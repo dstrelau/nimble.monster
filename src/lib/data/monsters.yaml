@@ -1,0 +1,311 @@
+families:
+  - name: Kobolds
+    description: "Small, maniacal dragonlings. Fiercely protective of their own."
+    ability:
+      name: "Nooooo!"
+      description: "When an ally within 10 ft. dies, attack once for free."
+    monsters:
+      - name: Kobold
+        slug: kobold
+        level: "1/3"
+        hp: 12
+        core: true
+        attacks:
+          - name: Stab
+            damage: "1d4+2"
+          - name: Sling
+            damage: "1d4+2"
+            range: 60
+
+  - name: Goblins
+    description: "Green, cunning, & thriving on the edge of chaos. Will mock you mercilessly if given the chance."
+    ability:
+      name: "Haha, Missed Me!"
+      description: "Whenever an attack misses you, deal 1 psychic damage in return."
+    monsters:
+      - name: Goblin
+        slug: goblin
+        level: "1/3"
+        hp: 15
+        core: true
+        attacks:
+          - name: Stab
+            damage: "1d6+2"
+          - name: Shoot
+            damage: "1d6+2"
+            range: 60
+
+      - name: Bugbear
+        slug: bugbear
+        level: "2"
+        hp: 30
+        armor: medium
+        core: true
+        attacks:
+          - name: Cleave
+            damage: "2d6+4"
+          - name: Javelin
+            damage: "1d6+2"
+            range: 60
+
+  - name: Bandits
+    description: "You've got money, they want money… a perfect match! (hand it over)"
+    ability:
+      name: "Parry"
+      description: "Treat attacks against you that roll 2 as a miss."
+    monsters:
+      - name: Bandit
+        slug: bandit
+        level: "1/3"
+        hp: 15
+        armor: medium
+        core: true
+        attacks:
+          - name: Stab
+            damage: "1d8+1"
+          - name: Shoot
+            damage: "1d8+1"
+            range: 60
+
+  - name: Undead
+    description: "Hate the living for not being dead, hate themselves for not being living."
+    ability:
+      name: "Unliving, Undying"
+      description: "Half damage from Necrotic and Piercing, double from Radiant. The first time this dies, reset to 1 HP instead (excluding minions)."
+    monsters:
+      - name: Ghoul
+        slug: ghoul
+        level: "1"
+        hp: 10
+        core: true
+        attacks:
+          - name: Sickening Claw (2x)
+            damage: "1d4+6"
+            description: "On crit: Dazed."
+      - name: Specter
+        slug: specter
+        level: "3"
+        hp: 30
+        core: true
+        attacks:
+          - name: Deathly Touch
+            damage: "1d4"
+            description: "On damage: set HP to zero if not undead."
+
+      - name: Zombie
+        slug: zombie
+        level: "1/2"
+        hp: 15
+        armor: heavy
+        core: true
+        attacks:
+          - name: Crunch
+            damage: "1d4+4"
+            description: "On damage: grappled."
+
+      - name: Skeleton
+        slug: skeleton
+        level: "1/3"
+        hp: 12
+        armor: medium
+        core: true
+        attacks:
+          - name: Grave Arrow
+            damage: "1d4+4"
+            range: 60
+
+      - name: Wraith
+        slug: wraith
+        level: "10"
+        hp: 70
+        core: true
+        attacks:
+          - name: Soul Rend (2x)
+            damage: "1d4+10"
+            range: 60
+            description: "On damage: deal 1 Wound."
+
+  - name: Forest Denizens
+    description: "Briarbanes. Soulless, thorny plant beings fertilized by blood."
+    monsters:
+      - name: Treant
+        slug: treant
+        level: "14"
+        hp: 200
+        armor: heavy
+        core: true
+        abilities:
+          - name: Enrage
+            description: "When Armor is reduced to none: attack with advantage."
+        attacks:
+          - name: Slam
+            damage: "2d6+15"
+            range: 15
+            description: "On hit: knock Prone."
+          - name: Stomp
+            damage: "1d20+15"
+            description: "If target is Slowed."
+
+  - name: Cultists & Horrors
+    description: "Driven by twisted beliefs, fanatical cultists perform dark rituals to awaken ancient evils, unleashing horrors that feast on fear and despair."
+    monsters:
+      - name: Cultist
+        slug: cultist
+        level: "1"
+        hp: 10
+        core: true
+        attacks:
+          - name: Oblation of Blood!
+            damage: "-"
+            description: "If undamaged, attack self for 2 damage. Adjacent enemies are inflicted with Despair."
+          - name: Dreadful Blade
+            damage: "1d6+6"
+          - name: Blood Boil
+            damage: "3d6+6"
+            range: 60
+            description: "Only affects Bloodied creatures."
+
+      - name: Cult Fanatic
+        slug: fanatic
+        level: "3"
+        hp: 18
+        core: true
+        abilities:
+          - name: Oblation of Blood!
+            description: "If undamaged, attack self for 2 damage. Adjacent enemies are inflicted with Despair."
+        attacks:
+          - name: Whispers of Madness
+            damage: "3d6+6"
+            description: "Contested STR save or Grappled (reroll to escape, or any radiant damage); if successful, attack cannot be Defended or Interposed against."
+
+      - name: Glabrezu
+        slug: glabrezu
+        level: "14"
+        hp: 110
+        armor: heavy
+        core: true
+        abilities:
+          - name: Fanatical Zeal
+            description: "While not at max HP, make all rolls with advantage. Your crits also inflict Despair."
+        attacks:
+          - name: Doomclaw (2x)
+            damage: "3d6+10"
+            range: 10
+            description: "On damage: Grappled (escape DC 17). If the same creature is grappled by both claws, it must escape each separately."
+          - name: Tear Asunder
+            damage: "50"
+            description: "Target must be grappled by both claws; if target is at 0 HP: DC 17 STR save or be torn in two, dying instantly."
+
+  - name: Hills & Fields
+    description: "Mighty brutes and cunning beasts, always on the lookout for easy prey."
+    monsters:
+      - name: Hill Giant
+        slug: hill-giant
+        level: "12"
+        hp: 130
+        armor: medium
+        core: true
+        abilities:
+          - name: Brute
+            description: "On hit: Knockback 5 ft. x Primary Die."
+        attacks:
+          - name: Tree Club (2x)
+            damage: "1d6+15"
+          - name: Boulder
+            damage: "1d6+20"
+            range: 60
+
+      - name: Griffin
+        slug: griffin
+        level: "4"
+        hp: 50
+        speed: 60
+        core: true
+        attacks:
+          - name: Talons
+            damage: "2d6+10"
+            description: "On hit: Grappled."
+          - name: Fly & Drop
+            damage: "-"
+            description: "If Grappling: Fly 60 ft. upward and release (fall damage is 1d6 per 10 ft.)."
+
+      - name: Gnoll
+        slug: gnoll
+        level: "1"
+        hp: 20
+        core: true
+        attacks:
+          - name: Ravage (2x)
+            damage: "1d10"
+          - name: Shoot
+            damage: "1d10"
+            range: 60
+
+  - name: Underground
+    description: "Nightmarish creatures from the depths, lurking in dark tunnels and cavernous realms, ready to ensnare or devour any intruders."
+    monsters:
+      - name: Giant Spider
+        slug: giant-spider
+        level: "2"
+        hp: 28
+        armor: medium
+        core: true
+        abilities:
+          - name: Shoot Web
+            description: "On hit, target is Restrained (escape DC 12, or with slashing/fire damage)."
+        attacks:
+          - name: Bite
+            damage: "2d8+4"
+            description: "Only affects Slowed targets. On damage: Poisoned (magical healing ends)."
+
+      - name: Ettercap
+        slug: ettercap
+        level: "4"
+        hp: 49
+        armor: heavy
+        core: true
+        abilities:
+          - name: Web Garrote
+            description: "1d8+2 damage, Grappled, and Silenced. Deals additional 1d8+2 damage each round a target is Grappled."
+        attacks:
+          - name: Acid Bite
+            damage: "2d8+3"
+            description: "On damage: Dazed."
+
+      - name: Cloaker
+        slug: cloaker
+        level: "13"
+        hp: 150
+        armor: medium
+        core: true
+        abilities:
+          - name: Ambusher
+            description: "Cloakers always act first and their foes roll initiative with disadvantage."
+          - name: Mutual Harm
+            description: "You take half damage from attacks while grappling a creature (they take the other half)."
+        attacks:
+          - name: Wrap
+            damage: "2d10+20"
+            description: "Grappled (escape DC 16)."
+          - name: Horrifying Wail
+            description: "DC 16 WIL save, or creatures within 30 ft. are Frightened and must spend 1 Action moving away."
+
+  - name: Beasts
+    description: "Nightmarish creatures from the depths, lurking in dark tunnels and cavernous realms, ready to ensnare or devour any intruders."
+    monsters:
+      - name: Stirge
+        slug: stirge
+        level: "1/4"
+        hp: 12 # Set to match level 1/4 Monster Builder guidelines for unarmored creatures
+        fly: 40
+        core: true
+        abilities:
+          - name: Blood Drain
+            description: >
+              Attach to the target, dealing Instead of attacking, deal 1d4+1
+              damage at the start of its turn (cannot miss). Target can use an
+              Action to detach, ending the effect.
+        attacks:
+          - name: Proboscis
+            damage: "1d4+1"
+            description: "On hit, initiate Blood Drain."
