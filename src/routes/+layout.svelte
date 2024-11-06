@@ -1,6 +1,7 @@
 <script lang="ts">
     import "@picocss/pico";
     import { page } from "$app/stores";
+    import { base } from "$app/paths";
 
     let { data, children } = $props();
     function slugify(s: string) {
@@ -25,9 +26,9 @@
                             {#each family.monsters as monster}
                                 <li>
                                     <a
-                                        href="/{monster.slug}"
+                                        href="/{base}/{monster.slug}"
                                         aria-current={$page.url.pathname ===
-                                            "/" + monster.slug}
+                                            `/${base}/${monster.slug}`}
                                     >
                                         {monster.name}
                                     </a>
