@@ -26,9 +26,9 @@
                             {#each family.monsters as monster}
                                 <li>
                                     <a
-                                        href="/{base}/{monster.slug}"
+                                        href="/{monster.slug}"
                                         aria-current={$page.url.pathname ===
-                                            `/${base}/${monster.slug}`}
+                                            `/${monster.slug}`}
                                     >
                                         {monster.name}
                                     </a>
