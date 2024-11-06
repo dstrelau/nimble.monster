@@ -1,19 +1,20 @@
-- name: Beasts
-  description: "Nightmarish creatures from the depths, lurking in dark tunnels and cavernous realms, ready to ensnare or devour any intruders."
-  monsters:
-    - name: Stirge
-      slug: stirge
-      level: "1/4"
-      hp: 12 # Set to match level 1/4 Monster Builder guidelines for unarmored creatures
-      fly: 40
-      core: true
-      abilities:
-        - name: Blood Drain
-          description: >
-            Attach to the target, dealing Instead of attacking, deal 1d4+1
-            damage at the start of its turn (cannot miss). Target can use an
-            Action to detach, ending the effect.
-      attacks:
-        - name: Proboscis
-          damage: "1d4+1"
-          description: "On hit, initiate Blood Drain."
+families:
+  - name: Beasts
+    description: "Nightmarish creatures from the depths, lurking in dark tunnels and cavernous realms, ready to ensnare or devour any intruders."
+    monsters:
+      - name: Stirge
+        slug: stirge
+        level: "1/4"
+        hp: 12 # Set to match level 1/4 Monster Builder guidelines for unarmored creatures
+        fly: 40
+        core: true
+        abilities:
+          - name: Blood Drain
+            description: >
+              Attach to the target, dealing Instead of attacking, deal 1d4+1
+              damage at the start of its turn (cannot miss). Target can use an
+              Action to detach, ending the effect.
+        attacks:
+          - name: Proboscis
+            damage: "1d4+1"
+            description: "On hit, initiate Blood Drain."
