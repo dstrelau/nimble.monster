@@ -1,6 +1,8 @@
 import Monsters from "$lib/data/monsters.yaml";
 import { type Family } from "$lib/Bestiary.svelte";
 
+export const prerender = true;
+
 export function load() {
   return {
     monsters: Monsters.monsters,

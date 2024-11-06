@@ -131,7 +131,7 @@
         margin-left: 5px;
         fill: var(--pico-color);
     }
-    .family {
+    .ability {
         font-style: italic;
     }
 </style>

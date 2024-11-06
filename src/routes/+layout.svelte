@@ -1,6 +1,4 @@
 <script lang="ts">
-    export const prerender = true;
-
     import "@picocss/pico";
     import { page } from "$app/stores";
 
@@ -38,22 +36,6 @@
                         </ul>
                     </details>
                 {/each}
-                <details>
-                    <summary>Monsters</summary>
-                    <ul>
-                        {#each data.monsters as monster}
-                            <li>
-                                <a
-                                    href="/{monster.slug}"
-                                    aria-current={$page.url.pathname ===
-                                        "/" + monster.slug}
-                                >
-                                    {monster.name}
-                                </a>
-                            </li>
-                        {/each}
-                    </ul>
-                </details>
             </nav>
         </aside>
         <div class="detail">
