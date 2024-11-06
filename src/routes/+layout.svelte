@@ -1,4 +1,6 @@
 <script lang="ts">
+    export const prerender = true;
+
     import "@picocss/pico";
     import { page } from "$app/stores";
 
