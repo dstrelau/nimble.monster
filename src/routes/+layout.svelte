@@ -37,6 +37,11 @@
                         </ul>
                     </details>
                 {/each}
+                <ul>
+                    <li>
+                        <a href="/_dice">Dice Roller</a>
+                    </li>
+                </ul>
             </nav>
         </aside>
         <div class="detail">
