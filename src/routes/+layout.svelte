@@ -1,7 +1,6 @@
 <script lang="ts">
     import "@picocss/pico";
     import { page } from "$app/stores";
-    import { base } from "$app/paths";
 
     let { data, children } = $props();
     function slugify(s: string) {

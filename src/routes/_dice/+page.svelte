@@ -1,7 +1,14 @@
 <script lang="ts">
-    import { page } from "$app/stores";
+    // import { page } from "$app/stores";
+    import { browser } from "$app/environment";
 
-    let q = $page.url.searchParams.get("roll");
+    let q = "";
+    if (browser) {
+        const urlParams = new URLSearchParams(window.location.search);
+        q = urlParams.get("roll") || "";
+    }
+
+    // let q = $page.url.searchParams.get("roll");
     let rollInput = $state(q || "");
     let rollOutput = $state(new Map<number, number>());
     if (q) {
@@ -76,19 +83,16 @@
 
 <div>
     <form>
-        <fieldset>
-            <label>
-                <input
-                    name="roll"
-                    placeholder="1d8+2"
-                    aria-describedby="roll-help"
-                    bind:value={rollInput}
-                />
-                <small id="roll-help">supported: 2d6, 3d4+2, 2x1d8+4</small>
-            </label>
+        <fieldset role="group">
+            <input
+                name="roll"
+                placeholder="1d8+2"
+                aria-describedby="roll-help"
+                bind:value={rollInput}
+            />
+            <input type="submit" value="Roll" {onclick} />
         </fieldset>
-
-        <input type="submit" value="Roll" {onclick} />
+        <small id="roll-help">supported: 2d6, 3d4+2, 2x1d8+4</small>
     </form>
 
     {#if rollOutput.size > 0}
