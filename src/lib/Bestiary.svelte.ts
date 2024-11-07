@@ -1,10 +1,12 @@
 export interface Monster {
-  hp: number;
-  speed: number;
-  armor: string;
-  level: string;
   name: string;
   slug: string;
+  hp: number;
+  speed: number;
+  fly: number;
+  swim: number;
+  armor: string;
+  level: string;
   abilities: Ability[];
   attacks: Attack[];
 }
@@ -24,6 +26,6 @@ export interface Ability {
 export interface Attack {
   name: string;
   damage: string;
-  range: number;
+  range: string;
   description: string;
 }

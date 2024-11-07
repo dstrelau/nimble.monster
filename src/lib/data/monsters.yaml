@@ -1,13 +1,43 @@
 families:
+  - name: Hobgoblins
+    ability:
+      name: Hammer the Gap
+      description: Once per round as a reaction, make a melee attack against a hero damaged by another creature for free.
+    monsters:
+      - name: Hobgoblin Captain
+        slug: hobgoblin-captain
+        level: "6"
+        armor: heavy
+        hp: 42
+        abilities:
+          - name: Inspiring Presence
+            description: Allies within 60 ft have Advantage on Saves.
+        attacks:
+          - name: Greatsword
+            damage: "3d4+2"
+          - name: Longbow
+            damage: "1d8+1"
+            range: "10-120"
+      - name: Hobgoblin Soldier
+        slug: hobgoblin-soldier
+        level: "1"
+        armor: heavy
+        hp: 15
+        attacks:
+          - name: Longsword
+            damage: "1d8+1"
+          - name: Longbow
+            damage: "1d8+1"
+            range: "10-120"
+
   - name: Beasts
     description: "Nightmarish creatures from the depths, lurking in dark tunnels and cavernous realms, ready to ensnare or devour any intruders."
     monsters:
       - name: Stirge
         slug: stirge
         level: "1/4"
-        hp: 12 # Set to match level 1/4 Monster Builder guidelines for unarmored creatures
+        hp: 12
         fly: 40
-        core: true
         abilities:
           - name: Blood Drain
             description: >
@@ -18,3 +48,40 @@ families:
           - name: Proboscis
             damage: "1d4+1"
             description: "On hit, initiate Blood Drain."
+  - name: Plants
+    description: "Harmless vegetables. Or are they?"
+    monsters:
+      - name: Spore Octopus
+        slug: spore-octopus
+        level: "3"
+        size: large
+        hp: 46
+        speed: 5
+        swim: 50
+        abilities:
+          - name: Blindsight
+            description: Cannot be blinded and can see through darkness and invisibilty within 30 ft but is blind beyond.
+          - name: Shifty
+            description: After taking damage, move for free.
+        attacks:
+          - name: Tentacle (3x)
+            damage: "1d6+1"
+            description: "On hit, initiate Blood Drain."
+            range: 10
+
+  - name: Elementals
+    description: "Earth. Wind. Fire. Water. With your powers combined..."
+    monsters:
+      - name: Fire Snake
+        slug: fire-snake
+        level: "2"
+        armor: medium
+        hp: 30
+        abilities:
+          - name: Of Fire
+            description: >
+              Immune to fire damage. Take double cold damage.
+              Any creature that touches or makes a melee attack against the creature takes 1d6 fire damage.
+        attacks:
+          - name: Bite
+            damage: "2d8+5 fire"
