@@ -2,6 +2,8 @@
     // import { page } from "$app/stores";
     import { browser } from "$app/environment";
 
+    const samples = 1_000_000;
+
     let q = "";
     if (browser) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -10,6 +12,7 @@
 
     // let q = $page.url.searchParams.get("roll");
     let rollInput = $state(q || "");
+    let mean = $state(0);
     let rollOutput = $state(new Map<number, number>());
     if (q) {
         onclick();
@@ -59,7 +62,6 @@
     function onclick() {
         let { multiplier, count, die, bonus } = parseRollString(rollInput);
 
-        const samples = 1_000_000;
         let results: { [key: number]: number } = {};
         for (let i = 0; i < samples; i++) {
             let sum = 0;
@@ -71,17 +73,20 @@
         }
 
         let output = new Map<number, number>();
+        let sum = 0;
         const maxValue = Math.max(...Object.keys(results).map(Number));
         for (let i = 0; i < maxValue; i++) {
             let v = results[i] || 0;
+            sum += i * v;
             let perc = v / samples;
             output.set(i, 100 * perc);
         }
         rollOutput = output;
+        mean = sum / samples;
     }
 </script>
 
-<div>
+<div class="wrap">
     <form>
         <fieldset role="group">
             <input
@@ -96,6 +101,7 @@
     </form>
 
     {#if rollOutput.size > 0}
+        <p>mean: {mean}</p>
         <table>
             <thead>
                 <tr><th>#</th><th>%</th><th></th></tr>
@@ -116,8 +122,8 @@
 </div>
 
 <style>
-    form {
-        margin: 0 50px;
+    .wrap {
+        padding: 0 50px;
     }
     td {
         padding-top: 0;
