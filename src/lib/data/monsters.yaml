@@ -13,7 +13,7 @@ families:
         abilities:
           - name: Inspiring Presence
             description: Allies within 60 ft have Advantage on Saves.
-        attacks:
+        actions:
           - name: Greatsword
             damage: "3d4+2"
           - name: Longbow
@@ -25,7 +25,7 @@ families:
         level: "1"
         armor: heavy
         hp: 15
-        attacks:
+        actions:
           - name: Longsword
             damage: "1d8+1"
           - name: Longbow
@@ -33,23 +33,42 @@ families:
             range: "10-120"
 
   - name: Beasts
-    description: "Nightmarish creatures from the depths, lurking in dark tunnels and cavernous realms, ready to ensnare or devour any intruders."
+    description: "Beasts of all shapes and sizes. Mostly teeth and claws."
     monsters:
-      - name: Stirge
-        slug: stirge
-        level: "1/4"
-        hp: 12
-        fly: 40
+      - name: Owlbear
+        slug: owlbear
+        level: "7"
+        hp: 64
+        armor: medium
         abilities:
-          - name: Blood Drain
+          - name: Aggressive
+            description: +10 ft speed if moving toward enemies
+          - name: Vicious
+            description: On crit, roll an additional die for each explosion.
+        actions:
+          - name: Claws (2x)
+            damage: "2d8+3"
+
+  - name: Beasts
+    description: "Beasts of all shapes and sizes. Mostly teeth and claws."
+    monsters:
+      - name: Harpy
+        slug: harpy
+        level: "3"
+        speed: 20
+        fly: 40
+        hp: 38
+        abilities:
+        actions:
+          - name: Claws (2x)
+            damage: "1d8+3"
+          - name: Sing. Recharge 5-6.
             description: >
-              Attach to the target, dealing Instead of attacking, deal 1d4+1
-              damage at the start of its turn (cannot miss). Target can use an
-              Action to detach, ending the effect.
-        attacks:
-          - name: Proboscis
-            damage: "1d4+1"
-            description: "On hit, initiate Blood Drain."
+              Any creatures within 100 ft must make a DC 11 WIL save. On
+              failure, creature is Charmed for 5 turns, must use its turn to
+              move directly toward the Harpy and make no attacks. Can re-roll
+              save on damage, any time movement would cause damage, and at the
+              end of each turn.
 
   - name: Plants
     description: "Harmless vegetables. Or are they?"
@@ -66,7 +85,7 @@ families:
             description: Cannot be blinded and can see through darkness and invisibilty within 30 ft but is blind beyond.
           - name: Shifty
             description: After taking damage, move for free.
-        attacks:
+        actions:
           - name: Tentacle (3x)
             damage: "1d6+1"
             range: 10
@@ -84,6 +103,43 @@ families:
             description: >
               Immune to fire damage. Take double cold damage.
               Any creature that touches or makes a melee attack against the creature takes 1d6 fire damage.
-        attacks:
+        actions:
           - name: Bite
             damage: "2d8+5 fire"
+
+  - name: Dragons
+    description: Wings, scales, claws, and a breath weapon. What more could you want?
+    monsters:
+      - name: Blue Dragon Wyrmling (Legendary)
+        slug: blue-dragon-wyrmling-legendary
+        legendary: true
+        level: "3"
+        size: medium
+        hp: 100
+        armor: M
+        saves:
+          STR: advantage
+        abilities:
+          - name: Lightning Aura
+            description: >
+              When hit by a critical strike, all creatures within 5 ft take 1d8
+              lightning damage.
+        actions:
+          - name: Talons
+            damage: "2d8+1"
+            description: Move/fly up to 40 ft, then attack.
+          - name: Thunderous Bite
+            damage: "4d8+1"
+            description: >
+              On hit, medium or smaller target is thrown 5 ft in a direction of
+              your choice.
+          - name: Lightning Breath
+            damage: 5d8 lightning damage, half on DC 11 DEX save
+            description: 1 time use. 10 ft wide, 60 ft line.
+        bloodied:
+          description: >
+            At 50 HP, recharge Lightning Breath and immediately use it.
+        last_stand:
+          description: >
+            30 damage until death. Until then, Lightning Aura triggers whenever
+            creature is hit.

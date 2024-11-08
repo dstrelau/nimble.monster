@@ -26,7 +26,7 @@
                     m.name[0].toUpperCase(),
                 );
                 return Object.entries(allByFirstLetter)
-                    .sort(([a], [b]) => a > b)
+                    .sort(([a], [b]) => (a > b ? 1 : -1))
                     .map(([letter, monsters]) => ({
                         header: letter,
                         monsters: monsters,
@@ -110,12 +110,11 @@
     .container {
         display: flex;
         flex-direction: row;
-        justify-content: center;
+        justify-content: baseline;
         align-items: stretch;
     }
     .detail {
         flex-grow: 4;
-        margin: auto 15px;
         max-width: 70%;
     }
 
@@ -127,11 +126,17 @@
     nav ul {
         font-size: 15px;
         margin-left: 0;
+        padding-top: 0;
     }
     nav li {
-        padding-bottom: 0;
+        padding-top: 5px;
+        padding-bottom: 5px;
         font-size: 20px;
-        margin-left: 0;
+        margin: 0;
+    }
+    nav a {
+        padding-top: 5px;
+        padding-bottom: 5px;
     }
     nav summary {
         margin-bottom: 0;

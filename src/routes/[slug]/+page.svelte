@@ -86,17 +86,17 @@
             {ability.description}
         </p>
     {/each}
-    {#each monster.attacks as attack}
+    {#each monster.actions as action}
         <p class="attack">
-            <strong>{attack.name}.</strong>
+            <strong>{action.name}.</strong>
             <span class="damage"
-                >{attack.damage}{#if attack.description}.{/if}</span
+                >{action.damage}{#if action.description}.{/if}</span
             >
-            {#if attack.description}
-                <span class="description">{attack.description}</span>
+            {#if action.description}
+                <span class="description">{action.description}</span>
             {/if}
-            {#if attack.range}
-                <span class="range">({attack.range} ft)</span>
+            {#if action.range}
+                <span class="range">({action.range} ft)</span>
             {/if}
         </p>
     {/each}

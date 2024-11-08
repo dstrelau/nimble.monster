@@ -8,7 +8,7 @@ export interface Monster {
   armor: string;
   level: string;
   abilities: Ability[];
-  attacks: Attack[];
+  actions: Attack[];
 }
 
 export interface Family {
