@@ -6,6 +6,7 @@ families:
     monsters:
       - name: Hobgoblin Captain
         slug: hobgoblin-captain
+        contributor: SanityWithIn
         level: "6"
         armor: heavy
         hp: 42
@@ -20,6 +21,7 @@ families:
             range: "10-120"
       - name: Hobgoblin Soldier
         slug: hobgoblin-soldier
+        contributor: SanityWithIn
         level: "1"
         armor: heavy
         hp: 15
@@ -48,6 +50,7 @@ families:
           - name: Proboscis
             damage: "1d4+1"
             description: "On hit, initiate Blood Drain."
+
   - name: Plants
     description: "Harmless vegetables. Or are they?"
     monsters:

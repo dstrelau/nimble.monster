@@ -100,6 +100,11 @@
             {/if}
         </p>
     {/each}
+    {#if monster.contributor}
+        <p class="attribution">
+            Contributed by <strong>{monster.contributor}</strong>
+        </p>
+    {/if}
 </article>
 
 <style>
@@ -153,5 +158,10 @@
     }
     .ability {
         font-style: italic;
+    }
+    .attribution {
+        margin-top: 25px;
+        font-style: italic;
+        font-size: 14px;
     }
 </style>
