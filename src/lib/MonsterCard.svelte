@@ -81,9 +81,11 @@
     {#each monster.actions as action (action.name)}
         <p class="attack">
             <strong>{action.name}.</strong>
-            <span class="damage"
-                >{action.damage}{#if action.description}.{/if}</span
-            >
+            {#if action.damage}
+                <span class="damage"
+                    >{action.damage}{#if action.description}.{/if}</span
+                >
+            {/if}
             {#if action.description}
                 <span class="description">{action.description}</span>
             {/if}

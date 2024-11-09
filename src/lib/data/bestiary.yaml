@@ -7,7 +7,6 @@ families:
     monsters:
       - name: Hobgoblin Soldier
         slug: hobgoblin-soldier
-        contributor: SanityWithIn
         level: "1"
         armor: H
         hp: 15
@@ -20,18 +19,85 @@ families:
       - name: Hobgoblin Captain
         slug: hobgoblin-captain
         contributor: SanityWithIn
-        level: "6"
+        level: "5"
         armor: H
-        hp: 42
+        hp: 45
+        saves: STR+
         abilities:
           - name: Inspiring Presence
             description: Allies within 60 ft have Advantage on Saves.
         actions:
           - name: Greatsword
-            damage: "3d4+2"
+            damage: "2d6+3"
           - name: Longbow
-            damage: "1d8+1"
+            damage: "1d8+2"
             range: "10-120"
+          - name: Commanding Shout
+            description: >
+              An ally within 30 ft moves without provoking opportunity attacks.
+      - name: Hobgoblin Shieldguard
+        slug: hobgoblin-shieldguard
+        contributor: SanityWithIn
+        level: "5"
+        armor: M
+        hp: 45
+        saves: STR+
+        abilities:
+          - name: Inspiring Presence
+            description: Allies within 60 ft have Advantage on Saves.
+        actions:
+          - name: Shield Bash
+            damage: "1d6+3"
+            description: On damage, knock the target prone.
+          - name: Longsword
+            damage: "1d8+3"
+          - name: Shield Charge
+            description: >
+              Once per encounter, move up to 60 ft then forcefully move an
+              adjacent creature by the same distance, or half distance on DC 13 STR save.
+      - name: Hobgoblin Blazer
+        slug: hobgoblin-blazer
+        contributor: SanityWithIn
+        level: "5"
+        hp: 30
+        saves: DEX+, STR-
+        abilities:
+          - name: Inspiring Presence
+            description: Allies within 60 ft have Advantage on Saves.
+        actions:
+          - name: Blazing Crossbow
+            damage: "1d10 + 1d6 Fire"
+            range: "10-60"
+          - name: Shortsword
+            damage: "1d6+2"
+          - name: Explosive Bolt
+            damage: "6d6 Fire, or half on DC 12 DEX save"
+            description: Once per encounter.
+
+      - name: Hobgoblin Devastator
+        slug: hobgoblin-devastator
+        contributor: SanityWithIn
+        level: "5"
+        hp: 25
+        saves: WIL+, STR-
+        abilities:
+          - name: Resistances.
+            description: Fire
+          - name: Army Arcana
+            description: Allies take no damage from your spells.
+        actions:
+          - name: Quarterstaff
+            damage: "1d6+1"
+          - name: Devestating Bolt
+            damage: "2d4+4"
+            range: "10-60"
+            description: On hit, target is knocked prone.
+          - name: Firey Escape
+            damage: "2d6 Fire"
+            description: Deal damage to adjacent creatures, then teleport 20ft.
+          - name: Fireball
+            damage: "8d6 Fire, or half on DC 11 DEX save"
+            description: Twice per encounter, deals damage in a 20ft sphere.
 
   - name: Beasts
     slug: beasts
