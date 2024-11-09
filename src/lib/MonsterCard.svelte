@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { type Monster, type Family } from "$lib/Bestiary.svelte";
+    import { type Monster, type Family } from "$lib/types.svelte";
 
     export let monster: Monster;
     export let family: Family;
@@ -146,12 +146,6 @@
         height: 32px;
         margin-left: 5px;
         fill: var(--pico-color);
-    }
-
-    .family {
-        margin-bottom: 25px;
-        font-style: italic;
-        font-size: 14px;
     }
 
     .ability {

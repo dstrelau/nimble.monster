@@ -1,12 +1,11 @@
-import Monsters from "$lib/data/monsters.yaml";
-import { type Family } from "$lib/Bestiary.svelte";
+import Data from "$lib/data/bestiary.yaml";
+import { type Family } from "$lib/types.svelte";
 
 export const prerender = true;
 
 export function load() {
   return {
-    monsters: Monsters.monsters,
-    families: Monsters.families.sort((a: Family, b: Family) =>
+    families: Data.families.sort((a: Family, b: Family) =>
       a.name.localeCompare(b.name),
     ),
   };

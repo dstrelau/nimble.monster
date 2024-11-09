@@ -1,7 +1,7 @@
 <script lang="ts">
     import "@picocss/pico";
     import { page } from "$app/stores";
-    import { type Family, type Monster } from "$lib/Bestiary.svelte.js";
+    import { type Family, type Monster } from "$lib/types.svelte";
 
     const COLLATE_FAMILIES = "Families";
     const COLLATE_MONSTERS_BY_LEVEL = "Monsters by Level";
@@ -124,6 +124,7 @@
         --pico-typography-spacing-vertical: 0.5rem;
         --pico-nav-element-spacing-vertical: 0.1rem;
     }
+
     /* override style meant for horizontal nav, which we don't have */
     nav ul:first-of-type {
         /* margin-left:calc(var(--pico-nav-element-spacing-horizontal) * -1) */
@@ -158,21 +159,6 @@
         margin-bottom: 0;
     }
 
-    nav ul {
-        /* font-size: 15px; */
-        /* margin-left: 0; */
-        /* padding-top: 0; */
-    }
-    nav li {
-        /* padding-top: 5px; */
-        /* padding-bottom: 5px; */
-        /* font-size: 20px; */
-        /* margin: 0; */
-    }
-    nav a {
-        /* padding-top: 5px;
-        padding-bottom: 5px; */
-    }
     nav summary {
         margin-top: 0.5rem;
     }
