@@ -197,7 +197,7 @@ families:
             damage: "8d8, half on DC 13 DEX save"
             description: >
               Once per encounter, sacrifice movement to unerringly damage all
-              all creatures within 10 ft.
+              creatures within 10 ft.
       - name: Giant Fire Elemental
         slug: giant-fire-elemental
         level: "9"
@@ -213,8 +213,8 @@ families:
           - name: Inferno
             damage: "10d8, half on DC 13 DEX save"
             description: >
-              Once per encounter, sacrifice movement uneeringly damage all
-              all creatures within 10 ft.
+              Once per encounter, sacrifice movement uneeringly damage all all
+              creatures within 10 ft.
       - name: Fire Titan
         slug: fire-titan
         level: "13"
@@ -230,5 +230,5 @@ families:
           - name: Eruption
             damage: "10d8, half on DC 16 DEX save"
             description: >
-              Once per encounter, sacrifice movement uneeringly damage all
+              Once per encounter, sacrifice movement uneeringly damage
               all creatures within 15 ft.
