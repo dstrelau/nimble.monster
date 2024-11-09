@@ -3,8 +3,12 @@
     import { page } from "$app/stores";
     import { type Family, type Monster } from "$lib/Bestiary.svelte.js";
 
+    const COLLATE_FAMILIES = "Families";
+    const COLLATE_MONSTERS_BY_LEVEL = "Monsters by Level";
+    const COLLATE_MONSTERS_BY_NAME = "Monsters by Name";
+
     let { data, children } = $props();
-    let collate = $state("By Name");
+    let collate = $state("Families");
     function build() {
         function allMonstersBy(f: (m: Monster) => string): {
             [key: string]: Monster[];
@@ -21,7 +25,7 @@
             return monstersBy;
         }
         switch (collate) {
-            case "By Name":
+            case COLLATE_MONSTERS_BY_NAME:
                 let allByFirstLetter = allMonstersBy((m: Monster) =>
                     m.name[0].toUpperCase(),
                 );
@@ -31,12 +35,12 @@
                         header: letter,
                         monsters: monsters,
                     }));
-            case "By Family":
+            case COLLATE_FAMILIES:
                 return data.families.map((family: Family) => ({
                     header: family.name,
                     monsters: family.monsters,
                 }));
-            case "By Level":
+            case COLLATE_MONSTERS_BY_LEVEL:
                 const allByLevel = allMonstersBy((m: Monster) => m.level);
                 return Object.entries(allByLevel)
                     .sort(([a], [b]) => {
@@ -65,27 +69,43 @@
     <div class="container">
         <aside>
             <select name="collate" bind:value={collate}>
-                <option selected>By Name</option>
-                <option selected>By Family</option>
-                <option selected>By Level</option>
+                <option selected>{COLLATE_FAMILIES}</option>
+                <option selected>{COLLATE_MONSTERS_BY_NAME}</option>
+                <option selected>{COLLATE_MONSTERS_BY_LEVEL}</option>
             </select>
             <nav>
-                {#each toc as { header, monsters }}
-                    <summary>{header}</summary>
+                {#if collate == COLLATE_FAMILIES}
                     <ul>
-                        {#each monsters as monster}
+                        {#each data.families as fam (fam.slug)}
                             <li>
                                 <a
-                                    href="/{monster.slug}"
+                                    href="/f/{fam.slug}"
                                     aria-current={$page.url.pathname ===
-                                        `/${monster.slug}`}
+                                        `/f/${fam.slug}`}
                                 >
-                                    {monster.name}
+                                    {fam.name}
                                 </a>
                             </li>
                         {/each}
                     </ul>
-                {/each}
+                {:else}
+                    {#each toc as { header, monsters } (header)}
+                        <summary>{header}</summary>
+                        <ul>
+                            {#each monsters as monster (monster.slug)}
+                                <li>
+                                    <a
+                                        href="/m/{monster.slug}"
+                                        aria-current={$page.url.pathname ===
+                                            `/m/${monster.slug}`}
+                                    >
+                                        {monster.name}
+                                    </a>
+                                </li>
+                            {/each}
+                        </ul>
+                    {/each}
+                {/if}
                 <!-- <ul>
                     <li>
                         <a href="/_dice">Dice Roller</a>
@@ -100,12 +120,23 @@
 </div>
 
 <style>
+    :root {
+        --pico-typography-spacing-vertical: 0.5rem;
+        --pico-nav-element-spacing-vertical: 0.1rem;
+    }
+    /* override style meant for horizontal nav, which we don't have */
+    nav ul:first-of-type {
+        /* margin-left:calc(var(--pico-nav-element-spacing-horizontal) * -1) */
+        margin-left: 0;
+    }
+
     .wrap {
         margin: 5px auto;
         max-width: 1200px;
     }
     header {
-        padding: 5px 25px;
+        padding-left: 5px;
+        padding-right: 5px;
     }
     .container {
         display: flex;
@@ -116,29 +147,33 @@
     .detail {
         flex-grow: 4;
         max-width: 70%;
+        margin-left: 25px;
     }
-
     aside {
-        overflow-y: auto;
         flex-grow: 1;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    aside select {
+        margin-bottom: 0;
     }
 
     nav ul {
-        font-size: 15px;
-        margin-left: 0;
-        padding-top: 0;
+        /* font-size: 15px; */
+        /* margin-left: 0; */
+        /* padding-top: 0; */
     }
     nav li {
-        padding-top: 5px;
-        padding-bottom: 5px;
-        font-size: 20px;
-        margin: 0;
+        /* padding-top: 5px; */
+        /* padding-bottom: 5px; */
+        /* font-size: 20px; */
+        /* margin: 0; */
     }
     nav a {
-        padding-top: 5px;
-        padding-bottom: 5px;
+        /* padding-top: 5px;
+        padding-bottom: 5px; */
     }
     nav summary {
-        margin-bottom: 0;
+        margin-top: 0.5rem;
     }
 </style>

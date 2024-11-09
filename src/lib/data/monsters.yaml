@@ -1,14 +1,27 @@
 families:
   - name: Hobgoblins
+    slug: hobgoblins
     ability:
       name: Hammer the Gap
       description: Once per round as a reaction, make a melee attack against a hero damaged by another creature for free.
     monsters:
+      - name: Hobgoblin Soldier
+        slug: hobgoblin-soldier
+        contributor: SanityWithIn
+        level: "1"
+        armor: H
+        hp: 15
+        actions:
+          - name: Longsword
+            damage: "1d8+1"
+          - name: Longbow
+            damage: "1d8+1"
+            range: "10-120"
       - name: Hobgoblin Captain
         slug: hobgoblin-captain
         contributor: SanityWithIn
         level: "6"
-        armor: heavy
+        armor: H
         hp: 42
         abilities:
           - name: Inspiring Presence
@@ -19,27 +32,16 @@ families:
           - name: Longbow
             damage: "1d8+1"
             range: "10-120"
-      - name: Hobgoblin Soldier
-        slug: hobgoblin-soldier
-        contributor: SanityWithIn
-        level: "1"
-        armor: heavy
-        hp: 15
-        actions:
-          - name: Longsword
-            damage: "1d8+1"
-          - name: Longbow
-            damage: "1d8+1"
-            range: "10-120"
 
   - name: Beasts
+    slug: beasts
     description: "Beasts of all shapes and sizes. Mostly teeth and claws."
     monsters:
       - name: Owlbear
         slug: owlbear
         level: "7"
         hp: 64
-        armor: medium
+        armor: M
         abilities:
           - name: Aggressive
             description: +10 ft speed if moving toward enemies
@@ -48,10 +50,6 @@ families:
         actions:
           - name: Claws (2x)
             damage: "2d8+3"
-
-  - name: Beasts
-    description: "Beasts of all shapes and sizes. Mostly teeth and claws."
-    monsters:
       - name: Harpy
         slug: harpy
         level: "3"
@@ -71,6 +69,7 @@ families:
               end of each turn.
 
   - name: Plants
+    slug: plants
     description: "Harmless vegetables. Or are they?"
     monsters:
       - name: Spore Octopus
@@ -90,27 +89,10 @@ families:
             damage: "1d6+1"
             range: 10
 
-  - name: Elementals
-    description: "Earth. Wind. Fire. Water. With your powers combined..."
+  - name: Legendary Monsters
+    slug: legendary-monsters
     monsters:
-      - name: Fire Snake
-        slug: fire-snake
-        level: "2"
-        armor: medium
-        hp: 30
-        abilities:
-          - name: Of Fire
-            description: >
-              Immune to fire damage. Take double cold damage.
-              Any creature that touches or makes a melee attack against the creature takes 1d6 fire damage.
-        actions:
-          - name: Bite
-            damage: "2d8+5 fire"
-
-  - name: Dragons
-    description: Wings, scales, claws, and a breath weapon. What more could you want?
-    monsters:
-      - name: Blue Dragon Wyrmling (Legendary)
+      - name: Blue Dragon Wyrmling
         slug: blue-dragon-wyrmling-legendary
         legendary: true
         level: "3"
@@ -143,3 +125,110 @@ families:
           description: >
             30 damage until death. Until then, Lightning Aura triggers whenever
             creature is hit.
+
+  - name: "Elementals: Fire"
+    slug: elementals-fire
+    description: "Burn baby burn! Elemental Inferno!"
+    ability:
+      name: Burning Aura
+      description: >
+        Immune to Fire damage. Takes double Ice damage. Any non-Fire Elemental
+        that starts its turn within 5 ft takes 1d4 damage.
+    monsters:
+      - name: Emberling
+        slug: emberling
+        level: "1/3"
+        hp: 15
+        actions:
+          - name: Flame Touch
+            damage: "1d8"
+      - name: Fire Imp
+        slug: fire-imp
+        level: "1/2"
+        hp: 18
+        abilities:
+          - name: Shifty
+            description: Can move for free after being hit with an attack.
+        actions:
+          - name: Fire Bolt
+            damage: "1d6+3"
+            range: 40
+      - name: Fire Snake
+        slug: fire-snake
+        level: "2"
+        hp: 34
+        actions:
+          - name: Bite
+            damage: "2d8+4"
+      - name: Magma Hound
+        slug: magma-hound
+        level: "3"
+        hp: 40
+        actions:
+          - name: Bite
+            damage: "2d8+6"
+          - name: Fire Breath
+            damage: "4d8, half on DC 11 DEX save"
+            description: >
+              Once per encounter, sacrifice movement to unerringly damage all
+              creatures in a 15 ft wide cone.
+      - name: Fire Elemental
+        slug: fire-elemental
+        level: "5"
+        armor: M
+        hp: 44
+        actions:
+          - name: Slam
+            damage: "(2x) 2d8"
+          - name: Inferno
+            damage: "6d8, half on DC 12 DEX save"
+            description: >
+              Once per encounter, sacrifice movement to unerringly damage all
+              creatures within 10 ft.
+      - name: Phoenix
+        slug: phoenix
+        level: "7"
+        hp: 80
+        fly: 40
+        actions:
+          - name: Talons
+            damage: "4d8+6"
+          - name: Inferno
+            damage: "8d8, half on DC 13 DEX save"
+            description: >
+              Once per encounter, sacrifice movement to unerringly damage all
+              all creatures within 10 ft.
+      - name: Giant Fire Elemental
+        slug: giant-fire-elemental
+        level: "9"
+        hp: 92
+        size: large
+        armor: M
+        abilities:
+          - name: Vicious
+            description: On crit, roll an additional die for each explosion.
+        actions:
+          - name: Slam
+            damage: "(2x) 3d8"
+          - name: Inferno
+            damage: "10d8, half on DC 13 DEX save"
+            description: >
+              Once per encounter, sacrifice movement uneeringly damage all
+              all creatures within 10 ft.
+      - name: Fire Titan
+        slug: fire-titan
+        level: "13"
+        hp: 128
+        size: large
+        armor: M
+        abilities:
+          - name: Vicious
+            description: On crit, roll an additional die for each explosion.
+        actions:
+          - name: Slam
+            damage: "(2x) 4d8"
+          - name: Eruption
+            damage: "10d8, half on DC 16 DEX save"
+            description: >
+              Once per encounter, sacrifice movement uneeringly damage all
+              all creatures within 15 ft.

@@ -1,18 +1,9 @@
 <script lang="ts">
-    let { data } = $props();
-    const monster = $derived(data.selected);
-    const family = $derived(data.family);
+    import { type Monster, type Family } from "$lib/Bestiary.svelte";
 
-    function toArmor(armor: string) {
-        switch (armor) {
-            case "medium":
-                return "M";
-            case "heavy":
-                return "H";
-            default:
-                return "";
-        }
-    }
+    export let monster: Monster;
+    export let family: Family;
+    export let standaloneView: boolean = true;
 </script>
 
 <article>
@@ -29,7 +20,7 @@
                             d="m37.254 22.156c1.4531 0 2.6328 1.1836 2.6328 2.6367v0.003906c0 1.2812-0.91797 2.3516-2.1289 2.5898h-0.003906l-10 2.5977-0.050781 0.066406-0.015625 20.125c0 1.457-1.1836 2.6406-2.6406 2.6406s-2.6367-1.1836-2.6367-2.6406l0.015625-22.223c0-1.2031 0.8125-2.25 1.9766-2.5547l12.129-3.1445c0.22266-0.0625 0.45703-0.097656 0.69922-0.097656zm12.719-12.207c-0.22656 0-0.45312 0.027343-0.67969 0.085937l-33.117 8.5977c-1.1953 0.30859-2.0273 1.3867-2.0312 2.6211l-0.027343 40.688c0.23828 3.4102 0.69531 7.0156 6.9609 11.852l0.003906 0.003906c5.7617 4.4453 16.895 10.285 27.641 15.934 0.40234 0.21094 0.83203 0.30859 1.2578 0.30859l0.035156 0.003907c0.42578-0.003907 0.85938-0.10156 1.2578-0.3125 10.746-5.6484 21.848-11.469 27.609-15.91l0.03125-0.023437c6.2695-4.8359 6.7305-8.4453 6.9648-11.855l-0.027344-40.688c-0.003906-1.2344-0.83594-2.3125-2.0273-2.6211l-33.117-8.5938c-0.23047-0.0625-0.45703-0.089843-0.68359-0.089843z"
                         />
                     </svg>
-                    {toArmor(monster.armor)}
+                    {monster.armor}
                 </span>
             {/if}
             {#if monster.swim}
@@ -74,19 +65,20 @@
             </span>
         </div>
     </header>
-    {#if family.ability}
-        <p class="family ability">
+    {#if standaloneView && family.ability}
+        <p class="ability">
             <strong>{family.ability.name}.</strong>
             {family.ability.description}
+            (<a href="/f/{family.slug}">{family.name}</a>)
         </p>
     {/if}
-    {#each monster.abilities as ability}
+    {#each monster.abilities as ability (ability.name)}
         <p class="ability">
             <strong>{ability.name}.</strong>
             {ability.description}
         </p>
     {/each}
-    {#each monster.actions as action}
+    {#each monster.actions as action (action.name)}
         <p class="attack">
             <strong>{action.name}.</strong>
             <span class="damage"
@@ -111,7 +103,6 @@
     article {
         display: flex;
         flex-direction: column;
-        margin: 0 15px;
     }
     header {
         display: flex;
@@ -156,9 +147,17 @@
         margin-left: 5px;
         fill: var(--pico-color);
     }
+
+    .family {
+        margin-bottom: 25px;
+        font-style: italic;
+        font-size: 14px;
+    }
+
     .ability {
         font-style: italic;
     }
+
     .attribution {
         margin-top: 25px;
         font-style: italic;

@@ -7,12 +7,14 @@ export interface Monster {
   swim: number;
   armor: string;
   level: string;
+  contributor: string;
   abilities: Ability[];
   actions: Attack[];
 }
 
 export interface Family {
   name: string;
+  slug: string;
   description: string;
   ability: Ability;
   monsters: Monster[];
