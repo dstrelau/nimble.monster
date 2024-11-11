@@ -7,6 +7,8 @@ export interface Monster {
   swim: number;
   armor: string;
   level: string;
+  last_stand: string;
+  bloodied: string;
   contributor: string;
   abilities: Ability[];
   actions: Attack[];

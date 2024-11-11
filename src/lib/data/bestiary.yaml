@@ -116,23 +116,6 @@ families:
         actions:
           - name: Claws (2x)
             damage: "2d8+3"
-      - name: Harpy
-        slug: harpy
-        level: "3"
-        speed: 20
-        fly: 40
-        hp: 38
-        abilities:
-        actions:
-          - name: Claws (2x)
-            damage: "1d8+3"
-          - name: Sing. Recharge 5-6.
-            description: >
-              Any creatures within 100 ft must make a DC 11 WIL save. On
-              failure, creature is Charmed for 5 turns, must use its turn to
-              move directly toward the Harpy and make no attacks. Can re-roll
-              save on damage, any time movement would cause damage, and at the
-              end of each turn.
 
   - name: Plants
     slug: plants
@@ -184,13 +167,31 @@ families:
           - name: Lightning Breath
             damage: 5d8 lightning damage, half on DC 11 DEX save
             description: 1 time use. 10 ft wide, 60 ft line.
-        bloodied:
-          description: >
-            At 50 HP, recharge Lightning Breath and immediately use it.
-        last_stand:
-          description: >
-            30 damage until death. Until then, Lightning Aura triggers whenever
-            creature is hit.
+        bloodied: >
+          At 50 HP, recharge Lightning Breath and immediately use it.
+        last_stand: >
+          30 HP. Until death, Lightning Aura triggers whenever hit.
+
+      - name: Harpy
+        slug: harpy
+        level: "1"
+        speed: 20
+        fly: 40
+        hp: 38
+        legendary: true
+        last_stand: 20 HP. Immediately Sing.
+        actions:
+          - name: Claws (2x)
+            damage: "2d4+1"
+          - name: Fly + Club
+            damage: "1d4+1"
+          - name: Sing (1/encounter)
+            description: >
+              Any creatures within 100 ft must make a DC 11 WIL save. On
+              failure, creature is Charmed for 5 turns, must use its turn to
+              move directly toward the Harpy and make no attacks. Can re-roll
+              save on damage, any time movement would cause damage, and at the
+              end of each turn.
 
   - name: "Elementals: Fire"
     slug: elementals-fire

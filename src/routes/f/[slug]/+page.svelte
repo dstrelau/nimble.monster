@@ -2,10 +2,11 @@
     import MonsterCard from "$lib/MonsterCard.svelte";
     const { data } = $props();
     const { family, monsters } = $derived(data);
+    const legendary = $derived(family.slug == "legendary-monsters");
 </script>
 
 <h2>{family.name}</h2>
-<div>
+<div class:legendary>
     {#if family.ability}
         <p class="ability">
             <strong>{family.ability.name}.</strong>
@@ -14,7 +15,7 @@
     {/if}
 
     {#each data.monsters as monster}
-        <MonsterCard {family} {monster} standaloneView={false} />
+        <MonsterCard {family} {monster} {legendary} standaloneView={false} />
     {/each}
 </div>
 
@@ -42,6 +43,10 @@
         font-weight: 900;
         font-size: 2rem;
         margin: 0 0;
+        grid-column: 1 / -1;
+    }
+    .legendary {
+        grid-template-columns: 1fr;
         grid-column: 1 / -1;
     }
 </style>

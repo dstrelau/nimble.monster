@@ -4,9 +4,10 @@
     export let monster: Monster;
     export let family: Family;
     export let standaloneView: boolean = true;
+    export let legendary: boolean = true;
 </script>
 
-<article>
+<article class:legendary>
     <header>
         <div>
             <span class="monster-name">{monster.name}</span>
@@ -94,9 +95,20 @@
             {/if}
         </p>
     {/each}
+    {#if monster.bloodied}
+        <p class="bloodied">
+            <strong>BLOODIED:</strong>{monster.bloodied}
+        </p>
+    {/if}
+    {#if monster.last_stand}
+        <p class="last-stand">
+            <strong>LAST STAND:</strong>
+            {monster.last_stand}
+        </p>
+    {/if}
     {#if monster.contributor}
         <p class="attribution">
-            Contributed by <strong>{monster.contributor}</strong>
+            Contributed by <strong> {monster.contributor}</strong>
         </p>
     {/if}
 </article>
@@ -108,6 +120,9 @@
         max-width: 320px;
         border: 0.5px solid #000;
         padding: 0.5rem;
+    }
+    article.legendary {
+        max-width: 640px;
     }
 
     header {
