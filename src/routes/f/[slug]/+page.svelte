@@ -19,15 +19,29 @@
 </div>
 
 <style>
-    .ability {
+    :global(.ability) {
         font-style: italic;
-        padding-left: var(--pico-block-spacing-horizontal);
-        padding-right: var(--pico-block-spacing-horizontal);
-        padding-bottom: var(--pico-block-spacing-vertical);
+        background-color: var(--nimble-fill);
+        padding: 0.25rem 0.5rem;
+        text-align: center;
+    }
+
+    div {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+    .ability {
+        background-color: var(--nimble-fill);
+        padding: 0.25rem 0.5rem;
+        grid-column: 1 / -1;
+        text-align: center;
     }
     h2 {
-        padding: 0 var(--pico-block-spacing-horizontal)
-            var(--pico-block-spacing-vertical)
-            var(--pico-block-spacing-vertical);
+        font-family: "beaufort-pro", serif;
+        font-weight: 900;
+        font-size: 2rem;
+        margin: 0 0;
+        grid-column: 1 / -1;
     }
 </style>

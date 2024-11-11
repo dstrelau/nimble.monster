@@ -217,8 +217,8 @@ families:
             description: Can move for free after being hit with an attack.
         actions:
           - name: Fire Bolt
-            damage: "1d6+3"
-            range: 40
+            damage: "1d8"
+            range: 30
       - name: Fire Snake
         slug: fire-snake
         level: "2"
@@ -305,7 +305,7 @@ families:
       Masters of the battlefield, Wind Elementals weave through combat,
       scattering foes with powerful gusts and unpredictable, storm-like agility
     ability:
-      name: Slipstream.
+      name: Slipstream
       description: >
         Immune to Prone, Grappled.
         Can move through other creatures’ space without penalty or opportunity attacks.
@@ -318,7 +318,7 @@ families:
         actions:
           - name: Breeze
             damage: "1d4+4"
-            description: "Target is pushed 5 ft directly away from attacker, 10 ft on crit."
+            range: "5–30"
 
       - name: Wisp
         slug: wisp

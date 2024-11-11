@@ -105,20 +105,27 @@
     article {
         display: flex;
         flex-direction: column;
+        max-width: 320px;
+        border: 0.5px solid #000;
+        padding: 0.5rem;
     }
+
     header {
         display: flex;
-        flex-direction: row;
         justify-content: space-between;
-        font-weight: bold;
-        align-items: flex-start;
     }
+
     .monster-name {
-        font-size: 32px;
-        font-weight: bold;
+        font-size: 1.5rem;
+        font-family: "beaufort-pro", serif;
+        font-weight: 900;
+        font-style: italic;
+        font-variant-caps: small-caps;
+        /* text-transform: uppercase; */
+        font-weight: 900;
     }
     .level {
-        font-size: 16px;
+        font-size: 1rem;
         margin-left: 10px;
         font-weight: normal;
         font-variant: small-caps;
@@ -127,12 +134,24 @@
         display: flex;
         flex-direction: row;
         align-items: flex-end;
+        height: 32px;
     }
     .corestat span {
         display: flex;
-        justify-content: center;
         margin: auto 5px;
+        line-height: 29px;
+        font-size: 0.8rem;
+        font-family: "beaufort-pro", serif;
+        font-weight: 400;
+        font-style: italic;
     }
+    .corestat svg {
+        display: flex;
+        height: 32px;
+        fill: var(--nimble-fill);
+        margin-right: -0.5rem;
+    }
+
     #speed svg {
         width: 18px;
         height: 23px;
@@ -141,17 +160,6 @@
     #speed {
         height: 32px;
         margin-left: 14px;
-    }
-    .corestat svg {
-        display: flex;
-        width: 32px;
-        height: 32px;
-        margin-left: 5px;
-        fill: var(--pico-color);
-    }
-
-    .ability {
-        font-style: italic;
     }
 
     .attribution {

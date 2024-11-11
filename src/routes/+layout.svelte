@@ -1,5 +1,5 @@
 <script lang="ts">
-    import "@picocss/pico";
+    // import "@picocss/pico";
     import { page } from "$app/stores";
     import { type Family, type Monster } from "$lib/types.svelte";
 
@@ -63,103 +63,216 @@
 </script>
 
 <div class="wrap">
-    <header>
-        <h1>Nimble Bestiary</h1>
-    </header>
-    <div class="container">
-        <aside>
-            <select name="collate" bind:value={collate}>
-                <option selected>{COLLATE_FAMILIES}</option>
-                <option selected>{COLLATE_MONSTERS_BY_NAME}</option>
-                <option selected>{COLLATE_MONSTERS_BY_LEVEL}</option>
-            </select>
-            <nav>
+    <h1>Nimble Bestiary</h1>
+    <aside>
+        <select name="collate" bind:value={collate}>
+            <option selected>{COLLATE_FAMILIES}</option>
+            <option selected>{COLLATE_MONSTERS_BY_NAME}</option>
+            <option selected>{COLLATE_MONSTERS_BY_LEVEL}</option>
+        </select>
+        <nav>
+            <ul>
                 {#if collate == COLLATE_FAMILIES}
-                    <ul>
-                        {#each data.families as fam (fam.slug)}
-                            <li>
-                                <a
-                                    href="/f/{fam.slug}"
-                                    aria-current={$page.url.pathname ===
-                                        `/f/${fam.slug}`}
-                                >
-                                    {fam.name}
-                                </a>
-                            </li>
-                        {/each}
-                    </ul>
+                    {#each data.families as fam (fam.slug)}
+                        <li>
+                            <a
+                                href="/f/{fam.slug}"
+                                aria-current={$page.url.pathname ===
+                                    `/f/${fam.slug}`}
+                            >
+                                {fam.name}
+                            </a>
+                        </li>
+                    {/each}
                 {:else}
                     {#each toc as { header, monsters } (header)}
-                        <summary>{header}</summary>
-                        <ul>
-                            {#each monsters as monster (monster.slug)}
-                                <li>
-                                    <a
-                                        href="/m/{monster.slug}"
-                                        aria-current={$page.url.pathname ===
-                                            `/m/${monster.slug}`}
-                                    >
-                                        {monster.name}
-                                    </a>
-                                </li>
-                            {/each}
-                        </ul>
+                        <li>
+                            <summary>{header}</summary>
+                            <ul>
+                                {#each monsters as monster (monster.slug)}
+                                    <li>
+                                        <a
+                                            href="/m/{monster.slug}"
+                                            aria-current={$page.url.pathname ===
+                                                `/m/${monster.slug}`}
+                                        >
+                                            {monster.name}
+                                        </a>
+                                    </li>
+                                {/each}
+                            </ul>
+                        </li>
                     {/each}
                 {/if}
-                <!-- <ul>
-                    <li>
-                        <a href="/_dice">Dice Roller</a>
-                    </li>
-                </ul> -->
-            </nav>
-        </aside>
-        <div class="detail">
-            {@render children()}
-        </div>
+            </ul>
+            <!-- <ul>
+                <li>
+                    <a href="/_dice">Dice Roller</a>
+                </li>
+            </ul> -->
+        </nav>
+    </aside>
+    <div class="detail">
+        {@render children()}
     </div>
 </div>
 
+<svelte:head>
+    <style>
+        @font-face {
+            font-family: "Beaufort";
+            src:
+                url("Beaufort/Beaufort-Light.woff2") format("woff2"),
+                url("Beaufort/Beaufort-Light.woff") format("woff");
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Beaufort";
+            src:
+                url("Beaufort/Beaufort-Medium.woff2") format("woff2"),
+                url("Beaufort/Beaufort-Medium.woff") format("woff");
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Beaufort";
+            src:
+                url("Beaufort/Beaufort-BoldItalic.woff2") format("woff2"),
+                url("Beaufort/Beaufort-BoldItalic.woff") format("woff");
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: "Beaufort";
+            src:
+                url("Beaufort/Beaufort-Heavy.woff2") format("woff2"),
+                url("Beaufort/Beaufort-Heavy.woff") format("woff");
+            font-weight: 900;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Beaufort";
+            src:
+                url("Beaufort/Beaufort-MediumItalic.woff2") format("woff2"),
+                url("Beaufort/Beaufort-MediumItalic.woff") format("woff");
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: "Beaufort";
+            src:
+                url("Beaufort/Beaufort-HeavyItalic.woff2") format("woff2"),
+                url("Beaufort/Beaufort-HeavyItalic.woff") format("woff"),
+            font-weight: 900;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: "Beaufort";
+            src:
+                url("Beaufort/Beaufort-Italic.woff2") format("woff2"),
+                url("Beaufort/Beaufort-Italic.woff") format("woff");
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: "Beaufort";
+            src:
+                url("Beaufort/Beaufort-LightItalic.woff2") format("woff2"),
+                url("Beaufort/Beaufort-LightItalic.woff") format("woff");
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: "Beaufort";
+            src:
+                url("Beaufort/Beaufort-Regular.woff2") format("woff2"),
+                url("Beaufort/Beaufort-Regular.woff") format("woff");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: "Beaufort";
+            src:
+                url("Beaufort/Beaufort-Bold.woff2") format("woff2"),
+                url("Beaufort/Beaufort-Bold.woff") format("woff");
+            font-weight: bold;
+            font-style: normal;
+        }
+    </style>
+</svelte:head>
+
 <style>
-    :root {
-        --pico-typography-spacing-vertical: 0.5rem;
-        --pico-nav-element-spacing-vertical: 0.1rem;
+    :global(body) {
+        font-family: "Roboto Condensed", sans-serif;
+        font-weight: 300;
+        background-color: #f5ebd7;
+        --nimble-fill: #d2cebd;
     }
-
-    /* override style meant for horizontal nav, which we don't have */
-    nav ul:first-of-type {
-        /* margin-left:calc(var(--pico-nav-element-spacing-horizontal) * -1) */
-        margin-left: 0;
-    }
-
     .wrap {
         margin: 5px auto;
         max-width: 1200px;
+        display: grid;
+        grid-template-columns: 1fr 3fr;
     }
-    header {
+
+    h1 {
+        font-size: 2rem;
+        font-family: "beaufort-pro", serif;
+        font-weight: 900;
+        font-style: italic;
+        text-transform: uppercase;
         padding-left: 5px;
         padding-right: 5px;
+        font-weight: bold;
+        grid-column: 1 / -1;
     }
-    .container {
-        display: flex;
-        flex-direction: row;
-        justify-content: baseline;
-        align-items: stretch;
-    }
-    .detail {
-        flex-grow: 4;
-        max-width: 70%;
-        margin-left: 25px;
-    }
+
     aside {
-        flex-grow: 1;
         padding-left: 5px;
         padding-right: 5px;
+        grid-column: 1;
     }
+
     aside select {
         margin-bottom: 0;
     }
 
-    nav summary {
+    nav ul,
+    nav li {
+        font-weight: bold;
+        margin: 0;
+        padding: 0;
+        text-indent: 0;
+        list-style: none;
+    }
+    nav li {
         margin-top: 0.5rem;
+    }
+    nav li li {
+        font-weight: 300;
+    }
+    nav a {
+        color: #000;
+        text-decoration: none;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    [aria-current]:not([aria-current="false"]) {
+        font-style: italic;
+    }
+
+    .detail {
+        grid-column: 2;
     }
 </style>
