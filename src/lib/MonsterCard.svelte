@@ -126,8 +126,8 @@
     }
     .level {
         font-size: 1rem;
-        margin-left: 10px;
-        font-weight: normal;
+        margin-left: 0.3rem;
+        font-weight: light;
         font-variant: small-caps;
     }
     .corestat {
@@ -160,6 +160,11 @@
     #speed {
         height: 32px;
         margin-left: 14px;
+    }
+
+    p {
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
     }
 
     .attribution {
