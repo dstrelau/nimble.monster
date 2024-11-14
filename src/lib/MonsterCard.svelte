@@ -115,6 +115,7 @@
 
 <style>
     article {
+        min-width: 250px;
         display: flex;
         flex-direction: column;
         max-width: 320px;

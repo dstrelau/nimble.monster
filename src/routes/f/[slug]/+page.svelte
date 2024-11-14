@@ -1,7 +1,7 @@
 <script lang="ts">
     import MonsterCard from "$lib/MonsterCard.svelte";
     const { data } = $props();
-    const { family, monsters } = $derived(data);
+    const { family } = $derived(data);
     const legendary = $derived(family.slug == "legendary-monsters");
 </script>
 

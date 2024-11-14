@@ -105,9 +105,14 @@
                     {/each}
                 {/if}
             </ul>
-            <!-- <ul>
+            <!-- <hr />
+            <ul>
                 <li>
-                    <a href="/_dice">Dice Roller</a>
+                    <a
+                        href="/builder"
+                        aria-current={$page.url.pathname === "/builder"}
+                        >Monster Builder</a
+                    >
                 </li>
             </ul> -->
         </nav>
@@ -220,6 +225,8 @@
     }
     .wrap {
         margin: 5px auto;
+        padding-left: 2rem;
+        padding-right: 2rem;
         max-width: 1200px;
         display: grid;
         grid-template-columns: 1fr 3fr;
@@ -270,6 +277,11 @@
     }
     [aria-current]:not([aria-current="false"]) {
         font-style: italic;
+    }
+    hr {
+        width: 50%;
+        color: var(--nimble-fill);
+        margin: 2rem auto;
     }
 
     .detail {
