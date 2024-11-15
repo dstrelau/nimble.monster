@@ -13,6 +13,7 @@
 		"@modyfi/vite-plugin-yaml": "^1.1.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/adapter-static": "^3.0.6",
+		"@sveltejs/adapter-vercel": "^5.4.7",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"svelte": "^5.0.0",
