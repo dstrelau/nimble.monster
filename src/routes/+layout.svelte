@@ -220,8 +220,14 @@
     :global(body) {
         font-family: "Roboto Condensed", sans-serif;
         font-weight: 300;
-        background-color: #f5ebd7;
-        --nimble-fill: #d2cebd;
+        --nimble-color-lighter: #faf6f0;
+        --nimble-color-light: #f5ebd7;
+        --nimble-color-mid: #d3cebb;
+        --nimble-color-dark: #b5ae92;
+        --nimble-color-darker: #6d6961;
+        --nimble-color-black: #040303;
+        --nimble-color-blackest: #0a0a0a;
+        background-color: var(--nimble-color-light);
     }
     .wrap {
         margin: 5px auto;
@@ -229,7 +235,7 @@
         padding-right: 2rem;
         max-width: 1200px;
         display: grid;
-        grid-template-columns: 1fr 3fr;
+        grid-template-columns: 1fr 4fr;
     }
 
     h1 {
@@ -269,7 +275,7 @@
         font-weight: 300;
     }
     nav a {
-        color: #000;
+        color: var(--nimble-color-blackest);
         text-decoration: none;
         &:hover {
             text-decoration: underline;
@@ -280,7 +286,7 @@
     }
     hr {
         width: 50%;
-        color: var(--nimble-fill);
+        color: var(--nimble-blackest);
         margin: 2rem auto;
     }
 

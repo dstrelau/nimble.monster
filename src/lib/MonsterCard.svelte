@@ -156,7 +156,7 @@
         display: flex;
         margin: auto 5px;
         line-height: 29px;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         font-family: "beaufort-pro", serif;
         font-weight: 400;
         font-style: italic;
@@ -164,8 +164,8 @@
     .corestat svg {
         display: flex;
         height: 32px;
-        fill: var(--nimble-fill);
-        margin-right: -0.5rem;
+        fill: var(--nimble-color-mid);
+        margin-right: -7px;
     }
 
     #speed svg {
@@ -187,5 +187,12 @@
         margin-top: 25px;
         font-style: italic;
         font-size: 14px;
+    }
+
+    .ability {
+        font-style: italic;
+        background-color: var(--nimble-color-mid);
+        padding: 0.25rem 0.5rem;
+        text-align: center;
     }
 </style>

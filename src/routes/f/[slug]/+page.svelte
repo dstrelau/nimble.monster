@@ -20,9 +20,9 @@
 </div>
 
 <style>
-    :global(.ability) {
+    .ability {
         font-style: italic;
-        background-color: var(--nimble-fill);
+        background-color: var(--nimble-color-mid);
         padding: 0.25rem 0.5rem;
         text-align: center;
     }
@@ -33,7 +33,7 @@
         gap: 1rem;
     }
     .ability {
-        background-color: var(--nimble-fill);
+        background-color: var(--nimble-color-mid);
         padding: 0.25rem 0.5rem;
         grid-column: 1 / -1;
         text-align: center;
