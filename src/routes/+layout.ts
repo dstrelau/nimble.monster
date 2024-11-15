@@ -1,8 +1,6 @@
 import Data from "$lib/data/bestiary.yaml";
 import { type Family } from "$lib/types.svelte";
 
-export const prerender = true;
-
 export function load() {
   return {
     families: Data.families.sort((a: Family, b: Family) =>
