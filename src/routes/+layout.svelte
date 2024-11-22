@@ -1,11 +1,17 @@
 <script lang="ts">
-    // import "@picocss/pico";
+    import { supabase, sessionData } from "$lib/supabase.svelte";
     import { page } from "$app/stores";
     import { type Family, type Monster } from "$lib/types.svelte";
 
     const COLLATE_FAMILIES = "Families";
     const COLLATE_MONSTERS_BY_LEVEL = "Monsters by Level";
     const COLLATE_MONSTERS_BY_NAME = "Monsters by Name";
+
+    $effect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            sessionData.user = session?.user ?? null;
+        });
+    });
 
     let { data, children } = $props();
     let collate = $state("Families");
