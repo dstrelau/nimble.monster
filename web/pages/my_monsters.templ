@@ -1,0 +1,32 @@
+package pages
+
+import (
+	"nimble.monster/internal/nimble"
+	"nimble.monster/web/assets/svg"
+	"nimble.monster/web/components"
+)
+
+templ MyMonsters(monsters []nimble.Monster) {
+	<div class="grid grid-cols-6 gap-x-8">
+		for _, m := range monsters {
+			<div class="monster col-span-2">
+				@components.MonsterCard(m)
+				<div class="flex flex-row justify-end mr-4">
+					<a href={ templ.URL("/my/monsters/" + m.ID + "/edit") } class="w-4 mx-4 p-2">
+						@svg.Edit("w-6 h-6 text-slate-500")
+					</a>
+					<a
+						href={ templ.URL("/my/monsters/" + m.ID + "/delete") }
+						class="w-4 p-2"
+						hx-delete={ "/my/monsters/" + m.ID }
+						hx-confirm="Really? This is permanent."
+						hx-target="closest div.monster"
+						hx-swap="outerHTML"
+					>
+						@svg.Trash("w-6 h-6 text-slate-500")
+					</a>
+				</div>
+			</div>
+		}
+	</div>
+}

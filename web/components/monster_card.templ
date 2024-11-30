@@ -1,0 +1,116 @@
+package components
+
+import (
+	"nimble.monster/internal/nimble"
+	"nimble.monster/web/assets/svg"
+	"strconv"
+	"strings"
+)
+
+templ statString(name, value string, svg templ.Component) {
+	if value != "" {
+		<span id={ name } class="flex ml-2 leading-8">
+			@svg
+			{ value }
+		</span>
+	}
+}
+
+templ statInt(name string, value int, svg templ.Component) {
+	if value > 0 {
+		<span id={ name } class="flex ml-2 leading-8">
+			@svg
+			{ strconv.Itoa(value) }
+		</span>
+	}
+}
+
+func maybePeriod(s string) string {
+	if strings.HasSuffix(s, ".") ||
+		strings.HasSuffix(s, "!") ||
+		strings.HasSuffix(s, "?") {
+		return s
+	}
+	return s + "."
+}
+
+templ MonsterCard(monster nimble.Monster) {
+	<article class="font-roboto border-2 rounded px-5 py-3 bg-[#f5ebd7]">
+		<header class="flex justify-between leading-5 mb-2">
+			<div class="grow">
+				<span class="font-serif font-black font-small-caps italic text-2xl">{ monster.Name }</span>
+				<span class="font-small-caps">
+					{{ s := "Lvl " + monster.Level }}
+					if monster.Size != "medium" {
+						{{ s += ", " + string(monster.Size) }}
+					}
+					{ s }
+				</span>
+			</div>
+			<div class="flex font-serif font-black italic">
+				{{ classes := []string{"fill-[#d3cebb]", "w-8", "-mr-2"} }}
+				switch monster.Armor {
+					case nimble.ArmorMedium:
+						@statString("armor", "M", svg.Armor(classes...))
+					case nimble.ArmorHeavy:
+						@statString("armor", "H", svg.Armor(classes...))
+				}
+				@statInt("swim", monster.Swim, svg.Swim(classes...))
+				@statInt("fly", monster.Fly, svg.Fly(classes...))
+				if monster.Speed > 0 && monster.Speed != 6 {
+					@statInt("speed", monster.Speed, svg.Speed(classes...))
+				}
+				@statInt("hp", monster.HP, svg.HP(classes...))
+			</div>
+		</header>
+		if f := monster.Family ; f != nil && f.Ability != nil {
+			<p>
+				<strong>{ maybePeriod(f.Ability.Name) }</strong>
+				{ f.Ability.Description }
+				(<a href="/f/{family.Slug}">{ f.Name }</a>)
+			</p>
+		}
+		for _, ability := range monster.Abilities {
+			<p class="italic -mx-2 mb-1 p-2 leading-5 bg-[#d3cebb]">
+				<strong>{ maybePeriod(ability.Name) }</strong>
+				{ ability.Description }
+			</p>
+		}
+		for _, action := range monster.Actions {
+			<p class="mb-1 leading-5">
+				<strong>{ action.Name }.</strong>
+				if action.Damage != "" {
+					<span class="damage">
+						if action.Description != "" {
+							{ maybePeriod(action.Damage) }
+						} else {
+							{ action.Damage }
+						}
+					</span>
+				}
+				if action.Description != "" {
+					<span class="description">{ action.Description }</span>
+				}
+				if action.Range != "" {
+					<span class="range">({ action.Range } ft)</span>
+				}
+			</p>
+		}
+		if monster.Bloodied != "" {
+			<p class="bloodied">
+				<strong>BLOODIED:</strong>{ monster.Bloodied }
+			</p>
+		}
+		if monster.LastStand != "" {
+			<p class="last-stand">
+				<strong>LAST STAND:</strong>
+				{ monster.LastStand }
+			</p>
+		}
+		if monster.Contributor != "" {
+			<p class="attribution">
+				Contributed by <strong>{ monster.Contributor }</strong>
+			</p>
+		}
+	</article>
+}
