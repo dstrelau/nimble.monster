@@ -249,7 +249,7 @@ func (q *Queries) ListAllMonsters(ctx context.Context) ([]Monster, error) {
 }
 
 const listMonstersByUserID = `-- name: ListMonstersByUserID :many
-SELECT id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at from monsters WHERE user_id = $1
+SELECT id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at from monsters WHERE user_id = $1 ORDER BY name ASC
 `
 
 func (q *Queries) ListMonstersByUserID(ctx context.Context, userID pgtype.UUID) ([]Monster, error) {

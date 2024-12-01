@@ -335,7 +335,7 @@ func (a *App) GetMyMonstersEdit(w http.ResponseWriter, r *http.Request) {
 	vd := web.ViewData{
 		CurrentUser: a.CurrentUser(r.Context()),
 		CurrentURL:  r.URL,
-		Title:       "Edit",
+		Title:       "Edit › " + monster.Name,
 	}
 	layouts.Global(vd, pages.Build(vd, monsterToDisplay(monster))).Render(r.Context(), w)
 }

@@ -9,7 +9,7 @@ INSERT INTO monsters (
 SELECT * from monsters;
 
 -- name: ListMonstersByUserID :many
-SELECT * from monsters WHERE user_id = $1;
+SELECT * from monsters WHERE user_id = $1 ORDER BY name ASC;
 --
 -- name: GetMonster :one
 SELECT * from monsters WHERE id = $1;
