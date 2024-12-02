@@ -5,7 +5,7 @@ import (
 	"nimble.monster/web/components"
 )
 
-templ Global(v web.ViewData, content templ.Component) {
+templ Global(v web.GlobalProps, content templ.Component) {
 	<!DOCTYPE html>
 	<html class="h-full bg-gray-100">
 		<head>
@@ -19,15 +19,11 @@ templ Global(v web.ViewData, content templ.Component) {
 			<link rel="stylesheet" href="https://use.typekit.net/fqv0sms.css"/>
 			<link rel="stylesheet" href="/css/output.css"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<title>{ v.Title } - nimble.monster</title>
 		</head>
 		<body class="h-full">
 			<div class="min-h-full flex flex-col">
 				@components.Header(v)
-				<header class="bg-white shadow">
-					<div class="mx-auto max-w-7xl px-4 py-4">
-						<h1 class="text-2xl font-bold tracking-tight text-gray-900">{ v.Title }</h1>
-					</div>
-				</header>
 				<main class="mx-auto flex-grow max-w-7xl px-4 py-6">
 					@content
 				</main>

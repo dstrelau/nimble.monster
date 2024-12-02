@@ -6,8 +6,12 @@ import (
 	"nimble.monster/internal/sqldb"
 )
 
-type ViewData struct {
+type GlobalProps struct {
 	CurrentURL  *url.URL
 	CurrentUser *sqldb.User
 	Title       string
+}
+
+func (vd *GlobalProps) IsCurrentURL(s string) bool {
+	return vd.CurrentURL.Path == s
 }

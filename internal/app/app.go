@@ -165,7 +165,7 @@ func (a *App) buildRouter() {
 }
 
 func (a *App) Home(w http.ResponseWriter, r *http.Request) {
-	vd := web.ViewData{
+	vd := web.GlobalProps{
 		CurrentUser: a.CurrentUser(r.Context()),
 		CurrentURL:  r.URL,
 		Title:       "Welcome",
@@ -174,7 +174,7 @@ func (a *App) Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) GetBuild(w http.ResponseWriter, r *http.Request) {
-	vd := web.ViewData{
+	vd := web.GlobalProps{
 		CurrentUser: a.CurrentUser(r.Context()),
 		CurrentURL:  r.URL,
 		Title:       "Builder",
@@ -297,18 +297,30 @@ func (a *App) GetMyMonsters(w http.ResponseWriter, r *http.Request) {
 	dbmonsters, err := a.db.ListMonstersByUserID(ctx, currentUser.ID)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+		trace.SpanFromContext(r.Context()).RecordError(err)
 		return
 	}
 
-	vd := web.ViewData{
-		CurrentUser: a.CurrentUser(r.Context()),
-		CurrentURL:  r.URL,
-		Title:       "My Monsters",
+	display := pages.MonsterDisplayCard
+	if d := r.URL.Query().Get("display"); d != "" && pages.MonsterDisplay(d).Valid() {
+		display = pages.MonsterDisplay(d)
 	}
 
-	monsters := xiter.Map(slices.Values(dbmonsters), monsterToDisplay)
-	layouts.Global(vd, pages.MyMonsters(slices.Collect(monsters))).Render(r.Context(), w)
+	props := pages.MyMonstersProps{
+		GlobalProps: web.GlobalProps{
+			CurrentUser: a.CurrentUser(r.Context()),
+			CurrentURL:  r.URL,
+			Title:       "My Monsters",
+		},
+		Monsters: slices.Collect(xiter.Map(slices.Values(dbmonsters), monsterToDisplay)),
+		Display:  display,
+	}
 
+	c := pages.MyMonsters(props)
+	if r.Header.Get("HX-Request") != "true" {
+		c = layouts.Global(props.GlobalProps, c)
+	}
+	c.Render(r.Context(), w)
 }
 
 func (a *App) GetMyMonstersEdit(w http.ResponseWriter, r *http.Request) {
@@ -332,7 +344,7 @@ func (a *App) GetMyMonstersEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	vd := web.ViewData{
+	vd := web.GlobalProps{
 		CurrentUser: a.CurrentUser(r.Context()),
 		CurrentURL:  r.URL,
 		Title:       "Edit › " + monster.Name,

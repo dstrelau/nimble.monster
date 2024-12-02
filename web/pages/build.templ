@@ -68,7 +68,7 @@ templ abilityRow(ab nimble.Ability) {
 			ab.Description,
 			[]string{"col-span-7"},
 		)
-		<button onclick="this.closest('div').remove()" class="col-span-1">
+		<button type="button" onclick="this.closest('div').remove()" class="col-span-1">
 			@svg.Trash("w-6 h-6 mb-2 text-slate-500")
 		</button>
 	</div>
@@ -95,6 +95,7 @@ templ actionRow(ac nimble.Action) {
 			[]string{"col-span-5"},
 		)
 		<button
+			type="button"
 			onclick="
 			event.preventDefault();
 			const form = this.closest('form');
@@ -108,7 +109,7 @@ templ actionRow(ac nimble.Action) {
 	</div>
 }
 
-templ Build(v web.ViewData, m nimble.Monster) {
+templ Build(v web.GlobalProps, m nimble.Monster) {
 	<script>
     function cloneTemplate(selector, evt) {
       evt.preventDefault();
@@ -149,7 +150,7 @@ templ Build(v web.ViewData, m nimble.Monster) {
 					<fieldset class="abilities">
 						<div class="header flex">
 							<legend>Abilities</legend>
-							<button class="ml-2" onclick="cloneTemplate('.abilities', event)">
+							<button type="button" class="ml-2" onclick="cloneTemplate('fieldset.abilities', event)">
 								@svg.Plus("w-6 h-6 text-slate-500")
 							</button>
 						</div>
@@ -166,7 +167,7 @@ templ Build(v web.ViewData, m nimble.Monster) {
 					<fieldset class="actions">
 						<div class="header flex">
 							<legend>Actions</legend>
-							<button class="ml-2" onclick="cloneTemplate('.actions', event)">
+							<button type="button" class="ml-2" onclick="cloneTemplate('.actions', event)">
 								@svg.Plus("w-6 h-6 text-slate-500")
 							</button>
 						</div>

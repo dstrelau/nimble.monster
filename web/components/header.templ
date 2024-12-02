@@ -5,7 +5,7 @@ import (
 	"nimble.monster/internal/web"
 )
 
-templ navItem(v web.ViewData, href, title string) {
+templ navItem(v web.GlobalProps, href, title string) {
 	if v.CurrentURL.Path == href {
 		<a href={ templ.SafeURL(href) } class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">{ title }</a>
 	} else {
@@ -13,7 +13,7 @@ templ navItem(v web.ViewData, href, title string) {
 	}
 }
 
-templ Header(v web.ViewData) {
+templ Header(v web.GlobalProps) {
 	<script>
     window.onclick = function(event) {
       if (!event.target.closest('.user-menu')) {

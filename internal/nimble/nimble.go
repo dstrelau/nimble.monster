@@ -26,6 +26,25 @@ const (
 	SizeGargantuan MonsterSize = "gargantuan"
 )
 
+func (s MonsterSize) Display() string {
+	switch s {
+	case SizeTiny:
+		return "Tiny"
+	case SizeSmall:
+		return "Small"
+	case SizeMedium:
+		return "Medium"
+	case SizeLarge:
+		return "Large"
+	case SizeHuge:
+		return "Huge"
+	case SizeGargantuan:
+		return "Gargantuan"
+	default:
+		return "Medium"
+	}
+}
+
 func MonsterSizeFromString(s string) MonsterSize {
 	switch s {
 	case "tiny":
