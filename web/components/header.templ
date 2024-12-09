@@ -28,6 +28,7 @@ templ Header(v web.GlobalProps) {
 					@navItem(v, "/build", "Builder")
 					if u := v.CurrentUser ; u != nil {
 						@navItem(v, "/my/monsters", "Monsters")
+						@navItem(v, "/my/collections", "Collections")
 					}
 				</div>
 				<div class="hidden md:block">

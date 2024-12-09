@@ -1,0 +1,21 @@
+package components
+
+import "nimble.monster/web/assets/svg"
+
+templ EditDeleteButtons(id, deleteTarget string) {
+	<div class="flex flex-row justify-end mr-4">
+		<a href={ templ.URL("/my/monsters/" + id + "/edit") } class="w-4 mx-4 p-2">
+			@svg.Edit("w-5 h-5 text-slate-500")
+		</a>
+		<a
+			href={ templ.URL("/my/monsters/" + id + "/delete") }
+			class="w-4 p-2"
+			hx-delete={ "/my/monsters/" + id }
+			hx-confirm="Really? This is permanent."
+			hx-target={ deleteTarget }
+			hx-swap="outerHTML"
+		>
+			@svg.Trash("w-5 h-5 text-slate-500")
+		</a>
+	</div>
+}

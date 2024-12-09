@@ -94,3 +94,9 @@ type Action struct {
 	Range       string
 	Description string
 }
+
+type Collection struct {
+	Name     string
+	Public   bool
+	Monsters []Monster
+}

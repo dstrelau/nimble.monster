@@ -17,7 +17,11 @@ require (
 	golang.org/x/oauth2 v0.24.0
 )
 
-require github.com/felixge/httpsnoop v1.0.4 // indirect
+require (
+	github.com/felixge/httpsnoop v1.0.4 // indirect
+	github.com/pgx-contrib/pgxotel v0.0.0-20241108225346-2379e8fa8063 // indirect
+	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.32.0 // indirect
+)
 
 require (
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect

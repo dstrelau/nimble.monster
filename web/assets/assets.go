@@ -2,5 +2,5 @@ package assets
 
 import "embed"
 
-//go:embed css/*
+//go:embed css/* favicon.svg
 var FS embed.FS

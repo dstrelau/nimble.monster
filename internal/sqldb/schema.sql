@@ -33,6 +33,23 @@ CREATE TABLE IF NOT EXISTS monsters (
 );
 CREATE INDEX IF NOT EXISTS idx_monsters_user_id ON monsters(user_id);
 
+CREATE TABLE IF NOT EXISTS collections (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id),
+    name TEXT NOT NULL,
+    public BOOLEAN DEFAULT false,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_collections_user_id ON collections(user_id);
+
+CREATE TABLE IF NOT EXISTS monsters_collections (
+    monster_id UUID NOT NULL REFERENCES monsters(id),
+    collection_id UUID NOT NULL REFERENCES collections(id),
+    PRIMARY KEY (monster_id, collection_id)
+);
+
 CREATE TABLE IF NOT EXISTS sessions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id),

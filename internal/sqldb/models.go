@@ -100,6 +100,15 @@ func (ns NullSizeType) Value() (driver.Value, error) {
 	return string(ns.SizeType), nil
 }
 
+type Collection struct {
+	ID        pgtype.UUID
+	UserID    pgtype.UUID
+	Name      string
+	Public    pgtype.Bool
+	CreatedAt pgtype.Timestamptz
+	UpdatedAt pgtype.Timestamptz
+}
+
 type Monster struct {
 	ID        pgtype.UUID
 	UserID    pgtype.UUID
@@ -119,6 +128,11 @@ type Monster struct {
 	Saves     []string
 	CreatedAt pgtype.Timestamptz
 	UpdatedAt pgtype.Timestamptz
+}
+
+type MonstersCollection struct {
+	MonsterID    pgtype.UUID
+	CollectionID pgtype.UUID
 }
 
 type Session struct {

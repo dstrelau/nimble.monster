@@ -1,0 +1,31 @@
+package pages
+
+import (
+	"nimble.monster/internal/nimble"
+	"nimble.monster/internal/web"
+	"nimble.monster/web/components"
+)
+
+templ Collections(props web.GlobalProps) {
+	<div>
+		<p>
+			<h2 class="mb-2 text-lg font-semibold">Collections</h2>
+			<ul class="max-w-lg space-y-1 list-disc list-inside">
+				<li>Group Monsters into Collections</li>
+			</ul>
+		</p>
+	</div>
+}
+
+templ Collection(c nimble.Collection) {
+	// <div class="mb-4 bg-white shadow-sm rounded-lg p-4">
+	<h2 class="text-2xl font-bold text-gray-800 mb-2">{ c.Name }</h2>
+	<div class="text-gray-600 mb-4">
+		if c.Public {
+			<span>Public Collection</span>
+		} else {
+			<span>Private Collection</span>
+		}
+	</div>
+	@components.MonsterTable(c.Monsters)
+}

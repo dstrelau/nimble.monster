@@ -114,3 +114,14 @@ templ MonsterCard(monster nimble.Monster) {
 		}
 	</article>
 }
+
+templ MonsterCards(monsters []nimble.Monster) {
+	<div class="grid grid-cols-6 gap-x-8">
+		for _, m := range monsters {
+			<div class="monster col-span-2">
+				@MonsterCard(m)
+				@EditDeleteButtons(m.ID, "closest div.monster")
+			</div>
+		}
+	</div>
+}
