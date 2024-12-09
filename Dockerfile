@@ -1,5 +1,5 @@
-ARG GO_VERSION=1
-FROM golang:${GO_VERSION}-bookworm AS builder
+ARG GO_VERSION=1.23
+FROM golang:${GO_VERSION}-alpine AS builder
 
 WORKDIR /usr/src/app
 RUN mkdir -p /usr/src/app/bin
@@ -10,15 +10,12 @@ RUN curl -sL https://github.com/tailwindlabs/tailwindcss/releases/latest/downloa
     -o /usr/src/app/bin/tailwindcss && chmod +x /usr/src/app/bin/tailwindcss
 
 COPY go.mod go.sum ./
-RUN --mount=type=cache,target=/go/pkg/mod go mod download && go mod verify
+RUN go mod download && go mod verify
 COPY . .
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    make build
+RUN make build BUILD_ARGS='-ldflags="-w -s"'
 
 FROM debian:bookworm
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates
 COPY --from=builder /usr/src/app/main /usr/local/bin/
 CMD ["main"]

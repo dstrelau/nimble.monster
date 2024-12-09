@@ -37,7 +37,7 @@ $(SQLCFILES): $(BIN)/sqlc $(SQLCSRC) internal/sqldb/sqlc.yaml
 sqlc: $(SQLCFILES)
 
 main: $(GOFILES)
-	go build -o main cmd/main.go
+	go build -o main ${BUILD_ARGS} cmd/main.go
 
 build: sqlc $(TEMPLGOS) web/assets/css/output.css main
 
