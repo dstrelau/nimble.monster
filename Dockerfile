@@ -1,5 +1,5 @@
 ARG GO_VERSION=1.23
-FROM golang:${GO_VERSION}-alpine AS builder
+FROM golang:${GO_VERSION}-bookworm AS builder
 
 WORKDIR /usr/src/app
 RUN mkdir -p /usr/src/app/bin
