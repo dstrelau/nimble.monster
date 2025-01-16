@@ -55,7 +55,7 @@ func (h *SessionsHandler) GetLogin(w http.ResponseWriter, r *http.Request) {
 		Name:     "oauth-state",
 		Value:    state,
 		Path:     "/",
-		MaxAge:   3600,
+		MaxAge:   300,
 		HttpOnly: true,
 		Secure:   true,
 		SameSite: http.SameSiteLaxMode,
@@ -156,7 +156,6 @@ func (h *SessionsHandler) GetCallbackDiscord(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	// Set session cookie
 	idv, err := session.ID.Value()
 	sid := idv.(string)
 	http.SetCookie(w, &http.Cookie{
@@ -168,6 +167,20 @@ func (h *SessionsHandler) GetCallbackDiscord(w http.ResponseWriter, r *http.Requ
 		Secure:   true,
 		SameSite: http.SameSiteLaxMode,
 	})
+	http.SetCookie(w, &http.Cookie{
+		Name:     "oauth-state",
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+	})
 
 	http.Redirect(w, r, "/my/monsters", http.StatusTemporaryRedirect)
+}
+
+func (h *SessionsHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
+	u := CurrentUser(r.Context())
+	json.NewEncoder(w).Encode(u)
 }

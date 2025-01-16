@@ -1,4 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 CREATE TYPE size_type AS ENUM ('tiny', 'small', 'medium', 'large', 'huge', 'gargantuan');
 CREATE TYPE armor_type AS ENUM ('none', 'medium', 'heavy');
@@ -17,11 +18,11 @@ CREATE TABLE IF NOT EXISTS monsters (
   name TEXT NOT NULL,
   level TEXT NOT NULL,
   hp INTEGER NOT NULL,
-  armor armor_type,
-  size size_type DEFAULT 'medium',
-  speed INTEGER DEFAULT 6,
-  fly INTEGER,
-  swim INTEGER,
+  armor armor_type NOT NULL DEFAULT 'none',
+  size size_type NOT NULL DEFAULT 'medium',
+  speed INTEGER NOT NULL DEFAULT 6,
+  fly INTEGER NOT NULL DEFAULT 0,
+  swim INTEGER NOT NULL DEFAULT 0,
   actions JSONB[],
   abilities JSONB[],
   legendary BOOLEAN DEFAULT false,

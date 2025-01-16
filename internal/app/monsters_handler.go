@@ -10,16 +10,12 @@ import (
 	"deedles.dev/xiter"
 	"github.com/go-chi/chi/v5"
 	"github.com/gofrs/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/jackc/pgx/v5"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
 	"nimble.monster/internal/nimble"
 	"nimble.monster/internal/sqldb"
-	"nimble.monster/internal/web"
-	"nimble.monster/web/components"
-	"nimble.monster/web/layouts"
-	"nimble.monster/web/pages"
 )
 
 type MonstersHandler struct {
@@ -28,21 +24,6 @@ type MonstersHandler struct {
 
 func NewMonstersHandler(db *sqldb.Queries) *MonstersHandler {
 	return &MonstersHandler{db: db}
-}
-
-func (h *MonstersHandler) GetBuild(w http.ResponseWriter, r *http.Request) {
-	vd := web.GlobalProps{
-		CurrentUser: CurrentUser(r.Context()),
-		CurrentURL:  r.URL,
-		Title:       "Builder",
-	}
-	m := nimble.Monster{
-		Speed: 6,
-		Size:  nimble.SizeMedium,
-		Armor: nimble.ArmorUnarmored,
-	}
-	layouts.Global(vd, pages.Build(vd, m)).Render(r.Context(), w)
-
 }
 
 func sqlmonsterFromMonster(m nimble.Monster) sqldb.Monster {
@@ -56,15 +37,26 @@ func sqlmonsterFromMonster(m nimble.Monster) sqldb.Monster {
 		b, _ := json.Marshal(activity)
 		abilities = append(abilities, json.RawMessage(b))
 	}
+	var armor sqldb.ArmorType
+	switch m.Armor {
+	case nimble.ArmorUnarmored:
+		armor = sqldb.ArmorTypeNone
+	case nimble.ArmorMedium:
+		armor = sqldb.ArmorTypeMedium
+	case nimble.ArmorHeavy:
+		armor = sqldb.ArmorTypeHeavy
+	default:
+		panic("unknown monster armor" + m.Armor)
+	}
 	return sqldb.Monster{
 		Name:      m.Name,
 		Level:     m.Level,
 		Hp:        int32(m.HP),
-		Armor:     sqldb.NullArmorType{Valid: true, ArmorType: sqldb.ArmorType(m.Armor)},
-		Size:      sqldb.NullSizeType{Valid: true, SizeType: sqldb.SizeType(m.Size)},
-		Speed:     pgtype.Int4{Valid: true, Int32: int32(m.Speed)},
-		Fly:       pgtype.Int4{Valid: true, Int32: int32(m.Fly)},
-		Swim:      pgtype.Int4{Valid: true, Int32: int32(m.Swim)},
+		Armor:     armor,
+		Size:      sqldb.SizeType(m.Size),
+		Speed:     int32(m.Speed),
+		Fly:       int32(m.Fly),
+		Swim:      int32(m.Swim),
 		Actions:   actions,
 		Abilities: abilities,
 	}
@@ -97,16 +89,43 @@ func (h *MonstersHandler) PostBuild(w http.ResponseWriter, r *http.Request) {
 		Error(ctx, w, err)
 		return
 	}
-	http.Redirect(w, r, "/my/monsters", 303)
+	http.Redirect(w, r, "/monsters", 303)
 }
 
-func (h *MonstersHandler) PostBuildPreview(w http.ResponseWriter, r *http.Request) {
-	monster, err := monsterFromForm(r)
+func (h *MonstersHandler) CreateMonster(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var monster nimble.Monster
+	err := json.NewDecoder(r.Body).Decode(&monster)
 	if err != nil {
 		w.WriteHeader(400)
 		return
 	}
-	components.MonsterCard(monster).Render(r.Context(), w)
+	m := sqlmonsterFromMonster(monster)
+
+	created, err := h.db.CreateMonster(r.Context(), sqldb.CreateMonsterParams{
+		Name:      m.Name,
+		Level:     m.Level,
+		Hp:        m.Hp,
+		Armor:     m.Armor,
+		Size:      m.Size,
+		Speed:     m.Speed,
+		Fly:       m.Fly,
+		Swim:      m.Swim,
+		Actions:   m.Actions,
+		Abilities: m.Abilities,
+		UserID:    CurrentUser(ctx).ID,
+	})
+	if err != nil {
+		Error(ctx, w, err)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(nimble.MonsterFromSQL(created)); err != nil {
+		Error(ctx, w, err)
+		return
+	}
+
 }
 
 func monsterFromForm(r *http.Request) (nimble.Monster, error) {
@@ -148,7 +167,7 @@ func monsterFromForm(r *http.Request) (nimble.Monster, error) {
 	return monster, nil
 }
 
-func (h *MonstersHandler) GetMyMonsters(w http.ResponseWriter, r *http.Request) {
+func (h *MonstersHandler) ListMyMonsters(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	currentUser := CurrentUser(ctx)
 	dbmonsters, err := h.db.ListMonsters(ctx, currentUser.ID)
@@ -160,59 +179,43 @@ func (h *MonstersHandler) GetMyMonsters(w http.ResponseWriter, r *http.Request) 
 
 	if ids := r.URL.Query()["ids"]; len(ids) > 0 {
 		dbmonsters = slices.Collect(xiter.Filter(slices.Values(dbmonsters), func(m sqldb.Monster) bool {
-			return slices.Contains(ids, uuid.UUID(m.ID.Bytes).String())
+			return slices.Contains(ids, m.ID.String())
 		}))
 	}
 
-	display := pages.MonsterDisplayCard
-	if d := r.URL.Query().Get("display"); d != "" && pages.MonsterDisplay(d).Valid() {
-		display = pages.MonsterDisplay(d)
+	if err := json.NewEncoder(w).Encode(struct {
+		Monsters []nimble.Monster `json:"monsters"`
+	}{
+		Monsters: slices.Collect(xiter.Map(slices.Values(dbmonsters), nimble.MonsterFromSQL)),
+	}); err != nil {
+		http.Error(w, err.Error(), 500)
+		trace.SpanFromContext(r.Context()).RecordError(err)
 	}
-
-	props := pages.MyMonstersProps{
-		GlobalProps: web.GlobalProps{
-			CurrentUser: CurrentUser(r.Context()),
-			CurrentURL:  r.URL,
-			Title:       "My Monsters",
-		},
-		Monsters: slices.Collect(xiter.Map(slices.Values(dbmonsters), monsterToDisplay)),
-		Display:  display,
-	}
-
-	c := pages.MyMonsters(props)
-	if r.Header.Get("HX-Request") != "true" {
-		c = layouts.Global(props.GlobalProps, c)
-	}
-	c.Render(r.Context(), w)
 }
 
-func (h *MonstersHandler) GetMyMonstersEdit(w http.ResponseWriter, r *http.Request) {
+func (h *MonstersHandler) GetMonster(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	span := trace.SpanFromContext(ctx)
 
 	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	span.SetAttributes(attribute.String("params.id", id.String()))
 	if err != nil {
-		http.Error(w, err.Error(), 404)
+		w.WriteHeader(404)
 		return
 	}
-	monster, err := h.db.GetMonster(ctx, pgtype.UUID{Bytes: id, Valid: true})
-	if err != nil {
-		trace.SpanFromContext(ctx).RecordError(err)
-		http.Error(w, "sorry, something went wrong", 500)
+	monster, err := h.db.GetMonster(ctx, CurrentUser(ctx).ID, id)
+	if errors.Is(err, pgx.ErrNoRows) {
+		w.WriteHeader(404)
 		return
-	}
-	if monster.UserID != CurrentUser(ctx).ID {
-		http.Error(w, "not authorized", 403)
+	} else if err != nil {
+		Error(ctx, w, err)
 		return
 	}
 
-	vd := web.GlobalProps{
-		CurrentUser: CurrentUser(r.Context()),
-		CurrentURL:  r.URL,
-		Title:       "Edit › " + monster.Name,
+	if err := json.NewEncoder(w).Encode(nimble.MonsterFromSQL(monster)); err != nil {
+		Error(ctx, w, err)
+		return
 	}
-	layouts.Global(vd, pages.Build(vd, monsterToDisplay(monster))).Render(r.Context(), w)
 }
 
 func (h *MonstersHandler) UpdateMonster(w http.ResponseWriter, r *http.Request) {
@@ -222,29 +225,29 @@ func (h *MonstersHandler) UpdateMonster(w http.ResponseWriter, r *http.Request) 
 	id, err := uuid.FromString(chi.URLParam(r, "id"))
 	span.SetAttributes(attribute.String("params.id", id.String()))
 	if err != nil {
-		http.Error(w, err.Error(), 404)
+		w.WriteHeader(404)
 		return
 	}
-	current, err := h.db.GetMonster(ctx, pgtype.UUID{Bytes: id, Valid: true})
-	if err != nil {
-		trace.SpanFromContext(ctx).RecordError(err)
-		http.Error(w, "sorry, something went wrong", 500)
+	_, err = h.db.GetMonster(ctx, CurrentUser(ctx).ID, id)
+	if errors.Is(err, pgx.ErrNoRows) {
+		w.WriteHeader(404)
 		return
-	}
-	if current.UserID != CurrentUser(ctx).ID {
-		http.Error(w, "not authorized", 403)
+	} else if err != nil {
+		Error(ctx, w, err)
 		return
 	}
 
-	update, err := monsterFromForm(r)
-	if err != nil {
-		w.WriteHeader(400)
+	var monster nimble.Monster
+	if err := json.NewDecoder(r.Body).Decode(&monster); err != nil {
+		http.Error(w, err.Error(), 400)
 		return
 	}
-	m := sqlmonsterFromMonster(update)
+	m := sqlmonsterFromMonster(monster)
 
 	_, err = h.db.UpdateMonster(r.Context(), sqldb.UpdateMonsterParams{
-		ID:        pgtype.UUID{Bytes: id, Valid: true},
+		UserID:    CurrentUser(ctx).ID,
+		UserID_2:  CurrentUser(ctx).ID, // editor
+		ID:        id,
 		Name:      m.Name,
 		Level:     m.Level,
 		Hp:        m.Hp,
@@ -255,13 +258,16 @@ func (h *MonstersHandler) UpdateMonster(w http.ResponseWriter, r *http.Request) 
 		Swim:      m.Swim,
 		Actions:   m.Actions,
 		Abilities: m.Abilities,
-		UserID:    CurrentUser(ctx).ID,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		Error(ctx, w, err)
 		return
 	}
-	http.Redirect(w, r, "/my/monsters", 303)
+
+	if err := json.NewEncoder(w).Encode(nimble.MonsterFromSQL(m)); err != nil {
+		Error(ctx, w, err)
+		return
+	}
 }
 
 func (h *MonstersHandler) DeleteMonster(w http.ResponseWriter, r *http.Request) {
@@ -274,75 +280,20 @@ func (h *MonstersHandler) DeleteMonster(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, err.Error(), 404)
 		return
 	}
-	current, err := h.db.GetMonster(ctx, pgtype.UUID{Bytes: id, Valid: true})
-	if err != nil {
-		trace.SpanFromContext(ctx).RecordError(err)
-		http.Error(w, err.Error(), 500)
+	current, err := h.db.GetMonster(ctx, CurrentUser(ctx).ID, id)
+	if errors.Is(err, pgx.ErrNoRows) {
+		w.WriteHeader(404)
+		return
+	} else if err != nil {
+		Error(ctx, w, err)
 		return
 	}
+
+	_, err = h.db.DeleteMonster(ctx, CurrentUser(ctx).ID, id)
 	if current.UserID != CurrentUser(ctx).ID {
-		http.Error(w, "not authorized", 403)
+		Error(ctx, w, err)
 		return
 	}
 
-	_, err = h.db.DeleteMonster(ctx, pgtype.UUID{Bytes: id, Valid: true})
-	if current.UserID != CurrentUser(ctx).ID {
-		trace.SpanFromContext(ctx).RecordError(err)
-		http.Error(w, "sorry, something went wrong", 500)
-		return
-	}
-}
-
-func monsterToDisplay(in sqldb.Monster) nimble.Monster {
-	var err error
-	var size nimble.MonsterSize
-	switch in.Size.SizeType {
-	case sqldb.SizeTypeTiny:
-		size = nimble.SizeTiny
-	case sqldb.SizeTypeSmall:
-		size = nimble.SizeSmall
-	case sqldb.SizeTypeMedium:
-		size = nimble.SizeMedium
-	case sqldb.SizeTypeLarge:
-		size = nimble.SizeLarge
-	case sqldb.SizeTypeHuge:
-		size = nimble.SizeHuge
-	case sqldb.SizeTypeGargantuan:
-		size = nimble.SizeGargantuan
-	default:
-		panic("unknown monster size" + in.Size.SizeType)
-	}
-
-	var armor nimble.MonsterArmor
-	switch in.Armor.ArmorType {
-	case sqldb.ArmorTypeNone:
-		armor = nimble.ArmorUnarmored
-	case sqldb.ArmorTypeMedium:
-		armor = nimble.ArmorMedium
-	case sqldb.ArmorTypeHeavy:
-		armor = nimble.ArmorHeavy
-	default:
-		panic("unknown monster armor" + in.Armor.ArmorType)
-	}
-
-	out := nimble.Monster{
-		ID:    uuid.UUID(in.ID.Bytes).String(),
-		Name:  in.Name,
-		Level: in.Level,
-		Size:  size,
-		Armor: armor,
-		Swim:  int(in.Swim.Int32),
-		Fly:   int(in.Fly.Int32),
-		Speed: int(in.Speed.Int32),
-		HP:    int(in.Hp),
-	}
-	out.Actions = make([]nimble.Action, len(in.Actions))
-	for i, a := range in.Actions {
-		err = errors.Join(err, json.Unmarshal(a, &out.Actions[i]))
-	}
-	out.Abilities = make([]nimble.Ability, len(in.Abilities))
-	for i, a := range in.Abilities {
-		err = errors.Join(err, json.Unmarshal(a, &out.Abilities[i]))
-	}
-	return out
+	w.WriteHeader(204)
 }

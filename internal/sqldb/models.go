@@ -8,6 +8,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 
+	"github.com/gofrs/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -101,8 +102,8 @@ func (ns NullSizeType) Value() (driver.Value, error) {
 }
 
 type Collection struct {
-	ID        pgtype.UUID
-	UserID    pgtype.UUID
+	ID        uuid.UUID
+	UserID    uuid.UUID
 	Name      string
 	Public    pgtype.Bool
 	CreatedAt pgtype.Timestamptz
@@ -110,16 +111,16 @@ type Collection struct {
 }
 
 type Monster struct {
-	ID        pgtype.UUID
-	UserID    pgtype.UUID
+	ID        uuid.UUID
+	UserID    uuid.UUID
 	Name      string
 	Level     string
 	Hp        int32
-	Armor     NullArmorType
-	Size      NullSizeType
-	Speed     pgtype.Int4
-	Fly       pgtype.Int4
-	Swim      pgtype.Int4
+	Armor     ArmorType
+	Size      SizeType
+	Speed     int32
+	Fly       int32
+	Swim      int32
 	Actions   [][]byte
 	Abilities [][]byte
 	Legendary pgtype.Bool
@@ -131,19 +132,19 @@ type Monster struct {
 }
 
 type MonstersCollection struct {
-	MonsterID    pgtype.UUID
-	CollectionID pgtype.UUID
+	MonsterID    uuid.UUID
+	CollectionID uuid.UUID
 }
 
 type Session struct {
-	ID        pgtype.UUID
-	UserID    pgtype.UUID
+	ID        uuid.UUID
+	UserID    uuid.UUID
 	DiscordID string
 	ExpiresAt pgtype.Timestamptz
 }
 
 type User struct {
-	ID        pgtype.UUID
+	ID        uuid.UUID
 	DiscordID string
 	Username  string
 	Avatar    pgtype.Text

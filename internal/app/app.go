@@ -23,11 +23,8 @@ import (
 	"go.opentelemetry.io/otel/trace"
 
 	"nimble.monster/internal/instr"
+	"nimble.monster/internal/nimble"
 	"nimble.monster/internal/sqldb"
-	"nimble.monster/internal/web"
-	"nimble.monster/web/assets"
-	"nimble.monster/web/layouts"
-	"nimble.monster/web/pages"
 )
 
 type App struct {
@@ -116,7 +113,6 @@ func (a *App) buildRouter() {
 				}
 			}),
 			"nimble.monster",
-			// otelhttp.WithMeterProvider(meterProvider),
 		)
 	})
 
@@ -133,47 +129,34 @@ func (a *App) buildRouter() {
 
 	r.Use(a.ProcessAuth)
 
-	r.Get("/", a.Home)
-
 	{
-		h := NewMonstersHandler(a.db)
-		r.Get("/build", h.GetBuild)
-		r.Post("/build", h.PostBuild)
-		r.Post("/build/preview", h.PostBuildPreview)
-
-		r.With(RequireAuth).Get("/my/monsters", h.GetMyMonsters)
-		r.With(RequireAuth).Get("/my/monsters/{id}/edit", h.GetMyMonstersEdit)
-		r.With(RequireAuth).Post("/my/monsters/{id}", h.UpdateMonster)
-		r.With(RequireAuth).Delete("/my/monsters/{id}", h.DeleteMonster)
+		h := NewSessionsHandler(a.db)
+		r.Get("/auth/login", h.GetLogin)
+		r.Post("/auth/logout", h.PostLogout)
+		r.Get("/auth/discord", h.GetCallbackDiscord)
+		r.Get("/api/users/me", h.GetCurrentUser)
 	}
 
 	{
-		h := NewSessionsHandler(a.db)
-		r.Get("/login", h.GetLogin)
-		r.Post("/logout", h.PostLogout)
-		r.Get("/callback/discord", h.GetCallbackDiscord)
+		h := NewMonstersHandler(a.db)
+		r.With(RequireAuth).Get("/api/users/me/monsters", h.ListMyMonsters)
+		r.With(RequireAuth).Get("/api/monsters/{id}", h.GetMonster)
+		r.With(RequireAuth).Put("/api/monsters/{id}", h.UpdateMonster)
+		r.With(RequireAuth).Post("/api/monsters", h.CreateMonster)
+		r.With(RequireAuth).Delete("/api/monsters/{id}", h.DeleteMonster)
 	}
 
 	{
 		h := NewCollectionsHandler(a.db)
-		r.With(RequireAuth).Get("/my/collections", h.GetCollections)
-		r.With(RequireAuth).Get("/my/collections/new", h.GetCollectionsNew)
-		r.With(RequireAuth).Post("/my/collections", h.PostCollections)
-		r.With(RequireAuth).Get("/my/collections/{id}", h.GetCollectionsID)
+		r.With(RequireAuth).Get("/api/users/me/collections", h.ListMyCollections)
+		r.With(RequireAuth).Post("/api/collections", h.CreateCollection)
+		r.With(RequireAuth).Delete("/api/collections/{id}", h.DeleteCollection)
+		r.With(RequireAuth).Put("/api/collections/{id}", h.UpdateCollection)
+		r.With(RequireAuth).Put("/api/collections/{id}/monsters", h.UpdateCollectionMonsters)
+		r.Get("/api/collections/{id}", h.GetCollection)
 	}
 
-	r.Get("/*", http.FileServer(http.FS(assets.FS)).ServeHTTP)
 	a.router = r
-}
-
-func (a *App) Home(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	vd := web.GlobalProps{
-		CurrentUser: CurrentUser(ctx),
-		CurrentURL:  r.URL,
-		Title:       "Welcome",
-	}
-	layouts.Global(vd, pages.Home()).Render(ctx, w)
 }
 
 func Error(ctx context.Context, w http.ResponseWriter, err error) {
@@ -201,7 +184,7 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 			return
 		}
 
-		user, err := a.db.GetUserByUnexpiredSessionID(ctx, sid)
+		user, err := a.db.GetUserByUnexpiredSession(ctx, sid)
 		if err != nil {
 			http.SetCookie(w, &http.Cookie{
 				Name:     sessionCookieName,
@@ -217,8 +200,7 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 			return
 		}
 
-		userID := uuid.UUID(user.ID.Bytes)
-		span.SetAttributes(attribute.String("user.id", userID.String()))
+		span.SetAttributes(attribute.String("user.id", user.ID.String()))
 
 		ctx = context.WithValue(ctx, currentUserCtxKey{}, &user)
 		next.ServeHTTP(w, r.WithContext(ctx))
@@ -226,9 +208,17 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 }
 
 // might be nil!
-func CurrentUser(ctx context.Context) *sqldb.User {
+func CurrentUser(ctx context.Context) *nimble.User {
 	u, _ := ctx.Value(currentUserCtxKey{}).(*sqldb.User)
-	return u
+	if u == nil {
+		return nil
+	}
+	return &nimble.User{
+		ID:        u.ID,
+		DiscordID: u.DiscordID,
+		Username:  u.Username,
+		Avatar:    u.Avatar.String,
+	}
 }
 
 func RequireAuth(next http.Handler) http.Handler {
@@ -236,7 +226,7 @@ func RequireAuth(next http.Handler) http.Handler {
 		ctx := r.Context()
 		user := CurrentUser(ctx)
 		if user == nil {
-			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 		next.ServeHTTP(w, r)
