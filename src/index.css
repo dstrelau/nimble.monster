@@ -9,3 +9,59 @@
 .font-roboto {
     font-family: "Roboto Condensed", sans-serif;
 }
+
+.scooped {
+    position: relative;
+    background-image: radial-gradient(
+            circle at 0 0,
+            #f3f4f6 10px,
+            black 10px,
+            black 11px,
+            transparent 11px
+        ),
+        radial-gradient(
+            circle at 100% 0,
+            #f3f4f6 10px,
+            black 10px,
+            black 11px,
+            transparent 11px
+        ),
+        radial-gradient(
+            circle at 0 100%,
+            #f3f4f6 10px,
+            black 10px,
+            black 11px,
+            transparent 11px
+        ),
+        radial-gradient(
+            circle at 100% 100%,
+            #f3f4f6 10px,
+            black 10px,
+            black 11px,
+            transparent 11px
+        );
+}
+
+.scooped::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: calc(100% - 22px);
+    transform: translate(-50%, -50%);
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.scooped::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(100% - 22px);
+    height: 100%;
+    transform: translate(-50%, -50%);
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}

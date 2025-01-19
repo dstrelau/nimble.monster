@@ -28,6 +28,28 @@ const ARMORS: { value: MonsterArmor; label: string }[] = [
   { value: "heavy", label: "Heavy" },
 ];
 
+const EXAMPLE_MONSTERS = {
+  kobold: {
+    name: "Kobold",
+    level: "1/3",
+    size: "small" as MonsterSize,
+    armor: "none" as MonsterArmor,
+    swim: 0,
+    fly: 0,
+    speed: 6,
+    hp: 12,
+    abilities: [
+      {
+        name: "Nooooo!",
+        description: "When an ally within 2 spaces dies, attack once for free.",
+      },
+    ],
+    actions: [
+      { name: "Stab", damage: "1d4+2", description: "(or Sling, Range 8)" },
+    ],
+  },
+};
+
 interface FormInputTextProps {
   label: string;
   name: string;
@@ -255,8 +277,30 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
     mutation.mutate(monster);
   };
 
+  const loadExample = (type: keyof typeof EXAMPLE_MONSTERS) => {
+    setMonster({ ...EXAMPLE_MONSTERS[type], id: "" });
+  };
+
   return (
     <div className="grid grid-cols-6 gap-x-8">
+      <div className="col-span-6 mb-6">
+        <div className="flex gap-2 items-center">
+          <span className="text-sm font-medium text-gray-900">
+            Load Example:
+          </span>
+          {Object.keys(EXAMPLE_MONSTERS).map((type) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() => loadExample(type as keyof typeof EXAMPLE_MONSTERS)}
+              className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            >
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="col-span-4">
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">

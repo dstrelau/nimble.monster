@@ -59,8 +59,8 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
 
   return (
     <div>
-      <article className="font-roboto border-2 rounded px-5 py-3 bg-[#f5ebd7]">
-        <header className="flex justify-between leading-5 mb-2">
+      <article className="font-roboto px-4 py-2 bg-[#f5ebd7] scooped">
+        <header className="flex justify-between leading-5">
           <div className="grow">
             <span className="font-serif font-black font-small-caps italic text-2xl pr-1">
               {monster.name}
@@ -88,7 +88,15 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
         {monster.abilities?.map((ability, index) => (
           <p
             key={index}
-            className="italic -mx-2 mb-2 p-2 leading-5 bg-[#d3cebb]"
+            className="relative italic mb-2 p-2 leading-5 bg-[#d3cebb]"
+            style={{
+              clipPath:
+                "polygon(20px 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 20px 100%, 0 50%)",
+              marginRight: "-30px",
+              paddingRight: "30px",
+              marginLeft: "-30px",
+              paddingLeft: "30px",
+            }}
           >
             <strong className="pr-1">{maybePeriod(ability.name)}</strong>
             {ability.description}
