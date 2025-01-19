@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@tailwind forms;
 
 .font-small-caps {
     font-variant: small-caps;

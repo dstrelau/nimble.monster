@@ -8,8 +8,18 @@ package sqldb
 import (
 	"context"
 
+	"github.com/gofrs/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
+
+const addMonsterToCollection = `-- name: AddMonsterToCollection :exec
+INSERT INTO monsters_collections (monster_id, collection_id) VALUES ($1, $2)
+`
+
+func (q *Queries) AddMonsterToCollection(ctx context.Context, monsterID uuid.UUID, collectionID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, addMonsterToCollection, monsterID, collectionID)
+	return err
+}
 
 const cleanExpiredSessions = `-- name: CleanExpiredSessions :exec
 DELETE FROM sessions WHERE expires_at <= NOW()
@@ -20,30 +30,59 @@ func (q *Queries) CleanExpiredSessions(ctx context.Context) error {
 	return err
 }
 
+const createCollection = `-- name: CreateCollection :one
+INSERT INTO collections (
+    name, public, user_id
+) VALUES (
+    $1, $2, $3
+) RETURNING id, user_id, name, public, created_at, updated_at
+`
+
+type CreateCollectionParams struct {
+	Name   string
+	Public pgtype.Bool
+	UserID uuid.UUID
+}
+
+func (q *Queries) CreateCollection(ctx context.Context, arg CreateCollectionParams) (Collection, error) {
+	row := q.db.QueryRow(ctx, createCollection, arg.Name, arg.Public, arg.UserID)
+	var i Collection
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Public,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createMonster = `-- name: CreateMonster :one
 INSERT INTO monsters (
-    name, level, hp, armor, size, speed, fly, swim, actions, abilities, user_id
+    user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
 ) RETURNING id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at
 `
 
 type CreateMonsterParams struct {
+	UserID    uuid.UUID
 	Name      string
 	Level     string
 	Hp        int32
-	Armor     NullArmorType
-	Size      NullSizeType
-	Speed     pgtype.Int4
-	Fly       pgtype.Int4
-	Swim      pgtype.Int4
+	Armor     ArmorType
+	Size      SizeType
+	Speed     int32
+	Fly       int32
+	Swim      int32
 	Actions   [][]byte
 	Abilities [][]byte
-	UserID    pgtype.UUID
 }
 
 func (q *Queries) CreateMonster(ctx context.Context, arg CreateMonsterParams) (Monster, error) {
 	row := q.db.QueryRow(ctx, createMonster,
+		arg.UserID,
 		arg.Name,
 		arg.Level,
 		arg.Hp,
@@ -54,7 +93,6 @@ func (q *Queries) CreateMonster(ctx context.Context, arg CreateMonsterParams) (M
 		arg.Swim,
 		arg.Actions,
 		arg.Abilities,
-		arg.UserID,
 	)
 	var i Monster
 	err := row.Scan(
@@ -87,7 +125,7 @@ RETURNING id, user_id, discord_id, expires_at
 `
 
 type CreateSessionParams struct {
-	UserID    pgtype.UUID
+	UserID    uuid.UUID
 	DiscordID string
 	ExpiresAt pgtype.Timestamptz
 }
@@ -104,12 +142,30 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 	return i, err
 }
 
-const deleteMonster = `-- name: DeleteMonster :one
-DELETE FROM monsters WHERE id = $1 RETURNING id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at
+const deleteCollection = `-- name: DeleteCollection :one
+DELETE FROM collections WHERE user_id = $1 AND id = $2 RETURNING id, user_id, name, public, created_at, updated_at
 `
 
-func (q *Queries) DeleteMonster(ctx context.Context, id pgtype.UUID) (Monster, error) {
-	row := q.db.QueryRow(ctx, deleteMonster, id)
+func (q *Queries) DeleteCollection(ctx context.Context, userID uuid.UUID, iD uuid.UUID) (Collection, error) {
+	row := q.db.QueryRow(ctx, deleteCollection, userID, iD)
+	var i Collection
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Public,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const deleteMonster = `-- name: DeleteMonster :one
+DELETE FROM monsters WHERE user_id = $1 AND id = $2 RETURNING id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at
+`
+
+func (q *Queries) DeleteMonster(ctx context.Context, userID uuid.UUID, iD uuid.UUID) (Monster, error) {
+	row := q.db.QueryRow(ctx, deleteMonster, userID, iD)
 	var i Monster
 	err := row.Scan(
 		&i.ID,
@@ -138,17 +194,35 @@ const deleteSession = `-- name: DeleteSession :exec
 DELETE FROM sessions WHERE id = $1
 `
 
-func (q *Queries) DeleteSession(ctx context.Context, id pgtype.UUID) error {
+func (q *Queries) DeleteSession(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteSession, id)
 	return err
 }
 
-const getMonster = `-- name: GetMonster :one
-SELECT id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at from monsters WHERE id = $1
+const getCollection = `-- name: GetCollection :one
+SELECT id, user_id, name, public, created_at, updated_at FROM collections WHERE id = $1
 `
 
-func (q *Queries) GetMonster(ctx context.Context, id pgtype.UUID) (Monster, error) {
-	row := q.db.QueryRow(ctx, getMonster, id)
+func (q *Queries) GetCollection(ctx context.Context, id uuid.UUID) (Collection, error) {
+	row := q.db.QueryRow(ctx, getCollection, id)
+	var i Collection
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Public,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getMonster = `-- name: GetMonster :one
+SELECT id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at FROM monsters WHERE user_id = $1 AND id = $2
+`
+
+func (q *Queries) GetMonster(ctx context.Context, userID uuid.UUID, iD uuid.UUID) (Monster, error) {
+	row := q.db.QueryRow(ctx, getMonster, userID, iD)
 	var i Monster
 	err := row.Scan(
 		&i.ID,
@@ -174,10 +248,10 @@ func (q *Queries) GetMonster(ctx context.Context, id pgtype.UUID) (Monster, erro
 }
 
 const getSession = `-- name: GetSession :one
-SELECT id, user_id, discord_id, expires_at FROM sessions WHERE id = $1 AND expires_at > NOW()
+SELECT id, user_id, discord_id, expires_at FROM sessions WHERE id = $1
 `
 
-func (q *Queries) GetSession(ctx context.Context, id pgtype.UUID) (Session, error) {
+func (q *Queries) GetSession(ctx context.Context, id uuid.UUID) (Session, error) {
 	row := q.db.QueryRow(ctx, getSession, id)
 	var i Session
 	err := row.Scan(
@@ -189,12 +263,14 @@ func (q *Queries) GetSession(ctx context.Context, id pgtype.UUID) (Session, erro
 	return i, err
 }
 
-const getUserByDiscordID = `-- name: GetUserByDiscordID :one
-SELECT id, discord_id, username, avatar FROM users WHERE discord_id = $1
+const getUserByUnexpiredSession = `-- name: GetUserByUnexpiredSession :one
+SELECT users.id, users.discord_id, users.username, users.avatar FROM users
+JOIN sessions ON users.id = sessions.user_id
+WHERE sessions.id = $1 AND sessions.expires_at >= NOW()
 `
 
-func (q *Queries) GetUserByDiscordID(ctx context.Context, discordID string) (User, error) {
-	row := q.db.QueryRow(ctx, getUserByDiscordID, discordID)
+func (q *Queries) GetUserByUnexpiredSession(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByUnexpiredSession, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -205,12 +281,59 @@ func (q *Queries) GetUserByDiscordID(ctx context.Context, discordID string) (Use
 	return i, err
 }
 
-const listAllMonsters = `-- name: ListAllMonsters :many
-SELECT id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at from monsters
+const listCollections = `-- name: ListCollections :many
+SELECT c.id, c.user_id, c.name, c.public, c.created_at, c.updated_at, COUNT(mc.monster_id) as monster_count
+FROM collections c
+LEFT JOIN monsters_collections mc ON c.id = mc.collection_id
+WHERE c.user_id = $1
+GROUP BY c.id
+ORDER BY c.name ASC
 `
 
-func (q *Queries) ListAllMonsters(ctx context.Context) ([]Monster, error) {
-	rows, err := q.db.Query(ctx, listAllMonsters)
+type ListCollectionsRow struct {
+	ID           uuid.UUID
+	UserID       uuid.UUID
+	Name         string
+	Public       pgtype.Bool
+	CreatedAt    pgtype.Timestamptz
+	UpdatedAt    pgtype.Timestamptz
+	MonsterCount int64
+}
+
+func (q *Queries) ListCollections(ctx context.Context, userID uuid.UUID) ([]ListCollectionsRow, error) {
+	rows, err := q.db.Query(ctx, listCollections, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListCollectionsRow
+	for rows.Next() {
+		var i ListCollectionsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Name,
+			&i.Public,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.MonsterCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listMonsters = `-- name: ListMonsters :many
+SELECT id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at from monsters WHERE user_id = $1 ORDER BY name ASC
+`
+
+func (q *Queries) ListMonsters(ctx context.Context, userID uuid.UUID) ([]Monster, error) {
+	rows, err := q.db.Query(ctx, listMonsters, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -248,12 +371,14 @@ func (q *Queries) ListAllMonsters(ctx context.Context) ([]Monster, error) {
 	return items, nil
 }
 
-const listMonstersByUserID = `-- name: ListMonstersByUserID :many
-SELECT id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at from monsters WHERE user_id = $1 ORDER BY name ASC
+const listMonstersInCollection = `-- name: ListMonstersInCollection :many
+SELECT monsters.id, monsters.user_id, monsters.name, monsters.level, monsters.hp, monsters.armor, monsters.size, monsters.speed, monsters.fly, monsters.swim, monsters.actions, monsters.abilities, monsters.legendary, monsters.bloodied, monsters.last_stand, monsters.saves, monsters.created_at, monsters.updated_at FROM monsters
+JOIN monsters_collections ON monsters.id = monsters_collections.monster_id
+WHERE collection_id = $1
 `
 
-func (q *Queries) ListMonstersByUserID(ctx context.Context, userID pgtype.UUID) ([]Monster, error) {
-	rows, err := q.db.Query(ctx, listMonstersByUserID, userID)
+func (q *Queries) ListMonstersInCollection(ctx context.Context, collectionID uuid.UUID) ([]Monster, error) {
+	rows, err := q.db.Query(ctx, listMonstersInCollection, collectionID)
 	if err != nil {
 		return nil, err
 	}
@@ -289,41 +414,137 @@ func (q *Queries) ListMonstersByUserID(ctx context.Context, userID pgtype.UUID) 
 		return nil, err
 	}
 	return items, nil
+}
+
+const removeMonsterFromCollection = `-- name: RemoveMonsterFromCollection :exec
+DELETE FROM monsters_collections WHERE monster_id = $1 AND collection_id = $2
+`
+
+func (q *Queries) RemoveMonsterFromCollection(ctx context.Context, monsterID uuid.UUID, collectionID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, removeMonsterFromCollection, monsterID, collectionID)
+	return err
+}
+
+const searchMonsters = `-- name: SearchMonsters :many
+SELECT m.id, m.user_id, m.name, m.level, m.hp, m.armor, m.size, m.speed, m.fly, m.swim, m.actions, m.abilities, m.legendary, m.bloodied, m.last_stand, m.saves, m.created_at, m.updated_at
+FROM monsters m
+WHERE
+    similarity(lower(m.name), lower($1)) > 0.3
+    OR lower(m.name) LIKE lower('%' || $1 || '%')
+ORDER BY
+    similarity(lower(m.name), lower($1)) DESC,
+    m.name ASC
+LIMIT 10
+`
+
+func (q *Queries) SearchMonsters(ctx context.Context, lower string) ([]Monster, error) {
+	rows, err := q.db.Query(ctx, searchMonsters, lower)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Monster
+	for rows.Next() {
+		var i Monster
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Name,
+			&i.Level,
+			&i.Hp,
+			&i.Armor,
+			&i.Size,
+			&i.Speed,
+			&i.Fly,
+			&i.Swim,
+			&i.Actions,
+			&i.Abilities,
+			&i.Legendary,
+			&i.Bloodied,
+			&i.LastStand,
+			&i.Saves,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateCollection = `-- name: UpdateCollection :one
+UPDATE collections
+SET name = $3,
+    public = $4
+WHERE user_id = $1 AND id = $2
+RETURNING id, user_id, name, public, created_at, updated_at
+`
+
+type UpdateCollectionParams struct {
+	UserID uuid.UUID
+	ID     uuid.UUID
+	Name   string
+	Public pgtype.Bool
+}
+
+func (q *Queries) UpdateCollection(ctx context.Context, arg UpdateCollectionParams) (Collection, error) {
+	row := q.db.QueryRow(ctx, updateCollection,
+		arg.UserID,
+		arg.ID,
+		arg.Name,
+		arg.Public,
+	)
+	var i Collection
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Public,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const updateMonster = `-- name: UpdateMonster :one
 UPDATE monsters
-SET name = $2,
-   level = $3,
-   hp = $4,
-   armor = $5,
-   size = $6,
-   speed = $7,
-   fly = $8,
-   swim = $9,
-   actions = $10,
-   abilities = $11,
-   user_id = $12
-WHERE id = $1 RETURNING id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at
+SET name = $3,
+   level = $4,
+   hp = $5,
+   armor = $6,
+   size = $7,
+   speed = $8,
+   fly = $9,
+   swim = $10,
+   actions = $11,
+   abilities = $12,
+   user_id = $13
+WHERE user_id = $1 AND id = $2 RETURNING id, user_id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at
 `
 
 type UpdateMonsterParams struct {
-	ID        pgtype.UUID
+	UserID    uuid.UUID
+	ID        uuid.UUID
 	Name      string
 	Level     string
 	Hp        int32
-	Armor     NullArmorType
-	Size      NullSizeType
-	Speed     pgtype.Int4
-	Fly       pgtype.Int4
-	Swim      pgtype.Int4
+	Armor     ArmorType
+	Size      SizeType
+	Speed     int32
+	Fly       int32
+	Swim      int32
 	Actions   [][]byte
 	Abilities [][]byte
-	UserID    pgtype.UUID
+	UserID_2  uuid.UUID
 }
 
 func (q *Queries) UpdateMonster(ctx context.Context, arg UpdateMonsterParams) (Monster, error) {
 	row := q.db.QueryRow(ctx, updateMonster,
+		arg.UserID,
 		arg.ID,
 		arg.Name,
 		arg.Level,
@@ -335,7 +556,7 @@ func (q *Queries) UpdateMonster(ctx context.Context, arg UpdateMonsterParams) (M
 		arg.Swim,
 		arg.Actions,
 		arg.Abilities,
-		arg.UserID,
+		arg.UserID_2,
 	)
 	var i Monster
 	err := row.Scan(

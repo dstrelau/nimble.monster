@@ -1,21 +1,32 @@
 ARG GO_VERSION=1.23
-FROM golang:${GO_VERSION}-bookworm AS builder
 
-WORKDIR /usr/src/app
-RUN mkdir -p /usr/src/app/bin
+FROM node:18-alpine AS frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
 
-RUN GOBIN=/usr/src/app/bin go install github.com/a-h/templ/cmd/templ@latest
-RUN GOBIN=/usr/src/app/bin go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-RUN curl -sL https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64 \
-    -o /usr/src/app/bin/tailwindcss && chmod +x /usr/src/app/bin/tailwindcss
-
+FROM golang:${GO_VERSION}-bookworm AS backend
+WORKDIR /app
+RUN mkdir -p /app/bin
+RUN GOBIN=/app/bin go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 COPY . .
-RUN make build BUILD_ARGS='-ldflags="-w -s"'
+COPY --from=frontend /app/dist ./dist
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 GOOS=linux BUILD_ARGS='-ldflags="-w -s"' \
+    make build
 
 FROM debian:bookworm
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates
-COPY --from=builder /usr/src/app/main /usr/local/bin/
-CMD ["main"]
+COPY --from=backend /app/bin/main /app/main
+COPY --from=frontend /app/dist /app/dist
+
+WORKDIR /app
+EXPOSE 8080
+ENV PORT=8080
+CMD ["/app/main"]

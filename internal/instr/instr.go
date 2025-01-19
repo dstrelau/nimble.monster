@@ -13,12 +13,19 @@ import (
 )
 
 func InitTracer(ctx context.Context, serviceName string) (shutdown func(context.Context) error, err error) {
-	exporter, err := otlptracehttp.New(ctx,
-		otlptracehttp.WithEndpoint("api.honeycomb.io"),
-		otlptracehttp.WithHeaders(map[string]string{
-			"x-honeycomb-team": os.Getenv("HONEYCOMB_API_KEY"),
-		}),
-	)
+	hnykey := os.Getenv("HONEYCOMB_API_KEY")
+
+	var opts []otlptracehttp.Option
+	if len(hnykey) > 0 {
+		opts = append(opts,
+			otlptracehttp.WithEndpoint("api.honeycomb.io"),
+			otlptracehttp.WithHeaders(map[string]string{
+				"x-honeycomb-team": os.Getenv("HONEYCOMB_API_KEY"),
+			}))
+	} else {
+		opts = append(opts, otlptracehttp.WithInsecure())
+	}
+	exporter, err := otlptracehttp.New(ctx, opts...)
 	if err != nil {
 		return nil, err
 	}
