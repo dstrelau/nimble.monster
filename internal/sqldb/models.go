@@ -102,25 +102,25 @@ func (ns NullSizeType) Value() (driver.Value, error) {
 }
 
 type Collection struct {
-	ID        uuid.UUID
-	UserID    uuid.UUID
-	Name      string
-	Public    pgtype.Bool
-	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
+	ID          uuid.UUID
+	UserID      uuid.UUID
+	Name        string
+	Public      pgtype.Bool
+	CreatedAt   pgtype.Timestamptz
+	UpdatedAt   pgtype.Timestamptz
+	Description string
 }
 
 type Monster struct {
 	ID        uuid.UUID
-	UserID    uuid.UUID
 	Name      string
 	Level     string
 	Hp        int32
 	Armor     ArmorType
 	Size      SizeType
-	Speed     int32
-	Fly       int32
-	Swim      int32
+	Speed     pgtype.Int4
+	Fly       pgtype.Int4
+	Swim      pgtype.Int4
 	Actions   [][]byte
 	Abilities [][]byte
 	Legendary pgtype.Bool
@@ -129,6 +129,7 @@ type Monster struct {
 	Saves     []string
 	CreatedAt pgtype.Timestamptz
 	UpdatedAt pgtype.Timestamptz
+	UserID    uuid.UUID
 }
 
 type MonstersCollection struct {
@@ -144,8 +145,9 @@ type Session struct {
 }
 
 type User struct {
-	ID        uuid.UUID
-	DiscordID string
-	Username  string
-	Avatar    pgtype.Text
+	ID           uuid.UUID
+	DiscordID    string
+	Username     string
+	Avatar       pgtype.Text
+	RefreshToken pgtype.Text
 }

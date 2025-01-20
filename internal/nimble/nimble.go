@@ -157,9 +157,9 @@ func MonsterFromSQL(in sqldb.Monster) Monster {
 		Level: in.Level,
 		Size:  size,
 		Armor: armor,
-		Swim:  int(in.Swim),
-		Fly:   int(in.Fly),
-		Speed: int(in.Speed),
+		Swim:  int(in.Swim.Int32),
+		Fly:   int(in.Fly.Int32),
+		Speed: int(in.Speed.Int32),
 		HP:    int(in.Hp),
 	}
 	out.Actions = make([]Action, len(in.Actions))

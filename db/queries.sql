@@ -80,12 +80,13 @@ INSERT INTO monsters_collections (monster_id, collection_id) VALUES ($1, $2);
 DELETE FROM monsters_collections WHERE monster_id = $1 AND collection_id = $2;
 
 -- name: UpsertUser :one
-INSERT INTO users (discord_id, username, avatar)
-VALUES ($1, $2, $3)
+INSERT INTO users (discord_id, username, avatar, refresh_token)
+VALUES ($1, $2, $3, $4)
 ON CONFLICT (discord_id)
 DO UPDATE SET
     username = $2,
-    avatar = $3
+    avatar = $3,
+    refresh_token = $4
 RETURNING *;
 
 -- name: GetUserByUnexpiredSession :one

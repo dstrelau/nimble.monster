@@ -11,6 +11,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/gofrs/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
@@ -54,9 +55,9 @@ func sqlmonsterFromMonster(m nimble.Monster) sqldb.Monster {
 		Hp:        int32(m.HP),
 		Armor:     armor,
 		Size:      sqldb.SizeType(m.Size),
-		Speed:     int32(m.Speed),
-		Fly:       int32(m.Fly),
-		Swim:      int32(m.Swim),
+		Speed:     pgtype.Int4{Int32: int32(m.Speed)},
+		Fly:       pgtype.Int4{Int32: int32(m.Fly)},
+		Swim:      pgtype.Int4{Int32: int32(m.Swim)},
 		Actions:   actions,
 		Abilities: abilities,
 	}

@@ -106,16 +106,14 @@ func (h *SessionsHandler) GetCallbackDiscord(w http.ResponseWriter, r *http.Requ
 	code := r.URL.Query().Get("code")
 	token, err := h.o2.Exchange(ctx, code)
 	if err != nil {
-		trace.SpanFromContext(ctx).RecordError(err)
-		http.Error(w, "Failed to exchange token", http.StatusInternalServerError)
+		Error(ctx, w, err)
 		return
 	}
 
 	client := h.o2.Client(ctx, token)
 	resp, err := client.Get("https://discord.com/api/users/@me")
 	if err != nil {
-		trace.SpanFromContext(ctx).RecordError(err)
-		http.Error(w, "Failed to get user info", http.StatusInternalServerError)
+		Error(ctx, w, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -134,9 +132,10 @@ func (h *SessionsHandler) GetCallbackDiscord(w http.ResponseWriter, r *http.Requ
 	}
 
 	user, err := h.db.UpsertUser(ctx, sqldb.UpsertUserParams{
-		DiscordID: userInfo.ID,
-		Username:  userInfo.Username,
-		Avatar:    pgtype.Text{String: userInfo.Avatar, Valid: true},
+		DiscordID:    userInfo.ID,
+		Username:     userInfo.Username,
+		Avatar:       pgtype.Text{String: userInfo.Avatar, Valid: true},
+		RefreshToken: pgtype.Text{String: token.RefreshToken, Valid: true},
 	})
 	if err != nil {
 		trace.SpanFromContext(ctx).RecordError(err)
@@ -162,7 +161,7 @@ func (h *SessionsHandler) GetCallbackDiscord(w http.ResponseWriter, r *http.Requ
 		Name:     sessionCookieName,
 		Value:    sid,
 		Path:     "/",
-		Expires:  session.ExpiresAt.Time,
+		Expires:  time.Now().AddDate(0, 0, 7),
 		HttpOnly: true,
 		Secure:   true,
 		SameSite: http.SameSiteLaxMode,

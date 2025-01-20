@@ -6,13 +6,21 @@ all: build test
 $(BIN)/sqlc:
 	GOBIN=$(BIN) go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
-SQLCFILES := internal/sqldb/query.sql.go internal/sqldb/models.go internal/sqldb/db.go
-SQLCSRC := $(wildcard internal/sqldb/*.sql)
-$(SQLCFILES): $(BIN)/sqlc $(SQLCSRC) internal/sqldb/sqlc.yaml
-	cd internal/sqldb && $(BIN)/sqlc generate
+SQLCFILES := internal/sqldb/queries.sql.go internal/sqldb/models.go internal/sqldb/db.go
+SQLCSRC := $(wildcard db/*.sql)
+$(SQLCFILES): $(BIN)/sqlc $(SQLCSRC) sqlc.yaml
+	$(BIN)/sqlc generate
 
 .PHONY: sqlc
 sqlc: $(SQLCFILES)
+
+.PHONY: migration
+migration:
+	touch db/migrate/$(shell date +%s)_$(NAME).up.sql
+
+DBNAME=postgres
+db/schema.sql:
+	pg_dump --no-owner --no-acl --no-comments --schema-only --dbname=$(DBNAME) > db/schema.sql
 
 $(BIN)/main: $(GOFILES)
 	go build -o $(BIN)/main ${BUILD_ARGS} cmd/main.go

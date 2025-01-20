@@ -1,12 +1,12 @@
 version: "2"
 sql:
   - engine: "postgresql"
-    queries: "query.sql"
-    schema: "schema.sql"
+    queries: "db/queries.sql"
+    schema: "db/schema.sql"
     gen:
       go:
         package: "sqldb"
-        out: "."
+        out: "internal/sqldb"
         sql_package: "pgx/v5"
         query_parameter_limit: 2
         overrides:

@@ -12,9 +12,6 @@ import (
 	"nimble.monster/internal/app"
 )
 
-func gracefulShutdown(s *http.Server, done chan bool) {
-}
-
 func main() {
 	a, err := app.New()
 	if err != nil {

@@ -120,7 +120,7 @@ const MyMonstersView = () => {
       {display === "table" ? (
         <MonsterTable monsters={data.monsters} />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {data.monsters.map((monster) => (
             <MonsterCard
               key={monster.id}
