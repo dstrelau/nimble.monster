@@ -30,9 +30,8 @@ const HomeView = () => (
         <PlusCircleIcon className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
         <div>
           <h2 className="text-lg font-semibold">Available Features</h2>
-          <ul className="mt-2 space-y-2 list-none">
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
+          <ul className="mt-2 space-y-2 list-disc list-inside">
+            <li>
               Use the{" "}
               <a
                 className="text-indigo-600 hover:text-indigo-800 underline"
@@ -40,7 +39,11 @@ const HomeView = () => (
               >
                 Monster Builder
               </a>{" "}
-              to create a new Nimble-flavor monster
+              to create a new Nimble-flavor monster, both Standard and
+              Legendary.
+            </li>
+            <li>
+              Save a monster block as image. (WIP. It's a bit broken still.)
             </li>
           </ul>
         </div>
@@ -50,16 +53,13 @@ const HomeView = () => (
         <LockClosedIcon className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
         <div>
           <h2 className="text-lg font-semibold">With Discord Login</h2>
-          <ul className="mt-2 space-y-2 list-none">
+          <ul className="mt-2 space-y-2 list-disc list-inside">
             {[
               "Save your monsters",
               "View your saved monsters",
               "Build collections of monsters that you can share",
             ].map((item) => (
-              <li key={item} className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
-                {item}
-              </li>
+              <li key={item}>{item}</li>
             ))}
           </ul>
         </div>
@@ -69,17 +69,12 @@ const HomeView = () => (
         <ClipboardDocumentListIcon className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
         <div>
           <h2 className="text-lg font-semibold">Coming Soon</h2>
-          <ul className="mt-2 space-y-2 list-none">
+          <ul className="mt-2 space-y-2 list-disc list-inside">
             {[
-              "Support creating Legendary monsters",
               "Upload Monster Images",
               "Monster Families (like Kobolds, Goblins, etc in the GM Guide)",
-              "Save a monster block as image",
             ].map((item) => (
-              <li key={item} className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
-                {item}
-              </li>
+              <li key={item}>{item}</li>
             ))}
           </ul>
         </div>
