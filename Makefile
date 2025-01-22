@@ -16,7 +16,7 @@ sqlc: $(SQLCFILES)
 
 .PHONY: migration
 migration:
-	touch db/migrate/$(shell date +%s)_$(NAME).up.sql
+	touch db/migrate/$(shell date +%s)_$(NAME).sql
 
 DBNAME=postgres
 db/schema.sql:

@@ -5,18 +5,18 @@ import (
 	"errors"
 	"net/http"
 	"slices"
-	"strconv"
+	"strings"
 
 	"deedles.dev/xiter"
 	"github.com/go-chi/chi/v5"
 	"github.com/gofrs/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgtype"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
 	"nimble.monster/internal/nimble"
 	"nimble.monster/internal/sqldb"
+	"nimble.monster/internal/xslices"
 )
 
 type MonstersHandler struct {
@@ -52,45 +52,20 @@ func sqlmonsterFromMonster(m nimble.Monster) sqldb.Monster {
 	return sqldb.Monster{
 		Name:      m.Name,
 		Level:     m.Level,
-		Hp:        int32(m.HP),
+		Hp:        m.HP,
 		Armor:     armor,
 		Size:      sqldb.SizeType(m.Size),
-		Speed:     pgtype.Int4{Int32: int32(m.Speed)},
-		Fly:       pgtype.Int4{Int32: int32(m.Fly)},
-		Swim:      pgtype.Int4{Int32: int32(m.Swim)},
-		Actions:   actions,
-		Abilities: abilities,
-	}
-}
-
-func (h *MonstersHandler) PostBuild(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	monster, err := monsterFromForm(r)
-	if err != nil {
-		w.WriteHeader(400)
-		return
-	}
-	m := sqlmonsterFromMonster(monster)
-
-	_, err = h.db.CreateMonster(r.Context(), sqldb.CreateMonsterParams{
-		Name:      m.Name,
-		Level:     m.Level,
-		Hp:        m.Hp,
-		Armor:     m.Armor,
-		Size:      m.Size,
 		Speed:     m.Speed,
 		Fly:       m.Fly,
 		Swim:      m.Swim,
-		Actions:   m.Actions,
-		Abilities: m.Abilities,
-		UserID:    CurrentUser(ctx).ID,
-	})
-	if err != nil {
-		Error(ctx, w, err)
-		return
+		Actions:   actions,
+		Abilities: abilities,
+		Legendary: m.Legendary,
+		Kind:      m.Kind,
+		Bloodied:  m.Bloodied,
+		LastStand: m.LastStand,
+		Saves:     xslices.Map(strings.Split(m.Saves, ","), strings.TrimSpace),
 	}
-	http.Redirect(w, r, "/monsters", 303)
 }
 
 func (h *MonstersHandler) CreateMonster(w http.ResponseWriter, r *http.Request) {
@@ -104,19 +79,37 @@ func (h *MonstersHandler) CreateMonster(w http.ResponseWriter, r *http.Request) 
 	}
 	m := sqlmonsterFromMonster(monster)
 
-	created, err := h.db.CreateMonster(r.Context(), sqldb.CreateMonsterParams{
-		Name:      m.Name,
-		Level:     m.Level,
-		Hp:        m.Hp,
-		Armor:     m.Armor,
-		Size:      m.Size,
-		Speed:     m.Speed,
-		Fly:       m.Fly,
-		Swim:      m.Swim,
-		Actions:   m.Actions,
-		Abilities: m.Abilities,
-		UserID:    CurrentUser(ctx).ID,
-	})
+	var created sqldb.Monster
+	if monster.Legendary {
+		created, err = h.db.CreateLegendaryMonster(ctx, sqldb.CreateLegendaryMonsterParams{
+			Actions:   m.Actions,
+			Abilities: m.Abilities,
+			UserID:    CurrentUser(ctx).ID,
+			Name:      m.Name,
+			Level:     m.Level,
+			Hp:        m.Hp,
+			Armor:     m.Armor,
+			Kind:      m.Kind,
+			Size:      m.Size,
+			Bloodied:  m.Bloodied,
+			LastStand: m.LastStand,
+			Saves:     m.Saves,
+		})
+	} else {
+		created, err = h.db.CreateMonster(r.Context(), sqldb.CreateMonsterParams{
+			Name:      m.Name,
+			Level:     m.Level,
+			Hp:        m.Hp,
+			Armor:     m.Armor,
+			Size:      m.Size,
+			Speed:     m.Speed,
+			Fly:       m.Fly,
+			Swim:      m.Swim,
+			Actions:   m.Actions,
+			Abilities: m.Abilities,
+			UserID:    CurrentUser(ctx).ID,
+		})
+	}
 	if err != nil {
 		Error(ctx, w, err)
 		return
@@ -127,45 +120,6 @@ func (h *MonstersHandler) CreateMonster(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-}
-
-func monsterFromForm(r *http.Request) (nimble.Monster, error) {
-	if err := r.ParseForm(); err != nil {
-	}
-
-	n := func(s string) int { n, _ := strconv.Atoi(r.FormValue(s)); return n }
-	monster := nimble.Monster{
-		Name:  r.FormValue("name"),
-		Level: r.FormValue("level"),
-		Size:  nimble.MonsterSize(r.FormValue("size")),
-		Armor: nimble.MonsterArmor(r.FormValue("armor")),
-		Swim:  n("swim"),
-		Fly:   n("fly"),
-		Speed: n("speed"),
-		HP:    n("hp"),
-	}
-
-	abilities := r.PostForm["ability[][name]"]
-	for i := range abilities {
-		if abilities[i] != "" {
-			monster.Abilities = append(monster.Abilities, nimble.Ability{
-				Name:        r.PostForm["ability[][name]"][i],
-				Description: r.PostForm["ability[][description]"][i],
-			})
-		}
-	}
-
-	actions := r.PostForm["action[][name]"]
-	for i := range actions {
-		if actions[i] != "" {
-			monster.Actions = append(monster.Actions, nimble.Action{
-				Name:        r.PostForm["action[][name]"][i],
-				Damage:      r.PostForm["action[][damage]"][i],
-				Description: r.PostForm["action[][description]"][i],
-			})
-		}
-	}
-	return monster, nil
 }
 
 func (h *MonstersHandler) ListMyMonsters(w http.ResponseWriter, r *http.Request) {
@@ -245,21 +199,38 @@ func (h *MonstersHandler) UpdateMonster(w http.ResponseWriter, r *http.Request) 
 	}
 	m := sqlmonsterFromMonster(monster)
 
-	_, err = h.db.UpdateMonster(r.Context(), sqldb.UpdateMonsterParams{
-		UserID:    CurrentUser(ctx).ID,
-		UserID_2:  CurrentUser(ctx).ID, // editor
-		ID:        id,
-		Name:      m.Name,
-		Level:     m.Level,
-		Hp:        m.Hp,
-		Armor:     m.Armor,
-		Size:      m.Size,
-		Speed:     m.Speed,
-		Fly:       m.Fly,
-		Swim:      m.Swim,
-		Actions:   m.Actions,
-		Abilities: m.Abilities,
-	})
+	if monster.Legendary {
+		_, err = h.db.UpdateLegendaryMonster(ctx, sqldb.UpdateLegendaryMonsterParams{
+			Actions:   m.Actions,
+			Abilities: m.Abilities,
+			UserID:    CurrentUser(ctx).ID,
+			ID:        id,
+			Name:      m.Name,
+			Level:     m.Level,
+			Hp:        m.Hp,
+			Armor:     m.Armor,
+			Kind:      m.Kind,
+			Size:      m.Size,
+			Bloodied:  m.Bloodied,
+			LastStand: m.LastStand,
+			Saves:     m.Saves,
+		})
+	} else {
+		_, err = h.db.UpdateMonster(r.Context(), sqldb.UpdateMonsterParams{
+			UserID:    CurrentUser(ctx).ID,
+			ID:        id,
+			Name:      m.Name,
+			Level:     m.Level,
+			Hp:        m.Hp,
+			Armor:     m.Armor,
+			Size:      m.Size,
+			Speed:     m.Speed,
+			Fly:       m.Fly,
+			Swim:      m.Swim,
+			Actions:   m.Actions,
+			Abilities: m.Abilities,
+		})
+	}
 	if err != nil {
 		Error(ctx, w, err)
 		return

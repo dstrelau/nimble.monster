@@ -3,6 +3,7 @@ package nimble
 import (
 	"encoding/json"
 	"errors"
+	"strings"
 
 	"github.com/gofrs/uuid"
 	"nimble.monster/internal/sqldb"
@@ -17,7 +18,6 @@ type User struct {
 
 type Family struct {
 	Name        string
-	Slug        string
 	Description string
 	Ability     *Ability
 }
@@ -80,22 +80,23 @@ func MonsterSizeFromString(s string) MonsterSize {
 }
 
 type Monster struct {
-	ID          string       `json:"id"`
-	Name        string       `json:"name"`
-	Slug        string       `json:"slug"`
-	HP          int          `json:"hp"`
-	Speed       int          `json:"speed"`
-	Fly         int          `json:"fly"`
-	Swim        int          `json:"swim"`
-	Armor       MonsterArmor `json:"armor"`
-	Size        MonsterSize  `json:"size"`
-	Level       string       `json:"level"`
-	LastStand   string       `json:"last_stand"`
-	Bloodied    string       `json:"bloodied"`
-	Contributor string       `json:"contributor"`
-	Abilities   []Ability    `json:"abilities"`
-	Actions     []Action     `json:"actions"`
-	Family      *Family      `json:"family"`
+	ID        string       `json:"id"`
+	Legendary bool         `json:"legendary"`
+	Kind      string       `json:"kind"`
+	Name      string       `json:"name"`
+	HP        int32        `json:"hp"`
+	Speed     int32        `json:"speed"`
+	Fly       int32        `json:"fly"`
+	Swim      int32        `json:"swim"`
+	Armor     MonsterArmor `json:"armor"`
+	Size      MonsterSize  `json:"size"`
+	Level     string       `json:"level"`
+	LastStand string       `json:"lastStand"`
+	Bloodied  string       `json:"bloodied"`
+	Saves     string       `json:"saves"`
+	Abilities []Ability    `json:"abilities"`
+	Actions   []Action     `json:"actions"`
+	Family    *Family      `json:"family"`
 }
 
 type Ability struct {
@@ -152,15 +153,20 @@ func MonsterFromSQL(in sqldb.Monster) Monster {
 	}
 
 	out := Monster{
-		ID:    in.ID.String(),
-		Name:  in.Name,
-		Level: in.Level,
-		Size:  size,
-		Armor: armor,
-		Swim:  int(in.Swim.Int32),
-		Fly:   int(in.Fly.Int32),
-		Speed: int(in.Speed.Int32),
-		HP:    int(in.Hp),
+		ID:        in.ID.String(),
+		Legendary: in.Legendary,
+		Kind:      in.Kind,
+		Name:      in.Name,
+		HP:        in.Hp,
+		Speed:     in.Speed,
+		Fly:       in.Fly,
+		Swim:      in.Swim,
+		Armor:     armor,
+		Size:      size,
+		Level:     in.Level,
+		LastStand: in.LastStand,
+		Bloodied:  in.Bloodied,
+		Saves:     strings.Join(in.Saves, ", "),
 	}
 	out.Actions = make([]Action, len(in.Actions))
 	for i, a := range in.Actions {

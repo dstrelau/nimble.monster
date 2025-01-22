@@ -4,6 +4,13 @@ INSERT INTO monsters (
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
 ) RETURNING *;
+--
+-- name: CreateLegendaryMonster :one
+INSERT INTO monsters (
+    user_id, name, kind, level, hp, armor, size, actions, abilities, bloodied, last_stand, saves, legendary
+) VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true
+) RETURNING *;
 
 -- name: ListMonsters :many
 SELECT * from monsters WHERE user_id = $1 ORDER BY name ASC;
@@ -14,16 +21,37 @@ SELECT * FROM monsters WHERE user_id = $1 AND id = $2;
 -- name: UpdateMonster :one
 UPDATE monsters
 SET name = $3,
-   level = $4,
-   hp = $5,
-   armor = $6,
-   size = $7,
-   speed = $8,
-   fly = $9,
-   swim = $10,
-   actions = $11,
-   abilities = $12,
-   user_id = $13
+    kind = '',
+    level = $4,
+    hp = $5,
+    armor = $6,
+    size = $7,
+    speed = $8,
+    fly = $9,
+    swim = $10,
+    actions = $11,
+    abilities = $12,
+    bloodied = '',
+    last_stand = '',
+    saves = ''
+WHERE user_id = $1 AND id = $2 RETURNING *;
+
+-- name: UpdateLegendaryMonster :one
+UPDATE monsters
+SET name = $3,
+    kind = $4,
+    level = $5,
+    hp = $6,
+    armor = $7,
+    size = $8,
+    speed = 0,
+    fly = 0,
+    swim = 0,
+    actions = $9,
+    abilities = $10,
+    bloodied = $11,
+    last_stand = $12,
+    saves = $13
 WHERE user_id = $1 AND id = $2 RETURNING *;
 
 -- name: DeleteMonster :one

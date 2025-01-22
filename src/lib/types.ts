@@ -1,11 +1,20 @@
-export type MonsterArmor = "none" | "medium" | "heavy";
-export type MonsterSize =
-  | "tiny"
-  | "small"
-  | "medium"
-  | "large"
-  | "huge"
-  | "gargantuan";
+export const SIZES = [
+  { value: "tiny", label: "Tiny" },
+  { value: "small", label: "Small" },
+  { value: "medium", label: "Medium" },
+  { value: "large", label: "Large" },
+  { value: "huge", label: "Huge" },
+  { value: "gargantuan", label: "Gargantuan" },
+] as const;
+
+export const ARMORS = [
+  { value: "none", label: "None" },
+  { value: "medium", label: "Medium" },
+  { value: "heavy", label: "Heavy" },
+] as const;
+
+export type MonsterSize = (typeof SIZES)[number]["value"];
+export type MonsterArmor = (typeof ARMORS)[number]["value"];
 
 export interface Family {
   name: string;
@@ -14,6 +23,11 @@ export interface Family {
 }
 
 export interface Monster {
+  legendary: boolean;
+  kind?: string;
+  saves?: string;
+  bloodied?: string;
+  lastStand?: string;
   id: string;
   name: string;
   hp: number;
@@ -23,8 +37,6 @@ export interface Monster {
   armor: MonsterArmor;
   size: MonsterSize;
   level: string;
-  lastStand?: string;
-  bloodied?: string;
   contributor?: string;
   abilities: Ability[];
   actions: Action[];

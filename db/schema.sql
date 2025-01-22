@@ -86,18 +86,19 @@ CREATE TABLE public.monsters (
     hp integer NOT NULL,
     armor public.armor_type DEFAULT 'none'::public.armor_type NOT NULL,
     size public.size_type DEFAULT 'medium'::public.size_type NOT NULL,
-    speed integer DEFAULT 6,
-    fly integer,
-    swim integer,
+    speed integer DEFAULT 0 NOT NULL,
+    fly integer DEFAULT 0 NOT NULL,
+    swim integer DEFAULT 0 NOT NULL,
     actions jsonb[],
     abilities jsonb[],
-    legendary boolean DEFAULT false,
-    bloodied text,
-    last_stand text,
+    legendary boolean DEFAULT false NOT NULL,
+    bloodied text DEFAULT ''::text NOT NULL,
+    last_stand text DEFAULT ''::text NOT NULL,
     saves text[],
-    created_at timestamp with time zone DEFAULT now(),
-    updated_at timestamp with time zone DEFAULT now(),
-    user_id uuid NOT NULL
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    user_id uuid NOT NULL,
+    kind text DEFAULT ''::text NOT NULL
 );
 
 

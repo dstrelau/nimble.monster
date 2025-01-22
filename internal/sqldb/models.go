@@ -118,18 +118,19 @@ type Monster struct {
 	Hp        int32
 	Armor     ArmorType
 	Size      SizeType
-	Speed     pgtype.Int4
-	Fly       pgtype.Int4
-	Swim      pgtype.Int4
+	Speed     int32
+	Fly       int32
+	Swim      int32
 	Actions   [][]byte
 	Abilities [][]byte
-	Legendary pgtype.Bool
-	Bloodied  pgtype.Text
-	LastStand pgtype.Text
+	Legendary bool
+	Bloodied  string
+	LastStand string
 	Saves     []string
 	CreatedAt pgtype.Timestamptz
 	UpdatedAt pgtype.Timestamptz
 	UserID    uuid.UUID
+	Kind      string
 }
 
 type MonstersCollection struct {
