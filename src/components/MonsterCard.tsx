@@ -90,7 +90,7 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
 const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
   <header className="flex justify-between leading-5">
     <div className="grow">
-      <div className="inline-flex flex-wrap gap-x-1">
+      <div className="inline-flex flex-wrap gap-x-1 items-baseline">
         <span className="font-serif font-black font-small-caps italic text-2xl pr-1">
           {monster.name}
         </span>
