@@ -94,7 +94,7 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
         <span className="font-serif font-black font-small-caps italic text-2xl pr-1">
           {monster.name}
         </span>
-        <span className="font-small-caps whitespace-nowrap">
+        <span className="font-small-caps whitespace-nowrap items-baseline">
           {`Lvl ${monster.level}${monster.size !== "medium" ? `, ${monster.size}` : ""}`}
         </span>
       </div>
