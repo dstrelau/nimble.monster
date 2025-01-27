@@ -4,22 +4,45 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useContext } from "react";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
 import Header from "./components/Header";
 
-import { useContext } from "react";
+import { HoneycombWebSDK } from "@honeycombio/opentelemetry-web";
+import { getWebAutoInstrumentations } from "@opentelemetry/auto-instrumentations-web";
+
 import { AuthContext } from "./lib/auth";
 import { User } from "./lib/types";
+
 import BuildMonsterView from "./views/BuildMonsterView";
+import { EditCollectionView } from "./views/EditCollectionView";
 import EditMonsterView from "./views/EditMonsterView";
 import HomeView from "./views/HomeView";
 import MyCollectionsView from "./views/MyCollectionsView";
 import MyMonstersView from "./views/MyMonstersView";
 import ShowCollectionView from "./views/ShowCollectionView";
-import { EditCollectionView } from "./views/EditCollectionView";
 
 const queryClient = new QueryClient();
+const honeycombAPIKey = import.meta.env.VITE_HONEYCOMB_API_KEY;
+
+const configDefaults = {
+  ignoreNetworkEvents: true, // no span events
+  propagateTraceHeaderCorsUrls: [/localhost.*/g, /https:\/\/nimble.monster.*/g],
+};
+
+const sdk = new HoneycombWebSDK({
+  debug: true,
+  apiKey: honeycombAPIKey,
+  serviceName: "nimble-monster",
+  instrumentations: [
+    getWebAutoInstrumentations({
+      "@opentelemetry/instrumentation-xml-http-request": configDefaults,
+      "@opentelemetry/instrumentation-fetch": configDefaults,
+    }),
+  ],
+});
+sdk.start();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const currentUser = useContext(AuthContext);

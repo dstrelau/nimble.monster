@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@honeycombio/opentelemetry-web": "^0.12.0",
+    "@opentelemetry/auto-instrumentations-web": "^0.45.0",
     "@tanstack/react-query": "^5.63.0",
     "@tanstack/react-query-devtools": "^5.63.0",
     "dom-to-image": "^2.6.0",
