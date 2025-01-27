@@ -22,7 +22,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     name: "Kobold",
     level: "1/3",
     size: "small" as MonsterSize,
-    armor: "none" as MonsterArmor,
+    armor: "" as MonsterArmor,
     swim: 0,
     fly: 0,
     speed: 6,
