@@ -15,7 +15,7 @@ import (
 type ArmorType string
 
 const (
-	ArmorTypeNone   ArmorType = "none"
+	ArmorTypeValue0 ArmorType = ""
 	ArmorTypeMedium ArmorType = "medium"
 	ArmorTypeHeavy  ArmorType = "heavy"
 )

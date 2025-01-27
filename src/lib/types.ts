@@ -8,7 +8,7 @@ export const SIZES = [
 ] as const;
 
 export const ARMORS = [
-  { value: "none", label: "None" },
+  { value: "", label: "None" },
   { value: "medium", label: "Medium" },
   { value: "heavy", label: "Heavy" },
 ] as const;

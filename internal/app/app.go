@@ -210,23 +210,25 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 
 		span.SetAttributes(attribute.String("user.id", user.ID.String()))
 
-		ctx = context.WithValue(ctx, currentUserCtxKey{}, &user)
+		ctx = SetCurrentUser(ctx,
+			nimble.User{
+				ID:        user.ID,
+				DiscordID: user.DiscordID,
+				Username:  user.Username,
+				Avatar:    user.Avatar.String,
+			})
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
+func SetCurrentUser(ctx context.Context, u nimble.User) context.Context {
+	return context.WithValue(ctx, currentUserCtxKey{}, &u)
+}
+
 // might be nil!
 func CurrentUser(ctx context.Context) *nimble.User {
-	u, _ := ctx.Value(currentUserCtxKey{}).(*sqldb.User)
-	if u == nil {
-		return nil
-	}
-	return &nimble.User{
-		ID:        u.ID,
-		DiscordID: u.DiscordID,
-		Username:  u.Username,
-		Avatar:    u.Avatar.String,
-	}
+	u, _ := ctx.Value(currentUserCtxKey{}).(*nimble.User)
+	return u
 }
 
 func RequireAuth(next http.Handler) http.Handler {

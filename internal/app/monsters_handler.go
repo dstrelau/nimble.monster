@@ -20,10 +20,10 @@ import (
 )
 
 type MonstersHandler struct {
-	db *sqldb.Queries
+	db sqldb.MonsterQuerier
 }
 
-func NewMonstersHandler(db *sqldb.Queries) *MonstersHandler {
+func NewMonstersHandler(db sqldb.MonsterQuerier) *MonstersHandler {
 	return &MonstersHandler{db: db}
 }
 
@@ -41,7 +41,7 @@ func sqlmonsterFromMonster(m nimble.Monster) sqldb.Monster {
 	var armor sqldb.ArmorType
 	switch m.Armor {
 	case nimble.ArmorNone:
-		armor = sqldb.ArmorTypeNone
+		armor = sqldb.ArmorTypeValue0
 	case nimble.ArmorMedium:
 		armor = sqldb.ArmorTypeMedium
 	case nimble.ArmorHeavy:

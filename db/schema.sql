@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.0 (Homebrew)
--- Dumped by pg_dump version 17.0 (Homebrew)
+-- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
+-- Dumped by pg_dump version 17.2 (Debian 17.2-1.pgdg120+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -36,7 +36,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 --
 
 CREATE TYPE public.armor_type AS ENUM (
-    'none',
+    '',
     'medium',
     'heavy'
 );
@@ -84,7 +84,7 @@ CREATE TABLE public.monsters (
     name text NOT NULL,
     level text NOT NULL,
     hp integer NOT NULL,
-    armor public.armor_type DEFAULT 'none'::public.armor_type NOT NULL,
+    armor public.armor_type NOT NULL,
     size public.size_type DEFAULT 'medium'::public.size_type NOT NULL,
     speed integer DEFAULT 0 NOT NULL,
     fly integer DEFAULT 0 NOT NULL,

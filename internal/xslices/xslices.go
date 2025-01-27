@@ -11,7 +11,7 @@ func Map[T, U any](s []T, f func(T) U) []U {
 }
 
 func Difference[T comparable](s1, s2 []T) []T {
-	var m []T
+	m := make([]T, 0)
 	for _, v := range s1 {
 		if !slices.Contains(s2, v) {
 			m = append(m, v)

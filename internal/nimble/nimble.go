@@ -10,22 +10,22 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID `json:"id"`
 	DiscordID string    `json:"discordId"`
 	Username  string    `json:"username"`
 	Avatar    string    `json:"avatar"`
+	ID        uuid.UUID `json:"id"`
 }
 
 type Family struct {
+	Ability     *Ability
 	Name        string
 	Description string
-	Ability     *Ability
 }
 
 type MonsterArmor string
 
 const (
-	ArmorNone   MonsterArmor = "none"
+	ArmorNone   MonsterArmor = ""
 	ArmorMedium MonsterArmor = "medium"
 	ArmorHeavy  MonsterArmor = "heavy"
 )
@@ -80,23 +80,24 @@ func MonsterSizeFromString(s string) MonsterSize {
 }
 
 type Monster struct {
-	ID        string       `json:"id"`
-	Legendary bool         `json:"legendary"`
-	Kind      string       `json:"kind"`
-	Name      string       `json:"name"`
-	HP        int32        `json:"hp"`
-	Speed     int32        `json:"speed"`
-	Fly       int32        `json:"fly"`
-	Swim      int32        `json:"swim"`
-	Armor     MonsterArmor `json:"armor"`
-	Size      MonsterSize  `json:"size"`
-	Level     string       `json:"level"`
-	LastStand string       `json:"lastStand"`
+	Family    *Family      `json:"family"`
 	Bloodied  string       `json:"bloodied"`
+	LastStand string       `json:"lastStand"`
+	Name      string       `json:"name"`
 	Saves     string       `json:"saves"`
+	Size      MonsterSize  `json:"size"`
+	ID        string       `json:"id"`
+	Kind      string       `json:"kind"`
+	Armor     MonsterArmor `json:"armor"`
+	Level     string       `json:"level"`
 	Abilities []Ability    `json:"abilities"`
 	Actions   []Action     `json:"actions"`
-	Family    *Family      `json:"family"`
+	Speed     int32        `json:"speed"`
+	Swim      int32        `json:"swim"`
+	Fly       int32        `json:"fly"`
+	HP        int32        `json:"hp"`
+	Legendary bool         `json:"legendary"`
+	UserID    uuid.UUID    `json:"-"`
 }
 
 type Ability struct {
@@ -142,7 +143,7 @@ func MonsterFromSQL(in sqldb.Monster) Monster {
 
 	var armor MonsterArmor
 	switch in.Armor {
-	case sqldb.ArmorTypeNone:
+	case sqldb.ArmorTypeValue0:
 		armor = ArmorNone
 	case sqldb.ArmorTypeMedium:
 		armor = ArmorMedium
