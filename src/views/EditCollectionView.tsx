@@ -1,16 +1,12 @@
-import { Collection, Monster } from "../lib/types";
+import type { Collection, Monster } from "../lib/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchApi } from "../lib/api";
 import MonsterCard from "../components/MonsterCard";
 import { useParams } from "react-router-dom";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { CheckIcon } from "@heroicons/react/24/outline";
+import CollectionForm from "../components/CollectionForm";
 
 export const EditCollectionView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-
-  const queryClient = useQueryClient();
 
   const { data: collection } = useQuery({
     queryKey: ["collections", id],
@@ -23,20 +19,7 @@ export const EditCollectionView: React.FC = () => {
     select: (data) => data.monsters,
   });
 
-  const updateMetadata = useMutation({
-    mutationFn: (data: { name: string; public: boolean }) =>
-      fetchApi(`/api/collections/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["collections"] });
-      setTimeout(() => {
-        updateMetadata.reset();
-      }, 2000);
-    },
-  });
-
+  const queryClient = useQueryClient();
   const updateMonsters = useMutation({
     mutationFn: (monsterId: string) =>
       fetchApi(`/api/collections/${id}/monsters`, {
@@ -54,73 +37,20 @@ export const EditCollectionView: React.FC = () => {
         ...old,
         monsters: updated,
       }));
-      setTimeout(() => {
-        updateMonsters.reset();
-      }, 2000);
     },
   });
-
-  const isLoading = updateMetadata.isPending || updateMonsters.isPending;
-  const hasError = updateMetadata.isError || updateMonsters.isError;
 
   if (!collection || !myMonsters) return null;
 
   return (
     <div className="grid grid-cols-6 gap-x-8">
-      <h2 className="text-2xl col-span-6 font-bold text-gray-800 mb-6">
-        Edit Collection
-      </h2>
-      <form className="mb-8 col-span-6">
-        <div className="space-y-4 col-span-6 grid grid-cols-6 gap-x-8">
-          <div className="col-span-4">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              defaultValue={collection.name}
-              onBlur={(e) =>
-                updateMetadata.mutate({
-                  name: e.target.value,
-                  public: collection.public,
-                })
-              }
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            />
-          </div>
-          <label className="inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              name="public"
-              defaultChecked={collection.public}
-              onChange={(e) =>
-                updateMetadata.mutate({
-                  name: collection.name,
-                  public: e.target.checked,
-                })
-              }
-              className="sr-only peer"
-            />
-            <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-            <span className="ms-3 text-sm font-medium">Public</span>
-          </label>
-          <div className="flex items-center gap-2">
-            {isLoading ? (
-              <ArrowPathIcon className="w-6 h-6 text-blue-500 animate-spin" />
-            ) : hasError ? (
-              <ExclamationTriangleIcon className="w-6 h-6 text-red-500" />
-            ) : (
-              <CheckIcon className="w-6 h-6 text-green-500" />
-            )}
-          </div>
-        </div>
-      </form>
+      <div className="col-span-6">
+        <CollectionForm collection={collection} />
+      </div>
 
+      <h2 className="border border-b-gray-800 mb-4 text-xl col-span-5">
+        Monsters
+      </h2>
       <div className="col-span-6 grid grid-cols-3 gap-x-8">
         <div className="space-y-2 p-2">
           {myMonsters.map((monster) => {
@@ -139,7 +69,8 @@ export const EditCollectionView: React.FC = () => {
               >
                 <span className="font-medium">{monster.name}</span>
                 <span className="text-sm text-gray-500">
-                  - Level {monster.level}
+                  {" "}
+                  Lvl {monster.level}
                 </span>
               </div>
             );

@@ -43,6 +43,17 @@ CREATE TYPE public.armor_type AS ENUM (
 
 
 --
+-- Name: collection_visibility; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.collection_visibility AS ENUM (
+    'public',
+    'secret',
+    'private'
+);
+
+
+--
 -- Name: size_type; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -71,7 +82,8 @@ CREATE TABLE public.collections (
     public boolean DEFAULT false,
     created_at timestamp with time zone DEFAULT now(),
     updated_at timestamp with time zone DEFAULT now(),
-    description text DEFAULT ''::text NOT NULL
+    description text DEFAULT ''::text NOT NULL,
+    visibility public.collection_visibility DEFAULT 'public'::public.collection_visibility NOT NULL
 );
 
 

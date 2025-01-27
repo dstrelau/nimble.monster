@@ -55,6 +55,49 @@ func (ns NullArmorType) Value() (driver.Value, error) {
 	return string(ns.ArmorType), nil
 }
 
+type CollectionVisibility string
+
+const (
+	CollectionVisibilityPublic  CollectionVisibility = "public"
+	CollectionVisibilitySecret  CollectionVisibility = "secret"
+	CollectionVisibilityPrivate CollectionVisibility = "private"
+)
+
+func (e *CollectionVisibility) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = CollectionVisibility(s)
+	case string:
+		*e = CollectionVisibility(s)
+	default:
+		return fmt.Errorf("unsupported scan type for CollectionVisibility: %T", src)
+	}
+	return nil
+}
+
+type NullCollectionVisibility struct {
+	CollectionVisibility CollectionVisibility
+	Valid                bool // Valid is true if CollectionVisibility is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullCollectionVisibility) Scan(value interface{}) error {
+	if value == nil {
+		ns.CollectionVisibility, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.CollectionVisibility.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullCollectionVisibility) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.CollectionVisibility), nil
+}
+
 type SizeType string
 
 const (
@@ -109,6 +152,7 @@ type Collection struct {
 	CreatedAt   pgtype.Timestamptz
 	UpdatedAt   pgtype.Timestamptz
 	Description string
+	Visibility  CollectionVisibility
 }
 
 type Monster struct {

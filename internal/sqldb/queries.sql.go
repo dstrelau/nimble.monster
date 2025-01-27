@@ -32,20 +32,20 @@ func (q *Queries) CleanExpiredSessions(ctx context.Context) error {
 
 const createCollection = `-- name: CreateCollection :one
 INSERT INTO collections (
-    name, public, user_id
+    name, visibility, user_id
 ) VALUES (
     $1, $2, $3
-) RETURNING id, user_id, name, public, created_at, updated_at, description
+) RETURNING id, user_id, name, public, created_at, updated_at, description, visibility
 `
 
 type CreateCollectionParams struct {
-	Name   string
-	Public pgtype.Bool
-	UserID uuid.UUID
+	Name       string
+	Visibility CollectionVisibility
+	UserID     uuid.UUID
 }
 
 func (q *Queries) CreateCollection(ctx context.Context, arg CreateCollectionParams) (Collection, error) {
-	row := q.db.QueryRow(ctx, createCollection, arg.Name, arg.Public, arg.UserID)
+	row := q.db.QueryRow(ctx, createCollection, arg.Name, arg.Visibility, arg.UserID)
 	var i Collection
 	err := row.Scan(
 		&i.ID,
@@ -55,6 +55,7 @@ func (q *Queries) CreateCollection(ctx context.Context, arg CreateCollectionPara
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Description,
+		&i.Visibility,
 	)
 	return i, err
 }
@@ -208,7 +209,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 }
 
 const deleteCollection = `-- name: DeleteCollection :one
-DELETE FROM collections WHERE user_id = $1 AND id = $2 RETURNING id, user_id, name, public, created_at, updated_at, description
+DELETE FROM collections WHERE user_id = $1 AND id = $2 RETURNING id, user_id, name, public, created_at, updated_at, description, visibility
 `
 
 func (q *Queries) DeleteCollection(ctx context.Context, userID uuid.UUID, iD uuid.UUID) (Collection, error) {
@@ -222,6 +223,7 @@ func (q *Queries) DeleteCollection(ctx context.Context, userID uuid.UUID, iD uui
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Description,
+		&i.Visibility,
 	)
 	return i, err
 }
@@ -267,7 +269,7 @@ func (q *Queries) DeleteSession(ctx context.Context, id uuid.UUID) error {
 }
 
 const getCollection = `-- name: GetCollection :one
-SELECT id, user_id, name, public, created_at, updated_at, description FROM collections WHERE id = $1
+SELECT id, user_id, name, public, created_at, updated_at, description, visibility FROM collections WHERE id = $1
 `
 
 func (q *Queries) GetCollection(ctx context.Context, id uuid.UUID) (Collection, error) {
@@ -281,6 +283,7 @@ func (q *Queries) GetCollection(ctx context.Context, id uuid.UUID) (Collection, 
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Description,
+		&i.Visibility,
 	)
 	return i, err
 }
@@ -352,7 +355,7 @@ func (q *Queries) GetUserByUnexpiredSession(ctx context.Context, id uuid.UUID) (
 }
 
 const listCollections = `-- name: ListCollections :many
-SELECT c.id, c.user_id, c.name, c.public, c.created_at, c.updated_at, c.description, COUNT(mc.monster_id) as monster_count
+SELECT c.id, c.user_id, c.name, c.public, c.created_at, c.updated_at, c.description, c.visibility, COUNT(mc.monster_id) as monster_count
 FROM collections c
 LEFT JOIN monsters_collections mc ON c.id = mc.collection_id
 WHERE c.user_id = $1
@@ -368,6 +371,7 @@ type ListCollectionsRow struct {
 	CreatedAt    pgtype.Timestamptz
 	UpdatedAt    pgtype.Timestamptz
 	Description  string
+	Visibility   CollectionVisibility
 	MonsterCount int64
 }
 
@@ -388,6 +392,7 @@ func (q *Queries) ListCollections(ctx context.Context, userID uuid.UUID) ([]List
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Description,
+			&i.Visibility,
 			&i.MonsterCount,
 		); err != nil {
 			return nil, err
@@ -554,16 +559,16 @@ func (q *Queries) SearchMonsters(ctx context.Context, lower string) ([]Monster, 
 const updateCollection = `-- name: UpdateCollection :one
 UPDATE collections
 SET name = $3,
-    public = $4
+    visibility = $4
 WHERE user_id = $1 AND id = $2
-RETURNING id, user_id, name, public, created_at, updated_at, description
+RETURNING id, user_id, name, public, created_at, updated_at, description, visibility
 `
 
 type UpdateCollectionParams struct {
-	UserID uuid.UUID
-	ID     uuid.UUID
-	Name   string
-	Public pgtype.Bool
+	UserID     uuid.UUID
+	ID         uuid.UUID
+	Name       string
+	Visibility CollectionVisibility
 }
 
 func (q *Queries) UpdateCollection(ctx context.Context, arg UpdateCollectionParams) (Collection, error) {
@@ -571,7 +576,7 @@ func (q *Queries) UpdateCollection(ctx context.Context, arg UpdateCollectionPara
 		arg.UserID,
 		arg.ID,
 		arg.Name,
-		arg.Public,
+		arg.Visibility,
 	)
 	var i Collection
 	err := row.Scan(
@@ -582,6 +587,7 @@ func (q *Queries) UpdateCollection(ctx context.Context, arg UpdateCollectionPara
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Description,
+		&i.Visibility,
 	)
 	return i, err
 }
