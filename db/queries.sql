@@ -33,7 +33,7 @@ SET name = $3,
     abilities = $12,
     bloodied = '',
     last_stand = '',
-    saves = ''
+    saves = array[]::text[]
 WHERE user_id = $1 AND id = $2 RETURNING *;
 
 -- name: UpdateLegendaryMonster :one

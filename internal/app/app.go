@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -37,9 +38,9 @@ type App struct {
 func New() (*App, error) {
 	ctx := context.Background()
 
-	port, err := strconv.Atoi(os.Getenv("PORT"))
-	if err != nil {
-		return nil, err
+	port := 8080
+	if v, _ := strconv.Atoi(os.Getenv("PORT")); v > 0 {
+		port = v
 	}
 
 	dbconfig, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
@@ -249,7 +250,7 @@ func (a *App) StartSessionCleanup(ctx context.Context) {
 			return
 		case <-ticker.C:
 			if err := a.db.CleanExpiredSessions(ctx); err != nil {
-				// Log error
+				log.Println(err)
 			}
 		}
 	}

@@ -257,7 +257,7 @@ const ActionRow: React.FC<ActionRowProps> = ({
       label="Description"
       name="action-description"
       value={action.description || ""}
-      className={`col-span-${legendary ? "7" : "5"}`}
+      className={legendary ? "col-span-7" : "col-span-5"}
       onChange={(description) => onChange({ ...action, description })}
     />
     <button type="button" onClick={onRemove} className="col-span-1">

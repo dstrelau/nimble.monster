@@ -40,14 +40,14 @@ func sqlmonsterFromMonster(m nimble.Monster) sqldb.Monster {
 	}
 	var armor sqldb.ArmorType
 	switch m.Armor {
-	case nimble.ArmorUnarmored:
+	case nimble.ArmorNone:
 		armor = sqldb.ArmorTypeNone
 	case nimble.ArmorMedium:
 		armor = sqldb.ArmorTypeMedium
 	case nimble.ArmorHeavy:
 		armor = sqldb.ArmorTypeHeavy
 	default:
-		panic("unknown monster armor" + m.Armor)
+		panic("unknown monster armor " + m.Armor)
 	}
 	return sqldb.Monster{
 		Name:      m.Name,
@@ -141,7 +141,7 @@ func (h *MonstersHandler) ListMyMonsters(w http.ResponseWriter, r *http.Request)
 	if err := json.NewEncoder(w).Encode(struct {
 		Monsters []nimble.Monster `json:"monsters"`
 	}{
-		Monsters: slices.Collect(xiter.Map(slices.Values(dbmonsters), nimble.MonsterFromSQL)),
+		Monsters: xslices.Map(dbmonsters, nimble.MonsterFromSQL),
 	}); err != nil {
 		http.Error(w, err.Error(), 500)
 		trace.SpanFromContext(r.Context()).RecordError(err)

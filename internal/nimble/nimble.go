@@ -25,9 +25,9 @@ type Family struct {
 type MonsterArmor string
 
 const (
-	ArmorUnarmored MonsterArmor = "unarmored"
-	ArmorMedium    MonsterArmor = "medium"
-	ArmorHeavy     MonsterArmor = "heavy"
+	ArmorNone   MonsterArmor = "none"
+	ArmorMedium MonsterArmor = "medium"
+	ArmorHeavy  MonsterArmor = "heavy"
 )
 
 type MonsterSize string
@@ -143,7 +143,7 @@ func MonsterFromSQL(in sqldb.Monster) Monster {
 	var armor MonsterArmor
 	switch in.Armor {
 	case sqldb.ArmorTypeNone:
-		armor = ArmorUnarmored
+		armor = ArmorNone
 	case sqldb.ArmorTypeMedium:
 		armor = ArmorMedium
 	case sqldb.ArmorTypeHeavy:

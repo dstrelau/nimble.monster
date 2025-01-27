@@ -48,7 +48,11 @@ func NewSessionsHandler(db *sqldb.Queries) *SessionsHandler {
 
 func (h *SessionsHandler) GetLogin(w http.ResponseWriter, r *http.Request) {
 	b := make([]byte, 16)
-	rand.Read(b)
+	_, err := rand.Read(b)
+	if err != nil {
+		Error(r.Context(), w, err)
+		return
+	}
 	state := base64.URLEncoding.EncodeToString(b)
 
 	cookie := &http.Cookie{
@@ -156,6 +160,10 @@ func (h *SessionsHandler) GetCallbackDiscord(w http.ResponseWriter, r *http.Requ
 	}
 
 	idv, err := session.ID.Value()
+	if err != nil {
+		Error(ctx, w, err)
+		return
+	}
 	sid := idv.(string)
 	http.SetCookie(w, &http.Cookie{
 		Name:     sessionCookieName,
@@ -181,5 +189,8 @@ func (h *SessionsHandler) GetCallbackDiscord(w http.ResponseWriter, r *http.Requ
 
 func (h *SessionsHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 	u := CurrentUser(r.Context())
-	json.NewEncoder(w).Encode(u)
+	err := json.NewEncoder(w).Encode(u)
+	if err != nil {
+		trace.SpanFromContext(r.Context()).RecordError(err)
+	}
 }
