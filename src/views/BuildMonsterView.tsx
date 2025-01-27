@@ -74,7 +74,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     name: "",
     level: "",
     size: "medium",
-    armor: "none",
+    armor: "",
     swim: 0,
     fly: 0,
     speed: 6,
