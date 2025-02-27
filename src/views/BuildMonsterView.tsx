@@ -1,14 +1,13 @@
 import { useContext, useState } from "react";
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
-import {
+import type {
   Monster,
   Ability,
   Action,
   MonsterSize,
   MonsterArmor,
-  SIZES,
-  ARMORS,
 } from "../lib/types";
+import { SIZES, ARMORS } from "../lib/types";
 import MonsterCard from "../components/MonsterCard";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -532,6 +531,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["monsters"] });
+      queryClient.invalidateQueries({ queryKey: ["monster", monster.id] });
       navigate("/my/monsters");
     },
     onError: (error) => {

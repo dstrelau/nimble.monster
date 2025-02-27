@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { fetchApi } from "../lib/api";
-import { Monster } from "../lib/types";
+import type { Monster } from "../lib/types";
 import BuildMonster from "./BuildMonsterView";
 
 const EditMonster = () => {
