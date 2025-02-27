@@ -43,6 +43,16 @@ const HomeView = () => (
               Legendary.
             </li>
             <li>
+              Browse{" "}
+              <a
+                className="text-indigo-600 hover:text-indigo-800 underline"
+                href="/collections"
+              >
+                public collections
+              </a>{" "}
+              of community-created monsters.
+            </li>
+            <li>
               Save a monster block as image. (WIP. It's a bit broken still.)
             </li>
           </ul>
