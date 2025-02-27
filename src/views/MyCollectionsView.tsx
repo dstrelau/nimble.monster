@@ -3,12 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import { fetchApi } from "../lib/api";
-import {
-  VisibilityToggle,
-  VisibilityEnum,
-} from "../components/VisibilityToggle";
+import { VisibilityEnum } from "../components/VisibilityToggle";
 import { z } from "zod";
 
 interface Collection {
@@ -67,7 +63,6 @@ const NewCollectionForm = () => {
     onSuccess: (newCollection) => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       reset();
-      // Redirect to edit page
       window.location.href = `/my/collections/${newCollection.id}/edit`;
     },
   });
@@ -88,7 +83,7 @@ const NewCollectionForm = () => {
 
   return (
     <div className="mb-6">
-      <form 
+      <form
         onSubmit={handleSubmit((data) => createMutation.mutate(data))}
         className="flex items-center gap-2"
       >
@@ -100,7 +95,9 @@ const NewCollectionForm = () => {
             placeholder="New collection name"
           />
           {errors.name && (
-            <p className="text-sm text-red-600 absolute">{errors.name.message}</p>
+            <p className="text-sm text-red-600 absolute">
+              {errors.name.message}
+            </p>
           )}
         </div>
         <button
