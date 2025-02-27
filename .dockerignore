@@ -1,2 +1,13 @@
+.git/
+.github/
+.gitignore
+.env*
+*.md
+tests/
+*.test
+tmp/
+.dockerignore
+Dockerfile
 bin/*
-*_templ.go
+node_modules/
+dist/
