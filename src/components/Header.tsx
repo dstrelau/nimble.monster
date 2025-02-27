@@ -72,10 +72,11 @@ const Header = () => {
               <span className="ml-2 text-white font-bold">nimble.monster</span>
             </NavLink>
             <NavItem href="/my/monsters/new" title="Build Monster" />
+            <NavItem href="/collections" title="Collections" />
             {currentUser.data && (
               <>
-                <NavItem href="/my/monsters" title="Monsters" />
-                <NavItem href="/my/collections" title="Collections" />
+                <NavItem href="/my/monsters" title="My Monsters" />
+                <NavItem href="/my/collections" title="My Collections" />
               </>
             )}
           </div>

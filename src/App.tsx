@@ -21,6 +21,7 @@ import EditMonsterView from "./views/EditMonsterView";
 import HomeView from "./views/HomeView";
 import MyCollectionsView from "./views/MyCollectionsView";
 import MyMonstersView from "./views/MyMonstersView";
+import PublicCollectionsView from "./views/PublicCollectionsView";
 import ShowCollectionView from "./views/ShowCollectionView";
 
 const queryClient = new QueryClient();
@@ -94,6 +95,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <HomeView />,
+      },
+      {
+        path: "/collections",
+        element: <PublicCollectionsView />,
       },
       {
         path: "/my/monsters/new",

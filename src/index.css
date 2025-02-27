@@ -10,9 +10,23 @@
     font-family: "Roboto Condensed", sans-serif;
 }
 
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.animate-fade-out {
+    animation: fade-out 2s ease-out forwards;
+}
+
 .scooped {
     position: relative;
-    background-image: radial-gradient(
+    background-image:
+        radial-gradient(
             circle at 0 0,
             #f3f4f6 10px,
             black 10px,

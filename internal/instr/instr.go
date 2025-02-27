@@ -2,6 +2,7 @@ package instr
 
 import (
 	"context"
+	"log"
 	"os"
 
 	"go.opentelemetry.io/otel"
@@ -20,13 +21,15 @@ func InitTracer(ctx context.Context, serviceName string) (shutdown func(context.
 		opts = append(opts,
 			otlptracehttp.WithEndpoint("api.honeycomb.io"),
 			otlptracehttp.WithHeaders(map[string]string{
-				"x-honeycomb-team": os.Getenv("HONEYCOMB_API_KEY"),
+				"x-honeycomb-team": hnykey,
 			}))
 	} else {
+		log.Printf("WARNING: Using insecure tracer - no Honeycomb key found")
 		opts = append(opts, otlptracehttp.WithInsecure())
 	}
 	exporter, err := otlptracehttp.New(ctx, opts...)
 	if err != nil {
+		log.Printf("Failed to create exporter: %v", err)
 		return nil, err
 	}
 

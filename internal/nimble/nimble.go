@@ -112,23 +112,6 @@ type Action struct {
 	Description string `json:"description"`
 }
 
-type CollectionVisibility string
-
-const (
-	CollectionVisibilityPublic  CollectionVisibility = "public"
-	CollectionVisibilityPrivate CollectionVisibility = "private"
-	CollectionVisibilitySecret  CollectionVisibility = "secret"
-)
-
-type Collection struct {
-	ID            string               `json:"id"`
-	Name          string               `json:"name"`
-	Creator       string               `json:"creator"`
-	Monsters      []Monster            `json:"monsters"`
-	MonstersCount int                  `json:"monstersCount"`
-	Visibility    CollectionVisibility `json:"visibility"`
-}
-
 func MonsterFromSQL(in sqldb.Monster) Monster {
 	var err error
 	var size MonsterSize
@@ -186,4 +169,34 @@ func MonsterFromSQL(in sqldb.Monster) Monster {
 		err = errors.Join(err, json.Unmarshal(a, &out.Abilities[i]))
 	}
 	return out
+}
+
+type CollectionVisibility string
+
+const (
+	CollectionVisibilityPublic  CollectionVisibility = "public"
+	CollectionVisibilityPrivate CollectionVisibility = "private"
+	CollectionVisibilitySecret  CollectionVisibility = "secret"
+)
+
+type Collection struct {
+	ID            string               `json:"id"`
+	Name          string               `json:"name"`
+	Creator       string               `json:"creator"`
+	Monsters      []Monster            `json:"monsters"`
+	MonstersCount int                  `json:"monstersCount"`
+	Visibility    CollectionVisibility `json:"visibility"`
+}
+
+type PublicCollection struct {
+	ID               string               `json:"id"`
+	Name             string               `json:"name"`
+	Visibility       CollectionVisibility `json:"visibility"`
+	MonstersCount    int                  `json:"monstersCount"`
+	LegendaryCount   int                  `json:"legendaryCount"`
+	StandardCount    int                  `json:"standardCount"`
+	Creator          string               `json:"creator"`
+	CreatorName      string               `json:"creatorName"`
+	CreatorAvatar    string               `json:"creatorAvatar"`
+	CreatorDiscordID string               `json:"creatorDiscordId"`
 }

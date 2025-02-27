@@ -1,9 +1,101 @@
-import type { Collection, Monster } from "../lib/types";
+import { CheckIcon } from "@heroicons/react/24/outline";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchApi } from "../lib/api";
-import MonsterCard from "../components/MonsterCard";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import CollectionForm from "../components/CollectionForm";
+import { z } from "zod";
+import {
+  VisibilityToggle,
+  VisibilityEnum
+} from "../components/VisibilityToggle";
+import MonsterCard from "../components/MonsterCard";
+import { fetchApi } from "../lib/api";
+import type { Collection, Monster } from "../lib/types";
+
+const collectionSchema = z.object({
+  name: z.string().min(1, "Collection name is required"),
+  visibility: z.enum(VisibilityEnum),
+});
+
+type CollectionFormData = z.infer<typeof collectionSchema>;
+
+interface Props {
+  collection?: Collection;
+  onSuccess?: () => void;
+}
+
+export const CollectionForm = ({ collection }: Props) => {
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (data: CollectionFormData) =>
+      fetchApi(`/api/collections/${collection!.id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 2000);
+    },
+  });
+
+  const onSubmit = (data: CollectionFormData) => {
+    if (collection) {
+      mutation.mutate(data);
+    }
+  };
+
+  const { register, handleSubmit, watch } = useForm<CollectionFormData>({
+    resolver: zodResolver(collectionSchema),
+    defaultValues: {
+      name: collection?.name ?? "",
+      visibility: (collection?.visibility ?? "public") as "public" | "private" | "secret",
+    },
+  });
+  const formData = watch();
+
+  useEffect(() => {
+    if (
+      collection &&
+      (formData.name !== collection.name ||
+        formData.visibility !== collection.visibility)
+    ) {
+      const timer = setTimeout(() => {
+        mutation.mutate(formData);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [collection, formData, mutation]);
+
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex items-start space-x-4 relative"
+    >
+      <div className="w-64 flex-shrink-0">
+        <input
+          {...register("name")}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+          placeholder="Name"
+        />
+      </div>
+      <div className="flex-shrink-0">
+        <VisibilityToggle register={register} value={formData.visibility} />
+      </div>
+      <div className="flex items-center h-10 ml-2">
+        {mutation.isPending && (
+          <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
+        )}
+        {showSuccess && (
+          <CheckIcon className="w-5 h-5 text-green-500 animate-fade-out" />
+        )}
+      </div>
+    </form>
+  );
+};
 
 export const EditCollectionView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -48,7 +140,7 @@ export const EditCollectionView: React.FC = () => {
         <CollectionForm collection={collection} />
       </div>
 
-      <h2 className="border border-b-gray-800 mb-4 text-xl col-span-5">
+      <h2 className="border-b border-b-gray-800 mb-4 text-xl col-span-5">
         Monsters
       </h2>
       <div className="col-span-6 grid grid-cols-3 gap-x-8">

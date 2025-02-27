@@ -1,8 +1,12 @@
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { fetchApi } from "../lib/api";
-import CollectionForm from "../components/CollectionForm";
+import { VisibilityToggle, VisibilityEnum } from "../components/VisibilityToggle";
+import { z } from "zod";
 
 interface Collection {
   id: string;
@@ -40,6 +44,104 @@ const EditDeleteButtons = ({ id }: { id: string }) => {
   );
 };
 
+const collectionSchema = z.object({
+  name: z.string().min(1, "Collection name is required"),
+  visibility: z.enum(VisibilityEnum),
+});
+
+type CollectionFormData = z.infer<typeof collectionSchema>;
+
+const NewCollectionForm = () => {
+  const queryClient = useQueryClient();
+  const [formVisible, setFormVisible] = useState(false);
+
+  const createMutation = useMutation({
+    mutationFn: (data: CollectionFormData) =>
+      fetchApi("/api/collections", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+      reset();
+      setFormVisible(false);
+    },
+  });
+
+  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm<CollectionFormData>({
+    resolver: zodResolver(collectionSchema),
+    defaultValues: {
+      name: "",
+      visibility: "public" as "public" | "private" | "secret",
+    },
+  });
+  
+  const formData = watch();
+
+  if (!formVisible) {
+    return (
+      <div className="mb-6">
+        <button 
+          onClick={() => setFormVisible(true)}
+          className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+        >
+          <PlusIcon className="w-5 h-5 mr-2" />
+          Create New Collection
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+      <h2 className="text-lg font-medium mb-4">Create a New Collection</h2>
+      <form onSubmit={handleSubmit((data) => createMutation.mutate(data))} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="md:col-span-1">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Collection Name
+            </label>
+            <input
+              id="name"
+              {...register("name")}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+              placeholder="Enter collection name"
+            />
+            {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+          </div>
+          
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Visibility
+            </label>
+            <div className="flex justify-start">
+              <VisibilityToggle register={register} value={formData.visibility} />
+            </div>
+            {errors.visibility && <p className="mt-1 text-sm text-red-600">{errors.visibility.message}</p>}
+          </div>
+        </div>
+        
+        <div className="flex justify-end space-x-2">
+          <button
+            type="button"
+            onClick={() => setFormVisible(false)}
+            className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={createMutation.isPending}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            {createMutation.isPending ? "Creating..." : "Create Collection"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
 const MyCollectionsView = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["collections"],
@@ -53,7 +155,7 @@ const MyCollectionsView = () => {
 
   return (
     <div className="space-y-6">
-      <CollectionForm />
+      <NewCollectionForm />
 
       {data.collections.length === 0 ? (
         <div className="text-center py-8">

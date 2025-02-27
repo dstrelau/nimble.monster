@@ -8,9 +8,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { fetchApi } from "../lib/api";
-import { Monster } from "../lib/types";
+import type { Monster } from "../lib/types";
 import { ArmorIcon, FlyIcon, HPIcon, SpeedIcon, SwimIcon } from "./Icons";
-// import html2canvas from "html2canvas";
 import domtoimage from "dom-to-image";
 
 const StatString: React.FC<{

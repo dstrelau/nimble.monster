@@ -56,6 +56,40 @@ func (h *CollectionsHandler) ListMyCollections(w http.ResponseWriter, r *http.Re
 	}
 }
 
+func (h *CollectionsHandler) ListPublicCollections(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	collections, err := h.db.ListPublicCollections(ctx)
+	if err != nil {
+		Error(ctx, w, err)
+		return
+	}
+
+	result := []nimble.PublicCollection{}
+	for _, c := range collections {
+		result = append(result, nimble.PublicCollection{
+			ID:               c.ID.String(),
+			Name:             c.Name,
+			Visibility:       nimble.CollectionVisibility(c.Visibility),
+			MonstersCount:    int(c.MonsterCount),
+			LegendaryCount:   int(c.LegendaryCount),
+			StandardCount:    int(c.StandardCount),
+			Creator:          c.UserID.String(),
+			CreatorName:      c.CreatorName,
+			CreatorAvatar:    c.CreatorAvatar.String,
+			CreatorDiscordID: c.CreatorDiscordID,
+		})
+	}
+
+	if err := json.NewEncoder(w).Encode(struct {
+		Collections []nimble.PublicCollection `json:"collections"`
+	}{
+		Collections: result,
+	}); err != nil {
+		Error(ctx, w, err)
+		return
+	}
+}
+
 func (h *CollectionsHandler) CreateCollection(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var col nimble.Collection
@@ -147,7 +181,9 @@ func (h *CollectionsHandler) GetCollection(w http.ResponseWriter, r *http.Reques
 		Error(ctx, w, err)
 		return
 	}
-	if !col.Public.Bool {
+
+	// public or secret are both fine
+	if col.Visibility == sqldb.CollectionVisibilityPrivate {
 		if currentUser == nil || currentUser.ID != col.UserID {
 			http.Error(w, "not found", 404)
 			return

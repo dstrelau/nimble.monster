@@ -98,6 +98,23 @@ WHERE c.user_id = $1
 GROUP BY c.id
 ORDER BY c.name ASC;
 
+-- name: ListPublicCollections :many
+SELECT
+  c.*,
+  COUNT(mc.monster_id) as monster_count,
+  u.username as creator_name,
+  u.avatar as creator_avatar,
+  u.discord_id as creator_discord_id,
+  COUNT(CASE WHEN m.legendary THEN 1 END) as legendary_count,
+  COUNT(CASE WHEN NOT m.legendary THEN 1 END) as standard_count
+FROM collections c
+JOIN users u ON c.user_id = u.id
+LEFT JOIN monsters_collections mc ON c.id = mc.collection_id
+LEFT JOIN monsters m ON mc.monster_id = m.id
+WHERE c.visibility = 'public'
+GROUP BY c.id, u.username, u.avatar, u.discord_id
+ORDER BY c.name ASC;
+
 -- name: DeleteCollection :one
 DELETE FROM collections WHERE user_id = $1 AND id = $2 RETURNING *;
 --
