@@ -60,7 +60,7 @@ const NewCollectionForm = () => {
         method: "POST",
         body: JSON.stringify(data),
       }),
-    onSuccess: (newCollection) => {
+    onSuccess: (newCollection: Collection) => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       reset();
       window.location.href = `/my/collections/${newCollection.id}/edit`;
