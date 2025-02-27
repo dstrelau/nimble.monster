@@ -5,7 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { fetchApi } from "../lib/api";
-import { VisibilityToggle, VisibilityEnum } from "../components/VisibilityToggle";
+import {
+  VisibilityToggle,
+  VisibilityEnum,
+} from "../components/VisibilityToggle";
 import { z } from "zod";
 
 interface Collection {
@@ -69,7 +72,13 @@ const NewCollectionForm = () => {
     },
   });
 
-  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm<CollectionFormData>({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<CollectionFormData>({
     resolver: zodResolver(collectionSchema),
     defaultValues: {
       name: "",
@@ -77,13 +86,13 @@ const NewCollectionForm = () => {
       description: "",
     },
   });
-  
+
   const formData = watch();
 
   if (!formVisible) {
     return (
       <div className="mb-6">
-        <button 
+        <button
           onClick={() => setFormVisible(true)}
           className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
         >
@@ -97,10 +106,16 @@ const NewCollectionForm = () => {
   return (
     <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
       <h2 className="text-lg font-medium mb-4">Create a New Collection</h2>
-      <form onSubmit={handleSubmit((data) => createMutation.mutate(data))} className="space-y-4">
+      <form
+        onSubmit={handleSubmit((data) => createMutation.mutate(data))}
+        className="space-y-4"
+      >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-1">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Collection Name
             </label>
             <input
@@ -109,21 +124,33 @@ const NewCollectionForm = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
               placeholder="Enter collection name"
             />
-            {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+            )}
           </div>
-          
+
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Visibility
             </label>
             <div className="flex justify-start">
-              <VisibilityToggle register={register} value={formData.visibility} />
+              <VisibilityToggle
+                register={register}
+                value={formData.visibility}
+              />
             </div>
-            {errors.visibility && <p className="mt-1 text-sm text-red-600">{errors.visibility.message}</p>}
+            {errors.visibility && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.visibility.message}
+              </p>
+            )}
           </div>
-          
+
           <div className="md:col-span-3">
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Description (optional)
             </label>
             <textarea
@@ -135,7 +162,7 @@ const NewCollectionForm = () => {
             />
           </div>
         </div>
-        
+
         <div className="flex justify-end space-x-2">
           <button
             type="button"
@@ -190,9 +217,11 @@ const MyCollectionsView = () => {
                   <h3 className="text-xl font-bold text-gray-900">{c.name}</h3>
                   <span
                     className={`px-3 py-1 text-xs font-medium rounded-full ${
-                      c.visibility
+                      c.visibility == "public"
                         ? "bg-green-100 text-green-700"
-                        : "bg-purple-100 text-purple-700"
+                        : c.visibility == "private"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-orange-100 text-orange-700"
                     }`}
                   >
                     {c.visibility == "public"
