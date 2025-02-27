@@ -32,20 +32,26 @@ func (q *Queries) CleanExpiredSessions(ctx context.Context) error {
 
 const createCollection = `-- name: CreateCollection :one
 INSERT INTO collections (
-    name, visibility, user_id
+    name, visibility, user_id, description
 ) VALUES (
-    $1, $2, $3
+    $1, $2, $3, $4
 ) RETURNING id, user_id, name, public, created_at, updated_at, description, visibility
 `
 
 type CreateCollectionParams struct {
-	Name       string
-	Visibility CollectionVisibility
-	UserID     uuid.UUID
+	Name        string
+	Visibility  CollectionVisibility
+	UserID      uuid.UUID
+	Description string
 }
 
 func (q *Queries) CreateCollection(ctx context.Context, arg CreateCollectionParams) (Collection, error) {
-	row := q.db.QueryRow(ctx, createCollection, arg.Name, arg.Visibility, arg.UserID)
+	row := q.db.QueryRow(ctx, createCollection,
+		arg.Name,
+		arg.Visibility,
+		arg.UserID,
+		arg.Description,
+	)
 	var i Collection
 	err := row.Scan(
 		&i.ID,
@@ -629,16 +635,18 @@ func (q *Queries) SearchMonsters(ctx context.Context, lower string) ([]Monster, 
 const updateCollection = `-- name: UpdateCollection :one
 UPDATE collections
 SET name = $3,
-    visibility = $4
+    visibility = $4,
+    description = $5
 WHERE user_id = $1 AND id = $2
 RETURNING id, user_id, name, public, created_at, updated_at, description, visibility
 `
 
 type UpdateCollectionParams struct {
-	UserID     uuid.UUID
-	ID         uuid.UUID
-	Name       string
-	Visibility CollectionVisibility
+	UserID      uuid.UUID
+	ID          uuid.UUID
+	Name        string
+	Visibility  CollectionVisibility
+	Description string
 }
 
 func (q *Queries) UpdateCollection(ctx context.Context, arg UpdateCollectionParams) (Collection, error) {
@@ -647,6 +655,7 @@ func (q *Queries) UpdateCollection(ctx context.Context, arg UpdateCollectionPara
 		arg.ID,
 		arg.Name,
 		arg.Visibility,
+		arg.Description,
 	)
 	var i Collection
 	err := row.Scan(

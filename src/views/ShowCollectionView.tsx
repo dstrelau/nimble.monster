@@ -18,6 +18,11 @@ const ShowCollectionView: React.FC = () => {
   return (
     <div className="container">
       <h2 className="text-2xl font-bold text-gray-800">{data.name}</h2>
+      {data.description && (
+        <div className="mt-2 mb-6 text-gray-600">
+          {data.description}
+        </div>
+      )}
       {data.monsters.length === 0 ? (
         <p>No monsters in this collection.</p>
       ) : (

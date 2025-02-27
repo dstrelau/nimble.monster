@@ -70,6 +70,7 @@ export interface Collection {
   monsters: Monster[];
   monstersCount: number;
   visibility: CollectionVisibility;
+  description?: string;
 }
 
 export interface User {

@@ -44,6 +44,7 @@ func (h *CollectionsHandler) ListMyCollections(w http.ResponseWriter, r *http.Re
 			Visibility:    nimble.CollectionVisibility(c.Visibility),
 			MonstersCount: int(c.MonsterCount),
 			Creator:       c.UserID.String(),
+			Description:   c.Description,
 		})
 	}
 	if err := json.NewEncoder(w).Encode(struct {
@@ -98,19 +99,21 @@ func (h *CollectionsHandler) CreateCollection(w http.ResponseWriter, r *http.Req
 		return
 	}
 	dbcol, err := h.db.CreateCollection(ctx, sqldb.CreateCollectionParams{
-		Name:       col.Name,
-		Visibility: sqldb.CollectionVisibility(col.Visibility),
-		UserID:     CurrentUser(ctx).ID,
+		Name:        col.Name,
+		Visibility:  sqldb.CollectionVisibility(col.Visibility),
+		UserID:      CurrentUser(ctx).ID,
+		Description: col.Description,
 	})
 	if err != nil {
 		Error(ctx, w, err)
 		return
 	}
 	if err := json.NewEncoder(w).Encode(nimble.Collection{
-		ID:         dbcol.ID.String(),
-		Name:       dbcol.Name,
-		Visibility: nimble.CollectionVisibility(dbcol.Visibility),
-		Creator:    dbcol.UserID.String(),
+		ID:          dbcol.ID.String(),
+		Name:        dbcol.Name,
+		Visibility:  nimble.CollectionVisibility(dbcol.Visibility),
+		Creator:     dbcol.UserID.String(),
+		Description: dbcol.Description,
 	}); err != nil {
 		Error(ctx, w, err)
 		return
@@ -130,20 +133,22 @@ func (h *CollectionsHandler) UpdateCollection(w http.ResponseWriter, r *http.Req
 		return
 	}
 	_, err = h.db.UpdateCollection(ctx, sqldb.UpdateCollectionParams{
-		UserID:     CurrentUser(ctx).ID,
-		ID:         id,
-		Name:       col.Name,
-		Visibility: sqldb.CollectionVisibility(col.Visibility),
+		UserID:      CurrentUser(ctx).ID,
+		ID:          id,
+		Name:        col.Name,
+		Visibility:  sqldb.CollectionVisibility(col.Visibility),
+		Description: col.Description,
 	})
 	if err != nil {
 		Error(ctx, w, err)
 		return
 	}
 	if err := json.NewEncoder(w).Encode(nimble.Collection{
-		ID:         id.String(),
-		Name:       col.Name,
-		Visibility: col.Visibility,
-		Creator:    CurrentUser(ctx).ID.String(),
+		ID:          id.String(),
+		Name:        col.Name,
+		Visibility:  col.Visibility,
+		Creator:     CurrentUser(ctx).ID.String(),
+		Description: col.Description,
 	}); err != nil {
 		Error(ctx, w, err)
 		return
@@ -191,11 +196,12 @@ func (h *CollectionsHandler) GetCollection(w http.ResponseWriter, r *http.Reques
 	}
 
 	if err := json.NewEncoder(w).Encode(nimble.Collection{
-		ID:         col.ID.String(),
-		Name:       col.Name,
-		Visibility: nimble.CollectionVisibility(col.Visibility),
-		Creator:    col.UserID.String(),
-		Monsters:   xslices.Map(monsters, nimble.MonsterFromSQL),
+		ID:          col.ID.String(),
+		Name:        col.Name,
+		Visibility:  nimble.CollectionVisibility(col.Visibility),
+		Creator:     col.UserID.String(),
+		Monsters:    xslices.Map(monsters, nimble.MonsterFromSQL),
+		Description: col.Description,
 	}); err != nil {
 		Error(ctx, w, err)
 		return

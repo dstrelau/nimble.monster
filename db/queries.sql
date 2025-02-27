@@ -70,15 +70,16 @@ LIMIT 10;
 
 -- name: CreateCollection :one
 INSERT INTO collections (
-    name, visibility, user_id
+    name, visibility, user_id, description
 ) VALUES (
-    $1, $2, $3
+    $1, $2, $3, $4
 ) RETURNING *;
 --
 -- name: UpdateCollection :one
 UPDATE collections
 SET name = $3,
-    visibility = $4
+    visibility = $4,
+    description = $5
 WHERE user_id = $1 AND id = $2
 RETURNING *;
 

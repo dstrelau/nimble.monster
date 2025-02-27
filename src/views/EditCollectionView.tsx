@@ -16,6 +16,7 @@ import type { Collection, Monster } from "../lib/types";
 const collectionSchema = z.object({
   name: z.string().min(1, "Collection name is required"),
   visibility: z.enum(VisibilityEnum),
+  description: z.string().optional(),
 });
 
 type CollectionFormData = z.infer<typeof collectionSchema>;
@@ -53,6 +54,7 @@ export const CollectionForm = ({ collection }: Props) => {
     defaultValues: {
       name: collection?.name ?? "",
       visibility: (collection?.visibility ?? "public") as "public" | "private" | "secret",
+      description: collection?.description ?? "",
     },
   });
   const formData = watch();
@@ -61,7 +63,8 @@ export const CollectionForm = ({ collection }: Props) => {
     if (
       collection &&
       (formData.name !== collection.name ||
-        formData.visibility !== collection.visibility)
+        formData.visibility !== collection.visibility ||
+        formData.description !== collection.description)
     ) {
       const timer = setTimeout(() => {
         mutation.mutate(formData);
@@ -73,25 +76,35 @@ export const CollectionForm = ({ collection }: Props) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex items-start space-x-4 relative"
+      className="flex flex-col space-y-4 w-full"
     >
-      <div className="w-64 flex-shrink-0">
-        <input
-          {...register("name")}
+      <div className="flex items-start space-x-4">
+        <div className="w-64 flex-shrink-0">
+          <input
+            {...register("name")}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            placeholder="Name"
+          />
+        </div>
+        <div className="flex-shrink-0">
+          <VisibilityToggle register={register} value={formData.visibility} />
+        </div>
+        <div className="flex items-center h-10 ml-2">
+          {mutation.isPending && (
+            <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
+          )}
+          {showSuccess && (
+            <CheckIcon className="w-5 h-5 text-green-500 animate-fade-out" />
+          )}
+        </div>
+      </div>
+      <div className="w-full">
+        <textarea
+          {...register("description")}
           className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-          placeholder="Name"
+          placeholder="Description (optional)"
+          rows={3}
         />
-      </div>
-      <div className="flex-shrink-0">
-        <VisibilityToggle register={register} value={formData.visibility} />
-      </div>
-      <div className="flex items-center h-10 ml-2">
-        {mutation.isPending && (
-          <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
-        )}
-        {showSuccess && (
-          <CheckIcon className="w-5 h-5 text-green-500 animate-fade-out" />
-        )}
       </div>
     </form>
   );

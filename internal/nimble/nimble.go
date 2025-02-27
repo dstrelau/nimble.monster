@@ -186,6 +186,7 @@ type Collection struct {
 	Monsters      []Monster            `json:"monsters"`
 	MonstersCount int                  `json:"monstersCount"`
 	Visibility    CollectionVisibility `json:"visibility"`
+	Description   string               `json:"description"`
 }
 
 type PublicCollection struct {
@@ -199,4 +200,5 @@ type PublicCollection struct {
 	CreatorName      string               `json:"creatorName"`
 	CreatorAvatar    string               `json:"creatorAvatar"`
 	CreatorDiscordID string               `json:"creatorDiscordId"`
+	Description      string               `json:"description"`
 }
