@@ -6,6 +6,8 @@ import (
 	"errors"
 	"net/http"
 	"slices"
+	"strconv"
+	"strings"
 
 	"deedles.dev/xiter"
 	"github.com/go-chi/chi/v5"
@@ -14,6 +16,7 @@ import (
 	"github.com/sourcegraph/conc/pool"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+	"nimble.monster/internal/export"
 	"nimble.monster/internal/nimble"
 	"nimble.monster/internal/sqldb"
 	"nimble.monster/internal/xslices"
@@ -155,17 +158,7 @@ func (h *CollectionsHandler) UpdateCollection(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (h *CollectionsHandler) GetCollection(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	span := trace.SpanFromContext(ctx)
-	id, err := uuid.FromString(chi.URLParam(r, "id"))
-	if err != nil {
-		http.Error(w, "not found", 404)
-		return
-	}
-	span.SetAttributes(attribute.String("params.id", id.String()))
-	currentUser := CurrentUser(ctx)
-
+func (h *CollectionsHandler) loadCollection(ctx context.Context, id uuid.UUID) (sqldb.Collection, []sqldb.Monster, error) {
 	p := pool.New().WithContext(ctx)
 	var col sqldb.Collection
 	var monsters []sqldb.Monster
@@ -177,7 +170,22 @@ func (h *CollectionsHandler) GetCollection(w http.ResponseWriter, r *http.Reques
 		monsters, err = h.db.ListMonstersInCollection(ctx, id)
 		return err
 	})
-	err = p.Wait()
+	err := p.Wait()
+	return col, monsters, err
+}
+
+func (h *CollectionsHandler) GetCollection(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	span := trace.SpanFromContext(ctx)
+	id, err := uuid.FromString(chi.URLParam(r, "id"))
+	if err != nil {
+		http.Error(w, "not found", 404)
+		return
+	}
+	span.SetAttributes(attribute.String("params.id", id.String()))
+	currentUser := CurrentUser(ctx)
+
+	col, monsters, err := h.loadCollection(ctx, id)
 	if errors.Is(err, pgx.ErrNoRows) {
 		http.Error(w, "not found", 404)
 		return
@@ -186,7 +194,6 @@ func (h *CollectionsHandler) GetCollection(w http.ResponseWriter, r *http.Reques
 		Error(ctx, w, err)
 		return
 	}
-
 	// public or secret are both fine
 	if col.Visibility == sqldb.CollectionVisibilityPrivate {
 		if currentUser == nil || currentUser.ID != col.UserID {
@@ -225,81 +232,6 @@ func (h *CollectionsHandler) DeleteCollection(w http.ResponseWriter, r *http.Req
 	}
 	w.WriteHeader(204)
 }
-
-// func (h *CollectionsHandler) SearchMonsters(w http.ResponseWriter, r *http.Request) {
-// 	ctx := r.Context()
-// 	query := r.FormValue("q")
-
-// 	if query == "" {
-// 		// Clear the results if the search box is empty
-// 		w.Write([]byte("<div class='p-2 text-gray-500'>Type to search monsters...</div>"))
-// 		return
-// 	}
-
-// 	monsters, err := h.db.SearchMonsters(ctx, query)
-// 	if err != nil {
-// 		Error(ctx, w, err)
-// 		return
-// 	}
-
-// 	var nmonsters []nimble.Monster
-// 	for _, m := range monsters {
-// 		nmonsters = append(nmonsters, nimble.MonsterFromSQL(m))
-// 	}
-// 	pages.MonsterSearchResults(nmonsters).Render(ctx, w)
-// }
-
-// func (h *CollectionsHandler) GetMonsterPreview(w http.ResponseWriter, r *http.Request) {
-// 	ctx := r.Context()
-// 	id := chi.URLParam(r, "id")
-// 	uuid, err := uuid.FromString(id)
-// 	if err != nil {
-// 		http.Error(w, "not found", 404)
-// 		return
-// 	}
-// 	monster, err := h.db.GetMonster(ctx, CurrentUser(ctx).ID, uuid)
-// 	if err != nil {
-// 		Error(ctx, w, err)
-// 		return
-// 	}
-
-// 	components.MonsterCard(components.MonsterCardProps{Monster: nimble.MonsterFromSQL(monster)}).Render(ctx, w)
-// }
-
-// func (h *CollectionsHandler) AddMonsterToCollection(w http.ResponseWriter, r *http.Request) {
-// 	ctx := r.Context()
-// 	span := trace.SpanFromContext(ctx)
-
-// 	collectionID := chi.URLParam(r, "id")
-// 	cuuid, err := uuid.FromString(collectionID)
-// 	if err != nil {
-// 		http.Error(w, "not found", 404)
-// 		return
-// 	}
-// 	span.SetAttributes(attribute.String("params.collection_id", cuuid.String()))
-// 	monsterID := r.FormValue("monster_id")
-// 	span.SetAttributes(attribute.String("params.monster_id", monsterID))
-// 	muuid, err := uuid.FromString(monsterID)
-// 	if err != nil {
-// 		span.RecordError(err)
-// 		http.Error(w, "invalid monster_id", 400)
-// 		return
-// 	}
-
-// 	err = h.db.AddMonsterToCollection(ctx, muuid, cuuid)
-// 	if err != nil {
-// 		Error(ctx, w, err)
-// 		return
-// 	}
-
-// 	monsters, err := h.db.ListMonstersInCollection(ctx, cuuid)
-// 	if err != nil {
-// 		Error(ctx, w, err)
-// 		return
-// 	}
-// 	nmonsters := slices.Collect(xiter.Map(slices.Values(monsters), nimble.MonsterFromSQL))
-// 	components.MonsterCards(components.MonsterCardsProps{Monsters: nmonsters}).Render(ctx, w)
-// }
 
 func (h *CollectionsHandler) UpdateCollectionMonsters(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -351,6 +283,78 @@ func (h *CollectionsHandler) UpdateCollectionMonsters(w http.ResponseWriter, r *
 
 	nmonsters := slices.Collect(xiter.Map(slices.Values(monsters), nimble.MonsterFromSQL))
 	if err := json.NewEncoder(w).Encode(nmonsters); err != nil {
+		Error(ctx, w, err)
+		return
+	}
+}
+
+func (h *CollectionsHandler) DownloadCollection(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	span := trace.SpanFromContext(ctx)
+	currentUser := CurrentUser(ctx)
+
+	id, err := uuid.FromString(chi.URLParam(r, "id"))
+	if err != nil {
+		http.Error(w, "not found", 404)
+		return
+	}
+	span.SetAttributes(attribute.String("params.id", id.String()))
+
+	col, monsters, err := h.loadCollection(ctx, id)
+	if errors.Is(err, pgx.ErrNoRows) {
+		http.Error(w, "not found", 404)
+		return
+	} else if err != nil {
+		trace.SpanFromContext(ctx).RecordError(err)
+		Error(ctx, w, err)
+		return
+	}
+
+	if col.Visibility == sqldb.CollectionVisibilityPrivate {
+		if currentUser == nil || currentUser.ID != col.UserID {
+			http.Error(w, "not found", 404)
+			return
+		}
+	}
+
+	nmonsters := xslices.Map(monsters, nimble.MonsterFromSQL)
+
+	pack := export.OBRCompendiumPack{
+		Name:    col.Name,
+		ID:      col.ID.String(),
+		Version: strconv.FormatInt(col.CreatedAt.Time.Unix(), 10),
+		Documents: xslices.Map(nmonsters, func(m nimble.Monster) export.OBRCompendiumNimbleMonster {
+			// compendium expects null, "Medium", "Heavy"
+			var armor *string
+			switch m.Armor {
+			case nimble.ArmorMedium:
+				a := "Medium"
+				armor = &a
+			case nimble.ArmorHeavy:
+				a := "Heavy"
+				armor = &a
+			}
+			return export.OBRCompendiumNimbleMonster{
+				Name:  m.Name,
+				Type:  "nimblev2-monster",
+				Level: m.Level,
+				HP:    int(m.HP),
+				Armor: armor,
+				Features: xslices.Map(m.Abilities, func(a nimble.Ability) export.OBRCompendiumFeature {
+					return export.OBRCompendiumFeature(a)
+				}),
+				Attacks: xslices.Map(m.Actions, func(a nimble.Action) export.OBRCompendiumFeature {
+
+					return export.OBRCompendiumFeature{
+						Name:        a.Name,
+						Description: strings.Join([]string{a.Damage, a.Description}, " "),
+					}
+				}),
+			}
+		}),
+	}
+
+	if err := json.NewEncoder(w).Encode(pack); err != nil {
 		Error(ctx, w, err)
 		return
 	}

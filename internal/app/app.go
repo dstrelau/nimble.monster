@@ -155,6 +155,7 @@ func (a *App) buildRouter() {
 		r.With(RequireAuth).Put("/api/collections/{id}", h.UpdateCollection)
 		r.With(RequireAuth).Put("/api/collections/{id}/monsters", h.UpdateCollectionMonsters)
 		r.Get("/api/collections/{id}", h.GetCollection)
+		r.Get("/api/collections/{id}/download", h.DownloadCollection)
 		r.Get("/api/collections", h.ListPublicCollections)
 	}
 
