@@ -56,7 +56,7 @@ const NewCollectionForm = () => {
 
   const createMutation = useMutation({
     mutationFn: (data: CollectionFormData) =>
-      fetchApi("/api/collections", {
+      fetchApi<Collection>("/api/collections", {
         method: "POST",
         body: JSON.stringify(data),
       }),
