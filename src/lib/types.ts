@@ -31,6 +31,7 @@ export interface Family {
 }
 
 export interface Monster {
+  visibility: "public" | "private";
   legendary: boolean;
   kind?: string;
   saves?: string;

@@ -13,7 +13,7 @@ import { HoneycombWebSDK } from "@honeycombio/opentelemetry-web";
 import { getWebAutoInstrumentations } from "@opentelemetry/auto-instrumentations-web";
 
 import { AuthContext } from "./lib/auth";
-import { User } from "./lib/types";
+import type { User } from "./lib/types";
 
 import BuildMonsterView from "./views/BuildMonsterView";
 import { EditCollectionView } from "./views/EditCollectionView";
@@ -23,6 +23,7 @@ import MyCollectionsView from "./views/MyCollectionsView";
 import MyMonstersView from "./views/MyMonstersView";
 import PublicCollectionsView from "./views/PublicCollectionsView";
 import ShowCollectionView from "./views/ShowCollectionView";
+import PublicMonstersView from "./views/PublicMonstersView";
 
 const queryClient = new QueryClient();
 const honeycombAPIKey = import.meta.env.VITE_HONEYCOMB_API_KEY;
@@ -99,6 +100,10 @@ const router = createBrowserRouter([
       {
         path: "/collections",
         element: <PublicCollectionsView />,
+      },
+      {
+        path: "/monsters",
+        element: <PublicMonstersView />,
       },
       {
         path: "/my/monsters/new",

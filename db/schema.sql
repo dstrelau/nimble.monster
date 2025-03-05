@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
--- Dumped by pg_dump version 17.2 (Debian 17.2-1.pgdg120+1)
+-- Dumped from database version 17.0 (Homebrew)
+-- Dumped by pg_dump version 17.4 (Homebrew)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -49,6 +49,16 @@ CREATE TYPE public.armor_type AS ENUM (
 CREATE TYPE public.collection_visibility AS ENUM (
     'public',
     'secret',
+    'private'
+);
+
+
+--
+-- Name: monster_visibility; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.monster_visibility AS ENUM (
+    'public',
     'private'
 );
 
@@ -110,7 +120,8 @@ CREATE TABLE public.monsters (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     user_id uuid NOT NULL,
-    kind text DEFAULT ''::text NOT NULL
+    kind text DEFAULT ''::text NOT NULL,
+    visibility public.monster_visibility DEFAULT 'public'::public.monster_visibility NOT NULL
 );
 
 

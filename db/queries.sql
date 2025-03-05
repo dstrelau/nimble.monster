@@ -15,6 +15,9 @@ INSERT INTO monsters (
 -- name: ListMonsters :many
 SELECT * from monsters WHERE user_id = $1 ORDER BY name ASC;
 --
+-- name: ListPublicMonsters :many
+SELECT * from monsters WHERE visibility = 'public' ORDER BY name ASC;
+
 -- name: GetMonster :one
 SELECT * FROM monsters WHERE user_id = $1 AND id = $2;
 
@@ -33,7 +36,8 @@ SET name = $3,
     abilities = $12,
     bloodied = '',
     last_stand = '',
-    saves = array[]::text[]
+    saves = array[]::text[],
+    visibility = $13
 WHERE user_id = $1 AND id = $2 RETURNING *;
 
 -- name: UpdateLegendaryMonster :one
@@ -51,7 +55,8 @@ SET name = $3,
     abilities = $10,
     bloodied = $11,
     last_stand = $12,
-    saves = $13
+    saves = $13,
+    visibility = $14
 WHERE user_id = $1 AND id = $2 RETURNING *;
 
 -- name: DeleteMonster :one

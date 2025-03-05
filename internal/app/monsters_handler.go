@@ -50,21 +50,22 @@ func sqlmonsterFromMonster(m nimble.Monster) sqldb.Monster {
 		panic("unknown monster armor " + m.Armor)
 	}
 	return sqldb.Monster{
-		Name:      m.Name,
-		Level:     m.Level,
-		Hp:        m.HP,
-		Armor:     armor,
-		Size:      sqldb.SizeType(m.Size),
-		Speed:     m.Speed,
-		Fly:       m.Fly,
-		Swim:      m.Swim,
-		Actions:   actions,
-		Abilities: abilities,
-		Legendary: m.Legendary,
-		Kind:      m.Kind,
-		Bloodied:  m.Bloodied,
-		LastStand: m.LastStand,
-		Saves:     xslices.Map(strings.Split(m.Saves, ","), strings.TrimSpace),
+		Name:       m.Name,
+		Level:      m.Level,
+		Hp:         m.HP,
+		Armor:      armor,
+		Size:       sqldb.SizeType(m.Size),
+		Speed:      m.Speed,
+		Fly:        m.Fly,
+		Swim:       m.Swim,
+		Actions:    actions,
+		Abilities:  abilities,
+		Legendary:  m.Legendary,
+		Kind:       m.Kind,
+		Bloodied:   m.Bloodied,
+		LastStand:  m.LastStand,
+		Saves:      xslices.Map(strings.Split(m.Saves, ","), strings.TrimSpace),
+		Visibility: sqldb.MonsterVisibility(m.Visibility),
 	}
 }
 
@@ -120,6 +121,31 @@ func (h *MonstersHandler) CreateMonster(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+}
+
+func (h *MonstersHandler) ListPublicMonsters(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	dbmonsters, err := h.db.ListPublicMonsters(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		trace.SpanFromContext(r.Context()).RecordError(err)
+		return
+	}
+
+	if ids := r.URL.Query()["ids"]; len(ids) > 0 {
+		dbmonsters = slices.Collect(xiter.Filter(slices.Values(dbmonsters), func(m sqldb.Monster) bool {
+			return slices.Contains(ids, m.ID.String())
+		}))
+	}
+
+	if err := json.NewEncoder(w).Encode(struct {
+		Monsters []nimble.Monster `json:"monsters"`
+	}{
+		Monsters: xslices.Map(dbmonsters, nimble.MonsterFromSQL),
+	}); err != nil {
+		http.Error(w, err.Error(), 500)
+		trace.SpanFromContext(r.Context()).RecordError(err)
+	}
 }
 
 func (h *MonstersHandler) ListMyMonsters(w http.ResponseWriter, r *http.Request) {
@@ -201,34 +227,36 @@ func (h *MonstersHandler) UpdateMonster(w http.ResponseWriter, r *http.Request) 
 
 	if monster.Legendary {
 		_, err = h.db.UpdateLegendaryMonster(ctx, sqldb.UpdateLegendaryMonsterParams{
-			Actions:   m.Actions,
-			Abilities: m.Abilities,
-			UserID:    CurrentUser(ctx).ID,
-			ID:        id,
-			Name:      m.Name,
-			Level:     m.Level,
-			Hp:        m.Hp,
-			Armor:     m.Armor,
-			Kind:      m.Kind,
-			Size:      m.Size,
-			Bloodied:  m.Bloodied,
-			LastStand: m.LastStand,
-			Saves:     m.Saves,
+			Actions:    m.Actions,
+			Abilities:  m.Abilities,
+			UserID:     CurrentUser(ctx).ID,
+			ID:         id,
+			Name:       m.Name,
+			Level:      m.Level,
+			Hp:         m.Hp,
+			Armor:      m.Armor,
+			Kind:       m.Kind,
+			Size:       m.Size,
+			Bloodied:   m.Bloodied,
+			LastStand:  m.LastStand,
+			Saves:      m.Saves,
+			Visibility: m.Visibility,
 		})
 	} else {
 		_, err = h.db.UpdateMonster(r.Context(), sqldb.UpdateMonsterParams{
-			UserID:    CurrentUser(ctx).ID,
-			ID:        id,
-			Name:      m.Name,
-			Level:     m.Level,
-			Hp:        m.Hp,
-			Armor:     m.Armor,
-			Size:      m.Size,
-			Speed:     m.Speed,
-			Fly:       m.Fly,
-			Swim:      m.Swim,
-			Actions:   m.Actions,
-			Abilities: m.Abilities,
+			UserID:     CurrentUser(ctx).ID,
+			ID:         id,
+			Name:       m.Name,
+			Level:      m.Level,
+			Hp:         m.Hp,
+			Armor:      m.Armor,
+			Size:       m.Size,
+			Speed:      m.Speed,
+			Fly:        m.Fly,
+			Swim:       m.Swim,
+			Actions:    m.Actions,
+			Abilities:  m.Abilities,
+			Visibility: m.Visibility,
 		})
 	}
 	if err != nil {

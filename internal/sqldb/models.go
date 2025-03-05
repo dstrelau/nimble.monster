@@ -98,6 +98,48 @@ func (ns NullCollectionVisibility) Value() (driver.Value, error) {
 	return string(ns.CollectionVisibility), nil
 }
 
+type MonsterVisibility string
+
+const (
+	MonsterVisibilityPublic  MonsterVisibility = "public"
+	MonsterVisibilityPrivate MonsterVisibility = "private"
+)
+
+func (e *MonsterVisibility) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = MonsterVisibility(s)
+	case string:
+		*e = MonsterVisibility(s)
+	default:
+		return fmt.Errorf("unsupported scan type for MonsterVisibility: %T", src)
+	}
+	return nil
+}
+
+type NullMonsterVisibility struct {
+	MonsterVisibility MonsterVisibility
+	Valid             bool // Valid is true if MonsterVisibility is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullMonsterVisibility) Scan(value interface{}) error {
+	if value == nil {
+		ns.MonsterVisibility, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.MonsterVisibility.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullMonsterVisibility) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.MonsterVisibility), nil
+}
+
 type SizeType string
 
 const (
@@ -156,25 +198,26 @@ type Collection struct {
 }
 
 type Monster struct {
-	ID        uuid.UUID
-	Name      string
-	Level     string
-	Hp        int32
-	Armor     ArmorType
-	Size      SizeType
-	Speed     int32
-	Fly       int32
-	Swim      int32
-	Actions   [][]byte
-	Abilities [][]byte
-	Legendary bool
-	Bloodied  string
-	LastStand string
-	Saves     []string
-	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
-	UserID    uuid.UUID
-	Kind      string
+	ID         uuid.UUID
+	Name       string
+	Level      string
+	Hp         int32
+	Armor      ArmorType
+	Size       SizeType
+	Speed      int32
+	Fly        int32
+	Swim       int32
+	Actions    [][]byte
+	Abilities  [][]byte
+	Legendary  bool
+	Bloodied   string
+	LastStand  string
+	Saves      []string
+	CreatedAt  pgtype.Timestamptz
+	UpdatedAt  pgtype.Timestamptz
+	UserID     uuid.UUID
+	Kind       string
+	Visibility MonsterVisibility
 }
 
 type MonstersCollection struct {

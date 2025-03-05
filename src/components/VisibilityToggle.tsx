@@ -1,15 +1,12 @@
 import type { UseFormRegister } from "react-hook-form";
 import { z } from "zod";
 
-// Array of valid visibility values
 export const VisibilityEnum = ["private", "secret", "public"] as const;
 
-// Schema for validation
 export const visibilitySchema = z.object({
   visibility: z.enum(VisibilityEnum),
 });
 
-// Type for form data
 export type VisibilityFormData = z.infer<typeof visibilitySchema>;
 
 export const VisibilityToggle = ({
@@ -86,7 +83,9 @@ export const VisibilityToggle = ({
           </span>
         </label>
       </div>
-      <div className="h-5 text-xs text-gray-600 text-center">{visibilityInfo[value]}</div>
+      <div className="h-5 text-xs text-gray-600 text-center">
+        {visibilityInfo[value]}
+      </div>
     </div>
   );
 };

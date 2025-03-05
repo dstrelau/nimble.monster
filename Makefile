@@ -8,7 +8,7 @@ $(BIN)/sqlc:
 
 SQLCFILES := internal/sqldb/queries.sql.go internal/sqldb/models.go internal/sqldb/db.go
 SQLCSRC := $(wildcard db/*.sql)
-$(SQLCFILES): $(BIN)/sqlc $(SQLCSRC) sqlc.yaml
+$(SQLCFILES): $(BIN)/sqlc db/schema.sql $(SQLCSRC) sqlc.yaml
 	$(BIN)/sqlc generate
 
 .PHONY: sqlc

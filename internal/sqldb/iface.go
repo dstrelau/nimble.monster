@@ -12,6 +12,7 @@ type MonsterQuerier interface {
 	DeleteMonster(ctx context.Context, userID uuid.UUID, iD uuid.UUID) (Monster, error)
 	GetMonster(ctx context.Context, userID uuid.UUID, iD uuid.UUID) (Monster, error)
 	ListMonsters(ctx context.Context, userID uuid.UUID) ([]Monster, error)
+	ListPublicMonsters(ctx context.Context) ([]Monster, error)
 	SearchMonsters(ctx context.Context, lower string) ([]Monster, error)
 	UpdateMonster(ctx context.Context, arg UpdateMonsterParams) (Monster, error)
 	UpdateLegendaryMonster(ctx context.Context, arg UpdateLegendaryMonsterParams) (Monster, error)

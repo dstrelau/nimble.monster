@@ -72,13 +72,8 @@ const Header = () => {
               <span className="ml-2 text-white font-bold">nimble.monster</span>
             </NavLink>
             <NavItem href="/my/monsters/new" title="Build Monster" />
+            <NavItem href="/monsters" title="Monsters" />
             <NavItem href="/collections" title="Collections" />
-            {currentUser.data && (
-              <>
-                <NavItem href="/my/monsters" title="My Monsters" />
-                <NavItem href="/my/collections" title="My Collections" />
-              </>
-            )}
           </div>
 
           <div className="hidden md:block">
@@ -116,6 +111,22 @@ const Header = () => {
                     aria-labelledby="user-menu-button"
                     tabIndex={-1}
                   >
+                    <NavLink
+                      to="/my/monsters"
+                      className="block px-4 py-2 text-sm text-gray-700"
+                      role="menuitem"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My Monsters
+                    </NavLink>
+                    <NavLink
+                      to="/my/collections"
+                      className="block px-4 py-2 text-sm text-gray-700"
+                      role="menuitem"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My Collections
+                    </NavLink>
                     <form method="POST" action="/auth/logout">
                       <button
                         className="block px-4 py-2 text-sm text-gray-700"

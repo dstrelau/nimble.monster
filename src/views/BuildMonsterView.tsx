@@ -1,21 +1,22 @@
-import { useContext, useState } from "react";
-import { TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
-import type {
-  Monster,
-  Ability,
-  Action,
-  MonsterSize,
-  MonsterArmor,
-} from "../lib/types";
-import { SIZES, ARMORS } from "../lib/types";
-import MonsterCard from "../components/MonsterCard";
-import { useNavigate } from "react-router-dom";
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import MonsterCard from "../components/MonsterCard";
 import { fetchApi } from "../lib/api";
 import { AuthContext } from "../lib/auth";
+import type {
+  Ability,
+  Action,
+  Monster,
+  MonsterArmor,
+  MonsterSize,
+} from "../lib/types";
+import { ARMORS, SIZES } from "../lib/types";
 
 const EXAMPLE_MONSTERS: Record<string, Monster> = {
   kobold: {
+    visibility: "public",
     id: "",
     legendary: false,
     name: "Kobold",
@@ -37,6 +38,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     ],
   },
   manticore: {
+    visibility: "public",
     id: "",
     legendary: true,
     name: "Ravager of the Lowlands",
@@ -68,6 +70,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
       "The Ravager is dying! 40 more damage and he dies. Until then, the first time each turn he takes damage, he uses Move & Claw.",
   },
   empty: {
+    visibility: "private",
     id: "",
     legendary: false,
     name: "",
@@ -500,6 +503,9 @@ const ActionsSection: React.FC<{
     ))}
   </fieldset>
 );
+
+export const MonsterVisibilityEnum = ["private", "public"] as const;
+
 interface BuildMonsterProps {
   existingMonster?: Monster;
 }
@@ -558,7 +564,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
     <div className="grid grid-cols-6 gap-x-8">
       <div className={monster.legendary ? "col-span-3" : "col-span-4"}>
         <form onSubmit={handleSubmit}>
-          <div className="mb-6">
+          <div className="mb-6 flex justify-between items-start">
             <div className="inline-flex rounded-md shadow-sm" role="group">
               {typeOptions.map((option, idx) => (
                 <button
@@ -571,22 +577,88 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
                     })
                   }
                   className={`
-                              ${idx === 0 ? "rounded-l-lg" : ""}
-                              ${idx === 1 ? "rounded-r-lg" : ""}
-                              px-4 py-2 text-sm font-medium
-                              ${
-                                monster.legendary === option.value
-                                  ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                                  : "bg-white text-gray-900 hover:bg-gray-50"
-                              }
-                              border border-gray-200
-                              ${idx > 0 ? "border-l-0" : ""}
-                            `}
+                            ${idx === 0 ? "rounded-l-lg" : ""}
+                            ${idx === 1 ? "rounded-r-lg" : ""}
+                            px-4 py-2 text-sm font-medium
+                            ${
+                              monster.legendary === option.value
+                                ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                                : "bg-white text-gray-900 hover:bg-gray-50"
+                            }
+                            border border-gray-200
+                            ${idx > 0 ? "border-l-0" : ""}
+                          `}
                 >
                   {option.label}
                 </button>
               ))}
             </div>
+
+            {currentUser.data && (
+              <div className="flex flex-col items-end">
+                <div className="inline-flex rounded-lg p-1 bg-gray-100">
+                  <label
+                    className={`flex items-center px-4 py-2 rounded-lg cursor-pointer w-[80px] text-center justify-center ${
+                      (monster.visibility || "private") === "private"
+                        ? "bg-white shadow-sm"
+                        : "hover:bg-gray-50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="visibility"
+                      value="private"
+                      checked={(monster.visibility || "private") === "private"}
+                      onChange={() =>
+                        setMonster({ ...monster, visibility: "private" })
+                      }
+                      className="hidden"
+                    />
+                    <span
+                      className={`text-sm font-medium ${
+                        (monster.visibility || "private") === "private"
+                          ? "text-gray-900"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      Private
+                    </span>
+                  </label>
+                  <label
+                    className={`flex items-center px-4 py-2 rounded-lg cursor-pointer w-[80px] text-center justify-center ${
+                      (monster.visibility || "private") === "public"
+                        ? "bg-white shadow-sm"
+                        : "hover:bg-gray-50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="visibility"
+                      value="public"
+                      checked={(monster.visibility || "private") === "public"}
+                      onChange={() =>
+                        setMonster({ ...monster, visibility: "public" })
+                      }
+                      className="hidden"
+                    />
+                    <span
+                      className={`text-sm font-medium ${
+                        (monster.visibility || "private") === "public"
+                          ? "text-gray-900"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      Public
+                    </span>
+                  </label>
+                </div>
+                <div className="h-5 text-xs text-gray-600 text-center w-[170px]">
+                  {(monster.visibility || "private") === "private"
+                    ? "Only you can see this monster."
+                    : "This monster is visible in the public Monsters list."}
+                </div>
+              </div>
+            )}
           </div>
 
           {monster.legendary ? (

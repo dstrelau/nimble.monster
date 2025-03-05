@@ -79,25 +79,33 @@ func MonsterSizeFromString(s string) MonsterSize {
 	}
 }
 
+type MonsterVisibility string
+
+const (
+	MonsterVisibilityPublic  MonsterVisibility = "public"
+	MonsterVisibilityPrivate MonsterVisibility = "private"
+)
+
 type Monster struct {
-	Family    *Family      `json:"family"`
-	Bloodied  string       `json:"bloodied"`
-	LastStand string       `json:"lastStand"`
-	Name      string       `json:"name"`
-	Saves     string       `json:"saves"`
-	Size      MonsterSize  `json:"size"`
-	ID        string       `json:"id"`
-	Kind      string       `json:"kind"`
-	Armor     MonsterArmor `json:"armor"`
-	Level     string       `json:"level"`
-	Abilities []Ability    `json:"abilities"`
-	Actions   []Action     `json:"actions"`
-	Speed     int32        `json:"speed"`
-	Swim      int32        `json:"swim"`
-	Fly       int32        `json:"fly"`
-	HP        int32        `json:"hp"`
-	Legendary bool         `json:"legendary"`
-	UserID    uuid.UUID    `json:"-"`
+	Family     *Family           `json:"family"`
+	Bloodied   string            `json:"bloodied"`
+	LastStand  string            `json:"lastStand"`
+	Name       string            `json:"name"`
+	Saves      string            `json:"saves"`
+	Size       MonsterSize       `json:"size"`
+	ID         string            `json:"id"`
+	Kind       string            `json:"kind"`
+	Armor      MonsterArmor      `json:"armor"`
+	Level      string            `json:"level"`
+	Abilities  []Ability         `json:"abilities"`
+	Actions    []Action          `json:"actions"`
+	Speed      int32             `json:"speed"`
+	Swim       int32             `json:"swim"`
+	Fly        int32             `json:"fly"`
+	HP         int32             `json:"hp"`
+	Legendary  bool              `json:"legendary"`
+	UserID     uuid.UUID         `json:"-"`
+	Visibility MonsterVisibility `json:"visibility"`
 }
 
 type Ability struct {

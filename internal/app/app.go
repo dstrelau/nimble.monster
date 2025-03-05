@@ -141,6 +141,7 @@ func (a *App) buildRouter() {
 	{
 		h := NewMonstersHandler(a.db)
 		r.With(RequireAuth).Get("/api/users/me/monsters", h.ListMyMonsters)
+		r.With(RequireAuth).Get("/api/monsters", h.ListPublicMonsters)
 		r.With(RequireAuth).Get("/api/monsters/{id}", h.GetMonster)
 		r.With(RequireAuth).Put("/api/monsters/{id}", h.UpdateMonster)
 		r.With(RequireAuth).Post("/api/monsters", h.CreateMonster)

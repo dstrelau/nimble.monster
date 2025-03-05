@@ -6,14 +6,14 @@ import type { Monster } from "../lib/types";
 import MonsterCard from "../components/MonsterCard";
 import MonsterList from "../components/MonsterList";
 
-export type MonsterDisplay = "card" | "list" | "table";
+export type MonsterDisplay = "card" | "list";
 
-const MyMonstersView = () => {
+const PublicMonstersView = () => {
   const [display] = useState<MonsterDisplay>("card");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["monsters"],
-    queryFn: () => fetchApi<{ monsters: Monster[] }>("/api/users/me/monsters"),
+    queryFn: () => fetchApi<{ monsters: Monster[] }>("/api/monsters"),
     staleTime: 0,
   });
 
@@ -48,4 +48,4 @@ const MyMonstersView = () => {
   );
 };
 
-export default MyMonstersView;
+export default PublicMonstersView;
