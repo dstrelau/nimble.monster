@@ -36,11 +36,7 @@ const PublicMonstersView = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3">
           {data.monsters.map((monster) => (
-            <MonsterCard
-              key={monster.id}
-              monster={monster}
-              showActions={true}
-            />
+            <MonsterCard key={monster.id} monster={monster} />
           ))}
         </div>
       )}
