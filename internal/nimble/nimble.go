@@ -140,7 +140,6 @@ type Ability struct {
 type Action struct {
 	Name        string `json:"name"`
 	Damage      string `json:"damage"`
-	Range       string `json:"range"`
 	Description string `json:"description"`
 }
 
@@ -176,20 +175,21 @@ func MonsterFromSQL(in sqldb.Monster) (Monster, error) {
 	}
 
 	out := Monster{
-		ID:        in.ID.String(),
-		Legendary: in.Legendary,
-		Kind:      in.Kind,
-		Name:      in.Name,
-		HP:        in.Hp,
-		Speed:     in.Speed,
-		Fly:       in.Fly,
-		Swim:      in.Swim,
-		Armor:     armor,
-		Size:      size,
-		Level:     in.Level,
-		LastStand: in.LastStand,
-		Bloodied:  in.Bloodied,
-		Saves:     strings.Join(in.Saves, ", "),
+		ID:         in.ID.String(),
+		Legendary:  in.Legendary,
+		Kind:       in.Kind,
+		Name:       in.Name,
+		HP:         in.Hp,
+		Speed:      in.Speed,
+		Fly:        in.Fly,
+		Swim:       in.Swim,
+		Armor:      armor,
+		Size:       size,
+		Level:      in.Level,
+		LastStand:  in.LastStand,
+		Bloodied:   in.Bloodied,
+		Saves:      strings.Join(in.Saves, ", "),
+		Visibility: MonsterVisibility(in.Visibility),
 	}
 	var err error
 	out.Actions = make([]Action, len(in.Actions))

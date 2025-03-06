@@ -32,7 +32,6 @@ func TestMonstersHandler_CreateMonster_Standard(t *testing.T) {
 			{
 				Name:   "Slash",
 				Damage: "1d6",
-				Range:  "5ft",
 			},
 		},
 	}
@@ -82,7 +81,6 @@ func TestMonstersHandler_CreateMonster_Legendary(t *testing.T) {
 			{
 				Name:   "Breath Weapon",
 				Damage: "8d6",
-				Range:  "Cone 8",
 			},
 		},
 	}
