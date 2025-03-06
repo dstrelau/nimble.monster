@@ -16,10 +16,34 @@ type User struct {
 	ID        uuid.UUID `json:"id"`
 }
 
+type FamilyVisibility string
+
+const (
+	FamilyVisibilityPublic  FamilyVisibility = "public"
+	FamilyVisibilityPrivate FamilyVisibility = "private"
+	FamilyVisibilitySecret  FamilyVisibility = "secret"
+)
+
 type Family struct {
-	Ability     *Ability
-	Name        string
-	Description string
+	ID          string           `json:"id"`
+	Abilities   []Ability        `json:"abilities"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
+	Visibility  FamilyVisibility `json:"visibility"`
+}
+
+func FamilyFromSQL(in sqldb.Family) (Family, error) {
+	out := Family{
+		ID:         in.ID.String(),
+		Name:       in.Name,
+		Visibility: FamilyVisibility(in.Visibility),
+	}
+	var err error
+	out.Abilities = make([]Ability, len(in.Abilities))
+	for i, a := range in.Abilities {
+		err = errors.Join(err, json.Unmarshal(a, &out.Abilities[i]))
+	}
+	return out, err
 }
 
 type MonsterArmor string
@@ -120,8 +144,7 @@ type Action struct {
 	Description string `json:"description"`
 }
 
-func MonsterFromSQL(in sqldb.Monster) Monster {
-	var err error
+func MonsterFromSQL(in sqldb.Monster) (Monster, error) {
 	var size MonsterSize
 	switch in.Size {
 	case sqldb.SizeTypeTiny:
@@ -168,6 +191,7 @@ func MonsterFromSQL(in sqldb.Monster) Monster {
 		Bloodied:  in.Bloodied,
 		Saves:     strings.Join(in.Saves, ", "),
 	}
+	var err error
 	out.Actions = make([]Action, len(in.Actions))
 	for i, a := range in.Actions {
 		err = errors.Join(err, json.Unmarshal(a, &out.Actions[i]))
@@ -176,7 +200,7 @@ func MonsterFromSQL(in sqldb.Monster) Monster {
 	for i, a := range in.Abilities {
 		err = errors.Join(err, json.Unmarshal(a, &out.Abilities[i]))
 	}
-	return out
+	return out, err
 }
 
 type CollectionVisibility string

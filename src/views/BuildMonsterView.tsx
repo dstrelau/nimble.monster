@@ -1,6 +1,11 @@
-import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useContext, useState } from "react";
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MonsterCard from "../components/MonsterCard";
 import { fetchApi } from "../lib/api";
@@ -8,6 +13,7 @@ import { AuthContext } from "../lib/auth";
 import type {
   Ability,
   Action,
+  Family,
   Monster,
   MonsterArmor,
   MonsterSize,
@@ -27,12 +33,18 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     fly: 0,
     speed: 6,
     hp: 12,
-    abilities: [
-      {
-        name: "Nooooo!",
-        description: "When an ally within 2 spaces dies, attack once for free.",
-      },
-    ],
+    family: {
+      id: "",
+      name: "Kobolds",
+      abilities: [
+        {
+          name: "Nooooo!",
+          description:
+            "When an ally within 2 spaces dies, attack once for free.",
+        },
+      ],
+    },
+    abilities: [],
     actions: [
       { name: "Stab", damage: "1d4+2", description: "(or Sling, Range 8)" },
     ],
@@ -193,6 +205,93 @@ function FormSelect<T extends string>({
   );
 }
 
+const FamilySection: React.FC<{
+  monster: Monster;
+  setMonster: (m: Monster) => void;
+}> = ({ monster, setMonster }) => {
+  const [expandSection, setExpandSection] = useState(false);
+
+  const publicFamilies = useQuery({
+    queryKey: ["families"],
+    queryFn: () => fetchApi<{ families: Family[] }>("/api/families"),
+    select: (data) => data.families,
+  });
+
+  const userFamilies = useQuery({
+    queryKey: ["userFamilies"],
+    queryFn: () => fetchApi<{ families: Family[] }>("/api/users/me/families"),
+    select: (data) => data.families,
+  });
+
+  const allFamilies = useMemo(() => {
+    const combined: Family[] = [];
+    const idSet = new Set<string>();
+    if (publicFamilies.data) {
+      for (const family of publicFamilies.data) {
+        if (!idSet.has(family.id)) {
+          idSet.add(family.id);
+          combined.push(family);
+        }
+      }
+    }
+
+    if (userFamilies.data) {
+      for (const family of userFamilies.data) {
+        if (!idSet.has(family.id)) {
+          idSet.add(family.id);
+          combined.push(family);
+        }
+      }
+    }
+    return combined;
+  }, [publicFamilies.data, userFamilies.data]);
+
+  const handleSelectFamily = (familyId: string) => {
+    const family = allFamilies.find((f) => f.id === familyId);
+    setMonster({ ...monster, family: family });
+  };
+
+  return (
+    <fieldset>
+      <div className="header flex items-center gap-x-1 mt-5 mb-2">
+        <button
+          type="button"
+          className="w-6 h-6 flex-shrink-0 "
+          onClick={() => setExpandSection(!expandSection)}
+        >
+          {expandSection ? (
+            <ChevronDownIcon className="w-6 h-6 text-slate-500" />
+          ) : (
+            <ChevronRightIcon className="w-6 h-6 text-slate-500" />
+          )}
+        </button>
+        <legend className="font-bold inline-block">Family</legend>
+      </div>
+
+      {expandSection && (
+        <div className="mb-4 p-4 border rounded-md">
+          <div className="flex">
+            <div className="flex-1 pr-4">
+              <select
+                className="w-full p-2 border rounded"
+                value={monster?.family?.id || ""}
+                onChange={(e) => handleSelectFamily(e.target.value)}
+              >
+                <option value="">None</option>
+                {allFamilies.map((family) => (
+                  <option key={family.id} value={family.id}>
+                    {family.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
+    </fieldset>
+  );
+};
+
 interface AbilityRowProps {
   ability: Ability;
   onChange: (ability: Ability) => void;
@@ -338,6 +437,7 @@ const LegendaryForm: React.FC<{
         </div>
       </div>
     </div>
+    <FamilySection monster={monster} setMonster={setMonster} />
     <AbilitiesSection monster={monster} setMonster={setMonster} />
     <ActionsSection monster={monster} setMonster={setMonster} />
     <div className="space-y-6">
@@ -419,6 +519,7 @@ const StandardForm: React.FC<{
         onChange={(hp) => setMonster({ ...monster, hp })}
       />
     </div>
+    <FamilySection monster={monster} setMonster={setMonster} />
     <AbilitiesSection monster={monster} setMonster={setMonster} />
     <ActionsSection monster={monster} setMonster={setMonster} />
   </div>

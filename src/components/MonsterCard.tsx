@@ -2,6 +2,7 @@ import {
   ArrowDownTrayIcon,
   PencilIcon,
   TrashIcon,
+  UsersIcon,
 } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -162,6 +163,26 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
           ) : (
             <HeaderStandard monster={monster} />
           )}
+
+          {monster.family?.abilities.map((ability, index) => (
+            <p
+              key={index}
+              className={`relative italic mb-2 p-2 leading-5 bg-[#d3cebb] ${monster.legendary ? " text-center " : ""}`}
+              style={{
+                clipPath:
+                  "polygon(20px 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 20px 100%, 0 50%)",
+                transform: "translateX(-30px)",
+                width: "calc(100% + 60px)",
+                paddingLeft: "30px",
+                paddingRight: "30px",
+              }}
+            >
+              <UsersIcon className="w-4 pb-1 mr-1 inline-block align-middle" />
+              <strong className="pr-1">{maybePeriod(ability.name)}</strong>
+              {ability.description}
+            </p>
+          ))}
+
           {monster.abilities?.map((ability, index) => (
             <p
               key={index}

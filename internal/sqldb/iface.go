@@ -37,3 +37,8 @@ type CollectionQuerier interface {
 	RemoveMonsterFromCollection(ctx context.Context, monsterID uuid.UUID, collectionID uuid.UUID) error
 	ListMonstersInCollection(ctx context.Context, collectionID uuid.UUID) ([]Monster, error)
 }
+
+type FamilyQuerier interface {
+	ListFamilies(ctx context.Context, userID uuid.UUID) ([]Family, error)
+	ListPublicFamilies(ctx context.Context) ([]Family, error)
+}

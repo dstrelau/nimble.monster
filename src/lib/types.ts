@@ -25,9 +25,9 @@ export type CollectionVisibility =
   (typeof COLLECTION_VISIBILITY)[number]["value"];
 
 export interface Family {
+  id: string;
   name: string;
-  description: string;
-  ability?: Ability;
+  abilities: Ability[];
 }
 
 export interface Monster {

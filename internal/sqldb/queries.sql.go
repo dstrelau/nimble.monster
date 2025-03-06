@@ -415,6 +415,38 @@ func (q *Queries) ListCollections(ctx context.Context, userID uuid.UUID) ([]List
 	return items, nil
 }
 
+const listFamilies = `-- name: ListFamilies :many
+SELECT id, user_id, visibility, name, abilities, created_at, updated_at FROM families WHERE user_id = $1
+`
+
+func (q *Queries) ListFamilies(ctx context.Context, userID uuid.UUID) ([]Family, error) {
+	rows, err := q.db.Query(ctx, listFamilies, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Family
+	for rows.Next() {
+		var i Family
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Visibility,
+			&i.Name,
+			&i.Abilities,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listMonsters = `-- name: ListMonsters :many
 SELECT id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility from monsters WHERE user_id = $1 ORDER BY name ASC
 `
@@ -566,6 +598,38 @@ func (q *Queries) ListPublicCollections(ctx context.Context) ([]ListPublicCollec
 			&i.CreatorDiscordID,
 			&i.LegendaryCount,
 			&i.StandardCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listPublicFamilies = `-- name: ListPublicFamilies :many
+SELECT id, user_id, visibility, name, abilities, created_at, updated_at FROM families WHERE visibility = 'public'
+`
+
+func (q *Queries) ListPublicFamilies(ctx context.Context) ([]Family, error) {
+	rows, err := q.db.Query(ctx, listPublicFamilies)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Family
+	for rows.Next() {
+		var i Family
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Visibility,
+			&i.Name,
+			&i.Abilities,
+			&i.CreatedAt,
+			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}

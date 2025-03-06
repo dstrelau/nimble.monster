@@ -130,6 +130,12 @@ INSERT INTO monsters_collections (monster_id, collection_id) VALUES ($1, $2);
 -- name: RemoveMonsterFromCollection :exec
 DELETE FROM monsters_collections WHERE monster_id = $1 AND collection_id = $2;
 
+-- name: ListFamilies :many
+SELECT * FROM families WHERE user_id = $1;
+--
+-- name: ListPublicFamilies :many
+SELECT * FROM families WHERE visibility = 'public';
+
 -- name: UpsertUser :one
 INSERT INTO users (discord_id, username, avatar, refresh_token)
 VALUES ($1, $2, $3, $4)

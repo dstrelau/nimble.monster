@@ -98,6 +98,49 @@ func (ns NullCollectionVisibility) Value() (driver.Value, error) {
 	return string(ns.CollectionVisibility), nil
 }
 
+type FamilyVisibility string
+
+const (
+	FamilyVisibilityPublic  FamilyVisibility = "public"
+	FamilyVisibilitySecret  FamilyVisibility = "secret"
+	FamilyVisibilityPrivate FamilyVisibility = "private"
+)
+
+func (e *FamilyVisibility) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = FamilyVisibility(s)
+	case string:
+		*e = FamilyVisibility(s)
+	default:
+		return fmt.Errorf("unsupported scan type for FamilyVisibility: %T", src)
+	}
+	return nil
+}
+
+type NullFamilyVisibility struct {
+	FamilyVisibility FamilyVisibility
+	Valid            bool // Valid is true if FamilyVisibility is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullFamilyVisibility) Scan(value interface{}) error {
+	if value == nil {
+		ns.FamilyVisibility, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.FamilyVisibility.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullFamilyVisibility) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.FamilyVisibility), nil
+}
+
 type MonsterVisibility string
 
 const (
@@ -195,6 +238,16 @@ type Collection struct {
 	UpdatedAt   pgtype.Timestamptz
 	Description string
 	Visibility  CollectionVisibility
+}
+
+type Family struct {
+	ID         uuid.UUID
+	UserID     uuid.UUID
+	Visibility FamilyVisibility
+	Name       string
+	Abilities  [][]byte
+	CreatedAt  pgtype.Timestamptz
+	UpdatedAt  pgtype.Timestamptz
 }
 
 type Monster struct {

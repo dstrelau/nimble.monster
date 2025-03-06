@@ -116,7 +116,13 @@ func (h *MonstersHandler) CreateMonster(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(nimble.MonsterFromSQL(created)); err != nil {
+	nmonster, err := nimble.MonsterFromSQL(created)
+	if err != nil {
+		Error(ctx, w, err)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(nmonster); err != nil {
 		Error(ctx, w, err)
 		return
 	}
@@ -138,10 +144,15 @@ func (h *MonstersHandler) ListPublicMonsters(w http.ResponseWriter, r *http.Requ
 		}))
 	}
 
+	nmonsters, errs := xslices.Map2(dbmonsters, nimble.MonsterFromSQL)
+	if e := errors.Join(errs...); e != nil {
+		Error(ctx, w, e)
+		return
+	}
 	if err := json.NewEncoder(w).Encode(struct {
 		Monsters []nimble.Monster `json:"monsters"`
 	}{
-		Monsters: xslices.Map(dbmonsters, nimble.MonsterFromSQL),
+		Monsters: nmonsters,
 	}); err != nil {
 		http.Error(w, err.Error(), 500)
 		trace.SpanFromContext(r.Context()).RecordError(err)
@@ -164,10 +175,15 @@ func (h *MonstersHandler) ListMyMonsters(w http.ResponseWriter, r *http.Request)
 		}))
 	}
 
+	nmonsters, errs := xslices.Map2(dbmonsters, nimble.MonsterFromSQL)
+	if e := errors.Join(errs...); e != nil {
+		Error(ctx, w, e)
+		return
+	}
 	if err := json.NewEncoder(w).Encode(struct {
 		Monsters []nimble.Monster `json:"monsters"`
 	}{
-		Monsters: xslices.Map(dbmonsters, nimble.MonsterFromSQL),
+		Monsters: nmonsters,
 	}); err != nil {
 		http.Error(w, err.Error(), 500)
 		trace.SpanFromContext(r.Context()).RecordError(err)
@@ -193,7 +209,12 @@ func (h *MonstersHandler) GetMonster(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(nimble.MonsterFromSQL(monster)); err != nil {
+	nmonster, err := nimble.MonsterFromSQL(monster)
+	if err != nil {
+		Error(ctx, w, err)
+		return
+	}
+	if err := json.NewEncoder(w).Encode(nmonster); err != nil {
 		Error(ctx, w, err)
 		return
 	}
@@ -264,7 +285,12 @@ func (h *MonstersHandler) UpdateMonster(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(nimble.MonsterFromSQL(m)); err != nil {
+	nmonster, err := nimble.MonsterFromSQL(m)
+	if err != nil {
+		Error(ctx, w, err)
+		return
+	}
+	if err := json.NewEncoder(w).Encode(nmonster); err != nil {
 		Error(ctx, w, err)
 		return
 	}

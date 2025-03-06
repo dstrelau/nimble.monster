@@ -160,6 +160,12 @@ func (a *App) buildRouter() {
 		r.Get("/api/collections", h.ListPublicCollections)
 	}
 
+	{
+		h := NewFamiliesHandler(a.db)
+		r.With(RequireAuth).Get("/api/users/me/families", h.ListMyFamilies)
+		r.Get("/api/families", h.ListPublicFamilies)
+	}
+
 	fs := http.FileServer(http.Dir("./dist/assets"))
 	r.Handle("/assets/*", http.StripPrefix("/assets/", fs))
 

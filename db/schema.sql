@@ -54,6 +54,17 @@ CREATE TYPE public.collection_visibility AS ENUM (
 
 
 --
+-- Name: family_visibility; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.family_visibility AS ENUM (
+    'public',
+    'secret',
+    'private'
+);
+
+
+--
 -- Name: monster_visibility; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -94,6 +105,21 @@ CREATE TABLE public.collections (
     updated_at timestamp with time zone DEFAULT now(),
     description text DEFAULT ''::text NOT NULL,
     visibility public.collection_visibility DEFAULT 'public'::public.collection_visibility NOT NULL
+);
+
+
+--
+-- Name: families; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.families (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    user_id uuid NOT NULL,
+    visibility public.family_visibility DEFAULT 'public'::public.family_visibility NOT NULL,
+    name text NOT NULL,
+    abilities jsonb[],
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now()
 );
 
 

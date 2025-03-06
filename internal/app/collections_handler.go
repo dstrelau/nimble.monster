@@ -5,11 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"slices"
 	"strconv"
 	"strings"
 
-	"deedles.dev/xiter"
 	"github.com/go-chi/chi/v5"
 	"github.com/gofrs/uuid"
 	"github.com/jackc/pgx/v5"
@@ -202,12 +200,18 @@ func (h *CollectionsHandler) GetCollection(w http.ResponseWriter, r *http.Reques
 		}
 	}
 
+	nmonsters, errs := xslices.Map2(monsters, nimble.MonsterFromSQL)
+	if e := errors.Join(errs...); e != nil {
+		Error(ctx, w, e)
+		return
+	}
+
 	if err := json.NewEncoder(w).Encode(nimble.Collection{
 		ID:          col.ID.String(),
 		Name:        col.Name,
 		Visibility:  nimble.CollectionVisibility(col.Visibility),
 		Creator:     col.UserID.String(),
-		Monsters:    xslices.Map(monsters, nimble.MonsterFromSQL),
+		Monsters:    nmonsters,
 		Description: col.Description,
 	}); err != nil {
 		Error(ctx, w, err)
@@ -281,7 +285,11 @@ func (h *CollectionsHandler) UpdateCollectionMonsters(w http.ResponseWriter, r *
 		return
 	}
 
-	nmonsters := slices.Collect(xiter.Map(slices.Values(monsters), nimble.MonsterFromSQL))
+	nmonsters, errs := xslices.Map2(monsters, nimble.MonsterFromSQL)
+	if e := errors.Join(errs...); e != nil {
+		Error(ctx, w, e)
+		return
+	}
 	if err := json.NewEncoder(w).Encode(nmonsters); err != nil {
 		Error(ctx, w, err)
 		return
@@ -317,7 +325,11 @@ func (h *CollectionsHandler) DownloadCollection(w http.ResponseWriter, r *http.R
 		}
 	}
 
-	nmonsters := xslices.Map(monsters, nimble.MonsterFromSQL)
+	nmonsters, errs := xslices.Map2(monsters, nimble.MonsterFromSQL)
+	if e := errors.Join(errs...); e != nil {
+		Error(ctx, w, e)
+		return
+	}
 
 	pack := export.OBRCompendiumPack{
 		Name:    col.Name,
