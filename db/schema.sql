@@ -147,7 +147,8 @@ CREATE TABLE public.monsters (
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     user_id uuid NOT NULL,
     kind text DEFAULT ''::text NOT NULL,
-    visibility public.monster_visibility DEFAULT 'public'::public.monster_visibility NOT NULL
+    visibility public.monster_visibility DEFAULT 'public'::public.monster_visibility NOT NULL,
+    family_id uuid
 );
 
 
@@ -192,6 +193,14 @@ CREATE TABLE public.users (
 
 ALTER TABLE ONLY public.collections
     ADD CONSTRAINT collections_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: families families_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.families
+    ADD CONSTRAINT families_id_key UNIQUE (id);
 
 
 --
@@ -269,6 +278,14 @@ ALTER TABLE ONLY public.collections
 
 ALTER TABLE ONLY public.monsters_collections
     ADD CONSTRAINT monsters_collections_monster_id_fkey FOREIGN KEY (monster_id) REFERENCES public.monsters(id);
+
+
+--
+-- Name: monsters monsters_family_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.monsters
+    ADD CONSTRAINT monsters_family_id_fkey FOREIGN KEY (family_id) REFERENCES public.families(id);
 
 
 --

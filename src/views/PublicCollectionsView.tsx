@@ -1,26 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { fetchApi } from "../lib/api";
-import type { CollectionVisibility } from "../lib/types";
-
-interface PublicCollection {
-  id: string;
-  name: string;
-  visibility: CollectionVisibility;
-  monstersCount: number;
-  legendaryCount: number;
-  standardCount: number;
-  creator: string;
-  creatorName: string;
-  creatorAvatar: string;
-  creatorDiscordId: string;
-}
+import type { CollectionOverview } from "../lib/types";
 
 const PublicCollectionsView: React.FC = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["public-collections"],
     queryFn: () =>
-      fetchApi<{ collections: PublicCollection[] }>("/api/collections"),
+      fetchApi<{ collections: CollectionOverview[] }>("/api/collections"),
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -50,12 +37,12 @@ const PublicCollectionsView: React.FC = () => {
 
               <div className="flex items-center mt-3 gap-2">
                 <img
-                  src={`https://cdn.discordapp.com/avatars/${collection.creatorDiscordId}/${collection.creatorAvatar}.png`}
-                  alt={collection.creatorName}
+                  src={`https://cdn.discordapp.com/avatars/${collection.creator.discordId}/${collection.creator.avatar}.png`}
+                  alt={collection.creator.username}
                   className="size-6 rounded-full"
                 />
                 <span className="text-sm text-gray-600">
-                  {collection.creatorName}
+                  {collection.creator.username}
                 </span>
               </div>
 

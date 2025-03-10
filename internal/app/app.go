@@ -130,6 +130,10 @@ func (a *App) buildRouter() {
 
 	r.Use(a.ProcessAuth)
 
+	monsters := sqldb.NewMonsterStore(a.db)
+	collections := sqldb.NewCollectionStore(a.db, monsters)
+	families := sqldb.NewFamilyStore(a.db)
+
 	{
 		h := NewSessionsHandler(a.db)
 		r.Get("/auth/login", h.GetLogin)
@@ -139,7 +143,7 @@ func (a *App) buildRouter() {
 	}
 
 	{
-		h := NewMonstersHandler(a.db)
+		h := NewMonstersHandler(monsters)
 		r.With(RequireAuth).Get("/api/users/me/monsters", h.ListMyMonsters)
 		r.With(RequireAuth).Get("/api/monsters/{id}", h.GetMonster)
 		r.With(RequireAuth).Put("/api/monsters/{id}", h.UpdateMonster)
@@ -149,7 +153,7 @@ func (a *App) buildRouter() {
 	}
 
 	{
-		h := NewCollectionsHandler(a.db)
+		h := NewCollectionsHandler(collections)
 		r.With(RequireAuth).Get("/api/users/me/collections", h.ListMyCollections)
 		r.With(RequireAuth).Post("/api/collections", h.CreateCollection)
 		r.With(RequireAuth).Delete("/api/collections/{id}", h.DeleteCollection)
@@ -161,7 +165,7 @@ func (a *App) buildRouter() {
 	}
 
 	{
-		h := NewFamiliesHandler(a.db)
+		h := NewFamiliesHandler(families)
 		r.With(RequireAuth).Get("/api/users/me/families", h.ListMyFamilies)
 		r.Get("/api/families", h.ListPublicFamilies)
 	}
@@ -181,8 +185,6 @@ func Error(ctx context.Context, w http.ResponseWriter, err error) {
 	http.Error(w, err.Error(), 500)
 }
 
-type currentUserCtxKey struct{}
-
 func (a *App) ProcessAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -200,6 +202,7 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			return
 		}
+		span.SetAttributes(attribute.String("session.id", sid.String()))
 
 		user, err := a.db.GetUserByUnexpiredSession(ctx, sid)
 		if err != nil {
@@ -219,9 +222,9 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 
 		span.SetAttributes(attribute.String("user.id", user.ID.String()))
 
-		ctx = SetCurrentUser(ctx,
+		ctx = nimble.SetCurrentUser(ctx,
 			nimble.User{
-				ID:        user.ID,
+				ID:        nimble.UserID(user.ID),
 				DiscordID: user.DiscordID,
 				Username:  user.Username,
 				Avatar:    user.Avatar.String,
@@ -230,20 +233,10 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 	})
 }
 
-func SetCurrentUser(ctx context.Context, u nimble.User) context.Context {
-	return context.WithValue(ctx, currentUserCtxKey{}, &u)
-}
-
-// might be nil!
-func CurrentUser(ctx context.Context) *nimble.User {
-	u, _ := ctx.Value(currentUserCtxKey{}).(*nimble.User)
-	return u
-}
-
 func RequireAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		user := CurrentUser(ctx)
+		user := nimble.CurrentUser(ctx)
 		if user == nil {
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return

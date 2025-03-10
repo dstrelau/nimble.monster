@@ -1,236 +1,78 @@
 package nimble
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
-	"strings"
 
 	"github.com/gofrs/uuid"
-	"nimble.monster/internal/sqldb"
 )
+
+type ID uuid.UUID
+
+func (id ID) IsNil() bool {
+	return uuid.UUID(id).IsNil()
+}
+
+func (id ID) String() string {
+	return uuid.UUID(id).String()
+}
+
+func (id ID) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + id.String() + `"`), nil
+}
+
+func (id *ID) UnmarshalJSON(data []byte) error {
+	var s string
+	err := json.Unmarshal(data, &s)
+	if err != nil {
+		return err
+	}
+	if s == "" {
+		*id = ID(uuid.Nil)
+		return nil
+	}
+	u, err := uuid.FromString(s)
+	if err != nil {
+		return err
+	}
+	*id = ID(u)
+	return nil
+}
+
+type UserID = ID
+type MonsterID = ID
+type CollectionID = ID
+type FamilyID = ID
+
+var (
+	ErrNotFound   = errors.New("not found")
+	ErrNotAllowed = errors.New("not allowed")
+)
+
+type Error struct {
+	Message string `json:"message"`
+}
+
+func (e Error) Error() string {
+	return e.Message
+}
 
 type User struct {
-	DiscordID string    `json:"discordId"`
-	Username  string    `json:"username"`
-	Avatar    string    `json:"avatar"`
-	ID        uuid.UUID `json:"id"`
+	ID        UserID `json:"id"`
+	DiscordID string `json:"discordId"`
+	Username  string `json:"username"`
+	Avatar    string `json:"avatar"`
 }
 
-type FamilyVisibility string
+type currentUserCtxKey struct{}
 
-const (
-	FamilyVisibilityPublic  FamilyVisibility = "public"
-	FamilyVisibilityPrivate FamilyVisibility = "private"
-	FamilyVisibilitySecret  FamilyVisibility = "secret"
-)
-
-type Family struct {
-	ID          string           `json:"id"`
-	Abilities   []Ability        `json:"abilities"`
-	Name        string           `json:"name"`
-	Description string           `json:"description"`
-	Visibility  FamilyVisibility `json:"visibility"`
+func SetCurrentUser(ctx context.Context, u User) context.Context {
+	return context.WithValue(ctx, currentUserCtxKey{}, &u)
 }
 
-func FamilyFromSQL(in sqldb.Family) (Family, error) {
-	out := Family{
-		ID:         in.ID.String(),
-		Name:       in.Name,
-		Visibility: FamilyVisibility(in.Visibility),
-	}
-	var err error
-	out.Abilities = make([]Ability, len(in.Abilities))
-	for i, a := range in.Abilities {
-		err = errors.Join(err, json.Unmarshal(a, &out.Abilities[i]))
-	}
-	return out, err
-}
-
-type MonsterArmor string
-
-const (
-	ArmorNone   MonsterArmor = ""
-	ArmorMedium MonsterArmor = "medium"
-	ArmorHeavy  MonsterArmor = "heavy"
-)
-
-type MonsterSize string
-
-const (
-	SizeTiny       MonsterSize = "tiny"
-	SizeSmall      MonsterSize = "small"
-	SizeMedium     MonsterSize = "medium"
-	SizeLarge      MonsterSize = "large"
-	SizeHuge       MonsterSize = "huge"
-	SizeGargantuan MonsterSize = "gargantuan"
-)
-
-func (s MonsterSize) Display() string {
-	switch s {
-	case SizeTiny:
-		return "Tiny"
-	case SizeSmall:
-		return "Small"
-	case SizeMedium:
-		return "Medium"
-	case SizeLarge:
-		return "Large"
-	case SizeHuge:
-		return "Huge"
-	case SizeGargantuan:
-		return "Gargantuan"
-	default:
-		return "Medium"
-	}
-}
-
-func MonsterSizeFromString(s string) MonsterSize {
-	switch s {
-	case "tiny":
-		return SizeTiny
-	case "small":
-		return SizeSmall
-	case "medium":
-		return SizeMedium
-	case "large":
-		return SizeLarge
-	case "huge":
-		return SizeHuge
-	case "gargantuan":
-		return SizeGargantuan
-	default:
-		return SizeMedium
-	}
-}
-
-type MonsterVisibility string
-
-const (
-	MonsterVisibilityPublic  MonsterVisibility = "public"
-	MonsterVisibilityPrivate MonsterVisibility = "private"
-)
-
-type Monster struct {
-	Family     *Family           `json:"family"`
-	Bloodied   string            `json:"bloodied"`
-	LastStand  string            `json:"lastStand"`
-	Name       string            `json:"name"`
-	Saves      string            `json:"saves"`
-	Size       MonsterSize       `json:"size"`
-	ID         string            `json:"id"`
-	Kind       string            `json:"kind"`
-	Armor      MonsterArmor      `json:"armor"`
-	Level      string            `json:"level"`
-	Abilities  []Ability         `json:"abilities"`
-	Actions    []Action          `json:"actions"`
-	Speed      int32             `json:"speed"`
-	Swim       int32             `json:"swim"`
-	Fly        int32             `json:"fly"`
-	HP         int32             `json:"hp"`
-	Legendary  bool              `json:"legendary"`
-	UserID     uuid.UUID         `json:"-"`
-	Visibility MonsterVisibility `json:"visibility"`
-}
-
-type Ability struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-}
-
-type Action struct {
-	Name        string `json:"name"`
-	Damage      string `json:"damage"`
-	Description string `json:"description"`
-}
-
-func MonsterFromSQL(in sqldb.Monster) (Monster, error) {
-	var size MonsterSize
-	switch in.Size {
-	case sqldb.SizeTypeTiny:
-		size = SizeTiny
-	case sqldb.SizeTypeSmall:
-		size = SizeSmall
-	case sqldb.SizeTypeMedium:
-		size = SizeMedium
-	case sqldb.SizeTypeLarge:
-		size = SizeLarge
-	case sqldb.SizeTypeHuge:
-		size = SizeHuge
-	case sqldb.SizeTypeGargantuan:
-		size = SizeGargantuan
-	default:
-		panic("unknown monster size" + in.Size)
-	}
-
-	var armor MonsterArmor
-	switch in.Armor {
-	case sqldb.ArmorTypeValue0:
-		armor = ArmorNone
-	case sqldb.ArmorTypeMedium:
-		armor = ArmorMedium
-	case sqldb.ArmorTypeHeavy:
-		armor = ArmorHeavy
-	default:
-		panic("unknown monster armor" + in.Armor)
-	}
-
-	out := Monster{
-		ID:         in.ID.String(),
-		Legendary:  in.Legendary,
-		Kind:       in.Kind,
-		Name:       in.Name,
-		HP:         in.Hp,
-		Speed:      in.Speed,
-		Fly:        in.Fly,
-		Swim:       in.Swim,
-		Armor:      armor,
-		Size:       size,
-		Level:      in.Level,
-		LastStand:  in.LastStand,
-		Bloodied:   in.Bloodied,
-		Saves:      strings.Join(in.Saves, ", "),
-		Visibility: MonsterVisibility(in.Visibility),
-	}
-	var err error
-	out.Actions = make([]Action, len(in.Actions))
-	for i, a := range in.Actions {
-		err = errors.Join(err, json.Unmarshal(a, &out.Actions[i]))
-	}
-	out.Abilities = make([]Ability, len(in.Abilities))
-	for i, a := range in.Abilities {
-		err = errors.Join(err, json.Unmarshal(a, &out.Abilities[i]))
-	}
-	return out, err
-}
-
-type CollectionVisibility string
-
-const (
-	CollectionVisibilityPublic  CollectionVisibility = "public"
-	CollectionVisibilityPrivate CollectionVisibility = "private"
-	CollectionVisibilitySecret  CollectionVisibility = "secret"
-)
-
-type Collection struct {
-	ID            string               `json:"id"`
-	Name          string               `json:"name"`
-	Creator       string               `json:"creator"`
-	Monsters      []Monster            `json:"monsters"`
-	MonstersCount int                  `json:"monstersCount"`
-	Visibility    CollectionVisibility `json:"visibility"`
-	Description   string               `json:"description"`
-}
-
-type PublicCollection struct {
-	ID               string               `json:"id"`
-	Name             string               `json:"name"`
-	Visibility       CollectionVisibility `json:"visibility"`
-	MonstersCount    int                  `json:"monstersCount"`
-	LegendaryCount   int                  `json:"legendaryCount"`
-	StandardCount    int                  `json:"standardCount"`
-	Creator          string               `json:"creator"`
-	CreatorName      string               `json:"creatorName"`
-	CreatorAvatar    string               `json:"creatorAvatar"`
-	CreatorDiscordID string               `json:"creatorDiscordId"`
-	Description      string               `json:"description"`
+// might be nil!
+func CurrentUser(ctx context.Context) *User {
+	u, _ := ctx.Value(currentUserCtxKey{}).(*User)
+	return u
 }

@@ -6,13 +6,13 @@ all: build test
 $(BIN)/sqlc:
 	GOBIN=$(BIN) go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
-SQLCFILES := internal/sqldb/queries.sql.go internal/sqldb/models.go internal/sqldb/db.go
-SQLCSRC := $(wildcard db/*.sql)
-$(SQLCFILES): $(BIN)/sqlc db/schema.sql $(SQLCSRC) sqlc.yaml
+SQLCSRC := db/schema.sql $(wildcard db/queries/*.sql)
+internal/sqldb/.sqlc-stamp: $(BIN)/sqlc $(SQLCSRC) sqlc.yaml
 	$(BIN)/sqlc generate
+	@touch $@
 
 .PHONY: sqlc
-sqlc: $(SQLCFILES)
+sqlc: internal/sqldb/.sqlc-stamp
 
 .PHONY: migration
 migration:

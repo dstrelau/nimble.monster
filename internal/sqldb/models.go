@@ -271,6 +271,7 @@ type Monster struct {
 	UserID     uuid.UUID
 	Kind       string
 	Visibility MonsterVisibility
+	FamilyID   pgtype.UUID
 }
 
 type MonstersCollection struct {

@@ -13,6 +13,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/oauth2"
 
+	"nimble.monster/internal/nimble"
 	"nimble.monster/internal/sqldb"
 )
 
@@ -188,7 +189,7 @@ func (h *SessionsHandler) GetCallbackDiscord(w http.ResponseWriter, r *http.Requ
 }
 
 func (h *SessionsHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
-	u := CurrentUser(r.Context())
+	u := nimble.CurrentUser(r.Context())
 	err := json.NewEncoder(w).Encode(u)
 	if err != nil {
 		trace.SpanFromContext(r.Context()).RecordError(err)

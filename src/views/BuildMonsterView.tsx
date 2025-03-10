@@ -1,9 +1,4 @@
-import {
-  ChevronDownIcon,
-  ChevronRightIcon,
-  PlusIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -209,8 +204,6 @@ const FamilySection: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
 }> = ({ monster, setMonster }) => {
-  const [expandSection, setExpandSection] = useState(false);
-
   const publicFamilies = useQuery({
     queryKey: ["families"],
     queryFn: () => fetchApi<{ families: Family[] }>("/api/families"),
@@ -254,40 +247,25 @@ const FamilySection: React.FC<{
   return (
     <fieldset>
       <div className="header flex items-center gap-x-1 mt-5 mb-2">
-        <button
-          type="button"
-          className="w-6 h-6 flex-shrink-0 "
-          onClick={() => setExpandSection(!expandSection)}
-        >
-          {expandSection ? (
-            <ChevronDownIcon className="w-6 h-6 text-slate-500" />
-          ) : (
-            <ChevronRightIcon className="w-6 h-6 text-slate-500" />
-          )}
-        </button>
         <legend className="font-bold inline-block">Family</legend>
       </div>
 
-      {expandSection && (
-        <div className="mb-4 p-4 border rounded-md">
-          <div className="flex">
-            <div className="flex-1 pr-4">
-              <select
-                className="w-full p-2 border rounded"
-                value={monster?.family?.id || ""}
-                onChange={(e) => handleSelectFamily(e.target.value)}
-              >
-                <option value="">None</option>
-                {allFamilies.map((family) => (
-                  <option key={family.id} value={family.id}>
-                    {family.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+      <div className="flex">
+        <div className="flex-1 pr-4">
+          <select
+            className="text-sm/6 w-full p-2 border rounded"
+            value={monster?.family?.id || ""}
+            onChange={(e) => handleSelectFamily(e.target.value)}
+          >
+            <option value="">None</option>
+            {allFamilies.map((family) => (
+              <option key={family.id} value={family.id}>
+                {family.name}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
+      </div>
     </fieldset>
   );
 };

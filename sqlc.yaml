@@ -1,7 +1,7 @@
 version: "2"
 sql:
   - engine: "postgresql"
-    queries: "db/queries.sql"
+    queries: "db/queries"
     schema: "db/schema.sql"
     gen:
       go:
@@ -9,6 +9,7 @@ sql:
         out: "internal/sqldb"
         sql_package: "pgx/v5"
         query_parameter_limit: 2
+        emit_interface: true
         overrides:
           - db_type: "uuid"
             go_type:

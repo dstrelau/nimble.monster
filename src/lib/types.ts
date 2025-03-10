@@ -67,11 +67,21 @@ export interface Action {
 export interface Collection {
   id: string;
   name: string;
-  creator: string;
+  creator: User;
   monsters: Monster[];
-  monstersCount: number;
+  legendaryCount: number;
+  standardCount: number;
   visibility: CollectionVisibility;
   description?: string;
+}
+
+export interface CollectionOverview {
+  id: string;
+  name: string;
+  visibility: CollectionVisibility;
+  legendaryCount: number;
+  standardCount: number;
+  creator: User;
 }
 
 export interface User {

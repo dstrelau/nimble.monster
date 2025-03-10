@@ -178,6 +178,7 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
               }}
             >
               <UsersIcon className="w-4 pb-1 mr-1 inline-block align-middle" />
+              <strong className="pr-1">{monster.family?.name}:</strong>
               <strong className="pr-1">{maybePeriod(ability.name)}</strong>
               {ability.description}
             </p>
@@ -211,11 +212,7 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
               <li key={index} className="mb-1 leading-5">
                 <strong className="pr-1">{action.name}.</strong>
                 {action.damage && (
-                  <span className="damage">
-                    {action.description
-                      ? maybePeriod(action.damage)
-                      : action.damage}
-                  </span>
+                  <span className="damage">{action.damage} </span>
                 )}
                 {action.description && (
                   <span className="description">{action.description}</span>

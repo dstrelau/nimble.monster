@@ -6,13 +6,7 @@ import { Link } from "react-router-dom";
 import { fetchApi } from "../lib/api";
 import { VisibilityEnum } from "../components/VisibilityToggle";
 import { z } from "zod";
-
-interface Collection {
-  id: string;
-  name: string;
-  visibility: string;
-  monstersCount: number;
-}
+import type { CollectionOverview } from "../lib/types";
 
 const EditDeleteButtons = ({ id }: { id: string }) => {
   const queryClient = useQueryClient();
@@ -56,11 +50,11 @@ const NewCollectionForm = () => {
 
   const createMutation = useMutation({
     mutationFn: (data: CollectionFormData) =>
-      fetchApi<Collection>("/api/collections", {
+      fetchApi<CollectionOverview>("/api/collections", {
         method: "POST",
         body: JSON.stringify(data),
       }),
-    onSuccess: (newCollection: Collection) => {
+    onSuccess: (newCollection: CollectionOverview) => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       reset();
       window.location.href = `/my/collections/${newCollection.id}/edit`;
@@ -117,7 +111,9 @@ const MyCollectionsView = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["collections"],
     queryFn: () =>
-      fetchApi<{ collections: Collection[] }>("/api/users/me/collections"),
+      fetchApi<{ collections: CollectionOverview[] }>(
+        "/api/users/me/collections",
+      ),
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -137,36 +133,59 @@ const MyCollectionsView = () => {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {data.collections.map((c) => (
-            <div
-              key={c.id}
-              className="collection p-6 border border-gray-200 rounded-xl bg-white hover:shadow-lg transition-all duration-200 hover:border-blue-200"
-            >
-              <Link to={`/collections/${c.id}`} className="block">
-                <div className="flex justify-between items-start">
-                  <h3 className="text-xl font-bold text-gray-900">{c.name}</h3>
-                  <span
-                    className={`px-3 py-1 text-xs font-medium rounded-full ${
-                      c.visibility == "public"
-                        ? "bg-green-100 text-green-700"
-                        : c.visibility == "private"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-orange-100 text-orange-700"
-                    }`}
-                  >
-                    {c.visibility == "public"
-                      ? "Public"
-                      : c.visibility == "private"
-                        ? "Private"
-                        : "Secret"}
-                  </span>
-                </div>
-                <div className="mt-3 text-sm text-gray-600">
-                  {c.monstersCount === 1
-                    ? "1 monster"
-                    : `${c.monstersCount} monsters`}
-                </div>
-              </Link>
-              <EditDeleteButtons id={c.id} />
+            <div>
+              <div
+                key={c.id}
+                className="collection p-6 border border-gray-200 rounded-xl bg-white hover:shadow-lg transition-all duration-200 hover:border-blue-200"
+              >
+                <Link to={`/collections/${c.id}`} className="block">
+                  <div className="flex justify-between items-start">
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {c.name}
+                    </h3>
+                    <div className="flex items-center">
+                      <span
+                        className={`px-3 py-1 text-xs font-medium rounded-full ${
+                          c.visibility == "public"
+                            ? "bg-green-100 text-green-700"
+                            : c.visibility == "private"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-orange-100 text-orange-700"
+                        }`}
+                      >
+                        {c.visibility == "public"
+                          ? "Public"
+                          : c.visibility == "private"
+                            ? "Private"
+                            : "Secret"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center mt-3 gap-2">
+                    <img
+                      src={`https://cdn.discordapp.com/avatars/${c.creator.discordId}/${c.creator.avatar}.png`}
+                      alt={c.creator.username}
+                      className="size-6 rounded-full"
+                    />
+                    <span className="text-sm text-gray-600">
+                      {c.creator.username}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 flex justify-between border-t pt-3 border-gray-100">
+                    <div className="text-sm text-gray-600">
+                      {c.standardCount} standard
+                    </div>
+                    <div className="text-sm text-purple-600 font-medium">
+                      {c.legendaryCount} legendary
+                    </div>
+                  </div>
+                </Link>
+              </div>
+              <div className="flex justify-end">
+                <EditDeleteButtons id={c.id} />
+              </div>
             </div>
           ))}
         </div>

@@ -3,7 +3,6 @@ module nimble.monster
 go 1.23.2
 
 require (
-	deedles.dev/xiter v0.1.1
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-chi/cors v1.2.1
 	github.com/gofrs/uuid v4.4.0+incompatible

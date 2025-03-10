@@ -12,11 +12,11 @@ import (
 
 // MemDB implements the minimum required DB interface for testing
 type MemDB struct {
-	sqldb.MonsterQuerier
+	sqldb.Querier
 	monsters map[uuid.UUID]sqldb.Monster
 }
 
-var _ sqldb.MonsterQuerier = (*MemDB)(nil)
+var _ sqldb.Querier = (*MemDB)(nil)
 
 func New() *MemDB {
 	return &MemDB{
@@ -66,13 +66,13 @@ func (m *MemDB) CreateLegendaryMonster(ctx context.Context, arg sqldb.CreateLege
 	return monster, nil
 }
 
-func (m *MemDB) DeleteMonster(ctx context.Context, userID uuid.UUID, id uuid.UUID) (sqldb.Monster, error) {
+func (m *MemDB) DeleteMonster(ctx context.Context, id uuid.UUID) (sqldb.Monster, error) {
 	monster := m.monsters[id]
 	delete(m.monsters, id)
 	return monster, nil
 }
 
-func (m *MemDB) GetMonster(ctx context.Context, userID uuid.UUID, id uuid.UUID) (sqldb.Monster, error) {
+func (m *MemDB) GetMonster(ctx context.Context, id uuid.UUID) (sqldb.Monster, error) {
 	return m.monsters[id], nil
 }
 

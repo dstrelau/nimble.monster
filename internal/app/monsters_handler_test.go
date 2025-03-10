@@ -14,12 +14,11 @@ import (
 	"nimble.monster/internal/app"
 	"nimble.monster/internal/memdb"
 	"nimble.monster/internal/nimble"
-	"nimble.monster/internal/sqldb"
 )
 
 func TestMonstersHandler_CreateMonster_Standard(t *testing.T) {
-	db := memdb.New()
-	handler := app.NewMonstersHandler(db)
+	monsters := memdb.NewMonsterStore()
+	handler := app.NewMonstersHandler(monsters)
 
 	monster := nimble.Monster{
 		Name:  "Goblin",
@@ -61,8 +60,8 @@ func TestMonstersHandler_CreateMonster_Standard(t *testing.T) {
 }
 
 func TestMonstersHandler_CreateMonster_Legendary(t *testing.T) {
-	db := memdb.New()
-	handler := app.NewMonstersHandler(db)
+	monsters := memdb.NewMonsterStore()
+	handler := app.NewMonstersHandler(monsters)
 
 	monster := nimble.Monster{
 		Name:      "Ancient Dragon",
@@ -114,58 +113,59 @@ func TestMonstersHandler_CreateMonster_Legendary(t *testing.T) {
 
 func TestMonstersHandler_ListMyMonsters(t *testing.T) {
 	t.Run("lists all user monsters", func(t *testing.T) {
-		db := memdb.New()
-		handler := app.NewMonstersHandler(db)
+		monsters := memdb.NewMonsterStore()
+		handler := app.NewMonstersHandler(monsters)
 		ctx := withTestUser(context.Background())
-		user := app.CurrentUser(ctx)
+		user := nimble.CurrentUser(ctx)
 
 		standardMonsters := []struct {
 			name   string
 			hp     int32
 			level  string
-			size   sqldb.SizeType
-			userID uuid.UUID
+			size   nimble.MonsterSize
+			userID nimble.UserID
 		}{
 			{
 				name:   "Goblin",
 				hp:     12,
 				level:  "1/3",
-				size:   sqldb.SizeTypeSmall,
+				size:   nimble.SizeSmall,
 				userID: user.ID,
 			},
 			{
 				name:   "Orc",
 				hp:     20,
 				level:  "1",
-				size:   sqldb.SizeTypeMedium,
+				size:   nimble.SizeMedium,
 				userID: user.ID,
 			},
 			{
 				name:   "Troll",
 				hp:     30,
 				level:  "2",
-				size:   sqldb.SizeTypeLarge,
-				userID: uuid.Must(uuid.NewV4()),
+				size:   nimble.SizeLarge,
+				userID: nimble.UserID(uuid.Must(uuid.NewV4())),
 			},
 		}
 
 		for _, m := range standardMonsters {
-			_, err := db.CreateMonster(ctx, sqldb.CreateMonsterParams{
-				UserID: m.userID,
-				Name:   m.name,
-				Hp:     m.hp,
-				Level:  m.level,
-				Size:   m.size,
+			_, err := monsters.Create(ctx, nimble.Monster{
+				Creator: *user,
+				Name:    m.name,
+				HP:      m.hp,
+				Level:   m.level,
+				Size:    nimble.MonsterSize(m.size),
 			})
 			require.NoError(t, err)
 		}
 
-		_, err := db.CreateLegendaryMonster(ctx, sqldb.CreateLegendaryMonsterParams{
-			UserID: user.ID,
-			Name:   "Dragon",
-			Hp:     300,
-			Level:  "14",
-			Size:   sqldb.SizeTypeHuge,
+		_, err := monsters.Create(ctx, nimble.Monster{
+			Legendary: true,
+			Creator:   *user,
+			Name:      "Dragon",
+			HP:        300,
+			Level:     "14",
+			Size:      nimble.SizeHuge,
 		})
 		require.NoError(t, err)
 
@@ -190,60 +190,9 @@ func TestMonstersHandler_ListMyMonsters(t *testing.T) {
 		assert.Equal(t, "Orc", response.Monsters[2].Name)
 	})
 
-	t.Run("filters monsters by IDs", func(t *testing.T) {
-		db := memdb.New()
-		handler := app.NewMonstersHandler(db)
-		ctx := withTestUser(context.Background())
-		user := app.CurrentUser(ctx)
-
-		// Create test monsters directly in db
-		goblin, err := db.CreateMonster(ctx, sqldb.CreateMonsterParams{
-			UserID: user.ID,
-			Name:   "Goblin",
-			Hp:     12,
-			Level:  "1/3",
-		})
-		require.NoError(t, err)
-
-		_, err = db.CreateMonster(ctx, sqldb.CreateMonsterParams{
-			UserID: user.ID,
-			Name:   "Dragon",
-			Hp:     300,
-			Level:  "14",
-		})
-		require.NoError(t, err)
-
-		orc, err := db.CreateMonster(ctx, sqldb.CreateMonsterParams{
-			UserID: user.ID,
-			Name:   "Orc",
-			Hp:     20,
-			Level:  "1",
-		})
-		require.NoError(t, err)
-
-		// Test listing with ID filter (just first and last monster)
-		req := httptest.NewRequest(http.MethodGet, "/monsters?ids="+goblin.ID.String()+"&ids="+orc.ID.String(), nil)
-		req = req.WithContext(ctx)
-		w := httptest.NewRecorder()
-
-		handler.ListMyMonsters(w, req)
-
-		assert.Equal(t, http.StatusOK, w.Code)
-
-		var response struct {
-			Monsters []nimble.Monster `json:"monsters"`
-		}
-		err = json.NewDecoder(w.Body).Decode(&response)
-		require.NoError(t, err)
-
-		assert.Len(t, response.Monsters, 2)
-		assert.Equal(t, goblin.ID.String(), response.Monsters[0].ID)
-		assert.Equal(t, orc.ID.String(), response.Monsters[1].ID)
-	})
-
 	t.Run("returns empty list when no monsters exist", func(t *testing.T) {
-		db := memdb.New()
-		handler := app.NewMonstersHandler(db)
+		monsters := memdb.NewMonsterStore()
+		handler := app.NewMonstersHandler(monsters)
 
 		req := httptest.NewRequest(http.MethodGet, "/monsters", nil)
 		req = req.WithContext(withTestUser(req.Context()))
@@ -263,14 +212,12 @@ func TestMonstersHandler_ListMyMonsters(t *testing.T) {
 	})
 }
 
-// Helper function to create a context with a test user
 func TestMonstersHandler_GetMonster(t *testing.T) {
 	t.Run("get existing monster", func(t *testing.T) {
-		db := memdb.New()
-		handler := app.NewMonstersHandler(db)
+		monsters := memdb.NewMonsterStore()
+		handler := app.NewMonstersHandler(monsters)
 		ctx := withTestUser(context.Background())
 
-		// Create a test monster first
 		monster := nimble.Monster{
 			Name:  "Goblin",
 			HP:    12,
@@ -291,7 +238,7 @@ func TestMonstersHandler_GetMonster(t *testing.T) {
 		require.NoError(t, err)
 
 		// Test getting the monster
-		req = httptest.NewRequest(http.MethodGet, "/monsters/"+created.ID, nil)
+		req = httptest.NewRequest(http.MethodGet, "/monsters/"+created.ID.String(), nil)
 		req = req.WithContext(ctx)
 		w = httptest.NewRecorder()
 
@@ -311,8 +258,8 @@ func TestMonstersHandler_GetMonster(t *testing.T) {
 	})
 
 	t.Run("monster not found", func(t *testing.T) {
-		db := memdb.New()
-		handler := app.NewMonstersHandler(db)
+		monsters := memdb.NewMonsterStore()
+		handler := app.NewMonstersHandler(monsters)
 		ctx := withTestUser(context.Background())
 
 		id := uuid.Must(uuid.NewV4())
@@ -326,8 +273,8 @@ func TestMonstersHandler_GetMonster(t *testing.T) {
 	})
 
 	t.Run("invalid monster ID", func(t *testing.T) {
-		db := memdb.New()
-		handler := app.NewMonstersHandler(db)
+		monsters := memdb.NewMonsterStore()
+		handler := app.NewMonstersHandler(monsters)
 		ctx := withTestUser(context.Background())
 
 		req := httptest.NewRequest(http.MethodGet, "/monsters/not-a-uuid", nil)
@@ -343,9 +290,9 @@ func TestMonstersHandler_GetMonster(t *testing.T) {
 // Helper function to create a context with a test user
 func withTestUser(ctx context.Context) context.Context {
 	testUser := nimble.User{
-		ID:        uuid.Must(uuid.NewV4()),
+		ID:        nimble.UserID(uuid.Must(uuid.NewV4())),
 		Username:  "testuser",
 		DiscordID: "123456789",
 	}
-	return app.SetCurrentUser(ctx, testUser)
+	return nimble.SetCurrentUser(ctx, testUser)
 }
