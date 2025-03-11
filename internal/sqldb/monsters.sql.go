@@ -175,57 +175,6 @@ func (q *Queries) DeleteMonster(ctx context.Context, id uuid.UUID) (Monster, err
 	return i, err
 }
 
-const findFamilies = `-- name: FindFamilies :many
-SELECT id, user_id, visibility, name, abilities, created_at, updated_at FROM families WHERE id = ANY($1::uuid[])
-`
-
-func (q *Queries) FindFamilies(ctx context.Context, dollar_1 []uuid.UUID) ([]Family, error) {
-	rows, err := q.db.Query(ctx, findFamilies, dollar_1)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Family
-	for rows.Next() {
-		var i Family
-		if err := rows.Scan(
-			&i.ID,
-			&i.UserID,
-			&i.Visibility,
-			&i.Name,
-			&i.Abilities,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getFamily = `-- name: GetFamily :one
-SELECT id, user_id, visibility, name, abilities, created_at, updated_at FROM families WHERE id = $1
-`
-
-func (q *Queries) GetFamily(ctx context.Context, id uuid.UUID) (Family, error) {
-	row := q.db.QueryRow(ctx, getFamily, id)
-	var i Family
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.Visibility,
-		&i.Name,
-		&i.Abilities,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const getMonster = `-- name: GetMonster :one
 SELECT id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id
 FROM monsters
@@ -259,38 +208,6 @@ func (q *Queries) GetMonster(ctx context.Context, id uuid.UUID) (Monster, error)
 		&i.FamilyID,
 	)
 	return i, err
-}
-
-const listFamiliesForUser = `-- name: ListFamiliesForUser :many
-SELECT id, user_id, visibility, name, abilities, created_at, updated_at FROM families WHERE user_id = $1
-`
-
-func (q *Queries) ListFamiliesForUser(ctx context.Context, userID uuid.UUID) ([]Family, error) {
-	rows, err := q.db.Query(ctx, listFamiliesForUser, userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Family
-	for rows.Next() {
-		var i Family
-		if err := rows.Scan(
-			&i.ID,
-			&i.UserID,
-			&i.Visibility,
-			&i.Name,
-			&i.Abilities,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }
 
 const listMonstersForUser = `-- name: ListMonstersForUser :many
@@ -330,38 +247,6 @@ func (q *Queries) ListMonstersForUser(ctx context.Context, userID uuid.UUID) ([]
 			&i.Kind,
 			&i.Visibility,
 			&i.FamilyID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listPublicFamilies = `-- name: ListPublicFamilies :many
-SELECT id, user_id, visibility, name, abilities, created_at, updated_at FROM families WHERE visibility = 'public'
-`
-
-func (q *Queries) ListPublicFamilies(ctx context.Context) ([]Family, error) {
-	rows, err := q.db.Query(ctx, listPublicFamilies)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Family
-	for rows.Next() {
-		var i Family
-		if err := rows.Scan(
-			&i.ID,
-			&i.UserID,
-			&i.Visibility,
-			&i.Name,
-			&i.Abilities,
-			&i.CreatedAt,
-			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}

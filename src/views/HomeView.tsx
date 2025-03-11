@@ -20,8 +20,8 @@ const HomeView = () => (
             .
           </p>
           <p className="mt-2 text-amber-700 bg-amber-50 p-3 rounded-md border border-amber-200">
-            This is a alpha-quality product. It is entirely possible that data
-            loss will occur. There are lots of bugs. Use at your own risk.
+            This is a beta-quality product. It is entirely possible that data
+            loss will occur. There are some bugs and usability issues.
           </p>
         </div>
       </div>
@@ -39,7 +39,7 @@ const HomeView = () => (
               >
                 Monster Builder
               </a>{" "}
-              to create a new Nimble-flavor monster, both Standard and
+              to create a new Nimble-flavor monster, both standard and
               Legendary.
             </li>
             <li>
@@ -68,6 +68,7 @@ const HomeView = () => (
               "Save your monsters",
               "View your saved monsters",
               "Build collections of monsters that you can share",
+              "Create families of similar monsters",
             ].map((item) => (
               <li key={item}>{item}</li>
             ))}
@@ -80,10 +81,7 @@ const HomeView = () => (
         <div>
           <h2 className="text-lg font-semibold">Coming Soon</h2>
           <ul className="mt-2 space-y-2 list-disc list-inside">
-            {[
-              "Upload Monster Images",
-              "Monster Families (like Kobolds, Goblins, etc in the GM Guide)",
-            ].map((item) => (
+            {["Upload Monster Images", "User profile pages"].map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>

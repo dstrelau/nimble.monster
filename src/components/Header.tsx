@@ -127,6 +127,14 @@ const Header = () => {
                     >
                       My Collections
                     </NavLink>
+                    <NavLink
+                      to="/my/families"
+                      className="block px-4 py-2 text-sm text-gray-700"
+                      role="menuitem"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My Families
+                    </NavLink>
                     <form method="POST" action="/auth/logout">
                       <button
                         className="block px-4 py-2 text-sm text-gray-700"

@@ -68,7 +68,7 @@ WHERE id = $1 RETURNING *;
 
 -- name: DeleteMonster :one
 DELETE FROM monsters WHERE id = $1 RETURNING *;
---
+
 -- name: SearchMonsters :many
 SELECT m.*
 FROM monsters m
@@ -79,15 +79,3 @@ ORDER BY
     similarity(lower(m.name), lower($1)) DESC,
     m.name ASC
 LIMIT 10;
-
--- name: GetFamily :one
-SELECT * FROM families WHERE id = $1;
---
--- name: FindFamilies :many
-SELECT * FROM families WHERE id = ANY($1::uuid[]);
-
--- name: ListFamiliesForUser :many
-SELECT * FROM families WHERE user_id = $1;
-
--- name: ListPublicFamilies :many
-SELECT * FROM families WHERE visibility = 'public';
