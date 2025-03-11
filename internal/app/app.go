@@ -165,8 +165,12 @@ func (a *App) buildRouter() {
 	}
 
 	{
-		h := NewFamiliesHandler(families)
+		h := NewFamiliesHandler(families, monsters)
 		r.With(RequireAuth).Get("/api/users/me/families", h.ListMyFamilies)
+		r.With(RequireAuth).Post("/api/families", h.CreateFamily)
+		r.With(RequireAuth).Get("/api/families/{id}", h.GetFamily)
+		r.With(RequireAuth).Put("/api/families/{id}", h.UpdateFamily)
+		r.With(RequireAuth).Delete("/api/families/{id}", h.DeleteFamily)
 		r.Get("/api/families", h.ListPublicFamilies)
 	}
 
@@ -182,7 +186,7 @@ func (a *App) buildRouter() {
 
 func Error(ctx context.Context, w http.ResponseWriter, err error) {
 	trace.SpanFromContext(ctx).RecordError(err)
-	http.Error(w, err.Error(), 500)
+	w.WriteHeader(http.StatusInternalServerError)
 }
 
 func (a *App) ProcessAuth(next http.Handler) http.Handler {

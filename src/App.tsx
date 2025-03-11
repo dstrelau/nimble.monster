@@ -24,6 +24,7 @@ import MyMonstersView from "./views/MyMonstersView";
 import PublicCollectionsView from "./views/PublicCollectionsView";
 import ShowCollectionView from "./views/ShowCollectionView";
 import PublicMonstersView from "./views/PublicMonstersView";
+import MyFamiliesView from "./views/MyFamiliesView";
 
 const queryClient = new QueryClient();
 const honeycombAPIKey = import.meta.env.VITE_HONEYCOMB_API_KEY;
@@ -108,6 +109,14 @@ const router = createBrowserRouter([
       {
         path: "/my/monsters/new",
         element: <BuildMonsterView />,
+      },
+      {
+        path: "/my/families",
+        element: (
+          <ProtectedRoute>
+            <MyFamiliesView />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/my/monsters",

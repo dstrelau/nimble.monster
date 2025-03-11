@@ -76,7 +76,7 @@ func (s *MonsterStore) Create(ctx context.Context, in nimble.Monster) (nimble.Mo
 		if err != nil {
 			return nimble.Monster{}, err
 		}
-		family = &f
+		family = &f.Family
 	}
 
 	return monsterFromSQL(created, family), nil
@@ -167,6 +167,14 @@ func (s *MonsterStore) Delete(ctx context.Context, id nimble.MonsterID) error {
 	return err
 }
 
+func (s *MonsterStore) CountByFamilyID(ctx context.Context, familyID nimble.FamilyID) (int, error) {
+	count, err := s.db.CountMonstersInFamily(ctx, pgtype.UUID{Valid: true, Bytes: familyID})
+	if err != nil {
+		return 0, err
+	}
+	return int(count), nil
+}
+
 func (s *MonsterStore) monsterWithFamily(ctx context.Context, m Monster) (nimble.Monster, error) {
 	var family *Family
 	if m.FamilyID.Valid {
@@ -175,7 +183,7 @@ func (s *MonsterStore) monsterWithFamily(ctx context.Context, m Monster) (nimble
 			// FK should make not found impossible here
 			return nimble.Monster{}, err
 		}
-		family = &f
+		family = &f.Family
 	}
 
 	return monsterFromSQL(m, family), nil

@@ -19,15 +19,24 @@ export const COLLECTION_VISIBILITY = [
   { value: "private", label: "Private" },
 ] as const;
 
+export const FAMILY_VISIBILITY = [
+  { value: "public", label: "Public" },
+  { value: "secret", label: "Secret" },
+  { value: "private", label: "Private" },
+] as const;
+
 export type MonsterSize = (typeof SIZES)[number]["value"];
 export type MonsterArmor = (typeof ARMORS)[number]["value"];
 export type CollectionVisibility =
   (typeof COLLECTION_VISIBILITY)[number]["value"];
+export type FamilyVisibility = (typeof FAMILY_VISIBILITY)[number]["value"];
 
 export interface Family {
   id: string;
   name: string;
   abilities: Ability[];
+  visibility: FamilyVisibility;
+  monsterCount: number;
 }
 
 export interface Monster {

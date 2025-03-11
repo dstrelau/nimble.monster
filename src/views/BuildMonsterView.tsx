@@ -31,6 +31,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     family: {
       id: "",
       name: "Kobolds",
+      visibility: "public",
       abilities: [
         {
           name: "Nooooo!",
@@ -204,43 +205,14 @@ const FamilySection: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
 }> = ({ monster, setMonster }) => {
-  const publicFamilies = useQuery({
-    queryKey: ["families"],
-    queryFn: () => fetchApi<{ families: Family[] }>("/api/families"),
-    select: (data) => data.families,
-  });
-
   const userFamilies = useQuery({
     queryKey: ["userFamilies"],
     queryFn: () => fetchApi<{ families: Family[] }>("/api/users/me/families"),
     select: (data) => data.families,
   });
 
-  const allFamilies = useMemo(() => {
-    const combined: Family[] = [];
-    const idSet = new Set<string>();
-    if (publicFamilies.data) {
-      for (const family of publicFamilies.data) {
-        if (!idSet.has(family.id)) {
-          idSet.add(family.id);
-          combined.push(family);
-        }
-      }
-    }
-
-    if (userFamilies.data) {
-      for (const family of userFamilies.data) {
-        if (!idSet.has(family.id)) {
-          idSet.add(family.id);
-          combined.push(family);
-        }
-      }
-    }
-    return combined;
-  }, [publicFamilies.data, userFamilies.data]);
-
   const handleSelectFamily = (familyId: string) => {
-    const family = allFamilies.find((f) => f.id === familyId);
+    const family = userFamilies.data?.find((f) => f.id === familyId);
     setMonster({ ...monster, family: family });
   };
 
@@ -258,7 +230,7 @@ const FamilySection: React.FC<{
             onChange={(e) => handleSelectFamily(e.target.value)}
           >
             <option value="">None</option>
-            {allFamilies.map((family) => (
+            {userFamilies.data?.map((family) => (
               <option key={family.id} value={family.id}>
                 {family.name}
               </option>

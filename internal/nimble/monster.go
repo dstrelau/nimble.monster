@@ -99,26 +99,6 @@ type Monster struct {
 	Visibility MonsterVisibility `json:"visibility"`
 }
 
-type FamilyStore interface {
-	ListPublic(context.Context) ([]Family, error)
-}
-
-type FamilyVisibility string
-
-const (
-	FamilyVisibilityPublic  FamilyVisibility = "public"
-	FamilyVisibilityPrivate FamilyVisibility = "private"
-	FamilyVisibilitySecret  FamilyVisibility = "secret"
-)
-
-type Family struct {
-	ID          FamilyID         `json:"id"`
-	Abilities   []Ability        `json:"abilities"`
-	Name        string           `json:"name"`
-	Description string           `json:"description"`
-	Visibility  FamilyVisibility `json:"visibility"`
-}
-
 type Ability struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
