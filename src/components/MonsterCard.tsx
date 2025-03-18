@@ -1,58 +1,45 @@
+import { AbilityOverlay } from "@/components/AbilityOverlay";
+import {
+  ArmorIcon,
+  FlyIcon,
+  HPIcon,
+  SpeedIcon,
+  SwimIcon,
+} from "@/components/Icons";
+import { fetchApi } from "@/lib/api";
+import type { Monster } from "@/lib/types";
+
 import {
   ArrowDownTrayIcon,
   PencilIcon,
   TrashIcon,
-  UsersIcon,
 } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import domtoimage from "dom-to-image";
 import { Link } from "react-router-dom";
 
-import { fetchApi } from "../lib/api";
-import type { Monster } from "../lib/types";
-import { ArmorIcon, FlyIcon, HPIcon, SpeedIcon, SwimIcon } from "./Icons";
-import domtoimage from "dom-to-image";
-
-const StatString: React.FC<{
+const Stat: React.FC<{
   name: string;
-  value: string;
+  value: string | number;
   SvgIcon: React.FC<{ className?: string }>;
-}> = ({ name, value, SvgIcon }) => {
-  if (!value) return null;
+  children?: React.ReactNode;
+}> = ({ name, value, children, SvgIcon }) => {
+  if (!value && !children) return null;
   return (
-    <span id={name} className="flex ml-2 leading-8">
-      <SvgIcon className="fill-[#d3cebb] w-8 -mr-2" />
+    <span id={name} className="flex ml-2 text-lg leading-6 ">
+      <SvgIcon className="w-7 -mr-2 fill-base-300" />
       {value}
+      {children}
     </span>
   );
-};
-
-const StatInt: React.FC<{
-  name: string;
-  value: number;
-  SvgIcon: React.FC<{ className?: string }>;
-}> = ({ name, value, SvgIcon }) => {
-  if (!value || value <= 0) return null;
-  return (
-    <span id={name} className="flex ml-2 leading-8">
-      <SvgIcon className="fill-[#d3cebb] w-8 -mr-2" />
-      {value}
-    </span>
-  );
-};
-
-const maybePeriod = (s: string) => {
-  if (s && (s.endsWith(".") || s.endsWith("!") || s.endsWith("?"))) {
-    return s;
-  }
-  return s + ".";
 };
 
 const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
   <>
     <header className="flex justify-between items-center -mb-1">
       <div>
-        <span className="font-beaufort font-black text-[#5d5e5b] text-lg leading-none tracking-tight">
+        <span className="font-beaufort font-black text-lg leading-none tracking-tight">
           Level {monster.level} Solo{" "}
           {monster.size.charAt(0).toUpperCase() + monster.size.slice(1)}{" "}
           {monster.kind}
@@ -60,58 +47,55 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
       </div>
       <div className="flex font-beaufort font-black italic">
         {monster.armor === "medium" && (
-          <StatString name="armor" value="M" SvgIcon={ArmorIcon} />
+          <Stat name="armor" value="M" SvgIcon={ArmorIcon} />
         )}
         {monster.armor === "heavy" && (
-          <StatString name="armor" value="H" SvgIcon={ArmorIcon} />
+          <Stat name="armor" value="H" SvgIcon={ArmorIcon} />
         )}
-        <StatInt name="hp" value={monster.hp} SvgIcon={HPIcon} />
-        <div id="saves" className="flex ml-2 leading-none">
-          <StarIcon className="fill-[#d3cebb] w-8 -mr-2" />
-          <span className="flex flex-col">
+        <Stat name="hp" value={monster.hp} SvgIcon={HPIcon} />
+        <Stat name="saves" value="" SvgIcon={StarIcon}>
+          <div className="flex flex-col">
             {monster.saves?.split(",").map((save, i, arr) => (
               <span key={i} className="block">
                 {save}
                 {i < arr.length - 1 && ", "}
               </span>
             ))}{" "}
-          </span>
-        </div>
+          </div>
+        </Stat>
       </div>
     </header>
     <div className="mb-1">
-      <span className="font-beaufort font-black text-4xl pr-1">
-        {monster.name}
-      </span>
+      <span className="font-slab font-black text-4xl pr-1">{monster.name}</span>
     </div>
   </>
 );
 
 const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
-  <header className="flex justify-between leading-5">
+  <header className="flex justify-between">
     <div className="grow">
       <div className="inline-flex flex-wrap gap-x-1 items-baseline">
-        <span className="font-beaufort font-black font-small-caps italic text-2xl pr-1">
+        <span className="font-slab font-black font-small-caps italic text-2xl pr-1">
           {monster.name}
         </span>
-        <span className="font-small-caps whitespace-nowrap items-baseline">
+        <span className="font-condensed font-small-caps whitespace-nowrap items-baseline">
           {`Lvl ${monster.level}${monster.size !== "medium" ? `, ${monster.size}` : ""}`}
         </span>
       </div>
     </div>
-    <div className="flex font-beaufort font-black italic">
+    <div className="flex font-slab font-black italic">
       {monster.armor === "medium" && (
-        <StatString name="armor" value="M" SvgIcon={ArmorIcon} />
+        <Stat name="armor" value="M" SvgIcon={ArmorIcon} />
       )}
       {monster.armor === "heavy" && (
-        <StatString name="armor" value="H" SvgIcon={ArmorIcon} />
+        <Stat name="armor" value="H" SvgIcon={ArmorIcon} />
       )}
-      <StatInt name="swim" value={monster.swim} SvgIcon={SwimIcon} />
-      <StatInt name="fly" value={monster.fly} SvgIcon={FlyIcon} />
+      <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
+      <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
       {monster.speed > 0 && monster.speed !== 6 && (
-        <StatInt name="speed" value={monster.speed} SvgIcon={SpeedIcon} />
+        <Stat name="speed" value={monster.speed} SvgIcon={SpeedIcon} />
       )}
-      <StatInt name="hp" value={monster.hp} SvgIcon={HPIcon} />
+      <Stat name="hp" value={monster.hp} SvgIcon={HPIcon} />
     </div>
   </header>
 );
@@ -132,6 +116,7 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const downloadCard = async () => {
     const card = document.getElementById(`monster-${monster.id}`);
     if (!card) return;
@@ -156,51 +141,26 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
 
   return (
     <div className="mb-5">
-      <div className="px-5 py-2" id={`monster-${monster.id}`}>
-        <article className="font-roboto px-4 py-2 bg-[#f5ebd7] scooped">
+      <div id={`monster-${monster.id}`}>
+        <article className="d-card d-card-border px-4 py-3 bg-base-100 border-base-300">
           {monster.legendary ? (
             <HeaderLegendary monster={monster} />
           ) : (
             <HeaderStandard monster={monster} />
           )}
 
-          {monster.family?.abilities.map((ability, index) => (
-            <p
-              key={index}
-              className={`relative italic mb-2 p-2 leading-5 bg-[#d3cebb] ${monster.legendary ? " text-center " : ""}`}
-              style={{
-                clipPath:
-                  "polygon(20px 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 20px 100%, 0 50%)",
-                transform: "translateX(-30px)",
-                width: "calc(100% + 60px)",
-                paddingLeft: "30px",
-                paddingRight: "30px",
-              }}
-            >
-              <UsersIcon className="w-4 pb-1 mr-1 inline-block align-middle" />
-              <strong className="pr-1">{monster.family?.name}:</strong>
-              <strong className="pr-1">{maybePeriod(ability.name)}</strong>
-              {ability.description}
-            </p>
-          ))}
-
-          {monster.abilities?.map((ability, index) => (
-            <p
-              key={index}
-              className={`relative italic mb-2 p-2 leading-5 bg-[#d3cebb] ${monster.legendary ? " text-center " : ""}`}
-              style={{
-                clipPath:
-                  "polygon(20px 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 20px 100%, 0 50%)",
-                transform: "translateX(-30px)",
-                width: "calc(100% + 60px)",
-                paddingLeft: "30px",
-                paddingRight: "30px",
-              }}
-            >
-              <strong className="pr-1">{maybePeriod(ability.name)}</strong>
-              {ability.description}
-            </p>
-          ))}
+          <div className="flex flex-col py-2 gap-4">
+            {monster.family?.abilities.map((ability, index) => (
+              <AbilityOverlay
+                key={index}
+                ability={ability}
+                family={monster.family}
+              />
+            ))}
+            {monster.abilities.map((ability, index) => (
+              <AbilityOverlay key={index} ability={ability} />
+            ))}
+          </div>
 
           {monster.legendary && (
             <div>
@@ -251,9 +211,11 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
       </div>
 
       <div className="flex flex-row justify-end mr-6">
-        <button onClick={downloadCard} className="px-2">
+        {/* FIXME
+        <button onClick={downloadCard} className="px-2 cursor-pointer">
           <ArrowDownTrayIcon className="h-5 text-slate-500" />
         </button>
+        */}
         {showActions && (
           <>
             <Link to={`/my/monsters/${monster.id}/edit`} className="px-2">
