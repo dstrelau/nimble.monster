@@ -38,7 +38,7 @@ const Header = () => {
   }, []);
 
   return (
-    <nav className="bg-gray-800">
+    <nav className="d-navbar bg-neutral text-neutral-content shadow-sm">
       <div className="mx-auto max-w-7xl px-0">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-4">
