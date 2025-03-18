@@ -52,13 +52,13 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
   <>
     <header className="flex justify-between items-center -mb-1">
       <div>
-        <span className="font-serif font-black text-[#5d5e5b] text-lg leading-none tracking-tight">
+        <span className="font-beaufort font-black text-[#5d5e5b] text-lg leading-none tracking-tight">
           Level {monster.level} Solo{" "}
           {monster.size.charAt(0).toUpperCase() + monster.size.slice(1)}{" "}
           {monster.kind}
         </span>
       </div>
-      <div className="flex font-serif font-black italic">
+      <div className="flex font-beaufort font-black italic">
         {monster.armor === "medium" && (
           <StatString name="armor" value="M" SvgIcon={ArmorIcon} />
         )}
@@ -80,7 +80,7 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
       </div>
     </header>
     <div className="mb-1">
-      <span className="font-serif font-black text-4xl pr-1">
+      <span className="font-beaufort font-black text-4xl pr-1">
         {monster.name}
       </span>
     </div>
@@ -91,7 +91,7 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
   <header className="flex justify-between leading-5">
     <div className="grow">
       <div className="inline-flex flex-wrap gap-x-1 items-baseline">
-        <span className="font-serif font-black font-small-caps italic text-2xl pr-1">
+        <span className="font-beaufort font-black font-small-caps italic text-2xl pr-1">
           {monster.name}
         </span>
         <span className="font-small-caps whitespace-nowrap items-baseline">
@@ -99,7 +99,7 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
         </span>
       </div>
     </div>
-    <div className="flex font-serif font-black italic">
+    <div className="flex font-beaufort font-black italic">
       {monster.armor === "medium" && (
         <StatString name="armor" value="M" SvgIcon={ArmorIcon} />
       )}

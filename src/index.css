@@ -1,13 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-.font-small-caps {
-    font-variant: small-caps;
+@import url("https://use.typekit.net/fqv0sms.css");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import "tailwindcss";
+@plugin "daisyui" {
+    prefix: "d-";
+    themes:
+        light --default,
+        dark --prefersdark;
 }
 
-.font-roboto {
-    font-family: "Roboto Condensed", sans-serif;
+@theme {
+    --font-beaufort: beaufort-pro, ui-serif;
+    --font-roboto: "Roboto Condensed", sans-serif;
+}
+
+@layer components {
+    .font-small-caps {
+        font-variant: small-caps;
+    }
 }
 
 @keyframes fade-out {

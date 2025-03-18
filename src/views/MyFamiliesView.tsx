@@ -1,4 +1,9 @@
-import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowPathIcon,
+  PencilIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -221,58 +226,86 @@ const NewFamilyForm = () => {
   });
 
   return (
-    <div className="mb-6">
+    <div className="d-collapse d-collapse-arrow bg-base-100 border-base-300 border">
+      <input type="checkbox" />
+      <h3 className="d-collapse-title text-lg">Create Family</h3>
       <form
+        className="d-collapse-content"
         onSubmit={handleSubmit((data) => createMutation.mutate(data))}
-        className="space-y-4 p-4 border border-gray-200 rounded-xl bg-white"
       >
-        <div>
-          <input
-            id="name"
-            {...register("name")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-            placeholder="Family name"
-          />
-          {errors.name && (
-            <p className="text-sm text-red-600">{errors.name.message}</p>
-          )}
-        </div>
+        <fieldset className="d-fieldset p-4">
+          <div className="space-y-4">
+            <div>
+              <label className="d-fieldset-label block mb-1" htmlFor="name">
+                Family Name
+              </label>
+              <input
+                id="name"
+                {...register("name")}
+                className="d-input w-full"
+              />
+              {errors.name && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.name.message}
+                </p>
+              )}
+            </div>
 
-        <div>
-          <input
-            id="abilityName"
-            {...register("abilityName")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-            placeholder="Ability name"
-          />
-          {errors.abilityName && (
-            <p className="text-sm text-red-600">{errors.abilityName.message}</p>
-          )}
-        </div>
+            <div>
+              <label
+                className="d-fieldset-label block mb-1"
+                htmlFor="abilityName"
+              >
+                Ability Name
+              </label>
+              <input
+                id="abilityName"
+                {...register("abilityName")}
+                className="d-input w-full"
+              />
+              {errors.abilityName && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.abilityName.message}
+                </p>
+              )}
+            </div>
 
-        <div>
-          <textarea
-            id="abilityDescription"
-            {...register("abilityDescription")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-            placeholder="Ability description"
-            rows={3}
-          />
-          {errors.abilityDescription && (
-            <p className="text-sm text-red-600">
-              {errors.abilityDescription.message}
-            </p>
-          )}
-        </div>
+            <div>
+              <label
+                className="d-fieldset-label block mb-1"
+                htmlFor="abilityDescription"
+              >
+                Ability Description
+              </label>
+              <textarea
+                id="abilityDescription"
+                {...register("abilityDescription")}
+                className="d-textarea w-full"
+                rows={3}
+              />
+              {errors.abilityDescription && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.abilityDescription.message}
+                </p>
+              )}
+            </div>
 
-        <button
-          type="submit"
-          disabled={createMutation.isPending}
-          className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors disabled:opacity-50"
-        >
-          <PlusIcon className="w-5 h-5 mr-2" />
-          {createMutation.isPending ? "Creating..." : "Create Family"}
-        </button>
+            <div className="mt-6">
+              <button
+                type="submit"
+                disabled={createMutation.isPending}
+                className="d-btn d-btn-primary flex items-center gap-2"
+              >
+                {createMutation.isPending ? (
+                  <ArrowPathIcon className="w-5 h-5 animate-spin" />
+                ) : (
+                  <PlusIcon className="w-5 h-5" />
+                )}
+                Create
+              </button>
+            </div>
+          </div>
+        </fieldset>
       </form>
     </div>
   );
@@ -289,23 +322,22 @@ const FamilyCard = ({ family }: { family: Family }) => {
 
   return (
     <div key={family.id}>
-      <div className="border border-gray-200 rounded-xl bg-white">
-        <div className="p-4 flex justify-between items-start">
-          <h3 className="text-xl font-bold text-gray-900">{family.name}</h3>
-          <span className="text-sm text-gray-600">
+      <div className="d-card d-card-border d-card-body bg-base-100 border-base-300">
+        <div className="flex justify-between items-baseline">
+          <h3 className="d-card-title">{family.name}</h3>
+          <span className="text-sm text-gray-600 dark:text-gray-400">
             {family.monsterCount || 0} monsters
           </span>
         </div>
 
         {family.abilities.length > 0 && (
-          <div className="border-t border-gray-200">
-            <p className="p-4 rounded-b-lg">
-              <strong className="font-semibold">
-                {family.abilities[0].name}:{" "}
-              </strong>
+          <>
+            <div className="d-divider m-0"></div>
+            <p>
+              <b>{family.abilities[0].name}: </b>
               {family.abilities[0].description}
             </p>
-          </div>
+          </>
         )}
       </div>
       <div className="flex justify-end">
