@@ -1,12 +1,14 @@
+import { AbilityOverlay } from "@/components/AbilityOverlay";
+import { fetchApi } from "@/lib/api";
+import type { Family } from "@/lib/types";
+
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { fetchApi } from "../lib/api";
 import { z } from "zod";
-import type { Family } from "../lib/types";
-import { useState } from "react";
 
 interface EditFamilyFormProps {
   family: Family;
@@ -273,23 +275,19 @@ const FamilyCard = ({ family }: { family: Family }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <div className="d-card d-card-border d-card-body bg-base-100 border-base-300 py-4">
+    <div className="d-card d-card-border px-4 py-3 bg-base-100 border-base-300">
       {isEditing ? (
         <EditFamilyForm family={family} onCancel={() => setIsEditing(false)} />
       ) : (
         <>
-          <h3 className="d-card-title font-bold">{family.name}</h3>
-          {family.abilities.length > 0 && (
-            <>
-              <p>
-                <strong className="font-bold">
-                  {family.abilities[0].name}:{" "}
-                </strong>
-                {family.abilities[0].description}
-              </p>
-            </>
-          )}
-          <div className="d-divider m-0"></div>
+          <h2 className="d-card-title font-bold font-condensed italic text-xl">
+            {family.name}
+          </h2>
+          <div className="flex flex-col py-2 gap-4">
+            {family.abilities.map((ability, index) => (
+              <AbilityOverlay ability={ability} key={index} />
+            ))}
+          </div>
           <div className="flex flex-row justify-between">
             <span className="font-condensed text-sm text-gray-600 dark:text-gray-400">
               {family.monsterCount || 0} monsters
@@ -331,7 +329,7 @@ const MyFamiliesView = () => {
           </p>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 items-start md:grid-cols-2 lg:grid-cols-3">
           {data.families.map((family) => (
             <FamilyCard key={family.id} family={family} />
           ))}

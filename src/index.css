@@ -2,9 +2,7 @@
 @import "tailwindcss";
 @plugin "daisyui" {
     prefix: "d-";
-    themes:
-        light --default,
-        dark --prefersdark;
+    themes: fantasy --default;
 }
 
 @theme {

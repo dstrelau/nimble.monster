@@ -1,11 +1,12 @@
+import { CollectionCard } from "@/components/CollectionCard";
+import { VisibilityEnum } from "@/components/VisibilityToggle";
+import { fetchApi } from "@/lib/api";
+import type { CollectionOverview } from "@/lib/types";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { fetchApi } from "../lib/api";
-import { VisibilityEnum } from "../components/VisibilityToggle";
 import { z } from "zod";
-import type { CollectionOverview } from "../lib/types";
-import { CollectionCard } from "@/components/CollectionCard";
 
 const collectionSchema = z.object({
   name: z.string().min(1, "Collection name is required"),
