@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { fetchApi } from "../lib/api";
 import type { CollectionOverview } from "../lib/types";
+import { CollectionCard } from "@/components/CollectionCard";
 
 const PublicCollectionsView: React.FC = () => {
   const { data, isLoading, error } = useQuery({
@@ -24,38 +25,12 @@ const PublicCollectionsView: React.FC = () => {
     <div className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {data.collections.map((collection) => (
-          <div
+          <CollectionCard
             key={collection.id}
-            className="collection p-6 border border-gray-200 rounded-xl bg-white hover:shadow-lg transition-all duration-200 hover:border-blue-200"
-          >
-            <Link to={`/collections/${collection.id}`} className="block">
-              <div className="flex justify-between items-start">
-                <h3 className="text-xl font-bold text-gray-900">
-                  {collection.name}
-                </h3>
-              </div>
-
-              <div className="flex items-center mt-3 gap-2">
-                <img
-                  src={`https://cdn.discordapp.com/avatars/${collection.creator.discordId}/${collection.creator.avatar}.png`}
-                  alt={collection.creator.username}
-                  className="size-6 rounded-full"
-                />
-                <span className="text-sm text-gray-600">
-                  {collection.creator.username}
-                </span>
-              </div>
-
-              <div className="mt-4 flex justify-between border-t pt-3 border-gray-100">
-                <div className="text-sm text-gray-600">
-                  {collection.standardCount} standard
-                </div>
-                <div className="text-sm text-purple-600 font-medium">
-                  {collection.legendaryCount} legendary
-                </div>
-              </div>
-            </Link>
-          </div>
+            collection={collection}
+            showEditDeleteButtons={false}
+            showPublicBadge={false}
+          />
         ))}
       </div>
     </div>

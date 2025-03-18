@@ -1,45 +1,11 @@
-import {
-  ArrowPathIcon,
-  PencilIcon,
-  PlusIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
 import { fetchApi } from "../lib/api";
 import { VisibilityEnum } from "../components/VisibilityToggle";
 import { z } from "zod";
 import type { CollectionOverview } from "../lib/types";
-
-const EditDeleteButtons = ({ id }: { id: string }) => {
-  const queryClient = useQueryClient();
-  const deleteMutation = useMutation({
-    mutationKey: ["deleteCollection", id],
-    mutationFn: () => fetchApi(`/api/collections/${id}`, { method: "DELETE" }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["collections"] });
-    },
-  });
-
-  return (
-    <div className="flex flex-row justify-end">
-      <Link to={`/my/collections/${id}/edit`} className="mr-2">
-        <PencilIcon className="w-5 h-5 text-slate-500" />
-      </Link>
-      <button
-        onClick={() => {
-          if (window.confirm("Really? This is permanent.")) {
-            deleteMutation.mutate();
-          }
-        }}
-      >
-        <TrashIcon className="w-5 h-5 text-slate-500" />
-      </button>
-    </div>
-  );
-};
+import { CollectionCard } from "@/components/CollectionCard";
 
 const collectionSchema = z.object({
   name: z.string().min(1, "Collection name is required"),
@@ -110,7 +76,7 @@ const NewCollectionForm = () => {
               <button
                 type="submit"
                 disabled={createMutation.isPending}
-                className="d-btn d-btn-primary flex items-center gap-2"
+                className="d-btn d-btn-primary"
               >
                 Create
               </button>
@@ -118,46 +84,6 @@ const NewCollectionForm = () => {
           </div>
         </fieldset>
       </form>
-    </div>
-  );
-};
-
-const CollectionCard = ({ collection }: { collection: CollectionOverview }) => {
-  return (
-    <div
-      key={collection.id}
-      className="d-card d-card-border d-card-body bg-base-100 border-base-300 py-4"
-    >
-      <Link to={`/collections/${collection.id}`} className="block">
-        <div className="flex justify-between items-start">
-          <h3 className="d-card-title">{collection.name}</h3>
-          {collection.visibility === "public" && (
-            <div className="d-badge d-badge-soft d-badge-success">Public</div>
-          )}
-        </div>
-        <div className="flex items-center mt-3 gap-2">
-          <img
-            src={`https://cdn.discordapp.com/avatars/${collection.creator.discordId}/${collection.creator.avatar}.png`}
-            alt={collection.creator.username}
-            className="size-6 rounded-full"
-          />
-          <span className="text-sm text-gray-600 dark:text-gray-400">
-            {collection.creator.username}
-          </span>
-        </div>
-        <div className="d-divider my-2"></div>
-        <div className="flex justify-between">
-          <div className="font-condensed text-sm text-gray-600 dark:text-gray-400">
-            {collection.standardCount} monsters |{" "}
-            <span className="text-info">
-              {collection.legendaryCount} legendary
-            </span>
-          </div>
-          <div className="flex justify-end">
-            <EditDeleteButtons id={collection.id} />
-          </div>
-        </div>
-      </Link>
     </div>
   );
 };
@@ -188,7 +114,12 @@ const MyCollectionsView = () => {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {data.collections.map((c) => (
-            <CollectionCard key={c.id} collection={c} />
+            <CollectionCard
+              key={c.id}
+              collection={c}
+              showEditDeleteButtons={true}
+              showPublicBadge={true}
+            />
           ))}
         </div>
       )}
