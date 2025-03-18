@@ -1,5 +1,4 @@
-@import url("https://use.typekit.net/fqv0sms.css");
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 @plugin "daisyui" {
     prefix: "d-";
@@ -9,8 +8,9 @@
 }
 
 @theme {
-    --font-beaufort: beaufort-pro, ui-serif;
-    --font-roboto: "Roboto Condensed", sans-serif;
+    --font-sans: "Roboto", sans-serif;
+    --font-condensed: "Roboto Condensed", sans-serif;
+    --font-slab: "Roboto Slab", sans-serif;
 }
 
 @layer components {
