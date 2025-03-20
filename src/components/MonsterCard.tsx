@@ -9,11 +9,7 @@ import {
 import { fetchApi } from "@/lib/api";
 import type { Monster } from "@/lib/types";
 
-import {
-  ArrowDownTrayIcon,
-  PencilIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import domtoimage from "dom-to-image";
@@ -105,7 +101,10 @@ interface MonsterCardProps {
   showActions?: boolean;
 }
 
-const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
+export const MonsterCard: React.FC<MonsterCardProps> = ({
+  monster,
+  showActions,
+}) => {
   const queryClient = useQueryClient();
   const deleteMutation = useMutation({
     mutationKey: ["deleteMonster", monster.id],
@@ -140,7 +139,7 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
   };
 
   return (
-    <div className="mb-5">
+    <div className={`mb-5 ${monster.legendary && "col-span-2"}`}>
       <div id={`monster-${monster.id}`}>
         <article className="d-card d-card-border px-4 py-3 bg-base-100 border-base-300">
           {monster.legendary ? (
@@ -162,14 +161,15 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
             ))}
           </div>
 
-          {monster.legendary && (
-            <div>
-              <strong>ACTIONS:</strong> After each hero's turn, choose one:
-            </div>
-          )}
-          <ul className={monster.legendary ? "list-disc ml-4" : ""}>
+          <div>
+            <strong>ACTIONS: </strong>
+            {monster.legendary
+              ? "After each hero's turn, choose one."
+              : "Choose one."}
+          </div>
+          <ul className="d-list text-base list-disc pl-4">
             {monster.actions?.map((action, index) => (
-              <li key={index} className="mb-1 leading-5">
+              <li key={index} className="d-list-item">
                 <strong className="pr-1">{action.name}.</strong>
                 {action.damage && (
                   <span className="damage">{action.damage} </span>
@@ -185,57 +185,71 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster, showActions }) => {
           </ul>
           {monster.legendary && (
             <>
-              <hr className="border-black my-2" />
+              <div className="d-divider my-1"></div>
               {monster.bloodied && (
-                <p className="bloodied">
+                <p className="font-condensed">
                   <strong>BLOODIED: </strong>
                   {monster.bloodied}
                 </p>
               )}
 
               {monster.lastStand && (
-                <p className="last-stand">
+                <p className="font-condensed">
                   <strong>LAST STAND: </strong>
                   {monster.lastStand}
                 </p>
               )}
             </>
           )}
+          {showActions && <div className="d-divider my-1"></div>}
 
           {monster.contributor && (
             <p className="attribution">
               Contributed by <strong>{monster.contributor}</strong>
             </p>
           )}
-        </article>
-      </div>
 
-      <div className="flex flex-row justify-end mr-6">
-        {/* FIXME
+          <div className="d-card-actions justify-end">
+            {/* FIXME
         <button onClick={downloadCard} className="px-2 cursor-pointer">
           <ArrowDownTrayIcon className="h-5 text-slate-500" />
         </button>
         */}
-        {showActions && (
-          <>
-            <Link to={`/my/monsters/${monster.id}/edit`} className="px-2">
-              <PencilIcon className="h-5 text-slate-500" />
-            </Link>
-            <button
-              onClick={() => {
-                if (window.confirm("Really? This is permanent.")) {
-                  deleteMutation.mutate();
-                }
-              }}
-              className="px-2"
-            >
-              <TrashIcon className="h-5 text-slate-500" />
-            </button>
-          </>
-        )}
+            {showActions && (
+              <>
+                <Link to={`/my/monsters/${monster.id}/edit`}>
+                  <PencilIcon className="w-5 h-5 text-base-content/50" />
+                </Link>
+                <button
+                  onClick={() => {
+                    if (window.confirm("Really? This is permanent.")) {
+                      deleteMutation.mutate();
+                    }
+                  }}
+                >
+                  <TrashIcon className="w-5 h-5 text-base-content/50 cursor-pointer" />
+                </button>
+              </>
+            )}
+          </div>
+        </article>
       </div>
     </div>
   );
 };
 
-export default MonsterCard;
+export const MonsterCardGrid = ({
+  monsters,
+  showActions,
+}: {
+  monsters: Monster[];
+  showActions: boolean;
+}) => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {monsters.map((m) => (
+        <MonsterCard key={m.id} monster={m} showActions={showActions} />
+      ))}
+    </div>
+  );
+};

@@ -280,7 +280,7 @@ const FamilyCard = ({ family }: { family: Family }) => {
         <EditFamilyForm family={family} onCancel={() => setIsEditing(false)} />
       ) : (
         <>
-          <h2 className="d-card-title font-bold font-condensed italic text-xl">
+          <h2 className="d-card-title font-bold italic text-xl">
             {family.name}
           </h2>
           <div className="flex flex-col py-2 gap-4">
@@ -289,9 +289,9 @@ const FamilyCard = ({ family }: { family: Family }) => {
             ))}
           </div>
           <div className="flex flex-row justify-between">
-            <span className="font-condensed text-sm text-gray-600 dark:text-gray-400">
+            <div className="font-condensed text-sm text-base-content/50">
               {family.monsterCount || 0} monsters
-            </span>
+            </div>
             <EditDeleteButtons
               family={family}
               onEdit={() => setIsEditing(true)}
@@ -325,7 +325,8 @@ const MyFamiliesView = () => {
       {!data || data.families.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-600">
-            No families yet. Create your first family to get started!
+            Families allow associating one or more abilities with a group of
+            related monsters.
           </p>
         </div>
       ) : (

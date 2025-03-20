@@ -18,7 +18,7 @@ export const AbilityOverlay = ({
   <p
     className={
       `relative font-condensed p-2 leading-5 bg-base-300 shadow-sm ` +
-      `rounded-md w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem] `
+      `w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem] `
     }
   >
     {family && (

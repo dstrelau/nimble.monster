@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+
 import { fetchApi } from "../lib/api";
 import type { CollectionOverview } from "../lib/types";
 import { CollectionCard } from "@/components/CollectionCard";
