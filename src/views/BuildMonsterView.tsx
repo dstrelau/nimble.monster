@@ -1,8 +1,9 @@
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import clsx from "clsx";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import MonsterCard from "../components/MonsterCard";
+import { MonsterCard } from "../components/MonsterCard";
 import { fetchApi } from "../lib/api";
 import { AuthContext } from "../lib/auth";
 import type {
@@ -28,19 +29,6 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     fly: 0,
     speed: 6,
     hp: 12,
-    family: {
-      id: "",
-      name: "Kobolds",
-      visibility: "public",
-      monsterCount: 0,
-      abilities: [
-        {
-          name: "Nooooo!",
-          description:
-            "When an ally within 2 spaces dies, attack once for free.",
-        },
-      ],
-    },
     abilities: [],
     actions: [
       { name: "Stab", damage: "1d4+2", description: "(or Sling, Range 8)" },
@@ -95,69 +83,48 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
   },
 };
 
-interface FormInputTextProps {
+interface FormInputProps<T extends string | number> {
   label: string;
   name: string;
-  value: string;
+  value: T;
   className?: string;
-  onChange: (value: string) => void;
+  onChange: (value: T) => void;
 }
 
-const FormInputText: React.FC<FormInputTextProps> = ({
+const FormInput = <T extends string | number>({
   label,
   name,
   value,
   className = "",
   onChange,
-}) => (
-  <div className={className}>
-    <label htmlFor={name} className="block text-sm/6 font-medium text-gray-900">
-      {label}
-    </label>
-    <div>
-      <input
-        type="text"
-        name={name}
-        id={name}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full py-1.5 text-gray-900 focus:ring-0 sm:text-sm/6"
-      />
+}: FormInputProps<T>) => {
+  const inputType = typeof value === "number" ? "number" : "text";
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue =
+      inputType === "number"
+        ? (Number(e.target.value) as T)
+        : (e.target.value as T);
+    onChange(newValue);
+  };
+  return (
+    <div className={className}>
+      <label htmlFor={name} className="d-fieldset-label">
+        {label}
+      </label>
+      <div>
+        <input
+          type={inputType}
+          name={name}
+          id={name}
+          value={value}
+          onChange={handleChange}
+          className="d-input w-full"
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
-interface FormInputNumberProps {
-  label: string;
-  name: string;
-  value: number;
-  className?: string;
-  onChange: (value: number) => void;
-}
-
-const FormInputNumber: React.FC<FormInputNumberProps> = ({
-  label,
-  name,
-  value,
-  className = "",
-  onChange,
-}) => (
-  <div className={className}>
-    <label htmlFor={name} className="block text-sm/6 font-medium text-gray-900">
-      {label}
-    </label>
-    <div>
-      <input
-        type="number"
-        name={name}
-        id={name}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full py-1.5 text-gray-900 focus:ring-0 sm:text-sm/6"
-      />
-    </div>
-  </div>
-);
 interface FormSelectProps<T extends string> {
   label: string;
   name: string;
@@ -177,27 +144,22 @@ function FormSelect<T extends string>({
 }: FormSelectProps<T>) {
   return (
     <div className={className}>
-      <label
-        htmlFor={name}
-        className="block text-sm/6 font-medium text-gray-900"
-      >
+      <label htmlFor={name} className="d-fieldset-label">
         {label}
       </label>
-      <div>
-        <select
-          name={name}
-          id={name}
-          value={selected}
-          onChange={(e) => onChange(e.target.value as T)}
-          className="w-full py-1.5 text-gray-900 focus:ring-0 sm:text-sm/6"
-        >
-          {choices.map((choice) => (
-            <option key={choice.value} value={choice.value}>
-              {choice.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      <select
+        name={name}
+        id={name}
+        value={selected}
+        onChange={(e) => onChange(e.target.value as T)}
+        className="d-select w-full"
+      >
+        {choices.map((choice) => (
+          <option key={choice.value} value={choice.value}>
+            {choice.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
@@ -217,29 +179,19 @@ const FamilySection: React.FC<{
     setMonster({ ...monster, family: family });
   };
 
-  return (
-    <fieldset>
-      <div className="header flex items-center gap-x-1 mt-5 mb-2">
-        <legend className="font-bold inline-block">Family</legend>
-      </div>
+  const familyChoices = [
+    { value: "", label: "None" },
+    ...(userFamilies.data?.map((f) => ({ value: f.id, label: f.name })) || []),
+  ];
 
-      <div className="flex">
-        <div className="flex-1 pr-4">
-          <select
-            className="text-sm/6 w-full p-2 border rounded"
-            value={monster?.family?.id || ""}
-            onChange={(e) => handleSelectFamily(e.target.value)}
-          >
-            <option value="">None</option>
-            {userFamilies.data?.map((family) => (
-              <option key={family.id} value={family.id}>
-                {family.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-    </fieldset>
+  return (
+    <FormSelect
+      label="Family"
+      name="family"
+      choices={familyChoices}
+      selected={monster?.family?.id || ""}
+      onChange={handleSelectFamily}
+    />
   );
 };
 
@@ -254,23 +206,29 @@ const AbilityRow: React.FC<AbilityRowProps> = ({
   onChange,
   onRemove,
 }) => (
-  <div className="grid grid-cols-12 gap-x-6 mb-2 items-end">
-    <FormInputText
-      label="Name"
-      name="ability-name"
-      value={ability.name}
-      className="col-span-4"
-      onChange={(name) => onChange({ ...ability, name })}
-    />
-    <FormInputText
-      label="Description"
-      name="ability-description"
-      value={ability.description}
-      className="col-span-7"
-      onChange={(description) => onChange({ ...ability, description })}
-    />
-    <button type="button" onClick={onRemove} className="col-span-1">
-      <TrashIcon className="w-6 h-6 mb-2 text-slate-500" />
+  <div className="flex flex-row items-center">
+    <div className="flex flex-wrap gap-x-4 mb-2 items-end flex-grow">
+      <FormInput
+        label="Name"
+        name="ability-name"
+        value={ability.name}
+        className="grow-1 min-w-32"
+        onChange={(name) => onChange({ ...ability, name })}
+      />
+      <FormInput
+        label="Description"
+        name="ability-description"
+        value={ability.description}
+        className="grow-4 min-w-96"
+        onChange={(description) => onChange({ ...ability, description })}
+      />
+    </div>
+    <button
+      type="button"
+      onClick={onRemove}
+      className="d-btn d-btn-ghost d-btn-square m-2"
+    >
+      <TrashIcon className="h-6 text-base-content/50" />
     </button>
   </div>
 );
@@ -288,32 +246,38 @@ const ActionRow: React.FC<ActionRowProps> = ({
   onChange,
   onRemove,
 }) => (
-  <div className="grid grid-cols-12 gap-x-6 mb-2 items-end">
-    <FormInputText
-      label="Name"
-      name="action-name"
-      value={action.name}
-      className="col-span-4"
-      onChange={(name) => onChange({ ...action, name })}
-    />
-    {legendary || (
-      <FormInputText
-        label="Damage"
-        name="action-damage"
-        value={action.damage || ""}
-        className="col-span-2"
-        onChange={(damage) => onChange({ ...action, damage })}
+  <div className="flex flex-row items-center">
+    <div className="flex flex-wrap gap-x-4 mb-2 items-end flex-grow">
+      <FormInput
+        label="Name"
+        name="action-name"
+        value={action.name}
+        className="grow-1 min-w-32"
+        onChange={(name) => onChange({ ...action, name })}
       />
-    )}
-    <FormInputText
-      label="Description"
-      name="action-description"
-      value={action.description || ""}
-      className={legendary ? "col-span-7" : "col-span-5"}
-      onChange={(description) => onChange({ ...action, description })}
-    />
-    <button type="button" onClick={onRemove} className="col-span-1">
-      <TrashIcon className="w-6 h-6 mb-2 text-slate-500" />
+      {legendary || (
+        <FormInput
+          label="Damage"
+          name="action-damage"
+          value={action.damage || ""}
+          className="w-24"
+          onChange={(damage) => onChange({ ...action, damage })}
+        />
+      )}
+      <FormInput
+        label="Description"
+        name="action-description"
+        value={action.description || ""}
+        className="grow-4 min-w-96"
+        onChange={(description) => onChange({ ...action, description })}
+      />
+    </div>
+    <button
+      type="button"
+      onClick={onRemove}
+      className="d-btn d-btn-ghost d-btn-square m-2"
+    >
+      <TrashIcon className="h-6 text-base-content/50" />
     </button>
   </div>
 );
@@ -324,7 +288,7 @@ const LegendaryForm: React.FC<{
 }> = ({ monster, setMonster }) => (
   <div className="space-y-4">
     <div className="grid grid-cols-7 gap-x-6">
-      <FormInputText
+      <FormInput
         label="Lvl"
         name="level"
         value={monster.level}
@@ -339,7 +303,7 @@ const LegendaryForm: React.FC<{
         className="col-span-2"
         onChange={(size) => setMonster({ ...monster, size })}
       />
-      <FormInputText
+      <FormInput
         label="Kind"
         name="kind"
         value={monster.kind || ""}
@@ -348,7 +312,7 @@ const LegendaryForm: React.FC<{
       />
     </div>
     <div>
-      <FormInputText
+      <FormInput
         label="Name"
         name="name"
         value={monster.name}
@@ -358,7 +322,7 @@ const LegendaryForm: React.FC<{
     </div>
     <div>
       <div className="grid grid-cols-12 gap-x-6">
-        <FormInputNumber
+        <FormInput
           label="HP"
           name="hp"
           value={monster.hp}
@@ -374,11 +338,9 @@ const LegendaryForm: React.FC<{
           onChange={(armor) => setMonster({ ...monster, armor })}
         />
         <div className="col-span-7">
-          <label className="block text-sm/6 font-medium text-gray-900">
-            Saves
-          </label>
+          <label className="d-fieldset-label">Saves</label>
           <div className="flex gap-2">
-            <FormInputText
+            <FormInput
               label=""
               name="saves"
               value={monster.saves || ""}
@@ -392,13 +354,13 @@ const LegendaryForm: React.FC<{
     <AbilitiesSection monster={monster} setMonster={setMonster} />
     <ActionsSection monster={monster} setMonster={setMonster} />
     <div className="space-y-6">
-      <FormInputText
+      <FormInput
         label="Bloodied"
         name="bloodied"
         value={monster.bloodied || ""}
         onChange={(bloodied) => setMonster({ ...monster, bloodied })}
       />
-      <FormInputText
+      <FormInput
         label="Last Stand"
         name="lastStand"
         value={monster.lastStand || ""}
@@ -414,14 +376,14 @@ const StandardForm: React.FC<{
 }> = ({ monster, setMonster }) => (
   <div className="space-y-4">
     <div className="grid grid-cols-5 gap-x-6">
-      <FormInputText
+      <FormInput
         label="Name"
         name="name"
         value={monster.name}
         className="col-span-3"
         onChange={(name) => setMonster({ ...monster, name })}
       />
-      <FormInputText
+      <FormInput
         label="Lvl"
         name="level"
         value={monster.level}
@@ -445,25 +407,25 @@ const StandardForm: React.FC<{
         selected={monster.armor}
         onChange={(armor) => setMonster({ ...monster, armor })}
       />
-      <FormInputNumber
+      <FormInput
         label="Swim"
         name="swim"
         value={monster.swim}
         onChange={(swim) => setMonster({ ...monster, swim })}
       />
-      <FormInputNumber
+      <FormInput
         label="Fly"
         name="fly"
         value={monster.fly}
         onChange={(fly) => setMonster({ ...monster, fly })}
       />
-      <FormInputNumber
+      <FormInput
         label="Speed"
         name="speed"
         value={monster.speed}
         onChange={(speed) => setMonster({ ...monster, speed })}
       />
-      <FormInputNumber
+      <FormInput
         label="HP"
         name="hp"
         value={monster.hp}
@@ -480,22 +442,8 @@ const AbilitiesSection: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
 }> = ({ monster, setMonster }) => (
-  <fieldset>
-    <div className="header grid grid-cols-12 gap-x-6 mt-5 mb-2 items-end">
-      <legend className="col-span-11 font-bold">Abilities</legend>
-      <button
-        type="button"
-        className="w-6 h-6"
-        onClick={() =>
-          setMonster({
-            ...monster,
-            abilities: [...monster.abilities, { name: "", description: "" }],
-          })
-        }
-      >
-        <PlusIcon className="w-6 h-6 text-slate-500" />
-      </button>
-    </div>
+  <fieldset className="d-fieldset">
+    <legend className="d-fieldset-legend text-base">Abilities</legend>
     {monster.abilities.map((ability, index) => (
       <AbilityRow
         key={index}
@@ -511,6 +459,19 @@ const AbilitiesSection: React.FC<{
         }}
       />
     ))}
+    <button
+      type="button"
+      className="d-btn d-btn-ghost text-base-content/50"
+      onClick={() =>
+        setMonster({
+          ...monster,
+          abilities: [...monster.abilities, { name: "", description: "" }],
+        })
+      }
+    >
+      <PlusIcon className="w-6 h-6" />
+      Add
+    </button>
   </fieldset>
 );
 
@@ -518,25 +479,8 @@ const ActionsSection: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
 }> = ({ monster, setMonster }) => (
-  <fieldset>
-    <div className="header grid grid-cols-12 gap-x-6 mt-5 mb-2 items-end">
-      <legend className="col-span-11 font-bold">Actions</legend>
-      <button
-        type="button"
-        className="w-6 h-6"
-        onClick={() =>
-          setMonster({
-            ...monster,
-            actions: [
-              ...monster.actions,
-              { name: "", damage: "", description: "" },
-            ],
-          })
-        }
-      >
-        <PlusIcon className="w-6 h-6 text-slate-500" />
-      </button>
-    </div>
+  <fieldset className="d-fieldset">
+    <legend className="d-fieldset-legend text-base">Actions</legend>
     {monster.actions.map((action, index) => (
       <ActionRow
         key={index}
@@ -553,6 +497,22 @@ const ActionsSection: React.FC<{
         }}
       />
     ))}
+    <button
+      type="button"
+      className="d-btn d-btn-ghost text-base-content/50"
+      onClick={() =>
+        setMonster({
+          ...monster,
+          actions: [
+            ...monster.actions,
+            { name: "", damage: "", description: "" },
+          ],
+        })
+      }
+    >
+      <PlusIcon className="w-6 h-6" />
+      Add
+    </button>
   </fieldset>
 );
 
@@ -615,10 +575,10 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
   return (
     <div className="grid grid-cols-6 gap-x-8">
       <div className={monster.legendary ? "col-span-3" : "col-span-4"}>
-        <form onSubmit={handleSubmit}>
+        <form className="d-fieldset" onSubmit={handleSubmit}>
           <div className="mb-6 flex justify-between items-start">
-            <div className="inline-flex rounded-md shadow-sm" role="group">
-              {typeOptions.map((option, idx) => (
+            <div className="d-tabs d-tabs-box" role="group">
+              {typeOptions.map((option) => (
                 <button
                   key={option.label}
                   type="button"
@@ -628,89 +588,12 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
                       legendary: option.value,
                     })
                   }
-                  className={`
-                            ${idx === 0 ? "rounded-l-lg" : ""}
-                            ${idx === 1 ? "rounded-r-lg" : ""}
-                            px-4 py-2 text-sm font-medium
-                            ${
-                              monster.legendary === option.value
-                                ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                                : "bg-white text-gray-900 hover:bg-gray-50"
-                            }
-                            border border-gray-200
-                            ${idx > 0 ? "border-l-0" : ""}
-                          `}
+                  className={`d-tab  ${monster.legendary === option.value && "d-tab-active"}`}
                 >
                   {option.label}
                 </button>
               ))}
             </div>
-
-            {currentUser.data && (
-              <div className="flex flex-col items-end">
-                <div className="inline-flex rounded-lg p-1 bg-gray-100">
-                  <label
-                    className={`flex items-center px-4 py-2 rounded-lg cursor-pointer w-[80px] text-center justify-center ${
-                      (monster.visibility || "private") === "private"
-                        ? "bg-white shadow-sm"
-                        : "hover:bg-gray-50"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="visibility"
-                      value="private"
-                      checked={(monster.visibility || "private") === "private"}
-                      onChange={() =>
-                        setMonster({ ...monster, visibility: "private" })
-                      }
-                      className="hidden"
-                    />
-                    <span
-                      className={`text-sm font-medium ${
-                        (monster.visibility || "private") === "private"
-                          ? "text-gray-900"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      Private
-                    </span>
-                  </label>
-                  <label
-                    className={`flex items-center px-4 py-2 rounded-lg cursor-pointer w-[80px] text-center justify-center ${
-                      (monster.visibility || "private") === "public"
-                        ? "bg-white shadow-sm"
-                        : "hover:bg-gray-50"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="visibility"
-                      value="public"
-                      checked={(monster.visibility || "private") === "public"}
-                      onChange={() =>
-                        setMonster({ ...monster, visibility: "public" })
-                      }
-                      className="hidden"
-                    />
-                    <span
-                      className={`text-sm font-medium ${
-                        (monster.visibility || "private") === "public"
-                          ? "text-gray-900"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      Public
-                    </span>
-                  </label>
-                </div>
-                <div className="h-5 text-xs text-gray-600 text-center w-[170px]">
-                  {(monster.visibility || "private") === "private"
-                    ? "Only you can see this monster."
-                    : "This monster is visible in the public Monsters list."}
-                </div>
-              </div>
-            )}
           </div>
 
           {monster.legendary ? (
@@ -720,39 +603,61 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
           )}
 
           {currentUser.data && (
-            <div className="mt-3">
-              <button
-                type="submit"
-                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Save
-              </button>
-            </div>
+            <>
+              <div className="d-divider"></div>
+              <div className="flex flex-row justify-between items-center">
+                <button type="submit" className="d-btn d-btn-primary">
+                  Save
+                </button>
+                <fieldset className="fieldset">
+                  <div>
+                    <label className="d-fieldset-label text-sm">
+                      Publish to Public Monsters
+                      <input
+                        name="public"
+                        type="checkbox"
+                        className="d-toggle d-toggle-lg mr-2 d-toggle-primary"
+                        onChange={(e) => {
+                          setMonster({
+                            ...monster,
+                            visibility: e.target.checked ? "public" : "private",
+                          });
+                        }}
+                      />
+                    </label>
+                  </div>
+                </fieldset>
+              </div>
+            </>
           )}
         </form>
       </div>
 
       <div className={monster.legendary ? "col-span-3" : "col-span-2"}>
-        <div className="flex mb-6 mr-5 justify-end">
-          <div className="flex gap-2 items-center">
-            <span className="text-sm font-medium text-gray-900">
-              Load Example:
-            </span>
-            {Object.keys(EXAMPLE_MONSTERS).map((type) => (
-              <button
-                key={type}
-                type="button"
-                onClick={() =>
-                  loadExample(type as keyof typeof EXAMPLE_MONSTERS)
-                }
-                className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              >
-                {type.charAt(0).toUpperCase() + type.slice(1)}
-              </button>
-            ))}
+        <div className="sticky top-4">
+          <div className="flex mb-6 mr-5 justify-end">
+            <div className="flex gap-2 items-center">
+              <span className="text-sm font-medium text-gray-900">
+                Load Example:
+              </span>
+              {Object.keys(EXAMPLE_MONSTERS).map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() =>
+                    loadExample(type as keyof typeof EXAMPLE_MONSTERS)
+                  }
+                  className="d-btn"
+                >
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
+            <MonsterCard monster={monster} />
           </div>
         </div>
-        <MonsterCard monster={monster} />
       </div>
     </div>
   );

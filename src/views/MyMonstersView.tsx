@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { fetchApi } from "../lib/api";
 import type { Monster } from "../lib/types";
-import MonsterCard from "../components/MonsterCard";
+import { MonsterCardGrid } from "../components/MonsterCard";
 import MonsterList from "../components/MonsterList";
 
 export type MonsterDisplay = "card" | "list" | "table";
@@ -34,15 +34,7 @@ const MyMonstersView = () => {
       {display === "list" ? (
         <MonsterList monsters={data.monsters} />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3">
-          {data.monsters.map((monster) => (
-            <MonsterCard
-              key={monster.id}
-              monster={monster}
-              showActions={true}
-            />
-          ))}
-        </div>
+        <MonsterCardGrid monsters={data.monsters} showActions={true} />
       )}
     </div>
   );

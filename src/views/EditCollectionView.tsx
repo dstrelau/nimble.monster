@@ -7,9 +7,9 @@ import { useParams } from "react-router-dom";
 import { z } from "zod";
 import {
   VisibilityToggle,
-  VisibilityEnum
+  VisibilityEnum,
 } from "../components/VisibilityToggle";
-import MonsterCard from "../components/MonsterCard";
+import { MonsterCard } from "../components/MonsterCard";
 import { fetchApi } from "../lib/api";
 import type { Collection, Monster } from "../lib/types";
 
@@ -53,7 +53,10 @@ export const CollectionForm = ({ collection }: Props) => {
     resolver: zodResolver(collectionSchema),
     defaultValues: {
       name: collection?.name ?? "",
-      visibility: (collection?.visibility ?? "public") as "public" | "private" | "secret",
+      visibility: (collection?.visibility ?? "public") as
+        | "public"
+        | "private"
+        | "secret",
       description: collection?.description ?? "",
     },
   });

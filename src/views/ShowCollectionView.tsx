@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchApi } from "../lib/api";
-import MonsterCard from "../components/MonsterCard";
+import { MonsterCardGrid } from "../components/MonsterCard";
 import type { Collection } from "../lib/types";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
@@ -49,11 +49,7 @@ const ShowCollectionView: React.FC = () => {
       {data.monsters.length === 0 ? (
         <p>No monsters in this collection.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {data.monsters.map((monster) => (
-            <MonsterCard key={monster.id} monster={monster} />
-          ))}
-        </div>
+        <MonsterCardGrid monsters={data.monsters} />
       )}
     </div>
   );

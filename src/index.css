@@ -17,6 +17,12 @@
     }
 }
 
+@layer utilities {
+    .d-fieldset-label {
+        font-size: var(--text-sm);
+    }
+}
+
 @keyframes fade-out {
     0% {
         opacity: 1;
