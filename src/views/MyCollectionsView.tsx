@@ -64,7 +64,6 @@ const NewCollectionForm = () => {
                 id="name"
                 {...register("name")}
                 className="d-input w-full"
-                placeholder="New collection name"
               />
               {errors.name && (
                 <p className="text-sm text-red-600 mt-1">
@@ -119,7 +118,7 @@ const MyCollectionsView = () => {
               key={c.id}
               collection={c}
               showEditDeleteButtons={true}
-              showPublicBadge={true}
+              showPublicBadge={c.visibility === "public"}
             />
           ))}
         </div>

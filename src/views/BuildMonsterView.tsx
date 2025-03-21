@@ -1,8 +1,13 @@
-import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  EyeIcon,
+  PlusIcon,
+  TrashIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import clsx from "clsx";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import clsx from "clsx";
 import { MonsterCard } from "../components/MonsterCard";
 import { fetchApi } from "../lib/api";
 import { AuthContext } from "../lib/auth";
@@ -531,6 +536,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
 
   const currentUser = useContext(AuthContext);
 
+  const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [monster, setMonster] = useState<Monster>(
     () => existingMonster ?? EXAMPLE_MONSTERS.empty,
   );
@@ -573,93 +579,150 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
   };
 
   return (
-    <div className="grid grid-cols-6 gap-x-8">
-      <div className={monster.legendary ? "col-span-3" : "col-span-4"}>
-        <form className="d-fieldset" onSubmit={handleSubmit}>
-          <div className="mb-6 flex justify-between items-start">
-            <div className="d-tabs d-tabs-box" role="group">
-              {typeOptions.map((option) => (
-                <button
-                  key={option.label}
-                  type="button"
-                  onClick={() =>
-                    setMonster({
-                      ...monster,
-                      legendary: option.value,
-                    })
-                  }
-                  className={`d-tab  ${monster.legendary === option.value && "d-tab-active"}`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {monster.legendary ? (
-            <LegendaryForm monster={monster} setMonster={setMonster} />
-          ) : (
-            <StandardForm monster={monster} setMonster={setMonster} />
-          )}
-
-          {currentUser.data && (
-            <>
-              <div className="d-divider"></div>
-              <div className="flex flex-row justify-between items-center">
-                <button type="submit" className="d-btn d-btn-primary">
-                  Save
-                </button>
-                <fieldset className="fieldset">
-                  <div>
-                    <label className="d-fieldset-label text-sm">
-                      Publish to Public Monsters
-                      <input
-                        name="public"
-                        type="checkbox"
-                        className="d-toggle d-toggle-lg mr-2 d-toggle-primary"
-                        onChange={(e) => {
-                          setMonster({
-                            ...monster,
-                            visibility: e.target.checked ? "public" : "private",
-                          });
-                        }}
-                      />
-                    </label>
-                  </div>
-                </fieldset>
-              </div>
-            </>
-          )}
-        </form>
+    <>
+      <div
+        className={clsx(
+          showMobilePreview || "hidden",
+          "md:hidden fixed h-full left-0 top-0 inset-0 z-1 bg-base-200",
+        )}
+      >
+        <div className="d-navbar w-full justify-center sticky bg-neutral text-neutral-content">
+          <h3 className="font-bold">Monster Preview</h3>
+          <button
+            className="d-btn d-btn-ghost d-btn-circle"
+            onClick={() => setShowMobilePreview(false)}
+          >
+            <XMarkIcon className="h-6 w-6" />
+          </button>
+        </div>
+        <div className="grid grid-cols-1 gap-4 p-4">
+          <MonsterCard monster={monster} />
+        </div>
       </div>
 
-      <div className={monster.legendary ? "col-span-3" : "col-span-2"}>
-        <div className="sticky top-4">
-          <div className="flex mb-6 mr-5 justify-end">
-            <div className="flex gap-2 items-center">
-              <span className="text-sm font-medium text-gray-900">
-                Load Example:
-              </span>
-              {Object.keys(EXAMPLE_MONSTERS).map((type) => (
-                <button
-                  key={type}
-                  type="button"
-                  onClick={() =>
-                    loadExample(type as keyof typeof EXAMPLE_MONSTERS)
-                  }
-                  className="d-btn"
-                >
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </button>
-              ))}
+      <div
+        className={clsx(
+          "md:hidden fixed bottom-0 left-0 right-0 z-1 w-full bg-base-100 flex p-2 justify-between",
+          showMobilePreview && "hidden",
+        )}
+        onClick={() => setShowMobilePreview(true)}
+      >
+        <span className="font-slab font-black font-small-caps italic text-2xl">
+          {monster.name}
+        </span>
+        <div className="flex gap-2 items-center text-sm text-base-content/70">
+          <EyeIcon className="h-6 w-6" /> Preview
+        </div>
+      </div>
+
+      <div
+        className={clsx(
+          `grid grid-cols-6 gap-x-8 mb-10 md:mb-0`,
+          showMobilePreview && "hidden",
+        )}
+      >
+        <div
+          className={clsx(
+            "col-span-6",
+            monster.legendary ? "md:col-span-3" : "md:col-span-4",
+          )}
+        >
+          <form className="d-fieldset" onSubmit={handleSubmit}>
+            <div className="mb-6 flex justify-between items-start">
+              <div className="d-join" role="group">
+                {typeOptions.map((option) => (
+                  <button
+                    key={option.label}
+                    type="button"
+                    onClick={() =>
+                      setMonster({
+                        ...monster,
+                        legendary: option.value,
+                      })
+                    }
+                    className={clsx(
+                      "d-btn d-join-item",
+                      monster.legendary === option.value && "d-btn-primary",
+                    )}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
-            <MonsterCard monster={monster} />
+
+            {monster.legendary ? (
+              <LegendaryForm monster={monster} setMonster={setMonster} />
+            ) : (
+              <StandardForm monster={monster} setMonster={setMonster} />
+            )}
+
+            {currentUser.data && (
+              <>
+                <div className="d-divider"></div>
+                <div className="flex flex-row justify-between items-center">
+                  <button type="submit" className="d-btn d-btn-primary">
+                    Save
+                  </button>
+                  <fieldset className="fieldset">
+                    <div>
+                      <label className="d-fieldset-label text-sm">
+                        Publish to Public Monsters
+                        <input
+                          name="public"
+                          type="checkbox"
+                          className="d-toggle d-toggle-lg mr-2 d-toggle-primary"
+                          onChange={(e) => {
+                            setMonster({
+                              ...monster,
+                              visibility: e.target.checked
+                                ? "public"
+                                : "private",
+                            });
+                          }}
+                        />
+                      </label>
+                    </div>
+                  </fieldset>
+                </div>
+              </>
+            )}
+          </form>
+        </div>
+
+        <div
+          className={clsx(
+            "hidden md:block",
+            monster.legendary ? "md:col-span-3" : "md:col-span-2",
+          )}
+        >
+          <div className="sticky top-4">
+            <div className="flex mb-6 mr-5 justify-end">
+              <div className="flex gap-2 items-center">
+                <span className="text-sm font-medium text-gray-900">
+                  Load Example:
+                </span>
+                {Object.keys(EXAMPLE_MONSTERS).map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() =>
+                      loadExample(type as keyof typeof EXAMPLE_MONSTERS)
+                    }
+                    className="d-btn"
+                  >
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
+              <MonsterCard monster={monster} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
