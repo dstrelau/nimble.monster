@@ -9,7 +9,7 @@ import {
   VisibilityToggle,
   VisibilityEnum,
 } from "../components/VisibilityToggle";
-import { MonsterCard } from "../components/MonsterCard";
+import { MonsterCardGrid } from "../components/MonsterCard";
 import { fetchApi } from "../lib/api";
 import type { Collection, Monster } from "../lib/types";
 
@@ -185,11 +185,7 @@ export const EditCollectionView: React.FC = () => {
           })}
         </div>
         <div className="col-span-2">
-          <div className="grid grid-cols-2 gap-4">
-            {collection.monsters.map((monster) => (
-              <MonsterCard key={monster.id} monster={monster} />
-            ))}
-          </div>
+          <MonsterCardGrid monsters={collection.monsters} showActions={false} />
         </div>
       </div>
     </div>

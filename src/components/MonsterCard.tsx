@@ -8,10 +8,10 @@ import {
 } from "@/components/Icons";
 import { fetchApi } from "@/lib/api";
 import type { Monster } from "@/lib/types";
-
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import clsx from "clsx";
 import domtoimage from "dom-to-image";
 import { Link } from "react-router-dom";
 
@@ -139,7 +139,7 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
   };
 
   return (
-    <div className={`mb-5 ${monster.legendary && "col-span-2"}`}>
+    <div className={clsx(monster.legendary && "md:col-span-2")}>
       <div id={`monster-${monster.id}`}>
         <article className="d-card d-card-border px-4 py-3 bg-base-100 border-base-300">
           {monster.legendary ? (
@@ -246,7 +246,7 @@ export const MonsterCardGrid = ({
   showActions: boolean;
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {monsters.map((m) => (
         <MonsterCard key={m.id} monster={m} showActions={showActions} />
       ))}

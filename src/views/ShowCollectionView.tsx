@@ -49,7 +49,7 @@ const ShowCollectionView: React.FC = () => {
       {data.monsters.length === 0 ? (
         <p>No monsters in this collection.</p>
       ) : (
-        <MonsterCardGrid monsters={data.monsters} />
+        <MonsterCardGrid monsters={data.monsters} showActions={false} />
       )}
     </div>
   );
