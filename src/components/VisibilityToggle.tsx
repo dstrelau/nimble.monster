@@ -1,5 +1,6 @@
 import type { UseFormRegister } from "react-hook-form";
 import { z } from "zod";
+import clsx from "clsx";
 
 export const VisibilityEnum = ["private", "secret", "public"] as const;
 
@@ -23,67 +24,43 @@ export const VisibilityToggle = ({
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="inline-flex rounded-lg p-1 bg-gray-100 w-fit">
-        <label
-          className={`flex items-center px-4 py-2 rounded-lg cursor-pointer ${
-            value === "private" ? "bg-white shadow-sm" : "hover:bg-gray-50"
-          }`}
-        >
-          <input
-            type="radio"
-            {...register("visibility")}
-            value="private"
-            className="hidden"
-          />
-          <span
-            className={`text-sm font-medium ${
-              value === "private" ? "text-gray-900" : "text-gray-500"
-            }`}
-          >
-            Private
-          </span>
-        </label>
-        <label
-          className={`flex items-center px-4 py-2 rounded-lg cursor-pointer ${
-            value === "secret" ? "bg-white shadow-sm" : "hover:bg-gray-50"
-          }`}
-        >
-          <input
-            type="radio"
-            {...register("visibility")}
-            value="secret"
-            className="hidden"
-          />
-          <span
-            className={`text-sm font-medium ${
-              value === "secret" ? "text-gray-900" : "text-gray-500"
-            }`}
-          >
-            Secret
-          </span>
-        </label>
-        <label
-          className={`flex items-center px-4 py-2 rounded-lg cursor-pointer ${
-            value === "public" ? "bg-white shadow-sm" : "hover:bg-gray-50"
-          }`}
-        >
-          <input
-            type="radio"
-            {...register("visibility")}
-            value="public"
-            className="hidden"
-          />
-          <span
-            className={`text-sm font-medium ${
-              value === "public" ? "text-gray-900" : "text-gray-500"
-            }`}
-          >
-            Public
-          </span>
-        </label>
+    <div>
+      <label className="d-fieldset-label mb-1" htmlFor="visibility">
+        Visibility
+      </label>
+      <div className="d-join" role="group">
+        <input
+          type="radio"
+          {...register("visibility")}
+          value="private"
+          aria-label="Private"
+          className={clsx(
+            "d-btn d-join-item",
+            value === "private" ? "d-btn-primary" : "bg-base-100",
+          )}
+        />
+        <input
+          type="radio"
+          {...register("visibility")}
+          value="secret"
+          aria-label="Secret"
+          className={clsx(
+            "d-btn d-join-item",
+            value === "secret" ? "d-btn-primary" : "bg-base-100",
+          )}
+        />
+        <input
+          type="radio"
+          {...register("visibility")}
+          value="public"
+          aria-label="Public"
+          className={clsx(
+            "d-btn d-join-item",
+            value === "public" ? "d-btn-primary" : "bg-base-100",
+          )}
+        />
       </div>
-      <div className="h-5 text-xs text-gray-600 text-center">
+      <div className="mt-2 text-xs text-base-content/60 text-center">
         {visibilityInfo[value]}
       </div>
     </div>

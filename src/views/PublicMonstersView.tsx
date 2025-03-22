@@ -34,7 +34,7 @@ const PublicMonstersView = () => {
       {display === "list" ? (
         <MonsterList monsters={data.monsters} />
       ) : (
-        <MonsterCardGrid monsters={data.monsters} />
+        <MonsterCardGrid monsters={data.monsters} showActions={false} />
       )}
     </div>
   );
