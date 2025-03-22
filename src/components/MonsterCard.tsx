@@ -12,7 +12,6 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
-import domtoimage from "dom-to-image";
 import { Link } from "react-router-dom";
 
 const Stat: React.FC<{
@@ -115,7 +114,7 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  /*
   const downloadCard = async () => {
     const card = document.getElementById(`monster-${monster.id}`);
     if (!card) return;
@@ -137,6 +136,7 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
     a.download = `${monster.name}.png`;
     a.click();
   };
+  */
 
   return (
     <div className={clsx(monster.legendary && "md:col-span-2")}>
