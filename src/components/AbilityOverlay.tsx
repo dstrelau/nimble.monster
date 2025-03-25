@@ -1,12 +1,6 @@
+import { maybePeriod } from "@/lib/text";
 import type { Ability, Family } from "@/lib/types";
 import { UsersIcon } from "@heroicons/react/24/outline";
-
-const maybePeriod = (s: string) => {
-  if (s && (s.endsWith(".") || s.endsWith("!") || s.endsWith("?"))) {
-    return s;
-  }
-  return s + ".";
-};
 
 export const AbilityOverlay = ({
   ability,

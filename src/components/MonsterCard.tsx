@@ -7,6 +7,7 @@ import {
   SwimIcon,
 } from "@/components/Icons";
 import { fetchApi } from "@/lib/api";
+import { maybePeriod } from "@/lib/text";
 import type { Monster } from "@/lib/types";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/solid";
@@ -168,7 +169,7 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
           <ul className="d-list text-base list-disc pl-4">
             {monster.actions?.map((action, index) => (
               <li key={index} className="d-list-item">
-                <strong className="pr-1">{action.name}.</strong>
+                <strong className="pr-1">{maybePeriod(action.name)}</strong>
                 {action.damage && (
                   <span className="damage">{action.damage} </span>
                 )}
