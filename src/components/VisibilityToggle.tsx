@@ -1,14 +1,12 @@
 import type { UseFormRegister } from "react-hook-form";
-import { z } from "zod";
+// import { z } from "zod";
 import clsx from "clsx";
 
 export const VisibilityEnum = ["private", "secret", "public"] as const;
 
-export const visibilitySchema = z.object({
-  visibility: z.enum(VisibilityEnum),
-});
-
-export type VisibilityFormData = z.infer<typeof visibilitySchema>;
+export type VisibilityFormData = {
+  visibility: (typeof VisibilityEnum)[keyof typeof VisibilityEnum];
+};
 
 export const VisibilityToggle = ({
   register,

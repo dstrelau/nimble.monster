@@ -8,10 +8,10 @@ import (
 
 func TestMap(t *testing.T) {
 	tests := []struct {
-		name     string
-		input    []int
+		name      string
+		input     []int
 		transform func(int) string
-		want     []string
+		want      []string
 	}{
 		{
 			name:  "int to string",

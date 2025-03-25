@@ -14,25 +14,27 @@ import (
 
 const createLegendaryMonster = `-- name: CreateLegendaryMonster :one
 INSERT INTO monsters (
-    user_id, name, kind, level, hp, armor, size, actions, abilities, bloodied, last_stand, saves, legendary
+    user_id, name, kind, level, hp, armor, size, actions, abilities, bloodied, last_stand, saves, legendary, action_preface, more_info
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true
-) RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true, $13, $14
+) RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 `
 
 type CreateLegendaryMonsterParams struct {
-	UserID    uuid.UUID
-	Name      string
-	Kind      string
-	Level     string
-	Hp        int32
-	Armor     ArmorType
-	Size      SizeType
-	Actions   [][]byte
-	Abilities [][]byte
-	Bloodied  string
-	LastStand string
-	Saves     []string
+	UserID        uuid.UUID
+	Name          string
+	Kind          string
+	Level         string
+	Hp            int32
+	Armor         ArmorType
+	Size          SizeType
+	Actions       [][]byte
+	Abilities     [][]byte
+	Bloodied      string
+	LastStand     string
+	Saves         []string
+	ActionPreface pgtype.Text
+	MoreInfo      pgtype.Text
 }
 
 func (q *Queries) CreateLegendaryMonster(ctx context.Context, arg CreateLegendaryMonsterParams) (Monster, error) {
@@ -49,6 +51,8 @@ func (q *Queries) CreateLegendaryMonster(ctx context.Context, arg CreateLegendar
 		arg.Bloodied,
 		arg.LastStand,
 		arg.Saves,
+		arg.ActionPreface,
+		arg.MoreInfo,
 	)
 	var i Monster
 	err := row.Scan(
@@ -73,31 +77,35 @@ func (q *Queries) CreateLegendaryMonster(ctx context.Context, arg CreateLegendar
 		&i.Kind,
 		&i.Visibility,
 		&i.FamilyID,
+		&i.ActionPreface,
+		&i.MoreInfo,
 	)
 	return i, err
 }
 
 const createMonster = `-- name: CreateMonster :one
 INSERT INTO monsters (
-    user_id, name, level, hp, armor, size, speed, fly, swim, family_id, actions, abilities
+    user_id, name, level, hp, armor, size, speed, fly, swim, family_id, actions, abilities, action_preface, more_info
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
-) RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+) RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 `
 
 type CreateMonsterParams struct {
-	UserID    uuid.UUID
-	Name      string
-	Level     string
-	Hp        int32
-	Armor     ArmorType
-	Size      SizeType
-	Speed     int32
-	Fly       int32
-	Swim      int32
-	FamilyID  pgtype.UUID
-	Actions   [][]byte
-	Abilities [][]byte
+	UserID        uuid.UUID
+	Name          string
+	Level         string
+	Hp            int32
+	Armor         ArmorType
+	Size          SizeType
+	Speed         int32
+	Fly           int32
+	Swim          int32
+	FamilyID      pgtype.UUID
+	Actions       [][]byte
+	Abilities     [][]byte
+	ActionPreface pgtype.Text
+	MoreInfo      pgtype.Text
 }
 
 func (q *Queries) CreateMonster(ctx context.Context, arg CreateMonsterParams) (Monster, error) {
@@ -114,6 +122,8 @@ func (q *Queries) CreateMonster(ctx context.Context, arg CreateMonsterParams) (M
 		arg.FamilyID,
 		arg.Actions,
 		arg.Abilities,
+		arg.ActionPreface,
+		arg.MoreInfo,
 	)
 	var i Monster
 	err := row.Scan(
@@ -138,12 +148,14 @@ func (q *Queries) CreateMonster(ctx context.Context, arg CreateMonsterParams) (M
 		&i.Kind,
 		&i.Visibility,
 		&i.FamilyID,
+		&i.ActionPreface,
+		&i.MoreInfo,
 	)
 	return i, err
 }
 
 const deleteMonster = `-- name: DeleteMonster :one
-DELETE FROM monsters WHERE id = $1 RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id
+DELETE FROM monsters WHERE id = $1 RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 `
 
 func (q *Queries) DeleteMonster(ctx context.Context, id uuid.UUID) (Monster, error) {
@@ -171,12 +183,14 @@ func (q *Queries) DeleteMonster(ctx context.Context, id uuid.UUID) (Monster, err
 		&i.Kind,
 		&i.Visibility,
 		&i.FamilyID,
+		&i.ActionPreface,
+		&i.MoreInfo,
 	)
 	return i, err
 }
 
 const getMonster = `-- name: GetMonster :one
-SELECT id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id
+SELECT id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 FROM monsters
 WHERE monsters.id = $1
 `
@@ -206,12 +220,14 @@ func (q *Queries) GetMonster(ctx context.Context, id uuid.UUID) (Monster, error)
 		&i.Kind,
 		&i.Visibility,
 		&i.FamilyID,
+		&i.ActionPreface,
+		&i.MoreInfo,
 	)
 	return i, err
 }
 
 const listMonstersForUser = `-- name: ListMonstersForUser :many
-SELECT id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id
+SELECT id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 FROM monsters
 WHERE user_id = $1 ORDER BY monsters.name ASC
 `
@@ -247,6 +263,8 @@ func (q *Queries) ListMonstersForUser(ctx context.Context, userID uuid.UUID) ([]
 			&i.Kind,
 			&i.Visibility,
 			&i.FamilyID,
+			&i.ActionPreface,
+			&i.MoreInfo,
 		); err != nil {
 			return nil, err
 		}
@@ -259,7 +277,7 @@ func (q *Queries) ListMonstersForUser(ctx context.Context, userID uuid.UUID) ([]
 }
 
 const listPublicMonsters = `-- name: ListPublicMonsters :many
-SELECT id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id
+SELECT id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 FROM monsters
 WHERE visibility = 'public' ORDER BY monsters.name ASC
 `
@@ -295,6 +313,8 @@ func (q *Queries) ListPublicMonsters(ctx context.Context) ([]Monster, error) {
 			&i.Kind,
 			&i.Visibility,
 			&i.FamilyID,
+			&i.ActionPreface,
+			&i.MoreInfo,
 		); err != nil {
 			return nil, err
 		}
@@ -307,7 +327,7 @@ func (q *Queries) ListPublicMonsters(ctx context.Context) ([]Monster, error) {
 }
 
 const searchMonsters = `-- name: SearchMonsters :many
-SELECT m.id, m.name, m.level, m.hp, m.armor, m.size, m.speed, m.fly, m.swim, m.actions, m.abilities, m.legendary, m.bloodied, m.last_stand, m.saves, m.created_at, m.updated_at, m.user_id, m.kind, m.visibility, m.family_id
+SELECT m.id, m.name, m.level, m.hp, m.armor, m.size, m.speed, m.fly, m.swim, m.actions, m.abilities, m.legendary, m.bloodied, m.last_stand, m.saves, m.created_at, m.updated_at, m.user_id, m.kind, m.visibility, m.family_id, m.action_preface, m.more_info
 FROM monsters m
 WHERE
     similarity(lower(m.name), lower($1)) > 0.3
@@ -349,6 +369,8 @@ func (q *Queries) SearchMonsters(ctx context.Context, lower string) ([]Monster, 
 			&i.Kind,
 			&i.Visibility,
 			&i.FamilyID,
+			&i.ActionPreface,
+			&i.MoreInfo,
 		); err != nil {
 			return nil, err
 		}
@@ -376,24 +398,28 @@ SET name = $2,
     bloodied = $10,
     last_stand = $11,
     saves = $12,
-    visibility = $13
-WHERE id = $1 RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id
+    visibility = $13,
+    action_preface = $14,
+    more_info = $15
+WHERE id = $1 RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 `
 
 type UpdateLegendaryMonsterParams struct {
-	ID         uuid.UUID
-	Name       string
-	Kind       string
-	Level      string
-	Hp         int32
-	Armor      ArmorType
-	Size       SizeType
-	Actions    [][]byte
-	Abilities  [][]byte
-	Bloodied   string
-	LastStand  string
-	Saves      []string
-	Visibility MonsterVisibility
+	ID            uuid.UUID
+	Name          string
+	Kind          string
+	Level         string
+	Hp            int32
+	Armor         ArmorType
+	Size          SizeType
+	Actions       [][]byte
+	Abilities     [][]byte
+	Bloodied      string
+	LastStand     string
+	Saves         []string
+	Visibility    MonsterVisibility
+	ActionPreface pgtype.Text
+	MoreInfo      pgtype.Text
 }
 
 func (q *Queries) UpdateLegendaryMonster(ctx context.Context, arg UpdateLegendaryMonsterParams) (Monster, error) {
@@ -411,6 +437,8 @@ func (q *Queries) UpdateLegendaryMonster(ctx context.Context, arg UpdateLegendar
 		arg.LastStand,
 		arg.Saves,
 		arg.Visibility,
+		arg.ActionPreface,
+		arg.MoreInfo,
 	)
 	var i Monster
 	err := row.Scan(
@@ -435,6 +463,8 @@ func (q *Queries) UpdateLegendaryMonster(ctx context.Context, arg UpdateLegendar
 		&i.Kind,
 		&i.Visibility,
 		&i.FamilyID,
+		&i.ActionPreface,
+		&i.MoreInfo,
 	)
 	return i, err
 }
@@ -456,24 +486,28 @@ SET name = $2,
     bloodied = '',
     last_stand = '',
     saves = array[]::text[],
-    visibility = $13
-WHERE id = $1 RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id
+    visibility = $13,
+    action_preface = $14,
+    more_info = $15
+WHERE id = $1 RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 `
 
 type UpdateMonsterParams struct {
-	ID         uuid.UUID
-	Name       string
-	Level      string
-	Hp         int32
-	Armor      ArmorType
-	Size       SizeType
-	Speed      int32
-	Fly        int32
-	Swim       int32
-	FamilyID   pgtype.UUID
-	Actions    [][]byte
-	Abilities  [][]byte
-	Visibility MonsterVisibility
+	ID            uuid.UUID
+	Name          string
+	Level         string
+	Hp            int32
+	Armor         ArmorType
+	Size          SizeType
+	Speed         int32
+	Fly           int32
+	Swim          int32
+	FamilyID      pgtype.UUID
+	Actions       [][]byte
+	Abilities     [][]byte
+	Visibility    MonsterVisibility
+	ActionPreface pgtype.Text
+	MoreInfo      pgtype.Text
 }
 
 func (q *Queries) UpdateMonster(ctx context.Context, arg UpdateMonsterParams) (Monster, error) {
@@ -491,6 +525,8 @@ func (q *Queries) UpdateMonster(ctx context.Context, arg UpdateMonsterParams) (M
 		arg.Actions,
 		arg.Abilities,
 		arg.Visibility,
+		arg.ActionPreface,
+		arg.MoreInfo,
 	)
 	var i Monster
 	err := row.Scan(
@@ -515,6 +551,8 @@ func (q *Queries) UpdateMonster(ctx context.Context, arg UpdateMonsterParams) (M
 		&i.Kind,
 		&i.Visibility,
 		&i.FamilyID,
+		&i.ActionPreface,
+		&i.MoreInfo,
 	)
 	return i, err
 }

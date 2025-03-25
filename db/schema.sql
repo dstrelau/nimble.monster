@@ -148,7 +148,9 @@ CREATE TABLE public.monsters (
     user_id uuid NOT NULL,
     kind text DEFAULT ''::text NOT NULL,
     visibility public.monster_visibility DEFAULT 'public'::public.monster_visibility NOT NULL,
-    family_id uuid
+    family_id uuid,
+    action_preface text,
+    more_info text DEFAULT ''::text
 );
 
 
@@ -277,7 +279,7 @@ ALTER TABLE ONLY public.collections
 --
 
 ALTER TABLE ONLY public.monsters_collections
-    ADD CONSTRAINT monsters_collections_monster_id_fkey FOREIGN KEY (monster_id) REFERENCES public.monsters(id);
+    ADD CONSTRAINT monsters_collections_monster_id_fkey FOREIGN KEY (monster_id) REFERENCES public.monsters(id) ON DELETE CASCADE;
 
 
 --

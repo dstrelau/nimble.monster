@@ -1,15 +1,15 @@
 -- name: CreateMonster :one
 INSERT INTO monsters (
-    user_id, name, level, hp, armor, size, speed, fly, swim, family_id, actions, abilities
+    user_id, name, level, hp, armor, size, speed, fly, swim, family_id, actions, abilities, action_preface, more_info
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
 ) RETURNING *;
 
 -- name: CreateLegendaryMonster :one
 INSERT INTO monsters (
-    user_id, name, kind, level, hp, armor, size, actions, abilities, bloodied, last_stand, saves, legendary
+    user_id, name, kind, level, hp, armor, size, actions, abilities, bloodied, last_stand, saves, legendary, action_preface, more_info
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true, $13, $14
 ) RETURNING *;
 
 -- name: ListMonstersForUser :many
@@ -44,7 +44,9 @@ SET name = $2,
     bloodied = '',
     last_stand = '',
     saves = array[]::text[],
-    visibility = $13
+    visibility = $13,
+    action_preface = $14,
+    more_info = $15
 WHERE id = $1 RETURNING *;
 
 -- name: UpdateLegendaryMonster :one
@@ -63,7 +65,9 @@ SET name = $2,
     bloodied = $10,
     last_stand = $11,
     saves = $12,
-    visibility = $13
+    visibility = $13,
+    action_preface = $14,
+    more_info = $15
 WHERE id = $1 RETURNING *;
 
 -- name: DeleteMonster :one

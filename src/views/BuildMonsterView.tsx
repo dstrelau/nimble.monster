@@ -20,24 +20,41 @@ import type {
   MonsterSize,
 } from "../lib/types";
 import { ARMORS, SIZES } from "../lib/types";
+import { FormTextarea } from "@/components/FormTextarea";
 
 const EXAMPLE_MONSTERS: Record<string, Monster> = {
-  kobold: {
+  goblin: {
     visibility: "public",
     id: "",
     legendary: false,
-    name: "Kobold",
-    level: "1/3",
+    name: "Goblin Taskmaster",
+    level: "2",
     size: "small" as MonsterSize,
-    armor: "" as MonsterArmor,
+    armor: "medium" as MonsterArmor,
     swim: 0,
     fly: 0,
     speed: 6,
-    hp: 12,
-    abilities: [],
-    actions: [
-      { name: "Stab", damage: "1d4+2", description: "(or Sling, Range 8)" },
+    hp: 30,
+    abilities: [
+      {
+        name: "Meat Shield",
+        description: "Can force other goblins to Interpose for him.",
+      },
     ],
+    actions: [
+      {
+        name: "Stab",
+        damage: "1d6+2",
+        description: "(or Shoot, Range 8).",
+      },
+      {
+        name: "Get in here!",
+        damage: "",
+        description: "Call a goblin minion to the fight.",
+      },
+    ],
+    actionPreface: "Do both.",
+    moreInfo: "It's called meat shield for a reason. Use those minions!",
   },
   manticore: {
     visibility: "public",
@@ -70,6 +87,9 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     bloodied: "At 65 HP, his Venomous Stinger recharges.",
     lastStand:
       "The Ravager is dying! 40 more damage and he dies. Until then, the first time each turn he takes damage, he uses Move & Claw.",
+    actionPreface: "After each hero's turn, choose one.",
+    moreInfo:
+      "A mythical beast with the body of a lion, the wings of a dragon, and the face of a human. Known for their deadly tail spikes.",
   },
   empty: {
     visibility: "private",
@@ -85,6 +105,8 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     hp: 0,
     abilities: [],
     actions: [],
+    actionPreface: "Choose one.",
+    moreInfo: "",
   },
 };
 
@@ -212,19 +234,18 @@ const AbilityRow: React.FC<AbilityRowProps> = ({
   onRemove,
 }) => (
   <div className="flex flex-row items-center">
-    <div className="flex flex-wrap gap-x-4 mb-2 items-end flex-grow">
+    <div className="flex flex-col w-full gap-2 mb-2 border-l pl-4">
       <FormInput
         label="Name"
         name="ability-name"
         value={ability.name}
-        className="grow-1 min-w-32"
         onChange={(name) => onChange({ ...ability, name })}
       />
-      <FormInput
+      <FormTextarea
         label="Description"
         name="ability-description"
         value={ability.description}
-        className="grow-4 min-w-96"
+        rows={1}
         onChange={(description) => onChange({ ...ability, description })}
       />
     </div>
@@ -252,28 +273,29 @@ const ActionRow: React.FC<ActionRowProps> = ({
   onRemove,
 }) => (
   <div className="flex flex-row items-center">
-    <div className="flex flex-wrap gap-x-4 mb-2 items-end flex-grow">
-      <FormInput
-        label="Name"
-        name="action-name"
-        value={action.name}
-        className="grow-1 min-w-32"
-        onChange={(name) => onChange({ ...action, name })}
-      />
-      {legendary || (
+    <div className="flex flex-col w-full gap-2 mb-2 border-l pl-4">
+      <div className="flex flex-col md:flex-row mb-2 gap-x-4">
         <FormInput
-          label="Damage"
-          name="action-damage"
-          value={action.damage || ""}
-          className="w-24"
-          onChange={(damage) => onChange({ ...action, damage })}
+          label="Name"
+          name="action-name"
+          className="grow-3"
+          value={action.name}
+          onChange={(name) => onChange({ ...action, name })}
         />
-      )}
-      <FormInput
+        {legendary || (
+          <FormInput
+            label="Damage"
+            name="action-damage"
+            value={action.damage || ""}
+            onChange={(damage) => onChange({ ...action, damage })}
+          />
+        )}
+      </div>
+      <FormTextarea
         label="Description"
         name="action-description"
         value={action.description || ""}
-        className="grow-4 min-w-96"
+        rows={2}
         onChange={(description) => onChange({ ...action, description })}
       />
     </div>
@@ -359,17 +381,26 @@ const LegendaryForm: React.FC<{
     <AbilitiesSection monster={monster} setMonster={setMonster} />
     <ActionsSection monster={monster} setMonster={setMonster} />
     <div className="space-y-6">
-      <FormInput
+      <FormTextarea
         label="Bloodied"
         name="bloodied"
         value={monster.bloodied || ""}
+        rows={2}
         onChange={(bloodied) => setMonster({ ...monster, bloodied })}
       />
-      <FormInput
+      <FormTextarea
         label="Last Stand"
         name="lastStand"
         value={monster.lastStand || ""}
+        rows={2}
         onChange={(lastStand) => setMonster({ ...monster, lastStand })}
+      />
+      <FormTextarea
+        label="More Information"
+        name="moreInfo"
+        value={monster.moreInfo || ""}
+        rows={4}
+        onChange={(moreInfo) => setMonster({ ...monster, moreInfo })}
       />
     </div>
   </div>
@@ -440,6 +471,13 @@ const StandardForm: React.FC<{
     <FamilySection monster={monster} setMonster={setMonster} />
     <AbilitiesSection monster={monster} setMonster={setMonster} />
     <ActionsSection monster={monster} setMonster={setMonster} />
+    <FormTextarea
+      label="More Information"
+      name="moreInfo"
+      value={monster.moreInfo || ""}
+      rows={4}
+      onChange={(moreInfo) => setMonster({ ...monster, moreInfo })}
+    />
   </div>
 );
 
@@ -484,8 +522,14 @@ const ActionsSection: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
 }> = ({ monster, setMonster }) => (
-  <fieldset className="d-fieldset">
+  <fieldset className="d-fieldset gap-y-4">
     <legend className="d-fieldset-legend text-base">Actions</legend>
+    <FormInput
+      label="Preface"
+      name="actionPreface"
+      value={monster.actionPreface}
+      onChange={(actionPreface) => setMonster({ ...monster, actionPreface })}
+    />
     {monster.actions.map((action, index) => (
       <ActionRow
         key={index}
@@ -659,8 +703,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
 
             {currentUser.data && (
               <>
-                <div className="d-divider"></div>
-                <div className="flex flex-row justify-between items-center">
+                <div className="flex flex-row justify-between items-center my-4">
                   <button type="submit" className="d-btn d-btn-primary">
                     Save
                   </button>

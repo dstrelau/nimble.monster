@@ -161,7 +161,7 @@ func (q *Queries) ListCollections(ctx context.Context, userID uuid.UUID) ([]List
 }
 
 const listMonstersInCollection = `-- name: ListMonstersInCollection :many
-SELECT monsters.id, monsters.name, monsters.level, monsters.hp, monsters.armor, monsters.size, monsters.speed, monsters.fly, monsters.swim, monsters.actions, monsters.abilities, monsters.legendary, monsters.bloodied, monsters.last_stand, monsters.saves, monsters.created_at, monsters.updated_at, monsters.user_id, monsters.kind, monsters.visibility, monsters.family_id
+SELECT monsters.id, monsters.name, monsters.level, monsters.hp, monsters.armor, monsters.size, monsters.speed, monsters.fly, monsters.swim, monsters.actions, monsters.abilities, monsters.legendary, monsters.bloodied, monsters.last_stand, monsters.saves, monsters.created_at, monsters.updated_at, monsters.user_id, monsters.kind, monsters.visibility, monsters.family_id, monsters.action_preface, monsters.more_info
 FROM monsters
 JOIN monsters_collections ON monsters.id = monsters_collections.monster_id
 WHERE collection_id = $1
@@ -198,6 +198,8 @@ func (q *Queries) ListMonstersInCollection(ctx context.Context, collectionID uui
 			&i.Kind,
 			&i.Visibility,
 			&i.FamilyID,
+			&i.ActionPreface,
+			&i.MoreInfo,
 		); err != nil {
 			return nil, err
 		}

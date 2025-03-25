@@ -59,6 +59,8 @@ export interface Monster {
   abilities: Ability[];
   actions: Action[];
   family?: Family;
+  actionPreface: string;
+  moreInfo?: string;
 }
 
 export interface Ability {

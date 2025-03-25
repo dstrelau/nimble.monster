@@ -251,27 +251,29 @@ type Family struct {
 }
 
 type Monster struct {
-	ID         uuid.UUID
-	Name       string
-	Level      string
-	Hp         int32
-	Armor      ArmorType
-	Size       SizeType
-	Speed      int32
-	Fly        int32
-	Swim       int32
-	Actions    [][]byte
-	Abilities  [][]byte
-	Legendary  bool
-	Bloodied   string
-	LastStand  string
-	Saves      []string
-	CreatedAt  pgtype.Timestamptz
-	UpdatedAt  pgtype.Timestamptz
-	UserID     uuid.UUID
-	Kind       string
-	Visibility MonsterVisibility
-	FamilyID   pgtype.UUID
+	ID            uuid.UUID
+	Name          string
+	Level         string
+	Hp            int32
+	Armor         ArmorType
+	Size          SizeType
+	Speed         int32
+	Fly           int32
+	Swim          int32
+	Actions       [][]byte
+	Abilities     [][]byte
+	Legendary     bool
+	Bloodied      string
+	LastStand     string
+	Saves         []string
+	CreatedAt     pgtype.Timestamptz
+	UpdatedAt     pgtype.Timestamptz
+	UserID        uuid.UUID
+	Kind          string
+	Visibility    MonsterVisibility
+	FamilyID      pgtype.UUID
+	ActionPreface pgtype.Text
+	MoreInfo      pgtype.Text
 }
 
 type MonstersCollection struct {

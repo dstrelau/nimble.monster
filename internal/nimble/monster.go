@@ -78,25 +78,27 @@ const (
 )
 
 type Monster struct {
-	Creator    User              `json:"-"`
-	Family     *Family           `json:"family"`
-	Bloodied   string            `json:"bloodied"`
-	LastStand  string            `json:"lastStand"`
-	Name       string            `json:"name"`
-	Saves      string            `json:"saves"`
-	Size       MonsterSize       `json:"size"`
-	ID         MonsterID         `json:"id"`
-	Kind       string            `json:"kind"`
-	Armor      MonsterArmor      `json:"armor"`
-	Level      string            `json:"level"`
-	Abilities  []Ability         `json:"abilities"`
-	Actions    []Action          `json:"actions"`
-	Speed      int32             `json:"speed"`
-	Swim       int32             `json:"swim"`
-	Fly        int32             `json:"fly"`
-	HP         int32             `json:"hp"`
-	Legendary  bool              `json:"legendary"`
-	Visibility MonsterVisibility `json:"visibility"`
+	Creator       User              `json:"-"`
+	Family        *Family           `json:"family"`
+	Bloodied      string            `json:"bloodied"`
+	LastStand     string            `json:"lastStand"`
+	Name          string            `json:"name"`
+	Saves         string            `json:"saves"`
+	Size          MonsterSize       `json:"size"`
+	ID            MonsterID         `json:"id"`
+	Kind          string            `json:"kind"`
+	Armor         MonsterArmor      `json:"armor"`
+	Level         string            `json:"level"`
+	Abilities     []Ability         `json:"abilities"`
+	Actions       []Action          `json:"actions"`
+	Speed         int32             `json:"speed"`
+	Swim          int32             `json:"swim"`
+	Fly           int32             `json:"fly"`
+	HP            int32             `json:"hp"`
+	Legendary     bool              `json:"legendary"`
+	Visibility    MonsterVisibility `json:"visibility"`
+	ActionPreface string            `json:"actionPreface"`
+	MoreInfo      string            `json:"moreInfo"`
 }
 
 type Ability struct {

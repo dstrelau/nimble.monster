@@ -163,9 +163,7 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
 
           <div>
             <strong>ACTIONS: </strong>
-            {monster.legendary
-              ? "After each hero's turn, choose one."
-              : "Choose one."}
+            {monster.actionPreface}
           </div>
           <ul className="d-list text-base list-disc pl-4">
             {monster.actions?.map((action, index) => (
@@ -201,7 +199,12 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
               )}
             </>
           )}
-          {showActions && <div className="d-divider my-1"></div>}
+
+          {monster.moreInfo && (
+            <>
+              <p className="italic mt-4">{monster.moreInfo}</p>
+            </>
+          )}
 
           {monster.contributor && (
             <p className="attribution">
@@ -209,14 +212,15 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
             </p>
           )}
 
-          <div className="d-card-actions justify-end">
-            {/* FIXME
+          {showActions && (
+            <>
+              <div className="d-divider my-1"></div>
+              <div className="d-card-actions justify-end">
+                {/* FIXME
         <button onClick={downloadCard} className="px-2 cursor-pointer">
           <ArrowDownTrayIcon className="h-5 text-slate-500" />
         </button>
         */}
-            {showActions && (
-              <>
                 <Link to={`/my/monsters/${monster.id}/edit`}>
                   <PencilIcon className="w-5 h-5 text-base-content/50" />
                 </Link>
@@ -229,9 +233,9 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
                 >
                   <TrashIcon className="w-5 h-5 text-base-content/50 cursor-pointer" />
                 </button>
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </article>
       </div>
     </div>

@@ -36,33 +36,37 @@ func (s *MonsterStore) Create(ctx context.Context, in nimble.Monster) (nimble.Mo
 	var created Monster
 	if toCreate.Legendary {
 		created, err = s.db.CreateLegendaryMonster(ctx, CreateLegendaryMonsterParams{
-			Actions:   toCreate.Actions,
-			Abilities: toCreate.Abilities,
-			Name:      toCreate.Name,
-			Level:     toCreate.Level,
-			Hp:        toCreate.Hp,
-			Armor:     toCreate.Armor,
-			Kind:      toCreate.Kind,
-			Size:      toCreate.Size,
-			Bloodied:  toCreate.Bloodied,
-			LastStand: toCreate.LastStand,
-			Saves:     toCreate.Saves,
-			UserID:    toCreate.UserID,
+			Actions:       toCreate.Actions,
+			Abilities:     toCreate.Abilities,
+			Name:          toCreate.Name,
+			Level:         toCreate.Level,
+			Hp:            toCreate.Hp,
+			Armor:         toCreate.Armor,
+			Kind:          toCreate.Kind,
+			Size:          toCreate.Size,
+			Bloodied:      toCreate.Bloodied,
+			LastStand:     toCreate.LastStand,
+			Saves:         toCreate.Saves,
+			UserID:        toCreate.UserID,
+			ActionPreface: toCreate.ActionPreface,
+			MoreInfo:      toCreate.MoreInfo,
 		})
 	} else {
 		created, err = s.db.CreateMonster(ctx, CreateMonsterParams{
-			Name:      toCreate.Name,
-			Level:     toCreate.Level,
-			Hp:        toCreate.Hp,
-			Armor:     toCreate.Armor,
-			Size:      toCreate.Size,
-			Speed:     toCreate.Speed,
-			Fly:       toCreate.Fly,
-			Swim:      toCreate.Swim,
-			Actions:   toCreate.Actions,
-			Abilities: toCreate.Abilities,
-			FamilyID:  toCreate.FamilyID,
-			UserID:    toCreate.UserID,
+			Name:          toCreate.Name,
+			Level:         toCreate.Level,
+			Hp:            toCreate.Hp,
+			Armor:         toCreate.Armor,
+			Size:          toCreate.Size,
+			Speed:         toCreate.Speed,
+			Fly:           toCreate.Fly,
+			Swim:          toCreate.Swim,
+			Actions:       toCreate.Actions,
+			Abilities:     toCreate.Abilities,
+			FamilyID:      toCreate.FamilyID,
+			UserID:        toCreate.UserID,
+			MoreInfo:      toCreate.MoreInfo,
+			ActionPreface: toCreate.ActionPreface,
 		})
 	}
 	if err != nil {
@@ -124,35 +128,39 @@ func (s *MonsterStore) Update(ctx context.Context, monster nimble.Monster) (nimb
 
 	if monster.Legendary {
 		update, err = s.db.UpdateLegendaryMonster(ctx, UpdateLegendaryMonsterParams{
-			ID:         update.ID,
-			Actions:    update.Actions,
-			Abilities:  update.Abilities,
-			Name:       update.Name,
-			Level:      update.Level,
-			Hp:         update.Hp,
-			Armor:      update.Armor,
-			Kind:       update.Kind,
-			Size:       update.Size,
-			Bloodied:   update.Bloodied,
-			LastStand:  update.LastStand,
-			Saves:      update.Saves,
-			Visibility: update.Visibility,
+			ID:            update.ID,
+			Actions:       update.Actions,
+			Abilities:     update.Abilities,
+			Name:          update.Name,
+			Level:         update.Level,
+			Hp:            update.Hp,
+			Armor:         update.Armor,
+			Kind:          update.Kind,
+			Size:          update.Size,
+			Bloodied:      update.Bloodied,
+			LastStand:     update.LastStand,
+			Saves:         update.Saves,
+			MoreInfo:      update.MoreInfo,
+			Visibility:    update.Visibility,
+			ActionPreface: update.ActionPreface,
 		})
 	} else {
 		update, err = s.db.UpdateMonster(ctx, UpdateMonsterParams{
-			ID:         update.ID,
-			Name:       update.Name,
-			Level:      update.Level,
-			Hp:         update.Hp,
-			Armor:      update.Armor,
-			Size:       update.Size,
-			Speed:      update.Speed,
-			Fly:        update.Fly,
-			Swim:       update.Swim,
-			Actions:    update.Actions,
-			Abilities:  update.Abilities,
-			Visibility: update.Visibility,
-			FamilyID:   update.FamilyID,
+			ID:            update.ID,
+			Name:          update.Name,
+			Level:         update.Level,
+			Hp:            update.Hp,
+			Armor:         update.Armor,
+			Size:          update.Size,
+			Speed:         update.Speed,
+			Fly:           update.Fly,
+			Swim:          update.Swim,
+			Actions:       update.Actions,
+			Abilities:     update.Abilities,
+			MoreInfo:      update.MoreInfo,
+			Visibility:    update.Visibility,
+			FamilyID:      update.FamilyID,
+			ActionPreface: update.ActionPreface,
 		})
 	}
 	if err != nil {
@@ -247,21 +255,23 @@ func monsterFromSQL(in Monster, f *Family) nimble.Monster {
 	}
 
 	out := nimble.Monster{
-		ID:         nimble.MonsterID(in.ID),
-		Legendary:  in.Legendary,
-		Kind:       in.Kind,
-		Name:       in.Name,
-		HP:         in.Hp,
-		Speed:      in.Speed,
-		Fly:        in.Fly,
-		Swim:       in.Swim,
-		Armor:      armor,
-		Size:       size,
-		Level:      in.Level,
-		LastStand:  in.LastStand,
-		Bloodied:   in.Bloodied,
-		Saves:      strings.Join(in.Saves, ", "),
-		Visibility: nimble.MonsterVisibility(in.Visibility),
+		ID:            nimble.MonsterID(in.ID),
+		Legendary:     in.Legendary,
+		Kind:          in.Kind,
+		Name:          in.Name,
+		HP:            in.Hp,
+		Speed:         in.Speed,
+		Fly:           in.Fly,
+		Swim:          in.Swim,
+		Armor:         armor,
+		Size:          size,
+		Level:         in.Level,
+		LastStand:     in.LastStand,
+		Bloodied:      in.Bloodied,
+		Saves:         strings.Join(in.Saves, ", "),
+		Visibility:    nimble.MonsterVisibility(in.Visibility),
+		ActionPreface: in.ActionPreface.String,
+		MoreInfo:      in.MoreInfo.String,
 		Creator: nimble.User{
 			ID: nimble.UserID(in.UserID),
 		},
@@ -316,25 +326,40 @@ func monsterToSQL(m nimble.Monster) (Monster, error) {
 	if m.Family != nil && !uuid.UUID(m.Family.ID).IsNil() {
 		familyID = pgtype.UUID{Valid: true, Bytes: [16]byte(m.Family.ID)}
 	}
+
+	var actionPreface pgtype.Text
+	if m.ActionPreface != "" {
+		actionPreface.Valid = true
+		actionPreface.String = m.ActionPreface
+	}
+
+	var moreInfo pgtype.Text
+	if m.MoreInfo != "" {
+		moreInfo.Valid = true
+		moreInfo.String = m.MoreInfo
+	}
+
 	return Monster{
-		ID:         uuid.UUID(m.ID),
-		Name:       m.Name,
-		Level:      m.Level,
-		Hp:         m.HP,
-		Armor:      armor,
-		Size:       SizeType(m.Size),
-		Speed:      m.Speed,
-		Fly:        m.Fly,
-		Swim:       m.Swim,
-		FamilyID:   familyID,
-		Actions:    actions,
-		Abilities:  abilities,
-		Legendary:  m.Legendary,
-		Kind:       m.Kind,
-		Bloodied:   m.Bloodied,
-		LastStand:  m.LastStand,
-		Saves:      xslices.Map(strings.Split(m.Saves, ","), strings.TrimSpace),
-		Visibility: MonsterVisibility(m.Visibility),
-		UserID:     uuid.UUID(m.Creator.ID),
+		ID:            uuid.UUID(m.ID),
+		Name:          m.Name,
+		Level:         m.Level,
+		Hp:            m.HP,
+		Armor:         armor,
+		Size:          SizeType(m.Size),
+		Speed:         m.Speed,
+		Fly:           m.Fly,
+		Swim:          m.Swim,
+		FamilyID:      familyID,
+		Actions:       actions,
+		Abilities:     abilities,
+		Legendary:     m.Legendary,
+		Kind:          m.Kind,
+		Bloodied:      m.Bloodied,
+		LastStand:     m.LastStand,
+		Saves:         xslices.Map(strings.Split(m.Saves, ","), strings.TrimSpace),
+		Visibility:    MonsterVisibility(m.Visibility),
+		ActionPreface: actionPreface,
+		MoreInfo:      moreInfo,
+		UserID:        uuid.UUID(m.Creator.ID),
 	}, nil
 }
