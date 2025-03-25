@@ -162,26 +162,30 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
             ))}
           </div>
 
-          <div>
-            <strong>ACTIONS: </strong>
-            {monster.actionPreface}
-          </div>
-          <ul className="d-list text-base list-disc pl-4">
-            {monster.actions?.map((action, index) => (
-              <li key={index} className="d-list-item">
-                <strong className="pr-1">{maybePeriod(action.name)}</strong>
-                {action.damage && (
-                  <span className="damage">{action.damage} </span>
-                )}
-                {action.description && (
-                  <span className="description">{action.description}</span>
-                )}
-                {action.range && (
-                  <span className="range">({action.range} ft)</span>
-                )}
-              </li>
-            ))}
-          </ul>
+          {monster.actions.length > 0 && (
+            <>
+              <div>
+                <strong>ACTIONS: </strong>
+                {monster.actionPreface}
+              </div>
+              <ul className="d-list text-base list-disc pl-4">
+                {monster.actions?.map((action, index) => (
+                  <li key={index} className="d-list-item">
+                    <strong className="pr-1">{maybePeriod(action.name)}</strong>
+                    {action.damage && (
+                      <span className="damage">{action.damage} </span>
+                    )}
+                    {action.description && (
+                      <span className="description">{action.description}</span>
+                    )}
+                    {action.range && (
+                      <span className="range">({action.range} ft)</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
           {monster.legendary && (
             <>
               <div className="d-divider my-1"></div>
