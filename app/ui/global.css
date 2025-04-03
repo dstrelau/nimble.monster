@@ -1,0 +1,96 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+@plugin "daisyui" {
+    prefix: "d-";
+    themes: fantasy --default;
+}
+
+@tailwind utilities;
+
+@theme {
+    --font-sans: "Roboto", sans-serif;
+    --font-condensed: "Roboto Condensed", sans-serif;
+    --font-slab: "Roboto Slab", sans-serif;
+}
+
+@layer components {
+    .font-small-caps {
+        font-variant: small-caps;
+    }
+}
+
+@layer utilities {
+    .d-fieldset-label {
+        font-size: var(--text-sm);
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.animate-fade-out {
+    animation: fade-out 2s ease-out forwards;
+}
+
+.scooped {
+    position: relative;
+    background-image:
+        radial-gradient(
+            circle at 0 0,
+            #f3f4f6 10px,
+            black 10px,
+            black 11px,
+            transparent 11px
+        ),
+        radial-gradient(
+            circle at 100% 0,
+            #f3f4f6 10px,
+            black 10px,
+            black 11px,
+            transparent 11px
+        ),
+        radial-gradient(
+            circle at 0 100%,
+            #f3f4f6 10px,
+            black 10px,
+            black 11px,
+            transparent 11px
+        ),
+        radial-gradient(
+            circle at 100% 100%,
+            #f3f4f6 10px,
+            black 10px,
+            black 11px,
+            transparent 11px
+        );
+}
+
+.scooped::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: calc(100% - 22px);
+    transform: translate(-50%, -50%);
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+.scooped::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(100% - 22px);
+    height: 100%;
+    transform: translate(-50%, -50%);
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
