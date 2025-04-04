@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
         hostname: "cdn.discordapp.com",
         pathname: "/embed/avatars/**",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.discordapp.com",
+        pathname: "/avatars/**",
+      },
     ],
   },
   async rewrites() {

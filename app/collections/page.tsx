@@ -1,20 +1,30 @@
-"use client";
-
-import { useQuery } from "@tanstack/react-query";
-import { fetchApi } from "@/lib/api";
 import { CollectionOverview } from "@/lib/types";
 import { CollectionCard } from "@/ui/CollectionCard";
+import { PrismaClient } from "@/lib/prisma";
 
-export default function CollectionsPage() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["public-collections"],
-    queryFn: () =>
-      fetchApi<{ collections: CollectionOverview[] }>("/api/collections"),
+export default async function CollectionsPage() {
+  const prisma = new PrismaClient();
+  const dbcollections = await prisma.collection.findMany({
+    where: { visibility: "public" },
+    include: {
+      creator: true,
+      monsterCollections: { include: { monster: true } },
+    },
+    orderBy: { name: "asc" },
+  });
+  const collections = dbcollections.map((c): CollectionOverview => {
+    const legendaryCount = c.monsterCollections.filter(
+      (m) => m.monster.legendary,
+    ).length;
+    return {
+      ...c,
+      legendaryCount,
+      standardCount: c.monsterCollections.length,
+      creator: { ...c.creator, avatar: c.creator.avatar || "" },
+    };
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {(error as Error).message}</div>;
-  if (!data || data.collections.length === 0) {
+  if (collections?.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-600">No public collections available yet.</p>
@@ -25,7 +35,7 @@ export default function CollectionsPage() {
   return (
     <div className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {data.collections.map((collection) => (
+        {collections.map((collection) => (
           <CollectionCard
             key={collection.id}
             collection={collection}

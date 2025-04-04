@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../app/lib/prisma"
+  provider        = "prisma-client-js"
+  output          = "../app/lib/prisma"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -9,26 +10,26 @@ datasource db {
 }
 
 model Collection {
-  id                  String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user_id             String                @db.Uuid
-  name                String
-  public              Boolean?              @default(false)
-  createdAt           DateTime?             @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt           DateTime?             @default(now()) @map("updated_at") @db.Timestamptz(6)
-  description         String                @default("")
-  visibility          collection_visibility @default(public)
-  users               User                  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  MonsterInCollection MonsterInCollection[]
+  id                 String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  creatorId          String                @map("user_id") @db.Uuid
+  name               String
+  public             Boolean?              @default(false)
+  createdAt          DateTime?             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime?             @default(now()) @map("updated_at") @db.Timestamptz(6)
+  description        String                @default("")
+  visibility         collection_visibility @default(public)
+  creator            User                  @relation(fields: [creatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  monsterCollections MonsterInCollection[]
 
-  @@index([user_id], map: "idx_collections_user_id")
+  @@index([creatorId], map: "idx_collections_user_id")
   @@map("collections")
 }
 
 model MonsterInCollection {
   collectionId String     @map("collection_id") @db.Uuid
   monsterId    String     @map("monster_id") @db.Uuid
-  monsters     Monster    @relation(fields: [monsterId], references: [id], onDelete: Cascade)
-  collections  Collection @relation(fields: [collectionId], references: [id])
+  monster      Monster    @relation(fields: [monsterId], references: [id], onDelete: Cascade)
+  collection   Collection @relation(fields: [collectionId], references: [id])
 
   @@id([monsterId, collectionId])
   @@map("monsters_collections")
@@ -48,32 +49,32 @@ model Family {
 }
 
 model Monster {
-  id                  String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name                String
-  level               String
-  hp                  Int
-  armor               armor_type
-  size                size_type             @default(medium)
-  speed               Int                   @default(0)
-  fly                 Int                   @default(0)
-  swim                Int                   @default(0)
-  actions             Json[]
-  abilities           Json[]
-  legendary           Boolean               @default(false)
-  bloodied            String                @default("")
-  lastStand           String                @default("") @map("last_stand")
-  saves               String[]
-  createdAt           DateTime?             @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt           DateTime?             @default(now()) @map("updated_at") @db.Timestamptz(6)
-  kind                String                @default("")
-  visibility          monster_visibility    @default(public)
-  family_id           String?               @db.Uuid
-  family              Family?               @relation(fields: [family_id], references: [id])
-  actionPreface       String?               @map("action_preface")
-  moreInfo            String?               @default("") @map("more_info")
-  userId              String                @map("user_id") @db.Uuid
-  creator             User                  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  MonsterInCollection MonsterInCollection[]
+  id                 String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name               String
+  level              String
+  hp                 Int
+  armor              armor_type
+  size               size_type             @default(medium)
+  speed              Int                   @default(0)
+  fly                Int                   @default(0)
+  swim               Int                   @default(0)
+  actions            Json[]
+  abilities          Json[]
+  legendary          Boolean               @default(false)
+  bloodied           String                @default("")
+  lastStand          String                @default("") @map("last_stand")
+  saves              String[]
+  createdAt          DateTime?             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime?             @default(now()) @map("updated_at") @db.Timestamptz(6)
+  kind               String                @default("")
+  visibility         monster_visibility    @default(public)
+  family_id          String?               @db.Uuid
+  family             Family?               @relation(fields: [family_id], references: [id])
+  actionPreface      String?               @map("action_preface")
+  moreInfo           String?               @default("") @map("more_info")
+  userId             String                @map("user_id") @db.Uuid
+  creator            User                  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  monsterCollections MonsterInCollection[]
 
   @@map("monsters")
 }
