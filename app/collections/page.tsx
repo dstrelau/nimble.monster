@@ -1,29 +1,8 @@
-import { CollectionOverview } from "@/lib/types";
 import { CollectionCard } from "@/ui/CollectionCard";
-import { PrismaClient } from "@/lib/prisma";
+import * as db from "@/lib/db";
 
 export default async function CollectionsPage() {
-  const prisma = new PrismaClient();
-  const dbcollections = await prisma.collection.findMany({
-    where: { visibility: "public" },
-    include: {
-      creator: true,
-      monsterCollections: { include: { monster: true } },
-    },
-    orderBy: { name: "asc" },
-  });
-  const collections = dbcollections.map((c): CollectionOverview => {
-    const legendaryCount = c.monsterCollections.filter(
-      (m) => m.monster.legendary,
-    ).length;
-    return {
-      ...c,
-      legendaryCount,
-      standardCount: c.monsterCollections.length,
-      creator: { ...c.creator, avatar: c.creator.avatar || "" },
-    };
-  });
-
+  const collections = await db.listPublicCollections();
   if (collections?.length === 0) {
     return (
       <div className="text-center py-12">
