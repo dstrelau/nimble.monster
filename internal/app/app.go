@@ -39,7 +39,7 @@ func New() (*App, error) {
 	ctx := context.Background()
 
 	port := 8080
-	if v, _ := strconv.Atoi(os.Getenv("PORT")); v > 0 {
+	if v, _ := strconv.Atoi(os.Getenv("API_PORT")); v > 0 {
 		port = v
 	}
 

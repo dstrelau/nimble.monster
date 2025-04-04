@@ -156,6 +156,8 @@ const Header = () => {
                 className="size-8 rounded"
                 src="https://cdn.discordapp.com/embed/avatars/0.png"
                 alt="Login"
+                width={32}
+                height={32}
               />
             </a>
           )}

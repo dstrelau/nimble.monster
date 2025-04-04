@@ -6,29 +6,28 @@ export const SIZES = [
   { value: "huge", label: "Huge" },
   { value: "gargantuan", label: "Gargantuan" },
 ] as const;
+export type MonsterSize = (typeof SIZES)[number]["value"];
 
 export const ARMORS = [
   { value: "", label: "None" },
   { value: "medium", label: "Medium" },
   { value: "heavy", label: "Heavy" },
 ] as const;
+export type MonsterArmor = (typeof ARMORS)[number]["value"];
 
 export const COLLECTION_VISIBILITY = [
   { value: "public", label: "Public" },
   { value: "secret", label: "Secret" },
   { value: "private", label: "Private" },
 ] as const;
+export type CollectionVisibility =
+  (typeof COLLECTION_VISIBILITY)[number]["value"];
 
 export const FAMILY_VISIBILITY = [
   { value: "public", label: "Public" },
   { value: "secret", label: "Secret" },
   { value: "private", label: "Private" },
 ] as const;
-
-export type MonsterSize = (typeof SIZES)[number]["value"];
-export type MonsterArmor = (typeof ARMORS)[number]["value"];
-export type CollectionVisibility =
-  (typeof COLLECTION_VISIBILITY)[number]["value"];
 export type FamilyVisibility = (typeof FAMILY_VISIBILITY)[number]["value"];
 
 export interface Family {

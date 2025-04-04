@@ -3,6 +3,15 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.discordapp.com",
+        pathname: "/embed/avatars/**",
+      },
+    ],
+  },
   async rewrites() {
     const apiPort = process.env.API_PORT || "8080";
     return [

@@ -1,42 +1,29 @@
-"use client";
-
 import { MonsterCardGrid } from "@/ui/MonsterCard";
-import MonsterList from "@/ui/MonsterList";
-import { fetchApi } from "@/lib/api";
-import { Monster } from "@/lib/types";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { Ability, Action, Monster } from "@/lib/types";
+import { PrismaClient } from "@/lib/prisma";
 
-export type MonsterDisplay = "card" | "list";
-
-export default function MostersPage() {
-  const [display] = useState<MonsterDisplay>("card");
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["monsters"],
-    queryFn: () => fetchApi<{ monsters: Monster[] }>("/api/monsters"),
-    staleTime: 0,
-  });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error loading monsters: {error.message}</div>;
-  }
-
-  if (!data) {
-    return null;
-  }
+export default async function MonstersPage() {
+  const prisma = new PrismaClient();
+  const monsters = (
+    await prisma.monster.findMany({
+      where: { visibility: "public" },
+      orderBy: { name: "asc" },
+    })
+  ).map(
+    (m): Monster => ({
+      ...m,
+      saves: m.saves.join(" "),
+      armor: m.armor === "EMPTY_ENUM_VALUE" ? "" : m.armor,
+      abilities: m.abilities as unknown as Ability[],
+      actions: m.actions as unknown as Action[],
+      actionPreface: m.actionPreface || "",
+      moreInfo: m.moreInfo || "",
+    }),
+  );
 
   return (
     <div className="container mx-auto py-6">
-      {display === "list" ? (
-        <MonsterList monsters={data.monsters} />
-      ) : (
-        <MonsterCardGrid monsters={data.monsters} showActions={false} />
-      )}
+      <MonsterCardGrid monsters={monsters} showActions={false} />
     </div>
   );
 }

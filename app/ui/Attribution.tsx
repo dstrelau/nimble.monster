@@ -7,6 +7,8 @@ export const Attribution = ({ user }: { user: User }) => (
       src={`https://cdn.discordapp.com/avatars/${user.discordId}/${user.avatar}.png`}
       alt={user.username}
       className="size-6 rounded-full"
+      width={24}
+      height={24}
     />
     <span className="text-sm">{user.username}</span>
   </div>
