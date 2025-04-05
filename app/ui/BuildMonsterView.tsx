@@ -1,3 +1,5 @@
+"use client";
+
 import {
   EyeIcon,
   PlusIcon,
@@ -5,11 +7,10 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import clsx from "clsx";
 import { MonsterCard } from "@/ui/MonsterCard";
 import { fetchApi } from "@/lib/api";
-import { AuthContext } from "@/lib/auth";
 import type {
   Ability,
   Action,
@@ -21,6 +22,7 @@ import type {
 import { ARMORS, SIZES } from "@/lib/types";
 import { Textarea } from "@/ui/Form";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const EXAMPLE_MONSTERS: Record<string, Monster> = {
   goblin: {
@@ -578,7 +580,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
   ];
   const router = useRouter();
 
-  const currentUser = useContext(AuthContext);
+  const { data: session } = useSession();
 
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [monster, setMonster] = useState<Monster>(
@@ -701,7 +703,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
               <StandardForm monster={monster} setMonster={setMonster} />
             )}
 
-            {currentUser.data && (
+            {session?.user && (
               <>
                 <div className="flex flex-row justify-between items-center my-4">
                   <button type="submit" className="d-btn d-btn-primary">

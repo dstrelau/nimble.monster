@@ -1,15 +1,17 @@
 "use client";
 
-import { AuthContext } from "@/lib/auth";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { FireIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
+import { signIn, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const Header = () => {
-  const currentUser = useContext(AuthContext);
+  const { data: session } = useSession();
+  const currentUser = session?.user;
   const pathname = usePathname();
 
   const isActive = (path: string) => pathname === path;
@@ -75,14 +77,19 @@ const Header = () => {
 
         {/* Dropdown menu */}
         <div>
-          {currentUser.data ? (
+          {currentUser ? (
             <details id="user-dropdown" className="d-dropdown d-dropdown-end">
               <summary className="list-none">
                 <div className="hidden md:block d-btn d-btn-ghost p-0 rounded-md d-avatar">
                   <div className="w-10 rounded-md">
                     <Image
-                      src={`https://cdn.discordapp.com/avatars/${currentUser.data.discordId}/${currentUser.data.avatar}.png`}
-                      alt={currentUser.data.username}
+                      src={
+                        currentUser.image ||
+                        "https://cdn.discordapp.com/embed/avatars/0.png"
+                      }
+                      alt={currentUser.name ?? ""}
+                      width={48}
+                      height={48}
                     />
                   </div>
                 </div>
@@ -144,14 +151,20 @@ const Header = () => {
                   </Link>
                 </li>
                 <li>
-                  <form method="POST" action="/auth/logout">
-                    <button className="d-menu-item">Logout</button>
-                  </form>
+                  <button
+                    className="d-menu-item"
+                    onClick={() => signOut({ redirectTo: "/" })}
+                  >
+                    Logout
+                  </button>
                 </li>
               </ul>
             </details>
           ) : (
-            <a href="/auth/login">
+            <button
+              className="cursor-pointer"
+              onClick={() => signIn("discord", { redirectTo: "/my/monsters" })}
+            >
               <Image
                 className="size-8 rounded"
                 src="https://cdn.discordapp.com/embed/avatars/0.png"
@@ -159,7 +172,7 @@ const Header = () => {
                 width={32}
                 height={32}
               />
-            </a>
+            </button>
           )}
         </div>
       </div>

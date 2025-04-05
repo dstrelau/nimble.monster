@@ -1,5 +1,5 @@
-import { PrismaClient } from "@/lib/prisma";
-import * as Prisma from "@/lib/prisma";
+import { Prisma, PrismaClient } from "@/lib/prisma";
+import { Monster as PrismaMonster } from "@/lib/prisma";
 import {
   Ability,
   Action,
@@ -10,7 +10,7 @@ import {
 
 const prisma = new PrismaClient();
 
-const toMonster = (m: Prisma.Monster): Monster => ({
+const toMonster = (m: PrismaMonster): Monster => ({
   ...m,
   saves: m.saves.join(" "),
   armor: m.armor === "EMPTY_ENUM_VALUE" ? "" : m.armor,
@@ -29,6 +29,43 @@ export const listPublicMonsters = async (): Promise<Monster[]> => {
   ).map(toMonster);
 };
 
+export const toCollectionOverview = (
+  c: Prisma.Result<
+    typeof prisma.collection,
+    {
+      include: {
+        creator: true;
+        monsterCollections: { include: { monster: true } };
+      };
+    },
+    "findMany"
+  >[0],
+): CollectionOverview => {
+  const legendaryCount = c.monsterCollections.filter(
+    (m) => m.monster.legendary,
+  ).length;
+  return {
+    ...c,
+    legendaryCount,
+    standardCount: c.monsterCollections.length - legendaryCount,
+    creator: { ...c.creator, avatar: c.creator.avatar || "" },
+  };
+};
+
+export const listCollectionsForUser = async (
+  userId: string,
+): Promise<CollectionOverview[]> => {
+  return (
+    await prisma.collection.findMany({
+      where: { creatorId: userId },
+      include: {
+        creator: true,
+        monsterCollections: { include: { monster: true } },
+      },
+    })
+  ).map(toCollectionOverview);
+};
+
 export const listPublicCollections = async (): Promise<
   CollectionOverview[]
 > => {
@@ -39,17 +76,7 @@ export const listPublicCollections = async (): Promise<
         monsterCollections: { include: { monster: true } },
       },
     })
-  ).map((c): CollectionOverview => {
-    const legendaryCount = c.monsterCollections.filter(
-      (m) => m.monster.legendary,
-    ).length;
-    return {
-      ...c,
-      legendaryCount,
-      standardCount: c.monsterCollections.length - legendaryCount,
-      creator: { ...c.creator, avatar: c.creator.avatar || "" },
-    };
-  });
+  ).map(toCollectionOverview);
 };
 
 export const getCollection = async (id: string): Promise<Collection | null> => {

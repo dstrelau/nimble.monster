@@ -1,7 +1,7 @@
+import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export default auth((request) => {
   const path = request.nextUrl.pathname;
 
   if (
@@ -17,8 +17,6 @@ export function middleware(request: NextRequest) {
   }
 
   return NextResponse.next();
-}
+});
 
-export const config = {
-  matcher: ["/my/:path*"],
-};
+export const middleware = auth;

@@ -1,13 +1,28 @@
-"use client";
+import NextAuth, { DefaultSession } from "next-auth";
+import Discord from "next-auth/providers/discord";
+import "next-auth/jwt";
 
-import { createContext, useContext } from "react";
-import type { UseQueryResult } from "@tanstack/react-query";
-import type { User } from "@/lib/types";
-
-export const AuthContext = createContext<UseQueryResult<User, Error>>(
-  undefined!,
-);
-
-export function useAuth() {
-  return useContext(AuthContext);
+declare module "next-auth" {
+  interface Session {
+    user: {
+      /** The unique Discord-provided ID. */
+      id: string;
+    } & DefaultSession["user"];
+  }
 }
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  providers: [Discord],
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.sub = user.id;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      session.user.id = token.sub || "";
+      return session;
+    },
+  },
+});

@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
     const apiPort = process.env.API_PORT || "8080";
     return [
       {
-        source: "/api/:path*",
+        source: "/api/:path((?!auth/).+)",
         destination: `http://localhost:${apiPort}/api/:path*`,
       },
       {
