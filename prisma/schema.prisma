@@ -1,0 +1,137 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../app/lib/prisma"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Collection {
+  id                 String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  creatorId          String                @map("user_id") @db.Uuid
+  name               String
+  public             Boolean?              @default(false)
+  createdAt          DateTime?             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime?             @default(now()) @map("updated_at") @db.Timestamptz(6)
+  description        String                @default("")
+  visibility         collection_visibility @default(public)
+  creator            User                  @relation(fields: [creatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  monsterCollections MonsterInCollection[]
+
+  @@index([creatorId], map: "idx_collections_user_id")
+  @@map("collections")
+}
+
+model MonsterInCollection {
+  collectionId String     @map("collection_id") @db.Uuid
+  monsterId    String     @map("monster_id") @db.Uuid
+  monster      Monster    @relation(fields: [monsterId], references: [id], onDelete: Cascade)
+  collection   Collection @relation(fields: [collectionId], references: [id])
+
+  @@id([monsterId, collectionId])
+  @@map("monsters_collections")
+}
+
+model Family {
+  id         String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id    String            @db.Uuid
+  visibility family_visibility @default(public)
+  name       String
+  abilities  Json[]
+  createdAt  DateTime?         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime?         @default(now()) @map("updated_at") @db.Timestamptz(6)
+  monsters   Monster[]
+
+  @@map("families")
+}
+
+model Monster {
+  id                 String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name               String
+  level              String
+  hp                 Int
+  armor              armor_type
+  size               size_type             @default(medium)
+  speed              Int                   @default(0)
+  fly                Int                   @default(0)
+  swim               Int                   @default(0)
+  actions            Json[]
+  abilities          Json[]
+  legendary          Boolean               @default(false)
+  bloodied           String                @default("")
+  lastStand          String                @default("") @map("last_stand")
+  saves              String[]
+  createdAt          DateTime?             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime?             @default(now()) @map("updated_at") @db.Timestamptz(6)
+  kind               String                @default("")
+  visibility         monster_visibility    @default(public)
+  family_id          String?               @db.Uuid
+  family             Family?               @relation(fields: [family_id], references: [id])
+  actionPreface      String?               @map("action_preface")
+  moreInfo           String?               @default("") @map("more_info")
+  userId             String                @map("user_id") @db.Uuid
+  creator            User                  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  monsterCollections MonsterInCollection[]
+
+  @@map("monsters")
+}
+
+model Session {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  discordId  String   @map("discord_id")
+  expires_at DateTime @db.Timestamptz(6)
+  userId     String   @map("user_id") @db.Uuid
+  users      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([expires_at], map: "idx_sessions_expires_at")
+  @@map("sessions")
+}
+
+model User {
+  id           String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  discordId    String       @map("discord_id")
+  username     String
+  avatar       String?
+  refreshToken String?      @map("refresh_token")
+  collections  Collection[]
+  monsters     Monster[]
+  sessions     Session[]
+
+  @@unique([discordId], map: "idx_users_discord_id")
+  @@map("users")
+}
+
+enum armor_type {
+  EMPTY_ENUM_VALUE @map("")
+  medium
+  heavy
+}
+
+enum collection_visibility {
+  public
+  secret
+  private
+}
+
+enum family_visibility {
+  public
+  secret
+  private
+}
+
+enum monster_visibility {
+  public
+  private
+}
+
+enum size_type {
+  tiny
+  small
+  medium
+  large
+  huge
+  gargantuan
+}

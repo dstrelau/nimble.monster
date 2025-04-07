@@ -2,6 +2,10 @@ package app
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/json"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -11,15 +15,16 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	"github.com/gofrs/uuid"
+	"github.com/go-jose/go-jose/v4"
 	pgxuuid "github.com/jackc/pgx-gofrs-uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/pgx-contrib/pgxotel"
+	"golang.org/x/crypto/hkdf"
 
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-	"go.opentelemetry.io/otel/attribute"
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
 	"go.opentelemetry.io/otel/trace"
 
@@ -39,7 +44,7 @@ func New() (*App, error) {
 	ctx := context.Background()
 
 	port := 8080
-	if v, _ := strconv.Atoi(os.Getenv("PORT")); v > 0 {
+	if v, _ := strconv.Atoi(os.Getenv("API_PORT")); v > 0 {
 		port = v
 	}
 
@@ -185,6 +190,9 @@ func (a *App) buildRouter() {
 }
 
 func Error(ctx context.Context, w http.ResponseWriter, err error) {
+	if os.Getenv("DEBUG") != "" {
+		fmt.Println(err)
+	}
 	trace.SpanFromContext(ctx).RecordError(err)
 	w.WriteHeader(http.StatusInternalServerError)
 }
@@ -194,37 +202,71 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 		ctx := r.Context()
 		span := trace.SpanFromContext(r.Context())
 
-		cookie, err := r.Cookie(sessionCookieName)
+		cookie, err := r.Cookie("authjs.session-token")
 		if err != nil {
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		sid, err := uuid.FromString(cookie.Value)
+		authSecret := os.Getenv("AUTH_SECRET")
+		if authSecret == "" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		const salt = "authjs.session-token"
+		info := fmt.Appendf(nil, "Auth.js Generated Encryption Key (%s)", salt)
+		kdf := hkdf.New(sha256.New, []byte(authSecret), []byte(salt), info)
+		derivedKey := make([]byte, 64)
+		if _, err := io.ReadFull(kdf, derivedKey); err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+		jwe, err := jose.ParseEncrypted(cookie.Value, []jose.KeyAlgorithm{jose.DIRECT}, []jose.ContentEncryption{jose.A256CBC_HS512})
 		if err != nil {
 			span.RecordError(err)
 			next.ServeHTTP(w, r)
 			return
 		}
-		span.SetAttributes(attribute.String("session.id", sid.String()))
 
-		user, err := a.db.GetUserByUnexpiredSession(ctx, sid)
+		decrypted, err := jwe.Decrypt(derivedKey)
 		if err != nil {
-			http.SetCookie(w, &http.Cookie{
-				Name:     sessionCookieName,
-				Value:    "",
-				Path:     "/",
-				MaxAge:   -1,
-				HttpOnly: true,
-				Secure:   true,
-				SameSite: http.SameSiteLaxMode,
-			})
 			span.RecordError(err)
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		span.SetAttributes(attribute.String("user.id", user.ID.String()))
+		var claims map[string]any
+		if err := json.Unmarshal(decrypted, &claims); err != nil {
+			span.RecordError(err)
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		if exp, ok := claims["exp"].(float64); ok {
+			if time.Now().Unix() > int64(exp) {
+				next.ServeHTTP(w, r)
+				return
+			}
+		}
+
+		if iat, ok := claims["iat"].(float64); ok {
+			if time.Now().Unix() < int64(iat/1000) {
+				next.ServeHTTP(w, r)
+				return
+			}
+		}
+
+		user, err := a.db.UpsertUser(ctx, sqldb.UpsertUserParams{
+			DiscordID: claims["id"].(string),
+			Username:  claims["name"].(string),
+			Avatar:    pgtype.Text{String: claims["picture"].(string), Valid: true},
+		})
+		if err != nil {
+			trace.SpanFromContext(ctx).RecordError(err)
+			http.Error(w, "Failed to create session", http.StatusInternalServerError)
+			return
+		}
 
 		ctx = nimble.SetCurrentUser(ctx,
 			nimble.User{
