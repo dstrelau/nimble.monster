@@ -11,17 +11,24 @@ declare module "next-auth" {
   }
 }
 
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string;
+  }
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Discord],
   callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        token.sub = user.id;
+    jwt(params) {
+      const token = params.token;
+      if (params.profile && params.profile.id) {
+        token.id = params.profile.id;
       }
       return token;
     },
     session({ session, token }) {
-      session.user.id = token.sub || "";
+      session.user.id = token.id || "";
       return session;
     },
   },

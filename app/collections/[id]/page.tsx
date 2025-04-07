@@ -1,3 +1,4 @@
+import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { MonsterCardGrid } from "@/ui/MonsterCard";
 import { notFound } from "next/navigation";
@@ -9,8 +10,14 @@ export default async function ShowCollectionView({
 }) {
   const { id } = await params;
   const collection = await db.getCollection(id);
-  // FIXME: allow private collection viewing
-  if (!collection || collection.visibility == "private") {
+  const session = await auth();
+  if (!collection) {
+    notFound();
+  }
+  if (
+    collection.visibility == "private" &&
+    collection.creator.discordId !== session?.user.id
+  ) {
     notFound();
   }
 

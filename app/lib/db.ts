@@ -8,7 +8,11 @@ import {
   Monster,
 } from "@/lib/types";
 
-const prisma = new PrismaClient();
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 const toMonster = (m: PrismaMonster): Monster => ({
   ...m,
@@ -57,7 +61,7 @@ export const listCollectionsForUser = async (
 ): Promise<CollectionOverview[]> => {
   return (
     await prisma.collection.findMany({
-      where: { creatorId: userId },
+      where: { creator: { discordId: userId } },
       include: {
         creator: true,
         monsterCollections: { include: { monster: true } },
@@ -71,6 +75,7 @@ export const listPublicCollections = async (): Promise<
 > => {
   return (
     await prisma.collection.findMany({
+      where: { visibility: "public" },
       include: {
         creator: true,
         monsterCollections: { include: { monster: true } },

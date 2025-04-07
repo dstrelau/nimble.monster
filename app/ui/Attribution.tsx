@@ -4,7 +4,7 @@ import Image from "next/image";
 export const Attribution = ({ user }: { user: User }) => (
   <div className="flex items-center gap-2">
     <Image
-      src={`https://cdn.discordapp.com/avatars/${user.discordId}/${user.avatar}.png`}
+      src={user.avatar}
       alt={user.username}
       className="size-6 rounded-full"
       width={24}

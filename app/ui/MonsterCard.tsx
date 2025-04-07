@@ -19,8 +19,11 @@ const Stat: React.FC<{
 }> = ({ name, value, children, SvgIcon }) => {
   if (!value && !children) return null;
   return (
-    <span id={name} className="flex ml-2 text-lg leading-6 ">
-      <SvgIcon className="w-7 -mr-2 fill-base-300" />
+    <span
+      id={name}
+      className="flex items-center ml-2 text-lg text-content leading-6 "
+    >
+      <SvgIcon className="w-7 -mr-[6px] fill-base-300" />
       {value}
       {children}
     </span>
@@ -37,7 +40,7 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
           {monster.kind}
         </span>
       </div>
-      <div className="flex font-beaufort font-black italic">
+      <div className="flex items-start font-slab font-black italic">
         {monster.armor === "medium" && (
           <Stat name="armor" value="M" SvgIcon={ArmorIcon} />
         )}
@@ -66,7 +69,7 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
 const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
   <header className="flex justify-between">
     <div className="grow">
-      <div className="inline-flex flex-wrap gap-x-1 items-baseline">
+      <div className="inline-flex flex-wrap gap-x-1 items-center">
         <span className="font-slab font-black font-small-caps italic text-2xl pr-1">
           {monster.name}
         </span>
@@ -75,7 +78,7 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
         </span>
       </div>
     </div>
-    <div className="flex font-slab font-black italic">
+    <div className="flex items-start font-slab font-black italic">
       {monster.armor === "medium" && (
         <Stat name="armor" value="M" SvgIcon={ArmorIcon} />
       )}
