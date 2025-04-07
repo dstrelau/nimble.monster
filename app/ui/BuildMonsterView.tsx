@@ -717,6 +717,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
                           name="public"
                           type="checkbox"
                           className="d-toggle d-toggle-lg mr-2 d-toggle-primary"
+                          checked={monster.visibility === "public"}
                           onChange={(e) => {
                             setMonster({
                               ...monster,
