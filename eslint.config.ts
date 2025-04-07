@@ -11,6 +11,6 @@ const compat = new FlatCompat({
 });
 
 export default defineConfig([
-  globalIgnores([".next/", "prisma/"]),
+  globalIgnores([".next/", "prisma/", "app/lib/prisma/"]),
   compat.extends("next/core-web-vitals", "next/typescript"),
 ]);
