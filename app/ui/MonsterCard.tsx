@@ -220,6 +220,11 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
             <>
               <div className="d-divider my-1"></div>
               <div className="d-card-actions justify-end">
+                {monster.visibility === "public" && (
+                  <div className="d-badge d-badge-soft d-badge-success">
+                    Public
+                  </div>
+                )}
                 {/* FIXME
                 <button onClick={downloadCard} className="px-2 cursor-pointer">
                   <ArrowDownTrayIcon className="h-5 text-slate-500" />
