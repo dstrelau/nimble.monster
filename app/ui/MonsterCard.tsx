@@ -67,30 +67,28 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
 );
 
 const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
-  <header className="flex justify-between">
-    <div className="grow">
-      <div className="inline-flex flex-wrap gap-x-1 items-center">
-        <span className="font-slab font-black font-small-caps italic text-2xl pr-1">
-          {monster.name}
-        </span>
-        <span className="font-condensed font-small-caps whitespace-nowrap items-baseline">
-          {`Lvl ${monster.level}${monster.size !== "medium" ? `, ${monster.size}` : ""}`}
-        </span>
+  <header className="justify-between">
+    <div className="flex flex-col gap-x-1 items-start">
+      <div className="flex items-start grow w-full justify-between font-slab font-black italic pr-1">
+        <div className="font-small-caps text-2xl">{monster.name}</div>
+        <div className="flex items-start">
+          {monster.armor === "medium" && (
+            <Stat name="armor" value="M" SvgIcon={ArmorIcon} />
+          )}
+          {monster.armor === "heavy" && (
+            <Stat name="armor" value="H" SvgIcon={ArmorIcon} />
+          )}
+          <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
+          <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
+          {monster.speed > 0 && monster.speed !== 6 && (
+            <Stat name="speed" value={monster.speed} SvgIcon={SpeedIcon} />
+          )}
+          <Stat name="hp" value={monster.hp} SvgIcon={HPIcon} />
+        </div>
       </div>
-    </div>
-    <div className="flex items-start font-slab font-black italic">
-      {monster.armor === "medium" && (
-        <Stat name="armor" value="M" SvgIcon={ArmorIcon} />
-      )}
-      {monster.armor === "heavy" && (
-        <Stat name="armor" value="H" SvgIcon={ArmorIcon} />
-      )}
-      <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
-      <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
-      {monster.speed > 0 && monster.speed !== 6 && (
-        <Stat name="speed" value={monster.speed} SvgIcon={SpeedIcon} />
-      )}
-      <Stat name="hp" value={monster.hp} SvgIcon={HPIcon} />
+      <div className="font-condensed font-small-caps whitespace-nowrap items-baseline">
+        {`Lvl ${monster.level}${monster.size !== "medium" ? `, ${monster.size}` : ""}`}
+      </div>
     </div>
   </header>
 );
