@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  webServerConfig: {
+    hostname: "0.0.0.0",
+  },
   reactStrictMode: true,
   images: {
     remotePatterns: [
