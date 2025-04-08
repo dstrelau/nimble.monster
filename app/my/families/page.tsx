@@ -256,7 +256,7 @@ const NewFamilyForm = () => {
   });
 
   return (
-    <div className="d-collapse d-collapse-arrow bg-base-100 border-base-300 border">
+    <div className="d-collapse d-collapse-arrow bg-base-200 border-base-300 border">
       <input type="checkbox" />
       <h3 className="d-collapse-title text-lg">Create Family</h3>
       <form

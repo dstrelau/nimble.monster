@@ -27,6 +27,7 @@ export default async function MyCollectionsPage() {
               collection={c}
               showEditDeleteButtons={true}
               showPublicBadge={c.visibility === "public"}
+              showAttribution={false}
             />
           ))}
         </div>

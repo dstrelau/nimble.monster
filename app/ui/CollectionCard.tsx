@@ -1,16 +1,19 @@
 import type { CollectionOverview } from "@/lib/types";
 import { Attribution } from "@/ui/Attribution";
 import Link from "next/link";
-import { EditDeleteButtons } from "@/ui//CollectionEditDelete";
+import { EditDeleteButtons } from "@/ui/CollectionEditDelete";
+import React from "react";
 
 export const CollectionCard = ({
   collection,
   showEditDeleteButtons,
   showPublicBadge,
+  showAttribution,
 }: {
   collection: CollectionOverview;
   showEditDeleteButtons: boolean;
   showPublicBadge: boolean;
+  showAttribution: boolean;
 }) => {
   return (
     <div
@@ -25,7 +28,7 @@ export const CollectionCard = ({
           <div className="d-badge d-badge-soft d-badge-success">Public</div>
         )}
       </div>
-      <div className="flex justify-between mt-2">
+      <div className="flex justify-between">
         <div className="font-condensed text-sm text-base-content/50">
           {collection.standardCount} monsters |{" "}
           <span className="text-secondary">
@@ -33,11 +36,15 @@ export const CollectionCard = ({
           </span>
         </div>
       </div>
-      <div className="d-divider my-2"></div>
-      <div className="flex justify-between">
-        <Attribution user={collection.creator} />
-        {showEditDeleteButtons && <EditDeleteButtons id={collection.id} />}
-      </div>
+      {(showAttribution || showEditDeleteButtons) && (
+        <>
+          <div className="d-divider my-1"></div>
+          <div className="flex justify-between">
+            <Attribution user={collection.creator} />
+            {showEditDeleteButtons && <EditDeleteButtons id={collection.id} />}
+          </div>
+        </>
+      )}
     </div>
   );
 };

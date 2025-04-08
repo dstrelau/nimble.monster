@@ -37,13 +37,14 @@ model MonsterInCollection {
 
 model Family {
   id         String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user_id    String            @db.Uuid
+  creatorId  String            @map("user_id") @db.Uuid
   visibility family_visibility @default(public)
   name       String
   abilities  Json[]
   createdAt  DateTime?         @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt  DateTime?         @default(now()) @map("updated_at") @db.Timestamptz(6)
   monsters   Monster[]
+  creator    User              @relation(fields: [creatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("families")
 }
@@ -98,6 +99,7 @@ model User {
   refreshToken String?      @map("refresh_token")
   collections  Collection[]
   monsters     Monster[]
+  families     Family[]
   sessions     Session[]
 
   @@unique([discordId], map: "idx_users_discord_id")

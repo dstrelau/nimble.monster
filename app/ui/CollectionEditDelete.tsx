@@ -1,10 +1,11 @@
 "use client";
 
 import { fetchApi } from "@/lib/api";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import React from "react";
 
 export const EditDeleteButtons = ({ id }: { id: string }) => {
   const router = useRouter();

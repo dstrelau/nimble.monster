@@ -39,7 +39,7 @@ const Header = () => {
   }, []);
 
   return (
-    <nav className="d-navbar bg-neutral text-neutral-content shadow-sm">
+    <nav className="d-navbar p-0 bg-neutral text-neutral-content shadow-sm">
       <div className="mx-auto max-w-7xl w-full px-4 flex justify-between items-center h-16">
         <Link href="/" className="flex items-center group">
           <Flame className="h-8 w-8 group-hover:fill-amber-600 transition-colors" />
@@ -123,6 +123,18 @@ const Header = () => {
                     className={isActive("/collections") ? "font-bold" : ""}
                   >
                     All Collections
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={currentUser.name ? `/u/${currentUser.name}` : "#"}
+                    className={
+                      currentUser.name && isActive(`/u/${currentUser.name}`)
+                        ? "font-bold"
+                        : ""
+                    }
+                  >
+                    My Profile
                   </Link>
                 </li>
                 <li>

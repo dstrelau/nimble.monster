@@ -20,6 +20,7 @@ export default async function CollectionsPage() {
             collection={collection}
             showEditDeleteButtons={false}
             showPublicBadge={false}
+            showAttribution={true}
           />
         ))}
       </div>

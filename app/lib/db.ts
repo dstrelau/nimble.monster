@@ -7,6 +7,7 @@ import {
   CollectionOverview,
   Family,
   Monster,
+  User,
 } from "@/lib/types";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
@@ -131,4 +132,104 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
     creator: { ...c.creator, avatar: c.creator.avatar || "" },
     monsters: c.monsterCollections.flatMap((mc) => toMonster(mc.monster)),
   };
+};
+
+export const getUserByUsername = async (
+  username: string,
+): Promise<User | null> => {
+  const user = await prisma.user.findFirst({
+    where: { username },
+  });
+
+  if (!user) return null;
+
+  return {
+    discordId: user.discordId,
+    username: user.username,
+    avatar: user.avatar || "",
+  };
+};
+
+export const getUserPublicMonsters = async (
+  username: string,
+): Promise<Monster[]> => {
+  return (
+    await prisma.monster.findMany({
+      include: { family: true },
+      where: {
+        creator: { username },
+        visibility: "public",
+      },
+      orderBy: { name: "asc" },
+    })
+  ).map(toMonster);
+};
+
+export const getUserPublicCollections = async (
+  username: string,
+): Promise<CollectionOverview[]> => {
+  return (
+    await prisma.collection.findMany({
+      where: {
+        creator: { username },
+        visibility: "public",
+      },
+      include: {
+        creator: true,
+        monsterCollections: { include: { monster: true } },
+      },
+    })
+  ).map(toCollectionOverview);
+};
+
+export const getUserFamilies = async (username: string): Promise<Family[]> => {
+  const families = await prisma.family.findMany({
+    where: {
+      creator: { username },
+    },
+    include: {
+      monsters: true,
+    },
+  });
+
+  return families.map((family) => ({
+    id: family.id,
+    name: family.name,
+    abilities: family.abilities as unknown as Ability[],
+    visibility: family.visibility,
+    monsterCount: family.monsters.length,
+  }));
+};
+
+export const getUserPublicMonstersCount = async (
+  username: string,
+): Promise<number> => {
+  return await prisma.monster.count({
+    where: {
+      creator: { username },
+      visibility: "public",
+    },
+  });
+};
+
+export const getUserPublicCollectionsCount = async (
+  username: string,
+): Promise<number> => {
+  return await prisma.collection.count({
+    where: {
+      creator: { username },
+      visibility: "public",
+    },
+  });
+};
+
+export const getUserPublicFamiliesCount = async (
+  username: string,
+): Promise<number> => {
+  return await prisma.family.count({
+    where: {
+      creator: { username },
+      visibility: "public",
+    },
+  });
 };
