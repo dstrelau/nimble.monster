@@ -1,10 +1,11 @@
 import { Prisma, PrismaClient } from "@/lib/prisma";
-import { Monster as PrismaMonster } from "@/lib/prisma";
+
 import {
   Ability,
   Action,
   Collection,
   CollectionOverview,
+  Family,
   Monster,
 } from "@/lib/types";
 
@@ -14,7 +15,17 @@ export const prisma = globalForPrisma.prisma || new PrismaClient();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
-const toMonster = (m: PrismaMonster): Monster => ({
+const toMonster = (
+  m: Prisma.Result<
+    typeof prisma.monster,
+    {
+      include: {
+        family: true;
+      };
+    },
+    "findMany"
+  >[0],
+): Monster => ({
   ...m,
   saves: m.saves.join(" "),
   armor: m.armor === "EMPTY_ENUM_VALUE" ? "" : m.armor,
@@ -22,15 +33,19 @@ const toMonster = (m: PrismaMonster): Monster => ({
   actions: m.actions as unknown as Action[],
   actionPreface: m.actionPreface || "",
   moreInfo: m.moreInfo || "",
+  family: toFamily(m.family),
 });
 
-export const listPublicMonsters = async (): Promise<Monster[]> => {
-  return (
-    await prisma.monster.findMany({
-      where: { visibility: "public" },
-      orderBy: { name: "asc" },
-    })
-  ).map(toMonster);
+export const toFamily = (
+  f: Prisma.Result<typeof prisma.family, object, "findMany">[0] | null,
+): Family | undefined => {
+  if (!f) {
+    return undefined;
+  }
+  return {
+    ...f,
+    abilities: f.abilities as unknown as Ability[],
+  };
 };
 
 export const toCollectionOverview = (
@@ -54,6 +69,16 @@ export const toCollectionOverview = (
     standardCount: c.monsterCollections.length - legendaryCount,
     creator: { ...c.creator, avatar: c.creator.avatar || "" },
   };
+};
+
+export const listPublicMonsters = async (): Promise<Monster[]> => {
+  return (
+    await prisma.monster.findMany({
+      where: { visibility: "public" },
+      orderBy: { name: "asc" },
+      include: { family: true },
+    })
+  ).map(toMonster);
 };
 
 export const listCollectionsForUser = async (
@@ -89,7 +114,9 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
     where: { id: id },
     include: {
       creator: true,
-      monsterCollections: { include: { monster: true } },
+      monsterCollections: {
+        include: { monster: { include: { family: true } } },
+      },
     },
   });
   if (!c) return c;

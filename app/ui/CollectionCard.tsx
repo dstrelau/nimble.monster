@@ -15,7 +15,7 @@ export const CollectionCard = ({
   return (
     <div
       key={collection.id}
-      className="d-card d-card-border d-card-body bg-base-100 border-base-300"
+      className="d-card d-card-border d-card-body py-3 px-4 bg-base-100 border-base-300"
     >
       <div className="flex justify-between items-start">
         <Link href={`/collections/${collection.id}`} className="block">

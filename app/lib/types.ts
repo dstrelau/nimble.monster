@@ -34,8 +34,7 @@ export interface Family {
   id: string;
   name: string;
   abilities: Ability[];
-  visibility: FamilyVisibility;
-  monsterCount: number;
+  monsterCount?: number;
 }
 
 export interface Monster {

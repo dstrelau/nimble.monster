@@ -61,7 +61,6 @@ const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
       name: family.name,
       abilityName: family.abilities[0]?.name || "",
       abilityDescription: family.abilities[0]?.description || "",
-      visibility: family.visibility,
     },
   });
 
@@ -124,13 +123,20 @@ const EditDeleteButtons = ({
               deleteMutation.mutate();
             }
           }}
-          className={`w-4 pr-2 cursor-pointer ${family.monsterCount > 0 && "d-tooltip"}`}
-          disabled={family.monsterCount > 0 || deleteMutation.isPending}
+          className={`w-4 pr-2 cursor-pointer ${family.monsterCount && family.monsterCount > 0 && "d-tooltip"}`}
+          disabled={
+            (family.monsterCount && family.monsterCount > 0) ||
+            deleteMutation.isPending
+          }
           data-tip="Cannot delete: family has monsters"
-          data-popover-target={family.monsterCount > 0 ? "popover-default" : ""}
+          data-popover-target={
+            family.monsterCount && family.monsterCount > 0
+              ? "popover-default"
+              : ""
+          }
         >
           <TrashIcon
-            className={`w-5 h-5 ${family.monsterCount > 0 ? "text-slate-300" : "text-slate-500"}`}
+            className={`w-5 h-5 ${family.monsterCount && family.monsterCount > 0 ? "text-slate-300" : "text-slate-500"}`}
           />
         </button>
       </div>

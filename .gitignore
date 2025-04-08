@@ -14,9 +14,10 @@ dist-ssr
 *.local
 .next
 app/lib/prisma
+tmp/
 
 # Editor directories and files
-.env
+.env*
 .vscode/*
 !.vscode/extensions.json
 .idea
