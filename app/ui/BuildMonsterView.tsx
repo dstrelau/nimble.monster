@@ -1,11 +1,11 @@
 "use client";
 
 import {
-  EyeIcon,
-  PlusIcon,
-  TrashIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+  Eye,
+  Plus,
+  Trash,
+  X,
+} from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import clsx from "clsx";
@@ -256,7 +256,7 @@ const AbilityRow: React.FC<AbilityRowProps> = ({
       onClick={onRemove}
       className="d-btn d-btn-ghost d-btn-square m-2"
     >
-      <TrashIcon className="h-6 text-base-content/50" />
+      <Trash className="h-6 w-6 text-base-content/50" />
     </button>
   </div>
 );
@@ -306,7 +306,7 @@ const ActionRow: React.FC<ActionRowProps> = ({
       onClick={onRemove}
       className="d-btn d-btn-ghost d-btn-square m-2"
     >
-      <TrashIcon className="h-6 text-base-content/50" />
+      <Trash className="h-6 w-6 text-base-content/50" />
     </button>
   </div>
 );
@@ -514,7 +514,7 @@ const AbilitiesSection: React.FC<{
         })
       }
     >
-      <PlusIcon className="w-6 h-6" />
+      <Plus className="w-6 h-6" />
       Add
     </button>
   </fieldset>
@@ -561,7 +561,7 @@ const ActionsSection: React.FC<{
         })
       }
     >
-      <PlusIcon className="w-6 h-6" />
+      <Plus className="w-6 h-6" />
       Add
     </button>
   </fieldset>
@@ -638,7 +638,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
             className="d-btn d-btn-ghost d-btn-circle"
             onClick={() => setShowMobilePreview(false)}
           >
-            <XMarkIcon className="h-6 w-6" />
+            <X className="h-6 w-6" />
           </button>
         </div>
         <div className="grid grid-cols-1 gap-4 p-4">
@@ -657,7 +657,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
           {monster.name}
         </span>
         <div className="flex gap-2 items-center text-sm text-base-content/70">
-          <EyeIcon className="h-6 w-6" /> Preview
+          <Eye className="h-6 w-6" /> Preview
         </div>
       </div>
 

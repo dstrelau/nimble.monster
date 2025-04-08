@@ -4,7 +4,7 @@ import { AbilityOverlay } from "@/ui/AbilityOverlay";
 import { fetchApi } from "@/lib/api";
 import type { Family } from "@/lib/types";
 
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Pencil, Trash } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -115,7 +115,7 @@ const EditDeleteButtons = ({
           className="w-4 pr-2 cursor-pointer"
           title="Edit family"
         >
-          <PencilIcon className="w-5 h-5 text-slate-500" />
+          <Pencil className="w-5 h-5 text-slate-500" />
         </button>
         <button
           onClick={() => {
@@ -135,7 +135,7 @@ const EditDeleteButtons = ({
               : ""
           }
         >
-          <TrashIcon
+          <Trash
             className={`w-5 h-5 ${family.monsterCount && family.monsterCount > 0 ? "text-slate-300" : "text-slate-500"}`}
           />
         </button>

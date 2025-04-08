@@ -1,7 +1,6 @@
 "use client";
 
-import { Bars3Icon } from "@heroicons/react/24/outline";
-import { FireIcon } from "@heroicons/react/24/solid";
+import { Menu, Flame } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -42,8 +41,8 @@ const Header = () => {
   return (
     <nav className="d-navbar bg-neutral text-neutral-content shadow-sm">
       <div className="mx-auto max-w-7xl w-full px-4 flex justify-between items-center h-16">
-        <Link href="/" className="flex items-center">
-          <FireIcon className="h-8" />
+        <Link href="/" className="flex items-center group">
+          <Flame className="h-8 w-8 group-hover:fill-amber-600 transition-colors" />
           <span className="hidden md:block ml-2 font-bold">nimble.monster</span>
         </Link>
 
@@ -94,7 +93,7 @@ const Header = () => {
                   </div>
                 </div>
                 <div className="d-btn d-btn-ghost md:hidden">
-                  <Bars3Icon className="h-8" />
+                  <Menu className="h-8 w-8" />
                 </div>
               </summary>
 

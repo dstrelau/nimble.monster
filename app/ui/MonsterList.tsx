@@ -3,7 +3,7 @@
 import React from "react";
 import type { Monster } from "@/lib/types";
 import Link from "next/link";
-import PencilIcon from "@heroicons/react/24/outline/PencilIcon";
+import { Pencil } from "lucide-react";
 
 const MonsterList: React.FC<{ monsters: Monster[] }> = ({ monsters }) => {
   return (
@@ -33,7 +33,7 @@ const MonsterList: React.FC<{ monsters: Monster[] }> = ({ monsters }) => {
               href={`/my/monsters/${monster.id}/edit`}
               className="text-gray-600 hover:text-gray-800"
             >
-              <PencilIcon className="h-5 w-5" />
+              <Pencil className="h-5 w-5" />
             </Link>
           </div>
         </div>

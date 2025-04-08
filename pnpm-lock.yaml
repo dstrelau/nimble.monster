@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@heroicons/react':
-        specifier: ^2.2.0
-        version: 2.2.0(react@18.3.1)
       '@honeycombio/opentelemetry-web':
         specifier: ^0.12.0
         version: 0.12.1(zone.js@0.15.0)
@@ -369,11 +366,6 @@ packages:
   '@eslint/plugin-kit@0.2.7':
     resolution: {integrity: sha512-JubJ5B2pJ4k4yGxaNLdbjrnk9d/iDz6/q8wOilpIowd6PJPgaxCuHBnBszq7Ce2TyMrywm5r4PnKm6V3iiZF+g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@heroicons/react@2.2.0':
-    resolution: {integrity: sha512-LMcepvRaS9LYHJGsF0zzmgKCUim/X3N/DQKc4jepAXJ7l8QxJ1PmxJzqplF2Z3FE4PqBAIGyJAQ/w4B5dsqbtQ==}
-    peerDependencies:
-      react: '>= 16 || ^19.0.0-rc'
 
   '@honeycombio/opentelemetry-web@0.12.1':
     resolution: {integrity: sha512-0qtjU3JQmT2fkvKguSdViB1RBtZpbNCrgRox9yWernFMuZ+t8pSm577AuyCoK0iCggRluklr6SF+DBHW0B42OA==}
@@ -2607,10 +2599,6 @@ snapshots:
     dependencies:
       '@eslint/core': 0.12.0
       levn: 0.4.1
-
-  '@heroicons/react@2.2.0(react@18.3.1)':
-    dependencies:
-      react: 18.3.1
 
   '@honeycombio/opentelemetry-web@0.12.1(zone.js@0.15.0)':
     dependencies:

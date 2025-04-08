@@ -1,15 +1,56 @@
 "use client";
 
 import { AbilityOverlay } from "./AbilityOverlay";
-import { ArmorIcon, FlyIcon, HPIcon, SpeedIcon, SwimIcon } from "./Icons";
 import { fetchApi } from "@/lib/api";
 import { maybePeriod } from "@/lib/text";
 import type { Monster } from "@/lib/types";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/24/solid";
+import {
+  Footprints,
+  Heart,
+  Shield,
+  Waves,
+  Send,
+  Star,
+  Pencil,
+  Trash,
+} from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
+
+const StatsGroup: React.FC<{
+  monster: Monster;
+  children: React.ReactNode;
+}> = ({ monster, children }) => {
+  const tooltipLines: string[] = [];
+
+  if (monster.armor)
+    tooltipLines.push(
+      `Armor: ${monster.armor.charAt(0).toUpperCase() + monster.armor.slice(1)}`,
+    );
+  if (monster.fly) tooltipLines.push(`Fly: ${monster.fly}`);
+  if (monster.swim) tooltipLines.push(`Swim: ${monster.swim}`);
+  if (monster.speed) tooltipLines.push(`Speed: ${monster.speed}`);
+  if (monster.hp) tooltipLines.push(`HP: ${monster.hp}`);
+  if (monster.saves) tooltipLines.push(`Saves: ${monster.saves}`);
+
+  return (
+    <div className="d-dropdown d-dropdown-hover d-dropdown-bottom d-dropdown-center ">
+      <div tabIndex={0} className="flex items-center">
+        {children}
+      </div>
+      {tooltipLines.length > 0 && (
+        <div className="d-dropdown-content d-shadow rounded-md bg-neutral text-neutral-content font-sans not-italic z-10">
+          <div className="p-2 text-sm gap-0 min-w-32">
+            {tooltipLines.map((line, index) => (
+              <p key={index}>{line}</p>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const Stat: React.FC<{
   name: string;
@@ -21,9 +62,9 @@ const Stat: React.FC<{
   return (
     <span
       id={name}
-      className="flex items-center ml-2 text-lg text-content leading-6 "
+      className="flex items-center ml-2 text-lg text-content leading-6 py-1"
     >
-      <SvgIcon className="w-7 -mr-[6px] fill-base-300" />
+      <SvgIcon className="w-7 -mr-[6px] stroke-base-300 fill-base-300" />
       {value}
       {children}
     </span>
@@ -40,25 +81,27 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
           {monster.kind}
         </span>
       </div>
-      <div className="flex items-start font-slab font-black italic">
-        {monster.armor === "medium" && (
-          <Stat name="armor" value="M" SvgIcon={ArmorIcon} />
-        )}
-        {monster.armor === "heavy" && (
-          <Stat name="armor" value="H" SvgIcon={ArmorIcon} />
-        )}
-        <Stat name="hp" value={monster.hp} SvgIcon={HPIcon} />
-        <Stat name="saves" value="" SvgIcon={StarIcon}>
-          <div className="flex flex-col">
-            {monster.saves?.split(",").map((save, i, arr) => (
-              <span key={i} className="block">
-                {save}
-                {i < arr.length - 1 && ", "}
-              </span>
-            ))}{" "}
-          </div>
-        </Stat>
-      </div>
+      <StatsGroup monster={monster}>
+        <div className="flex items-center justify-center font-slab font-black italic">
+          {monster.armor === "medium" && (
+            <Stat name="armor" value="M" SvgIcon={Shield} />
+          )}
+          {monster.armor === "heavy" && (
+            <Stat name="armor" value="H" SvgIcon={Shield} />
+          )}
+          <Stat name="hp" value={monster.hp} SvgIcon={Heart} />
+          <Stat name="saves" value="" SvgIcon={Star}>
+            <div className="flex flex-col">
+              {monster.saves?.split(",").map((save, i, arr) => (
+                <span key={i} className="block">
+                  {save}
+                  {i < arr.length - 1 && ", "}
+                </span>
+              ))}{" "}
+            </div>
+          </Stat>
+        </div>
+      </StatsGroup>
     </header>
     <div className="mb-1">
       <span className="font-slab font-black text-4xl pr-1">{monster.name}</span>
@@ -69,24 +112,26 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
 const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
   <header className="justify-between">
     <div className="flex flex-col gap-x-1 items-start">
-      <div className="flex items-start grow w-full justify-between font-slab font-black italic pr-1">
+      <div className="flex items-center grow w-full justify-between font-slab font-black italic pr-1">
         <div className="font-small-caps text-2xl">{monster.name}</div>
-        <div className="flex items-start">
-          {monster.armor === "medium" && (
-            <Stat name="armor" value="M" SvgIcon={ArmorIcon} />
-          )}
-          {monster.armor === "heavy" && (
-            <Stat name="armor" value="H" SvgIcon={ArmorIcon} />
-          )}
-          <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
-          <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
-          {monster.speed > 0 && monster.speed !== 6 && (
-            <Stat name="speed" value={monster.speed} SvgIcon={SpeedIcon} />
-          )}
-          <Stat name="hp" value={monster.hp} SvgIcon={HPIcon} />
-        </div>
+        <StatsGroup monster={monster}>
+          <div className="flex items-center">
+            {monster.armor === "medium" && (
+              <Stat name="armor" value="M" SvgIcon={Shield} />
+            )}
+            {monster.armor === "heavy" && (
+              <Stat name="armor" value="H" SvgIcon={Shield} />
+            )}
+            <Stat name="swim" value={monster.swim} SvgIcon={Waves} />
+            <Stat name="fly" value={monster.fly} SvgIcon={Send} />
+            {monster.speed > 0 && (
+              <Stat name="speed" value={monster.speed} SvgIcon={Footprints} />
+            )}
+            <Stat name="hp" value={monster.hp} SvgIcon={Heart} />
+          </div>
+        </StatsGroup>
       </div>
-      <div className="font-condensed font-small-caps whitespace-nowrap items-baseline">
+      <div className="font-condensed font-small-caps whitespace-nowrap items-start">
         {`Lvl ${monster.level}${monster.size !== "medium" ? `, ${monster.size}` : ""}`}
       </div>
     </div>
@@ -229,7 +274,7 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
                 </button>
                 */}
                 <Link href={`/my/monsters/${monster.id}/edit`}>
-                  <PencilIcon className="w-5 h-5 text-base-content/50" />
+                  <Pencil className="w-5 h-5 text-base-content/50" />
                 </Link>
                 <button
                   onClick={() => {
@@ -238,7 +283,7 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
                     }
                   }}
                 >
-                  <TrashIcon className="w-5 h-5 text-base-content/50 cursor-pointer" />
+                  <Trash className="w-5 h-5 text-base-content/50 cursor-pointer" />
                 </button>
               </div>
             </>

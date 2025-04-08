@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon } from "@heroicons/react/24/outline";
+import { Check } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -113,7 +113,7 @@ const CollectionForm = ({ collection }: Props) => {
         >
           {showSuccess && (
             <div className="flex space-x-2 text-success">
-              <CheckIcon className="w-5 h-5 text-success " />
+              <Check className="w-5 h-5 text-success " />
               Saved
             </div>
           )}
@@ -183,7 +183,7 @@ export default function EditCollectionPage({
       >
         {showSuccess && (
           <div className="flex space-x-2 text-success">
-            <CheckIcon className="w-5 h-5 text-success " />
+            <Check className="w-5 h-5 text-success " />
             Saved
           </div>
         )}

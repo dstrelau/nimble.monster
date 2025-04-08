@@ -1,8 +1,4 @@
-import {
-  PlusCircleIcon,
-  LockClosedIcon,
-  ClipboardDocumentListIcon,
-} from "@heroicons/react/24/outline";
+import { PlusCircle, Lock, ClipboardList } from "lucide-react";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -29,7 +25,7 @@ export default function HomePage() {
         </div>
 
         <div className="mt-8 flex items-start gap-2">
-          <PlusCircleIcon className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
+          <PlusCircle className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
           <div>
             <h2 className="text-lg font-semibold">Available Features</h2>
             <ul className="mt-2 space-y-2 list-disc list-inside">
@@ -63,7 +59,7 @@ export default function HomePage() {
         </div>
 
         <div className="mt-8 flex items-start gap-2">
-          <LockClosedIcon className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
+          <Lock className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
           <div>
             <h2 className="text-lg font-semibold">With Discord Login</h2>
             <ul className="mt-2 space-y-2 list-disc list-inside">
@@ -80,7 +76,7 @@ export default function HomePage() {
         </div>
 
         <div className="mt-8 flex items-start gap-2">
-          <ClipboardDocumentListIcon className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
+          <ClipboardList className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
           <div>
             <h2 className="text-lg font-semibold">Coming Soon</h2>
             <ul className="mt-2 space-y-2 list-disc list-inside">

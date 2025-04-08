@@ -1,6 +1,6 @@
 import { maybePeriod } from "@/lib/text";
 import type { Ability, Family } from "@/lib/types";
-import { UsersIcon } from "@heroicons/react/24/outline";
+import { Users } from "lucide-react";
 
 export const AbilityOverlay = ({
   ability,
@@ -17,7 +17,7 @@ export const AbilityOverlay = ({
   >
     {family && (
       <>
-        <UsersIcon className="w-4 pb-1 mr-1 inline-block align-middle" />
+        <Users className="w-4 pb-1 mr-1 inline-block align-middle" />
         <strong className="pr-1 font-condensed">{family.name}:</strong>
       </>
     )}
