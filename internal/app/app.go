@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -202,23 +203,32 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 		ctx := r.Context()
 		span := trace.SpanFromContext(r.Context())
 
-		cookie, err := r.Cookie("authjs.session-token")
+		var cookie *http.Cookie
+		var err error
+		for _, c := range []string{"__Secure-authjs.session-token", "authjs.session-token"} {
+			cookie, err = r.Cookie(c)
+			if err == nil {
+				break
+			}
+		}
 		if err != nil {
+			span.RecordError(err)
 			next.ServeHTTP(w, r)
 			return
 		}
 
 		authSecret := os.Getenv("AUTH_SECRET")
 		if authSecret == "" {
+			span.RecordError(errors.New("no AUTH_SECRET"))
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		const salt = "authjs.session-token"
-		info := fmt.Appendf(nil, "Auth.js Generated Encryption Key (%s)", salt)
-		kdf := hkdf.New(sha256.New, []byte(authSecret), []byte(salt), info)
+		info := fmt.Appendf(nil, "Auth.js Generated Encryption Key (%s)", cookie.Name)
+		kdf := hkdf.New(sha256.New, []byte(authSecret), []byte(cookie.Name), info)
 		derivedKey := make([]byte, 64)
 		if _, err := io.ReadFull(kdf, derivedKey); err != nil {
+			span.RecordError(err)
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -245,6 +255,7 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 
 		if exp, ok := claims["exp"].(float64); ok {
 			if time.Now().Unix() > int64(exp) {
+				span.RecordError(errors.New("session expired"))
 				next.ServeHTTP(w, r)
 				return
 			}
@@ -252,6 +263,7 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 
 		if iat, ok := claims["iat"].(float64); ok {
 			if time.Now().Unix() < int64(iat/1000) {
+				span.RecordError(errors.New("issued in future?"))
 				next.ServeHTTP(w, r)
 				return
 			}
@@ -263,7 +275,7 @@ func (a *App) ProcessAuth(next http.Handler) http.Handler {
 			Avatar:    pgtype.Text{String: claims["picture"].(string), Valid: true},
 		})
 		if err != nil {
-			trace.SpanFromContext(ctx).RecordError(err)
+			span.RecordError(err)
 			http.Error(w, "Failed to create session", http.StatusInternalServerError)
 			return
 		}
@@ -284,7 +296,7 @@ func RequireAuth(next http.Handler) http.Handler {
 		ctx := r.Context()
 		user := nimble.CurrentUser(ctx)
 		if user == nil {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 		next.ServeHTTP(w, r)
