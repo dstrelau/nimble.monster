@@ -7,7 +7,7 @@
     "build": "next build",
     "lint": "eslint .",
     "start": "next start",
-    "deploy": "next build && cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/"
+    "deploy": "prisma generate && next build && cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
