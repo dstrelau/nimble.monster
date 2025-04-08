@@ -33,5 +33,4 @@ COPY --from=frontend --chown=node:node /app/.next/standalone .next/standalone
 COPY --from=backend /app/bin/main /app/main
 COPY --chmod=755 start.js /app/
 EXPOSE 3000 3000
-ENV NODE_ENV=production
-CMD ["start.js"]
+CMD ["node", "start.js"]

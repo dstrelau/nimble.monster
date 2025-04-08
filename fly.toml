@@ -5,13 +5,15 @@ primary_region = "ord"
 go_version = "1.23.2"
 
 [env]
-port = "8080"
+AUTH_TRUST_HOST = "true"
+HOSTNAME = "0.0.0.0"
+NODE_ENV = "production"
 
 [http_service]
 auto_start_machines = true
 auto_stop_machines = "suspend"
 force_https = true
-internal_port = 8080
+internal_port = 3000
 min_machines_running = 0
 processes = ["app"]
 
