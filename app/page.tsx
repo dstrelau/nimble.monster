@@ -1,4 +1,4 @@
-import { PlusCircle, Lock, ClipboardList } from "lucide-react";
+import { PlusCircle, Lock, ClipboardList, Check } from "lucide-react";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -31,28 +31,22 @@ export default function HomePage() {
             <ul className="mt-2 space-y-2 list-disc list-inside">
               <li>
                 Use the{" "}
-                <a
-                  className="text-indigo-600 hover:text-indigo-800 underline"
-                  href="/monsters/new"
-                >
+                <Link className="d-link" href="/monsters/new">
                   Monster Builder
-                </a>{" "}
+                </Link>{" "}
                 to create a new Nimble-flavor monster, both standard and
                 Legendary.
               </li>
               <li>
                 Browse{" "}
-                <Link
-                  className="text-indigo-600 hover:text-indigo-800 underline"
-                  href="/collections"
-                >
+                <Link className="d-link" href="/collections">
                   public collections
                 </Link>{" "}
                 of community-created monsters.
               </li>
               <li>
-                Save a monster block as image. (WIP. It&lsquo;s a bit broken
-                still.)
+                <s>Save a monster block as image.</s>{" "}
+                <em>Temporarily removed. Back soon!</em>
               </li>
             </ul>
           </div>
@@ -63,14 +57,29 @@ export default function HomePage() {
           <div>
             <h2 className="text-lg font-semibold">With Discord Login</h2>
             <ul className="mt-2 space-y-2 list-disc list-inside">
-              {[
-                "Save your monsters",
-                "View your saved monsters",
-                "Build collections of monsters that you can share",
-                "Create families of similar monsters",
-              ].map((item) => (
-                <li key={item}>{item}</li>
-              ))}
+              <li>Save custom monster blocks for later reference.</li>
+              <li>
+                <Link className="d-link" href="/monsters">
+                  Publish monsters
+                </Link>{" "}
+                for the community or keep them private.
+              </li>
+              <li>
+                Build your{" "}
+                <Link className="d-link" href="/u/sanitywithin">
+                  public profile
+                </Link>
+              </li>
+              <li>
+                Group monsters into sharable{" "}
+                <Link
+                  className="d-link"
+                  href="/collections//collections/ed25c4e5-4bd9-4f1e-8ad6-0850ed8d7d40"
+                >
+                  collections.
+                </Link>
+              </li>
+              <li>Create families of similar monsters that share traits.</li>
             </ul>
           </div>
         </div>
@@ -80,9 +89,11 @@ export default function HomePage() {
           <div>
             <h2 className="text-lg font-semibold">Coming Soon</h2>
             <ul className="mt-2 space-y-2 list-disc list-inside">
-              {["Upload Monster Images", "User profile pages"].map((item) => (
-                <li key={item}>{item}</li>
-              ))}
+              <li>Upload Monster Images</li>
+              <li className="items-center">
+                <s>User profile pages</s>
+                <Check className="inline w-4 h-4 ml-2 text-green-500" />
+              </li>
             </ul>
           </div>
         </div>

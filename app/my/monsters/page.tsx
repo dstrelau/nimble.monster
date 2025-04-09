@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 
 import { fetchApi } from "@/lib/api";
 import type { Monster } from "@/lib/types";
