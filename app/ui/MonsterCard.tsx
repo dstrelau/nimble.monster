@@ -3,7 +3,7 @@
 import { AbilityOverlay } from "./AbilityOverlay";
 import { fetchApi } from "@/lib/api";
 import { maybePeriod } from "@/lib/text";
-import type { Monster } from "@/lib/types";
+import type { Monster, User } from "@/lib/types";
 import {
   Footprints,
   Heart,
@@ -17,6 +17,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
+import { Attribution } from "@/ui/Attribution";
 
 const StatsGroup: React.FC<{
   monster: Monster;
@@ -140,11 +141,13 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
 
 interface MonsterCardProps {
   monster: Monster;
+  creator?: User;
   showActions?: boolean;
 }
 
 export const MonsterCard: React.FC<MonsterCardProps> = ({
   monster,
+  creator,
   showActions,
 }) => {
   const queryClient = useQueryClient();
@@ -254,9 +257,19 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
           )}
 
           {monster.contributor && (
-            <p className="attribution">
-              Contributed by <strong>{monster.contributor}</strong>
-            </p>
+            <>
+              <div className="d-divider my-1"></div>
+              <p className="attribution">
+                Contributed by <strong>{monster.contributor}</strong>
+              </p>
+            </>
+          )}
+
+          {creator && (
+            <>
+              <div className="d-divider my-1"></div>
+              <Attribution user={creator} />
+            </>
           )}
 
           {showActions && (

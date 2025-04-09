@@ -22,6 +22,7 @@ const toMonster = (
     {
       include: {
         family: true;
+        creator: true;
       };
     },
     "findMany"
@@ -35,6 +36,7 @@ const toMonster = (
   actionPreface: m.actionPreface || "",
   moreInfo: m.moreInfo || "",
   family: toFamily(m.family),
+  creator: { ...m.creator, avatar: m.creator.avatar || "" },
 });
 
 export const toFamily = (
@@ -77,9 +79,19 @@ export const listPublicMonsters = async (): Promise<Monster[]> => {
     await prisma.monster.findMany({
       where: { visibility: "public" },
       orderBy: { name: "asc" },
-      include: { family: true },
+      include: { family: true, creator: true },
     })
   ).map(toMonster);
+};
+
+export const findPublicMonsterById = async (
+  id: string,
+): Promise<Monster | null> => {
+  const monster = await prisma.monster.findUnique({
+    where: { id },
+    include: { family: true, creator: true },
+  });
+  return monster ? toMonster(monster) : null;
 };
 
 export const listCollectionsForUser = async (
@@ -116,7 +128,7 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
     include: {
       creator: true,
       monsterCollections: {
-        include: { monster: { include: { family: true } } },
+        include: { monster: { include: { family: true, creator: true } } },
       },
     },
   });
@@ -155,7 +167,7 @@ export const getUserPublicMonsters = async (
 ): Promise<Monster[]> => {
   return (
     await prisma.monster.findMany({
-      include: { family: true },
+      include: { family: true, creator: true },
       where: {
         creator: { username },
         visibility: "public",

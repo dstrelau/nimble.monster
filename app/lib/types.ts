@@ -56,9 +56,10 @@ export interface Monster {
   contributor?: string;
   abilities: Ability[];
   actions: Action[];
-  family?: Family;
   actionPreface: string;
   moreInfo?: string;
+  family?: Family;
+  creator?: User;
 }
 
 export interface Ability {

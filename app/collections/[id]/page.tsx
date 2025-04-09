@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import { Attribution } from "@/ui/Attribution";
 import { MonsterCardGrid } from "@/ui/MonsterCard";
 import { notFound } from "next/navigation";
 
@@ -28,6 +29,9 @@ export default async function ShowCollectionView({
           <h2 className="text-2xl font-bold text-gray-800">
             {collection.name}
           </h2>
+          <div className="mt-2">
+            <Attribution user={collection.creator} />
+          </div>
           {collection.description && (
             <div className="mt-2 text-gray-600">{collection.description}</div>
           )}

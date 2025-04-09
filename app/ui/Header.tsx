@@ -61,7 +61,7 @@ const Header = () => {
               href="/monsters"
               className={isActive("/monsters") ? "font-bold" : ""}
             >
-              All Monsters
+              Monsters
             </Link>
           </li>
           <li>
@@ -69,7 +69,7 @@ const Header = () => {
               href="/collections"
               className={isActive("/collections") ? "font-bold" : ""}
             >
-              All Collections
+              Collections
             </Link>
           </li>
         </ul>
