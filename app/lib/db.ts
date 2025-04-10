@@ -162,7 +162,7 @@ export const getUserByUsername = async (
   };
 };
 
-export const getUserPublicMonsters = async (
+export const listPublicMonstersForDiscordID = async (
   username: string,
 ): Promise<Monster[]> => {
   return (
@@ -172,6 +172,18 @@ export const getUserPublicMonsters = async (
         creator: { username },
         visibility: "public",
       },
+      orderBy: { name: "asc" },
+    })
+  ).map(toMonster);
+};
+
+export const listAllMonstersForDiscordID = async (
+  id: string,
+): Promise<Monster[]> => {
+  return (
+    await prisma.monster.findMany({
+      include: { family: true, creator: true },
+      where: { creator: { discordId: id } },
       orderBy: { name: "asc" },
     })
   ).map(toMonster);

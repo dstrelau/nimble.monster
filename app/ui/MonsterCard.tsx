@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import { AbilityOverlay } from "./AbilityOverlay";
 import { fetchApi } from "@/lib/api";
 import { maybePeriod } from "@/lib/text";
@@ -13,7 +14,10 @@ import {
   Star,
   Pencil,
   Trash,
+  Download,
+  Frown,
 } from "lucide-react";
+import html2canvas from "html2canvas-pro";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
@@ -150,6 +154,7 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
   creator,
   showActions,
 }) => {
+  const [downloadError, setDownloadError] = useState(false);
   const queryClient = useQueryClient();
   const deleteMutation = useMutation({
     mutationKey: ["deleteMonster", monster.id],
@@ -160,29 +165,104 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
     },
   });
 
-  /*
+  // Helper function to test error state
   const downloadCard = async () => {
-    const card = document.getElementById(`monster-${monster.id}`);
-    if (!card) return;
+    try {
+      const cardElement = document.querySelector(
+        `#monster-${monster.id} article`,
+      );
+      if (!cardElement) return;
 
-    const scale = 2;
-    const width = card.offsetWidth * scale;
-    const height = card.offsetHeight * scale;
+      // Store original style
+      const exportAttribution = cardElement.querySelector(
+        ".export-attribution",
+      );
+      let originalAttributionDisplay = "";
 
-    const dataUrl = await domtoimage.toPng(card, {
-      height,
-      width,
-      style: {
-        transform: `scale(${scale})`,
-        transformOrigin: "top left",
-      },
-    });
-    const a = document.createElement("a");
-    a.href = dataUrl;
-    a.download = `${monster.name}.png`;
-    a.click();
+      if (exportAttribution) {
+        originalAttributionDisplay = (exportAttribution as HTMLElement).style
+          .display;
+        (exportAttribution as HTMLElement).style.display = "block";
+      }
+
+      try {
+        // Create a wrapper with padding to handle the overflow
+        const wrapper = document.createElement("div");
+        wrapper.style.position = "absolute";
+        wrapper.style.left = "-9999px";
+        wrapper.style.top = "0";
+        wrapper.style.padding = "1.5rem 1.5rem 0 1.5rem"; // Padding on sides and top only
+        document.body.appendChild(wrapper);
+
+        const cardClone = cardElement.cloneNode(true) as HTMLElement;
+
+        // Remove action buttons from clone before capture
+        const actionsDiv = cardClone.querySelector(".d-card-actions");
+        if (actionsDiv) {
+          actionsDiv.parentNode?.removeChild(actionsDiv);
+        }
+
+        // Replace dividers with simple HR elements to ensure they show up in the image
+        const dividers = cardClone.querySelectorAll(".d-divider");
+        dividers.forEach((divider) => {
+          const hr = document.createElement("hr");
+          hr.style.width = "100%";
+          hr.style.margin = "0.25rem 0";
+          hr.style.border = "none";
+          hr.style.borderTop = "1px solid #e5e7eb";
+          hr.style.height = "1px";
+          divider.parentNode?.replaceChild(hr, divider);
+        });
+
+        // Fix vertical spacing in card
+        const abilities = cardClone.querySelectorAll(".abilities");
+        abilities.forEach((a) => {
+          (a as HTMLElement).style.gap = "0.5rem";
+        });
+        const ps = cardClone.querySelectorAll("p");
+        ps.forEach((p) => {
+          (p as HTMLElement).style.margin = "0.25rem 0";
+        });
+
+        cardClone.style.paddingBottom = "0.75rem";
+
+        wrapper.appendChild(cardClone);
+
+        const originalCard = document.querySelector(
+          `#monster-${monster.id} article`,
+        ) as HTMLElement;
+        const originalWidth = originalCard.offsetWidth;
+        cardClone.style.width = `${originalWidth}px`;
+
+        const canvas = await html2canvas(wrapper, {
+          scale: 2,
+          backgroundColor: null, // Transparent background
+          useCORS: true,
+          allowTaint: true,
+          imageTimeout: 0,
+          logging: true,
+        });
+
+        document.body.removeChild(wrapper);
+
+        const link = document.createElement("a");
+        link.download = `${monster.name}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      } finally {
+        if (exportAttribution) {
+          (exportAttribution as HTMLElement).style.display =
+            originalAttributionDisplay;
+        }
+      }
+    } catch (error) {
+      console.error("Error generating image:", error);
+      setDownloadError(true);
+      setTimeout(() => {
+        setDownloadError(false);
+      }, 5000);
+    }
   };
-  */
 
   return (
     <div className={clsx(monster.legendary && "md:col-span-2")}>
@@ -194,7 +274,7 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
             <HeaderStandard monster={monster} />
           )}
 
-          <div className="flex flex-col py-2 gap-4">
+          <div className="abilities flex flex-col py-2 gap-4">
             {monster.family?.abilities.map((ability, index) => (
               <AbilityOverlay
                 key={index}
@@ -256,51 +336,45 @@ export const MonsterCard: React.FC<MonsterCardProps> = ({
             </>
           )}
 
-          {monster.contributor && (
-            <>
-              <div className="d-divider my-1"></div>
-              <p className="attribution">
-                Contributed by <strong>{monster.contributor}</strong>
-              </p>
-            </>
-          )}
-
-          {creator && (
-            <>
-              <div className="d-divider my-1"></div>
+          <div className="d-divider my-1"></div>
+          <div className="flex items-center justify-between">
+            {creator ? (
               <Attribution user={creator} />
-            </>
-          )}
+            ) : (
+              <div></div> /* Empty div to maintain flex layout */
+            )}
 
-          {showActions && (
-            <>
-              <div className="d-divider my-1"></div>
-              <div className="d-card-actions justify-end">
-                {monster.visibility === "public" && (
-                  <div className="d-badge d-badge-soft d-badge-success">
-                    Public
-                  </div>
+            <div className="d-card-actions">
+              {showActions && monster.visibility === "public" && (
+                <div className="d-badge d-badge-soft d-badge-success mr-2">
+                  Public
+                </div>
+              )}
+              <button onClick={downloadCard} className="px-2 cursor-pointer">
+                {downloadError ? (
+                  <Frown className="w-5 h-5 text-error" />
+                ) : (
+                  <Download className="w-5 h-5 text-base-content/50" />
                 )}
-                {/* FIXME
-                <button onClick={downloadCard} className="px-2 cursor-pointer">
-                  <ArrowDownTrayIcon className="h-5 text-slate-500" />
-                </button>
-                */}
-                <Link href={`/my/monsters/${monster.id}/edit`}>
-                  <Pencil className="w-5 h-5 text-base-content/50" />
-                </Link>
-                <button
-                  onClick={() => {
-                    if (window.confirm("Really? This is permanent.")) {
-                      deleteMutation.mutate();
-                    }
-                  }}
-                >
-                  <Trash className="w-5 h-5 text-base-content/50 cursor-pointer" />
-                </button>
-              </div>
-            </>
-          )}
+              </button>
+              {showActions && (
+                <>
+                  <Link href={`/my/monsters/${monster.id}/edit`}>
+                    <Pencil className="w-5 h-5 text-base-content/50" />
+                  </Link>
+                  <button
+                    onClick={() => {
+                      if (window.confirm("Really? This is permanent.")) {
+                        deleteMutation.mutate();
+                      }
+                    }}
+                  >
+                    <Trash className="w-5 h-5 text-base-content/50 cursor-pointer" />
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         </article>
       </div>
     </div>
@@ -327,7 +401,12 @@ export const MonsterCardGrid = ({
       )}
     >
       {monsters.map((m) => (
-        <MonsterCard key={m.id} monster={m} showActions={showActions} />
+        <MonsterCard
+          key={m.id}
+          monster={m}
+          creator={m.creator}
+          showActions={showActions}
+        />
       ))}
     </div>
   );
