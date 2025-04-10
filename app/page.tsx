@@ -40,10 +40,7 @@ export default function HomePage() {
               </Link>{" "}
               of community-created monsters.
             </li>
-            <li>
-              <s>Save a monster block as image.</s>{" "}
-              <em>Temporarily removed. Back soon!</em>
-            </li>
+            <li>Save a monster block as image.</li>
           </ul>
         </div>
       </div>
