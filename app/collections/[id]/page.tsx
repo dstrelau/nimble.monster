@@ -1,7 +1,9 @@
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { Attribution } from "@/ui/Attribution";
-import { MonsterCardGrid } from "@/ui/MonsterCard";
+import { Dropdown } from "@/ui/components/dropdown";
+import { CardGrid } from "@/ui/monster/CardGrid";
+import { Share, FileJson } from "lucide-react";
 import { notFound } from "next/navigation";
 
 export default async function ShowCollectionView({
@@ -36,25 +38,35 @@ export default async function ShowCollectionView({
             <div className="mt-2 text-gray-600">{collection.description}</div>
           )}
         </div>
-        <details className="d-dropdown d-dropdown-end">
-          <summary className="d-btn d-btn-outline d-btn-secondary">
-            Export
-          </summary>
-          <div className="d-dropdown-content bg-base-100 z-1 w-48 shadow-sm">
-            <a
-              className="p-2 block hover:bg-base-200"
-              href={`/api/collections/${id}/download`}
-              download={`collection-${id}.json`}
-            >
-              OBR Compendium
-            </a>
-          </div>
-        </details>
+        <Dropdown
+          summary={
+            <span>
+              <Share className="w-5 h-5 text-base-content/50" />
+            </span>
+          }
+          items={[
+            {
+              element: (
+                <a
+                  className="flex gap-2 items-center"
+                  href={`/api/collections/${id}/download`}
+                  download={`collection-${collection.id}.json`}
+                >
+                  <FileJson className="w-4 h-4" />
+                  Export OBR Compendium JSON
+                </a>
+              ),
+            },
+          ]}
+          position="bottom"
+          alignment="end"
+          menuClassName="min-w-72"
+        />
       </div>
       {collection.monsters.length === 0 ? (
         <p>No monsters in this collection.</p>
       ) : (
-        <MonsterCardGrid monsters={collection.monsters} showActions={false} />
+        <CardGrid monsters={collection.monsters} showActions={false} />
       )}
     </div>
   );

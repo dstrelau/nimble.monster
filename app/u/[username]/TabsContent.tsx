@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { Monster, CollectionOverview, Family } from "@/lib/types";
-import { MonsterCardGrid } from "@/ui/MonsterCard";
+import { CardGrid } from "@/ui/monster/CardGrid";
 import { CollectionCard } from "@/ui/CollectionCard";
 import UserFamilyCard from "@/ui/UserFamilyCard";
 
@@ -63,7 +63,7 @@ export default function TabsContent({
               No public monsters available
             </p>
           ) : (
-            <MonsterCardGrid monsters={monsters} showActions={false} />
+            <CardGrid monsters={monsters} showActions={false} />
           )}
         </section>
       )}

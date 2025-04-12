@@ -22,8 +22,8 @@ export const AbilityOverlay = ({
       </>
     )}
     <strong className="pr-1 font-condensed">
-      {maybePeriod(ability.name || ability.Name)}
+      {maybePeriod(ability.name || ability.Name || "")}
     </strong>
-    {ability.description || ability.Description}
+    {ability.description || ability.Description || ""}
   </p>
 );

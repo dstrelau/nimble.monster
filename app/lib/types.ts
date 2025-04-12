@@ -62,9 +62,14 @@ export interface Monster {
   creator?: User;
 }
 
+{
+  /* FIXME: some families are serialized with Go-default capitalization */
+}
 export interface Ability {
   name: string;
   description: string;
+  Name?: string;
+  Description?: string;
 }
 
 export interface Action {

@@ -34,6 +34,10 @@
     }
 }
 
+summary::-webkit-details-marker {
+    display: none;
+}
+
 .animate-fade-out {
     animation: fade-out 2s ease-out forwards;
 }

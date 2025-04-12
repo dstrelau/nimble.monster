@@ -8,6 +8,7 @@ go_version = "1.23.2"
 AUTH_TRUST_HOST = "true"
 HOSTNAME = "0.0.0.0"
 NODE_ENV = "production"
+NEXT_PUBLIC_APP_URL = "https://nimble.monster"
 
 [http_service]
 auto_start_machines = true
@@ -19,3 +20,4 @@ processes = ["app"]
 
 [[vm]]
 size = "shared-cpu-1x"
+memory = "1024"

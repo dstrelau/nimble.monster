@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { Monster } from "@/lib/types";
-import { MonsterCard } from "@/ui/MonsterCard";
+import { Card } from "@/ui/monster/Card";
 import { Search, X, Ghost, Crown, ArrowUp, ArrowDown } from "lucide-react";
 import clsx from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -249,7 +249,7 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
       <div className="w-full lg:w-2/3">
         {selectedMonster ? (
           <div className="sticky top-4">
-            <MonsterCard
+            <Card
               monster={selectedMonster}
               creator={selectedMonster.creator}
               showActions={false}

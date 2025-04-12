@@ -4,8 +4,12 @@ ARG NODE_VERSION=18
 FROM node:20-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN apt-get update && apt-get install -y \
-    ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates chromium chromium-sandbox \
+    fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf \
+    && rm -rf /var/lib/apt/lists/*
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 RUN corepack enable
 COPY . /app
 WORKDIR /app
@@ -33,4 +37,5 @@ COPY --from=frontend --chown=node:node /app/.next/standalone .next/standalone
 COPY --from=backend /app/bin/main /app/main
 COPY --chmod=755 start.js /app/
 EXPOSE 3000 3000
+USER node
 CMD ["node", "start.js"]

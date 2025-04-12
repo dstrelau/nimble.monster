@@ -1,5 +1,5 @@
 import * as db from "@/lib/db";
-import { MonsterCardGrid } from "@/ui/MonsterCard";
+import { CardGrid } from "@/ui/monster/CardGrid";
 import { auth } from "@/lib/auth";
 import { notFound } from "next/navigation";
 
@@ -12,7 +12,7 @@ export default async function MyMonstersPage() {
   const monsters = await db.listAllMonstersForDiscordID(session.user.id);
   return (
     <div className="container mx-auto py-6">
-      <MonsterCardGrid monsters={monsters} showActions={true} />
+      <CardGrid monsters={monsters} showActions={true} />
     </div>
   );
 }

@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import clsx from "clsx";
 import { VisibilityToggle, VisibilityEnum } from "@/ui/VisibilityToggle";
-import { MonsterCardGrid } from "@/ui/MonsterCard";
+import { CardGrid } from "@/ui/monster/CardGrid";
 import { fetchApi } from "@/lib/api";
 import type { Collection, Monster } from "@/lib/types";
 import React from "react";
@@ -230,7 +230,7 @@ export default function EditCollectionPage({
           </table>
         </div>
         <div className="hidden sm:block flex-2">
-          <MonsterCardGrid
+          <CardGrid
             monsters={collection.monsters}
             showActions={false}
             gridColumns={{ sm: 1, md: 2 }}

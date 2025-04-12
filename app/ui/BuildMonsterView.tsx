@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  Eye,
-  Plus,
-  Trash,
-  X,
-} from "lucide-react";
+import { Eye, Plus, Trash, X } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import clsx from "clsx";
-import { MonsterCard } from "@/ui/MonsterCard";
+import { Card } from "@/ui/monster/Card";
 import { fetchApi } from "@/lib/api";
 import type {
   Ability,
@@ -642,7 +637,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
           </button>
         </div>
         <div className="grid grid-cols-1 gap-4 p-4">
-          <MonsterCard monster={monster} />
+          <Card monster={monster} />
         </div>
       </div>
 
@@ -763,7 +758,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
               </div>
             </div>
             <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
-              <MonsterCard monster={monster} />
+              <Card monster={monster} />
             </div>
           </div>
         </div>
