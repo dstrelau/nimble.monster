@@ -46,7 +46,8 @@ SET name = $2,
     saves = array[]::text[],
     visibility = $13,
     action_preface = $14,
-    more_info = $15
+    more_info = $15,
+    updated_at = NOW()
 WHERE id = $1 RETURNING *;
 
 -- name: UpdateLegendaryMonster :one
@@ -67,7 +68,8 @@ SET name = $2,
     saves = $12,
     visibility = $13,
     action_preface = $14,
-    more_info = $15
+    more_info = $15,
+    updated_at = NOW()
 WHERE id = $1 RETURNING *;
 
 -- name: DeleteMonster :one

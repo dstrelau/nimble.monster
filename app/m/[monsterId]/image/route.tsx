@@ -2,6 +2,10 @@
 import { findPublicMonsterById } from "@/lib/db";
 import { NextRequest } from "next/server";
 import puppeteer from "puppeteer";
+import {
+  getCachedMonsterImage,
+  cacheMonsterImage,
+} from "@/lib/imageStorage/simpleCache";
 
 export async function GET(
   request: NextRequest,
@@ -14,6 +18,19 @@ export async function GET(
     return new Response("Monster not found", { status: 404 });
   }
 
+  // Check cache first to see if we have a valid cached image
+  const cachedImage = await getCachedMonsterImage(monster);
+  if (cachedImage) {
+    // Return cached image if available
+    return new Response(cachedImage, {
+      headers: {
+        "Content-Type": "image/png",
+        "X-Cache": "HIT",
+      },
+    });
+  }
+
+  // No cached image or it's invalid, generate a new one
   // Get the base URL from the request
   const host = request.headers.get("host") || "localhost:3000";
   const protocol = new URL(request.url).protocol;
@@ -25,7 +42,7 @@ export async function GET(
   // Launch browser and navigate to the actual URL
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  
+
   // Set viewport to match OpenGraph dimensions (1200x630)
   await page.setViewport({ width: 1200, height: 630 });
 
@@ -41,74 +58,86 @@ export async function GET(
     // Define the target OpenGraph dimensions
     const OG_WIDTH = 1200;
     const OG_HEIGHT = 630;
-    
+
     // Apply custom styling to match OpenGraph dimensions and clean up the card
-    await page.evaluate((params) => {
-      const { monsterId, OG_WIDTH } = params;
-      // Select the container of the monster card
-      const container = document.querySelector(
-        ".container .max-w-2xl",
-      ) as HTMLElement | null;
+    await page.evaluate(
+      (params) => {
+        const { monsterId, OG_WIDTH } = params;
+        // Select the container of the monster card
+        const container = document.querySelector(
+          ".container .max-w-2xl",
+        ) as HTMLElement | null;
 
-      // Apply consistent styling for OpenGraph image
-      if (container) {
-        // Set dimensions to match OpenGraph metadata dimensions
-        container.style.width = `${OG_WIDTH}px`;
-        container.style.boxSizing = 'border-box';
-        // Set padding and center content
-        container.style.display = 'flex';
-        container.style.justifyContent = 'center';
-        container.style.alignItems = 'center';
+        // Apply consistent styling for OpenGraph image
+        if (container) {
+          // Set dimensions to match OpenGraph metadata dimensions
+          container.style.width = `${OG_WIDTH}px`;
+          container.style.boxSizing = "border-box";
+          // Set padding and center content
+          container.style.display = "flex";
+          container.style.justifyContent = "center";
+          container.style.alignItems = "center";
 
-        // Remove any margins from the container to ensure clean screenshot
-        container.style.margin = "0";
-        container.style.padding = "0";
-      }
+          // Remove any margins from the container to ensure clean screenshot
+          container.style.margin = "0";
+          container.style.padding = "0";
+        }
 
-      // Remove unnecessary UI elements that shouldn't appear in the image
-      const actionsToRemove = document.querySelectorAll(
-        '[id^="monster-"] button',
-      );
-      actionsToRemove.forEach((el) => {
-        (el as HTMLElement).style.display = "none";
-      });
+        // Remove unnecessary UI elements that shouldn't appear in the image
+        const actionsToRemove = document.querySelectorAll(
+          '[id^="monster-"] button',
+        );
+        actionsToRemove.forEach((el) => {
+          (el as HTMLElement).style.display = "none";
+        });
 
-      // Ensure the card has the right background and styling
-      const monsterCard = document.querySelector(`#monster-${monsterId}`) as HTMLElement | null;
-      if (monsterCard) {
-        // Ensure the card has proper padding for the image
-        monsterCard.style.padding = "20px";
-      }
-    }, { isLegendary: monster.legendary, monsterId, OG_WIDTH, OG_HEIGHT });
+        // Ensure the card has the right background and styling
+        const monsterCard = document.querySelector(
+          `#monster-${monsterId}`,
+        ) as HTMLElement | null;
+        if (monsterCard) {
+          // Ensure the card has proper padding for the image
+          monsterCard.style.padding = "20px";
+        }
+      },
+      { isLegendary: monster.legendary, monsterId, OG_WIDTH, OG_HEIGHT },
+    );
 
     // Take a screenshot of the monster card element with fixed size for OpenGraph
     const monsterCardElement = await page.$(`#monster-${monsterId}`);
     if (!monsterCardElement) {
       throw new Error("Monster card element not found");
     }
-    
+
     // Get the card's dimensions
     const boundingBox = await monsterCardElement.boundingBox();
     if (!boundingBox) {
       throw new Error("Could not determine monster card dimensions");
     }
-    
+
     // Capture the screenshot
     const screenshotBuffer = await page.screenshot({
       clip: {
         x: boundingBox.x,
         y: boundingBox.y,
         width: boundingBox.width,
-        height: boundingBox.height
+        height: boundingBox.height,
       },
       omitBackground: true,
       type: "png",
     });
 
-    // Return the image
-    return new Response(screenshotBuffer, {
+    // Convert Uint8Array to Buffer for caching
+    const imageBuffer = Buffer.from(screenshotBuffer);
+
+    // Cache the generated image
+    await cacheMonsterImage(monsterId, imageBuffer);
+
+    // Return the newly generated image
+    return new Response(imageBuffer, {
       headers: {
         "Content-Type": "image/png",
+        "X-Cache": "MISS",
       },
     });
   } catch (error: unknown) {

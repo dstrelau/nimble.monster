@@ -60,6 +60,7 @@ export interface Monster {
   moreInfo?: string;
   family?: Family;
   creator?: User;
+  updatedAt: Date;
 }
 
 {

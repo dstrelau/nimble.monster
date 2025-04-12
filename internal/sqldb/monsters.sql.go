@@ -400,7 +400,8 @@ SET name = $2,
     saves = $12,
     visibility = $13,
     action_preface = $14,
-    more_info = $15
+    more_info = $15,
+    updated_at = NOW()
 WHERE id = $1 RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 `
 
@@ -488,7 +489,8 @@ SET name = $2,
     saves = array[]::text[],
     visibility = $13,
     action_preface = $14,
-    more_info = $15
+    more_info = $15,
+    updated_at = NOW()
 WHERE id = $1 RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 `
 

@@ -52,6 +52,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     ],
     actionPreface: "Do both.",
     moreInfo: "It's called meat shield for a reason. Use those minions!",
+    updatedAt: new Date(),
   },
   manticore: {
     visibility: "public",
@@ -87,6 +88,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     actionPreface: "After each hero's turn, choose one.",
     moreInfo:
       "A mythical beast with the body of a lion, the wings of a dragon, and the face of a human. Known for their deadly tail spikes.",
+    updatedAt: new Date(),
   },
   empty: {
     visibility: "private",
@@ -104,6 +106,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     actions: [],
     actionPreface: "Choose one.",
     moreInfo: "",
+    updatedAt: new Date(),
   },
 };
 
