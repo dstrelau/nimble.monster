@@ -411,14 +411,16 @@ const StandardForm: React.FC<{
   setMonster: (m: Monster) => void;
 }> = ({ monster, setMonster }) => (
   <div className="space-y-4">
-    <div className="grid grid-cols-5 gap-x-6">
+    <div className="grid grid-cols-2 gap-x-6">
       <FormInput
         label="Name"
         name="name"
         value={monster.name}
-        className="col-span-3"
+        className="col-span-2"
         onChange={(name) => setMonster({ ...monster, name })}
       />
+    </div>
+    <div className="grid grid-cols-5 gap-x-6">
       <FormInput
         label="Lvl"
         name="level"
@@ -434,8 +436,15 @@ const StandardForm: React.FC<{
         className="col-span-1"
         onChange={(size) => setMonster({ ...monster, size })}
       />
+      <FormInput
+        label="Kind"
+        name="kind"
+        value={monster.kind || ""}
+        className="col-span-3"
+        onChange={(kind) => setMonster({ ...monster, kind })}
+      />
     </div>
-    <div className="grid grid-cols-6 gap-2">
+    <div className="grid grid-cols-5 gap-2">
       <FormSelect
         label="Armor"
         name="armor"

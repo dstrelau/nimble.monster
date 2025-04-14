@@ -102,9 +102,9 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
   <header className="justify-between">
     <div className="flex flex-col gap-x-1 items-start">
       <div className="flex items-center grow w-full justify-between font-slab font-black italic pr-1">
-        <div className="font-small-caps text-2xl">{monster.name}</div>
+        <div className="basis-2 font-small-caps text-2xl">{monster.name}</div>
         <StatsGroup monster={monster}>
-          <div className="flex items-center">
+          <div className="flex grow flex-wrap items-center justify-end">
             {monster.armor === "medium" && (
               <Stat name="armor" value="M" SvgIcon={Shield} />
             )}
@@ -121,7 +121,12 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
         </StatsGroup>
       </div>
       <div className="font-condensed font-small-caps whitespace-nowrap items-start">
-        {`Lvl ${monster.level}${monster.size !== "medium" ? `, ${monster.size}` : ""}`}
+        Lvl {monster.level}
+        {monster.kind && monster.size !== "medium"
+          ? ` ${monster.size} ${monster.kind.toLocaleLowerCase()}`
+          : monster.kind
+            ? ` ${monster.kind.toLocaleLowerCase()}`
+            : `, ${monster.size}`}
       </div>
     </div>
   </header>
