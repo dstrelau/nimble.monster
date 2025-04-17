@@ -6,6 +6,7 @@ import { Footprints, Heart, Shield, Waves, Send, Star } from "lucide-react";
 import clsx from "clsx";
 import { Attribution } from "@/ui/Attribution";
 import CardActions from "./CardActions";
+import { Stat } from "./Stat";
 
 const StatsGroup: React.FC<{
   monster: Monster;
@@ -38,25 +39,6 @@ const StatsGroup: React.FC<{
         </div>
       )}
     </div>
-  );
-};
-
-const Stat: React.FC<{
-  name: string;
-  value: string | number;
-  SvgIcon: React.FC<{ className?: string }>;
-  children?: React.ReactNode;
-}> = ({ name, value, children, SvgIcon }) => {
-  if (!value && !children) return null;
-  return (
-    <span
-      id={name}
-      className="flex items-center ml-2 text-lg text-content leading-6 py-1"
-    >
-      <SvgIcon className="w-7 -mr-[6px] stroke-base-300 fill-base-300" />
-      {value}
-      {children}
-    </span>
   );
 };
 
@@ -102,7 +84,7 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
   <header className="justify-between">
     <div className="flex flex-col gap-x-1 items-start">
       <div className="flex items-center grow w-full justify-between font-slab font-black italic pr-1">
-        <div className="basis-2 font-small-caps text-2xl">{monster.name}</div>
+        <div className="font-small-caps text-2xl">{monster.name}</div>
         <StatsGroup monster={monster}>
           <div className="flex grow flex-wrap items-center justify-end">
             {monster.armor === "medium" && (
@@ -113,7 +95,7 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
             )}
             <Stat name="swim" value={monster.swim} SvgIcon={Waves} />
             <Stat name="fly" value={monster.fly} SvgIcon={Send} />
-            {monster.speed > 0 && (
+            {monster.speed > 0 && monster.speed !== 6 && (
               <Stat name="speed" value={monster.speed} SvgIcon={Footprints} />
             )}
             <Stat name="hp" value={monster.hp} SvgIcon={Heart} />

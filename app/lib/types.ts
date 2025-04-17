@@ -15,13 +15,19 @@ export const ARMORS = [
 ] as const;
 export type MonsterArmor = (typeof ARMORS)[number]["value"];
 
-export const COLLECTION_VISIBILITY = [
-  { value: "public", label: "Public" },
-  { value: "secret", label: "Secret" },
-  { value: "private", label: "Private" },
+export const CollectionVisibility = {
+  PUBLIC: "public",
+  PRIVATE: "private",
+  SECRET: "secret",
+} as const;
+
+export const ValidCollectionVisibilities = [
+  CollectionVisibility.PUBLIC,
+  CollectionVisibility.PRIVATE,
+  CollectionVisibility.SECRET,
 ] as const;
-export type CollectionVisibility =
-  (typeof COLLECTION_VISIBILITY)[number]["value"];
+export type CollectionVisibilityType =
+  (typeof ValidCollectionVisibilities)[number];
 
 export const FAMILY_VISIBILITY = [
   { value: "public", label: "Public" },
@@ -87,14 +93,14 @@ export interface Collection {
   monsters: Monster[];
   legendaryCount: number;
   standardCount: number;
-  visibility: CollectionVisibility;
+  visibility: CollectionVisibilityType;
   description?: string;
 }
 
 export interface CollectionOverview {
   id: string;
   name: string;
-  visibility: CollectionVisibility;
+  visibility: CollectionVisibilityType;
   legendaryCount: number;
   standardCount: number;
   creator: User;

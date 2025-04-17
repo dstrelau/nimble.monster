@@ -6,6 +6,7 @@ import { Card } from "@/ui/monster/Card";
 import { Search, X, Ghost, Crown, ArrowUp, ArrowDown } from "lucide-react";
 import clsx from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { List } from "./monster/List";
 
 interface MonstersListViewProps {
   monsters: Monster[];
@@ -198,51 +199,11 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
         </div>
 
         {/* Monster list */}
-        <div className="list overflow-y-auto max-h-[70vh]">
-          {filteredMonsters && (
-            <ul className="divide-y divide-base-300">
-              {filteredMonsters.map((monster) => (
-                <li
-                  key={monster.id}
-                  className={clsx(
-                    "block p-3 transition-colors",
-                    selectedMonsterId === monster.id
-                      ? "bg-primary/10"
-                      : "hover:bg-base-200",
-                  )}
-                  onClick={() => handleMonsterClick(monster.id)}
-                >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="font-bold text-lg">
-                        {monster.legendary && (
-                          <Crown
-                            size={14}
-                            className="inline align-baseline mr-1"
-                          />
-                        )}
-                        {monster.name}
-                      </h3>
-                      <p className="text-sm text-base-content/70">
-                        Level {monster.level}
-                        {monster.legendary ? " Solo " : ", "}
-                        {monster.size.charAt(0).toUpperCase() +
-                          monster.size.slice(1)}{" "}
-                        {monster.kind}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="flex items-center mr-2">
-                        <span className="mr-1">HP:</span>
-                        <span className="font-medium">{monster.hp}</span>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <List
+          monsters={filteredMonsters}
+          selectedIds={selectedMonsterId ? [selectedMonsterId] : []}
+          handleMonsterClick={handleMonsterClick}
+        />
       </div>
 
       {/* Right side: Detail view */}

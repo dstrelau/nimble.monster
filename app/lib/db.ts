@@ -142,7 +142,9 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
     legendaryCount: legendaryCount,
     standardCount: c.monsterCollections.length - legendaryCount,
     creator: { ...c.creator, avatar: c.creator.avatar || "" },
-    monsters: c.monsterCollections.flatMap((mc) => toMonster(mc.monster)),
+    monsters: c.monsterCollections
+      .flatMap((mc) => toMonster(mc.monster))
+      .sort((a, b) => a.name.localeCompare(b.name)),
   };
 };
 

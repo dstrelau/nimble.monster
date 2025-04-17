@@ -1,7 +1,6 @@
 "use client";
 import { fetchApi } from "@/lib/api";
-import { CollectionOverview } from "@/lib/types";
-import { VisibilityEnum } from "@/ui/VisibilityToggle";
+import { CollectionOverview, ValidCollectionVisibilities } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -9,7 +8,7 @@ import { z } from "zod";
 
 const collectionSchema = z.object({
   name: z.string().min(1, "Collection name is required"),
-  visibility: z.enum(VisibilityEnum).default("private"),
+  visibility: z.enum(ValidCollectionVisibilities).default("private"),
   description: z.string().optional(),
 });
 
