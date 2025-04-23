@@ -4,145 +4,14 @@ import { AbilityOverlay } from "@/ui/AbilityOverlay";
 import { fetchApi } from "@/lib/api";
 import type { Family } from "@/lib/types";
 
-import { Pencil, Trash } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-interface EditFamilyFormProps {
-  family: Family;
-  onCancel: () => void;
-}
-
-const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
-  const queryClient = useQueryClient();
-
-  const familySchema = z.object({
-    name: z.string().min(1, "Family name is required"),
-    abilityName: z.string().min(1, "Ability name is required"),
-    abilityDescription: z.string().min(1, "Ability description is required"),
-    visibility: z.enum(["public", "secret", "private"] as const),
-  });
-
-  type EditFamilyFormData = z.infer<typeof familySchema>;
-
-  const updateMutation = useMutation({
-    mutationKey: ["updateFamily", family.id],
-    mutationFn: (data: EditFamilyFormData) =>
-      fetchApi<Family>(`/api/families/${family.id}`, {
-        method: "PUT",
-        body: JSON.stringify({
-          name: data.name,
-          abilities: [
-            {
-              name: data.abilityName,
-              description: data.abilityDescription,
-            },
-          ],
-          visibility: data.visibility,
-        }),
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["families"] });
-      onCancel();
-    },
-  });
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<EditFamilyFormData>({
-    resolver: zodResolver(familySchema),
-    defaultValues: {
-      name: family.name,
-      abilityName: family.abilities[0]?.name || "",
-      abilityDescription: family.abilities[0]?.description || "",
-    },
-  });
-
-  return (
-    <div className="mb-6">
-      <form
-        onSubmit={handleSubmit((data) => updateMutation.mutate(data))}
-        className=""
-      >
-        <FamilyForm register={register} errors={errors}>
-          <div className="flex justify-end space-x-2">
-            <button type="button" onClick={onCancel} className="d-btn">
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={updateMutation.isPending}
-              className="d-btn d-btn-primary"
-            >
-              {updateMutation.isPending ? "Updating..." : "Update"}
-            </button>
-          </div>
-        </FamilyForm>
-      </form>
-    </div>
-  );
-};
-
-const EditDeleteButtons = ({
-  family,
-  onEdit,
-}: {
-  family: Family;
-  onEdit: () => void;
-}) => {
-  const queryClient = useQueryClient();
-
-  const deleteMutation = useMutation({
-    mutationKey: ["deleteFamily", family.id],
-    mutationFn: () =>
-      fetchApi(`/api/families/${family.id}`, { method: "DELETE" }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["families"] });
-    },
-  });
-
-  return (
-    <div className="flex flex-col items-end">
-      <div className="flex flex-row space-x-2">
-        <button
-          onClick={onEdit}
-          className="w-4 pr-2 cursor-pointer"
-          title="Edit family"
-        >
-          <Pencil className="w-5 h-5 text-slate-500" />
-        </button>
-        <button
-          onClick={() => {
-            if (window.confirm("Are you sure?")) {
-              deleteMutation.mutate();
-            }
-          }}
-          className={`w-4 pr-2 cursor-pointer ${family.monsterCount && family.monsterCount > 0 && "d-tooltip"}`}
-          disabled={
-            (family.monsterCount && family.monsterCount > 0) ||
-            deleteMutation.isPending
-          }
-          data-tip="Cannot delete: family has monsters"
-          data-popover-target={
-            family.monsterCount && family.monsterCount > 0
-              ? "popover-default"
-              : ""
-          }
-        >
-          <Trash
-            className={`w-5 h-5 ${family.monsterCount && family.monsterCount > 0 ? "text-slate-300" : "text-slate-500"}`}
-          />
-        </button>
-      </div>
-    </div>
-  );
-};
+import { EditFamilyForm } from "./EditFamilyForm";
+import { EditDeleteButtons } from "./EditDeleteButtons";
 
 const familySchema = z.object({
   name: z.string().min(1, "Family name is required"),
