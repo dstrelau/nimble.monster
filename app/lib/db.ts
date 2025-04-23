@@ -208,10 +208,10 @@ export const getUserPublicCollections = async (
   ).map(toCollectionOverview);
 };
 
-export const getUserFamilies = async (username: string): Promise<Family[]> => {
+export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
   const families = await prisma.family.findMany({
     where: {
-      creator: { username },
+      creator: { discordId },
     },
     include: {
       monsters: true,

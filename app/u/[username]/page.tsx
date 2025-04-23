@@ -24,7 +24,7 @@ export default async function UserProfilePage({
   const [monsters, collections, families] = await Promise.all([
     db.listPublicMonstersForDiscordID(username),
     db.getUserPublicCollections(username),
-    db.getUserFamilies(username),
+    db.getUserFamilies(user.discordId),
   ]);
 
   return (
