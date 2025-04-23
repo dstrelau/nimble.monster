@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Monster } from "@/lib/types";
 import { Card } from "@/ui/monster/Card";
-import { Search, X, Ghost, Crown, ArrowUp, ArrowDown } from "lucide-react";
+import { Search, X, Ghost, ArrowUp, ArrowDown } from "lucide-react";
 import clsx from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { List } from "./monster/List";
