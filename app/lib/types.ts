@@ -41,6 +41,7 @@ export interface Family {
   name: string;
   abilities: Ability[];
   monsterCount?: number;
+  creatorId: string;
 }
 
 export interface Monster {

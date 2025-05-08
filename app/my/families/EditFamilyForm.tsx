@@ -1,9 +1,11 @@
+"use client";
 import { fetchApi } from "@/lib/api";
 import { Family } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { FamilyForm } from "./FamilyForm";
 
 interface EditFamilyFormProps {
   family: Family;
@@ -16,7 +18,6 @@ export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
     name: z.string().min(1, "Family name is required"),
     abilityName: z.string().min(1, "Ability name is required"),
     abilityDescription: z.string().min(1, "Ability description is required"),
-    visibility: z.enum(["public", "secret", "private"] as const),
   });
 
   type EditFamilyFormData = z.infer<typeof familySchema>;
@@ -25,7 +26,7 @@ export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
     mutationKey: ["updateFamily", family.id],
     mutationFn: (data: EditFamilyFormData) =>
       fetchApi<Family>(`/api/families/${family.id}`, {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify({
           name: data.name,
           abilities: [
@@ -34,7 +35,6 @@ export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
               description: data.abilityDescription,
             },
           ],
-          visibility: data.visibility,
         }),
       }),
     onSuccess: () => {
@@ -51,8 +51,11 @@ export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
     resolver: zodResolver(familySchema),
     defaultValues: {
       name: family.name,
-      abilityName: family.abilities[0]?.name || "",
-      abilityDescription: family.abilities[0]?.description || "",
+      abilityName: family.abilities[0]?.name || family.abilities[0]?.Name || "",
+      abilityDescription:
+        family.abilities[0]?.description ||
+        family.abilities[0]?.Description ||
+        "",
     },
   });
 

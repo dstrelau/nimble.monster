@@ -1,0 +1,13 @@
+import { PrismaClient } from "@/lib/prisma";
+
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+export * from "./converters";
+export * from "./monster";
+export * from "./collection";
+export * from "./family";
+export * from "./user";

@@ -172,12 +172,8 @@ func (a *App) buildRouter() {
 
 	{
 		h := NewFamiliesHandler(families, monsters)
-		r.With(RequireAuth).Get("/api/users/me/families", h.ListMyFamilies)
-		r.With(RequireAuth).Post("/api/families", h.CreateFamily)
-		r.With(RequireAuth).Get("/api/families/{id}", h.GetFamily)
 		r.With(RequireAuth).Put("/api/families/{id}", h.UpdateFamily)
-		r.With(RequireAuth).Delete("/api/families/{id}", h.DeleteFamily)
-		r.Get("/api/families", h.ListPublicFamilies)
+
 	}
 
 	fs := http.FileServer(http.Dir("./dist/assets"))
