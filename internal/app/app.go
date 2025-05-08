@@ -138,15 +138,6 @@ func (a *App) buildRouter() {
 
 	monsters := sqldb.NewMonsterStore(a.db)
 	collections := sqldb.NewCollectionStore(a.db, monsters)
-	families := sqldb.NewFamilyStore(a.db)
-
-	{
-		h := NewSessionsHandler(a.db)
-		r.Get("/auth/login", h.GetLogin)
-		r.Post("/auth/logout", h.PostLogout)
-		r.Get("/auth/discord", h.GetCallbackDiscord)
-		r.Get("/api/users/me", h.GetCurrentUser)
-	}
 
 	{
 		h := NewMonstersHandler(monsters)
@@ -157,7 +148,6 @@ func (a *App) buildRouter() {
 		r.With(RequireAuth).Delete("/api/monsters/{id}", h.DeleteMonster)
 		r.Get("/api/monsters", h.ListPublicMonsters)
 	}
-
 	{
 		h := NewCollectionsHandler(collections)
 		r.With(RequireAuth).Get("/api/users/me/collections", h.ListMyCollections)
@@ -168,12 +158,6 @@ func (a *App) buildRouter() {
 		r.Get("/api/collections/{id}", h.GetCollection)
 		r.Get("/api/collections/{id}/download", h.DownloadCollection)
 		r.Get("/api/collections", h.ListPublicCollections)
-	}
-
-	{
-		h := NewFamiliesHandler(families, monsters)
-		r.With(RequireAuth).Put("/api/families/{id}", h.UpdateFamily)
-
 	}
 
 	fs := http.FileServer(http.Dir("./dist/assets"))
