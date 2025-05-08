@@ -72,6 +72,25 @@ export async function updateFamily(
   }
 }
 
+export async function getUserFamilies() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { success: false, error: "Not authenticated", families: [] };
+    }
+
+    const families = await db.getUserFamilies(session.user.id);
+    return { success: true, families, error: null };
+  } catch (error) {
+    console.error("Error fetching families:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error occurred",
+      families: [],
+    };
+  }
+}
+
 export async function createFamily(formData: {
   name: string;
   abilityName: string;

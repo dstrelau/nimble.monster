@@ -9,7 +9,6 @@ import { fetchApi } from "@/lib/api";
 import type {
   Ability,
   Action,
-  Family,
   Monster,
   MonsterArmor,
   MonsterSize,
@@ -197,8 +196,11 @@ const FamilySection: React.FC<{
 }> = ({ monster, setMonster }) => {
   const userFamilies = useQuery({
     queryKey: ["userFamilies"],
-    queryFn: () => fetchApi<{ families: Family[] }>("/api/users/me/families"),
-    select: (data) => data.families,
+    queryFn: async () => {
+      const { getUserFamilies } = await import("@/actions/family");
+      const result = await getUserFamilies();
+      return result.success ? result.families : [];
+    },
   });
 
   const handleSelectFamily = (familyId: string) => {
