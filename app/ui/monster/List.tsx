@@ -22,9 +22,10 @@ export const List = ({
         <li
           key={monster.id}
           className={clsx(
-            "block p-3 transition-colors",
+            "block p-3 transition-colors cursor-pointer",
             selectedIds.includes(monster.id) && "bg-primary/10",
           )}
+          onClick={() => !showChecks && handleMonsterClick(monster.id)}
         >
           <div className="flex items-center gap-x-3">
             {showChecks && (
