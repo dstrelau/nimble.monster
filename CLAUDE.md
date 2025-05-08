@@ -27,3 +27,4 @@
 - If you are unsure of anything, please ask. Do not assume.
 - If there is ambiguity in my questions or instructions, please ask for clarification.
 - Be as terse as possible, only doing what is asked.
+- We use version control, so you may delete files without backup when necessary.
