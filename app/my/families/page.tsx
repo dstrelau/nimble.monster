@@ -1,31 +1,23 @@
-"use client";
+import * as db from "@/lib/db";
 
-import { fetchApi } from "@/lib/api";
-import type { Family } from "@/lib/types";
-import { useQuery } from "@tanstack/react-query";
 import { FamilyCard } from "./FamilyCard";
 import { NewFamilyForm } from "./NewFamilyForm";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-export default function MyFamiliesPage() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["families"],
-    queryFn: () => fetchApi<{ families: Family[] }>("/api/users/me/families"),
-    staleTime: 0,
-  });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
+export default async function MyFamiliesPage() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    redirect("/api/auth/signin");
   }
 
-  if (error) {
-    return <div>Error loading families: {(error as Error).message}</div>;
-  }
+  const families = await db.getUserFamilies(session.user.id);
 
   return (
     <div className="space-y-6">
       <NewFamilyForm />
 
-      {!data || data.families.length === 0 ? (
+      {families.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-600">
             Families allow associating one or more abilities with a group of
@@ -34,7 +26,7 @@ export default function MyFamiliesPage() {
         </div>
       ) : (
         <div className="grid gap-8 items-start md:grid-cols-2 lg:grid-cols-3">
-          {data.families.map((family) => (
+          {families.map((family) => (
             <FamilyCard key={family.id} family={family} />
           ))}
         </div>

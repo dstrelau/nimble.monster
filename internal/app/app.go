@@ -137,7 +137,6 @@ func (a *App) buildRouter() {
 	r.Use(a.ProcessAuth)
 
 	monsters := sqldb.NewMonsterStore(a.db)
-	collections := sqldb.NewCollectionStore(a.db, monsters)
 
 	{
 		h := NewMonstersHandler(monsters)
@@ -148,17 +147,7 @@ func (a *App) buildRouter() {
 		r.With(RequireAuth).Delete("/api/monsters/{id}", h.DeleteMonster)
 		r.Get("/api/monsters", h.ListPublicMonsters)
 	}
-	{
-		h := NewCollectionsHandler(collections)
-		r.With(RequireAuth).Get("/api/users/me/collections", h.ListMyCollections)
-		r.With(RequireAuth).Post("/api/collections", h.CreateCollection)
-		r.With(RequireAuth).Delete("/api/collections/{id}", h.DeleteCollection)
-		r.With(RequireAuth).Put("/api/collections/{id}", h.UpdateCollection)
-		r.With(RequireAuth).Put("/api/collections/{id}/monsters", h.UpdateCollectionMonsters)
-		r.Get("/api/collections/{id}", h.GetCollection)
-		r.Get("/api/collections/{id}/download", h.DownloadCollection)
-		r.Get("/api/collections", h.ListPublicCollections)
-	}
+
 
 	fs := http.FileServer(http.Dir("./dist/assets"))
 	r.Handle("/assets/*", http.StripPrefix("/assets/", fs))

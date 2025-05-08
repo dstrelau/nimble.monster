@@ -30,13 +30,18 @@ export function EditForm({ collection, myMonsters }: Props) {
     );
   }, [currentCollection, collection]);
 
-  const initialState = {
+  type ActionState = {
+    success: boolean;
+    monsterIds: string[];
+  };
+
+  const initialState: ActionState = {
     success: false,
     monsterIds: collection.monsters.map((m) => m.id),
   };
 
-  const [_state, formAction] = useActionState(
-    async (_prevState: unknown, formData: FormData) => {
+  const [_state, formAction] = useActionState<ActionState, FormData>(
+    async (prevState: ActionState, formData: FormData) => {
       formData.append(
         "monsterIds",
         JSON.stringify(currentCollection.monsters.map((m) => m.id)),

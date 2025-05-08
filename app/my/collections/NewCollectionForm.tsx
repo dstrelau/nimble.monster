@@ -1,10 +1,11 @@
 "use client";
-import { fetchApi } from "@/lib/api";
-import { CollectionOverview, ValidCollectionVisibilities } from "@/lib/types";
+import { ValidCollectionVisibilities } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { createCollection } from "@/actions/collection";
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 const collectionSchema = z.object({
   name: z.string().min(1, "Collection name is required"),
@@ -15,20 +16,8 @@ const collectionSchema = z.object({
 type CollectionFormData = z.infer<typeof collectionSchema>;
 
 export default function NewCollectionForm() {
-  const queryClient = useQueryClient();
-
-  const createMutation = useMutation({
-    mutationFn: (data: CollectionFormData) =>
-      fetchApi<CollectionOverview>("/api/collections", {
-        method: "POST",
-        body: JSON.stringify(data),
-      }),
-    onSuccess: (newCollection: CollectionOverview) => {
-      queryClient.invalidateQueries({ queryKey: ["collections"] });
-      reset();
-      window.location.href = `/my/collections/${newCollection.id}/edit`;
-    },
-  });
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const {
     register,
@@ -50,7 +39,15 @@ export default function NewCollectionForm() {
       <h3 className="d-collapse-title text-lg">Create Collection</h3>
       <form
         className="d-collapse-content"
-        onSubmit={handleSubmit((data) => createMutation.mutate(data))}
+        onSubmit={handleSubmit((data) => {
+          startTransition(async () => {
+            const result = await createCollection(data);
+            if (result.success && result.collection) {
+              reset();
+              router.push(`/my/collections/${result.collection.id}/edit`);
+            }
+          });
+        })}
       >
         <fieldset className="d-fieldset">
           <div className="space-y-4">
@@ -73,10 +70,10 @@ export default function NewCollectionForm() {
             <div>
               <button
                 type="submit"
-                disabled={createMutation.isPending}
+                disabled={isPending}
                 className="d-btn d-btn-primary"
               >
-                Create
+                {isPending ? "Creating..." : "Create"}
               </button>
             </div>
           </div>

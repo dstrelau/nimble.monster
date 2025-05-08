@@ -96,6 +96,7 @@ export interface Collection {
   standardCount: number;
   visibility: CollectionVisibilityType;
   description?: string;
+  createdAt?: Date | null;
 }
 
 export interface CollectionOverview {

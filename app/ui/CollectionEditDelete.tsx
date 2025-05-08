@@ -1,22 +1,12 @@
 "use client";
 
-import { fetchApi } from "@/lib/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteCollection } from "@/actions/collection";
 import { Pencil, Trash } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useTransition } from "react";
 
 export const EditDeleteButtons = ({ id }: { id: string }) => {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const deleteMutation = useMutation({
-    mutationKey: ["deleteCollection", id],
-    mutationFn: () => fetchApi(`/api/collections/${id}`, { method: "DELETE" }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["collections"] });
-    },
-  });
+  const [isPending, startTransition] = useTransition();
 
   return (
     <div className="flex flex-row justify-end">
@@ -25,15 +15,20 @@ export const EditDeleteButtons = ({ id }: { id: string }) => {
       </Link>
       <button
         className="cursor-pointer"
+        disabled={isPending}
         onClick={(e) => {
           if (window.confirm("Really? This is permanent.")) {
             e.preventDefault();
-            deleteMutation.mutate();
-            router.refresh();
+            startTransition(async () => {
+              const result = await deleteCollection(id);
+              if (!result.success && result.error) {
+                alert(`Error deleting collection: ${result.error}`);
+              }
+            });
           }
         }}
       >
-        <Trash className="w-5 h-5 text-slate-500" />
+        <Trash className={`w-5 h-5 ${isPending ? "text-slate-300" : "text-slate-500"}`} />
       </button>
     </div>
   );

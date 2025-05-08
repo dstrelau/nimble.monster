@@ -1,7 +1,7 @@
-import { fetchApi } from "@/lib/api";
 import { Family } from "@/lib/types";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Pencil, Trash } from "lucide-react";
+import { deleteFamily } from "@/actions/family";
+import { useTransition } from "react";
 
 export const EditDeleteButtons = ({
   family,
@@ -10,16 +10,7 @@ export const EditDeleteButtons = ({
   family: Family;
   onEdit: () => void;
 }) => {
-  const queryClient = useQueryClient();
-
-  const deleteMutation = useMutation({
-    mutationKey: ["deleteFamily", family.id],
-    mutationFn: () =>
-      fetchApi(`/api/families/${family.id}`, { method: "DELETE" }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["families"] });
-    },
-  });
+  const [isPending, startTransition] = useTransition();
 
   return (
     <div className="flex flex-col items-end">
@@ -34,13 +25,15 @@ export const EditDeleteButtons = ({
         <button
           onClick={() => {
             if (window.confirm("Are you sure?")) {
-              deleteMutation.mutate();
+              startTransition(() => {
+                deleteFamily(family.id);
+              });
             }
           }}
           className={`w-4 pr-2 cursor-pointer ${family.monsterCount && family.monsterCount > 0 && "d-tooltip"}`}
           disabled={
             (family.monsterCount && family.monsterCount > 0) ||
-            deleteMutation.isPending
+            isPending
           }
           data-tip="Cannot delete: family has monsters"
           data-popover-target={

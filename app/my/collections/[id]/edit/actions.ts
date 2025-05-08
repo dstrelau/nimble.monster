@@ -1,12 +1,13 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import * as db from "@/lib/db";
 import {
   CollectionVisibilityType,
   ValidCollectionVisibilities,
 } from "@/lib/types";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const collectionSchema = z.object({
@@ -21,7 +22,7 @@ export type CollectionFormData = z.infer<typeof collectionSchema>;
 export async function updateCollection(
   collectionId: string,
   formData: FormData,
-) {
+): Promise<{ success: boolean; monsterIds: string[] }> {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
 
@@ -33,55 +34,27 @@ export async function updateCollection(
     monsterIds: JSON.parse(formData.get("monsterIds")?.toString() || "[]"),
   });
 
-  const collection = await prisma.collection.findUnique({
-    where: { id: collectionId },
-    include: { creator: true },
+  // Use the new db function to update the collection
+  const updatedCollection = await db.updateCollection({
+    id: collectionId,
+    name: parsed.name,
+    visibility: parsed.visibility as CollectionVisibilityType,
+    description: parsed.description,
+    discordId: session.user.id,
+    monsterIds: parsed.monsterIds,
   });
 
-  if (!collection) throw new Error("Not Found");
-  if (collection.creator.discordId !== session.user.id)
-    throw new Error("Unauthorized");
+  if (!updatedCollection) throw new Error("Failed to update collection");
 
-  await prisma.$transaction(async (tx) => {
-    await tx.collection.update({
-      where: { id: collectionId },
-      data: {
-        name: parsed.name,
-        visibility: parsed.visibility as CollectionVisibilityType,
-        description: parsed.description,
-      },
-    });
-
-    const existingMonsters = (
-      await tx.monsterInCollection.findMany({
-        where: { collectionId },
-      })
-    ).map((monster) => monster.monsterId);
-
-    const toDelete = existingMonsters.filter(
-      (id) => !parsed.monsterIds.includes(id),
-    );
-    const toAdd = parsed.monsterIds.filter(
-      (id) => !existingMonsters.includes(id),
-    );
-
-    await Promise.all([
-      tx.monsterInCollection.deleteMany({
-        where: {
-          collectionId,
-          monsterId: { in: toDelete },
-        },
-      }),
-      tx.monsterInCollection.createMany({
-        data: toAdd.map((monsterId) => ({
-          monsterId,
-          collectionId,
-        })),
-      }),
-    ]);
-  });
-
-  revalidatePath(`/my/collections/${collectionId}/edit`);
-
-  return { success: true, monsterIds: parsed.monsterIds };
+  revalidatePath("/my/collections");
+  
+  // Check if "exit" parameter was provided
+  if (formData.get("exit") === "true") {
+    redirect("/my/collections");
+  }
+  
+  return { 
+    success: true, 
+    monsterIds: parsed.monsterIds 
+  };
 }

@@ -1,18 +1,18 @@
 "use client";
-import { fetchApi } from "@/lib/api";
 import { Family } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FamilyForm } from "./FamilyForm";
+import { updateFamily } from "@/actions/family";
+import { useTransition } from "react";
 
 interface EditFamilyFormProps {
   family: Family;
   onCancel: () => void;
 }
 export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
-  const queryClient = useQueryClient();
+  const [isPending, startTransition] = useTransition();
 
   const familySchema = z.object({
     name: z.string().min(1, "Family name is required"),
@@ -22,26 +22,14 @@ export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
 
   type EditFamilyFormData = z.infer<typeof familySchema>;
 
-  const updateMutation = useMutation({
-    mutationKey: ["updateFamily", family.id],
-    mutationFn: (data: EditFamilyFormData) =>
-      fetchApi<Family>(`/api/families/${family.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({
-          name: data.name,
-          abilities: [
-            {
-              name: data.abilityName,
-              description: data.abilityDescription,
-            },
-          ],
-        }),
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["families"] });
-      onCancel();
-    },
-  });
+  const handleUpdate = (data: EditFamilyFormData) => {
+    startTransition(async () => {
+      const result = await updateFamily(family.id, data);
+      if (result.success) {
+        onCancel();
+      }
+    });
+  };
 
   const {
     register,
@@ -62,7 +50,7 @@ export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
   return (
     <div className="mb-6">
       <form
-        onSubmit={handleSubmit((data) => updateMutation.mutate(data))}
+        onSubmit={handleSubmit(handleUpdate)}
         className=""
       >
         <FamilyForm register={register} errors={errors}>
@@ -72,10 +60,10 @@ export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
             </button>
             <button
               type="submit"
-              disabled={updateMutation.isPending}
+              disabled={isPending}
               className="d-btn d-btn-primary"
             >
-              {updateMutation.isPending ? "Updating..." : "Update"}
+              {isPending ? "Updating..." : "Update"}
             </button>
           </div>
         </FamilyForm>
