@@ -2,6 +2,23 @@ import { Monster } from "@/lib/types";
 import { prisma } from "./index";
 import { toMonster } from "./converters";
 
+export const deleteMonster = async ({
+  id,
+  discordId,
+}: {
+  id: string;
+  discordId: string;
+}): Promise<boolean> => {
+  const monster = await prisma.monster.delete({
+    where: {
+      id: id,
+      creator: { discordId },
+    },
+  });
+
+  return !!monster;
+};
+
 export const listPublicMonsters = async (): Promise<Monster[]> => {
   return (
     await prisma.monster.findMany({

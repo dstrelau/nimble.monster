@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useTransition } from "react";
 import {
   Download,
   Link as LinkIcon,
@@ -9,9 +9,8 @@ import {
   Share,
   Expand,
 } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { fetchApi } from "@/lib/api";
+import { deleteMonster } from "@/actions/monster";
 import html2canvas from "html2canvas-pro";
 import type { Monster } from "@/lib/types";
 import { Dropdown } from "@/ui/components/dropdown";
@@ -25,16 +24,7 @@ export default function CardActions({
   monster,
   showActions,
 }: MonsterCardActionsProps) {
-  const queryClient = useQueryClient();
-
-  const deleteMutation = useMutation({
-    mutationKey: ["deleteMonster", monster.id],
-    mutationFn: () =>
-      fetchApi(`/api/monsters/${monster.id}`, { method: "DELETE" }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["monsters"] });
-    },
-  });
+  const [isPending, startTransition] = useTransition();
 
   const copyMonsterLink = async () => {
     try {
@@ -195,13 +185,21 @@ export default function CardActions({
             <Pencil className="w-5 h-5 text-base-content/50" />
           </Link>
           <button
+            disabled={isPending}
             onClick={() => {
               if (window.confirm("Really? This is permanent.")) {
-                deleteMutation.mutate();
+                startTransition(async () => {
+                  const result = await deleteMonster(monster.id);
+                  if (!result.success && result.error) {
+                    alert(`Error deleting monster: ${result.error}`);
+                  }
+                });
               }
             }}
           >
-            <Trash className="w-5 h-5 text-base-content/50 cursor-pointer" />
+            <Trash
+              className={`w-5 h-5 text-base-content/50 cursor-pointer ${isPending ? "opacity-50" : ""}`}
+            />
           </button>
         </>
       )}
