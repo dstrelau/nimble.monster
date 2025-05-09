@@ -85,15 +85,16 @@ func (q *Queries) CreateLegendaryMonster(ctx context.Context, arg CreateLegendar
 
 const createMonster = `-- name: CreateMonster :one
 INSERT INTO monsters (
-    user_id, name, level, hp, armor, size, speed, fly, swim, family_id, actions, abilities, action_preface, more_info
+    user_id, name, kind, level, hp, armor, size, speed, fly, swim, family_id, actions, abilities, action_preface, more_info
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
 ) RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 `
 
 type CreateMonsterParams struct {
 	UserID        uuid.UUID
 	Name          string
+	Kind          string
 	Level         string
 	Hp            int32
 	Armor         ArmorType
@@ -112,6 +113,7 @@ func (q *Queries) CreateMonster(ctx context.Context, arg CreateMonsterParams) (M
 	row := q.db.QueryRow(ctx, createMonster,
 		arg.UserID,
 		arg.Name,
+		arg.Kind,
 		arg.Level,
 		arg.Hp,
 		arg.Armor,
@@ -473,23 +475,23 @@ func (q *Queries) UpdateLegendaryMonster(ctx context.Context, arg UpdateLegendar
 const updateMonster = `-- name: UpdateMonster :one
 UPDATE monsters
 SET name = $2,
-    kind = '',
-    level = $3,
-    hp = $4,
-    armor = $5,
-    size = $6,
-    speed = $7,
-    fly = $8,
-    swim = $9,
-    family_id = $10,
-    actions = $11,
-    abilities = $12,
+    kind = $3,
+    level = $4,
+    hp = $5,
+    armor = $6,
+    size = $7,
+    speed = $8,
+    fly = $9,
+    swim = $10,
+    family_id = $11,
+    actions = $12,
+    abilities = $13,
     bloodied = '',
     last_stand = '',
     saves = array[]::text[],
-    visibility = $13,
-    action_preface = $14,
-    more_info = $15,
+    visibility = $14,
+    action_preface = $15,
+    more_info = $16,
     updated_at = NOW()
 WHERE id = $1 RETURNING id, name, level, hp, armor, size, speed, fly, swim, actions, abilities, legendary, bloodied, last_stand, saves, created_at, updated_at, user_id, kind, visibility, family_id, action_preface, more_info
 `
@@ -497,6 +499,7 @@ WHERE id = $1 RETURNING id, name, level, hp, armor, size, speed, fly, swim, acti
 type UpdateMonsterParams struct {
 	ID            uuid.UUID
 	Name          string
+	Kind          string
 	Level         string
 	Hp            int32
 	Armor         ArmorType
@@ -516,6 +519,7 @@ func (q *Queries) UpdateMonster(ctx context.Context, arg UpdateMonsterParams) (M
 	row := q.db.QueryRow(ctx, updateMonster,
 		arg.ID,
 		arg.Name,
+		arg.Kind,
 		arg.Level,
 		arg.Hp,
 		arg.Armor,

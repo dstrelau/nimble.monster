@@ -55,6 +55,7 @@ func (s *MonsterStore) Create(ctx context.Context, in nimble.Monster) (nimble.Mo
 		created, err = s.db.CreateMonster(ctx, CreateMonsterParams{
 			Name:          toCreate.Name,
 			Level:         toCreate.Level,
+			Kind:          toCreate.Kind,
 			Hp:            toCreate.Hp,
 			Armor:         toCreate.Armor,
 			Size:          toCreate.Size,
@@ -148,6 +149,7 @@ func (s *MonsterStore) Update(ctx context.Context, monster nimble.Monster) (nimb
 		update, err = s.db.UpdateMonster(ctx, UpdateMonsterParams{
 			ID:            update.ID,
 			Name:          update.Name,
+			Kind:          update.Kind,
 			Level:         update.Level,
 			Hp:            update.Hp,
 			Armor:         update.Armor,

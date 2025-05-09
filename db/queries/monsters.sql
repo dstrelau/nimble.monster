@@ -1,8 +1,8 @@
 -- name: CreateMonster :one
 INSERT INTO monsters (
-    user_id, name, level, hp, armor, size, speed, fly, swim, family_id, actions, abilities, action_preface, more_info
+    user_id, name, kind, level, hp, armor, size, speed, fly, swim, family_id, actions, abilities, action_preface, more_info
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
 ) RETURNING *;
 
 -- name: CreateLegendaryMonster :one
@@ -30,23 +30,23 @@ WHERE monsters.id = $1;
 -- name: UpdateMonster :one
 UPDATE monsters
 SET name = $2,
-    kind = '',
-    level = $3,
-    hp = $4,
-    armor = $5,
-    size = $6,
-    speed = $7,
-    fly = $8,
-    swim = $9,
-    family_id = $10,
-    actions = $11,
-    abilities = $12,
+    kind = $3,
+    level = $4,
+    hp = $5,
+    armor = $6,
+    size = $7,
+    speed = $8,
+    fly = $9,
+    swim = $10,
+    family_id = $11,
+    actions = $12,
+    abilities = $13,
     bloodied = '',
     last_stand = '',
     saves = array[]::text[],
-    visibility = $13,
-    action_preface = $14,
-    more_info = $15,
+    visibility = $14,
+    action_preface = $15,
+    more_info = $16,
     updated_at = NOW()
 WHERE id = $1 RETURNING *;
 
