@@ -24,7 +24,8 @@
 - In this version of Next.js, params are a Promise that need to be awaited.
 
 # Claude Instructions
-- If you are unsure of anything, please ask. Do not assume.
 - If there is ambiguity in my questions or instructions, please ask for clarification.
 - Be as terse as possible, only doing what is asked.
 - We use version control, so you may delete files without backup when necessary.
+- Do not add unnecessary comments or explanations.
+- Do not add logging unless specifically requested.
