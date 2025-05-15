@@ -3,13 +3,11 @@ import * as db from "@/lib/db";
 import { FamilyCard } from "./FamilyCard";
 import { NewFamilyForm } from "./NewFamilyForm";
 import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 export default async function MyFamiliesPage() {
   const session = await auth();
-  if (!session?.user?.id) {
-    redirect("/api/auth/signin");
-  }
+  if (!session?.user?.id) notFound();
 
   const families = await db.getUserFamilies(session.user.id);
 
