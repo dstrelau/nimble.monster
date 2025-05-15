@@ -1,41 +1,27 @@
-ARG GO_VERSION=1.23
-ARG NODE_VERSION=18
-
 FROM node:20-slim AS base
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+
+FROM base AS deps
+WORKDIR /app
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates chromium chromium-sandbox \
     fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf \
     && rm -rf /var/lib/apt/lists/*
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
-RUN corepack enable
-COPY . /app
+COPY package.json pnpm-lock.yaml ./
+RUN corepack enable pnpm && pnpm install --frozen-lockfile
+
+FROM base AS builder
 WORKDIR /app
-
-FROM base AS deps
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
-
-FROM base AS frontend
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN pnpm run deploy
-
-FROM golang:${GO_VERSION}-bookworm AS backend
-WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download && go mod verify
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    CGO_ENABLED=0 GOOS=linux BUILD_ARGS='-ldflags="-w -s"' \
-    make build
+RUN corepack enable pnpm && pnpm run build
 
-FROM base
+FROM base AS runner
 WORKDIR /app
-COPY --from=frontend --chown=node:node /app/.next/standalone .next/standalone
-COPY --from=backend /app/bin/main /app/main
-COPY --chmod=755 start.js /app/
-EXPOSE 3000 3000
-USER node
-CMD ["node", "start.js"]
+ENV NODE_ENV=production
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+RUN if [ -d "/app/public" ]; then cp -r /app/public ./public; fi
+EXPOSE 3000
+CMD ["node", "server.js"]
