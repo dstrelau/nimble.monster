@@ -4,14 +4,17 @@ import { auth } from "@/lib/auth";
 import { generateCompendiumPack } from "@/lib/export";
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await auth();
   const id = (await params).id;
-  
+
   if (!id) {
-    return NextResponse.json({ error: "Collection ID is required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Collection ID is required" },
+      { status: 400 },
+    );
   }
 
   try {
@@ -19,7 +22,10 @@ export async function GET(
     const collection = await db.getCollection(id);
 
     if (!collection) {
-      return NextResponse.json({ error: "Collection not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Collection not found" },
+        { status: 404 },
+      );
     }
 
     // Check if collection is private and user isn't the owner
@@ -43,7 +49,7 @@ export async function GET(
     console.error("Error downloading collection:", error);
     return NextResponse.json(
       { error: "Failed to process download" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

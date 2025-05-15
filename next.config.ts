@@ -17,19 +17,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async rewrites() {
-    const apiPort = process.env.API_PORT || "8080";
-    return [
-      {
-        source: "/api/:path((?!auth|collections).+)",
-        destination: `http://localhost:${apiPort}/api/:path*`,
-      },
-      {
-        source: "/auth/:path*",
-        destination: `http://localhost:${apiPort}/auth/:path*`,
-      },
-    ];
-  },
 };
 
 export default nextConfig;

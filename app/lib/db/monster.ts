@@ -1,6 +1,13 @@
-import { Monster } from "@/lib/types";
+import {
+  Ability,
+  Action,
+  Monster,
+  MonsterSize,
+  MonsterArmor,
+} from "@/lib/types";
 import { prisma } from "./index";
 import { toMonster } from "./converters";
+import { InputJsonValue } from "../prisma/runtime/library";
 
 export const deleteMonster = async ({
   id,
@@ -64,4 +71,101 @@ export const listAllMonstersForDiscordID = async (
       orderBy: { name: "asc" },
     })
   ).map(toMonster);
+};
+
+export interface CreateMonsterInput {
+  name: string;
+  kind?: string;
+  level: string;
+  hp: number;
+  armor: MonsterArmor;
+  size: MonsterSize;
+  speed: number;
+  fly: number;
+  swim: number;
+  familyId?: string | null;
+  actions: Action[];
+  abilities: Ability[];
+  actionPreface: string;
+  moreInfo?: string;
+  visibility: "public" | "private";
+  discordId: string;
+  legendary?: boolean;
+  bloodied?: string;
+  lastStand?: string;
+  saves?: string[];
+}
+
+export const createMonster = async (
+  input: CreateMonsterInput,
+): Promise<Monster> => {
+  const {
+    name,
+    kind = "",
+    level,
+    hp,
+    armor,
+    size,
+    speed,
+    fly,
+    swim,
+    familyId,
+    actions,
+    abilities,
+    actionPreface = "",
+    moreInfo = "",
+    visibility,
+    discordId,
+    legendary = false,
+    bloodied = "",
+    lastStand = "",
+    saves = [],
+  } = input;
+
+  const user = await prisma.user.findUnique({
+    where: { discordId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const savesArray = legendary
+    ? Array.isArray(saves)
+      ? saves
+      : [saves].filter(Boolean)
+    : [];
+
+  const createdMonster = await prisma.monster.create({
+    data: {
+      name,
+      kind,
+      level,
+      hp,
+      armor: armor || "EMPTY_ENUM_VALUE",
+      size,
+      speed: legendary ? 0 : speed,
+      fly: legendary ? 0 : fly,
+      swim: legendary ? 0 : swim,
+      family: familyId ? { connect: { id: familyId } } : undefined,
+      actions: actions as unknown as InputJsonValue[],
+      abilities: abilities as unknown as InputJsonValue[],
+      bloodied: legendary ? bloodied : "",
+      lastStand: legendary ? lastStand : "",
+      saves: savesArray,
+      visibility,
+      actionPreface,
+      moreInfo,
+      legendary,
+      creator: {
+        connect: { id: user.id },
+      },
+    },
+    include: {
+      family: true,
+      creator: true,
+    },
+  });
+
+  return toMonster(createdMonster);
 };
