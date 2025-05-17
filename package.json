@@ -4,10 +4,9 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "lint": "eslint .",
-    "start": "next start",
-    "deploy": "prisma generate && next build && cp -r .next/static .next/standalone/.next/"
+    "start": "next start"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
