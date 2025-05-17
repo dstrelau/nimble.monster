@@ -43,27 +43,24 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
   return { numDice, dieSize, modifier };
 }
 
-/**
- * Calculate probability distribution for the primary die,
- * which can explode and miss.
- */
 function primaryDie(dieSize: number): ProbabilityDistribution {
   const baseProbability = 1 / dieSize;
   const result: ProbabilityDistribution = new Map([[0, baseProbability]]);
   // 1 == miss, so start at 2
-  for (let i = 2; i <= dieSize; i++) {
+  for (let i = 2; i < dieSize; i++) {
     result.set(i, baseProbability);
   }
 
   let currentProbability = baseProbability;
   let explodingValue = dieSize;
 
-  const maxExplosions = 3;
+  const maxExplosions = 4;
+
   for (let explosion = 1; explosion <= maxExplosions; explosion++) {
     // Probability of getting this explosion (reduces with each explosion)
     currentProbability *= 1 / dieSize;
     // Add probability for each possible value after exploding
-    for (let i = 1; i <= dieSize; i++) {
+    for (let i = 1; i < dieSize; i++) {
       const outcomeValue = explodingValue + i;
       result.set(
         outcomeValue,

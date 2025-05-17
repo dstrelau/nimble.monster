@@ -5,6 +5,7 @@ import {
   CircleCheck,
   Eye,
   Plus,
+  Sword,
   Target,
   Trash,
   TriangleAlert,
@@ -27,6 +28,11 @@ import { Textarea } from "@/ui/Form";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMemo } from "react";
+import {
+  parseDiceNotation,
+  calculateProbabilityDistribution,
+  calculateAverageDamageOnHit,
+} from "@/lib/dice";
 
 const EXAMPLE_MONSTERS: Record<string, Monster> = {
   goblin: {
@@ -120,7 +126,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
 };
 
 interface FormInputProps<T extends string | number> {
-  label: string;
+  label: React.ReactNode;
   name: string;
   value: T;
   className?: string;
@@ -144,7 +150,7 @@ const FormInput = <T extends string | number>({
   };
   return (
     <div className={className}>
-      <label htmlFor={name} className="d-fieldset-label">
+      <label htmlFor={name} className="d-fieldset-label flex flex-row">
         {label}
       </label>
       <div>
@@ -283,43 +289,66 @@ const ActionRow: React.FC<ActionRowProps> = ({
   legendary,
   onChange,
   onRemove,
-}) => (
-  <div className="flex flex-row items-center">
-    <div className="flex flex-col w-full gap-2 mb-2 border-l pl-4">
-      <div className="flex flex-col md:flex-row mb-2 gap-x-4">
-        <FormInput
-          label="Name"
-          name="action-name"
-          className="grow-3"
-          value={action.name}
-          onChange={(name) => onChange({ ...action, name })}
-        />
-        {legendary || (
+}) => {
+  const avgDamage = useMemo(() => {
+    if (!action.damage) return;
+    const diceRoll = parseDiceNotation(action.damage);
+    if (!diceRoll) return;
+    const distribution = calculateProbabilityDistribution(diceRoll);
+    return calculateAverageDamageOnHit(distribution);
+  }, [action.damage]);
+
+  return (
+    <div className="flex flex-row items-center">
+      <div className="flex flex-col w-full gap-2 mb-2 border-l pl-4">
+        <div className="flex flex-col md:flex-row mb-2 gap-x-4">
           <FormInput
-            label="Damage"
-            name="action-damage"
-            value={action.damage || ""}
-            onChange={(damage) => onChange({ ...action, damage })}
+            label="Name"
+            name="action-name"
+            className="grow-3"
+            value={action.name}
+            onChange={(name) => onChange({ ...action, name })}
           />
-        )}
+          {legendary || (
+            <FormInput
+              name="action-damage"
+              value={action.damage || ""}
+              onChange={(damage) => onChange({ ...action, damage })}
+              label={
+                <>
+                  <span className="flex-1">Damage</span>{" "}
+                  {avgDamage && (
+                    <span
+                      className="d-tooltip flex items-center leading-4"
+                      data-tip={`Avg. Damage on Hit: ${avgDamage.toFixed(1)}`}
+                    >
+                      <Sword className="h-4" />
+                      {avgDamage.toFixed(1)}
+                    </span>
+                  )}
+                </>
+              }
+            />
+          )}
+        </div>
+        <Textarea
+          label="Description"
+          name="action-description"
+          value={action.description || ""}
+          rows={2}
+          onChange={(description) => onChange({ ...action, description })}
+        />
       </div>
-      <Textarea
-        label="Description"
-        name="action-description"
-        value={action.description || ""}
-        rows={2}
-        onChange={(description) => onChange({ ...action, description })}
-      />
+      <button
+        type="button"
+        onClick={onRemove}
+        className="d-btn d-btn-ghost d-btn-square m-2"
+      >
+        <Trash className="h-6 w-6 text-base-content/50" />
+      </button>
     </div>
-    <button
-      type="button"
-      onClick={onRemove}
-      className="d-btn d-btn-ghost d-btn-square m-2"
-    >
-      <Trash className="h-6 w-6 text-base-content/50" />
-    </button>
-  </div>
-);
+  );
+};
 
 const LegendaryForm: React.FC<{
   monster: Monster;
@@ -673,12 +702,27 @@ const HPInput: React.FC<{
   const critical = percentDiff > 0.4;
 
   return (
-    <div className={className}>
-      <label htmlFor="hp" className="d-fieldset-label flex flex-row">
-        <span className="flex-1">HP</span>{" "}
-        {recommendedHP && (
-          <span className="d-dropdown d-dropdown-hover d-dropdown-top">
-            <span className={"flex items-center leading-4"}>
+    <FormInput
+      name="hp"
+      className={className}
+      value={monster.hp}
+      onChange={onChange}
+      label={
+        <>
+          <span className="flex-1">HP</span>{" "}
+          {recommendedHP && (
+            <span
+              className="d-tooltip flex items-center leading-4"
+              data-tip={
+                monster.hp == 0
+                  ? "GM Guide Recommended HP"
+                  : warning
+                    ? ">20% from recommended"
+                    : critical
+                      ? ">40% from recommended"
+                      : "Within 20% of recommended"
+              }
+            >
               {monster.hp == 0 ? (
                 <Target className="h-4" />
               ) : warning ? (
@@ -690,29 +734,10 @@ const HPInput: React.FC<{
               )}
               {recommendedHP}
             </span>
-            <span className="d-dropdown-content d-shadow p-2 rounded-md bg-neutral text-neutral-content font-sans not-italic z-10">
-              {monster.hp == 0
-                ? "GM Guide Recommended HP"
-                : warning
-                  ? ">20% from recommended"
-                  : critical
-                    ? ">40% from recommended"
-                    : "Within 20% of recommended"}
-            </span>
-          </span>
-        )}
-      </label>
-      <div>
-        <input
-          type="number"
-          name="hp"
-          id="hp"
-          value={monster.hp}
-          onChange={(e) => onChange(Number(e.target.value))}
-          className="d-input w-full"
-        />
-      </div>
-    </div>
+          )}
+        </>
+      }
+    />
   );
 };
 
