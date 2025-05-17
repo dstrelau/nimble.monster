@@ -3,6 +3,7 @@
 import {
   CircleAlert,
   CircleCheck,
+  CircleSlash2,
   Eye,
   Plus,
   Sword,
@@ -290,14 +291,20 @@ const ActionRow: React.FC<ActionRowProps> = ({
   onChange,
   onRemove,
 }) => {
-  const avgDamage = useMemo(() => {
-    if (!action.damage) return;
+  const distribution = useMemo(() => {
+    if (!action.damage) return null;
     const diceRoll = parseDiceNotation(action.damage);
-    if (!diceRoll) return;
+    if (!diceRoll) return null;
     const distribution = calculateProbabilityDistribution(diceRoll);
-    return calculateAverageDamageOnHit(distribution);
+    return distribution;
   }, [action.damage]);
 
+  let avgDamage;
+  let missPercent;
+  if (distribution) {
+    avgDamage = calculateAverageDamageOnHit(distribution);
+    missPercent = 100 * (distribution.get(0) || 0);
+  }
   return (
     <div className="flex flex-row items-center">
       <div className="flex flex-col w-full gap-2 mb-2 border-l pl-4">
@@ -317,6 +324,15 @@ const ActionRow: React.FC<ActionRowProps> = ({
               label={
                 <>
                   <span className="flex-1">Damage</span>{" "}
+                  {missPercent && (
+                    <span
+                      className="d-tooltip flex items-center leading-4"
+                      data-tip={`Miss Chance: ${missPercent.toFixed(0)}%`}
+                    >
+                      <CircleSlash2 className="h-4" />
+                      {missPercent.toFixed(0)}%
+                    </span>
+                  )}
                   {avgDamage && (
                     <span
                       className="d-tooltip flex items-center leading-4"

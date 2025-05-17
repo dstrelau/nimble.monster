@@ -41,11 +41,8 @@ const DiceRollerApp = () => {
 
   const missProbability = probabilities.get(0) || 0;
 
-  // Get the top 20 most probable outcomes for display
-  const filteredProbabilities = probabilities
-    .entries()
+  const filteredProbabilities = Array.from(probabilities.entries())
     .filter(([r, p]) => r > 0 && p > 0.005)
-    .toArray()
     .sort(([_, a], [__, b]) => b - a)
     .sort(([a], [b]) => a - b);
 
