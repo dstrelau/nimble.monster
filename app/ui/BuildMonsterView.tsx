@@ -1,6 +1,15 @@
 "use client";
 
-import { Eye, Plus, Trash, X } from "lucide-react";
+import {
+  CircleAlert,
+  CircleCheck,
+  Eye,
+  Plus,
+  Target,
+  Trash,
+  TriangleAlert,
+  X,
+} from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import clsx from "clsx";
@@ -17,6 +26,7 @@ import { ARMORS, SIZES } from "@/lib/types";
 import { Textarea } from "@/ui/Form";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useMemo } from "react";
 
 const EXAMPLE_MONSTERS: Record<string, Monster> = {
   goblin: {
@@ -351,10 +361,8 @@ const LegendaryForm: React.FC<{
     </div>
     <div>
       <div className="grid grid-cols-12 gap-x-6">
-        <FormInput
-          label="HP"
-          name="hp"
-          value={monster.hp}
+        <HPInput
+          monster={monster}
           className="col-span-2"
           onChange={(hp) => setMonster({ ...monster, hp })}
         />
@@ -472,10 +480,8 @@ const StandardForm: React.FC<{
         value={monster.speed}
         onChange={(speed) => setMonster({ ...monster, speed })}
       />
-      <FormInput
-        label="HP"
-        name="hp"
-        value={monster.hp}
+      <HPInput
+        monster={monster}
         onChange={(hp) => setMonster({ ...monster, hp })}
       />
     </div>
@@ -577,6 +583,138 @@ const ActionsSection: React.FC<{
 );
 
 export const MonsterVisibilityEnum = ["private", "public"] as const;
+
+const HP_RECOMMENDATION_STANDARD: Record<
+  string,
+  Record<MonsterArmor, number>
+> = {
+  "1/4": { "": 12, medium: 9, heavy: 7 },
+  "1/3": { "": 15, medium: 11, heavy: 8 },
+  "1/2": { "": 18, medium: 15, heavy: 11 },
+  "1": { "": 26, medium: 20, heavy: 16 },
+  "2": { "": 34, medium: 27, heavy: 20 },
+  "3": { "": 41, medium: 33, heavy: 25 },
+  "4": { "": 49, medium: 39, heavy: 29 },
+  "5": { "": 58, medium: 46, heavy: 35 },
+  "6": { "": 68, medium: 54, heavy: 41 },
+  "7": { "": 79, medium: 63, heavy: 47 },
+  "8": { "": 91, medium: 73, heavy: 55 },
+  "9": { "": 104, medium: 83, heavy: 62 },
+  "10": { "": 118, medium: 94, heavy: 71 },
+  "11": { "": 133, medium: 106, heavy: 80 },
+  "12": { "": 149, medium: 119, heavy: 89 },
+  "13": { "": 166, medium: 132, heavy: 100 },
+  "14": { "": 184, medium: 147, heavy: 110 },
+  "15": { "": 203, medium: 162, heavy: 122 },
+  "16": { "": 223, medium: 178, heavy: 134 },
+  "17": { "": 244, medium: 195, heavy: 146 },
+  "18": { "": 266, medium: 213, heavy: 160 },
+  "19": { "": 289, medium: 231, heavy: 173 },
+  "20": { "": 313, medium: 250, heavy: 189 },
+};
+
+const HP_RECOMMENDATION_LEGENDARY: Record<string, Record<string, number>> = {
+  "1": { "": 50, medium: 50, heavy: 35, lastStand: 10 },
+  "2": { "": 75, medium: 75, heavy: 55, lastStand: 20 },
+  "3": { "": 100, medium: 100, heavy: 75, lastStand: 30 },
+  "4": { "": 125, medium: 125, heavy: 95, lastStand: 40 },
+  "5": { "": 150, medium: 150, heavy: 115, lastStand: 50 },
+  "6": { "": 175, medium: 175, heavy: 135, lastStand: 60 },
+  "7": { "": 200, medium: 200, heavy: 155, lastStand: 70 },
+  "8": { "": 225, medium: 225, heavy: 175, lastStand: 80 },
+  "9": { "": 250, medium: 250, heavy: 195, lastStand: 90 },
+  "10": { "": 275, medium: 275, heavy: 215, lastStand: 100 },
+  "11": { "": 300, medium: 300, heavy: 235, lastStand: 110 },
+  "12": { "": 325, medium: 325, heavy: 255, lastStand: 120 },
+  "13": { "": 350, medium: 350, heavy: 275, lastStand: 130 },
+  "14": { "": 375, medium: 375, heavy: 295, lastStand: 140 },
+  "15": { "": 400, medium: 400, heavy: 315, lastStand: 150 },
+  "16": { "": 425, medium: 425, heavy: 335, lastStand: 160 },
+  "17": { "": 450, medium: 450, heavy: 355, lastStand: 170 },
+  "18": { "": 475, medium: 475, heavy: 375, lastStand: 180 },
+  "19": { "": 500, medium: 500, heavy: 395, lastStand: 190 },
+  "20": { "": 525, medium: 525, heavy: 415, lastStand: 200 },
+};
+
+const getRecommendedHPStandard = (
+  level: string,
+  armor: MonsterArmor,
+): number | null => {
+  if (!level || !HP_RECOMMENDATION_STANDARD[level]) return null;
+  return HP_RECOMMENDATION_STANDARD[level][armor] || null;
+};
+
+const getRecommendedHPLegendary = (
+  level: string,
+  armor: MonsterArmor,
+): number | null => {
+  if (!level || !HP_RECOMMENDATION_LEGENDARY[level]) return null;
+  return HP_RECOMMENDATION_LEGENDARY[level][armor] || null;
+};
+
+const HPInput: React.FC<{
+  monster: Monster;
+  onChange: (hp: number) => void;
+  className?: string;
+}> = ({ monster, onChange, className }) => {
+  const recommendedHP = useMemo(() => {
+    return monster.legendary
+      ? getRecommendedHPLegendary(monster.level, monster.armor)
+      : getRecommendedHPStandard(monster.level, monster.armor);
+  }, [monster.legendary, monster.level, monster.armor]);
+
+  const percentDiff = useMemo(() => {
+    if (!recommendedHP || monster.hp === 0) return 0;
+    const diff = monster.hp - recommendedHP;
+    return Math.abs(diff) / recommendedHP;
+  }, [recommendedHP, monster.hp]);
+
+  const warning = percentDiff > 0.2 && percentDiff < 0.4;
+  const critical = percentDiff > 0.4;
+
+  return (
+    <div className={className}>
+      <label htmlFor="hp" className="d-fieldset-label flex flex-row">
+        <span className="flex-1">HP</span>{" "}
+        {recommendedHP && (
+          <span className="d-dropdown d-dropdown-hover d-dropdown-top">
+            <span className={"flex items-center leading-4"}>
+              {monster.hp == 0 ? (
+                <Target className="h-4" />
+              ) : warning ? (
+                <TriangleAlert className="h-4 text-warning" />
+              ) : critical ? (
+                <CircleAlert className="h-4 text-error" />
+              ) : (
+                <CircleCheck className="h-4 text-success" />
+              )}
+              {recommendedHP}
+            </span>
+            <span className="d-dropdown-content d-shadow p-2 rounded-md bg-neutral text-neutral-content font-sans not-italic z-10">
+              {monster.hp == 0
+                ? "GM Guide Recommended HP"
+                : warning
+                  ? ">20% from recommended"
+                  : critical
+                    ? ">40% from recommended"
+                    : "Within 20% of recommended"}
+            </span>
+          </span>
+        )}
+      </label>
+      <div>
+        <input
+          type="number"
+          name="hp"
+          id="hp"
+          value={monster.hp}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="d-input w-full"
+        />
+      </div>
+    </div>
+  );
+};
 
 interface BuildMonsterProps {
   existingMonster?: Monster;
