@@ -61,7 +61,7 @@ export async function PUT(
         name: monsterData.name,
         level: monsterData.level,
         hp: monsterData.hp,
-        armor: monsterData.armor,
+        armor: monsterData.armor || "EMPTY_ENUM_VALUE",
         size: monsterData.size,
         speed: monsterData.speed,
         fly: monsterData.fly,
