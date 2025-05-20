@@ -1,6 +1,7 @@
 import { Collection, CollectionOverview } from "@/lib/types";
 import { prisma } from "./index";
 import { toCollectionOverview, toMonster } from "./converters";
+import { isValidUUID } from "@/lib/utils/validation";
 
 export const listCollectionsForUser = async (
   userId: string,
@@ -31,6 +32,8 @@ export const listPublicCollections = async (): Promise<
 };
 
 export const getCollection = async (id: string): Promise<Collection | null> => {
+  if (!isValidUUID(id)) return null;
+  
   const c = await prisma.collection.findUnique({
     where: { id: id },
     include: {
@@ -143,6 +146,8 @@ export const updateCollection = async ({
   discordId,
   monsterIds,
 }: UpdateCollectionInput): Promise<CollectionOverview | null> => {
+  if (!isValidUUID(id)) return null;
+  
   try {
     // Check if collection exists and belongs to the user
     const existingCollection = await prisma.collection.findFirst({
@@ -264,6 +269,8 @@ export const deleteCollection = async ({
   id: string;
   discordId: string;
 }): Promise<boolean> => {
+  if (!isValidUUID(id)) return false;
+  
   return await prisma.$transaction(async (tx) => {
     await tx.monsterInCollection.deleteMany({
       where: { collectionId: id },

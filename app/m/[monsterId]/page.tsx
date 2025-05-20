@@ -32,10 +32,10 @@ export async function generateMetadata({
       title: monster.name,
       description: `${monsterInfo}${creatorText}`,
       type: "article",
-      url: `/m/${monsterId}`,
+      url: `/m/${monster.id}`,
       images: [
         {
-          url: `/m/${monsterId}/image`,
+          url: `/m/${monster.id}/image`,
           alt: monster.name,
         },
       ],
@@ -44,7 +44,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: monster.name,
       description: `${monsterInfo}${creatorText}`,
-      images: [`/m/${monsterId}.png`],
+      images: [`/m/${monster.id}/image`],
     },
   };
 }

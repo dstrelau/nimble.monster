@@ -8,6 +8,7 @@ import {
 import { prisma } from "./index";
 import { toMonster } from "./converters";
 import { InputJsonValue } from "../prisma/runtime/library";
+import { isValidUUID } from "@/lib/utils/validation";
 
 export const deleteMonster = async ({
   id,
@@ -16,6 +17,8 @@ export const deleteMonster = async ({
   id: string;
   discordId: string;
 }): Promise<boolean> => {
+  if (!isValidUUID(id)) return false;
+  
   const monster = await prisma.monster.delete({
     where: {
       id: id,
@@ -39,6 +42,8 @@ export const listPublicMonsters = async (): Promise<Monster[]> => {
 export const findPublicMonsterById = async (
   id: string,
 ): Promise<Monster | null> => {
+  if (!isValidUUID(id)) return null;
+  
   const monster = await prisma.monster.findUnique({
     where: { id },
     include: { family: true, creator: true },

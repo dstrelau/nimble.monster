@@ -2,12 +2,18 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { findPublicMonsterById, toMonster } from "@/lib/db";
+import { revalidatePath } from "next/cache";
+import { isValidUUID } from "@/lib/utils/validation";
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+
+  if (!isValidUUID(id)) {
+    return NextResponse.json({ error: "Monster not found" }, { status: 404 });
+  }
 
   try {
     const monster = await findPublicMonsterById(id);
@@ -31,6 +37,10 @@ export async function PUT(
 ) {
   const session = await auth();
   const id = (await params).id;
+
+  if (!isValidUUID(id)) {
+    return NextResponse.json({ error: "Monster not found" }, { status: 404 });
+  }
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -88,6 +98,8 @@ export async function PUT(
       },
     });
 
+    revalidatePath(`/m/${id}`);
+    revalidatePath(`/m/${id}/image`);
     return NextResponse.json(toMonster(updatedMonster));
   } catch {
     return NextResponse.json(
@@ -103,6 +115,10 @@ export async function DELETE(
 ) {
   const session = await auth();
   const id = (await params).id;
+
+  if (!isValidUUID(id)) {
+    return NextResponse.json({ error: "Monster not found" }, { status: 404 });
+  }
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -1,65 +1,27 @@
-// nimble.monster/app/m/[monsterId]/image/route.tsx
 import { findPublicMonsterById } from "@/lib/db";
 import { NextRequest } from "next/server";
 import puppeteer from "puppeteer";
-import {
-  getCachedMonsterImage,
-  cacheMonsterImage,
-} from "@/lib/imageStorage/simpleCache";
+import { isValidUUID } from "@/lib/utils/validation";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ monsterId: string }> },
-) {
-  const { monsterId } = await params;
-  const monster = await findPublicMonsterById(monsterId);
-
-  if (!monster) {
-    return new Response("Monster not found", { status: 404 });
-  }
-
-  // Check cache first to see if we have a valid cached image
-  const cachedImage = await getCachedMonsterImage(monster);
-  if (cachedImage) {
-    // Return cached image if available
-    return new Response(cachedImage, {
-      headers: {
-        "Content-Type": "image/png",
-        "X-Cache": "HIT",
-      },
-    });
-  }
-
-  // No cached image or it's invalid, generate a new one
-  // Get the base URL from the request
-  const host = request.headers.get("host") || "localhost:3000";
-  const protocol = new URL(request.url).protocol;
-  const baseUrl = `${protocol}//${host}`;
-
-  // Construct the URL to the monster's page
+async function getMonsterImage(baseUrl: string, monsterId: string) {
+  "use cache";
   const monsterPageUrl = `${baseUrl}/m/${monsterId}`;
-
-  // Launch browser and navigate to the actual URL
   const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-
-  // Set viewport to match OpenGraph dimensions (1200x630)
-  await page.setViewport({ width: 1200, height: 630 });
-
   try {
-    // Navigate to the monster page
+    const page = await browser.newPage();
+
+    // Set viewport to match OpenGraph dimensions (1200x630)
+    await page.setViewport({ width: 1200, height: 630 });
+
     await page.goto(monsterPageUrl, {
       waitUntil: "networkidle0",
     });
 
-    // Wait for the monster card to be rendered
     await page.waitForSelector(`#monster-${monsterId}`);
 
-    // Define the target OpenGraph dimensions
     const OG_WIDTH = 1200;
     const OG_HEIGHT = 630;
 
-    // Apply custom styling to match OpenGraph dimensions and clean up the card
     await page.evaluate(
       (params) => {
         const { monsterId, OG_WIDTH } = params;
@@ -70,15 +32,11 @@ export async function GET(
 
         // Apply consistent styling for OpenGraph image
         if (container) {
-          // Set dimensions to match OpenGraph metadata dimensions
           container.style.width = `${OG_WIDTH}px`;
           container.style.boxSizing = "border-box";
-          // Set padding and center content
           container.style.display = "flex";
           container.style.justifyContent = "center";
           container.style.alignItems = "center";
-
-          // Remove any margins from the container to ensure clean screenshot
           container.style.margin = "0";
           container.style.padding = "0";
         }
@@ -100,10 +58,9 @@ export async function GET(
           monsterCard.style.padding = "20px";
         }
       },
-      { isLegendary: monster.legendary, monsterId, OG_WIDTH, OG_HEIGHT },
+      { monsterId, OG_WIDTH, OG_HEIGHT },
     );
 
-    // Take a screenshot of the monster card element with fixed size for OpenGraph
     const monsterCardElement = await page.$(`#monster-${monsterId}`);
     if (!monsterCardElement) {
       throw new Error("Monster card element not found");
@@ -127,14 +84,37 @@ export async function GET(
       type: "png",
     });
 
-    // Convert Uint8Array to Buffer for caching
-    const imageBuffer = Buffer.from(screenshotBuffer);
+    return Buffer.from(screenshotBuffer);
+  } finally {
+    await browser.close();
+  }
+}
 
-    // Cache the generated image
-    await cacheMonsterImage(monsterId, imageBuffer);
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ monsterId: string }> },
+) {
+  const { monsterId } = await params;
 
-    // Return the newly generated image
+  if (!isValidUUID(monsterId)) {
+    return new Response("Monster not found", { status: 404 });
+  }
+
+  const monster = await findPublicMonsterById(monsterId);
+
+  if (!monster) {
+    return new Response("Monster not found", { status: 404 });
+  }
+
+  const host = request.headers.get("host") || "localhost:3000";
+  const protocol = new URL(request.url).protocol;
+  const baseUrl = `${protocol}//${host}`;
+
+  try {
+    const imageBuffer = await getMonsterImage(baseUrl, monster.id);
+    // const etag = `"${monsterId}-${monster.updatedAt.getTime()}"`;
     return new Response(imageBuffer, {
+      status: 200,
       headers: {
         "Content-Type": "image/png",
         "X-Cache": "MISS",
@@ -147,6 +127,5 @@ export async function GET(
       status: 500,
     });
   } finally {
-    await browser.close();
   }
 }

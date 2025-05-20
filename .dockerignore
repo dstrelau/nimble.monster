@@ -6,8 +6,8 @@
 .github
 .gitignore
 .next
+app/lib/prisma
 Dockerfile
-bin/*
 dist
 node_modules
 tests
