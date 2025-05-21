@@ -1,4 +1,4 @@
-import { Ability, Family } from "@/lib/types";
+import type { Ability, Family } from "@/lib/types";
 import { prisma } from "./index";
 
 export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
@@ -72,11 +72,7 @@ export const createFamily = async ({
   const family = await prisma.family.create({
     data: {
       name: name,
-      abilities: abilities.map((a) => ({
-        ...a,
-        Name: undefined,
-        Description: undefined,
-      })),
+      abilities: abilities.map((a) => ({ ...a })),
       visibility: "public", // not used
       creator: {
         connect: { discordId },

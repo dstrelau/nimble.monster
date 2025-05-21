@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { AbilityOverlay } from "@/ui/AbilityOverlay";
 import { maybePeriod } from "@/lib/text";
 import type { Monster, User } from "@/lib/types";
@@ -32,8 +32,8 @@ const StatsGroup: React.FC<{
       {tooltipLines.length > 0 && (
         <div className="d-dropdown-content d-shadow rounded-md bg-neutral text-neutral-content font-sans not-italic z-10">
           <div className="p-2 text-sm gap-0 min-w-32">
-            {tooltipLines.map((line, index) => (
-              <p key={index}>{line}</p>
+            {tooltipLines.map((line) => (
+              <p key={line}>{line}</p>
             ))}
           </div>
         </div>
@@ -64,7 +64,7 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
           <Stat name="saves" value="" SvgIcon={Star}>
             <div className="flex flex-col">
               {monster.saves?.split(",").map((save, i, arr) => (
-                <span key={i} className="block">
+                <span key={save} className="block">
                   {save}
                   {i < arr.length - 1 && ", "}
                 </span>
@@ -132,15 +132,14 @@ export const Card = ({ monster, creator, showActions }: CardProps) => {
           )}
 
           <div className="abilities flex flex-col py-2 gap-4">
-            {monster.family?.abilities.map((ability, index) => (
+            {monster.family?.abilities && (
               <AbilityOverlay
-                key={index}
-                ability={ability}
+                abilities={monster.family.abilities}
                 family={monster.family}
               />
-            ))}
-            {monster.abilities.map((ability, index) => (
-              <AbilityOverlay key={index} ability={ability} />
+            )}
+            {monster.abilities.map((ability) => (
+              <AbilityOverlay key={ability.name} abilities={[ability]} />
             ))}
           </div>
 
@@ -151,8 +150,8 @@ export const Card = ({ monster, creator, showActions }: CardProps) => {
                 {monster.actionPreface}
               </div>
               <ul className="d-list text-base list-disc pl-4">
-                {monster.actions?.map((action, index) => (
-                  <li key={index} className="d-list-item">
+                {monster.actions?.map((action) => (
+                  <li key={action.name} className="d-list-item">
                     <strong className="pr-1">{maybePeriod(action.name)}</strong>
                     {action.damage && (
                       <span className="damage">{action.damage} </span>
@@ -170,7 +169,7 @@ export const Card = ({ monster, creator, showActions }: CardProps) => {
           )}
           {monster.legendary && (
             <>
-              <div className="d-divider my-1"></div>
+              <div className="d-divider my-1" />
               {monster.bloodied && (
                 <p className="font-condensed">
                   <strong>BLOODIED: </strong>
@@ -188,17 +187,15 @@ export const Card = ({ monster, creator, showActions }: CardProps) => {
           )}
 
           {monster.moreInfo && (
-            <>
-              <p className="italic mt-4">{monster.moreInfo}</p>
-            </>
+            <p className="italic mt-4">{monster.moreInfo}</p>
           )}
 
-          <div className="d-divider my-1"></div>
+          <div className="d-divider my-1" />
           <div className="flex items-center justify-between">
             {creator ? (
               <Attribution user={creator} />
             ) : (
-              <div></div> /* Empty div to maintain flex layout */
+              <div /> /* Empty div to maintain flex layout */
             )}
 
             <CardActions monster={monster} showActions={showActions} />

@@ -299,8 +299,8 @@ const ActionRow: React.FC<ActionRowProps> = ({
     return distribution;
   }, [action.damage]);
 
-  let avgDamage;
-  let missPercent;
+  let avgDamage = 0;
+  let missPercent = 0;
   if (distribution) {
     avgDamage = calculateAverageDamageOnHit(distribution);
     missPercent = 100 * (distribution.get(0) || 0);
@@ -730,7 +730,7 @@ const HPInput: React.FC<{
             <span
               className="d-tooltip flex items-center leading-4"
               data-tip={
-                monster.hp == 0
+                monster.hp === 0
                   ? "GM Guide Recommended HP"
                   : warning
                     ? ">20% from recommended"
@@ -739,7 +739,7 @@ const HPInput: React.FC<{
                       : "Within 20% of recommended"
               }
             >
-              {monster.hp == 0 ? (
+              {monster.hp === 0 ? (
                 <Target className="h-4" />
               ) : warning ? (
                 <TriangleAlert className="h-4 text-warning" />
@@ -823,6 +823,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
         <div className="d-navbar w-full justify-center sticky bg-neutral text-neutral-content">
           <h3 className="font-bold">Monster Preview</h3>
           <button
+            type="button"
             className="d-btn d-btn-ghost d-btn-circle"
             onClick={() => setShowMobilePreview(false)}
           >
@@ -851,7 +852,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
 
       <div
         className={clsx(
-          `grid grid-cols-6 gap-x-8 mb-10 md:mb-0`,
+          "grid grid-cols-6 gap-x-8 mb-10 md:mb-0",
           showMobilePreview && "hidden",
         )}
       >
@@ -892,34 +893,30 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
             )}
 
             {session?.user && (
-              <>
-                <div className="flex flex-row justify-between items-center my-4">
-                  <button type="submit" className="d-btn d-btn-primary">
-                    Save
-                  </button>
-                  <fieldset className="fieldset">
-                    <div>
-                      <label className="d-fieldset-label text-sm">
-                        Publish to Public Monsters
-                        <input
-                          name="public"
-                          type="checkbox"
-                          className="d-toggle d-toggle-lg mr-2 d-toggle-primary"
-                          checked={monster.visibility === "public"}
-                          onChange={(e) => {
-                            setMonster({
-                              ...monster,
-                              visibility: e.target.checked
-                                ? "public"
-                                : "private",
-                            });
-                          }}
-                        />
-                      </label>
-                    </div>
-                  </fieldset>
-                </div>
-              </>
+              <div className="flex flex-row justify-between items-center my-4">
+                <button type="submit" className="d-btn d-btn-primary">
+                  Save
+                </button>
+                <fieldset className="fieldset">
+                  <div>
+                    <label className="d-fieldset-label text-sm">
+                      Publish to Public Monsters
+                      <input
+                        name="public"
+                        type="checkbox"
+                        className="d-toggle d-toggle-lg mr-2 d-toggle-primary"
+                        checked={monster.visibility === "public"}
+                        onChange={(e) => {
+                          setMonster({
+                            ...monster,
+                            visibility: e.target.checked ? "public" : "private",
+                          });
+                        }}
+                      />
+                    </label>
+                  </div>
+                </fieldset>
+              </div>
             )}
           </form>
         </div>

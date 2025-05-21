@@ -1,13 +1,14 @@
-import {
+import type {
   Ability,
   Action,
   Monster,
   MonsterSize,
   MonsterArmor,
+  Family,
 } from "@/lib/types";
 import { prisma } from "./index";
 import { toMonster } from "./converters";
-import { InputJsonValue } from "../prisma/runtime/library";
+import type { InputJsonValue } from "../prisma/runtime/library";
 import { isValidUUID } from "@/lib/utils/validation";
 
 export const deleteMonster = async ({
@@ -18,7 +19,7 @@ export const deleteMonster = async ({
   discordId: string;
 }): Promise<boolean> => {
   if (!isValidUUID(id)) return false;
-  
+
   const monster = await prisma.monster.delete({
     where: {
       id: id,
@@ -43,7 +44,7 @@ export const findPublicMonsterById = async (
   id: string,
 ): Promise<Monster | null> => {
   if (!isValidUUID(id)) return null;
-  
+
   const monster = await prisma.monster.findUnique({
     where: { id },
     include: { family: true, creator: true },
@@ -88,7 +89,7 @@ export interface CreateMonsterInput {
   speed: number;
   fly: number;
   swim: number;
-  familyId?: string | null;
+  family?: Family;
   actions: Action[];
   abilities: Ability[];
   actionPreface: string;
@@ -114,7 +115,7 @@ export const createMonster = async (
     speed,
     fly,
     swim,
-    familyId,
+    family,
     actions,
     abilities,
     actionPreface = "",
@@ -152,7 +153,7 @@ export const createMonster = async (
       speed: legendary ? 0 : speed,
       fly: legendary ? 0 : fly,
       swim: legendary ? 0 : swim,
-      family: familyId ? { connect: { id: familyId } } : undefined,
+      family: family ? { connect: { id: family.id } } : undefined,
       actions: actions as unknown as InputJsonValue[],
       abilities: abilities as unknown as InputJsonValue[],
       bloodied: legendary ? bloodied : "",

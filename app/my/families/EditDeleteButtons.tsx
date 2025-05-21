@@ -1,4 +1,4 @@
-import { Family } from "@/lib/types";
+import type { Family } from "@/lib/types";
 import { Pencil, Trash } from "lucide-react";
 import { deleteFamily } from "@/actions/family";
 import { useTransition } from "react";
@@ -16,6 +16,7 @@ export const EditDeleteButtons = ({
     <div className="flex flex-col items-end">
       <div className="flex flex-row space-x-2">
         <button
+          type="button"
           onClick={onEdit}
           className="w-4 pr-2 cursor-pointer"
           title="Edit family"
@@ -23,6 +24,7 @@ export const EditDeleteButtons = ({
           <Pencil className="w-5 h-5 text-slate-500" />
         </button>
         <button
+          type="button"
           onClick={() => {
             if (window.confirm("Are you sure?")) {
               startTransition(() => {
@@ -32,8 +34,7 @@ export const EditDeleteButtons = ({
           }}
           className={`w-4 pr-2 cursor-pointer ${family.monsterCount && family.monsterCount > 0 && "d-tooltip"}`}
           disabled={
-            (family.monsterCount && family.monsterCount > 0) ||
-            isPending
+            (family.monsterCount && family.monsterCount > 0) || isPending
           }
           data-tip="Cannot delete: family has monsters"
           data-popover-target={

@@ -70,9 +70,7 @@ export interface Monster {
   updatedAt: Date;
 }
 
-{
-  /* FIXME: some families are serialized with Go-default capitalization */
-}
+/* FIXME: some families are serialized with Go-default capitalization */
 export interface Ability {
   name: string;
   description: string;

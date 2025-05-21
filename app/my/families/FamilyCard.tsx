@@ -1,5 +1,5 @@
 "use client";
-import { Family } from "@/lib/types";
+import type { Family } from "@/lib/types";
 import { AbilityOverlay } from "@/ui/AbilityOverlay";
 import { useState } from "react";
 import { EditDeleteButtons } from "./EditDeleteButtons";
@@ -18,8 +18,11 @@ export const FamilyCard = ({ family }: { family: Family }) => {
             {family.name}
           </h2>
           <div className="flex flex-col py-2 gap-4">
-            {family.abilities.map((ability, index) => (
-              <AbilityOverlay ability={ability} key={index} />
+            {family.abilities.map((ability) => (
+              <AbilityOverlay
+                abilities={[ability]}
+                key={ability.name + ability.description}
+              />
             ))}
           </div>
           <div className="flex flex-row justify-between">

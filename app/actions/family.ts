@@ -3,7 +3,7 @@
 import * as db from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import { Ability } from "@/lib/types";
+import type { Ability } from "@/lib/types";
 
 export async function deleteFamily(familyId: string) {
   try {
@@ -37,8 +37,7 @@ export async function updateFamily(
   familyId: string,
   formData: {
     name: string;
-    abilityName: string;
-    abilityDescription: string;
+    abilities: Ability[];
   },
 ) {
   try {
@@ -47,15 +46,10 @@ export async function updateFamily(
       return { success: false, error: "Not authenticated" };
     }
 
-    const ability: Ability = {
-      name: formData.abilityName,
-      description: formData.abilityDescription,
-    };
-
     const family = await db.updateFamily({
       id: familyId,
       name: formData.name,
-      abilities: [ability],
+      abilities: formData.abilities,
       discordId: session.user.id,
     });
 
@@ -93,8 +87,7 @@ export async function getUserFamilies() {
 
 export async function createFamily(formData: {
   name: string;
-  abilityName: string;
-  abilityDescription: string;
+  abilities: Ability[];
 }) {
   try {
     const session = await auth();
@@ -102,14 +95,9 @@ export async function createFamily(formData: {
       return { success: false, error: "Not authenticated" };
     }
 
-    const ability: Ability = {
-      name: formData.abilityName,
-      description: formData.abilityDescription,
-    };
-
     const family = await db.createFamily({
       name: formData.name,
-      abilities: [ability],
+      abilities: formData.abilities,
       discordId: session.user.id,
     });
 

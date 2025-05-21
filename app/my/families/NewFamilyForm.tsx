@@ -2,9 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { FamilyFormData, FamilySchema, FamilyForm } from "./FamilyForm";
+import { type FamilyFormData, FamilySchema, FamilyForm } from "./FamilyForm";
 import { createFamily } from "@/actions/family";
 import { useTransition } from "react";
+import type { Ability } from "@/lib/types";
 
 export const NewFamilyForm = () => {
   const [isPending, startTransition] = useTransition();
@@ -13,19 +14,26 @@ export const NewFamilyForm = () => {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<FamilyFormData>({
     resolver: zodResolver(FamilySchema),
     defaultValues: {
       name: "",
-      abilityName: "",
-      abilityDescription: "",
+      abilities: [{ name: "", description: "" }],
     },
   });
 
   const handleCreate = (data: FamilyFormData) => {
     startTransition(async () => {
-      const result = await createFamily(data);
+      const abilities: Ability[] = data.abilities.map((ability) => ({
+        name: ability.name,
+        description: ability.description,
+      }));
+      const result = await createFamily({
+        name: data.name,
+        abilities,
+      });
       if (result.success) {
         reset();
       }
@@ -40,7 +48,7 @@ export const NewFamilyForm = () => {
         className="d-collapse-content"
         onSubmit={handleSubmit(handleCreate)}
       >
-        <FamilyForm register={register} errors={errors}>
+        <FamilyForm register={register} errors={errors} control={control}>
           <div>
             <button
               type="submit"

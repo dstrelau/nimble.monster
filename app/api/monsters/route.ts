@@ -6,7 +6,6 @@ import type { CreateMonsterInput } from "@/lib/db";
 export async function POST(request: Request) {
   const session = await auth();
 
-  // Check if user is authenticated
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
