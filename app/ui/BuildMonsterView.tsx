@@ -299,8 +299,8 @@ const ActionRow: React.FC<ActionRowProps> = ({
     return distribution;
   }, [action.damage]);
 
-  let avgDamage = 0;
-  let missPercent = 0;
+  let avgDamage;
+  let missPercent;
   if (distribution) {
     avgDamage = calculateAverageDamageOnHit(distribution);
     missPercent = 100 * (distribution.get(0) || 0);
