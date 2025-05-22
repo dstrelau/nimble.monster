@@ -17,12 +17,12 @@ import { Dropdown } from "@/ui/components/dropdown";
 
 interface MonsterCardActionsProps {
   monster: Monster;
-  showActions?: boolean;
+  isOwner?: boolean;
 }
 
 export default function CardActions({
   monster,
-  showActions,
+  isOwner,
 }: MonsterCardActionsProps) {
   const [isPending, startTransition] = useTransition();
 
@@ -133,7 +133,7 @@ export default function CardActions({
 
   return (
     <div className="d-card-actions">
-      {showActions && monster.visibility === "public" && (
+      {isOwner && monster.visibility === "public" && (
         <div className="d-badge d-badge-soft d-badge-success mr-2">Public</div>
       )}
 
@@ -179,7 +179,7 @@ export default function CardActions({
         ]}
       />
 
-      {showActions && (
+      {isOwner && (
         <>
           <Link href={`/my/monsters/${monster.id}/edit`}>
             <Pencil className="w-5 h-5 text-base-content/50" />

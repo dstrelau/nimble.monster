@@ -12,7 +12,7 @@ export default async function MyMonstersPage() {
   const monsters = await db.listAllMonstersForDiscordID(session.user.id);
   return (
     <div className="container mx-auto py-6">
-      <CardGrid monsters={monsters} showActions={true} />
+      <CardGrid monsters={monsters} currentUserId={session.user.id} />
     </div>
   );
 }

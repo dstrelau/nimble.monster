@@ -1,6 +1,12 @@
-import { Prisma } from "@/lib/prisma";
-import { Ability, Action, CollectionOverview, Family, Monster } from "@/lib/types";
-import { prisma } from "./index";
+import type { Prisma } from "@/lib/prisma";
+import type {
+  Ability,
+  Action,
+  CollectionOverview,
+  Family,
+  Monster,
+} from "@/lib/types";
+import type { prisma } from "./index";
 
 export const toMonster = (
   m: Prisma.Result<

@@ -23,6 +23,7 @@ import type {
   Monster,
   MonsterArmor,
   MonsterSize,
+  User,
 } from "@/lib/types";
 import { ARMORS, SIZES } from "@/lib/types";
 import { Textarea } from "@/ui/Form";
@@ -769,6 +770,14 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
   const router = useRouter();
 
   const { data: session } = useSession();
+  let creator: User | undefined;
+  if (session?.user) {
+    creator = {
+      discordId: session.user.id,
+      avatar: session.user.image || "",
+      username: session.user.name || "",
+    };
+  }
 
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [monster, setMonster] = useState<Monster>(
@@ -948,7 +957,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
               </div>
             </div>
             <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
-              <Card monster={monster} />
+              <Card monster={monster} creator={creator} hideActions={true} />
             </div>
           </div>
         </div>

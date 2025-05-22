@@ -66,7 +66,10 @@ export default async function ShowCollectionView({
       {collection.monsters.length === 0 ? (
         <p>No monsters in this collection.</p>
       ) : (
-        <CardGrid monsters={collection.monsters} showActions={false} />
+        <CardGrid
+          monsters={collection.monsters}
+          currentUserId={session?.user?.id}
+        />
       )}
     </div>
   );

@@ -117,10 +117,16 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
 interface CardProps {
   monster: Monster;
   creator?: User;
-  showActions?: boolean;
+  isOwner?: boolean;
+  hideActions?: boolean;
 }
 
-export const Card = ({ monster, creator, showActions }: CardProps) => {
+export const Card = ({
+  monster,
+  creator,
+  isOwner = false,
+  hideActions = false,
+}: CardProps) => {
   return (
     <div className={clsx(monster.legendary && "md:col-span-2")}>
       <div id={`monster-${monster.id}`}>
@@ -198,7 +204,9 @@ export const Card = ({ monster, creator, showActions }: CardProps) => {
               <div /> /* Empty div to maintain flex layout */
             )}
 
-            <CardActions monster={monster} showActions={showActions} />
+            {!hideActions && (
+              <CardActions monster={monster} isOwner={isOwner} />
+            )}
           </div>
         </article>
       </div>

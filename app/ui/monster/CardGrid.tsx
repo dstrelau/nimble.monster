@@ -4,11 +4,13 @@ import { Card } from "./Card";
 
 export const CardGrid = ({
   monsters,
-  showActions,
+  hideActions = false,
+  currentUserId,
   gridColumns = { default: 1, md: 2, lg: 3 },
 }: {
   monsters: Monster[];
-  showActions: boolean;
+  hideActions?: boolean;
+  currentUserId?: string;
   gridColumns?: { default?: number; sm?: number; md?: number; lg?: number };
 }) => {
   return (
@@ -21,14 +23,19 @@ export const CardGrid = ({
         gridColumns.lg && `lg:grid-cols-${gridColumns.lg}`,
       )}
     >
-      {monsters.map((m) => (
-        <Card
-          key={m.id}
-          monster={m}
-          creator={m.creator}
-          showActions={showActions}
-        />
-      ))}
+      {monsters.map((m) => {
+        const isOwner =
+          !!currentUserId && currentUserId === m.creator?.discordId;
+        return (
+          <Card
+            key={m.id}
+            monster={m}
+            creator={m.creator}
+            isOwner={isOwner}
+            hideActions={hideActions}
+          />
+        );
+      })}
     </div>
   );
 };

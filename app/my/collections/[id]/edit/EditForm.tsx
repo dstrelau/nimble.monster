@@ -183,7 +183,8 @@ export function EditForm({ collection, myMonsters }: Props) {
           <div className="hidden sm:block flex-2">
             <CardGrid
               monsters={currentCollection.monsters}
-              showActions={false}
+              hideActions={true}
+              isOwner={false}
               gridColumns={{ sm: 1, md: 2 }}
             />
           </div>

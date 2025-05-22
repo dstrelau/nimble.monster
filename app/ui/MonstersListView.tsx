@@ -212,11 +212,7 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
       <div className="w-full lg:w-2/3">
         {selectedMonster ? (
           <div className="sticky top-4">
-            <Card
-              monster={selectedMonster}
-              creator={selectedMonster.creator}
-              showActions={false}
-            />
+            <Card monster={selectedMonster} creator={selectedMonster.creator} />
           </div>
         ) : (
           <div className="d-card d-card-bordered bg-base-100 p-8 h-full flex items-center justify-center text-center">

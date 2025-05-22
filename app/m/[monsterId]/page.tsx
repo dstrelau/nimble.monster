@@ -1,7 +1,8 @@
 import { findPublicMonsterById } from "@/lib/db";
 import { Card } from "@/ui/monster/Card";
 import { notFound } from "next/navigation";
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import { auth } from "@/lib/auth";
 
 export async function generateMetadata({
   params,
@@ -54,6 +55,7 @@ export default async function MonsterPage({
 }: {
   params: Promise<{ monsterId: string }>;
 }) {
+  const session = await auth();
   const { monsterId } = await params;
   const monster = await findPublicMonsterById(monsterId);
 
@@ -61,10 +63,19 @@ export default async function MonsterPage({
     return notFound();
   }
 
+  const isOwner =
+    (session?.user && session?.user?.id === monster.creator?.discordId) ||
+    false;
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
-        <Card monster={monster} creator={monster.creator} showActions={false} />
+        <Card
+          monster={monster}
+          creator={monster.creator}
+          hideActions={false}
+          isOwner={isOwner}
+        />
       </div>
     </div>
   );

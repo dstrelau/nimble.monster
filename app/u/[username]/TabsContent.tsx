@@ -63,7 +63,7 @@ export default function TabsContent({
               No public monsters available
             </p>
           ) : (
-            <CardGrid monsters={monsters} showActions={false} />
+            <CardGrid monsters={monsters} />
           )}
         </section>
       )}
