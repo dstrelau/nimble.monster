@@ -25,12 +25,12 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
     return null;
   }
 
-  const numDice = parseInt(match[1], 10);
-  const dieSize = parseInt(match[2], 10);
+  const numDice = Number.parseInt(match[1], 10);
+  const dieSize = Number.parseInt(match[2], 10);
   let modifier = 0;
 
   if (match[3] && match[4]) {
-    modifier = parseInt(match[4], 10);
+    modifier = Number.parseInt(match[4], 10);
     if (match[3] === "-") {
       modifier = -modifier;
     }
@@ -164,7 +164,7 @@ export function calculateAverageDamageOnHit(
 
   let sum = 0;
   for (const [roll, p] of distribution) {
-    if (roll == 0) continue;
+    if (roll === 0) continue;
     // re-scale probabilities to be "on hit"
     sum += roll * p * (1 / hitP);
   }

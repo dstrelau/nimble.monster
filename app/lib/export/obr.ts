@@ -22,7 +22,9 @@ export interface OBRCompendiumPack {
   documents: OBRCompendiumNimbleMonster[];
 }
 
-export const convertMonsterToOBR = (monster: Monster): OBRCompendiumNimbleMonster => {
+export const convertMonsterToOBR = (
+  monster: Monster,
+): OBRCompendiumNimbleMonster => {
   // Convert armor format to match OBR expectations
   let armor: string | null = null;
   if (monster.armor === "medium") {
@@ -35,7 +37,8 @@ export const convertMonsterToOBR = (monster: Monster): OBRCompendiumNimbleMonste
     name: monster.name,
     type: "nimblev2-monster",
     level: monster.level,
-    hp: typeof monster.hp === "string" ? parseInt(monster.hp) : monster.hp,
+    hp:
+      typeof monster.hp === "string" ? Number.parseInt(monster.hp) : monster.hp,
     armor,
     features: monster.abilities.map((ability) => ({
       name: ability.name,
@@ -51,14 +54,18 @@ export const convertMonsterToOBR = (monster: Monster): OBRCompendiumNimbleMonste
 };
 
 export const generateCompendiumPack = (
-  collection: Collection
+  collection: Collection,
 ): OBRCompendiumPack => {
-  const monsters = collection.monsters.sort((a, b) => a.name.localeCompare(b.name));
+  const monsters = collection.monsters.sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
 
   return {
     name: collection.name,
     id: collection.id,
-    version: collection.createdAt ? collection.createdAt.getTime().toString() : new Date().getTime().toString(),
+    version: collection.createdAt
+      ? collection.createdAt.getTime().toString()
+      : new Date().getTime().toString(),
     documents: monsters.map(convertMonsterToOBR),
   };
 };

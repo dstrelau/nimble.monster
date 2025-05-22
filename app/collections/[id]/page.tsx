@@ -18,7 +18,7 @@ export default async function ShowCollectionView({
     notFound();
   }
   if (
-    collection.visibility == "private" &&
+    collection.visibility === "private" &&
     collection.creator.discordId !== session?.user.id
   ) {
     notFound();

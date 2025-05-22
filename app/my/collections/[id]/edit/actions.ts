@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import {
-  CollectionVisibilityType,
+  type CollectionVisibilityType,
   ValidCollectionVisibilities,
 } from "@/lib/types";
 import { revalidatePath } from "next/cache";
@@ -47,14 +47,14 @@ export async function updateCollection(
   if (!updatedCollection) throw new Error("Failed to update collection");
 
   revalidatePath("/my/collections");
-  
+
   // Check if "exit" parameter was provided
   if (formData.get("exit") === "true") {
     redirect("/my/collections");
   }
-  
-  return { 
-    success: true, 
-    monsterIds: parsed.monsterIds 
+
+  return {
+    success: true,
+    monsterIds: parsed.monsterIds,
   };
 }

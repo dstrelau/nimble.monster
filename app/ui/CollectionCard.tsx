@@ -38,7 +38,7 @@ export const CollectionCard = ({
       </div>
       {(showAttribution || showEditDeleteButtons) && (
         <>
-          <div className="d-divider my-1"></div>
+          <div className="d-divider my-1" />
           <div className="flex justify-between">
             <Attribution user={collection.creator} />
             {showEditDeleteButtons && <EditDeleteButtons id={collection.id} />}

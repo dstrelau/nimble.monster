@@ -20,28 +20,29 @@ export async function deleteCollection(collectionId: string) {
     if (deleted) {
       revalidatePath("/my/collections");
       return { success: true, error: null };
-    } else {
-      return {
-        success: false,
-        error: "Could not delete the collection. Please try again.",
-      };
     }
+    return {
+      success: false,
+      error: "Could not delete the collection. Please try again.",
+    };
   } catch (error) {
     console.error("Error deleting collection:", error);
-    
+
     // Handle specific database errors
     const errorMessage = error instanceof Error ? error.message : "";
-    
+
     if (errorMessage.includes("foreign key constraint")) {
       return {
         success: false,
-        error: "Cannot delete this collection because it has monsters associated with it.",
+        error:
+          "Cannot delete this collection because it has monsters associated with it.",
       };
     }
-    
+
     return {
       success: false,
-      error: "An error occurred while deleting the collection. Please try again later.",
+      error:
+        "An error occurred while deleting the collection. Please try again later.",
     };
   }
 }
@@ -100,9 +101,9 @@ export async function updateCollection(
     });
 
     if (!collection) {
-      return { 
-        success: false, 
-        error: "Collection not found or you don't have permission to update it" 
+      return {
+        success: false,
+        error: "Collection not found or you don't have permission to update it",
       };
     }
 

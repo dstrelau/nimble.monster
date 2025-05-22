@@ -163,6 +163,7 @@ const Header = () => {
                 </li>
                 <li>
                   <button
+                    type="button"
                     className="d-menu-item"
                     onClick={() => signOut({ redirectTo: "/" })}
                   >
@@ -173,6 +174,7 @@ const Header = () => {
             </details>
           ) : (
             <button
+              type="button"
               className="cursor-pointer"
               onClick={() => signIn("discord", { redirectTo: "/my/monsters" })}
             >

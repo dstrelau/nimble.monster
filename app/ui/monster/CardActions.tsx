@@ -75,7 +75,7 @@ export default function CardActions({
 
         // Replace dividers with simple HR elements to ensure they show up in the image
         const dividers = cardClone.querySelectorAll(".d-divider");
-        dividers.forEach((divider) => {
+        for (const divider of dividers) {
           const hr = document.createElement("hr");
           hr.style.width = "100%";
           hr.style.margin = "0.25rem 0";
@@ -83,17 +83,17 @@ export default function CardActions({
           hr.style.borderTop = "1px solid #e5e7eb";
           hr.style.height = "1px";
           divider.parentNode?.replaceChild(hr, divider);
-        });
+        }
 
         // Fix vertical spacing in card
         const abilities = cardClone.querySelectorAll(".abilities");
-        abilities.forEach((a) => {
-          (a as HTMLElement).style.gap = "0.5rem";
-        });
+        for (const ability of abilities) {
+          (ability as HTMLElement).style.gap = "0.5rem";
+        }
         const ps = cardClone.querySelectorAll("p");
-        ps.forEach((p) => {
+        for (const p of ps) {
           (p as HTMLElement).style.margin = "0.25rem 0";
-        });
+        }
 
         cardClone.style.paddingBottom = "0.75rem";
 
@@ -185,6 +185,7 @@ export default function CardActions({
             <Pencil className="w-5 h-5 text-base-content/50" />
           </Link>
           <button
+            type="button"
             disabled={isPending}
             onClick={() => {
               if (window.confirm("Really? This is permanent.")) {

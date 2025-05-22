@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
-import { Monster } from "@/lib/types";
+import type React from "react";
+import { useState, useEffect, useMemo } from "react";
+import type { Monster } from "@/lib/types";
 import { Card } from "@/ui/monster/Card";
 import { Search, X, Ghost, ArrowUp, ArrowDown } from "lucide-react";
 import clsx from "clsx";
@@ -117,6 +118,7 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
               />
               {searchTerm && (
                 <button
+                  type="button"
                   className="absolute right-2 top-1/2 transform -translate-y-1/2"
                   onClick={() => handleSearch("")}
                   aria-label="Clear search"

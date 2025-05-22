@@ -14,6 +14,7 @@ export const EditDeleteButtons = ({ id }: { id: string }) => {
         <Pencil className="translate-y-[2px] w-5 h-5 text-slate-500" />
       </Link>
       <button
+        type="button"
         className="cursor-pointer"
         disabled={isPending}
         onClick={(e) => {
@@ -28,7 +29,9 @@ export const EditDeleteButtons = ({ id }: { id: string }) => {
           }
         }}
       >
-        <Trash className={`w-5 h-5 ${isPending ? "text-slate-300" : "text-slate-500"}`} />
+        <Trash
+          className={`w-5 h-5 ${isPending ? "text-slate-300" : "text-slate-500"}`}
+        />
       </button>
     </div>
   );

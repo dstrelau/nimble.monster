@@ -1,4 +1,4 @@
-import NextAuth, { DefaultSession } from "next-auth";
+import NextAuth, { type DefaultSession } from "next-auth";
 import Discord from "next-auth/providers/discord";
 import "next-auth/jwt";
 

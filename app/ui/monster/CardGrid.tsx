@@ -1,4 +1,4 @@
-import { Monster } from "@/lib/types";
+import type { Monster } from "@/lib/types";
 import clsx from "clsx";
 import { Card } from "./Card";
 
