@@ -95,7 +95,7 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
             )}
             <Stat name="swim" value={monster.swim} SvgIcon={Waves} />
             <Stat name="fly" value={monster.fly} SvgIcon={Send} />
-            {monster.speed > 0 && monster.speed !== 6 && (
+            {monster.speed !== 6 && (
               <Stat name="speed" value={monster.speed} SvgIcon={Footprints} />
             )}
             <Stat name="hp" value={monster.hp} SvgIcon={Heart} />
