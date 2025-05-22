@@ -184,7 +184,6 @@ export function EditForm({ collection, myMonsters }: Props) {
             <CardGrid
               monsters={currentCollection.monsters}
               hideActions={true}
-              isOwner={false}
               gridColumns={{ sm: 1, md: 2 }}
             />
           </div>
