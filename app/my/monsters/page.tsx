@@ -1,5 +1,5 @@
 import * as db from "@/lib/db";
-import { CardGrid } from "@/ui/monster/CardGrid";
+import { FilterableCardGrid } from "@/ui/monster/FilterableCardGrid";
 import { auth } from "@/lib/auth";
 import { notFound } from "next/navigation";
 
@@ -11,8 +11,8 @@ export default async function MyMonstersPage() {
 
   const monsters = await db.listAllMonstersForDiscordID(session.user.id);
   return (
-    <div className="container mx-auto py-6">
-      <CardGrid monsters={monsters} currentUserId={session.user.id} />
+    <div className="container mx-auto py-3">
+      <FilterableCardGrid monsters={monsters} currentUserId={session.user.id} />
     </div>
   );
 }

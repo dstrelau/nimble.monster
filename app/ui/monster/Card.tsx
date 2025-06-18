@@ -2,7 +2,7 @@ import type React from "react";
 import { AbilityOverlay } from "@/ui/AbilityOverlay";
 import { maybePeriod } from "@/lib/text";
 import type { Monster, User } from "@/lib/types";
-import { Footprints, Heart, Shield, Waves, Send, Star } from "lucide-react";
+import { ChevronsRight, Heart, Shield, Waves, Send, Star } from "lucide-react";
 import clsx from "clsx";
 import { Attribution } from "@/ui/Attribution";
 import CardActions from "./CardActions";
@@ -96,7 +96,11 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
             <Stat name="swim" value={monster.swim} SvgIcon={Waves} />
             <Stat name="fly" value={monster.fly} SvgIcon={Send} />
             {monster.speed !== 6 && (
-              <Stat name="speed" value={monster.speed} SvgIcon={Footprints} />
+              <Stat
+                name="speed"
+                value={monster.speed}
+                SvgIcon={ChevronsRight}
+              />
             )}
             <Stat name="hp" value={monster.hp} SvgIcon={Heart} />
           </div>

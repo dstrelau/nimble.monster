@@ -11,7 +11,7 @@ export default async function MonstersPage({
   const selectedMonsterId = (await searchParams).id;
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto py-3">
       <MonstersListView
         monsters={monsters}
         initialSelectedId={selectedMonsterId}

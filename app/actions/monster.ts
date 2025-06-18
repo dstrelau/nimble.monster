@@ -70,10 +70,9 @@ export async function deleteMonster(monsterId: string) {
   if (deleted) {
     revalidatePath("/my/monsters");
     return { success: true, error: null };
-  } else {
-    return {
-      success: false,
-      error: "Could not delete the monster. Please try again.",
-    };
   }
+  return {
+    success: false,
+    error: "Could not delete the monster. Please try again.",
+  };
 }

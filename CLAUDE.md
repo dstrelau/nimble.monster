@@ -2,6 +2,7 @@
 - `pnpm run build` (TypeScript/React)
 - Regenerate lib/prisma from schema: `pnpm prisma generate`
 - Lint: `pnpm run lint`
+  - Don't modify the tailwind config file for lint errors.
 
 # Code Style
 
@@ -16,6 +17,7 @@
 - In this version of Next.js, params are a Promise that need to be awaited.
 - Use OpenTelemetry.
 - Do not add console.* functions permanently (they may be used for temporary debugging).
+- Use clsx for constructing className
 
 # Claude Instructions
 - If there is ambiguity in my questions or instructions, please ask for clarification.
