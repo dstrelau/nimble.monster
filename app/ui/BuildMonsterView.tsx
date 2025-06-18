@@ -11,6 +11,12 @@ import {
   Trash,
   TriangleAlert,
   X,
+  Heart,
+  Shield,
+  Waves,
+  Send,
+  ChevronsRight,
+  Star,
 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -170,7 +176,7 @@ const FormInput = <T extends string | number>({
 };
 
 interface FormSelectProps<T extends string> {
-  label: string;
+  label: React.ReactNode;
   name: string;
   choices: ReadonlyArray<{ readonly value: T; readonly label: string }>;
   selected: T;
@@ -406,22 +412,30 @@ const LegendaryForm: React.FC<{
       />
     </div>
     <div>
-      <div className="grid grid-cols-12 gap-x-6">
+      <div className="grid grid-cols-14 gap-x-6">
         <HPInput
           monster={monster}
-          className="col-span-2"
+          className="col-span-3"
           onChange={(hp) => setMonster({ ...monster, hp })}
         />
         <FormSelect
-          label="Armor"
+          label={
+            <>
+              <Shield className="h-4 w-4" />
+              Armor
+            </>
+          }
           name="armor"
           choices={ARMORS}
           selected={monster.armor}
-          className="col-span-3"
+          className="col-span-4"
           onChange={(armor) => setMonster({ ...monster, armor })}
         />
         <div className="col-span-7">
-          <label className="d-fieldset-label">Saves</label>
+          <label htmlFor="saves" className="d-fieldset-label">
+            <Star className="h-4 w-4" />
+            Saves
+          </label>
           <div className="flex gap-2">
             <FormInput
               label=""
@@ -502,26 +516,46 @@ const StandardForm: React.FC<{
     </div>
     <div className="grid grid-cols-5 gap-2">
       <FormSelect
-        label="Armor"
+        label={
+          <>
+            <Shield className="h-4 w-4" />
+            Armor
+          </>
+        }
         name="armor"
         choices={ARMORS}
         selected={monster.armor}
         onChange={(armor) => setMonster({ ...monster, armor })}
       />
       <FormInput
-        label="Swim"
+        label={
+          <>
+            <Waves className="h-4 w-4" />
+            Swim
+          </>
+        }
         name="swim"
         value={monster.swim}
         onChange={(swim) => setMonster({ ...monster, swim })}
       />
       <FormInput
-        label="Fly"
+        label={
+          <>
+            <Send className="h-4 w-4" />
+            Fly
+          </>
+        }
         name="fly"
         value={monster.fly}
         onChange={(fly) => setMonster({ ...monster, fly })}
       />
       <FormInput
-        label="Speed"
+        label={
+          <>
+            <ChevronsRight className="h-4 w-4" />
+            Speed
+          </>
+        }
         name="speed"
         value={monster.speed}
         onChange={(speed) => setMonster({ ...monster, speed })}
@@ -726,7 +760,10 @@ const HPInput: React.FC<{
       onChange={onChange}
       label={
         <>
-          <span className="flex-1">HP</span>{" "}
+          <span className="flex-1">
+            <Heart className="h-4 w-4 inline mr-1" />
+            HP
+          </span>{" "}
           {recommendedHP && (
             <span
               className="d-tooltip flex items-center leading-4"

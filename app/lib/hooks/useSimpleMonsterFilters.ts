@@ -9,7 +9,9 @@ interface UseSimpleMonsterFiltersProps {
   monsters: Monster[];
 }
 
-export const useSimpleMonsterFilters = ({ monsters }: UseSimpleMonsterFiltersProps) => {
+export const useSimpleMonsterFilters = ({
+  monsters,
+}: UseSimpleMonsterFiltersProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -17,19 +19,24 @@ export const useSimpleMonsterFilters = ({ monsters }: UseSimpleMonsterFiltersPro
   // Initialize state directly from URL params to avoid flash
   const initialSearch = searchParams.get("search") || "";
   const initialLegendary = searchParams.get("legendary");
-  const initialSort = searchParams.get("sort") as SortOption || "name-asc";
+  const initialSort = (searchParams.get("sort") as SortOption) || "name-asc";
 
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(initialSearch);
   const [legendaryFilter, setLegendaryFilter] = useState<LegendaryFilter>(
-    initialLegendary === "true" ? "legendary" : 
-    initialLegendary === "false" ? "standard" : 
-    "all"
+    initialLegendary === "true"
+      ? "legendary"
+      : initialLegendary === "false"
+        ? "standard"
+        : "all",
   );
   const [sortOption, setSortOption] = useState<SortOption>(
-    initialSort && (initialSort.includes("name") || initialSort.includes("level") || initialSort.includes("hp"))
+    initialSort &&
+      (initialSort.includes("name") ||
+        initialSort.includes("level") ||
+        initialSort.includes("hp"))
       ? initialSort
-      : "name-asc"
+      : "name-asc",
   );
 
   // Debounce search term
@@ -44,14 +51,14 @@ export const useSimpleMonsterFilters = ({ monsters }: UseSimpleMonsterFiltersPro
   // Update URL when filters change
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
-    
+
     // Search term
     if (debouncedSearchTerm) {
       params.set("search", debouncedSearchTerm);
     } else {
       params.delete("search");
     }
-    
+
     // Legendary filter
     if (legendaryFilter === "legendary") {
       params.set("legendary", "true");
@@ -60,16 +67,23 @@ export const useSimpleMonsterFilters = ({ monsters }: UseSimpleMonsterFiltersPro
     } else {
       params.delete("legendary");
     }
-    
+
     // Sort
     if (sortOption !== "name-asc") {
       params.set("sort", sortOption);
     } else {
       params.delete("sort");
     }
-    
+
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  }, [debouncedSearchTerm, legendaryFilter, sortOption, pathname, router, searchParams]);
+  }, [
+    debouncedSearchTerm,
+    legendaryFilter,
+    sortOption,
+    pathname,
+    router,
+    searchParams,
+  ]);
 
   const handleSearch = useCallback((q: string) => {
     setSearchTerm(q);
@@ -79,12 +93,18 @@ export const useSimpleMonsterFilters = ({ monsters }: UseSimpleMonsterFiltersPro
     return monsters
       .filter((monster) => {
         // Search filter
-        if (debouncedSearchTerm && 
-            !monster.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) &&
-            !monster.kind?.toLowerCase().includes(debouncedSearchTerm.toLowerCase())) {
+        if (
+          debouncedSearchTerm &&
+          !monster.name
+            .toLowerCase()
+            .includes(debouncedSearchTerm.toLowerCase()) &&
+          !monster.kind
+            ?.toLowerCase()
+            .includes(debouncedSearchTerm.toLowerCase())
+        ) {
           return false;
         }
-        
+
         // Legendary filter
         if (legendaryFilter === "legendary" && !monster.legendary) {
           return false;
@@ -92,29 +112,29 @@ export const useSimpleMonsterFilters = ({ monsters }: UseSimpleMonsterFiltersPro
         if (legendaryFilter === "standard" && monster.legendary) {
           return false;
         }
-        
+
         return true;
       })
       .sort((a, b) => {
         const [field, direction] = sortOption.split("-");
-        
+
         if (field === "name") {
           const result = a.name.localeCompare(b.name);
           return direction === "asc" ? result : -result;
         }
-        
+
         if (field === "level") {
-          const levelA = parseFloat(a.level) || 0;
-          const levelB = parseFloat(b.level) || 0;
+          const levelA = Number.parseFloat(a.level) || 0;
+          const levelB = Number.parseFloat(b.level) || 0;
           const result = levelA - levelB;
           return direction === "asc" ? result : -result;
         }
-        
+
         if (field === "hp") {
           const result = a.hp - b.hp;
           return direction === "asc" ? result : -result;
         }
-        
+
         return 0;
       });
   }, [monsters, debouncedSearchTerm, legendaryFilter, sortOption]);
