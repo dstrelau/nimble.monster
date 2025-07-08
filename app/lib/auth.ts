@@ -1,6 +1,7 @@
 import NextAuth, { type DefaultSession } from "next-auth";
 import Discord from "next-auth/providers/discord";
 import "next-auth/jwt";
+import { prisma } from "./db";
 
 declare module "next-auth" {
   interface Session {
@@ -34,6 +35,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
+    signIn: async ({ profile }) => {
+      if (profile?.id) {
+        await prisma.user.upsert({
+          where: { discordId: profile.id },
+          update: {
+            username: (profile.username as string) || "",
+            avatar: (profile.avatar as string) || null,
+          },
+          create: {
+            discordId: profile.id,
+            username: (profile.username as string) || "",
+            avatar: (profile.avatar as string) || null,
+          },
+        });
+      }
+      return true;
+    },
     jwt(params) {
       const token = params.token;
       if (params.profile?.id) {
