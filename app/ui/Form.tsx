@@ -1,38 +1,15 @@
-export interface FormTextareaProps {
-  label: string;
-  name: string;
-  value: string;
-  className?: string;
-  rows?: number;
-  onChange: (value: string) => void;
-}
+// Import all components first
+import { 
+  FormInput, 
+  FormTextarea, 
+  FormField,
+  type FormInputProps,
+  type FormTextareaProps 
+} from "../components/ui/form-field"
 
-export const Textarea = ({
-  label,
-  name,
-  value,
-  className = "",
-  rows = 3,
-  onChange,
-}: FormTextareaProps) => {
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange(e.target.value);
-  };
-  return (
-    <div className={className}>
-      <label htmlFor={name} className="d-fieldset-label">
-        {label}
-      </label>
-      <div>
-        <textarea
-          name={name}
-          id={name}
-          value={value}
-          rows={rows}
-          onChange={handleChange}
-          className="d-textarea w-full"
-        />
-      </div>
-    </div>
-  );
-};
+// Re-export everything
+export { FormInput, FormTextarea, FormField }
+export type { FormInputProps, FormTextareaProps }
+
+// Legacy alias for backwards compatibility
+export const Textarea = FormTextarea

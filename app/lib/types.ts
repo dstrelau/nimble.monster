@@ -68,6 +68,7 @@ export interface Monster {
   family?: Family;
   creator?: User;
   updatedAt: Date;
+  imageUrl?: string;
 }
 
 /* FIXME: some families are serialized with Go-default capitalization */
