@@ -1,9 +1,6 @@
 "use client";
-import type { Family } from "@/lib/types";
-import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { useState } from "react";
-import { EditDeleteButtons } from "./EditDeleteButtons";
-import { EditFamilyForm } from "./EditFamilyForm";
+import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import {
   Card,
   CardContent,
@@ -11,8 +8,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { Family } from "@/lib/types";
+import { EditDeleteButtons } from "@/app/my/families/EditDeleteButtons";
+import { EditFamilyForm } from "@/app/my/families/EditFamilyForm";
 
-export const FamilyCard = ({ family }: { family: Family }) => {
+interface FamilyCardProps {
+  family: Family;
+  showEditDeleteButtons?: boolean;
+}
+
+export const FamilyCard = ({
+  family,
+  showEditDeleteButtons = false,
+}: FamilyCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   return (
@@ -38,10 +46,12 @@ export const FamilyCard = ({ family }: { family: Family }) => {
             <div className="font-condensed text-sm text-muted-foreground">
               {family.monsterCount || 0} monsters
             </div>
-            <EditDeleteButtons
-              family={family}
-              onEdit={() => setIsEditing(true)}
-            />
+            {showEditDeleteButtons && (
+              <EditDeleteButtons
+                family={family}
+                onEdit={() => setIsEditing(true)}
+              />
+            )}
           </CardFooter>
         </>
       )}

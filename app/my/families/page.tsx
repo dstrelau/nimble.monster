@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import { FamilyCard } from "./FamilyCard";
+import { FamilyCard } from "@/components/FamilyCard";
 import { NewFamilyForm } from "./NewFamilyForm";
 
 export default async function MyFamiliesPage() {
@@ -24,7 +24,7 @@ export default async function MyFamiliesPage() {
       ) : (
         <div className="grid gap-8 items-start md:grid-cols-2 lg:grid-cols-3">
           {families.map((family) => (
-            <FamilyCard key={family.id} family={family} />
+            <FamilyCard key={family.id} family={family} showEditDeleteButtons />
           ))}
         </div>
       )}

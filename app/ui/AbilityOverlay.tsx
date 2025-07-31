@@ -1,7 +1,6 @@
+import { Users } from "lucide-react";
 import { maybePeriod } from "@/lib/text";
 import type { Ability, Family } from "@/lib/types";
-import { Users } from "lucide-react";
-import React from "react";
 
 export const AbilityOverlay = ({
   abilities,
@@ -19,7 +18,7 @@ export const AbilityOverlay = ({
 
   return (
     <div className="ability relative font-condensed p-2 bg-secondary text-secondary-foreground shadow-sm  w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem]">
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-4">
         {abilities?.map((ability) => {
           const abilityName = ability.name || ability.Name || "";
           const isFromFamily = familyAbilityNames.has(abilityName);
