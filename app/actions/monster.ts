@@ -34,7 +34,7 @@ export async function createMonster(formData: {
 
     const monster = await db.createMonster({
       ...formData,
-      armor: formData.armor as "" | "medium" | "heavy",
+      armor: formData.armor === "none" ? "" : formData.armor as "" | "medium" | "heavy",
       size: formData.size as
         | "tiny"
         | "small"

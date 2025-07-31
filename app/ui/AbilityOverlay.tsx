@@ -11,40 +11,37 @@ export const AbilityOverlay = ({
   family?: Family;
 }) => {
   if (abilities.length === 0) return null;
+
+  const familyAbilities = family?.abilities || [];
+  const familyAbilityNames = new Set(
+    familyAbilities.map((a) => a.name || a.Name),
+  );
+
   return (
-    <div className="ability relative font-condensed p-2 leading-5 bg-base-300 shadow-sm  w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem]">
-      {abilities.length > 1 && family ? (
-        <div className="flex flex-col gap-y-1">
-          <div className="flex items-center">
-            <Users className="w-4 pb-1 mr-1 inline-block align-middle" />
-            <strong className="pr-1 font-condensed">{family.name}</strong>
-          </div>
-          <ul className="flex flex-col gap-y-1">
-            {abilities?.map((ability) => (
-              <li key={ability.name}>
-                <strong className="pr-1 font-condensed">
-                  {maybePeriod(ability.name || ability.Name || "")}
-                </strong>
-                {ability.description || ability.Description || ""}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <React.Fragment>
-          {family && (
-            <>
-              <Users className="w-4 pb-1 mr-1 inline-block align-middle" />
-              <strong className="pr-1 font-condensed">{family.name}:</strong>
-            </>
-          )}
-          <strong className="pr-1 font-condensed">
-            {maybePeriod(abilities[0].name || abilities[0].Name || "")}
-          </strong>
-          {abilities[0].description || abilities[0].Description || ""}
-          <br />
-        </React.Fragment>
-      )}
+    <div className="ability relative font-condensed p-2 bg-secondary text-secondary-foreground shadow-sm  w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem]">
+      <div className="flex flex-col">
+        {abilities?.map((ability) => {
+          const abilityName = ability.name || ability.Name || "";
+          const isFromFamily = familyAbilityNames.has(abilityName);
+
+          return (
+            <div key={abilityName}>
+              {isFromFamily && family && (
+                <>
+                  <Users className="w-4 pb-1 mr-1 inline-block align-middle" />
+                  <strong className="pr-1 font-condensed">
+                    {family.name}:
+                  </strong>
+                </>
+              )}
+              <strong className="pr-1 font-condensed">
+                {maybePeriod(abilityName)}
+              </strong>
+              {ability.description || ability.Description || ""}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

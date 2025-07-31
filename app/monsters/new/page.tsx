@@ -1,4 +1,4 @@
-import BuildMonsterView from "@/ui/BuildMonsterView";
+import BuildMonsterView from "@/app/ui/BuildMonsterView";
 
 export default function NewMonsterPage() {
   return <BuildMonsterView />;

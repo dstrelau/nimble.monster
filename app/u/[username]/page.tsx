@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import * as db from "@/lib/db";
 import TabsContent from "./TabsContent";
 import React from "react";
-import { UserAvatar } from "@/ui/UserAvatar";
+import { UserAvatar } from "@/components/app/UserAvatar";
 
 export default async function UserProfilePage({
   params,

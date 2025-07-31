@@ -13,7 +13,7 @@ dist
 dist-ssr
 *.local
 .next
-app/lib/prisma
+lib/prisma
 tmp/
 
 # Editor directories and files

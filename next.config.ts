@@ -6,15 +6,6 @@ const nextConfig: NextConfig = {
   },
   output: "standalone",
   reactStrictMode: true,
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': require('path').resolve(__dirname, 'app'),
-      '@/components': require('path').resolve(__dirname, 'components'),
-      '@/lib': require('path').resolve(__dirname, 'app/lib'),
-    };
-    return config;
-  },
   images: {
     remotePatterns: [
       {

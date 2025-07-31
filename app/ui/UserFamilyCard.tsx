@@ -1,5 +1,5 @@
-import { Family } from "@/lib/types";
-import { AbilityOverlay } from "@/ui/AbilityOverlay";
+import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
+import type { Family } from "@/lib/types";
 
 export default function UserFamilyCard({ family }: { family: Family }) {
   return (

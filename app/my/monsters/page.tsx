@@ -1,7 +1,7 @@
-import * as db from "@/lib/db";
-import { FilterableCardGrid } from "@/ui/monster/FilterableCardGrid";
-import { auth } from "@/lib/auth";
 import { notFound } from "next/navigation";
+import { FilterableCardGrid } from "@/app/ui/monster/FilterableCardGrid";
+import { auth } from "@/lib/auth";
+import * as db from "@/lib/db";
 
 export type MonsterDisplay = "card" | "list" | "table";
 

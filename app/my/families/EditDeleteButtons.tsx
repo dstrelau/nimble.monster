@@ -1,7 +1,7 @@
-import type { Family } from "@/lib/types";
 import { Pencil, Trash } from "lucide-react";
-import { deleteFamily } from "@/actions/family";
 import { useTransition } from "react";
+import { deleteFamily } from "@/app/actions/family";
+import type { Family } from "@/lib/types";
 
 export const EditDeleteButtons = ({
   family,

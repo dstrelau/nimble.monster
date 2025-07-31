@@ -1,13 +1,15 @@
 import { Monster } from "@/lib/types";
 import clsx from "clsx";
-import { Crown, Heart, Shield } from "lucide-react";
-import { Stat } from "./Stat";
+import { Crown } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { HPStat, ArmorStat } from "./Stat";
 
 type ListProps = {
   monsters: Monster[];
   selectedIds: string[];
   handleMonsterClick: (id: string) => void;
   showChecks?: boolean;
+  scrollToSelected?: boolean;
 };
 
 export const List = ({
@@ -15,18 +17,33 @@ export const List = ({
   selectedIds,
   handleMonsterClick,
   showChecks,
-}: ListProps) => (
-  <div className="list overflow-y-auto max-h-[70vh]">
-    <ul className="divide-y divide-base-300">
-      {monsters.map((monster) => (
-        <li
-          key={monster.id}
-          className={clsx(
-            "block p-3 transition-colors cursor-pointer",
-            selectedIds.includes(monster.id) && "bg-primary/10",
-          )}
-          onClick={() => !showChecks && handleMonsterClick(monster.id)}
-        >
+  scrollToSelected = false,
+}: ListProps) => {
+  const listRef = useRef<HTMLDivElement>(null);
+  const selectedItemRef = useRef<HTMLLIElement>(null);
+
+  useEffect(() => {
+    if (scrollToSelected && selectedIds.length > 0 && selectedItemRef.current && listRef.current) {
+      selectedItemRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, [scrollToSelected, selectedIds, monsters]);
+
+  return (
+    <div ref={listRef} className="list overflow-y-auto max-h-[70vh]">
+      <ul className="divide-y divide-base-300">
+        {monsters.map((monster) => (
+          <li
+            key={monster.id}
+            ref={selectedIds.includes(monster.id) ? selectedItemRef : null}
+            className={clsx(
+              "block p-3 transition-colors cursor-pointer",
+              selectedIds.includes(monster.id) && "bg-primary/10",
+            )}
+            onClick={() => !showChecks && handleMonsterClick(monster.id)}
+          >
           <div className="flex items-center gap-x-3">
             {showChecks && (
               <label>
@@ -56,17 +73,18 @@ export const List = ({
             <div className="flex items-center">
               <div className="flex items-center mr-2 font-slab font-black italic">
                 {monster.armor === "medium" && (
-                  <Stat name="armor" value="M" SvgIcon={Shield} />
+                  <ArmorStat value="M" />
                 )}
                 {monster.armor === "heavy" && (
-                  <Stat name="armor" value="H" SvgIcon={Shield} />
+                  <ArmorStat value="H" />
                 )}
-                <Stat name="hp" value={monster.hp} SvgIcon={Heart} />
+                <HPStat value={monster.hp} />
               </div>
             </div>
           </div>
         </li>
       ))}
-    </ul>
-  </div>
-);
+      </ul>
+    </div>
+  );
+};

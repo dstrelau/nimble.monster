@@ -1,28 +1,47 @@
 "use client";
 
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import clsx from "clsx";
 import {
+  ChevronsRight,
   CircleAlert,
   CircleCheck,
   CircleSlash2,
+  Crown,
   Eye,
+  Heart,
   Plus,
+  Send,
+  Shield,
+  Star,
   Sword,
   Target,
   Trash,
   TriangleAlert,
-  X,
-  Heart,
-  Shield,
+  User as UserIcon,
   Waves,
-  Send,
-  ChevronsRight,
-  Star,
+  X,
 } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import clsx from "clsx";
-import { Card } from "@/ui/monster/Card";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { fetchApi } from "@/lib/api";
+import {
+  calculateAverageDamageOnHit,
+  calculateProbabilityDistribution,
+  parseDiceNotation,
+} from "@/lib/dice";
 import type {
   Ability,
   Action,
@@ -32,15 +51,12 @@ import type {
   User,
 } from "@/lib/types";
 import { ARMORS, SIZES } from "@/lib/types";
-import { Textarea } from "@/ui/Form";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useMemo } from "react";
 import {
-  parseDiceNotation,
-  calculateProbabilityDistribution,
-  calculateAverageDamageOnHit,
-} from "@/lib/dice";
+  FormInput as ShadcnFormInput,
+  FormSelect as ShadcnFormSelect,
+  Textarea,
+} from "@/app/ui/Form";
+import { Card } from "@/app/ui/monster/Card";
 
 const EXAMPLE_MONSTERS: Record<string, Monster> = {
   goblin: {
@@ -120,7 +136,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     name: "",
     level: "",
     size: "medium",
-    armor: "",
+    armor: "none",
     swim: 0,
     fly: 0,
     speed: 6,
@@ -149,28 +165,39 @@ const FormInput = <T extends string | number>({
   onChange,
 }: FormInputProps<T>) => {
   const inputType = typeof value === "number" ? "number" : "text";
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue =
-      inputType === "number"
-        ? (Number(e.target.value) as T)
-        : (e.target.value as T);
-    onChange(newValue);
+  const handleChange = (newValue: string) => {
+    const convertedValue =
+      inputType === "number" ? (Number(newValue) as T) : (newValue as T);
+    onChange(convertedValue);
   };
-  return (
-    <div className={className}>
-      <label htmlFor={name} className="d-fieldset-label flex flex-row">
-        {label}
-      </label>
-      <div>
-        <input
-          type={inputType}
+
+  if (typeof label === "string") {
+    return (
+      <div className={className}>
+        <ShadcnFormInput
+          label={label}
           name={name}
-          id={name}
-          value={value}
+          value={String(value)}
+          type={inputType}
           onChange={handleChange}
-          className="d-input w-full"
         />
       </div>
+    );
+  }
+
+  // For complex labels (with icons, etc), use shadcn components
+  return (
+    <div className={className}>
+      <Label htmlFor={name} className="flex flex-row mb-2">
+        {label}
+      </Label>
+      <Input
+        type={inputType}
+        name={name}
+        id={name}
+        value={String(value)}
+        onChange={(e) => handleChange(e.target.value)}
+      />
     </div>
   );
 };
@@ -194,22 +221,13 @@ function FormSelect<T extends string>({
 }: FormSelectProps<T>) {
   return (
     <div className={className}>
-      <label htmlFor={name} className="d-fieldset-label">
-        {label}
-      </label>
-      <select
+      <ShadcnFormSelect
+        label={label}
         name={name}
-        id={name}
-        value={selected}
-        onChange={(e) => onChange(e.target.value as T)}
-        className="d-select w-full"
-      >
-        {choices.map((choice) => (
-          <option key={choice.value} value={choice.value}>
-            {choice.label}
-          </option>
-        ))}
-      </select>
+        choices={choices}
+        selected={selected}
+        onChange={onChange}
+      />
     </div>
   );
 }
@@ -221,19 +239,23 @@ const FamilySection: React.FC<{
   const userFamilies = useQuery({
     queryKey: ["userFamilies"],
     queryFn: async () => {
-      const { getUserFamilies } = await import("@/actions/family");
+      const { getUserFamilies } = await import("@/app/actions/family");
       const result = await getUserFamilies();
       return result.success ? result.families : [];
     },
   });
 
   const handleSelectFamily = (familyId: string) => {
-    const family = userFamilies.data?.find((f) => f.id === familyId);
-    setMonster({ ...monster, family: family });
+    if (familyId === "none") {
+      setMonster({ ...monster, family: undefined });
+    } else {
+      const family = userFamilies.data?.find((f) => f.id === familyId);
+      setMonster({ ...monster, family: family });
+    }
   };
 
   const familyChoices = [
-    { value: "", label: "None" },
+    { value: "none", label: "None" },
     ...(userFamilies.data?.map((f) => ({ value: f.id, label: f.name })) || []),
   ];
 
@@ -242,7 +264,7 @@ const FamilySection: React.FC<{
       label="Family"
       name="family"
       choices={familyChoices}
-      selected={monster?.family?.id || ""}
+      selected={monster?.family?.id || "none"}
       onChange={handleSelectFamily}
     />
   );
@@ -259,8 +281,8 @@ const AbilityRow: React.FC<AbilityRowProps> = ({
   onChange,
   onRemove,
 }) => (
-  <div className="flex flex-row items-center">
-    <div className="flex flex-col w-full gap-2 mb-2 border-l pl-4">
+  <div className="flex flex-row items-center px-4">
+    <div className="flex flex-col w-full gap-2 mb-2">
       <FormInput
         label="Name"
         name="ability-name"
@@ -272,16 +294,20 @@ const AbilityRow: React.FC<AbilityRowProps> = ({
         name="ability-description"
         value={ability.description}
         rows={1}
-        onChange={(description) => onChange({ ...ability, description })}
+        onChange={(description: string) =>
+          onChange({ ...ability, description })
+        }
       />
     </div>
-    <button
+    <Button
       type="button"
+      variant="ghost"
+      size="icon"
       onClick={onRemove}
-      className="d-btn d-btn-ghost d-btn-square m-2"
+      className="m-2"
     >
-      <Trash className="h-6 w-6 text-base-content/50" />
-    </button>
+      <Trash className="h-6 w-6 text-muted-foreground" />
+    </Button>
   </div>
 );
 
@@ -314,7 +340,7 @@ const ActionRow: React.FC<ActionRowProps> = ({
   }
   return (
     <div className="flex flex-row items-center">
-      <div className="flex flex-col w-full gap-2 mb-2 border-l pl-4">
+      <div className="flex flex-col w-full gap-2 mb-2 pl-4">
         <div className="flex flex-col md:flex-row mb-2 gap-x-4">
           <FormInput
             label="Name"
@@ -329,27 +355,35 @@ const ActionRow: React.FC<ActionRowProps> = ({
               value={action.damage || ""}
               onChange={(damage) => onChange({ ...action, damage })}
               label={
-                <>
+                <TooltipProvider>
                   <span className="flex-1">Damage</span>{" "}
                   {missPercent && (
-                    <span
-                      className="d-tooltip flex items-center leading-4"
-                      data-tip={`Miss Chance: ${missPercent.toFixed(0)}%`}
-                    >
-                      <CircleSlash2 className="h-4" />
-                      {missPercent.toFixed(0)}%
-                    </span>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="flex items-center leading-4">
+                          <CircleSlash2 className="h-4" />
+                          {missPercent.toFixed(0)}%
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Miss Chance: {missPercent.toFixed(0)}%</p>
+                      </TooltipContent>
+                    </Tooltip>
                   )}
                   {avgDamage && (
-                    <span
-                      className="d-tooltip flex items-center leading-4"
-                      data-tip={`Avg. Damage on Hit: ${avgDamage.toFixed(1)}`}
-                    >
-                      <Sword className="h-4" />
-                      {avgDamage.toFixed(1)}
-                    </span>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="flex items-center leading-4">
+                          <Sword className="h-4" />
+                          {avgDamage.toFixed(1)}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Avg. Damage on Hit: {avgDamage.toFixed(1)}</p>
+                      </TooltipContent>
+                    </Tooltip>
                   )}
-                </>
+                </TooltipProvider>
               }
             />
           )}
@@ -359,16 +393,20 @@ const ActionRow: React.FC<ActionRowProps> = ({
           name="action-description"
           value={action.description || ""}
           rows={2}
-          onChange={(description) => onChange({ ...action, description })}
+          onChange={(description: string) =>
+            onChange({ ...action, description })
+          }
         />
       </div>
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        size="icon"
         onClick={onRemove}
-        className="d-btn d-btn-ghost d-btn-square m-2"
+        className="m-2"
       >
-        <Trash className="h-6 w-6 text-base-content/50" />
-      </button>
+        <Trash className="h-6 w-6 text-muted-foreground" />
+      </Button>
     </div>
   );
 };
@@ -432,16 +470,18 @@ const LegendaryForm: React.FC<{
           onChange={(armor) => setMonster({ ...monster, armor })}
         />
         <div className="col-span-7">
-          <label htmlFor="saves" className="d-fieldset-label">
+          <Label htmlFor="saves" className="flex items-center gap-2 mb-2">
             <Star className="h-4 w-4" />
             Saves
-          </label>
+          </Label>
           <div className="flex gap-2">
-            <FormInput
-              label=""
+            <Input
+              id="saves"
               name="saves"
               value={monster.saves || ""}
-              onChange={(saves) => setMonster({ ...monster, saves: saves })}
+              onChange={(e) =>
+                setMonster({ ...monster, saves: e.target.value })
+              }
             />
           </div>
         </div>
@@ -456,21 +496,21 @@ const LegendaryForm: React.FC<{
         name="bloodied"
         value={monster.bloodied || ""}
         rows={2}
-        onChange={(bloodied) => setMonster({ ...monster, bloodied })}
+        onChange={(bloodied: string) => setMonster({ ...monster, bloodied })}
       />
       <Textarea
         label="Last Stand"
         name="lastStand"
         value={monster.lastStand || ""}
         rows={2}
-        onChange={(lastStand) => setMonster({ ...monster, lastStand })}
+        onChange={(lastStand: string) => setMonster({ ...monster, lastStand })}
       />
       <Textarea
         label="More Information"
         name="moreInfo"
         value={monster.moreInfo || ""}
         rows={4}
-        onChange={(moreInfo) => setMonster({ ...monster, moreInfo })}
+        onChange={(moreInfo: string) => setMonster({ ...monster, moreInfo })}
       />
     </div>
   </div>
@@ -573,7 +613,7 @@ const StandardForm: React.FC<{
       name="moreInfo"
       value={monster.moreInfo || ""}
       rows={4}
-      onChange={(moreInfo) => setMonster({ ...monster, moreInfo })}
+      onChange={(moreInfo: string) => setMonster({ ...monster, moreInfo })}
     />
   </div>
 );
@@ -582,8 +622,8 @@ const AbilitiesSection: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
 }> = ({ monster, setMonster }) => (
-  <fieldset className="d-fieldset">
-    <legend className="d-fieldset-legend text-base">Abilities</legend>
+  <fieldset className="flex flex-col">
+    <legend className="mb-4 font-condensed font-bold">Abilities</legend>
     {monster.abilities.map((ability, index) => (
       <AbilityRow
         key={index}
@@ -599,9 +639,10 @@ const AbilitiesSection: React.FC<{
         }}
       />
     ))}
-    <button
+    <Button
       type="button"
-      className="d-btn d-btn-ghost text-base-content/50"
+      variant="ghost"
+      className="text-muted-foreground"
       onClick={() =>
         setMonster({
           ...monster,
@@ -611,7 +652,7 @@ const AbilitiesSection: React.FC<{
     >
       <Plus className="w-6 h-6" />
       Add
-    </button>
+    </Button>
   </fieldset>
 );
 
@@ -619,46 +660,49 @@ const ActionsSection: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
 }> = ({ monster, setMonster }) => (
-  <fieldset className="d-fieldset gap-y-4">
-    <legend className="d-fieldset-legend text-base">Actions</legend>
-    <FormInput
-      label="Preface"
-      name="actionPreface"
-      value={monster.actionPreface}
-      onChange={(actionPreface) => setMonster({ ...monster, actionPreface })}
-    />
-    {monster.actions.map((action, index) => (
-      <ActionRow
-        key={index}
-        action={action}
-        legendary={monster.legendary}
-        onChange={(newAction) => {
-          const newActions = [...monster.actions];
-          newActions[index] = newAction;
-          setMonster({ ...monster, actions: newActions });
-        }}
-        onRemove={() => {
-          const newActions = monster.actions.filter((_, i) => i !== index);
-          setMonster({ ...monster, actions: newActions });
-        }}
+  <fieldset className="flex flex-col gap-4">
+    <legend className="mb-4 font-condensed font-bold">Actions</legend>
+    <div className="flex flex-col gap-4">
+      <FormInput
+        label="Preface"
+        name="actionPreface"
+        value={monster.actionPreface}
+        onChange={(actionPreface) => setMonster({ ...monster, actionPreface })}
       />
-    ))}
-    <button
-      type="button"
-      className="d-btn d-btn-ghost text-base-content/50"
-      onClick={() =>
-        setMonster({
-          ...monster,
-          actions: [
-            ...monster.actions,
-            { name: "", damage: "", description: "" },
-          ],
-        })
-      }
-    >
-      <Plus className="w-6 h-6" />
-      Add
-    </button>
+      {monster.actions.map((action, index) => (
+        <ActionRow
+          key={index}
+          action={action}
+          legendary={monster.legendary}
+          onChange={(newAction) => {
+            const newActions = [...monster.actions];
+            newActions[index] = newAction;
+            setMonster({ ...monster, actions: newActions });
+          }}
+          onRemove={() => {
+            const newActions = monster.actions.filter((_, i) => i !== index);
+            setMonster({ ...monster, actions: newActions });
+          }}
+        />
+      ))}
+      <Button
+        type="button"
+        variant="ghost"
+        className="text-muted-foreground"
+        onClick={() =>
+          setMonster({
+            ...monster,
+            actions: [
+              ...monster.actions,
+              { name: "", damage: "", description: "" },
+            ],
+          })
+        }
+      >
+        <Plus className="w-6 h-6" />
+        Add
+      </Button>
+    </div>
   </fieldset>
 );
 
@@ -668,52 +712,52 @@ const HP_RECOMMENDATION_STANDARD: Record<
   string,
   Record<MonsterArmor, number>
 > = {
-  "1/4": { "": 12, medium: 9, heavy: 7 },
-  "1/3": { "": 15, medium: 11, heavy: 8 },
-  "1/2": { "": 18, medium: 15, heavy: 11 },
-  "1": { "": 26, medium: 20, heavy: 16 },
-  "2": { "": 34, medium: 27, heavy: 20 },
-  "3": { "": 41, medium: 33, heavy: 25 },
-  "4": { "": 49, medium: 39, heavy: 29 },
-  "5": { "": 58, medium: 46, heavy: 35 },
-  "6": { "": 68, medium: 54, heavy: 41 },
-  "7": { "": 79, medium: 63, heavy: 47 },
-  "8": { "": 91, medium: 73, heavy: 55 },
-  "9": { "": 104, medium: 83, heavy: 62 },
-  "10": { "": 118, medium: 94, heavy: 71 },
-  "11": { "": 133, medium: 106, heavy: 80 },
-  "12": { "": 149, medium: 119, heavy: 89 },
-  "13": { "": 166, medium: 132, heavy: 100 },
-  "14": { "": 184, medium: 147, heavy: 110 },
-  "15": { "": 203, medium: 162, heavy: 122 },
-  "16": { "": 223, medium: 178, heavy: 134 },
-  "17": { "": 244, medium: 195, heavy: 146 },
-  "18": { "": 266, medium: 213, heavy: 160 },
-  "19": { "": 289, medium: 231, heavy: 173 },
-  "20": { "": 313, medium: 250, heavy: 189 },
+  "1/4": { none: 12, medium: 9, heavy: 7 },
+  "1/3": { none: 15, medium: 11, heavy: 8 },
+  "1/2": { none: 18, medium: 15, heavy: 11 },
+  "1": { none: 26, medium: 20, heavy: 16 },
+  "2": { none: 34, medium: 27, heavy: 20 },
+  "3": { none: 41, medium: 33, heavy: 25 },
+  "4": { none: 49, medium: 39, heavy: 29 },
+  "5": { none: 58, medium: 46, heavy: 35 },
+  "6": { none: 68, medium: 54, heavy: 41 },
+  "7": { none: 79, medium: 63, heavy: 47 },
+  "8": { none: 91, medium: 73, heavy: 55 },
+  "9": { none: 104, medium: 83, heavy: 62 },
+  "10": { none: 118, medium: 94, heavy: 71 },
+  "11": { none: 133, medium: 106, heavy: 80 },
+  "12": { none: 149, medium: 119, heavy: 89 },
+  "13": { none: 166, medium: 132, heavy: 100 },
+  "14": { none: 184, medium: 147, heavy: 110 },
+  "15": { none: 203, medium: 162, heavy: 122 },
+  "16": { none: 223, medium: 178, heavy: 134 },
+  "17": { none: 244, medium: 195, heavy: 146 },
+  "18": { none: 266, medium: 213, heavy: 160 },
+  "19": { none: 289, medium: 231, heavy: 173 },
+  "20": { none: 313, medium: 250, heavy: 189 },
 };
 
 const HP_RECOMMENDATION_LEGENDARY: Record<string, Record<string, number>> = {
-  "1": { "": 50, medium: 50, heavy: 35, lastStand: 10 },
-  "2": { "": 75, medium: 75, heavy: 55, lastStand: 20 },
-  "3": { "": 100, medium: 100, heavy: 75, lastStand: 30 },
-  "4": { "": 125, medium: 125, heavy: 95, lastStand: 40 },
-  "5": { "": 150, medium: 150, heavy: 115, lastStand: 50 },
-  "6": { "": 175, medium: 175, heavy: 135, lastStand: 60 },
-  "7": { "": 200, medium: 200, heavy: 155, lastStand: 70 },
-  "8": { "": 225, medium: 225, heavy: 175, lastStand: 80 },
-  "9": { "": 250, medium: 250, heavy: 195, lastStand: 90 },
-  "10": { "": 275, medium: 275, heavy: 215, lastStand: 100 },
-  "11": { "": 300, medium: 300, heavy: 235, lastStand: 110 },
-  "12": { "": 325, medium: 325, heavy: 255, lastStand: 120 },
-  "13": { "": 350, medium: 350, heavy: 275, lastStand: 130 },
-  "14": { "": 375, medium: 375, heavy: 295, lastStand: 140 },
-  "15": { "": 400, medium: 400, heavy: 315, lastStand: 150 },
-  "16": { "": 425, medium: 425, heavy: 335, lastStand: 160 },
-  "17": { "": 450, medium: 450, heavy: 355, lastStand: 170 },
-  "18": { "": 475, medium: 475, heavy: 375, lastStand: 180 },
-  "19": { "": 500, medium: 500, heavy: 395, lastStand: 190 },
-  "20": { "": 525, medium: 525, heavy: 415, lastStand: 200 },
+  "1": { none: 50, medium: 50, heavy: 35, lastStand: 10 },
+  "2": { none: 75, medium: 75, heavy: 55, lastStand: 20 },
+  "3": { none: 100, medium: 100, heavy: 75, lastStand: 30 },
+  "4": { none: 125, medium: 125, heavy: 95, lastStand: 40 },
+  "5": { none: 150, medium: 150, heavy: 115, lastStand: 50 },
+  "6": { none: 175, medium: 175, heavy: 135, lastStand: 60 },
+  "7": { none: 200, medium: 200, heavy: 155, lastStand: 70 },
+  "8": { none: 225, medium: 225, heavy: 175, lastStand: 80 },
+  "9": { none: 250, medium: 250, heavy: 195, lastStand: 90 },
+  "10": { none: 275, medium: 275, heavy: 215, lastStand: 100 },
+  "11": { none: 300, medium: 300, heavy: 235, lastStand: 110 },
+  "12": { none: 325, medium: 325, heavy: 255, lastStand: 120 },
+  "13": { none: 350, medium: 350, heavy: 275, lastStand: 130 },
+  "14": { none: 375, medium: 375, heavy: 295, lastStand: 140 },
+  "15": { none: 400, medium: 400, heavy: 315, lastStand: 150 },
+  "16": { none: 425, medium: 425, heavy: 335, lastStand: 160 },
+  "17": { none: 450, medium: 450, heavy: 355, lastStand: 170 },
+  "18": { none: 475, medium: 475, heavy: 375, lastStand: 180 },
+  "19": { none: 500, medium: 500, heavy: 395, lastStand: 190 },
+  "20": { none: 525, medium: 525, heavy: 415, lastStand: 200 },
 };
 
 const getRecommendedHPStandard = (
@@ -759,37 +803,41 @@ const HPInput: React.FC<{
       value={monster.hp}
       onChange={onChange}
       label={
-        <>
+        <TooltipProvider>
           <span className="flex-1">
             <Heart className="h-4 w-4 inline mr-1" />
             HP
           </span>{" "}
           {recommendedHP && (
-            <span
-              className="d-tooltip flex items-center leading-4"
-              data-tip={
-                monster.hp === 0
-                  ? "GM Guide Recommended HP"
-                  : warning
-                    ? ">20% from recommended"
-                    : critical
-                      ? ">40% from recommended"
-                      : "Within 20% of recommended"
-              }
-            >
-              {monster.hp === 0 ? (
-                <Target className="h-4" />
-              ) : warning ? (
-                <TriangleAlert className="h-4 text-warning" />
-              ) : critical ? (
-                <CircleAlert className="h-4 text-error" />
-              ) : (
-                <CircleCheck className="h-4 text-success" />
-              )}
-              {recommendedHP}
-            </span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="flex items-center leading-4">
+                  {monster.hp === 0 ? (
+                    <Target className="h-4" />
+                  ) : warning ? (
+                    <TriangleAlert className="h-4 text-warning" />
+                  ) : critical ? (
+                    <CircleAlert className="h-4 text-error" />
+                  ) : (
+                    <CircleCheck className="h-4 text-success" />
+                  )}
+                  {recommendedHP}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>
+                  {monster.hp === 0
+                    ? "GM Guide Recommended HP"
+                    : warning
+                      ? ">20% from recommended"
+                      : critical
+                        ? ">40% from recommended"
+                        : "Within 20% of recommended"}
+                </p>
+              </TooltipContent>
+            </Tooltip>
           )}
-        </>
+        </TooltipProvider>
       }
     />
   );
@@ -800,10 +848,6 @@ interface BuildMonsterProps {
 }
 
 const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
-  const typeOptions = [
-    { value: false, label: "Standard" },
-    { value: true, label: "Legendary" },
-  ];
   const router = useRouter();
 
   const { data: session } = useSession();
@@ -863,18 +907,20 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
       <div
         className={clsx(
           showMobilePreview || "hidden",
-          "md:hidden fixed h-full left-0 top-0 inset-0 z-1 bg-base-200",
+          "md:hidden fixed h-full left-0 top-0 inset-0 z-1 bg-background",
         )}
       >
-        <div className="d-navbar w-full justify-center sticky bg-neutral text-neutral-content">
+        <div className="w-full flex justify-center items-center sticky bg-secondary text-secondary-foreground p-4">
           <h3 className="font-bold">Monster Preview</h3>
-          <button
+          <Button
             type="button"
-            className="d-btn d-btn-ghost d-btn-circle"
+            variant="ghost"
+            size="icon"
             onClick={() => setShowMobilePreview(false)}
+            className="ml-auto"
           >
             <X className="h-6 w-6" />
-          </button>
+          </Button>
         </div>
         <div className="grid grid-cols-1 gap-4 p-4">
           <Card monster={monster} />
@@ -883,7 +929,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
 
       <div
         className={clsx(
-          "md:hidden fixed bottom-0 left-0 right-0 z-1 w-full bg-base-100 flex p-2 justify-between",
+          "md:hidden fixed bottom-0 left-0 right-0 z-1 w-full bg-background flex p-2 justify-between",
           showMobilePreview && "hidden",
         )}
         onClick={() => setShowMobilePreview(true)}
@@ -891,7 +937,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
         <span className="font-slab font-black font-small-caps italic text-2xl">
           {monster.name}
         </span>
-        <div className="flex gap-2 items-center text-sm text-base-content/70">
+        <div className="flex gap-2 items-center text-sm text-muted-foreground">
           <Eye className="h-6 w-6" /> Preview
         </div>
       </div>
@@ -908,58 +954,59 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
             monster.legendary ? "md:col-span-3" : "md:col-span-4",
           )}
         >
-          <form className="d-fieldset" onSubmit={handleSubmit}>
-            <div className="mb-6 flex justify-between items-start">
-              <div className="d-join" role="group">
-                {typeOptions.map((option) => (
-                  <button
-                    key={option.label}
-                    type="button"
-                    onClick={() =>
-                      setMonster({
-                        ...monster,
-                        legendary: option.value,
-                      })
-                    }
-                    className={clsx(
-                      "d-btn d-join-item",
-                      monster.legendary === option.value && "d-btn-primary",
-                    )}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="mb-6 flex justify-center">
+              <Tabs
+                value={monster.legendary ? "legendary" : "standard"}
+                onValueChange={(value: string) =>
+                  setMonster({
+                    ...monster,
+                    legendary: value === "legendary",
+                  })
+                }
+              >
+                <TabsList>
+                  <TabsTrigger value="standard" className="px-3">
+                    <UserIcon className="h-4 w-4" />
+                    Standard
+                  </TabsTrigger>
+                  <TabsTrigger value="legendary" className="px-3">
+                    <Crown className="h-4 w-4" />
+                    Legendary
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="standard" className="mt-6">
+                  <StandardForm monster={monster} setMonster={setMonster} />
+                </TabsContent>
+                <TabsContent value="legendary" className="mt-6">
+                  <LegendaryForm monster={monster} setMonster={setMonster} />
+                </TabsContent>
+              </Tabs>
             </div>
-
-            {monster.legendary ? (
-              <LegendaryForm monster={monster} setMonster={setMonster} />
-            ) : (
-              <StandardForm monster={monster} setMonster={setMonster} />
-            )}
 
             {session?.user && (
               <div className="flex flex-row justify-between items-center my-4">
-                <button type="submit" className="d-btn d-btn-primary">
-                  Save
-                </button>
-                <fieldset className="fieldset">
+                <Button type="submit">Save</Button>
+                <fieldset className="space-y-2">
                   <div>
-                    <label className="d-fieldset-label text-sm">
-                      Publish to Public Monsters
-                      <input
-                        name="public"
-                        type="checkbox"
-                        className="d-toggle d-toggle-lg mr-2 d-toggle-primary"
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="public-toggle"
                         checked={monster.visibility === "public"}
-                        onChange={(e) => {
+                        onCheckedChange={(checked) => {
                           setMonster({
                             ...monster,
-                            visibility: e.target.checked ? "public" : "private",
+                            visibility: checked ? "public" : "private",
                           });
                         }}
                       />
-                    </label>
+                      <label
+                        htmlFor="public-toggle"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Publish to Public Monsters
+                      </label>
+                    </div>
                   </div>
                 </fieldset>
               </div>
@@ -980,16 +1027,16 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
                   Load Example:
                 </span>
                 {Object.keys(EXAMPLE_MONSTERS).map((type) => (
-                  <button
+                  <Button
                     key={type}
-                    type="button"
+                    variant="outline"
                     onClick={() =>
                       loadExample(type as keyof typeof EXAMPLE_MONSTERS)
                     }
-                    className="d-btn"
                   >
+                    {EXAMPLE_MONSTERS[type].legendary && <Crown />}
                     {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>

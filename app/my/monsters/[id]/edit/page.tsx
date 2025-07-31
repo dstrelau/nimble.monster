@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/api";
 import type { Monster } from "@/lib/types";
-import BuildMonster from "@/ui/BuildMonsterView";
+import BuildMonster from "@/app/ui/BuildMonsterView";
 import React from "react";
 
 export default function EditMonsterPage({

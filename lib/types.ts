@@ -9,7 +9,7 @@ export const SIZES = [
 export type MonsterSize = (typeof SIZES)[number]["value"];
 
 export const ARMORS = [
-  { value: "", label: "None" },
+  { value: "none", label: "None" },
   { value: "medium", label: "Medium" },
   { value: "heavy", label: "Heavy" },
 ] as const;

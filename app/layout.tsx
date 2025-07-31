@@ -1,7 +1,7 @@
-import "@/ui/global.css";
+import "@/app/ui/global.css";
 import type { Metadata } from "next";
+import { auth } from "@/lib/auth";
 import { Providers } from "./providers";
-import { auth } from "./lib/auth";
 
 export const metadata: Metadata = {
   title: "Nimble Monster",

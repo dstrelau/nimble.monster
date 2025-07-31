@@ -1,9 +1,9 @@
 "use client";
 
-import { deleteCollection } from "@/actions/collection";
 import { Pencil, Trash } from "lucide-react";
 import Link from "next/link";
-import React, { useTransition } from "react";
+import { useTransition } from "react";
+import { deleteCollection } from "@/app/actions/collection";
 
 export const EditDeleteButtons = ({ id }: { id: string }) => {
   const [isPending, startTransition] = useTransition();

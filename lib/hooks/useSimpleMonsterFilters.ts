@@ -3,14 +3,16 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Monster } from "@/lib/types";
-import type { LegendaryFilter, SortOption } from "@/ui/monster/SimpleFilterBar";
+import type { LegendaryFilter, SortOption } from "@/app/ui/monster/SimpleFilterBar";
 
 interface UseSimpleMonsterFiltersProps {
   monsters: Monster[];
+  selectedMonsterId?: string | null;
 }
 
 export const useSimpleMonsterFilters = ({
   monsters,
+  selectedMonsterId,
 }: UseSimpleMonsterFiltersProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -139,11 +141,26 @@ export const useSimpleMonsterFilters = ({
       });
   }, [monsters, debouncedSearchTerm, legendaryFilter, sortOption]);
 
+  // Check if selected monster should be cleared (not in filtered results)
+  const shouldClearSelection = useMemo(() => {
+    if (!selectedMonsterId) return false;
+    return !filteredMonsters.some(m => m.id === selectedMonsterId);
+  }, [selectedMonsterId, filteredMonsters]);
+
+  // Track when filters change to trigger scrolling
+  const [filtersChangeId, setFiltersChangeId] = useState(0);
+  
+  useEffect(() => {
+    setFiltersChangeId(prev => prev + 1);
+  }, [debouncedSearchTerm, legendaryFilter, sortOption]);
+
   return {
     searchTerm,
     legendaryFilter,
     sortOption,
     filteredMonsters,
+    shouldClearSelection,
+    filtersChangeId,
     handleSearch,
     setLegendaryFilter,
     setSortOption,

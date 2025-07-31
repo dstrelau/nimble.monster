@@ -1,19 +1,26 @@
 "use client";
 
-import React, { useTransition } from "react";
+import html2canvas from "html2canvas-pro";
 import {
   Download,
+  Expand,
   Link as LinkIcon,
   Pencil,
-  Trash,
   Share,
-  Expand,
+  Trash,
 } from "lucide-react";
 import Link from "next/link";
-import { deleteMonster } from "@/actions/monster";
-import html2canvas from "html2canvas-pro";
+import { usePathname } from "next/navigation";
+import { useTransition } from "react";
+import { deleteMonster } from "@/app/actions/monster";
+import { VisibilityBadge } from "@/app/ui/VisibilityBadge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { Monster } from "@/lib/types";
-import { Dropdown } from "@/ui/components/dropdown";
 
 interface MonsterCardActionsProps {
   monster: Monster;
@@ -25,6 +32,8 @@ export default function CardActions({
   isOwner,
 }: MonsterCardActionsProps) {
   const [isPending, startTransition] = useTransition();
+  const pathname = usePathname();
+  const isOnDetailPage = pathname === `/m/${monster.id}`;
 
   const copyMonsterLink = async () => {
     try {
@@ -40,7 +49,7 @@ export default function CardActions({
   const downloadCard = async () => {
     try {
       const cardElement = document.querySelector(
-        `#monster-${monster.id} article`,
+        `#monster-${monster.id} > div`,
       );
       if (!cardElement) return;
 
@@ -67,22 +76,24 @@ export default function CardActions({
 
         const cardClone = cardElement.cloneNode(true) as HTMLElement;
 
-        // Remove action buttons from clone before capture
+        // Remove action buttons from clone before capture (keep attribution)
         const actionsDiv = cardClone.querySelector(".d-card-actions");
         if (actionsDiv) {
           actionsDiv.parentNode?.removeChild(actionsDiv);
         }
 
-        // Replace dividers with simple HR elements to ensure they show up in the image
-        const dividers = cardClone.querySelectorAll(".d-divider");
-        for (const divider of dividers) {
+        // Replace shadcn separators with simple HR elements to ensure they show up in the image
+        const separators = cardClone.querySelectorAll(
+          '[data-slot="separator"]',
+        );
+        for (const separator of separators) {
           const hr = document.createElement("hr");
           hr.style.width = "100%";
           hr.style.margin = "0.25rem 0";
           hr.style.border = "none";
-          hr.style.borderTop = "1px solid #e5e7eb";
+          hr.style.borderTop = "1px solid #d1d5db";
           hr.style.height = "1px";
-          divider.parentNode?.replaceChild(hr, divider);
+          separator.parentNode?.replaceChild(hr, separator);
         }
 
         // Fix vertical spacing in card
@@ -100,14 +111,14 @@ export default function CardActions({
         wrapper.appendChild(cardClone);
 
         const originalCard = document.querySelector(
-          `#monster-${monster.id} article`,
+          `#monster-${monster.id} > div`,
         ) as HTMLElement;
         const originalWidth = originalCard.offsetWidth;
         cardClone.style.width = `${originalWidth}px`;
 
         const canvas = await html2canvas(wrapper, {
           scale: 2,
-          backgroundColor: null, // Transparent background
+          backgroundColor: "#ffffff", // White background
           useCORS: true,
           allowTaint: true,
           imageTimeout: 0,
@@ -132,52 +143,36 @@ export default function CardActions({
   };
 
   return (
-    <div className="d-card-actions">
-      {isOwner && monster.visibility === "public" && (
-        <div className="d-badge d-badge-soft d-badge-success mr-2">Public</div>
+    <div className="flex gap-2">
+      {isOwner && (
+        <div className="mr-2">
+          <VisibilityBadge visibility={monster.visibility} />
+        </div>
       )}
 
-      <Dropdown
-        position="top"
-        alignment="end"
-        menuClassName="min-w-38"
-        summary={
-          <span>
-            <Share className="w-5 h-5 text-base-content/50" />
-          </span>
-        }
-        items={[
-          {
-            element: (
-              <Link
-                className="flex gap-2 items-center"
-                href={`/m/${monster.id}`}
-              >
+      <DropdownMenu>
+        <DropdownMenuTrigger className="hover:opacity-70">
+          <Share className="w-5 h-5 text-base-content/50" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="top" align="end" className="min-w-38">
+          {!isOnDetailPage && (
+            <DropdownMenuItem asChild>
+              <Link className="flex gap-2 items-center" href={`/m/${monster.id}`}>
                 <Expand className="w-4 h-4" />
                 Monster Detail
               </Link>
-            ),
-          },
-          {
-            element: (
-              <>
-                <LinkIcon className="w-4 h-4" />
-                Copy Link
-              </>
-            ),
-            onClick: copyMonsterLink,
-          },
-          {
-            element: (
-              <>
-                <Download className="w-4 h-4" />
-                Card Image
-              </>
-            ),
-            onClick: downloadCard,
-          },
-        ]}
-      />
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuItem onClick={copyMonsterLink}>
+            <LinkIcon className="w-4 h-4" />
+            Copy Link
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={downloadCard}>
+            <Download className="w-4 h-4" />
+            Card Image
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {isOwner && (
         <>

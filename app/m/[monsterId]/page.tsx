@@ -1,5 +1,5 @@
 import { findPublicMonsterById } from "@/lib/db";
-import { Card } from "@/ui/monster/Card";
+import { Card } from "@/app/ui/monster/Card";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { auth } from "@/lib/auth";

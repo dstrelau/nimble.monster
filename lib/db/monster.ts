@@ -84,7 +84,7 @@ export interface CreateMonsterInput {
   kind?: string;
   level: string;
   hp: number;
-  armor: MonsterArmor;
+  armor: MonsterArmor | "";
   size: MonsterSize;
   speed: number;
   fly: number;
@@ -148,7 +148,7 @@ export const createMonster = async (
       kind,
       level,
       hp,
-      armor: armor || "EMPTY_ENUM_VALUE",
+      armor: armor === "none" || armor === "" ? "EMPTY_ENUM_VALUE" : armor,
       size,
       speed: legendary ? 0 : speed,
       fly: legendary ? 0 : fly,

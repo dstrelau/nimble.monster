@@ -5,7 +5,7 @@ import {
   parseDiceNotation,
   calculateAverageDamageOnHit,
   ProbabilityDistribution,
-} from "../lib/dice";
+} from "../../lib/dice";
 import { Sword } from "lucide-react";
 
 export default function DiceRollerPage() {

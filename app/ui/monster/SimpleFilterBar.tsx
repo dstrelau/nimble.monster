@@ -1,8 +1,15 @@
 "use client";
 
-import { SearchInput } from "@/ui/SearchInput";
-import clsx from "clsx";
 import { ArrowDownUp, Crown, User } from "lucide-react";
+import { SearchInput } from "@/app/ui/SearchInput";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export type LegendaryFilter = "all" | "legendary" | "standard";
 export type SortOption =
@@ -39,75 +46,53 @@ export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
   onLegendaryFilterChange,
   onSortChange,
 }) => {
-  const sortLabel = SORT_OPTIONS.find((option) => option.value === sortOption)?.label || "Name (A-Z)";
-
   return (
-    <div className="flex flex-wrap gap-3 items-center">
-      <div className="flex-1 min-w-2xs">
-        <SearchInput
-          value={searchTerm}
-          onChange={onSearch}
-          placeholder="Search"
-        />
-      </div>
+    <div className="flex flex-col gap-3 pb-4">
+      <SearchInput
+        value={searchTerm}
+        onChange={onSearch}
+        placeholder="Search"
+      />
 
-      {/* Filter buttons - will wrap to new line if needed */}
-      <div className="d-join">
-        <button
-          type="button"
-          className={`d-btn d-join-item ${legendaryFilter === "all" ? "d-btn-active" : ""}`}
-          onClick={() => onLegendaryFilterChange("all")}
+      <div className="flex gap-3 items-center">
+        <ToggleGroup
+          type="single"
+          variant="outline"
+          value={legendaryFilter}
+          onValueChange={(value) => {
+            if (value) onLegendaryFilterChange(value as LegendaryFilter);
+          }}
         >
-          <User className="h-4 w-4" />
-          +
-          <Crown className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          className={clsx(
-            "d-btn d-join-item",
-            legendaryFilter === "standard" && "d-btn-active",
-          )}
-          onClick={() => onLegendaryFilterChange("standard")}
-        >
-          <User className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          className={clsx(
-            "d-btn d-join-item",
-            legendaryFilter === "legendary" && "d-btn-active",
-          )}
-          onClick={() => onLegendaryFilterChange("legendary")}
-        >
-          <Crown className="h-4 w-4" />
-        </button>
-      </div>
+          <ToggleGroupItem
+            value="all"
+            aria-label="All monsters"
+            className="px-6"
+          >
+            <User className="h-4 w-4" />
+            +
+            <Crown className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="standard" aria-label="Standard monsters">
+            <User className="h-4 w-4" />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="legendary" aria-label="Legendary monsters">
+            <Crown className="h-4 w-4" />
+          </ToggleGroupItem>
+        </ToggleGroup>
 
-      {/* Sort dropdown */}
-      <div className="d-dropdown d-dropdown-end">
-        <div tabIndex={0} role="button" className="d-btn d-btn-ghost gap-2">
-          <ArrowDownUp className="h-4 w-4" />
-          {sortLabel}
-        </div>
-        <ul
-          tabIndex={0}
-          className="d-dropdown-content z-[1] d-menu p-2 shadow bg-base-100 rounded-box w-48"
-        >
-          {SORT_OPTIONS.map((option) => (
-            <li key={option.value}>
-              <button
-                onClick={() => onSortChange(option.value)}
-                className={clsx(
-                  sortOption === option.value &&
-                    "d-active bg-primary text-primary-content",
-                )}
-              >
+        <Select value={sortOption} onValueChange={onSortChange}>
+          <SelectTrigger>
+            <ArrowDownUp className="h-4 w-4" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SORT_OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
                 {option.label}
-              </button>
-            </li>
-          ))}
-        </ul>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

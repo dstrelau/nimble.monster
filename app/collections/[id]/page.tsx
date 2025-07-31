@@ -1,8 +1,13 @@
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import { Attribution } from "@/ui/Attribution";
-import { Dropdown } from "@/ui/components/dropdown";
-import { CardGrid } from "@/ui/monster/CardGrid";
+import { Attribution } from "@/app/ui/Attribution";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { Share, FileJson } from "lucide-react";
 import { notFound } from "next/navigation";
 
@@ -38,30 +43,23 @@ export default async function ShowCollectionView({
             <div className="mt-2 text-gray-600">{collection.description}</div>
           )}
         </div>
-        <Dropdown
-          summary={
-            <span>
-              <Share className="w-5 h-5 text-base-content/50" />
-            </span>
-          }
-          items={[
-            {
-              element: (
-                <a
-                  className="flex gap-2 items-center"
-                  href={`/api/collections/${id}/download`}
-                  download={`collection-${collection.id}.json`}
-                >
-                  <FileJson className="w-4 h-4" />
-                  Export OBR Compendium JSON
-                </a>
-              ),
-            },
-          ]}
-          position="bottom"
-          alignment="end"
-          menuClassName="min-w-72"
-        />
+        <DropdownMenu>
+          <DropdownMenuTrigger className="hover:opacity-70">
+            <Share className="w-5 h-5 text-base-content/50" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="bottom" align="end" className="min-w-72">
+            <DropdownMenuItem asChild>
+              <a
+                className="flex gap-2 items-center"
+                href={`/api/collections/${id}/download`}
+                download={`collection-${collection.id}.json`}
+              >
+                <FileJson className="w-4 h-4" />
+                Export OBR Compendium JSON
+              </a>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       {collection.monsters.length === 0 ? (
         <p>No monsters in this collection.</p>

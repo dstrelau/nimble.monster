@@ -8,8 +8,13 @@ import type {
   Monster,
 } from "@/lib/types";
 import { updateCollection } from "./actions";
-import { List } from "@/ui/monster/List";
-import { CardGrid } from "@/ui/monster/CardGrid";
+import { List } from "@/app/ui/monster/List";
+import { CardGrid } from "@/app/ui/monster/CardGrid";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Props {
   collection: Collection;
@@ -119,55 +124,61 @@ export function EditForm({ collection, myMonsters }: Props) {
         name="formChanged"
         value={isDirty ? "true" : "false"}
       />
+      <input
+        type="hidden"
+        name="visibility"
+        value={currentCollection.visibility}
+      />
 
-      <fieldset className="d-fieldset space-y-4">
-        <div className="flex flex-row flex-wrap items-center space-x-4 space-y-4 md:space-y-0">
-          <div className="w-full md:w-auto">
-            <label className="d-fieldset-label mb-1" htmlFor="name">
-              Name
-            </label>
-            <input
-              name="name"
-              id="name"
-              className="d-input w-full md:w-md"
-              placeholder="Name"
-              value={currentCollection.name}
+      <Card>
+        <CardContent className="p-6 space-y-4">
+          <div className="flex flex-row flex-wrap items-center gap-4">
+            <div className="w-full md:w-auto">
+              <Label htmlFor="name" className="mb-2 block">
+                Name
+              </Label>
+              <Input
+                name="name"
+                id="name"
+                className="w-full md:w-80"
+                placeholder="Name"
+                value={currentCollection.name}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="flex items-end">
+              <VisibilityToggle
+                name="visibility"
+                value={currentCollection.visibility}
+                onChangeAction={handleVisibilityChange}
+              />
+            </div>
+            <div className="flex items-end ml-auto">
+              <Button
+                type="submit"
+                disabled={!isDirty}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="description" className="mb-2 block">
+              Description
+            </Label>
+            <Textarea
+              name="description"
+              id="description"
+              className="w-full"
+              placeholder="Description (optional)"
+              rows={3}
+              value={currentCollection.description}
               onChange={handleInputChange}
-              required
             />
           </div>
-          <div className="flex items-center">
-            <VisibilityToggle
-              name="visibility"
-              value={currentCollection.visibility}
-              onChangeAction={handleVisibilityChange}
-            />
-          </div>
-          <div className="flex items-center ml-auto">
-            <button
-              type="submit"
-              className="d-btn d-btn-primary"
-              disabled={!isDirty}
-            >
-              Save
-            </button>
-          </div>
-        </div>
-        <div>
-          <label className="d-fieldset-label mb-1" htmlFor="description">
-            Description
-          </label>
-          <textarea
-            name="description"
-            id="description"
-            className="w-full d-textarea"
-            placeholder="Description (optional)"
-            rows={3}
-            value={currentCollection.description}
-            onChange={handleInputChange}
-          />
-        </div>
-      </fieldset>
+        </CardContent>
+      </Card>
 
       <div className="mt-4">
         <div className="flex gap-x-8">

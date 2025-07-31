@@ -3,9 +3,7 @@
     "noLib": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./app/*"],
-      "@/components/*": ["./components/*"],
-      "@/lib/*": ["./app/lib/*", "./lib/*"]
+      "@/*": ["./*"]
     },
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],

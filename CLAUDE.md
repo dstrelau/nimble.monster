@@ -17,7 +17,10 @@
 - Do NOT use "as Type" constructs to bypass type checking. EVER.
 - Organize imports: React/libraries first, then components, then contexts/types
 - File structure: components/, views/, lib/ directories
-- Use tailwind and daisyUI for styling
+- Use tailwind and shadcn for styling
+  - We are migrating from daisyui to shadcn
+  - You may add new shadcn components as needed via `pnpx shadcn@latest add <component>`
+  - Do not modify shadcn components in components/ui without explicit confirmation
 - In this version of Next.js, params are a Promise that need to be awaited.
 - Use OpenTelemetry.
 - Do not add console.* functions permanently (they may be used for temporary debugging).

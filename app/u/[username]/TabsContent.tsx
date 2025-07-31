@@ -2,9 +2,9 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { Monster, CollectionOverview, Family } from "@/lib/types";
-import { CardGrid } from "@/ui/monster/CardGrid";
-import { CollectionCard } from "@/ui/CollectionCard";
-import UserFamilyCard from "@/ui/UserFamilyCard";
+import { CardGrid } from "@/app/ui/monster/CardGrid";
+import { CollectionCard } from "@/app/ui/CollectionCard";
+import UserFamilyCard from "@/app/ui/UserFamilyCard";
 
 type TabType = "monsters" | "collections" | "families";
 
@@ -82,7 +82,7 @@ export default function TabsContent({
                   key={collection.id}
                   collection={collection}
                   showEditDeleteButtons={false}
-                  showPublicBadge={false}
+                  showVisibilityBadge={false}
                   showAttribution={false}
                 />
               ))}

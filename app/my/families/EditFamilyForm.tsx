@@ -1,10 +1,11 @@
 "use client";
-import { updateFamily } from "@/actions/family";
-import type { Family } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { updateFamily } from "@/app/actions/family";
+import type { Family } from "@/lib/types";
 import { FamilyForm, type FamilyFormData, FamilySchema } from "./FamilyForm";
+import { Button } from "@/components/ui/button";
 
 interface EditFamilyFormProps {
   family: Family;
@@ -47,23 +48,17 @@ export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
   });
 
   return (
-    <div className="mb-6">
-      <form onSubmit={handleSubmit(handleUpdate)} className="">
-        <FamilyForm register={register} errors={errors} control={control}>
-          <div className="flex space-x-2">
-            <button
-              type="submit"
-              disabled={isPending}
-              className="d-btn d-btn-primary"
-            >
-              {isPending ? "Updating..." : "Update"}
-            </button>
-            <button type="button" onClick={onCancel} className="d-btn">
-              Cancel
-            </button>
-          </div>
-        </FamilyForm>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit(handleUpdate)}>
+      <FamilyForm register={register} errors={errors} control={control}>
+        <div className="flex space-x-2">
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Updating..." : "Update"}
+          </Button>
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+        </div>
+      </FamilyForm>
+    </form>
   );
 };

@@ -69,7 +69,7 @@ export const PUT = telemetry(async (
       name: monsterData.name,
       level: monsterData.level,
       hp: monsterData.hp,
-      armor: monsterData.armor || "EMPTY_ENUM_VALUE",
+      armor: monsterData.armor === "none" || !monsterData.armor ? "EMPTY_ENUM_VALUE" : monsterData.armor,
       size: monsterData.size,
       speed: monsterData.speed,
       fly: monsterData.fly,

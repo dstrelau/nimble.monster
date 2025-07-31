@@ -1,7 +1,7 @@
-import { CollectionCard } from "@/ui/CollectionCard";
-import * as db from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { notFound } from "next/navigation";
+import { CollectionCard } from "@/app/ui/CollectionCard";
+import { auth } from "@/lib/auth";
+import * as db from "@/lib/db";
 import NewCollectionForm from "./NewCollectionForm";
 
 export default async function MyCollectionsPage() {
@@ -26,7 +26,7 @@ export default async function MyCollectionsPage() {
               key={c.id}
               collection={c}
               showEditDeleteButtons={true}
-              showPublicBadge={c.visibility === "public"}
+              showVisibilityBadge={true}
               showAttribution={false}
             />
           ))}

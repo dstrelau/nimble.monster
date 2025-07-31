@@ -22,11 +22,12 @@ export const toMonster = (
 ): Monster => ({
   ...m,
   saves: m.saves.join(" "),
-  armor: m.armor === "EMPTY_ENUM_VALUE" ? "" : m.armor,
+  armor: m.armor === "EMPTY_ENUM_VALUE" ? "none" : m.armor,
   abilities: m.abilities as unknown as Ability[],
   actions: m.actions as unknown as Action[],
   actionPreface: m.actionPreface || "",
   moreInfo: m.moreInfo || "",
+  imageUrl: m.imageUrl || undefined,
   family: toFamily(m.family),
   creator: { ...m.creator, avatar: m.creator.avatar || "" },
 });

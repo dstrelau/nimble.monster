@@ -1,14 +1,14 @@
 "use client";
 
-import type React from "react";
-import { useState, useEffect, useMemo } from "react";
-import type { Monster } from "@/lib/types";
-import { Card } from "@/ui/monster/Card";
 import { Ghost } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Card } from "@/app/ui/monster/Card";
+import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
+import type { Monster } from "@/lib/types";
 import { List } from "./monster/List";
 import { SimpleFilterBar } from "./monster/SimpleFilterBar";
-import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
 
 interface MonstersListViewProps {
   monsters: Monster[];
@@ -26,16 +26,19 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
   const [selectedMonsterId, setSelectedMonsterId] = useState<string | null>(
     initialSelectedId || null,
   );
+  const [shouldScrollToSelected, setShouldScrollToSelected] = useState(false);
 
   const {
     searchTerm,
     legendaryFilter,
     sortOption,
     filteredMonsters,
+    shouldClearSelection,
+    filtersChangeId,
     handleSearch,
     setLegendaryFilter,
     setSortOption,
-  } = useSimpleMonsterFilters({ monsters });
+  } = useSimpleMonsterFilters({ monsters, selectedMonsterId });
 
   useEffect(() => {
     if (initialSelectedId) {
@@ -48,6 +51,37 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
       setSelectedMonsterId(null);
     }
   }, [searchParams]);
+
+  // Clear selection if the selected monster is filtered out
+  useEffect(() => {
+    if (shouldClearSelection) {
+      setSelectedMonsterId(null);
+      const params = new URLSearchParams(searchParams);
+      params.delete("id");
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    }
+  }, [shouldClearSelection, router, pathname, searchParams]);
+
+  // Trigger scrolling when filters change and there's a selected monster
+  useEffect(() => {
+    if (selectedMonsterId && filtersChangeId > 1) { // Skip initial load
+      setShouldScrollToSelected(true);
+      const timer = setTimeout(() => setShouldScrollToSelected(false), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [filtersChangeId, selectedMonsterId]);
+
+  // Scroll to selected monster on initial load
+  useEffect(() => {
+    if (selectedMonsterId) {
+      const timer = setTimeout(() => {
+        setShouldScrollToSelected(true);
+        const clearTimer = setTimeout(() => setShouldScrollToSelected(false), 100);
+        return () => clearTimeout(clearTimer);
+      }, 100); // Small delay to ensure list is rendered
+      return () => clearTimeout(timer);
+    }
+  }, [selectedMonsterId]);
 
   const selectedMonster = useMemo(() => {
     return monsters.find((m) => m.id === selectedMonsterId);
@@ -78,6 +112,7 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
           monsters={filteredMonsters}
           selectedIds={selectedMonsterId ? [selectedMonsterId] : []}
           handleMonsterClick={handleMonsterClick}
+          scrollToSelected={shouldScrollToSelected}
         />
       </div>
 

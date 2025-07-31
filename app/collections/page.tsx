@@ -1,4 +1,4 @@
-import { CollectionCard } from "@/ui/CollectionCard";
+import { CollectionCard } from "@/app/ui/CollectionCard";
 import * as db from "@/lib/db";
 
 export default async function CollectionsPage() {
@@ -19,7 +19,7 @@ export default async function CollectionsPage() {
             key={collection.id}
             collection={collection}
             showEditDeleteButtons={false}
-            showPublicBadge={false}
+            showVisibilityBadge={false}
             showAttribution={true}
           />
         ))}

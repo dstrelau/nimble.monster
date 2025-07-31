@@ -1,11 +1,28 @@
 "use client";
-import { ValidCollectionVisibilities } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { createCollection } from "@/actions/collection";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { createCollection } from "@/app/actions/collection";
+import { ValidCollectionVisibilities } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const collectionSchema = z.object({
   name: z.string().min(1, "Collection name is required"),
@@ -19,12 +36,7 @@ export default function NewCollectionForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<CollectionFormData>({
+  const form = useForm<CollectionFormData>({
     resolver: zodResolver(collectionSchema),
     defaultValues: {
       name: "",
@@ -34,51 +46,53 @@ export default function NewCollectionForm() {
   });
 
   return (
-    <div className="d-collapse d-collapse-arrow bg-base-100 border-base-300 border mb-6">
-      <input type="checkbox" />
-      <h3 className="d-collapse-title text-lg">Create Collection</h3>
-      <form
-        className="d-collapse-content"
-        onSubmit={handleSubmit((data) => {
-          startTransition(async () => {
-            const result = await createCollection(data);
-            if (result.success && result.collection) {
-              reset();
-              router.push(`/my/collections/${result.collection.id}/edit`);
-            }
-          });
-        })}
-      >
-        <fieldset className="d-fieldset">
-          <div className="space-y-4">
-            <div>
-              <label className="d-fieldset-label block mb-1" htmlFor="name">
-                Collection Name
-              </label>
-              <input
-                id="name"
-                {...register("name")}
-                className="d-input w-full"
-              />
-              {errors.name && (
-                <p className="text-sm text-red-600 mt-1">
-                  {errors.name.message}
-                </p>
-              )}
+    <Card className="mb-6">
+      <Collapsible>
+        <CollapsibleTrigger asChild>
+          <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg">Create Collection</CardTitle>
+              <ChevronDown className="h-4 w-4" />
             </div>
-
-            <div>
-              <button
-                type="submit"
-                disabled={isPending}
-                className="d-btn d-btn-primary"
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit((data) => {
+                  startTransition(async () => {
+                    const result = await createCollection(data);
+                    if (result.success && result.collection) {
+                      form.reset();
+                      router.push(`/my/collections/${result.collection.id}/edit`);
+                    }
+                  });
+                })}
+                className="space-y-4"
               >
-                {isPending ? "Creating..." : "Create"}
-              </button>
-            </div>
-          </div>
-        </fieldset>
-      </form>
-    </div>
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Collection Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? "Creating..." : "Create"}
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
+    </Card>
   );
 }

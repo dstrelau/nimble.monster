@@ -1,7 +1,8 @@
 "use client";
 
 import { CollectionVisibility, CollectionVisibilityType } from "@/lib/types";
-import clsx from "clsx";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export const VisibilityToggle = ({
   name,
@@ -21,58 +22,33 @@ export const VisibilityToggle = ({
   };
 
   return (
-    <div>
-      <label className="d-fieldset-label mb-1" htmlFor={name}>
-        Visibility
-      </label>
-      <div className="d-join" role="group">
-        <input
-          type="radio"
-          name={name}
-          id={`${name}-private`}
-          value={CollectionVisibility.PRIVATE}
-          checked={value === CollectionVisibility.PRIVATE}
-          onChange={() => onChangeAction(CollectionVisibility.PRIVATE)}
-          aria-label="Private"
-          className={clsx(
-            "d-btn d-join-item",
-            value === CollectionVisibility.PRIVATE
-              ? "d-btn-primary"
-              : "bg-base-100",
-          )}
-        />
-        <input
-          type="radio"
-          name={name}
-          id={`${name}-secret`}
-          value={CollectionVisibility.SECRET}
-          checked={value === CollectionVisibility.SECRET}
-          onChange={() => onChangeAction(CollectionVisibility.SECRET)}
-          aria-label="Secret"
-          className={clsx(
-            "d-btn d-join-item",
-            value === CollectionVisibility.SECRET
-              ? "d-btn-primary"
-              : "bg-base-100",
-          )}
-        />
-        <input
-          type="radio"
-          name={name}
-          id={`${name}-public`}
-          value={CollectionVisibility.PUBLIC}
-          checked={value === CollectionVisibility.PUBLIC}
-          onChange={() => onChangeAction(CollectionVisibility.PUBLIC)}
-          aria-label="Public"
-          className={clsx(
-            "d-btn d-join-item",
-            value === CollectionVisibility.PUBLIC
-              ? "d-btn-primary"
-              : "bg-base-100",
-          )}
-        />
-      </div>
-      <div className="mt-2 text-xs text-base-content/60 text-center">
+    <div className="space-y-2">
+      <Label className="text-sm font-medium">Visibility</Label>
+      <RadioGroup
+        value={value}
+        onValueChange={(newValue) => onChangeAction(newValue as CollectionVisibilityType)}
+        className="flex flex-row space-x-2"
+      >
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value={CollectionVisibility.PRIVATE} id={`${name}-private`} />
+          <Label htmlFor={`${name}-private`} className="text-sm cursor-pointer">
+            Private
+          </Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value={CollectionVisibility.SECRET} id={`${name}-secret`} />
+          <Label htmlFor={`${name}-secret`} className="text-sm cursor-pointer">
+            Secret
+          </Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem value={CollectionVisibility.PUBLIC} id={`${name}-public`} />
+          <Label htmlFor={`${name}-public`} className="text-sm cursor-pointer">
+            Public
+          </Label>
+        </div>
+      </RadioGroup>
+      <div className="text-xs text-muted-foreground text-center">
         {visibilityInfo[value]}
       </div>
     </div>

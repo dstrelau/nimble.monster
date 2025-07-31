@@ -2,6 +2,7 @@
 
 import { Search, X } from "lucide-react";
 import { useRef, useEffect } from "react";
+import { IconInput } from "@/components/app/IconInput";
 
 interface SearchInputProps {
   value: string;
@@ -36,25 +37,26 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   };
 
   return (
-    <div className="d-input w-full relative">
-      <Search className="h-4 w-4" />
-      <input
+    <div className="relative">
+      <IconInput
         ref={inputRef}
         type="text"
+        icon={Search}
         placeholder={placeholder}
         defaultValue={value}
         onChange={handleChange}
         autoComplete="off"
         spellCheck={false}
+        className="pr-9"
       />
       {value && (
         <button
           type="button"
-          className="absolute right-2 top-1/2 transform -translate-y-1/2"
+          className="absolute right-3 top-1/2 -translate-y-1/2"
           onClick={handleClear}
           aria-label="Clear search"
         >
-          <X className="h-4 w-4 cursor-pointer" />
+          <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
         </button>
       )}
     </div>

@@ -1,8 +1,6 @@
-import type { User } from "@/lib/types";
-
 import Link from "next/link";
-import React from "react";
-import { UserAvatar } from "./UserAvatar";
+import { UserAvatar } from "@/components/app/UserAvatar";
+import type { User } from "@/lib/types";
 
 export const Attribution = ({ user }: { user: User }) => (
   <Link

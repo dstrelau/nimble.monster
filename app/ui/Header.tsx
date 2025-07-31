@@ -1,194 +1,281 @@
 "use client";
 
-import { Menu, Flame } from "lucide-react";
-import Image from "next/image";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 import { signIn, signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/app/UserAvatar";
+import { MobileMenuDropdown } from "@/components/app/MobileMenuDropdown";
+import { Logo } from "@/components/app/Logo";
+import { cn } from "@/lib/utils";
 
 const Header = () => {
   const { data: session } = useSession();
   const currentUser = session?.user;
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileUserMenuOpen, setMobileUserMenuOpen] = useState(false);
 
   const isActive = (path: string) => pathname === path;
 
-  const closeMenu = () => {
-    const detailsElement = document.querySelector(
-      "#user-dropdown",
-    ) as HTMLDetailsElement;
-    if (detailsElement) {
-      detailsElement.open = false;
-    }
-  };
+  // Navigation data
+  const mainNavLinks = [
+    {
+      href: "/monsters/new",
+      label: "Build Monster",
+      isActive: isActive("/monsters/new"),
+    },
+    { href: "/monsters", label: "Monsters", isActive: isActive("/monsters") },
+    {
+      href: "/collections",
+      label: "Collections",
+      isActive: isActive("/collections"),
+    },
+  ];
 
-  useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
-      if (
-        event.target instanceof Element &&
-        !event.target.closest("#user-dropdown")
-      ) {
-        closeMenu();
-      }
-    };
+  const userNavLinks = currentUser
+    ? [
+        {
+          href: currentUser.name ? `/u/${currentUser.name}` : "#",
+          label: "My Profile",
+          isActive: currentUser.name
+            ? isActive(`/u/${currentUser.name}`)
+            : false,
+        },
+        {
+          href: "/my/monsters",
+          label: "My Monsters",
+          isActive: isActive("/my/monsters"),
+        },
+        {
+          href: "/my/collections",
+          label: "My Collections",
+          isActive: isActive("/my/collections"),
+        },
+        {
+          href: "/my/families",
+          label: "My Families",
+          isActive: isActive("/my/families"),
+        },
+      ]
+    : [];
 
-    window.addEventListener("click", handleClick);
-    return () => window.removeEventListener("click", handleClick);
-  }, []);
+  const userNavButtons = currentUser
+    ? [
+        {
+          label: "Logout",
+          onClick: () => {
+            setMobileUserMenuOpen(false);
+            signOut({ redirectTo: "/" });
+          },
+        },
+      ]
+    : [];
 
   return (
-    <nav className="d-navbar p-0 bg-neutral text-neutral-content shadow-sm">
+    <nav className="p-0 shadow-sm bg-blue">
       <div className="mx-auto max-w-7xl w-full px-4 flex justify-between items-center h-16">
-        <Link href="/" className="flex items-center group">
-          <Flame className="h-8 w-8 group-hover:fill-amber-600 transition-colors" />
-          <span className="hidden md:block ml-2 font-bold">nimble.monster</span>
-        </Link>
+        {/* Mobile left menu button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden text-white hover:bg-white/10 hover:text-white"
+          onClick={() => {
+            setMobileMenuOpen(!mobileMenuOpen);
+            setMobileUserMenuOpen(false);
+          }}
+        >
+          <Menu className="h-8 w-8" />
+        </Button>
 
-        {/* Desktop navigation */}
-        <ul className="hidden md:flex d-menu d-menu-horizontal">
-          <li>
-            <Link
-              href="/monsters/new"
-              className={isActive("/monsters/new") ? "font-bold" : ""}
-            >
-              Build Monster
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/monsters"
-              className={isActive("/monsters") ? "font-bold" : ""}
-            >
-              Monsters
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/collections"
-              className={isActive("/collections") ? "font-bold" : ""}
-            >
-              Collections
-            </Link>
-          </li>
-        </ul>
+        {/* Desktop logo (left) */}
+        <Logo showText={true} className="hidden md:flex" />
 
-        {/* Dropdown menu */}
-        <div>
+        {/* Mobile logo (center) */}
+        <Logo showText={false} className="md:hidden" />
+
+        {/* Desktop navigation (center) */}
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <Link href="/monsters/new" legacyBehavior passHref>
+                <NavigationMenuLink
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    "text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent",
+                    isActive("/monsters/new") && "font-bold bg-white/20",
+                  )}
+                >
+                  Build Monster
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/monsters" legacyBehavior passHref>
+                <NavigationMenuLink
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    "text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent",
+                    isActive("/monsters") && "font-bold bg-white/20",
+                  )}
+                >
+                  Monsters
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/collections" legacyBehavior passHref>
+                <NavigationMenuLink
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    "text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent",
+                    isActive("/collections") && "font-bold bg-white/20",
+                  )}
+                >
+                  Collections
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+
+        {/* Desktop User menu */}
+        <div className="hidden md:block">
           {currentUser ? (
-            <details id="user-dropdown" className="d-dropdown d-dropdown-end">
-              <summary className="list-none">
-                <div className="hidden md:block d-btn d-btn-ghost p-0 rounded-md d-avatar">
-                  <div className="w-10 rounded-md">
-                    <Image
-                      src={
-                        currentUser.image ||
-                        "https://cdn.discordapp.com/embed/avatars/0.png"
-                      }
-                      alt={currentUser.name ?? ""}
-                      width={48}
-                      height={48}
-                    />
-                  </div>
-                </div>
-                <div className="d-btn d-btn-ghost md:hidden">
-                  <Menu className="h-8 w-8" />
-                </div>
-              </summary>
-
-              <ul
-                className="d-menu d-dropdown-content bg-base-100 text-base text-base-content p-2 m-2 z-1 w-64 md:w-48 rounded-sm shadow-md"
-                role="menu"
-              >
-                <li className="md:hidden">
-                  <Link
-                    href="/monsters/new"
-                    className={isActive("/monsters/new") ? "font-bold" : ""}
-                  >
-                    Build Monster
-                  </Link>
-                </li>
-                <li className="md:hidden">
-                  <Link
-                    href="/monsters"
-                    className={isActive("/monsters") ? "font-bold" : ""}
-                  >
-                    All Monsters
-                  </Link>
-                </li>
-                <li className="md:hidden">
-                  <Link
-                    href="/collections"
-                    className={isActive("/collections") ? "font-bold" : ""}
-                  >
-                    All Collections
-                  </Link>
-                </li>
-                <li>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent p-2 rounded-full"
+                >
+                  <UserAvatar user={currentUser} size="md" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
                   <Link
                     href={currentUser.name ? `/u/${currentUser.name}` : "#"}
-                    className={
-                      currentUser.name && isActive(`/u/${currentUser.name}`)
-                        ? "font-bold"
-                        : ""
-                    }
+                    className={cn(
+                      currentUser.name &&
+                        isActive(`/u/${currentUser.name}`) &&
+                        "font-bold bg-accent",
+                    )}
                   >
                     My Profile
                   </Link>
-                </li>
-                <li>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link
                     href="/my/monsters"
-                    className={isActive("/my/monsters") ? "font-bold" : ""}
+                    className={cn(
+                      isActive("/my/monsters") && "font-bold bg-accent",
+                    )}
                   >
                     My Monsters
                   </Link>
-                </li>
-                <li>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link
                     href="/my/collections"
-                    className={isActive("/my/collections") ? "font-bold" : ""}
+                    className={cn(
+                      isActive("/my/collections") && "font-bold bg-accent",
+                    )}
                   >
                     My Collections
                   </Link>
-                </li>
-                <li>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link
                     href="/my/families"
-                    className={isActive("/my/families") ? "font-bold" : ""}
+                    className={cn(
+                      isActive("/my/families") && "font-bold bg-accent",
+                    )}
                   >
                     My Families
                   </Link>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    className="d-menu-item"
-                    onClick={() => signOut({ redirectTo: "/" })}
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            </details>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => signOut({ redirectTo: "/" })}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
-            <button
-              type="button"
-              className="cursor-pointer"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent p-2 rounded-full"
+              onClick={() =>
+                signIn("discord", { redirectTo: "/my/monsters" })
+              }
+            >
+              <UserAvatar user={{}} size="md" />
+            </Button>
+          )}
+        </div>
+
+        {/* Mobile User menu */}
+        <div className="md:hidden">
+          {currentUser ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/10 hover:text-white"
+              onClick={() => {
+                setMobileUserMenuOpen(!mobileUserMenuOpen);
+                setMobileMenuOpen(false);
+              }}
+            >
+              <UserAvatar user={currentUser} size="md" />
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/10 hover:text-white"
               onClick={() => signIn("discord", { redirectTo: "/my/monsters" })}
             >
-              <Image
-                className="size-8 rounded"
-                src="https://cdn.discordapp.com/embed/avatars/0.png"
-                alt="Login"
-                width={32}
-                height={32}
-              />
-            </button>
+              <UserAvatar user={{}} size="md" />
+            </Button>
           )}
         </div>
       </div>
+
+      {/* Mobile menu dropdowns */}
+      <MobileMenuDropdown
+        isOpen={mobileMenuOpen}
+        links={mainNavLinks.map((link) => ({
+          ...link,
+          onClick: () => setMobileMenuOpen(false),
+        }))}
+      />
+
+      <MobileMenuDropdown
+        isOpen={mobileUserMenuOpen && !!currentUser}
+        links={userNavLinks.map((link) => ({
+          ...link,
+          onClick: () => setMobileUserMenuOpen(false),
+        }))}
+        buttons={userNavButtons}
+      />
     </nav>
   );
 };

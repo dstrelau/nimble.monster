@@ -1,5 +1,5 @@
 // app/monsters/page.tsx
-import { MonstersListView } from "@/ui/MonstersListView";
+import { MonstersListView } from "@/app/ui/MonstersListView";
 import * as db from "@/lib/db";
 
 export default async function MonstersPage({

@@ -1,12 +1,27 @@
-import type React from "react";
-import { AbilityOverlay } from "@/ui/AbilityOverlay";
+import clsx from "clsx";
+import { ChevronsRight, Send, Waves } from "lucide-react";
+import React from "react";
+import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
+import { Attribution } from "@/app/ui/Attribution";
+import {
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Card as ShadcnCard,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { maybePeriod } from "@/lib/text";
 import type { Monster, User } from "@/lib/types";
-import { ChevronsRight, Heart, Shield, Waves, Send, Star } from "lucide-react";
-import clsx from "clsx";
-import { Attribution } from "@/ui/Attribution";
 import CardActions from "./CardActions";
-import { Stat } from "./Stat";
+import { ArmorStat, HPStat, SavesStat, Stat } from "./Stat";
 
 const StatsGroup: React.FC<{
   monster: Monster;
@@ -14,7 +29,7 @@ const StatsGroup: React.FC<{
 }> = ({ monster, children }) => {
   const tooltipLines: string[] = [];
 
-  if (monster.armor)
+  if (monster.armor !== "none")
     tooltipLines.push(
       `Armor: ${monster.armor.charAt(0).toUpperCase() + monster.armor.slice(1)}`,
     );
@@ -24,44 +39,46 @@ const StatsGroup: React.FC<{
   if (monster.hp) tooltipLines.push(`HP: ${monster.hp}`);
   if (monster.saves) tooltipLines.push(`Saves: ${monster.saves}`);
 
+  if (tooltipLines.length === 0) {
+    return <div className="flex items-center">{children}</div>;
+  }
+
   return (
-    <div className="d-dropdown d-dropdown-hover d-dropdown-bottom d-dropdown-center ">
-      <div tabIndex={0} className="flex items-center">
-        {children}
-      </div>
-      {tooltipLines.length > 0 && (
-        <div className="d-dropdown-content d-shadow rounded-md bg-neutral text-neutral-content font-sans not-italic z-10">
-          <div className="p-2 text-sm gap-0 min-w-32">
-            {tooltipLines.map((line) => (
-              <p key={line}>{line}</p>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="flex items-center cursor-pointer">{children}</div>
+      </TooltipTrigger>
+      <TooltipContent className="w-fit p-3">
+        <dl className="grid grid-cols-2 gap-x-2 gap-y-1">
+          {tooltipLines.map((line) => (
+            <React.Fragment key={line}>
+              <dt className="text-right font-medium">{line.split(":")[0]}:</dt>
+              <dd className="text-left">{line.split(":")[1]}</dd>
+            </React.Fragment>
+          ))}
+        </dl>
+      </TooltipContent>
+    </Tooltip>
   );
 };
 
 const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
-  <>
-    <header className="flex justify-between items-center -mb-1">
-      <div>
-        <span className="font-beaufort font-black text-lg leading-none tracking-tight">
-          Level {monster.level} Solo{" "}
-          {monster.size.charAt(0).toUpperCase() + monster.size.slice(1)}{" "}
-          {monster.kind}
-        </span>
-      </div>
+  <CardHeader>
+    <CardTitle className="font-slab font-black italic text-4xl">
+      {monster.name}
+    </CardTitle>
+    <CardDescription className="font-beaufort font-black text-lg leading-none tracking-tight">
+      Level {monster.level} Solo{" "}
+      {monster.size.charAt(0).toUpperCase() + monster.size.slice(1)}{" "}
+      {monster.kind}
+    </CardDescription>
+    <CardAction>
       <StatsGroup monster={monster}>
         <div className="flex items-center justify-center font-slab font-black italic">
-          {monster.armor === "medium" && (
-            <Stat name="armor" value="M" SvgIcon={Shield} />
-          )}
-          {monster.armor === "heavy" && (
-            <Stat name="armor" value="H" SvgIcon={Shield} />
-          )}
-          <Stat name="hp" value={monster.hp} SvgIcon={Heart} />
-          <Stat name="saves" value="" SvgIcon={Star}>
+          {monster.armor === "medium" && <ArmorStat value="M" />}
+          {monster.armor === "heavy" && <ArmorStat value="H" />}
+          <HPStat value={monster.hp} />
+          <SavesStat>
             <div className="flex flex-col">
               {monster.saves?.split(",").map((save, i, arr) => (
                 <span key={save} className="block">
@@ -70,52 +87,41 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
                 </span>
               ))}{" "}
             </div>
-          </Stat>
+          </SavesStat>
         </div>
       </StatsGroup>
-    </header>
-    <div className="mb-1">
-      <span className="font-slab font-black text-4xl pr-1">{monster.name}</span>
-    </div>
-  </>
+    </CardAction>
+  </CardHeader>
 );
 
 const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
-  <header className="justify-between">
-    <div className="flex flex-col gap-x-1 items-start">
-      <div className="flex items-center grow w-full justify-between font-slab font-black italic pr-1">
-        <div className="font-small-caps text-2xl">{monster.name}</div>
-        <StatsGroup monster={monster}>
-          <div className="flex grow flex-wrap items-center justify-end">
-            {monster.armor === "medium" && (
-              <Stat name="armor" value="M" SvgIcon={Shield} />
-            )}
-            {monster.armor === "heavy" && (
-              <Stat name="armor" value="H" SvgIcon={Shield} />
-            )}
-            <Stat name="swim" value={monster.swim} SvgIcon={Waves} />
-            <Stat name="fly" value={monster.fly} SvgIcon={Send} />
-            {monster.speed !== 6 && (
-              <Stat
-                name="speed"
-                value={monster.speed}
-                SvgIcon={ChevronsRight}
-              />
-            )}
-            <Stat name="hp" value={monster.hp} SvgIcon={Heart} />
-          </div>
-        </StatsGroup>
-      </div>
-      <div className="font-condensed font-small-caps whitespace-nowrap items-start">
-        Lvl {monster.level}
-        {monster.kind && monster.size !== "medium"
-          ? ` ${monster.size} ${monster.kind.toLocaleLowerCase()}`
-          : monster.kind
-            ? ` ${monster.kind.toLocaleLowerCase()}`
-            : `, ${monster.size}`}
-      </div>
-    </div>
-  </header>
+  <CardHeader>
+    <CardTitle className="font-slab font-black small-caps italic">
+      <div className="text-2xl">{monster.name}</div>
+    </CardTitle>
+    <CardDescription className="font-condensed small-caps">
+      Lvl {monster.level}
+      {monster.kind && monster.size !== "medium"
+        ? ` ${monster.size} ${monster.kind.toLocaleLowerCase()}`
+        : monster.kind
+          ? ` ${monster.kind.toLocaleLowerCase()}`
+          : `, ${monster.size}`}
+    </CardDescription>
+    <CardAction>
+      <StatsGroup monster={monster}>
+        <div className="flex grow flex-wrap items-center justify-end font-slab font-black italic">
+          {monster.armor === "medium" && <ArmorStat value="M" />}
+          {monster.armor === "heavy" && <ArmorStat value="H" />}
+          <Stat name="swim" value={monster.swim} SvgIcon={Waves} />
+          <Stat name="fly" value={monster.fly} SvgIcon={Send} />
+          {monster.speed !== 6 && (
+            <Stat name="speed" value={monster.speed} SvgIcon={ChevronsRight} />
+          )}
+          <HPStat value={monster.hp} />
+        </div>
+      </StatsGroup>
+    </CardAction>
+  </CardHeader>
 );
 
 interface CardProps {
@@ -134,85 +140,88 @@ export const Card = ({
   return (
     <div className={clsx(monster.legendary && "md:col-span-2")}>
       <div id={`monster-${monster.id}`}>
-        <article className="d-card d-card-border px-4 py-3 bg-base-100 border-base-300">
+        <ShadcnCard className="gap-4 py-4">
           {monster.legendary ? (
             <HeaderLegendary monster={monster} />
           ) : (
             <HeaderStandard monster={monster} />
           )}
 
-          <div className="abilities flex flex-col py-2 gap-4">
-            {monster.family?.abilities && (
+          <CardContent className="flex flex-col gap-4">
+            {(monster.family?.abilities || monster.abilities.length > 0) && (
               <AbilityOverlay
-                abilities={monster.family.abilities}
+                abilities={[
+                  ...(monster.family?.abilities || []),
+                  ...monster.abilities,
+                ]}
                 family={monster.family}
               />
             )}
-            {monster.abilities.map((ability) => (
-              <AbilityOverlay key={ability.name} abilities={[ability]} />
-            ))}
-          </div>
 
-          {monster.actions.length > 0 && (
-            <>
+            {monster.actions.length > 0 && (
               <div>
-                <strong>ACTIONS: </strong>
-                {monster.actionPreface}
+                <div>
+                  <strong className="font-condensed">ACTIONS: </strong>
+                  {monster.actionPreface}
+                </div>
+                <ul className="text-base list-disc pl-4">
+                  {monster.actions?.map((action) => (
+                    <li key={action.name}>
+                      <strong className="pr-1">
+                        {maybePeriod(action.name)}
+                      </strong>
+                      {action.damage && (
+                        <span className="damage">{action.damage} </span>
+                      )}
+                      {action.description && (
+                        <span className="description">
+                          {action.description}
+                        </span>
+                      )}
+                      {action.range && (
+                        <span className="range">({action.range} ft)</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="d-list text-base list-disc pl-4">
-                {monster.actions?.map((action) => (
-                  <li key={action.name} className="d-list-item">
-                    <strong className="pr-1">{maybePeriod(action.name)}</strong>
-                    {action.damage && (
-                      <span className="damage">{action.damage} </span>
-                    )}
-                    {action.description && (
-                      <span className="description">{action.description}</span>
-                    )}
-                    {action.range && (
-                      <span className="range">({action.range} ft)</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-          {monster.legendary && (
-            <>
-              <div className="d-divider my-1" />
-              {monster.bloodied && (
-                <p className="font-condensed">
-                  <strong>BLOODIED: </strong>
-                  {monster.bloodied}
-                </p>
-              )}
+            )}
+            {monster.legendary && (
+              <div>
+                {monster.bloodied && (
+                  <p>
+                    <strong className="font-condensed">BLOODIED: </strong>
+                    {monster.bloodied}
+                  </p>
+                )}
 
-              {monster.lastStand && (
-                <p className="font-condensed">
-                  <strong>LAST STAND: </strong>
-                  {monster.lastStand}
-                </p>
-              )}
-            </>
-          )}
-
-          {monster.moreInfo && (
-            <p className="italic mt-4">{monster.moreInfo}</p>
-          )}
-
-          <div className="d-divider my-1" />
-          <div className="flex items-center justify-between">
-            {creator ? (
-              <Attribution user={creator} />
-            ) : (
-              <div /> /* Empty div to maintain flex layout */
+                {monster.lastStand && (
+                  <p>
+                    <strong className="font-condensed">LAST STAND: </strong>
+                    {monster.lastStand}
+                  </p>
+                )}
+              </div>
             )}
 
-            {!hideActions && (
-              <CardActions monster={monster} isOwner={isOwner} />
-            )}
-          </div>
-        </article>
+            {monster.moreInfo && <p className="italic">{monster.moreInfo}</p>}
+          </CardContent>
+
+          <Separator />
+          <CardFooter className="flex-col items-stretch">
+            <div className="flex items-center justify-between">
+              {creator ? (
+                <Attribution user={creator} />
+              ) : (
+                <div /> /* Empty div to maintain flex layout */
+              )}
+
+              {!hideActions && (
+                <CardActions monster={monster} isOwner={isOwner} />
+              )}
+            </div>
+          </CardFooter>
+        </ShadcnCard>
       </div>
     </div>
   );
