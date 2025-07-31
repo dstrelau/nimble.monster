@@ -27,7 +27,6 @@ export const toMonster = (
   actions: m.actions as unknown as Action[],
   actionPreface: m.actionPreface || "",
   moreInfo: m.moreInfo || "",
-  imageUrl: m.imageUrl || undefined,
   family: toFamily(m.family),
   creator: { ...m.creator, avatar: m.creator.avatar || "" },
 });

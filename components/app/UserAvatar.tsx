@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { User } from "@/lib/types";
 
@@ -32,8 +31,14 @@ export const UserAvatar = ({ user, size, className }: UserAvatarProps) => {
 
   if (isEmpty) {
     return (
-      <Avatar className={className} style={{ width: sizeInPixels, height: sizeInPixels }}>
-        <AvatarImage src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Discord" />
+      <Avatar
+        className={className}
+        style={{ width: sizeInPixels, height: sizeInPixels }}
+      >
+        <AvatarImage
+          src="https://cdn.discordapp.com/embed/avatars/0.png"
+          alt="Discord"
+        />
         <AvatarFallback>D</AvatarFallback>
       </Avatar>
     );

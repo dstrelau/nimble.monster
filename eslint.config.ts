@@ -11,7 +11,7 @@ const compat = new FlatCompat({
 });
 
 export default defineConfig([
-  globalIgnores([".next/", "prisma/", "app/lib/prisma/", "tailwind.config.js"]),
+  globalIgnores([".next/", "prisma/", "lib/prisma/", "tailwind.config.js"]),
   compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
