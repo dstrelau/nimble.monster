@@ -16,6 +16,9 @@ dist-ssr
 lib/prisma
 tmp/
 
+# TypeScript
+*.tsbuildinfo
+
 # Editor directories and files
 .env*
 .vscode/*

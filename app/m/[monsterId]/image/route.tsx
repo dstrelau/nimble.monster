@@ -1,15 +1,15 @@
 import { findPublicMonsterById } from "@/lib/db";
 import { NextRequest } from "next/server";
-import puppeteer from "puppeteer";
+import { getBrowser } from "@/lib/browser";
 import { isValidUUID } from "@/lib/utils/validation";
 
 async function getMonsterImage(baseUrl: string, monsterId: string) {
   "use cache";
   const monsterPageUrl = `${baseUrl}/m/${monsterId}`;
-  const browser = await puppeteer.launch();
-  try {
-    const page = await browser.newPage();
+  const browser = await getBrowser();
+  const page = await browser.newPage();
 
+  try {
     // Set viewport to match OpenGraph dimensions (1200x630)
     await page.setViewport({ width: 1200, height: 630 });
 
@@ -23,7 +23,7 @@ async function getMonsterImage(baseUrl: string, monsterId: string) {
     const OG_HEIGHT = 630;
 
     await page.evaluate(
-      (params) => {
+      (params: { monsterId: string; OG_WIDTH: number; OG_HEIGHT: number }) => {
         const { monsterId, OG_WIDTH } = params;
         // Select the container of the monster card
         const container = document.querySelector(
@@ -86,7 +86,7 @@ async function getMonsterImage(baseUrl: string, monsterId: string) {
 
     return Buffer.from(screenshotBuffer);
   } finally {
-    await browser.close();
+    await page.close();
   }
 }
 
