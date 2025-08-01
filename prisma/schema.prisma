@@ -19,7 +19,7 @@ model Collection {
   updatedAt          DateTime?             @default(now()) @map("updated_at") @db.Timestamptz(6)
   description        String                @default("")
   visibility         collection_visibility @default(public)
-  creator            User                  @relation(fields: [creatorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  creator            User                  @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
   monsterCollections MonsterInCollection[]
 
   @@index([creatorId], map: "idx_collections_user_id")
@@ -30,7 +30,7 @@ model MonsterInCollection {
   collectionId String     @map("collection_id") @db.Uuid
   monsterId    String     @map("monster_id") @db.Uuid
   monster      Monster    @relation(fields: [monsterId], references: [id], onDelete: Cascade)
-  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collection   Collection @relation(fields: [collectionId], references: [id])
 
   @@id([monsterId, collectionId])
   @@map("monsters_collections")
@@ -45,7 +45,7 @@ model Family {
   createdAt  DateTime?         @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt  DateTime?         @default(now()) @map("updated_at") @db.Timestamptz(6)
   monsters   Monster[]
-  creator    User              @relation(fields: [creatorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  creator    User              @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
 
   @@map("families")
 }
@@ -75,9 +75,10 @@ model Monster {
   actionPreface      String?               @map("action_preface")
   moreInfo           String?               @default("") @map("more_info")
   userId             String                @map("user_id") @db.Uuid
-  creator            User                  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  creator            User                  @relation(fields: [userId], references: [id], onUpdate: NoAction)
   monsterCollections MonsterInCollection[]
 
+  @@index([userId], map: "idx_monsters_user_id")
   @@map("monsters")
 }
 
@@ -86,7 +87,7 @@ model Session {
   discordId  String   @map("discord_id")
   expires_at DateTime @db.Timestamptz(6)
   userId     String   @map("user_id") @db.Uuid
-  users      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      User     @relation(fields: [userId], references: [id], onUpdate: NoAction)
 
   @@index([expires_at], map: "idx_sessions_expires_at")
   @@map("sessions")

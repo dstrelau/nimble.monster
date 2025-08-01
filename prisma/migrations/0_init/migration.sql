@@ -1,3 +1,6 @@
+-- CreateExtension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- CreateEnum
 CREATE TYPE "armor_type" AS ENUM ('', 'medium', 'heavy');
 
@@ -65,8 +68,8 @@ CREATE TABLE "monsters" (
     "bloodied" TEXT NOT NULL DEFAULT '',
     "last_stand" TEXT NOT NULL DEFAULT '',
     "saves" TEXT[],
-    "created_at" TIMESTAMPTZ(6) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ(6) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "kind" TEXT NOT NULL DEFAULT '',
     "visibility" "monster_visibility" NOT NULL DEFAULT 'public',
     "family_id" UUID,
@@ -102,13 +105,16 @@ CREATE TABLE "users" (
 CREATE INDEX "idx_collections_user_id" ON "collections"("user_id");
 
 -- CreateIndex
+CREATE INDEX "idx_monsters_user_id" ON "monsters"("user_id");
+
+-- CreateIndex
 CREATE INDEX "idx_sessions_expires_at" ON "sessions"("expires_at");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "idx_users_discord_id" ON "users"("discord_id");
 
 -- AddForeignKey
-ALTER TABLE "collections" ADD CONSTRAINT "collections_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "collections" ADD CONSTRAINT "collections_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "monsters_collections" ADD CONSTRAINT "monsters_collections_monster_id_fkey" FOREIGN KEY ("monster_id") REFERENCES "monsters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -117,11 +123,14 @@ ALTER TABLE "monsters_collections" ADD CONSTRAINT "monsters_collections_monster_
 ALTER TABLE "monsters_collections" ADD CONSTRAINT "monsters_collections_collection_id_fkey" FOREIGN KEY ("collection_id") REFERENCES "collections"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "families" ADD CONSTRAINT "families_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
+
+-- AddForeignKey
 ALTER TABLE "monsters" ADD CONSTRAINT "monsters_family_id_fkey" FOREIGN KEY ("family_id") REFERENCES "families"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "monsters" ADD CONSTRAINT "monsters_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "monsters" ADD CONSTRAINT "monsters_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
 
