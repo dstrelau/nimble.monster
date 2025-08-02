@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
+import { UserAvatar } from "@/components/app/UserAvatar";
 import * as db from "@/lib/db";
 import TabsContent from "./TabsContent";
-import React from "react";
-import { UserAvatar } from "@/components/app/UserAvatar";
 
 export default async function UserProfilePage({
   params,

@@ -25,6 +25,12 @@ import {
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
+import {
+  FormInput as ShadcnFormInput,
+  FormSelect as ShadcnFormSelect,
+  Textarea,
+} from "@/app/ui/Form";
+import { Card } from "@/app/ui/monster/Card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -51,12 +57,6 @@ import type {
   User,
 } from "@/lib/types";
 import { ARMORS, SIZES } from "@/lib/types";
-import {
-  FormInput as ShadcnFormInput,
-  FormSelect as ShadcnFormSelect,
-  Textarea,
-} from "@/app/ui/Form";
-import { Card } from "@/app/ui/monster/Card";
 
 const EXAMPLE_MONSTERS: Record<string, Monster> = {
   goblin: {
@@ -762,7 +762,7 @@ const HP_RECOMMENDATION_LEGENDARY: Record<string, Record<string, number>> = {
 
 const getRecommendedHPStandard = (
   level: string,
-  armor: MonsterArmor,
+  armor: MonsterArmor
 ): number | null => {
   if (!level || !HP_RECOMMENDATION_STANDARD[level]) return null;
   return HP_RECOMMENDATION_STANDARD[level][armor] || null;
@@ -770,7 +770,7 @@ const getRecommendedHPStandard = (
 
 const getRecommendedHPLegendary = (
   level: string,
-  armor: MonsterArmor,
+  armor: MonsterArmor
 ): number | null => {
   if (!level || !HP_RECOMMENDATION_LEGENDARY[level]) return null;
   return HP_RECOMMENDATION_LEGENDARY[level][armor] || null;
@@ -862,7 +862,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
 
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [monster, setMonster] = useState<Monster>(
-    () => existingMonster ?? EXAMPLE_MONSTERS.empty,
+    () => existingMonster ?? EXAMPLE_MONSTERS.empty
   );
 
   const queryClient = useQueryClient();
@@ -907,7 +907,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
       <div
         className={clsx(
           showMobilePreview || "hidden",
-          "md:hidden fixed h-full left-0 top-0 inset-0 z-1 bg-background",
+          "md:hidden fixed h-full left-0 top-0 inset-0 z-1 bg-background"
         )}
       >
         <div className="w-full flex justify-center items-center sticky bg-secondary text-secondary-foreground p-4">
@@ -930,7 +930,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
       <div
         className={clsx(
           "md:hidden fixed bottom-0 left-0 right-0 z-1 w-full bg-background flex p-2 justify-between",
-          showMobilePreview && "hidden",
+          showMobilePreview && "hidden"
         )}
         onClick={() => setShowMobilePreview(true)}
       >
@@ -945,13 +945,13 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
       <div
         className={clsx(
           "grid grid-cols-6 gap-x-8 mb-10 md:mb-0",
-          showMobilePreview && "hidden",
+          showMobilePreview && "hidden"
         )}
       >
         <div
           className={clsx(
             "col-span-6",
-            monster.legendary ? "md:col-span-3" : "md:col-span-4",
+            monster.legendary ? "md:col-span-3" : "md:col-span-4"
           )}
         >
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -1017,7 +1017,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
         <div
           className={clsx(
             "hidden md:block",
-            monster.legendary ? "md:col-span-3" : "md:col-span-2",
+            monster.legendary ? "md:col-span-3" : "md:col-span-2"
           )}
         >
           <div className="sticky top-4">

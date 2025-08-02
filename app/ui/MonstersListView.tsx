@@ -24,7 +24,7 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
   const searchParams = useSearchParams();
 
   const [selectedMonsterId, setSelectedMonsterId] = useState<string | null>(
-    initialSelectedId || null,
+    initialSelectedId || null
   );
   const [shouldScrollToSelected, setShouldScrollToSelected] = useState(false);
 
@@ -64,7 +64,8 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
 
   // Trigger scrolling when filters change and there's a selected monster
   useEffect(() => {
-    if (selectedMonsterId && filtersChangeId > 1) { // Skip initial load
+    if (selectedMonsterId && filtersChangeId > 1) {
+      // Skip initial load
       setShouldScrollToSelected(true);
       const timer = setTimeout(() => setShouldScrollToSelected(false), 100);
       return () => clearTimeout(timer);
@@ -76,7 +77,10 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
     if (selectedMonsterId) {
       const timer = setTimeout(() => {
         setShouldScrollToSelected(true);
-        const clearTimer = setTimeout(() => setShouldScrollToSelected(false), 100);
+        const clearTimer = setTimeout(
+          () => setShouldScrollToSelected(false),
+          100
+        );
         return () => clearTimeout(clearTimer);
       }, 100); // Small delay to ensure list is rendered
       return () => clearTimeout(timer);

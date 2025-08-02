@@ -1,16 +1,16 @@
+import { Plus, Trash } from "lucide-react";
 import {
+  type Control,
   type FieldErrors,
   type UseFormRegister,
   useFieldArray,
-  type Control,
 } from "react-hook-form";
 import { z } from "zod";
-import { Plus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
 
 const AbilitySchema = z.object({
   name: z.string().min(1, "Ability name is required"),
@@ -57,7 +57,10 @@ export const FamilyForm = ({
           <Card key={field.id}>
             <CardContent className="p-4 space-y-4">
               <div>
-                <Label htmlFor={`abilities.${index}.name`} className="mb-2 block">
+                <Label
+                  htmlFor={`abilities.${index}.name`}
+                  className="mb-2 block"
+                >
                   Ability Name
                 </Label>
                 <Input
@@ -72,7 +75,10 @@ export const FamilyForm = ({
               </div>
 
               <div>
-                <Label htmlFor={`abilities.${index}.description`} className="mb-2 block">
+                <Label
+                  htmlFor={`abilities.${index}.description`}
+                  className="mb-2 block"
+                >
                   Ability Description
                 </Label>
                 <Textarea
@@ -86,7 +92,7 @@ export const FamilyForm = ({
                   </p>
                 )}
               </div>
-              
+
               {fields.length > 1 && (
                 <div className="flex justify-end">
                   <Button
@@ -102,7 +108,7 @@ export const FamilyForm = ({
             </CardContent>
           </Card>
         ))}
-        
+
         <div className="flex justify-end">
           <Button
             type="button"

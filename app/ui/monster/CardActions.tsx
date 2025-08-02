@@ -49,13 +49,13 @@ export default function CardActions({
   const downloadCard = async () => {
     try {
       const cardElement = document.querySelector(
-        `#monster-${monster.id} > div`,
+        `#monster-${monster.id} > div`
       );
       if (!cardElement) return;
 
       // Store original style
       const exportAttribution = cardElement.querySelector(
-        ".export-attribution",
+        ".export-attribution"
       );
       let originalAttributionDisplay = "";
 
@@ -84,7 +84,7 @@ export default function CardActions({
 
         // Replace shadcn separators with simple HR elements to ensure they show up in the image
         const separators = cardClone.querySelectorAll(
-          '[data-slot="separator"]',
+          '[data-slot="separator"]'
         );
         for (const separator of separators) {
           const hr = document.createElement("hr");
@@ -111,7 +111,7 @@ export default function CardActions({
         wrapper.appendChild(cardClone);
 
         const originalCard = document.querySelector(
-          `#monster-${monster.id} > div`,
+          `#monster-${monster.id} > div`
         ) as HTMLElement;
         const originalWidth = originalCard.offsetWidth;
         cardClone.style.width = `${originalWidth}px`;
@@ -157,7 +157,10 @@ export default function CardActions({
         <DropdownMenuContent side="top" align="end" className="min-w-38">
           {!isOnDetailPage && (
             <DropdownMenuItem asChild>
-              <Link className="flex gap-2 items-center" href={`/m/${monster.id}`}>
+              <Link
+                className="flex gap-2 items-center"
+                href={`/m/${monster.id}`}
+              >
                 <Expand className="w-4 h-4" />
                 Monster Detail
               </Link>

@@ -1,4 +1,4 @@
-import { PlusCircle, Lock, ClipboardList, Check } from "lucide-react";
+import { Check, ClipboardList, Lock, PlusCircle } from "lucide-react";
 import Link from "next/link";
 
 export default function HomePage() {

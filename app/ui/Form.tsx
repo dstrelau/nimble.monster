@@ -1,8 +1,14 @@
-import React from "react";
+import type React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea as ShadcnTextarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export interface FormInputProps {
   label: string;
@@ -42,7 +48,9 @@ export const FormInput: React.FC<FormInputProps> = ({
       name={name}
       type={type}
       value={value}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+        onChange(e.target.value)
+      }
     />
   </div>
 );
@@ -61,7 +69,9 @@ export const FormTextarea: React.FC<FormTextareaProps> = ({
       name={name}
       value={value}
       rows={rows}
-      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onChange(e.target.value)}
+      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        onChange(e.target.value)
+      }
     />
   </div>
 );

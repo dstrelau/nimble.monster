@@ -1,9 +1,9 @@
+import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { createMonster } from "@/lib/db";
 import type { CreateMonsterInput } from "@/lib/db";
+import { createMonster } from "@/lib/db";
 import { telemetry } from "@/lib/telemetry";
-import { trace } from "@opentelemetry/api";
 
 export const POST = telemetry(async (request: Request) => {
   const session = await auth();

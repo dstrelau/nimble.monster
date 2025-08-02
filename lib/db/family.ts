@@ -26,7 +26,7 @@ export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
 };
 
 export const getUserPublicFamiliesCount = async (
-  username: string,
+  username: string
 ): Promise<number> => {
   return await prisma.family.count({
     where: {

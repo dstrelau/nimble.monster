@@ -2,10 +2,10 @@ import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 
 function isRetryableDbError(error: unknown): boolean {
-  if (typeof error !== 'object' || !error) return false;
-  
-  const errorMessage = 'message' in error ? String(error.message) : '';
-  
+  if (typeof error !== "object" || !error) return false;
+
+  const errorMessage = "message" in error ? String(error.message) : "";
+
   return (
     errorMessage.includes("Can't reach database server") ||
     errorMessage.includes("Server has closed the connection") ||
@@ -17,7 +17,7 @@ function isRetryableDbError(error: unknown): boolean {
 }
 
 export function telemetry<T extends readonly unknown[]>(
-  handler: (...args: T) => Promise<NextResponse>,
+  handler: (...args: T) => Promise<NextResponse>
 ) {
   return async (...args: T): Promise<NextResponse> => {
     try {

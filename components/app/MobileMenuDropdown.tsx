@@ -39,7 +39,7 @@ export const MobileMenuDropdown: React.FC<MobileMenuDropdownProps> = ({
             href={link.href}
             className={cn(
               "block px-3 py-2 rounded-md text-white hover:bg-white/10 transition-colors",
-              link.isActive && "font-bold bg-white/20",
+              link.isActive && "font-bold bg-white/20"
             )}
             onClick={link.onClick}
           >

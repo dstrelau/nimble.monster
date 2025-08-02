@@ -1,12 +1,18 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createCollection } from "@/app/actions/collection";
-import { ValidCollectionVisibilities } from "@/lib/types";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Form,
   FormControl,
@@ -16,13 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ValidCollectionVisibilities } from "@/lib/types";
 
 const collectionSchema = z.object({
   name: z.string().min(1, "Collection name is required"),
@@ -65,7 +65,9 @@ export default function NewCollectionForm() {
                     const result = await createCollection(data);
                     if (result.success && result.collection) {
                       form.reset();
-                      router.push(`/my/collections/${result.collection.id}/edit`);
+                      router.push(
+                        `/my/collections/${result.collection.id}/edit`
+                      );
                     }
                   });
                 })}

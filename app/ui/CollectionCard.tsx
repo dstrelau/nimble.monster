@@ -30,7 +30,9 @@ export const CollectionCard = ({
           <Link href={`/collections/${collection.id}`} className="block">
             <CardTitle>{collection.name}</CardTitle>
           </Link>
-          {showVisibilityBadge && <VisibilityBadge visibility={collection.visibility} />}
+          {showVisibilityBadge && (
+            <VisibilityBadge visibility={collection.visibility} />
+          )}
         </div>
       </CardHeader>
       <CardContent>

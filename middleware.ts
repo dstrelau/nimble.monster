@@ -1,5 +1,5 @@
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 
 export default auth((request) => {
   const { nextUrl, auth: session } = request;
@@ -19,5 +19,5 @@ export default auth((request) => {
 });
 
 export const config = {
-  matcher: ["/my/:path*"]
+  matcher: ["/my/:path*"],
 };

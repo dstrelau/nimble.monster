@@ -1,8 +1,8 @@
-import { findPublicMonsterById } from "@/lib/db";
-import { Card } from "@/app/ui/monster/Card";
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { Card } from "@/app/ui/monster/Card";
 import { auth } from "@/lib/auth";
+import { findPublicMonsterById } from "@/lib/db";
 
 export async function generateMetadata({
   params,

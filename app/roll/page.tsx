@@ -1,12 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  calculateProbabilityDistribution,
-  parseDiceNotation,
-  calculateAverageDamageOnHit,
-  ProbabilityDistribution,
-} from "../../lib/dice";
 import { Sword } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  calculateAverageDamageOnHit,
+  calculateProbabilityDistribution,
+  type ProbabilityDistribution,
+  parseDiceNotation,
+} from "../../lib/dice";
 
 export default function DiceRollerPage() {
   return (
@@ -21,7 +21,7 @@ export default function DiceRollerPage() {
 const DiceRollerApp = () => {
   const [diceNotation, setDiceNotation] = useState("3d6+2");
   const [probabilities, setProbabilities] = useState<ProbabilityDistribution>(
-    new Map(),
+    new Map()
   );
   const [averageRoll, setAverageRoll] = useState<number | null>(null);
 

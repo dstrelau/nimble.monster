@@ -1,8 +1,8 @@
 "use server";
 
-import * as db from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
+import * as db from "@/lib/db";
 import type { Ability } from "@/lib/types";
 
 export async function deleteFamily(familyId: string) {
@@ -38,7 +38,7 @@ export async function updateFamily(
   formData: {
     name: string;
     abilities: Ability[];
-  },
+  }
 ) {
   try {
     const session = await auth();

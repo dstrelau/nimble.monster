@@ -1,8 +1,8 @@
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
+import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { resourceFromAttributes } from "@opentelemetry/resources";
 import { NodeSDK } from "@opentelemetry/sdk-node";
 import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions";
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
-import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 
 const HONEYCOMB_API_KEY = process.env.HONEYCOMB_API_KEY ?? "";
 
@@ -13,7 +13,7 @@ const otelHost = useHoneycomb
 const traceEndpoint = `${otelHost}/v1/traces`;
 
 console.log(
-  `OpenTelemetry exporting to: ${useHoneycomb ? "Honeycomb.io" : "localhost:4318"}`,
+  `OpenTelemetry exporting to: ${useHoneycomb ? "Honeycomb.io" : "localhost:4318"}`
 );
 
 const traceExporter = new OTLPTraceExporter({
@@ -48,7 +48,7 @@ const shutdownHandler = () => {
   sdk
     .shutdown()
     .catch((error) =>
-      console.error("Error shutting down OpenTelemetry SDK", error),
+      console.error("Error shutting down OpenTelemetry SDK", error)
     )
     .finally(() => process.exit(0));
 };

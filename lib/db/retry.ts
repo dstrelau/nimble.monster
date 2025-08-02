@@ -1,5 +1,5 @@
-import type { PrismaClient } from "@/lib/prisma";
 import { trace } from "@opentelemetry/api";
+import type { PrismaClient } from "@/lib/prisma";
 
 interface RetryOptions {
   maxRetries: number;
@@ -43,7 +43,7 @@ async function sleep(ms: number): Promise<void> {
 
 export function createRetryWrapper(
   prisma: PrismaClient,
-  options: RetryOptions = defaultRetryOptions,
+  options: RetryOptions = defaultRetryOptions
 ) {
   const handler: ProxyHandler<PrismaClient> = {
     get(target, prop) {

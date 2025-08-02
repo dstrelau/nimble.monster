@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
+import { FamilyCard } from "@/components/FamilyCard";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import { FamilyCard } from "@/components/FamilyCard";
 import { NewFamilyForm } from "./NewFamilyForm";
 
 export default async function MyFamiliesPage() {

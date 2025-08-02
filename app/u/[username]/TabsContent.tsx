@@ -1,16 +1,16 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
-import { Monster, CollectionOverview, Family } from "@/lib/types";
-import { CardGrid } from "@/app/ui/monster/CardGrid";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CollectionCard } from "@/app/ui/CollectionCard";
+import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { FamilyCard } from "@/components/FamilyCard";
 import {
-  Tabs,
   TabsContent as ShadcnTabsContent,
+  Tabs,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import type { CollectionOverview, Family, Monster } from "@/lib/types";
 
 type TabType = "monsters" | "collections" | "families";
 

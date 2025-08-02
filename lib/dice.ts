@@ -64,7 +64,7 @@ function primaryDie(dieSize: number): ProbabilityDistribution {
       const outcomeValue = explodingValue + i;
       result.set(
         outcomeValue,
-        (result.get(outcomeValue) || 0) + currentProbability,
+        (result.get(outcomeValue) || 0) + currentProbability
       );
     }
 
@@ -76,7 +76,7 @@ function primaryDie(dieSize: number): ProbabilityDistribution {
 
 function applyModifier(
   distribution: ProbabilityDistribution,
-  mod: number,
+  mod: number
 ): ProbabilityDistribution {
   if (mod === 0) return distribution;
   const result = new Map<number, number>();
@@ -93,7 +93,7 @@ function applyModifier(
 
 function regularDiceDistribution(
   numDice: number,
-  dieSize: number,
+  dieSize: number
 ): ProbabilityDistribution {
   if (numDice === 1) {
     const result: ProbabilityDistribution = new Map<number, number>();
@@ -114,7 +114,7 @@ function regularDiceDistribution(
 
 function combineProbabilityDistributions(
   d1: ProbabilityDistribution,
-  d2: ProbabilityDistribution,
+  d2: ProbabilityDistribution
 ): ProbabilityDistribution {
   const result: ProbabilityDistribution = new Map();
   const missP = d1.get(0);
@@ -134,7 +134,7 @@ function combineProbabilityDistributions(
 }
 
 export function calculateProbabilityDistribution(
-  diceRoll: DiceRoll,
+  diceRoll: DiceRoll
 ): ProbabilityDistribution {
   const { numDice, dieSize, modifier } = diceRoll;
 
@@ -146,7 +146,7 @@ export function calculateProbabilityDistribution(
     const restDistribution = regularDiceDistribution(numDice - 1, dieSize);
     result = combineProbabilityDistributions(
       firstDieDistribution,
-      restDistribution,
+      restDistribution
     );
   }
 
@@ -158,7 +158,7 @@ export function calculateProbabilityDistribution(
 }
 
 export function calculateAverageDamageOnHit(
-  distribution: ProbabilityDistribution,
+  distribution: ProbabilityDistribution
 ): number {
   const hitP = 1 - (distribution.get(0) || 1);
 

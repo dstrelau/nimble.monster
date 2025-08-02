@@ -1,20 +1,20 @@
 "use client";
 
-import { useState, useEffect, useActionState } from "react";
-import { VisibilityToggle } from "./VisibilityToggle";
+import { useActionState, useEffect, useState } from "react";
+import { CardGrid } from "@/app/ui/monster/CardGrid";
+import { List } from "@/app/ui/monster/List";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import type {
   Collection,
   CollectionVisibilityType,
   Monster,
 } from "@/lib/types";
 import { updateCollection } from "./actions";
-import { List } from "@/app/ui/monster/List";
-import { CardGrid } from "@/app/ui/monster/CardGrid";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
+import { VisibilityToggle } from "./VisibilityToggle";
 
 interface Props {
   collection: Collection;
@@ -31,7 +31,7 @@ export function EditForm({ collection, myMonsters }: Props) {
         currentCollection.description !== collection.description ||
         currentCollection.visibility !== collection.visibility ||
         JSON.stringify(currentCollection.monsters.map((m) => m.id).sort()) !==
-          JSON.stringify(collection.monsters.map((m) => m.id).sort()),
+          JSON.stringify(collection.monsters.map((m) => m.id).sort())
     );
   }, [currentCollection, collection]);
 
@@ -46,10 +46,10 @@ export function EditForm({ collection, myMonsters }: Props) {
   };
 
   const [_state, formAction] = useActionState<ActionState, FormData>(
-    async (prevState: ActionState, formData: FormData) => {
+    async (_prevState: ActionState, formData: FormData) => {
       formData.append(
         "monsterIds",
-        JSON.stringify(currentCollection.monsters.map((m) => m.id)),
+        JSON.stringify(currentCollection.monsters.map((m) => m.id))
       );
       const result = await updateCollection(collection.id, formData);
       if (result.success) {
@@ -64,11 +64,11 @@ export function EditForm({ collection, myMonsters }: Props) {
       }
       return result;
     },
-    initialState,
+    initialState
   );
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setCurrentCollection((prev) => ({
@@ -97,7 +97,7 @@ export function EditForm({ collection, myMonsters }: Props) {
         setCurrentCollection((prev) => ({
           ...prev,
           monsters: [...prev.monsters, clicked].sort((a, b) =>
-            a.name.localeCompare(b.name),
+            a.name.localeCompare(b.name)
           ),
         }));
       }
@@ -155,10 +155,7 @@ export function EditForm({ collection, myMonsters }: Props) {
               />
             </div>
             <div className="flex items-end ml-auto">
-              <Button
-                type="submit"
-                disabled={!isDirty}
-              >
+              <Button type="submit" disabled={!isDirty}>
                 Save
               </Button>
             </div>

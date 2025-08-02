@@ -1,10 +1,10 @@
-import * as React from "react"
-import { LucideIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
+import type { LucideIcon } from "lucide-react";
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
 interface IconInputProps extends React.ComponentProps<"input"> {
-  icon?: LucideIcon
-  iconPosition?: "start" | "end"
+  icon?: LucideIcon;
+  iconPosition?: "start" | "end";
 }
 
 const IconInput = React.forwardRef<HTMLInputElement, IconInputProps>(
@@ -22,7 +22,7 @@ const IconInput = React.forwardRef<HTMLInputElement, IconInputProps>(
           ref={ref}
           {...props}
         />
-      )
+      );
     }
 
     return (
@@ -47,10 +47,10 @@ const IconInput = React.forwardRef<HTMLInputElement, IconInputProps>(
           <Icon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         )}
       </div>
-    )
+    );
   }
-)
+);
 
-IconInput.displayName = "IconInput"
+IconInput.displayName = "IconInput";
 
-export { IconInput }
+export { IconInput };

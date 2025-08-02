@@ -1,14 +1,14 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from "zod";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import {
   type CollectionVisibilityType,
   ValidCollectionVisibilities,
 } from "@/lib/types";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { z } from "zod";
 
 const collectionSchema = z.object({
   name: z.string().min(1, "Collection name is required"),
@@ -21,7 +21,7 @@ export type CollectionFormData = z.infer<typeof collectionSchema>;
 
 export async function updateCollection(
   collectionId: string,
-  formData: FormData,
+  formData: FormData
 ): Promise<{ success: boolean; monsterIds: string[] }> {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");

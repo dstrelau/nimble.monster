@@ -1,5 +1,5 @@
-import type { Monster } from "@/lib/types";
 import clsx from "clsx";
+import type { Monster } from "@/lib/types";
 import { Card } from "./Card";
 
 export const CardGrid = ({
@@ -20,7 +20,7 @@ export const CardGrid = ({
         gridColumns.default && `grid-cols-${gridColumns.default}`,
         gridColumns.sm && `grid-cols-${gridColumns.sm}`,
         gridColumns.md && `md:grid-cols-${gridColumns.md}`,
-        gridColumns.lg && `lg:grid-cols-${gridColumns.lg}`,
+        gridColumns.lg && `lg:grid-cols-${gridColumns.lg}`
       )}
     >
       {monsters.map((m) => {

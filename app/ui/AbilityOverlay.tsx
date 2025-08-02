@@ -13,7 +13,7 @@ export const AbilityOverlay = ({
 
   const familyAbilities = family?.abilities || [];
   const familyAbilityNames = new Set(
-    familyAbilities.map((a) => a.name || a.Name),
+    familyAbilities.map((a) => a.name || a.Name)
   );
 
   return (

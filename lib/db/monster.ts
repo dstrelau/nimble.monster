@@ -41,7 +41,7 @@ export const listPublicMonsters = async (): Promise<Monster[]> => {
 };
 
 export const findPublicMonsterById = async (
-  id: string,
+  id: string
 ): Promise<Monster | null> => {
   if (!isValidUUID(id)) return null;
 
@@ -53,7 +53,7 @@ export const findPublicMonsterById = async (
 };
 
 export const listPublicMonstersForDiscordID = async (
-  username: string,
+  username: string
 ): Promise<Monster[]> => {
   return (
     await prisma.monster.findMany({
@@ -68,7 +68,7 @@ export const listPublicMonstersForDiscordID = async (
 };
 
 export const listAllMonstersForDiscordID = async (
-  id: string,
+  id: string
 ): Promise<Monster[]> => {
   return (
     await prisma.monster.findMany({
@@ -103,7 +103,7 @@ export interface CreateMonsterInput {
 }
 
 export const createMonster = async (
-  input: CreateMonsterInput,
+  input: CreateMonsterInput
 ): Promise<Monster> => {
   const {
     name,

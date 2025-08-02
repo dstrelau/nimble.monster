@@ -1,6 +1,6 @@
 # Build Commands
 - `pnpm run check` - Lint and type-check (dev-safe, use this during development)
-- `pnpm run lint` - ESLint only
+- `pnpm run lint` - Biome check (linting, formatting, import sorting)
 - `pnpm run type-check` - TypeScript check only
 - `pnpm run build` - Production build (breaks dev server, requires `rm -rf .next && pnpm run dev` after)
 - Regenerate lib/prisma from schema: `pnpm prisma generate`

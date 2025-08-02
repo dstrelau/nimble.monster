@@ -1,9 +1,9 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import type { CollectionOverview, CollectionVisibilityType } from "@/lib/types";
-import { revalidatePath } from "next/cache";
 
 export async function deleteCollection(collectionId: string) {
   try {
@@ -84,7 +84,7 @@ export async function updateCollection(
     name: string;
     visibility: CollectionVisibilityType;
     description?: string;
-  },
+  }
 ) {
   try {
     const session = await auth();

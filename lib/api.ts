@@ -1,6 +1,6 @@
 export async function fetchApi<T>(
   endpoint: string,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<T> {
   const response = await fetch(endpoint, {
     credentials: "same-origin",

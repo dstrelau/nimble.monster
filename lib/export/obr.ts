@@ -1,4 +1,4 @@
-import type { Monster, Collection } from "@/lib/types";
+import type { Collection, Monster } from "@/lib/types";
 
 interface OBRCompendiumFeature {
   name: string;
@@ -23,7 +23,7 @@ export interface OBRCompendiumPack {
 }
 
 export const convertMonsterToOBR = (
-  monster: Monster,
+  monster: Monster
 ): OBRCompendiumNimbleMonster => {
   // Convert armor format to match OBR expectations
   let armor: string | null = null;
@@ -54,10 +54,10 @@ export const convertMonsterToOBR = (
 };
 
 export const generateCompendiumPack = (
-  collection: Collection,
+  collection: Collection
 ): OBRCompendiumPack => {
   const monsters = collection.monsters.sort((a, b) =>
-    a.name.localeCompare(b.name),
+    a.name.localeCompare(b.name)
   );
 
   return {
@@ -65,7 +65,7 @@ export const generateCompendiumPack = (
     id: collection.id,
     version: collection.createdAt
       ? collection.createdAt.getTime().toString()
-      : new Date().getTime().toString(),
+      : Date.now().toString(),
     documents: monsters.map(convertMonsterToOBR),
   };
 };

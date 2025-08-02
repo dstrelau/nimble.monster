@@ -18,7 +18,7 @@ export const toMonster = (
       };
     },
     "findMany"
-  >[0],
+  >[0]
 ): Monster => ({
   ...m,
   saves: m.saves.join(" "),
@@ -32,7 +32,7 @@ export const toMonster = (
 });
 
 export const toFamily = (
-  f: Prisma.Result<typeof prisma.family, object, "findMany">[0] | null,
+  f: Prisma.Result<typeof prisma.family, object, "findMany">[0] | null
 ): Family | undefined => {
   if (!f) {
     return undefined;
@@ -53,10 +53,10 @@ export const toCollectionOverview = (
       };
     },
     "findMany"
-  >[0],
+  >[0]
 ): CollectionOverview => {
   const legendaryCount = c.monsterCollections.filter(
-    (m) => m.monster.legendary,
+    (m) => m.monster.legendary
   ).length;
   return {
     ...c,

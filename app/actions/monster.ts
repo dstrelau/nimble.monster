@@ -1,9 +1,9 @@
 "use server";
 
-import * as db from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import { Action, Ability } from "@/lib/types";
+import * as db from "@/lib/db";
+import type { Ability, Action } from "@/lib/types";
 
 export async function createMonster(formData: {
   name: string;
@@ -34,7 +34,10 @@ export async function createMonster(formData: {
 
     const monster = await db.createMonster({
       ...formData,
-      armor: formData.armor === "none" ? "" : formData.armor as "" | "medium" | "heavy",
+      armor:
+        formData.armor === "none"
+          ? ""
+          : (formData.armor as "" | "medium" | "heavy"),
       size: formData.size as
         | "tiny"
         | "small"

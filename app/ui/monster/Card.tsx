@@ -31,7 +31,7 @@ const StatsGroup: React.FC<{
 
   if (monster.armor !== "none")
     tooltipLines.push(
-      `Armor: ${monster.armor.charAt(0).toUpperCase() + monster.armor.slice(1)}`,
+      `Armor: ${monster.armor.charAt(0).toUpperCase() + monster.armor.slice(1)}`
     );
   if (monster.fly) tooltipLines.push(`Fly: ${monster.fly}`);
   if (monster.swim) tooltipLines.push(`Swim: ${monster.swim}`);

@@ -1,9 +1,9 @@
 "use client";
 
+import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
 import type { Monster } from "@/lib/types";
 import { CardGrid } from "./CardGrid";
 import { SimpleFilterBar } from "./SimpleFilterBar";
-import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
 
 interface FilterableCardGridProps {
   monsters: Monster[];
@@ -38,7 +38,6 @@ export const FilterableCardGrid: React.FC<FilterableCardGridProps> = ({
         onLegendaryFilterChange={setLegendaryFilter}
         onSortChange={setSortOption}
       />
-
 
       <CardGrid
         monsters={filteredMonsters}

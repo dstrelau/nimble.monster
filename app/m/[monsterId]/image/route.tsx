@@ -1,6 +1,6 @@
-import { findPublicMonsterById } from "@/lib/db";
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { getBrowser } from "@/lib/browser";
+import { findPublicMonsterById } from "@/lib/db";
 import { isValidUUID } from "@/lib/utils/validation";
 
 async function getMonsterImage(baseUrl: string, monsterId: string) {
@@ -27,7 +27,7 @@ async function getMonsterImage(baseUrl: string, monsterId: string) {
         const { monsterId, OG_WIDTH } = params;
         // Select the container of the monster card
         const container = document.querySelector(
-          ".container .max-w-2xl",
+          ".container .max-w-2xl"
         ) as HTMLElement | null;
 
         // Apply consistent styling for OpenGraph image
@@ -43,7 +43,7 @@ async function getMonsterImage(baseUrl: string, monsterId: string) {
 
         // Remove unnecessary UI elements that shouldn't appear in the image
         const actionsToRemove = document.querySelectorAll(
-          '[id^="monster-"] button',
+          '[id^="monster-"] button'
         );
         actionsToRemove.forEach((el) => {
           (el as HTMLElement).style.display = "none";
@@ -51,14 +51,14 @@ async function getMonsterImage(baseUrl: string, monsterId: string) {
 
         // Ensure the card has the right background and styling
         const monsterCard = document.querySelector(
-          `#monster-${monsterId}`,
+          `#monster-${monsterId}`
         ) as HTMLElement | null;
         if (monsterCard) {
           // Ensure the card has proper padding for the image
           monsterCard.style.padding = "20px";
         }
       },
-      { monsterId, OG_WIDTH, OG_HEIGHT },
+      { monsterId, OG_WIDTH, OG_HEIGHT }
     );
 
     const monsterCardElement = await page.$(`#monster-${monsterId}`);
@@ -92,7 +92,7 @@ async function getMonsterImage(baseUrl: string, monsterId: string) {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ monsterId: string }> },
+  { params }: { params: Promise<{ monsterId: string }> }
 ) {
   const { monsterId } = await params;
 

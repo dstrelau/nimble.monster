@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { EditForm } from "./EditForm";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import { EditForm } from "./EditForm";
 
 export default async function EditCollectionPage({
   params,

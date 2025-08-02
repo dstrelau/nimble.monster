@@ -2,7 +2,7 @@ import type { User } from "@/lib/types";
 import { prisma } from "./index";
 
 export const getUserByUsername = async (
-  username: string,
+  username: string
 ): Promise<User | null> => {
   const user = await prisma.user.findFirst({
     where: { username },
@@ -18,7 +18,7 @@ export const getUserByUsername = async (
 };
 
 export const getUserPublicMonstersCount = async (
-  username: string,
+  username: string
 ): Promise<number> => {
   return await prisma.monster.count({
     where: {

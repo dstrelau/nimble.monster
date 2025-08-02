@@ -3,9 +3,18 @@
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signIn, signOut } from "next-auth/react";
-import { useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
+import { Logo } from "@/components/app/Logo";
+import { MobileMenuDropdown } from "@/components/app/MobileMenuDropdown";
+import { UserAvatar } from "@/components/app/UserAvatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -13,16 +22,6 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { UserAvatar } from "@/components/app/UserAvatar";
-import { MobileMenuDropdown } from "@/components/app/MobileMenuDropdown";
-import { Logo } from "@/components/app/Logo";
 import { cn } from "@/lib/utils";
 
 const Header = () => {
@@ -119,7 +118,7 @@ const Header = () => {
                   className={cn(
                     navigationMenuTriggerStyle(),
                     "text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent",
-                    isActive("/monsters/new") && "font-bold bg-white/20",
+                    isActive("/monsters/new") && "font-bold bg-white/20"
                   )}
                 >
                   Build Monster
@@ -132,7 +131,7 @@ const Header = () => {
                   className={cn(
                     navigationMenuTriggerStyle(),
                     "text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent",
-                    isActive("/monsters") && "font-bold bg-white/20",
+                    isActive("/monsters") && "font-bold bg-white/20"
                   )}
                 >
                   Monsters
@@ -145,7 +144,7 @@ const Header = () => {
                   className={cn(
                     navigationMenuTriggerStyle(),
                     "text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent",
-                    isActive("/collections") && "font-bold bg-white/20",
+                    isActive("/collections") && "font-bold bg-white/20"
                   )}
                 >
                   Collections
@@ -175,7 +174,7 @@ const Header = () => {
                     className={cn(
                       currentUser.name &&
                         isActive(`/u/${currentUser.name}`) &&
-                        "font-bold bg-accent",
+                        "font-bold bg-accent"
                     )}
                   >
                     My Profile
@@ -185,7 +184,7 @@ const Header = () => {
                   <Link
                     href="/my/monsters"
                     className={cn(
-                      isActive("/my/monsters") && "font-bold bg-accent",
+                      isActive("/my/monsters") && "font-bold bg-accent"
                     )}
                   >
                     My Monsters
@@ -195,7 +194,7 @@ const Header = () => {
                   <Link
                     href="/my/collections"
                     className={cn(
-                      isActive("/my/collections") && "font-bold bg-accent",
+                      isActive("/my/collections") && "font-bold bg-accent"
                     )}
                   >
                     My Collections
@@ -205,15 +204,13 @@ const Header = () => {
                   <Link
                     href="/my/families"
                     className={cn(
-                      isActive("/my/families") && "font-bold bg-accent",
+                      isActive("/my/families") && "font-bold bg-accent"
                     )}
                   >
                     My Families
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => signOut({ redirectTo: "/" })}
-                >
+                <DropdownMenuItem onClick={() => signOut({ redirectTo: "/" })}>
                   Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -223,9 +220,7 @@ const Header = () => {
               variant="ghost"
               size="icon"
               className="text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent p-2 rounded-full"
-              onClick={() =>
-                signIn("discord", { redirectTo: "/my/monsters" })
-              }
+              onClick={() => signIn("discord", { redirectTo: "/my/monsters" })}
             >
               <UserAvatar user={{}} size="md" />
             </Button>
