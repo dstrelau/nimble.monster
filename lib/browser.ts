@@ -1,12 +1,14 @@
 import chromium from "@sparticuz/chromium-min";
-import puppeteerCore from "puppeteer-core";
 import puppeteer from "puppeteer";
+import puppeteerCore from "puppeteer-core";
 
+// keep in sync with puppeteer version requirement
+// https://pptr.dev/supported-browsers
 const remoteExecutablePath =
-  "https://github.com/Sparticuz/chromium/releases/download/v138.0.0/chromium-v138.0.0-pack.tar";
+  "https://github.com/Sparticuz/chromium/releases/download/v138.0.2/chromium-v138.0.2-pack.x64.tar";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let browser: any = null;
+// biome-ignore lint/suspicious/noExplicitAny: Browser types make no sense
+let browser: any;
 
 export async function getBrowser() {
   if (browser) return browser;
@@ -23,7 +25,7 @@ export async function getBrowser() {
       headless: true,
     });
   }
-  
+
   return browser;
 }
 
