@@ -60,6 +60,9 @@ model Monster {
   speed              Int                   @default(0)
   fly                Int                   @default(0)
   swim               Int                   @default(0)
+  climb              Int                   @default(0)
+  teleport           Int                   @default(0)
+  burrow             Int                   @default(0)
   actions            Json[]
   abilities          Json[]
   legendary          Boolean               @default(false)

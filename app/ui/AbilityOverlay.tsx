@@ -26,12 +26,7 @@ export const AbilityOverlay = ({
           return (
             <div key={abilityName}>
               {isFromFamily && family && (
-                <>
-                  <Users className="w-4 pb-1 mr-1 inline-block align-middle" />
-                  <strong className="pr-1 font-condensed">
-                    {family.name}:
-                  </strong>
-                </>
+                <Users className="w-4 pb-1 mr-0.5 inline-block text-orange" />
               )}
               <strong className="pr-1 font-condensed">
                 {maybePeriod(abilityName)}

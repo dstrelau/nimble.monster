@@ -1,10 +1,10 @@
 import type { Collection, CollectionOverview } from "@/lib/types";
-import { prisma } from "./index";
-import { toCollectionOverview, toMonster } from "./converters";
 import { isValidUUID } from "@/lib/utils/validation";
+import { toCollectionOverview, toMonster } from "./converters";
+import { prisma } from "./index";
 
 export const listCollectionsForUser = async (
-  userId: string,
+  userId: string
 ): Promise<CollectionOverview[]> => {
   return (
     await prisma.collection.findMany({
@@ -46,7 +46,7 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
   if (!c) return c;
 
   const legendaryCount = c.monsterCollections.filter(
-    (m) => m.monster.legendary,
+    (m) => m.monster.legendary
   ).length;
   return {
     ...c,
@@ -60,7 +60,7 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
 };
 
 export const getUserPublicCollections = async (
-  username: string,
+  username: string
 ): Promise<CollectionOverview[]> => {
   return (
     await prisma.collection.findMany({
@@ -77,7 +77,7 @@ export const getUserPublicCollections = async (
 };
 
 export const getUserPublicCollectionsCount = async (
-  username: string,
+  username: string
 ): Promise<number> => {
   return await prisma.collection.count({
     where: {
@@ -189,16 +189,16 @@ export const updateCollection = async ({
       // Update monster associations if monsterIds is provided
       if (monsterIds) {
         const existingMonsterIds = existingCollection.monsterCollections.map(
-          (mc) => mc.monsterId,
+          (mc) => mc.monsterId
         );
 
         // Find monsters to remove and add
         const toRemove = existingMonsterIds.filter(
-          (monsterId) => !monsterIds.includes(monsterId),
+          (monsterId) => !monsterIds.includes(monsterId)
         );
 
         const toAdd = monsterIds.filter(
-          (monsterId) => !existingMonsterIds.includes(monsterId),
+          (monsterId) => !existingMonsterIds.includes(monsterId)
         );
 
         // Remove monsters no longer in the collection
@@ -237,7 +237,7 @@ export const updateCollection = async ({
 
       // Count legendary monsters
       const legendaryCount = updatedCollection.monsterCollections.filter(
-        (mc) => mc.monster.legendary,
+        (mc) => mc.monster.legendary
       ).length;
 
       // Return the updated collection overview

@@ -15,6 +15,9 @@ export async function createMonster(formData: {
   speed: number;
   fly: number;
   swim: number;
+  climb: number;
+  teleport: number;
+  burrow: number;
   familyId?: string | null;
   actions: Action[];
   abilities: Ability[];

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ChevronsRight, Send, Waves } from "lucide-react";
+import { OctagonMinus, Users } from "lucide-react";
 import React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
@@ -21,7 +21,18 @@ import {
 import { maybePeriod } from "@/lib/text";
 import type { Monster, User } from "@/lib/types";
 import CardActions from "./CardActions";
-import { ArmorStat, HPStat, SavesStat, Stat } from "./Stat";
+import {
+  ArmorStat,
+  BurrowIcon,
+  ClimbIcon,
+  FlyIcon,
+  HPStat,
+  SavesStat,
+  SpeedIcon,
+  Stat,
+  SwimIcon,
+  TeleportIcon,
+} from "./Stat";
 
 const StatsGroup: React.FC<{
   monster: Monster;
@@ -33,9 +44,12 @@ const StatsGroup: React.FC<{
     tooltipLines.push(
       `Armor: ${monster.armor.charAt(0).toUpperCase() + monster.armor.slice(1)}`
     );
-  if (monster.fly) tooltipLines.push(`Fly: ${monster.fly}`);
   if (monster.swim) tooltipLines.push(`Swim: ${monster.swim}`);
-  if (monster.speed) tooltipLines.push(`Speed: ${monster.speed}`);
+  if (monster.fly) tooltipLines.push(`Fly: ${monster.fly}`);
+  if (monster.climb) tooltipLines.push(`Climb: ${monster.climb}`);
+  if (monster.burrow) tooltipLines.push(`Burrow: ${monster.burrow}`);
+  if (monster.teleport) tooltipLines.push(`Teleport: ${monster.teleport}`);
+  tooltipLines.push(`Speed: ${monster.speed}`);
   if (monster.hp) tooltipLines.push(`HP: ${monster.hp}`);
   if (monster.saves) tooltipLines.push(`Saves: ${monster.saves}`);
 
@@ -99,23 +113,45 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
     <CardTitle className="font-slab font-black small-caps italic">
       <div className="text-2xl">{monster.name}</div>
     </CardTitle>
-    <CardDescription className="font-condensed small-caps">
-      Lvl {monster.level}
-      {monster.kind && monster.size !== "medium"
-        ? ` ${monster.size} ${monster.kind.toLocaleLowerCase()}`
-        : monster.kind
-          ? ` ${monster.kind.toLocaleLowerCase()}`
-          : `, ${monster.size}`}
+    <CardDescription className="flex gap-2 font-condensed small-caps">
+      <p>
+        Lvl {monster.level}
+        {monster.kind && monster.size !== "medium"
+          ? ` ${monster.size} ${monster.kind.toLocaleLowerCase()}`
+          : monster.kind
+            ? ` ${monster.kind.toLocaleLowerCase()}`
+            : monster.size !== "medium"
+              ? ` ${monster.size}`
+              : ""}
+      </p>
+      {monster.family && (
+        <div className="flex items-start">
+          <Users className="w-4 pb-1 mr-0.5 text-orange" />
+          <strong>{monster.family.name}</strong>
+        </div>
+      )}
     </CardDescription>
     <CardAction>
       <StatsGroup monster={monster}>
         <div className="flex grow flex-wrap items-center justify-end font-slab font-black italic">
           {monster.armor === "medium" && <ArmorStat value="M" />}
           {monster.armor === "heavy" && <ArmorStat value="H" />}
-          <Stat name="swim" value={monster.swim} SvgIcon={Waves} />
-          <Stat name="fly" value={monster.fly} SvgIcon={Send} />
+          <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
+          <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
+          <Stat name="climb" value={monster.climb} SvgIcon={ClimbIcon} />
+          <Stat name="burrow" value={monster.burrow} SvgIcon={BurrowIcon} />
+          <Stat
+            name="teleport"
+            value={monster.teleport}
+            SvgIcon={TeleportIcon}
+          />
           {monster.speed !== 6 && (
-            <Stat name="speed" value={monster.speed} SvgIcon={ChevronsRight} />
+            <Stat
+              name="speed"
+              value={monster.speed}
+              SvgIcon={SpeedIcon}
+              showZero={true}
+            />
           )}
           <HPStat value={monster.hp} />
         </div>

@@ -57,6 +57,9 @@ export interface Monster {
   speed: number;
   fly: number;
   swim: number;
+  climb: number;
+  teleport: number;
+  burrow: number;
   armor: MonsterArmor;
   size: MonsterSize;
   level: string;

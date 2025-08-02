@@ -3,37 +3,37 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import {
-  ChevronsRight,
+  ChevronDown,
   CircleAlert,
   CircleCheck,
   CircleSlash2,
   Crown,
   Eye,
-  Heart,
   Plus,
-  Send,
-  Shield,
-  Star,
   Sword,
   Target,
   Trash,
   TriangleAlert,
   User as UserIcon,
-  Waves,
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
-import {
-  FormInput as ShadcnFormInput,
-  FormSelect as ShadcnFormSelect,
-  Textarea,
-} from "@/app/ui/Form";
 import { Card } from "@/app/ui/monster/Card";
+import {
+  FormInput,
+  FormSelect,
+  FormTextarea,
+  IconFormInput,
+  IconFormSelect,
+} from "@/components/app/Form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -57,6 +57,17 @@ import type {
   User,
 } from "@/lib/types";
 import { ARMORS, SIZES } from "@/lib/types";
+import {
+  ArmorIcon,
+  BurrowIcon,
+  ClimbIcon,
+  FlyIcon,
+  HPIcon,
+  SavesIcon,
+  SpeedIcon,
+  SwimIcon,
+  TeleportIcon,
+} from "@/app/ui/monster/Stat";
 
 const EXAMPLE_MONSTERS: Record<string, Monster> = {
   goblin: {
@@ -69,6 +80,9 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     armor: "medium" as MonsterArmor,
     swim: 0,
     fly: 0,
+    climb: 0,
+    teleport: 0,
+    burrow: 0,
     speed: 6,
     hp: 30,
     abilities: [
@@ -106,6 +120,9 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     speed: 0,
     swim: 0,
     fly: 0,
+    climb: 0,
+    teleport: 0,
+    burrow: 0,
     saves: "STR+, DEX+",
     abilities: [
       {
@@ -139,6 +156,9 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     armor: "none",
     swim: 0,
     fly: 0,
+    climb: 0,
+    teleport: 0,
+    burrow: 0,
     speed: 6,
     hp: 0,
     abilities: [],
@@ -148,89 +168,6 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     updatedAt: new Date(),
   },
 };
-
-interface FormInputProps<T extends string | number> {
-  label: React.ReactNode;
-  name: string;
-  value: T;
-  className?: string;
-  onChange: (value: T) => void;
-}
-
-const FormInput = <T extends string | number>({
-  label,
-  name,
-  value,
-  className = "",
-  onChange,
-}: FormInputProps<T>) => {
-  const inputType = typeof value === "number" ? "number" : "text";
-  const handleChange = (newValue: string) => {
-    const convertedValue =
-      inputType === "number" ? (Number(newValue) as T) : (newValue as T);
-    onChange(convertedValue);
-  };
-
-  if (typeof label === "string") {
-    return (
-      <div className={className}>
-        <ShadcnFormInput
-          label={label}
-          name={name}
-          value={String(value)}
-          type={inputType}
-          onChange={handleChange}
-        />
-      </div>
-    );
-  }
-
-  // For complex labels (with icons, etc), use shadcn components
-  return (
-    <div className={className}>
-      <Label htmlFor={name} className="flex flex-row mb-2">
-        {label}
-      </Label>
-      <Input
-        type={inputType}
-        name={name}
-        id={name}
-        value={String(value)}
-        onChange={(e) => handleChange(e.target.value)}
-      />
-    </div>
-  );
-};
-
-interface FormSelectProps<T extends string> {
-  label: React.ReactNode;
-  name: string;
-  choices: ReadonlyArray<{ readonly value: T; readonly label: string }>;
-  selected: T;
-  className?: string;
-  onChange: (value: T) => void;
-}
-
-function FormSelect<T extends string>({
-  label,
-  name,
-  choices,
-  selected,
-  className = "",
-  onChange,
-}: FormSelectProps<T>) {
-  return (
-    <div className={className}>
-      <ShadcnFormSelect
-        label={label}
-        name={name}
-        choices={choices}
-        selected={selected}
-        onChange={onChange}
-      />
-    </div>
-  );
-}
 
 const FamilySection: React.FC<{
   monster: Monster;
@@ -289,7 +226,7 @@ const AbilityRow: React.FC<AbilityRowProps> = ({
         value={ability.name}
         onChange={(name) => onChange({ ...ability, name })}
       />
-      <Textarea
+      <FormTextarea
         label="Description"
         name="ability-description"
         value={ability.description}
@@ -388,7 +325,7 @@ const ActionRow: React.FC<ActionRowProps> = ({
             />
           )}
         </div>
-        <Textarea
+        <FormTextarea
           label="Description"
           name="action-description"
           value={action.description || ""}
@@ -454,15 +391,11 @@ const LegendaryForm: React.FC<{
         <HPInput
           monster={monster}
           className="col-span-3"
-          onChange={(hp) => setMonster({ ...monster, hp })}
+          onChange={(hp) => setMonster({ ...monster, hp: Math.max(0, hp) })}
         />
-        <FormSelect
-          label={
-            <>
-              <Shield className="h-4 w-4" />
-              Armor
-            </>
-          }
+        <IconFormSelect
+          icon={ArmorIcon}
+          text="Armor"
           name="armor"
           choices={ARMORS}
           selected={monster.armor}
@@ -470,20 +403,13 @@ const LegendaryForm: React.FC<{
           onChange={(armor) => setMonster({ ...monster, armor })}
         />
         <div className="col-span-7">
-          <Label htmlFor="saves" className="flex items-center gap-2 mb-2">
-            <Star className="h-4 w-4" />
-            Saves
-          </Label>
-          <div className="flex gap-2">
-            <Input
-              id="saves"
-              name="saves"
-              value={monster.saves || ""}
-              onChange={(e) =>
-                setMonster({ ...monster, saves: e.target.value })
-              }
-            />
-          </div>
+          <IconFormInput
+            name="saves"
+            text="Saves"
+            icon={SavesIcon}
+            value={monster.saves || ""}
+            onChange={(e) => setMonster({ ...monster, saves: e })}
+          />
         </div>
       </div>
     </div>
@@ -491,21 +417,21 @@ const LegendaryForm: React.FC<{
     <AbilitiesSection monster={monster} setMonster={setMonster} />
     <ActionsSection monster={monster} setMonster={setMonster} />
     <div className="space-y-6">
-      <Textarea
+      <FormTextarea
         label="Bloodied"
         name="bloodied"
         value={monster.bloodied || ""}
         rows={2}
         onChange={(bloodied: string) => setMonster({ ...monster, bloodied })}
       />
-      <Textarea
+      <FormTextarea
         label="Last Stand"
         name="lastStand"
         value={monster.lastStand || ""}
         rows={2}
         onChange={(lastStand: string) => setMonster({ ...monster, lastStand })}
       />
-      <Textarea
+      <FormTextarea
         label="More Information"
         name="moreInfo"
         value={monster.moreInfo || ""}
@@ -519,104 +445,116 @@ const LegendaryForm: React.FC<{
 const StandardForm: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
-}> = ({ monster, setMonster }) => (
-  <div className="space-y-4">
-    <div className="grid grid-cols-2 gap-x-6">
-      <FormInput
-        label="Name"
-        name="name"
-        value={monster.name}
-        className="col-span-2"
-        onChange={(name) => setMonster({ ...monster, name })}
+}> = ({ monster, setMonster }) => {
+  const [isMovementOpen, setIsMovementOpen] = useState(false);
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-x-6">
+        <FormInput
+          label="Name"
+          name="name"
+          value={monster.name}
+          className="col-span-2"
+          onChange={(name) => setMonster({ ...monster, name })}
+        />
+      </div>
+      <div className="grid grid-cols-5 gap-x-6">
+        <FormInput
+          label="Lvl"
+          name="level"
+          value={monster.level}
+          className="col-span-1"
+          onChange={(level) => setMonster({ ...monster, level })}
+        />
+        <FormSelect
+          label="Size"
+          name="size"
+          choices={SIZES}
+          selected={monster.size}
+          className="col-span-1"
+          onChange={(size) => setMonster({ ...monster, size })}
+        />
+        <FormInput
+          label="Kind"
+          name="kind"
+          value={monster.kind || ""}
+          className="col-span-3"
+          onChange={(kind) => setMonster({ ...monster, kind })}
+        />
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        <IconFormSelect
+          icon={ArmorIcon}
+          text="Armor"
+          name="armor"
+          choices={ARMORS}
+          selected={monster.armor}
+          onChange={(armor) => setMonster({ ...monster, armor })}
+        />
+        <IconFormInput
+          icon={SpeedIcon}
+          text="Speed"
+          name="speed"
+          value={monster.speed}
+          onChange={(speed) => setMonster({ ...monster, speed: Math.max(0, speed) })}
+        />
+        <HPInput
+          monster={monster}
+          onChange={(hp) => setMonster({ ...monster, hp: Math.max(0, hp) })}
+        />
+      </div>
+
+      <div className="grid grid-cols-5 gap-2">
+        <IconFormInput
+          icon={SwimIcon}
+          text="Swim"
+          name="swim"
+          value={monster.swim}
+          onChange={(swim) => setMonster({ ...monster, swim: Math.max(0, swim) })}
+        />
+        <IconFormInput
+          icon={FlyIcon}
+          text="Fly"
+          name="fly"
+          value={monster.fly}
+          onChange={(fly) => setMonster({ ...monster, fly: Math.max(0, fly) })}
+        />
+        <IconFormInput
+          icon={ClimbIcon}
+          text="Climb"
+          name="climb"
+          value={monster.climb}
+          onChange={(climb) => setMonster({ ...monster, climb: Math.max(0, climb) })}
+        />
+        <IconFormInput
+          icon={BurrowIcon}
+          text="Burrow"
+          name="burrow"
+          value={monster.burrow}
+          onChange={(burrow) => setMonster({ ...monster, burrow: Math.max(0, burrow) })}
+        />
+        <IconFormInput
+          icon={TeleportIcon}
+          text="Teleport"
+          name="teleport"
+          value={monster.teleport}
+          onChange={(teleport) => setMonster({ ...monster, teleport: Math.max(0, teleport) })}
+        />
+      </div>
+      <FamilySection monster={monster} setMonster={setMonster} />
+      <AbilitiesSection monster={monster} setMonster={setMonster} />
+      <ActionsSection monster={monster} setMonster={setMonster} />
+      <FormTextarea
+        label="More Information"
+        name="moreInfo"
+        value={monster.moreInfo || ""}
+        rows={4}
+        onChange={(moreInfo: string) => setMonster({ ...monster, moreInfo })}
       />
     </div>
-    <div className="grid grid-cols-5 gap-x-6">
-      <FormInput
-        label="Lvl"
-        name="level"
-        value={monster.level}
-        className="col-span-1"
-        onChange={(level) => setMonster({ ...monster, level })}
-      />
-      <FormSelect
-        label="Size"
-        name="size"
-        choices={SIZES}
-        selected={monster.size}
-        className="col-span-1"
-        onChange={(size) => setMonster({ ...monster, size })}
-      />
-      <FormInput
-        label="Kind"
-        name="kind"
-        value={monster.kind || ""}
-        className="col-span-3"
-        onChange={(kind) => setMonster({ ...monster, kind })}
-      />
-    </div>
-    <div className="grid grid-cols-5 gap-2">
-      <FormSelect
-        label={
-          <>
-            <Shield className="h-4 w-4" />
-            Armor
-          </>
-        }
-        name="armor"
-        choices={ARMORS}
-        selected={monster.armor}
-        onChange={(armor) => setMonster({ ...monster, armor })}
-      />
-      <FormInput
-        label={
-          <>
-            <Waves className="h-4 w-4" />
-            Swim
-          </>
-        }
-        name="swim"
-        value={monster.swim}
-        onChange={(swim) => setMonster({ ...monster, swim })}
-      />
-      <FormInput
-        label={
-          <>
-            <Send className="h-4 w-4" />
-            Fly
-          </>
-        }
-        name="fly"
-        value={monster.fly}
-        onChange={(fly) => setMonster({ ...monster, fly })}
-      />
-      <FormInput
-        label={
-          <>
-            <ChevronsRight className="h-4 w-4" />
-            Speed
-          </>
-        }
-        name="speed"
-        value={monster.speed}
-        onChange={(speed) => setMonster({ ...monster, speed })}
-      />
-      <HPInput
-        monster={monster}
-        onChange={(hp) => setMonster({ ...monster, hp })}
-      />
-    </div>
-    <FamilySection monster={monster} setMonster={setMonster} />
-    <AbilitiesSection monster={monster} setMonster={setMonster} />
-    <ActionsSection monster={monster} setMonster={setMonster} />
-    <Textarea
-      label="More Information"
-      name="moreInfo"
-      value={monster.moreInfo || ""}
-      rows={4}
-      onChange={(moreInfo: string) => setMonster({ ...monster, moreInfo })}
-    />
-  </div>
-);
+  );
+};
 
 const AbilitiesSection: React.FC<{
   monster: Monster;
@@ -626,7 +564,7 @@ const AbilitiesSection: React.FC<{
     <legend className="mb-4 font-condensed font-bold">Abilities</legend>
     {monster.abilities.map((ability, index) => (
       <AbilityRow
-        key={index}
+        key={ability.name}
         ability={ability}
         onChange={(newAbility) => {
           const newAbilities = [...monster.abilities];
@@ -671,7 +609,7 @@ const ActionsSection: React.FC<{
       />
       {monster.actions.map((action, index) => (
         <ActionRow
-          key={index}
+          key={action.name}
           action={action}
           legendary={monster.legendary}
           onChange={(newAction) => {
@@ -805,13 +743,13 @@ const HPInput: React.FC<{
       label={
         <TooltipProvider>
           <span className="flex-1">
-            <Heart className="h-4 w-4 inline mr-1" />
+            <HPIcon className="h-4 w-4 mr-0.5 inline stroke-red fill-red" />
             HP
           </span>{" "}
           {recommendedHP && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="flex items-center leading-4">
+                <span className="flex items-center leading-4 mr-[1px]">
                   {monster.hp === 0 ? (
                     <Target className="h-4" />
                   ) : warning ? (

@@ -1,15 +1,15 @@
 import type {
   Ability,
   Action,
-  Monster,
-  MonsterSize,
-  MonsterArmor,
   Family,
+  Monster,
+  MonsterArmor,
+  MonsterSize,
 } from "@/lib/types";
-import { prisma } from "./index";
-import { toMonster } from "./converters";
-import type { InputJsonValue } from "../prisma/runtime/library";
 import { isValidUUID } from "@/lib/utils/validation";
+import type { InputJsonValue } from "../prisma/runtime/library";
+import { toMonster } from "./converters";
+import { prisma } from "./index";
 
 export const deleteMonster = async ({
   id,
@@ -89,6 +89,9 @@ export interface CreateMonsterInput {
   speed: number;
   fly: number;
   swim: number;
+  climb: number;
+  burrow: number;
+  teleport: number;
   family?: Family;
   actions: Action[];
   abilities: Ability[];
@@ -115,6 +118,9 @@ export const createMonster = async (
     speed,
     fly,
     swim,
+    climb,
+    burrow,
+    teleport,
     family,
     actions,
     abilities,
@@ -153,6 +159,9 @@ export const createMonster = async (
       speed: legendary ? 0 : speed,
       fly: legendary ? 0 : fly,
       swim: legendary ? 0 : swim,
+      climb: legendary ? 0 : climb,
+      burrow: legendary ? 0 : burrow,
+      teleport: legendary ? 0 : teleport,
       family: family ? { connect: { id: family.id } } : undefined,
       actions: actions as unknown as InputJsonValue[],
       abilities: abilities as unknown as InputJsonValue[],

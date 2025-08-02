@@ -1,11 +1,10 @@
+import { trace } from "@opentelemetry/api";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/db";
-import { findPublicMonsterById, toMonster } from "@/lib/db";
-import { revalidatePath } from "next/cache";
-import { isValidUUID } from "@/lib/utils/validation";
+import { findPublicMonsterById, prisma, toMonster } from "@/lib/db";
 import { telemetry } from "@/lib/telemetry";
-import { trace } from "@opentelemetry/api";
+import { isValidUUID } from "@/lib/utils/validation";
 
 export const GET = telemetry(
   async (
