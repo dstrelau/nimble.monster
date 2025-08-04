@@ -2,7 +2,7 @@ import {
   ArrowBigRightDash,
   Heart,
   Mountain,
-  PawPrint,
+  Pickaxe,
   Send,
   Shield,
   Star,
@@ -18,7 +18,7 @@ export const SpeedIcon = ArrowBigRightDash;
 export const SwimIcon = Waves;
 export const FlyIcon = Send;
 export const ClimbIcon = Mountain;
-export const BurrowIcon = PawPrint;
+export const BurrowIcon = Pickaxe;
 export const TeleportIcon = Zap;
 
 export const Stat: React.FC<{
@@ -35,7 +35,7 @@ export const Stat: React.FC<{
   showZero = false,
   children,
   SvgIcon,
-  fillColor = "var(--color-gray-300)",
+  fillColor = "var(--color-gray-200)",
   strokeColor = "var(--color-gray-300)",
 }) => {
   if (!value && !children && !showZero) return null;

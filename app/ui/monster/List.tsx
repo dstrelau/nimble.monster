@@ -34,7 +34,7 @@ export const List = ({
         block: "start",
       });
     }
-  }, [scrollToSelected, selectedIds, monsters]);
+  }, [scrollToSelected, selectedIds]);
 
   return (
     <div ref={listRef} className="list overflow-y-auto max-h-[70vh]">
@@ -45,7 +45,7 @@ export const List = ({
             ref={selectedIds.includes(monster.id) ? selectedItemRef : null}
             className={clsx(
               "block p-3 transition-colors cursor-pointer",
-              selectedIds.includes(monster.id) && "bg-primary/10"
+              selectedIds.includes(monster.id) && "bg-primary/40"
             )}
             onClick={() => !showChecks && handleMonsterClick(monster.id)}
           >
