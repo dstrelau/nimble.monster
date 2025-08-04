@@ -79,6 +79,21 @@ export const listAllMonstersForDiscordID = async (
   ).map(toMonster);
 };
 
+export const listMonstersByFamilyId = async (
+  familyId: string
+): Promise<Monster[]> => {
+  return (
+    await prisma.monster.findMany({
+      include: { family: true, creator: true },
+      where: {
+        family_id: familyId,
+        visibility: "public",
+      },
+      orderBy: { name: "asc" },
+    })
+  ).map(toMonster);
+};
+
 export interface CreateMonsterInput {
   name: string;
   kind?: string;

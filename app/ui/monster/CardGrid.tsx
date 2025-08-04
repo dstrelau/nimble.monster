@@ -7,11 +7,13 @@ export const CardGrid = ({
   hideActions = false,
   currentUserId,
   gridColumns = { default: 1, md: 2, lg: 3 },
+  hideFamilyAbilities = false,
 }: {
   monsters: Monster[];
   hideActions?: boolean;
   currentUserId?: string;
   gridColumns?: { default?: number; sm?: number; md?: number; lg?: number };
+  hideFamilyAbilities?: boolean;
 }) => {
   return (
     <div
@@ -33,6 +35,7 @@ export const CardGrid = ({
             creator={m.creator}
             isOwner={isOwner}
             hideActions={hideActions}
+            hideFamilyAbilities={hideFamilyAbilities}
           />
         );
       })}

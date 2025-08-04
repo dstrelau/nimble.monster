@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 import { EditDeleteButtons } from "@/app/my/families/EditDeleteButtons";
 import { EditFamilyForm } from "@/app/my/families/EditFamilyForm";
@@ -36,7 +37,7 @@ export const FamilyCard = ({
         <>
           <CardHeader>
             <CardTitle className="font-bold italic text-xl">
-              {family.name}
+              <Link href={`/f/${family.id}`}>{family.name}</Link>
             </CardTitle>
           </CardHeader>
           <CardContent>

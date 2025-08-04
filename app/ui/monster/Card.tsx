@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { OctagonMinus, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
@@ -33,6 +33,7 @@ import {
   SwimIcon,
   TeleportIcon,
 } from "./Stat";
+import Link from "next/link";
 
 const StatsGroup: React.FC<{
   monster: Monster;
@@ -125,10 +126,10 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
               : ""}
       </p>
       {monster.family && (
-        <div className="flex items-start">
+        <Link href={`/f/${monster.family.id}`} className="flex items-center">
           <Users className="w-4 pb-1 mr-0.5 text-orange" />
           <strong>{monster.family.name}</strong>
-        </div>
+        </Link>
       )}
     </CardDescription>
     <CardAction>
@@ -165,6 +166,7 @@ interface CardProps {
   creator?: User;
   isOwner?: boolean;
   hideActions?: boolean;
+  hideFamilyAbilities?: boolean;
 }
 
 export const Card = ({
@@ -172,6 +174,7 @@ export const Card = ({
   creator,
   isOwner = false,
   hideActions = false,
+  hideFamilyAbilities = false,
 }: CardProps) => {
   return (
     <div className={clsx(monster.legendary && "md:col-span-2")}>
@@ -184,13 +187,16 @@ export const Card = ({
           )}
 
           <CardContent className="flex flex-col gap-4">
-            {(monster.family?.abilities || monster.abilities.length > 0) && (
+            {((!hideFamilyAbilities && monster.family?.abilities) ||
+              monster.abilities.length > 0) && (
               <AbilityOverlay
                 abilities={[
-                  ...(monster.family?.abilities || []),
+                  ...(hideFamilyAbilities
+                    ? []
+                    : monster.family?.abilities || []),
                   ...monster.abilities,
                 ]}
-                family={monster.family}
+                family={hideFamilyAbilities ? undefined : monster.family}
               />
             )}
 
