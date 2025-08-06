@@ -110,11 +110,11 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
 );
 
 const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
-  <CardHeader>
+  <CardHeader className="has-data-[slot=card-action]:grid-cols-[1fr_1fr] gap-0">
     <CardTitle className="font-slab font-black small-caps italic">
       <div className="text-2xl">{monster.name}</div>
     </CardTitle>
-    <CardDescription className="flex gap-2 font-condensed small-caps">
+    <CardDescription className="col-span-2 flex gap-2 font-condensed small-caps">
       <p>
         Lvl {monster.level}
         {monster.kind && monster.size !== "medium"
