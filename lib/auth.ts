@@ -59,8 +59,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return token;
     },
-    session({ session, token }) {
+    async session({ session, token }) {
       session.user.id = token.id || "";
+
+      // Fetch username from database
+      if (token.id) {
+        const user = await prisma.user.findUnique({
+          where: { discordId: token.id },
+          select: { username: true },
+        });
+        if (user) {
+          session.user.name = user.username;
+        }
+      }
+
       return session;
     },
   },
