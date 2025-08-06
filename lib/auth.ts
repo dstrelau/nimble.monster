@@ -15,6 +15,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
+    username?: string;
   }
 }
 
@@ -52,27 +53,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return true;
     },
-    jwt(params) {
+    async jwt(params) {
       const token = params.token;
       if (params.profile?.id) {
         token.id = params.profile.id;
+
+        try {
+          const user = await prisma.user.findUnique({
+            where: { discordId: params.profile.id },
+            select: { username: true },
+          });
+          if (user) {
+            token.username = user.username;
+          }
+        } catch {}
       }
       return token;
     },
-    async session({ session, token }) {
+    session({ session, token }) {
       session.user.id = token.id || "";
-
-      // Fetch username from database
-      if (token.id) {
-        const user = await prisma.user.findUnique({
-          where: { discordId: token.id },
-          select: { username: true },
-        });
-        if (user) {
-          session.user.name = user.username;
-        }
+      if (token.username) {
+        session.user.name = token.username;
       }
-
       return session;
     },
   },
