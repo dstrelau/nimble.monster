@@ -25,37 +25,35 @@ export const FamilyCard = ({
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <Card>
-      {isEditing ? (
-        <CardContent className="p-6">
-          <EditFamilyForm
-            family={family}
-            onCancel={() => setIsEditing(false)}
-          />
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-bold italic text-xl">
+            <Link href={`/f/${family.id}`}>{family.name}</Link>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AbilityOverlay abilities={family.abilities} />
         </CardContent>
-      ) : (
-        <>
-          <CardHeader>
-            <CardTitle className="font-bold italic text-xl">
-              <Link href={`/f/${family.id}`}>{family.name}</Link>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <AbilityOverlay abilities={family.abilities} />
-          </CardContent>
-          <CardFooter className="flex flex-row justify-between items-center">
-            <div className="font-condensed text-sm text-muted-foreground">
-              {family.monsterCount || 0} monsters
-            </div>
-            {showEditDeleteButtons && (
-              <EditDeleteButtons
-                family={family}
-                onEdit={() => setIsEditing(true)}
-              />
-            )}
-          </CardFooter>
-        </>
+        <CardFooter className="flex flex-row justify-between items-center">
+          <div className="font-condensed text-sm text-muted-foreground">
+            {family.monsterCount || 0} monsters
+          </div>
+          {showEditDeleteButtons && (
+            <EditDeleteButtons
+              family={family}
+              onEdit={() => setIsEditing(true)}
+            />
+          )}
+        </CardFooter>
+      </Card>
+      {showEditDeleteButtons && (
+        <EditFamilyForm
+          family={family}
+          open={isEditing}
+          onOpenChange={setIsEditing}
+        />
       )}
-    </Card>
+    </>
   );
 };
