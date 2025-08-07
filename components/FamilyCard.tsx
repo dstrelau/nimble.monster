@@ -47,11 +47,10 @@ export const FamilyCard = ({
           )}
         </CardFooter>
       </Card>
-      {showEditDeleteButtons && (
+      {showEditDeleteButtons && isEditing && (
         <EditFamilyForm
           family={family}
-          open={isEditing}
-          onOpenChange={setIsEditing}
+          onCancel={() => setIsEditing(false)}
         />
       )}
     </>
