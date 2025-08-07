@@ -83,7 +83,8 @@ export function InlineEditInput({
     const inputElement = React.cloneElement(editComponent, {
       ref: inputRef,
       value: editValue,
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setEditValue(e.target.value),
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        setEditValue(e.target.value),
       onKeyDown: handleKeyDown,
       placeholder,
       ...editComponent.props,

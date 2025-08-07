@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { Users } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
@@ -33,7 +34,6 @@ import {
   SwimIcon,
   TeleportIcon,
 } from "./Stat";
-import Link from "next/link";
 
 const StatsGroup: React.FC<{
   monster: Monster;

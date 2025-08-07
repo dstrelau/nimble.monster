@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import { DevBanner } from "@/app/ui/DevBanner";
 import Header from "@/app/ui/Header";
 
 const queryClient = new QueryClient();
@@ -19,6 +20,7 @@ export function Providers({
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
         <Header />
+        <DevBanner />
         <main className="mx-auto w-full max-w-7xl px-4 py-6">{children}</main>
       </SessionProvider>
       <ReactQueryDevtools initialIsOpen={false} />

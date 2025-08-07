@@ -22,6 +22,17 @@ import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 import { Card } from "@/app/ui/monster/Card";
 import {
+  ArmorIcon,
+  BurrowIcon,
+  ClimbIcon,
+  FlyIcon,
+  HPIcon,
+  SavesIcon,
+  SpeedIcon,
+  SwimIcon,
+  TeleportIcon,
+} from "@/app/ui/monster/Stat";
+import {
   FormInput,
   FormSelect,
   FormTextarea,
@@ -57,17 +68,6 @@ import type {
   User,
 } from "@/lib/types";
 import { ARMORS, SIZES } from "@/lib/types";
-import {
-  ArmorIcon,
-  BurrowIcon,
-  ClimbIcon,
-  FlyIcon,
-  HPIcon,
-  SavesIcon,
-  SpeedIcon,
-  SwimIcon,
-  TeleportIcon,
-} from "@/app/ui/monster/Stat";
 
 const EXAMPLE_MONSTERS: Record<string, Monster> = {
   goblin: {
@@ -497,7 +497,9 @@ const StandardForm: React.FC<{
           text="Speed"
           name="speed"
           value={monster.speed}
-          onChange={(speed) => setMonster({ ...monster, speed: Math.max(0, speed) })}
+          onChange={(speed) =>
+            setMonster({ ...monster, speed: Math.max(0, speed) })
+          }
         />
         <HPInput
           monster={monster}
@@ -511,7 +513,9 @@ const StandardForm: React.FC<{
           text="Swim"
           name="swim"
           value={monster.swim}
-          onChange={(swim) => setMonster({ ...monster, swim: Math.max(0, swim) })}
+          onChange={(swim) =>
+            setMonster({ ...monster, swim: Math.max(0, swim) })
+          }
         />
         <IconFormInput
           icon={FlyIcon}
@@ -525,21 +529,27 @@ const StandardForm: React.FC<{
           text="Climb"
           name="climb"
           value={monster.climb}
-          onChange={(climb) => setMonster({ ...monster, climb: Math.max(0, climb) })}
+          onChange={(climb) =>
+            setMonster({ ...monster, climb: Math.max(0, climb) })
+          }
         />
         <IconFormInput
           icon={BurrowIcon}
           text="Burrow"
           name="burrow"
           value={monster.burrow}
-          onChange={(burrow) => setMonster({ ...monster, burrow: Math.max(0, burrow) })}
+          onChange={(burrow) =>
+            setMonster({ ...monster, burrow: Math.max(0, burrow) })
+          }
         />
         <IconFormInput
           icon={TeleportIcon}
           text="Teleport"
           name="teleport"
           value={monster.teleport}
-          onChange={(teleport) => setMonster({ ...monster, teleport: Math.max(0, teleport) })}
+          onChange={(teleport) =>
+            setMonster({ ...monster, teleport: Math.max(0, teleport) })
+          }
         />
       </div>
       <FamilySection monster={monster} setMonster={setMonster} />
