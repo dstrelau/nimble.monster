@@ -23,6 +23,8 @@ interface FamilyHeaderProps {
   editHref?: string;
 }
 
+const descriptionTruncationLength = 500;
+
 export function FamilyHeader({
   family,
   showEditButton = false,
@@ -31,9 +33,9 @@ export function FamilyHeader({
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const desc = family.description || "";
-  const shouldTruncate = desc.length > 250;
+  const shouldTruncate = desc.length > descriptionTruncationLength;
   const truncatedDescription = shouldTruncate
-    ? `${family.description?.substring(0, 500)}...`
+    ? `${family.description?.substring(0, descriptionTruncationLength)}...`
     : family.description;
 
   const truncatedHtml = truncatedDescription
