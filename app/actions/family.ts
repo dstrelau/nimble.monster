@@ -17,8 +17,9 @@ export async function deleteFamily(familyId: string) {
       discordId: session.user.id,
     });
 
-    // Revalidate the families page to force a refresh
+    // Revalidate the families page and family detail page to force a refresh
     revalidatePath("/my/families");
+    revalidatePath(`/f/${familyId}`);
 
     return {
       success: deleted,

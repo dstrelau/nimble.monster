@@ -1,6 +1,6 @@
 "use client";
 import DOMPurify from "isomorphic-dompurify";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { marked } from "marked";
 import Link from "next/link";
 import { useState } from "react";
@@ -21,6 +21,8 @@ interface FamilyHeaderProps {
   family: Family;
   showEditButton?: boolean;
   editHref?: string;
+  showDeleteButton?: boolean;
+  onDelete?: () => void;
 }
 
 const descriptionTruncationLength = 500;
@@ -29,6 +31,8 @@ export function FamilyHeader({
   family,
   showEditButton = false,
   editHref,
+  showDeleteButton = false,
+  onDelete,
 }: FamilyHeaderProps) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -53,14 +57,22 @@ export function FamilyHeader({
       <div className="w-full">
         <div className="flex justify-between items-start">
           <h2 className="text-2xl font-bold">{family.name}</h2>
-          {showEditButton && editHref && (
-            <Button variant="outline" size="sm" asChild>
-              <Link href={editHref}>
-                <Pencil className="w-4 h-4" />
-                Edit
-              </Link>
-            </Button>
-          )}
+          <div className="flex gap-2">
+            {showEditButton && editHref && (
+              <Button variant="outline" size="sm" asChild>
+                <Link href={editHref}>
+                  <Pencil className="w-4 h-4" />
+                  Edit
+                </Link>
+              </Button>
+            )}
+            {showDeleteButton && onDelete && (
+              <Button variant="destructive" size="sm" onClick={onDelete}>
+                <Trash2 className="w-4 h-4" />
+                Delete
+              </Button>
+            )}
+          </div>
         </div>
         {family.creator && (
           <div className="mt-2">

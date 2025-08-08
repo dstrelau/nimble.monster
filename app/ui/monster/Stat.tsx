@@ -64,6 +64,7 @@ export const HPStat: React.FC<{ value: string | number }> = ({ value }) => (
     SvgIcon={HPIcon}
     strokeColor="var(--red)"
     fillColor="var(--red)"
+    showZero={true}
   />
 );
 

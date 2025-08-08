@@ -1,5 +1,6 @@
 import type { Ability, Family } from "@/lib/types";
 import { prisma } from "./index";
+import { toMonster } from "./converters";
 
 export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
   const families = await prisma.family.findMany({
@@ -7,7 +8,10 @@ export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
       creator: { discordId },
     },
     include: {
-      monsters: true,
+      monsters: {
+        where: { visibility: "public" },
+        include: { creator: true, family: true },
+      },
       creator: true,
     },
     orderBy: {
@@ -21,6 +25,7 @@ export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
     description: family.description ?? undefined,
     abilities: family.abilities as unknown as Ability[],
     visibility: family.visibility,
+    monsters: family.monsters.map(toMonster),
     monsterCount: family.monsters.length,
     creatorId: family.creator.discordId,
   }));

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
-import { FamilyHeader } from "@/components/FamilyHeader";
+import { FamilyHeaderWithDelete } from "./DeleteButton";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 
@@ -36,7 +36,7 @@ export default async function FamilyDetailPage({
 
   return (
     <div className="container">
-      <FamilyHeader
+      <FamilyHeaderWithDelete
         family={family}
         showEditButton={isCreator}
         editHref={`/f/${id}/edit`}

@@ -41,6 +41,7 @@ export interface Family {
   name: string;
   description?: string;
   abilities: Ability[];
+  monsters?: Monster[];
   monsterCount?: number;
   creatorId: string;
   creator?: User;
