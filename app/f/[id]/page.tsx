@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
+import { FamilyHeader } from "@/components/FamilyHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 
@@ -32,18 +32,15 @@ export default async function FamilyDetailPage({
     return parseLevel(a.level) - parseLevel(b.level);
   });
 
+  const isCreator = session?.user?.id === family.creatorId;
+
   return (
     <div className="container">
-      <div className="flex justify-between items-start mb-6">
-        <div className="w-full">
-          <h2 className="text-2xl font-bold ">{family.name}</h2>
-          {family.abilities && family.abilities.length > 0 && (
-            <div className="mt-4 mx-6">
-              <AbilityOverlay abilities={family.abilities} />
-            </div>
-          )}
-        </div>
-      </div>
+      <FamilyHeader
+        family={family}
+        showEditButton={isCreator}
+        editHref={`/f/${id}/edit`}
+      />
       {monsters.length === 0 ? (
         <p>No public monsters in this family.</p>
       ) : (
@@ -51,6 +48,8 @@ export default async function FamilyDetailPage({
           monsters={sortedMonsters}
           currentUserId={session?.user?.id}
           hideFamilyAbilities={true}
+          hideCreator={true}
+          hideFamilyName={true}
         />
       )}
     </div>

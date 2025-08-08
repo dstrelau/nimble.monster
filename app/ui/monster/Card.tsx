@@ -109,7 +109,10 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
   </CardHeader>
 );
 
-const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
+const HeaderStandard: React.FC<{
+  monster: Monster;
+  hideFamilyName?: boolean;
+}> = ({ monster, hideFamilyName = false }) => (
   <CardHeader className="has-data-[slot=card-action]:grid-cols-[1fr_1fr] gap-0">
     <CardTitle className="font-slab font-black small-caps italic">
       <div className="text-2xl">{monster.name}</div>
@@ -125,7 +128,7 @@ const HeaderStandard: React.FC<{ monster: Monster }> = ({ monster }) => (
               ? ` ${monster.size}`
               : ""}
       </p>
-      {monster.family && (
+      {monster.family && !hideFamilyName && (
         <Link href={`/f/${monster.family.id}`} className="flex items-center">
           <Users className="w-4 pb-1 mr-0.5 text-orange" />
           <strong>{monster.family.name}</strong>
@@ -167,6 +170,8 @@ interface CardProps {
   isOwner?: boolean;
   hideActions?: boolean;
   hideFamilyAbilities?: boolean;
+  hideCreator?: boolean;
+  hideFamilyName?: boolean;
 }
 
 export const Card = ({
@@ -175,6 +180,8 @@ export const Card = ({
   isOwner = false,
   hideActions = false,
   hideFamilyAbilities = false,
+  hideCreator = false,
+  hideFamilyName = false,
 }: CardProps) => {
   return (
     <div className={clsx(monster.legendary && "md:col-span-2")}>
@@ -183,7 +190,7 @@ export const Card = ({
           {monster.legendary ? (
             <HeaderLegendary monster={monster} />
           ) : (
-            <HeaderStandard monster={monster} />
+            <HeaderStandard monster={monster} hideFamilyName={hideFamilyName} />
           )}
 
           <CardContent className="flex flex-col gap-4">
@@ -252,7 +259,7 @@ export const Card = ({
           <Separator />
           <CardFooter className="flex-col items-stretch">
             <div className="flex items-center justify-between">
-              {creator ? (
+              {creator && !hideCreator ? (
                 <Attribution user={creator} />
               ) : (
                 <div /> /* Empty div to maintain flex layout */

@@ -19,8 +19,8 @@ export function Providers({
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        <Header />
         <DevBanner />
+        <Header />
         <main className="mx-auto w-full max-w-7xl px-4 py-6">{children}</main>
       </SessionProvider>
       <ReactQueryDevtools initialIsOpen={false} />

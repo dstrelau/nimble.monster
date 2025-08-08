@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export function DevBanner() {
   return (
-    <div className="w-full bg-orange py-3 px-4">
-      <div className="mx-auto flex items-center justify-center gap-2 max-w-4xl">
+    <div className="w-full bg-orange">
+      <div className="mx-auto px-4 py-2 flex items-center justify-center gap-2 max-w-7xl">
         <TriangleAlert className="h-10 w-10 flex-shrink-0" />
         <div className="text-sm">
           You are using the "next" version, which is undergoing heavy

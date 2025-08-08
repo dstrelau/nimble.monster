@@ -39,6 +39,7 @@ export const toFamily = (
   }
   return {
     ...f,
+    description: f.description ?? undefined,
     abilities: f.abilities as unknown as Ability[],
   };
 };

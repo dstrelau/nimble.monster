@@ -8,12 +8,16 @@ export const CardGrid = ({
   currentUserId,
   gridColumns = { default: 1, md: 2, lg: 3 },
   hideFamilyAbilities = false,
+  hideCreator = false,
+  hideFamilyName = false,
 }: {
   monsters: Monster[];
   hideActions?: boolean;
   currentUserId?: string;
   gridColumns?: { default?: number; sm?: number; md?: number; lg?: number };
   hideFamilyAbilities?: boolean;
+  hideCreator?: boolean;
+  hideFamilyName?: boolean;
 }) => {
   return (
     <div
@@ -36,6 +40,8 @@ export const CardGrid = ({
             isOwner={isOwner}
             hideActions={hideActions}
             hideFamilyAbilities={hideFamilyAbilities}
+            hideCreator={hideCreator}
+            hideFamilyName={hideFamilyName}
           />
         );
       })}

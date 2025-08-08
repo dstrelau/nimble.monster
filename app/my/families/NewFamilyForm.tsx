@@ -28,6 +28,7 @@ export const NewFamilyForm = () => {
     resolver: zodResolver(FamilySchema),
     defaultValues: {
       name: "",
+      description: "",
       abilities: [{ name: "", description: "" }],
     },
   });
@@ -40,6 +41,7 @@ export const NewFamilyForm = () => {
       }));
       const result = await createFamily({
         name: data.name,
+        description: data.description,
         abilities,
       });
       if (result.success) {

@@ -29,23 +29,24 @@ model Collection {
 model MonsterInCollection {
   collectionId String     @map("collection_id") @db.Uuid
   monsterId    String     @map("monster_id") @db.Uuid
-  monster      Monster    @relation(fields: [monsterId], references: [id], onDelete: Cascade)
   collection   Collection @relation(fields: [collectionId], references: [id])
+  monster      Monster    @relation(fields: [monsterId], references: [id], onDelete: Cascade)
 
   @@id([monsterId, collectionId])
   @@map("monsters_collections")
 }
 
 model Family {
-  id         String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  creatorId  String            @map("user_id") @db.Uuid
-  visibility family_visibility @default(public)
-  name       String
-  abilities  Json[]
-  createdAt  DateTime?         @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt  DateTime?         @default(now()) @map("updated_at") @db.Timestamptz(6)
-  monsters   Monster[]
-  creator    User              @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
+  id          String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  creatorId   String            @map("user_id") @db.Uuid
+  visibility  family_visibility @default(public)
+  name        String
+  description String?
+  abilities   Json[]
+  createdAt   DateTime?         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime?         @default(now()) @map("updated_at") @db.Timestamptz(6)
+  creator     User              @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
+  monsters    Monster[]
 
   @@map("families")
 }
@@ -60,9 +61,6 @@ model Monster {
   speed              Int                   @default(0)
   fly                Int                   @default(0)
   swim               Int                   @default(0)
-  climb              Int                   @default(0)
-  teleport           Int                   @default(0)
-  burrow             Int                   @default(0)
   actions            Json[]
   abilities          Json[]
   legendary          Boolean               @default(false)
@@ -74,10 +72,13 @@ model Monster {
   kind               String                @default("")
   visibility         monster_visibility    @default(public)
   family_id          String?               @db.Uuid
-  family             Family?               @relation(fields: [family_id], references: [id])
   actionPreface      String?               @map("action_preface")
   moreInfo           String?               @default("") @map("more_info")
   userId             String                @map("user_id") @db.Uuid
+  burrow             Int                   @default(0)
+  climb              Int                   @default(0)
+  teleport           Int                   @default(0)
+  family             Family?               @relation(fields: [family_id], references: [id])
   creator            User                  @relation(fields: [userId], references: [id], onUpdate: NoAction)
   monsterCollections MonsterInCollection[]
 
@@ -98,16 +99,15 @@ model Session {
 
 model User {
   id           String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  discordId    String       @map("discord_id")
+  discordId    String       @unique(map: "idx_users_discord_id") @map("discord_id")
   username     String
   avatar       String?
   refreshToken String?      @map("refresh_token")
   collections  Collection[]
-  monsters     Monster[]
   families     Family[]
+  monsters     Monster[]
   sessions     Session[]
 
-  @@unique([discordId], map: "idx_users_discord_id")
   @@map("users")
 }
 

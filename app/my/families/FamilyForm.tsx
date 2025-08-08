@@ -19,6 +19,7 @@ const AbilitySchema = z.object({
 
 export const FamilySchema = z.object({
   name: z.string().min(1, "Family name is required"),
+  description: z.string().optional(),
   abilities: z.array(AbilitySchema).min(1, "At least one ability is required"),
 });
 
@@ -52,10 +53,27 @@ export const FamilyForm = ({
         )}
       </div>
 
+      <div>
+        <Label htmlFor="description" className="mb-2 block">
+          Description (Markdown Supported)
+        </Label>
+        <Textarea
+          className="min-h-32"
+          id="description"
+          {...register("description")}
+          rows={3}
+        />
+        {errors.description && (
+          <p className="text-sm text-destructive mt-1">
+            {errors.description.message}
+          </p>
+        )}
+      </div>
+
       <div className="space-y-4">
         {fields.map((field, index) => (
           <Card key={field.id}>
-            <CardContent className="p-4 space-y-4">
+            <CardContent className="px-4 space-y-4">
               <div>
                 <Label
                   htmlFor={`abilities.${index}.name`}

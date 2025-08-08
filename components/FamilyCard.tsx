@@ -48,10 +48,7 @@ export const FamilyCard = ({
         </CardFooter>
       </Card>
       {showEditDeleteButtons && isEditing && (
-        <EditFamilyForm
-          family={family}
-          onCancel={() => setIsEditing(false)}
-        />
+        <EditFamilyForm family={family} onCancel={() => setIsEditing(false)} />
       )}
     </>
   );

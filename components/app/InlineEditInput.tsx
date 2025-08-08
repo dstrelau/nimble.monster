@@ -4,8 +4,6 @@ import { Check, Pencil, X } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 
 interface InlineEditInputProps {
   value: string;

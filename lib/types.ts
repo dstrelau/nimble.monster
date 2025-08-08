@@ -39,9 +39,11 @@ export type FamilyVisibility = (typeof FAMILY_VISIBILITY)[number]["value"];
 export interface Family {
   id: string;
   name: string;
+  description?: string;
   abilities: Ability[];
   monsterCount?: number;
   creatorId: string;
+  creator?: User;
 }
 
 export interface Monster {

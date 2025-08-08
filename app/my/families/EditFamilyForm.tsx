@@ -18,6 +18,7 @@ export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
     startTransition(async () => {
       const result = await updateFamily(family.id, {
         name: data.name,
+        description: data.description,
         abilities: data.abilities,
       });
       if (result.success) {
@@ -40,6 +41,7 @@ export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
     resolver: zodResolver(FamilySchema),
     defaultValues: {
       name: family.name,
+      description: family.description || "",
       abilities:
         normalizedAbilities.length > 0
           ? normalizedAbilities

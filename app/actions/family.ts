@@ -37,6 +37,7 @@ export async function updateFamily(
   familyId: string,
   formData: {
     name: string;
+    description?: string;
     abilities: Ability[];
   }
 ) {
@@ -49,12 +50,15 @@ export async function updateFamily(
     const family = await db.updateFamily({
       id: familyId,
       name: formData.name,
+      description: formData.description,
       abilities: formData.abilities,
       discordId: session.user.id,
     });
 
-    // Revalidate the families page to force a refresh
+    // Revalidate the families page and family detail page to force a refresh
+    revalidatePath(`/u/${session.user.name}`);
     revalidatePath("/my/families");
+    revalidatePath(`/f/${familyId}`);
 
     return { success: true, family };
   } catch (error) {
@@ -87,6 +91,7 @@ export async function getUserFamilies() {
 
 export async function createFamily(formData: {
   name: string;
+  description?: string;
   abilities: Ability[];
 }) {
   try {
@@ -97,6 +102,7 @@ export async function createFamily(formData: {
 
     const family = await db.createFamily({
       name: formData.name,
+      description: formData.description,
       abilities: formData.abilities,
       discordId: session.user.id,
     });

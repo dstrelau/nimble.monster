@@ -18,6 +18,7 @@ export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
   return families.map((family) => ({
     id: family.id,
     name: family.name,
+    description: family.description ?? undefined,
     abilities: family.abilities as unknown as Ability[],
     visibility: family.visibility,
     monsterCount: family.monsters.length,
@@ -52,26 +53,31 @@ export const getFamily = async (id: string): Promise<Family | null> => {
   return {
     id: family.id,
     name: family.name,
+    description: family.description ?? undefined,
     abilities: family.abilities as unknown as Ability[],
     monsterCount: family.monsters.length,
     creatorId: family.creator.discordId,
+    creator: { ...family.creator, avatar: family.creator.avatar || "" },
   };
 };
 
 export interface CreateFamilyInput {
   name: string;
+  description?: string;
   abilities: Ability[];
   discordId: string;
 }
 
 export const createFamily = async ({
   name,
+  description,
   abilities,
   discordId,
 }: CreateFamilyInput): Promise<Family> => {
   const family = await prisma.family.create({
     data: {
       name: name,
+      description: description,
       abilities: abilities.map((a) => ({ ...a })),
       visibility: "public", // not used
       creator: {
@@ -89,6 +95,7 @@ export const createFamily = async ({
   return {
     id: family.id,
     name: family.name,
+    description: family.description ?? undefined,
     abilities: family.abilities as unknown as Ability[],
     monsterCount: monsterCount,
     creatorId: discordId,
@@ -98,11 +105,13 @@ export const createFamily = async ({
 export const updateFamily = async ({
   id,
   name,
+  description,
   abilities,
   discordId,
 }: {
   id: string;
   name: string;
+  description?: string;
   abilities: Ability[];
   discordId: string;
 }): Promise<Family | null> => {
@@ -116,6 +125,7 @@ export const updateFamily = async ({
     },
     data: {
       name: name,
+      description: description === "" ? null : description,
       abilities: abilities.map((a) => ({
         ...a,
         Name: undefined,
@@ -135,6 +145,7 @@ export const updateFamily = async ({
   return {
     id: family.id,
     name: family.name,
+    description: family.description ?? undefined,
     abilities: family.abilities as unknown as Ability[],
     monsterCount: monsterCount,
     creatorId: family.creator.discordId,
