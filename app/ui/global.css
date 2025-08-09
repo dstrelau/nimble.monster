@@ -33,7 +33,7 @@
     --radius: 0.25rem;
 
     --background: var(--color-neutral-50);
-    --foreground: var(--color-neutral-900);
+    --foreground: var(--color-neutral-700);
     --border: var(--color-neutral-100);
 
     --card: var(--color-white);
@@ -61,7 +61,7 @@
 
 .dark {
     --background: var(--color-neutral-950);
-    --foreground: var(--color-neutral-300);
+    --foreground: var(--color-neutral-200);
     --tw-prose-body: var(--foreground);
     --border: var(--color-neutral-800);
 
@@ -124,6 +124,7 @@
     }
     body {
         @apply bg-background text-foreground;
+        -webkit-font-smoothing: antialiased;
     }
 }
 

@@ -1,15 +1,9 @@
 "use client";
-import Link from "next/link";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { MiniCard } from "@/app/ui/monster/MiniCard";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
 import type { Family } from "@/lib/types";
+import { Link } from "./app/Link";
 
 interface FamilyCardProps {
   family: Family;
@@ -19,7 +13,7 @@ interface FamilyCardProps {
 export const FamilyCard = ({ family }: FamilyCardProps) => {
   return (
     <Card className="px-4 gap-4">
-      <CardTitle className="font-bold italic text-2xl">
+      <CardTitle className="font-black text-2xl">
         <Link href={`/f/${family.id}`}>{family.name}</Link>
       </CardTitle>
       <AbilityOverlay abilities={family.abilities} />

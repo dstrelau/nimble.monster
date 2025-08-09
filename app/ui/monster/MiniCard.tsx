@@ -1,10 +1,10 @@
 import clsx from "clsx";
 import { Crown } from "lucide-react";
-import Link from "next/link";
 import type React from "react";
 import { Card as ShadcnCard } from "@/components/ui/card";
 import type { Monster } from "@/lib/types";
 import { ArmorStat, HPStat } from "./Stat";
+import { Link } from "@/components/app/Link";
 
 const HeaderStandard: React.FC<{
   monster: Monster;
@@ -17,7 +17,7 @@ const HeaderStandard: React.FC<{
       <Link href={`/m/${monster.id}`} className="text-xl">
         {monster.name}
       </Link>{" "}
-      <span className="text-muted-foreground text-sm font-condensed small-caps">
+      <span className="ml-1 text-muted-foreground text-sm font-condensed small-caps not-italic text-nowrap">
         Lvl {monster.level}
       </span>
     </div>

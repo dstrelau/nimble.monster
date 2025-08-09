@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import { Users } from "lucide-react";
-import Link from "next/link";
 import React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
+import { Link } from "@/components/app/Link";
 import {
   CardAction,
   CardContent,
@@ -80,7 +80,7 @@ const StatsGroup: React.FC<{
 const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
   <CardHeader>
     <CardTitle className="font-slab font-black italic text-4xl">
-      {monster.name}
+      <Link href={`/m/${monster.id}`}>{monster.name}</Link>
     </CardTitle>
     <CardDescription className="font-beaufort font-black text-lg leading-none tracking-tight">
       Level {monster.level} Solo{" "}
@@ -114,8 +114,8 @@ const HeaderStandard: React.FC<{
   hideFamilyName?: boolean;
 }> = ({ monster, hideFamilyName = false }) => (
   <CardHeader className="has-data-[slot=card-action]:grid-cols-[1fr_1fr] gap-0">
-    <CardTitle className="font-slab font-black small-caps italic">
-      <div className="text-2xl">{monster.name}</div>
+    <CardTitle className="font-slab font-black small-caps italic text-2xl">
+      <Link href={`/m/${monster.id}`}>{monster.name}</Link>
     </CardTitle>
     <CardDescription className="col-span-2 flex gap-2 font-condensed small-caps">
       <p>
@@ -130,7 +130,7 @@ const HeaderStandard: React.FC<{
       </p>
       {monster.family && !hideFamilyName && (
         <Link href={`/f/${monster.family.id}`} className="flex items-center">
-          <Users className="w-4 pb-1 mr-0.5 text-orange" />
+          <Users className="w-4 pb-1 mr-0.5 text-flame" />
           <strong>{monster.family.name}</strong>
         </Link>
       )}
@@ -256,20 +256,24 @@ export const Card = ({
             {monster.moreInfo && <p className="italic">{monster.moreInfo}</p>}
           </CardContent>
 
-          <Separator />
-          <CardFooter className="flex-col items-stretch">
-            <div className="flex items-center justify-between">
-              {creator && !hideCreator ? (
-                <Attribution user={creator} />
-              ) : (
-                <div /> /* Empty div to maintain flex layout */
-              )}
+          {(!hideActions || !hideCreator) && (
+            <>
+              <Separator />
+              <CardFooter className="flex-col items-stretch">
+                <div className="flex items-center justify-between">
+                  {creator && !hideCreator ? (
+                    <Attribution user={creator} />
+                  ) : (
+                    <div /> /* Empty div to maintain flex layout */
+                  )}
 
-              {!hideActions && (
-                <CardActions monster={monster} isOwner={isOwner} />
-              )}
-            </div>
-          </CardFooter>
+                  {!hideActions && (
+                    <CardActions monster={monster} isOwner={isOwner} />
+                  )}
+                </div>
+              </CardFooter>
+            </>
+          )}
         </ShadcnCard>
       </div>
     </div>

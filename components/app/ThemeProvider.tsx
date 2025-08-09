@@ -15,8 +15,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       root.classList.add(systemTheme);
     };
 
-    updateTheme();
-
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     mediaQuery.addEventListener("change", updateTheme);
 

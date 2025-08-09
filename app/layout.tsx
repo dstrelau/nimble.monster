@@ -15,7 +15,20 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
   return (
-    <html lang="en">
+    <html lang="en" supressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const root = document.documentElement;
+                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                root.classList.add(systemTheme);
+              })();
+            `,
+          }}
+        />
+      </head>
       <body>
         <Providers session={session}>{children}</Providers>
       </body>

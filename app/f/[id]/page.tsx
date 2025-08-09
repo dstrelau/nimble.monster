@@ -1,8 +1,16 @@
-import { notFound } from "next/navigation";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
-import { FamilyHeaderWithDelete } from "./DeleteButton";
+import { FamilyHeader } from "@/components/FamilyHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import { notFound, } from "next/navigation";
+
+function parseMonsterLevel(level: string): number {
+  if (level.includes("/")) {
+    const [numerator, denominator] = level.split("/").map(Number);
+    return numerator / denominator;
+  }
+  return Number(level);
+}
 
 export default async function FamilyDetailPage({
   params,
@@ -10,46 +18,37 @@ export default async function FamilyDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const family = await db.getFamily(id);
-  const session = await auth();
+  const [session, family, monsters] = await Promise.all([
+    auth(),
+    db.getFamily(id),
+    db.listMonstersByFamilyId(id),
+  ]);
 
   if (!family) {
     notFound();
   }
 
-  const monsters = await db.listMonstersByFamilyId(id);
-
-  // Sort monsters by level (accounting for fractional levels like "1/2", "1/3")
-  const sortedMonsters = monsters.sort((a, b) => {
-    const parseLevel = (level: string): number => {
-      if (level.includes("/")) {
-        const [numerator, denominator] = level.split("/").map(Number);
-        return numerator / denominator;
-      }
-      return Number(level);
-    };
-
-    return parseLevel(a.level) - parseLevel(b.level);
-  });
-
   const isCreator = session?.user?.id === family.creatorId;
+  const sortedMonsters = monsters?.sort(
+    (a, b) => parseMonsterLevel(a.level) - parseMonsterLevel(b.level)
+  ) ?? [];
 
   return (
     <div className="container">
-      <FamilyHeaderWithDelete
+      <FamilyHeader
         family={family}
-        showEditButton={isCreator}
-        editHref={`/f/${id}/edit`}
+        showEditDeleteButtons={isCreator}
       />
-      {monsters.length === 0 ? (
+      {sortedMonsters.length === 0 ? (
         <p>No public monsters in this family.</p>
       ) : (
         <CardGrid
-          monsters={sortedMonsters}
-          currentUserId={session?.user?.id}
-          hideFamilyAbilities={true}
-          hideCreator={true}
-          hideFamilyName={true}
+            monsters={sortedMonsters}
+            currentUserId={session?.user?.id}
+            hideFamilyAbilities={true}
+            hideCreator={true}
+            hideFamilyName={true}
+            hideActions={true}
         />
       )}
     </div>

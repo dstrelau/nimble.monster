@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { Attribution } from "@/app/ui/Attribution";
 import { EditDeleteButtons } from "@/app/ui/CollectionEditDelete";
 import { VisibilityBadge } from "@/app/ui/VisibilityBadge";
+import { Link } from "@/components/app/Link";
 import {
   Card,
   CardContent,

@@ -3,8 +3,9 @@ import DOMPurify from "isomorphic-dompurify";
 import { Pencil, Trash2 } from "lucide-react";
 import { marked } from "marked";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-
+import { deleteFamily } from "@/app/actions/family";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
 import { Button } from "@/components/ui/button";
@@ -19,9 +20,7 @@ import type { Family } from "@/lib/types";
 
 interface FamilyHeaderProps {
   family: Family;
-  showEditButton?: boolean;
-  editHref?: string;
-  showDeleteButton?: boolean;
+  showEditDeleteButtons?: boolean;
   onDelete?: () => void;
 }
 
@@ -29,12 +28,33 @@ const descriptionTruncationLength = 500;
 
 export function FamilyHeader({
   family,
-  showEditButton = false,
-  editHref,
-  showDeleteButton = false,
-  onDelete,
+  showEditDeleteButtons = false,
 }: FamilyHeaderProps) {
+  const router = useRouter();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const [_isDeleting, setIsDeleting] = useState(false);
+  const handleDelete = async () => {
+    if (!confirm(`Are you sure you want to delete "${family.name}"?`)) {
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      const result = await deleteFamily(family.id);
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to delete family");
+      }
+
+      router.push("/my/families");
+    } catch (error) {
+      console.error("Error deleting family:", error);
+      alert("Failed to delete family. Please try again.");
+      setIsDeleting(false);
+    }
+  };
 
   const desc = family.description || "";
   const shouldTruncate = desc.length > descriptionTruncationLength;
@@ -56,31 +76,29 @@ export function FamilyHeader({
     <div className="flex justify-between items-start mb-6">
       <div className="w-full">
         <div className="flex justify-between items-start">
-          <h2 className="text-2xl font-bold">{family.name}</h2>
-          <div className="flex gap-2">
-            {showEditButton && editHref && (
+          <h1 className="text-3xl font-black">{family.name}</h1>
+          {showEditDeleteButtons && (
+            <div className="flex gap-2">
               <Button variant="outline" size="sm" asChild>
-                <Link href={editHref}>
+                <Link href={`/f/${family.id}/edit`}>
                   <Pencil className="w-4 h-4" />
                   Edit
                 </Link>
               </Button>
-            )}
-            {showDeleteButton && onDelete && (
-              <Button variant="destructive" size="sm" onClick={onDelete}>
+              <Button variant="outline" size="sm" onClick={handleDelete}>
                 <Trash2 className="w-4 h-4" />
                 Delete
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
         {family.creator && (
-          <div className="mt-2">
+          <div className="mt-2 flex">
             <Attribution user={family.creator} />
           </div>
         )}
         {family.description && (
-          <div className="mt-2 prose prose-sm prose-orange max-w-none">
+          <div className="mt-2 prose prose-sm prose-neutral dark:prose-invert max-w-none">
             <div
               className="inline [&>*:last-child]:inline"
               // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized markdown content
@@ -102,7 +120,7 @@ export function FamilyHeader({
                   </SheetHeader>
 
                   <div
-                    className="w-full p-4 prose prose-sm prose-orange max-w-none"
+                    className="w-full p-4 prose prose-sm prose-neutral dark:prose-invert max-w-none"
                     // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized markdown content
                     dangerouslySetInnerHTML={{ __html: fullHtml }}
                   />

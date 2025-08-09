@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import {
   ArrowBigRightDash,
   Heart,
@@ -10,6 +9,7 @@ import {
   Waves,
   Zap,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // Icon aliases for consistent usage across components
 export const HPIcon = Heart;

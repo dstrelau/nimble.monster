@@ -12,7 +12,12 @@ const Link = forwardRef<HTMLAnchorElement, LinkProps>(
     return (
       <NextLink
         ref={ref}
-        className={cn("text-muted-foreground", className)}
+        className={cn(
+          "text-foreground",
+          "hover:text-black dark:hover:text-white",
+          "hover:underline underline-offset-2 decoration-2",
+          className
+        )}
         {...props}
       >
         {children}

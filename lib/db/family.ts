@@ -1,6 +1,6 @@
 import type { Ability, Family } from "@/lib/types";
-import { prisma } from "./index";
 import { toMonster } from "./converters";
+import { prisma } from "./index";
 
 export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
   const families = await prisma.family.findMany({

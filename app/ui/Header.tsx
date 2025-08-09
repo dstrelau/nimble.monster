@@ -117,7 +117,12 @@ const Header = () => {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link href="/monsters/new" data-active={isActive("/monsters/new")}>Build Monster</Link>
+                <Link
+                  href="/monsters/new"
+                  data-active={isActive("/monsters/new")}
+                >
+                  Build Monster
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
@@ -125,7 +130,9 @@ const Header = () => {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link href="/monsters" data-active={isActive("/monsters")}>Monsters</Link>
+                <Link href="/monsters" data-active={isActive("/monsters")}>
+                  Monsters
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
@@ -133,7 +140,12 @@ const Header = () => {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link href="/collections" data-active={isActive("/collections")}>Collections</Link>
+                <Link
+                  href="/collections"
+                  data-active={isActive("/collections")}
+                >
+                  Collections
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>

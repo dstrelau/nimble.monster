@@ -72,10 +72,11 @@ export function EditFamilyClient({ family }: EditFamilyClientProps) {
     name: watchedValues.name || family.name,
     description: watchedValues.description ?? family.description,
     abilities:
-      watchedValues.abilities?.filter((a) => a.name && a.description)
+      watchedValues.abilities
+        ?.filter((a) => a.name && a.description)
         .map((ability) => ({
-          name: ability.name??"",
-          description: ability.description??"",
+          name: ability.name ?? "",
+          description: ability.description ?? "",
         })) ?? family.abilities,
   };
 
