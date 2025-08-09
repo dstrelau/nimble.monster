@@ -17,7 +17,7 @@ export const AbilityOverlay = ({
   );
 
   return (
-    <div className="ability relative font-condensed p-2 bg-muted text-muted-foreground shadow-sm  w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem]">
+    <div className="ability relative font-condensed p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm  w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem]">
       <div className="flex flex-col gap-4">
         {abilities?.map((ability) => {
           const abilityName = ability.name || ability.Name || "";

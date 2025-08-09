@@ -79,7 +79,7 @@
     --accent: var(--color-indigo-500);
     --accent-foreground: var(--color-neutral-50);
     --muted: var(--color-neutral-800);
-    --muted-foreground: var(--color-neutral-300);
+    --muted-foreground: var(--color-neutral-400);
 
     --input: var(--color-neutral-700);
     --ring: var(--color-neutral-700);
