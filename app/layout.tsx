@@ -15,9 +15,10 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
   return (
-    <html lang="en" supressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: theming
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
