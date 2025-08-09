@@ -88,13 +88,13 @@ const Header = () => {
     : [];
 
   return (
-    <nav className="p-0 shadow-sm bg-blue">
+    <nav className="p-0 shadow-sm bg-header text-header-foreground">
       <div className="mx-auto max-w-7xl w-full px-4 flex justify-between items-center h-16">
         {/* Mobile left menu button */}
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden text-white hover:bg-white/10 hover:text-white"
+          className="md:hidden"
           onClick={() => {
             setMobileMenuOpen(!mobileMenuOpen);
             setMobileUserMenuOpen(false);
@@ -113,43 +113,28 @@ const Header = () => {
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
-              <Link href="/monsters/new" legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    "text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent",
-                    isActive("/monsters/new") && "font-bold bg-white/20"
-                  )}
-                >
-                  Build Monster
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link href="/monsters/new" data-active={isActive("/monsters/new")}>Build Monster</Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/monsters" legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    "text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent",
-                    isActive("/monsters") && "font-bold bg-white/20"
-                  )}
-                >
-                  Monsters
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link href="/monsters" data-active={isActive("/monsters")}>Monsters</Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/collections" legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    "text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent",
-                    isActive("/collections") && "font-bold bg-white/20"
-                  )}
-                >
-                  Collections
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link href="/collections" data-active={isActive("/collections")}>Collections</Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

@@ -6,6 +6,7 @@ import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { DevBanner } from "@/app/ui/DevBanner";
 import Header from "@/app/ui/Header";
+import { ThemeProvider } from "@/components/app/ThemeProvider";
 
 const queryClient = new QueryClient();
 
@@ -19,9 +20,11 @@ export function Providers({
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        <DevBanner />
-        <Header />
-        <main className="mx-auto w-full max-w-7xl px-4 py-6">{children}</main>
+        <ThemeProvider>
+          <DevBanner />
+          <Header />
+          <main className="mx-auto w-full max-w-7xl px-4 py-6">{children}</main>
+        </ThemeProvider>
       </SessionProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

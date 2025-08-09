@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
   ArrowBigRightDash,
   Heart,
@@ -27,29 +28,23 @@ export const Stat: React.FC<{
   showZero?: boolean;
   SvgIcon: React.FC<{ className?: string; style?: React.CSSProperties }>;
   children?: React.ReactNode;
-  fillColor?: string;
-  strokeColor?: string;
-}> = ({
-  name,
-  value,
-  showZero = false,
-  children,
-  SvgIcon,
-  fillColor = "var(--color-gray-200)",
-  strokeColor = "var(--color-gray-300)",
-}) => {
+  iconClassName?: string;
+}> = ({ name, value, showZero = false, children, SvgIcon, iconClassName }) => {
   if (!value && !children && !showZero) return null;
   return (
     <span
       id={name}
-      className="flex items-center ml-2 text-lg text-content leading-6 py-1"
+      className="flex items-center ml-2 text-lg text-content leading-6 py-1 "
     >
       <SvgIcon
-        className={`w-7 h-7 -mr-[6px]`}
-        style={{
-          fill: fillColor,
-          stroke: strokeColor,
-        }}
+        className={cn(
+          "w-7 h-7 -mr-[6px] stroke-neutral-300 fill-neutral-200 dark:stroke-neutral-600 dark:fill-neutral-700",
+          iconClassName
+        )}
+        // style={{
+        //   fill: fillColor,
+        //   stroke: strokeColor,
+        // }}
       />
       {value}
       {children}
@@ -62,8 +57,7 @@ export const HPStat: React.FC<{ value: string | number }> = ({ value }) => (
     name="hp"
     value={value}
     SvgIcon={HPIcon}
-    strokeColor="var(--red)"
-    fillColor="var(--red)"
+    iconClassName="stroke-hp fill-hp dark:stroke-hp dark:fill-hp"
     showZero={true}
   />
 );

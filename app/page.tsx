@@ -1,109 +1,69 @@
-import { Check, ClipboardList, Lock, PlusCircle } from "lucide-react";
-import Link from "next/link";
+import { Check, ClipboardList, PlusCircle } from "lucide-react";
+import { Link } from "@/components/app/Link";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function HomePage() {
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex items-start gap-2">
-        <div>
-          <p className="text-lg">
-            nimble.monster allows creating and organizing monsters for the{" "}
-            <Link className="d-link" href="https://nimblerpg.com">
-              Nimble TTRPG system
-            </Link>
-            .
-          </p>
-          <p className="mt-2 text-amber-700 bg-amber-50 p-3 rounded-md border border-amber-200">
-            This is a beta-quality product. It is entirely possible that data
-            loss will occur. There are some bugs and usability issues.
-          </p>
-        </div>
-      </div>
+    <div className="max-w-4xl mx-auto prose prose-neutral dark:prose-invert">
+      <h1 className="text-6xl text-center font-bold">
+        Create and share adversaries for <br />
+        <span className="pr-3 font-slab font-black italic uppercase text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600">
+          Nimble TTRPG
+        </span>
+      </h1>
 
-      <div className="mt-8 flex items-start gap-2">
-        <PlusCircle className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
-        <div>
-          <h2 className="text-lg font-semibold">Available Features</h2>
-          <ul className="mt-2 space-y-2 list-disc list-inside">
-            <li>
-              Use the{" "}
-              <Link className="d-link" href="/monsters/new">
-                Monster Builder
-              </Link>{" "}
-              to create a new Nimble-flavor monster, both standard and
-              Legendary.
-            </li>
-            <li>
-              Browse{" "}
-              <Link className="d-link" href="/collections">
-                public collections
-              </Link>{" "}
-              of community-created monsters.
-            </li>
-            <li>Save a monster block as image.</li>
-          </ul>
-        </div>
-      </div>
+      <h2 className="flex items-center gap-2">
+        <PlusCircle className="w-7 h-7 stroke-icon" />
+        Features
+      </h2>
 
-      <div className="mt-8 flex items-start gap-2">
-        <Lock className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
-        <div>
-          <h2 className="text-lg font-semibold">With Discord Login</h2>
-          <ul className="mt-2 space-y-2 list-disc list-inside">
-            <li>Save custom monster blocks for later reference.</li>
-            <li>
-              <Link className="d-link" href="/monsters">
-                Publish monsters
-              </Link>{" "}
-              for the community or keep them private.
-            </li>
-            <li>
-              Build your{" "}
-              <Link className="d-link" href="/u/sanitywithin">
-                public profile
-              </Link>
-            </li>
-            <li>
-              Group monsters into sharable{" "}
-              <Link
-                className="d-link"
-                href="/collections//collections/ed25c4e5-4bd9-4f1e-8ad6-0850ed8d7d40"
-              >
-                collections.
-              </Link>
-            </li>
-            <li>Create families of similar monsters that share traits.</li>
-          </ul>
-        </div>
-      </div>
+      <ul>
+        <li>
+          Use the <Link href="/monsters/new">Monster Builder</Link> to create a
+          new Nimble-flavor monster, both standard and Legendary.
+        </li>
+        <li>
+          Browse <Link href="/collections">public collections</Link> of
+          community-created monsters.
+        </li>
+        <li>Save a monster block as image.</li>
+        <li>Save custom monster blocks for later reference.</li>
+        <li>
+          <Link href="/monsters">Publish monsters</Link> for the community or
+          keep them private.
+        </li>
+        <li>
+          Build your <Link href="/u/sanitywithin">public profile</Link>.
+        </li>
+        <li>
+          Group monsters into sharable{" "}
+          <Link href="/collections">collections.</Link>
+        </li>
+        <li>Create families of similar monsters that share traits.</li>
+      </ul>
 
-      <div className="mt-8 flex items-start gap-2">
-        <ClipboardList className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
-        <div>
-          <h2 className="text-lg font-semibold">Coming Soon</h2>
-          <ul className="mt-2 space-y-2 list-disc list-inside">
-            <li>Upload Monster Images</li>
-            <li className="items-center">
-              <s>User profile pages</s>
-              <Check className="inline w-4 h-4 ml-2 text-green-500" />
-            </li>
-          </ul>
-        </div>
-      </div>
+      <h2 className="flex items-center gap-2">
+        <ClipboardList className="w-7 h-7 stroke-icon" />
+        Coming Soon
+      </h2>
+      <ul>
+        <li>Upload Monster Images</li>
+        <li className="items-center">
+          <s>User profile pages</s>
+          <Check className="inline w-4 h-4 ml-2 text-success" />
+        </li>
+      </ul>
 
-      <div className="mt-8 flex items-start gap-2">
-        <p>
+      <Card className="mt-8 flex items-start gap-2">
+        <CardContent>
           If you have feedback or feature requests, reach out to me on Discord (
           <code>_byteslicer</code>) or raise an issue on the{" "}
-          <a
-            className="text-indigo-600 hover:text-indigo-800 underline"
-            href="https://github.com/dstrelau/nimble.monster"
-          >
+          <a href="https://github.com/dstrelau/nimble.monster">
             GitHub repository
           </a>
           .
-        </p>
-      </div>
+        </CardContent>
+      </Card>
 
       <div className="mt-16 text-sm text-gray-600 border-t pt-4">
         nimble.monster is an independent product published under the Nimble 3rd

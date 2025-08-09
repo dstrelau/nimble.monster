@@ -3,7 +3,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import {
-  ChevronDown,
   CircleAlert,
   CircleCheck,
   CircleSlash2,
@@ -40,11 +39,6 @@ import {
   IconFormSelect,
 } from "@/components/app/Form";
 import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -753,7 +747,7 @@ const HPInput: React.FC<{
       label={
         <TooltipProvider>
           <span className="flex-1">
-            <HPIcon className="h-4 w-4 mr-0.5 inline stroke-red fill-red" />
+            <HPIcon className="h-4 w-4 mr-0.5 inline stroke-hp" />
             HP
           </span>{" "}
           {recommendedHP && (
@@ -971,13 +965,11 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
           <div className="sticky top-4">
             <div className="flex mb-6 mr-5 justify-end">
               <div className="flex gap-2 items-center">
-                <span className="text-sm font-medium text-gray-900">
-                  Load Example:
-                </span>
+                <span className="text-sm font-medium">Load Example:</span>
                 {Object.keys(EXAMPLE_MONSTERS).map((type) => (
                   <Button
                     key={type}
-                    variant="outline"
+                    variant="ghost"
                     onClick={() =>
                       loadExample(type as keyof typeof EXAMPLE_MONSTERS)
                     }

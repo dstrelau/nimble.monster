@@ -146,7 +146,7 @@ export function IconFormInput<T extends string | number>({
     <FormInput
       label={
         <>
-          <Icon className="h-4 w-4 stroke-gray-400 fill-gray-300" />
+          <Icon className="h-4 w-4 stroke-icon" />
           {text}
         </>
       }
@@ -183,14 +183,13 @@ export function IconFormSelect<T extends string>({
       <FormSelect
         label={
           <>
-            <Icon className="h-4 w-4 stroke-gray-400 fill-gray-300" />
+            <Icon className="h-4 w-4 stroke-icon" />
             {text}
           </>
         }
         name={name}
         choices={choices}
         selected={selected}
-        // className={className}
         onChange={onChange}
       />
     </div>

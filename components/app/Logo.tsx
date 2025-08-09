@@ -12,9 +12,11 @@ export const Logo: React.FC<LogoProps> = ({
 }) => {
   return (
     <Link href="/" className={`flex items-center group ${className}`}>
-      <Flame className="h-8 w-8 text-amber-400 group-hover:text-amber-300 transition-colors" />
+      <Flame className="h-8 w-8 text-flame hover:fill-flame-fill transition-colors" />
       {showText && (
-        <span className="ml-2 font-bold text-white">nimble.monster</span>
+        <span className="ml-2 font-bold text-header-foreground">
+          nimble.monster
+        </span>
       )}
     </Link>
   );

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function DevBanner() {
   return (
-    <div className="w-full bg-orange">
+    <div className="w-full bg-warning text-warning-foreground">
       <div className="mx-auto px-4 py-2 flex items-center justify-center gap-2 max-w-7xl">
         <TriangleAlert className="h-10 w-10 flex-shrink-0" />
         <div className="text-sm">
