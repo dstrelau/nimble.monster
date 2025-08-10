@@ -46,7 +46,7 @@
     --accent: var(--color-violet-200);
     --accent-foreground: var(--color-black);
     --muted: var(--color-neutral-100);
-    --muted-foreground: var(--color-neutral-900);
+    --muted-foreground: var(--color-neutral-500);
 
     --input: var(--color-neutral-200);
     --ring: var(--color-neutral-300);

@@ -24,7 +24,6 @@ export const CollectionVisibility = {
 export const ValidCollectionVisibilities = [
   CollectionVisibility.PUBLIC,
   CollectionVisibility.PRIVATE,
-  CollectionVisibility.SECRET,
 ] as const;
 export type CollectionVisibilityType =
   (typeof ValidCollectionVisibilities)[number];
@@ -111,6 +110,7 @@ export interface CollectionOverview {
   legendaryCount: number;
   standardCount: number;
   creator: User;
+  monsters: Monster[];
 }
 
 export interface User {

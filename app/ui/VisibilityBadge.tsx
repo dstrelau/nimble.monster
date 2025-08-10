@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface VisibilityBadgeProps {
   visibility: "public" | "private" | "secret";
@@ -9,15 +10,11 @@ export function VisibilityBadge({
   visibility,
   className,
 }: VisibilityBadgeProps) {
-  if (visibility === "private") {
-    return null;
-  }
-
-  const badgeText = visibility === "public" ? "Public" : "Secret";
-  const variant = visibility === "public" ? "default" : "secondary";
+  const badgeText = visibility === "public" ? "Public" : "Private";
+  const variant = visibility === "public" ? "secondary" : "default";
 
   return (
-    <Badge variant={variant} className={className}>
+    <Badge variant={variant} className={cn("h-6", className)}>
       {badgeText}
     </Badge>
   );

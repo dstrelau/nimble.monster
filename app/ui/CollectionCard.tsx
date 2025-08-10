@@ -1,61 +1,28 @@
 import { Attribution } from "@/app/ui/Attribution";
-import { EditDeleteButtons } from "@/app/ui/CollectionEditDelete";
 import { VisibilityBadge } from "@/app/ui/VisibilityBadge";
-import { Link } from "@/components/app/Link";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import type { CollectionOverview } from "@/lib/types";
+import { MonsterGroupMinis } from "@/components/MonsterGroupMinis";
+import type { Collection } from "@/lib/types";
 
 export const CollectionCard = ({
   collection,
-  showEditDeleteButtons,
-  showVisibilityBadge,
   showAttribution,
+  showVisibilityBadge = true,
 }: {
-  collection: CollectionOverview;
-  showEditDeleteButtons: boolean;
+  collection: Collection;
   showVisibilityBadge: boolean;
   showAttribution: boolean;
 }) => {
   return (
-    <Card key={collection.id}>
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <Link href={`/collections/${collection.id}`} className="block">
-            <CardTitle>{collection.name}</CardTitle>
-          </Link>
-          {showVisibilityBadge && (
-            <VisibilityBadge visibility={collection.visibility} />
-          )}
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="font-condensed text-sm text-muted-foreground">
-          {collection.standardCount} monsters |{" "}
-          <span className="text-accent">
-            {collection.legendaryCount} legendary
-          </span>
-        </div>
-      </CardContent>
-      {(showAttribution || showEditDeleteButtons) && (
-        <>
-          <Separator />
-          <CardFooter>
-            <div className="flex justify-between w-full">
-              <Attribution user={collection.creator} />
-              {showEditDeleteButtons && (
-                <EditDeleteButtons id={collection.id} />
-              )}
-            </div>
-          </CardFooter>
-        </>
-      )}
-    </Card>
+    <MonsterGroupMinis
+      name={collection.name}
+      href={`/collections/${collection.id}`}
+      monsters={collection.monsters}
+      badge={
+        showVisibilityBadge ? (
+          <VisibilityBadge visibility={collection.visibility} />
+        ) : null
+      }
+      attribution={showAttribution && <Attribution user={collection.creator} />}
+    ></MonsterGroupMinis>
   );
 };

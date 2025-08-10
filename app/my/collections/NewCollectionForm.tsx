@@ -26,7 +26,7 @@ import { ValidCollectionVisibilities } from "@/lib/types";
 
 const collectionSchema = z.object({
   name: z.string().min(1, "Collection name is required"),
-  visibility: z.enum(ValidCollectionVisibilities).default("private"),
+  visibility: z.enum(ValidCollectionVisibilities).default("public"),
   description: z.string().optional(),
 });
 
@@ -40,7 +40,7 @@ export default function NewCollectionForm() {
     resolver: zodResolver(collectionSchema),
     defaultValues: {
       name: "",
-      visibility: "private" as "public" | "private" | "secret",
+      visibility: "public" as "public" | "private",
       description: "",
     },
   });

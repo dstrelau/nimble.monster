@@ -1,8 +1,10 @@
 import { CollectionCard } from "@/app/ui/CollectionCard";
 import * as db from "@/lib/db";
+import { sortMonstersInCollections } from "@/lib/utils";
 
 export default async function CollectionsPage() {
-  const collections = await db.listPublicCollections();
+  const collections = await db.listPublicCollectionsWithMonsters();
+  console.log(collections);
   if (collections?.length === 0) {
     return (
       <div className="text-center py-12">
@@ -11,14 +13,15 @@ export default async function CollectionsPage() {
     );
   }
 
+  const sortedCollections = sortMonstersInCollections(collections);
+
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {collections.map((collection) => (
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
+        {sortedCollections.map((collection) => (
           <CollectionCard
             key={collection.id}
             collection={collection}
-            showEditDeleteButtons={false}
             showVisibilityBadge={false}
             showAttribution={true}
           />

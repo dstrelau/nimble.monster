@@ -119,7 +119,6 @@ enum armor_type {
 
 enum collection_visibility {
   public
-  secret
   private
 }
 

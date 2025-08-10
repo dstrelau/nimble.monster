@@ -1,21 +1,13 @@
 "use client";
-import DOMPurify from "isomorphic-dompurify";
 import { Pencil, Trash2 } from "lucide-react";
-import { marked } from "marked";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteFamily } from "@/app/actions/family";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
+import { TruncatedMarkdown } from "@/components/TruncatedMarkdown";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import type { Family } from "@/lib/types";
 
 interface FamilyHeaderProps {
@@ -24,14 +16,11 @@ interface FamilyHeaderProps {
   onDelete?: () => void;
 }
 
-const descriptionTruncationLength = 500;
-
 export function FamilyHeader({
   family,
   showEditDeleteButtons = false,
 }: FamilyHeaderProps) {
   const router = useRouter();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const [_isDeleting, setIsDeleting] = useState(false);
   const handleDelete = async () => {
@@ -55,22 +44,6 @@ export function FamilyHeader({
       setIsDeleting(false);
     }
   };
-
-  const desc = family.description || "";
-  const shouldTruncate = desc.length > descriptionTruncationLength;
-  const truncatedDescription = shouldTruncate
-    ? `${family.description?.substring(0, descriptionTruncationLength)}...`
-    : family.description;
-
-  const truncatedHtml = truncatedDescription
-    ? DOMPurify.sanitize(
-        marked(truncatedDescription, { async: false }) as string
-      )
-    : "";
-
-  const fullHtml = family.description
-    ? DOMPurify.sanitize(String(marked(family.description)))
-    : "";
 
   return (
     <div className="flex justify-between items-start mb-6">
@@ -98,35 +71,11 @@ export function FamilyHeader({
           </div>
         )}
         {family.description && (
-          <div className="mt-2 prose prose-sm prose-neutral dark:prose-invert max-w-none">
-            <div
-              className="inline [&>*:last-child]:inline"
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized markdown content
-              dangerouslySetInnerHTML={{ __html: truncatedHtml }}
+          <div className="mt-2">
+            <TruncatedMarkdown
+              content={family.description}
+              title={family.name}
             />
-            {shouldTruncate && (
-              <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="link"
-                    className="text-sm p-0 h-auto ml-1 align-baseline"
-                  >
-                    Read All
-                  </Button>
-                </SheetTrigger>
-                <SheetContent className="sm:max-w-2xl overflow-y-scroll">
-                  <SheetHeader className="sr-only">
-                    <SheetTitle>{family.name}</SheetTitle>
-                  </SheetHeader>
-
-                  <div
-                    className="w-full p-4 prose prose-sm prose-neutral dark:prose-invert max-w-none"
-                    // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized markdown content
-                    dangerouslySetInnerHTML={{ __html: fullHtml }}
-                  />
-                </SheetContent>
-              </Sheet>
-            )}
           </div>
         )}
         {family.abilities && family.abilities.length > 0 && (

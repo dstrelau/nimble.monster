@@ -66,12 +66,11 @@ export default function TabsContent({
             No public collections available
           </p>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
             {collections.map((collection) => (
               <CollectionCard
                 key={collection.id}
                 collection={collection}
-                showEditDeleteButtons={false}
                 showVisibilityBadge={false}
                 showAttribution={false}
               />

@@ -50,7 +50,16 @@ export const toCollectionOverview = (
     {
       include: {
         creator: true;
-        monsterCollections: { include: { monster: true } };
+        monsterCollections: {
+          include: {
+            monster: {
+              include: {
+                creator: true;
+                family: true;
+              };
+            };
+          };
+        };
       };
     },
     "findMany"
@@ -61,8 +70,10 @@ export const toCollectionOverview = (
   ).length;
   return {
     ...c,
+    visibility: c.visibility === "private" ? "private" : "public",
     legendaryCount,
     standardCount: c.monsterCollections.length - legendaryCount,
     creator: { ...c.creator, avatar: c.creator.avatar || "" },
+    monsters: c.monsterCollections.map((mc) => toMonster(mc.monster)),
   };
 };

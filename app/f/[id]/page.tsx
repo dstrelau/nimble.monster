@@ -3,14 +3,7 @@ import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { FamilyHeader } from "@/components/FamilyHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-
-function parseMonsterLevel(level: string): number {
-  if (level.includes("/")) {
-    const [numerator, denominator] = level.split("/").map(Number);
-    return numerator / denominator;
-  }
-  return Number(level);
-}
+import { parseMonsterLevel } from "@/lib/utils";
 
 export default async function FamilyDetailPage({
   params,
