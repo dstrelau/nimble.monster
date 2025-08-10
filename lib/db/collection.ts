@@ -3,16 +3,27 @@ import { isValidUUID } from "@/lib/utils/validation";
 import { toCollectionOverview, toMonster } from "./converters";
 import { prisma } from "./index";
 
+const collectionWithMonstersInclude = {
+  creator: true,
+  monsterCollections: {
+    include: {
+      monster: {
+        include: {
+          creator: true,
+          family: true,
+        },
+      },
+    },
+  },
+} as const;
+
 export const listCollectionsForUser = async (
   userId: string
 ): Promise<CollectionOverview[]> => {
   return (
     await prisma.collection.findMany({
       where: { creator: { discordId: userId } },
-      include: {
-        creator: true,
-        monsterCollections: { include: { monster: true } },
-      },
+      include: collectionWithMonstersInclude,
     })
   ).map(toCollectionOverview);
 };
@@ -50,10 +61,7 @@ export const listPublicCollections = async (): Promise<
   return (
     await prisma.collection.findMany({
       where: { visibility: "public" },
-      include: {
-        creator: true,
-        monsterCollections: { include: { monster: true } },
-      },
+      include: collectionWithMonstersInclude,
     })
   ).map(toCollectionOverview);
 };
@@ -122,10 +130,7 @@ export const getUserPublicCollections = async (
         creator: { username },
         visibility: "public",
       },
-      include: {
-        creator: true,
-        monsterCollections: { include: { monster: true } },
-      },
+      include: collectionWithMonstersInclude,
     })
   ).map(toCollectionOverview);
 };
@@ -272,19 +277,7 @@ export const updateCollection = async ({
           ...(description !== undefined && { description }),
           updatedAt: new Date(),
         },
-        include: {
-          creator: true,
-          monsterCollections: {
-            include: {
-              monster: {
-                include: {
-                  creator: true,
-                  family: true,
-                },
-              },
-            },
-          },
-        },
+        include: collectionWithMonstersInclude,
       });
 
       // Update monster associations if monsterIds is provided
@@ -326,19 +319,7 @@ export const updateCollection = async ({
       // Get the updated collection with the new monster relationships
       const updatedCollection = await tx.collection.findUnique({
         where: { id },
-        include: {
-          creator: true,
-          monsterCollections: {
-            include: {
-              monster: {
-                include: {
-                  creator: true,
-                  family: true,
-                },
-              },
-            },
-          },
-        },
+        include: collectionWithMonstersInclude,
       });
 
       if (!updatedCollection) return null;
