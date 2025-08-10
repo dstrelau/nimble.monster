@@ -61,7 +61,7 @@ const StatsGroup: React.FC<{
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="flex items-center cursor-pointer">{children}</div>
+        <div className="flex items-center">{children}</div>
       </TooltipTrigger>
       <TooltipContent className="w-fit p-3">
         <dl className="grid grid-cols-2 gap-x-2 gap-y-1">
@@ -77,10 +77,17 @@ const StatsGroup: React.FC<{
   );
 };
 
-const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
+const HeaderLegendary: React.FC<{ monster: Monster; link?: boolean }> = ({
+  monster,
+  link = true,
+}) => (
   <CardHeader>
     <CardTitle className="font-slab font-black italic text-4xl">
-      <Link href={`/m/${monster.id}`}>{monster.name}</Link>
+      {link ? (
+        <Link href={`/m/${monster.id}`}>{monster.name}</Link>
+      ) : (
+        monster.name
+      )}
     </CardTitle>
     <CardDescription className="font-beaufort font-black text-lg leading-none tracking-tight">
       Level {monster.level} Solo{" "}
@@ -112,10 +119,15 @@ const HeaderLegendary: React.FC<{ monster: Monster }> = ({ monster }) => (
 const HeaderStandard: React.FC<{
   monster: Monster;
   hideFamilyName?: boolean;
-}> = ({ monster, hideFamilyName = false }) => (
+  link?: boolean;
+}> = ({ monster, hideFamilyName = false, link = true }) => (
   <CardHeader className="has-data-[slot=card-action]:grid-cols-[1fr_1fr] gap-0">
     <CardTitle className="font-slab font-black small-caps italic text-2xl">
-      <Link href={`/m/${monster.id}`}>{monster.name}</Link>
+      {link ? (
+        <Link href={`/m/${monster.id}`}>{monster.name}</Link>
+      ) : (
+        monster.name
+      )}
     </CardTitle>
     <CardDescription className="col-span-2 flex gap-2 font-condensed small-caps">
       <p>
@@ -168,6 +180,7 @@ interface CardProps {
   monster: Monster;
   creator?: User;
   isOwner?: boolean;
+  link?: boolean;
   hideActions?: boolean;
   hideFamilyAbilities?: boolean;
   hideCreator?: boolean;
@@ -178,6 +191,7 @@ export const Card = ({
   monster,
   creator,
   isOwner = false,
+  link = true,
   hideActions = false,
   hideFamilyAbilities = false,
   hideCreator = false,
@@ -188,9 +202,13 @@ export const Card = ({
       <div id={`monster-${monster.id}`}>
         <ShadcnCard className="gap-4 py-4">
           {monster.legendary ? (
-            <HeaderLegendary monster={monster} />
+            <HeaderLegendary monster={monster} link={link} />
           ) : (
-            <HeaderStandard monster={monster} hideFamilyName={hideFamilyName} />
+            <HeaderStandard
+              monster={monster}
+              hideFamilyName={hideFamilyName}
+              link={link}
+            />
           )}
 
           <CardContent className="flex flex-col gap-4">

@@ -45,7 +45,7 @@ export const List = ({
             ref={selectedIds.includes(monster.id) ? selectedItemRef : null}
             className={clsx(
               "block p-3 transition-colors cursor-pointer",
-              selectedIds.includes(monster.id) && "bg-primary/40"
+              selectedIds.includes(monster.id) && "bg-accent"
             )}
             onClick={() => !showChecks && handleMonsterClick(monster.id)}
           >

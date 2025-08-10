@@ -73,6 +73,7 @@ export default async function MonsterPage({
         <Card
           monster={monster}
           creator={monster.creator}
+          link={false}
           hideActions={false}
           isOwner={isOwner}
         />
