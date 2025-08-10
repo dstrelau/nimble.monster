@@ -59,7 +59,9 @@
     */
 }
 
-.dark {
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+[data-theme="dark"] {
     --background: var(--color-neutral-950);
     --foreground: var(--color-neutral-200);
     --tw-prose-body: var(--foreground);

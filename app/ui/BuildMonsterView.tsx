@@ -440,8 +440,6 @@ const StandardForm: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
 }> = ({ monster, setMonster }) => {
-  const [isMovementOpen, setIsMovementOpen] = useState(false);
-
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-x-6">

@@ -1,8 +1,8 @@
+import { notFound } from "next/navigation";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { FamilyHeader } from "@/components/FamilyHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import { notFound, } from "next/navigation";
 
 function parseMonsterLevel(level: string): number {
   if (level.includes("/")) {
@@ -29,26 +29,24 @@ export default async function FamilyDetailPage({
   }
 
   const isCreator = session?.user?.id === family.creatorId;
-  const sortedMonsters = monsters?.sort(
-    (a, b) => parseMonsterLevel(a.level) - parseMonsterLevel(b.level)
-  ) ?? [];
+  const sortedMonsters =
+    monsters?.sort(
+      (a, b) => parseMonsterLevel(a.level) - parseMonsterLevel(b.level)
+    ) ?? [];
 
   return (
     <div className="container">
-      <FamilyHeader
-        family={family}
-        showEditDeleteButtons={isCreator}
-      />
+      <FamilyHeader family={family} showEditDeleteButtons={isCreator} />
       {sortedMonsters.length === 0 ? (
         <p>No public monsters in this family.</p>
       ) : (
         <CardGrid
-            monsters={sortedMonsters}
-            currentUserId={session?.user?.id}
-            hideFamilyAbilities={true}
-            hideCreator={true}
-            hideFamilyName={true}
-            hideActions={true}
+          monsters={sortedMonsters}
+          currentUserId={session?.user?.id}
+          hideFamilyAbilities={true}
+          hideCreator={true}
+          hideFamilyName={true}
+          hideActions={true}
         />
       )}
     </div>

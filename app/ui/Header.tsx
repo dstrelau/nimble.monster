@@ -7,6 +7,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import { Logo } from "@/components/app/Logo";
 import { MobileMenuDropdown } from "@/components/app/MobileMenuDropdown";
+import { ModeToggle } from "@/components/app/ModeToggle";
 import { UserAvatar } from "@/components/app/UserAvatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +23,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
 const Header = () => {
@@ -152,7 +154,7 @@ const Header = () => {
         </NavigationMenu>
 
         {/* Desktop User menu */}
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center gap-2">
           {currentUser ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -210,6 +212,8 @@ const Header = () => {
                 <DropdownMenuItem onClick={() => signOut({ redirectTo: "/" })}>
                   Logout
                 </DropdownMenuItem>
+                <Separator />
+                <ModeToggle className="mt-2 mb-1 items-center" />
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
@@ -225,7 +229,8 @@ const Header = () => {
         </div>
 
         {/* Mobile User menu */}
-        <div className="md:hidden">
+        <div className="md:hidden flex items-center gap-2">
+          <ModeToggle />
           {currentUser ? (
             <Button
               variant="ghost"

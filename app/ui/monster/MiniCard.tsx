@@ -1,10 +1,10 @@
 import clsx from "clsx";
 import { Crown } from "lucide-react";
 import type React from "react";
+import { Link } from "@/components/app/Link";
 import { Card as ShadcnCard } from "@/components/ui/card";
 import type { Monster } from "@/lib/types";
 import { ArmorStat, HPStat } from "./Stat";
-import { Link } from "@/components/app/Link";
 
 const HeaderStandard: React.FC<{
   monster: Monster;
