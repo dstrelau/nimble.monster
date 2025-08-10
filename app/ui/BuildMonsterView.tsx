@@ -566,7 +566,7 @@ const AbilitiesSection: React.FC<{
     <legend className="mb-4 font-condensed font-bold">Abilities</legend>
     {monster.abilities.map((ability, index) => (
       <AbilityRow
-        key={ability.name}
+        key={index}
         ability={ability}
         onChange={(newAbility) => {
           const newAbilities = [...monster.abilities];
@@ -611,7 +611,7 @@ const ActionsSection: React.FC<{
       />
       {monster.actions.map((action, index) => (
         <ActionRow
-          key={action.name}
+          key={index}
           action={action}
           legendary={monster.legendary}
           onChange={(newAction) => {
