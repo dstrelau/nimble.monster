@@ -5,10 +5,12 @@ import { FamilyCard } from "@/components/FamilyCard";
 import { Button } from "@/components/ui/button";
 import { getRandomFeaturedFamily } from "@/lib/db/family";
 import { monstersSortedByLevel } from "@/lib/utils";
+import { auth } from "@/lib/auth";
 import { Attribution } from "./ui/Attribution";
 import { MonsterCardWithOverflow } from "./ui/MonsterCardWithOverflow";
 
 export default async function HomePage() {
+  const session = await auth();
   const featuredFamily = await getRandomFeaturedFamily();
   // we want the middle card to be roughly vertical, so do some math
   const randomIdx = Math.floor(
@@ -57,16 +59,18 @@ export default async function HomePage() {
 
       <div className="dark:prose-invert">
         <div className="flex justify-center mb-8 gap-4">
-          <Button className="px-4 py-6 bg-[#5865F2] hover:bg-[#5865F2] text-white font-semibold rounded-lg flex items-center gap-2 transition-colors">
-            <Image
-              src="https://cdn.discordapp.com/embed/avatars/0.png"
-              alt="Discord"
-              width="32"
-              height="32"
-              className="w-8 h-8"
-            />
-            Login with Discord
-          </Button>
+          {!session?.user && (
+            <Button className="px-4 py-6 bg-[#5865F2] hover:bg-[#5865F2] text-white font-semibold rounded-lg flex items-center gap-2 transition-colors">
+              <Image
+                src="https://cdn.discordapp.com/embed/avatars/0.png"
+                alt="Discord"
+                width="32"
+                height="32"
+                className="w-8 h-8"
+              />
+              Login with Discord
+            </Button>
+          )}
           <Button asChild className="px-4 py-6" variant="outline">
             <a href="/monsters">
               Browse Monsters
