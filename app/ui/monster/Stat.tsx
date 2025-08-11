@@ -34,17 +34,13 @@ export const Stat: React.FC<{
   return (
     <span
       id={name}
-      className="flex items-center ml-2 text-lg text-content leading-6 py-1 "
+      className="flex items-center ml-2 text-lg text-content leading-6 py-1 min-w-14"
     >
       <SvgIcon
         className={cn(
-          "w-7 h-7 -mr-[6px] stroke-neutral-300 fill-neutral-200 dark:stroke-neutral-600 dark:fill-neutral-700",
+          "w-7 h-7 -mr-[4px] stroke-neutral-300 fill-neutral-200 dark:stroke-neutral-600 dark:fill-neutral-700",
           iconClassName
         )}
-        // style={{
-        //   fill: fillColor,
-        //   stroke: strokeColor,
-        // }}
       />
       {value}
       {children}
@@ -52,12 +48,18 @@ export const Stat: React.FC<{
   );
 };
 
-export const HPStat: React.FC<{ value: string | number }> = ({ value }) => (
+export const HPStat: React.FC<{
+  className?: string;
+  value: string | number;
+}> = ({ className, value }) => (
   <Stat
     name="hp"
     value={value}
     SvgIcon={HPIcon}
-    iconClassName="stroke-hp fill-hp dark:stroke-hp dark:fill-hp"
+    iconClassName={cn(
+      "stroke-hp fill-hp dark:stroke-hp dark:fill-hp",
+      className
+    )}
     showZero={true}
   />
 );

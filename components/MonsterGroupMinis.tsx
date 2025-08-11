@@ -1,7 +1,7 @@
 "use client";
 import { Crown } from "lucide-react";
 import type { ReactNode } from "react";
-import { ArmorStat, HPStat } from "@/app/ui/monster/Stat";
+import { HPStat } from "@/app/ui/monster/Stat";
 import {
   Card,
   CardAction,
@@ -19,20 +19,22 @@ const MonsterRow: React.FC<{
   monster: Monster;
 }> = ({ monster }) => (
   <div className="flex gap-1 items-center">
-    <div className="flex-1 font-slab font-black small-caps italic">
+    <div className="flex-1 flex gap-1 items-center font-slab font-bold small-caps italic">
       {monster.legendary && (
-        <Crown className="h-4 w-4 inline align-baseline mr-1 stroke-flame" />
+        <Crown className="h-5 w-5 inline self-center stroke-flame" />
       )}
-      <Link href={`/m/${monster.id}`} className="text-lg">
-        {monster.name}
-      </Link>{" "}
-      <span className="ml-1 font-medium text-muted-foreground text-sm font-condensed small-caps not-italic text-nowrap">
-        Lvl {monster.level}
+      <span className="inline-block">
+        <Link href={`/m/${monster.id}`} className="text-lg mr-1">
+          {monster.name}
+        </Link>
+        <span className="font-medium text-muted-foreground text-sm font-condensed small-caps not-italic text-nowrap">
+          Lvl {monster.level}
+        </span>
       </span>
     </div>
     <div className="flex flex-wrap items-baseline justify-end font-slab font-black italic">
-      {monster.armor === "medium" && <ArmorStat value="M" />}
-      {monster.armor === "heavy" && <ArmorStat value="H" />}
+      {/*{monster.armor === "medium" && <ArmorStat value="M" />}
+      {monster.armor === "heavy" && <ArmorStat value="H" />}*/}
       <HPStat value={monster.hp} />
     </div>
   </div>
@@ -55,9 +57,12 @@ export const MonsterGroupMinis = ({
   badge,
   attribution,
 }: MonsterGroupMinis) => {
-  const visibleMonsters = monsters?.slice(0, 10);
+  const visibleMonsterCount = 5;
+  const visibleMonsters = monsters?.slice(0, visibleMonsterCount);
   const remainingCount =
-    monsters && monsters.length > 10 ? monsters.length - 10 : 0;
+    monsters && monsters.length > visibleMonsterCount
+      ? monsters.length - visibleMonsterCount
+      : 0;
 
   return (
     <Card>
@@ -85,7 +90,9 @@ export const MonsterGroupMinis = ({
           ))}
           {remainingCount > 0 && (
             <div className="text-sm text-muted-foreground mt-2 text-center font-bold">
-              +{remainingCount} more
+              <Link className="text-muted-foreground" href={href}>
+                +{remainingCount} more
+              </Link>
             </div>
           )}
         </div>
