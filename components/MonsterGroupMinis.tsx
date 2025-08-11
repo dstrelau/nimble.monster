@@ -1,5 +1,5 @@
 "use client";
-import { Crown } from "lucide-react";
+import { Crown, EyeOff } from "lucide-react";
 import type { ReactNode } from "react";
 import { HPStat } from "@/app/ui/monster/Stat";
 import {
@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { Monster } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, monstersSortedByLevel } from "@/lib/utils";
 import { Link } from "./app/Link";
 import { Level } from "./Level";
 import { Separator } from "./ui/separator";
@@ -24,8 +24,17 @@ const MonsterRow: React.FC<{
       {monster.legendary && (
         <Crown className="h-5 w-5 inline self-center stroke-flame" />
       )}
+      {monster.visibility === "private" && (
+        <EyeOff className="h-5 w-5 inline self-center stroke-flame" />
+      )}
       <span>
-        <Link href={`/m/${monster.id}`} className="text-lg mr-2">
+        <Link
+          href={`/m/${monster.id}`}
+          className={cn(
+            "text-lg mr-2",
+            monster.visibility === "private" && "text-muted-foreground"
+          )}
+        >
           {monster.name}
         </Link>
         <span className="font-medium text-muted-foreground text-sm font-condensed small-caps not-italic text-nowrap">
@@ -59,7 +68,8 @@ export const MonsterGroupMinis = ({
   attribution,
 }: MonsterGroupMinis) => {
   const visibleMonsterCount = 5;
-  const visibleMonsters = monsters?.slice(0, visibleMonsterCount);
+  const sortedMonsters = monstersSortedByLevel(monsters ?? []);
+  const visibleMonsters = sortedMonsters?.slice(0, visibleMonsterCount);
   const remainingCount =
     monsters && monsters.length > visibleMonsterCount
       ? monsters.length - visibleMonsterCount
@@ -101,3 +111,6 @@ export const MonsterGroupMinis = ({
     </Card>
   );
 };
+function sortMonstersInCollections(monsters: Monster[] | undefined) {
+  throw new Error("Function not implemented.");
+}

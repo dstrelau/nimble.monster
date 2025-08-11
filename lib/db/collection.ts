@@ -3,31 +3,6 @@ import { isValidUUID } from "@/lib/utils/validation";
 import { toCollectionOverview, toMonster } from "./converters";
 import { prisma } from "./index";
 
-const collectionWithMonstersInclude = {
-  creator: true,
-  monsterCollections: {
-    include: {
-      monster: {
-        include: {
-          creator: true,
-          family: true,
-        },
-      },
-    },
-  },
-} as const;
-
-export const listCollectionsForUser = async (
-  userId: string
-): Promise<CollectionOverview[]> => {
-  return (
-    await prisma.collection.findMany({
-      where: { creator: { discordId: userId } },
-      include: collectionWithMonstersInclude,
-    })
-  ).map(toCollectionOverview);
-};
-
 export const listCollectionsWithMonstersForUser = async (
   userId: string
 ): Promise<Collection[]> => {
@@ -61,12 +36,24 @@ export const listPublicCollections = async (): Promise<
   return (
     await prisma.collection.findMany({
       where: { visibility: "public" },
-      include: collectionWithMonstersInclude,
+      include: {
+        creator: true,
+        monsterCollections: {
+          include: {
+            monster: {
+              include: {
+                creator: true,
+                family: true,
+              },
+            },
+          },
+        },
+      },
     })
   ).map(toCollectionOverview);
 };
 
-export const listPublicCollectionsWithMonsters = async (): Promise<
+export const listPublicCollectionsHavingMonsters = async (): Promise<
   Collection[]
 > => {
   const collections = await prisma.collection.findMany({
@@ -74,23 +61,26 @@ export const listPublicCollectionsWithMonsters = async (): Promise<
     include: {
       creator: true,
       monsterCollections: {
+        where: { monster: { visibility: "public" } },
         include: { monster: { include: { family: true, creator: true } } },
       },
     },
   });
 
-  return collections.map((c) => {
-    const legendaryCount = c.monsterCollections.filter(
-      (m) => m.monster.legendary
-    ).length;
-    return {
-      ...c,
-      legendaryCount,
-      standardCount: c.monsterCollections.length - legendaryCount,
-      creator: { ...c.creator, avatar: c.creator.avatar || "" },
-      monsters: c.monsterCollections.map((mc) => toMonster(mc.monster)),
-    };
-  });
+  return collections
+    .filter((c) => c.monsterCollections.length > 0)
+    .map((c) => {
+      const legendaryCount = c.monsterCollections.filter(
+        (m) => m.monster.legendary
+      ).length;
+      return {
+        ...c,
+        legendaryCount,
+        standardCount: c.monsterCollections.length - legendaryCount,
+        creator: { ...c.creator, avatar: c.creator.avatar || "" },
+        monsters: c.monsterCollections.map((mc) => toMonster(mc.monster)),
+      };
+    });
 };
 
 export const getCollection = async (id: string): Promise<Collection | null> => {
@@ -121,21 +111,7 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
   };
 };
 
-export const getUserPublicCollections = async (
-  username: string
-): Promise<CollectionOverview[]> => {
-  return (
-    await prisma.collection.findMany({
-      where: {
-        creator: { username },
-        visibility: "public",
-      },
-      include: collectionWithMonstersInclude,
-    })
-  ).map(toCollectionOverview);
-};
-
-export const getUserPublicCollectionsWithMonsters = async (
+export const getUserPublicCollectionsHavingMonsters = async (
   username: string
 ): Promise<Collection[]> => {
   const collections = await prisma.collection.findMany({
@@ -146,23 +122,32 @@ export const getUserPublicCollectionsWithMonsters = async (
     include: {
       creator: true,
       monsterCollections: {
-        include: { monster: { include: { family: true, creator: true } } },
+        where: {
+          monster: { visibility: "public" },
+        },
+        include: {
+          monster: {
+            include: { family: true, creator: true },
+          },
+        },
       },
     },
   });
 
-  return collections.map((c) => {
-    const legendaryCount = c.monsterCollections.filter(
-      (m) => m.monster.legendary
-    ).length;
-    return {
-      ...c,
-      legendaryCount,
-      standardCount: c.monsterCollections.length - legendaryCount,
-      creator: { ...c.creator, avatar: c.creator.avatar || "" },
-      monsters: c.monsterCollections.map((mc) => toMonster(mc.monster)),
-    };
-  });
+  return collections
+    .filter((c) => c.monsterCollections.length > 0)
+    .map((c) => {
+      const legendaryCount = c.monsterCollections.filter(
+        (m) => m.monster.legendary
+      ).length;
+      return {
+        ...c,
+        legendaryCount,
+        standardCount: c.monsterCollections.length - legendaryCount,
+        creator: { ...c.creator, avatar: c.creator.avatar || "" },
+        monsters: c.monsterCollections.map((mc) => toMonster(mc.monster)),
+      };
+    });
 };
 
 export const getUserPublicCollectionsCount = async (
@@ -277,7 +262,16 @@ export const updateCollection = async ({
           ...(description !== undefined && { description }),
           updatedAt: new Date(),
         },
-        include: collectionWithMonstersInclude,
+        include: {
+          creator: true,
+          monsterCollections: {
+            include: {
+              monster: {
+                include: { family: true, creator: true },
+              },
+            },
+          },
+        },
       });
 
       // Update monster associations if monsterIds is provided
@@ -319,7 +313,16 @@ export const updateCollection = async ({
       // Get the updated collection with the new monster relationships
       const updatedCollection = await tx.collection.findUnique({
         where: { id },
-        include: collectionWithMonstersInclude,
+        include: {
+          creator: true,
+          monsterCollections: {
+            include: {
+              monster: {
+                include: { family: true, creator: true },
+              },
+            },
+          },
+        },
       });
 
       if (!updatedCollection) return null;

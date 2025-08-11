@@ -13,17 +13,15 @@ export default async function UserProfilePage({
   const { username } = await params;
   const tab = (await searchParams).tab;
 
-  // Fetch user data
   const user = await db.getUserByUsername(username);
   if (!user) {
     return notFound();
   }
 
-  // Fetch user's public content
   const [monsters, collections, families] = await Promise.all([
     db.listPublicMonstersForDiscordID(username),
-    db.getUserPublicCollectionsWithMonsters(username),
-    db.getUserFamilies(user.discordId),
+    db.getUserPublicCollectionsHavingMonsters(username),
+    db.getUserPublicFamiliesWithMonsters(user.discordId),
   ]);
 
   return (
@@ -39,7 +37,7 @@ export default async function UserProfilePage({
       <TabsContent
         monsters={monsters}
         collections={collections}
-        families={families}
+        families={families.filter((f) => !!(f.monsterCount))}
         initialTab={tab as "monsters" | "collections" | "families" | undefined}
       />
     </div>

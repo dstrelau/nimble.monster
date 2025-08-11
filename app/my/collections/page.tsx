@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { CollectionCard } from "@/app/ui/CollectionCard";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import { sortMonstersInCollections } from "@/lib/utils";
 import NewCollectionForm from "./NewCollectionForm";
 
 export default async function MyCollectionsPage() {
@@ -12,7 +11,6 @@ export default async function MyCollectionsPage() {
   const collections = await db.listCollectionsWithMonstersForUser(
     session.user.id
   );
-  const sortedCollections = sortMonstersInCollections(collections);
   return (
     <div className="space-y-6">
       <NewCollectionForm />
@@ -25,7 +23,7 @@ export default async function MyCollectionsPage() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
-          {sortedCollections.map((c) => (
+          {collections.map((c) => (
             <CollectionCard
               key={c.id}
               collection={c}

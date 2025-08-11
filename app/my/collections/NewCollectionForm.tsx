@@ -66,7 +66,7 @@ export default function NewCollectionForm() {
                     if (result.success && result.collection) {
                       form.reset();
                       router.push(
-                        `/my/collections/${result.collection.id}/edit`
+                        `/collections/${result.collection.id}`
                       );
                     }
                   });

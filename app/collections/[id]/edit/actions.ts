@@ -47,11 +47,15 @@ export async function updateCollection(
   if (!updatedCollection) throw new Error("Failed to update collection");
 
   revalidatePath("/my/collections");
+  revalidatePath(`/collections/${collectionId}`);
 
   // Check if "exit" parameter was provided
   if (formData.get("exit") === "true") {
     redirect("/my/collections");
   }
+
+  // Redirect to collection detail page after successful save
+  redirect(`/collections/${collectionId}`);
 
   return {
     success: true,

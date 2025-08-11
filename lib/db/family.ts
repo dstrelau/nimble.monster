@@ -9,7 +9,39 @@ export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
     },
     include: {
       monsters: {
-        where: { visibility: "public" },
+        include: { creator: true, family: true },
+      },
+      creator: true,
+    },
+    orderBy: {
+      name: "asc",
+    },
+  });
+
+  return families.map((family) => ({
+    id: family.id,
+    name: family.name,
+    description: family.description ?? undefined,
+    abilities: family.abilities as unknown as Ability[],
+    visibility: family.visibility,
+    monsters: family.monsters.map(toMonster),
+    monsterCount: family.monsters.length,
+    creatorId: family.creator.discordId,
+  }));
+};
+
+export const getUserPublicFamiliesWithMonsters = async (
+  discordId: string
+): Promise<Family[]> => {
+  const families = await prisma.family.findMany({
+    where: {
+      creator: { discordId },
+    },
+    include: {
+      monsters: {
+        where: {
+          visibility: "public",
+        },
         include: { creator: true, family: true },
       },
       creator: true,

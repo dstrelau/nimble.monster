@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { Collection } from "./types";
+import type { Monster } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -14,13 +14,8 @@ export function parseMonsterLevel(level: string): number {
   return Number(level);
 }
 
-export function sortMonstersInCollections(
-  collections: Collection[]
-): Collection[] {
-  return collections.map((collection) => ({
-    ...collection,
-    monsters: collection.monsters?.sort(
-      (a, b) => parseMonsterLevel(a.level) - parseMonsterLevel(b.level)
-    ),
-  }));
+export function monstersSortedByLevel(monsters: Monster[]): Monster[] {
+  return monsters?.sort(
+    (a, b) => parseMonsterLevel(a.level) - parseMonsterLevel(b.level)
+  );
 }
