@@ -28,13 +28,25 @@ export const Stat: React.FC<{
   showZero?: boolean;
   SvgIcon: React.FC<{ className?: string; style?: React.CSSProperties }>;
   children?: React.ReactNode;
+  className?: string;
   iconClassName?: string;
-}> = ({ name, value, showZero = false, children, SvgIcon, iconClassName }) => {
+}> = ({
+  name,
+  value,
+  showZero = false,
+  children,
+  SvgIcon,
+  className,
+  iconClassName,
+}) => {
   if (!value && !children && !showZero) return null;
   return (
     <span
       id={name}
-      className="flex items-center ml-2 text-lg text-content leading-6 py-1 min-w-14"
+      className={cn(
+        "flex items-center ml-2 text-lg text-content leading-6 py-1",
+        className
+      )}
     >
       <SvgIcon
         className={cn(
@@ -56,10 +68,8 @@ export const HPStat: React.FC<{
     name="hp"
     value={value}
     SvgIcon={HPIcon}
-    iconClassName={cn(
-      "stroke-hp fill-hp dark:stroke-hp dark:fill-hp",
-      className
-    )}
+    className={className}
+    iconClassName={"stroke-hp fill-hp dark:stroke-hp dark:fill-hp"}
     showZero={true}
   />
 );

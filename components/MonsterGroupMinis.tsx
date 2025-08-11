@@ -35,7 +35,7 @@ const MonsterRow: React.FC<{
     <div className="flex flex-wrap items-baseline justify-end font-slab font-black italic">
       {/*{monster.armor === "medium" && <ArmorStat value="M" />}
       {monster.armor === "heavy" && <ArmorStat value="H" />}*/}
-      <HPStat value={monster.hp} />
+      <HPStat value={monster.hp} className="min-w-14" />
     </div>
   </div>
 );
@@ -67,7 +67,7 @@ export const MonsterGroupMinis = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-condensed font-normal text-2xl flex items-center gap-2">
+        <CardTitle className="font-condensed font-bold text-2xl flex items-center gap-2">
           <Link href={href}>{name}</Link>
         </CardTitle>
         {attribution && <CardDescription>{attribution}</CardDescription>}
