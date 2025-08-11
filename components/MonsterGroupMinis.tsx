@@ -13,6 +13,7 @@ import {
 import type { Monster } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Link } from "./app/Link";
+import { Level } from "./Level";
 import { Separator } from "./ui/separator";
 
 const MonsterRow: React.FC<{
@@ -23,12 +24,12 @@ const MonsterRow: React.FC<{
       {monster.legendary && (
         <Crown className="h-5 w-5 inline self-center stroke-flame" />
       )}
-      <span className="inline-block">
-        <Link href={`/m/${monster.id}`} className="text-lg mr-1">
+      <span>
+        <Link href={`/m/${monster.id}`} className="text-lg mr-2">
           {monster.name}
         </Link>
         <span className="font-medium text-muted-foreground text-sm font-condensed small-caps not-italic text-nowrap">
-          Lvl {monster.level}
+          Lvl <Level level={monster.level} />
         </span>
       </span>
     </div>

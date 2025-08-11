@@ -132,7 +132,7 @@
 
 @layer utilities {
     .small-caps {
-        font-variant: small-caps;
+        font-variant-caps: small-caps;
     }
 }
 

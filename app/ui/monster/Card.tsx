@@ -4,6 +4,7 @@ import React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
 import { Link } from "@/components/app/Link";
+import { Level } from "@/components/Level";
 import {
   CardAction,
   CardContent,
@@ -90,7 +91,7 @@ const HeaderLegendary: React.FC<{ monster: Monster; link?: boolean }> = ({
       )}
     </CardTitle>
     <CardDescription className="font-beaufort font-black text-lg leading-none tracking-tight">
-      Level {monster.level} Solo{" "}
+      Level <Level level={monster.level} className="text-lg" /> Solo{" "}
       {monster.size.charAt(0).toUpperCase() + monster.size.slice(1)}{" "}
       {monster.kind}
     </CardDescription>
@@ -131,7 +132,7 @@ const HeaderStandard: React.FC<{
     </CardTitle>
     <CardDescription className="col-span-2 flex gap-2 font-condensed small-caps">
       <p>
-        Lvl {monster.level}
+        Lvl <Level level={monster.level} />
         {monster.kind && monster.size !== "medium"
           ? ` ${monster.size} ${monster.kind.toLocaleLowerCase()}`
           : monster.kind

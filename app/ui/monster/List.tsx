@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { Crown } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { Level } from "@/components/Level";
 import type { Monster } from "@/lib/types";
 import { ArmorStat, HPStat } from "./Stat";
 
@@ -68,7 +69,7 @@ export const List = ({
                   {monster.name}
                 </h3>
                 <p className="text-sm text-base-content/70">
-                  Level {monster.level}
+                  Level <Level level={monster.level} />
                   {monster.legendary ? " Solo " : ", "}
                   {monster.size.charAt(0).toUpperCase() + monster.size.slice(1)}{" "}
                   {monster.kind}
