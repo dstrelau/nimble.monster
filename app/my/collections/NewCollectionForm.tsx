@@ -65,9 +65,7 @@ export default function NewCollectionForm() {
                     const result = await createCollection(data);
                     if (result.success && result.collection) {
                       form.reset();
-                      router.push(
-                        `/collections/${result.collection.id}`
-                      );
+                      router.push(`/collections/${result.collection.id}`);
                     }
                   });
                 })}

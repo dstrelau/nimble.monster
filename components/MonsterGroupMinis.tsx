@@ -57,6 +57,7 @@ interface MonsterGroupMinis {
   children?: ReactNode;
   badge?: ReactNode;
   attribution?: ReactNode;
+  visibleMonsterCount?: number;
 }
 
 export const MonsterGroupMinis = ({
@@ -66,8 +67,8 @@ export const MonsterGroupMinis = ({
   children,
   badge,
   attribution,
+  visibleMonsterCount = 5,
 }: MonsterGroupMinis) => {
-  const visibleMonsterCount = 5;
   const sortedMonsters = monstersSortedByLevel(monsters ?? []);
   const visibleMonsters = sortedMonsters?.slice(0, visibleMonsterCount);
   const remainingCount =
@@ -111,6 +112,3 @@ export const MonsterGroupMinis = ({
     </Card>
   );
 };
-function sortMonstersInCollections(monsters: Monster[] | undefined) {
-  throw new Error("Function not implemented.");
-}

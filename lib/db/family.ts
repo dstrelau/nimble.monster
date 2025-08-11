@@ -204,3 +204,40 @@ export const deleteFamily = async ({
   });
   return !!family;
 };
+
+export const getRandomFeaturedFamily = async (): Promise<Family | null> => {
+  const featuredFamilies = await prisma.family.findMany({
+    where: {
+      featured: true,
+    },
+    include: {
+      monsters: {
+        where: {
+          visibility: "public",
+        },
+        include: { creator: true, family: true },
+      },
+      creator: true,
+    },
+  });
+  const familiesWithMonsters = featuredFamilies.filter(
+    (family) => family.monsters.length > 0
+  );
+
+  if (familiesWithMonsters.length === 0) return null;
+
+  const randomIndex = Math.floor(Math.random() * familiesWithMonsters.length);
+  const family = familiesWithMonsters[randomIndex];
+
+  return {
+    id: family.id,
+    name: family.name,
+    description: family.description ?? undefined,
+    abilities: family.abilities as unknown as Ability[],
+    visibility: family.visibility,
+    monsters: family.monsters.map(toMonster),
+    monsterCount: family.monsters.length,
+    creatorId: family.creator.discordId,
+    creator: { ...family.creator, avatar: family.creator.avatar || "" },
+  };
+};

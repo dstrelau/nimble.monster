@@ -37,7 +37,7 @@ export default async function UserProfilePage({
       <TabsContent
         monsters={monsters}
         collections={collections}
-        families={families.filter((f) => !!(f.monsterCount))}
+        families={families.filter((f) => !!f.monsterCount)}
         initialTab={tab as "monsters" | "collections" | "families" | undefined}
       />
     </div>

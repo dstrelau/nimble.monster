@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/tooltip";
 import { maybePeriod } from "@/lib/text";
 import type { Monster, User } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import CardActions from "./CardActions";
 import {
   ArmorStat,
@@ -186,6 +187,7 @@ interface CardProps {
   hideFamilyAbilities?: boolean;
   hideCreator?: boolean;
   hideFamilyName?: boolean;
+  className?: string;
 }
 
 export const Card = ({
@@ -197,11 +199,12 @@ export const Card = ({
   hideFamilyAbilities = false,
   hideCreator = false,
   hideFamilyName = false,
+  className,
 }: CardProps) => {
   return (
     <div className={clsx(monster.legendary && "md:col-span-2")}>
       <div id={`monster-${monster.id}`}>
-        <ShadcnCard className="gap-4 py-4">
+        <ShadcnCard className={cn("gap-4 py-4", className)}>
           {monster.legendary ? (
             <HeaderLegendary monster={monster} link={link} />
           ) : (
