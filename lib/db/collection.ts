@@ -343,7 +343,9 @@ export const updateCollection = async ({
           username: updatedCollection.creator.username,
           avatar: updatedCollection.creator.avatar || "",
         },
-        monsters: updatedCollection.monsterCollections.map((mc) => toMonster(mc.monster)),
+        monsters: updatedCollection.monsterCollections.map((mc) =>
+          toMonster(mc.monster)
+        ),
       };
     });
   } catch (error) {

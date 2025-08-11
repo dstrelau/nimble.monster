@@ -1,6 +1,9 @@
 "use client";
 import { Sword } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   calculateAverageDamageOnHit,
   calculateProbabilityDistribution,
@@ -11,7 +14,7 @@ import {
 export default function DiceRollerPage() {
   return (
     <div className="container mx-auto">
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+      <div className="shadow-lg rounded-lg overflow-hidden">
         <DiceRollerApp />
       </div>
     </div>
@@ -56,85 +59,88 @@ const DiceRollerApp = () => {
 
   return (
     <div className="flex flex-col p-6 max-w-4xl mx-auto">
-      <div className="flex gap-2 mb-2">
+      <div className="flex gap-4 mb-6">
         <div className="w-2/3">
-          <label
-            htmlFor="diceNotation"
-            className="block text-sm font-medium mb-1"
-          >
+          <Label htmlFor="diceNotation" className="text-sm font-medium mb-2">
             Dice Notation
-          </label>
-          <input
+          </Label>
+          <Input
             id="diceNotation"
             type="text"
             value={diceNotation}
             onChange={(e) => setDiceNotation(e.target.value)}
             placeholder="3d6+2"
-            className="d-input d-input-lg w-full p-2 border rounded focus:ring focus:ring-blue-300 bg-white"
+            className="text-lg"
             onKeyDown={(e) => e.key === "Enter"}
           />
         </div>
-        <div className="d-stats d-shadow bg-base-300">
-          <div className="d-stat">
-            <div className="d-stat-figure hidden md:block">
-              <Sword className="w-8 h-8" />
+        <Card className="shadow-lg">
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <Sword className="w-6 h-6 hidden md:block" />
+              <h3 className="text-sm font-medium text-muted-foreground">
+                Avg. Damage on Hit
+              </h3>
             </div>
-            <div className="d-stat-title">Avg. Damage on Hit</div>
-            <div className="d-stat-value">
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="text-2xl font-bold">
               {averageRoll ? averageRoll.toFixed(1) : "-"}
             </div>
-            <div className="d-stat-desc">
+            <div className="text-sm text-muted-foreground">
               Chance to Miss: {(100 * missProbability).toFixed(1)}%
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
       {Object.keys(filteredProbabilities).length > 0 && (
-        <div className="border rounded p-4 bg-white">
-          <div
-            className="my-8 overflow-x-auto pb-6"
-            style={{ maxWidth: "100%" }}
-          >
+        <Card>
+          <CardContent className="p-6">
             <div
-              style={{
-                height: "220px",
-                minWidth: `${filteredProbabilities.length * 40 + 20}px`,
-                position: "relative",
-              }}
+              className="my-8 overflow-x-auto pb-6"
+              style={{ maxWidth: "100%" }}
             >
-              {filteredProbabilities.map(([outcome, probability], index) => {
-                const height = Math.max(1, probability * scaleFactor);
+              <div
+                style={{
+                  height: "220px",
+                  minWidth: `${filteredProbabilities.length * 40 + 20}px`,
+                  position: "relative",
+                }}
+              >
+                {filteredProbabilities.map(([outcome, probability], index) => {
+                  const height = Math.max(1, probability * scaleFactor);
 
-                return (
-                  <div key={outcome}>
-                    <div
-                      className="absolute text-center text-[.6rem] text-primary-content bg-primary rounded-t"
-                      style={{
-                        height: `${height}px`,
-                        width: "30px",
-                        bottom: "24px",
-                        left: `${index * 35 + 10}px`,
-                      }}
-                    >
-                      {(100 * probability).toFixed(1)}%
+                  return (
+                    <div key={outcome}>
+                      <div
+                        className="absolute text-center text-[.6rem] text-primary-foreground bg-primary rounded-t"
+                        style={{
+                          height: `${height}px`,
+                          width: "30px",
+                          bottom: "24px",
+                          left: `${index * 35 + 10}px`,
+                        }}
+                      >
+                        {(100 * probability).toFixed(1)}%
+                      </div>
+                      <div
+                        className="absolute text-xs font-medium text-center text-foreground"
+                        style={{
+                          bottom: "0px",
+                          left: `${index * 35 + 10}px`,
+                          width: "30px",
+                        }}
+                      >
+                        {outcome}
+                      </div>
                     </div>
-                    <div
-                      className="absolute text-xs font-medium text-center"
-                      style={{
-                        bottom: "0px",
-                        left: `${index * 35 + 10}px`,
-                        width: "30px",
-                      }}
-                    >
-                      {outcome}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
