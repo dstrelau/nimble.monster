@@ -23,6 +23,7 @@ import {
 import { maybePeriod } from "@/lib/text";
 import type { Monster, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { formatSizeKind } from "@/lib/utils/monster";
 import CardActions from "./CardActions";
 import {
   ArmorStat,
@@ -93,8 +94,7 @@ const HeaderLegendary: React.FC<{ monster: Monster; link?: boolean }> = ({
     </CardTitle>
     <CardDescription className="font-beaufort font-black text-lg leading-none tracking-tight">
       Level <Level level={monster.level} className="text-lg" /> Solo{" "}
-      {monster.size.charAt(0).toUpperCase() + monster.size.slice(1)}{" "}
-      {monster.kind}
+      {formatSizeKind(monster)}
     </CardDescription>
     <CardAction>
       <StatsGroup monster={monster}>
@@ -133,14 +133,7 @@ const HeaderStandard: React.FC<{
     </CardTitle>
     <CardDescription className="col-span-2 flex gap-2 font-condensed small-caps">
       <p>
-        Lvl <Level level={monster.level} />
-        {monster.kind && monster.size !== "medium"
-          ? ` ${monster.size} ${monster.kind.toLocaleLowerCase()}`
-          : monster.kind
-            ? ` ${monster.kind.toLocaleLowerCase()}`
-            : monster.size !== "medium"
-              ? ` ${monster.size}`
-              : ""}
+        Lvl <Level level={monster.level} /> {formatSizeKind(monster)}
       </p>
       {monster.family && !hideFamilyName && (
         <Link href={`/f/${monster.family.id}`} className="flex items-center">

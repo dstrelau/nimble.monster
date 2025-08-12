@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { findPublicMonsterById } from "@/lib/db";
 import { telemetry } from "@/lib/telemetry";
 import { isValidUUID } from "@/lib/utils/validation";
+import { formatSizeKind } from "@/lib/utils/monster";
 
 export const GET = telemetry(
   async (
@@ -44,9 +45,14 @@ export const GET = telemetry(
       })) || [])
     ];
 
+    const lvl = monster.legendary ?
+      `Level ${monster.level} Solo` :
+      `Lvl ${monster.level}`;
+    const cr = [lvl, formatSizeKind(monster)].join(" ");
+
     const nimbrewData: any = {
       name: monster.name,
-      CR: monster.level,
+      CR: cr,
       armor: monster.armor === "medium" ? "M" : monster.armor === "heavy" ? "H" : "",
       hp: monster.hp.toString(),
       saves: monster.saves,
