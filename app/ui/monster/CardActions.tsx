@@ -170,7 +170,7 @@ export default function CardActions({
           <DropdownMenuItem asChild>
             <a
               className="flex gap-2 items-center"
-              href={`http://nimbrew.net/statblock-generic?urlJson=https://nimble.monster/m/${monster.id}/nimbrew.json`}
+              href={`http://nimbrew.net/${monster.legendary ? "statblock-legendary" : "statblock-generic"}?urlJson=https://nimble.monster/m/${monster.id}/nimbrew.json`}
               target="_blank"
               rel="noopener noreferrer"
             >

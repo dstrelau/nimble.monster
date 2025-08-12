@@ -79,6 +79,12 @@ export const GET = telemetry(
       }
     }
 
-    return NextResponse.json(nimbrewData);
+    const response = NextResponse.json(nimbrewData);
+    
+    response.headers.set("Access-Control-Allow-Origin", "https://nimbrew.net");
+    response.headers.set("Access-Control-Allow-Methods", "GET");
+    response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+    
+    return response;
   }
 );
