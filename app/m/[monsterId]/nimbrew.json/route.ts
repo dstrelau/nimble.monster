@@ -27,22 +27,31 @@ export const GET = telemetry(
     span?.setAttributes({ "monster.id": monster.id });
 
     const speedParts = [];
-    if (monster.speed) speedParts.push(monster.speed.toString());
+    if (monster.speed && monster.speed != 6) speedParts.push(monster.speed.toString());
     if (monster.fly) speedParts.push(`Fly ${monster.fly}`);
     if (monster.swim) speedParts.push(`Swim ${monster.swim}`);
-    
-    const nimbrewData: any = {
-      name: monster.name,
-      CR: monster.level,
-      armor: monster.armor === "none" ? "" : monster.armor,
-      hp: monster.hp.toString(),
-      saves: monster.saves,
-      speed: speedParts.join(", "),
-      passives: monster.abilities?.map(ability => ({
+
+   const passives : { type: string, name: string, desc: string }[] = [
+      ...(monster.family?.abilities?.map(passive => ({
+        type: "single",
+        name: passive.name,
+        desc: passive.description
+      })) || []),
+      ...(monster.abilities?.map(ability => ({
         type: "single",
         name: ability.name,
         desc: ability.description
-      })) || [],
+      })) || [])
+    ];
+
+    const nimbrewData: any = {
+      name: monster.name,
+      CR: monster.level,
+      armor: monster.armor === "medium" ? "M" : monster.armor === "heavy" ? "H" : "",
+      hp: monster.hp.toString(),
+      saves: monster.saves,
+      speed: speedParts.join(", "),
+      passives: passives,
       actions: monster.actionPreface ? [
         {
           type: "multi",
@@ -51,13 +60,14 @@ export const GET = telemetry(
           actions: monster.actions?.map(action => ({
             type: "single",
             name: action.name,
-            desc: action.description
+            desc: [action.damage, action.description].join(" "),
+            status: false
           })) || []
         }
       ] : monster.actions?.map(action => ({
         type: "single",
         name: action.name,
-        desc: action.description,
+        desc: [action.damage, action.description].join(" "),
         status: false
       })) || [],
       theme: {
@@ -80,11 +90,11 @@ export const GET = telemetry(
     }
 
     const response = NextResponse.json(nimbrewData);
-    
+
     response.headers.set("Access-Control-Allow-Origin", "https://nimbrew.net");
     response.headers.set("Access-Control-Allow-Methods", "GET");
     response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-    
+
     return response;
   }
 );
