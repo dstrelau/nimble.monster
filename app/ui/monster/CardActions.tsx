@@ -4,6 +4,7 @@ import html2canvas from "html2canvas-pro";
 import {
   Download,
   Expand,
+  ExternalLink,
   Link as LinkIcon,
   Pencil,
   Share,
@@ -166,6 +167,17 @@ export default function CardActions({
               </Link>
             </DropdownMenuItem>
           )}
+          <DropdownMenuItem asChild>
+            <a
+              className="flex gap-2 items-center"
+              href={`http://nimbrew.net/statblock-generic?urlJson=https://nimble.monster/m/${monster.id}/nimbrew.json`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Send to Nimbrew
+            </a>
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={copyMonsterLink}>
             <LinkIcon className="w-4 h-4" />
             Copy Link
