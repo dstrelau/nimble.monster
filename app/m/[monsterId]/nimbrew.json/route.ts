@@ -61,8 +61,8 @@ export const GET = telemetry(
       actions: monster.actionPreface ? [
         {
           type: "multi",
-          name: monster.actionPreface,
-          desc: "",
+          name: "ACTIONS",
+          desc: monster.actionPreface,
           actions: monster.actions?.map(action => ({
             type: "single",
             name: action.name,
@@ -97,7 +97,7 @@ export const GET = telemetry(
 
     const response = NextResponse.json(nimbrewData);
 
-    response.headers.set("Access-Control-Allow-Origin", "https://nimbrew.net");
+    response.headers.set("Access-Control-Allow-Origin", "*");
     response.headers.set("Access-Control-Allow-Methods", "GET");
     response.headers.set("Access-Control-Allow-Headers", "Content-Type");
 
