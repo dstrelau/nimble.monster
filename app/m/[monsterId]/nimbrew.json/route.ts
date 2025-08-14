@@ -61,8 +61,8 @@ export const GET = telemetry(
       actions: monster.actionPreface ? [
         {
           type: "multi",
-          name: monster.actionPreface,
-          desc: "",
+          name: "ACTIONS",
+          desc: monster.actionPreface,
           actions: monster.actions?.map(action => ({
             type: "single",
             name: action.name,
