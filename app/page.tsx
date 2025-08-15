@@ -3,9 +3,9 @@ import Image from "next/image";
 import { Link } from "@/components/app/Link";
 import { FamilyCard } from "@/components/FamilyCard";
 import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
 import { getRandomFeaturedFamily } from "@/lib/db/family";
 import { monstersSortedByLevel } from "@/lib/utils";
-import { auth } from "@/lib/auth";
 import { Attribution } from "./ui/Attribution";
 import { MonsterCardWithOverflow } from "./ui/MonsterCardWithOverflow";
 

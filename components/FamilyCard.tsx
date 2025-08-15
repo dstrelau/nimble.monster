@@ -1,10 +1,10 @@
 "use client";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
-import type { Family } from "@/lib/types";
+import type { FamilyOverview } from "@/lib/types";
 import { MonsterGroupMinis } from "./MonsterGroupMinis";
 
 interface FamilyCardProps {
-  family: Family;
+  family: FamilyOverview;
   showEditDeleteButtons?: boolean;
 }
 
@@ -15,7 +15,8 @@ export const FamilyCard = ({ family }: FamilyCardProps) => {
       href={`/f/${family.id}`}
       monsters={family.monsters}
     >
-      <AbilityOverlay abilities={family.abilities} />
+      {/* FIXME: Add family conditions */}
+      <AbilityOverlay abilities={family.abilities} conditions={[]} />
     </MonsterGroupMinis>
   );
 };

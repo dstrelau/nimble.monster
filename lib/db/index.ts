@@ -9,6 +9,7 @@ export const prisma = createRetryWrapper(basePrisma);
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = basePrisma;
 
 export * from "./collection";
+export * from "./condition";
 export * from "./converters";
 export * from "./family";
 export * from "./monster";

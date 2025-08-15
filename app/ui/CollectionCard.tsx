@@ -1,14 +1,14 @@
 import { Attribution } from "@/app/ui/Attribution";
 import { VisibilityBadge } from "@/app/ui/VisibilityBadge";
 import { MonsterGroupMinis } from "@/components/MonsterGroupMinis";
-import type { Collection } from "@/lib/types";
+import type { CollectionOverview } from "@/lib/types";
 
 export const CollectionCard = ({
   collection,
   showAttribution,
   showVisibilityBadge = true,
 }: {
-  collection: Collection;
+  collection: CollectionOverview;
   showVisibilityBadge: boolean;
   showAttribution: boolean;
 }) => {

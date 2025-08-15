@@ -10,14 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Monster } from "@/lib/types";
+import type { MonsterMini } from "@/lib/types";
 import { cn, monstersSortedByLevel } from "@/lib/utils";
 import { Link } from "./app/Link";
 import { Level } from "./Level";
 import { Separator } from "./ui/separator";
 
 const MonsterRow: React.FC<{
-  monster: Monster;
+  monster: MonsterMini;
 }> = ({ monster }) => (
   <div className="flex gap-1 items-center">
     <div className="flex-1 flex gap-1 items-center font-slab font-bold small-caps italic">
@@ -50,10 +50,10 @@ const MonsterRow: React.FC<{
   </div>
 );
 
-interface MonsterGroupMinis {
+interface MonsterGroupMinisProps {
   name: string;
   href: string;
-  monsters?: Monster[];
+  monsters?: MonsterMini[];
   children?: ReactNode;
   badge?: ReactNode;
   attribution?: ReactNode;
@@ -68,7 +68,7 @@ export const MonsterGroupMinis = ({
   badge,
   attribution,
   visibleMonsterCount = 5,
-}: MonsterGroupMinis) => {
+}: MonsterGroupMinisProps) => {
   const sortedMonsters = monstersSortedByLevel(monsters ?? []);
   const visibleMonsters = sortedMonsters?.slice(0, visibleMonsterCount);
   const remainingCount =

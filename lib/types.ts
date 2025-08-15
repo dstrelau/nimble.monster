@@ -35,28 +35,36 @@ export const FAMILY_VISIBILITY = [
 ] as const;
 export type FamilyVisibility = (typeof FAMILY_VISIBILITY)[number]["value"];
 
-export interface Family {
+export interface FamilyOverview {
   id: string;
   name: string;
   description?: string;
   abilities: Ability[];
   visibility?: FamilyVisibility;
-  monsters?: Monster[];
+  monsters?: MonsterMini[];
   monsterCount?: number;
   creatorId: string;
   creator?: User;
 }
 
-export interface Monster {
-  visibility: "public" | "private";
+export interface Family extends FamilyOverview {
+  monsters?: Monster[];
+}
+
+export interface MonsterMini {
+  id: string;
+  hp: number;
   legendary: boolean;
+  level: string;
+  name: string;
+  visibility: "public" | "private";
+}
+
+export interface Monster extends MonsterMini {
   kind?: string;
   saves?: string;
   bloodied?: string;
   lastStand?: string;
-  id: string;
-  name: string;
-  hp: number;
   speed: number;
   fly: number;
   swim: number;
@@ -71,10 +79,24 @@ export interface Monster {
   actions: Action[];
   actionPreface: string;
   moreInfo?: string;
-  family?: Family;
+  family?: FamilyOverview;
   creator?: User;
   updatedAt: Date;
   imageUrl?: string;
+  conditions: MonsterCondition[];
+}
+
+export interface Condition {
+  name: string;
+  description: string;
+  official: boolean;
+  creatorId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface MonsterCondition extends Condition {
+  inline: boolean;
 }
 
 /* FIXME: some families are serialized with Go-default capitalization */
@@ -92,26 +114,20 @@ export interface Action {
   description?: string;
 }
 
-export interface Collection {
-  id: string;
-  name: string;
-  creator: User;
+export interface Collection extends CollectionOverview {
   monsters: Monster[];
-  legendaryCount: number;
-  standardCount: number;
-  visibility: CollectionVisibilityType;
-  description?: string;
-  createdAt?: Date | null;
 }
 
 export interface CollectionOverview {
   id: string;
-  name: string;
-  visibility: CollectionVisibilityType;
-  legendaryCount: number;
-  standardCount: number;
   creator: User;
-  monsters: Monster[];
+  description?: string;
+  legendaryCount: number;
+  monsters: MonsterMini[];
+  name: string;
+  standardCount: number;
+  visibility: CollectionVisibilityType;
+  createdAt?: Date;
 }
 
 export interface User {

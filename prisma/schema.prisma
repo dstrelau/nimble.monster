@@ -52,6 +52,32 @@ model Family {
   @@map("families")
 }
 
+model Condition {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String
+  description String
+  official    Boolean  @default(false)
+  creatorId   String   @map("creator_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  creator           User               @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
+  monsterConditions MonsterCondition[]
+
+  @@map("conditions")
+}
+
+model MonsterCondition {
+  monsterId   String    @map("monster_id") @db.Uuid
+  conditionId String    @map("condition_id") @db.Uuid
+  inline      Boolean
+  monster     Monster   @relation(fields: [monsterId], references: [id], onDelete: Cascade)
+  condition   Condition @relation(fields: [conditionId], references: [id])
+
+  @@id([monsterId, conditionId])
+  @@map("monsters_conditions")
+}
+
 model Monster {
   id                 String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name               String
@@ -82,6 +108,7 @@ model Monster {
   family             Family?               @relation(fields: [family_id], references: [id])
   creator            User                  @relation(fields: [userId], references: [id], onUpdate: NoAction)
   monsterCollections MonsterInCollection[]
+  monsterConditions  MonsterCondition[]
 
   @@index([userId], map: "idx_monsters_user_id")
   @@map("monsters")
@@ -108,6 +135,7 @@ model User {
   families     Family[]
   monsters     Monster[]
   sessions     Session[]
+  conditions   Condition[]
 
   @@map("users")
 }

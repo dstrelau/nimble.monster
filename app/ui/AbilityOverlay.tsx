@@ -1,13 +1,16 @@
 import { Users } from "lucide-react";
+import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
 import { maybePeriod } from "@/lib/text";
-import type { Ability, Family } from "@/lib/types";
+import type { Ability, Condition, FamilyOverview } from "@/lib/types";
 
 export const AbilityOverlay = ({
   abilities,
   family,
+  conditions = [],
 }: {
   abilities: Ability[];
-  family?: Family;
+  family?: FamilyOverview;
+  conditions: Condition[];
 }) => {
   if (abilities.length === 0) return null;
 
@@ -29,7 +32,10 @@ export const AbilityOverlay = ({
                 <Users className="w-4 pb-1 mr-0.5 inline-block text-flame" />
               )}
               <strong className="pr-1">{maybePeriod(abilityName)}</strong>
-              {ability.description || ability.Description || ""}
+              <WithConditionsTooltips
+                text={ability.description || ability.Description}
+                conditions={conditions}
+              />
             </div>
           );
         })}

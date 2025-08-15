@@ -5,8 +5,15 @@ import type {
   CollectionOverview,
   Family,
   Monster,
+  MonsterMini,
 } from "@/lib/types";
 import type { prisma } from "./index";
+
+export const toMonsterMini = (
+  m: Prisma.Result<typeof prisma.monster, object, "findMany">[0]
+): MonsterMini => ({
+  ...m,
+});
 
 export const toMonster = (
   m: Prisma.Result<
@@ -15,6 +22,7 @@ export const toMonster = (
       include: {
         family: true;
         creator: true;
+        monsterConditions: { include: { condition: true } };
       };
     },
     "findMany"
@@ -29,6 +37,10 @@ export const toMonster = (
   moreInfo: m.moreInfo || "",
   family: toFamily(m.family),
   creator: { ...m.creator, avatar: m.creator.avatar || "" },
+  conditions: m.monsterConditions.map((mc) => ({
+    ...mc.condition,
+    inline: mc.inline,
+  })),
 });
 
 export const toFamily = (
@@ -52,12 +64,7 @@ export const toCollectionOverview = (
         creator: true;
         monsterCollections: {
           include: {
-            monster: {
-              include: {
-                creator: true;
-                family: true;
-              };
-            };
+            monster: true;
           };
         };
       };
@@ -70,10 +77,11 @@ export const toCollectionOverview = (
   ).length;
   return {
     ...c,
+    createdAt: c.createdAt ?? undefined,
     visibility: c.visibility === "private" ? "private" : "public",
     legendaryCount,
     standardCount: c.monsterCollections.length - legendaryCount,
     creator: { ...c.creator, avatar: c.creator.avatar || "" },
-    monsters: c.monsterCollections.map((mc) => toMonster(mc.monster)),
+    monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
   };
 };

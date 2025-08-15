@@ -80,7 +80,8 @@ export function FamilyHeader({
         )}
         {family.abilities && family.abilities.length > 0 && (
           <div className="mt-4 mx-6">
-            <AbilityOverlay abilities={family.abilities} />
+            {/* FIXME: Add family conditions */}
+            <AbilityOverlay abilities={family.abilities} conditions={[]} />
           </div>
         )}
       </div>

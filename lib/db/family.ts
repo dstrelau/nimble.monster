@@ -1,16 +1,16 @@
-import type { Ability, Family } from "@/lib/types";
+import type { Ability, Family, FamilyOverview } from "@/lib/types";
 import { toMonster } from "./converters";
-import { prisma } from "./index";
+import { prisma, toMonsterMini } from "./index";
 
-export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
+export const getUserFamilies = async (
+  discordId: string
+): Promise<FamilyOverview[]> => {
   const families = await prisma.family.findMany({
     where: {
       creator: { discordId },
     },
     include: {
-      monsters: {
-        include: { creator: true, family: true },
-      },
+      monsters: true,
       creator: true,
     },
     orderBy: {
@@ -24,7 +24,7 @@ export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
     description: family.description ?? undefined,
     abilities: family.abilities as unknown as Ability[],
     visibility: family.visibility,
-    monsters: family.monsters.map(toMonster),
+    monsters: family.monsters.map(toMonsterMini),
     monsterCount: family.monsters.length,
     creatorId: family.creator.discordId,
   }));
@@ -42,7 +42,11 @@ export const getUserPublicFamiliesWithMonsters = async (
         where: {
           visibility: "public",
         },
-        include: { creator: true, family: true },
+        include: {
+          creator: true,
+          family: true,
+          monsterConditions: { include: { condition: true } },
+        },
       },
       creator: true,
     },
@@ -80,7 +84,7 @@ export const getFamily = async (id: string): Promise<Family | null> => {
       id,
     },
     include: {
-      monsters: true,
+      _count: { select: { monsters: true } },
       creator: true,
     },
   });
@@ -92,7 +96,7 @@ export const getFamily = async (id: string): Promise<Family | null> => {
     name: family.name,
     description: family.description ?? undefined,
     abilities: family.abilities as unknown as Ability[],
-    monsterCount: family.monsters.length,
+    monsterCount: family._count.monsters,
     creatorId: family.creator.discordId,
     creator: { ...family.creator, avatar: family.creator.avatar || "" },
   };
@@ -215,7 +219,11 @@ export const getRandomFeaturedFamily = async (): Promise<Family | null> => {
         where: {
           visibility: "public",
         },
-        include: { creator: true, family: true },
+        include: {
+          creator: true,
+          family: true,
+          monsterConditions: { include: { condition: true } },
+        },
       },
       creator: true,
     },

@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card } from "@/app/ui/monster/Card";
 import {
   ArmorIcon,
@@ -38,6 +38,7 @@ import {
   IconFormInput,
   IconFormSelect,
 } from "@/components/app/Form";
+import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -53,6 +54,7 @@ import {
   calculateProbabilityDistribution,
   parseDiceNotation,
 } from "@/lib/dice";
+import { useConditions } from "@/lib/hooks/useConditions";
 import type {
   Ability,
   Action,
@@ -62,6 +64,7 @@ import type {
   User,
 } from "@/lib/types";
 import { ARMORS, SIZES } from "@/lib/types";
+import { getUserFamilies } from "../actions/family";
 
 const EXAMPLE_MONSTERS: Record<string, Monster> = {
   goblin: {
@@ -79,6 +82,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     burrow: 0,
     speed: 6,
     hp: 30,
+    conditions: [],
     abilities: [
       {
         name: "Meat Shield",
@@ -118,6 +122,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     teleport: 0,
     burrow: 0,
     saves: "STR+, DEX+",
+    conditions: [],
     abilities: [
       {
         name: "Feral Instinct",
@@ -155,6 +160,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     burrow: 0,
     speed: 6,
     hp: 0,
+    conditions: [],
     abilities: [],
     actions: [],
     actionPreface: "Choose one.",
@@ -170,7 +176,6 @@ const FamilySection: React.FC<{
   const userFamilies = useQuery({
     queryKey: ["userFamilies"],
     queryFn: async () => {
-      const { getUserFamilies } = await import("@/app/actions/family");
       const result = await getUserFamilies();
       return result.success ? result.families : [];
     },
@@ -202,6 +207,7 @@ const FamilySection: React.FC<{
 };
 
 interface AbilityRowProps {
+  monsterId: string;
   ability: Ability;
   onChange: (ability: Ability) => void;
   onRemove: () => void;
@@ -221,7 +227,12 @@ const AbilityRow: React.FC<AbilityRowProps> = ({
         onChange={(name) => onChange({ ...ability, name })}
       />
       <FormTextarea
-        label="Description"
+        label={
+          <div className="flex items-center gap-2">
+            Description
+            <ConditionValidationIcon text={ability.description} />
+          </div>
+        }
         name="ability-description"
         value={ability.description}
         rows={1}
@@ -320,7 +331,12 @@ const ActionRow: React.FC<ActionRowProps> = ({
           )}
         </div>
         <FormTextarea
-          label="Description"
+          label={
+            <div className="flex items-center gap-2">
+              Description
+              <ConditionValidationIcon text={action.description || ""} />
+            </div>
+          }
           name="action-description"
           value={action.description || ""}
           rows={2}
@@ -412,21 +428,36 @@ const LegendaryForm: React.FC<{
     <ActionsSection monster={monster} setMonster={setMonster} />
     <div className="space-y-6">
       <FormTextarea
-        label="Bloodied"
+        label={
+          <div className="flex items-center gap-2">
+            Bloodied
+            <ConditionValidationIcon text={monster.bloodied || ""} />
+          </div>
+        }
         name="bloodied"
         value={monster.bloodied || ""}
         rows={2}
         onChange={(bloodied: string) => setMonster({ ...monster, bloodied })}
       />
       <FormTextarea
-        label="Last Stand"
+        label={
+          <div className="flex items-center gap-2">
+            Last Stand
+            <ConditionValidationIcon text={monster.lastStand || ""} />
+          </div>
+        }
         name="lastStand"
         value={monster.lastStand || ""}
         rows={2}
         onChange={(lastStand: string) => setMonster({ ...monster, lastStand })}
       />
       <FormTextarea
-        label="More Information"
+        label={
+          <div className="flex items-center gap-2">
+            More Information
+            <ConditionValidationIcon text={monster.moreInfo || ""} />
+          </div>
+        }
         name="moreInfo"
         value={monster.moreInfo || ""}
         rows={4}
@@ -548,7 +579,12 @@ const StandardForm: React.FC<{
       <AbilitiesSection monster={monster} setMonster={setMonster} />
       <ActionsSection monster={monster} setMonster={setMonster} />
       <FormTextarea
-        label="More Information"
+        label={
+          <div className="flex items-center gap-2">
+            More Information
+            <ConditionValidationIcon text={monster.moreInfo || ""} />
+          </div>
+        }
         name="moreInfo"
         value={monster.moreInfo || ""}
         rows={4}
@@ -567,6 +603,7 @@ const AbilitiesSection: React.FC<{
     {monster.abilities.map((ability, index) => (
       <AbilityRow
         key={index}
+        monsterId={monster.id}
         ability={ability}
         onChange={(newAbility) => {
           const newAbilities = [...monster.abilities];
@@ -802,13 +839,26 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
 
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [monster, setMonster] = useState<Monster>(
-    () => existingMonster ?? EXAMPLE_MONSTERS.empty
+    // we will override conditions just below once loaded
+    () =>
+      existingMonster
+        ? { ...existingMonster, conditions: [] }
+        : EXAMPLE_MONSTERS.empty
   );
-
   const queryClient = useQueryClient();
 
+  const { allConditions } = useConditions();
+  useEffect(() => {
+    if (allConditions.length > 0 && monster.conditions.length === 0) {
+      setMonster((prev) => ({
+        ...prev,
+        conditions: allConditions.map((c) => ({ ...c, inline: false })),
+      }));
+    }
+  }, [allConditions, monster.conditions]);
+
   const mutation = useMutation({
-    mutationFn: (data: Monster) => {
+    mutationFn: async (data: Monster) => {
       const endpoint = data.id ? `/api/monsters/${data.id}` : "/api/monsters";
       const method = data.id ? "PUT" : "POST";
 
@@ -820,7 +870,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["monsters"] });
       queryClient.invalidateQueries({ queryKey: ["monster", monster.id] });
-      router.push("/my/monsters");
+      router.push(`/m/${monster.id}`);
     },
     onError: (error) => {
       console.error("Failed to save monster:", error);
@@ -923,6 +973,13 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
                 </TabsContent>
               </Tabs>
             </div>
+
+            {/*{hasInvalidConditions && (
+              <MissingConditionsForm
+                conditionNames={allInvalidConditions}
+                onConditionsChange={setNewConditions}
+              />
+            )}*/}
 
             {session?.user && (
               <div className="flex flex-row justify-between items-center my-4">

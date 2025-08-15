@@ -14,7 +14,9 @@ export function parseMonsterLevel(level: string): number {
   return Number(level);
 }
 
-export function monstersSortedByLevel(monsters: Monster[]): Monster[] {
+export function monstersSortedByLevel<T extends { level: string }>(
+  monsters: T[]
+): T[] {
   return monsters?.sort(
     (a, b) => parseMonsterLevel(a.level) - parseMonsterLevel(b.level)
   );

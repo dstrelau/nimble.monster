@@ -10,6 +10,10 @@ import { isValidUUID } from "@/lib/utils/validation";
 import type { InputJsonValue } from "../prisma/runtime/library";
 import { toMonster } from "./converters";
 import { prisma } from "./index";
+import {
+  extractAllConditions,
+  syncMonsterConditions,
+} from "./monster-conditions";
 
 export const deleteMonster = async ({
   id,
@@ -35,9 +39,27 @@ export const listPublicMonsters = async (): Promise<Monster[]> => {
     await prisma.monster.findMany({
       where: { visibility: "public" },
       orderBy: { name: "asc" },
-      include: { family: true, creator: true },
+      include: {
+        family: true,
+        creator: true,
+        monsterConditions: { include: { condition: true } },
+      },
     })
   ).map(toMonster);
+};
+
+export const findMonster = async (id: string): Promise<Monster | null> => {
+  if (!isValidUUID(id)) return null;
+
+  const monster = await prisma.monster.findUnique({
+    where: { id },
+    include: {
+      family: true,
+      creator: true,
+      monsterConditions: { include: { condition: true } },
+    },
+  });
+  return monster ? toMonster(monster) : null;
 };
 
 export const findPublicMonsterById = async (
@@ -46,8 +68,29 @@ export const findPublicMonsterById = async (
   if (!isValidUUID(id)) return null;
 
   const monster = await prisma.monster.findUnique({
-    where: { id },
-    include: { family: true, creator: true },
+    where: { id, visibility: "public" },
+    include: {
+      family: true,
+      creator: true,
+      monsterConditions: { include: { condition: true } },
+    },
+  });
+  return monster ? toMonster(monster) : null;
+};
+
+export const findMonsterWithCreatorDiscordId = async (
+  id: string,
+  creatorId: string
+): Promise<Monster | null> => {
+  if (!isValidUUID(id)) return null;
+
+  const monster = await prisma.monster.findUnique({
+    where: { id, creator: { discordId: creatorId } },
+    include: {
+      family: true,
+      creator: true,
+      monsterConditions: { include: { condition: true } },
+    },
   });
   return monster ? toMonster(monster) : null;
 };
@@ -57,7 +100,11 @@ export const listPublicMonstersForDiscordID = async (
 ): Promise<Monster[]> => {
   return (
     await prisma.monster.findMany({
-      include: { family: true, creator: true },
+      include: {
+        family: true,
+        creator: true,
+        monsterConditions: { include: { condition: true } },
+      },
       where: {
         creator: { username },
         visibility: "public",
@@ -72,7 +119,11 @@ export const listAllMonstersForDiscordID = async (
 ): Promise<Monster[]> => {
   return (
     await prisma.monster.findMany({
-      include: { family: true, creator: true },
+      include: {
+        family: true,
+        creator: true,
+        monsterConditions: { include: { condition: true } },
+      },
       where: { creator: { discordId: id } },
       orderBy: { name: "asc" },
     })
@@ -84,7 +135,11 @@ export const listMonstersByFamilyId = async (
 ): Promise<Monster[]> => {
   return (
     await prisma.monster.findMany({
-      include: { family: true, creator: true },
+      include: {
+        family: true,
+        creator: true,
+        monsterConditions: { include: { condition: true } },
+      },
       where: {
         family_id: familyId,
         visibility: "public",
@@ -194,8 +249,19 @@ export const createMonster = async (
     include: {
       family: true,
       creator: true,
+      monsterConditions: { include: { condition: true } },
     },
   });
+
+  const conditionNames = extractAllConditions({
+    actions,
+    abilities,
+    bloodied: legendary ? bloodied : "",
+    lastStand: legendary ? lastStand : "",
+    moreInfo,
+  });
+
+  await syncMonsterConditions(createdMonster.id, conditionNames);
 
   return toMonster(createdMonster);
 };

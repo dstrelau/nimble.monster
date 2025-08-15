@@ -1,30 +1,20 @@
-"use client";
-
-import { useQuery } from "@tanstack/react-query";
+import { unauthorized } from "next/navigation";
 import React from "react";
 import BuildMonster from "@/app/ui/BuildMonsterView";
-import { fetchApi } from "@/lib/api";
-import type { Monster } from "@/lib/types";
+import { auth } from "@/lib/auth";
+import { findMonsterWithCreatorDiscordId } from "@/lib/db/monster";
 
-export default function EditMonsterPage({
+export default async function EditMonsterPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = React.use(params);
-  const { data: monster, isLoading } = useQuery({
-    queryKey: ["monster", id],
-    queryFn: () => fetchApi<Monster>(`/api/monsters/${id}`),
-    enabled: !!id,
-  });
-
-  if (!id) {
-    return <div>Monster ID is required</div>;
+  const { id } = await params;
+  const session = await auth();
+  if (!session?.user?.id) {
+    return unauthorized();
   }
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const monster = await findMonsterWithCreatorDiscordId(id, session?.user.id);
 
   if (!monster) {
     return <div>Monster not found</div>;

@@ -20,6 +20,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
 import { maybePeriod } from "@/lib/text";
 import type { Monster, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -212,6 +213,7 @@ export const Card = ({
             {((!hideFamilyAbilities && monster.family?.abilities) ||
               monster.abilities.length > 0) && (
               <AbilityOverlay
+                conditions={monster.conditions}
                 abilities={[
                   ...(hideFamilyAbilities
                     ? []
@@ -225,8 +227,9 @@ export const Card = ({
             {monster.actions.length > 0 && (
               <div>
                 <div>
-                  <strong className="font-condensed">ACTIONS: </strong>
-                  {monster.actionPreface}
+                  <strong className="font-condensed ">
+                    {monster.actionPreface || "ACTIONS:"}
+                  </strong>
                 </div>
                 <ul className="text-base list-disc pl-4">
                   {monster.actions?.map((action) => (
@@ -239,7 +242,10 @@ export const Card = ({
                       )}
                       {action.description && (
                         <span className="description">
-                          {action.description}
+                          <WithConditionsTooltips
+                            text={action.description}
+                            conditions={monster.conditions}
+                          />
                         </span>
                       )}
                       {action.range && (
@@ -250,25 +256,50 @@ export const Card = ({
                 </ul>
               </div>
             )}
+            {monster.conditions.filter((c) => c.inline).length > 0 && (
+              <div className="font-condensed p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm">
+                {monster.conditions
+                  .filter((c) => c.inline)
+                  .map((c) => (
+                    <p key={c.name}>
+                      <strong className="font-condensed">{c.name}:</strong>{" "}
+                      {c.description}
+                    </p>
+                  ))}
+              </div>
+            )}
             {monster.legendary && (
               <div>
                 {monster.bloodied && (
                   <p>
                     <strong className="font-condensed">BLOODIED: </strong>
-                    {monster.bloodied}
+                    <WithConditionsTooltips
+                      text={monster.bloodied}
+                      conditions={monster.conditions}
+                    />
                   </p>
                 )}
 
                 {monster.lastStand && (
                   <p>
                     <strong className="font-condensed">LAST STAND: </strong>
-                    {monster.lastStand}
+                    <WithConditionsTooltips
+                      text={monster.lastStand}
+                      conditions={monster.conditions}
+                    />
                   </p>
                 )}
               </div>
             )}
 
-            {monster.moreInfo && <p className="italic">{monster.moreInfo}</p>}
+            {monster.moreInfo && (
+              <p className="italic">
+                <WithConditionsTooltips
+                  text={monster.moreInfo}
+                  conditions={monster.conditions}
+                />
+              </p>
+            )}
           </CardContent>
 
           {(!hideActions || !hideCreator) && (
