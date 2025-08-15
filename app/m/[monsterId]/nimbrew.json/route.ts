@@ -29,8 +29,11 @@ export const GET = telemetry(
 
     const speedParts = [];
     if (monster.speed && monster.speed != 6) speedParts.push(monster.speed.toString());
-    if (monster.fly) speedParts.push(`Fly ${monster.fly}`);
     if (monster.swim) speedParts.push(`Swim ${monster.swim}`);
+    if (monster.fly) speedParts.push(`Fly ${monster.fly}`);
+    if (monster.climb) speedParts.push(`Climb ${monster.climb}`);
+    if (monster.burrow) speedParts.push(`Burrow ${monster.burrow}`);
+    if (monster.teleport) speedParts.push(`Teleport ${monster.teleport}`);
 
    const passives : { type: string, name: string, desc: string }[] = [
       ...(monster.family?.abilities?.map(passive => ({
