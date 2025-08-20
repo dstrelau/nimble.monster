@@ -1,7 +1,9 @@
 import type { Condition, Monster, MonsterMini } from "./types";
 
+export const CONDITION_REGEX = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
+
 export function extractConditions(text: string): string[] {
-  const matches = Array.from(text.matchAll(/\[\[([^\]]+)\]\]/g));
+  const matches = Array.from(text.matchAll(CONDITION_REGEX));
   return matches.map((match) => match[1].trim().toLowerCase());
 }
 

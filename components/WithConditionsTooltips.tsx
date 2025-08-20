@@ -7,6 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CONDITION_REGEX } from "@/lib/conditions";
 import type { Condition as ConditionT } from "@/lib/types";
 
 interface WithConditionsTooltipsProps {
@@ -16,11 +17,13 @@ interface WithConditionsTooltipsProps {
 
 function ConditionSpan({
   conditionName,
+  displayText,
   condition,
   isClient,
   keyProp,
 }: {
   conditionName: string;
+  displayText: string;
   condition: ConditionT | undefined;
   isClient: boolean;
   keyProp: string;
@@ -34,7 +37,7 @@ function ConditionSpan({
           condition ? "text-primary-success" : "cursor-help"
         }`}
       >
-        {conditionName}
+        {displayText}
       </span>
     );
   }
@@ -45,7 +48,7 @@ function ConditionSpan({
       <Tooltip>
         <TooltipTrigger asChild>
           <span className="text-primary-success underline decoration-dotted cursor-default">
-            {condition.name}
+            {displayText}
           </span>
         </TooltipTrigger>
         <TooltipContent className="max-w-3xs text-wrap">
@@ -61,7 +64,7 @@ function parseTextWithConditions(
   conditions: ConditionT[],
   isClient: boolean
 ): ReactNode[] {
-  const matches = Array.from(text.matchAll(/\[\[([^\]]+)\]\]/g));
+  const matches = Array.from(text.matchAll(CONDITION_REGEX));
   const parts: ReactNode[] = [];
   let lastIndex = 0;
 
@@ -71,8 +74,9 @@ function parseTextWithConditions(
       parts.push(text.slice(lastIndex, match.index));
     }
 
-    // Add the condition span
+    // Parse condition name and display text
     const conditionName = match[1];
+    const displayText = match[2] || conditionName; // Use display text if provided, otherwise use condition name
     const condition = conditions.find(
       (c) => c.name.toLowerCase() === conditionName.toLowerCase()
     );
@@ -81,6 +85,7 @@ function parseTextWithConditions(
       <ConditionSpan
         key={`${match.index}-${index}`}
         conditionName={conditionName}
+        displayText={displayText}
         condition={condition}
         isClient={isClient}
         keyProp={`${match.index}-${index}`}
@@ -110,7 +115,7 @@ export function WithConditionsTooltips({
     return null;
   }
 
-  const matches = Array.from(text.matchAll(/\[\[([^\]]+)\]\]/g));
+  const matches = Array.from(text.matchAll(CONDITION_REGEX));
   if (matches.length === 0) {
     return text;
   }
