@@ -4,8 +4,10 @@ import {
   type FieldErrors,
   type UseFormRegister,
   useFieldArray,
+  useWatch,
 } from "react-hook-form";
 import { z } from "zod";
+import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,6 +39,11 @@ export const FamilyForm = ({
   children: React.ReactNode;
 }) => {
   const { fields, append, remove } = useFieldArray({
+    control,
+    name: "abilities",
+  });
+
+  const watchedAbilities = useWatch({
     control,
     name: "abilities",
   });
@@ -95,9 +102,12 @@ export const FamilyForm = ({
               <div>
                 <Label
                   htmlFor={`abilities.${index}.description`}
-                  className="mb-2 block"
+                  className="mb-2 block flex items-center gap-2"
                 >
                   Ability Description
+                  <ConditionValidationIcon
+                    text={watchedAbilities?.[index]?.description || ""}
+                  />
                 </Label>
                 <Textarea
                   id={`abilities.${index}.description`}

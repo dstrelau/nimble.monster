@@ -9,8 +9,10 @@ export default async function EditFamilyPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const family = await db.getFamily(id);
-  const session = await auth();
+  const [family, session] = await Promise.all([
+    db.getFamily(id),
+    auth(),
+  ]);
 
   if (!family) {
     notFound();

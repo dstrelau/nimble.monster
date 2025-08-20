@@ -8,16 +8,18 @@ import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
 import { TruncatedMarkdown } from "@/components/TruncatedMarkdown";
 import { Button } from "@/components/ui/button";
-import type { Family } from "@/lib/types";
+import type { Condition, Family } from "@/lib/types";
 
 interface FamilyHeaderProps {
   family: Family;
   showEditDeleteButtons?: boolean;
+  conditions?: Condition[];
 }
 
 export function FamilyHeader({
   family,
   showEditDeleteButtons = false,
+  conditions = [],
 }: FamilyHeaderProps) {
   const router = useRouter();
 
@@ -79,8 +81,10 @@ export function FamilyHeader({
         )}
         {family.abilities && family.abilities.length > 0 && (
           <div className="mt-4 mx-6">
-            {/* FIXME: Add family conditions */}
-            <AbilityOverlay abilities={family.abilities} conditions={[]} />
+            <AbilityOverlay
+              abilities={family.abilities}
+              conditions={conditions}
+            />
           </div>
         )}
       </div>

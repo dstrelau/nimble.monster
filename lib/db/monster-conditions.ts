@@ -1,21 +1,5 @@
+import { extractConditions } from "@/lib/conditions";
 import { prisma } from "./index";
-
-export function parseConditionMarkers(text: string): string[] {
-  const conditionRegex = /\[\[([^\]]+)\]\]/g;
-  const conditions: string[] = [];
-  let match: RegExpExecArray | null;
-
-  match = conditionRegex.exec(text);
-  while (match !== null) {
-    const conditionName = match[1].trim().toLowerCase();
-    if (!conditions.includes(conditionName)) {
-      conditions.push(conditionName);
-    }
-    match = conditionRegex.exec(text);
-  }
-
-  return conditions;
-}
 
 export function extractAllConditions(data: {
   actions: Array<{ description?: string }>;
@@ -34,7 +18,7 @@ export function extractAllConditions(data: {
     data.moreInfo || "",
   ].join(" ");
 
-  return parseConditionMarkers(allText);
+  return extractConditions(allText);
 }
 
 export async function syncMonsterConditions(

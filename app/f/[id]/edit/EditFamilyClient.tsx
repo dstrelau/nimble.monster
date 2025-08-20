@@ -11,6 +11,7 @@ import {
 } from "@/app/my/families/FamilyForm";
 import { FamilyHeader } from "@/components/FamilyHeader";
 import { Button } from "@/components/ui/button";
+import { useConditions } from "@/lib/hooks/useConditions";
 import type { Family } from "@/lib/types";
 
 interface EditFamilyClientProps {
@@ -21,6 +22,9 @@ export function EditFamilyClient({ family }: EditFamilyClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  
+  // Load all conditions for the preview (will be reactive to new conditions)
+  const { allConditions } = useConditions();
 
   const normalizedAbilities = family.abilities.map((ability) => ({
     name: ability.name || ability.Name || "",
@@ -106,7 +110,7 @@ export function EditFamilyClient({ family }: EditFamilyClientProps) {
         <div className="hidden lg:block">
           <h2 className="text-lg font-semibold mb-4">Preview</h2>
           <div className="border rounded-lg p-4">
-            <FamilyHeader family={previewFamily} />
+            <FamilyHeader family={previewFamily} conditions={allConditions} />
           </div>
         </div>
       </div>
