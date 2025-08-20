@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
+import { SSRSafe } from "@/components/SSRSafe";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { SSRSafe } from "@/components/SSRSafe";
 
 interface StatsTooltipProps {
   tooltipLines: string[];
@@ -37,9 +37,5 @@ export function StatsTooltip({ tooltipLines, children }: StatsTooltipProps) {
     </Tooltip>
   );
 
-  return (
-    <SSRSafe fallback={fallback}>
-      {tooltipContent}
-    </SSRSafe>
-  );
+  return <SSRSafe fallback={fallback}>{tooltipContent}</SSRSafe>;
 }

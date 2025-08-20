@@ -8,10 +8,10 @@ interface SSRSafeProps {
 
 /**
  * SSRSafe wrapper for components that have hydration issues with SSR.
- * 
+ *
  * Use this to wrap any interactive component (like tooltips, popovers, etc.)
  * that uses browser APIs or complex state that differs between server and client.
- * 
+ *
  * @param children - The component to render after hydration
  * @param fallback - Optional fallback to render during SSR (defaults to children without interactivity)
  */

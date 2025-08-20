@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Users } from "lucide-react";
-import React from "react";
+import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
 import { Link } from "@/components/app/Link";
@@ -59,11 +59,7 @@ const StatsGroup: React.FC<{
   if (monster.hp) tooltipLines.push(`HP: ${monster.hp}`);
   if (monster.saves) tooltipLines.push(`Saves: ${monster.saves}`);
 
-  return (
-    <StatsTooltip tooltipLines={tooltipLines}>
-      {children}
-    </StatsTooltip>
-  );
+  return <StatsTooltip tooltipLines={tooltipLines}>{children}</StatsTooltip>;
 };
 
 const HeaderLegendary: React.FC<{ monster: Monster; link?: boolean }> = ({
@@ -217,27 +213,30 @@ export const Card = ({
                   </strong>
                 </div>
                 <ul className="text-base list-disc pl-4">
-                  {monster.actions?.map((action) => action && (
-                    <li key={action.name}>
-                      <strong className="pr-1">
-                        {maybePeriod(action.name)}
-                      </strong>
-                      {action.damage && (
-                        <span className="damage">{action.damage} </span>
-                      )}
-                      {action.description && (
-                        <span className="description">
-                          <WithConditionsTooltips
-                            text={action.description}
-                            conditions={monster.conditions}
-                          />
-                        </span>
-                      )}
-                      {action.range && (
-                        <span className="range">({action.range} ft)</span>
-                      )}
-                    </li>
-                  ))}
+                  {monster.actions?.map(
+                    (action) =>
+                      action && (
+                        <li key={action.name}>
+                          <strong className="pr-1">
+                            {maybePeriod(action.name)}
+                          </strong>
+                          {action.damage && (
+                            <span className="damage">{action.damage} </span>
+                          )}
+                          {action.description && (
+                            <span className="description">
+                              <WithConditionsTooltips
+                                text={action.description}
+                                conditions={monster.conditions}
+                              />
+                            </span>
+                          )}
+                          {action.range && (
+                            <span className="range">({action.range} ft)</span>
+                          )}
+                        </li>
+                      )
+                  )}
                 </ul>
               </div>
             )}
@@ -245,12 +244,15 @@ export const Card = ({
               <div className="font-condensed p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm">
                 {monster.conditions
                   .filter((c) => c.inline)
-                  .map((c) => c && (
-                    <p key={c.name}>
-                      <strong className="font-condensed">{c.name}:</strong>{" "}
-                      {c.description}
-                    </p>
-                  ))}
+                  .map(
+                    (c) =>
+                      c && (
+                        <p key={c.name}>
+                          <strong className="font-condensed">{c.name}:</strong>{" "}
+                          {c.description}
+                        </p>
+                      )
+                  )}
               </div>
             )}
             {monster.legendary && (

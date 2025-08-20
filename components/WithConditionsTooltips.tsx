@@ -1,12 +1,12 @@
 "use client";
 import type { ReactNode } from "react";
+import { useIsClient } from "@/components/SSRSafe";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useIsClient } from "@/components/SSRSafe";
 import type { Condition as ConditionT } from "@/lib/types";
 
 interface WithConditionsTooltipsProps {
