@@ -2,11 +2,10 @@
 - `pnpm run check` - Lint and type-check (dev-safe, use this during development)
 - `pnpm run lint` - Biome check (linting, formatting, import sorting)
 - `pnpm run type-check` - TypeScript check only
-- `pnpm run build` - Production build (breaks dev server, requires `rm -rf .next && pnpm run dev` after)
+- `pnpm run build` - Production build (breaks dev server. Only run when asked. Always run `rm -rf .next` after.)
 - Regenerate lib/prisma from schema: `pnpm prisma generate`
-- the dev server runs on localhost:3000 and can be accessed via playwright
-
-**Note:** `pnpm run build` creates production cache in `.next` that conflicts with the dev server. Use `pnpm run check` during development instead.
+- Assume the dev server is already running on localhost:3000 and can be accessed via playwright.
+  - Do not ever run `pnpm run dev`
 
 # Code Style
 

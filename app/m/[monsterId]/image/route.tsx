@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { getBrowser } from "@/lib/browser";
-import { findPublicMonsterById } from "@/lib/db";
+import { findMonster } from "@/lib/db";
+import { auth } from "@/lib/auth";
 import { isValidUUID } from "@/lib/utils/validation";
 
 async function getMonsterImage(baseUrl: string, monsterId: string) {
@@ -100,10 +101,19 @@ export async function GET(
     return new Response("Monster not found", { status: 404 });
   }
 
-  const monster = await findPublicMonsterById(monsterId);
+  const monster = await findMonster(monsterId);
 
   if (!monster) {
     return new Response("Monster not found", { status: 404 });
+  }
+
+  // if monster is not public, then user must be creator
+  if (monster.visibility !== "public") {
+    const session = await auth();
+    const isOwner = session?.user?.id === monster.creator?.discordId || false;
+    if (!isOwner) {
+      return new Response("Monster not found", { status: 404 });
+    }
   }
 
   const host = request.headers.get("host") || "localhost:3000";

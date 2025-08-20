@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Card } from "@/app/ui/monster/Card";
 import { MonsterDetailActions } from "@/components/MonsterDetailActions";
 import { auth } from "@/lib/auth";
-import { findPublicMonsterById } from "@/lib/db";
+import { findMonster } from "@/lib/db";
 
 export async function generateMetadata({
   params,
@@ -11,7 +11,7 @@ export async function generateMetadata({
   params: Promise<{ monsterId: string }>;
 }): Promise<Metadata> {
   const { monsterId } = await params;
-  const monster = await findPublicMonsterById(monsterId);
+  const monster = await findMonster(monsterId);
 
   if (!monster) {
     return {
@@ -58,7 +58,7 @@ export default async function MonsterPage({
 }) {
   const session = await auth();
   const { monsterId } = await params;
-  const rawMonster = await findPublicMonsterById(monsterId);
+  const rawMonster = await findMonster(monsterId);
 
   if (!rawMonster) {
     return notFound();

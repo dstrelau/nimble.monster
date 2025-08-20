@@ -1,6 +1,7 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
-import { findPublicMonsterById } from "@/lib/db";
+import { findMonster } from "@/lib/db";
+import { auth } from "@/lib/auth";
 import { telemetry } from "@/lib/telemetry";
 import { formatSizeKind } from "@/lib/utils/monster";
 import { isValidUUID } from "@/lib/utils/validation";
@@ -19,10 +20,19 @@ export const GET = telemetry(
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });
     }
 
-    const monster = await findPublicMonsterById(monsterId);
+    const monster = await findMonster(monsterId);
 
     if (!monster) {
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });
+    }
+
+    // if monster is not public, then user must be creator
+    if (monster.visibility !== "public") {
+      const session = await auth();
+      const isOwner = session?.user?.id === monster.creator?.discordId || false;
+      if (!isOwner) {
+        return NextResponse.json({ error: "Monster not found" }, { status: 404 });
+      }
     }
 
     span?.setAttributes({ "monster.id": monster.id });
