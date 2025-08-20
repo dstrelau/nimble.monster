@@ -848,14 +848,12 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
   const queryClient = useQueryClient();
 
   const { allConditions } = useConditions();
-  useEffect(() => {
-    if (allConditions.length > 0 && monster.conditions.length === 0) {
-      setMonster((prev) => ({
-        ...prev,
-        conditions: allConditions.map((c) => ({ ...c, inline: false })),
-      }));
-    }
-  }, [allConditions, monster.conditions]);
+  
+  // Create a monster with current conditions for preview
+  const monsterWithConditions = useMemo(() => ({
+    ...monster,
+    conditions: allConditions.map((c) => ({ ...c, inline: false })),
+  }), [monster, allConditions]);
 
   const mutation = useMutation({
     mutationFn: async (data: Monster) => {
@@ -913,7 +911,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
           </Button>
         </div>
         <div className="grid grid-cols-1 gap-4 p-4">
-          <Card monster={monster} />
+          <Card monster={monsterWithConditions} />
         </div>
       </div>
 
@@ -1036,7 +1034,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
               </div>
             </div>
             <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
-              <Card monster={monster} creator={creator} hideActions={true} />
+              <Card monster={monsterWithConditions} creator={creator} hideActions={true} />
             </div>
           </div>
         </div>
