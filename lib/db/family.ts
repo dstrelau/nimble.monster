@@ -1,4 +1,5 @@
 import type { Ability, Family, FamilyOverview } from "@/lib/types";
+import { isValidUUID } from "@/lib/utils/validation";
 import { toMonster } from "./converters";
 import { prisma, toMonsterMini } from "./index";
 
@@ -79,6 +80,10 @@ export const getUserPublicFamiliesCount = async (
 };
 
 export const getFamily = async (id: string): Promise<Family | null> => {
+  if (!isValidUUID(id)) {
+    return null;
+  }
+
   const family = await prisma.family.findUnique({
     where: {
       id,
@@ -156,6 +161,10 @@ export const updateFamily = async ({
   abilities: Ability[];
   discordId: string;
 }): Promise<Family | null> => {
+  if (!isValidUUID(id)) {
+    return null;
+  }
+
   const family = await prisma.family.update({
     where: {
       id: id,
@@ -200,6 +209,10 @@ export const deleteFamily = async ({
   id: string;
   discordId: string;
 }): Promise<boolean> => {
+  if (!isValidUUID(id)) {
+    return false;
+  }
+
   const family = await prisma.family.delete({
     where: {
       id: id,

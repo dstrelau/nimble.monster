@@ -217,7 +217,7 @@ export const Card = ({
                   </strong>
                 </div>
                 <ul className="text-base list-disc pl-4">
-                  {monster.actions?.map((action) => (
+                  {monster.actions?.map((action) => action && (
                     <li key={action.name}>
                       <strong className="pr-1">
                         {maybePeriod(action.name)}
@@ -245,7 +245,7 @@ export const Card = ({
               <div className="font-condensed p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm">
                 {monster.conditions
                   .filter((c) => c.inline)
-                  .map((c) => (
+                  .map((c) => c && (
                     <p key={c.name}>
                       <strong className="font-condensed">{c.name}:</strong>{" "}
                       {c.description}

@@ -133,6 +133,10 @@ export const listAllMonstersForDiscordID = async (
 export const listMonstersByFamilyId = async (
   familyId: string
 ): Promise<Monster[]> => {
+  if (!isValidUUID(familyId)) {
+    return [];
+  }
+
   return (
     await prisma.monster.findMany({
       include: {
