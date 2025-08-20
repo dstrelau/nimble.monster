@@ -83,7 +83,6 @@ export default async function MonsterPage({
           monster={monster}
           creator={monster.creator}
           link={false}
-          hideActions={true}
           isOwner={isOwner}
         />
       </div>

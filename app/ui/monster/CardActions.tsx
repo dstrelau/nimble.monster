@@ -188,32 +188,6 @@ export default function CardActions({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      {isOwner && (
-        <>
-          <Link href={`/my/monsters/${monster.id}/edit`}>
-            <Pencil className="w-5 h-5 text-base-content/50" />
-          </Link>
-          <button
-            type="button"
-            disabled={isPending}
-            onClick={() => {
-              if (window.confirm("Really? This is permanent.")) {
-                startTransition(async () => {
-                  const result = await deleteMonster(monster.id);
-                  if (!result.success && result.error) {
-                    alert(`Error deleting monster: ${result.error}`);
-                  }
-                });
-              }
-            }}
-          >
-            <Trash
-              className={`w-5 h-5 text-base-content/50 cursor-pointer ${isPending ? "opacity-50" : ""}`}
-            />
-          </button>
-        </>
-      )}
     </div>
   );
 }
