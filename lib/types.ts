@@ -73,15 +73,13 @@ export interface Monster extends MonsterMini {
   burrow: number;
   armor: MonsterArmor;
   size: MonsterSize;
-  level: string;
-  contributor?: string;
   abilities: Ability[];
   actions: Action[];
   actionPreface: string;
   moreInfo?: string;
   family?: FamilyOverview;
   creator?: User;
-  updatedAt: Date;
+  updatedAt: string;
   imageUrl?: string;
   conditions: MonsterCondition[];
 }
@@ -90,9 +88,6 @@ export interface Condition {
   name: string;
   description: string;
   official: boolean;
-  creatorId: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface MonsterCondition extends Condition {

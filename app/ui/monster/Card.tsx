@@ -38,6 +38,7 @@ import {
   SwimIcon,
   TeleportIcon,
 } from "./Stat";
+import { StatsTooltip } from "./StatsTooltip";
 
 const StatsGroup: React.FC<{
   monster: Monster;
@@ -58,26 +59,10 @@ const StatsGroup: React.FC<{
   if (monster.hp) tooltipLines.push(`HP: ${monster.hp}`);
   if (monster.saves) tooltipLines.push(`Saves: ${monster.saves}`);
 
-  if (tooltipLines.length === 0) {
-    return <div className="flex items-center">{children}</div>;
-  }
-
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <div className="flex items-center">{children}</div>
-      </TooltipTrigger>
-      <TooltipContent className="w-fit p-3">
-        <dl className="grid grid-cols-2 gap-x-2 gap-y-1">
-          {tooltipLines.map((line) => (
-            <React.Fragment key={line}>
-              <dt className="text-right font-medium">{line.split(":")[0]}:</dt>
-              <dd className="text-left">{line.split(":")[1]}</dd>
-            </React.Fragment>
-          ))}
-        </dl>
-      </TooltipContent>
-    </Tooltip>
+    <StatsTooltip tooltipLines={tooltipLines}>
+      {children}
+    </StatsTooltip>
   );
 };
 

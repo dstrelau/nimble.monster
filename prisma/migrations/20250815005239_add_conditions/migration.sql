@@ -3,10 +3,10 @@ CREATE TABLE "public"."conditions" (
     "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "creatorId" UUID NOT NULL,
+    "official" BOOLEAN NOT NULL DEFAULT false,
+    "creator_id" UUID NOT NULL,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "monsterId" UUID,
 
     CONSTRAINT "conditions_pkey" PRIMARY KEY ("id")
 );
@@ -21,10 +21,7 @@ CREATE TABLE "public"."monsters_conditions" (
 );
 
 -- AddForeignKey
-ALTER TABLE "public"."conditions" ADD CONSTRAINT "conditions_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES "public"."users"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
-
--- AddForeignKey
-ALTER TABLE "public"."conditions" ADD CONSTRAINT "conditions_monsterId_fkey" FOREIGN KEY ("monsterId") REFERENCES "public"."monsters"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."conditions" ADD CONSTRAINT "conditions_creator_id_fkey" FOREIGN KEY ("creator_id") REFERENCES "public"."users"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "public"."monsters_conditions" ADD CONSTRAINT "monsters_conditions_monster_id_fkey" FOREIGN KEY ("monster_id") REFERENCES "public"."monsters"("id") ON DELETE CASCADE ON UPDATE CASCADE;

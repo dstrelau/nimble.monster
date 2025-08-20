@@ -1,14 +1,9 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { loadMonsterConditions } from "@/app/actions/conditions";
 import { Card } from "@/app/ui/monster/Card";
+import { MonsterDetailActions } from "@/components/MonsterDetailActions";
 import { auth } from "@/lib/auth";
-import { findMonster, findPublicMonsterById } from "@/lib/db";
+import { findPublicMonsterById } from "@/lib/db";
 
 export async function generateMetadata({
   params,
@@ -63,39 +58,35 @@ export default async function MonsterPage({
 }) {
   const session = await auth();
   const { monsterId } = await params;
-  const monster = await findMonster(monsterId);
+  const rawMonster = await findPublicMonsterById(monsterId);
 
-  if (!monster) {
+  if (!rawMonster) {
     return notFound();
   }
 
   // if monster is not public, then user must be creator
-  const isOwner = session?.user?.id === monster.creator?.discordId || false;
+  const isOwner = session?.user?.id === rawMonster.creator?.discordId || false;
 
-  if (monster.visibility !== "public" && !isOwner) {
+  if (rawMonster.visibility !== "public" && !isOwner) {
     return notFound();
   }
 
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["condition", monsterId],
-    queryFn: () => loadMonsterConditions(monsterId),
-    staleTime: 60 * 1000,
-  });
+  const monster = JSON.parse(JSON.stringify(rawMonster)); // Force serialization
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <Card
-            monster={monster}
-            creator={monster.creator}
-            link={false}
-            hideActions={false}
-            isOwner={isOwner}
-          />
-        </div>
+    <div className="container mx-auto">
+      <div className="flex justify-end items-start mb-6">
+        {isOwner && <MonsterDetailActions monster={monster} />}
       </div>
-    </HydrationBoundary>
+      <div className="max-w-2xl mx-auto">
+        <Card
+          monster={monster}
+          creator={monster.creator}
+          link={false}
+          hideActions={true}
+          isOwner={isOwner}
+        />
+      </div>
+    </div>
   );
 }
