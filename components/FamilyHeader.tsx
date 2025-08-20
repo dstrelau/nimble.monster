@@ -1,3 +1,4 @@
+"use client";
 import { Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,7 +13,6 @@ import type { Family } from "@/lib/types";
 interface FamilyHeaderProps {
   family: Family;
   showEditDeleteButtons?: boolean;
-  onDelete?: () => void;
 }
 
 export function FamilyHeader({
