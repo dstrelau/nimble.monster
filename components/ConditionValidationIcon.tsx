@@ -6,6 +6,7 @@ import {
   CircleQuestionMark,
   Ellipsis,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { ConditionManagementDialog } from "@/components/ConditionManagementDialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +25,7 @@ interface ConditionValidationIconProps {
 export function ConditionValidationIcon({
   text,
 }: ConditionValidationIconProps) {
+  const { data: session } = useSession();
   const wantConditions = extractConditions(text);
 
   const { allConditions, ownConds, officialConds } = useConditions({
@@ -63,15 +65,21 @@ export function ConditionValidationIcon({
         <TooltipContent className="max-w-50 text-center">
           <div className="space-y-2">
             <p>{tooltipText}</p>
-            <DialogTrigger asChild>
-              <Button
-                variant="link"
-                size="sm"
-                className="p-0 h-auto text-blue-400"
-              >
-                Manage Conditions
-              </Button>
-            </DialogTrigger>
+            {session ? (
+              <DialogTrigger asChild>
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="p-0 h-auto text-blue-400"
+                >
+                  Manage Conditions
+                </Button>
+              </DialogTrigger>
+            ) : (
+              <p className="text-muted-foreground">
+                Login to define new conditions
+              </p>
+            )}
           </div>
         </TooltipContent>
         <ConditionManagementDialog />
