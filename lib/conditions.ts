@@ -1,6 +1,6 @@
 export function extractConditions(text: string): string[] {
   const matches = Array.from(text.matchAll(/\[\[([^\]]+)\]\]/g));
-  return matches.map((match) => match[1].trim());
+  return matches.map((match) => match[1].trim().toLowerCase());
 }
 
 export async function validateCondition(name: string): Promise<boolean> {

@@ -44,7 +44,8 @@ export function ConditionValidationIcon({
     tooltipText = "Loading...";
   } else {
     const invalidConditions = wantConditions.filter(
-      (want) => !allConditions.some((c) => want === c.name)
+      (want) =>
+        !allConditions.some((c) => want.toLowerCase() === c.name.toLowerCase())
     );
     if (!invalidConditions.length) {
       Icon = <CircleCheck className="h-3 w-3 text-success" />;

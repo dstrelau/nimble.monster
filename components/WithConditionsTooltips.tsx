@@ -73,7 +73,9 @@ function parseTextWithConditions(
 
     // Add the condition span
     const conditionName = match[1];
-    const condition = conditions.find((c) => c.name === conditionName);
+    const condition = conditions.find(
+      (c) => c.name.toLowerCase() === conditionName.toLowerCase()
+    );
 
     parts.push(
       <ConditionSpan
