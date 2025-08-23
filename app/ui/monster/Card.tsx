@@ -5,6 +5,7 @@ import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
 import { InlineConditions } from "@/app/ui/shared/InlineConditions";
+import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import { Link } from "@/components/app/Link";
 import { Level } from "@/components/Level";
 import {
@@ -231,14 +232,10 @@ export const Card = ({
               </div>
             )}
 
-            {monster.moreInfo && (
-              <p className="italic">
-                <WithConditionsTooltips
-                  text={monster.moreInfo}
-                  conditions={monster.conditions}
-                />
-              </p>
-            )}
+            <MoreInfoSection
+              moreInfo={monster.moreInfo}
+              conditions={monster.conditions}
+            />
           </CardContent>
 
           {(!hideActions || !hideCreator) && (

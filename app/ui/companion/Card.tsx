@@ -4,6 +4,7 @@ import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
 import { InlineConditions } from "@/app/ui/shared/InlineConditions";
+import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import { HPStat, SavesStat } from "@/app/ui/monster/Stat";
 import { Link } from "@/components/app/Link";
 import {
@@ -124,14 +125,10 @@ export const Card = ({
               <Skull className="w-6 h-6" />
             </div>
 
-            {companion.moreInfo && (
-              <p className="italic">
-                <WithConditionsTooltips
-                  text={companion.moreInfo}
-                  conditions={companion.conditions}
-                />
-              </p>
-            )}
+            <MoreInfoSection
+              moreInfo={companion.moreInfo}
+              conditions={companion.conditions}
+            />
           </CardContent>
 
           {(!hideActions || !hideCreator) && (
