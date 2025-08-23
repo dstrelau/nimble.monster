@@ -6,10 +6,11 @@ import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 import { Card } from "@/app/ui/companion/Card";
 import { BuildView } from "@/components/app/BuildView";
+import { ExampleLoader } from "@/components/app/ExampleLoader";
+import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { FormInput, FormSelect, FormTextarea } from "@/components/app/Form";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { fetchApi } from "@/lib/api";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Companion, MonsterSize, User } from "@/lib/types";
@@ -317,24 +318,17 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
               <Button type="submit">Save</Button>
               <fieldset className="space-y-2">
                 <div>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="public-toggle"
-                      checked={companion.visibility === "public"}
-                      onCheckedChange={(checked) => {
-                        setCompanion({
-                          ...companion,
-                          visibility: checked ? "public" : "private",
-                        });
-                      }}
-                    />
-                    <label
-                      htmlFor="public-toggle"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Publish to Public Companions
-                    </label>
-                  </div>
+                  <VisibilityToggle
+                    id="public-toggle"
+                    checked={companion.visibility === "public"}
+                    onCheckedChange={(checked) => {
+                      setCompanion({
+                        ...companion,
+                        visibility: checked ? "public" : "private",
+                      });
+                    }}
+                    entityType="Companion"
+                  />
                 </div>
               </fieldset>
             </div>
@@ -343,22 +337,10 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
       }
       desktopPreviewContent={
         <>
-          <div className="flex mb-6 mr-5 justify-end">
-            <div className="flex gap-2 items-center">
-              <span className="text-sm font-medium">Load Example:</span>
-              {Object.keys(EXAMPLE_COMPANIONS).map((type) => (
-                <Button
-                  key={type}
-                  variant="ghost"
-                  onClick={() =>
-                    loadExample(type as keyof typeof EXAMPLE_COMPANIONS)
-                  }
-                >
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </Button>
-              ))}
-            </div>
-          </div>
+          <ExampleLoader
+            examples={EXAMPLE_COMPANIONS}
+            onLoadExample={(type) => loadExample(type as keyof typeof EXAMPLE_COMPANIONS)}
+          />
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
             <Card
               companion={companionWithConditions}

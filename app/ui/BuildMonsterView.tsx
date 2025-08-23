@@ -15,6 +15,8 @@ import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 import { Card } from "@/app/ui/monster/Card";
 import { BuildView } from "@/components/app/BuildView";
+import { ExampleLoader } from "@/components/app/ExampleLoader";
+import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import {
   ArmorIcon,
   BurrowIcon,
@@ -35,7 +37,6 @@ import {
 } from "@/components/app/Form";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
@@ -718,7 +719,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
               <fieldset className="space-y-2">
                 <div>
                   <div className="flex items-center space-x-2">
-                    <Switch
+                    <VisibilityToggle
                       id="public-toggle"
                       checked={monster.visibility === "public"}
                       onCheckedChange={(checked) => {
@@ -727,13 +728,8 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
                           visibility: checked ? "public" : "private",
                         });
                       }}
+                      entityType="Monster"
                     />
-                    <label
-                      htmlFor="public-toggle"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      Publish to Public Monsters
-                    </label>
                   </div>
                 </div>
               </fieldset>
@@ -743,23 +739,11 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
       }
       desktopPreviewContent={
         <>
-          <div className="flex mb-6 mr-5 justify-end">
-            <div className="flex gap-2 items-center">
-              <span className="text-sm font-medium">Load Example:</span>
-              {Object.keys(EXAMPLE_MONSTERS).map((type) => (
-                <Button
-                  key={type}
-                  variant="ghost"
-                  onClick={() =>
-                    loadExample(type as keyof typeof EXAMPLE_MONSTERS)
-                  }
-                >
-                  {EXAMPLE_MONSTERS[type].legendary && <Crown />}
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </Button>
-              ))}
-            </div>
-          </div>
+          <ExampleLoader
+            examples={EXAMPLE_MONSTERS}
+            onLoadExample={(type) => loadExample(type as keyof typeof EXAMPLE_MONSTERS)}
+            getIsLegendary={(monster) => monster.legendary}
+          />
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
             <Card
               monster={monsterWithConditions}
