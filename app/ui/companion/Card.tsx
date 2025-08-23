@@ -2,6 +2,7 @@ import { Circle, Skull } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
+import { ActionsList } from "@/app/ui/shared/ActionsList";
 import { HPStat, SavesStat } from "@/app/ui/monster/Stat";
 import { Link } from "@/components/app/Link";
 import {
@@ -15,7 +16,6 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
-import { maybePeriod } from "@/lib/text";
 import type { Companion, MonsterSize, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -95,41 +95,11 @@ export const Card = ({
               />
             )}
 
-            {companion.actions.length > 0 && (
-              <div>
-                <div>
-                  <strong className="font-condensed">
-                    {companion.actionPreface || "ACTIONS:"}
-                  </strong>
-                </div>
-                <ul className="text-base list-disc pl-4">
-                  {companion.actions?.map(
-                    (action) =>
-                      action && (
-                        <li key={action.name}>
-                          <strong className="pr-1">
-                            {maybePeriod(action.name)}
-                          </strong>
-                          {action.damage && (
-                            <span className="damage">{action.damage} </span>
-                          )}
-                          {action.description && (
-                            <span className="description">
-                              <WithConditionsTooltips
-                                text={action.description}
-                                conditions={companion.conditions}
-                              />
-                            </span>
-                          )}
-                          {action.range && (
-                            <span className="range">({action.range} ft)</span>
-                          )}
-                        </li>
-                      )
-                  )}
-                </ul>
-              </div>
-            )}
+            <ActionsList
+              actions={companion.actions}
+              conditions={companion.conditions}
+              actionPreface={companion.actionPreface}
+            />
 
             {companion.conditions.filter((c) => c.inline).length > 0 && (
               <div className="font-condensed p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm">

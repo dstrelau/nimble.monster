@@ -3,6 +3,7 @@ import { Users } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
+import { ActionsList } from "@/app/ui/shared/ActionsList";
 import { Link } from "@/components/app/Link";
 import { Level } from "@/components/Level";
 import {
@@ -16,7 +17,6 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
-import { maybePeriod } from "@/lib/text";
 import type { Monster, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatSizeKind } from "@/lib/utils/monster";
@@ -200,41 +200,11 @@ export const Card = ({
               />
             )}
 
-            {monster.actions.length > 0 && (
-              <div>
-                <div>
-                  <strong className="font-condensed ">
-                    {monster.actionPreface || "ACTIONS:"}
-                  </strong>
-                </div>
-                <ul className="text-base list-disc pl-4">
-                  {monster.actions?.map(
-                    (action) =>
-                      action && (
-                        <li key={action.name}>
-                          <strong className="pr-1">
-                            {maybePeriod(action.name)}
-                          </strong>
-                          {action.damage && (
-                            <span className="damage">{action.damage} </span>
-                          )}
-                          {action.description && (
-                            <span className="description">
-                              <WithConditionsTooltips
-                                text={action.description}
-                                conditions={monster.conditions}
-                              />
-                            </span>
-                          )}
-                          {action.range && (
-                            <span className="range">({action.range} ft)</span>
-                          )}
-                        </li>
-                      )
-                  )}
-                </ul>
-              </div>
-            )}
+            <ActionsList
+              actions={monster.actions}
+              conditions={monster.conditions}
+              actionPreface={monster.actionPreface}
+            />
             {monster.conditions.filter((c) => c.inline).length > 0 && (
               <div className="font-condensed p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm">
                 {monster.conditions
