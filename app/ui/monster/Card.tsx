@@ -2,26 +2,24 @@ import clsx from "clsx";
 import { Users } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
-import { Attribution } from "@/app/ui/Attribution";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
+import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { InlineConditions } from "@/app/ui/shared/InlineConditions";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
-import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
+import {
+  CardContainer,
+  CardContentWithGap,
+} from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
 import { Level } from "@/components/Level";
 import {
   CardAction,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-  Card as ShadcnCard,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
 import type { Monster, User } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { formatSizeKind } from "@/lib/utils/monster";
 import CardActions from "./CardActions";
 import {
@@ -177,7 +175,7 @@ export const Card = ({
   return (
     <div className={clsx(monster.legendary && "md:col-span-2")}>
       <div id={`monster-${monster.id}`}>
-        <ShadcnCard className={cn("gap-4 py-4", className)}>
+        <CardContainer className={className}>
           {monster.legendary ? (
             <HeaderLegendary monster={monster} link={link} />
           ) : (
@@ -188,7 +186,7 @@ export const Card = ({
             />
           )}
 
-          <CardContent className="flex flex-col gap-4">
+          <CardContentWithGap>
             {((!hideFamilyAbilities && monster.family?.abilities) ||
               monster.abilities.length > 0) && (
               <AbilityOverlay
@@ -237,7 +235,7 @@ export const Card = ({
               moreInfo={monster.moreInfo}
               conditions={monster.conditions}
             />
-          </CardContent>
+          </CardContentWithGap>
 
           <CardFooterLayout
             creator={creator}
@@ -245,7 +243,7 @@ export const Card = ({
             hideActions={hideActions}
             actionsSlot={<CardActions monster={monster} isOwner={isOwner} />}
           />
-        </ShadcnCard>
+        </CardContainer>
       </div>
     </div>
   );

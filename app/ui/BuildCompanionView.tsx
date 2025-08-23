@@ -48,7 +48,7 @@ const EXAMPLE_COMPANIONS: Record<string, Companion> = {
         name: "Stab!",
         damage: "1d4",
         description:
-          "(Advantage VS [[Distracted]] targets). On Crit: +LVL damage (instead of rolling additional dice)",
+          "(Advantage VS Distracted targets). On Crit: +LVL damage (instead of rolling additional dice)",
       },
       {
         name: "Shadowstep",

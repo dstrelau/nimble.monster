@@ -1,11 +1,12 @@
 import type React from "react";
 import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
 import { maybePeriod } from "@/lib/text";
-import type { Action, Condition } from "@/lib/types";
+import type { Action, MonsterCondition } from "@/lib/types";
+import { StrongCondensed } from "./StyledComponents";
 
 interface ActionsListProps {
   actions: Action[];
-  conditions: Condition[];
+  conditions: MonsterCondition[];
   actionPreface?: string;
 }
 
@@ -19,7 +20,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({
   return (
     <div>
       <div>
-        <strong className="font-condensed">{actionPreface}</strong>
+        <StrongCondensed>{actionPreface}</StrongCondensed>
       </div>
       <ul className="text-base list-disc pl-4">
         {actions?.map(

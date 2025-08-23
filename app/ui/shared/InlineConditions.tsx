@@ -1,5 +1,6 @@
 import type React from "react";
 import type { MonsterCondition } from "@/lib/types";
+import { InlineConditionsBox, StrongCondensed } from "./StyledComponents";
 
 interface InlineConditionsProps {
   conditions: MonsterCondition[];
@@ -13,16 +14,15 @@ export const InlineConditions: React.FC<InlineConditionsProps> = ({
   if (inlineConditions.length === 0) return null;
 
   return (
-    <div className="font-condensed p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm">
+    <InlineConditionsBox>
       {inlineConditions.map(
         (c) =>
           c && (
             <p key={c.name}>
-              <strong className="font-condensed">{c.name}:</strong>{" "}
-              {c.description}
+              <StrongCondensed>{c.name}:</StrongCondensed> {c.description}
             </p>
           )
       )}
-    </div>
+    </InlineConditionsBox>
   );
 };

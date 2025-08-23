@@ -24,11 +24,7 @@ export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
       <Separator />
       <CardFooter className="flex-col items-stretch">
         <div className="flex items-center justify-between">
-          {creator && !hideCreator ? (
-            <Attribution user={creator} />
-          ) : (
-            <div />
-          )}
+          {creator && !hideCreator ? <Attribution user={creator} /> : <div />}
 
           {!hideActions && actionsSlot}
         </div>

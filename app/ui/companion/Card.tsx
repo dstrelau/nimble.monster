@@ -1,26 +1,22 @@
 import { Circle, Skull } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
-import { Attribution } from "@/app/ui/Attribution";
+import { HPStat, SavesStat } from "@/app/ui/monster/Stat";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
+import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { InlineConditions } from "@/app/ui/shared/InlineConditions";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
-import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
-import { HPStat, SavesStat } from "@/app/ui/monster/Stat";
+import { CardContainer } from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
 import {
   CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-  Card as ShadcnCard,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
 import type { Companion, MonsterSize, User } from "@/lib/types";
-import { cn } from "@/lib/utils";
 
 // Helper function to format companion size
 const formatCompanionSize = (size: MonsterSize): string => {
@@ -83,7 +79,7 @@ export const Card = ({
   return (
     <div>
       <div id={`companion-${companion.id}`}>
-        <ShadcnCard className={cn("gap-4 py-4", className)}>
+        <CardContainer className={className}>
           <HeaderCompanion
             companion={companion}
             hideFamilyName={hideFamilyName}
@@ -137,7 +133,7 @@ export const Card = ({
             hideCreator={hideCreator}
             hideActions={hideActions}
           />
-        </ShadcnCard>
+        </CardContainer>
       </div>
     </div>
   );
