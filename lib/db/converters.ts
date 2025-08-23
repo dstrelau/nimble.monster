@@ -3,6 +3,8 @@ import type {
   Ability,
   Action,
   CollectionOverview,
+  Companion,
+  CompanionMini,
   Family,
   Monster,
   MonsterMini,
@@ -117,5 +119,47 @@ export const toCollectionOverview = (
     standardCount: c.monsterCollections.length - legendaryCount,
     visibility: c.visibility === "private" ? "private" : "public",
     createdAt: c.createdAt ?? undefined,
+  };
+};
+
+export const toCompanionMini = (
+  c: Prisma.Result<typeof prisma.companion, object, "findMany">[0]
+): CompanionMini => ({
+  id: c.id,
+  name: c.name,
+  hp_per_level: c.hp_per_level,
+  wounds: c.wounds,
+  visibility: c.visibility,
+});
+
+export const toCompanion = (
+  c: Prisma.Result<
+    typeof prisma.companion,
+    {
+      include: {
+        creator: true;
+      };
+    },
+    "findMany"
+  >[0]
+): Companion => {
+  return {
+    id: c.id,
+    name: c.name,
+    hp_per_level: c.hp_per_level,
+    wounds: c.wounds,
+    visibility: c.visibility,
+    kind: c.kind,
+    class: c.class,
+    size: c.size,
+    saves: c.saves,
+    updatedAt: c.updatedAt.toISOString(),
+    abilities: c.abilities as unknown as Ability[],
+    actions: c.actions as unknown as Action[],
+    actionPreface: c.actionPreface || "",
+    dyingRule: c.dyingRule,
+    moreInfo: c.moreInfo || "",
+    creator: { ...c.creator, avatar: c.creator.avatar || "" },
+    conditions: [], // TODO: Add companion conditions if needed
   };
 };

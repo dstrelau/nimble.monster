@@ -3,7 +3,8 @@
 - `pnpm run lint` - Biome check (linting, formatting, import sorting)
 - `pnpm run type-check` - TypeScript check only
 - `pnpm run build` - Production build (breaks dev server. Only run when asked. Always run `rm -rf .next` after.)
-- Regenerate lib/prisma from schema: `pnpm prisma generate`
+- `prisma/scehma.prisma` is the schema file.
+  - lib/prisma is generated with `pnpm prisma generate`
 - Assume the dev server is already running on localhost:3000 and can be accessed via playwright.
   - Do not ever run `pnpm run dev`
 

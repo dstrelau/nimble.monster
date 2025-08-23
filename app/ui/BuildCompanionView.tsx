@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
@@ -11,10 +11,10 @@ import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { FormInput, FormSelect, FormTextarea } from "@/components/app/Form";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
-import { fetchApi } from "@/lib/api";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Companion, MonsterSize, User } from "@/lib/types";
 import { SIZES } from "@/lib/types";
+import { createCompanion, updateCompanion } from "../actions/companion";
 import { getUserFamilies } from "../actions/family";
 import { AbilitiesSection } from "./shared/AbilitiesSection";
 import { ActionsSection } from "./shared/ActionsSection";
@@ -97,14 +97,14 @@ const _FamilySection: React.FC<{
     if (familyId === "none") {
       setCompanion({ ...companion });
     } else {
-      const _family = userFamilies.data?.find((f) => f.id === familyId);
+      const _family = userFamilies.data?.find((f: any) => f.id === familyId);
       setCompanion({ ...companion });
     }
   };
 
   const familyChoices = [
     { value: "none", label: "None" },
-    ...(userFamilies.data?.map((f) => ({ value: f.id, label: f.name })) || []),
+    ...(userFamilies.data?.map((f: any) => ({ value: f.id, label: f.name })) || []),
   ];
 
   return (
@@ -267,31 +267,48 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
     [companion, allConditions]
   );
 
-  const mutation = useMutation({
-    mutationFn: async (data: Companion) => {
-      const endpoint = data.id
-        ? `/api/companions/${data.id}`
-        : "/api/companions";
-      const method = data.id ? "PUT" : "POST";
-
-      return fetchApi<Companion>(endpoint, {
-        method,
-        body: JSON.stringify(data),
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["companions"] });
-      queryClient.invalidateQueries({ queryKey: ["companion", companion.id] });
-      router.push(`/c/${companion.id}`);
-    },
-    onError: (error) => {
-      console.error("Failed to save companion:", error);
-    },
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    mutation.mutate(companion);
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const formData = {
+        name: companion.name,
+        kind: companion.kind,
+        class: companion.class,
+        hp_per_level: companion.hp_per_level,
+        wounds: companion.wounds,
+        size: companion.size,
+        saves: companion.saves,
+        actions: companion.actions,
+        abilities: companion.abilities,
+        actionPreface: companion.actionPreface,
+        dyingRule: companion.dyingRule,
+        moreInfo: companion.moreInfo,
+        visibility: companion.visibility,
+      };
+
+      const result = companion.id
+        ? await updateCompanion(companion.id, formData)
+        : await createCompanion(formData);
+
+      if (result.success && result.companion) {
+        queryClient.invalidateQueries({ queryKey: ["companions"] });
+        queryClient.invalidateQueries({ queryKey: ["companion", result.companion.id] });
+        router.push(`/c/${result.companion.id}`);
+      } else {
+        setSubmitError(result.error || "Failed to save companion");
+      }
+    } catch (error) {
+      console.error("Failed to save companion:", error);
+      setSubmitError("An unexpected error occurred");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const loadExample = (type: keyof typeof EXAMPLE_COMPANIONS) => {
@@ -315,7 +332,14 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
 
           {session?.user && (
             <div className="flex flex-row justify-between items-center my-4">
-              <Button type="submit">Save</Button>
+              <div className="flex flex-col gap-2">
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Saving..." : "Save"}
+                </Button>
+                {submitError && (
+                  <p className="text-sm text-red-600">{submitError}</p>
+                )}
+              </div>
               <fieldset className="space-y-2">
                 <div>
                   <VisibilityToggle
