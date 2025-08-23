@@ -68,6 +68,11 @@ const Header = () => {
           isActive: isActive("/my/monsters"),
         },
         {
+          href: "/my/companions",
+          label: "My Companions",
+          isActive: isActive("/my/companions"),
+        },
+        {
           href: "/my/collections",
           label: "My Collections",
           isActive: isActive("/my/collections"),
@@ -194,6 +199,16 @@ const Header = () => {
                     )}
                   >
                     My Monsters
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href="/my/companions"
+                    className={cn(
+                      isActive("/my/companions") && "font-bold bg-accent"
+                    )}
+                  >
+                    My Companions
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

@@ -60,73 +60,69 @@ interface CardProps {
   link?: boolean;
   hideActions?: boolean;
   hideCreator?: boolean;
-  hideFamilyName?: boolean;
   className?: string;
 }
 
 export const Card = ({
   companion,
   creator,
-  isOwner = false,
+  isOwner: _isOwner = false,
   link = true,
   hideActions = false,
   hideCreator = false,
-  hideFamilyName = false,
   className,
 }: CardProps) => {
   return (
-    <div>
-      <div id={`companion-${companion.id}`}>
-        <CardContainer className={className}>
-          <HeaderCompanion companion={companion} link={link} />
+    <div id={`companion-${companion.id}`}>
+      <CardContainer className={className}>
+        <HeaderCompanion companion={companion} link={link} />
 
-          <CardContent className="flex flex-col gap-3 pt-0 pb-4">
-            {companion.abilities.length > 0 && (
-              <AbilityOverlay
-                conditions={companion.conditions}
-                abilities={companion.abilities}
-              />
-            )}
-
-            <ActionsList
-              actions={companion.actions}
+        <CardContent className="flex flex-col gap-3 pt-0 pb-4">
+          {companion.abilities.length > 0 && (
+            <AbilityOverlay
               conditions={companion.conditions}
-              actionPreface={companion.actionPreface}
+              abilities={companion.abilities}
             />
+          )}
 
-            <InlineConditions conditions={companion.conditions} />
-
-            {companion.dyingRule && (
-              <p>
-                <strong>Dying:</strong>{" "}
-                <WithConditionsTooltips
-                  text={companion.dyingRule}
-                  conditions={companion.conditions}
-                />
-              </p>
-            )}
-
-            <div className="flex items-center justify-center gap-1">
-              <strong className="font-condensed text-xs">WOUNDS:</strong>
-              {Array.from({ length: companion.wounds }, (_, i) => (
-                <Circle key={i} className="w-6 h-6" />
-              ))}
-              <Skull className="w-6 h-6" />
-            </div>
-
-            <MoreInfoSection
-              moreInfo={companion.moreInfo}
-              conditions={companion.conditions}
-            />
-          </CardContent>
-
-          <CardFooterLayout
-            creator={creator}
-            hideCreator={hideCreator}
-            hideActions={hideActions}
+          <ActionsList
+            actions={companion.actions}
+            conditions={companion.conditions}
+            actionPreface={companion.actionPreface}
           />
-        </CardContainer>
-      </div>
+
+          <InlineConditions conditions={companion.conditions} />
+
+          {companion.dyingRule && (
+            <p>
+              <strong>Dying:</strong>{" "}
+              <WithConditionsTooltips
+                text={companion.dyingRule}
+                conditions={companion.conditions}
+              />
+            </p>
+          )}
+
+          <div className="flex items-center justify-center gap-1">
+            <strong className="font-condensed text-xs">WOUNDS:</strong>
+            {Array.from({ length: companion.wounds }, (_, i) => (
+              <Circle key={i} className="w-6 h-6" />
+            ))}
+            <Skull className="w-6 h-6" />
+          </div>
+
+          <MoreInfoSection
+            moreInfo={companion.moreInfo}
+            conditions={companion.conditions}
+          />
+        </CardContent>
+
+        <CardFooterLayout
+          creator={creator}
+          hideCreator={hideCreator}
+          hideActions={hideActions}
+        />
+      </CardContainer>
     </div>
   );
 };
