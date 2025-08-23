@@ -4,6 +4,7 @@ import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
+import { InlineConditions } from "@/app/ui/shared/InlineConditions";
 import { Link } from "@/components/app/Link";
 import { Level } from "@/components/Level";
 import {
@@ -205,21 +206,7 @@ export const Card = ({
               conditions={monster.conditions}
               actionPreface={monster.actionPreface}
             />
-            {monster.conditions.filter((c) => c.inline).length > 0 && (
-              <div className="font-condensed p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm">
-                {monster.conditions
-                  .filter((c) => c.inline)
-                  .map(
-                    (c) =>
-                      c && (
-                        <p key={c.name}>
-                          <strong className="font-condensed">{c.name}:</strong>{" "}
-                          {c.description}
-                        </p>
-                      )
-                  )}
-              </div>
-            )}
+            <InlineConditions conditions={monster.conditions} />
             {monster.legendary && (
               <div>
                 {monster.bloodied && (

@@ -3,6 +3,7 @@ import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
+import { InlineConditions } from "@/app/ui/shared/InlineConditions";
 import { HPStat, SavesStat } from "@/app/ui/monster/Stat";
 import { Link } from "@/components/app/Link";
 import {
@@ -101,21 +102,7 @@ export const Card = ({
               actionPreface={companion.actionPreface}
             />
 
-            {companion.conditions.filter((c) => c.inline).length > 0 && (
-              <div className="font-condensed p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm">
-                {companion.conditions
-                  .filter((c) => c.inline)
-                  .map(
-                    (c) =>
-                      c && (
-                        <p key={c.name}>
-                          <strong className="font-condensed">{c.name}:</strong>{" "}
-                          {c.description}
-                        </p>
-                      )
-                  )}
-              </div>
-            )}
+            <InlineConditions conditions={companion.conditions} />
 
             {companion.dyingRule && (
               <div className="font-condensed p-2 dark:shadow-sm">
