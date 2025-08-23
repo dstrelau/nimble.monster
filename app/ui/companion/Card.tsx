@@ -39,8 +39,9 @@ const HeaderCompanion: React.FC<{
         </div>
       </div>
     </CardAction>
-    <CardDescription className="font-condensed small-caps text-sm">
-      {formatCompanionSize(companion.size)} {companion.kind}, {companion.class}
+    <CardDescription className="font-condensed text-md">
+      {formatCompanionSize(companion.size)} {companion.kind} Adventuring
+      Companion, {companion.class}
     </CardDescription>
 
     <CardTitle className="font-slab font-black text-2xl leading-tight text-left">

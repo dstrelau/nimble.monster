@@ -1,12 +1,11 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import clsx from "clsx";
-import { Eye, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 import { Card } from "@/app/ui/companion/Card";
+import { BuildView } from "@/components/app/BuildView";
 import { FormInput, FormSelect, FormTextarea } from "@/components/app/Form";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
@@ -301,114 +300,75 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
   };
 
   return (
-    <>
-      <div
-        className={clsx(
-          showMobilePreview || "hidden",
-          "md:hidden fixed h-full left-0 top-0 inset-0 z-1 bg-background"
-        )}
-      >
-        <div className="w-full flex justify-center items-center sticky bg-secondary text-secondary-foreground p-4">
-          <h3 className="font-bold">Companion Preview</h3>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowMobilePreview(false)}
-            className="ml-auto"
-          >
-            <X className="h-6 w-6" />
-          </Button>
-        </div>
-        <div className="grid grid-cols-1 gap-4 p-4">
-          <Card companion={companionWithConditions} />
-        </div>
-      </div>
+    <BuildView
+      showMobilePreview={showMobilePreview}
+      setShowMobilePreview={setShowMobilePreview}
+      entityName={companion.name}
+      previewTitle="Companion Preview"
+      formClassName="md:col-span-3"
+      previewClassName="md:col-span-3"
+      previewContent={<Card companion={companionWithConditions} />}
+      formContent={
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <CompanionForm companion={companion} setCompanion={setCompanion} />
 
-      <div
-        className={clsx(
-          "md:hidden fixed bottom-0 left-0 right-0 z-1 w-full bg-background flex p-2 justify-between",
-          showMobilePreview && "hidden"
-        )}
-        onClick={() => setShowMobilePreview(true)}
-      >
-        <span className="font-slab font-black font-small-caps italic text-2xl">
-          {companion.name}
-        </span>
-        <div className="flex gap-2 items-center text-sm text-muted-foreground">
-          <Eye className="h-6 w-6" /> Preview
-        </div>
-      </div>
-
-      <div
-        className={clsx(
-          "grid grid-cols-6 gap-x-8 mb-10 md:mb-0",
-          showMobilePreview && "hidden"
-        )}
-      >
-        <div className="col-span-6 md:col-span-3">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <CompanionForm companion={companion} setCompanion={setCompanion} />
-
-            {session?.user && (
-              <div className="flex flex-row justify-between items-center my-4">
-                <Button type="submit">Save</Button>
-                <fieldset className="space-y-2">
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        id="public-toggle"
-                        checked={companion.visibility === "public"}
-                        onCheckedChange={(checked) => {
-                          setCompanion({
-                            ...companion,
-                            visibility: checked ? "public" : "private",
-                          });
-                        }}
-                      />
-                      <label
-                        htmlFor="public-toggle"
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      >
-                        Publish to Public Companions
-                      </label>
-                    </div>
+          {session?.user && (
+            <div className="flex flex-row justify-between items-center my-4">
+              <Button type="submit">Save</Button>
+              <fieldset className="space-y-2">
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="public-toggle"
+                      checked={companion.visibility === "public"}
+                      onCheckedChange={(checked) => {
+                        setCompanion({
+                          ...companion,
+                          visibility: checked ? "public" : "private",
+                        });
+                      }}
+                    />
+                    <label
+                      htmlFor="public-toggle"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Publish to Public Companions
+                    </label>
                   </div>
-                </fieldset>
-              </div>
-            )}
-          </form>
-        </div>
-
-        <div className="hidden md:block md:col-span-3">
-          <div className="sticky top-4">
-            <div className="flex mb-6 mr-5 justify-end">
-              <div className="flex gap-2 items-center">
-                <span className="text-sm font-medium">Load Example:</span>
-                {Object.keys(EXAMPLE_COMPANIONS).map((type) => (
-                  <Button
-                    key={type}
-                    variant="ghost"
-                    onClick={() =>
-                      loadExample(type as keyof typeof EXAMPLE_COMPANIONS)
-                    }
-                  >
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                  </Button>
-                ))}
-              </div>
+                </div>
+              </fieldset>
             </div>
-            <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
-              <Card
-                companion={companionWithConditions}
-                creator={creator}
-                hideActions={true}
-              />
+          )}
+        </form>
+      }
+      desktopPreviewContent={
+        <>
+          <div className="flex mb-6 mr-5 justify-end">
+            <div className="flex gap-2 items-center">
+              <span className="text-sm font-medium">Load Example:</span>
+              {Object.keys(EXAMPLE_COMPANIONS).map((type) => (
+                <Button
+                  key={type}
+                  variant="ghost"
+                  onClick={() =>
+                    loadExample(type as keyof typeof EXAMPLE_COMPANIONS)
+                  }
+                >
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </Button>
+              ))}
             </div>
           </div>
-        </div>
-      </div>
-    </>
+          <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
+            <Card
+              companion={companionWithConditions}
+              creator={creator}
+              hideActions={true}
+            />
+          </div>
+        </>
+      }
+    />
   );
 };
 
