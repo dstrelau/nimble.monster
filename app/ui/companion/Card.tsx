@@ -28,7 +28,7 @@ const HeaderCompanion: React.FC<{
   hideFamilyName?: boolean;
   link?: boolean;
 }> = ({ companion, hideFamilyName = false, link = true }) => (
-  <CardHeader className="gap-2 py-3">
+  <CardHeader>
     <CardAction>
       <div className="flex items-start justify-between">
         <div className="flex items-center font-slab font-black italic">
@@ -104,15 +104,13 @@ export const Card = ({
             <InlineConditions conditions={companion.conditions} />
 
             {companion.dyingRule && (
-              <div className="font-condensed p-2 dark:shadow-sm">
-                <p>
-                  <strong className="font-condensed">Dying:</strong>{" "}
-                  <WithConditionsTooltips
-                    text={companion.dyingRule}
-                    conditions={companion.conditions}
-                  />
-                </p>
-              </div>
+              <p>
+                <strong>Dying:</strong>{" "}
+                <WithConditionsTooltips
+                  text={companion.dyingRule}
+                  conditions={companion.conditions}
+                />
+              </p>
             )}
 
             <div className="flex items-center justify-center gap-1">
