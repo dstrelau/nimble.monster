@@ -25,9 +25,8 @@ const formatCompanionSize = (size: MonsterSize): string => {
 
 const HeaderCompanion: React.FC<{
   companion: Companion;
-  hideFamilyName?: boolean;
   link?: boolean;
-}> = ({ companion, hideFamilyName = false, link = true }) => (
+}> = ({ companion, link = true }) => (
   <CardHeader>
     <CardAction>
       <div className="flex items-start justify-between">
@@ -60,7 +59,6 @@ interface CardProps {
   isOwner?: boolean;
   link?: boolean;
   hideActions?: boolean;
-  hideFamilyAbilities?: boolean;
   hideCreator?: boolean;
   hideFamilyName?: boolean;
   className?: string;
@@ -72,7 +70,6 @@ export const Card = ({
   isOwner = false,
   link = true,
   hideActions = false,
-  hideFamilyAbilities = false,
   hideCreator = false,
   hideFamilyName = false,
   className,
@@ -81,11 +78,7 @@ export const Card = ({
     <div>
       <div id={`companion-${companion.id}`}>
         <CardContainer className={className}>
-          <HeaderCompanion
-            companion={companion}
-            hideFamilyName={hideFamilyName}
-            link={link}
-          />
+          <HeaderCompanion companion={companion} link={link} />
 
           <CardContent className="flex flex-col gap-3 pt-0 pb-4">
             {companion.abilities.length > 0 && (

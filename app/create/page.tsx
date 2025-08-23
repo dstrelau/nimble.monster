@@ -1,6 +1,5 @@
-import { Crown, Users } from "lucide-react";
+import { Ghost, Users } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,6 +7,30 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+interface CreateCardProps {
+  href: string;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
+
+function CreateCard({ href, icon, title, description }: CreateCardProps) {
+  return (
+    <Link href={href} className="block">
+      <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+        <CardHeader className="text-center">
+          <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+            {icon}
+            {title}
+          </CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </CardHeader>
+        <CardContent />
+      </Card>
+    </Link>
+  );
+}
 
 export default function CreatePage() {
   return (
@@ -17,60 +40,21 @@ export default function CreatePage() {
           <h1 className="text-4xl font-bold mb-4">
             What would you like to create?
           </h1>
-          <p className="text-muted-foreground text-lg">
-            Choose between creating a traditional monster or an adventuring
-            companion.
-          </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="text-center">
-              <CardTitle className="flex items-center justify-center gap-2 text-2xl">
-                <Crown className="h-6 w-6" />
-                Monster
-              </CardTitle>
-              <CardDescription>
-                Create traditional monsters with full stat blocks, legendary
-                variants, and complex abilities.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Standard and Legendary variants</li>
-                <li>• Full movement and armor stats</li>
-                <li>• Bloodied and Last Stand mechanics</li>
-                <li>• Family system support</li>
-              </ul>
-              <Button asChild className="w-full" size="lg">
-                <Link href="/monsters/new">Create Monster</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader className="text-center">
-              <CardTitle className="flex items-center justify-center gap-2 text-2xl">
-                <Users className="h-6 w-6" />
-                Companion
-              </CardTitle>
-              <CardDescription>
-                Create adventuring companions with simplified stats, wound
-                tracking, and unique dying rules.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Pocket Friend mechanics</li>
-                <li>• Wound tracking system</li>
-                <li>• Primary stat focus</li>
-                <li>• Special dying rules</li>
-              </ul>
-              <Button asChild className="w-full" size="lg">
-                <Link href="/companions/new">Create Companion</Link>
-              </Button>
-            </CardContent>
-          </Card>
+          <CreateCard
+            href="/monsters/new"
+            icon={<Ghost className="h-16 w-16" />}
+            title="Monster"
+            description="Traditional monsters and Solo Legendaries."
+          />
+          <CreateCard
+            href="/companions/new"
+            icon={<Users className="h-16 w-16" />}
+            title="Companion"
+            description="NPC adventuring companions."
+          />
         </div>
       </div>
     </div>
