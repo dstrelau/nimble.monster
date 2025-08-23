@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Card } from "@/app/ui/companion/Card";
+import { CompanionDetailActions } from "@/components/CompanionDetailActions";
 import { auth } from "@/lib/auth";
 import { findCompanion } from "@/lib/db";
 
@@ -75,7 +76,7 @@ export default async function CompanionPage({
   return (
     <div className="container mx-auto">
       <div className="flex justify-end items-start mb-6">
-        {/* TODO: Add CompanionDetailActions component if needed */}
+        {isOwner && <CompanionDetailActions companion={companion} />}
       </div>
       <div className="max-w-2xl mx-auto">
         <Card
