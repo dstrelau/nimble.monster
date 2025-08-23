@@ -10,7 +10,9 @@ export function extractConditions(text: string): string[] {
 /**
  * Extracts unique conditions from an array of monsters, handling both Monster and MonsterMini types
  */
-export function extractFamilyConditions(monsters: (Monster | MonsterMini)[] | undefined): Condition[] {
+export function extractFamilyConditions(
+  monsters: (Monster | MonsterMini)[] | undefined
+): Condition[] {
   const familyConditions: Condition[] = [];
   const seenConditions = new Set<string>();
 
@@ -18,7 +20,7 @@ export function extractFamilyConditions(monsters: (Monster | MonsterMini)[] | un
 
   for (const monster of monsters) {
     // Check if this is a full Monster object (has conditions)
-    if ('conditions' in monster && Array.isArray(monster.conditions)) {
+    if ("conditions" in monster && Array.isArray(monster.conditions)) {
       for (const condition of monster.conditions) {
         const key = condition.name.toLowerCase();
         if (!seenConditions.has(key)) {

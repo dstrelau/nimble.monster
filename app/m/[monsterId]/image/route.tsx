@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
 import { getBrowser } from "@/lib/browser";
 import { findMonster } from "@/lib/db";
-import { auth } from "@/lib/auth";
 import { isValidUUID } from "@/lib/utils/validation";
 
 async function getMonsterImage(baseUrl: string, monsterId: string) {

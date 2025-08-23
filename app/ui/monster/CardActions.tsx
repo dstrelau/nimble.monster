@@ -6,14 +6,11 @@ import {
   Expand,
   ExternalLink,
   Link as LinkIcon,
-  Pencil,
   Share,
-  Trash,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTransition } from "react";
-import { deleteMonster } from "@/app/actions/monster";
 import { VisibilityBadge } from "@/app/ui/VisibilityBadge";
 import {
   DropdownMenu,
@@ -32,7 +29,7 @@ export default function CardActions({
   monster,
   isOwner,
 }: MonsterCardActionsProps) {
-  const [isPending, startTransition] = useTransition();
+  const [_isPending, _startTransition] = useTransition();
   const pathname = usePathname();
   const isOnDetailPage = pathname === `/m/${monster.id}`;
 

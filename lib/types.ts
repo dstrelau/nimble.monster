@@ -84,6 +84,41 @@ export interface Monster extends MonsterMini {
   conditions: MonsterCondition[];
 }
 
+export const COMPANION_STATS = [
+  { value: "STR+", label: "STR+" },
+  { value: "DEX+", label: "DEX+" },
+  { value: "CON+", label: "CON+" },
+  { value: "INT+", label: "INT+" },
+  { value: "WIS+", label: "WIS+" },
+  { value: "WIL+", label: "WIL+" },
+  { value: "CHA+", label: "CHA+" },
+] as const;
+export type CompanionStat = (typeof COMPANION_STATS)[number]["value"];
+
+export interface CompanionMini {
+  id: string;
+  name: string;
+  hp_per_level: string;
+  wounds: number;
+  visibility: "public" | "private";
+}
+
+export interface Companion extends CompanionMini {
+  kind: string;
+  class: string;
+  size: MonsterSize;
+  saves: string;
+  abilities: Ability[];
+  actions: Action[];
+  actionPreface: string;
+  dyingRule: string;
+  moreInfo?: string;
+  creator?: User;
+  updatedAt: string;
+  imageUrl?: string;
+  conditions: MonsterCondition[];
+}
+
 export interface Condition {
   name: string;
   description: string;

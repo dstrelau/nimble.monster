@@ -15,11 +15,6 @@ import {
   Card as ShadcnCard,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
 import { maybePeriod } from "@/lib/text";
 import type { Monster, User } from "@/lib/types";

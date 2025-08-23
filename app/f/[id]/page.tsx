@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { loadOfficialConditions, loadOwnConditions } from "@/app/actions/conditions";
+import { loadOfficialConditions } from "@/app/actions/conditions";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { FamilyHeader } from "@/components/FamilyHeader";
 import { auth } from "@/lib/auth";
@@ -34,7 +34,7 @@ export default async function FamilyDetailPage({
     listConditionsForDiscordId(family.creatorId),
   ]);
 
-  const conditionsMap = new Map<string, typeof officialConditions[0]>();
+  const conditionsMap = new Map<string, (typeof officialConditions)[0]>();
 
   for (const condition of [...officialConditions, ...familyOwnerConditions]) {
     const key = condition.name.toLowerCase();

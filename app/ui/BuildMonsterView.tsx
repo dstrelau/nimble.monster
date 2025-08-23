@@ -5,20 +5,16 @@ import clsx from "clsx";
 import {
   CircleAlert,
   CircleCheck,
-  CircleSlash2,
   Crown,
   Eye,
-  Plus,
-  Sword,
   Target,
-  Trash,
   TriangleAlert,
   User as UserIcon,
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Card } from "@/app/ui/monster/Card";
 import {
   ArmorIcon,
@@ -49,22 +45,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { fetchApi } from "@/lib/api";
-import {
-  calculateAverageDamageOnHit,
-  calculateProbabilityDistribution,
-  parseDiceNotation,
-} from "@/lib/dice";
 import { useConditions } from "@/lib/hooks/useConditions";
-import type {
-  Ability,
-  Action,
-  Monster,
-  MonsterArmor,
-  MonsterSize,
-  User,
-} from "@/lib/types";
+import type { Monster, MonsterArmor, MonsterSize, User } from "@/lib/types";
 import { ARMORS, SIZES } from "@/lib/types";
 import { getUserFamilies } from "../actions/family";
+import { AbilitiesSection } from "./shared/AbilitiesSection";
+import { ActionsSection } from "./shared/ActionsSection";
 
 const EXAMPLE_MONSTERS: Record<string, Monster> = {
   goblin: {
@@ -206,158 +192,6 @@ const FamilySection: React.FC<{
   );
 };
 
-interface AbilityRowProps {
-  monsterId: string;
-  ability: Ability;
-  onChange: (ability: Ability) => void;
-  onRemove: () => void;
-}
-
-const AbilityRow: React.FC<AbilityRowProps> = ({
-  ability,
-  onChange,
-  onRemove,
-}) => (
-  <div className="flex flex-row items-center px-4">
-    <div className="flex flex-col w-full gap-2 mb-2">
-      <FormInput
-        label="Name"
-        name="ability-name"
-        value={ability.name}
-        onChange={(name) => onChange({ ...ability, name })}
-      />
-      <FormTextarea
-        label={
-          <div className="flex items-center gap-2">
-            Description
-            <ConditionValidationIcon text={ability.description} />
-          </div>
-        }
-        name="ability-description"
-        value={ability.description}
-        rows={1}
-        onChange={(description: string) =>
-          onChange({ ...ability, description })
-        }
-      />
-    </div>
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      onClick={onRemove}
-      className="m-2"
-    >
-      <Trash className="h-6 w-6 text-muted-foreground" />
-    </Button>
-  </div>
-);
-
-interface ActionRowProps {
-  action: Action;
-  legendary: boolean;
-  onChange: (action: Action) => void;
-  onRemove: () => void;
-}
-
-const ActionRow: React.FC<ActionRowProps> = ({
-  action,
-  legendary,
-  onChange,
-  onRemove,
-}) => {
-  const distribution = useMemo(() => {
-    if (!action.damage) return null;
-    const diceRoll = parseDiceNotation(action.damage);
-    if (!diceRoll) return null;
-    const distribution = calculateProbabilityDistribution(diceRoll);
-    return distribution;
-  }, [action.damage]);
-
-  let avgDamage: number | undefined;
-  let missPercent: number | undefined;
-  if (distribution) {
-    avgDamage = calculateAverageDamageOnHit(distribution);
-    missPercent = 100 * (distribution.get(0) || 0);
-  }
-  return (
-    <div className="flex flex-row items-center">
-      <div className="flex flex-col w-full gap-2 mb-2 pl-4">
-        <div className="flex flex-col md:flex-row mb-2 gap-x-4">
-          <FormInput
-            label="Name"
-            name="action-name"
-            className="grow-3"
-            value={action.name}
-            onChange={(name) => onChange({ ...action, name })}
-          />
-          {legendary || (
-            <FormInput
-              name="action-damage"
-              value={action.damage || ""}
-              onChange={(damage) => onChange({ ...action, damage })}
-              label={
-                <TooltipProvider>
-                  <span className="flex-1">Damage</span>{" "}
-                  {missPercent && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="flex items-center leading-4">
-                          <CircleSlash2 className="h-4" />
-                          {missPercent.toFixed(0)}%
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Miss Chance: {missPercent.toFixed(0)}%</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                  {avgDamage && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="flex items-center leading-4">
-                          <Sword className="h-4" />
-                          {avgDamage.toFixed(1)}
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Avg. Damage on Hit: {avgDamage.toFixed(1)}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                </TooltipProvider>
-              }
-            />
-          )}
-        </div>
-        <FormTextarea
-          label={
-            <div className="flex items-center gap-2">
-              Description
-              <ConditionValidationIcon text={action.description || ""} />
-            </div>
-          }
-          name="action-description"
-          value={action.description || ""}
-          rows={2}
-          onChange={(description: string) =>
-            onChange({ ...action, description })
-          }
-        />
-      </div>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        onClick={onRemove}
-        className="m-2"
-      >
-        <Trash className="h-6 w-6 text-muted-foreground" />
-      </Button>
-    </div>
-  );
-};
-
 const LegendaryForm: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
@@ -424,8 +258,19 @@ const LegendaryForm: React.FC<{
       </div>
     </div>
     <FamilySection monster={monster} setMonster={setMonster} />
-    <AbilitiesSection monster={monster} setMonster={setMonster} />
-    <ActionsSection monster={monster} setMonster={setMonster} />
+    <AbilitiesSection
+      abilities={monster.abilities}
+      onChange={(abilities) => setMonster({ ...monster, abilities })}
+    />
+    <ActionsSection
+      actions={monster.actions}
+      actionPreface={monster.actionPreface}
+      showDamage={!monster.legendary}
+      onChange={(actions) => setMonster({ ...monster, actions })}
+      onPrefaceChange={(actionPreface) =>
+        setMonster({ ...monster, actionPreface })
+      }
+    />
     <div className="space-y-6">
       <FormTextarea
         label={
@@ -576,8 +421,19 @@ const StandardForm: React.FC<{
         />
       </div>
       <FamilySection monster={monster} setMonster={setMonster} />
-      <AbilitiesSection monster={monster} setMonster={setMonster} />
-      <ActionsSection monster={monster} setMonster={setMonster} />
+      <AbilitiesSection
+        abilities={monster.abilities}
+        onChange={(abilities) => setMonster({ ...monster, abilities })}
+      />
+      <ActionsSection
+        actions={monster.actions}
+        actionPreface={monster.actionPreface}
+        showDamage={!monster.legendary}
+        onChange={(actions) => setMonster({ ...monster, actions })}
+        onPrefaceChange={(actionPreface) =>
+          setMonster({ ...monster, actionPreface })
+        }
+      />
       <FormTextarea
         label={
           <div className="flex items-center gap-2">
@@ -593,95 +449,6 @@ const StandardForm: React.FC<{
     </div>
   );
 };
-
-const AbilitiesSection: React.FC<{
-  monster: Monster;
-  setMonster: (m: Monster) => void;
-}> = ({ monster, setMonster }) => (
-  <fieldset className="flex flex-col">
-    <legend className="mb-4 font-condensed font-bold">Abilities</legend>
-    {monster.abilities.map((ability, index) => (
-      <AbilityRow
-        key={index}
-        monsterId={monster.id}
-        ability={ability}
-        onChange={(newAbility) => {
-          const newAbilities = [...monster.abilities];
-          newAbilities[index] = newAbility;
-          setMonster({ ...monster, abilities: newAbilities });
-        }}
-        onRemove={() => {
-          const newAbilities = monster.abilities.filter((_, i) => i !== index);
-          setMonster({ ...monster, abilities: newAbilities });
-        }}
-      />
-    ))}
-    <Button
-      type="button"
-      variant="ghost"
-      className="text-muted-foreground"
-      onClick={() =>
-        setMonster({
-          ...monster,
-          abilities: [...monster.abilities, { name: "", description: "" }],
-        })
-      }
-    >
-      <Plus className="w-6 h-6" />
-      Add
-    </Button>
-  </fieldset>
-);
-
-const ActionsSection: React.FC<{
-  monster: Monster;
-  setMonster: (m: Monster) => void;
-}> = ({ monster, setMonster }) => (
-  <fieldset className="flex flex-col gap-4">
-    <legend className="mb-4 font-condensed font-bold">Actions</legend>
-    <div className="flex flex-col gap-4">
-      <FormInput
-        label="Preface"
-        name="actionPreface"
-        value={monster.actionPreface}
-        onChange={(actionPreface) => setMonster({ ...monster, actionPreface })}
-      />
-      {monster.actions.map((action, index) => (
-        <ActionRow
-          key={index}
-          action={action}
-          legendary={monster.legendary}
-          onChange={(newAction) => {
-            const newActions = [...monster.actions];
-            newActions[index] = newAction;
-            setMonster({ ...monster, actions: newActions });
-          }}
-          onRemove={() => {
-            const newActions = monster.actions.filter((_, i) => i !== index);
-            setMonster({ ...monster, actions: newActions });
-          }}
-        />
-      ))}
-      <Button
-        type="button"
-        variant="ghost"
-        className="text-muted-foreground"
-        onClick={() =>
-          setMonster({
-            ...monster,
-            actions: [
-              ...monster.actions,
-              { name: "", damage: "", description: "" },
-            ],
-          })
-        }
-      >
-        <Plus className="w-6 h-6" />
-        Add
-      </Button>
-    </div>
-  </fieldset>
-);
 
 export const MonsterVisibilityEnum = ["private", "public"] as const;
 

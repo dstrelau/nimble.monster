@@ -22,7 +22,7 @@ export function EditFamilyClient({ family }: EditFamilyClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  
+
   // Load all conditions for the preview (will be reactive to new conditions)
   const { allConditions } = useConditions();
 

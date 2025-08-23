@@ -1,5 +1,4 @@
 import { unauthorized } from "next/navigation";
-import React from "react";
 import BuildMonster from "@/app/ui/BuildMonsterView";
 import { auth } from "@/lib/auth";
 import { findMonsterWithCreatorDiscordId } from "@/lib/db/monster";

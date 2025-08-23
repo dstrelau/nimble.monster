@@ -38,9 +38,12 @@ const Header = () => {
   // Navigation data
   const mainNavLinks = [
     {
-      href: "/monsters/new",
-      label: "Build Monster",
-      isActive: isActive("/monsters/new"),
+      href: "/create",
+      label: "Create",
+      isActive:
+        isActive("/create") ||
+        isActive("/monsters/new") ||
+        isActive("/companions/new"),
     },
     { href: "/monsters", label: "Monsters", isActive: isActive("/monsters") },
     {
@@ -120,10 +123,14 @@ const Header = () => {
                 className={navigationMenuTriggerStyle()}
               >
                 <Link
-                  href="/monsters/new"
-                  data-active={isActive("/monsters/new")}
+                  href="/create"
+                  data-active={
+                    isActive("/create") ||
+                    isActive("/monsters/new") ||
+                    isActive("/companions/new")
+                  }
                 >
-                  Build Monster
+                  Create
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>

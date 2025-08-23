@@ -1,7 +1,7 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
-import { findMonster } from "@/lib/db";
 import { auth } from "@/lib/auth";
+import { findMonster } from "@/lib/db";
 import { telemetry } from "@/lib/telemetry";
 import { formatSizeKind } from "@/lib/utils/monster";
 import { isValidUUID } from "@/lib/utils/validation";
@@ -31,14 +31,17 @@ export const GET = telemetry(
       const session = await auth();
       const isOwner = session?.user?.id === monster.creator?.discordId || false;
       if (!isOwner) {
-        return NextResponse.json({ error: "Monster not found" }, { status: 404 });
+        return NextResponse.json(
+          { error: "Monster not found" },
+          { status: 404 }
+        );
       }
     }
 
     span?.setAttributes({ "monster.id": monster.id });
 
     const speedParts = [];
-    if (monster.speed && monster.speed != 6)
+    if (monster.speed && monster.speed !== 6)
       speedParts.push(monster.speed.toString());
     if (monster.swim) speedParts.push(`Swim ${monster.swim}`);
     if (monster.fly) speedParts.push(`Fly ${monster.fly}`);
@@ -79,7 +82,7 @@ export const GET = telemetry(
               type: "multi",
               name: "ACTIONS",
               desc: monster.actionPreface,
-              actions: monster.actions?.map((action) => ({
+              actions: monster.actions?.map((_action) => ({
                 type: "multi",
                 name: monster.actionPreface,
                 desc: "",
