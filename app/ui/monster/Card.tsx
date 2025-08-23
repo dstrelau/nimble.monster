@@ -6,6 +6,7 @@ import { Attribution } from "@/app/ui/Attribution";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
 import { InlineConditions } from "@/app/ui/shared/InlineConditions";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
+import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { Link } from "@/components/app/Link";
 import { Level } from "@/components/Level";
 import {
@@ -238,24 +239,12 @@ export const Card = ({
             />
           </CardContent>
 
-          {(!hideActions || !hideCreator) && (
-            <>
-              <Separator />
-              <CardFooter className="flex-col items-stretch">
-                <div className="flex items-center justify-between">
-                  {creator && !hideCreator ? (
-                    <Attribution user={creator} />
-                  ) : (
-                    <div /> /* Empty div to maintain flex layout */
-                  )}
-
-                  {!hideActions && (
-                    <CardActions monster={monster} isOwner={isOwner} />
-                  )}
-                </div>
-              </CardFooter>
-            </>
-          )}
+          <CardFooterLayout
+            creator={creator}
+            hideCreator={hideCreator}
+            hideActions={hideActions}
+            actionsSlot={<CardActions monster={monster} isOwner={isOwner} />}
+          />
         </ShadcnCard>
       </div>
     </div>

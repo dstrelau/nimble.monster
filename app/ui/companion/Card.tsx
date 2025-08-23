@@ -5,6 +5,7 @@ import { Attribution } from "@/app/ui/Attribution";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
 import { InlineConditions } from "@/app/ui/shared/InlineConditions";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
+import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { HPStat, SavesStat } from "@/app/ui/monster/Stat";
 import { Link } from "@/components/app/Link";
 import {
@@ -131,20 +132,11 @@ export const Card = ({
             />
           </CardContent>
 
-          {(!hideActions || !hideCreator) && (
-            <>
-              <Separator />
-              <CardFooter className="flex-col items-stretch">
-                <div className="flex items-center justify-between">
-                  {creator && !hideCreator ? (
-                    <Attribution user={creator} />
-                  ) : (
-                    <div />
-                  )}
-                </div>
-              </CardFooter>
-            </>
-          )}
+          <CardFooterLayout
+            creator={creator}
+            hideCreator={hideCreator}
+            hideActions={hideActions}
+          />
         </ShadcnCard>
       </div>
     </div>
