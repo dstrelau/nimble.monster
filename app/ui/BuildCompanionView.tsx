@@ -7,8 +7,8 @@ import { useMemo, useState } from "react";
 import { Card } from "@/app/ui/companion/Card";
 import { BuildView } from "@/components/app/BuildView";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
-import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { FormInput, FormSelect, FormTextarea } from "@/components/app/Form";
+import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import { useConditions } from "@/lib/hooks/useConditions";
@@ -104,7 +104,8 @@ const _FamilySection: React.FC<{
 
   const familyChoices = [
     { value: "none", label: "None" },
-    ...(userFamilies.data?.map((f: any) => ({ value: f.id, label: f.name })) || []),
+    ...(userFamilies.data?.map((f: any) => ({ value: f.id, label: f.name })) ||
+      []),
   ];
 
   return (
@@ -298,7 +299,9 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
 
       if (result.success && result.companion) {
         queryClient.invalidateQueries({ queryKey: ["companions"] });
-        queryClient.invalidateQueries({ queryKey: ["companion", result.companion.id] });
+        queryClient.invalidateQueries({
+          queryKey: ["companion", result.companion.id],
+        });
         router.push(`/c/${result.companion.id}`);
       } else {
         setSubmitError(result.error || "Failed to save companion");
@@ -363,7 +366,9 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
         <>
           <ExampleLoader
             examples={EXAMPLE_COMPANIONS}
-            onLoadExample={(type) => loadExample(type as keyof typeof EXAMPLE_COMPANIONS)}
+            onLoadExample={(type) =>
+              loadExample(type as keyof typeof EXAMPLE_COMPANIONS)
+            }
           />
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
             <Card

@@ -19,7 +19,9 @@ export async function generateMetadata({
     };
   }
 
-  const creatorText = companion.creator ? ` by ${companion.creator.username}` : "";
+  const creatorText = companion.creator
+    ? ` by ${companion.creator.username}`
+    : "";
   const companionInfo = [companion.kind, companion.class]
     .filter(Boolean)
     .join(" ");
@@ -65,7 +67,8 @@ export default async function CompanionPage({
   }
 
   // if companion is not public, then user must be creator
-  const isOwner = session?.user?.id === rawCompanion.creator?.discordId || false;
+  const isOwner =
+    session?.user?.id === rawCompanion.creator?.discordId || false;
 
   if (rawCompanion.visibility !== "public" && !isOwner) {
     return notFound();

@@ -9,10 +9,10 @@ interface ExampleLoaderProps<T> {
   getIsLegendary?: (example: T) => boolean;
 }
 
-export function ExampleLoader<T>({ 
-  examples, 
-  onLoadExample, 
-  getIsLegendary 
+export function ExampleLoader<T>({
+  examples,
+  onLoadExample,
+  getIsLegendary,
 }: ExampleLoaderProps<T>) {
   return (
     <div className="flex mb-6 mr-5 justify-end">

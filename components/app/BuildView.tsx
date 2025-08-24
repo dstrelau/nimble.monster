@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { Eye, X } from "lucide-react";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 
 interface BuildViewProps {
@@ -49,9 +49,7 @@ export const BuildView: React.FC<BuildViewProps> = ({
             <X className="h-6 w-6" />
           </Button>
         </div>
-        <div className="grid grid-cols-1 gap-4 p-4">
-          {previewContent}
-        </div>
+        <div className="grid grid-cols-1 gap-4 p-4">{previewContent}</div>
       </div>
 
       {/* Mobile Preview Toggle Bar */}
@@ -78,15 +76,11 @@ export const BuildView: React.FC<BuildViewProps> = ({
         )}
       >
         {/* Form Section */}
-        <div className={clsx("col-span-6", formClassName)}>
-          {formContent}
-        </div>
+        <div className={clsx("col-span-6", formClassName)}>{formContent}</div>
 
         {/* Desktop Preview Section */}
         <div className={clsx("hidden md:block", previewClassName)}>
-          <div className="sticky top-4">
-            {desktopPreviewContent}
-          </div>
+          <div className="sticky top-4">{desktopPreviewContent}</div>
         </div>
       </div>
     </>

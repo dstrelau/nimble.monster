@@ -13,7 +13,10 @@ export default async function EditCompanionPage({
   if (!session?.user?.id) {
     return unauthorized();
   }
-  const companion = await findCompanionWithCreatorDiscordId(id, session?.user.id);
+  const companion = await findCompanionWithCreatorDiscordId(
+    id,
+    session?.user.id
+  );
 
   if (!companion) {
     return <div>Companion not found</div>;

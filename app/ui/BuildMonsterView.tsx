@@ -14,9 +14,6 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 import { Card } from "@/app/ui/monster/Card";
-import { BuildView } from "@/components/app/BuildView";
-import { ExampleLoader } from "@/components/app/ExampleLoader";
-import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import {
   ArmorIcon,
   BurrowIcon,
@@ -28,6 +25,8 @@ import {
   SwimIcon,
   TeleportIcon,
 } from "@/app/ui/monster/Stat";
+import { BuildView } from "@/components/app/BuildView";
+import { ExampleLoader } from "@/components/app/ExampleLoader";
 import {
   FormInput,
   FormSelect,
@@ -35,6 +34,7 @@ import {
   IconFormInput,
   IconFormSelect,
 } from "@/components/app/Form";
+import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -743,7 +743,9 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
         <>
           <ExampleLoader
             examples={EXAMPLE_MONSTERS}
-            onLoadExample={(type) => loadExample(type as keyof typeof EXAMPLE_MONSTERS)}
+            onLoadExample={(type) =>
+              loadExample(type as keyof typeof EXAMPLE_MONSTERS)
+            }
             getIsLegendary={(monster) => monster.legendary}
           />
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">

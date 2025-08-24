@@ -11,7 +11,9 @@ interface CompanionDetailActionsProps {
   companion: Companion;
 }
 
-export function CompanionDetailActions({ companion }: CompanionDetailActionsProps) {
+export function CompanionDetailActions({
+  companion,
+}: CompanionDetailActionsProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 

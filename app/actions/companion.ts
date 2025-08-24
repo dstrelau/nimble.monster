@@ -57,7 +57,14 @@ export async function updateCompanion(
     class: string;
     hp_per_level: string;
     wounds: number;
-    size: "tiny" | "small" | "medium" | "large" | "huge" | "gargantuan" | string;
+    size:
+      | "tiny"
+      | "small"
+      | "medium"
+      | "large"
+      | "huge"
+      | "gargantuan"
+      | string;
     saves: string;
     actions: Action[];
     abilities: Ability[];
