@@ -159,12 +159,14 @@ const FamilySection: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
 }> = ({ monster, setMonster }) => {
+  const { data: session } = useSession();
   const userFamilies = useQuery({
     queryKey: ["userFamilies"],
     queryFn: async () => {
       const result = await getUserFamilies();
       return result.success ? result.families : [];
     },
+    enabled: !!session?.user,
   });
 
   const handleSelectFamily = (familyId: string) => {

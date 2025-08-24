@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import {
   loadOfficialConditions,
   loadOwnConditions,
@@ -14,11 +15,12 @@ export function useConditions({
   enabled = true,
   staleTime = 60 * 1000,
 }: UseConditionsOptions = {}) {
+  const { data: session } = useSession();
   const ownConds = useQuery({
     queryKey: ["own-conditions"],
     queryFn: loadOwnConditions,
     staleTime,
-    enabled,
+    enabled: enabled && !!session?.user,
   });
 
   const officialConds = useQuery({

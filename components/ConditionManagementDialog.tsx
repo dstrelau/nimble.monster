@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useConditions } from "@/lib/hooks/useConditions";
 
 export function ConditionManagementDialog() {
   const [condition, setCondition] = useState<{
@@ -22,12 +23,7 @@ export function ConditionManagementDialog() {
     description: "",
   });
   const queryClient = useQueryClient();
-
-  const result = useQuery({
-    queryKey: ["own-conditions"],
-    queryFn: loadOwnConditions,
-    staleTime: 60 * 1000,
-  });
+  const { ownConds } = useConditions();
 
   const handleCreateCondition = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,10 +46,10 @@ export function ConditionManagementDialog() {
       </DialogHeader>
       <div className="space-y-4">
         <div className="max-h-60 overflow-y-auto space-y-2">
-          {result.isLoading ? (
+          {ownConds.isLoading ? (
             <div>Loading...</div>
           ) : (
-            result.data?.map((condition, idx) => (
+            ownConds.data?.map((condition, idx) => (
               <div key={idx} className="border rounded p-2">
                 <div className="font-medium">{condition.name}</div>
                 <div className="text-sm text-muted-foreground">
