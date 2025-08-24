@@ -635,10 +635,10 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
         body: JSON.stringify(data),
       });
     },
-    onSuccess: () => {
+    onSuccess: (newMonster) => {
       queryClient.invalidateQueries({ queryKey: ["monsters"] });
-      queryClient.invalidateQueries({ queryKey: ["monster", monster.id] });
-      router.push(`/m/${monster.id}`);
+      queryClient.invalidateQueries({ queryKey: ["monster", newMonster.id] });
+      router.push(`/m/${newMonster.id}`);
     },
     onError: (error) => {
       console.error("Failed to save monster:", error);
