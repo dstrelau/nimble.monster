@@ -62,6 +62,12 @@ export const GET = telemetry(
       })) || []),
     ];
 
+    const actions = monster.actions?.map((a) => ({
+      type: "single",
+      name: a.name,
+      desc: [a.damage, a.description].join(" "),
+    }));
+
     const lvl = monster.legendary
       ? `Level ${monster.level} Solo`
       : `Lvl ${monster.level}`;
@@ -76,32 +82,17 @@ export const GET = telemetry(
       saves: monster.saves,
       speed: speedParts.join(", "),
       passives: passives,
-      actions: monster.actionPreface
-        ? [
-            {
-              type: "multi",
-              name: "ACTIONS",
-              desc: monster.actionPreface,
-              actions: monster.actions?.map((_action) => ({
+      actions:
+        monster.actions?.length > 1
+          ? [
+              {
                 type: "multi",
                 name: monster.actionPreface,
                 desc: "",
-                actions:
-                  monster.actions?.map((action) => ({
-                    type: "single",
-                    name: action.name,
-                    desc: [action.damage, action.description].join(" "),
-                    status: false,
-                  })) || [],
-              })),
-            },
-          ]
-        : monster.actions?.map((action) => ({
-            type: "single",
-            name: action.name,
-            desc: [action.damage, action.description].join(" "),
-            status: false,
-          })) || [],
+                actions: actions,
+              },
+            ]
+          : actions || [],
       theme: {
         BGColor: "#f2ebda",
         BGOpacity: "1",
