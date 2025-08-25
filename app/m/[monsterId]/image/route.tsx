@@ -44,6 +44,7 @@ export async function GET(
       status: 200,
       headers: {
         "Content-Type": "image/png",
+        "Content-Disposition": `inline; filename="${monster.name.replace(/[^a-zA-Z0-9-_]/g, '_')}.png"`,
         "X-Cache": "MISS",
       },
     });
