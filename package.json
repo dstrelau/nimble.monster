@@ -10,7 +10,6 @@
     "check": "pnpm run lint && pnpm run type-check",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:ui": "vitest --ui",
     "start": "next start",
     "postinstall": "prisma generate"
   },
