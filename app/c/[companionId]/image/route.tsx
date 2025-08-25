@@ -1,31 +1,31 @@
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
-import { findMonster } from "@/lib/db";
+import { findCompanion } from "@/lib/db";
 import { generateEntityImage } from "@/lib/image-generation";
 import { isValidUUID } from "@/lib/utils/validation";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ monsterId: string }> }
+  { params }: { params: Promise<{ companionId: string }> }
 ) {
-  const { monsterId } = await params;
+  const { companionId } = await params;
 
-  if (!isValidUUID(monsterId)) {
-    return new Response("Monster not found", { status: 404 });
+  if (!isValidUUID(companionId)) {
+    return new Response("Companion not found", { status: 404 });
   }
 
-  const monster = await findMonster(monsterId);
+  const companion = await findCompanion(companionId);
 
-  if (!monster) {
-    return new Response("Monster not found", { status: 404 });
+  if (!companion) {
+    return new Response("Companion not found", { status: 404 });
   }
 
-  // if monster is not public, then user must be creator
-  if (monster.visibility !== "public") {
+  // if companion is not public, then user must be creator
+  if (companion.visibility !== "public") {
     const session = await auth();
-    const isOwner = session?.user?.id === monster.creator?.discordId || false;
+    const isOwner = session?.user?.id === companion.creator?.discordId || false;
     if (!isOwner) {
-      return new Response("Monster not found", { status: 404 });
+      return new Response("Companion not found", { status: 404 });
     }
   }
 
@@ -36,8 +36,8 @@ export async function GET(
   try {
     const imageBuffer = await generateEntityImage({
       baseUrl,
-      entityId: monster.id,
-      entityType: "monster",
+      entityId: companion.id,
+      entityType: "companion",
     });
 
     return new Response(imageBuffer, {
@@ -48,7 +48,7 @@ export async function GET(
       },
     });
   } catch (error: unknown) {
-    console.error("Error generating monster image:", error);
+    console.error("Error generating companion image:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(`Error generating image: ${errorMessage}`, {
       status: 500,
