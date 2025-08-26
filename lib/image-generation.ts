@@ -17,8 +17,7 @@ export async function generateEntityImage({
   const page = await browser.newPage();
 
   try {
-    // Set viewport to match OpenGraph dimensions (1200x630)
-    await page.setViewport({ width: 1200, height: 630 });
+    await page.setViewport({ width: 1200, height: 630, deviceScaleFactor: 2 });
 
     await page.goto(entityPageUrl, {
       waitUntil: "networkidle0",
@@ -84,7 +83,6 @@ export async function generateEntityImage({
       throw new Error(`Could not determine ${entityType} card dimensions`);
     }
 
-    // Capture the screenshot
     const screenshotBuffer = await page.screenshot({
       clip: {
         x: boundingBox.x,
