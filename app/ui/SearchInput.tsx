@@ -3,17 +3,20 @@
 import { Search, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { IconInput } from "@/components/app/IconInput";
+import { cn } from "@/lib/utils";
 
 interface SearchInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  className?: string;
 }
 
 export const SearchInput: React.FC<SearchInputProps> = ({
   value,
   onChange,
   placeholder = "Search",
+  className,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -37,7 +40,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   };
 
   return (
-    <div className="relative">
+    <div className={cn("relative h-fit", className)}>
       <IconInput
         ref={inputRef}
         type="text"

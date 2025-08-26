@@ -155,6 +155,7 @@ model Item {
   kind        String          @default("")
   description String          @default("")
   moreInfo    String?         @default("") @map("more_info")
+  imageIcon   String?         @map("image_icon")
   visibility  item_visibility @default(public)
   userId      String          @map("user_id") @db.Uuid
   createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)

@@ -16,12 +16,13 @@ export function ExampleLoader<T>({
 }: ExampleLoaderProps<T>) {
   return (
     <div className="flex mb-6 mr-5 justify-end">
-      <div className="flex gap-2 items-center">
-        <span className="text-sm font-medium">Load Example:</span>
+      <div className="flex items-center">
+        <span className="text-sm font-bold mr-2">Load:</span>
         {Object.keys(examples).map((type) => (
           <Button
             key={type}
             variant="ghost"
+            className="small-caps text-sm"
             onClick={() => onLoadExample(type)}
           >
             {getIsLegendary?.(examples[type]) && <Crown />}

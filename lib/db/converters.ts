@@ -193,6 +193,7 @@ export const toItem = (
     visibility: i.visibility,
     description: i.description,
     moreInfo: i.moreInfo || undefined,
+    imageIcon: i.imageIcon || undefined,
     updatedAt: i.updatedAt.toISOString(),
     creator: { ...i.creator, avatar: i.creator.avatar || "" },
   };

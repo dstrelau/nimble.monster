@@ -107,6 +107,7 @@ export interface CreateItemInput {
   kind?: string;
   description: string;
   moreInfo?: string;
+  imageIcon?: string;
   visibility: "public" | "private";
   discordId: string;
 }
@@ -117,6 +118,7 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
     kind = "",
     description,
     moreInfo = "",
+    imageIcon,
     visibility,
     discordId,
   } = input;
@@ -135,6 +137,7 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
       kind,
       description,
       moreInfo,
+      imageIcon,
       visibility,
       creator: {
         connect: { id: user.id },
@@ -154,6 +157,7 @@ export interface UpdateItemInput {
   kind?: string;
   description: string;
   moreInfo?: string;
+  imageIcon?: string;
   visibility: "public" | "private";
   discordId: string;
 }
@@ -165,6 +169,7 @@ export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
     kind = "",
     description,
     moreInfo = "",
+    imageIcon,
     visibility,
     discordId,
   } = input;
@@ -183,6 +188,7 @@ export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
       kind,
       description,
       moreInfo,
+      imageIcon,
       visibility,
     },
     include: {

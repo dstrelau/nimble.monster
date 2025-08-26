@@ -3,7 +3,7 @@ import { getBrowser } from "@/lib/browser";
 export interface ImageGenerationOptions {
   baseUrl: string;
   entityId: string;
-  entityType: "monster" | "companion";
+  entityType: "monster" | "companion" | "item";
 }
 
 export async function generateEntityImage({
@@ -12,7 +12,18 @@ export async function generateEntityImage({
   entityType,
 }: ImageGenerationOptions): Promise<Buffer> {
   "use cache";
-  const entityPageUrl = `${baseUrl}/${entityType === "monster" ? "m" : "c"}/${entityId}`;
+  const entityPageUrl = (() => {
+    switch (entityType) {
+      case "monster":
+        return `${baseUrl}/m/${entityId}`;
+      case "companion":
+        return `${baseUrl}/c/${entityId}`;
+      case "item":
+        return `${baseUrl}/items/${entityId}`;
+      default:
+        throw new Error(`Unknown entity type: ${entityType}`);
+    }
+  })();
   const browser = await getBrowser();
   const page = await browser.newPage();
 
@@ -25,17 +36,9 @@ export async function generateEntityImage({
 
     await page.waitForSelector(`#${entityType}-${entityId}`);
 
-    const OG_WIDTH = 1200;
-    const OG_HEIGHT = 630;
-
     await page.evaluate(
-      (params: {
-        entityId: string;
-        entityType: string;
-        OG_WIDTH: number;
-        OG_HEIGHT: number;
-      }) => {
-        const { entityId, entityType, OG_WIDTH } = params;
+      (params: { entityId: string; entityType: string }) => {
+        const { entityId, entityType } = params;
         // Select the container of the entity card
         const container = document.querySelector(
           ".container .max-w-2xl"
@@ -43,7 +46,7 @@ export async function generateEntityImage({
 
         // Apply consistent styling for OpenGraph image
         if (container) {
-          container.style.width = `${OG_WIDTH}px`;
+          // container.style.width = `${OG_WIDTH}px`;
           container.style.boxSizing = "border-box";
           container.style.display = "flex";
           container.style.justifyContent = "center";
@@ -69,7 +72,7 @@ export async function generateEntityImage({
           entityCard.style.padding = "20px";
         }
       },
-      { entityId, entityType, OG_WIDTH, OG_HEIGHT }
+      { entityId, entityType }
     );
 
     const entityCardElement = await page.$(`#${entityType}-${entityId}`);

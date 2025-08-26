@@ -11,7 +11,8 @@
     "test": "vitest",
     "test:run": "vitest run",
     "start": "next start",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "sync-icons": "node tools/sync-icons.js"
   },
   "node": {
     "child_process": "empty"

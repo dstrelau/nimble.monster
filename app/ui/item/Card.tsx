@@ -4,6 +4,7 @@ import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import { CardContainer } from "@/app/ui/shared/StyledComponents";
 import { FormattedText } from "@/components/app/FormattedText";
 import { Link } from "@/components/app/Link";
+import { GameIcon } from "@/components/GameIcon";
 import {
   CardContent,
   CardDescription,
@@ -17,7 +18,7 @@ const HeaderItem: React.FC<{
   link?: boolean;
 }> = ({ item, link = true }) => (
   <CardHeader>
-    <CardTitle className="font-slab font-black text-2xl leading-tight">
+    <CardTitle className="font-slab font-black text-2xl leading-tight flex items-center gap-3">
       {link && item.id ? (
         <Link href={`/items/${item.id}`}>{item.name}</Link>
       ) : (
@@ -52,11 +53,19 @@ export const Card = ({
   className,
 }: CardProps) => {
   return (
-    <div id={`item-${item.id}`}>
-      <CardContainer className={className}>
-        <HeaderItem item={item} link={link} />
+    <div className="max-w-sm" id={`item-${item.id}`}>
+      <CardContainer className={`relative ${className}`}>
+        {item.imageIcon && (
+          <GameIcon
+            iconId={item.imageIcon}
+            className="absolute top-4 right-4 w-24 h-24 fill-icon/50 z-0"
+          />
+        )}
+        <div className="relative z-10">
+          <HeaderItem item={item} link={link} />
+        </div>
 
-        <CardContent className="flex flex-col gap-3 pt-0 pb-4">
+        <CardContent className="flex flex-col gap-3 relative z-10">
           {item.description && (
             <p>
               <FormattedText text={item.description} />
@@ -70,6 +79,7 @@ export const Card = ({
           creator={creator}
           hideCreator={hideCreator}
           hideActions={hideActions}
+          className="z-10"
         />
       </CardContainer>
     </div>

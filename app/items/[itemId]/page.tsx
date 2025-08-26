@@ -33,11 +33,20 @@ export async function generateMetadata({
       description: `${itemInfo}${creatorText}`,
       type: "article",
       url: `/items/${item.id}`,
+      images: [
+        {
+          url: `/items/${item.id}/image`,
+          width: 1200,
+          height: 630,
+          alt: item.name,
+        },
+      ],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: item.name,
       description: `${itemInfo}${creatorText}`,
+      images: [`/items/${item.id}/image`],
     },
   };
 }
@@ -49,27 +58,25 @@ export default async function ItemPage({
 }) {
   const session = await auth();
   const { itemId } = await params;
-  const rawItem = await findItem(itemId);
+  const item = await findItem(itemId);
 
-  if (!rawItem) {
+  if (!item) {
     return notFound();
   }
 
   // if item is not public, then user must be creator
-  const isOwner = session?.user?.id === rawItem.creator?.discordId || false;
+  const isOwner = session?.user?.id === item.creator?.discordId || false;
 
-  if (rawItem.visibility !== "public" && !isOwner) {
+  if (item.visibility !== "public" && !isOwner) {
     return notFound();
   }
-
-  const item = JSON.parse(JSON.stringify(rawItem)); // Force serialization
 
   return (
     <div className="container mx-auto">
       <div className="flex justify-end items-start mb-6">
         {isOwner && <ItemDetailActions item={item} />}
       </div>
-      <div className="max-w-2xl mx-auto">
+      <div className="flex justify-center">
         <Card
           item={item}
           creator={item.creator}

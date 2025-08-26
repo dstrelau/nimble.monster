@@ -9,6 +9,7 @@ export async function createItem(formData: {
   kind?: string;
   description: string;
   moreInfo?: string;
+  imageIcon?: string;
   visibility: "public" | "private";
 }) {
   try {
@@ -40,6 +41,7 @@ export async function updateItem(
     kind?: string;
     description: string;
     moreInfo?: string;
+    imageIcon?: string;
     visibility: "public" | "private";
   }
 ) {

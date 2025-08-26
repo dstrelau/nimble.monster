@@ -170,6 +170,7 @@ export interface ItemMini {
 export interface Item extends ItemMini {
   description: string;
   moreInfo?: string;
+  imageIcon?: string;
   creator?: User;
   updatedAt: string;
 }

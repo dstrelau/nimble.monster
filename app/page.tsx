@@ -94,6 +94,13 @@ export default async function HomePage() {
             <br />
             Nimble © 2025 Nimble Co.
           </p>
+          <p>
+            Card icons from the amazing{" "}
+            <Link href="https://github.com/game-icons/icons/blob/master/license.txt">
+              Game Icons
+            </Link>
+            , used under the CC-BY 3.0 license.
+          </p>
         </div>
       </div>
     </div>
