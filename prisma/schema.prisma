@@ -149,6 +149,22 @@ model Session {
   @@map("sessions")
 }
 
+model Item {
+  id          String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String
+  kind        String          @default("")
+  description String          @default("")
+  moreInfo    String?         @default("") @map("more_info")
+  visibility  item_visibility @default(public)
+  userId      String          @map("user_id") @db.Uuid
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime        @default(now()) @map("updated_at") @db.Timestamptz(6)
+  creator     User            @relation(fields: [userId], references: [id], onUpdate: NoAction)
+
+  @@index([userId], map: "idx_items_user_id")
+  @@map("items")
+}
+
 model User {
   id           String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   discordId    String       @unique(map: "idx_users_discord_id") @map("discord_id")
@@ -159,6 +175,7 @@ model User {
   families     Family[]
   monsters     Monster[]
   companions   Companion[]
+  items        Item[]
   sessions     Session[]
   conditions   Condition[]
 
@@ -199,4 +216,9 @@ enum size_type {
   large
   huge
   gargantuan
+}
+
+enum item_visibility {
+  public
+  private
 }

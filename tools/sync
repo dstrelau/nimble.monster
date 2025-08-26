@@ -1,0 +1,250 @@
+#!/usr/bin/env node
+
+import { PrismaClient } from "@prisma/client";
+
+// Production database connection
+const prodPrisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.PRODUCTION_DATABASE_URL || process.env.DATABASE_URL,
+    },
+  },
+});
+
+// Local database connection
+const localPrisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
+
+async function syncMonster(monsterId) {
+  try {
+    console.log(`Syncing monster ${monsterId} from production...`);
+
+    // Fetch monster with all relationships from production
+    const prodMonster = await prodPrisma.monster.findUnique({
+      where: { id: monsterId },
+      include: {
+        creator: true,
+        family: {
+          include: {
+            creator: true,
+          },
+        },
+        monsterConditions: {
+          include: {
+            condition: {
+              include: {
+                creator: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!prodMonster) {
+      console.error(`Monster ${monsterId} not found in production database`);
+      process.exit(1);
+    }
+
+    console.log(`Found monster: ${prodMonster.name}`);
+
+    // Sync creator (user)
+    await upsertUser(prodMonster.creator);
+
+    // Sync family if exists
+    if (prodMonster.family) {
+      await upsertUser(prodMonster.family.creator);
+      await upsertFamily(prodMonster.family);
+    }
+
+    // Sync conditions and their creators
+    for (const mc of prodMonster.monsterConditions) {
+      await upsertUser(mc.condition.creator);
+      await upsertCondition(mc.condition);
+    }
+
+    // Sync the monster itself
+    await upsertMonster(prodMonster);
+
+    // Sync monster conditions relationships
+    for (const mc of prodMonster.monsterConditions) {
+      await upsertMonsterCondition(mc);
+    }
+
+    console.log(
+      `Successfully synced monster ${prodMonster.name} and all related objects`
+    );
+  } catch (error) {
+    console.error("Sync failed:", error);
+    process.exit(1);
+  } finally {
+    await prodPrisma.$disconnect();
+    await localPrisma.$disconnect();
+  }
+}
+
+async function upsertUser(user) {
+  await localPrisma.user.upsert({
+    where: { id: user.id },
+    update: {
+      discordId: user.discordId,
+      username: user.username,
+      avatar: user.avatar,
+      refreshToken: user.refreshToken,
+    },
+    create: {
+      id: user.id,
+      discordId: user.discordId,
+      username: user.username,
+      avatar: user.avatar,
+      refreshToken: user.refreshToken,
+    },
+  });
+  console.log(`Synced user: ${user.username}`);
+}
+
+async function upsertFamily(family) {
+  await localPrisma.family.upsert({
+    where: { id: family.id },
+    update: {
+      creatorId: family.creatorId,
+      visibility: family.visibility,
+      name: family.name,
+      description: family.description,
+      abilities: family.abilities,
+      featured: family.featured,
+    },
+    create: {
+      id: family.id,
+      creatorId: family.creatorId,
+      visibility: family.visibility,
+      name: family.name,
+      description: family.description,
+      abilities: family.abilities,
+      featured: family.featured,
+    },
+  });
+  console.log(`Synced family: ${family.name}`);
+}
+
+async function upsertCondition(condition) {
+  await localPrisma.condition.upsert({
+    where: { id: condition.id },
+    update: {
+      name: condition.name,
+      description: condition.description,
+      official: condition.official,
+      creatorId: condition.creatorId,
+    },
+    create: {
+      id: condition.id,
+      name: condition.name,
+      description: condition.description,
+      official: condition.official,
+      creatorId: condition.creatorId,
+    },
+  });
+  console.log(`Synced condition: ${condition.name}`);
+}
+
+async function upsertMonster(monster) {
+  await localPrisma.monster.upsert({
+    where: { id: monster.id },
+    update: {
+      name: monster.name,
+      level: monster.level,
+      hp: monster.hp,
+      armor: monster.armor,
+      size: monster.size,
+      speed: monster.speed,
+      fly: monster.fly,
+      swim: monster.swim,
+      burrow: monster.burrow,
+      climb: monster.climb,
+      teleport: monster.teleport,
+      actions: monster.actions,
+      abilities: monster.abilities,
+      legendary: monster.legendary,
+      bloodied: monster.bloodied,
+      lastStand: monster.lastStand,
+      saves: monster.saves,
+      kind: monster.kind,
+      visibility: monster.visibility,
+      family_id: monster.family_id,
+      actionPreface: monster.actionPreface,
+      moreInfo: monster.moreInfo,
+      userId: monster.userId,
+    },
+    create: {
+      id: monster.id,
+      name: monster.name,
+      level: monster.level,
+      hp: monster.hp,
+      armor: monster.armor,
+      size: monster.size,
+      speed: monster.speed,
+      fly: monster.fly,
+      swim: monster.swim,
+      burrow: monster.burrow,
+      climb: monster.climb,
+      teleport: monster.teleport,
+      actions: monster.actions,
+      abilities: monster.abilities,
+      legendary: monster.legendary,
+      bloodied: monster.bloodied,
+      lastStand: monster.lastStand,
+      saves: monster.saves,
+      kind: monster.kind,
+      visibility: monster.visibility,
+      family_id: monster.family_id,
+      actionPreface: monster.actionPreface,
+      moreInfo: monster.moreInfo,
+      userId: monster.userId,
+    },
+  });
+  console.log(`Synced monster: ${monster.name}`);
+}
+
+async function upsertMonsterCondition(mc) {
+  await localPrisma.monsterCondition.upsert({
+    where: {
+      monsterId_conditionId: {
+        monsterId: mc.monsterId,
+        conditionId: mc.conditionId,
+      },
+    },
+    update: {
+      inline: mc.inline,
+    },
+    create: {
+      monsterId: mc.monsterId,
+      conditionId: mc.conditionId,
+      inline: mc.inline,
+    },
+  });
+}
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+
+if (args.length !== 2 || args[0] !== "monster") {
+  console.error("Usage: ./tools/sync monster {uuid}");
+  process.exit(1);
+}
+
+const monsterId = args[1];
+
+// Validate UUID format
+const uuidRegex =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+if (!uuidRegex.test(monsterId)) {
+  console.error("Invalid UUID format");
+  process.exit(1);
+}
+
+syncMonster(monsterId);

@@ -26,6 +26,17 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
+const UserAvatarButton = ({ user, onClick }: { user?: any; onClick?: () => void }) => (
+  <Button
+    variant="ghost"
+    size="icon"
+    className="text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent p-2 rounded-full"
+    onClick={onClick}
+  >
+    <UserAvatar user={user || {}} size="md" />
+  </Button>
+);
+
 const Header = () => {
   const { data: session } = useSession();
   const currentUser = session?.user;
@@ -35,15 +46,18 @@ const Header = () => {
 
   const isActive = (path: string) => pathname === path;
 
+  const isCreateActive = () =>
+    isActive("/create") ||
+    isActive("/monsters/new") ||
+    isActive("/companions/new") ||
+    isActive("/items/new");
+
   // Navigation data
   const mainNavLinks = [
     {
       href: "/create",
       label: "Create",
-      isActive:
-        isActive("/create") ||
-        isActive("/monsters/new") ||
-        isActive("/companions/new"),
+      isActive: isCreateActive(),
     },
     { href: "/monsters", label: "Monsters", isActive: isActive("/monsters") },
     {
@@ -53,11 +67,11 @@ const Header = () => {
     },
   ];
 
-  const userNavLinks = currentUser
+  const userMenuItems = currentUser
     ? [
         {
           href: currentUser.name ? `/u/${currentUser.name}` : "#",
-          label: "My Profile",
+          label: "View Profile",
           isActive: currentUser.name
             ? isActive(`/u/${currentUser.name}`)
             : false,
@@ -82,20 +96,16 @@ const Header = () => {
           label: "My Families",
           isActive: isActive("/my/families"),
         },
-      ]
-    : [];
-
-  const userNavButtons = currentUser
-    ? [
         {
-          label: "Logout",
-          onClick: () => {
-            setMobileUserMenuOpen(false);
-            signOut({ redirectTo: "/" });
-          },
+          href: "/my/items",
+          label: "My Items",
+          isActive: isActive("/my/items"),
         },
       ]
     : [];
+
+  const handleSignOut = () => signOut({ redirectTo: "/" });
+  const handleSignIn = () => signIn("discord", { redirectTo: "/my/monsters" });
 
   return (
     <nav className="p-0 shadow-sm bg-header text-header-foreground">
@@ -127,14 +137,7 @@ const Header = () => {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link
-                  href="/create"
-                  data-active={
-                    isActive("/create") ||
-                    isActive("/monsters/new") ||
-                    isActive("/companions/new")
-                  }
-                >
+                <Link href="/create" data-active={isCreateActive()}>
                   Create
                 </Link>
               </NavigationMenuLink>
@@ -179,59 +182,17 @@ const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link
-                    href={currentUser.name ? `/u/${currentUser.name}` : "#"}
-                    className={cn(
-                      currentUser.name &&
-                        isActive(`/u/${currentUser.name}`) &&
-                        "font-bold bg-accent"
-                    )}
-                  >
-                    My Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/my/monsters"
-                    className={cn(
-                      isActive("/my/monsters") && "font-bold bg-accent"
-                    )}
-                  >
-                    My Monsters
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/my/companions"
-                    className={cn(
-                      isActive("/my/companions") && "font-bold bg-accent"
-                    )}
-                  >
-                    My Companions
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/my/collections"
-                    className={cn(
-                      isActive("/my/collections") && "font-bold bg-accent"
-                    )}
-                  >
-                    My Collections
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/my/families"
-                    className={cn(
-                      isActive("/my/families") && "font-bold bg-accent"
-                    )}
-                  >
-                    My Families
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => signOut({ redirectTo: "/" })}>
+                {userMenuItems.map((item) => (
+                  <DropdownMenuItem key={item.href} asChild>
+                    <Link
+                      href={item.href}
+                      className={cn(item.isActive && "font-bold bg-accent")}
+                    >
+                      {item.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuItem onClick={handleSignOut}>
                   Logout
                 </DropdownMenuItem>
                 <Separator />
@@ -239,14 +200,7 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent p-2 rounded-full"
-              onClick={() => signIn("discord", { redirectTo: "/my/monsters" })}
-            >
-              <UserAvatar user={{}} size="md" />
-            </Button>
+            <UserAvatarButton user={undefined} onClick={handleSignIn} />
           )}
         </div>
 
@@ -254,26 +208,15 @@ const Header = () => {
         <div className="md:hidden flex items-center gap-2">
           <ModeToggle />
           {currentUser ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/10 hover:text-white"
+            <UserAvatarButton
+              user={currentUser}
               onClick={() => {
                 setMobileUserMenuOpen(!mobileUserMenuOpen);
                 setMobileMenuOpen(false);
               }}
-            >
-              <UserAvatar user={currentUser} size="md" />
-            </Button>
+            />
           ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/10 hover:text-white"
-              onClick={() => signIn("discord", { redirectTo: "/my/monsters" })}
-            >
-              <UserAvatar user={{}} size="md" />
-            </Button>
+            <UserAvatarButton user={undefined} onClick={handleSignIn} />
           )}
         </div>
       </div>
@@ -289,11 +232,19 @@ const Header = () => {
 
       <MobileMenuDropdown
         isOpen={mobileUserMenuOpen && !!currentUser}
-        links={userNavLinks.map((link) => ({
+        links={userMenuItems.map((link) => ({
           ...link,
           onClick: () => setMobileUserMenuOpen(false),
         }))}
-        buttons={userNavButtons}
+        buttons={[
+          {
+            label: "Logout",
+            onClick: () => {
+              setMobileUserMenuOpen(false);
+              handleSignOut();
+            },
+          },
+        ]}
       />
     </nav>
   );

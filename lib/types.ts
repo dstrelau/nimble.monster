@@ -160,6 +160,20 @@ export interface CollectionOverview {
   createdAt?: Date;
 }
 
+export interface ItemMini {
+  id: string;
+  name: string;
+  kind?: string;
+  visibility: "public" | "private";
+}
+
+export interface Item extends ItemMini {
+  description: string;
+  moreInfo?: string;
+  creator?: User;
+  updatedAt: string;
+}
+
 export interface User {
   discordId: string;
   avatar: string;

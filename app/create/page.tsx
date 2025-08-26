@@ -1,4 +1,4 @@
-import { Ghost, Users } from "lucide-react";
+import { Ghost, Shield, Users } from "lucide-react";
 import Link from "next/link";
 import {
   Card,
@@ -42,7 +42,7 @@ export default function CreatePage() {
           </h1>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <CreateCard
             href="/monsters/new"
             icon={<Ghost className="h-16 w-16" />}
@@ -54,6 +54,12 @@ export default function CreatePage() {
             icon={<Users className="h-16 w-16" />}
             title="Companion"
             description="NPC adventuring companions."
+          />
+          <CreateCard
+            href="/items/new"
+            icon={<Shield className="h-16 w-16" />}
+            title="Item"
+            description="Magical items and equipment."
           />
         </div>
       </div>

@@ -6,7 +6,7 @@ interface VisibilityToggleProps {
   id: string;
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
-  entityType: "Monster" | "Companion";
+  entityType: "Monster" | "Companion" | "Item";
 }
 
 export const VisibilityToggle: React.FC<VisibilityToggleProps> = ({

@@ -13,5 +13,6 @@ export * from "./companion";
 export * from "./condition";
 export * from "./converters";
 export * from "./family";
+export * from "./item";
 export * from "./monster";
 export * from "./user";

@@ -6,6 +6,8 @@ import type {
   Companion,
   CompanionMini,
   Family,
+  Item,
+  ItemMini,
   Monster,
   MonsterMini,
 } from "@/lib/types";
@@ -161,5 +163,37 @@ export const toCompanion = (
     moreInfo: c.moreInfo || "",
     creator: { ...c.creator, avatar: c.creator.avatar || "" },
     conditions: [], // TODO: Add companion conditions if needed
+  };
+};
+
+export const toItemMini = (
+  i: Prisma.Result<typeof prisma.item, object, "findMany">[0]
+): ItemMini => ({
+  id: i.id,
+  name: i.name,
+  kind: i.kind || undefined,
+  visibility: i.visibility,
+});
+
+export const toItem = (
+  i: Prisma.Result<
+    typeof prisma.item,
+    {
+      include: {
+        creator: true;
+      };
+    },
+    "findMany"
+  >[0]
+): Item => {
+  return {
+    id: i.id,
+    name: i.name,
+    kind: i.kind || undefined,
+    visibility: i.visibility,
+    description: i.description,
+    moreInfo: i.moreInfo || undefined,
+    updatedAt: i.updatedAt.toISOString(),
+    creator: { ...i.creator, avatar: i.creator.avatar || "" },
   };
 };

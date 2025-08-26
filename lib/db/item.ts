@@ -1,0 +1,194 @@
+import type { Item } from "@/lib/types";
+import { isValidUUID } from "@/lib/utils/validation";
+import { toItem } from "./converters";
+import { prisma } from "./index";
+
+export const deleteItem = async ({
+  id,
+  discordId,
+}: {
+  id: string;
+  discordId: string;
+}): Promise<boolean> => {
+  if (!isValidUUID(id)) return false;
+
+  const item = await prisma.item.delete({
+    where: {
+      id: id,
+      creator: { discordId },
+    },
+  });
+
+  return !!item;
+};
+
+export const listPublicItems = async (): Promise<Item[]> => {
+  return (
+    await prisma.item.findMany({
+      where: { visibility: "public" },
+      orderBy: { name: "asc" },
+      include: {
+        creator: true,
+      },
+    })
+  ).map(toItem);
+};
+
+export const findItem = async (id: string): Promise<Item | null> => {
+  if (!isValidUUID(id)) return null;
+
+  const item = await prisma.item.findUnique({
+    where: { id },
+    include: {
+      creator: true,
+    },
+  });
+  return item ? toItem(item) : null;
+};
+
+export const findPublicItemById = async (id: string): Promise<Item | null> => {
+  if (!isValidUUID(id)) return null;
+
+  const item = await prisma.item.findUnique({
+    where: { id, visibility: "public" },
+    include: {
+      creator: true,
+    },
+  });
+  return item ? toItem(item) : null;
+};
+
+export const findItemWithCreatorDiscordId = async (
+  id: string,
+  creatorId: string
+): Promise<Item | null> => {
+  if (!isValidUUID(id)) return null;
+
+  const item = await prisma.item.findUnique({
+    where: { id, creator: { discordId: creatorId } },
+    include: {
+      creator: true,
+    },
+  });
+  return item ? toItem(item) : null;
+};
+
+export const listPublicItemsForDiscordID = async (
+  username: string
+): Promise<Item[]> => {
+  return (
+    await prisma.item.findMany({
+      include: {
+        creator: true,
+      },
+      where: {
+        creator: { username },
+        visibility: "public",
+      },
+      orderBy: { name: "asc" },
+    })
+  ).map(toItem);
+};
+
+export const listAllItemsForDiscordID = async (id: string): Promise<Item[]> => {
+  return (
+    await prisma.item.findMany({
+      include: {
+        creator: true,
+      },
+      where: { creator: { discordId: id } },
+      orderBy: { name: "asc" },
+    })
+  ).map(toItem);
+};
+
+export interface CreateItemInput {
+  name: string;
+  kind?: string;
+  description: string;
+  moreInfo?: string;
+  visibility: "public" | "private";
+  discordId: string;
+}
+
+export const createItem = async (input: CreateItemInput): Promise<Item> => {
+  const {
+    name,
+    kind = "",
+    description,
+    moreInfo = "",
+    visibility,
+    discordId,
+  } = input;
+
+  const user = await prisma.user.findUnique({
+    where: { discordId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const createdItem = await prisma.item.create({
+    data: {
+      name,
+      kind,
+      description,
+      moreInfo,
+      visibility,
+      creator: {
+        connect: { id: user.id },
+      },
+    },
+    include: {
+      creator: true,
+    },
+  });
+
+  return toItem(createdItem);
+};
+
+export interface UpdateItemInput {
+  id: string;
+  name: string;
+  kind?: string;
+  description: string;
+  moreInfo?: string;
+  visibility: "public" | "private";
+  discordId: string;
+}
+
+export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
+  const {
+    id,
+    name,
+    kind = "",
+    description,
+    moreInfo = "",
+    visibility,
+    discordId,
+  } = input;
+
+  if (!isValidUUID(id)) {
+    throw new Error("Invalid item ID");
+  }
+
+  const updatedItem = await prisma.item.update({
+    where: {
+      id,
+      creator: { discordId },
+    },
+    data: {
+      name,
+      kind,
+      description,
+      moreInfo,
+      visibility,
+    },
+    include: {
+      creator: true,
+    },
+  });
+
+  return toItem(updatedItem);
+};
