@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && node tools/sync-icons.js && next build",
     "lint": "biome check .",
     "type-check": "tsc --noEmit",
     "check": "pnpm run lint && pnpm run type-check",
