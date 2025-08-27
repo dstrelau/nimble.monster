@@ -18,11 +18,14 @@ export default async function UserProfilePage({
     return notFound();
   }
 
-  const [monsters, collections, families] = await Promise.all([
-    db.listPublicMonstersForDiscordID(username),
-    db.getUserPublicCollectionsHavingMonsters(username),
-    db.getUserPublicFamiliesWithMonsters(user.discordId),
-  ]);
+  const [monsters, collections, families, companions, items] =
+    await Promise.all([
+      db.listPublicMonstersForDiscordID(username),
+      db.getUserPublicCollectionsHavingMonsters(username),
+      db.getUserPublicFamiliesWithMonsters(user.discordId),
+      db.listPublicCompanionsForDiscordID(username),
+      db.listPublicItemsForDiscordID(username),
+    ]);
 
   return (
     <div className="container mx-auto">
@@ -38,7 +41,17 @@ export default async function UserProfilePage({
         monsters={monsters}
         collections={collections}
         families={families.filter((f) => !!f.monsterCount)}
-        initialTab={tab as "monsters" | "collections" | "families" | undefined}
+        companions={companions}
+        items={items}
+        initialTab={
+          tab as
+            | "monsters"
+            | "collections"
+            | "families"
+            | "companions"
+            | "items"
+            | undefined
+        }
       />
     </div>
   );
