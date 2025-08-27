@@ -29,13 +29,13 @@ export function IconPicker({ selectedIcon, onIconSelect }: IconPickerProps) {
             onIconSelect={onIconSelect}
             trigger={
               <Button
-                className="h-24 w-24 border-2 border-primary-foreground p-2"
+                className="h-24 w-24 border-2 border-border p-2"
                 variant="ghost"
               >
                 {selectedIconData ? (
                   <GameIcon
                     iconId={selectedIconData.id}
-                    className="size-full stroke-primary-foreground background-primary"
+                    className="size-full fill-foreground"
                   />
                 ) : (
                   <CircleSlash2 className="w-12 h-12 stroke-muted-foreground" />

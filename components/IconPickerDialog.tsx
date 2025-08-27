@@ -106,7 +106,7 @@ export function IconPickerDialog({
             {tempSelection ? (
               <GameIcon
                 iconId={tempSelection}
-                className="size-16 stroke-primary"
+                className="size-16 fill-foreground"
               />
             ) : (
               <CircleSlash2 className="size-8 stroke-muted-foreground" />
@@ -141,7 +141,7 @@ export function IconPickerDialog({
                 >
                   <GameIcon
                     iconId={icon.id}
-                    className="w-8 h-8 fill-primary stroke-primary-foreground background-primary flex-shrink-0"
+                    className="w-8 h-8 fill-foreground flex-shrink-0"
                   />
                   <span className="text-xs text-center line-clamp-2 w-full leading-tight">
                     {icon.name}
