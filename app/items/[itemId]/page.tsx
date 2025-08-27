@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { loadOfficialConditions } from "@/app/actions/conditions";
 import { Card } from "@/app/ui/item/Card";
 import { ItemDetailActions } from "@/components/ItemDetailActions";
 import { auth } from "@/lib/auth";
@@ -57,6 +58,7 @@ export default async function ItemPage({
   const session = await auth();
   const { itemId } = await params;
   const item = await findItem(itemId);
+  const conditions = await loadOfficialConditions();
 
   if (!item) {
     return notFound();
@@ -80,6 +82,7 @@ export default async function ItemPage({
           creator={item.creator}
           link={false}
           isOwner={isOwner}
+          conditions={conditions}
         />
       </div>
     </div>

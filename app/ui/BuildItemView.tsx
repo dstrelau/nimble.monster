@@ -11,7 +11,7 @@ import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { IconPicker } from "@/components/IconPicker";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import type { Item, User } from "@/lib/types";
+import type { Condition, Item, User } from "@/lib/types";
 import { createItem, updateItem } from "../actions/item";
 
 const EXAMPLE_ITEMS: Record<string, Item> = {
@@ -27,7 +27,7 @@ const EXAMPLE_ITEMS: Record<string, Item> = {
     id: "",
     name: "Greater Healing Potion",
     description:
-      "*_ACTION_*. Consume (or administer to an adjacent creature) to heal *3d6+6* HP.",
+      "**_ACTION_**. Consume (or administer to an adjacent creature) to heal **3d6+6** HP.",
     imageIcon: "health-potion",
     updatedAt: "",
   },
@@ -36,7 +36,7 @@ const EXAMPLE_ITEMS: Record<string, Item> = {
     id: "",
     name: "Gem of Escape",
     description:
-      "*_ACTION_*. Crush one in case of emergency to instantly teleport ALL who are bound to one to the location of the other gem.",
+      "**_ACTION_**. Crush one in case of emergency to instantly teleport ALL who are bound to one to the location of the other gem.",
     moreInfo:
       "These magical gems are always crafted in pairs and can have any number of willing creatures magically bound to them.",
     imageIcon: "emerald",
@@ -46,9 +46,10 @@ const EXAMPLE_ITEMS: Record<string, Item> = {
 
 interface BuildItemViewProps {
   item?: Item;
+  conditions?: Condition[];
 }
 
-export default function BuildItemView({ item }: BuildItemViewProps) {
+export default function BuildItemView({ item, conditions = [] }: BuildItemViewProps) {
   const id = useId();
   const router = useRouter();
   const { data: session } = useSession();
@@ -62,7 +63,6 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
     item?.visibility || "public"
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showMobilePreview, setShowMobilePreview] = useState(false);
 
   let creator: User | undefined;
   if (session?.user) {
@@ -150,8 +150,6 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
 
   return (
     <BuildView
-      showMobilePreview={showMobilePreview}
-      setShowMobilePreview={setShowMobilePreview}
       entityName={name || (item?.id ? "Edit Item" : "New Item")}
       previewTitle="Item Preview"
       formClassName="md:col-span-4"
@@ -225,7 +223,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
         </form>
       }
       previewContent={
-        <Card item={previewItem} creator={creator} link={false} hideActions />
+        <Card item={previewItem} creator={creator} link={false} hideActions conditions={conditions} />
       }
       desktopPreviewContent={
         <>
@@ -236,6 +234,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
               creator={creator}
               link={false}
               hideActions
+              conditions={conditions}
             />
           </div>
         </>

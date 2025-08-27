@@ -15,6 +15,7 @@ import {
 import type {
   CollectionOverview,
   Companion,
+  Condition,
   Family,
   Item,
   Monster,
@@ -28,6 +29,7 @@ export default function TabsContent({
   families,
   companions,
   items,
+  conditions,
   initialTab,
 }: {
   monsters: Monster[];
@@ -35,6 +37,7 @@ export default function TabsContent({
   families: Family[];
   companions: Companion[];
   items: Item[];
+  conditions: Condition[];
   initialTab?: "monsters" | "collections" | "families" | "companions" | "items";
 }) {
   const searchParams = useSearchParams();
@@ -132,7 +135,7 @@ export default function TabsContent({
             No public items available
           </p>
         ) : (
-          <ItemCardGrid items={items} hideCreator />
+          <ItemCardGrid items={items} hideCreator conditions={conditions} />
         )}
       </ShadcnTabsContent>
     </Tabs>

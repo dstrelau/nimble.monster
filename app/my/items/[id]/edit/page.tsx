@@ -1,4 +1,5 @@
 import { unauthorized } from "next/navigation";
+import { loadOfficialConditions } from "@/app/actions/conditions";
 import BuildItemView from "@/app/ui/BuildItemView";
 import { auth } from "@/lib/auth";
 import { findItemWithCreatorDiscordId } from "@/lib/db/item";
@@ -14,10 +15,11 @@ export default async function EditItemPage({
     return unauthorized();
   }
   const item = await findItemWithCreatorDiscordId(id, session?.user.id);
+  const conditions = await loadOfficialConditions();
 
   if (!item) {
     return <div>Item not found</div>;
   }
 
-  return <BuildItemView item={item} />;
+  return <BuildItemView item={item} conditions={conditions} />;
 }

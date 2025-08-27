@@ -6,7 +6,6 @@ import { useState } from "react";
 import { deleteCollection } from "@/app/actions/collection";
 import { Attribution } from "@/app/ui/Attribution";
 import { VisibilityBadge } from "@/app/ui/VisibilityBadge";
-import { TruncatedMarkdown } from "@/components/TruncatedMarkdown";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,17 +13,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Collection } from "@/lib/types";
+import type { Collection, Condition } from "@/lib/types";
+import { FormattedText } from "./FormattedText";
 
 interface CollectionHeaderProps {
   collection: Collection;
   showEditDeleteButtons?: boolean;
   onDelete?: () => void;
+  conditions: Condition[];
 }
 
 export function CollectionHeader({
   collection,
   showEditDeleteButtons = false,
+  conditions,
 }: CollectionHeaderProps) {
   const router = useRouter();
 
@@ -110,12 +112,11 @@ export function CollectionHeader({
           </div>
         )}
         {collection.description && (
-          <div className="mt-2">
-            <TruncatedMarkdown
-              content={collection.description}
-              title={collection.name}
-            />
-          </div>
+          <FormattedText
+            className="mt-2"
+            content={collection.description}
+            conditions={conditions}
+          />
         )}
       </div>
     </div>

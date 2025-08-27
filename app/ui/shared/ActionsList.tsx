@@ -1,5 +1,5 @@
 import type React from "react";
-import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
+import { FormattedText } from "@/components/FormattedText";
 import { maybePeriod } from "@/lib/text";
 import type { Action, MonsterCondition } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -34,8 +34,8 @@ export const ActionsList: React.FC<ActionsListProps> = ({
                 )}
                 {action.description && (
                   <span className="description">
-                    <WithConditionsTooltips
-                      text={action.description}
+                    <FormattedText
+                      content={action.description}
                       conditions={conditions}
                     />
                   </span>

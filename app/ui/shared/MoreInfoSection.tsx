@@ -1,5 +1,5 @@
 import type React from "react";
-import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
+import { FormattedText } from "@/components/FormattedText";
 import type { MonsterCondition } from "@/lib/types";
 
 interface MoreInfoSectionProps {
@@ -14,8 +14,8 @@ export const MoreInfoSection: React.FC<MoreInfoSectionProps> = ({
   if (!moreInfo) return null;
 
   return (
-    <p className="italic">
-      <WithConditionsTooltips text={moreInfo} conditions={conditions} />
-    </p>
+    <div className="italic">
+      <FormattedText content={moreInfo} conditions={conditions} />
+    </div>
   );
 };

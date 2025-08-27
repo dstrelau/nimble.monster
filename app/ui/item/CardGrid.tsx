@@ -1,4 +1,4 @@
-import type { Item } from "@/lib/types";
+import type { Condition, Item } from "@/lib/types";
 import { Card } from "./Card";
 
 interface GridColumns {
@@ -11,12 +11,14 @@ interface CardGridProps {
   items: Item[];
   gridColumns?: GridColumns;
   hideCreator?: boolean;
+  conditions?: Condition[];
 }
 
 export function CardGrid({
   items,
   gridColumns = { default: 1, md: 2, lg: 3 },
   hideCreator = false,
+  conditions = [],
 }: CardGridProps) {
   const gridClasses = [
     `grid-cols-${gridColumns.default}`,
@@ -34,6 +36,7 @@ export function CardGrid({
           item={item}
           creator={item.creator}
           hideCreator={hideCreator}
+          conditions={conditions}
         />
       ))}
     </div>

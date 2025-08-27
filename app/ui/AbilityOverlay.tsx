@@ -1,5 +1,5 @@
 import { Users } from "lucide-react";
-import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
+import { FormattedText } from "@/components/FormattedText";
 import { maybePeriod } from "@/lib/text";
 import type { Ability, Condition, FamilyOverview } from "@/lib/types";
 
@@ -32,8 +32,8 @@ export const AbilityOverlay = ({
                 <Users className="w-4 pb-1 mr-0.5 inline-block text-flame" />
               )}
               <strong className="pr-1">{maybePeriod(abilityName)}</strong>
-              <WithConditionsTooltips
-                text={ability.description || ability.Description}
+              <FormattedText
+                content={ability.description || ""}
                 conditions={conditions}
               />
             </div>

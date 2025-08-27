@@ -8,6 +8,7 @@ import { InlineConditions } from "@/app/ui/shared/InlineConditions";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import { CardContainer } from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
+import { FormattedText } from "@/components/FormattedText";
 import {
   CardAction,
   CardContent,
@@ -15,7 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
 import type { Companion, MonsterSize, User } from "@/lib/types";
 
 // Helper function to format companion size
@@ -96,8 +96,8 @@ export const Card = ({
           {companion.dyingRule && (
             <p>
               <strong>Dying:</strong>{" "}
-              <WithConditionsTooltips
-                text={companion.dyingRule}
+              <FormattedText
+                content={companion.dyingRule}
                 conditions={companion.conditions}
               />
             </p>

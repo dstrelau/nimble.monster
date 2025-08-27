@@ -2,8 +2,8 @@ import type React from "react";
 import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import { CardContainer } from "@/app/ui/shared/StyledComponents";
-import { FormattedText } from "@/components/app/FormattedText";
 import { Link } from "@/components/app/Link";
+import { FormattedText } from "@/components/FormattedText";
 import { GameIcon } from "@/components/GameIcon";
 import {
   CardContent,
@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Item, User } from "@/lib/types";
+import type { Condition, Item, User } from "@/lib/types";
 
 const HeaderItem: React.FC<{
   item: Item;
@@ -41,6 +41,7 @@ interface CardProps {
   hideActions?: boolean;
   hideCreator?: boolean;
   className?: string;
+  conditions?: Condition[];
 }
 
 export const Card = ({
@@ -51,6 +52,7 @@ export const Card = ({
   hideActions = false,
   hideCreator = false,
   className,
+  conditions = [],
 }: CardProps) => {
   return (
     <div className="max-w-sm" id={`item-${item.id}`}>
@@ -66,13 +68,9 @@ export const Card = ({
         </div>
 
         <CardContent className="flex flex-col gap-3 relative z-10">
-          {item.description && (
-            <p>
-              <FormattedText text={item.description} />
-            </p>
-          )}
+          {item.description && <FormattedText content={item.description} conditions={conditions} />}
 
-          <MoreInfoSection moreInfo={item.moreInfo} conditions={[]} />
+          <MoreInfoSection moreInfo={item.moreInfo} conditions={conditions} />
         </CardContent>
 
         <CardFooterLayout

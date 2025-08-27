@@ -762,7 +762,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
     };
   }
 
-  const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [monster, setMonster] = useState<Monster>(
     // we will override conditions just below once loaded
     () =>
@@ -820,8 +819,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
 
   return (
     <BuildView
-      showMobilePreview={showMobilePreview}
-      setShowMobilePreview={setShowMobilePreview}
       entityName={monster.name}
       previewTitle="Monster Preview"
       formClassName={clsx(

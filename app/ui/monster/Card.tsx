@@ -11,6 +11,7 @@ import {
   CardContentWithGap,
 } from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
+import { FormattedText } from "@/components/FormattedText";
 import { Level } from "@/components/Level";
 import {
   CardAction,
@@ -18,7 +19,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { WithConditionsTooltips } from "@/components/WithConditionsTooltips";
 import type { Monster, User } from "@/lib/types";
 import { formatSizeKind } from "@/lib/utils/monster";
 import CardActions from "./CardActions";
@@ -268,8 +268,8 @@ export const Card = ({
                 {monster.bloodied && (
                   <p>
                     <strong className="font-condensed">BLOODIED: </strong>
-                    <WithConditionsTooltips
-                      text={monster.bloodied}
+                    <FormattedText
+                      content={monster.bloodied}
                       conditions={monster.conditions}
                     />
                   </p>
@@ -278,8 +278,8 @@ export const Card = ({
                 {monster.lastStand && (
                   <p>
                     <strong className="font-condensed">LAST STAND: </strong>
-                    <WithConditionsTooltips
-                      text={monster.lastStand}
+                    <FormattedText
+                      content={monster.lastStand}
                       conditions={monster.conditions}
                     />
                   </p>

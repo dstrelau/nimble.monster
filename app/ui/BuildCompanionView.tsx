@@ -212,7 +212,6 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
     };
   }
 
-  const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [companion, setCompanion] = useState<Companion>(() =>
     existingCompanion
       ? { ...existingCompanion, conditions: [] }
@@ -284,8 +283,6 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
 
   return (
     <BuildView
-      showMobilePreview={showMobilePreview}
-      setShowMobilePreview={setShowMobilePreview}
       entityName={companion.name}
       previewTitle="Companion Preview"
       formClassName="md:col-span-3"

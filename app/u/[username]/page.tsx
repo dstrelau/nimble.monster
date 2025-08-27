@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { loadOfficialConditions } from "@/app/actions/conditions";
 import { UserAvatar } from "@/components/app/UserAvatar";
 import * as db from "@/lib/db";
 import TabsContent from "./TabsContent";
@@ -18,13 +19,14 @@ export default async function UserProfilePage({
     return notFound();
   }
 
-  const [monsters, collections, families, companions, items] =
+  const [monsters, collections, families, companions, items, conditions] =
     await Promise.all([
       db.listPublicMonstersForDiscordID(username),
       db.getUserPublicCollectionsHavingMonsters(username),
       db.getUserPublicFamiliesWithMonsters(user.discordId),
       db.listPublicCompanionsForDiscordID(username),
       db.listPublicItemsForDiscordID(username),
+      loadOfficialConditions(),
     ]);
 
   return (
@@ -43,6 +45,7 @@ export default async function UserProfilePage({
         families={families.filter((f) => !!f.monsterCount)}
         companions={companions}
         items={items}
+        conditions={conditions}
         initialTab={
           tab as
             | "monsters"

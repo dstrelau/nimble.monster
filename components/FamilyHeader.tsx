@@ -6,9 +6,9 @@ import { useState } from "react";
 import { deleteFamily } from "@/app/actions/family";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
-import { TruncatedMarkdown } from "@/components/TruncatedMarkdown";
 import { Button } from "@/components/ui/button";
 import type { Condition, Family } from "@/lib/types";
+import { FormattedText } from "./FormattedText";
 
 interface FamilyHeaderProps {
   family: Family;
@@ -72,12 +72,7 @@ export function FamilyHeader({
           </div>
         )}
         {family.description && (
-          <div className="mt-2">
-            <TruncatedMarkdown
-              content={family.description}
-              title={family.name}
-            />
-          </div>
+          <FormattedText className="mt-2" content={family.description} conditions={conditions} />
         )}
         {family.abilities && family.abilities.length > 0 && (
           <div className="mt-4 mx-6">

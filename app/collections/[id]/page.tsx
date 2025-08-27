@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { loadOfficialConditions } from "@/app/actions/conditions";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { CollectionHeader } from "@/components/CollectionHeader";
 import { auth } from "@/lib/auth";
@@ -53,6 +54,7 @@ export default async function ShowCollectionView({
   const { id } = await params;
   const collection = await db.getCollection(id);
   const session = await auth();
+  const conditions = await loadOfficialConditions();
   if (!collection) {
     notFound();
   }
@@ -70,6 +72,7 @@ export default async function ShowCollectionView({
       <CollectionHeader
         collection={collection}
         showEditDeleteButtons={isCreator}
+        conditions={conditions}
       />
       {collection.monsters.length === 0 ? (
         <p>No monsters in this collection.</p>
