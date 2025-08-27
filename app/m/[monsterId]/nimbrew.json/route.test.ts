@@ -1,6 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, Mock, MockedFunction, vi } from "vitest";
 import type { Monster } from "@/lib/types";
 import { GET } from "./route";
+import { Session } from "next-auth";
+import { auth } from "@/lib/auth";
 
 // Mock dependencies
 vi.mock("@opentelemetry/api", () => ({
@@ -31,7 +33,8 @@ vi.mock("@/lib/utils/validation", () => ({
   isValidUUID: vi.fn(),
 }));
 
-const mockAuth = vi.mocked(await import("@/lib/auth")).auth;
+// Can't for the life of me figure out how to get these types to work...
+const mockAuth : MockedFunction<any> = vi.mocked(await import("@/lib/auth")).auth;
 const mockFindMonster = vi.mocked(await import("@/lib/db")).findMonster;
 const mockIsValidUUID = vi.mocked(
   await import("@/lib/utils/validation")
@@ -80,14 +83,14 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Test Monster",
       visibility: "private",
-      creator: { discordId: "owner123" },
+      creator: { discordId: "owner123", avatar: "avatar.jpg", username: "testuser" },
       level: "1",
       hp: 50,
       legendary: false,
       minion: false,
       armor: "none",
       speed: 6,
-      saves: [],
+      saves: "",
       size: "medium",
       fly: 0,
       swim: 0,
@@ -102,7 +105,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
     } satisfies Partial<Monster>);
     mockAuth.mockResolvedValue({
       user: { id: "different-user" },
-    });
+    } as Session);
 
     const response = await GET(
       mockRequest,
@@ -122,7 +125,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Test Goblin",
       visibility: "public",
-      creator: { discordId: "owner123" },
+      creator: { discordId: "owner123", avatar: "avatar.jpg", username: "testuser" },
       level: "3",
       hp: 25,
       legendary: false,
@@ -135,8 +138,11 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       climb: 6,
       burrow: 0,
       teleport: 0,
-      saves: ["Dex", "Wis"],
+      saves: "Dex, Wis",
       family: {
+        id: "family1",
+        name: "Goblinoid",
+        creatorId: "owner123",
         abilities: [
           {
             name: "Pack Tactics",
@@ -177,7 +183,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
     expect(data.CR).toBe("Lvl 3 Medium Humanoid");
     expect(data.armor).toBe("");
     expect(data.hp).toBe("25");
-    expect(data.saves).toEqual(["Dex", "Wis"]);
+    expect(data.saves).toBe("Dex, Wis");
     expect(data.speed).toBe("8, Swim 4, Climb 6");
     expect(data.passives).toHaveLength(2);
     expect(data.passives[0].name).toBe("Pack Tactics");
@@ -204,7 +210,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Ancient Dragon",
       visibility: "private",
-      creator: { discordId: "owner123" },
+      creator: { discordId: "owner123", avatar: "avatar.jpg", username: "testuser" },
       level: "15",
       hp: 200,
       legendary: true,
@@ -217,10 +223,10 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       climb: 0,
       teleport: 0,
       burrow: 0,
-      saves: ["Str", "Con", "Wis", "Cha"],
+      saves: "Str, Con, Wis, Cha",
       bloodied: "The dragon roars in fury",
       lastStand: "The dragon makes one final desperate attack",
-      family: null,
+      family: undefined,
       abilities: [],
       actions: [
         {
@@ -263,7 +269,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Rat",
       visibility: "public",
-      creator: { discordId: "owner123" },
+      creator: { discordId: "owner123", avatar: "avatar.jpg", username: "testuser" },
       level: "1",
       hp: 1,
       legendary: false,
@@ -276,8 +282,8 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       climb: 0,
       teleport: 0,
       burrow: 0,
-      saves: [],
-      family: null,
+      saves: "",
+      family: undefined,
       abilities: [],
       actions: [
         {
