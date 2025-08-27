@@ -12,7 +12,11 @@ export default async function MyItemsPage() {
   const conditions = await loadOfficialConditions();
   return (
     <div className="container mx-auto py-3">
-      <CardGrid items={items} gridColumns={{ default: 1, md: 2, lg: 3 }} conditions={conditions} />
+      <CardGrid
+        items={items}
+        gridColumns={{ default: 1, md: 2, lg: 3 }}
+        conditions={conditions}
+      />
     </div>
   );
 }

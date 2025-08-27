@@ -49,7 +49,10 @@ interface BuildItemViewProps {
   conditions?: Condition[];
 }
 
-export default function BuildItemView({ item, conditions = [] }: BuildItemViewProps) {
+export default function BuildItemView({
+  item,
+  conditions = [],
+}: BuildItemViewProps) {
   const id = useId();
   const router = useRouter();
   const { data: session } = useSession();
@@ -223,7 +226,13 @@ export default function BuildItemView({ item, conditions = [] }: BuildItemViewPr
         </form>
       }
       previewContent={
-        <Card item={previewItem} creator={creator} link={false} hideActions conditions={conditions} />
+        <Card
+          item={previewItem}
+          creator={creator}
+          link={false}
+          hideActions
+          conditions={conditions}
+        />
       }
       desktopPreviewContent={
         <>

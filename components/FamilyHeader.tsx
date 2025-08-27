@@ -72,7 +72,11 @@ export function FamilyHeader({
           </div>
         )}
         {family.description && (
-          <FormattedText className="mt-2" content={family.description} conditions={conditions} />
+          <FormattedText
+            className="mt-2"
+            content={family.description}
+            conditions={conditions}
+          />
         )}
         {family.abilities && family.abilities.length > 0 && (
           <div className="mt-4 mx-6">

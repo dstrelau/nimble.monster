@@ -1,10 +1,10 @@
 import type React from "react";
 import { FormattedText } from "@/components/FormattedText";
-import type { MonsterCondition } from "@/lib/types";
+import type { Condition } from "@/lib/types";
 
 interface MoreInfoSectionProps {
   moreInfo?: string;
-  conditions: MonsterCondition[];
+  conditions: Condition[];
 }
 
 export const MoreInfoSection: React.FC<MoreInfoSectionProps> = ({

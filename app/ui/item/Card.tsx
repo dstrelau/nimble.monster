@@ -68,7 +68,9 @@ export const Card = ({
         </div>
 
         <CardContent className="flex flex-col gap-3 relative z-10">
-          {item.description && <FormattedText content={item.description} conditions={conditions} />}
+          {item.description && (
+            <FormattedText content={item.description} conditions={conditions} />
+          )}
 
           <MoreInfoSection moreInfo={item.moreInfo} conditions={conditions} />
         </CardContent>
