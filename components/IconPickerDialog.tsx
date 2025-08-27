@@ -9,7 +9,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -128,7 +127,7 @@ export function IconPickerDialog({
             <div className="grid grid-cols-4 gap-3 p-3">
               {dialogFilteredIcons.map((icon) => (
                 <button
-                  key={icon.id}
+                  key={`${icon.id}-${icon.contributor}`}
                   type="button"
                   onClick={() => handleDialogIconClick(icon.id)}
                   className={cn(
