@@ -36,7 +36,7 @@ const EXAMPLE_ITEMS: Record<string, Item> = {
     id: "",
     name: "Gem of Escape",
     description:
-      "*_ACTION_*. Crush one in case of emergency to instantly teleport AL who are bound to one to the location of the other gem.",
+      "*_ACTION_*. Crush one in case of emergency to instantly teleport ALL who are bound to one to the location of the other gem.",
     moreInfo:
       "These magical gems are always crafted in pairs and can have any number of willing creatures magically bound to them.",
     imageIcon: "emerald",

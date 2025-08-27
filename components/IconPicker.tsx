@@ -1,7 +1,7 @@
 import { CircleSlash2 } from "lucide-react";
 import { useMemo } from "react";
 import { GameIcon } from "@/components/GameIcon";
-import { ICON_LIST, ICONS } from "@/components/icons";
+import { ICONS } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { IconPickerDialog } from "./IconPickerDialog";
 
@@ -12,12 +12,9 @@ interface IconPickerProps {
 
 export function IconPicker({ selectedIcon, onIconSelect }: IconPickerProps) {
   const icons = useMemo(() => {
-    return ICON_LIST.map((iconId) => ({
-      id: iconId,
-      name: ICONS[iconId].name,
-      searchName: iconId.replace(/-/g, "").toLowerCase(),
-      contributor: ICONS[iconId].contributor,
-      componentName: ICONS[iconId].componentName,
+    return ICONS.map((icon) => ({
+      ...icon,
+      searchName: icon.id.replace(/-/g, "").toLowerCase(),
     }));
   }, []);
 

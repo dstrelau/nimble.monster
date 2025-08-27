@@ -149,7 +149,8 @@ function main() {
   console.log("Creating TypeScript index...");
   const iconEntries = icons
     .map(
-      (icon) => `  "${icon.id}": {
+      (icon) => `  {
+    id: "${icon.id}",
     name: "${icon.name}",
     contributor: "${icon.contributor}",
     componentName: "${icon.componentName}",
@@ -160,17 +161,17 @@ function main() {
 
   const indexContent = `// Auto-generated icon index
 export interface IconData {
+  id: string;
   name: string;
   contributor: string;
   componentName: string;
   componentPath: string;
 }
 
-export const ICONS: Record<string, IconData> = {
+export const ICONS: IconData[] = [
 ${iconEntries}
-};
+];
 
-export const ICON_LIST = Object.keys(ICONS);
 export const ICON_COUNT = ${icons.length};
 `;
 

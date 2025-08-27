@@ -10,7 +10,7 @@ interface GameIconProps extends Omit<SVGProps<SVGSVGElement>, "children"> {
 const iconComponentCache = new Map();
 
 export function GameIcon({ iconId, className, ...props }: GameIconProps) {
-  const iconData: IconData | undefined = ICONS[iconId];
+  const iconData: IconData | undefined = ICONS.find(icon => icon.id === iconId);
 
   if (!iconData) {
     return (
