@@ -16,13 +16,11 @@ interface WithConditionsTooltipsProps {
 }
 
 function ConditionSpan({
-  conditionName,
   displayText,
   condition,
   isClient,
   keyProp,
 }: {
-  conditionName: string;
   displayText: string;
   condition: ConditionT | undefined;
   isClient: boolean;

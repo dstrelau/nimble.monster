@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -8,15 +9,14 @@ import {
 } from "@/lib/types";
 
 export const VisibilityToggle = ({
-  name,
   value,
   onChangeAction = () => {},
 }: {
-  name: string;
   value: CollectionVisibilityType;
   onChangeAction?: (value: CollectionVisibilityType) => void;
 }) => {
   const isPublic = value === CollectionVisibility.PUBLIC;
+  const id = useId();
 
   const handleToggle = (checked: boolean) => {
     const newValue = checked
@@ -28,12 +28,8 @@ export const VisibilityToggle = ({
   return (
     <div className="space-y-2">
       <div className="flex items-center space-x-2">
-        <Switch
-          id={`${name}-visibility`}
-          checked={isPublic}
-          onCheckedChange={handleToggle}
-        />
-        <Label htmlFor={`${name}-visibility`} className="text-sm font-medium">
+        <Switch id={id} checked={isPublic} onCheckedChange={handleToggle} />
+        <Label htmlFor={id} className="text-sm font-medium">
           Public
         </Label>
       </div>

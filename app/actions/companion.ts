@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import type { InputJsonValue } from "@/lib/prisma/runtime/library";
 import type { Ability, Action } from "@/lib/types";
 
 export async function createCompanion(formData: {
@@ -107,8 +108,8 @@ export async function updateCompanion(
           | "huge"
           | "gargantuan",
         saves: formData.saves,
-        actions: formData.actions as any,
-        abilities: formData.abilities as any,
+        actions: formData.actions as unknown as InputJsonValue[],
+        abilities: formData.abilities as unknown as InputJsonValue[],
         actionPreface: formData.actionPreface,
         dyingRule: formData.dyingRule,
         moreInfo: formData.moreInfo || "",

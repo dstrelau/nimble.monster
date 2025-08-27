@@ -73,7 +73,24 @@ export const GET = telemetry(
       : `Lvl ${monster.level}`;
     const cr = [lvl, formatSizeKind(monster)].join(" ");
 
-    const nimbrewData: any = {
+    const nimbrewData: {
+      name: string;
+      CR: string;
+      armor: string;
+      hp: string;
+      saves?: string;
+      speed: string;
+      passives: { type: string; name: string; desc: string }[];
+      actions: {
+        type: string;
+        name: string;
+        desc?: string;
+        actions?: { type: string; name: string; desc: string }[];
+      }[];
+      theme: object;
+      bloodied?: string;
+      laststand?: string;
+    } = {
       name: monster.name,
       CR: cr,
       armor:

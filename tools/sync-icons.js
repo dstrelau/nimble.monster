@@ -99,7 +99,7 @@ function createIconComponent(iconData) {
 
   // Ensure component name doesn't start with a number
   if (/^\d/.test(componentName)) {
-    componentName = "Icon" + componentName;
+    componentName = `Icon${componentName}`;
   }
 
   const componentCode = `import type { SVGProps } from 'react';

@@ -1,6 +1,6 @@
 "use client";
 import { Sword } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +22,7 @@ export default function DiceRollerPage() {
 }
 
 const DiceRollerApp = () => {
+  const id = useId();
   const [diceNotation, setDiceNotation] = useState("3d6+2");
   const [probabilities, setProbabilities] = useState<ProbabilityDistribution>(
     new Map()
@@ -61,11 +62,14 @@ const DiceRollerApp = () => {
     <div className="flex flex-col p-6 max-w-4xl mx-auto">
       <div className="flex gap-4 mb-6">
         <div className="w-2/3">
-          <Label htmlFor="diceNotation" className="text-sm font-medium mb-2">
+          <Label
+            htmlFor={`diceNotation-${id}`}
+            className="text-sm font-medium mb-2"
+          >
             Dice Notation
           </Label>
           <Input
-            id="diceNotation"
+            id={`diceNotation-${id}`}
             type="text"
             value={diceNotation}
             onChange={(e) => setDiceNotation(e.target.value)}

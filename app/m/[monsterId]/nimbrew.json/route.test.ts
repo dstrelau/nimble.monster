@@ -1,8 +1,14 @@
-import { beforeEach, describe, expect, it, Mock, MockedFunction, vi } from "vitest";
+import type { Session } from "next-auth";
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type MockedFunction,
+  vi,
+} from "vitest";
 import type { Monster } from "@/lib/types";
 import { GET } from "./route";
-import { Session } from "next-auth";
-import { auth } from "@/lib/auth";
 
 // Mock dependencies
 vi.mock("@opentelemetry/api", () => ({
@@ -34,7 +40,10 @@ vi.mock("@/lib/utils/validation", () => ({
 }));
 
 // Can't for the life of me figure out how to get these types to work...
-const mockAuth : MockedFunction<any> = vi.mocked(await import("@/lib/auth")).auth;
+// biome-ignore lint/suspicious/noExplicitAny: ???
+const mockAuth: MockedFunction<any> = vi.mocked(
+  await import("@/lib/auth")
+).auth;
 const mockFindMonster = vi.mocked(await import("@/lib/db")).findMonster;
 const mockIsValidUUID = vi.mocked(
   await import("@/lib/utils/validation")
@@ -83,7 +92,11 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Test Monster",
       visibility: "private",
-      creator: { discordId: "owner123", avatar: "avatar.jpg", username: "testuser" },
+      creator: {
+        discordId: "owner123",
+        avatar: "avatar.jpg",
+        username: "testuser",
+      },
       level: "1",
       hp: 50,
       legendary: false,
@@ -125,7 +138,11 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Test Goblin",
       visibility: "public",
-      creator: { discordId: "owner123", avatar: "avatar.jpg", username: "testuser" },
+      creator: {
+        discordId: "owner123",
+        avatar: "avatar.jpg",
+        username: "testuser",
+      },
       level: "3",
       hp: 25,
       legendary: false,
@@ -210,7 +227,11 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Ancient Dragon",
       visibility: "private",
-      creator: { discordId: "owner123", avatar: "avatar.jpg", username: "testuser" },
+      creator: {
+        discordId: "owner123",
+        avatar: "avatar.jpg",
+        username: "testuser",
+      },
       level: "15",
       hp: 200,
       legendary: true,
@@ -269,7 +290,11 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Rat",
       visibility: "public",
-      creator: { discordId: "owner123", avatar: "avatar.jpg", username: "testuser" },
+      creator: {
+        discordId: "owner123",
+        avatar: "avatar.jpg",
+        username: "testuser",
+      },
       level: "1",
       hp: 1,
       legendary: false,

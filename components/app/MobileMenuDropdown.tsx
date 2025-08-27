@@ -33,9 +33,9 @@ export const MobileMenuDropdown: React.FC<MobileMenuDropdownProps> = ({
       className={cn("md:hidden border-t border-white/20 bg-blue", className)}
     >
       <div className="px-4 py-2 space-y-1">
-        {links.map((link, index) => (
+        {links.map((link) => (
           <Link
-            key={index}
+            key={link.href}
             href={link.href}
             className={cn(
               "block px-3 py-2 rounded-md text-white hover:bg-white/10 transition-colors",
@@ -46,9 +46,9 @@ export const MobileMenuDropdown: React.FC<MobileMenuDropdownProps> = ({
             {link.label}
           </Link>
         ))}
-        {buttons.map((button, index) => (
+        {buttons.map((button) => (
           <button
-            key={index}
+            key={button.label}
             type="button"
             className="block w-full text-left px-3 py-2 rounded-md text-white hover:bg-white/10 transition-colors"
             onClick={button.onClick}

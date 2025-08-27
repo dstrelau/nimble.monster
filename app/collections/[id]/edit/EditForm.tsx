@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useId, useState } from "react";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { List } from "@/app/ui/monster/List";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ interface Props {
 export function EditForm({ collection, myMonsters }: Props) {
   const [currentCollection, setCurrentCollection] = useState(collection);
   const [isDirty, setIsDirty] = useState(false);
+  const id = useId();
 
   useEffect(() => {
     setIsDirty(
@@ -134,12 +135,12 @@ export function EditForm({ collection, myMonsters }: Props) {
         <CardContent className="p-6 space-y-4">
           <div className="flex flex-row flex-wrap items-center gap-4">
             <div className="w-full md:w-auto">
-              <Label htmlFor="name" className="mb-2 block">
+              <Label htmlFor={`name-${id}`} className="mb-2 block">
                 Name
               </Label>
               <Input
                 name="name"
-                id="name"
+                id={`name-${id}`}
                 className="w-full md:w-80"
                 placeholder="Name"
                 value={currentCollection.name}
@@ -149,7 +150,6 @@ export function EditForm({ collection, myMonsters }: Props) {
             </div>
             <div className="flex items-end">
               <VisibilityToggle
-                name="visibility"
                 value={currentCollection.visibility}
                 onChangeAction={handleVisibilityChange}
               />
@@ -161,12 +161,12 @@ export function EditForm({ collection, myMonsters }: Props) {
             </div>
           </div>
           <div>
-            <Label htmlFor="description" className="mb-2 block">
+            <Label htmlFor={`description-${id}`} className="mb-2 block">
               Description
             </Label>
             <Textarea
               name="description"
-              id="description"
+              id={`description-${id}`}
               className="w-full"
               placeholder="Description (optional)"
               rows={3}

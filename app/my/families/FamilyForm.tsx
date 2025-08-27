@@ -1,4 +1,5 @@
 import { Plus, Trash } from "lucide-react";
+import { useId } from "react";
 import {
   type Control,
   type FieldErrors,
@@ -38,6 +39,7 @@ export const FamilyForm = ({
   control: Control<FamilyFormData>;
   children: React.ReactNode;
 }) => {
+  const id = useId();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "abilities",
@@ -51,22 +53,22 @@ export const FamilyForm = ({
   return (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="name" className="mb-2 block">
+        <Label htmlFor={`name-${id}`} className="mb-2 block">
           Family Name
         </Label>
-        <Input id="name" {...register("name")} />
+        <Input id={`name-${id}`} {...register("name")} />
         {errors.name && (
           <p className="text-sm text-destructive mt-1">{errors.name.message}</p>
         )}
       </div>
 
       <div>
-        <Label htmlFor="description" className="mb-2 block">
+        <Label htmlFor={`description-${id}`} className="mb-2 block">
           Description (Markdown Supported)
         </Label>
         <Textarea
           className="min-h-32"
-          id="description"
+          id={`description-${id}`}
           {...register("description")}
           rows={3}
         />

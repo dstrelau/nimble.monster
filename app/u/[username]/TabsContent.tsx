@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { CardGrid as MonsterCardGrid } from "@/app/ui/monster/CardGrid";
+import { CollectionCard } from "@/app/ui/CollectionCard";
 import { CardGrid as CompanionCardGrid } from "@/app/ui/companion/CardGrid";
 import { CardGrid as ItemCardGrid } from "@/app/ui/item/CardGrid";
-import { CollectionCard } from "@/app/ui/CollectionCard";
+import { CardGrid as MonsterCardGrid } from "@/app/ui/monster/CardGrid";
 import { FamilyCard } from "@/components/FamilyCard";
 import {
   TabsContent as ShadcnTabsContent,
@@ -14,10 +14,10 @@ import {
 } from "@/components/ui/tabs";
 import type {
   CollectionOverview,
-  Family,
-  Monster,
   Companion,
+  Family,
   Item,
+  Monster,
 } from "@/lib/types";
 
 type TabType = "monsters" | "collections" | "families" | "companions" | "items";
@@ -41,12 +41,20 @@ export default function TabsContent({
   const router = useRouter();
 
   const tab = searchParams.get("tab") as TabType | null;
-  const validTabs: TabType[] = ["monsters", "collections", "families", "companions", "items"];
+  const validTabs: TabType[] = [
+    "monsters",
+    "collections",
+    "families",
+    "companions",
+    "items",
+  ];
 
   const activeTab: TabType =
-    (tab && validTabs.includes(tab)) ? tab :
-    (initialTab && validTabs.includes(initialTab)) ? initialTab :
-    "monsters";
+    tab && validTabs.includes(tab)
+      ? tab
+      : initialTab && validTabs.includes(initialTab)
+        ? initialTab
+        : "monsters";
   return (
     <Tabs
       value={activeTab}

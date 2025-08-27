@@ -1,9 +1,9 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Card } from "@/app/ui/companion/Card";
 import { BuildView } from "@/components/app/BuildView";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
@@ -15,7 +15,6 @@ import { useConditions } from "@/lib/hooks/useConditions";
 import type { Companion, MonsterSize, User } from "@/lib/types";
 import { SIZES } from "@/lib/types";
 import { createCompanion, updateCompanion } from "../actions/companion";
-import { getUserFamilies } from "../actions/family";
 import { AbilitiesSection } from "./shared/AbilitiesSection";
 import { ActionsSection } from "./shared/ActionsSection";
 
@@ -79,44 +78,6 @@ const EXAMPLE_COMPANIONS: Record<string, Companion> = {
     dyingRule: "",
     updatedAt: new Date().toISOString(),
   },
-};
-
-const _FamilySection: React.FC<{
-  companion: Companion;
-  setCompanion: (c: Companion) => void;
-}> = ({ companion, setCompanion }) => {
-  const userFamilies = useQuery({
-    queryKey: ["userFamilies"],
-    queryFn: async () => {
-      const result = await getUserFamilies();
-      return result.success ? result.families : [];
-    },
-  });
-
-  const handleSelectFamily = (familyId: string) => {
-    if (familyId === "none") {
-      setCompanion({ ...companion });
-    } else {
-      const _family = userFamilies.data?.find((f: any) => f.id === familyId);
-      setCompanion({ ...companion });
-    }
-  };
-
-  const familyChoices = [
-    { value: "none", label: "None" },
-    ...(userFamilies.data?.map((f: any) => ({ value: f.id, label: f.name })) ||
-      []),
-  ];
-
-  return (
-    <FormSelect
-      label="Family"
-      name="family"
-      choices={familyChoices}
-      selected="none"
-      onChange={handleSelectFamily}
-    />
-  );
 };
 
 const CompanionForm: React.FC<{
@@ -238,6 +199,7 @@ interface BuildCompanionProps {
 const BuildCompanion: React.FC<BuildCompanionProps> = ({
   existingCompanion,
 }) => {
+  const id = useId();
   const router = useRouter();
 
   const { data: session } = useSession();
@@ -346,7 +308,7 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
               <fieldset className="space-y-2">
                 <div>
                   <VisibilityToggle
-                    id="public-toggle"
+                    id={`public-toggle-${id}`}
                     checked={companion.visibility === "public"}
                     onCheckedChange={(checked) => {
                       setCompanion({

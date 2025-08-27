@@ -49,6 +49,9 @@ export const List = ({
               selectedIds.includes(monster.id) && "bg-accent"
             )}
             onClick={() => !showChecks && handleMonsterClick(monster.id)}
+            onKeyUp={(k) =>
+              k.key === "Enter" && !showChecks && handleMonsterClick(monster.id)
+            }
           >
             <div className="flex items-center gap-x-3">
               {showChecks && (

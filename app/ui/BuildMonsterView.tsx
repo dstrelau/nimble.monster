@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Card } from "@/app/ui/monster/Card";
 import {
   ArmorIcon,
@@ -749,6 +749,7 @@ interface BuildMonsterProps {
 }
 
 const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
+  const id = useId();
   const router = useRouter();
 
   const { data: session } = useSession();
@@ -899,7 +900,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
                 <div>
                   <div className="flex items-center space-x-2">
                     <VisibilityToggle
-                      id="public-toggle"
+                      id={`public-toggle-${id}`}
                       checked={monster.visibility === "public"}
                       onCheckedChange={(checked) => {
                         setMonster({

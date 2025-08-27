@@ -38,7 +38,9 @@ export const convertMonsterToOBR = (
     type: "nimblev2-monster",
     level: monster.level,
     hp:
-      typeof monster.hp === "string" ? Number.parseInt(monster.hp) : monster.hp,
+      typeof monster.hp === "string"
+        ? Number.parseInt(monster.hp, 10)
+        : monster.hp,
     armor,
     features: monster.abilities.map((ability) => ({
       name: ability.name,

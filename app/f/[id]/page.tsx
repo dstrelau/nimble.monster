@@ -25,7 +25,7 @@ export async function generateMetadata({
     : "";
 
   const monsterCount = family.monsterCount || 0;
-  const countText = `${monsterCount} monster${monsterCount !== 1 ? 's' : ''}`;
+  const countText = `${monsterCount} monster${monsterCount !== 1 ? "s" : ""}`;
   const description = `${countText}${creatorText}`;
 
   return {

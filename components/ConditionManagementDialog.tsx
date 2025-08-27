@@ -1,8 +1,8 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { createCondition, loadOwnConditions } from "@/app/actions/conditions";
+import { useQueryClient } from "@tanstack/react-query";
+import { useId, useState } from "react";
+import { createCondition } from "@/app/actions/conditions";
 import { Button } from "@/components/ui/button";
 import {
   DialogContent,
@@ -24,6 +24,7 @@ export function ConditionManagementDialog() {
   });
   const queryClient = useQueryClient();
   const { ownConds } = useConditions();
+  const id = useId();
 
   const handleCreateCondition = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +51,10 @@ export function ConditionManagementDialog() {
             <div>Loading...</div>
           ) : (
             ownConds.data?.map((condition, idx) => (
-              <div key={idx} className="border rounded p-2">
+              <div
+                key={`${condition.name}-${idx}`}
+                className="border rounded p-2"
+              >
                 <div className="font-medium">{condition.name}</div>
                 <div className="text-sm text-muted-foreground">
                   {condition.description}
@@ -61,9 +65,9 @@ export function ConditionManagementDialog() {
         </div>
         <form onSubmit={handleCreateCondition} className="space-y-3">
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor={`name-${id}`}>Name</Label>
             <Input
-              id="name"
+              id={`name-${id}`}
               value={condition.name}
               onChange={(e) =>
                 setCondition({ ...condition, name: e.target.value })
@@ -73,9 +77,9 @@ export function ConditionManagementDialog() {
             />
           </div>
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor={`description-${id}`}>Description</Label>
             <Textarea
-              id="description"
+              id={`description-${id}`}
               value={condition.description}
               onChange={(e) =>
                 setCondition({

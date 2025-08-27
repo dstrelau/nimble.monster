@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Card } from "@/app/ui/item/Card";
 import { BuildView } from "@/components/app/BuildView";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
@@ -49,6 +49,7 @@ interface BuildItemViewProps {
 }
 
 export default function BuildItemView({ item }: BuildItemViewProps) {
+  const id = useId();
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -210,7 +211,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
               <fieldset className="space-y-2">
                 <div>
                   <VisibilityToggle
-                    id="item-visibility-toggle"
+                    id={`item-visibility-toggle-${id}`}
                     checked={visibility === "public"}
                     onCheckedChange={(checked) =>
                       setVisibility(checked ? "public" : "private")

@@ -30,7 +30,7 @@ const UserAvatarButton = ({
   user,
   onClick,
 }: {
-  user?: any;
+  user?: { id?: string; name?: string | null; image?: string | null };
   onClick?: () => void;
 }) => (
   <Button

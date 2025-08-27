@@ -106,7 +106,7 @@ export const Card = ({
           <div className="flex items-center justify-center gap-1">
             <strong className="font-condensed text-xs">WOUNDS:</strong>
             {Array.from({ length: companion.wounds }, (_, i) => (
-              <Circle key={i} className="w-6 h-6" />
+              <Circle key={`${companion.id}-wound-${i}`} className="w-6 h-6" />
             ))}
             <Skull className="w-6 h-6" />
           </div>
