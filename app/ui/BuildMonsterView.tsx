@@ -6,6 +6,7 @@ import {
   CircleAlert,
   CircleCheck,
   Crown,
+  PersonStanding,
   Target,
   TriangleAlert,
   User as UserIcon,
@@ -57,6 +58,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     visibility: "public",
     id: "",
     legendary: false,
+    minion: false,
     name: "Goblin Taskmaster",
     level: "2",
     size: "small" as MonsterSize,
@@ -95,6 +97,7 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     visibility: "public",
     id: "",
     legendary: true,
+    minion: false,
     name: "Ravager of the Lowlands",
     kind: "Manticore",
     size: "large" as MonsterSize,
@@ -131,10 +134,39 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
       "A mythical beast with the body of a lion, the wings of a dragon, and the face of a human. Known for their deadly tail spikes.",
     updatedAt: new Date().toISOString(),
   },
+  kobold: {
+    visibility: "public",
+    id: "",
+    legendary: false,
+    minion: true,
+    name: "Kobold Minion",
+    level: "1/4",
+    size: "small" as MonsterSize,
+    armor: "none" as MonsterArmor,
+    swim: 0,
+    fly: 0,
+    climb: 0,
+    teleport: 0,
+    burrow: 0,
+    speed: 6,
+    hp: 0,
+    conditions: [],
+    abilities: [],
+    actions: [
+      {
+        name: "Slash",
+        description: "1d6 (follows minion rules)",
+      },
+    ],
+    actionPreface: "",
+    moreInfo: "",
+    updatedAt: new Date().toISOString(),
+  },
   empty: {
     visibility: "private",
     id: "",
     legendary: false,
+    minion: false,
     name: "",
     level: "",
     size: "medium",
@@ -313,6 +345,129 @@ const LegendaryForm: React.FC<{
     </div>
   </div>
 );
+
+const MinionForm: React.FC<{
+  monster: Monster;
+  setMonster: (m: Monster) => void;
+}> = ({ monster, setMonster }) => {
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-x-6">
+        <FormInput
+          label="Name"
+          name="name"
+          value={monster.name}
+          className="col-span-2"
+          onChange={(name) => setMonster({ ...monster, name })}
+        />
+      </div>
+      <div className="grid grid-cols-5 gap-x-6">
+        <FormInput
+          label="Lvl"
+          name="level"
+          value={monster.level}
+          className="col-span-1"
+          onChange={(level) => setMonster({ ...monster, level })}
+        />
+        <FormSelect
+          label="Size"
+          name="size"
+          choices={SIZES}
+          selected={monster.size}
+          className="col-span-1"
+          onChange={(size) => setMonster({ ...monster, size })}
+        />
+        <FormInput
+          label="Kind"
+          name="kind"
+          value={monster.kind || ""}
+          className="col-span-3"
+          onChange={(kind) => setMonster({ ...monster, kind })}
+        />
+      </div>
+      <div className="grid grid-cols-6 gap-2">
+        <IconFormInput
+          icon={SpeedIcon}
+          text="Speed"
+          name="speed"
+          value={monster.speed}
+          onChange={(speed) =>
+            setMonster({ ...monster, speed: Math.max(0, speed) })
+          }
+        />
+        <IconFormInput
+          icon={SwimIcon}
+          text="Swim"
+          name="swim"
+          value={monster.swim}
+          onChange={(swim) =>
+            setMonster({ ...monster, swim: Math.max(0, swim) })
+          }
+        />
+        <IconFormInput
+          icon={FlyIcon}
+          text="Fly"
+          name="fly"
+          value={monster.fly}
+          onChange={(fly) => setMonster({ ...monster, fly: Math.max(0, fly) })}
+        />
+        <IconFormInput
+          icon={ClimbIcon}
+          text="Climb"
+          name="climb"
+          value={monster.climb}
+          onChange={(climb) =>
+            setMonster({ ...monster, climb: Math.max(0, climb) })
+          }
+        />
+        <IconFormInput
+          icon={BurrowIcon}
+          text="Burrow"
+          name="burrow"
+          value={monster.burrow}
+          onChange={(burrow) =>
+            setMonster({ ...monster, burrow: Math.max(0, burrow) })
+          }
+        />
+        <IconFormInput
+          icon={TeleportIcon}
+          text="Teleport"
+          name="teleport"
+          value={monster.teleport}
+          onChange={(teleport) =>
+            setMonster({ ...monster, teleport: Math.max(0, teleport) })
+          }
+        />
+      </div>
+      <FamilySection monster={monster} setMonster={setMonster} />
+      <AbilitiesSection
+        abilities={monster.abilities}
+        onChange={(abilities) => setMonster({ ...monster, abilities })}
+      />
+      <ActionsSection
+        actions={monster.actions}
+        actionPreface={monster.actionPreface}
+        showDamage={false}
+        onChange={(actions) => setMonster({ ...monster, actions })}
+        onPrefaceChange={(actionPreface) =>
+          setMonster({ ...monster, actionPreface })
+        }
+      />
+      <FormTextarea
+        label={
+          <div className="flex items-center gap-2">
+            More Information
+            <ConditionValidationIcon text={monster.moreInfo || ""} />
+          </div>
+        }
+        name="moreInfo"
+        value={monster.moreInfo || ""}
+        rows={4}
+        onChange={(moreInfo: string) => setMonster({ ...monster, moreInfo })}
+      />
+    </div>
+  );
+};
 
 const StandardForm: React.FC<{
   monster: Monster;
@@ -670,26 +825,45 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
       previewTitle="Monster Preview"
       formClassName={clsx(
         "col-span-6",
-        monster.legendary ? "md:col-span-3" : "md:col-span-4"
+        monster.legendary
+          ? "md:col-span-3"
+          : monster.minion
+            ? "md:col-span-4"
+            : "md:col-span-4"
       )}
       previewClassName={clsx(
         "hidden md:block",
-        monster.legendary ? "md:col-span-3" : "md:col-span-2"
+        monster.legendary
+          ? "md:col-span-3"
+          : monster.minion
+            ? "md:col-span-2"
+            : "md:col-span-2"
       )}
       previewContent={<Card monster={monsterWithConditions} />}
       formContent={
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="mb-6 flex justify-center">
             <Tabs
-              value={monster.legendary ? "legendary" : "standard"}
+              value={
+                monster.legendary
+                  ? "legendary"
+                  : monster.minion
+                    ? "minion"
+                    : "standard"
+              }
               onValueChange={(value: string) =>
                 setMonster({
                   ...monster,
                   legendary: value === "legendary",
+                  minion: value === "minion",
                 })
               }
             >
               <TabsList>
+                <TabsTrigger value="minion" className="px-3">
+                  <PersonStanding className="h-4 w-4" />
+                  Minion
+                </TabsTrigger>
                 <TabsTrigger value="standard" className="px-3">
                   <UserIcon className="h-4 w-4" />
                   Standard
@@ -704,6 +878,9 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
               </TabsContent>
               <TabsContent value="legendary" className="mt-6">
                 <LegendaryForm monster={monster} setMonster={setMonster} />
+              </TabsContent>
+              <TabsContent value="minion" className="mt-6">
+                <MinionForm monster={monster} setMonster={setMonster} />
               </TabsContent>
             </Tabs>
           </div>
@@ -746,7 +923,11 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
             onLoadExample={(type) =>
               loadExample(type as keyof typeof EXAMPLE_MONSTERS)
             }
-            getIsLegendary={(monster) => monster.legendary}
+            getIcon={(monster) => {
+              if (monster.legendary) return Crown;
+              if (monster.minion) return PersonStanding;
+              if (monster.name) return UserIcon;
+            }}
           />
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
             <Card

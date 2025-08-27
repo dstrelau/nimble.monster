@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Crown } from "lucide-react";
+import { Crown, PersonStanding } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Level } from "@/components/Level";
 import type { Monster } from "@/lib/types";
@@ -64,7 +64,16 @@ export const List = ({
               <div className="grow">
                 <h3 className="font-bold text-lg">
                   {monster.legendary && (
-                    <Crown size={14} className="inline align-baseline mr-1" />
+                    <Crown
+                      size={14}
+                      className="inline align-baseline mr-1 stroke-flame"
+                    />
+                  )}
+                  {monster.minion && (
+                    <PersonStanding
+                      size={14}
+                      className="inline align-baseline mr-1 stroke-flame"
+                    />
                   )}
                   {monster.name}
                 </h3>
@@ -79,7 +88,7 @@ export const List = ({
                 <div className="flex items-center mr-2 font-slab font-black italic">
                   {monster.armor === "medium" && <ArmorStat value="M" />}
                   {monster.armor === "heavy" && <ArmorStat value="H" />}
-                  <HPStat value={monster.hp} />
+                  {monster.minion || <HPStat value={monster.hp} />}
                 </div>
               </div>
             </div>

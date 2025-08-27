@@ -174,6 +174,7 @@ export interface CreateMonsterInput {
   visibility: "public" | "private";
   discordId: string;
   legendary?: boolean;
+  minion?: boolean;
   bloodied?: string;
   lastStand?: string;
   saves?: string[];
@@ -203,6 +204,7 @@ export const createMonster = async (
     visibility,
     discordId,
     legendary = false,
+    minion = false,
     bloodied = "",
     lastStand = "",
     saves = [],
@@ -246,6 +248,7 @@ export const createMonster = async (
       actionPreface,
       moreInfo,
       legendary,
+      minion,
       creator: {
         connect: { id: user.id },
       },

@@ -55,6 +55,7 @@ export interface MonsterMini {
   id: string;
   hp: number;
   legendary: boolean;
+  minion: boolean;
   level: string;
   name: string;
   visibility: "public" | "private";

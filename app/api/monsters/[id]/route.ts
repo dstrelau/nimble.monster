@@ -68,6 +68,7 @@ export const PUT = telemetry(
           actions: monsterData.actions,
           abilities: monsterData.abilities,
           legendary: monsterData.legendary,
+          minion: monsterData.minion || false,
           bloodied: monsterData.bloodied || "",
           lastStand: monsterData.lastStand || "",
           saves: Array.isArray(monsterData.saves)

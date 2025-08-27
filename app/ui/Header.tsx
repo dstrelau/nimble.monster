@@ -26,7 +26,13 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
-const UserAvatarButton = ({ user, onClick }: { user?: any; onClick?: () => void }) => (
+const UserAvatarButton = ({
+  user,
+  onClick,
+}: {
+  user?: any;
+  onClick?: () => void;
+}) => (
   <Button
     variant="ghost"
     size="icon"

@@ -1,5 +1,5 @@
 "use client";
-import { Crown, EyeOff } from "lucide-react";
+import { Crown, EyeOff, PersonStanding } from "lucide-react";
 import type { ReactNode } from "react";
 import { HPStat } from "@/app/ui/monster/Stat";
 import {
@@ -24,6 +24,9 @@ const MonsterRow: React.FC<{
       {monster.legendary && (
         <Crown className="h-5 w-5 inline self-center stroke-flame" />
       )}
+      {monster.minion && (
+        <PersonStanding className="h-5 w-5 inline self-center stroke-flame" />
+      )}
       {monster.visibility === "private" && (
         <EyeOff className="h-5 w-5 inline self-center stroke-flame" />
       )}
@@ -43,9 +46,7 @@ const MonsterRow: React.FC<{
       </span>
     </div>
     <div className="flex flex-wrap items-baseline justify-end font-slab font-black italic">
-      {/*{monster.armor === "medium" && <ArmorStat value="M" />}
-      {monster.armor === "heavy" && <ArmorStat value="H" />}*/}
-      <HPStat value={monster.hp} className="min-w-14" />
+      {monster.minion || <HPStat value={monster.hp} className="min-w-14" />}
     </div>
   </div>
 );

@@ -96,6 +96,56 @@ const HeaderLegendary: React.FC<{ monster: Monster; link?: boolean }> = ({
   </CardHeader>
 );
 
+const HeaderMinion: React.FC<{
+  monster: Monster;
+  hideFamilyName?: boolean;
+  link?: boolean;
+}> = ({ monster, hideFamilyName = false, link = true }) => (
+  <CardHeader className="has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0">
+    <CardTitle className="font-slab font-black small-caps italic text-2xl">
+      {link ? (
+        <Link href={`/m/${monster.id}`}>{monster.name}</Link>
+      ) : (
+        monster.name
+      )}
+    </CardTitle>
+    <CardDescription className="col-span-2 flex gap-2 font-condensed small-caps">
+      <p>
+        Lvl <Level level={monster.level} /> {formatSizeKind(monster)} Minion
+      </p>
+      {monster.family && !hideFamilyName && (
+        <Link href={`/f/${monster.family.id}`} className="flex items-center">
+          <Users className="w-4 pb-1 mr-0.5 text-flame" />
+          <strong>{monster.family.name}</strong>
+        </Link>
+      )}
+    </CardDescription>
+    <CardAction>
+      <StatsGroup monster={monster}>
+        <div className="flex grow flex-wrap items-center justify-end font-slab font-black italic">
+          <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
+          <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
+          <Stat name="climb" value={monster.climb} SvgIcon={ClimbIcon} />
+          <Stat name="burrow" value={monster.burrow} SvgIcon={BurrowIcon} />
+          <Stat
+            name="teleport"
+            value={monster.teleport}
+            SvgIcon={TeleportIcon}
+          />
+          {monster.speed !== 6 && (
+            <Stat
+              name="speed"
+              value={monster.speed}
+              SvgIcon={SpeedIcon}
+              showZero={true}
+            />
+          )}
+        </div>
+      </StatsGroup>
+    </CardAction>
+  </CardHeader>
+);
+
 const HeaderStandard: React.FC<{
   monster: Monster;
   hideFamilyName?: boolean;
@@ -178,6 +228,12 @@ export const Card = ({
         <CardContainer className={className}>
           {monster.legendary ? (
             <HeaderLegendary monster={monster} link={link} />
+          ) : monster.minion ? (
+            <HeaderMinion
+              monster={monster}
+              hideFamilyName={hideFamilyName}
+              link={link}
+            />
           ) : (
             <HeaderStandard
               monster={monster}

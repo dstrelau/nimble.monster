@@ -91,6 +91,7 @@ model Monster {
   actions            Json[]
   abilities          Json[]
   legendary          Boolean               @default(false)
+  minion             Boolean               @default(false)
   bloodied           String                @default("")
   lastStand          String                @default("") @map("last_stand")
   saves              String[]
