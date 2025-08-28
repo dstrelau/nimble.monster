@@ -131,7 +131,6 @@ const Header = () => {
 
         {/* Desktop logo (left) */}
         <Logo showText={true} className="hidden md:flex" />
-
         {/* Mobile logo (center) */}
         <Logo showText={false} className="md:hidden" />
 
@@ -212,7 +211,6 @@ const Header = () => {
 
         {/* Mobile User menu */}
         <div className="md:hidden flex items-center gap-2">
-          <ModeToggle />
           {currentUser ? (
             <UserAvatarButton
               user={currentUser}
@@ -251,7 +249,9 @@ const Header = () => {
             },
           },
         ]}
-      />
+      >
+        <ModeToggle />
+      </MobileMenuDropdown>
     </nav>
   );
 };
