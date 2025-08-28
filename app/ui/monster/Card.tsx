@@ -266,23 +266,23 @@ export const Card = ({
             {monster.legendary && (
               <div>
                 {monster.bloodied && (
-                  <p>
+                  <div>
                     <strong className="font-condensed">BLOODIED: </strong>
                     <FormattedText
                       content={monster.bloodied}
                       conditions={monster.conditions}
                     />
-                  </p>
+                  </div>
                 )}
 
                 {monster.lastStand && (
-                  <p>
+                  <div>
                     <strong className="font-condensed">LAST STAND: </strong>
                     <FormattedText
                       content={monster.lastStand}
                       conditions={monster.conditions}
                     />
-                  </p>
+                  </div>
                 )}
               </div>
             )}

@@ -82,7 +82,7 @@ export default function TabsContent({
             No public monsters available
           </p>
         ) : (
-          <MonsterCardGrid monsters={monsters} hideCreator={true} />
+          <MonsterCardGrid monsters={monsters} hideCreator={true} hideActions={true} />
         )}
       </ShadcnTabsContent>
 
