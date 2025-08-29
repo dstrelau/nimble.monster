@@ -188,8 +188,8 @@ export const PrefixedFormattedText = ({
   content: string;
   conditions: Condition[];
 }) => (
-  <div className="flex gap-1">
-    <span className="flex gap-1 flex-shrink-0">{prefix}</span>
+  <div className="overflow-auto">
+    <span className="float-left mr-1 flex gap-1">{prefix}</span>
     <FormattedText content={content} conditions={conditions} />
   </div>
 );
