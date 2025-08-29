@@ -23,7 +23,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({
       <div>
         <StrongCondensed>{actionPreface}</StrongCondensed>
       </div>
-      <ul className={cn("text-base", actions.length > 1 && "pl-4 list-disc")}>
+      <ul className="text-base">
         {actions?.map(
           (action) =>
             action && (
@@ -33,6 +33,9 @@ export const ActionsList: React.FC<ActionsListProps> = ({
                   conditions={conditions}
                   prefix={
                     <>
+                      {actions.length > 1 && (
+                        <span className="text-foreground">•</span>
+                      )}
                       <strong>{maybePeriod(action.name)}</strong>
                       {action.damage && (
                         <span className="damage">{action.damage} </span>
