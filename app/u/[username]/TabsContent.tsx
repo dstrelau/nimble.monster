@@ -82,7 +82,11 @@ export default function TabsContent({
             No public monsters available
           </p>
         ) : (
-          <MonsterCardGrid monsters={monsters} hideCreator={true} hideActions={true} />
+          <MonsterCardGrid
+            monsters={monsters}
+            hideCreator={true}
+            hideActions={true}
+          />
         )}
       </ShadcnTabsContent>
 
@@ -125,7 +129,12 @@ export default function TabsContent({
             No public companions available
           </p>
         ) : (
-          <CompanionCardGrid companions={companions} hideActions hideCreator />
+          <CompanionCardGrid
+            conditions={conditions}
+            companions={companions}
+            hideActions
+            hideCreator
+          />
         )}
       </ShadcnTabsContent>
 
@@ -135,7 +144,12 @@ export default function TabsContent({
             No public items available
           </p>
         ) : (
-          <ItemCardGrid items={items} hideCreator conditions={conditions} />
+          <ItemCardGrid
+            items={items}
+            hideActions
+            hideCreator
+            conditions={conditions}
+          />
         )}
       </ShadcnTabsContent>
     </Tabs>

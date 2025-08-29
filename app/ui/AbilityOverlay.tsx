@@ -1,5 +1,5 @@
 import { Users } from "lucide-react";
-import { FormattedText } from "@/components/FormattedText";
+import { PrefixedFormattedText } from "@/components/FormattedText";
 import { maybePeriod } from "@/lib/text";
 import type { Ability, Condition, FamilyOverview } from "@/lib/types";
 
@@ -28,11 +28,15 @@ export const AbilityOverlay = ({
 
           return (
             <div key={abilityName}>
-              {isFromFamily && family && (
-                <Users className="w-4 pb-1 mr-0.5 inline-block text-flame" />
-              )}
-              <strong className="pr-1">{maybePeriod(abilityName)}</strong>
-              <FormattedText
+              <PrefixedFormattedText
+                prefix={
+                  <>
+                    {isFromFamily && family && (
+                      <Users className="w-4 pb-1 inline-block text-flame" />
+                    )}
+                    <strong>{maybePeriod(abilityName)}</strong>
+                  </>
+                }
                 content={ability.description || ""}
                 conditions={conditions}
               />

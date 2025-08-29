@@ -1,13 +1,13 @@
 import type React from "react";
-import { FormattedText } from "@/components/FormattedText";
+import { PrefixedFormattedText } from "@/components/FormattedText";
 import { maybePeriod } from "@/lib/text";
-import type { Action, MonsterCondition } from "@/lib/types";
+import type { Action, Condition } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { StrongCondensed } from "./StyledComponents";
 
 interface ActionsListProps {
   actions: Action[];
-  conditions: MonsterCondition[];
+  conditions: Condition[];
   actionPreface?: string;
 }
 
@@ -28,17 +28,19 @@ export const ActionsList: React.FC<ActionsListProps> = ({
           (action) =>
             action && (
               <li key={action.name}>
-                <strong className="pr-1">{maybePeriod(action.name)}</strong>
-                {action.damage && (
-                  <span className="damage">{action.damage} </span>
-                )}
                 {action.description && (
-                  <span className="description">
-                    <FormattedText
-                      content={action.description}
-                      conditions={conditions}
-                    />
-                  </span>
+                  <PrefixedFormattedText
+                    content={action.description}
+                    conditions={conditions}
+                    prefix={
+                      <>
+                        <strong>{maybePeriod(action.name)}</strong>
+                        {action.damage && (
+                          <span className="damage">{action.damage} </span>
+                        )}
+                      </>
+                    }
+                  />
                 )}
                 {action.range && (
                   <span className="range">({action.range} ft)</span>

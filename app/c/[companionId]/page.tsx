@@ -3,7 +3,11 @@ import { notFound } from "next/navigation";
 import { Card } from "@/app/ui/companion/Card";
 import { CompanionDetailActions } from "@/components/CompanionDetailActions";
 import { auth } from "@/lib/auth";
-import { findCompanion } from "@/lib/db";
+import {
+  findCompanion,
+  listConditionsForDiscordId,
+  listOfficialConditions,
+} from "@/lib/db";
 
 export async function generateMetadata({
   params,
@@ -60,21 +64,24 @@ export default async function CompanionPage({
 }) {
   const session = await auth();
   const { companionId } = await params;
-  const rawCompanion = await findCompanion(companionId);
+  const companion = await findCompanion(companionId);
 
-  if (!rawCompanion) {
+  if (!companion) {
     return notFound();
   }
+
+  const [officialConditions, userConditions] = await Promise.all([
+    listOfficialConditions(),
+    listConditionsForDiscordId(companion.creator.discordId || ""),
+  ]);
+  const conditions = [...officialConditions, ...userConditions];
 
   // if companion is not public, then user must be creator
-  const isOwner =
-    session?.user?.id === rawCompanion.creator?.discordId || false;
+  const isOwner = session?.user?.id === companion.creator?.discordId || false;
 
-  if (rawCompanion.visibility !== "public" && !isOwner) {
+  if (companion.visibility !== "public" && !isOwner) {
     return notFound();
   }
-
-  const companion = JSON.parse(JSON.stringify(rawCompanion)); // Force serialization
 
   return (
     <div className="container mx-auto">
@@ -85,8 +92,8 @@ export default async function CompanionPage({
         <Card
           companion={companion}
           creator={companion.creator}
+          conditions={conditions}
           link={false}
-          isOwner={isOwner}
         />
       </div>
     </div>

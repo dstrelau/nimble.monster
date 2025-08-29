@@ -3,7 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useId, useMemo, useState } from "react";
+import { useId, useState } from "react";
 import { Card } from "@/app/ui/companion/Card";
 import { BuildView } from "@/components/app/BuildView";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
@@ -12,13 +12,13 @@ import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import { useConditions } from "@/lib/hooks/useConditions";
-import type { Companion, MonsterSize, User } from "@/lib/types";
+import type { Companion, MonsterSize } from "@/lib/types";
 import { SIZES } from "@/lib/types";
 import { createCompanion, updateCompanion } from "../actions/companion";
 import { AbilitiesSection } from "./shared/AbilitiesSection";
 import { ActionsSection } from "./shared/ActionsSection";
 
-const EXAMPLE_COMPANIONS: Record<string, Companion> = {
+const EXAMPLE_COMPANIONS: Record<string, Omit<Companion, "creator">> = {
   Stabs: {
     visibility: "public",
     id: "",
@@ -29,7 +29,6 @@ const EXAMPLE_COMPANIONS: Record<string, Companion> = {
     size: "small" as MonsterSize,
     saves: "DEX+",
     wounds: 3,
-    conditions: [],
     abilities: [
       {
         name: "Companion",
@@ -71,7 +70,6 @@ const EXAMPLE_COMPANIONS: Record<string, Companion> = {
     size: "medium",
     saves: "",
     wounds: 3,
-    conditions: [],
     abilities: [],
     actions: [],
     actionPreface: "Each turn, choose 1:",
@@ -203,31 +201,23 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
   const router = useRouter();
 
   const { data: session } = useSession();
-  let creator: User | undefined;
-  if (session?.user) {
-    creator = {
-      discordId: session.user.id,
-      avatar: session.user.image || "",
-      username: session.user.name || "",
-    };
-  }
+
+  const creator = session?.user
+    ? {
+        discordId: session.user.id,
+        avatar: session.user.image || "",
+        username: session.user.name || "",
+      }
+    : { discordId: "", avatar: "", username: "" };
 
   const [companion, setCompanion] = useState<Companion>(() =>
     existingCompanion
       ? { ...existingCompanion, conditions: [] }
-      : EXAMPLE_COMPANIONS.empty
+      : { ...EXAMPLE_COMPANIONS.empty, creator }
   );
   const queryClient = useQueryClient();
 
-  const { allConditions } = useConditions();
-
-  const companionWithConditions = useMemo(
-    () => ({
-      ...companion,
-      conditions: allConditions.map((c) => ({ ...c, inline: false })),
-    }),
-    [companion, allConditions]
-  );
+  const { allConditions: conditions } = useConditions();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -278,6 +268,7 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
   const loadExample = (type: keyof typeof EXAMPLE_COMPANIONS) => {
     setCompanion({
       ...EXAMPLE_COMPANIONS[type],
+      creator,
     });
   };
 
@@ -287,7 +278,7 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
       previewTitle="Companion Preview"
       formClassName="md:col-span-3"
       previewClassName="md:col-span-3"
-      previewContent={<Card companion={companionWithConditions} />}
+      previewContent={<Card companion={companion} conditions={conditions} />}
       formContent={
         <form className="space-y-6" onSubmit={handleSubmit}>
           <CompanionForm companion={companion} setCompanion={setCompanion} />
@@ -331,7 +322,8 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
           />
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
             <Card
-              companion={companionWithConditions}
+              companion={companion}
+              conditions={conditions}
               creator={creator}
               hideActions={true}
             />

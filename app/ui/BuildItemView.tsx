@@ -11,10 +11,10 @@ import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { IconPicker } from "@/components/IconPicker";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import type { Condition, Item, User } from "@/lib/types";
+import type { Condition, Item } from "@/lib/types";
 import { createItem, updateItem } from "../actions/item";
 
-const EXAMPLE_ITEMS: Record<string, Item> = {
+const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
   Empty: {
     visibility: "public",
     id: "",
@@ -67,14 +67,13 @@ export default function BuildItemView({
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  let creator: User | undefined;
-  if (session?.user) {
-    creator = {
-      discordId: session.user.id,
-      avatar: session.user.image || "",
-      username: session.user.name || "",
-    };
-  }
+  const creator = session?.user
+    ? {
+        discordId: session.user.id,
+        avatar: session.user.image || "",
+        username: session.user.name || "",
+      }
+    : { discordId: "", avatar: "", username: "" };
   const previewItem = useMemo<Item>(
     () => ({
       id: item?.id || "",

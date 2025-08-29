@@ -11,7 +11,7 @@ import {
   CardContentWithGap,
 } from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
-import { FormattedText } from "@/components/FormattedText";
+import { PrefixedFormattedText } from "@/components/FormattedText";
 import { Level } from "@/components/Level";
 import {
   CardAction,
@@ -264,27 +264,29 @@ export const Card = ({
             />
             <InlineConditions conditions={monster.conditions} />
             {monster.legendary && (
-              <div>
+              <>
                 {monster.bloodied && (
-                  <div>
-                    <strong className="font-condensed">BLOODIED: </strong>
-                    <FormattedText
-                      content={monster.bloodied}
-                      conditions={monster.conditions}
-                    />
-                  </div>
+                  <PrefixedFormattedText
+                    content={monster.bloodied}
+                    conditions={monster.conditions}
+                    prefix={
+                      <strong className="font-condensed">BLOODIED:</strong>
+                    }
+                  />
                 )}
 
                 {monster.lastStand && (
                   <div>
-                    <strong className="font-condensed">LAST STAND: </strong>
-                    <FormattedText
+                    <PrefixedFormattedText
                       content={monster.lastStand}
                       conditions={monster.conditions}
+                      prefix={
+                        <strong className="font-condensed">LAST STAND:</strong>
+                      }
                     />
                   </div>
                 )}
-              </div>
+              </>
             )}
 
             <MoreInfoSection

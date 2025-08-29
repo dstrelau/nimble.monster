@@ -2,7 +2,6 @@
 
 import html2canvas from "html2canvas-pro";
 import { Download, ExternalLink, Link as LinkIcon, Share } from "lucide-react";
-import { usePathname } from "next/navigation";
 import { useTransition } from "react";
 import { VisibilityBadge } from "@/app/ui/VisibilityBadge";
 import {
@@ -29,8 +28,6 @@ export default function CardActions({
   isOwner,
 }: MonsterCardActionsProps) {
   const [_isPending, _startTransition] = useTransition();
-  const pathname = usePathname();
-  const _isOnDetailPage = pathname === `/m/${monster.id}`;
   const isPublic = monster.visibility === "public";
 
   const copyMonsterLink = async () => {

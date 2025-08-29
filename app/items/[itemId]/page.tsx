@@ -4,7 +4,7 @@ import { loadOfficialConditions } from "@/app/actions/conditions";
 import { Card } from "@/app/ui/item/Card";
 import { ItemDetailActions } from "@/components/ItemDetailActions";
 import { auth } from "@/lib/auth";
-import { findItem } from "@/lib/db";
+import { findItem, listConditionsForDiscordId } from "@/lib/db";
 
 export async function generateMetadata({
   params,
@@ -58,7 +58,6 @@ export default async function ItemPage({
   const session = await auth();
   const { itemId } = await params;
   const item = await findItem(itemId);
-  const conditions = await loadOfficialConditions();
 
   if (!item) {
     return notFound();
@@ -70,6 +69,12 @@ export default async function ItemPage({
   if (item.visibility !== "public" && !isOwner) {
     return notFound();
   }
+
+  const [officialConditions, userConditions] = await Promise.all([
+    loadOfficialConditions(),
+    listConditionsForDiscordId(item.creator.discordId),
+  ]);
+  const conditions = [...officialConditions, ...userConditions];
 
   return (
     <div className="container mx-auto">

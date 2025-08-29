@@ -164,7 +164,6 @@ export const toCompanion = (
     dyingRule: c.dyingRule,
     moreInfo: c.moreInfo || "",
     creator: { ...c.creator, avatar: c.creator.avatar || "" },
-    conditions: [], // TODO: Add companion conditions if needed
   };
 };
 

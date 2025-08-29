@@ -11,6 +11,7 @@ interface CardGridProps {
   items: Item[];
   gridColumns?: GridColumns;
   hideCreator?: boolean;
+  hideActions?: boolean;
   conditions?: Condition[];
 }
 
@@ -18,6 +19,7 @@ export function CardGrid({
   items,
   gridColumns = { default: 1, md: 2, lg: 3 },
   hideCreator = false,
+  hideActions = false,
   conditions = [],
 }: CardGridProps) {
   const gridClasses = [
@@ -36,6 +38,7 @@ export function CardGrid({
           item={item}
           creator={item.creator}
           hideCreator={hideCreator}
+          hideActions={hideActions}
           conditions={conditions}
         />
       ))}

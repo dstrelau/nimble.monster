@@ -1,13 +1,22 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import type { Condition } from "@/lib/types";
-import { FormattedText } from "./FormattedText";
+import { FormattedText, PrefixedFormattedText } from "./FormattedText";
+
+afterEach(() => {
+  cleanup();
+});
 
 const mockConditions: Condition[] = [
   {
     name: "Poisoned",
     description: "Takes poison damage at the start of each turn",
     official: true,
+  },
+  {
+    name: "Stunned",
+    description: "Cannot take actions",
+    official: false,
   },
 ];
 
@@ -53,5 +62,144 @@ describe("FormattedText", () => {
 
     const conditionElement = screen.getByText("Poisoned");
     expect(conditionElement).toHaveClass("text-primary-success");
+  });
+
+  it("respects newlines", () => {
+    const content = "One.\n\n\nTwo.";
+
+    const { container } = render(
+      <FormattedText content={content} conditions={mockConditions} />
+    );
+
+    const paragraphs = container.querySelectorAll("p");
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0]).toHaveTextContent("One.");
+    expect(paragraphs[1]).toHaveTextContent("Two.");
+  });
+
+  it("should handle unknown conditions", () => {
+    const content = "You are [[Blinded]].";
+
+    render(<FormattedText content={content} conditions={mockConditions} />);
+
+    const conditionElement = screen.getByText("Blinded");
+    expect(conditionElement).toHaveClass("underline");
+    expect(conditionElement).toHaveClass("decoration-dotted");
+    expect(conditionElement).toHaveClass("cursor-help");
+    expect(conditionElement).not.toHaveClass("text-primary-success");
+  });
+
+  it("should handle conditions without display text", () => {
+    const content = "You are [[Poisoned]].";
+
+    render(<FormattedText content={content} conditions={mockConditions} />);
+
+    const conditionElement = screen.getByText("Poisoned");
+    expect(conditionElement).toHaveClass("text-primary-success");
+    expect(conditionElement).toHaveClass("underline");
+    expect(conditionElement).toHaveClass("decoration-dotted");
+  });
+
+  it("should handle multiple conditions in one text", () => {
+    const content = "You are [[Poisoned|suffering]] and [[Stunned]].";
+
+    render(<FormattedText content={content} conditions={mockConditions} />);
+
+    const poisonedElement = screen.getByText("suffering");
+    expect(poisonedElement).toHaveClass("text-primary-success");
+
+    const stunnedElement = screen.getByText("Stunned");
+    expect(stunnedElement).toHaveClass("text-primary-success");
+  });
+
+  it("should handle complex markdown with conditions", () => {
+    const content =
+      "**Bold** text with [[Poisoned|poison]] and *italic* with [[Stunned]].";
+
+    render(<FormattedText content={content} conditions={mockConditions} />);
+
+    expect(screen.getByText("Bold").tagName.toLowerCase()).toBe("strong");
+    expect(screen.getByText("italic").tagName.toLowerCase()).toBe("em");
+
+    const poisonElement = screen.getByText("poison");
+    expect(poisonElement).toHaveClass("text-primary-success");
+
+    const stunnedElement = screen.getByText("Stunned");
+    expect(stunnedElement).toHaveClass("text-primary-success");
+  });
+
+  it("should handle list formatting", () => {
+    const content = "Effects:\n- [[Poisoned]]\n- **Heavy damage**";
+
+    const { container } = render(
+      <FormattedText content={content} conditions={mockConditions} />
+    );
+
+    const listItems = container.querySelectorAll("li");
+    expect(listItems).toHaveLength(2);
+
+    const poisonedElement = screen.getByText("Poisoned");
+    expect(poisonedElement).toHaveClass("text-primary-success");
+
+    const boldElement = screen.getByText("Heavy damage");
+    expect(boldElement.tagName.toLowerCase()).toBe("strong");
+  });
+
+  it("should handle edge cases and malformed syntax", () => {
+    const content =
+      "[[InvalidCondition]] incomplete [ syntax and [[Poisoned]] normal";
+
+    const { container } = render(
+      <FormattedText content={content} conditions={mockConditions} />
+    );
+
+    expect(screen.getByText("Poisoned")).toHaveClass("text-primary-success");
+    expect(container).toHaveTextContent("normal");
+    expect(screen.getByText("InvalidCondition")).toHaveClass("cursor-help");
+    expect(container).toHaveTextContent("incomplete [ syntax and");
+  });
+
+  it("should handle empty content", () => {
+    const { container } = render(
+      <FormattedText content="" conditions={mockConditions} />
+    );
+
+    expect(container.firstChild).toBeInTheDocument();
+  });
+});
+
+describe("PrefixedFormattedText", () => {
+  it("should render prefix and formatted content", () => {
+    const prefix = <span className="prefix-class">Prefix:</span>;
+    const content = "This is **bold** text with [[Poisoned]].";
+
+    render(
+      <PrefixedFormattedText
+        prefix={prefix}
+        content={content}
+        conditions={mockConditions}
+      />
+    );
+
+    expect(screen.getByText("Prefix:")).toHaveClass("prefix-class");
+    expect(screen.getByText("bold").tagName.toLowerCase()).toBe("strong");
+    expect(screen.getByText("Poisoned")).toHaveClass("text-primary-success");
+  });
+
+  it("should float the prefix to the left", () => {
+    const prefix = <span>Icon</span>;
+    const content = "Some content";
+
+    const { container } = render(
+      <PrefixedFormattedText
+        prefix={prefix}
+        content={content}
+        conditions={mockConditions}
+      />
+    );
+
+    const prefixElement = container.querySelector(".float-left");
+    expect(prefixElement).toBeInTheDocument();
+    expect(prefixElement).toHaveClass("mr-1");
   });
 });

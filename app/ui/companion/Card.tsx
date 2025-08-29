@@ -4,11 +4,10 @@ import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { HPStat, SavesStat } from "@/app/ui/monster/Stat";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
 import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
-import { InlineConditions } from "@/app/ui/shared/InlineConditions";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import { CardContainer } from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
-import { FormattedText } from "@/components/FormattedText";
+import { PrefixedFormattedText } from "@/components/FormattedText";
 import {
   CardAction,
   CardContent,
@@ -16,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Companion, MonsterSize, User } from "@/lib/types";
+import type { Companion, Condition, MonsterSize, User } from "@/lib/types";
 
 // Helper function to format companion size
 const formatCompanionSize = (size: MonsterSize): string => {
@@ -56,7 +55,7 @@ const HeaderCompanion: React.FC<{
 interface CardProps {
   companion: Companion;
   creator?: User;
-  isOwner?: boolean;
+  conditions: Condition[];
   link?: boolean;
   hideActions?: boolean;
   hideCreator?: boolean;
@@ -66,7 +65,7 @@ interface CardProps {
 export const Card = ({
   companion,
   creator,
-  isOwner: _isOwner = false,
+  conditions,
   link = true,
   hideActions = false,
   hideCreator = false,
@@ -80,27 +79,23 @@ export const Card = ({
         <CardContent className="flex flex-col gap-3 pt-0 pb-4">
           {companion.abilities.length > 0 && (
             <AbilityOverlay
-              conditions={companion.conditions}
+              conditions={conditions}
               abilities={companion.abilities}
             />
           )}
 
           <ActionsList
             actions={companion.actions}
-            conditions={companion.conditions}
+            conditions={conditions}
             actionPreface={companion.actionPreface}
           />
 
-          <InlineConditions conditions={companion.conditions} />
-
           {companion.dyingRule && (
-            <p>
-              <strong>Dying:</strong>{" "}
-              <FormattedText
-                content={companion.dyingRule}
-                conditions={companion.conditions}
-              />
-            </p>
+            <PrefixedFormattedText
+              prefix={<strong>Dying: </strong>}
+              content={companion.dyingRule}
+              conditions={conditions}
+            />
           )}
 
           <div className="flex items-center justify-center gap-1">
@@ -113,7 +108,7 @@ export const Card = ({
 
           <MoreInfoSection
             moreInfo={companion.moreInfo}
-            conditions={companion.conditions}
+            conditions={conditions}
           />
         </CardContent>
 

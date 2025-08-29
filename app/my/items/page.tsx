@@ -1,15 +1,22 @@
 import { notFound } from "next/navigation";
-import { loadOfficialConditions } from "@/app/actions/conditions";
 import { CardGrid } from "@/app/ui/item/CardGrid";
 import { auth } from "@/lib/auth";
-import * as db from "@/lib/db";
+import {
+  listAllItemsForDiscordID,
+  listConditionsForDiscordId,
+  listOfficialConditions,
+} from "@/lib/db";
 
 export default async function MyItemsPage() {
   const session = await auth();
   if (!session?.user?.id) notFound();
 
-  const items = await db.listAllItemsForDiscordID(session.user.id);
-  const conditions = await loadOfficialConditions();
+  const [items, officialConditions, userConditions] = await Promise.all([
+    listAllItemsForDiscordID(session.user.id),
+    listOfficialConditions(),
+    listConditionsForDiscordId(session.user.id),
+  ]);
+  const conditions = [...officialConditions, ...userConditions];
   return (
     <div className="container mx-auto py-3">
       <CardGrid

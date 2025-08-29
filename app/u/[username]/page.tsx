@@ -19,15 +19,24 @@ export default async function UserProfilePage({
     return notFound();
   }
 
-  const [monsters, collections, families, companions, items, conditions] =
-    await Promise.all([
-      db.listPublicMonstersForDiscordID(username),
-      db.getUserPublicCollectionsHavingMonsters(username),
-      db.getUserPublicFamiliesWithMonsters(user.discordId),
-      db.listPublicCompanionsForDiscordID(username),
-      db.listPublicItemsForDiscordID(username),
-      loadOfficialConditions(),
-    ]);
+  const [
+    monsters,
+    collections,
+    families,
+    companions,
+    items,
+    userConditions,
+    officialConditions,
+  ] = await Promise.all([
+    db.listPublicMonstersForDiscordID(username),
+    db.getUserPublicCollectionsHavingMonsters(username),
+    db.getUserPublicFamiliesWithMonsters(user.discordId),
+    db.listPublicCompanionsForDiscordID(username),
+    db.listPublicItemsForDiscordID(username),
+    db.listConditionsForDiscordId(user.discordId),
+    loadOfficialConditions(),
+  ]);
+  const conditions = [...userConditions, ...officialConditions];
 
   return (
     <div className="container mx-auto">

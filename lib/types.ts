@@ -114,10 +114,9 @@ export interface Companion extends CompanionMini {
   actionPreface: string;
   dyingRule: string;
   moreInfo?: string;
-  creator?: User;
+  creator: User;
   updatedAt: string;
   imageUrl?: string;
-  conditions: MonsterCondition[];
 }
 
 export interface Condition {
@@ -172,7 +171,7 @@ export interface Item extends ItemMini {
   description: string;
   moreInfo?: string;
   imageIcon?: string;
-  creator?: User;
+  creator: User;
   updatedAt: string;
 }
 

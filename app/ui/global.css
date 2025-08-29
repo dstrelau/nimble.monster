@@ -137,6 +137,15 @@
     }
 }
 
+.formatted-text p {
+    display: inline;
+    margin: 0;
+}
+
+.formatted-text p + p::before {
+    content: " ";
+}
+
 @keyframes fade-out {
     0% {
         opacity: 1;

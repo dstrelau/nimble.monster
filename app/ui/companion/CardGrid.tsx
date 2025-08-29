@@ -1,17 +1,17 @@
 import clsx from "clsx";
-import type { Companion } from "@/lib/types";
+import type { Companion, Condition } from "@/lib/types";
 import { Card } from "./Card";
 
 export const CardGrid = ({
   companions,
+  conditions,
   hideActions = false,
-  currentUserId,
   gridColumns = { default: 1, md: 1, lg: 2 },
   hideCreator = false,
 }: {
   companions: Companion[];
+  conditions: Condition[];
   hideActions?: boolean;
-  currentUserId?: string;
   gridColumns?: { default?: number; sm?: number; md?: number; lg?: number };
   hideCreator?: boolean;
 }) => {
@@ -26,14 +26,12 @@ export const CardGrid = ({
       )}
     >
       {companions.map((c) => {
-        const isOwner =
-          !!currentUserId && currentUserId === c.creator?.discordId;
         return (
           <Card
             key={c.id}
             companion={c}
+            conditions={conditions}
             creator={c.creator}
-            isOwner={isOwner}
             hideActions={hideActions}
             hideCreator={hideCreator}
           />

@@ -1,8 +1,9 @@
 "use client";
 import DOMPurify from "isomorphic-dompurify";
+
 import MarkdownIt from "markdown-it";
-import type { ReactNode } from "react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { createRoot } from "react-dom/client";
 import { useIsClient } from "@/components/SSRSafe";
 import {
   Tooltip,
@@ -10,7 +11,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { Condition as ConditionT } from "@/lib/types";
+import type { Condition, Condition as ConditionT } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface FormattedTextProps {
   content: string;
@@ -21,19 +23,13 @@ interface FormattedTextProps {
 function ConditionSpan({
   displayText,
   condition,
-  isClient,
 }: {
   displayText: string;
   condition: ConditionT | undefined;
-  isClient: boolean;
 }) {
-  if (!isClient || !condition) {
+  if (!condition) {
     return (
-      <span
-        className={`underline decoration-dotted ${
-          condition ? "text-primary-success" : "cursor-help"
-        }`}
-      >
+      <span className="underline decoration-dotted cursor-help">
         {displayText}
       </span>
     );
@@ -56,8 +52,7 @@ function ConditionSpan({
 }
 
 // Custom markdown-it plugin for condition parsing
-function conditionPlugin(md: MarkdownIt, conditions: ConditionT[]) {
-  // Add custom inline rule for conditions
+function conditionPlugin(md: MarkdownIt) {
   md.inline.ruler.before("emphasis", "condition", (state, silent) => {
     const start = state.pos;
     const max = state.posMax;
@@ -92,16 +87,12 @@ function conditionPlugin(md: MarkdownIt, conditions: ConditionT[]) {
     const displayText =
       pipeIndex >= 0 ? conditionContent.slice(pipeIndex + 1) : conditionName;
 
-    const condition = conditions.find(
-      (c) => c.name.toLowerCase() === conditionName.toLowerCase()
-    );
-
     if (!silent) {
       const token = state.push("condition", "", 0);
       token.meta = {
         conditionName,
         displayText,
-        condition,
+        // condition,
       };
     }
 
@@ -113,78 +104,8 @@ function conditionPlugin(md: MarkdownIt, conditions: ConditionT[]) {
   md.renderer.rules.condition = (tokens, idx) => {
     const token = tokens[idx];
     const meta = token.meta;
-    return `<span class="condition-marker" data-condition-name="${meta.conditionName}" data-display-text="${meta.displayText}" data-has-condition="${meta.condition ? "true" : "false"}"></span>`;
+    return `<span class="underline decoration-dotted" data-condition-name="${meta.conditionName}" data-display-text="${meta.displayText}" data-has-condition="${meta.condition ? "true" : "false"}">${meta.conditionName}</span>`;
   };
-}
-
-function parseHtmlWithConditions(
-  html: string,
-  conditions: ConditionT[],
-  isClient: boolean
-): ReactNode[] {
-  const parts: ReactNode[] = [];
-  let currentIndex = 0;
-  let partKey = 0;
-
-  // Find all condition markers in the HTML
-  const markerRegex =
-    /<span class="condition-marker" data-condition-name="([^"]*)" data-display-text="([^"]*)" data-has-condition="([^"]*)"><\/span>/g;
-
-  let match = markerRegex.exec(html);
-  while (match !== null) {
-    // Add HTML before the marker
-    const beforeHtml = html.slice(currentIndex, match.index);
-    if (beforeHtml.trim()) {
-      parts.push(
-        <span
-          key={`html-${partKey++}`}
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized markdown content
-          dangerouslySetInnerHTML={{ __html: beforeHtml }}
-        />
-      );
-    }
-
-    // Add condition component
-    const conditionName = match[1];
-    const displayText = match[2];
-    const condition = conditions.find(
-      (c) => c.name.toLowerCase() === conditionName.toLowerCase()
-    );
-
-    parts.push(
-      <ConditionSpan
-        key={`condition-${partKey++}`}
-        displayText={displayText}
-        condition={condition}
-        isClient={isClient}
-      />
-    );
-
-    currentIndex = match.index + match[0].length;
-    match = markerRegex.exec(html);
-  }
-
-  // Add remaining HTML
-  const remainingHtml = html.slice(currentIndex);
-  if (remainingHtml.trim()) {
-    parts.push(
-      <span
-        key={`html-${partKey++}`}
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized markdown content
-        dangerouslySetInnerHTML={{ __html: remainingHtml }}
-      />
-    );
-  }
-
-  return parts.length > 0
-    ? parts
-    : [
-        <span
-          key="fallback"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized markdown content
-          dangerouslySetInnerHTML={{ __html: html }}
-        />,
-      ];
 }
 
 export function FormattedText({
@@ -192,6 +113,7 @@ export function FormattedText({
   conditions,
   className = "",
 }: FormattedTextProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const isClient = useIsClient();
 
   // Create markdown instance with condition plugin
@@ -203,28 +125,71 @@ export function FormattedText({
       "list",
     ]);
 
-    conditionPlugin(markdownInstance, conditions);
+    conditionPlugin(markdownInstance);
     return markdownInstance;
-  }, [conditions]);
+  }, []);
 
   const renderedContent = useMemo(() => {
     // Process markdown with conditions
     const html = DOMPurify.sanitize(md.render(content));
 
-    // Check if there are any condition markers
-    if (html.includes('class="condition-marker"')) {
-      return parseHtmlWithConditions(html, conditions, isClient);
-    }
-
-    // Simple case: just return the HTML
-    return [
+    // Always return the HTML with data attributes
+    return (
       <div
-        key="simple"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized markdown content
         dangerouslySetInnerHTML={{ __html: html }}
-      />,
-    ];
-  }, [content, conditions, isClient, md]);
+      />
+    );
+  }, [content, md]);
 
-  return <div className={className}>{renderedContent}</div>;
+  // Hydrate condition spans after client-side render
+  useEffect(() => {
+    if (!isClient || !containerRef.current) return;
+
+    const conditionSpans = containerRef.current.querySelectorAll(
+      "[data-condition-name]"
+    );
+
+    conditionSpans.forEach((span) => {
+      const conditionName = span.getAttribute("data-condition-name");
+      const displayText = span.getAttribute("data-display-text");
+
+      if (!conditionName || !displayText) return;
+
+      const condition = conditions.find(
+        (c) => c.name.toLowerCase() === conditionName.toLowerCase()
+      );
+
+      // Create a container for the React component
+      const container = document.createElement("span");
+      span.parentNode?.replaceChild(container, span);
+
+      // Render the ConditionSpan component
+      const root = createRoot(container);
+      root.render(
+        <ConditionSpan displayText={displayText} condition={condition} />
+      );
+    });
+  }, [isClient, conditions]);
+
+  return (
+    <div ref={containerRef} className={cn("[&_p_~_p]:mt-1.5", className)}>
+      {renderedContent}
+    </div>
+  );
 }
+
+export const PrefixedFormattedText = ({
+  prefix,
+  content,
+  conditions,
+}: {
+  prefix: React.ReactNode;
+  content: string;
+  conditions: Condition[];
+}) => (
+  <div>
+    <span className="float-left mr-1 flex gap-1">{prefix}</span>
+    <FormattedText content={content} conditions={conditions} />
+  </div>
+);

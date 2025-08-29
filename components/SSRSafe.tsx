@@ -16,13 +16,9 @@ interface SSRSafeProps {
  * @param fallback - Optional fallback to render during SSR (defaults to children without interactivity)
  */
 export function SSRSafe({ children, fallback }: SSRSafeProps) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
+  const isClient = useIsClient();
   if (!isClient) {
+    console.log("SSRSafe: Rendering fallback", fallback);
     return <>{fallback || children}</>;
   }
 
