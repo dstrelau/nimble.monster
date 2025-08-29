@@ -63,7 +63,7 @@ export const AbilitiesSection: React.FC<AbilitiesSectionProps> = ({
     <legend className="mb-4 font-condensed font-bold">Abilities</legend>
     {abilities.map((ability, index) => (
       <AbilityRow
-        key={`${ability.name}-${index}`}
+        key={index}
         ability={ability}
         onChange={(newAbility) => {
           const newAbilities = [...abilities];

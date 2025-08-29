@@ -148,7 +148,7 @@ export const ActionsSection: React.FC<ActionsSectionProps> = ({
       />
       {actions.map((action, index) => (
         <ActionRow
-          key={`${action.name}-${index}`}
+          key={index}
           action={action}
           showDamage={showDamage}
           onChange={(newAction) => {
