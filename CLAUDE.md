@@ -1,6 +1,8 @@
 # Build Commands
 - `pnpm run check` - Lint and type-check (dev-safe, use this during development)
+  - You must run this after making changes to ensure there are no type errors or lint errors.
 - `pnpm run lint` - Biome check (linting, formatting, import sorting)
+  - `--fix` can be added to automatically fix many issues
 - `pnpm run type-check` - TypeScript check only
 - `pnpm run build` - Production build (breaks dev server. Only run when asked. Always run `rm -rf .next` after.)
 - `prisma/scehma.prisma` is the schema file.
@@ -9,8 +11,6 @@
   - Do not ever run `pnpm run dev`
 
 # Code Style
-
-## TypeScript/React
 - Prefer SSR when possible
 - Use the latest Next.js built-in features over external libraries
 - Type all props and state with TypeScript interfaces
@@ -27,10 +27,9 @@
 - Use clsx for constructing className
 - Use lucide icons instead of custom SVGs
 
-# Claude Instructions
-- If there is ambiguity in my questions or instructions, please ask for clarification.
-- Be as terse as possible, only doing what is asked.
-- Do not be overly enthusiastic or ingratiating. Treat me as an equal.
-- We use version control, so you may delete files without backup when necessary.
-- Do not add unnecessary comments or explanations.
-- Do not add logging unless specifically requested.
+# Tests
+- `pnpm run test` to run tests.
+- When adding new functionality, make sure you add tests.
+- Use @testing-library/react and vitest.
+- Make sure to add cleanup after each test whenever necessary.
+- When mocking dependencies, use the most narrow, specific mock possible.
