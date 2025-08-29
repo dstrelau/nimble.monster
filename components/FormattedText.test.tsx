@@ -185,21 +185,4 @@ describe("PrefixedFormattedText", () => {
     expect(screen.getByText("bold").tagName.toLowerCase()).toBe("strong");
     expect(screen.getByText("Poisoned")).toHaveClass("text-primary-success");
   });
-
-  it("should float the prefix to the left", () => {
-    const prefix = <span>Icon</span>;
-    const content = "Some content";
-
-    const { container } = render(
-      <PrefixedFormattedText
-        prefix={prefix}
-        content={content}
-        conditions={mockConditions}
-      />
-    );
-
-    const prefixElement = container.querySelector(".float-left");
-    expect(prefixElement).toBeInTheDocument();
-    expect(prefixElement).toHaveClass("mr-1");
-  });
 });

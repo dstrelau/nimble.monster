@@ -28,20 +28,18 @@ export const ActionsList: React.FC<ActionsListProps> = ({
           (action) =>
             action && (
               <li key={action.name}>
-                {action.description && (
-                  <PrefixedFormattedText
-                    content={action.description}
-                    conditions={conditions}
-                    prefix={
-                      <>
-                        <strong>{maybePeriod(action.name)}</strong>
-                        {action.damage && (
-                          <span className="damage">{action.damage} </span>
-                        )}
-                      </>
-                    }
-                  />
-                )}
+                <PrefixedFormattedText
+                  content={action.description || ""}
+                  conditions={conditions}
+                  prefix={
+                    <>
+                      <strong>{maybePeriod(action.name)}</strong>
+                      {action.damage && (
+                        <span className="damage">{action.damage} </span>
+                      )}
+                    </>
+                  }
+                />
                 {action.range && (
                   <span className="range">({action.range} ft)</span>
                 )}
