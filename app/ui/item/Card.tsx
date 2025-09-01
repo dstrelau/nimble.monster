@@ -1,3 +1,4 @@
+"use client";
 import type React from "react";
 import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
