@@ -58,20 +58,18 @@ export default async function MonsterPage({
 }) {
   const session = await auth();
   const { monsterId } = await params;
-  const rawMonster = await findMonster(monsterId);
+  const monster = await findMonster(monsterId);
 
-  if (!rawMonster) {
+  if (!monster) {
     return notFound();
   }
 
   // if monster is not public, then user must be creator
-  const isOwner = session?.user?.id === rawMonster.creator?.discordId || false;
+  const isOwner = session?.user?.id === monster.creator?.discordId || false;
 
-  if (rawMonster.visibility !== "public" && !isOwner) {
+  if (monster.visibility !== "public" && !isOwner) {
     return notFound();
   }
-
-  const monster = JSON.parse(JSON.stringify(rawMonster)); // Force serialization
 
   return (
     <div className="container mx-auto">

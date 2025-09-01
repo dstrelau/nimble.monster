@@ -1,9 +1,23 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import { findMonster } from "@/lib/db";
 import type { Ability, Action } from "@/lib/types";
+
+export async function findPublicMonster(id: string) {
+  const [session, monster] = await Promise.all([auth(), findMonster(id)]);
+  if (!monster) {
+    return { success: false, error: "Monster not found" };
+  }
+  const isOwner = session?.user?.id === monster.creator?.discordId || false;
+  if (monster.visibility !== "public" && !isOwner) {
+    return notFound();
+  }
+  return { success: true, monster };
+}
 
 export async function createMonster(formData: {
   name: string;

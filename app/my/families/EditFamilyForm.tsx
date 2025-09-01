@@ -28,8 +28,8 @@ export const EditFamilyForm = ({ family, onCancel }: EditFamilyFormProps) => {
   };
 
   const normalizedAbilities = family.abilities.map((ability) => ({
-    name: ability.name || ability.Name || "",
-    description: ability.description || ability.Description || "",
+    name: ability.name || "",
+    description: ability.description || "",
   }));
 
   const {

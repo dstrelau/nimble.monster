@@ -225,13 +225,7 @@ export default function BuildItemView({
         </form>
       }
       previewContent={
-        <Card
-          item={previewItem}
-          creator={creator}
-          link={false}
-          hideActions
-          conditions={conditions}
-        />
+        <Card item={previewItem} creator={creator} link={false} hideActions />
       }
       desktopPreviewContent={
         <>
@@ -242,7 +236,6 @@ export default function BuildItemView({
               creator={creator}
               link={false}
               hideActions
-              conditions={conditions}
             />
           </div>
         </>

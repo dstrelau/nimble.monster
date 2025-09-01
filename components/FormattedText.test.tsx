@@ -33,7 +33,6 @@ describe("FormattedText", () => {
 
     // Check for condition tooltip text
     const conditionElement = screen.getByText("suffering from poison");
-    expect(conditionElement).toHaveClass("text-primary-success");
     expect(conditionElement).toHaveClass("underline");
     expect(conditionElement).toHaveClass("decoration-dotted");
   });
@@ -61,7 +60,8 @@ describe("FormattedText", () => {
     render(<FormattedText content={content} conditions={mockConditions} />);
 
     const conditionElement = screen.getByText("Poisoned");
-    expect(conditionElement).toHaveClass("text-primary-success");
+    expect(conditionElement).toHaveClass("underline");
+    expect(conditionElement).toHaveClass("decoration-dotted");
   });
 
   it("respects newlines", () => {
@@ -86,7 +86,6 @@ describe("FormattedText", () => {
     expect(conditionElement).toHaveClass("underline");
     expect(conditionElement).toHaveClass("decoration-dotted");
     expect(conditionElement).toHaveClass("cursor-help");
-    expect(conditionElement).not.toHaveClass("text-primary-success");
   });
 
   it("should handle conditions without display text", () => {
@@ -95,7 +94,6 @@ describe("FormattedText", () => {
     render(<FormattedText content={content} conditions={mockConditions} />);
 
     const conditionElement = screen.getByText("Poisoned");
-    expect(conditionElement).toHaveClass("text-primary-success");
     expect(conditionElement).toHaveClass("underline");
     expect(conditionElement).toHaveClass("decoration-dotted");
   });
@@ -106,10 +104,12 @@ describe("FormattedText", () => {
     render(<FormattedText content={content} conditions={mockConditions} />);
 
     const poisonedElement = screen.getByText("suffering");
-    expect(poisonedElement).toHaveClass("text-primary-success");
+    expect(poisonedElement).toHaveClass("underline");
+    expect(poisonedElement).toHaveClass("decoration-dotted");
 
     const stunnedElement = screen.getByText("Stunned");
-    expect(stunnedElement).toHaveClass("text-primary-success");
+    expect(stunnedElement).toHaveClass("underline");
+    expect(stunnedElement).toHaveClass("decoration-dotted");
   });
 
   it("should handle complex markdown with conditions", () => {
@@ -122,10 +122,12 @@ describe("FormattedText", () => {
     expect(screen.getByText("italic").tagName.toLowerCase()).toBe("em");
 
     const poisonElement = screen.getByText("poison");
-    expect(poisonElement).toHaveClass("text-primary-success");
+    expect(poisonElement).toHaveClass("underline");
+    expect(poisonElement).toHaveClass("decoration-dotted");
 
     const stunnedElement = screen.getByText("Stunned");
-    expect(stunnedElement).toHaveClass("text-primary-success");
+    expect(stunnedElement).toHaveClass("underline");
+    expect(stunnedElement).toHaveClass("decoration-dotted");
   });
 
   it("should handle list formatting", () => {
@@ -139,7 +141,8 @@ describe("FormattedText", () => {
     expect(listItems).toHaveLength(2);
 
     const poisonedElement = screen.getByText("Poisoned");
-    expect(poisonedElement).toHaveClass("text-primary-success");
+    expect(poisonedElement).toHaveClass("underline");
+    expect(poisonedElement).toHaveClass("decoration-dotted");
 
     const boldElement = screen.getByText("Heavy damage");
     expect(boldElement.tagName.toLowerCase()).toBe("strong");
@@ -153,7 +156,9 @@ describe("FormattedText", () => {
       <FormattedText content={content} conditions={mockConditions} />
     );
 
-    expect(screen.getByText("Poisoned")).toHaveClass("text-primary-success");
+    const poisonedElement = screen.getByText("Poisoned");
+    expect(poisonedElement).toHaveClass("underline");
+    expect(poisonedElement).toHaveClass("decoration-dotted");
     expect(container).toHaveTextContent("normal");
     expect(screen.getByText("InvalidCondition")).toHaveClass("cursor-help");
     expect(container).toHaveTextContent("incomplete [ syntax and");
@@ -183,6 +188,7 @@ describe("PrefixedFormattedText", () => {
 
     expect(screen.getByText("Prefix:")).toHaveClass("prefix-class");
     expect(screen.getByText("bold").tagName.toLowerCase()).toBe("strong");
-    expect(screen.getByText("Poisoned")).toHaveClass("text-primary-success");
+    expect(screen.getByText("Poisoned")).toHaveClass("underline");
+    expect(screen.getByText("Poisoned")).toHaveClass("decoration-dotted");
   });
 });

@@ -5,7 +5,7 @@ import type {
   CollectionOverview,
   Companion,
   CompanionMini,
-  Family,
+  FamilyOverview,
   Item,
   ItemMini,
   Monster,
@@ -23,6 +23,8 @@ export const toMonsterMini = (
   level: m.level,
   name: m.name,
   visibility: m.visibility,
+  size: m.size,
+  armor: m.armor === "EMPTY_ENUM_VALUE" ? "none" : m.armor,
 });
 
 export const toMonster = (
@@ -30,22 +32,15 @@ export const toMonster = (
     typeof prisma.monster,
     {
       include: {
-        family: true;
+        family: { include: { creator: true } };
         creator: true;
-        monsterConditions: { include: { condition: true } };
       };
     },
     "findMany"
   >[0]
 ): Monster => {
   return {
-    id: m.id,
-    name: m.name,
-    hp: m.hp,
-    legendary: m.legendary,
-    minion: m.minion,
-    level: m.level,
-    visibility: m.visibility,
+    ...toMonsterMini(m),
     kind: m.kind,
     bloodied: m.bloodied,
     lastStand: m.lastStand,
@@ -55,28 +50,26 @@ export const toMonster = (
     climb: m.climb,
     teleport: m.teleport,
     burrow: m.burrow,
-    size: m.size,
     saves: m.saves.join(" "),
-    armor: m.armor === "EMPTY_ENUM_VALUE" ? "none" : m.armor,
     updatedAt: m.updatedAt.toISOString(),
     abilities: m.abilities as unknown as Ability[],
     actions: m.actions as unknown as Action[],
     actionPreface: m.actionPreface || "",
     moreInfo: m.moreInfo || "",
-    family: toFamily(m.family),
+    family: toFamilyOverview(m.family),
     creator: { ...m.creator, avatar: m.creator.avatar || "" },
-    conditions: m.monsterConditions.map((mc) => ({
-      name: mc.condition.name,
-      description: mc.condition.description,
-      official: mc.condition.official,
-      inline: mc.inline,
-    })),
   };
 };
 
-export const toFamily = (
-  f: Prisma.Result<typeof prisma.family, object, "findMany">[0] | null
-): Family | undefined => {
+export const toFamilyOverview = (
+  f:
+    | Prisma.Result<
+        typeof prisma.family,
+        { include: { creator: true } },
+        "findMany"
+      >[0]
+    | null
+): FamilyOverview | undefined => {
   if (!f) {
     return undefined;
   }
@@ -87,6 +80,7 @@ export const toFamily = (
     abilities: f.abilities as unknown as Ability[],
     visibility: f.visibility,
     creatorId: f.creatorId,
+    creator: { ...f.creator, avatar: f.creator.avatar || "" },
   };
 };
 

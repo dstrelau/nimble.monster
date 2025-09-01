@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { loadOfficialConditions } from "@/app/actions/conditions";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { FamilyHeader } from "@/components/FamilyHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import { listConditionsForDiscordId } from "@/lib/db/condition";
 import { parseMonsterLevel } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -70,29 +68,9 @@ export default async function FamilyDetailPage({
       (a, b) => parseMonsterLevel(a.level) - parseMonsterLevel(b.level)
     ) ?? [];
 
-  const [officialConditions, familyOwnerConditions] = await Promise.all([
-    loadOfficialConditions(),
-    listConditionsForDiscordId(family.creatorId),
-  ]);
-
-  const conditionsMap = new Map<string, (typeof officialConditions)[0]>();
-
-  for (const condition of [...officialConditions, ...familyOwnerConditions]) {
-    const key = condition.name.toLowerCase();
-    if (!conditionsMap.has(key)) {
-      conditionsMap.set(key, condition);
-    }
-  }
-
-  const allConditions = Array.from(conditionsMap.values());
-
   return (
     <div className="container">
-      <FamilyHeader
-        family={family}
-        showEditDeleteButtons={isCreator}
-        conditions={allConditions}
-      />
+      <FamilyHeader family={family} showEditDeleteButtons={isCreator} />
       {sortedMonsters.length === 0 ? (
         <p>No public monsters in this family.</p>
       ) : (

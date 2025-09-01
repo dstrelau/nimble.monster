@@ -7,11 +7,11 @@ import { deleteFamily } from "@/app/actions/family";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
 import { Button } from "@/components/ui/button";
-import type { Condition, Family } from "@/lib/types";
+import type { Condition, FamilyOverview } from "@/lib/types";
 import { FormattedText } from "./FormattedText";
 
 interface FamilyHeaderProps {
-  family: Family;
+  family: FamilyOverview;
   showEditDeleteButtons?: boolean;
   conditions?: Condition[];
 }

@@ -74,7 +74,7 @@ export default async function ItemPage({
     loadOfficialConditions(),
     listConditionsForDiscordId(item.creator.discordId),
   ]);
-  const conditions = [...officialConditions, ...userConditions];
+  const _conditions = [...officialConditions, ...userConditions];
 
   return (
     <div className="container mx-auto">
@@ -87,7 +87,6 @@ export default async function ItemPage({
           creator={item.creator}
           link={false}
           isOwner={isOwner}
-          conditions={conditions}
         />
       </div>
     </div>

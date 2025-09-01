@@ -95,9 +95,8 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
         include: {
           monster: {
             include: {
-              family: true,
+              family: { include: { creator: true } },
               creator: true,
-              monsterConditions: { include: { condition: true } },
             },
           },
         },
@@ -199,7 +198,7 @@ export const createCollection = async ({
           monster: {
             include: {
               creator: true,
-              family: true,
+              family: { include: { creator: true } },
               monsterConditions: { include: { condition: true } },
             },
           },
@@ -278,7 +277,7 @@ export const updateCollection = async ({
             include: {
               monster: {
                 include: {
-                  family: true,
+                  family: { include: { creator: true } },
                   creator: true,
                   monsterConditions: { include: { condition: true } },
                 },
@@ -333,7 +332,7 @@ export const updateCollection = async ({
             include: {
               monster: {
                 include: {
-                  family: true,
+                  family: { include: { creator: true } },
                   creator: true,
                   monsterConditions: { include: { condition: true } },
                 },

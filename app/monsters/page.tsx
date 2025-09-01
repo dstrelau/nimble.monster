@@ -7,7 +7,7 @@ export default async function MonstersPage({
 }: {
   searchParams: Promise<{ id?: string }>;
 }) {
-  const monsters = await db.listPublicMonsters();
+  const monsters = await db.listPublicMonsterMinis();
   const selectedMonsterId = (await searchParams).id;
 
   return (

@@ -1,14 +1,14 @@
 import { notFound } from "next/navigation";
 import { FamilyCard } from "@/components/FamilyCard";
 import { auth } from "@/lib/auth";
-import * as db from "@/lib/db";
+import { getUserFamilies } from "@/lib/db";
 import { NewFamilyForm } from "./NewFamilyForm";
 
 export default async function MyFamiliesPage() {
   const session = await auth();
   if (!session?.user?.id) notFound();
 
-  const families = await db.getUserFamilies(session.user.id);
+  const families = await getUserFamilies(session.user.id);
 
   return (
     <div className="space-y-6">
@@ -24,7 +24,12 @@ export default async function MyFamiliesPage() {
       ) : (
         <div className="grid gap-8 items-start md:grid-cols-2 lg:grid-cols-3">
           {families.map((family) => (
-            <FamilyCard key={family.id} family={family} showEditDeleteButtons />
+            <FamilyCard
+              key={family.id}
+              family={family}
+              monsters={family.monsters}
+              showEditDeleteButtons
+            />
           ))}
         </div>
       )}

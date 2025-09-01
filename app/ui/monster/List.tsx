@@ -2,11 +2,11 @@ import clsx from "clsx";
 import { Crown, PersonStanding } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Level } from "@/components/Level";
-import type { Monster } from "@/lib/types";
+import type { MonsterMini } from "@/lib/types";
 import { ArmorStat, HPStat } from "./Stat";
 
 type ListProps = {
-  monsters: Monster[];
+  monsters: MonsterMini[];
   selectedIds: string[];
   handleMonsterClick: (id: string) => void;
   showChecks?: boolean;

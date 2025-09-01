@@ -46,14 +46,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { fetchApi } from "@/lib/api";
-import { useConditions } from "@/lib/hooks/useConditions";
-import type { Monster, MonsterArmor, MonsterSize, User } from "@/lib/types";
+import type { Monster, MonsterArmor, MonsterSize } from "@/lib/types";
 import { ARMORS, SIZES } from "@/lib/types";
 import { getUserFamilies } from "../actions/family";
 import { AbilitiesSection } from "./shared/AbilitiesSection";
 import { ActionsSection } from "./shared/ActionsSection";
 
-const EXAMPLE_MONSTERS: Record<string, Monster> = {
+const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
   goblin: {
     visibility: "public",
     id: "",
@@ -70,7 +69,6 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     burrow: 0,
     speed: 6,
     hp: 30,
-    conditions: [],
     abilities: [
       {
         name: "Meat Shield",
@@ -111,7 +109,6 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     teleport: 0,
     burrow: 0,
     saves: "STR+, DEX+",
-    conditions: [],
     abilities: [
       {
         name: "Feral Instinct",
@@ -150,7 +147,6 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     burrow: 0,
     speed: 6,
     hp: 0,
-    conditions: [],
     abilities: [],
     actions: [
       {
@@ -178,7 +174,6 @@ const EXAMPLE_MONSTERS: Record<string, Monster> = {
     burrow: 0,
     speed: 6,
     hp: 0,
-    conditions: [],
     abilities: [],
     actions: [],
     actionPreface: "Choose one.",
@@ -753,34 +748,16 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
   const router = useRouter();
 
   const { data: session } = useSession();
-  let creator: User | undefined;
-  if (session?.user) {
-    creator = {
-      discordId: session.user.id,
-      avatar: session.user.image || "",
-      username: session.user.name || "",
-    };
-  }
+  const creator = {
+    discordId: session?.user.id || "",
+    avatar: session?.user.image || "",
+    username: session?.user.name || "",
+  };
 
   const [monster, setMonster] = useState<Monster>(
-    // we will override conditions just below once loaded
-    () =>
-      existingMonster
-        ? { ...existingMonster, conditions: [] }
-        : EXAMPLE_MONSTERS.empty
+    () => existingMonster || { ...EXAMPLE_MONSTERS.empty, creator }
   );
   const queryClient = useQueryClient();
-
-  const { allConditions } = useConditions();
-
-  // Create a monster with current conditions for preview
-  const monsterWithConditions = useMemo(
-    () => ({
-      ...monster,
-      conditions: allConditions.map((c) => ({ ...c, inline: false })),
-    }),
-    [monster, allConditions]
-  );
 
   const mutation = useMutation({
     mutationFn: async (data: Monster) => {
@@ -814,6 +791,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
       saves: EXAMPLE_MONSTERS[type].saves || undefined,
       bloodied: EXAMPLE_MONSTERS[type].bloodied || undefined,
       lastStand: EXAMPLE_MONSTERS[type].lastStand || undefined,
+      creator: creator,
     });
   };
 
@@ -837,7 +815,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
             ? "md:col-span-2"
             : "md:col-span-2"
       )}
-      previewContent={<Card monster={monsterWithConditions} />}
+      previewContent={<Card monster={monster} />}
       formContent={
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="mb-6 flex justify-center">
@@ -928,11 +906,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
             }}
           />
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
-            <Card
-              monster={monsterWithConditions}
-              creator={creator}
-              hideActions={true}
-            />
+            <Card monster={monster} creator={creator} hideActions={true} />
           </div>
         </>
       }

@@ -4,12 +4,13 @@ import type {
   Family,
   Monster,
   MonsterArmor,
+  MonsterMini,
   MonsterSize,
 } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
 import type { InputJsonValue } from "../prisma/runtime/library";
 import { toMonster } from "./converters";
-import { prisma } from "./index";
+import { prisma, toMonsterMini } from "./index";
 import {
   extractAllConditions,
   syncMonsterConditions,
@@ -34,18 +35,13 @@ export const deleteMonster = async ({
   return !!monster;
 };
 
-export const listPublicMonsters = async (): Promise<Monster[]> => {
+export const listPublicMonsterMinis = async (): Promise<MonsterMini[]> => {
   return (
     await prisma.monster.findMany({
       where: { visibility: "public" },
       orderBy: { name: "asc" },
-      include: {
-        family: true,
-        creator: true,
-        monsterConditions: { include: { condition: true } },
-      },
     })
-  ).map(toMonster);
+  ).map(toMonsterMini);
 };
 
 export const findMonster = async (id: string): Promise<Monster | null> => {
@@ -54,7 +50,7 @@ export const findMonster = async (id: string): Promise<Monster | null> => {
   const monster = await prisma.monster.findUnique({
     where: { id },
     include: {
-      family: true,
+      family: { include: { creator: true } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -70,7 +66,7 @@ export const findPublicMonsterById = async (
   const monster = await prisma.monster.findUnique({
     where: { id, visibility: "public" },
     include: {
-      family: true,
+      family: { include: { creator: true } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -87,7 +83,7 @@ export const findMonsterWithCreatorDiscordId = async (
   const monster = await prisma.monster.findUnique({
     where: { id, creator: { discordId: creatorId } },
     include: {
-      family: true,
+      family: { include: { creator: true } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -101,7 +97,7 @@ export const listPublicMonstersForDiscordID = async (
   return (
     await prisma.monster.findMany({
       include: {
-        family: true,
+        family: { include: { creator: true } },
         creator: true,
         monsterConditions: { include: { condition: true } },
       },
@@ -120,7 +116,7 @@ export const listAllMonstersForDiscordID = async (
   return (
     await prisma.monster.findMany({
       include: {
-        family: true,
+        family: { include: { creator: true } },
         creator: true,
         monsterConditions: { include: { condition: true } },
       },
@@ -140,7 +136,7 @@ export const listMonstersByFamilyId = async (
   return (
     await prisma.monster.findMany({
       include: {
-        family: true,
+        family: { include: { creator: true } },
         creator: true,
         monsterConditions: { include: { condition: true } },
       },
@@ -254,7 +250,7 @@ export const createMonster = async (
       },
     },
     include: {
-      family: true,
+      family: { include: { creator: true } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },

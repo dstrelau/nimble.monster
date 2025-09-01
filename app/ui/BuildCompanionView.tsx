@@ -278,7 +278,7 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
       previewTitle="Companion Preview"
       formClassName="md:col-span-3"
       previewClassName="md:col-span-3"
-      previewContent={<Card companion={companion} conditions={conditions} />}
+      previewContent={<Card companion={companion} creator={creator} />}
       formContent={
         <form className="space-y-6" onSubmit={handleSubmit}>
           <CompanionForm companion={companion} setCompanion={setCompanion} />
@@ -321,12 +321,7 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
             }
           />
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
-            <Card
-              companion={companion}
-              conditions={conditions}
-              creator={creator}
-              hideActions={true}
-            />
+            <Card companion={companion} creator={creator} hideActions={true} />
           </div>
         </>
       }

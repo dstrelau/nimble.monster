@@ -74,7 +74,7 @@ export default async function CompanionPage({
     listOfficialConditions(),
     listConditionsForDiscordId(companion.creator.discordId || ""),
   ]);
-  const conditions = [...officialConditions, ...userConditions];
+  const _conditions = [...officialConditions, ...userConditions];
 
   // if companion is not public, then user must be creator
   const isOwner = session?.user?.id === companion.creator?.discordId || false;
@@ -89,12 +89,7 @@ export default async function CompanionPage({
         {isOwner && <CompanionDetailActions companion={companion} />}
       </div>
       <div className="max-w-2xl mx-auto">
-        <Card
-          companion={companion}
-          creator={companion.creator}
-          conditions={conditions}
-          link={false}
-        />
+        <Card companion={companion} creator={companion.creator} link={false} />
       </div>
     </div>
   );

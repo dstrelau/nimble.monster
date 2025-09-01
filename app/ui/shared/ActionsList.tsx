@@ -2,7 +2,6 @@ import type React from "react";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { maybePeriod } from "@/lib/text";
 import type { Action, Condition } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { StrongCondensed } from "./StyledComponents";
 
 interface ActionsListProps {

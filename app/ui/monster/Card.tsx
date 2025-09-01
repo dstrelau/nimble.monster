@@ -1,10 +1,10 @@
+"use client";
 import clsx from "clsx";
 import { Users } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
 import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
-import { InlineConditions } from "@/app/ui/shared/InlineConditions";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import {
   CardContainer,
@@ -19,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useConditions } from "@/lib/hooks/useConditions";
 import type { Monster, User } from "@/lib/types";
 import { formatSizeKind } from "@/lib/utils/monster";
 import CardActions from "./CardActions";
@@ -222,6 +223,9 @@ export const Card = ({
   hideFamilyName = false,
   className,
 }: CardProps) => {
+  const { allConditions: conditions } = useConditions({
+    creatorId: creator?.discordId,
+  });
   return (
     <div className={clsx(monster.legendary && "md:col-span-2")}>
       <div id={`monster-${monster.id}`}>
@@ -246,7 +250,7 @@ export const Card = ({
             {((!hideFamilyAbilities && monster.family?.abilities) ||
               monster.abilities.length > 0) && (
               <AbilityOverlay
-                conditions={monster.conditions}
+                conditions={conditions}
                 abilities={[
                   ...(hideFamilyAbilities
                     ? []
@@ -259,16 +263,15 @@ export const Card = ({
 
             <ActionsList
               actions={monster.actions}
-              conditions={monster.conditions}
+              conditions={conditions}
               actionPreface={monster.actionPreface}
             />
-            <InlineConditions conditions={monster.conditions} />
             {monster.legendary && (
               <>
                 {monster.bloodied && (
                   <PrefixedFormattedText
                     content={monster.bloodied}
-                    conditions={monster.conditions}
+                    conditions={conditions}
                     prefix={
                       <strong className="font-condensed">BLOODIED:</strong>
                     }
@@ -279,7 +282,7 @@ export const Card = ({
                   <div>
                     <PrefixedFormattedText
                       content={monster.lastStand}
-                      conditions={monster.conditions}
+                      conditions={conditions}
                       prefix={
                         <strong className="font-condensed">LAST STAND:</strong>
                       }
@@ -291,7 +294,7 @@ export const Card = ({
 
             <MoreInfoSection
               moreInfo={monster.moreInfo}
-              conditions={monster.conditions}
+              conditions={conditions}
             />
           </CardContentWithGap>
 

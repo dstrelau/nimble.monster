@@ -41,28 +41,29 @@ export interface FamilyOverview {
   description?: string;
   abilities: Ability[];
   visibility?: FamilyVisibility;
-  monsters?: MonsterMini[];
   monsterCount?: number;
   creatorId: string;
-  creator?: User;
+  creator: User;
 }
 
 export interface Family extends FamilyOverview {
-  monsters?: Monster[];
+  monsters: Monster[];
 }
 
 export interface MonsterMini {
   id: string;
   hp: number;
+  kind?: string;
   legendary: boolean;
   minion: boolean;
   level: string;
   name: string;
+  size: MonsterSize;
+  armor: MonsterArmor;
   visibility: "public" | "private";
 }
 
 export interface Monster extends MonsterMini {
-  kind?: string;
   saves?: string;
   bloodied?: string;
   lastStand?: string;
@@ -72,17 +73,15 @@ export interface Monster extends MonsterMini {
   climb: number;
   teleport: number;
   burrow: number;
-  armor: MonsterArmor;
   size: MonsterSize;
   abilities: Ability[];
   actions: Action[];
   actionPreface: string;
   moreInfo?: string;
   family?: FamilyOverview;
-  creator?: User;
+  creator: User;
   updatedAt: string;
   imageUrl?: string;
-  conditions: MonsterCondition[];
 }
 
 export const COMPANION_STATS = [
@@ -125,16 +124,9 @@ export interface Condition {
   official: boolean;
 }
 
-export interface MonsterCondition extends Condition {
-  inline: boolean;
-}
-
-/* FIXME: some families are serialized with Go-default capitalization */
 export interface Ability {
   name: string;
   description: string;
-  Name?: string;
-  Description?: string;
 }
 
 export interface Action {

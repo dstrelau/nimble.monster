@@ -83,7 +83,7 @@ export const PUT = telemetry(
           family_id: monsterData.family?.id || null,
         },
         include: {
-          family: true,
+          family: { include: { creator: true } },
           creator: true,
           monsterConditions: { include: { condition: true } },
         },

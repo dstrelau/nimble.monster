@@ -26,7 +26,7 @@ export const FilterableCardGrid: React.FC<FilterableCardGridProps> = ({
     handleSearch,
     setLegendaryFilter,
     setSortOption,
-  } = useSimpleMonsterFilters({ monsters });
+  } = useSimpleMonsterFilters<Monster>({ monsters });
 
   return (
     <div className="space-y-6">

@@ -1,17 +1,19 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { Ghost } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/app/ui/monster/Card";
 import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
-import type { Monster } from "@/lib/types";
+import type { MonsterMini } from "@/lib/types";
+import { findPublicMonster } from "../actions/monster";
 import { List } from "./monster/List";
 import { SimpleFilterBar } from "./monster/SimpleFilterBar";
 
 interface MonstersListViewProps {
-  monsters: Monster[];
+  monsters: MonsterMini[];
   initialSelectedId?: string;
 }
 
@@ -34,7 +36,6 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
     sortOption,
     filteredMonsters,
     shouldClearSelection,
-    filtersChangeId,
     handleSearch,
     setLegendaryFilter,
     setSortOption,
@@ -62,16 +63,6 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
     }
   }, [shouldClearSelection, router, pathname, searchParams]);
 
-  // Trigger scrolling when filters change and there's a selected monster
-  useEffect(() => {
-    if (selectedMonsterId && filtersChangeId > 1) {
-      // Skip initial load
-      setShouldScrollToSelected(true);
-      const timer = setTimeout(() => setShouldScrollToSelected(false), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [filtersChangeId, selectedMonsterId]);
-
   // Scroll to selected monster on initial load
   useEffect(() => {
     if (selectedMonsterId) {
@@ -87,9 +78,14 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
     }
   }, [selectedMonsterId]);
 
-  const selectedMonster = useMemo(() => {
-    return monsters.find((m) => m.id === selectedMonsterId);
-  }, [monsters, selectedMonsterId]);
+  const selectedMonster = useQuery({
+    queryKey: ["monster", selectedMonsterId],
+    queryFn: async () => {
+      const { monster } = await findPublicMonster(selectedMonsterId || "");
+      return monster;
+    },
+    enabled: !!selectedMonsterId,
+  });
 
   const handleMonsterClick = (monsterId: string) => {
     setSelectedMonsterId(monsterId);
@@ -122,9 +118,12 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
 
       {/* Right side: Detail view */}
       <div className="w-full lg:w-2/3">
-        {selectedMonster ? (
+        {selectedMonster.data ? (
           <div className="sticky top-4">
-            <Card monster={selectedMonster} creator={selectedMonster.creator} />
+            <Card
+              monster={selectedMonster.data}
+              creator={selectedMonster.data.creator}
+            />
           </div>
         ) : (
           <div className="d-card d-card-bordered bg-base-100 p-8 h-full flex items-center justify-center text-center">

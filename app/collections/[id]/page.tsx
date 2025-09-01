@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { loadOfficialConditions } from "@/app/actions/conditions";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { CollectionHeader } from "@/components/CollectionHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import { listConditionsForDiscordId, listOfficialConditions } from "@/lib/db";
 
 export async function generateMetadata({
   params,
@@ -54,10 +54,15 @@ export default async function ShowCollectionView({
   const { id } = await params;
   const collection = await db.getCollection(id);
   const session = await auth();
-  const conditions = await loadOfficialConditions();
   if (!collection) {
     notFound();
   }
+
+  const [officialConditions, userConditions] = await Promise.all([
+    listOfficialConditions(),
+    listConditionsForDiscordId(collection.creator.discordId),
+  ]);
+  const conditions = [...officialConditions, ...userConditions];
   if (
     collection.visibility === "private" &&
     collection.creator.discordId !== session?.user.id

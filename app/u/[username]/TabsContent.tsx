@@ -15,7 +15,6 @@ import {
 import type {
   CollectionOverview,
   Companion,
-  Condition,
   Family,
   Item,
   Monster,
@@ -29,7 +28,6 @@ export default function TabsContent({
   families,
   companions,
   items,
-  conditions,
   initialTab,
 }: {
   monsters: Monster[];
@@ -37,7 +35,6 @@ export default function TabsContent({
   families: Family[];
   companions: Companion[];
   items: Item[];
-  conditions: Condition[];
   initialTab?: "monsters" | "collections" | "families" | "companions" | "items";
 }) {
   const searchParams = useSearchParams();
@@ -117,7 +114,11 @@ export default function TabsContent({
         ) : (
           <div className="grid gap-8 items-start md:grid-cols-2 lg:grid-cols-3">
             {families.map((family) => (
-              <FamilyCard key={family.id} family={family} />
+              <FamilyCard
+                key={family.id}
+                family={family}
+                monsters={family.monsters}
+              />
             ))}
           </div>
         )}
@@ -129,12 +130,7 @@ export default function TabsContent({
             No public companions available
           </p>
         ) : (
-          <CompanionCardGrid
-            conditions={conditions}
-            companions={companions}
-            hideActions
-            hideCreator
-          />
+          <CompanionCardGrid companions={companions} hideActions hideCreator />
         )}
       </ShadcnTabsContent>
 
@@ -144,12 +140,7 @@ export default function TabsContent({
             No public items available
           </p>
         ) : (
-          <ItemCardGrid
-            items={items}
-            hideActions
-            hideCreator
-            conditions={conditions}
-          />
+          <ItemCardGrid items={items} hideActions hideCreator />
         )}
       </ShadcnTabsContent>
     </Tabs>

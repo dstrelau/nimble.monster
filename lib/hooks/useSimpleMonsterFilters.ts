@@ -6,17 +6,17 @@ import type {
   LegendaryFilter,
   SortOption,
 } from "@/app/ui/monster/SimpleFilterBar";
-import type { Monster } from "@/lib/types";
+import type { MonsterMini } from "@/lib/types";
 
-interface UseSimpleMonsterFiltersProps {
-  monsters: Monster[];
+interface UseSimpleMonsterFiltersProps<T extends MonsterMini> {
+  monsters: T[];
   selectedMonsterId?: string | null;
 }
 
-export const useSimpleMonsterFilters = ({
+export const useSimpleMonsterFilters = <T extends MonsterMini>({
   monsters,
   selectedMonsterId,
-}: UseSimpleMonsterFiltersProps) => {
+}: UseSimpleMonsterFiltersProps<T>) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -94,7 +94,7 @@ export const useSimpleMonsterFilters = ({
     setSearchTerm(q);
   }, []);
 
-  const filteredMonsters = useMemo(() => {
+  const filteredMonsters = useMemo((): T[] => {
     return monsters
       .filter((monster) => {
         // Search filter

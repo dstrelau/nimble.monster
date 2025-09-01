@@ -1,6 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useState, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { updateFamily } from "@/app/actions/family";
@@ -12,14 +13,19 @@ import {
 import { FamilyHeader } from "@/components/FamilyHeader";
 import { Button } from "@/components/ui/button";
 import { useConditions } from "@/lib/hooks/useConditions";
-import type { Family } from "@/lib/types";
+import type { FamilyOverview } from "@/lib/types";
 
 interface EditFamilyClientProps {
-  family: Family;
+  family: FamilyOverview;
 }
 
 export function EditFamilyClient({ family }: EditFamilyClientProps) {
   const router = useRouter();
+  const { data: session } = useSession();
+  if (!session) {
+    router.push("/login");
+    return null;
+  }
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -27,8 +33,8 @@ export function EditFamilyClient({ family }: EditFamilyClientProps) {
   const { allConditions } = useConditions();
 
   const normalizedAbilities = family.abilities.map((ability) => ({
-    name: ability.name || ability.Name || "",
-    description: ability.description || ability.Description || "",
+    name: ability.name || "",
+    description: ability.description || "",
   }));
 
   const {
@@ -70,9 +76,10 @@ export function EditFamilyClient({ family }: EditFamilyClientProps) {
 
   const watchedValues = useWatch({ control });
 
-  const previewFamily: Family = {
+  const previewFamily: FamilyOverview = {
     id: family.id,
     creatorId: family.creatorId,
+    creator: family.creator,
     name: watchedValues.name || family.name,
     description: watchedValues.description ?? family.description,
     abilities:

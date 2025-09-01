@@ -11,7 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Condition, Item, User } from "@/lib/types";
+import { useConditions } from "@/lib/hooks/useConditions";
+import type { Item, User } from "@/lib/types";
 
 const HeaderItem: React.FC<{
   item: Item;
@@ -35,13 +36,12 @@ const HeaderItem: React.FC<{
 
 interface CardProps {
   item: Item;
-  creator?: User;
+  creator: User;
   isOwner?: boolean;
   link?: boolean;
   hideActions?: boolean;
   hideCreator?: boolean;
   className?: string;
-  conditions?: Condition[];
 }
 
 export const Card = ({
@@ -52,8 +52,10 @@ export const Card = ({
   hideActions = false,
   hideCreator = false,
   className,
-  conditions = [],
 }: CardProps) => {
+  const { allConditions } = useConditions({
+    creatorId: creator.discordId,
+  });
   return (
     <div className="max-w-sm" id={`item-${item.id}`}>
       <CardContainer className={`relative ${className}`}>
@@ -69,10 +71,16 @@ export const Card = ({
 
         <CardContent className="flex flex-col gap-3 relative z-10">
           {item.description && (
-            <FormattedText content={item.description} conditions={conditions} />
+            <FormattedText
+              content={item.description}
+              conditions={allConditions}
+            />
           )}
 
-          <MoreInfoSection moreInfo={item.moreInfo} conditions={conditions} />
+          <MoreInfoSection
+            moreInfo={item.moreInfo}
+            conditions={allConditions}
+          />
         </CardContent>
 
         <CardFooterLayout

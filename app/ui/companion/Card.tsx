@@ -15,7 +15,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Companion, Condition, MonsterSize, User } from "@/lib/types";
+import { useConditions } from "@/lib/hooks/useConditions";
+import type { Companion, MonsterSize, User } from "@/lib/types";
 
 // Helper function to format companion size
 const formatCompanionSize = (size: MonsterSize): string => {
@@ -54,8 +55,7 @@ const HeaderCompanion: React.FC<{
 
 interface CardProps {
   companion: Companion;
-  creator?: User;
-  conditions: Condition[];
+  creator: User;
   link?: boolean;
   hideActions?: boolean;
   hideCreator?: boolean;
@@ -65,12 +65,14 @@ interface CardProps {
 export const Card = ({
   companion,
   creator,
-  conditions,
   link = true,
   hideActions = false,
   hideCreator = false,
   className,
 }: CardProps) => {
+  const { allConditions } = useConditions({
+    creatorId: creator.discordId,
+  });
   return (
     <div id={`companion-${companion.id}`}>
       <CardContainer className={className}>
@@ -79,14 +81,14 @@ export const Card = ({
         <CardContent className="flex flex-col gap-3 pt-0 pb-4">
           {companion.abilities.length > 0 && (
             <AbilityOverlay
-              conditions={conditions}
+              conditions={allConditions}
               abilities={companion.abilities}
             />
           )}
 
           <ActionsList
             actions={companion.actions}
-            conditions={conditions}
+            conditions={allConditions}
             actionPreface={companion.actionPreface}
           />
 
@@ -94,7 +96,7 @@ export const Card = ({
             <PrefixedFormattedText
               prefix={<strong>Dying: </strong>}
               content={companion.dyingRule}
-              conditions={conditions}
+              conditions={allConditions}
             />
           )}
 
@@ -108,7 +110,7 @@ export const Card = ({
 
           <MoreInfoSection
             moreInfo={companion.moreInfo}
-            conditions={conditions}
+            conditions={allConditions}
           />
         </CardContent>
 

@@ -25,18 +25,13 @@ export default async function UserProfilePage({
     families,
     companions,
     items,
-    userConditions,
-    officialConditions,
   ] = await Promise.all([
     db.listPublicMonstersForDiscordID(username),
     db.getUserPublicCollectionsHavingMonsters(username),
     db.getUserPublicFamiliesWithMonsters(user.discordId),
     db.listPublicCompanionsForDiscordID(username),
     db.listPublicItemsForDiscordID(username),
-    db.listConditionsForDiscordId(user.discordId),
-    loadOfficialConditions(),
   ]);
-  const conditions = [...userConditions, ...officialConditions];
 
   return (
     <div className="container mx-auto">
@@ -54,7 +49,6 @@ export default async function UserProfilePage({
         families={families.filter((f) => !!f.monsterCount)}
         companions={companions}
         items={items}
-        conditions={conditions}
         initialTab={
           tab as
             | "monsters"

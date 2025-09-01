@@ -44,7 +44,10 @@ export default async function HomePage() {
 
           <div className="flex gap-4 items-center">
             <div className="flex-1">
-              <FamilyCard family={featuredFamily} />
+              <FamilyCard
+                family={featuredFamily}
+                monsters={featuredFamily.monsters}
+              />
             </div>
             <div className="flex-1">
               <MonsterCardWithOverflow

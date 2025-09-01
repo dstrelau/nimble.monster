@@ -1,8 +1,7 @@
 "use client";
 import DOMPurify from "isomorphic-dompurify";
-
 import MarkdownIt from "markdown-it";
-import { useEffect, useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { useIsClient } from "@/components/SSRSafe";
 import {
@@ -35,14 +34,16 @@ function ConditionSpan({
     );
   }
 
+  const text = (
+    <span className="underline decoration-dotted cursor-default">
+      {displayText}
+    </span>
+  );
+
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <span className="text-primary-success underline decoration-dotted cursor-default">
-            {displayText}
-          </span>
-        </TooltipTrigger>
+        <TooltipTrigger asChild>{text}</TooltipTrigger>
         <TooltipContent className="max-w-3xs text-wrap">
           <strong>{condition.name}:</strong> {condition.description}
         </TooltipContent>
@@ -92,7 +93,6 @@ function conditionPlugin(md: MarkdownIt) {
       token.meta = {
         conditionName,
         displayText,
-        // condition,
       };
     }
 
@@ -104,78 +104,110 @@ function conditionPlugin(md: MarkdownIt) {
   md.renderer.rules.condition = (tokens, idx) => {
     const token = tokens[idx];
     const meta = token.meta;
-    return `<span class="underline decoration-dotted" data-condition-name="${meta.conditionName}" data-display-text="${meta.displayText}" data-has-condition="${meta.condition ? "true" : "false"}">${meta.conditionName}</span>`;
+    return `<span class="underline decoration-dotted" data-condition-name="${meta.conditionName}" data-display-text="${meta.displayText}">${meta.displayText}</span>`;
   };
 }
+
+const md = new MarkdownIt("zero").enable([
+  "paragraph",
+  "emphasis",
+  "newline",
+  "list",
+]);
+conditionPlugin(md);
 
 export function FormattedText({
   content,
   conditions,
   className = "",
 }: FormattedTextProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
   const isClient = useIsClient();
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Create markdown instance with condition plugin
-  const md = useMemo(() => {
-    const markdownInstance = new MarkdownIt("zero").enable([
-      "paragraph",
-      "emphasis",
-      "newline",
-      "list",
-    ]);
-
-    conditionPlugin(markdownInstance);
-    return markdownInstance;
-  }, []);
-
-  const renderedContent = useMemo(() => {
-    // Process markdown with conditions
+  const { html, placeholders } = useMemo(() => {
     const html = DOMPurify.sanitize(md.render(content));
 
-    // Always return the HTML with data attributes
-    return (
+    if (!isClient) {
+      return { html, placeholders: [] };
+    }
+
+    // Parse HTML and replace condition spans with React components
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    const conditionSpans = doc.querySelectorAll("[data-condition-name]");
+
+    if (conditionSpans.length === 0) {
+      return { html, placeholders: [] };
+    }
+
+    // Create a new div to hold the processed content
+    const processedDiv = document.createElement("div");
+    processedDiv.innerHTML = html;
+
+    // Replace each condition span with a placeholder
+    const placeholders: { id: string; component: React.ReactNode }[] = [];
+    processedDiv
+      .querySelectorAll("[data-condition-name]")
+      .forEach((span, index) => {
+        const conditionName = span.getAttribute("data-condition-name") || "";
+        const displayText =
+          span.getAttribute("data-display-text") || conditionName;
+        const condition = conditions.find(
+          (c) => c.name.toLowerCase() === conditionName.toLowerCase()
+        );
+
+        const placeholderId = `condition-placeholder-${index}`;
+        const placeholder = document.createElement("span");
+        placeholder.id = placeholderId;
+        span.parentNode?.replaceChild(placeholder, span);
+
+        placeholders.push({
+          id: placeholderId,
+          component: (
+            <ConditionSpan
+              key={condition?.name}
+              displayText={displayText}
+              condition={condition}
+            />
+          ),
+        });
+      });
+
+    return { html: processedDiv.innerHTML, placeholders };
+  }, [content, conditions, isClient]);
+
+  useLayoutEffect(() => {
+    if (!containerRef.current || placeholders.length === 0) return;
+
+    placeholders.forEach(({ id, component }) => {
+      const placeholder = containerRef.current?.querySelector(`#${id}`);
+      if (placeholder) {
+        const reactContainer = document.createElement("span");
+        // Copy the text content before replacing to avoid flicker
+        reactContainer.textContent = placeholder.textContent;
+        placeholder.parentNode?.replaceChild(reactContainer, placeholder);
+        const root = createRoot(reactContainer);
+        root.render(component);
+      }
+    });
+  }, [placeholders]);
+
+  const renderedContent =
+    placeholders.length > 0 ? (
+      <div
+        ref={containerRef}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized and processed markdown content
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    ) : (
       <div
         // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized markdown content
         dangerouslySetInnerHTML={{ __html: html }}
       />
     );
-  }, [content, md]);
-
-  // Hydrate condition spans after client-side render
-  useEffect(() => {
-    if (!isClient || !containerRef.current) return;
-
-    const conditionSpans = containerRef.current.querySelectorAll(
-      "[data-condition-name]"
-    );
-
-    conditionSpans.forEach((span) => {
-      const conditionName = span.getAttribute("data-condition-name");
-      const displayText = span.getAttribute("data-display-text");
-
-      if (!conditionName || !displayText) return;
-
-      const condition = conditions.find(
-        (c) => c.name.toLowerCase() === conditionName.toLowerCase()
-      );
-
-      // Create a container for the React component
-      const container = document.createElement("span");
-      span.parentNode?.replaceChild(container, span);
-
-      // Render the ConditionSpan component
-      const root = createRoot(container);
-      root.render(
-        <ConditionSpan displayText={displayText} condition={condition} />
-      );
-    });
-  }, [isClient, conditions]);
 
   return (
-    <div ref={containerRef} className={cn("[&_p_~_p]:mt-1.5", className)}>
-      {renderedContent}
-    </div>
+    <div className={cn("[&_p_~_p]:mt-1.5", className)}>{renderedContent}</div>
   );
 }
 

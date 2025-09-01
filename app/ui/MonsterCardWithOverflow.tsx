@@ -40,12 +40,7 @@ export function MonsterCardWithOverflow({
       className="relative max-h-[450px] overflow-hidden p-2 group"
     >
       <div ref={cardRef}>
-        <MonsterCard
-          className=""
-          monster={monster}
-          hideActions={true}
-          hideCreator={true}
-        />
+        <MonsterCard monster={monster} hideActions={true} hideCreator={true} />
       </div>
       <div
         className={cn(

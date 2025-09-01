@@ -3,19 +3,9 @@ import { auth } from "@/lib/auth";
 import {
   createCondition as dbCreateCondition,
   listConditionsForDiscordId,
-  listConditionsForMonster,
   listOfficialConditions,
 } from "@/lib/db/condition";
-import type { Condition, MonsterCondition } from "@/lib/types";
-
-export async function loadMonsterConditions(
-  monsterId: string
-): Promise<MonsterCondition[]> {
-  return (await listConditionsForMonster(monsterId)).map((mc) => ({
-    ...mc.condition,
-    inline: mc.inline,
-  }));
-}
+import type { Condition } from "@/lib/types";
 
 export async function loadOwnConditions(): Promise<Condition[]> {
   const session = await auth();
@@ -23,6 +13,12 @@ export async function loadOwnConditions(): Promise<Condition[]> {
     throw new Error("Not authenticated");
   }
   return await listConditionsForDiscordId(session.user.id);
+}
+
+export async function loadConditionsForDiscordId(
+  discordId: string
+): Promise<Condition[]> {
+  return await listConditionsForDiscordId(discordId);
 }
 
 export async function loadOfficialConditions(): Promise<Condition[]> {
