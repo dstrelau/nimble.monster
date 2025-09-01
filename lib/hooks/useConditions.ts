@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import {
+  loadConditionsForDiscordId,
   loadOfficialConditions,
-  loadOwnConditions,
 } from "@/app/actions/conditions";
 import type { Condition } from "@/lib/types";
 
@@ -19,7 +19,7 @@ export function useConditions({
 }: UseConditionsOptions = {}) {
   const creatorConditions = useQuery({
     queryKey: ["conditions", creatorId],
-    queryFn: loadOwnConditions,
+    queryFn: () => loadConditionsForDiscordId(creatorId || ""),
     staleTime,
     enabled: enabled && !!creatorId,
   });
@@ -27,7 +27,7 @@ export function useConditions({
   const { data: session } = useSession();
   const ownConds = useQuery({
     queryKey: ["conditions", session?.user?.id],
-    queryFn: loadOwnConditions,
+    queryFn: () => loadConditionsForDiscordId(session?.user?.id || ""),
     staleTime,
     enabled: enabled && !!session?.user,
   });

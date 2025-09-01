@@ -7,14 +7,6 @@ import {
 } from "@/lib/db/condition";
 import type { Condition } from "@/lib/types";
 
-export async function loadOwnConditions(): Promise<Condition[]> {
-  const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error("Not authenticated");
-  }
-  return await listConditionsForDiscordId(session.user.id);
-}
-
 export async function loadConditionsForDiscordId(
   discordId: string
 ): Promise<Condition[]> {
