@@ -37,7 +37,7 @@ export default async function UserProfilePage({
     <div className="container mx-auto">
       {/* User Profile Header */}
       <div className="flex items-center mb-4">
-        <UserAvatar user={user} size={72} className="mr-4" />
+        <UserAvatar user={user} size={56} className="mr-4" />
         <div>
           <h1 className="text-3xl font-bold">{username}</h1>
         </div>

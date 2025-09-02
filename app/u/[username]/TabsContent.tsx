@@ -59,9 +59,8 @@ export default function TabsContent({
     <Tabs
       value={activeTab}
       onValueChange={(value) => router.push(`?tab=${value}`)}
-      className="w-full"
     >
-      <TabsList className="grid w-full grid-cols-5">
+      <TabsList className="w-full overflow-x-auto justify-start">
         <TabsTrigger value="monsters">Monsters ({monsters.length})</TabsTrigger>
         <TabsTrigger value="collections">
           Collections ({collections.length})
