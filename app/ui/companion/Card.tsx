@@ -1,3 +1,4 @@
+"use client";
 import { Circle, Skull } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
