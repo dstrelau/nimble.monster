@@ -22,15 +22,9 @@ interface EditFamilyClientProps {
 export function EditFamilyClient({ family }: EditFamilyClientProps) {
   const router = useRouter();
   const { data: session } = useSession();
-  if (!session) {
-    router.push("/login");
-    return null;
-  }
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-
-  // Load all conditions for the preview (will be reactive to new conditions)
-  const { allConditions } = useConditions();
+  const { allConditions } = useConditions({ creatorId: session?.user?.id });
 
   const normalizedAbilities = family.abilities.map((ability) => ({
     name: ability.name || "",

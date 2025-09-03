@@ -1,71 +1,69 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Ghost } from "lucide-react";
+import { Shield } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { Card } from "@/app/ui/monster/Card";
-import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
-import type { MonsterMini } from "@/lib/types";
-import { findPublicMonster } from "../actions/monster";
-import { List } from "./monster/List";
-import { SimpleFilterBar } from "./monster/SimpleFilterBar";
+import { Card } from "@/app/ui/item/Card";
+import { useSimpleItemFilters } from "@/lib/hooks/useSimpleItemFilters";
+import type { Item } from "@/lib/types";
+import { findPublicItem } from "../actions/item";
+import { List } from "./item/List";
+import { SimpleFilterBar } from "./item/SimpleFilterBar";
 
-interface MonstersListViewProps {
-  monsters: MonsterMini[];
+interface ItemsListViewProps {
+  items: Item[];
   initialSelectedId?: string;
 }
 
-export const MonstersListView: React.FC<MonstersListViewProps> = ({
-  monsters,
+export const ItemsListView: React.FC<ItemsListViewProps> = ({
+  items,
   initialSelectedId,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [selectedMonsterId, setSelectedMonsterId] = useState<string | null>(
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(
     initialSelectedId || null
   );
   const [shouldScrollToSelected, setShouldScrollToSelected] = useState(false);
 
   const {
     searchTerm,
-    legendaryFilter,
     sortOption,
-    filteredMonsters,
+    filteredItems,
     shouldClearSelection,
     handleSearch,
-    setLegendaryFilter,
     setSortOption,
-  } = useSimpleMonsterFilters({ monsters, selectedMonsterId });
+  } = useSimpleItemFilters({ items, selectedItemId });
 
   useEffect(() => {
     if (initialSelectedId) {
-      setSelectedMonsterId(initialSelectedId);
+      setSelectedItemId(initialSelectedId);
     }
   }, [initialSelectedId]);
 
   useEffect(() => {
     if (!searchParams.get("id")) {
-      setSelectedMonsterId(null);
+      setSelectedItemId(null);
     }
   }, [searchParams]);
 
-  // Clear selection if the selected monster is filtered out
+  // Clear selection if the selected item is filtered out
   useEffect(() => {
     if (shouldClearSelection) {
-      setSelectedMonsterId(null);
+      setSelectedItemId(null);
       const params = new URLSearchParams(searchParams);
       params.delete("id");
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     }
   }, [shouldClearSelection, router, pathname, searchParams]);
 
-  // Scroll to selected monster on initial load
+  // Scroll to selected item on initial load
   useEffect(() => {
-    if (selectedMonsterId) {
+    if (selectedItemId) {
       const timer = setTimeout(() => {
         setShouldScrollToSelected(true);
         const clearTimer = setTimeout(
@@ -76,22 +74,22 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
       }, 100); // Small delay to ensure list is rendered
       return () => clearTimeout(timer);
     }
-  }, [selectedMonsterId]);
+  }, [selectedItemId]);
 
-  const selectedMonster = useQuery({
-    queryKey: ["monster", selectedMonsterId],
+  const selectedItem = useQuery({
+    queryKey: ["item", selectedItemId],
     queryFn: async () => {
-      const { monster } = await findPublicMonster(selectedMonsterId || "");
-      return monster;
+      const { item } = await findPublicItem(selectedItemId || "");
+      return item;
     },
-    enabled: !!selectedMonsterId,
+    enabled: !!selectedItemId,
     placeholderData: keepPreviousData,
   });
 
-  const handleMonsterClick = (monsterId: string) => {
-    setSelectedMonsterId(monsterId);
+  const handleItemClick = (itemId: string) => {
+    setSelectedItemId(itemId);
     const params = new URLSearchParams(searchParams);
-    params.set("id", monsterId);
+    params.set("id", itemId);
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -101,34 +99,27 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
       <div className="w-full lg:w-1/3 flex flex-col">
         <SimpleFilterBar
           searchTerm={searchTerm}
-          legendaryFilter={legendaryFilter}
           sortOption={sortOption}
           onSearch={handleSearch}
-          onLegendaryFilterChange={setLegendaryFilter}
           onSortChange={setSortOption}
         />
 
-        {/* Monster list */}
+        {/* Item list */}
         <List
-          monsters={filteredMonsters}
-          selectedIds={selectedMonsterId ? [selectedMonsterId] : []}
-          handleMonsterClick={handleMonsterClick}
+          items={filteredItems}
+          selectedIds={selectedItemId ? [selectedItemId] : []}
+          handleItemClick={handleItemClick}
           scrollToSelected={shouldScrollToSelected}
         />
       </div>
 
       {/* Right side: Detail view */}
       <div className="w-full lg:w-2/3">
-        {selectedMonster.data ? (
-          <div className="sticky top-4 grid grid-cols-1 gap-4">
-            <Card
-              monster={selectedMonster.data}
-              creator={selectedMonster.data.creator}
-            />
-          </div>
+        {selectedItem.data ? (
+          <Card item={selectedItem.data} creator={selectedItem.data.creator} />
         ) : (
           <div className="d-card d-card-bordered bg-base-100 p-8 h-full flex items-center justify-center text-center">
-            <Ghost className="stroke-muted-foreground" size={96} />
+            <Shield className="stroke-muted-foreground" size={96} />
           </div>
         )}
       </div>

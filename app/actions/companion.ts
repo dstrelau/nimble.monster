@@ -132,6 +132,23 @@ export async function updateCompanion(
   }
 }
 
+export async function findPublicCompanion(companionId: string) {
+  try {
+    const companion = await db.findPublicCompanionById(companionId);
+    if (!companion) {
+      return { success: false, error: "Companion not found", companion: null };
+    }
+
+    return { success: true, error: null, companion };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error occurred",
+      companion: null,
+    };
+  }
+}
+
 export async function deleteCompanion(companionId: string) {
   const session = await auth();
   if (!session?.user?.id) {

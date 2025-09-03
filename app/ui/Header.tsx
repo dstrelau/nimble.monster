@@ -1,6 +1,13 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import {
+  Box,
+  Ghost,
+  HeartHandshake,
+  Menu,
+  Shield,
+  SquarePen,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -21,7 +28,6 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -58,18 +64,30 @@ const Header = () => {
     isActive("/companions/new") ||
     isActive("/items/new");
 
-  // Navigation data
-  const mainNavLinks = [
+  const browseItems = [
     {
-      href: "/create",
-      label: "Create",
-      isActive: isCreateActive(),
+      href: "/monsters",
+      label: "Monsters",
+      isActive: isActive("/monsters"),
+      icon: Ghost,
     },
-    { href: "/monsters", label: "Monsters", isActive: isActive("/monsters") },
+    {
+      href: "/items",
+      label: "Items",
+      isActive: isActive("/items"),
+      icon: Shield,
+    },
+    {
+      href: "/companions",
+      label: "Companions",
+      isActive: isActive("/companions"),
+      icon: HeartHandshake,
+    },
     {
       href: "/collections",
       label: "Collections",
       isActive: isActive("/collections"),
+      icon: Box,
     },
   ];
 
@@ -136,37 +154,28 @@ const Header = () => {
 
         {/* Desktop navigation (center) */}
         <NavigationMenu className="hidden md:flex">
-          <NavigationMenuList>
+          <NavigationMenuList className="gap-4">
+            {browseItems.map((item) => (
+              <NavigationMenuItem key={item.href}>
+                <NavigationMenuLink data-active={item.isActive} asChild>
+                  <Link
+                    href={item.href}
+                    className="flex-row items-center gap-1"
+                  >
+                    <item.icon />
+                    {item.label}
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            ))}
             <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className={navigationMenuTriggerStyle()}
-              >
-                <Link href="/create" data-active={isCreateActive()}>
-                  Create
-                </Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className={navigationMenuTriggerStyle()}
-              >
-                <Link href="/monsters" data-active={isActive("/monsters")}>
-                  Monsters
-                </Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className={navigationMenuTriggerStyle()}
-              >
+              <NavigationMenuLink data-active={isCreateActive()} asChild>
                 <Link
-                  href="/collections"
-                  data-active={isActive("/collections")}
+                  href="/create"
+                  className="px-3 border-2 border-border flex-row items-center gap-1"
                 >
-                  Collections
+                  <SquarePen />
+                  Create
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -228,10 +237,18 @@ const Header = () => {
       {/* Mobile menu dropdowns */}
       <MobileMenuDropdown
         isOpen={mobileMenuOpen}
-        links={mainNavLinks.map((link) => ({
-          ...link,
-          onClick: () => setMobileMenuOpen(false),
-        }))}
+        links={[
+          {
+            href: "/create",
+            label: "Create",
+            isActive: isCreateActive(),
+            onClick: () => setMobileMenuOpen(false),
+          },
+          ...browseItems.map((link) => ({
+            ...link,
+            onClick: () => setMobileMenuOpen(false),
+          })),
+        ]}
       />
 
       <MobileMenuDropdown

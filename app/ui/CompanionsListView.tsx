@@ -1,71 +1,69 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Ghost } from "lucide-react";
+import { HeartHandshake } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { Card } from "@/app/ui/monster/Card";
-import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
-import type { MonsterMini } from "@/lib/types";
-import { findPublicMonster } from "../actions/monster";
-import { List } from "./monster/List";
-import { SimpleFilterBar } from "./monster/SimpleFilterBar";
+import { Card } from "@/app/ui/companion/Card";
+import { useSimpleCompanionFilters } from "@/lib/hooks/useSimpleCompanionFilters";
+import type { Companion } from "@/lib/types";
+import { findPublicCompanion } from "../actions/companion";
+import { List } from "./companion/List";
+import { SimpleFilterBar } from "./companion/SimpleFilterBar";
 
-interface MonstersListViewProps {
-  monsters: MonsterMini[];
+interface CompanionsListViewProps {
+  companions: Companion[];
   initialSelectedId?: string;
 }
 
-export const MonstersListView: React.FC<MonstersListViewProps> = ({
-  monsters,
+export const CompanionsListView: React.FC<CompanionsListViewProps> = ({
+  companions,
   initialSelectedId,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [selectedMonsterId, setSelectedMonsterId] = useState<string | null>(
+  const [selectedCompanionId, setSelectedCompanionId] = useState<string | null>(
     initialSelectedId || null
   );
   const [shouldScrollToSelected, setShouldScrollToSelected] = useState(false);
 
   const {
     searchTerm,
-    legendaryFilter,
     sortOption,
-    filteredMonsters,
+    filteredCompanions,
     shouldClearSelection,
     handleSearch,
-    setLegendaryFilter,
     setSortOption,
-  } = useSimpleMonsterFilters({ monsters, selectedMonsterId });
+  } = useSimpleCompanionFilters({ companions, selectedCompanionId });
 
   useEffect(() => {
     if (initialSelectedId) {
-      setSelectedMonsterId(initialSelectedId);
+      setSelectedCompanionId(initialSelectedId);
     }
   }, [initialSelectedId]);
 
   useEffect(() => {
     if (!searchParams.get("id")) {
-      setSelectedMonsterId(null);
+      setSelectedCompanionId(null);
     }
   }, [searchParams]);
 
-  // Clear selection if the selected monster is filtered out
+  // Clear selection if the selected companion is filtered out
   useEffect(() => {
     if (shouldClearSelection) {
-      setSelectedMonsterId(null);
+      setSelectedCompanionId(null);
       const params = new URLSearchParams(searchParams);
       params.delete("id");
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     }
   }, [shouldClearSelection, router, pathname, searchParams]);
 
-  // Scroll to selected monster on initial load
+  // Scroll to selected companion on initial load
   useEffect(() => {
-    if (selectedMonsterId) {
+    if (selectedCompanionId) {
       const timer = setTimeout(() => {
         setShouldScrollToSelected(true);
         const clearTimer = setTimeout(
@@ -76,22 +74,24 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
       }, 100); // Small delay to ensure list is rendered
       return () => clearTimeout(timer);
     }
-  }, [selectedMonsterId]);
+  }, [selectedCompanionId]);
 
-  const selectedMonster = useQuery({
-    queryKey: ["monster", selectedMonsterId],
+  const selectedCompanion = useQuery({
+    queryKey: ["companion", selectedCompanionId],
     queryFn: async () => {
-      const { monster } = await findPublicMonster(selectedMonsterId || "");
-      return monster;
+      const { companion } = await findPublicCompanion(
+        selectedCompanionId || ""
+      );
+      return companion;
     },
-    enabled: !!selectedMonsterId,
+    enabled: !!selectedCompanionId,
     placeholderData: keepPreviousData,
   });
 
-  const handleMonsterClick = (monsterId: string) => {
-    setSelectedMonsterId(monsterId);
+  const handleCompanionClick = (companionId: string) => {
+    setSelectedCompanionId(companionId);
     const params = new URLSearchParams(searchParams);
-    params.set("id", monsterId);
+    params.set("id", companionId);
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -101,34 +101,32 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
       <div className="w-full lg:w-1/3 flex flex-col">
         <SimpleFilterBar
           searchTerm={searchTerm}
-          legendaryFilter={legendaryFilter}
           sortOption={sortOption}
           onSearch={handleSearch}
-          onLegendaryFilterChange={setLegendaryFilter}
           onSortChange={setSortOption}
         />
 
-        {/* Monster list */}
+        {/* Companion list */}
         <List
-          monsters={filteredMonsters}
-          selectedIds={selectedMonsterId ? [selectedMonsterId] : []}
-          handleMonsterClick={handleMonsterClick}
+          companions={filteredCompanions}
+          selectedIds={selectedCompanionId ? [selectedCompanionId] : []}
+          handleCompanionClick={handleCompanionClick}
           scrollToSelected={shouldScrollToSelected}
         />
       </div>
 
       {/* Right side: Detail view */}
       <div className="w-full lg:w-2/3">
-        {selectedMonster.data ? (
-          <div className="sticky top-4 grid grid-cols-1 gap-4">
+        {selectedCompanion.data ? (
+          <div className="sticky top-4">
             <Card
-              monster={selectedMonster.data}
-              creator={selectedMonster.data.creator}
+              companion={selectedCompanion.data}
+              creator={selectedCompanion.data.creator}
             />
           </div>
         ) : (
           <div className="d-card d-card-bordered bg-base-100 p-8 h-full flex items-center justify-center text-center">
-            <Ghost className="stroke-muted-foreground" size={96} />
+            <HeartHandshake className="stroke-muted-foreground" size={96} />
           </div>
         )}
       </div>

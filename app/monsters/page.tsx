@@ -7,15 +7,14 @@ export default async function MonstersPage({
 }: {
   searchParams: Promise<{ id?: string }>;
 }) {
+  const params = await searchParams;
+  const selectedId = params.id;
+
   const monsters = await db.listPublicMonsterMinis();
-  const selectedMonsterId = (await searchParams).id;
 
   return (
     <div className="container mx-auto py-3">
-      <MonstersListView
-        monsters={monsters}
-        initialSelectedId={selectedMonsterId}
-      />
+      <MonstersListView monsters={monsters} initialSelectedId={selectedId} />
     </div>
   );
 }

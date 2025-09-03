@@ -11,7 +11,6 @@ import { FormInput, FormSelect, FormTextarea } from "@/components/app/Form";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
-import { useConditions } from "@/lib/hooks/useConditions";
 import type { Companion, MonsterSize } from "@/lib/types";
 import { SIZES } from "@/lib/types";
 import { createCompanion, updateCompanion } from "../actions/companion";
@@ -212,12 +211,10 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
 
   const [companion, setCompanion] = useState<Companion>(() =>
     existingCompanion
-      ? { ...existingCompanion, conditions: [] }
+      ? { ...existingCompanion }
       : { ...EXAMPLE_COMPANIONS.empty, creator }
   );
   const queryClient = useQueryClient();
-
-  const { allConditions: conditions } = useConditions();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);

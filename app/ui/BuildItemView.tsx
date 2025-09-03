@@ -11,7 +11,7 @@ import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { IconPicker } from "@/components/IconPicker";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import type { Condition, Item } from "@/lib/types";
+import type { Item } from "@/lib/types";
 import { createItem, updateItem } from "../actions/item";
 
 const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
@@ -46,13 +46,9 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
 
 interface BuildItemViewProps {
   item?: Item;
-  conditions?: Condition[];
 }
 
-export default function BuildItemView({
-  item,
-  conditions = [],
-}: BuildItemViewProps) {
+export default function BuildItemView({ item }: BuildItemViewProps) {
   const id = useId();
   const router = useRouter();
   const { data: session } = useSession();

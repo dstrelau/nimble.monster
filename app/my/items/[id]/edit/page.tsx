@@ -15,11 +15,10 @@ export default async function EditItemPage({
     return unauthorized();
   }
   const item = await findItemWithCreatorDiscordId(id, session?.user.id);
-  const conditions = await loadOfficialConditions();
 
   if (!item) {
     return <div>Item not found</div>;
   }
 
-  return <BuildItemView item={item} conditions={conditions} />;
+  return <BuildItemView item={item} />;
 }

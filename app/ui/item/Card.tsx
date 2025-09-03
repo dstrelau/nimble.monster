@@ -38,7 +38,6 @@ const HeaderItem: React.FC<{
 interface CardProps {
   item: Item;
   creator: User;
-  isOwner?: boolean;
   link?: boolean;
   hideActions?: boolean;
   hideCreator?: boolean;
@@ -48,7 +47,6 @@ interface CardProps {
 export const Card = ({
   item,
   creator,
-  isOwner: _isOwner = false,
   link = true,
   hideActions = false,
   hideCreator = false,
@@ -58,7 +56,7 @@ export const Card = ({
     creatorId: creator.discordId,
   });
   return (
-    <div className="max-w-sm" id={`item-${item.id}`}>
+    <div className="max-w-sm mx-auto" id={`item-${item.id}`}>
       <CardContainer className={`relative ${className}`}>
         {item.imageIcon && (
           <GameIcon

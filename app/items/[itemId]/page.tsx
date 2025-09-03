@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { loadOfficialConditions } from "@/app/actions/conditions";
 import { Card } from "@/app/ui/item/Card";
 import { ItemDetailActions } from "@/components/ItemDetailActions";
 import { auth } from "@/lib/auth";
-import { findItem, listConditionsForDiscordId } from "@/lib/db";
+import { findItem } from "@/lib/db";
 
 export async function generateMetadata({
   params,
@@ -70,24 +69,13 @@ export default async function ItemPage({
     return notFound();
   }
 
-  const [officialConditions, userConditions] = await Promise.all([
-    loadOfficialConditions(),
-    listConditionsForDiscordId(item.creator.discordId),
-  ]);
-  const _conditions = [...officialConditions, ...userConditions];
-
   return (
     <div className="container mx-auto">
       <div className="flex justify-end items-start mb-6">
         {isOwner && <ItemDetailActions item={item} />}
       </div>
       <div className="flex justify-center">
-        <Card
-          item={item}
-          creator={item.creator}
-          link={false}
-          isOwner={isOwner}
-        />
+        <Card item={item} creator={item.creator} link={false} />
       </div>
     </div>
   );

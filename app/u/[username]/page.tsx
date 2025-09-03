@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { loadOfficialConditions } from "@/app/actions/conditions";
 import { UserAvatar } from "@/components/app/UserAvatar";
 import * as db from "@/lib/db";
 import TabsContent from "./TabsContent";
@@ -19,19 +18,14 @@ export default async function UserProfilePage({
     return notFound();
   }
 
-  const [
-    monsters,
-    collections,
-    families,
-    companions,
-    items,
-  ] = await Promise.all([
-    db.listPublicMonstersForDiscordID(username),
-    db.getUserPublicCollectionsHavingMonsters(username),
-    db.getUserPublicFamiliesWithMonsters(user.discordId),
-    db.listPublicCompanionsForDiscordID(username),
-    db.listPublicItemsForDiscordID(username),
-  ]);
+  const [monsters, collections, families, companions, items] =
+    await Promise.all([
+      db.listPublicMonstersForDiscordID(username),
+      db.getUserPublicCollectionsHavingMonsters(username),
+      db.getUserPublicFamiliesWithMonsters(user.discordId),
+      db.listPublicCompanionsForDiscordID(username),
+      db.listPublicItemsForDiscordID(username),
+    ]);
 
   return (
     <div className="container mx-auto">

@@ -69,6 +69,23 @@ export async function updateItem(
   }
 }
 
+export async function findPublicItem(itemId: string) {
+  try {
+    const item = await db.findPublicItemById(itemId);
+    if (!item) {
+      return { success: false, error: "Item not found", item: null };
+    }
+
+    return { success: true, error: null, item };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error occurred",
+      item: null,
+    };
+  }
+}
+
 export async function deleteItem(itemId: string) {
   const session = await auth();
   if (!session?.user?.id) {
