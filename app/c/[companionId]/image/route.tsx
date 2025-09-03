@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { findCompanion } from "@/lib/db";
-import { generateEntityImage } from "@/lib/image-generation";
+import { createImageResponse } from "@/lib/image-route-handler";
 import { isValidUUID } from "@/lib/utils/validation";
 
 export async function GET(
@@ -29,30 +29,5 @@ export async function GET(
     }
   }
 
-  const host = request.headers.get("host") || "localhost:3000";
-  const protocol = new URL(request.url).protocol;
-  const baseUrl = `${protocol}//${host}`;
-
-  try {
-    const imageBuffer = await generateEntityImage({
-      baseUrl,
-      entityId: companion.id,
-      entityType: "companion",
-    });
-
-    return new Response(imageBuffer, {
-      status: 200,
-      headers: {
-        "Content-Type": "image/png",
-        "Content-Disposition": `inline; filename="${companion.name.replace(/[^a-zA-Z0-9-_]/g, "_")}.png"`,
-        "X-Cache": "MISS",
-      },
-    });
-  } catch (error: unknown) {
-    console.error("Error generating companion image:", error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    return new Response(`Error generating image: ${errorMessage}`, {
-      status: 500,
-    });
-  }
+  return createImageResponse(request, companion, "companion");
 }

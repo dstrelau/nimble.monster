@@ -1,5 +1,7 @@
 import type { Item } from "@/lib/types";
+import { getBaseUrl } from "@/lib/utils/url";
 import { isValidUUID } from "@/lib/utils/validation";
+import { invalidateEntityImageCache, preloadImage } from "../cache/image-cache";
 import { toItem } from "./converters";
 import { prisma } from "./index";
 
@@ -148,7 +150,13 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
     },
   });
 
-  return toItem(createdItem);
+  const item = toItem(createdItem);
+
+  // Trigger async image pre-generation (non-blocking)
+  // Silent fail - image will be generated on-demand if needed
+  preloadImage("item", item.id, getBaseUrl()).catch(() => {});
+
+  return item;
 };
 
 export interface UpdateItemInput {
@@ -190,11 +198,19 @@ export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
       moreInfo,
       imageIcon,
       visibility,
+      updatedAt: new Date(),
     },
     include: {
       creator: true,
     },
   });
 
-  return toItem(updatedItem);
+  const item = toItem(updatedItem);
+
+  // Invalidate old cached image and trigger async pre-generation
+  // Silent fail - image will be generated on-demand if needed
+  invalidateEntityImageCache("item", item.id);
+  preloadImage("item", item.id, getBaseUrl()).catch(() => {});
+
+  return item;
 };

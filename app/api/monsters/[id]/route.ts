@@ -2,11 +2,8 @@ import { trace } from "@opentelemetry/api";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma, toMonster } from "@/lib/db";
-import {
-  extractAllConditions,
-  syncMonsterConditions,
-} from "@/lib/db/monster-conditions";
+import { prisma } from "@/lib/db";
+import { updateMonster } from "@/lib/db/monster";
 import { telemetry } from "@/lib/telemetry";
 import { isValidUUID } from "@/lib/utils/validation";
 
@@ -48,63 +45,44 @@ export const PUT = telemetry(
 
       const monsterData = await request.json();
 
-      const updatedMonster = await prisma.monster.update({
-        where: { id },
-        data: {
-          name: monsterData.name,
-          level: monsterData.level,
-          hp: monsterData.hp,
-          armor:
-            monsterData.armor === "none" || !monsterData.armor
-              ? "EMPTY_ENUM_VALUE"
-              : monsterData.armor,
-          size: monsterData.size,
-          speed: monsterData.speed,
-          fly: monsterData.fly,
-          swim: monsterData.swim,
-          climb: monsterData.climb,
-          teleport: monsterData.teleport,
-          burrow: monsterData.burrow,
-          actions: monsterData.actions,
-          abilities: monsterData.abilities,
-          legendary: monsterData.legendary,
-          minion: monsterData.minion || false,
-          bloodied: monsterData.bloodied || "",
-          lastStand: monsterData.lastStand || "",
-          saves: Array.isArray(monsterData.saves)
-            ? monsterData.saves
-            : monsterData.saves
-              ? [monsterData.saves]
-              : [],
-          kind: monsterData.kind || "",
-          visibility: monsterData.visibility,
-          actionPreface: monsterData.actionPreface || "",
-          moreInfo: monsterData.moreInfo || "",
-          family_id: monsterData.family?.id || null,
-        },
-        include: {
-          family: { include: { creator: true } },
-          creator: true,
-          monsterConditions: { include: { condition: true } },
-        },
-      });
-
-      const conditionNames = extractAllConditions({
-        actions: monsterData.actions || [],
-        abilities: monsterData.abilities || [],
+      const monster = await updateMonster({
+        id,
+        name: monsterData.name,
+        level: monsterData.level,
+        hp: monsterData.hp,
+        armor: monsterData.armor,
+        size: monsterData.size,
+        speed: monsterData.speed,
+        fly: monsterData.fly,
+        swim: monsterData.swim,
+        climb: monsterData.climb,
+        teleport: monsterData.teleport,
+        burrow: monsterData.burrow,
+        actions: monsterData.actions,
+        abilities: monsterData.abilities,
+        legendary: monsterData.legendary,
+        minion: monsterData.minion || false,
         bloodied: monsterData.bloodied || "",
         lastStand: monsterData.lastStand || "",
+        saves: Array.isArray(monsterData.saves)
+          ? monsterData.saves
+          : monsterData.saves
+            ? [monsterData.saves]
+            : [],
+        kind: monsterData.kind || "",
+        visibility: monsterData.visibility,
+        actionPreface: monsterData.actionPreface || "",
         moreInfo: monsterData.moreInfo || "",
+        family: monsterData.family,
+        discordId: session.user.id,
       });
-
-      await syncMonsterConditions(id, conditionNames);
 
       revalidatePath(`/m/${id}`);
       revalidatePath(`/m/${id}/image`);
 
-      span?.setAttributes({ "monster.id": updatedMonster.id });
+      span?.setAttributes({ "monster.id": monster.id });
 
-      return NextResponse.json(toMonster(updatedMonster));
+      return NextResponse.json(monster);
     } catch (error) {
       console.error("Error in PUT /api/monsters/[id]:", error);
       return NextResponse.json(

@@ -1,4 +1,9 @@
+import {
+  invalidateEntityImageCache,
+  preloadImage,
+} from "@/lib/cache/image-cache";
 import type { Ability, Action, Companion, MonsterSize } from "@/lib/types";
+import { getBaseUrl } from "@/lib/utils/url";
 import { isValidUUID } from "@/lib/utils/validation";
 import type { InputJsonValue } from "../prisma/runtime/library";
 import { toCompanion } from "./converters";
@@ -176,5 +181,88 @@ export const createCompanion = async (
     },
   });
 
-  return toCompanion(createdCompanion);
+  const companion = toCompanion(createdCompanion);
+
+  // Trigger async image pre-generation (non-blocking)
+  preloadImage("companion", companion.id, getBaseUrl()).catch(() => {});
+
+  return companion;
+};
+
+export interface UpdateCompanionInput {
+  id: string;
+  name: string;
+  kind: string;
+  class: string;
+  hp_per_level: string;
+  wounds: number;
+  size: MonsterSize;
+  saves: string;
+  actions: Action[];
+  abilities: Ability[];
+  actionPreface: string;
+  dyingRule: string;
+  moreInfo: string;
+  visibility: "public" | "private";
+  discordId: string;
+}
+
+export const updateCompanion = async (
+  input: UpdateCompanionInput
+): Promise<Companion> => {
+  const {
+    id,
+    name,
+    kind,
+    class: companionClass,
+    hp_per_level,
+    wounds,
+    size,
+    saves,
+    actions,
+    abilities,
+    actionPreface,
+    dyingRule,
+    moreInfo,
+    visibility,
+    discordId,
+  } = input;
+
+  if (!isValidUUID(id)) {
+    throw new Error("Invalid companion ID");
+  }
+
+  const updatedCompanion = await prisma.companion.update({
+    where: {
+      id,
+      creator: { discordId },
+    },
+    data: {
+      name,
+      kind,
+      class: companionClass,
+      hp_per_level,
+      wounds,
+      size,
+      saves,
+      actions: actions as unknown as InputJsonValue[],
+      abilities: abilities as unknown as InputJsonValue[],
+      actionPreface,
+      dyingRule,
+      moreInfo,
+      visibility,
+      updatedAt: new Date(),
+    },
+    include: {
+      creator: true,
+    },
+  });
+
+  const companion = toCompanion(updatedCompanion);
+
+  // Invalidate old cached image and trigger async pre-generation
+  invalidateEntityImageCache("companion", companion.id);
+  preloadImage("companion", companion.id, getBaseUrl()).catch(() => {});
+
+  return companion;
 };

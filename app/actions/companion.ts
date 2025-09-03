@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import type { InputJsonValue } from "@/lib/prisma/runtime/library";
 import type { Ability, Action } from "@/lib/types";
 
 export async function createCompanion(formData: {
@@ -91,39 +90,34 @@ export async function updateCompanion(
       return { success: false, error: "Companion not found" };
     }
 
-    // Update using Prisma directly since we don't have an updateCompanion function in db
-    const updatedCompanion = await db.prisma.companion.update({
-      where: { id: companionId },
-      data: {
-        name: formData.name,
-        kind: formData.kind,
-        class: formData.class,
-        hp_per_level: formData.hp_per_level,
-        wounds: formData.wounds,
-        size: formData.size as
-          | "tiny"
-          | "small"
-          | "medium"
-          | "large"
-          | "huge"
-          | "gargantuan",
-        saves: formData.saves,
-        actions: formData.actions as unknown as InputJsonValue[],
-        abilities: formData.abilities as unknown as InputJsonValue[],
-        actionPreface: formData.actionPreface,
-        dyingRule: formData.dyingRule,
-        moreInfo: formData.moreInfo || "",
-        visibility: formData.visibility,
-      },
-      include: {
-        creator: true,
-      },
+    const companion = await db.updateCompanion({
+      id: companionId,
+      name: formData.name,
+      kind: formData.kind,
+      class: formData.class,
+      hp_per_level: formData.hp_per_level,
+      wounds: formData.wounds,
+      size: formData.size as
+        | "tiny"
+        | "small"
+        | "medium"
+        | "large"
+        | "huge"
+        | "gargantuan",
+      saves: formData.saves,
+      actions: formData.actions as unknown as Action[],
+      abilities: formData.abilities as unknown as Ability[],
+      actionPreface: formData.actionPreface,
+      dyingRule: formData.dyingRule,
+      moreInfo: formData.moreInfo || "",
+      visibility: formData.visibility,
+      discordId: session.user.id,
     });
 
     revalidatePath(`/c/${companionId}`);
     revalidatePath("/my/companions");
 
-    return { success: true, companion: db.toCompanion(updatedCompanion) };
+    return { success: true, companion };
   } catch (error) {
     return {
       success: false,

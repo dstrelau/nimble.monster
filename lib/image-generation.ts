@@ -1,3 +1,4 @@
+import { unstable_cacheTag as cacheTag } from "next/cache";
 import { getBrowser } from "@/lib/browser";
 
 export interface ImageGenerationOptions {
@@ -12,6 +13,8 @@ export async function generateEntityImage({
   entityType,
 }: ImageGenerationOptions): Promise<Buffer> {
   "use cache";
+
+  cacheTag(`${entityType}-image-${entityId}`);
   const entityPageUrl = (() => {
     switch (entityType) {
       case "monster":

@@ -1,3 +1,7 @@
+import {
+  invalidateEntityImageCache,
+  preloadImage,
+} from "@/lib/cache/image-cache";
 import type {
   Ability,
   Action,
@@ -7,6 +11,7 @@ import type {
   MonsterMini,
   MonsterSize,
 } from "@/lib/types";
+import { getBaseUrl } from "@/lib/utils/url";
 import { isValidUUID } from "@/lib/utils/validation";
 import type { InputJsonValue } from "../prisma/runtime/library";
 import { toMonster } from "./converters";
@@ -266,5 +271,129 @@ export const createMonster = async (
 
   await syncMonsterConditions(createdMonster.id, conditionNames);
 
-  return toMonster(createdMonster);
+  const monster = toMonster(createdMonster);
+
+  // Trigger async image pre-generation (non-blocking)
+  // Silent fail - image will be generated on-demand if needed
+  preloadImage("monster", monster.id, getBaseUrl()).catch(() => {});
+
+  return monster;
+};
+
+export interface UpdateMonsterInput {
+  id: string;
+  name: string;
+  level: string;
+  hp: number;
+  armor: MonsterArmor;
+  size: MonsterSize;
+  speed: number;
+  fly?: number;
+  swim?: number;
+  climb?: number;
+  teleport?: number;
+  burrow?: number;
+  actions: Action[];
+  abilities: Ability[];
+  legendary: boolean;
+  minion: boolean;
+  bloodied: string;
+  lastStand: string;
+  saves: string[];
+  kind: string;
+  visibility: "public" | "private";
+  actionPreface: string;
+  moreInfo: string;
+  family?: { id: string } | null;
+  discordId: string;
+}
+
+export const updateMonster = async (
+  input: UpdateMonsterInput
+): Promise<Monster> => {
+  const {
+    id,
+    name,
+    level,
+    hp,
+    armor,
+    size,
+    speed,
+    fly,
+    swim,
+    climb,
+    teleport,
+    burrow,
+    actions,
+    abilities,
+    legendary,
+    minion,
+    bloodied,
+    lastStand,
+    saves,
+    kind,
+    visibility,
+    actionPreface,
+    moreInfo,
+    family,
+    discordId,
+  } = input;
+
+  if (!isValidUUID(id)) {
+    throw new Error("Invalid monster ID");
+  }
+
+  const updatedMonster = await prisma.monster.update({
+    where: { id, creator: { discordId } },
+    data: {
+      name,
+      level,
+      hp,
+      armor: armor === "none" || !armor ? "EMPTY_ENUM_VALUE" : armor,
+      size,
+      speed,
+      fly,
+      swim,
+      climb,
+      teleport,
+      burrow,
+      actions: actions as unknown as InputJsonValue[],
+      abilities: abilities as unknown as InputJsonValue[],
+      legendary,
+      minion,
+      bloodied,
+      lastStand,
+      saves: Array.isArray(saves) ? saves : saves ? [saves] : [],
+      kind,
+      visibility,
+      actionPreface,
+      moreInfo,
+      family_id: family?.id || null,
+      updatedAt: new Date(),
+    },
+    include: {
+      family: { include: { creator: true } },
+      creator: true,
+      monsterConditions: { include: { condition: true } },
+    },
+  });
+
+  const conditionNames = extractAllConditions({
+    actions: actions || [],
+    abilities: abilities || [],
+    bloodied: bloodied || "",
+    lastStand: lastStand || "",
+    moreInfo: moreInfo || "",
+  });
+
+  await syncMonsterConditions(id, conditionNames);
+
+  const monster = toMonster(updatedMonster);
+
+  // Invalidate old cached image and trigger async pre-generation
+  // Silent fail - image will be generated on-demand if needed
+  invalidateEntityImageCache("monster", monster.id);
+  preloadImage("monster", monster.id, getBaseUrl()).catch(() => {});
+
+  return monster;
 };

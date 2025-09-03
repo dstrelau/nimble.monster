@@ -1,6 +1,5 @@
 "use client";
 
-import html2canvas from "html2canvas-pro";
 import { Download, ExternalLink, Link as LinkIcon, Share } from "lucide-react";
 import { useTransition } from "react";
 import { VisibilityBadge } from "@/app/ui/VisibilityBadge";
@@ -43,97 +42,12 @@ export default function CardActions({
 
   const downloadCard = async () => {
     try {
-      const cardElement = document.querySelector(
-        `#monster-${monster.id} > div`
-      );
-      if (!cardElement) return;
-
-      // Store original style
-      const exportAttribution = cardElement.querySelector(
-        ".export-attribution"
-      );
-      let originalAttributionDisplay = "";
-
-      if (exportAttribution) {
-        originalAttributionDisplay = (exportAttribution as HTMLElement).style
-          .display;
-        (exportAttribution as HTMLElement).style.display = "block";
-      }
-
-      try {
-        // Create a wrapper with padding to handle the overflow
-        const wrapper = document.createElement("div");
-        wrapper.style.position = "absolute";
-        wrapper.style.left = "-9999px";
-        wrapper.style.top = "0";
-        wrapper.style.padding = "1.5rem 1.5rem 0 1.5rem"; // Padding on sides and top only
-        document.body.appendChild(wrapper);
-
-        const cardClone = cardElement.cloneNode(true) as HTMLElement;
-
-        // Remove action buttons from clone before capture (keep attribution)
-        const actionsDiv = cardClone.querySelector(".d-card-actions");
-        if (actionsDiv) {
-          actionsDiv.parentNode?.removeChild(actionsDiv);
-        }
-
-        // Replace shadcn separators with simple HR elements to ensure they show up in the image
-        const separators = cardClone.querySelectorAll(
-          '[data-slot="separator"]'
-        );
-        for (const separator of separators) {
-          const hr = document.createElement("hr");
-          hr.style.width = "100%";
-          hr.style.margin = "0.25rem 0";
-          hr.style.border = "none";
-          hr.style.borderTop = "1px solid #d1d5db";
-          hr.style.height = "1px";
-          separator.parentNode?.replaceChild(hr, separator);
-        }
-
-        // Fix vertical spacing in card
-        const abilities = cardClone.querySelectorAll(".abilities");
-        for (const ability of abilities) {
-          (ability as HTMLElement).style.gap = "0.5rem";
-        }
-        const ps = cardClone.querySelectorAll("p");
-        for (const p of ps) {
-          (p as HTMLElement).style.margin = "0.25rem 0";
-        }
-
-        cardClone.style.paddingBottom = "0.75rem";
-
-        wrapper.appendChild(cardClone);
-
-        const originalCard = document.querySelector(
-          `#monster-${monster.id} > div`
-        ) as HTMLElement;
-        const originalWidth = originalCard.offsetWidth;
-        cardClone.style.width = `${originalWidth}px`;
-
-        const canvas = await html2canvas(wrapper, {
-          scale: 2,
-          backgroundColor: "#ffffff", // White background
-          useCORS: true,
-          allowTaint: true,
-          imageTimeout: 0,
-          logging: true,
-        });
-
-        document.body.removeChild(wrapper);
-
-        const link = document.createElement("a");
-        link.download = `${monster.name}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-      } finally {
-        if (exportAttribution) {
-          (exportAttribution as HTMLElement).style.display =
-            originalAttributionDisplay;
-        }
-      }
+      const link = document.createElement("a");
+      link.download = `${monster.name}.png`;
+      link.href = `/m/${monster.id}/image`;
+      link.click();
     } catch (error) {
-      console.error("Error generating image:", error);
+      console.error("Error downloading image:", error);
     }
   };
 
