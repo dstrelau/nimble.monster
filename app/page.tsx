@@ -1,6 +1,5 @@
 import { ArrowRight, CornerRightDown } from "lucide-react";
 import Image from "next/image";
-import { Link } from "@/components/app/Link";
 import { FamilyCard } from "@/components/FamilyCard";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
@@ -8,6 +7,7 @@ import { getRandomFeaturedFamily } from "@/lib/db/family";
 import { monstersSortedByLevel } from "@/lib/utils";
 import { Attribution } from "./ui/Attribution";
 import { MonsterCardWithOverflow } from "./ui/MonsterCardWithOverflow";
+import { Footer } from "@/components/app/Footer";
 
 export default async function HomePage() {
   const session = await auth();
@@ -18,7 +18,7 @@ export default async function HomePage() {
   );
   return (
     <div className="max-w-4xl mx-auto flex flex-col items-center gap-8">
-      <h1 className="text-6xl text-center font-bold">
+      <h1 className="text-4xl md:text-6xl text-center font-bold">
         Create and share adversaries for <br />
         <span className="pr-3 font-slab font-black italic uppercase text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600">
           Nimble TTRPG
@@ -26,7 +26,7 @@ export default async function HomePage() {
       </h1>
       {!!featuredFamily?.monsters && (
         <>
-          <h2 className="flex text-4xl text-center italic text-muted-foreground gap-2">
+          <h2 className="flex flex-wrap text-2xl md:text-4xl text-center italic text-muted-foreground gap-2">
             <span>Like these</span>
             <span className="font-medium">{featuredFamily.name}</span>
             {featuredFamily.creator && (
@@ -42,7 +42,7 @@ export default async function HomePage() {
             <CornerRightDown className="mt-4 w-8 h-8" />
           </h2>
 
-          <div className="flex gap-4 items-center">
+          <div className="flex flex-wrap gap-4 items-center">
             <div className="flex-1">
               <FamilyCard
                 family={featuredFamily}
@@ -81,31 +81,8 @@ export default async function HomePage() {
             </a>
           </Button>
         </div>
-
-        <div className="prose dark:prose-invert max-w-full mx-auto mt-16 text-sm text-muted-foreground border-t pt-4">
-          <p>
-            If you have feedback or feature requests, reach out to me on Discord{" "}
-            (<i>_byteslicer</i>) or raise an issue on the{" "}
-            <Link href="https://github.com/dstrelau/nimble.monster">
-              GitHub repository
-            </Link>
-            .
-          </p>
-          <p>
-            nimble.monster is an independent product published under the Nimble
-            3rd Party Creator License and is not affiliated with Nimble Co.
-            <br />
-            Nimble © 2025 Nimble Co.
-          </p>
-          <p>
-            Card icons from the amazing{" "}
-            <Link href="https://github.com/game-icons/icons/blob/master/license.txt">
-              Game Icons
-            </Link>
-            , used under the CC-BY 3.0 license.
-          </p>
-        </div>
       </div>
+      <Footer />
     </div>
   );
 }
