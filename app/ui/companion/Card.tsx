@@ -18,6 +18,11 @@ import {
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Companion, MonsterSize, User } from "@/lib/types";
+import {
+  ShareMenu,
+  ShareMenuCopyURLItem,
+  ShareMenuDownloadCardItem,
+} from "@/components/ShareMenu";
 
 // Helper function to format companion size
 const formatCompanionSize = (size: MonsterSize): string => {
@@ -119,6 +124,15 @@ export const Card = ({
           creator={creator}
           hideCreator={hideCreator}
           hideActions={hideActions}
+          actionsSlot={
+            <ShareMenu>
+              <ShareMenuCopyURLItem path={`/c/${companion.id}`} />
+              <ShareMenuDownloadCardItem
+                name={`${companion.name}.png`}
+                path={`/c/${companion.id}/image`}
+              />
+            </ShareMenu>
+          }
         />
       </CardContainer>
     </div>

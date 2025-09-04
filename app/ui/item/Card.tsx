@@ -7,6 +7,11 @@ import { Link } from "@/components/app/Link";
 import { FormattedText } from "@/components/FormattedText";
 import { GameIcon } from "@/components/GameIcon";
 import {
+  ShareMenu,
+  ShareMenuCopyURLItem,
+  ShareMenuDownloadCardItem,
+} from "@/components/ShareMenu";
+import {
   CardContent,
   CardDescription,
   CardHeader,
@@ -87,6 +92,15 @@ export const Card = ({
           hideCreator={hideCreator}
           hideActions={hideActions}
           className="z-10"
+          actionsSlot={
+            <ShareMenu>
+              <ShareMenuCopyURLItem path={`/items/${item.id}`} />
+              <ShareMenuDownloadCardItem
+                name={`${item.name}.png`}
+                path={`/items/${item.id}/image`}
+              />
+            </ShareMenu>
+          }
         />
       </CardContainer>
     </div>
