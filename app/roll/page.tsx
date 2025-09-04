@@ -9,13 +9,13 @@ import {
 import { DiceRollerClient } from "./dice-roller-client";
 
 type Props = {
-  searchParams: { dice?: string };
+  searchParams: Promise<{ dice?: string }>;
 };
 
 export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
-  const dice = searchParams.dice;
+  const dice = (await searchParams).dice;
 
   try {
     let diceRoll: DiceRoll | null = null;
@@ -55,8 +55,8 @@ export async function generateMetadata({
   };
 }
 
-export default function DiceRollerPage({ searchParams }: Props) {
-  const diceNotation = searchParams.dice || "3d6+2";
+export default async function DiceRollerPage({ searchParams }: Props) {
+  const diceNotation = (await searchParams).dice || "3d6+2";
 
   return <DiceRollerClient initialDice={diceNotation} />;
 }
