@@ -1,5 +1,6 @@
 import { Download, LinkIcon, Share } from "lucide-react";
 import type { ReactNode } from "react";
+import { Badge } from "./ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,10 +29,6 @@ export const downloadCard = async (name: string, path: string) => {
     console.error("Error downloading image:", error);
   }
 };
-
-interface ShareMenuProps {
-  children: ReactNode;
-}
 
 interface ShareMenuItemProps {
   onClick: () => void;
@@ -68,8 +65,17 @@ export const ShareMenuDownloadCardItem = ({
   );
 };
 
-export const ShareMenu = ({ children }: ShareMenuProps) => {
-  return (
+interface ShareMenuProps {
+  children: ReactNode;
+  disabled?: boolean;
+}
+
+export const ShareMenu = ({ children, disabled = false }: ShareMenuProps) =>
+  disabled ? (
+    <Badge variant="default" className="h-6">
+      Private
+    </Badge>
+  ) : (
     <TooltipProvider>
       <DropdownMenu>
         <DropdownMenuTrigger className="hover:opacity-70">
@@ -81,4 +87,3 @@ export const ShareMenu = ({ children }: ShareMenuProps) => {
       </DropdownMenu>
     </TooltipProvider>
   );
-};

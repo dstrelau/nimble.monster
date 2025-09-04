@@ -10,6 +10,11 @@ import { CardContainer } from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import {
+  ShareMenu,
+  ShareMenuCopyURLItem,
+  ShareMenuDownloadCardItem,
+} from "@/components/ShareMenu";
+import {
   CardAction,
   CardContent,
   CardDescription,
@@ -18,11 +23,6 @@ import {
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Companion, MonsterSize, User } from "@/lib/types";
-import {
-  ShareMenu,
-  ShareMenuCopyURLItem,
-  ShareMenuDownloadCardItem,
-} from "@/components/ShareMenu";
 
 // Helper function to format companion size
 const formatCompanionSize = (size: MonsterSize): string => {
@@ -125,12 +125,12 @@ export const Card = ({
           hideCreator={hideCreator}
           hideActions={hideActions}
           actionsSlot={
-            <ShareMenu>
-              <ShareMenuCopyURLItem path={`/c/${companion.id}`} />
+            <ShareMenu disabled={companion.visibility !== "public"}>
               <ShareMenuDownloadCardItem
                 name={`${companion.name}.png`}
                 path={`/c/${companion.id}/image`}
               />
+              <ShareMenuCopyURLItem path={`/c/${companion.id}`} />
             </ShareMenu>
           }
         />

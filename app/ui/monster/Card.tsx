@@ -302,7 +302,7 @@ export const Card = ({
             creator={creator}
             hideCreator={hideCreator}
             hideActions={hideActions}
-            actionsSlot={<CardActions monster={monster} isOwner={isOwner} />}
+            actionsSlot={<CardActions monster={monster} />}
           />
         </CardContainer>
       </div>

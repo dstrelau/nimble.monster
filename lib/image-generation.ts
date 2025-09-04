@@ -33,9 +33,15 @@ export async function generateEntityImage({
   try {
     await page.setViewport({ width: 1200, height: 630, deviceScaleFactor: 2 });
 
-    await page.goto(entityPageUrl, {
+    const response = await page.goto(entityPageUrl, {
       waitUntil: "networkidle0",
     });
+
+    if (!response || response.status() !== 200) {
+      throw new Error(
+        `Failed to load ${entityType} page: ${response?.status() || "unknown error"}`
+      );
+    }
 
     await page.waitForSelector(`#${entityType}-${entityId}`);
 

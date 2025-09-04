@@ -93,12 +93,12 @@ export const Card = ({
           hideActions={hideActions}
           className="z-10"
           actionsSlot={
-            <ShareMenu>
-              <ShareMenuCopyURLItem path={`/items/${item.id}`} />
+            <ShareMenu disabled={item.visibility !== "public"}>
               <ShareMenuDownloadCardItem
                 name={`${item.name}.png`}
                 path={`/items/${item.id}/image`}
               />
+              <ShareMenuCopyURLItem path={`/items/${item.id}`} />
             </ShareMenu>
           }
         />
