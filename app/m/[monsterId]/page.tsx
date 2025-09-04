@@ -81,7 +81,6 @@ export default async function MonsterPage({
           monster={monster}
           creator={monster.creator}
           link={false}
-          isOwner={isOwner}
         />
       </div>
     </div>

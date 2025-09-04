@@ -30,14 +30,11 @@ export const CardGrid = ({
       )}
     >
       {monsters.map((m) => {
-        const isOwner =
-          !!currentUserId && currentUserId === m.creator?.discordId;
         return (
           <Card
             key={m.id}
             monster={m}
             creator={m.creator}
-            isOwner={isOwner}
             hideActions={hideActions}
             hideFamilyAbilities={hideFamilyAbilities}
             hideCreator={hideCreator}

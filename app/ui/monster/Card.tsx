@@ -203,7 +203,6 @@ const HeaderStandard: React.FC<{
 interface CardProps {
   monster: Monster;
   creator?: User;
-  isOwner?: boolean;
   link?: boolean;
   hideActions?: boolean;
   hideFamilyAbilities?: boolean;
@@ -215,7 +214,6 @@ interface CardProps {
 export const Card = ({
   monster,
   creator,
-  isOwner = false,
   link = true,
   hideActions = false,
   hideFamilyAbilities = false,
