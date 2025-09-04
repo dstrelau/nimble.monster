@@ -9,7 +9,7 @@
  * - If the first die rolls a 1, the entire roll equals 0 (critical failure)
  */
 
-type DiceRoll = {
+export type DiceRoll = {
   numDice: number;
   dieSize: number;
   modifier: number;
