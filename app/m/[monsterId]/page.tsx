@@ -77,11 +77,7 @@ export default async function MonsterPage({
         {isOwner && <MonsterDetailActions monster={monster} />}
       </div>
       <div className="max-w-2xl mx-auto">
-        <Card
-          monster={monster}
-          creator={monster.creator}
-          link={false}
-        />
+        <Card monster={monster} creator={monster.creator} link={false} />
       </div>
     </div>
   );

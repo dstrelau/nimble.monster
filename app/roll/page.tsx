@@ -1,5 +1,6 @@
 "use client";
-import { Sword } from "lucide-react";
+import { Dices, Sword } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,9 +8,11 @@ import { Label } from "@/components/ui/label";
 import {
   calculateAverageDamageOnHit,
   calculateProbabilityDistribution,
+  calculateTotalAverageDamage,
   type ProbabilityDistribution,
   parseDiceNotation,
 } from "../../lib/dice";
+import React from "react";
 
 export default function DiceRollerPage() {
   return (
@@ -23,11 +26,16 @@ export default function DiceRollerPage() {
 
 const DiceRollerApp = () => {
   const id = useId();
-  const [diceNotation, setDiceNotation] = useState("3d6+2");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [diceNotation, setDiceNotation] = useState(
+    searchParams.get("dice") || "3d6+2"
+  );
   const [probabilities, setProbabilities] = useState<ProbabilityDistribution>(
     new Map()
   );
   const [averageRoll, setAverageRoll] = useState<number | null>(null);
+  const [totalAverageRoll, setTotalAverageRoll] = useState<number | null>(null);
 
   useEffect(() => {
     try {
@@ -35,11 +43,14 @@ const DiceRollerApp = () => {
       if (!diceRoll) return;
       const distribution = calculateProbabilityDistribution(diceRoll);
       const average = calculateAverageDamageOnHit(distribution);
+      const totalAverage = calculateTotalAverageDamage(distribution);
       setAverageRoll(average);
+      setTotalAverageRoll(totalAverage);
       setProbabilities(distribution);
     } catch {
       setProbabilities(new Map());
       setAverageRoll(null);
+      setTotalAverageRoll(null);
     }
   }, [diceNotation]);
 
@@ -59,7 +70,7 @@ const DiceRollerApp = () => {
   const scaleFactor = maxProbability > 0 ? 180 / maxProbability : 0;
 
   return (
-    <div className="flex flex-col p-6 max-w-4xl mx-auto">
+    <div className="flex flex-col p-6 max-w-7xl mx-auto">
       <div className="flex gap-4 mb-6">
         <div className="w-2/3">
           <Label
@@ -72,80 +83,110 @@ const DiceRollerApp = () => {
             id={`diceNotation-${id}`}
             type="text"
             value={diceNotation}
-            onChange={(e) => setDiceNotation(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setDiceNotation(value);
+              const params = new URLSearchParams(searchParams);
+              if (value) {
+                params.set("dice", value);
+              } else {
+                params.delete("dice");
+              }
+              router.replace(`?${params.toString()}`, { scroll: false });
+            }}
             placeholder="3d6+2"
             className="text-lg"
             onKeyDown={(e) => e.key === "Enter"}
           />
         </div>
-        <Card className="shadow-lg">
-          <CardHeader className="pb-2">
-            <div className="flex items-center gap-2">
-              <Sword className="w-6 h-6 hidden md:block" />
-              <h3 className="text-sm font-medium text-muted-foreground">
-                Avg. Damage on Hit
-              </h3>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-2xl font-bold">
-              {averageRoll ? averageRoll.toFixed(1) : "-"}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Chance to Miss: {(100 * missProbability).toFixed(1)}%
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
-      {Object.keys(filteredProbabilities).length > 0 && (
-        <Card>
-          <CardContent className="p-6">
-            <div
-              className="my-8 overflow-x-auto pb-6"
-              style={{ maxWidth: "100%" }}
-            >
-              <div
-                style={{
-                  height: "220px",
-                  minWidth: `${filteredProbabilities.length * 40 + 20}px`,
-                  position: "relative",
-                }}
-              >
-                {filteredProbabilities.map(([outcome, probability], index) => {
-                  const height = Math.max(1, probability * scaleFactor);
-
-                  return (
-                    <div key={outcome}>
-                      <div
-                        className="absolute text-center text-[.6rem] text-primary-foreground bg-primary rounded-t"
-                        style={{
-                          height: `${height}px`,
-                          width: "30px",
-                          bottom: "24px",
-                          left: `${index * 35 + 10}px`,
-                        }}
-                      >
-                        {(100 * probability).toFixed(1)}%
-                      </div>
-                      <div
-                        className="absolute text-xs font-medium text-center text-foreground"
-                        style={{
-                          bottom: "0px",
-                          left: `${index * 35 + 10}px`,
-                          width: "30px",
-                        }}
-                      >
-                        {outcome}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+      <div className="flex flex-wrap gap-4">
+        <Card className="min-w-48">
+          <CardHeader>
+            <h3 className="flex gap-1 items-center text-lg font-bold">
+              <Dices className="size-4" />
+              {diceNotation}
+            </h3>
+          </CardHeader>
+          <CardContent>
+            <dl>
+              {[
+                {
+                  label: "Avg. Damage on Hit",
+                  value: averageRoll ? averageRoll.toFixed(1) : "-",
+                },
+                {
+                  label: "Avg. Damage",
+                  value: totalAverageRoll ? totalAverageRoll.toFixed(1) : "-",
+                },
+                {
+                  label: "Chance to Miss",
+                  value: `${(100 * missProbability).toFixed(1)}%`,
+                },
+              ].map((item) => (
+                <React.Fragment key={item.label}>
+                  <dt className="text-sm font-medium text-muted-foreground">
+                    {item.label}
+                  </dt>
+                  <dd className="text-lg font-bold">{item.value}</dd>
+                </React.Fragment>
+              ))}
+            </dl>
+            <div className=""></div>
           </CardContent>
         </Card>
-      )}
+        {Object.keys(filteredProbabilities).length > 0 && (
+          <Card className="overflow-x-scroll">
+            <CardContent className="p-6">
+              <div
+                className="my-8 overflow-x-auto pb-6"
+                style={{ maxWidth: "100%" }}
+              >
+                <div
+                  style={{
+                    height: "220px",
+                    minWidth: `${filteredProbabilities.length * 40 + 20}px`,
+                    position: "relative",
+                  }}
+                >
+                  {filteredProbabilities.map(
+                    ([outcome, probability], index) => {
+                      const height = Math.max(1, probability * scaleFactor);
+
+                      return (
+                        <div key={outcome}>
+                          <div
+                            className="absolute text-center text-[.6rem] text-primary-foreground bg-primary rounded-t"
+                            style={{
+                              height: `${height}px`,
+                              width: "30px",
+                              bottom: "24px",
+                              left: `${index * 35 + 10}px`,
+                            }}
+                          >
+                            {(100 * probability).toFixed(1)}%
+                          </div>
+                          <div
+                            className="absolute text-xs font-medium text-center text-foreground"
+                            style={{
+                              bottom: "0px",
+                              left: `${index * 35 + 10}px`,
+                              width: "30px",
+                            }}
+                          >
+                            {outcome}
+                          </div>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   );
 };

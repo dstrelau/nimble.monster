@@ -171,3 +171,13 @@ export function calculateAverageDamageOnHit(
 
   return sum;
 }
+
+export function calculateTotalAverageDamage(
+  distribution: ProbabilityDistribution
+): number {
+  let sum = 0;
+  for (const [roll, p] of distribution) {
+    sum += roll * p;
+  }
+  return sum;
+}
