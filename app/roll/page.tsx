@@ -28,8 +28,8 @@ export async function generateMetadata({
       const totalAvg = calculateTotalAverageDamage(distribution);
       const missProbability = distribution.get(0) || 0;
 
-      const title = dice;
-      const description = `Avg ${totalAvg.toFixed(1)} (${avgOnHit.toFixed(1)} on hit)\n${(100 * missProbability).toFixed(1)}% miss`;
+      const title = "Dice Roller - Nimble Monster";
+      const description = `${dice}\nAvg ${totalAvg.toFixed(1)} (${avgOnHit.toFixed(1)} on hit)\n${(100 * missProbability).toFixed(1)}% miss`;
 
       return {
         title,

@@ -1,6 +1,5 @@
 "use client";
 import { CircleAlert, Dices } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useId, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,8 +18,6 @@ type Props = {
 
 export function DiceRollerClient({ initialDice }: Props) {
   const id = useId();
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const [diceNotation, setDiceNotation] = useState(initialDice);
   const [probabilities, setProbabilities] = useState<ProbabilityDistribution>(
     new Map()
@@ -28,18 +25,17 @@ export function DiceRollerClient({ initialDice }: Props) {
   const [averageRoll, setAverageRoll] = useState<number | null>(null);
   const [totalAverageRoll, setTotalAverageRoll] = useState<number | null>(null);
   const [isValidDice, setIsValidDice] = useState(true);
+  const [lastValidDice, setLastValidDice] = useState(initialDice);
 
   useEffect(() => {
     try {
       const diceRoll = parseDiceNotation(diceNotation);
       if (!diceRoll) {
         setIsValidDice(false);
-        setProbabilities(new Map());
-        setAverageRoll(null);
-        setTotalAverageRoll(null);
         return;
       }
       setIsValidDice(true);
+      setLastValidDice(diceNotation);
       const distribution = calculateProbabilityDistribution(diceRoll);
       const average = calculateAverageDamageOnHit(distribution);
       const totalAverage = calculateTotalAverageDamage(distribution);
@@ -48,9 +44,6 @@ export function DiceRollerClient({ initialDice }: Props) {
       setProbabilities(distribution);
     } catch {
       setIsValidDice(false);
-      setProbabilities(new Map());
-      setAverageRoll(null);
-      setTotalAverageRoll(null);
     }
   }, [diceNotation]);
 
@@ -89,15 +82,7 @@ export function DiceRollerClient({ initialDice }: Props) {
                 type="text"
                 value={diceNotation}
                 onChange={(e) => {
-                  const value = e.target.value;
-                  setDiceNotation(value);
-                  const params = new URLSearchParams(searchParams);
-                  if (value) {
-                    params.set("dice", value);
-                  } else {
-                    params.delete("dice");
-                  }
-                  router.replace(`?${params.toString()}`, { scroll: false });
+                  setDiceNotation(e.target.value);
                 }}
                 placeholder="3d6+2"
                 className="text-lg"
@@ -111,7 +96,7 @@ export function DiceRollerClient({ initialDice }: Props) {
               <CardHeader>
                 <h3 className="flex gap-1 items-center text-lg font-bold">
                   <Dices className="size-4" />
-                  {diceNotation}
+                  {lastValidDice}
                 </h3>
               </CardHeader>
               <CardContent>
