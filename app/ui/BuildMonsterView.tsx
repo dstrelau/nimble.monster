@@ -159,7 +159,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     updatedAt: new Date().toISOString(),
   },
   empty: {
-    visibility: "private",
+    visibility: "public",
     id: "",
     legendary: false,
     minion: false,
