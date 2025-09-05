@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   experimental: {
     useCache: true,
   },
-  output: "standalone",
   reactStrictMode: true,
   async redirects() {
     return [

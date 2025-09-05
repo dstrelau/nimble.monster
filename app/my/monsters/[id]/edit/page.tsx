@@ -1,5 +1,5 @@
 import { unauthorized } from "next/navigation";
-import BuildMonster from "@/app/ui/BuildMonsterView";
+import BuildMonster from "@/app/monsters/BuildMonsterView";
 import { auth } from "@/lib/auth";
 import { findMonsterWithCreatorDiscordId } from "@/lib/db/monster";
 

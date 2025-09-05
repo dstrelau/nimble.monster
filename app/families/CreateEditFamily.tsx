@@ -51,16 +51,22 @@ export function CreateEditFamily({
   const handleSubmit = (data: FamilyFormData) => {
     setError(null);
     startTransition(async () => {
+      const abilitiesWithIds = data.abilities.map((ability) => ({
+        id: ability.id ?? crypto.randomUUID(),
+        name: ability.name,
+        description: ability.description,
+      }));
+
       const result = isCreating
         ? await createFamily({
             name: data.name,
             description: data.description || undefined,
-            abilities: data.abilities,
+            abilities: abilitiesWithIds,
           })
         : await updateFamily(family.id, {
             name: data.name,
             description: data.description || undefined,
-            abilities: data.abilities,
+            abilities: abilitiesWithIds,
           });
 
       if (result.success) {
@@ -86,6 +92,7 @@ export function CreateEditFamily({
       watchedValues.abilities
         ?.filter((a) => a.name && a.description)
         .map((ability) => ({
+          id: ability.id ?? crypto.randomUUID(),
           name: ability.name ?? "",
           description: ability.description ?? "",
         })) ?? family.abilities,

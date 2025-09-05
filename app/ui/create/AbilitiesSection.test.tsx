@@ -15,8 +15,12 @@ afterEach(() => {
 describe("AbilitiesSection", () => {
   const mockOnChange = vi.fn();
 
+  afterEach(() => {
+    mockOnChange.mockClear();
+  });
+
   it("maintains focus when typing in ability name", () => {
-    const abilities: Ability[] = [{ name: "", description: "" }];
+    const abilities: Ability[] = [{ id: "test-1", name: "", description: "" }];
     render(<AbilitiesSection abilities={abilities} onChange={mockOnChange} />);
 
     const nameInput = screen.getByLabelText("Name");
@@ -26,12 +30,14 @@ describe("AbilitiesSection", () => {
 
     expect(document.activeElement).toBe(nameInput);
     expect(mockOnChange).toHaveBeenCalledWith([
-      { name: "Fire", description: "" },
+      { id: "test-1", name: "Fire", description: "" },
     ]);
   });
 
   it("maintains focus when typing in ability description", () => {
-    const abilities: Ability[] = [{ name: "Fireball", description: "" }];
+    const abilities: Ability[] = [
+      { id: "test-1", name: "Fireball", description: "" },
+    ];
     render(<AbilitiesSection abilities={abilities} onChange={mockOnChange} />);
 
     const descInput = screen.getByRole("textbox", { name: /description/i });
@@ -41,27 +47,29 @@ describe("AbilitiesSection", () => {
 
     expect(document.activeElement).toBe(descInput);
     expect(mockOnChange).toHaveBeenCalledWith([
-      { name: "Fireball", description: "Deals fire damage" },
+      { id: "test-1", name: "Fireball", description: "Deals fire damage" },
     ]);
   });
 
   it("adds new ability when add button is clicked", () => {
-    const abilities: Ability[] = [{ name: "Existing", description: "Test" }];
+    const abilities: Ability[] = [
+      { id: "test-1", name: "Existing", description: "Test" },
+    ];
     render(<AbilitiesSection abilities={abilities} onChange={mockOnChange} />);
 
     const addButton = screen.getByRole("button", { name: /add/i });
     fireEvent.click(addButton);
 
     expect(mockOnChange).toHaveBeenCalledWith([
-      { name: "Existing", description: "Test" },
-      { name: "", description: "" },
+      { id: "test-1", name: "Existing", description: "Test" },
+      { id: expect.any(String), name: "", description: "" },
     ]);
   });
 
   it("removes ability when remove button is clicked", () => {
     const abilities: Ability[] = [
-      { name: "First", description: "First desc" },
-      { name: "Second", description: "Second desc" },
+      { id: "test-1", name: "First", description: "First desc" },
+      { id: "test-2", name: "Second", description: "Second desc" },
     ];
     render(<AbilitiesSection abilities={abilities} onChange={mockOnChange} />);
 
@@ -71,15 +79,15 @@ describe("AbilitiesSection", () => {
     fireEvent.click(removeButtons[0]);
 
     expect(mockOnChange).toHaveBeenCalledWith([
-      { name: "Second", description: "Second desc" },
+      { id: "test-2", name: "Second", description: "Second desc" },
     ]);
   });
 
   it("removes correct ability when multiple exist", () => {
     const abilities: Ability[] = [
-      { name: "First", description: "First desc" },
-      { name: "Second", description: "Second desc" },
-      { name: "Third", description: "Third desc" },
+      { id: "test-1", name: "First", description: "First desc" },
+      { id: "test-2", name: "Second", description: "Second desc" },
+      { id: "test-3", name: "Third", description: "Third desc" },
     ];
     render(<AbilitiesSection abilities={abilities} onChange={mockOnChange} />);
 
@@ -89,8 +97,8 @@ describe("AbilitiesSection", () => {
     fireEvent.click(removeButtons[1]); // Remove middle ability
 
     expect(mockOnChange).toHaveBeenCalledWith([
-      { name: "First", description: "First desc" },
-      { name: "Third", description: "Third desc" },
+      { id: "test-1", name: "First", description: "First desc" },
+      { id: "test-3", name: "Third", description: "Third desc" },
     ]);
   });
 

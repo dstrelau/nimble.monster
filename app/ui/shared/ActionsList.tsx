@@ -26,7 +26,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({
         {actions?.map(
           (action) =>
             action && (
-              <li key={action.name}>
+              <li key={action.id}>
                 <PrefixedFormattedText
                   content={action.description || ""}
                   conditions={conditions}

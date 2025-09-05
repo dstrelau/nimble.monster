@@ -166,21 +166,28 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
         },
         abilities: [
           {
+            id: "test-ability-1",
             name: "Pack Tactics",
             description: "Has advantage when ally is adjacent",
           },
         ],
       },
       abilities: [
-        { name: "Nimble Escape", description: "Can disengage as bonus action" },
+        {
+          id: "test-ability-2",
+          name: "Nimble Escape",
+          description: "Can disengage as bonus action",
+        },
       ],
       actions: [
         {
+          id: "test-id-1",
           name: "Shortsword",
           damage: "1d6+2",
           description: "Melee weapon attack",
         },
         {
+          id: "test-id-2",
           name: "Shortbow",
           damage: "1d6+2",
           description: "Ranged weapon attack",
@@ -254,6 +261,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       abilities: [],
       actions: [
         {
+          id: "test-id-3",
           name: "Bite",
           damage: "2d10+8",
           description: "Melee weapon attack",
@@ -314,6 +322,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       abilities: [],
       actions: [
         {
+          id: "test-id-4",
           name: "Bite",
           damage: "1",
           description: "Melee weapon attack",

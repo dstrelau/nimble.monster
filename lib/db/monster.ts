@@ -21,6 +21,9 @@ import {
   syncMonsterConditions,
 } from "./monster-conditions";
 
+const stripActionIds = (actions: Action[]): Omit<Action, "id">[] =>
+  actions.map(({ id, ...action }) => action);
+
 export const deleteMonster = async ({
   id,
   discordId,
@@ -240,7 +243,7 @@ export const createMonster = async (
       burrow: legendary ? 0 : burrow,
       teleport: legendary ? 0 : teleport,
       family: family ? { connect: { id: family.id } } : undefined,
-      actions: actions as unknown as InputJsonValue[],
+      actions: stripActionIds(actions) as unknown as InputJsonValue[],
       abilities: abilities as unknown as InputJsonValue[],
       bloodied: legendary ? bloodied : "",
       lastStand: legendary ? lastStand : "",
@@ -357,7 +360,7 @@ export const updateMonster = async (
       climb,
       teleport,
       burrow,
-      actions: actions as unknown as InputJsonValue[],
+      actions: stripActionIds(actions) as unknown as InputJsonValue[],
       abilities: abilities as unknown as InputJsonValue[],
       legendary,
       minion,

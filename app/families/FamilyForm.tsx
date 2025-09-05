@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 const AbilitySchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(1, "Ability name is required"),
   description: z.string().min(1, "Ability description is required"),
 });

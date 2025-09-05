@@ -136,11 +136,13 @@ export interface Condition {
 }
 
 export interface Ability {
+  id: string;
   name: string;
   description: string;
 }
 
 export interface Action {
+  id: string;
   name: string;
   damage?: string;
   range?: string;

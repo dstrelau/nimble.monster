@@ -1,5 +1,5 @@
 import { unauthorized } from "next/navigation";
-import BuildItemView from "@/app/ui/BuildItemView";
+import BuildItemView from "@/app/items/BuildItemView";
 import { auth } from "@/lib/auth";
 import { findItemWithCreatorDiscordId } from "@/lib/db/item";
 
