@@ -1,6 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useId, useState } from "react";
+import { createCollection } from "@/app/actions/collection";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { List } from "@/app/ui/monster/List";
 import { Button } from "@/components/ui/button";
@@ -13,41 +15,99 @@ import type {
   CollectionVisibilityType,
   Monster,
 } from "@/lib/types";
-import { updateCollection } from "./actions";
-import { VisibilityToggle } from "./VisibilityToggle";
+import { updateCollection } from "./[id]/edit/actions";
+import { VisibilityToggle } from "./[id]/edit/VisibilityToggle";
 
 interface Props {
   collection: Collection;
   myMonsters: Monster[];
+  onSubmit?: (prevState: ActionState, data: FormData) => Promise<ActionState>;
+  isCreating?: boolean;
+  submitLabel?: string;
 }
 
-export function EditForm({ collection, myMonsters }: Props) {
+type ActionState = {
+  success: boolean;
+  monsterIds?: string[];
+  error?: string;
+  collection?: { id: string };
+};
+
+export function CreateEditCollection({
+  collection,
+  myMonsters,
+  onSubmit,
+  isCreating = false,
+  submitLabel = "Save",
+}: Props) {
+  const router = useRouter();
   const [currentCollection, setCurrentCollection] = useState(collection);
   const [isDirty, setIsDirty] = useState(false);
   const id = useId();
 
   useEffect(() => {
-    setIsDirty(
-      currentCollection.name !== collection.name ||
-        currentCollection.description !== collection.description ||
-        currentCollection.visibility !== collection.visibility ||
-        JSON.stringify(currentCollection.monsters.map((m) => m.id).sort()) !==
-          JSON.stringify(collection.monsters.map((m) => m.id).sort())
-    );
-  }, [currentCollection, collection]);
-
-  type ActionState = {
-    success: boolean;
-    monsterIds: string[];
-  };
+    if (isCreating) {
+      setIsDirty(currentCollection.name.trim() !== "");
+    } else {
+      setIsDirty(
+        currentCollection.name !== collection.name ||
+          currentCollection.description !== collection.description ||
+          currentCollection.visibility !== collection.visibility ||
+          JSON.stringify(currentCollection.monsters.map((m) => m.id).sort()) !==
+            JSON.stringify(collection.monsters.map((m) => m.id).sort())
+      );
+    }
+  }, [currentCollection, collection, isCreating]);
 
   const initialState: ActionState = {
     success: false,
     monsterIds: collection.monsters.map((m) => m.id),
   };
 
-  const [_state, formAction] = useActionState<ActionState, FormData>(
-    async (_prevState: ActionState, formData: FormData) => {
+  const defaultSubmitHandler = async (
+    _prevState: ActionState,
+    formData: FormData
+  ): Promise<ActionState> => {
+    if (isCreating) {
+      const result = await createCollection({
+        name: formData.get("name") as string,
+        visibility: formData.get("visibility") as CollectionVisibilityType,
+        description: (formData.get("description") as string) || undefined,
+      });
+
+      if (result.success && result.collection) {
+        // If we have monsters selected, update the collection with them
+        if (currentCollection.monsters.length > 0) {
+          const updateFormData = new FormData();
+          updateFormData.append("name", formData.get("name") as string);
+          updateFormData.append("visibility", formData.get("visibility") as string);
+          updateFormData.append("description", formData.get("description") as string);
+          updateFormData.append(
+            "monsterIds",
+            JSON.stringify(currentCollection.monsters.map((m) => m.id))
+          );
+
+          const updateResult = await updateCollection(result.collection.id, updateFormData);
+          if (!updateResult.success) {
+            return {
+              success: false,
+              error: "Failed to add monsters to collection",
+            };
+          }
+        }
+
+        router.push(`/collections/${result.collection.id}`);
+        return {
+          success: true,
+          collection: { id: result.collection.id },
+        };
+      }
+
+      return {
+        success: false,
+        error: result.error || "Failed to create collection",
+      };
+    } else {
       formData.append(
         "monsterIds",
         JSON.stringify(currentCollection.monsters.map((m) => m.id))
@@ -55,7 +115,7 @@ export function EditForm({ collection, myMonsters }: Props) {
       const result = await updateCollection(collection.id, formData);
       if (result.success) {
         const updatedMonsters = myMonsters
-          .filter((m) => result.monsterIds.includes(m.id))
+          .filter((m) => result.monsterIds?.includes(m.id) ?? false)
           .sort((a, b) => a.name.localeCompare(b.name));
 
         setCurrentCollection((prev) => ({
@@ -64,7 +124,11 @@ export function EditForm({ collection, myMonsters }: Props) {
         }));
       }
       return result;
-    },
+    }
+  };
+
+  const [_state, formAction] = useActionState<ActionState, FormData>(
+    onSubmit || defaultSubmitHandler,
     initialState
   );
 
@@ -156,7 +220,7 @@ export function EditForm({ collection, myMonsters }: Props) {
             </div>
             <div className="flex items-end ml-auto">
               <Button type="submit" disabled={!isDirty}>
-                Save
+                {isCreating ? "Create" : submitLabel}
               </Button>
             </div>
           </div>

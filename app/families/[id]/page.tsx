@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { FamilyHeader } from "@/app/families/FamilyHeader";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
-import { FamilyHeader } from "@/components/FamilyHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { parseMonsterLevel } from "@/lib/utils";
@@ -36,7 +36,7 @@ export async function generateMetadata({
       title: family.name,
       description: description,
       type: "article",
-      url: `/f/${family.id}`,
+      url: `/families/${family.id}`,
     },
     twitter: {
       card: "summary",
@@ -76,7 +76,6 @@ export default async function FamilyDetailPage({
       ) : (
         <CardGrid
           monsters={sortedMonsters}
-          currentUserId={session?.user?.id}
           hideFamilyAbilities={true}
           hideCreator={true}
           hideFamilyName={true}

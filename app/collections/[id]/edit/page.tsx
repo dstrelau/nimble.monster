@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import { EditForm } from "./EditForm";
+import { CreateEditCollection } from "../../CreateEditCollection";
 
 export default async function EditCollectionPage({
   params,
@@ -23,7 +23,7 @@ export default async function EditCollectionPage({
 
   return (
     <div className="">
-      <EditForm collection={collection} myMonsters={myMonsters} />
+      <CreateEditCollection collection={collection} myMonsters={myMonsters} />
     </div>
   );
 }

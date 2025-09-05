@@ -51,7 +51,7 @@ const HeaderCompanion: React.FC<{
 
     <CardTitle className="font-slab font-black text-2xl leading-tight text-left">
       {link && companion.id ? (
-        <Link href={`/c/${companion.id}`}>{companion.name}</Link>
+        <Link href={`/companions/${companion.id}`}>{companion.name}</Link>
       ) : (
         companion.name
       )}
@@ -128,9 +128,9 @@ export const Card = ({
             <ShareMenu disabled={companion.visibility !== "public"}>
               <ShareMenuDownloadCardItem
                 name={`${companion.name}.png`}
-                path={`/c/${companion.id}/image`}
+                path={`/companions/${companion.id}/image`}
               />
-              <ShareMenuCopyURLItem path={`/c/${companion.id}`} />
+              <ShareMenuCopyURLItem path={`/companions/${companion.id}`} />
             </ShareMenu>
           }
         />

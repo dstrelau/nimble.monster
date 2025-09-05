@@ -6,6 +6,20 @@ const nextConfig: NextConfig = {
   },
   output: "standalone",
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: "/f/:path*",
+        destination: "/families/:path*",
+        permanent: true,
+      },
+      {
+        source: "/c/:path*",
+        destination: "/companions/:path*",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

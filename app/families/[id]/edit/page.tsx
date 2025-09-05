@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import { EditFamilyClient } from "./EditFamilyClient";
+import { CreateEditFamily } from "../../CreateEditFamily";
 
 export default async function EditFamilyPage({
   params,
@@ -16,8 +16,8 @@ export default async function EditFamilyPage({
   }
 
   if (!session?.user?.id || session.user.id !== family.creatorId) {
-    redirect(`/f/${id}`);
+    redirect(`/families/${id}`);
   }
 
-  return <EditFamilyClient family={family} />;
+  return <CreateEditFamily family={family} />;
 }

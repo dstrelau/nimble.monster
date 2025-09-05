@@ -8,14 +8,12 @@ import { SimpleFilterBar } from "./SimpleFilterBar";
 interface FilterableCardGridProps {
   monsters: Monster[];
   hideActions?: boolean;
-  currentUserId?: string;
   gridColumns?: { default?: number; sm?: number; md?: number; lg?: number };
 }
 
 export const FilterableCardGrid: React.FC<FilterableCardGridProps> = ({
   monsters,
   hideActions = false,
-  currentUserId,
   gridColumns = { default: 1, md: 2, lg: 3 },
 }) => {
   const {
@@ -42,7 +40,6 @@ export const FilterableCardGrid: React.FC<FilterableCardGridProps> = ({
       <CardGrid
         monsters={filteredMonsters}
         hideActions={hideActions}
-        currentUserId={currentUserId}
         gridColumns={gridColumns}
       />
     </div>

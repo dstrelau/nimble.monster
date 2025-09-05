@@ -40,10 +40,10 @@ export async function generateMetadata({
       title: companion.name,
       description: `${companionInfo}${creatorText}`,
       type: "article",
-      url: `/c/${companion.id}`,
+      url: `/companions/${companion.id}`,
       images: [
         {
-          url: `/c/${companion.id}/image`,
+          url: `/companions/${companion.id}/image`,
           alt: companion.name,
         },
       ],
@@ -52,7 +52,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: companion.name,
       description: `${companionInfo}${creatorText}`,
-      images: [`/c/${companion.id}/image`],
+      images: [`/companions/${companion.id}/image`],
     },
   };
 }

@@ -48,7 +48,7 @@ import {
 import { fetchApi } from "@/lib/api";
 import type { Monster, MonsterArmor, MonsterSize } from "@/lib/types";
 import { ARMORS, SIZES } from "@/lib/types";
-import { getUserFamilies } from "../actions/family";
+import { getUserFamilies } from "../families/actions";
 import { AbilitiesSection } from "./shared/AbilitiesSection";
 import { ActionsSection } from "./shared/ActionsSection";
 

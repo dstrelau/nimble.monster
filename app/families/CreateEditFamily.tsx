@@ -1,30 +1,30 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useState, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { updateFamily } from "@/app/actions/family";
+import { createFamily, updateFamily } from "@/app/families/actions";
 import {
   FamilyForm,
   type FamilyFormData,
   FamilySchema,
-} from "@/app/my/families/FamilyForm";
-import { FamilyHeader } from "@/components/FamilyHeader";
+} from "@/app/families/FamilyForm";
+import { FamilyHeader } from "@/app/families/FamilyHeader";
 import { Button } from "@/components/ui/button";
-import { useConditions } from "@/lib/hooks/useConditions";
 import type { FamilyOverview } from "@/lib/types";
 
 interface EditFamilyClientProps {
   family: FamilyOverview;
+  isCreating?: boolean;
 }
 
-export function EditFamilyClient({ family }: EditFamilyClientProps) {
+export function CreateEditFamily({
+  family,
+  isCreating = false,
+}: EditFamilyClientProps) {
   const router = useRouter();
-  const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const { allConditions } = useConditions({ creatorId: session?.user?.id });
 
   const normalizedAbilities = family.abilities.map((ability) => ({
     name: ability.name || "",
@@ -33,7 +33,7 @@ export function EditFamilyClient({ family }: EditFamilyClientProps) {
 
   const {
     register,
-    handleSubmit,
+    handleSubmit: onSubmit,
     control,
     formState: { errors },
   } = useForm<FamilyFormData>({
@@ -48,24 +48,30 @@ export function EditFamilyClient({ family }: EditFamilyClientProps) {
     },
   });
 
-  const handleUpdate = (data: FamilyFormData) => {
+  const handleSubmit = (data: FamilyFormData) => {
     setError(null);
     startTransition(async () => {
-      const result = await updateFamily(family.id, {
-        name: data.name,
-        description: data.description || undefined, // Convert empty string to undefined
-        abilities: data.abilities,
-      });
+      const result = isCreating
+        ? await createFamily({
+            name: data.name,
+            description: data.description || undefined,
+            abilities: data.abilities,
+          })
+        : await updateFamily(family.id, {
+            name: data.name,
+            description: data.description || undefined,
+            abilities: data.abilities,
+          });
+
       if (result.success) {
-        router.push(`/f/${family.id}`);
+        const targetId = isCreating ? result.family?.id : family.id;
+        router.push(`/families/${targetId}`);
       } else {
-        setError(result.error || "Failed to update family");
+        setError(
+          result.error || `Failed to ${isCreating ? "create" : "update"} family`
+        );
       }
     });
-  };
-
-  const handleCancel = () => {
-    router.push(`/f/${family.id}`);
   };
 
   const watchedValues = useWatch({ control });
@@ -87,7 +93,9 @@ export function EditFamilyClient({ family }: EditFamilyClientProps) {
 
   return (
     <div className="container max-w-7xl">
-      <h1 className="text-2xl font-bold mb-6">Edit Family</h1>
+      <h1 className="text-2xl font-bold mb-6">
+        {isCreating ? "Create Family" : "Edit Family"}
+      </h1>
       {error && (
         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
           {error}
@@ -95,14 +103,17 @@ export function EditFamilyClient({ family }: EditFamilyClientProps) {
       )}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-          <form onSubmit={handleSubmit(handleUpdate)}>
+          <form onSubmit={onSubmit(handleSubmit)}>
             <FamilyForm register={register} errors={errors} control={control}>
               <div className="flex space-x-2">
                 <Button type="submit" disabled={isPending}>
-                  {isPending ? "Saving..." : "Save"}
-                </Button>
-                <Button type="button" variant="outline" onClick={handleCancel}>
-                  Cancel
+                  {isPending
+                    ? isCreating
+                      ? "Creating..."
+                      : "Saving..."
+                    : isCreating
+                      ? "Create"
+                      : "Save"}
                 </Button>
               </div>
             </FamilyForm>
@@ -111,7 +122,7 @@ export function EditFamilyClient({ family }: EditFamilyClientProps) {
         <div className="hidden lg:block">
           <h2 className="text-lg font-semibold mb-4">Preview</h2>
           <div className="border rounded-lg p-4">
-            <FamilyHeader family={previewFamily} conditions={allConditions} />
+            <FamilyHeader family={previewFamily} />
           </div>
         </div>
       </div>

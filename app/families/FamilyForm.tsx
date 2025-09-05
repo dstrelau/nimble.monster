@@ -104,7 +104,7 @@ export const FamilyForm = ({
               <div>
                 <Label
                   htmlFor={`abilities.${index}.description`}
-                  className="mb-2 block flex items-center gap-2"
+                  className="mb-2 flex items-center gap-2"
                 >
                   Ability Description
                   <ConditionValidationIcon

@@ -17,7 +17,7 @@ export const FamilyCard = ({ family, monsters }: FamilyCardProps) => {
   return (
     <MonsterGroupMinis
       name={family.name}
-      href={`/f/${family.id}`}
+      href={`/families/${family.id}`}
       monsters={monsters}
     >
       <AbilityOverlay abilities={family.abilities} conditions={allConditions} />

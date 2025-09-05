@@ -2,26 +2,30 @@
 import { Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { deleteFamily } from "@/app/actions/family";
+import { deleteFamily } from "@/app/families/actions";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { Attribution } from "@/app/ui/Attribution";
 import { Button } from "@/components/ui/button";
-import type { Condition, FamilyOverview } from "@/lib/types";
-import { FormattedText } from "./FormattedText";
+import { useConditions } from "@/lib/hooks/useConditions";
+import type { FamilyOverview } from "@/lib/types";
+import { FormattedText } from "../../components/FormattedText";
 
 interface FamilyHeaderProps {
   family: FamilyOverview;
   showEditDeleteButtons?: boolean;
-  conditions?: Condition[];
 }
 
 export function FamilyHeader({
   family,
   showEditDeleteButtons = false,
-  conditions = [],
 }: FamilyHeaderProps) {
   const router = useRouter();
+  const { data: session } = useSession();
+  const { allConditions: conditions } = useConditions({
+    creatorId: session?.user.id,
+  });
 
   const [_isDeleting, setIsDeleting] = useState(false);
   const handleDelete = async () => {
@@ -54,7 +58,7 @@ export function FamilyHeader({
           {showEditDeleteButtons && (
             <div className="flex gap-2">
               <Button variant="outline" size="sm" asChild>
-                <Link href={`/f/${family.id}/edit`}>
+                <Link href={`/families/${family.id}/edit`}>
                   <Pencil className="w-4 h-4" />
                   Edit
                 </Link>

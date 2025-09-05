@@ -115,7 +115,10 @@ const HeaderMinion: React.FC<{
         Lvl <Level level={monster.level} /> {formatSizeKind(monster)} Minion
       </p>
       {monster.family && !hideFamilyName && (
-        <Link href={`/f/${monster.family.id}`} className="flex items-center">
+        <Link
+          href={`/families/${monster.family.id}`}
+          className="flex items-center"
+        >
           <Users className="w-4 pb-1 mr-0.5 text-flame" />
           <strong>{monster.family.name}</strong>
         </Link>
@@ -165,7 +168,10 @@ const HeaderStandard: React.FC<{
         Lvl <Level level={monster.level} /> {formatSizeKind(monster)}
       </p>
       {monster.family && !hideFamilyName && (
-        <Link href={`/f/${monster.family.id}`} className="flex items-center">
+        <Link
+          href={`/families/${monster.family.id}`}
+          className="flex items-center"
+        >
           <Users className="w-4 pb-1 mr-0.5 text-flame" />
           <strong>{monster.family.name}</strong>
         </Link>

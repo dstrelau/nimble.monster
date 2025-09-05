@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { FamilyCard } from "@/components/FamilyCard";
 import { auth } from "@/lib/auth";
 import { getUserFamilies } from "@/lib/db";
-import { NewFamilyForm } from "./NewFamilyForm";
 
 export default async function MyFamiliesPage() {
   const session = await auth();
@@ -12,8 +11,6 @@ export default async function MyFamiliesPage() {
 
   return (
     <div className="space-y-6">
-      <NewFamilyForm />
-
       {families.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-600">

@@ -250,7 +250,7 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
         queryClient.invalidateQueries({
           queryKey: ["companion", result.companion.id],
         });
-        router.push(`/c/${result.companion.id}`);
+        router.push(`/companions/${result.companion.id}`);
       } else {
         setSubmitError(result.error || "Failed to save companion");
       }

@@ -114,7 +114,7 @@ export async function updateCompanion(
       discordId: session.user.id,
     });
 
-    revalidatePath(`/c/${companionId}`);
+    revalidatePath(`/companions/${companionId}`);
     revalidatePath("/my/companions");
 
     return { success: true, companion };

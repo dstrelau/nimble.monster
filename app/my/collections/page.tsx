@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { CollectionCard } from "@/app/ui/CollectionCard";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import NewCollectionForm from "./NewCollectionForm";
 
 export default async function MyCollectionsPage() {
   const session = await auth();
@@ -13,8 +12,6 @@ export default async function MyCollectionsPage() {
   );
   return (
     <div className="space-y-6">
-      <NewCollectionForm />
-
       {collections.length === 0 ? (
         <div className="d-alert d-alert-info">
           <p>

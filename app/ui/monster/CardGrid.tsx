@@ -5,7 +5,6 @@ import { Card } from "./Card";
 export const CardGrid = ({
   monsters,
   hideActions = false,
-  currentUserId,
   gridColumns = { default: 1, md: 2, lg: 3 },
   hideFamilyAbilities = false,
   hideCreator = false,
@@ -13,7 +12,6 @@ export const CardGrid = ({
 }: {
   monsters: Monster[];
   hideActions?: boolean;
-  currentUserId?: string;
   gridColumns?: { default?: number; sm?: number; md?: number; lg?: number };
   hideFamilyAbilities?: boolean;
   hideCreator?: boolean;

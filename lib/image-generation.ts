@@ -26,7 +26,7 @@ export async function generateEntityImage({
           case "monster":
             return `${baseUrl}/m/${entityId}`;
           case "companion":
-            return `${baseUrl}/c/${entityId}`;
+            return `${baseUrl}/companions/${entityId}`;
           case "item":
             return `${baseUrl}/items/${entityId}`;
           default:
