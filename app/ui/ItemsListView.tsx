@@ -33,10 +33,12 @@ export const ItemsListView: React.FC<ItemsListViewProps> = ({
   const {
     searchTerm,
     sortOption,
+    rarityFilter,
     filteredItems,
     shouldClearSelection,
     handleSearch,
     setSortOption,
+    handleRarityChange,
   } = useSimpleItemFilters({ items, selectedItemId });
 
   useEffect(() => {
@@ -100,8 +102,10 @@ export const ItemsListView: React.FC<ItemsListViewProps> = ({
         <SimpleFilterBar
           searchTerm={searchTerm}
           sortOption={sortOption}
+          rarityFilter={rarityFilter}
           onSearch={handleSearch}
           onSortChange={setSortOption}
+          onRarityChange={handleRarityChange}
         />
 
         {/* Item list */}

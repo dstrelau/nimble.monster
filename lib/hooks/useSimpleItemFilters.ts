@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { SortOption } from "@/app/ui/item/SimpleFilterBar";
-import type { Item } from "@/lib/types";
+import type { Item, ItemRarity } from "@/lib/types";
 
 interface UseSimpleItemFiltersProps {
   items: Item[];
@@ -13,17 +13,23 @@ export const useSimpleItemFilters = ({
 }: UseSimpleItemFiltersProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState<SortOption>("name-asc");
+  const [rarityFilter, setRarityFilter] = useState<ItemRarity | null>(null);
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
   };
 
+  const handleRarityChange = (rarity: ItemRarity | null) => {
+    setRarityFilter(rarity);
+  };
+
   const { filteredItems, shouldClearSelection } = useMemo(() => {
     let filtered = items.filter(
       (item) =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.kind?.toLowerCase().includes(searchTerm.toLowerCase())
+        (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.kind?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (!rarityFilter || item.rarity === rarityFilter)
     );
 
     // Sort items
@@ -33,10 +39,6 @@ export const useSimpleItemFilters = ({
           return a.name.localeCompare(b.name);
         case "name-desc":
           return b.name.localeCompare(a.name);
-        case "kind-asc":
-          return (a.kind || "").localeCompare(b.kind || "");
-        case "kind-desc":
-          return (b.kind || "").localeCompare(a.kind || "");
         default:
           return 0;
       }
@@ -47,14 +49,16 @@ export const useSimpleItemFilters = ({
       : false;
 
     return { filteredItems: filtered, shouldClearSelection };
-  }, [items, searchTerm, sortOption, selectedItemId]);
+  }, [items, searchTerm, sortOption, rarityFilter, selectedItemId]);
 
   return {
     searchTerm,
     sortOption,
+    rarityFilter,
     filteredItems,
     shouldClearSelection,
     handleSearch,
     setSortOption,
+    handleRarityChange,
   };
 };
