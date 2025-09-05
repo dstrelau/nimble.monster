@@ -49,8 +49,8 @@ import { fetchApi } from "@/lib/api";
 import type { Monster, MonsterArmor, MonsterSize } from "@/lib/types";
 import { ARMORS, SIZES } from "@/lib/types";
 import { getUserFamilies } from "../families/actions";
-import { AbilitiesSection } from "./shared/AbilitiesSection";
-import { ActionsSection } from "./shared/ActionsSection";
+import { AbilitiesSection } from "../ui/create/AbilitiesSection";
+import { ActionsSection } from "../ui/create/ActionsSection";
 
 const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
   goblin: {
@@ -71,6 +71,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     hp: 30,
     abilities: [
       {
+        id: crypto.randomUUID(),
         name: "Meat Shield",
         description: "Can force other goblins to Interpose for him.",
       },
@@ -113,27 +114,25 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     saves: "STR+, DEX+",
     abilities: [
       {
+        id: crypto.randomUUID(),
         name: "Feral Instinct",
         description: "Whenever Ravager is crit, he can fly 10.",
       },
     ],
     actions: [
       {
-        id: crypto.randomUUID(),
         name: "Venomous Stinger",
         description: "(1 use) Reach:3, 5d12 damage.",
       },
       {
-        id: crypto.randomUUID(),
         name: "Ravage",
         description: "Attack for 1d12+20 damage.",
       },
       {
-        id: crypto.randomUUID(),
         name: "Move & Claw",
         description: "Fly 10, attack for 1d12+6 damage.",
       },
-    ],
+    ].map((a) => ({ ...a, id: crypto.randomUUID() })),
     bloodied: "At 65 HP, his Venomous Stinger recharges.",
     lastStand:
       "The Ravager is dying! 40 more damage and he dies. Until then, the first time each turn he takes damage, he uses Move & Claw.",

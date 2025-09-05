@@ -166,13 +166,18 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
         },
         abilities: [
           {
+            id: "test-ability-1",
             name: "Pack Tactics",
             description: "Has advantage when ally is adjacent",
           },
         ],
       },
       abilities: [
-        { name: "Nimble Escape", description: "Can disengage as bonus action" },
+        {
+          id: "test-ability-2",
+          name: "Nimble Escape",
+          description: "Can disengage as bonus action",
+        },
       ],
       actions: [
         {

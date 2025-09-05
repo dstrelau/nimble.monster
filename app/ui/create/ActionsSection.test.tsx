@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { ActionsSection } from "@/app/ui/create/ActionsSection";
 import type { Action } from "@/lib/types";
-import { ActionsSection } from "./ActionsSection";
 
 // Only mock what causes the next-auth import issue
 vi.mock("@/components/ConditionValidationIcon", () => ({

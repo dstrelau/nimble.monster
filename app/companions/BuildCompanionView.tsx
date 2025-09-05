@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useId, useState } from "react";
 import { Card } from "@/app/ui/companion/Card";
+import { AbilitiesSection } from "@/app/ui/create/AbilitiesSection";
+import { ActionsSection } from "@/app/ui/create/ActionsSection";
 import { BuildView } from "@/components/app/BuildView";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
 import { FormInput, FormSelect, FormTextarea } from "@/components/app/Form";
@@ -14,8 +16,6 @@ import { Button } from "@/components/ui/button";
 import type { Companion, MonsterSize } from "@/lib/types";
 import { SIZES } from "@/lib/types";
 import { createCompanion, updateCompanion } from "../actions/companion";
-import { AbilitiesSection } from "./shared/AbilitiesSection";
-import { ActionsSection } from "./shared/ActionsSection";
 
 const EXAMPLE_COMPANIONS: Record<string, Omit<Companion, "creator">> = {
   Stabs: {
@@ -30,11 +30,13 @@ const EXAMPLE_COMPANIONS: Record<string, Omit<Companion, "creator">> = {
     wounds: 3,
     abilities: [
       {
+        id: crypto.randomUUID(),
         name: "Companion",
         description:
           "Can Interpose for friends (but you'll never hear the end of it!)",
       },
       {
+        id: crypto.randomUUID(),
         name: "Pocket Sand!",
         description:
           "(1/encounter) force an adjacent enemy to reroll an attack with disadvantage.",

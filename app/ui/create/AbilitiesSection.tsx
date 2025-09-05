@@ -63,7 +63,7 @@ export const AbilitiesSection: React.FC<AbilitiesSectionProps> = ({
     <legend className="mb-4 font-condensed font-bold">Abilities</legend>
     {abilities.map((ability, index) => (
       <AbilityRow
-        key={index}
+        key={ability.id}
         ability={ability}
         onChange={(newAbility) => {
           const newAbilities = [...abilities];
@@ -80,7 +80,12 @@ export const AbilitiesSection: React.FC<AbilitiesSectionProps> = ({
       type="button"
       variant="ghost"
       className="text-muted-foreground"
-      onClick={() => onChange([...abilities, { name: "", description: "" }])}
+      onClick={() =>
+        onChange([
+          ...abilities,
+          { id: crypto.randomUUID(), name: "", description: "" },
+        ])
+      }
     >
       <Plus className="w-6 h-6" />
       Add

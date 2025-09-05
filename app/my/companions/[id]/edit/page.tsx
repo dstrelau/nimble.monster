@@ -1,5 +1,5 @@
 import { unauthorized } from "next/navigation";
-import BuildCompanionView from "@/app/ui/BuildCompanionView";
+import BuildCompanionView from "@/app/companions/BuildCompanionView";
 import { auth } from "@/lib/auth";
 import { findCompanionWithCreatorDiscordId } from "@/lib/db/companion";
 

@@ -1,4 +1,4 @@
-import BuildItemView from "@/app/ui/BuildItemView";
+import BuildItemView from "@/app/items/BuildItemView";
 
 export default async function NewItemPage() {
   return <BuildItemView />;

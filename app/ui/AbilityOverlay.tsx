@@ -25,7 +25,7 @@ export const AbilityOverlay = ({
           const isFromFamily = familyAbilityNames.has(abilityName);
 
           return (
-            <div key={abilityName}>
+            <div key={ability.id}>
               <PrefixedFormattedText
                 prefix={
                   <>
