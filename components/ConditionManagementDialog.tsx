@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useId, useState } from "react";
-import { createCondition } from "@/app/actions/conditions";
+import { createCondition, deleteCondition } from "@/app/actions/conditions";
 import { Button } from "@/components/ui/button";
 import {
   DialogContent,
@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useConditions } from "@/lib/hooks/useConditions";
+import { Trash2 } from "lucide-react";
 
 export function ConditionManagementDialog() {
   const [condition, setCondition] = useState<{
@@ -40,6 +41,15 @@ export function ConditionManagementDialog() {
     }
   };
 
+  const handleDeleteCondition = async (conditionId: string) => {
+    try {
+      await deleteCondition(conditionId);
+      queryClient.invalidateQueries({ queryKey: ["conditions"] });
+    } catch (error) {
+      console.error("Failed to delete condition:", error);
+    }
+  };
+
   return (
     <DialogContent>
       <DialogHeader>
@@ -53,12 +63,22 @@ export function ConditionManagementDialog() {
             ownConds.data?.map((condition, idx) => (
               <div
                 key={`${condition.name}-${idx}`}
-                className="border rounded p-2"
+                className="border rounded p-2 flex justify-between items-start"
               >
-                <div className="font-medium">{condition.name}</div>
-                <div className="text-sm text-muted-foreground">
-                  {condition.description}
+                <div className="flex-1">
+                  <div className="font-medium">{condition.name}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {condition.description}
+                  </div>
                 </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDeleteCondition(condition.id)}
+                  className="ml-2 p-1 h-auto"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
             ))
           )}

@@ -40,3 +40,12 @@ export async function createCondition(
     },
   });
 }
+
+export async function deleteCondition(conditionId: string, discordId: string) {
+  return await prisma.condition.delete({
+    where: {
+      id: conditionId,
+      creator: { discordId },
+    },
+  });
+}
