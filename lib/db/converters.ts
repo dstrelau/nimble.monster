@@ -8,6 +8,7 @@ import type {
   FamilyOverview,
   Item,
   ItemMini,
+  ItemRarity,
   Monster,
   MonsterMini,
 } from "@/lib/types";
@@ -167,6 +168,7 @@ export const toItemMini = (
   id: i.id,
   name: i.name,
   kind: i.kind || undefined,
+  rarity: i.rarity as ItemRarity,
   visibility: i.visibility,
 });
 
@@ -185,6 +187,7 @@ export const toItem = (
     id: i.id,
     name: i.name,
     kind: i.kind || undefined,
+    rarity: i.rarity as ItemRarity,
     visibility: i.visibility,
     description: i.description,
     moreInfo: i.moreInfo || undefined,

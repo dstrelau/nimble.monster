@@ -1,4 +1,4 @@
-import type { Item } from "@/lib/types";
+import type { Item, ItemRarity } from "@/lib/types";
 import { getBaseUrl } from "@/lib/utils/url";
 import { isValidUUID } from "@/lib/utils/validation";
 import { invalidateEntityImageCache, preloadImage } from "../cache/image-cache";
@@ -110,6 +110,7 @@ export interface CreateItemInput {
   description: string;
   moreInfo?: string;
   imageIcon?: string;
+  rarity?: ItemRarity;
   visibility: "public" | "private";
   discordId: string;
 }
@@ -121,6 +122,7 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
     description,
     moreInfo = "",
     imageIcon,
+    rarity,
     visibility,
     discordId,
   } = input;
@@ -140,6 +142,7 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
       description,
       moreInfo,
       imageIcon,
+      rarity,
       visibility,
       creator: {
         connect: { id: user.id },
@@ -166,6 +169,7 @@ export interface UpdateItemInput {
   description: string;
   moreInfo?: string;
   imageIcon?: string;
+  rarity?: ItemRarity;
   visibility: "public" | "private";
   discordId: string;
 }
@@ -178,6 +182,7 @@ export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
     description,
     moreInfo = "",
     imageIcon,
+    rarity,
     visibility,
     discordId,
   } = input;
@@ -197,6 +202,7 @@ export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
       description,
       moreInfo,
       imageIcon,
+      rarity,
       visibility,
       updatedAt: new Date(),
     },

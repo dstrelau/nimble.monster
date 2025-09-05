@@ -28,6 +28,16 @@ export const ValidCollectionVisibilities = [
 export type CollectionVisibilityType =
   (typeof ValidCollectionVisibilities)[number];
 
+export const RARITIES = [
+  { value: "unspecified", label: "Unspecified" },
+  { value: "common", label: "Common" },
+  { value: "uncommon", label: "Uncommon" },
+  { value: "rare", label: "Rare" },
+  { value: "very_rare", label: "Very Rare" },
+  { value: "legendary", label: "Legendary" },
+] as const;
+export type ItemRarity = (typeof RARITIES)[number]["value"];
+
 export const FAMILY_VISIBILITY = [
   { value: "public", label: "Public" },
   { value: "secret", label: "Secret" },
@@ -119,6 +129,7 @@ export interface Companion extends CompanionMini {
 }
 
 export interface Condition {
+  id: string;
   name: string;
   description: string;
   official: boolean;
@@ -156,6 +167,7 @@ export interface ItemMini {
   id: string;
   name: string;
   kind?: string;
+  rarity: ItemRarity;
   visibility: "public" | "private";
 }
 

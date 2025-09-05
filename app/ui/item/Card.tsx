@@ -18,7 +18,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
-import type { Item, User } from "@/lib/types";
+import { type Item, RARITIES, type User } from "@/lib/types";
+
+const formatRarityDisplay = (rarity?: string): string => {
+  if (!rarity || rarity === "unspecified") return "";
+
+  const rarityOption = RARITIES.find((option) => option.value === rarity);
+  return rarityOption ? `${rarityOption.label} ` : "";
+};
 
 const HeaderItem: React.FC<{
   item: Item;
@@ -32,9 +39,10 @@ const HeaderItem: React.FC<{
         item.name
       )}
     </CardTitle>
-    {item.kind && (
+    {(item.rarity || item.kind) && (
       <CardDescription className="font-condensed text-md">
-        {item.kind}
+        {formatRarityDisplay(item.rarity)}
+        {item.kind || ""}
       </CardDescription>
     )}
   </CardHeader>

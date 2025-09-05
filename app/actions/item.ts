@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import type { ItemRarity } from "@/lib/types";
 
 export async function createItem(formData: {
   name: string;
@@ -10,6 +11,7 @@ export async function createItem(formData: {
   description: string;
   moreInfo?: string;
   imageIcon?: string;
+  rarity?: ItemRarity;
   visibility: "public" | "private";
 }) {
   try {
@@ -42,6 +44,7 @@ export async function updateItem(
     description: string;
     moreInfo?: string;
     imageIcon?: string;
+    rarity?: ItemRarity;
     visibility: "public" | "private";
   }
 ) {

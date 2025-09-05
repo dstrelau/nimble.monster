@@ -6,12 +6,12 @@ import { useId, useMemo, useState } from "react";
 import { Card } from "@/app/ui/item/Card";
 import { BuildView } from "@/components/app/BuildView";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
-import { FormInput, FormTextarea } from "@/components/app/Form";
+import { FormInput, FormSelect, FormTextarea } from "@/components/app/Form";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { IconPicker } from "@/components/IconPicker";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import type { Item } from "@/lib/types";
+import { type Item, type ItemRarity, RARITIES } from "@/lib/types";
 import { createItem, updateItem } from "../actions/item";
 
 const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
@@ -20,6 +20,7 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     id: "",
     name: "",
     description: "",
+    rarity: "unspecified",
     updatedAt: "",
   },
   "Healing Potion": {
@@ -29,6 +30,7 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     description:
       "**_ACTION_**. Consume (or administer to an adjacent creature) to heal **3d6+6** HP.",
     imageIcon: "health-potion",
+    rarity: "uncommon",
     updatedAt: "",
   },
   "Gem of Escape": {
@@ -40,6 +42,7 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     moreInfo:
       "These magical gems are always crafted in pairs and can have any number of willing creatures magically bound to them.",
     imageIcon: "emerald",
+    rarity: "very_rare",
     updatedAt: "",
   },
 };
@@ -58,6 +61,9 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
   const [description, setDescription] = useState(item?.description || "");
   const [moreInfo, setMoreInfo] = useState(item?.moreInfo || "");
   const [imageIcon, setImageIcon] = useState(item?.imageIcon || "");
+  const [rarity, setRarity] = useState<ItemRarity>(
+    item?.rarity || "unspecified"
+  );
   const [visibility, setVisibility] = useState<"public" | "private">(
     item?.visibility || "public"
   );
@@ -78,6 +84,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
       description,
       moreInfo: moreInfo || undefined,
       imageIcon: imageIcon || undefined,
+      rarity,
       visibility,
       creator: creator,
       updatedAt: new Date().toISOString(),
@@ -88,6 +95,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
       description,
       moreInfo,
       imageIcon,
+      rarity,
       visibility,
       creator,
       item?.id,
@@ -108,6 +116,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
             description: description.trim(),
             moreInfo: moreInfo.trim() || undefined,
             imageIcon: imageIcon || undefined,
+            rarity,
             visibility,
           })
         : await createItem({
@@ -116,6 +125,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
             description: description.trim(),
             moreInfo: moreInfo.trim() || undefined,
             imageIcon: imageIcon || undefined,
+            rarity,
             visibility,
           });
 
@@ -142,6 +152,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
       setDescription(example.description);
       setMoreInfo(example.moreInfo || "");
       setImageIcon(example.imageIcon || "");
+      setRarity(example.rarity || "unspecified");
       setVisibility(example.visibility);
     }
   };
@@ -161,6 +172,14 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
               value={name}
               onChange={setName}
               className="flex-1"
+            />
+
+            <FormSelect
+              label="Rarity"
+              name="rarity"
+              choices={RARITIES}
+              selected={rarity}
+              onChange={setRarity}
             />
 
             <FormInput

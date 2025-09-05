@@ -157,6 +157,7 @@ model Item {
   description String          @default("")
   moreInfo    String?         @default("") @map("more_info")
   imageIcon   String?         @map("image_icon")
+  rarity      item_rarity @default(unspecified)
   visibility  item_visibility @default(public)
   userId      String          @map("user_id") @db.Uuid
   createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
@@ -223,4 +224,13 @@ enum size_type {
 enum item_visibility {
   public
   private
+}
+
+enum item_rarity {
+  unspecified
+  common
+  uncommon
+  rare
+  very_rare
+  legendary
 }
