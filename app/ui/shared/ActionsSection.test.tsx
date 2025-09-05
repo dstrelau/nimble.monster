@@ -17,7 +17,9 @@ describe("ActionsSection", () => {
   const mockOnPrefaceChange = vi.fn();
 
   it("maintains focus when typing in action name", () => {
-    const actions: Action[] = [{ name: "", damage: "", description: "" }];
+    const actions: Action[] = [
+      { id: "test-id-1", name: "", damage: "", description: "" },
+    ];
     render(
       <ActionsSection
         actions={actions}
@@ -34,13 +36,13 @@ describe("ActionsSection", () => {
 
     expect(document.activeElement).toBe(nameInput);
     expect(mockOnChange).toHaveBeenCalledWith([
-      { name: "Fireball", damage: "", description: "" },
+      { id: "test-id-1", name: "Fireball", damage: "", description: "" },
     ]);
   });
 
   it("maintains focus when typing in action description", () => {
     const actions: Action[] = [
-      { name: "Fireball", damage: "1d6", description: "" },
+      { id: "test-id-2", name: "Fireball", damage: "1d6", description: "" },
     ];
     render(
       <ActionsSection
@@ -58,13 +60,18 @@ describe("ActionsSection", () => {
 
     expect(document.activeElement).toBe(descInput);
     expect(mockOnChange).toHaveBeenCalledWith([
-      { name: "Fireball", damage: "1d6", description: "Deals fire damage" },
+      {
+        id: "test-id-2",
+        name: "Fireball",
+        damage: "1d6",
+        description: "Deals fire damage",
+      },
     ]);
   });
 
   it("adds new action when add button is clicked", () => {
     const actions: Action[] = [
-      { name: "Existing", damage: "1d4", description: "Test" },
+      { id: "test-id-3", name: "Existing", damage: "1d4", description: "Test" },
     ];
     render(
       <ActionsSection
@@ -79,15 +86,25 @@ describe("ActionsSection", () => {
     fireEvent.click(addButton);
 
     expect(mockOnChange).toHaveBeenCalledWith([
-      { name: "Existing", damage: "1d4", description: "Test" },
-      { name: "", damage: "", description: "" },
+      { id: "test-id-3", name: "Existing", damage: "1d4", description: "Test" },
+      expect.objectContaining({ name: "", damage: "", description: "" }),
     ]);
   });
 
   it("removes action when remove button is clicked", () => {
     const actions: Action[] = [
-      { name: "First", damage: "1d4", description: "First desc" },
-      { name: "Second", damage: "1d6", description: "Second desc" },
+      {
+        id: "test-id-4",
+        name: "First",
+        damage: "1d4",
+        description: "First desc",
+      },
+      {
+        id: "test-id-5",
+        name: "Second",
+        damage: "1d6",
+        description: "Second desc",
+      },
     ];
     render(
       <ActionsSection
@@ -104,7 +121,12 @@ describe("ActionsSection", () => {
     fireEvent.click(removeButtons[0]);
 
     expect(mockOnChange).toHaveBeenCalledWith([
-      { name: "Second", damage: "1d6", description: "Second desc" },
+      {
+        id: "test-id-5",
+        name: "Second",
+        damage: "1d6",
+        description: "Second desc",
+      },
     ]);
   });
 

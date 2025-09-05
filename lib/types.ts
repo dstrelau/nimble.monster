@@ -119,6 +119,7 @@ export interface Companion extends CompanionMini {
 }
 
 export interface Condition {
+  id: string;
   name: string;
   description: string;
   official: boolean;
@@ -130,6 +131,7 @@ export interface Ability {
 }
 
 export interface Action {
+  id: string;
   name: string;
   damage?: string;
   range?: string;

@@ -42,12 +42,14 @@ const EXAMPLE_COMPANIONS: Record<string, Omit<Companion, "creator">> = {
     ],
     actions: [
       {
+        id: crypto.randomUUID(),
         name: "Stab!",
         damage: "1d4",
         description:
           "(Advantage VS Distracted targets). On Crit: +LVL damage (instead of rolling additional dice)",
       },
       {
+        id: crypto.randomUUID(),
         name: "Shadowstep",
         damage: "",
         description:

@@ -53,7 +53,10 @@ export const toMonster = (
     saves: m.saves.join(" "),
     updatedAt: m.updatedAt.toISOString(),
     abilities: m.abilities as unknown as Ability[],
-    actions: m.actions as unknown as Action[],
+    actions: (m.actions as unknown as Omit<Action, "id">[]).map((action) => ({
+      ...action,
+      id: crypto.randomUUID(),
+    })),
     actionPreface: m.actionPreface || "",
     moreInfo: m.moreInfo || "",
     family: toFamilyOverview(m.family),
@@ -153,7 +156,10 @@ export const toCompanion = (
     saves: c.saves,
     updatedAt: c.updatedAt.toISOString(),
     abilities: c.abilities as unknown as Ability[],
-    actions: c.actions as unknown as Action[],
+    actions: (c.actions as unknown as Omit<Action, "id">[]).map((action) => ({
+      ...action,
+      id: crypto.randomUUID(),
+    })),
     actionPreface: c.actionPreface || "",
     dyingRule: c.dyingRule,
     moreInfo: c.moreInfo || "",

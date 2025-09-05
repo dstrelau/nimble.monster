@@ -77,11 +77,13 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     ],
     actions: [
       {
+        id: crypto.randomUUID(),
         name: "Stab",
         damage: "1d6+2",
         description: "(or Shoot, Range 8).",
       },
       {
+        id: crypto.randomUUID(),
         name: "Get in here!",
         damage: "",
         description: "Call a goblin minion to the fight.",
@@ -117,11 +119,20 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     ],
     actions: [
       {
+        id: crypto.randomUUID(),
         name: "Venomous Stinger",
         description: "(1 use) Reach:3, 5d12 damage.",
       },
-      { name: "Ravage", description: "Attack for 1d12+20 damage." },
-      { name: "Move & Claw", description: "Fly 10, attack for 1d12+6 damage." },
+      {
+        id: crypto.randomUUID(),
+        name: "Ravage",
+        description: "Attack for 1d12+20 damage.",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Move & Claw",
+        description: "Fly 10, attack for 1d12+6 damage.",
+      },
     ],
     bloodied: "At 65 HP, his Venomous Stinger recharges.",
     lastStand:
@@ -150,6 +161,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     abilities: [],
     actions: [
       {
+        id: crypto.randomUUID(),
         name: "Slash",
         description: "1d6 (follows minion rules)",
       },

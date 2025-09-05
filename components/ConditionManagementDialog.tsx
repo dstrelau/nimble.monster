@@ -1,6 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { Trash2 } from "lucide-react";
 import { useId, useState } from "react";
 import { createCondition, deleteCondition } from "@/app/actions/conditions";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useConditions } from "@/lib/hooks/useConditions";
-import { Trash2 } from "lucide-react";
 
 export function ConditionManagementDialog() {
   const [condition, setCondition] = useState<{

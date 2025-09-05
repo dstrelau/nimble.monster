@@ -148,7 +148,7 @@ export const ActionsSection: React.FC<ActionsSectionProps> = ({
       />
       {actions.map((action, index) => (
         <ActionRow
-          key={index}
+          key={action.id}
           action={action}
           showDamage={showDamage}
           onChange={(newAction) => {
@@ -167,7 +167,10 @@ export const ActionsSection: React.FC<ActionsSectionProps> = ({
         variant="ghost"
         className="text-muted-foreground"
         onClick={() =>
-          onChange([...actions, { name: "", damage: "", description: "" }])
+          onChange([
+            ...actions,
+            { id: crypto.randomUUID(), name: "", damage: "", description: "" },
+          ])
         }
       >
         <Plus className="w-6 h-6" />

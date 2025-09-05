@@ -80,14 +80,23 @@ export function CreateEditCollection({
         if (currentCollection.monsters.length > 0) {
           const updateFormData = new FormData();
           updateFormData.append("name", formData.get("name") as string);
-          updateFormData.append("visibility", formData.get("visibility") as string);
-          updateFormData.append("description", formData.get("description") as string);
+          updateFormData.append(
+            "visibility",
+            formData.get("visibility") as string
+          );
+          updateFormData.append(
+            "description",
+            formData.get("description") as string
+          );
           updateFormData.append(
             "monsterIds",
             JSON.stringify(currentCollection.monsters.map((m) => m.id))
           );
 
-          const updateResult = await updateCollection(result.collection.id, updateFormData);
+          const updateResult = await updateCollection(
+            result.collection.id,
+            updateFormData
+          );
           if (!updateResult.success) {
             return {
               success: false,

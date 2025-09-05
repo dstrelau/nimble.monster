@@ -9,6 +9,9 @@ import type { InputJsonValue } from "../prisma/runtime/library";
 import { toCompanion } from "./converters";
 import { prisma } from "./index";
 
+const stripActionIds = (actions: Action[]): Omit<Action, "id">[] =>
+  actions.map(({ id, ...action }) => action);
+
 export const deleteCompanion = async ({
   id,
   discordId,
@@ -166,7 +169,7 @@ export const createCompanion = async (
       wounds,
       size,
       saves,
-      actions: actions as unknown as InputJsonValue[],
+      actions: stripActionIds(actions) as unknown as InputJsonValue[],
       abilities: abilities as unknown as InputJsonValue[],
       actionPreface,
       dyingRule,
@@ -245,7 +248,7 @@ export const updateCompanion = async (
       wounds,
       size,
       saves,
-      actions: actions as unknown as InputJsonValue[],
+      actions: stripActionIds(actions) as unknown as InputJsonValue[],
       abilities: abilities as unknown as InputJsonValue[],
       actionPreface,
       dyingRule,

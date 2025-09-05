@@ -9,11 +9,13 @@ afterEach(() => {
 
 const mockConditions: Condition[] = [
   {
+    id: "test-condition-1",
     name: "Poisoned",
     description: "Takes poison damage at the start of each turn",
     official: true,
   },
   {
+    id: "test-condition-2",
     name: "Stunned",
     description: "Cannot take actions",
     official: false,
