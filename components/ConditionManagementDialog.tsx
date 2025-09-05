@@ -33,7 +33,7 @@ export function ConditionManagementDialog() {
 
     try {
       await createCondition(condition.name, condition.description);
-      queryClient.invalidateQueries({ queryKey: ["own-conditions"] });
+      queryClient.invalidateQueries({ queryKey: ["conditions"] });
       setCondition({ name: "", description: "" });
     } catch (error) {
       console.error("Failed to create condition:", error);
