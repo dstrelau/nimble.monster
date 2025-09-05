@@ -41,7 +41,9 @@ export async function generateEntityImage({
         "page.base_url": baseUrl,
       });
 
+      // biome-ignore lint/suspicious/noExplicitAny: browser types. who knows.
       let browser: any;
+      // biome-ignore lint/suspicious/noExplicitAny: ibid
       let page: any;
 
       try {
