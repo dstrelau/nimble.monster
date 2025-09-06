@@ -53,7 +53,12 @@ export const toMonster = (
     burrow: m.burrow,
     saves: m.saves.join(" "),
     updatedAt: m.updatedAt.toISOString(),
-    abilities: m.abilities as unknown as Ability[],
+    abilities: (m.abilities as unknown as Omit<Ability, "id">[]).map(
+      (ability) => ({
+        ...ability,
+        id: crypto.randomUUID(),
+      })
+    ),
     actions: (m.actions as unknown as Omit<Action, "id">[]).map((action) => ({
       ...action,
       id: crypto.randomUUID(),
@@ -81,7 +86,12 @@ export const toFamilyOverview = (
     id: f.id,
     name: f.name,
     description: f.description ?? undefined,
-    abilities: f.abilities as unknown as Ability[],
+    abilities: (f.abilities as unknown as Omit<Ability, "id">[]).map(
+      (ability) => ({
+        ...ability,
+        id: crypto.randomUUID(),
+      })
+    ),
     visibility: f.visibility,
     creatorId: f.creatorId,
     creator: { ...f.creator, avatar: f.creator.avatar || "" },
@@ -156,7 +166,12 @@ export const toCompanion = (
     size: c.size,
     saves: c.saves,
     updatedAt: c.updatedAt.toISOString(),
-    abilities: c.abilities as unknown as Ability[],
+    abilities: (c.abilities as unknown as Omit<Ability, "id">[]).map(
+      (ability) => ({
+        ...ability,
+        id: crypto.randomUUID(),
+      })
+    ),
     actions: (c.actions as unknown as Omit<Action, "id">[]).map((action) => ({
       ...action,
       id: crypto.randomUUID(),
