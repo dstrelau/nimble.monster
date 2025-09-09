@@ -1,52 +1,135 @@
 import { ModeToggle } from "@/components/app/ModeToggle";
+import { Button } from "@/components/ui/button";
 
-const colorVariables = [
-  // Theme colors
-  { name: "success", variable: "--color-success" },
-  { name: "success-foreground", variable: "--color-success-foreground" },
-  { name: "warning", variable: "--color-warning" },
-  { name: "warning-foreground", variable: "--color-warning-foreground" },
-  { name: "error", variable: "--color-error" },
-  { name: "error-foreground", variable: "--color-error-foreground" },
+const componentColors = [
+  {
+    backgroundVar: "--background",
+    foregroundVar: "--foreground",
+  },
+  {
+    backgroundVar: "--card",
+    foregroundVar: "--card-foreground",
+  },
+  {
+    backgroundVar: "--popover",
+    foregroundVar: "--popover-foreground",
+  },
+  {
+    backgroundVar: "--primary",
+    foregroundVar: "--primary-foreground",
+  },
+  {
+    backgroundVar: "--secondary",
+    foregroundVar: "--secondary-foreground",
+  },
+  {
+    backgroundVar: "--accent",
+    foregroundVar: "--accent-foreground",
+  },
+  {
+    backgroundVar: "--muted",
+    foregroundVar: "--muted-foreground",
+  },
+  {
+    backgroundVar: "--destructive",
+    foregroundVar: "--destructive-foreground",
+  },
+];
+
+const colorPairs = [
+  {
+    backgroundVar: "--color-success",
+    foregroundVar: "--color-success-foreground",
+  },
+  {
+    backgroundVar: "--color-warning",
+    foregroundVar: "--color-warning-foreground",
+  },
+  {
+    backgroundVar: "--color-error",
+    foregroundVar: "--color-error-foreground",
+  },
+  {
+    backgroundVar: "--color-header",
+    foregroundVar: "--color-header-foreground",
+  },
+];
+
+const singleColors = [
   { name: "icon", variable: "--color-icon" },
   { name: "hp", variable: "--color-hp" },
-  { name: "header", variable: "--color-header" },
-  { name: "header-foreground", variable: "--color-header-foreground" },
   { name: "flame", variable: "--color-flame" },
   { name: "flame-fill", variable: "--color-flame-fill" },
-
-  // Root colors
-  { name: "background", variable: "--background" },
-  { name: "foreground", variable: "--foreground" },
   { name: "border", variable: "--border" },
-  { name: "card", variable: "--card" },
-  { name: "card-foreground", variable: "--card-foreground" },
-  { name: "popover", variable: "--popover" },
-  { name: "popover-foreground", variable: "--popover-foreground" },
-  { name: "primary", variable: "--primary" },
-  { name: "primary-foreground", variable: "--primary-foreground" },
-  { name: "accent", variable: "--accent" },
-  { name: "accent-foreground", variable: "--accent-foreground" },
-  { name: "muted", variable: "--muted" },
-  { name: "muted-foreground", variable: "--muted-foreground" },
   { name: "input", variable: "--input" },
   { name: "ring", variable: "--ring" },
 ];
 
+const buttonVariants = [
+  { variant: "default" as const, label: "Default" },
+  { variant: "destructive" as const, label: "Destructive" },
+  { variant: "outline" as const, label: "Outline" },
+  { variant: "secondary" as const, label: "Secondary" },
+  { variant: "ghost" as const, label: "Ghost" },
+  { variant: "link" as const, label: "Link" },
+];
+
+const buttonSizes = [
+  { size: "sm" as const, label: "Small" },
+  { size: "default" as const, label: "Default" },
+  { size: "lg" as const, label: "Large" },
+  { size: "icon" as const, label: "🎲" },
+];
+
 export default function ColorsPage() {
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">Color Palette</h1>
+        <h1 className="text-3xl font-bold">Component Colors</h1>
         <ModeToggle />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {colorVariables.map(({ name, variable }) => (
+      {[
+        { title: "Component Colors", data: componentColors },
+        { title: "Color Pairs", data: colorPairs },
+      ].map(({ title, data }) => (
+        <div key={title} className="space-y-4">
+          <h2 className="text-xl font-semibold">{title}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {data.map(({ backgroundVar, foregroundVar }) => (
+              <div
+                key={backgroundVar + foregroundVar}
+                className="border rounded-lg p-4 bg-card"
+              >
+                <div
+                  className="w-full h-16 rounded-md mb-3 border flex items-center justify-center relative overflow-hidden"
+                  style={{
+                    background: `var(${backgroundVar}, linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3))`,
+                    color: `var(${foregroundVar}, linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3))`,
+                  }}
+                >
+                  <span className="font-medium relative z-10">Sample Text</span>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  <code>{backgroundVar}</code>
+                  <br />
+                  <code>{foregroundVar}</code>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <h1 className="text-3xl font-bold">Other Colors</h1>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {singleColors.map(({ name, variable }) => (
           <div key={name} className="border rounded-lg p-4 bg-card">
             <div
-              className="w-full h-16 rounded-md mb-3 border"
-              style={{ backgroundColor: `var(${variable})` }}
+              className="w-full h-16 rounded-md mb-3 border relative overflow-hidden"
+              style={{
+                background: `var(${variable}, linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3))`,
+              }}
             />
             <h3 className="font-medium text-card-foreground">{name}</h3>
             <code className="text-sm text-muted-foreground">{variable}</code>
@@ -55,74 +138,24 @@ export default function ColorsPage() {
       </div>
 
       <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-6">Color Usage Examples</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <div className="p-4 bg-card border rounded-lg">
-              <h3 className="text-card-foreground font-medium mb-2">
-                Card Example
-              </h3>
-              <p className="text-muted-foreground">
-                This card uses card and card-foreground colors.
-              </p>
+        <h2 className="text-2xl font-bold mb-6">Button Variants</h2>
+        <div className="flex">
+          {buttonVariants.map(({ variant, label }) => (
+            <div key={variant} className="p-4">
+              <Button key={variant} variant={variant}>
+                {label} Button
+              </Button>
             </div>
+          ))}
+        </div>
 
-            <div className="p-4 bg-muted rounded-lg">
-              <h3 className="text-foreground font-medium mb-2">
-                Muted Background
-              </h3>
-              <p className="text-muted-foreground">
-                This uses muted background with muted-foreground text.
-              </p>
-            </div>
-
-            <div className="p-4 bg-accent rounded-lg">
-              <h3 className="text-accent-foreground font-medium mb-2">
-                Accent Background
-              </h3>
-              <p className="text-accent-foreground">
-                This uses accent background with accent-foreground text.
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="p-4 bg-primary rounded-lg">
-              <h3 className="text-primary-foreground font-medium mb-2">
-                Primary Background
-              </h3>
-              <p className="text-primary-foreground">
-                This uses primary background with primary-foreground text.
-              </p>
-            </div>
-
-            <div className="p-4 border-2 border-success bg-success/10 rounded-lg">
-              <h3 className="text-success-foreground font-medium mb-2">
-                Success State
-              </h3>
-              <p className="text-foreground">
-                Success colors for positive feedback.
-              </p>
-            </div>
-
-            <div className="p-4 border-2 border-warning bg-warning/10 rounded-lg">
-              <h3 className="text-warning-foreground font-medium mb-2">
-                Warning State
-              </h3>
-              <p className="text-foreground">
-                Warning colors for cautionary messages.
-              </p>
-            </div>
-
-            <div className="p-4 border-2 border-error bg-error/10 rounded-lg">
-              <h3 className="text-error-foreground font-medium mb-2">
-                Error State
-              </h3>
-              <p className="text-foreground">
-                Error colors for error messages.
-              </p>
-            </div>
-          </div>
+        <h3 className="text-xl font-bold mt-8 mb-4">Button Sizes</h3>
+        <div className="flex flex-wrap gap-4 items-center p-4 bg-card border rounded-lg">
+          {buttonSizes.map(({ size, label }) => (
+            <Button key={size} size={size}>
+              {label}
+            </Button>
+          ))}
         </div>
       </div>
     </div>
