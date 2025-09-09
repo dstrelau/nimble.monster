@@ -19,9 +19,12 @@ export async function findPublicMonster(id: string) {
   return { success: true, monster };
 }
 
+export type TypeFilter = "all" | "legendary" | "standard" | "minion";
+
 export async function searchPublicMonsters(params: {
+  creatorId?: string;
   searchTerm?: string;
-  legendary?: boolean | null;
+  type?: TypeFilter;
   sortBy?: "name" | "level" | "hp";
   sortDirection?: "asc" | "desc";
   limit?: number;

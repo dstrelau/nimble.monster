@@ -1,15 +1,9 @@
 "use client";
 
-import { ArrowDownUp, Crown, User } from "lucide-react";
+import { Crown, User } from "lucide-react";
 import { SearchInput } from "@/app/ui/SearchInput";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { SortSelect } from "./SortSelect";
 
 export type LegendaryFilter = "all" | "legendary" | "standard";
 export type SortOption =
@@ -28,15 +22,6 @@ interface SimpleFilterBarProps {
   onLegendaryFilterChange: (filter: LegendaryFilter) => void;
   onSortChange: (sort: SortOption) => void;
 }
-
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: "name-asc", label: "Name (A→Z)" },
-  { value: "name-desc", label: "Name (Z→A)" },
-  { value: "level-asc", label: "Level (Low→High)" },
-  { value: "level-desc", label: "Level (High→Low)" },
-  { value: "hp-asc", label: "HP (Low→High)" },
-  { value: "hp-desc", label: "HP (High→Low)" },
-];
 
 export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
   searchTerm,
@@ -80,19 +65,7 @@ export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
           </ToggleGroupItem>
         </ToggleGroup>
 
-        <Select value={sortOption} onValueChange={onSortChange}>
-          <SelectTrigger>
-            <ArrowDownUp className="h-4 w-4" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {SORT_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SortSelect value={sortOption} onChange={onSortChange} />
       </div>
     </div>
   );

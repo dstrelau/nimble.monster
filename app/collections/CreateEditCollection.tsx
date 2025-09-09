@@ -1,45 +1,65 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useId, useState } from "react";
-import { createCollection } from "@/app/actions/collection";
-import { searchPublicMonsters } from "@/app/actions/monster";
-import { List } from "@/app/ui/monster/List";
 import {
-  type LegendaryFilter,
-  SimpleFilterBar,
-  type SortOption,
-} from "@/app/ui/monster/SimpleFilterBar";
+  Crown,
+  PersonStanding,
+  SlidersHorizontal,
+  Square,
+  SquareCheck,
+  User,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { createCollection } from "@/app/actions/collection";
+import { searchPublicMonsters, type TypeFilter } from "@/app/actions/monster";
+import { List } from "@/app/ui/monster/List";
+import type { SortOption } from "@/app/ui/monster/SimpleFilterBar";
 import { MonsterGroupMinis } from "@/components/MonsterGroupMinis";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
-import type {
-  Collection,
-  CollectionVisibilityType,
-  Monster,
-  MonsterMini,
-} from "@/lib/types";
+import { Toggle } from "@/components/ui/toggle";
+import type { Collection, Monster, MonsterMini } from "@/lib/types";
+import { SortSelect } from "../ui/monster/SortSelect";
+import { SearchInput } from "../ui/SearchInput";
 import { updateCollection } from "./[id]/edit/actions";
 import { VisibilityToggle } from "./[id]/edit/VisibilityToggle";
+
+const formSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  visibility: z.enum(["public", "private"]),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 interface Props {
   collection: Collection;
   myMonsters: Monster[];
-  onSubmit?: (prevState: ActionState, data: FormData) => Promise<ActionState>;
+  onSubmit?: (data: FormData & { monsters: MonsterMini[] }) => Promise<void>;
   isCreating?: boolean;
   submitLabel?: string;
 }
-
-type ActionState = {
-  success: boolean;
-  monsterIds?: string[];
-  error?: string;
-  collection?: { id: string };
-};
 
 export function CreateEditCollection({
   collection,
@@ -49,62 +69,56 @@ export function CreateEditCollection({
   submitLabel = "Save",
 }: Props) {
   const router = useRouter();
-  const [currentCollection, setCurrentCollection] =
-    useState<Omit<Collection, "monsters">>(collection);
   const [currentMonsters, setCurrentMonsters] = useState<MonsterMini[]>(
     collection.monsters
   );
-  const [isDirty, setIsDirty] = useState(false);
-  const [monsterScope, setMonsterScope] = useState<"mine" | "public">("mine");
+  const { data: session } = useSession();
+  const [onlyMine, setOnlyMine] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [legendaryFilter, setLegendaryFilter] =
-    useState<LegendaryFilter>("all");
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [sortOption, setSortOption] = useState<SortOption>("name-asc");
-  const id = useId();
 
-  useEffect(() => {
-    if (isCreating) {
-      setIsDirty(currentCollection.name.trim() !== "");
-    } else {
-      setIsDirty(
-        currentCollection.name !== collection.name ||
-          currentCollection.description !== collection.description ||
-          currentCollection.visibility !== collection.visibility ||
-          JSON.stringify(currentMonsters.map((m) => m.id).sort()) !==
-            JSON.stringify(collection.monsters.map((m) => m.id).sort())
-      );
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: collection.name,
+      description: collection.description || "",
+      visibility: collection.visibility,
+    },
+  });
+
+  const { watch } = form;
+  const watchedValues = watch();
+
+  const isDirty = isCreating
+    ? watchedValues.name.trim() !== ""
+    : watchedValues.name !== collection.name ||
+      watchedValues.description !== (collection.description || "") ||
+      watchedValues.visibility !== collection.visibility ||
+      JSON.stringify(currentMonsters.map((m) => m.id).sort()) !==
+        JSON.stringify(collection.monsters.map((m) => m.id).sort());
+
+  const handleSubmit = async (data: FormData) => {
+    if (onSubmit) {
+      await onSubmit({ ...data, monsters: currentMonsters });
+      return;
     }
-  }, [currentCollection, currentMonsters, collection, isCreating]);
 
-  const initialState: ActionState = {
-    success: false,
-    monsterIds: collection.monsters.map((m) => m.id),
-  };
-
-  const defaultSubmitHandler = async (
-    _prevState: ActionState,
-    formData: FormData
-  ): Promise<ActionState> => {
+    // Default submit handler
     if (isCreating) {
       const result = await createCollection({
-        name: formData.get("name") as string,
-        visibility: formData.get("visibility") as CollectionVisibilityType,
-        description: (formData.get("description") as string) || undefined,
+        name: data.name,
+        visibility: data.visibility,
+        description: data.description || undefined,
       });
 
       if (result.success && result.collection) {
         // If we have monsters selected, update the collection with them
         if (currentMonsters.length > 0) {
           const updateFormData = new FormData();
-          updateFormData.append("name", formData.get("name") as string);
-          updateFormData.append(
-            "visibility",
-            formData.get("visibility") as string
-          );
-          updateFormData.append(
-            "description",
-            formData.get("description") as string
-          );
+          updateFormData.append("name", data.name);
+          updateFormData.append("visibility", data.visibility);
+          updateFormData.append("description", data.description || "");
           updateFormData.append(
             "monsterIds",
             JSON.stringify(currentMonsters.map((m) => m.id))
@@ -115,109 +129,68 @@ export function CreateEditCollection({
             updateFormData
           );
           if (!updateResult.success) {
-            return {
-              success: false,
-              error: "Failed to add monsters to collection",
-            };
+            form.setError("root", {
+              message: "Failed to add monsters to collection",
+            });
+            return;
           }
         }
 
         router.push(`/collections/${result.collection.id}`);
-        return {
-          success: true,
-          collection: { id: result.collection.id },
-        };
+      } else {
+        form.setError("root", {
+          message: result.error || "Failed to create collection",
+        });
       }
-
-      return {
-        success: false,
-        error: result.error || "Failed to create collection",
-      };
     } else {
-      formData.append(
+      const updateFormData = new FormData();
+      updateFormData.append("name", data.name);
+      updateFormData.append("visibility", data.visibility);
+      updateFormData.append("description", data.description || "");
+      updateFormData.append(
         "monsterIds",
         JSON.stringify(currentMonsters.map((m) => m.id))
       );
-      const result = await updateCollection(collection.id, formData);
-      if (result.success) {
-        const updatedMonsters = myMonsters
-          .filter((m) => result.monsterIds?.includes(m.id) ?? false)
-          .sort((a, b) => a.name.localeCompare(b.name));
 
-        setCurrentCollection((prev) => ({
-          ...prev,
-          monsters: updatedMonsters,
-        }));
+      try {
+        await updateCollection(collection.id, updateFormData);
+      } catch (error) {
+        form.setError("root", {
+          message:
+            error instanceof Error
+              ? error.message
+              : "Failed to update collection",
+        });
       }
-      return result;
     }
   };
 
-  const [_state, formAction] = useActionState<ActionState, FormData>(
-    onSubmit || defaultSubmitHandler,
-    initialState
-  );
+  let creatorId: string | undefined;
+  if (onlyMine) {
+    creatorId = session?.user?.id;
+  }
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setCurrentCollection((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleVisibilityChange = (visibility: string) => {
-    setCurrentCollection((prev) => ({
-      ...prev,
-      visibility: visibility as CollectionVisibilityType,
-    }));
-  };
-
-  // Use the existing hook for filtering user's monsters
-  const {
-    searchTerm: myMonstersSearchTerm,
-    legendaryFilter: myMonstersLegendaryFilter,
-    sortOption: myMonstersSortOption,
-    filteredMonsters: filteredMyMonsters,
-    handleSearch: handleMyMonstersSearch,
-    setLegendaryFilter: setMyMonstersLegendaryFilter,
-    setSortOption: setMyMonstersSortOption,
-  } = useSimpleMonsterFilters({
-    monsters: myMonsters,
-  });
-
-  // Search public monsters with debouncing
-  const publicMonstersQuery = useQuery({
-    queryKey: ["publicMonsters", searchTerm, legendaryFilter, sortOption],
+  const monstersQuery = useQuery({
+    queryKey: ["publicMonsters", searchTerm, typeFilter, sortOption, creatorId],
     queryFn: async () => {
-      if (monsterScope !== "public") return { success: true, monsters: [] };
-
       const [sortBy, sortDirection] = sortOption.split("-") as [
         "name" | "level" | "hp",
         "asc" | "desc",
       ];
-      const legendaryValue =
-        legendaryFilter === "all" ? null : legendaryFilter === "legendary";
 
       return searchPublicMonsters({
-        searchTerm: searchTerm || undefined,
-        legendary: legendaryValue,
+        searchTerm: searchTerm,
+        type: typeFilter,
+        creatorId,
         sortBy,
         sortDirection,
         limit: 50,
       });
     },
-    enabled: monsterScope === "public" && searchTerm?.length > 2,
-    staleTime: 10000, // Cache for 30 seconds
+    staleTime: 10000,
   });
 
-  // Get the current filtered monster list
-  const availableMonsters: MonsterMini[] =
-    monsterScope === "mine"
-      ? filteredMyMonsters
-      : publicMonstersQuery.data?.monsters || [];
+  const availableMonsters: MonsterMini[] = monstersQuery.data?.monsters || [];
 
   const handleMonsterCheck = (id: string) => {
     const isInCollection = currentMonsters.some((m) => m.id === id);
@@ -249,149 +222,156 @@ export function CreateEditCollection({
   }, [isDirty]);
 
   return (
-    <form action={formAction} className="flex flex-col gap-8">
-      <input
-        type="hidden"
-        name="formChanged"
-        value={isDirty ? "true" : "false"}
-      />
-      <input
-        type="hidden"
-        name="visibility"
-        value={currentCollection.visibility}
-      />
-      <div className="flex justify-between gap-4">
-        <div>
-          <Label htmlFor={`name-${id}`} className="mb-2 block">
-            Name
-          </Label>
-          <Input
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="flex flex-col gap-4"
+      >
+        <div className="flex justify-between grow-2 gap-4">
+          <FormField
+            control={form.control}
             name="name"
-            id={`name-${id}`}
-            className="w-full md:w-80"
-            placeholder="Name"
-            value={currentCollection.name}
-            onChange={handleInputChange}
-            required
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full md:w-80"
+                    placeholder="Name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="flex grow items-end justify-start">
-          <VisibilityToggle
-            value={currentCollection.visibility}
-            onChangeAction={handleVisibilityChange}
-          />
-        </div>
-
-        <Button type="submit" disabled={!isDirty}>
-          {isCreating ? "Create" : submitLabel}
-        </Button>
-      </div>
-
-      <div className="flex flex-col grow gap-4">
-        <div className="flex flex-col">
-          <Label htmlFor={`description-${id}`} className="mb-2 block">
-            Description
-          </Label>
-          <Textarea
-            name="description"
-            id={`description-${id}`}
-            className="w-full"
-            placeholder="Description (optional)"
-            rows={3}
-            value={currentCollection.description}
-            onChange={handleInputChange}
-          />
+          <Button type="submit" disabled={!isDirty}>
+            {isCreating ? "Create" : submitLabel}
+          </Button>
         </div>
 
         <div className="flex gap-8">
-          <div className="grow">
-            <div className="mb-4">
-              <div className="flex gap-4">
-                <label className="flex items-center cursor-pointer">
-                  <input
-                    type="radio"
-                    name="monsterScope"
-                    value="mine"
-                    checked={monsterScope === "mine"}
-                    onChange={(e) =>
-                      setMonsterScope(e.target.value as "mine" | "public")
-                    }
-                    className="mr-2"
-                  />
-                  My Monsters
-                </label>
-                <label className="flex items-center cursor-pointer">
-                  <input
-                    type="radio"
-                    name="monsterScope"
-                    value="public"
-                    checked={monsterScope === "public"}
-                    onChange={(e) =>
-                      setMonsterScope(e.target.value as "mine" | "public")
-                    }
-                    className="mr-2"
-                  />
-                  All Public Monsters
-                </label>
-              </div>
-            </div>
-
-            <SimpleFilterBar
-              searchTerm={
-                monsterScope === "mine" ? myMonstersSearchTerm : searchTerm
-              }
-              legendaryFilter={
-                monsterScope === "mine"
-                  ? myMonstersLegendaryFilter
-                  : legendaryFilter
-              }
-              sortOption={
-                monsterScope === "mine" ? myMonstersSortOption : sortOption
-              }
-              onSearch={
-                monsterScope === "mine" ? handleMyMonstersSearch : setSearchTerm
-              }
-              onLegendaryFilterChange={
-                monsterScope === "mine"
-                  ? setMyMonstersLegendaryFilter
-                  : setLegendaryFilter
-              }
-              onSortChange={
-                monsterScope === "mine"
-                  ? setMyMonstersSortOption
-                  : setSortOption
-              }
+          <div className="flex flex-col gap-4 grow">
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      className="w-full"
+                      placeholder="Description (optional)"
+                      rows={3}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            <div className="flex gap-x-8">
-              <div>
-                {monsterScope === "public" && publicMonstersQuery.isLoading ? (
-                  <div className="p-4 text-center">Searching...</div>
-                ) : monsterScope === "public" && !searchTerm ? (
-                  <div className="p-4 text-center">Enter a search term</div>
-                ) : monsterScope === "public" &&
-                  (publicMonstersQuery.data?.monsters?.length ?? 0) === 0 ? (
-                  <div className="p-4 text-center">No monsters found</div>
-                ) : (
-                  <List
-                    monsters={availableMonsters}
-                    selectedIds={currentMonsters.map((m) => m.id)}
-                    handleMonsterClick={handleMonsterCheck}
-                    showChecks={true}
-                  />
-                )}
+            <FormField
+              control={form.control}
+              name="visibility"
+              render={({ field }) => (
+                <VisibilityToggle
+                  value={field.value}
+                  onChangeAction={field.onChange}
+                />
+              )}
+            />
+
+            <h2 className="text-lg font-semibold mb-2 border-b-2 border-foreground">
+              Monsters
+            </h2>
+            <div className="flex flex-col gap-4 grow-2">
+              <div className="flex gap-3 items-center">
+                <SearchInput
+                  className="grow"
+                  value={searchTerm}
+                  onChange={setSearchTerm}
+                  placeholder="Search"
+                />
+                <SortSelect value={sortOption} onChange={setSortOption} />
+              </div>
+
+              <div className="flex gap-4">
+                <Toggle
+                  variant="outline"
+                  aria-label="Toggle Only My Monsters "
+                  pressed={onlyMine}
+                  onPressedChange={setOnlyMine}
+                >
+                  {onlyMine ? <SquareCheck /> : <Square />}
+                  Only My Monsters
+                </Toggle>
+
+                <Select
+                  defaultValue="all"
+                  onValueChange={(s: TypeFilter) => setTypeFilter(s)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Monsters" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">
+                      <SlidersHorizontal />
+                      All Monsters
+                    </SelectItem>
+                    <SelectItem value="standard" aria-label="Standard monsters">
+                      <User />
+                      Standard
+                    </SelectItem>
+                    <SelectItem
+                      value="legendary"
+                      aria-label="Legendary monsters"
+                    >
+                      <Crown />
+                      Legendary
+                    </SelectItem>
+                    <SelectItem value="minion" aria-label="Minions">
+                      <PersonStanding />
+                      Minions
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex gap-x-8">
+                <div>
+                  {monstersQuery.isLoading ? (
+                    <div className="p-4 text-center">Searching...</div>
+                  ) : (monstersQuery.data?.monsters?.length ?? 0) === 0 ? (
+                    <div className="p-4 text-center">No monsters found</div>
+                  ) : (
+                    <List
+                      monsters={availableMonsters}
+                      selectedIds={currentMonsters.map((m) => m.id)}
+                      handleMonsterClick={handleMonsterCheck}
+                      showChecks={true}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </div>
-          <div className="hidden sm:block grow">
+
+          <div className="hidden sm:block">
             <MonsterGroupMinis
-              name={currentCollection.name}
+              name={watchedValues.name}
               monsters={currentMonsters}
               showAll={true}
             />
           </div>
         </div>
-      </div>
-    </form>
+
+        {form.formState.errors.root && (
+          <div className="text-destructive text-sm">
+            {form.formState.errors.root.message}
+          </div>
+        )}
+      </form>
+    </Form>
   );
 }

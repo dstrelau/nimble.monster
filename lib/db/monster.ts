@@ -1,3 +1,4 @@
+import type { TypeFilter } from "@/app/actions/monster";
 import {
   invalidateEntityImageCache,
   preloadImage,
@@ -136,6 +137,8 @@ export const listAllMonstersForDiscordID = async (
 
 export interface SearchMonstersParams {
   searchTerm?: string;
+  type?: TypeFilter;
+  creatorId?: string;
   legendary?: boolean | null;
   sortBy?: "name" | "level" | "hp";
   sortDirection?: "asc" | "desc";
@@ -144,21 +147,27 @@ export interface SearchMonstersParams {
 
 export const searchPublicMonsterMinis = async ({
   searchTerm,
-  legendary,
+  type,
+  creatorId,
   sortBy = "name",
   sortDirection = "asc",
-  limit = 100,
+  limit = 500,
 }: SearchMonstersParams): Promise<MonsterMini[]> => {
   const whereClause: {
+    creator?: { discordId?: string };
     visibility: "public";
     OR?: Array<{
       name?: { contains: string; mode: "insensitive" };
       kind?: { contains: string; mode: "insensitive" };
     }>;
     legendary?: boolean;
+    minion?: boolean;
   } = {
     visibility: "public",
   };
+  if (creatorId) {
+    whereClause.creator = { discordId: creatorId };
+  }
 
   if (searchTerm) {
     whereClause.OR = [
@@ -167,8 +176,19 @@ export const searchPublicMonsterMinis = async ({
     ];
   }
 
-  if (legendary !== null && legendary !== undefined) {
-    whereClause.legendary = legendary;
+  switch (type) {
+    case "all":
+      break;
+    case "standard":
+      whereClause.legendary = false;
+      whereClause.minion = false;
+      break;
+    case "legendary":
+      whereClause.legendary = true;
+      break;
+    case "minion":
+      whereClause.minion = true;
+      break;
   }
 
   let orderBy:
