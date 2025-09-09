@@ -53,12 +53,13 @@ const MonsterRow: React.FC<{
 
 interface MonsterGroupMinisProps {
   name: string;
-  href: string;
+  href?: string;
   monsters?: MonsterMini[];
   children?: ReactNode;
   badge?: ReactNode;
   attribution?: ReactNode;
   visibleMonsterCount?: number;
+  showAll?: boolean;
 }
 
 export const MonsterGroupMinis = ({
@@ -69,11 +70,14 @@ export const MonsterGroupMinis = ({
   badge,
   attribution,
   visibleMonsterCount = 5,
+  showAll = false,
 }: MonsterGroupMinisProps) => {
   const sortedMonsters = monstersSortedByLevel(monsters ?? []);
-  const visibleMonsters = sortedMonsters?.slice(0, visibleMonsterCount);
+  const visibleMonsters = showAll
+    ? sortedMonsters
+    : sortedMonsters?.slice(0, visibleMonsterCount);
   const remainingCount =
-    monsters && monsters.length > visibleMonsterCount
+    !showAll && monsters && monsters.length > visibleMonsterCount
       ? monsters.length - visibleMonsterCount
       : 0;
 
@@ -81,7 +85,7 @@ export const MonsterGroupMinis = ({
     <Card>
       <CardHeader>
         <CardTitle className="font-condensed font-bold text-2xl flex items-center gap-2">
-          <Link href={href}>{name}</Link>
+          {href ? <Link href={href}>{name}</Link> : name}
         </CardTitle>
         {attribution && <CardDescription>{attribution}</CardDescription>}
         {badge && <CardAction>{badge}</CardAction>}
@@ -103,9 +107,13 @@ export const MonsterGroupMinis = ({
           ))}
           {remainingCount > 0 && (
             <div className="text-sm text-muted-foreground mt-2 text-center font-bold">
-              <Link className="text-muted-foreground" href={href}>
-                +{remainingCount} more
-              </Link>
+              {href ? (
+                <Link className="text-muted-foreground" href={href}>
+                  +{remainingCount} more
+                </Link>
+              ) : (
+                <span>+{remainingCount} more</span>
+              )}
             </div>
           )}
         </div>

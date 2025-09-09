@@ -134,6 +134,65 @@ export const listAllMonstersForDiscordID = async (
   ).map(toMonster);
 };
 
+export interface SearchMonstersParams {
+  searchTerm?: string;
+  legendary?: boolean | null;
+  sortBy?: "name" | "level" | "hp";
+  sortDirection?: "asc" | "desc";
+  limit?: number;
+}
+
+export const searchPublicMonsterMinis = async ({
+  searchTerm,
+  legendary,
+  sortBy = "name",
+  sortDirection = "asc",
+  limit = 100,
+}: SearchMonstersParams): Promise<MonsterMini[]> => {
+  const whereClause: {
+    visibility: "public";
+    OR?: Array<{
+      name?: { contains: string; mode: "insensitive" };
+      kind?: { contains: string; mode: "insensitive" };
+    }>;
+    legendary?: boolean;
+  } = {
+    visibility: "public",
+  };
+
+  if (searchTerm) {
+    whereClause.OR = [
+      { name: { contains: searchTerm, mode: "insensitive" } },
+      { kind: { contains: searchTerm, mode: "insensitive" } },
+    ];
+  }
+
+  if (legendary !== null && legendary !== undefined) {
+    whereClause.legendary = legendary;
+  }
+
+  let orderBy:
+    | { name: "asc" | "desc" }
+    | { level: "asc" | "desc" }
+    | { hp: "asc" | "desc" } = { name: "asc" };
+
+  if (sortBy === "name") {
+    orderBy = { name: sortDirection };
+  } else if (sortBy === "level") {
+    orderBy = { level: sortDirection };
+  } else if (sortBy === "hp") {
+    orderBy = { hp: sortDirection };
+  }
+
+  return (
+    await prisma.monster.findMany({
+      where: whereClause,
+      orderBy,
+      take: limit,
+    })
+  ).map(toMonsterMini);
+};
+
 export const listMonstersByFamilyId = async (
   familyId: string
 ): Promise<Monster[]> => {

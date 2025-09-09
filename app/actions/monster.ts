@@ -19,6 +19,22 @@ export async function findPublicMonster(id: string) {
   return { success: true, monster };
 }
 
+export async function searchPublicMonsters(params: {
+  searchTerm?: string;
+  legendary?: boolean | null;
+  sortBy?: "name" | "level" | "hp";
+  sortDirection?: "asc" | "desc";
+  limit?: number;
+}) {
+  try {
+    const monsters = await db.searchPublicMonsterMinis(params);
+    return { success: true, monsters };
+  } catch (error) {
+    console.error("Error searching public monsters:", error);
+    return { success: false, error: "Failed to search monsters" };
+  }
+}
+
 export async function createMonster(formData: {
   name: string;
   kind?: string;

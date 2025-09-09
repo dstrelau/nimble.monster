@@ -22,7 +22,7 @@ export default async function EditCollectionPage({
   if (!collection) return notFound();
 
   return (
-    <div className="">
+    <div>
       <CreateEditCollection collection={collection} myMonsters={myMonsters} />
     </div>
   );

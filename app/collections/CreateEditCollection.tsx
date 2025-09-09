@@ -1,19 +1,27 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useId, useState } from "react";
 import { createCollection } from "@/app/actions/collection";
-import { CardGrid } from "@/app/ui/monster/CardGrid";
+import { searchPublicMonsters } from "@/app/actions/monster";
 import { List } from "@/app/ui/monster/List";
+import {
+  type LegendaryFilter,
+  SimpleFilterBar,
+  type SortOption,
+} from "@/app/ui/monster/SimpleFilterBar";
+import { MonsterGroupMinis } from "@/components/MonsterGroupMinis";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
 import type {
   Collection,
   CollectionVisibilityType,
   Monster,
+  MonsterMini,
 } from "@/lib/types";
 import { updateCollection } from "./[id]/edit/actions";
 import { VisibilityToggle } from "./[id]/edit/VisibilityToggle";
@@ -41,8 +49,17 @@ export function CreateEditCollection({
   submitLabel = "Save",
 }: Props) {
   const router = useRouter();
-  const [currentCollection, setCurrentCollection] = useState(collection);
+  const [currentCollection, setCurrentCollection] =
+    useState<Omit<Collection, "monsters">>(collection);
+  const [currentMonsters, setCurrentMonsters] = useState<MonsterMini[]>(
+    collection.monsters
+  );
   const [isDirty, setIsDirty] = useState(false);
+  const [monsterScope, setMonsterScope] = useState<"mine" | "public">("mine");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [legendaryFilter, setLegendaryFilter] =
+    useState<LegendaryFilter>("all");
+  const [sortOption, setSortOption] = useState<SortOption>("name-asc");
   const id = useId();
 
   useEffect(() => {
@@ -53,11 +70,11 @@ export function CreateEditCollection({
         currentCollection.name !== collection.name ||
           currentCollection.description !== collection.description ||
           currentCollection.visibility !== collection.visibility ||
-          JSON.stringify(currentCollection.monsters.map((m) => m.id).sort()) !==
+          JSON.stringify(currentMonsters.map((m) => m.id).sort()) !==
             JSON.stringify(collection.monsters.map((m) => m.id).sort())
       );
     }
-  }, [currentCollection, collection, isCreating]);
+  }, [currentCollection, currentMonsters, collection, isCreating]);
 
   const initialState: ActionState = {
     success: false,
@@ -77,7 +94,7 @@ export function CreateEditCollection({
 
       if (result.success && result.collection) {
         // If we have monsters selected, update the collection with them
-        if (currentCollection.monsters.length > 0) {
+        if (currentMonsters.length > 0) {
           const updateFormData = new FormData();
           updateFormData.append("name", formData.get("name") as string);
           updateFormData.append(
@@ -90,7 +107,7 @@ export function CreateEditCollection({
           );
           updateFormData.append(
             "monsterIds",
-            JSON.stringify(currentCollection.monsters.map((m) => m.id))
+            JSON.stringify(currentMonsters.map((m) => m.id))
           );
 
           const updateResult = await updateCollection(
@@ -119,7 +136,7 @@ export function CreateEditCollection({
     } else {
       formData.append(
         "monsterIds",
-        JSON.stringify(currentCollection.monsters.map((m) => m.id))
+        JSON.stringify(currentMonsters.map((m) => m.id))
       );
       const result = await updateCollection(collection.id, formData);
       if (result.success) {
@@ -158,22 +175,62 @@ export function CreateEditCollection({
     }));
   };
 
+  // Use the existing hook for filtering user's monsters
+  const {
+    searchTerm: myMonstersSearchTerm,
+    legendaryFilter: myMonstersLegendaryFilter,
+    sortOption: myMonstersSortOption,
+    filteredMonsters: filteredMyMonsters,
+    handleSearch: handleMyMonstersSearch,
+    setLegendaryFilter: setMyMonstersLegendaryFilter,
+    setSortOption: setMyMonstersSortOption,
+  } = useSimpleMonsterFilters({
+    monsters: myMonsters,
+  });
+
+  // Search public monsters with debouncing
+  const publicMonstersQuery = useQuery({
+    queryKey: ["publicMonsters", searchTerm, legendaryFilter, sortOption],
+    queryFn: async () => {
+      if (monsterScope !== "public") return { success: true, monsters: [] };
+
+      const [sortBy, sortDirection] = sortOption.split("-") as [
+        "name" | "level" | "hp",
+        "asc" | "desc",
+      ];
+      const legendaryValue =
+        legendaryFilter === "all" ? null : legendaryFilter === "legendary";
+
+      return searchPublicMonsters({
+        searchTerm: searchTerm || undefined,
+        legendary: legendaryValue,
+        sortBy,
+        sortDirection,
+        limit: 50,
+      });
+    },
+    enabled: monsterScope === "public" && searchTerm?.length > 2,
+    staleTime: 10000, // Cache for 30 seconds
+  });
+
+  // Get the current filtered monster list
+  const availableMonsters: MonsterMini[] =
+    monsterScope === "mine"
+      ? filteredMyMonsters
+      : publicMonstersQuery.data?.monsters || [];
+
   const handleMonsterCheck = (id: string) => {
-    const isInCollection = currentCollection.monsters.some((m) => m.id === id);
+    const isInCollection = currentMonsters.some((m) => m.id === id);
     if (isInCollection) {
-      setCurrentCollection((prev) => ({
-        ...prev,
-        monsters: prev.monsters.filter((m) => m.id !== id),
-      }));
+      setCurrentMonsters((prev) => prev.filter((m) => m.id !== id));
     } else {
-      const clicked = myMonsters.find((m) => m.id === id);
+      const clicked =
+        myMonsters.find((m) => m.id === id) ||
+        availableMonsters.find((m) => m.id === id);
       if (clicked) {
-        setCurrentCollection((prev) => ({
-          ...prev,
-          monsters: [...prev.monsters, clicked].sort((a, b) =>
-            a.name.localeCompare(b.name)
-          ),
-        }));
+        setCurrentMonsters((prev) =>
+          [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
+        );
       }
     }
   };
@@ -192,7 +249,7 @@ export function CreateEditCollection({
   }, [isDirty]);
 
   return (
-    <form action={formAction} className="flex flex-col space-y-4">
+    <form action={formAction} className="flex flex-col gap-8">
       <input
         type="hidden"
         name="formChanged"
@@ -203,69 +260,134 @@ export function CreateEditCollection({
         name="visibility"
         value={currentCollection.visibility}
       />
+      <div className="flex justify-between gap-4">
+        <div>
+          <Label htmlFor={`name-${id}`} className="mb-2 block">
+            Name
+          </Label>
+          <Input
+            name="name"
+            id={`name-${id}`}
+            className="w-full md:w-80"
+            placeholder="Name"
+            value={currentCollection.name}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="flex grow items-end justify-start">
+          <VisibilityToggle
+            value={currentCollection.visibility}
+            onChangeAction={handleVisibilityChange}
+          />
+        </div>
 
-      <Card>
-        <CardContent className="p-6 space-y-4">
-          <div className="flex flex-row flex-wrap items-center gap-4">
-            <div className="w-full md:w-auto">
-              <Label htmlFor={`name-${id}`} className="mb-2 block">
-                Name
-              </Label>
-              <Input
-                name="name"
-                id={`name-${id}`}
-                className="w-full md:w-80"
-                placeholder="Name"
-                value={currentCollection.name}
-                onChange={handleInputChange}
-                required
-              />
+        <Button type="submit" disabled={!isDirty}>
+          {isCreating ? "Create" : submitLabel}
+        </Button>
+      </div>
+
+      <div className="flex flex-col grow gap-4">
+        <div className="flex flex-col">
+          <Label htmlFor={`description-${id}`} className="mb-2 block">
+            Description
+          </Label>
+          <Textarea
+            name="description"
+            id={`description-${id}`}
+            className="w-full"
+            placeholder="Description (optional)"
+            rows={3}
+            value={currentCollection.description}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="flex gap-8">
+          <div className="grow">
+            <div className="mb-4">
+              <div className="flex gap-4">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="monsterScope"
+                    value="mine"
+                    checked={monsterScope === "mine"}
+                    onChange={(e) =>
+                      setMonsterScope(e.target.value as "mine" | "public")
+                    }
+                    className="mr-2"
+                  />
+                  My Monsters
+                </label>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="monsterScope"
+                    value="public"
+                    checked={monsterScope === "public"}
+                    onChange={(e) =>
+                      setMonsterScope(e.target.value as "mine" | "public")
+                    }
+                    className="mr-2"
+                  />
+                  All Public Monsters
+                </label>
+              </div>
             </div>
-            <div className="flex items-end">
-              <VisibilityToggle
-                value={currentCollection.visibility}
-                onChangeAction={handleVisibilityChange}
-              />
-            </div>
-            <div className="flex items-end ml-auto">
-              <Button type="submit" disabled={!isDirty}>
-                {isCreating ? "Create" : submitLabel}
-              </Button>
-            </div>
-          </div>
-          <div>
-            <Label htmlFor={`description-${id}`} className="mb-2 block">
-              Description
-            </Label>
-            <Textarea
-              name="description"
-              id={`description-${id}`}
-              className="w-full"
-              placeholder="Description (optional)"
-              rows={3}
-              value={currentCollection.description}
-              onChange={handleInputChange}
+
+            <SimpleFilterBar
+              searchTerm={
+                monsterScope === "mine" ? myMonstersSearchTerm : searchTerm
+              }
+              legendaryFilter={
+                monsterScope === "mine"
+                  ? myMonstersLegendaryFilter
+                  : legendaryFilter
+              }
+              sortOption={
+                monsterScope === "mine" ? myMonstersSortOption : sortOption
+              }
+              onSearch={
+                monsterScope === "mine" ? handleMyMonstersSearch : setSearchTerm
+              }
+              onLegendaryFilterChange={
+                monsterScope === "mine"
+                  ? setMyMonstersLegendaryFilter
+                  : setLegendaryFilter
+              }
+              onSortChange={
+                monsterScope === "mine"
+                  ? setMyMonstersSortOption
+                  : setSortOption
+              }
             />
-          </div>
-        </CardContent>
-      </Card>
 
-      <div className="mt-4">
-        <div className="flex gap-x-8">
-          <div>
-            <List
-              monsters={myMonsters}
-              selectedIds={currentCollection.monsters.map((m) => m.id)}
-              handleMonsterClick={handleMonsterCheck}
-              showChecks={true}
-            />
+            <div className="flex gap-x-8">
+              <div>
+                {monsterScope === "public" && publicMonstersQuery.isLoading ? (
+                  <div className="p-4 text-center">Searching...</div>
+                ) : monsterScope === "public" && !searchTerm ? (
+                  <div className="p-4 text-center">Enter a search term</div>
+                ) : monsterScope === "public" &&
+                  (publicMonstersQuery.data?.monsters?.length ?? 0) === 0 ? (
+                  <div className="p-4 text-center">No monsters found</div>
+                ) : (
+                  <List
+                    monsters={availableMonsters}
+                    selectedIds={currentMonsters.map((m) => m.id)}
+                    handleMonsterClick={handleMonsterCheck}
+                    showChecks={true}
+                  />
+                )}
+              </div>
+            </div>
           </div>
-
-          <div className="hidden sm:block flex-2">
-            <CardGrid
-              monsters={currentCollection.monsters}
-              hideActions={true}
-              gridColumns={{ sm: 1, md: 2 }}
+          <div className="hidden sm:block grow">
+            <MonsterGroupMinis
+              name={currentCollection.name}
+              monsters={currentMonsters}
+              showAll={true}
             />
           </div>
         </div>
