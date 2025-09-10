@@ -42,6 +42,7 @@ export async function createMonster(formData: {
   name: string;
   kind?: string;
   level: string;
+  levelInt: number;
   hp: number;
   armor: string;
   size: "tiny" | "small" | "medium" | "large" | "huge" | "gargantuan" | string;

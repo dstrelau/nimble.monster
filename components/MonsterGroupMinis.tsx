@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { MonsterMini } from "@/lib/types";
-import { cn, monstersSortedByLevel } from "@/lib/utils";
+import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import { Link } from "./app/Link";
 import { Level } from "./Level";
 import { Separator } from "./ui/separator";
@@ -72,7 +72,7 @@ export const MonsterGroupMinis = ({
   visibleMonsterCount = 5,
   showAll = false,
 }: MonsterGroupMinisProps) => {
-  const sortedMonsters = monstersSortedByLevel(monsters ?? []);
+  const sortedMonsters = monstersSortedByLevelInt(monsters ?? []);
   const visibleMonsters = showAll
     ? sortedMonsters
     : sortedMonsters?.slice(0, visibleMonsterCount);

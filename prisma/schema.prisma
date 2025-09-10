@@ -82,6 +82,7 @@ model Monster {
   id                 String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name               String
   level              String
+  levelInt           Int                   @default(0) @map("level_int")
   hp                 Int
   armor              armor_type
   size               size_type             @default(medium)

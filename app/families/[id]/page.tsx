@@ -4,8 +4,6 @@ import { FamilyHeader } from "@/app/families/FamilyHeader";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import { parseMonsterLevel } from "@/lib/utils";
-
 export async function generateMetadata({
   params,
 }: {
@@ -63,19 +61,15 @@ export default async function FamilyDetailPage({
   }
 
   const isCreator = session?.user?.id === family.creatorId;
-  const sortedMonsters =
-    monsters?.sort(
-      (a, b) => parseMonsterLevel(a.level) - parseMonsterLevel(b.level)
-    ) ?? [];
 
   return (
     <div className="container">
       <FamilyHeader family={family} showEditDeleteButtons={isCreator} />
-      {sortedMonsters.length === 0 ? (
+      {monsters.length === 0 ? (
         <p>No public monsters in this family.</p>
       ) : (
         <CardGrid
-          monsters={sortedMonsters}
+          monsters={monsters}
           hideFamilyAbilities={true}
           hideCreator={true}
           hideFamilyName={true}

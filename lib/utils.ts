@@ -5,18 +5,38 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function parseMonsterLevel(level: string): number {
-  if (level.includes("/")) {
-    const [numerator, denominator] = level.split("/").map(Number);
-    return numerator / denominator;
+export function levelIntToDisplay(levelInt: number): string {
+  switch (levelInt) {
+    case -4:
+      return "1/4";
+    case -3:
+      return "1/3";
+    case -2:
+      return "1/2";
+    case 0:
+      return "";
+    default:
+      return levelInt > 0 ? levelInt.toString() : "";
   }
-  return Number(level);
 }
 
-export function monstersSortedByLevel<T extends { level: string }>(
+export function stringToLevelInt(level: string): number {
+  switch (level) {
+    case "1/4":
+      return -4;
+    case "1/3":
+      return -3;
+    case "1/2":
+      return -2;
+    default: {
+      const parsed = parseInt(level, 10);
+      return !Number.isNaN(parsed) && parsed >= 1 && parsed <= 20 ? parsed : 0;
+    }
+  }
+}
+
+export function monstersSortedByLevelInt<T extends { levelInt: number }>(
   monsters: T[]
 ): T[] {
-  return monsters?.sort(
-    (a, b) => parseMonsterLevel(a.level) - parseMonsterLevel(b.level)
-  );
+  return monsters?.slice().sort((a, b) => a.levelInt - b.levelInt);
 }

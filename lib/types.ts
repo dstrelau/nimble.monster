@@ -8,6 +8,37 @@ export const SIZES = [
 ] as const;
 export type MonsterSize = (typeof SIZES)[number]["value"];
 
+export const MONSTER_LEVELS = [
+  { value: -4, label: "1/4", display: "1/4" },
+  { value: -3, label: "1/3", display: "1/3" },
+  { value: -2, label: "1/2", display: "1/2" },
+  { value: 1, label: "1", display: "1" },
+  { value: 2, label: "2", display: "2" },
+  { value: 3, label: "3", display: "3" },
+  { value: 4, label: "4", display: "4" },
+  { value: 5, label: "5", display: "5" },
+  { value: 6, label: "6", display: "6" },
+  { value: 7, label: "7", display: "7" },
+  { value: 8, label: "8", display: "8" },
+  { value: 9, label: "9", display: "9" },
+  { value: 10, label: "10", display: "10" },
+  { value: 11, label: "11", display: "11" },
+  { value: 12, label: "12", display: "12" },
+  { value: 13, label: "13", display: "13" },
+  { value: 14, label: "14", display: "14" },
+  { value: 15, label: "15", display: "15" },
+  { value: 16, label: "16", display: "16" },
+  { value: 17, label: "17", display: "17" },
+  { value: 18, label: "18", display: "18" },
+  { value: 19, label: "19", display: "19" },
+  { value: 20, label: "20", display: "20" },
+] as const;
+
+export const LEGENDARY_MONSTER_LEVELS = MONSTER_LEVELS.filter(
+  (level) => level.value > 0
+);
+export const ALL_MONSTER_LEVELS = MONSTER_LEVELS;
+
 export const ARMORS = [
   { value: "none", label: "None" },
   { value: "medium", label: "Medium" },
@@ -67,6 +98,7 @@ export interface MonsterMini {
   legendary: boolean;
   minion: boolean;
   level: string;
+  levelInt: number;
   name: string;
   size: MonsterSize;
   armor: MonsterArmor;

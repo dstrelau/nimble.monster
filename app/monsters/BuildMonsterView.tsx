@@ -47,7 +47,13 @@ import {
 } from "@/components/ui/tooltip";
 import { fetchApi } from "@/lib/api";
 import type { Monster, MonsterArmor, MonsterSize } from "@/lib/types";
-import { ARMORS, SIZES } from "@/lib/types";
+import {
+  ARMORS,
+  LEGENDARY_MONSTER_LEVELS,
+  MONSTER_LEVELS,
+  SIZES,
+} from "@/lib/types";
+import { levelIntToDisplay } from "@/lib/utils";
 import { getUserFamilies } from "../families/actions";
 import { AbilitiesSection } from "../ui/create/AbilitiesSection";
 import { ActionsSection } from "../ui/create/ActionsSection";
@@ -60,6 +66,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     minion: false,
     name: "Goblin Taskmaster",
     level: "2",
+    levelInt: 2,
     size: "small" as MonsterSize,
     armor: "medium" as MonsterArmor,
     swim: 0,
@@ -104,6 +111,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     size: "large" as MonsterSize,
     armor: "medium" as MonsterArmor,
     level: "5",
+    levelInt: 5,
     hp: 130,
     speed: 0,
     swim: 0,
@@ -148,6 +156,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     minion: true,
     name: "Kobold Minion",
     level: "1/4",
+    levelInt: -4,
     size: "small" as MonsterSize,
     armor: "none" as MonsterArmor,
     swim: 0,
@@ -176,6 +185,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     minion: false,
     name: "",
     level: "",
+    levelInt: 0,
     size: "medium",
     armor: "none",
     swim: 0,
@@ -238,12 +248,20 @@ const LegendaryForm: React.FC<{
 }> = ({ monster, setMonster }) => (
   <div className="space-y-4">
     <div className="grid grid-cols-7 gap-x-6">
-      <FormInput
+      <FormSelect
         label="Lvl"
         name="level"
-        value={monster.level}
+        choices={LEGENDARY_MONSTER_LEVELS.map((l) => ({
+          value: l.value.toString(),
+          label: l.display,
+        }))}
+        selected={monster.levelInt.toString()}
         className="col-span-1"
-        onChange={(level) => setMonster({ ...monster, level })}
+        onChange={(levelStr) => {
+          const levelInt = parseInt(levelStr, 10);
+          const level = levelIntToDisplay(levelInt);
+          setMonster({ ...monster, level, levelInt });
+        }}
       />
       <FormSelect
         label="Size"
@@ -368,12 +386,20 @@ const MinionForm: React.FC<{
         />
       </div>
       <div className="grid grid-cols-5 gap-x-6">
-        <FormInput
+        <FormSelect
           label="Lvl"
           name="level"
-          value={monster.level}
+          choices={MONSTER_LEVELS.map((l) => ({
+            value: l.value.toString(),
+            label: l.display,
+          }))}
+          selected={monster.levelInt.toString()}
           className="col-span-1"
-          onChange={(level) => setMonster({ ...monster, level })}
+          onChange={(levelStr) => {
+            const levelInt = parseInt(levelStr, 10);
+            const level = levelIntToDisplay(levelInt);
+            setMonster({ ...monster, level, levelInt });
+          }}
         />
         <FormSelect
           label="Size"
@@ -491,12 +517,20 @@ const StandardForm: React.FC<{
         />
       </div>
       <div className="grid grid-cols-5 gap-x-6">
-        <FormInput
+        <FormSelect
           label="Lvl"
           name="level"
-          value={monster.level}
+          choices={MONSTER_LEVELS.map((l) => ({
+            value: l.value.toString(),
+            label: l.display,
+          }))}
+          selected={monster.levelInt.toString()}
           className="col-span-1"
-          onChange={(level) => setMonster({ ...monster, level })}
+          onChange={(levelStr) => {
+            const levelInt = parseInt(levelStr, 10);
+            const level = levelIntToDisplay(levelInt);
+            setMonster({ ...monster, level, levelInt });
+          }}
         />
         <FormSelect
           label="Size"
@@ -616,71 +650,71 @@ const StandardForm: React.FC<{
 export const MonsterVisibilityEnum = ["private", "public"] as const;
 
 const HP_RECOMMENDATION_STANDARD: Record<
-  string,
+  number,
   Record<MonsterArmor, number>
 > = {
-  "1/4": { none: 12, medium: 9, heavy: 7 },
-  "1/3": { none: 15, medium: 11, heavy: 8 },
-  "1/2": { none: 18, medium: 15, heavy: 11 },
-  "1": { none: 26, medium: 20, heavy: 16 },
-  "2": { none: 34, medium: 27, heavy: 20 },
-  "3": { none: 41, medium: 33, heavy: 25 },
-  "4": { none: 49, medium: 39, heavy: 29 },
-  "5": { none: 58, medium: 46, heavy: 35 },
-  "6": { none: 68, medium: 54, heavy: 41 },
-  "7": { none: 79, medium: 63, heavy: 47 },
-  "8": { none: 91, medium: 73, heavy: 55 },
-  "9": { none: 104, medium: 83, heavy: 62 },
-  "10": { none: 118, medium: 94, heavy: 71 },
-  "11": { none: 133, medium: 106, heavy: 80 },
-  "12": { none: 149, medium: 119, heavy: 89 },
-  "13": { none: 166, medium: 132, heavy: 100 },
-  "14": { none: 184, medium: 147, heavy: 110 },
-  "15": { none: 203, medium: 162, heavy: 122 },
-  "16": { none: 223, medium: 178, heavy: 134 },
-  "17": { none: 244, medium: 195, heavy: 146 },
-  "18": { none: 266, medium: 213, heavy: 160 },
-  "19": { none: 289, medium: 231, heavy: 173 },
-  "20": { none: 313, medium: 250, heavy: 189 },
+  [-4]: { none: 12, medium: 9, heavy: 7 }, // 1/4
+  [-3]: { none: 15, medium: 11, heavy: 8 }, // 1/3
+  [-2]: { none: 18, medium: 15, heavy: 11 }, // 1/2
+  1: { none: 26, medium: 20, heavy: 16 },
+  2: { none: 34, medium: 27, heavy: 20 },
+  3: { none: 41, medium: 33, heavy: 25 },
+  4: { none: 49, medium: 39, heavy: 29 },
+  5: { none: 58, medium: 46, heavy: 35 },
+  6: { none: 68, medium: 54, heavy: 41 },
+  7: { none: 79, medium: 63, heavy: 47 },
+  8: { none: 91, medium: 73, heavy: 55 },
+  9: { none: 104, medium: 83, heavy: 62 },
+  10: { none: 118, medium: 94, heavy: 71 },
+  11: { none: 133, medium: 106, heavy: 80 },
+  12: { none: 149, medium: 119, heavy: 89 },
+  13: { none: 166, medium: 132, heavy: 100 },
+  14: { none: 184, medium: 147, heavy: 110 },
+  15: { none: 203, medium: 162, heavy: 122 },
+  16: { none: 223, medium: 178, heavy: 134 },
+  17: { none: 244, medium: 195, heavy: 146 },
+  18: { none: 266, medium: 213, heavy: 160 },
+  19: { none: 289, medium: 231, heavy: 173 },
+  20: { none: 313, medium: 250, heavy: 189 },
 };
 
-const HP_RECOMMENDATION_LEGENDARY: Record<string, Record<string, number>> = {
-  "1": { none: 50, medium: 50, heavy: 35, lastStand: 10 },
-  "2": { none: 75, medium: 75, heavy: 55, lastStand: 20 },
-  "3": { none: 100, medium: 100, heavy: 75, lastStand: 30 },
-  "4": { none: 125, medium: 125, heavy: 95, lastStand: 40 },
-  "5": { none: 150, medium: 150, heavy: 115, lastStand: 50 },
-  "6": { none: 175, medium: 175, heavy: 135, lastStand: 60 },
-  "7": { none: 200, medium: 200, heavy: 155, lastStand: 70 },
-  "8": { none: 225, medium: 225, heavy: 175, lastStand: 80 },
-  "9": { none: 250, medium: 250, heavy: 195, lastStand: 90 },
-  "10": { none: 275, medium: 275, heavy: 215, lastStand: 100 },
-  "11": { none: 300, medium: 300, heavy: 235, lastStand: 110 },
-  "12": { none: 325, medium: 325, heavy: 255, lastStand: 120 },
-  "13": { none: 350, medium: 350, heavy: 275, lastStand: 130 },
-  "14": { none: 375, medium: 375, heavy: 295, lastStand: 140 },
-  "15": { none: 400, medium: 400, heavy: 315, lastStand: 150 },
-  "16": { none: 425, medium: 425, heavy: 335, lastStand: 160 },
-  "17": { none: 450, medium: 450, heavy: 355, lastStand: 170 },
-  "18": { none: 475, medium: 475, heavy: 375, lastStand: 180 },
-  "19": { none: 500, medium: 500, heavy: 395, lastStand: 190 },
-  "20": { none: 525, medium: 525, heavy: 415, lastStand: 200 },
+const HP_RECOMMENDATION_LEGENDARY: Record<number, Record<string, number>> = {
+  1: { none: 50, medium: 50, heavy: 35, lastStand: 10 },
+  2: { none: 75, medium: 75, heavy: 55, lastStand: 20 },
+  3: { none: 100, medium: 100, heavy: 75, lastStand: 30 },
+  4: { none: 125, medium: 125, heavy: 95, lastStand: 40 },
+  5: { none: 150, medium: 150, heavy: 115, lastStand: 50 },
+  6: { none: 175, medium: 175, heavy: 135, lastStand: 60 },
+  7: { none: 200, medium: 200, heavy: 155, lastStand: 70 },
+  8: { none: 225, medium: 225, heavy: 175, lastStand: 80 },
+  9: { none: 250, medium: 250, heavy: 195, lastStand: 90 },
+  10: { none: 275, medium: 275, heavy: 215, lastStand: 100 },
+  11: { none: 300, medium: 300, heavy: 235, lastStand: 110 },
+  12: { none: 325, medium: 325, heavy: 255, lastStand: 120 },
+  13: { none: 350, medium: 350, heavy: 275, lastStand: 130 },
+  14: { none: 375, medium: 375, heavy: 295, lastStand: 140 },
+  15: { none: 400, medium: 400, heavy: 315, lastStand: 150 },
+  16: { none: 425, medium: 425, heavy: 335, lastStand: 160 },
+  17: { none: 450, medium: 450, heavy: 355, lastStand: 170 },
+  18: { none: 475, medium: 475, heavy: 375, lastStand: 180 },
+  19: { none: 500, medium: 500, heavy: 395, lastStand: 190 },
+  20: { none: 525, medium: 525, heavy: 415, lastStand: 200 },
 };
 
 const getRecommendedHPStandard = (
-  level: string,
+  levelInt: number,
   armor: MonsterArmor
 ): number | null => {
-  if (!level || !HP_RECOMMENDATION_STANDARD[level]) return null;
-  return HP_RECOMMENDATION_STANDARD[level][armor] || null;
+  if (levelInt === 0 || !HP_RECOMMENDATION_STANDARD[levelInt]) return null;
+  return HP_RECOMMENDATION_STANDARD[levelInt][armor] || null;
 };
 
 const getRecommendedHPLegendary = (
-  level: string,
+  levelInt: number,
   armor: MonsterArmor
 ): number | null => {
-  if (!level || !HP_RECOMMENDATION_LEGENDARY[level]) return null;
-  return HP_RECOMMENDATION_LEGENDARY[level][armor] || null;
+  if (levelInt === 0 || !HP_RECOMMENDATION_LEGENDARY[levelInt]) return null;
+  return HP_RECOMMENDATION_LEGENDARY[levelInt][armor] || null;
 };
 
 const HPInput: React.FC<{
@@ -690,9 +724,9 @@ const HPInput: React.FC<{
 }> = ({ monster, onChange, className }) => {
   const recommendedHP = useMemo(() => {
     return monster.legendary
-      ? getRecommendedHPLegendary(monster.level, monster.armor)
-      : getRecommendedHPStandard(monster.level, monster.armor);
-  }, [monster.legendary, monster.level, monster.armor]);
+      ? getRecommendedHPLegendary(monster.levelInt, monster.armor)
+      : getRecommendedHPStandard(monster.levelInt, monster.armor);
+  }, [monster.legendary, monster.levelInt, monster.armor]);
 
   const percentDiff = useMemo(() => {
     if (!recommendedHP || monster.hp === 0) return 0;

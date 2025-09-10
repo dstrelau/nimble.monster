@@ -22,6 +22,7 @@ export const toMonsterMini = (
   legendary: m.legendary,
   minion: m.minion,
   level: m.level,
+  levelInt: m.levelInt,
   name: m.name,
   visibility: m.visibility,
   size: m.size,

@@ -1,16 +1,24 @@
-import { cn } from "@/lib/utils";
+import { cn, levelIntToDisplay } from "@/lib/utils";
 
 interface LevelProps {
-  level: string;
+  level?: string;
+  levelInt?: number;
   className?: string;
 }
 
-export function Level({ level, className }: LevelProps) {
+export function Level({ level, levelInt, className }: LevelProps) {
+  const displayLevel =
+    levelInt !== undefined ? levelIntToDisplay(levelInt) : level || "";
+  const fallbackLevel = levelInt === 0 && level ? level : displayLevel;
+
   return (
     <span
-      className={cn(level.includes("/") && "diagonal-fractions", className)}
+      className={cn(
+        fallbackLevel.includes("/") && "diagonal-fractions",
+        className
+      )}
     >
-      {level}
+      {fallbackLevel}
     </span>
   );
 }

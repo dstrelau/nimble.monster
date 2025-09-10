@@ -253,6 +253,7 @@ export const getRandomFeaturedFamily = async (): Promise<Family | null> => {
           family: { include: { creator: true } },
           monsterConditions: { include: { condition: true } },
         },
+        orderBy: { levelInt: "asc" },
       },
       creator: true,
     },
@@ -270,7 +271,12 @@ export const getRandomFeaturedFamily = async (): Promise<Family | null> => {
     id: family.id,
     name: family.name,
     description: family.description ?? undefined,
-    abilities: family.abilities as unknown as Ability[],
+    abilities: (family.abilities as unknown as Omit<Ability, "id">[]).map(
+      (ability) => ({
+        ...ability,
+        id: crypto.randomUUID(),
+      })
+    ),
     visibility: family.visibility,
     monsters: family.monsters.map(toMonster),
     monsterCount: family.monsters.length,

@@ -14,6 +14,7 @@ export default async function EditMonsterPage({
     return unauthorized();
   }
   const monster = await findMonsterWithCreatorDiscordId(id, session?.user.id);
+  console.log(monster);
 
   if (!monster) {
     return <div>Monster not found</div>;

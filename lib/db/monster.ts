@@ -193,13 +193,13 @@ export const searchPublicMonsterMinis = async ({
 
   let orderBy:
     | { name: "asc" | "desc" }
-    | { level: "asc" | "desc" }
+    | { levelInt: "asc" | "desc" }
     | { hp: "asc" | "desc" } = { name: "asc" };
 
   if (sortBy === "name") {
     orderBy = { name: sortDirection };
   } else if (sortBy === "level") {
-    orderBy = { level: sortDirection };
+    orderBy = { levelInt: sortDirection };
   } else if (sortBy === "hp") {
     orderBy = { hp: sortDirection };
   }
@@ -231,7 +231,7 @@ export const listMonstersByFamilyId = async (
         family_id: familyId,
         visibility: "public",
       },
-      orderBy: { name: "asc" },
+      orderBy: { levelInt: "asc" },
     })
   ).map(toMonster);
 };
@@ -240,6 +240,7 @@ export interface CreateMonsterInput {
   name: string;
   kind?: string;
   level: string;
+  levelInt: number;
   hp: number;
   armor: MonsterArmor | "";
   size: MonsterSize;
@@ -270,6 +271,7 @@ export const createMonster = async (
     name,
     kind = "",
     level,
+    levelInt,
     hp,
     armor,
     size,
@@ -312,6 +314,7 @@ export const createMonster = async (
       name,
       kind,
       level,
+      levelInt,
       hp,
       armor: armor === "none" || armor === "" ? "EMPTY_ENUM_VALUE" : armor,
       size,
@@ -366,6 +369,7 @@ export interface UpdateMonsterInput {
   id: string;
   name: string;
   level: string;
+  levelInt: number;
   hp: number;
   armor: MonsterArmor;
   size: MonsterSize;
@@ -397,6 +401,7 @@ export const updateMonster = async (
     id,
     name,
     level,
+    levelInt,
     hp,
     armor,
     size,
@@ -430,6 +435,7 @@ export const updateMonster = async (
     data: {
       name,
       level,
+      levelInt,
       hp,
       armor: armor === "none" || !armor ? "EMPTY_ENUM_VALUE" : armor,
       size,

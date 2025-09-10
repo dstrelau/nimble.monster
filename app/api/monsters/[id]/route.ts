@@ -49,6 +49,7 @@ export const PUT = telemetry(
         id,
         name: monsterData.name,
         level: monsterData.level,
+        levelInt: monsterData.levelInt,
         hp: monsterData.hp,
         armor: monsterData.armor,
         size: monsterData.size,

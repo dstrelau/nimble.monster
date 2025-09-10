@@ -5,7 +5,6 @@ import { FamilyCard } from "@/components/FamilyCard";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { getRandomFeaturedFamily } from "@/lib/db/family";
-import { monstersSortedByLevel } from "@/lib/utils";
 import { Attribution } from "./ui/Attribution";
 import { MonsterCardWithOverflow } from "./ui/MonsterCardWithOverflow";
 
@@ -51,9 +50,7 @@ export default async function HomePage() {
             </div>
             <div className="flex-1">
               <MonsterCardWithOverflow
-                monster={
-                  monstersSortedByLevel(featuredFamily.monsters)[randomIdx]
-                }
+                monster={featuredFamily.monsters[randomIdx]}
               />
             </div>
           </div>

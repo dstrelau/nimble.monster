@@ -14,6 +14,7 @@ export const listCollectionsWithMonstersForUser = async (
         include: {
           monster: true,
         },
+        orderBy: { monster: { name: "asc" } },
       },
     },
     orderBy: { name: "asc" },
@@ -64,6 +65,7 @@ export const listPublicCollectionsHavingMonsters = async (): Promise<
         include: {
           monster: {},
         },
+        orderBy: { monster: { name: "asc" } },
       },
     },
   });
