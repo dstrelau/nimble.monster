@@ -357,7 +357,7 @@ export function CreateEditCollection({
             </div>
           </div>
 
-          <div className="hidden sm:block">
+          <div className="hidden sm:block min-w-xs">
             <MonsterGroupMinis
               name={watchedValues.name}
               monsters={currentMonsters}

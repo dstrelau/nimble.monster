@@ -4,6 +4,7 @@ import { Card } from "@/app/ui/monster/Card";
 import { MonsterDetailActions } from "@/components/MonsterDetailActions";
 import { auth } from "@/lib/auth";
 import { findMonster } from "@/lib/db";
+import { AddToCollectionDialog } from "./AddToCollectionDialog";
 
 export async function generateMetadata({
   params,
@@ -73,8 +74,9 @@ export default async function MonsterPage({
 
   return (
     <div className="container mx-auto">
-      <div className="flex justify-end items-start mb-6">
+      <div className="flex justify-end items-start gap-2 mb-6">
         {isOwner && <MonsterDetailActions monster={monster} />}
+        {session?.user && <AddToCollectionDialog monsterId={monster.id} />}
       </div>
       <div className="max-w-2xl mx-auto">
         <Card monster={monster} creator={monster.creator} link={false} />

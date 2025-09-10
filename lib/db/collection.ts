@@ -16,6 +16,7 @@ export const listCollectionsWithMonstersForUser = async (
         },
       },
     },
+    orderBy: { name: "asc" },
   });
 
   return collections.map((c) => {
@@ -372,6 +373,21 @@ export const updateCollection = async ({
     console.error("Error updating collection:", error);
     return null;
   }
+};
+
+export const addMonsterToCollection = async ({
+  monsterId,
+  collectionId,
+}: {
+  monsterId: string;
+  collectionId: string;
+}): Promise<boolean> => {
+  if (!isValidUUID(monsterId) || !isValidUUID(collectionId)) return false;
+
+  await prisma.monsterInCollection.create({
+    data: { monsterId, collectionId },
+  });
+  return true;
 };
 
 export const deleteCollection = async ({
