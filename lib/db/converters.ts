@@ -110,6 +110,11 @@ export const toCollectionOverview = (
             monster: true;
           };
         };
+        itemCollections: {
+          include: {
+            item: true;
+          };
+        };
       };
     },
     "findMany"
@@ -132,6 +137,8 @@ export const toCollectionOverview = (
     standardCount: c.monsterCollections.length - legendaryCount,
     visibility: c.visibility === "private" ? "private" : "public",
     createdAt: c.createdAt ?? undefined,
+    items: c.itemCollections?.map((ic) => toItemMini(ic.item)) || [],
+    itemCount: c.itemCollections?.length || 0,
   };
 };
 
@@ -192,6 +199,7 @@ export const toItemMini = (
   kind: i.kind || undefined,
   rarity: i.rarity as ItemRarity,
   visibility: i.visibility,
+  imageIcon: i.imageIcon || undefined,
 });
 
 export const toItem = (
@@ -206,14 +214,9 @@ export const toItem = (
   >[0]
 ): Item => {
   return {
-    id: i.id,
-    name: i.name,
-    kind: i.kind || undefined,
-    rarity: i.rarity as ItemRarity,
-    visibility: i.visibility,
+    ...toItemMini(i),
     description: i.description,
     moreInfo: i.moreInfo || undefined,
-    imageIcon: i.imageIcon || undefined,
     updatedAt: i.updatedAt.toISOString(),
     creator: { ...i.creator, avatar: i.creator.avatar || "" },
   };

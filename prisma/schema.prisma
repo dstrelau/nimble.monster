@@ -21,6 +21,7 @@ model Collection {
   visibility         collection_visibility @default(public)
   creator            User                  @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
   monsterCollections MonsterInCollection[]
+  itemCollections    ItemInCollection[]
 
   @@index([creatorId], map: "idx_collections_user_id")
   @@map("collections")
@@ -34,6 +35,16 @@ model MonsterInCollection {
 
   @@id([monsterId, collectionId])
   @@map("monsters_collections")
+}
+
+model ItemInCollection {
+  collectionId String     @map("collection_id") @db.Uuid
+  itemId       String     @map("item_id") @db.Uuid
+  collection   Collection @relation(fields: [collectionId], references: [id])
+  item         Item       @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, collectionId])
+  @@map("items_collections")
 }
 
 model Family {
@@ -152,18 +163,19 @@ model Session {
 }
 
 model Item {
-  id          String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name        String
-  kind        String          @default("")
-  description String          @default("")
-  moreInfo    String?         @default("") @map("more_info")
-  imageIcon   String?         @map("image_icon")
-  rarity      item_rarity @default(unspecified)
-  visibility  item_visibility @default(public)
-  userId      String          @map("user_id") @db.Uuid
-  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime        @default(now()) @map("updated_at") @db.Timestamptz(6)
-  creator     User            @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  id              String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name            String
+  kind            String             @default("")
+  description     String             @default("")
+  moreInfo        String?            @default("") @map("more_info")
+  imageIcon       String?            @map("image_icon")
+  rarity          item_rarity        @default(unspecified)
+  visibility      item_visibility    @default(public)
+  userId          String             @map("user_id") @db.Uuid
+  createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime           @default(now()) @map("updated_at") @db.Timestamptz(6)
+  creator         User               @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  itemCollections ItemInCollection[]
 
   @@index([userId], map: "idx_items_user_id")
   @@map("items")

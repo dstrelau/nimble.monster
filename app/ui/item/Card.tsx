@@ -74,7 +74,7 @@ export const Card = ({
         {item.imageIcon && (
           <GameIcon
             iconId={item.imageIcon}
-            className="absolute top-4 right-4 w-24 h-24 fill-icon/50 z-0"
+            className="absolute top-4 right-4 size-24 fill-icon/50 z-0"
           />
         )}
         <div className="relative z-10">

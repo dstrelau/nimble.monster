@@ -16,19 +16,19 @@ import { Link } from "./app/Link";
 import { Level } from "./Level";
 import { Separator } from "./ui/separator";
 
-const MonsterRow: React.FC<{
+export const MonsterRow: React.FC<{
   monster: MonsterMini;
 }> = ({ monster }) => (
   <div className="flex gap-1 items-center">
     <div className="flex-1 flex gap-1 items-center font-slab font-bold small-caps italic">
       {monster.legendary && (
-        <Crown className="h-5 w-5 inline self-center stroke-flame" />
+        <Crown className="size-5 inline self-center stroke-flame" />
       )}
       {monster.minion && (
-        <PersonStanding className="h-5 w-5 inline self-center stroke-flame" />
+        <PersonStanding className="size-5 inline self-center stroke-flame" />
       )}
       {monster.visibility === "private" && (
-        <EyeOff className="h-5 w-5 inline self-center stroke-flame" />
+        <EyeOff className="size-5 inline self-center stroke-flame" />
       )}
       <span>
         <Link
@@ -94,13 +94,7 @@ export const MonsterGroupMinis = ({
         {children}
         <div className="relative">
           {visibleMonsters?.map((monster, index) => (
-            <div
-              key={monster.id}
-              className={cn(
-                "py-0.5 relative",
-                monster.legendary && "md:col-span-2"
-              )}
-            >
+            <div key={monster.id}>
               <MonsterRow monster={monster} />
               {index < visibleMonsters.length - 1 && <Separator />}
             </div>

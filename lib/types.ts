@@ -68,6 +68,7 @@ export const RARITIES = [
   { value: "legendary", label: "Legendary" },
 ] as const;
 export type ItemRarity = (typeof RARITIES)[number]["value"];
+export type ItemRarityFilter = "all" | ItemRarity;
 
 export const FAMILY_VISIBILITY = [
   { value: "public", label: "Public" },
@@ -183,6 +184,7 @@ export interface Action {
 
 export interface Collection extends CollectionOverview {
   monsters: Monster[];
+  items: Item[];
 }
 
 export interface CollectionOverview {
@@ -193,6 +195,8 @@ export interface CollectionOverview {
   monsters: MonsterMini[];
   name: string;
   standardCount: number;
+  items: ItemMini[];
+  itemCount: number;
   visibility: CollectionVisibilityType;
   createdAt?: Date;
 }
@@ -203,12 +207,12 @@ export interface ItemMini {
   kind?: string;
   rarity: ItemRarity;
   visibility: "public" | "private";
+  imageIcon?: string;
 }
 
 export interface Item extends ItemMini {
   description: string;
   moreInfo?: string;
-  imageIcon?: string;
   creator: User;
   updatedAt: string;
 }

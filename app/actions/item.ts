@@ -3,7 +3,26 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import type { ItemRarity } from "@/lib/types";
+import type { ItemRarity, ItemRarityFilter } from "@/lib/types";
+
+export type { ItemRarityFilter };
+
+export async function searchPublicItems(params: {
+  creatorId?: string;
+  searchTerm?: string;
+  rarity?: ItemRarityFilter;
+  sortBy?: "name" | "rarity";
+  sortDirection?: "asc" | "desc";
+  limit?: number;
+}) {
+  try {
+    const items = await db.searchPublicItemMinis(params);
+    return { success: true, items };
+  } catch (error) {
+    console.error("Error searching public items:", error);
+    return { success: false, error: "Failed to search items" };
+  }
+}
 
 export async function createItem(formData: {
   name: string;

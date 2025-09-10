@@ -15,6 +15,7 @@ const collectionSchema = z.object({
   visibility: z.enum(ValidCollectionVisibilities),
   description: z.string().optional(),
   monsterIds: z.string().array(),
+  itemIds: z.string().array().optional(),
 });
 
 export type CollectionFormData = z.infer<typeof collectionSchema>;
@@ -32,6 +33,7 @@ export async function updateCollection(
     visibility: formData.get("visibility"),
     description: formData.get("description") || "",
     monsterIds: JSON.parse(formData.get("monsterIds")?.toString() || "[]"),
+    itemIds: JSON.parse(formData.get("itemIds")?.toString() || "[]"),
   });
 
   // Use the new db function to update the collection
@@ -42,6 +44,7 @@ export async function updateCollection(
     description: parsed.description,
     discordId: session.user.id,
     monsterIds: parsed.monsterIds,
+    itemIds: parsed.itemIds,
   });
 
   if (!updatedCollection) throw new Error("Failed to update collection");

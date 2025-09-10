@@ -1,6 +1,12 @@
 import type { Collection, CollectionOverview } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
-import { toCollectionOverview, toMonster, toMonsterMini } from "./converters";
+import {
+  toCollectionOverview,
+  toItem,
+  toItemMini,
+  toMonster,
+  toMonsterMini,
+} from "./converters";
 import { prisma } from "./index";
 
 export const listCollectionsWithMonstersForUser = async (
@@ -15,6 +21,12 @@ export const listCollectionsWithMonstersForUser = async (
           monster: true,
         },
         orderBy: { monster: { name: "asc" } },
+      },
+      itemCollections: {
+        include: {
+          item: true,
+        },
+        orderBy: { item: { name: "asc" } },
       },
     },
     orderBy: { name: "asc" },
@@ -31,6 +43,8 @@ export const listCollectionsWithMonstersForUser = async (
       standardCount: c.monsterCollections.length - legendaryCount,
       creator: { ...c.creator, avatar: c.creator.avatar || "" },
       monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
+      items: c.itemCollections.map((ic) => toItemMini(ic.item)),
+      itemCount: c.itemCollections.length,
     };
   });
 };
@@ -46,6 +60,11 @@ export const listPublicCollections = async (): Promise<
         monsterCollections: {
           include: {
             monster: true,
+          },
+        },
+        itemCollections: {
+          include: {
+            item: true,
           },
         },
       },
@@ -67,11 +86,20 @@ export const listPublicCollectionsHavingMonsters = async (): Promise<
         },
         orderBy: { monster: { name: "asc" } },
       },
+      itemCollections: {
+        where: { item: { visibility: "public" } },
+        include: {
+          item: {},
+        },
+        orderBy: { item: { name: "asc" } },
+      },
     },
   });
 
   return collections
-    .filter((c) => c.monsterCollections.length > 0)
+    .filter(
+      (c) => c.monsterCollections.length > 0 || c.itemCollections.length > 0
+    )
     .map((c) => {
       const legendaryCount = c.monsterCollections.filter(
         (m) => m.monster.legendary
@@ -83,6 +111,8 @@ export const listPublicCollectionsHavingMonsters = async (): Promise<
         standardCount: c.monsterCollections.length - legendaryCount,
         creator: { ...c.creator, avatar: c.creator.avatar || "" },
         monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
+        items: c.itemCollections.map((ic) => toItemMini(ic.item)),
+        itemCount: c.itemCollections.length,
       };
     });
 };
@@ -104,6 +134,15 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
           },
         },
       },
+      itemCollections: {
+        include: {
+          item: {
+            include: {
+              creator: true,
+            },
+          },
+        },
+      },
     },
   });
   if (!c) return c;
@@ -120,6 +159,10 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
     monsters: c.monsterCollections
       .flatMap((mc) => toMonster(mc.monster))
       .sort((a, b) => a.name.localeCompare(b.name)),
+    items: c.itemCollections
+      .flatMap((ic) => toItem(ic.item))
+      .sort((a, b) => a.name.localeCompare(b.name)),
+    itemCount: c.itemCollections.length,
   };
 };
 
@@ -141,11 +184,21 @@ export const getUserPublicCollectionsHavingMonsters = async (
           monster: true,
         },
       },
+      itemCollections: {
+        where: {
+          item: { visibility: "public" },
+        },
+        include: {
+          item: true,
+        },
+      },
     },
   });
 
   return collections
-    .filter((c) => c.monsterCollections.length > 0)
+    .filter(
+      (c) => c.monsterCollections.length > 0 || c.itemCollections.length > 0
+    )
     .map((c) => {
       const legendaryCount = c.monsterCollections.filter(
         (m) => m.monster.legendary
@@ -157,6 +210,8 @@ export const getUserPublicCollectionsHavingMonsters = async (
         standardCount: c.monsterCollections.length - legendaryCount,
         creator: { ...c.creator, avatar: c.creator.avatar || "" },
         monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
+        items: c.itemCollections.map((ic) => toItemMini(ic.item)),
+        itemCount: c.itemCollections.length,
       };
     });
 };
@@ -222,6 +277,8 @@ export const createCollection = async ({
       avatar: collection.creator.avatar || "",
     },
     monsters: collection.monsterCollections.map((mc) => toMonster(mc.monster)),
+    items: [],
+    itemCount: 0,
   };
 };
 
@@ -232,6 +289,7 @@ export interface UpdateCollectionInput {
   description?: string;
   discordId: string;
   monsterIds?: string[];
+  itemIds?: string[];
 }
 
 export const updateCollection = async ({
@@ -241,6 +299,7 @@ export const updateCollection = async ({
   description,
   discordId,
   monsterIds,
+  itemIds,
 }: UpdateCollectionInput): Promise<CollectionOverview | null> => {
   if (!isValidUUID(id)) return null;
 
@@ -254,6 +313,7 @@ export const updateCollection = async ({
       include: {
         creator: true,
         monsterCollections: true,
+        itemCollections: true,
       },
     });
 
@@ -326,7 +386,43 @@ export const updateCollection = async ({
         }
       }
 
-      // Get the updated collection with the new monster relationships
+      // Update item associations if itemIds is provided
+      if (itemIds) {
+        const existingItemIds = existingCollection.itemCollections.map(
+          (ic) => ic.itemId
+        );
+
+        // Find items to remove and add
+        const toRemove = existingItemIds.filter(
+          (itemId) => !itemIds.includes(itemId)
+        );
+
+        const toAdd = itemIds.filter(
+          (itemId) => !existingItemIds.includes(itemId)
+        );
+
+        // Remove items no longer in the collection
+        if (toRemove.length > 0) {
+          await tx.itemInCollection.deleteMany({
+            where: {
+              collectionId: id,
+              itemId: { in: toRemove },
+            },
+          });
+        }
+
+        // Add new items to the collection
+        if (toAdd.length > 0) {
+          await tx.itemInCollection.createMany({
+            data: toAdd.map((itemId) => ({
+              collectionId: id,
+              itemId,
+            })),
+          });
+        }
+      }
+
+      // Get the updated collection with the new monster and item relationships
       const updatedCollection = await tx.collection.findUnique({
         where: { id },
         include: {
@@ -338,6 +434,15 @@ export const updateCollection = async ({
                   family: { include: { creator: true } },
                   creator: true,
                   monsterConditions: { include: { condition: true } },
+                },
+              },
+            },
+          },
+          itemCollections: {
+            include: {
+              item: {
+                include: {
+                  creator: true,
                 },
               },
             },
@@ -369,6 +474,8 @@ export const updateCollection = async ({
         monsters: updatedCollection.monsterCollections.map((mc) =>
           toMonster(mc.monster)
         ),
+        items: updatedCollection.itemCollections.map((ic) => toItem(ic.item)),
+        itemCount: updatedCollection.itemCollections.length,
       };
     });
   } catch (error) {
@@ -392,6 +499,21 @@ export const addMonsterToCollection = async ({
   return true;
 };
 
+export const addItemToCollection = async ({
+  itemId,
+  collectionId,
+}: {
+  itemId: string;
+  collectionId: string;
+}): Promise<boolean> => {
+  if (!isValidUUID(itemId) || !isValidUUID(collectionId)) return false;
+
+  await prisma.itemInCollection.create({
+    data: { itemId, collectionId },
+  });
+  return true;
+};
+
 export const deleteCollection = async ({
   id,
   discordId,
@@ -403,6 +525,10 @@ export const deleteCollection = async ({
 
   return await prisma.$transaction(async (tx) => {
     await tx.monsterInCollection.deleteMany({
+      where: { collectionId: id },
+    });
+
+    await tx.itemInCollection.deleteMany({
       where: { collectionId: id },
     });
 

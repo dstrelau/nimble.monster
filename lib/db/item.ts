@@ -1,8 +1,8 @@
-import type { Item, ItemRarity } from "@/lib/types";
+import type { Item, ItemMini, ItemRarity, ItemRarityFilter } from "@/lib/types";
 import { getBaseUrl } from "@/lib/utils/url";
 import { isValidUUID } from "@/lib/utils/validation";
 import { invalidateEntityImageCache, preloadImage } from "../cache/image-cache";
-import { toItem } from "./converters";
+import { toItem, toItemMini } from "./converters";
 import { prisma } from "./index";
 
 export const deleteItem = async ({
@@ -102,6 +102,69 @@ export const listAllItemsForDiscordID = async (id: string): Promise<Item[]> => {
       orderBy: { name: "asc" },
     })
   ).map(toItem);
+};
+
+export interface SearchItemsParams {
+  searchTerm?: string;
+  rarity?: ItemRarityFilter;
+  creatorId?: string;
+  sortBy?: "name" | "rarity";
+  sortDirection?: "asc" | "desc";
+  limit?: number;
+}
+
+export const searchPublicItemMinis = async ({
+  searchTerm,
+  rarity,
+  creatorId,
+  sortBy = "name",
+  sortDirection = "asc",
+  limit = 500,
+}: SearchItemsParams): Promise<ItemMini[]> => {
+  const whereClause: {
+    creator?: { discordId?: string };
+    visibility: "public";
+    OR?: Array<{
+      name?: { contains: string; mode: "insensitive" };
+      kind?: { contains: string; mode: "insensitive" };
+    }>;
+    rarity?: ItemRarity;
+  } = {
+    visibility: "public",
+  };
+
+  if (creatorId) {
+    whereClause.creator = { discordId: creatorId };
+  }
+
+  if (searchTerm) {
+    whereClause.OR = [
+      { name: { contains: searchTerm, mode: "insensitive" } },
+      { kind: { contains: searchTerm, mode: "insensitive" } },
+    ];
+  }
+
+  if (rarity && rarity !== "all") {
+    whereClause.rarity = rarity;
+  }
+
+  let orderBy: { name: "asc" | "desc" } | { rarity: "asc" | "desc" } = {
+    name: "asc",
+  };
+
+  if (sortBy === "name") {
+    orderBy = { name: sortDirection };
+  } else if (sortBy === "rarity") {
+    orderBy = { rarity: sortDirection };
+  }
+
+  return (
+    await prisma.item.findMany({
+      where: whereClause,
+      orderBy,
+      take: limit,
+    })
+  ).map(toItemMini);
 };
 
 export interface CreateItemInput {

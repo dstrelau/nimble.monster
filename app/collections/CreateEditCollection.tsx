@@ -4,7 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import {
   Crown,
+  Ghost,
   PersonStanding,
+  Shield,
   SlidersHorizontal,
   Square,
   SquareCheck,
@@ -16,10 +18,11 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createCollection } from "@/app/actions/collection";
+import { type ItemRarityFilter, searchPublicItems } from "@/app/actions/item";
 import { searchPublicMonsters, type TypeFilter } from "@/app/actions/monster";
+import { List as ItemList } from "@/app/ui/item/List";
 import { List } from "@/app/ui/monster/List";
 import type { SortOption } from "@/app/ui/monster/SimpleFilterBar";
-import { MonsterGroupMinis } from "@/components/MonsterGroupMinis";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -37,9 +40,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
-import type { Collection, Monster, MonsterMini } from "@/lib/types";
+import type {
+  Collection,
+  Item,
+  ItemMini,
+  Monster,
+  MonsterMini,
+} from "@/lib/types";
+import { RARITIES } from "@/lib/types";
+import { CollectionCard } from "../ui/CollectionCard";
 import { SortSelect } from "../ui/monster/SortSelect";
 import { SearchInput } from "../ui/SearchInput";
 import { updateCollection } from "./[id]/edit/actions";
@@ -56,7 +69,10 @@ type FormData = z.infer<typeof formSchema>;
 interface Props {
   collection: Collection;
   myMonsters: Monster[];
-  onSubmit?: (data: FormData & { monsters: MonsterMini[] }) => Promise<void>;
+  myItems?: Item[];
+  onSubmit?: (
+    data: FormData & { monsters: MonsterMini[]; items: ItemMini[] }
+  ) => Promise<void>;
   isCreating?: boolean;
   submitLabel?: string;
 }
@@ -64,6 +80,7 @@ interface Props {
 export function CreateEditCollection({
   collection,
   myMonsters,
+  myItems = [],
   onSubmit,
   isCreating = false,
   submitLabel = "Save",
@@ -72,11 +89,22 @@ export function CreateEditCollection({
   const [currentMonsters, setCurrentMonsters] = useState<MonsterMini[]>(
     collection.monsters
   );
+  const [currentItems, setCurrentItems] = useState<ItemMini[]>(
+    collection.items
+  );
   const { data: session } = useSession();
   const [onlyMine, setOnlyMine] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [sortOption, setSortOption] = useState<SortOption>("name-asc");
+
+  // Item-specific state
+  const [onlyMineItems, setOnlyMineItems] = useState<boolean>(true);
+  const [itemSearchTerm, setItemSearchTerm] = useState("");
+  const [rarityFilter, setRarityFilter] = useState<ItemRarityFilter>("all");
+  const [itemSortOption, _setItemSortOption] = useState<"name" | "rarity">(
+    "name"
+  );
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -96,11 +124,17 @@ export function CreateEditCollection({
       watchedValues.description !== (collection.description || "") ||
       watchedValues.visibility !== collection.visibility ||
       JSON.stringify(currentMonsters.map((m) => m.id).sort()) !==
-        JSON.stringify(collection.monsters.map((m) => m.id).sort());
+        JSON.stringify(collection.monsters.map((m) => m.id).sort()) ||
+      JSON.stringify(currentItems.map((i) => i.id).sort()) !==
+        JSON.stringify(collection.items.map((i) => i.id).sort());
 
   const handleSubmit = async (data: FormData) => {
     if (onSubmit) {
-      await onSubmit({ ...data, monsters: currentMonsters });
+      await onSubmit({
+        ...data,
+        monsters: currentMonsters,
+        items: currentItems,
+      });
       return;
     }
 
@@ -113,8 +147,8 @@ export function CreateEditCollection({
       });
 
       if (result.success && result.collection) {
-        // If we have monsters selected, update the collection with them
-        if (currentMonsters.length > 0) {
+        // If we have monsters or items selected, update the collection with them
+        if (currentMonsters.length > 0 || currentItems.length > 0) {
           const updateFormData = new FormData();
           updateFormData.append("name", data.name);
           updateFormData.append("visibility", data.visibility);
@@ -123,6 +157,10 @@ export function CreateEditCollection({
             "monsterIds",
             JSON.stringify(currentMonsters.map((m) => m.id))
           );
+          updateFormData.append(
+            "itemIds",
+            JSON.stringify(currentItems.map((i) => i.id))
+          );
 
           const updateResult = await updateCollection(
             result.collection.id,
@@ -130,7 +168,7 @@ export function CreateEditCollection({
           );
           if (!updateResult.success) {
             form.setError("root", {
-              message: "Failed to add monsters to collection",
+              message: "Failed to add monsters and items to collection",
             });
             return;
           }
@@ -151,6 +189,10 @@ export function CreateEditCollection({
         "monsterIds",
         JSON.stringify(currentMonsters.map((m) => m.id))
       );
+      updateFormData.append(
+        "itemIds",
+        JSON.stringify(currentItems.map((i) => i.id))
+      );
 
       try {
         await updateCollection(collection.id, updateFormData);
@@ -168,6 +210,11 @@ export function CreateEditCollection({
   let creatorId: string | undefined;
   if (onlyMine) {
     creatorId = session?.user?.id;
+  }
+
+  let itemCreatorId: string | undefined;
+  if (onlyMineItems) {
+    itemCreatorId = session?.user?.id;
   }
 
   const monstersQuery = useQuery({
@@ -192,6 +239,29 @@ export function CreateEditCollection({
 
   const availableMonsters: MonsterMini[] = monstersQuery.data?.monsters || [];
 
+  const itemsQuery = useQuery({
+    queryKey: [
+      "publicItems",
+      itemSearchTerm,
+      rarityFilter,
+      itemSortOption,
+      itemCreatorId,
+    ],
+    queryFn: async () => {
+      return searchPublicItems({
+        searchTerm: itemSearchTerm,
+        rarity: rarityFilter,
+        creatorId: itemCreatorId,
+        sortBy: itemSortOption,
+        sortDirection: "asc",
+        limit: 50,
+      });
+    },
+    staleTime: 10000,
+  });
+
+  const availableItems: ItemMini[] = itemsQuery.data?.items || [];
+
   const handleMonsterCheck = (id: string) => {
     const isInCollection = currentMonsters.some((m) => m.id === id);
     if (isInCollection) {
@@ -202,6 +272,22 @@ export function CreateEditCollection({
         availableMonsters.find((m) => m.id === id);
       if (clicked) {
         setCurrentMonsters((prev) =>
+          [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
+        );
+      }
+    }
+  };
+
+  const handleItemCheck = (id: string) => {
+    const isInCollection = currentItems.some((i) => i.id === id);
+    if (isInCollection) {
+      setCurrentItems((prev) => prev.filter((i) => i.id !== id));
+    } else {
+      const clicked =
+        myItems.find((i) => i.id === id) ||
+        availableItems.find((i) => i.id === id);
+      if (clicked) {
+        setCurrentItems((prev) =>
           [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
         );
       }
@@ -282,86 +368,169 @@ export function CreateEditCollection({
               )}
             />
 
-            <h2 className="text-lg font-semibold mb-2 border-b-2 border-foreground">
-              Monsters
-            </h2>
-            <div className="flex flex-col gap-4 grow-2">
-              <div className="flex gap-3 items-center">
-                <SearchInput
-                  className="grow"
-                  value={searchTerm}
-                  onChange={setSearchTerm}
-                  placeholder="Search"
-                />
-                <SortSelect value={sortOption} onChange={setSortOption} />
-              </div>
+            <Separator />
+            <Tabs defaultValue="monsters">
+              <TabsList className="min-w-sm">
+                <TabsTrigger className="text-md p-4" value="monsters">
+                  <Ghost className="size-5" />
+                  Monsters
+                </TabsTrigger>
+                <TabsTrigger className="text-md p-4" value="items">
+                  <Shield className="size-5" />
+                  Items
+                </TabsTrigger>
+              </TabsList>
 
-              <div className="flex gap-4">
-                <Toggle
-                  variant="outline"
-                  aria-label="Toggle Only My Monsters "
-                  pressed={onlyMine}
-                  onPressedChange={setOnlyMine}
-                >
-                  {onlyMine ? <SquareCheck /> : <Square />}
-                  Only My Monsters
-                </Toggle>
-
-                <Select
-                  defaultValue="all"
-                  onValueChange={(s: TypeFilter) => setTypeFilter(s)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="All Monsters" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">
-                      <SlidersHorizontal />
-                      All Monsters
-                    </SelectItem>
-                    <SelectItem value="standard" aria-label="Standard monsters">
-                      <User />
-                      Standard
-                    </SelectItem>
-                    <SelectItem
-                      value="legendary"
-                      aria-label="Legendary monsters"
-                    >
-                      <Crown />
-                      Legendary
-                    </SelectItem>
-                    <SelectItem value="minion" aria-label="Minions">
-                      <PersonStanding />
-                      Minions
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex gap-x-8">
-                <div>
-                  {monstersQuery.isLoading ? (
-                    <div className="p-4 text-center">Searching...</div>
-                  ) : (monstersQuery.data?.monsters?.length ?? 0) === 0 ? (
-                    <div className="p-4 text-center">No monsters found</div>
-                  ) : (
-                    <List
-                      monsters={availableMonsters}
-                      selectedIds={currentMonsters.map((m) => m.id)}
-                      handleMonsterClick={handleMonsterCheck}
-                      showChecks={true}
-                    />
-                  )}
+              <TabsContent
+                value="monsters"
+                className="flex flex-col gap-4 grow-2"
+              >
+                <div className="flex gap-3 items-center">
+                  <SearchInput
+                    className="grow"
+                    value={searchTerm}
+                    onChange={setSearchTerm}
+                    placeholder="Search monsters"
+                  />
+                  <SortSelect value={sortOption} onChange={setSortOption} />
                 </div>
-              </div>
-            </div>
+
+                <div className="flex gap-4">
+                  <Toggle
+                    variant="outline"
+                    aria-label="Toggle Only My Monsters"
+                    pressed={onlyMine}
+                    onPressedChange={setOnlyMine}
+                  >
+                    {onlyMine ? <SquareCheck /> : <Square />}
+                    Only My Monsters
+                  </Toggle>
+
+                  <Select
+                    defaultValue="all"
+                    onValueChange={(s: TypeFilter) => setTypeFilter(s)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Monsters" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">
+                        <SlidersHorizontal />
+                        All Monsters
+                      </SelectItem>
+                      <SelectItem
+                        value="standard"
+                        aria-label="Standard monsters"
+                      >
+                        <User />
+                        Standard
+                      </SelectItem>
+                      <SelectItem
+                        value="legendary"
+                        aria-label="Legendary monsters"
+                      >
+                        <Crown />
+                        Legendary
+                      </SelectItem>
+                      <SelectItem value="minion" aria-label="Minions">
+                        <PersonStanding />
+                        Minions
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex gap-x-8">
+                  <div>
+                    {monstersQuery.isLoading ? (
+                      <div className="p-4 text-center">Searching...</div>
+                    ) : (monstersQuery.data?.monsters?.length ?? 0) === 0 ? (
+                      <div className="p-4 text-center">No monsters found</div>
+                    ) : (
+                      <List
+                        monsters={availableMonsters}
+                        selectedIds={currentMonsters.map((m) => m.id)}
+                        handleMonsterClick={handleMonsterCheck}
+                        showChecks={true}
+                      />
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="items" className="flex flex-col gap-4 grow-2">
+                <div className="flex gap-3 items-center">
+                  <SearchInput
+                    className="grow"
+                    value={itemSearchTerm}
+                    onChange={setItemSearchTerm}
+                    placeholder="Search items"
+                  />
+                </div>
+
+                <div className="flex gap-4">
+                  <Toggle
+                    variant="outline"
+                    aria-label="Toggle Only My Items"
+                    pressed={onlyMineItems}
+                    onPressedChange={setOnlyMineItems}
+                  >
+                    {onlyMineItems ? <SquareCheck /> : <Square />}
+                    Only My Items
+                  </Toggle>
+
+                  <Select
+                    defaultValue="all"
+                    onValueChange={(s: ItemRarityFilter) => setRarityFilter(s)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Rarities" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">
+                        <SlidersHorizontal />
+                        All Rarities
+                      </SelectItem>
+                      {RARITIES.map((rarity) => (
+                        <SelectItem key={rarity.value} value={rarity.value}>
+                          {rarity.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex gap-x-8">
+                  <div>
+                    {itemsQuery.isLoading ? (
+                      <div className="p-4 text-center">Searching...</div>
+                    ) : (itemsQuery.data?.items?.length ?? 0) === 0 ? (
+                      <div className="p-4 text-center">No items found</div>
+                    ) : (
+                      <ItemList
+                        items={availableItems}
+                        selectedIds={currentItems.map((i) => i.id)}
+                        handleItemClick={handleItemCheck}
+                        showChecks={true}
+                      />
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
 
           <div className="hidden sm:block min-w-xs">
-            <MonsterGroupMinis
-              name={watchedValues.name}
-              monsters={currentMonsters}
-              showAll={true}
+            <CollectionCard
+              collection={{
+                ...collection,
+                name: watchedValues.name,
+                monsters: currentMonsters,
+                items: currentItems,
+              }}
+              showVisibilityBadge={true}
+              showAttribution={true}
+              limit={5}
             />
           </div>
         </div>

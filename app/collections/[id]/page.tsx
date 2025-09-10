@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CardGrid as ItemCardGrid } from "@/app/ui/item/CardGrid";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { CollectionHeader } from "@/components/CollectionHeader";
 import { auth } from "@/lib/auth";
@@ -23,7 +24,14 @@ export async function generateMetadata({
     : "";
 
   const monsterCount = collection.monsters?.length || 0;
-  const countText = `${monsterCount} monster${monsterCount !== 1 ? "s" : ""}`;
+  const itemCount = collection.items?.length || 0;
+  const monsterText =
+    monsterCount > 0
+      ? `${monsterCount} monster${monsterCount !== 1 ? "s" : ""}`
+      : "";
+  const itemText =
+    itemCount > 0 ? `${itemCount} item${itemCount !== 1 ? "s" : ""}` : "";
+  const countText = [monsterText, itemText].filter(Boolean).join(", ");
   const description = `${countText}${creatorText}`;
 
   return {
@@ -71,6 +79,8 @@ export default async function ShowCollectionView({
   }
 
   const isCreator = session?.user?.id === collection.creator.discordId;
+  const hasMonsters = collection.monsters.length > 0;
+  const hasItems = collection.items?.length > 0;
 
   return (
     <div className="container">
@@ -79,11 +89,18 @@ export default async function ShowCollectionView({
         showEditDeleteButtons={isCreator}
         conditions={conditions}
       />
-      {collection.monsters.length === 0 ? (
-        <p>No monsters in this collection.</p>
-      ) : (
-        <CardGrid monsters={collection.monsters} />
-      )}
+
+      <div className="space-y-8">
+        {hasMonsters && <CardGrid monsters={collection.monsters} />}
+
+        {hasItems && <ItemCardGrid items={collection.items} />}
+
+        {!hasMonsters && !hasItems && (
+          <p className="text-center text-muted-foreground py-8">
+            This collection is empty.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

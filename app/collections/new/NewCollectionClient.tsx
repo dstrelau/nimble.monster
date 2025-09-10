@@ -16,8 +16,10 @@ export function NewCollection({ myMonsters }: Props) {
     description: "",
     visibility: "public",
     monsters: [],
+    items: [],
     legendaryCount: 0,
     standardCount: 0,
+    itemCount: 0,
   };
 
   return (
