@@ -33,8 +33,8 @@ export function DevBanner() {
   }
 
   return (
-    <div className={`w-full ${colorClass}`}>
-      <div className="mx-auto px-4 py-2 flex items-center justify-center gap-2 max-w-7xl">
+    <div className={`w-full fixed bottom-0 z-10 ${colorClass}`}>
+      <div className="mx-auto px-4 py-4 flex items-center justify-center gap-2 max-w-7xl">
         {isLocalhost ? (
           <Code className="h-10 w-10 flex-shrink-0" />
         ) : (
