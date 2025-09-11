@@ -15,6 +15,7 @@ import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import { Link } from "./app/Link";
 import { Level } from "./Level";
 import { Separator } from "./ui/separator";
+import React from "react";
 
 export const MonsterRow: React.FC<{
   monster: MonsterMini;
@@ -89,15 +90,15 @@ export const MonsterGroupMinis = ({
         </CardTitle>
         {attribution && <CardDescription>{attribution}</CardDescription>}
         {badge && <CardAction>{badge}</CardAction>}
-      </CardHeader>
-      <CardContent>
         {children}
-        <div className="relative">
+      </CardHeader>
+      <CardContent className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1">
           {visibleMonsters?.map((monster, index) => (
-            <div key={monster.id}>
-              <MonsterRow monster={monster} />
+            <React.Fragment key={monster.id}>
+              <MonsterRow key={monster.id} monster={monster} />
               {index < visibleMonsters.length - 1 && <Separator />}
-            </div>
+            </React.Fragment>
           ))}
           {remainingCount > 0 && (
             <div className="text-sm text-muted-foreground mt-2 text-center font-bold">
