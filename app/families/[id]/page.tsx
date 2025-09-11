@@ -63,7 +63,7 @@ export default async function FamilyDetailPage({
   const isCreator = session?.user?.id === family.creatorId;
 
   return (
-    <div className="container">
+    <div className="container mx-auto">
       <FamilyHeader family={family} showEditDeleteButtons={isCreator} />
       {monsters.length === 0 ? (
         <p>No public monsters in this family.</p>

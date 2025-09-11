@@ -24,7 +24,7 @@
 - In this version of Next.js, params are a Promise that need to be awaited.
 - Use OpenTelemetry.
 - Do not add console.* functions permanently (they may be used for temporary debugging).
-- Use clsx for constructing className
+- Use cn from lib/utils.ts for constructing dynamic className attributes
 - Use lucide icons instead of custom SVGs
 
 # Tests

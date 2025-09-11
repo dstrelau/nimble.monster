@@ -29,7 +29,7 @@ export function CardGrid({
     .join(" ");
 
   return (
-    <div className={`grid gap-6 ${gridClasses}`}>
+    <div className={`grid gap-6 [&>*]:w-full ${gridClasses}`}>
       {items.map((item) => (
         <Card
           key={item.id}

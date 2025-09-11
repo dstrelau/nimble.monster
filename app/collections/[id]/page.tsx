@@ -83,7 +83,7 @@ export default async function ShowCollectionView({
   const hasItems = collection.items?.length > 0;
 
   return (
-    <div className="container">
+    <div className="container mx-auto">
       <CollectionHeader
         collection={collection}
         showEditDeleteButtons={isCreator}

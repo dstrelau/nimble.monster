@@ -36,6 +36,7 @@ import {
   TeleportIcon,
 } from "./Stat";
 import { StatsTooltip } from "./StatsTooltip";
+import { cn } from "@/lib/utils";
 
 const StatsGroup: React.FC<{
   monster: Monster;
@@ -231,7 +232,12 @@ export const Card = ({
     creatorId: creator?.discordId,
   });
   return (
-    <div className={clsx(monster.legendary && "md:col-span-2")}>
+    <div
+      className={cn(
+        "w-full max-w-sm mx-auto",
+        monster.legendary && "max-w-3xl md:col-span-2"
+      )}
+    >
       <div id={`monster-${monster.id}`}>
         <CardContainer className={className}>
           {monster.legendary ? (
