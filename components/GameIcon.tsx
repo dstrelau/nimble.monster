@@ -45,14 +45,5 @@ export function GameIcon({ iconId, className, ...props }: GameIconProps) {
 
   const IconComponent = iconComponentCache.get(cacheKey);
 
-  return (
-    <Suspense
-      fallback={
-        <div className={`${className} animate-pulse bg-gray-200 rounded`} />
-      }
-    >
-      {/* @ts-ignore - Dynamic import component typing issue */}
-      <IconComponent {...props} className={className} title={iconData.name} />
-    </Suspense>
-  );
+  return <IconComponent {...props} className={className} />;
 }
