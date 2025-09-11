@@ -10,7 +10,7 @@ import {
   SlidersHorizontal,
   Square,
   SquareCheck,
-  User,
+  User as UserIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -422,7 +422,7 @@ export function CreateEditCollection({
                         value="standard"
                         aria-label="Standard monsters"
                       >
-                        <User />
+                        <UserIcon />
                         Standard
                       </SelectItem>
                       <SelectItem
@@ -527,6 +527,11 @@ export function CreateEditCollection({
                 name: watchedValues.name,
                 monsters: currentMonsters,
                 items: currentItems,
+                creator: {
+                  username: session?.user?.name || "",
+                  discordId: session?.user?.id || "",
+                  avatar: session?.user?.image || "",
+                },
               }}
               showVisibilityBadge={true}
               showAttribution={true}
