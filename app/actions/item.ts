@@ -41,7 +41,7 @@ export async function createItem(formData: {
 
     const item = await db.createItem({
       ...formData,
-      discordId: session.user.id,
+      discordId: session.user.discordId,
     });
 
     revalidatePath("/my/items");
@@ -76,7 +76,7 @@ export async function updateItem(
     const item = await db.updateItem({
       id: itemId,
       ...formData,
-      discordId: session.user.id,
+      discordId: session.user.discordId,
     });
 
     revalidatePath(`/items/${itemId}`);
@@ -116,7 +116,7 @@ export async function deleteItem(itemId: string) {
 
   const deleted = await db.deleteItem({
     id: itemId,
-    discordId: session.user.id,
+    discordId: session.user.discordId,
   });
 
   if (deleted) {

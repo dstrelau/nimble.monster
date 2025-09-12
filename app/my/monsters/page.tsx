@@ -9,7 +9,7 @@ export default async function MyMonstersPage() {
   const session = await auth();
   if (!session?.user?.id) notFound();
 
-  const monsters = await db.listAllMonstersForDiscordID(session.user.id);
+  const monsters = await db.listAllMonstersForDiscordID(session.user.discordId);
   return (
     <div className="container mx-auto py-3">
       <FilterableCardGrid monsters={monsters} />

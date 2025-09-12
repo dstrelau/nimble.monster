@@ -15,7 +15,7 @@ export async function deleteCollection(collectionId: string) {
 
     const deleted = await db.deleteCollection({
       id: collectionId,
-      discordId: session.user.id,
+      discordId: session.user.discordId,
     });
 
     if (deleted) {
@@ -63,7 +63,7 @@ export async function createCollection(formData: {
       name: formData.name,
       visibility: formData.visibility,
       description: formData.description,
-      discordId: session.user.id,
+      discordId: session.user.discordId,
     });
 
     // Revalidate the collections page to force a refresh
@@ -98,7 +98,7 @@ export async function updateCollection(
       name: formData.name,
       visibility: formData.visibility,
       description: formData.description,
-      discordId: session.user.id,
+      discordId: session.user.discordId,
     });
 
     if (!collection) {

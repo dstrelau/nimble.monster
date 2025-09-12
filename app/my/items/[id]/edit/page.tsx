@@ -13,7 +13,7 @@ export default async function EditItemPage({
   if (!session?.user?.id) {
     return unauthorized();
   }
-  const item = await findItemWithCreatorDiscordId(id, session?.user.id);
+  const item = await findItemWithCreatorDiscordId(id, session?.user.discordId);
 
   if (!item) {
     return <div>Item not found</div>;

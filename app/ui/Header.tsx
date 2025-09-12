@@ -30,13 +30,14 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Separator } from "@/components/ui/separator";
+import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const UserAvatarButton = ({
   user,
   onClick,
 }: {
-  user?: { id?: string; name?: string | null; image?: string | null };
+  user?: User;
   onClick?: () => void;
 }) => (
   <Button
@@ -45,7 +46,7 @@ const UserAvatarButton = ({
     className="text-white hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white bg-transparent p-2 rounded-full"
     onClick={onClick}
   >
-    <UserAvatar user={user || {}} size="md" />
+    <UserAvatar user={user} size="md" />
   </Button>
 );
 
@@ -94,10 +95,10 @@ const Header = () => {
   const userMenuItems = currentUser
     ? [
         {
-          href: currentUser.name ? `/u/${currentUser.name}` : "#",
+          href: currentUser.username ? `/u/${currentUser.username}` : "#",
           label: "View Profile",
-          isActive: currentUser.name
-            ? isActive(`/u/${currentUser.name}`)
+          isActive: currentUser.username
+            ? isActive(`/u/${currentUser.username}`)
             : false,
         },
         {

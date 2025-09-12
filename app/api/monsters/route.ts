@@ -26,7 +26,7 @@ export const POST = telemetry(async (request: Request) => {
 
   const input: CreateMonsterInput = {
     ...monsterData,
-    discordId: session.user.id,
+    discordId: session.user.discordId,
   };
 
   const newMonster = await createMonster(input);

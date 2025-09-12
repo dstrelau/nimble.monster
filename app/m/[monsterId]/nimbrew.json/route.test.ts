@@ -52,6 +52,13 @@ const mockFormatSizeKind = vi.mocked(
   await import("@/lib/utils/monster")
 ).formatSizeKind;
 
+const fakeCreator = {
+  id: "12345678-1234-1234-1234-1234567890ab",
+  discordId: "owner123",
+  avatar: "avatar.jpg",
+  username: "testuser",
+};
+
 describe("GET /m/[monsterId]/nimbrew.json", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -92,11 +99,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Test Monster",
       visibility: "private",
-      creator: {
-        discordId: "owner123",
-        avatar: "avatar.jpg",
-        username: "testuser",
-      },
+      creator: fakeCreator,
       level: "1",
       levelInt: 1,
       hp: 50,
@@ -138,11 +141,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Test Goblin",
       visibility: "public",
-      creator: {
-        discordId: "owner123",
-        avatar: "avatar.jpg",
-        username: "testuser",
-      },
+      creator: fakeCreator,
       level: "3",
       levelInt: 3,
       hp: 25,
@@ -161,11 +160,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
         id: "family1",
         name: "Goblinoid",
         creatorId: "owner123",
-        creator: {
-          discordId: "owner123",
-          avatar: "avatar.jpg",
-          username: "testuser",
-        },
+        creator: fakeCreator,
         abilities: [
           {
             id: "test-ability-1",
@@ -239,11 +234,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Ancient Dragon",
       visibility: "private",
-      creator: {
-        discordId: "owner123",
-        avatar: "avatar.jpg",
-        username: "testuser",
-      },
+      creator: fakeCreator,
       level: "15",
       levelInt: 15,
       hp: 200,
@@ -303,11 +294,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Rat",
       visibility: "public",
-      creator: {
-        discordId: "owner123",
-        avatar: "avatar.jpg",
-        username: "testuser",
-      },
+      creator: fakeCreator,
       level: "1",
       levelInt: 1,
       hp: 1,

@@ -15,7 +15,7 @@ export default async function EditFamilyPage({
     notFound();
   }
 
-  if (!session?.user?.id || session.user.id !== family.creatorId) {
+  if (!session?.user?.id || session.user.discordId !== family.creatorId) {
     redirect(`/families/${id}`);
   }
 

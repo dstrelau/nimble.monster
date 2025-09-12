@@ -51,7 +51,7 @@ import type {
   Monster,
   MonsterMini,
 } from "@/lib/types";
-import { RARITIES } from "@/lib/types";
+import { RARITIES, UNKNOWN_USER } from "@/lib/types";
 import { CollectionCard } from "../ui/CollectionCard";
 import { SortSelect } from "../ui/monster/SortSelect";
 import { SearchInput } from "../ui/SearchInput";
@@ -209,12 +209,12 @@ export function CreateEditCollection({
 
   let creatorId: string | undefined;
   if (onlyMine) {
-    creatorId = session?.user?.id;
+    creatorId = session?.user?.discordId;
   }
 
   let itemCreatorId: string | undefined;
   if (onlyMineItems) {
-    itemCreatorId = session?.user?.id;
+    itemCreatorId = session?.user?.discordId;
   }
 
   const monstersQuery = useQuery({
@@ -527,11 +527,7 @@ export function CreateEditCollection({
                 name: watchedValues.name,
                 monsters: currentMonsters,
                 items: currentItems,
-                creator: {
-                  username: session?.user?.name || "",
-                  discordId: session?.user?.id || "",
-                  avatar: session?.user?.image || "",
-                },
+                creator: session?.user || UNKNOWN_USER,
               }}
               showVisibilityBadge={true}
               showAttribution={true}

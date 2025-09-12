@@ -16,7 +16,7 @@ export default async function EditCollectionPage({
 
   const [collection, myMonsters] = await Promise.all([
     db.getCollection(id),
-    db.listAllMonstersForDiscordID(session.user.id),
+    db.listAllMonstersForDiscordID(session.user.discordId),
   ]);
 
   if (!collection) return notFound();

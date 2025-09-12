@@ -1,5 +1,4 @@
 "use client";
-import clsx from "clsx";
 import { Users } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
@@ -21,6 +20,7 @@ import {
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Monster, User } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { formatSizeKind } from "@/lib/utils/monster";
 import CardActions from "./CardActions";
 import {
@@ -36,7 +36,6 @@ import {
   TeleportIcon,
 } from "./Stat";
 import { StatsTooltip } from "./StatsTooltip";
-import { cn } from "@/lib/utils";
 
 const StatsGroup: React.FC<{
   monster: Monster;

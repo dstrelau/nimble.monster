@@ -14,7 +14,7 @@ import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import type { Companion, MonsterSize } from "@/lib/types";
-import { SIZES } from "@/lib/types";
+import { SIZES, UNKNOWN_USER } from "@/lib/types";
 import { createCompanion, updateCompanion } from "../actions/companion";
 
 const EXAMPLE_COMPANIONS: Record<string, Omit<Companion, "creator">> = {
@@ -205,13 +205,7 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
 
   const { data: session } = useSession();
 
-  const creator = session?.user
-    ? {
-        discordId: session.user.id,
-        avatar: session.user.image || "",
-        username: session.user.name || "",
-      }
-    : { discordId: "", avatar: "", username: "" };
+  const creator = session?.user || UNKNOWN_USER;
 
   const [companion, setCompanion] = useState<Companion>(() =>
     existingCompanion

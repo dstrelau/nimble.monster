@@ -60,7 +60,7 @@ export default async function FamilyDetailPage({
     notFound();
   }
 
-  const isCreator = session?.user?.id === family.creatorId;
+  const isCreator = session?.user?.discordId === family.creatorId;
 
   return (
     <div className="container mx-auto">

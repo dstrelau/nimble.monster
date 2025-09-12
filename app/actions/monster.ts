@@ -12,7 +12,8 @@ export async function findPublicMonster(id: string) {
   if (!monster) {
     return { success: false, error: "Monster not found" };
   }
-  const isOwner = session?.user?.id === monster.creator?.discordId || false;
+  const isOwner =
+    session?.user?.discordId === monster.creator?.discordId || false;
   if (monster.visibility !== "public" && !isOwner) {
     return notFound();
   }
@@ -82,7 +83,7 @@ export async function createMonster(formData: {
         | "large"
         | "huge"
         | "gargantuan",
-      discordId: session.user.id,
+      discordId: session.user.discordId,
     });
 
     revalidatePath("/my/monsters");
@@ -104,7 +105,7 @@ export async function deleteMonster(monsterId: string) {
 
   const deleted = await db.deleteMonster({
     id: monsterId,
-    discordId: session.user.id,
+    discordId: session.user.discordId,
   });
 
   if (deleted) {

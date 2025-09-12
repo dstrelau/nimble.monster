@@ -27,7 +27,7 @@ export function useConditions({
   const { data: session } = useSession();
   const ownConds = useQuery({
     queryKey: ["conditions", session?.user?.id],
-    queryFn: () => loadConditionsForDiscordId(session?.user?.id || ""),
+    queryFn: () => loadConditionsForDiscordId(session?.user?.discordId || ""),
     staleTime,
     enabled: enabled && !!session?.user,
   });

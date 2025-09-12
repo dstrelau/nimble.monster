@@ -35,7 +35,7 @@ export const PUT = telemetry(
 
       if (
         !existingMonster ||
-        existingMonster.creator.discordId !== session.user.id
+        existingMonster.creator.discordId !== session.user.discordId
       ) {
         return NextResponse.json(
           { error: "Monster not found" },
@@ -75,7 +75,7 @@ export const PUT = telemetry(
         actionPreface: monsterData.actionPreface || "",
         moreInfo: monsterData.moreInfo || "",
         family: monsterData.family,
-        discordId: session.user.id,
+        discordId: session.user.discordId,
       });
 
       revalidatePath(`/m/${id}`);
@@ -124,7 +124,7 @@ export const DELETE = telemetry(
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });
     }
 
-    if (existingMonster.creator.discordId !== session.user.id) {
+    if (existingMonster.creator.discordId !== session.user.discordId) {
       return NextResponse.json(
         { error: "Forbidden - you don't own this monster" },
         { status: 403 }

@@ -15,7 +15,7 @@ export default async function EditCompanionPage({
   }
   const companion = await findCompanionWithCreatorDiscordId(
     id,
-    session?.user.id
+    session?.user.discordId
   );
 
   if (!companion) {

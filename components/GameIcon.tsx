@@ -1,4 +1,4 @@
-import { lazy, Suspense, type SVGProps } from "react";
+import { lazy, type SVGProps } from "react";
 import { ICONS, type IconData } from "@/components/icons";
 
 interface GameIconProps extends Omit<SVGProps<SVGSVGElement>, "children"> {

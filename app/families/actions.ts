@@ -12,7 +12,7 @@ export async function getUserFamilies() {
       return { success: false, error: "Not authenticated", families: [] };
     }
 
-    const families = await db.getUserFamilies(session.user.id);
+    const families = await db.getUserFamilies(session.user.discordId);
     return { success: true, families, error: null };
   } catch (error) {
     console.error("Error fetching families:", error);
@@ -39,7 +39,7 @@ export async function createFamily(formData: {
       name: formData.name,
       description: formData.description,
       abilities: formData.abilities,
-      discordId: session.user.id,
+      discordId: session.user.discordId,
     });
 
     // Revalidate the families page to force a refresh
@@ -74,11 +74,11 @@ export async function updateFamily(
       name: formData.name,
       description: formData.description,
       abilities: formData.abilities,
-      discordId: session.user.id,
+      discordId: session.user.discordId,
     });
 
     // Revalidate the families page and family detail page to force a refresh
-    revalidatePath(`/u/${session.user.name}`);
+    revalidatePath(`/u/${session.user.username}`);
     revalidatePath("/my/families");
     revalidatePath(`/families/${familyId}`);
 
@@ -101,7 +101,7 @@ export async function deleteFamily(familyId: string) {
 
     const deleted = await db.deleteFamily({
       id: familyId,
-      discordId: session.user.id,
+      discordId: session.user.discordId,
     });
 
     // Revalidate the families page and family detail page to force a refresh

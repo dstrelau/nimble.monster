@@ -10,10 +10,10 @@ import {
 import { prisma } from "./index";
 
 export const listCollectionsWithMonstersForUser = async (
-  userId: string
+  discordId: string
 ): Promise<CollectionOverview[]> => {
   const collections = await prisma.collection.findMany({
-    where: { creator: { discordId: userId } },
+    where: { creator: { discordId: discordId } },
     include: {
       creator: true,
       monsterCollections: {
@@ -272,9 +272,8 @@ export const createCollection = async ({
     legendaryCount: 0,
     standardCount: 0,
     creator: {
-      discordId: collection.creator.discordId,
-      username: collection.creator.username,
-      avatar: collection.creator.avatar || "",
+      ...collection.creator,
+      avatar: collection.creator.avatar || undefined,
     },
     monsters: collection.monsterCollections.map((mc) => toMonster(mc.monster)),
     items: [],
@@ -467,9 +466,8 @@ export const updateCollection = async ({
         standardCount:
           updatedCollection.monsterCollections.length - legendaryCount,
         creator: {
-          discordId: updatedCollection.creator.discordId,
-          username: updatedCollection.creator.username,
-          avatar: updatedCollection.creator.avatar || "",
+          ...updatedCollection.creator,
+          avatar: updatedCollection.creator.avatar || undefined,
         },
         monsters: updatedCollection.monsterCollections.map((mc) =>
           toMonster(mc.monster)

@@ -66,7 +66,8 @@ export default async function MonsterPage({
   }
 
   // if monster is not public, then user must be creator
-  const isOwner = session?.user?.id === monster.creator?.discordId || false;
+  const isOwner =
+    session?.user?.discordId === monster.creator?.discordId || false;
 
   if (monster.visibility !== "public" && !isOwner) {
     return notFound();

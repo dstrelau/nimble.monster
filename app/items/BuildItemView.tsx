@@ -11,7 +11,12 @@ import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { IconPicker } from "@/components/IconPicker";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { type Item, type ItemRarity, RARITIES } from "@/lib/types";
+import {
+  type Item,
+  type ItemRarity,
+  RARITIES,
+  UNKNOWN_USER,
+} from "@/lib/types";
 import { createItem, updateItem } from "../actions/item";
 
 const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
@@ -69,13 +74,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const creator = session?.user
-    ? {
-        discordId: session.user.id,
-        avatar: session.user.image || "",
-        username: session.user.name || "",
-      }
-    : { discordId: "", avatar: "", username: "" };
+  const creator = session?.user || UNKNOWN_USER;
   const previewItem = useMemo<Item>(
     () => ({
       id: item?.id || "",

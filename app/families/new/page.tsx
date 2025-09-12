@@ -13,11 +13,7 @@ export default async function NewFamilyPage() {
     description: "",
     abilities: [],
     creatorId: "",
-    creator: {
-      discordId: session.user.id,
-      username: session.user.name || "",
-      avatar: session.user.image || "",
-    },
+    creator: session.user,
   };
 
   return <CreateEditFamily family={emptyFamily} isCreating={true} />;

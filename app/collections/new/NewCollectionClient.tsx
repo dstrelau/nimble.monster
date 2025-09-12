@@ -1,7 +1,7 @@
 "use client";
 
 import { CreateEditCollection } from "@/app/collections/CreateEditCollection";
-import type { Collection, Monster } from "@/lib/types";
+import { type Collection, type Monster, UNKNOWN_USER } from "@/lib/types";
 
 interface Props {
   myMonsters: Monster[];
@@ -11,7 +11,7 @@ export function NewCollection({ myMonsters }: Props) {
   // Create empty collection for creation
   const emptyCollection: Collection = {
     id: "",
-    creator: { discordId: "", avatar: "", username: "" },
+    creator: UNKNOWN_USER,
     name: "",
     description: "",
     visibility: "public",

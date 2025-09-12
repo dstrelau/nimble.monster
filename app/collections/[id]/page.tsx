@@ -73,12 +73,12 @@ export default async function ShowCollectionView({
   const conditions = [...officialConditions, ...userConditions];
   if (
     collection.visibility === "private" &&
-    collection.creator.discordId !== session?.user.id
+    collection.creator.discordId !== session?.user.discordId
   ) {
     notFound();
   }
 
-  const isCreator = session?.user?.id === collection.creator.discordId;
+  const isCreator = session?.user?.discordId === collection.creator.discordId;
   const hasMonsters = collection.monsters.length > 0;
   const hasItems = collection.items?.length > 0;
 

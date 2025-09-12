@@ -1,21 +1,21 @@
-import NextAuth, { type DefaultSession } from "next-auth";
+import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
 import "next-auth/jwt";
 import { prisma } from "./db";
+import type { User } from "./types";
 
 declare module "next-auth" {
   interface Session {
-    user: {
-      /** The unique Discord-provided ID. */
-      id: string;
-    } & DefaultSession["user"];
+    user: User;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
-    id?: string;
+    userId?: string;
+    discordId?: string;
     username?: string;
+    avatar?: string;
   }
 }
 
@@ -56,24 +56,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt(params) {
       const token = params.token;
       if (params.profile?.id) {
-        token.id = params.profile.id;
+        token.discordId = params.profile.id;
 
         try {
           const user = await prisma.user.findUnique({
             where: { discordId: params.profile.id },
-            select: { username: true },
+            select: { id: true, username: true, avatar: true },
           });
           if (user) {
+            token.userId = user.id;
             token.username = user.username;
+            token.avatar = user.avatar || undefined;
           }
         } catch {}
       }
       return token;
     },
     session({ session, token }) {
-      session.user.id = token.id || "";
+      session.user.id = token.userId || "";
+      session.user.discordId = token.discordId || "";
       if (token.username) {
-        session.user.name = token.username;
+        session.user.username = token.username;
+      }
+      if (token.avatar) {
+        session.user.avatar = token.avatar;
+        session.user.image = token.avatar.startsWith("https")
+          ? token.avatar
+          : `https://cdn.discordapp.com/avatars/${token.discordId}/${token.avatar}.png`;
       }
       return session;
     },

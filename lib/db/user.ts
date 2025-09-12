@@ -10,11 +10,7 @@ export const getUserByUsername = async (
 
   if (!user) return null;
 
-  return {
-    discordId: user.discordId,
-    username: user.username,
-    avatar: user.avatar || "",
-  };
+  return { ...user, avatar: user.avatar || undefined };
 };
 
 export const getUserPublicMonstersCount = async (

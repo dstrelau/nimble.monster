@@ -7,7 +7,9 @@ export default async function MyCompanionsPage() {
   const session = await auth();
   if (!session?.user?.id) notFound();
 
-  const companions = await db.listAllCompanionsForDiscordID(session.user.id);
+  const companions = await db.listAllCompanionsForDiscordID(
+    session.user.discordId
+  );
 
   return (
     <div className="container mx-auto py-3">

@@ -35,7 +35,7 @@ export async function createCompanion(formData: {
         | "large"
         | "huge"
         | "gargantuan",
-      discordId: session.user.id,
+      discordId: session.user.discordId,
     });
 
     revalidatePath("/my/companions");
@@ -111,7 +111,7 @@ export async function updateCompanion(
       dyingRule: formData.dyingRule,
       moreInfo: formData.moreInfo || "",
       visibility: formData.visibility,
-      discordId: session.user.id,
+      discordId: session.user.discordId,
     });
 
     revalidatePath(`/companions/${companionId}`);
@@ -151,7 +151,7 @@ export async function deleteCompanion(companionId: string) {
 
   const deleted = await db.deleteCompanion({
     id: companionId,
-    discordId: session.user.id,
+    discordId: session.user.discordId,
   });
 
   if (deleted) {

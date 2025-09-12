@@ -77,7 +77,8 @@ export default async function CompanionPage({
   const _conditions = [...officialConditions, ...userConditions];
 
   // if companion is not public, then user must be creator
-  const isOwner = session?.user?.id === companion.creator?.discordId || false;
+  const isOwner =
+    session?.user?.discordId === companion.creator?.discordId || false;
 
   if (companion.visibility !== "public" && !isOwner) {
     return notFound();

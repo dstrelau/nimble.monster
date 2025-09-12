@@ -1,10 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { User } from "@/lib/types";
+import { getUserAvatarUrl, getUserDisplayName } from "@/lib/types";
 
 type AvatarSize = "sm" | "md" | "lg";
 
 interface UserAvatarProps {
-  user: User | { id?: string; name?: string | null; image?: string | null };
+  user?: User;
   size: AvatarSize | number;
   className?: string;
 }
@@ -26,10 +27,7 @@ const getSizeInPixels = (size: AvatarSize | number): number => {
 export const UserAvatar = ({ user, size, className }: UserAvatarProps) => {
   const sizeInPixels = getSizeInPixels(size);
 
-  // Check if user is empty (for logged-out state)
-  const isEmpty = !user || Object.keys(user).length === 0;
-
-  if (isEmpty) {
+  if (!user) {
     return (
       <Avatar
         className={className}
@@ -39,26 +37,13 @@ export const UserAvatar = ({ user, size, className }: UserAvatarProps) => {
           src="https://cdn.discordapp.com/embed/avatars/0.png"
           alt="Discord"
         />
-        <AvatarFallback>D</AvatarFallback>
+        <AvatarFallback>?</AvatarFallback>
       </Avatar>
     );
   }
 
-  // Handle NextAuth session user format
-  const isSessionUser = "id" in user && !("discordId" in user);
-  const avatarSrc = isSessionUser
-    ? user.image
-    : "avatar" in user && user.avatar
-      ? user.avatar?.startsWith("https")
-        ? user.avatar
-        : `https://cdn.discordapp.com/avatars/${user.discordId}/${user.avatar}.png`
-      : null;
-
-  const displayName = isSessionUser
-    ? user.name
-    : "username" in user
-      ? user.username
-      : "";
+  const avatarSrc = getUserAvatarUrl(user);
+  const displayName = getUserDisplayName(user);
   const fallbackLetter = displayName?.charAt(0).toUpperCase() || "?";
 
   return (
@@ -66,8 +51,10 @@ export const UserAvatar = ({ user, size, className }: UserAvatarProps) => {
       className={className}
       style={{ width: sizeInPixels, height: sizeInPixels }}
     >
-      {avatarSrc && <AvatarImage src={avatarSrc} alt={displayName || "User"} />}
-      <AvatarFallback>{fallbackLetter}</AvatarFallback>
+      <AvatarImage src={avatarSrc} alt={displayName || "User"} />
+      <AvatarFallback className="bg-transparent">
+        {fallbackLetter}
+      </AvatarFallback>
     </Avatar>
   );
 };

@@ -42,7 +42,7 @@ export async function updateCollection(
     name: parsed.name,
     visibility: parsed.visibility as CollectionVisibilityType,
     description: parsed.description,
-    discordId: session.user.id,
+    discordId: session.user.discordId,
     monsterIds: parsed.monsterIds,
     itemIds: parsed.itemIds,
   });

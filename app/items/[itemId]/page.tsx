@@ -63,7 +63,7 @@ export default async function ItemPage({
   }
 
   // if item is not public, then user must be creator
-  const isOwner = session?.user?.id === item.creator?.discordId || false;
+  const isOwner = session?.user?.discordId === item.creator?.discordId || false;
 
   if (item.visibility !== "public" && !isOwner) {
     return notFound();

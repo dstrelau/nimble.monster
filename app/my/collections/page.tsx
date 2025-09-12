@@ -8,7 +8,7 @@ export default async function MyCollectionsPage() {
   if (!session?.user?.id) notFound();
 
   const collections = await db.listCollectionsWithMonstersForUser(
-    session.user.id
+    session.user.discordId
   );
   return (
     <div className="space-y-6">

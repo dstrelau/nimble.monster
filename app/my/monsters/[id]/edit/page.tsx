@@ -13,7 +13,10 @@ export default async function EditMonsterPage({
   if (!session?.user?.id) {
     return unauthorized();
   }
-  const monster = await findMonsterWithCreatorDiscordId(id, session?.user.id);
+  const monster = await findMonsterWithCreatorDiscordId(
+    id,
+    session?.user.discordId
+  );
   console.log(monster);
 
   if (!monster) {

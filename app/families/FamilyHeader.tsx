@@ -24,7 +24,7 @@ export function FamilyHeader({
   const router = useRouter();
   const { data: session } = useSession();
   const { allConditions: conditions } = useConditions({
-    creatorId: session?.user.id,
+    creatorId: session?.user.discordId,
   });
 
   const [_isDeleting, setIsDeleting] = useState(false);

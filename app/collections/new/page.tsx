@@ -10,7 +10,9 @@ export default async function NewCollectionPage() {
     redirect("/create");
   }
 
-  const myMonsters = await db.listAllMonstersForDiscordID(session.user.id);
+  const myMonsters = await db.listAllMonstersForDiscordID(
+    session.user.discordId
+  );
 
   return <NewCollection myMonsters={myMonsters} />;
 }

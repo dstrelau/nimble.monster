@@ -29,7 +29,8 @@ export const GET = telemetry(
     // if monster is not public, then user must be creator
     if (monster.visibility !== "public") {
       const session = await auth();
-      const isOwner = session?.user?.id === monster.creator?.discordId || false;
+      const isOwner =
+        session?.user?.discordId === monster.creator?.discordId || false;
       if (!isOwner) {
         return NextResponse.json(
           { error: "Monster not found" },

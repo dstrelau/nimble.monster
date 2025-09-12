@@ -71,12 +71,12 @@ export const findPublicCompanionById = async (
 
 export const findCompanionWithCreatorDiscordId = async (
   id: string,
-  creatorId: string
+  creatorDiscordId: string
 ): Promise<Companion | null> => {
   if (!isValidUUID(id)) return null;
 
   const companion = await prisma.companion.findUnique({
-    where: { id, creator: { discordId: creatorId } },
+    where: { id, creator: { discordId: creatorDiscordId } },
     include: {
       creator: true,
     },
@@ -102,14 +102,14 @@ export const listPublicCompanionsForDiscordID = async (
 };
 
 export const listAllCompanionsForDiscordID = async (
-  id: string
+  discordId: string
 ): Promise<Companion[]> => {
   return (
     await prisma.companion.findMany({
       include: {
         creator: true,
       },
-      where: { creator: { discordId: id } },
+      where: { creator: { discordId: discordId } },
       orderBy: { name: "asc" },
     })
   ).map(toCompanion);

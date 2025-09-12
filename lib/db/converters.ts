@@ -125,11 +125,7 @@ export const toCollectionOverview = (
   ).length;
   return {
     id: c.id,
-    creator: {
-      discordId: c.creator.discordId,
-      avatar: c.creator.avatar || "",
-      username: c.creator.username,
-    },
+    creator: { ...c.creator, avatar: c.creator.avatar || undefined },
     description: c.description ?? undefined,
     legendaryCount,
     monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),

@@ -1,6 +1,7 @@
 "use client";
 import { Crown, EyeOff, PersonStanding } from "lucide-react";
 import type { ReactNode } from "react";
+import React from "react";
 import { HPStat } from "@/app/ui/monster/Stat";
 import {
   Card,
@@ -15,7 +16,6 @@ import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import { Link } from "./app/Link";
 import { Level } from "./Level";
 import { Separator } from "./ui/separator";
-import React from "react";
 
 export const MonsterRow: React.FC<{
   monster: MonsterMini;

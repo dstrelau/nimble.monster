@@ -62,12 +62,12 @@ export const findPublicItemById = async (id: string): Promise<Item | null> => {
 
 export const findItemWithCreatorDiscordId = async (
   id: string,
-  creatorId: string
+  creatorDiscordId: string
 ): Promise<Item | null> => {
   if (!isValidUUID(id)) return null;
 
   const item = await prisma.item.findUnique({
-    where: { id, creator: { discordId: creatorId } },
+    where: { id, creator: { discordId: creatorDiscordId } },
     include: {
       creator: true,
     },
@@ -92,13 +92,15 @@ export const listPublicItemsForDiscordID = async (
   ).map(toItem);
 };
 
-export const listAllItemsForDiscordID = async (id: string): Promise<Item[]> => {
+export const listAllItemsForDiscordID = async (
+  discordId: string
+): Promise<Item[]> => {
   return (
     await prisma.item.findMany({
       include: {
         creator: true,
       },
-      where: { creator: { discordId: id } },
+      where: { creator: { discordId } },
       orderBy: { name: "asc" },
     })
   ).map(toItem);
@@ -116,7 +118,7 @@ export interface SearchItemsParams {
 export const searchPublicItemMinis = async ({
   searchTerm,
   rarity,
-  creatorId,
+  creatorId: discordId,
   sortBy = "name",
   sortDirection = "asc",
   limit = 500,
@@ -133,8 +135,8 @@ export const searchPublicItemMinis = async ({
     visibility: "public",
   };
 
-  if (creatorId) {
-    whereClause.creator = { discordId: creatorId };
+  if (discordId) {
+    whereClause.creator = { discordId: discordId };
   }
 
   if (searchTerm) {

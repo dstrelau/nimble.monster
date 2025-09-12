@@ -52,6 +52,7 @@ import {
   LEGENDARY_MONSTER_LEVELS,
   MONSTER_LEVELS,
   SIZES,
+  UNKNOWN_USER,
 } from "@/lib/types";
 import { levelIntToDisplay } from "@/lib/utils";
 import { getUserFamilies } from "../families/actions";
@@ -793,11 +794,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
   const router = useRouter();
 
   const { data: session } = useSession();
-  const creator = {
-    discordId: session?.user.id || "",
-    avatar: session?.user.image || "",
-    username: session?.user.name || "",
-  };
+  const creator = session?.user || UNKNOWN_USER;
 
   const [monster, setMonster] = useState<Monster>(
     () => existingMonster || { ...EXAMPLE_MONSTERS.empty, creator }
