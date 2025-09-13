@@ -9,7 +9,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
-import { DevBanner } from "@/app/ui/DevBanner";
 import Header from "@/app/ui/Header";
 
 function makeQueryClient() {
@@ -56,7 +55,6 @@ export function Providers({
           defaultTheme="system"
           enableSystem
         >
-          <DevBanner />
           <Header />
           <main className="mx-auto w-full max-w-7xl px-4 py-6">{children}</main>
         </ThemeProvider>

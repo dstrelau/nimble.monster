@@ -70,6 +70,36 @@ export const RARITIES = [
 export type ItemRarity = (typeof RARITIES)[number]["value"];
 export type ItemRarityFilter = "all" | ItemRarity;
 
+export const TAILWIND_COLORS = [
+  "red",
+  "orange",
+  "amber",
+  "yellow",
+  "lime",
+  "green",
+  "emerald",
+  "teal",
+  "cyan",
+  "sky",
+  "blue",
+  "indigo",
+  "violet",
+  "purple",
+  "fuchsia",
+  "pink",
+  "rose",
+  "slate",
+  "gray",
+  "zinc",
+  "neutral",
+  "stone",
+] as const;
+
+export const COLOR_VARIANTS = [200, 400, 600] as const;
+
+export type TailwindColor = (typeof TAILWIND_COLORS)[number];
+export type ColorVariant = (typeof COLOR_VARIANTS)[number];
+
 export const FAMILY_VISIBILITY = [
   { value: "public", label: "Public" },
   { value: "secret", label: "Secret" },
@@ -208,6 +238,9 @@ export interface ItemMini {
   rarity: ItemRarity;
   visibility: "public" | "private";
   imageIcon?: string;
+  imageBgIcon?: string;
+  imageColor?: string;
+  imageBgColor?: string;
 }
 
 export interface Item extends ItemMini {

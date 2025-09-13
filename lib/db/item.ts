@@ -175,6 +175,8 @@ export interface CreateItemInput {
   description: string;
   moreInfo?: string;
   imageIcon?: string;
+  imageBgIcon?: string;
+  imageColor?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
   discordId: string;
@@ -187,6 +189,8 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
     description,
     moreInfo = "",
     imageIcon,
+    imageBgIcon,
+    imageColor,
     rarity,
     visibility,
     discordId,
@@ -207,6 +211,8 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
       description,
       moreInfo,
       imageIcon,
+      imageBgIcon,
+      imageColor,
       rarity,
       visibility,
       creator: {
@@ -234,12 +240,16 @@ export interface UpdateItemInput {
   description: string;
   moreInfo?: string;
   imageIcon?: string;
+  imageBgIcon?: string;
+  imageColor?: string;
+  imageBgColor?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
   discordId: string;
 }
 
 export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
+  console.log(input);
   const {
     id,
     name,
@@ -247,6 +257,9 @@ export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
     description,
     moreInfo = "",
     imageIcon,
+    imageBgIcon,
+    imageColor,
+    imageBgColor,
     rarity,
     visibility,
     discordId,
@@ -267,9 +280,11 @@ export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
       description,
       moreInfo,
       imageIcon,
+      imageBgIcon,
+      imageColor,
+      imageBgColor,
       rarity,
       visibility,
-      updatedAt: new Date(),
     },
     include: {
       creator: true,

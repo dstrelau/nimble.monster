@@ -196,6 +196,7 @@ export const toItemMini = (
   rarity: i.rarity as ItemRarity,
   visibility: i.visibility,
   imageIcon: i.imageIcon || undefined,
+  imageColor: i.imageColor || undefined,
 });
 
 export const toItem = (
@@ -211,6 +212,8 @@ export const toItem = (
 ): Item => {
   return {
     ...toItemMini(i),
+    imageBgIcon: i.imageBgIcon || undefined,
+    imageBgColor: i.imageBgColor || undefined,
     description: i.description,
     moreInfo: i.moreInfo || undefined,
     updatedAt: i.updatedAt.toISOString(),

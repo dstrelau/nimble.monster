@@ -27,7 +27,7 @@ export async function createCondition(
     throw new Error("Not authenticated");
   }
 
-  return await dbCreateCondition(session.user.id, name, description);
+  return await dbCreateCondition(session.user.discordId, name, description);
 }
 
 export async function deleteCondition(conditionId: string): Promise<void> {
@@ -36,5 +36,5 @@ export async function deleteCondition(conditionId: string): Promise<void> {
     throw new Error("Not authenticated");
   }
 
-  await dbDeleteCondition(conditionId, session.user.id);
+  await dbDeleteCondition(conditionId, session.user.discordId);
 }

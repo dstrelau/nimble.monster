@@ -32,7 +32,7 @@ export async function GET(
     // Check if collection is private and user isn't the owner
     if (
       collection.visibility === "private" &&
-      session?.user?.id !== collection.creator.discordId
+      session?.user?.discordId !== collection.creator.discordId
     ) {
       return NextResponse.json({ error: "Not authorized" }, { status: 403 });
     }

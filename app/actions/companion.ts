@@ -83,7 +83,7 @@ export async function updateCompanion(
     // First check if companion exists and user owns it
     const existingCompanion = await db.findCompanionWithCreatorDiscordId(
       companionId,
-      session.user.id
+      session.user.discordId
     );
 
     if (!existingCompanion) {

@@ -30,6 +30,9 @@ export async function createItem(formData: {
   description: string;
   moreInfo?: string;
   imageIcon?: string;
+  imageBgIcon?: string;
+  imageColor?: string;
+  imageBgColor?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
 }) {
@@ -63,6 +66,9 @@ export async function updateItem(
     description: string;
     moreInfo?: string;
     imageIcon?: string;
+    imageBgIcon?: string;
+    imageColor?: string;
+    imageBgColor?: string;
     rarity?: ItemRarity;
     visibility: "public" | "private";
   }

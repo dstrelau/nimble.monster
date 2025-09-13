@@ -127,7 +127,7 @@ export async function listOwnCollections() {
     return unauthorized();
   }
   const collections = await db.listCollectionsWithMonstersForUser(
-    session.user.id
+    session.user.discordId
   );
   return { success: true, collections };
 }
@@ -152,7 +152,7 @@ export async function addMonsterToCollection(formData: FormData) {
     };
   }
 
-  if (collection.creator.discordId !== session.user.id) {
+  if (collection.creator.discordId !== session.user.discordId) {
     return forbidden();
   }
 

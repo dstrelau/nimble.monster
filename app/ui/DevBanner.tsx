@@ -19,10 +19,10 @@ export function DevBanner() {
     } else {
       setIsVisible(true);
       if (hostname === "localhost") {
-        setColorClass("bg-error text-error-foreground");
+        setColorClass("bg-error/50 text-error-foreground");
         setIsLocalhost(true);
       } else {
-        setColorClass("bg-warning text-warning-foreground");
+        setColorClass("bg-warning/50 text-warning-foreground");
         setIsLocalhost(false);
       }
     }
@@ -33,7 +33,7 @@ export function DevBanner() {
   }
 
   return (
-    <div className={`w-full fixed bottom-0 z-10 ${colorClass}`}>
+    <div className={`w-full fixed bottom-0 z-50 ${colorClass}`}>
       <div className="mx-auto px-4 py-4 flex items-center justify-center gap-2 max-w-7xl">
         {isLocalhost ? (
           <Code className="h-10 w-10 flex-shrink-0" />

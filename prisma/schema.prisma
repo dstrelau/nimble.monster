@@ -169,6 +169,9 @@ model Item {
   description     String             @default("")
   moreInfo        String?            @default("") @map("more_info")
   imageIcon       String?            @map("image_icon")
+  imageBgIcon     String?            @map("image_bg_icon")
+  imageColor      String?            @map("image_color")
+  imageBgColor    String?            @map("image_bg_color")
   rarity          item_rarity        @default(unspecified)
   visibility      item_visibility    @default(public)
   userId          String             @map("user_id") @db.Uuid

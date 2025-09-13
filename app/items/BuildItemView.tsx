@@ -1,23 +1,60 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useId, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Card } from "@/app/ui/item/Card";
 import { BuildView } from "@/components/app/BuildView";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
-import { FormInput, FormSelect, FormTextarea } from "@/components/app/Form";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { IconPicker } from "@/components/IconPicker";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import {
-  type Item,
-  type ItemRarity,
-  RARITIES,
-  UNKNOWN_USER,
-} from "@/lib/types";
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { type Item, RARITIES, UNKNOWN_USER } from "@/lib/types";
 import { createItem, updateItem } from "../actions/item";
+
+const formSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  kind: z.string().optional(),
+  description: z.string().min(1, "Description is required"),
+  moreInfo: z.string().optional(),
+  imageIcon: z.string().optional(),
+  imageBgIcon: z.string().optional(),
+  imageColor: z.string().optional(),
+  imageBgColor: z.string().optional(),
+  rarity: z
+    .enum([
+      "unspecified",
+      "common",
+      "uncommon",
+      "rare",
+      "very_rare",
+      "legendary",
+    ])
+    .default("unspecified"),
+  visibility: z.enum(["public", "private"]).default("public"),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
   Empty: {
@@ -35,6 +72,9 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     description:
       "**_ACTION_**. Consume (or administer to an adjacent creature) to heal **3d6+6** HP.",
     imageIcon: "health-potion",
+    imageBgIcon: "sparkles",
+    imageColor: "rose-200",
+    imageBgColor: "red-100",
     rarity: "uncommon",
     updatedAt: "",
   },
@@ -47,6 +87,9 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     moreInfo:
       "These magical gems are always crafted in pairs and can have any number of willing creatures magically bound to them.",
     imageIcon: "emerald",
+    imageBgIcon: "fire-dash",
+    imageColor: "purple-400",
+    imageBgColor: "purple-100",
     rarity: "very_rare",
     updatedAt: "",
   },
@@ -60,84 +103,92 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
   const id = useId();
   const router = useRouter();
   const { data: session } = useSession();
-
-  const [name, setName] = useState(item?.name || "");
-  const [kind, setKind] = useState(item?.kind || "");
-  const [description, setDescription] = useState(item?.description || "");
-  const [moreInfo, setMoreInfo] = useState(item?.moreInfo || "");
-  const [imageIcon, setImageIcon] = useState(item?.imageIcon || "");
-  const [rarity, setRarity] = useState<ItemRarity>(
-    item?.rarity || "unspecified"
-  );
-  const [visibility, setVisibility] = useState<"public" | "private">(
-    item?.visibility || "public"
-  );
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: item?.name || "",
+      kind: item?.kind || "",
+      description: item?.description || "",
+      moreInfo: item?.moreInfo || "",
+      imageIcon: item?.imageIcon || "",
+      imageBgIcon: item?.imageBgIcon || "",
+      imageColor: item?.imageColor || "",
+      imageBgColor: item?.imageBgColor || "",
+      rarity: item?.rarity || "unspecified",
+      visibility: item?.visibility || "public",
+    },
+  });
+
+  const { watch } = form;
+  const watchedValues = watch();
 
   const creator = session?.user || UNKNOWN_USER;
   const previewItem = useMemo<Item>(
     () => ({
       id: item?.id || "",
-      name,
-      kind: kind || undefined,
-      description,
-      moreInfo: moreInfo || undefined,
-      imageIcon: imageIcon || undefined,
-      rarity,
-      visibility,
+      name: watchedValues.name || "",
+      kind: watchedValues.kind || undefined,
+      description: watchedValues.description || "",
+      moreInfo: watchedValues.moreInfo || undefined,
+      imageIcon: watchedValues.imageIcon || undefined,
+      imageBgIcon: watchedValues.imageBgIcon || undefined,
+      imageColor: watchedValues.imageColor || undefined,
+      imageBgColor: watchedValues.imageBgColor || undefined,
+      rarity: watchedValues.rarity,
+      visibility: watchedValues.visibility,
       creator: creator,
       updatedAt: new Date().toISOString(),
     }),
     [
-      name,
-      kind,
-      description,
-      moreInfo,
-      imageIcon,
-      rarity,
-      visibility,
+      watchedValues.name,
+      watchedValues.kind,
+      watchedValues.description,
+      watchedValues.moreInfo,
+      watchedValues.imageIcon,
+      watchedValues.imageBgIcon,
+      watchedValues.imageColor,
+      watchedValues.imageBgColor,
+      watchedValues.rarity,
+      watchedValues.visibility,
       creator,
       item?.id,
     ]
   );
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || !description.trim() || isSubmitting) return;
-
+  const handleSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
       const isEditing = !!item?.id;
+      const payload = {
+        name: data.name.trim(),
+        kind: data.kind?.trim() || undefined,
+        description: data.description.trim(),
+        moreInfo: data.moreInfo?.trim() || undefined,
+        imageIcon: data.imageIcon || undefined,
+        imageBgIcon: data.imageBgIcon,
+        imageColor: data.imageColor,
+        imageBgColor: data.imageBgColor,
+        rarity: data.rarity,
+        visibility: data.visibility,
+      };
       const result = isEditing
-        ? await updateItem(item.id, {
-            name: name.trim(),
-            kind: kind.trim() || undefined,
-            description: description.trim(),
-            moreInfo: moreInfo.trim() || undefined,
-            imageIcon: imageIcon || undefined,
-            rarity,
-            visibility,
-          })
-        : await createItem({
-            name: name.trim(),
-            kind: kind.trim() || undefined,
-            description: description.trim(),
-            moreInfo: moreInfo.trim() || undefined,
-            imageIcon: imageIcon || undefined,
-            rarity,
-            visibility,
-          });
+        ? await updateItem(item.id, payload)
+        : await createItem(payload);
 
       if (result.success && result.item) {
         router.push(`/items/${result.item.id}`);
       } else {
-        console.error(
-          `Failed to ${isEditing ? "update" : "create"} item:`,
-          result.error
-        );
+        form.setError("root", {
+          message:
+            result.error || `Failed to ${isEditing ? "update" : "create"} item`,
+        });
       }
     } catch (error) {
-      console.error(`Error ${item?.id ? "updating" : "creating"} item:`, error);
+      form.setError("root", {
+        message: `Error ${item?.id ? "updating" : "creating"} item: ${error instanceof Error ? error.message : String(error)}`,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -146,97 +197,197 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
   const loadExample = (exampleKey: string) => {
     const example = EXAMPLE_ITEMS[exampleKey];
     if (example) {
-      setName(example.name);
-      setKind(example.kind || "");
-      setDescription(example.description);
-      setMoreInfo(example.moreInfo || "");
-      setImageIcon(example.imageIcon || "");
-      setRarity(example.rarity || "unspecified");
-      setVisibility(example.visibility);
+      form.reset({
+        name: example.name,
+        kind: example.kind || "",
+        description: example.description,
+        moreInfo: example.moreInfo || "",
+        imageIcon: example.imageIcon || "",
+        imageBgIcon: example.imageBgIcon || "",
+        imageColor: example.imageColor || "",
+        imageBgColor: example.imageBgColor || "",
+        rarity: example.rarity || "unspecified",
+        visibility: example.visibility,
+      });
     }
   };
 
   return (
     <BuildView
-      entityName={name || (item?.id ? "Edit Item" : "New Item")}
+      entityName={watchedValues.name || (item?.id ? "Edit Item" : "New Item")}
       previewTitle="Item Preview"
       formClassName="md:col-span-4"
       previewClassName="md:col-span-2"
       formContent={
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex gap-4">
-            <FormInput
-              label="Name"
-              name="name"
-              value={name}
-              onChange={setName}
-              className="flex-1"
-            />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormSelect
-              label="Rarity"
-              name="rarity"
-              choices={RARITIES}
-              selected={rarity}
-              onChange={setRarity}
-            />
+              <FormField
+                control={form.control}
+                name="rarity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rarity</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select rarity" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {RARITIES.map((rarity) => (
+                          <SelectItem key={rarity.value} value={rarity.value}>
+                            {rarity.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormInput
-              label="Kind"
-              name="kind"
-              value={kind}
-              onChange={setKind}
-              className="flex-1"
-            />
-          </div>
-
-          <FormTextarea
-            label="Description"
-            name="description"
-            value={description}
-            onChange={setDescription}
-          />
-
-          <FormTextarea
-            label="More Info"
-            name="moreInfo"
-            value={moreInfo}
-            onChange={setMoreInfo}
-          />
-
-          <div className="space-y-2">
-            <Label className="">Icon</Label>
-            <IconPicker
-              selectedIcon={imageIcon || undefined}
-              onIconSelect={(iconId) => setImageIcon(iconId || "")}
-            />
-          </div>
-
-          {session?.user && (
-            <div className="flex flex-row justify-between items-center my-4">
-              <div className="flex flex-col gap-2">
-                <Button
-                  type="submit"
-                  disabled={!name.trim() || !description.trim() || isSubmitting}
-                >
-                  {isSubmitting ? "Saving..." : item?.id ? "Update" : "Save"}
-                </Button>
-              </div>
-              <fieldset className="space-y-2">
-                <div>
-                  <VisibilityToggle
-                    id={`item-visibility-toggle-${id}`}
-                    checked={visibility === "public"}
-                    onCheckedChange={(checked) =>
-                      setVisibility(checked ? "public" : "private")
-                    }
-                    entityType="Item"
-                  />
-                </div>
-              </fieldset>
+              <FormField
+                control={form.control}
+                name="kind"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Kind</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Kind" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-          )}
-        </form>
+
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Description" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="moreInfo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>More Info</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="More Info (optional)" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="imageIcon"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Icon</FormLabel>
+                    <FormControl>
+                      <IconPicker
+                        selectedIcon={field.value || undefined}
+                        selectedColor={watchedValues.imageColor || undefined}
+                        onIconSelect={(iconId) => field.onChange(iconId || "")}
+                        onColorSelect={(color) =>
+                          form.setValue("imageColor", color || "")
+                        }
+                        showColorPicker={true}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="imageBgIcon"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Background Icon</FormLabel>
+                    <FormControl>
+                      <IconPicker
+                        selectedIcon={field.value || undefined}
+                        selectedColor={watchedValues.imageBgColor || undefined}
+                        onIconSelect={(iconId) => field.onChange(iconId || "")}
+                        onColorSelect={(color) =>
+                          form.setValue("imageBgColor", color || "")
+                        }
+                        showColorPicker={true}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {session?.user && (
+              <div className="flex flex-row justify-between items-center my-4">
+                <div className="flex flex-col gap-2">
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Saving..." : item?.id ? "Update" : "Save"}
+                  </Button>
+                </div>
+                <fieldset className="space-y-2">
+                  <FormField
+                    control={form.control}
+                    name="visibility"
+                    render={({ field }) => (
+                      <VisibilityToggle
+                        id={`item-visibility-toggle-${id}`}
+                        checked={field.value === "public"}
+                        onCheckedChange={(checked) =>
+                          field.onChange(checked ? "public" : "private")
+                        }
+                        entityType="Item"
+                      />
+                    )}
+                  />
+                </fieldset>
+              </div>
+            )}
+            {form.formState.errors.root && (
+              <div className="text-destructive text-sm">
+                {form.formState.errors.root.message}
+              </div>
+            )}
+          </form>
+        </Form>
       }
       previewContent={
         <Card item={previewItem} creator={creator} link={false} hideActions />

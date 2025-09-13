@@ -1,7 +1,9 @@
 import { CircleSlash2, Shuffle } from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
+import { FG_COLOR_CLASSES } from "@/app/ui/item/Card";
 import { SearchInput } from "@/app/ui/SearchInput";
+import { ColorPicker } from "@/components/ColorPicker";
 import { GameIcon } from "@/components/GameIcon";
 import { ICONS } from "@/components/icons";
 import { Button } from "@/components/ui/button";
@@ -19,19 +21,28 @@ import { cn } from "@/lib/utils";
 
 interface IconPickerDialogProps {
   selectedIcon?: string;
+  selectedColor?: string;
   onIconSelect: (iconId: string | null) => void;
+  onColorSelect?: (color: string | null) => void;
   trigger: React.ReactNode;
+  showColorPicker?: boolean;
 }
 
 export function IconPickerDialog({
   selectedIcon,
+  selectedColor,
   onIconSelect,
+  onColorSelect,
   trigger,
+  showColorPicker = false,
 }: IconPickerDialogProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogSearchTerm, setDialogSearchTerm] = useState("");
   const [tempSelection, setTempSelection] = useState<string | null>(
     selectedIcon || null
+  );
+  const [tempColor, setTempColor] = useState<string | null>(
+    selectedColor || null
   );
 
   // ICONS is now already an array, just add searchName
@@ -71,12 +82,16 @@ export function IconPickerDialog({
 
   const handleSave = () => {
     onIconSelect(tempSelection);
+    if (onColorSelect && showColorPicker) {
+      onColorSelect(tempColor);
+    }
     setDialogOpen(false);
     setDialogSearchTerm("");
   };
 
   const handleCancel = () => {
     setTempSelection(selectedIcon || null);
+    setTempColor(selectedColor || null);
     setDialogOpen(false);
     setDialogSearchTerm("");
   };
@@ -84,6 +99,7 @@ export function IconPickerDialog({
   const handleDialogOpenChange = (open: boolean) => {
     if (open) {
       setTempSelection(selectedIcon || null);
+      setTempColor(selectedColor || null);
     } else {
       handleCancel();
     }
@@ -101,11 +117,14 @@ export function IconPickerDialog({
       <DialogContent className="max-w-4xl h-[80vh] flex flex-col overflow-hidden">
         <DialogHeader className="flex flex-col gap-4 items-center flex-shrink-0">
           <DialogTitle className="hidden">Select Icon</DialogTitle>
-          <div className="size-20 flex flex-col items-center justify-center gap-2">
+          <div className="flex flex-col items-center justify-center gap-2">
             {tempSelection ? (
               <GameIcon
                 iconId={tempSelection}
-                className="size-16 fill-foreground"
+                className={cn(
+                  "size-32 stroke-4",
+                  tempColor ? FG_COLOR_CLASSES[tempColor] : "fill-foreground"
+                )}
               />
             ) : (
               <CircleSlash2 className="size-8 stroke-muted-foreground" />
@@ -115,11 +134,22 @@ export function IconPickerDialog({
             </div>
           </div>
 
-          <SearchInput
-            value={dialogSearchTerm}
-            onChange={setDialogSearchTerm}
-            placeholder="Search..."
-          />
+          <div className="flex gap-4 items-center">
+            <SearchInput
+              value={dialogSearchTerm}
+              onChange={setDialogSearchTerm}
+              placeholder="Search..."
+            />
+
+            {showColorPicker && (
+              <div className="flex flex-col items-center gap-2">
+                <ColorPicker
+                  selectedColor={tempColor || undefined}
+                  onColorSelect={(color) => setTempColor(color || null)}
+                />
+              </div>
+            )}
+          </div>
         </DialogHeader>
 
         <div className="flex-1 min-h-0 overflow-hidden">
