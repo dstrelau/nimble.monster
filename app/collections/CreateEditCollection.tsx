@@ -19,7 +19,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createCollection } from "@/app/actions/collection";
 import { searchPublicItems } from "@/app/actions/item";
-import type { ItemRarityFilter } from "@/lib/types";
 import { searchPublicMonsters, type TypeFilter } from "@/app/actions/monster";
 import { List as ItemList } from "@/app/ui/item/List";
 import { List } from "@/app/ui/monster/List";
@@ -49,6 +48,7 @@ import type {
   Collection,
   Item,
   ItemMini,
+  ItemRarityFilter,
   Monster,
   MonsterMini,
 } from "@/lib/types";

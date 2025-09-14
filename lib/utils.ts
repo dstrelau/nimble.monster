@@ -2,9 +2,12 @@ import { type ClassValue, clsx } from "clsx";
 import { Roboto, Roboto_Condensed, Roboto_Slab } from "next/font/google";
 import { twMerge } from "tailwind-merge";
 
-export const sans = Roboto({ style: ["normal", "italic"] });
-export const slab = Roboto_Slab();
-export const condensed = Roboto_Condensed({ style: ["normal", "italic"] });
+export const sans = Roboto({ subsets: ["latin"], style: ["normal", "italic"] });
+export const slab = Roboto_Slab({ subsets: ["latin"] });
+export const condensed = Roboto_Condensed({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+});
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
