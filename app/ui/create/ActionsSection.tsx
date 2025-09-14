@@ -1,3 +1,4 @@
+import { cn, condensed } from "lib/utils";
 import { CircleSlash2, Plus, Sword, Trash } from "lucide-react";
 import { useMemo } from "react";
 import { FormInput, FormTextarea } from "@/components/app/Form";
@@ -138,7 +139,9 @@ export const ActionsSection: React.FC<ActionsSectionProps> = ({
   onPrefaceChange,
 }) => (
   <fieldset className="flex flex-col gap-4">
-    <legend className="mb-4 font-condensed font-bold">Actions</legend>
+    <legend className={cn(condensed.className, "mb-4 font-bold")}>
+      Actions
+    </legend>
     <div className="flex flex-col gap-4">
       <FormInput
         label="Preface"

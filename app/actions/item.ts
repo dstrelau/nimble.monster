@@ -5,8 +5,6 @@ import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import type { ItemRarity, ItemRarityFilter } from "@/lib/types";
 
-export type { ItemRarityFilter };
-
 export async function searchPublicItems(params: {
   creatorId?: string;
   searchTerm?: string;

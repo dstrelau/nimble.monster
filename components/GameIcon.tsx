@@ -28,10 +28,9 @@ export function GameIcon({ iconId, className, ...props }: GameIconProps) {
   // Get or create cached lazy component
   const cacheKey = `${iconData.contributor}/${iconData.componentName}`;
   if (!iconComponentCache.has(cacheKey)) {
+    const path = `./icons/${iconData.contributor}/${iconData.componentName}`;
     const IconComponent = lazy(() =>
-      import(
-        `@/components/icons/${iconData.contributor}/${iconData.componentName}`
-      )
+      import(path)
         .then((module) => ({
           default: (props: SVGProps<SVGSVGElement>) => {
             const Component = module[iconData.componentName];

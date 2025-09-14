@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { cn, slab } from "lib/utils";
 import { Crown, PersonStanding } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Level } from "@/components/Level";
@@ -88,7 +89,12 @@ export const List = ({
                 </p>
               </div>
               <div className="flex items-center">
-                <div className="flex items-center mr-2 font-slab font-black italic">
+                <div
+                  className={cn(
+                    slab.className,
+                    "flex items-center mr-2 font-black italic"
+                  )}
+                >
                   {monster.armor === "medium" && <ArmorStat value="M" />}
                   {monster.armor === "heavy" && <ArmorStat value="H" />}
                   {monster.minion || <HPStat value={monster.hp} />}

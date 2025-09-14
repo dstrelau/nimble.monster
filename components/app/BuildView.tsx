@@ -6,6 +6,7 @@ import {
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
 import clsx from "clsx";
+import { cn, slab } from "lib/utils";
 import { Eye, X } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -37,7 +38,12 @@ export const BuildView: React.FC<BuildViewProps> = ({
             "md:hidden fixed bottom-0 left-0 right-0 z-1 w-full bg-background flex p-2 justify-between"
           )}
         >
-          <span className="font-slab font-black font-small-caps italic text-2xl">
+          <span
+            className={cn(
+              slab.className,
+              "font-black font-small-caps italic text-2xl"
+            )}
+          >
             {entityName}
           </span>
           <div className="flex gap-2 items-center text-sm text-muted-foreground">

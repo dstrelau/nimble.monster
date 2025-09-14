@@ -1,18 +1,23 @@
 import type React from "react";
 import { CardContent, Card as ShadcnCard } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn, condensed } from "@/lib/utils";
 
 export const StrongCondensed: React.FC<{
   children: React.ReactNode;
   className?: string;
 }> = ({ children, className = "" }) => (
-  <strong className={`font-condensed ${className}`}>{children}</strong>
+  <strong className={cn(condensed.className, className)}>{children}</strong>
 );
 
 export const InlineConditionsBox: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
-  <div className="font-condensed p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm">
+  <div
+    className={cn(
+      condensed.className,
+      "p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm"
+    )}
+  >
     {children}
   </div>
 );

@@ -5,6 +5,8 @@ import { ItemDetailActions } from "@/components/ItemDetailActions";
 import { auth } from "@/lib/auth";
 import { findItem } from "@/lib/db";
 
+export const experimental_ppr = true;
+
 export async function generateMetadata({
   params,
 }: {

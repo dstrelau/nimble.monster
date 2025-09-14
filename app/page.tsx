@@ -1,3 +1,4 @@
+import { cn, slab } from "lib/utils";
 import { ArrowRight, CornerRightDown } from "lucide-react";
 import Image from "next/image";
 import { Footer } from "@/components/app/Footer";
@@ -19,7 +20,12 @@ export default async function HomePage() {
     <div className="max-w-4xl mx-auto flex flex-col items-center gap-8">
       <h1 className="text-4xl md:text-6xl text-center font-bold">
         Create and share adversaries for <br />
-        <span className="pr-3 font-slab font-black italic uppercase text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600">
+        <span
+          className={cn(
+            slab.className,
+            "pr-3 font-black italic uppercase text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600"
+          )}
+        >
           Nimble TTRPG
         </span>
       </h1>

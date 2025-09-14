@@ -267,7 +267,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
 
     mockFindMonster.mockResolvedValue(mockMonster);
     mockAuth.mockResolvedValue({
-      user: { id: "owner123" },
+      user: { discordId: "owner123" },
     });
 
     const response = await GET(

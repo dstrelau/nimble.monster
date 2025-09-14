@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { MonsterMini } from "@/lib/types";
-import { cn, monstersSortedByLevelInt } from "@/lib/utils";
+import { cn, condensed, monstersSortedByLevelInt, slab } from "@/lib/utils";
 import { Link } from "./app/Link";
 import { Level } from "./Level";
 import { Separator } from "./ui/separator";
@@ -21,7 +21,12 @@ export const MonsterRow: React.FC<{
   monster: MonsterMini;
 }> = ({ monster }) => (
   <div className="flex gap-1 items-center">
-    <div className="flex-1 flex gap-1 items-center font-slab font-bold small-caps italic">
+    <div
+      className={cn(
+        slab.className,
+        "flex-1 flex gap-1 items-center font-bold small-caps italic"
+      )}
+    >
       {monster.legendary && (
         <Crown className="size-5 inline self-center stroke-flame" />
       )}
@@ -41,12 +46,22 @@ export const MonsterRow: React.FC<{
         >
           {monster.name}
         </Link>
-        <span className="font-medium text-muted-foreground text-sm font-condensed small-caps not-italic text-nowrap">
+        <span
+          className={cn(
+            condensed.className,
+            "font-medium text-muted-foreground text-sm small-caps not-italic text-nowrap"
+          )}
+        >
           Lvl <Level level={monster.level} />
         </span>
       </span>
     </div>
-    <div className="flex flex-wrap items-baseline justify-end font-slab font-black italic">
+    <div
+      className={cn(
+        slab.className,
+        "flex flex-wrap items-baseline justify-end font-black italic"
+      )}
+    >
       {monster.minion || <HPStat value={monster.hp} className="min-w-14" />}
     </div>
   </div>
@@ -85,7 +100,12 @@ export const MonsterGroupMinis = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-condensed font-bold text-2xl flex items-center gap-2">
+        <CardTitle
+          className={cn(
+            condensed.className,
+            "font-bold text-2xl flex items-center gap-2"
+          )}
+        >
           {href ? <Link href={href}>{name}</Link> : name}
         </CardTitle>
         {attribution && <CardDescription>{attribution}</CardDescription>}

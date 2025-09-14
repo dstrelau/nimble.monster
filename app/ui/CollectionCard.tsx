@@ -16,7 +16,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import type { CollectionOverview } from "@/lib/types";
 import { RARITIES } from "@/lib/types";
-import { cn, getRarityColor, monstersSortedByLevelInt } from "@/lib/utils";
+import { cn, condensed, monstersSortedByLevelInt, slab } from "@/lib/utils";
 
 const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
   const rarityOption = RARITIES.find(
@@ -25,7 +25,12 @@ const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
 
   return (
     <div className="flex gap-1 items-center">
-      <div className="flex-1 flex gap-1 items-center font-slab font-bold small-caps italic">
+      <div
+        className={cn(
+          slab.className,
+          "flex-1 flex gap-1 items-center font-bold small-caps italic"
+        )}
+      >
         {item.imageIcon && (
           <GameIcon
             iconId={item.imageIcon}
@@ -47,12 +52,17 @@ const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
           </Link>
         </span>
       </div>
-      <div className="flex flex-wrap items-center justify-end font-slab font-black italic">
+      <div
+        className={cn(
+          slab.className,
+          "flex flex-wrap items-center justify-end font-black italic"
+        )}
+      >
         {rarityOption && item.rarity !== "unspecified" && (
           <span
             className={cn(
-              "text-sm font-condensed uppercase px-1.5 py-0 mr-2 rounded border-2",
-              getRarityColor(item.rarity)
+              condensed.className,
+              "text-sm uppercase px-1.5 py-0 mr-2 rounded border-2"
             )}
           >
             {rarityOption.label[0]}
@@ -104,7 +114,12 @@ export const CollectionCard = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-condensed font-bold text-2xl flex items-center gap-2">
+        <CardTitle
+          className={cn(
+            condensed.className,
+            "font-bold text-2xl flex items-center gap-2"
+          )}
+        >
           {collection.id ? (
             <Link href={href}>{collection.name}</Link>
           ) : (

@@ -1,3 +1,4 @@
+import { cn, condensed } from "lib/utils";
 import { Plus, Trash } from "lucide-react";
 import { FormInput, FormTextarea } from "@/components/app/Form";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
@@ -60,7 +61,9 @@ export const AbilitiesSection: React.FC<AbilitiesSectionProps> = ({
   onChange,
 }) => (
   <fieldset className="flex flex-col">
-    <legend className="mb-4 font-condensed font-bold">Abilities</legend>
+    <legend className={cn(condensed.className, "mb-4 font-bold")}>
+      Abilities
+    </legend>
     {abilities.map((ability, index) => (
       <AbilityRow
         key={ability.id}

@@ -6,6 +6,8 @@ import { auth } from "@/lib/auth";
 import { findMonster } from "@/lib/db";
 import { AddToCollectionDialog } from "./AddToCollectionDialog";
 
+export const experimental_ppr = true;
+
 export async function generateMetadata({
   params,
 }: {

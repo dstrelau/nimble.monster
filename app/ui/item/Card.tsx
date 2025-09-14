@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { type Item, RARITIES, type User } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, condensed, slab } from "@/lib/utils";
 
 const formatRarityDisplay = (rarity?: string): string => {
   if (!rarity || rarity === "unspecified") return "";
@@ -214,7 +214,12 @@ export const Card = ({
           )}
         >
           <CardTitle>
-            <h2 className="font-slab font-black text-2xl leading-tight">
+            <h2
+              className={cn(
+                slab.className,
+                "font-black text-2xl leading-tight"
+              )}
+            >
               {link && item.id ? (
                 <Link href={`/items/${item.id}`}>{item.name}</Link>
               ) : (
@@ -223,7 +228,7 @@ export const Card = ({
             </h2>
           </CardTitle>
           {(item.rarity || item.kind) && (
-            <CardDescription className="font-condensed text-md">
+            <CardDescription className={cn(condensed.className, "text-md")}>
               {formatRarityDisplay(item.rarity)}
               {item.kind || ""}
             </CardDescription>

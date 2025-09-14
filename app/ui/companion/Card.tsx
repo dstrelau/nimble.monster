@@ -1,4 +1,6 @@
 "use client";
+
+import { cn, condensed, slab } from "lib/utils";
 import { Circle, Skull } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
@@ -36,7 +38,9 @@ const HeaderCompanion: React.FC<{
   <CardHeader>
     <CardAction>
       <div className="flex items-start justify-between">
-        <div className="flex items-center font-slab font-black italic">
+        <div
+          className={cn(slab.className, "flex items-center font-black italic")}
+        >
           <HPStat value={`${companion.hp_per_level}/LVL`} />
           <SavesStat>
             <span>{companion.saves}</span>
@@ -44,12 +48,17 @@ const HeaderCompanion: React.FC<{
         </div>
       </div>
     </CardAction>
-    <CardDescription className="font-condensed text-md">
+    <CardDescription className={cn(condensed.className, "text-md")}>
       {formatCompanionSize(companion.size)} {companion.kind} Adventuring
       Companion, {companion.class}
     </CardDescription>
 
-    <CardTitle className="font-slab font-black text-2xl leading-tight text-left">
+    <CardTitle
+      className={cn(
+        slab.className,
+        "font-black text-2xl leading-tight text-left"
+      )}
+    >
       {link && companion.id ? (
         <Link href={`/companions/${companion.id}`}>{companion.name}</Link>
       ) : (
@@ -107,7 +116,9 @@ export const Card = ({
           )}
 
           <div className="flex items-center justify-center gap-1">
-            <strong className="font-condensed text-xs">WOUNDS:</strong>
+            <strong className={cn(condensed.className, "text-xs")}>
+              WOUNDS:
+            </strong>
             {Array.from({ length: companion.wounds }, (_, i) => (
               <Circle key={`${companion.id}-wound-${i}`} className="w-6 h-6" />
             ))}

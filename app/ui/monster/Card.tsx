@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Monster, User } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, condensed, slab } from "@/lib/utils";
 import { formatSizeKind } from "@/lib/utils/monster";
 import CardActions from "./CardActions";
 import {
@@ -64,7 +64,7 @@ const HeaderLegendary: React.FC<{ monster: Monster; link?: boolean }> = ({
   link = true,
 }) => (
   <CardHeader>
-    <CardTitle className="font-slab font-black italic text-4xl">
+    <CardTitle className={cn(slab.className, "font-black italic text-4xl")}>
       {link ? (
         <Link href={`/m/${monster.id}`}>{monster.name}</Link>
       ) : (
@@ -77,7 +77,12 @@ const HeaderLegendary: React.FC<{ monster: Monster; link?: boolean }> = ({
     </CardDescription>
     <CardAction>
       <StatsGroup monster={monster}>
-        <div className="flex items-center justify-center font-slab font-black italic">
+        <div
+          className={cn(
+            slab.className,
+            "flex items-center justify-center font-black italic"
+          )}
+        >
           {monster.armor === "medium" && <ArmorStat value="M" />}
           {monster.armor === "heavy" && <ArmorStat value="H" />}
           <HPStat value={monster.hp} />
@@ -103,14 +108,18 @@ const HeaderMinion: React.FC<{
   link?: boolean;
 }> = ({ monster, hideFamilyName = false, link = true }) => (
   <CardHeader className="has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0">
-    <CardTitle className="font-slab font-black small-caps italic text-2xl">
+    <CardTitle
+      className={cn(slab.className, "font-black small-caps italic text-2xl")}
+    >
       {link ? (
         <Link href={`/m/${monster.id}`}>{monster.name}</Link>
       ) : (
         monster.name
       )}
     </CardTitle>
-    <CardDescription className="col-span-2 flex gap-2 font-condensed small-caps">
+    <CardDescription
+      className={cn(condensed.className, "col-span-2 flex gap-2 small-caps")}
+    >
       <p>
         Lvl <Level level={monster.level} /> {formatSizeKind(monster)} Minion
       </p>
@@ -126,7 +135,12 @@ const HeaderMinion: React.FC<{
     </CardDescription>
     <CardAction>
       <StatsGroup monster={monster}>
-        <div className="flex grow flex-wrap items-center justify-end font-slab font-black italic">
+        <div
+          className={cn(
+            slab.className,
+            "flex grow flex-wrap items-center justify-end font-black italic"
+          )}
+        >
           <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
           <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
           <Stat name="climb" value={monster.climb} SvgIcon={ClimbIcon} />
@@ -156,14 +170,18 @@ const HeaderStandard: React.FC<{
   link?: boolean;
 }> = ({ monster, hideFamilyName = false, link = true }) => (
   <CardHeader className="has-data-[slot=card-action]:grid-cols-[1fr_1fr] gap-0">
-    <CardTitle className="font-slab font-black small-caps italic text-2xl">
+    <CardTitle
+      className={cn(slab.className, "font-black small-caps italic text-2xl")}
+    >
       {link ? (
         <Link href={`/m/${monster.id}`}>{monster.name}</Link>
       ) : (
         monster.name
       )}
     </CardTitle>
-    <CardDescription className="col-span-2 flex gap-2 font-condensed small-caps">
+    <CardDescription
+      className={cn(condensed.className, "col-span-2 flex gap-2 small-caps")}
+    >
       <p>
         Lvl <Level level={monster.level} /> {formatSizeKind(monster)}
       </p>
@@ -179,7 +197,12 @@ const HeaderStandard: React.FC<{
     </CardDescription>
     <CardAction>
       <StatsGroup monster={monster}>
-        <div className="flex grow flex-wrap items-center justify-end font-slab font-black italic">
+        <div
+          className={cn(
+            slab.className,
+            "flex grow flex-wrap items-center justify-end font-black italic"
+          )}
+        >
           {monster.armor === "medium" && <ArmorStat value="M" />}
           {monster.armor === "heavy" && <ArmorStat value="H" />}
           <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
@@ -282,7 +305,9 @@ export const Card = ({
                     content={monster.bloodied}
                     conditions={conditions}
                     prefix={
-                      <strong className="font-condensed">BLOODIED:</strong>
+                      <strong className={cn(condensed.className)}>
+                        BLOODIED:
+                      </strong>
                     }
                   />
                 )}
@@ -293,7 +318,9 @@ export const Card = ({
                       content={monster.lastStand}
                       conditions={conditions}
                       prefix={
-                        <strong className="font-condensed">LAST STAND:</strong>
+                        <strong className={cn(condensed.className)}>
+                          LAST STAND:
+                        </strong>
                       }
                     />
                   </div>
