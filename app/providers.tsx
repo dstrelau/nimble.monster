@@ -10,6 +10,7 @@ import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import Header from "@/app/ui/Header";
+import { Analytics } from "@vercel/analytics/next";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -57,6 +58,7 @@ export function Providers({
         >
           <Header />
           <main className="mx-auto w-full max-w-7xl px-4 py-6">{children}</main>
+          <Analytics />
         </ThemeProvider>
       </SessionProvider>
       <ReactQueryDevtools initialIsOpen={false} />
