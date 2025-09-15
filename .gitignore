@@ -33,4 +33,4 @@ tmp/
 
 **/.claude/settings.local.json
 
-components/icons/*
+public/game-icons/*

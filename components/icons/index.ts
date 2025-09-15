@@ -1,0 +1,25386 @@
+// Auto-generated icon index for SVG files
+export interface IconData {
+  id: string;
+  name: string;
+  contributor: string;
+  svgPath: string;
+}
+
+export const ICONS: IconData[] = [
+  {
+    "id": "police-badge",
+    "name": "police badge",
+    "contributor": "andymeneely",
+    "svgPath": "/game-icons/andymeneely/police-badge.svg"
+  },
+  {
+    "id": "riposte",
+    "name": "riposte",
+    "contributor": "andymeneely",
+    "svgPath": "/game-icons/andymeneely/riposte.svg"
+  },
+  {
+    "id": "card-10-clubs",
+    "name": "card 10 clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-10-clubs.svg"
+  },
+  {
+    "id": "card-10-diamonds",
+    "name": "card 10 diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-10-diamonds.svg"
+  },
+  {
+    "id": "card-10-hearts",
+    "name": "card 10 hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-10-hearts.svg"
+  },
+  {
+    "id": "card-10-spades",
+    "name": "card 10 spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-10-spades.svg"
+  },
+  {
+    "id": "card-2-clubs",
+    "name": "card 2 clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-2-clubs.svg"
+  },
+  {
+    "id": "card-2-diamonds",
+    "name": "card 2 diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-2-diamonds.svg"
+  },
+  {
+    "id": "card-2-hearts",
+    "name": "card 2 hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-2-hearts.svg"
+  },
+  {
+    "id": "card-2-spades",
+    "name": "card 2 spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-2-spades.svg"
+  },
+  {
+    "id": "card-3-clubs",
+    "name": "card 3 clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-3-clubs.svg"
+  },
+  {
+    "id": "card-3-diamonds",
+    "name": "card 3 diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-3-diamonds.svg"
+  },
+  {
+    "id": "card-3-hearts",
+    "name": "card 3 hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-3-hearts.svg"
+  },
+  {
+    "id": "card-3-spades",
+    "name": "card 3 spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-3-spades.svg"
+  },
+  {
+    "id": "card-4-clubs",
+    "name": "card 4 clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-4-clubs.svg"
+  },
+  {
+    "id": "card-4-diamonds",
+    "name": "card 4 diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-4-diamonds.svg"
+  },
+  {
+    "id": "card-4-hearts",
+    "name": "card 4 hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-4-hearts.svg"
+  },
+  {
+    "id": "card-4-spades",
+    "name": "card 4 spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-4-spades.svg"
+  },
+  {
+    "id": "card-5-clubs",
+    "name": "card 5 clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-5-clubs.svg"
+  },
+  {
+    "id": "card-5-diamonds",
+    "name": "card 5 diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-5-diamonds.svg"
+  },
+  {
+    "id": "card-5-hearts",
+    "name": "card 5 hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-5-hearts.svg"
+  },
+  {
+    "id": "card-5-spades",
+    "name": "card 5 spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-5-spades.svg"
+  },
+  {
+    "id": "card-6-clubs",
+    "name": "card 6 clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-6-clubs.svg"
+  },
+  {
+    "id": "card-6-diamonds",
+    "name": "card 6 diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-6-diamonds.svg"
+  },
+  {
+    "id": "card-6-hearts",
+    "name": "card 6 hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-6-hearts.svg"
+  },
+  {
+    "id": "card-6-spades",
+    "name": "card 6 spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-6-spades.svg"
+  },
+  {
+    "id": "card-7-clubs",
+    "name": "card 7 clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-7-clubs.svg"
+  },
+  {
+    "id": "card-7-diamonds",
+    "name": "card 7 diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-7-diamonds.svg"
+  },
+  {
+    "id": "card-7-hearts",
+    "name": "card 7 hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-7-hearts.svg"
+  },
+  {
+    "id": "card-7-spades",
+    "name": "card 7 spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-7-spades.svg"
+  },
+  {
+    "id": "card-8-clubs",
+    "name": "card 8 clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-8-clubs.svg"
+  },
+  {
+    "id": "card-8-diamonds",
+    "name": "card 8 diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-8-diamonds.svg"
+  },
+  {
+    "id": "card-8-hearts",
+    "name": "card 8 hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-8-hearts.svg"
+  },
+  {
+    "id": "card-8-spades",
+    "name": "card 8 spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-8-spades.svg"
+  },
+  {
+    "id": "card-9-clubs",
+    "name": "card 9 clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-9-clubs.svg"
+  },
+  {
+    "id": "card-9-diamonds",
+    "name": "card 9 diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-9-diamonds.svg"
+  },
+  {
+    "id": "card-9-hearts",
+    "name": "card 9 hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-9-hearts.svg"
+  },
+  {
+    "id": "card-9-spades",
+    "name": "card 9 spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-9-spades.svg"
+  },
+  {
+    "id": "card-ace-clubs",
+    "name": "card ace clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-ace-clubs.svg"
+  },
+  {
+    "id": "card-ace-diamonds",
+    "name": "card ace diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-ace-diamonds.svg"
+  },
+  {
+    "id": "card-ace-hearts",
+    "name": "card ace hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-ace-hearts.svg"
+  },
+  {
+    "id": "card-ace-spades",
+    "name": "card ace spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-ace-spades.svg"
+  },
+  {
+    "id": "card-jack-clubs",
+    "name": "card jack clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-jack-clubs.svg"
+  },
+  {
+    "id": "card-jack-diamonds",
+    "name": "card jack diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-jack-diamonds.svg"
+  },
+  {
+    "id": "card-jack-hearts",
+    "name": "card jack hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-jack-hearts.svg"
+  },
+  {
+    "id": "card-jack-spades",
+    "name": "card jack spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-jack-spades.svg"
+  },
+  {
+    "id": "card-king-clubs",
+    "name": "card king clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-king-clubs.svg"
+  },
+  {
+    "id": "card-king-diamonds",
+    "name": "card king diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-king-diamonds.svg"
+  },
+  {
+    "id": "card-king-hearts",
+    "name": "card king hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-king-hearts.svg"
+  },
+  {
+    "id": "card-king-spades",
+    "name": "card king spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-king-spades.svg"
+  },
+  {
+    "id": "card-queen-clubs",
+    "name": "card queen clubs",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-queen-clubs.svg"
+  },
+  {
+    "id": "card-queen-diamonds",
+    "name": "card queen diamonds",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-queen-diamonds.svg"
+  },
+  {
+    "id": "card-queen-hearts",
+    "name": "card queen hearts",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-queen-hearts.svg"
+  },
+  {
+    "id": "card-queen-spades",
+    "name": "card queen spades",
+    "contributor": "aussiesim",
+    "svgPath": "/game-icons/aussiesim/card-queen-spades.svg"
+  },
+  {
+    "id": "anvil",
+    "name": "anvil",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/anvil.svg"
+  },
+  {
+    "id": "arrow-down",
+    "name": "arrow down",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/arrow-down.svg"
+  },
+  {
+    "id": "arrow-up",
+    "name": "arrow up",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/arrow-up.svg"
+  },
+  {
+    "id": "blank",
+    "name": "blank",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/blank.svg"
+  },
+  {
+    "id": "body",
+    "name": "body",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/body.svg"
+  },
+  {
+    "id": "bolt",
+    "name": "bolt",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/bolt.svg"
+  },
+  {
+    "id": "building",
+    "name": "building",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/building.svg"
+  },
+  {
+    "id": "cloud",
+    "name": "cloud",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/cloud.svg"
+  },
+  {
+    "id": "club",
+    "name": "club",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/club.svg"
+  },
+  {
+    "id": "cog",
+    "name": "cog",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/cog.svg"
+  },
+  {
+    "id": "coins",
+    "name": "coins",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/coins.svg"
+  },
+  {
+    "id": "corporal",
+    "name": "corporal",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/corporal.svg"
+  },
+  {
+    "id": "crosshair",
+    "name": "crosshair",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/crosshair.svg"
+  },
+  {
+    "id": "crown",
+    "name": "crown",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/crown.svg"
+  },
+  {
+    "id": "diamond",
+    "name": "diamond",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/diamond.svg"
+  },
+  {
+    "id": "exclamation",
+    "name": "exclamation",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/exclamation.svg"
+  },
+  {
+    "id": "eye",
+    "name": "eye",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/eye.svg"
+  },
+  {
+    "id": "fire",
+    "name": "fire",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/fire.svg"
+  },
+  {
+    "id": "flask",
+    "name": "flask",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/flask.svg"
+  },
+  {
+    "id": "happy",
+    "name": "happy",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/happy.svg"
+  },
+  {
+    "id": "heart",
+    "name": "heart",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/heart.svg"
+  },
+  {
+    "id": "ice",
+    "name": "ice",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/ice.svg"
+  },
+  {
+    "id": "justice",
+    "name": "justice",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/justice.svg"
+  },
+  {
+    "id": "leaf",
+    "name": "leaf",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/leaf.svg"
+  },
+  {
+    "id": "lock",
+    "name": "lock",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/lock.svg"
+  },
+  {
+    "id": "minus",
+    "name": "minus",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/minus.svg"
+  },
+  {
+    "id": "moon",
+    "name": "moon",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/moon.svg"
+  },
+  {
+    "id": "mountain",
+    "name": "mountain",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/mountain.svg"
+  },
+  {
+    "id": "multiply",
+    "name": "multiply",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/multiply.svg"
+  },
+  {
+    "id": "music",
+    "name": "music",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/music.svg"
+  },
+  {
+    "id": "number-0",
+    "name": "number 0",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/number-0.svg"
+  },
+  {
+    "id": "number-1",
+    "name": "number 1",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/number-1.svg"
+  },
+  {
+    "id": "number-2",
+    "name": "number 2",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/number-2.svg"
+  },
+  {
+    "id": "number-3",
+    "name": "number 3",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/number-3.svg"
+  },
+  {
+    "id": "number-4",
+    "name": "number 4",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/number-4.svg"
+  },
+  {
+    "id": "number-5",
+    "name": "number 5",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/number-5.svg"
+  },
+  {
+    "id": "number-6",
+    "name": "number 6",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/number-6.svg"
+  },
+  {
+    "id": "number-7",
+    "name": "number 7",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/number-7.svg"
+  },
+  {
+    "id": "number-8",
+    "name": "number 8",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/number-8.svg"
+  },
+  {
+    "id": "number-9",
+    "name": "number 9",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/number-9.svg"
+  },
+  {
+    "id": "paw",
+    "name": "paw",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/paw.svg"
+  },
+  {
+    "id": "pencil",
+    "name": "pencil",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/pencil.svg"
+  },
+  {
+    "id": "percentage",
+    "name": "percentage",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/percentage.svg"
+  },
+  {
+    "id": "plus",
+    "name": "plus",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/plus.svg"
+  },
+  {
+    "id": "private",
+    "name": "private",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/private.svg"
+  },
+  {
+    "id": "purse",
+    "name": "purse",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/purse.svg"
+  },
+  {
+    "id": "question",
+    "name": "question",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/question.svg"
+  },
+  {
+    "id": "radioactive",
+    "name": "radioactive",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/radioactive.svg"
+  },
+  {
+    "id": "sad",
+    "name": "sad",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/sad.svg"
+  },
+  {
+    "id": "sergeant",
+    "name": "sergeant",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/sergeant.svg"
+  },
+  {
+    "id": "shield",
+    "name": "shield",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/shield.svg"
+  },
+  {
+    "id": "skull",
+    "name": "skull",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/skull.svg"
+  },
+  {
+    "id": "spade",
+    "name": "spade",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/spade.svg"
+  },
+  {
+    "id": "star",
+    "name": "star",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/star.svg"
+  },
+  {
+    "id": "strength",
+    "name": "strength",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/strength.svg"
+  },
+  {
+    "id": "summon",
+    "name": "summon",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/summon.svg"
+  },
+  {
+    "id": "sun",
+    "name": "sun",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/sun.svg"
+  },
+  {
+    "id": "time",
+    "name": "time",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/time.svg"
+  },
+  {
+    "id": "water",
+    "name": "water",
+    "contributor": "badges",
+    "svgPath": "/game-icons/badges/water.svg"
+  },
+  {
+    "id": "brutal-helm",
+    "name": "brutal helm",
+    "contributor": "carl-olsen",
+    "svgPath": "/game-icons/carl-olsen/brutal-helm.svg"
+  },
+  {
+    "id": "crossbow",
+    "name": "crossbow",
+    "contributor": "carl-olsen",
+    "svgPath": "/game-icons/carl-olsen/crossbow.svg"
+  },
+  {
+    "id": "flame",
+    "name": "flame",
+    "contributor": "carl-olsen",
+    "svgPath": "/game-icons/carl-olsen/flame.svg"
+  },
+  {
+    "id": "mite-alt",
+    "name": "mite alt",
+    "contributor": "carl-olsen",
+    "svgPath": "/game-icons/carl-olsen/mite-alt.svg"
+  },
+  {
+    "id": "spider-alt",
+    "name": "spider alt",
+    "contributor": "carl-olsen",
+    "svgPath": "/game-icons/carl-olsen/spider-alt.svg"
+  },
+  {
+    "id": "spider-face",
+    "name": "spider face",
+    "contributor": "carl-olsen",
+    "svgPath": "/game-icons/carl-olsen/spider-face.svg"
+  },
+  {
+    "id": "accordion",
+    "name": "accordion",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/accordion.svg"
+  },
+  {
+    "id": "anteater",
+    "name": "anteater",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/anteater.svg"
+  },
+  {
+    "id": "archaeopteryx-fossil",
+    "name": "archaeopteryx fossil",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/archaeopteryx-fossil.svg"
+  },
+  {
+    "id": "armchair",
+    "name": "armchair",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/armchair.svg"
+  },
+  {
+    "id": "artichoke",
+    "name": "artichoke",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/artichoke.svg"
+  },
+  {
+    "id": "astrolabe",
+    "name": "astrolabe",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/astrolabe.svg"
+  },
+  {
+    "id": "axolotl",
+    "name": "axolotl",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/axolotl.svg"
+  },
+  {
+    "id": "badger",
+    "name": "badger",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/badger.svg"
+  },
+  {
+    "id": "barn-owl",
+    "name": "barn owl",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/barn-owl.svg"
+  },
+  {
+    "id": "bassoon",
+    "name": "bassoon",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/bassoon.svg"
+  },
+  {
+    "id": "birch-trees",
+    "name": "birch trees",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/birch-trees.svg"
+  },
+  {
+    "id": "blender",
+    "name": "blender",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/blender.svg"
+  },
+  {
+    "id": "boar",
+    "name": "boar",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/boar.svg"
+  },
+  {
+    "id": "boarding-pass",
+    "name": "boarding pass",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/boarding-pass.svg"
+  },
+  {
+    "id": "boba",
+    "name": "boba",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/boba.svg"
+  },
+  {
+    "id": "bok-choy",
+    "name": "bok choy",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/bok-choy.svg"
+  },
+  {
+    "id": "bowl-of-rice",
+    "name": "bowl of rice",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/bowl-of-rice.svg"
+  },
+  {
+    "id": "bucket-wheel-excavator",
+    "name": "bucket wheel excavator",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/bucket-wheel-excavator.svg"
+  },
+  {
+    "id": "bunny-slippers",
+    "name": "bunny slippers",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/bunny-slippers.svg"
+  },
+  {
+    "id": "bus-stop",
+    "name": "bus stop",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/bus-stop.svg"
+  },
+  {
+    "id": "canadian-goose",
+    "name": "canadian goose",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/canadian-goose.svg"
+  },
+  {
+    "id": "capybara",
+    "name": "capybara",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/capybara.svg"
+  },
+  {
+    "id": "charcuterie",
+    "name": "charcuterie",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/charcuterie.svg"
+  },
+  {
+    "id": "clarinet",
+    "name": "clarinet",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/clarinet.svg"
+  },
+  {
+    "id": "cloaked-figure-on-horseback",
+    "name": "cloaked figure on horseback",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/cloaked-figure-on-horseback.svg"
+  },
+  {
+    "id": "clock-tower",
+    "name": "clock tower",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/clock-tower.svg"
+  },
+  {
+    "id": "clothesline",
+    "name": "clothesline",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/clothesline.svg"
+  },
+  {
+    "id": "coinflip",
+    "name": "coinflip",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/coinflip.svg"
+  },
+  {
+    "id": "cootie-catcher",
+    "name": "cootie catcher",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/cootie-catcher.svg"
+  },
+  {
+    "id": "deer-head",
+    "name": "deer head",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/deer-head.svg"
+  },
+  {
+    "id": "deer",
+    "name": "deer",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/deer.svg"
+  },
+  {
+    "id": "dodo",
+    "name": "dodo",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/dodo.svg"
+  },
+  {
+    "id": "drum-kit",
+    "name": "drum kit",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/drum-kit.svg"
+  },
+  {
+    "id": "dumpling-bao",
+    "name": "dumpling bao",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/dumpling-bao.svg"
+  },
+  {
+    "id": "dumpling",
+    "name": "dumpling",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/dumpling.svg"
+  },
+  {
+    "id": "earbuds",
+    "name": "earbuds",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/earbuds.svg"
+  },
+  {
+    "id": "easel",
+    "name": "easel",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/easel.svg"
+  },
+  {
+    "id": "fox",
+    "name": "fox",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/fox.svg"
+  },
+  {
+    "id": "french-horn",
+    "name": "french horn",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/french-horn.svg"
+  },
+  {
+    "id": "fridge",
+    "name": "fridge",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/fridge.svg"
+  },
+  {
+    "id": "froe-and-mallet",
+    "name": "froe and mallet",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/froe-and-mallet.svg"
+  },
+  {
+    "id": "frog-mouth-helm",
+    "name": "frog mouth helm",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/frog-mouth-helm.svg"
+  },
+  {
+    "id": "goblin",
+    "name": "goblin",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/goblin.svg"
+  },
+  {
+    "id": "grand-piano",
+    "name": "grand piano",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/grand-piano.svg"
+  },
+  {
+    "id": "gyroscope",
+    "name": "gyroscope",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/gyroscope.svg"
+  },
+  {
+    "id": "hedgehog",
+    "name": "hedgehog",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/hedgehog.svg"
+  },
+  {
+    "id": "heraldic-sun",
+    "name": "heraldic sun",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/heraldic-sun.svg"
+  },
+  {
+    "id": "heron",
+    "name": "heron",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/heron.svg"
+  },
+  {
+    "id": "hyena-head",
+    "name": "hyena head",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/hyena-head.svg"
+  },
+  {
+    "id": "mason-jar",
+    "name": "mason jar",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/mason-jar.svg"
+  },
+  {
+    "id": "medieval-village-01",
+    "name": "medieval village 01",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/medieval-village-01.svg"
+  },
+  {
+    "id": "mole",
+    "name": "mole",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/mole.svg"
+  },
+  {
+    "id": "mountain-climbing",
+    "name": "mountain climbing",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/mountain-climbing.svg"
+  },
+  {
+    "id": "ophanim",
+    "name": "ophanim",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/ophanim.svg"
+  },
+  {
+    "id": "orrery",
+    "name": "orrery",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/orrery.svg"
+  },
+  {
+    "id": "pangolin",
+    "name": "pangolin",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/pangolin.svg"
+  },
+  {
+    "id": "paper-bag-crumpled",
+    "name": "paper bag crumpled",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/paper-bag-crumpled.svg"
+  },
+  {
+    "id": "paper-bag-folded",
+    "name": "paper bag folded",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/paper-bag-folded.svg"
+  },
+  {
+    "id": "paper-bag-open",
+    "name": "paper bag open",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/paper-bag-open.svg"
+  },
+  {
+    "id": "paper-crane",
+    "name": "paper crane",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/paper-crane.svg"
+  },
+  {
+    "id": "paper-frog",
+    "name": "paper frog",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/paper-frog.svg"
+  },
+  {
+    "id": "philosopher-bust",
+    "name": "philosopher bust",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/philosopher-bust.svg"
+  },
+  {
+    "id": "pianist",
+    "name": "pianist",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/pianist.svg"
+  },
+  {
+    "id": "pipe-organ",
+    "name": "pipe organ",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/pipe-organ.svg"
+  },
+  {
+    "id": "porcupine",
+    "name": "porcupine",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/porcupine.svg"
+  },
+  {
+    "id": "prank-glasses",
+    "name": "prank glasses",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/prank-glasses.svg"
+  },
+  {
+    "id": "pressure-cooker",
+    "name": "pressure cooker",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/pressure-cooker.svg"
+  },
+  {
+    "id": "rice-cooker",
+    "name": "rice cooker",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/rice-cooker.svg"
+  },
+  {
+    "id": "ricochet",
+    "name": "ricochet",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/ricochet.svg"
+  },
+  {
+    "id": "rolling-suitcase",
+    "name": "rolling suitcase",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/rolling-suitcase.svg"
+  },
+  {
+    "id": "rotary-phone",
+    "name": "rotary phone",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/rotary-phone.svg"
+  },
+  {
+    "id": "round-potion",
+    "name": "round potion",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/round-potion.svg"
+  },
+  {
+    "id": "saucepan",
+    "name": "saucepan",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/saucepan.svg"
+  },
+  {
+    "id": "sauropod-skeleton",
+    "name": "sauropod skeleton",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/sauropod-skeleton.svg"
+  },
+  {
+    "id": "schrodingers-cat-alive",
+    "name": "schrodingers cat alive",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/schrodingers-cat-alive.svg"
+  },
+  {
+    "id": "schrodingers-cat-dead",
+    "name": "schrodingers cat dead",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/schrodingers-cat-dead.svg"
+  },
+  {
+    "id": "sewing-machine",
+    "name": "sewing machine",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/sewing-machine.svg"
+  },
+  {
+    "id": "sink",
+    "name": "sink",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/sink.svg"
+  },
+  {
+    "id": "skateboarding-01",
+    "name": "skateboarding 01",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/skateboarding-01.svg"
+  },
+  {
+    "id": "skateboarding-02",
+    "name": "skateboarding 02",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/skateboarding-02.svg"
+  },
+  {
+    "id": "slot-machine",
+    "name": "slot machine",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/slot-machine.svg"
+  },
+  {
+    "id": "sloth",
+    "name": "sloth",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/sloth.svg"
+  },
+  {
+    "id": "soda-bottle",
+    "name": "soda bottle",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/soda-bottle.svg"
+  },
+  {
+    "id": "soldering-iron",
+    "name": "soldering iron",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/soldering-iron.svg"
+  },
+  {
+    "id": "spinning-wheel",
+    "name": "spinning wheel",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/spinning-wheel.svg"
+  },
+  {
+    "id": "stapler-heavy-duty",
+    "name": "stapler heavy duty",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/stapler-heavy-duty.svg"
+  },
+  {
+    "id": "stapler-pneumatic",
+    "name": "stapler pneumatic",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/stapler-pneumatic.svg"
+  },
+  {
+    "id": "stapler",
+    "name": "stapler",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/stapler.svg"
+  },
+  {
+    "id": "steamroller",
+    "name": "steamroller",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/steamroller.svg"
+  },
+  {
+    "id": "subway-pass",
+    "name": "subway pass",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/subway-pass.svg"
+  },
+  {
+    "id": "subway-train",
+    "name": "subway train",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/subway-train.svg"
+  },
+  {
+    "id": "tarot-00-the-fool",
+    "name": "tarot 00 the fool",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tarot-00-the-fool.svg"
+  },
+  {
+    "id": "tarot-01-the-magician",
+    "name": "tarot 01 the magician",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tarot-01-the-magician.svg"
+  },
+  {
+    "id": "tarot-02-the-high-priestess",
+    "name": "tarot 02 the high priestess",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tarot-02-the-high-priestess.svg"
+  },
+  {
+    "id": "tarot-03-the-empress",
+    "name": "tarot 03 the empress",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tarot-03-the-empress.svg"
+  },
+  {
+    "id": "tarot-04-the-emperor",
+    "name": "tarot 04 the emperor",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tarot-04-the-emperor.svg"
+  },
+  {
+    "id": "tarot-05-the-hierophant",
+    "name": "tarot 05 the hierophant",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tarot-05-the-hierophant.svg"
+  },
+  {
+    "id": "tarot-06-the-lovers",
+    "name": "tarot 06 the lovers",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tarot-06-the-lovers.svg"
+  },
+  {
+    "id": "tarot-07-the-chariot",
+    "name": "tarot 07 the chariot",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tarot-07-the-chariot.svg"
+  },
+  {
+    "id": "tarot-08-strength",
+    "name": "tarot 08 strength",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tarot-08-strength.svg"
+  },
+  {
+    "id": "tarot-09-the-hermit",
+    "name": "tarot 09 the hermit",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tarot-09-the-hermit.svg"
+  },
+  {
+    "id": "tarot-10-wheel-of-fortune",
+    "name": "tarot 10 wheel of fortune",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tarot-10-wheel-of-fortune.svg"
+  },
+  {
+    "id": "tesla-coil",
+    "name": "tesla coil",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tesla-coil.svg"
+  },
+  {
+    "id": "test-tube-held",
+    "name": "test tube held",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/test-tube-held.svg"
+  },
+  {
+    "id": "test-tube-rack",
+    "name": "test tube rack",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/test-tube-rack.svg"
+  },
+  {
+    "id": "toothbrush",
+    "name": "toothbrush",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/toothbrush.svg"
+  },
+  {
+    "id": "treehouse",
+    "name": "treehouse",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/treehouse.svg"
+  },
+  {
+    "id": "trombone",
+    "name": "trombone",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/trombone.svg"
+  },
+  {
+    "id": "tuba",
+    "name": "tuba",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/tuba.svg"
+  },
+  {
+    "id": "venus-flytrap",
+    "name": "venus flytrap",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/venus-flytrap.svg"
+  },
+  {
+    "id": "vhs",
+    "name": "vhs",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/vhs.svg"
+  },
+  {
+    "id": "warlord-helmet",
+    "name": "warlord helmet",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/warlord-helmet.svg"
+  },
+  {
+    "id": "water-mill",
+    "name": "water mill",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/water-mill.svg"
+  },
+  {
+    "id": "willow-tree",
+    "name": "willow tree",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/willow-tree.svg"
+  },
+  {
+    "id": "windchimes",
+    "name": "windchimes",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/windchimes.svg"
+  },
+  {
+    "id": "wok",
+    "name": "wok",
+    "contributor": "caro-asercion",
+    "svgPath": "/game-icons/caro-asercion/wok.svg"
+  },
+  {
+    "id": "annexation",
+    "name": "annexation",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/annexation.svg"
+  },
+  {
+    "id": "bad-gnome",
+    "name": "bad gnome",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/bad-gnome.svg"
+  },
+  {
+    "id": "battleship",
+    "name": "battleship",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/battleship.svg"
+  },
+  {
+    "id": "boar-ensign",
+    "name": "boar ensign",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/boar-ensign.svg"
+  },
+  {
+    "id": "carnyx",
+    "name": "carnyx",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/carnyx.svg"
+  },
+  {
+    "id": "carrier",
+    "name": "carrier",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/carrier.svg"
+  },
+  {
+    "id": "chariot",
+    "name": "chariot",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/chariot.svg"
+  },
+  {
+    "id": "cruiser",
+    "name": "cruiser",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/cruiser.svg"
+  },
+  {
+    "id": "dread",
+    "name": "dread",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/dread.svg"
+  },
+  {
+    "id": "dreadnought",
+    "name": "dreadnought",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/dreadnought.svg"
+  },
+  {
+    "id": "earth-worm",
+    "name": "earth worm",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/earth-worm.svg"
+  },
+  {
+    "id": "flying-trout",
+    "name": "flying trout",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/flying-trout.svg"
+  },
+  {
+    "id": "fomorian",
+    "name": "fomorian",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/fomorian.svg"
+  },
+  {
+    "id": "great-war-tank",
+    "name": "great war tank",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/great-war-tank.svg"
+  },
+  {
+    "id": "holy-oak",
+    "name": "holy oak",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/holy-oak.svg"
+  },
+  {
+    "id": "iron-hulled-warship",
+    "name": "iron hulled warship",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/iron-hulled-warship.svg"
+  },
+  {
+    "id": "medusa-head",
+    "name": "medusa head",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/medusa-head.svg"
+  },
+  {
+    "id": "nun-face",
+    "name": "nun face",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/nun-face.svg"
+  },
+  {
+    "id": "occupy",
+    "name": "occupy",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/occupy.svg"
+  },
+  {
+    "id": "old-king",
+    "name": "old king",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/old-king.svg"
+  },
+  {
+    "id": "oppidum",
+    "name": "oppidum",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/oppidum.svg"
+  },
+  {
+    "id": "polar-bear",
+    "name": "polar bear",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/polar-bear.svg"
+  },
+  {
+    "id": "swordman",
+    "name": "swordman",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/swordman.svg"
+  },
+  {
+    "id": "swordwoman",
+    "name": "swordwoman",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/swordwoman.svg"
+  },
+  {
+    "id": "torc",
+    "name": "torc",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/torc.svg"
+  },
+  {
+    "id": "transparent-slime",
+    "name": "transparent slime",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/transparent-slime.svg"
+  },
+  {
+    "id": "tree-face",
+    "name": "tree face",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/tree-face.svg"
+  },
+  {
+    "id": "tumulus",
+    "name": "tumulus",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/tumulus.svg"
+  },
+  {
+    "id": "witch-face",
+    "name": "witch face",
+    "contributor": "cathelineau",
+    "svgPath": "/game-icons/cathelineau/witch-face.svg"
+  },
+  {
+    "id": "broken-arrow",
+    "name": "broken arrow",
+    "contributor": "catsu",
+    "svgPath": "/game-icons/catsu/broken-arrow.svg"
+  },
+  {
+    "id": "acrobatic",
+    "name": "acrobatic",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/acrobatic.svg"
+  },
+  {
+    "id": "apothecary",
+    "name": "apothecary",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/apothecary.svg"
+  },
+  {
+    "id": "big-gear",
+    "name": "big gear",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/big-gear.svg"
+  },
+  {
+    "id": "catch",
+    "name": "catch",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/catch.svg"
+  },
+  {
+    "id": "cauldron",
+    "name": "cauldron",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/cauldron.svg"
+  },
+  {
+    "id": "chameleon-glyph",
+    "name": "chameleon glyph",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/chameleon-glyph.svg"
+  },
+  {
+    "id": "death-juice",
+    "name": "death juice",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/death-juice.svg"
+  },
+  {
+    "id": "distraction",
+    "name": "distraction",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/distraction.svg"
+  },
+  {
+    "id": "fish-cooked",
+    "name": "fish cooked",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/fish-cooked.svg"
+  },
+  {
+    "id": "flying-shuriken",
+    "name": "flying shuriken",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/flying-shuriken.svg"
+  },
+  {
+    "id": "fried-fish",
+    "name": "fried fish",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/fried-fish.svg"
+  },
+  {
+    "id": "hooded-assassin",
+    "name": "hooded assassin",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/hooded-assassin.svg"
+  },
+  {
+    "id": "hooded-figure",
+    "name": "hooded figure",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/hooded-figure.svg"
+  },
+  {
+    "id": "kusarigama",
+    "name": "kusarigama",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/kusarigama.svg"
+  },
+  {
+    "id": "ninja-head",
+    "name": "ninja head",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/ninja-head.svg"
+  },
+  {
+    "id": "ninja-heroic-stance",
+    "name": "ninja heroic stance",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/ninja-heroic-stance.svg"
+  },
+  {
+    "id": "north-star-shuriken",
+    "name": "north star shuriken",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/north-star-shuriken.svg"
+  },
+  {
+    "id": "on-sight",
+    "name": "on sight",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/on-sight.svg"
+  },
+  {
+    "id": "plants-and-animals",
+    "name": "plants and animals",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/plants-and-animals.svg"
+  },
+  {
+    "id": "ram",
+    "name": "ram",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/ram.svg"
+  },
+  {
+    "id": "revolt",
+    "name": "revolt",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/revolt.svg"
+  },
+  {
+    "id": "robber-hand",
+    "name": "robber hand",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/robber-hand.svg"
+  },
+  {
+    "id": "running-ninja",
+    "name": "running ninja",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/running-ninja.svg"
+  },
+  {
+    "id": "severed-hand",
+    "name": "severed hand",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/severed-hand.svg"
+  },
+  {
+    "id": "sharp-shuriken",
+    "name": "sharp shuriken",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/sharp-shuriken.svg"
+  },
+  {
+    "id": "shuriken",
+    "name": "shuriken",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/shuriken.svg"
+  },
+  {
+    "id": "skull-sabertooth",
+    "name": "skull sabertooth",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/skull-sabertooth.svg"
+  },
+  {
+    "id": "smoke-bomb",
+    "name": "smoke bomb",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/smoke-bomb.svg"
+  },
+  {
+    "id": "star-shuriken",
+    "name": "star shuriken",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/star-shuriken.svg"
+  },
+  {
+    "id": "tabi-boot",
+    "name": "tabi boot",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/tabi-boot.svg"
+  },
+  {
+    "id": "three-pointed-shuriken",
+    "name": "three pointed shuriken",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/three-pointed-shuriken.svg"
+  },
+  {
+    "id": "whirlpool-shuriken",
+    "name": "whirlpool shuriken",
+    "contributor": "darkzaitzev",
+    "svgPath": "/game-icons/darkzaitzev/whirlpool-shuriken.svg"
+  },
+  {
+    "id": "3d-glasses",
+    "name": "3d glasses",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/3d-glasses.svg"
+  },
+  {
+    "id": "3d-hammer",
+    "name": "3d hammer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/3d-hammer.svg"
+  },
+  {
+    "id": "3d-meeple",
+    "name": "3d meeple",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/3d-meeple.svg"
+  },
+  {
+    "id": "3d-stairs",
+    "name": "3d stairs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/3d-stairs.svg"
+  },
+  {
+    "id": "abacus",
+    "name": "abacus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/abacus.svg"
+  },
+  {
+    "id": "abbot-meeple",
+    "name": "abbot meeple",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/abbot-meeple.svg"
+  },
+  {
+    "id": "abdominal-armor",
+    "name": "abdominal armor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/abdominal-armor.svg"
+  },
+  {
+    "id": "achilles-heel",
+    "name": "achilles heel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/achilles-heel.svg"
+  },
+  {
+    "id": "acoustic-megaphone",
+    "name": "acoustic megaphone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/acoustic-megaphone.svg"
+  },
+  {
+    "id": "aero-bike",
+    "name": "aero bike",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/aero-bike.svg"
+  },
+  {
+    "id": "africa",
+    "name": "africa",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/africa.svg"
+  },
+  {
+    "id": "agave",
+    "name": "agave",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/agave.svg"
+  },
+  {
+    "id": "ages",
+    "name": "ages",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ages.svg"
+  },
+  {
+    "id": "air-balloon",
+    "name": "air balloon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/air-balloon.svg"
+  },
+  {
+    "id": "air-man",
+    "name": "air man",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/air-man.svg"
+  },
+  {
+    "id": "airplane-arrival",
+    "name": "airplane arrival",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/airplane-arrival.svg"
+  },
+  {
+    "id": "airplane-departure",
+    "name": "airplane departure",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/airplane-departure.svg"
+  },
+  {
+    "id": "airtight-hatch",
+    "name": "airtight hatch",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/airtight-hatch.svg"
+  },
+  {
+    "id": "akhet",
+    "name": "akhet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/akhet.svg"
+  },
+  {
+    "id": "alarm-clock",
+    "name": "alarm clock",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/alarm-clock.svg"
+  },
+  {
+    "id": "algae",
+    "name": "algae",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/algae.svg"
+  },
+  {
+    "id": "algeria",
+    "name": "algeria",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/algeria.svg"
+  },
+  {
+    "id": "alien-bug",
+    "name": "alien bug",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/alien-bug.svg"
+  },
+  {
+    "id": "alien-egg",
+    "name": "alien egg",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/alien-egg.svg"
+  },
+  {
+    "id": "all-seeing-eye",
+    "name": "all seeing eye",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/all-seeing-eye.svg"
+  },
+  {
+    "id": "almond",
+    "name": "almond",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/almond.svg"
+  },
+  {
+    "id": "amber-mosquito",
+    "name": "amber mosquito",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/amber-mosquito.svg"
+  },
+  {
+    "id": "ambulance",
+    "name": "ambulance",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ambulance.svg"
+  },
+  {
+    "id": "american-football-ball",
+    "name": "american football ball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/american-football-ball.svg"
+  },
+  {
+    "id": "american-football-helmet",
+    "name": "american football helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/american-football-helmet.svg"
+  },
+  {
+    "id": "american-football-player",
+    "name": "american football player",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/american-football-player.svg"
+  },
+  {
+    "id": "american-shield",
+    "name": "american shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/american-shield.svg"
+  },
+  {
+    "id": "amphora",
+    "name": "amphora",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/amphora.svg"
+  },
+  {
+    "id": "ample-dress",
+    "name": "ample dress",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ample-dress.svg"
+  },
+  {
+    "id": "anarchy",
+    "name": "anarchy",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/anarchy.svg"
+  },
+  {
+    "id": "ancient-columns",
+    "name": "ancient columns",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ancient-columns.svg"
+  },
+  {
+    "id": "ancient-ruins",
+    "name": "ancient ruins",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ancient-ruins.svg"
+  },
+  {
+    "id": "ancient-screw",
+    "name": "ancient screw",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ancient-screw.svg"
+  },
+  {
+    "id": "ancient-sword",
+    "name": "ancient sword",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ancient-sword.svg"
+  },
+  {
+    "id": "angola",
+    "name": "angola",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/angola.svg"
+  },
+  {
+    "id": "angry-eyes",
+    "name": "angry eyes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/angry-eyes.svg"
+  },
+  {
+    "id": "animal-hide",
+    "name": "animal hide",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/animal-hide.svg"
+  },
+  {
+    "id": "ant",
+    "name": "ant",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ant.svg"
+  },
+  {
+    "id": "antarctica",
+    "name": "antarctica",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/antarctica.svg"
+  },
+  {
+    "id": "antibody",
+    "name": "antibody",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/antibody.svg"
+  },
+  {
+    "id": "anticlockwise-rotation",
+    "name": "anticlockwise rotation",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/anticlockwise-rotation.svg"
+  },
+  {
+    "id": "ants",
+    "name": "ants",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ants.svg"
+  },
+  {
+    "id": "anubis",
+    "name": "anubis",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/anubis.svg"
+  },
+  {
+    "id": "apollo-capsule",
+    "name": "apollo capsule",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/apollo-capsule.svg"
+  },
+  {
+    "id": "apple-core",
+    "name": "apple core",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/apple-core.svg"
+  },
+  {
+    "id": "aquarium",
+    "name": "aquarium",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/aquarium.svg"
+  },
+  {
+    "id": "aquarius",
+    "name": "aquarius",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/aquarius.svg"
+  },
+  {
+    "id": "aqueduct",
+    "name": "aqueduct",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/aqueduct.svg"
+  },
+  {
+    "id": "arabic-door",
+    "name": "arabic door",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/arabic-door.svg"
+  },
+  {
+    "id": "arc-triomphe",
+    "name": "arc triomphe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/arc-triomphe.svg"
+  },
+  {
+    "id": "arch-bridge",
+    "name": "arch bridge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/arch-bridge.svg"
+  },
+  {
+    "id": "archer",
+    "name": "archer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/archer.svg"
+  },
+  {
+    "id": "archive-register",
+    "name": "archive register",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/archive-register.svg"
+  },
+  {
+    "id": "archive-research",
+    "name": "archive research",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/archive-research.svg"
+  },
+  {
+    "id": "aries",
+    "name": "aries",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/aries.svg"
+  },
+  {
+    "id": "arm-bandage",
+    "name": "arm bandage",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/arm-bandage.svg"
+  },
+  {
+    "id": "arm-sling",
+    "name": "arm sling",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/arm-sling.svg"
+  },
+  {
+    "id": "arm",
+    "name": "arm",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/arm.svg"
+  },
+  {
+    "id": "armadillo",
+    "name": "armadillo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/armadillo.svg"
+  },
+  {
+    "id": "armor-cuisses",
+    "name": "armor cuisses",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/armor-cuisses.svg"
+  },
+  {
+    "id": "armor-downgrade",
+    "name": "armor downgrade",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/armor-downgrade.svg"
+  },
+  {
+    "id": "armor-punch",
+    "name": "armor punch",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/armor-punch.svg"
+  },
+  {
+    "id": "armor-upgrade",
+    "name": "armor upgrade",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/armor-upgrade.svg"
+  },
+  {
+    "id": "armored-boomerang",
+    "name": "armored boomerang",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/armored-boomerang.svg"
+  },
+  {
+    "id": "arrest",
+    "name": "arrest",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/arrest.svg"
+  },
+  {
+    "id": "arrow-cursor",
+    "name": "arrow cursor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/arrow-cursor.svg"
+  },
+  {
+    "id": "arrow-wings",
+    "name": "arrow wings",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/arrow-wings.svg"
+  },
+  {
+    "id": "ascending-block",
+    "name": "ascending block",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ascending-block.svg"
+  },
+  {
+    "id": "asian-lantern",
+    "name": "asian lantern",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/asian-lantern.svg"
+  },
+  {
+    "id": "asparagus",
+    "name": "asparagus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/asparagus.svg"
+  },
+  {
+    "id": "aspergillum",
+    "name": "aspergillum",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/aspergillum.svg"
+  },
+  {
+    "id": "asteroid",
+    "name": "asteroid",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/asteroid.svg"
+  },
+  {
+    "id": "astronaut-helmet",
+    "name": "astronaut helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/astronaut-helmet.svg"
+  },
+  {
+    "id": "atlas",
+    "name": "atlas",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/atlas.svg"
+  },
+  {
+    "id": "atom-core",
+    "name": "atom core",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/atom-core.svg"
+  },
+  {
+    "id": "attached-shield",
+    "name": "attached shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/attached-shield.svg"
+  },
+  {
+    "id": "attack-gauge",
+    "name": "attack gauge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/attack-gauge.svg"
+  },
+  {
+    "id": "audio-cassette",
+    "name": "audio cassette",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/audio-cassette.svg"
+  },
+  {
+    "id": "australia",
+    "name": "australia",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/australia.svg"
+  },
+  {
+    "id": "avocado",
+    "name": "avocado",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/avocado.svg"
+  },
+  {
+    "id": "avoidance",
+    "name": "avoidance",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/avoidance.svg"
+  },
+  {
+    "id": "axe-in-log",
+    "name": "axe in log",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/axe-in-log.svg"
+  },
+  {
+    "id": "axe-sword",
+    "name": "axe sword",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/axe-sword.svg"
+  },
+  {
+    "id": "aztec-calendar-sun",
+    "name": "aztec calendar sun",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/aztec-calendar-sun.svg"
+  },
+  {
+    "id": "azul-flake",
+    "name": "azul flake",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/azul-flake.svg"
+  },
+  {
+    "id": "baby-bottle",
+    "name": "baby bottle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/baby-bottle.svg"
+  },
+  {
+    "id": "baby-face",
+    "name": "baby face",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/baby-face.svg"
+  },
+  {
+    "id": "babyfoot-players",
+    "name": "babyfoot players",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/babyfoot-players.svg"
+  },
+  {
+    "id": "backgammon",
+    "name": "backgammon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/backgammon.svg"
+  },
+  {
+    "id": "backpack",
+    "name": "backpack",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/backpack.svg"
+  },
+  {
+    "id": "backward-time",
+    "name": "backward time",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/backward-time.svg"
+  },
+  {
+    "id": "bacon",
+    "name": "bacon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bacon.svg"
+  },
+  {
+    "id": "bad-breath",
+    "name": "bad breath",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bad-breath.svg"
+  },
+  {
+    "id": "bagpipes",
+    "name": "bagpipes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bagpipes.svg"
+  },
+  {
+    "id": "ball-pyramid",
+    "name": "ball pyramid",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ball-pyramid.svg"
+  },
+  {
+    "id": "ballerina-shoes",
+    "name": "ballerina shoes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ballerina-shoes.svg"
+  },
+  {
+    "id": "balloon-dog",
+    "name": "balloon dog",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/balloon-dog.svg"
+  },
+  {
+    "id": "bamboo-fountain",
+    "name": "bamboo fountain",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bamboo-fountain.svg"
+  },
+  {
+    "id": "bamboo",
+    "name": "bamboo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bamboo.svg"
+  },
+  {
+    "id": "banana-bunch",
+    "name": "banana bunch",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/banana-bunch.svg"
+  },
+  {
+    "id": "banana-peel",
+    "name": "banana peel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/banana-peel.svg"
+  },
+  {
+    "id": "banana-peeled",
+    "name": "banana peeled",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/banana-peeled.svg"
+  },
+  {
+    "id": "banana",
+    "name": "banana",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/banana.svg"
+  },
+  {
+    "id": "bandana",
+    "name": "bandana",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bandana.svg"
+  },
+  {
+    "id": "bandit",
+    "name": "bandit",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bandit.svg"
+  },
+  {
+    "id": "banging-gavel",
+    "name": "banging gavel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/banging-gavel.svg"
+  },
+  {
+    "id": "banjo",
+    "name": "banjo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/banjo.svg"
+  },
+  {
+    "id": "bank",
+    "name": "bank",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bank.svg"
+  },
+  {
+    "id": "banknote",
+    "name": "banknote",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/banknote.svg"
+  },
+  {
+    "id": "baobab",
+    "name": "baobab",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/baobab.svg"
+  },
+  {
+    "id": "bar-stool",
+    "name": "bar stool",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bar-stool.svg"
+  },
+  {
+    "id": "barbarian",
+    "name": "barbarian",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/barbarian.svg"
+  },
+  {
+    "id": "barbecue",
+    "name": "barbecue",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/barbecue.svg"
+  },
+  {
+    "id": "barn",
+    "name": "barn",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/barn.svg"
+  },
+  {
+    "id": "barracks-tent",
+    "name": "barracks tent",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/barracks-tent.svg"
+  },
+  {
+    "id": "barracks",
+    "name": "barracks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/barracks.svg"
+  },
+  {
+    "id": "barrel-leak",
+    "name": "barrel leak",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/barrel-leak.svg"
+  },
+  {
+    "id": "barrel",
+    "name": "barrel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/barrel.svg"
+  },
+  {
+    "id": "barricade",
+    "name": "barricade",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/barricade.svg"
+  },
+  {
+    "id": "barrier",
+    "name": "barrier",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/barrier.svg"
+  },
+  {
+    "id": "base-dome",
+    "name": "base dome",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/base-dome.svg"
+  },
+  {
+    "id": "baseball-bat",
+    "name": "baseball bat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/baseball-bat.svg"
+  },
+  {
+    "id": "baseball-glove",
+    "name": "baseball glove",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/baseball-glove.svg"
+  },
+  {
+    "id": "basket",
+    "name": "basket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/basket.svg"
+  },
+  {
+    "id": "basketball-ball",
+    "name": "basketball ball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/basketball-ball.svg"
+  },
+  {
+    "id": "basketball-basket",
+    "name": "basketball basket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/basketball-basket.svg"
+  },
+  {
+    "id": "basketball-jersey",
+    "name": "basketball jersey",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/basketball-jersey.svg"
+  },
+  {
+    "id": "basset-hound-head",
+    "name": "basset hound head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/basset-hound-head.svg"
+  },
+  {
+    "id": "bastet",
+    "name": "bastet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bastet.svg"
+  },
+  {
+    "id": "bat-leth",
+    "name": "bat leth",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bat-leth.svg"
+  },
+  {
+    "id": "bat-mask",
+    "name": "bat mask",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bat-mask.svg"
+  },
+  {
+    "id": "bat",
+    "name": "bat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bat.svg"
+  },
+  {
+    "id": "bathtub",
+    "name": "bathtub",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bathtub.svg"
+  },
+  {
+    "id": "battle-mech",
+    "name": "battle mech",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/battle-mech.svg"
+  },
+  {
+    "id": "beach-bag",
+    "name": "beach bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/beach-bag.svg"
+  },
+  {
+    "id": "beach-ball",
+    "name": "beach ball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/beach-ball.svg"
+  },
+  {
+    "id": "beach-bucket",
+    "name": "beach bucket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/beach-bucket.svg"
+  },
+  {
+    "id": "beam-satellite",
+    "name": "beam satellite",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/beam-satellite.svg"
+  },
+  {
+    "id": "bear-head",
+    "name": "bear head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bear-head.svg"
+  },
+  {
+    "id": "beaver",
+    "name": "beaver",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/beaver.svg"
+  },
+  {
+    "id": "bed-lamp",
+    "name": "bed lamp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bed-lamp.svg"
+  },
+  {
+    "id": "bed",
+    "name": "bed",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bed.svg"
+  },
+  {
+    "id": "beehive",
+    "name": "beehive",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/beehive.svg"
+  },
+  {
+    "id": "beer-bottle",
+    "name": "beer bottle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/beer-bottle.svg"
+  },
+  {
+    "id": "beer-horn",
+    "name": "beer horn",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/beer-horn.svg"
+  },
+  {
+    "id": "beet",
+    "name": "beet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/beet.svg"
+  },
+  {
+    "id": "belgium",
+    "name": "belgium",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/belgium.svg"
+  },
+  {
+    "id": "bell-pepper",
+    "name": "bell pepper",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bell-pepper.svg"
+  },
+  {
+    "id": "bellows",
+    "name": "bellows",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bellows.svg"
+  },
+  {
+    "id": "belt-armor",
+    "name": "belt armor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/belt-armor.svg"
+  },
+  {
+    "id": "berries-bowl",
+    "name": "berries bowl",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/berries-bowl.svg"
+  },
+  {
+    "id": "berry-bush",
+    "name": "berry bush",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/berry-bush.svg"
+  },
+  {
+    "id": "biceps",
+    "name": "biceps",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/biceps.svg"
+  },
+  {
+    "id": "billed-cap",
+    "name": "billed cap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/billed-cap.svg"
+  },
+  {
+    "id": "bindle",
+    "name": "bindle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bindle.svg"
+  },
+  {
+    "id": "binoculars",
+    "name": "binoculars",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/binoculars.svg"
+  },
+  {
+    "id": "bird-cage",
+    "name": "bird cage",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bird-cage.svg"
+  },
+  {
+    "id": "bird-house",
+    "name": "bird house",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bird-house.svg"
+  },
+  {
+    "id": "bird-scepter",
+    "name": "bird scepter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bird-scepter.svg"
+  },
+  {
+    "id": "bison",
+    "name": "bison",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bison.svg"
+  },
+  {
+    "id": "black-belt",
+    "name": "black belt",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/black-belt.svg"
+  },
+  {
+    "id": "black-bridge",
+    "name": "black bridge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/black-bridge.svg"
+  },
+  {
+    "id": "black-knight-helm",
+    "name": "black knight helm",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/black-knight-helm.svg"
+  },
+  {
+    "id": "black-sea",
+    "name": "black sea",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/black-sea.svg"
+  },
+  {
+    "id": "blacksmith",
+    "name": "blacksmith",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/blacksmith.svg"
+  },
+  {
+    "id": "blanket",
+    "name": "blanket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/blanket.svg"
+  },
+  {
+    "id": "blindfold",
+    "name": "blindfold",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/blindfold.svg"
+  },
+  {
+    "id": "block-house",
+    "name": "block house",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/block-house.svg"
+  },
+  {
+    "id": "bo",
+    "name": "bo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bo.svg"
+  },
+  {
+    "id": "boat-engine",
+    "name": "boat engine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/boat-engine.svg"
+  },
+  {
+    "id": "boat-fishing",
+    "name": "boat fishing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/boat-fishing.svg"
+  },
+  {
+    "id": "boat-horizon",
+    "name": "boat horizon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/boat-horizon.svg"
+  },
+  {
+    "id": "boat-propeller",
+    "name": "boat propeller",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/boat-propeller.svg"
+  },
+  {
+    "id": "body-balance",
+    "name": "body balance",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/body-balance.svg"
+  },
+  {
+    "id": "body-height",
+    "name": "body height",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/body-height.svg"
+  },
+  {
+    "id": "bolivia",
+    "name": "bolivia",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bolivia.svg"
+  },
+  {
+    "id": "bolt-bomb",
+    "name": "bolt bomb",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bolt-bomb.svg"
+  },
+  {
+    "id": "bolt-cutter",
+    "name": "bolt cutter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bolt-cutter.svg"
+  },
+  {
+    "id": "bolt-drop",
+    "name": "bolt drop",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bolt-drop.svg"
+  },
+  {
+    "id": "bolt-spell-cast",
+    "name": "bolt spell cast",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bolt-spell-cast.svg"
+  },
+  {
+    "id": "bone-knife",
+    "name": "bone knife",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bone-knife.svg"
+  },
+  {
+    "id": "bone-mace",
+    "name": "bone mace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bone-mace.svg"
+  },
+  {
+    "id": "bonsai-tree",
+    "name": "bonsai tree",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bonsai-tree.svg"
+  },
+  {
+    "id": "book-cover",
+    "name": "book cover",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/book-cover.svg"
+  },
+  {
+    "id": "book-pile",
+    "name": "book pile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/book-pile.svg"
+  },
+  {
+    "id": "bookshelf",
+    "name": "bookshelf",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bookshelf.svg"
+  },
+  {
+    "id": "boombox",
+    "name": "boombox",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/boombox.svg"
+  },
+  {
+    "id": "boomerang-cross",
+    "name": "boomerang cross",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/boomerang-cross.svg"
+  },
+  {
+    "id": "boomerang",
+    "name": "boomerang",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/boomerang.svg"
+  },
+  {
+    "id": "booze",
+    "name": "booze",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/booze.svg"
+  },
+  {
+    "id": "boss-key",
+    "name": "boss key",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/boss-key.svg"
+  },
+  {
+    "id": "bottle-cap",
+    "name": "bottle cap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bottle-cap.svg"
+  },
+  {
+    "id": "bottled-shadow",
+    "name": "bottled shadow",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bottled-shadow.svg"
+  },
+  {
+    "id": "boulder-dash",
+    "name": "boulder dash",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/boulder-dash.svg"
+  },
+  {
+    "id": "bouncing-spring",
+    "name": "bouncing spring",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bouncing-spring.svg"
+  },
+  {
+    "id": "bow-arrow",
+    "name": "bow arrow",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bow-arrow.svg"
+  },
+  {
+    "id": "bow-string",
+    "name": "bow string",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bow-string.svg"
+  },
+  {
+    "id": "bow-tie-ribbon",
+    "name": "bow tie ribbon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bow-tie-ribbon.svg"
+  },
+  {
+    "id": "bow-tie",
+    "name": "bow tie",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bow-tie.svg"
+  },
+  {
+    "id": "bowels",
+    "name": "bowels",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bowels.svg"
+  },
+  {
+    "id": "bowen-knot",
+    "name": "bowen knot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bowen-knot.svg"
+  },
+  {
+    "id": "bowling-alley",
+    "name": "bowling alley",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bowling-alley.svg"
+  },
+  {
+    "id": "bowling-pin",
+    "name": "bowling pin",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bowling-pin.svg"
+  },
+  {
+    "id": "bowling-strike",
+    "name": "bowling strike",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bowling-strike.svg"
+  },
+  {
+    "id": "box-cutter",
+    "name": "box cutter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/box-cutter.svg"
+  },
+  {
+    "id": "box-unpacking",
+    "name": "box unpacking",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/box-unpacking.svg"
+  },
+  {
+    "id": "boxing-ring",
+    "name": "boxing ring",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/boxing-ring.svg"
+  },
+  {
+    "id": "bracer",
+    "name": "bracer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bracer.svg"
+  },
+  {
+    "id": "brain-dump",
+    "name": "brain dump",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/brain-dump.svg"
+  },
+  {
+    "id": "brain-leak",
+    "name": "brain leak",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/brain-leak.svg"
+  },
+  {
+    "id": "brain-tentacle",
+    "name": "brain tentacle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/brain-tentacle.svg"
+  },
+  {
+    "id": "brasero",
+    "name": "brasero",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/brasero.svg"
+  },
+  {
+    "id": "brass-knuckles",
+    "name": "brass knuckles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/brass-knuckles.svg"
+  },
+  {
+    "id": "brazil-flag",
+    "name": "brazil flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/brazil-flag.svg"
+  },
+  {
+    "id": "brazil",
+    "name": "brazil",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/brazil.svg"
+  },
+  {
+    "id": "bread-slice",
+    "name": "bread slice",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bread-slice.svg"
+  },
+  {
+    "id": "bread",
+    "name": "bread",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bread.svg"
+  },
+  {
+    "id": "brick-pile",
+    "name": "brick pile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/brick-pile.svg"
+  },
+  {
+    "id": "brick-wall",
+    "name": "brick wall",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/brick-wall.svg"
+  },
+  {
+    "id": "briefcase",
+    "name": "briefcase",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/briefcase.svg"
+  },
+  {
+    "id": "broccoli",
+    "name": "broccoli",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/broccoli.svg"
+  },
+  {
+    "id": "broken-axe",
+    "name": "broken axe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/broken-axe.svg"
+  },
+  {
+    "id": "broken-pottery",
+    "name": "broken pottery",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/broken-pottery.svg"
+  },
+  {
+    "id": "broken-wall",
+    "name": "broken wall",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/broken-wall.svg"
+  },
+  {
+    "id": "broom",
+    "name": "broom",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/broom.svg"
+  },
+  {
+    "id": "brute",
+    "name": "brute",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/brute.svg"
+  },
+  {
+    "id": "buffalo-head",
+    "name": "buffalo head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/buffalo-head.svg"
+  },
+  {
+    "id": "bug-net",
+    "name": "bug net",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bug-net.svg"
+  },
+  {
+    "id": "bulgaria",
+    "name": "bulgaria",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bulgaria.svg"
+  },
+  {
+    "id": "bulldozer",
+    "name": "bulldozer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bulldozer.svg"
+  },
+  {
+    "id": "bullet-bill",
+    "name": "bullet bill",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bullet-bill.svg"
+  },
+  {
+    "id": "bullet-impacts",
+    "name": "bullet impacts",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bullet-impacts.svg"
+  },
+  {
+    "id": "bully-minion",
+    "name": "bully minion",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bully-minion.svg"
+  },
+  {
+    "id": "bunk-beds",
+    "name": "bunk beds",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bunk-beds.svg"
+  },
+  {
+    "id": "buoy",
+    "name": "buoy",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/buoy.svg"
+  },
+  {
+    "id": "burning-forest",
+    "name": "burning forest",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/burning-forest.svg"
+  },
+  {
+    "id": "bus-doors",
+    "name": "bus doors",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bus-doors.svg"
+  },
+  {
+    "id": "bus",
+    "name": "bus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/bus.svg"
+  },
+  {
+    "id": "butter-toast",
+    "name": "butter toast",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/butter-toast.svg"
+  },
+  {
+    "id": "butter",
+    "name": "butter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/butter.svg"
+  },
+  {
+    "id": "butterfly-flower",
+    "name": "butterfly flower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/butterfly-flower.svg"
+  },
+  {
+    "id": "butterfly-knife",
+    "name": "butterfly knife",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/butterfly-knife.svg"
+  },
+  {
+    "id": "button-finger",
+    "name": "button finger",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/button-finger.svg"
+  },
+  {
+    "id": "buy-card",
+    "name": "buy card",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/buy-card.svg"
+  },
+  {
+    "id": "byzantin-temple",
+    "name": "byzantin temple",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/byzantin-temple.svg"
+  },
+  {
+    "id": "cabbage",
+    "name": "cabbage",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cabbage.svg"
+  },
+  {
+    "id": "cable-stayed-bridge",
+    "name": "cable stayed bridge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cable-stayed-bridge.svg"
+  },
+  {
+    "id": "cactus-pot",
+    "name": "cactus pot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cactus-pot.svg"
+  },
+  {
+    "id": "cactus-tap",
+    "name": "cactus tap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cactus-tap.svg"
+  },
+  {
+    "id": "cactus",
+    "name": "cactus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cactus.svg"
+  },
+  {
+    "id": "cadillac-helm",
+    "name": "cadillac helm",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cadillac-helm.svg"
+  },
+  {
+    "id": "caduceus",
+    "name": "caduceus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/caduceus.svg"
+  },
+  {
+    "id": "caesar",
+    "name": "caesar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/caesar.svg"
+  },
+  {
+    "id": "cage",
+    "name": "cage",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cage.svg"
+  },
+  {
+    "id": "calavera",
+    "name": "calavera",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/calavera.svg"
+  },
+  {
+    "id": "calculator",
+    "name": "calculator",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/calculator.svg"
+  },
+  {
+    "id": "calendar-half-year",
+    "name": "calendar half year",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/calendar-half-year.svg"
+  },
+  {
+    "id": "calendar",
+    "name": "calendar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/calendar.svg"
+  },
+  {
+    "id": "caltrops",
+    "name": "caltrops",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/caltrops.svg"
+  },
+  {
+    "id": "camargue-cross",
+    "name": "camargue cross",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/camargue-cross.svg"
+  },
+  {
+    "id": "cambodia",
+    "name": "cambodia",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cambodia.svg"
+  },
+  {
+    "id": "camel-head",
+    "name": "camel head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/camel-head.svg"
+  },
+  {
+    "id": "camel",
+    "name": "camel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/camel.svg"
+  },
+  {
+    "id": "camp-cooking-pot",
+    "name": "camp cooking pot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/camp-cooking-pot.svg"
+  },
+  {
+    "id": "camping-tent",
+    "name": "camping tent",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/camping-tent.svg"
+  },
+  {
+    "id": "cancer",
+    "name": "cancer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cancer.svg"
+  },
+  {
+    "id": "candles",
+    "name": "candles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/candles.svg"
+  },
+  {
+    "id": "candlestick-phone",
+    "name": "candlestick phone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/candlestick-phone.svg"
+  },
+  {
+    "id": "candy-canes",
+    "name": "candy canes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/candy-canes.svg"
+  },
+  {
+    "id": "canned-fish",
+    "name": "canned fish",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/canned-fish.svg"
+  },
+  {
+    "id": "canoe",
+    "name": "canoe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/canoe.svg"
+  },
+  {
+    "id": "cantua",
+    "name": "cantua",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cantua.svg"
+  },
+  {
+    "id": "cape-armor",
+    "name": "cape armor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cape-armor.svg"
+  },
+  {
+    "id": "cape",
+    "name": "cape",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cape.svg"
+  },
+  {
+    "id": "capricorn",
+    "name": "capricorn",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/capricorn.svg"
+  },
+  {
+    "id": "captain-hat-profile",
+    "name": "captain hat profile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/captain-hat-profile.svg"
+  },
+  {
+    "id": "car-battery",
+    "name": "car battery",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/car-battery.svg"
+  },
+  {
+    "id": "car-door",
+    "name": "car door",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/car-door.svg"
+  },
+  {
+    "id": "car-key",
+    "name": "car key",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/car-key.svg"
+  },
+  {
+    "id": "car-seat",
+    "name": "car seat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/car-seat.svg"
+  },
+  {
+    "id": "car-wheel",
+    "name": "car wheel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/car-wheel.svg"
+  },
+  {
+    "id": "carabiner",
+    "name": "carabiner",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/carabiner.svg"
+  },
+  {
+    "id": "carambola",
+    "name": "carambola",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/carambola.svg"
+  },
+  {
+    "id": "caravan",
+    "name": "caravan",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/caravan.svg"
+  },
+  {
+    "id": "caravel",
+    "name": "caravel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/caravel.svg"
+  },
+  {
+    "id": "card-burn",
+    "name": "card burn",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/card-burn.svg"
+  },
+  {
+    "id": "card-exchange",
+    "name": "card exchange",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/card-exchange.svg"
+  },
+  {
+    "id": "card-joker",
+    "name": "card joker",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/card-joker.svg"
+  },
+  {
+    "id": "cardboard-box-closed",
+    "name": "cardboard box closed",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cardboard-box-closed.svg"
+  },
+  {
+    "id": "cardboard-box",
+    "name": "cardboard box",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cardboard-box.svg"
+  },
+  {
+    "id": "cargo-crate",
+    "name": "cargo crate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cargo-crate.svg"
+  },
+  {
+    "id": "cargo-ship",
+    "name": "cargo ship",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cargo-ship.svg"
+  },
+  {
+    "id": "carnival-mask",
+    "name": "carnival mask",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/carnival-mask.svg"
+  },
+  {
+    "id": "carnivorous-plant",
+    "name": "carnivorous plant",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/carnivorous-plant.svg"
+  },
+  {
+    "id": "carousel",
+    "name": "carousel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/carousel.svg"
+  },
+  {
+    "id": "carrot",
+    "name": "carrot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/carrot.svg"
+  },
+  {
+    "id": "cassowary-head",
+    "name": "cassowary head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cassowary-head.svg"
+  },
+  {
+    "id": "castle-ruins",
+    "name": "castle ruins",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/castle-ruins.svg"
+  },
+  {
+    "id": "castle",
+    "name": "castle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/castle.svg"
+  },
+  {
+    "id": "caterpillar",
+    "name": "caterpillar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/caterpillar.svg"
+  },
+  {
+    "id": "cavalry",
+    "name": "cavalry",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cavalry.svg"
+  },
+  {
+    "id": "cave-entrance",
+    "name": "cave entrance",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cave-entrance.svg"
+  },
+  {
+    "id": "caveman",
+    "name": "caveman",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/caveman.svg"
+  },
+  {
+    "id": "cctv-camera",
+    "name": "cctv camera",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cctv-camera.svg"
+  },
+  {
+    "id": "ceiling-barnacle",
+    "name": "ceiling barnacle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ceiling-barnacle.svg"
+  },
+  {
+    "id": "ceiling-light",
+    "name": "ceiling light",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ceiling-light.svg"
+  },
+  {
+    "id": "cellar-barrels",
+    "name": "cellar barrels",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cellar-barrels.svg"
+  },
+  {
+    "id": "centaur-heart",
+    "name": "centaur heart",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/centaur-heart.svg"
+  },
+  {
+    "id": "centaur",
+    "name": "centaur",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/centaur.svg"
+  },
+  {
+    "id": "centurion-helmet",
+    "name": "centurion helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/centurion-helmet.svg"
+  },
+  {
+    "id": "ceremonial-mask",
+    "name": "ceremonial mask",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ceremonial-mask.svg"
+  },
+  {
+    "id": "chainsaw",
+    "name": "chainsaw",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chainsaw.svg"
+  },
+  {
+    "id": "chakram",
+    "name": "chakram",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chakram.svg"
+  },
+  {
+    "id": "chalk-outline-murder",
+    "name": "chalk outline murder",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chalk-outline-murder.svg"
+  },
+  {
+    "id": "champagne-cork",
+    "name": "champagne cork",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/champagne-cork.svg"
+  },
+  {
+    "id": "champions",
+    "name": "champions",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/champions.svg"
+  },
+  {
+    "id": "chanterelles",
+    "name": "chanterelles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chanterelles.svg"
+  },
+  {
+    "id": "character",
+    "name": "character",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/character.svg"
+  },
+  {
+    "id": "charging-bull",
+    "name": "charging bull",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/charging-bull.svg"
+  },
+  {
+    "id": "charging",
+    "name": "charging",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/charging.svg"
+  },
+  {
+    "id": "chart",
+    "name": "chart",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chart.svg"
+  },
+  {
+    "id": "chat-bubble",
+    "name": "chat bubble",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chat-bubble.svg"
+  },
+  {
+    "id": "check-mark",
+    "name": "check mark",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/check-mark.svg"
+  },
+  {
+    "id": "checkered-flag",
+    "name": "checkered flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/checkered-flag.svg"
+  },
+  {
+    "id": "checklist",
+    "name": "checklist",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/checklist.svg"
+  },
+  {
+    "id": "chef-toque",
+    "name": "chef toque",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chef-toque.svg"
+  },
+  {
+    "id": "chelsea-boot",
+    "name": "chelsea boot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chelsea-boot.svg"
+  },
+  {
+    "id": "cherish",
+    "name": "cherish",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cherish.svg"
+  },
+  {
+    "id": "cherry",
+    "name": "cherry",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cherry.svg"
+  },
+  {
+    "id": "chest-armor",
+    "name": "chest armor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chest-armor.svg"
+  },
+  {
+    "id": "chest",
+    "name": "chest",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chest.svg"
+  },
+  {
+    "id": "chestnut-leaf",
+    "name": "chestnut leaf",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chestnut-leaf.svg"
+  },
+  {
+    "id": "chicken-oven",
+    "name": "chicken oven",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chicken-oven.svg"
+  },
+  {
+    "id": "chicken",
+    "name": "chicken",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chicken.svg"
+  },
+  {
+    "id": "chili-pepper",
+    "name": "chili pepper",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chili-pepper.svg"
+  },
+  {
+    "id": "chimney",
+    "name": "chimney",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chimney.svg"
+  },
+  {
+    "id": "chips-bag",
+    "name": "chips bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chips-bag.svg"
+  },
+  {
+    "id": "chisel",
+    "name": "chisel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chisel.svg"
+  },
+  {
+    "id": "choice",
+    "name": "choice",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/choice.svg"
+  },
+  {
+    "id": "chopsticks",
+    "name": "chopsticks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/chopsticks.svg"
+  },
+  {
+    "id": "church",
+    "name": "church",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/church.svg"
+  },
+  {
+    "id": "cigale",
+    "name": "cigale",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cigale.svg"
+  },
+  {
+    "id": "cigar",
+    "name": "cigar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cigar.svg"
+  },
+  {
+    "id": "cigarette",
+    "name": "cigarette",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cigarette.svg"
+  },
+  {
+    "id": "circle-forest",
+    "name": "circle forest",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/circle-forest.svg"
+  },
+  {
+    "id": "circle",
+    "name": "circle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/circle.svg"
+  },
+  {
+    "id": "circling-fish",
+    "name": "circling fish",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/circling-fish.svg"
+  },
+  {
+    "id": "city-car",
+    "name": "city car",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/city-car.svg"
+  },
+  {
+    "id": "clamp",
+    "name": "clamp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/clamp.svg"
+  },
+  {
+    "id": "clapperboard",
+    "name": "clapperboard",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/clapperboard.svg"
+  },
+  {
+    "id": "classical-knowledge",
+    "name": "classical knowledge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/classical-knowledge.svg"
+  },
+  {
+    "id": "claws",
+    "name": "claws",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/claws.svg"
+  },
+  {
+    "id": "clay-brick",
+    "name": "clay brick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/clay-brick.svg"
+  },
+  {
+    "id": "claymore-explosive",
+    "name": "claymore explosive",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/claymore-explosive.svg"
+  },
+  {
+    "id": "cleaver",
+    "name": "cleaver",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cleaver.svg"
+  },
+  {
+    "id": "cleopatra",
+    "name": "cleopatra",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cleopatra.svg"
+  },
+  {
+    "id": "cliff-crossing",
+    "name": "cliff crossing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cliff-crossing.svg"
+  },
+  {
+    "id": "clockwise-rotation",
+    "name": "clockwise rotation",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/clockwise-rotation.svg"
+  },
+  {
+    "id": "closed-barbute",
+    "name": "closed barbute",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/closed-barbute.svg"
+  },
+  {
+    "id": "closed-doors",
+    "name": "closed doors",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/closed-doors.svg"
+  },
+  {
+    "id": "cloth-jar",
+    "name": "cloth jar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cloth-jar.svg"
+  },
+  {
+    "id": "clothes",
+    "name": "clothes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/clothes.svg"
+  },
+  {
+    "id": "clothespin",
+    "name": "clothespin",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/clothespin.svg"
+  },
+  {
+    "id": "cloud-download",
+    "name": "cloud download",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cloud-download.svg"
+  },
+  {
+    "id": "cloud-upload",
+    "name": "cloud upload",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cloud-upload.svg"
+  },
+  {
+    "id": "clown",
+    "name": "clown",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/clown.svg"
+  },
+  {
+    "id": "clownfish",
+    "name": "clownfish",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/clownfish.svg"
+  },
+  {
+    "id": "coa-de-jima",
+    "name": "coa de jima",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coa-de-jima.svg"
+  },
+  {
+    "id": "coal-pile",
+    "name": "coal pile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coal-pile.svg"
+  },
+  {
+    "id": "coal-wagon",
+    "name": "coal wagon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coal-wagon.svg"
+  },
+  {
+    "id": "cobra",
+    "name": "cobra",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cobra.svg"
+  },
+  {
+    "id": "coconuts",
+    "name": "coconuts",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coconuts.svg"
+  },
+  {
+    "id": "coffee-beans",
+    "name": "coffee beans",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coffee-beans.svg"
+  },
+  {
+    "id": "coffee-cup",
+    "name": "coffee cup",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coffee-cup.svg"
+  },
+  {
+    "id": "coffee-pot",
+    "name": "coffee pot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coffee-pot.svg"
+  },
+  {
+    "id": "coiled-nail",
+    "name": "coiled nail",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coiled-nail.svg"
+  },
+  {
+    "id": "coins-pile",
+    "name": "coins pile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coins-pile.svg"
+  },
+  {
+    "id": "coins",
+    "name": "coins",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coins.svg"
+  },
+  {
+    "id": "coliseum",
+    "name": "coliseum",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coliseum.svg"
+  },
+  {
+    "id": "colombia",
+    "name": "colombia",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/colombia.svg"
+  },
+  {
+    "id": "colombian-statue",
+    "name": "colombian statue",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/colombian-statue.svg"
+  },
+  {
+    "id": "column-vase",
+    "name": "column vase",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/column-vase.svg"
+  },
+  {
+    "id": "commercial-airplane",
+    "name": "commercial airplane",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/commercial-airplane.svg"
+  },
+  {
+    "id": "compact-disc",
+    "name": "compact disc",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/compact-disc.svg"
+  },
+  {
+    "id": "companion-cube",
+    "name": "companion cube",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/companion-cube.svg"
+  },
+  {
+    "id": "computer-fan",
+    "name": "computer fan",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/computer-fan.svg"
+  },
+  {
+    "id": "concrete-bag",
+    "name": "concrete bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/concrete-bag.svg"
+  },
+  {
+    "id": "confirmed",
+    "name": "confirmed",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/confirmed.svg"
+  },
+  {
+    "id": "confrontation",
+    "name": "confrontation",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/confrontation.svg"
+  },
+  {
+    "id": "congress",
+    "name": "congress",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/congress.svg"
+  },
+  {
+    "id": "conqueror",
+    "name": "conqueror",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/conqueror.svg"
+  },
+  {
+    "id": "contortionist",
+    "name": "contortionist",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/contortionist.svg"
+  },
+  {
+    "id": "contract",
+    "name": "contract",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/contract.svg"
+  },
+  {
+    "id": "control-tower",
+    "name": "control tower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/control-tower.svg"
+  },
+  {
+    "id": "convergence-target",
+    "name": "convergence target",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/convergence-target.svg"
+  },
+  {
+    "id": "converse-shoe",
+    "name": "converse shoe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/converse-shoe.svg"
+  },
+  {
+    "id": "convict",
+    "name": "convict",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/convict.svg"
+  },
+  {
+    "id": "convince",
+    "name": "convince",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/convince.svg"
+  },
+  {
+    "id": "conway-life-glider",
+    "name": "conway life glider",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/conway-life-glider.svg"
+  },
+  {
+    "id": "cook",
+    "name": "cook",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cook.svg"
+  },
+  {
+    "id": "cookie",
+    "name": "cookie",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cookie.svg"
+  },
+  {
+    "id": "cooking-glove",
+    "name": "cooking glove",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cooking-glove.svg"
+  },
+  {
+    "id": "cooking-pot",
+    "name": "cooking pot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cooking-pot.svg"
+  },
+  {
+    "id": "cooler",
+    "name": "cooler",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cooler.svg"
+  },
+  {
+    "id": "coral",
+    "name": "coral",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coral.svg"
+  },
+  {
+    "id": "cork-hat",
+    "name": "cork hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cork-hat.svg"
+  },
+  {
+    "id": "corkscrew",
+    "name": "corkscrew",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/corkscrew.svg"
+  },
+  {
+    "id": "corn",
+    "name": "corn",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/corn.svg"
+  },
+  {
+    "id": "corner-flag",
+    "name": "corner flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/corner-flag.svg"
+  },
+  {
+    "id": "cornucopia",
+    "name": "cornucopia",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cornucopia.svg"
+  },
+  {
+    "id": "coronation",
+    "name": "coronation",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/coronation.svg"
+  },
+  {
+    "id": "corporal",
+    "name": "corporal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/corporal.svg"
+  },
+  {
+    "id": "corset",
+    "name": "corset",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/corset.svg"
+  },
+  {
+    "id": "corsica",
+    "name": "corsica",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/corsica.svg"
+  },
+  {
+    "id": "cosmic-egg",
+    "name": "cosmic egg",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cosmic-egg.svg"
+  },
+  {
+    "id": "cotton-flower",
+    "name": "cotton flower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cotton-flower.svg"
+  },
+  {
+    "id": "covered-jar",
+    "name": "covered jar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/covered-jar.svg"
+  },
+  {
+    "id": "cow",
+    "name": "cow",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cow.svg"
+  },
+  {
+    "id": "cowboy-boot",
+    "name": "cowboy boot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cowboy-boot.svg"
+  },
+  {
+    "id": "cowboy-holster",
+    "name": "cowboy holster",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cowboy-holster.svg"
+  },
+  {
+    "id": "cpu",
+    "name": "cpu",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cpu.svg"
+  },
+  {
+    "id": "crafting",
+    "name": "crafting",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crafting.svg"
+  },
+  {
+    "id": "crane",
+    "name": "crane",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crane.svg"
+  },
+  {
+    "id": "credits-currency",
+    "name": "credits currency",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/credits-currency.svg"
+  },
+  {
+    "id": "crenel-crown",
+    "name": "crenel crown",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crenel-crown.svg"
+  },
+  {
+    "id": "crescent-staff",
+    "name": "crescent staff",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crescent-staff.svg"
+  },
+  {
+    "id": "cricket-bat",
+    "name": "cricket bat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cricket-bat.svg"
+  },
+  {
+    "id": "cricket",
+    "name": "cricket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cricket.svg"
+  },
+  {
+    "id": "crime-scene-tape",
+    "name": "crime scene tape",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crime-scene-tape.svg"
+  },
+  {
+    "id": "croissant",
+    "name": "croissant",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/croissant.svg"
+  },
+  {
+    "id": "crook-flail",
+    "name": "crook flail",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crook-flail.svg"
+  },
+  {
+    "id": "cross-shield",
+    "name": "cross shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cross-shield.svg"
+  },
+  {
+    "id": "crosscut-saw",
+    "name": "crosscut saw",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crosscut-saw.svg"
+  },
+  {
+    "id": "crosshair",
+    "name": "crosshair",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crosshair.svg"
+  },
+  {
+    "id": "crossroad",
+    "name": "crossroad",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crossroad.svg"
+  },
+  {
+    "id": "crow-nest",
+    "name": "crow nest",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crow-nest.svg"
+  },
+  {
+    "id": "crowbar",
+    "name": "crowbar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crowbar.svg"
+  },
+  {
+    "id": "crucifix",
+    "name": "crucifix",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crucifix.svg"
+  },
+  {
+    "id": "cryo-chamber",
+    "name": "cryo chamber",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cryo-chamber.svg"
+  },
+  {
+    "id": "crypt-entrance",
+    "name": "crypt entrance",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crypt-entrance.svg"
+  },
+  {
+    "id": "crystal-earrings",
+    "name": "crystal earrings",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crystal-earrings.svg"
+  },
+  {
+    "id": "crystal-shrine",
+    "name": "crystal shrine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/crystal-shrine.svg"
+  },
+  {
+    "id": "cuauhtli",
+    "name": "cuauhtli",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cuauhtli.svg"
+  },
+  {
+    "id": "cube",
+    "name": "cube",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cube.svg"
+  },
+  {
+    "id": "cuckoo-clock",
+    "name": "cuckoo clock",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cuckoo-clock.svg"
+  },
+  {
+    "id": "cupcake",
+    "name": "cupcake",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cupcake.svg"
+  },
+  {
+    "id": "curling-stone",
+    "name": "curling stone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/curling-stone.svg"
+  },
+  {
+    "id": "custodian-helmet",
+    "name": "custodian helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/custodian-helmet.svg"
+  },
+  {
+    "id": "cut-lemon",
+    "name": "cut lemon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cut-lemon.svg"
+  },
+  {
+    "id": "cyber-eye",
+    "name": "cyber eye",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cyber-eye.svg"
+  },
+  {
+    "id": "cyborg-face",
+    "name": "cyborg face",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cyborg-face.svg"
+  },
+  {
+    "id": "cycling",
+    "name": "cycling",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/cycling.svg"
+  },
+  {
+    "id": "daemon-pull",
+    "name": "daemon pull",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/daemon-pull.svg"
+  },
+  {
+    "id": "dagger-rose",
+    "name": "dagger rose",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dagger-rose.svg"
+  },
+  {
+    "id": "dam",
+    "name": "dam",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dam.svg"
+  },
+  {
+    "id": "dandelion-flower",
+    "name": "dandelion flower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dandelion-flower.svg"
+  },
+  {
+    "id": "dango",
+    "name": "dango",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dango.svg"
+  },
+  {
+    "id": "dart",
+    "name": "dart",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dart.svg"
+  },
+  {
+    "id": "database",
+    "name": "database",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/database.svg"
+  },
+  {
+    "id": "dead-head",
+    "name": "dead head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dead-head.svg"
+  },
+  {
+    "id": "death-star",
+    "name": "death star",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/death-star.svg"
+  },
+  {
+    "id": "deer-track",
+    "name": "deer track",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/deer-track.svg"
+  },
+  {
+    "id": "defense-satellite",
+    "name": "defense satellite",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/defense-satellite.svg"
+  },
+  {
+    "id": "deku-tree",
+    "name": "deku tree",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/deku-tree.svg"
+  },
+  {
+    "id": "delicate-perfume",
+    "name": "delicate perfume",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/delicate-perfume.svg"
+  },
+  {
+    "id": "delivery-drone",
+    "name": "delivery drone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/delivery-drone.svg"
+  },
+  {
+    "id": "desert-camp",
+    "name": "desert camp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/desert-camp.svg"
+  },
+  {
+    "id": "desert",
+    "name": "desert",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/desert.svg"
+  },
+  {
+    "id": "deshret-red-crown",
+    "name": "deshret red crown",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/deshret-red-crown.svg"
+  },
+  {
+    "id": "desk",
+    "name": "desk",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/desk.svg"
+  },
+  {
+    "id": "detonator",
+    "name": "detonator",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/detonator.svg"
+  },
+  {
+    "id": "detour",
+    "name": "detour",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/detour.svg"
+  },
+  {
+    "id": "devil-mask",
+    "name": "devil mask",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/devil-mask.svg"
+  },
+  {
+    "id": "dial-padlock",
+    "name": "dial padlock",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dial-padlock.svg"
+  },
+  {
+    "id": "diamond-hilt",
+    "name": "diamond hilt",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/diamond-hilt.svg"
+  },
+  {
+    "id": "diamond-ring",
+    "name": "diamond ring",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/diamond-ring.svg"
+  },
+  {
+    "id": "diamond-trophy",
+    "name": "diamond trophy",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/diamond-trophy.svg"
+  },
+  {
+    "id": "dice-eight-faces-eight",
+    "name": "dice eight faces eight",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-eight-faces-eight.svg"
+  },
+  {
+    "id": "dice-fire",
+    "name": "dice fire",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-fire.svg"
+  },
+  {
+    "id": "dice-shield",
+    "name": "dice shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-shield.svg"
+  },
+  {
+    "id": "dice-six-faces-five",
+    "name": "dice six faces five",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-six-faces-five.svg"
+  },
+  {
+    "id": "dice-six-faces-four",
+    "name": "dice six faces four",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-six-faces-four.svg"
+  },
+  {
+    "id": "dice-six-faces-one",
+    "name": "dice six faces one",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-six-faces-one.svg"
+  },
+  {
+    "id": "dice-six-faces-six",
+    "name": "dice six faces six",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-six-faces-six.svg"
+  },
+  {
+    "id": "dice-six-faces-three",
+    "name": "dice six faces three",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-six-faces-three.svg"
+  },
+  {
+    "id": "dice-six-faces-two",
+    "name": "dice six faces two",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-six-faces-two.svg"
+  },
+  {
+    "id": "dice-target",
+    "name": "dice target",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-target.svg"
+  },
+  {
+    "id": "dice-twenty-faces-one",
+    "name": "dice twenty faces one",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-twenty-faces-one.svg"
+  },
+  {
+    "id": "dice-twenty-faces-twenty",
+    "name": "dice twenty faces twenty",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dice-twenty-faces-twenty.svg"
+  },
+  {
+    "id": "dig-hole",
+    "name": "dig hole",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dig-hole.svg"
+  },
+  {
+    "id": "dimetrodon",
+    "name": "dimetrodon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dimetrodon.svg"
+  },
+  {
+    "id": "diplodocus",
+    "name": "diplodocus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/diplodocus.svg"
+  },
+  {
+    "id": "diploma",
+    "name": "diploma",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/diploma.svg"
+  },
+  {
+    "id": "direction-sign",
+    "name": "direction sign",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/direction-sign.svg"
+  },
+  {
+    "id": "direction-signs",
+    "name": "direction signs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/direction-signs.svg"
+  },
+  {
+    "id": "director-chair",
+    "name": "director chair",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/director-chair.svg"
+  },
+  {
+    "id": "disc-golf-bag",
+    "name": "disc golf bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/disc-golf-bag.svg"
+  },
+  {
+    "id": "disc-golf-basket",
+    "name": "disc golf basket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/disc-golf-basket.svg"
+  },
+  {
+    "id": "discobolus",
+    "name": "discobolus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/discobolus.svg"
+  },
+  {
+    "id": "discussion",
+    "name": "discussion",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/discussion.svg"
+  },
+  {
+    "id": "distress-signal",
+    "name": "distress signal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/distress-signal.svg"
+  },
+  {
+    "id": "diving-helmet",
+    "name": "diving helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/diving-helmet.svg"
+  },
+  {
+    "id": "djed-pillar",
+    "name": "djed pillar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/djed-pillar.svg"
+  },
+  {
+    "id": "djembe",
+    "name": "djembe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/djembe.svg"
+  },
+  {
+    "id": "djinn",
+    "name": "djinn",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/djinn.svg"
+  },
+  {
+    "id": "dog-bowl",
+    "name": "dog bowl",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dog-bowl.svg"
+  },
+  {
+    "id": "dog-house",
+    "name": "dog house",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dog-house.svg"
+  },
+  {
+    "id": "dolmen",
+    "name": "dolmen",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dolmen.svg"
+  },
+  {
+    "id": "dolphin",
+    "name": "dolphin",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dolphin.svg"
+  },
+  {
+    "id": "domino-tiles",
+    "name": "domino tiles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/domino-tiles.svg"
+  },
+  {
+    "id": "doner-kebab",
+    "name": "doner kebab",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/doner-kebab.svg"
+  },
+  {
+    "id": "donut",
+    "name": "donut",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/donut.svg"
+  },
+  {
+    "id": "door-handle",
+    "name": "door handle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/door-handle.svg"
+  },
+  {
+    "id": "door-ring-handle",
+    "name": "door ring handle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/door-ring-handle.svg"
+  },
+  {
+    "id": "door-watcher",
+    "name": "door watcher",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/door-watcher.svg"
+  },
+  {
+    "id": "door",
+    "name": "door",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/door.svg"
+  },
+  {
+    "id": "double-fish",
+    "name": "double fish",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/double-fish.svg"
+  },
+  {
+    "id": "double-necklace",
+    "name": "double necklace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/double-necklace.svg"
+  },
+  {
+    "id": "double-street-lights",
+    "name": "double street lights",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/double-street-lights.svg"
+  },
+  {
+    "id": "dough-roller",
+    "name": "dough roller",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dough-roller.svg"
+  },
+  {
+    "id": "dragon-orb",
+    "name": "dragon orb",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dragon-orb.svg"
+  },
+  {
+    "id": "dragon-shield",
+    "name": "dragon shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dragon-shield.svg"
+  },
+  {
+    "id": "drakkar-dragon",
+    "name": "drakkar dragon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/drakkar-dragon.svg"
+  },
+  {
+    "id": "drakkar",
+    "name": "drakkar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/drakkar.svg"
+  },
+  {
+    "id": "drawbridge",
+    "name": "drawbridge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/drawbridge.svg"
+  },
+  {
+    "id": "dream-catcher",
+    "name": "dream catcher",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dream-catcher.svg"
+  },
+  {
+    "id": "drill",
+    "name": "drill",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/drill.svg"
+  },
+  {
+    "id": "drinking",
+    "name": "drinking",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/drinking.svg"
+  },
+  {
+    "id": "drop-earrings",
+    "name": "drop earrings",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/drop-earrings.svg"
+  },
+  {
+    "id": "drum",
+    "name": "drum",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/drum.svg"
+  },
+  {
+    "id": "duck-palm",
+    "name": "duck palm",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/duck-palm.svg"
+  },
+  {
+    "id": "duck",
+    "name": "duck",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/duck.svg"
+  },
+  {
+    "id": "duffel-bag",
+    "name": "duffel bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/duffel-bag.svg"
+  },
+  {
+    "id": "dunce-cap",
+    "name": "dunce cap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dunce-cap.svg"
+  },
+  {
+    "id": "dungeon-gate",
+    "name": "dungeon gate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dungeon-gate.svg"
+  },
+  {
+    "id": "dungeon-light",
+    "name": "dungeon light",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dungeon-light.svg"
+  },
+  {
+    "id": "duration",
+    "name": "duration",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/duration.svg"
+  },
+  {
+    "id": "dutch-bike",
+    "name": "dutch bike",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dutch-bike.svg"
+  },
+  {
+    "id": "dwarf-face",
+    "name": "dwarf face",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dwarf-face.svg"
+  },
+  {
+    "id": "dwennimmen",
+    "name": "dwennimmen",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dwennimmen.svg"
+  },
+  {
+    "id": "dynamite",
+    "name": "dynamite",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/dynamite.svg"
+  },
+  {
+    "id": "eagle-head",
+    "name": "eagle head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/eagle-head.svg"
+  },
+  {
+    "id": "earrings",
+    "name": "earrings",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/earrings.svg"
+  },
+  {
+    "id": "earth-africa-europe",
+    "name": "earth africa europe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/earth-africa-europe.svg"
+  },
+  {
+    "id": "earth-america",
+    "name": "earth america",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/earth-america.svg"
+  },
+  {
+    "id": "earth-asia-oceania",
+    "name": "earth asia oceania",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/earth-asia-oceania.svg"
+  },
+  {
+    "id": "easter-egg",
+    "name": "easter egg",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/easter-egg.svg"
+  },
+  {
+    "id": "eating-pelican",
+    "name": "eating pelican",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/eating-pelican.svg"
+  },
+  {
+    "id": "eating",
+    "name": "eating",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/eating.svg"
+  },
+  {
+    "id": "ecology",
+    "name": "ecology",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ecology.svg"
+  },
+  {
+    "id": "eel",
+    "name": "eel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/eel.svg"
+  },
+  {
+    "id": "egg-eye",
+    "name": "egg eye",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/egg-eye.svg"
+  },
+  {
+    "id": "egypt",
+    "name": "egypt",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/egypt.svg"
+  },
+  {
+    "id": "egyptian-bird",
+    "name": "egyptian bird",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/egyptian-bird.svg"
+  },
+  {
+    "id": "egyptian-profile",
+    "name": "egyptian profile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/egyptian-profile.svg"
+  },
+  {
+    "id": "egyptian-pyramids",
+    "name": "egyptian pyramids",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/egyptian-pyramids.svg"
+  },
+  {
+    "id": "egyptian-sphinx",
+    "name": "egyptian sphinx",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/egyptian-sphinx.svg"
+  },
+  {
+    "id": "egyptian-temple",
+    "name": "egyptian temple",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/egyptian-temple.svg"
+  },
+  {
+    "id": "egyptian-urns",
+    "name": "egyptian urns",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/egyptian-urns.svg"
+  },
+  {
+    "id": "egyptian-walk",
+    "name": "egyptian walk",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/egyptian-walk.svg"
+  },
+  {
+    "id": "eight-ball",
+    "name": "eight ball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/eight-ball.svg"
+  },
+  {
+    "id": "elbow-pad",
+    "name": "elbow pad",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/elbow-pad.svg"
+  },
+  {
+    "id": "electrical-resistance",
+    "name": "electrical resistance",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/electrical-resistance.svg"
+  },
+  {
+    "id": "electrical-socket",
+    "name": "electrical socket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/electrical-socket.svg"
+  },
+  {
+    "id": "elephant-head",
+    "name": "elephant head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/elephant-head.svg"
+  },
+  {
+    "id": "elephant",
+    "name": "elephant",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/elephant.svg"
+  },
+  {
+    "id": "elevator",
+    "name": "elevator",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/elevator.svg"
+  },
+  {
+    "id": "elf-ear",
+    "name": "elf ear",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/elf-ear.svg"
+  },
+  {
+    "id": "elysium-shade",
+    "name": "elysium shade",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/elysium-shade.svg"
+  },
+  {
+    "id": "emerald-necklace",
+    "name": "emerald necklace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/emerald-necklace.svg"
+  },
+  {
+    "id": "empty-chessboard",
+    "name": "empty chessboard",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/empty-chessboard.svg"
+  },
+  {
+    "id": "empty-metal-bucket-handle",
+    "name": "empty metal bucket handle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/empty-metal-bucket-handle.svg"
+  },
+  {
+    "id": "empty-metal-bucket",
+    "name": "empty metal bucket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/empty-metal-bucket.svg"
+  },
+  {
+    "id": "empty-wood-bucket-handle",
+    "name": "empty wood bucket handle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/empty-wood-bucket-handle.svg"
+  },
+  {
+    "id": "empty-wood-bucket",
+    "name": "empty wood bucket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/empty-wood-bucket.svg"
+  },
+  {
+    "id": "encirclement",
+    "name": "encirclement",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/encirclement.svg"
+  },
+  {
+    "id": "encrypted-channel",
+    "name": "encrypted channel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/encrypted-channel.svg"
+  },
+  {
+    "id": "energy-tank",
+    "name": "energy tank",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/energy-tank.svg"
+  },
+  {
+    "id": "enrage",
+    "name": "enrage",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/enrage.svg"
+  },
+  {
+    "id": "entry-door",
+    "name": "entry door",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/entry-door.svg"
+  },
+  {
+    "id": "ermine",
+    "name": "ermine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ermine.svg"
+  },
+  {
+    "id": "escalator",
+    "name": "escalator",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/escalator.svg"
+  },
+  {
+    "id": "eternal-love",
+    "name": "eternal love",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/eternal-love.svg"
+  },
+  {
+    "id": "european-flag",
+    "name": "european flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/european-flag.svg"
+  },
+  {
+    "id": "evasion",
+    "name": "evasion",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/evasion.svg"
+  },
+  {
+    "id": "evil-love",
+    "name": "evil love",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/evil-love.svg"
+  },
+  {
+    "id": "evil-tower",
+    "name": "evil tower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/evil-tower.svg"
+  },
+  {
+    "id": "executioner-hood",
+    "name": "executioner hood",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/executioner-hood.svg"
+  },
+  {
+    "id": "exit-door",
+    "name": "exit door",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/exit-door.svg"
+  },
+  {
+    "id": "expand",
+    "name": "expand",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/expand.svg"
+  },
+  {
+    "id": "expense",
+    "name": "expense",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/expense.svg"
+  },
+  {
+    "id": "exploding-planet",
+    "name": "exploding planet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/exploding-planet.svg"
+  },
+  {
+    "id": "extra-time",
+    "name": "extra time",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/extra-time.svg"
+  },
+  {
+    "id": "extra-vision",
+    "name": "extra vision",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/extra-vision.svg"
+  },
+  {
+    "id": "eye-of-horus",
+    "name": "eye of horus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/eye-of-horus.svg"
+  },
+  {
+    "id": "eye-target",
+    "name": "eye target",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/eye-target.svg"
+  },
+  {
+    "id": "eyelashes",
+    "name": "eyelashes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/eyelashes.svg"
+  },
+  {
+    "id": "eyepatch",
+    "name": "eyepatch",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/eyepatch.svg"
+  },
+  {
+    "id": "f-clef",
+    "name": "f clef",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/f-clef.svg"
+  },
+  {
+    "id": "face-to-face",
+    "name": "face to face",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/face-to-face.svg"
+  },
+  {
+    "id": "factory-arm",
+    "name": "factory arm",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/factory-arm.svg"
+  },
+  {
+    "id": "factory",
+    "name": "factory",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/factory.svg"
+  },
+  {
+    "id": "fairy-wings",
+    "name": "fairy wings",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fairy-wings.svg"
+  },
+  {
+    "id": "fairy",
+    "name": "fairy",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fairy.svg"
+  },
+  {
+    "id": "falcon-moon",
+    "name": "falcon moon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/falcon-moon.svg"
+  },
+  {
+    "id": "falling-bomb",
+    "name": "falling bomb",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/falling-bomb.svg"
+  },
+  {
+    "id": "falling-rocks",
+    "name": "falling rocks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/falling-rocks.svg"
+  },
+  {
+    "id": "falling-star",
+    "name": "falling star",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/falling-star.svg"
+  },
+  {
+    "id": "fallout-shelter",
+    "name": "fallout shelter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fallout-shelter.svg"
+  },
+  {
+    "id": "family-house",
+    "name": "family house",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/family-house.svg"
+  },
+  {
+    "id": "family-tree",
+    "name": "family tree",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/family-tree.svg"
+  },
+  {
+    "id": "farm-tractor",
+    "name": "farm tractor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/farm-tractor.svg"
+  },
+  {
+    "id": "farmer",
+    "name": "farmer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/farmer.svg"
+  },
+  {
+    "id": "fast-backward-button",
+    "name": "fast backward button",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fast-backward-button.svg"
+  },
+  {
+    "id": "fast-forward-button",
+    "name": "fast forward button",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fast-forward-button.svg"
+  },
+  {
+    "id": "fast-noodles",
+    "name": "fast noodles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fast-noodles.svg"
+  },
+  {
+    "id": "feather-necklace",
+    "name": "feather necklace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/feather-necklace.svg"
+  },
+  {
+    "id": "feline",
+    "name": "feline",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/feline.svg"
+  },
+  {
+    "id": "female-legs",
+    "name": "female legs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/female-legs.svg"
+  },
+  {
+    "id": "female-vampire",
+    "name": "female vampire",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/female-vampire.svg"
+  },
+  {
+    "id": "female",
+    "name": "female",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/female.svg"
+  },
+  {
+    "id": "fencer",
+    "name": "fencer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fencer.svg"
+  },
+  {
+    "id": "fern",
+    "name": "fern",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fern.svg"
+  },
+  {
+    "id": "fertilizer-bag",
+    "name": "fertilizer bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fertilizer-bag.svg"
+  },
+  {
+    "id": "fez",
+    "name": "fez",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fez.svg"
+  },
+  {
+    "id": "figurehead",
+    "name": "figurehead",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/figurehead.svg"
+  },
+  {
+    "id": "files",
+    "name": "files",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/files.svg"
+  },
+  {
+    "id": "film-projector",
+    "name": "film projector",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/film-projector.svg"
+  },
+  {
+    "id": "film-spool",
+    "name": "film spool",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/film-spool.svg"
+  },
+  {
+    "id": "film-strip",
+    "name": "film strip",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/film-strip.svg"
+  },
+  {
+    "id": "finch",
+    "name": "finch",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/finch.svg"
+  },
+  {
+    "id": "finger-print",
+    "name": "finger print",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/finger-print.svg"
+  },
+  {
+    "id": "fingernail",
+    "name": "fingernail",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fingernail.svg"
+  },
+  {
+    "id": "finish-line",
+    "name": "finish line",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/finish-line.svg"
+  },
+  {
+    "id": "fire-extinguisher",
+    "name": "fire extinguisher",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fire-extinguisher.svg"
+  },
+  {
+    "id": "fire-flower",
+    "name": "fire flower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fire-flower.svg"
+  },
+  {
+    "id": "fire-gem",
+    "name": "fire gem",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fire-gem.svg"
+  },
+  {
+    "id": "fire-iris",
+    "name": "fire iris",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fire-iris.svg"
+  },
+  {
+    "id": "fire-shrine",
+    "name": "fire shrine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fire-shrine.svg"
+  },
+  {
+    "id": "fire-spell-cast",
+    "name": "fire spell cast",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fire-spell-cast.svg"
+  },
+  {
+    "id": "fireplace",
+    "name": "fireplace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fireplace.svg"
+  },
+  {
+    "id": "firewall",
+    "name": "firewall",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/firewall.svg"
+  },
+  {
+    "id": "first-aid-kit",
+    "name": "first aid kit",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/first-aid-kit.svg"
+  },
+  {
+    "id": "fish-bucket",
+    "name": "fish bucket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fish-bucket.svg"
+  },
+  {
+    "id": "fish-eggs",
+    "name": "fish eggs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fish-eggs.svg"
+  },
+  {
+    "id": "fish-escape",
+    "name": "fish escape",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fish-escape.svg"
+  },
+  {
+    "id": "fish-monster",
+    "name": "fish monster",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fish-monster.svg"
+  },
+  {
+    "id": "fish-scales",
+    "name": "fish scales",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fish-scales.svg"
+  },
+  {
+    "id": "fish-smoking",
+    "name": "fish smoking",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fish-smoking.svg"
+  },
+  {
+    "id": "fishing-boat",
+    "name": "fishing boat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fishing-boat.svg"
+  },
+  {
+    "id": "fishing-jig",
+    "name": "fishing jig",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fishing-jig.svg"
+  },
+  {
+    "id": "fishing-lure",
+    "name": "fishing lure",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fishing-lure.svg"
+  },
+  {
+    "id": "fishing-pole",
+    "name": "fishing pole",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fishing-pole.svg"
+  },
+  {
+    "id": "fishing-spoon",
+    "name": "fishing spoon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fishing-spoon.svg"
+  },
+  {
+    "id": "fishing",
+    "name": "fishing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fishing.svg"
+  },
+  {
+    "id": "flag-objective",
+    "name": "flag objective",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flag-objective.svg"
+  },
+  {
+    "id": "flail",
+    "name": "flail",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flail.svg"
+  },
+  {
+    "id": "flamethrower-soldier",
+    "name": "flamethrower soldier",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flamethrower-soldier.svg"
+  },
+  {
+    "id": "flamethrower",
+    "name": "flamethrower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flamethrower.svg"
+  },
+  {
+    "id": "flamingo",
+    "name": "flamingo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flamingo.svg"
+  },
+  {
+    "id": "flanged-mace",
+    "name": "flanged mace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flanged-mace.svg"
+  },
+  {
+    "id": "flashlight",
+    "name": "flashlight",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flashlight.svg"
+  },
+  {
+    "id": "flat-platform",
+    "name": "flat platform",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flat-platform.svg"
+  },
+  {
+    "id": "flat-tire",
+    "name": "flat tire",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flat-tire.svg"
+  },
+  {
+    "id": "flatfish",
+    "name": "flatfish",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flatfish.svg"
+  },
+  {
+    "id": "flax",
+    "name": "flax",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flax.svg"
+  },
+  {
+    "id": "fleur-de-lys",
+    "name": "fleur de lys",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fleur-de-lys.svg"
+  },
+  {
+    "id": "flexible-lamp",
+    "name": "flexible lamp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flexible-lamp.svg"
+  },
+  {
+    "id": "flint-spark",
+    "name": "flint spark",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flint-spark.svg"
+  },
+  {
+    "id": "flip-flops",
+    "name": "flip flops",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flip-flops.svg"
+  },
+  {
+    "id": "floating-ghost",
+    "name": "floating ghost",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/floating-ghost.svg"
+  },
+  {
+    "id": "floating-platforms",
+    "name": "floating platforms",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/floating-platforms.svg"
+  },
+  {
+    "id": "floating-tentacles",
+    "name": "floating tentacles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/floating-tentacles.svg"
+  },
+  {
+    "id": "flood",
+    "name": "flood",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flood.svg"
+  },
+  {
+    "id": "floor-hatch",
+    "name": "floor hatch",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/floor-hatch.svg"
+  },
+  {
+    "id": "floor-polisher",
+    "name": "floor polisher",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/floor-polisher.svg"
+  },
+  {
+    "id": "flour",
+    "name": "flour",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flour.svg"
+  },
+  {
+    "id": "flower-emblem",
+    "name": "flower emblem",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flower-emblem.svg"
+  },
+  {
+    "id": "flower-hat",
+    "name": "flower hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flower-hat.svg"
+  },
+  {
+    "id": "flower-star",
+    "name": "flower star",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flower-star.svg"
+  },
+  {
+    "id": "flute",
+    "name": "flute",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flute.svg"
+  },
+  {
+    "id": "fly",
+    "name": "fly",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fly.svg"
+  },
+  {
+    "id": "flying-beetle",
+    "name": "flying beetle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flying-beetle.svg"
+  },
+  {
+    "id": "flying-fox",
+    "name": "flying fox",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flying-fox.svg"
+  },
+  {
+    "id": "flying-target",
+    "name": "flying target",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/flying-target.svg"
+  },
+  {
+    "id": "fog-light",
+    "name": "fog light",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fog-light.svg"
+  },
+  {
+    "id": "fog",
+    "name": "fog",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fog.svg"
+  },
+  {
+    "id": "food-truck",
+    "name": "food truck",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/food-truck.svg"
+  },
+  {
+    "id": "foot-plaster",
+    "name": "foot plaster",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/foot-plaster.svg"
+  },
+  {
+    "id": "footy-field",
+    "name": "footy field",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/footy-field.svg"
+  },
+  {
+    "id": "forearm",
+    "name": "forearm",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/forearm.svg"
+  },
+  {
+    "id": "forest-camp",
+    "name": "forest camp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/forest-camp.svg"
+  },
+  {
+    "id": "forest-entrance",
+    "name": "forest entrance",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/forest-entrance.svg"
+  },
+  {
+    "id": "forest",
+    "name": "forest",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/forest.svg"
+  },
+  {
+    "id": "fork-knife-spoon",
+    "name": "fork knife spoon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fork-knife-spoon.svg"
+  },
+  {
+    "id": "forklift",
+    "name": "forklift",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/forklift.svg"
+  },
+  {
+    "id": "foundry-bucket",
+    "name": "foundry bucket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/foundry-bucket.svg"
+  },
+  {
+    "id": "fox-tail",
+    "name": "fox tail",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fox-tail.svg"
+  },
+  {
+    "id": "france",
+    "name": "france",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/france.svg"
+  },
+  {
+    "id": "freemasonry",
+    "name": "freemasonry",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/freemasonry.svg"
+  },
+  {
+    "id": "french-fries",
+    "name": "french fries",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/french-fries.svg"
+  },
+  {
+    "id": "fried-eggs",
+    "name": "fried eggs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fried-eggs.svg"
+  },
+  {
+    "id": "frisbee",
+    "name": "frisbee",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/frisbee.svg"
+  },
+  {
+    "id": "frog-foot",
+    "name": "frog foot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/frog-foot.svg"
+  },
+  {
+    "id": "frog-prince",
+    "name": "frog prince",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/frog-prince.svg"
+  },
+  {
+    "id": "frozen-body",
+    "name": "frozen body",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/frozen-body.svg"
+  },
+  {
+    "id": "frozen-ring",
+    "name": "frozen ring",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/frozen-ring.svg"
+  },
+  {
+    "id": "fruit-tree",
+    "name": "fruit tree",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fruit-tree.svg"
+  },
+  {
+    "id": "fuel-tank",
+    "name": "fuel tank",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fuel-tank.svg"
+  },
+  {
+    "id": "fuji",
+    "name": "fuji",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fuji.svg"
+  },
+  {
+    "id": "full-folder",
+    "name": "full folder",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/full-folder.svg"
+  },
+  {
+    "id": "full-metal-bucket-handle",
+    "name": "full metal bucket handle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/full-metal-bucket-handle.svg"
+  },
+  {
+    "id": "full-metal-bucket",
+    "name": "full metal bucket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/full-metal-bucket.svg"
+  },
+  {
+    "id": "full-motorcycle-helmet",
+    "name": "full motorcycle helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/full-motorcycle-helmet.svg"
+  },
+  {
+    "id": "full-pizza",
+    "name": "full pizza",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/full-pizza.svg"
+  },
+  {
+    "id": "full-wood-bucket-handle",
+    "name": "full wood bucket handle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/full-wood-bucket-handle.svg"
+  },
+  {
+    "id": "full-wood-bucket",
+    "name": "full wood bucket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/full-wood-bucket.svg"
+  },
+  {
+    "id": "funnel",
+    "name": "funnel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/funnel.svg"
+  },
+  {
+    "id": "fur-boot",
+    "name": "fur boot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fur-boot.svg"
+  },
+  {
+    "id": "fur-shirt",
+    "name": "fur shirt",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/fur-shirt.svg"
+  },
+  {
+    "id": "furnace",
+    "name": "furnace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/furnace.svg"
+  },
+  {
+    "id": "g-clef",
+    "name": "g clef",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/g-clef.svg"
+  },
+  {
+    "id": "galaxy",
+    "name": "galaxy",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/galaxy.svg"
+  },
+  {
+    "id": "galea",
+    "name": "galea",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/galea.svg"
+  },
+  {
+    "id": "galley",
+    "name": "galley",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/galley.svg"
+  },
+  {
+    "id": "game-console",
+    "name": "game console",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/game-console.svg"
+  },
+  {
+    "id": "gamepad",
+    "name": "gamepad",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gamepad.svg"
+  },
+  {
+    "id": "gardening-shears",
+    "name": "gardening shears",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gardening-shears.svg"
+  },
+  {
+    "id": "gargoyle",
+    "name": "gargoyle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gargoyle.svg"
+  },
+  {
+    "id": "garlic",
+    "name": "garlic",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/garlic.svg"
+  },
+  {
+    "id": "gas-pump",
+    "name": "gas pump",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gas-pump.svg"
+  },
+  {
+    "id": "gas-stove",
+    "name": "gas stove",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gas-stove.svg"
+  },
+  {
+    "id": "gate",
+    "name": "gate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gate.svg"
+  },
+  {
+    "id": "gauls-helm",
+    "name": "gauls helm",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gauls-helm.svg"
+  },
+  {
+    "id": "gauntlet",
+    "name": "gauntlet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gauntlet.svg"
+  },
+  {
+    "id": "gear-stick-pattern",
+    "name": "gear stick pattern",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gear-stick-pattern.svg"
+  },
+  {
+    "id": "gear-stick",
+    "name": "gear stick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gear-stick.svg"
+  },
+  {
+    "id": "gemini",
+    "name": "gemini",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gemini.svg"
+  },
+  {
+    "id": "giant-squid",
+    "name": "giant squid",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/giant-squid.svg"
+  },
+  {
+    "id": "giant",
+    "name": "giant",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/giant.svg"
+  },
+  {
+    "id": "gingerbread-man",
+    "name": "gingerbread man",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gingerbread-man.svg"
+  },
+  {
+    "id": "ginkgo-leaf",
+    "name": "ginkgo leaf",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ginkgo-leaf.svg"
+  },
+  {
+    "id": "glaive",
+    "name": "glaive",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/glaive.svg"
+  },
+  {
+    "id": "glass-ball",
+    "name": "glass ball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/glass-ball.svg"
+  },
+  {
+    "id": "glass-celebration",
+    "name": "glass celebration",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/glass-celebration.svg"
+  },
+  {
+    "id": "globe-ring",
+    "name": "globe ring",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/globe-ring.svg"
+  },
+  {
+    "id": "gloves",
+    "name": "gloves",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gloves.svg"
+  },
+  {
+    "id": "glowing-artifact",
+    "name": "glowing artifact",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/glowing-artifact.svg"
+  },
+  {
+    "id": "goal-keeper",
+    "name": "goal keeper",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/goal-keeper.svg"
+  },
+  {
+    "id": "goblin-camp",
+    "name": "goblin camp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/goblin-camp.svg"
+  },
+  {
+    "id": "goblin-head",
+    "name": "goblin head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/goblin-head.svg"
+  },
+  {
+    "id": "gold-mine",
+    "name": "gold mine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gold-mine.svg"
+  },
+  {
+    "id": "gold-nuggets",
+    "name": "gold nuggets",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gold-nuggets.svg"
+  },
+  {
+    "id": "gold-stack",
+    "name": "gold stack",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gold-stack.svg"
+  },
+  {
+    "id": "golem-head",
+    "name": "golem head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/golem-head.svg"
+  },
+  {
+    "id": "golf-flag",
+    "name": "golf flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/golf-flag.svg"
+  },
+  {
+    "id": "golf-tee",
+    "name": "golf tee",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/golf-tee.svg"
+  },
+  {
+    "id": "gong",
+    "name": "gong",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gong.svg"
+  },
+  {
+    "id": "goose",
+    "name": "goose",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/goose.svg"
+  },
+  {
+    "id": "gorilla",
+    "name": "gorilla",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gorilla.svg"
+  },
+  {
+    "id": "gps",
+    "name": "gps",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gps.svg"
+  },
+  {
+    "id": "graduate-cap",
+    "name": "graduate cap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/graduate-cap.svg"
+  },
+  {
+    "id": "grain-bundle",
+    "name": "grain bundle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/grain-bundle.svg"
+  },
+  {
+    "id": "grain",
+    "name": "grain",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/grain.svg"
+  },
+  {
+    "id": "granary",
+    "name": "granary",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/granary.svg"
+  },
+  {
+    "id": "grasping-slug",
+    "name": "grasping slug",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/grasping-slug.svg"
+  },
+  {
+    "id": "grass-mushroom",
+    "name": "grass mushroom",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/grass-mushroom.svg"
+  },
+  {
+    "id": "grass",
+    "name": "grass",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/grass.svg"
+  },
+  {
+    "id": "grave-flowers",
+    "name": "grave flowers",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/grave-flowers.svg"
+  },
+  {
+    "id": "graveyard",
+    "name": "graveyard",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/graveyard.svg"
+  },
+  {
+    "id": "gravitation",
+    "name": "gravitation",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gravitation.svg"
+  },
+  {
+    "id": "great-pyramid",
+    "name": "great pyramid",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/great-pyramid.svg"
+  },
+  {
+    "id": "greaves",
+    "name": "greaves",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/greaves.svg"
+  },
+  {
+    "id": "greek-sphinx",
+    "name": "greek sphinx",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/greek-sphinx.svg"
+  },
+  {
+    "id": "greek-temple",
+    "name": "greek temple",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/greek-temple.svg"
+  },
+  {
+    "id": "green-power",
+    "name": "green power",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/green-power.svg"
+  },
+  {
+    "id": "greenhouse",
+    "name": "greenhouse",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/greenhouse.svg"
+  },
+  {
+    "id": "griffin-shield",
+    "name": "griffin shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/griffin-shield.svg"
+  },
+  {
+    "id": "griffin-symbol",
+    "name": "griffin symbol",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/griffin-symbol.svg"
+  },
+  {
+    "id": "growth",
+    "name": "growth",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/growth.svg"
+  },
+  {
+    "id": "guards",
+    "name": "guards",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/guards.svg"
+  },
+  {
+    "id": "guatemala",
+    "name": "guatemala",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/guatemala.svg"
+  },
+  {
+    "id": "guitar-bass-head",
+    "name": "guitar bass head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/guitar-bass-head.svg"
+  },
+  {
+    "id": "guitar-head",
+    "name": "guitar head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/guitar-head.svg"
+  },
+  {
+    "id": "gun-rose",
+    "name": "gun rose",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gun-rose.svg"
+  },
+  {
+    "id": "gun-stock",
+    "name": "gun stock",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gun-stock.svg"
+  },
+  {
+    "id": "gym-bag",
+    "name": "gym bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/gym-bag.svg"
+  },
+  {
+    "id": "h2o",
+    "name": "h2o",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/h2o.svg"
+  },
+  {
+    "id": "habitat-dome",
+    "name": "habitat dome",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/habitat-dome.svg"
+  },
+  {
+    "id": "hades-symbol",
+    "name": "hades symbol",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hades-symbol.svg"
+  },
+  {
+    "id": "hair-strands",
+    "name": "hair strands",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hair-strands.svg"
+  },
+  {
+    "id": "half-body-crawling",
+    "name": "half body crawling",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/half-body-crawling.svg"
+  },
+  {
+    "id": "half-dead",
+    "name": "half dead",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/half-dead.svg"
+  },
+  {
+    "id": "half-log",
+    "name": "half log",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/half-log.svg"
+  },
+  {
+    "id": "hamburger-menu",
+    "name": "hamburger menu",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hamburger-menu.svg"
+  },
+  {
+    "id": "hamburger",
+    "name": "hamburger",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hamburger.svg"
+  },
+  {
+    "id": "hammer-break",
+    "name": "hammer break",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hammer-break.svg"
+  },
+  {
+    "id": "hammer-sickle",
+    "name": "hammer sickle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hammer-sickle.svg"
+  },
+  {
+    "id": "hand-bag",
+    "name": "hand bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hand-bag.svg"
+  },
+  {
+    "id": "hand-bandage",
+    "name": "hand bandage",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hand-bandage.svg"
+  },
+  {
+    "id": "hand-grip",
+    "name": "hand grip",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hand-grip.svg"
+  },
+  {
+    "id": "hand-of-god",
+    "name": "hand of god",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hand-of-god.svg"
+  },
+  {
+    "id": "hand-ok",
+    "name": "hand ok",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hand-ok.svg"
+  },
+  {
+    "id": "hand-saw",
+    "name": "hand saw",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hand-saw.svg"
+  },
+  {
+    "id": "hand-truck",
+    "name": "hand truck",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hand-truck.svg"
+  },
+  {
+    "id": "hand-wing",
+    "name": "hand wing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hand-wing.svg"
+  },
+  {
+    "id": "handcuffed",
+    "name": "handcuffed",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/handcuffed.svg"
+  },
+  {
+    "id": "handheld-fan",
+    "name": "handheld fan",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/handheld-fan.svg"
+  },
+  {
+    "id": "hang-glider",
+    "name": "hang glider",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hang-glider.svg"
+  },
+  {
+    "id": "hanger",
+    "name": "hanger",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hanger.svg"
+  },
+  {
+    "id": "hanging-sign",
+    "name": "hanging sign",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hanging-sign.svg"
+  },
+  {
+    "id": "harbor-dock",
+    "name": "harbor dock",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/harbor-dock.svg"
+  },
+  {
+    "id": "harp",
+    "name": "harp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/harp.svg"
+  },
+  {
+    "id": "hatchet",
+    "name": "hatchet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hatchet.svg"
+  },
+  {
+    "id": "hazmat-suit",
+    "name": "hazmat suit",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hazmat-suit.svg"
+  },
+  {
+    "id": "headband-knot",
+    "name": "headband knot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/headband-knot.svg"
+  },
+  {
+    "id": "headphones",
+    "name": "headphones",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/headphones.svg"
+  },
+  {
+    "id": "healing-shield",
+    "name": "healing shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/healing-shield.svg"
+  },
+  {
+    "id": "healing",
+    "name": "healing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/healing.svg"
+  },
+  {
+    "id": "health-capsule",
+    "name": "health capsule",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/health-capsule.svg"
+  },
+  {
+    "id": "health-potion",
+    "name": "health potion",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/health-potion.svg"
+  },
+  {
+    "id": "heart-armor",
+    "name": "heart armor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heart-armor.svg"
+  },
+  {
+    "id": "heart-battery",
+    "name": "heart battery",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heart-battery.svg"
+  },
+  {
+    "id": "heart-beats",
+    "name": "heart beats",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heart-beats.svg"
+  },
+  {
+    "id": "heart-earrings",
+    "name": "heart earrings",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heart-earrings.svg"
+  },
+  {
+    "id": "heart-key",
+    "name": "heart key",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heart-key.svg"
+  },
+  {
+    "id": "heart-necklace",
+    "name": "heart necklace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heart-necklace.svg"
+  },
+  {
+    "id": "heart-shield",
+    "name": "heart shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heart-shield.svg"
+  },
+  {
+    "id": "heart-stake",
+    "name": "heart stake",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heart-stake.svg"
+  },
+  {
+    "id": "heart-wings",
+    "name": "heart wings",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heart-wings.svg"
+  },
+  {
+    "id": "heaven-gate",
+    "name": "heaven gate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heaven-gate.svg"
+  },
+  {
+    "id": "heavy-bullets",
+    "name": "heavy bullets",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heavy-bullets.svg"
+  },
+  {
+    "id": "heavy-collar",
+    "name": "heavy collar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heavy-collar.svg"
+  },
+  {
+    "id": "hedjet-white-crown",
+    "name": "hedjet white crown",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hedjet-white-crown.svg"
+  },
+  {
+    "id": "helicoprion",
+    "name": "helicoprion",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/helicoprion.svg"
+  },
+  {
+    "id": "helicopter-tail",
+    "name": "helicopter tail",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/helicopter-tail.svg"
+  },
+  {
+    "id": "helicopter",
+    "name": "helicopter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/helicopter.svg"
+  },
+  {
+    "id": "hell-crosses",
+    "name": "hell crosses",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hell-crosses.svg"
+  },
+  {
+    "id": "hemp",
+    "name": "hemp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hemp.svg"
+  },
+  {
+    "id": "heptagram",
+    "name": "heptagram",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/heptagram.svg"
+  },
+  {
+    "id": "herbs-bundle",
+    "name": "herbs bundle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/herbs-bundle.svg"
+  },
+  {
+    "id": "hexagonal-nut",
+    "name": "hexagonal nut",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hexagonal-nut.svg"
+  },
+  {
+    "id": "hieroglyph-legs",
+    "name": "hieroglyph legs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hieroglyph-legs.svg"
+  },
+  {
+    "id": "hieroglyph-y",
+    "name": "hieroglyph y",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hieroglyph-y.svg"
+  },
+  {
+    "id": "high-grass",
+    "name": "high grass",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/high-grass.svg"
+  },
+  {
+    "id": "high-heel",
+    "name": "high heel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/high-heel.svg"
+  },
+  {
+    "id": "high-kick",
+    "name": "high kick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/high-kick.svg"
+  },
+  {
+    "id": "high-punch",
+    "name": "high punch",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/high-punch.svg"
+  },
+  {
+    "id": "high-tide",
+    "name": "high tide",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/high-tide.svg"
+  },
+  {
+    "id": "highlighter",
+    "name": "highlighter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/highlighter.svg"
+  },
+  {
+    "id": "hiking",
+    "name": "hiking",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hiking.svg"
+  },
+  {
+    "id": "hill-conquest",
+    "name": "hill conquest",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hill-conquest.svg"
+  },
+  {
+    "id": "hill-fort",
+    "name": "hill fort",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hill-fort.svg"
+  },
+  {
+    "id": "hills",
+    "name": "hills",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hills.svg"
+  },
+  {
+    "id": "histogram",
+    "name": "histogram",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/histogram.svg"
+  },
+  {
+    "id": "hive-mind",
+    "name": "hive mind",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hive-mind.svg"
+  },
+  {
+    "id": "hobbit-door",
+    "name": "hobbit door",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hobbit-door.svg"
+  },
+  {
+    "id": "hobbit-dwelling",
+    "name": "hobbit dwelling",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hobbit-dwelling.svg"
+  },
+  {
+    "id": "hockey",
+    "name": "hockey",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hockey.svg"
+  },
+  {
+    "id": "hole-ladder",
+    "name": "hole ladder",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hole-ladder.svg"
+  },
+  {
+    "id": "hole",
+    "name": "hole",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hole.svg"
+  },
+  {
+    "id": "holy-hand-grenade",
+    "name": "holy hand grenade",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/holy-hand-grenade.svg"
+  },
+  {
+    "id": "holy-water",
+    "name": "holy water",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/holy-water.svg"
+  },
+  {
+    "id": "home-garage",
+    "name": "home garage",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/home-garage.svg"
+  },
+  {
+    "id": "honey-jar",
+    "name": "honey jar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/honey-jar.svg"
+  },
+  {
+    "id": "hoodie",
+    "name": "hoodie",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hoodie.svg"
+  },
+  {
+    "id": "hook-swords",
+    "name": "hook swords",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hook-swords.svg"
+  },
+  {
+    "id": "hook",
+    "name": "hook",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hook.svg"
+  },
+  {
+    "id": "hops",
+    "name": "hops",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hops.svg"
+  },
+  {
+    "id": "horizon-road",
+    "name": "horizon road",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/horizon-road.svg"
+  },
+  {
+    "id": "horizontal-flip",
+    "name": "horizontal flip",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/horizontal-flip.svg"
+  },
+  {
+    "id": "horned-reptile",
+    "name": "horned reptile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/horned-reptile.svg"
+  },
+  {
+    "id": "horse-head",
+    "name": "horse head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/horse-head.svg"
+  },
+  {
+    "id": "horseshoe",
+    "name": "horseshoe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/horseshoe.svg"
+  },
+  {
+    "id": "horus",
+    "name": "horus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/horus.svg"
+  },
+  {
+    "id": "hospital",
+    "name": "hospital",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hospital.svg"
+  },
+  {
+    "id": "hot-dog",
+    "name": "hot dog",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hot-dog.svg"
+  },
+  {
+    "id": "hot-meal",
+    "name": "hot meal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hot-meal.svg"
+  },
+  {
+    "id": "house-keys",
+    "name": "house keys",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/house-keys.svg"
+  },
+  {
+    "id": "house",
+    "name": "house",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/house.svg"
+  },
+  {
+    "id": "human-cannonball",
+    "name": "human cannonball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/human-cannonball.svg"
+  },
+  {
+    "id": "human-ear",
+    "name": "human ear",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/human-ear.svg"
+  },
+  {
+    "id": "human-pyramid",
+    "name": "human pyramid",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/human-pyramid.svg"
+  },
+  {
+    "id": "human-target",
+    "name": "human target",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/human-target.svg"
+  },
+  {
+    "id": "hummingbird",
+    "name": "hummingbird",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hummingbird.svg"
+  },
+  {
+    "id": "hungary",
+    "name": "hungary",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hungary.svg"
+  },
+  {
+    "id": "hunter-eyes",
+    "name": "hunter eyes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hunter-eyes.svg"
+  },
+  {
+    "id": "hunting-bolas",
+    "name": "hunting bolas",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hunting-bolas.svg"
+  },
+  {
+    "id": "hut",
+    "name": "hut",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/hut.svg"
+  },
+  {
+    "id": "huts-village",
+    "name": "huts village",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/huts-village.svg"
+  },
+  {
+    "id": "i-beam",
+    "name": "i beam",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/i-beam.svg"
+  },
+  {
+    "id": "i-brick",
+    "name": "i brick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/i-brick.svg"
+  },
+  {
+    "id": "ibis",
+    "name": "ibis",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ibis.svg"
+  },
+  {
+    "id": "icarus",
+    "name": "icarus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/icarus.svg"
+  },
+  {
+    "id": "ice-cream-cone",
+    "name": "ice cream cone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ice-cream-cone.svg"
+  },
+  {
+    "id": "ice-cream-scoop",
+    "name": "ice cream scoop",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ice-cream-scoop.svg"
+  },
+  {
+    "id": "ice-cubes",
+    "name": "ice cubes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ice-cubes.svg"
+  },
+  {
+    "id": "ice-golem",
+    "name": "ice golem",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ice-golem.svg"
+  },
+  {
+    "id": "ice-iris",
+    "name": "ice iris",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ice-iris.svg"
+  },
+  {
+    "id": "ice-pop",
+    "name": "ice pop",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ice-pop.svg"
+  },
+  {
+    "id": "ice-skate",
+    "name": "ice skate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ice-skate.svg"
+  },
+  {
+    "id": "ice-spell-cast",
+    "name": "ice spell cast",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ice-spell-cast.svg"
+  },
+  {
+    "id": "iceberg",
+    "name": "iceberg",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/iceberg.svg"
+  },
+  {
+    "id": "iceland",
+    "name": "iceland",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/iceland.svg"
+  },
+  {
+    "id": "id-card",
+    "name": "id card",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/id-card.svg"
+  },
+  {
+    "id": "idea",
+    "name": "idea",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/idea.svg"
+  },
+  {
+    "id": "igloo",
+    "name": "igloo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/igloo.svg"
+  },
+  {
+    "id": "imperial-crown",
+    "name": "imperial crown",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/imperial-crown.svg"
+  },
+  {
+    "id": "inauguration",
+    "name": "inauguration",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/inauguration.svg"
+  },
+  {
+    "id": "incubator",
+    "name": "incubator",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/incubator.svg"
+  },
+  {
+    "id": "india-gate",
+    "name": "india gate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/india-gate.svg"
+  },
+  {
+    "id": "indian-palace",
+    "name": "indian palace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/indian-palace.svg"
+  },
+  {
+    "id": "inferno-bomb",
+    "name": "inferno bomb",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/inferno-bomb.svg"
+  },
+  {
+    "id": "info",
+    "name": "info",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/info.svg"
+  },
+  {
+    "id": "injustice",
+    "name": "injustice",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/injustice.svg"
+  },
+  {
+    "id": "inspiration",
+    "name": "inspiration",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/inspiration.svg"
+  },
+  {
+    "id": "interceptor-ship",
+    "name": "interceptor ship",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/interceptor-ship.svg"
+  },
+  {
+    "id": "intricate-necklace",
+    "name": "intricate necklace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/intricate-necklace.svg"
+  },
+  {
+    "id": "invisible-face",
+    "name": "invisible face",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/invisible-face.svg"
+  },
+  {
+    "id": "invisible",
+    "name": "invisible",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/invisible.svg"
+  },
+  {
+    "id": "ionic-column",
+    "name": "ionic column",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ionic-column.svg"
+  },
+  {
+    "id": "iraq",
+    "name": "iraq",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/iraq.svg"
+  },
+  {
+    "id": "island",
+    "name": "island",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/island.svg"
+  },
+  {
+    "id": "italia",
+    "name": "italia",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/italia.svg"
+  },
+  {
+    "id": "ivory-tusks",
+    "name": "ivory tusks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ivory-tusks.svg"
+  },
+  {
+    "id": "j-brick",
+    "name": "j brick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/j-brick.svg"
+  },
+  {
+    "id": "jack-plug",
+    "name": "jack plug",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jack-plug.svg"
+  },
+  {
+    "id": "japan",
+    "name": "japan",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/japan.svg"
+  },
+  {
+    "id": "japanese-bridge",
+    "name": "japanese bridge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/japanese-bridge.svg"
+  },
+  {
+    "id": "jasmine",
+    "name": "jasmine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jasmine.svg"
+  },
+  {
+    "id": "jason-mask",
+    "name": "jason mask",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jason-mask.svg"
+  },
+  {
+    "id": "jawless-cyclop",
+    "name": "jawless cyclop",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jawless-cyclop.svg"
+  },
+  {
+    "id": "jeep",
+    "name": "jeep",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jeep.svg"
+  },
+  {
+    "id": "jelly-beans",
+    "name": "jelly beans",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jelly-beans.svg"
+  },
+  {
+    "id": "jelly",
+    "name": "jelly",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jelly.svg"
+  },
+  {
+    "id": "jerrycan",
+    "name": "jerrycan",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jerrycan.svg"
+  },
+  {
+    "id": "jerusalem-cross",
+    "name": "jerusalem cross",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jerusalem-cross.svg"
+  },
+  {
+    "id": "jester-hat",
+    "name": "jester hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jester-hat.svg"
+  },
+  {
+    "id": "jet-fighter",
+    "name": "jet fighter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jet-fighter.svg"
+  },
+  {
+    "id": "jewel-crown",
+    "name": "jewel crown",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jewel-crown.svg"
+  },
+  {
+    "id": "join",
+    "name": "join",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/join.svg"
+  },
+  {
+    "id": "joystick",
+    "name": "joystick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/joystick.svg"
+  },
+  {
+    "id": "jug",
+    "name": "jug",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jug.svg"
+  },
+  {
+    "id": "juggling-clubs",
+    "name": "juggling clubs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/juggling-clubs.svg"
+  },
+  {
+    "id": "juggling-seal",
+    "name": "juggling seal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/juggling-seal.svg"
+  },
+  {
+    "id": "jump-across",
+    "name": "jump across",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jump-across.svg"
+  },
+  {
+    "id": "jumping-dog",
+    "name": "jumping dog",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jumping-dog.svg"
+  },
+  {
+    "id": "jumping-rope",
+    "name": "jumping rope",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jumping-rope.svg"
+  },
+  {
+    "id": "jungle",
+    "name": "jungle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jungle.svg"
+  },
+  {
+    "id": "jupiter",
+    "name": "jupiter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/jupiter.svg"
+  },
+  {
+    "id": "kangaroo",
+    "name": "kangaroo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kangaroo.svg"
+  },
+  {
+    "id": "katana",
+    "name": "katana",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/katana.svg"
+  },
+  {
+    "id": "kebab-spit",
+    "name": "kebab spit",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kebab-spit.svg"
+  },
+  {
+    "id": "kenku-head",
+    "name": "kenku head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kenku-head.svg"
+  },
+  {
+    "id": "kenya",
+    "name": "kenya",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kenya.svg"
+  },
+  {
+    "id": "ketchup",
+    "name": "ketchup",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ketchup.svg"
+  },
+  {
+    "id": "key-card",
+    "name": "key card",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/key-card.svg"
+  },
+  {
+    "id": "key-lock",
+    "name": "key lock",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/key-lock.svg"
+  },
+  {
+    "id": "keyboard",
+    "name": "keyboard",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/keyboard.svg"
+  },
+  {
+    "id": "keyring",
+    "name": "keyring",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/keyring.svg"
+  },
+  {
+    "id": "kick-scooter",
+    "name": "kick scooter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kick-scooter.svg"
+  },
+  {
+    "id": "kid-slide",
+    "name": "kid slide",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kid-slide.svg"
+  },
+  {
+    "id": "kidneys",
+    "name": "kidneys",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kidneys.svg"
+  },
+  {
+    "id": "kimono",
+    "name": "kimono",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kimono.svg"
+  },
+  {
+    "id": "king-ju-mask",
+    "name": "king ju mask",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/king-ju-mask.svg"
+  },
+  {
+    "id": "kitchen-scale",
+    "name": "kitchen scale",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kitchen-scale.svg"
+  },
+  {
+    "id": "kitchen-tap",
+    "name": "kitchen tap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kitchen-tap.svg"
+  },
+  {
+    "id": "kite",
+    "name": "kite",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kite.svg"
+  },
+  {
+    "id": "kiwi-bird",
+    "name": "kiwi bird",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kiwi-bird.svg"
+  },
+  {
+    "id": "kiwi-fruit",
+    "name": "kiwi fruit",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kiwi-fruit.svg"
+  },
+  {
+    "id": "klingon",
+    "name": "klingon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/klingon.svg"
+  },
+  {
+    "id": "knee-bandage",
+    "name": "knee bandage",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/knee-bandage.svg"
+  },
+  {
+    "id": "knee-cap",
+    "name": "knee cap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/knee-cap.svg"
+  },
+  {
+    "id": "knee-pad",
+    "name": "knee pad",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/knee-pad.svg"
+  },
+  {
+    "id": "kneeling",
+    "name": "kneeling",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kneeling.svg"
+  },
+  {
+    "id": "knight-banner",
+    "name": "knight banner",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/knight-banner.svg"
+  },
+  {
+    "id": "knocked-out-stars",
+    "name": "knocked out stars",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/knocked-out-stars.svg"
+  },
+  {
+    "id": "knot",
+    "name": "knot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/knot.svg"
+  },
+  {
+    "id": "koala",
+    "name": "koala",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/koala.svg"
+  },
+  {
+    "id": "koholint-egg",
+    "name": "koholint egg",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/koholint-egg.svg"
+  },
+  {
+    "id": "kraken-tentacle",
+    "name": "kraken tentacle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/kraken-tentacle.svg"
+  },
+  {
+    "id": "l-brick",
+    "name": "l brick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/l-brick.svg"
+  },
+  {
+    "id": "lab-coat",
+    "name": "lab coat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lab-coat.svg"
+  },
+  {
+    "id": "labrador-head",
+    "name": "labrador head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/labrador-head.svg"
+  },
+  {
+    "id": "ladder",
+    "name": "ladder",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ladder.svg"
+  },
+  {
+    "id": "ladders-platform",
+    "name": "ladders platform",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ladders-platform.svg"
+  },
+  {
+    "id": "ladle",
+    "name": "ladle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ladle.svg"
+  },
+  {
+    "id": "ladybug",
+    "name": "ladybug",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ladybug.svg"
+  },
+  {
+    "id": "lambda",
+    "name": "lambda",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lambda.svg"
+  },
+  {
+    "id": "laptop",
+    "name": "laptop",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/laptop.svg"
+  },
+  {
+    "id": "large-dress",
+    "name": "large dress",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/large-dress.svg"
+  },
+  {
+    "id": "large-paint-brush",
+    "name": "large paint brush",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/large-paint-brush.svg"
+  },
+  {
+    "id": "laser-turret",
+    "name": "laser turret",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/laser-turret.svg"
+  },
+  {
+    "id": "lasso",
+    "name": "lasso",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lasso.svg"
+  },
+  {
+    "id": "latvia",
+    "name": "latvia",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/latvia.svg"
+  },
+  {
+    "id": "laurels-trophy",
+    "name": "laurels trophy",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/laurels-trophy.svg"
+  },
+  {
+    "id": "lead-pipe",
+    "name": "lead pipe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lead-pipe.svg"
+  },
+  {
+    "id": "leak",
+    "name": "leak",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/leak.svg"
+  },
+  {
+    "id": "leapfrog",
+    "name": "leapfrog",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/leapfrog.svg"
+  },
+  {
+    "id": "leather-armor",
+    "name": "leather armor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/leather-armor.svg"
+  },
+  {
+    "id": "led",
+    "name": "led",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/led.svg"
+  },
+  {
+    "id": "leek",
+    "name": "leek",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/leek.svg"
+  },
+  {
+    "id": "leg-armor",
+    "name": "leg armor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/leg-armor.svg"
+  },
+  {
+    "id": "leg",
+    "name": "leg",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/leg.svg"
+  },
+  {
+    "id": "lemon",
+    "name": "lemon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lemon.svg"
+  },
+  {
+    "id": "leo",
+    "name": "leo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/leo.svg"
+  },
+  {
+    "id": "level-crossing",
+    "name": "level crossing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/level-crossing.svg"
+  },
+  {
+    "id": "level-end-flag",
+    "name": "level end flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/level-end-flag.svg"
+  },
+  {
+    "id": "liar",
+    "name": "liar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/liar.svg"
+  },
+  {
+    "id": "liberty-wing",
+    "name": "liberty wing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/liberty-wing.svg"
+  },
+  {
+    "id": "libra",
+    "name": "libra",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/libra.svg"
+  },
+  {
+    "id": "libya",
+    "name": "libya",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/libya.svg"
+  },
+  {
+    "id": "life-bar",
+    "name": "life bar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/life-bar.svg"
+  },
+  {
+    "id": "life-buoy",
+    "name": "life buoy",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/life-buoy.svg"
+  },
+  {
+    "id": "life-jacket",
+    "name": "life jacket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/life-jacket.svg"
+  },
+  {
+    "id": "light-backpack",
+    "name": "light backpack",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/light-backpack.svg"
+  },
+  {
+    "id": "light-helm",
+    "name": "light helm",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/light-helm.svg"
+  },
+  {
+    "id": "light-projector",
+    "name": "light projector",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/light-projector.svg"
+  },
+  {
+    "id": "light-sabers",
+    "name": "light sabers",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/light-sabers.svg"
+  },
+  {
+    "id": "lighter",
+    "name": "lighter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lighter.svg"
+  },
+  {
+    "id": "lighthouse",
+    "name": "lighthouse",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lighthouse.svg"
+  },
+  {
+    "id": "lightning-dome",
+    "name": "lightning dome",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lightning-dome.svg"
+  },
+  {
+    "id": "lightning-flame",
+    "name": "lightning flame",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lightning-flame.svg"
+  },
+  {
+    "id": "lily-pads",
+    "name": "lily pads",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lily-pads.svg"
+  },
+  {
+    "id": "lipstick",
+    "name": "lipstick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lipstick.svg"
+  },
+  {
+    "id": "liquid-soap",
+    "name": "liquid soap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/liquid-soap.svg"
+  },
+  {
+    "id": "liver",
+    "name": "liver",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/liver.svg"
+  },
+  {
+    "id": "load",
+    "name": "load",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/load.svg"
+  },
+  {
+    "id": "lock-picking",
+    "name": "lock picking",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lock-picking.svg"
+  },
+  {
+    "id": "lock-spy",
+    "name": "lock spy",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lock-spy.svg"
+  },
+  {
+    "id": "locked-box",
+    "name": "locked box",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/locked-box.svg"
+  },
+  {
+    "id": "locked-door",
+    "name": "locked door",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/locked-door.svg"
+  },
+  {
+    "id": "locked-heart",
+    "name": "locked heart",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/locked-heart.svg"
+  },
+  {
+    "id": "lockers",
+    "name": "lockers",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lockers.svg"
+  },
+  {
+    "id": "lockpicks",
+    "name": "lockpicks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lockpicks.svg"
+  },
+  {
+    "id": "log",
+    "name": "log",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/log.svg"
+  },
+  {
+    "id": "logic-gate-and",
+    "name": "logic gate and",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/logic-gate-and.svg"
+  },
+  {
+    "id": "logic-gate-nand",
+    "name": "logic gate nand",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/logic-gate-nand.svg"
+  },
+  {
+    "id": "logic-gate-nor",
+    "name": "logic gate nor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/logic-gate-nor.svg"
+  },
+  {
+    "id": "logic-gate-not",
+    "name": "logic gate not",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/logic-gate-not.svg"
+  },
+  {
+    "id": "logic-gate-nxor",
+    "name": "logic gate nxor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/logic-gate-nxor.svg"
+  },
+  {
+    "id": "logic-gate-or",
+    "name": "logic gate or",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/logic-gate-or.svg"
+  },
+  {
+    "id": "logic-gate-xor",
+    "name": "logic gate xor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/logic-gate-xor.svg"
+  },
+  {
+    "id": "loincloth",
+    "name": "loincloth",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/loincloth.svg"
+  },
+  {
+    "id": "look-at",
+    "name": "look at",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/look-at.svg"
+  },
+  {
+    "id": "lorgnette",
+    "name": "lorgnette",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lorgnette.svg"
+  },
+  {
+    "id": "louvre-pyramid",
+    "name": "louvre pyramid",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/louvre-pyramid.svg"
+  },
+  {
+    "id": "love-letter",
+    "name": "love letter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/love-letter.svg"
+  },
+  {
+    "id": "love-mystery",
+    "name": "love mystery",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/love-mystery.svg"
+  },
+  {
+    "id": "lovers",
+    "name": "lovers",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lovers.svg"
+  },
+  {
+    "id": "low-tide",
+    "name": "low tide",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/low-tide.svg"
+  },
+  {
+    "id": "luchador",
+    "name": "luchador",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/luchador.svg"
+  },
+  {
+    "id": "lucky-fisherman",
+    "name": "lucky fisherman",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lucky-fisherman.svg"
+  },
+  {
+    "id": "lunar-module",
+    "name": "lunar module",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lunar-module.svg"
+  },
+  {
+    "id": "lunar-wand",
+    "name": "lunar wand",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lunar-wand.svg"
+  },
+  {
+    "id": "lungs",
+    "name": "lungs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lungs.svg"
+  },
+  {
+    "id": "lynx-head",
+    "name": "lynx head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/lynx-head.svg"
+  },
+  {
+    "id": "machine-gun-magazine",
+    "name": "machine gun magazine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/machine-gun-magazine.svg"
+  },
+  {
+    "id": "magic-axe",
+    "name": "magic axe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/magic-axe.svg"
+  },
+  {
+    "id": "magic-broom",
+    "name": "magic broom",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/magic-broom.svg"
+  },
+  {
+    "id": "magic-hat",
+    "name": "magic hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/magic-hat.svg"
+  },
+  {
+    "id": "magic-potion",
+    "name": "magic potion",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/magic-potion.svg"
+  },
+  {
+    "id": "magic-trident",
+    "name": "magic trident",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/magic-trident.svg"
+  },
+  {
+    "id": "magick-trick",
+    "name": "magick trick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/magick-trick.svg"
+  },
+  {
+    "id": "magnet-man",
+    "name": "magnet man",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/magnet-man.svg"
+  },
+  {
+    "id": "mailbox",
+    "name": "mailbox",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mailbox.svg"
+  },
+  {
+    "id": "male",
+    "name": "male",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/male.svg"
+  },
+  {
+    "id": "mammoth",
+    "name": "mammoth",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mammoth.svg"
+  },
+  {
+    "id": "mandrill-head",
+    "name": "mandrill head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mandrill-head.svg"
+  },
+  {
+    "id": "manta-ray",
+    "name": "manta ray",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/manta-ray.svg"
+  },
+  {
+    "id": "manual-juicer",
+    "name": "manual juicer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/manual-juicer.svg"
+  },
+  {
+    "id": "manual-meat-grinder",
+    "name": "manual meat grinder",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/manual-meat-grinder.svg"
+  },
+  {
+    "id": "manual-water-pump",
+    "name": "manual water pump",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/manual-water-pump.svg"
+  },
+  {
+    "id": "maracas",
+    "name": "maracas",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/maracas.svg"
+  },
+  {
+    "id": "marble-tap",
+    "name": "marble tap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/marble-tap.svg"
+  },
+  {
+    "id": "marbles",
+    "name": "marbles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/marbles.svg"
+  },
+  {
+    "id": "mars-curiosity",
+    "name": "mars curiosity",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mars-curiosity.svg"
+  },
+  {
+    "id": "mars-pathfinder",
+    "name": "mars pathfinder",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mars-pathfinder.svg"
+  },
+  {
+    "id": "marshmallows",
+    "name": "marshmallows",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/marshmallows.svg"
+  },
+  {
+    "id": "martyr-memorial",
+    "name": "martyr memorial",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/martyr-memorial.svg"
+  },
+  {
+    "id": "matchbox",
+    "name": "matchbox",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/matchbox.svg"
+  },
+  {
+    "id": "matryoshka-dolls",
+    "name": "matryoshka dolls",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/matryoshka-dolls.svg"
+  },
+  {
+    "id": "matter-states",
+    "name": "matter states",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/matter-states.svg"
+  },
+  {
+    "id": "mayan-pyramid",
+    "name": "mayan pyramid",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mayan-pyramid.svg"
+  },
+  {
+    "id": "meal",
+    "name": "meal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/meal.svg"
+  },
+  {
+    "id": "measure-tape",
+    "name": "measure tape",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/measure-tape.svg"
+  },
+  {
+    "id": "mecha-head",
+    "name": "mecha head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mecha-head.svg"
+  },
+  {
+    "id": "mecha-mask",
+    "name": "mecha mask",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mecha-mask.svg"
+  },
+  {
+    "id": "mechanic-garage",
+    "name": "mechanic garage",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mechanic-garage.svg"
+  },
+  {
+    "id": "medallist",
+    "name": "medallist",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/medallist.svg"
+  },
+  {
+    "id": "medical-drip",
+    "name": "medical drip",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/medical-drip.svg"
+  },
+  {
+    "id": "medical-thermometer",
+    "name": "medical thermometer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/medical-thermometer.svg"
+  },
+  {
+    "id": "medicine-pills",
+    "name": "medicine pills",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/medicine-pills.svg"
+  },
+  {
+    "id": "medicines",
+    "name": "medicines",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/medicines.svg"
+  },
+  {
+    "id": "medieval-barracks",
+    "name": "medieval barracks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/medieval-barracks.svg"
+  },
+  {
+    "id": "medieval-gate",
+    "name": "medieval gate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/medieval-gate.svg"
+  },
+  {
+    "id": "medieval-pavilion",
+    "name": "medieval pavilion",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/medieval-pavilion.svg"
+  },
+  {
+    "id": "meeple-army",
+    "name": "meeple army",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/meeple-army.svg"
+  },
+  {
+    "id": "meeple-circle",
+    "name": "meeple circle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/meeple-circle.svg"
+  },
+  {
+    "id": "meeple-group",
+    "name": "meeple group",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/meeple-group.svg"
+  },
+  {
+    "id": "meeple-king",
+    "name": "meeple king",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/meeple-king.svg"
+  },
+  {
+    "id": "meeple",
+    "name": "meeple",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/meeple.svg"
+  },
+  {
+    "id": "megaphone",
+    "name": "megaphone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/megaphone.svg"
+  },
+  {
+    "id": "melting-ice-cube",
+    "name": "melting ice cube",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/melting-ice-cube.svg"
+  },
+  {
+    "id": "melting-metal",
+    "name": "melting metal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/melting-metal.svg"
+  },
+  {
+    "id": "menhir",
+    "name": "menhir",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/menhir.svg"
+  },
+  {
+    "id": "mermaid",
+    "name": "mermaid",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mermaid.svg"
+  },
+  {
+    "id": "mesh-network",
+    "name": "mesh network",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mesh-network.svg"
+  },
+  {
+    "id": "metal-boot",
+    "name": "metal boot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/metal-boot.svg"
+  },
+  {
+    "id": "metal-detector",
+    "name": "metal detector",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/metal-detector.svg"
+  },
+  {
+    "id": "metal-golem-head",
+    "name": "metal golem head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/metal-golem-head.svg"
+  },
+  {
+    "id": "metal-plate",
+    "name": "metal plate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/metal-plate.svg"
+  },
+  {
+    "id": "metal-skirt",
+    "name": "metal skirt",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/metal-skirt.svg"
+  },
+  {
+    "id": "metroid",
+    "name": "metroid",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/metroid.svg"
+  },
+  {
+    "id": "metronome",
+    "name": "metronome",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/metronome.svg"
+  },
+  {
+    "id": "mexico",
+    "name": "mexico",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mexico.svg"
+  },
+  {
+    "id": "microphone",
+    "name": "microphone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/microphone.svg"
+  },
+  {
+    "id": "mid-summit",
+    "name": "mid summit",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mid-summit.svg"
+  },
+  {
+    "id": "mighty-boosh",
+    "name": "mighty boosh",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mighty-boosh.svg"
+  },
+  {
+    "id": "mighty-force",
+    "name": "mighty force",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mighty-force.svg"
+  },
+  {
+    "id": "mighty-horn",
+    "name": "mighty horn",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mighty-horn.svg"
+  },
+  {
+    "id": "military-fort",
+    "name": "military fort",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/military-fort.svg"
+  },
+  {
+    "id": "millenium-key",
+    "name": "millenium key",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/millenium-key.svg"
+  },
+  {
+    "id": "mimic-chest",
+    "name": "mimic chest",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mimic-chest.svg"
+  },
+  {
+    "id": "mine-truck",
+    "name": "mine truck",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mine-truck.svg"
+  },
+  {
+    "id": "mine-wagon",
+    "name": "mine wagon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mine-wagon.svg"
+  },
+  {
+    "id": "miner",
+    "name": "miner",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/miner.svg"
+  },
+  {
+    "id": "mineral-pearls",
+    "name": "mineral pearls",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mineral-pearls.svg"
+  },
+  {
+    "id": "mini-submarine",
+    "name": "mini submarine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mini-submarine.svg"
+  },
+  {
+    "id": "mining-helmet",
+    "name": "mining helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mining-helmet.svg"
+  },
+  {
+    "id": "misdirection",
+    "name": "misdirection",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/misdirection.svg"
+  },
+  {
+    "id": "missile-launcher",
+    "name": "missile launcher",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/missile-launcher.svg"
+  },
+  {
+    "id": "moai",
+    "name": "moai",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/moai.svg"
+  },
+  {
+    "id": "modern-city",
+    "name": "modern city",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/modern-city.svg"
+  },
+  {
+    "id": "moka-pot",
+    "name": "moka pot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/moka-pot.svg"
+  },
+  {
+    "id": "moldova",
+    "name": "moldova",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/moldova.svg"
+  },
+  {
+    "id": "mona-lisa",
+    "name": "mona lisa",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mona-lisa.svg"
+  },
+  {
+    "id": "moncler-jacket",
+    "name": "moncler jacket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/moncler-jacket.svg"
+  },
+  {
+    "id": "money-stack",
+    "name": "money stack",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/money-stack.svg"
+  },
+  {
+    "id": "mongolia",
+    "name": "mongolia",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mongolia.svg"
+  },
+  {
+    "id": "monk-face",
+    "name": "monk face",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/monk-face.svg"
+  },
+  {
+    "id": "monkey-wrench",
+    "name": "monkey wrench",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/monkey-wrench.svg"
+  },
+  {
+    "id": "mono-wheel-robot",
+    "name": "mono wheel robot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mono-wheel-robot.svg"
+  },
+  {
+    "id": "monstera-leaf",
+    "name": "monstera leaf",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/monstera-leaf.svg"
+  },
+  {
+    "id": "monument-valley",
+    "name": "monument valley",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/monument-valley.svg"
+  },
+  {
+    "id": "moon-bats",
+    "name": "moon bats",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/moon-bats.svg"
+  },
+  {
+    "id": "moon-orbit",
+    "name": "moon orbit",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/moon-orbit.svg"
+  },
+  {
+    "id": "mooring-bollard",
+    "name": "mooring bollard",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mooring-bollard.svg"
+  },
+  {
+    "id": "morgue-feet",
+    "name": "morgue feet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/morgue-feet.svg"
+  },
+  {
+    "id": "morph-ball",
+    "name": "morph ball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/morph-ball.svg"
+  },
+  {
+    "id": "mortar",
+    "name": "mortar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mortar.svg"
+  },
+  {
+    "id": "mountain-cave",
+    "name": "mountain cave",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mountain-cave.svg"
+  },
+  {
+    "id": "mountain-road",
+    "name": "mountain road",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mountain-road.svg"
+  },
+  {
+    "id": "mouse",
+    "name": "mouse",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mouse.svg"
+  },
+  {
+    "id": "move",
+    "name": "move",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/move.svg"
+  },
+  {
+    "id": "mp5",
+    "name": "mp5",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mp5.svg"
+  },
+  {
+    "id": "mug-shot",
+    "name": "mug shot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mug-shot.svg"
+  },
+  {
+    "id": "multi-directions",
+    "name": "multi directions",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/multi-directions.svg"
+  },
+  {
+    "id": "multiple-targets",
+    "name": "multiple targets",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/multiple-targets.svg"
+  },
+  {
+    "id": "mummy-head",
+    "name": "mummy head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mummy-head.svg"
+  },
+  {
+    "id": "muscular-torso",
+    "name": "muscular torso",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/muscular-torso.svg"
+  },
+  {
+    "id": "mushroom-house",
+    "name": "mushroom house",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mushroom-house.svg"
+  },
+  {
+    "id": "mushrooms-cluster",
+    "name": "mushrooms cluster",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mushrooms-cluster.svg"
+  },
+  {
+    "id": "mushrooms",
+    "name": "mushrooms",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mushrooms.svg"
+  },
+  {
+    "id": "musical-keyboard",
+    "name": "musical keyboard",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/musical-keyboard.svg"
+  },
+  {
+    "id": "musical-notes",
+    "name": "musical notes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/musical-notes.svg"
+  },
+  {
+    "id": "musical-score",
+    "name": "musical score",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/musical-score.svg"
+  },
+  {
+    "id": "mussel",
+    "name": "mussel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mussel.svg"
+  },
+  {
+    "id": "mustache",
+    "name": "mustache",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mustache.svg"
+  },
+  {
+    "id": "mute",
+    "name": "mute",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/mute.svg"
+  },
+  {
+    "id": "nachos",
+    "name": "nachos",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nachos.svg"
+  },
+  {
+    "id": "nano-bot",
+    "name": "nano bot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nano-bot.svg"
+  },
+  {
+    "id": "neck-bite",
+    "name": "neck bite",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/neck-bite.svg"
+  },
+  {
+    "id": "necklace-display",
+    "name": "necklace display",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/necklace-display.svg"
+  },
+  {
+    "id": "nectar",
+    "name": "nectar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nectar.svg"
+  },
+  {
+    "id": "nefertiti",
+    "name": "nefertiti",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nefertiti.svg"
+  },
+  {
+    "id": "nest-birds",
+    "name": "nest birds",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nest-birds.svg"
+  },
+  {
+    "id": "nest-eggs",
+    "name": "nest eggs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nest-eggs.svg"
+  },
+  {
+    "id": "nested-hearts",
+    "name": "nested hearts",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nested-hearts.svg"
+  },
+  {
+    "id": "nested-hexagons",
+    "name": "nested hexagons",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nested-hexagons.svg"
+  },
+  {
+    "id": "network-bars",
+    "name": "network bars",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/network-bars.svg"
+  },
+  {
+    "id": "new-born",
+    "name": "new born",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/new-born.svg"
+  },
+  {
+    "id": "newspaper",
+    "name": "newspaper",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/newspaper.svg"
+  },
+  {
+    "id": "next-button",
+    "name": "next button",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/next-button.svg"
+  },
+  {
+    "id": "nigeria",
+    "name": "nigeria",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nigeria.svg"
+  },
+  {
+    "id": "night-sleep",
+    "name": "night sleep",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/night-sleep.svg"
+  },
+  {
+    "id": "night-vision",
+    "name": "night vision",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/night-vision.svg"
+  },
+  {
+    "id": "ninja-armor",
+    "name": "ninja armor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ninja-armor.svg"
+  },
+  {
+    "id": "ninja-velociraptor",
+    "name": "ninja velociraptor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ninja-velociraptor.svg"
+  },
+  {
+    "id": "noodles",
+    "name": "noodles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/noodles.svg"
+  },
+  {
+    "id": "nose-front",
+    "name": "nose front",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nose-front.svg"
+  },
+  {
+    "id": "nose-side",
+    "name": "nose side",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nose-side.svg"
+  },
+  {
+    "id": "notebook",
+    "name": "notebook",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/notebook.svg"
+  },
+  {
+    "id": "nuclear-plant",
+    "name": "nuclear plant",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nuclear-plant.svg"
+  },
+  {
+    "id": "nuclear-waste",
+    "name": "nuclear waste",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nuclear-waste.svg"
+  },
+  {
+    "id": "nunchaku",
+    "name": "nunchaku",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nunchaku.svg"
+  },
+  {
+    "id": "nurse-female",
+    "name": "nurse female",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nurse-female.svg"
+  },
+  {
+    "id": "nurse-male",
+    "name": "nurse male",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/nurse-male.svg"
+  },
+  {
+    "id": "o-brick",
+    "name": "o brick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/o-brick.svg"
+  },
+  {
+    "id": "oak-leaf",
+    "name": "oak leaf",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/oak-leaf.svg"
+  },
+  {
+    "id": "oasis",
+    "name": "oasis",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/oasis.svg"
+  },
+  {
+    "id": "obelisk",
+    "name": "obelisk",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/obelisk.svg"
+  },
+  {
+    "id": "observatory",
+    "name": "observatory",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/observatory.svg"
+  },
+  {
+    "id": "ocarina",
+    "name": "ocarina",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ocarina.svg"
+  },
+  {
+    "id": "oden",
+    "name": "oden",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/oden.svg"
+  },
+  {
+    "id": "office-chair",
+    "name": "office chair",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/office-chair.svg"
+  },
+  {
+    "id": "offshore-platform",
+    "name": "offshore platform",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/offshore-platform.svg"
+  },
+  {
+    "id": "ogre",
+    "name": "ogre",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ogre.svg"
+  },
+  {
+    "id": "oil-can",
+    "name": "oil can",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/oil-can.svg"
+  },
+  {
+    "id": "oil-pump",
+    "name": "oil pump",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/oil-pump.svg"
+  },
+  {
+    "id": "oil-rig",
+    "name": "oil rig",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/oil-rig.svg"
+  },
+  {
+    "id": "old-lantern",
+    "name": "old lantern",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/old-lantern.svg"
+  },
+  {
+    "id": "old-microphone",
+    "name": "old microphone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/old-microphone.svg"
+  },
+  {
+    "id": "old-wagon",
+    "name": "old wagon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/old-wagon.svg"
+  },
+  {
+    "id": "olive",
+    "name": "olive",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/olive.svg"
+  },
+  {
+    "id": "oni",
+    "name": "oni",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/oni.svg"
+  },
+  {
+    "id": "onigori",
+    "name": "onigori",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/onigori.svg"
+  },
+  {
+    "id": "open-folder",
+    "name": "open folder",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/open-folder.svg"
+  },
+  {
+    "id": "open-gate",
+    "name": "open gate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/open-gate.svg"
+  },
+  {
+    "id": "opened-food-can",
+    "name": "opened food can",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/opened-food-can.svg"
+  },
+  {
+    "id": "ophiuchus",
+    "name": "ophiuchus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ophiuchus.svg"
+  },
+  {
+    "id": "opposite-hearts",
+    "name": "opposite hearts",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/opposite-hearts.svg"
+  },
+  {
+    "id": "orange-slice",
+    "name": "orange slice",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/orange-slice.svg"
+  },
+  {
+    "id": "orange",
+    "name": "orange",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/orange.svg"
+  },
+  {
+    "id": "orc-head",
+    "name": "orc head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/orc-head.svg"
+  },
+  {
+    "id": "organigram",
+    "name": "organigram",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/organigram.svg"
+  },
+  {
+    "id": "ostrich",
+    "name": "ostrich",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ostrich.svg"
+  },
+  {
+    "id": "otamatone",
+    "name": "otamatone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/otamatone.svg"
+  },
+  {
+    "id": "outback-hat",
+    "name": "outback hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/outback-hat.svg"
+  },
+  {
+    "id": "overlord-helm",
+    "name": "overlord helm",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/overlord-helm.svg"
+  },
+  {
+    "id": "oyster-pearl",
+    "name": "oyster pearl",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/oyster-pearl.svg"
+  },
+  {
+    "id": "oyster",
+    "name": "oyster",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/oyster.svg"
+  },
+  {
+    "id": "packed-planks",
+    "name": "packed planks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/packed-planks.svg"
+  },
+  {
+    "id": "paddle-steamer",
+    "name": "paddle steamer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/paddle-steamer.svg"
+  },
+  {
+    "id": "paddles",
+    "name": "paddles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/paddles.svg"
+  },
+  {
+    "id": "padlock-open",
+    "name": "padlock open",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/padlock-open.svg"
+  },
+  {
+    "id": "pagoda",
+    "name": "pagoda",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pagoda.svg"
+  },
+  {
+    "id": "paint-brush",
+    "name": "paint brush",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/paint-brush.svg"
+  },
+  {
+    "id": "paint-bucket",
+    "name": "paint bucket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/paint-bucket.svg"
+  },
+  {
+    "id": "paint-roller",
+    "name": "paint roller",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/paint-roller.svg"
+  },
+  {
+    "id": "painted-pottery",
+    "name": "painted pottery",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/painted-pottery.svg"
+  },
+  {
+    "id": "palette",
+    "name": "palette",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/palette.svg"
+  },
+  {
+    "id": "palisade",
+    "name": "palisade",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/palisade.svg"
+  },
+  {
+    "id": "palm-tree",
+    "name": "palm tree",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/palm-tree.svg"
+  },
+  {
+    "id": "pan-flute",
+    "name": "pan flute",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pan-flute.svg"
+  },
+  {
+    "id": "panda",
+    "name": "panda",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/panda.svg"
+  },
+  {
+    "id": "panzerfaust",
+    "name": "panzerfaust",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/panzerfaust.svg"
+  },
+  {
+    "id": "paper-boat",
+    "name": "paper boat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/paper-boat.svg"
+  },
+  {
+    "id": "paper-clip",
+    "name": "paper clip",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/paper-clip.svg"
+  },
+  {
+    "id": "paper-plane",
+    "name": "paper plane",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/paper-plane.svg"
+  },
+  {
+    "id": "paper-tray",
+    "name": "paper tray",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/paper-tray.svg"
+  },
+  {
+    "id": "paper-windmill",
+    "name": "paper windmill",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/paper-windmill.svg"
+  },
+  {
+    "id": "papyrus",
+    "name": "papyrus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/papyrus.svg"
+  },
+  {
+    "id": "paraguay",
+    "name": "paraguay",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/paraguay.svg"
+  },
+  {
+    "id": "parasaurolophus",
+    "name": "parasaurolophus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/parasaurolophus.svg"
+  },
+  {
+    "id": "park-bench",
+    "name": "park bench",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/park-bench.svg"
+  },
+  {
+    "id": "party-flags",
+    "name": "party flags",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/party-flags.svg"
+  },
+  {
+    "id": "party-hat",
+    "name": "party hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/party-hat.svg"
+  },
+  {
+    "id": "party-popper",
+    "name": "party popper",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/party-popper.svg"
+  },
+  {
+    "id": "passport",
+    "name": "passport",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/passport.svg"
+  },
+  {
+    "id": "path-distance",
+    "name": "path distance",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/path-distance.svg"
+  },
+  {
+    "id": "path-tile",
+    "name": "path tile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/path-tile.svg"
+  },
+  {
+    "id": "pay-money",
+    "name": "pay money",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pay-money.svg"
+  },
+  {
+    "id": "peace-dove",
+    "name": "peace dove",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/peace-dove.svg"
+  },
+  {
+    "id": "peach",
+    "name": "peach",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/peach.svg"
+  },
+  {
+    "id": "pear",
+    "name": "pear",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pear.svg"
+  },
+  {
+    "id": "pearl-earring",
+    "name": "pearl earring",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pearl-earring.svg"
+  },
+  {
+    "id": "pearl-necklace",
+    "name": "pearl necklace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pearl-necklace.svg"
+  },
+  {
+    "id": "peas",
+    "name": "peas",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/peas.svg"
+  },
+  {
+    "id": "pelvis-bone",
+    "name": "pelvis bone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pelvis-bone.svg"
+  },
+  {
+    "id": "pencil-brush",
+    "name": "pencil brush",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pencil-brush.svg"
+  },
+  {
+    "id": "pencil-ruler",
+    "name": "pencil ruler",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pencil-ruler.svg"
+  },
+  {
+    "id": "pencil",
+    "name": "pencil",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pencil.svg"
+  },
+  {
+    "id": "pendant-key",
+    "name": "pendant key",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pendant-key.svg"
+  },
+  {
+    "id": "pendulum-swing",
+    "name": "pendulum swing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pendulum-swing.svg"
+  },
+  {
+    "id": "penguin",
+    "name": "penguin",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/penguin.svg"
+  },
+  {
+    "id": "periscope",
+    "name": "periscope",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/periscope.svg"
+  },
+  {
+    "id": "person-in-bed",
+    "name": "person in bed",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/person-in-bed.svg"
+  },
+  {
+    "id": "person",
+    "name": "person",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/person.svg"
+  },
+  {
+    "id": "perspective-dice-five",
+    "name": "perspective dice five",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-five.svg"
+  },
+  {
+    "id": "perspective-dice-four",
+    "name": "perspective dice four",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-four.svg"
+  },
+  {
+    "id": "perspective-dice-one",
+    "name": "perspective dice one",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-one.svg"
+  },
+  {
+    "id": "perspective-dice-six-faces-five",
+    "name": "perspective dice six faces five",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-six-faces-five.svg"
+  },
+  {
+    "id": "perspective-dice-six-faces-four",
+    "name": "perspective dice six faces four",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-six-faces-four.svg"
+  },
+  {
+    "id": "perspective-dice-six-faces-one",
+    "name": "perspective dice six faces one",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-six-faces-one.svg"
+  },
+  {
+    "id": "perspective-dice-six-faces-random",
+    "name": "perspective dice six faces random",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-six-faces-random.svg"
+  },
+  {
+    "id": "perspective-dice-six-faces-six",
+    "name": "perspective dice six faces six",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-six-faces-six.svg"
+  },
+  {
+    "id": "perspective-dice-six-faces-three",
+    "name": "perspective dice six faces three",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-six-faces-three.svg"
+  },
+  {
+    "id": "perspective-dice-six-faces-two",
+    "name": "perspective dice six faces two",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-six-faces-two.svg"
+  },
+  {
+    "id": "perspective-dice-six",
+    "name": "perspective dice six",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-six.svg"
+  },
+  {
+    "id": "perspective-dice-three",
+    "name": "perspective dice three",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-three.svg"
+  },
+  {
+    "id": "perspective-dice-two",
+    "name": "perspective dice two",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/perspective-dice-two.svg"
+  },
+  {
+    "id": "peru",
+    "name": "peru",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/peru.svg"
+  },
+  {
+    "id": "pharoah",
+    "name": "pharoah",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pharoah.svg"
+  },
+  {
+    "id": "phone",
+    "name": "phone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/phone.svg"
+  },
+  {
+    "id": "photo-camera",
+    "name": "photo camera",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/photo-camera.svg"
+  },
+  {
+    "id": "phrygian-cap",
+    "name": "phrygian cap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/phrygian-cap.svg"
+  },
+  {
+    "id": "piano-keys",
+    "name": "piano keys",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/piano-keys.svg"
+  },
+  {
+    "id": "pick-of-destiny",
+    "name": "pick of destiny",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pick-of-destiny.svg"
+  },
+  {
+    "id": "pickle",
+    "name": "pickle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pickle.svg"
+  },
+  {
+    "id": "pie-chart",
+    "name": "pie chart",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pie-chart.svg"
+  },
+  {
+    "id": "piggy-bank",
+    "name": "piggy bank",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/piggy-bank.svg"
+  },
+  {
+    "id": "pikeman",
+    "name": "pikeman",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pikeman.svg"
+  },
+  {
+    "id": "pilgrim-hat",
+    "name": "pilgrim hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pilgrim-hat.svg"
+  },
+  {
+    "id": "pillow",
+    "name": "pillow",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pillow.svg"
+  },
+  {
+    "id": "pimiento",
+    "name": "pimiento",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pimiento.svg"
+  },
+  {
+    "id": "pin",
+    "name": "pin",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pin.svg"
+  },
+  {
+    "id": "pinata",
+    "name": "pinata",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pinata.svg"
+  },
+  {
+    "id": "pinball-flipper",
+    "name": "pinball flipper",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pinball-flipper.svg"
+  },
+  {
+    "id": "pineapple",
+    "name": "pineapple",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pineapple.svg"
+  },
+  {
+    "id": "ping-pong-bat",
+    "name": "ping pong bat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ping-pong-bat.svg"
+  },
+  {
+    "id": "pipes",
+    "name": "pipes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pipes.svg"
+  },
+  {
+    "id": "piranha",
+    "name": "piranha",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/piranha.svg"
+  },
+  {
+    "id": "pirate-cannon",
+    "name": "pirate cannon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pirate-cannon.svg"
+  },
+  {
+    "id": "pirate-captain",
+    "name": "pirate captain",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pirate-captain.svg"
+  },
+  {
+    "id": "pirate-coat",
+    "name": "pirate coat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pirate-coat.svg"
+  },
+  {
+    "id": "pirate-flag",
+    "name": "pirate flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pirate-flag.svg"
+  },
+  {
+    "id": "pirate-hat",
+    "name": "pirate hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pirate-hat.svg"
+  },
+  {
+    "id": "pirate-hook",
+    "name": "pirate hook",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pirate-hook.svg"
+  },
+  {
+    "id": "pisa-tower",
+    "name": "pisa tower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pisa-tower.svg"
+  },
+  {
+    "id": "pisces",
+    "name": "pisces",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pisces.svg"
+  },
+  {
+    "id": "pitchfork",
+    "name": "pitchfork",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pitchfork.svg"
+  },
+  {
+    "id": "pizza-slice",
+    "name": "pizza slice",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pizza-slice.svg"
+  },
+  {
+    "id": "plague-doctor-profile",
+    "name": "plague doctor profile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plague-doctor-profile.svg"
+  },
+  {
+    "id": "plain-arrow",
+    "name": "plain arrow",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plain-arrow.svg"
+  },
+  {
+    "id": "plain-circle",
+    "name": "plain circle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plain-circle.svg"
+  },
+  {
+    "id": "plain-padlock",
+    "name": "plain padlock",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plain-padlock.svg"
+  },
+  {
+    "id": "plain-square",
+    "name": "plain square",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plain-square.svg"
+  },
+  {
+    "id": "plane-pilot",
+    "name": "plane pilot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plane-pilot.svg"
+  },
+  {
+    "id": "plane-wing",
+    "name": "plane wing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plane-wing.svg"
+  },
+  {
+    "id": "planet-conquest",
+    "name": "planet conquest",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/planet-conquest.svg"
+  },
+  {
+    "id": "planet-core",
+    "name": "planet core",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/planet-core.svg"
+  },
+  {
+    "id": "planks",
+    "name": "planks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/planks.svg"
+  },
+  {
+    "id": "plant-roots",
+    "name": "plant roots",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plant-roots.svg"
+  },
+  {
+    "id": "plant-seed",
+    "name": "plant seed",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plant-seed.svg"
+  },
+  {
+    "id": "plant-watering",
+    "name": "plant watering",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plant-watering.svg"
+  },
+  {
+    "id": "plastic-duck",
+    "name": "plastic duck",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plastic-duck.svg"
+  },
+  {
+    "id": "player-base",
+    "name": "player base",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/player-base.svg"
+  },
+  {
+    "id": "player-next",
+    "name": "player next",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/player-next.svg"
+  },
+  {
+    "id": "player-previous",
+    "name": "player previous",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/player-previous.svg"
+  },
+  {
+    "id": "player-time",
+    "name": "player time",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/player-time.svg"
+  },
+  {
+    "id": "plesiosaurus",
+    "name": "plesiosaurus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plesiosaurus.svg"
+  },
+  {
+    "id": "plow",
+    "name": "plow",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plow.svg"
+  },
+  {
+    "id": "plug",
+    "name": "plug",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plug.svg"
+  },
+  {
+    "id": "plum",
+    "name": "plum",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plum.svg"
+  },
+  {
+    "id": "plunger",
+    "name": "plunger",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/plunger.svg"
+  },
+  {
+    "id": "pocket-radio",
+    "name": "pocket radio",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pocket-radio.svg"
+  },
+  {
+    "id": "podium-second",
+    "name": "podium second",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/podium-second.svg"
+  },
+  {
+    "id": "podium-third",
+    "name": "podium third",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/podium-third.svg"
+  },
+  {
+    "id": "podium-winner",
+    "name": "podium winner",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/podium-winner.svg"
+  },
+  {
+    "id": "podium",
+    "name": "podium",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/podium.svg"
+  },
+  {
+    "id": "poland",
+    "name": "poland",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/poland.svg"
+  },
+  {
+    "id": "polar-star",
+    "name": "polar star",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/polar-star.svg"
+  },
+  {
+    "id": "police-car",
+    "name": "police car",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/police-car.svg"
+  },
+  {
+    "id": "police-officer-head",
+    "name": "police officer head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/police-officer-head.svg"
+  },
+  {
+    "id": "police-target",
+    "name": "police target",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/police-target.svg"
+  },
+  {
+    "id": "polo-shirt",
+    "name": "polo shirt",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/polo-shirt.svg"
+  },
+  {
+    "id": "poncho",
+    "name": "poncho",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/poncho.svg"
+  },
+  {
+    "id": "pool-dive",
+    "name": "pool dive",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pool-dive.svg"
+  },
+  {
+    "id": "pool-table-corner",
+    "name": "pool table corner",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pool-table-corner.svg"
+  },
+  {
+    "id": "pool-triangle",
+    "name": "pool triangle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pool-triangle.svg"
+  },
+  {
+    "id": "popcorn",
+    "name": "popcorn",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/popcorn.svg"
+  },
+  {
+    "id": "pope-crown",
+    "name": "pope crown",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pope-crown.svg"
+  },
+  {
+    "id": "porcelain-vase",
+    "name": "porcelain vase",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/porcelain-vase.svg"
+  },
+  {
+    "id": "porcupinefish",
+    "name": "porcupinefish",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/porcupinefish.svg"
+  },
+  {
+    "id": "portrait",
+    "name": "portrait",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/portrait.svg"
+  },
+  {
+    "id": "portugal",
+    "name": "portugal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/portugal.svg"
+  },
+  {
+    "id": "position-marker",
+    "name": "position marker",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/position-marker.svg"
+  },
+  {
+    "id": "post-office",
+    "name": "post office",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/post-office.svg"
+  },
+  {
+    "id": "post-stamp",
+    "name": "post stamp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/post-stamp.svg"
+  },
+  {
+    "id": "potato",
+    "name": "potato",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/potato.svg"
+  },
+  {
+    "id": "pouring-pot",
+    "name": "pouring pot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pouring-pot.svg"
+  },
+  {
+    "id": "powder-bag",
+    "name": "powder bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/powder-bag.svg"
+  },
+  {
+    "id": "power-generator",
+    "name": "power generator",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/power-generator.svg"
+  },
+  {
+    "id": "power-ring",
+    "name": "power ring",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/power-ring.svg"
+  },
+  {
+    "id": "prayer-beads",
+    "name": "prayer beads",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/prayer-beads.svg"
+  },
+  {
+    "id": "praying-mantis",
+    "name": "praying mantis",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/praying-mantis.svg"
+  },
+  {
+    "id": "present",
+    "name": "present",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/present.svg"
+  },
+  {
+    "id": "pretzel",
+    "name": "pretzel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pretzel.svg"
+  },
+  {
+    "id": "previous-button",
+    "name": "previous button",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/previous-button.svg"
+  },
+  {
+    "id": "price-tag",
+    "name": "price tag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/price-tag.svg"
+  },
+  {
+    "id": "primitive-necklace",
+    "name": "primitive necklace",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/primitive-necklace.svg"
+  },
+  {
+    "id": "primitive-torch",
+    "name": "primitive torch",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/primitive-torch.svg"
+  },
+  {
+    "id": "prism",
+    "name": "prism",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/prism.svg"
+  },
+  {
+    "id": "prisoner",
+    "name": "prisoner",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/prisoner.svg"
+  },
+  {
+    "id": "private-first-class",
+    "name": "private first class",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/private-first-class.svg"
+  },
+  {
+    "id": "private",
+    "name": "private",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/private.svg"
+  },
+  {
+    "id": "progression",
+    "name": "progression",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/progression.svg"
+  },
+  {
+    "id": "propeller-beanie",
+    "name": "propeller beanie",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/propeller-beanie.svg"
+  },
+  {
+    "id": "protection-glasses",
+    "name": "protection glasses",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/protection-glasses.svg"
+  },
+  {
+    "id": "pschent-double-crown",
+    "name": "pschent double crown",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pschent-double-crown.svg"
+  },
+  {
+    "id": "pterodactylus",
+    "name": "pterodactylus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pterodactylus.svg"
+  },
+  {
+    "id": "public-speaker",
+    "name": "public speaker",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/public-speaker.svg"
+  },
+  {
+    "id": "pull",
+    "name": "pull",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pull.svg"
+  },
+  {
+    "id": "pulley-hook",
+    "name": "pulley hook",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pulley-hook.svg"
+  },
+  {
+    "id": "pumpkin",
+    "name": "pumpkin",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pumpkin.svg"
+  },
+  {
+    "id": "punching-bag",
+    "name": "punching bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/punching-bag.svg"
+  },
+  {
+    "id": "purple-tentacle",
+    "name": "purple tentacle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/purple-tentacle.svg"
+  },
+  {
+    "id": "push",
+    "name": "push",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/push.svg"
+  },
+  {
+    "id": "puzzle",
+    "name": "puzzle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/puzzle.svg"
+  },
+  {
+    "id": "pylon",
+    "name": "pylon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pylon.svg"
+  },
+  {
+    "id": "pyre",
+    "name": "pyre",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/pyre.svg"
+  },
+  {
+    "id": "qaitbay-citadel",
+    "name": "qaitbay citadel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/qaitbay-citadel.svg"
+  },
+  {
+    "id": "quick-man",
+    "name": "quick man",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/quick-man.svg"
+  },
+  {
+    "id": "quiver",
+    "name": "quiver",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/quiver.svg"
+  },
+  {
+    "id": "rabbit-head",
+    "name": "rabbit head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rabbit-head.svg"
+  },
+  {
+    "id": "rabbit",
+    "name": "rabbit",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rabbit.svg"
+  },
+  {
+    "id": "raccoon-head",
+    "name": "raccoon head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/raccoon-head.svg"
+  },
+  {
+    "id": "radar-cross-section",
+    "name": "radar cross section",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/radar-cross-section.svg"
+  },
+  {
+    "id": "raddish",
+    "name": "raddish",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/raddish.svg"
+  },
+  {
+    "id": "radiations",
+    "name": "radiations",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/radiations.svg"
+  },
+  {
+    "id": "radio-tower",
+    "name": "radio tower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/radio-tower.svg"
+  },
+  {
+    "id": "raft",
+    "name": "raft",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/raft.svg"
+  },
+  {
+    "id": "rail-road",
+    "name": "rail road",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rail-road.svg"
+  },
+  {
+    "id": "railway",
+    "name": "railway",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/railway.svg"
+  },
+  {
+    "id": "rake",
+    "name": "rake",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rake.svg"
+  },
+  {
+    "id": "ram-profile",
+    "name": "ram profile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ram-profile.svg"
+  },
+  {
+    "id": "ranch-gate",
+    "name": "ranch gate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ranch-gate.svg"
+  },
+  {
+    "id": "raspberry",
+    "name": "raspberry",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/raspberry.svg"
+  },
+  {
+    "id": "rat",
+    "name": "rat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rat.svg"
+  },
+  {
+    "id": "rattlesnake",
+    "name": "rattlesnake",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rattlesnake.svg"
+  },
+  {
+    "id": "raw-egg",
+    "name": "raw egg",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/raw-egg.svg"
+  },
+  {
+    "id": "razor",
+    "name": "razor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/razor.svg"
+  },
+  {
+    "id": "receive-money",
+    "name": "receive money",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/receive-money.svg"
+  },
+  {
+    "id": "red-carpet",
+    "name": "red carpet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/red-carpet.svg"
+  },
+  {
+    "id": "reed",
+    "name": "reed",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/reed.svg"
+  },
+  {
+    "id": "refinery",
+    "name": "refinery",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/refinery.svg"
+  },
+  {
+    "id": "reload-gun-barrel",
+    "name": "reload gun barrel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/reload-gun-barrel.svg"
+  },
+  {
+    "id": "remedy",
+    "name": "remedy",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/remedy.svg"
+  },
+  {
+    "id": "rempart",
+    "name": "rempart",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rempart.svg"
+  },
+  {
+    "id": "reptile-tail",
+    "name": "reptile tail",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/reptile-tail.svg"
+  },
+  {
+    "id": "resize",
+    "name": "resize",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/resize.svg"
+  },
+  {
+    "id": "resting-vampire",
+    "name": "resting vampire",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/resting-vampire.svg"
+  },
+  {
+    "id": "revolver",
+    "name": "revolver",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/revolver.svg"
+  },
+  {
+    "id": "rhinoceros-horn",
+    "name": "rhinoceros horn",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rhinoceros-horn.svg"
+  },
+  {
+    "id": "rialto-bridge",
+    "name": "rialto bridge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rialto-bridge.svg"
+  },
+  {
+    "id": "ribbon-medal",
+    "name": "ribbon medal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ribbon-medal.svg"
+  },
+  {
+    "id": "ribbon-shield",
+    "name": "ribbon shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ribbon-shield.svg"
+  },
+  {
+    "id": "ring-box",
+    "name": "ring box",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ring-box.svg"
+  },
+  {
+    "id": "ring-mould",
+    "name": "ring mould",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ring-mould.svg"
+  },
+  {
+    "id": "ring",
+    "name": "ring",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ring.svg"
+  },
+  {
+    "id": "ringed-tentacle",
+    "name": "ringed tentacle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ringed-tentacle.svg"
+  },
+  {
+    "id": "ringing-alarm",
+    "name": "ringing alarm",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ringing-alarm.svg"
+  },
+  {
+    "id": "ringmaster",
+    "name": "ringmaster",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ringmaster.svg"
+  },
+  {
+    "id": "river",
+    "name": "river",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/river.svg"
+  },
+  {
+    "id": "road",
+    "name": "road",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/road.svg"
+  },
+  {
+    "id": "robber-mask",
+    "name": "robber mask",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/robber-mask.svg"
+  },
+  {
+    "id": "robber",
+    "name": "robber",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/robber.svg"
+  },
+  {
+    "id": "robin-hood-hat",
+    "name": "robin hood hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/robin-hood-hat.svg"
+  },
+  {
+    "id": "robot-antennas",
+    "name": "robot antennas",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/robot-antennas.svg"
+  },
+  {
+    "id": "robot-grab",
+    "name": "robot grab",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/robot-grab.svg"
+  },
+  {
+    "id": "robot-helmet",
+    "name": "robot helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/robot-helmet.svg"
+  },
+  {
+    "id": "robot-leg",
+    "name": "robot leg",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/robot-leg.svg"
+  },
+  {
+    "id": "rock-golem",
+    "name": "rock golem",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rock-golem.svg"
+  },
+  {
+    "id": "rocket-thruster",
+    "name": "rocket thruster",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rocket-thruster.svg"
+  },
+  {
+    "id": "rocking-chair",
+    "name": "rocking chair",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rocking-chair.svg"
+  },
+  {
+    "id": "rod-of-asclepius",
+    "name": "rod of asclepius",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rod-of-asclepius.svg"
+  },
+  {
+    "id": "rolled-cloth",
+    "name": "rolled cloth",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rolled-cloth.svg"
+  },
+  {
+    "id": "roller-skate",
+    "name": "roller skate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/roller-skate.svg"
+  },
+  {
+    "id": "rolling-dice-cup",
+    "name": "rolling dice cup",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rolling-dice-cup.svg"
+  },
+  {
+    "id": "rolling-dices",
+    "name": "rolling dices",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rolling-dices.svg"
+  },
+  {
+    "id": "roman-shield",
+    "name": "roman shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/roman-shield.svg"
+  },
+  {
+    "id": "roman-toga",
+    "name": "roman toga",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/roman-toga.svg"
+  },
+  {
+    "id": "rooster",
+    "name": "rooster",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rooster.svg"
+  },
+  {
+    "id": "rope-bridge",
+    "name": "rope bridge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rope-bridge.svg"
+  },
+  {
+    "id": "rope-coil",
+    "name": "rope coil",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rope-coil.svg"
+  },
+  {
+    "id": "rope-dart",
+    "name": "rope dart",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rope-dart.svg"
+  },
+  {
+    "id": "ropeway",
+    "name": "ropeway",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ropeway.svg"
+  },
+  {
+    "id": "round-knob",
+    "name": "round knob",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/round-knob.svg"
+  },
+  {
+    "id": "round-silo",
+    "name": "round silo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/round-silo.svg"
+  },
+  {
+    "id": "round-star",
+    "name": "round star",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/round-star.svg"
+  },
+  {
+    "id": "round-straw-bale",
+    "name": "round straw bale",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/round-straw-bale.svg"
+  },
+  {
+    "id": "round-table",
+    "name": "round table",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/round-table.svg"
+  },
+  {
+    "id": "rss",
+    "name": "rss",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rss.svg"
+  },
+  {
+    "id": "rub-el-hizb",
+    "name": "rub el hizb",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rub-el-hizb.svg"
+  },
+  {
+    "id": "rubber-boot",
+    "name": "rubber boot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rubber-boot.svg"
+  },
+  {
+    "id": "rugby-conversion",
+    "name": "rugby conversion",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rugby-conversion.svg"
+  },
+  {
+    "id": "rule-book",
+    "name": "rule book",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rule-book.svg"
+  },
+  {
+    "id": "running-shoe",
+    "name": "running shoe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/running-shoe.svg"
+  },
+  {
+    "id": "rupee",
+    "name": "rupee",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rupee.svg"
+  },
+  {
+    "id": "rusty-sword",
+    "name": "rusty sword",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/rusty-sword.svg"
+  },
+  {
+    "id": "s-brick",
+    "name": "s brick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/s-brick.svg"
+  },
+  {
+    "id": "saber-and-pistol",
+    "name": "saber and pistol",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/saber-and-pistol.svg"
+  },
+  {
+    "id": "saber-toothed-cat-head",
+    "name": "saber toothed cat head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/saber-toothed-cat-head.svg"
+  },
+  {
+    "id": "saddle",
+    "name": "saddle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/saddle.svg"
+  },
+  {
+    "id": "safety-pin",
+    "name": "safety pin",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/safety-pin.svg"
+  },
+  {
+    "id": "sagittarius",
+    "name": "sagittarius",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sagittarius.svg"
+  },
+  {
+    "id": "sai",
+    "name": "sai",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sai.svg"
+  },
+  {
+    "id": "sail",
+    "name": "sail",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sail.svg"
+  },
+  {
+    "id": "sailboat",
+    "name": "sailboat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sailboat.svg"
+  },
+  {
+    "id": "saint-basil-cathedral",
+    "name": "saint basil cathedral",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/saint-basil-cathedral.svg"
+  },
+  {
+    "id": "saiyan-suit",
+    "name": "saiyan suit",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/saiyan-suit.svg"
+  },
+  {
+    "id": "saloon-doors",
+    "name": "saloon doors",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/saloon-doors.svg"
+  },
+  {
+    "id": "saloon",
+    "name": "saloon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/saloon.svg"
+  },
+  {
+    "id": "samara-mosque",
+    "name": "samara mosque",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/samara-mosque.svg"
+  },
+  {
+    "id": "samurai-helmet",
+    "name": "samurai helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/samurai-helmet.svg"
+  },
+  {
+    "id": "samus-helmet",
+    "name": "samus helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/samus-helmet.svg"
+  },
+  {
+    "id": "sand-castle",
+    "name": "sand castle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sand-castle.svg"
+  },
+  {
+    "id": "sand-snake",
+    "name": "sand snake",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sand-snake.svg"
+  },
+  {
+    "id": "sandal",
+    "name": "sandal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sandal.svg"
+  },
+  {
+    "id": "sandstorm",
+    "name": "sandstorm",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sandstorm.svg"
+  },
+  {
+    "id": "sandwich",
+    "name": "sandwich",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sandwich.svg"
+  },
+  {
+    "id": "santa-hat",
+    "name": "santa hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/santa-hat.svg"
+  },
+  {
+    "id": "sarcophagus",
+    "name": "sarcophagus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sarcophagus.svg"
+  },
+  {
+    "id": "sasquatch",
+    "name": "sasquatch",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sasquatch.svg"
+  },
+  {
+    "id": "satellite-communication",
+    "name": "satellite communication",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/satellite-communication.svg"
+  },
+  {
+    "id": "sauropod-head",
+    "name": "sauropod head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sauropod-head.svg"
+  },
+  {
+    "id": "sausage",
+    "name": "sausage",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sausage.svg"
+  },
+  {
+    "id": "sausages-ribbon",
+    "name": "sausages ribbon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sausages-ribbon.svg"
+  },
+  {
+    "id": "save-arrow",
+    "name": "save arrow",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/save-arrow.svg"
+  },
+  {
+    "id": "save",
+    "name": "save",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/save.svg"
+  },
+  {
+    "id": "sawed-off-shotgun",
+    "name": "sawed off shotgun",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sawed-off-shotgun.svg"
+  },
+  {
+    "id": "saxophone",
+    "name": "saxophone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/saxophone.svg"
+  },
+  {
+    "id": "scabbard",
+    "name": "scabbard",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/scabbard.svg"
+  },
+  {
+    "id": "school-bag",
+    "name": "school bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/school-bag.svg"
+  },
+  {
+    "id": "school-of-fish",
+    "name": "school of fish",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/school-of-fish.svg"
+  },
+  {
+    "id": "scooter",
+    "name": "scooter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/scooter.svg"
+  },
+  {
+    "id": "scorpio",
+    "name": "scorpio",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/scorpio.svg"
+  },
+  {
+    "id": "scout-ship",
+    "name": "scout ship",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/scout-ship.svg"
+  },
+  {
+    "id": "screw",
+    "name": "screw",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/screw.svg"
+  },
+  {
+    "id": "scroll-quill",
+    "name": "scroll quill",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/scroll-quill.svg"
+  },
+  {
+    "id": "scuba-mask",
+    "name": "scuba mask",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/scuba-mask.svg"
+  },
+  {
+    "id": "scuba-tanks",
+    "name": "scuba tanks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/scuba-tanks.svg"
+  },
+  {
+    "id": "sea-cliff",
+    "name": "sea cliff",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sea-cliff.svg"
+  },
+  {
+    "id": "sea-star",
+    "name": "sea star",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sea-star.svg"
+  },
+  {
+    "id": "sea-turtle",
+    "name": "sea turtle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sea-turtle.svg"
+  },
+  {
+    "id": "sea-urchin",
+    "name": "sea urchin",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sea-urchin.svg"
+  },
+  {
+    "id": "seagull",
+    "name": "seagull",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/seagull.svg"
+  },
+  {
+    "id": "seahorse",
+    "name": "seahorse",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/seahorse.svg"
+  },
+  {
+    "id": "secret-book",
+    "name": "secret book",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/secret-book.svg"
+  },
+  {
+    "id": "secret-door",
+    "name": "secret door",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/secret-door.svg"
+  },
+  {
+    "id": "security-gate",
+    "name": "security gate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/security-gate.svg"
+  },
+  {
+    "id": "seedling",
+    "name": "seedling",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/seedling.svg"
+  },
+  {
+    "id": "sell-card",
+    "name": "sell card",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sell-card.svg"
+  },
+  {
+    "id": "sergeant",
+    "name": "sergeant",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sergeant.svg"
+  },
+  {
+    "id": "server-rack",
+    "name": "server rack",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/server-rack.svg"
+  },
+  {
+    "id": "sesame",
+    "name": "sesame",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sesame.svg"
+  },
+  {
+    "id": "settings-knobs",
+    "name": "settings knobs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/settings-knobs.svg"
+  },
+  {
+    "id": "seven-pointed-star",
+    "name": "seven pointed star",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/seven-pointed-star.svg"
+  },
+  {
+    "id": "sewing-string",
+    "name": "sewing string",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sewing-string.svg"
+  },
+  {
+    "id": "sextant",
+    "name": "sextant",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sextant.svg"
+  },
+  {
+    "id": "shaking-hands",
+    "name": "shaking hands",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shaking-hands.svg"
+  },
+  {
+    "id": "shambling-mound",
+    "name": "shambling mound",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shambling-mound.svg"
+  },
+  {
+    "id": "shambling-zombie",
+    "name": "shambling zombie",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shambling-zombie.svg"
+  },
+  {
+    "id": "shamrock",
+    "name": "shamrock",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shamrock.svg"
+  },
+  {
+    "id": "share",
+    "name": "share",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/share.svg"
+  },
+  {
+    "id": "shark-bite",
+    "name": "shark bite",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shark-bite.svg"
+  },
+  {
+    "id": "shark-fin",
+    "name": "shark fin",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shark-fin.svg"
+  },
+  {
+    "id": "sharp-axe",
+    "name": "sharp axe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sharp-axe.svg"
+  },
+  {
+    "id": "sharp-halberd",
+    "name": "sharp halberd",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sharp-halberd.svg"
+  },
+  {
+    "id": "shattered-heart",
+    "name": "shattered heart",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shattered-heart.svg"
+  },
+  {
+    "id": "shears",
+    "name": "shears",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shears.svg"
+  },
+  {
+    "id": "sheep",
+    "name": "sheep",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sheep.svg"
+  },
+  {
+    "id": "sherlock-holmes",
+    "name": "sherlock holmes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sherlock-holmes.svg"
+  },
+  {
+    "id": "shield-bash",
+    "name": "shield bash",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shield-bash.svg"
+  },
+  {
+    "id": "shield-impact",
+    "name": "shield impact",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shield-impact.svg"
+  },
+  {
+    "id": "shield-opposition",
+    "name": "shield opposition",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shield-opposition.svg"
+  },
+  {
+    "id": "shinto-shrine-mirror",
+    "name": "shinto shrine mirror",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shinto-shrine-mirror.svg"
+  },
+  {
+    "id": "shinto-shrine",
+    "name": "shinto shrine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shinto-shrine.svg"
+  },
+  {
+    "id": "ship-bow",
+    "name": "ship bow",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ship-bow.svg"
+  },
+  {
+    "id": "ship-wheel",
+    "name": "ship wheel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ship-wheel.svg"
+  },
+  {
+    "id": "ship-wreck",
+    "name": "ship wreck",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ship-wreck.svg"
+  },
+  {
+    "id": "shirt-button",
+    "name": "shirt button",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shirt-button.svg"
+  },
+  {
+    "id": "shoebill-stork",
+    "name": "shoebill stork",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shoebill-stork.svg"
+  },
+  {
+    "id": "shop",
+    "name": "shop",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shop.svg"
+  },
+  {
+    "id": "shopping-bag",
+    "name": "shopping bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shopping-bag.svg"
+  },
+  {
+    "id": "shopping-cart",
+    "name": "shopping cart",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shopping-cart.svg"
+  },
+  {
+    "id": "shorts",
+    "name": "shorts",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shorts.svg"
+  },
+  {
+    "id": "shotgun-rounds",
+    "name": "shotgun rounds",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shotgun-rounds.svg"
+  },
+  {
+    "id": "shoulder-armor",
+    "name": "shoulder armor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shoulder-armor.svg"
+  },
+  {
+    "id": "shoulder-bag",
+    "name": "shoulder bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shoulder-bag.svg"
+  },
+  {
+    "id": "shower",
+    "name": "shower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shower.svg"
+  },
+  {
+    "id": "shrimp",
+    "name": "shrimp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shrimp.svg"
+  },
+  {
+    "id": "shrug",
+    "name": "shrug",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shrug.svg"
+  },
+  {
+    "id": "shuttlecock",
+    "name": "shuttlecock",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/shuttlecock.svg"
+  },
+  {
+    "id": "sickle",
+    "name": "sickle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sickle.svg"
+  },
+  {
+    "id": "siege-tower",
+    "name": "siege tower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/siege-tower.svg"
+  },
+  {
+    "id": "silenced",
+    "name": "silenced",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/silenced.svg"
+  },
+  {
+    "id": "silex",
+    "name": "silex",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/silex.svg"
+  },
+  {
+    "id": "silver-bullet",
+    "name": "silver bullet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/silver-bullet.svg"
+  },
+  {
+    "id": "sinagot",
+    "name": "sinagot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sinagot.svg"
+  },
+  {
+    "id": "sinking-ship",
+    "name": "sinking ship",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sinking-ship.svg"
+  },
+  {
+    "id": "sitting-dog",
+    "name": "sitting dog",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sitting-dog.svg"
+  },
+  {
+    "id": "skateboard",
+    "name": "skateboard",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/skateboard.svg"
+  },
+  {
+    "id": "skeletal-hand",
+    "name": "skeletal hand",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/skeletal-hand.svg"
+  },
+  {
+    "id": "ski-boot",
+    "name": "ski boot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ski-boot.svg"
+  },
+  {
+    "id": "skier",
+    "name": "skier",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/skier.svg"
+  },
+  {
+    "id": "skills",
+    "name": "skills",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/skills.svg"
+  },
+  {
+    "id": "skimmer-hat",
+    "name": "skimmer hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/skimmer-hat.svg"
+  },
+  {
+    "id": "skipping-rope",
+    "name": "skipping rope",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/skipping-rope.svg"
+  },
+  {
+    "id": "skirt",
+    "name": "skirt",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/skirt.svg"
+  },
+  {
+    "id": "skis",
+    "name": "skis",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/skis.svg"
+  },
+  {
+    "id": "skull-staff",
+    "name": "skull staff",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/skull-staff.svg"
+  },
+  {
+    "id": "slalom",
+    "name": "slalom",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/slalom.svg"
+  },
+  {
+    "id": "sleeping-bag",
+    "name": "sleeping bag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sleeping-bag.svg"
+  },
+  {
+    "id": "sleeveless-jacket",
+    "name": "sleeveless jacket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sleeveless-jacket.svg"
+  },
+  {
+    "id": "sleeveless-top",
+    "name": "sleeveless top",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sleeveless-top.svg"
+  },
+  {
+    "id": "sliced-mushroom",
+    "name": "sliced mushroom",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sliced-mushroom.svg"
+  },
+  {
+    "id": "sliced-sausage",
+    "name": "sliced sausage",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sliced-sausage.svg"
+  },
+  {
+    "id": "slime",
+    "name": "slime",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/slime.svg"
+  },
+  {
+    "id": "sling",
+    "name": "sling",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sling.svg"
+  },
+  {
+    "id": "slingshot",
+    "name": "slingshot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/slingshot.svg"
+  },
+  {
+    "id": "slipknot",
+    "name": "slipknot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/slipknot.svg"
+  },
+  {
+    "id": "slippers",
+    "name": "slippers",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/slippers.svg"
+  },
+  {
+    "id": "slumbering-sanctuary",
+    "name": "slumbering sanctuary",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/slumbering-sanctuary.svg"
+  },
+  {
+    "id": "smart",
+    "name": "smart",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/smart.svg"
+  },
+  {
+    "id": "smartphone",
+    "name": "smartphone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/smartphone.svg"
+  },
+  {
+    "id": "smoking-pipe",
+    "name": "smoking pipe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/smoking-pipe.svg"
+  },
+  {
+    "id": "smoking-volcano",
+    "name": "smoking volcano",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/smoking-volcano.svg"
+  },
+  {
+    "id": "snail-eyes",
+    "name": "snail eyes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/snail-eyes.svg"
+  },
+  {
+    "id": "snake-egg",
+    "name": "snake egg",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/snake-egg.svg"
+  },
+  {
+    "id": "snake-jar",
+    "name": "snake jar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/snake-jar.svg"
+  },
+  {
+    "id": "snake-spiral",
+    "name": "snake spiral",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/snake-spiral.svg"
+  },
+  {
+    "id": "snake-tongue",
+    "name": "snake tongue",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/snake-tongue.svg"
+  },
+  {
+    "id": "sniffing-dog",
+    "name": "sniffing dog",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sniffing-dog.svg"
+  },
+  {
+    "id": "snitch-quidditch-ball",
+    "name": "snitch quidditch ball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/snitch-quidditch-ball.svg"
+  },
+  {
+    "id": "snowboard",
+    "name": "snowboard",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/snowboard.svg"
+  },
+  {
+    "id": "soap",
+    "name": "soap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/soap.svg"
+  },
+  {
+    "id": "soccer-ball",
+    "name": "soccer ball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/soccer-ball.svg"
+  },
+  {
+    "id": "soccer-field",
+    "name": "soccer field",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/soccer-field.svg"
+  },
+  {
+    "id": "soccer-kick",
+    "name": "soccer kick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/soccer-kick.svg"
+  },
+  {
+    "id": "socks",
+    "name": "socks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/socks.svg"
+  },
+  {
+    "id": "sofa",
+    "name": "sofa",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sofa.svg"
+  },
+  {
+    "id": "solar-system",
+    "name": "solar system",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/solar-system.svg"
+  },
+  {
+    "id": "solar-time",
+    "name": "solar time",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/solar-time.svg"
+  },
+  {
+    "id": "solid-leaf",
+    "name": "solid leaf",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/solid-leaf.svg"
+  },
+  {
+    "id": "sombrero",
+    "name": "sombrero",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sombrero.svg"
+  },
+  {
+    "id": "sonic-shoes",
+    "name": "sonic shoes",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sonic-shoes.svg"
+  },
+  {
+    "id": "soul-vessel",
+    "name": "soul vessel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/soul-vessel.svg"
+  },
+  {
+    "id": "soul",
+    "name": "soul",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/soul.svg"
+  },
+  {
+    "id": "sound-off",
+    "name": "sound off",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sound-off.svg"
+  },
+  {
+    "id": "sound-on",
+    "name": "sound on",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sound-on.svg"
+  },
+  {
+    "id": "south-africa-flag",
+    "name": "south africa flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/south-africa-flag.svg"
+  },
+  {
+    "id": "south-africa",
+    "name": "south africa",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/south-africa.svg"
+  },
+  {
+    "id": "south-america",
+    "name": "south america",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/south-america.svg"
+  },
+  {
+    "id": "south-korea",
+    "name": "south korea",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/south-korea.svg"
+  },
+  {
+    "id": "space-needle",
+    "name": "space needle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/space-needle.svg"
+  },
+  {
+    "id": "space-shuttle",
+    "name": "space shuttle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/space-shuttle.svg"
+  },
+  {
+    "id": "spaceship",
+    "name": "spaceship",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spaceship.svg"
+  },
+  {
+    "id": "spain",
+    "name": "spain",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spain.svg"
+  },
+  {
+    "id": "spark-plug",
+    "name": "spark plug",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spark-plug.svg"
+  },
+  {
+    "id": "sparkles",
+    "name": "sparkles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sparkles.svg"
+  },
+  {
+    "id": "spartan-helmet",
+    "name": "spartan helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spartan-helmet.svg"
+  },
+  {
+    "id": "speaker-off",
+    "name": "speaker off",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/speaker-off.svg"
+  },
+  {
+    "id": "speaker",
+    "name": "speaker",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/speaker.svg"
+  },
+  {
+    "id": "spear-feather",
+    "name": "spear feather",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spear-feather.svg"
+  },
+  {
+    "id": "spearfishing",
+    "name": "spearfishing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spearfishing.svg"
+  },
+  {
+    "id": "speed-boat",
+    "name": "speed boat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/speed-boat.svg"
+  },
+  {
+    "id": "speedometer",
+    "name": "speedometer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/speedometer.svg"
+  },
+  {
+    "id": "spell-book",
+    "name": "spell book",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spell-book.svg"
+  },
+  {
+    "id": "sperm-whale",
+    "name": "sperm whale",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sperm-whale.svg"
+  },
+  {
+    "id": "spider-bot",
+    "name": "spider bot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spider-bot.svg"
+  },
+  {
+    "id": "spider-eye",
+    "name": "spider eye",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spider-eye.svg"
+  },
+  {
+    "id": "spider-mask",
+    "name": "spider mask",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spider-mask.svg"
+  },
+  {
+    "id": "spiked-dragon-head",
+    "name": "spiked dragon head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spiked-dragon-head.svg"
+  },
+  {
+    "id": "spiked-shield",
+    "name": "spiked shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spiked-shield.svg"
+  },
+  {
+    "id": "spiked-shoulder-armor",
+    "name": "spiked shoulder armor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spiked-shoulder-armor.svg"
+  },
+  {
+    "id": "spiked-trunk",
+    "name": "spiked trunk",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spiked-trunk.svg"
+  },
+  {
+    "id": "spiked-wall",
+    "name": "spiked wall",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spiked-wall.svg"
+  },
+  {
+    "id": "spiky-pit",
+    "name": "spiky pit",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spiky-pit.svg"
+  },
+  {
+    "id": "spiky-wing",
+    "name": "spiky wing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spiky-wing.svg"
+  },
+  {
+    "id": "spiral-hilt",
+    "name": "spiral hilt",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spiral-hilt.svg"
+  },
+  {
+    "id": "spiral-lollipop",
+    "name": "spiral lollipop",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spiral-lollipop.svg"
+  },
+  {
+    "id": "split-arrows",
+    "name": "split arrows",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/split-arrows.svg"
+  },
+  {
+    "id": "spock-hand",
+    "name": "spock hand",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spock-hand.svg"
+  },
+  {
+    "id": "spooky-house",
+    "name": "spooky house",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spooky-house.svg"
+  },
+  {
+    "id": "sport-medal",
+    "name": "sport medal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sport-medal.svg"
+  },
+  {
+    "id": "spring",
+    "name": "spring",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spring.svg"
+  },
+  {
+    "id": "spy",
+    "name": "spy",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/spy.svg"
+  },
+  {
+    "id": "square",
+    "name": "square",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/square.svg"
+  },
+  {
+    "id": "squirrel",
+    "name": "squirrel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/squirrel.svg"
+  },
+  {
+    "id": "sri-lanka",
+    "name": "sri lanka",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sri-lanka.svg"
+  },
+  {
+    "id": "stabbed-note",
+    "name": "stabbed note",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stabbed-note.svg"
+  },
+  {
+    "id": "stable",
+    "name": "stable",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stable.svg"
+  },
+  {
+    "id": "stack",
+    "name": "stack",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stack.svg"
+  },
+  {
+    "id": "stairs-cake",
+    "name": "stairs cake",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stairs-cake.svg"
+  },
+  {
+    "id": "stairs-goal",
+    "name": "stairs goal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stairs-goal.svg"
+  },
+  {
+    "id": "stairs",
+    "name": "stairs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stairs.svg"
+  },
+  {
+    "id": "stake-hammer",
+    "name": "stake hammer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stake-hammer.svg"
+  },
+  {
+    "id": "stakes-fence",
+    "name": "stakes fence",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stakes-fence.svg"
+  },
+  {
+    "id": "stalactites",
+    "name": "stalactites",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stalactites.svg"
+  },
+  {
+    "id": "stamper",
+    "name": "stamper",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stamper.svg"
+  },
+  {
+    "id": "star-altar",
+    "name": "star altar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/star-altar.svg"
+  },
+  {
+    "id": "star-flag",
+    "name": "star flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/star-flag.svg"
+  },
+  {
+    "id": "star-formation",
+    "name": "star formation",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/star-formation.svg"
+  },
+  {
+    "id": "star-gate",
+    "name": "star gate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/star-gate.svg"
+  },
+  {
+    "id": "star-key",
+    "name": "star key",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/star-key.svg"
+  },
+  {
+    "id": "star-medal",
+    "name": "star medal",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/star-medal.svg"
+  },
+  {
+    "id": "star-struck",
+    "name": "star struck",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/star-struck.svg"
+  },
+  {
+    "id": "starfighter",
+    "name": "starfighter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/starfighter.svg"
+  },
+  {
+    "id": "stars-stack",
+    "name": "stars stack",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stars-stack.svg"
+  },
+  {
+    "id": "steak",
+    "name": "steak",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/steak.svg"
+  },
+  {
+    "id": "stealth-bomber",
+    "name": "stealth bomber",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stealth-bomber.svg"
+  },
+  {
+    "id": "steam-blast",
+    "name": "steam blast",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/steam-blast.svg"
+  },
+  {
+    "id": "steam-locomotive",
+    "name": "steam locomotive",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/steam-locomotive.svg"
+  },
+  {
+    "id": "steam",
+    "name": "steam",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/steam.svg"
+  },
+  {
+    "id": "steampunk-goggles",
+    "name": "steampunk goggles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/steampunk-goggles.svg"
+  },
+  {
+    "id": "steering-wheel",
+    "name": "steering wheel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/steering-wheel.svg"
+  },
+  {
+    "id": "stegosaurus-scales",
+    "name": "stegosaurus scales",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stegosaurus-scales.svg"
+  },
+  {
+    "id": "stethoscope",
+    "name": "stethoscope",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stethoscope.svg"
+  },
+  {
+    "id": "stick-frame",
+    "name": "stick frame",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stick-frame.svg"
+  },
+  {
+    "id": "sticky-boot",
+    "name": "sticky boot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sticky-boot.svg"
+  },
+  {
+    "id": "stockpiles",
+    "name": "stockpiles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stockpiles.svg"
+  },
+  {
+    "id": "stomach",
+    "name": "stomach",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stomach.svg"
+  },
+  {
+    "id": "stone-bridge",
+    "name": "stone bridge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stone-bridge.svg"
+  },
+  {
+    "id": "stone-bust",
+    "name": "stone bust",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stone-bust.svg"
+  },
+  {
+    "id": "stone-path",
+    "name": "stone path",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stone-path.svg"
+  },
+  {
+    "id": "stone-pile",
+    "name": "stone pile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stone-pile.svg"
+  },
+  {
+    "id": "stone-stack",
+    "name": "stone stack",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stone-stack.svg"
+  },
+  {
+    "id": "stone-wall",
+    "name": "stone wall",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stone-wall.svg"
+  },
+  {
+    "id": "stone-wheel",
+    "name": "stone wheel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stone-wheel.svg"
+  },
+  {
+    "id": "stop-sign",
+    "name": "stop sign",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stop-sign.svg"
+  },
+  {
+    "id": "stork-delivery",
+    "name": "stork delivery",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stork-delivery.svg"
+  },
+  {
+    "id": "straight-pipe",
+    "name": "straight pipe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/straight-pipe.svg"
+  },
+  {
+    "id": "strawberry",
+    "name": "strawberry",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/strawberry.svg"
+  },
+  {
+    "id": "street-light",
+    "name": "street light",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/street-light.svg"
+  },
+  {
+    "id": "striped-sun",
+    "name": "striped sun",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/striped-sun.svg"
+  },
+  {
+    "id": "strong-man",
+    "name": "strong man",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/strong-man.svg"
+  },
+  {
+    "id": "strongbox",
+    "name": "strongbox",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/strongbox.svg"
+  },
+  {
+    "id": "stump-regrowth",
+    "name": "stump regrowth",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stump-regrowth.svg"
+  },
+  {
+    "id": "stun-grenade",
+    "name": "stun grenade",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/stun-grenade.svg"
+  },
+  {
+    "id": "submarine-missile",
+    "name": "submarine missile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/submarine-missile.svg"
+  },
+  {
+    "id": "submarine",
+    "name": "submarine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/submarine.svg"
+  },
+  {
+    "id": "subway",
+    "name": "subway",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/subway.svg"
+  },
+  {
+    "id": "sugar-cane",
+    "name": "sugar cane",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sugar-cane.svg"
+  },
+  {
+    "id": "suitcase",
+    "name": "suitcase",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/suitcase.svg"
+  },
+  {
+    "id": "summits",
+    "name": "summits",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/summits.svg"
+  },
+  {
+    "id": "sun-cloud",
+    "name": "sun cloud",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sun-cloud.svg"
+  },
+  {
+    "id": "sun-priest",
+    "name": "sun priest",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sun-priest.svg"
+  },
+  {
+    "id": "sun-spear",
+    "name": "sun spear",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sun-spear.svg"
+  },
+  {
+    "id": "sunflower",
+    "name": "sunflower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sunflower.svg"
+  },
+  {
+    "id": "sunglasses",
+    "name": "sunglasses",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sunglasses.svg"
+  },
+  {
+    "id": "sunrise",
+    "name": "sunrise",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sunrise.svg"
+  },
+  {
+    "id": "sunset",
+    "name": "sunset",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sunset.svg"
+  },
+  {
+    "id": "surf-board",
+    "name": "surf board",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/surf-board.svg"
+  },
+  {
+    "id": "surfer-van",
+    "name": "surfer van",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/surfer-van.svg"
+  },
+  {
+    "id": "sushis",
+    "name": "sushis",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sushis.svg"
+  },
+  {
+    "id": "suspension-bridge",
+    "name": "suspension bridge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/suspension-bridge.svg"
+  },
+  {
+    "id": "sverd-i-fjell",
+    "name": "sverd i fjell",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sverd-i-fjell.svg"
+  },
+  {
+    "id": "swallow",
+    "name": "swallow",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/swallow.svg"
+  },
+  {
+    "id": "swallower",
+    "name": "swallower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/swallower.svg"
+  },
+  {
+    "id": "swamp-bat",
+    "name": "swamp bat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/swamp-bat.svg"
+  },
+  {
+    "id": "swamp",
+    "name": "swamp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/swamp.svg"
+  },
+  {
+    "id": "swimfins",
+    "name": "swimfins",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/swimfins.svg"
+  },
+  {
+    "id": "swipe-card",
+    "name": "swipe card",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/swipe-card.svg"
+  },
+  {
+    "id": "swiss-army-knife",
+    "name": "swiss army knife",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/swiss-army-knife.svg"
+  },
+  {
+    "id": "switch-weapon",
+    "name": "switch weapon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/switch-weapon.svg"
+  },
+  {
+    "id": "switzerland",
+    "name": "switzerland",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/switzerland.svg"
+  },
+  {
+    "id": "sword-altar",
+    "name": "sword altar",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sword-altar.svg"
+  },
+  {
+    "id": "sword-brandish",
+    "name": "sword brandish",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sword-brandish.svg"
+  },
+  {
+    "id": "sword-mold",
+    "name": "sword mold",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sword-mold.svg"
+  },
+  {
+    "id": "swords-power",
+    "name": "swords power",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/swords-power.svg"
+  },
+  {
+    "id": "sydney-opera-house",
+    "name": "sydney opera house",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/sydney-opera-house.svg"
+  },
+  {
+    "id": "t-brick",
+    "name": "t brick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/t-brick.svg"
+  },
+  {
+    "id": "t-rex-skull",
+    "name": "t rex skull",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/t-rex-skull.svg"
+  },
+  {
+    "id": "t-shirt",
+    "name": "t shirt",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/t-shirt.svg"
+  },
+  {
+    "id": "table",
+    "name": "table",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/table.svg"
+  },
+  {
+    "id": "tabletop-players",
+    "name": "tabletop players",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tabletop-players.svg"
+  },
+  {
+    "id": "tacos",
+    "name": "tacos",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tacos.svg"
+  },
+  {
+    "id": "tadpole",
+    "name": "tadpole",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tadpole.svg"
+  },
+  {
+    "id": "take-my-money",
+    "name": "take my money",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/take-my-money.svg"
+  },
+  {
+    "id": "tall-bridge",
+    "name": "tall bridge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tall-bridge.svg"
+  },
+  {
+    "id": "tally-mark-5",
+    "name": "tally mark 5",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tally-mark-5.svg"
+  },
+  {
+    "id": "tambourine",
+    "name": "tambourine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tambourine.svg"
+  },
+  {
+    "id": "tangerine",
+    "name": "tangerine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tangerine.svg"
+  },
+  {
+    "id": "tank-top",
+    "name": "tank top",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tank-top.svg"
+  },
+  {
+    "id": "tanzania",
+    "name": "tanzania",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tanzania.svg"
+  },
+  {
+    "id": "tap",
+    "name": "tap",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tap.svg"
+  },
+  {
+    "id": "tapir",
+    "name": "tapir",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tapir.svg"
+  },
+  {
+    "id": "target-poster",
+    "name": "target poster",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/target-poster.svg"
+  },
+  {
+    "id": "target-prize",
+    "name": "target prize",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/target-prize.svg"
+  },
+  {
+    "id": "taurus",
+    "name": "taurus",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/taurus.svg"
+  },
+  {
+    "id": "tavern-sign",
+    "name": "tavern sign",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tavern-sign.svg"
+  },
+  {
+    "id": "teacher",
+    "name": "teacher",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/teacher.svg"
+  },
+  {
+    "id": "team-downgrade",
+    "name": "team downgrade",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/team-downgrade.svg"
+  },
+  {
+    "id": "team-idea",
+    "name": "team idea",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/team-idea.svg"
+  },
+  {
+    "id": "team-upgrade",
+    "name": "team upgrade",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/team-upgrade.svg"
+  },
+  {
+    "id": "teapot-leaves",
+    "name": "teapot leaves",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/teapot-leaves.svg"
+  },
+  {
+    "id": "tee-pipe",
+    "name": "tee pipe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tee-pipe.svg"
+  },
+  {
+    "id": "telescope",
+    "name": "telescope",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/telescope.svg"
+  },
+  {
+    "id": "templar-shield",
+    "name": "templar shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/templar-shield.svg"
+  },
+  {
+    "id": "temple-door",
+    "name": "temple door",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/temple-door.svg"
+  },
+  {
+    "id": "temple-gate",
+    "name": "temple gate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/temple-gate.svg"
+  },
+  {
+    "id": "temporary-shield",
+    "name": "temporary shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/temporary-shield.svg"
+  },
+  {
+    "id": "tennis-ball",
+    "name": "tennis ball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tennis-ball.svg"
+  },
+  {
+    "id": "tennis-court",
+    "name": "tennis court",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tennis-court.svg"
+  },
+  {
+    "id": "tennis-racket",
+    "name": "tennis racket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tennis-racket.svg"
+  },
+  {
+    "id": "tentacles-barrier",
+    "name": "tentacles barrier",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tentacles-barrier.svg"
+  },
+  {
+    "id": "texas",
+    "name": "texas",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/texas.svg"
+  },
+  {
+    "id": "theater-curtains",
+    "name": "theater curtains",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/theater-curtains.svg"
+  },
+  {
+    "id": "theater",
+    "name": "theater",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/theater.svg"
+  },
+  {
+    "id": "thermometer-cold",
+    "name": "thermometer cold",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/thermometer-cold.svg"
+  },
+  {
+    "id": "thermometer-hot",
+    "name": "thermometer hot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/thermometer-hot.svg"
+  },
+  {
+    "id": "think",
+    "name": "think",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/think.svg"
+  },
+  {
+    "id": "thor-hammer",
+    "name": "thor hammer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/thor-hammer.svg"
+  },
+  {
+    "id": "three-friends",
+    "name": "three friends",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/three-friends.svg"
+  },
+  {
+    "id": "throne-king",
+    "name": "throne king",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/throne-king.svg"
+  },
+  {
+    "id": "throwing-ball",
+    "name": "throwing ball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/throwing-ball.svg"
+  },
+  {
+    "id": "thrust-bend",
+    "name": "thrust bend",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/thrust-bend.svg"
+  },
+  {
+    "id": "thumb-down",
+    "name": "thumb down",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/thumb-down.svg"
+  },
+  {
+    "id": "thumb-up",
+    "name": "thumb up",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/thumb-up.svg"
+  },
+  {
+    "id": "thwomp",
+    "name": "thwomp",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/thwomp.svg"
+  },
+  {
+    "id": "tiara",
+    "name": "tiara",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tiara.svg"
+  },
+  {
+    "id": "tic-tac-toe",
+    "name": "tic tac toe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tic-tac-toe.svg"
+  },
+  {
+    "id": "ticket",
+    "name": "ticket",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ticket.svg"
+  },
+  {
+    "id": "tie",
+    "name": "tie",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tie.svg"
+  },
+  {
+    "id": "tiger-head",
+    "name": "tiger head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tiger-head.svg"
+  },
+  {
+    "id": "tiger",
+    "name": "tiger",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tiger.svg"
+  },
+  {
+    "id": "tightrope",
+    "name": "tightrope",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tightrope.svg"
+  },
+  {
+    "id": "time-dynamite",
+    "name": "time dynamite",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/time-dynamite.svg"
+  },
+  {
+    "id": "time-synchronization",
+    "name": "time synchronization",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/time-synchronization.svg"
+  },
+  {
+    "id": "tipi",
+    "name": "tipi",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tipi.svg"
+  },
+  {
+    "id": "tire-iron-cross",
+    "name": "tire iron cross",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tire-iron-cross.svg"
+  },
+  {
+    "id": "tire-iron",
+    "name": "tire iron",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tire-iron.svg"
+  },
+  {
+    "id": "tire-tracks",
+    "name": "tire tracks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tire-tracks.svg"
+  },
+  {
+    "id": "tired-eye",
+    "name": "tired eye",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tired-eye.svg"
+  },
+  {
+    "id": "toaster",
+    "name": "toaster",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/toaster.svg"
+  },
+  {
+    "id": "toggles",
+    "name": "toggles",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/toggles.svg"
+  },
+  {
+    "id": "token",
+    "name": "token",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/token.svg"
+  },
+  {
+    "id": "tomahawk",
+    "name": "tomahawk",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tomahawk.svg"
+  },
+  {
+    "id": "tomato",
+    "name": "tomato",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tomato.svg"
+  },
+  {
+    "id": "tongue",
+    "name": "tongue",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tongue.svg"
+  },
+  {
+    "id": "toolbox",
+    "name": "toolbox",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/toolbox.svg"
+  },
+  {
+    "id": "torch",
+    "name": "torch",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/torch.svg"
+  },
+  {
+    "id": "torpedo",
+    "name": "torpedo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/torpedo.svg"
+  },
+  {
+    "id": "tortoise",
+    "name": "tortoise",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tortoise.svg"
+  },
+  {
+    "id": "totem",
+    "name": "totem",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/totem.svg"
+  },
+  {
+    "id": "toucan",
+    "name": "toucan",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/toucan.svg"
+  },
+  {
+    "id": "tow-truck",
+    "name": "tow truck",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tow-truck.svg"
+  },
+  {
+    "id": "towel",
+    "name": "towel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/towel.svg"
+  },
+  {
+    "id": "tower-bridge",
+    "name": "tower bridge",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tower-bridge.svg"
+  },
+  {
+    "id": "tower-flag",
+    "name": "tower flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tower-flag.svg"
+  },
+  {
+    "id": "toy-mallet",
+    "name": "toy mallet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/toy-mallet.svg"
+  },
+  {
+    "id": "tracked-robot",
+    "name": "tracked robot",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tracked-robot.svg"
+  },
+  {
+    "id": "traffic-cone",
+    "name": "traffic cone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/traffic-cone.svg"
+  },
+  {
+    "id": "traffic-lights-green",
+    "name": "traffic lights green",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/traffic-lights-green.svg"
+  },
+  {
+    "id": "traffic-lights-orange",
+    "name": "traffic lights orange",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/traffic-lights-orange.svg"
+  },
+  {
+    "id": "traffic-lights-ready-to-go",
+    "name": "traffic lights ready to go",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/traffic-lights-ready-to-go.svg"
+  },
+  {
+    "id": "traffic-lights-red",
+    "name": "traffic lights red",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/traffic-lights-red.svg"
+  },
+  {
+    "id": "trail",
+    "name": "trail",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trail.svg"
+  },
+  {
+    "id": "transform",
+    "name": "transform",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/transform.svg"
+  },
+  {
+    "id": "trash-can",
+    "name": "trash can",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trash-can.svg"
+  },
+  {
+    "id": "travel-dress",
+    "name": "travel dress",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/travel-dress.svg"
+  },
+  {
+    "id": "trebuchet",
+    "name": "trebuchet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trebuchet.svg"
+  },
+  {
+    "id": "tree-beehive",
+    "name": "tree beehive",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tree-beehive.svg"
+  },
+  {
+    "id": "tree-door",
+    "name": "tree door",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tree-door.svg"
+  },
+  {
+    "id": "tree-growth",
+    "name": "tree growth",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tree-growth.svg"
+  },
+  {
+    "id": "tree-roots",
+    "name": "tree roots",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tree-roots.svg"
+  },
+  {
+    "id": "tree-swing",
+    "name": "tree swing",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tree-swing.svg"
+  },
+  {
+    "id": "triangle-target",
+    "name": "triangle target",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/triangle-target.svg"
+  },
+  {
+    "id": "tribal-gear",
+    "name": "tribal gear",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tribal-gear.svg"
+  },
+  {
+    "id": "tribal-pendant",
+    "name": "tribal pendant",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tribal-pendant.svg"
+  },
+  {
+    "id": "tribal-shield",
+    "name": "tribal shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tribal-shield.svg"
+  },
+  {
+    "id": "tribunal-jury",
+    "name": "tribunal jury",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tribunal-jury.svg"
+  },
+  {
+    "id": "triceratops-head",
+    "name": "triceratops head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/triceratops-head.svg"
+  },
+  {
+    "id": "trident-shield",
+    "name": "trident shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trident-shield.svg"
+  },
+  {
+    "id": "triforce",
+    "name": "triforce",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/triforce.svg"
+  },
+  {
+    "id": "trinacria",
+    "name": "trinacria",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trinacria.svg"
+  },
+  {
+    "id": "triple-gate",
+    "name": "triple gate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/triple-gate.svg"
+  },
+  {
+    "id": "triquetra",
+    "name": "triquetra",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/triquetra.svg"
+  },
+  {
+    "id": "trireme",
+    "name": "trireme",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trireme.svg"
+  },
+  {
+    "id": "troglodyte",
+    "name": "troglodyte",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/troglodyte.svg"
+  },
+  {
+    "id": "trojan-horse",
+    "name": "trojan horse",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trojan-horse.svg"
+  },
+  {
+    "id": "trophies-shelf",
+    "name": "trophies shelf",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trophies-shelf.svg"
+  },
+  {
+    "id": "trophy-cup",
+    "name": "trophy cup",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trophy-cup.svg"
+  },
+  {
+    "id": "tropical-fish",
+    "name": "tropical fish",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tropical-fish.svg"
+  },
+  {
+    "id": "trowel",
+    "name": "trowel",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trowel.svg"
+  },
+  {
+    "id": "truce",
+    "name": "truce",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/truce.svg"
+  },
+  {
+    "id": "truck",
+    "name": "truck",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/truck.svg"
+  },
+  {
+    "id": "trumpet-flag",
+    "name": "trumpet flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trumpet-flag.svg"
+  },
+  {
+    "id": "trumpet",
+    "name": "trumpet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trumpet.svg"
+  },
+  {
+    "id": "trunk-mushroom",
+    "name": "trunk mushroom",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/trunk-mushroom.svg"
+  },
+  {
+    "id": "tumbleweed",
+    "name": "tumbleweed",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tumbleweed.svg"
+  },
+  {
+    "id": "tunisia",
+    "name": "tunisia",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tunisia.svg"
+  },
+  {
+    "id": "turban",
+    "name": "turban",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/turban.svg"
+  },
+  {
+    "id": "turbine",
+    "name": "turbine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/turbine.svg"
+  },
+  {
+    "id": "turnstile",
+    "name": "turnstile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/turnstile.svg"
+  },
+  {
+    "id": "tusks-flag",
+    "name": "tusks flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tusks-flag.svg"
+  },
+  {
+    "id": "tv-remote",
+    "name": "tv remote",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tv-remote.svg"
+  },
+  {
+    "id": "tv-tower",
+    "name": "tv tower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tv-tower.svg"
+  },
+  {
+    "id": "tv",
+    "name": "tv",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/tv.svg"
+  },
+  {
+    "id": "two-coins",
+    "name": "two coins",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/two-coins.svg"
+  },
+  {
+    "id": "two-handed-sword",
+    "name": "two handed sword",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/two-handed-sword.svg"
+  },
+  {
+    "id": "udder",
+    "name": "udder",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/udder.svg"
+  },
+  {
+    "id": "ufo",
+    "name": "ufo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ufo.svg"
+  },
+  {
+    "id": "uluru",
+    "name": "uluru",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/uluru.svg"
+  },
+  {
+    "id": "umbrella-bayonet",
+    "name": "umbrella bayonet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/umbrella-bayonet.svg"
+  },
+  {
+    "id": "unbalanced",
+    "name": "unbalanced",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/unbalanced.svg"
+  },
+  {
+    "id": "underground-cave",
+    "name": "underground cave",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/underground-cave.svg"
+  },
+  {
+    "id": "underwear-shorts",
+    "name": "underwear shorts",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/underwear-shorts.svg"
+  },
+  {
+    "id": "underwear",
+    "name": "underwear",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/underwear.svg"
+  },
+  {
+    "id": "unicorn",
+    "name": "unicorn",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/unicorn.svg"
+  },
+  {
+    "id": "unicycle",
+    "name": "unicycle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/unicycle.svg"
+  },
+  {
+    "id": "union-jack",
+    "name": "union jack",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/union-jack.svg"
+  },
+  {
+    "id": "up-card",
+    "name": "up card",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/up-card.svg"
+  },
+  {
+    "id": "upgrade",
+    "name": "upgrade",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/upgrade.svg"
+  },
+  {
+    "id": "uprising",
+    "name": "uprising",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/uprising.svg"
+  },
+  {
+    "id": "ursa-major",
+    "name": "ursa major",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ursa-major.svg"
+  },
+  {
+    "id": "uruguay",
+    "name": "uruguay",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/uruguay.svg"
+  },
+  {
+    "id": "usa-flag",
+    "name": "usa flag",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/usa-flag.svg"
+  },
+  {
+    "id": "usb-key",
+    "name": "usb key",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/usb-key.svg"
+  },
+  {
+    "id": "ushanka",
+    "name": "ushanka",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/ushanka.svg"
+  },
+  {
+    "id": "uzi",
+    "name": "uzi",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/uzi.svg"
+  },
+  {
+    "id": "vacuum-cleaner",
+    "name": "vacuum cleaner",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vacuum-cleaner.svg"
+  },
+  {
+    "id": "valve",
+    "name": "valve",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/valve.svg"
+  },
+  {
+    "id": "vampire-cape",
+    "name": "vampire cape",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vampire-cape.svg"
+  },
+  {
+    "id": "vampire-dracula",
+    "name": "vampire dracula",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vampire-dracula.svg"
+  },
+  {
+    "id": "van-damme-split",
+    "name": "van damme split",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/van-damme-split.svg"
+  },
+  {
+    "id": "velocipede",
+    "name": "velocipede",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/velocipede.svg"
+  },
+  {
+    "id": "velociraptor-tracks",
+    "name": "velociraptor tracks",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/velociraptor-tracks.svg"
+  },
+  {
+    "id": "velociraptor",
+    "name": "velociraptor",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/velociraptor.svg"
+  },
+  {
+    "id": "vending-machine",
+    "name": "vending machine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vending-machine.svg"
+  },
+  {
+    "id": "venezuela",
+    "name": "venezuela",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/venezuela.svg"
+  },
+  {
+    "id": "venus-of-willendorf",
+    "name": "venus of willendorf",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/venus-of-willendorf.svg"
+  },
+  {
+    "id": "vertical-banner",
+    "name": "vertical banner",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vertical-banner.svg"
+  },
+  {
+    "id": "vertical-flip",
+    "name": "vertical flip",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vertical-flip.svg"
+  },
+  {
+    "id": "vibrating-shield",
+    "name": "vibrating shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vibrating-shield.svg"
+  },
+  {
+    "id": "vibrating-smartphone",
+    "name": "vibrating smartphone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vibrating-smartphone.svg"
+  },
+  {
+    "id": "video-camera",
+    "name": "video camera",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/video-camera.svg"
+  },
+  {
+    "id": "video-conference",
+    "name": "video conference",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/video-conference.svg"
+  },
+  {
+    "id": "viking-church",
+    "name": "viking church",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/viking-church.svg"
+  },
+  {
+    "id": "viking-head",
+    "name": "viking head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/viking-head.svg"
+  },
+  {
+    "id": "viking-helmet",
+    "name": "viking helmet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/viking-helmet.svg"
+  },
+  {
+    "id": "viking-longhouse",
+    "name": "viking longhouse",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/viking-longhouse.svg"
+  },
+  {
+    "id": "viking-shield",
+    "name": "viking shield",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/viking-shield.svg"
+  },
+  {
+    "id": "village",
+    "name": "village",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/village.svg"
+  },
+  {
+    "id": "vines",
+    "name": "vines",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vines.svg"
+  },
+  {
+    "id": "virgo",
+    "name": "virgo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/virgo.svg"
+  },
+  {
+    "id": "virtual-marker",
+    "name": "virtual marker",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/virtual-marker.svg"
+  },
+  {
+    "id": "vitruvian-man",
+    "name": "vitruvian man",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vitruvian-man.svg"
+  },
+  {
+    "id": "volleyball-ball",
+    "name": "volleyball ball",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/volleyball-ball.svg"
+  },
+  {
+    "id": "vote",
+    "name": "vote",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vote.svg"
+  },
+  {
+    "id": "vr-headset",
+    "name": "vr headset",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vr-headset.svg"
+  },
+  {
+    "id": "vuvuzelas",
+    "name": "vuvuzelas",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/vuvuzelas.svg"
+  },
+  {
+    "id": "walk",
+    "name": "walk",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/walk.svg"
+  },
+  {
+    "id": "walkie-talkie",
+    "name": "walkie talkie",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/walkie-talkie.svg"
+  },
+  {
+    "id": "walking-scout",
+    "name": "walking scout",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/walking-scout.svg"
+  },
+  {
+    "id": "walking-turret",
+    "name": "walking turret",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/walking-turret.svg"
+  },
+  {
+    "id": "wall-light",
+    "name": "wall light",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wall-light.svg"
+  },
+  {
+    "id": "wallet",
+    "name": "wallet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wallet.svg"
+  },
+  {
+    "id": "walrus-head",
+    "name": "walrus head",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/walrus-head.svg"
+  },
+  {
+    "id": "wanted-reward",
+    "name": "wanted reward",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wanted-reward.svg"
+  },
+  {
+    "id": "war-axe",
+    "name": "war axe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/war-axe.svg"
+  },
+  {
+    "id": "war-bonnet",
+    "name": "war bonnet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/war-bonnet.svg"
+  },
+  {
+    "id": "war-pick",
+    "name": "war pick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/war-pick.svg"
+  },
+  {
+    "id": "warehouse",
+    "name": "warehouse",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/warehouse.svg"
+  },
+  {
+    "id": "warhammer",
+    "name": "warhammer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/warhammer.svg"
+  },
+  {
+    "id": "warlock-eye",
+    "name": "warlock eye",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/warlock-eye.svg"
+  },
+  {
+    "id": "warlock-hood",
+    "name": "warlock hood",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/warlock-hood.svg"
+  },
+  {
+    "id": "warp-pipe",
+    "name": "warp pipe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/warp-pipe.svg"
+  },
+  {
+    "id": "washing-machine",
+    "name": "washing machine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/washing-machine.svg"
+  },
+  {
+    "id": "watch",
+    "name": "watch",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/watch.svg"
+  },
+  {
+    "id": "watchtower",
+    "name": "watchtower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/watchtower.svg"
+  },
+  {
+    "id": "water-bottle",
+    "name": "water bottle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/water-bottle.svg"
+  },
+  {
+    "id": "water-diviner-stick",
+    "name": "water diviner stick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/water-diviner-stick.svg"
+  },
+  {
+    "id": "water-flask",
+    "name": "water flask",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/water-flask.svg"
+  },
+  {
+    "id": "water-fountain",
+    "name": "water fountain",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/water-fountain.svg"
+  },
+  {
+    "id": "water-gallon",
+    "name": "water gallon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/water-gallon.svg"
+  },
+  {
+    "id": "water-gun",
+    "name": "water gun",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/water-gun.svg"
+  },
+  {
+    "id": "water-polo",
+    "name": "water polo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/water-polo.svg"
+  },
+  {
+    "id": "water-recycling",
+    "name": "water recycling",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/water-recycling.svg"
+  },
+  {
+    "id": "water-tank",
+    "name": "water tank",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/water-tank.svg"
+  },
+  {
+    "id": "water-tower",
+    "name": "water tower",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/water-tower.svg"
+  },
+  {
+    "id": "waterfall",
+    "name": "waterfall",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/waterfall.svg"
+  },
+  {
+    "id": "watering-can",
+    "name": "watering can",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/watering-can.svg"
+  },
+  {
+    "id": "watermelon",
+    "name": "watermelon",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/watermelon.svg"
+  },
+  {
+    "id": "waterskin",
+    "name": "waterskin",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/waterskin.svg"
+  },
+  {
+    "id": "wave-surfer",
+    "name": "wave surfer",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wave-surfer.svg"
+  },
+  {
+    "id": "wax-tablet",
+    "name": "wax tablet",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wax-tablet.svg"
+  },
+  {
+    "id": "weight-lifting-down",
+    "name": "weight lifting down",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/weight-lifting-down.svg"
+  },
+  {
+    "id": "weight-lifting-up",
+    "name": "weight lifting up",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/weight-lifting-up.svg"
+  },
+  {
+    "id": "weight-scale",
+    "name": "weight scale",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/weight-scale.svg"
+  },
+  {
+    "id": "weight",
+    "name": "weight",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/weight.svg"
+  },
+  {
+    "id": "well",
+    "name": "well",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/well.svg"
+  },
+  {
+    "id": "western-hat",
+    "name": "western hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/western-hat.svg"
+  },
+  {
+    "id": "whale-tail",
+    "name": "whale tail",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/whale-tail.svg"
+  },
+  {
+    "id": "wheelbarrow",
+    "name": "wheelbarrow",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wheelbarrow.svg"
+  },
+  {
+    "id": "whisk",
+    "name": "whisk",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/whisk.svg"
+  },
+  {
+    "id": "whistle",
+    "name": "whistle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/whistle.svg"
+  },
+  {
+    "id": "wifi-router",
+    "name": "wifi router",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wifi-router.svg"
+  },
+  {
+    "id": "wind-turbine",
+    "name": "wind turbine",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wind-turbine.svg"
+  },
+  {
+    "id": "windmill",
+    "name": "windmill",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/windmill.svg"
+  },
+  {
+    "id": "window-bars",
+    "name": "window bars",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/window-bars.svg"
+  },
+  {
+    "id": "window",
+    "name": "window",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/window.svg"
+  },
+  {
+    "id": "windpump",
+    "name": "windpump",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/windpump.svg"
+  },
+  {
+    "id": "windsock",
+    "name": "windsock",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/windsock.svg"
+  },
+  {
+    "id": "wine-bottle",
+    "name": "wine bottle",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wine-bottle.svg"
+  },
+  {
+    "id": "winged-scepter",
+    "name": "winged scepter",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/winged-scepter.svg"
+  },
+  {
+    "id": "winter-gloves",
+    "name": "winter gloves",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/winter-gloves.svg"
+  },
+  {
+    "id": "winter-hat",
+    "name": "winter hat",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/winter-hat.svg"
+  },
+  {
+    "id": "wire-coil",
+    "name": "wire coil",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wire-coil.svg"
+  },
+  {
+    "id": "wireframe-globe",
+    "name": "wireframe globe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wireframe-globe.svg"
+  },
+  {
+    "id": "wisdom",
+    "name": "wisdom",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wisdom.svg"
+  },
+  {
+    "id": "wizard-face",
+    "name": "wizard face",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wizard-face.svg"
+  },
+  {
+    "id": "wolverine-claws",
+    "name": "wolverine claws",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wolverine-claws.svg"
+  },
+  {
+    "id": "woman-elf-face",
+    "name": "woman elf face",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/woman-elf-face.svg"
+  },
+  {
+    "id": "wood-beam",
+    "name": "wood beam",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wood-beam.svg"
+  },
+  {
+    "id": "wood-cabin",
+    "name": "wood cabin",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wood-cabin.svg"
+  },
+  {
+    "id": "wood-canoe",
+    "name": "wood canoe",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wood-canoe.svg"
+  },
+  {
+    "id": "wood-club",
+    "name": "wood club",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wood-club.svg"
+  },
+  {
+    "id": "wood-frame",
+    "name": "wood frame",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wood-frame.svg"
+  },
+  {
+    "id": "wood-pile",
+    "name": "wood pile",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wood-pile.svg"
+  },
+  {
+    "id": "wood-stick",
+    "name": "wood stick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wood-stick.svg"
+  },
+  {
+    "id": "wooden-chair",
+    "name": "wooden chair",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wooden-chair.svg"
+  },
+  {
+    "id": "wooden-clogs",
+    "name": "wooden clogs",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wooden-clogs.svg"
+  },
+  {
+    "id": "wooden-crate",
+    "name": "wooden crate",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wooden-crate.svg"
+  },
+  {
+    "id": "wooden-pegleg",
+    "name": "wooden pegleg",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wooden-pegleg.svg"
+  },
+  {
+    "id": "wooden-pier",
+    "name": "wooden pier",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wooden-pier.svg"
+  },
+  {
+    "id": "wool",
+    "name": "wool",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/wool.svg"
+  },
+  {
+    "id": "worms",
+    "name": "worms",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/worms.svg"
+  },
+  {
+    "id": "xylophone",
+    "name": "xylophone",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/xylophone.svg"
+  },
+  {
+    "id": "yarn",
+    "name": "yarn",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/yarn.svg"
+  },
+  {
+    "id": "yin-yang",
+    "name": "yin yang",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/yin-yang.svg"
+  },
+  {
+    "id": "yunluo",
+    "name": "yunluo",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/yunluo.svg"
+  },
+  {
+    "id": "z-brick",
+    "name": "z brick",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/z-brick.svg"
+  },
+  {
+    "id": "zat-gun",
+    "name": "zat gun",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/zat-gun.svg"
+  },
+  {
+    "id": "zigzag-hieroglyph",
+    "name": "zigzag hieroglyph",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/zigzag-hieroglyph.svg"
+  },
+  {
+    "id": "zipper",
+    "name": "zipper",
+    "contributor": "delapouite",
+    "svgPath": "/game-icons/delapouite/zipper.svg"
+  },
+  {
+    "id": "card-discard",
+    "name": "card discard",
+    "contributor": "faithtoken",
+    "svgPath": "/game-icons/faithtoken/card-discard.svg"
+  },
+  {
+    "id": "card-draw",
+    "name": "card draw",
+    "contributor": "faithtoken",
+    "svgPath": "/game-icons/faithtoken/card-draw.svg"
+  },
+  {
+    "id": "card-pick",
+    "name": "card pick",
+    "contributor": "faithtoken",
+    "svgPath": "/game-icons/faithtoken/card-pick.svg"
+  },
+  {
+    "id": "card-random",
+    "name": "card random",
+    "contributor": "faithtoken",
+    "svgPath": "/game-icons/faithtoken/card-random.svg"
+  },
+  {
+    "id": "dragon-head",
+    "name": "dragon head",
+    "contributor": "faithtoken",
+    "svgPath": "/game-icons/faithtoken/dragon-head.svg"
+  },
+  {
+    "id": "forward-sun",
+    "name": "forward sun",
+    "contributor": "faithtoken",
+    "svgPath": "/game-icons/faithtoken/forward-sun.svg"
+  },
+  {
+    "id": "minerals",
+    "name": "minerals",
+    "contributor": "faithtoken",
+    "svgPath": "/game-icons/faithtoken/minerals.svg"
+  },
+  {
+    "id": "nautilus-shell",
+    "name": "nautilus shell",
+    "contributor": "faithtoken",
+    "svgPath": "/game-icons/faithtoken/nautilus-shell.svg"
+  },
+  {
+    "id": "ninja-star",
+    "name": "ninja star",
+    "contributor": "faithtoken",
+    "svgPath": "/game-icons/faithtoken/ninja-star.svg"
+  },
+  {
+    "id": "ore",
+    "name": "ore",
+    "contributor": "faithtoken",
+    "svgPath": "/game-icons/faithtoken/ore.svg"
+  },
+  {
+    "id": "dodge",
+    "name": "dodge",
+    "contributor": "felbrigg",
+    "svgPath": "/game-icons/felbrigg/dodge.svg"
+  },
+  {
+    "id": "overhead",
+    "name": "overhead",
+    "contributor": "felbrigg",
+    "svgPath": "/game-icons/felbrigg/overhead.svg"
+  },
+  {
+    "id": "sideswipe",
+    "name": "sideswipe",
+    "contributor": "felbrigg",
+    "svgPath": "/game-icons/felbrigg/sideswipe.svg"
+  },
+  {
+    "id": "thrust",
+    "name": "thrust",
+    "contributor": "felbrigg",
+    "svgPath": "/game-icons/felbrigg/thrust.svg"
+  },
+  {
+    "id": "underhand",
+    "name": "underhand",
+    "contributor": "felbrigg",
+    "svgPath": "/game-icons/felbrigg/underhand.svg"
+  },
+  {
+    "id": "fingers-crossed",
+    "name": "fingers crossed",
+    "contributor": "generalace135",
+    "svgPath": "/game-icons/generalace135/fingers-crossed.svg"
+  },
+  {
+    "id": "shepherds-crook",
+    "name": "shepherds crook",
+    "contributor": "generalace135",
+    "svgPath": "/game-icons/generalace135/shepherds-crook.svg"
+  },
+  {
+    "id": "pause-button",
+    "name": "pause button",
+    "contributor": "guard13007",
+    "svgPath": "/game-icons/guard13007/pause-button.svg"
+  },
+  {
+    "id": "play-button",
+    "name": "play button",
+    "contributor": "guard13007",
+    "svgPath": "/game-icons/guard13007/play-button.svg"
+  },
+  {
+    "id": "soda-can",
+    "name": "soda can",
+    "contributor": "guard13007",
+    "svgPath": "/game-icons/guard13007/soda-can.svg"
+  },
+  {
+    "id": "catapult",
+    "name": "catapult",
+    "contributor": "heavenly-dog",
+    "svgPath": "/game-icons/heavenly-dog/catapult.svg"
+  },
+  {
+    "id": "defensive-wall",
+    "name": "defensive wall",
+    "contributor": "heavenly-dog",
+    "svgPath": "/game-icons/heavenly-dog/defensive-wall.svg"
+  },
+  {
+    "id": "armored-pants",
+    "name": "armored pants",
+    "contributor": "irongamer",
+    "svgPath": "/game-icons/irongamer/armored-pants.svg"
+  },
+  {
+    "id": "pistol-gun",
+    "name": "pistol gun",
+    "contributor": "john-colburn",
+    "svgPath": "/game-icons/john-colburn/pistol-gun.svg"
+  },
+  {
+    "id": "paper",
+    "name": "paper",
+    "contributor": "john-redman",
+    "svgPath": "/game-icons/john-redman/paper.svg"
+  },
+  {
+    "id": "rock",
+    "name": "rock",
+    "contributor": "john-redman",
+    "svgPath": "/game-icons/john-redman/rock.svg"
+  },
+  {
+    "id": "scissors",
+    "name": "scissors",
+    "contributor": "john-redman",
+    "svgPath": "/game-icons/john-redman/scissors.svg"
+  },
+  {
+    "id": "dwarf-helmet",
+    "name": "dwarf helmet",
+    "contributor": "kier-heyl",
+    "svgPath": "/game-icons/kier-heyl/dwarf-helmet.svg"
+  },
+  {
+    "id": "dwarf-king",
+    "name": "dwarf king",
+    "contributor": "kier-heyl",
+    "svgPath": "/game-icons/kier-heyl/dwarf-king.svg"
+  },
+  {
+    "id": "elf-helmet",
+    "name": "elf helmet",
+    "contributor": "kier-heyl",
+    "svgPath": "/game-icons/kier-heyl/elf-helmet.svg"
+  },
+  {
+    "id": "ace",
+    "name": "ace",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ace.svg"
+  },
+  {
+    "id": "acid-blob",
+    "name": "acid blob",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/acid-blob.svg"
+  },
+  {
+    "id": "acorn",
+    "name": "acorn",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/acorn.svg"
+  },
+  {
+    "id": "aerial-signal",
+    "name": "aerial signal",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/aerial-signal.svg"
+  },
+  {
+    "id": "aerodynamic-harpoon",
+    "name": "aerodynamic harpoon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/aerodynamic-harpoon.svg"
+  },
+  {
+    "id": "aerosol",
+    "name": "aerosol",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/aerosol.svg"
+  },
+  {
+    "id": "afterburn",
+    "name": "afterburn",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/afterburn.svg"
+  },
+  {
+    "id": "air-zigzag",
+    "name": "air zigzag",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/air-zigzag.svg"
+  },
+  {
+    "id": "alien-fire",
+    "name": "alien fire",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/alien-fire.svg"
+  },
+  {
+    "id": "alien-skull",
+    "name": "alien skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/alien-skull.svg"
+  },
+  {
+    "id": "alien-stare",
+    "name": "alien stare",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/alien-stare.svg"
+  },
+  {
+    "id": "all-for-one",
+    "name": "all for one",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/all-for-one.svg"
+  },
+  {
+    "id": "alligator-clip",
+    "name": "alligator clip",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/alligator-clip.svg"
+  },
+  {
+    "id": "ammonite-fossil",
+    "name": "ammonite fossil",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ammonite-fossil.svg"
+  },
+  {
+    "id": "ammonite",
+    "name": "ammonite",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ammonite.svg"
+  },
+  {
+    "id": "anatomy",
+    "name": "anatomy",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/anatomy.svg"
+  },
+  {
+    "id": "anchor",
+    "name": "anchor",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/anchor.svg"
+  },
+  {
+    "id": "android-mask",
+    "name": "android mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/android-mask.svg"
+  },
+  {
+    "id": "andromeda-chain",
+    "name": "andromeda chain",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/andromeda-chain.svg"
+  },
+  {
+    "id": "angel-outfit",
+    "name": "angel outfit",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/angel-outfit.svg"
+  },
+  {
+    "id": "angel-wings",
+    "name": "angel wings",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/angel-wings.svg"
+  },
+  {
+    "id": "angler-fish",
+    "name": "angler fish",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/angler-fish.svg"
+  },
+  {
+    "id": "angular-spider",
+    "name": "angular spider",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/angular-spider.svg"
+  },
+  {
+    "id": "animal-skull",
+    "name": "animal skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/animal-skull.svg"
+  },
+  {
+    "id": "ankh",
+    "name": "ankh",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ankh.svg"
+  },
+  {
+    "id": "anthem",
+    "name": "anthem",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/anthem.svg"
+  },
+  {
+    "id": "anvil-impact",
+    "name": "anvil impact",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/anvil-impact.svg"
+  },
+  {
+    "id": "anvil",
+    "name": "anvil",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/anvil.svg"
+  },
+  {
+    "id": "apple-maggot",
+    "name": "apple maggot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/apple-maggot.svg"
+  },
+  {
+    "id": "apple-seeds",
+    "name": "apple seeds",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/apple-seeds.svg"
+  },
+  {
+    "id": "archery-target",
+    "name": "archery target",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/archery-target.svg"
+  },
+  {
+    "id": "architect-mask",
+    "name": "architect mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/architect-mask.svg"
+  },
+  {
+    "id": "arcing-bolt",
+    "name": "arcing bolt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/arcing-bolt.svg"
+  },
+  {
+    "id": "armadillo-tail",
+    "name": "armadillo tail",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/armadillo-tail.svg"
+  },
+  {
+    "id": "armor-vest",
+    "name": "armor vest",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/armor-vest.svg"
+  },
+  {
+    "id": "armoured-shell",
+    "name": "armoured shell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/armoured-shell.svg"
+  },
+  {
+    "id": "arrow-cluster",
+    "name": "arrow cluster",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/arrow-cluster.svg"
+  },
+  {
+    "id": "arrow-dunk",
+    "name": "arrow dunk",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/arrow-dunk.svg"
+  },
+  {
+    "id": "arrow-flights",
+    "name": "arrow flights",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/arrow-flights.svg"
+  },
+  {
+    "id": "arrow-scope",
+    "name": "arrow scope",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/arrow-scope.svg"
+  },
+  {
+    "id": "arrowed",
+    "name": "arrowed",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/arrowed.svg"
+  },
+  {
+    "id": "arrowhead",
+    "name": "arrowhead",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/arrowhead.svg"
+  },
+  {
+    "id": "arrows-shield",
+    "name": "arrows shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/arrows-shield.svg"
+  },
+  {
+    "id": "arson",
+    "name": "arson",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/arson.svg"
+  },
+  {
+    "id": "artificial-hive",
+    "name": "artificial hive",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/artificial-hive.svg"
+  },
+  {
+    "id": "assassin-pocket",
+    "name": "assassin pocket",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/assassin-pocket.svg"
+  },
+  {
+    "id": "at-sea",
+    "name": "at sea",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/at-sea.svg"
+  },
+  {
+    "id": "atomic-slashes",
+    "name": "atomic slashes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/atomic-slashes.svg"
+  },
+  {
+    "id": "aubergine",
+    "name": "aubergine",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/aubergine.svg"
+  },
+  {
+    "id": "aura",
+    "name": "aura",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/aura.svg"
+  },
+  {
+    "id": "auto-repair",
+    "name": "auto repair",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/auto-repair.svg"
+  },
+  {
+    "id": "autogun",
+    "name": "autogun",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/autogun.svg"
+  },
+  {
+    "id": "automatic-sas",
+    "name": "automatic sas",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/automatic-sas.svg"
+  },
+  {
+    "id": "awareness",
+    "name": "awareness",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/awareness.svg"
+  },
+  {
+    "id": "axe-in-stump",
+    "name": "axe in stump",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/axe-in-stump.svg"
+  },
+  {
+    "id": "axe-swing",
+    "name": "axe swing",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/axe-swing.svg"
+  },
+  {
+    "id": "back-forth",
+    "name": "back forth",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/back-forth.svg"
+  },
+  {
+    "id": "back-pain",
+    "name": "back pain",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/back-pain.svg"
+  },
+  {
+    "id": "backbone-shell",
+    "name": "backbone shell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/backbone-shell.svg"
+  },
+  {
+    "id": "backstab",
+    "name": "backstab",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/backstab.svg"
+  },
+  {
+    "id": "backup",
+    "name": "backup",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/backup.svg"
+  },
+  {
+    "id": "ball-glow",
+    "name": "ball glow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ball-glow.svg"
+  },
+  {
+    "id": "ball-heart",
+    "name": "ball heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ball-heart.svg"
+  },
+  {
+    "id": "balloons",
+    "name": "balloons",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/balloons.svg"
+  },
+  {
+    "id": "bandage-roll",
+    "name": "bandage roll",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bandage-roll.svg"
+  },
+  {
+    "id": "bandaged",
+    "name": "bandaged",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bandaged.svg"
+  },
+  {
+    "id": "barbed-arrow",
+    "name": "barbed arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/barbed-arrow.svg"
+  },
+  {
+    "id": "barbed-coil",
+    "name": "barbed coil",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/barbed-coil.svg"
+  },
+  {
+    "id": "barbed-nails",
+    "name": "barbed nails",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/barbed-nails.svg"
+  },
+  {
+    "id": "barbed-spear",
+    "name": "barbed spear",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/barbed-spear.svg"
+  },
+  {
+    "id": "barbed-star",
+    "name": "barbed star",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/barbed-star.svg"
+  },
+  {
+    "id": "barbed-sun",
+    "name": "barbed sun",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/barbed-sun.svg"
+  },
+  {
+    "id": "barbed-wire",
+    "name": "barbed wire",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/barbed-wire.svg"
+  },
+  {
+    "id": "barbute",
+    "name": "barbute",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/barbute.svg"
+  },
+  {
+    "id": "barefoot",
+    "name": "barefoot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/barefoot.svg"
+  },
+  {
+    "id": "bat-blade",
+    "name": "bat blade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bat-blade.svg"
+  },
+  {
+    "id": "bat-wing",
+    "name": "bat wing",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bat-wing.svg"
+  },
+  {
+    "id": "battered-axe",
+    "name": "battered axe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/battered-axe.svg"
+  },
+  {
+    "id": "batteries",
+    "name": "batteries",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/batteries.svg"
+  },
+  {
+    "id": "battle-axe",
+    "name": "battle axe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/battle-axe.svg"
+  },
+  {
+    "id": "battle-gear",
+    "name": "battle gear",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/battle-gear.svg"
+  },
+  {
+    "id": "battle-tank",
+    "name": "battle tank",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/battle-tank.svg"
+  },
+  {
+    "id": "batwing-emblem",
+    "name": "batwing emblem",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/batwing-emblem.svg"
+  },
+  {
+    "id": "beam-wake",
+    "name": "beam wake",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/beam-wake.svg"
+  },
+  {
+    "id": "beams-aura",
+    "name": "beams aura",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/beams-aura.svg"
+  },
+  {
+    "id": "beanstalk",
+    "name": "beanstalk",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/beanstalk.svg"
+  },
+  {
+    "id": "beard",
+    "name": "beard",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/beard.svg"
+  },
+  {
+    "id": "beast-eye",
+    "name": "beast eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/beast-eye.svg"
+  },
+  {
+    "id": "bee",
+    "name": "bee",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bee.svg"
+  },
+  {
+    "id": "beech",
+    "name": "beech",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/beech.svg"
+  },
+  {
+    "id": "beer-stein",
+    "name": "beer stein",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/beer-stein.svg"
+  },
+  {
+    "id": "beetle-shell",
+    "name": "beetle shell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/beetle-shell.svg"
+  },
+  {
+    "id": "behold",
+    "name": "behold",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/behold.svg"
+  },
+  {
+    "id": "bell-shield",
+    "name": "bell shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bell-shield.svg"
+  },
+  {
+    "id": "belt-buckles",
+    "name": "belt buckles",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/belt-buckles.svg"
+  },
+  {
+    "id": "bestial-fangs",
+    "name": "bestial fangs",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bestial-fangs.svg"
+  },
+  {
+    "id": "beveled-star",
+    "name": "beveled star",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/beveled-star.svg"
+  },
+  {
+    "id": "big-wave",
+    "name": "big wave",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/big-wave.svg"
+  },
+  {
+    "id": "biohazard",
+    "name": "biohazard",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/biohazard.svg"
+  },
+  {
+    "id": "bird-claw",
+    "name": "bird claw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bird-claw.svg"
+  },
+  {
+    "id": "bird-limb",
+    "name": "bird limb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bird-limb.svg"
+  },
+  {
+    "id": "bird-mask",
+    "name": "bird mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bird-mask.svg"
+  },
+  {
+    "id": "bird-twitter",
+    "name": "bird twitter",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bird-twitter.svg"
+  },
+  {
+    "id": "black-bar",
+    "name": "black bar",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/black-bar.svg"
+  },
+  {
+    "id": "black-flag",
+    "name": "black flag",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/black-flag.svg"
+  },
+  {
+    "id": "black-hand-shield",
+    "name": "black hand shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/black-hand-shield.svg"
+  },
+  {
+    "id": "black-hole-bolas",
+    "name": "black hole bolas",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/black-hole-bolas.svg"
+  },
+  {
+    "id": "blackball",
+    "name": "blackball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/blackball.svg"
+  },
+  {
+    "id": "blackcurrant",
+    "name": "blackcurrant",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/blackcurrant.svg"
+  },
+  {
+    "id": "blade-bite",
+    "name": "blade bite",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/blade-bite.svg"
+  },
+  {
+    "id": "blade-drag",
+    "name": "blade drag",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/blade-drag.svg"
+  },
+  {
+    "id": "blade-fall",
+    "name": "blade fall",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/blade-fall.svg"
+  },
+  {
+    "id": "bleeding-eye",
+    "name": "bleeding eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bleeding-eye.svg"
+  },
+  {
+    "id": "bleeding-heart",
+    "name": "bleeding heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bleeding-heart.svg"
+  },
+  {
+    "id": "bleeding-wound",
+    "name": "bleeding wound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bleeding-wound.svg"
+  },
+  {
+    "id": "bloody-stash",
+    "name": "bloody stash",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bloody-stash.svg"
+  },
+  {
+    "id": "bloody-sword",
+    "name": "bloody sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bloody-sword.svg"
+  },
+  {
+    "id": "blunderbuss",
+    "name": "blunderbuss",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/blunderbuss.svg"
+  },
+  {
+    "id": "boar-tusks",
+    "name": "boar tusks",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/boar-tusks.svg"
+  },
+  {
+    "id": "body-swapping",
+    "name": "body swapping",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/body-swapping.svg"
+  },
+  {
+    "id": "boiling-bubbles",
+    "name": "boiling bubbles",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/boiling-bubbles.svg"
+  },
+  {
+    "id": "bolas",
+    "name": "bolas",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bolas.svg"
+  },
+  {
+    "id": "bolt-eye",
+    "name": "bolt eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bolt-eye.svg"
+  },
+  {
+    "id": "bolt-saw",
+    "name": "bolt saw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bolt-saw.svg"
+  },
+  {
+    "id": "bolt-shield",
+    "name": "bolt shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bolt-shield.svg"
+  },
+  {
+    "id": "bolter-gun",
+    "name": "bolter gun",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bolter-gun.svg"
+  },
+  {
+    "id": "bombing-run",
+    "name": "bombing run",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bombing-run.svg"
+  },
+  {
+    "id": "bone-gnawer",
+    "name": "bone gnawer",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bone-gnawer.svg"
+  },
+  {
+    "id": "bone-knife",
+    "name": "bone knife",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bone-knife.svg"
+  },
+  {
+    "id": "book-aura",
+    "name": "book aura",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/book-aura.svg"
+  },
+  {
+    "id": "book-cover",
+    "name": "book cover",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/book-cover.svg"
+  },
+  {
+    "id": "book-storm",
+    "name": "book storm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/book-storm.svg"
+  },
+  {
+    "id": "bookmark",
+    "name": "bookmark",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bookmark.svg"
+  },
+  {
+    "id": "bookmarklet",
+    "name": "bookmarklet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bookmarklet.svg"
+  },
+  {
+    "id": "boomerang-sun",
+    "name": "boomerang sun",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/boomerang-sun.svg"
+  },
+  {
+    "id": "boot-kick",
+    "name": "boot kick",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/boot-kick.svg"
+  },
+  {
+    "id": "boot-prints",
+    "name": "boot prints",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/boot-prints.svg"
+  },
+  {
+    "id": "boot-stomp",
+    "name": "boot stomp",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/boot-stomp.svg"
+  },
+  {
+    "id": "boots",
+    "name": "boots",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/boots.svg"
+  },
+  {
+    "id": "bordered-shield",
+    "name": "bordered shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bordered-shield.svg"
+  },
+  {
+    "id": "bottle-vapors",
+    "name": "bottle vapors",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bottle-vapors.svg"
+  },
+  {
+    "id": "bottled-bolt",
+    "name": "bottled bolt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bottled-bolt.svg"
+  },
+  {
+    "id": "bottom-right-3d-arrow",
+    "name": "bottom right 3d arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bottom-right-3d-arrow.svg"
+  },
+  {
+    "id": "bouncing-sword",
+    "name": "bouncing sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bouncing-sword.svg"
+  },
+  {
+    "id": "bowie-knife",
+    "name": "bowie knife",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bowie-knife.svg"
+  },
+  {
+    "id": "bowl-spiral",
+    "name": "bowl spiral",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bowl-spiral.svg"
+  },
+  {
+    "id": "bowling-propulsion",
+    "name": "bowling propulsion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bowling-propulsion.svg"
+  },
+  {
+    "id": "bowman",
+    "name": "bowman",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bowman.svg"
+  },
+  {
+    "id": "boxing-glove-surprise",
+    "name": "boxing glove surprise",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/boxing-glove-surprise.svg"
+  },
+  {
+    "id": "boxing-glove",
+    "name": "boxing glove",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/boxing-glove.svg"
+  },
+  {
+    "id": "brain-freeze",
+    "name": "brain freeze",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/brain-freeze.svg"
+  },
+  {
+    "id": "brain-stem",
+    "name": "brain stem",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/brain-stem.svg"
+  },
+  {
+    "id": "brain",
+    "name": "brain",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/brain.svg"
+  },
+  {
+    "id": "brainstorm",
+    "name": "brainstorm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/brainstorm.svg"
+  },
+  {
+    "id": "branch-arrow",
+    "name": "branch arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/branch-arrow.svg"
+  },
+  {
+    "id": "brandy-bottle",
+    "name": "brandy bottle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/brandy-bottle.svg"
+  },
+  {
+    "id": "brass-eye",
+    "name": "brass eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/brass-eye.svg"
+  },
+  {
+    "id": "breastplate",
+    "name": "breastplate",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/breastplate.svg"
+  },
+  {
+    "id": "bridge",
+    "name": "bridge",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bridge.svg"
+  },
+  {
+    "id": "bright-explosion",
+    "name": "bright explosion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bright-explosion.svg"
+  },
+  {
+    "id": "broad-dagger",
+    "name": "broad dagger",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/broad-dagger.svg"
+  },
+  {
+    "id": "broadhead-arrow",
+    "name": "broadhead arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/broadhead-arrow.svg"
+  },
+  {
+    "id": "broadsword",
+    "name": "broadsword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/broadsword.svg"
+  },
+  {
+    "id": "broken-bone",
+    "name": "broken bone",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/broken-bone.svg"
+  },
+  {
+    "id": "broken-bottle",
+    "name": "broken bottle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/broken-bottle.svg"
+  },
+  {
+    "id": "broken-heart-zone",
+    "name": "broken heart zone",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/broken-heart-zone.svg"
+  },
+  {
+    "id": "broken-heart",
+    "name": "broken heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/broken-heart.svg"
+  },
+  {
+    "id": "broken-ribbon",
+    "name": "broken ribbon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/broken-ribbon.svg"
+  },
+  {
+    "id": "broken-shield",
+    "name": "broken shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/broken-shield.svg"
+  },
+  {
+    "id": "broken-skull",
+    "name": "broken skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/broken-skull.svg"
+  },
+  {
+    "id": "broken-tablet",
+    "name": "broken tablet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/broken-tablet.svg"
+  },
+  {
+    "id": "bubble-field",
+    "name": "bubble field",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bubble-field.svg"
+  },
+  {
+    "id": "bubbles",
+    "name": "bubbles",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bubbles.svg"
+  },
+  {
+    "id": "bubbling-beam",
+    "name": "bubbling beam",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bubbling-beam.svg"
+  },
+  {
+    "id": "bubbling-bowl",
+    "name": "bubbling bowl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bubbling-bowl.svg"
+  },
+  {
+    "id": "bubbling-flask",
+    "name": "bubbling flask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bubbling-flask.svg"
+  },
+  {
+    "id": "bud",
+    "name": "bud",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bud.svg"
+  },
+  {
+    "id": "bugle-call",
+    "name": "bugle call",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bugle-call.svg"
+  },
+  {
+    "id": "bulb",
+    "name": "bulb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bulb.svg"
+  },
+  {
+    "id": "bull-horns",
+    "name": "bull horns",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bull-horns.svg"
+  },
+  {
+    "id": "bull",
+    "name": "bull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bull.svg"
+  },
+  {
+    "id": "bullets",
+    "name": "bullets",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/bullets.svg"
+  },
+  {
+    "id": "burning-blobs",
+    "name": "burning blobs",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/burning-blobs.svg"
+  },
+  {
+    "id": "burning-book",
+    "name": "burning book",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/burning-book.svg"
+  },
+  {
+    "id": "burning-dot",
+    "name": "burning dot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/burning-dot.svg"
+  },
+  {
+    "id": "burning-embers",
+    "name": "burning embers",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/burning-embers.svg"
+  },
+  {
+    "id": "burning-eye",
+    "name": "burning eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/burning-eye.svg"
+  },
+  {
+    "id": "burning-meteor",
+    "name": "burning meteor",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/burning-meteor.svg"
+  },
+  {
+    "id": "burning-passion",
+    "name": "burning passion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/burning-passion.svg"
+  },
+  {
+    "id": "burning-round-shot",
+    "name": "burning round shot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/burning-round-shot.svg"
+  },
+  {
+    "id": "burning-tree",
+    "name": "burning tree",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/burning-tree.svg"
+  },
+  {
+    "id": "burst-blob",
+    "name": "burst blob",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/burst-blob.svg"
+  },
+  {
+    "id": "butterfly-warning",
+    "name": "butterfly warning",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/butterfly-warning.svg"
+  },
+  {
+    "id": "butterfly",
+    "name": "butterfly",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/butterfly.svg"
+  },
+  {
+    "id": "caged-ball",
+    "name": "caged ball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/caged-ball.svg"
+  },
+  {
+    "id": "cake-slice",
+    "name": "cake slice",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cake-slice.svg"
+  },
+  {
+    "id": "caldera",
+    "name": "caldera",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/caldera.svg"
+  },
+  {
+    "id": "campfire",
+    "name": "campfire",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/campfire.svg"
+  },
+  {
+    "id": "candle-flame",
+    "name": "candle flame",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/candle-flame.svg"
+  },
+  {
+    "id": "candle-holder",
+    "name": "candle holder",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/candle-holder.svg"
+  },
+  {
+    "id": "candle-light",
+    "name": "candle light",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/candle-light.svg"
+  },
+  {
+    "id": "candle-skull",
+    "name": "candle skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/candle-skull.svg"
+  },
+  {
+    "id": "candlebright",
+    "name": "candlebright",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/candlebright.svg"
+  },
+  {
+    "id": "cannister",
+    "name": "cannister",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cannister.svg"
+  },
+  {
+    "id": "cannon-ball",
+    "name": "cannon ball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cannon-ball.svg"
+  },
+  {
+    "id": "cannon-shot",
+    "name": "cannon shot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cannon-shot.svg"
+  },
+  {
+    "id": "cannon",
+    "name": "cannon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cannon.svg"
+  },
+  {
+    "id": "capitol",
+    "name": "capitol",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/capitol.svg"
+  },
+  {
+    "id": "cargo-crane",
+    "name": "cargo crane",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cargo-crane.svg"
+  },
+  {
+    "id": "carillon",
+    "name": "carillon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/carillon.svg"
+  },
+  {
+    "id": "carnivore-mouth",
+    "name": "carnivore mouth",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/carnivore-mouth.svg"
+  },
+  {
+    "id": "carrion",
+    "name": "carrion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/carrion.svg"
+  },
+  {
+    "id": "cartwheel",
+    "name": "cartwheel",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cartwheel.svg"
+  },
+  {
+    "id": "cash",
+    "name": "cash",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cash.svg"
+  },
+  {
+    "id": "castle",
+    "name": "castle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/castle.svg"
+  },
+  {
+    "id": "cat",
+    "name": "cat",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cat.svg"
+  },
+  {
+    "id": "cauldron",
+    "name": "cauldron",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cauldron.svg"
+  },
+  {
+    "id": "celebration-fire",
+    "name": "celebration fire",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/celebration-fire.svg"
+  },
+  {
+    "id": "centipede",
+    "name": "centipede",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/centipede.svg"
+  },
+  {
+    "id": "chained-arrow-heads",
+    "name": "chained arrow heads",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/chained-arrow-heads.svg"
+  },
+  {
+    "id": "chained-heart",
+    "name": "chained heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/chained-heart.svg"
+  },
+  {
+    "id": "chalice-drops",
+    "name": "chalice drops",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/chalice-drops.svg"
+  },
+  {
+    "id": "charged-arrow",
+    "name": "charged arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/charged-arrow.svg"
+  },
+  {
+    "id": "charm",
+    "name": "charm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/charm.svg"
+  },
+  {
+    "id": "checkbox-tree",
+    "name": "checkbox tree",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/checkbox-tree.svg"
+  },
+  {
+    "id": "checked-shield",
+    "name": "checked shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/checked-shield.svg"
+  },
+  {
+    "id": "checkered-diamond",
+    "name": "checkered diamond",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/checkered-diamond.svg"
+  },
+  {
+    "id": "cheerful",
+    "name": "cheerful",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cheerful.svg"
+  },
+  {
+    "id": "cheese-wedge",
+    "name": "cheese wedge",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cheese-wedge.svg"
+  },
+  {
+    "id": "chemical-arrow",
+    "name": "chemical arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/chemical-arrow.svg"
+  },
+  {
+    "id": "chemical-bolt",
+    "name": "chemical bolt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/chemical-bolt.svg"
+  },
+  {
+    "id": "chemical-drop",
+    "name": "chemical drop",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/chemical-drop.svg"
+  },
+  {
+    "id": "chemical-tank",
+    "name": "chemical tank",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/chemical-tank.svg"
+  },
+  {
+    "id": "chewed-heart",
+    "name": "chewed heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/chewed-heart.svg"
+  },
+  {
+    "id": "chewed-skull",
+    "name": "chewed skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/chewed-skull.svg"
+  },
+  {
+    "id": "chicken-leg",
+    "name": "chicken leg",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/chicken-leg.svg"
+  },
+  {
+    "id": "chopped-skull",
+    "name": "chopped skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/chopped-skull.svg"
+  },
+  {
+    "id": "circle-cage",
+    "name": "circle cage",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/circle-cage.svg"
+  },
+  {
+    "id": "circle-claws",
+    "name": "circle claws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/circle-claws.svg"
+  },
+  {
+    "id": "circle-sparks",
+    "name": "circle sparks",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/circle-sparks.svg"
+  },
+  {
+    "id": "circuitry",
+    "name": "circuitry",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/circuitry.svg"
+  },
+  {
+    "id": "circular-sawblade",
+    "name": "circular sawblade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/circular-sawblade.svg"
+  },
+  {
+    "id": "claw-hammer",
+    "name": "claw hammer",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/claw-hammer.svg"
+  },
+  {
+    "id": "claw-slashes",
+    "name": "claw slashes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/claw-slashes.svg"
+  },
+  {
+    "id": "claw-string",
+    "name": "claw string",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/claw-string.svg"
+  },
+  {
+    "id": "cloak-dagger",
+    "name": "cloak dagger",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cloak-dagger.svg"
+  },
+  {
+    "id": "clockwork",
+    "name": "clockwork",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/clockwork.svg"
+  },
+  {
+    "id": "cloud-ring",
+    "name": "cloud ring",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cloud-ring.svg"
+  },
+  {
+    "id": "cloudy-fork",
+    "name": "cloudy fork",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cloudy-fork.svg"
+  },
+  {
+    "id": "clout",
+    "name": "clout",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/clout.svg"
+  },
+  {
+    "id": "clover",
+    "name": "clover",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/clover.svg"
+  },
+  {
+    "id": "cluster-bomb",
+    "name": "cluster bomb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cluster-bomb.svg"
+  },
+  {
+    "id": "cobweb",
+    "name": "cobweb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cobweb.svg"
+  },
+  {
+    "id": "coffee-mug",
+    "name": "coffee mug",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/coffee-mug.svg"
+  },
+  {
+    "id": "coffin",
+    "name": "coffin",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/coffin.svg"
+  },
+  {
+    "id": "cog-lock",
+    "name": "cog lock",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cog-lock.svg"
+  },
+  {
+    "id": "cog",
+    "name": "cog",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cog.svg"
+  },
+  {
+    "id": "cogsplosion",
+    "name": "cogsplosion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cogsplosion.svg"
+  },
+  {
+    "id": "coiling-curl",
+    "name": "coiling curl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/coiling-curl.svg"
+  },
+  {
+    "id": "cold-heart",
+    "name": "cold heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cold-heart.svg"
+  },
+  {
+    "id": "coma",
+    "name": "coma",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/coma.svg"
+  },
+  {
+    "id": "comb",
+    "name": "comb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/comb.svg"
+  },
+  {
+    "id": "comet-spark",
+    "name": "comet spark",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/comet-spark.svg"
+  },
+  {
+    "id": "compass",
+    "name": "compass",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/compass.svg"
+  },
+  {
+    "id": "concentration-orb",
+    "name": "concentration orb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/concentration-orb.svg"
+  },
+  {
+    "id": "concentric-crescents",
+    "name": "concentric crescents",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/concentric-crescents.svg"
+  },
+  {
+    "id": "condor-emblem",
+    "name": "condor emblem",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/condor-emblem.svg"
+  },
+  {
+    "id": "condylura-skull",
+    "name": "condylura skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/condylura-skull.svg"
+  },
+  {
+    "id": "conversation",
+    "name": "conversation",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/conversation.svg"
+  },
+  {
+    "id": "cool-spices",
+    "name": "cool spices",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cool-spices.svg"
+  },
+  {
+    "id": "corked-tube",
+    "name": "corked tube",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/corked-tube.svg"
+  },
+  {
+    "id": "corner-explosion",
+    "name": "corner explosion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/corner-explosion.svg"
+  },
+  {
+    "id": "cowled",
+    "name": "cowled",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cowled.svg"
+  },
+  {
+    "id": "cpu-shot",
+    "name": "cpu shot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cpu-shot.svg"
+  },
+  {
+    "id": "crab-claw",
+    "name": "crab claw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crab-claw.svg"
+  },
+  {
+    "id": "crab",
+    "name": "crab",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crab.svg"
+  },
+  {
+    "id": "cracked-alien-skull",
+    "name": "cracked alien skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cracked-alien-skull.svg"
+  },
+  {
+    "id": "cracked-ball-dunk",
+    "name": "cracked ball dunk",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cracked-ball-dunk.svg"
+  },
+  {
+    "id": "cracked-disc",
+    "name": "cracked disc",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cracked-disc.svg"
+  },
+  {
+    "id": "cracked-glass",
+    "name": "cracked glass",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cracked-glass.svg"
+  },
+  {
+    "id": "cracked-helm",
+    "name": "cracked helm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cracked-helm.svg"
+  },
+  {
+    "id": "cracked-mask",
+    "name": "cracked mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cracked-mask.svg"
+  },
+  {
+    "id": "cracked-saber",
+    "name": "cracked saber",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cracked-saber.svg"
+  },
+  {
+    "id": "cracked-shield",
+    "name": "cracked shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cracked-shield.svg"
+  },
+  {
+    "id": "crags",
+    "name": "crags",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crags.svg"
+  },
+  {
+    "id": "crenulated-shield",
+    "name": "crenulated shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crenulated-shield.svg"
+  },
+  {
+    "id": "crescent-blade",
+    "name": "crescent blade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crescent-blade.svg"
+  },
+  {
+    "id": "crested-helmet",
+    "name": "crested helmet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crested-helmet.svg"
+  },
+  {
+    "id": "croc-jaws",
+    "name": "croc jaws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/croc-jaws.svg"
+  },
+  {
+    "id": "croc-sword",
+    "name": "croc sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/croc-sword.svg"
+  },
+  {
+    "id": "croissants-pupil",
+    "name": "croissants pupil",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/croissants-pupil.svg"
+  },
+  {
+    "id": "cross-flare",
+    "name": "cross flare",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cross-flare.svg"
+  },
+  {
+    "id": "cross-mark",
+    "name": "cross mark",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cross-mark.svg"
+  },
+  {
+    "id": "crossed-air-flows",
+    "name": "crossed air flows",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crossed-air-flows.svg"
+  },
+  {
+    "id": "crossed-axes",
+    "name": "crossed axes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crossed-axes.svg"
+  },
+  {
+    "id": "crossed-bones",
+    "name": "crossed bones",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crossed-bones.svg"
+  },
+  {
+    "id": "crossed-chains",
+    "name": "crossed chains",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crossed-chains.svg"
+  },
+  {
+    "id": "crossed-claws",
+    "name": "crossed claws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crossed-claws.svg"
+  },
+  {
+    "id": "crossed-pistols",
+    "name": "crossed pistols",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crossed-pistols.svg"
+  },
+  {
+    "id": "crossed-sabres",
+    "name": "crossed sabres",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crossed-sabres.svg"
+  },
+  {
+    "id": "crossed-slashes",
+    "name": "crossed slashes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crossed-slashes.svg"
+  },
+  {
+    "id": "crossed-swords",
+    "name": "crossed swords",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crossed-swords.svg"
+  },
+  {
+    "id": "crosshair-arrow",
+    "name": "crosshair arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crosshair-arrow.svg"
+  },
+  {
+    "id": "crow-dive",
+    "name": "crow dive",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crow-dive.svg"
+  },
+  {
+    "id": "crown-coin",
+    "name": "crown coin",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crown-coin.svg"
+  },
+  {
+    "id": "crown-of-thorns",
+    "name": "crown of thorns",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crown-of-thorns.svg"
+  },
+  {
+    "id": "crown",
+    "name": "crown",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crown.svg"
+  },
+  {
+    "id": "crowned-explosion",
+    "name": "crowned explosion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crowned-explosion.svg"
+  },
+  {
+    "id": "crowned-heart",
+    "name": "crowned heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crowned-heart.svg"
+  },
+  {
+    "id": "crowned-skull",
+    "name": "crowned skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crowned-skull.svg"
+  },
+  {
+    "id": "crumbling-ball",
+    "name": "crumbling ball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crumbling-ball.svg"
+  },
+  {
+    "id": "crystal-ball",
+    "name": "crystal ball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crystal-ball.svg"
+  },
+  {
+    "id": "crystal-bars",
+    "name": "crystal bars",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crystal-bars.svg"
+  },
+  {
+    "id": "crystal-cluster",
+    "name": "crystal cluster",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crystal-cluster.svg"
+  },
+  {
+    "id": "crystal-eye",
+    "name": "crystal eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crystal-eye.svg"
+  },
+  {
+    "id": "crystal-growth",
+    "name": "crystal growth",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crystal-growth.svg"
+  },
+  {
+    "id": "crystal-shine",
+    "name": "crystal shine",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crystal-shine.svg"
+  },
+  {
+    "id": "crystal-wand",
+    "name": "crystal wand",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crystal-wand.svg"
+  },
+  {
+    "id": "crystalize",
+    "name": "crystalize",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/crystalize.svg"
+  },
+  {
+    "id": "cubeforce",
+    "name": "cubeforce",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cubeforce.svg"
+  },
+  {
+    "id": "cubes",
+    "name": "cubes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cubes.svg"
+  },
+  {
+    "id": "cultist",
+    "name": "cultist",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cultist.svg"
+  },
+  {
+    "id": "cupidon-arrow",
+    "name": "cupidon arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cupidon-arrow.svg"
+  },
+  {
+    "id": "curled-leaf",
+    "name": "curled leaf",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/curled-leaf.svg"
+  },
+  {
+    "id": "curled-tentacle",
+    "name": "curled tentacle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/curled-tentacle.svg"
+  },
+  {
+    "id": "curling-vines",
+    "name": "curling vines",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/curling-vines.svg"
+  },
+  {
+    "id": "curly-mask",
+    "name": "curly mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/curly-mask.svg"
+  },
+  {
+    "id": "curly-wing",
+    "name": "curly wing",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/curly-wing.svg"
+  },
+  {
+    "id": "cursed-star",
+    "name": "cursed star",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cursed-star.svg"
+  },
+  {
+    "id": "curvy-knife",
+    "name": "curvy knife",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/curvy-knife.svg"
+  },
+  {
+    "id": "cut-diamond",
+    "name": "cut diamond",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cut-diamond.svg"
+  },
+  {
+    "id": "cut-palm",
+    "name": "cut palm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cut-palm.svg"
+  },
+  {
+    "id": "cycle",
+    "name": "cycle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cycle.svg"
+  },
+  {
+    "id": "cyclops",
+    "name": "cyclops",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/cyclops.svg"
+  },
+  {
+    "id": "daemon-skull",
+    "name": "daemon skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/daemon-skull.svg"
+  },
+  {
+    "id": "daggers",
+    "name": "daggers",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/daggers.svg"
+  },
+  {
+    "id": "daisy",
+    "name": "daisy",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/daisy.svg"
+  },
+  {
+    "id": "dark-squad",
+    "name": "dark squad",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dark-squad.svg"
+  },
+  {
+    "id": "dead-eye",
+    "name": "dead eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dead-eye.svg"
+  },
+  {
+    "id": "dead-wood",
+    "name": "dead wood",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dead-wood.svg"
+  },
+  {
+    "id": "deadly-strike",
+    "name": "deadly strike",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/deadly-strike.svg"
+  },
+  {
+    "id": "death-note",
+    "name": "death note",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/death-note.svg"
+  },
+  {
+    "id": "death-zone",
+    "name": "death zone",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/death-zone.svg"
+  },
+  {
+    "id": "deathcab",
+    "name": "deathcab",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/deathcab.svg"
+  },
+  {
+    "id": "decapitation",
+    "name": "decapitation",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/decapitation.svg"
+  },
+  {
+    "id": "defibrilate",
+    "name": "defibrilate",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/defibrilate.svg"
+  },
+  {
+    "id": "delighted",
+    "name": "delighted",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/delighted.svg"
+  },
+  {
+    "id": "demolish",
+    "name": "demolish",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/demolish.svg"
+  },
+  {
+    "id": "dervish-swords",
+    "name": "dervish swords",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dervish-swords.svg"
+  },
+  {
+    "id": "desert-skull",
+    "name": "desert skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/desert-skull.svg"
+  },
+  {
+    "id": "desk-lamp",
+    "name": "desk lamp",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/desk-lamp.svg"
+  },
+  {
+    "id": "despair",
+    "name": "despair",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/despair.svg"
+  },
+  {
+    "id": "dew",
+    "name": "dew",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dew.svg"
+  },
+  {
+    "id": "diablo-skull",
+    "name": "diablo skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/diablo-skull.svg"
+  },
+  {
+    "id": "diamond-hard",
+    "name": "diamond hard",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/diamond-hard.svg"
+  },
+  {
+    "id": "diamonds-smile",
+    "name": "diamonds smile",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/diamonds-smile.svg"
+  },
+  {
+    "id": "dig-dug",
+    "name": "dig dug",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dig-dug.svg"
+  },
+  {
+    "id": "dinosaur-bones",
+    "name": "dinosaur bones",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dinosaur-bones.svg"
+  },
+  {
+    "id": "dinosaur-egg",
+    "name": "dinosaur egg",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dinosaur-egg.svg"
+  },
+  {
+    "id": "dinosaur-rex",
+    "name": "dinosaur rex",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dinosaur-rex.svg"
+  },
+  {
+    "id": "direwolf",
+    "name": "direwolf",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/direwolf.svg"
+  },
+  {
+    "id": "disc",
+    "name": "disc",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/disc.svg"
+  },
+  {
+    "id": "disintegrate",
+    "name": "disintegrate",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/disintegrate.svg"
+  },
+  {
+    "id": "distraction",
+    "name": "distraction",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/distraction.svg"
+  },
+  {
+    "id": "divergence",
+    "name": "divergence",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/divergence.svg"
+  },
+  {
+    "id": "divert",
+    "name": "divert",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/divert.svg"
+  },
+  {
+    "id": "divided-spiral",
+    "name": "divided spiral",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/divided-spiral.svg"
+  },
+  {
+    "id": "diving-dagger",
+    "name": "diving dagger",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/diving-dagger.svg"
+  },
+  {
+    "id": "dna1",
+    "name": "dna1",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dna1.svg"
+  },
+  {
+    "id": "dna2",
+    "name": "dna2",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dna2.svg"
+  },
+  {
+    "id": "doctor-face",
+    "name": "doctor face",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/doctor-face.svg"
+  },
+  {
+    "id": "dodging",
+    "name": "dodging",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dodging.svg"
+  },
+  {
+    "id": "domino-mask",
+    "name": "domino mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/domino-mask.svg"
+  },
+  {
+    "id": "doorway",
+    "name": "doorway",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/doorway.svg"
+  },
+  {
+    "id": "dorsal-scales",
+    "name": "dorsal scales",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dorsal-scales.svg"
+  },
+  {
+    "id": "double-diaphragm",
+    "name": "double diaphragm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/double-diaphragm.svg"
+  },
+  {
+    "id": "double-dragon",
+    "name": "double dragon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/double-dragon.svg"
+  },
+  {
+    "id": "double-face-mask",
+    "name": "double face mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/double-face-mask.svg"
+  },
+  {
+    "id": "double-quaver",
+    "name": "double quaver",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/double-quaver.svg"
+  },
+  {
+    "id": "double-ringed-orb",
+    "name": "double ringed orb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/double-ringed-orb.svg"
+  },
+  {
+    "id": "double-shot",
+    "name": "double shot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/double-shot.svg"
+  },
+  {
+    "id": "dove",
+    "name": "dove",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dove.svg"
+  },
+  {
+    "id": "dozen",
+    "name": "dozen",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dozen.svg"
+  },
+  {
+    "id": "dragon-balls",
+    "name": "dragon balls",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dragon-balls.svg"
+  },
+  {
+    "id": "dragon-breath",
+    "name": "dragon breath",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dragon-breath.svg"
+  },
+  {
+    "id": "dragon-head",
+    "name": "dragon head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dragon-head.svg"
+  },
+  {
+    "id": "dragon-spiral",
+    "name": "dragon spiral",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dragon-spiral.svg"
+  },
+  {
+    "id": "dragonfly",
+    "name": "dragonfly",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dragonfly.svg"
+  },
+  {
+    "id": "drama-masks",
+    "name": "drama masks",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/drama-masks.svg"
+  },
+  {
+    "id": "dread-skull",
+    "name": "dread skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dread-skull.svg"
+  },
+  {
+    "id": "drill",
+    "name": "drill",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/drill.svg"
+  },
+  {
+    "id": "drink-me",
+    "name": "drink me",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/drink-me.svg"
+  },
+  {
+    "id": "dripping-blade",
+    "name": "dripping blade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dripping-blade.svg"
+  },
+  {
+    "id": "dripping-goo",
+    "name": "dripping goo",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dripping-goo.svg"
+  },
+  {
+    "id": "dripping-honey",
+    "name": "dripping honey",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dripping-honey.svg"
+  },
+  {
+    "id": "dripping-knife",
+    "name": "dripping knife",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dripping-knife.svg"
+  },
+  {
+    "id": "dripping-star",
+    "name": "dripping star",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dripping-star.svg"
+  },
+  {
+    "id": "dripping-stone",
+    "name": "dripping stone",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dripping-stone.svg"
+  },
+  {
+    "id": "dripping-sword",
+    "name": "dripping sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dripping-sword.svg"
+  },
+  {
+    "id": "dripping-tube",
+    "name": "dripping tube",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dripping-tube.svg"
+  },
+  {
+    "id": "drop",
+    "name": "drop",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/drop.svg"
+  },
+  {
+    "id": "droplet-splash",
+    "name": "droplet splash",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/droplet-splash.svg"
+  },
+  {
+    "id": "droplets",
+    "name": "droplets",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/droplets.svg"
+  },
+  {
+    "id": "drowning",
+    "name": "drowning",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/drowning.svg"
+  },
+  {
+    "id": "duality-mask",
+    "name": "duality mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/duality-mask.svg"
+  },
+  {
+    "id": "duality",
+    "name": "duality",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/duality.svg"
+  },
+  {
+    "id": "dust-cloud",
+    "name": "dust cloud",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/dust-cloud.svg"
+  },
+  {
+    "id": "eagle-emblem",
+    "name": "eagle emblem",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/eagle-emblem.svg"
+  },
+  {
+    "id": "earth-crack",
+    "name": "earth crack",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/earth-crack.svg"
+  },
+  {
+    "id": "earth-spit",
+    "name": "earth spit",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/earth-spit.svg"
+  },
+  {
+    "id": "earwig",
+    "name": "earwig",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/earwig.svg"
+  },
+  {
+    "id": "echo-ripples",
+    "name": "echo ripples",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/echo-ripples.svg"
+  },
+  {
+    "id": "eclipse-flare",
+    "name": "eclipse flare",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/eclipse-flare.svg"
+  },
+  {
+    "id": "eclipse-saw",
+    "name": "eclipse saw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/eclipse-saw.svg"
+  },
+  {
+    "id": "eclipse",
+    "name": "eclipse",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/eclipse.svg"
+  },
+  {
+    "id": "edge-crack",
+    "name": "edge crack",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/edge-crack.svg"
+  },
+  {
+    "id": "edged-shield",
+    "name": "edged shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/edged-shield.svg"
+  },
+  {
+    "id": "egg-clutch",
+    "name": "egg clutch",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/egg-clutch.svg"
+  },
+  {
+    "id": "egg-defense",
+    "name": "egg defense",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/egg-defense.svg"
+  },
+  {
+    "id": "elderberry",
+    "name": "elderberry",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/elderberry.svg"
+  },
+  {
+    "id": "electric-whip",
+    "name": "electric whip",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/electric-whip.svg"
+  },
+  {
+    "id": "electrical-crescent",
+    "name": "electrical crescent",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/electrical-crescent.svg"
+  },
+  {
+    "id": "ember-shot",
+    "name": "ember shot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ember-shot.svg"
+  },
+  {
+    "id": "embrassed-energy",
+    "name": "embrassed energy",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/embrassed-energy.svg"
+  },
+  {
+    "id": "embryo",
+    "name": "embryo",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/embryo.svg"
+  },
+  {
+    "id": "emerald",
+    "name": "emerald",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/emerald.svg"
+  },
+  {
+    "id": "empty-hourglass",
+    "name": "empty hourglass",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/empty-hourglass.svg"
+  },
+  {
+    "id": "energise",
+    "name": "energise",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/energise.svg"
+  },
+  {
+    "id": "energy-arrow",
+    "name": "energy arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/energy-arrow.svg"
+  },
+  {
+    "id": "energy-breath",
+    "name": "energy breath",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/energy-breath.svg"
+  },
+  {
+    "id": "energy-shield",
+    "name": "energy shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/energy-shield.svg"
+  },
+  {
+    "id": "energy-sword",
+    "name": "energy sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/energy-sword.svg"
+  },
+  {
+    "id": "engagement-ring",
+    "name": "engagement ring",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/engagement-ring.svg"
+  },
+  {
+    "id": "enlightenment",
+    "name": "enlightenment",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/enlightenment.svg"
+  },
+  {
+    "id": "ent-mouth",
+    "name": "ent mouth",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ent-mouth.svg"
+  },
+  {
+    "id": "entangled-typhoon",
+    "name": "entangled typhoon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/entangled-typhoon.svg"
+  },
+  {
+    "id": "envelope",
+    "name": "envelope",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/envelope.svg"
+  },
+  {
+    "id": "erlenmeyer",
+    "name": "erlenmeyer",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/erlenmeyer.svg"
+  },
+  {
+    "id": "eruption",
+    "name": "eruption",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/eruption.svg"
+  },
+  {
+    "id": "evil-bat",
+    "name": "evil bat",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/evil-bat.svg"
+  },
+  {
+    "id": "evil-book",
+    "name": "evil book",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/evil-book.svg"
+  },
+  {
+    "id": "evil-bud",
+    "name": "evil bud",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/evil-bud.svg"
+  },
+  {
+    "id": "evil-comet",
+    "name": "evil comet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/evil-comet.svg"
+  },
+  {
+    "id": "evil-fork",
+    "name": "evil fork",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/evil-fork.svg"
+  },
+  {
+    "id": "evil-hand",
+    "name": "evil hand",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/evil-hand.svg"
+  },
+  {
+    "id": "evil-minion",
+    "name": "evil minion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/evil-minion.svg"
+  },
+  {
+    "id": "evil-moon",
+    "name": "evil moon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/evil-moon.svg"
+  },
+  {
+    "id": "evil-tree",
+    "name": "evil tree",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/evil-tree.svg"
+  },
+  {
+    "id": "expanded-rays",
+    "name": "expanded rays",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/expanded-rays.svg"
+  },
+  {
+    "id": "explosion-rays",
+    "name": "explosion rays",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/explosion-rays.svg"
+  },
+  {
+    "id": "explosive-materials",
+    "name": "explosive materials",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/explosive-materials.svg"
+  },
+  {
+    "id": "explosive-meeting",
+    "name": "explosive meeting",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/explosive-meeting.svg"
+  },
+  {
+    "id": "extra-lucid",
+    "name": "extra lucid",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/extra-lucid.svg"
+  },
+  {
+    "id": "extraction-orb",
+    "name": "extraction orb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/extraction-orb.svg"
+  },
+  {
+    "id": "eye-shield",
+    "name": "eye shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/eye-shield.svg"
+  },
+  {
+    "id": "eyeball",
+    "name": "eyeball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/eyeball.svg"
+  },
+  {
+    "id": "eyedropper",
+    "name": "eyedropper",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/eyedropper.svg"
+  },
+  {
+    "id": "eyestalk",
+    "name": "eyestalk",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/eyestalk.svg"
+  },
+  {
+    "id": "fairy-wand",
+    "name": "fairy wand",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fairy-wand.svg"
+  },
+  {
+    "id": "fairy",
+    "name": "fairy",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fairy.svg"
+  },
+  {
+    "id": "falling-blob",
+    "name": "falling blob",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/falling-blob.svg"
+  },
+  {
+    "id": "falling-boulder",
+    "name": "falling boulder",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/falling-boulder.svg"
+  },
+  {
+    "id": "falling-eye",
+    "name": "falling eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/falling-eye.svg"
+  },
+  {
+    "id": "falling-leaf",
+    "name": "falling leaf",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/falling-leaf.svg"
+  },
+  {
+    "id": "falling-ovoid",
+    "name": "falling ovoid",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/falling-ovoid.svg"
+  },
+  {
+    "id": "fanged-skull",
+    "name": "fanged skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fanged-skull.svg"
+  },
+  {
+    "id": "fangs-circle",
+    "name": "fangs circle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fangs-circle.svg"
+  },
+  {
+    "id": "fast-arrow",
+    "name": "fast arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fast-arrow.svg"
+  },
+  {
+    "id": "feather-wound",
+    "name": "feather wound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/feather-wound.svg"
+  },
+  {
+    "id": "feather",
+    "name": "feather",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/feather.svg"
+  },
+  {
+    "id": "feathered-wing",
+    "name": "feathered wing",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/feathered-wing.svg"
+  },
+  {
+    "id": "fedora",
+    "name": "fedora",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fedora.svg"
+  },
+  {
+    "id": "field",
+    "name": "field",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/field.svg"
+  },
+  {
+    "id": "fire-ace",
+    "name": "fire ace",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-ace.svg"
+  },
+  {
+    "id": "fire-axe",
+    "name": "fire axe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-axe.svg"
+  },
+  {
+    "id": "fire-bomb",
+    "name": "fire bomb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-bomb.svg"
+  },
+  {
+    "id": "fire-bottle",
+    "name": "fire bottle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-bottle.svg"
+  },
+  {
+    "id": "fire-bowl",
+    "name": "fire bowl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-bowl.svg"
+  },
+  {
+    "id": "fire-breath",
+    "name": "fire breath",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-breath.svg"
+  },
+  {
+    "id": "fire-dash",
+    "name": "fire dash",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-dash.svg"
+  },
+  {
+    "id": "fire-punch",
+    "name": "fire punch",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-punch.svg"
+  },
+  {
+    "id": "fire-ray",
+    "name": "fire ray",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-ray.svg"
+  },
+  {
+    "id": "fire-ring",
+    "name": "fire ring",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-ring.svg"
+  },
+  {
+    "id": "fire-shield",
+    "name": "fire shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-shield.svg"
+  },
+  {
+    "id": "fire-silhouette",
+    "name": "fire silhouette",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-silhouette.svg"
+  },
+  {
+    "id": "fire-tail",
+    "name": "fire tail",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-tail.svg"
+  },
+  {
+    "id": "fire-wave",
+    "name": "fire wave",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-wave.svg"
+  },
+  {
+    "id": "fire-zone",
+    "name": "fire zone",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fire-zone.svg"
+  },
+  {
+    "id": "fireball",
+    "name": "fireball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fireball.svg"
+  },
+  {
+    "id": "firework-rocket",
+    "name": "firework rocket",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/firework-rocket.svg"
+  },
+  {
+    "id": "fish-corpse",
+    "name": "fish corpse",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fish-corpse.svg"
+  },
+  {
+    "id": "fishbone",
+    "name": "fishbone",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fishbone.svg"
+  },
+  {
+    "id": "fishhook-fork",
+    "name": "fishhook fork",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fishhook-fork.svg"
+  },
+  {
+    "id": "fishing-hook",
+    "name": "fishing hook",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fishing-hook.svg"
+  },
+  {
+    "id": "fishing-net",
+    "name": "fishing net",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fishing-net.svg"
+  },
+  {
+    "id": "fission",
+    "name": "fission",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fission.svg"
+  },
+  {
+    "id": "fist",
+    "name": "fist",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fist.svg"
+  },
+  {
+    "id": "fizzing-flask",
+    "name": "fizzing flask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fizzing-flask.svg"
+  },
+  {
+    "id": "flame-claws",
+    "name": "flame claws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flame-claws.svg"
+  },
+  {
+    "id": "flame-spin",
+    "name": "flame spin",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flame-spin.svg"
+  },
+  {
+    "id": "flame-tunnel",
+    "name": "flame tunnel",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flame-tunnel.svg"
+  },
+  {
+    "id": "flamed-leaf",
+    "name": "flamed leaf",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flamed-leaf.svg"
+  },
+  {
+    "id": "flaming-arrow",
+    "name": "flaming arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flaming-arrow.svg"
+  },
+  {
+    "id": "flaming-claw",
+    "name": "flaming claw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flaming-claw.svg"
+  },
+  {
+    "id": "flaming-sheet",
+    "name": "flaming sheet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flaming-sheet.svg"
+  },
+  {
+    "id": "flaming-trident",
+    "name": "flaming trident",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flaming-trident.svg"
+  },
+  {
+    "id": "flash-grenade",
+    "name": "flash grenade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flash-grenade.svg"
+  },
+  {
+    "id": "flat-hammer",
+    "name": "flat hammer",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flat-hammer.svg"
+  },
+  {
+    "id": "flat-paw-print",
+    "name": "flat paw print",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flat-paw-print.svg"
+  },
+  {
+    "id": "flat-star",
+    "name": "flat star",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flat-star.svg"
+  },
+  {
+    "id": "fleshy-mass",
+    "name": "fleshy mass",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fleshy-mass.svg"
+  },
+  {
+    "id": "flexible-star",
+    "name": "flexible star",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flexible-star.svg"
+  },
+  {
+    "id": "floating-crystal",
+    "name": "floating crystal",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/floating-crystal.svg"
+  },
+  {
+    "id": "flower-pot",
+    "name": "flower pot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flower-pot.svg"
+  },
+  {
+    "id": "flower-twirl",
+    "name": "flower twirl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flower-twirl.svg"
+  },
+  {
+    "id": "flowers",
+    "name": "flowers",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flowers.svg"
+  },
+  {
+    "id": "fluffy-cloud",
+    "name": "fluffy cloud",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fluffy-cloud.svg"
+  },
+  {
+    "id": "fluffy-flame",
+    "name": "fluffy flame",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fluffy-flame.svg"
+  },
+  {
+    "id": "fluffy-swirl",
+    "name": "fluffy swirl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fluffy-swirl.svg"
+  },
+  {
+    "id": "fluffy-trefoil",
+    "name": "fluffy trefoil",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fluffy-trefoil.svg"
+  },
+  {
+    "id": "fluffy-wing",
+    "name": "fluffy wing",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fluffy-wing.svg"
+  },
+  {
+    "id": "flying-dagger",
+    "name": "flying dagger",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flying-dagger.svg"
+  },
+  {
+    "id": "flying-flag",
+    "name": "flying flag",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/flying-flag.svg"
+  },
+  {
+    "id": "foam",
+    "name": "foam",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/foam.svg"
+  },
+  {
+    "id": "foamy-disc",
+    "name": "foamy disc",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/foamy-disc.svg"
+  },
+  {
+    "id": "focused-lightning",
+    "name": "focused lightning",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/focused-lightning.svg"
+  },
+  {
+    "id": "folded-paper",
+    "name": "folded paper",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/folded-paper.svg"
+  },
+  {
+    "id": "food-chain",
+    "name": "food chain",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/food-chain.svg"
+  },
+  {
+    "id": "foot-trip",
+    "name": "foot trip",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/foot-trip.svg"
+  },
+  {
+    "id": "footprint",
+    "name": "footprint",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/footprint.svg"
+  },
+  {
+    "id": "forward-field",
+    "name": "forward field",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/forward-field.svg"
+  },
+  {
+    "id": "fossil",
+    "name": "fossil",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fossil.svg"
+  },
+  {
+    "id": "fountain-pen",
+    "name": "fountain pen",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fountain-pen.svg"
+  },
+  {
+    "id": "fountain",
+    "name": "fountain",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fountain.svg"
+  },
+  {
+    "id": "fox-head",
+    "name": "fox head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fox-head.svg"
+  },
+  {
+    "id": "fragmented-meteor",
+    "name": "fragmented meteor",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fragmented-meteor.svg"
+  },
+  {
+    "id": "fragmented-sword",
+    "name": "fragmented sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fragmented-sword.svg"
+  },
+  {
+    "id": "fragrance",
+    "name": "fragrance",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fragrance.svg"
+  },
+  {
+    "id": "frankenstein-creature",
+    "name": "frankenstein creature",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/frankenstein-creature.svg"
+  },
+  {
+    "id": "frayed-arrow",
+    "name": "frayed arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/frayed-arrow.svg"
+  },
+  {
+    "id": "freedom-dove",
+    "name": "freedom dove",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/freedom-dove.svg"
+  },
+  {
+    "id": "frog",
+    "name": "frog",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/frog.svg"
+  },
+  {
+    "id": "front-teeth",
+    "name": "front teeth",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/front-teeth.svg"
+  },
+  {
+    "id": "frontal-lobe",
+    "name": "frontal lobe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/frontal-lobe.svg"
+  },
+  {
+    "id": "frostfire",
+    "name": "frostfire",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/frostfire.svg"
+  },
+  {
+    "id": "frozen-arrow",
+    "name": "frozen arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/frozen-arrow.svg"
+  },
+  {
+    "id": "frozen-block",
+    "name": "frozen block",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/frozen-block.svg"
+  },
+  {
+    "id": "frozen-orb",
+    "name": "frozen orb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/frozen-orb.svg"
+  },
+  {
+    "id": "fruiting",
+    "name": "fruiting",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fruiting.svg"
+  },
+  {
+    "id": "fulguro-punch",
+    "name": "fulguro punch",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/fulguro-punch.svg"
+  },
+  {
+    "id": "galleon",
+    "name": "galleon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/galleon.svg"
+  },
+  {
+    "id": "gamepad-cross",
+    "name": "gamepad cross",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gamepad-cross.svg"
+  },
+  {
+    "id": "gas-mask",
+    "name": "gas mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gas-mask.svg"
+  },
+  {
+    "id": "gavel",
+    "name": "gavel",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gavel.svg"
+  },
+  {
+    "id": "gaze",
+    "name": "gaze",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gaze.svg"
+  },
+  {
+    "id": "gear-hammer",
+    "name": "gear hammer",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gear-hammer.svg"
+  },
+  {
+    "id": "gears",
+    "name": "gears",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gears.svg"
+  },
+  {
+    "id": "gecko",
+    "name": "gecko",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gecko.svg"
+  },
+  {
+    "id": "gem-chain",
+    "name": "gem chain",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gem-chain.svg"
+  },
+  {
+    "id": "gem-necklace",
+    "name": "gem necklace",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gem-necklace.svg"
+  },
+  {
+    "id": "gem-pendant",
+    "name": "gem pendant",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gem-pendant.svg"
+  },
+  {
+    "id": "gems",
+    "name": "gems",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gems.svg"
+  },
+  {
+    "id": "ghost-ally",
+    "name": "ghost ally",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ghost-ally.svg"
+  },
+  {
+    "id": "ghost",
+    "name": "ghost",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ghost.svg"
+  },
+  {
+    "id": "gibbet",
+    "name": "gibbet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gibbet.svg"
+  },
+  {
+    "id": "gift-of-knowledge",
+    "name": "gift of knowledge",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gift-of-knowledge.svg"
+  },
+  {
+    "id": "gift-trap",
+    "name": "gift trap",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gift-trap.svg"
+  },
+  {
+    "id": "glass-heart",
+    "name": "glass heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/glass-heart.svg"
+  },
+  {
+    "id": "glass-shot",
+    "name": "glass shot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/glass-shot.svg"
+  },
+  {
+    "id": "globe",
+    "name": "globe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/globe.svg"
+  },
+  {
+    "id": "gloop",
+    "name": "gloop",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gloop.svg"
+  },
+  {
+    "id": "glowing-hands",
+    "name": "glowing hands",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/glowing-hands.svg"
+  },
+  {
+    "id": "gluttonous-smile",
+    "name": "gluttonous smile",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gluttonous-smile.svg"
+  },
+  {
+    "id": "gluttony",
+    "name": "gluttony",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gluttony.svg"
+  },
+  {
+    "id": "gold-scarab",
+    "name": "gold scarab",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gold-scarab.svg"
+  },
+  {
+    "id": "gold-shell",
+    "name": "gold shell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gold-shell.svg"
+  },
+  {
+    "id": "goo-explosion",
+    "name": "goo explosion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/goo-explosion.svg"
+  },
+  {
+    "id": "goo-skull",
+    "name": "goo skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/goo-skull.svg"
+  },
+  {
+    "id": "goo-spurt",
+    "name": "goo spurt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/goo-spurt.svg"
+  },
+  {
+    "id": "gooey-daemon",
+    "name": "gooey daemon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gooey-daemon.svg"
+  },
+  {
+    "id": "gooey-eyed-sun",
+    "name": "gooey eyed sun",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gooey-eyed-sun.svg"
+  },
+  {
+    "id": "gooey-impact",
+    "name": "gooey impact",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gooey-impact.svg"
+  },
+  {
+    "id": "gooey-molecule",
+    "name": "gooey molecule",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gooey-molecule.svg"
+  },
+  {
+    "id": "gooey-sword",
+    "name": "gooey sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gooey-sword.svg"
+  },
+  {
+    "id": "gothic-cross",
+    "name": "gothic cross",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gothic-cross.svg"
+  },
+  {
+    "id": "grab",
+    "name": "grab",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/grab.svg"
+  },
+  {
+    "id": "grapes",
+    "name": "grapes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/grapes.svg"
+  },
+  {
+    "id": "grapple",
+    "name": "grapple",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/grapple.svg"
+  },
+  {
+    "id": "grasping-claws",
+    "name": "grasping claws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/grasping-claws.svg"
+  },
+  {
+    "id": "grease-trap",
+    "name": "grease trap",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/grease-trap.svg"
+  },
+  {
+    "id": "grenade",
+    "name": "grenade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/grenade.svg"
+  },
+  {
+    "id": "grim-reaper",
+    "name": "grim reaper",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/grim-reaper.svg"
+  },
+  {
+    "id": "ground-sprout",
+    "name": "ground sprout",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ground-sprout.svg"
+  },
+  {
+    "id": "groundbreaker",
+    "name": "groundbreaker",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/groundbreaker.svg"
+  },
+  {
+    "id": "grouped-drops",
+    "name": "grouped drops",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/grouped-drops.svg"
+  },
+  {
+    "id": "guarded-tower",
+    "name": "guarded tower",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/guarded-tower.svg"
+  },
+  {
+    "id": "guillotine",
+    "name": "guillotine",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/guillotine.svg"
+  },
+  {
+    "id": "guitar",
+    "name": "guitar",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/guitar.svg"
+  },
+  {
+    "id": "gunshot",
+    "name": "gunshot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/gunshot.svg"
+  },
+  {
+    "id": "halberd-shuriken",
+    "name": "halberd shuriken",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/halberd-shuriken.svg"
+  },
+  {
+    "id": "halberd",
+    "name": "halberd",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/halberd.svg"
+  },
+  {
+    "id": "half-heart",
+    "name": "half heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/half-heart.svg"
+  },
+  {
+    "id": "half-tornado",
+    "name": "half tornado",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/half-tornado.svg"
+  },
+  {
+    "id": "hammer-drop",
+    "name": "hammer drop",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hammer-drop.svg"
+  },
+  {
+    "id": "hammer-nails",
+    "name": "hammer nails",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hammer-nails.svg"
+  },
+  {
+    "id": "hand",
+    "name": "hand",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hand.svg"
+  },
+  {
+    "id": "handcuffs",
+    "name": "handcuffs",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/handcuffs.svg"
+  },
+  {
+    "id": "hanging-spider",
+    "name": "hanging spider",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hanging-spider.svg"
+  },
+  {
+    "id": "happy-skull",
+    "name": "happy skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/happy-skull.svg"
+  },
+  {
+    "id": "harpoon-chain",
+    "name": "harpoon chain",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/harpoon-chain.svg"
+  },
+  {
+    "id": "harpoon-trident",
+    "name": "harpoon trident",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/harpoon-trident.svg"
+  },
+  {
+    "id": "harpy",
+    "name": "harpy",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/harpy.svg"
+  },
+  {
+    "id": "harry-potter-skull",
+    "name": "harry potter skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/harry-potter-skull.svg"
+  },
+  {
+    "id": "hatchets",
+    "name": "hatchets",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hatchets.svg"
+  },
+  {
+    "id": "haunting",
+    "name": "haunting",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/haunting.svg"
+  },
+  {
+    "id": "hawk-emblem",
+    "name": "hawk emblem",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hawk-emblem.svg"
+  },
+  {
+    "id": "hazard-sign",
+    "name": "hazard sign",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hazard-sign.svg"
+  },
+  {
+    "id": "headshot",
+    "name": "headshot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/headshot.svg"
+  },
+  {
+    "id": "heart-bottle",
+    "name": "heart bottle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heart-bottle.svg"
+  },
+  {
+    "id": "heart-drop",
+    "name": "heart drop",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heart-drop.svg"
+  },
+  {
+    "id": "heart-inside",
+    "name": "heart inside",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heart-inside.svg"
+  },
+  {
+    "id": "heart-organ",
+    "name": "heart organ",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heart-organ.svg"
+  },
+  {
+    "id": "heart-tower",
+    "name": "heart tower",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heart-tower.svg"
+  },
+  {
+    "id": "heartburn",
+    "name": "heartburn",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heartburn.svg"
+  },
+  {
+    "id": "heat-haze",
+    "name": "heat haze",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heat-haze.svg"
+  },
+  {
+    "id": "heavy-arrow",
+    "name": "heavy arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heavy-arrow.svg"
+  },
+  {
+    "id": "heavy-fall",
+    "name": "heavy fall",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heavy-fall.svg"
+  },
+  {
+    "id": "heavy-helm",
+    "name": "heavy helm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heavy-helm.svg"
+  },
+  {
+    "id": "heavy-lightning",
+    "name": "heavy lightning",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heavy-lightning.svg"
+  },
+  {
+    "id": "heavy-rain",
+    "name": "heavy rain",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heavy-rain.svg"
+  },
+  {
+    "id": "heavy-thorny-triskelion",
+    "name": "heavy thorny triskelion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heavy-thorny-triskelion.svg"
+  },
+  {
+    "id": "heavy-timer",
+    "name": "heavy timer",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/heavy-timer.svg"
+  },
+  {
+    "id": "helmet-head-shot",
+    "name": "helmet head shot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/helmet-head-shot.svg"
+  },
+  {
+    "id": "hidden",
+    "name": "hidden",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hidden.svg"
+  },
+  {
+    "id": "high-five",
+    "name": "high five",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/high-five.svg"
+  },
+  {
+    "id": "high-shot",
+    "name": "high shot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/high-shot.svg"
+  },
+  {
+    "id": "hollow-cat",
+    "name": "hollow cat",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hollow-cat.svg"
+  },
+  {
+    "id": "holy-grail",
+    "name": "holy grail",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/holy-grail.svg"
+  },
+  {
+    "id": "holy-symbol",
+    "name": "holy symbol",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/holy-symbol.svg"
+  },
+  {
+    "id": "honeycomb",
+    "name": "honeycomb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/honeycomb.svg"
+  },
+  {
+    "id": "honeypot",
+    "name": "honeypot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/honeypot.svg"
+  },
+  {
+    "id": "hood",
+    "name": "hood",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hood.svg"
+  },
+  {
+    "id": "hoof",
+    "name": "hoof",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hoof.svg"
+  },
+  {
+    "id": "horn-internal",
+    "name": "horn internal",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/horn-internal.svg"
+  },
+  {
+    "id": "horned-helm",
+    "name": "horned helm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/horned-helm.svg"
+  },
+  {
+    "id": "horned-skull",
+    "name": "horned skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/horned-skull.svg"
+  },
+  {
+    "id": "horse-head",
+    "name": "horse head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/horse-head.svg"
+  },
+  {
+    "id": "hospital-cross",
+    "name": "hospital cross",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hospital-cross.svg"
+  },
+  {
+    "id": "hot-spices",
+    "name": "hot spices",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hot-spices.svg"
+  },
+  {
+    "id": "hound",
+    "name": "hound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hound.svg"
+  },
+  {
+    "id": "hourglass",
+    "name": "hourglass",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hourglass.svg"
+  },
+  {
+    "id": "hunting-horn",
+    "name": "hunting horn",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hunting-horn.svg"
+  },
+  {
+    "id": "hydra-shot",
+    "name": "hydra shot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hydra-shot.svg"
+  },
+  {
+    "id": "hydra",
+    "name": "hydra",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hydra.svg"
+  },
+  {
+    "id": "hypersonic-bolt",
+    "name": "hypersonic bolt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hypersonic-bolt.svg"
+  },
+  {
+    "id": "hypersonic-melon",
+    "name": "hypersonic melon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hypersonic-melon.svg"
+  },
+  {
+    "id": "hypodermic-test",
+    "name": "hypodermic test",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/hypodermic-test.svg"
+  },
+  {
+    "id": "ice-bolt",
+    "name": "ice bolt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ice-bolt.svg"
+  },
+  {
+    "id": "ice-bomb",
+    "name": "ice bomb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ice-bomb.svg"
+  },
+  {
+    "id": "ice-cube",
+    "name": "ice cube",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ice-cube.svg"
+  },
+  {
+    "id": "ice-shield",
+    "name": "ice shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ice-shield.svg"
+  },
+  {
+    "id": "ice-spear",
+    "name": "ice spear",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ice-spear.svg"
+  },
+  {
+    "id": "icebergs",
+    "name": "icebergs",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/icebergs.svg"
+  },
+  {
+    "id": "icicles-aura",
+    "name": "icicles aura",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/icicles-aura.svg"
+  },
+  {
+    "id": "icicles-fence",
+    "name": "icicles fence",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/icicles-fence.svg"
+  },
+  {
+    "id": "ifrit",
+    "name": "ifrit",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ifrit.svg"
+  },
+  {
+    "id": "imbricated-arrows",
+    "name": "imbricated arrows",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/imbricated-arrows.svg"
+  },
+  {
+    "id": "imp-laugh",
+    "name": "imp laugh",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/imp-laugh.svg"
+  },
+  {
+    "id": "imp",
+    "name": "imp",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/imp.svg"
+  },
+  {
+    "id": "impact-point",
+    "name": "impact point",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/impact-point.svg"
+  },
+  {
+    "id": "implosion",
+    "name": "implosion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/implosion.svg"
+  },
+  {
+    "id": "imprisoned",
+    "name": "imprisoned",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/imprisoned.svg"
+  },
+  {
+    "id": "incense",
+    "name": "incense",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/incense.svg"
+  },
+  {
+    "id": "incisors",
+    "name": "incisors",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/incisors.svg"
+  },
+  {
+    "id": "incoming-rocket",
+    "name": "incoming rocket",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/incoming-rocket.svg"
+  },
+  {
+    "id": "infested-mass",
+    "name": "infested mass",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/infested-mass.svg"
+  },
+  {
+    "id": "ink-swirl",
+    "name": "ink swirl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ink-swirl.svg"
+  },
+  {
+    "id": "inner-self",
+    "name": "inner self",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/inner-self.svg"
+  },
+  {
+    "id": "insect-jaws",
+    "name": "insect jaws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/insect-jaws.svg"
+  },
+  {
+    "id": "interdiction",
+    "name": "interdiction",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/interdiction.svg"
+  },
+  {
+    "id": "interlaced-tentacles",
+    "name": "interlaced tentacles",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/interlaced-tentacles.svg"
+  },
+  {
+    "id": "interleaved-arrows",
+    "name": "interleaved arrows",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/interleaved-arrows.svg"
+  },
+  {
+    "id": "interleaved-claws",
+    "name": "interleaved claws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/interleaved-claws.svg"
+  },
+  {
+    "id": "internal-injury",
+    "name": "internal injury",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/internal-injury.svg"
+  },
+  {
+    "id": "internal-organ",
+    "name": "internal organ",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/internal-organ.svg"
+  },
+  {
+    "id": "interstellar-path",
+    "name": "interstellar path",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/interstellar-path.svg"
+  },
+  {
+    "id": "ion-cannon-blast",
+    "name": "ion cannon blast",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ion-cannon-blast.svg"
+  },
+  {
+    "id": "iron-mask",
+    "name": "iron mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/iron-mask.svg"
+  },
+  {
+    "id": "james-bond-aperture",
+    "name": "james bond aperture",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/james-bond-aperture.svg"
+  },
+  {
+    "id": "jawbone",
+    "name": "jawbone",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/jawbone.svg"
+  },
+  {
+    "id": "jellyfish",
+    "name": "jellyfish",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/jellyfish.svg"
+  },
+  {
+    "id": "jetpack",
+    "name": "jetpack",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/jetpack.svg"
+  },
+  {
+    "id": "jeweled-chalice",
+    "name": "jeweled chalice",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/jeweled-chalice.svg"
+  },
+  {
+    "id": "jigsaw-box",
+    "name": "jigsaw box",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/jigsaw-box.svg"
+  },
+  {
+    "id": "jigsaw-piece",
+    "name": "jigsaw piece",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/jigsaw-piece.svg"
+  },
+  {
+    "id": "journey",
+    "name": "journey",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/journey.svg"
+  },
+  {
+    "id": "juggler",
+    "name": "juggler",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/juggler.svg"
+  },
+  {
+    "id": "justice-star",
+    "name": "justice star",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/justice-star.svg"
+  },
+  {
+    "id": "kaleidoscope-pearls",
+    "name": "kaleidoscope pearls",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/kaleidoscope-pearls.svg"
+  },
+  {
+    "id": "key",
+    "name": "key",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/key.svg"
+  },
+  {
+    "id": "kindle",
+    "name": "kindle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/kindle.svg"
+  },
+  {
+    "id": "king",
+    "name": "king",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/king.svg"
+  },
+  {
+    "id": "kitchen-knives",
+    "name": "kitchen knives",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/kitchen-knives.svg"
+  },
+  {
+    "id": "knapsack",
+    "name": "knapsack",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/knapsack.svg"
+  },
+  {
+    "id": "knife-fork",
+    "name": "knife fork",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/knife-fork.svg"
+  },
+  {
+    "id": "knife-thrust",
+    "name": "knife thrust",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/knife-thrust.svg"
+  },
+  {
+    "id": "lamellar",
+    "name": "lamellar",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lamellar.svg"
+  },
+  {
+    "id": "lamprey-mouth",
+    "name": "lamprey mouth",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lamprey-mouth.svg"
+  },
+  {
+    "id": "land-mine",
+    "name": "land mine",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/land-mine.svg"
+  },
+  {
+    "id": "lantern-flame",
+    "name": "lantern flame",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lantern-flame.svg"
+  },
+  {
+    "id": "lantern",
+    "name": "lantern",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lantern.svg"
+  },
+  {
+    "id": "large-wound",
+    "name": "large wound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/large-wound.svg"
+  },
+  {
+    "id": "laser-blast",
+    "name": "laser blast",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/laser-blast.svg"
+  },
+  {
+    "id": "laser-precision",
+    "name": "laser precision",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/laser-precision.svg"
+  },
+  {
+    "id": "laser-sparks",
+    "name": "laser sparks",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/laser-sparks.svg"
+  },
+  {
+    "id": "laser-warning",
+    "name": "laser warning",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/laser-warning.svg"
+  },
+  {
+    "id": "laserburn",
+    "name": "laserburn",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/laserburn.svg"
+  },
+  {
+    "id": "laurel-crown",
+    "name": "laurel crown",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/laurel-crown.svg"
+  },
+  {
+    "id": "laurels",
+    "name": "laurels",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/laurels.svg"
+  },
+  {
+    "id": "law-star",
+    "name": "law star",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/law-star.svg"
+  },
+  {
+    "id": "layered-armor",
+    "name": "layered armor",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/layered-armor.svg"
+  },
+  {
+    "id": "leaf-skeleton",
+    "name": "leaf skeleton",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/leaf-skeleton.svg"
+  },
+  {
+    "id": "leaf-swirl",
+    "name": "leaf swirl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/leaf-swirl.svg"
+  },
+  {
+    "id": "leaky-skull",
+    "name": "leaky skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/leaky-skull.svg"
+  },
+  {
+    "id": "leather-boot",
+    "name": "leather boot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/leather-boot.svg"
+  },
+  {
+    "id": "leather-vest",
+    "name": "leather vest",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/leather-vest.svg"
+  },
+  {
+    "id": "leeching-worm",
+    "name": "leeching worm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/leeching-worm.svg"
+  },
+  {
+    "id": "letter-bomb",
+    "name": "letter bomb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/letter-bomb.svg"
+  },
+  {
+    "id": "lever",
+    "name": "lever",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lever.svg"
+  },
+  {
+    "id": "life-in-the-balance",
+    "name": "life in the balance",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/life-in-the-balance.svg"
+  },
+  {
+    "id": "life-support",
+    "name": "life support",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/life-support.svg"
+  },
+  {
+    "id": "life-tap",
+    "name": "life tap",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/life-tap.svg"
+  },
+  {
+    "id": "lift",
+    "name": "lift",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lift.svg"
+  },
+  {
+    "id": "light-bulb",
+    "name": "light bulb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/light-bulb.svg"
+  },
+  {
+    "id": "light-thorny-triskelion",
+    "name": "light thorny triskelion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/light-thorny-triskelion.svg"
+  },
+  {
+    "id": "lightning-arc",
+    "name": "lightning arc",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-arc.svg"
+  },
+  {
+    "id": "lightning-bow",
+    "name": "lightning bow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-bow.svg"
+  },
+  {
+    "id": "lightning-branches",
+    "name": "lightning branches",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-branches.svg"
+  },
+  {
+    "id": "lightning-dissipation",
+    "name": "lightning dissipation",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-dissipation.svg"
+  },
+  {
+    "id": "lightning-electron",
+    "name": "lightning electron",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-electron.svg"
+  },
+  {
+    "id": "lightning-frequency",
+    "name": "lightning frequency",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-frequency.svg"
+  },
+  {
+    "id": "lightning-helix",
+    "name": "lightning helix",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-helix.svg"
+  },
+  {
+    "id": "lightning-mask",
+    "name": "lightning mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-mask.svg"
+  },
+  {
+    "id": "lightning-saber",
+    "name": "lightning saber",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-saber.svg"
+  },
+  {
+    "id": "lightning-shadow",
+    "name": "lightning shadow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-shadow.svg"
+  },
+  {
+    "id": "lightning-shield",
+    "name": "lightning shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-shield.svg"
+  },
+  {
+    "id": "lightning-shout",
+    "name": "lightning shout",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-shout.svg"
+  },
+  {
+    "id": "lightning-slashes",
+    "name": "lightning slashes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-slashes.svg"
+  },
+  {
+    "id": "lightning-spanner",
+    "name": "lightning spanner",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-spanner.svg"
+  },
+  {
+    "id": "lightning-storm",
+    "name": "lightning storm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-storm.svg"
+  },
+  {
+    "id": "lightning-tear",
+    "name": "lightning tear",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-tear.svg"
+  },
+  {
+    "id": "lightning-tree",
+    "name": "lightning tree",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-tree.svg"
+  },
+  {
+    "id": "lightning-trio",
+    "name": "lightning trio",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lightning-trio.svg"
+  },
+  {
+    "id": "linden-leaf",
+    "name": "linden leaf",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/linden-leaf.svg"
+  },
+  {
+    "id": "linked-rings",
+    "name": "linked rings",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/linked-rings.svg"
+  },
+  {
+    "id": "lion",
+    "name": "lion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lion.svg"
+  },
+  {
+    "id": "lips",
+    "name": "lips",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lips.svg"
+  },
+  {
+    "id": "lit-candelabra",
+    "name": "lit candelabra",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lit-candelabra.svg"
+  },
+  {
+    "id": "lizard-tongue",
+    "name": "lizard tongue",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lizard-tongue.svg"
+  },
+  {
+    "id": "lizardman",
+    "name": "lizardman",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lizardman.svg"
+  },
+  {
+    "id": "lob-arrow",
+    "name": "lob arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lob-arrow.svg"
+  },
+  {
+    "id": "locked-chest",
+    "name": "locked chest",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/locked-chest.svg"
+  },
+  {
+    "id": "locked-fortress",
+    "name": "locked fortress",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/locked-fortress.svg"
+  },
+  {
+    "id": "long-antennae-bug",
+    "name": "long antennae bug",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/long-antennae-bug.svg"
+  },
+  {
+    "id": "lotus-flower",
+    "name": "lotus flower",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lotus-flower.svg"
+  },
+  {
+    "id": "lotus",
+    "name": "lotus",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lotus.svg"
+  },
+  {
+    "id": "love-howl",
+    "name": "love howl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/love-howl.svg"
+  },
+  {
+    "id": "love-injection",
+    "name": "love injection",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/love-injection.svg"
+  },
+  {
+    "id": "love-song",
+    "name": "love song",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/love-song.svg"
+  },
+  {
+    "id": "lyre",
+    "name": "lyre",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/lyre.svg"
+  },
+  {
+    "id": "mace-head",
+    "name": "mace head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mace-head.svg"
+  },
+  {
+    "id": "machete",
+    "name": "machete",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/machete.svg"
+  },
+  {
+    "id": "mad-scientist",
+    "name": "mad scientist",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mad-scientist.svg"
+  },
+  {
+    "id": "maggot",
+    "name": "maggot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/maggot.svg"
+  },
+  {
+    "id": "magic-gate",
+    "name": "magic gate",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/magic-gate.svg"
+  },
+  {
+    "id": "magic-lamp",
+    "name": "magic lamp",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/magic-lamp.svg"
+  },
+  {
+    "id": "magic-palm",
+    "name": "magic palm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/magic-palm.svg"
+  },
+  {
+    "id": "magic-portal",
+    "name": "magic portal",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/magic-portal.svg"
+  },
+  {
+    "id": "magic-shield",
+    "name": "magic shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/magic-shield.svg"
+  },
+  {
+    "id": "magic-swirl",
+    "name": "magic swirl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/magic-swirl.svg"
+  },
+  {
+    "id": "magnet-blast",
+    "name": "magnet blast",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/magnet-blast.svg"
+  },
+  {
+    "id": "magnet",
+    "name": "magnet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/magnet.svg"
+  },
+  {
+    "id": "magnifying-glass",
+    "name": "magnifying glass",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/magnifying-glass.svg"
+  },
+  {
+    "id": "mail-shirt",
+    "name": "mail shirt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mail-shirt.svg"
+  },
+  {
+    "id": "mailed-fist",
+    "name": "mailed fist",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mailed-fist.svg"
+  },
+  {
+    "id": "manacles",
+    "name": "manacles",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/manacles.svg"
+  },
+  {
+    "id": "mantrap",
+    "name": "mantrap",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mantrap.svg"
+  },
+  {
+    "id": "maple-leaf",
+    "name": "maple leaf",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/maple-leaf.svg"
+  },
+  {
+    "id": "marrow-drain",
+    "name": "marrow drain",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/marrow-drain.svg"
+  },
+  {
+    "id": "martini",
+    "name": "martini",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/martini.svg"
+  },
+  {
+    "id": "masked-spider",
+    "name": "masked spider",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/masked-spider.svg"
+  },
+  {
+    "id": "master-of-arms",
+    "name": "master of arms",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/master-of-arms.svg"
+  },
+  {
+    "id": "match-head",
+    "name": "match head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/match-head.svg"
+  },
+  {
+    "id": "match-tip",
+    "name": "match tip",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/match-tip.svg"
+  },
+  {
+    "id": "materials-science",
+    "name": "materials science",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/materials-science.svg"
+  },
+  {
+    "id": "maze-cornea",
+    "name": "maze cornea",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/maze-cornea.svg"
+  },
+  {
+    "id": "maze-saw",
+    "name": "maze saw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/maze-saw.svg"
+  },
+  {
+    "id": "maze",
+    "name": "maze",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/maze.svg"
+  },
+  {
+    "id": "meat-cleaver",
+    "name": "meat cleaver",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/meat-cleaver.svg"
+  },
+  {
+    "id": "meat-hook",
+    "name": "meat hook",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/meat-hook.svg"
+  },
+  {
+    "id": "meat",
+    "name": "meat",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/meat.svg"
+  },
+  {
+    "id": "mechanical-arm",
+    "name": "mechanical arm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mechanical-arm.svg"
+  },
+  {
+    "id": "medal-skull",
+    "name": "medal skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/medal-skull.svg"
+  },
+  {
+    "id": "medal",
+    "name": "medal",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/medal.svg"
+  },
+  {
+    "id": "meditation",
+    "name": "meditation",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/meditation.svg"
+  },
+  {
+    "id": "megabot",
+    "name": "megabot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/megabot.svg"
+  },
+  {
+    "id": "mesh-ball",
+    "name": "mesh ball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mesh-ball.svg"
+  },
+  {
+    "id": "metal-bar",
+    "name": "metal bar",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/metal-bar.svg"
+  },
+  {
+    "id": "metal-disc",
+    "name": "metal disc",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/metal-disc.svg"
+  },
+  {
+    "id": "metal-hand",
+    "name": "metal hand",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/metal-hand.svg"
+  },
+  {
+    "id": "metal-scales",
+    "name": "metal scales",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/metal-scales.svg"
+  },
+  {
+    "id": "meteor-impact",
+    "name": "meteor impact",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/meteor-impact.svg"
+  },
+  {
+    "id": "microchip",
+    "name": "microchip",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/microchip.svg"
+  },
+  {
+    "id": "microscope-lens",
+    "name": "microscope lens",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/microscope-lens.svg"
+  },
+  {
+    "id": "middle-arrow",
+    "name": "middle arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/middle-arrow.svg"
+  },
+  {
+    "id": "midnight-claw",
+    "name": "midnight claw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/midnight-claw.svg"
+  },
+  {
+    "id": "mighty-spanner",
+    "name": "mighty spanner",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mighty-spanner.svg"
+  },
+  {
+    "id": "mine-explosion",
+    "name": "mine explosion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mine-explosion.svg"
+  },
+  {
+    "id": "mineral-heart",
+    "name": "mineral heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mineral-heart.svg"
+  },
+  {
+    "id": "minigun",
+    "name": "minigun",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/minigun.svg"
+  },
+  {
+    "id": "mining",
+    "name": "mining",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mining.svg"
+  },
+  {
+    "id": "minions",
+    "name": "minions",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/minions.svg"
+  },
+  {
+    "id": "minotaur",
+    "name": "minotaur",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/minotaur.svg"
+  },
+  {
+    "id": "miracle-medecine",
+    "name": "miracle medecine",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/miracle-medecine.svg"
+  },
+  {
+    "id": "mirror-mirror",
+    "name": "mirror mirror",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mirror-mirror.svg"
+  },
+  {
+    "id": "missile-mech",
+    "name": "missile mech",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/missile-mech.svg"
+  },
+  {
+    "id": "missile-pod",
+    "name": "missile pod",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/missile-pod.svg"
+  },
+  {
+    "id": "missile-swarm",
+    "name": "missile swarm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/missile-swarm.svg"
+  },
+  {
+    "id": "mite",
+    "name": "mite",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mite.svg"
+  },
+  {
+    "id": "moebius-star",
+    "name": "moebius star",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/moebius-star.svg"
+  },
+  {
+    "id": "moebius-trefoil",
+    "name": "moebius trefoil",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/moebius-trefoil.svg"
+  },
+  {
+    "id": "moebius-triangle",
+    "name": "moebius triangle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/moebius-triangle.svg"
+  },
+  {
+    "id": "molecule",
+    "name": "molecule",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/molecule.svg"
+  },
+  {
+    "id": "molotov",
+    "name": "molotov",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/molotov.svg"
+  },
+  {
+    "id": "monkey",
+    "name": "monkey",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/monkey.svg"
+  },
+  {
+    "id": "monster-grasp",
+    "name": "monster grasp",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/monster-grasp.svg"
+  },
+  {
+    "id": "moon-claws",
+    "name": "moon claws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/moon-claws.svg"
+  },
+  {
+    "id": "moon",
+    "name": "moon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/moon.svg"
+  },
+  {
+    "id": "morbid-humour",
+    "name": "morbid humour",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/morbid-humour.svg"
+  },
+  {
+    "id": "mountains",
+    "name": "mountains",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mountains.svg"
+  },
+  {
+    "id": "mountaintop",
+    "name": "mountaintop",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mountaintop.svg"
+  },
+  {
+    "id": "mouse",
+    "name": "mouse",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mouse.svg"
+  },
+  {
+    "id": "mouth-watering",
+    "name": "mouth watering",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mouth-watering.svg"
+  },
+  {
+    "id": "movement-sensor",
+    "name": "movement sensor",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/movement-sensor.svg"
+  },
+  {
+    "id": "mucous-pillar",
+    "name": "mucous pillar",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mucous-pillar.svg"
+  },
+  {
+    "id": "muscle-fat",
+    "name": "muscle fat",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/muscle-fat.svg"
+  },
+  {
+    "id": "muscle-up",
+    "name": "muscle up",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/muscle-up.svg"
+  },
+  {
+    "id": "mushroom-cloud",
+    "name": "mushroom cloud",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mushroom-cloud.svg"
+  },
+  {
+    "id": "mushroom-gills",
+    "name": "mushroom gills",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mushroom-gills.svg"
+  },
+  {
+    "id": "mushroom",
+    "name": "mushroom",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/mushroom.svg"
+  },
+  {
+    "id": "music-spell",
+    "name": "music spell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/music-spell.svg"
+  },
+  {
+    "id": "nailed-foot",
+    "name": "nailed foot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/nailed-foot.svg"
+  },
+  {
+    "id": "nailed-head",
+    "name": "nailed head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/nailed-head.svg"
+  },
+  {
+    "id": "nails",
+    "name": "nails",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/nails.svg"
+  },
+  {
+    "id": "needle-drill",
+    "name": "needle drill",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/needle-drill.svg"
+  },
+  {
+    "id": "needle-jaws",
+    "name": "needle jaws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/needle-jaws.svg"
+  },
+  {
+    "id": "nested-eclipses",
+    "name": "nested eclipses",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/nested-eclipses.svg"
+  },
+  {
+    "id": "new-shoot",
+    "name": "new shoot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/new-shoot.svg"
+  },
+  {
+    "id": "night-sky",
+    "name": "night sky",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/night-sky.svg"
+  },
+  {
+    "id": "ninja-mask",
+    "name": "ninja mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ninja-mask.svg"
+  },
+  {
+    "id": "noodle-ball",
+    "name": "noodle ball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/noodle-ball.svg"
+  },
+  {
+    "id": "nothing-to-say",
+    "name": "nothing to say",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/nothing-to-say.svg"
+  },
+  {
+    "id": "oak",
+    "name": "oak",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/oak.svg"
+  },
+  {
+    "id": "oat",
+    "name": "oat",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/oat.svg"
+  },
+  {
+    "id": "octogonal-eye",
+    "name": "octogonal eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/octogonal-eye.svg"
+  },
+  {
+    "id": "octoman",
+    "name": "octoman",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/octoman.svg"
+  },
+  {
+    "id": "octopus",
+    "name": "octopus",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/octopus.svg"
+  },
+  {
+    "id": "oily-spiral",
+    "name": "oily spiral",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/oily-spiral.svg"
+  },
+  {
+    "id": "omega",
+    "name": "omega",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/omega.svg"
+  },
+  {
+    "id": "on-target",
+    "name": "on target",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/on-target.svg"
+  },
+  {
+    "id": "one-eyed",
+    "name": "one eyed",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/one-eyed.svg"
+  },
+  {
+    "id": "open-book",
+    "name": "open book",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/open-book.svg"
+  },
+  {
+    "id": "open-wound",
+    "name": "open wound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/open-wound.svg"
+  },
+  {
+    "id": "opening-shell",
+    "name": "opening shell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/opening-shell.svg"
+  },
+  {
+    "id": "oppression",
+    "name": "oppression",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/oppression.svg"
+  },
+  {
+    "id": "orb-direction",
+    "name": "orb direction",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/orb-direction.svg"
+  },
+  {
+    "id": "orbital-rays",
+    "name": "orbital rays",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/orbital-rays.svg"
+  },
+  {
+    "id": "orbital",
+    "name": "orbital",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/orbital.svg"
+  },
+  {
+    "id": "ouroboros",
+    "name": "ouroboros",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ouroboros.svg"
+  },
+  {
+    "id": "over-infinity",
+    "name": "over infinity",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/over-infinity.svg"
+  },
+  {
+    "id": "overdose",
+    "name": "overdose",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/overdose.svg"
+  },
+  {
+    "id": "overdrive",
+    "name": "overdrive",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/overdrive.svg"
+  },
+  {
+    "id": "owl",
+    "name": "owl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/owl.svg"
+  },
+  {
+    "id": "padlock",
+    "name": "padlock",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/padlock.svg"
+  },
+  {
+    "id": "palm",
+    "name": "palm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/palm.svg"
+  },
+  {
+    "id": "paper-arrow",
+    "name": "paper arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/paper-arrow.svg"
+  },
+  {
+    "id": "paper-bomb",
+    "name": "paper bomb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/paper-bomb.svg"
+  },
+  {
+    "id": "paper-lantern",
+    "name": "paper lantern",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/paper-lantern.svg"
+  },
+  {
+    "id": "papers",
+    "name": "papers",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/papers.svg"
+  },
+  {
+    "id": "parachute",
+    "name": "parachute",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/parachute.svg"
+  },
+  {
+    "id": "paranoia",
+    "name": "paranoia",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/paranoia.svg"
+  },
+  {
+    "id": "parmecia",
+    "name": "parmecia",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/parmecia.svg"
+  },
+  {
+    "id": "parrot-head",
+    "name": "parrot head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/parrot-head.svg"
+  },
+  {
+    "id": "paw-front",
+    "name": "paw front",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/paw-front.svg"
+  },
+  {
+    "id": "paw-heart",
+    "name": "paw heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/paw-heart.svg"
+  },
+  {
+    "id": "paw-print",
+    "name": "paw print",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/paw-print.svg"
+  },
+  {
+    "id": "paw",
+    "name": "paw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/paw.svg"
+  },
+  {
+    "id": "pawn",
+    "name": "pawn",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pawn.svg"
+  },
+  {
+    "id": "peaks",
+    "name": "peaks",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/peaks.svg"
+  },
+  {
+    "id": "pentagram-rose",
+    "name": "pentagram rose",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pentagram-rose.svg"
+  },
+  {
+    "id": "pentarrows-tornado",
+    "name": "pentarrows tornado",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pentarrows-tornado.svg"
+  },
+  {
+    "id": "perfume-bottle",
+    "name": "perfume bottle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/perfume-bottle.svg"
+  },
+  {
+    "id": "perpendicular-rings",
+    "name": "perpendicular rings",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/perpendicular-rings.svg"
+  },
+  {
+    "id": "person-in-blizzard",
+    "name": "person in blizzard",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/person-in-blizzard.svg"
+  },
+  {
+    "id": "pie-slice",
+    "name": "pie slice",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pie-slice.svg"
+  },
+  {
+    "id": "piece-skull",
+    "name": "piece skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/piece-skull.svg"
+  },
+  {
+    "id": "pierced-body",
+    "name": "pierced body",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pierced-body.svg"
+  },
+  {
+    "id": "pierced-heart",
+    "name": "pierced heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pierced-heart.svg"
+  },
+  {
+    "id": "piercing-sword",
+    "name": "piercing sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/piercing-sword.svg"
+  },
+  {
+    "id": "pig-face",
+    "name": "pig face",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pig-face.svg"
+  },
+  {
+    "id": "pill-drop",
+    "name": "pill drop",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pill-drop.svg"
+  },
+  {
+    "id": "pill",
+    "name": "pill",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pill.svg"
+  },
+  {
+    "id": "pincers",
+    "name": "pincers",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pincers.svg"
+  },
+  {
+    "id": "pine-tree",
+    "name": "pine tree",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pine-tree.svg"
+  },
+  {
+    "id": "pirate-grave",
+    "name": "pirate grave",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pirate-grave.svg"
+  },
+  {
+    "id": "pirate-skull",
+    "name": "pirate skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pirate-skull.svg"
+  },
+  {
+    "id": "pizza-cutter",
+    "name": "pizza cutter",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pizza-cutter.svg"
+  },
+  {
+    "id": "plain-dagger",
+    "name": "plain dagger",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/plain-dagger.svg"
+  },
+  {
+    "id": "plasma-bolt",
+    "name": "plasma bolt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/plasma-bolt.svg"
+  },
+  {
+    "id": "plastron",
+    "name": "plastron",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/plastron.svg"
+  },
+  {
+    "id": "plate-claw",
+    "name": "plate claw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/plate-claw.svg"
+  },
+  {
+    "id": "pocket-bow",
+    "name": "pocket bow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pocket-bow.svg"
+  },
+  {
+    "id": "pointing",
+    "name": "pointing",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pointing.svg"
+  },
+  {
+    "id": "pointy-hat",
+    "name": "pointy hat",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pointy-hat.svg"
+  },
+  {
+    "id": "pointy-sword",
+    "name": "pointy sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pointy-sword.svg"
+  },
+  {
+    "id": "poison-bottle",
+    "name": "poison bottle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/poison-bottle.svg"
+  },
+  {
+    "id": "poison-gas",
+    "name": "poison gas",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/poison-gas.svg"
+  },
+  {
+    "id": "pokecog",
+    "name": "pokecog",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pokecog.svg"
+  },
+  {
+    "id": "poker-hand",
+    "name": "poker hand",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/poker-hand.svg"
+  },
+  {
+    "id": "pollen-dust",
+    "name": "pollen dust",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pollen-dust.svg"
+  },
+  {
+    "id": "portal",
+    "name": "portal",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/portal.svg"
+  },
+  {
+    "id": "portculis",
+    "name": "portculis",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/portculis.svg"
+  },
+  {
+    "id": "potion-ball",
+    "name": "potion ball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/potion-ball.svg"
+  },
+  {
+    "id": "pouring-chalice",
+    "name": "pouring chalice",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pouring-chalice.svg"
+  },
+  {
+    "id": "powder",
+    "name": "powder",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/powder.svg"
+  },
+  {
+    "id": "power-lightning",
+    "name": "power lightning",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/power-lightning.svg"
+  },
+  {
+    "id": "prayer",
+    "name": "prayer",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/prayer.svg"
+  },
+  {
+    "id": "pretty-fangs",
+    "name": "pretty fangs",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pretty-fangs.svg"
+  },
+  {
+    "id": "processor",
+    "name": "processor",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/processor.svg"
+  },
+  {
+    "id": "profit",
+    "name": "profit",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/profit.svg"
+  },
+  {
+    "id": "psychic-waves",
+    "name": "psychic waves",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/psychic-waves.svg"
+  },
+  {
+    "id": "pummeled",
+    "name": "pummeled",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pummeled.svg"
+  },
+  {
+    "id": "pumpkin-lantern",
+    "name": "pumpkin lantern",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pumpkin-lantern.svg"
+  },
+  {
+    "id": "pumpkin-mask",
+    "name": "pumpkin mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pumpkin-mask.svg"
+  },
+  {
+    "id": "punch-blast",
+    "name": "punch blast",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/punch-blast.svg"
+  },
+  {
+    "id": "punch",
+    "name": "punch",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/punch.svg"
+  },
+  {
+    "id": "puppet",
+    "name": "puppet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/puppet.svg"
+  },
+  {
+    "id": "pyromaniac",
+    "name": "pyromaniac",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/pyromaniac.svg"
+  },
+  {
+    "id": "quake-stomp",
+    "name": "quake stomp",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/quake-stomp.svg"
+  },
+  {
+    "id": "queen-crown",
+    "name": "queen crown",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/queen-crown.svg"
+  },
+  {
+    "id": "quick-slash",
+    "name": "quick slash",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/quick-slash.svg"
+  },
+  {
+    "id": "quicksand",
+    "name": "quicksand",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/quicksand.svg"
+  },
+  {
+    "id": "quill-ink",
+    "name": "quill ink",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/quill-ink.svg"
+  },
+  {
+    "id": "quill",
+    "name": "quill",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/quill.svg"
+  },
+  {
+    "id": "radar-dish",
+    "name": "radar dish",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/radar-dish.svg"
+  },
+  {
+    "id": "radar-sweep",
+    "name": "radar sweep",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/radar-sweep.svg"
+  },
+  {
+    "id": "radial-balance",
+    "name": "radial balance",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/radial-balance.svg"
+  },
+  {
+    "id": "radioactive",
+    "name": "radioactive",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/radioactive.svg"
+  },
+  {
+    "id": "ragged-wound",
+    "name": "ragged wound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ragged-wound.svg"
+  },
+  {
+    "id": "rainbow-star",
+    "name": "rainbow star",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rainbow-star.svg"
+  },
+  {
+    "id": "raining",
+    "name": "raining",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/raining.svg"
+  },
+  {
+    "id": "rally-the-troops",
+    "name": "rally the troops",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rally-the-troops.svg"
+  },
+  {
+    "id": "ram",
+    "name": "ram",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ram.svg"
+  },
+  {
+    "id": "rapidshare-arrow",
+    "name": "rapidshare arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rapidshare-arrow.svg"
+  },
+  {
+    "id": "raven",
+    "name": "raven",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/raven.svg"
+  },
+  {
+    "id": "ray-gun",
+    "name": "ray gun",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ray-gun.svg"
+  },
+  {
+    "id": "razor-blade",
+    "name": "razor blade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/razor-blade.svg"
+  },
+  {
+    "id": "reaper-scythe",
+    "name": "reaper scythe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/reaper-scythe.svg"
+  },
+  {
+    "id": "rear-aura",
+    "name": "rear aura",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rear-aura.svg"
+  },
+  {
+    "id": "recycle",
+    "name": "recycle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/recycle.svg"
+  },
+  {
+    "id": "relationship-bounds",
+    "name": "relationship bounds",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/relationship-bounds.svg"
+  },
+  {
+    "id": "relic-blade",
+    "name": "relic blade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/relic-blade.svg"
+  },
+  {
+    "id": "resonance",
+    "name": "resonance",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/resonance.svg"
+  },
+  {
+    "id": "reticule",
+    "name": "reticule",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/reticule.svg"
+  },
+  {
+    "id": "return-arrow",
+    "name": "return arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/return-arrow.svg"
+  },
+  {
+    "id": "ribbon",
+    "name": "ribbon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ribbon.svg"
+  },
+  {
+    "id": "ribcage",
+    "name": "ribcage",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ribcage.svg"
+  },
+  {
+    "id": "ringed-beam",
+    "name": "ringed beam",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ringed-beam.svg"
+  },
+  {
+    "id": "ringed-planet",
+    "name": "ringed planet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ringed-planet.svg"
+  },
+  {
+    "id": "ringing-bell",
+    "name": "ringing bell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ringing-bell.svg"
+  },
+  {
+    "id": "riot-shield",
+    "name": "riot shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/riot-shield.svg"
+  },
+  {
+    "id": "roast-chicken",
+    "name": "roast chicken",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/roast-chicken.svg"
+  },
+  {
+    "id": "robe",
+    "name": "robe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/robe.svg"
+  },
+  {
+    "id": "robot-golem",
+    "name": "robot golem",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/robot-golem.svg"
+  },
+  {
+    "id": "rock",
+    "name": "rock",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rock.svg"
+  },
+  {
+    "id": "rocket-flight",
+    "name": "rocket flight",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rocket-flight.svg"
+  },
+  {
+    "id": "rocket",
+    "name": "rocket",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rocket.svg"
+  },
+  {
+    "id": "rogue",
+    "name": "rogue",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rogue.svg"
+  },
+  {
+    "id": "rolling-bomb",
+    "name": "rolling bomb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rolling-bomb.svg"
+  },
+  {
+    "id": "rolling-energy",
+    "name": "rolling energy",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rolling-energy.svg"
+  },
+  {
+    "id": "root-tip",
+    "name": "root tip",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/root-tip.svg"
+  },
+  {
+    "id": "rosa-shield",
+    "name": "rosa shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rosa-shield.svg"
+  },
+  {
+    "id": "rose",
+    "name": "rose",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rose.svg"
+  },
+  {
+    "id": "rough-wound",
+    "name": "rough wound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rough-wound.svg"
+  },
+  {
+    "id": "round-bottom-flask",
+    "name": "round bottom flask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/round-bottom-flask.svg"
+  },
+  {
+    "id": "round-struck",
+    "name": "round struck",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/round-struck.svg"
+  },
+  {
+    "id": "royal-love",
+    "name": "royal love",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/royal-love.svg"
+  },
+  {
+    "id": "rss",
+    "name": "rss",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rss.svg"
+  },
+  {
+    "id": "run",
+    "name": "run",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/run.svg"
+  },
+  {
+    "id": "rune-stone",
+    "name": "rune stone",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rune-stone.svg"
+  },
+  {
+    "id": "rune-sword",
+    "name": "rune sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/rune-sword.svg"
+  },
+  {
+    "id": "saber-slash",
+    "name": "saber slash",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/saber-slash.svg"
+  },
+  {
+    "id": "saber-tooth",
+    "name": "saber tooth",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/saber-tooth.svg"
+  },
+  {
+    "id": "sabers-choc",
+    "name": "sabers choc",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sabers-choc.svg"
+  },
+  {
+    "id": "sacrificial-dagger",
+    "name": "sacrificial dagger",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sacrificial-dagger.svg"
+  },
+  {
+    "id": "sad-crab",
+    "name": "sad crab",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sad-crab.svg"
+  },
+  {
+    "id": "salamander",
+    "name": "salamander",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/salamander.svg"
+  },
+  {
+    "id": "salt-shaker",
+    "name": "salt shaker",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/salt-shaker.svg"
+  },
+  {
+    "id": "sands-of-time",
+    "name": "sands of time",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sands-of-time.svg"
+  },
+  {
+    "id": "saphir",
+    "name": "saphir",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/saphir.svg"
+  },
+  {
+    "id": "satellite",
+    "name": "satellite",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/satellite.svg"
+  },
+  {
+    "id": "saw-claw",
+    "name": "saw claw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/saw-claw.svg"
+  },
+  {
+    "id": "scale-mail",
+    "name": "scale mail",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scale-mail.svg"
+  },
+  {
+    "id": "scales",
+    "name": "scales",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scales.svg"
+  },
+  {
+    "id": "scallop",
+    "name": "scallop",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scallop.svg"
+  },
+  {
+    "id": "scalpel-strike",
+    "name": "scalpel strike",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scalpel-strike.svg"
+  },
+  {
+    "id": "scalpel",
+    "name": "scalpel",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scalpel.svg"
+  },
+  {
+    "id": "scar-wound",
+    "name": "scar wound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scar-wound.svg"
+  },
+  {
+    "id": "scarab-beetle",
+    "name": "scarab beetle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scarab-beetle.svg"
+  },
+  {
+    "id": "scarecrow",
+    "name": "scarecrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scarecrow.svg"
+  },
+  {
+    "id": "scissors",
+    "name": "scissors",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scissors.svg"
+  },
+  {
+    "id": "scorpion-tail",
+    "name": "scorpion tail",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scorpion-tail.svg"
+  },
+  {
+    "id": "scorpion",
+    "name": "scorpion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scorpion.svg"
+  },
+  {
+    "id": "screaming",
+    "name": "screaming",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/screaming.svg"
+  },
+  {
+    "id": "screen-impact",
+    "name": "screen impact",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/screen-impact.svg"
+  },
+  {
+    "id": "screw",
+    "name": "screw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/screw.svg"
+  },
+  {
+    "id": "screwdriver",
+    "name": "screwdriver",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/screwdriver.svg"
+  },
+  {
+    "id": "scroll-unfurled",
+    "name": "scroll unfurled",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scroll-unfurled.svg"
+  },
+  {
+    "id": "scythe",
+    "name": "scythe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/scythe.svg"
+  },
+  {
+    "id": "sea-dragon",
+    "name": "sea dragon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sea-dragon.svg"
+  },
+  {
+    "id": "sea-serpent",
+    "name": "sea serpent",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sea-serpent.svg"
+  },
+  {
+    "id": "seated-mouse",
+    "name": "seated mouse",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/seated-mouse.svg"
+  },
+  {
+    "id": "self-love",
+    "name": "self love",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/self-love.svg"
+  },
+  {
+    "id": "semi-closed-eye",
+    "name": "semi closed eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/semi-closed-eye.svg"
+  },
+  {
+    "id": "sensuousness",
+    "name": "sensuousness",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sensuousness.svg"
+  },
+  {
+    "id": "sentry-gun",
+    "name": "sentry gun",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sentry-gun.svg"
+  },
+  {
+    "id": "serrated-slash",
+    "name": "serrated slash",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/serrated-slash.svg"
+  },
+  {
+    "id": "sewed-shell",
+    "name": "sewed shell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sewed-shell.svg"
+  },
+  {
+    "id": "sewing-needle",
+    "name": "sewing needle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sewing-needle.svg"
+  },
+  {
+    "id": "shadow-follower",
+    "name": "shadow follower",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shadow-follower.svg"
+  },
+  {
+    "id": "shadow-grasp",
+    "name": "shadow grasp",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shadow-grasp.svg"
+  },
+  {
+    "id": "shard-sword",
+    "name": "shard sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shard-sword.svg"
+  },
+  {
+    "id": "shark-jaws",
+    "name": "shark jaws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shark-jaws.svg"
+  },
+  {
+    "id": "sharp-crown",
+    "name": "sharp crown",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sharp-crown.svg"
+  },
+  {
+    "id": "sharp-lips",
+    "name": "sharp lips",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sharp-lips.svg"
+  },
+  {
+    "id": "sharp-smile",
+    "name": "sharp smile",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sharp-smile.svg"
+  },
+  {
+    "id": "sharped-teeth-skull",
+    "name": "sharped teeth skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sharped-teeth-skull.svg"
+  },
+  {
+    "id": "shatter",
+    "name": "shatter",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shatter.svg"
+  },
+  {
+    "id": "shattered-glass",
+    "name": "shattered glass",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shattered-glass.svg"
+  },
+  {
+    "id": "shattered-sword",
+    "name": "shattered sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shattered-sword.svg"
+  },
+  {
+    "id": "sheikah-eye",
+    "name": "sheikah eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sheikah-eye.svg"
+  },
+  {
+    "id": "shield-bounces",
+    "name": "shield bounces",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shield-bounces.svg"
+  },
+  {
+    "id": "shield-echoes",
+    "name": "shield echoes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shield-echoes.svg"
+  },
+  {
+    "id": "shield-reflect",
+    "name": "shield reflect",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shield-reflect.svg"
+  },
+  {
+    "id": "shieldcomb",
+    "name": "shieldcomb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shieldcomb.svg"
+  },
+  {
+    "id": "shining-claw",
+    "name": "shining claw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shining-claw.svg"
+  },
+  {
+    "id": "shining-heart",
+    "name": "shining heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shining-heart.svg"
+  },
+  {
+    "id": "shining-sword",
+    "name": "shining sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shining-sword.svg"
+  },
+  {
+    "id": "shiny-apple",
+    "name": "shiny apple",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shiny-apple.svg"
+  },
+  {
+    "id": "shiny-entrance",
+    "name": "shiny entrance",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shiny-entrance.svg"
+  },
+  {
+    "id": "shiny-iris",
+    "name": "shiny iris",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shiny-iris.svg"
+  },
+  {
+    "id": "shiny-omega",
+    "name": "shiny omega",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shiny-omega.svg"
+  },
+  {
+    "id": "shiny-purse",
+    "name": "shiny purse",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shiny-purse.svg"
+  },
+  {
+    "id": "shoulder-scales",
+    "name": "shoulder scales",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shoulder-scales.svg"
+  },
+  {
+    "id": "shouting",
+    "name": "shouting",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shouting.svg"
+  },
+  {
+    "id": "shuriken-aperture",
+    "name": "shuriken aperture",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shuriken-aperture.svg"
+  },
+  {
+    "id": "shuriken",
+    "name": "shuriken",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shuriken.svg"
+  },
+  {
+    "id": "shut-rose",
+    "name": "shut rose",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/shut-rose.svg"
+  },
+  {
+    "id": "silence",
+    "name": "silence",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/silence.svg"
+  },
+  {
+    "id": "sing",
+    "name": "sing",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sing.svg"
+  },
+  {
+    "id": "sinking-trap",
+    "name": "sinking trap",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sinking-trap.svg"
+  },
+  {
+    "id": "sinusoidal-beam",
+    "name": "sinusoidal beam",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sinusoidal-beam.svg"
+  },
+  {
+    "id": "six-eyes",
+    "name": "six eyes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/six-eyes.svg"
+  },
+  {
+    "id": "skeleton-inside",
+    "name": "skeleton inside",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skeleton-inside.svg"
+  },
+  {
+    "id": "skeleton-key",
+    "name": "skeleton key",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skeleton-key.svg"
+  },
+  {
+    "id": "skid-mark",
+    "name": "skid mark",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skid-mark.svg"
+  },
+  {
+    "id": "skull-bolt",
+    "name": "skull bolt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skull-bolt.svg"
+  },
+  {
+    "id": "skull-crack",
+    "name": "skull crack",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skull-crack.svg"
+  },
+  {
+    "id": "skull-crossed-bones",
+    "name": "skull crossed bones",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skull-crossed-bones.svg"
+  },
+  {
+    "id": "skull-in-jar",
+    "name": "skull in jar",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skull-in-jar.svg"
+  },
+  {
+    "id": "skull-mask",
+    "name": "skull mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skull-mask.svg"
+  },
+  {
+    "id": "skull-ring",
+    "name": "skull ring",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skull-ring.svg"
+  },
+  {
+    "id": "skull-shield",
+    "name": "skull shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skull-shield.svg"
+  },
+  {
+    "id": "skull-signet",
+    "name": "skull signet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skull-signet.svg"
+  },
+  {
+    "id": "skull-slices",
+    "name": "skull slices",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/skull-slices.svg"
+  },
+  {
+    "id": "slap",
+    "name": "slap",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/slap.svg"
+  },
+  {
+    "id": "slashed-shield",
+    "name": "slashed shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/slashed-shield.svg"
+  },
+  {
+    "id": "slavery-whip",
+    "name": "slavery whip",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/slavery-whip.svg"
+  },
+  {
+    "id": "sleepy",
+    "name": "sleepy",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sleepy.svg"
+  },
+  {
+    "id": "sliced-bread",
+    "name": "sliced bread",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sliced-bread.svg"
+  },
+  {
+    "id": "slicing-arrow",
+    "name": "slicing arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/slicing-arrow.svg"
+  },
+  {
+    "id": "sly",
+    "name": "sly",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sly.svg"
+  },
+  {
+    "id": "small-fire",
+    "name": "small fire",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/small-fire.svg"
+  },
+  {
+    "id": "smash-arrows",
+    "name": "smash arrows",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/smash-arrows.svg"
+  },
+  {
+    "id": "smitten",
+    "name": "smitten",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/smitten.svg"
+  },
+  {
+    "id": "smoking-finger",
+    "name": "smoking finger",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/smoking-finger.svg"
+  },
+  {
+    "id": "smoking-orb",
+    "name": "smoking orb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/smoking-orb.svg"
+  },
+  {
+    "id": "snail",
+    "name": "snail",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/snail.svg"
+  },
+  {
+    "id": "snake-bite",
+    "name": "snake bite",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/snake-bite.svg"
+  },
+  {
+    "id": "snake-totem",
+    "name": "snake totem",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/snake-totem.svg"
+  },
+  {
+    "id": "snake",
+    "name": "snake",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/snake.svg"
+  },
+  {
+    "id": "snatch",
+    "name": "snatch",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/snatch.svg"
+  },
+  {
+    "id": "snout",
+    "name": "snout",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/snout.svg"
+  },
+  {
+    "id": "snow-bottle",
+    "name": "snow bottle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/snow-bottle.svg"
+  },
+  {
+    "id": "snowflake-1",
+    "name": "snowflake 1",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/snowflake-1.svg"
+  },
+  {
+    "id": "snowflake-2",
+    "name": "snowflake 2",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/snowflake-2.svg"
+  },
+  {
+    "id": "snowing",
+    "name": "snowing",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/snowing.svg"
+  },
+  {
+    "id": "snowman",
+    "name": "snowman",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/snowman.svg"
+  },
+  {
+    "id": "soap-experiment",
+    "name": "soap experiment",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/soap-experiment.svg"
+  },
+  {
+    "id": "sonic-boom",
+    "name": "sonic boom",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sonic-boom.svg"
+  },
+  {
+    "id": "sonic-lightning",
+    "name": "sonic lightning",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sonic-lightning.svg"
+  },
+  {
+    "id": "sonic-screech",
+    "name": "sonic screech",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sonic-screech.svg"
+  },
+  {
+    "id": "sonic-shout",
+    "name": "sonic shout",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sonic-shout.svg"
+  },
+  {
+    "id": "space-suit",
+    "name": "space suit",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/space-suit.svg"
+  },
+  {
+    "id": "spade-skull",
+    "name": "spade skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spade-skull.svg"
+  },
+  {
+    "id": "spade",
+    "name": "spade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spade.svg"
+  },
+  {
+    "id": "spanner",
+    "name": "spanner",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spanner.svg"
+  },
+  {
+    "id": "spark-spirit",
+    "name": "spark spirit",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spark-spirit.svg"
+  },
+  {
+    "id": "sparkling-sabre",
+    "name": "sparkling sabre",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sparkling-sabre.svg"
+  },
+  {
+    "id": "sparky-bomb",
+    "name": "sparky bomb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sparky-bomb.svg"
+  },
+  {
+    "id": "sparrow",
+    "name": "sparrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sparrow.svg"
+  },
+  {
+    "id": "spartan",
+    "name": "spartan",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spartan.svg"
+  },
+  {
+    "id": "spatter",
+    "name": "spatter",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spatter.svg"
+  },
+  {
+    "id": "spear-hook",
+    "name": "spear hook",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spear-hook.svg"
+  },
+  {
+    "id": "spears",
+    "name": "spears",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spears.svg"
+  },
+  {
+    "id": "spectacle-lenses",
+    "name": "spectacle lenses",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spectacle-lenses.svg"
+  },
+  {
+    "id": "spectacles",
+    "name": "spectacles",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spectacles.svg"
+  },
+  {
+    "id": "spectre",
+    "name": "spectre",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spectre.svg"
+  },
+  {
+    "id": "spider-web",
+    "name": "spider web",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spider-web.svg"
+  },
+  {
+    "id": "spiked-armor",
+    "name": "spiked armor",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiked-armor.svg"
+  },
+  {
+    "id": "spiked-collar",
+    "name": "spiked collar",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiked-collar.svg"
+  },
+  {
+    "id": "spiked-fence",
+    "name": "spiked fence",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiked-fence.svg"
+  },
+  {
+    "id": "spiked-halo",
+    "name": "spiked halo",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiked-halo.svg"
+  },
+  {
+    "id": "spiked-mace",
+    "name": "spiked mace",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiked-mace.svg"
+  },
+  {
+    "id": "spiked-shell",
+    "name": "spiked shell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiked-shell.svg"
+  },
+  {
+    "id": "spiked-snail",
+    "name": "spiked snail",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiked-snail.svg"
+  },
+  {
+    "id": "spiked-tail",
+    "name": "spiked tail",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiked-tail.svg"
+  },
+  {
+    "id": "spiked-tentacle",
+    "name": "spiked tentacle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiked-tentacle.svg"
+  },
+  {
+    "id": "spiky-eclipse",
+    "name": "spiky eclipse",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiky-eclipse.svg"
+  },
+  {
+    "id": "spiky-explosion",
+    "name": "spiky explosion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiky-explosion.svg"
+  },
+  {
+    "id": "spiky-field",
+    "name": "spiky field",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiky-field.svg"
+  },
+  {
+    "id": "spill",
+    "name": "spill",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spill.svg"
+  },
+  {
+    "id": "spinal-coil",
+    "name": "spinal coil",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spinal-coil.svg"
+  },
+  {
+    "id": "spine-arrow",
+    "name": "spine arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spine-arrow.svg"
+  },
+  {
+    "id": "spinning-blades",
+    "name": "spinning blades",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spinning-blades.svg"
+  },
+  {
+    "id": "spinning-ribbons",
+    "name": "spinning ribbons",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spinning-ribbons.svg"
+  },
+  {
+    "id": "spinning-sword",
+    "name": "spinning sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spinning-sword.svg"
+  },
+  {
+    "id": "spiral-arrow",
+    "name": "spiral arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiral-arrow.svg"
+  },
+  {
+    "id": "spiral-bloom",
+    "name": "spiral bloom",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiral-bloom.svg"
+  },
+  {
+    "id": "spiral-bottle",
+    "name": "spiral bottle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiral-bottle.svg"
+  },
+  {
+    "id": "spiral-shell",
+    "name": "spiral shell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiral-shell.svg"
+  },
+  {
+    "id": "spiral-tentacle",
+    "name": "spiral tentacle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiral-tentacle.svg"
+  },
+  {
+    "id": "spiral-thrust",
+    "name": "spiral thrust",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spiral-thrust.svg"
+  },
+  {
+    "id": "splash",
+    "name": "splash",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/splash.svg"
+  },
+  {
+    "id": "splashy-stream",
+    "name": "splashy stream",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/splashy-stream.svg"
+  },
+  {
+    "id": "split-body",
+    "name": "split body",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/split-body.svg"
+  },
+  {
+    "id": "split-cross",
+    "name": "split cross",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/split-cross.svg"
+  },
+  {
+    "id": "splurt",
+    "name": "splurt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/splurt.svg"
+  },
+  {
+    "id": "spoon",
+    "name": "spoon",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spoon.svg"
+  },
+  {
+    "id": "spoted-flower",
+    "name": "spoted flower",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spoted-flower.svg"
+  },
+  {
+    "id": "spotted-arrowhead",
+    "name": "spotted arrowhead",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spotted-arrowhead.svg"
+  },
+  {
+    "id": "spotted-mushroom",
+    "name": "spotted mushroom",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spotted-mushroom.svg"
+  },
+  {
+    "id": "spotted-wound",
+    "name": "spotted wound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spotted-wound.svg"
+  },
+  {
+    "id": "spoutnik",
+    "name": "spoutnik",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spoutnik.svg"
+  },
+  {
+    "id": "spray",
+    "name": "spray",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spray.svg"
+  },
+  {
+    "id": "sprint",
+    "name": "sprint",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sprint.svg"
+  },
+  {
+    "id": "sprout-disc",
+    "name": "sprout disc",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sprout-disc.svg"
+  },
+  {
+    "id": "sprout",
+    "name": "sprout",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sprout.svg"
+  },
+  {
+    "id": "spyglass",
+    "name": "spyglass",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/spyglass.svg"
+  },
+  {
+    "id": "square-bottle",
+    "name": "square bottle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/square-bottle.svg"
+  },
+  {
+    "id": "squib",
+    "name": "squib",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/squib.svg"
+  },
+  {
+    "id": "squid-head",
+    "name": "squid head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/squid-head.svg"
+  },
+  {
+    "id": "squid",
+    "name": "squid",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/squid.svg"
+  },
+  {
+    "id": "stag-head",
+    "name": "stag head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stag-head.svg"
+  },
+  {
+    "id": "stalagtite",
+    "name": "stalagtite",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stalagtite.svg"
+  },
+  {
+    "id": "standing-potion",
+    "name": "standing potion",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/standing-potion.svg"
+  },
+  {
+    "id": "star-cycle",
+    "name": "star cycle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/star-cycle.svg"
+  },
+  {
+    "id": "star-prominences",
+    "name": "star prominences",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/star-prominences.svg"
+  },
+  {
+    "id": "star-pupil",
+    "name": "star pupil",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/star-pupil.svg"
+  },
+  {
+    "id": "star-satellites",
+    "name": "star satellites",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/star-satellites.svg"
+  },
+  {
+    "id": "star-skull",
+    "name": "star skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/star-skull.svg"
+  },
+  {
+    "id": "star-swirl",
+    "name": "star swirl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/star-swirl.svg"
+  },
+  {
+    "id": "staryu",
+    "name": "staryu",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/staryu.svg"
+  },
+  {
+    "id": "static-guard",
+    "name": "static guard",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/static-guard.svg"
+  },
+  {
+    "id": "static-waves",
+    "name": "static waves",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/static-waves.svg"
+  },
+  {
+    "id": "static",
+    "name": "static",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/static.svg"
+  },
+  {
+    "id": "steel-claws",
+    "name": "steel claws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/steel-claws.svg"
+  },
+  {
+    "id": "steeltoe-boots",
+    "name": "steeltoe boots",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/steeltoe-boots.svg"
+  },
+  {
+    "id": "steelwing-emblem",
+    "name": "steelwing emblem",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/steelwing-emblem.svg"
+  },
+  {
+    "id": "stick-splitting",
+    "name": "stick splitting",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stick-splitting.svg"
+  },
+  {
+    "id": "sticking-plaster",
+    "name": "sticking plaster",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sticking-plaster.svg"
+  },
+  {
+    "id": "stigmata",
+    "name": "stigmata",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stigmata.svg"
+  },
+  {
+    "id": "stiletto",
+    "name": "stiletto",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stiletto.svg"
+  },
+  {
+    "id": "stitched-wound",
+    "name": "stitched wound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stitched-wound.svg"
+  },
+  {
+    "id": "stomp-tornado",
+    "name": "stomp tornado",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stomp-tornado.svg"
+  },
+  {
+    "id": "stomp",
+    "name": "stomp",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stomp.svg"
+  },
+  {
+    "id": "stone-axe",
+    "name": "stone axe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stone-axe.svg"
+  },
+  {
+    "id": "stone-block",
+    "name": "stone block",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stone-block.svg"
+  },
+  {
+    "id": "stone-crafting",
+    "name": "stone crafting",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stone-crafting.svg"
+  },
+  {
+    "id": "stone-spear",
+    "name": "stone spear",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stone-spear.svg"
+  },
+  {
+    "id": "stone-sphere",
+    "name": "stone sphere",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stone-sphere.svg"
+  },
+  {
+    "id": "stone-tablet",
+    "name": "stone tablet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stone-tablet.svg"
+  },
+  {
+    "id": "stone-throne",
+    "name": "stone throne",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stone-throne.svg"
+  },
+  {
+    "id": "stone-tower",
+    "name": "stone tower",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stone-tower.svg"
+  },
+  {
+    "id": "stoned-skull",
+    "name": "stoned skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stoned-skull.svg"
+  },
+  {
+    "id": "stopwatch",
+    "name": "stopwatch",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/stopwatch.svg"
+  },
+  {
+    "id": "strafe",
+    "name": "strafe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/strafe.svg"
+  },
+  {
+    "id": "striking-arrows",
+    "name": "striking arrows",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/striking-arrows.svg"
+  },
+  {
+    "id": "striking-balls",
+    "name": "striking balls",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/striking-balls.svg"
+  },
+  {
+    "id": "striking-clamps",
+    "name": "striking clamps",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/striking-clamps.svg"
+  },
+  {
+    "id": "striking-diamonds",
+    "name": "striking diamonds",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/striking-diamonds.svg"
+  },
+  {
+    "id": "striking-splinter",
+    "name": "striking splinter",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/striking-splinter.svg"
+  },
+  {
+    "id": "striped-sword",
+    "name": "striped sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/striped-sword.svg"
+  },
+  {
+    "id": "strong",
+    "name": "strong",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/strong.svg"
+  },
+  {
+    "id": "suckered-tentacle",
+    "name": "suckered tentacle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/suckered-tentacle.svg"
+  },
+  {
+    "id": "suits",
+    "name": "suits",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/suits.svg"
+  },
+  {
+    "id": "sun-radiations",
+    "name": "sun radiations",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sun-radiations.svg"
+  },
+  {
+    "id": "sun",
+    "name": "sun",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sun.svg"
+  },
+  {
+    "id": "sunbeams",
+    "name": "sunbeams",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sunbeams.svg"
+  },
+  {
+    "id": "sundial",
+    "name": "sundial",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sundial.svg"
+  },
+  {
+    "id": "sunken-eye",
+    "name": "sunken eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sunken-eye.svg"
+  },
+  {
+    "id": "sunrise",
+    "name": "sunrise",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sunrise.svg"
+  },
+  {
+    "id": "super-mushroom",
+    "name": "super mushroom",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/super-mushroom.svg"
+  },
+  {
+    "id": "supersonic-arrow",
+    "name": "supersonic arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/supersonic-arrow.svg"
+  },
+  {
+    "id": "supersonic-bullet",
+    "name": "supersonic bullet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/supersonic-bullet.svg"
+  },
+  {
+    "id": "surprised-skull",
+    "name": "surprised skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/surprised-skull.svg"
+  },
+  {
+    "id": "surprised",
+    "name": "surprised",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/surprised.svg"
+  },
+  {
+    "id": "surrounded-eye",
+    "name": "surrounded eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/surrounded-eye.svg"
+  },
+  {
+    "id": "surrounded-shield",
+    "name": "surrounded shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/surrounded-shield.svg"
+  },
+  {
+    "id": "suspicious",
+    "name": "suspicious",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/suspicious.svg"
+  },
+  {
+    "id": "swallow",
+    "name": "swallow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/swallow.svg"
+  },
+  {
+    "id": "swan-breeze",
+    "name": "swan breeze",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/swan-breeze.svg"
+  },
+  {
+    "id": "swan",
+    "name": "swan",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/swan.svg"
+  },
+  {
+    "id": "swap-bag",
+    "name": "swap bag",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/swap-bag.svg"
+  },
+  {
+    "id": "swirl-ring",
+    "name": "swirl ring",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/swirl-ring.svg"
+  },
+  {
+    "id": "swirl-string",
+    "name": "swirl string",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/swirl-string.svg"
+  },
+  {
+    "id": "sword-array",
+    "name": "sword array",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sword-array.svg"
+  },
+  {
+    "id": "sword-break",
+    "name": "sword break",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sword-break.svg"
+  },
+  {
+    "id": "sword-clash",
+    "name": "sword clash",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sword-clash.svg"
+  },
+  {
+    "id": "sword-hilt",
+    "name": "sword hilt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sword-hilt.svg"
+  },
+  {
+    "id": "sword-in-stone",
+    "name": "sword in stone",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sword-in-stone.svg"
+  },
+  {
+    "id": "sword-slice",
+    "name": "sword slice",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sword-slice.svg"
+  },
+  {
+    "id": "sword-smithing",
+    "name": "sword smithing",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sword-smithing.svg"
+  },
+  {
+    "id": "sword-spade",
+    "name": "sword spade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sword-spade.svg"
+  },
+  {
+    "id": "sword-spin",
+    "name": "sword spin",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sword-spin.svg"
+  },
+  {
+    "id": "sword-tie",
+    "name": "sword tie",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sword-tie.svg"
+  },
+  {
+    "id": "sword-wound",
+    "name": "sword wound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/sword-wound.svg"
+  },
+  {
+    "id": "swords-emblem",
+    "name": "swords emblem",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/swords-emblem.svg"
+  },
+  {
+    "id": "syringe",
+    "name": "syringe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/syringe.svg"
+  },
+  {
+    "id": "tank",
+    "name": "tank",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tank.svg"
+  },
+  {
+    "id": "target-arrows",
+    "name": "target arrows",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/target-arrows.svg"
+  },
+  {
+    "id": "target-dummy",
+    "name": "target dummy",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/target-dummy.svg"
+  },
+  {
+    "id": "target-shot",
+    "name": "target shot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/target-shot.svg"
+  },
+  {
+    "id": "targeting",
+    "name": "targeting",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/targeting.svg"
+  },
+  {
+    "id": "tattered-banner",
+    "name": "tattered banner",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tattered-banner.svg"
+  },
+  {
+    "id": "teapot",
+    "name": "teapot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/teapot.svg"
+  },
+  {
+    "id": "tear-tracks",
+    "name": "tear tracks",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tear-tracks.svg"
+  },
+  {
+    "id": "tearing",
+    "name": "tearing",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tearing.svg"
+  },
+  {
+    "id": "techno-heart",
+    "name": "techno heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/techno-heart.svg"
+  },
+  {
+    "id": "telepathy",
+    "name": "telepathy",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/telepathy.svg"
+  },
+  {
+    "id": "teleport",
+    "name": "teleport",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/teleport.svg"
+  },
+  {
+    "id": "templar-eye",
+    "name": "templar eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/templar-eye.svg"
+  },
+  {
+    "id": "templar-heart",
+    "name": "templar heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/templar-heart.svg"
+  },
+  {
+    "id": "temptation",
+    "name": "temptation",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/temptation.svg"
+  },
+  {
+    "id": "tension-snowflake",
+    "name": "tension snowflake",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tension-snowflake.svg"
+  },
+  {
+    "id": "tentacle-heart",
+    "name": "tentacle heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tentacle-heart.svg"
+  },
+  {
+    "id": "tentacle-strike",
+    "name": "tentacle strike",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tentacle-strike.svg"
+  },
+  {
+    "id": "tentacles-skull",
+    "name": "tentacles skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tentacles-skull.svg"
+  },
+  {
+    "id": "tentacurl",
+    "name": "tentacurl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tentacurl.svg"
+  },
+  {
+    "id": "terror",
+    "name": "terror",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/terror.svg"
+  },
+  {
+    "id": "tesla-coil",
+    "name": "tesla coil",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tesla-coil.svg"
+  },
+  {
+    "id": "tesla-turret",
+    "name": "tesla turret",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tesla-turret.svg"
+  },
+  {
+    "id": "test-tubes",
+    "name": "test tubes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/test-tubes.svg"
+  },
+  {
+    "id": "thermometer-scale",
+    "name": "thermometer scale",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thermometer-scale.svg"
+  },
+  {
+    "id": "third-eye",
+    "name": "third eye",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/third-eye.svg"
+  },
+  {
+    "id": "thor-fist",
+    "name": "thor fist",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thor-fist.svg"
+  },
+  {
+    "id": "thorn-helix",
+    "name": "thorn helix",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thorn-helix.svg"
+  },
+  {
+    "id": "thorned-arrow",
+    "name": "thorned arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thorned-arrow.svg"
+  },
+  {
+    "id": "thorny-tentacle",
+    "name": "thorny tentacle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thorny-tentacle.svg"
+  },
+  {
+    "id": "thorny-vine",
+    "name": "thorny vine",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thorny-vine.svg"
+  },
+  {
+    "id": "three-burning-balls",
+    "name": "three burning balls",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/three-burning-balls.svg"
+  },
+  {
+    "id": "three-keys",
+    "name": "three keys",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/three-keys.svg"
+  },
+  {
+    "id": "three-leaves",
+    "name": "three leaves",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/three-leaves.svg"
+  },
+  {
+    "id": "thrown-charcoal",
+    "name": "thrown charcoal",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thrown-charcoal.svg"
+  },
+  {
+    "id": "thrown-daggers",
+    "name": "thrown daggers",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thrown-daggers.svg"
+  },
+  {
+    "id": "thrown-knife",
+    "name": "thrown knife",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thrown-knife.svg"
+  },
+  {
+    "id": "thrown-spear",
+    "name": "thrown spear",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thrown-spear.svg"
+  },
+  {
+    "id": "thunder-blade",
+    "name": "thunder blade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thunder-blade.svg"
+  },
+  {
+    "id": "thunder-skull",
+    "name": "thunder skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thunder-skull.svg"
+  },
+  {
+    "id": "thunder-struck",
+    "name": "thunder struck",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thunder-struck.svg"
+  },
+  {
+    "id": "thunderball",
+    "name": "thunderball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/thunderball.svg"
+  },
+  {
+    "id": "tick",
+    "name": "tick",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tick.svg"
+  },
+  {
+    "id": "tied-scroll",
+    "name": "tied scroll",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tied-scroll.svg"
+  },
+  {
+    "id": "time-bomb",
+    "name": "time bomb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/time-bomb.svg"
+  },
+  {
+    "id": "time-trap",
+    "name": "time trap",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/time-trap.svg"
+  },
+  {
+    "id": "tinker",
+    "name": "tinker",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tinker.svg"
+  },
+  {
+    "id": "toad-teeth",
+    "name": "toad teeth",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/toad-teeth.svg"
+  },
+  {
+    "id": "tombstone",
+    "name": "tombstone",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tombstone.svg"
+  },
+  {
+    "id": "tooth",
+    "name": "tooth",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tooth.svg"
+  },
+  {
+    "id": "top-hat",
+    "name": "top hat",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/top-hat.svg"
+  },
+  {
+    "id": "top-paw",
+    "name": "top paw",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/top-paw.svg"
+  },
+  {
+    "id": "tornado-discs",
+    "name": "tornado discs",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tornado-discs.svg"
+  },
+  {
+    "id": "tornado",
+    "name": "tornado",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tornado.svg"
+  },
+  {
+    "id": "totem-head",
+    "name": "totem head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/totem-head.svg"
+  },
+  {
+    "id": "totem-mask",
+    "name": "totem mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/totem-mask.svg"
+  },
+  {
+    "id": "tower-fall",
+    "name": "tower fall",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tower-fall.svg"
+  },
+  {
+    "id": "trade",
+    "name": "trade",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/trade.svg"
+  },
+  {
+    "id": "transfuse",
+    "name": "transfuse",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/transfuse.svg"
+  },
+  {
+    "id": "transparent-tubes",
+    "name": "transparent tubes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/transparent-tubes.svg"
+  },
+  {
+    "id": "transportation-rings",
+    "name": "transportation rings",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/transportation-rings.svg"
+  },
+  {
+    "id": "trap-mask",
+    "name": "trap mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/trap-mask.svg"
+  },
+  {
+    "id": "tread",
+    "name": "tread",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tread.svg"
+  },
+  {
+    "id": "treasure-map",
+    "name": "treasure map",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/treasure-map.svg"
+  },
+  {
+    "id": "tree-branch",
+    "name": "tree branch",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tree-branch.svg"
+  },
+  {
+    "id": "trefoil-lily",
+    "name": "trefoil lily",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/trefoil-lily.svg"
+  },
+  {
+    "id": "trefoil-shuriken",
+    "name": "trefoil shuriken",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/trefoil-shuriken.svg"
+  },
+  {
+    "id": "tribal-mask",
+    "name": "tribal mask",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tribal-mask.svg"
+  },
+  {
+    "id": "trident",
+    "name": "trident",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/trident.svg"
+  },
+  {
+    "id": "trilobite",
+    "name": "trilobite",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/trilobite.svg"
+  },
+  {
+    "id": "triorb",
+    "name": "triorb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triorb.svg"
+  },
+  {
+    "id": "triple-beak",
+    "name": "triple beak",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triple-beak.svg"
+  },
+  {
+    "id": "triple-claws",
+    "name": "triple claws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triple-claws.svg"
+  },
+  {
+    "id": "triple-corn",
+    "name": "triple corn",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triple-corn.svg"
+  },
+  {
+    "id": "triple-lock",
+    "name": "triple lock",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triple-lock.svg"
+  },
+  {
+    "id": "triple-needle",
+    "name": "triple needle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triple-needle.svg"
+  },
+  {
+    "id": "triple-plier",
+    "name": "triple plier",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triple-plier.svg"
+  },
+  {
+    "id": "triple-scratches",
+    "name": "triple scratches",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triple-scratches.svg"
+  },
+  {
+    "id": "triple-shells",
+    "name": "triple shells",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triple-shells.svg"
+  },
+  {
+    "id": "triple-skulls",
+    "name": "triple skulls",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triple-skulls.svg"
+  },
+  {
+    "id": "triple-yin",
+    "name": "triple yin",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triple-yin.svg"
+  },
+  {
+    "id": "tripwire",
+    "name": "tripwire",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tripwire.svg"
+  },
+  {
+    "id": "triton-head",
+    "name": "triton head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/triton-head.svg"
+  },
+  {
+    "id": "tron-arrow",
+    "name": "tron arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tron-arrow.svg"
+  },
+  {
+    "id": "trophy",
+    "name": "trophy",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/trophy.svg"
+  },
+  {
+    "id": "trousers",
+    "name": "trousers",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/trousers.svg"
+  },
+  {
+    "id": "tumor",
+    "name": "tumor",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tumor.svg"
+  },
+  {
+    "id": "tune-pitch",
+    "name": "tune pitch",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tune-pitch.svg"
+  },
+  {
+    "id": "turd",
+    "name": "turd",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/turd.svg"
+  },
+  {
+    "id": "turtle-shell",
+    "name": "turtle shell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/turtle-shell.svg"
+  },
+  {
+    "id": "turtle",
+    "name": "turtle",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/turtle.svg"
+  },
+  {
+    "id": "twin-shell",
+    "name": "twin shell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/twin-shell.svg"
+  },
+  {
+    "id": "twirl-center",
+    "name": "twirl center",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/twirl-center.svg"
+  },
+  {
+    "id": "twirly-flower",
+    "name": "twirly flower",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/twirly-flower.svg"
+  },
+  {
+    "id": "twister",
+    "name": "twister",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/twister.svg"
+  },
+  {
+    "id": "two-feathers",
+    "name": "two feathers",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/two-feathers.svg"
+  },
+  {
+    "id": "two-shadows",
+    "name": "two shadows",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/two-shadows.svg"
+  },
+  {
+    "id": "tyre",
+    "name": "tyre",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/tyre.svg"
+  },
+  {
+    "id": "ubisoft-sun",
+    "name": "ubisoft sun",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ubisoft-sun.svg"
+  },
+  {
+    "id": "ultrasound",
+    "name": "ultrasound",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/ultrasound.svg"
+  },
+  {
+    "id": "umbrella",
+    "name": "umbrella",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/umbrella.svg"
+  },
+  {
+    "id": "uncertainty",
+    "name": "uncertainty",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/uncertainty.svg"
+  },
+  {
+    "id": "unfriendly-fire",
+    "name": "unfriendly fire",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/unfriendly-fire.svg"
+  },
+  {
+    "id": "unlit-bomb",
+    "name": "unlit bomb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/unlit-bomb.svg"
+  },
+  {
+    "id": "unlit-candelabra",
+    "name": "unlit candelabra",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/unlit-candelabra.svg"
+  },
+  {
+    "id": "unlocking",
+    "name": "unlocking",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/unlocking.svg"
+  },
+  {
+    "id": "unstable-orb",
+    "name": "unstable orb",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/unstable-orb.svg"
+  },
+  {
+    "id": "unstable-projectile",
+    "name": "unstable projectile",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/unstable-projectile.svg"
+  },
+  {
+    "id": "valley",
+    "name": "valley",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/valley.svg"
+  },
+  {
+    "id": "vanilla-flower",
+    "name": "vanilla flower",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/vanilla-flower.svg"
+  },
+  {
+    "id": "vibrating-ball",
+    "name": "vibrating ball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/vibrating-ball.svg"
+  },
+  {
+    "id": "vile-fluid",
+    "name": "vile fluid",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/vile-fluid.svg"
+  },
+  {
+    "id": "vine-flower",
+    "name": "vine flower",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/vine-flower.svg"
+  },
+  {
+    "id": "vine-leaf",
+    "name": "vine leaf",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/vine-leaf.svg"
+  },
+  {
+    "id": "vine-whip",
+    "name": "vine whip",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/vine-whip.svg"
+  },
+  {
+    "id": "vintage-robot",
+    "name": "vintage robot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/vintage-robot.svg"
+  },
+  {
+    "id": "viola",
+    "name": "viola",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/viola.svg"
+  },
+  {
+    "id": "virus",
+    "name": "virus",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/virus.svg"
+  },
+  {
+    "id": "visored-helm",
+    "name": "visored helm",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/visored-helm.svg"
+  },
+  {
+    "id": "volcano",
+    "name": "volcano",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/volcano.svg"
+  },
+  {
+    "id": "vomiting",
+    "name": "vomiting",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/vomiting.svg"
+  },
+  {
+    "id": "voodoo-doll",
+    "name": "voodoo doll",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/voodoo-doll.svg"
+  },
+  {
+    "id": "vortex",
+    "name": "vortex",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/vortex.svg"
+  },
+  {
+    "id": "vulture",
+    "name": "vulture",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/vulture.svg"
+  },
+  {
+    "id": "walking-boot",
+    "name": "walking boot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/walking-boot.svg"
+  },
+  {
+    "id": "wasp-sting",
+    "name": "wasp sting",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wasp-sting.svg"
+  },
+  {
+    "id": "water-bolt",
+    "name": "water bolt",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/water-bolt.svg"
+  },
+  {
+    "id": "water-splash",
+    "name": "water splash",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/water-splash.svg"
+  },
+  {
+    "id": "wave-crest",
+    "name": "wave crest",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wave-crest.svg"
+  },
+  {
+    "id": "wave-strike",
+    "name": "wave strike",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wave-strike.svg"
+  },
+  {
+    "id": "waves",
+    "name": "waves",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/waves.svg"
+  },
+  {
+    "id": "wavy-chains",
+    "name": "wavy chains",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wavy-chains.svg"
+  },
+  {
+    "id": "wavy-itinerary",
+    "name": "wavy itinerary",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wavy-itinerary.svg"
+  },
+  {
+    "id": "wax-seal",
+    "name": "wax seal",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wax-seal.svg"
+  },
+  {
+    "id": "web-spit",
+    "name": "web spit",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/web-spit.svg"
+  },
+  {
+    "id": "werewolf",
+    "name": "werewolf",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/werewolf.svg"
+  },
+  {
+    "id": "wheat",
+    "name": "wheat",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wheat.svg"
+  },
+  {
+    "id": "whip",
+    "name": "whip",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/whip.svg"
+  },
+  {
+    "id": "whiplash",
+    "name": "whiplash",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/whiplash.svg"
+  },
+  {
+    "id": "whirlwind",
+    "name": "whirlwind",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/whirlwind.svg"
+  },
+  {
+    "id": "white-tower",
+    "name": "white tower",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/white-tower.svg"
+  },
+  {
+    "id": "wide-arrow-dunk",
+    "name": "wide arrow dunk",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wide-arrow-dunk.svg"
+  },
+  {
+    "id": "wildfires",
+    "name": "wildfires",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wildfires.svg"
+  },
+  {
+    "id": "william-tell-skull",
+    "name": "william tell skull",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/william-tell-skull.svg"
+  },
+  {
+    "id": "william-tell",
+    "name": "william tell",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/william-tell.svg"
+  },
+  {
+    "id": "wind-hole",
+    "name": "wind hole",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wind-hole.svg"
+  },
+  {
+    "id": "wind-slap",
+    "name": "wind slap",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wind-slap.svg"
+  },
+  {
+    "id": "windy-stripes",
+    "name": "windy stripes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/windy-stripes.svg"
+  },
+  {
+    "id": "wine-glass",
+    "name": "wine glass",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wine-glass.svg"
+  },
+  {
+    "id": "wing-cloak",
+    "name": "wing cloak",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wing-cloak.svg"
+  },
+  {
+    "id": "winged-arrow",
+    "name": "winged arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/winged-arrow.svg"
+  },
+  {
+    "id": "winged-emblem",
+    "name": "winged emblem",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/winged-emblem.svg"
+  },
+  {
+    "id": "winged-leg",
+    "name": "winged leg",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/winged-leg.svg"
+  },
+  {
+    "id": "winged-shield",
+    "name": "winged shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/winged-shield.svg"
+  },
+  {
+    "id": "winged-sword",
+    "name": "winged sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/winged-sword.svg"
+  },
+  {
+    "id": "wingfoot",
+    "name": "wingfoot",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wingfoot.svg"
+  },
+  {
+    "id": "witch-flight",
+    "name": "witch flight",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/witch-flight.svg"
+  },
+  {
+    "id": "wizard-staff",
+    "name": "wizard staff",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wizard-staff.svg"
+  },
+  {
+    "id": "wolf-head",
+    "name": "wolf head",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wolf-head.svg"
+  },
+  {
+    "id": "wolf-howl",
+    "name": "wolf howl",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wolf-howl.svg"
+  },
+  {
+    "id": "wolf-trap",
+    "name": "wolf trap",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wolf-trap.svg"
+  },
+  {
+    "id": "wolverine-claws",
+    "name": "wolverine claws",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wolverine-claws.svg"
+  },
+  {
+    "id": "wood-axe",
+    "name": "wood axe",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wood-axe.svg"
+  },
+  {
+    "id": "wooden-door",
+    "name": "wooden door",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wooden-door.svg"
+  },
+  {
+    "id": "wooden-fence",
+    "name": "wooden fence",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wooden-fence.svg"
+  },
+  {
+    "id": "wooden-sign",
+    "name": "wooden sign",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wooden-sign.svg"
+  },
+  {
+    "id": "world",
+    "name": "world",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/world.svg"
+  },
+  {
+    "id": "worm-mouth",
+    "name": "worm mouth",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/worm-mouth.svg"
+  },
+  {
+    "id": "worried-eyes",
+    "name": "worried eyes",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/worried-eyes.svg"
+  },
+  {
+    "id": "wrapped-heart",
+    "name": "wrapped heart",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wrapped-heart.svg"
+  },
+  {
+    "id": "wrapped-sweet",
+    "name": "wrapped sweet",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wrapped-sweet.svg"
+  },
+  {
+    "id": "wrapping-star",
+    "name": "wrapping star",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wrapping-star.svg"
+  },
+  {
+    "id": "wrecking-ball",
+    "name": "wrecking ball",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wrecking-ball.svg"
+  },
+  {
+    "id": "wyvern",
+    "name": "wyvern",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/wyvern.svg"
+  },
+  {
+    "id": "zebra-shield",
+    "name": "zebra shield",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/zebra-shield.svg"
+  },
+  {
+    "id": "zeus-sword",
+    "name": "zeus sword",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/zeus-sword.svg"
+  },
+  {
+    "id": "zig-arrow",
+    "name": "zig arrow",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/zig-arrow.svg"
+  },
+  {
+    "id": "zigzag-cage",
+    "name": "zigzag cage",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/zigzag-cage.svg"
+  },
+  {
+    "id": "zigzag-leaf",
+    "name": "zigzag leaf",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/zigzag-leaf.svg"
+  },
+  {
+    "id": "zigzag-tune",
+    "name": "zigzag tune",
+    "contributor": "lorc",
+    "svgPath": "/game-icons/lorc/zigzag-tune.svg"
+  },
+  {
+    "id": "amplitude",
+    "name": "amplitude",
+    "contributor": "lord-berandas",
+    "svgPath": "/game-icons/lord-berandas/amplitude.svg"
+  },
+  {
+    "id": "artificial-intelligence",
+    "name": "artificial intelligence",
+    "contributor": "lord-berandas",
+    "svgPath": "/game-icons/lord-berandas/artificial-intelligence.svg"
+  },
+  {
+    "id": "bomber",
+    "name": "bomber",
+    "contributor": "lord-berandas",
+    "svgPath": "/game-icons/lord-berandas/bomber.svg"
+  },
+  {
+    "id": "computing",
+    "name": "computing",
+    "contributor": "lord-berandas",
+    "svgPath": "/game-icons/lord-berandas/computing.svg"
+  },
+  {
+    "id": "diagram",
+    "name": "diagram",
+    "contributor": "lord-berandas",
+    "svgPath": "/game-icons/lord-berandas/diagram.svg"
+  },
+  {
+    "id": "heavy-fighter",
+    "name": "heavy fighter",
+    "contributor": "lord-berandas",
+    "svgPath": "/game-icons/lord-berandas/heavy-fighter.svg"
+  },
+  {
+    "id": "holosphere",
+    "name": "holosphere",
+    "contributor": "lord-berandas",
+    "svgPath": "/game-icons/lord-berandas/holosphere.svg"
+  },
+  {
+    "id": "light-fighter",
+    "name": "light fighter",
+    "contributor": "lord-berandas",
+    "svgPath": "/game-icons/lord-berandas/light-fighter.svg"
+  },
+  {
+    "id": "microscope",
+    "name": "microscope",
+    "contributor": "lord-berandas",
+    "svgPath": "/game-icons/lord-berandas/microscope.svg"
+  },
+  {
+    "id": "power-button",
+    "name": "power button",
+    "contributor": "lord-berandas",
+    "svgPath": "/game-icons/lord-berandas/power-button.svg"
+  },
+  {
+    "id": "belt",
+    "name": "belt",
+    "contributor": "lucasms",
+    "svgPath": "/game-icons/lucasms/belt.svg"
+  },
+  {
+    "id": "cloak",
+    "name": "cloak",
+    "contributor": "lucasms",
+    "svgPath": "/game-icons/lucasms/cloak.svg"
+  },
+  {
+    "id": "necklace",
+    "name": "necklace",
+    "contributor": "lucasms",
+    "svgPath": "/game-icons/lucasms/necklace.svg"
+  },
+  {
+    "id": "shirt",
+    "name": "shirt",
+    "contributor": "lucasms",
+    "svgPath": "/game-icons/lucasms/shirt.svg"
+  },
+  {
+    "id": "trousers",
+    "name": "trousers",
+    "contributor": "lucasms",
+    "svgPath": "/game-icons/lucasms/trousers.svg"
+  },
+  {
+    "id": "elven-castle",
+    "name": "elven castle",
+    "contributor": "pepijn-poolman",
+    "svgPath": "/game-icons/pepijn-poolman/elven-castle.svg"
+  },
+  {
+    "id": "anti-aircraft-gun",
+    "name": "anti aircraft gun",
+    "contributor": "pierre-leducq",
+    "svgPath": "/game-icons/pierre-leducq/anti-aircraft-gun.svg"
+  },
+  {
+    "id": "shooner-sailboat",
+    "name": "shooner sailboat",
+    "contributor": "pierre-leducq",
+    "svgPath": "/game-icons/pierre-leducq/shooner-sailboat.svg"
+  },
+  {
+    "id": "small-fishing-sailboat",
+    "name": "small fishing sailboat",
+    "contributor": "pierre-leducq",
+    "svgPath": "/game-icons/pierre-leducq/small-fishing-sailboat.svg"
+  },
+  {
+    "id": "battery-0",
+    "name": "battery 0",
+    "contributor": "priorblue",
+    "svgPath": "/game-icons/priorblue/battery-0.svg"
+  },
+  {
+    "id": "battery-100",
+    "name": "battery 100",
+    "contributor": "priorblue",
+    "svgPath": "/game-icons/priorblue/battery-100.svg"
+  },
+  {
+    "id": "battery-25",
+    "name": "battery 25",
+    "contributor": "priorblue",
+    "svgPath": "/game-icons/priorblue/battery-25.svg"
+  },
+  {
+    "id": "battery-50",
+    "name": "battery 50",
+    "contributor": "priorblue",
+    "svgPath": "/game-icons/priorblue/battery-50.svg"
+  },
+  {
+    "id": "battery-75",
+    "name": "battery 75",
+    "contributor": "priorblue",
+    "svgPath": "/game-icons/priorblue/battery-75.svg"
+  },
+  {
+    "id": "battery-minus",
+    "name": "battery minus",
+    "contributor": "priorblue",
+    "svgPath": "/game-icons/priorblue/battery-minus.svg"
+  },
+  {
+    "id": "battery-plus",
+    "name": "battery plus",
+    "contributor": "priorblue",
+    "svgPath": "/game-icons/priorblue/battery-plus.svg"
+  },
+  {
+    "id": "artillery-shell",
+    "name": "artillery shell",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/artillery-shell.svg"
+  },
+  {
+    "id": "biplane",
+    "name": "biplane",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/biplane.svg"
+  },
+  {
+    "id": "bunker-assault",
+    "name": "bunker assault",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/bunker-assault.svg"
+  },
+  {
+    "id": "bunker",
+    "name": "bunker",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/bunker.svg"
+  },
+  {
+    "id": "card-pickup",
+    "name": "card pickup",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/card-pickup.svg"
+  },
+  {
+    "id": "card-play",
+    "name": "card play",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/card-play.svg"
+  },
+  {
+    "id": "damaged-house",
+    "name": "damaged house",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/damaged-house.svg"
+  },
+  {
+    "id": "field-gun",
+    "name": "field gun",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/field-gun.svg"
+  },
+  {
+    "id": "lost-limb",
+    "name": "lost limb",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/lost-limb.svg"
+  },
+  {
+    "id": "military-ambulance",
+    "name": "military ambulance",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/military-ambulance.svg"
+  },
+  {
+    "id": "poppy",
+    "name": "poppy",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/poppy.svg"
+  },
+  {
+    "id": "trench-assault",
+    "name": "trench assault",
+    "contributor": "quoting",
+    "svgPath": "/game-icons/quoting/trench-assault.svg"
+  },
+  {
+    "id": "chocolate-bar",
+    "name": "chocolate bar",
+    "contributor": "rihlsul",
+    "svgPath": "/game-icons/rihlsul/chocolate-bar.svg"
+  },
+  {
+    "id": "milk-carton",
+    "name": "milk carton",
+    "contributor": "rihlsul",
+    "svgPath": "/game-icons/rihlsul/milk-carton.svg"
+  },
+  {
+    "id": "peanut",
+    "name": "peanut",
+    "contributor": "rihlsul",
+    "svgPath": "/game-icons/rihlsul/peanut.svg"
+  },
+  {
+    "id": "acid-tube",
+    "name": "acid tube",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/acid-tube.svg"
+  },
+  {
+    "id": "acid",
+    "name": "acid",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/acid.svg"
+  },
+  {
+    "id": "ammo-box",
+    "name": "ammo box",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/ammo-box.svg"
+  },
+  {
+    "id": "arena",
+    "name": "arena",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/arena.svg"
+  },
+  {
+    "id": "battery-pack-alt",
+    "name": "battery pack alt",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/battery-pack-alt.svg"
+  },
+  {
+    "id": "battery-pack",
+    "name": "battery pack",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/battery-pack.svg"
+  },
+  {
+    "id": "big-egg",
+    "name": "big egg",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/big-egg.svg"
+  },
+  {
+    "id": "blast",
+    "name": "blast",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/blast.svg"
+  },
+  {
+    "id": "blaster",
+    "name": "blaster",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/blaster.svg"
+  },
+  {
+    "id": "burn",
+    "name": "burn",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/burn.svg"
+  },
+  {
+    "id": "cancel",
+    "name": "cancel",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/cancel.svg"
+  },
+  {
+    "id": "chaingun",
+    "name": "chaingun",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/chaingun.svg"
+  },
+  {
+    "id": "circular-saw",
+    "name": "circular saw",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/circular-saw.svg"
+  },
+  {
+    "id": "claw",
+    "name": "claw",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/claw.svg"
+  },
+  {
+    "id": "clover-spiked",
+    "name": "clover spiked",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/clover-spiked.svg"
+  },
+  {
+    "id": "clover",
+    "name": "clover",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/clover.svg"
+  },
+  {
+    "id": "crush",
+    "name": "crush",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/crush.svg"
+  },
+  {
+    "id": "death-skull",
+    "name": "death skull",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/death-skull.svg"
+  },
+  {
+    "id": "doubled",
+    "name": "doubled",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/doubled.svg"
+  },
+  {
+    "id": "duel",
+    "name": "duel",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/duel.svg"
+  },
+  {
+    "id": "egg-pod",
+    "name": "egg pod",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/egg-pod.svg"
+  },
+  {
+    "id": "electric",
+    "name": "electric",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/electric.svg"
+  },
+  {
+    "id": "evil-wings",
+    "name": "evil wings",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/evil-wings.svg"
+  },
+  {
+    "id": "expander",
+    "name": "expander",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/expander.svg"
+  },
+  {
+    "id": "fall-down",
+    "name": "fall down",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/fall-down.svg"
+  },
+  {
+    "id": "falling",
+    "name": "falling",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/falling.svg"
+  },
+  {
+    "id": "fire",
+    "name": "fire",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/fire.svg"
+  },
+  {
+    "id": "fireflake",
+    "name": "fireflake",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/fireflake.svg"
+  },
+  {
+    "id": "flake",
+    "name": "flake",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/flake.svg"
+  },
+  {
+    "id": "flamer",
+    "name": "flamer",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/flamer.svg"
+  },
+  {
+    "id": "grenade",
+    "name": "grenade",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/grenade.svg"
+  },
+  {
+    "id": "hand",
+    "name": "hand",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/hand.svg"
+  },
+  {
+    "id": "head-shot",
+    "name": "head shot",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/head-shot.svg"
+  },
+  {
+    "id": "health-decrease",
+    "name": "health decrease",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/health-decrease.svg"
+  },
+  {
+    "id": "health-increase",
+    "name": "health increase",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/health-increase.svg"
+  },
+  {
+    "id": "health-normal",
+    "name": "health normal",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/health-normal.svg"
+  },
+  {
+    "id": "helmet",
+    "name": "helmet",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/helmet.svg"
+  },
+  {
+    "id": "help",
+    "name": "help",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/help.svg"
+  },
+  {
+    "id": "hive",
+    "name": "hive",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/hive.svg"
+  },
+  {
+    "id": "hot-surface",
+    "name": "hot surface",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/hot-surface.svg"
+  },
+  {
+    "id": "jet-pack",
+    "name": "jet pack",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/jet-pack.svg"
+  },
+  {
+    "id": "kevlar",
+    "name": "kevlar",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/kevlar.svg"
+  },
+  {
+    "id": "key",
+    "name": "key",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/key.svg"
+  },
+  {
+    "id": "laser-gun",
+    "name": "laser gun",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/laser-gun.svg"
+  },
+  {
+    "id": "lava",
+    "name": "lava",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/lava.svg"
+  },
+  {
+    "id": "level-four-advanced",
+    "name": "level four advanced",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/level-four-advanced.svg"
+  },
+  {
+    "id": "level-four",
+    "name": "level four",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/level-four.svg"
+  },
+  {
+    "id": "level-three-advanced",
+    "name": "level three advanced",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/level-three-advanced.svg"
+  },
+  {
+    "id": "level-three",
+    "name": "level three",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/level-three.svg"
+  },
+  {
+    "id": "level-two-advanced",
+    "name": "level two advanced",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/level-two-advanced.svg"
+  },
+  {
+    "id": "level-two",
+    "name": "level two",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/level-two.svg"
+  },
+  {
+    "id": "lucifer-cannon",
+    "name": "lucifer cannon",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/lucifer-cannon.svg"
+  },
+  {
+    "id": "mass-driver",
+    "name": "mass driver",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/mass-driver.svg"
+  },
+  {
+    "id": "medical-pack-alt",
+    "name": "medical pack alt",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/medical-pack-alt.svg"
+  },
+  {
+    "id": "medical-pack",
+    "name": "medical pack",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/medical-pack.svg"
+  },
+  {
+    "id": "nodular",
+    "name": "nodular",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/nodular.svg"
+  },
+  {
+    "id": "nuclear",
+    "name": "nuclear",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/nuclear.svg"
+  },
+  {
+    "id": "overkill",
+    "name": "overkill",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/overkill.svg"
+  },
+  {
+    "id": "overmind",
+    "name": "overmind",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/overmind.svg"
+  },
+  {
+    "id": "poison-cloud",
+    "name": "poison cloud",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/poison-cloud.svg"
+  },
+  {
+    "id": "poison",
+    "name": "poison",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/poison.svg"
+  },
+  {
+    "id": "pounce",
+    "name": "pounce",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/pounce.svg"
+  },
+  {
+    "id": "pulse",
+    "name": "pulse",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/pulse.svg"
+  },
+  {
+    "id": "reactor",
+    "name": "reactor",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/reactor.svg"
+  },
+  {
+    "id": "regeneration",
+    "name": "regeneration",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/regeneration.svg"
+  },
+  {
+    "id": "revolt",
+    "name": "revolt",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/revolt.svg"
+  },
+  {
+    "id": "rifle",
+    "name": "rifle",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/rifle.svg"
+  },
+  {
+    "id": "select",
+    "name": "select",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/select.svg"
+  },
+  {
+    "id": "shield",
+    "name": "shield",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/shield.svg"
+  },
+  {
+    "id": "shotgun",
+    "name": "shotgun",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/shotgun.svg"
+  },
+  {
+    "id": "slow-blob",
+    "name": "slow blob",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/slow-blob.svg"
+  },
+  {
+    "id": "snorkel",
+    "name": "snorkel",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/snorkel.svg"
+  },
+  {
+    "id": "spawn-node",
+    "name": "spawn node",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/spawn-node.svg"
+  },
+  {
+    "id": "spikeball",
+    "name": "spikeball",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/spikeball.svg"
+  },
+  {
+    "id": "spikes-full",
+    "name": "spikes full",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/spikes-full.svg"
+  },
+  {
+    "id": "spikes-half",
+    "name": "spikes half",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/spikes-half.svg"
+  },
+  {
+    "id": "spikes-init",
+    "name": "spikes init",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/spikes-init.svg"
+  },
+  {
+    "id": "spikes",
+    "name": "spikes",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/spikes.svg"
+  },
+  {
+    "id": "splash",
+    "name": "splash",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/splash.svg"
+  },
+  {
+    "id": "suicide",
+    "name": "suicide",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/suicide.svg"
+  },
+  {
+    "id": "syringe",
+    "name": "syringe",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/syringe.svg"
+  },
+  {
+    "id": "target-laser",
+    "name": "target laser",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/target-laser.svg"
+  },
+  {
+    "id": "targeted",
+    "name": "targeted",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/targeted.svg"
+  },
+  {
+    "id": "telefrag",
+    "name": "telefrag",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/telefrag.svg"
+  },
+  {
+    "id": "tesla",
+    "name": "tesla",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/tesla.svg"
+  },
+  {
+    "id": "tombstone",
+    "name": "tombstone",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/tombstone.svg"
+  },
+  {
+    "id": "trample",
+    "name": "trample",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/trample.svg"
+  },
+  {
+    "id": "trigger-hurt",
+    "name": "trigger hurt",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/trigger-hurt.svg"
+  },
+  {
+    "id": "turret",
+    "name": "turret",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/turret.svg"
+  },
+  {
+    "id": "unplugged",
+    "name": "unplugged",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/unplugged.svg"
+  },
+  {
+    "id": "usable",
+    "name": "usable",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/usable.svg"
+  },
+  {
+    "id": "vial",
+    "name": "vial",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/vial.svg"
+  },
+  {
+    "id": "water-drop",
+    "name": "water drop",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/water-drop.svg"
+  },
+  {
+    "id": "weight-crush",
+    "name": "weight crush",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/weight-crush.svg"
+  },
+  {
+    "id": "wrench",
+    "name": "wrench",
+    "contributor": "sbed",
+    "svgPath": "/game-icons/sbed/wrench.svg"
+  },
+  {
+    "id": "acid-shield",
+    "name": "acid shield",
+    "contributor": "seregacthtuf",
+    "svgPath": "/game-icons/seregacthtuf/acid-shield.svg"
+  },
+  {
+    "id": "armor-blueprint",
+    "name": "armor blueprint",
+    "contributor": "seregacthtuf",
+    "svgPath": "/game-icons/seregacthtuf/armor-blueprint.svg"
+  },
+  {
+    "id": "pouch-with-beads",
+    "name": "pouch with beads",
+    "contributor": "seregacthtuf",
+    "svgPath": "/game-icons/seregacthtuf/pouch-with-beads.svg"
+  },
+  {
+    "id": "sake-bottle",
+    "name": "sake bottle",
+    "contributor": "seregacthtuf",
+    "svgPath": "/game-icons/seregacthtuf/sake-bottle.svg"
+  },
+  {
+    "id": "thought-bubble",
+    "name": "thought bubble",
+    "contributor": "seregacthtuf",
+    "svgPath": "/game-icons/seregacthtuf/thought-bubble.svg"
+  },
+  {
+    "id": "achievement",
+    "name": "achievement",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/achievement.svg"
+  },
+  {
+    "id": "air-force",
+    "name": "air force",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/air-force.svg"
+  },
+  {
+    "id": "airplane",
+    "name": "airplane",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/airplane.svg"
+  },
+  {
+    "id": "ak47",
+    "name": "ak47",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/ak47.svg"
+  },
+  {
+    "id": "ak47u",
+    "name": "ak47u",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/ak47u.svg"
+  },
+  {
+    "id": "allied-star",
+    "name": "allied star",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/allied-star.svg"
+  },
+  {
+    "id": "amethyst",
+    "name": "amethyst",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/amethyst.svg"
+  },
+  {
+    "id": "amputation",
+    "name": "amputation",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/amputation.svg"
+  },
+  {
+    "id": "apc",
+    "name": "apc",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/apc.svg"
+  },
+  {
+    "id": "atom",
+    "name": "atom",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/atom.svg"
+  },
+  {
+    "id": "balaclava",
+    "name": "balaclava",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/balaclava.svg"
+  },
+  {
+    "id": "balkenkreuz",
+    "name": "balkenkreuz",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/balkenkreuz.svg"
+  },
+  {
+    "id": "ballista",
+    "name": "ballista",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/ballista.svg"
+  },
+  {
+    "id": "bat",
+    "name": "bat",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/bat.svg"
+  },
+  {
+    "id": "baton",
+    "name": "baton",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/baton.svg"
+  },
+  {
+    "id": "bayonet",
+    "name": "bayonet",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/bayonet.svg"
+  },
+  {
+    "id": "big-diamond-ring",
+    "name": "big diamond ring",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/big-diamond-ring.svg"
+  },
+  {
+    "id": "blood",
+    "name": "blood",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/blood.svg"
+  },
+  {
+    "id": "bowie-knife",
+    "name": "bowie knife",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/bowie-knife.svg"
+  },
+  {
+    "id": "box-trap",
+    "name": "box trap",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/box-trap.svg"
+  },
+  {
+    "id": "bracers",
+    "name": "bracers",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/bracers.svg"
+  },
+  {
+    "id": "breaking-chain",
+    "name": "breaking chain",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/breaking-chain.svg"
+  },
+  {
+    "id": "brodie-helmet",
+    "name": "brodie helmet",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/brodie-helmet.svg"
+  },
+  {
+    "id": "bullseye",
+    "name": "bullseye",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/bullseye.svg"
+  },
+  {
+    "id": "bundle-grenade",
+    "name": "bundle grenade",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/bundle-grenade.svg"
+  },
+  {
+    "id": "burning-skull",
+    "name": "burning skull",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/burning-skull.svg"
+  },
+  {
+    "id": "butterfly-knife",
+    "name": "butterfly knife",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/butterfly-knife.svg"
+  },
+  {
+    "id": "c96",
+    "name": "c96",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/c96.svg"
+  },
+  {
+    "id": "carpet-bombing",
+    "name": "carpet bombing",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/carpet-bombing.svg"
+  },
+  {
+    "id": "cement-shoes",
+    "name": "cement shoes",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/cement-shoes.svg"
+  },
+  {
+    "id": "chess-bishop",
+    "name": "chess bishop",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/chess-bishop.svg"
+  },
+  {
+    "id": "chess-king",
+    "name": "chess king",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/chess-king.svg"
+  },
+  {
+    "id": "chess-knight",
+    "name": "chess knight",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/chess-knight.svg"
+  },
+  {
+    "id": "chess-pawn",
+    "name": "chess pawn",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/chess-pawn.svg"
+  },
+  {
+    "id": "chess-queen",
+    "name": "chess queen",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/chess-queen.svg"
+  },
+  {
+    "id": "chess-rook",
+    "name": "chess rook",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/chess-rook.svg"
+  },
+  {
+    "id": "click",
+    "name": "click",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/click.svg"
+  },
+  {
+    "id": "clubs",
+    "name": "clubs",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/clubs.svg"
+  },
+  {
+    "id": "cobra",
+    "name": "cobra",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/cobra.svg"
+  },
+  {
+    "id": "colt-m1911",
+    "name": "colt m1911",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/colt-m1911.svg"
+  },
+  {
+    "id": "combination-lock",
+    "name": "combination lock",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/combination-lock.svg"
+  },
+  {
+    "id": "console-controller",
+    "name": "console controller",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/console-controller.svg"
+  },
+  {
+    "id": "crescent-blade",
+    "name": "crescent blade",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/crescent-blade.svg"
+  },
+  {
+    "id": "cultist",
+    "name": "cultist",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/cultist.svg"
+  },
+  {
+    "id": "cz-skorpion",
+    "name": "cz skorpion",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/cz-skorpion.svg"
+  },
+  {
+    "id": "d10",
+    "name": "d10",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/d10.svg"
+  },
+  {
+    "id": "d12",
+    "name": "d12",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/d12.svg"
+  },
+  {
+    "id": "d4",
+    "name": "d4",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/d4.svg"
+  },
+  {
+    "id": "desert-eagle",
+    "name": "desert eagle",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/desert-eagle.svg"
+  },
+  {
+    "id": "diamonds",
+    "name": "diamonds",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/diamonds.svg"
+  },
+  {
+    "id": "divided-square",
+    "name": "divided square",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/divided-square.svg"
+  },
+  {
+    "id": "donkey",
+    "name": "donkey",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/donkey.svg"
+  },
+  {
+    "id": "dress",
+    "name": "dress",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/dress.svg"
+  },
+  {
+    "id": "drop-weapon",
+    "name": "drop weapon",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/drop-weapon.svg"
+  },
+  {
+    "id": "evil-eyes",
+    "name": "evil eyes",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/evil-eyes.svg"
+  },
+  {
+    "id": "f1-car",
+    "name": "f1 car",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/f1-car.svg"
+  },
+  {
+    "id": "famas",
+    "name": "famas",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/famas.svg"
+  },
+  {
+    "id": "fangs",
+    "name": "fangs",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/fangs.svg"
+  },
+  {
+    "id": "fat",
+    "name": "fat",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/fat.svg"
+  },
+  {
+    "id": "fetus",
+    "name": "fetus",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/fetus.svg"
+  },
+  {
+    "id": "fist",
+    "name": "fist",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/fist.svg"
+  },
+  {
+    "id": "flatbed-covered",
+    "name": "flatbed covered",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/flatbed-covered.svg"
+  },
+  {
+    "id": "flatbed",
+    "name": "flatbed",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/flatbed.svg"
+  },
+  {
+    "id": "fn-fal",
+    "name": "fn fal",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/fn-fal.svg"
+  },
+  {
+    "id": "footsteps",
+    "name": "footsteps",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/footsteps.svg"
+  },
+  {
+    "id": "fruit-bowl",
+    "name": "fruit bowl",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/fruit-bowl.svg"
+  },
+  {
+    "id": "gas-mask",
+    "name": "gas mask",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/gas-mask.svg"
+  },
+  {
+    "id": "gladius",
+    "name": "gladius",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/gladius.svg"
+  },
+  {
+    "id": "glider",
+    "name": "glider",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/glider.svg"
+  },
+  {
+    "id": "glock",
+    "name": "glock",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/glock.svg"
+  },
+  {
+    "id": "goat",
+    "name": "goat",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/goat.svg"
+  },
+  {
+    "id": "halt",
+    "name": "halt",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/halt.svg"
+  },
+  {
+    "id": "ham-shank",
+    "name": "ham shank",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/ham-shank.svg"
+  },
+  {
+    "id": "hang-glider",
+    "name": "hang glider",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/hang-glider.svg"
+  },
+  {
+    "id": "hasty-grave",
+    "name": "hasty grave",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/hasty-grave.svg"
+  },
+  {
+    "id": "headshot",
+    "name": "headshot",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/headshot.svg"
+  },
+  {
+    "id": "hearing-disabled",
+    "name": "hearing disabled",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/hearing-disabled.svg"
+  },
+  {
+    "id": "hearts",
+    "name": "hearts",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/hearts.svg"
+  },
+  {
+    "id": "hexes",
+    "name": "hexes",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/hexes.svg"
+  },
+  {
+    "id": "inverted-dice-1",
+    "name": "inverted dice 1",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/inverted-dice-1.svg"
+  },
+  {
+    "id": "inverted-dice-2",
+    "name": "inverted dice 2",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/inverted-dice-2.svg"
+  },
+  {
+    "id": "inverted-dice-3",
+    "name": "inverted dice 3",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/inverted-dice-3.svg"
+  },
+  {
+    "id": "inverted-dice-4",
+    "name": "inverted dice 4",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/inverted-dice-4.svg"
+  },
+  {
+    "id": "inverted-dice-5",
+    "name": "inverted dice 5",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/inverted-dice-5.svg"
+  },
+  {
+    "id": "inverted-dice-6",
+    "name": "inverted dice 6",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/inverted-dice-6.svg"
+  },
+  {
+    "id": "iron-cross",
+    "name": "iron cross",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/iron-cross.svg"
+  },
+  {
+    "id": "jeep",
+    "name": "jeep",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/jeep.svg"
+  },
+  {
+    "id": "joint",
+    "name": "joint",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/joint.svg"
+  },
+  {
+    "id": "kevlar-vest",
+    "name": "kevlar vest",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/kevlar-vest.svg"
+  },
+  {
+    "id": "knockout",
+    "name": "knockout",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/knockout.svg"
+  },
+  {
+    "id": "laser-burst",
+    "name": "laser burst",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/laser-burst.svg"
+  },
+  {
+    "id": "lee-enfield",
+    "name": "lee enfield",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/lee-enfield.svg"
+  },
+  {
+    "id": "logging",
+    "name": "logging",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/logging.svg"
+  },
+  {
+    "id": "long-legged-spider",
+    "name": "long legged spider",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/long-legged-spider.svg"
+  },
+  {
+    "id": "luger",
+    "name": "luger",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/luger.svg"
+  },
+  {
+    "id": "m3-grease-gun",
+    "name": "m3 grease gun",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/m3-grease-gun.svg"
+  },
+  {
+    "id": "mac-10",
+    "name": "mac 10",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/mac-10.svg"
+  },
+  {
+    "id": "machine-gun",
+    "name": "machine gun",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/machine-gun.svg"
+  },
+  {
+    "id": "minefield",
+    "name": "minefield",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/minefield.svg"
+  },
+  {
+    "id": "molecule",
+    "name": "molecule",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/molecule.svg"
+  },
+  {
+    "id": "mounted-knight",
+    "name": "mounted knight",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/mounted-knight.svg"
+  },
+  {
+    "id": "mp-40",
+    "name": "mp 40",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/mp-40.svg"
+  },
+  {
+    "id": "mp5",
+    "name": "mp5",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/mp5.svg"
+  },
+  {
+    "id": "mp5k",
+    "name": "mp5k",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/mp5k.svg"
+  },
+  {
+    "id": "musket",
+    "name": "musket",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/musket.svg"
+  },
+  {
+    "id": "nuclear-bomb",
+    "name": "nuclear bomb",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/nuclear-bomb.svg"
+  },
+  {
+    "id": "oil-drum",
+    "name": "oil drum",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/oil-drum.svg"
+  },
+  {
+    "id": "open-chest",
+    "name": "open chest",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/open-chest.svg"
+  },
+  {
+    "id": "open-palm",
+    "name": "open palm",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/open-palm.svg"
+  },
+  {
+    "id": "open-treasure-chest",
+    "name": "open treasure chest",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/open-treasure-chest.svg"
+  },
+  {
+    "id": "orbit",
+    "name": "orbit",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/orbit.svg"
+  },
+  {
+    "id": "p90",
+    "name": "p90",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/p90.svg"
+  },
+  {
+    "id": "pauldrons",
+    "name": "pauldrons",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/pauldrons.svg"
+  },
+  {
+    "id": "pc",
+    "name": "pc",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/pc.svg"
+  },
+  {
+    "id": "pegasus",
+    "name": "pegasus",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/pegasus.svg"
+  },
+  {
+    "id": "pentacle",
+    "name": "pentacle",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/pentacle.svg"
+  },
+  {
+    "id": "pestle-mortar",
+    "name": "pestle mortar",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/pestle-mortar.svg"
+  },
+  {
+    "id": "pickelhaube",
+    "name": "pickelhaube",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/pickelhaube.svg"
+  },
+  {
+    "id": "pig",
+    "name": "pig",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/pig.svg"
+  },
+  {
+    "id": "platform",
+    "name": "platform",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/platform.svg"
+  },
+  {
+    "id": "pocket-watch",
+    "name": "pocket watch",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/pocket-watch.svg"
+  },
+  {
+    "id": "pteruges",
+    "name": "pteruges",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/pteruges.svg"
+  },
+  {
+    "id": "race-car",
+    "name": "race car",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/race-car.svg"
+  },
+  {
+    "id": "raise-skeleton",
+    "name": "raise skeleton",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/raise-skeleton.svg"
+  },
+  {
+    "id": "raise-zombie",
+    "name": "raise zombie",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/raise-zombie.svg"
+  },
+  {
+    "id": "rank-1",
+    "name": "rank 1",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/rank-1.svg"
+  },
+  {
+    "id": "rank-2",
+    "name": "rank 2",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/rank-2.svg"
+  },
+  {
+    "id": "rank-3",
+    "name": "rank 3",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/rank-3.svg"
+  },
+  {
+    "id": "read",
+    "name": "read",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/read.svg"
+  },
+  {
+    "id": "retro-controller",
+    "name": "retro controller",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/retro-controller.svg"
+  },
+  {
+    "id": "revolver",
+    "name": "revolver",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/revolver.svg"
+  },
+  {
+    "id": "sea-creature",
+    "name": "sea creature",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/sea-creature.svg"
+  },
+  {
+    "id": "shield-disabled",
+    "name": "shield disabled",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/shield-disabled.svg"
+  },
+  {
+    "id": "siege-ram",
+    "name": "siege ram",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/siege-ram.svg"
+  },
+  {
+    "id": "sight-disabled",
+    "name": "sight disabled",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/sight-disabled.svg"
+  },
+  {
+    "id": "siren",
+    "name": "siren",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/siren.svg"
+  },
+  {
+    "id": "skeleton",
+    "name": "skeleton",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/skeleton.svg"
+  },
+  {
+    "id": "smartphone",
+    "name": "smartphone",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/smartphone.svg"
+  },
+  {
+    "id": "solar-power",
+    "name": "solar power",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/solar-power.svg"
+  },
+  {
+    "id": "sound-waves",
+    "name": "sound waves",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/sound-waves.svg"
+  },
+  {
+    "id": "spades",
+    "name": "spades",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/spades.svg"
+  },
+  {
+    "id": "spectre-m4",
+    "name": "spectre m4",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/spectre-m4.svg"
+  },
+  {
+    "id": "spiked-ball",
+    "name": "spiked ball",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/spiked-ball.svg"
+  },
+  {
+    "id": "spiked-bat",
+    "name": "spiked bat",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/spiked-bat.svg"
+  },
+  {
+    "id": "spinning-top",
+    "name": "spinning top",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/spinning-top.svg"
+  },
+  {
+    "id": "spotted-bug",
+    "name": "spotted bug",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/spotted-bug.svg"
+  },
+  {
+    "id": "stahlhelm",
+    "name": "stahlhelm",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/stahlhelm.svg"
+  },
+  {
+    "id": "steel-claws",
+    "name": "steel claws",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/steel-claws.svg"
+  },
+  {
+    "id": "steel-door",
+    "name": "steel door",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/steel-door.svg"
+  },
+  {
+    "id": "steyr-aug",
+    "name": "steyr aug",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/steyr-aug.svg"
+  },
+  {
+    "id": "stick-grenade",
+    "name": "stick grenade",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/stick-grenade.svg"
+  },
+  {
+    "id": "stiletto",
+    "name": "stiletto",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/stiletto.svg"
+  },
+  {
+    "id": "stopwatch",
+    "name": "stopwatch",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/stopwatch.svg"
+  },
+  {
+    "id": "swirled-shell",
+    "name": "swirled shell",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/swirled-shell.svg"
+  },
+  {
+    "id": "switchblade",
+    "name": "switchblade",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/switchblade.svg"
+  },
+  {
+    "id": "tablet",
+    "name": "tablet",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/tablet.svg"
+  },
+  {
+    "id": "talk",
+    "name": "talk",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/talk.svg"
+  },
+  {
+    "id": "tank-tread",
+    "name": "tank tread",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/tank-tread.svg"
+  },
+  {
+    "id": "tec-9",
+    "name": "tec 9",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/tec-9.svg"
+  },
+  {
+    "id": "telescopic-baton",
+    "name": "telescopic baton",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/telescopic-baton.svg"
+  },
+  {
+    "id": "teller-mine",
+    "name": "teller mine",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/teller-mine.svg"
+  },
+  {
+    "id": "thompson-m1",
+    "name": "thompson m1",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/thompson-m1.svg"
+  },
+  {
+    "id": "thompson-m1928",
+    "name": "thompson m1928",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/thompson-m1928.svg"
+  },
+  {
+    "id": "topaz",
+    "name": "topaz",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/topaz.svg"
+  },
+  {
+    "id": "trench-body-armor",
+    "name": "trench body armor",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/trench-body-armor.svg"
+  },
+  {
+    "id": "trench-knife",
+    "name": "trench knife",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/trench-knife.svg"
+  },
+  {
+    "id": "trench-spade",
+    "name": "trench spade",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/trench-spade.svg"
+  },
+  {
+    "id": "troll",
+    "name": "troll",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/troll.svg"
+  },
+  {
+    "id": "walther-ppk",
+    "name": "walther ppk",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/walther-ppk.svg"
+  },
+  {
+    "id": "winchester-rifle",
+    "name": "winchester rifle",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/winchester-rifle.svg"
+  },
+  {
+    "id": "wooden-helmet",
+    "name": "wooden helmet",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/wooden-helmet.svg"
+  },
+  {
+    "id": "zeppelin",
+    "name": "zeppelin",
+    "contributor": "skoll",
+    "svgPath": "/game-icons/skoll/zeppelin.svg"
+  },
+  {
+    "id": "bear-face",
+    "name": "bear face",
+    "contributor": "sparker",
+    "svgPath": "/game-icons/sparker/bear-face.svg"
+  },
+  {
+    "id": "digital-trace",
+    "name": "digital trace",
+    "contributor": "spencerdub",
+    "svgPath": "/game-icons/spencerdub/digital-trace.svg"
+  },
+  {
+    "id": "potion-of-madness",
+    "name": "potion of madness",
+    "contributor": "starseeker",
+    "svgPath": "/game-icons/starseeker/potion-of-madness.svg"
+  },
+  {
+    "id": "infinity",
+    "name": "infinity",
+    "contributor": "various-artists",
+    "svgPath": "/game-icons/various-artists/infinity.svg"
+  },
+  {
+    "id": "salmon",
+    "name": "salmon",
+    "contributor": "various-artists",
+    "svgPath": "/game-icons/various-artists/salmon.svg"
+  },
+  {
+    "id": "abstract-001",
+    "name": "abstract 001",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-001.svg"
+  },
+  {
+    "id": "abstract-002",
+    "name": "abstract 002",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-002.svg"
+  },
+  {
+    "id": "abstract-003",
+    "name": "abstract 003",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-003.svg"
+  },
+  {
+    "id": "abstract-004",
+    "name": "abstract 004",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-004.svg"
+  },
+  {
+    "id": "abstract-005",
+    "name": "abstract 005",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-005.svg"
+  },
+  {
+    "id": "abstract-006",
+    "name": "abstract 006",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-006.svg"
+  },
+  {
+    "id": "abstract-007",
+    "name": "abstract 007",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-007.svg"
+  },
+  {
+    "id": "abstract-008",
+    "name": "abstract 008",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-008.svg"
+  },
+  {
+    "id": "abstract-009",
+    "name": "abstract 009",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-009.svg"
+  },
+  {
+    "id": "abstract-010",
+    "name": "abstract 010",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-010.svg"
+  },
+  {
+    "id": "abstract-011",
+    "name": "abstract 011",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-011.svg"
+  },
+  {
+    "id": "abstract-012",
+    "name": "abstract 012",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-012.svg"
+  },
+  {
+    "id": "abstract-013",
+    "name": "abstract 013",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-013.svg"
+  },
+  {
+    "id": "abstract-014",
+    "name": "abstract 014",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-014.svg"
+  },
+  {
+    "id": "abstract-015",
+    "name": "abstract 015",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-015.svg"
+  },
+  {
+    "id": "abstract-016",
+    "name": "abstract 016",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-016.svg"
+  },
+  {
+    "id": "abstract-017",
+    "name": "abstract 017",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-017.svg"
+  },
+  {
+    "id": "abstract-018",
+    "name": "abstract 018",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-018.svg"
+  },
+  {
+    "id": "abstract-019",
+    "name": "abstract 019",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-019.svg"
+  },
+  {
+    "id": "abstract-020",
+    "name": "abstract 020",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-020.svg"
+  },
+  {
+    "id": "abstract-021",
+    "name": "abstract 021",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-021.svg"
+  },
+  {
+    "id": "abstract-022",
+    "name": "abstract 022",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-022.svg"
+  },
+  {
+    "id": "abstract-023",
+    "name": "abstract 023",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-023.svg"
+  },
+  {
+    "id": "abstract-024",
+    "name": "abstract 024",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-024.svg"
+  },
+  {
+    "id": "abstract-025",
+    "name": "abstract 025",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-025.svg"
+  },
+  {
+    "id": "abstract-026",
+    "name": "abstract 026",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-026.svg"
+  },
+  {
+    "id": "abstract-027",
+    "name": "abstract 027",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-027.svg"
+  },
+  {
+    "id": "abstract-028",
+    "name": "abstract 028",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-028.svg"
+  },
+  {
+    "id": "abstract-029",
+    "name": "abstract 029",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-029.svg"
+  },
+  {
+    "id": "abstract-030",
+    "name": "abstract 030",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-030.svg"
+  },
+  {
+    "id": "abstract-031",
+    "name": "abstract 031",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-031.svg"
+  },
+  {
+    "id": "abstract-032",
+    "name": "abstract 032",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-032.svg"
+  },
+  {
+    "id": "abstract-033",
+    "name": "abstract 033",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-033.svg"
+  },
+  {
+    "id": "abstract-034",
+    "name": "abstract 034",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-034.svg"
+  },
+  {
+    "id": "abstract-035",
+    "name": "abstract 035",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-035.svg"
+  },
+  {
+    "id": "abstract-036",
+    "name": "abstract 036",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-036.svg"
+  },
+  {
+    "id": "abstract-037",
+    "name": "abstract 037",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-037.svg"
+  },
+  {
+    "id": "abstract-038",
+    "name": "abstract 038",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-038.svg"
+  },
+  {
+    "id": "abstract-039",
+    "name": "abstract 039",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-039.svg"
+  },
+  {
+    "id": "abstract-040",
+    "name": "abstract 040",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-040.svg"
+  },
+  {
+    "id": "abstract-041",
+    "name": "abstract 041",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-041.svg"
+  },
+  {
+    "id": "abstract-042",
+    "name": "abstract 042",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-042.svg"
+  },
+  {
+    "id": "abstract-043",
+    "name": "abstract 043",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-043.svg"
+  },
+  {
+    "id": "abstract-044",
+    "name": "abstract 044",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-044.svg"
+  },
+  {
+    "id": "abstract-045",
+    "name": "abstract 045",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-045.svg"
+  },
+  {
+    "id": "abstract-046",
+    "name": "abstract 046",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-046.svg"
+  },
+  {
+    "id": "abstract-047",
+    "name": "abstract 047",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-047.svg"
+  },
+  {
+    "id": "abstract-048",
+    "name": "abstract 048",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-048.svg"
+  },
+  {
+    "id": "abstract-049",
+    "name": "abstract 049",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-049.svg"
+  },
+  {
+    "id": "abstract-050",
+    "name": "abstract 050",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-050.svg"
+  },
+  {
+    "id": "abstract-051",
+    "name": "abstract 051",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-051.svg"
+  },
+  {
+    "id": "abstract-052",
+    "name": "abstract 052",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-052.svg"
+  },
+  {
+    "id": "abstract-053",
+    "name": "abstract 053",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-053.svg"
+  },
+  {
+    "id": "abstract-054",
+    "name": "abstract 054",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-054.svg"
+  },
+  {
+    "id": "abstract-055",
+    "name": "abstract 055",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-055.svg"
+  },
+  {
+    "id": "abstract-056",
+    "name": "abstract 056",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-056.svg"
+  },
+  {
+    "id": "abstract-057",
+    "name": "abstract 057",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-057.svg"
+  },
+  {
+    "id": "abstract-058",
+    "name": "abstract 058",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-058.svg"
+  },
+  {
+    "id": "abstract-059",
+    "name": "abstract 059",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-059.svg"
+  },
+  {
+    "id": "abstract-060",
+    "name": "abstract 060",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-060.svg"
+  },
+  {
+    "id": "abstract-061",
+    "name": "abstract 061",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-061.svg"
+  },
+  {
+    "id": "abstract-062",
+    "name": "abstract 062",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-062.svg"
+  },
+  {
+    "id": "abstract-063",
+    "name": "abstract 063",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-063.svg"
+  },
+  {
+    "id": "abstract-064",
+    "name": "abstract 064",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-064.svg"
+  },
+  {
+    "id": "abstract-065",
+    "name": "abstract 065",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-065.svg"
+  },
+  {
+    "id": "abstract-066",
+    "name": "abstract 066",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-066.svg"
+  },
+  {
+    "id": "abstract-067",
+    "name": "abstract 067",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-067.svg"
+  },
+  {
+    "id": "abstract-068",
+    "name": "abstract 068",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-068.svg"
+  },
+  {
+    "id": "abstract-069",
+    "name": "abstract 069",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-069.svg"
+  },
+  {
+    "id": "abstract-070",
+    "name": "abstract 070",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-070.svg"
+  },
+  {
+    "id": "abstract-071",
+    "name": "abstract 071",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-071.svg"
+  },
+  {
+    "id": "abstract-072",
+    "name": "abstract 072",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-072.svg"
+  },
+  {
+    "id": "abstract-073",
+    "name": "abstract 073",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-073.svg"
+  },
+  {
+    "id": "abstract-074",
+    "name": "abstract 074",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-074.svg"
+  },
+  {
+    "id": "abstract-075",
+    "name": "abstract 075",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-075.svg"
+  },
+  {
+    "id": "abstract-076",
+    "name": "abstract 076",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-076.svg"
+  },
+  {
+    "id": "abstract-077",
+    "name": "abstract 077",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-077.svg"
+  },
+  {
+    "id": "abstract-078",
+    "name": "abstract 078",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-078.svg"
+  },
+  {
+    "id": "abstract-079",
+    "name": "abstract 079",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-079.svg"
+  },
+  {
+    "id": "abstract-080",
+    "name": "abstract 080",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-080.svg"
+  },
+  {
+    "id": "abstract-081",
+    "name": "abstract 081",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-081.svg"
+  },
+  {
+    "id": "abstract-082",
+    "name": "abstract 082",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-082.svg"
+  },
+  {
+    "id": "abstract-083",
+    "name": "abstract 083",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-083.svg"
+  },
+  {
+    "id": "abstract-084",
+    "name": "abstract 084",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-084.svg"
+  },
+  {
+    "id": "abstract-085",
+    "name": "abstract 085",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-085.svg"
+  },
+  {
+    "id": "abstract-086",
+    "name": "abstract 086",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-086.svg"
+  },
+  {
+    "id": "abstract-087",
+    "name": "abstract 087",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-087.svg"
+  },
+  {
+    "id": "abstract-088",
+    "name": "abstract 088",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-088.svg"
+  },
+  {
+    "id": "abstract-089",
+    "name": "abstract 089",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-089.svg"
+  },
+  {
+    "id": "abstract-090",
+    "name": "abstract 090",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-090.svg"
+  },
+  {
+    "id": "abstract-091",
+    "name": "abstract 091",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-091.svg"
+  },
+  {
+    "id": "abstract-092",
+    "name": "abstract 092",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-092.svg"
+  },
+  {
+    "id": "abstract-093",
+    "name": "abstract 093",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-093.svg"
+  },
+  {
+    "id": "abstract-094",
+    "name": "abstract 094",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-094.svg"
+  },
+  {
+    "id": "abstract-095",
+    "name": "abstract 095",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-095.svg"
+  },
+  {
+    "id": "abstract-096",
+    "name": "abstract 096",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-096.svg"
+  },
+  {
+    "id": "abstract-097",
+    "name": "abstract 097",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-097.svg"
+  },
+  {
+    "id": "abstract-098",
+    "name": "abstract 098",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-098.svg"
+  },
+  {
+    "id": "abstract-099",
+    "name": "abstract 099",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-099.svg"
+  },
+  {
+    "id": "abstract-100",
+    "name": "abstract 100",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-100.svg"
+  },
+  {
+    "id": "abstract-101",
+    "name": "abstract 101",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-101.svg"
+  },
+  {
+    "id": "abstract-102",
+    "name": "abstract 102",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-102.svg"
+  },
+  {
+    "id": "abstract-103",
+    "name": "abstract 103",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-103.svg"
+  },
+  {
+    "id": "abstract-104",
+    "name": "abstract 104",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-104.svg"
+  },
+  {
+    "id": "abstract-105",
+    "name": "abstract 105",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-105.svg"
+  },
+  {
+    "id": "abstract-106",
+    "name": "abstract 106",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-106.svg"
+  },
+  {
+    "id": "abstract-107",
+    "name": "abstract 107",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-107.svg"
+  },
+  {
+    "id": "abstract-108",
+    "name": "abstract 108",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-108.svg"
+  },
+  {
+    "id": "abstract-109",
+    "name": "abstract 109",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-109.svg"
+  },
+  {
+    "id": "abstract-110",
+    "name": "abstract 110",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-110.svg"
+  },
+  {
+    "id": "abstract-111",
+    "name": "abstract 111",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-111.svg"
+  },
+  {
+    "id": "abstract-112",
+    "name": "abstract 112",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-112.svg"
+  },
+  {
+    "id": "abstract-113",
+    "name": "abstract 113",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-113.svg"
+  },
+  {
+    "id": "abstract-114",
+    "name": "abstract 114",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-114.svg"
+  },
+  {
+    "id": "abstract-115",
+    "name": "abstract 115",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-115.svg"
+  },
+  {
+    "id": "abstract-116",
+    "name": "abstract 116",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-116.svg"
+  },
+  {
+    "id": "abstract-117",
+    "name": "abstract 117",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-117.svg"
+  },
+  {
+    "id": "abstract-118",
+    "name": "abstract 118",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-118.svg"
+  },
+  {
+    "id": "abstract-119",
+    "name": "abstract 119",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-119.svg"
+  },
+  {
+    "id": "abstract-120",
+    "name": "abstract 120",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-120.svg"
+  },
+  {
+    "id": "abstract-121",
+    "name": "abstract 121",
+    "contributor": "viscious-speed",
+    "svgPath": "/game-icons/viscious-speed/abstract-121.svg"
+  },
+  {
+    "id": "black-book",
+    "name": "black book",
+    "contributor": "willdabeast",
+    "svgPath": "/game-icons/willdabeast/black-book.svg"
+  },
+  {
+    "id": "chain-lightning",
+    "name": "chain lightning",
+    "contributor": "willdabeast",
+    "svgPath": "/game-icons/willdabeast/chain-lightning.svg"
+  },
+  {
+    "id": "chain-mail",
+    "name": "chain mail",
+    "contributor": "willdabeast",
+    "svgPath": "/game-icons/willdabeast/chain-mail.svg"
+  },
+  {
+    "id": "gold-bar",
+    "name": "gold bar",
+    "contributor": "willdabeast",
+    "svgPath": "/game-icons/willdabeast/gold-bar.svg"
+  },
+  {
+    "id": "orb-wand",
+    "name": "orb wand",
+    "contributor": "willdabeast",
+    "svgPath": "/game-icons/willdabeast/orb-wand.svg"
+  },
+  {
+    "id": "round-shield",
+    "name": "round shield",
+    "contributor": "willdabeast",
+    "svgPath": "/game-icons/willdabeast/round-shield.svg"
+  },
+  {
+    "id": "white-book",
+    "name": "white book",
+    "contributor": "willdabeast",
+    "svgPath": "/game-icons/willdabeast/white-book.svg"
+  },
+  {
+    "id": "skull-with-syringe",
+    "name": "skull with syringe",
+    "contributor": "zajkonur",
+    "svgPath": "/game-icons/zajkonur/skull-with-syringe.svg"
+  },
+  {
+    "id": "violin",
+    "name": "violin",
+    "contributor": "zajkonur",
+    "svgPath": "/game-icons/zajkonur/violin.svg"
+  },
+  {
+    "id": "heart-minus",
+    "name": "heart minus",
+    "contributor": "zeromancer",
+    "svgPath": "/game-icons/zeromancer/heart-minus.svg"
+  },
+  {
+    "id": "heart-plus",
+    "name": "heart plus",
+    "contributor": "zeromancer",
+    "svgPath": "/game-icons/zeromancer/heart-plus.svg"
+  }
+];
+
+export const ICON_COUNT = 4229;

@@ -8,6 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const ASSETS_DIR = path.join(__dirname, "../assets/game-icons");
+const PUBLIC_DIR = path.join(__dirname, "../public/game-icons");
 const COMPONENTS_DIR = path.join(__dirname, "../components/icons");
 const INDEX_FILE = path.join(COMPONENTS_DIR, "index.ts");
 
@@ -43,6 +44,7 @@ function getAllSvgFiles(dir) {
           name: name.replace(/-/g, " "),
           searchName: name.replace(/-/g, "").toLowerCase(),
           id: name,
+          svgPath: `/game-icons/${relativePath}`,
         });
       }
     }
@@ -52,88 +54,61 @@ function getAllSvgFiles(dir) {
   return results;
 }
 
-function createIconComponent(iconData) {
-  const sourcePath = path.join(ASSETS_DIR, iconData.path);
-  const svgContent = fs.readFileSync(sourcePath, "utf8");
-
-  // Clean up the SVG content for React
-  const cleanedSvg = svgContent
-    .replace(/<!--[\s\S]*?-->/g, "") // Remove comments
-    .replace(/\s+/g, " ") // Normalize whitespace
-    .replace(/>\s+</g, "><") // Remove whitespace between tags
-    .trim();
-
-  // Extract viewBox and other attributes
-  const viewBoxMatch = cleanedSvg.match(/viewBox="([^"]*)"/);
-  const viewBox = viewBoxMatch ? viewBoxMatch[1] : "0 0 512 512";
-
-  // Extract path data or other SVG content and clean up styling
-  let svgInnerContent = cleanedSvg
-    .replace(/<svg[^>]*>/, "")
-    .replace(/<\/svg>$/, "");
-
-  // Remove existing fill attributes and background rectangles to allow CSS styling
-  svgInnerContent = svgInnerContent
-    .replace(/fill="[^"]*"/g, "")
-    .replace(/fill-opacity="[^"]*"/g, "")
-    .replace(/<path d="M0 0h512v512H0z"[^>]*\/?>/, "") // Remove common background rectangle
-    .replace(
-      /<rect[^>]*x="0"[^>]*y="0"[^>]*width="512"[^>]*height="512"[^>]*\/?>/,
-      ""
-    ) // Remove background rect
-    .replace(/stroke-width="/g, 'strokeWidth="')
-    .replace(/stroke-opacity="/g, 'strokeOpacity="')
-    .replace(/fill-opacity="/g, 'fillOpacity="')
-    .replace(/stroke-linecap="/g, 'strokeLinecap="')
-    .replace(/stroke-linejoin="/g, 'strokeLinejoin="')
-    .replace(/stroke-dasharray="/g, 'strokeDasharray="')
-    .replace(/stroke-dashoffset="/g, 'strokeDashoffset="')
-    .replace(/\s+/g, " ")
-    .trim();
-
-  // Generate component name from icon ID
-  let componentName = iconData.id
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join("");
-
-  // Ensure component name doesn't start with a number
-  if (/^\d/.test(componentName)) {
-    componentName = `Icon${componentName}`;
-  }
-
-  const componentCode = `import type { SVGProps } from 'react';
-
-export function ${componentName}(props: SVGProps<SVGSVGElement>) {
+function cleanSvgContent(svgContent) {
+  // Clean the SVG: remove background and apply proper styling
   return (
-    <svg
-      viewBox="${viewBox}"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      ${svgInnerContent}
-    </svg>
+    svgContent
+      // Remove the black background rectangle
+      .replace(/<path d="M0 0h512v512H0z"[^>]*\/?>/, "")
+      // Remove explicit white fills to let CSS styling take over
+      .replace(/fill="#fff"/g, "")
+      // Normalize whitespace
+      .replace(/\s+/g, " ")
+      .trim()
   );
 }
-`;
 
-  // Create directory structure
-  const contributorDir = path.join(COMPONENTS_DIR, iconData.contributor);
-  ensureDir(contributorDir);
+function copySvgFiles() {
+  console.log("Copying and cleaning SVG files to public directory...");
 
-  // Write component file
-  const componentPath = path.join(contributorDir, `${componentName}.tsx`);
-  fs.writeFileSync(componentPath, componentCode);
+  // Remove existing public directory
+  if (fs.existsSync(PUBLIC_DIR)) {
+    fs.rmSync(PUBLIC_DIR, { recursive: true });
+  }
 
-  // Update the icon data with component info
-  iconData.componentName = componentName;
-  iconData.componentPath = `@/components/icons/${iconData.contributor}/${componentName}`;
+  // Ensure public directory exists
+  ensureDir(PUBLIC_DIR);
+
+  // Walk through all SVG files and copy them with cleaning
+  function walkAndCopy(sourceDir, targetDir) {
+    const files = fs.readdirSync(sourceDir);
+
+    for (const file of files) {
+      const sourcePath = path.join(sourceDir, file);
+      const targetPath = path.join(targetDir, file);
+      const stat = fs.statSync(sourcePath);
+
+      if (stat.isDirectory()) {
+        ensureDir(targetPath);
+        walkAndCopy(sourcePath, targetPath);
+      } else if (file.endsWith(".svg")) {
+        // Read, clean, and write SVG
+        const svgContent = fs.readFileSync(sourcePath, "utf8");
+        const cleanedSvg = cleanSvgContent(svgContent);
+        fs.writeFileSync(targetPath, cleanedSvg);
+      }
+    }
+  }
+
+  walkAndCopy(ASSETS_DIR, PUBLIC_DIR);
+
+  console.log("SVG files copied and cleaned to public/game-icons/");
 }
 
 function main() {
   console.log("Syncing game icons...");
 
-  // Ensure components directory exists
+  // Ensure directories exist
   ensureDir(COMPONENTS_DIR);
 
   // Get all SVG files
@@ -141,43 +116,36 @@ function main() {
   const icons = getAllSvgFiles(ASSETS_DIR);
   console.log(`Found ${icons.length} icons`);
 
-  // Create React components
-  console.log("Creating React components...");
-  icons.forEach(createIconComponent);
+  // Copy SVG files to public directory
+  copySvgFiles();
 
   // Create TypeScript index with icon metadata
   console.log("Creating TypeScript index...");
-  const iconEntries = icons
-    .map(
-      (icon) => `  {
-    id: "${icon.id}",
-    name: "${icon.name}",
-    contributor: "${icon.contributor}",
-    componentName: "${icon.componentName}",
-    componentPath: "${icon.componentPath}"
-  }`
-    )
-    .join(",\n");
 
-  const indexContent = `// Auto-generated icon index
+  // Extract only the needed properties for the interface
+  const cleanedIcons = icons.map((icon) => ({
+    id: icon.id,
+    name: icon.name,
+    contributor: icon.contributor,
+    svgPath: icon.svgPath,
+  }));
+
+  const indexContent = `// Auto-generated icon index for SVG files
 export interface IconData {
   id: string;
   name: string;
   contributor: string;
-  componentName: string;
-  componentPath: string;
+  svgPath: string;
 }
 
-export const ICONS: IconData[] = [
-${iconEntries}
-];
+export const ICONS: IconData[] = ${JSON.stringify(cleanedIcons, null, 2)};
 
-export const ICON_COUNT = ${icons.length};
+export const ICON_COUNT = ${cleanedIcons.length};
 `;
 
   fs.writeFileSync(INDEX_FILE, indexContent);
 
-  console.log(`Sync complete! ${icons.length} React components created.`);
+  console.log(`Sync complete! ${icons.length} SVG files indexed.`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
