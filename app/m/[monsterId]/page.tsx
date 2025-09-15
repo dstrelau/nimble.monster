@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Card } from "@/app/ui/monster/Card";
+import { MonsterCollections } from "@/components/MonsterCollections";
 import { MonsterDetailActions } from "@/components/MonsterDetailActions";
 import { auth } from "@/lib/auth";
-import { findMonster } from "@/lib/db";
+import { findMonster, findMonsterCollections } from "@/lib/db";
 import { AddToCollectionDialog } from "./AddToCollectionDialog";
 
 export const experimental_ppr = true;
@@ -61,7 +62,10 @@ export default async function MonsterPage({
 }) {
   const session = await auth();
   const { monsterId } = await params;
-  const monster = await findMonster(monsterId);
+  const [monster, collections] = await Promise.all([
+    findMonster(monsterId),
+    findMonsterCollections(monsterId),
+  ]);
 
   if (!monster) {
     return notFound();
@@ -81,8 +85,9 @@ export default async function MonsterPage({
         {isOwner && <MonsterDetailActions monster={monster} />}
         {session?.user && <AddToCollectionDialog monsterId={monster.id} />}
       </div>
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto flex flex-col items-center gap-12">
         <Card monster={monster} creator={monster.creator} link={false} />
+        <MonsterCollections collections={collections} />
       </div>
     </div>
   );

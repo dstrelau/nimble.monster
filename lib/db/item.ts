@@ -48,6 +48,34 @@ export const findItem = async (id: string): Promise<Item | null> => {
   return item ? toItem(item) : null;
 };
 
+export const findItemCollections = async (itemId: string) => {
+  if (!isValidUUID(itemId)) return [];
+
+  const collections = await prisma.collection.findMany({
+    where: {
+      itemCollections: {
+        some: { itemId },
+      },
+      visibility: "public",
+    },
+    include: {
+      creator: true,
+    },
+    orderBy: { name: "asc" },
+  });
+
+  return collections.map((collection) => ({
+    id: collection.id,
+    name: collection.name,
+    creator: {
+      id: collection.creator.id,
+      discordId: collection.creator.discordId,
+      username: collection.creator.username,
+      avatar: collection.creator.avatar || undefined,
+    },
+  }));
+};
+
 export const findPublicItemById = async (id: string): Promise<Item | null> => {
   if (!isValidUUID(id)) return null;
 

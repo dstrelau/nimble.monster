@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Card } from "@/app/ui/item/Card";
+import { ItemCollections } from "@/components/ItemCollections";
 import { ItemDetailActions } from "@/components/ItemDetailActions";
 import { auth } from "@/lib/auth";
-import { findItem } from "@/lib/db";
+import { findItem, findItemCollections } from "@/lib/db";
 
 export const experimental_ppr = true;
 
@@ -58,7 +59,10 @@ export default async function ItemPage({
 }) {
   const session = await auth();
   const { itemId } = await params;
-  const item = await findItem(itemId);
+  const [item, collections] = await Promise.all([
+    findItem(itemId),
+    findItemCollections(itemId),
+  ]);
 
   if (!item) {
     return notFound();
@@ -77,7 +81,10 @@ export default async function ItemPage({
         {isOwner && <ItemDetailActions item={item} />}
       </div>
       <div className="flex justify-center">
-        <Card item={item} creator={item.creator} link={false} />
+        <div className="flex flex-col items-center gap-12">
+          <Card item={item} creator={item.creator} link={false} />
+          <ItemCollections collections={collections} />
+        </div>
       </div>
     </div>
   );

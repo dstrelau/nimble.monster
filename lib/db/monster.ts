@@ -394,6 +394,34 @@ export interface UpdateMonsterInput {
   discordId: string;
 }
 
+export const findMonsterCollections = async (monsterId: string) => {
+  if (!isValidUUID(monsterId)) return [];
+
+  const collections = await prisma.collection.findMany({
+    where: {
+      monsterCollections: {
+        some: { monsterId },
+      },
+      visibility: "public",
+    },
+    include: {
+      creator: true,
+    },
+    orderBy: { name: "asc" },
+  });
+
+  return collections.map((collection) => ({
+    id: collection.id,
+    name: collection.name,
+    creator: {
+      id: collection.creator.id,
+      discordId: collection.creator.discordId,
+      username: collection.creator.username,
+      avatar: collection.creator.avatar || undefined,
+    },
+  }));
+};
+
 export const updateMonster = async (
   input: UpdateMonsterInput
 ): Promise<Monster> => {
