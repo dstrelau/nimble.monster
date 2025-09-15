@@ -1,9 +1,13 @@
 import { type ClassValue, clsx } from "clsx";
-import { Roboto, Roboto_Condensed, Roboto_Slab } from "next/font/google";
+import { Roboto, Roboto_Condensed, Zilla_Slab } from "next/font/google";
 import { twMerge } from "tailwind-merge";
 
 export const sans = Roboto({ subsets: ["latin"], style: ["normal", "italic"] });
-export const slab = Roboto_Slab({ subsets: ["latin"] });
+export const slab = Zilla_Slab({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+});
 export const condensed = Roboto_Condensed({
   subsets: ["latin"],
   style: ["normal", "italic"],
