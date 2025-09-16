@@ -108,7 +108,7 @@ model Monster {
   lastStand          String                @default("") @map("last_stand")
   saves              String[]
   createdAt          DateTime              @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt          DateTime              @default(now()) @map("updated_at") @db.Timestamptz(6)
+  updatedAt          DateTime              @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   kind               String                @default("")
   visibility         monster_visibility    @default(public)
   family_id          String?               @db.Uuid
@@ -144,7 +144,7 @@ model Companion {
   visibility    companion_visibility @default(public)
   userId        String               @map("user_id") @db.Uuid
   createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt     DateTime             @default(now()) @map("updated_at") @db.Timestamptz(6)
+  updatedAt     DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   creator       User                 @relation(fields: [userId], references: [id], onUpdate: NoAction)
 
   @@index([userId], map: "idx_companions_user_id")
@@ -176,7 +176,7 @@ model Item {
   visibility      item_visibility    @default(public)
   userId          String             @map("user_id") @db.Uuid
   createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt       DateTime           @default(now()) @map("updated_at") @db.Timestamptz(6)
+  updatedAt       DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   creator         User               @relation(fields: [userId], references: [id], onUpdate: NoAction)
   itemCollections ItemInCollection[]
 
@@ -199,6 +199,23 @@ model User {
   conditions   Condition[]
 
   @@map("users")
+}
+
+model EntityImage {
+  id                    String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  entityType            entity_image_type      @map("entity_type")
+  entityId              String                 @map("entity_id") @db.Uuid
+  blobUrl               String?                @map("blob_url")
+  generatedAt           DateTime?              @map("generated_at") @db.Timestamptz(6)
+  entityVersion         String                 @map("entity_version")
+  generationStatus      generation_status      @default(generating) @map("generation_status")
+  generationStartedAt   DateTime               @default(now()) @map("generation_started_at") @db.Timestamptz(6)
+  createdAt             DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime               @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([entityType, entityId])
+  @@index([generationStatus, generationStartedAt], map: "idx_entity_images_status_started")
+  @@map("entity_images")
 }
 
 enum armor_type {
@@ -249,4 +266,16 @@ enum item_rarity {
   rare
   very_rare
   legendary
+}
+
+enum entity_image_type {
+  monster
+  companion
+  item
+}
+
+enum generation_status {
+  generating
+  completed
+  failed
 }

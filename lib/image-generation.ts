@@ -1,6 +1,15 @@
 import { trace } from "@opentelemetry/api";
 import { unstable_cacheTag as cacheTag } from "next/cache";
+import { generateBlobFilename, uploadBlob } from "@/lib/blob-storage";
 import { getBrowser } from "@/lib/browser";
+import {
+  claimImageGeneration,
+  completeImageGeneration,
+  type EntityImageClaim,
+  failImageGeneration,
+  waitForImageGeneration,
+} from "@/lib/db/entity-images";
+import type { entity_image_type as EntityImageType } from "@/lib/prisma";
 
 export interface ImageGenerationOptions {
   baseUrl: string;
@@ -8,19 +17,143 @@ export interface ImageGenerationOptions {
   entityType: "monster" | "companion" | "item";
 }
 
-export async function generateEntityImage({
+export async function generateEntityImageWithStorage({
+  baseUrl,
+  entityId,
+  entityType,
+  entityVersion,
+}: ImageGenerationOptions & { entityVersion: string }): Promise<string> {
+  const tracer = trace.getTracer("image-generation");
+
+  return tracer.startActiveSpan(
+    `generate-${entityType}-image-with-storage`,
+    async (span) => {
+      span.setAttributes({
+        "entity.id": entityId,
+        "entity.type": entityType,
+        "entity.version": entityVersion,
+        "page.base_url": baseUrl,
+      });
+
+      const entityImageType = entityType as EntityImageType;
+      let claim: EntityImageClaim | null = null;
+
+      try {
+        // Try to claim generation or get existing result
+        claim = await claimImageGeneration(
+          entityImageType,
+          entityId,
+          entityVersion
+        );
+
+        span.setAttributes({
+          "claim.id": claim.id,
+          "claim.claimed": claim.claimed,
+        });
+
+        // If we didn't claim it, either wait for generation or return existing
+        if (!claim.claimed) {
+          if (claim.existing?.blobUrl) {
+            span.setAttributes({
+              "cache.hit": true,
+              "blob.url": claim.existing.blobUrl,
+            });
+            span.setStatus({ code: 1 }); // OK
+            return claim.existing.blobUrl;
+          }
+
+          // Wait for ongoing generation
+          span.setAttributes({ "waiting.for_generation": true });
+          const completedRecord = await waitForImageGeneration(claim.id);
+
+          if (!completedRecord.blobUrl) {
+            throw new Error("Completed image generation has no blob URL");
+          }
+
+          span.setAttributes({
+            "cache.wait_hit": true,
+            "blob.url": completedRecord.blobUrl,
+          });
+          span.setStatus({ code: 1 }); // OK
+          return completedRecord.blobUrl;
+        }
+
+        // We claimed generation, now actually generate the image
+        span.setAttributes({ "generation.claimed": true });
+
+        const imageBuffer = await generateEntityImageDirect({
+          baseUrl,
+          entityId,
+          entityType,
+        });
+
+        // Upload to blob storage
+        const filename = generateBlobFilename(
+          entityType,
+          entityId,
+          entityVersion
+        );
+        const uploadStartTime = Date.now();
+        const blobResult = await uploadBlob(filename, imageBuffer, "image/png");
+        const uploadTime = Date.now() - uploadStartTime;
+
+        span.setAttributes({
+          "upload.time_ms": uploadTime,
+          "upload.filename": filename,
+          "blob.url": blobResult.url,
+        });
+
+        // Mark generation as complete
+        await completeImageGeneration(claim.id, blobResult.url);
+
+        span.setStatus({ code: 1 }); // OK
+        return blobResult.url;
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        const errorStack = error instanceof Error ? error.stack : undefined;
+
+        span.setAttributes({
+          "error.message": errorMessage,
+          "error.type":
+            error instanceof Error ? error.constructor.name : "Unknown",
+        });
+
+        if (errorStack) {
+          span.setAttributes({ "error.stack": errorStack });
+        }
+
+        // Mark generation as failed if we claimed it
+        if (claim?.claimed) {
+          try {
+            await failImageGeneration(claim.id, errorMessage);
+          } catch (failError) {
+            console.warn(
+              "Failed to mark image generation as failed:",
+              failError
+            );
+          }
+        }
+
+        span.setStatus({ code: 2, message: errorMessage }); // ERROR
+        throw error;
+      } finally {
+        span.end();
+      }
+    }
+  );
+}
+
+export async function generateEntityImageDirect({
   baseUrl,
   entityId,
   entityType,
 }: ImageGenerationOptions): Promise<Buffer> {
-  "use cache";
-
   const tracer = trace.getTracer("image-generation");
 
   return tracer.startActiveSpan(
-    `generate-${entityType}-image`,
+    `generate-${entityType}-image-direct`,
     async (span) => {
-      cacheTag(`${entityType}-image-${entityId}`);
       const entityPageUrl = (() => {
         switch (entityType) {
           case "monster":

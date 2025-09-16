@@ -34,3 +34,4 @@ tmp/
 **/.claude/settings.local.json
 
 public/game-icons/*
+public/blob-storage/
