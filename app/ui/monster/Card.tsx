@@ -169,32 +169,34 @@ const HeaderStandard: React.FC<{
   hideFamilyName?: boolean;
   link?: boolean;
 }> = ({ monster, hideFamilyName = false, link = true }) => (
-  <CardHeader className="has-data-[slot=card-action]:grid-cols-[1fr_1fr] gap-0">
-    <CardTitle
-      className={cn(slab.className, "font-black small-caps italic text-2xl")}
-    >
-      {link ? (
-        <Link href={`/m/${monster.id}`}>{monster.name}</Link>
-      ) : (
-        monster.name
-      )}
-    </CardTitle>
-    <CardDescription
-      className={cn(condensed.className, "col-span-2 flex gap-2 small-caps")}
-    >
-      <p>
-        Lvl <Level level={monster.level} /> {formatSizeKind(monster)}
-      </p>
-      {monster.family && !hideFamilyName && (
-        <Link
-          href={`/families/${monster.family.id}`}
-          className="flex items-center"
-        >
-          <Users className="w-4 pb-1 mr-0.5 text-flame" />
-          <strong>{monster.family.name}</strong>
-        </Link>
-      )}
-    </CardDescription>
+  <CardHeader className="gap-0 flex">
+    <div className="grow">
+      <CardTitle
+        className={cn(slab.className, "font-black italic small-caps text-2xl")}
+      >
+        {link ? (
+          <Link href={`/m/${monster.id}`}>{monster.name}</Link>
+        ) : (
+          monster.name
+        )}
+      </CardTitle>
+      <CardDescription
+        className={cn(condensed.className, "col-span-2 flex gap-2 small-caps")}
+      >
+        <p>
+          Lvl <Level level={monster.level} /> {formatSizeKind(monster)}
+        </p>
+        {monster.family && !hideFamilyName && (
+          <Link
+            href={`/families/${monster.family.id}`}
+            className="flex items-center"
+          >
+            <Users className="w-4 pb-1 mr-0.5 text-flame" />
+            <strong>{monster.family.name}</strong>
+          </Link>
+        )}
+      </CardDescription>
+    </div>
     <CardAction>
       <StatsGroup monster={monster}>
         <div
