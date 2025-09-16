@@ -14,16 +14,30 @@ export async function getBrowser() {
   if (browser) return browser;
 
   if (process.env.VERCEL) {
+    console.log("Launching browser on Vercel with chromium", {
+      remoteExecutablePath,
+      chromiumArgs: chromium.args.length,
+    });
+
+    const executablePath = await chromium.executablePath(remoteExecutablePath);
+    console.log("Chromium executable path resolved:", executablePath);
+
     browser = await puppeteerCore.launch({
       args: chromium.args,
-      executablePath: await chromium.executablePath(remoteExecutablePath),
+      executablePath,
       headless: true,
     });
+
+    console.log("Browser launched successfully on Vercel");
   } else {
+    console.log("Launching browser locally");
+
     browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       headless: true,
     });
+
+    console.log("Browser launched successfully locally");
   }
 
   return browser;
