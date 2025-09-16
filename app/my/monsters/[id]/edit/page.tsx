@@ -17,7 +17,6 @@ export default async function EditMonsterPage({
     id,
     session?.user.discordId
   );
-  console.log(monster);
 
   if (!monster) {
     return <div>Monster not found</div>;

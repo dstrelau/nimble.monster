@@ -277,7 +277,6 @@ export interface UpdateItemInput {
 }
 
 export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
-  console.log(input);
   const {
     id,
     name,
