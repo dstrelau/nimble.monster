@@ -32,7 +32,7 @@ export default function CardActions({ monster }: MonsterCardActionsProps) {
         </DropdownMenuItem>
         <ShareMenuDownloadCardItem
           name={`${monster.name}.png`}
-          path={`/m/${monster.id}`}
+          path={`/m/${monster.id}/image`}
         />
         <ShareMenuCopyURLItem path={`/m/${monster.id}`} />
       </ShareMenu>
