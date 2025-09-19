@@ -13,18 +13,18 @@ export default async function UserProfilePage({
   const { username } = await params;
   const tab = (await searchParams).tab;
 
-  const user = await db.getUserByUsername(username);
+  const user = await db.getUserByUsername(username.toLowerCase());
   if (!user) {
     return notFound();
   }
 
   const [monsters, collections, families, companions, items] =
     await Promise.all([
-      db.listPublicMonstersForDiscordID(username),
-      db.getUserPublicCollectionsHavingMonsters(username),
-      db.getUserPublicFamiliesWithMonsters(user.discordId),
-      db.listPublicCompanionsForDiscordID(username),
-      db.listPublicItemsForDiscordID(username),
+      db.listPublicMonstersForUser(user.id),
+      db.listPublicCollectionsHavingMonstersForUser(user.id),
+      db.listPublicFamiliesHavingMonstersForUser(user.id),
+      db.listPublicCompanionsForUser(user.id),
+      db.listPublicItemsForUser(user.id),
     ]);
 
   return (
@@ -33,7 +33,7 @@ export default async function UserProfilePage({
       <div className="flex items-center mb-4">
         <UserAvatar user={user} size={56} className="mr-4" />
         <div>
-          <h1 className="text-3xl font-bold">{user.username}</h1>
+          <h1 className="text-3xl font-bold">{user.displayName}</h1>
         </div>
       </div>
 

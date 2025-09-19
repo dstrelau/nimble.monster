@@ -22,7 +22,7 @@ export async function generateMetadata({
     };
   }
 
-  const creatorText = item.creator ? ` by ${item.creator.username}` : "";
+  const creatorText = item.creator ? ` by ${item.creator.displayName}` : "";
   const itemInfo = item.kind || "Item";
 
   return {

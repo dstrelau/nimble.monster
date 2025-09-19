@@ -6,6 +6,7 @@ import {
   toItemMini,
   toMonster,
   toMonsterMini,
+  toUser,
 } from "./converters";
 import { prisma } from "./index";
 
@@ -41,7 +42,7 @@ export const listCollectionsWithMonstersForUser = async (
       createdAt: c.createdAt ?? undefined,
       legendaryCount,
       standardCount: c.monsterCollections.length - legendaryCount,
-      creator: { ...c.creator, avatar: c.creator.avatar || "" },
+      creator: toUser(c.creator),
       monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
       items: c.itemCollections.map((ic) => toItemMini(ic.item)),
       itemCount: c.itemCollections.length,
@@ -109,7 +110,7 @@ export const listPublicCollectionsHavingMonsters = async (): Promise<
         createdAt: c.createdAt ?? undefined,
         legendaryCount,
         standardCount: c.monsterCollections.length - legendaryCount,
-        creator: { ...c.creator, avatar: c.creator.avatar || "" },
+        creator: toUser(c.creator),
         monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
         items: c.itemCollections.map((ic) => toItemMini(ic.item)),
         itemCount: c.itemCollections.length,
@@ -155,7 +156,7 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
     createdAt: c.createdAt ?? undefined,
     legendaryCount,
     standardCount: c.monsterCollections.length - legendaryCount,
-    creator: { ...c.creator, avatar: c.creator.avatar || "" },
+    creator: toUser(c.creator),
     monsters: c.monsterCollections
       .flatMap((mc) => toMonster(mc.monster))
       .sort((a, b) => a.name.localeCompare(b.name)),
@@ -166,12 +167,12 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
   };
 };
 
-export const getUserPublicCollectionsHavingMonsters = async (
-  username: string
+export const listPublicCollectionsHavingMonstersForUser = async (
+  creatorId: string
 ): Promise<CollectionOverview[]> => {
   const collections = await prisma.collection.findMany({
     where: {
-      creator: { username },
+      creatorId,
       visibility: "public",
     },
     include: {
@@ -208,7 +209,7 @@ export const getUserPublicCollectionsHavingMonsters = async (
         createdAt: c.createdAt ?? undefined,
         legendaryCount,
         standardCount: c.monsterCollections.length - legendaryCount,
-        creator: { ...c.creator, avatar: c.creator.avatar || "" },
+        creator: toUser(c.creator),
         monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
         items: c.itemCollections.map((ic) => toItemMini(ic.item)),
         itemCount: c.itemCollections.length,
@@ -271,10 +272,7 @@ export const createCollection = async ({
     visibility: collection.visibility as CollectionOverview["visibility"],
     legendaryCount: 0,
     standardCount: 0,
-    creator: {
-      ...collection.creator,
-      avatar: collection.creator.avatar || undefined,
-    },
+    creator: toUser(collection.creator),
     monsters: collection.monsterCollections.map((mc) => toMonster(mc.monster)),
     items: [],
     itemCount: 0,
@@ -465,10 +463,7 @@ export const updateCollection = async ({
         legendaryCount,
         standardCount:
           updatedCollection.monsterCollections.length - legendaryCount,
-        creator: {
-          ...updatedCollection.creator,
-          avatar: updatedCollection.creator.avatar || undefined,
-        },
+        creator: toUser(updatedCollection.creator),
         monsters: updatedCollection.monsterCollections.map((mc) =>
           toMonster(mc.monster)
         ),

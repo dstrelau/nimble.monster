@@ -23,7 +23,9 @@ export async function generateMetadata({
     };
   }
 
-  const creatorText = monster.creator ? ` by ${monster.creator.username}` : "";
+  const creatorText = monster.creator
+    ? ` by ${monster.creator.displayName}`
+    : "";
   const monsterInfo = [monster.legendary ? "Legendary" : "", monster.kind || ""]
     .filter(Boolean)
     .join(" ");

@@ -24,7 +24,7 @@ export async function generateMetadata({
   }
 
   const creatorText = companion.creator
-    ? ` by ${companion.creator.username}`
+    ? ` by ${companion.creator.displayName}`
     : "";
   const companionInfo = [companion.kind, companion.class]
     .filter(Boolean)

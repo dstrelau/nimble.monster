@@ -11,6 +11,7 @@ import type {
   ItemRarity,
   Monster,
   MonsterMini,
+  User,
 } from "@/lib/types";
 import type { prisma } from "./index";
 
@@ -67,7 +68,7 @@ export const toMonster = (
     actionPreface: m.actionPreface || "",
     moreInfo: m.moreInfo || "",
     family: toFamilyOverview(m.family),
-    creator: { ...m.creator, avatar: m.creator.avatar || "" },
+    creator: toUser(m.creator),
   };
 };
 
@@ -95,7 +96,7 @@ export const toFamilyOverview = (
     ),
     visibility: f.visibility,
     creatorId: f.creatorId,
-    creator: { ...f.creator, avatar: f.creator.avatar || "" },
+    creator: toUser(f.creator),
   };
 };
 
@@ -125,7 +126,7 @@ export const toCollectionOverview = (
   ).length;
   return {
     id: c.id,
-    creator: { ...c.creator, avatar: c.creator.avatar || undefined },
+    creator: toUser(c.creator),
     description: c.description ?? undefined,
     legendaryCount,
     monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
@@ -183,7 +184,7 @@ export const toCompanion = (
     actionPreface: c.actionPreface || "",
     dyingRule: c.dyingRule,
     moreInfo: c.moreInfo || "",
-    creator: { ...c.creator, avatar: c.creator.avatar || "" },
+    creator: toUser(c.creator),
   };
 };
 
@@ -217,6 +218,28 @@ export const toItem = (
     description: i.description,
     moreInfo: i.moreInfo || undefined,
     updatedAt: i.updatedAt.toISOString(),
-    creator: { ...i.creator, avatar: i.creator.avatar || "" },
+    creator: toUser(i.creator),
   };
 };
+
+export const toUser = (
+  u: Prisma.Result<
+    typeof prisma.user,
+    {
+      include: {
+        avatar: true;
+      };
+    },
+    "findMany"
+  >[0]
+): User => ({
+  id: u.id,
+  discordId: u.discordId,
+  username: u.username,
+  displayName: u.displayName || u.username,
+  imageUrl:
+    u.imageUrl ||
+    (u.avatar
+      ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
+      : "https://cdn.discordapp.com/embed/avatars/0.png"),
+});

@@ -1,4 +1,5 @@
 import type { User } from "@/lib/types";
+import { toUser } from "./converters";
 import { prisma } from "./index";
 
 export const getUserByUsername = async (
@@ -9,8 +10,7 @@ export const getUserByUsername = async (
   });
 
   if (!user) return null;
-
-  return { ...user, avatar: user.avatar || undefined };
+  return toUser(user);
 };
 
 export const getUserPublicMonstersCount = async (

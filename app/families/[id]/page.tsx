@@ -16,8 +16,8 @@ export async function generateMetadata({
     return {};
   }
 
-  const creatorText = family.creator?.username
-    ? ` by ${family.creator.username}`
+  const creatorText = family.creator?.displayName
+    ? ` by ${family.creator.displayName}`
     : "";
 
   const monsterCount = family.monsterCount || 0;

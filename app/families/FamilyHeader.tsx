@@ -54,7 +54,7 @@ export function FamilyHeader({
     <div className="flex justify-between items-start mb-6">
       <div className="w-full">
         <div className="flex justify-between items-start">
-          <h1 className="text-3xl font-black">{family.name}</h1>
+          <h1 className="text-3xl font-bold">{family.name}</h1>
           {showEditDeleteButtons && (
             <div className="flex gap-2">
               <Button variant="outline" size="sm" asChild>

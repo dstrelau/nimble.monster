@@ -2,7 +2,7 @@ import type { Item, ItemMini, ItemRarity, ItemRarityFilter } from "@/lib/types";
 import { getBaseUrl } from "@/lib/utils/url";
 import { isValidUUID } from "@/lib/utils/validation";
 import { invalidateEntityImageCache, preloadImage } from "../cache/image-cache";
-import { toItem, toItemMini } from "./converters";
+import { toItem, toItemMini, toUser } from "./converters";
 import { prisma } from "./index";
 
 export const deleteItem = async ({
@@ -67,12 +67,7 @@ export const findItemCollections = async (itemId: string) => {
   return collections.map((collection) => ({
     id: collection.id,
     name: collection.name,
-    creator: {
-      id: collection.creator.id,
-      discordId: collection.creator.discordId,
-      username: collection.creator.username,
-      avatar: collection.creator.avatar || undefined,
-    },
+    creator: toUser(collection.creator),
   }));
 };
 
@@ -103,8 +98,8 @@ export const findItemWithCreatorDiscordId = async (
   return item ? toItem(item) : null;
 };
 
-export const listPublicItemsForDiscordID = async (
-  username: string
+export const listPublicItemsForUser = async (
+  userId: string
 ): Promise<Item[]> => {
   return (
     await prisma.item.findMany({
@@ -112,7 +107,7 @@ export const listPublicItemsForDiscordID = async (
         creator: true,
       },
       where: {
-        creator: { username },
+        userId,
         visibility: "public",
       },
       orderBy: { name: "asc" },

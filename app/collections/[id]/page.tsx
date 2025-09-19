@@ -19,8 +19,8 @@ export async function generateMetadata({
     return {};
   }
 
-  const creatorText = collection.creator?.username
-    ? ` by ${collection.creator.username}`
+  const creatorText = collection.creator?.displayName
+    ? ` by ${collection.creator.displayName}`
     : "";
 
   const monsterCount = collection.monsters?.length || 0;

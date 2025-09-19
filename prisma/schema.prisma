@@ -187,8 +187,10 @@ model Item {
 model User {
   id           String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   discordId    String       @unique(map: "idx_users_discord_id") @map("discord_id")
-  username     String
+  username     String       @unique(map: "idx_users_username")
+  displayName  String?      @map("display_name")
   avatar       String?
+  imageUrl     String?      @map("image_url")
   refreshToken String?      @map("refresh_token")
   collections  Collection[]
   families     Family[]
@@ -202,16 +204,16 @@ model User {
 }
 
 model EntityImage {
-  id                    String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  entityType            entity_image_type      @map("entity_type")
-  entityId              String                 @map("entity_id") @db.Uuid
-  blobUrl               String?                @map("blob_url")
-  generatedAt           DateTime?              @map("generated_at") @db.Timestamptz(6)
-  entityVersion         String                 @map("entity_version")
-  generationStatus      generation_status      @default(generating) @map("generation_status")
-  generationStartedAt   DateTime               @default(now()) @map("generation_started_at") @db.Timestamptz(6)
-  createdAt             DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt             DateTime               @default(now()) @map("updated_at") @db.Timestamptz(6)
+  id                  String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  entityType          entity_image_type @map("entity_type")
+  entityId            String            @map("entity_id") @db.Uuid
+  blobUrl             String?           @map("blob_url")
+  generatedAt         DateTime?         @map("generated_at") @db.Timestamptz(6)
+  entityVersion       String            @map("entity_version")
+  generationStatus    generation_status @default(generating) @map("generation_status")
+  generationStartedAt DateTime          @default(now()) @map("generation_started_at") @db.Timestamptz(6)
+  createdAt           DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime          @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   @@unique([entityType, entityId])
   @@index([generationStatus, generationStartedAt], map: "idx_entity_images_status_started")

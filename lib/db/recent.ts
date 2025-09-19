@@ -5,6 +5,7 @@ import {
   toFamilyOverview,
   toItem,
   toMonster,
+  toUser,
 } from "./converters";
 import { prisma } from "./index";
 
@@ -127,7 +128,7 @@ export const getRecentPublicContent = async (
       id: monster.id,
       name: monster.name,
       createdAt: monster.createdAt,
-      creator: { ...monster.creator, avatar: monster.creator.avatar || "" },
+      creator: toUser(monster.creator),
       data: toMonster(monster),
     })),
     ...items.map((item) => ({
@@ -135,7 +136,7 @@ export const getRecentPublicContent = async (
       id: item.id,
       name: item.name,
       createdAt: item.createdAt,
-      creator: { ...item.creator, avatar: item.creator.avatar || "" },
+      creator: toUser(item.creator),
       data: toItem(item),
     })),
     ...companions.map((companion) => ({
@@ -143,7 +144,7 @@ export const getRecentPublicContent = async (
       id: companion.id,
       name: companion.name,
       createdAt: companion.createdAt,
-      creator: { ...companion.creator, avatar: companion.creator.avatar || "" },
+      creator: toUser(companion.creator),
       data: toCompanion(companion),
     })),
     ...collections
@@ -153,10 +154,7 @@ export const getRecentPublicContent = async (
         id: collection.id,
         name: collection.name,
         createdAt: collection.createdAt as Date,
-        creator: {
-          ...collection.creator,
-          avatar: collection.creator.avatar || "",
-        },
+        creator: toUser(collection.creator),
         data: toCollectionOverview(collection),
       })),
     ...families
@@ -173,7 +171,7 @@ export const getRecentPublicContent = async (
           id: family.id,
           name: family.name,
           createdAt: family.createdAt as Date,
-          creator: { ...family.creator, avatar: family.creator.avatar || "" },
+          creator: toUser(family.creator),
           data: {
             ...familyOverview,
             monsters: family.monsters.map(toMonster),

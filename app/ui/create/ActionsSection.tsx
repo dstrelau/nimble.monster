@@ -1,4 +1,3 @@
-import { cn } from "lib/utils";
 import { CircleSlash2, Plus, Sword, Trash } from "lucide-react";
 import { useMemo } from "react";
 import { FormInput, FormTextarea } from "@/components/app/Form";
@@ -16,6 +15,7 @@ import {
   parseDiceNotation,
 } from "@/lib/dice";
 import type { Action } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface ActionRowProps {
   action: Action;

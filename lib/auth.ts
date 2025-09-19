@@ -15,7 +15,8 @@ declare module "next-auth/jwt" {
     userId?: string;
     discordId?: string;
     username?: string;
-    avatar?: string;
+    displayName: string;
+    image?: string;
   }
 }
 
@@ -42,11 +43,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { discordId: profile.id },
           update: {
             username: (profile.username as string) || "",
+            displayName: (profile.global_name as string) || "",
             avatar: (profile.avatar as string) || null,
+            imageUrl: (profile.image_url as string) || null,
           },
           create: {
             discordId: profile.id,
             username: (profile.username as string) || "",
+            displayName: (profile.global_name as string) || "",
             avatar: (profile.avatar as string) || null,
           },
         });
@@ -61,12 +65,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           const user = await prisma.user.findUnique({
             where: { discordId: params.profile.id },
-            select: { id: true, username: true, avatar: true },
           });
           if (user) {
             token.userId = user.id;
             token.username = user.username;
+            token.displayName = user.displayName || user.username;
             token.avatar = user.avatar || undefined;
+            token.imageUrl = user.imageUrl || undefined;
           }
         } catch {}
       }
@@ -78,12 +83,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token.username) {
         session.user.username = token.username;
       }
-      if (token.avatar) {
-        session.user.avatar = token.avatar;
-        session.user.image = token.avatar.startsWith("https")
-          ? token.avatar
-          : `https://cdn.discordapp.com/avatars/${token.discordId}/${token.avatar}.png`;
+      if (token.displayName) {
+        session.user.displayName = token.displayName;
       }
+      session.user.imageUrl =
+        token.imageUrl || token.avatar
+          ? `https://cdn.discordapp.com/avatars/${token.discordId}/${token.avatar}.png`
+          : "https://cdn.discordapp.com/embed/avatars/0.png";
       return session;
     },
   },

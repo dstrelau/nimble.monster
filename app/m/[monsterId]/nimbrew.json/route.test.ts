@@ -57,6 +57,7 @@ const fakeCreator = {
   discordId: "owner123",
   avatar: "avatar.jpg",
   username: "testuser",
+  displayName: "Test User",
 };
 
 describe("GET /m/[monsterId]/nimbrew.json", () => {

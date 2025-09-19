@@ -1,6 +1,6 @@
 import type { Ability, Family, FamilyOverview } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
-import { toMonster } from "./converters";
+import { toMonster, toUser } from "./converters";
 import { prisma } from "./index";
 
 export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
@@ -32,17 +32,15 @@ export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
     monsters: family.monsters.map(toMonster),
     monsterCount: family.monsters.length,
     creatorId: family.creator.discordId,
-    creator: { ...family.creator, avatar: family.creator.avatar || "" },
+    creator: toUser(family.creator),
   }));
 };
 
-export const getUserPublicFamiliesWithMonsters = async (
-  discordId: string
+export const listPublicFamiliesHavingMonstersForUser = async (
+  creatorId: string
 ): Promise<Family[]> => {
   const families = await prisma.family.findMany({
-    where: {
-      creator: { discordId },
-    },
+    where: { creatorId },
     include: {
       monsters: {
         where: {
@@ -70,7 +68,7 @@ export const getUserPublicFamiliesWithMonsters = async (
     monsters: family.monsters.map(toMonster),
     monsterCount: family.monsters.length,
     creatorId: family.creator.discordId,
-    creator: { ...family.creator, avatar: family.creator.avatar || "" },
+    creator: toUser(family.creator),
   }));
 };
 
@@ -109,7 +107,7 @@ export const getFamily = async (id: string): Promise<FamilyOverview | null> => {
     abilities: family.abilities as unknown as Ability[],
     monsterCount: family._count.monsters,
     creatorId: family.creator.discordId,
-    creator: { ...family.creator, avatar: family.creator.avatar || "" },
+    creator: toUser(family.creator),
   };
 };
 
@@ -159,7 +157,7 @@ export const createFamily = async ({
     abilities: family.abilities as unknown as Ability[],
     monsterCount: monsterCount,
     creatorId: discordId,
-    creator: { ...creator, avatar: creator.avatar || "" },
+    creator: toUser(creator),
   };
 };
 
@@ -214,7 +212,7 @@ export const updateFamily = async ({
     abilities: family.abilities as unknown as Ability[],
     monsterCount: monsterCount,
     creatorId: family.creator.discordId,
-    creator: { ...family.creator, avatar: family.creator.avatar || "" },
+    creator: toUser(family.creator),
   };
 };
 
@@ -281,6 +279,6 @@ export const getRandomFeaturedFamily = async (): Promise<Family | null> => {
     monsters: family.monsters.map(toMonster),
     monsterCount: family.monsters.length,
     creatorId: family.creator.discordId,
-    creator: { ...family.creator, avatar: family.creator.avatar || "" },
+    creator: toUser(family.creator),
   };
 };

@@ -84,8 +84,8 @@ export const findCompanionWithCreatorDiscordId = async (
   return companion ? toCompanion(companion) : null;
 };
 
-export const listPublicCompanionsForDiscordID = async (
-  username: string
+export const listPublicCompanionsForUser = async (
+  userId: string
 ): Promise<Companion[]> => {
   return (
     await prisma.companion.findMany({
@@ -93,7 +93,7 @@ export const listPublicCompanionsForDiscordID = async (
         creator: true,
       },
       where: {
-        creator: { username },
+        userId,
         visibility: "public",
       },
       orderBy: { name: "asc" },

@@ -15,8 +15,8 @@ import type {
 import { getBaseUrl } from "@/lib/utils/url";
 import { isValidUUID } from "@/lib/utils/validation";
 import type { InputJsonValue } from "../prisma/runtime/library";
-import { toMonster } from "./converters";
-import { prisma, toMonsterMini } from "./index";
+import { toMonster, toMonsterMini, toUser } from "./converters";
+import { prisma } from "./index";
 import {
   extractAllConditions,
   syncMonsterConditions,
@@ -100,8 +100,8 @@ export const findMonsterWithCreatorDiscordId = async (
   return monster ? toMonster(monster) : null;
 };
 
-export const listPublicMonstersForDiscordID = async (
-  username: string
+export const listPublicMonstersForUser = async (
+  userId: string
 ): Promise<Monster[]> => {
   return (
     await prisma.monster.findMany({
@@ -111,7 +111,7 @@ export const listPublicMonstersForDiscordID = async (
         monsterConditions: { include: { condition: true } },
       },
       where: {
-        creator: { username },
+        userId,
         visibility: "public",
       },
       orderBy: { name: "asc" },
@@ -413,12 +413,7 @@ export const findMonsterCollections = async (monsterId: string) => {
   return collections.map((collection) => ({
     id: collection.id,
     name: collection.name,
-    creator: {
-      id: collection.creator.id,
-      discordId: collection.creator.discordId,
-      username: collection.creator.username,
-      avatar: collection.creator.avatar || undefined,
-    },
+    creator: toUser(collection.creator),
   }));
 };
 

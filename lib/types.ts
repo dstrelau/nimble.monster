@@ -254,23 +254,14 @@ export const UNKNOWN_USER: User = {
   id: "",
   discordId: "",
   username: "",
-  avatar: "",
+  displayName: "",
+  imageUrl: "",
 };
 
 export interface User {
   id: string;
   discordId: string;
   username: string;
-  avatar?: string;
-}
-
-export function getUserAvatarUrl(user: User): string {
-  if (!user.avatar) return "https://cdn.discordapp.com/embed/avatars/0.png";
-  return user.avatar.startsWith("https")
-    ? user.avatar
-    : `https://cdn.discordapp.com/avatars/${user.discordId}/${user.avatar}.png`;
-}
-
-export function getUserDisplayName(user: User): string {
-  return user.username;
+  displayName: string;
+  imageUrl?: string;
 }

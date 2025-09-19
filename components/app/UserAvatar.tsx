@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { User } from "@/lib/types";
-import { getUserAvatarUrl, getUserDisplayName } from "@/lib/types";
 
 type AvatarSize = "sm" | "md" | "lg";
 
@@ -26,6 +25,7 @@ const getSizeInPixels = (size: AvatarSize | number): number => {
 
 export const UserAvatar = ({ user, size, className }: UserAvatarProps) => {
   const sizeInPixels = getSizeInPixels(size);
+  console.log("useravatar", user);
 
   if (!user) {
     return (
@@ -42,16 +42,14 @@ export const UserAvatar = ({ user, size, className }: UserAvatarProps) => {
     );
   }
 
-  const avatarSrc = getUserAvatarUrl(user);
-  const displayName = getUserDisplayName(user);
-  const fallbackLetter = displayName?.charAt(0).toUpperCase() || "?";
+  const fallbackLetter = user.displayName?.charAt(0).toUpperCase() || "?";
 
   return (
     <Avatar
       className={className}
       style={{ width: sizeInPixels, height: sizeInPixels }}
     >
-      <AvatarImage src={avatarSrc} alt={displayName || "User"} />
+      <AvatarImage src={user.imageUrl} alt={user.displayName || "User"} />
       <AvatarFallback className="bg-transparent">
         {fallbackLetter}
       </AvatarFallback>

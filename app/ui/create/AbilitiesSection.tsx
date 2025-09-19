@@ -1,9 +1,9 @@
-import { cn } from "lib/utils";
 import { Plus, Trash } from "lucide-react";
 import { FormInput, FormTextarea } from "@/components/app/Form";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import type { Ability } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface AbilityRowProps {
   ability: Ability;
