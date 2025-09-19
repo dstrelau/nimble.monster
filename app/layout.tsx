@@ -7,7 +7,7 @@ import { Providers } from "./providers";
 
 const sans = Roboto_Flex({
   subsets: ["latin"],
-  axes: ["wdth", "slnt", "opsz"],
+  axes: ["wdth", "slnt", "opsz", "GRAD"],
   style: ["normal"],
   variable: "--font-roboto-sans",
 });

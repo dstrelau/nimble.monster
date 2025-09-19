@@ -18,14 +18,9 @@ export default async function HomePage() {
   );
   return (
     <div className="max-w-4xl mx-auto flex flex-col items-center gap-8">
-      <h1 className="text-4xl md:text-6xl text-center font-bold">
+      <h1 className="text-4xl md:text-6xl text-center font-semibold grade-100">
         Create and share adversaries for <br />
-        <span
-          className={cn(
-            "font-slab",
-            "pr-3 font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600"
-          )}
-        >
+        <span className="pr-3 font-slab font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600">
           Nimble TTRPG
         </span>
       </h1>

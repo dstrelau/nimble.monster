@@ -138,6 +138,10 @@
     .font-condensed {
         font-stretch: ultra-condensed;
     }
+
+    .grade-100 {
+        font-variation-settings: "GRAD" 100;
+    }
 }
 
 .formatted-text p {
