@@ -1,4 +1,4 @@
-import { cn, condensed } from "lib/utils";
+import { cn, sans } from "lib/utils";
 import { Users } from "lucide-react";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { maybePeriod } from "@/lib/text";
@@ -21,8 +21,9 @@ export const AbilityOverlay = ({
   return (
     <div
       className={cn(
-        condensed.className,
-        "ability relative p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem]"
+        sans.className,
+        "font-stretch-ultra-condensed relative p-2 w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem]",
+        "bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm "
       )}
     >
       <div className="flex flex-col gap-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, condensed, slab } from "lib/utils";
+import { cn, sans, slab } from "lib/utils";
 import { Circle, Skull } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
@@ -48,7 +48,7 @@ const HeaderCompanion: React.FC<{
         </div>
       </div>
     </CardAction>
-    <CardDescription className={cn(condensed.className, "text-md")}>
+    <CardDescription className={cn(sans.className, "text-md")}>
       {formatCompanionSize(companion.size)} {companion.kind} Adventuring
       Companion, {companion.class}
     </CardDescription>
@@ -116,9 +116,7 @@ export const Card = ({
           )}
 
           <div className="flex items-center justify-center gap-1">
-            <strong className={cn(condensed.className, "text-xs")}>
-              WOUNDS:
-            </strong>
+            <strong className={cn(sans.className, "text-xs")}>WOUNDS:</strong>
             {Array.from({ length: companion.wounds }, (_, i) => (
               <Circle key={`${companion.id}-wound-${i}`} className="w-6 h-6" />
             ))}

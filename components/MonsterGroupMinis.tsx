@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { MonsterMini } from "@/lib/types";
-import { cn, condensed, monstersSortedByLevelInt, slab } from "@/lib/utils";
+import { cn, sans, monstersSortedByLevelInt, slab } from "@/lib/utils";
 import { Link } from "./app/Link";
 import { Level } from "./Level";
 import { Separator } from "./ui/separator";
@@ -48,7 +48,7 @@ export const MonsterRow: React.FC<{
         </Link>
         <span
           className={cn(
-            condensed.className,
+            sans.className,
             "font-medium text-muted-foreground text-sm small-caps not-italic text-nowrap"
           )}
         >
@@ -102,7 +102,7 @@ export const MonsterGroupMinis = ({
       <CardHeader>
         <CardTitle
           className={cn(
-            condensed.className,
+            sans.className,
             "font-bold text-2xl flex items-center gap-2"
           )}
         >

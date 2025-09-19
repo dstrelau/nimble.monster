@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Monster, User } from "@/lib/types";
-import { cn, condensed, slab } from "@/lib/utils";
+import { cn, sans, slab } from "@/lib/utils";
 import { formatSizeKind } from "@/lib/utils/monster";
 import CardActions from "./CardActions";
 import {
@@ -64,14 +64,14 @@ const HeaderLegendary: React.FC<{ monster: Monster; link?: boolean }> = ({
   link = true,
 }) => (
   <CardHeader>
-    <CardTitle className={cn(slab.className, "font-black italic text-4xl")}>
+    <CardTitle className={cn(slab.className, "font-bold text-4xl")}>
       {link ? (
         <Link href={`/m/${monster.id}`}>{monster.name}</Link>
       ) : (
         monster.name
       )}
     </CardTitle>
-    <CardDescription className="font-beaufort font-black text-lg leading-none tracking-tight">
+    <CardDescription className="font-bold text-lg leading-none tracking-tight">
       Level <Level level={monster.level} className="text-lg" /> Solo{" "}
       {formatSizeKind(monster)}
     </CardDescription>
@@ -118,7 +118,7 @@ const HeaderMinion: React.FC<{
       )}
     </CardTitle>
     <CardDescription
-      className={cn(condensed.className, "col-span-2 flex gap-2 small-caps")}
+      className={cn(sans.className, "col-span-2 flex gap-2 small-caps")}
     >
       <p>
         Lvl <Level level={monster.level} /> {formatSizeKind(monster)} Minion
@@ -181,15 +181,18 @@ const HeaderStandard: React.FC<{
         )}
       </CardTitle>
       <CardDescription
-        className={cn(condensed.className, "col-span-2 flex gap-2 small-caps")}
+        className={cn(
+          sans.className,
+          "col-span-2 flex flex-wrap gap-x-2 gap-y-0 small-caps"
+        )}
       >
-        <p>
+        <p className="shrink-0">
           Lvl <Level level={monster.level} /> {formatSizeKind(monster)}
         </p>
         {monster.family && !hideFamilyName && (
           <Link
             href={`/families/${monster.family.id}`}
-            className="flex items-center"
+            className="flex shrink-0 items-center"
           >
             <Users className="w-4 pb-1 mr-0.5 text-flame" />
             <strong>{monster.family.name}</strong>
@@ -307,7 +310,12 @@ export const Card = ({
                     content={monster.bloodied}
                     conditions={conditions}
                     prefix={
-                      <strong className={cn(condensed.className)}>
+                      <strong
+                        className={cn(
+                          sans.className,
+                          "font-stretch-ultra-condensed"
+                        )}
+                      >
                         BLOODIED:
                       </strong>
                     }
@@ -320,7 +328,12 @@ export const Card = ({
                       content={monster.lastStand}
                       conditions={conditions}
                       prefix={
-                        <strong className={cn(condensed.className)}>
+                        <strong
+                          className={cn(
+                            sans.className,
+                            "font-stretch-ultra-condensed"
+                          )}
+                        >
                           LAST STAND:
                         </strong>
                       }

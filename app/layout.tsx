@@ -1,6 +1,7 @@
 import "@/app/ui/global.css";
 import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
+import { cn, sans } from "@/lib/utils";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head></head>
-      <body>
+      <body className={cn(sans.className)}>
         <Providers session={session}>{children}</Providers>
       </body>
     </html>

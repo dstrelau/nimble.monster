@@ -2,7 +2,6 @@ import type React from "react";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { maybePeriod } from "@/lib/text";
 import type { Action, Condition } from "@/lib/types";
-import { StrongCondensed } from "./StyledComponents";
 
 interface ActionsListProps {
   actions: Action[];
@@ -20,7 +19,9 @@ export const ActionsList: React.FC<ActionsListProps> = ({
   return (
     <div>
       <div>
-        <StrongCondensed>{actionPreface}</StrongCondensed>
+        <strong className="font-stretch-ultra-condensed">
+          {actionPreface}
+        </strong>
       </div>
       <ul className="text-base">
         {actions?.map(
