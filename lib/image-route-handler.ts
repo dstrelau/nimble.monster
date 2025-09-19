@@ -1,6 +1,6 @@
 import { trace } from "@opentelemetry/api";
 import type { NextRequest } from "next/server";
-import { generateEntityImage } from "@/lib/image-generation";
+import { generateEntityImageWithStorage } from "@/lib/image-generation";
 
 type Entity = {
   id: string;
@@ -52,25 +52,40 @@ export async function createImageResponse(
       span.setAttributes({ "cache.hit": false });
 
       const startTime = Date.now();
-      const imageBuffer = await generateEntityImage({
+
+      // Use blob storage for image generation
+      const blobUrl = await generateEntityImageWithStorage({
         baseUrl,
         entityId: entity.id,
         entityType,
+        entityVersion: version,
       });
+
       const generationTime = Date.now() - startTime;
 
       span.setAttributes({
         "image.generation_time_ms": generationTime,
-        "image.buffer_size": imageBuffer.length,
-        "response.status": 200,
+        "blob.url": blobUrl,
+        "response.status": 302,
+        "redirect.target": blobUrl,
       });
 
       span.setStatus({ code: 1 }); // OK
-      return new Response(imageBuffer, {
-        status: 200,
+
+      // For local development, redirect to static file in public/
+      // For production, redirect to Vercel blob URL directly
+      const isLocal = blobUrl.startsWith("/blob-storage/");
+
+      if (isLocal) {
+        // Local development - redirect to static file
+        return Response.redirect(new URL(blobUrl, baseUrl).toString(), 302);
+      }
+
+      // Production - redirect directly to Vercel blob URL
+      return new Response(null, {
+        status: 302,
         headers: {
-          "Content-Type": "image/png",
-          "Content-Disposition": `inline; filename="${entity.name.replace(/[^a-zA-Z0-9-_]/g, "_")}.png"`,
+          Location: blobUrl,
           ETag: etag,
           "Cache-Control": "public, max-age=30, must-revalidate",
         },

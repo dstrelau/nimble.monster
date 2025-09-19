@@ -67,6 +67,7 @@
     "@tanstack/react-query": "^5.69.0",
     "@tanstack/react-query-devtools": "^5.63.0",
     "@vercel/analytics": "^1.5.0",
+    "@vercel/blob": "^1.1.1",
     "@vercel/speed-insights": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -91,7 +92,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.2",
+    "@biomejs/biome": "^2.2.4",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@testing-library/jest-dom": "^6.8.0",

@@ -1,4 +1,5 @@
 # Logs
+.cache
 logs
 *.log
 npm-debug.log*
@@ -34,3 +35,4 @@ tmp/
 **/.claude/settings.local.json
 
 public/game-icons/*
+public/blob-storage/
