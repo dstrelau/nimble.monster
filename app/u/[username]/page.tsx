@@ -33,7 +33,7 @@ export default async function UserProfilePage({
       <div className="flex items-center mb-4">
         <UserAvatar user={user} size={56} className="mr-4" />
         <div>
-          <h1 className="text-3xl font-bold">{username}</h1>
+          <h1 className="text-3xl font-bold">{user.username}</h1>
         </div>
       </div>
 
