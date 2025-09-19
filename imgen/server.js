@@ -43,14 +43,16 @@ function validateUrl(req, res, next) {
 
   const allowedUrls = process.env.ALLOWED_URLS;
   if (!allowedUrls) {
-    return res.status(500).json({ error: "Server configuration error: ALLOWED_URLS not set" });
+    return res
+      .status(500)
+      .json({ error: "Server configuration error: ALLOWED_URLS not set" });
   }
 
-  const allowedList = allowedUrls.split(',').map(u => u.trim());
+  const allowedList = allowedUrls.split(",").map((u) => u.trim());
   const requestUrl = new URL(url);
   const requestOrigin = `${requestUrl.protocol}//${requestUrl.host}`;
 
-  const isAllowed = allowedList.some(allowedUrl => {
+  const isAllowed = allowedList.some((allowedUrl) => {
     try {
       const allowed = new URL(allowedUrl);
       const allowedOrigin = `${allowed.protocol}//${allowed.host}`;
@@ -64,7 +66,7 @@ function validateUrl(req, res, next) {
     return res.status(403).json({
       error: "URL not allowed",
       requestedUrl: requestOrigin,
-      allowedUrls: allowedList
+      allowedUrls: allowedList,
     });
   }
 

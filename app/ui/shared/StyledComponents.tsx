@@ -1,14 +1,13 @@
 import type React from "react";
 import { CardContent, Card as ShadcnCard } from "@/components/ui/card";
-import { cn, sans } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 export const InlineConditionsBox: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
   <div
     className={cn(
-      sans.className,
-      "p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm"
+      "font-sans p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm"
     )}
   >
     {children}

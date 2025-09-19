@@ -1,4 +1,4 @@
-import { cn, slab } from "lib/utils";
+import { cn } from "lib/utils";
 import { ArrowRight, CornerRightDown } from "lucide-react";
 import Image from "next/image";
 import { Footer } from "@/components/app/Footer";
@@ -22,8 +22,8 @@ export default async function HomePage() {
         Create and share adversaries for <br />
         <span
           className={cn(
-            slab.className,
-            "pr-3 font-black italic uppercase text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600"
+            "font-slab",
+            "pr-3 font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600"
           )}
         >
           Nimble TTRPG

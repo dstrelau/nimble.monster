@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { cn, slab } from "lib/utils";
+import { cn } from "lib/utils";
 import { Crown, PersonStanding } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Level } from "@/components/Level";
@@ -91,7 +91,7 @@ export const List = ({
               <div className="flex items-center">
                 <div
                   className={cn(
-                    slab.className,
+                    "font-slab",
                     "flex items-center mr-2 font-black italic"
                   )}
                 >

@@ -6,7 +6,7 @@ import {
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
 import clsx from "clsx";
-import { cn, slab } from "lib/utils";
+import { cn } from "lib/utils";
 import { Eye, X } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,7 @@ export const BuildView: React.FC<BuildViewProps> = ({
         >
           <span
             className={cn(
-              slab.className,
+              "font-slab",
               "font-black font-small-caps italic text-2xl"
             )}
           >

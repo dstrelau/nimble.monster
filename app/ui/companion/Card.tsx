@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, sans, slab } from "lib/utils";
+import { cn } from "lib/utils";
 import { Circle, Skull } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
@@ -35,12 +35,10 @@ const HeaderCompanion: React.FC<{
   companion: Companion;
   link?: boolean;
 }> = ({ companion, link = true }) => (
-  <CardHeader>
+  <CardHeader className="gap-0">
     <CardAction>
       <div className="flex items-start justify-between">
-        <div
-          className={cn(slab.className, "flex items-center font-black italic")}
-        >
+        <div className={cn("font-slab flex items-center font-black")}>
           <HPStat value={`${companion.hp_per_level}/LVL`} />
           <SavesStat>
             <span>{companion.saves}</span>
@@ -48,16 +46,13 @@ const HeaderCompanion: React.FC<{
         </div>
       </div>
     </CardAction>
-    <CardDescription className={cn(sans.className, "text-md")}>
+    <CardDescription className={cn("font-slab text-md")}>
       {formatCompanionSize(companion.size)} {companion.kind} Adventuring
       Companion, {companion.class}
     </CardDescription>
 
     <CardTitle
-      className={cn(
-        slab.className,
-        "font-black text-2xl leading-tight text-left"
-      )}
+      className={cn("font-slab font-bold text-2xl leading-tight text-left")}
     >
       {link && companion.id ? (
         <Link href={`/companions/${companion.id}`}>{companion.name}</Link>
@@ -116,7 +111,7 @@ export const Card = ({
           )}
 
           <div className="flex items-center justify-center gap-1">
-            <strong className={cn(sans.className, "text-xs")}>WOUNDS:</strong>
+            <strong className={cn("font-sans text-xs")}>WOUNDS:</strong>
             {Array.from({ length: companion.wounds }, (_, i) => (
               <Circle key={`${companion.id}-wound-${i}`} className="w-6 h-6" />
             ))}

@@ -14,10 +14,16 @@ function initTelemetry() {
 
   try {
     const { NodeSDK } = require("@opentelemetry/sdk-node");
-    const { getNodeAutoInstrumentations } = require("@opentelemetry/auto-instrumentations-node");
+    const {
+      getNodeAutoInstrumentations,
+    } = require("@opentelemetry/auto-instrumentations-node");
     const { Resource } = require("@opentelemetry/resources");
-    const { SEMRESATTRS_SERVICE_NAME } = require("@opentelemetry/semantic-conventions");
-    const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
+    const {
+      SEMRESATTRS_SERVICE_NAME,
+    } = require("@opentelemetry/semantic-conventions");
+    const {
+      OTLPTraceExporter,
+    } = require("@opentelemetry/exporter-trace-otlp-http");
 
     const resource = Resource.default({
       [SEMRESATTRS_SERVICE_NAME]: process.env.OTEL_SERVICE_NAME || "imgen",

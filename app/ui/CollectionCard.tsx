@@ -16,7 +16,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import type { CollectionOverview } from "@/lib/types";
 import { RARITIES } from "@/lib/types";
-import { cn, monstersSortedByLevelInt, sans, slab } from "@/lib/utils";
+import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 
 const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
   const rarityOption = RARITIES.find(
@@ -27,7 +27,7 @@ const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
     <div className="flex gap-1 items-center">
       <div
         className={cn(
-          slab.className,
+          "font-slab",
           "flex-1 flex gap-1 items-center font-bold small-caps italic"
         )}
       >
@@ -54,17 +54,12 @@ const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
       </div>
       <div
         className={cn(
-          slab.className,
+          "font-slab",
           "flex flex-wrap items-center justify-end font-black italic"
         )}
       >
         {rarityOption && item.rarity !== "unspecified" && (
-          <span
-            className={cn(
-              sans.className,
-              "font-stretch-ultra-condensed text-sm uppercase px-1.5 py-0 mr-2 rounded border-2"
-            )}
-          >
+          <span className="font-condensed text-sm uppercase px-1.5 py-0 mr-2 rounded border-2">
             {rarityOption.label[0]}
           </span>
         )}
@@ -116,8 +111,7 @@ export const CollectionCard = ({
       <CardHeader>
         <CardTitle
           className={cn(
-            sans.className,
-            "font-stretch-ultra-condensed font-bold text-2xl flex items-center gap-2"
+            "font-condensed font-bold text-2xl flex items-center gap-2"
           )}
         >
           {collection.id ? (

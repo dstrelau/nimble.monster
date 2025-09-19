@@ -1,4 +1,3 @@
-import { cn, sans } from "lib/utils";
 import { Users } from "lucide-react";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { maybePeriod } from "@/lib/text";
@@ -19,13 +18,7 @@ export const AbilityOverlay = ({
   const familyAbilityNames = new Set(familyAbilities.map((a) => a.name));
 
   return (
-    <div
-      className={cn(
-        sans.className,
-        "font-stretch-ultra-condensed relative p-2 w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem]",
-        "bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm "
-      )}
-    >
+    <div className="font-stretch-extra-condensed relative p-2 w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem] bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm">
       <div className="flex flex-col gap-4">
         {abilities?.map((ability) => {
           const abilityName = ability.name || "";

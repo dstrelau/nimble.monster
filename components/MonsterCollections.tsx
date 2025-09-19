@@ -1,7 +1,7 @@
 import { Attribution } from "@/app/ui/Attribution";
 import { Link } from "@/components/app/Link";
 import type { User } from "@/lib/types";
-import { cn, sans } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface Collection {
   id: string;
@@ -20,12 +20,7 @@ export function MonsterCollections({ collections }: MonsterCollectionsProps) {
 
   return (
     <div className="w-md">
-      <h3
-        className={cn(
-          sans.className,
-          "font-stretch-ultra-condensed text-lg pb-1 border-b-2 mb-4"
-        )}
-      >
+      <h3 className={cn("font-condensed text-lg pb-1 border-b-2 mb-4")}>
         Collected In
       </h3>
       <div className="space-y-3">

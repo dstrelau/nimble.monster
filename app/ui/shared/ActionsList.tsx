@@ -19,9 +19,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({
   return (
     <div>
       <div>
-        <strong className="font-stretch-ultra-condensed">
-          {actionPreface}
-        </strong>
+        <strong className="font-condensed">{actionPreface}</strong>
       </div>
       <ul className="text-base">
         {actions?.map(

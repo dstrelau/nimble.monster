@@ -1,8 +1,26 @@
 import "@/app/ui/global.css";
 import type { Metadata } from "next";
+import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
 import { auth } from "@/lib/auth";
-import { cn, sans } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
+
+const sans = Roboto_Flex({
+  subsets: ["latin"],
+  axes: ["wdth", "slnt", "opsz"],
+  style: ["normal"],
+  variable: "--font-roboto-sans",
+});
+const slab = Roboto_Slab({
+  subsets: ["latin"],
+  style: ["normal"],
+  variable: "--font-roboto-slab",
+});
+const serif = Roboto_Serif({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-roboto-serif",
+});
 
 export const metadata: Metadata = {
   title: "Nimble Monster",
@@ -18,7 +36,14 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head></head>
-      <body className={cn(sans.className)}>
+      <body
+        className={cn(
+          "font-sans",
+          sans.variable,
+          slab.variable,
+          serif.variable
+        )}
+      >
         <Providers session={session}>{children}</Providers>
       </body>
     </html>

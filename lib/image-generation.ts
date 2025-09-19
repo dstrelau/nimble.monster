@@ -1,6 +1,5 @@
 import { trace } from "@opentelemetry/api";
 import { generateBlobFilename, uploadBlob } from "@/lib/blob-storage";
-import { getBrowser } from "@/lib/browser";
 import {
   claimImageGeneration,
   completeImageGeneration,
@@ -215,7 +214,9 @@ async function generateEntityImageViaService({
         });
 
         if (!response.ok) {
-          const errorText = await response.text().catch(() => "Could not read error response");
+          const errorText = await response
+            .text()
+            .catch(() => "Could not read error response");
           span.setAttributes({
             "service.error_response": errorText,
           });
@@ -229,7 +230,9 @@ async function generateEntityImageViaService({
           span.setAttributes({
             "service.unexpected_content_type": contentType || "unknown",
           });
-          throw new Error(`Unexpected content type from service: ${contentType}`);
+          throw new Error(
+            `Unexpected content type from service: ${contentType}`
+          );
         }
 
         const arrayBuffer = await response.arrayBuffer();

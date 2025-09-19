@@ -1,20 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
-import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
 import { twMerge } from "tailwind-merge";
-
-export const sans = Roboto_Flex({
-  subsets: ["latin"],
-  axes: ["wdth", "slnt", "opsz"],
-  style: ["normal"],
-});
-export const serif = Roboto_Serif({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-});
-export const slab = Roboto_Slab({
-  subsets: ["latin"],
-  style: ["normal"],
-});
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

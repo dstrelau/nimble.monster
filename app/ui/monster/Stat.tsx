@@ -69,7 +69,7 @@ export const HPStat: React.FC<{
     value={value}
     SvgIcon={HPIcon}
     className={className}
-    iconClassName={"stroke-hp fill-hp dark:stroke-hp dark:fill-hp"}
+    iconClassName={"-mr-[3px] stroke-hp fill-hp dark:stroke-hp dark:fill-hp"}
     showZero={true}
   />
 );

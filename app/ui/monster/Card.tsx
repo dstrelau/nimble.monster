@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Monster, User } from "@/lib/types";
-import { cn, sans, slab } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { formatSizeKind } from "@/lib/utils/monster";
 import CardActions from "./CardActions";
 import {
@@ -59,180 +59,153 @@ const StatsGroup: React.FC<{
   return <StatsTooltip tooltipLines={tooltipLines}>{children}</StatsTooltip>;
 };
 
-const HeaderLegendary: React.FC<{ monster: Monster; link?: boolean }> = ({
-  monster,
-  link = true,
-}) => (
-  <CardHeader>
-    <CardTitle className={cn(slab.className, "font-bold text-4xl")}>
+const MonsterTitle: React.FC<{
+  monster: Monster;
+  link?: boolean;
+  variant: "legendary" | "minion" | "standard";
+}> = ({ monster, link = true, variant }) => {
+  const titleClasses = cn(
+    "font-slab font-bold",
+    variant === "legendary" ? "text-3xl" : "small-caps text-2xl"
+  );
+
+  return (
+    <CardTitle className={titleClasses}>
       {link ? (
         <Link href={`/m/${monster.id}`}>{monster.name}</Link>
       ) : (
         monster.name
       )}
     </CardTitle>
-    <CardDescription className="font-bold text-lg leading-none tracking-tight">
-      Level <Level level={monster.level} className="text-lg" /> Solo{" "}
-      {formatSizeKind(monster)}
-    </CardDescription>
-    <CardAction>
-      <StatsGroup monster={monster}>
-        <div
-          className={cn(
-            slab.className,
-            "flex items-center justify-center font-black italic"
-          )}
-        >
-          {monster.armor === "medium" && <ArmorStat value="M" />}
-          {monster.armor === "heavy" && <ArmorStat value="H" />}
-          <HPStat value={monster.hp} />
-          <SavesStat>
-            <div className="flex flex-col">
-              {monster.saves?.split(",").map((save, i, arr) => (
-                <span key={save} className="block">
-                  {save}
-                  {i < arr.length - 1 && ", "}
-                </span>
-              ))}{" "}
-            </div>
-          </SavesStat>
-        </div>
-      </StatsGroup>
-    </CardAction>
-  </CardHeader>
-);
+  );
+};
 
-const HeaderMinion: React.FC<{
+const MonsterDescription: React.FC<{
   monster: Monster;
   hideFamilyName?: boolean;
-  link?: boolean;
-}> = ({ monster, hideFamilyName = false, link = true }) => (
-  <CardHeader className="has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0">
-    <CardTitle
-      className={cn(slab.className, "font-black small-caps italic text-2xl")}
-    >
-      {link ? (
-        <Link href={`/m/${monster.id}`}>{monster.name}</Link>
-      ) : (
-        monster.name
-      )}
-    </CardTitle>
-    <CardDescription
-      className={cn(sans.className, "col-span-2 flex gap-2 small-caps")}
-    >
+  variant: "legendary" | "minion" | "standard";
+}> = ({ monster, hideFamilyName = false, variant }) => {
+  const descriptionClasses = cn(
+    "font-condensed flex flex-wrap items-baseline gap-2",
+    variant === "legendary" && "text-md font-slab font-normal",
+    variant === "minion" && "small-caps col-span-2",
+    variant === "standard" && "small-caps col-span-2"
+  );
+
+  const levelPrefix = variant === "legendary" ? "Level" : "Lvl";
+
+  return (
+    <CardDescription className={descriptionClasses}>
       <p>
-        Lvl <Level level={monster.level} /> {formatSizeKind(monster)} Minion
+        {levelPrefix} <Level level={monster.level} />{" "}
+        {variant === "legendary" && "Solo "}
+        {formatSizeKind(monster)}
+        {variant === "minion" && " Minion"}
       </p>
       {monster.family && !hideFamilyName && (
         <Link
           href={`/families/${monster.family.id}`}
-          className="flex items-center"
+          className="text-sm font-sans flex small-caps font-semibold"
         >
-          <Users className="w-4 pb-1 mr-0.5 text-flame" />
-          <strong>{monster.family.name}</strong>
+          <Users className="size-4 mr-1 text-flame" />
+          <span>{monster.family.name}</span>
         </Link>
       )}
     </CardDescription>
-    <CardAction>
-      <StatsGroup monster={monster}>
-        <div
-          className={cn(
-            slab.className,
-            "flex grow flex-wrap items-center justify-end font-black italic"
-          )}
-        >
-          <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
-          <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
-          <Stat name="climb" value={monster.climb} SvgIcon={ClimbIcon} />
-          <Stat name="burrow" value={monster.burrow} SvgIcon={BurrowIcon} />
-          <Stat
-            name="teleport"
-            value={monster.teleport}
-            SvgIcon={TeleportIcon}
-          />
-          {monster.speed !== 6 && (
-            <Stat
-              name="speed"
-              value={monster.speed}
-              SvgIcon={SpeedIcon}
-              showZero={true}
-            />
-          )}
-        </div>
-      </StatsGroup>
-    </CardAction>
-  </CardHeader>
-);
+  );
+};
 
-const HeaderStandard: React.FC<{
+const MonsterStats: React.FC<{
+  monster: Monster;
+  variant: "legendary" | "minion" | "standard";
+}> = ({ monster, variant }) => {
+  const statsClasses = cn(
+    "font-slab font-black flex flex-wrap items-center justify-end min-w-fit"
+  );
+
+  return (
+    <StatsGroup monster={monster}>
+      <div className={statsClasses}>
+        {(variant === "legendary" || variant === "standard") && (
+          <>
+            {monster.armor === "medium" && <ArmorStat value="M" />}
+            {monster.armor === "heavy" && <ArmorStat value="H" />}
+          </>
+        )}
+        {variant !== "legendary" && (
+          <>
+            <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
+            <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
+            <Stat name="climb" value={monster.climb} SvgIcon={ClimbIcon} />
+            <Stat name="burrow" value={monster.burrow} SvgIcon={BurrowIcon} />
+            <Stat
+              name="teleport"
+              value={monster.teleport}
+              SvgIcon={TeleportIcon}
+            />
+            {monster.speed !== 6 && (
+              <Stat
+                name="speed"
+                value={monster.speed}
+                SvgIcon={SpeedIcon}
+                showZero={true}
+              />
+            )}
+          </>
+        )}
+        {variant === "legendary" && (
+          <>
+            <HPStat value={monster.hp} />
+            <SavesStat>
+              <div className="flex flex-col">
+                {monster.saves?.split(",").map((save, i, arr) => (
+                  <span key={save} className="block">
+                    {save}
+                    {i < arr.length - 1 && ", "}
+                  </span>
+                ))}
+              </div>
+            </SavesStat>
+          </>
+        )}
+        {variant === "standard" && <HPStat value={monster.hp} />}
+      </div>
+    </StatsGroup>
+  );
+};
+
+const MonsterHeader: React.FC<{
   monster: Monster;
   hideFamilyName?: boolean;
   link?: boolean;
-}> = ({ monster, hideFamilyName = false, link = true }) => (
-  <CardHeader className="gap-0 flex">
-    <div className="grow">
-      <CardTitle
-        className={cn(slab.className, "font-black italic small-caps text-2xl")}
-      >
-        {link ? (
-          <Link href={`/m/${monster.id}`}>{monster.name}</Link>
-        ) : (
-          monster.name
-        )}
-      </CardTitle>
-      <CardDescription
-        className={cn(
-          sans.className,
-          "col-span-2 flex flex-wrap gap-x-2 gap-y-0 small-caps"
-        )}
-      >
-        <p className="shrink-0">
-          Lvl <Level level={monster.level} /> {formatSizeKind(monster)}
-        </p>
-        {monster.family && !hideFamilyName && (
-          <Link
-            href={`/families/${monster.family.id}`}
-            className="flex shrink-0 items-center"
-          >
-            <Users className="w-4 pb-1 mr-0.5 text-flame" />
-            <strong>{monster.family.name}</strong>
-          </Link>
-        )}
-      </CardDescription>
-    </div>
-    <CardAction>
-      <StatsGroup monster={monster}>
-        <div
-          className={cn(
-            slab.className,
-            "flex grow flex-wrap items-center justify-end font-black italic"
-          )}
-        >
-          {monster.armor === "medium" && <ArmorStat value="M" />}
-          {monster.armor === "heavy" && <ArmorStat value="H" />}
-          <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
-          <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
-          <Stat name="climb" value={monster.climb} SvgIcon={ClimbIcon} />
-          <Stat name="burrow" value={monster.burrow} SvgIcon={BurrowIcon} />
-          <Stat
-            name="teleport"
-            value={monster.teleport}
-            SvgIcon={TeleportIcon}
-          />
-          {monster.speed !== 6 && (
-            <Stat
-              name="speed"
-              value={monster.speed}
-              SvgIcon={SpeedIcon}
-              showZero={true}
-            />
-          )}
-          <HPStat value={monster.hp} />
-        </div>
-      </StatsGroup>
-    </CardAction>
-  </CardHeader>
-);
+  variant: "legendary" | "minion" | "standard";
+}> = ({ monster, hideFamilyName = false, link = true, variant }) => {
+  const headerClasses = cn(
+    "gap-0 flex",
+    variant === "minion" &&
+      "has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0"
+  );
+
+  const content = (
+    <>
+      <MonsterTitle monster={monster} link={link} variant={variant} />
+      <MonsterDescription
+        monster={monster}
+        hideFamilyName={hideFamilyName}
+        variant={variant}
+      />
+    </>
+  );
+
+  return (
+    <CardHeader className={headerClasses}>
+      <div className="grow">{content}</div>
+      <CardAction>
+        <MonsterStats monster={monster} variant={variant} />
+      </CardAction>
+    </CardHeader>
+  );
+};
 
 interface CardProps {
   monster: Monster;
@@ -267,21 +240,18 @@ export const Card = ({
     >
       <div id={`monster-${monster.id}`}>
         <CardContainer className={className}>
-          {monster.legendary ? (
-            <HeaderLegendary monster={monster} link={link} />
-          ) : monster.minion ? (
-            <HeaderMinion
-              monster={monster}
-              hideFamilyName={hideFamilyName}
-              link={link}
-            />
-          ) : (
-            <HeaderStandard
-              monster={monster}
-              hideFamilyName={hideFamilyName}
-              link={link}
-            />
-          )}
+          <MonsterHeader
+            monster={monster}
+            hideFamilyName={hideFamilyName}
+            link={link}
+            variant={
+              monster.legendary
+                ? "legendary"
+                : monster.minion
+                  ? "minion"
+                  : "standard"
+            }
+          />
 
           <CardContentWithGap>
             {((!hideFamilyAbilities && monster.family?.abilities) ||
@@ -309,16 +279,7 @@ export const Card = ({
                   <PrefixedFormattedText
                     content={monster.bloodied}
                     conditions={conditions}
-                    prefix={
-                      <strong
-                        className={cn(
-                          sans.className,
-                          "font-stretch-ultra-condensed"
-                        )}
-                      >
-                        BLOODIED:
-                      </strong>
-                    }
+                    prefix={<strong>BLOODIED:</strong>}
                   />
                 )}
 
@@ -327,16 +288,7 @@ export const Card = ({
                     <PrefixedFormattedText
                       content={monster.lastStand}
                       conditions={conditions}
-                      prefix={
-                        <strong
-                          className={cn(
-                            sans.className,
-                            "font-stretch-ultra-condensed"
-                          )}
-                        >
-                          LAST STAND:
-                        </strong>
-                      }
+                      prefix={<strong>LAST STAND:</strong>}
                     />
                   </div>
                 )}

@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { MonsterMini } from "@/lib/types";
-import { cn, sans, monstersSortedByLevelInt, slab } from "@/lib/utils";
+import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import { Link } from "./app/Link";
 import { Level } from "./Level";
 import { Separator } from "./ui/separator";
@@ -23,8 +23,7 @@ export const MonsterRow: React.FC<{
   <div className="flex gap-1 items-center">
     <div
       className={cn(
-        slab.className,
-        "flex-1 flex gap-1 items-center font-bold small-caps italic"
+        "font-slab flex-1 flex gap-1 items-center font-medium small-caps italic"
       )}
     >
       {monster.legendary && (
@@ -48,8 +47,7 @@ export const MonsterRow: React.FC<{
         </Link>
         <span
           className={cn(
-            sans.className,
-            "font-medium text-muted-foreground text-sm small-caps not-italic text-nowrap"
+            "font-sans font-medium text-muted-foreground text-sm small-caps not-italic text-nowrap"
           )}
         >
           Lvl <Level level={monster.level} />
@@ -58,8 +56,7 @@ export const MonsterRow: React.FC<{
     </div>
     <div
       className={cn(
-        slab.className,
-        "flex flex-wrap items-baseline justify-end font-black italic"
+        "font-slab flex flex-wrap items-baseline justify-end font-black italic"
       )}
     >
       {monster.minion || <HPStat value={monster.hp} className="min-w-14" />}
@@ -102,8 +99,7 @@ export const MonsterGroupMinis = ({
       <CardHeader>
         <CardTitle
           className={cn(
-            sans.className,
-            "font-bold text-2xl flex items-center gap-2"
+            "font-condensed font-bold text-2xl flex items-center gap-2"
           )}
         >
           {href ? <Link href={href}>{name}</Link> : name}

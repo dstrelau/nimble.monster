@@ -82,6 +82,10 @@
 }
 
 @theme inline {
+    --font-sans: var(--font-roboto-sans);
+    --font-slab: var(--font-roboto-slab);
+    --font-serif: var(--font-roboto-serif);
+
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-card: var(--card);
@@ -114,12 +118,25 @@
     body {
         @apply bg-background text-foreground;
         -webkit-font-smoothing: antialiased;
+        font-synthesis: small-caps;
     }
 }
 
 @layer utilities {
     .small-caps {
         font-variant-caps: small-caps;
+    }
+
+    .italic {
+        font-style: italic;
+        font-variation-settings: "slnt" -10;
+    }
+    .not-italic {
+        font-style: normal;
+        font-variation-settings: "slnt" 0;
+    }
+    .font-condensed {
+        font-stretch: ultra-condensed;
     }
 }
 
