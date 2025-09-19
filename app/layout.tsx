@@ -22,10 +22,6 @@ const serif = Roboto_Serif({
   variable: "--font-roboto-serif",
 });
 
-export const metadata: Metadata = {
-  title: "Nimble Monster",
-  description: "Create and organize monsters for the Nimble TTRPG system",
-};
 
 export default async function RootLayout({
   children,

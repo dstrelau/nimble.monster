@@ -1,4 +1,5 @@
 import { ArrowRight, CornerRightDown } from "lucide-react";
+import type { Metadata } from "next";
 import Image from "next/image";
 import { Footer } from "@/components/app/Footer";
 import { FamilyCard } from "@/components/FamilyCard";
@@ -7,6 +8,7 @@ import { auth } from "@/lib/auth";
 import { getRandomFeaturedFamily } from "@/lib/db/family";
 import { Attribution } from "./ui/Attribution";
 import { MonsterCardWithOverflow } from "./ui/MonsterCardWithOverflow";
+
 
 export default async function HomePage() {
   const session = await auth();

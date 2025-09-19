@@ -1,7 +1,50 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { UserAvatar } from "@/components/app/UserAvatar";
 import * as db from "@/lib/db";
 import TabsContent from "./TabsContent";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ username: string }>;
+}): Promise<Metadata> {
+  const { username } = await params;
+
+  const user = await db.getUserByUsername(username.toLowerCase());
+  if (!user) {
+    return {
+      title: "User not found",
+    };
+  }
+
+  const [monsters, items, collections, companions] = await Promise.all([
+    db.listPublicMonstersForUser(user.id),
+    db.listPublicItemsForUser(user.id),
+    db.listPublicCollectionsHavingMonstersForUser(user.id),
+    db.listPublicCompanionsForUser(user.id),
+  ]);
+
+  const title = `${user.displayName} - nimble.monster`;
+  const description = [
+    monsters.length > 0 && `${monsters.length} monsters`,
+    items.length > 0 && `${items.length} items`,
+    collections.length > 0 && `${collections.length} collections`,
+    companions.length > 0 && `${companions.length} companions`,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "profile",
+    },
+  };
+}
 
 export default async function UserProfilePage({
   params,
