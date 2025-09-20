@@ -10,7 +10,10 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const family = await db.getFamily(id);
+  const [family, publicMonsters] = await Promise.all([
+    db.getFamily(id),
+    db.listMonstersByFamilyId(id),
+  ]);
 
   if (!family) {
     return {};
@@ -20,7 +23,7 @@ export async function generateMetadata({
     ? ` by ${family.creator.displayName}`
     : "";
 
-  const monsterCount = family.monsterCount || 0;
+  const monsterCount = publicMonsters.length;
   const countText = `${monsterCount} monster${monsterCount !== 1 ? "s" : ""}`;
   const description = `${countText}${creatorText}`;
 
