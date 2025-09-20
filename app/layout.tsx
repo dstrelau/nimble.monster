@@ -1,5 +1,4 @@
 import "@/app/ui/global.css";
-import type { Metadata } from "next";
 import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
 import { auth } from "@/lib/auth";
 import { cn } from "@/lib/utils";

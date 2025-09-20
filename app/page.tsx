@@ -1,5 +1,4 @@
 import { ArrowRight, CornerRightDown } from "lucide-react";
-import type { Metadata } from "next";
 import Image from "next/image";
 import { Footer } from "@/components/app/Footer";
 import { FamilyCard } from "@/components/FamilyCard";

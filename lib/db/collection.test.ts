@@ -135,10 +135,10 @@ describe("Collection access control", () => {
     );
 
     expect(collection).toBeTruthy();
-    expect(collection!.visibility).toBe("public");
+    expect(collection?.visibility).toBe("public");
 
     // Should only show public monsters when accessed by non-owners
-    const monsterNames = collection!.monsters.map((m) => m.name);
+    const monsterNames = collection?.monsters.map((m) => m.name);
     expect(monsterNames).toContain("Public Monster");
     expect(monsterNames).not.toContain("Private Monster");
   });
@@ -151,10 +151,10 @@ describe("Collection access control", () => {
     );
 
     expect(collection).toBeTruthy();
-    expect(collection!.visibility).toBe("public");
+    expect(collection?.visibility).toBe("public");
 
     // Should show all monsters to the owner
-    const monsterNames = collection!.monsters.map((m) => m.name);
+    const monsterNames = collection?.monsters.map((m) => m.name);
     expect(monsterNames).toContain("Public Monster");
     expect(monsterNames).toContain("Private Monster");
   });
@@ -167,10 +167,10 @@ describe("Collection access control", () => {
     );
 
     expect(collection).toBeTruthy();
-    expect(collection!.visibility).toBe("private");
+    expect(collection?.visibility).toBe("private");
 
     // Private collections should show all monsters to the owner
-    const monsterNames = collection!.monsters.map((m) => m.name);
+    const monsterNames = collection?.monsters.map((m) => m.name);
     expect(monsterNames).toContain("Public Monster");
     expect(monsterNames).toContain("Private Monster");
   });
@@ -184,10 +184,10 @@ describe("Collection access control", () => {
     );
 
     expect(collection).toBeTruthy();
-    expect(collection!.visibility).toBe("private");
+    expect(collection?.visibility).toBe("private");
 
     // Should only show public monsters even in private collections if accessed by non-owners
-    const monsterNames = collection!.monsters.map((m) => m.name);
+    const monsterNames = collection?.monsters.map((m) => m.name);
     expect(monsterNames).toContain("Public Monster");
     expect(monsterNames).not.toContain("Private Monster");
   });

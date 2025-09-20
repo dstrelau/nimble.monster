@@ -200,6 +200,7 @@ export interface CreateItemInput {
   imageIcon?: string;
   imageBgIcon?: string;
   imageColor?: string;
+  imageBgColor?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
   discordId: string;
@@ -214,6 +215,7 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
     imageIcon,
     imageBgIcon,
     imageColor,
+    imageBgColor,
     rarity,
     visibility,
     discordId,
@@ -236,6 +238,7 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
       imageIcon,
       imageBgIcon,
       imageColor,
+      imageBgColor,
       rarity,
       visibility,
       creator: {
