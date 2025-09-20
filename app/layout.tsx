@@ -22,7 +22,6 @@ const serif = Roboto_Serif({
   variable: "--font-roboto-serif",
 });
 
-
 export default async function RootLayout({
   children,
 }: Readonly<{

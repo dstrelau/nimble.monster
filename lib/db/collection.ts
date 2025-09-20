@@ -118,7 +118,10 @@ export const listPublicCollectionsHavingMonsters = async (): Promise<
     });
 };
 
-export const getCollection = async (id: string): Promise<Collection | null> => {
+export const getCollection = async (
+  id: string,
+  viewerDiscordId?: string
+): Promise<Collection | null> => {
   if (!isValidUUID(id)) return null;
 
   const c = await prisma.collection.findUnique({
@@ -148,22 +151,34 @@ export const getCollection = async (id: string): Promise<Collection | null> => {
   });
   if (!c) return c;
 
-  const legendaryCount = c.monsterCollections.filter(
+  // Check if viewer is the collection owner
+  const isOwner = viewerDiscordId && c.creator.discordId === viewerDiscordId;
+
+  // Filter monsters and items by visibility if viewer is not the owner
+  const filteredMonsterCollections = isOwner
+    ? c.monsterCollections
+    : c.monsterCollections.filter((mc) => mc.monster.visibility === "public");
+
+  const filteredItemCollections = isOwner
+    ? c.itemCollections
+    : c.itemCollections.filter((ic) => ic.item.visibility === "public");
+
+  const legendaryCount = filteredMonsterCollections.filter(
     (m) => m.monster.legendary
   ).length;
   return {
     ...c,
     createdAt: c.createdAt ?? undefined,
     legendaryCount,
-    standardCount: c.monsterCollections.length - legendaryCount,
+    standardCount: filteredMonsterCollections.length - legendaryCount,
     creator: toUser(c.creator),
-    monsters: c.monsterCollections
+    monsters: filteredMonsterCollections
       .flatMap((mc) => toMonster(mc.monster))
       .sort((a, b) => a.name.localeCompare(b.name)),
-    items: c.itemCollections
+    items: filteredItemCollections
       .flatMap((ic) => toItem(ic.item))
       .sort((a, b) => a.name.localeCompare(b.name)),
-    itemCount: c.itemCollections.length,
+    itemCount: filteredItemCollections.length,
   };
 };
 

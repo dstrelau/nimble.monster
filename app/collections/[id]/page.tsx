@@ -60,8 +60,8 @@ export default async function ShowCollectionView({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const collection = await db.getCollection(id);
   const session = await auth();
+  const collection = await db.getCollection(id, session?.user?.discordId);
   if (!collection) {
     notFound();
   }

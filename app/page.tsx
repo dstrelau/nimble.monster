@@ -9,7 +9,6 @@ import { getRandomFeaturedFamily } from "@/lib/db/family";
 import { Attribution } from "./ui/Attribution";
 import { MonsterCardWithOverflow } from "./ui/MonsterCardWithOverflow";
 
-
 export default async function HomePage() {
   const session = await auth();
   const featuredFamily = await getRandomFeaturedFamily();
