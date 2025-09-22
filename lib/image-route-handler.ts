@@ -18,7 +18,10 @@ export async function createImageResponse(
   const tracer = trace.getTracer("image-route-handler");
 
   return tracer.startActiveSpan(`create-${entityType}-image`, async (span) => {
-    const host = request.headers.get("host") || "localhost:3000";
+    const host =
+      process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+      request.headers.get("host") ||
+      "localhost:3000";
     const protocol = new URL(request.url).protocol;
     const baseUrl = `${protocol}//${host}`;
 
