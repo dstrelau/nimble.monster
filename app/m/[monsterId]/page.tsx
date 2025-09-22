@@ -43,7 +43,7 @@ export async function generateMetadata({
       url: `/m/${monster.id}`,
       images: [
         {
-          url: `/m/${monster.id}/image`,
+          url: `/m/${monster.id}/image?${monster.updatedAt.getTime()}`,
           alt: monster.name,
         },
       ],

@@ -54,7 +54,7 @@ export const toMonster = (
     teleport: m.teleport,
     burrow: m.burrow,
     saves: m.saves.join(" "),
-    updatedAt: m.updatedAt.toISOString(),
+    updatedAt: m.updatedAt,
     abilities: (m.abilities as unknown as Omit<Ability, "id">[]).map(
       (ability) => ({
         ...ability,

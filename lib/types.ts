@@ -153,7 +153,7 @@ export interface Monster extends MonsterMini {
   moreInfo?: string;
   family?: FamilyOverview;
   creator: User;
-  updatedAt: string;
+  updatedAt: Date;
   imageUrl?: string;
 }
 
