@@ -184,14 +184,18 @@ export const Card = ({
   });
   return (
     <div className="max-w-sm mx-auto" id={`item-${item.id}`}>
-      <CardContainer className={`relative p-0 ${className}`}>
-        <div className="relative">
+      <CardContainer className={`relative py-0 ${className}`}>
+        <div
+          className={cn(
+            "flex flex-col items-center py-4",
+            item.imageBgIcon ? "min-h-56" : item.imageIcon ? "min-h-48" : "py-0"
+          )}
+        >
           {item.imageBgIcon && (
             <GameIcon
               iconId={item.imageBgIcon}
               className={cn(
-                "absolute size-64 z-0 left-1/2 transform -translate-x-1/2 fill-icon/30",
-                "fill-foreground",
+                "size-56 fill-foreground",
                 item.imageBgColor && FG_COLOR_CLASSES[item.imageBgColor]
               )}
             />
@@ -200,19 +204,15 @@ export const Card = ({
             <GameIcon
               iconId={item.imageIcon}
               className={cn(
-                "absolute size-48 mt-8 stroke-6 z-10 left-1/2 transform -translate-x-1/2 drop-shadow-lg",
+                "absolute size-42 stroke-6 z-10 left-1/2 transform -translate-x-1/2 drop-shadow-lg",
                 "fill-foreground",
+                item.imageBgIcon && "mt-7",
                 item.imageColor && FG_COLOR_CLASSES[item.imageColor]
               )}
             />
           )}
         </div>
-        <CardHeader
-          className={cn(
-            "text-center gap-0",
-            item.imageIcon && item.imageBgIcon ? "mt-64" : "mt-52"
-          )}
-        >
+        <CardHeader className="text-center gap-0">
           <CardTitle>
             <h2
               className={cn("font-slab", "font-black text-2xl leading-tight")}
