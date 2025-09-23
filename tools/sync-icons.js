@@ -130,6 +130,14 @@ function main() {
     svgPath: icon.svgPath,
   }));
 
+  // Format the icons array in a biome-compliant way
+  const formattedIcons = cleanedIcons
+    .map(
+      (icon) =>
+        `  {\n    id: ${JSON.stringify(icon.id)},\n    name: ${JSON.stringify(icon.name)},\n    contributor: ${JSON.stringify(icon.contributor)},\n    svgPath: ${JSON.stringify(icon.svgPath)},\n  }`
+    )
+    .join(",\n");
+
   const indexContent = `// Auto-generated icon index for SVG files
 export interface IconData {
   id: string;
@@ -138,7 +146,9 @@ export interface IconData {
   svgPath: string;
 }
 
-export const ICONS: IconData[] = ${JSON.stringify(cleanedIcons, null, 2)};
+export const ICONS: IconData[] = [
+${formattedIcons},
+];
 
 export const ICON_COUNT = ${cleanedIcons.length};
 `;
