@@ -40,7 +40,8 @@ import { StatsTooltip } from "./StatsTooltip";
 const StatsGroup: React.FC<{
   monster: Monster;
   children: React.ReactNode;
-}> = ({ monster, children }) => {
+  className?: string;
+}> = ({ monster, children, className }) => {
   const tooltipLines: string[] = [];
 
   if (monster.armor !== "none")
@@ -56,7 +57,11 @@ const StatsGroup: React.FC<{
   if (monster.hp) tooltipLines.push(`HP: ${monster.hp}`);
   if (monster.saves) tooltipLines.push(`Saves: ${monster.saves}`);
 
-  return <StatsTooltip tooltipLines={tooltipLines}>{children}</StatsTooltip>;
+  return (
+    <StatsTooltip tooltipLines={tooltipLines} className={className}>
+      {children}
+    </StatsTooltip>
+  );
 };
 
 const MonsterTitle: React.FC<{
@@ -65,7 +70,7 @@ const MonsterTitle: React.FC<{
   variant: "legendary" | "minion" | "standard";
 }> = ({ monster, link = true, variant }) => {
   const titleClasses = cn(
-    "font-slab font-bold",
+    "font-slab font-bold w-fit",
     variant === "legendary" ? "text-3xl" : "small-caps text-2xl"
   );
 
@@ -118,13 +123,13 @@ const MonsterDescription: React.FC<{
 const MonsterStats: React.FC<{
   monster: Monster;
   variant: "legendary" | "minion" | "standard";
-}> = ({ monster, variant }) => {
-  const statsClasses = cn(
-    "font-slab font-black flex flex-wrap items-center justify-end min-w-fit"
-  );
+  className?: string;
+}> = ({ monster, variant, className }) => {
+  const statsClasses =
+    "font-slab font-black flex flex-wrap items-center justify-end min-w-fit";
 
   return (
-    <StatsGroup monster={monster}>
+    <StatsGroup className={className} monster={monster}>
       <div className={statsClasses}>
         {(variant === "legendary" || variant === "standard") && (
           <>
@@ -158,10 +163,9 @@ const MonsterStats: React.FC<{
             <HPStat value={monster.hp} />
             <SavesStat>
               <div className="flex flex-col">
-                {monster.saves?.split(",").map((save, i, arr) => (
+                {monster.saves?.split(",").map((save) => (
                   <span key={save} className="block">
                     {save}
-                    {i < arr.length - 1 && ", "}
                   </span>
                 ))}
               </div>
@@ -186,24 +190,25 @@ const MonsterHeader: React.FC<{
       "has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0"
   );
 
-  const content = (
-    <>
-      <MonsterTitle monster={monster} link={link} variant={variant} />
-      <MonsterDescription
+  return (
+    <div
+      data-slot="card-header"
+      className={cn("@container/card-header gap-1.5 px-4 grow", headerClasses)}
+    >
+      <div className="w-fit">
+        <MonsterTitle monster={monster} link={link} variant={variant} />
+        <MonsterDescription
+          monster={monster}
+          hideFamilyName={hideFamilyName}
+          variant={variant}
+        />
+      </div>
+      <MonsterStats
+        className="grow items-start justify-end"
         monster={monster}
-        hideFamilyName={hideFamilyName}
         variant={variant}
       />
-    </>
-  );
-
-  return (
-    <CardHeader className={headerClasses}>
-      <div className="grow">{content}</div>
-      <CardAction>
-        <MonsterStats monster={monster} variant={variant} />
-      </CardAction>
-    </CardHeader>
+    </div>
   );
 };
 
@@ -235,7 +240,8 @@ export const Card = ({
     <div
       className={cn(
         "w-full max-w-sm mx-auto",
-        monster.legendary && "max-w-3xl md:col-span-2"
+        monster.legendary && // add gap-8 so card fills 2 columns of grid completely
+          "max-w-4xl md:col-span-2"
       )}
     >
       <div id={`monster-${monster.id}`}>
