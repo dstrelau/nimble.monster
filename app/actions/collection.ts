@@ -159,3 +159,31 @@ export async function addMonsterToCollection(formData: FormData) {
   await db.addMonsterToCollection({ monsterId, collectionId });
   return { success: true };
 }
+
+export async function addItemToCollection(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return unauthorized();
+  }
+
+  const itemId = formData.get("itemId")?.toString();
+  const collectionId = formData.get("collectionId")?.toString();
+  if (!itemId || !collectionId) {
+    return { success: false, error: "Missing itemId or collectionId" };
+  }
+
+  const collection = await db.getCollection(collectionId);
+  if (!collection) {
+    return {
+      success: false,
+      error: "Collection not found or you don't have permission to update it",
+    };
+  }
+
+  if (collection.creator.id !== session.user.id) {
+    return forbidden();
+  }
+
+  await db.addItemToCollection({ itemId, collectionId });
+  return { success: true };
+}

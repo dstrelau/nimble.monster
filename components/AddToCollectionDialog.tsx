@@ -4,6 +4,7 @@ import { CopyPlus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
+  addItemToCollection,
   addMonsterToCollection,
   listOwnCollections,
 } from "@/app/actions/collection";
@@ -34,7 +35,11 @@ interface AddToCollectionForm {
   collectionId: string;
 }
 
-export const AddToCollectionDialog = ({ monsterId }: { monsterId: string }) => {
+type AddToCollectionDialogProps =
+  | { type: "monster"; monsterId: string }
+  | { type: "item"; itemId: string };
+
+export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -53,15 +58,26 @@ export const AddToCollectionDialog = ({ monsterId }: { monsterId: string }) => {
   const selectedCollection = availableCollections.data?.collections?.find(
     (c) => c.id === selectedCollectionId
   );
-  const isMonsterAlreadyInCollection =
-    selectedCollection?.monsters.find((m) => m.id === monsterId) !== undefined;
+
+  const isAlreadyInCollection =
+    props.type === "monster"
+      ? selectedCollection?.monsters.find((m) => m.id === props.monsterId) !==
+        undefined
+      : selectedCollection?.items.find((i) => i.id === props.itemId) !==
+        undefined;
 
   const mutation = useMutation({
     mutationFn: async (data: AddToCollectionForm) => {
       const formData = new FormData();
       formData.append("collectionId", data.collectionId);
-      formData.append("monsterId", monsterId);
-      return addMonsterToCollection(formData);
+
+      if (props.type === "monster") {
+        formData.append("monsterId", props.monsterId);
+        return addMonsterToCollection(formData);
+      } else {
+        formData.append("itemId", props.itemId);
+        return addItemToCollection(formData);
+      }
     },
     onSuccess: () => {
       setOpen(false);
@@ -75,6 +91,8 @@ export const AddToCollectionDialog = ({ monsterId }: { monsterId: string }) => {
   const onSubmit = (data: AddToCollectionForm) => {
     mutation.mutate(data);
   };
+
+  const entityType = props.type === "monster" ? "monster" : "item";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -114,15 +132,15 @@ export const AddToCollectionDialog = ({ monsterId }: { monsterId: string }) => {
                 </FormItem>
               )}
             />
-            {selectedCollectionId && isMonsterAlreadyInCollection && (
+            {selectedCollectionId && isAlreadyInCollection && (
               <div className="text-warning text-sm">
-                This monster is already in the selected collection
+                This {entityType} is already in the selected collection
               </div>
             )}
             <div className="flex justify-end">
               <Button
                 type="submit"
-                disabled={mutation.isPending || isMonsterAlreadyInCollection}
+                disabled={mutation.isPending || isAlreadyInCollection}
               >
                 {mutation.isPending ? "Adding..." : "Add"}
               </Button>

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Card } from "@/app/ui/monster/Card";
+import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { MonsterCollections } from "@/components/MonsterCollections";
 import { MonsterDetailActions } from "@/components/MonsterDetailActions";
 import { auth } from "@/lib/auth";
 import { findMonster, findMonsterCollections } from "@/lib/db";
-import { AddToCollectionDialog } from "./AddToCollectionDialog";
 
 export const experimental_ppr = true;
 
@@ -85,7 +85,9 @@ export default async function MonsterPage({
     <div className="container mx-auto">
       <div className="flex justify-end items-start gap-2 mb-6">
         {isOwner && <MonsterDetailActions monster={monster} />}
-        {session?.user && <AddToCollectionDialog monsterId={monster.id} />}
+        {session?.user && (
+          <AddToCollectionDialog type="monster" monsterId={monster.id} />
+        )}
       </div>
       <div className="max-w-2xl mx-auto flex flex-col items-center gap-12">
         <Card monster={monster} creator={monster.creator} link={false} />

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Card } from "@/app/ui/item/Card";
+import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { ItemCollections } from "@/components/ItemCollections";
 import { ItemDetailActions } from "@/components/ItemDetailActions";
 import { auth } from "@/lib/auth";
@@ -77,8 +78,11 @@ export default async function ItemPage({
 
   return (
     <div className="container mx-auto">
-      <div className="flex justify-end items-start mb-6">
+      <div className="flex justify-end items-start gap-2 mb-6">
         {isOwner && <ItemDetailActions item={item} />}
+        {session?.user && (
+          <AddToCollectionDialog type="item" itemId={item.id} />
+        )}
       </div>
       <div className="flex justify-center">
         <div className="flex flex-col items-center gap-12">
