@@ -192,12 +192,28 @@ async function generateEntityImageViaService({
 
         const requestStartTime = Date.now();
 
+        // Get trace context headers for propagation
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+          "X-IMGEN-SECRET": secret,
+        };
+
+        // Inject trace context into headers
+        const activeSpan = trace.getActiveSpan();
+        if (activeSpan) {
+          const { propagation, context } = await import("@opentelemetry/api");
+          propagation.inject(
+            trace.setSpanContext(
+              context.active(),
+              activeSpan.spanContext()
+            ),
+            headers
+          );
+        }
+
         const response = await fetch(`${serviceUrl}/generate`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-IMGEN-SECRET": secret,
-          },
+          headers,
           body: JSON.stringify({
             type: entityType,
             id: entityId,

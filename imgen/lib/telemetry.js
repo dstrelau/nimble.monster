@@ -51,31 +51,42 @@ function initTelemetry() {
 function telemetryMiddleware(req, res, next) {
   const tracer = trace.getTracer("imgen-server");
 
-  tracer.startActiveSpan(`${req.method} ${req.path}`, (span) => {
-    span.setAttributes({
-      "http.method": req.method,
-      "http.url": req.url,
-      "http.path": req.path,
-      "http.user_agent": req.get("User-Agent") || "",
-    });
+  // Extract trace context from incoming headers
+  const { propagation, context } = require("@opentelemetry/api");
+  const parentContext = propagation.extract(context.active(), req.headers);
 
-    res.on("finish", () => {
+  tracer.startActiveSpan(
+    `${req.method} ${req.path}`,
+    {
+      kind: 1, // SpanKind.SERVER
+    },
+    parentContext,
+    (span) => {
       span.setAttributes({
-        "http.status_code": res.statusCode,
-        "http.response_size": res.get("Content-Length") || 0,
+        "http.method": req.method,
+        "http.url": req.url,
+        "http.path": req.path,
+        "http.user_agent": req.get("User-Agent") || "",
       });
 
-      if (res.statusCode >= 400) {
-        span.setStatus({ code: 2, message: `HTTP ${res.statusCode}` });
-      } else {
-        span.setStatus({ code: 1 });
-      }
+      res.on("finish", () => {
+        span.setAttributes({
+          "http.status_code": res.statusCode,
+          "http.response_size": res.get("Content-Length") || 0,
+        });
 
-      span.end();
-    });
+        if (res.statusCode >= 400) {
+          span.setStatus({ code: 2, message: `HTTP ${res.statusCode}` });
+        } else {
+          span.setStatus({ code: 1 });
+        }
 
-    next();
-  });
+        span.end();
+      });
+
+      next();
+    }
+  );
 }
 
 module.exports = {
