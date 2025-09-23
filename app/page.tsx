@@ -5,12 +5,15 @@ import { FamilyCard } from "@/components/FamilyCard";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { getRandomFeaturedFamily } from "@/lib/db/family";
+import { getRandomRecentItems } from "@/lib/db/item";
 import { Attribution } from "./ui/Attribution";
+import { Card as ItemCard } from "./ui/item/Card";
 import { MonsterCardWithOverflow } from "./ui/MonsterCardWithOverflow";
 
 export default async function HomePage() {
   const session = await auth();
   const featuredFamily = await getRandomFeaturedFamily();
+  const recentItems = await getRandomRecentItems(3);
   // we want the middle card to be roughly vertical, so do some math
   const randomIdx = Math.floor(
     Math.random() * (featuredFamily?.monsters ?? []).length
@@ -18,27 +21,30 @@ export default async function HomePage() {
   return (
     <div className="max-w-4xl mx-auto flex flex-col items-center gap-8">
       <h1 className="text-4xl md:text-6xl text-center font-semibold grade-100">
-        Create and share adversaries for <br />
+        Your homebrew hub for <br />
         <span className="pr-3 font-slab font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600">
           Nimble TTRPG
         </span>
       </h1>
       {!!featuredFamily?.monsters && (
         <>
-          <h2 className="flex flex-wrap text-2xl md:text-4xl text-center italic text-muted-foreground gap-2">
-            <span>Like these</span>
-            <span className="font-medium">{featuredFamily.name}</span>
-            {featuredFamily.creator && (
-              <>
-                <span>by</span>
-                <Attribution
-                  user={featuredFamily.creator}
-                  size="4xl"
-                  className="not-italic"
-                />
-              </>
-            )}
-            <CornerRightDown className="mt-4 w-8 h-8" />
+          <h2 className="text-2xl md:text-4xl text-center italic text-muted-foreground gap-2">
+            Explore hundreds of creative monsters
+            <span className="text-nowrap flex flex-nowrap gap-2">
+              like these
+              <span className="font-medium">{featuredFamily.name}</span>
+              {featuredFamily.creator && (
+                <>
+                  <span>by</span>
+                  <Attribution
+                    user={featuredFamily.creator}
+                    size="4xl"
+                    className="not-italic"
+                  />
+                </>
+              )}
+              <CornerRightDown className="mt-4 w-8 h-8" />
+            </span>
           </h2>
 
           <div className="flex flex-wrap gap-4 items-center">
@@ -79,6 +85,36 @@ export default async function HomePage() {
           </Button>
         </div>
       </div>
+
+      {recentItems.length > 0 && (
+        <>
+          <h2 className="flex flex-wrap gap-2 text-2xl md:text-4xl text-center italic text-muted-foreground">
+            Or you might like these recent items
+            <CornerRightDown className="mt-4 w-8 h-8" />
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+            {recentItems.map((item) => (
+              <ItemCard
+                key={item.id}
+                item={item}
+                creator={item.creator}
+                hideActions={true}
+              />
+            ))}
+          </div>
+        </>
+      )}
+      <div className="dark:prose-invert">
+        <div className="flex justify-center mb-8 gap-4">
+          <Button asChild className="px-4 py-6" variant="outline">
+            <a href="/items">
+              Browse Items
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </Button>
+        </div>
+      </div>
+
       <Footer />
     </div>
   );

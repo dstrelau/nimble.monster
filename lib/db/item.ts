@@ -36,6 +36,25 @@ export const listPublicItems = async (): Promise<Item[]> => {
   ).map(toItem);
 };
 
+export const getRandomRecentItems = async (
+  limit: number = 3
+): Promise<Item[]> => {
+  const items = (
+    await prisma.item.findMany({
+      where: { visibility: "public" },
+      orderBy: { createdAt: "desc" },
+      take: limit * 3,
+      include: {
+        creator: true,
+      },
+    })
+  ).map(toItem);
+
+  // Shuffle and return requested number
+  const shuffled = items.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, limit);
+};
+
 export const findItem = async (id: string): Promise<Item | null> => {
   if (!isValidUUID(id)) return null;
 
