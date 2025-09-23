@@ -39,7 +39,8 @@ export const useSimpleMonsterFilters = <T extends MonsterMini>({
     initialSort &&
       (initialSort.includes("name") ||
         initialSort.includes("level") ||
-        initialSort.includes("hp"))
+        initialSort.includes("hp") ||
+        initialSort.includes("created"))
       ? initialSort
       : "name-asc"
   );
@@ -137,6 +138,11 @@ export const useSimpleMonsterFilters = <T extends MonsterMini>({
 
         if (field === "hp") {
           const result = a.hp - b.hp;
+          return direction === "asc" ? result : -result;
+        }
+
+        if (field === "created") {
+          const result = a.createdAt.getTime() - b.createdAt.getTime();
           return direction === "asc" ? result : -result;
         }
 

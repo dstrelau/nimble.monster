@@ -13,7 +13,9 @@ export type SortOption =
   | "level-asc"
   | "level-desc"
   | "hp-asc"
-  | "hp-desc";
+  | "hp-desc"
+  | "created-asc"
+  | "created-desc";
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "name-asc", label: "Name (A→Z)" },
@@ -22,6 +24,8 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "level-desc", label: "Level (High→Low)" },
   { value: "hp-asc", label: "HP (Low→High)" },
   { value: "hp-desc", label: "HP (High→Low)" },
+  { value: "created-asc", label: "Creation Date (Old→New)" },
+  { value: "created-desc", label: "Creation Date (New→Old)" },
 ];
 
 export interface SortSelectProps {

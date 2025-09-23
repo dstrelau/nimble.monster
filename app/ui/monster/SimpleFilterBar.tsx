@@ -12,7 +12,9 @@ export type SortOption =
   | "level-asc"
   | "level-desc"
   | "hp-asc"
-  | "hp-desc";
+  | "hp-desc"
+  | "created-asc"
+  | "created-desc";
 
 interface SimpleFilterBarProps {
   searchTerm: string;

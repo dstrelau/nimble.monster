@@ -100,6 +100,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     ],
     actionPreface: "Do both.",
     moreInfo: "It's called meat shield for a reason. Use those minions!",
+    createdAt: new Date(),
     updatedAt: new Date(),
   },
   manticore: {
@@ -148,6 +149,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     actionPreface: "After each hero's turn, choose one.",
     moreInfo:
       "A mythical beast with the body of a lion, the wings of a dragon, and the face of a human. Known for their deadly tail spikes.",
+    createdAt: new Date(),
     updatedAt: new Date(),
   },
   kobold: {
@@ -177,6 +179,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     ],
     actionPreface: "",
     moreInfo: "",
+    createdAt: new Date(),
     updatedAt: new Date(),
   },
   empty: {
@@ -200,6 +203,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     actions: [],
     actionPreface: "Choose one.",
     moreInfo: "",
+    createdAt: new Date(),
     updatedAt: new Date(),
   },
 };

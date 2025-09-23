@@ -134,6 +134,7 @@ export interface MonsterMini {
   size: MonsterSize;
   armor: MonsterArmor;
   visibility: "public" | "private";
+  createdAt: Date;
 }
 
 export interface Monster extends MonsterMini {

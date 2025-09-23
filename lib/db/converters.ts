@@ -28,6 +28,7 @@ export const toMonsterMini = (
   visibility: m.visibility,
   size: m.size,
   armor: m.armor === "EMPTY_ENUM_VALUE" ? "none" : m.armor,
+  createdAt: m.createdAt,
 });
 
 export const toMonster = (

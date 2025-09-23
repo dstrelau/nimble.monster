@@ -118,6 +118,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       abilities: [],
       actions: [],
       actionPreface: "",
+      createdAt: new Date(),
       updatedAt: new Date(),
     } satisfies Partial<Monster>);
     mockAuth.mockResolvedValue({
@@ -192,6 +193,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
         },
       ],
       actionPreface: "The goblin makes two attacks",
+      createdAt: new Date(),
       updatedAt: new Date(),
     } satisfies Partial<Monster>;
 
@@ -263,6 +265,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
         },
       ],
       actionPreface: "",
+      createdAt: new Date(),
       updatedAt: new Date(),
     } satisfies Partial<Monster>;
 
@@ -321,6 +324,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
         },
       ],
       actionPreface: "",
+      createdAt: new Date(),
       updatedAt: new Date(),
     } satisfies Partial<Monster>;
 

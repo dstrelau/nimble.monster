@@ -6,14 +6,22 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 interface StatsTooltipProps {
   tooltipLines: string[];
   children: React.ReactNode;
+  className?: string;
 }
 
-export function StatsTooltip({ tooltipLines, children }: StatsTooltipProps) {
-  const fallback = <div className="flex items-center">{children}</div>;
+export function StatsTooltip({
+  tooltipLines,
+  children,
+  className,
+}: StatsTooltipProps) {
+  const fallback = (
+    <div className={cn("flex items-center", className)}>{children}</div>
+  );
 
   if (tooltipLines.length === 0) {
     return fallback;
@@ -22,7 +30,7 @@ export function StatsTooltip({ tooltipLines, children }: StatsTooltipProps) {
   const tooltipContent = (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="flex items-center">{children}</div>
+        <div className={cn("flex items-center", className)}>{children}</div>
       </TooltipTrigger>
       <TooltipContent className="w-fit p-3">
         <dl className="grid grid-cols-2 gap-x-2 gap-y-1">
