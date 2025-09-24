@@ -1,7 +1,7 @@
 "use client";
 
 import { Crown, User } from "lucide-react";
-import { SearchInput } from "@/app/ui/SearchInput";
+import { FilterBar } from "@/app/ui/FilterBar";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { SortSelect } from "./SortSelect";
 
@@ -34,41 +34,33 @@ export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
   onSortChange,
 }) => {
   return (
-    <div className="flex flex-col gap-3 pb-4">
-      <SearchInput
-        value={searchTerm}
-        onChange={onSearch}
-        placeholder="Search"
-      />
+    <FilterBar
+      searchTerm={searchTerm}
+      onSearch={onSearch}
+      searchPlaceholder="Search"
+    >
+      <ToggleGroup
+        type="single"
+        variant="outline"
+        value={legendaryFilter}
+        onValueChange={(value) => {
+          if (value) onLegendaryFilterChange(value as LegendaryFilter);
+        }}
+      >
+        <ToggleGroupItem value="all" aria-label="All monsters" className="px-6">
+          <User className="h-4 w-4" />
+          +
+          <Crown className="h-4 w-4" />
+        </ToggleGroupItem>
+        <ToggleGroupItem value="standard" aria-label="Standard monsters">
+          <User className="h-4 w-4" />
+        </ToggleGroupItem>
+        <ToggleGroupItem value="legendary" aria-label="Legendary monsters">
+          <Crown className="h-4 w-4" />
+        </ToggleGroupItem>
+      </ToggleGroup>
 
-      <div className="flex gap-3 items-center">
-        <ToggleGroup
-          type="single"
-          variant="outline"
-          value={legendaryFilter}
-          onValueChange={(value) => {
-            if (value) onLegendaryFilterChange(value as LegendaryFilter);
-          }}
-        >
-          <ToggleGroupItem
-            value="all"
-            aria-label="All monsters"
-            className="px-6"
-          >
-            <User className="h-4 w-4" />
-            +
-            <Crown className="h-4 w-4" />
-          </ToggleGroupItem>
-          <ToggleGroupItem value="standard" aria-label="Standard monsters">
-            <User className="h-4 w-4" />
-          </ToggleGroupItem>
-          <ToggleGroupItem value="legendary" aria-label="Legendary monsters">
-            <Crown className="h-4 w-4" />
-          </ToggleGroupItem>
-        </ToggleGroup>
-
-        <SortSelect value={sortOption} onChange={onSortChange} />
-      </div>
-    </div>
+      <SortSelect value={sortOption} onChange={onSortChange} />
+    </FilterBar>
   );
 };

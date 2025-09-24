@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowDownUp } from "lucide-react";
-import { SearchInput } from "@/app/ui/SearchInput";
+import { FilterBar } from "@/app/ui/FilterBar";
 import {
   Select,
   SelectContent,
@@ -41,28 +41,24 @@ export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
   onSortChange,
 }) => {
   return (
-    <div className="flex flex-col gap-3 pb-4">
-      <SearchInput
-        value={searchTerm}
-        onChange={onSearch}
-        placeholder="Search"
-      />
-
-      <div className="flex gap-3 items-center">
-        <Select value={sortOption} onValueChange={onSortChange}>
-          <SelectTrigger>
-            <ArrowDownUp className="h-4 w-4" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {SORT_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
+    <FilterBar
+      searchTerm={searchTerm}
+      onSearch={onSearch}
+      searchPlaceholder="Search"
+    >
+      <Select value={sortOption} onValueChange={onSortChange}>
+        <SelectTrigger>
+          <ArrowDownUp className="h-4 w-4" />
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {SORT_OPTIONS.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </FilterBar>
   );
 };

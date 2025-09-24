@@ -1,8 +1,9 @@
-import { CollectionCard } from "@/app/ui/CollectionCard";
+import { CollectionsListView } from "@/app/ui/collection/CollectionsListView";
 import * as db from "@/lib/db";
 
 export default async function CollectionsPage() {
   const collections = await db.listPublicCollectionsHavingMonsters();
+
   if (collections?.length === 0) {
     return (
       <div className="text-center py-12">
@@ -12,12 +13,8 @@ export default async function CollectionsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
-        {collections.map((collection) => (
-          <CollectionCard key={collection.id} collection={collection} />
-        ))}
-      </div>
+    <div className="container mx-auto py-3">
+      <CollectionsListView collections={collections} />
     </div>
   );
 }
