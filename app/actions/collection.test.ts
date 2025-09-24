@@ -1,10 +1,19 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { Session } from "next-auth";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type MockedFunction,
+  vi,
+} from "vitest";
 import { prisma } from "@/lib/db";
 import type { Collection, Item, Monster, User } from "@/lib/prisma";
 import { addItemToCollection, addMonsterToCollection } from "./collection";
 
 vi.mock("@/lib/auth", () => ({
-  auth: vi.fn().mockResolvedValue(null),
+  auth: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -13,7 +22,22 @@ vi.mock("next/navigation", () => ({
 }));
 
 const { auth } = await import("@/lib/auth");
+// biome-ignore lint/suspicious/noExplicitAny: test mocking requires any
+const mockAuth: MockedFunction<any> = vi.mocked(auth);
 const { unauthorized, forbidden } = await import("next/navigation");
+
+function createMockSession(user: User): Session {
+  return {
+    user: {
+      id: user.id,
+      discordId: user.discordId,
+      username: user.username,
+      displayName: user.displayName ?? "",
+      imageUrl: user.imageUrl ?? undefined,
+    },
+    expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+  };
+}
 
 describe("Collection actions", () => {
   let testUser: User;
@@ -98,9 +122,7 @@ describe("Collection actions", () => {
 
   describe("addItemToCollection", () => {
     it("should add item to collection successfully", async () => {
-      vi.mocked(auth).mockResolvedValue({
-        user: { id: testUser.id, discordId: testUser.discordId },
-      });
+      mockAuth.mockResolvedValue(createMockSession(testUser));
 
       const formData = new FormData();
       formData.append("itemId", item.id);
@@ -120,7 +142,7 @@ describe("Collection actions", () => {
     });
 
     it("should return unauthorized when user is not authenticated", async () => {
-      vi.mocked(auth).mockResolvedValue(null);
+      mockAuth.mockResolvedValue(null);
 
       const formData = new FormData();
       formData.append("itemId", item.id);
@@ -132,9 +154,7 @@ describe("Collection actions", () => {
     });
 
     it("should return error when itemId is missing", async () => {
-      vi.mocked(auth).mockResolvedValue({
-        user: { id: testUser.id, discordId: testUser.discordId },
-      });
+      mockAuth.mockResolvedValue(createMockSession(testUser));
 
       const formData = new FormData();
       formData.append("collectionId", collection.id);
@@ -148,9 +168,7 @@ describe("Collection actions", () => {
     });
 
     it("should return error when collectionId is missing", async () => {
-      vi.mocked(auth).mockResolvedValue({
-        user: { id: testUser.id, discordId: testUser.discordId },
-      });
+      mockAuth.mockResolvedValue(createMockSession(testUser));
 
       const formData = new FormData();
       formData.append("itemId", item.id);
@@ -164,9 +182,7 @@ describe("Collection actions", () => {
     });
 
     it("should return forbidden when user is not collection owner", async () => {
-      vi.mocked(auth).mockResolvedValue({
-        user: { id: otherUser.id, discordId: otherUser.discordId },
-      });
+      mockAuth.mockResolvedValue(createMockSession(otherUser));
 
       const formData = new FormData();
       formData.append("itemId", item.id);
@@ -178,9 +194,7 @@ describe("Collection actions", () => {
     });
 
     it("should return error when collection does not exist", async () => {
-      vi.mocked(auth).mockResolvedValue({
-        user: { id: testUser.id, discordId: testUser.discordId },
-      });
+      mockAuth.mockResolvedValue(createMockSession(testUser));
 
       const formData = new FormData();
       formData.append("itemId", item.id);
@@ -197,9 +211,7 @@ describe("Collection actions", () => {
 
   describe("addMonsterToCollection", () => {
     it("should add monster to collection successfully", async () => {
-      vi.mocked(auth).mockResolvedValue({
-        user: { id: testUser.id, discordId: testUser.discordId },
-      });
+      mockAuth.mockResolvedValue(createMockSession(testUser));
 
       const formData = new FormData();
       formData.append("monsterId", monster.id);
