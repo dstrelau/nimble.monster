@@ -14,4 +14,5 @@ export * from "./condition";
 export * from "./family";
 export * from "./item";
 export * from "./monster";
+export * from "./subclass";
 export * from "./user";

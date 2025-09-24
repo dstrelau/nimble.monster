@@ -11,6 +11,10 @@ import type {
   ItemRarity,
   Monster,
   MonsterMini,
+  Subclass,
+  SubclassAbility,
+  SubclassLevel,
+  SubclassMini,
   User,
 } from "@/lib/types";
 import type { prisma } from "./index";
@@ -244,3 +248,58 @@ export const toUser = (
       ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
       : "https://cdn.discordapp.com/embed/avatars/0.png"),
 });
+
+export const toSubclassMini = (
+  s: Prisma.Result<typeof prisma.subclass, object, "findMany">[0]
+): SubclassMini => ({
+  id: s.id,
+  name: s.name,
+  className: s.className as SubclassMini["className"],
+  namePreface: s.namePreface || undefined,
+  visibility: s.visibility,
+  createdAt: s.createdAt,
+});
+
+export const toSubclass = (
+  s: Prisma.Result<
+    typeof prisma.subclass,
+    {
+      include: {
+        creator: true;
+        abilities: true;
+      };
+    },
+    "findMany"
+  >[0]
+): Subclass => {
+  // Group abilities by level and convert to SubclassLevel format
+  const levelGroups = s.abilities.reduce(
+    (acc, ability) => {
+      if (!acc[ability.level]) {
+        acc[ability.level] = [];
+      }
+      acc[ability.level].push({
+        name: ability.name,
+        description: ability.description,
+      });
+      return acc;
+    },
+    {} as Record<number, SubclassAbility[]>
+  );
+
+  // Convert to levels array, sorted by level
+  const levels: SubclassLevel[] = Object.entries(levelGroups)
+    .map(([level, abilities]) => ({
+      level: parseInt(level, 10),
+      abilities,
+    }))
+    .sort((a, b) => a.level - b.level);
+
+  return {
+    ...toSubclassMini(s),
+    description: s.description || undefined,
+    levels,
+    creator: toUser(s.creator),
+    updatedAt: s.updatedAt,
+  };
+};

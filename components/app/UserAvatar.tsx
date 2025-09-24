@@ -25,7 +25,6 @@ const getSizeInPixels = (size: AvatarSize | number): number => {
 
 export const UserAvatar = ({ user, size, className }: UserAvatarProps) => {
   const sizeInPixels = getSizeInPixels(size);
-  console.log("useravatar", user);
 
   if (!user) {
     return (

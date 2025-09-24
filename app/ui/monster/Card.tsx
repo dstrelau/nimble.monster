@@ -12,12 +12,7 @@ import {
 import { Link } from "@/components/app/Link";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { Level } from "@/components/Level";
-import {
-  CardAction,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { CardDescription, CardTitle } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Monster, User } from "@/lib/types";
 import { cn } from "@/lib/utils";

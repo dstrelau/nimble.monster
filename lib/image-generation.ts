@@ -203,10 +203,7 @@ async function generateEntityImageViaService({
         if (activeSpan) {
           const { propagation, context } = await import("@opentelemetry/api");
           propagation.inject(
-            trace.setSpanContext(
-              context.active(),
-              activeSpan.spanContext()
-            ),
+            trace.setSpanContext(context.active(), activeSpan.spanContext()),
             headers
           );
         }

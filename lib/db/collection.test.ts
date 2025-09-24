@@ -1,14 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import type { Collection, Monster, User } from "@/lib/prisma";
 import { getCollection } from "./collection";
 import { prisma } from "./index";
 
 describe("Collection access control", () => {
-  let publicCollection: any;
-  let privateCollection: any;
-  let publicMonster: any;
-  let privateMonster: any;
-  let testUser: any;
-  let otherUser: any;
+  let publicCollection: Collection;
+  let privateCollection: Collection;
+  let publicMonster: Monster;
+  let privateMonster: Monster;
+  let testUser: User;
+  let otherUser: User;
   let testRunId: string;
 
   beforeEach(async () => {

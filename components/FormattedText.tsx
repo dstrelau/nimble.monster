@@ -207,7 +207,14 @@ export function FormattedText({
     );
 
   return (
-    <div className={cn("[&_p_~_p]:mt-1.5", className)}>{renderedContent}</div>
+    <div
+      className={cn(
+        "[&_p_~_p]:mt-1.5 [&_ul,&_li]:list-disc [&_ul,&_li]:list-inside",
+        className
+      )}
+    >
+      {renderedContent}
+    </div>
   );
 }
 

@@ -266,3 +266,73 @@ export interface User {
   displayName: string;
   imageUrl?: string;
 }
+
+export const SUBCLASS_VISIBILITY = [
+  { value: "public", label: "Public" },
+  { value: "private", label: "Private" },
+] as const;
+export type SubclassVisibility = (typeof SUBCLASS_VISIBILITY)[number]["value"];
+
+export const SUBCLASS_CLASSES = [
+  { value: "Shadowmancer", label: "Shadowmancer" },
+  { value: "Berserker", label: "Berserker" },
+  { value: "The Cheat", label: "The Cheat" },
+  { value: "Commander", label: "Commander" },
+  { value: "Hunter", label: "Hunter" },
+  { value: "Mage", label: "Mage" },
+  { value: "Oathsworn", label: "Oathsworn" },
+  { value: "Shepherd", label: "Shepherd" },
+  { value: "Songweaver", label: "Songweaver" },
+  { value: "Stormshifter", label: "Stormshifter" },
+  { value: "Zephyr", label: "Zephyr" },
+] as const;
+export type SubclassClass = (typeof SUBCLASS_CLASSES)[number]["value"];
+
+export const SUBCLASS_NAME_PREFIXES: Record<SubclassClass, string> = {
+  Berserker: "Path of the",
+  "The Cheat": "Tools of the",
+  Commander: "Champion of the",
+  Hunter: "Keeper of the",
+  Mage: "Invoker of",
+  Oathsworn: "Oauth of",
+  Shadowmancer: "Pact of the",
+  Shepherd: "Luminary of",
+  Songweaver: "Herald of",
+  Stormshifter: "Circle of",
+  Zephyr: "Way of",
+};
+
+export interface SubclassAbility {
+  name: string;
+  description: string;
+}
+
+export interface SubclassLevel {
+  level: number;
+  abilities: SubclassAbility[];
+}
+
+export interface SubclassMini {
+  id: string;
+  name: string;
+  className: SubclassClass;
+  namePreface?: string;
+  visibility: SubclassVisibility;
+  createdAt: Date;
+}
+
+export interface Subclass extends SubclassMini {
+  description?: string;
+  levels: SubclassLevel[];
+  creator: User;
+  updatedAt: Date;
+}
+
+export interface SubclassAbilityDb {
+  id: string;
+  subclassId: string;
+  level: number;
+  name: string;
+  description: string;
+  orderIndex: number;
+}

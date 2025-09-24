@@ -82,25 +82,25 @@ export default async function CreatePage() {
           <div className="flex flex-wrap justify-center gap-6">
             <CreateCard
               href="/monsters/new"
-              icon={<Ghost className="h-16 w-16" />}
+              icon={<Ghost className="size-16" />}
               title="Monster"
               description="Traditional monsters and Solo Legendaries."
             />
             <CreateCard
               href="/items/new"
-              icon={<Shield className="h-16 w-16" />}
+              icon={<Shield className="size-16" />}
               title="Item"
               description="Magical items and equipment."
             />
             <CreateCard
               href="/companions/new"
-              icon={<HeartHandshake className="h-16 w-16" />}
+              icon={<HeartHandshake className="size-16" />}
               title="Companion"
               description="NPC adventuring companions."
             />
             <CreateCard
               href="/collections/new"
-              icon={<Box className="h-16 w-16" />}
+              icon={<Box className="size-16" />}
               title="Collection"
               description="Organize monsters into collections."
               disabled={!isAuthenticated}
@@ -108,12 +108,20 @@ export default async function CreatePage() {
             />
             <CreateCard
               href="/families/new"
-              icon={<Users className="h-16 w-16" />}
+              icon={<Users className="size-16" />}
               title="Family"
               description="Create monster families with shared abilities."
               disabled={!isAuthenticated}
               disabledMessage="You must signin to create a Family."
             />
+            {/*<CreateCard
+              href="/subclasses/new"
+              icon={<HandFist className="size-16" />}
+              title="Subclass"
+              description="Create custom character subclasses with abilities."
+              disabled={!isAuthenticated}
+              disabledMessage="You must signin to create a Subclass."
+            /> */}
           </div>
         </div>
       </div>

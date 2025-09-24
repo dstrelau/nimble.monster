@@ -184,6 +184,36 @@ model Item {
   @@map("items")
 }
 
+model Subclass {
+  id          String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String
+  className   String              @map("class_name")
+  namePreface String?             @map("name_preface")
+  description String?
+  visibility  subclass_visibility @default(public)
+  userId      String              @map("user_id") @db.Uuid
+  createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  creator     User                @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  abilities   SubclassAbility[]
+
+  @@index([userId], map: "idx_subclasses_user_id")
+  @@map("subclasses")
+}
+
+model SubclassAbility {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  subclassId  String    @map("subclass_id") @db.Uuid
+  level       Int
+  name        String
+  description String
+  orderIndex  Int       @map("order_index")
+  subclass    Subclass  @relation(fields: [subclassId], references: [id], onDelete: Cascade)
+
+  @@index([subclassId, level, orderIndex], map: "idx_subclass_abilities_subclass_level_order")
+  @@map("subclass_abilities")
+}
+
 model User {
   id           String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   discordId    String       @unique(map: "idx_users_discord_id") @map("discord_id")
@@ -199,6 +229,7 @@ model User {
   items        Item[]
   sessions     Session[]
   conditions   Condition[]
+  subclasses   Subclass[]
 
   @@map("users")
 }
@@ -280,4 +311,9 @@ enum generation_status {
   generating
   completed
   failed
+}
+
+enum subclass_visibility {
+  public
+  private
 }
