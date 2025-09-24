@@ -1,22 +1,25 @@
+"use client";
 import { EyeOff } from "lucide-react";
+import { useSession } from "next-auth/react";
 import React from "react";
-import { Attribution } from "@/app/ui/Attribution";
-import { VisibilityBadge } from "@/app/ui/VisibilityBadge";
 import { Link } from "@/components/app/Link";
+import { FormattedText } from "@/components/FormattedText";
 import { GameIcon } from "@/components/GameIcon";
 import { MonsterRow } from "@/components/MonsterGroupMinis";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useConditions } from "@/lib/hooks/useConditions";
 import type { CollectionOverview } from "@/lib/types";
 import { RARITIES } from "@/lib/types";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
+import { CardFooterLayout } from "./shared/CardFooterLayout";
 
 const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
   const rarityOption = RARITIES.find(
@@ -70,13 +73,11 @@ const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
 
 export const CollectionCard = ({
   collection,
-  showAttribution,
   showVisibilityBadge = true,
   limit = 5,
 }: {
   collection: CollectionOverview;
   showVisibilityBadge: boolean;
-  showAttribution: boolean;
   limit?: number;
 }) => {
   const total = collection.items.length + collection.monsters.length;
@@ -106,6 +107,16 @@ export const CollectionCard = ({
 
   const href = collection.id && `/collections/${collection.id}`;
 
+  const { data: session } = useSession();
+  const { allConditions: conditions } = useConditions({
+    creatorId: session?.user.discordId,
+  });
+  const truncatedDescription = collection.description
+    ? collection.description.length > 100
+      ? `${collection.description.slice(0, 100)}...`
+      : collection.description
+    : null;
+
   return (
     <Card>
       <CardHeader>
@@ -120,15 +131,13 @@ export const CollectionCard = ({
             `${collection.name}`
           )}
         </CardTitle>
-        {showAttribution && (
+        {truncatedDescription && (
           <CardDescription>
-            <Attribution user={collection.creator} />
+            <FormattedText
+              content={truncatedDescription}
+              conditions={conditions}
+            />
           </CardDescription>
-        )}
-        {showVisibilityBadge && (
-          <CardAction>
-            <VisibilityBadge visibility={collection.visibility} />
-          </CardAction>
         )}
       </CardHeader>
       <CardContent>
@@ -159,6 +168,17 @@ export const CollectionCard = ({
           )}
         </div>
       </CardContent>
+      <CardFooterLayout
+        creator={collection.creator}
+        actionsSlot={
+          showVisibilityBadge &&
+          collection.visibility === "private" && (
+            <Badge variant="default" className="h-6">
+              Private
+            </Badge>
+          )
+        }
+      />
     </Card>
   );
 };

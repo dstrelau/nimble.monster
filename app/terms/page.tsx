@@ -1,5 +1,5 @@
-import { Footer } from "@/components/app/Footer";
 import Link from "next/link";
+import { Footer } from "@/components/app/Footer";
 
 export default async function TermsPage() {
   return (
