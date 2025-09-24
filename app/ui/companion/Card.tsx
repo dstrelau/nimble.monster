@@ -68,7 +68,6 @@ interface CardProps {
   creator: User;
   link?: boolean;
   hideActions?: boolean;
-  hideCreator?: boolean;
   className?: string;
 }
 
@@ -77,7 +76,6 @@ export const Card = ({
   creator,
   link = true,
   hideActions = false,
-  hideCreator = false,
   className,
 }: CardProps) => {
   const { allConditions } = useConditions({
@@ -126,7 +124,6 @@ export const Card = ({
 
         <CardFooterLayout
           creator={creator}
-          hideCreator={hideCreator}
           hideActions={hideActions}
           actionsSlot={
             <ShareMenu disabled={companion.visibility !== "public"}>

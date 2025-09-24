@@ -21,12 +21,7 @@ export default async function MyCollectionsPage() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
           {collections.map((c) => (
-            <CollectionCard
-              key={c.id}
-              collection={c}
-              showVisibilityBadge={true}
-              showAttribution={false}
-            />
+            <CollectionCard key={c.id} collection={c} />
           ))}
         </div>
       )}

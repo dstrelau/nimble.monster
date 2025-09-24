@@ -10,14 +10,12 @@ interface GridColumns {
 interface CardGridProps {
   items: Item[];
   gridColumns?: GridColumns;
-  hideCreator?: boolean;
   hideActions?: boolean;
 }
 
 export function CardGrid({
   items,
   gridColumns = { default: 1, md: 2, lg: 3 },
-  hideCreator = false,
   hideActions = false,
 }: CardGridProps) {
   const gridClasses = [
@@ -35,7 +33,6 @@ export function CardGrid({
           key={item.id}
           item={item}
           creator={item.creator}
-          hideCreator={hideCreator}
           hideActions={hideActions}
         />
       ))}

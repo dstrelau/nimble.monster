@@ -45,8 +45,6 @@ export default async function RecentPage() {
                 <CollectionCard
                   key={`collection-${item.id}`}
                   collection={item.data}
-                  showAttribution={true}
-                  showVisibilityBadge={false}
                 />
               );
             case "family":

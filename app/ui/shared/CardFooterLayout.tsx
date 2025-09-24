@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 
 interface CardFooterLayoutProps {
   creator?: User;
-  hideCreator?: boolean;
   hideActions?: boolean;
   actionsSlot?: React.ReactNode;
   className?: string;
@@ -15,19 +14,16 @@ interface CardFooterLayoutProps {
 
 export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
   creator,
-  hideCreator = false,
   hideActions = false,
   actionsSlot,
   className,
 }) => {
-  if (hideActions && hideCreator) return null;
-
   return (
     <>
       <Separator />
       <CardFooter className={cn("flex-col items-stretch", className)}>
         <div className="flex items-center justify-between">
-          {creator && !hideCreator ? <Attribution user={creator} /> : <div />}
+          {creator ? <Attribution user={creator} /> : <div />}
 
           {!hideActions && actionsSlot}
         </div>

@@ -78,11 +78,7 @@ export default function TabsContent({
             No public monsters available
           </p>
         ) : (
-          <MonsterCardGrid
-            monsters={monsters}
-            hideCreator={true}
-            hideActions={true}
-          />
+          <MonsterCardGrid monsters={monsters} hideActions={true} />
         )}
       </ShadcnTabsContent>
 
@@ -94,12 +90,7 @@ export default function TabsContent({
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
             {collections.map((collection) => (
-              <CollectionCard
-                key={collection.id}
-                collection={collection}
-                showVisibilityBadge={false}
-                showAttribution={false}
-              />
+              <CollectionCard key={collection.id} collection={collection} />
             ))}
           </div>
         )}
@@ -129,7 +120,7 @@ export default function TabsContent({
             No public companions available
           </p>
         ) : (
-          <CompanionCardGrid companions={companions} hideActions hideCreator />
+          <CompanionCardGrid companions={companions} hideActions />
         )}
       </ShadcnTabsContent>
 
@@ -139,7 +130,7 @@ export default function TabsContent({
             No public items available
           </p>
         ) : (
-          <ItemCardGrid items={items} hideActions hideCreator />
+          <ItemCardGrid items={items} hideActions />
         )}
       </ShadcnTabsContent>
     </Tabs>

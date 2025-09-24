@@ -6,12 +6,10 @@ export const CardGrid = ({
   companions,
   hideActions = false,
   gridColumns = { default: 1, md: 1, lg: 2 },
-  hideCreator = false,
 }: {
   companions: Companion[];
   hideActions?: boolean;
   gridColumns?: { default?: number; sm?: number; md?: number; lg?: number };
-  hideCreator?: boolean;
 }) => {
   return (
     <div
@@ -30,7 +28,6 @@ export const CardGrid = ({
             companion={c}
             creator={c.creator}
             hideActions={hideActions}
-            hideCreator={hideCreator}
           />
         );
       })}

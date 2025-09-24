@@ -530,8 +530,6 @@ export function CreateEditCollection({
                 items: currentItems,
                 creator: session?.user || UNKNOWN_USER,
               }}
-              showVisibilityBadge={true}
-              showAttribution={true}
               limit={5}
             />
           </div>

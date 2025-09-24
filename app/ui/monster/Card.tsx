@@ -213,7 +213,6 @@ interface CardProps {
   link?: boolean;
   hideActions?: boolean;
   hideFamilyAbilities?: boolean;
-  hideCreator?: boolean;
   hideFamilyName?: boolean;
   className?: string;
 }
@@ -224,7 +223,6 @@ export const Card = ({
   link = true,
   hideActions = false,
   hideFamilyAbilities = false,
-  hideCreator = false,
   hideFamilyName = false,
   className,
 }: CardProps) => {
@@ -304,7 +302,6 @@ export const Card = ({
 
           <CardFooterLayout
             creator={creator}
-            hideCreator={hideCreator}
             hideActions={hideActions}
             actionsSlot={<CardActions monster={monster} />}
           />

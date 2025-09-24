@@ -73,11 +73,9 @@ const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
 
 export const CollectionCard = ({
   collection,
-  showVisibilityBadge = true,
   limit = 5,
 }: {
   collection: CollectionOverview;
-  showVisibilityBadge: boolean;
   limit?: number;
 }) => {
   const total = collection.items.length + collection.monsters.length;
@@ -171,7 +169,6 @@ export const CollectionCard = ({
       <CardFooterLayout
         creator={collection.creator}
         actionsSlot={
-          showVisibilityBadge &&
           collection.visibility === "private" && (
             <Badge variant="default" className="h-6">
               Private

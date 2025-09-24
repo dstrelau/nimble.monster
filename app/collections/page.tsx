@@ -15,12 +15,7 @@ export default async function CollectionsPage() {
     <div className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
         {collections.map((collection) => (
-          <CollectionCard
-            key={collection.id}
-            collection={collection}
-            showVisibilityBadge={false}
-            showAttribution={true}
-          />
+          <CollectionCard key={collection.id} collection={collection} />
         ))}
       </div>
     </div>

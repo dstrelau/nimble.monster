@@ -74,7 +74,6 @@ export default async function FamilyDetailPage({
         <CardGrid
           monsters={monsters}
           hideFamilyAbilities={true}
-          hideCreator={true}
           hideFamilyName={true}
           hideActions={true}
         />
