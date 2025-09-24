@@ -25,15 +25,16 @@ export async function generateMetadata({
     ? ` by ${subclass.creator.displayName}`
     : "";
   const subclassInfo = `${subclass.className} Subclass`;
+  const title = `${subclass.namePreface} ${subclass.name}`;
 
   return {
     metadataBase: process.env.NEXT_PUBLIC_APP_URL
       ? new URL(process.env.NEXT_PUBLIC_APP_URL)
       : undefined,
-    title: subclass.name,
+    title,
     description: `${subclass.name} - ${subclassInfo}${creatorText} | nimble.monster`,
     openGraph: {
-      title: subclass.name,
+      title: title,
       description: `${subclassInfo}${creatorText}`,
       type: "article",
       url: `/subclasses/${subclass.id}`,
