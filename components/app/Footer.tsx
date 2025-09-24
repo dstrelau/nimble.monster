@@ -1,9 +1,19 @@
-import { Beer, Coins, Flame, Mail } from "lucide-react";
+import { Beer, Coins, Flame, Mail, ScrollText } from "lucide-react";
 import Link from "next/link";
 import { Discord, GitHub } from "../SimpleIcons";
 
 export const Footer = () => {
   const sections = [
+    {
+      name: "About",
+      links: [
+        {
+          icon: <ScrollText className="size-4" />,
+          url: "/terms",
+          text: "Terms",
+        },
+      ],
+    },
     {
       name: "Support",
       links: [
@@ -60,13 +70,12 @@ export const Footer = () => {
   ];
   return (
     <footer>
-      <div className="mx-auto max-w-5xl flex flex-wrap gap-8 px-4 py-6 mt-16 border-t">
-        <div className="max-w-lg prose dark:prose-invert text-sm text-muted-foreground ">
+      <div className="mx-auto max-w-7xl flex flex-wrap-reverse justify-center gap-8 px-4 py-6 mt-16 border-t">
+        <div className="max-w-2xl prose dark:prose-invert text-sm text-muted-foreground ">
           <p>
-            <Flame className="size-3 mr-0.5 inline align-baseline" />
+            <Flame className="size-3 mr-0.5 inline align-baseline stroke-flame" />
             nimble.monster is an independent product published under the Nimble
             3rd Party Creator License and is not affiliated with Nimble Co.
-            <br />
             Nimble © 2025 Nimble Co.
           </p>
           <Link href="https://discord.gg/2etKN3aGfM" />
@@ -83,11 +92,11 @@ export const Footer = () => {
             <Link href="https://ko-fi.com/byteslicer">Toss a coin</Link>
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-8">
           {sections.map((section) => (
-            <div key={section.name}>
+            <div className="min-w-28" key={section.name}>
               <h4 className="font-bold text-md">{section.name}</h4>
-              <ul className="list-none pl-0 text-sm py-1">
+              <ul className="list-none pl-0 text-sm">
                 {section.links.map((link) => (
                   <li key={link.url} className="flex items-center gap-2 py-1">
                     {link.icon}
