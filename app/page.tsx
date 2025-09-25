@@ -1,6 +1,5 @@
 import { ArrowRight, CornerRightDown } from "lucide-react";
 import Image from "next/image";
-import { Footer } from "@/components/app/Footer";
 import { FamilyCard } from "@/components/FamilyCard";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
@@ -116,7 +115,6 @@ export default async function HomePage() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

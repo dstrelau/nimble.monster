@@ -1,5 +1,6 @@
 import "@/app/ui/global.css";
 import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
+import { Footer } from "@/components/app/Footer";
 import { auth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
@@ -38,7 +39,10 @@ export default async function RootLayout({
           serif.variable
         )}
       >
-        <Providers session={session}>{children}</Providers>
+        <Providers session={session}>
+          <div className="min-h-[50rem]">{children}</div>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
