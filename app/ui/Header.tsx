@@ -3,6 +3,7 @@
 import {
   Box,
   Ghost,
+  HandFist,
   HeartHandshake,
   Menu,
   Shield,
@@ -89,6 +90,12 @@ const Header = () => {
       label: "Collections",
       isActive: isActive("/collections"),
       icon: Box,
+    },
+    {
+      href: "/subclasses",
+      label: "Subclasses",
+      isActive: isActive("/subclasses"),
+      icon: HandFist,
     },
   ];
 

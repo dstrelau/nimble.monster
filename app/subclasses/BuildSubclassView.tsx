@@ -5,10 +5,16 @@ import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useId, useMemo, useState } from "react";
-import { type Control, useFieldArray, useForm } from "react-hook-form";
+import {
+  type Control,
+  useFieldArray,
+  useForm,
+  useWatch,
+} from "react-hook-form";
 import { z } from "zod";
 import { Card } from "@/app/ui/subclass/Card";
 import { BuildView } from "@/components/app/BuildView";
+import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { Button } from "@/components/ui/button";
@@ -38,6 +44,7 @@ import {
 import { createSubclass, updateSubclass } from "../actions/subclass";
 
 const abilitySchema = z.object({
+  id: z.string().uuid(),
   name: z.string().min(1, "Ability name is required"),
   description: z.string().min(1, "Ability description is required"),
   actionType: z.enum(["ability", "action", "reaction", "passive"]).optional(),
@@ -65,6 +72,7 @@ const formSchema = z.object({
     "Zephyr",
   ]),
   namePreface: z.string().optional(),
+  tagline: z.string().optional(),
   description: z.string().optional(),
   levels: z.array(levelSchema),
   visibility: z.enum(["public", "private"]).default("public"),
@@ -94,11 +102,13 @@ const EXAMPLE_SUBCLASSES: Record<string, Omit<Subclass, "creator">> = {
         level: 3,
         abilities: [
           {
+            id: "blood-frenzy",
             name: "Blood Frenzy",
             description:
               "(1/turn) While Raging, whenever you crit or kill an enemy, change 1 Fury Die to the maximum.",
           },
           {
+            id: "savage-awareness",
             name: "Savage Awareness",
             description:
               "Advantage on Perception checks to notice or track down blood. Blindsight 2 while Raging: you ignore the [[Blinded]] condition and can see through darkness and Invisibility within that Range.",
@@ -109,6 +119,7 @@ const EXAMPLE_SUBCLASSES: Record<string, Omit<Subclass, "creator">> = {
         level: 7,
         abilities: [
           {
+            id: "unstoppable-brutality",
             name: "Unstoppable Brutality",
             description:
               "While Raging, you may gain 1 Wound to reroll any attack or save.",
@@ -119,6 +130,7 @@ const EXAMPLE_SUBCLASSES: Record<string, Omit<Subclass, "creator">> = {
         level: 11,
         abilities: [
           {
+            id: "opportunistic-frenzy",
             name: "Opportunistic Frenzy",
             description:
               "While Raging, you can make opportunity attacks without disadvantage, and you may make them whenever an enemy enters your melee weapon's reach.",
@@ -129,6 +141,7 @@ const EXAMPLE_SUBCLASSES: Record<string, Omit<Subclass, "creator">> = {
         level: 15,
         abilities: [
           {
+            id: "onslaught",
             name: "Onslaught",
             description:
               "While Raging, gain +2 speed. (1/round) you may move for free.",
@@ -163,8 +176,9 @@ export default function BuildSubclassView({
         (subclass?.className
           ? SUBCLASS_NAME_PREFIXES[subclass.className]
           : SUBCLASS_NAME_PREFIXES.Berserker),
+      tagline: subclass?.tagline || "",
       description: subclass?.description || "",
-      levels: subclass?.levels || [],
+      levels: subclass?.levels || [{ level: 3, abilities: [] }],
       visibility: subclass?.visibility || "public",
     },
   });
@@ -188,6 +202,7 @@ export default function BuildSubclassView({
       name: watchedValues.name || "",
       className: watchedValues.className || "",
       namePreface: watchedValues.namePreface || undefined,
+      tagline: watchedValues.tagline || undefined,
       description: watchedValues.description || undefined,
       levels: watchedValues.levels || [],
       visibility: watchedValues.visibility,
@@ -199,6 +214,7 @@ export default function BuildSubclassView({
       watchedValues.name,
       watchedValues.className,
       watchedValues.namePreface,
+      watchedValues.tagline,
       watchedValues.description,
       watchedValues.levels,
       watchedValues.visibility,
@@ -218,6 +234,7 @@ export default function BuildSubclassView({
         name: data.name.trim(),
         className: data.className,
         namePreface: data.namePreface?.trim() || undefined,
+        tagline: data.tagline?.trim() || undefined,
         description: data.description?.trim() || undefined,
         levels: processedLevels,
         visibility: data.visibility,
@@ -273,6 +290,7 @@ export default function BuildSubclassView({
       level: nextLevel,
       abilities: [
         {
+          id: crypto.randomUUID(),
           name: "",
           description: "",
         },
@@ -378,12 +396,26 @@ export default function BuildSubclassView({
 
             <FormField
               control={form.control}
+              name="tagline"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tagline</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Optional description" {...field} />
+                    <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -400,7 +432,7 @@ export default function BuildSubclassView({
                   onClick={addLevel}
                   disabled={levelFields.length >= 20}
                 >
-                  <Plus className="w-4 h-4 mr-2" />
+                  <Plus className="size-4" />
                   Add Level
                 </Button>
               </div>
@@ -410,59 +442,18 @@ export default function BuildSubclassView({
                   key={levelField.id}
                   className="border rounded-lg p-4 space-y-4"
                 >
-                  <div className="flex items-center justify-between">
-                    <FormField
-                      control={form.control}
-                      name={`levels.${levelIndex}.level`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Level</FormLabel>
-                          <Select
-                            onValueChange={(value) =>
-                              field.onChange(Number(value))
-                            }
-                            defaultValue={String(field.value)}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-24">
-                                <SelectValue />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {Array.from({ length: 20 }, (_, i) => i + 1).map(
-                                (level) => (
-                                  <SelectItem key={level} value={String(level)}>
-                                    {level}
-                                  </SelectItem>
-                                )
-                              )}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeLevel(levelIndex)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-
                   <LevelAbilitiesForm
                     control={form.control}
                     levelIndex={levelIndex}
+                    removeLevel={removeLevel}
                   />
                 </div>
               ))}
             </div>
 
-            {session?.user && (
-              <div className="flex flex-row justify-between items-center my-4">
-                <div className="flex flex-col gap-2">
+            <div className="mt-10 flex flex-row justify-between items-center my-4">
+              <div className="flex items-center gap-2">
+                {session?.user.id ? (
                   <Button type="submit" disabled={isSubmitting}>
                     {isSubmitting
                       ? "Saving..."
@@ -470,25 +461,30 @@ export default function BuildSubclassView({
                         ? "Update"
                         : "Save"}
                   </Button>
-                </div>
-                <fieldset className="space-y-2">
-                  <FormField
-                    control={form.control}
-                    name="visibility"
-                    render={({ field }) => (
-                      <VisibilityToggle
-                        id={`subclass-visibility-toggle-${id}`}
-                        checked={field.value === "public"}
-                        onCheckedChange={(checked) =>
-                          field.onChange(checked ? "public" : "private")
-                        }
-                        entityType="Subclass"
-                      />
-                    )}
-                  />
-                </fieldset>
+                ) : (
+                  <>
+                    <DiscordLoginButton className="px-2 py-1" />
+                    {" to save"}
+                  </>
+                )}
               </div>
-            )}
+              <fieldset className="space-y-2">
+                <FormField
+                  control={form.control}
+                  name="visibility"
+                  render={({ field }) => (
+                    <VisibilityToggle
+                      id={`subclass-visibility-toggle-${id}`}
+                      checked={field.value === "public"}
+                      onCheckedChange={(checked) =>
+                        field.onChange(checked ? "public" : "private")
+                      }
+                      entityType="Subclass"
+                    />
+                  )}
+                />
+              </fieldset>
+            </div>
             {form.formState.errors.root && (
               <div className="text-destructive text-sm">
                 {form.formState.errors.root.message}
@@ -528,76 +524,143 @@ export default function BuildSubclassView({
 interface LevelAbilitiesFormProps {
   control: Control<FormData>;
   levelIndex: number;
+  removeLevel: (index: number) => void;
 }
 
-function LevelAbilitiesForm({ control, levelIndex }: LevelAbilitiesFormProps) {
+function LevelAbilitiesForm({
+  control,
+  levelIndex,
+  removeLevel,
+}: LevelAbilitiesFormProps) {
   const {
     fields: abilityFields,
-    append: appendAbility,
     remove: removeAbility,
+    append: appendAbility,
   } = useFieldArray({
     control,
     name: `levels.${levelIndex}.abilities`,
   });
 
+  const allLevels = useWatch({ control, name: "levels" }) || [];
+  const usedLevels = allLevels
+    .map((level: { level: number }, index: number) =>
+      index === levelIndex ? null : level?.level
+    )
+    .filter((level: number | null) => level !== null) as number[];
+
   const addAbility = () => {
     appendAbility({
+      id: crypto.randomUUID(),
       name: "",
       description: "",
     });
   };
 
   return (
-    <div className="space-y-4">
+    <>
       <div className="flex items-center justify-between">
-        <h4 className="font-medium">Abilities</h4>
-        <Button type="button" variant="outline" size="sm" onClick={addAbility}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Ability
-        </Button>
-      </div>
-
-      {abilityFields.map((abilityField, abilityIndex) => (
-        <div key={abilityField.id} className="border rounded p-3 space-y-3">
-          <div className="flex items-center justify-between">
-            <FormField
-              control={control}
-              name={`levels.${levelIndex}.abilities.${abilityIndex}.name`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ability name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => removeAbility(abilityIndex)}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
-
-          <FormField
-            control={control}
-            name={`levels.${levelIndex}.abilities.${abilityIndex}.description`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
+        <FormField
+          control={control}
+          name={`levels.${levelIndex}.level`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Level</FormLabel>
+              <Select
+                onValueChange={(value) => field.onChange(Number(value))}
+                defaultValue={String(field.value)}
+              >
                 <FormControl>
-                  <Textarea placeholder="Ability description" {...field} />
+                  <SelectTrigger className="w-18">
+                    <SelectValue />
+                  </SelectTrigger>
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <SelectContent>
+                  {Array.from({ length: 20 }, (_, i) => i + 1).map((level) => (
+                    <SelectItem
+                      key={level}
+                      value={String(level)}
+                      disabled={usedLevels.includes(level)}
+                    >
+                      {level}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex gap-2 items-center justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addAbility}
+          >
+            <Plus className="size-4" />
+            Add Ability
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => removeLevel(levelIndex)}
+          >
+            <Trash2 className="size-4" />
+            Level
+          </Button>
         </div>
-      ))}
-    </div>
+      </div>
+      <div className="space-y-4">
+        {abilityFields.map((abilityField, abilityIndex) => (
+          <div key={abilityField.id}>
+            {abilityIndex > 0 && <hr className="my-4" />}
+            <div className="space-y-3">
+              <div className="flex gap-2 items-end justify-between">
+                <FormField
+                  control={control}
+                  name={`levels.${levelIndex}.abilities.${abilityIndex}.name`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input className="min-w-56" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {abilityFields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => removeAbility(abilityIndex)}
+                    className="mb-0.5"
+                  >
+                    <Trash2 className="size-4" />
+                    Ability
+                  </Button>
+                )}
+              </div>
+
+              <FormField
+                control={control}
+                name={`levels.${levelIndex}.abilities.${abilityIndex}.description`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea className="min-h-18" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }

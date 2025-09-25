@@ -190,6 +190,7 @@ model Subclass {
   className   String              @map("class_name")
   namePreface String?             @map("name_preface")
   description String?
+  tagline     String?
   visibility  subclass_visibility @default(public)
   userId      String              @map("user_id") @db.Uuid
   createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)

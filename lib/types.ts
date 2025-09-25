@@ -274,13 +274,13 @@ export const SUBCLASS_VISIBILITY = [
 export type SubclassVisibility = (typeof SUBCLASS_VISIBILITY)[number]["value"];
 
 export const SUBCLASS_CLASSES = [
-  { value: "Shadowmancer", label: "Shadowmancer" },
   { value: "Berserker", label: "Berserker" },
-  { value: "The Cheat", label: "The Cheat" },
+  { value: "The Cheat", label: "Cheat, The" },
   { value: "Commander", label: "Commander" },
   { value: "Hunter", label: "Hunter" },
   { value: "Mage", label: "Mage" },
   { value: "Oathsworn", label: "Oathsworn" },
+  { value: "Shadowmancer", label: "Shadowmancer" },
   { value: "Shepherd", label: "Shepherd" },
   { value: "Songweaver", label: "Songweaver" },
   { value: "Stormshifter", label: "Stormshifter" },
@@ -303,6 +303,7 @@ export const SUBCLASS_NAME_PREFIXES: Record<SubclassClass, string> = {
 };
 
 export interface SubclassAbility {
+  id: string;
   name: string;
   description: string;
 }
@@ -317,6 +318,7 @@ export interface SubclassMini {
   name: string;
   className: SubclassClass;
   namePreface?: string;
+  tagline?: string;
   visibility: SubclassVisibility;
   createdAt: Date;
 }
@@ -336,3 +338,9 @@ export interface SubclassAbilityDb {
   description: string;
   orderIndex: number;
 }
+
+export type SubclassSortOption =
+  | "name-asc"
+  | "name-desc"
+  | "created-asc"
+  | "created-desc";

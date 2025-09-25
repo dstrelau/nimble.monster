@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { Card } from "@/app/ui/subclass/Card";
+import { SubclassMiniCard } from "@/app/ui/subclass/SubclassMiniCard";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 
@@ -15,12 +15,7 @@ export default async function MySubclassesPage() {
     <div className="container mx-auto py-3">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {subclasses.map((subclass) => (
-          <Card
-            key={subclass.id}
-            subclass={subclass}
-            creator={subclass.creator}
-            link={true}
-          />
+          <SubclassMiniCard key={subclass.id} subclass={subclass} />
         ))}
       </div>
       {subclasses.length === 0 && (

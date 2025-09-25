@@ -1,4 +1,11 @@
-import { Box, Ghost, HeartHandshake, Shield, Users } from "lucide-react";
+import {
+  Box,
+  Ghost,
+  HandFist,
+  HeartHandshake,
+  Shield,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import {
   Card,
@@ -110,18 +117,17 @@ export default async function CreatePage() {
               href="/families/new"
               icon={<Users className="size-16" />}
               title="Family"
-              description="Create monster families with shared abilities."
+              description="Monster groups with shared abilities."
               disabled={!isAuthenticated}
               disabledMessage="You must signin to create a Family."
             />
-            {/*<CreateCard
+            <CreateCard
               href="/subclasses/new"
               icon={<HandFist className="size-16" />}
               title="Subclass"
-              description="Create custom character subclasses with abilities."
-              disabled={!isAuthenticated}
+              description="Custom character subclasses with abilities."
               disabledMessage="You must signin to create a Subclass."
-            /> */}
+            />
           </div>
         </div>
       </div>

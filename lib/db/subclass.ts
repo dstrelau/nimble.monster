@@ -197,6 +197,7 @@ export interface CreateSubclassInput {
   name: string;
   className: SubclassClass;
   namePreface?: string;
+  tagline?: string;
   description?: string;
   levels: SubclassLevel[];
   visibility: SubclassVisibility;
@@ -210,6 +211,7 @@ export const createSubclass = async (
     name,
     className,
     namePreface,
+    tagline,
     description,
     levels,
     visibility,
@@ -229,6 +231,7 @@ export const createSubclass = async (
       name,
       className,
       namePreface,
+      tagline,
       description,
       visibility,
       creator: {
@@ -261,6 +264,7 @@ export interface UpdateSubclassInput {
   name: string;
   className: SubclassClass;
   namePreface?: string;
+  tagline?: string;
   description?: string;
   levels: SubclassLevel[];
   visibility: SubclassVisibility;
@@ -275,6 +279,7 @@ export const updateSubclass = async (
     name,
     className,
     namePreface,
+    tagline,
     description,
     levels,
     visibility,
@@ -294,6 +299,7 @@ export const updateSubclass = async (
       name,
       className,
       namePreface,
+      tagline,
       description,
       visibility,
       abilities: {

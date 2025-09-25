@@ -1,0 +1,63 @@
+"use client";
+
+import { Link } from "@/components/app/Link";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import type { Subclass } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { CardFooterLayout } from "../shared/CardFooterLayout";
+
+interface SubclassMiniCardProps {
+  subclass: Subclass;
+  className?: string;
+}
+
+export function SubclassMiniCard({
+  subclass,
+  className,
+}: SubclassMiniCardProps) {
+  return (
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle className={cn("font-slab small-caps font-bold text-2xl")}>
+          <Link href={`/subclasses/${subclass.id}`} className="block">
+            {subclass.namePreface && `${subclass.namePreface} `}
+            {subclass.name}
+          </Link>
+        </CardTitle>
+        <CardAction>
+          <Badge>{subclass.className}</Badge>
+        </CardAction>
+      </CardHeader>
+
+      <CardContent className="">
+        {subclass.levels.map((level) => (
+          <div key={level.level} className="flex text-sm">
+            <span className="font-stretch-condensed font-bold uppercase italic text-sm text-muted-foreground block w-17">
+              Level {level.level}
+            </span>{" "}
+            <span className="font-semibold">
+              {level.abilities.map((ability) => ability.name).join(", ")}
+            </span>
+          </div>
+        ))}
+      </CardContent>
+      <CardFooterLayout
+        creator={subclass.creator}
+        actionsSlot={
+          subclass.visibility === "private" && (
+            <Badge variant="default" className="h-6">
+              Private
+            </Badge>
+          )
+        }
+      />
+    </Card>
+  );
+}

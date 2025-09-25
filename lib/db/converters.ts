@@ -256,6 +256,7 @@ export const toSubclassMini = (
   name: s.name,
   className: s.className as SubclassMini["className"],
   namePreface: s.namePreface || undefined,
+  tagline: s.tagline || undefined,
   visibility: s.visibility,
   createdAt: s.createdAt,
 });
@@ -279,6 +280,7 @@ export const toSubclass = (
         acc[ability.level] = [];
       }
       acc[ability.level].push({
+        id: ability.id,
         name: ability.name,
         description: ability.description,
       });

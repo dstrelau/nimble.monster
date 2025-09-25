@@ -1,5 +1,5 @@
 import { ArrowRight, CornerRightDown } from "lucide-react";
-import Image from "next/image";
+import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
 import { FamilyCard } from "@/components/FamilyCard";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
@@ -65,18 +65,7 @@ export default async function HomePage() {
 
         <div className="dark:prose-invert">
           <div className="flex justify-center mb-8 gap-4">
-            {!session?.user && (
-              <Button className="px-4 py-6 bg-[#5865F2] hover:bg-[#5865F2] text-white font-semibold rounded-lg flex items-center gap-2 transition-colors">
-                <Image
-                  src="https://cdn.discordapp.com/embed/avatars/0.png"
-                  alt="Discord"
-                  width="32"
-                  height="32"
-                  className="w-8 h-8"
-                />
-                Login with Discord
-              </Button>
-            )}
+            {!session?.user && <DiscordLoginButton />}
             <Button asChild className="px-4 py-6" variant="outline">
               <a href="/monsters">
                 Browse Monsters

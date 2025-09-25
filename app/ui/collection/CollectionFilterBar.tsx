@@ -21,7 +21,7 @@ export const CollectionFilterBar: React.FC<CollectionFilterBarProps> = ({
     <FilterBar
       searchTerm={searchTerm}
       onSearch={onSearch}
-      searchPlaceholder="Search collections..."
+      searchPlaceholder="Search"
       layout="horizontal"
     >
       <CollectionSortSelect value={sortOption} onChange={onSortChange} />

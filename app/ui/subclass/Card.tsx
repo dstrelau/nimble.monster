@@ -34,7 +34,7 @@ export function Card({ subclass, creator, link = true, className }: CardProps) {
               <span className="self-center w-fit mb-2 py-1 px-2 bg-muted text-sm font-sab font-normal">
                 {subclass.className}
               </span>
-              <span>— {subclass.namePreface} —</span>
+              {subclass.namePreface && <span>— {subclass.namePreface} —</span>}
               <span className="text-4xl">{subclass.name}</span>
             </CardTitle>
           </div>
@@ -42,14 +42,22 @@ export function Card({ subclass, creator, link = true, className }: CardProps) {
       </CardHeader>
 
       <CardContent className="pt-0 space-y-4">
-        {subclass.description && (
+        {subclass.tagline && (
           <div className="text-center text-sm text-muted-foreground italic">
             <FormattedText
               className="[&_p_~_p]:mt-0.5"
-              content={subclass.description}
+              content={subclass.tagline}
               conditions={conditions.allConditions}
             />
           </div>
+        )}
+
+        {subclass.description && (
+          <FormattedText
+            className="text-sm [&_p_~_p]:mt-0.5"
+            content={subclass.description}
+            conditions={conditions.allConditions}
+          />
         )}
 
         {subclass.levels.map((levelData) => (
@@ -59,7 +67,7 @@ export function Card({ subclass, creator, link = true, className }: CardProps) {
             </h4>
             <div className="space-y-3">
               {levelData.abilities.map((ability) => (
-                <div key={ability.name} className="space-y-1 text-sm">
+                <div key={ability.id} className="space-y-1 text-sm">
                   <PrefixedFormattedText
                     prefix={
                       <h5 className="font-semibold inline">{ability.name}.</h5>

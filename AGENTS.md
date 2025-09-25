@@ -14,7 +14,7 @@
 - Prefer SSR when possible
 - Use the latest Next.js built-in features over external libraries
 - Type all props and state with TypeScript interfaces
-- Do NOT use "as Type" constructs to bypass type checking. EVER.
+- Do NOT use "as <type>" constructs to bypass type checking. EVER.
 - Organize imports: React/libraries first, then components, then contexts/types
 - File structure: components/, views/, lib/ directories
 - Use tailwind and shadcn for styling
@@ -24,7 +24,7 @@
 - In this version of Next.js, params are a Promise that need to be awaited.
 - Use OpenTelemetry.
 - Do not add console.* functions permanently (they may be used for temporary debugging).
-- Use cn from lib/utils.ts for constructing dynamic className attributes
+- Use `cn `from lib/utils.ts for constructing dynamic className attributes. DO NOT use string concatenation for className.
 - Use lucide icons instead of custom SVGs
 
 # Tests
