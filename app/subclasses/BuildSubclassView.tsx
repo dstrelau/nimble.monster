@@ -39,6 +39,7 @@ import {
   SUBCLASS_CLASSES,
   SUBCLASS_NAME_PREFIXES,
   type Subclass,
+  type SubclassClass,
   UNKNOWN_USER,
 } from "@/lib/types";
 import { createSubclass, updateSubclass } from "../actions/subclass";
@@ -58,19 +59,12 @@ const levelSchema = z.object({
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  className: z.enum([
-    "Berserker",
-    "The Cheat",
-    "Commander",
-    "Hunter",
-    "Mage",
-    "Oathsworn",
-    "Shadowmancer",
-    "Shepherd",
-    "Songweaver",
-    "Stormshifter",
-    "Zephyr",
-  ]),
+  className: z.enum(
+    SUBCLASS_CLASSES.map((cls) => cls.value) as [
+      SubclassClass,
+      ...SubclassClass[],
+    ]
+  ),
   namePreface: z.string().optional(),
   tagline: z.string().optional(),
   description: z.string().optional(),
@@ -193,14 +187,14 @@ export default function BuildSubclassView({
   });
 
   const { watch } = form;
-  const watchedValues = watch();
+  const watchedValues = watch() as FormData;
 
   const creator = session?.user || UNKNOWN_USER;
   const previewSubclass = useMemo<Subclass>(
     () => ({
       id: subclass?.id || "",
       name: watchedValues.name || "",
-      className: watchedValues.className || "",
+      className: watchedValues.className || ("" as SubclassClass),
       namePreface: watchedValues.namePreface || undefined,
       tagline: watchedValues.tagline || undefined,
       description: watchedValues.description || undefined,
@@ -337,9 +331,8 @@ export default function BuildSubclassView({
                             value as keyof typeof SUBCLASS_NAME_PREFIXES
                           ];
                         if (
-                          defaultPrefix &&
-                          (!currentNamePreface ||
-                            currentNamePreface === previousDefaultPrefix)
+                          !currentNamePreface ||
+                          currentNamePreface === previousDefaultPrefix
                         ) {
                           form.setValue("namePreface", defaultPrefix);
                         }

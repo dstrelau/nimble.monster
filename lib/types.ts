@@ -274,9 +274,11 @@ export const SUBCLASS_VISIBILITY = [
 export type SubclassVisibility = (typeof SUBCLASS_VISIBILITY)[number]["value"];
 
 export const SUBCLASS_CLASSES = [
+  { value: "Artificer", label: "Artificer" },
   { value: "Berserker", label: "Berserker" },
   { value: "The Cheat", label: "Cheat, The" },
   { value: "Commander", label: "Commander" },
+  { value: "Hexbinder", label: "Hexbinder" },
   { value: "Hunter", label: "Hunter" },
   { value: "Mage", label: "Mage" },
   { value: "Oathsworn", label: "Oathsworn" },
@@ -289,9 +291,11 @@ export const SUBCLASS_CLASSES = [
 export type SubclassClass = (typeof SUBCLASS_CLASSES)[number]["value"];
 
 export const SUBCLASS_NAME_PREFIXES: Record<SubclassClass, string> = {
+  Artificer: "",
   Berserker: "Path of the",
   "The Cheat": "Tools of the",
   Commander: "Champion of the",
+  Hexbinder: "Coven of",
   Hunter: "Keeper of the",
   Mage: "Invoker of",
   Oathsworn: "Oauth of",
