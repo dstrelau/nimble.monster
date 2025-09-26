@@ -36,12 +36,15 @@ export function SubclassMiniCard({
         </CardAction>
       </CardHeader>
 
-      <CardContent className="">
+      <CardContent className="flex flex-col gap-1">
         {subclass.levels.map((level) => (
-          <div key={level.level} className="flex text-sm">
-            <span className="font-stretch-condensed font-bold uppercase italic text-sm text-muted-foreground block w-17">
+          <div
+            key={level.level}
+            className="flex gap-x-4 items-baseline text-sm"
+          >
+            <span className="font-stretch-condensed font-bold uppercase italic text-sm text-muted-foreground w-16 flex-shrink-0">
               Level {level.level}
-            </span>{" "}
+            </span>
             <span className="font-semibold">
               {level.abilities.map((ability) => ability.name).join(", ")}
             </span>
