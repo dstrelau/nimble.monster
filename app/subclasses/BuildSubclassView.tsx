@@ -172,7 +172,12 @@ export default function BuildSubclassView({
           : SUBCLASS_NAME_PREFIXES.Berserker),
       tagline: subclass?.tagline || "",
       description: subclass?.description || "",
-      levels: subclass?.levels || [{ level: 3, abilities: [] }],
+      levels: subclass?.levels || [
+        {
+          level: 3,
+          abilities: [{ id: crypto.randomUUID(), name: "", description: "" }],
+        },
+      ],
       visibility: subclass?.visibility || "public",
     },
   });
