@@ -68,6 +68,18 @@ const Header = () => {
 
   const browseItems = [
     {
+      href: "/collections",
+      label: "Collections",
+      isActive: isActive("/collections"),
+      icon: Box,
+    },
+    {
+      href: "/companions",
+      label: "Companions",
+      isActive: isActive("/companions"),
+      icon: HeartHandshake,
+    },
+    {
       href: "/monsters",
       label: "Monsters",
       isActive: isActive("/monsters"),
@@ -78,18 +90,6 @@ const Header = () => {
       label: "Items",
       isActive: isActive("/items"),
       icon: Shield,
-    },
-    {
-      href: "/companions",
-      label: "Companions",
-      isActive: isActive("/companions"),
-      icon: HeartHandshake,
-    },
-    {
-      href: "/collections",
-      label: "Collections",
-      isActive: isActive("/collections"),
-      icon: Box,
     },
     {
       href: "/subclasses",
@@ -109,19 +109,14 @@ const Header = () => {
             : false,
         },
         {
-          href: "/my/monsters",
-          label: "My Monsters",
-          isActive: isActive("/my/monsters"),
+          href: "/my/collections",
+          label: "My Collections",
+          isActive: isActive("/my/collections"),
         },
         {
           href: "/my/companions",
           label: "My Companions",
           isActive: isActive("/my/companions"),
-        },
-        {
-          href: "/my/collections",
-          label: "My Collections",
-          isActive: isActive("/my/collections"),
         },
         {
           href: "/my/families",
@@ -132,6 +127,16 @@ const Header = () => {
           href: "/my/items",
           label: "My Items",
           isActive: isActive("/my/items"),
+        },
+        {
+          href: "/my/monsters",
+          label: "My Monsters",
+          isActive: isActive("/my/monsters"),
+        },
+        {
+          href: "/my/subclasses",
+          label: "My Subclasses",
+          isActive: isActive("/my/subclasses"),
         },
       ]
     : [];
