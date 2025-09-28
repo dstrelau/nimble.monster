@@ -13,7 +13,7 @@ const SIZE_SETTINGS = {
   "4xl": {
     gap: "gap-2",
     avatarSize: 42,
-    textClass: "text-4xl font-bold",
+    textClass: "text-2xl md:text-4xl font-bold",
   },
 } as const;
 

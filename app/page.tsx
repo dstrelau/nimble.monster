@@ -28,23 +28,20 @@ export default async function HomePage() {
         </h1>
         {!!featuredFamily?.monsters && (
           <>
-            <h2 className="text-2xl md:text-4xl text-center italic text-muted-foreground gap-2">
-              Explore hundreds of creative monsters
-              <span className="text-nowrap flex flex-nowrap gap-2">
-                like these
-                <span className="font-medium">{featuredFamily.name}</span>
-                {featuredFamily.creator && (
-                  <>
-                    <span>by</span>
-                    <Attribution
-                      user={featuredFamily.creator}
-                      size="4xl"
-                      className="not-italic"
-                    />
-                  </>
-                )}
-                <CornerRightDown className="mt-4 w-8 h-8" />
-              </span>
+            <h2 className="flex flex-wrap gap-2 text-2xl md:text-4xl items-center justify-center text-center italic text-muted-foreground md:max-w-[39rem] mx-auto">
+              <span>Explore hundreds of creative monsters like these</span>
+              <span className="font-medium">{featuredFamily.name}</span>
+              {featuredFamily.creator && (
+                <>
+                  <span>by</span>
+                  <Attribution
+                    user={featuredFamily.creator}
+                    size="4xl"
+                    className="not-italic"
+                  />
+                </>
+              )}
+              <CornerRightDown className="w-8 h-8" />
             </h2>
 
             <div className="flex flex-wrap gap-4 items-center">
