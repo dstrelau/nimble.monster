@@ -44,8 +44,6 @@ export const listPublicSubclasses = async (): Promise<Subclass[]> => {
 };
 
 export const findSubclass = async (id: string): Promise<Subclass | null> => {
-  if (!isValidUUID(id)) return null;
-
   const subclass = await prisma.subclass.findUnique({
     where: { id },
     include: {
@@ -61,8 +59,6 @@ export const findSubclass = async (id: string): Promise<Subclass | null> => {
 export const findPublicSubclassById = async (
   id: string
 ): Promise<Subclass | null> => {
-  if (!isValidUUID(id)) return null;
-
   const subclass = await prisma.subclass.findUnique({
     where: { id, visibility: "public" },
     include: {
@@ -79,8 +75,6 @@ export const findSubclassWithCreatorDiscordId = async (
   id: string,
   creatorDiscordId: string
 ): Promise<Subclass | null> => {
-  if (!isValidUUID(id)) return null;
-
   const subclass = await prisma.subclass.findUnique({
     where: { id, creator: { discordId: creatorDiscordId } },
     include: {

@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/item/Card";
 import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { ItemCollections } from "@/components/ItemCollections";
 import { ItemDetailActions } from "@/components/ItemDetailActions";
 import { auth } from "@/lib/auth";
 import { findItem, findItemCollections } from "@/lib/db";
+import { deslugify, slugify } from "@/lib/utils/slug";
+import { getItemImageUrl, getItemUrl } from "@/lib/utils/url";
 
 export const experimental_ppr = true;
 
@@ -15,12 +17,12 @@ export async function generateMetadata({
   params: Promise<{ itemId: string }>;
 }): Promise<Metadata> {
   const { itemId } = await params;
-  const item = await findItem(itemId);
+  const uid = deslugify(itemId);
+  const item = await findItem(uid);
+  if (!item) return {};
 
-  if (!item) {
-    return {
-      title: "Item Not Found",
-    };
+  if (itemId !== slugify(item)) {
+    return permanentRedirect(getItemUrl(item));
   }
 
   const creatorText = item.creator ? ` by ${item.creator.displayName}` : "";
@@ -36,10 +38,10 @@ export async function generateMetadata({
       title: item.name,
       description: `${itemInfo}${creatorText}`,
       type: "article",
-      url: `/items/${item.id}`,
+      url: getItemUrl(item),
       images: [
         {
-          url: `/items/${item.id}/image`,
+          url: `${getItemImageUrl(item)}?${item.updatedAt.getTime()}`,
           alt: item.name,
         },
       ],
@@ -48,7 +50,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: item.name,
       description: `${itemInfo}${creatorText}`,
-      images: [`/items/${item.id}/image`],
+      images: [`${getItemImageUrl(item)}?${item.updatedAt.getTime()}`],
     },
   };
 }
@@ -60,14 +62,16 @@ export default async function ItemPage({
 }) {
   const session = await auth();
   const { itemId } = await params;
-  const [item, collections] = await Promise.all([
-    findItem(itemId),
-    findItemCollections(itemId),
-  ]);
 
-  if (!item) {
-    return notFound();
+  const uid = deslugify(itemId);
+  const item = await findItem(uid);
+  if (!item) return notFound();
+
+  if (itemId !== slugify(item)) {
+    return permanentRedirect(getItemUrl(item));
   }
+
+  const collections = await findItemCollections(uid);
 
   // if item is not public, then user must be creator
   const isOwner = session?.user?.discordId === item.creator?.discordId || false;

@@ -1,23 +1,26 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { FamilyHeader } from "@/app/families/FamilyHeader";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import { deslugify, slugify } from "@/lib/utils/slug";
+import { getFamilyUrl } from "@/lib/utils/url";
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const [family, publicMonsters] = await Promise.all([
-    db.getFamily(id),
-    db.listMonstersByFamilyId(id),
-  ]);
+  const uid = deslugify(id);
+  const family = await db.getFamily(uid);
+  if (!family) return {};
 
-  if (!family) {
-    return {};
+  if (id !== slugify(family)) {
+    return permanentRedirect(getFamilyUrl(family));
   }
+
+  const publicMonsters = await db.listMonstersByFamilyId(uid);
 
   const creatorText = family.creator?.displayName
     ? ` by ${family.creator.displayName}`
@@ -37,7 +40,7 @@ export async function generateMetadata({
       title: family.name,
       description: description,
       type: "article",
-      url: `/families/${family.id}`,
+      url: getFamilyUrl(family),
     },
     twitter: {
       card: "summary",
@@ -53,15 +56,19 @@ export default async function FamilyDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [session, family, monsters] = await Promise.all([
-    auth(),
-    db.getFamily(id),
-    db.listMonstersByFamilyId(id),
-  ]);
 
-  if (!family) {
-    notFound();
+  const uid = deslugify(id);
+  const family = await db.getFamily(uid);
+  if (!family) return notFound();
+
+  if (id !== slugify(family)) {
+    return permanentRedirect(getFamilyUrl(family));
   }
+
+  const [session, monsters] = await Promise.all([
+    auth(),
+    db.listMonstersByFamilyId(uid),
+  ]);
 
   const isCreator = session?.user?.discordId === family.creatorId;
 

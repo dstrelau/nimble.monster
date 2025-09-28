@@ -1,6 +1,7 @@
 import { trace } from "@opentelemetry/api";
 import type { NextRequest } from "next/server";
 import { generateEntityImageWithStorage } from "@/lib/image-generation";
+import { getCompanionUrl, getItemUrl, getMonsterUrl } from "./utils/url";
 
 type Entity = {
   id: string;
@@ -56,10 +57,24 @@ export async function createImageResponse(
 
       const startTime = Date.now();
 
+      const entityUrlPath = (() => {
+        switch (entityType) {
+          case "monster":
+            return getMonsterUrl(entity);
+          case "item":
+            return getItemUrl(entity);
+          case "companion":
+            return getCompanionUrl(entity);
+          default:
+            throw new Error(`Unsupported entity type: ${entityType}`);
+        }
+      })();
+
       // Use blob storage for image generation
       const blobUrl = await generateEntityImageWithStorage({
         baseUrl,
         entityId: entity.id,
+        entityUrlPath,
         entityType,
         entityVersion: version,
       });

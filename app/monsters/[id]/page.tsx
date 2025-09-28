@@ -1,26 +1,29 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/monster/Card";
 import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { MonsterCollections } from "@/components/MonsterCollections";
 import { MonsterDetailActions } from "@/components/MonsterDetailActions";
 import { auth } from "@/lib/auth";
 import { findMonster, findMonsterCollections } from "@/lib/db";
+import { deslugify, slugify } from "@/lib/utils/slug";
+import { getMonsterImageUrl, getMonsterUrl } from "@/lib/utils/url";
 
 export const experimental_ppr = true;
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ monsterId: string }>;
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const { monsterId } = await params;
-  const monster = await findMonster(monsterId);
+  const { id: monsterId } = await params;
+  const uid = deslugify(monsterId);
+  const monster = await findMonster(uid);
 
-  if (!monster) {
-    return {
-      title: "Monster Not Found",
-    };
+  if (!monster) return {};
+
+  if (monsterId !== slugify(monster)) {
+    return permanentRedirect(getMonsterUrl(monster));
   }
 
   const creatorText = monster.creator
@@ -40,10 +43,10 @@ export async function generateMetadata({
       title: monster.name,
       description: `${monsterInfo}${creatorText}`,
       type: "article",
-      url: `/m/${monster.id}`,
+      url: getMonsterUrl(monster),
       images: [
         {
-          url: `/m/${monster.id}/image?${monster.updatedAt.getTime()}`,
+          url: `${getMonsterImageUrl(monster)}?${monster.updatedAt.getTime()}`,
           alt: monster.name,
         },
       ],
@@ -52,7 +55,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: monster.name,
       description: `${monsterInfo}${creatorText}`,
-      images: [`/m/${monster.id}/image`],
+      images: [`/monsters/${monster.id}/image`],
     },
   };
 }
@@ -60,18 +63,20 @@ export async function generateMetadata({
 export default async function MonsterPage({
   params,
 }: {
-  params: Promise<{ monsterId: string }>;
+  params: Promise<{ id: string }>;
 }) {
   const session = await auth();
-  const { monsterId } = await params;
-  const [monster, collections] = await Promise.all([
-    findMonster(monsterId),
-    findMonsterCollections(monsterId),
-  ]);
+  const { id: monsterId } = await params;
 
-  if (!monster) {
-    return notFound();
+  const uid = deslugify(monsterId);
+  const monster = await findMonster(uid);
+  if (!monster) return notFound();
+
+  if (monsterId !== slugify(monster)) {
+    return permanentRedirect(getMonsterUrl(monster));
   }
+
+  const collections = await findMonsterCollections(uid);
 
   // if monster is not public, then user must be creator
   const isOwner =

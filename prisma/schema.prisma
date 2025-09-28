@@ -19,19 +19,19 @@ model Collection {
   updatedAt          DateTime?             @default(now()) @map("updated_at") @db.Timestamptz(6)
   description        String                @default("")
   visibility         collection_visibility @default(public)
-  creator            User                  @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
-  monsterCollections MonsterInCollection[]
+  creator            User                  @relation(fields: [creatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   itemCollections    ItemInCollection[]
+  monsterCollections MonsterInCollection[]
 
   @@index([creatorId], map: "idx_collections_user_id")
   @@map("collections")
 }
 
 model MonsterInCollection {
-  collectionId String     @map("collection_id") @db.Uuid
   monsterId    String     @map("monster_id") @db.Uuid
-  collection   Collection @relation(fields: [collectionId], references: [id])
-  monster      Monster    @relation(fields: [monsterId], references: [id], onDelete: Cascade)
+  collectionId String     @map("collection_id") @db.Uuid
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  monster      Monster    @relation(fields: [monsterId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([monsterId, collectionId])
   @@map("monsters_collections")
@@ -52,26 +52,25 @@ model Family {
   creatorId   String            @map("user_id") @db.Uuid
   visibility  family_visibility @default(public)
   name        String
-  description String?
   abilities   Json[]
   createdAt   DateTime?         @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime?         @default(now()) @map("updated_at") @db.Timestamptz(6)
+  description String?
   featured    Boolean           @default(false)
-  creator     User              @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
   monsters    Monster[]
+  creator     User              @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
 
   @@map("families")
 }
 
 model Condition {
-  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name        String
-  description String
-  official    Boolean  @default(false)
-  creatorId   String   @map("creator_id") @db.Uuid
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
-
+  id                String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name              String
+  description       String
+  official          Boolean            @default(false)
+  creatorId         String             @map("creator_id") @db.Uuid
+  createdAt         DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime           @default(now()) @map("updated_at") @db.Timestamptz(6)
   creator           User               @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
   monsterConditions MonsterCondition[]
 
@@ -82,8 +81,8 @@ model MonsterCondition {
   monsterId   String    @map("monster_id") @db.Uuid
   conditionId String    @map("condition_id") @db.Uuid
   inline      Boolean
-  monster     Monster   @relation(fields: [monsterId], references: [id], onDelete: Cascade)
   condition   Condition @relation(fields: [conditionId], references: [id])
+  monster     Monster   @relation(fields: [monsterId], references: [id], onDelete: Cascade)
 
   @@id([monsterId, conditionId])
   @@map("monsters_conditions")
@@ -91,9 +90,9 @@ model MonsterCondition {
 
 model Monster {
   id                 String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId             String                @map("user_id") @db.Uuid
   name               String
   level              String
-  levelInt           Int                   @default(0) @map("level_int")
   hp                 Int
   armor              armor_type
   size               size_type             @default(medium)
@@ -102,8 +101,7 @@ model Monster {
   swim               Int                   @default(0)
   actions            Json[]
   abilities          Json[]
-  legendary          Boolean               @default(false)
-  minion             Boolean               @default(false)
+  legendary          Boolean?              @default(false)
   bloodied           String                @default("")
   lastStand          String                @default("") @map("last_stand")
   saves              String[]
@@ -114,12 +112,13 @@ model Monster {
   family_id          String?               @db.Uuid
   actionPreface      String?               @map("action_preface")
   moreInfo           String?               @default("") @map("more_info")
-  userId             String                @map("user_id") @db.Uuid
   burrow             Int                   @default(0)
   climb              Int                   @default(0)
   teleport           Int                   @default(0)
-  family             Family?               @relation(fields: [family_id], references: [id])
-  creator            User                  @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  minion             Boolean               @default(false)
+  levelInt           Int                   @default(0) @map("level_int")
+  family             Family?               @relation(fields: [family_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  creator            User                  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   monsterCollections MonsterInCollection[]
   monsterConditions  MonsterCondition[]
 
@@ -153,10 +152,10 @@ model Companion {
 
 model Session {
   id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
   discordId  String   @map("discord_id")
   expires_at DateTime @db.Timestamptz(6)
-  userId     String   @map("user_id") @db.Uuid
-  users      User     @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  users      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([expires_at], map: "idx_sessions_expires_at")
   @@map("sessions")
@@ -168,15 +167,15 @@ model Item {
   kind            String             @default("")
   description     String             @default("")
   moreInfo        String?            @default("") @map("more_info")
-  imageIcon       String?            @map("image_icon")
-  imageBgIcon     String?            @map("image_bg_icon")
-  imageColor      String?            @map("image_color")
-  imageBgColor    String?            @map("image_bg_color")
-  rarity          item_rarity        @default(unspecified)
   visibility      item_visibility    @default(public)
   userId          String             @map("user_id") @db.Uuid
   createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt       DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  imageIcon       String?            @map("image_icon")
+  rarity          item_rarity        @default(unspecified)
+  imageBgIcon     String?            @map("image_bg_icon")
+  imageColor      String?            @map("image_color")
+  imageBgColor    String?            @map("image_bg_color")
   creator         User               @relation(fields: [userId], references: [id], onUpdate: NoAction)
   itemCollections ItemInCollection[]
 
@@ -190,26 +189,26 @@ model Subclass {
   className   String              @map("class_name")
   namePreface String?             @map("name_preface")
   description String?
-  tagline     String?
   visibility  subclass_visibility @default(public)
   userId      String              @map("user_id") @db.Uuid
   createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  creator     User                @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  tagline     String?
   abilities   SubclassAbility[]
+  creator     User                @relation(fields: [userId], references: [id], onUpdate: NoAction)
 
   @@index([userId], map: "idx_subclasses_user_id")
   @@map("subclasses")
 }
 
 model SubclassAbility {
-  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  subclassId  String    @map("subclass_id") @db.Uuid
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  subclassId  String   @map("subclass_id") @db.Uuid
   level       Int
   name        String
   description String
-  orderIndex  Int       @map("order_index")
-  subclass    Subclass  @relation(fields: [subclassId], references: [id], onDelete: Cascade)
+  orderIndex  Int      @map("order_index")
+  subclass    Subclass @relation(fields: [subclassId], references: [id], onDelete: Cascade)
 
   @@index([subclassId, level, orderIndex], map: "idx_subclass_abilities_subclass_level_order")
   @@map("subclass_abilities")
@@ -217,20 +216,20 @@ model SubclassAbility {
 
 model User {
   id           String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  discordId    String       @unique(map: "idx_users_discord_id") @map("discord_id")
+  discordId    String       @unique @map("discord_id")
   username     String       @unique(map: "idx_users_username")
-  displayName  String?      @map("display_name")
   avatar       String?
-  imageUrl     String?      @map("image_url")
   refreshToken String?      @map("refresh_token")
+  displayName  String?      @map("display_name")
+  imageUrl     String?      @map("image_url")
   collections  Collection[]
-  families     Family[]
-  monsters     Monster[]
   companions   Companion[]
-  items        Item[]
-  sessions     Session[]
   conditions   Condition[]
+  items        Item[]
+  monsters     Monster[]
+  sessions     Session[]
   subclasses   Subclass[]
+  Family       Family[]
 
   @@map("users")
 }

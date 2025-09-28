@@ -14,6 +14,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Collection, Condition } from "@/lib/types";
+import {
+  getCollectionDownloadUrl,
+  getCollectionEditUrl,
+} from "@/lib/utils/url";
 import { FormattedText } from "./FormattedText";
 
 interface CollectionHeaderProps {
@@ -70,7 +74,7 @@ export function CollectionHeader({
             {showEditDeleteButtons && (
               <>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`/collections/${collection.id}/edit`}>
+                  <Link href={getCollectionEditUrl(collection)}>
                     <Pencil className="w-4 h-4" />
                     Edit
                   </Link>
@@ -95,7 +99,7 @@ export function CollectionHeader({
                 <DropdownMenuItem asChild>
                   <a
                     className="flex gap-2 items-center"
-                    href={`/api/collections/${collection.id}/download`}
+                    href={getCollectionDownloadUrl(collection)}
                     download={`collection-${collection.id}.json`}
                   >
                     <FileJson className="w-4 h-4" />

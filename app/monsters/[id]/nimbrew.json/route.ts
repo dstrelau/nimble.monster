@@ -1,29 +1,36 @@
 import { trace } from "@opentelemetry/api";
+import { permanentRedirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { findMonster } from "@/lib/db";
 import { telemetry } from "@/lib/telemetry";
 import { formatSizeKind } from "@/lib/utils/monster";
-import { isValidUUID } from "@/lib/utils/validation";
+import { deslugify, slugify } from "@/lib/utils/slug";
+import { getMonsterUrl } from "@/lib/utils/url";
 
 export const GET = telemetry(
   async (
     _request: Request,
-    { params }: { params: Promise<{ monsterId: string }> }
+    { params }: { params: Promise<{ id: string }> }
   ) => {
-    const { monsterId } = await params;
+    const { id: monsterId } = await params;
     const span = trace.getActiveSpan();
-
     span?.setAttributes({ "params.id": monsterId });
 
-    if (!isValidUUID(monsterId)) {
+    let uid: string;
+    try {
+      uid = deslugify(monsterId);
+    } catch {
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });
     }
 
-    const monster = await findMonster(monsterId);
+    const monster = await findMonster(uid);
 
     if (!monster) {
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });
+    }
+    if (monsterId !== slugify(monster)) {
+      return permanentRedirect(`${getMonsterUrl(monster)}/nimbrew.json`);
     }
 
     // if monster is not public, then user must be creator

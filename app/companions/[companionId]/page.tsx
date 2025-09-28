@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/companion/Card";
 import { CompanionDetailActions } from "@/components/CompanionDetailActions";
 import { auth } from "@/lib/auth";
@@ -8,6 +8,8 @@ import {
   listConditionsForDiscordId,
   listOfficialConditions,
 } from "@/lib/db";
+import { deslugify, slugify } from "@/lib/utils/slug";
+import { getCompanionImageUrl, getCompanionUrl } from "@/lib/utils/url";
 
 export async function generateMetadata({
   params,
@@ -15,12 +17,12 @@ export async function generateMetadata({
   params: Promise<{ companionId: string }>;
 }): Promise<Metadata> {
   const { companionId } = await params;
-  const companion = await findCompanion(companionId);
+  const uid = deslugify(companionId);
+  const companion = await findCompanion(uid);
+  if (!companion) return {};
 
-  if (!companion) {
-    return {
-      title: "Companion Not Found",
-    };
+  if (companionId !== slugify(companion)) {
+    return permanentRedirect(getCompanionUrl(companion));
   }
 
   const creatorText = companion.creator
@@ -40,10 +42,10 @@ export async function generateMetadata({
       title: companion.name,
       description: `${companionInfo}${creatorText}`,
       type: "article",
-      url: `/companions/${companion.id}`,
+      url: getCompanionUrl(companion),
       images: [
         {
-          url: `/companions/${companion.id}/image`,
+          url: `${getCompanionImageUrl(companion)}?${companion.updatedAt.getTime()}`,
           alt: companion.name,
         },
       ],
@@ -52,7 +54,9 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: companion.name,
       description: `${companionInfo}${creatorText}`,
-      images: [`/companions/${companion.id}/image`],
+      images: [
+        `${getCompanionImageUrl(companion)}?${companion.updatedAt.getTime()}`,
+      ],
     },
   };
 }
@@ -64,10 +68,13 @@ export default async function CompanionPage({
 }) {
   const session = await auth();
   const { companionId } = await params;
-  const companion = await findCompanion(companionId);
 
-  if (!companion) {
-    return notFound();
+  const uid = deslugify(companionId);
+  const companion = await findCompanion(uid);
+  if (!companion) return notFound();
+
+  if (companionId !== slugify(companion)) {
+    return permanentRedirect(getCompanionUrl(companion));
   }
 
   const [officialConditions, userConditions] = await Promise.all([

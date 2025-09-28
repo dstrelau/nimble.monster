@@ -84,14 +84,8 @@ export const getUserPublicFamiliesCount = async (
 };
 
 export const getFamily = async (id: string): Promise<FamilyOverview | null> => {
-  if (!isValidUUID(id)) {
-    return null;
-  }
-
   const family = await prisma.family.findUnique({
-    where: {
-      id,
-    },
+    where: { id },
     include: {
       _count: { select: { monsters: true } },
       creator: true,
@@ -173,9 +167,9 @@ export const updateFamily = async ({
   description?: string;
   abilities: Ability[];
   discordId: string;
-}): Promise<FamilyOverview | null> => {
+}): Promise<FamilyOverview> => {
   if (!isValidUUID(id)) {
-    return null;
+    throw new Error("family not found");
   }
 
   const family = await prisma.family.update({
@@ -197,7 +191,7 @@ export const updateFamily = async ({
     },
   });
 
-  if (!family) return null;
+  if (!family) throw new Error("family not found");
 
   const monsterCount = await prisma.monster.count({
     where: {

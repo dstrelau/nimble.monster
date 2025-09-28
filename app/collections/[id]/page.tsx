@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { CardGrid as ItemCardGrid } from "@/app/ui/item/CardGrid";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { CollectionHeader } from "@/components/CollectionHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { listConditionsForDiscordId, listOfficialConditions } from "@/lib/db";
+import { deslugify, slugify } from "@/lib/utils/slug";
+import { getCollectionUrl } from "@/lib/utils/url";
 
 export async function generateMetadata({
   params,
@@ -13,10 +15,12 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const collection = await db.getCollection(id);
+  const uid = deslugify(id);
+  const collection = await db.getCollection(uid);
+  if (!collection) return {};
 
-  if (!collection) {
-    return {};
+  if (id !== slugify(collection)) {
+    return permanentRedirect(getCollectionUrl(collection));
   }
 
   const creatorText = collection.creator?.displayName
@@ -44,7 +48,7 @@ export async function generateMetadata({
       title: collection.name,
       description: description,
       type: "article",
-      url: `/collections/${collection.id}`,
+      url: getCollectionUrl(collection),
     },
     twitter: {
       card: "summary",
@@ -61,9 +65,13 @@ export default async function ShowCollectionView({
 }) {
   const { id } = await params;
   const session = await auth();
-  const collection = await db.getCollection(id, session?.user?.discordId);
-  if (!collection) {
-    notFound();
+
+  const uid = deslugify(id);
+  const collection = await db.getCollection(uid, session?.user?.discordId);
+  if (!collection) return notFound();
+
+  if (id !== slugify(collection)) {
+    return permanentRedirect(getCollectionUrl(collection));
   }
 
   const [officialConditions, userConditions] = await Promise.all([

@@ -42,6 +42,7 @@ import {
   type SubclassClass,
   UNKNOWN_USER,
 } from "@/lib/types";
+import { getSubclassUrl } from "@/lib/utils/url";
 import { createSubclass, updateSubclass } from "../actions/subclass";
 
 const abilitySchema = z.object({
@@ -243,7 +244,7 @@ export default function BuildSubclassView({
         : await createSubclass(payload);
 
       if (result.success && result.subclass) {
-        router.push(`/subclasses/${result.subclass.id}`);
+        router.push(getSubclassUrl(result.subclass));
       } else {
         form.setError("root", {
           message:

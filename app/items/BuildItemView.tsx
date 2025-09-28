@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { type Item, RARITIES, UNKNOWN_USER } from "@/lib/types";
+import { getItemUrl } from "@/lib/utils/url";
 import { createItem, updateItem } from "../actions/item";
 
 const formSchema = z.object({
@@ -63,7 +64,7 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     name: "",
     description: "",
     rarity: "unspecified",
-    updatedAt: "",
+    updatedAt: new Date(),
   },
   "Healing Potion": {
     visibility: "public",
@@ -76,7 +77,7 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     imageColor: "rose-200",
     imageBgColor: "red-100",
     rarity: "uncommon",
-    updatedAt: "",
+    updatedAt: new Date(),
   },
   "Gem of Escape": {
     visibility: "public",
@@ -91,7 +92,7 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     imageColor: "purple-400",
     imageBgColor: "purple-100",
     rarity: "very_rare",
-    updatedAt: "",
+    updatedAt: new Date(),
   },
 };
 
@@ -139,7 +140,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
       rarity: watchedValues.rarity,
       visibility: watchedValues.visibility,
       creator: creator,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     }),
     [
       watchedValues.name,
@@ -178,7 +179,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
         : await createItem(payload);
 
       if (result.success && result.item) {
-        router.push(`/items/${result.item.id}`);
+        router.push(getItemUrl(result.item));
       } else {
         form.setError("root", {
           message:

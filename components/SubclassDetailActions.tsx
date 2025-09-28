@@ -6,6 +6,7 @@ import { useTransition } from "react";
 import { deleteSubclass } from "@/app/actions/subclass";
 import { Button } from "@/components/ui/button";
 import type { Subclass } from "@/lib/types";
+import { getSubclassEditUrl } from "@/lib/utils/url";
 
 interface SubclassDetailActionsProps {
   subclass: Subclass;
@@ -39,7 +40,7 @@ export function SubclassDetailActions({
   return (
     <div className="flex gap-2">
       <Button variant="outline" size="sm" asChild>
-        <Link href={`/my/subclasses/${subclass.id}/edit`}>
+        <Link href={getSubclassEditUrl(subclass)}>
           <Pencil className="w-4 h-4" />
           Edit
         </Link>

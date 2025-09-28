@@ -1,7 +1,9 @@
-import { unauthorized } from "next/navigation";
+import { notFound, permanentRedirect, unauthorized } from "next/navigation";
 import BuildSubclass from "@/app/subclasses/BuildSubclassView";
 import { auth } from "@/lib/auth";
 import { findSubclassWithCreatorDiscordId } from "@/lib/db/subclass";
+import { deslugify } from "@/lib/utils/slug";
+import { getSubclassEditUrl, getSubclassSlug } from "@/lib/utils/url";
 
 export default async function EditSubclassPage({
   params,
@@ -13,13 +15,16 @@ export default async function EditSubclassPage({
   if (!session?.user?.id) {
     return unauthorized();
   }
+
+  const uid = deslugify(id);
   const subclass = await findSubclassWithCreatorDiscordId(
-    id,
+    uid,
     session?.user.discordId
   );
+  if (!subclass) return notFound();
 
-  if (!subclass) {
-    return <div>Subclass not found</div>;
+  if (id !== getSubclassSlug(subclass)) {
+    return permanentRedirect(getSubclassEditUrl(subclass));
   }
 
   return <BuildSubclass subclass={subclass} />;

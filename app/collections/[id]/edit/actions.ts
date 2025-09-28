@@ -9,6 +9,7 @@ import {
   type CollectionVisibilityType,
   ValidCollectionVisibilities,
 } from "@/lib/types";
+import { getCollectionUrl } from "@/lib/utils/url";
 
 const collectionSchema = z.object({
   name: z.string().min(1, "Collection name is required"),
@@ -50,7 +51,7 @@ export async function updateCollection(
   if (!updatedCollection) throw new Error("Failed to update collection");
 
   revalidatePath("/my/collections");
-  revalidatePath(`/collections/${collectionId}`);
+  revalidatePath(getCollectionUrl(updatedCollection));
 
   // Check if "exit" parameter was provided
   if (formData.get("exit") === "true") {
@@ -58,7 +59,7 @@ export async function updateCollection(
   }
 
   // Redirect to collection detail page after successful save
-  redirect(`/collections/${collectionId}`);
+  redirect(getCollectionUrl(updatedCollection));
 
   return {
     success: true,

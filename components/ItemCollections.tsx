@@ -2,9 +2,11 @@ import { Attribution } from "@/app/ui/Attribution";
 import { Link } from "@/components/app/Link";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { getCollectionUrl } from "@/lib/utils/url";
 
 interface Collection {
   id: string;
+  slug?: string | null;
   name: string;
   creator: User;
 }
@@ -27,7 +29,7 @@ export function ItemCollections({ collections }: ItemCollectionsProps) {
         {collections.map((collection) => (
           <div key={collection.id} className="flex gap-2 justify-between">
             <Link
-              href={`/collections/${collection.id}`}
+              href={getCollectionUrl(collection)}
               className="text-lg font-medium"
             >
               {collection.name}

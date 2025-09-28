@@ -3,24 +3,19 @@ import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { updateMonster } from "@/lib/db/monster";
+import { findMonster, updateMonster } from "@/lib/db/monster";
 import { telemetry } from "@/lib/telemetry";
-import { isValidUUID } from "@/lib/utils/validation";
+import { deslugify } from "@/lib/utils/slug";
+import { getMonsterUrl } from "@/lib/utils/url";
 
 export const PUT = telemetry(
   async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     try {
-      const id = (await params).id;
+      const { id } = await params;
+      const uid = deslugify(id);
       const span = trace.getActiveSpan();
 
       span?.setAttributes({ "params.id": id });
-
-      if (!isValidUUID(id)) {
-        return NextResponse.json(
-          { error: "Monster not found" },
-          { status: 404 }
-        );
-      }
 
       const session = await auth();
       if (!session?.user?.id) {
@@ -28,10 +23,7 @@ export const PUT = telemetry(
       }
       span?.setAttributes({ "user.id": session.user.id });
 
-      const existingMonster = await prisma.monster.findUnique({
-        where: { id },
-        include: { creator: true },
-      });
+      const existingMonster = await findMonster(uid);
 
       if (
         !existingMonster ||
@@ -46,7 +38,7 @@ export const PUT = telemetry(
       const monsterData = await request.json();
 
       const monster = await updateMonster({
-        id,
+        id: existingMonster.id,
         name: monsterData.name,
         level: monsterData.level,
         levelInt: monsterData.levelInt,
@@ -78,8 +70,8 @@ export const PUT = telemetry(
         discordId: session.user.discordId,
       });
 
-      revalidatePath(`/m/${id}`);
-      revalidatePath(`/m/${id}/image`);
+      revalidatePath(getMonsterUrl(monster));
+      revalidatePath(`${getMonsterUrl(monster)}/image`);
 
       span?.setAttributes({ "monster.id": monster.id });
 
@@ -100,14 +92,11 @@ export const DELETE = telemetry(
     { params }: { params: Promise<{ id: string }> }
   ) => {
     const session = await auth();
-    const id = (await params).id;
+    const { id } = await params;
+    const uid = deslugify(id);
     const span = trace.getActiveSpan();
 
     span?.setAttributes({ "params.id": id });
-
-    if (!isValidUUID(id)) {
-      return NextResponse.json({ error: "Monster not found" }, { status: 404 });
-    }
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -115,10 +104,7 @@ export const DELETE = telemetry(
 
     span?.setAttributes({ "user.id": session.user.id });
 
-    const existingMonster = await prisma.monster.findUnique({
-      where: { id },
-      include: { creator: true },
-    });
+    const existingMonster = await findMonster(uid);
 
     if (!existingMonster) {
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });
@@ -134,7 +120,7 @@ export const DELETE = telemetry(
     span?.setAttributes({ "monster.id": existingMonster.id });
 
     await prisma.monster.delete({
-      where: { id },
+      where: { id: existingMonster.id },
     });
 
     return new NextResponse(null, { status: 204 });

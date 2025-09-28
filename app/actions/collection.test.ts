@@ -48,7 +48,7 @@ describe("Collection actions", () => {
   let testRunId: string;
 
   beforeEach(async () => {
-    testRunId = Date.now().toString();
+    testRunId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
     testUser = await prisma.user.create({
       data: {
@@ -198,7 +198,7 @@ describe("Collection actions", () => {
 
       const formData = new FormData();
       formData.append("itemId", item.id);
-      formData.append("collectionId", "non-existent-id");
+      formData.append("collectionId", "550e8400-e29b-41d4-a716-446655440000");
 
       const result = await addItemToCollection(formData);
 

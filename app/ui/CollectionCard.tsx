@@ -19,6 +19,7 @@ import { useConditions } from "@/lib/hooks/useConditions";
 import type { CollectionOverview } from "@/lib/types";
 import { RARITIES } from "@/lib/types";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
+import { getCollectionUrl, getItemUrl } from "@/lib/utils/url";
 import { CardFooterLayout } from "./shared/CardFooterLayout";
 
 const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
@@ -45,7 +46,7 @@ const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
         )}
         <span>
           <Link
-            href={`/items/${item.id}`}
+            href={getItemUrl(item)}
             className={cn(
               "text-lg mr-2",
               item.visibility === "private" && "text-muted-foreground"
@@ -103,7 +104,7 @@ export const CollectionCard = ({
 
   const totalRemainingCount = remainingItemCount + remainingMonsterCount;
 
-  const href = collection.id && `/collections/${collection.id}`;
+  const href = collection.id && getCollectionUrl(collection);
 
   const { data: session } = useSession();
   const { allConditions: conditions } = useConditions({

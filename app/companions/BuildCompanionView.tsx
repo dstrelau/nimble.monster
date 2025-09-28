@@ -15,6 +15,7 @@ import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import type { Companion, MonsterSize } from "@/lib/types";
 import { SIZES, UNKNOWN_USER } from "@/lib/types";
+import { getCompanionUrl } from "@/lib/utils/url";
 import { createCompanion, updateCompanion } from "../actions/companion";
 
 const EXAMPLE_COMPANIONS: Record<string, Omit<Companion, "creator">> = {
@@ -61,7 +62,7 @@ const EXAMPLE_COMPANIONS: Record<string, Omit<Companion, "creator">> = {
     actionPreface: "Each turn, move 4 then choose 1:",
     dyingRule:
       "When Stabs drops to 0 HP, he can turn Invisible until the end of his next turn.",
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date(),
   },
   empty: {
     visibility: "private",
@@ -77,7 +78,7 @@ const EXAMPLE_COMPANIONS: Record<string, Omit<Companion, "creator">> = {
     actions: [],
     actionPreface: "Each turn, choose 1:",
     dyingRule: "",
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date(),
   },
 };
 
@@ -248,7 +249,7 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
         queryClient.invalidateQueries({
           queryKey: ["companion", result.companion.id],
         });
-        router.push(`/companions/${result.companion.id}`);
+        router.push(getCompanionUrl(result.companion));
       } else {
         setSubmitError(result.error || "Failed to save companion");
       }

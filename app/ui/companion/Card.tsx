@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Companion, MonsterSize, User } from "@/lib/types";
+import { getCompanionImageUrl, getCompanionUrl } from "@/lib/utils/url";
 
 // Helper function to format companion size
 const formatCompanionSize = (size: MonsterSize): string => {
@@ -55,7 +56,7 @@ const HeaderCompanion: React.FC<{
       className={cn("font-slab font-bold text-2xl leading-tight text-left")}
     >
       {link && companion.id ? (
-        <Link href={`/companions/${companion.id}`}>{companion.name}</Link>
+        <Link href={getCompanionUrl(companion)}>{companion.name}</Link>
       ) : (
         companion.name
       )}
@@ -129,9 +130,9 @@ export const Card = ({
             <ShareMenu disabled={companion.visibility !== "public"}>
               <ShareMenuDownloadCardItem
                 name={`${companion.name}.png`}
-                path={`/companions/${companion.id}/image`}
+                path={getCompanionImageUrl(companion)}
               />
-              <ShareMenuCopyURLItem path={`/companions/${companion.id}`} />
+              <ShareMenuCopyURLItem path={getCompanionUrl(companion)} />
             </ShareMenu>
           }
         />

@@ -6,6 +6,7 @@ import { useTransition } from "react";
 import { deleteMonster } from "@/app/actions/monster";
 import { Button } from "@/components/ui/button";
 import type { Monster } from "@/lib/types";
+import { getMonsterEditUrl } from "@/lib/utils/url";
 
 interface MonsterDetailActionsProps {
   monster: Monster;
@@ -37,7 +38,7 @@ export function MonsterDetailActions({ monster }: MonsterDetailActionsProps) {
   return (
     <div className="flex gap-2">
       <Button variant="outline" size="sm" asChild>
-        <Link href={`/my/monsters/${monster.id}/edit`}>
+        <Link href={getMonsterEditUrl(monster)}>
           <Pencil className="w-4 h-4" />
           Edit
         </Link>

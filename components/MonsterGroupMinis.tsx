@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import type { MonsterMini } from "@/lib/types";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
+import { getMonsterUrl } from "@/lib/utils/url";
 import { Link } from "./app/Link";
 import { Level } from "./Level";
 import { Separator } from "./ui/separator";
@@ -37,7 +38,7 @@ export const MonsterRow: React.FC<{
       )}
       <span>
         <Link
-          href={`/m/${monster.id}`}
+          href={getMonsterUrl(monster)}
           className={cn(
             "text-lg mr-2",
             monster.visibility === "private" && "text-muted-foreground"

@@ -10,6 +10,7 @@ import { Attribution } from "@/app/ui/Attribution";
 import { Button } from "@/components/ui/button";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { FamilyOverview } from "@/lib/types";
+import { getFamilyEditUrl } from "@/lib/utils/url";
 import { FormattedText } from "../../components/FormattedText";
 
 interface FamilyHeaderProps {
@@ -58,7 +59,7 @@ export function FamilyHeader({
           {showEditDeleteButtons && (
             <div className="flex gap-2">
               <Button variant="outline" size="sm" asChild>
-                <Link href={`/families/${family.id}/edit`}>
+                <Link href={getFamilyEditUrl(family)}>
                   <Pencil className="w-4 h-4" />
                   Edit
                 </Link>

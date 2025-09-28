@@ -6,6 +6,7 @@ import { useTransition } from "react";
 import { deleteItem } from "@/app/actions/item";
 import { Button } from "@/components/ui/button";
 import type { Item } from "@/lib/types";
+import { getItemEditUrl } from "@/lib/utils/url";
 
 interface ItemDetailActionsProps {
   item: Item;
@@ -37,7 +38,7 @@ export function ItemDetailActions({ item }: ItemDetailActionsProps) {
   return (
     <div className="flex gap-2">
       <Button variant="outline" size="sm" asChild>
-        <Link href={`/my/items/${item.id}/edit`}>
+        <Link href={getItemEditUrl(item)}>
           <Pencil className="w-4 h-4" />
           Edit
         </Link>

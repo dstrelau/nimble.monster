@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/subclass/Card";
 import { SubclassDetailActions } from "@/components/SubclassDetailActions";
 import { auth } from "@/lib/auth";
 import { findSubclass } from "@/lib/db";
+import { deslugify } from "@/lib/utils/slug";
+import { getSubclassSlug, getSubclassUrl } from "@/lib/utils/url";
 
 export const experimental_ppr = true;
 
@@ -13,12 +15,12 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const subclass = await findSubclass(id);
+  const uid = deslugify(id);
+  const subclass = await findSubclass(uid);
+  if (!subclass) return {};
 
-  if (!subclass) {
-    return {
-      title: "Subclass Not Found",
-    };
+  if (id !== getSubclassSlug(subclass)) {
+    return permanentRedirect(getSubclassUrl(subclass));
   }
 
   const creatorText = subclass.creator
@@ -37,7 +39,7 @@ export async function generateMetadata({
       title: title,
       description: `${subclassInfo}${creatorText}`,
       type: "article",
-      url: `/subclasses/${subclass.id}`,
+      url: getSubclassUrl(subclass),
     },
     twitter: {
       card: "summary_large_image",
@@ -54,10 +56,13 @@ export default async function SubclassPage({
 }) {
   const session = await auth();
   const { id } = await params;
-  const subclass = await findSubclass(id);
 
-  if (!subclass) {
-    return notFound();
+  const uid = deslugify(id);
+  const subclass = await findSubclass(uid);
+  if (!subclass) return notFound();
+
+  if (id !== getSubclassSlug(subclass)) {
+    return permanentRedirect(getSubclassUrl(subclass));
   }
 
   // if subclass is not public, then user must be creator

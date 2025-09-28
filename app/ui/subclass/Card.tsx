@@ -14,6 +14,7 @@ import {
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Subclass, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { getSubclassUrl } from "@/lib/utils/url";
 
 interface CardProps {
   subclass: Subclass;
@@ -88,7 +89,7 @@ export function Card({ subclass, creator, link = true, className }: CardProps) {
 
   if (link) {
     return (
-      <Link href={`/subclasses/${subclass.id}`} className="block">
+      <Link href={getSubclassUrl(subclass)} className="block">
         {cardContent}
       </Link>
     );

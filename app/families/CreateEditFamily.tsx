@@ -12,6 +12,7 @@ import {
 import { FamilyHeader } from "@/app/families/FamilyHeader";
 import { Button } from "@/components/ui/button";
 import type { FamilyOverview } from "@/lib/types";
+import { getFamilyUrl } from "@/lib/utils/url";
 
 interface EditFamilyClientProps {
   family: FamilyOverview;
@@ -70,8 +71,10 @@ export function CreateEditFamily({
           });
 
       if (result.success) {
-        const targetId = isCreating ? result.family?.id : family.id;
-        router.push(`/families/${targetId}`);
+        const target = isCreating ? result.family : family;
+        if (target) {
+          router.push(getFamilyUrl(target));
+        }
       } else {
         setError(
           result.error || `Failed to ${isCreating ? "create" : "update"} family`

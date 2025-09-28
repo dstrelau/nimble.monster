@@ -6,6 +6,7 @@ import { useTransition } from "react";
 import { deleteCompanion } from "@/app/actions/companion";
 import { Button } from "@/components/ui/button";
 import type { Companion } from "@/lib/types";
+import { getCompanionEditUrl } from "@/lib/utils/url";
 
 interface CompanionDetailActionsProps {
   companion: Companion;
@@ -39,7 +40,7 @@ export function CompanionDetailActions({
   return (
     <div className="flex gap-2">
       <Button variant="outline" size="sm" asChild>
-        <Link href={`/my/companions/${companion.id}/edit`}>
+        <Link href={getCompanionEditUrl(companion)}>
           <Pencil className="w-4 h-4" />
           Edit
         </Link>

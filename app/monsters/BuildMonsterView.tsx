@@ -55,6 +55,7 @@ import {
   UNKNOWN_USER,
 } from "@/lib/types";
 import { levelIntToDisplay } from "@/lib/utils";
+import { getMonsterUrl } from "@/lib/utils/url";
 import { getUserFamilies } from "../families/actions";
 import { AbilitiesSection } from "../ui/create/AbilitiesSection";
 import { ActionsSection } from "../ui/create/ActionsSection";
@@ -818,7 +819,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
     onSuccess: (newMonster) => {
       queryClient.invalidateQueries({ queryKey: ["monsters"] });
       queryClient.invalidateQueries({ queryKey: ["monster", newMonster.id] });
-      router.push(`/m/${newMonster.id}`);
+      router.push(getMonsterUrl(newMonster));
     },
     onError: (error) => {
       console.error("Failed to save monster:", error);

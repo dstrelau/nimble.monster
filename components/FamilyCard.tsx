@@ -2,6 +2,7 @@
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Family, MonsterMini } from "@/lib/types";
+import { getFamilyUrl } from "@/lib/utils/url";
 import { MonsterGroupMinis } from "./MonsterGroupMinis";
 
 interface FamilyCardProps {
@@ -17,7 +18,7 @@ export const FamilyCard = ({ family, monsters }: FamilyCardProps) => {
   return (
     <MonsterGroupMinis
       name={family.name}
-      href={`/families/${family.id}`}
+      href={getFamilyUrl(family)}
       monsters={monsters}
     >
       <AbilityOverlay abilities={family.abilities} conditions={allConditions} />

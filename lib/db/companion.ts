@@ -1,9 +1,5 @@
-import {
-  invalidateEntityImageCache,
-  preloadImage,
-} from "@/lib/cache/image-cache";
+import { invalidateEntityImageCache } from "@/lib/cache/image-cache";
 import type { Ability, Action, Companion, MonsterSize } from "@/lib/types";
-import { getBaseUrl } from "@/lib/utils/url";
 import { isValidUUID } from "@/lib/utils/validation";
 import type { InputJsonValue } from "../prisma/runtime/library";
 import { toCompanion } from "./converters";
@@ -44,8 +40,6 @@ export const listPublicCompanions = async (): Promise<Companion[]> => {
 };
 
 export const findCompanion = async (id: string): Promise<Companion | null> => {
-  if (!isValidUUID(id)) return null;
-
   const companion = await prisma.companion.findUnique({
     where: { id },
     include: {
@@ -58,10 +52,8 @@ export const findCompanion = async (id: string): Promise<Companion | null> => {
 export const findPublicCompanionById = async (
   id: string
 ): Promise<Companion | null> => {
-  if (!isValidUUID(id)) return null;
-
   const companion = await prisma.companion.findUnique({
-    where: { id, visibility: "public" },
+    where: { id: id, visibility: "public" as const },
     include: {
       creator: true,
     },
@@ -69,14 +61,12 @@ export const findPublicCompanionById = async (
   return companion ? toCompanion(companion) : null;
 };
 
-export const findCompanionWithCreatorDiscordId = async (
+export const findCompanionWithCreator = async (
   id: string,
-  creatorDiscordId: string
+  creatorId: string
 ): Promise<Companion | null> => {
-  if (!isValidUUID(id)) return null;
-
   const companion = await prisma.companion.findUnique({
-    where: { id, creator: { discordId: creatorDiscordId } },
+    where: { id, creator: { id: creatorId } },
     include: {
       creator: true,
     },
@@ -186,9 +176,6 @@ export const createCompanion = async (
 
   const companion = toCompanion(createdCompanion);
 
-  // Trigger async image pre-generation (non-blocking)
-  preloadImage("companion", companion.id, getBaseUrl()).catch(() => {});
-
   return companion;
 };
 
@@ -265,7 +252,6 @@ export const updateCompanion = async (
 
   // Invalidate old cached image and trigger async pre-generation
   invalidateEntityImageCache("companion", companion.id);
-  preloadImage("companion", companion.id, getBaseUrl()).catch(() => {});
 
   return companion;
 };

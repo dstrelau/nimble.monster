@@ -53,6 +53,7 @@ import type {
   MonsterMini,
 } from "@/lib/types";
 import { RARITIES, UNKNOWN_USER } from "@/lib/types";
+import { getCollectionUrl } from "@/lib/utils/url";
 import { CollectionCard } from "../ui/CollectionCard";
 import { SortSelect } from "../ui/monster/SortSelect";
 import { SearchInput } from "../ui/SearchInput";
@@ -175,7 +176,7 @@ export function CreateEditCollection({
           }
         }
 
-        router.push(`/collections/${result.collection.id}`);
+        router.push(getCollectionUrl(result.collection));
       } else {
         form.setError("root", {
           message: result.error || "Failed to create collection",

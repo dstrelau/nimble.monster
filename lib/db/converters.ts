@@ -24,7 +24,7 @@ export const toMonsterMini = (
 ): MonsterMini => ({
   id: m.id,
   hp: m.hp,
-  legendary: m.legendary,
+  legendary: m.legendary || false,
   minion: m.minion,
   level: m.level,
   levelInt: m.levelInt,
@@ -166,16 +166,12 @@ export const toCompanion = (
   >[0]
 ): Companion => {
   return {
-    id: c.id,
-    name: c.name,
-    hp_per_level: c.hp_per_level,
-    wounds: c.wounds,
-    visibility: c.visibility,
+    ...toCompanionMini(c),
     kind: c.kind,
     class: c.class,
     size: c.size,
     saves: c.saves,
-    updatedAt: c.updatedAt.toISOString(),
+    updatedAt: c.updatedAt,
     abilities: (c.abilities as unknown as Omit<Ability, "id">[]).map(
       (ability) => ({
         ...ability,
@@ -222,7 +218,7 @@ export const toItem = (
     imageBgColor: i.imageBgColor || undefined,
     description: i.description,
     moreInfo: i.moreInfo || undefined,
-    updatedAt: i.updatedAt.toISOString(),
+    updatedAt: i.updatedAt,
     creator: toUser(i.creator),
   };
 };

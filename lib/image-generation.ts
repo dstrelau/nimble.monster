@@ -12,12 +12,14 @@ import type { entity_image_type as EntityImageType } from "@/lib/prisma";
 export interface ImageGenerationOptions {
   baseUrl: string;
   entityId: string;
+  entityUrlPath: string;
   entityType: "monster" | "companion" | "item";
 }
 
 export async function generateEntityImageWithStorage({
   baseUrl,
   entityId,
+  entityUrlPath,
   entityType,
   entityVersion,
 }: ImageGenerationOptions & { entityVersion: string }): Promise<string> {
@@ -82,6 +84,7 @@ export async function generateEntityImageWithStorage({
         const imageBuffer = await generateEntityImageViaService({
           baseUrl,
           entityId,
+          entityUrlPath,
           entityType,
         });
 
@@ -145,6 +148,7 @@ export async function generateEntityImageWithStorage({
 async function generateEntityImageViaService({
   baseUrl,
   entityId,
+  entityUrlPath,
   entityType,
 }: ImageGenerationOptions): Promise<Buffer> {
   const tracer = trace.getTracer("image-generation");
@@ -152,18 +156,7 @@ async function generateEntityImageViaService({
   return tracer.startActiveSpan(
     `generate-${entityType}-image-via-service`,
     async (span) => {
-      const entityPageUrl = (() => {
-        switch (entityType) {
-          case "monster":
-            return `${baseUrl}/m/${entityId}`;
-          case "companion":
-            return `${baseUrl}/companions/${entityId}`;
-          case "item":
-            return `${baseUrl}/items/${entityId}`;
-          default:
-            throw new Error(`Unknown entity type: ${entityType}`);
-        }
-      })();
+      const entityPageUrl = `${baseUrl}${entityUrlPath}`;
 
       span.setAttributes({
         "entity.id": entityId,

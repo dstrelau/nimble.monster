@@ -35,8 +35,17 @@ vi.mock("@/lib/utils/monster", () => ({
   formatSizeKind: vi.fn(() => "Medium Humanoid"),
 }));
 
-vi.mock("@/lib/utils/validation", () => ({
-  isValidUUID: vi.fn(),
+vi.mock("next/navigation", () => ({
+  permanentRedirect: vi.fn(),
+}));
+
+vi.mock("@/lib/utils/slug", () => ({
+  deslugify: vi.fn(),
+  slugify: vi.fn(),
+}));
+
+vi.mock("@/lib/utils/url", () => ({
+  getMonsterUrl: vi.fn(() => "/monsters/test-monster-abc123"),
 }));
 
 // Can't for the life of me figure out how to get these types to work...
@@ -45,12 +54,14 @@ const mockAuth: MockedFunction<any> = vi.mocked(
   await import("@/lib/auth")
 ).auth;
 const mockFindMonster = vi.mocked(await import("@/lib/db")).findMonster;
-const mockIsValidUUID = vi.mocked(
-  await import("@/lib/utils/validation")
-).isValidUUID;
 const mockFormatSizeKind = vi.mocked(
   await import("@/lib/utils/monster")
 ).formatSizeKind;
+const mockDeslugify = vi.mocked(await import("@/lib/utils/slug")).deslugify;
+const mockSlugify = vi.mocked(await import("@/lib/utils/slug")).slugify;
+const _mockPermanentRedirect = vi.mocked(
+  await import("next/navigation")
+).permanentRedirect;
 
 const fakeCreator = {
   id: "12345678-1234-1234-1234-1234567890ab",
@@ -60,18 +71,20 @@ const fakeCreator = {
   displayName: "Test User",
 };
 
-describe("GET /m/[monsterId]/nimbrew.json", () => {
+describe("GET /monsters/[id]/nimbrew.json", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   const mockRequest = new Request("http://localhost:3000");
-  const createMockParams = (monsterId: string) => ({
-    params: Promise.resolve({ monsterId }),
+  const createMockParams = (id: string) => ({
+    params: Promise.resolve({ id }),
   });
 
   it("should return 404 for invalid UUID", async () => {
-    mockIsValidUUID.mockReturnValue(false);
+    mockDeslugify.mockImplementation(() => {
+      throw new Error("Identifier must be exactly 26 characters");
+    });
 
     const response = await GET(mockRequest, createMockParams("invalid-id"));
     const data = await response.json();
@@ -81,12 +94,12 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
   });
 
   it("should return 404 when monster not found", async () => {
-    mockIsValidUUID.mockReturnValue(true);
+    mockDeslugify.mockReturnValue("550e8400-e29b-41d4-a716-446655440000");
     mockFindMonster.mockResolvedValue(null);
 
     const response = await GET(
       mockRequest,
-      createMockParams("550e8400-e29b-41d4-a716-446655440000")
+      createMockParams("test-monster-abcdefghijklmnopqrstuvwxyz")
     );
     const data = await response.json();
 
@@ -95,8 +108,7 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
   });
 
   it("should return 404 for private monster when user is not owner", async () => {
-    mockIsValidUUID.mockReturnValue(true);
-    mockFindMonster.mockResolvedValue({
+    const testMonster = {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Test Monster",
       visibility: "private",
@@ -120,15 +132,17 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       actionPreface: "",
       createdAt: new Date(),
       updatedAt: new Date(),
-    } satisfies Partial<Monster>);
+    } satisfies Partial<Monster>;
+
+    const slug = "test-monster-abcdefghijklmnopqrstuvwxyz";
+    mockDeslugify.mockReturnValue("550e8400-e29b-41d4-a716-446655440000");
+    mockSlugify.mockReturnValue(slug);
+    mockFindMonster.mockResolvedValue(testMonster);
     mockAuth.mockResolvedValue({
       user: { id: "different-user" },
     } as Session);
 
-    const response = await GET(
-      mockRequest,
-      createMockParams("550e8400-e29b-41d4-a716-446655440000")
-    );
+    const response = await GET(mockRequest, createMockParams(slug));
     const data = await response.json();
 
     expect(response.status).toBe(404);
@@ -136,7 +150,6 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
   });
 
   it("should return nimbrew data for public monster", async () => {
-    mockIsValidUUID.mockReturnValue(true);
     mockFormatSizeKind.mockReturnValue("Medium Humanoid");
 
     const mockMonster = {
@@ -197,12 +210,12 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       updatedAt: new Date(),
     } satisfies Partial<Monster>;
 
+    const slug = "test-goblin-abcdefghijklmnopqrstuvwxyz";
+    mockDeslugify.mockReturnValue("550e8400-e29b-41d4-a716-446655440000");
+    mockSlugify.mockReturnValue(slug);
     mockFindMonster.mockResolvedValue(mockMonster);
 
-    const response = await GET(
-      mockRequest,
-      createMockParams("550e8400-e29b-41d4-a716-446655440000")
-    );
+    const response = await GET(mockRequest, createMockParams(slug));
     const data = await response.json();
 
     expect(response.status).toBe(200);
@@ -230,7 +243,6 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
   });
 
   it("should return nimbrew data for private monster when user is owner", async () => {
-    mockIsValidUUID.mockReturnValue(true);
     mockFormatSizeKind.mockReturnValue("Large Dragon");
 
     const mockMonster = {
@@ -269,15 +281,15 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       updatedAt: new Date(),
     } satisfies Partial<Monster>;
 
+    const slug = "ancient-dragon-abcdefghijklmnopqrstuvw";
+    mockDeslugify.mockReturnValue("550e8400-e29b-41d4-a716-446655440000");
+    mockSlugify.mockReturnValue(slug);
     mockFindMonster.mockResolvedValue(mockMonster);
     mockAuth.mockResolvedValue({
       user: { discordId: "owner123" },
     });
 
-    const response = await GET(
-      mockRequest,
-      createMockParams("550e8400-e29b-41d4-a716-446655440000")
-    );
+    const response = await GET(mockRequest, createMockParams(slug));
     const data = await response.json();
 
     expect(response.status).toBe(200);
@@ -291,7 +303,6 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
   });
 
   it("should handle monster with single action", async () => {
-    mockIsValidUUID.mockReturnValue(true);
     mockFormatSizeKind.mockReturnValue("Small Beast");
 
     const mockMonster = {
@@ -328,12 +339,12 @@ describe("GET /m/[monsterId]/nimbrew.json", () => {
       updatedAt: new Date(),
     } satisfies Partial<Monster>;
 
+    const slug = "rat-abcdefghijklmnopqrstuvwxyz";
+    mockDeslugify.mockReturnValue("550e8400-e29b-41d4-a716-446655440000");
+    mockSlugify.mockReturnValue(slug);
     mockFindMonster.mockResolvedValue(mockMonster);
 
-    const response = await GET(
-      mockRequest,
-      createMockParams("550e8400-e29b-41d4-a716-446655440000")
-    );
+    const response = await GET(mockRequest, createMockParams(slug));
     const data = await response.json();
 
     expect(response.status).toBe(200);

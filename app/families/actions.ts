@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import type { Ability } from "@/lib/types";
+import { getFamilyUrl, getUserUrl } from "@/lib/utils/url";
 
 export async function getUserFamilies() {
   try {
@@ -78,9 +79,9 @@ export async function updateFamily(
     });
 
     // Revalidate the families page and family detail page to force a refresh
-    revalidatePath(`/u/${session.user.username}`);
+    revalidatePath(getUserUrl(session.user));
     revalidatePath("/my/families");
-    revalidatePath(`/families/${familyId}`);
+    revalidatePath(getFamilyUrl(family));
 
     return { success: true, family };
   } catch (error) {
@@ -104,9 +105,7 @@ export async function deleteFamily(familyId: string) {
       discordId: session.user.discordId,
     });
 
-    // Revalidate the families page and family detail page to force a refresh
     revalidatePath("/my/families");
-    revalidatePath(`/families/${familyId}`);
 
     return {
       success: deleted,

@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
         destination: "/companions/:path*",
         permanent: true,
       },
+      {
+        source: "/m/:path*",
+        destination: "/monsters/:path*",
+        permanent: true,
+      },
     ];
   },
   images: {

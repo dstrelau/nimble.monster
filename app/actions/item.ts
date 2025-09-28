@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import type { ItemRarity, ItemRarityFilter } from "@/lib/types";
+import { getItemUrl } from "@/lib/utils/url";
 
 export async function searchPublicItems(params: {
   creatorId?: string;
@@ -83,7 +84,7 @@ export async function updateItem(
       discordId: session.user.discordId,
     });
 
-    revalidatePath(`/items/${itemId}`);
+    revalidatePath(getItemUrl(item));
     revalidatePath("/my/items");
 
     return { success: true, item };

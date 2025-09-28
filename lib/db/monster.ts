@@ -1,8 +1,5 @@
 import type { TypeFilter } from "@/app/actions/monster";
-import {
-  invalidateEntityImageCache,
-  preloadImage,
-} from "@/lib/cache/image-cache";
+import { invalidateEntityImageCache } from "@/lib/cache/image-cache";
 import type {
   Ability,
   Action,
@@ -12,7 +9,7 @@ import type {
   MonsterMini,
   MonsterSize,
 } from "@/lib/types";
-import { getBaseUrl } from "@/lib/utils/url";
+
 import { isValidUUID } from "@/lib/utils/validation";
 import type { InputJsonValue } from "../prisma/runtime/library";
 import { toMonster, toMonsterMini, toUser } from "./converters";
@@ -54,8 +51,6 @@ export const listPublicMonsterMinis = async (): Promise<MonsterMini[]> => {
 };
 
 export const findMonster = async (id: string): Promise<Monster | null> => {
-  if (!isValidUUID(id)) return null;
-
   const monster = await prisma.monster.findUnique({
     where: { id },
     include: {
@@ -70,8 +65,6 @@ export const findMonster = async (id: string): Promise<Monster | null> => {
 export const findPublicMonsterById = async (
   id: string
 ): Promise<Monster | null> => {
-  if (!isValidUUID(id)) return null;
-
   const monster = await prisma.monster.findUnique({
     where: { id, visibility: "public" },
     include: {
@@ -83,14 +76,12 @@ export const findPublicMonsterById = async (
   return monster ? toMonster(monster) : null;
 };
 
-export const findMonsterWithCreatorDiscordId = async (
+export const findMonsterWithCreatorId = async (
   id: string,
   creatorId: string
 ): Promise<Monster | null> => {
-  if (!isValidUUID(id)) return null;
-
   const monster = await prisma.monster.findUnique({
-    where: { id, creator: { discordId: creatorId } },
+    where: { id, creator: { id: creatorId } },
     include: {
       family: { include: { creator: true } },
       creator: true,
@@ -216,10 +207,6 @@ export const searchPublicMonsterMinis = async ({
 export const listMonstersByFamilyId = async (
   familyId: string
 ): Promise<Monster[]> => {
-  if (!isValidUUID(familyId)) {
-    return [];
-  }
-
   return (
     await prisma.monster.findMany({
       include: {
@@ -227,10 +214,7 @@ export const listMonstersByFamilyId = async (
         creator: true,
         monsterConditions: { include: { condition: true } },
       },
-      where: {
-        family_id: familyId,
-        visibility: "public",
-      },
+      where: { family: { id: familyId }, visibility: "public" },
       orderBy: { levelInt: "asc" },
     })
   ).map(toMonster);
@@ -356,13 +340,7 @@ export const createMonster = async (
 
   await syncMonsterConditions(createdMonster.id, conditionNames);
 
-  const monster = toMonster(createdMonster);
-
-  // Trigger async image pre-generation (non-blocking)
-  // Silent fail - image will be generated on-demand if needed
-  preloadImage("monster", monster.id, getBaseUrl()).catch(() => {});
-
-  return monster;
+  return toMonster(createdMonster);
 };
 
 export interface UpdateMonsterInput {
@@ -499,12 +477,6 @@ export const updateMonster = async (
 
   await syncMonsterConditions(id, conditionNames);
 
-  const monster = toMonster(updatedMonster);
-
-  // Invalidate old cached image and trigger async pre-generation
-  // Silent fail - image will be generated on-demand if needed
-  invalidateEntityImageCache("monster", monster.id);
-  preloadImage("monster", monster.id, getBaseUrl()).catch(() => {});
-
-  return monster;
+  invalidateEntityImageCache("monster", updatedMonster.id);
+  return toMonster(updatedMonster);
 };

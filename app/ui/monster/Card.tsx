@@ -17,6 +17,7 @@ import { useConditions } from "@/lib/hooks/useConditions";
 import type { Monster, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatSizeKind } from "@/lib/utils/monster";
+import { getFamilyUrl, getMonsterUrl } from "@/lib/utils/url";
 import CardActions from "./CardActions";
 import {
   ArmorStat,
@@ -72,7 +73,7 @@ const MonsterTitle: React.FC<{
   return (
     <CardTitle className={titleClasses}>
       {link ? (
-        <Link href={`/m/${monster.id}`}>{monster.name}</Link>
+        <Link href={getMonsterUrl(monster)}>{monster.name}</Link>
       ) : (
         monster.name
       )}
@@ -104,7 +105,7 @@ const MonsterDescription: React.FC<{
       </p>
       {monster.family && !hideFamilyName && (
         <Link
-          href={`/families/${monster.family.id}`}
+          href={getFamilyUrl(monster.family)}
           className="text-sm font-sans flex small-caps font-semibold"
         >
           <Users className="size-4 mr-1 text-flame" />

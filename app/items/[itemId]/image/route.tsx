@@ -2,37 +2,25 @@ import { trace } from "@opentelemetry/api";
 import type { NextRequest } from "next/server";
 import { findItem } from "@/lib/db";
 import { createImageResponse } from "@/lib/image-route-handler";
-import { isValidUUID } from "@/lib/utils/validation";
+import { deslugify } from "@/lib/utils/slug";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ itemId: string }> }
 ) {
   const tracer = trace.getTracer("item-image-route");
-
   return tracer.startActiveSpan("item-image-request", async (span) => {
     try {
       const { itemId } = await params;
+      const uid = deslugify(itemId);
 
       span.setAttributes({
         "item.id": itemId,
         "request.url": request.url,
         "request.method": request.method,
       });
-
-      if (!isValidUUID(itemId)) {
-        span.setAttributes({
-          "validation.uuid_valid": false,
-          "response.status": 404,
-        });
-        span.setStatus({ code: 1 }); // OK (expected validation failure)
-        return new Response("Item not found", { status: 404 });
-      }
-
-      span.setAttributes({ "validation.uuid_valid": true });
-
       const dbStartTime = Date.now();
-      const item = await findItem(itemId);
+      const item = await findItem(uid);
       const dbTime = Date.now() - dbStartTime;
 
       span.setAttributes({
@@ -53,7 +41,7 @@ export async function GET(
 
       span.setAttributes({
         "item.name": item.name,
-        "item.updated_at": item.updatedAt,
+        "item.updated_at": item.updatedAt.toISOString(),
       });
 
       return createImageResponse(request, item, "item");

@@ -2,6 +2,7 @@ import { clsx } from "clsx";
 import { Link } from "@/components/app/Link";
 import { UserAvatar } from "@/components/app/UserAvatar";
 import type { User } from "@/lib/types";
+import { getUserUrl } from "@/lib/utils/url";
 
 const SIZE_SETTINGS = {
   default: {
@@ -30,7 +31,7 @@ export const Attribution = ({
   const settings = SIZE_SETTINGS[size];
   return (
     <Link
-      href={`/u/${user.username}`}
+      href={getUserUrl(user)}
       className={clsx("flex items-center", settings.gap, className)}
     >
       <UserAvatar user={user} size={settings.avatarSize} />

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import type { Subclass } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { getSubclassUrl } from "@/lib/utils/url";
 import { CardFooterLayout } from "../shared/CardFooterLayout";
 
 interface SubclassMiniCardProps {
@@ -26,7 +27,7 @@ export function SubclassMiniCard({
     <Card className={className}>
       <CardHeader>
         <CardTitle className={cn("font-slab small-caps font-bold text-2xl")}>
-          <Link href={`/subclasses/${subclass.id}`} className="block">
+          <Link href={getSubclassUrl(subclass)} className="block">
             {subclass.namePreface && `${subclass.namePreface} `}
             {subclass.name}
           </Link>

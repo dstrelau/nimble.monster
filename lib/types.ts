@@ -188,7 +188,7 @@ export interface Companion extends CompanionMini {
   dyingRule: string;
   moreInfo?: string;
   creator: User;
-  updatedAt: string;
+  updatedAt: Date;
   imageUrl?: string;
 }
 
@@ -248,7 +248,7 @@ export interface Item extends ItemMini {
   description: string;
   moreInfo?: string;
   creator: User;
-  updatedAt: string;
+  updatedAt: Date;
 }
 
 export const UNKNOWN_USER: User = {

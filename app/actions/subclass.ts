@@ -8,6 +8,7 @@ import type {
   SubclassLevel,
   SubclassVisibility,
 } from "@/lib/types";
+import { getSubclassUrl } from "@/lib/utils/url";
 
 export async function searchPublicSubclasses(params: {
   creatorId?: string;
@@ -81,7 +82,7 @@ export async function updateSubclass(
       discordId: session.user.discordId,
     });
 
-    revalidatePath(`/subclasses/${subclassId}`);
+    revalidatePath(getSubclassUrl(subclass));
     revalidatePath("/my/subclasses");
 
     return { success: true, subclass };

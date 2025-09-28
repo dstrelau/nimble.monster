@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import type { Ability, Action } from "@/lib/types";
+import { getCompanionUrl } from "@/lib/utils/url";
 
 export async function createCompanion(formData: {
   name: string;
@@ -81,9 +82,9 @@ export async function updateCompanion(
     }
 
     // First check if companion exists and user owns it
-    const existingCompanion = await db.findCompanionWithCreatorDiscordId(
+    const existingCompanion = await db.findCompanionWithCreator(
       companionId,
-      session.user.discordId
+      session.user.id
     );
 
     if (!existingCompanion) {
@@ -113,8 +114,7 @@ export async function updateCompanion(
       visibility: formData.visibility,
       discordId: session.user.discordId,
     });
-
-    revalidatePath(`/companions/${companionId}`);
+    revalidatePath(getCompanionUrl(companion));
     revalidatePath("/my/companions");
 
     return { success: true, companion };

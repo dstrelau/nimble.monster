@@ -1,7 +1,7 @@
 import type { Item, ItemMini, ItemRarity, ItemRarityFilter } from "@/lib/types";
-import { getBaseUrl } from "@/lib/utils/url";
+
 import { isValidUUID } from "@/lib/utils/validation";
-import { invalidateEntityImageCache, preloadImage } from "../cache/image-cache";
+import { invalidateEntityImageCache } from "../cache/image-cache";
 import { toItem, toItemMini, toUser } from "./converters";
 import { prisma } from "./index";
 
@@ -56,8 +56,6 @@ export const getRandomRecentItems = async (
 };
 
 export const findItem = async (id: string): Promise<Item | null> => {
-  if (!isValidUUID(id)) return null;
-
   const item = await prisma.item.findUnique({
     where: { id },
     include: {
@@ -91,8 +89,6 @@ export const findItemCollections = async (itemId: string) => {
 };
 
 export const findPublicItemById = async (id: string): Promise<Item | null> => {
-  if (!isValidUUID(id)) return null;
-
   const item = await prisma.item.findUnique({
     where: { id, visibility: "public" },
     include: {
@@ -104,12 +100,10 @@ export const findPublicItemById = async (id: string): Promise<Item | null> => {
 
 export const findItemWithCreatorDiscordId = async (
   id: string,
-  creatorDiscordId: string
+  creatorId: string
 ): Promise<Item | null> => {
-  if (!isValidUUID(id)) return null;
-
   const item = await prisma.item.findUnique({
-    where: { id, creator: { discordId: creatorDiscordId } },
+    where: { id, creator: { id: creatorId } },
     include: {
       creator: true,
     },
@@ -271,10 +265,6 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
 
   const item = toItem(createdItem);
 
-  // Trigger async image pre-generation (non-blocking)
-  // Silent fail - image will be generated on-demand if needed
-  preloadImage("item", item.id, getBaseUrl()).catch(() => {});
-
   return item;
 };
 
@@ -335,12 +325,6 @@ export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
     },
   });
 
-  const item = toItem(updatedItem);
-
-  // Invalidate old cached image and trigger async pre-generation
-  // Silent fail - image will be generated on-demand if needed
-  invalidateEntityImageCache("item", item.id);
-  preloadImage("item", item.id, getBaseUrl()).catch(() => {});
-
-  return item;
+  invalidateEntityImageCache("item", updatedItem.id);
+  return toItem(updatedItem);
 };

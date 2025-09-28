@@ -1,6 +1,8 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import { deslugify, slugify } from "@/lib/utils/slug";
+import { getFamilyEditUrl } from "@/lib/utils/url";
 import { CreateEditFamily } from "../../CreateEditFamily";
 
 export default async function EditFamilyPage({
@@ -9,10 +11,14 @@ export default async function EditFamilyPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [family, session] = await Promise.all([db.getFamily(id), auth()]);
+  const session = await auth();
 
-  if (!family) {
-    notFound();
+  const uid = deslugify(id);
+  const family = await db.getFamily(uid);
+  if (!family) return notFound();
+
+  if (id !== slugify(family)) {
+    return permanentRedirect(getFamilyEditUrl(family));
   }
 
   if (!session?.user?.id || session.user.discordId !== family.creatorId) {

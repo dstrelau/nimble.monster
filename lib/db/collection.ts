@@ -122,10 +122,8 @@ export const getCollection = async (
   id: string,
   viewerDiscordId?: string
 ): Promise<Collection | null> => {
-  if (!isValidUUID(id)) return null;
-
   const c = await prisma.collection.findUnique({
-    where: { id: id },
+    where: { id },
     include: {
       creator: true,
       monsterCollections: {
@@ -134,6 +132,7 @@ export const getCollection = async (
             include: {
               family: { include: { creator: true } },
               creator: true,
+              monsterConditions: { include: { condition: true } },
             },
           },
         },

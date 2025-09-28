@@ -19,6 +19,7 @@ import {
 import { useConditions } from "@/lib/hooks/useConditions";
 import { type Item, RARITIES, type User } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { getItemImageUrl, getItemUrl } from "@/lib/utils/url";
 
 const formatRarityDisplay = (rarity?: string): string => {
   if (!rarity || rarity === "unspecified") return "";
@@ -216,7 +217,7 @@ export const Card = ({
               className={cn("font-slab", "font-black text-2xl leading-tight")}
             >
               {link && item.id ? (
-                <Link href={`/items/${item.id}`}>{item.name}</Link>
+                <Link href={getItemUrl(item)}>{item.name}</Link>
               ) : (
                 item.name
               )}
@@ -252,9 +253,9 @@ export const Card = ({
             <ShareMenu disabled={item.visibility !== "public"}>
               <ShareMenuDownloadCardItem
                 name={`${item.name}.png`}
-                path={`/items/${item.id}/image`}
+                path={getItemImageUrl(item)}
               />
-              <ShareMenuCopyURLItem path={`/items/${item.id}`} />
+              <ShareMenuCopyURLItem path={getItemUrl(item)} />
             </ShareMenu>
           }
         />

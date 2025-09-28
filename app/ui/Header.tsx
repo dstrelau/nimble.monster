@@ -33,6 +33,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { getUserUrl } from "@/lib/utils/url";
 
 const UserAvatarButton = ({
   user,
@@ -102,10 +103,10 @@ const Header = () => {
   const userMenuItems = currentUser
     ? [
         {
-          href: currentUser.username ? `/u/${currentUser.username}` : "#",
+          href: currentUser.username ? getUserUrl(currentUser) : "#",
           label: "View Profile",
           isActive: currentUser.username
-            ? isActive(`/u/${currentUser.username}`)
+            ? isActive(getUserUrl(currentUser))
             : false,
         },
         {
