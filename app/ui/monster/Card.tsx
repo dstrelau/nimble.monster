@@ -72,7 +72,7 @@ const MonsterTitle: React.FC<{
 
   return (
     <CardTitle className={titleClasses}>
-      {link ? (
+      {link && monster.id ? (
         <Link href={getMonsterUrl(monster)}>{monster.name}</Link>
       ) : (
         monster.name

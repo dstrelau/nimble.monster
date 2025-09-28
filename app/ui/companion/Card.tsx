@@ -127,13 +127,15 @@ export const Card = ({
           creator={creator}
           hideActions={hideActions}
           actionsSlot={
-            <ShareMenu disabled={companion.visibility !== "public"}>
-              <ShareMenuDownloadCardItem
-                name={`${companion.name}.png`}
-                path={getCompanionImageUrl(companion)}
-              />
-              <ShareMenuCopyURLItem path={getCompanionUrl(companion)} />
-            </ShareMenu>
+            companion.id && (
+              <ShareMenu disabled={companion.visibility !== "public"}>
+                <ShareMenuDownloadCardItem
+                  name={`${companion.name}.png`}
+                  path={getCompanionImageUrl(companion)}
+                />
+                <ShareMenuCopyURLItem path={getCompanionUrl(companion)} />
+              </ShareMenu>
+            )
           }
         />
       </CardContainer>
