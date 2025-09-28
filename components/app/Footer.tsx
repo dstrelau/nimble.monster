@@ -92,7 +92,7 @@ export const Footer = () => {
             <Link href="https://ko-fi.com/byteslicer">Toss a coin</Link>
           </p>
         </div>
-        <div className="flex gap-8">
+        <div className="flex flex-wrap gap-8">
           {sections.map((section) => (
             <div className="min-w-28" key={section.name}>
               <h4 className="font-bold text-md">{section.name}</h4>
