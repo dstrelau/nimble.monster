@@ -1,4 +1,5 @@
 import { trace } from "@opentelemetry/api";
+import { Prisma } from "@/lib/prisma";
 import { prisma } from "@/lib/db";
 import {
   type EntityImage,
@@ -20,118 +21,191 @@ export async function claimImageGeneration(
   entityVersion: string
 ): Promise<EntityImageClaim> {
   const tracer = trace.getTracer("entity-images");
-
-  return tracer.startActiveSpan("claim-image-generation", async (span) => {
-    span.setAttributes({
+  const span = tracer.startSpan("claim-image-generation", {
+    attributes: {
       "entity.type": entityType,
       "entity.id": entityId,
       "entity.version": entityVersion,
-    });
+    },
+  });
 
-    try {
-      // Use upsert to atomically handle creation/update - eliminates race condition
-      const record = await prisma.entityImage.upsert({
-        where: {
-          entityType_entityId: {
-            entityType,
-            entityId,
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const now = new Date();
+
+      const inserted = await tx.$queryRaw<Array<{ id: string }>>(
+        Prisma.sql`
+          INSERT INTO entity_images (id, entity_type, entity_id, entity_version, generation_status, generation_started_at, created_at, updated_at)
+          VALUES (uuid_generate_v4(), CAST(${entityType} AS entity_image_type), CAST(${entityId} AS uuid), ${entityVersion}, 'generating', ${now}, ${now}, ${now})
+          ON CONFLICT (entity_type, entity_id) DO NOTHING
+          RETURNING id
+        `
+      );
+
+      if (inserted.length > 0) {
+        span.setAttributes({
+          "claim.id": inserted[0].id,
+          "claim.claimed": true,
+          "record.created": true,
+        });
+
+        return {
+          id: inserted[0].id,
+          claimed: true,
+        };
+      }
+
+      const locked = await tx.$queryRaw<
+        Array<{
+          id: string;
+          entity_type: string;
+          entity_id: string;
+          entity_version: string;
+          generation_status: string;
+          generation_started_at: Date;
+          blob_url: string | null;
+          generated_at: Date | null;
+          created_at: Date;
+          updated_at: Date;
+        }>
+      >(
+        Prisma.sql`
+          SELECT * FROM entity_images
+          WHERE entity_type = CAST(${entityType} AS entity_image_type)
+            AND entity_id = CAST(${entityId} AS uuid)
+          FOR UPDATE SKIP LOCKED
+        `
+      );
+
+      if (locked.length === 0) {
+        const existing = await tx.entityImage.findUnique({
+          where: {
+            entityType_entityId: { entityType, entityId },
           },
-        },
-        create: {
-          entityType,
-          entityId,
-          entityVersion,
-          generationStatus: GenerationStatus.generating,
-          generationStartedAt: new Date(),
-        },
-        update: {}, // No update on conflict - we'll handle logic below
-      });
+        });
+
+        if (!existing) {
+          throw new Error("Entity image record disappeared");
+        }
+
+        span.setAttributes({
+          "claim.claimed": false,
+          "lock.held_by_other": true,
+          "existing.status": existing.generationStatus,
+        });
+
+        return {
+          id: existing.id,
+          claimed: false,
+          existing,
+        };
+      }
+
+      const record = locked[0];
 
       span.setAttributes({
         "record.id": record.id,
-        "record.status": record.generationStatus,
-        "record.version": record.entityVersion,
+        "record.status": record.generation_status,
+        "record.version": record.entity_version,
       });
 
-      // Check if the record is for the current version
-      if (record.entityVersion === entityVersion) {
-        if (record.generationStatus === GenerationStatus.completed) {
-          span.setAttributes({
-            "claim.claimed": false,
-            "existing.completed": true,
-          });
-          return {
-            id: record.id,
-            claimed: false,
-            existing: record,
-          };
-        }
-
-        // Check if generation is stale (timeout)
-        const generationAge = Date.now() - record.generationStartedAt.getTime();
-        if (generationAge > GENERATION_TIMEOUT_MS) {
-          // Take over stale generation
-          const updatedRecord = await prisma.entityImage.update({
-            where: { id: record.id },
-            data: {
-              generationStatus: GenerationStatus.generating,
-              generationStartedAt: new Date(),
-            },
-          });
-
-          span.setAttributes({
-            "claim.claimed": true,
-            "takeover.stale": true,
-            "generation.age_ms": generationAge,
-          });
-
-          return {
-            id: updatedRecord.id,
-            claimed: true,
-          };
-        }
-
-        // Generation is in progress and not stale
+      if (
+        record.entity_version === entityVersion &&
+        record.generation_status === "completed"
+      ) {
         span.setAttributes({
           "claim.claimed": false,
-          "existing.in_progress": true,
-          "generation.age_ms": generationAge,
+          "existing.completed": true,
+        });
+
+        const mappedRecord = await tx.entityImage.findUnique({
+          where: { id: record.id },
         });
 
         return {
           id: record.id,
           claimed: false,
-          existing: record,
+          existing: mappedRecord,
         };
       }
 
-      // Version has changed, update to new version and claim
-      const updatedRecord = await prisma.entityImage.update({
+      if (
+        record.entity_version === entityVersion &&
+        record.generation_status === "generating"
+      ) {
+        const generationAge =
+          Date.now() - new Date(record.generation_started_at).getTime();
+
+        if (generationAge <= GENERATION_TIMEOUT_MS) {
+          span.setAttributes({
+            "claim.claimed": false,
+            "existing.in_progress": true,
+            "generation.age_ms": generationAge,
+          });
+
+          const mappedRecord = await tx.entityImage.findUnique({
+            where: { id: record.id },
+          });
+
+          return {
+            id: record.id,
+            claimed: false,
+            existing: mappedRecord,
+          };
+        }
+
+        await tx.entityImage.update({
+          where: { id: record.id },
+          data: {
+            generationStatus: GenerationStatus.generating,
+            generationStartedAt: new Date(),
+          },
+        });
+
+        span.setAttributes({
+          "claim.claimed": true,
+          "takeover.stale": true,
+          "generation.age_ms": generationAge,
+        });
+
+        return {
+          id: record.id,
+          claimed: true,
+        };
+      }
+
+      const needsVersionUpdate = record.entity_version !== entityVersion;
+
+      await tx.entityImage.update({
         where: { id: record.id },
         data: {
           entityVersion,
           generationStatus: GenerationStatus.generating,
           generationStartedAt: new Date(),
-          blobUrl: null,
-          generatedAt: null,
+          ...(needsVersionUpdate ? { blobUrl: null, generatedAt: null } : {}),
         },
       });
 
       span.setAttributes({
         "claim.claimed": true,
-        "version.updated": true,
-        "old.version": record.entityVersion,
-        "new.version": entityVersion,
+        ...(needsVersionUpdate
+          ? {
+              "version.updated": true,
+              "old.version": record.entity_version,
+            }
+          : {
+              "takeover.failed": true,
+            }),
       });
 
       return {
-        id: updatedRecord.id,
+        id: record.id,
         claimed: true,
       };
-    } finally {
-      span.end();
-    }
-  });
+    });
+  } finally {
+    span.end();
+  }
 }
 
 export async function completeImageGeneration(
