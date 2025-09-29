@@ -29,70 +29,50 @@ export async function claimImageGeneration(
     });
 
     try {
-      // Try to create a new generation claim
-      const newClaim = await prisma.entityImage.create({
-        data: {
-          entityType,
-          entityId,
-          entityVersion,
-          generationStatus: GenerationStatus.generating,
-          generationStartedAt: new Date(),
-        },
-      });
-
-      span.setAttributes({
-        "claim.id": newClaim.id,
-        "claim.claimed": true,
-      });
-
-      return {
-        id: newClaim.id,
-        claimed: true,
-      };
-    } catch (_error) {
-      // If creation fails due to unique constraint, check existing record
-      const existing = await prisma.entityImage.findUnique({
+      // Use upsert to atomically handle creation/update - eliminates race condition
+      const record = await prisma.entityImage.upsert({
         where: {
           entityType_entityId: {
             entityType,
             entityId,
           },
         },
+        create: {
+          entityType,
+          entityId,
+          entityVersion,
+          generationStatus: GenerationStatus.generating,
+          generationStartedAt: new Date(),
+        },
+        update: {}, // No update on conflict - we'll handle logic below
       });
-
-      if (!existing) {
-        throw new Error(
-          "Failed to create or find existing entity image record"
-        );
-      }
 
       span.setAttributes({
-        "existing.id": existing.id,
-        "existing.status": existing.generationStatus,
-        "existing.version": existing.entityVersion,
+        "record.id": record.id,
+        "record.status": record.generationStatus,
+        "record.version": record.entityVersion,
       });
 
-      // Check if the existing record is for the current version
-      if (existing.entityVersion === entityVersion) {
-        if (existing.generationStatus === GenerationStatus.completed) {
+      // Check if the record is for the current version
+      if (record.entityVersion === entityVersion) {
+        if (record.generationStatus === GenerationStatus.completed) {
           span.setAttributes({
             "claim.claimed": false,
             "existing.completed": true,
           });
           return {
-            id: existing.id,
+            id: record.id,
             claimed: false,
-            existing,
+            existing: record,
           };
         }
 
         // Check if generation is stale (timeout)
-        const generationAge =
-          Date.now() - existing.generationStartedAt.getTime();
+        const generationAge = Date.now() - record.generationStartedAt.getTime();
         if (generationAge > GENERATION_TIMEOUT_MS) {
           // Take over stale generation
           const updatedRecord = await prisma.entityImage.update({
-            where: { id: existing.id },
+            where: { id: record.id },
             data: {
               generationStatus: GenerationStatus.generating,
               generationStartedAt: new Date(),
@@ -119,15 +99,15 @@ export async function claimImageGeneration(
         });
 
         return {
-          id: existing.id,
+          id: record.id,
           claimed: false,
-          existing,
+          existing: record,
         };
       }
 
       // Version has changed, update to new version and claim
       const updatedRecord = await prisma.entityImage.update({
-        where: { id: existing.id },
+        where: { id: record.id },
         data: {
           entityVersion,
           generationStatus: GenerationStatus.generating,
@@ -140,7 +120,7 @@ export async function claimImageGeneration(
       span.setAttributes({
         "claim.claimed": true,
         "version.updated": true,
-        "old.version": existing.entityVersion,
+        "old.version": record.entityVersion,
         "new.version": entityVersion,
       });
 
