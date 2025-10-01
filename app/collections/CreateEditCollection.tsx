@@ -44,15 +44,10 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
-import type {
-  Collection,
-  Item,
-  ItemMini,
-  ItemRarityFilter,
-  Monster,
-  MonsterMini,
-} from "@/lib/types";
-import { RARITIES, UNKNOWN_USER } from "@/lib/types";
+import type { Item, ItemMini, ItemRarityFilter } from "@/lib/services/items";
+import { RARITIES } from "@/lib/services/items";
+import type { Collection, Monster, MonsterMini } from "@/lib/types";
+import { UNKNOWN_USER } from "@/lib/types";
 import { getCollectionUrl } from "@/lib/utils/url";
 import { CollectionCard } from "../ui/CollectionCard";
 import { SortSelect } from "../ui/monster/SortSelect";

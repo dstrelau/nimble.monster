@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type ItemRarity, RARITIES } from "@/lib/types";
+import { type ItemRarity, RARITIES } from "@/lib/services/items";
 
 export type SortOption = "name-asc" | "name-desc";
 

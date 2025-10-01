@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { SortOption } from "@/app/ui/item/SimpleFilterBar";
-import type { Item, ItemRarity } from "@/lib/types";
+import type { Item, ItemRarity } from "@/lib/services/items";
 
 interface UseSimpleItemFiltersProps {
   items: Item[];

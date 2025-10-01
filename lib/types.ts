@@ -1,3 +1,5 @@
+import type { Item, ItemMini } from "@/lib/services/items";
+
 export const SIZES = [
   { value: "tiny", label: "Tiny" },
   { value: "small", label: "Small" },
@@ -58,17 +60,6 @@ export const ValidCollectionVisibilities = [
 ] as const;
 export type CollectionVisibilityType =
   (typeof ValidCollectionVisibilities)[number];
-
-export const RARITIES = [
-  { value: "unspecified", label: "Unspecified" },
-  { value: "common", label: "Common" },
-  { value: "uncommon", label: "Uncommon" },
-  { value: "rare", label: "Rare" },
-  { value: "very_rare", label: "Very Rare" },
-  { value: "legendary", label: "Legendary" },
-] as const;
-export type ItemRarity = (typeof RARITIES)[number]["value"];
-export type ItemRarityFilter = "all" | ItemRarity;
 
 export const TAILWIND_COLORS = [
   "red",
@@ -230,25 +221,6 @@ export interface CollectionOverview {
   itemCount: number;
   visibility: CollectionVisibilityType;
   createdAt?: Date;
-}
-
-export interface ItemMini {
-  id: string;
-  name: string;
-  kind?: string;
-  rarity: ItemRarity;
-  visibility: "public" | "private";
-  imageIcon?: string;
-  imageBgIcon?: string;
-  imageColor?: string;
-  imageBgColor?: string;
-}
-
-export interface Item extends ItemMini {
-  description: string;
-  moreInfo?: string;
-  creator: User;
-  updatedAt: Date;
 }
 
 export const UNKNOWN_USER: User = {

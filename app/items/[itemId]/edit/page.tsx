@@ -1,7 +1,7 @@
 import { notFound, permanentRedirect, unauthorized } from "next/navigation";
 import BuildItemView from "@/app/items/BuildItemView";
 import { auth } from "@/lib/auth";
-import { findItemWithCreatorDiscordId as findItemWithCreatorId } from "@/lib/db/item";
+import { itemsService } from "@/lib/services/items";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getItemEditUrl } from "@/lib/utils/url";
 
@@ -17,7 +17,7 @@ export default async function EditItemPage({
   }
 
   const uid = deslugify(itemId);
-  const item = await findItemWithCreatorId(uid, session?.user.id);
+  const item = await itemsService.getItem(uid, { userId: session?.user.id });
   if (!item) return notFound();
 
   if (itemId !== slugify(item)) {

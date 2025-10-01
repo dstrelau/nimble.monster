@@ -1,4 +1,5 @@
 import type { Prisma } from "@/lib/prisma";
+import { toItemMini } from "@/lib/services/items/converters";
 import type {
   Ability,
   Action,
@@ -6,9 +7,6 @@ import type {
   Companion,
   CompanionMini,
   FamilyOverview,
-  Item,
-  ItemMini,
-  ItemRarity,
   Monster,
   MonsterMini,
   Subclass,
@@ -186,40 +184,6 @@ export const toCompanion = (
     dyingRule: c.dyingRule,
     moreInfo: c.moreInfo || "",
     creator: toUser(c.creator),
-  };
-};
-
-export const toItemMini = (
-  i: Prisma.Result<typeof prisma.item, object, "findMany">[0]
-): ItemMini => ({
-  id: i.id,
-  name: i.name,
-  kind: i.kind || undefined,
-  rarity: i.rarity as ItemRarity,
-  visibility: i.visibility,
-  imageIcon: i.imageIcon || undefined,
-  imageColor: i.imageColor || undefined,
-});
-
-export const toItem = (
-  i: Prisma.Result<
-    typeof prisma.item,
-    {
-      include: {
-        creator: true;
-      };
-    },
-    "findMany"
-  >[0]
-): Item => {
-  return {
-    ...toItemMini(i),
-    imageBgIcon: i.imageBgIcon || undefined,
-    imageBgColor: i.imageBgColor || undefined,
-    description: i.description,
-    moreInfo: i.moreInfo || undefined,
-    updatedAt: i.updatedAt,
-    creator: toUser(i.creator),
   };
 };
 

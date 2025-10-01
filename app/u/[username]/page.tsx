@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { UserAvatar } from "@/components/app/UserAvatar";
 import * as db from "@/lib/db";
+import { itemsService } from "@/lib/services/items";
 import TabsContent from "./TabsContent";
 
 export async function generateMetadata({
@@ -20,7 +21,7 @@ export async function generateMetadata({
 
   const [monsters, items, collections, companions] = await Promise.all([
     db.listPublicMonstersForUser(user.id),
-    db.listPublicItemsForUser(user.id),
+    itemsService.listPublicItems(),
     db.listPublicCollectionsHavingMonstersForUser(user.id),
     db.listPublicCompanionsForUser(user.id),
   ]);
@@ -67,7 +68,7 @@ export default async function UserProfilePage({
       db.listPublicCollectionsHavingMonstersForUser(user.id),
       db.listPublicFamiliesHavingMonstersForUser(user.id),
       db.listPublicCompanionsForUser(user.id),
-      db.listPublicItemsForUser(user.id),
+      itemsService.listPublicItems(),
     ]);
 
   return (

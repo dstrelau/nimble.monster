@@ -1,9 +1,8 @@
+import { toItem, toItemMini } from "@/lib/services/items/converters";
 import type { Collection, CollectionOverview } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
 import {
   toCollectionOverview,
-  toItem,
-  toItemMini,
   toMonster,
   toMonsterMini,
   toUser,

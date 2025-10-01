@@ -7,7 +7,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { Card } from "@/app/ui/item/Card";
 import { useSimpleItemFilters } from "@/lib/hooks/useSimpleItemFilters";
-import type { Item } from "@/lib/types";
+import type { Item } from "@/lib/services/items";
 import { findPublicItem } from "../actions/item";
 import { List } from "./item/List";
 import { SimpleFilterBar } from "./item/SimpleFilterBar";

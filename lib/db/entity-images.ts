@@ -1,10 +1,10 @@
 import { trace } from "@opentelemetry/api";
-import { Prisma } from "@/lib/prisma";
 import { prisma } from "@/lib/db";
 import {
   type EntityImage,
   type entity_image_type as EntityImageType,
   generation_status as GenerationStatus,
+  Prisma,
 } from "@/lib/prisma";
 
 export interface EntityImageClaim {

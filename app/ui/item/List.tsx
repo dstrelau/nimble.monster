@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useEffect, useRef } from "react";
 import { GameIcon } from "@/components/GameIcon";
-import type { Item, ItemMini } from "@/lib/types";
+import type { Item, ItemMini } from "@/lib/services/items";
 
 type ListProps = {
   items: (Item | ItemMini)[];

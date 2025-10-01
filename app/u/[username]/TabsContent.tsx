@@ -12,11 +12,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import type { Item } from "@/lib/services/items";
 import type {
   CollectionOverview,
   Companion,
   Family,
-  Item,
   Monster,
 } from "@/lib/types";
 

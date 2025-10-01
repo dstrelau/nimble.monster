@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useConditions } from "@/lib/hooks/useConditions";
+import { RARITIES } from "@/lib/services/items";
 import type { CollectionOverview } from "@/lib/types";
-import { RARITIES } from "@/lib/types";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import { getCollectionUrl, getItemUrl } from "@/lib/utils/url";
 import { CardFooterLayout } from "./shared/CardFooterLayout";

@@ -2,8 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import * as db from "@/lib/db";
-import type { ItemRarity, ItemRarityFilter } from "@/lib/types";
+import { invalidateEntityImageCache } from "@/lib/cache/image-cache";
+import type { ItemRarity, ItemRarityFilter } from "@/lib/services/items";
+import { itemsService } from "@/lib/services/items";
 import { getItemUrl } from "@/lib/utils/url";
 
 export async function searchPublicItems(params: {
@@ -15,7 +16,7 @@ export async function searchPublicItems(params: {
   limit?: number;
 }) {
   try {
-    const items = await db.searchPublicItemMinis(params);
+    const items = await itemsService.searchItems(params);
     return { success: true, items };
   } catch (error) {
     console.error("Error searching public items:", error);
@@ -41,10 +42,10 @@ export async function createItem(formData: {
       return { success: false, error: "Not authenticated" };
     }
 
-    const item = await db.createItem({
-      ...formData,
-      discordId: session.user.discordId,
-    });
+    const item = await itemsService.createItem(
+      formData,
+      session.user.discordId
+    );
 
     revalidatePath("/my/items");
 
@@ -78,12 +79,13 @@ export async function updateItem(
       return { success: false, error: "Not authenticated" };
     }
 
-    const item = await db.updateItem({
-      id: itemId,
-      ...formData,
-      discordId: session.user.discordId,
-    });
+    const item = await itemsService.updateItem(
+      itemId,
+      formData,
+      session.user.discordId
+    );
 
+    invalidateEntityImageCache("item", itemId);
     revalidatePath(getItemUrl(item));
     revalidatePath("/my/items");
 
@@ -98,7 +100,7 @@ export async function updateItem(
 
 export async function findPublicItem(itemId: string) {
   try {
-    const item = await db.findPublicItemById(itemId);
+    const item = await itemsService.getItem(itemId);
     if (!item) {
       return { success: false, error: "Item not found", item: null };
     }
@@ -119,10 +121,7 @@ export async function deleteItem(itemId: string) {
     return { success: false, error: "Not authenticated" };
   }
 
-  const deleted = await db.deleteItem({
-    id: itemId,
-    discordId: session.user.discordId,
-  });
+  const deleted = await itemsService.deleteItem(itemId, session.user.discordId);
 
   if (deleted) {
     revalidatePath("/my/items");

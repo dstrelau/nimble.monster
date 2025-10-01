@@ -1,17 +1,20 @@
-import type { Item, ItemMini, ItemRarity, ItemRarityFilter } from "@/lib/types";
-
+import { toUser } from "@/lib/db/converters";
+import { prisma } from "@/lib/db/prisma";
 import { isValidUUID } from "@/lib/utils/validation";
-import { invalidateEntityImageCache } from "../cache/image-cache";
-import { toItem, toItemMini, toUser } from "./converters";
-import { prisma } from "./index";
+import { toItem, toItemMini } from "./converters";
+import type {
+  CreateItemInput,
+  Item,
+  ItemMini,
+  ItemRarity,
+  SearchItemsParams,
+  UpdateItemInput,
+} from "./types";
 
-export const deleteItem = async ({
-  id,
-  discordId,
-}: {
-  id: string;
-  discordId: string;
-}): Promise<boolean> => {
+export const deleteItem = async (
+  id: string,
+  discordId: string
+): Promise<boolean> => {
   if (!isValidUUID(id)) return false;
 
   const item = await prisma.item.delete({
@@ -50,7 +53,6 @@ export const getRandomRecentItems = async (
     })
   ).map(toItem);
 
-  // Shuffle and return requested number
   const shuffled = items.sort(() => Math.random() - 0.5);
   return shuffled.slice(0, limit);
 };
@@ -142,15 +144,6 @@ export const listAllItemsForDiscordID = async (
   ).map(toItem);
 };
 
-export interface SearchItemsParams {
-  searchTerm?: string;
-  rarity?: ItemRarityFilter;
-  creatorId?: string;
-  sortBy?: "name" | "rarity";
-  sortDirection?: "asc" | "desc";
-  limit?: number;
-}
-
 export const searchPublicItemMinis = async ({
   searchTerm,
   rarity,
@@ -205,21 +198,10 @@ export const searchPublicItemMinis = async ({
   ).map(toItemMini);
 };
 
-export interface CreateItemInput {
-  name: string;
-  kind?: string;
-  description: string;
-  moreInfo?: string;
-  imageIcon?: string;
-  imageBgIcon?: string;
-  imageColor?: string;
-  imageBgColor?: string;
-  rarity?: ItemRarity;
-  visibility: "public" | "private";
-  discordId: string;
-}
-
-export const createItem = async (input: CreateItemInput): Promise<Item> => {
+export const createItem = async (
+  input: CreateItemInput,
+  discordId: string
+): Promise<Item> => {
   const {
     name,
     kind = "",
@@ -231,7 +213,6 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
     imageBgColor,
     rarity,
     visibility,
-    discordId,
   } = input;
 
   const user = await prisma.user.findUnique({
@@ -268,24 +249,12 @@ export const createItem = async (input: CreateItemInput): Promise<Item> => {
   return item;
 };
 
-export interface UpdateItemInput {
-  id: string;
-  name: string;
-  kind?: string;
-  description: string;
-  moreInfo?: string;
-  imageIcon?: string;
-  imageBgIcon?: string;
-  imageColor?: string;
-  imageBgColor?: string;
-  rarity?: ItemRarity;
-  visibility: "public" | "private";
-  discordId: string;
-}
-
-export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
+export const updateItem = async (
+  id: string,
+  input: UpdateItemInput,
+  discordId: string
+): Promise<Item> => {
   const {
-    id,
     name,
     kind = "",
     description,
@@ -296,7 +265,6 @@ export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
     imageBgColor,
     rarity,
     visibility,
-    discordId,
   } = input;
 
   if (!isValidUUID(id)) {
@@ -325,6 +293,5 @@ export const updateItem = async (input: UpdateItemInput): Promise<Item> => {
     },
   });
 
-  invalidateEntityImageCache("item", updatedItem.id);
   return toItem(updatedItem);
 };

@@ -5,7 +5,7 @@ import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { ItemCollections } from "@/components/ItemCollections";
 import { ItemDetailActions } from "@/components/ItemDetailActions";
 import { auth } from "@/lib/auth";
-import { findItem, findItemCollections } from "@/lib/db";
+import { itemsService } from "@/lib/services/items";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getItemImageUrl, getItemUrl } from "@/lib/utils/url";
 
@@ -18,7 +18,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { itemId } = await params;
   const uid = deslugify(itemId);
-  const item = await findItem(uid);
+  const item = await itemsService.getItem(uid);
   if (!item) return {};
 
   if (itemId !== slugify(item)) {
@@ -64,14 +64,14 @@ export default async function ItemPage({
   const { itemId } = await params;
 
   const uid = deslugify(itemId);
-  const item = await findItem(uid);
+  const item = await itemsService.getItem(uid);
   if (!item) return notFound();
 
   if (itemId !== slugify(item)) {
     return permanentRedirect(getItemUrl(item));
   }
 
-  const collections = await findItemCollections(uid);
+  const collections = await itemsService.getItemCollections(uid);
 
   // if item is not public, then user must be creator
   const isOwner = session?.user?.discordId === item.creator?.discordId || false;

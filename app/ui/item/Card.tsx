@@ -17,7 +17,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
-import { type Item, RARITIES, type User } from "@/lib/types";
+import type { Item } from "@/lib/services/items";
+import { RARITIES } from "@/lib/services/items";
+import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { getItemImageUrl, getItemUrl } from "@/lib/utils/url";
 

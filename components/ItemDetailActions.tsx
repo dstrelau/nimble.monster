@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { deleteItem } from "@/app/actions/item";
 import { Button } from "@/components/ui/button";
-import type { Item } from "@/lib/types";
+import type { Item } from "@/lib/services/items";
 import { getItemEditUrl } from "@/lib/utils/url";
 
 interface ItemDetailActionsProps {

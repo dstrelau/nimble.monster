@@ -29,7 +29,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { type Item, RARITIES, UNKNOWN_USER } from "@/lib/types";
+import type { Item } from "@/lib/services/items";
+import { RARITIES } from "@/lib/services/items";
+import { UNKNOWN_USER } from "@/lib/types";
 import { getItemUrl } from "@/lib/utils/url";
 import { createItem, updateItem } from "../actions/item";
 

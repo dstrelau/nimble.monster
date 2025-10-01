@@ -4,7 +4,7 @@ import { FamilyCard } from "@/components/FamilyCard";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { getRandomFeaturedFamily } from "@/lib/db/family";
-import { getRandomRecentItems } from "@/lib/db/item";
+import { itemsService } from "@/lib/services/items";
 import { Attribution } from "./ui/Attribution";
 import { Card as ItemCard } from "./ui/item/Card";
 import { MonsterCardWithOverflow } from "./ui/MonsterCardWithOverflow";
@@ -12,7 +12,7 @@ import { MonsterCardWithOverflow } from "./ui/MonsterCardWithOverflow";
 export default async function HomePage() {
   const session = await auth();
   const featuredFamily = await getRandomFeaturedFamily();
-  const recentItems = await getRandomRecentItems(3);
+  const recentItems = await itemsService.getRandomRecentItems(3);
   // we want the middle card to be roughly vertical, so do some math
   const randomIdx = Math.floor(
     Math.random() * (featuredFamily?.monsters ?? []).length

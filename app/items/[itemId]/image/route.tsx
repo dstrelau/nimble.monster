@@ -1,7 +1,7 @@
 import { trace } from "@opentelemetry/api";
 import type { NextRequest } from "next/server";
-import { findItem } from "@/lib/db";
 import { createImageResponse } from "@/lib/image-route-handler";
+import { itemsService } from "@/lib/services/items";
 import { deslugify } from "@/lib/utils/slug";
 
 export async function GET(
@@ -20,7 +20,7 @@ export async function GET(
         "request.method": request.method,
       });
       const dbStartTime = Date.now();
-      const item = await findItem(uid);
+      const item = await itemsService.getItem(uid);
       const dbTime = Date.now() - dbStartTime;
 
       span.setAttributes({
