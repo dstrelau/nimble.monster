@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { deleteMonster } from "@/app/actions/monster";
 import { Button } from "@/components/ui/button";
-import type { Monster } from "@/lib/types";
+import type { Monster } from "@/lib/services/monsters";
 import { getMonsterEditUrl } from "@/lib/utils/url";
 
 interface MonsterDetailActionsProps {

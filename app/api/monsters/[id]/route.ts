@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { findMonster, updateMonster } from "@/lib/db/monster";
+import { monstersService } from "@/lib/services/monsters";
 import { telemetry } from "@/lib/telemetry";
 import { deslugify } from "@/lib/utils/slug";
 import { getMonsterUrl } from "@/lib/utils/url";
@@ -23,7 +23,7 @@ export const PUT = telemetry(
       }
       span?.setAttributes({ "user.id": session.user.id });
 
-      const existingMonster = await findMonster(uid);
+      const existingMonster = await monstersService.getMonsterInternal(uid);
 
       if (
         !existingMonster ||
@@ -37,38 +37,40 @@ export const PUT = telemetry(
 
       const monsterData = await request.json();
 
-      const monster = await updateMonster({
-        id: existingMonster.id,
-        name: monsterData.name,
-        level: monsterData.level,
-        levelInt: monsterData.levelInt,
-        hp: monsterData.hp,
-        armor: monsterData.armor,
-        size: monsterData.size,
-        speed: monsterData.speed,
-        fly: monsterData.fly,
-        swim: monsterData.swim,
-        climb: monsterData.climb,
-        teleport: monsterData.teleport,
-        burrow: monsterData.burrow,
-        actions: monsterData.actions,
-        abilities: monsterData.abilities,
-        legendary: monsterData.legendary,
-        minion: monsterData.minion || false,
-        bloodied: monsterData.bloodied || "",
-        lastStand: monsterData.lastStand || "",
-        saves: Array.isArray(monsterData.saves)
-          ? monsterData.saves
-          : monsterData.saves
-            ? [monsterData.saves]
-            : [],
-        kind: monsterData.kind || "",
-        visibility: monsterData.visibility,
-        actionPreface: monsterData.actionPreface || "",
-        moreInfo: monsterData.moreInfo || "",
-        family: monsterData.family,
-        discordId: session.user.discordId,
-      });
+      const monster = await monstersService.updateMonster(
+        {
+          id: existingMonster.id,
+          name: monsterData.name,
+          level: monsterData.level,
+          levelInt: monsterData.levelInt,
+          hp: monsterData.hp,
+          armor: monsterData.armor,
+          size: monsterData.size,
+          speed: monsterData.speed,
+          fly: monsterData.fly,
+          swim: monsterData.swim,
+          climb: monsterData.climb,
+          teleport: monsterData.teleport,
+          burrow: monsterData.burrow,
+          actions: monsterData.actions,
+          abilities: monsterData.abilities,
+          legendary: monsterData.legendary,
+          minion: monsterData.minion || false,
+          bloodied: monsterData.bloodied || "",
+          lastStand: monsterData.lastStand || "",
+          saves: Array.isArray(monsterData.saves)
+            ? monsterData.saves
+            : monsterData.saves
+              ? [monsterData.saves]
+              : [],
+          kind: monsterData.kind || "",
+          visibility: monsterData.visibility,
+          actionPreface: monsterData.actionPreface || "",
+          moreInfo: monsterData.moreInfo || "",
+          family: monsterData.family,
+        },
+        session.user.discordId
+      );
 
       revalidatePath(getMonsterUrl(monster));
       revalidatePath(`${getMonsterUrl(monster)}/image`);
@@ -104,7 +106,7 @@ export const DELETE = telemetry(
 
     span?.setAttributes({ "user.id": session.user.id });
 
-    const existingMonster = await findMonster(uid);
+    const existingMonster = await monstersService.getMonsterInternal(uid);
 
     if (!existingMonster) {
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });

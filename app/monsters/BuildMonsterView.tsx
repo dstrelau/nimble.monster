@@ -46,14 +46,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { fetchApi } from "@/lib/api";
-import type { Monster, MonsterArmor, MonsterSize } from "@/lib/types";
+import type {
+  Monster,
+  MonsterArmor,
+  MonsterSize,
+} from "@/lib/services/monsters";
 import {
   ARMORS,
   LEGENDARY_MONSTER_LEVELS,
   MONSTER_LEVELS,
   SIZES,
-  UNKNOWN_USER,
-} from "@/lib/types";
+} from "@/lib/services/monsters";
+import { UNKNOWN_USER } from "@/lib/types";
 import { levelIntToDisplay } from "@/lib/utils";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { getUserFamilies } from "../families/actions";

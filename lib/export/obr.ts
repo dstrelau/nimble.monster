@@ -1,4 +1,5 @@
-import type { Collection, Monster } from "@/lib/types";
+import type { Monster } from "@/lib/services/monsters";
+import type { Collection } from "@/lib/types";
 
 interface OBRCompendiumFeature {
   name: string;

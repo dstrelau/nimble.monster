@@ -1,26 +1,27 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
-import * as db from "@/lib/db";
-import { findMonster } from "@/lib/db";
+import {
+  type CreateMonsterInput,
+  monstersService,
+  type TypeFilter,
+} from "@/lib/services/monsters";
 import type { Ability, Action } from "@/lib/types";
 
 export async function findPublicMonster(id: string) {
-  const [session, monster] = await Promise.all([auth(), findMonster(id)]);
+  const session = await auth();
+  const monster = await monstersService.getMonsterInternal(id);
   if (!monster) {
     return { success: false, error: "Monster not found" };
   }
   const isOwner =
     session?.user?.discordId === monster.creator?.discordId || false;
   if (monster.visibility !== "public" && !isOwner) {
-    return notFound();
+    return { success: false, error: "Monster not found" };
   }
   return { success: true, monster };
 }
-
-export type TypeFilter = "all" | "legendary" | "standard" | "minion";
 
 export async function searchPublicMonsters(params: {
   creatorId?: string;
@@ -31,10 +32,9 @@ export async function searchPublicMonsters(params: {
   limit?: number;
 }) {
   try {
-    const monsters = await db.searchPublicMonsterMinis(params);
+    const monsters = await monstersService.searchMonsters(params);
     return { success: true, monsters };
-  } catch (error) {
-    console.error("Error searching public monsters:", error);
+  } catch (_error) {
     return { success: false, error: "Failed to search monsters" };
   }
 }
@@ -70,7 +70,7 @@ export async function createMonster(formData: {
       return { success: false, error: "Not authenticated" };
     }
 
-    const monster = await db.createMonster({
+    const input: CreateMonsterInput = {
       ...formData,
       armor:
         formData.armor === "none"
@@ -83,8 +83,13 @@ export async function createMonster(formData: {
         | "large"
         | "huge"
         | "gargantuan",
-      discordId: session.user.discordId,
-    });
+      family: formData.familyId ? { id: formData.familyId } : undefined,
+    };
+
+    const monster = await monstersService.createMonster(
+      input,
+      session.user.discordId
+    );
 
     revalidatePath("/my/monsters");
 
@@ -103,10 +108,10 @@ export async function deleteMonster(monsterId: string) {
     return { success: false, error: "Not authenticated" };
   }
 
-  const deleted = await db.deleteMonster({
-    id: monsterId,
-    discordId: session.user.discordId,
-  });
+  const deleted = await monstersService.deleteMonster(
+    monsterId,
+    session.user.discordId
+  );
 
   if (deleted) {
     revalidatePath("/my/monsters");

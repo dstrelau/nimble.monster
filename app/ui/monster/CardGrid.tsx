@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import type { Monster } from "@/lib/types";
+import type { Monster } from "@/lib/services/monsters";
 import { Card } from "./Card";
 
 export const CardGrid = ({

@@ -5,7 +5,7 @@ import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { MonsterCollections } from "@/components/MonsterCollections";
 import { MonsterDetailActions } from "@/components/MonsterDetailActions";
 import { auth } from "@/lib/auth";
-import { findMonster, findMonsterCollections } from "@/lib/db";
+import { monstersService } from "@/lib/services/monsters";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterImageUrl, getMonsterUrl } from "@/lib/utils/url";
 
@@ -18,7 +18,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id: monsterId } = await params;
   const uid = deslugify(monsterId);
-  const monster = await findMonster(uid);
+  const monster = await monstersService.getMonsterInternal(uid);
 
   if (!monster) return {};
 
@@ -69,14 +69,14 @@ export default async function MonsterPage({
   const { id: monsterId } = await params;
 
   const uid = deslugify(monsterId);
-  const monster = await findMonster(uid);
+  const monster = await monstersService.getMonsterInternal(uid);
   if (!monster) return notFound();
 
   if (monsterId !== slugify(monster)) {
     return permanentRedirect(getMonsterUrl(monster));
   }
 
-  const collections = await findMonsterCollections(uid);
+  const collections = await monstersService.getMonsterCollections(uid);
 
   // if monster is not public, then user must be creator
   const isOwner =

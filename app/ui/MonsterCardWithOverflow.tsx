@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { Card as MonsterCard } from "@/app/ui/monster/Card";
-import type { Monster } from "@/lib/types";
+import type { Monster } from "@/lib/services/monsters";
 import { cn } from "@/lib/utils";
 
 interface MonsterCardWithOverflowProps {

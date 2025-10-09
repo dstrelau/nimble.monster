@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { MonsterMini } from "@/lib/types";
+import type { MonsterMini } from "@/lib/services/monsters";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { Link } from "./app/Link";

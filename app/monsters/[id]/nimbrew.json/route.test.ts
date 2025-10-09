@@ -7,7 +7,7 @@ import {
   type MockedFunction,
   vi,
 } from "vitest";
-import type { Monster } from "@/lib/types";
+import type { Monster } from "@/lib/services/monsters";
 import { GET } from "./route";
 
 // Mock dependencies
@@ -23,8 +23,14 @@ vi.mock("@/lib/auth", () => ({
   auth: vi.fn(),
 }));
 
-vi.mock("@/lib/db", () => ({
-  findMonster: vi.fn(),
+const { mockGetMonsterInternal } = vi.hoisted(() => {
+  return { mockGetMonsterInternal: vi.fn() };
+});
+
+vi.mock("@/lib/services/monsters", () => ({
+  monstersService: {
+    getMonsterInternal: mockGetMonsterInternal,
+  },
 }));
 
 vi.mock("@/lib/telemetry", () => ({
@@ -53,7 +59,7 @@ vi.mock("@/lib/utils/url", () => ({
 const mockAuth: MockedFunction<any> = vi.mocked(
   await import("@/lib/auth")
 ).auth;
-const mockFindMonster = vi.mocked(await import("@/lib/db")).findMonster;
+const mockFindMonster = mockGetMonsterInternal;
 const mockFormatSizeKind = vi.mocked(
   await import("@/lib/utils/monster")
 ).formatSizeKind;

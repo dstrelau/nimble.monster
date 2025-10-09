@@ -1,5 +1,5 @@
-import { invalidateEntityImageCache } from "@/lib/cache/image-cache";
-import type { Ability, Action, Companion, MonsterSize } from "@/lib/types";
+import type { MonsterSize } from "@/lib/services/monsters";
+import type { Ability, Action, Companion } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
 import type { InputJsonValue } from "../prisma/runtime/library";
 import { toCompanion } from "./converters";
@@ -251,7 +251,7 @@ export const updateCompanion = async (
   const companion = toCompanion(updatedCompanion);
 
   // Invalidate old cached image and trigger async pre-generation
-  invalidateEntityImageCache("companion", companion.id);
+  // invalidateEntityImageCache("companion", companion.id);
 
   return companion;
 };

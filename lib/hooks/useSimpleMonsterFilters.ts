@@ -6,7 +6,7 @@ import type {
   LegendaryFilter,
   SortOption,
 } from "@/app/ui/monster/SimpleFilterBar";
-import type { MonsterMini } from "@/lib/types";
+import type { MonsterMini } from "@/lib/services/monsters";
 
 interface UseSimpleMonsterFiltersProps<T extends MonsterMini> {
   monsters: T[];

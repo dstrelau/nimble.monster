@@ -1,4 +1,4 @@
-import type { Monster } from "@/lib/types";
+import type { Monster } from "@/lib/services/monsters";
 
 export function formatSizeKind(monster: Monster): string {
   const parts = [];

@@ -1,7 +1,8 @@
 "use client";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { useConditions } from "@/lib/hooks/useConditions";
-import type { Family, MonsterMini } from "@/lib/types";
+import type { MonsterMini } from "@/lib/services/monsters";
+import type { Family } from "@/lib/types";
 import { getFamilyUrl } from "@/lib/utils/url";
 import { MonsterGroupMinis } from "./MonsterGroupMinis";
 

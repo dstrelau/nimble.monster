@@ -24,7 +24,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
-import type { Companion, MonsterSize, User } from "@/lib/types";
+import type { MonsterSize } from "@/lib/services/monsters";
+import type { Companion, User } from "@/lib/types";
 import { getCompanionImageUrl, getCompanionUrl } from "@/lib/utils/url";
 
 // Helper function to format companion size

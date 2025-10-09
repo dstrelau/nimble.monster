@@ -13,12 +13,8 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import type { Item } from "@/lib/services/items";
-import type {
-  CollectionOverview,
-  Companion,
-  Family,
-  Monster,
-} from "@/lib/types";
+import type { Monster } from "@/lib/services/monsters";
+import type { CollectionOverview, Companion, Family } from "@/lib/types";
 
 type TabType = "monsters" | "collections" | "families" | "companions" | "items";
 

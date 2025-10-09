@@ -1,7 +1,7 @@
 "use client";
 
 import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
-import type { Monster } from "@/lib/types";
+import type { Monster } from "@/lib/services/monsters";
 import { CardGrid } from "./CardGrid";
 import { SimpleFilterBar } from "./SimpleFilterBar";
 

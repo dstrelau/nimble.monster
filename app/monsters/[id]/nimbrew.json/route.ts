@@ -2,7 +2,7 @@ import { trace } from "@opentelemetry/api";
 import { permanentRedirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { findMonster } from "@/lib/db";
+import { monstersService } from "@/lib/services/monsters";
 import { telemetry } from "@/lib/telemetry";
 import { formatSizeKind } from "@/lib/utils/monster";
 import { deslugify, slugify } from "@/lib/utils/slug";
@@ -24,7 +24,7 @@ export const GET = telemetry(
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });
     }
 
-    const monster = await findMonster(uid);
+    const monster = await monstersService.getMonsterInternal(uid);
 
     if (!monster) {
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });

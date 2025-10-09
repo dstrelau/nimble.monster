@@ -1,31 +1,25 @@
-import type {
-  Monster,
-  MonsterArmor,
-  MonsterMini,
-  MonsterSize,
-  TypeFilter,
-} from "@/lib/services/monsters";
-import type { Ability, Action, Family } from "@/lib/types";
-
+import { prisma } from "@/lib/db";
+import { toUser } from "@/lib/db/converters";
+import type { InputJsonValue } from "@/lib/prisma/runtime/library";
+import type { Action } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
-import type { InputJsonValue } from "../prisma/runtime/library";
-import { toMonster, toMonsterMini, toUser } from "./converters";
-import { prisma } from "./index";
-import {
-  extractAllConditions,
-  syncMonsterConditions,
-} from "./monster-conditions";
+import { extractAllConditions, syncMonsterConditions } from "./conditions";
+import { toMonster, toMonsterMini } from "./converters";
+import type {
+  CreateMonsterInput,
+  Monster,
+  MonsterMini,
+  SearchMonstersParams,
+  UpdateMonsterInput,
+} from "./types";
 
 const stripActionIds = (actions: Action[]): Omit<Action, "id">[] =>
   actions.map(({ id, ...action }) => action);
 
-export const deleteMonster = async ({
-  id,
-  discordId,
-}: {
-  id: string;
-  discordId: string;
-}): Promise<boolean> => {
+export const deleteMonster = async (
+  id: string,
+  discordId: string
+): Promise<boolean> => {
   if (!isValidUUID(id)) return false;
 
   const monster = await prisma.monster.delete({
@@ -48,6 +42,8 @@ export const listPublicMonsterMinis = async (): Promise<MonsterMini[]> => {
 };
 
 export const findMonster = async (id: string): Promise<Monster | null> => {
+  if (!isValidUUID(id)) return null;
+
   const monster = await prisma.monster.findUnique({
     where: { id },
     include: {
@@ -62,6 +58,8 @@ export const findMonster = async (id: string): Promise<Monster | null> => {
 export const findPublicMonsterById = async (
   id: string
 ): Promise<Monster | null> => {
+  if (!isValidUUID(id)) return null;
+
   const monster = await prisma.monster.findUnique({
     where: { id, visibility: "public" },
     include: {
@@ -77,6 +75,8 @@ export const findMonsterWithCreatorId = async (
   id: string,
   creatorId: string
 ): Promise<Monster | null> => {
+  if (!isValidUUID(id)) return null;
+
   const monster = await prisma.monster.findUnique({
     where: { id, creator: { id: creatorId } },
     include: {
@@ -122,16 +122,6 @@ export const listAllMonstersForDiscordID = async (
     })
   ).map(toMonster);
 };
-
-export interface SearchMonstersParams {
-  searchTerm?: string;
-  type?: TypeFilter;
-  creatorId?: string;
-  legendary?: boolean | null;
-  sortBy?: "name" | "level" | "hp";
-  sortDirection?: "asc" | "desc";
-  limit?: number;
-}
 
 export const searchPublicMonsterMinis = async ({
   searchTerm,
@@ -217,36 +207,32 @@ export const listMonstersByFamilyId = async (
   ).map(toMonster);
 };
 
-export interface CreateMonsterInput {
-  name: string;
-  kind?: string;
-  level: string;
-  levelInt: number;
-  hp: number;
-  armor: MonsterArmor | "";
-  size: MonsterSize;
-  speed: number;
-  fly: number;
-  swim: number;
-  climb: number;
-  burrow: number;
-  teleport: number;
-  family?: Family;
-  actions: Action[];
-  abilities: Ability[];
-  actionPreface: string;
-  moreInfo?: string;
-  visibility: "public" | "private";
-  discordId: string;
-  legendary?: boolean;
-  minion?: boolean;
-  bloodied?: string;
-  lastStand?: string;
-  saves?: string[];
-}
+export const findMonsterCollections = async (monsterId: string) => {
+  if (!isValidUUID(monsterId)) return [];
+
+  const collections = await prisma.collection.findMany({
+    where: {
+      monsterCollections: {
+        some: { monsterId },
+      },
+      visibility: "public",
+    },
+    include: {
+      creator: true,
+    },
+    orderBy: { name: "asc" },
+  });
+
+  return collections.map((collection) => ({
+    id: collection.id,
+    name: collection.name,
+    creator: toUser(collection.creator),
+  }));
+};
 
 export const createMonster = async (
-  input: CreateMonsterInput
+  input: CreateMonsterInput,
+  discordId: string
 ): Promise<Monster> => {
   const {
     name,
@@ -268,7 +254,6 @@ export const createMonster = async (
     actionPreface = "",
     moreInfo = "",
     visibility,
-    discordId,
     legendary = false,
     minion = false,
     bloodied = "",
@@ -340,60 +325,9 @@ export const createMonster = async (
   return toMonster(createdMonster);
 };
 
-export interface UpdateMonsterInput {
-  id: string;
-  name: string;
-  level: string;
-  levelInt: number;
-  hp: number;
-  armor: MonsterArmor;
-  size: MonsterSize;
-  speed: number;
-  fly?: number;
-  swim?: number;
-  climb?: number;
-  teleport?: number;
-  burrow?: number;
-  actions: Action[];
-  abilities: Ability[];
-  legendary: boolean;
-  minion: boolean;
-  bloodied: string;
-  lastStand: string;
-  saves: string[];
-  kind: string;
-  visibility: "public" | "private";
-  actionPreface: string;
-  moreInfo: string;
-  family?: { id: string } | null;
-  discordId: string;
-}
-
-export const findMonsterCollections = async (monsterId: string) => {
-  if (!isValidUUID(monsterId)) return [];
-
-  const collections = await prisma.collection.findMany({
-    where: {
-      monsterCollections: {
-        some: { monsterId },
-      },
-      visibility: "public",
-    },
-    include: {
-      creator: true,
-    },
-    orderBy: { name: "asc" },
-  });
-
-  return collections.map((collection) => ({
-    id: collection.id,
-    name: collection.name,
-    creator: toUser(collection.creator),
-  }));
-};
-
 export const updateMonster = async (
-  input: UpdateMonsterInput
+  input: UpdateMonsterInput,
+  discordId: string
 ): Promise<Monster> => {
   const {
     id,
@@ -421,7 +355,6 @@ export const updateMonster = async (
     actionPreface,
     moreInfo,
     family,
-    discordId,
   } = input;
 
   if (!isValidUUID(id)) {
@@ -474,6 +407,5 @@ export const updateMonster = async (
 
   await syncMonsterConditions(id, conditionNames);
 
-  // invalidateEntityImageCache("monster", updatedMonster.id);
   return toMonster(updatedMonster);
 };

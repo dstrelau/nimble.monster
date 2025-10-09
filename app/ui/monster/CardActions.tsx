@@ -7,7 +7,7 @@ import {
   ShareMenuDownloadCardItem,
 } from "@/components/ShareMenu";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import type { Monster } from "@/lib/types";
+import type { Monster } from "@/lib/services/monsters";
 import { getMonsterImageUrl, getMonsterUrl } from "@/lib/utils/url";
 
 interface MonsterCardActionsProps {

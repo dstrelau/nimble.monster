@@ -1,8 +1,8 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import type { CreateMonsterInput } from "@/lib/db";
-import { createMonster } from "@/lib/db";
+import type { CreateMonsterInput } from "@/lib/services/monsters";
+import { monstersService } from "@/lib/services/monsters";
 import { telemetry } from "@/lib/telemetry";
 
 export const POST = telemetry(async (request: Request) => {
@@ -26,10 +26,12 @@ export const POST = telemetry(async (request: Request) => {
 
   const input: CreateMonsterInput = {
     ...monsterData,
-    discordId: session.user.discordId,
   };
 
-  const newMonster = await createMonster(input);
+  const newMonster = await monstersService.createMonster(
+    input,
+    session.user.discordId
+  );
 
   span?.setAttributes({
     "monster.id": newMonster.id,

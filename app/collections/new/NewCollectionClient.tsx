@@ -1,7 +1,8 @@
 "use client";
 
 import { CreateEditCollection } from "@/app/collections/CreateEditCollection";
-import { type Collection, type Monster, UNKNOWN_USER } from "@/lib/types";
+import type { Monster } from "@/lib/services/monsters";
+import { type Collection, UNKNOWN_USER } from "@/lib/types";
 
 interface Props {
   myMonsters: Monster[];

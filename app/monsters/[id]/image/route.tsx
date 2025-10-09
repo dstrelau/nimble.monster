@@ -1,7 +1,7 @@
 import { permanentRedirect } from "next/navigation";
 import type { NextRequest } from "next/server";
-import { findMonster } from "@/lib/db";
 import { createImageResponse } from "@/lib/image-route-handler";
+import { monstersService } from "@/lib/services/monsters";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterImageUrl } from "@/lib/utils/url";
 
@@ -11,7 +11,7 @@ export async function GET(
 ) {
   const { id: monsterId } = await params;
   const uid = deslugify(monsterId);
-  const monster = await findMonster(uid);
+  const monster = await monstersService.getMonsterInternal(uid);
 
   if (!monster || monster.visibility !== "public") {
     return new Response("Monster not found", { status: 404 });

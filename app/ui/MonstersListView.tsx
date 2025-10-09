@@ -7,7 +7,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { Card } from "@/app/ui/monster/Card";
 import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
-import type { MonsterMini } from "@/lib/types";
+import type { MonsterMini } from "@/lib/services/monsters";
 import { findPublicMonster } from "../actions/monster";
 import { List } from "./monster/List";
 import { SimpleFilterBar } from "./monster/SimpleFilterBar";
@@ -81,8 +81,11 @@ export const MonstersListView: React.FC<MonstersListViewProps> = ({
   const selectedMonster = useQuery({
     queryKey: ["monster", selectedMonsterId],
     queryFn: async () => {
-      const { monster } = await findPublicMonster(selectedMonsterId || "");
-      return monster;
+      const result = await findPublicMonster(selectedMonsterId || "");
+      if (!result.success || !result.monster) {
+        throw new Error(result.error || "Monster not found");
+      }
+      return result.monster;
     },
     enabled: !!selectedMonsterId,
     placeholderData: keepPreviousData,

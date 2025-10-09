@@ -1,6 +1,6 @@
 // app/monsters/page.tsx
 import { MonstersListView } from "@/app/ui/MonstersListView";
-import * as db from "@/lib/db";
+import { monstersService } from "@/lib/services/monsters";
 
 export default async function MonstersPage({
   searchParams,
@@ -10,7 +10,7 @@ export default async function MonstersPage({
   const params = await searchParams;
   const selectedId = params.id;
 
-  const monsters = await db.listPublicMonsterMinis();
+  const monsters = await monstersService.listPublicMonsters();
 
   return (
     <div className="container mx-auto py-3">

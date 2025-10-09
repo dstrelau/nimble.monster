@@ -13,8 +13,10 @@ import { FormInput, FormSelect, FormTextarea } from "@/components/app/Form";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
-import type { Companion, MonsterSize } from "@/lib/types";
-import { SIZES, UNKNOWN_USER } from "@/lib/types";
+import type { MonsterSize } from "@/lib/services/monsters";
+import { SIZES } from "@/lib/services/monsters";
+import type { Companion } from "@/lib/types";
+import { UNKNOWN_USER } from "@/lib/types";
 import { getCompanionUrl } from "@/lib/utils/url";
 import { createCompanion, updateCompanion } from "../actions/companion";
 

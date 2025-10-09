@@ -3,7 +3,7 @@ import { cn } from "lib/utils";
 import { Crown, PersonStanding } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Level } from "@/components/Level";
-import type { MonsterMini } from "@/lib/types";
+import type { MonsterMini } from "@/lib/services/monsters";
 import { ArmorStat, HPStat } from "./Stat";
 
 type ListProps = {
