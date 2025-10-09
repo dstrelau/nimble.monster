@@ -35,9 +35,8 @@ export const ActionsList: React.FC<ActionsListProps> = ({
                         <span className="text-foreground">•</span>
                       )}
                       <strong>{maybePeriod(action.name)}</strong>
-                      {action.damage && (
-                        <span className="damage">{action.damage} </span>
-                      )}
+                      {action.damage && action.damage}
+                      {action.damage && action.description && ". "}
                     </>
                   }
                 />

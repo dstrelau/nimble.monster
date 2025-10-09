@@ -2,6 +2,7 @@ import type { prisma } from "@/lib/db";
 import { toFamilyOverview, toUser } from "@/lib/db/converters";
 import type { Prisma } from "@/lib/prisma";
 import type { Ability, Action } from "@/lib/types";
+import { uuidToIdentifier } from "@/lib/utils/slug";
 import type { Monster, MonsterMini } from "./types";
 
 export const toMonsterMini = (
@@ -59,5 +60,65 @@ export const toMonster = (
     moreInfo: m.moreInfo || "",
     family: toFamilyOverview(m.family),
     creator: toUser(m.creator),
+  };
+};
+
+export const toZodMonster = (m: Monster) => {
+  const movement = [];
+  if (m.speed > 0) movement.push({ speed: m.speed });
+  if (m.fly > 0) movement.push({ mode: "fly", speed: m.fly });
+  if (m.swim > 0) movement.push({ mode: "swim", speed: m.swim });
+  if (m.climb > 0) movement.push({ mode: "climb", speed: m.climb });
+  if (m.burrow > 0) movement.push({ mode: "burrow", speed: m.burrow });
+  if (m.teleport > 0) movement.push({ mode: "teleport", speed: m.teleport });
+
+  const abilities = m.abilities.map((a) => ({
+    description: a.description,
+    name: a.name,
+  }));
+
+  const actions = m.actions.map((a) => ({
+    name: a.name,
+    description: a.description,
+  }));
+
+  const parsedLevel: number | "1/4" | "1/3" | "1/2" =
+    m.level === "1/4" || m.level === "1/3" || m.level === "1/2"
+      ? m.level
+      : Number.parseInt(m.level, 10);
+
+  const base = {
+    id: uuidToIdentifier(m.id),
+    name: m.name,
+    hp: m.hp,
+    level: parsedLevel,
+    size: m.size,
+    armor: m.armor === "none" ? ("none" as const) : m.armor,
+    kind: m.kind || undefined,
+    movement: movement,
+    abilities,
+    actions,
+    effects: [],
+    actionsPerTurn: "single" as const,
+  };
+
+  if (m.legendary) {
+    return {
+      ...base,
+      legendary: true as const,
+      bloodied: {
+        hp: Math.floor(m.hp / 2),
+        description: m.bloodied,
+      },
+      lastStand: {
+        hp: Math.floor(m.hp / 4),
+        description: m.lastStand,
+      },
+    };
+  }
+
+  return {
+    ...base,
+    legendary: false as const,
   };
 };

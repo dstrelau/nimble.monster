@@ -38,7 +38,7 @@ export function telemetry<T extends readonly unknown[]>(
         });
       }
 
-      return NextResponse.json({ error: "Unknown Error" }, { status: 500 });
+      throw error;
     }
   };
 }

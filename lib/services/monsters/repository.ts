@@ -7,6 +7,7 @@ import { extractAllConditions, syncMonsterConditions } from "./conditions";
 import { toMonster, toMonsterMini } from "./converters";
 import type {
   CreateMonsterInput,
+  ListMonstersParams,
   Monster,
   MonsterMini,
   SearchMonstersParams,
@@ -39,6 +40,53 @@ export const listPublicMonsterMinis = async (): Promise<MonsterMini[]> => {
       orderBy: { name: "asc" },
     })
   ).map(toMonsterMini);
+};
+
+export const listPublicMonsters = async ({
+  cursor,
+  limit = 100,
+  sort = "name",
+}: ListMonstersParams): Promise<{ monsters: Monster[]; nextCursor: string | null }> => {
+  const isDesc = sort.startsWith("-");
+  const sortField = isDesc ? sort.slice(1) : sort;
+  const sortDir = isDesc ? "desc" : "asc";
+
+  let orderBy:
+    | [{ name: "asc" | "desc" }, { id: "asc" | "desc" }]
+    | [{ createdAt: "asc" | "desc" }, { id: "asc" | "desc" }]
+    | [{ levelInt: "asc" | "desc" }, { id: "asc" | "desc" }];
+
+  if (sortField === "name") {
+    orderBy = [{ name: sortDir }, { id: sortDir }];
+  } else if (sortField === "created_at") {
+    orderBy = [{ createdAt: sortDir }, { id: sortDir }];
+  } else {
+    orderBy = [{ levelInt: sortDir }, { id: sortDir }];
+  }
+
+  const where = cursor
+    ? { visibility: "public" as const, id: { gt: cursor } }
+    : { visibility: "public" as const };
+
+  const monsters = await prisma.monster.findMany({
+    where,
+    include: {
+      family: { include: { creator: true } },
+      creator: true,
+      monsterConditions: { include: { condition: true } },
+    },
+    orderBy,
+    take: limit + 1,
+  });
+
+  const hasMore = monsters.length > limit;
+  const results = hasMore ? monsters.slice(0, limit) : monsters;
+  const nextCursor = hasMore ? results[results.length - 1].id : null;
+
+  return {
+    monsters: results.map(toMonster),
+    nextCursor,
+  };
 };
 
 export const findMonster = async (id: string): Promise<Monster | null> => {

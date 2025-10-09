@@ -4,9 +4,49 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { monstersService } from "@/lib/services/monsters";
+import { toZodMonster } from "@/lib/services/monsters/converters";
 import { telemetry } from "@/lib/telemetry";
 import { deslugify } from "@/lib/utils/slug";
 import { getMonsterUrl } from "@/lib/utils/url";
+
+const CONTENT_TYPE = "application/vnd.nimble.v202510+json";
+
+export const GET = telemetry(
+  async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params;
+    const span = trace.getActiveSpan();
+
+    span?.setAttributes({ "params.id": id });
+
+    try {
+      const uid = deslugify(id);
+      const monster = await monstersService.getMonster(uid);
+
+      if (!monster) {
+        return NextResponse.json(
+          { error: "Monster not found" },
+          { status: 404 }
+        );
+      }
+
+      span?.setAttributes({ "monster.id": monster.id });
+
+      const data = toZodMonster(monster);
+
+      return NextResponse.json(data, {
+        headers: {
+          "Content-Type": CONTENT_TYPE,
+        },
+      });
+    } catch (error) {
+      span?.setAttributes({ "error": String(error) });
+      return NextResponse.json(
+        { error: "Monster not found" },
+        { status: 404 }
+      );
+    }
+  }
+);
 
 export const PUT = telemetry(
   async (request: Request, { params }: { params: Promise<{ id: string }> }) => {

@@ -96,6 +96,12 @@ export interface SearchMonstersParams {
   limit?: number;
 }
 
+export interface ListMonstersParams {
+  cursor?: string;
+  limit?: number;
+  sort?: "name" | "-name" | "created_at" | "-created_at" | "level" | "-level";
+}
+
 export interface CreateMonsterInput {
   name: string;
   kind?: string;
