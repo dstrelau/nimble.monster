@@ -318,6 +318,7 @@ describe("GET /api/collections/[id]", () => {
           name: "Magic Sword",
           kind: "Weapon",
           rarity: "rare",
+          visibility: "public",
           description: "A powerful magic sword",
           moreInfo: undefined,
           creator: fakeCreator,

@@ -1,5 +1,5 @@
 "use client";
-import { FileJson, Pencil, Share, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -7,17 +7,8 @@ import { deleteCollection } from "@/app/actions/collection";
 import { Attribution } from "@/app/ui/Attribution";
 import { VisibilityBadge } from "@/app/ui/VisibilityBadge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import type { Collection, Condition } from "@/lib/types";
-import {
-  getCollectionDownloadUrl,
-  getCollectionEditUrl,
-} from "@/lib/utils/url";
+import { getCollectionEditUrl } from "@/lib/utils/url";
 import { FormattedText } from "./FormattedText";
 
 interface CollectionHeaderProps {
@@ -85,29 +76,6 @@ export function CollectionHeader({
                 </Button>
               </>
             )}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Share className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="bottom"
-                align="end"
-                className="min-w-72"
-              >
-                <DropdownMenuItem asChild>
-                  <a
-                    className="flex gap-2 items-center"
-                    href={getCollectionDownloadUrl(collection)}
-                    download={`collection-${collection.id}.json`}
-                  >
-                    <FileJson className="w-4 h-4" />
-                    Export OBR Compendium JSON
-                  </a>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         </div>
         {collection.creator && (

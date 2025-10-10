@@ -83,10 +83,6 @@ export function getCollectionEditUrl(collection: {
   return `/collections/${slugify(collection)}/edit`;
 }
 
-export function getCollectionDownloadUrl(collection: { id: string }): string {
-  return `/api/collections/${collection.id}/download`;
-}
-
 // Family URLs
 export function getFamilyUrl(family: { name: string; id: string }): string {
   return `/families/${slugify(family)}`;
