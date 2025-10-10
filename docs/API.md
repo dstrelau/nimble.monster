@@ -119,9 +119,12 @@ List public collections with pagination and sorting.
 Retrieve a single collection by ID (26-character identifier).
 
 **Query Parameters:**
-- `include` (string, optional): Related resources to include (currently only supports `monsters`)
+- `include` (string, optional): Related resources to include. Supports:
+  - `monsters` - Include all monsters in the collection
+  - `items` - Include all items in the collection
+  - `monsters,items` - Include both monsters and items (comma-separated)
 
-**Response (with include=monsters):**
+**Response (with include=monsters,items):**
 ```json
 {
   "data": {
@@ -148,6 +151,14 @@ Retrieve a single collection by ID (26-character identifier).
             "id": "0abc123def456..."
           }
         ]
+      },
+      "items": {
+        "data": [
+          {
+            "type": "items",
+            "id": "0def789ghi012..."
+          }
+        ]
       }
     },
     "links": {
@@ -158,9 +169,17 @@ Retrieve a single collection by ID (26-character identifier).
     {
       "type": "monsters",
       "id": "0abc123def456...",
-      "attributes": { ... }
+      "attributes": { ... },
       "links": {
         "self": "/api/monsters/0abc123def456..."
+      }
+    },
+    {
+      "type": "items",
+      "id": "0def789ghi012...",
+      "attributes": { ... },
+      "links": {
+        "self": "/api/items/0def789ghi012..."
       }
     }
   ]

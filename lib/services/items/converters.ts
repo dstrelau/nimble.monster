@@ -1,6 +1,7 @@
 import type { prisma } from "@/lib/db";
 import { toUser } from "@/lib/db/converters";
 import type { Prisma } from "@/lib/prisma";
+import { uuidToIdentifier } from "@/lib/utils/slug";
 import type { Item, ItemMini, ItemRarity } from "./types";
 
 export const toItemMini = (
@@ -34,5 +35,22 @@ export const toItem = (
     moreInfo: i.moreInfo || undefined,
     updatedAt: i.updatedAt,
     creator: toUser(i.creator),
+  };
+};
+
+export const toJsonApiItem = (item: Item) => {
+  return {
+    type: "items",
+    id: uuidToIdentifier(item.id),
+    attributes: {
+      name: item.name,
+      kind: item.kind,
+      rarity: item.rarity,
+      description: item.description,
+      moreInfo: item.moreInfo,
+    },
+    links: {
+      self: `/api/items/${uuidToIdentifier(item.id)}`,
+    },
   };
 };

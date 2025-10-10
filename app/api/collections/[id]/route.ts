@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
   toJsonApiCollection,
+  toJsonApiCollectionWithBoth,
+  toJsonApiCollectionWithItems,
   toJsonApiCollectionWithMonsters,
 } from "@/lib/services/collections/converters";
 import * as repository from "@/lib/services/collections/repository";
@@ -43,13 +45,21 @@ export const GET = telemetry(
 
     const { include } = queryResult.data;
 
-    if (include && include !== "monsters") {
+    const includeResources = include
+      ? include.split(",").map((r) => r.trim())
+      : [];
+    const validIncludes = new Set(["monsters", "items"]);
+    const invalidIncludes = includeResources.filter(
+      (r) => !validIncludes.has(r)
+    );
+
+    if (invalidIncludes.length > 0) {
       return NextResponse.json(
         {
           errors: [
             {
               status: "400",
-              title: "Invalid include parameter. Only 'monsters' is supported.",
+              title: `Invalid include parameter. Only 'monsters' and 'items' are supported.`,
             },
           ],
         },
@@ -80,8 +90,29 @@ export const GET = telemetry(
         "collection.include": include || "none",
       });
 
-      if (include === "monsters") {
+      const includeMonsters = includeResources.includes("monsters");
+      const includeItems = includeResources.includes("items");
+
+      if (includeMonsters && includeItems) {
+        const response = toJsonApiCollectionWithBoth(collection);
+        return NextResponse.json(response, {
+          headers: {
+            "Content-Type": CONTENT_TYPE,
+          },
+        });
+      }
+
+      if (includeMonsters) {
         const response = toJsonApiCollectionWithMonsters(collection);
+        return NextResponse.json(response, {
+          headers: {
+            "Content-Type": CONTENT_TYPE,
+          },
+        });
+      }
+
+      if (includeItems) {
+        const response = toJsonApiCollectionWithItems(collection);
         return NextResponse.json(response, {
           headers: {
             "Content-Type": CONTENT_TYPE,
