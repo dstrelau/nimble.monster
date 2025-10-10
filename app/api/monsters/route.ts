@@ -1,77 +1,91 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { auth } from "@/lib/auth";
 import type { CreateMonsterInput } from "@/lib/services/monsters";
 import { monstersService } from "@/lib/services/monsters";
-import { toZodMonster } from "@/lib/services/monsters/converters";
+import { toJsonApiMonster } from "@/lib/services/monsters/converters";
 import * as repository from "@/lib/services/monsters/repository";
 import { telemetry } from "@/lib/telemetry";
 
-const CONTENT_TYPE = "application/vnd.nimble.v202510+json";
+const CONTENT_TYPE = "application/vnd.api+json; nimble.version=202510.beta";
+
+const querySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1, "Limit must be between 1 and 100")
+    .max(100, "Limit must be between 1 and 100")
+    .default(100),
+  sort: z
+    .enum(["name", "-name", "created_at", "-created_at", "level", "-level"])
+    .default("name"),
+});
 
 export const GET = telemetry(async (request: Request) => {
   const span = trace.getActiveSpan();
   const { searchParams } = new URL(request.url);
 
-  const cursor = searchParams.get("cursor") || undefined;
-  const limit = Number.parseInt(searchParams.get("limit") || "100", 10);
-  const sort = searchParams.get("sort") || "name";
+  const result = querySchema.safeParse({
+    cursor: searchParams.get("cursor") || undefined,
+    limit: searchParams.get("limit") || undefined,
+    sort: searchParams.get("sort") || undefined,
+  });
 
-  const validSorts = [
-    "name",
-    "-name",
-    "created_at",
-    "-created_at",
-    "level",
-    "-level",
-  ];
-  if (!validSorts.includes(sort)) {
+  if (!result.success) {
+    const issue = result.error.issues[0];
+    const title =
+      issue.path[0] === "sort" ? "Invalid sort parameter" : issue.message;
     return NextResponse.json(
-      { error: "Invalid sort parameter" },
-      { status: 400 }
+      {
+        errors: [
+          {
+            status: "400",
+            title,
+          },
+        ],
+      },
+      { status: 400, headers: { "Content-Type": CONTENT_TYPE } }
     );
   }
 
-  if (limit < 1 || limit > 1000) {
-    return NextResponse.json(
-      { error: "Limit must be between 1 and 1000" },
-      { status: 400 }
-    );
-  }
+  const { cursor, limit, sort } = result.data;
 
   span?.setAttributes({
-    "monsters.list.cursor": cursor || "none",
-    "monsters.list.limit": limit,
-    "monsters.list.sort": sort,
+    "params.limit": limit,
+    "params.sort": sort,
   });
+  cursor && span?.setAttributes({ "params.cursor": cursor });
 
   const { monsters, nextCursor } = await repository.listPublicMonsters({
     cursor,
     limit,
-    sort: sort as
-      | "name"
-      | "-name"
-      | "created_at"
-      | "-created_at"
-      | "level"
-      | "-level",
+    sort,
   });
 
-  const data = monsters.map(toZodMonster);
+  const data = monsters.map(toJsonApiMonster);
 
   span?.setAttributes({
-    "monsters.list.count": data.length,
-    "monsters.list.has_more": nextCursor !== null,
+    "params.count": data.length,
+    "params.has_more": nextCursor !== null,
   });
 
-  return NextResponse.json(
-    { data, nextCursor },
-    {
-      headers: {
-        "Content-Type": CONTENT_TYPE,
-      },
-    }
-  );
+  const response: { data: typeof data; links?: { next: string } } = { data };
+
+  if (nextCursor) {
+    const url = new URL(request.url);
+    url.searchParams.set("cursor", nextCursor);
+    response.links = {
+      next: `${url.pathname}?${url.searchParams.toString()}`,
+    };
+  }
+
+  return NextResponse.json(response, {
+    headers: {
+      "Content-Type": CONTENT_TYPE,
+    },
+  });
 });
 
 export const POST = telemetry(async (request: Request) => {

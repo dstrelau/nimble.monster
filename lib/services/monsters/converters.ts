@@ -77,10 +77,32 @@ export const toZodMonster = (m: Monster) => {
     name: a.name,
   }));
 
-  const actions = m.actions.map((a) => ({
-    name: a.name,
-    description: a.description,
-  }));
+  const actions = m.actions.map((a) => {
+    const action: {
+      name: string;
+      description?: string;
+      damage?: { roll: string };
+      target?: { reach: number } | { range: number };
+    } = {
+      name: a.name,
+      description: [a.damage, a.description].filter(Boolean).join(". "),
+    };
+
+    if (a.damage) {
+      action.damage = { roll: a.damage };
+    }
+
+    const reachMatch = a.description?.match(/\(reach\s+(\d+)\)/i);
+    const rangeMatch = a.description?.match(/\(range\s+(\d+)\)/i);
+
+    if (reachMatch) {
+      action.target = { reach: Number.parseInt(reachMatch[1], 10) };
+    } else if (rangeMatch) {
+      action.target = { range: Number.parseInt(rangeMatch[1], 10) };
+    }
+
+    return action;
+  });
 
   const parsedLevel: number | "1/4" | "1/3" | "1/2" =
     m.level === "1/4" || m.level === "1/3" || m.level === "1/2"
@@ -98,8 +120,9 @@ export const toZodMonster = (m: Monster) => {
     movement: movement,
     abilities,
     actions,
+    actionsInstructions: m.actionPreface,
     effects: [],
-    actionsPerTurn: "single" as const,
+    description: m.moreInfo,
   };
 
   if (m.legendary) {
@@ -107,11 +130,9 @@ export const toZodMonster = (m: Monster) => {
       ...base,
       legendary: true as const,
       bloodied: {
-        hp: Math.floor(m.hp / 2),
         description: m.bloodied,
       },
       lastStand: {
-        hp: Math.floor(m.hp / 4),
         description: m.lastStand,
       },
     };
@@ -120,5 +141,19 @@ export const toZodMonster = (m: Monster) => {
   return {
     ...base,
     legendary: false as const,
+  };
+};
+
+export const toJsonApiMonster = (m: Monster) => {
+  const monsterData = toZodMonster(m);
+  const { id, ...attributes } = monsterData;
+
+  return {
+    type: "monsters",
+    id,
+    attributes,
+    links: {
+      self: `/api/monsters/${id}`,
+    },
   };
 };

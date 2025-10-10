@@ -1,5 +1,9 @@
-import { MonsterSchema } from "nimble-schemas/zod/monster";
+import {
+  LegendaryMonsterSchema,
+  MonsterSchema,
+} from "nimble-schemas/zod/monster";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 import { GET } from "./route";
 
 vi.mock("@opentelemetry/api", () => ({
@@ -22,6 +26,27 @@ vi.mock("@/lib/services/monsters/repository", () => ({
   listPublicMonsters: mockListPublicMonsters,
 }));
 
+vi.mock("@/lib/utils/cursor", () => ({
+  encodeCursor: vi.fn(
+    (data) => `encoded_${data.sort}_${data.value}_${data.id}`
+  ),
+  decodeCursor: vi.fn((cursor: string) => {
+    const match = cursor.match(/^encoded_(-?[^_]+)_(.+)_([^_]+)$/);
+    if (!match) return null;
+    const [, sort, value, id] = match;
+    if (sort === "name" || sort === "-name") {
+      return { sort, value, id };
+    }
+    if (sort === "created_at" || sort === "-created_at") {
+      return { sort, value, id };
+    }
+    if (sort === "level" || sort === "-level") {
+      return { sort, value: Number(value), id };
+    }
+    return null;
+  }),
+}));
+
 vi.mock("@/lib/telemetry", () => ({
   telemetry: vi.fn((handler) => handler),
 }));
@@ -35,6 +60,22 @@ const fakeCreator = {
   username: "testuser",
   displayName: "Test User",
 };
+
+// Allow hp to be optional, since we don't have it.
+const TestLegendaryMonsterSchema = LegendaryMonsterSchema.extend({
+  bloodied: z
+    .object({
+      hp: z.int().positive().optional(),
+      description: z.string().optional(),
+    })
+    .optional(),
+  lastStand: z
+    .object({
+      hp: z.int().positive().optional(),
+      description: z.string().optional(),
+    })
+    .optional(),
+});
 
 describe("GET /api/monsters", () => {
   beforeEach(() => {
@@ -80,35 +121,43 @@ describe("GET /api/monsters", () => {
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Content-Type")).toBe(
-      "application/vnd.nimble.v202510+json"
+    expect(response.headers.get("Content-Type")).toContain(
+      "application/vnd.api+json"
     );
     expect(data).toHaveProperty("data");
-    expect(data).toHaveProperty("nextCursor");
-    expect(data.nextCursor).toBeNull();
     expect(Array.isArray(data.data)).toBe(true);
     expect(data.data).toHaveLength(1);
 
-    const result = MonsterSchema.safeParse(data.data[0]);
+    const resource = data.data[0];
+    expect(resource.type).toBe("monsters");
+    expect(resource).toHaveProperty("id");
+    expect(resource).toHaveProperty("attributes");
+
+    const result = MonsterSchema.safeParse({
+      id: resource.id,
+      ...resource.attributes,
+    });
     expect(result.success).toBe(true);
   });
 
   it("should handle cursor pagination", async () => {
+    const encodedCursor =
+      "encoded_name_Dragon_550e8400-e29b-41d4-a716-446655440001";
     mockListMonsters.mockResolvedValue({
       monsters: [],
-      nextCursor: "550e8400-e29b-41d4-a716-446655440001",
+      nextCursor: encodedCursor,
     });
 
     const request = new Request(
-      "http://localhost:3000/api/monsters?cursor=550e8400-e29b-41d4-a716-446655440000"
+      "http://localhost:3000/api/monsters?cursor=encoded_name_Goblin_550e8400-e29b-41d4-a716-446655440000"
     );
     const response = await GET(request);
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data.nextCursor).toBe("550e8400-e29b-41d4-a716-446655440001");
+    expect(data.links?.next).toContain(`cursor=${encodedCursor}`);
     expect(mockListMonsters).toHaveBeenCalledWith({
-      cursor: "550e8400-e29b-41d4-a716-446655440000",
+      cursor: "encoded_name_Goblin_550e8400-e29b-41d4-a716-446655440000",
       limit: 100,
       sort: "name",
     });
@@ -136,7 +185,9 @@ describe("GET /api/monsters", () => {
     const data = await response.json();
 
     expect(response.status).toBe(400);
-    expect(data.error).toBe("Limit must be between 1 and 1000");
+    expect(data.errors).toHaveLength(1);
+    expect(data.errors[0].status).toBe("400");
+    expect(data.errors[0].title).toBe("Limit must be between 1 and 100");
   });
 
   it("should reject limit over 1000", async () => {
@@ -147,7 +198,9 @@ describe("GET /api/monsters", () => {
     const data = await response.json();
 
     expect(response.status).toBe(400);
-    expect(data.error).toBe("Limit must be between 1 and 1000");
+    expect(data.errors).toHaveLength(1);
+    expect(data.errors[0].status).toBe("400");
+    expect(data.errors[0].title).toBe("Limit must be between 1 and 100");
   });
 
   it("should handle sort by name ascending", async () => {
@@ -264,7 +317,9 @@ describe("GET /api/monsters", () => {
     const data = await response.json();
 
     expect(response.status).toBe(400);
-    expect(data.error).toBe("Invalid sort parameter");
+    expect(data.errors).toHaveLength(1);
+    expect(data.errors[0].status).toBe("400");
+    expect(data.errors[0].title).toBe("Invalid sort parameter");
   });
 
   it("should validate response conforms to MonsterSchema", async () => {
@@ -309,8 +364,16 @@ describe("GET /api/monsters", () => {
 
     expect(data.data).toHaveLength(1);
 
-    const result = MonsterSchema.safeParse(data.data[0]);
-    expect(result.success).toBe(true);
+    const resource = data.data[0];
+    expect(resource.type).toBe("monsters");
+    expect(resource).toHaveProperty("id");
+    expect(resource).toHaveProperty("attributes");
+
+    const result = TestLegendaryMonsterSchema.safeParse({
+      id: resource.id,
+      ...resource.attributes,
+    });
+    expect(result.success, JSON.stringify(result.error)).toBe(true);
     if (result.success) {
       expect(result.data.name).toBe("Dragon");
       expect(result.data.legendary).toBe(true);

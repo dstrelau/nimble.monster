@@ -36,6 +36,9 @@ vi.mock("@/lib/utils/slug", () => ({
     }
     return "550e8400-e29b-41d4-a716-446655440000";
   }),
+  uuidToIdentifier: vi.fn((uuid: string) => {
+    return "0psvtrh43w8xm9dfbf5b6nkcq1";
+  }),
 }));
 
 vi.mock("@/lib/db", () => ({
@@ -64,7 +67,7 @@ describe("GET /api/monsters/[id]", () => {
   });
 
   it("should return a monster by slug", async () => {
-    const mockMonster: Partial<Monster> = {
+    const mockMonster: Monster = {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Goblin",
       level: "1",
@@ -87,7 +90,6 @@ describe("GET /api/monsters/[id]", () => {
       creator: fakeCreator,
       createdAt: new Date("2025-01-01"),
       updatedAt: new Date("2025-01-01"),
-      saves: "",
     };
 
     mockGetMonster.mockResolvedValue(mockMonster);
@@ -100,10 +102,19 @@ describe("GET /api/monsters/[id]", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe(
-      "application/vnd.nimble.v202510+json"
+      "application/vnd.api+json"
     );
 
-    const result = MonsterSchema.safeParse(data);
+    expect(data).toHaveProperty("data");
+    const resource = data.data;
+    expect(resource.type).toBe("monsters");
+    expect(resource).toHaveProperty("id");
+    expect(resource).toHaveProperty("attributes");
+
+    const result = MonsterSchema.safeParse({
+      id: resource.id,
+      ...resource.attributes,
+    });
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.name).toBe("Goblin");
@@ -122,7 +133,9 @@ describe("GET /api/monsters/[id]", () => {
     const data = await response.json();
 
     expect(response.status).toBe(404);
-    expect(data.error).toBe("Monster not found");
+    expect(data.errors).toHaveLength(1);
+    expect(data.errors[0].status).toBe("404");
+    expect(data.errors[0].title).toBe("Monster not found");
   });
 
   it("should return 404 for invalid slug", async () => {
@@ -133,11 +146,13 @@ describe("GET /api/monsters/[id]", () => {
     const data = await response.json();
 
     expect(response.status).toBe(404);
-    expect(data.error).toBe("Monster not found");
+    expect(data.errors).toHaveLength(1);
+    expect(data.errors[0].status).toBe("404");
+    expect(data.errors[0].title).toBe("Monster not found");
   });
 
   it("should validate legendary monster conforms to MonsterSchema", async () => {
-    const mockMonster: Partial<Monster> = {
+    const mockMonster: Monster = {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Ancient Dragon",
       level: "15",
@@ -164,7 +179,6 @@ describe("GET /api/monsters/[id]", () => {
       creator: fakeCreator,
       createdAt: new Date("2025-01-01"),
       updatedAt: new Date("2025-01-01"),
-      saves: "STR CON WIS",
     };
 
     mockGetMonster.mockResolvedValue(mockMonster);
@@ -177,8 +191,17 @@ describe("GET /api/monsters/[id]", () => {
 
     expect(response.status).toBe(200);
 
-    const result = MonsterSchema.safeParse(data);
-    expect(result.success).toBe(true);
+    expect(data).toHaveProperty("data");
+    const resource = data.data;
+    expect(resource.type).toBe("monsters");
+    expect(resource).toHaveProperty("id");
+    expect(resource).toHaveProperty("attributes");
+
+    const result = MonsterSchema.safeParse({
+      id: resource.id,
+      ...resource.attributes,
+    });
+    expect(result.success, JSON.stringify(result.error)).toBe(true);
     if (result.success) {
       expect(result.data.name).toBe("Ancient Dragon");
       expect(result.data.legendary).toBe(true);
@@ -195,7 +218,7 @@ describe("GET /api/monsters/[id]", () => {
   });
 
   it("should handle monster with multiple movement modes", async () => {
-    const mockMonster: Partial<Monster> = {
+    const mockMonster: Monster = {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Water Elemental",
       level: "5",
@@ -218,7 +241,6 @@ describe("GET /api/monsters/[id]", () => {
       creator: fakeCreator,
       createdAt: new Date("2025-01-01"),
       updatedAt: new Date("2025-01-01"),
-      saves: "",
     };
 
     mockGetMonster.mockResolvedValue(mockMonster);
@@ -234,7 +256,13 @@ describe("GET /api/monsters/[id]", () => {
 
     expect(response.status).toBe(200);
 
-    const result = MonsterSchema.safeParse(data);
+    expect(data).toHaveProperty("data");
+    const resource = data.data;
+
+    const result = MonsterSchema.safeParse({
+      id: resource.id,
+      ...resource.attributes,
+    });
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.movement).toEqual(
@@ -244,7 +272,7 @@ describe("GET /api/monsters/[id]", () => {
   });
 
   it("should handle fractional level monsters", async () => {
-    const mockMonster: Partial<Monster> = {
+    const mockMonster: Monster = {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Tiny Rat",
       level: "1/4",
@@ -267,7 +295,6 @@ describe("GET /api/monsters/[id]", () => {
       creator: fakeCreator,
       createdAt: new Date("2025-01-01"),
       updatedAt: new Date("2025-01-01"),
-      saves: "",
     };
 
     mockGetMonster.mockResolvedValue(mockMonster);
@@ -280,7 +307,13 @@ describe("GET /api/monsters/[id]", () => {
 
     expect(response.status).toBe(200);
 
-    const result = MonsterSchema.safeParse(data);
+    expect(data).toHaveProperty("data");
+    const resource = data.data;
+
+    const result = MonsterSchema.safeParse({
+      id: resource.id,
+      ...resource.attributes,
+    });
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.level).toBe("1/4");

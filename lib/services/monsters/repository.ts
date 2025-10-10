@@ -2,6 +2,8 @@ import { prisma } from "@/lib/db";
 import { toUser } from "@/lib/db/converters";
 import type { InputJsonValue } from "@/lib/prisma/runtime/library";
 import type { Action } from "@/lib/types";
+import type { CursorData } from "@/lib/utils/cursor";
+import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
 import { extractAllConditions, syncMonsterConditions } from "./conditions";
 import { toMonster, toMonsterMini } from "./converters";
@@ -46,7 +48,18 @@ export const listPublicMonsters = async ({
   cursor,
   limit = 100,
   sort = "name",
-}: ListMonstersParams): Promise<{ monsters: Monster[]; nextCursor: string | null }> => {
+}: ListMonstersParams): Promise<{
+  monsters: Monster[];
+  nextCursor: string | null;
+}> => {
+  const cursorData = cursor ? decodeCursor(cursor) : null;
+
+  if (cursorData && cursorData.sort !== sort) {
+    throw new Error(
+      `Cursor sort mismatch: cursor has '${cursorData.sort}' but request has '${sort}'`
+    );
+  }
+
   const isDesc = sort.startsWith("-");
   const sortField = isDesc ? sort.slice(1) : sort;
   const sortDir = isDesc ? "desc" : "asc";
@@ -57,16 +70,59 @@ export const listPublicMonsters = async ({
     | [{ levelInt: "asc" | "desc" }, { id: "asc" | "desc" }];
 
   if (sortField === "name") {
-    orderBy = [{ name: sortDir }, { id: sortDir }];
+    orderBy = [{ name: sortDir }, { id: "asc" }];
   } else if (sortField === "created_at") {
-    orderBy = [{ createdAt: sortDir }, { id: sortDir }];
+    orderBy = [{ createdAt: sortDir }, { id: "asc" }];
   } else {
-    orderBy = [{ levelInt: sortDir }, { id: sortDir }];
+    orderBy = [{ levelInt: sortDir }, { id: "asc" }];
   }
 
-  const where = cursor
-    ? { visibility: "public" as const, id: { gt: cursor } }
-    : { visibility: "public" as const };
+  const where: {
+    visibility: "public";
+    OR?: Array<{
+      name?: { gt?: string; lt?: string };
+      createdAt?: { gt?: Date; lt?: Date };
+      levelInt?: { gt?: number; lt?: number };
+      AND?: Array<{
+        name?: string;
+        createdAt?: Date;
+        levelInt?: number;
+        id?: { gt: string };
+      }>;
+    }>;
+  } = { visibility: "public" };
+
+  if (cursorData) {
+    const op = isDesc ? "lt" : "gt";
+
+    if (sortField === "name") {
+      where.OR = [
+        { name: { [op]: cursorData.value as string } },
+        {
+          AND: [
+            { name: cursorData.value as string },
+            { id: { gt: cursorData.id } },
+          ],
+        },
+      ];
+    } else if (sortField === "created_at") {
+      const date = new Date(cursorData.value as string);
+      where.OR = [
+        { createdAt: { [op]: date } },
+        { AND: [{ createdAt: date }, { id: { gt: cursorData.id } }] },
+      ];
+    } else if (sortField === "level") {
+      where.OR = [
+        { levelInt: { [op]: cursorData.value as number } },
+        {
+          AND: [
+            { levelInt: cursorData.value as number },
+            { id: { gt: cursorData.id } },
+          ],
+        },
+      ];
+    }
+  }
 
   const monsters = await prisma.monster.findMany({
     where,
@@ -81,7 +137,34 @@ export const listPublicMonsters = async ({
 
   const hasMore = monsters.length > limit;
   const results = hasMore ? monsters.slice(0, limit) : monsters;
-  const nextCursor = hasMore ? results[results.length - 1].id : null;
+
+  let nextCursor: string | null = null;
+  if (hasMore) {
+    const lastMonster = results[results.length - 1];
+    let cursorData: CursorData;
+
+    if (sortField === "name") {
+      cursorData = {
+        sort: sort as "name" | "-name",
+        value: lastMonster.name,
+        id: lastMonster.id,
+      };
+    } else if (sortField === "created_at") {
+      cursorData = {
+        sort: sort as "created_at" | "-created_at",
+        value: lastMonster.createdAt.toISOString(),
+        id: lastMonster.id,
+      };
+    } else {
+      cursorData = {
+        sort: sort as "level" | "-level",
+        value: lastMonster.levelInt,
+        id: lastMonster.id,
+      };
+    }
+
+    nextCursor = encodeCursor(cursorData);
+  }
 
   return {
     monsters: results.map(toMonster),

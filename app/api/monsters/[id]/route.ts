@@ -4,12 +4,12 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { monstersService } from "@/lib/services/monsters";
-import { toZodMonster } from "@/lib/services/monsters/converters";
+import { toJsonApiMonster } from "@/lib/services/monsters/converters";
 import { telemetry } from "@/lib/telemetry";
 import { deslugify } from "@/lib/utils/slug";
 import { getMonsterUrl } from "@/lib/utils/url";
 
-const CONTENT_TYPE = "application/vnd.nimble.v202510+json";
+const CONTENT_TYPE = "application/vnd.api+json";
 
 export const GET = telemetry(
   async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
@@ -24,25 +24,42 @@ export const GET = telemetry(
 
       if (!monster) {
         return NextResponse.json(
-          { error: "Monster not found" },
-          { status: 404 }
+          {
+            errors: [
+              {
+                status: "404",
+                title: "Monster not found",
+              },
+            ],
+          },
+          { status: 404, headers: { "Content-Type": CONTENT_TYPE } }
         );
       }
 
       span?.setAttributes({ "monster.id": monster.id });
 
-      const data = toZodMonster(monster);
+      const data = toJsonApiMonster(monster);
 
-      return NextResponse.json(data, {
-        headers: {
-          "Content-Type": CONTENT_TYPE,
-        },
-      });
+      return NextResponse.json(
+        { data },
+        {
+          headers: {
+            "Content-Type": CONTENT_TYPE,
+          },
+        }
+      );
     } catch (error) {
       span?.setAttributes({ "error": String(error) });
       return NextResponse.json(
-        { error: "Monster not found" },
-        { status: 404 }
+        {
+          errors: [
+            {
+              status: "404",
+              title: "Monster not found",
+            },
+          ],
+        },
+        { status: 404, headers: { "Content-Type": CONTENT_TYPE } }
       );
     }
   }
