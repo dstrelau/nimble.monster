@@ -13,7 +13,7 @@ interface InlineEditInputProps {
   showEditIcon?: boolean;
   canEdit?: boolean;
   displayComponent: React.ReactNode;
-  editComponent: React.ReactElement;
+  editComponent: React.ReactElement<any>;
 }
 
 export function InlineEditInput({

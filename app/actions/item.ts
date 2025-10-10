@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import { invalidateEntityImageCache } from "@/lib/cache/image-cache";
 import type { ItemRarity, ItemRarityFilter } from "@/lib/services/items";
 import { itemsService } from "@/lib/services/items";
 import { getItemUrl } from "@/lib/utils/url";
@@ -85,7 +84,6 @@ export async function updateItem(
       session.user.discordId
     );
 
-    invalidateEntityImageCache("item", itemId);
     revalidatePath(getItemUrl(item));
     revalidatePath("/my/items");
 
