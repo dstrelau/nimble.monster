@@ -28,9 +28,9 @@ describe("cursor encoding/decoding", () => {
     expect(decoded).toEqual(cursor);
   });
 
-  it("should encode and decode created_at cursor", () => {
+  it("should encode and decode createdAt cursor", () => {
     const cursor = {
-      sort: "created_at" as const,
+      sort: "createdAt" as const,
       value: "2025-01-01T00:00:00.000Z",
       id: "550e8400-e29b-41d4-a716-446655440000",
     };

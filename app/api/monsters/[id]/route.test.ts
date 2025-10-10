@@ -36,7 +36,7 @@ vi.mock("@/lib/utils/slug", () => ({
     }
     return "550e8400-e29b-41d4-a716-446655440000";
   }),
-  uuidToIdentifier: vi.fn((uuid: string) => {
+  uuidToIdentifier: vi.fn(() => {
     return "0psvtrh43w8xm9dfbf5b6nkcq1";
   }),
 }));

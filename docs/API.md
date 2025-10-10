@@ -19,7 +19,7 @@ List public monsters with pagination and sorting.
 - `limit` (number, optional): Results per page (1-100, default: 100)
 - `sort` (string, optional): Sort order; '-' prefix for descending
   - `name`, `-name`
-  - `created_at`, `-created_at`
+  - `createdAt`, `-createdAt`
   - `level`, `-level`
 
 **Response:**
@@ -67,6 +67,103 @@ Retrieve a single monster by ID (26-character identifier).
       "self": "/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
     }
   }
+}
+```
+
+### GET /api/collections
+
+List public collections with pagination and sorting.
+
+**Query Parameters:**
+- `cursor` (string, optional): Pagination cursor for next page
+- `limit` (number, optional): Results per page (1-100, default: 100)
+- `sort` (string, optional): Sort order; '-' prefix for descending
+  - `name`, `-name`
+  - `createdAt`, `-createdAt`
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "type": "collections",
+      "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+      "attributes": {
+        "name": "Forest Encounters",
+        "description": "Monsters for forest adventures",
+        "createdAt": "2025-01-15T10:30:00Z",
+        "monsterCount": 5,
+        "itemCount": 3
+      },
+      "relationships": {
+        "creator": {
+          "data": {
+            "type": "users",
+            "id": "username"
+          }
+        }
+      },
+      "links": {
+        "self": "/api/collections/0psvtrh43w8xm9dfbf5b6nkcq1"
+      }
+    }
+  ],
+  "links": {
+    "next": "/api/collections?cursor=..."
+  }
+}
+```
+
+### GET /api/collections/:id
+
+Retrieve a single collection by ID (26-character identifier).
+
+**Query Parameters:**
+- `include` (string, optional): Related resources to include (currently only supports `monsters`)
+
+**Response (with include=monsters):**
+```json
+{
+  "data": {
+    "type": "collections",
+    "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+    "attributes": {
+      "name": "Forest Encounters",
+      "description": "Monsters for forest adventures",
+      "createdAt": "2025-01-15T10:30:00Z",
+      "monsterCount": 5,
+      "itemCount": 3
+    },
+    "relationships": {
+      "creator": {
+        "data": {
+          "type": "users",
+          "id": "username"
+        }
+      },
+      "monsters": {
+        "data": [
+          {
+            "type": "monsters",
+            "id": "0abc123def456..."
+          }
+        ]
+      }
+    },
+    "links": {
+      "self": "/api/collections/0psvtrh43w8xm9dfbf5b6nkcq1"
+    }
+  },
+  "included": [
+    {
+      "type": "monsters",
+      "id": "0abc123def456...",
+      "attributes": { ... }
+      "links": {
+        "self": "/api/monsters/0abc123def456..."
+      }
+    }
+  ]
 }
 ```
 

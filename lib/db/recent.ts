@@ -1,10 +1,10 @@
 import { toItem } from "@/lib/services/items/converters";
 import type { Family, User } from "@/lib/types";
+import { toMonster } from "../services/monsters/converters";
 import {
   toCollectionOverview,
   toCompanion,
   toFamilyOverview,
-  toMonster,
   toUser,
 } from "./converters";
 import { prisma } from "./index";

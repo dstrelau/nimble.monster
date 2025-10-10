@@ -9,7 +9,8 @@ import type { Ability, Action, Family } from "@/lib/types";
 
 import { isValidUUID } from "@/lib/utils/validation";
 import type { InputJsonValue } from "../prisma/runtime/library";
-import { toMonster, toMonsterMini, toUser } from "./converters";
+import { toMonster, toMonsterMini } from "../services/monsters/converters";
+import { toUser } from "./converters";
 import { prisma } from "./index";
 import {
   extractAllConditions,

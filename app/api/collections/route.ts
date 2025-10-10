@@ -1,14 +1,11 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
-import type { CreateMonsterInput } from "@/lib/services/monsters";
-import { monstersService } from "@/lib/services/monsters";
-import { toJsonApiMonster } from "@/lib/services/monsters/converters";
-import * as repository from "@/lib/services/monsters/repository";
+import { toJsonApiCollection } from "@/lib/services/collections/converters";
+import * as repository from "@/lib/services/collections/repository";
 import { telemetry } from "@/lib/telemetry";
 
-const CONTENT_TYPE = "application/vnd.api+json; nimble.version=202510.beta";
+const CONTENT_TYPE = "application/vnd.api+json";
 
 const querySchema = z.object({
   cursor: z.string().optional(),
@@ -19,7 +16,7 @@ const querySchema = z.object({
     .max(100, "Limit must be between 1 and 100")
     .default(100),
   sort: z
-    .enum(["name", "-name", "createdAt", "-createdAt", "level", "-level"])
+    .enum(["name", "-name", "createdAt", "-createdAt"])
     .default("name"),
 });
 
@@ -58,13 +55,13 @@ export const GET = telemetry(async (request: Request) => {
   });
   cursor && span?.setAttributes({ "params.cursor": cursor });
 
-  const { monsters, nextCursor } = await repository.listPublicMonsters({
+  const { collections, nextCursor } = await repository.listPublicCollections({
     cursor,
     limit,
     sort,
   });
 
-  const data = monsters.map(toJsonApiMonster);
+  const data = collections.map(toJsonApiCollection);
 
   span?.setAttributes({
     "params.count": data.length,
@@ -86,39 +83,4 @@ export const GET = telemetry(async (request: Request) => {
       "Content-Type": CONTENT_TYPE,
     },
   });
-});
-
-export const POST = telemetry(async (request: Request) => {
-  const session = await auth();
-  const span = trace.getActiveSpan();
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  span?.setAttributes({
-    "user.id": session.user.id,
-  });
-
-  const monsterData = await request.json();
-
-  span?.setAttributes({
-    "monster.create.data_keys": Object.keys(monsterData).join(","),
-    "monster.create.data_size": JSON.stringify(monsterData).length,
-  });
-
-  const input: CreateMonsterInput = {
-    ...monsterData,
-  };
-
-  const newMonster = await monstersService.createMonster(
-    input,
-    session.user.discordId
-  );
-
-  span?.setAttributes({
-    "monster.id": newMonster.id,
-  });
-
-  return NextResponse.json(newMonster, { status: 201 });
 });

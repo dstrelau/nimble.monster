@@ -1,6 +1,7 @@
 import type { Ability, Family, FamilyOverview } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
-import { toMonster, toUser } from "./converters";
+import { toMonster } from "../services/monsters/converters";
+import { toUser } from "./converters";
 import { prisma } from "./index";
 
 export const getUserFamilies = async (discordId: string): Promise<Family[]> => {

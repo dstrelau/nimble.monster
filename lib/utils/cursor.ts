@@ -2,7 +2,7 @@ import { decode, encode } from "@msgpack/msgpack";
 
 export type CursorData =
   | { sort: "name" | "-name"; value: string; id: string }
-  | { sort: "created_at" | "-created_at"; value: string; id: string }
+  | { sort: "createdAt" | "-createdAt"; value: string; id: string }
   | { sort: "level" | "-level"; value: number; id: string };
 
 export function encodeCursor(data: CursorData): string {

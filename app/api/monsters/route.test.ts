@@ -37,7 +37,7 @@ vi.mock("@/lib/utils/cursor", () => ({
     if (sort === "name" || sort === "-name") {
       return { sort, value, id };
     }
-    if (sort === "created_at" || sort === "-created_at") {
+    if (sort === "createdAt" || sort === "-createdAt") {
       return { sort, value, id };
     }
     if (sort === "level" || sort === "-level") {
@@ -237,39 +237,39 @@ describe("GET /api/monsters", () => {
     });
   });
 
-  it("should handle sort by created_at ascending", async () => {
+  it("should handle sort by createdAt ascending", async () => {
     mockListMonsters.mockResolvedValue({
       monsters: [],
       nextCursor: null,
     });
 
     const request = new Request(
-      "http://localhost:3000/api/monsters?sort=created_at"
+      "http://localhost:3000/api/monsters?sort=createdAt"
     );
     await GET(request);
 
     expect(mockListMonsters).toHaveBeenCalledWith({
       cursor: undefined,
       limit: 100,
-      sort: "created_at",
+      sort: "createdAt",
     });
   });
 
-  it("should handle sort by created_at descending", async () => {
+  it("should handle sort by createdAt descending", async () => {
     mockListMonsters.mockResolvedValue({
       monsters: [],
       nextCursor: null,
     });
 
     const request = new Request(
-      "http://localhost:3000/api/monsters?sort=-created_at"
+      "http://localhost:3000/api/monsters?sort=-createdAt"
     );
     await GET(request);
 
     expect(mockListMonsters).toHaveBeenCalledWith({
       cursor: undefined,
       limit: 100,
-      sort: "-created_at",
+      sort: "-createdAt",
     });
   });
 

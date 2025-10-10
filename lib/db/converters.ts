@@ -1,9 +1,5 @@
 import type { Prisma } from "@/lib/prisma";
 import { toItemMini } from "@/lib/services/items/converters";
-import {
-  toMonster as toMonsterInternal,
-  toMonsterMini as toMonsterMiniInternal,
-} from "@/lib/services/monsters/converters";
 import type {
   Ability,
   Action,
@@ -17,10 +13,8 @@ import type {
   SubclassMini,
   User,
 } from "@/lib/types";
+import { toMonsterMini } from "../services/monsters/converters";
 import type { prisma } from "./index";
-
-export const toMonsterMini = toMonsterMiniInternal;
-export const toMonster = toMonsterInternal;
 
 export const toFamilyOverview = (
   f:

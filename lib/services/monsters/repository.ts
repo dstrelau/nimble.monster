@@ -71,7 +71,7 @@ export const listPublicMonsters = async ({
 
   if (sortField === "name") {
     orderBy = [{ name: sortDir }, { id: "asc" }];
-  } else if (sortField === "created_at") {
+  } else if (sortField === "createdAt") {
     orderBy = [{ createdAt: sortDir }, { id: "asc" }];
   } else {
     orderBy = [{ levelInt: sortDir }, { id: "asc" }];
@@ -105,7 +105,7 @@ export const listPublicMonsters = async ({
           ],
         },
       ];
-    } else if (sortField === "created_at") {
+    } else if (sortField === "createdAt") {
       const date = new Date(cursorData.value as string);
       where.OR = [
         { createdAt: { [op]: date } },
@@ -149,9 +149,9 @@ export const listPublicMonsters = async ({
         value: lastMonster.name,
         id: lastMonster.id,
       };
-    } else if (sortField === "created_at") {
+    } else if (sortField === "createdAt") {
       cursorData = {
-        sort: sort as "created_at" | "-created_at",
+        sort: sort as "createdAt" | "-createdAt",
         value: lastMonster.createdAt.toISOString(),
         id: lastMonster.id,
       };

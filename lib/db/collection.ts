@@ -1,12 +1,8 @@
 import { toItem, toItemMini } from "@/lib/services/items/converters";
 import type { Collection, CollectionOverview } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
-import {
-  toCollectionOverview,
-  toMonster,
-  toMonsterMini,
-  toUser,
-} from "./converters";
+import { toMonster, toMonsterMini } from "../services/monsters/converters";
+import { toCollectionOverview, toUser } from "./converters";
 import { prisma } from "./index";
 
 export const listCollectionsWithMonstersForUser = async (
