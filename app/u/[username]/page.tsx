@@ -21,7 +21,7 @@ export async function generateMetadata({
 
   const [monsters, items, collections, companions] = await Promise.all([
     db.listPublicMonstersForUser(user.id),
-    itemsService.listPublicItems(),
+    itemsService.listPublicItemsForUser(user.id),
     db.listPublicCollectionsHavingMonstersForUser(user.id),
     db.listPublicCompanionsForUser(user.id),
   ]);
@@ -68,7 +68,7 @@ export default async function UserProfilePage({
       db.listPublicCollectionsHavingMonstersForUser(user.id),
       db.listPublicFamiliesHavingMonstersForUser(user.id),
       db.listPublicCompanionsForUser(user.id),
-      itemsService.listPublicItems(),
+      itemsService.listPublicItemsForUser(user.id),
     ]);
 
   return (

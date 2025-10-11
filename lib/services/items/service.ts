@@ -26,6 +26,10 @@ export class ItemsService {
     return repository.listPublicItems();
   }
 
+  async listPublicItemsForUser(userId: string): Promise<Item[]> {
+    return repository.listPublicItemsForUser(userId);
+  }
+
   async getRandomRecentItems(limit?: number): Promise<Item[]> {
     return repository.getRandomRecentItems(limit);
   }
