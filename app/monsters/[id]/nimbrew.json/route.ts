@@ -2,6 +2,7 @@ import { trace } from "@opentelemetry/api";
 import { permanentRedirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { addCorsHeaders } from "@/lib/cors";
 import { monstersService } from "@/lib/services/monsters";
 import { telemetry } from "@/lib/telemetry";
 import { formatSizeKind } from "@/lib/utils/monster";
@@ -138,11 +139,7 @@ export const GET = telemetry(
     }
 
     const response = NextResponse.json(nimbrewData);
-
-    response.headers.set("Access-Control-Allow-Origin", "*");
-    response.headers.set("Access-Control-Allow-Methods", "GET");
-    response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-
+    addCorsHeaders(response.headers);
     return response;
   }
 );

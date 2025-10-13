@@ -2,6 +2,7 @@ import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
+import { addCorsHeaders } from "@/lib/cors";
 import type { CreateMonsterInput } from "@/lib/services/monsters";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
@@ -37,6 +38,8 @@ export const GET = telemetry(async (request: Request) => {
     const issue = result.error.issues[0];
     const title =
       issue.path[0] === "sort" ? "Invalid sort parameter" : issue.message;
+    const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+    addCorsHeaders(headers);
     return NextResponse.json(
       {
         errors: [
@@ -46,7 +49,7 @@ export const GET = telemetry(async (request: Request) => {
           },
         ],
       },
-      { status: 400, headers: { "Content-Type": CONTENT_TYPE } }
+      { status: 400, headers }
     );
   }
 
@@ -81,11 +84,9 @@ export const GET = telemetry(async (request: Request) => {
     };
   }
 
-  return NextResponse.json(response, {
-    headers: {
-      "Content-Type": CONTENT_TYPE,
-    },
-  });
+  const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+  addCorsHeaders(headers);
+  return NextResponse.json(response, { headers });
 });
 
 export const POST = telemetry(async (request: Request) => {

@@ -1,6 +1,7 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { addCorsHeaders } from "@/lib/cors";
 import {
   toJsonApiCollection,
   toJsonApiCollectionWithBoth,
@@ -18,7 +19,10 @@ const querySchema = z.object({
 });
 
 export const GET = telemetry(
-  async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
+  async (
+    _request: Request,
+    { params }: { params: Promise<{ id: string }> }
+  ) => {
     const { id } = await params;
     const span = trace.getActiveSpan();
     const { searchParams } = new URL(_request.url);
@@ -30,6 +34,8 @@ export const GET = telemetry(
     });
 
     if (!queryResult.success) {
+      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+      addCorsHeaders(headers);
       return NextResponse.json(
         {
           errors: [
@@ -39,7 +45,7 @@ export const GET = telemetry(
             },
           ],
         },
-        { status: 400, headers: { "Content-Type": CONTENT_TYPE } }
+        { status: 400, headers }
       );
     }
 
@@ -54,6 +60,8 @@ export const GET = telemetry(
     );
 
     if (invalidIncludes.length > 0) {
+      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+      addCorsHeaders(headers);
       return NextResponse.json(
         {
           errors: [
@@ -63,7 +71,7 @@ export const GET = telemetry(
             },
           ],
         },
-        { status: 400, headers: { "Content-Type": CONTENT_TYPE } }
+        { status: 400, headers }
       );
     }
 
@@ -72,6 +80,8 @@ export const GET = telemetry(
       const collection = await repository.findPublicCollectionById(uid);
 
       if (!collection) {
+        const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+        addCorsHeaders(headers);
         return NextResponse.json(
           {
             errors: [
@@ -81,7 +91,7 @@ export const GET = telemetry(
               },
             ],
           },
-          { status: 404, headers: { "Content-Type": CONTENT_TYPE } }
+          { status: 404, headers }
         );
       }
 
@@ -93,44 +103,30 @@ export const GET = telemetry(
       const includeMonsters = includeResources.includes("monsters");
       const includeItems = includeResources.includes("items");
 
+      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+      addCorsHeaders(headers);
+
       if (includeMonsters && includeItems) {
         const response = toJsonApiCollectionWithBoth(collection);
-        return NextResponse.json(response, {
-          headers: {
-            "Content-Type": CONTENT_TYPE,
-          },
-        });
+        return NextResponse.json(response, { headers });
       }
 
       if (includeMonsters) {
         const response = toJsonApiCollectionWithMonsters(collection);
-        return NextResponse.json(response, {
-          headers: {
-            "Content-Type": CONTENT_TYPE,
-          },
-        });
+        return NextResponse.json(response, { headers });
       }
 
       if (includeItems) {
         const response = toJsonApiCollectionWithItems(collection);
-        return NextResponse.json(response, {
-          headers: {
-            "Content-Type": CONTENT_TYPE,
-          },
-        });
+        return NextResponse.json(response, { headers });
       }
 
       const data = toJsonApiCollection(collection);
-      return NextResponse.json(
-        { data },
-        {
-          headers: {
-            "Content-Type": CONTENT_TYPE,
-          },
-        }
-      );
+      return NextResponse.json({ data }, { headers });
     } catch (error) {
       span?.setAttributes({ error: String(error) });
+      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+      addCorsHeaders(headers);
       return NextResponse.json(
         {
           errors: [
@@ -140,7 +136,7 @@ export const GET = telemetry(
             },
           ],
         },
-        { status: 404, headers: { "Content-Type": CONTENT_TYPE } }
+        { status: 404, headers }
       );
     }
   }

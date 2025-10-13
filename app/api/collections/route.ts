@@ -1,6 +1,7 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { addCorsHeaders } from "@/lib/cors";
 import { toJsonApiCollection } from "@/lib/services/collections/converters";
 import * as repository from "@/lib/services/collections/repository";
 import { telemetry } from "@/lib/telemetry";
@@ -15,9 +16,7 @@ const querySchema = z.object({
     .min(1, "Limit must be between 1 and 100")
     .max(100, "Limit must be between 1 and 100")
     .default(100),
-  sort: z
-    .enum(["name", "-name", "createdAt", "-createdAt"])
-    .default("name"),
+  sort: z.enum(["name", "-name", "createdAt", "-createdAt"]).default("name"),
 });
 
 export const GET = telemetry(async (request: Request) => {
@@ -34,6 +33,8 @@ export const GET = telemetry(async (request: Request) => {
     const issue = result.error.issues[0];
     const title =
       issue.path[0] === "sort" ? "Invalid sort parameter" : issue.message;
+    const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+    addCorsHeaders(headers);
     return NextResponse.json(
       {
         errors: [
@@ -43,7 +44,7 @@ export const GET = telemetry(async (request: Request) => {
           },
         ],
       },
-      { status: 400, headers: { "Content-Type": CONTENT_TYPE } }
+      { status: 400, headers }
     );
   }
 
@@ -78,9 +79,7 @@ export const GET = telemetry(async (request: Request) => {
     };
   }
 
-  return NextResponse.json(response, {
-    headers: {
-      "Content-Type": CONTENT_TYPE,
-    },
-  });
+  const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+  addCorsHeaders(headers);
+  return NextResponse.json(response, { headers });
 });

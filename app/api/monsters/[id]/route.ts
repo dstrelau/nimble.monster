@@ -2,6 +2,7 @@ import { trace } from "@opentelemetry/api";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { addCorsHeaders } from "@/lib/cors";
 import { prisma } from "@/lib/db";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
@@ -12,7 +13,10 @@ import { getMonsterUrl } from "@/lib/utils/url";
 const CONTENT_TYPE = "application/vnd.api+json";
 
 export const GET = telemetry(
-  async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
+  async (
+    _request: Request,
+    { params }: { params: Promise<{ id: string }> }
+  ) => {
     const { id } = await params;
     const span = trace.getActiveSpan();
 
@@ -23,6 +27,8 @@ export const GET = telemetry(
       const monster = await monstersService.getMonster(uid);
 
       if (!monster) {
+        const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+        addCorsHeaders(headers);
         return NextResponse.json(
           {
             errors: [
@@ -32,7 +38,7 @@ export const GET = telemetry(
               },
             ],
           },
-          { status: 404, headers: { "Content-Type": CONTENT_TYPE } }
+          { status: 404, headers }
         );
       }
 
@@ -40,16 +46,13 @@ export const GET = telemetry(
 
       const data = toJsonApiMonster(monster);
 
-      return NextResponse.json(
-        { data },
-        {
-          headers: {
-            "Content-Type": CONTENT_TYPE,
-          },
-        }
-      );
+      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+      addCorsHeaders(headers);
+      return NextResponse.json({ data }, { headers });
     } catch (error) {
-      span?.setAttributes({ "error": String(error) });
+      span?.setAttributes({ error: String(error) });
+      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+      addCorsHeaders(headers);
       return NextResponse.json(
         {
           errors: [
@@ -59,7 +62,7 @@ export const GET = telemetry(
             },
           ],
         },
-        { status: 404, headers: { "Content-Type": CONTENT_TYPE } }
+        { status: 404, headers }
       );
     }
   }
