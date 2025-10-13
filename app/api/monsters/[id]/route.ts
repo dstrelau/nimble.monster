@@ -12,7 +12,10 @@ import { getMonsterUrl } from "@/lib/utils/url";
 const CONTENT_TYPE = "application/vnd.api+json";
 
 export const GET = telemetry(
-  async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
+  async (
+    _request: Request,
+    { params }: { params: Promise<{ id: string }> }
+  ) => {
     const { id } = await params;
     const span = trace.getActiveSpan();
 
@@ -49,7 +52,7 @@ export const GET = telemetry(
         }
       );
     } catch (error) {
-      span?.setAttributes({ "error": String(error) });
+      span?.setAttributes({ error: String(error) });
       return NextResponse.json(
         {
           errors: [

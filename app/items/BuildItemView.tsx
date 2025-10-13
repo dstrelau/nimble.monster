@@ -44,17 +44,15 @@ const formSchema = z.object({
   imageBgIcon: z.string().optional(),
   imageColor: z.string().optional(),
   imageBgColor: z.string().optional(),
-  rarity: z
-    .enum([
-      "unspecified",
-      "common",
-      "uncommon",
-      "rare",
-      "very_rare",
-      "legendary",
-    ])
-    .default("unspecified"),
-  visibility: z.enum(["public", "private"]).default("public"),
+  rarity: z.enum([
+    "unspecified",
+    "common",
+    "uncommon",
+    "rare",
+    "very_rare",
+    "legendary",
+  ]),
+  visibility: z.enum(["public", "private"]),
 });
 
 type FormData = z.infer<typeof formSchema>;

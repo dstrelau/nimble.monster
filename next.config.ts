@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   experimental: {
     useCache: true,
-    turbopackFileSystemCacheForDev: true,
   },
   reactStrictMode: true,
   async redirects() {

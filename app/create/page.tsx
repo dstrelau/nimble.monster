@@ -5,6 +5,7 @@ import {
   HeartHandshake,
   Shield,
   Users,
+  WandSparkles,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -79,12 +80,10 @@ export default async function CreatePage() {
   return (
     <TooltipProvider>
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4">
-              What would you like to create?
-            </h1>
-          </div>
+        <div className="max-w-3xl mx-auto">
+          <h2 className="w-full text-4xl text-center font-bold mb-4">
+            What would you like to create?
+          </h2>
 
           <div className="flex flex-wrap justify-center gap-6">
             <CreateCard
@@ -92,6 +91,14 @@ export default async function CreatePage() {
               icon={<Ghost className="size-16" />}
               title="Monster"
               description="Traditional monsters and Solo Legendaries."
+            />
+            <CreateCard
+              href="/families/new"
+              icon={<Users className="size-16" />}
+              title="Family"
+              description="Monster groups with shared abilities."
+              disabled={!isAuthenticated}
+              disabledMessage="You must signin to create a Family."
             />
             <CreateCard
               href="/items/new"
@@ -105,28 +112,28 @@ export default async function CreatePage() {
               title="Companion"
               description="NPC adventuring companions."
             />
-            <CreateCard
-              href="/collections/new"
-              icon={<Box className="size-16" />}
-              title="Collection"
-              description="Organize monsters into collections."
-              disabled={!isAuthenticated}
-              disabledMessage="You must signin to create a Collection."
-            />
-            <CreateCard
-              href="/families/new"
-              icon={<Users className="size-16" />}
-              title="Family"
-              description="Monster groups with shared abilities."
-              disabled={!isAuthenticated}
-              disabledMessage="You must signin to create a Family."
-            />
+
             <CreateCard
               href="/subclasses/new"
               icon={<HandFist className="size-16" />}
               title="Subclass"
-              description="Custom character subclasses with abilities."
+              description="Character subclasses."
               disabledMessage="You must signin to create a Subclass."
+            />
+            <CreateCard
+              href="/spell-schools/new"
+              icon={<WandSparkles className="size-16" />}
+              title="Spells"
+              description="Schools of magic"
+            />
+
+            <CreateCard
+              href="/collections/new"
+              icon={<Box className="size-16" />}
+              title="Collection"
+              description="Organize your favorites."
+              disabled={!isAuthenticated}
+              disabledMessage="You must signin to create a Collection."
             />
           </div>
         </div>

@@ -15,9 +15,7 @@ const querySchema = z.object({
     .min(1, "Limit must be between 1 and 100")
     .max(100, "Limit must be between 1 and 100")
     .default(100),
-  sort: z
-    .enum(["name", "-name", "createdAt", "-createdAt"])
-    .default("name"),
+  sort: z.enum(["name", "-name", "createdAt", "-createdAt"]).default("name"),
 });
 
 export const GET = telemetry(async (request: Request) => {

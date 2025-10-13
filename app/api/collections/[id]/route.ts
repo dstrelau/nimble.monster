@@ -18,7 +18,10 @@ const querySchema = z.object({
 });
 
 export const GET = telemetry(
-  async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
+  async (
+    _request: Request,
+    { params }: { params: Promise<{ id: string }> }
+  ) => {
     const { id } = await params;
     const span = trace.getActiveSpan();
     const { searchParams } = new URL(_request.url);

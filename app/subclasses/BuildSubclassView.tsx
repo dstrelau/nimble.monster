@@ -70,7 +70,7 @@ const formSchema = z.object({
   tagline: z.string().optional(),
   description: z.string().optional(),
   levels: z.array(levelSchema),
-  visibility: z.enum(["public", "private"]).default("public"),
+  visibility: z.enum(["public", "private"]),
 });
 
 type FormData = z.infer<typeof formSchema>;

@@ -26,7 +26,7 @@
     }
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.10.0",
+    "@hookform/resolvers": "^5.2.2",
     "@msgpack/msgpack": "^3.1.2",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/auto-instrumentations-node": "^0.58.1",
@@ -46,6 +46,7 @@
     "@opentelemetry/sdk-trace-web": "^2.0.0",
     "@opentelemetry/semantic-conventions": "^1.33.0",
     "@prisma/client": "6.5.0",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-collapsible": "^1.1.11",
     "@radix-ui/react-dialog": "^1.1.14",
@@ -70,7 +71,6 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/blob": "^1.1.1",
     "@vercel/speed-insights": "^1.2.0",
-    "biome": "^0.3.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dom-to-image": "^2.6.0",
@@ -86,7 +86,7 @@
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-error-boundary": "^5.0.0",
-    "react-hook-form": "^7.54.2",
+    "react-hook-form": "^7.64.0",
     "require-in-the-middle": "^7.5.2",
     "simple-icons": "^15.13.0",
     "tailwind-merge": "^3.0.2",

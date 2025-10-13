@@ -1,5 +1,5 @@
 import { trace } from "@opentelemetry/api";
-import { NextResponse } from "next/server";
+import type { NextResponse } from "next/server";
 
 function isRetryableDbError(error: unknown): boolean {
   if (typeof error !== "object" || !error) return false;

@@ -12,5 +12,7 @@ export * from "./collection";
 export * from "./companion";
 export * from "./condition";
 export * from "./family";
+export * from "./school";
+export * from "./spell";
 export * from "./subclass";
 export * from "./user";

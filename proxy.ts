@@ -5,7 +5,7 @@ export default auth((request) => {
   const { nextUrl, auth: session } = request;
   const path = nextUrl.pathname;
 
-  if ( path.startsWith("/my/") ) {
+  if (path.startsWith("/my/")) {
     if (!session) {
       return Response.redirect(new URL("/api/auth/signin", nextUrl));
     }
