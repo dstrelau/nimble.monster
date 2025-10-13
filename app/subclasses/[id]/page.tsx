@@ -16,8 +16,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const uid = deslugify(id);
+  const session = await auth();
+
   const subclass = await findSubclass(uid);
   if (!subclass) return {};
+  const isOwner = session?.user?.id === subclass.creator.id;
+  if (subclass.visibility !== "public" && !isOwner) {
+    notFound();
+  }
 
   if (id !== getSubclassSlug(subclass)) {
     return permanentRedirect(getSubclassUrl(subclass));

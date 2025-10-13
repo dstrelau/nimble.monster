@@ -214,14 +214,52 @@ model SubclassAbility {
   @@map("subclass_abilities")
 }
 
+model SpellSchool {
+  id          String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String
+  description String?
+  visibility  spell_school_visibility @default(public)
+  userId      String                  @map("user_id") @db.Uuid
+  createdAt   DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime                @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  creator     User                    @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  spells      Spell[]
+
+  @@index([userId], map: "idx_spell_schools_user_id")
+  @@map("spell_schools")
+}
+
+model Spell {
+  id             String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  schoolId       String      @map("school_id") @db.Uuid
+  name           String
+  tier           Int         @default(0)
+  actions        Int         @default(1)
+  reaction       Boolean     @default(false)
+  targetType     String?     @map("target_type")
+  targetKind     String?     @map("target_kind")
+  targetDistance Int?        @map("target_distance")
+  damage         String?
+  description    String
+  highLevels     String?     @map("high_levels")
+  concentration  String?
+  upcast         String?
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  school         SpellSchool @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId], map: "idx_spells_school_id")
+  @@map("spells")
+}
+
 model User {
-  id           String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  discordId    String       @unique @map("discord_id")
-  username     String       @unique(map: "idx_users_username")
+  id           String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  discordId    String        @unique @map("discord_id")
+  username     String        @unique(map: "idx_users_username")
   avatar       String?
-  refreshToken String?      @map("refresh_token")
-  displayName  String?      @map("display_name")
-  imageUrl     String?      @map("image_url")
+  refreshToken String?       @map("refresh_token")
+  displayName  String?       @map("display_name")
+  imageUrl     String?       @map("image_url")
   collections  Collection[]
   companions   Companion[]
   conditions   Condition[]
@@ -230,6 +268,7 @@ model User {
   sessions     Session[]
   subclasses   Subclass[]
   Family       Family[]
+  spellSchools SpellSchool[]
 
   @@map("users")
 }
@@ -314,6 +353,11 @@ enum generation_status {
 }
 
 enum subclass_visibility {
+  public
+  private
+}
+
+enum spell_school_visibility {
   public
   private
 }

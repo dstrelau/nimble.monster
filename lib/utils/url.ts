@@ -92,6 +92,20 @@ export function getFamilyEditUrl(family: { name: string; id: string }): string {
   return `/families/${slugify(family)}/edit`;
 }
 
+export function getSpellSchoolUrl(spellSchool: {
+  name: string;
+  id: string;
+}): string {
+  return `/spell-schools/${slugify(spellSchool)}`;
+}
+
+export function getSpellSchoolEditUrl(spellSchool: {
+  name: string;
+  id: string;
+}): string {
+  return `/spell-schools/${slugify(spellSchool)}/edit`;
+}
+
 // Subclass URLs
 export function getSubclassSlug(subclass: {
   namePreface?: string;

@@ -241,3 +241,59 @@ export type SubclassSortOption =
   | "name-desc"
   | "created-asc"
   | "created-desc";
+
+export type SpellSchoolVisibility = "public" | "private";
+
+export type SpellTarget =
+  | { type: "self" }
+  | {
+      type: "single" | "single+" | "multi" | "special";
+      kind: "range" | "reach";
+      distance?: number;
+    }
+  | {
+      type: "aoe";
+      kind: "range" | "reach" | "line" | "cone";
+      distance?: number;
+    };
+
+export interface SpellMini {
+  id: string;
+  name: string;
+  tier: number;
+  actions: number;
+  target?: SpellTarget;
+}
+
+export interface Spell extends SpellMini {
+  schoolId: string;
+  reaction: boolean;
+  damage?: string;
+  description: string;
+  highLevels?: string;
+  concentration?: string;
+  upcast?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  school?: SpellSchool;
+}
+
+export interface SpellSchoolMini {
+  id: string;
+  name: string;
+  visibility: SpellSchoolVisibility;
+  createdAt: Date;
+}
+
+export interface SpellSchool extends SpellSchoolMini {
+  description?: string;
+  spells: Spell[];
+  creator: User;
+  updatedAt: Date;
+}
+
+export type SpellSchoolSortOption =
+  | "name-asc"
+  | "name-desc"
+  | "created-asc"
+  | "created-desc";

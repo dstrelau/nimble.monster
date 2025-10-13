@@ -6,8 +6,10 @@ import {
   HandFist,
   HeartHandshake,
   Menu,
+  PersonStanding,
   Shield,
   SquarePen,
+  WandSparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -26,9 +28,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   NavigationMenu,
+  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Separator } from "@/components/ui/separator";
 import type { User } from "@/lib/types";
@@ -65,7 +69,8 @@ const Header = () => {
     isActive("/create") ||
     isActive("/monsters/new") ||
     isActive("/companions/new") ||
-    isActive("/items/new");
+    isActive("/items/new") ||
+    isActive("/spell-schools/new");
 
   const browseItems = [
     {
@@ -92,13 +97,25 @@ const Header = () => {
       isActive: isActive("/items"),
       icon: Shield,
     },
+  ];
+
+  const characterItems = [
     {
       href: "/subclasses",
       label: "Subclasses",
       isActive: isActive("/subclasses"),
       icon: HandFist,
     },
+    {
+      href: "/spell-schools",
+      label: "Spells",
+      isActive: isActive("/spell-schools"),
+      icon: WandSparkles,
+    },
   ];
+
+  const isCharacterActive = () =>
+    isActive("/subclasses") || isActive("/spell-schools");
 
   const userMenuItems = currentUser
     ? [
@@ -135,6 +152,11 @@ const Header = () => {
           isActive: isActive("/my/monsters"),
         },
         {
+          href: "/my/spell-schools",
+          label: "My Spells",
+          isActive: isActive("/my/spell-schools"),
+        },
+        {
           href: "/my/subclasses",
           label: "My Subclasses",
           isActive: isActive("/my/subclasses"),
@@ -167,7 +189,7 @@ const Header = () => {
         <Logo showText={false} className="md:hidden" />
 
         {/* Desktop navigation (center) */}
-        <NavigationMenu className="hidden md:flex">
+        <NavigationMenu className="hidden md:block" viewport={false}>
           <NavigationMenuList className="gap-4">
             {browseItems.map((item) => (
               <NavigationMenuItem key={item.href}>
@@ -182,6 +204,34 @@ const Header = () => {
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
+            <NavigationMenuItem className="z-10">
+              <NavigationMenuTrigger data-active={isCharacterActive()}>
+                <PersonStanding />
+                Character
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul>
+                  {characterItems.map((item) => (
+                    <li key={item.href}>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={item.href}
+                          className={cn(
+                            "",
+                            item.isActive && "text-flame font-bold"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none flex items-center gap-2">
+                            <item.icon className="h-4 w-4" />
+                            {item.label}
+                          </div>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  ))}
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink data-active={isCreateActive()} asChild>
                 <Link
@@ -259,6 +309,10 @@ const Header = () => {
             onClick: () => setMobileMenuOpen(false),
           },
           ...browseItems.map((link) => ({
+            ...link,
+            onClick: () => setMobileMenuOpen(false),
+          })),
+          ...characterItems.map((link) => ({
             ...link,
             onClick: () => setMobileMenuOpen(false),
           })),

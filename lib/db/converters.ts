@@ -7,6 +7,9 @@ import type {
   Companion,
   CompanionMini,
   FamilyOverview,
+  Spell,
+  SpellSchool,
+  SpellSchoolMini,
   Subclass,
   SubclassAbility,
   SubclassLevel,
@@ -204,5 +207,135 @@ export const toSubclass = (
     levels,
     creator: toUser(s.creator),
     updatedAt: s.updatedAt,
+  };
+};
+
+export const toSpellSchoolMini = (
+  s: Prisma.Result<typeof prisma.spellSchool, object, "findMany">[0]
+): SpellSchoolMini => ({
+  id: s.id,
+  name: s.name,
+  visibility: s.visibility,
+  createdAt: s.createdAt,
+});
+
+export const toSpellSchool = (
+  s: Prisma.Result<
+    typeof prisma.spellSchool,
+    {
+      include: {
+        creator: true;
+        spells: true;
+      };
+    },
+    "findMany"
+  >[0]
+): SpellSchool => {
+  return {
+    ...toSpellSchoolMini(s),
+    description: s.description || undefined,
+    spells: s.spells.map((spell) => {
+      let target: Spell["target"];
+      if (spell.targetType === "self") {
+        target = { type: "self" };
+      } else if (
+        spell.targetType === "aoe" &&
+        spell.targetKind &&
+        spell.targetDistance
+      ) {
+        target = {
+          type: "aoe",
+          kind: spell.targetKind as "range" | "reach" | "line" | "cone",
+          distance: spell.targetDistance,
+        };
+      } else if (spell.targetType && spell.targetKind && spell.targetDistance) {
+        target = {
+          type: spell.targetType as "single" | "single+" | "multi" | "special",
+          kind: spell.targetKind as "range" | "reach",
+          distance: spell.targetDistance,
+        };
+      }
+
+      return {
+        id: spell.id,
+        schoolId: spell.schoolId,
+        name: spell.name,
+        tier: spell.tier,
+        actions: spell.actions,
+        reaction: spell.reaction,
+        target,
+        damage: spell.damage || undefined,
+        description: spell.description,
+        highLevels: spell.highLevels || undefined,
+        concentration: spell.concentration || undefined,
+        upcast: spell.upcast || undefined,
+        createdAt: spell.createdAt,
+        updatedAt: spell.updatedAt,
+      };
+    }),
+    creator: toUser(s.creator),
+    updatedAt: s.updatedAt,
+  };
+};
+
+export const toSpell = (
+  s: Prisma.Result<
+    typeof prisma.spell,
+    {
+      include: {
+        school: {
+          include: {
+            creator: true;
+          };
+        };
+      };
+    },
+    "findMany"
+  >[0]
+): Spell => {
+  let target: Spell["target"];
+  if (s.targetType === "self") {
+    target = { type: "self" };
+  } else if (s.targetType === "aoe" && s.targetKind && s.targetDistance) {
+    target = {
+      type: "aoe",
+      kind: s.targetKind as "range" | "reach" | "line" | "cone",
+      distance: s.targetDistance,
+    };
+  } else if (s.targetType && s.targetKind && s.targetDistance) {
+    target = {
+      type: s.targetType as "single" | "single+" | "multi" | "special",
+      kind: s.targetKind as "range" | "reach",
+      distance: s.targetDistance,
+    };
+  }
+
+  return {
+    id: s.id,
+    schoolId: s.schoolId,
+    name: s.name,
+    tier: s.tier,
+    actions: s.actions,
+    reaction: s.reaction,
+    target,
+    damage: s.damage || undefined,
+    description: s.description,
+    highLevels: s.highLevels || undefined,
+    concentration: s.concentration || undefined,
+    upcast: s.upcast || undefined,
+    createdAt: s.createdAt,
+    updatedAt: s.updatedAt,
+    school: s.school
+      ? {
+          id: s.school.id,
+          name: s.school.name,
+          description: s.school.description || undefined,
+          visibility: s.school.visibility,
+          spells: [], // Not populated for single spell queries
+          creator: toUser(s.school.creator),
+          createdAt: s.school.createdAt,
+          updatedAt: s.school.updatedAt,
+        }
+      : undefined,
   };
 };
