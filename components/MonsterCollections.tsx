@@ -21,7 +21,7 @@ export function MonsterCollections({ collections }: MonsterCollectionsProps) {
   }
 
   return (
-    <div className="w-md">
+    <div className="">
       <h3 className={cn("font-condensed text-lg pb-1 border-b-2 mb-4")}>
         Collected In
       </h3>
@@ -34,7 +34,7 @@ export function MonsterCollections({ collections }: MonsterCollectionsProps) {
             >
               {collection.name}
             </Link>
-            <Attribution user={collection.creator} />
+            <Attribution user={collection.creator} showUsername={false} />
           </div>
         ))}
       </div>

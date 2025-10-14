@@ -21,12 +21,14 @@ interface AttributionProps {
   user: User;
   size?: keyof typeof SIZE_SETTINGS;
   className?: string;
+  showUsername?: boolean;
 }
 
 export const Attribution = ({
   user,
   size = "default",
   className,
+  showUsername = true,
 }: AttributionProps) => {
   const settings = SIZE_SETTINGS[size];
   return (
@@ -35,7 +37,7 @@ export const Attribution = ({
       className={clsx("flex items-center", settings.gap, className)}
     >
       <UserAvatar user={user} size={settings.avatarSize} />
-      <span className={settings.textClass}>{user.displayName}</span>
+      {showUsername && <span className={settings.textClass}>{user.displayName}</span>}
     </Link>
   );
 };
