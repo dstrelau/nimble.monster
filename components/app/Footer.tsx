@@ -1,6 +1,8 @@
 "use client";
 
-import { Beer, Coins, Flame, Mail, ScrollText } from "lucide-react";
+import { Beer, Coins, Mail, ScrollText } from "lucide-react";
+import { planet } from "@lucide/lab";
+import { Icon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getSiteEmail, getSiteName } from "@/lib/utils/branding";
@@ -86,7 +88,10 @@ export const Footer = () => {
       <div className="mx-auto max-w-7xl flex flex-wrap-reverse justify-center gap-8 px-4 py-6 mt-16 border-t">
         <div className="max-w-2xl prose dark:prose-invert text-sm text-muted-foreground ">
           <p>
-            <Flame className="size-3 mr-0.5 inline align-baseline stroke-flame" />
+            <Icon
+              iconNode={planet}
+              className="size-3 mr-0.5 inline align-baseline stroke-flame"
+            />
             {siteName} is an independent product published under the Nimble 3rd
             Party Creator License and is not affiliated with Nimble Co. Nimble ©
             2025 Nimble Co.
