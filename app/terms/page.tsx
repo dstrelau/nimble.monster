@@ -1,6 +1,19 @@
-import Link from "next/link";
+"use client";
 
-export default async function TermsPage() {
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getSiteEmail, getSiteName } from "@/lib/utils/branding";
+
+export default function TermsPage() {
+  const [siteName, setSiteName] = useState("Nimble Nexus");
+  const [email, setEmail] = useState("hello@nimble.nexus");
+
+  useEffect(() => {
+    const hostname = window.location.hostname;
+    setSiteName(getSiteName(hostname));
+    setEmail(getSiteEmail(hostname));
+  }, []);
+
   return (
     <div className="prose dark:prose-invert">
       <p className="last-updated">
@@ -9,15 +22,15 @@ export default async function TermsPage() {
 
       <h2>1. Acceptance of Terms</h2>
       <p>
-        By accessing or using nimble.monster ("the Service"), you agree to be
-        bound by these Terms of Service ("Terms"). If you do not agree to these
-        Terms, do not use the Service.
+        By accessing or using {siteName} ("the Service"), you agree to be bound
+        by these Terms of Service ("Terms"). If you do not agree to these Terms,
+        do not use the Service.
       </p>
 
       <h2>2. Description of Service</h2>
       <p>
-        nimble.monster is a web-based platform that allows users to create,
-        organize, and share homebrew content for the Nimble TTRPG system.
+        {siteName} is a web-based platform that allows users to create, organize,
+        and share homebrew content for the Nimble TTRPG system.
       </p>
 
       <h2>3. Service Disclaimer</h2>
@@ -42,8 +55,8 @@ export default async function TermsPage() {
       <h3>5.1 Your Content</h3>
       <p>
         You retain ownership of all content you upload to the Service; however,
-        you grant nimble.monster a non-exclusive, worldwide license to host,
-        store, and display your content as necessary to provide the Service.
+        you grant {siteName} a non-exclusive, worldwide license to host, store,
+        and display your content as necessary to provide the Service.
       </p>
       <p>
         You are solely responsible for the content you create and share.
@@ -85,10 +98,9 @@ export default async function TermsPage() {
       <h2>6. Intellectual Property</h2>
 
       <p>
-        nimble.monster is published under the Nimble 3rd Party Creator License
-        and is not affiliated with Nimble Co. Nimble © 2025 Nimble Co. Users
-        must comply with the Nimble 3rd Party Creator License when creating
-        content.
+        {siteName} is published under the Nimble 3rd Party Creator License and is
+        not affiliated with Nimble Co. Nimble © 2025 Nimble Co. Users must comply
+        with the Nimble 3rd Party Creator License when creating content.
       </p>
 
       <h2>7. Privacy and Data Collection</h2>
@@ -111,9 +123,9 @@ export default async function TermsPage() {
 
       <h2>9. Indemnification</h2>
       <p>
-        You agree to indemnify and hold harmless nimble.monster and its
-        operators from any claims, damages, or expenses arising from your use of
-        the Service or violation of these Terms.
+        You agree to indemnify and hold harmless {siteName} and its operators from
+        any claims, damages, or expenses arising from your use of the Service or
+        violation of these Terms.
       </p>
 
       <h2>10. Termination</h2>
@@ -127,7 +139,7 @@ export default async function TermsPage() {
       <h2>11. Contact for Disputes</h2>
       <p>
         For any disputes or concerns, please contact{" "}
-        <Link href="mailto:hello@nimble.monster">hello@nimble.monster</Link>.
+        <Link href={`mailto:${email}`}>{email}</Link>.
       </p>
 
       <h2>12. Changes to Terms</h2>

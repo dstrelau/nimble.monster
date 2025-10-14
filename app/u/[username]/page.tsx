@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { UserAvatar } from "@/components/app/UserAvatar";
 import * as db from "@/lib/db";
 import { itemsService } from "@/lib/services/items";
+import { getSiteName } from "@/lib/utils/branding";
 import TabsContent from "./TabsContent";
 
 export async function generateMetadata({
@@ -19,6 +21,10 @@ export async function generateMetadata({
     };
   }
 
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "";
+  const siteName = getSiteName(hostname);
+
   const [monsters, items, collections, companions] = await Promise.all([
     db.listPublicMonstersForUser(user.id),
     itemsService.listPublicItemsForUser(user.id),
@@ -26,7 +32,7 @@ export async function generateMetadata({
     db.listPublicCompanionsForUser(user.id),
   ]);
 
-  const title = `${user.displayName} - nimble.monster`;
+  const title = `${user.displayName} - ${siteName}`;
   const description = [
     monsters.length > 0 && `${monsters.length} monsters`,
     items.length > 0 && `${items.length} items`,

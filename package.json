@@ -1,5 +1,5 @@
 {
-  "name": "nimble.monster",
+  "name": "nimble-nexus",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@lucide/lab": "^0.1.2",
     "@msgpack/msgpack": "^3.1.2",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/auto-instrumentations-node": "^0.58.1",
@@ -75,7 +76,7 @@
     "clsx": "^2.1.1",
     "dom-to-image": "^2.6.0",
     "isomorphic-dompurify": "^2.26.0",
-    "lucide-react": "^0.539.0",
+    "lucide-react": "^0.545.0",
     "markdown-it": "^14.1.0",
     "next": "16.0.0-beta.0",
     "next-auth": "5.0.0-beta.29",

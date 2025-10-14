@@ -1,8 +1,21 @@
+"use client";
+
 import { Beer, Coins, Flame, Mail, ScrollText } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getSiteEmail, getSiteName } from "@/lib/utils/branding";
 import { Discord, GitHub } from "../SimpleIcons";
 
 export const Footer = () => {
+  const [siteName, setSiteName] = useState("Nimble Nexus");
+  const [email, setEmail] = useState("hello@nimble.nexus");
+
+  useEffect(() => {
+    const hostname = window.location.hostname;
+    setSiteName(getSiteName(hostname));
+    setEmail(getSiteEmail(hostname));
+  }, []);
+
   const sections = [
     {
       name: "About",
@@ -24,8 +37,8 @@ export const Footer = () => {
         },
         {
           icon: <Mail className="size-4" />,
-          url: "mailto:hello@nimble.monster",
-          text: "hello@nimble.monster",
+          url: `mailto:${email}`,
+          text: email,
         },
       ],
     },
@@ -74,9 +87,9 @@ export const Footer = () => {
         <div className="max-w-2xl prose dark:prose-invert text-sm text-muted-foreground ">
           <p>
             <Flame className="size-3 mr-0.5 inline align-baseline stroke-flame" />
-            nimble.monster is an independent product published under the Nimble
-            3rd Party Creator License and is not affiliated with Nimble Co.
-            Nimble © 2025 Nimble Co.
+            {siteName} is an independent product published under the Nimble 3rd
+            Party Creator License and is not affiliated with Nimble Co. Nimble ©
+            2025 Nimble Co.
           </p>
           <Link href="https://discord.gg/2etKN3aGfM" />
           <p>

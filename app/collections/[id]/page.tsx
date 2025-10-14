@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
 import { CardGrid as ItemCardGrid } from "@/app/ui/item/CardGrid";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
@@ -6,6 +7,7 @@ import { CollectionHeader } from "@/components/CollectionHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { listConditionsForDiscordId, listOfficialConditions } from "@/lib/db";
+import { getSiteName } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getCollectionUrl } from "@/lib/utils/url";
 
@@ -22,6 +24,10 @@ export async function generateMetadata({
   if (id !== slugify(collection)) {
     return permanentRedirect(getCollectionUrl(collection));
   }
+
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "";
+  const siteName = getSiteName(hostname);
 
   const creatorText = collection.creator?.displayName
     ? ` by ${collection.creator.displayName}`
@@ -43,7 +49,7 @@ export async function generateMetadata({
       ? new URL(process.env.NEXT_PUBLIC_APP_URL)
       : undefined,
     title: collection.name,
-    description: `${collection.name} - ${countText}${creatorText} | nimble.monster`,
+    description: `${collection.name} - ${countText}${creatorText} | ${siteName}`,
     openGraph: {
       title: collection.name,
       description: description,

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/monster/Card";
 import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
@@ -6,6 +7,7 @@ import { MonsterCollections } from "@/components/MonsterCollections";
 import { MonsterDetailActions } from "@/components/MonsterDetailActions";
 import { auth } from "@/lib/auth";
 import { monstersService } from "@/lib/services/monsters";
+import { getSiteName } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterImageUrl, getMonsterUrl } from "@/lib/utils/url";
 
@@ -26,6 +28,10 @@ export async function generateMetadata({
     return permanentRedirect(getMonsterUrl(monster));
   }
 
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "";
+  const siteName = getSiteName(hostname);
+
   const creatorText = monster.creator
     ? ` by ${monster.creator.displayName}`
     : "";
@@ -38,7 +44,7 @@ export async function generateMetadata({
       ? new URL(process.env.NEXT_PUBLIC_APP_URL)
       : undefined,
     title: monster.name,
-    description: `${monster.name} - ${monsterInfo}${creatorText} | nimble.monster`,
+    description: `${monster.name} - ${monsterInfo}${creatorText} | ${siteName}`,
     openGraph: {
       title: monster.name,
       description: `${monsterInfo}${creatorText}`,

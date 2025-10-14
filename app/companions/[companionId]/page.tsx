@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/companion/Card";
 import { CompanionDetailActions } from "@/components/CompanionDetailActions";
@@ -8,6 +9,7 @@ import {
   listConditionsForDiscordId,
   listOfficialConditions,
 } from "@/lib/db";
+import { getSiteName } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getCompanionImageUrl, getCompanionUrl } from "@/lib/utils/url";
 
@@ -25,6 +27,10 @@ export async function generateMetadata({
     return permanentRedirect(getCompanionUrl(companion));
   }
 
+  const headersList = await headers();
+  const hostname = headersList.get("host") || "";
+  const siteName = getSiteName(hostname);
+
   const creatorText = companion.creator
     ? ` by ${companion.creator.displayName}`
     : "";
@@ -37,7 +43,7 @@ export async function generateMetadata({
       ? new URL(process.env.NEXT_PUBLIC_APP_URL)
       : undefined,
     title: companion.name,
-    description: `${companion.name} - ${companionInfo}${creatorText} | nimble.monster`,
+    description: `${companion.name} - ${companionInfo}${creatorText} | ${siteName}`,
     openGraph: {
       title: companion.name,
       description: `${companionInfo}${creatorText}`,
