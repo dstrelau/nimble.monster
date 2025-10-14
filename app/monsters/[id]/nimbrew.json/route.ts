@@ -25,7 +25,7 @@ export const GET = telemetry(
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });
     }
 
-    const monster = await monstersService.getMonsterInternal(uid);
+    const monster = await monstersService.getMonster(uid);
 
     if (!monster) {
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });

@@ -24,7 +24,7 @@ export const GET = telemetry(
 
     try {
       const uid = deslugify(id);
-      const monster = await monstersService.getMonster(uid);
+      const monster = await monstersService.getPublicMonster(uid);
 
       if (!monster) {
         const headers = new Headers({ "Content-Type": CONTENT_TYPE });
@@ -83,7 +83,7 @@ export const PUT = telemetry(
       }
       span?.setAttributes({ "user.id": session.user.id });
 
-      const existingMonster = await monstersService.getMonsterInternal(uid);
+      const existingMonster = await monstersService.getMonster(uid);
 
       if (
         !existingMonster ||
@@ -166,7 +166,7 @@ export const DELETE = telemetry(
 
     span?.setAttributes({ "user.id": session.user.id });
 
-    const existingMonster = await monstersService.getMonsterInternal(uid);
+    const existingMonster = await monstersService.getMonster(uid);
 
     if (!existingMonster) {
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });

@@ -8,14 +8,19 @@ import type {
 } from "./types";
 
 export class ItemsService {
-  async getItem(
-    itemId: string,
-    options?: { userId?: string }
-  ): Promise<Item | null> {
-    if (options?.userId) {
-      return repository.findItemWithCreatorDiscordId(itemId, options.userId);
-    }
+  async getPublicItem(itemId: string): Promise<Item | null> {
     return repository.findPublicItemById(itemId);
+  }
+
+  async getItem(itemId: string): Promise<Item | null> {
+    return repository.findItem(itemId);
+  }
+
+  async getItemWithCreator(
+    itemId: string,
+    userId: string
+  ): Promise<Item | null> {
+    return repository.findItemWithCreatorDiscordId(itemId, userId);
   }
 
   async searchItems(params: SearchItemsParams): Promise<ItemMini[]> {

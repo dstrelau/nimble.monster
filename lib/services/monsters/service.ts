@@ -8,17 +8,11 @@ import type {
 } from "./types";
 
 export class MonstersService {
-  async getMonster(
-    monsterId: string,
-    options?: { userId?: string }
-  ): Promise<Monster | null> {
-    if (options?.userId) {
-      return repository.findMonsterWithCreatorId(monsterId, options.userId);
-    }
-    return repository.findPublicMonsterById(monsterId);
+  async getPublicMonster(id: string): Promise<Monster | null> {
+    return repository.findPublicMonsterById(id);
   }
 
-  async getMonsterInternal(monsterId: string): Promise<Monster | null> {
+  async getMonster(monsterId: string): Promise<Monster | null> {
     return repository.findMonster(monsterId);
   }
 

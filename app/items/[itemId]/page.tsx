@@ -20,7 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { itemId } = await params;
   const uid = deslugify(itemId);
-  const item = await itemsService.getItem(uid);
+  const item = await itemsService.getPublicItem(uid);
   if (!item) return {};
 
   if (itemId !== slugify(item)) {
@@ -76,11 +76,11 @@ export default async function ItemPage({
   if (itemId !== slugify(item)) {
     return permanentRedirect(getItemUrl(item));
   }
-
-  const collections = await itemsService.getItemCollections(uid);
-
+  //
   // if item is not public, then user must be creator
   const isOwner = session?.user?.discordId === item.creator?.discordId || false;
+
+  const collections = await itemsService.getItemCollections(uid);
 
   if (item.visibility !== "public" && !isOwner) {
     return notFound();

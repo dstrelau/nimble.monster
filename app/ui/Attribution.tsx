@@ -37,7 +37,9 @@ export const Attribution = ({
       className={clsx("flex items-center", settings.gap, className)}
     >
       <UserAvatar user={user} size={settings.avatarSize} />
-      {showUsername && <span className={settings.textClass}>{user.displayName}</span>}
+      {showUsername && (
+        <span className={settings.textClass}>{user.displayName}</span>
+      )}
     </Link>
   );
 };

@@ -23,13 +23,13 @@ vi.mock("@/lib/auth", () => ({
   auth: vi.fn(),
 }));
 
-const { mockGetMonsterInternal } = vi.hoisted(() => {
-  return { mockGetMonsterInternal: vi.fn() };
+const { mockGetMonster } = vi.hoisted(() => {
+  return { mockGetMonster: vi.fn() };
 });
 
 vi.mock("@/lib/services/monsters", () => ({
   monstersService: {
-    getMonsterInternal: mockGetMonsterInternal,
+    getMonster: mockGetMonster,
   },
 }));
 
@@ -59,7 +59,7 @@ vi.mock("@/lib/utils/url", () => ({
 const mockAuth: MockedFunction<any> = vi.mocked(
   await import("@/lib/auth")
 ).auth;
-const mockFindMonster = mockGetMonsterInternal;
+const mockFindMonster = mockGetMonster;
 const mockFormatSizeKind = vi.mocked(
   await import("@/lib/utils/monster")
 ).formatSizeKind;

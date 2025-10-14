@@ -20,7 +20,7 @@ export async function GET(
         "request.method": request.method,
       });
       const dbStartTime = Date.now();
-      const item = await itemsService.getItem(uid);
+      const item = await itemsService.getPublicItem(uid);
       const dbTime = Date.now() - dbStartTime;
 
       span.setAttributes({

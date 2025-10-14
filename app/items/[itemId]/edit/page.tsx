@@ -17,7 +17,7 @@ export default async function EditItemPage({
   }
 
   const uid = deslugify(itemId);
-  const item = await itemsService.getItem(uid, { userId: session?.user.id });
+  const item = await itemsService.getItemWithCreator(uid, session?.user.id);
   if (!item) return notFound();
 
   if (itemId !== slugify(item)) {

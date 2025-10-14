@@ -11,7 +11,7 @@ import type { Ability, Action } from "@/lib/types";
 
 export async function findPublicMonster(id: string) {
   const session = await auth();
-  const monster = await monstersService.getMonsterInternal(id);
+  const monster = await monstersService.getMonster(id);
   if (!monster) {
     return { success: false, error: "Monster not found" };
   }

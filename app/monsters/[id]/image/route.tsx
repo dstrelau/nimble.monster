@@ -11,7 +11,7 @@ export async function GET(
 ) {
   const { id: monsterId } = await params;
   const uid = deslugify(monsterId);
-  const monster = await monstersService.getMonsterInternal(uid);
+  const monster = await monstersService.getMonster(uid);
 
   if (!monster || monster.visibility !== "public") {
     return new Response("Monster not found", { status: 404 });

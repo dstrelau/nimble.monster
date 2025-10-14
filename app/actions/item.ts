@@ -98,7 +98,7 @@ export async function updateItem(
 
 export async function findPublicItem(itemId: string) {
   try {
-    const item = await itemsService.getItem(itemId);
+    const item = await itemsService.getPublicItem(itemId);
     if (!item) {
       return { success: false, error: "Item not found", item: null };
     }
