@@ -115,15 +115,15 @@ export function Card({
             return (
               <div key={spell.id}>
                 <div className="flex justify-between">
-                  <div className="flex items-baseline gap-1">
-                    <h3 className="font-extrabold font-slab text-lg">
+                  <div className="items-baseline gap-1">
+                    <h3 className="inline font-extrabold font-slab text-lg mr-1">
                       {spell.name}
                     </h3>
-                    <span className="text-sm text-muted-foreground italic">
+                    <span className="text-sm text-muted-foreground italic text-nowrap">
                       {formatTierTarget(spell.tier, spell.target)}
                     </span>
                   </div>
-                  <span className="text-sm font-bold italic small-caps">
+                  <span className="text-sm font-bold italic small-caps text-nowrap">
                     {" "}
                     {formatActions(spell.actions)}
                   </span>
