@@ -129,19 +129,45 @@ export default function BuildSchoolView({
       id: existingSchool?.id ?? "",
       name: existingSchool?.name ?? "",
       description: existingSchool?.description ?? "",
-      spells: existingSchool?.spells.map((spell) => ({
-        id: spell.id,
-        name: spell.name,
-        tier: spell.tier,
-        actions: spell.actions,
-        reaction: spell.reaction || false,
-        target: spell.target,
-        damage: spell.damage || "",
-        description: spell.description,
-        highLevels: spell.highLevels || "",
-        concentration: spell.concentration || "",
-        upcast: spell.upcast || "",
-      })),
+      spells: existingSchool?.spells
+        ? existingSchool.spells
+            .sort((a, b) => {
+              if (a.tier !== b.tier) return a.tier - b.tier;
+              return a.name.localeCompare(b.name);
+            })
+            .map((spell) => ({
+              id: spell.id,
+              name: spell.name,
+              tier: spell.tier,
+              actions: spell.actions,
+              reaction: spell.reaction || false,
+              target:
+                spell.target?.type === "self"
+                  ? { type: "self" as const }
+                  : spell.target?.type === "aoe"
+                    ? {
+                        type: spell.target.type,
+                        kind: spell.target.kind || "range",
+                        distance: spell.target.distance,
+                      }
+                    : spell.target
+                      ? {
+                          type: spell.target.type,
+                          kind: spell.target.kind || "range",
+                          distance: spell.target.distance,
+                        }
+                      : {
+                          type: "single" as const,
+                          kind: "range" as const,
+                          distance: 0,
+                        },
+              damage: spell.damage || "",
+              description: spell.description,
+              highLevels: spell.highLevels || "",
+              concentration: spell.concentration || "",
+              upcast: spell.upcast || "",
+            }))
+        : [],
       visibility: existingSchool?.visibility ?? "public",
     },
   });
@@ -374,7 +400,23 @@ export default function BuildSchoolView({
                               }
                               onValueChange={(value) => {
                                 const newType = getTargetTypeValue(value);
-                                field.onChange(newType);
+                                if (newType === "self") {
+                                  form.setValue(`spells.${index}.target`, {
+                                    type: "self",
+                                  });
+                                } else if (newType === "aoe") {
+                                  form.setValue(`spells.${index}.target`, {
+                                    type: "aoe",
+                                    kind: "range",
+                                    distance: 0,
+                                  });
+                                } else {
+                                  form.setValue(`spells.${index}.target`, {
+                                    type: newType,
+                                    kind: "range",
+                                    distance: 0,
+                                  });
+                                }
                               }}
                             >
                               <SelectTrigger className="min-w-36">
