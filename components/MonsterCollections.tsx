@@ -21,7 +21,7 @@ export function MonsterCollections({ collections }: MonsterCollectionsProps) {
   }
 
   return (
-    <div className="">
+    <div className="w-full max-w-lg">
       <h3 className={cn("font-condensed text-lg pb-1 border-b-2 mb-4")}>
         Collected In
       </h3>
