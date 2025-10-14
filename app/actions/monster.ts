@@ -83,7 +83,7 @@ export async function createMonster(formData: {
         | "large"
         | "huge"
         | "gargantuan",
-      family: formData.familyId ? { id: formData.familyId } : undefined,
+      families: formData.familyId ? [{ id: formData.familyId }] : undefined,
     };
 
     const monster = await monstersService.createMonster(

@@ -88,6 +88,7 @@ export function FamilyHeader({
             <AbilityOverlay
               abilities={family.abilities}
               conditions={conditions}
+              families={[family]}
             />
           </div>
         )}

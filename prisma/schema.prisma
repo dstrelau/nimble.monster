@@ -48,17 +48,17 @@ model ItemInCollection {
 }
 
 model Family {
-  id          String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  creatorId   String            @map("user_id") @db.Uuid
-  visibility  family_visibility @default(public)
-  name        String
-  abilities   Json[]
-  createdAt   DateTime?         @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime?         @default(now()) @map("updated_at") @db.Timestamptz(6)
-  description String?
-  featured    Boolean           @default(false)
-  monsters    Monster[]
-  creator     User              @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
+  id              String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  creatorId       String          @map("user_id") @db.Uuid
+  visibility      family_visibility @default(public)
+  name            String
+  abilities       Json[]
+  createdAt       DateTime?       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime?       @default(now()) @map("updated_at") @db.Timestamptz(6)
+  description     String?
+  featured        Boolean         @default(false)
+  monsterFamilies MonsterFamily[]
+  creator         User            @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
 
   @@map("families")
 }
@@ -88,6 +88,16 @@ model MonsterCondition {
   @@map("monsters_conditions")
 }
 
+model MonsterFamily {
+  monsterId String  @map("monster_id") @db.Uuid
+  familyId  String  @map("family_id") @db.Uuid
+  family    Family  @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  monster   Monster @relation(fields: [monsterId], references: [id], onDelete: Cascade)
+
+  @@id([monsterId, familyId])
+  @@map("monsters_families")
+}
+
 model Monster {
   id                 String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userId             String                @map("user_id") @db.Uuid
@@ -109,7 +119,6 @@ model Monster {
   updatedAt          DateTime              @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   kind               String                @default("")
   visibility         monster_visibility    @default(public)
-  family_id          String?               @db.Uuid
   actionPreface      String?               @map("action_preface")
   moreInfo           String?               @default("") @map("more_info")
   burrow             Int                   @default(0)
@@ -117,10 +126,10 @@ model Monster {
   teleport           Int                   @default(0)
   minion             Boolean               @default(false)
   levelInt           Int                   @default(0) @map("level_int")
-  family             Family?               @relation(fields: [family_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   creator            User                  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   monsterCollections MonsterInCollection[]
   monsterConditions  MonsterCondition[]
+  monsterFamilies    MonsterFamily[]
 
   @@index([userId], map: "idx_monsters_user_id")
   @@map("monsters")

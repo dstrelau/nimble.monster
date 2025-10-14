@@ -224,7 +224,6 @@ export default function BuildSchoolView({
   };
 
   const onSubmit = async (data: FormValues) => {
-    console.log(data.spells);
     setIsSubmitting(true);
     setError(null);
 

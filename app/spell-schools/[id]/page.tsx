@@ -15,10 +15,8 @@ export default async function SchoolPage({ params }: SchoolPageProps) {
   const { id } = await params;
   const uid = deslugify(id);
   const session = await auth();
-  console.log(id, uid);
 
   const spellSchool = await findSpellSchool(uid);
-  console.log(spellSchool);
   if (!spellSchool) {
     notFound();
   }

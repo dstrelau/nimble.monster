@@ -4,17 +4,54 @@ import { toMonster } from "../services/monsters/converters";
 import { toUser } from "./converters";
 import { prisma } from "./index";
 
-export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
+export const listFamiliesForUser = async (
+  discordId: string
+): Promise<FamilyOverview[]> => {
+  const families = await prisma.family.findMany({
+    where: { creator: { discordId } },
+    include: {
+      monsterFamilies: true,
+      creator: true,
+    },
+    orderBy: { name: "asc" },
+  });
+
+  return families.map((family) => ({
+    id: family.id,
+    name: family.name,
+    description: family.description ?? undefined,
+    abilities: (family.abilities as unknown as Omit<Ability, "id">[]).map(
+      (ability) => ({
+        ...ability,
+        id: crypto.randomUUID(),
+      })
+    ),
+    visibility: family.visibility,
+    monsterCount: family.monsterFamilies.length,
+    creatorId: family.creator.discordId,
+    creator: toUser(family.creator),
+  }));
+};
+
+export const getUserFamiliesWithMonsters = async (
+  discordId: string
+): Promise<Family[]> => {
   const families = await prisma.family.findMany({
     where: {
       creator: { discordId },
     },
     include: {
-      monsters: {
+      monsterFamilies: {
         include: {
-          creator: true,
-          family: { include: { creator: true } },
-          monsterConditions: { include: { condition: true } },
+          monster: {
+            include: {
+              creator: true,
+              monsterFamilies: {
+                include: { family: { include: { creator: true } } },
+              },
+              monsterConditions: { include: { condition: true } },
+            },
+          },
         },
       },
       creator: true,
@@ -28,10 +65,15 @@ export const getUserFamilies = async (discordId: string): Promise<Family[]> => {
     id: family.id,
     name: family.name,
     description: family.description ?? undefined,
-    abilities: family.abilities as unknown as Ability[],
+    abilities: (family.abilities as unknown as Omit<Ability, "id">[]).map(
+      (ability) => ({
+        ...ability,
+        id: crypto.randomUUID(),
+      })
+    ),
     visibility: family.visibility,
-    monsters: family.monsters.map(toMonster),
-    monsterCount: family.monsters.length,
+    monsters: family.monsterFamilies.map((mf) => toMonster(mf.monster)),
+    monsterCount: family.monsterFamilies.length,
     creatorId: family.creator.discordId,
     creator: toUser(family.creator),
   }));
@@ -43,14 +85,20 @@ export const listPublicFamiliesHavingMonstersForUser = async (
   const families = await prisma.family.findMany({
     where: { creatorId },
     include: {
-      monsters: {
+      monsterFamilies: {
         where: {
-          visibility: "public",
+          monster: { visibility: "public" },
         },
         include: {
-          creator: true,
-          family: { include: { creator: true } },
-          monsterConditions: { include: { condition: true } },
+          monster: {
+            include: {
+              creator: true,
+              monsterFamilies: {
+                include: { family: { include: { creator: true } } },
+              },
+              monsterConditions: { include: { condition: true } },
+            },
+          },
         },
       },
       creator: true,
@@ -64,10 +112,15 @@ export const listPublicFamiliesHavingMonstersForUser = async (
     id: family.id,
     name: family.name,
     description: family.description ?? undefined,
-    abilities: family.abilities as unknown as Ability[],
+    abilities: (family.abilities as unknown as Omit<Ability, "id">[]).map(
+      (ability) => ({
+        ...ability,
+        id: crypto.randomUUID(),
+      })
+    ),
     visibility: family.visibility,
-    monsters: family.monsters.map(toMonster),
-    monsterCount: family.monsters.length,
+    monsters: family.monsterFamilies.map((mf) => toMonster(mf.monster)),
+    monsterCount: family.monsterFamilies.length,
     creatorId: family.creator.discordId,
     creator: toUser(family.creator),
   }));
@@ -88,7 +141,7 @@ export const getFamily = async (id: string): Promise<FamilyOverview | null> => {
   const family = await prisma.family.findUnique({
     where: { id },
     include: {
-      _count: { select: { monsters: true } },
+      _count: { select: { monsterFamilies: true } },
       creator: true,
     },
   });
@@ -99,8 +152,13 @@ export const getFamily = async (id: string): Promise<FamilyOverview | null> => {
     id: family.id,
     name: family.name,
     description: family.description ?? undefined,
-    abilities: family.abilities as unknown as Ability[],
-    monsterCount: family._count.monsters,
+    abilities: (family.abilities as unknown as Omit<Ability, "id">[]).map(
+      (ability) => ({
+        ...ability,
+        id: crypto.randomUUID(),
+      })
+    ),
+    monsterCount: family._count.monsterFamilies,
     creatorId: family.creator.discordId,
     creator: toUser(family.creator),
   };
@@ -131,9 +189,9 @@ export const createFamily = async ({
     },
   });
 
-  const monsterCount = await prisma.monster.count({
+  const monsterCount = await prisma.monsterFamily.count({
     where: {
-      family_id: family.id,
+      familyId: family.id,
     },
   });
 
@@ -194,9 +252,9 @@ export const updateFamily = async ({
 
   if (!family) throw new Error("family not found");
 
-  const monsterCount = await prisma.monster.count({
+  const monsterCount = await prisma.monsterFamily.count({
     where: {
-      family_id: family.id,
+      familyId: family.id,
     },
   });
 
@@ -237,22 +295,28 @@ export const getRandomFeaturedFamily = async (): Promise<Family | null> => {
       featured: true,
     },
     include: {
-      monsters: {
+      monsterFamilies: {
         where: {
-          visibility: "public",
+          monster: { visibility: "public" },
         },
         include: {
-          creator: true,
-          family: { include: { creator: true } },
-          monsterConditions: { include: { condition: true } },
+          monster: {
+            include: {
+              creator: true,
+              monsterFamilies: {
+                include: { family: { include: { creator: true } } },
+              },
+              monsterConditions: { include: { condition: true } },
+            },
+          },
         },
-        orderBy: { levelInt: "asc" },
+        orderBy: { monster: { levelInt: "asc" } },
       },
       creator: true,
     },
   });
   const familiesWithMonsters = featuredFamilies.filter(
-    (family) => family.monsters.length > 0
+    (family) => family.monsterFamilies.length > 0
   );
 
   if (familiesWithMonsters.length === 0) return null;
@@ -271,8 +335,8 @@ export const getRandomFeaturedFamily = async (): Promise<Family | null> => {
       })
     ),
     visibility: family.visibility,
-    monsters: family.monsters.map(toMonster),
-    monsterCount: family.monsters.length,
+    monsters: family.monsterFamilies.map((mf) => toMonster(mf.monster)),
+    monsterCount: family.monsterFamilies.length,
     creatorId: family.creator.discordId,
     creator: toUser(family.creator),
   };

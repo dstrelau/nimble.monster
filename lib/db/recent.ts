@@ -60,7 +60,9 @@ export const getRecentPublicContent = async (
         where: { visibility: "public" },
         include: {
           creator: true,
-          family: { include: { creator: true } },
+          monsterFamilies: {
+            include: { family: { include: { creator: true } } },
+          },
           monsterConditions: { include: { condition: true } },
         },
         orderBy: { createdAt: "desc" },
@@ -88,7 +90,9 @@ export const getRecentPublicContent = async (
               monster: {
                 include: {
                   creator: true,
-                  family: { include: { creator: true } },
+                  monsterFamilies: {
+                    include: { family: { include: { creator: true } } },
+                  },
                 },
               },
             },
@@ -108,12 +112,18 @@ export const getRecentPublicContent = async (
         where: { visibility: "public" },
         include: {
           creator: true,
-          monsters: {
-            where: { visibility: "public" },
+          monsterFamilies: {
+            where: { monster: { visibility: "public" } },
             include: {
-              creator: true,
-              family: { include: { creator: true } },
-              monsterConditions: { include: { condition: true } },
+              monster: {
+                include: {
+                  creator: true,
+                  monsterFamilies: {
+                    include: { family: { include: { creator: true } } },
+                  },
+                  monsterConditions: { include: { condition: true } },
+                },
+              },
             },
           },
         },
@@ -159,7 +169,8 @@ export const getRecentPublicContent = async (
       })),
     ...families
       .filter(
-        (family) => family.monsters.length > 0 && family.createdAt !== null
+        (family) =>
+          family.monsterFamilies.length > 0 && family.createdAt !== null
       )
       .map((family) => {
         const familyOverview = toFamilyOverview(family);
@@ -174,7 +185,7 @@ export const getRecentPublicContent = async (
           creator: toUser(family.creator),
           data: {
             ...familyOverview,
-            monsters: family.monsters.map(toMonster),
+            monsters: family.monsterFamilies.map((mf) => toMonster(mf.monster)),
           } as Family,
         };
       }),

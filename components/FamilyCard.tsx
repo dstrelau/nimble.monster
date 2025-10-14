@@ -22,7 +22,11 @@ export const FamilyCard = ({ family, monsters }: FamilyCardProps) => {
       href={getFamilyUrl(family)}
       monsters={monsters}
     >
-      <AbilityOverlay abilities={family.abilities} conditions={allConditions} />
+      <AbilityOverlay
+        abilities={family.abilities}
+        conditions={allConditions}
+        families={[family]}
+      />
     </MonsterGroupMinis>
   );
 };

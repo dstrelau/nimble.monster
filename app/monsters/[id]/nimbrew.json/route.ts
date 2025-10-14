@@ -59,11 +59,13 @@ export const GET = telemetry(
     if (monster.teleport) speedParts.push(`Teleport ${monster.teleport}`);
 
     const passives: { type: string; name: string; desc: string }[] = [
-      ...(monster.family?.abilities?.map((passive) => ({
-        type: "single",
-        name: passive.name,
-        desc: passive.description,
-      })) || []),
+      ...(monster.families?.flatMap((family) =>
+        family.abilities.map((passive) => ({
+          type: "single",
+          name: passive.name,
+          desc: passive.description,
+        }))
+      ) || []),
       ...(monster.abilities?.map((ability) => ({
         type: "single",
         name: ability.name,

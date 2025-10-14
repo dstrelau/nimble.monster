@@ -38,6 +38,7 @@ import {
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
+import { MultiSelect } from "@/components/ui/multi-select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
@@ -82,6 +83,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     burrow: 0,
     speed: 6,
     hp: 30,
+    families: [],
     abilities: [
       {
         id: crypto.randomUUID(),
@@ -127,6 +129,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     teleport: 0,
     burrow: 0,
     saves: "STR+, DEX+",
+    families: [],
     abilities: [
       {
         id: crypto.randomUUID(),
@@ -174,6 +177,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     burrow: 0,
     speed: 6,
     hp: 0,
+    families: [],
     abilities: [],
     actions: [
       {
@@ -204,6 +208,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     burrow: 0,
     speed: 6,
     hp: 0,
+    families: [],
     abilities: [],
     actions: [],
     actionPreface: "Choose one.",
@@ -227,28 +232,26 @@ const FamilySection: React.FC<{
     enabled: !!session?.user,
   });
 
-  const handleSelectFamily = (familyId: string) => {
-    if (familyId === "none") {
-      setMonster({ ...monster, family: undefined });
-    } else {
-      const family = userFamilies.data?.find((f) => f.id === familyId);
-      setMonster({ ...monster, family: family });
-    }
+  const handleSelectFamilies = (familyIds: string[]) => {
+    const selectedFamilies =
+      userFamilies.data?.filter((f) => familyIds.includes(f.id)) || [];
+    setMonster({ ...monster, families: selectedFamilies });
   };
 
-  const familyChoices = [
-    { value: "none", label: "None" },
-    ...(userFamilies.data?.map((f) => ({ value: f.id, label: f.name })) || []),
-  ];
+  const familyOptions =
+    userFamilies.data?.map((f) => ({ value: f.id, label: f.name })) || [];
 
   return (
-    <FormSelect
-      label="Family"
-      name="family"
-      choices={familyChoices}
-      selected={monster?.family?.id || "none"}
-      onChange={handleSelectFamily}
-    />
+    <fieldset className="flex flex-col">
+      <legend className="font-sans mb-4 font-bold">Families</legend>
+      <MultiSelect
+        options={familyOptions}
+        selected={monster.families.map((f) => f.id)}
+        onChange={handleSelectFamilies}
+        placeholder="Select..."
+        emptyText="No families found."
+      />
+    </fieldset>
   );
 };
 

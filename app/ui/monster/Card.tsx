@@ -104,14 +104,19 @@ const MonsterDescription: React.FC<{
         {formatSizeKind(monster)}
         {variant === "minion" && " Minion"}
       </p>
-      {monster.family && !hideFamilyName && (
-        <Link
-          href={getFamilyUrl(monster.family)}
-          className="text-sm font-sans flex small-caps font-semibold"
-        >
-          <Users className="size-4 mr-1 text-flame" />
-          <span>{monster.family.name}</span>
-        </Link>
+      {monster.families.length > 0 && !hideFamilyName && (
+        <div className="flex flex-wrap gap-2">
+          {monster.families.map((family) => (
+            <Link
+              key={family.id}
+              href={getFamilyUrl(family)}
+              className="text-sm font-sans flex small-caps font-semibold"
+            >
+              <Users className="size-4 mr-1 text-flame" />
+              <span>{family.name}</span>
+            </Link>
+          ))}
+        </div>
       )}
     </CardDescription>
   );
@@ -231,6 +236,7 @@ export const Card = ({
   const { allConditions: conditions } = useConditions({
     creatorId: creator?.discordId,
   });
+  console.log(monster.families.map((f) => f.abilities));
   return (
     <div
       className={cn(
@@ -255,17 +261,18 @@ export const Card = ({
           />
 
           <CardContentWithGap>
-            {((!hideFamilyAbilities && monster.family?.abilities) ||
+            {((!hideFamilyAbilities &&
+              monster.families.some((f) => f.abilities.length > 0)) ||
               monster.abilities.length > 0) && (
               <AbilityOverlay
                 conditions={conditions}
                 abilities={[
                   ...(hideFamilyAbilities
                     ? []
-                    : monster.family?.abilities || []),
+                    : monster.families.flatMap((f) => f.abilities)),
                   ...monster.abilities,
                 ]}
-                family={hideFamilyAbilities ? undefined : monster.family}
+                families={hideFamilyAbilities ? undefined : monster.families}
               />
             )}
 

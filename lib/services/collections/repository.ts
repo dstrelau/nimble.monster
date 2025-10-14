@@ -167,7 +167,9 @@ export const findPublicCollectionById = async (
         include: {
           monster: {
             include: {
-              family: { include: { creator: true } },
+              monsterFamilies: {
+                include: { family: { include: { creator: true } } },
+              },
               creator: true,
               monsterConditions: { include: { condition: true } },
             },

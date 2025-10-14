@@ -13,7 +13,7 @@ export async function getUserFamilies() {
       return { success: false, error: "Not authenticated", families: [] };
     }
 
-    const families = await db.getUserFamilies(session.user.discordId);
+    const families = await db.listFamiliesForUser(session.user.discordId);
     return { success: true, families, error: null };
   } catch (error) {
     console.error("Error fetching families:", error);

@@ -80,7 +80,7 @@ export interface Monster extends MonsterMini {
   actions: Action[];
   actionPreface: string;
   moreInfo?: string;
-  family?: FamilyOverview;
+  families: FamilyOverview[];
   creator: User;
   updatedAt: Date;
   imageUrl?: string;
@@ -116,7 +116,7 @@ export interface CreateMonsterInput {
   climb: number;
   burrow: number;
   teleport: number;
-  family?: { id: string };
+  families?: { id: string }[];
   actions: Action[];
   abilities: Ability[];
   actionPreface: string;
@@ -154,5 +154,5 @@ export interface UpdateMonsterInput {
   visibility: "public" | "private";
   actionPreface: string;
   moreInfo: string;
-  family?: { id: string } | null;
+  families?: { id: string }[];
 }

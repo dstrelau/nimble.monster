@@ -16,6 +16,7 @@ import {
   extractAllConditions,
   syncMonsterConditions,
 } from "./monster-conditions";
+import { syncMonsterFamilies } from "../services/monsters/families";
 
 const stripActionIds = (actions: Action[]): Omit<Action, "id">[] =>
   actions.map(({ id, ...action }) => action);
@@ -52,7 +53,7 @@ export const findMonster = async (id: string): Promise<Monster | null> => {
   const monster = await prisma.monster.findUnique({
     where: { id },
     include: {
-      family: { include: { creator: true } },
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -66,7 +67,7 @@ export const findPublicMonsterById = async (
   const monster = await prisma.monster.findUnique({
     where: { id, visibility: "public" },
     include: {
-      family: { include: { creator: true } },
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -81,7 +82,7 @@ export const findMonsterWithCreatorId = async (
   const monster = await prisma.monster.findUnique({
     where: { id, creator: { id: creatorId } },
     include: {
-      family: { include: { creator: true } },
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -95,7 +96,9 @@ export const listPublicMonstersForUser = async (
   return (
     await prisma.monster.findMany({
       include: {
-        family: { include: { creator: true } },
+        monsterFamilies: {
+          include: { family: { include: { creator: true } } },
+        },
         creator: true,
         monsterConditions: { include: { condition: true } },
       },
@@ -114,7 +117,9 @@ export const listAllMonstersForDiscordID = async (
   return (
     await prisma.monster.findMany({
       include: {
-        family: { include: { creator: true } },
+        monsterFamilies: {
+          include: { family: { include: { creator: true } } },
+        },
         creator: true,
         monsterConditions: { include: { condition: true } },
       },
@@ -208,11 +213,16 @@ export const listMonstersByFamilyId = async (
   return (
     await prisma.monster.findMany({
       include: {
-        family: { include: { creator: true } },
+        monsterFamilies: {
+          include: { family: { include: { creator: true } } },
+        },
         creator: true,
         monsterConditions: { include: { condition: true } },
       },
-      where: { family: { id: familyId }, visibility: "public" },
+      where: {
+        monsterFamilies: { some: { familyId } },
+        visibility: "public",
+      },
       orderBy: { levelInt: "asc" },
     })
   ).map(toMonster);
@@ -306,7 +316,6 @@ export const createMonster = async (
       climb: legendary ? 0 : climb,
       burrow: legendary ? 0 : burrow,
       teleport: legendary ? 0 : teleport,
-      family: family ? { connect: { id: family.id } } : undefined,
       actions: stripActionIds(actions) as unknown as InputJsonValue[],
       abilities: abilities as unknown as InputJsonValue[],
       bloodied: legendary ? bloodied : "",
@@ -322,7 +331,7 @@ export const createMonster = async (
       },
     },
     include: {
-      family: { include: { creator: true } },
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -338,7 +347,25 @@ export const createMonster = async (
 
   await syncMonsterConditions(createdMonster.id, conditionNames);
 
-  return toMonster(createdMonster);
+  if (family) {
+    await syncMonsterFamilies(createdMonster.id, [family.id]);
+  }
+
+  // Re-fetch to get synced families
+  const finalMonster = await prisma.monster.findUnique({
+    where: { id: createdMonster.id },
+    include: {
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
+      creator: true,
+      monsterConditions: { include: { condition: true } },
+    },
+  });
+
+  if (!finalMonster) {
+    throw new Error("Failed to fetch created monster");
+  }
+
+  return toMonster(finalMonster);
 };
 
 export interface UpdateMonsterInput {
@@ -366,7 +393,7 @@ export interface UpdateMonsterInput {
   visibility: "public" | "private";
   actionPreface: string;
   moreInfo: string;
-  family?: { id: string } | null;
+  families?: { id: string }[];
   discordId: string;
 }
 
@@ -421,7 +448,7 @@ export const updateMonster = async (
     visibility,
     actionPreface,
     moreInfo,
-    family,
+    families,
     discordId,
   } = input;
 
@@ -455,11 +482,10 @@ export const updateMonster = async (
       visibility,
       actionPreface,
       moreInfo,
-      family_id: family?.id || null,
       updatedAt: new Date(),
     },
     include: {
-      family: { include: { creator: true } },
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -475,6 +501,27 @@ export const updateMonster = async (
 
   await syncMonsterConditions(id, conditionNames);
 
-  // invalidateEntityImageCache("monster", updatedMonster.id);
-  return toMonster(updatedMonster);
+  if (families !== undefined) {
+    await syncMonsterFamilies(
+      id,
+      families.map((f) => f.id)
+    );
+  }
+
+  // Re-fetch to get synced families
+  const finalMonster = await prisma.monster.findUnique({
+    where: { id },
+    include: {
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
+      creator: true,
+      monsterConditions: { include: { condition: true } },
+    },
+  });
+
+  if (!finalMonster) {
+    throw new Error("Failed to fetch updated monster");
+  }
+
+  // invalidateEntityImageCache("monster", finalMonster.id);
+  return toMonster(finalMonster);
 };

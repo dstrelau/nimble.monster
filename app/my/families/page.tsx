@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
 import { FamilyCard } from "@/components/FamilyCard";
 import { auth } from "@/lib/auth";
-import { getUserFamilies } from "@/lib/db";
+import { getUserFamiliesWithMonsters } from "@/lib/db";
 
 export default async function MyFamiliesPage() {
   const session = await auth();
   if (!session?.user?.id) notFound();
 
-  const families = await getUserFamilies(session.user.discordId);
+  const families = await getUserFamiliesWithMonsters(session.user.discordId);
 
   return (
     <div className="space-y-6">

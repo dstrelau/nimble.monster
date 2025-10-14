@@ -1,7 +1,7 @@
 import type { prisma } from "@/lib/db";
 import { toFamilyOverview, toUser } from "@/lib/db/converters";
 import type { Prisma } from "@/lib/prisma";
-import type { Ability, Action } from "@/lib/types";
+import type { Ability, Action, FamilyOverview } from "@/lib/types";
 import { uuidToIdentifier } from "@/lib/utils/slug";
 import type { Monster, MonsterMini } from "./types";
 
@@ -26,7 +26,9 @@ export const toMonster = (
     typeof prisma.monster,
     {
       include: {
-        family: { include: { creator: true } };
+        monsterFamilies: {
+          include: { family: { include: { creator: true } } };
+        };
         creator: true;
       };
     },
@@ -58,7 +60,10 @@ export const toMonster = (
     })),
     actionPreface: m.actionPreface || "",
     moreInfo: m.moreInfo || "",
-    family: toFamilyOverview(m.family),
+    families: m.monsterFamilies
+      .map((mf) => toFamilyOverview(mf.family))
+      .filter((f): f is FamilyOverview => f !== undefined)
+      .sort((a, b) => a.name.localeCompare(b.name)),
     creator: toUser(m.creator),
   };
 };

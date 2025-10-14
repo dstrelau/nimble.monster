@@ -6,6 +6,7 @@ import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
 import { extractAllConditions, syncMonsterConditions } from "./conditions";
+import { syncMonsterFamilies } from "./families";
 import { toMonster, toMonsterMini } from "./converters";
 import type {
   CreateMonsterInput,
@@ -127,7 +128,7 @@ export const listPublicMonsters = async ({
   const monsters = await prisma.monster.findMany({
     where,
     include: {
-      family: { include: { creator: true } },
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -178,7 +179,7 @@ export const findMonster = async (id: string): Promise<Monster | null> => {
   const monster = await prisma.monster.findUnique({
     where: { id },
     include: {
-      family: { include: { creator: true } },
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -194,7 +195,7 @@ export const findPublicMonsterById = async (
   const monster = await prisma.monster.findUnique({
     where: { id, visibility: "public" },
     include: {
-      family: { include: { creator: true } },
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -211,7 +212,7 @@ export const findMonsterWithCreatorId = async (
   const monster = await prisma.monster.findUnique({
     where: { id, creator: { id: creatorId } },
     include: {
-      family: { include: { creator: true } },
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -225,7 +226,9 @@ export const listPublicMonstersForUser = async (
   return (
     await prisma.monster.findMany({
       include: {
-        family: { include: { creator: true } },
+        monsterFamilies: {
+          include: { family: { include: { creator: true } } },
+        },
         creator: true,
         monsterConditions: { include: { condition: true } },
       },
@@ -244,7 +247,9 @@ export const listAllMonstersForDiscordID = async (
   return (
     await prisma.monster.findMany({
       include: {
-        family: { include: { creator: true } },
+        monsterFamilies: {
+          include: { family: { include: { creator: true } } },
+        },
         creator: true,
         monsterConditions: { include: { condition: true } },
       },
@@ -328,11 +333,16 @@ export const listMonstersByFamilyId = async (
   return (
     await prisma.monster.findMany({
       include: {
-        family: { include: { creator: true } },
+        monsterFamilies: {
+          include: { family: { include: { creator: true } } },
+        },
         creator: true,
         monsterConditions: { include: { condition: true } },
       },
-      where: { family: { id: familyId }, visibility: "public" },
+      where: {
+        monsterFamilies: { some: { familyId } },
+        visibility: "public",
+      },
       orderBy: { levelInt: "asc" },
     })
   ).map(toMonster);
@@ -379,7 +389,7 @@ export const createMonster = async (
     climb,
     burrow,
     teleport,
-    family,
+    families = [],
     actions,
     abilities,
     actionPreface = "",
@@ -421,7 +431,6 @@ export const createMonster = async (
       climb: legendary ? 0 : climb,
       burrow: legendary ? 0 : burrow,
       teleport: legendary ? 0 : teleport,
-      family: family ? { connect: { id: family.id } } : undefined,
       actions: stripActionIds(actions) as unknown as InputJsonValue[],
       abilities: abilities as unknown as InputJsonValue[],
       bloodied: legendary ? bloodied : "",
@@ -437,7 +446,7 @@ export const createMonster = async (
       },
     },
     include: {
-      family: { include: { creator: true } },
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -452,6 +461,10 @@ export const createMonster = async (
   });
 
   await syncMonsterConditions(createdMonster.id, conditionNames);
+  await syncMonsterFamilies(
+    createdMonster.id,
+    families.map((f) => f.id)
+  );
 
   return toMonster(createdMonster);
 };
@@ -485,7 +498,7 @@ export const updateMonster = async (
     visibility,
     actionPreface,
     moreInfo,
-    family,
+    families = [],
   } = input;
 
   if (!isValidUUID(id)) {
@@ -518,11 +531,10 @@ export const updateMonster = async (
       visibility,
       actionPreface,
       moreInfo,
-      family_id: family?.id || null,
       updatedAt: new Date(),
     },
     include: {
-      family: { include: { creator: true } },
+      monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
       monsterConditions: { include: { condition: true } },
     },
@@ -537,6 +549,10 @@ export const updateMonster = async (
   });
 
   await syncMonsterConditions(id, conditionNames);
+  await syncMonsterFamilies(
+    id,
+    families.map((f) => f.id)
+  );
 
   return toMonster(updatedMonster);
 };

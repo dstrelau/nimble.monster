@@ -127,7 +127,7 @@ export const PUT = telemetry(
           visibility: monsterData.visibility,
           actionPreface: monsterData.actionPreface || "",
           moreInfo: monsterData.moreInfo || "",
-          family: monsterData.family,
+          families: monsterData.families || [],
         },
         session.user.discordId
       );

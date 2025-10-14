@@ -177,19 +177,21 @@ describe("GET /monsters/[id]/nimbrew.json", () => {
       burrow: 0,
       teleport: 0,
       saves: "Dex, Wis",
-      family: {
-        id: "family1",
-        name: "Goblinoid",
-        creatorId: "owner123",
-        creator: fakeCreator,
-        abilities: [
-          {
-            id: "test-ability-1",
-            name: "Pack Tactics",
-            description: "Has advantage when ally is adjacent",
-          },
-        ],
-      },
+      families: [
+        {
+          id: "family1",
+          name: "Goblinoid",
+          creatorId: "owner123",
+          creator: fakeCreator,
+          abilities: [
+            {
+              id: "test-ability-1",
+              name: "Pack Tactics",
+              description: "Has advantage when ally is adjacent",
+            },
+          ],
+        },
+      ],
       abilities: [
         {
           id: "test-ability-2",
@@ -272,7 +274,7 @@ describe("GET /monsters/[id]/nimbrew.json", () => {
       saves: "Str, Con, Wis, Cha",
       bloodied: "The dragon roars in fury",
       lastStand: "The dragon makes one final desperate attack",
-      family: undefined,
+      families: [],
       abilities: [],
       actions: [
         {
@@ -330,7 +332,7 @@ describe("GET /monsters/[id]/nimbrew.json", () => {
       teleport: 0,
       burrow: 0,
       saves: "",
-      family: undefined,
+      families: [],
       abilities: [],
       actions: [
         {
