@@ -35,7 +35,7 @@ export const listPublicSpellSchools = async (): Promise<SpellSchool[]> => {
       include: {
         creator: true,
         spells: {
-          orderBy: { name: "asc" },
+          orderBy: [{ tier: "asc" }, { name: "asc" }],
         },
       },
     })
@@ -83,7 +83,7 @@ export const listAllSpellSchoolsForDiscordID = async (
       include: {
         creator: true,
         spells: {
-          orderBy: { name: "asc" },
+          orderBy: [{ tier: "asc" }, { name: "asc" }],
         },
       },
       where: { creator: { discordId } },

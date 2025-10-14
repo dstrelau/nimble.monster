@@ -29,8 +29,8 @@ export default function TermsPage() {
 
       <h2>2. Description of Service</h2>
       <p>
-        {siteName} is a web-based platform that allows users to create, organize,
-        and share homebrew content for the Nimble TTRPG system.
+        {siteName} is a web-based platform that allows users to create,
+        organize, and share homebrew content for the Nimble TTRPG system.
       </p>
 
       <h2>3. Service Disclaimer</h2>
@@ -98,9 +98,9 @@ export default function TermsPage() {
       <h2>6. Intellectual Property</h2>
 
       <p>
-        {siteName} is published under the Nimble 3rd Party Creator License and is
-        not affiliated with Nimble Co. Nimble © 2025 Nimble Co. Users must comply
-        with the Nimble 3rd Party Creator License when creating content.
+        {siteName} is published under the Nimble 3rd Party Creator License and
+        is not affiliated with Nimble Co. Nimble © 2025 Nimble Co. Users must
+        comply with the Nimble 3rd Party Creator License when creating content.
       </p>
 
       <h2>7. Privacy and Data Collection</h2>
@@ -123,9 +123,9 @@ export default function TermsPage() {
 
       <h2>9. Indemnification</h2>
       <p>
-        You agree to indemnify and hold harmless {siteName} and its operators from
-        any claims, damages, or expenses arising from your use of the Service or
-        violation of these Terms.
+        You agree to indemnify and hold harmless {siteName} and its operators
+        from any claims, damages, or expenses arising from your use of the
+        Service or violation of these Terms.
       </p>
 
       <h2>10. Termination</h2>

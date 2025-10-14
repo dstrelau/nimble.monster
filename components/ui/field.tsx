@@ -1,4 +1,5 @@
 /** biome-ignore-all lint/a11y/useSemanticElements: shadcn generated */
+/** biome-ignore-all lint/suspicious/noArrayIndexKey: shadcn generated */
 "use client";
 
 import { cva, type VariantProps } from "class-variance-authority";

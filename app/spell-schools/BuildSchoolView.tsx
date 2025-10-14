@@ -21,7 +21,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -29,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { type SpellSchool, UNKNOWN_USER } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -155,36 +155,41 @@ export default function BuildSchoolView({
 
   let previewSchool: SpellSchool;
   try {
+    const spells = (watchedValues.spells || []).map((spell) => ({
+      id: spell?.id || crypto.randomUUID(),
+      schoolId: "",
+      name: spell?.name || "",
+      tier: spell?.tier ?? 0,
+      actions: Number(spell?.actions) || 1,
+      reaction: spell?.reaction || false,
+      target: spell?.target
+        ? {
+            ...spell.target,
+            distance:
+              spell.target.type !== "self" &&
+              spell.target.distance !== undefined
+                ? Number(spell.target.distance)
+                : undefined,
+          }
+        : undefined,
+      damage: spell?.damage,
+      description: spell?.description || "",
+      highLevels: spell?.highLevels,
+      concentration: spell?.concentration,
+      upcast: spell?.upcast,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }));
+
     previewSchool = {
       id: watchedValues.id || crypto.randomUUID(),
       name: watchedValues.name || "Untitled School",
       description: watchedValues.description || undefined,
       visibility: watchedValues.visibility,
-      spells: (watchedValues.spells || []).map((spell) => ({
-        id: spell?.id || crypto.randomUUID(),
-        schoolId: "",
-        name: spell?.name || "",
-        tier: spell?.tier ?? 0,
-        actions: Number(spell?.actions) || 1,
-        reaction: spell?.reaction || false,
-        target: spell?.target
-          ? {
-              ...spell.target,
-              distance:
-                spell.target.type !== "self" &&
-                spell.target.distance !== undefined
-                  ? Number(spell.target.distance)
-                  : undefined,
-            }
-          : undefined,
-        damage: spell?.damage,
-        description: spell?.description || "",
-        highLevels: spell?.highLevels,
-        concentration: spell?.concentration,
-        upcast: spell?.upcast,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })),
+      spells: spells.sort((a, b) => {
+        if (a.tier !== b.tier) return a.tier - b.tier;
+        return a.name.localeCompare(b.name);
+      }),
       creator: existingSchool?.creator || session?.user || UNKNOWN_USER,
       createdAt: existingSchool?.createdAt || new Date(),
       updatedAt: new Date(),
