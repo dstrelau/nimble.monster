@@ -10,13 +10,13 @@ import type { Ability, Action, Family } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
 import type { InputJsonValue } from "../prisma/runtime/library";
 import { toMonster, toMonsterMini } from "../services/monsters/converters";
+import { syncMonsterFamilies } from "../services/monsters/families";
 import { toUser } from "./converters";
 import { prisma } from "./index";
 import {
   extractAllConditions,
   syncMonsterConditions,
 } from "./monster-conditions";
-import { syncMonsterFamilies } from "../services/monsters/families";
 
 const stripActionIds = (actions: Action[]): Omit<Action, "id">[] =>
   actions.map(({ id, ...action }) => action);
@@ -456,7 +456,7 @@ export const updateMonster = async (
     throw new Error("Invalid monster ID");
   }
 
-  const updatedMonster = await prisma.monster.update({
+  const _updatedMonster = await prisma.monster.update({
     where: { id, creator: { discordId } },
     data: {
       name,

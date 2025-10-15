@@ -15,7 +15,7 @@ export default async function SubclassesPage() {
   }
 
   return (
-    <div className="container mx-auto py-3">
+    <div className="container mx-auto">
       <SubclassesListView subclasses={subclasses} />
     </div>
   );

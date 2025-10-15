@@ -170,6 +170,7 @@ interface CardProps {
   creator: User;
   link?: boolean;
   hideActions?: boolean;
+  hideDescription?: boolean;
   className?: string;
 }
 
@@ -178,13 +179,15 @@ export const Card = ({
   creator,
   link = true,
   hideActions = false,
+  hideDescription = false,
   className,
 }: CardProps) => {
   const { allConditions } = useConditions({
     creatorId: creator.discordId,
+    enabled: !hideDescription && !!item.description,
   });
   return (
-    <div className="max-w-sm mx-auto" id={`item-${item.id}`}>
+    <div className="max-w-sm mx-auto w-full" id={`item-${item.id}`}>
       <CardContainer className={`relative py-0 ${className}`}>
         <div
           className={cn(
@@ -233,19 +236,21 @@ export const Card = ({
           )}
         </CardHeader>
 
-        <CardContent className="flex flex-col gap-3 relative z-10">
-          {item.description && (
-            <FormattedText
-              content={item.description}
+        {hideDescription || (
+          <CardContent className="flex flex-col gap-3 relative z-10">
+            {item.description && (
+              <FormattedText
+                content={item.description}
+                conditions={allConditions}
+              />
+            )}
+
+            <MoreInfoSection
+              moreInfo={item.moreInfo}
               conditions={allConditions}
             />
-          )}
-
-          <MoreInfoSection
-            moreInfo={item.moreInfo}
-            conditions={allConditions}
-          />
-        </CardContent>
+          </CardContent>
+        )}
 
         <CardFooterLayout
           creator={creator}

@@ -1,3 +1,4 @@
+"use server";
 import { toUser } from "@/lib/db/converters";
 import { prisma } from "@/lib/db/prisma";
 import { isValidUUID } from "@/lib/utils/validation";
@@ -27,16 +28,13 @@ export const deleteItem = async (
   return !!item;
 };
 
-export const listPublicItems = async (): Promise<Item[]> => {
+export const listPublicItems = async (): Promise<ItemMini[]> => {
   return (
     await prisma.item.findMany({
       where: { visibility: "public" },
       orderBy: { name: "asc" },
-      include: {
-        creator: true,
-      },
     })
-  ).map(toItem);
+  ).map(toItemMini);
 };
 
 export const getRandomRecentItems = async (
@@ -144,14 +142,14 @@ export const listAllItemsForDiscordID = async (
   ).map(toItem);
 };
 
-export const searchPublicItemMinis = async ({
+export const searchPublicItems = async ({
   searchTerm,
   rarity,
-  creatorId: discordId,
-  sortBy = "name",
+  sortBy,
   sortDirection = "asc",
-  limit = 500,
-}: SearchItemsParams): Promise<ItemMini[]> => {
+  limit,
+  offset,
+}: SearchItemsParams & { offset?: number }): Promise<Item[]> => {
   const whereClause: {
     creator?: { discordId?: string };
     visibility: "public";
@@ -164,10 +162,6 @@ export const searchPublicItemMinis = async ({
     visibility: "public",
   };
 
-  if (discordId) {
-    whereClause.creator = { discordId: discordId };
-  }
-
   if (searchTerm) {
     whereClause.OR = [
       { name: { contains: searchTerm, mode: "insensitive" } },
@@ -179,14 +173,14 @@ export const searchPublicItemMinis = async ({
     whereClause.rarity = rarity;
   }
 
-  let orderBy: { name: "asc" | "desc" } | { rarity: "asc" | "desc" } = {
-    name: "asc",
+  let orderBy: { name: "asc" | "desc" } | { createdAt: "asc" | "desc" } = {
+    createdAt: sortDirection,
   };
 
   if (sortBy === "name") {
     orderBy = { name: sortDirection };
-  } else if (sortBy === "rarity") {
-    orderBy = { rarity: sortDirection };
+  } else if (sortBy === "createdAt") {
+    orderBy = { createdAt: sortDirection };
   }
 
   return (
@@ -194,8 +188,12 @@ export const searchPublicItemMinis = async ({
       where: whereClause,
       orderBy,
       take: limit,
+      skip: offset,
+      include: {
+        creator: true,
+      },
     })
-  ).map(toItemMini);
+  ).map(toItem);
 };
 
 export const createItem = async (

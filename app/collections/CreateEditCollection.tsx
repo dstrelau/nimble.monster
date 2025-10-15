@@ -18,7 +18,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createCollection } from "@/app/actions/collection";
-import { searchPublicItems } from "@/app/actions/item";
 import { searchPublicMonsters } from "@/app/actions/monster";
 import { List as ItemList } from "@/app/ui/item/List";
 import { List } from "@/app/ui/monster/List";
@@ -55,6 +54,7 @@ import { SortSelect } from "../ui/monster/SortSelect";
 import { SearchInput } from "../ui/SearchInput";
 import { updateCollection } from "./[id]/edit/actions";
 import { VisibilityToggle } from "./[id]/edit/VisibilityToggle";
+import { searchPublicItems } from "@/lib/services/items/repository";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -100,9 +100,6 @@ export function CreateEditCollection({
   const [onlyMineItems, setOnlyMineItems] = useState<boolean>(true);
   const [itemSearchTerm, setItemSearchTerm] = useState("");
   const [rarityFilter, setRarityFilter] = useState<ItemRarityFilter>("all");
-  const [itemSortOption, _setItemSortOption] = useState<"name" | "rarity">(
-    "name"
-  );
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -238,27 +235,20 @@ export function CreateEditCollection({
   const availableMonsters: MonsterMini[] = monstersQuery.data?.monsters || [];
 
   const itemsQuery = useQuery({
-    queryKey: [
-      "publicItems",
-      itemSearchTerm,
-      rarityFilter,
-      itemSortOption,
-      itemCreatorId,
-    ],
-    queryFn: async () => {
-      return searchPublicItems({
+    queryKey: ["items", itemSearchTerm, rarityFilter, itemCreatorId],
+    queryFn: () =>
+      searchPublicItems({
         searchTerm: itemSearchTerm,
         rarity: rarityFilter,
         creatorId: itemCreatorId,
-        sortBy: itemSortOption,
+        sortBy: "name",
         sortDirection: "asc",
         limit: 50,
-      });
-    },
+      }),
     staleTime: 10000,
   });
 
-  const availableItems: ItemMini[] = itemsQuery.data?.items || [];
+  const availableItems: ItemMini[] = itemsQuery.data || [];
 
   const handleMonsterCheck = (id: string) => {
     const isInCollection = currentMonsters.some((m) => m.id === id);
@@ -502,7 +492,7 @@ export function CreateEditCollection({
                   <div>
                     {itemsQuery.isLoading ? (
                       <div className="p-4 text-center">Searching...</div>
-                    ) : (itemsQuery.data?.items?.length ?? 0) === 0 ? (
+                    ) : (itemsQuery.data?.length ?? 0) === 0 ? (
                       <div className="p-4 text-center">No items found</div>
                     ) : (
                       <ItemList

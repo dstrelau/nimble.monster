@@ -1,11 +1,5 @@
 import * as repository from "./repository";
-import type {
-  CreateItemInput,
-  Item,
-  ItemMini,
-  SearchItemsParams,
-  UpdateItemInput,
-} from "./types";
+import type { CreateItemInput, Item, UpdateItemInput } from "./types";
 
 export class ItemsService {
   async getPublicItem(itemId: string): Promise<Item | null> {
@@ -21,14 +15,6 @@ export class ItemsService {
     userId: string
   ): Promise<Item | null> {
     return repository.findItemWithCreatorDiscordId(itemId, userId);
-  }
-
-  async searchItems(params: SearchItemsParams): Promise<ItemMini[]> {
-    return repository.searchPublicItemMinis(params);
-  }
-
-  async listPublicItems(): Promise<Item[]> {
-    return repository.listPublicItems();
   }
 
   async listPublicItemsForUser(userId: string): Promise<Item[]> {

@@ -22,21 +22,25 @@ export interface ItemMini {
   imageBgIcon?: string;
   imageColor?: string;
   imageBgColor?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Item extends ItemMini {
   description: string;
   moreInfo?: string;
   creator: User;
-  updatedAt: Date;
 }
+
+export type ItemSortBy = "name" | "createdAt";
+export type ItemSortDirection = "asc" | "desc";
 
 export interface SearchItemsParams {
   searchTerm?: string;
   rarity?: ItemRarityFilter;
   creatorId?: string;
-  sortBy?: "name" | "rarity";
-  sortDirection?: "asc" | "desc";
+  sortBy?: ItemSortBy;
+  sortDirection?: ItemSortDirection;
   limit?: number;
 }
 

@@ -1,8 +1,7 @@
 "use client";
 
-import { Beer, Coins, Mail, ScrollText } from "lucide-react";
 import { planet } from "@lucide/lab";
-import { Icon } from "lucide-react";
+import { Beer, Coins, Icon, Mail, ScrollText } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getSiteEmail, getSiteName } from "@/lib/utils/branding";

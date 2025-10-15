@@ -250,6 +250,7 @@ describe("GET /api/collections/[id]", () => {
           creator: fakeCreator,
           visibility: "public",
 
+          createdAt: new Date("2025-01-01"),
           updatedAt: new Date("2025-01-01"),
         },
       ],
@@ -311,8 +312,8 @@ describe("GET /api/collections/[id]", () => {
           actionPreface: "",
           creator: fakeCreator,
           visibility: "public",
-          createdAt: new Date("2025-01-01"),
           families: [],
+          createdAt: new Date("2025-01-01"),
           updatedAt: new Date("2025-01-01"),
         },
       ],
@@ -326,7 +327,7 @@ describe("GET /api/collections/[id]", () => {
           moreInfo: undefined,
           creator: fakeCreator,
           visibility: "public",
-
+          createdAt: new Date("2025-01-01"),
           updatedAt: new Date("2025-01-01"),
         },
       ],

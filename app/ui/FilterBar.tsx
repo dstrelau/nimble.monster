@@ -5,7 +5,7 @@ import { SearchInput } from "@/app/ui/SearchInput";
 import { cn } from "@/lib/utils";
 
 interface FilterBarProps {
-  searchTerm: string;
+  searchTerm: string | null;
   onSearch: (value: string) => void;
   searchPlaceholder?: string;
   layout?: "vertical" | "horizontal";
@@ -22,7 +22,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   className = "",
 }) => {
   const containerClass = cn(
-    "flex flex-col gap-4 pb-4",
+    "flex flex-col gap-4",
     layout === "horizontal" && "sm:flex-row"
   );
 
@@ -37,7 +37,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     <div className={cn(containerClass, className)}>
       <div className={searchContainerClass}>
         <SearchInput
-          value={searchTerm}
+          value={searchTerm || ""}
           onChange={onSearch}
           placeholder={searchPlaceholder}
         />

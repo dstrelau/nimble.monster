@@ -64,6 +64,7 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     name: "",
     description: "",
     rarity: "unspecified",
+    createdAt: new Date(),
     updatedAt: new Date(),
   },
   "Healing Potion": {
@@ -77,6 +78,7 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     imageColor: "rose-200",
     imageBgColor: "red-100",
     rarity: "uncommon",
+    createdAt: new Date(),
     updatedAt: new Date(),
   },
   "Gem of Escape": {
@@ -92,6 +94,7 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     imageColor: "purple-400",
     imageBgColor: "purple-100",
     rarity: "very_rare",
+    createdAt: new Date(),
     updatedAt: new Date(),
   },
 };
@@ -140,6 +143,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
       rarity: watchedValues.rarity,
       visibility: watchedValues.visibility,
       creator: creator,
+      createdAt: new Date(),
       updatedAt: new Date(),
     }),
     [

@@ -16,6 +16,8 @@ export const toItemMini = (
   imageBgIcon: i.imageBgIcon || undefined,
   imageColor: i.imageColor || undefined,
   imageBgColor: i.imageBgColor || undefined,
+  createdAt: i.createdAt,
+  updatedAt: i.updatedAt,
 });
 
 export const toItem = (
@@ -33,7 +35,6 @@ export const toItem = (
     ...toItemMini(i),
     description: i.description,
     moreInfo: i.moreInfo || undefined,
-    updatedAt: i.updatedAt,
     creator: toUser(i.creator),
   };
 };

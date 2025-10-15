@@ -11,6 +11,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import Header from "@/app/ui/Header";
 
 function makeQueryClient() {
@@ -52,16 +53,20 @@ export function Providers({
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        <ThemeProvider
-          attribute="data-theme"
-          defaultTheme="system"
-          enableSystem
-        >
-          <Header />
-          <main className="mx-auto w-full max-w-7xl px-4 py-6">{children}</main>
-          <Analytics />
-          <SpeedInsights />
-        </ThemeProvider>
+        <NuqsAdapter>
+          <ThemeProvider
+            attribute="data-theme"
+            defaultTheme="system"
+            enableSystem
+          >
+            <Header />
+            <main className="mx-auto w-full max-w-7xl px-4 py-6">
+              {children}
+            </main>
+            <Analytics />
+            <SpeedInsights />
+          </ThemeProvider>
+        </NuqsAdapter>
       </SessionProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

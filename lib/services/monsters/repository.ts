@@ -6,8 +6,8 @@ import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
 import { extractAllConditions, syncMonsterConditions } from "./conditions";
-import { syncMonsterFamilies } from "./families";
 import { toMonster, toMonsterMini } from "./converters";
+import { syncMonsterFamilies } from "./families";
 import type {
   CreateMonsterInput,
   ListMonstersParams,
