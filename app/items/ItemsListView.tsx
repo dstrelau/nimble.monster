@@ -61,7 +61,7 @@ export const ItemsListView: React.FC = () => {
         onRarityChange={setRarityQuery}
       />
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 items-start">
+      <div className="flex flex-wrap items-center justify-center gap-4">
         {!filteredItems || filteredItems?.length === 0 ? (
           <div className="col-span-4 text-center text-muted-foreground">
             No items found.
@@ -69,6 +69,7 @@ export const ItemsListView: React.FC = () => {
         ) : (
           filteredItems.map((item) => (
             <Card
+              className="max-w-sm min-w-2xs"
               key={item.id}
               item={item}
               creator={item.creator}

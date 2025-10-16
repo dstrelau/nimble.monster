@@ -1,7 +1,6 @@
 "use client";
 import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
-import { CardContainer } from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
 import { FormattedText } from "@/components/FormattedText";
 import { GameIcon } from "@/components/GameIcon";
@@ -15,6 +14,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  Card as ShadcnCard,
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Item } from "@/lib/services/items";
@@ -187,88 +187,87 @@ export const Card = ({
     enabled: !hideDescription && !!item.description,
   });
   return (
-    <div className="max-w-sm mx-auto w-full" id={`item-${item.id}`}>
-      <CardContainer className={`relative py-0 ${className}`}>
-        <div
-          className={cn(
-            "flex flex-col items-center py-4",
-            item.imageBgIcon ? "min-h-56" : item.imageIcon ? "min-h-48" : "py-0"
-          )}
-        >
-          {item.imageBgIcon && (
-            <GameIcon
-              iconId={item.imageBgIcon}
-              className={cn(
-                "size-56 fill-foreground",
-                item.imageBgColor && FG_COLOR_CLASSES[item.imageBgColor]
-              )}
-            />
-          )}
-          {item.imageIcon && (
-            <GameIcon
-              iconId={item.imageIcon}
-              className={cn(
-                "absolute size-42 stroke-6 z-10 left-1/2 transform -translate-x-1/2 drop-shadow-lg",
-                "fill-foreground",
-                item.imageBgIcon && "mt-7",
-                item.imageColor && FG_COLOR_CLASSES[item.imageColor]
-              )}
-            />
-          )}
-        </div>
-        <CardHeader className="text-center gap-0">
-          <CardTitle>
-            <h2
-              className={cn("font-slab", "font-black text-2xl leading-tight")}
-            >
-              {link && item.id ? (
-                <Link href={getItemUrl(item)}>{item.name}</Link>
-              ) : (
-                item.name
-              )}
-            </h2>
-          </CardTitle>
-          {(item.rarity || item.kind) && (
-            <CardDescription className={cn("font-sans text-md")}>
-              {formatRarityDisplay(item.rarity)}
-              {item.kind || ""}
-            </CardDescription>
-          )}
-        </CardHeader>
-
-        {hideDescription || (
-          <CardContent className="flex flex-col gap-3 relative z-10">
-            {item.description && (
-              <FormattedText
-                content={item.description}
-                conditions={allConditions}
-              />
+    <ShadcnCard
+      className={cn("relative py-0 h-fit", className)}
+      id={`item-{item.id}`}
+    >
+      <div
+        className={cn(
+          "flex flex-col items-center py-4",
+          item.imageBgIcon ? "min-h-56" : item.imageIcon ? "min-h-48" : "py-0"
+        )}
+      >
+        {item.imageBgIcon && (
+          <GameIcon
+            iconId={item.imageBgIcon}
+            className={cn(
+              "size-56 fill-foreground",
+              item.imageBgColor && FG_COLOR_CLASSES[item.imageBgColor]
             )}
+          />
+        )}
+        {item.imageIcon && (
+          <GameIcon
+            iconId={item.imageIcon}
+            className={cn(
+              "absolute size-42 stroke-6 z-10 left-1/2 transform -translate-x-1/2 drop-shadow-lg",
+              "fill-foreground",
+              item.imageBgIcon && "mt-7",
+              item.imageColor && FG_COLOR_CLASSES[item.imageColor]
+            )}
+          />
+        )}
+      </div>
+      <CardHeader className="text-center gap-0">
+        <CardTitle>
+          <h2 className={cn("font-slab", "font-black text-2xl leading-tight")}>
+            {link && item.id ? (
+              <Link href={getItemUrl(item)}>{item.name}</Link>
+            ) : (
+              item.name
+            )}
+          </h2>
+        </CardTitle>
+        {(item.rarity || item.kind) && (
+          <CardDescription className={cn("font-sans text-md")}>
+            {formatRarityDisplay(item.rarity)}
+            {item.kind || ""}
+          </CardDescription>
+        )}
+      </CardHeader>
 
-            <MoreInfoSection
-              moreInfo={item.moreInfo}
+      {hideDescription || (
+        <CardContent className="flex flex-col gap-3 relative z-10">
+          {item.description && (
+            <FormattedText
+              content={item.description}
               conditions={allConditions}
             />
-          </CardContent>
-        )}
+          )}
 
-        <CardFooterLayout
-          creator={creator}
-          hideActions={hideActions}
-          className="pb-4"
-          actionsSlot={
-            item.id && (
-              <ShareMenu disabled={item.visibility !== "public"}>
-                <ShareMenuDownloadCardItem
-                  name={`${item.name}.png`}
-                  path={getItemImageUrl(item)}
-                />
-                <ShareMenuCopyURLItem path={getItemUrl(item)} />
-              </ShareMenu>
-            )
-          }
-        />
-      </CardContainer>
-    </div>
+          <MoreInfoSection
+            moreInfo={item.moreInfo}
+            conditions={allConditions}
+          />
+        </CardContent>
+      )}
+
+      <CardFooterLayout
+        creator={creator}
+        hideActions={hideActions}
+        className="pb-4"
+        actionsSlot={
+          item.id && (
+            <ShareMenu disabled={item.visibility !== "public"}>
+              <ShareMenuDownloadCardItem
+                name={`${item.name}.png`}
+                path={getItemImageUrl(item)}
+              />
+              <ShareMenuCopyURLItem path={getItemUrl(item)} />
+            </ShareMenu>
+          )
+        }
+      />
+    </ShadcnCard>
   );
 };

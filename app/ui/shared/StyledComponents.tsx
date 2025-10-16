@@ -1,5 +1,5 @@
 import type React from "react";
-import { CardContent, Card as ShadcnCard } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 export const InlineConditionsBox: React.FC<{ children: React.ReactNode }> = ({
@@ -21,11 +21,4 @@ export const CardContentWithGap: React.FC<{
   <CardContent className={`flex flex-col gap-4 ${className}`}>
     {children}
   </CardContent>
-);
-
-export const CardContainer: React.FC<{
-  children: React.ReactNode;
-  className?: string;
-}> = ({ children, className = "" }) => (
-  <ShadcnCard className={cn("gap-4 py-4", className)}>{children}</ShadcnCard>
 );

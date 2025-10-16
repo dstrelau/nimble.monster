@@ -8,7 +8,6 @@ import { HPStat, SavesStat } from "@/app/ui/monster/Stat";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
 import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
-import { CardContainer } from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import {
@@ -17,6 +16,7 @@ import {
   ShareMenuDownloadCardItem,
 } from "@/components/ShareMenu";
 import {
+  Card as ShadcnCard,
   CardAction,
   CardContent,
   CardDescription,
@@ -85,7 +85,7 @@ export const Card = ({
   });
   return (
     <div id={`companion-${companion.id}`}>
-      <CardContainer className={className}>
+      <ShadcnCard className={className}>
         <HeaderCompanion companion={companion} link={link} />
 
         <CardContent className="flex flex-col gap-3 pt-0 pb-4">
@@ -139,7 +139,7 @@ export const Card = ({
             )
           }
         />
-      </CardContainer>
+      </ShadcnCard>
     </div>
   );
 };

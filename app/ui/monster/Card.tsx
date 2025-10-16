@@ -5,14 +5,15 @@ import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
 import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
-import {
-  CardContainer,
-  CardContentWithGap,
-} from "@/app/ui/shared/StyledComponents";
+import { CardContentWithGap } from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { Level } from "@/components/Level";
-import { CardDescription, CardTitle } from "@/components/ui/card";
+import {
+  Card as ShadcnCard,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Monster } from "@/lib/services/monsters";
 import type { User } from "@/lib/types";
@@ -246,7 +247,7 @@ export const Card = ({
       )}
     >
       <div id={`monster-${monster.id}`}>
-        <CardContainer className={className}>
+        <ShadcnCard className={className}>
           <MonsterHeader
             monster={monster}
             hideFamilyName={hideFamilyName}
@@ -314,7 +315,7 @@ export const Card = ({
             hideActions={hideActions}
             actionsSlot={<CardActions monster={monster} />}
           />
-        </CardContainer>
+        </ShadcnCard>
       </div>
     </div>
   );

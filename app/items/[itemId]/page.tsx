@@ -95,7 +95,7 @@ export default async function ItemPage({
         )}
       </div>
       <div className="flex justify-center">
-        <div className="flex flex-col items-center gap-12">
+        <div className="flex flex-col items-center gap-12 max-w-sm w-full">
           <Card item={item} creator={item.creator} link={false} />
           <ItemCollections collections={collections} />
         </div>
