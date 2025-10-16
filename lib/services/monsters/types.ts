@@ -1,4 +1,10 @@
-import type { Ability, Action, FamilyOverview, User } from "@/lib/types";
+import type {
+  Ability,
+  Action,
+  FamilyOverview,
+  Source,
+  User,
+} from "@/lib/types";
 
 export const SIZES = [
   { value: "tiny", label: "Tiny" },
@@ -82,6 +88,7 @@ export interface Monster extends MonsterMini {
   moreInfo?: string;
   families: FamilyOverview[];
   creator: User;
+  source?: Source;
   updatedAt: Date;
   imageUrl?: string;
 }
@@ -127,6 +134,7 @@ export interface CreateMonsterInput {
   bloodied?: string;
   lastStand?: string;
   saves?: string[];
+  sourceId?: string;
 }
 
 export interface UpdateMonsterInput {
@@ -155,4 +163,5 @@ export interface UpdateMonsterInput {
   actionPreface: string;
   moreInfo: string;
   families?: { id: string }[];
+  sourceId?: string | null;
 }

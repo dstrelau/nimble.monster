@@ -129,6 +129,7 @@ export const getCollection = async (
                 include: { family: { include: { creator: true } } },
               },
               creator: true,
+              source: true,
               monsterConditions: { include: { condition: true } },
             },
           },
@@ -139,6 +140,7 @@ export const getCollection = async (
           item: {
             include: {
               creator: true,
+              source: true,
             },
           },
         },
@@ -268,6 +270,7 @@ export const createCollection = async ({
           monster: {
             include: {
               creator: true,
+              source: true,
               monsterFamilies: {
                 include: { family: { include: { creator: true } } },
               },
@@ -354,6 +357,7 @@ export const updateCollection = async ({
                     include: { family: { include: { creator: true } } },
                   },
                   creator: true,
+                  source: true,
                   monsterConditions: { include: { condition: true } },
                 },
               },
@@ -447,6 +451,7 @@ export const updateCollection = async ({
                     include: { family: { include: { creator: true } } },
                   },
                   creator: true,
+                  source: true,
                   monsterConditions: { include: { condition: true } },
                 },
               },
@@ -457,6 +462,7 @@ export const updateCollection = async ({
               item: {
                 include: {
                   creator: true,
+                  source: true,
                 },
               },
             },

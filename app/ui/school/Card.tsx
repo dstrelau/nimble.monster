@@ -159,7 +159,10 @@ export function Card({
         </div>
       </CardContent>
 
-      <CardFooterLayout creator={creator || spellSchool.creator} />
+      <CardFooterLayout
+        creator={creator || spellSchool.creator}
+        source={spellSchool.source}
+      />
     </UICard>
   );
 }

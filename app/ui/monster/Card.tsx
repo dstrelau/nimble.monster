@@ -10,9 +10,9 @@ import { Link } from "@/components/app/Link";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { Level } from "@/components/Level";
 import {
-  Card as ShadcnCard,
   CardDescription,
   CardTitle,
+  Card as ShadcnCard,
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Monster } from "@/lib/services/monsters";
@@ -237,7 +237,6 @@ export const Card = ({
   const { allConditions: conditions } = useConditions({
     creatorId: creator?.discordId,
   });
-  console.log(monster.families.map((f) => f.abilities));
   return (
     <div
       className={cn(
@@ -312,6 +311,7 @@ export const Card = ({
 
           <CardFooterLayout
             creator={creator}
+            source={monster.source}
             hideActions={hideActions}
             actionsSlot={<CardActions monster={monster} />}
           />

@@ -55,6 +55,7 @@ export const findMonster = async (id: string): Promise<Monster | null> => {
     include: {
       monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
+      source: true,
       monsterConditions: { include: { condition: true } },
     },
   });
@@ -69,6 +70,7 @@ export const findPublicMonsterById = async (
     include: {
       monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
+      source: true,
       monsterConditions: { include: { condition: true } },
     },
   });
@@ -84,6 +86,7 @@ export const findMonsterWithCreatorId = async (
     include: {
       monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
+      source: true,
       monsterConditions: { include: { condition: true } },
     },
   });
@@ -100,6 +103,7 @@ export const listPublicMonstersForUser = async (
           include: { family: { include: { creator: true } } },
         },
         creator: true,
+        source: true,
         monsterConditions: { include: { condition: true } },
       },
       where: {
@@ -121,6 +125,7 @@ export const listAllMonstersForDiscordID = async (
           include: { family: { include: { creator: true } } },
         },
         creator: true,
+        source: true,
         monsterConditions: { include: { condition: true } },
       },
       where: { creator: { discordId: id } },
@@ -217,6 +222,7 @@ export const listMonstersByFamilyId = async (
           include: { family: { include: { creator: true } } },
         },
         creator: true,
+        source: true,
         monsterConditions: { include: { condition: true } },
       },
       where: {
@@ -333,6 +339,7 @@ export const createMonster = async (
     include: {
       monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
+      source: true,
       monsterConditions: { include: { condition: true } },
     },
   });
@@ -357,6 +364,7 @@ export const createMonster = async (
     include: {
       monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
+      source: true,
       monsterConditions: { include: { condition: true } },
     },
   });
@@ -487,6 +495,7 @@ export const updateMonster = async (
     include: {
       monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
+      source: true,
       monsterConditions: { include: { condition: true } },
     },
   });
@@ -514,6 +523,7 @@ export const updateMonster = async (
     include: {
       monsterFamilies: { include: { family: { include: { creator: true } } } },
       creator: true,
+      source: true,
       monsterConditions: { include: { condition: true } },
     },
   });

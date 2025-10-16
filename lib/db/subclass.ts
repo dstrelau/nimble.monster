@@ -35,6 +35,7 @@ export const listPublicSubclasses = async (): Promise<Subclass[]> => {
       orderBy: { name: "asc" },
       include: {
         creator: true,
+        source: true,
         abilities: {
           orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
         },
@@ -48,6 +49,7 @@ export const findSubclass = async (id: string): Promise<Subclass | null> => {
     where: { id },
     include: {
       creator: true,
+      source: true,
       abilities: {
         orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
       },
@@ -63,6 +65,7 @@ export const findPublicSubclassById = async (
     where: { id, visibility: "public" },
     include: {
       creator: true,
+      source: true,
       abilities: {
         orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
       },
@@ -79,6 +82,7 @@ export const findSubclassWithCreatorDiscordId = async (
     where: { id, creator: { discordId: creatorDiscordId } },
     include: {
       creator: true,
+      source: true,
       abilities: {
         orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
       },
@@ -94,6 +98,7 @@ export const listPublicSubclassesForUser = async (
     await prisma.subclass.findMany({
       include: {
         creator: true,
+        source: true,
         abilities: {
           orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
         },
@@ -114,6 +119,7 @@ export const listAllSubclassesForDiscordID = async (
     await prisma.subclass.findMany({
       include: {
         creator: true,
+        source: true,
         abilities: {
           orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
         },
@@ -244,6 +250,7 @@ export const createSubclass = async (
     },
     include: {
       creator: true,
+      source: true,
       abilities: {
         orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
       },
@@ -310,6 +317,7 @@ export const updateSubclass = async (
     },
     include: {
       creator: true,
+      source: true,
       abilities: {
         orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
       },

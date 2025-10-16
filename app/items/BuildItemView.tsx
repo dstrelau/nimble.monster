@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useId, useMemo, useState } from "react";
@@ -29,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { listAllSources } from "@/lib/db/source";
 import type { Item } from "@/lib/services/items";
 import { RARITIES } from "@/lib/services/items";
 import { UNKNOWN_USER } from "@/lib/types";
@@ -53,6 +55,7 @@ const formSchema = z.object({
     "legendary",
   ]),
   visibility: z.enum(["public", "private"]),
+  sourceId: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -109,6 +112,13 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const sourcesQuery = useQuery({
+    queryKey: ["sources"],
+    queryFn: async () => {
+      return await listAllSources();
+    },
+  });
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -122,6 +132,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
       imageBgColor: item?.imageBgColor || "",
       rarity: item?.rarity || "unspecified",
       visibility: item?.visibility || "public",
+      sourceId: item?.source?.id || "",
     },
   });
 
@@ -177,6 +188,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
         imageBgColor: data.imageBgColor,
         rarity: data.rarity,
         visibility: data.visibility,
+        sourceId: data.sourceId || undefined,
       };
       const result = isEditing
         ? await updateItem(item.id, payload)
@@ -360,6 +372,37 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
                 )}
               />
             </div>
+
+            {sourcesQuery.data && sourcesQuery.data.length > 0 && (
+              <FormField
+                control={form.control}
+                name="sourceId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Source</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="None" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="">None</SelectItem>
+                        {sourcesQuery.data.map((source) => (
+                          <SelectItem key={source.id} value={source.id}>
+                            {source.name} ({source.abbreviation})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             {session?.user && (
               <div className="flex flex-row justify-between items-center my-4">

@@ -26,6 +26,7 @@ export const toItem = (
     {
       include: {
         creator: true;
+        source: true;
       };
     },
     "findMany"
@@ -36,6 +37,7 @@ export const toItem = (
     description: i.description,
     moreInfo: i.moreInfo || undefined,
     creator: toUser(i.creator),
+    source: i.source || undefined,
   };
 };
 

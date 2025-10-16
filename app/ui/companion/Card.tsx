@@ -16,12 +16,12 @@ import {
   ShareMenuDownloadCardItem,
 } from "@/components/ShareMenu";
 import {
-  Card as ShadcnCard,
   CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  Card as ShadcnCard,
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { MonsterSize } from "@/lib/services/monsters";
@@ -126,6 +126,7 @@ export const Card = ({
 
         <CardFooterLayout
           creator={creator}
+          source={companion.source}
           hideActions={hideActions}
           actionsSlot={
             companion.id && (

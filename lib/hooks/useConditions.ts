@@ -6,6 +6,33 @@ import {
 } from "@/app/actions/conditions";
 import type { Condition } from "@/lib/types";
 
+export function officialConditionsQueryOptions(props?: {
+  staleTime?: number;
+  enabled?: boolean;
+}) {
+  return {
+    ...props,
+    queryKey: ["conditions", "official"],
+    queryFn: loadOfficialConditions,
+  };
+}
+
+export function userConditionsQueryOptions({
+  discordId,
+  ...props
+}: {
+  staleTime?: number;
+  enabled?: boolean;
+  discordId?: string;
+}) {
+  return {
+    ...props,
+    queryKey: ["conditions", discordId],
+    queryFn: () => loadConditionsForDiscordId(discordId ?? ""),
+    enabled: (props?.enabled ?? true) && !!discordId,
+  };
+}
+
 interface UseConditionsOptions {
   creatorId?: string;
   enabled?: boolean;
@@ -13,31 +40,28 @@ interface UseConditionsOptions {
 }
 
 export function useConditions({
-  creatorId,
+  creatorId: discordId,
   enabled = true,
   staleTime = 60 * 1000,
 }: UseConditionsOptions = {}) {
-  const creatorConditions = useQuery({
-    queryKey: ["conditions", creatorId],
-    queryFn: () => loadConditionsForDiscordId(creatorId || ""),
-    staleTime,
-    enabled: enabled && !!creatorId,
-  });
+  const creatorConditions = useQuery(
+    userConditionsQueryOptions({ staleTime, discordId })
+  );
 
   const { data: session } = useSession();
-  const ownConds = useQuery({
-    queryKey: ["conditions", session?.user?.id],
-    queryFn: () => loadConditionsForDiscordId(session?.user?.discordId || ""),
-    staleTime,
-    enabled: enabled && !!session?.user,
-  });
+  const ownConds = useQuery(
+    userConditionsQueryOptions({
+      staleTime,
+      discordId: session?.user?.discordId,
+    })
+  );
 
-  const officialConds = useQuery({
-    queryKey: ["conditions", "official"],
-    queryFn: loadOfficialConditions,
-    staleTime,
-    enabled,
-  });
+  const officialConds = useQuery(
+    officialConditionsQueryOptions({
+      staleTime,
+      enabled,
+    })
+  );
 
   const isLoading =
     creatorConditions.isLoading ||

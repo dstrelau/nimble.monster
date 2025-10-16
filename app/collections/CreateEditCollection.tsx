@@ -45,6 +45,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import type { Item, ItemMini, ItemRarityFilter } from "@/lib/services/items";
 import { RARITIES } from "@/lib/services/items";
+import { searchPublicItems } from "@/lib/services/items/repository";
 import type { Monster, MonsterMini, TypeFilter } from "@/lib/services/monsters";
 import type { Collection } from "@/lib/types";
 import { UNKNOWN_USER } from "@/lib/types";
@@ -54,7 +55,6 @@ import { SortSelect } from "../ui/monster/SortSelect";
 import { SearchInput } from "../ui/SearchInput";
 import { updateCollection } from "./[id]/edit/actions";
 import { VisibilityToggle } from "./[id]/edit/VisibilityToggle";
-import { searchPublicItems } from "@/lib/services/items/repository";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),

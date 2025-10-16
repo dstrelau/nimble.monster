@@ -1,4 +1,3 @@
-// app/monsters/page.tsx
 import { MonstersListView } from "@/app/ui/MonstersListView";
 import { monstersService } from "@/lib/services/monsters";
 

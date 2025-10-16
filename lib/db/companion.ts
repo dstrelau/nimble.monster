@@ -34,6 +34,7 @@ export const listPublicCompanions = async (): Promise<Companion[]> => {
       orderBy: { name: "asc" },
       include: {
         creator: true,
+        source: true,
       },
     })
   ).map(toCompanion);
@@ -44,6 +45,7 @@ export const findCompanion = async (id: string): Promise<Companion | null> => {
     where: { id },
     include: {
       creator: true,
+      source: true,
     },
   });
   return companion ? toCompanion(companion) : null;
@@ -56,6 +58,7 @@ export const findPublicCompanionById = async (
     where: { id: id, visibility: "public" as const },
     include: {
       creator: true,
+      source: true,
     },
   });
   return companion ? toCompanion(companion) : null;
@@ -69,6 +72,7 @@ export const findCompanionWithCreator = async (
     where: { id, creator: { id: creatorId } },
     include: {
       creator: true,
+      source: true,
     },
   });
   return companion ? toCompanion(companion) : null;
@@ -81,6 +85,7 @@ export const listPublicCompanionsForUser = async (
     await prisma.companion.findMany({
       include: {
         creator: true,
+        source: true,
       },
       where: {
         userId,
@@ -98,6 +103,7 @@ export const listAllCompanionsForDiscordID = async (
     await prisma.companion.findMany({
       include: {
         creator: true,
+        source: true,
       },
       where: { creator: { discordId: discordId } },
       orderBy: { name: "asc" },
@@ -171,6 +177,7 @@ export const createCompanion = async (
     },
     include: {
       creator: true,
+      source: true,
     },
   });
 
@@ -245,6 +252,7 @@ export const updateCompanion = async (
     },
     include: {
       creator: true,
+      source: true,
     },
   });
 

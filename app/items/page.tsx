@@ -1,11 +1,8 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { ItemsListView } from "@/app/items/ItemsListView";
+import { getQueryClient } from "@/lib/queryClient";
 import * as items from "@/lib/services/items/repository";
 import { getItemUrl } from "@/lib/utils/url";
 import { publicItemsInfiniteQueryOptions } from "./actions";
@@ -43,7 +40,7 @@ export default async function ItemsPage({
     if (item) redirect(getItemUrl(item));
   }
 
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
   await queryClient.prefetchInfiniteQuery(
     publicItemsInfiniteQueryOptions(params)
   );

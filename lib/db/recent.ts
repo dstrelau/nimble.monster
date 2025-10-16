@@ -60,6 +60,7 @@ export const getRecentPublicContent = async (
         where: { visibility: "public" },
         include: {
           creator: true,
+          source: true,
           monsterFamilies: {
             include: { family: { include: { creator: true } } },
           },
@@ -70,7 +71,7 @@ export const getRecentPublicContent = async (
       }),
       prisma.item.findMany({
         where: { visibility: "public" },
-        include: { creator: true },
+        include: { creator: true, source: true },
         orderBy: { createdAt: "desc" },
         take: limit,
       }),
@@ -90,6 +91,7 @@ export const getRecentPublicContent = async (
               monster: {
                 include: {
                   creator: true,
+                  source: true,
                   monsterFamilies: {
                     include: { family: { include: { creator: true } } },
                   },
@@ -100,7 +102,7 @@ export const getRecentPublicContent = async (
           itemCollections: {
             include: {
               item: {
-                include: { creator: true },
+                include: { creator: true, source: true },
               },
             },
           },
@@ -118,6 +120,7 @@ export const getRecentPublicContent = async (
               monster: {
                 include: {
                   creator: true,
+                  source: true,
                   monsterFamilies: {
                     include: { family: { include: { creator: true } } },
                   },

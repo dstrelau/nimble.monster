@@ -1,7 +1,7 @@
 "use client";
 
 import { planet } from "@lucide/lab";
-import { Beer, Coins, Icon, Mail, ScrollText } from "lucide-react";
+import { Beer, Coins, Icon, Mail, NotebookPen, ScrollText } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getSiteEmail, getSiteName } from "@/lib/utils/branding";
@@ -25,6 +25,11 @@ export const Footer = () => {
           icon: <ScrollText className="size-4" />,
           url: "/terms",
           text: "Terms",
+        },
+        {
+          icon: <NotebookPen className="size-4" />,
+          url: "/terms/attribution",
+          text: "Attribution",
         },
       ],
     },
@@ -92,16 +97,7 @@ export const Footer = () => {
               className="size-3 mr-0.5 inline align-baseline stroke-flame"
             />
             {siteName} is an independent product published under the Nimble 3rd
-            Party Creator License and is not affiliated with Nimble Co. Nimble ©
-            2025 Nimble Co.
-          </p>
-          <Link href="https://discord.gg/2etKN3aGfM" />
-          <p>
-            Card icons from the amazing{" "}
-            <Link href="https://github.com/game-icons/icons/blob/master/license.txt">
-              Game Icons
-            </Link>
-            , used under the CC-BY 3.0 license.
+            Party Creator License and is not affiliated with Nimble Co.
           </p>
           <p>
             Want to support development?{" "}

@@ -101,6 +101,7 @@ model MonsterFamily {
 model Monster {
   id                 String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userId             String                @map("user_id") @db.Uuid
+  sourceId           String?               @map("source_id") @db.Uuid
   name               String
   level              String
   hp                 Int
@@ -127,6 +128,7 @@ model Monster {
   minion             Boolean               @default(false)
   levelInt           Int                   @default(0) @map("level_int")
   creator            User                  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  source             Source?               @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
   monsterCollections MonsterInCollection[]
   monsterConditions  MonsterCondition[]
   monsterFamilies    MonsterFamily[]
@@ -151,9 +153,11 @@ model Companion {
   moreInfo      String?              @default("") @map("more_info")
   visibility    companion_visibility @default(public)
   userId        String               @map("user_id") @db.Uuid
+  sourceId      String?              @map("source_id") @db.Uuid
   createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt     DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   creator       User                 @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source        Source?              @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
 
   @@index([userId], map: "idx_companions_user_id")
   @@map("companions")
@@ -178,6 +182,7 @@ model Item {
   moreInfo        String?            @default("") @map("more_info")
   visibility      item_visibility    @default(public)
   userId          String             @map("user_id") @db.Uuid
+  sourceId        String?            @map("source_id") @db.Uuid
   createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt       DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   imageIcon       String?            @map("image_icon")
@@ -186,6 +191,7 @@ model Item {
   imageColor      String?            @map("image_color")
   imageBgColor    String?            @map("image_bg_color")
   creator         User               @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source          Source?            @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
   itemCollections ItemInCollection[]
 
   @@index([userId], map: "idx_items_user_id")
@@ -200,11 +206,13 @@ model Subclass {
   description String?
   visibility  subclass_visibility @default(public)
   userId      String              @map("user_id") @db.Uuid
+  sourceId    String?             @map("source_id") @db.Uuid
   createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   tagline     String?
   abilities   SubclassAbility[]
   creator     User                @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source      Source?             @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
 
   @@index([userId], map: "idx_subclasses_user_id")
   @@map("subclasses")
@@ -229,9 +237,11 @@ model SpellSchool {
   description String?
   visibility  spell_school_visibility @default(public)
   userId      String                  @map("user_id") @db.Uuid
+  sourceId    String?                 @map("source_id") @db.Uuid
   createdAt   DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime                @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   creator     User                    @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source      Source?                 @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
   spells      Spell[]
 
   @@index([userId], map: "idx_spell_schools_user_id")
@@ -369,4 +379,21 @@ enum subclass_visibility {
 enum spell_school_visibility {
   public
   private
+}
+
+model Source {
+  id           String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name         String
+  license      String
+  link         String
+  abbreviation String
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  monsters     Monster[]
+  items        Item[]
+  companions   Companion[]
+  subclasses   Subclass[]
+  spellSchools SpellSchool[]
+
+  @@map("sources")
 }

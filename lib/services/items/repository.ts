@@ -47,6 +47,7 @@ export const getRandomRecentItems = async (
       take: limit * 3,
       include: {
         creator: true,
+        source: true,
       },
     })
   ).map(toItem);
@@ -60,6 +61,7 @@ export const findItem = async (id: string): Promise<Item | null> => {
     where: { id },
     include: {
       creator: true,
+      source: true,
     },
   });
   return item ? toItem(item) : null;
@@ -93,6 +95,7 @@ export const findPublicItemById = async (id: string): Promise<Item | null> => {
     where: { id, visibility: "public" },
     include: {
       creator: true,
+      source: true,
     },
   });
   return item ? toItem(item) : null;
@@ -106,6 +109,7 @@ export const findItemWithCreatorDiscordId = async (
     where: { id, creator: { id: creatorId } },
     include: {
       creator: true,
+      source: true,
     },
   });
   return item ? toItem(item) : null;
@@ -118,6 +122,7 @@ export const listPublicItemsForUser = async (
     await prisma.item.findMany({
       include: {
         creator: true,
+        source: true,
       },
       where: {
         userId,
@@ -135,6 +140,7 @@ export const listAllItemsForDiscordID = async (
     await prisma.item.findMany({
       include: {
         creator: true,
+        source: true,
       },
       where: { creator: { discordId } },
       orderBy: { name: "asc" },
@@ -191,6 +197,7 @@ export const searchPublicItems = async ({
       skip: offset,
       include: {
         creator: true,
+        source: true,
       },
     })
   ).map(toItem);
@@ -211,6 +218,7 @@ export const createItem = async (
     imageBgColor,
     rarity,
     visibility,
+    sourceId,
   } = input;
 
   const user = await prisma.user.findUnique({
@@ -236,9 +244,11 @@ export const createItem = async (
       creator: {
         connect: { id: user.id },
       },
+      ...(sourceId && { source: { connect: { id: sourceId } } }),
     },
     include: {
       creator: true,
+      source: true,
     },
   });
 
@@ -263,6 +273,7 @@ export const updateItem = async (
     imageBgColor,
     rarity,
     visibility,
+    sourceId,
   } = input;
 
   if (!isValidUUID(id)) {
@@ -285,9 +296,13 @@ export const updateItem = async (
       imageBgColor,
       rarity,
       visibility,
+      ...(sourceId !== undefined && {
+        source: sourceId ? { connect: { id: sourceId } } : { disconnect: true },
+      }),
     },
     include: {
       creator: true,
+      source: true,
     },
   });
 

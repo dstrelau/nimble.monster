@@ -34,6 +34,7 @@ export const listPublicSpellSchools = async (): Promise<SpellSchool[]> => {
       orderBy: { name: "asc" },
       include: {
         creator: true,
+        source: true,
         spells: {
           orderBy: [{ tier: "asc" }, { name: "asc" }],
         },
@@ -49,6 +50,7 @@ export const findSpellSchool = async (
     where: { id },
     include: {
       creator: true,
+      source: true,
       spells: {
         orderBy: { name: "asc" },
       },
@@ -67,6 +69,7 @@ export const findSpellSchoolWithCreatorDiscordId = async (
     where: { id, creator: { discordId: creatorDiscordId } },
     include: {
       creator: true,
+      source: true,
       spells: {
         orderBy: { name: "asc" },
       },
@@ -82,6 +85,7 @@ export const listAllSpellSchoolsForDiscordID = async (
     await prisma.spellSchool.findMany({
       include: {
         creator: true,
+        source: true,
         spells: {
           orderBy: [{ tier: "asc" }, { name: "asc" }],
         },
@@ -198,6 +202,7 @@ export const createSpellSchool = async (
     },
     include: {
       creator: true,
+      source: true,
       spells: {
         orderBy: { name: "asc" },
       },
@@ -271,6 +276,7 @@ export const updateSpellSchool = async (
     },
     include: {
       creator: true,
+      source: true,
       spells: {
         orderBy: { name: "asc" },
       },

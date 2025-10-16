@@ -30,6 +30,7 @@ export const toMonster = (
           include: { family: { include: { creator: true } } };
         };
         creator: true;
+        source: true;
       };
     },
     "findMany"
@@ -65,6 +66,7 @@ export const toMonster = (
       .filter((f): f is FamilyOverview => f !== undefined)
       .sort((a, b) => a.name.localeCompare(b.name)),
     creator: toUser(m.creator),
+    source: m.source || undefined,
   };
 };
 

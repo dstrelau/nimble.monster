@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import type { ItemRarity, ItemRarityFilter } from "@/lib/services/items";
+import type { ItemRarity } from "@/lib/services/items";
 import { itemsService } from "@/lib/services/items";
 import { getItemUrl } from "@/lib/utils/url";
 

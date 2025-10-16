@@ -1,4 +1,4 @@
-import type { User } from "@/lib/types";
+import type { Source, User } from "@/lib/types";
 
 export const RARITIES = [
   { value: "unspecified", label: "Unspecified" },
@@ -30,6 +30,7 @@ export interface Item extends ItemMini {
   description: string;
   moreInfo?: string;
   creator: User;
+  source?: Source;
 }
 
 export type ItemSortBy = "name" | "createdAt";
@@ -55,6 +56,7 @@ export interface CreateItemInput {
   imageBgColor?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
+  sourceId?: string;
 }
 
 export interface UpdateItemInput {
@@ -68,4 +70,5 @@ export interface UpdateItemInput {
   imageBgColor?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
+  sourceId?: string;
 }

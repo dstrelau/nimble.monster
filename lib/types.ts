@@ -100,6 +100,7 @@ export interface Companion extends CompanionMini {
   dyingRule: string;
   moreInfo?: string;
   creator: User;
+  source?: Source;
   updatedAt: Date;
   imageUrl?: string;
 }
@@ -224,6 +225,7 @@ export interface Subclass extends SubclassMini {
   description?: string;
   levels: SubclassLevel[];
   creator: User;
+  source?: Source;
   updatedAt: Date;
 }
 
@@ -289,6 +291,7 @@ export interface SpellSchool extends SpellSchoolMini {
   description?: string;
   spells: Spell[];
   creator: User;
+  source?: Source;
   updatedAt: Date;
 }
 
@@ -297,3 +300,13 @@ export type SpellSchoolSortOption =
   | "name-desc"
   | "created-asc"
   | "created-desc";
+
+export interface Source {
+  id: string;
+  name: string;
+  license: string;
+  link: string;
+  abbreviation: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

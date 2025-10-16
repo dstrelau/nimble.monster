@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import {
   CircleAlert,
@@ -61,9 +61,10 @@ import {
 import { UNKNOWN_USER } from "@/lib/types";
 import { levelIntToDisplay } from "@/lib/utils";
 import { getMonsterUrl } from "@/lib/utils/url";
-import { getUserFamilies } from "../families/actions";
+import { useUserFamiliesQuery } from "../families/hooks";
 import { AbilitiesSection } from "../ui/create/AbilitiesSection";
 import { ActionsSection } from "../ui/create/ActionsSection";
+import { useMonsterSourcesQuery } from "./hooks";
 
 const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
   goblin: {
@@ -223,12 +224,7 @@ const FamilySection: React.FC<{
   setMonster: (m: Monster) => void;
 }> = ({ monster, setMonster }) => {
   const { data: session } = useSession();
-  const userFamilies = useQuery({
-    queryKey: ["userFamilies"],
-    queryFn: async () => {
-      const result = await getUserFamilies();
-      return result.success ? result.families : [];
-    },
+  const userFamilies = useUserFamiliesQuery({
     enabled: !!session?.user,
   });
 
@@ -812,6 +808,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
     () => existingMonster || { ...EXAMPLE_MONSTERS.empty, creator }
   );
   const queryClient = useQueryClient();
+  const sourcesQuery = useMonsterSourcesQuery();
 
   const mutation = useMutation({
     mutationFn: async (data: Monster) => {
@@ -915,12 +912,30 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
             </Tabs>
           </div>
 
-          {/*{hasInvalidConditions && (
-            <MissingConditionsForm
-              conditionNames={allInvalidConditions}
-              onConditionsChange={setNewConditions}
-            />
-          )}*/}
+          <FormSelect
+            label="Source"
+            name="source"
+            className="max-w-sm"
+            choices={[
+              { value: "none", label: "None" },
+              ...(sourcesQuery.data || []).map((s) => ({
+                value: s.id,
+                label: `${s.name} (${s.abbreviation})`,
+              })),
+            ]}
+            selected={monster.source?.id || "none"}
+            onChange={(sourceId) => {
+              if (sourceId === "none") {
+                const { source: _, ...rest } = monster;
+                setMonster(rest);
+              } else {
+                const source = sourcesQuery.data?.find(
+                  (s) => s.id === sourceId
+                );
+                setMonster({ ...monster, source });
+              }
+            }}
+          />
 
           {session?.user && (
             <div className="flex flex-row justify-between items-center my-4">

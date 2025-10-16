@@ -46,6 +46,7 @@ export const getUserFamiliesWithMonsters = async (
           monster: {
             include: {
               creator: true,
+              source: true,
               monsterFamilies: {
                 include: { family: { include: { creator: true } } },
               },
@@ -93,6 +94,7 @@ export const listPublicFamiliesHavingMonstersForUser = async (
           monster: {
             include: {
               creator: true,
+              source: true,
               monsterFamilies: {
                 include: { family: { include: { creator: true } } },
               },
@@ -303,6 +305,7 @@ export const getRandomFeaturedFamily = async (): Promise<Family | null> => {
           monster: {
             include: {
               creator: true,
+              source: true,
               monsterFamilies: {
                 include: { family: { include: { creator: true } } },
               },
