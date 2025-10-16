@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import * as db from "@/lib/db";
+import * as monstersRepo from "@/lib/services/monsters/repository";
 import { NewCollection } from "./NewCollectionClient";
 
 export default async function NewCollectionPage() {
@@ -10,7 +10,7 @@ export default async function NewCollectionPage() {
     redirect("/create");
   }
 
-  const myMonsters = await db.listAllMonstersForDiscordID(
+  const myMonsters = await monstersRepo.listAllMonstersForDiscordID(
     session.user.discordId
   );
 

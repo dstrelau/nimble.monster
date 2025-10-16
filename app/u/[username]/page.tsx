@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { UserAvatar } from "@/components/app/UserAvatar";
 import * as db from "@/lib/db";
 import { itemsService } from "@/lib/services/items";
+import * as monstersRepo from "@/lib/services/monsters/repository";
 import { getSiteName } from "@/lib/utils/branding";
 import TabsContent from "./TabsContent";
 
@@ -26,7 +27,7 @@ export async function generateMetadata({
   const siteName = getSiteName(hostname);
 
   const [monsters, items, collections, companions] = await Promise.all([
-    db.listPublicMonstersForUser(user.id),
+    monstersRepo.listPublicMonstersForUser(user.id),
     itemsService.listPublicItemsForUser(user.id),
     db.listPublicCollectionsHavingMonstersForUser(user.id),
     db.listPublicCompanionsForUser(user.id),
@@ -70,7 +71,7 @@ export default async function UserProfilePage({
 
   const [monsters, collections, families, companions, items] =
     await Promise.all([
-      db.listPublicMonstersForUser(user.id),
+      monstersRepo.listPublicMonstersForUser(user.id),
       db.listPublicCollectionsHavingMonstersForUser(user.id),
       db.listPublicFamiliesHavingMonstersForUser(user.id),
       db.listPublicCompanionsForUser(user.id),

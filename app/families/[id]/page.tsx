@@ -5,6 +5,7 @@ import { FamilyHeader } from "@/app/families/FamilyHeader";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import * as monstersRepo from "@/lib/services/monsters/repository";
 import { getSiteName } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getFamilyUrl } from "@/lib/utils/url";
@@ -26,7 +27,7 @@ export async function generateMetadata({
   const hostname = headersList.get("host") || "";
   const siteName = getSiteName(hostname);
 
-  const publicMonsters = await db.listMonstersByFamilyId(uid);
+  const publicMonsters = await monstersRepo.listMonstersByFamilyId(uid);
 
   const creatorText = family.creator?.displayName
     ? ` by ${family.creator.displayName}`
@@ -73,7 +74,7 @@ export default async function FamilyDetailPage({
 
   const [session, monsters] = await Promise.all([
     auth(),
-    db.listMonstersByFamilyId(uid),
+    monstersRepo.listMonstersByFamilyId(uid),
   ]);
 
   const isCreator = session?.user?.discordId === family.creatorId;
