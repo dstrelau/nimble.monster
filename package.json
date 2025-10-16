@@ -3,16 +3,18 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "prisma generate && node tools/sync-icons.js && next build",
-    "lint": "biome check .",
-    "type-check": "tsc --noEmit",
+    "build": "next build",
     "check": "pnpm run lint && pnpm run type-check",
+    "deploy": "prisma generate && node tools/sync-icons.js && next build && prisma migrate deploy",
+    "dev": "next dev --turbopack",
+    "lint": "biome check .",
+    "migrate:deploy": "prisma migrate deploy",
+    "postinstall": "prisma generate",
+    "start": "next start",
+    "sync-icons": "node tools/sync-icons.js",
     "test": "vitest",
     "test:run": "vitest run",
-    "start": "next start",
-    "postinstall": "prisma generate",
-    "sync-icons": "node tools/sync-icons.js"
+    "type-check": "tsc --noEmit"
   },
   "node": {
     "child_process": "empty"

@@ -48,17 +48,17 @@ model ItemInCollection {
 }
 
 model Family {
-  id              String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  creatorId       String          @map("user_id") @db.Uuid
+  id              String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  creatorId       String            @map("user_id") @db.Uuid
   visibility      family_visibility @default(public)
   name            String
   abilities       Json[]
-  createdAt       DateTime?       @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt       DateTime?       @default(now()) @map("updated_at") @db.Timestamptz(6)
+  createdAt       DateTime?         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime?         @default(now()) @map("updated_at") @db.Timestamptz(6)
   description     String?
-  featured        Boolean         @default(false)
+  featured        Boolean           @default(false)
   monsterFamilies MonsterFamily[]
-  creator         User            @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
+  creator         User              @relation(fields: [creatorId], references: [id], onUpdate: NoAction)
 
   @@map("families")
 }

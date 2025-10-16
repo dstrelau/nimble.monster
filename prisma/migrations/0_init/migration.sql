@@ -64,7 +64,7 @@ CREATE TABLE "monsters" (
     "swim" INTEGER NOT NULL DEFAULT 0,
     "actions" JSONB[],
     "abilities" JSONB[],
-    "legendary" BOOLEAN NOT NULL DEFAULT false,
+    "legendary" BOOLEAN DEFAULT false,
     "bloodied" TEXT NOT NULL DEFAULT '',
     "last_stand" TEXT NOT NULL DEFAULT '',
     "saves" TEXT[],
@@ -111,26 +111,22 @@ CREATE INDEX "idx_monsters_user_id" ON "monsters"("user_id");
 CREATE INDEX "idx_sessions_expires_at" ON "sessions"("expires_at");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "idx_users_discord_id" ON "users"("discord_id");
+CREATE UNIQUE INDEX "users_discord_id_key" ON "users"("discord_id");
 
 -- AddForeignKey
-ALTER TABLE "collections" ADD CONSTRAINT "collections_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
+ALTER TABLE "collections" ADD CONSTRAINT "collections_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id");
 
 -- AddForeignKey
-ALTER TABLE "monsters_collections" ADD CONSTRAINT "monsters_collections_monster_id_fkey" FOREIGN KEY ("monster_id") REFERENCES "monsters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "monsters_collections" ADD CONSTRAINT "monsters_collections_monster_id_fkey" FOREIGN KEY ("monster_id") REFERENCES "monsters"("id") ON DELETE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "monsters_collections" ADD CONSTRAINT "monsters_collections_collection_id_fkey" FOREIGN KEY ("collection_id") REFERENCES "collections"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "monsters_collections" ADD CONSTRAINT "monsters_collections_collection_id_fkey" FOREIGN KEY ("collection_id") REFERENCES "collections"("id");
 
 -- AddForeignKey
-ALTER TABLE "families" ADD CONSTRAINT "families_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
+ALTER TABLE "monsters" ADD CONSTRAINT "monsters_family_id_fkey" FOREIGN KEY ("family_id") REFERENCES "families"("id");
 
 -- AddForeignKey
-ALTER TABLE "monsters" ADD CONSTRAINT "monsters_family_id_fkey" FOREIGN KEY ("family_id") REFERENCES "families"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "monsters" ADD CONSTRAINT "monsters_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id");
 
 -- AddForeignKey
-ALTER TABLE "monsters" ADD CONSTRAINT "monsters_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
-
--- AddForeignKey
-ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE NO ACTION;
-
+ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id");

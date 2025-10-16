@@ -12,9 +12,6 @@ SELECT "id", "family_id"
 FROM "monsters"
 WHERE "family_id" IS NOT NULL;
 
--- Drop the old family_id column
-ALTER TABLE "monsters" DROP COLUMN "family_id";
-
 -- AddForeignKey
 ALTER TABLE "monsters_families" ADD CONSTRAINT "monsters_families_monster_id_fkey" FOREIGN KEY ("monster_id") REFERENCES "monsters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
