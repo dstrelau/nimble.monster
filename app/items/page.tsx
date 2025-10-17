@@ -27,11 +27,9 @@ export default async function ItemsPage({
 }) {
   const rawParams = await searchParams;
   const parseResult = searchParamsSchema.safeParse(rawParams);
-
   if (!parseResult.success) {
     redirect("/items");
   }
-
   const params = parseResult.data;
 
   if (params.id) {

@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/db";
 import { toUser } from "@/lib/db/converters";
+import type { Prisma } from "@/lib/prisma";
 import type { InputJsonValue } from "@/lib/prisma/runtime/library";
-import type { Action } from "@/lib/types";
+import type { Action, Source } from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
@@ -10,9 +11,9 @@ import { toMonster, toMonsterMini } from "./converters";
 import { syncMonsterFamilies } from "./families";
 import type {
   CreateMonsterInput,
-  ListMonstersParams,
   Monster,
   MonsterMini,
+  PaginateMonstersParams,
   SearchMonstersParams,
   UpdateMonsterInput,
 } from "./types";
@@ -45,12 +46,14 @@ export const listPublicMonsterMinis = async (): Promise<MonsterMini[]> => {
   ).map(toMonsterMini);
 };
 
-export const listPublicMonsters = async ({
+export const paginatePublicMonsters = async ({
   cursor,
   limit = 100,
-  sort = "name",
-}: ListMonstersParams): Promise<{
-  monsters: Monster[];
+  sort = "-createdAt",
+  search,
+  type = "all",
+}: PaginateMonstersParams): Promise<{
+  data: Monster[];
   nextCursor: string | null;
 }> => {
   const cursorData = cursor ? decodeCursor(cursor) : null;
@@ -77,21 +80,23 @@ export const listPublicMonsters = async ({
   } else {
     orderBy = [{ levelInt: sortDir }, { id: "asc" }];
   }
+  const where: Prisma.MonsterWhereInput = { visibility: "public" };
 
-  const where: {
-    visibility: "public";
-    OR?: Array<{
-      name?: { gt?: string; lt?: string };
-      createdAt?: { gt?: Date; lt?: Date };
-      levelInt?: { gt?: number; lt?: number };
-      AND?: Array<{
-        name?: string;
-        createdAt?: Date;
-        levelInt?: number;
-        id?: { gt: string };
-      }>;
-    }>;
-  } = { visibility: "public" };
+  if (type === "legendary") {
+    where.legendary = true;
+  } else if (type === "minion") {
+    where.minion = true;
+  } else if (type === "standard") {
+    where.minion = false;
+    where.legendary = false;
+  }
+
+  if (search) {
+    where.OR = [
+      { name: { contains: search, mode: "insensitive" } },
+      { kind: { contains: search, mode: "insensitive" } },
+    ];
+  }
 
   if (cursorData) {
     const op = isDesc ? "lt" : "gt";
@@ -169,7 +174,7 @@ export const listPublicMonsters = async ({
   }
 
   return {
-    monsters: results.map(toMonster),
+    data: results.map(toMonster),
     nextCursor,
   };
 };
@@ -574,4 +579,20 @@ export const updateMonster = async (
   );
 
   return toMonster(updatedMonster);
+};
+
+export const listAllSources = async (): Promise<Source[]> => {
+  const sources = await prisma.source.findMany({
+    orderBy: { name: "asc" },
+  });
+
+  return sources.map((s) => ({
+    id: s.id,
+    name: s.name,
+    license: s.license,
+    link: s.link,
+    abbreviation: s.abbreviation,
+    createdAt: s.createdAt,
+    updatedAt: s.updatedAt,
+  }));
 };

@@ -1,6 +1,9 @@
 "use server";
-import { listAllSources } from "@/lib/db/source";
 
-export async function listAllMonsterSources() {
-  return listAllSources();
-}
+import { listAllSources, monstersService } from "@/lib/services/monsters";
+import type { PaginateMonstersParams } from "@/lib/services/monsters/service";
+
+export const listAllMonsterSources = async () => listAllSources();
+
+export const paginatePublicMonsters = async (params: PaginateMonstersParams) =>
+  monstersService.paginatePublicMonsters(params);

@@ -1,11 +1,30 @@
+import { z } from "zod";
+import type { Source } from "@/lib/types";
 import * as repository from "./repository";
-import type {
-  CreateMonsterInput,
-  Monster,
-  MonsterMini,
-  SearchMonstersParams,
-  UpdateMonsterInput,
+import {
+  type CreateMonsterInput,
+  type Monster,
+  type MonsterMini,
+  MonsterTypeOptions,
+  PaginateMonstersSortOptions,
+  type SearchMonstersParams,
+  type UpdateMonsterInput,
 } from "./types";
+
+const PaginateMonstersSchema = z.object({
+  search: z.string().optional(),
+  sort: z.enum(PaginateMonstersSortOptions).default("-createdAt"),
+  limit: z.number().min(1).max(100).default(10),
+  cursor: z.string().optional(),
+  type: z.enum(MonsterTypeOptions).optional(),
+});
+
+export type PaginateMonstersParams = z.infer<typeof PaginateMonstersSchema>;
+
+export type PaginatePublicMonstersResponse = {
+  data: Monster[];
+  nextCursor: string | null;
+};
 
 export class MonstersService {
   async getPublicMonster(id: string): Promise<Monster | null> {
@@ -16,12 +35,15 @@ export class MonstersService {
     return repository.findMonster(monsterId);
   }
 
-  async searchMonsters(params: SearchMonstersParams): Promise<MonsterMini[]> {
-    return repository.searchPublicMonsterMinis(params);
+  async paginatePublicMonsters(
+    params: PaginateMonstersParams
+  ): Promise<PaginatePublicMonstersResponse> {
+    const parsedParams = PaginateMonstersSchema.parse(params);
+    return repository.paginatePublicMonsters(parsedParams);
   }
 
-  async listPublicMonsters(): Promise<MonsterMini[]> {
-    return repository.listPublicMonsterMinis();
+  async searchMonsters(params: SearchMonstersParams): Promise<MonsterMini[]> {
+    return repository.searchPublicMonsterMinis(params);
   }
 
   async listPublicMonstersForUser(userId: string): Promise<Monster[]> {
@@ -83,6 +105,10 @@ export class MonstersService {
     }
 
     return repository.deleteMonster(monsterId, userDiscordId);
+  }
+
+  async listAllSources(): Promise<Source[]> {
+    return repository.listAllSources();
   }
 }
 

@@ -1,5 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { listAllMonsterSources } from "./actions";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import type { PaginatePublicMonstersResponse } from "@/lib/services/monsters/service";
+import type {
+  MonsterTypeOption,
+  PaginateMonstersSortOption,
+} from "@/lib/services/monsters/types";
+import { listAllMonsterSources, paginatePublicMonsters } from "./actions";
 
 export function monsterSourcesQueryOptions(props?: { enabled?: boolean }) {
   return {
@@ -14,4 +19,28 @@ export function monsterSourcesQueryOptions(props?: { enabled?: boolean }) {
 
 export function useMonsterSourcesQuery(props?: { enabled?: boolean }) {
   return useQuery(monsterSourcesQueryOptions(props));
+}
+
+export function publicMonstersInfiniteQueryOptions({
+  search,
+  sort = "-createdAt",
+  type = "all",
+  limit = 12,
+}: Partial<{
+  search?: string;
+  sort: PaginateMonstersSortOption;
+  type: MonsterTypeOption;
+  limit?: number;
+}> = {}) {
+  const params = { search, sort, type, limit };
+  return {
+    queryKey: ["monsters", params],
+    queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>
+      paginatePublicMonsters({ cursor, ...params }),
+    placeholderData: keepPreviousData,
+    initialPageParam: undefined,
+    getNextPageParam: (last: PaginatePublicMonstersResponse) => {
+      return last.nextCursor;
+    },
+  };
 }

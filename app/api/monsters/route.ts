@@ -61,11 +61,12 @@ export const GET = telemetry(async (request: Request) => {
   });
   cursor && span?.setAttributes({ "params.cursor": cursor });
 
-  const { monsters, nextCursor } = await repository.listPublicMonsters({
-    cursor,
-    limit,
-    sort,
-  });
+  const { data: monsters, nextCursor } =
+    await repository.paginatePublicMonsters({
+      cursor,
+      limit,
+      sort,
+    });
 
   const data = monsters.map(toJsonApiMonster);
 

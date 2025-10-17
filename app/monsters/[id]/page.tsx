@@ -10,6 +10,7 @@ import { monstersService } from "@/lib/services/monsters";
 import { getSiteName } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterImageUrl, getMonsterUrl } from "@/lib/utils/url";
+import { cn } from "@/lib/utils";
 
 export const experimental_ppr = true;
 
@@ -100,7 +101,12 @@ export default async function MonsterPage({
           <AddToCollectionDialog type="monster" monsterId={monster.id} />
         )}
       </div>
-      <div className="max-w-2xl mx-auto flex flex-col items-center gap-12">
+      <div
+        className={cn(
+          "mx-auto flex flex-col items-center gap-12",
+          monster.legendary ? "max-w-2xl" : "max-w-md"
+        )}
+      >
         <Card monster={monster} creator={monster.creator} link={false} />
         <MonsterCollections collections={collections} />
       </div>

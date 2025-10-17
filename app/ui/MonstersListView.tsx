@@ -1,140 +1,107 @@
 "use client";
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Ghost } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useDebouncedValue } from "@tanstack/react-pacer";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
-import { useEffect, useState } from "react";
-import { Card } from "@/app/ui/monster/Card";
-import { useSimpleMonsterFilters } from "@/lib/hooks/useSimpleMonsterFilters";
-import type { MonsterMini } from "@/lib/services/monsters";
-import { findPublicMonster } from "../actions/monster";
-import { List } from "./monster/List";
+import { Button } from "@/components/ui/button";
+import {
+  MonsterTypeOptions,
+  PaginateMonstersSortOptions,
+} from "@/lib/services/monsters/types";
+import { cn } from "@/lib/utils";
+import { publicMonstersInfiniteQueryOptions } from "../monsters/hooks";
+import { Card } from "./monster/Card";
 import { SimpleFilterBar } from "./monster/SimpleFilterBar";
 
-interface MonstersListViewProps {
-  monsters: MonsterMini[];
-  initialSelectedId?: string;
-}
+export const MonstersListView: React.FC = () => {
+  const [rawSearchQuery, setSearchQuery] = useQueryState("search");
+  const [searchQuery] = useDebouncedValue(rawSearchQuery, { wait: 250 });
 
-export const MonstersListView: React.FC<MonstersListViewProps> = ({
-  monsters,
-  initialSelectedId,
-}) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const [selectedMonsterId, setSelectedMonsterId] = useState<string | null>(
-    initialSelectedId || null
+  const [sortQuery, setSortQuery] = useQueryState(
+    "sort",
+    parseAsStringLiteral(PaginateMonstersSortOptions).withDefault("-createdAt")
   );
-  const [shouldScrollToSelected, setShouldScrollToSelected] = useState(false);
+  const [typeQuery, setTypeQuery] = useQueryState(
+    "type",
+    parseAsStringLiteral(MonsterTypeOptions).withDefault("all")
+  );
 
-  const {
-    searchTerm,
-    legendaryFilter,
-    sortOption,
-    filteredMonsters,
-    shouldClearSelection,
-    handleSearch,
-    setLegendaryFilter,
-    setSortOption,
-  } = useSimpleMonsterFilters({ monsters, selectedMonsterId });
+  const { data, isLoading, isFetching, fetchNextPage, hasNextPage, error } =
+    useInfiniteQuery(
+      publicMonstersInfiniteQueryOptions({
+        sort: sortQuery,
+        search: searchQuery ?? undefined,
+        type: typeQuery,
+      })
+    );
 
-  useEffect(() => {
-    if (initialSelectedId) {
-      setSelectedMonsterId(initialSelectedId);
-    }
-  }, [initialSelectedId]);
+  if (isLoading) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    if (!searchParams.get("id")) {
-      setSelectedMonsterId(null);
-    }
-  }, [searchParams]);
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">{error.message}</p>
+      </div>
+    );
+  }
 
-  // Clear selection if the selected monster is filtered out
-  useEffect(() => {
-    if (shouldClearSelection) {
-      setSelectedMonsterId(null);
-      const params = new URLSearchParams(searchParams);
-      params.delete("id");
-      router.push(`${pathname}?${params.toString()}`, { scroll: false });
-    }
-  }, [shouldClearSelection, router, pathname, searchParams]);
-
-  // Scroll to selected monster on initial load
-  useEffect(() => {
-    if (selectedMonsterId) {
-      const timer = setTimeout(() => {
-        setShouldScrollToSelected(true);
-        const clearTimer = setTimeout(
-          () => setShouldScrollToSelected(false),
-          100
-        );
-        return () => clearTimeout(clearTimer);
-      }, 100); // Small delay to ensure list is rendered
-      return () => clearTimeout(timer);
-    }
-  }, [selectedMonsterId]);
-
-  const selectedMonster = useQuery({
-    queryKey: ["monster", selectedMonsterId],
-    queryFn: async () => {
-      const result = await findPublicMonster(selectedMonsterId || "");
-      if (!result.success || !result.monster) {
-        throw new Error(result.error || "Monster not found");
-      }
-      return result.monster;
-    },
-    enabled: !!selectedMonsterId,
-    placeholderData: keepPreviousData,
-  });
-
-  const handleMonsterClick = (monsterId: string) => {
-    setSelectedMonsterId(monsterId);
-    const params = new URLSearchParams(searchParams);
-    params.set("id", monsterId);
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+  const filteredMonsters = data?.pages.flatMap((page) => page.data);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6">
-      {/* Left side: List with filters */}
-      <div className="w-full lg:w-1/3 flex flex-col">
-        <SimpleFilterBar
-          searchTerm={searchTerm}
-          legendaryFilter={legendaryFilter}
-          sortOption={sortOption}
-          onSearch={handleSearch}
-          onLegendaryFilterChange={setLegendaryFilter}
-          onSortChange={setSortOption}
-        />
+    <div className="space-y-6">
+      <SimpleFilterBar
+        searchTerm={searchQuery}
+        sortOption={sortQuery}
+        onSearch={setSearchQuery}
+        onSortChange={setSortQuery}
+        typeFilter={typeQuery}
+        onTypeFilterChange={setTypeQuery}
+      />
 
-        {/* Monster list */}
-        <List
-          monsters={filteredMonsters}
-          selectedIds={selectedMonsterId ? [selectedMonsterId] : []}
-          handleMonsterClick={handleMonsterClick}
-          scrollToSelected={shouldScrollToSelected}
-        />
-      </div>
-
-      {/* Right side: Detail view */}
-      <div className="w-full lg:w-2/3">
-        {selectedMonster.data ? (
-          <div className="sticky top-4 grid grid-cols-1 gap-4">
-            <Card
-              monster={selectedMonster.data}
-              creator={selectedMonster.data.creator}
-            />
-          </div>
-        ) : (
-          <div className="d-card d-card-bordered bg-base-100 p-8 h-full flex items-center justify-center text-center">
-            <Ghost className="stroke-muted-foreground" size={96} />
-          </div>
-        )}
-      </div>
+      {!filteredMonsters || filteredMonsters?.length === 0 ? (
+        <div className="col-span-4 text-center text-muted-foreground">
+          No monsters found.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredMonsters.map((monster) => (
+            <div
+              key={monster.id}
+              className={cn(
+                "w-full max-w-sm mx-auto",
+                monster.legendary && "max-w-3xl sm:col-span-2 md:col-span-2",
+                monster.legendary &&
+                  typeQuery === "legendary" &&
+                  "md:col-span-3"
+              )}
+            >
+              <Card
+                monster={monster}
+                creator={monster.creator}
+                hideDescription={true}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+      {data?.pages.at(-1)?.data.length === 12 && hasNextPage && (
+        <div className="flex justify-center">
+          <Button
+            className="min-w-2xs"
+            onClick={() => fetchNextPage()}
+            disabled={isFetching}
+          >
+            Load More
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type ItemRarity, RARITIES } from "@/lib/services/items";
+import { SortSelect } from "@/components/app/SortSelect";
 
 interface ItemFilterBarProps {
   searchTerm: string | null;
@@ -61,19 +62,11 @@ export const ItemFilterBar: React.FC<ItemFilterBarProps> = ({
         </SelectContent>
       </Select>
 
-      <Select value={sortOption} onValueChange={onSortChange}>
-        <SelectTrigger>
-          <ArrowDownUp className="h-4 w-4" />
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {SORT_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <SortSelect
+        items={SORT_OPTIONS}
+        value={sortOption}
+        onChange={onSortChange}
+      />
     </FilterBar>
   );
 };

@@ -1,66 +1,82 @@
 "use client";
 
-import { Crown, User } from "lucide-react";
+import { Crown, PersonStanding, User } from "lucide-react";
 import { FilterBar } from "@/app/ui/FilterBar";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { SortSelect } from "./SortSelect";
-
-export type LegendaryFilter = "all" | "legendary" | "standard";
-export type SortOption =
-  | "name-asc"
-  | "name-desc"
-  | "level-asc"
-  | "level-desc"
-  | "hp-asc"
-  | "hp-desc"
-  | "created-asc"
-  | "created-desc";
+import { SortSelect } from "@/components/app/SortSelect";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type {
+  MonsterTypeOption,
+  PaginateMonstersSortOption,
+} from "@/lib/services/monsters/types";
 
 interface SimpleFilterBarProps {
-  searchTerm: string;
-  legendaryFilter: LegendaryFilter;
-  sortOption: SortOption;
-  onSearch: (value: string) => void;
-  onLegendaryFilterChange: (filter: LegendaryFilter) => void;
-  onSortChange: (sort: SortOption) => void;
+  searchTerm: string | null;
+  typeFilter: MonsterTypeOption;
+  onTypeFilterChange: (filter: MonsterTypeOption) => void;
+  sortOption: PaginateMonstersSortOption;
+  onSearch: (value: string | null) => void;
+  onSortChange: (sort: PaginateMonstersSortOption) => void;
 }
+
+const TYPE_OPTIONS: {
+  value: MonsterTypeOption;
+  label: string;
+  icon?: React.ReactNode;
+}[] = [
+  { value: "all", label: "All" },
+  { value: "standard", label: "Standard", icon: <User size={4} /> },
+  { value: "legendary", label: "Legendary", icon: <Crown size={4} /> },
+  { value: "minion", label: "Minion", icon: <PersonStanding size={4} /> },
+];
+
+const SORT_OPTIONS: { value: PaginateMonstersSortOption; label: string }[] = [
+  { value: "-createdAt", label: "Newest First" },
+  { value: "createdAt", label: "Oldest First" },
+  { value: "name", label: "Name (A→Z)" },
+  { value: "-name", label: "Name (Z→A)" },
+  { value: "level", label: "Level (Low→High)" },
+  { value: "-level", label: "Level (High→Low)" },
+];
 
 export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
   searchTerm,
-  legendaryFilter,
+  typeFilter,
+  onTypeFilterChange,
   sortOption,
   onSearch,
-  onLegendaryFilterChange,
   onSortChange,
 }) => {
   return (
     <FilterBar
       searchTerm={searchTerm}
-      onSearch={onSearch}
+      onSearch={(v) => onSearch(v ? v : null)}
       searchPlaceholder="Search"
+      layout="horizontal"
     >
-      <ToggleGroup
-        type="single"
-        variant="outline"
-        value={legendaryFilter}
-        onValueChange={(value) => {
-          if (value) onLegendaryFilterChange(value as LegendaryFilter);
-        }}
-      >
-        <ToggleGroupItem value="all" aria-label="All monsters" className="px-6">
-          <User className="h-4 w-4" />
-          +
-          <Crown className="h-4 w-4" />
-        </ToggleGroupItem>
-        <ToggleGroupItem value="standard" aria-label="Standard monsters">
-          <User className="h-4 w-4" />
-        </ToggleGroupItem>
-        <ToggleGroupItem value="legendary" aria-label="Legendary monsters">
-          <Crown className="h-4 w-4" />
-        </ToggleGroupItem>
-      </ToggleGroup>
-
-      <SortSelect value={sortOption} onChange={onSortChange} />
+      <Select value={typeFilter} onValueChange={onTypeFilterChange}>
+        <SelectTrigger className="min-w-36">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {TYPE_OPTIONS.map(({ label, value, icon }) => (
+            <SelectItem key={value} value={value}>
+              {icon}
+              {label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <SortSelect
+        items={SORT_OPTIONS}
+        value={sortOption}
+        onChange={onSortChange}
+      />
     </FilterBar>
   );
 };

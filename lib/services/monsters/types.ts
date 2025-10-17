@@ -103,10 +103,31 @@ export interface SearchMonstersParams {
   limit?: number;
 }
 
-export interface ListMonstersParams {
+export const MonsterTypeOptions = [
+  "all",
+  "standard",
+  "legendary",
+  "minion",
+] as const;
+export type MonsterTypeOption = (typeof MonsterTypeOptions)[number];
+
+export const PaginateMonstersSortOptions = [
+  "createdAt",
+  "-createdAt",
+  "level",
+  "-level",
+  "name",
+  "-name",
+] as const;
+export type PaginateMonstersSortOption =
+  (typeof PaginateMonstersSortOptions)[number];
+
+export interface PaginateMonstersParams {
+  search?: string;
   cursor?: string;
   limit?: number;
-  sort?: "name" | "-name" | "createdAt" | "-createdAt" | "level" | "-level";
+  sort?: PaginateMonstersSortOption;
+  type?: MonsterTypeOption;
 }
 
 export interface CreateMonsterInput {

@@ -222,6 +222,7 @@ interface CardProps {
   hideActions?: boolean;
   hideFamilyAbilities?: boolean;
   hideFamilyName?: boolean;
+  hideDescription?: boolean;
   className?: string;
 }
 
@@ -232,91 +233,86 @@ export const Card = ({
   hideActions = false,
   hideFamilyAbilities = false,
   hideFamilyName = false,
+  hideDescription = false,
   className,
 }: CardProps) => {
   const { allConditions: conditions } = useConditions({
     creatorId: creator?.discordId,
   });
   return (
-    <div
-      className={cn(
-        "w-full max-w-sm mx-auto",
-        monster.legendary && // add gap-8 so card fills 2 columns of grid completely
-          "max-w-4xl md:col-span-2"
-      )}
-    >
-      <div id={`monster-${monster.id}`}>
-        <ShadcnCard className={className}>
-          <MonsterHeader
-            monster={monster}
-            hideFamilyName={hideFamilyName}
-            link={link}
-            variant={
-              monster.legendary
-                ? "legendary"
-                : monster.minion
-                  ? "minion"
-                  : "standard"
-            }
-          />
+    <div id={`monster-${monster.id}`}>
+      <ShadcnCard className={className}>
+        <MonsterHeader
+          monster={monster}
+          hideFamilyName={hideFamilyName}
+          link={link}
+          variant={
+            monster.legendary
+              ? "legendary"
+              : monster.minion
+                ? "minion"
+                : "standard"
+          }
+        />
 
-          <CardContentWithGap>
-            {((!hideFamilyAbilities &&
-              monster.families.some((f) => f.abilities.length > 0)) ||
-              monster.abilities.length > 0) && (
-              <AbilityOverlay
-                conditions={conditions}
-                abilities={[
-                  ...(hideFamilyAbilities
-                    ? []
-                    : monster.families.flatMap((f) => f.abilities)),
-                  ...monster.abilities,
-                ]}
-                families={hideFamilyAbilities ? undefined : monster.families}
-              />
-            )}
-
-            <ActionsList
-              actions={monster.actions}
+        <CardContentWithGap>
+          {((!hideFamilyAbilities &&
+            monster.families.some((f) => f.abilities.length > 0)) ||
+            monster.abilities.length > 0) && (
+            <AbilityOverlay
               conditions={conditions}
-              actionPreface={monster.actionPreface}
+              abilities={[
+                ...(hideFamilyAbilities
+                  ? []
+                  : monster.families.flatMap((f) => f.abilities)),
+                ...monster.abilities,
+              ]}
+              families={hideFamilyAbilities ? undefined : monster.families}
             />
-            {monster.legendary && (
-              <>
-                {monster.bloodied && (
+          )}
+
+          <ActionsList
+            actions={monster.actions}
+            conditions={conditions}
+            actionPreface={monster.actionPreface}
+          />
+          {monster.legendary && (
+            <>
+              {monster.bloodied && (
+                <PrefixedFormattedText
+                  content={monster.bloodied}
+                  conditions={conditions}
+                  prefix={<strong>BLOODIED:</strong>}
+                />
+              )}
+
+              {monster.lastStand && (
+                <div>
                   <PrefixedFormattedText
-                    content={monster.bloodied}
+                    content={monster.lastStand}
                     conditions={conditions}
-                    prefix={<strong>BLOODIED:</strong>}
+                    prefix={<strong>LAST STAND:</strong>}
                   />
-                )}
+                </div>
+              )}
+            </>
+          )}
 
-                {monster.lastStand && (
-                  <div>
-                    <PrefixedFormattedText
-                      content={monster.lastStand}
-                      conditions={conditions}
-                      prefix={<strong>LAST STAND:</strong>}
-                    />
-                  </div>
-                )}
-              </>
-            )}
-
+          {hideDescription || (
             <MoreInfoSection
               moreInfo={monster.moreInfo}
               conditions={conditions}
             />
-          </CardContentWithGap>
+          )}
+        </CardContentWithGap>
 
-          <CardFooterLayout
-            creator={creator}
-            source={monster.source}
-            hideActions={hideActions}
-            actionsSlot={<CardActions monster={monster} />}
-          />
-        </ShadcnCard>
-      </div>
+        <CardFooterLayout
+          creator={creator}
+          source={monster.source}
+          hideActions={hideActions}
+          actionsSlot={<CardActions monster={monster} />}
+        />
+      </ShadcnCard>
     </div>
   );
 };

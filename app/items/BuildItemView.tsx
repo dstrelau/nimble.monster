@@ -30,7 +30,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { listAllSources } from "@/lib/db/source";
 import type { Item } from "@/lib/services/items";
 import { RARITIES } from "@/lib/services/items";
 import { UNKNOWN_USER } from "@/lib/types";
