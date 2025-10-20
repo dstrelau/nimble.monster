@@ -52,7 +52,7 @@ export const findSpellSchool = async (
       creator: true,
       source: true,
       spells: {
-        orderBy: { name: "asc" },
+        orderBy: [{ tier: "asc" }, { name: "asc" }],
       },
     },
   });
