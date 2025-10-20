@@ -21,7 +21,7 @@ import { createCollection } from "@/app/actions/collection";
 import { searchPublicMonsters } from "@/app/actions/monster";
 import { List as ItemList } from "@/app/ui/item/List";
 import { List } from "@/app/ui/monster/List";
-import type { SortOption } from "@/app/ui/monster/SimpleFilterBar";
+import { SortSelect } from "@/components/app/SortSelect";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -51,7 +51,6 @@ import type { Collection } from "@/lib/types";
 import { UNKNOWN_USER } from "@/lib/types";
 import { getCollectionUrl } from "@/lib/utils/url";
 import { CollectionCard } from "../ui/CollectionCard";
-import { SortSelect } from "../ui/monster/SortSelect";
 import { SearchInput } from "../ui/SearchInput";
 import { updateCollection } from "./[id]/edit/actions";
 import { VisibilityToggle } from "./[id]/edit/VisibilityToggle";
@@ -63,6 +62,23 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
+
+type SortOption =
+  | "name-asc"
+  | "name-desc"
+  | "level-asc"
+  | "level-desc"
+  | "hp-asc"
+  | "hp-desc";
+
+const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+  { value: "name-asc", label: "Name (A→Z)" },
+  { value: "name-desc", label: "Name (Z→A)" },
+  { value: "level-asc", label: "Level (Low→High)" },
+  { value: "level-desc", label: "Level (High→Low)" },
+  { value: "hp-asc", label: "HP (Low→High)" },
+  { value: "hp-desc", label: "HP (High→Low)" },
+];
 
 interface Props {
   collection: Collection;
@@ -380,7 +396,11 @@ export function CreateEditCollection({
                     onChange={setSearchTerm}
                     placeholder="Search monsters"
                   />
-                  <SortSelect value={sortOption} onChange={setSortOption} />
+                  <SortSelect
+                    items={SORT_OPTIONS}
+                    value={sortOption}
+                    onChange={setSortOption}
+                  />
                 </div>
 
                 <div className="flex gap-4">

@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { CollectionCard } from "@/app/ui/CollectionCard";
 import { CardGrid as CompanionCardGrid } from "@/app/ui/companion/CardGrid";
 import { CardGrid as ItemCardGrid } from "@/app/ui/item/CardGrid";
-import { CardGrid as MonsterCardGrid } from "@/app/ui/monster/CardGrid";
+import { PaginatedMonsterGrid } from "@/app/ui/monster/PaginatedMonsterGrid";
 import { FamilyCard } from "@/components/FamilyCard";
 import {
   TabsContent as ShadcnTabsContent,
@@ -13,20 +13,21 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import type { Item } from "@/lib/services/items";
-import type { Monster } from "@/lib/services/monsters";
 import type { CollectionOverview, Companion, Family } from "@/lib/types";
 
 type TabType = "monsters" | "collections" | "families" | "companions" | "items";
 
 export default function TabsContent({
-  monsters,
+  creatorId,
+  monstersCount,
   collections,
   families,
   companions,
   items,
   initialTab,
 }: {
-  monsters: Monster[];
+  creatorId: string;
+  monstersCount: number;
   collections: CollectionOverview[];
   families: Family[];
   companions: Companion[];
@@ -57,7 +58,7 @@ export default function TabsContent({
       onValueChange={(value) => router.push(`?tab=${value}`)}
     >
       <TabsList className="w-full overflow-x-auto justify-start">
-        <TabsTrigger value="monsters">Monsters ({monsters.length})</TabsTrigger>
+        <TabsTrigger value="monsters">Monsters ({monstersCount})</TabsTrigger>
         <TabsTrigger value="collections">
           Collections ({collections.length})
         </TabsTrigger>
@@ -69,13 +70,7 @@ export default function TabsContent({
       </TabsList>
 
       <ShadcnTabsContent value="monsters" className="py-6">
-        {monsters.length === 0 ? (
-          <p className="text-center py-8 text-muted-foreground">
-            No public monsters available
-          </p>
-        ) : (
-          <MonsterCardGrid monsters={monsters} hideActions={true} />
-        )}
+        <PaginatedMonsterGrid kind="user-monsters" creatorId={creatorId} />
       </ShadcnTabsContent>
 
       <ShadcnTabsContent value="collections" className="py-6">

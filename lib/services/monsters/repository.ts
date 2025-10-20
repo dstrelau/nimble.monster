@@ -52,6 +52,7 @@ export const paginatePublicMonsters = async ({
   sort = "-createdAt",
   search,
   type = "all",
+  creatorId,
 }: PaginateMonstersParams): Promise<{
   data: Monster[];
   nextCursor: string | null;
@@ -81,6 +82,10 @@ export const paginatePublicMonsters = async ({
     orderBy = [{ levelInt: sortDir }, { id: "asc" }];
   }
   const where: Prisma.MonsterWhereInput = { visibility: "public" };
+
+  if (creatorId) {
+    where.userId = creatorId;
+  }
 
   if (type === "legendary") {
     where.legendary = true;
@@ -227,6 +232,17 @@ export const findMonsterWithCreatorId = async (
     },
   });
   return monster ? toMonster(monster) : null;
+};
+
+export const countPublicMonstersForUser = async (
+  userId: string
+): Promise<number> => {
+  return await prisma.monster.count({
+    where: {
+      userId,
+      visibility: "public",
+    },
+  });
 };
 
 export const listPublicMonstersForUser = async (

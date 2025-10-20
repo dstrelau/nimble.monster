@@ -17,6 +17,7 @@ const PaginateMonstersSchema = z.object({
   limit: z.number().min(1).max(100).default(10),
   cursor: z.string().optional(),
   type: z.enum(MonsterTypeOptions).optional(),
+  creatorId: z.string().optional(),
 });
 
 export type PaginateMonstersParams = z.infer<typeof PaginateMonstersSchema>;

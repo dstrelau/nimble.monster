@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  curry,
   levelIntToDisplay,
   monstersSortedByLevelInt,
   stringToLevelInt,
@@ -99,5 +100,35 @@ describe("monstersSortedByLevelInt", () => {
     sorted.forEach((monster) => {
       expect(monster.levelInt).toBe(1);
     });
+  });
+});
+
+describe("curry", () => {
+  it("returns result when all args provided", () => {
+    const add = (a: number, b: number, c: number) => a + b + c;
+    const curriedAdd = curry(add);
+    expect(curriedAdd(1, 2, 3)).toBe(6);
+  });
+
+  it("supports partial application", () => {
+    const add = (a: number, b: number, c: number) => a + b + c;
+    const curriedAdd = curry(add);
+    const addOne = curriedAdd(1);
+    const addOneTwo = addOne(2);
+    expect(addOneTwo(3)).toBe(6);
+  });
+
+  it("supports multiple args at once", () => {
+    const add = (a: number, b: number, c: number) => a + b + c;
+    const curriedAdd = curry(add);
+    const addOneTwo = curriedAdd(1, 2);
+    expect(addOneTwo(3)).toBe(6);
+  });
+
+  it("works with different types", () => {
+    const concat = (a: string, b: number, c: boolean) => `${a}-${b}-${c}`;
+    const curriedConcat = curry(concat);
+    const result = curriedConcat("test")(42)(true);
+    expect(result).toBe("test-42-true");
   });
 });

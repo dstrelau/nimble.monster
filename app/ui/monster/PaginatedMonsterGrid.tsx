@@ -4,17 +4,29 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
+import { publicMonstersInfiniteQueryOptions } from "@/app/monsters/hooks";
+import { myMonstersInfiniteQueryOptions } from "@/app/my/monsters/hooks";
+import { userProfileMonstersInfiniteQueryOptions } from "@/app/u/[username]/hooks";
 import { Button } from "@/components/ui/button";
 import {
   MonsterTypeOptions,
   PaginateMonstersSortOptions,
 } from "@/lib/services/monsters/types";
 import { cn } from "@/lib/utils";
-import { publicMonstersInfiniteQueryOptions } from "../monsters/hooks";
-import { Card } from "./monster/Card";
-import { SimpleFilterBar } from "./monster/SimpleFilterBar";
+import { Card } from "./Card";
+import { SimpleFilterBar } from "./SimpleFilterBar";
 
-export const MonstersListView: React.FC = () => {
+// we can't directly pass the queryOptions fn here because props to client
+// components must be serializable.
+export type PaginatedMonsterGridProps =
+  | { kind: "monsters" | "my-monsters" }
+  | {
+      kind: "user-monsters";
+      creatorId: string;
+    };
+export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
+  props
+) => {
   const [rawSearchQuery, setSearchQuery] = useQueryState("search");
   const [searchQuery] = useDebouncedValue(rawSearchQuery, { wait: 250 });
 
@@ -27,14 +39,25 @@ export const MonstersListView: React.FC = () => {
     parseAsStringLiteral(MonsterTypeOptions).withDefault("all")
   );
 
+  const params = {
+    search: searchQuery ?? undefined,
+    sort: sortQuery,
+    type: typeQuery,
+    limit: 12,
+  };
+  const queryParams = () => {
+    switch (props.kind) {
+      case "user-monsters":
+        return userProfileMonstersInfiniteQueryOptions(props.creatorId, params);
+      case "my-monsters":
+        return myMonstersInfiniteQueryOptions(params);
+      case "monsters":
+        return publicMonstersInfiniteQueryOptions(params);
+    }
+  };
+
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage, error } =
-    useInfiniteQuery(
-      publicMonstersInfiniteQueryOptions({
-        sort: sortQuery,
-        search: searchQuery ?? undefined,
-        type: typeQuery,
-      })
-    );
+    useInfiniteQuery(queryParams());
 
   if (isLoading) {
     return (

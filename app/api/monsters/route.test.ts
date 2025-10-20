@@ -18,13 +18,15 @@ vi.mock("@/lib/auth", () => ({
   auth: vi.fn(),
 }));
 
-const { mockListPublicMonsters } = vi.hoisted(() => {
-  return { mockListPublicMonsters: vi.fn() };
+const { mockPaginatePublicMonsters } = vi.hoisted(() => {
+  return { mockPaginatePublicMonsters: vi.fn() };
 });
 
-vi.mock("@/lib/services/monsters/repository", () => ({
-  listPublicMonsters: mockListPublicMonsters,
-}));
+vi.mock("@/lib/services/monsters/repository", async () => {
+  return {
+    paginatePublicMonsters: mockPaginatePublicMonsters,
+  };
+});
 
 vi.mock("@/lib/utils/cursor", () => ({
   encodeCursor: vi.fn(
@@ -51,7 +53,7 @@ vi.mock("@/lib/telemetry", () => ({
   telemetry: vi.fn((handler) => handler),
 }));
 
-const mockListMonsters = mockListPublicMonsters;
+const mockPaginateMonsters = mockPaginatePublicMonsters;
 
 const fakeCreator = {
   id: "12345678-1234-1234-1234-1234567890ab",
@@ -112,8 +114,8 @@ describe("GET /api/monsters", () => {
       },
     ];
 
-    mockListMonsters.mockResolvedValue({
-      monsters: mockMonsters,
+    mockPaginateMonsters.mockResolvedValue({
+      data: mockMonsters,
       nextCursor: null,
     });
 
@@ -144,8 +146,8 @@ describe("GET /api/monsters", () => {
   it("should handle cursor pagination", async () => {
     const encodedCursor =
       "encoded_name_Dragon_550e8400-e29b-41d4-a716-446655440001";
-    mockListMonsters.mockResolvedValue({
-      monsters: [],
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
       nextCursor: encodedCursor,
     });
 
@@ -157,7 +159,7 @@ describe("GET /api/monsters", () => {
 
     expect(response.status).toBe(200);
     expect(data.links?.next).toContain(`cursor=${encodedCursor}`);
-    expect(mockListMonsters).toHaveBeenCalledWith({
+    expect(mockPaginateMonsters).toHaveBeenCalledWith({
       cursor: "encoded_name_Goblin_550e8400-e29b-41d4-a716-446655440000",
       limit: 100,
       sort: "name",
@@ -165,15 +167,15 @@ describe("GET /api/monsters", () => {
   });
 
   it("should handle custom limit", async () => {
-    mockListMonsters.mockResolvedValue({
-      monsters: [],
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
       nextCursor: null,
     });
 
     const request = new Request("http://localhost:3000/api/monsters?limit=50");
     await GET(request);
 
-    expect(mockListMonsters).toHaveBeenCalledWith({
+    expect(mockPaginateMonsters).toHaveBeenCalledWith({
       cursor: undefined,
       limit: 50,
       sort: "name",
@@ -205,15 +207,15 @@ describe("GET /api/monsters", () => {
   });
 
   it("should handle sort by name ascending", async () => {
-    mockListMonsters.mockResolvedValue({
-      monsters: [],
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
       nextCursor: null,
     });
 
     const request = new Request("http://localhost:3000/api/monsters?sort=name");
     await GET(request);
 
-    expect(mockListMonsters).toHaveBeenCalledWith({
+    expect(mockPaginateMonsters).toHaveBeenCalledWith({
       cursor: undefined,
       limit: 100,
       sort: "name",
@@ -221,8 +223,8 @@ describe("GET /api/monsters", () => {
   });
 
   it("should handle sort by name descending", async () => {
-    mockListMonsters.mockResolvedValue({
-      monsters: [],
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
       nextCursor: null,
     });
 
@@ -231,7 +233,7 @@ describe("GET /api/monsters", () => {
     );
     await GET(request);
 
-    expect(mockListMonsters).toHaveBeenCalledWith({
+    expect(mockPaginateMonsters).toHaveBeenCalledWith({
       cursor: undefined,
       limit: 100,
       sort: "-name",
@@ -239,8 +241,8 @@ describe("GET /api/monsters", () => {
   });
 
   it("should handle sort by createdAt ascending", async () => {
-    mockListMonsters.mockResolvedValue({
-      monsters: [],
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
       nextCursor: null,
     });
 
@@ -249,7 +251,7 @@ describe("GET /api/monsters", () => {
     );
     await GET(request);
 
-    expect(mockListMonsters).toHaveBeenCalledWith({
+    expect(mockPaginateMonsters).toHaveBeenCalledWith({
       cursor: undefined,
       limit: 100,
       sort: "createdAt",
@@ -257,8 +259,8 @@ describe("GET /api/monsters", () => {
   });
 
   it("should handle sort by createdAt descending", async () => {
-    mockListMonsters.mockResolvedValue({
-      monsters: [],
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
       nextCursor: null,
     });
 
@@ -267,7 +269,7 @@ describe("GET /api/monsters", () => {
     );
     await GET(request);
 
-    expect(mockListMonsters).toHaveBeenCalledWith({
+    expect(mockPaginateMonsters).toHaveBeenCalledWith({
       cursor: undefined,
       limit: 100,
       sort: "-createdAt",
@@ -275,8 +277,8 @@ describe("GET /api/monsters", () => {
   });
 
   it("should handle sort by level ascending", async () => {
-    mockListMonsters.mockResolvedValue({
-      monsters: [],
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
       nextCursor: null,
     });
 
@@ -285,7 +287,7 @@ describe("GET /api/monsters", () => {
     );
     await GET(request);
 
-    expect(mockListMonsters).toHaveBeenCalledWith({
+    expect(mockPaginateMonsters).toHaveBeenCalledWith({
       cursor: undefined,
       limit: 100,
       sort: "level",
@@ -293,8 +295,8 @@ describe("GET /api/monsters", () => {
   });
 
   it("should handle sort by level descending", async () => {
-    mockListMonsters.mockResolvedValue({
-      monsters: [],
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
       nextCursor: null,
     });
 
@@ -303,7 +305,7 @@ describe("GET /api/monsters", () => {
     );
     await GET(request);
 
-    expect(mockListMonsters).toHaveBeenCalledWith({
+    expect(mockPaginateMonsters).toHaveBeenCalledWith({
       cursor: undefined,
       limit: 100,
       sort: "-level",
@@ -355,8 +357,8 @@ describe("GET /api/monsters", () => {
       },
     ];
 
-    mockListMonsters.mockResolvedValue({
-      monsters: mockMonsters,
+    mockPaginateMonsters.mockResolvedValue({
+      data: mockMonsters,
       nextCursor: null,
     });
 

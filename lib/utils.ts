@@ -57,3 +57,25 @@ export function getRarityColor(rarity: string): string {
       return "bg-gray-100 text-gray-600";
   }
 }
+
+type Curry<P extends unknown[], R> = <T extends unknown[]>(
+  ...args: T
+) => T extends [...P]
+  ? R
+  : T extends [...infer T1]
+    ? T1 extends [...P]
+      ? never
+      : Curry<[...{ [K in keyof P]: K extends keyof T1 ? never : P[K] }], R>
+    : never;
+
+export function curry<P extends unknown[], R>(
+  fn: (...args: P) => R
+): Curry<P, R> {
+  const curried = (...args: unknown[]): unknown => {
+    if (args.length >= fn.length) {
+      return fn(...(args as P));
+    }
+    return curry((fn as (...allArgs: unknown[]) => R).bind(null, ...args));
+  };
+  return curried as Curry<P, R>;
+}

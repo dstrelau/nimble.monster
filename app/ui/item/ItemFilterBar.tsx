@@ -1,9 +1,9 @@
 "use client";
 
-import { ArrowDownUp } from "lucide-react";
 import type React from "react";
 import type { ItemSortOption } from "@/app/items/actions";
 import { FilterBar } from "@/app/ui/FilterBar";
+import { SortSelect } from "@/components/app/SortSelect";
 import {
   Select,
   SelectContent,
@@ -12,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type ItemRarity, RARITIES } from "@/lib/services/items";
-import { SortSelect } from "@/components/app/SortSelect";
 
 interface ItemFilterBarProps {
   searchTerm: string | null;

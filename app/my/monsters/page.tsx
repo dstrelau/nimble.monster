@@ -1,20 +1,24 @@
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { FilterableCardGrid } from "@/app/ui/monster/FilterableCardGrid";
+import { PaginatedMonsterGrid } from "@/app/ui/monster/PaginatedMonsterGrid";
 import { auth } from "@/lib/auth";
-import { monstersService } from "@/lib/services/monsters";
-
-export type MonsterDisplay = "card" | "list" | "table";
+import { getQueryClient } from "@/lib/queryClient";
+import { myMonstersInfiniteQueryOptions } from "./hooks";
 
 export default async function MyMonstersPage() {
   const session = await auth();
   if (!session?.user?.id) notFound();
 
-  const monsters = await monstersService.listMonstersForUser(
-    session.user.discordId
+  const queryClient = getQueryClient();
+  await queryClient.prefetchInfiniteQuery(
+    myMonstersInfiniteQueryOptions({ sort: "-createdAt", type: "all" })
   );
+
   return (
-    <div className="container mx-auto py-3">
-      <FilterableCardGrid monsters={monsters} />
+    <div className="container mx-auto">
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <PaginatedMonsterGrid kind="my-monsters" />
+      </HydrationBoundary>
     </div>
   );
 }

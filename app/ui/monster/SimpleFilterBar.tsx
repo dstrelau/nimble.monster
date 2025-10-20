@@ -29,7 +29,17 @@ const TYPE_OPTIONS: {
   label: string;
   icon?: React.ReactNode;
 }[] = [
-  { value: "all", label: "All" },
+  {
+    value: "all",
+    label: "All",
+    icon: (
+      <>
+        <User size={4} />
+        <Crown size={4} />
+        <PersonStanding size={4} />
+      </>
+    ),
+  },
   { value: "standard", label: "Standard", icon: <User size={4} /> },
   { value: "legendary", label: "Legendary", icon: <Crown size={4} /> },
   { value: "minion", label: "Minion", icon: <PersonStanding size={4} /> },

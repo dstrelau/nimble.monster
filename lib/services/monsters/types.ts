@@ -128,6 +128,7 @@ export interface PaginateMonstersParams {
   limit?: number;
   sort?: PaginateMonstersSortOption;
   type?: MonsterTypeOption;
+  creatorId?: string;
 }
 
 export interface CreateMonsterInput {

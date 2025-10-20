@@ -1,7 +1,8 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { MonstersListView } from "@/app/ui/MonstersListView";
+import { PaginatedMonsterGrid } from "@/app/ui/monster/PaginatedMonsterGrid";
+import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { monstersService } from "@/lib/services/monsters";
 import { getMonsterUrl } from "@/lib/utils/url";
@@ -37,14 +38,15 @@ export default async function MonstersPage({
   }
 
   const queryClient = getQueryClient();
-  await queryClient.prefetchInfiniteQuery(
+  void queryClient.prefetchQuery(officialConditionsQueryOptions());
+  void queryClient.prefetchInfiniteQuery(
     publicMonstersInfiniteQueryOptions(params)
   );
 
   return (
     <div className="container mx-auto">
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <MonstersListView />
+        <PaginatedMonsterGrid kind="monsters" />
       </HydrationBoundary>
     </div>
   );

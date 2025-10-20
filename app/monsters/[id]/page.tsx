@@ -7,10 +7,10 @@ import { MonsterCollections } from "@/components/MonsterCollections";
 import { MonsterDetailActions } from "@/components/MonsterDetailActions";
 import { auth } from "@/lib/auth";
 import { monstersService } from "@/lib/services/monsters";
+import { cn } from "@/lib/utils";
 import { getSiteName } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterImageUrl, getMonsterUrl } from "@/lib/utils/url";
-import { cn } from "@/lib/utils";
 
 export const experimental_ppr = true;
 
