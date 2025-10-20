@@ -128,7 +128,7 @@ export function DiceRollerClient({ initialDice }: Props) {
               </CardContent>
             </Card>
             {Object.keys(filteredProbabilities).length > 0 && (
-              <Card className="overflow-x-scroll">
+              <Card className="flex-1 min-w-sm overflow-x-scroll">
                 <CardContent className="p-6">
                   <div
                     className="my-8 overflow-x-auto pb-6"
