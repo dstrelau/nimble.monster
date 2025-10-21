@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 const ASSETS_DIR = path.join(__dirname, "../assets/game-icons");
 const PUBLIC_DIR = path.join(__dirname, "../public/game-icons");
-const COMPONENTS_DIR = path.join(__dirname, "../components/icons");
+const COMPONENTS_DIR = path.join(__dirname, "../components/game-icons");
 const INDEX_FILE = path.join(COMPONENTS_DIR, "index.ts");
 
 function ensureDir(dir) {

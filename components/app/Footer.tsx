@@ -5,6 +5,7 @@ import { Beer, Coins, Icon, Mail, NotebookPen, ScrollText } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getSiteEmail, getSiteName } from "@/lib/utils/branding";
+import { D20 } from "../icons/PolyhedralDice";
 import { Discord, GitHub } from "../SimpleIcons";
 
 export const Footer = () => {
@@ -52,25 +53,7 @@ export const Footer = () => {
       name: "More Nimble",
       links: [
         {
-          icon: (
-            <svg
-              className="size-4"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <title>D20</title>
-              <path d="m12 2 4.81 7.4a2 2 0 0 1 .1.17L20.74 17h0l-8.5.97a2 2 0 0 1-.46 0L3.27 17h0l3.81-7.43a2 2 0 0 1 .1-.18L12 2h0Z" />
-              <path d="M12.87 17.5a1 1 0 0 1-1.74 0l-4-7A1 1 0 0 1 8 9h8a1 1 0 0 1 .87 1.5l-4 7Z" />
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-            </svg>
-          ),
+          icon: <D20 className="size-4" />,
           url: "https://nimblerpg.com",
           text: "Nimble Official",
         },

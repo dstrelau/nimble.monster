@@ -1,12 +1,41 @@
 /**
  * Exploding Dice Roller
  *
- * This TypeScript implementation handles dice notation like "1d8" or "3d6+2" with
- * special dice rules:
- * - When the first die rolls its maximum value, reroll and add the new value
- * - This may happen multiple times until a non-maximum value is rolled
- * - Only the first die can explode, other dice never explode
- * - If the first die rolls a 1, the entire roll equals 0 (critical failure)
+ * This implementation handles dice notation with special rules for the primary die.
+ *
+ * NOTATION FORMAT:
+ * - Basic: XdY+Z where X = number of dice, Y = die size, Z = modifier
+ * - Flags can be added after dY: v (vicious), a/aN (advantage), d/dN (disadvantage)
+ * - Examples: "3d6+2", "1d8v", "2d20a", "3d6d2-1"
+ *
+ * PRIMARY DIE RULES:
+ * The "primary die" is the first (leftmost) kept die after advantage/disadvantage.
+ * Only the primary die has special behavior:
+ * - Rolls 1: Critical miss - entire roll equals 0 (modifier not added)
+ * - Rolls max: Critical hit - die explodes (reroll and add until non-max)
+ * - Other dice in the pool never explode and have no special behavior
+ *
+ * VICIOUS (v):
+ * - On a critical hit, add one extra non-exploding die to the result
+ * - The vicious die is added after all explosions complete
+ *
+ * ADVANTAGE (a or aN):
+ * - Roll N extra dice (default N=1 if not specified)
+ * - Keep the highest values, drop the lowest
+ * - Ties are broken left to right (earlier dice are kept)
+ * - Primary die is the first kept die (may not be the first rolled)
+ * - Example: 3d6a rolling [1, 6, 3, 1] drops first 1, keeps [6, 3, 1], primary is 6
+ *
+ * DISADVANTAGE (d or dN):
+ * - Roll N extra dice (default N=1 if not specified)
+ * - Keep the lowest values, drop the highest
+ * - Ties are broken left to right (earlier dice are kept)
+ * - Primary die is the first kept die (may not be the first rolled)
+ * - Example: 3d6d rolling [6, 3, 1, 6] drops first 6, keeps [3, 1, 6], primary is 3
+ *
+ * MODIFIERS:
+ * - Added to the total only if the roll is not a critical miss (total > 0)
+ * - Example: 1d6+2 rolling 1 = 0 (not 2), rolling 3 = 5
  */
 
 // AGENT INSTRUCTIONS:
@@ -204,26 +233,79 @@ function calculateAdvantageDistribution(
 ): ProbabilityDistribution {
   const extraDice = advantage > 0 ? advantage : disadvantage;
   const totalDice = numDice + extraDice;
-  const outcomeMap = new Map<string, number>();
+  const result: ProbabilityDistribution = new Map();
 
   // Generate all possible outcomes of rolling totalDice dice
   function generateOutcomes(diceLeft: number, currentRolls: number[]): void {
     if (diceLeft === 0) {
-      // Sort descending
-      const sorted = [...currentRolls].sort((a, b) => b - a);
+      // Create indexed rolls to track which die is which
+      const indexedRolls = currentRolls.map((value, index) => ({
+        value,
+        index,
+      }));
 
-      // Keep highest numDice for advantage, lowest numDice for disadvantage
-      const keptDice =
-        advantage > 0
-          ? sorted.slice(0, numDice)
-          : sorted.slice(-numDice).reverse();
+      // Determine which dice to keep/drop
+      // For advantage: drop lowest values, ties broken left to right
+      // For disadvantage: drop highest values, ties broken left to right
+      const numToDrop = totalDice - numDice;
+      let droppedIndices: number[];
+
+      if (advantage > 0) {
+        droppedIndices = [...indexedRolls]
+          .sort((a, b) => a.value - b.value || a.index - b.index)
+          .slice(0, numToDrop)
+          .map((d) => d.index);
+      } else {
+        droppedIndices = [...indexedRolls]
+          .sort((a, b) => b.value - a.value || a.index - b.index)
+          .slice(0, numToDrop)
+          .map((d) => d.index);
+      }
+
+      const droppedSet = new Set(droppedIndices);
+      const keptIndices: number[] = [];
+      for (let i = 0; i < totalDice; i++) {
+        if (!droppedSet.has(i)) {
+          keptIndices.push(i);
+        }
+      }
+
+      // Primary die is the first kept die
+      const primaryDieIndex = keptIndices[0];
+      const primaryDie = indexedRolls[primaryDieIndex];
 
       // Probability of this specific outcome
       const probability = (1 / dieSize) ** totalDice;
 
-      // Use sorted dice as key (highest to lowest)
-      const key = keptDice.join(",");
-      outcomeMap.set(key, (outcomeMap.get(key) || 0) + probability);
+      // Calculate sum of kept dice (excluding primary)
+      let otherDiceSum = 0;
+      for (const idx of keptIndices) {
+        if (idx !== primaryDieIndex) {
+          otherDiceSum += indexedRolls[idx].value;
+        }
+      }
+
+      // Apply primary die logic
+      if (primaryDie.value === 1) {
+        // Miss
+        result.set(0, (result.get(0) || 0) + probability);
+      } else if (primaryDie.value === dieSize) {
+        // Crit - primary die explodes
+        const explosionDist = calculateExplosionDistribution(dieSize, vicious);
+
+        for (const [explosionValue, explosionP] of explosionDist) {
+          const total = explosionValue + otherDiceSum;
+          result.set(
+            total,
+            (result.get(total) || 0) + probability * explosionP
+          );
+        }
+      } else {
+        // Regular hit
+        const total = primaryDie.value + otherDiceSum;
+        result.set(total, (result.get(total) || 0) + probability);
+      }
+
       return;
     }
 
@@ -234,33 +316,6 @@ function calculateAdvantageDistribution(
   }
 
   generateOutcomes(totalDice, []);
-
-  // Now process each unique outcome
-  const result: ProbabilityDistribution = new Map();
-
-  for (const [key, probability] of outcomeMap) {
-    const keptDice = key.split(",").map(Number);
-    const primaryDieValue = keptDice[0];
-    const otherDiceSum = keptDice.slice(1).reduce((sum, val) => sum + val, 0);
-
-    // Apply primary die logic
-    if (primaryDieValue === 1) {
-      // Miss
-      result.set(0, (result.get(0) || 0) + probability);
-    } else if (primaryDieValue === dieSize) {
-      // Crit - primary die explodes
-      const explosionDist = calculateExplosionDistribution(dieSize, vicious);
-
-      for (const [explosionValue, explosionP] of explosionDist) {
-        const total = explosionValue + otherDiceSum;
-        result.set(total, (result.get(total) || 0) + probability * explosionP);
-      }
-    } else {
-      // Regular hit
-      const total = primaryDieValue + otherDiceSum;
-      result.set(total, (result.get(total) || 0) + probability);
-    }
-  }
 
   return result;
 }
@@ -372,4 +427,260 @@ export function calculateTotalAverageDamage(
     sum += roll * p;
   }
   return sum;
+}
+
+export type DieResult = {
+  value: number;
+  dieSize: number;
+  type: "primary" | "regular" | "vicious" | "dropped";
+  isCrit: boolean;
+  isMiss: boolean;
+};
+
+export type RollResult = {
+  results: DieResult[];
+  modifier: number;
+  total: number;
+};
+
+export function simulateRoll(diceRoll: DiceRoll): RollResult {
+  const { numDice, dieSize, modifier, vicious, advantage, disadvantage } =
+    diceRoll;
+
+  const results: DieResult[] = [];
+  let total = 0;
+
+  if (advantage > 0 || disadvantage > 0) {
+    const totalDice = numDice + (advantage > 0 ? advantage : disadvantage);
+    const allRolls: Array<DieResult & { originalIndex: number }> = [];
+
+    for (let i = 0; i < totalDice; i++) {
+      const value = Math.floor(Math.random() * dieSize) + 1;
+      allRolls.push({
+        value,
+        dieSize,
+        type: "regular",
+        isCrit: false,
+        isMiss: false,
+        originalIndex: i,
+      });
+    }
+
+    // Determine which dice to keep
+    // For advantage: keep highest values, drop lowest (ties broken left to right)
+    // For disadvantage: keep lowest values, drop highest (ties broken left to right)
+    const keptSet = new Set<number>();
+    const droppedSet = new Set<number>();
+    const numToDrop = totalDice - numDice;
+
+    if (advantage > 0) {
+      // Drop the lowest values, ties broken left to right
+      const valuesToDrop = [...allRolls]
+        .sort((a, b) => a.value - b.value || a.originalIndex - b.originalIndex)
+        .slice(0, numToDrop)
+        .map((d) => d.originalIndex);
+      for (const idx of valuesToDrop) {
+        droppedSet.add(idx);
+      }
+    } else {
+      // Drop the highest values, ties broken left to right
+      const valuesToDrop = [...allRolls]
+        .sort((a, b) => b.value - a.value || a.originalIndex - b.originalIndex)
+        .slice(0, numToDrop)
+        .map((d) => d.originalIndex);
+      for (const idx of valuesToDrop) {
+        droppedSet.add(idx);
+      }
+    }
+
+    for (let i = 0; i < totalDice; i++) {
+      if (!droppedSet.has(i)) {
+        keptSet.add(i);
+      }
+    }
+
+    // Find the first kept die (primary die)
+    let primaryDieIndex = -1;
+    for (let i = 0; i < totalDice; i++) {
+      if (keptSet.has(i)) {
+        primaryDieIndex = i;
+        break;
+      }
+    }
+
+    const primaryDie = allRolls[primaryDieIndex];
+    const explosionDice: DieResult[] = [];
+    let viciousDie: DieResult | null = null;
+
+    if (primaryDie.value === 1) {
+      primaryDie.isMiss = true;
+      primaryDie.type = "primary";
+      total = 0;
+    } else if (primaryDie.value === dieSize) {
+      let currentRoll = dieSize;
+
+      while (currentRoll === dieSize) {
+        explosionDice.push({
+          value: currentRoll,
+          dieSize,
+          type: "primary",
+          isCrit: true,
+          isMiss: false,
+        });
+        total += currentRoll;
+        currentRoll = Math.floor(Math.random() * dieSize) + 1;
+      }
+
+      explosionDice.push({
+        value: currentRoll,
+        dieSize,
+        type: "primary",
+        isCrit: true,
+        isMiss: false,
+      });
+      total += currentRoll;
+
+      if (vicious) {
+        const viciousValue = Math.floor(Math.random() * dieSize) + 1;
+        total += viciousValue;
+        viciousDie = {
+          value: viciousValue,
+          dieSize,
+          type: "vicious",
+          isCrit: false,
+          isMiss: false,
+        };
+      }
+
+      for (let i = 0; i < totalDice; i++) {
+        if (keptSet.has(i) && i !== primaryDieIndex) {
+          total += allRolls[i].value;
+        }
+      }
+    } else {
+      primaryDie.type = "primary";
+      total = primaryDie.value;
+
+      for (let i = 0; i < totalDice; i++) {
+        if (keptSet.has(i) && i !== primaryDieIndex) {
+          total += allRolls[i].value;
+        }
+      }
+    }
+
+    for (const die of allRolls) {
+      if (die.originalIndex === primaryDieIndex) {
+        if (explosionDice.length > 0) {
+          results.push(...explosionDice);
+          if (viciousDie) {
+            results.push(viciousDie);
+          }
+        } else {
+          results.push(primaryDie);
+        }
+      } else if (keptSet.has(die.originalIndex)) {
+        results.push(die);
+      } else {
+        results.push({ ...die, type: "dropped" });
+      }
+    }
+  } else {
+    const primaryValue = Math.floor(Math.random() * dieSize) + 1;
+
+    if (primaryValue === 1) {
+      results.push({
+        value: primaryValue,
+        dieSize,
+        type: "primary",
+        isCrit: false,
+        isMiss: true,
+      });
+      total = 0;
+
+      for (let i = 1; i < numDice; i++) {
+        const value = Math.floor(Math.random() * dieSize) + 1;
+        results.push({
+          value,
+          dieSize,
+          type: "regular",
+          isCrit: false,
+          isMiss: false,
+        });
+      }
+    } else if (primaryValue === dieSize) {
+      let currentRoll = dieSize;
+
+      while (currentRoll === dieSize) {
+        results.push({
+          value: currentRoll,
+          dieSize,
+          type: "primary",
+          isCrit: true,
+          isMiss: false,
+        });
+        total += currentRoll;
+        currentRoll = Math.floor(Math.random() * dieSize) + 1;
+      }
+
+      results.push({
+        value: currentRoll,
+        dieSize,
+        type: "primary",
+        isCrit: true,
+        isMiss: false,
+      });
+      total += currentRoll;
+
+      if (vicious) {
+        const viciousValue = Math.floor(Math.random() * dieSize) + 1;
+        results.push({
+          value: viciousValue,
+          dieSize,
+          type: "vicious",
+          isCrit: false,
+          isMiss: false,
+        });
+        total += viciousValue;
+      }
+
+      for (let i = 1; i < numDice; i++) {
+        const value = Math.floor(Math.random() * dieSize) + 1;
+        results.push({
+          value,
+          dieSize,
+          type: "regular",
+          isCrit: false,
+          isMiss: false,
+        });
+        total += value;
+      }
+    } else {
+      results.push({
+        value: primaryValue,
+        dieSize,
+        type: "primary",
+        isCrit: false,
+        isMiss: false,
+      });
+      total = primaryValue;
+
+      for (let i = 1; i < numDice; i++) {
+        const value = Math.floor(Math.random() * dieSize) + 1;
+        results.push({
+          value,
+          dieSize,
+          type: "regular",
+          isCrit: false,
+          isMiss: false,
+        });
+        total += value;
+      }
+    }
+  }
+
+  if (total > 0) {
+    total += modifier;
+  }
+
+  return { results, modifier, total };
 }

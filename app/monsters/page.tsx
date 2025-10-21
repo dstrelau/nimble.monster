@@ -38,10 +38,12 @@ export default async function MonstersPage({
   }
 
   const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(officialConditionsQueryOptions());
-  void queryClient.prefetchInfiniteQuery(
-    publicMonstersInfiniteQueryOptions(params)
-  );
+  await Promise.all([
+    queryClient.prefetchQuery(officialConditionsQueryOptions()),
+    queryClient.prefetchInfiniteQuery(
+      publicMonstersInfiniteQueryOptions(params)
+    ),
+  ]);
 
   return (
     <div className="container mx-auto">

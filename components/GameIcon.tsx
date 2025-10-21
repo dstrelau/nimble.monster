@@ -1,6 +1,6 @@
 "use client";
 import { type SVGProps, useEffect, useState } from "react";
-import { ICONS, type IconData } from "@/components/icons";
+import { ICONS, type IconData } from "@/components/game-icons";
 
 interface GameIconProps extends Omit<SVGProps<SVGSVGElement>, "children"> {
   iconId: string;

@@ -2,7 +2,7 @@ import { CircleSlash2 } from "lucide-react";
 import { useMemo } from "react";
 import { FG_COLOR_CLASSES } from "@/app/ui/item/Card";
 import { GameIcon } from "@/components/GameIcon";
-import { ICONS } from "@/components/icons";
+import { ICONS } from "@/components/game-icons";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { IconPickerDialog } from "./IconPickerDialog";

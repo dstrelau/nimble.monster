@@ -1,4 +1,5 @@
 import type React from "react";
+import { DiceNotation } from "@/components/DiceNotation";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { maybePeriod } from "@/lib/text";
 import type { Action, Condition } from "@/lib/types";
@@ -35,7 +36,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({
                         <span className="text-foreground">•</span>
                       )}
                       <strong>{maybePeriod(action.name)}</strong>
-                      {action.damage && action.damage}
+                      {action.damage && <DiceNotation text={action.damage} />}
                       {action.damage && action.description && ". "}
                     </>
                   }

@@ -5,7 +5,7 @@ import { FG_COLOR_CLASSES } from "@/app/ui/item/Card";
 import { SearchInput } from "@/app/ui/SearchInput";
 import { ColorPicker } from "@/components/ColorPicker";
 import { GameIcon } from "@/components/GameIcon";
-import { ICONS } from "@/components/icons";
+import { ICONS } from "@/components/game-icons";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
