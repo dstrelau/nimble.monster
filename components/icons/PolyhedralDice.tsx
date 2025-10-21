@@ -1,7 +1,14 @@
-export const D20 = ({ className }: { className?: string }) => (
+export const D20 = ({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className={className}
+    style={style}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -16,11 +23,18 @@ export const D20 = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export const D12 = ({ className }: { className?: string }) => {
+export const D12 = ({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      style={style}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -40,11 +54,18 @@ export const D12 = ({ className }: { className?: string }) => {
   );
 };
 
-export const D10 = ({ className }: { className?: string }) => {
+export const D10 = ({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      style={style}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -62,10 +83,17 @@ export const D10 = ({ className }: { className?: string }) => {
   );
 };
 
-export const D8 = ({ className }: { className?: string }) => {
+export const D8 = ({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) => {
   return (
     <svg
       className={className}
+      style={style}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -88,10 +116,17 @@ export const D8 = ({ className }: { className?: string }) => {
   );
 };
 
-export const D4 = ({ className }: { className?: string }) => {
+export const D4 = ({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) => {
   return (
     <svg
       className={className}
+      style={style}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"

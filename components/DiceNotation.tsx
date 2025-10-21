@@ -1,7 +1,7 @@
 "use client";
 import { Box } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { DiceRollDisplay } from "@/components/dice/DiceRollDisplay";
 import { DiceStatistics } from "@/components/dice/DiceStatistics";
 import { D4, D8, D10, D12, D20 } from "@/components/icons/PolyhedralDice";
@@ -27,16 +27,33 @@ interface DiceNotationProps {
 }
 
 function DiceDrawer({ diceText }: { diceText: string }) {
-  const [, reroll] = useState(0);
+  const [rollKey, reroll] = useState(0);
+  const [isRolling, setIsRolling] = useState(false);
   const parsed = parseDiceNotation(diceText);
 
-  if (!parsed) return <span>{diceText}</span>;
+  const distribution = useMemo(
+    () => (parsed ? calculateProbabilityDistribution(parsed) : null),
+    [parsed]
+  );
+  const averageRoll = useMemo(
+    () => (distribution ? calculateAverageDamageOnHit(distribution) : 0),
+    [distribution]
+  );
+  const totalAverageRoll = useMemo(
+    () => (distribution ? calculateTotalAverageDamage(distribution) : 0),
+    [distribution]
+  );
+  const missProbability = useMemo(
+    () => distribution?.get(0) || 0,
+    [distribution]
+  );
+  // biome-ignore lint/correctness/useExhaustiveDependencies: rollKey triggers reroll
+  const sampleRoll = useMemo(
+    () => (parsed ? simulateRoll(parsed) : null),
+    [parsed, rollKey]
+  );
 
-  const distribution = calculateProbabilityDistribution(parsed);
-  const averageRoll = calculateAverageDamageOnHit(distribution);
-  const totalAverageRoll = calculateTotalAverageDamage(distribution);
-  const sampleRoll = simulateRoll(parsed);
-  const missProbability = distribution.get(0) || 0;
+  if (!parsed || !sampleRoll) return <span>{diceText}</span>;
 
   const dieToIcon = (size: number) => {
     const className = "size-4 stroke-flame";
@@ -58,8 +75,16 @@ function DiceDrawer({ diceText }: { diceText: string }) {
     }
   };
 
+  const handleReroll = () => {
+    setIsRolling(true);
+    setTimeout(() => {
+      reroll((k) => k + 1);
+      setIsRolling(false);
+    }, 500);
+  };
+
   return (
-    <Drawer onOpenChange={(open) => open && reroll((k) => k + 1)}>
+    <Drawer onOpenChange={(open) => open && handleReroll()}>
       <DrawerTrigger asChild>
         <span className="inline-flex items-center cursor-pointer">
           {dieToIcon(parsed.dieSize)}
@@ -82,13 +107,18 @@ function DiceDrawer({ diceText }: { diceText: string }) {
             />
             <DiceRollDisplay
               className="flex-1"
+              pending={isRolling}
               results={sampleRoll.results}
               modifier={sampleRoll.modifier}
               total={sampleRoll.total}
             />
 
             <div className="flex flex-col gap-4">
-              <Button onClick={() => reroll((k) => k + 1)} variant="outline">
+              <Button
+                onClick={handleReroll}
+                variant="outline"
+                disabled={isRolling}
+              >
                 Reroll
               </Button>
               <Link href={`/roll?dice=${encodeURIComponent(diceText)}`}>

@@ -432,7 +432,7 @@ export function calculateTotalAverageDamage(
 export type DieResult = {
   value: number;
   dieSize: number;
-  type: "primary" | "regular" | "vicious" | "dropped";
+  type: "primary" | "regular" | "vicious" | "dropped" | "explosion";
   isCrit: boolean;
   isMiss: boolean;
 };
@@ -517,13 +517,23 @@ export function simulateRoll(diceRoll: DiceRoll): RollResult {
       primaryDie.type = "primary";
       total = 0;
     } else if (primaryDie.value === dieSize) {
-      let currentRoll = dieSize;
+      // First die is the primary die
+      explosionDice.push({
+        value: dieSize,
+        dieSize,
+        type: "primary",
+        isCrit: true,
+        isMiss: false,
+      });
+      total += dieSize;
+
+      let currentRoll = Math.floor(Math.random() * dieSize) + 1;
 
       while (currentRoll === dieSize) {
         explosionDice.push({
           value: currentRoll,
           dieSize,
-          type: "primary",
+          type: "explosion",
           isCrit: true,
           isMiss: false,
         });
@@ -534,7 +544,7 @@ export function simulateRoll(diceRoll: DiceRoll): RollResult {
       explosionDice.push({
         value: currentRoll,
         dieSize,
-        type: "primary",
+        type: "explosion",
         isCrit: true,
         isMiss: false,
       });
@@ -608,13 +618,23 @@ export function simulateRoll(diceRoll: DiceRoll): RollResult {
         });
       }
     } else if (primaryValue === dieSize) {
-      let currentRoll = dieSize;
+      // First die is the primary die
+      results.push({
+        value: dieSize,
+        dieSize,
+        type: "primary",
+        isCrit: true,
+        isMiss: false,
+      });
+      total += dieSize;
+
+      let currentRoll = Math.floor(Math.random() * dieSize) + 1;
 
       while (currentRoll === dieSize) {
         results.push({
           value: currentRoll,
           dieSize,
-          type: "primary",
+          type: "explosion",
           isCrit: true,
           isMiss: false,
         });
@@ -625,7 +645,7 @@ export function simulateRoll(diceRoll: DiceRoll): RollResult {
       results.push({
         value: currentRoll,
         dieSize,
-        type: "primary",
+        type: "explosion",
         isCrit: true,
         isMiss: false,
       });
