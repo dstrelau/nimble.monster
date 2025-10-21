@@ -80,6 +80,7 @@ export async function createItem(formData: {
   imageBgColor?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
+  sourceId?: string;
 }) {
   try {
     const session = await auth();
@@ -116,6 +117,7 @@ export async function updateItem(
     imageBgColor?: string;
     rarity?: ItemRarity;
     visibility: "public" | "private";
+    sourceId?: string;
   }
 ) {
   try {

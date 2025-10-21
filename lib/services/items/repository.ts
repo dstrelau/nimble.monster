@@ -296,9 +296,7 @@ export const updateItem = async (
       imageBgColor,
       rarity,
       visibility,
-      ...(sourceId !== undefined && {
-        source: sourceId ? { connect: { id: sourceId } } : { disconnect: true },
-      }),
+      source: sourceId ? { connect: { id: sourceId } } : { disconnect: true },
     },
     include: {
       creator: true,

@@ -188,7 +188,8 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
         imageBgColor: data.imageBgColor,
         rarity: data.rarity,
         visibility: data.visibility,
-        sourceId: data.sourceId || undefined,
+        sourceId:
+          data.sourceId && data.sourceId !== "none" ? data.sourceId : undefined,
       };
       const result = isEditing
         ? await updateItem(item.id, payload)
@@ -390,7 +391,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">None</SelectItem>
+                        <SelectItem value="none">None</SelectItem>
                         {sourcesQuery.data.map((source) => (
                           <SelectItem key={source.id} value={source.id}>
                             {source.name} ({source.abbreviation})
