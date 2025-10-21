@@ -307,190 +307,193 @@ export default function BuildSubclassView({
       formClassName="md:col-span-3"
       previewClassName="md:col-span-3"
       formContent={
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
-          >
-            <div className="flex flex-wrap gap-4">
-              <FormField
-                control={form.control}
-                name="className"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Class</FormLabel>
-                    <Select
-                      onValueChange={(value) => {
-                        const currentNamePreface =
-                          form.getValues("namePreface");
-                        const previousClassName = field.value;
-                        const previousDefaultPrefix =
-                          SUBCLASS_NAME_PREFIXES[
-                            previousClassName as keyof typeof SUBCLASS_NAME_PREFIXES
-                          ];
-
-                        field.onChange(value);
-
-                        // Auto-set namePreface based on class if field is empty or matches previous default
-                        const defaultPrefix =
-                          SUBCLASS_NAME_PREFIXES[
-                            value as keyof typeof SUBCLASS_NAME_PREFIXES
-                          ];
-                        if (
-                          !currentNamePreface ||
-                          currentNamePreface === previousDefaultPrefix
-                        ) {
-                          form.setValue("namePreface", defaultPrefix);
-                        }
-                      }}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-40">
-                          <SelectValue placeholder="Select a class" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {SUBCLASS_CLASSES.map((classOption) => (
-                          <SelectItem
-                            key={classOption.value}
-                            value={classOption.value}
-                          >
-                            {classOption.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="namePreface"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Preface</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="tagline"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tagline</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Levels</h3>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addLevel}
-                  disabled={levelFields.length >= 20}
-                >
-                  <Plus className="size-4" />
-                  Add Level
-                </Button>
-              </div>
-
-              {levelFields.map((levelField, levelIndex) => (
-                <div
-                  key={levelField.id}
-                  className="border rounded-lg p-4 space-y-4"
-                >
-                  <LevelAbilitiesForm
-                    control={form.control}
-                    levelIndex={levelIndex}
-                    removeLevel={removeLevel}
-                  />
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-10 flex flex-row justify-between items-center my-4">
-              <div className="flex items-center gap-2">
-                {session?.user.id ? (
-                  <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting
-                      ? "Saving..."
-                      : subclass?.id
-                        ? "Update"
-                        : "Save"}
-                  </Button>
-                ) : (
-                  <>
-                    <DiscordLoginButton className="px-2 py-1" />
-                    {" to save"}
-                  </>
-                )}
-              </div>
-              <fieldset className="space-y-2">
+        <>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4"
+            >
+              <div className="flex flex-wrap gap-4">
                 <FormField
                   control={form.control}
-                  name="visibility"
+                  name="className"
                   render={({ field }) => (
-                    <VisibilityToggle
-                      id={`subclass-visibility-toggle-${id}`}
-                      checked={field.value === "public"}
-                      onCheckedChange={(checked) =>
-                        field.onChange(checked ? "public" : "private")
-                      }
-                      entityType="Subclass"
-                    />
+                    <FormItem>
+                      <FormLabel>Class</FormLabel>
+                      <Select
+                        onValueChange={(value) => {
+                          const currentNamePreface =
+                            form.getValues("namePreface");
+                          const previousClassName = field.value;
+                          const previousDefaultPrefix =
+                            SUBCLASS_NAME_PREFIXES[
+                              previousClassName as keyof typeof SUBCLASS_NAME_PREFIXES
+                            ];
+
+                          field.onChange(value);
+
+                          // Auto-set namePreface based on class if field is empty or matches previous default
+                          const defaultPrefix =
+                            SUBCLASS_NAME_PREFIXES[
+                              value as keyof typeof SUBCLASS_NAME_PREFIXES
+                            ];
+                          if (
+                            !currentNamePreface ||
+                            currentNamePreface === previousDefaultPrefix
+                          ) {
+                            form.setValue("namePreface", defaultPrefix);
+                          }
+                        }}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-40">
+                            <SelectValue placeholder="Select a class" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {SUBCLASS_CLASSES.map((classOption) => (
+                            <SelectItem
+                              key={classOption.value}
+                              value={classOption.value}
+                            >
+                              {classOption.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
                   )}
                 />
-              </fieldset>
-            </div>
-            {form.formState.errors.root && (
-              <div className="text-destructive text-sm">
-                {form.formState.errors.root.message}
+                <FormField
+                  control={form.control}
+                  name="namePreface"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Preface</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-            )}
-          </form>
-        </Form>
+
+              <FormField
+                control={form.control}
+                name="tagline"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tagline</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Levels</h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addLevel}
+                    disabled={levelFields.length >= 20}
+                  >
+                    <Plus className="size-4" />
+                    Add Level
+                  </Button>
+                </div>
+
+                {levelFields.map((levelField, levelIndex) => (
+                  <div
+                    key={levelField.id}
+                    className="border rounded-lg p-4 space-y-4"
+                  >
+                    <LevelAbilitiesForm
+                      control={form.control}
+                      levelIndex={levelIndex}
+                      removeLevel={removeLevel}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-10 flex flex-row justify-between items-center my-4">
+                <div className="flex items-center gap-2">
+                  {session?.user.id && (
+                    <Button type="submit" disabled={isSubmitting}>
+                      {isSubmitting
+                        ? "Saving..."
+                        : subclass?.id
+                          ? "Update"
+                          : "Save"}
+                    </Button>
+                  )}
+                </div>
+                <fieldset className="space-y-2">
+                  <FormField
+                    control={form.control}
+                    name="visibility"
+                    render={({ field }) => (
+                      <VisibilityToggle
+                        id={`subclass-visibility-toggle-${id}`}
+                        checked={field.value === "public"}
+                        onCheckedChange={(checked) =>
+                          field.onChange(checked ? "public" : "private")
+                        }
+                        entityType="Subclass"
+                      />
+                    )}
+                  />
+                </fieldset>
+              </div>
+              {form.formState.errors.root && (
+                <div className="text-destructive text-sm">
+                  {form.formState.errors.root.message}
+                </div>
+              )}
+            </form>
+          </Form>
+          {!session?.user && (
+            <div className="flex items-center gap-2 py-4">
+              <DiscordLoginButton className="px-2 py-1" />
+              {" to save"}
+            </div>
+          )}
+        </>
       }
       previewContent={
         <Card
