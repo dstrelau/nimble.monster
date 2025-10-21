@@ -189,7 +189,7 @@ export const Card = ({
   return (
     <ShadcnCard
       className={cn("relative py-0 h-fit", className)}
-      id={`item-{item.id}`}
+      id={`item-${item.id}`}
     >
       <div
         className={cn(
