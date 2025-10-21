@@ -1,5 +1,6 @@
 "use client";
 import { CircleAlert, Dices } from "lucide-react";
+import { useQueryState } from "nuqs";
 import React, { useEffect, useId, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,7 +19,9 @@ type Props = {
 
 export function DiceRollerClient({ initialDice }: Props) {
   const id = useId();
-  const [diceNotation, setDiceNotation] = useState(initialDice);
+  const [diceNotation, setDiceNotation] = useQueryState("dice", {
+    defaultValue: initialDice,
+  });
   const [probabilities, setProbabilities] = useState<ProbabilityDistribution>(
     new Map()
   );
