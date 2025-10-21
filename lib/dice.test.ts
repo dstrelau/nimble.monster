@@ -87,6 +87,23 @@ describe("parseDiceNotation", () => {
     expect(parseDiceNotation("1d6a1d1")).toBeNull();
     expect(parseDiceNotation("1d6da")).toBeNull();
   });
+
+  it("rejects advantage >= 7", () => {
+    expect(parseDiceNotation("1d6a7")).toBeNull();
+    expect(parseDiceNotation("1d6a8")).toBeNull();
+    expect(parseDiceNotation("1d6a10")).toBeNull();
+  });
+
+  it("rejects disadvantage >= 7", () => {
+    expect(parseDiceNotation("1d6d7")).toBeNull();
+    expect(parseDiceNotation("1d6d8")).toBeNull();
+    expect(parseDiceNotation("1d6d10")).toBeNull();
+  });
+
+  it("accepts advantage/disadvantage up to 6", () => {
+    expect(parseDiceNotation("1d6a6")).not.toBeNull();
+    expect(parseDiceNotation("1d6d6")).not.toBeNull();
+  });
 });
 
 describe("calculateProbabilityDistribution", () => {
@@ -367,5 +384,77 @@ describe("calculateProbabilityDistribution", () => {
     // When min=4 (all dice are 4), it explodes
     const pMin4 = (1 / 4) ** 3;
     expect(dist.get(5)).toBeCloseTo(pMin4 * (1 / 4), 10); // 4+1
+  });
+
+  it("probabilities sum to 1.0 for basic dice", () => {
+    const roll = parseDiceNotation("1d6");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 3);
+  });
+
+  it("probabilities sum to 1.0 for advantage", () => {
+    const roll = parseDiceNotation("1d6a");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 3);
+  });
+
+  it("probabilities sum to 1.0 for multiple advantage", () => {
+    const roll = parseDiceNotation("1d4a2");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 2);
+  });
+
+  it("probabilities sum to 1.0 for disadvantage", () => {
+    const roll = parseDiceNotation("1d6d");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 4);
+  });
+
+  it("probabilities sum to 1.0 for multiple disadvantage", () => {
+    const roll = parseDiceNotation("1d4d2");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 3);
+  });
+
+  it("probabilities sum to 1.0 for multiple dice with advantage", () => {
+    const roll = parseDiceNotation("2d4a1");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 2);
+  });
+
+  it("probabilities sum to 1.0 for vicious dice", () => {
+    const roll = parseDiceNotation("1d4v");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 2);
+  });
+
+  it("probabilities sum to 1.0 for vicious with advantage", () => {
+    const roll = parseDiceNotation("1d6va");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 3);
   });
 });

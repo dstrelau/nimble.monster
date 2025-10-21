@@ -73,6 +73,10 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
     return null;
   }
 
+  if (advantage >= 7 || disadvantage >= 7) {
+    return null;
+  }
+
   return { numDice, dieSize, modifier, vicious, advantage, disadvantage };
 }
 

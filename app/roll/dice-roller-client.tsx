@@ -25,6 +25,7 @@ export function DiceRollerClient({ initialDice }: Props) {
   const [averageRoll, setAverageRoll] = useState<number | null>(null);
   const [totalAverageRoll, setTotalAverageRoll] = useState<number | null>(null);
   const [isValidDice, setIsValidDice] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [lastValidDice, setLastValidDice] = useState(initialDice);
 
   useEffect(() => {
@@ -32,9 +33,29 @@ export function DiceRollerClient({ initialDice }: Props) {
       const diceRoll = parseDiceNotation(diceNotation);
       if (!diceRoll) {
         setIsValidDice(false);
+        const advantageMatch = diceNotation.toLowerCase().match(/a(\d+)/);
+        const disadvantageMatch = diceNotation
+          .toLowerCase()
+          .match(/[^d]d(\d+)(?![d\d])/);
+
+        if (advantageMatch && Number.parseInt(advantageMatch[1], 10) >= 7) {
+          setErrorMessage(
+            "Advantage values over 6 are not supported for performance reasons"
+          );
+        } else if (
+          disadvantageMatch &&
+          Number.parseInt(disadvantageMatch[1], 10) >= 7
+        ) {
+          setErrorMessage(
+            "Disadvantage values over 6 are not supported for performance reasons"
+          );
+        } else {
+          setErrorMessage("Invalid dice notation");
+        }
         return;
       }
       setIsValidDice(true);
+      setErrorMessage(null);
       setLastValidDice(diceNotation);
       const distribution = calculateProbabilityDistribution(diceRoll);
       const average = calculateAverageDamageOnHit(distribution);
@@ -44,6 +65,7 @@ export function DiceRollerClient({ initialDice }: Props) {
       setProbabilities(distribution);
     } catch {
       setIsValidDice(false);
+      setErrorMessage("Invalid dice notation");
     }
   }, [diceNotation]);
 
@@ -86,7 +108,7 @@ export function DiceRollerClient({ initialDice }: Props) {
             className="text-sm font-medium mb-2 flex items-center gap-1"
           >
             Dice Notation
-            {!isValidDice && <CircleAlert className="size-4 stroke-red-500" />}
+            {!isValidDice && <CircleAlert className="size-4 stroke-error" />}
           </Label>
           <Input
             id={`diceNotation-${id}`}
@@ -99,6 +121,9 @@ export function DiceRollerClient({ initialDice }: Props) {
             className="text-xl"
             onKeyDown={(e) => e.key === "Enter"}
           />
+          {!isValidDice && errorMessage && (
+            <p className="text-sm text-error mt-1">{errorMessage}</p>
+          )}
         </div>
       </div>
 
