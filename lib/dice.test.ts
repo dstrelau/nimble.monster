@@ -9,6 +9,8 @@ describe("parseDiceNotation", () => {
       dieSize: 8,
       modifier: 0,
       vicious: false,
+      advantage: 0,
+      disadvantage: 0,
     });
   });
 
@@ -19,6 +21,8 @@ describe("parseDiceNotation", () => {
       dieSize: 6,
       modifier: 2,
       vicious: false,
+      advantage: 0,
+      disadvantage: 0,
     });
   });
 
@@ -29,6 +33,8 @@ describe("parseDiceNotation", () => {
       dieSize: 4,
       modifier: -1,
       vicious: false,
+      advantage: 0,
+      disadvantage: 0,
     });
   });
 
@@ -39,6 +45,8 @@ describe("parseDiceNotation", () => {
       dieSize: 8,
       modifier: 0,
       vicious: true,
+      advantage: 0,
+      disadvantage: 0,
     });
   });
 
@@ -49,6 +57,8 @@ describe("parseDiceNotation", () => {
       dieSize: 6,
       modifier: 2,
       vicious: true,
+      advantage: 0,
+      disadvantage: 0,
     });
   });
 
@@ -67,7 +77,15 @@ describe("parseDiceNotation", () => {
       dieSize: 8,
       modifier: 0,
       vicious: true,
+      advantage: 0,
+      disadvantage: 0,
     });
+  });
+
+  it("rejects both advantage and disadvantage", () => {
+    expect(parseDiceNotation("1d6ad")).toBeNull();
+    expect(parseDiceNotation("1d6a1d1")).toBeNull();
+    expect(parseDiceNotation("1d6da")).toBeNull();
   });
 });
 
@@ -104,5 +122,250 @@ describe("calculateProbabilityDistribution", () => {
 
     // 4,4,1,v=4; 4,4,2,v=3; 4,4,3,v=2
     expect(dist.get(13)).toBeCloseTo(3 * (1 / 4) ** 4, 10);
+  });
+
+  it("handles advantage notation parsing", () => {
+    const basic = parseDiceNotation("1d6a");
+    expect(basic).toEqual({
+      numDice: 1,
+      dieSize: 6,
+      modifier: 0,
+      vicious: false,
+      advantage: 1,
+      disadvantage: 0,
+    });
+
+    const explicit = parseDiceNotation("1d6a2");
+    expect(explicit).toEqual({
+      numDice: 1,
+      dieSize: 6,
+      modifier: 0,
+      vicious: false,
+      advantage: 2,
+      disadvantage: 0,
+    });
+
+    const withVicious = parseDiceNotation("1d8va1");
+    expect(withVicious).toEqual({
+      numDice: 1,
+      dieSize: 8,
+      modifier: 0,
+      vicious: true,
+      advantage: 1,
+      disadvantage: 0,
+    });
+
+    const withViciousReversed = parseDiceNotation("1d8a1v");
+    expect(withViciousReversed).toEqual({
+      numDice: 1,
+      dieSize: 8,
+      modifier: 0,
+      vicious: true,
+      advantage: 1,
+      disadvantage: 0,
+    });
+
+    const withModifier = parseDiceNotation("2d4a1+3");
+    expect(withModifier).toEqual({
+      numDice: 2,
+      dieSize: 4,
+      modifier: 3,
+      vicious: false,
+      advantage: 1,
+      disadvantage: 0,
+    });
+
+    const allFlags = parseDiceNotation("1d6va2+5");
+    expect(allFlags).toEqual({
+      numDice: 1,
+      dieSize: 6,
+      modifier: 5,
+      vicious: true,
+      advantage: 2,
+      disadvantage: 0,
+    });
+
+    const allFlagsReversed = parseDiceNotation("1d6a2v-1");
+    expect(allFlagsReversed).toEqual({
+      numDice: 1,
+      dieSize: 6,
+      modifier: -1,
+      vicious: true,
+      advantage: 2,
+      disadvantage: 0,
+    });
+  });
+
+  it("handles disadvantage notation parsing", () => {
+    const basic = parseDiceNotation("1d6d");
+    expect(basic).toEqual({
+      numDice: 1,
+      dieSize: 6,
+      modifier: 0,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 1,
+    });
+
+    const explicit = parseDiceNotation("1d6d2");
+    expect(explicit).toEqual({
+      numDice: 1,
+      dieSize: 6,
+      modifier: 0,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 2,
+    });
+
+    const withVicious = parseDiceNotation("1d8vd1");
+    expect(withVicious).toEqual({
+      numDice: 1,
+      dieSize: 8,
+      modifier: 0,
+      vicious: true,
+      advantage: 0,
+      disadvantage: 1,
+    });
+
+    const withViciousReversed = parseDiceNotation("1d8d1v");
+    expect(withViciousReversed).toEqual({
+      numDice: 1,
+      dieSize: 8,
+      modifier: 0,
+      vicious: true,
+      advantage: 0,
+      disadvantage: 1,
+    });
+
+    const withModifier = parseDiceNotation("2d4d1+3");
+    expect(withModifier).toEqual({
+      numDice: 2,
+      dieSize: 4,
+      modifier: 3,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 1,
+    });
+  });
+
+  it("calculates distribution for 1d6a (advantage)", () => {
+    const roll = parseDiceNotation("1d6a");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // With advantage, we roll 2d6 and keep the max.
+    // P(max=k) = probability both dice are ≤ k minus the probability both
+    // dice are ≤ k-1 (inclusion-exclusion principle)
+    // (k/6)^2 = probability both dice ≤ k
+    // ((k-1)/6)^2 = probability both dice ≤ k-1
+    // P(max=k) = (k/6)^2 - ((k-1)/6)^2
+    expect(dist.get(0)).toBeCloseTo((1 / 6) ** 2, 10); // both dice = 1
+    expect(dist.get(2)).toBeCloseTo((2 / 6) ** 2 - (1 / 6) ** 2, 10);
+    expect(dist.get(3)).toBeCloseTo((3 / 6) ** 2 - (2 / 6) ** 2, 10);
+    expect(dist.get(4)).toBeCloseTo((4 / 6) ** 2 - (3 / 6) ** 2, 10);
+    expect(dist.get(5)).toBeCloseTo((5 / 6) ** 2 - (4 / 6) ** 2, 10);
+
+    // Rolling max=6 triggers explosion
+    // P(max=6) = 1 - (5/6)^2 = 11/36
+    const pMax6 = 1 - (5 / 6) ** 2;
+    expect(dist.get(7)).toBeCloseTo(pMax6 * (1 / 6), 10); // 6 then 1
+    expect(dist.get(8)).toBeCloseTo(pMax6 * (1 / 6), 10); // 6 then 2
+  });
+
+  it("calculates distribution for 2d4a1", () => {
+    const roll = parseDiceNotation("2d4a1");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // Roll 3d4, keep highest 2
+    // Highest becomes primary die, can explode/crit/miss
+    // Second highest is added as regular die
+
+    // If all three dice are 1: miss (0)
+    expect(dist.get(0)).toBeCloseTo((1 / 4) ** 3, 10);
+
+    // For total = 9, there are multiple ways:
+    // [4,4]: explosion to 5 (4+1), then +4 = 9
+    // [4,3]: explosion to 6 (4+2), then +3 = 9
+    // [4,2]: explosion to 7 (4+3), then +2 = 9
+
+    const p_4_4 = 10 / 64; // {4,4,4}, {4,4,3}, {4,4,2}, {4,4,1}
+    const p_4_3 = 15 / 64; // {4,3,3}, {4,3,2}, {4,3,1} with permutations
+    const p_4_2 = 9 / 64; // {4,2,2}, {4,2,1} with permutations
+
+    const expectedP9 =
+      p_4_4 * (1 / 4) + // explosion to 5
+      p_4_3 * (1 / 4) + // explosion to 6
+      p_4_2 * (1 / 4); // explosion to 7
+
+    expect(dist.get(9)).toBeCloseTo(expectedP9, 10);
+  });
+
+  it("calculates distribution for 1d4a2 (multiple advantage)", () => {
+    const roll = parseDiceNotation("1d4a2");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // Roll 3d4, keep highest 1 (max of 3d4)
+    // P(max=4) = 1 - (3/4)^3 = 37/64
+    const pMax4 = 1 - (3 / 4) ** 3;
+
+    // P(all three dice are 1) = (1/4)^3 = 1/64
+    expect(dist.get(0)).toBeCloseTo((1 / 4) ** 3, 10);
+
+    // P(max=2) = (2/4)^3 - (1/4)^3 = 8/64 - 1/64 = 7/64
+    expect(dist.get(2)).toBeCloseTo((2 / 4) ** 3 - (1 / 4) ** 3, 10);
+
+    // When max=4, it explodes
+    // P(4 then 1) = pMax4 * 1/4
+    expect(dist.get(5)).toBeCloseTo(pMax4 * (1 / 4), 10); // 4+1
+  });
+
+  it("calculates distribution for 1d6d (disadvantage)", () => {
+    const roll = parseDiceNotation("1d6d");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // With disadvantage, we roll 2d6 and keep the min.
+    // P(min=k) = probability both dice are ≥ k minus the probability both
+    // dice are ≥ k+1
+    // ((7-k)/6)^2 = probability both dice ≥ k
+    // P(min=k) = ((7-k)/6)^2 - ((6-k)/6)^2
+
+    // P(min=1) = 1 - (5/6)^2 = 11/36
+    expect(dist.get(0)).toBeCloseTo(1 - (5 / 6) ** 2, 10); // both = 1 -> miss
+
+    expect(dist.get(2)).toBeCloseTo((5 / 6) ** 2 - (4 / 6) ** 2, 10);
+    expect(dist.get(3)).toBeCloseTo((4 / 6) ** 2 - (3 / 6) ** 2, 10);
+    expect(dist.get(4)).toBeCloseTo((3 / 6) ** 2 - (2 / 6) ** 2, 10);
+    expect(dist.get(5)).toBeCloseTo((2 / 6) ** 2 - (1 / 6) ** 2, 10);
+
+    // Rolling min=6 (both dice are 6) triggers explosion
+    const pMin6 = (1 / 6) ** 2;
+    expect(dist.get(7)).toBeCloseTo(pMin6 * (1 / 6), 10); // 6 then 1
+    expect(dist.get(8)).toBeCloseTo(pMin6 * (1 / 6), 10); // 6 then 2
+  });
+
+  it("calculates distribution for 1d4d2 (multiple disadvantage)", () => {
+    const roll = parseDiceNotation("1d4d2");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // Roll 3d4, keep lowest 1 (min of 3d4)
+    // P(min=1) = 1 - (3/4)^3 = 37/64
+    const pMin1 = 1 - (3 / 4) ** 3;
+
+    // P(all three dice are 1) = (1/4)^3 = 1/64 -> miss
+    expect(dist.get(0)).toBeCloseTo(pMin1, 10);
+
+    // P(min=2) = (3/4)^3 - (2/4)^3
+    expect(dist.get(2)).toBeCloseTo((3 / 4) ** 3 - (2 / 4) ** 3, 10);
+
+    // P(min=3) = (2/4)^3 - (1/4)^3
+    expect(dist.get(3)).toBeCloseTo((2 / 4) ** 3 - (1 / 4) ** 3, 10);
+
+    // When min=4 (all dice are 4), it explodes
+    const pMin4 = (1 / 4) ** 3;
+    expect(dist.get(5)).toBeCloseTo(pMin4 * (1 / 4), 10); // 4+1
   });
 });
