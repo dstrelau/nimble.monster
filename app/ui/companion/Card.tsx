@@ -42,9 +42,11 @@ const HeaderCompanion: React.FC<{
       <div className="flex items-start justify-between">
         <div className={cn("font-slab flex items-center font-black")}>
           <HPStat value={`${companion.hp_per_level}/LVL`} />
-          <SavesStat>
-            <span>{companion.saves}</span>
-          </SavesStat>
+          {companion.saves && (
+            <SavesStat>
+              <span>{companion.saves}</span>
+            </SavesStat>
+          )}
         </div>
       </div>
     </CardAction>
@@ -70,6 +72,7 @@ interface CardProps {
   creator: User;
   link?: boolean;
   hideActions?: boolean;
+  hideDescription?: boolean;
   className?: string;
 }
 
@@ -78,6 +81,7 @@ export const Card = ({
   creator,
   link = true,
   hideActions = false,
+  hideDescription = false,
   className,
 }: CardProps) => {
   const { allConditions } = useConditions({
@@ -118,10 +122,12 @@ export const Card = ({
             <Skull className="w-6 h-6" />
           </div>
 
-          <MoreInfoSection
-            moreInfo={companion.moreInfo}
-            conditions={allConditions}
-          />
+          {hideDescription || (
+            <MoreInfoSection
+              moreInfo={companion.moreInfo}
+              conditions={allConditions}
+            />
+          )}
         </CardContent>
 
         <CardFooterLayout

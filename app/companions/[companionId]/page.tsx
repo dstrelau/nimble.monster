@@ -102,7 +102,7 @@ export default async function CompanionPage({
       <div className="flex justify-end items-start mb-6">
         {isOwner && <CompanionDetailActions companion={companion} />}
       </div>
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         <Card companion={companion} creator={companion.creator} link={false} />
       </div>
     </div>

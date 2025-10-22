@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowDownUp } from "lucide-react";
 import { FilterBar } from "@/app/ui/FilterBar";
+import { SortSelect } from "@/components/app/SortSelect";
 import {
   Select,
   SelectContent,
@@ -9,33 +9,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-export type SortOption =
-  | "name-asc"
-  | "name-desc"
-  | "kind-asc"
-  | "kind-desc"
-  | "class-asc"
-  | "class-desc";
+import type {
+  CompanionClassOption,
+  PaginateCompanionsSortOption,
+} from "@/lib/services/companions/types";
+import { SUBCLASS_CLASSES } from "@/lib/types";
 
 interface SimpleFilterBarProps {
-  searchTerm: string;
-  sortOption: SortOption;
-  onSearch: (value: string) => void;
-  onSortChange: (sort: SortOption) => void;
+  searchTerm: string | null;
+  classFilter: CompanionClassOption;
+  onClassFilterChange: (filter: CompanionClassOption) => void;
+  sortOption: PaginateCompanionsSortOption;
+  onSearch: (value: string | null) => void;
+  onSortChange: (sort: PaginateCompanionsSortOption) => void;
 }
 
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: "name-asc", label: "Name (A→Z)" },
-  { value: "name-desc", label: "Name (Z→A)" },
-  { value: "kind-asc", label: "Kind (A→Z)" },
-  { value: "kind-desc", label: "Kind (Z→A)" },
-  { value: "class-asc", label: "Class (A→Z)" },
-  { value: "class-desc", label: "Class (Z→A)" },
+const CLASS_OPTIONS: {
+  value: CompanionClassOption;
+  label: string;
+}[] = [{ value: "all", label: "All Classes" }, ...SUBCLASS_CLASSES];
+
+const SORT_OPTIONS: { value: PaginateCompanionsSortOption; label: string }[] = [
+  { value: "-createdAt", label: "Newest First" },
+  { value: "createdAt", label: "Oldest First" },
+  { value: "name", label: "Name (A→Z)" },
+  { value: "-name", label: "Name (Z→A)" },
 ];
 
 export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
   searchTerm,
+  classFilter,
+  onClassFilterChange,
   sortOption,
   onSearch,
   onSortChange,
@@ -43,22 +47,27 @@ export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
   return (
     <FilterBar
       searchTerm={searchTerm}
-      onSearch={onSearch}
+      onSearch={(v) => onSearch(v ? v : null)}
       searchPlaceholder="Search"
+      layout="horizontal"
     >
-      <Select value={sortOption} onValueChange={onSortChange}>
-        <SelectTrigger>
-          <ArrowDownUp className="h-4 w-4" />
+      <Select value={classFilter} onValueChange={onClassFilterChange}>
+        <SelectTrigger className="min-w-36">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {SORT_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
+          {CLASS_OPTIONS.map(({ label, value }) => (
+            <SelectItem key={value} value={value}>
+              {label}
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
+      <SortSelect
+        items={SORT_OPTIONS}
+        value={sortOption}
+        onChange={onSortChange}
+      />
     </FilterBar>
   );
 };
