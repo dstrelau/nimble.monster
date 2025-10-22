@@ -133,6 +133,7 @@ export const Card = ({
         <CardFooterLayout
           creator={creator}
           source={companion.source}
+          awards={companion.awards}
           hideActions={hideActions}
           actionsSlot={
             companion.id && (

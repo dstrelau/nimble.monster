@@ -1,6 +1,7 @@
 import type {
   Ability,
   Action,
+  Award,
   FamilyOverview,
   Source,
   User,
@@ -89,6 +90,7 @@ export interface Monster extends MonsterMini {
   families: FamilyOverview[];
   creator: User;
   source?: Source;
+  awards?: Award[];
   updatedAt: Date;
   imageUrl?: string;
 }

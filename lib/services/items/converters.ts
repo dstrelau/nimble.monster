@@ -27,6 +27,7 @@ export const toItem = (
       include: {
         creator: true;
         source: true;
+        itemAwards: { include: { award: true } };
       };
     },
     "findMany"
@@ -38,6 +39,17 @@ export const toItem = (
     moreInfo: i.moreInfo || undefined,
     creator: toUser(i.creator),
     source: i.source || undefined,
+    awards:
+      i.itemAwards?.map((ia) => ({
+        id: ia.award.id,
+        name: ia.award.name,
+        abbreviation: ia.award.abbreviation,
+        url: ia.award.url,
+        color: ia.award.color,
+        icon: ia.award.icon,
+        createdAt: ia.award.createdAt,
+        updatedAt: ia.award.updatedAt,
+      })) || undefined,
   };
 };
 

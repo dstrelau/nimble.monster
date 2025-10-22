@@ -101,6 +101,7 @@ export interface Companion extends CompanionMini {
   moreInfo?: string;
   creator: User;
   source?: Source;
+  awards?: Award[];
   updatedAt: Date;
   imageUrl?: string;
 }
@@ -226,6 +227,7 @@ export interface Subclass extends SubclassMini {
   levels: SubclassLevel[];
   creator: User;
   source?: Source;
+  awards?: Award[];
   updatedAt: Date;
 }
 
@@ -292,6 +294,7 @@ export interface SpellSchool extends SpellSchoolMini {
   spells: Spell[];
   creator: User;
   source?: Source;
+  awards?: Award[];
   updatedAt: Date;
 }
 
@@ -307,6 +310,17 @@ export interface Source {
   license: string;
   link: string;
   abbreviation: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Award {
+  id: string;
+  name: string;
+  abbreviation: string;
+  url: string;
+  color: string;
+  icon: string;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -173,6 +173,7 @@ export const findPublicCollectionById = async (
               creator: true,
               source: true,
               monsterConditions: { include: { condition: true } },
+              monsterAwards: { include: { award: true } },
             },
           },
         },
@@ -184,6 +185,7 @@ export const findPublicCollectionById = async (
             include: {
               creator: true,
               source: true,
+              itemAwards: { include: { award: true } },
             },
           },
         },

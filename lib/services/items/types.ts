@@ -1,4 +1,4 @@
-import type { Source, User } from "@/lib/types";
+import type { Award, Source, User } from "@/lib/types";
 
 export const RARITIES = [
   { value: "unspecified", label: "Unspecified" },
@@ -31,6 +31,7 @@ export interface Item extends ItemMini {
   moreInfo?: string;
   creator: User;
   source?: Source;
+  awards?: Award[];
 }
 
 export type ItemSortBy = "name" | "createdAt";

@@ -39,6 +39,7 @@ export const listPublicSubclasses = async (): Promise<Subclass[]> => {
         abilities: {
           orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
         },
+        subclassAwards: { include: { award: true } },
       },
     })
   ).map(toSubclass);
@@ -53,6 +54,7 @@ export const findSubclass = async (id: string): Promise<Subclass | null> => {
       abilities: {
         orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
       },
+      subclassAwards: { include: { award: true } },
     },
   });
   return subclass ? toSubclass(subclass) : null;
@@ -69,6 +71,7 @@ export const findPublicSubclassById = async (
       abilities: {
         orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
       },
+      subclassAwards: { include: { award: true } },
     },
   });
   return subclass ? toSubclass(subclass) : null;
@@ -86,6 +89,7 @@ export const findSubclassWithCreatorDiscordId = async (
       abilities: {
         orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
       },
+      subclassAwards: { include: { award: true } },
     },
   });
   return subclass ? toSubclass(subclass) : null;
@@ -102,6 +106,7 @@ export const listPublicSubclassesForUser = async (
         abilities: {
           orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
         },
+        subclassAwards: { include: { award: true } },
       },
       where: {
         userId,
@@ -123,6 +128,7 @@ export const listAllSubclassesForDiscordID = async (
         abilities: {
           orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
         },
+        subclassAwards: { include: { award: true } },
       },
       where: { creator: { discordId } },
       orderBy: { name: "asc" },
@@ -254,6 +260,7 @@ export const createSubclass = async (
       abilities: {
         orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
       },
+      subclassAwards: { include: { award: true } },
     },
   });
 
@@ -321,6 +328,7 @@ export const updateSubclass = async (
       abilities: {
         orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
       },
+      subclassAwards: { include: { award: true } },
     },
   });
 

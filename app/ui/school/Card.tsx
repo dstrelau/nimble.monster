@@ -162,6 +162,7 @@ export function Card({
       <CardFooterLayout
         creator={creator || spellSchool.creator}
         source={spellSchool.source}
+        awards={spellSchool.awards}
       />
     </UICard>
   );

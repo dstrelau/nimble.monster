@@ -86,6 +86,7 @@ export function Card({ subclass, creator, link = true, className }: CardProps) {
       <CardFooterLayout
         creator={creator || subclass.creator}
         source={subclass.source}
+        awards={subclass.awards}
       />
     </UICard>
   );

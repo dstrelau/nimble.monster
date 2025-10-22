@@ -102,6 +102,8 @@ export const toCompanion = (
     {
       include: {
         creator: true;
+        source: true;
+        companionAwards: { include: { award: true } };
       };
     },
     "findMany"
@@ -128,6 +130,18 @@ export const toCompanion = (
     dyingRule: c.dyingRule,
     moreInfo: c.moreInfo || "",
     creator: toUser(c.creator),
+    source: c.source || undefined,
+    awards:
+      c.companionAwards?.map((ca) => ({
+        id: ca.award.id,
+        name: ca.award.name,
+        abbreviation: ca.award.abbreviation,
+        url: ca.award.url,
+        color: ca.award.color,
+        icon: ca.award.icon,
+        createdAt: ca.award.createdAt,
+        updatedAt: ca.award.updatedAt,
+      })) || undefined,
   };
 };
 
@@ -172,6 +186,8 @@ export const toSubclass = (
       include: {
         creator: true;
         abilities: true;
+        source: true;
+        subclassAwards: { include: { award: true } };
       };
     },
     "findMany"
@@ -206,6 +222,18 @@ export const toSubclass = (
     description: s.description || undefined,
     levels,
     creator: toUser(s.creator),
+    source: s.source || undefined,
+    awards:
+      s.subclassAwards?.map((sa) => ({
+        id: sa.award.id,
+        name: sa.award.name,
+        abbreviation: sa.award.abbreviation,
+        url: sa.award.url,
+        color: sa.award.color,
+        icon: sa.award.icon,
+        createdAt: sa.award.createdAt,
+        updatedAt: sa.award.updatedAt,
+      })) || undefined,
     updatedAt: s.updatedAt,
   };
 };
@@ -226,6 +254,8 @@ export const toSpellSchool = (
       include: {
         creator: true;
         spells: true;
+        source: true;
+        schoolAwards: { include: { award: true } };
       };
     },
     "findMany"
@@ -274,6 +304,18 @@ export const toSpellSchool = (
       };
     }),
     creator: toUser(s.creator),
+    source: s.source || undefined,
+    awards:
+      s.schoolAwards?.map((sa) => ({
+        id: sa.award.id,
+        name: sa.award.name,
+        abbreviation: sa.award.abbreviation,
+        url: sa.award.url,
+        color: sa.award.color,
+        icon: sa.award.icon,
+        createdAt: sa.award.createdAt,
+        updatedAt: sa.award.updatedAt,
+      })) || undefined,
     updatedAt: s.updatedAt,
   };
 };

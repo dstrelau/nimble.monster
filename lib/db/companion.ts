@@ -35,6 +35,7 @@ export const listPublicCompanions = async (): Promise<Companion[]> => {
       include: {
         creator: true,
         source: true,
+        companionAwards: { include: { award: true } },
       },
     })
   ).map(toCompanion);
@@ -46,6 +47,7 @@ export const findCompanion = async (id: string): Promise<Companion | null> => {
     include: {
       creator: true,
       source: true,
+      companionAwards: { include: { award: true } },
     },
   });
   return companion ? toCompanion(companion) : null;
@@ -59,6 +61,7 @@ export const findPublicCompanionById = async (
     include: {
       creator: true,
       source: true,
+      companionAwards: { include: { award: true } },
     },
   });
   return companion ? toCompanion(companion) : null;
@@ -73,6 +76,7 @@ export const findCompanionWithCreator = async (
     include: {
       creator: true,
       source: true,
+      companionAwards: { include: { award: true } },
     },
   });
   return companion ? toCompanion(companion) : null;
@@ -86,6 +90,7 @@ export const listPublicCompanionsForUser = async (
       include: {
         creator: true,
         source: true,
+        companionAwards: { include: { award: true } },
       },
       where: {
         userId,
@@ -104,6 +109,7 @@ export const listAllCompanionsForDiscordID = async (
       include: {
         creator: true,
         source: true,
+        companionAwards: { include: { award: true } },
       },
       where: { creator: { discordId: discordId } },
       orderBy: { name: "asc" },
@@ -178,6 +184,7 @@ export const createCompanion = async (
     include: {
       creator: true,
       source: true,
+      companionAwards: { include: { award: true } },
     },
   });
 
@@ -253,6 +260,7 @@ export const updateCompanion = async (
     include: {
       creator: true,
       source: true,
+      companionAwards: { include: { award: true } },
     },
   });
 

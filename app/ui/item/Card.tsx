@@ -255,6 +255,7 @@ export const Card = ({
       <CardFooterLayout
         creator={creator}
         source={item.source}
+        awards={item.awards}
         hideActions={hideActions}
         className="pb-4"
         actionsSlot={

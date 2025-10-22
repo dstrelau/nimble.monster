@@ -84,6 +84,7 @@ export const paginatePublicCompanions = async ({
     include: {
       creator: true,
       source: true,
+      companionAwards: { include: { award: true } },
     },
     orderBy,
     take: limit + 1,

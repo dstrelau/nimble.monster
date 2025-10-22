@@ -31,6 +31,7 @@ export const toMonster = (
         };
         creator: true;
         source: true;
+        monsterAwards: { include: { award: true } };
       };
     },
     "findMany"
@@ -67,6 +68,17 @@ export const toMonster = (
       .sort((a, b) => a.name.localeCompare(b.name)),
     creator: toUser(m.creator),
     source: m.source || undefined,
+    awards:
+      m.monsterAwards?.map((ma) => ({
+        id: ma.award.id,
+        name: ma.award.name,
+        abbreviation: ma.award.abbreviation,
+        url: ma.award.url,
+        color: ma.award.color,
+        icon: ma.award.icon,
+        createdAt: ma.award.createdAt,
+        updatedAt: ma.award.updatedAt,
+      })) || undefined,
   };
 };
 

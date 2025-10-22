@@ -48,6 +48,7 @@ export const getRandomRecentItems = async (
       include: {
         creator: true,
         source: true,
+        itemAwards: { include: { award: true } },
       },
     })
   ).map(toItem);
@@ -62,6 +63,7 @@ export const findItem = async (id: string): Promise<Item | null> => {
     include: {
       creator: true,
       source: true,
+      itemAwards: { include: { award: true } },
     },
   });
   return item ? toItem(item) : null;
@@ -96,6 +98,7 @@ export const findPublicItemById = async (id: string): Promise<Item | null> => {
     include: {
       creator: true,
       source: true,
+      itemAwards: { include: { award: true } },
     },
   });
   return item ? toItem(item) : null;
@@ -110,6 +113,7 @@ export const findItemWithCreatorDiscordId = async (
     include: {
       creator: true,
       source: true,
+      itemAwards: { include: { award: true } },
     },
   });
   return item ? toItem(item) : null;
@@ -123,6 +127,7 @@ export const listPublicItemsForUser = async (
       include: {
         creator: true,
         source: true,
+        itemAwards: { include: { award: true } },
       },
       where: {
         userId,
@@ -141,6 +146,7 @@ export const listAllItemsForDiscordID = async (
       include: {
         creator: true,
         source: true,
+        itemAwards: { include: { award: true } },
       },
       where: { creator: { discordId } },
       orderBy: { name: "asc" },
@@ -204,6 +210,7 @@ export const searchPublicItems = async ({
       include: {
         creator: true,
         source: true,
+        itemAwards: { include: { award: true } },
       },
     })
   ).map(toItem);
@@ -255,6 +262,7 @@ export const createItem = async (
     include: {
       creator: true,
       source: true,
+      itemAwards: { include: { award: true } },
     },
   });
 
@@ -307,6 +315,7 @@ export const updateItem = async (
     include: {
       creator: true,
       source: true,
+      itemAwards: { include: { award: true } },
     },
   });
 

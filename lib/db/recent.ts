@@ -65,19 +65,28 @@ export const getRecentPublicContent = async (
             include: { family: { include: { creator: true } } },
           },
           monsterConditions: { include: { condition: true } },
+          monsterAwards: { include: { award: true } },
         },
         orderBy: { createdAt: "desc" },
         take: limit,
       }),
       prisma.item.findMany({
         where: { visibility: "public" },
-        include: { creator: true, source: true },
+        include: {
+          creator: true,
+          source: true,
+          itemAwards: { include: { award: true } },
+        },
         orderBy: { createdAt: "desc" },
         take: limit,
       }),
       prisma.companion.findMany({
         where: { visibility: "public" },
-        include: { creator: true },
+        include: {
+          creator: true,
+          source: true,
+          companionAwards: { include: { award: true } },
+        },
         orderBy: { createdAt: "desc" },
         take: limit,
       }),
@@ -95,6 +104,7 @@ export const getRecentPublicContent = async (
                   monsterFamilies: {
                     include: { family: { include: { creator: true } } },
                   },
+                  monsterAwards: { include: { award: true } },
                 },
               },
             },
@@ -102,7 +112,11 @@ export const getRecentPublicContent = async (
           itemCollections: {
             include: {
               item: {
-                include: { creator: true, source: true },
+                include: {
+                  creator: true,
+                  source: true,
+                  itemAwards: { include: { award: true } },
+                },
               },
             },
           },
@@ -125,6 +139,7 @@ export const getRecentPublicContent = async (
                     include: { family: { include: { creator: true } } },
                   },
                   monsterConditions: { include: { condition: true } },
+                  monsterAwards: { include: { award: true } },
                 },
               },
             },

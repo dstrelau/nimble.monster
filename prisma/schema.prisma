@@ -132,6 +132,7 @@ model Monster {
   monsterCollections MonsterInCollection[]
   monsterConditions  MonsterCondition[]
   monsterFamilies    MonsterFamily[]
+  monsterAwards      MonsterAward[]
 
   @@index([userId], map: "idx_monsters_user_id")
   @@map("monsters")
@@ -154,10 +155,11 @@ model Companion {
   visibility    companion_visibility @default(public)
   userId        String               @map("user_id") @db.Uuid
   sourceId      String?              @map("source_id") @db.Uuid
-  createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt     DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  creator       User                 @relation(fields: [userId], references: [id], onUpdate: NoAction)
-  source        Source?              @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  creator         User                 @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source          Source?              @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  companionAwards CompanionAward[]
 
   @@index([userId], map: "idx_companions_user_id")
   @@map("companions")
@@ -193,6 +195,7 @@ model Item {
   creator         User               @relation(fields: [userId], references: [id], onUpdate: NoAction)
   source          Source?            @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
   itemCollections ItemInCollection[]
+  itemAwards      ItemAward[]
 
   @@index([userId], map: "idx_items_user_id")
   @@map("items")
@@ -209,10 +212,11 @@ model Subclass {
   sourceId    String?             @map("source_id") @db.Uuid
   createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  tagline     String?
-  abilities   SubclassAbility[]
-  creator     User                @relation(fields: [userId], references: [id], onUpdate: NoAction)
-  source      Source?             @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  tagline        String?
+  abilities      SubclassAbility[]
+  creator        User                @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source         Source?             @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  subclassAwards SubclassAward[]
 
   @@index([userId], map: "idx_subclasses_user_id")
   @@map("subclasses")
@@ -238,11 +242,12 @@ model SpellSchool {
   visibility  spell_school_visibility @default(public)
   userId      String                  @map("user_id") @db.Uuid
   sourceId    String?                 @map("source_id") @db.Uuid
-  createdAt   DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime                @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  creator     User                    @relation(fields: [userId], references: [id], onUpdate: NoAction)
-  source      Source?                 @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
-  spells      Spell[]
+  createdAt    DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  creator      User                 @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source       Source?              @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  spells       Spell[]
+  schoolAwards SpellSchoolAward[]
 
   @@index([userId], map: "idx_spell_schools_user_id")
   @@map("spell_schools")
@@ -396,4 +401,72 @@ model Source {
   spellSchools SpellSchool[]
 
   @@map("sources")
+}
+
+model Award {
+  id              String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name            String
+  abbreviation    String
+  url             String
+  color           String
+  icon            String
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  monsterAwards   MonsterAward[]
+  itemAwards      ItemAward[]
+  companionAwards CompanionAward[]
+  subclassAwards  SubclassAward[]
+  schoolAwards    SpellSchoolAward[]
+
+  @@map("awards")
+}
+
+model MonsterAward {
+  monsterId String  @map("monster_id") @db.Uuid
+  awardId   String  @map("award_id") @db.Uuid
+  monster   Monster @relation(fields: [monsterId], references: [id], onDelete: Cascade)
+  award     Award   @relation(fields: [awardId], references: [id], onDelete: Cascade)
+
+  @@id([monsterId, awardId])
+  @@map("monsters_awards")
+}
+
+model ItemAward {
+  itemId  String @map("item_id") @db.Uuid
+  awardId String @map("award_id") @db.Uuid
+  item    Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  award   Award  @relation(fields: [awardId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, awardId])
+  @@map("items_awards")
+}
+
+model CompanionAward {
+  companionId String    @map("companion_id") @db.Uuid
+  awardId     String    @map("award_id") @db.Uuid
+  companion   Companion @relation(fields: [companionId], references: [id], onDelete: Cascade)
+  award       Award     @relation(fields: [awardId], references: [id], onDelete: Cascade)
+
+  @@id([companionId, awardId])
+  @@map("companions_awards")
+}
+
+model SubclassAward {
+  subclassId String   @map("subclass_id") @db.Uuid
+  awardId    String   @map("award_id") @db.Uuid
+  subclass   Subclass @relation(fields: [subclassId], references: [id], onDelete: Cascade)
+  award      Award    @relation(fields: [awardId], references: [id], onDelete: Cascade)
+
+  @@id([subclassId, awardId])
+  @@map("subclasses_awards")
+}
+
+model SpellSchoolAward {
+  schoolId String      @map("school_id") @db.Uuid
+  awardId  String      @map("award_id") @db.Uuid
+  school   SpellSchool @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  award    Award       @relation(fields: [awardId], references: [id], onDelete: Cascade)
+
+  @@id([schoolId, awardId])
+  @@map("spell_schools_awards")
 }

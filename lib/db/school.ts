@@ -38,6 +38,7 @@ export const listPublicSpellSchools = async (): Promise<SpellSchool[]> => {
         spells: {
           orderBy: [{ tier: "asc" }, { name: "asc" }],
         },
+        schoolAwards: { include: { award: true } },
       },
     })
   ).map(toSpellSchool);
@@ -54,6 +55,7 @@ export const findSpellSchool = async (
       spells: {
         orderBy: [{ tier: "asc" }, { name: "asc" }],
       },
+      schoolAwards: { include: { award: true } },
     },
   });
   return spellSchool ? toSpellSchool(spellSchool) : null;
@@ -73,6 +75,7 @@ export const findSpellSchoolWithCreatorDiscordId = async (
       spells: {
         orderBy: { name: "asc" },
       },
+      schoolAwards: { include: { award: true } },
     },
   });
   return spellSchool ? toSpellSchool(spellSchool) : null;
@@ -89,6 +92,7 @@ export const listAllSpellSchoolsForDiscordID = async (
         spells: {
           orderBy: [{ tier: "asc" }, { name: "asc" }],
         },
+        schoolAwards: { include: { award: true } },
       },
       where: { creator: { discordId } },
       orderBy: { name: "asc" },
@@ -206,6 +210,7 @@ export const createSpellSchool = async (
       spells: {
         orderBy: { name: "asc" },
       },
+      schoolAwards: { include: { award: true } },
     },
   });
 
@@ -280,6 +285,7 @@ export const updateSpellSchool = async (
       spells: {
         orderBy: { name: "asc" },
       },
+      schoolAwards: { include: { award: true } },
     },
   });
 

@@ -309,6 +309,7 @@ export const Card = ({
         <CardFooterLayout
           creator={creator}
           source={monster.source}
+          awards={monster.awards}
           hideActions={hideActions}
           actionsSlot={<CardActions monster={monster} />}
         />

@@ -147,6 +147,7 @@ export const paginatePublicMonsters = async ({
       creator: true,
       source: true,
       monsterConditions: { include: { condition: true } },
+      monsterAwards: { include: { award: true } },
     },
     orderBy,
     take: limit + 1,
@@ -199,6 +200,7 @@ export const findMonster = async (id: string): Promise<Monster | null> => {
       creator: true,
       source: true,
       monsterConditions: { include: { condition: true } },
+      monsterAwards: { include: { award: true } },
     },
   });
   return monster ? toMonster(monster) : null;
@@ -216,6 +218,7 @@ export const findPublicMonsterById = async (
       creator: true,
       source: true,
       monsterConditions: { include: { condition: true } },
+      monsterAwards: { include: { award: true } },
     },
   });
   return monster ? toMonster(monster) : null;
@@ -234,6 +237,7 @@ export const findMonsterWithCreatorId = async (
       creator: true,
       source: true,
       monsterConditions: { include: { condition: true } },
+      monsterAwards: { include: { award: true } },
     },
   });
   return monster ? toMonster(monster) : null;
@@ -262,6 +266,7 @@ export const listPublicMonstersForUser = async (
         creator: true,
         source: true,
         monsterConditions: { include: { condition: true } },
+        monsterAwards: { include: { award: true } },
       },
       where: {
         userId,
@@ -284,6 +289,7 @@ export const listAllMonstersForDiscordID = async (
         creator: true,
         source: true,
         monsterConditions: { include: { condition: true } },
+        monsterAwards: { include: { award: true } },
       },
       where: { creator: { discordId: id } },
       orderBy: { name: "asc" },
@@ -371,6 +377,7 @@ export const listMonstersByFamilyId = async (
         creator: true,
         source: true,
         monsterConditions: { include: { condition: true } },
+        monsterAwards: { include: { award: true } },
       },
       where: {
         monsterFamilies: { some: { familyId } },
@@ -485,6 +492,7 @@ export const createMonster = async (
       creator: true,
       source: true,
       monsterConditions: { include: { condition: true } },
+      monsterAwards: { include: { award: true } },
     },
   });
 
@@ -582,6 +590,7 @@ export const updateMonster = async (
       creator: true,
       source: true,
       monsterConditions: { include: { condition: true } },
+      monsterAwards: { include: { award: true } },
     },
   });
 
