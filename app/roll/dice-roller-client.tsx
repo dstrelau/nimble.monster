@@ -41,15 +41,23 @@ export function DiceRollerClient({ initialDice }: Props) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [lastValidDice, setLastValidDice] = useState(initialDice);
   const [rollKey, setRollKey] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: rollKey is used to trigger re-rolls
   const sampleRoll = useMemo(() => {
+    if (!mounted) {
+      return { results: [], modifier: 0, total: 0 };
+    }
     const diceRoll = parseDiceNotation(lastValidDice);
     if (!diceRoll) {
       return { results: [], modifier: 0, total: 0 };
     }
     return simulateRoll(diceRoll);
-  }, [lastValidDice, rollKey]);
+  }, [lastValidDice, rollKey, mounted]);
 
   useEffect(() => {
     try {

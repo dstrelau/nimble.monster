@@ -298,22 +298,24 @@ describe("calculateProbabilityDistribution", () => {
     // Highest becomes primary die, can explode/crit/miss
     // Second highest is added as regular die
 
-    // If all three dice are 1: miss (0)
-    expect(dist.get(0)).toBeCloseTo((1 / 4) ** 3, 10);
+    // Primary die is 1 when dice[0]=1, dice[1]=1, dice[2]=any
+    // (dice[0] gets dropped due to tie-breaking, dice[1] becomes primary)
+    expect(dist.get(0)).toBeCloseTo(4 / 64, 10);
 
     // For total = 9, there are multiple ways:
-    // [4,4]: explosion to 5 (4+1), then +4 = 9
-    // [4,3]: explosion to 6 (4+2), then +3 = 9
-    // [4,2]: explosion to 7 (4+3), then +2 = 9
+    // primary=4 explodes to 5 (4+1), second=4: 5+4=9
+    // primary=4 explodes to 6 (4+2), second=3: 6+3=9
+    // primary=4 explodes to 7 (4+3), second=2: 7+2=9
 
-    const p_4_4 = 10 / 64; // {4,4,4}, {4,4,3}, {4,4,2}, {4,4,1}
-    const p_4_3 = 15 / 64; // {4,3,3}, {4,3,2}, {4,3,1} with permutations
-    const p_4_2 = 9 / 64; // {4,2,2}, {4,2,1} with permutations
+    // Count cases where primary die (first kept by index) is 4
+    const p_primary4_second4 = 10 / 64; // All 10 cases with kept=[4,4]
+    const p_primary4_second3 = 8 / 64; // Only 8 of 15 {4,3} cases have primary=4
+    const p_primary4_second2 = 5 / 64; // Only 5 of 9 {4,2} cases have primary=4
 
     const expectedP9 =
-      p_4_4 * (1 / 4) + // explosion to 5
-      p_4_3 * (1 / 4) + // explosion to 6
-      p_4_2 * (1 / 4); // explosion to 7
+      p_primary4_second4 * (1 / 4) + // explosion to 5
+      p_primary4_second3 * (1 / 4) + // explosion to 6
+      p_primary4_second2 * (1 / 4); // explosion to 7
 
     expect(dist.get(9)).toBeCloseTo(expectedP9, 10);
   });
