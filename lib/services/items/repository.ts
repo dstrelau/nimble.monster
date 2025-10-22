@@ -151,6 +151,7 @@ export const listAllItemsForDiscordID = async (
 export const searchPublicItems = async ({
   searchTerm,
   rarity,
+  sourceId,
   sortBy,
   sortDirection = "asc",
   limit,
@@ -164,6 +165,7 @@ export const searchPublicItems = async ({
       kind?: { contains: string; mode: "insensitive" };
     }>;
     rarity?: ItemRarity;
+    sourceId?: string;
   } = {
     visibility: "public",
   };
@@ -177,6 +179,10 @@ export const searchPublicItems = async ({
 
   if (rarity && rarity !== "all") {
     whereClause.rarity = rarity;
+  }
+
+  if (sourceId) {
+    whereClause.sourceId = sourceId;
   }
 
   let orderBy: { name: "asc" | "desc" } | { createdAt: "asc" | "desc" } = {

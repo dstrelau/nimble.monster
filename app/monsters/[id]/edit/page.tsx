@@ -30,9 +30,11 @@ export default async function EditMonsterPage({
   }
 
   const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(userFamiliesQueryOptions());
-  void queryClient.prefetchQuery(monsterSourcesQueryOptions());
-  void queryClient.prefetchQuery(officialConditionsQueryOptions());
+  await Promise.all([
+    queryClient.prefetchQuery(userFamiliesQueryOptions()),
+    queryClient.prefetchQuery(monsterSourcesQueryOptions()),
+    queryClient.prefetchQuery(officialConditionsQueryOptions()),
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

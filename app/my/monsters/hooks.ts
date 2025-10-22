@@ -10,14 +10,16 @@ export function myMonstersInfiniteQueryOptions({
   search,
   sort = "-createdAt",
   type = "all",
+  sourceId,
   limit = 12,
 }: Partial<{
   search?: string;
   sort: PaginateMonstersSortOption;
   type: MonsterTypeOption;
+  sourceId?: string;
   limit?: number;
 }> = {}) {
-  const params = { search, sort, type, limit };
+  const params = { search, sort, type, sourceId, limit };
   return {
     queryKey: ["my-monsters", params],
     queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>

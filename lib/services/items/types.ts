@@ -40,6 +40,7 @@ export interface SearchItemsParams {
   searchTerm?: string;
   rarity?: ItemRarityFilter;
   creatorId?: string;
+  sourceId?: string;
   sortBy?: ItemSortBy;
   sortDirection?: ItemSortDirection;
   limit?: number;

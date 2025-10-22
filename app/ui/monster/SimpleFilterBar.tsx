@@ -3,6 +3,7 @@
 import { Crown, PersonStanding, User } from "lucide-react";
 import { FilterBar } from "@/app/ui/FilterBar";
 import { SortSelect } from "@/components/app/SortSelect";
+import { SourceFilter } from "@/components/app/SourceFilter";
 import {
   Select,
   SelectContent,
@@ -22,6 +23,8 @@ interface SimpleFilterBarProps {
   sortOption: PaginateMonstersSortOption;
   onSearch: (value: string | null) => void;
   onSortChange: (sort: PaginateMonstersSortOption) => void;
+  sourceId: string | null;
+  onSourceChange: (sourceId: string | null) => void;
 }
 
 const TYPE_OPTIONS: {
@@ -61,6 +64,8 @@ export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
   sortOption,
   onSearch,
   onSortChange,
+  sourceId,
+  onSourceChange,
 }) => {
   return (
     <FilterBar
@@ -82,6 +87,7 @@ export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
           ))}
         </SelectContent>
       </Select>
+      <SourceFilter sourceId={sourceId} onSourceChange={onSourceChange} />
       <SortSelect
         items={SORT_OPTIONS}
         value={sortOption}

@@ -10,6 +10,7 @@ import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { itemsService } from "@/lib/services/items";
 import * as monstersRepo from "@/lib/services/monsters/repository";
+import { sourcesQueryOptions } from "@/lib/services/sources";
 import { getSiteName } from "@/lib/utils/branding";
 import { userProfileMonstersInfiniteQueryOptions } from "./hooks";
 import TabsContent from "./TabsContent";
@@ -100,6 +101,7 @@ export default async function UserProfilePage({
 
   const queryClient = getQueryClient();
   await Promise.all([
+    queryClient.prefetchQuery(sourcesQueryOptions()),
     queryClient.prefetchQuery(monsterSourcesQueryOptions()),
     queryClient.prefetchQuery(officialConditionsQueryOptions()),
     queryClient.prefetchInfiniteQuery(

@@ -2,7 +2,7 @@
 
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useQueryState } from "nuqs";
+import { parseAsString, useQueryState } from "nuqs";
 import type React from "react";
 import { Button } from "@/components/ui/button";
 import type { ItemRarityFilter } from "@/lib/services/items";
@@ -23,12 +23,18 @@ export const ItemsListView: React.FC = () => {
   const [rarityQuery, setRarityQuery] = useQueryState("rarity", {
     defaultValue: "all",
   });
+  const [sourceIdQuery, setSourceIdQuery] = useQueryState(
+    "sourceId",
+    parseAsString
+  );
+
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage, error } =
     useInfiniteQuery(
       publicItemsInfiniteQueryOptions({
         rarity: rarityQuery,
         sort: sortQuery,
         search: searchQuery || undefined,
+        sourceId: sourceIdQuery ?? undefined,
       })
     );
 
@@ -59,6 +65,8 @@ export const ItemsListView: React.FC = () => {
         onSearch={setSearchQuery}
         onSortChange={setSortQuery}
         onRarityChange={setRarityQuery}
+        sourceId={sourceIdQuery}
+        onSourceChange={setSourceIdQuery}
       />
 
       <div className="flex flex-wrap items-center justify-center gap-4">

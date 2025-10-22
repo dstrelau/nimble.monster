@@ -4,6 +4,7 @@ import { z } from "zod";
 import { ItemsListView } from "@/app/items/ItemsListView";
 import { getQueryClient } from "@/lib/queryClient";
 import * as items from "@/lib/services/items/repository";
+import { sourcesQueryOptions } from "@/lib/services/sources";
 import { getItemUrl } from "@/lib/utils/url";
 import { publicItemsInfiniteQueryOptions } from "./actions";
 
@@ -16,6 +17,7 @@ const searchParamsSchema = z.object({
     .enum(["all", "common", "uncommon", "rare", "epic", "legendary"])
     .default("all"),
   search: z.string().optional(),
+  sourceId: z.string().optional(),
 });
 
 type SearchParams = z.infer<typeof searchParamsSchema>;
@@ -39,9 +41,10 @@ export default async function ItemsPage({
   }
 
   const queryClient = getQueryClient();
-  await queryClient.prefetchInfiniteQuery(
-    publicItemsInfiniteQueryOptions(params)
-  );
+  await Promise.all([
+    queryClient.prefetchQuery(sourcesQueryOptions()),
+    queryClient.prefetchInfiniteQuery(publicItemsInfiniteQueryOptions(params)),
+  ]);
 
   return (
     <div className="container mx-auto">

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { PaginatedMonsterGrid } from "@/app/ui/monster/PaginatedMonsterGrid";
 import { auth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/queryClient";
+import { sourcesQueryOptions } from "@/lib/services/sources";
 import { myMonstersInfiniteQueryOptions } from "./hooks";
 
 export default async function MyMonstersPage() {
@@ -10,9 +11,12 @@ export default async function MyMonstersPage() {
   if (!session?.user?.id) notFound();
 
   const queryClient = getQueryClient();
-  await queryClient.prefetchInfiniteQuery(
-    myMonstersInfiniteQueryOptions({ sort: "-createdAt", type: "all" })
-  );
+  await Promise.all([
+    queryClient.prefetchQuery(sourcesQueryOptions()),
+    queryClient.prefetchInfiniteQuery(
+      myMonstersInfiniteQueryOptions({ sort: "-createdAt", type: "all" })
+    ),
+  ]);
 
   return (
     <div className="container mx-auto">

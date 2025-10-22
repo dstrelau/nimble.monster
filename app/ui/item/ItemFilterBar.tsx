@@ -4,6 +4,7 @@ import type React from "react";
 import type { ItemSortOption } from "@/app/items/actions";
 import { FilterBar } from "@/app/ui/FilterBar";
 import { SortSelect } from "@/components/app/SortSelect";
+import { SourceFilter } from "@/components/app/SourceFilter";
 import {
   Select,
   SelectContent,
@@ -20,6 +21,8 @@ interface ItemFilterBarProps {
   onSearch: (value: string | null) => void;
   onSortChange: (sort: ItemSortOption) => void;
   onRarityChange: (rarity: ItemRarity | "all") => void;
+  sourceId: string | null;
+  onSourceChange: (sourceId: string | null) => void;
 }
 
 const SORT_OPTIONS: { value: ItemSortOption; label: string }[] = [
@@ -36,6 +39,8 @@ export const ItemFilterBar: React.FC<ItemFilterBarProps> = ({
   onSearch,
   onSortChange,
   onRarityChange,
+  sourceId,
+  onSourceChange,
 }) => {
   return (
     <FilterBar
@@ -49,10 +54,10 @@ export const ItemFilterBar: React.FC<ItemFilterBarProps> = ({
         onValueChange={(value) => onRarityChange(value as ItemRarity | "all")}
       >
         <SelectTrigger>
-          <SelectValue placeholder="All rarities" />
+          <SelectValue placeholder="All Rarities" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All rarities</SelectItem>
+          <SelectItem value="all">All Rarities</SelectItem>
           {RARITIES.map((rarity) => (
             <SelectItem key={rarity.value} value={rarity.value}>
               {rarity.label}
@@ -60,6 +65,8 @@ export const ItemFilterBar: React.FC<ItemFilterBarProps> = ({
           ))}
         </SelectContent>
       </Select>
+
+      <SourceFilter sourceId={sourceId} onSourceChange={onSourceChange} />
 
       <SortSelect
         items={SORT_OPTIONS}

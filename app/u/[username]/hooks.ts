@@ -12,15 +12,17 @@ export function userProfileMonstersInfiniteQueryOptions(
     search,
     sort = "-createdAt",
     type = "all",
+    sourceId,
     limit = 12,
   }: Partial<{
     search?: string;
     sort: PaginateMonstersSortOption;
     type: MonsterTypeOption;
+    sourceId?: string;
     limit?: number;
   }> = {}
 ) {
-  const params = { search, sort, type, limit, creatorId };
+  const params = { search, sort, type, sourceId, limit, creatorId };
   return {
     queryKey: ["monsters", params],
     queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>

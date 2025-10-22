@@ -53,6 +53,7 @@ export const paginatePublicMonsters = async ({
   search,
   type = "all",
   creatorId,
+  sourceId,
 }: PaginateMonstersParams): Promise<{
   data: Monster[];
   nextCursor: string | null;
@@ -85,6 +86,10 @@ export const paginatePublicMonsters = async ({
 
   if (creatorId) {
     where.userId = creatorId;
+  }
+
+  if (sourceId) {
+    where.sourceId = sourceId;
   }
 
   if (type === "legendary") {

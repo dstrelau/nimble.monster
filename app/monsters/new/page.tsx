@@ -12,12 +12,14 @@ import { monsterSourcesQueryOptions } from "../hooks";
 export default async function NewMonsterPage() {
   const session = await auth();
   const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(userFamiliesQueryOptions());
-  void queryClient.prefetchQuery(monsterSourcesQueryOptions());
-  void queryClient.prefetchQuery(officialConditionsQueryOptions());
-  void queryClient.prefetchQuery(
-    userConditionsQueryOptions({ discordId: session?.user?.discordId })
-  );
+  await Promise.all([
+    queryClient.prefetchQuery(userFamiliesQueryOptions()),
+    queryClient.prefetchQuery(monsterSourcesQueryOptions()),
+    queryClient.prefetchQuery(officialConditionsQueryOptions()),
+    queryClient.prefetchQuery(
+      userConditionsQueryOptions({ discordId: session?.user?.discordId })
+    ),
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

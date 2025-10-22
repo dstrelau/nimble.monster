@@ -5,6 +5,7 @@ import { PaginatedMonsterGrid } from "@/app/ui/monster/PaginatedMonsterGrid";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { monstersService } from "@/lib/services/monsters";
+import { sourcesQueryOptions } from "@/lib/services/sources";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { publicMonstersInfiniteQueryOptions } from "./hooks";
 
@@ -15,6 +16,7 @@ const searchParamsSchema = z.object({
     .default("-createdAt"),
   type: z.enum(["all", "standard", "legendary", "minion"]).default("all"),
   search: z.string().optional(),
+  sourceId: z.string().optional(),
 });
 
 type SearchParams = z.infer<typeof searchParamsSchema>;
@@ -39,6 +41,7 @@ export default async function MonstersPage({
 
   const queryClient = getQueryClient();
   await Promise.all([
+    queryClient.prefetchQuery(sourcesQueryOptions()),
     queryClient.prefetchQuery(officialConditionsQueryOptions()),
     queryClient.prefetchInfiniteQuery(
       publicMonstersInfiniteQueryOptions(params)
