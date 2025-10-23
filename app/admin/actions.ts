@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/auth";
 import * as awardDb from "@/lib/db/award";
+import * as sourceDb from "@/lib/db/source";
 
 export async function createAwardAction(formData: FormData) {
   if (!(await isAdmin())) {
@@ -112,4 +113,19 @@ export async function searchEntitiesAction(entityType: string, query: string) {
   }
 
   return awardDb.searchEntities(entityType, query);
+}
+
+export async function createSourceAction(formData: FormData) {
+  if (!(await isAdmin())) {
+    throw new Error("Unauthorized");
+  }
+
+  const name = formData.get("name") as string;
+  const abbreviation = formData.get("abbreviation") as string;
+  const license = formData.get("license") as string;
+  const link = formData.get("link") as string;
+
+  await sourceDb.createSource({ name, abbreviation, license, link });
+  revalidatePath("/admin/sources");
+  redirect("/admin/sources");
 }
