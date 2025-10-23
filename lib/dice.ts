@@ -560,7 +560,13 @@ export function calculateProbabilityDistribution(
 export function calculateAverageDamageOnHit(
   distribution: ProbabilityDistribution
 ): number {
-  const hitP = 1 - (distribution.get(0) || 1);
+  const missP = distribution.get(0) || 0;
+  const hitP = 1 - missP;
+
+  // If there's no miss possibility (like tensOnes dice), return total average
+  if (hitP === 1) {
+    return calculateTotalAverageDamage(distribution);
+  }
 
   let sum = 0;
   for (const [roll, p] of distribution) {
