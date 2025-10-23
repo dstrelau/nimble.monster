@@ -13,7 +13,7 @@ interface AwardBadgeProps {
   award: Award;
 }
 
-const COLOR_CLASSES: Record<string, string> = {
+export const AWARD_COLOR_CLASSES: Record<string, string> = {
   rose: "text-rose-600 bg-rose-100 border-rose-200 dark:text-rose-500 dark:border-rose-500 dark:bg-rose-900",
   red: "text-red-600 bg-red-100 border-red-200 dark:text-red-500 dark:border-red-500 dark:bg-red-900",
   amber:
@@ -29,6 +29,8 @@ const COLOR_CLASSES: Record<string, string> = {
     "text-neutral-600 bg-neutral-100 border-neutral-200 dark:text-neutral-500 dark:border-neutral-500 dark:bg-neutral-900",
 };
 
+export const AWARD_COLORS = Object.keys(AWARD_COLOR_CLASSES);
+
 export const AwardBadge = ({ award }: AwardBadgeProps) => {
   return (
     <TooltipProvider>
@@ -38,7 +40,7 @@ export const AwardBadge = ({ award }: AwardBadgeProps) => {
             href={award.url}
             className={cn(
               "px-1 py-0.5 flex items-center gap-0.5 text-sm small-caps font-stretch-ultra-condensed border rounded-md",
-              COLOR_CLASSES[award.color]
+              AWARD_COLOR_CLASSES[award.color]
             )}
             target="_blank"
             rel="noopener noreferrer"

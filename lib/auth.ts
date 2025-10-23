@@ -6,7 +6,7 @@ import type { User } from "./types";
 
 declare module "next-auth" {
   interface Session {
-    user: User;
+    user: User & { role?: string | null };
   }
 }
 
@@ -17,6 +17,7 @@ declare module "next-auth/jwt" {
     username?: string;
     displayName: string;
     image?: string;
+    role?: string | null;
   }
 }
 
@@ -72,6 +73,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             token.displayName = user.displayName || user.username;
             token.avatar = user.avatar || undefined;
             token.imageUrl = user.imageUrl || undefined;
+            token.role = user.role;
+          }
+        } catch {}
+      } else if (token.discordId) {
+        try {
+          const user = await prisma.user.findUnique({
+            where: { discordId: token.discordId as string },
+            select: { role: true },
+          });
+          if (user) {
+            token.role = user.role;
           }
         } catch {}
       }
@@ -90,7 +102,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.imageUrl || token.avatar
           ? `https://cdn.discordapp.com/avatars/${token.discordId}/${token.avatar}.png`
           : "https://cdn.discordapp.com/embed/avatars/0.png";
+      session.user.role = token.role;
       return session;
     },
   },
 });
+
+export async function isAdmin() {
+  const session = await auth();
+  return session?.user?.role === "admin";
+}

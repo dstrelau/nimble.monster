@@ -284,6 +284,7 @@ model User {
   refreshToken String?       @map("refresh_token")
   displayName  String?       @map("display_name")
   imageUrl     String?       @map("image_url")
+  role         String?
   collections  Collection[]
   companions   Companion[]
   conditions   Condition[]
