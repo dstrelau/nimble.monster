@@ -9,9 +9,14 @@ import {
 } from "./ui/dropdown-menu";
 import { TooltipProvider } from "./ui/tooltip";
 
-export const copyLinkToClipboard = async (path: string) => {
+export const copyLinkToClipboard = async (path: string, updatedAt?: Date) => {
   try {
-    await navigator.clipboard.writeText(`${window.location.origin}${path}`);
+    let url = `${window.location.origin}${path}`;
+    if (updatedAt) {
+      const timestamp = Math.floor(updatedAt.getTime() / 1000);
+      url += `?t=${timestamp}`;
+    }
+    await navigator.clipboard.writeText(url);
     const activeElement = document.activeElement as HTMLElement;
     activeElement?.blur?.();
   } catch (error) {
@@ -39,8 +44,14 @@ export const ShareMenuItem = ({ onClick, children }: ShareMenuItemProps) => {
   return <DropdownMenuItem onClick={onClick}>{children}</DropdownMenuItem>;
 };
 
-export const ShareMenuCopyURLItem = ({ path }: { path: string }) => {
-  const onClick = () => copyLinkToClipboard(path);
+export const ShareMenuCopyURLItem = ({
+  path,
+  updatedAt,
+}: {
+  path: string;
+  updatedAt?: Date;
+}) => {
+  const onClick = () => copyLinkToClipboard(path, updatedAt);
   return (
     <ShareMenuItem onClick={onClick}>
       <LinkIcon className="w-4 h-4" />

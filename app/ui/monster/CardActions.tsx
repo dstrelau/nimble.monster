@@ -35,7 +35,10 @@ export default function CardActions({ monster }: MonsterCardActionsProps) {
           name={`${monster.name}.png`}
           path={getMonsterImageUrl(monster)}
         />
-        <ShareMenuCopyURLItem path={getMonsterUrl(monster)} />
+        <ShareMenuCopyURLItem
+          path={getMonsterUrl(monster)}
+          updatedAt={monster.updatedAt}
+        />
       </ShareMenu>
     </div>
   );

@@ -142,7 +142,10 @@ export const Card = ({
                   name={`${companion.name}.png`}
                   path={getCompanionImageUrl(companion)}
                 />
-                <ShareMenuCopyURLItem path={getCompanionUrl(companion)} />
+                <ShareMenuCopyURLItem
+                  path={getCompanionUrl(companion)}
+                  updatedAt={companion.updatedAt}
+                />
               </ShareMenu>
             )
           }

@@ -265,7 +265,10 @@ export const Card = ({
                 name={`${item.name}.png`}
                 path={getItemImageUrl(item)}
               />
-              <ShareMenuCopyURLItem path={getItemUrl(item)} />
+              <ShareMenuCopyURLItem
+                path={getItemUrl(item)}
+                updatedAt={item.updatedAt}
+              />
             </ShareMenu>
           )
         }
