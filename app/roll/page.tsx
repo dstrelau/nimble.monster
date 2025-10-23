@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_NAME } from "@/lib/utils/branding";
 import {
   calculateAverageDamageOnHit,
   calculateProbabilityDistribution,
@@ -7,7 +8,6 @@ import {
   parseDiceNotation,
 } from "../../lib/dice";
 import { DiceRollerClient } from "./dice-roller-client";
-import { SITE_NAME } from "@/lib/utils/branding";
 
 type Props = {
   searchParams: Promise<{ dice?: string }>;

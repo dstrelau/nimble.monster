@@ -6,9 +6,9 @@ import { CollectionHeader } from "@/components/CollectionHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { listConditionsForDiscordId, listOfficialConditions } from "@/lib/db";
+import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getCollectionUrl } from "@/lib/utils/url";
-import { SITE_NAME } from "@/lib/utils/branding";
 
 export async function generateMetadata({
   params,

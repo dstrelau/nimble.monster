@@ -3,6 +3,7 @@ import DOMPurify from "isomorphic-dompurify";
 import MarkdownIt from "markdown-it";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { createRoot } from "react-dom/client";
+import { DiceNotation } from "@/components/DiceNotation";
 import { useIsClient } from "@/components/SSRSafe";
 import {
   Tooltip,
@@ -108,6 +109,76 @@ function conditionPlugin(md: MarkdownIt) {
   };
 }
 
+// Custom markdown-it plugin for dice notation parsing
+function diceNotationPlugin(md: MarkdownIt) {
+  function splitTextToken(
+    text: string,
+    // biome-ignore lint/suspicious/noExplicitAny: markdown-it Token constructor type is not exported
+    Token: any
+  ) {
+    const diceRegex = /(\d+d\d+(?:[vad]\d*)?(?:[+-]\d+)?)/gi;
+    const result = [];
+    let lastIndex = 0;
+
+    let match = diceRegex.exec(text);
+    while (match !== null) {
+      // Add text before match
+      if (match.index > lastIndex) {
+        const textToken = new Token("text", "", 0);
+        textToken.content = text.slice(lastIndex, match.index);
+        result.push(textToken);
+      }
+
+      // Add dice token
+      const diceToken = new Token("dice", "", 0);
+      diceToken.meta = { diceText: match[1] };
+      result.push(diceToken);
+
+      lastIndex = match.index + match[1].length;
+      match = diceRegex.exec(text);
+    }
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+      const textToken = new Token("text", "", 0);
+      textToken.content = text.slice(lastIndex);
+      result.push(textToken);
+    }
+
+    return result;
+  }
+
+  md.core.ruler.after("inline", "dice", (state) => {
+    for (let i = 0; i < state.tokens.length; i++) {
+      if (state.tokens[i].type !== "inline") continue;
+
+      const blockToken = state.tokens[i];
+      if (!blockToken.children) continue;
+
+      const newChildren = [];
+
+      for (let j = 0; j < blockToken.children.length; j++) {
+        const token = blockToken.children[j];
+        if (token.type === "text") {
+          const split = splitTextToken(token.content, state.Token);
+          newChildren.push(...split);
+        } else {
+          newChildren.push(token);
+        }
+      }
+
+      blockToken.children = newChildren;
+    }
+  });
+
+  // Add custom renderer that creates HTML markers
+  md.renderer.rules.dice = (tokens, idx) => {
+    const token = tokens[idx];
+    const meta = token.meta;
+    return `<span data-dice-text="${meta.diceText}">${meta.diceText}</span>`;
+  };
+}
+
 const md = new MarkdownIt("zero").enable([
   "paragraph",
   "emphasis",
@@ -115,6 +186,8 @@ const md = new MarkdownIt("zero").enable([
   "list",
 ]);
 conditionPlugin(md);
+diceNotationPlugin(md);
+md.enable(["text"]);
 
 export function FormattedText({
   content,
@@ -131,21 +204,13 @@ export function FormattedText({
       return { html, placeholders: [] };
     }
 
-    // Parse HTML and replace condition spans with React components
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-    const conditionSpans = doc.querySelectorAll("[data-condition-name]");
-
-    if (conditionSpans.length === 0) {
-      return { html, placeholders: [] };
-    }
-
     // Create a new div to hold the processed content
     const processedDiv = document.createElement("div");
     processedDiv.innerHTML = html;
 
-    // Replace each condition span with a placeholder
     const placeholders: { id: string; component: React.ReactNode }[] = [];
+
+    // Replace each condition span with a placeholder
     processedDiv
       .querySelectorAll("[data-condition-name]")
       .forEach((span, index) => {
@@ -172,6 +237,26 @@ export function FormattedText({
           ),
         });
       });
+
+    // Replace each dice span with a placeholder
+    let diceIndex = 0;
+    processedDiv.querySelectorAll("[data-dice-text]").forEach((span) => {
+      const diceText = span.getAttribute("data-dice-text") || "";
+
+      const placeholderId = `dice-placeholder-${diceIndex}`;
+      const placeholder = document.createElement("span");
+      placeholder.id = placeholderId;
+      span.parentNode?.replaceChild(placeholder, span);
+
+      placeholders.push({
+        id: placeholderId,
+        component: (
+          <DiceNotation key={`${diceText}-${diceIndex}`} text={diceText} />
+        ),
+      });
+
+      diceIndex++;
+    });
 
     return { html: processedDiv.innerHTML, placeholders };
   }, [content, conditions, isClient]);

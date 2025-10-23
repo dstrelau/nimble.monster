@@ -56,7 +56,7 @@ function DiceDrawer({ diceText }: { diceText: string }) {
   if (!parsed || !sampleRoll) return <span>{diceText}</span>;
 
   const dieToIcon = (size: number) => {
-    const className = "size-4 stroke-flame";
+    const className = "size-3.5 stroke-flame";
     switch (size) {
       case 4:
         return <D4 className={className} />;
@@ -86,7 +86,7 @@ function DiceDrawer({ diceText }: { diceText: string }) {
   return (
     <Drawer onOpenChange={(open) => open && handleReroll()}>
       <DrawerTrigger asChild>
-        <span className="inline-flex items-center cursor-pointer">
+        <span className="inline-flex gap-0.5 items-baseline cursor-pointer hover:text-flame">
           {dieToIcon(parsed.dieSize)}
           {diceText}
         </span>
