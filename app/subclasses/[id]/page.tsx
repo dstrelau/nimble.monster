@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/subclass/Card";
 import { SubclassDetailActions } from "@/components/SubclassDetailActions";
 import { auth } from "@/lib/auth";
 import { findSubclass } from "@/lib/db";
-import { getSiteName } from "@/lib/utils/branding";
+import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify } from "@/lib/utils/slug";
 import { getSubclassSlug, getSubclassUrl } from "@/lib/utils/url";
 
@@ -31,10 +30,6 @@ export async function generateMetadata({
     return permanentRedirect(getSubclassUrl(subclass));
   }
 
-  const headersList = await headers();
-  const hostname = headersList.get("host") || "";
-  const siteName = getSiteName(hostname);
-
   const creatorText = subclass.creator
     ? ` by ${subclass.creator.displayName}`
     : "";
@@ -46,7 +41,7 @@ export async function generateMetadata({
       ? new URL(process.env.NEXT_PUBLIC_APP_URL)
       : undefined,
     title,
-    description: `${subclass.name} - ${subclassInfo}${creatorText} | ${siteName}`,
+    description: `${subclass.name} - ${subclassInfo}${creatorText} | ${SITE_NAME}`,
     openGraph: {
       title: title,
       description: `${subclassInfo}${creatorText}`,

@@ -1,22 +1,12 @@
-"use client";
-
-import { planet } from "@lucide/lab";
-import { Beer, Coins, Icon, Mail, NotebookPen, ScrollText } from "lucide-react";
+import { Beer, Coins, Mail, NotebookPen, ScrollText } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { getSiteEmail, getSiteName } from "@/lib/utils/branding";
+import { SITE_EMAIL, SITE_NAME } from "@/lib/utils/branding";
+import { Nexus } from "../icons/Nexus";
 import { D20 } from "../icons/PolyhedralDice";
 import { Discord, GitHub } from "../SimpleIcons";
 
 export const Footer = () => {
-  const [siteName, setSiteName] = useState("Nimble Nexus");
-  const [email, setEmail] = useState("hello@nimble.nexus");
-
-  useEffect(() => {
-    const hostname = window.location.hostname;
-    setSiteName(getSiteName(hostname));
-    setEmail(getSiteEmail(hostname));
-  }, []);
+  const email = SITE_EMAIL;
 
   const sections = [
     {
@@ -75,11 +65,8 @@ export const Footer = () => {
       <div className="mx-auto max-w-7xl flex flex-wrap-reverse justify-center gap-8 px-4 py-6 mt-16 border-t">
         <div className="max-w-2xl prose dark:prose-invert text-sm text-muted-foreground ">
           <p>
-            <Icon
-              iconNode={planet}
-              className="size-3 mr-0.5 inline align-baseline stroke-flame"
-            />
-            {siteName} is an independent product published under the Nimble 3rd
+            <Nexus className="size-3 mr-0.5 inline align-baseline stroke-flame" />
+            {SITE_NAME} is an independent product published under the Nimble 3rd
             Party Creator License and is not affiliated with Nimble Co.
           </p>
           <p>

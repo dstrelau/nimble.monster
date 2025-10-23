@@ -23,7 +23,6 @@
     --color-header: var(--color-neutral-200);
     --color-header-foreground: var(--color-neutral-900);
     --color-flame: var(--color-warning);
-    --color-flame-fill: var(--color-yellow-400);
 }
 
 :root {

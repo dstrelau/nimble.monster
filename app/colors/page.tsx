@@ -59,7 +59,6 @@ const singleColors = [
   { name: "icon", variable: "--color-icon" },
   { name: "hp", variable: "--color-hp" },
   { name: "flame", variable: "--color-flame" },
-  { name: "flame-fill", variable: "--color-flame-fill" },
   { name: "border", variable: "--border" },
   { name: "input", variable: "--input" },
   { name: "ring", variable: "--ring" },

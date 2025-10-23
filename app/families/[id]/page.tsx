@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
 import { FamilyHeader } from "@/app/families/FamilyHeader";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import * as monstersRepo from "@/lib/services/monsters/repository";
-import { getSiteName } from "@/lib/utils/branding";
+import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getFamilyUrl } from "@/lib/utils/url";
 export async function generateMetadata({
@@ -23,10 +22,6 @@ export async function generateMetadata({
     return permanentRedirect(getFamilyUrl(family));
   }
 
-  const headersList = await headers();
-  const hostname = headersList.get("host") || "";
-  const siteName = getSiteName(hostname);
-
   const publicMonsters = await monstersRepo.listMonstersByFamilyId(uid);
 
   const creatorText = family.creator?.displayName
@@ -42,7 +37,7 @@ export async function generateMetadata({
       ? new URL(process.env.NEXT_PUBLIC_APP_URL)
       : undefined,
     title: family.name,
-    description: `${family.name} - ${countText}${creatorText} | ${siteName}`,
+    description: `${family.name} - ${countText}${creatorText} | ${SITE_NAME}`,
     openGraph: {
       title: family.name,
       description: description,

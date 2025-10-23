@@ -1,6 +1,5 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { monsterSourcesQueryOptions } from "@/app/monsters/hooks";
@@ -11,7 +10,7 @@ import { getQueryClient } from "@/lib/queryClient";
 import { itemsService } from "@/lib/services/items";
 import * as monstersRepo from "@/lib/services/monsters/repository";
 import { sourcesQueryOptions } from "@/lib/services/sources";
-import { getSiteName } from "@/lib/utils/branding";
+import { SITE_NAME } from "@/lib/utils/branding";
 import { userProfileMonstersInfiniteQueryOptions } from "./hooks";
 import TabsContent from "./TabsContent";
 
@@ -40,10 +39,6 @@ export async function generateMetadata({
     };
   }
 
-  const headersList = await headers();
-  const hostname = headersList.get("host") || "";
-  const siteName = getSiteName(hostname);
-
   const [items, collections, companions, monstersCount] = await Promise.all([
     itemsService.listPublicItemsForUser(user.id),
     db.listPublicCollectionsHavingMonstersForUser(user.id),
@@ -51,7 +46,7 @@ export async function generateMetadata({
     monstersRepo.countPublicMonstersForUser(user.id),
   ]);
 
-  const title = `${user.displayName} - ${siteName}`;
+  const title = `${user.displayName} - ${SITE_NAME}`;
   const description = [
     monstersCount > 0 && `${monstersCount} monsters`,
     items.length > 0 && `${items.length} items`,

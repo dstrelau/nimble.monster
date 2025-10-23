@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/item/Card";
 import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
@@ -7,7 +6,7 @@ import { ItemCollections } from "@/components/ItemCollections";
 import { ItemDetailActions } from "@/components/ItemDetailActions";
 import { auth } from "@/lib/auth";
 import { itemsService } from "@/lib/services/items";
-import { getSiteName } from "@/lib/utils/branding";
+import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getItemImageUrl, getItemUrl } from "@/lib/utils/url";
 
@@ -27,10 +26,6 @@ export async function generateMetadata({
     return permanentRedirect(getItemUrl(item));
   }
 
-  const headersList = await headers();
-  const hostname = headersList.get("host") || "";
-  const siteName = getSiteName(hostname);
-
   const creatorText = item.creator ? ` by ${item.creator.displayName}` : "";
   const itemInfo = item.kind || "Item";
 
@@ -39,7 +34,7 @@ export async function generateMetadata({
       ? new URL(process.env.NEXT_PUBLIC_APP_URL)
       : undefined,
     title: item.name,
-    description: `${item.name} - ${itemInfo}${creatorText} | ${siteName}`,
+    description: `${item.name} - ${itemInfo}${creatorText} | ${SITE_NAME}`,
     openGraph: {
       title: item.name,
       description: `${itemInfo}${creatorText}`,

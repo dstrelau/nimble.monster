@@ -1,10 +1,6 @@
-"use client";
-
-import { planet } from "@lucide/lab";
-import { Icon } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { getSiteName } from "@/lib/utils/branding";
+import { cn } from "@/lib/utils";
+import { Nexus } from "../icons/Nexus";
 
 interface LogoProps {
   showText?: boolean;
@@ -15,21 +11,18 @@ export const Logo: React.FC<LogoProps> = ({
   showText = true,
   className = "",
 }) => {
-  const [siteName, setSiteName] = useState("Nimble Nexus");
-
-  useEffect(() => {
-    setSiteName(getSiteName(window.location.hostname));
-  }, []);
-
   return (
-    <Link href="/" className={`flex items-center group ${className}`}>
-      <Icon
-        iconNode={planet}
-        className="h-8 w-8 text-flame hover:fill-flame-fill transition-colors"
-      />
+    <Link
+      href="/"
+      className={cn(
+        "flex items-center text-flame hover:text-yellow-500 transition-colors",
+        className
+      )}
+    >
+      <Nexus className="h-8 w-8" />
       {showText && (
-        <span className="ml-2 font-bold text-header-foreground">
-          {siteName}
+        <span className="ml-2 font-stretch-ultra-condensed font-bold text-header-foreground">
+          Nimble Nexus
         </span>
       )}
     </Link>
