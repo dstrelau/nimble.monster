@@ -5,6 +5,7 @@ import {
   FormattedText,
   PrefixedFormattedText,
 } from "@/components/FormattedText";
+import { Badge } from "@/components/ui/badge";
 import {
   CardContent,
   CardHeader,
@@ -87,6 +88,13 @@ export function Card({ subclass, creator, link = true, className }: CardProps) {
         creator={creator || subclass.creator}
         source={subclass.source}
         awards={subclass.awards}
+        actionsSlot={
+          subclass.visibility === "private" && (
+            <Badge variant="default" className="h-6">
+              Private
+            </Badge>
+          )
+        }
       />
     </UICard>
   );

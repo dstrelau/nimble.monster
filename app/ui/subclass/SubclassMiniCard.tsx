@@ -54,6 +54,8 @@ export function SubclassMiniCard({
       </CardContent>
       <CardFooterLayout
         creator={subclass.creator}
+        source={subclass.source}
+        awards={subclass.awards}
         actionsSlot={
           subclass.visibility === "private" && (
             <Badge variant="default" className="h-6">
