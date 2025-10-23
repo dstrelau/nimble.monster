@@ -11,6 +11,7 @@ describe("parseDiceNotation", () => {
       vicious: false,
       advantage: 0,
       disadvantage: 0,
+      tensOnes: false,
     });
   });
 
@@ -23,6 +24,7 @@ describe("parseDiceNotation", () => {
       vicious: false,
       advantage: 0,
       disadvantage: 0,
+      tensOnes: false,
     });
   });
 
@@ -35,6 +37,7 @@ describe("parseDiceNotation", () => {
       vicious: false,
       advantage: 0,
       disadvantage: 0,
+      tensOnes: false,
     });
   });
 
@@ -47,6 +50,7 @@ describe("parseDiceNotation", () => {
       vicious: true,
       advantage: 0,
       disadvantage: 0,
+      tensOnes: false,
     });
   });
 
@@ -59,6 +63,7 @@ describe("parseDiceNotation", () => {
       vicious: true,
       advantage: 0,
       disadvantage: 0,
+      tensOnes: false,
     });
   });
 
@@ -79,6 +84,7 @@ describe("parseDiceNotation", () => {
       vicious: true,
       advantage: 0,
       disadvantage: 0,
+      tensOnes: false,
     });
   });
 
@@ -150,6 +156,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: false,
       advantage: 1,
       disadvantage: 0,
+      tensOnes: false,
     });
 
     const explicit = parseDiceNotation("1d6a2");
@@ -160,6 +167,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: false,
       advantage: 2,
       disadvantage: 0,
+      tensOnes: false,
     });
 
     const withVicious = parseDiceNotation("1d8va1");
@@ -170,6 +178,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: true,
       advantage: 1,
       disadvantage: 0,
+      tensOnes: false,
     });
 
     const withViciousReversed = parseDiceNotation("1d8a1v");
@@ -180,6 +189,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: true,
       advantage: 1,
       disadvantage: 0,
+      tensOnes: false,
     });
 
     const withModifier = parseDiceNotation("2d4a1+3");
@@ -190,6 +200,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: false,
       advantage: 1,
       disadvantage: 0,
+      tensOnes: false,
     });
 
     const allFlags = parseDiceNotation("1d6va2+5");
@@ -200,6 +211,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: true,
       advantage: 2,
       disadvantage: 0,
+      tensOnes: false,
     });
 
     const allFlagsReversed = parseDiceNotation("1d6a2v-1");
@@ -210,6 +222,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: true,
       advantage: 2,
       disadvantage: 0,
+      tensOnes: false,
     });
   });
 
@@ -222,6 +235,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: false,
       advantage: 0,
       disadvantage: 1,
+      tensOnes: false,
     });
 
     const explicit = parseDiceNotation("1d6d2");
@@ -232,6 +246,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: false,
       advantage: 0,
       disadvantage: 2,
+      tensOnes: false,
     });
 
     const withVicious = parseDiceNotation("1d8vd1");
@@ -242,6 +257,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: true,
       advantage: 0,
       disadvantage: 1,
+      tensOnes: false,
     });
 
     const withViciousReversed = parseDiceNotation("1d8d1v");
@@ -252,6 +268,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: true,
       advantage: 0,
       disadvantage: 1,
+      tensOnes: false,
     });
 
     const withModifier = parseDiceNotation("2d4d1+3");
@@ -262,6 +279,7 @@ describe("calculateProbabilityDistribution", () => {
       vicious: false,
       advantage: 0,
       disadvantage: 1,
+      tensOnes: false,
     });
   });
 
@@ -458,5 +476,217 @@ describe("calculateProbabilityDistribution", () => {
 
     const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
     expect(sum).toBeCloseTo(1.0, 3);
+  });
+});
+
+describe("tensOnes dice (d44, d66, d88)", () => {
+  it("parses d44 notation", () => {
+    const result = parseDiceNotation("d44");
+    expect(result).toEqual({
+      numDice: 2,
+      dieSize: 4,
+      modifier: 0,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 0,
+      tensOnes: true,
+    });
+  });
+
+  it("parses d66 notation", () => {
+    const result = parseDiceNotation("d66");
+    expect(result).toEqual({
+      numDice: 2,
+      dieSize: 6,
+      modifier: 0,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 0,
+      tensOnes: true,
+    });
+  });
+
+  it("parses d88 notation", () => {
+    const result = parseDiceNotation("d88");
+    expect(result).toEqual({
+      numDice: 2,
+      dieSize: 8,
+      modifier: 0,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 0,
+      tensOnes: true,
+    });
+  });
+
+  it("parses d66 with advantage", () => {
+    const result = parseDiceNotation("d66a");
+    expect(result).toEqual({
+      numDice: 2,
+      dieSize: 6,
+      modifier: 0,
+      vicious: false,
+      advantage: 1,
+      disadvantage: 0,
+      tensOnes: true,
+    });
+  });
+
+  it("parses d66 with disadvantage", () => {
+    const result = parseDiceNotation("d66d");
+    expect(result).toEqual({
+      numDice: 2,
+      dieSize: 6,
+      modifier: 0,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 1,
+      tensOnes: true,
+    });
+  });
+
+  it("rejects d44 with vicious flag", () => {
+    expect(parseDiceNotation("d44v")).toBeNull();
+  });
+
+  it("rejects d66 with modifier", () => {
+    expect(parseDiceNotation("d66+1")).toBeNull();
+    expect(parseDiceNotation("d66-2")).toBeNull();
+  });
+
+  it("rejects invalid tensOnes combinations", () => {
+    expect(parseDiceNotation("d22")).toBeNull();
+    expect(parseDiceNotation("d00")).toBeNull();
+    // 2d66, 3d44, etc. should be rejected (die sizes 44,66,88 are tensOnes only)
+    expect(parseDiceNotation("2d66")).toBeNull();
+    expect(parseDiceNotation("3d44")).toBeNull();
+    expect(parseDiceNotation("1d88")).toBeNull();
+  });
+
+  it("calculates distribution for d44", () => {
+    const roll = parseDiceNotation("d44");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // d44 has 16 possible outcomes: 11,12,13,14,21,22,...,44
+    expect(dist.size).toBe(16);
+
+    // Each outcome has probability 1/16
+    const expectedP = 1 / 16;
+    for (let tens = 1; tens <= 4; tens++) {
+      for (let ones = 1; ones <= 4; ones++) {
+        const value = tens * 10 + ones;
+        expect(dist.get(value)).toBeCloseTo(expectedP, 10);
+      }
+    }
+
+    // Values outside this range should not exist
+    expect(dist.get(15)).toBeUndefined();
+    expect(dist.get(20)).toBeUndefined();
+    expect(dist.get(45)).toBeUndefined();
+  });
+
+  it("calculates distribution for d66", () => {
+    const roll = parseDiceNotation("d66");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // d66 has 36 possible outcomes
+    expect(dist.size).toBe(36);
+
+    // Each outcome has probability 1/36
+    const expectedP = 1 / 36;
+    for (let tens = 1; tens <= 6; tens++) {
+      for (let ones = 1; ones <= 6; ones++) {
+        const value = tens * 10 + ones;
+        expect(dist.get(value)).toBeCloseTo(expectedP, 10);
+      }
+    }
+  });
+
+  it("calculates distribution for d88", () => {
+    const roll = parseDiceNotation("d88");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // d88 has 64 possible outcomes
+    expect(dist.size).toBe(64);
+
+    // Each outcome has probability 1/64
+    const expectedP = 1 / 64;
+    for (let tens = 1; tens <= 8; tens++) {
+      for (let ones = 1; ones <= 8; ones++) {
+        const value = tens * 10 + ones;
+        expect(dist.get(value)).toBeCloseTo(expectedP, 10);
+      }
+    }
+  });
+
+  it("calculates distribution for d66a (advantage)", () => {
+    const roll = parseDiceNotation("d66a");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // Roll 3d6, drop lowest, use remaining 2 in order
+    // All outcomes should still be in range 11-66
+    for (const [value] of dist) {
+      const tens = Math.floor(value / 10);
+      const ones = value % 10;
+      expect(tens).toBeGreaterThanOrEqual(1);
+      expect(tens).toBeLessThanOrEqual(6);
+      expect(ones).toBeGreaterThanOrEqual(1);
+      expect(ones).toBeLessThanOrEqual(6);
+    }
+
+    // Probabilities should sum to 1
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 5);
+  });
+
+  it("calculates distribution for d66d (disadvantage)", () => {
+    const roll = parseDiceNotation("d66d");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // Roll 3d6, drop highest, use remaining 2 in order
+    for (const [value] of dist) {
+      const tens = Math.floor(value / 10);
+      const ones = value % 10;
+      expect(tens).toBeGreaterThanOrEqual(1);
+      expect(tens).toBeLessThanOrEqual(6);
+      expect(ones).toBeGreaterThanOrEqual(1);
+      expect(ones).toBeLessThanOrEqual(6);
+    }
+
+    // Probabilities should sum to 1
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 5);
+  });
+
+  it("probabilities sum to 1.0 for d44", () => {
+    const roll = parseDiceNotation("d44");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 10);
+  });
+
+  it("probabilities sum to 1.0 for d66", () => {
+    const roll = parseDiceNotation("d66");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 10);
+  });
+
+  it("probabilities sum to 1.0 for d88", () => {
+    const roll = parseDiceNotation("d88");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 10);
   });
 });

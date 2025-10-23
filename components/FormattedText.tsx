@@ -116,7 +116,8 @@ function diceNotationPlugin(md: MarkdownIt) {
     // biome-ignore lint/suspicious/noExplicitAny: markdown-it Token constructor type is not exported
     Token: any
   ) {
-    const diceRegex = /(\d+d\d+(?:[vad]\d*)?(?:[+-]\d+)?)/gi;
+    const diceRegex =
+      /(\d+d\d+(?:[vad]\d*)?(?:[+-]\d+)?|d(?:44|66|88)(?:[ad]\d*)?)/gi;
     const result = [];
     let lastIndex = 0;
 

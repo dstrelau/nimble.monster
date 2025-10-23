@@ -87,7 +87,14 @@ function DiceDrawer({ diceText }: { diceText: string }) {
     <Drawer onOpenChange={(open) => open && handleReroll()}>
       <DrawerTrigger asChild>
         <span className="inline-flex gap-0.5 items-baseline cursor-pointer hover:text-flame">
-          {dieToIcon(parsed.dieSize)}
+          {parsed.tensOnes ? (
+            <span className="inline-flex items-baseline">
+              {dieToIcon(parsed.dieSize)}
+              {dieToIcon(parsed.dieSize)}
+            </span>
+          ) : (
+            dieToIcon(parsed.dieSize)
+          )}
           {diceText}
         </span>
       </DrawerTrigger>
@@ -136,7 +143,8 @@ function DiceDrawer({ diceText }: { diceText: string }) {
 }
 
 export function DiceNotation({ text }: DiceNotationProps) {
-  const diceRegex = /\b(\d+d\d+(?:[vad]\d*)?(?:[+-]\d+)?)\b/gi;
+  const diceRegex =
+    /\b(\d+d\d+(?:[vad]\d*)?(?:[+-]\d+)?|d(?:44|66|88)(?:[ad]\d*)?)\b/gi;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
 

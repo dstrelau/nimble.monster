@@ -50,13 +50,60 @@ export type DiceRoll = {
   vicious: boolean;
   advantage: number;
   disadvantage: number;
+  tensOnes: boolean;
 };
 
 export type ProbabilityDistribution = Map<number, number>;
 
 export function parseDiceNotation(notation: string): DiceRoll | null {
+  const trimmed = notation.trim().toLowerCase();
+
+  // Check for tensOnes notation: d44, d66, d88
+  const tensOnesMatch = trimmed.match(/^d(44|66|88)([ad]\d*)?$/);
+  if (tensOnesMatch) {
+    const dieSize = Number.parseInt(tensOnesMatch[1][0], 10);
+    const flags = tensOnesMatch[2] || "";
+
+    let advantage = 0;
+    let disadvantage = 0;
+
+    if (flags) {
+      const advantageMatch = flags.match(/a(\d+)?/);
+      if (advantageMatch) {
+        advantage = advantageMatch[1]
+          ? Number.parseInt(advantageMatch[1], 10)
+          : 1;
+      }
+      const disadvantageMatch = flags.match(/d(\d+)?/);
+      if (disadvantageMatch) {
+        disadvantage = disadvantageMatch[1]
+          ? Number.parseInt(disadvantageMatch[1], 10)
+          : 1;
+      }
+    }
+
+    if (advantage > 0 && disadvantage > 0) {
+      return null;
+    }
+
+    if (advantage >= 7 || disadvantage >= 7) {
+      return null;
+    }
+
+    return {
+      numDice: 2,
+      dieSize,
+      modifier: 0,
+      vicious: false,
+      advantage,
+      disadvantage,
+      tensOnes: true,
+    };
+  }
+
+  // Standard dice notation
   const diceRegex = /^(\d+)d(\d+)([vad\d]+)?(?:([+-])(\d+))?$/;
-  const match = notation.trim().toLowerCase().match(diceRegex);
+  const match = trimmed.match(diceRegex);
 
   if (!match) {
     return null;
@@ -64,6 +111,12 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
 
   const numDice = Number.parseInt(match[1], 10);
   const dieSize = Number.parseInt(match[2], 10);
+
+  // Reject die sizes 44, 66, 88 for standard notation (these are tensOnes only)
+  if (dieSize === 44 || dieSize === 66 || dieSize === 88) {
+    return null;
+  }
+
   const flags = match[3] || "";
 
   let vicious = false;
@@ -106,7 +159,15 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
     return null;
   }
 
-  return { numDice, dieSize, modifier, vicious, advantage, disadvantage };
+  return {
+    numDice,
+    dieSize,
+    modifier,
+    vicious,
+    advantage,
+    disadvantage,
+    tensOnes: false,
+  };
 }
 
 function primaryDie(
@@ -221,6 +282,89 @@ function combineProbabilityDistributions(
       result.set(totalRoll, (result.get(totalRoll) || 0) + combinedP);
     }
   }
+  return result;
+}
+
+// Calculate the distribution for tensOnes dice (d44, d66, d88)
+// These roll 2 dice and combine them as tens and ones digits
+// For example, rolling [3, 5] on d66 results in 35
+// With advantage/disadvantage, we roll extra dice, drop the lowest/highest,
+// and use the remaining 2 dice in order as tens and ones
+function calculateTensOnesDistribution(
+  dieSize: number,
+  advantage: number,
+  disadvantage: number
+): ProbabilityDistribution {
+  const result: ProbabilityDistribution = new Map();
+
+  if (advantage === 0 && disadvantage === 0) {
+    // Simple case: roll 2 dice, each outcome equally likely
+    const probability = 1 / (dieSize * dieSize);
+    for (let tens = 1; tens <= dieSize; tens++) {
+      for (let ones = 1; ones <= dieSize; ones++) {
+        const value = tens * 10 + ones;
+        result.set(value, probability);
+      }
+    }
+    return result;
+  }
+
+  // With advantage/disadvantage: roll extra dice, keep 2 in original order
+  const totalDice = 2 + (advantage > 0 ? advantage : disadvantage);
+
+  // Generate all possible outcomes
+  function generateOutcomes(diceLeft: number, currentRolls: number[]): void {
+    if (diceLeft === 0) {
+      const indexedRolls = currentRolls.map((value, index) => ({
+        value,
+        index,
+      }));
+
+      // Determine which dice to drop
+      const numToDrop = totalDice - 2;
+      let droppedIndices: number[];
+
+      if (advantage > 0) {
+        // Drop lowest values, ties broken left to right
+        droppedIndices = [...indexedRolls]
+          .sort((a, b) => a.value - b.value || a.index - b.index)
+          .slice(0, numToDrop)
+          .map((d) => d.index);
+      } else {
+        // Drop highest values, ties broken left to right
+        droppedIndices = [...indexedRolls]
+          .sort((a, b) => b.value - a.value || a.index - b.index)
+          .slice(0, numToDrop)
+          .map((d) => d.index);
+      }
+
+      const droppedSet = new Set(droppedIndices);
+      const keptIndices: number[] = [];
+      for (let i = 0; i < totalDice; i++) {
+        if (!droppedSet.has(i)) {
+          keptIndices.push(i);
+        }
+      }
+
+      // First kept die is tens, second kept die is ones
+      const tens = indexedRolls[keptIndices[0]].value;
+      const ones = indexedRolls[keptIndices[1]].value;
+      const value = tens * 10 + ones;
+
+      const probability = (1 / dieSize) ** totalDice;
+      result.set(value, (result.get(value) || 0) + probability);
+
+      return;
+    }
+
+    // Try each possible die value
+    for (let i = 1; i <= dieSize; i++) {
+      generateOutcomes(diceLeft - 1, [...currentRolls, i]);
+    }
+  }
+
+  generateOutcomes(totalDice, []);
+
   return result;
 }
 
@@ -373,12 +517,21 @@ function calculateExplosionDistribution(
 export function calculateProbabilityDistribution(
   diceRoll: DiceRoll
 ): ProbabilityDistribution {
-  const { numDice, dieSize, modifier, vicious, advantage, disadvantage } =
-    diceRoll;
+  const {
+    numDice,
+    dieSize,
+    modifier,
+    vicious,
+    advantage,
+    disadvantage,
+    tensOnes,
+  } = diceRoll;
 
   let result: ProbabilityDistribution;
 
-  if (advantage > 0 || disadvantage > 0) {
+  if (tensOnes) {
+    result = calculateTensOnesDistribution(dieSize, advantage, disadvantage);
+  } else if (advantage > 0 || disadvantage > 0) {
     result = calculateAdvantageDistribution(
       numDice,
       dieSize,
@@ -444,11 +597,94 @@ export type RollResult = {
 };
 
 export function simulateRoll(diceRoll: DiceRoll): RollResult {
-  const { numDice, dieSize, modifier, vicious, advantage, disadvantage } =
-    diceRoll;
+  const {
+    numDice,
+    dieSize,
+    modifier,
+    vicious,
+    advantage,
+    disadvantage,
+    tensOnes,
+  } = diceRoll;
 
   const results: DieResult[] = [];
   let total = 0;
+
+  if (tensOnes) {
+    // TensOnes dice (d44, d66, d88) - roll 2 dice, first is tens, second is ones
+    // With advantage/disadvantage, roll extra dice and drop lowest/highest
+    const totalDiceToRoll =
+      2 + (advantage > 0 ? advantage : disadvantage > 0 ? disadvantage : 0);
+    const allRolls: Array<DieResult & { originalIndex: number }> = [];
+
+    for (let i = 0; i < totalDiceToRoll; i++) {
+      const value = Math.floor(Math.random() * dieSize) + 1;
+      allRolls.push({
+        value,
+        dieSize,
+        type: "regular",
+        isCrit: false,
+        isMiss: false,
+        originalIndex: i,
+      });
+    }
+
+    if (advantage > 0 || disadvantage > 0) {
+      // Drop dice and keep 2 in original order
+      const numToDrop = totalDiceToRoll - 2;
+      const droppedSet = new Set<number>();
+
+      if (advantage > 0) {
+        // Drop lowest values, ties broken left to right
+        const valuesToDrop = [...allRolls]
+          .sort(
+            (a, b) => a.value - b.value || a.originalIndex - b.originalIndex
+          )
+          .slice(0, numToDrop)
+          .map((d) => d.originalIndex);
+        for (const idx of valuesToDrop) {
+          droppedSet.add(idx);
+        }
+      } else {
+        // Drop highest values, ties broken left to right
+        const valuesToDrop = [...allRolls]
+          .sort(
+            (a, b) => b.value - a.value || a.originalIndex - b.originalIndex
+          )
+          .slice(0, numToDrop)
+          .map((d) => d.originalIndex);
+        for (const idx of valuesToDrop) {
+          droppedSet.add(idx);
+        }
+      }
+
+      // Find the kept dice in original order
+      const keptDice: DieResult[] = [];
+      for (let i = 0; i < totalDiceToRoll; i++) {
+        if (droppedSet.has(i)) {
+          results.push({ ...allRolls[i], type: "dropped" });
+        } else {
+          keptDice.push(allRolls[i]);
+        }
+      }
+
+      // First kept die is tens, second is ones
+      const tens = keptDice[0].value;
+      const ones = keptDice[1].value;
+      total = tens * 10 + ones;
+
+      results.push(...keptDice);
+    } else {
+      // Simple case: just roll 2 dice
+      const tens = allRolls[0].value;
+      const ones = allRolls[1].value;
+      total = tens * 10 + ones;
+
+      results.push(allRolls[0], allRolls[1]);
+    }
+
+    return { results, modifier: 0, total };
+  }
 
   if (advantage > 0 || disadvantage > 0) {
     const totalDice = numDice + (advantage > 0 ? advantage : disadvantage);
