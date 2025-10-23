@@ -1,6 +1,6 @@
 "use client";
 
-import { Link as LinkIcon, Plus } from "lucide-react";
+import { Link as LinkIcon, Plus, X } from "lucide-react";
 import { useId, useState } from "react";
 import { searchEntitiesAction } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,8 @@ export function AwardAssociationForm({
   const [entityType, setEntityType] = useState("monster");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Entity[]>([]);
-  const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null);
+  const [selectedEntities, setSelectedEntities] = useState<Entity[]>([]);
+  const [selectedAwardId, setSelectedAwardId] = useState<string>("");
 
   const handleSearch = async () => {
     if (searchQuery.length < 2) return;
@@ -43,25 +44,43 @@ export function AwardAssociationForm({
     setSearchResults(results);
   };
 
-  const handleSubmit = (formData: FormData) => {
-    if (!selectedEntity) return;
-    formData.append("entityType", entityType);
-    formData.append("entityId", selectedEntity.id);
-    onSubmit(formData);
-    setSelectedEntity(null);
-    setSearchQuery("");
+  const handleSelectEntity = (entity: Entity) => {
+    if (!selectedEntities.find((e) => e.id === entity.id)) {
+      setSelectedEntities([...selectedEntities, entity]);
+    }
     setSearchResults([]);
+    setSearchQuery("");
+  };
+
+  const handleRemoveEntity = (entityId: string) => {
+    setSelectedEntities(selectedEntities.filter((e) => e.id !== entityId));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedEntities.length === 0 || !selectedAwardId) return;
+
+    for (const entity of selectedEntities) {
+      const formData = new FormData();
+      formData.append("entityType", entityType);
+      formData.append("entityId", entity.id);
+      formData.append("awardId", selectedAwardId);
+      await onSubmit(formData);
+    }
+
+    setSelectedEntities([]);
+    setSelectedAwardId("");
   };
 
   return (
-    <form action={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor={entityTypeId}>Entity Type</Label>
         <Select
           value={entityType}
           onValueChange={(value) => {
             setEntityType(value);
-            setSelectedEntity(null);
+            setSelectedEntities([]);
             setSearchResults([]);
           }}
         >
@@ -79,28 +98,31 @@ export function AwardAssociationForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor={entitySearchId}>Search Entity</Label>
+        <Label htmlFor={entitySearchId}>Search Entities</Label>
         <div className="flex gap-2">
           <Input
             id={entitySearchId}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Type to search..."
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSearch();
+              }
+            }}
           />
           <Button type="button" onClick={handleSearch} variant="outline">
             Search
           </Button>
         </div>
         {searchResults.length > 0 && (
-          <div className="rounded-md border">
+          <div className="rounded-md border max-h-48 overflow-y-auto">
             {searchResults.map((entity) => (
               <button
                 type="button"
                 key={entity.id}
-                onClick={() => {
-                  setSelectedEntity(entity);
-                  setSearchResults([]);
-                }}
+                onClick={() => handleSelectEntity(entity)}
                 className="w-full px-3 py-2 text-left text-sm hover:bg-muted"
               >
                 {entity.name}
@@ -108,16 +130,39 @@ export function AwardAssociationForm({
             ))}
           </div>
         )}
-        {selectedEntity && (
-          <div className="text-sm text-muted-foreground">
-            Selected: {selectedEntity.name}
+        {selectedEntities.length > 0 && (
+          <div className="space-y-2">
+            <div className="text-sm font-medium">
+              Selected ({selectedEntities.length}):
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {selectedEntities.map((entity) => (
+                <div
+                  key={entity.id}
+                  className="flex items-center gap-1 px-2 py-1 text-sm bg-muted rounded"
+                >
+                  <span>{entity.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveEntity(entity.id)}
+                    className="hover:text-destructive"
+                  >
+                    <X className="size-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor={awardId}>Award</Label>
-        <Select name="awardId" required>
+        <Select
+          value={selectedAwardId}
+          onValueChange={setSelectedAwardId}
+          required
+        >
           <SelectTrigger id={awardId}>
             <SelectValue placeholder="Select an award" />
           </SelectTrigger>
@@ -133,12 +178,13 @@ export function AwardAssociationForm({
 
       <Button
         type="submit"
-        disabled={!selectedEntity}
+        disabled={selectedEntities.length === 0 || !selectedAwardId}
         className="flex items-center gap-2"
       >
         <Plus className="size-4" />
         <LinkIcon className="size-4" />
-        Add Association
+        Add {selectedEntities.length > 0 && `(${selectedEntities.length})`}{" "}
+        Association{selectedEntities.length !== 1 ? "s" : ""}
       </Button>
     </form>
   );
