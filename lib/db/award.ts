@@ -54,6 +54,8 @@ export async function getAwardsWithCounts() {
       companionAwards: true,
       subclassAwards: true,
       schoolAwards: true,
+      ancestryAwards: true,
+      backgroundAwards: true,
     },
     orderBy: { name: "asc" },
   });
@@ -65,11 +67,21 @@ export async function getAwardsWithCounts() {
     companionCount: award.companionAwards.length,
     subclassCount: award.subclassAwards.length,
     schoolCount: award.schoolAwards.length,
+    ancestryCount: award.ancestryAwards.length,
+    backgroundCount: award.backgroundAwards.length,
   }));
 }
 
 export async function getEntitiesWithAwards() {
-  const [monsters, items, companions, subclasses, schools] = await Promise.all([
+  const [
+    monsters,
+    items,
+    companions,
+    subclasses,
+    schools,
+    ancestries,
+    backgrounds,
+  ] = await Promise.all([
     prisma.monster.findMany({
       where: { monsterAwards: { some: {} } },
       include: {
@@ -115,9 +127,35 @@ export async function getEntitiesWithAwards() {
       },
       orderBy: { name: "asc" },
     }),
+    prisma.ancestry.findMany({
+      where: { ancestryAwards: { some: {} } },
+      include: {
+        ancestryAwards: {
+          include: { award: true },
+        },
+      },
+      orderBy: { name: "asc" },
+    }),
+    prisma.background.findMany({
+      where: { backgroundAwards: { some: {} } },
+      include: {
+        backgroundAwards: {
+          include: { award: true },
+        },
+      },
+      orderBy: { name: "asc" },
+    }),
   ]);
 
-  return { monsters, items, companions, subclasses, schools };
+  return {
+    monsters,
+    items,
+    companions,
+    subclasses,
+    schools,
+    ancestries,
+    backgrounds,
+  };
 }
 
 export async function addAwardToMonster(monsterId: string, awardId: string) {
@@ -192,6 +230,39 @@ export async function removeAwardFromSchool(schoolId: string, awardId: string) {
   });
 }
 
+export async function addAwardToAncestry(ancestryId: string, awardId: string) {
+  return prisma.ancestryAward.create({
+    data: { ancestryId, awardId },
+  });
+}
+
+export async function removeAwardFromAncestry(
+  ancestryId: string,
+  awardId: string
+) {
+  return prisma.ancestryAward.delete({
+    where: { ancestryId_awardId: { ancestryId, awardId } },
+  });
+}
+
+export async function addAwardToBackground(
+  backgroundId: string,
+  awardId: string
+) {
+  return prisma.backgroundAward.create({
+    data: { backgroundId, awardId },
+  });
+}
+
+export async function removeAwardFromBackground(
+  backgroundId: string,
+  awardId: string
+) {
+  return prisma.backgroundAward.delete({
+    where: { backgroundId_awardId: { backgroundId, awardId } },
+  });
+}
+
 export async function searchEntities(entityType: string, query: string) {
   const searchQuery = {
     name: { contains: query, mode: "insensitive" as const },
@@ -224,6 +295,18 @@ export async function searchEntities(entityType: string, query: string) {
       });
     case "school":
       return prisma.spellSchool.findMany({
+        where: searchQuery,
+        select: { id: true, name: true },
+        take: 10,
+      });
+    case "ancestry":
+      return prisma.ancestry.findMany({
+        where: searchQuery,
+        select: { id: true, name: true },
+        take: 10,
+      });
+    case "background":
+      return prisma.background.findMany({
         where: searchQuery,
         select: { id: true, name: true },
         take: 10,

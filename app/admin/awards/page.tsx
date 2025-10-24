@@ -136,15 +136,46 @@ export default async function AdminAwardsPage() {
     }
   }
 
+  for (const ancestry of entities.ancestries) {
+    for (const aa of ancestry.ancestryAwards) {
+      if (!awardEntityMap.has(aa.award.id)) {
+        awardEntityMap.set(aa.award.id, []);
+      }
+      const existing = awardEntityMap
+        .get(aa.award.id)
+        ?.find((e) => e.id === ancestry.id);
+      if (!existing) {
+        awardEntityMap.get(aa.award.id)?.push({
+          type: "ancestry",
+          id: ancestry.id,
+          name: ancestry.name,
+          awardIds: [aa.award.id],
+        });
+      }
+    }
+  }
+
+  for (const background of entities.backgrounds) {
+    for (const ba of background.backgroundAwards) {
+      if (!awardEntityMap.has(ba.award.id)) {
+        awardEntityMap.set(ba.award.id, []);
+      }
+      const existing = awardEntityMap
+        .get(ba.award.id)
+        ?.find((e) => e.id === background.id);
+      if (!existing) {
+        awardEntityMap.get(ba.award.id)?.push({
+          type: "background",
+          id: background.id,
+          name: background.name,
+          awardIds: [ba.award.id],
+        });
+      }
+    }
+  }
+
   return (
     <div className="container mx-auto py-8 space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Award Management</h1>
-        <p className="text-muted-foreground">
-          Create and manage awards, and associate them with content
-        </p>
-      </div>
-
       <div className="grid gap-8 md:grid-cols-2">
         <Card>
           <CardHeader>

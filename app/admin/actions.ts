@@ -72,6 +72,12 @@ export async function addAwardAssociationAction(formData: FormData) {
     case "school":
       await awardDb.addAwardToSchool(entityId, awardId);
       break;
+    case "ancestry":
+      await awardDb.addAwardToAncestry(entityId, awardId);
+      break;
+    case "background":
+      await awardDb.addAwardToBackground(entityId, awardId);
+      break;
   }
 
   revalidatePath("/admin/awards");
@@ -101,6 +107,12 @@ export async function removeAwardAssociationAction(
       break;
     case "school":
       await awardDb.removeAwardFromSchool(entityId, awardId);
+      break;
+    case "ancestry":
+      await awardDb.removeAwardFromAncestry(entityId, awardId);
+      break;
+    case "background":
+      await awardDb.removeAwardFromBackground(entityId, awardId);
       break;
   }
 

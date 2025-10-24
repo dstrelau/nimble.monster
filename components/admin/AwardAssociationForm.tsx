@@ -88,11 +88,13 @@ export function AwardAssociationForm({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="monster">Monster</SelectItem>
-            <SelectItem value="item">Item</SelectItem>
+            <SelectItem value="ancestry">Ancestry</SelectItem>
+            <SelectItem value="background">Background</SelectItem>
             <SelectItem value="companion">Companion</SelectItem>
-            <SelectItem value="subclass">Subclass</SelectItem>
+            <SelectItem value="item">Item</SelectItem>
+            <SelectItem value="monster">Monster</SelectItem>
             <SelectItem value="school">Spell School</SelectItem>
+            <SelectItem value="subclass">Subclass</SelectItem>
           </SelectContent>
         </Select>
       </div>
