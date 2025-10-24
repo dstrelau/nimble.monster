@@ -64,7 +64,7 @@ import { getMonsterUrl } from "@/lib/utils/url";
 import { useUserFamiliesQuery } from "../families/hooks";
 import { AbilitiesSection } from "../ui/create/AbilitiesSection";
 import { ActionsSection } from "../ui/create/ActionsSection";
-import { useMonsterSourcesQuery } from "./hooks";
+import { SourceSelect } from "../ui/create/SourceSelect";
 
 const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
   goblin: {
@@ -808,7 +808,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
     () => existingMonster || { ...EXAMPLE_MONSTERS.empty, creator }
   );
   const queryClient = useQueryClient();
-  const sourcesQuery = useMonsterSourcesQuery();
 
   const mutation = useMutation({
     mutationFn: async (data: Monster) => {
@@ -912,27 +911,23 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
             </Tabs>
           </div>
 
-          <FormSelect
-            label="Source"
-            name="source"
-            className="max-w-sm"
-            choices={[
-              { value: "none", label: "None" },
-              ...(sourcesQuery.data || []).map((s) => ({
-                value: s.id,
-                label: `${s.name} (${s.abbreviation})`,
-              })),
-            ]}
-            selected={monster.source?.id || "none"}
-            onChange={(sourceId) => {
-              if (sourceId === "none") {
+          <SourceSelect
+            source={monster.source}
+            onChange={(sourceOption) => {
+              if (sourceOption) {
+                setMonster({
+                  ...monster,
+                  source: {
+                    ...sourceOption,
+                    license: "",
+                    link: "",
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                  },
+                });
+              } else {
                 const { source: _, ...rest } = monster;
                 setMonster(rest);
-              } else {
-                const source = sourcesQuery.data?.find(
-                  (s) => s.id === sourceId
-                );
-                setMonster({ ...monster, source });
               }
             }}
           />

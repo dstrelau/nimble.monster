@@ -135,6 +135,33 @@ export function getSubclassEditUrl(subclass: {
   return `${getSubclassUrl(subclass)}/edit`;
 }
 
+// Background URLs
+export function getBackgroundUrl(background: {
+  name: string;
+  id: string;
+}): string {
+  return `/backgrounds/${slugify(background)}`;
+}
+
+export function getBackgroundEditUrl(background: {
+  name: string;
+  id: string;
+}): string {
+  return `/backgrounds/${slugify(background)}/edit`;
+}
+
+// Ancestry URLs
+export function getAncestryUrl(ancestry: { name: string; id: string }): string {
+  return `/ancestries/${slugify(ancestry)}`;
+}
+
+export function getAncestryEditUrl(ancestry: {
+  name: string;
+  id: string;
+}): string {
+  return `/ancestries/${slugify(ancestry)}/edit`;
+}
+
 // User URLs
 export function getUserUrl(user: { username: string }): string {
   return `/u/${user.username}`;

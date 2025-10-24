@@ -1,8 +1,10 @@
 import {
   Box,
+  Drama,
   Ghost,
   HandFist,
   HeartHandshake,
+  Scroll,
   Shield,
   Users,
   WandSparkles,
@@ -114,6 +116,31 @@ export default async function CreatePage() {
             />
 
             <CreateCard
+              href="/collections/new"
+              icon={<Box className="size-16" />}
+              title="Collection"
+              description="Organize your favorites."
+              disabled={!isAuthenticated}
+              disabledMessage="You must signin to create a Collection."
+            />
+
+            <h2 className="w-full text-4xl text-center font-bold mb-4">
+              Heroes
+            </h2>
+
+            <CreateCard
+              href="/ancestries/new"
+              icon={<Scroll className="size-16" />}
+              title="Ancestry"
+              description="Character ancestries and lineages."
+            />
+            <CreateCard
+              href="/backgrounds/new"
+              icon={<Drama className="size-16" />}
+              title="Background"
+              description="Character backgrounds and origins."
+            />
+            <CreateCard
               href="/subclasses/new"
               icon={<HandFist className="size-16" />}
               title="Subclass"
@@ -125,15 +152,6 @@ export default async function CreatePage() {
               icon={<WandSparkles className="size-16" />}
               title="Spells"
               description="Schools of magic"
-            />
-
-            <CreateCard
-              href="/collections/new"
-              icon={<Box className="size-16" />}
-              title="Collection"
-              description="Organize your favorites."
-              disabled={!isAuthenticated}
-              disabledMessage="You must signin to create a Collection."
             />
           </div>
         </div>

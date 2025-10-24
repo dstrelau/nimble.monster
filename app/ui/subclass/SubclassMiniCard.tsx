@@ -33,7 +33,7 @@ export function SubclassMiniCard({
           </Link>
         </CardTitle>
         <CardAction>
-          <Badge>{subclass.className}</Badge>
+          <Badge variant="secondary">{subclass.className}</Badge>
         </CardAction>
       </CardHeader>
 

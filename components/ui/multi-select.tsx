@@ -56,6 +56,11 @@ export function MultiSelect({
   const selectedLabels = React.useMemo(
     () =>
       selected
+        .sort((a, b) => {
+          const aIndex = options.findIndex((opt) => opt.value === a);
+          const bIndex = options.findIndex((opt) => opt.value === b);
+          return aIndex - bIndex;
+        })
         .map((value) => options.find((option) => option.value === value)?.label)
         .filter(Boolean)
         .join(", "),

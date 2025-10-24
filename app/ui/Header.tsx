@@ -2,13 +2,16 @@
 
 import {
   Box,
+  Drama,
   Ghost,
   HandFist,
   HeartHandshake,
   Menu,
   PersonStanding,
+  Scroll,
   Shield,
   SquarePen,
+  User as UserIcon,
   WandSparkles,
 } from "lucide-react";
 import Link from "next/link";
@@ -99,7 +102,19 @@ const Header = () => {
     },
   ];
 
-  const characterItems = [
+  const heroItems = [
+    {
+      href: "/ancestries",
+      label: "Ancestries",
+      isActive: isActive("/ancestries"),
+      icon: Scroll,
+    },
+    {
+      href: "/backgrounds",
+      label: "Backgrounds",
+      isActive: isActive("/backgrounds"),
+      icon: Drama,
+    },
     {
       href: "/subclasses",
       label: "Subclasses",
@@ -114,8 +129,11 @@ const Header = () => {
     },
   ];
 
-  const isCharacterActive = () =>
-    isActive("/subclasses") || isActive("/spell-schools");
+  const isHeroActive = () =>
+    isActive("/ancestries") ||
+    isActive("/backgrounds") ||
+    isActive("/subclasses") ||
+    isActive("/spell-schools");
 
   const userMenuItems = currentUser
     ? [
@@ -125,41 +143,61 @@ const Header = () => {
           isActive: currentUser.username
             ? isActive(getUserUrl(currentUser))
             : false,
+          icon: UserIcon,
         },
         {
-          href: "/my/collections",
-          label: "My Collections",
-          isActive: isActive("/my/collections"),
-        },
-        {
-          href: "/my/companions",
-          label: "My Companions",
-          isActive: isActive("/my/companions"),
-        },
-        {
-          href: "/my/families",
-          label: "My Families",
-          isActive: isActive("/my/families"),
-        },
-        {
-          href: "/my/items",
-          label: "My Items",
-          isActive: isActive("/my/items"),
+          href: "/my/ancestries",
+          label: "Ancestries",
+          isActive: isActive("/my/ancestries"),
+          icon: Scroll,
         },
         {
           href: "/my/monsters",
-          label: "My Monsters",
+          label: "Monsters",
           isActive: isActive("/my/monsters"),
+          icon: Ghost,
+        },
+        {
+          href: "/my/backgrounds",
+          label: "Backgrounds",
+          isActive: isActive("/my/backgrounds"),
+          icon: Drama,
+        },
+        {
+          href: "/my/families",
+          label: "Families",
+          isActive: isActive("/my/families"),
+          icon: PersonStanding,
         },
         {
           href: "/my/spell-schools",
-          label: "My Spells",
+          label: "Spells",
           isActive: isActive("/my/spell-schools"),
+          icon: WandSparkles,
+        },
+        {
+          href: "/my/items",
+          label: "Items",
+          isActive: isActive("/my/items"),
+          icon: Shield,
         },
         {
           href: "/my/subclasses",
-          label: "My Subclasses",
+          label: "Subclasses",
           isActive: isActive("/my/subclasses"),
+          icon: HandFist,
+        },
+        {
+          href: "/my/companions",
+          label: "Companions",
+          isActive: isActive("/my/companions"),
+          icon: HeartHandshake,
+        },
+        {
+          href: "/my/collections",
+          label: "Collections",
+          isActive: isActive("/my/collections"),
+          icon: Box,
         },
       ]
     : [];
@@ -205,13 +243,13 @@ const Header = () => {
               </NavigationMenuItem>
             ))}
             <NavigationMenuItem className="z-10">
-              <NavigationMenuTrigger data-active={isCharacterActive()}>
+              <NavigationMenuTrigger data-active={isHeroActive()}>
                 <PersonStanding />
-                Character
+                Heroes
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul>
-                  {characterItems.map((item) => (
+                  {heroItems.map((item) => (
                     <li key={item.href}>
                       <NavigationMenuLink asChild>
                         <Link
@@ -259,22 +297,47 @@ const Header = () => {
                   <UserAvatar user={currentUser} size="md" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                {userMenuItems.map((item) => (
-                  <DropdownMenuItem key={item.href} asChild>
-                    <Link
-                      href={item.href}
-                      className={cn(item.isActive && "font-bold bg-accent")}
-                    >
-                      {item.label}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuItem onClick={handleSignOut}>
-                  Logout
-                </DropdownMenuItem>
+              <DropdownMenuContent align="end" className="w-64">
+                <div className="p-1">
+                  {userMenuItems[0] && (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={userMenuItems[0].href}
+                        className={cn(
+                          "flex justify-center items-center gap-1",
+                          userMenuItems[0].isActive && "font-bold bg-accent"
+                        )}
+                      >
+                        {(() => {
+                          const Icon = userMenuItems[0].icon;
+                          return <Icon className="size-4" />;
+                        })()}
+                        {userMenuItems[0].label}
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <div className="grid grid-cols-2 gap-1">
+                    {userMenuItems.slice(1).map((item) => (
+                      <DropdownMenuItem key={item.href} asChild>
+                        <Link
+                          href={item.href}
+                          className={cn(
+                            "flex justify-center items-center gap-2 flex-col",
+                            item.isActive && "font-bold bg-accent"
+                          )}
+                        >
+                          <item.icon className="h-4 w-4" />
+                          {item.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </div>
+                </div>
                 <Separator />
-                <ModeToggle className="mt-2 mb-1 items-center" />
+                <div className="flex text-sm justify-between items-center gap-2 px-2">
+                  <ModeToggle className="mt-2 mb-1 items-center" />
+                  <Button onClick={handleSignOut}>Logout</Button>
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
@@ -312,7 +375,7 @@ const Header = () => {
             ...link,
             onClick: () => setMobileMenuOpen(false),
           })),
-          ...characterItems.map((link) => ({
+          ...heroItems.map((link) => ({
             ...link,
             onClick: () => setMobileMenuOpen(false),
           })),

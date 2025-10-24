@@ -276,6 +276,42 @@ model Spell {
   @@map("spells")
 }
 
+model Background {
+  id                String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name              String
+  description       String
+  requirement       String?
+  userId            String            @map("user_id") @db.Uuid
+  sourceId          String?           @map("source_id") @db.Uuid
+  createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  creator           User              @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source            Source?           @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  backgroundAwards  BackgroundAward[]
+
+  @@index([userId], map: "idx_backgrounds_user_id")
+  @@map("backgrounds")
+}
+
+model Ancestry {
+  id             String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name           String
+  description    String
+  size           size_type[]
+  rarity         ancestry_rarity @default(common)
+  abilities      Json[]
+  userId         String          @map("user_id") @db.Uuid
+  sourceId       String?         @map("source_id") @db.Uuid
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  creator        User            @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source         Source?         @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  ancestryAwards AncestryAward[]
+
+  @@index([userId], map: "idx_ancestries_user_id")
+  @@map("ancestries")
+}
+
 model User {
   id           String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   discordId    String        @unique @map("discord_id")
@@ -294,6 +330,8 @@ model User {
   subclasses   Subclass[]
   Family       Family[]
   spellSchools SpellSchool[]
+  backgrounds  Background[]
+  ancestries   Ancestry[]
 
   @@map("users")
 }
@@ -387,6 +425,11 @@ enum spell_school_visibility {
   private
 }
 
+enum ancestry_rarity {
+  common
+  exotic
+}
+
 model Source {
   id           String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name         String
@@ -400,24 +443,28 @@ model Source {
   companions   Companion[]
   subclasses   Subclass[]
   spellSchools SpellSchool[]
+  backgrounds  Background[]
+  ancestries   Ancestry[]
 
   @@map("sources")
 }
 
 model Award {
-  id              String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id              String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name            String
   abbreviation    String
   url             String
   color           String
   icon            String
-  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   monsterAwards   MonsterAward[]
   itemAwards      ItemAward[]
   companionAwards CompanionAward[]
   subclassAwards  SubclassAward[]
   schoolAwards    SpellSchoolAward[]
+  backgroundAwards BackgroundAward[]
+  ancestryAwards  AncestryAward[]
 
   @@map("awards")
 }
@@ -470,4 +517,24 @@ model SpellSchoolAward {
 
   @@id([schoolId, awardId])
   @@map("spell_schools_awards")
+}
+
+model BackgroundAward {
+  backgroundId String     @map("background_id") @db.Uuid
+  awardId      String     @map("award_id") @db.Uuid
+  background   Background @relation(fields: [backgroundId], references: [id], onDelete: Cascade)
+  award        Award      @relation(fields: [awardId], references: [id], onDelete: Cascade)
+
+  @@id([backgroundId, awardId])
+  @@map("backgrounds_awards")
+}
+
+model AncestryAward {
+  ancestryId String   @map("ancestry_id") @db.Uuid
+  awardId    String   @map("award_id") @db.Uuid
+  ancestry   Ancestry @relation(fields: [ancestryId], references: [id], onDelete: Cascade)
+  award      Award    @relation(fields: [awardId], references: [id], onDelete: Cascade)
+
+  @@id([ancestryId, awardId])
+  @@map("ancestries_awards")
 }
