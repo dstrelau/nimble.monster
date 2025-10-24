@@ -57,7 +57,7 @@ const SORT_OPTIONS: { value: PaginateMonstersSortOption; label: string }[] = [
   { value: "-level", label: "Level (High→Low)" },
 ];
 
-export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
+export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
   searchTerm,
   typeFilter,
   onTypeFilterChange,
@@ -71,8 +71,6 @@ export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
     <FilterBar
       searchTerm={searchTerm}
       onSearch={(v) => onSearch(v ? v : null)}
-      searchPlaceholder="Search"
-      layout="horizontal"
     >
       <Select value={typeFilter} onValueChange={onTypeFilterChange}>
         <SelectTrigger className="min-w-36">

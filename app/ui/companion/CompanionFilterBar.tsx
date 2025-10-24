@@ -36,7 +36,7 @@ const SORT_OPTIONS: { value: PaginateCompanionsSortOption; label: string }[] = [
   { value: "-name", label: "Name (Z→A)" },
 ];
 
-export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
+export const CompanionFilterBar: React.FC<SimpleFilterBarProps> = ({
   searchTerm,
   classFilter,
   onClassFilterChange,
@@ -48,8 +48,6 @@ export const SimpleFilterBar: React.FC<SimpleFilterBarProps> = ({
     <FilterBar
       searchTerm={searchTerm}
       onSearch={(v) => onSearch(v ? v : null)}
-      searchPlaceholder="Search"
-      layout="horizontal"
     >
       <Select value={classFilter} onValueChange={onClassFilterChange}>
         <SelectTrigger className="min-w-36">

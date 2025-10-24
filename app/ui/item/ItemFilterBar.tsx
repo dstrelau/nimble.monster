@@ -46,8 +46,6 @@ export const ItemFilterBar: React.FC<ItemFilterBarProps> = ({
     <FilterBar
       searchTerm={searchTerm}
       onSearch={(v) => onSearch(v ? v : null)}
-      searchPlaceholder="Search"
-      layout="horizontal"
     >
       <Select
         value={rarityFilter}

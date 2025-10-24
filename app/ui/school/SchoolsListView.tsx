@@ -24,8 +24,6 @@ export function SchoolsListView({ spellSchools }: SchoolsListViewProps) {
       <FilterBar
         searchTerm={searchTerm}
         onSearch={handleSearch}
-        searchPlaceholder="Search"
-        layout="horizontal"
       >
         <SchoolSortSelect value={sortOption} onChange={setSortOption} />
       </FilterBar>

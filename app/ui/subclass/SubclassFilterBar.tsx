@@ -26,8 +26,6 @@ export const SubclassFilterBar: React.FC<SubclassFilterBarProps> = ({
     <FilterBar
       searchTerm={searchTerm}
       onSearch={onSearch}
-      searchPlaceholder="Search"
-      layout="horizontal"
     >
       <SubclassClassSelect
         value={classNameFilter}

@@ -7,8 +7,6 @@ import { cn } from "@/lib/utils";
 interface FilterBarProps {
   searchTerm: string | null;
   onSearch: (value: string) => void;
-  searchPlaceholder?: string;
-  layout?: "vertical" | "horizontal";
   children?: React.ReactNode;
   className?: string;
 }
@@ -16,34 +14,21 @@ interface FilterBarProps {
 export const FilterBar: React.FC<FilterBarProps> = ({
   searchTerm,
   onSearch,
-  searchPlaceholder = "Search",
-  layout = "vertical",
   children,
   className = "",
 }) => {
-  const containerClass = cn(
-    "flex flex-col gap-4",
-    layout === "horizontal" && "sm:flex-row"
-  );
-
-  const searchContainerClass = layout === "horizontal" ? "flex-1" : "";
-
-  const filtersContainerClass = cn(
-    "flex gap-4",
-    layout === "horizontal" ? "flex-shrink-0" : "items-center"
-  );
 
   return (
-    <div className={cn(containerClass, className)}>
-      <div className={searchContainerClass}>
+    <div className={cn("flex flex-col gap-4 sm:flex-row", className)}>
+      <div className="flex-1">
         <SearchInput
           value={searchTerm || ""}
           onChange={onSearch}
-          placeholder={searchPlaceholder}
+          placeholder={"Search"}
         />
       </div>
 
-      {children && <div className={filtersContainerClass}>{children}</div>}
+      {children && <div className="flex flex-shrink-0 gap-4">{children}</div>}
     </div>
   );
 };

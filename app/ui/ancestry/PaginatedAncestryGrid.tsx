@@ -6,9 +6,14 @@ import { parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { publicAncestriesInfiniteQueryOptions } from "@/app/ancestries/hooks";
 import { myAncestriesInfiniteQueryOptions } from "@/app/my/ancestries/hooks";
-import { Button } from "@/components/ui/button";
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "@/app/ui/shared/GridStates";
+import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
 import { Card } from "./Card";
-import { FilterBar } from "./FilterBar";
+import { AncestryFilterBar } from "./AncestryFilterBar";
 
 const PaginateAncestriesSortOptions = [
   "-createdAt",
@@ -58,26 +63,18 @@ export const PaginatedAncestryGrid: React.FC<PaginatedAncestryGridProps> = (
     useInfiniteQuery(queryParams());
 
   if (isLoading) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (error) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">{error.message}</p>
-      </div>
-    );
+    return <ErrorState message={error.message} />;
   }
 
   const filteredAncestries = data?.pages.flatMap((page) => page.data);
 
   return (
     <div className="space-y-6">
-      <FilterBar
+      <AncestryFilterBar
         searchTerm={searchQuery}
         sortOption={sortQuery}
         onSearch={setSearchQuery}
@@ -85,9 +82,7 @@ export const PaginatedAncestryGrid: React.FC<PaginatedAncestryGridProps> = (
       />
 
       {!filteredAncestries || filteredAncestries?.length === 0 ? (
-        <div className="col-span-4 text-center text-muted-foreground">
-          No ancestries found.
-        </div>
+        <EmptyState entityName="ancestries" />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredAncestries.map((ancestry) => (
@@ -102,15 +97,7 @@ export const PaginatedAncestryGrid: React.FC<PaginatedAncestryGridProps> = (
         </div>
       )}
       {data?.pages.at(-1)?.data.length === 12 && hasNextPage && (
-        <div className="flex justify-center">
-          <Button
-            className="min-w-2xs"
-            onClick={() => fetchNextPage()}
-            disabled={isFetching}
-          >
-            Load More
-          </Button>
-        </div>
+        <LoadMoreButton onClick={() => fetchNextPage()} disabled={isFetching} />
       )}
     </div>
   );

@@ -5,12 +5,17 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { publicCompanionsInfiniteQueryOptions } from "@/app/companions/hooks";
-import { Button } from "@/components/ui/button";
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "@/app/ui/shared/GridStates";
+import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
 import type { CompanionClassOption } from "@/lib/services/companions/types";
 import { PaginateCompanionsSortOptions } from "@/lib/services/companions/types";
 import { SUBCLASS_CLASSES } from "@/lib/types";
 import { Card } from "./Card";
-import { SimpleFilterBar } from "./SimpleFilterBar";
+import { CompanionFilterBar } from "./CompanionFilterBar";
 
 const isValidCompanionClass = (
   value: string
@@ -51,26 +56,18 @@ export const PaginatedCompanionGrid: React.FC = () => {
     useInfiniteQuery(publicCompanionsInfiniteQueryOptions(params));
 
   if (isLoading) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (error) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">{error.message}</p>
-      </div>
-    );
+    return <ErrorState message={error.message} />;
   }
 
   const filteredCompanions = data?.pages.flatMap((page) => page.data);
 
   return (
     <div className="space-y-6">
-      <SimpleFilterBar
+      <CompanionFilterBar
         searchTerm={searchQuery}
         sortOption={sortQuery}
         onSearch={setSearchQuery}
@@ -80,9 +77,7 @@ export const PaginatedCompanionGrid: React.FC = () => {
       />
 
       {!filteredCompanions || filteredCompanions?.length === 0 ? (
-        <div className="col-span-4 text-center text-muted-foreground">
-          No companions found.
-        </div>
+        <EmptyState entityName="companions" />
       ) : (
         <div className="max-w-3xl mx-auto grid grid-cols-1 gap-4">
           {filteredCompanions.map((companion) => (
@@ -97,15 +92,7 @@ export const PaginatedCompanionGrid: React.FC = () => {
         </div>
       )}
       {data?.pages.at(-1)?.data.length === 6 && hasNextPage && (
-        <div className="flex justify-center">
-          <Button
-            className="min-w-2xs"
-            onClick={() => fetchNextPage()}
-            disabled={isFetching}
-          >
-            Load More
-          </Button>
-        </div>
+        <LoadMoreButton onClick={() => fetchNextPage()} disabled={isFetching} />
       )}
     </div>
   );

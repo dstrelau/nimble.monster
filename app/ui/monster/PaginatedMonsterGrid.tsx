@@ -7,14 +7,19 @@ import type React from "react";
 import { publicMonstersInfiniteQueryOptions } from "@/app/monsters/hooks";
 import { myMonstersInfiniteQueryOptions } from "@/app/my/monsters/hooks";
 import { userProfileMonstersInfiniteQueryOptions } from "@/app/u/[username]/hooks";
-import { Button } from "@/components/ui/button";
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "@/app/ui/shared/GridStates";
+import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
 import {
   MonsterTypeOptions,
   PaginateMonstersSortOptions,
 } from "@/lib/services/monsters/types";
 import { cn } from "@/lib/utils";
 import { Card } from "./Card";
-import { SimpleFilterBar } from "./SimpleFilterBar";
+import { MonsterFilterBar } from "./MonsterFilterBar";
 
 // we can't directly pass the queryOptions fn here because props to client
 // components must be serializable.
@@ -65,26 +70,18 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
     useInfiniteQuery(queryParams());
 
   if (isLoading) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (error) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">{error.message}</p>
-      </div>
-    );
+    return <ErrorState message={error.message} />;
   }
 
   const filteredMonsters = data?.pages.flatMap((page) => page.data);
 
   return (
     <div className="space-y-6">
-      <SimpleFilterBar
+      <MonsterFilterBar
         searchTerm={searchQuery}
         sortOption={sortQuery}
         onSearch={setSearchQuery}
@@ -96,9 +93,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
       />
 
       {!filteredMonsters || filteredMonsters?.length === 0 ? (
-        <div className="col-span-4 text-center text-muted-foreground">
-          No monsters found.
-        </div>
+        <EmptyState entityName="monsters" />
       ) : (
         <div className="grid grid-flow-dense grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredMonsters.map((monster) => (
@@ -122,15 +117,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
         </div>
       )}
       {data?.pages.at(-1)?.data.length === 12 && hasNextPage && (
-        <div className="flex justify-center">
-          <Button
-            className="min-w-2xs"
-            onClick={() => fetchNextPage()}
-            disabled={isFetching}
-          >
-            Load More
-          </Button>
-        </div>
+        <LoadMoreButton onClick={() => fetchNextPage()} disabled={isFetching} />
       )}
     </div>
   );

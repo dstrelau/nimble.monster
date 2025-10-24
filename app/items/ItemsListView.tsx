@@ -4,7 +4,12 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { parseAsString, useQueryState } from "nuqs";
 import type React from "react";
-import { Button } from "@/components/ui/button";
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "@/app/ui/shared/GridStates";
+import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
 import type { ItemRarityFilter } from "@/lib/services/items";
 import { Card } from "../ui/item/Card";
 import { ItemFilterBar } from "../ui/item/ItemFilterBar";
@@ -39,19 +44,11 @@ export const ItemsListView: React.FC = () => {
     );
 
   if (isLoading) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (error) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">{error.message}</p>
-      </div>
-    );
+    return <ErrorState message={error.message} />;
   }
 
   const filteredItems = data?.pages.flatMap((page) => page.data);
@@ -69,32 +66,29 @@ export const ItemsListView: React.FC = () => {
         onSourceChange={setSourceIdQuery}
       />
 
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        {!filteredItems || filteredItems?.length === 0 ? (
-          <div className="col-span-4 text-center text-muted-foreground">
-            No items found.
+      {!filteredItems || filteredItems?.length === 0 ? (
+        <EmptyState entityName="items" />
+      ) : (
+        <>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            {filteredItems.map((item) => (
+              <Card
+                className="max-w-sm min-w-2xs"
+                key={item.id}
+                item={item}
+                creator={item.creator}
+                hideDescription={true}
+              />
+            ))}
           </div>
-        ) : (
-          filteredItems.map((item) => (
-            <Card
-              className="max-w-sm min-w-2xs"
-              key={item.id}
-              item={item}
-              creator={item.creator}
-              hideDescription={true}
+          {data?.pages.at(-1)?.data.length === 12 && hasNextPage && (
+            <LoadMoreButton
+              onClick={() => fetchNextPage()}
+              disabled={isFetching}
             />
-          ))
-        )}
-        {data?.pages.at(-1)?.data.length === 12 && hasNextPage && (
-          <Button
-            className="col-span-4 mx-auto min-w-2xs"
-            onClick={() => fetchNextPage()}
-            disabled={isFetching}
-          >
-            Load More
-          </Button>
-        )}
-      </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
