@@ -1,9 +1,19 @@
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { PaginatedBackgroundGrid } from "@/app/ui/background/PaginatedBackgroundGrid";
+import { getQueryClient } from "@/lib/queryClient";
+import { publicBackgroundsInfiniteQueryOptions } from "./hooks";
 
-export default function BackgroundsPage() {
+export default async function BackgroundsPage() {
+  const queryClient = getQueryClient();
+  await queryClient.prefetchInfiniteQuery(
+    publicBackgroundsInfiniteQueryOptions()
+  );
+
   return (
     <div className="container mx-auto">
-      <PaginatedBackgroundGrid kind="backgrounds" />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <PaginatedBackgroundGrid kind="backgrounds" />
+      </HydrationBoundary>
     </div>
   );
 }
