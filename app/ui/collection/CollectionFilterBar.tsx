@@ -18,10 +18,7 @@ export const CollectionFilterBar: React.FC<CollectionFilterBarProps> = ({
   onSortChange,
 }) => {
   return (
-    <FilterBar
-      searchTerm={searchTerm}
-      onSearch={onSearch}
-    >
+    <FilterBar searchTerm={searchTerm} onSearch={onSearch}>
       <CollectionSortSelect value={sortOption} onChange={onSortChange} />
     </FilterBar>
   );

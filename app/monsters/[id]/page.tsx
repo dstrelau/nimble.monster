@@ -20,6 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id: monsterId } = await params;
   const uid = deslugify(monsterId);
+  if (!uid) return {};
   const monster = await monstersService.getMonster(uid);
 
   if (!monster) return {};
@@ -71,6 +72,7 @@ export default async function MonsterPage({
   const { id: monsterId } = await params;
 
   const uid = deslugify(monsterId);
+  if (!uid) return notFound();
   const monster = await monstersService.getMonster(uid);
   if (!monster) return notFound();
 

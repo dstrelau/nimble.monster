@@ -17,6 +17,7 @@ export default async function EditCompanionPage({
   }
 
   const uid = deslugify(companionId);
+  if (!uid) return notFound();
 
   const companion = await findCompanionWithCreator(uid, session?.user.id);
   if (!companion) return notFound();

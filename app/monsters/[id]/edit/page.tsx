@@ -22,6 +22,7 @@ export default async function EditMonsterPage({
   }
 
   const uid = deslugify(monsterId);
+  if (!uid) return notFound();
   const monster = await findMonsterWithCreatorId(uid, session?.user.id);
   if (!monster) return notFound();
 

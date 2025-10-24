@@ -17,6 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const uid = deslugify(id);
+  if (!uid) return {};
   const collection = await db.getCollection(uid);
   if (!collection) return {};
 
@@ -68,6 +69,7 @@ export default async function ShowCollectionView({
   const session = await auth();
 
   const uid = deslugify(id);
+  if (!uid) return notFound();
   const collection = await db.getCollection(uid, session?.user?.discordId);
   if (!collection) return notFound();
 

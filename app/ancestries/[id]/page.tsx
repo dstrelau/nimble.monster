@@ -15,6 +15,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id: ancestryId } = await params;
   const uid = deslugify(ancestryId);
+  if (!uid) return {};
   const ancestry = await findAncestry(uid);
 
   if (!ancestry) return {};
@@ -56,6 +57,7 @@ export default async function AncestryPage({
   const { id: ancestryId } = await params;
 
   const uid = deslugify(ancestryId);
+  if (!uid) return notFound();
   const ancestry = await findAncestry(uid);
   if (!ancestry) return notFound();
 

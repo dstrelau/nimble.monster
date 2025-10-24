@@ -17,6 +17,7 @@ export default async function EditItemPage({
   }
 
   const uid = deslugify(itemId);
+  if (!uid) return notFound();
   const item = await itemsService.getItemWithCreator(uid, session?.user.id);
   if (!item) return notFound();
 

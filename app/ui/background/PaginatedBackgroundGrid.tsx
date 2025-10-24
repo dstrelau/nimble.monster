@@ -12,8 +12,8 @@ import {
   LoadingState,
 } from "@/app/ui/shared/GridStates";
 import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
-import { Card } from "./Card";
 import { BackgroundFilterBar } from "./BackgroundFilterBar";
+import { Card } from "./Card";
 
 const PaginateBackgroundsSortOptions = [
   "-createdAt",

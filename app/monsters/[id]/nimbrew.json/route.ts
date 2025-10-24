@@ -18,10 +18,8 @@ export const GET = telemetry(
     const span = trace.getActiveSpan();
     span?.setAttributes({ "params.id": monsterId });
 
-    let uid: string;
-    try {
-      uid = deslugify(monsterId);
-    } catch {
+    const uid = deslugify(monsterId);
+    if (!uid) {
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });
     }
 

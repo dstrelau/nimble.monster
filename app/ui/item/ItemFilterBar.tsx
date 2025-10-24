@@ -43,10 +43,7 @@ export const ItemFilterBar: React.FC<ItemFilterBarProps> = ({
   onSourceChange,
 }) => {
   return (
-    <FilterBar
-      searchTerm={searchTerm}
-      onSearch={(v) => onSearch(v ? v : null)}
-    >
+    <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v ? v : null)}>
       <Select
         value={rarityFilter}
         onValueChange={(value) => onRarityChange(value as ItemRarity | "all")}

@@ -68,10 +68,7 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
   onSourceChange,
 }) => {
   return (
-    <FilterBar
-      searchTerm={searchTerm}
-      onSearch={(v) => onSearch(v ? v : null)}
-    >
+    <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v ? v : null)}>
       <Select value={typeFilter} onValueChange={onTypeFilterChange}>
         <SelectTrigger className="min-w-36">
           <SelectValue />

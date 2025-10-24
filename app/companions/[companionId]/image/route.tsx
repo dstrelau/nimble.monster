@@ -11,6 +11,9 @@ export async function GET(
 ) {
   const { companionId } = await params;
   const uid = deslugify(companionId);
+  if (!uid) {
+    return new Response("Companion not found", { status: 404 });
+  }
   const companion = await findCompanion(uid);
 
   if (!companion || companion.visibility !== "public") {

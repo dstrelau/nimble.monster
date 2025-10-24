@@ -13,6 +13,14 @@ export async function GET(
     try {
       const { itemId } = await params;
       const uid = deslugify(itemId);
+      if (!uid) {
+        span.setAttributes({
+          "response.status": 404,
+          "response.reason": "invalid_slug",
+        });
+        span.setStatus({ code: 1 });
+        return new Response("Item not found", { status: 404 });
+      }
 
       span.setAttributes({
         "item.id": itemId,

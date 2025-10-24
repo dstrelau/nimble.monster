@@ -2,14 +2,18 @@ export function slugify({ name, id }: { name: string; id: string }): string {
   return `${nameToKebabCase(name)}-${uuidToIdentifier(id)}`;
 }
 
-export function deslugify(slug: string): string {
+export function deslugify(slug: string): string | null {
   if (isUUID(slug)) {
     // fallback for legacy UUID URLs
     return slug;
   }
-  // Extract the last 26 characters (the identifier)
-  const identifier = slug.slice(-26);
-  return identifierToUuid(identifier);
+  try {
+    // Extract the last 26 characters (the identifier)
+    const identifier = slug.slice(-26);
+    return identifierToUuid(identifier);
+  } catch {
+    return null;
+  }
 }
 
 export function nameToKebabCase(name: string): string {

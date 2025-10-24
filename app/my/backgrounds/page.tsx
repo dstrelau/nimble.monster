@@ -10,9 +10,7 @@ export default async function MyBackgroundsPage() {
   if (!session?.user?.id) notFound();
 
   const queryClient = getQueryClient();
-  await queryClient.prefetchInfiniteQuery(
-    myBackgroundsInfiniteQueryOptions()
-  );
+  await queryClient.prefetchInfiniteQuery(myBackgroundsInfiniteQueryOptions());
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

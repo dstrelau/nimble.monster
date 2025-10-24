@@ -27,14 +27,13 @@ export const AncestryFilterBar = ({
   onSortChange,
 }: FilterBarProps) => {
   return (
-    <FilterBar
-      searchTerm={searchTerm}
-      onSearch={(v) => onSearch(v || null)}
-    >
+    <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v || null)}>
       <SortSelect
         items={SORT_OPTIONS}
         value={sortOption}
-        onChange={(v) => onSortChange(v as "name" | "createdAt" | "-name" | "-createdAt")}
+        onChange={(v) =>
+          onSortChange(v as "name" | "createdAt" | "-name" | "-createdAt")
+        }
       />
     </FilterBar>
   );

@@ -75,8 +75,24 @@ export const GET = telemetry(
       );
     }
 
+    const uid = deslugify(id);
+    if (!uid) {
+      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+      addCorsHeaders(headers);
+      return NextResponse.json(
+        {
+          errors: [
+            {
+              status: "404",
+              title: "Collection not found",
+            },
+          ],
+        },
+        { status: 404, headers }
+      );
+    }
+
     try {
-      const uid = deslugify(id);
       const collection = await repository.findPublicCollectionById(uid);
 
       if (!collection) {

@@ -14,6 +14,7 @@ interface SchoolPageProps {
 export default async function SchoolPage({ params }: SchoolPageProps) {
   const { id } = await params;
   const uid = deslugify(id);
+  if (!uid) return notFound();
   const session = await auth();
 
   const spellSchool = await findSpellSchool(uid);

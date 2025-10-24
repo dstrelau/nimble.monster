@@ -14,6 +14,7 @@ export default async function EditFamilyPage({
   const session = await auth();
 
   const uid = deslugify(id);
+  if (!uid) return notFound();
   const family = await db.getFamily(uid);
   if (!family) return notFound();
 

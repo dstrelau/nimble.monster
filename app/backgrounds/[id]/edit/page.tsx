@@ -19,6 +19,7 @@ export default async function EditBackgroundPage({
   }
 
   const uid = deslugify(backgroundId);
+  if (!uid) return notFound();
   const background = await findBackgroundWithCreatorId(uid, session?.user.id);
   if (!background) return notFound();
 

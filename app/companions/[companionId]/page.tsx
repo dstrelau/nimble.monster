@@ -19,6 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { companionId } = await params;
   const uid = deslugify(companionId);
+  if (!uid) return {};
   const companion = await findCompanion(uid);
   if (!companion) return {};
 
@@ -71,6 +72,7 @@ export default async function CompanionPage({
   const { companionId } = await params;
 
   const uid = deslugify(companionId);
+  if (!uid) return notFound();
   const companion = await findCompanion(uid);
   if (!companion) return notFound();
 

@@ -21,10 +21,7 @@ export function SchoolsListView({ spellSchools }: SchoolsListViewProps) {
 
   return (
     <div className="space-y-6">
-      <FilterBar
-        searchTerm={searchTerm}
-        onSearch={handleSearch}
-      >
+      <FilterBar searchTerm={searchTerm} onSearch={handleSearch}>
         <SchoolSortSelect value={sortOption} onChange={setSortOption} />
       </FilterBar>
 

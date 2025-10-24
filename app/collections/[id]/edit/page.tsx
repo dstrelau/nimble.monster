@@ -16,6 +16,7 @@ export default async function EditCollectionPage({
   if (!session?.user?.id) return notFound();
 
   const uid = deslugify(id);
+  if (!uid) return notFound();
   const collection = await db.getCollection(uid);
   if (!collection) return notFound();
 

@@ -17,6 +17,7 @@ export default async function EditSubclassPage({
   }
 
   const uid = deslugify(id);
+  if (!uid) return notFound();
   const subclass = await findSubclassWithCreatorDiscordId(
     uid,
     session?.user.discordId

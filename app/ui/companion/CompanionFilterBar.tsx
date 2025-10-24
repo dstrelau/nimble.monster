@@ -45,10 +45,7 @@ export const CompanionFilterBar: React.FC<SimpleFilterBarProps> = ({
   onSortChange,
 }) => {
   return (
-    <FilterBar
-      searchTerm={searchTerm}
-      onSearch={(v) => onSearch(v ? v : null)}
-    >
+    <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v ? v : null)}>
       <Select value={classFilter} onValueChange={onClassFilterChange}>
         <SelectTrigger className="min-w-36">
           <SelectValue />

@@ -19,6 +19,7 @@ export default async function EditAncestryPage({
   }
 
   const uid = deslugify(ancestryId);
+  if (!uid) return notFound();
   const ancestry = await findAncestryWithCreatorId(uid, session?.user.id);
   if (!ancestry) return notFound();
 

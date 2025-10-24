@@ -22,8 +22,24 @@ export const GET = telemetry(
 
     span?.setAttributes({ "params.id": id });
 
+    const uid = deslugify(id);
+    if (!uid) {
+      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+      addCorsHeaders(headers);
+      return NextResponse.json(
+        {
+          errors: [
+            {
+              status: "404",
+              title: "Monster not found",
+            },
+          ],
+        },
+        { status: 404, headers }
+      );
+    }
+
     try {
-      const uid = deslugify(id);
       const monster = await monstersService.getPublicMonster(uid);
 
       if (!monster) {
@@ -73,6 +89,12 @@ export const PUT = telemetry(
     try {
       const { id } = await params;
       const uid = deslugify(id);
+      if (!uid) {
+        return NextResponse.json(
+          { error: "Monster not found" },
+          { status: 404 }
+        );
+      }
       const span = trace.getActiveSpan();
 
       span?.setAttributes({ "params.id": id });
@@ -157,6 +179,9 @@ export const DELETE = telemetry(
     const session = await auth();
     const { id } = await params;
     const uid = deslugify(id);
+    if (!uid) {
+      return NextResponse.json({ error: "Monster not found" }, { status: 404 });
+    }
     const span = trace.getActiveSpan();
 
     span?.setAttributes({ "params.id": id });

@@ -17,6 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const uid = deslugify(id);
+  if (!uid) return {};
   const session = await auth();
 
   const subclass = await findSubclass(uid);
@@ -65,6 +66,7 @@ export default async function SubclassPage({
   const { id } = await params;
 
   const uid = deslugify(id);
+  if (!uid) return notFound();
   const subclass = await findSubclass(uid);
   if (!subclass) return notFound();
 

@@ -15,6 +15,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const uid = deslugify(id);
+  if (!uid) return {};
   const family = await db.getFamily(uid);
   if (!family) return {};
 
@@ -60,6 +61,7 @@ export default async function FamilyDetailPage({
   const { id } = await params;
 
   const uid = deslugify(id);
+  if (!uid) return notFound();
   const family = await db.getFamily(uid);
   if (!family) return notFound();
 

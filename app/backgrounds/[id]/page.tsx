@@ -15,6 +15,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id: backgroundId } = await params;
   const uid = deslugify(backgroundId);
+  if (!uid) return {};
   const background = await findBackground(uid);
 
   if (!background) return {};
@@ -56,6 +57,7 @@ export default async function BackgroundPage({
   const { id: backgroundId } = await params;
 
   const uid = deslugify(backgroundId);
+  if (!uid) return notFound();
   const background = await findBackground(uid);
   if (!background) return notFound();
 

@@ -19,6 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { itemId } = await params;
   const uid = deslugify(itemId);
+  if (!uid) return {};
   const item = await itemsService.getPublicItem(uid);
   if (!item) return {};
 
@@ -65,6 +66,7 @@ export default async function ItemPage({
   const { itemId } = await params;
 
   const uid = deslugify(itemId);
+  if (!uid) return notFound();
   const item = await itemsService.getItem(uid);
   if (!item) return notFound();
 

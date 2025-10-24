@@ -23,10 +23,7 @@ export const SubclassFilterBar: React.FC<SubclassFilterBarProps> = ({
   onClassNameChange,
 }) => {
   return (
-    <FilterBar
-      searchTerm={searchTerm}
-      onSearch={onSearch}
-    >
+    <FilterBar searchTerm={searchTerm} onSearch={onSearch}>
       <SubclassClassSelect
         value={classNameFilter}
         onChange={onClassNameChange}

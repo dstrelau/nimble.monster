@@ -17,7 +17,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   children,
   className = "",
 }) => {
-
   return (
     <div className={cn("flex flex-col gap-4 sm:flex-row", className)}>
       <div className="flex-1">
