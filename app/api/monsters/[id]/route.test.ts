@@ -32,7 +32,7 @@ vi.mock("@/lib/telemetry", () => ({
 vi.mock("@/lib/utils/slug", () => ({
   deslugify: vi.fn((slug: string) => {
     if (slug === "invalid-slug") {
-      throw new Error("Invalid slug");
+      return null;
     }
     return "550e8400-e29b-41d4-a716-446655440000";
   }),

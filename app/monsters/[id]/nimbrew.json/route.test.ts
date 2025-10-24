@@ -89,7 +89,7 @@ describe("GET /monsters/[id]/nimbrew.json", () => {
 
   it("should return 404 for invalid UUID", async () => {
     mockDeslugify.mockImplementation(() => {
-      throw new Error("Identifier must be exactly 26 characters");
+      return null;
     });
 
     const response = await GET(mockRequest, createMockParams("invalid-id"));
