@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import type { Award } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +30,7 @@ export function AwardForm({
 }: AwardFormProps) {
   const nameId = useId();
   const abbreviationId = useId();
+  const descriptionId = useId();
   const urlId = useId();
   const colorId = useId();
   const iconId = useId();
@@ -54,6 +56,17 @@ export function AwardForm({
           defaultValue={award?.abbreviation}
           required
           placeholder="BM24"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor={descriptionId}>Description</Label>
+        <Textarea
+          id={descriptionId}
+          name="description"
+          defaultValue={award?.description || ""}
+          placeholder="Optional description of the award"
+          rows={3}
         />
       </div>
 

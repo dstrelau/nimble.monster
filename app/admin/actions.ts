@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { isAdmin } from "@/lib/auth";
 import * as awardDb from "@/lib/db/award";
 import * as sourceDb from "@/lib/db/source";
+import { awardSlugify } from "@/lib/utils/slug";
 
 export async function createAwardAction(formData: FormData) {
   if (!(await isAdmin())) {
@@ -13,11 +14,21 @@ export async function createAwardAction(formData: FormData) {
 
   const name = formData.get("name") as string;
   const abbreviation = formData.get("abbreviation") as string;
+  const description = (formData.get("description") as string) || "";
   const url = formData.get("url") as string;
   const color = formData.get("color") as string;
   const icon = formData.get("icon") as string;
+  const slug = awardSlugify(abbreviation);
 
-  await awardDb.createAward({ name, abbreviation, url, color, icon });
+  await awardDb.createAward({
+    name,
+    abbreviation,
+    description,
+    slug,
+    url,
+    color,
+    icon,
+  });
   revalidatePath("/admin/awards");
   redirect("/admin/awards");
 }
@@ -29,11 +40,21 @@ export async function updateAwardAction(id: string, formData: FormData) {
 
   const name = formData.get("name") as string;
   const abbreviation = formData.get("abbreviation") as string;
+  const description = (formData.get("description") as string) || "";
   const url = formData.get("url") as string;
   const color = formData.get("color") as string;
   const icon = formData.get("icon") as string;
+  const slug = awardSlugify(abbreviation);
 
-  await awardDb.updateAward(id, { name, abbreviation, url, color, icon });
+  await awardDb.updateAward(id, {
+    name,
+    abbreviation,
+    description,
+    slug,
+    url,
+    color,
+    icon,
+  });
   revalidatePath("/admin/awards");
   redirect("/admin/awards");
 }

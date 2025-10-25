@@ -34,8 +34,10 @@ export const toBackground = (
     awards:
       b.backgroundAwards?.map((ba) => ({
         id: ba.award.id,
+        slug: ba.award.slug,
         name: ba.award.name,
         abbreviation: ba.award.abbreviation,
+        description: ba.award.description,
         url: ba.award.url,
         color: ba.award.color,
         icon: ba.award.icon,

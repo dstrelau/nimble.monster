@@ -6,10 +6,12 @@ import {
   createAwardAction,
   deleteAwardAction,
   removeAwardAssociationAction,
+  updateAwardAction,
 } from "@/app/admin/actions";
 import { AwardBadge } from "@/components/AwardBadge";
 import { AwardAssociationForm } from "@/components/admin/AwardAssociationForm";
 import { AwardForm } from "@/components/admin/AwardForm";
+import { EditAwardDialog } from "@/components/admin/EditAwardDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -231,16 +233,22 @@ export default async function AdminAwardsPage() {
                         {awardEntities.length}
                       </TableCell>
                       <TableCell>
-                        <form action={deleteAwardAction.bind(null, award.id)}>
-                          <Button
-                            type="submit"
-                            variant="ghost"
-                            size="sm"
-                            className="text-destructive"
-                          >
-                            <Trash2 className="size-4" />
-                          </Button>
-                        </form>
+                        <div className="flex items-center gap-1">
+                          <EditAwardDialog
+                            award={award}
+                            onSubmit={updateAwardAction.bind(null, award.id)}
+                          />
+                          <form action={deleteAwardAction.bind(null, award.id)}>
+                            <Button
+                              type="submit"
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive"
+                            >
+                              <Trash2 className="size-4" />
+                            </Button>
+                          </form>
+                        </div>
                       </TableCell>
                     </TableRow>
                     {awardEntities.map((entity) => (

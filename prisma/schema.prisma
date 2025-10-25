@@ -139,22 +139,22 @@ model Monster {
 }
 
 model Companion {
-  id            String               @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name          String
-  kind          String               @default("")
-  class         String               @default("")
-  hp_per_level  String               @map("hp_per_level")
-  wounds        Int                  @default(0)
-  size          size_type            @default(medium)
-  saves         String               @default("")
-  actions       Json[]
-  abilities     Json[]
-  actionPreface String?              @map("action_preface")
-  dyingRule     String               @default("") @map("dying_rule")
-  moreInfo      String?              @default("") @map("more_info")
-  visibility    companion_visibility @default(public)
-  userId        String               @map("user_id") @db.Uuid
-  sourceId      String?              @map("source_id") @db.Uuid
+  id              String               @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name            String
+  kind            String               @default("")
+  class           String               @default("")
+  hp_per_level    String               @map("hp_per_level")
+  wounds          Int                  @default(0)
+  size            size_type            @default(medium)
+  saves           String               @default("")
+  actions         Json[]
+  abilities       Json[]
+  actionPreface   String?              @map("action_preface")
+  dyingRule       String               @default("") @map("dying_rule")
+  moreInfo        String?              @default("") @map("more_info")
+  visibility      companion_visibility @default(public)
+  userId          String               @map("user_id") @db.Uuid
+  sourceId        String?              @map("source_id") @db.Uuid
   createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt       DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   creator         User                 @relation(fields: [userId], references: [id], onUpdate: NoAction)
@@ -202,16 +202,16 @@ model Item {
 }
 
 model Subclass {
-  id          String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name        String
-  className   String              @map("class_name")
-  namePreface String?             @map("name_preface")
-  description String?
-  visibility  subclass_visibility @default(public)
-  userId      String              @map("user_id") @db.Uuid
-  sourceId    String?             @map("source_id") @db.Uuid
-  createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id             String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name           String
+  className      String              @map("class_name")
+  namePreface    String?             @map("name_preface")
+  description    String?
+  visibility     subclass_visibility @default(public)
+  userId         String              @map("user_id") @db.Uuid
+  sourceId       String?             @map("source_id") @db.Uuid
+  createdAt      DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   tagline        String?
   abilities      SubclassAbility[]
   creator        User                @relation(fields: [userId], references: [id], onUpdate: NoAction)
@@ -236,16 +236,16 @@ model SubclassAbility {
 }
 
 model SpellSchool {
-  id          String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name        String
-  description String?
-  visibility  spell_school_visibility @default(public)
-  userId      String                  @map("user_id") @db.Uuid
-  sourceId    String?                 @map("source_id") @db.Uuid
-  createdAt    DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  creator      User                 @relation(fields: [userId], references: [id], onUpdate: NoAction)
-  source       Source?              @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  id           String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name         String
+  description  String?
+  visibility   spell_school_visibility @default(public)
+  userId       String                  @map("user_id") @db.Uuid
+  sourceId     String?                 @map("source_id") @db.Uuid
+  createdAt    DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime                @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  creator      User                    @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source       Source?                 @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
   spells       Spell[]
   schoolAwards SpellSchoolAward[]
 
@@ -277,17 +277,17 @@ model Spell {
 }
 
 model Background {
-  id                String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name              String
-  description       String
-  requirement       String?
-  userId            String            @map("user_id") @db.Uuid
-  sourceId          String?           @map("source_id") @db.Uuid
-  createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt         DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  creator           User              @relation(fields: [userId], references: [id], onUpdate: NoAction)
-  source            Source?           @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
-  backgroundAwards  BackgroundAward[]
+  id               String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name             String
+  description      String
+  requirement      String?
+  userId           String            @map("user_id") @db.Uuid
+  sourceId         String?           @map("source_id") @db.Uuid
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  creator          User              @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source           Source?           @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  backgroundAwards BackgroundAward[]
 
   @@index([userId], map: "idx_backgrounds_user_id")
   @@map("backgrounds")
@@ -450,21 +450,23 @@ model Source {
 }
 
 model Award {
-  id              String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name            String
-  abbreviation    String
-  url             String
-  color           String
-  icon            String
-  createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt       DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  monsterAwards   MonsterAward[]
-  itemAwards      ItemAward[]
-  companionAwards CompanionAward[]
-  subclassAwards  SubclassAward[]
-  schoolAwards    SpellSchoolAward[]
+  id               String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name             String
+  abbreviation     String
+  description      String?
+  slug             String             @unique
+  url              String
+  color            String
+  icon             String
+  createdAt        DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  monsterAwards    MonsterAward[]
+  itemAwards       ItemAward[]
+  companionAwards  CompanionAward[]
+  subclassAwards   SubclassAward[]
+  schoolAwards     SpellSchoolAward[]
   backgroundAwards BackgroundAward[]
-  ancestryAwards  AncestryAward[]
+  ancestryAwards   AncestryAward[]
 
   @@map("awards")
 }

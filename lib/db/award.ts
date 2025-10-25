@@ -1,3 +1,8 @@
+import { toAncestry } from "@/lib/services/ancestries/converters";
+import { toBackground } from "@/lib/services/backgrounds/converters";
+import { toItem } from "@/lib/services/items/converters";
+import { toMonster } from "@/lib/services/monsters/converters";
+import { toCompanion, toSpellSchool, toSubclass } from "./converters";
 import { prisma } from "./index";
 
 export async function getAllAwards() {
@@ -12,9 +17,17 @@ export async function getAwardById(id: string) {
   });
 }
 
+export async function getAwardBySlug(slug: string) {
+  return prisma.award.findUnique({
+    where: { slug },
+  });
+}
+
 export async function createAward(data: {
   name: string;
   abbreviation: string;
+  description: string;
+  slug: string;
   url: string;
   color: string;
   icon: string;
@@ -29,6 +42,8 @@ export async function updateAward(
   data: {
     name: string;
     abbreviation: string;
+    description: string;
+    slug: string;
     url: string;
     color: string;
     icon: string;
@@ -314,4 +329,137 @@ export async function searchEntities(entityType: string, query: string) {
     default:
       return [];
   }
+}
+
+export async function getEntitiesForAward(awardId: string) {
+  const [
+    monsters,
+    items,
+    companions,
+    subclasses,
+    schools,
+    ancestries,
+    backgrounds,
+  ] = await Promise.all([
+    prisma.monster
+      .findMany({
+        where: {
+          monsterAwards: { some: { awardId } },
+          visibility: "public",
+        },
+        include: {
+          monsterFamilies: {
+            include: { family: { include: { creator: true } } },
+          },
+          creator: true,
+          source: true,
+          monsterConditions: { include: { condition: true } },
+          monsterAwards: { include: { award: true } },
+        },
+        orderBy: { name: "asc" },
+      })
+      .then((results) => results.map(toMonster)),
+
+    prisma.item
+      .findMany({
+        where: {
+          itemAwards: { some: { awardId } },
+          visibility: "public",
+        },
+        include: {
+          creator: true,
+          source: true,
+          itemAwards: { include: { award: true } },
+        },
+        orderBy: { name: "asc" },
+      })
+      .then((results) => results.map(toItem)),
+
+    prisma.companion
+      .findMany({
+        where: {
+          companionAwards: { some: { awardId } },
+          visibility: "public",
+        },
+        include: {
+          creator: true,
+          source: true,
+          companionAwards: { include: { award: true } },
+        },
+        orderBy: { name: "asc" },
+      })
+      .then((results) => results.map(toCompanion)),
+
+    prisma.subclass
+      .findMany({
+        where: {
+          subclassAwards: { some: { awardId } },
+          visibility: "public",
+        },
+        include: {
+          creator: true,
+          source: true,
+          abilities: {
+            orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
+          },
+          subclassAwards: { include: { award: true } },
+        },
+        orderBy: { name: "asc" },
+      })
+      .then((results) => results.map(toSubclass)),
+
+    prisma.spellSchool
+      .findMany({
+        where: {
+          schoolAwards: { some: { awardId } },
+          visibility: "public",
+        },
+        include: {
+          creator: true,
+          source: true,
+          spells: true,
+          schoolAwards: { include: { award: true } },
+        },
+        orderBy: { name: "asc" },
+      })
+      .then((results) => results.map(toSpellSchool)),
+
+    prisma.ancestry
+      .findMany({
+        where: {
+          ancestryAwards: { some: { awardId } },
+        },
+        include: {
+          creator: true,
+          source: true,
+          ancestryAwards: { include: { award: true } },
+        },
+        orderBy: { name: "asc" },
+      })
+      .then((results) => results.map(toAncestry)),
+
+    prisma.background
+      .findMany({
+        where: {
+          backgroundAwards: { some: { awardId } },
+        },
+        include: {
+          creator: true,
+          source: true,
+          backgroundAwards: { include: { award: true } },
+        },
+        orderBy: { name: "asc" },
+      })
+      .then((results) => results.map(toBackground)),
+  ]);
+
+  return {
+    monsters,
+    items,
+    companions,
+    subclasses,
+    schools,
+    ancestries,
+    backgrounds,
+  };
 }

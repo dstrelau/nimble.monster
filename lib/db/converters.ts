@@ -134,8 +134,10 @@ export const toCompanion = (
     awards:
       c.companionAwards?.map((ca) => ({
         id: ca.award.id,
+        slug: ca.award.slug,
         name: ca.award.name,
         abbreviation: ca.award.abbreviation,
+        description: ca.award.description,
         url: ca.award.url,
         color: ca.award.color,
         icon: ca.award.icon,
@@ -226,8 +228,10 @@ export const toSubclass = (
     awards:
       s.subclassAwards?.map((sa) => ({
         id: sa.award.id,
+        slug: sa.award.slug,
         name: sa.award.name,
         abbreviation: sa.award.abbreviation,
+        description: sa.award.description,
         url: sa.award.url,
         color: sa.award.color,
         icon: sa.award.icon,
@@ -308,8 +312,10 @@ export const toSpellSchool = (
     awards:
       s.schoolAwards?.map((sa) => ({
         id: sa.award.id,
+        slug: sa.award.slug,
         name: sa.award.name,
         abbreviation: sa.award.abbreviation,
+        description: sa.award.description,
         url: sa.award.url,
         color: sa.award.color,
         icon: sa.award.icon,

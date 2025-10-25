@@ -1,5 +1,8 @@
+"use client";
+
 import { AwardIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Tooltip,
   TooltipContent,
@@ -10,7 +13,7 @@ import type { Award } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface AwardBadgeProps {
-  award: Award;
+  award: Pick<Award, "slug" | "color" | "abbreviation" | "name">;
 }
 
 export const AWARD_COLOR_CLASSES: Record<string, string> = {
@@ -32,24 +35,36 @@ export const AWARD_COLOR_CLASSES: Record<string, string> = {
 export const AWARD_COLORS = Object.keys(AWARD_COLOR_CLASSES);
 
 export const AwardBadge = ({ award }: AwardBadgeProps) => {
+  const pathname = usePathname();
+  const isCurrentPage = pathname === `/awards/${award.slug}`;
+
+  const className = cn(
+    "px-1 py-0.5 flex items-center gap-0.5 text-sm small-caps font-stretch-ultra-condensed border rounded-md",
+    AWARD_COLOR_CLASSES[award.color]
+  );
+
+  const content = (
+    <>
+      <AwardIcon className="size-3.5" />
+      {award.abbreviation}
+    </>
+  );
+
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Link
-            href={award.url}
-            className={cn(
-              "px-1 py-0.5 flex items-center gap-0.5 text-sm small-caps font-stretch-ultra-condensed border rounded-md",
-              AWARD_COLOR_CLASSES[award.color]
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <AwardIcon className="size-3.5" />
-            {award.abbreviation}
-          </Link>
+          {isCurrentPage ? (
+            <span className={className}>{content}</span>
+          ) : (
+            <Link href={`/awards/${award.slug}`} className={className}>
+              {content}
+            </Link>
+          )}
         </TooltipTrigger>
-        <TooltipContent className="text-sm">{award.name}</TooltipContent>
+        <TooltipContent className="text-sm">
+          Winner of {award.name}
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );

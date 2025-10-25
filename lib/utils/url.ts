@@ -166,3 +166,8 @@ export function getAncestryEditUrl(ancestry: {
 export function getUserUrl(user: { username: string }): string {
   return `/u/${user.username}`;
 }
+
+// Award URLs
+export function getAwardUrl(award: { slug: string }): string {
+  return `/awards/${award.slug}`;
+}

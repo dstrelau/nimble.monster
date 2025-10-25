@@ -42,8 +42,10 @@ export const toAncestry = (
     awards:
       a.ancestryAwards?.map((aa) => ({
         id: aa.award.id,
+        slug: aa.award.slug,
         name: aa.award.name,
         abbreviation: aa.award.abbreviation,
+        description: aa.award.description,
         url: aa.award.url,
         color: aa.award.color,
         icon: aa.award.icon,

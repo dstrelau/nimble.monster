@@ -13,9 +13,7 @@ const Link = forwardRef<HTMLAnchorElement, LinkProps>(
       <NextLink
         ref={ref}
         className={cn(
-          "text-foreground",
-          "hover:text-black dark:hover:text-white",
-          "hover:underline underline-offset-2 decoration-2",
+          "text-foreground hover:underline underline-offset-2 underline-muted decoration-muted-foreground decoration-2",
           className
         )}
         {...props}

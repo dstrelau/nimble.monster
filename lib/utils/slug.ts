@@ -97,3 +97,13 @@ export function identifierToUuid(identifier: string): string {
   // Format as UUID with hyphens
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
 }
+
+/**
+ * Convert award abbreviation to URL-safe slug
+ */
+export function awardSlugify(abbreviation: string): string {
+  return abbreviation
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}

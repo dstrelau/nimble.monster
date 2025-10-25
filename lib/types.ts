@@ -316,8 +316,10 @@ export interface Source {
 
 export interface Award {
   id: string;
+  slug: string;
   name: string;
   abbreviation: string;
+  description?: string | null;
   url: string;
   color: string;
   icon: string;

@@ -71,8 +71,10 @@ export const toMonster = (
     awards:
       m.monsterAwards?.map((ma) => ({
         id: ma.award.id,
+        slug: ma.award.slug,
         name: ma.award.name,
         abbreviation: ma.award.abbreviation,
+        description: ma.award.description,
         url: ma.award.url,
         color: ma.award.color,
         icon: ma.award.icon,

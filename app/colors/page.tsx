@@ -1,5 +1,5 @@
-import { ModeToggle } from "@/components/app/ModeToggle";
 import { AWARD_COLOR_CLASSES, AWARD_COLORS } from "@/components/AwardBadge";
+import { ModeToggle } from "@/components/app/ModeToggle";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -163,15 +163,15 @@ export default function ColorsPage() {
         <div className="flex flex-wrap gap-4 items-center p-4 bg-card border rounded-lg">
           {AWARD_COLORS.map((color) => (
             <div key={color} className="flex items-center gap-2">
-                <span
-                  className={cn(
-                    "capitalize p-1 rounded border w-16 text-center",
-                    AWARD_COLOR_CLASSES[color]
-                  )}
-                >
-                  {color}
-                </span>
-              </div>
+              <span
+                className={cn(
+                  "capitalize p-1 rounded border w-16 text-center",
+                  AWARD_COLOR_CLASSES[color]
+                )}
+              >
+                {color}
+              </span>
+            </div>
           ))}
         </div>
       </div>

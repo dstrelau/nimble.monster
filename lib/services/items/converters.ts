@@ -42,8 +42,10 @@ export const toItem = (
     awards:
       i.itemAwards?.map((ia) => ({
         id: ia.award.id,
+        slug: ia.award.slug,
         name: ia.award.name,
         abbreviation: ia.award.abbreviation,
+        description: ia.award.description,
         url: ia.award.url,
         color: ia.award.color,
         icon: ia.award.icon,
