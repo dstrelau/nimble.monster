@@ -147,6 +147,7 @@ export const listPublicCollections = async ({
         createdAt: c.createdAt ?? undefined,
         items: c.itemCollections?.map((ic) => toItemMini(ic.item)) || [],
         itemCount: c.itemCollections?.length || 0,
+        spellSchools: [],
       };
     }),
     nextCursor,
@@ -215,5 +216,6 @@ export const findPublicCollectionById = async (
       .flatMap((ic) => toItem(ic.item))
       .sort((a, b) => a.name.localeCompare(b.name)),
     itemCount: c.itemCollections.length,
+    spellSchools: [],
   };
 };

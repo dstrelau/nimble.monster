@@ -21,6 +21,7 @@ export function NewCollection({ myMonsters }: Props) {
     legendaryCount: 0,
     standardCount: 0,
     itemCount: 0,
+    spellSchools: [],
   };
 
   return (

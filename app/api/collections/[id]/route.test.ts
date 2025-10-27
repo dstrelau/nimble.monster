@@ -61,6 +61,7 @@ describe("GET /api/collections/[id]", () => {
       monsters: [],
       items: [],
       itemCount: 0,
+      spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
 
@@ -150,6 +151,7 @@ describe("GET /api/collections/[id]", () => {
       ],
       items: [],
       itemCount: 0,
+      spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
 
@@ -214,6 +216,7 @@ describe("GET /api/collections/[id]", () => {
       ],
       items: [],
       itemCount: 0,
+      spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
 
@@ -255,6 +258,7 @@ describe("GET /api/collections/[id]", () => {
         },
       ],
       itemCount: 1,
+      spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
 
@@ -332,6 +336,7 @@ describe("GET /api/collections/[id]", () => {
         },
       ],
       itemCount: 1,
+      spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
 
@@ -384,6 +389,7 @@ describe("GET /api/collections/[id]", () => {
       monsters: [],
       items: [],
       itemCount: 0,
+      spellSchools: [],
     };
 
     mockFindPublicCollectionById.mockResolvedValue(mockCollection);

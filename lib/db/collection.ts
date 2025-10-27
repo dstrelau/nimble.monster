@@ -2,7 +2,7 @@ import { toItem, toItemMini } from "@/lib/services/items/converters";
 import type { Collection, CollectionOverview } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
 import { toMonster, toMonsterMini } from "../services/monsters/converters";
-import { toCollectionOverview, toUser } from "./converters";
+import { toCollectionOverview, toSpellSchool, toUser } from "./converters";
 import { prisma } from "./index";
 
 export const listCollectionsWithMonstersForUser = async (
@@ -24,6 +24,12 @@ export const listCollectionsWithMonstersForUser = async (
         },
         orderBy: { item: { name: "asc" } },
       },
+      spellSchoolCollections: {
+        include: {
+          spellSchool: true,
+        },
+        orderBy: { spellSchool: { name: "asc" } },
+      },
     },
     orderBy: { name: "asc" },
   });
@@ -41,6 +47,12 @@ export const listCollectionsWithMonstersForUser = async (
       monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
       items: c.itemCollections.map((ic) => toItemMini(ic.item)),
       itemCount: c.itemCollections.length,
+      spellSchools: c.spellSchoolCollections.map((sc) => ({
+        id: sc.spellSchool.id,
+        name: sc.spellSchool.name,
+        visibility: sc.spellSchool.visibility,
+        createdAt: sc.spellSchool.createdAt,
+      })),
     };
   });
 };
@@ -89,6 +101,11 @@ export const listPublicCollectionsHavingMonsters = async (): Promise<
         },
         orderBy: { item: { name: "asc" } },
       },
+      spellSchoolCollections: {
+        include: {
+          spellSchool: true,
+        },
+      },
     },
   });
 
@@ -109,6 +126,12 @@ export const listPublicCollectionsHavingMonsters = async (): Promise<
         monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
         items: c.itemCollections.map((ic) => toItemMini(ic.item)),
         itemCount: c.itemCollections.length,
+        spellSchools: c.spellSchoolCollections.map((sc) => ({
+          id: sc.spellSchool.id,
+          name: sc.spellSchool.name,
+          visibility: sc.spellSchool.visibility,
+          createdAt: sc.spellSchool.createdAt,
+        })),
       };
     });
 };
@@ -147,6 +170,20 @@ export const getCollection = async (
           },
         },
       },
+      spellSchoolCollections: {
+        include: {
+          spellSchool: {
+            include: {
+              creator: true,
+              source: true,
+              spells: {
+                orderBy: [{ tier: "asc" }, { name: "asc" }],
+              },
+              schoolAwards: { include: { award: true } },
+            },
+          },
+        },
+      },
     },
   });
   if (!c) return c;
@@ -162,6 +199,12 @@ export const getCollection = async (
   const filteredItemCollections = isOwner
     ? c.itemCollections
     : c.itemCollections.filter((ic) => ic.item.visibility === "public");
+
+  const filteredSpellSchoolCollections = isOwner
+    ? c.spellSchoolCollections
+    : c.spellSchoolCollections.filter(
+        (sc) => sc.spellSchool.visibility === "public"
+      );
 
   const legendaryCount = filteredMonsterCollections.filter(
     (m) => m.monster.legendary
@@ -179,6 +222,9 @@ export const getCollection = async (
       .flatMap((ic) => toItem(ic.item))
       .sort((a, b) => a.name.localeCompare(b.name)),
     itemCount: filteredItemCollections.length,
+    spellSchools: filteredSpellSchoolCollections
+      .map((sc) => toSpellSchool(sc.spellSchool))
+      .sort((a, b) => a.name.localeCompare(b.name)),
   };
 };
 
@@ -208,6 +254,11 @@ export const listPublicCollectionsHavingMonstersForUser = async (
           item: true,
         },
       },
+      spellSchoolCollections: {
+        include: {
+          spellSchool: true,
+        },
+      },
     },
   });
 
@@ -228,6 +279,12 @@ export const listPublicCollectionsHavingMonstersForUser = async (
         monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
         items: c.itemCollections.map((ic) => toItemMini(ic.item)),
         itemCount: c.itemCollections.length,
+        spellSchools: c.spellSchoolCollections.map((sc) => ({
+          id: sc.spellSchool.id,
+          name: sc.spellSchool.name,
+          visibility: sc.spellSchool.visibility,
+          createdAt: sc.spellSchool.createdAt,
+        })),
       };
     });
 };
@@ -295,6 +352,7 @@ export const createCollection = async ({
     monsters: collection.monsterCollections.map((mc) => toMonster(mc.monster)),
     items: [],
     itemCount: 0,
+    spellSchools: [],
   };
 };
 
@@ -497,6 +555,7 @@ export const updateCollection = async ({
         ),
         items: updatedCollection.itemCollections.map((ic) => toItem(ic.item)),
         itemCount: updatedCollection.itemCollections.length,
+        spellSchools: [],
       };
     });
   } catch (error) {
@@ -535,6 +594,44 @@ export const addItemToCollection = async ({
   return true;
 };
 
+export const addSpellSchoolToCollection = async ({
+  spellSchoolId,
+  collectionId,
+}: {
+  spellSchoolId: string;
+  collectionId: string;
+}): Promise<boolean> => {
+  if (!isValidUUID(spellSchoolId) || !isValidUUID(collectionId)) return false;
+
+  await prisma.spellSchoolInCollection.create({
+    data: { spellSchoolId, collectionId },
+  });
+  return true;
+};
+
+export const findSpellSchoolCollections = async (spellSchoolId: string) => {
+  if (!isValidUUID(spellSchoolId)) return [];
+
+  const collections = await prisma.collection.findMany({
+    where: {
+      spellSchoolCollections: {
+        some: { spellSchoolId },
+      },
+      visibility: "public",
+    },
+    include: {
+      creator: true,
+    },
+    orderBy: { name: "asc" },
+  });
+
+  return collections.map((collection) => ({
+    id: collection.id,
+    name: collection.name,
+    creator: toUser(collection.creator),
+  }));
+};
+
 export const deleteCollection = async ({
   id,
   discordId,
@@ -550,6 +647,10 @@ export const deleteCollection = async ({
     });
 
     await tx.itemInCollection.deleteMany({
+      where: { collectionId: id },
+    });
+
+    await tx.spellSchoolInCollection.deleteMany({
       where: { collectionId: id },
     });
 

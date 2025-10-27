@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { CardGrid as ItemCardGrid } from "@/app/ui/item/CardGrid";
 import { CardGrid } from "@/app/ui/monster/CardGrid";
+import { Card as SchoolCard } from "@/app/ui/school/Card";
 import { CollectionHeader } from "@/components/CollectionHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
@@ -92,6 +93,7 @@ export default async function ShowCollectionView({
   const isCreator = session?.user?.discordId === collection.creator.discordId;
   const hasMonsters = collection.monsters.length > 0;
   const hasItems = collection.items?.length > 0;
+  const hasSpellSchools = collection.spellSchools?.length > 0;
 
   return (
     <div className="container mx-auto">
@@ -106,7 +108,15 @@ export default async function ShowCollectionView({
 
         {hasItems && <ItemCardGrid items={collection.items} />}
 
-        {!hasMonsters && !hasItems && (
+        {hasSpellSchools && (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
+            {collection.spellSchools.map((school) => (
+              <SchoolCard key={school.id} spellSchool={school} mini={true} />
+            ))}
+          </div>
+        )}
+
+        {!hasMonsters && !hasItems && !hasSpellSchools && (
           <p className="text-center text-muted-foreground py-8">
             This collection is empty.
           </p>

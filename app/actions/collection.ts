@@ -187,3 +187,31 @@ export async function addItemToCollection(formData: FormData) {
   await db.addItemToCollection({ itemId, collectionId });
   return { success: true };
 }
+
+export async function addSpellSchoolToCollection(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return unauthorized();
+  }
+
+  const spellSchoolId = formData.get("spellSchoolId")?.toString();
+  const collectionId = formData.get("collectionId")?.toString();
+  if (!spellSchoolId || !collectionId) {
+    return { success: false, error: "Missing spellSchoolId or collectionId" };
+  }
+
+  const collection = await db.getCollection(collectionId);
+  if (!collection) {
+    return {
+      success: false,
+      error: "Collection not found or you don't have permission to update it",
+    };
+  }
+
+  if (collection.creator.id !== session.user.id) {
+    return forbidden();
+  }
+
+  await db.addSpellSchoolToCollection({ spellSchoolId, collectionId });
+  return { success: true };
+}

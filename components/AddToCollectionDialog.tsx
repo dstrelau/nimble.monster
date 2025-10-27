@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import {
   addItemToCollection,
   addMonsterToCollection,
+  addSpellSchoolToCollection,
   listOwnCollections,
 } from "@/app/actions/collection";
 import { Button } from "@/components/ui/button";
@@ -37,7 +38,8 @@ interface AddToCollectionForm {
 
 type AddToCollectionDialogProps =
   | { type: "monster"; monsterId: string }
-  | { type: "item"; itemId: string };
+  | { type: "item"; itemId: string }
+  | { type: "spellSchool"; spellSchoolId: string };
 
 export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
   const [open, setOpen] = useState(false);
@@ -63,8 +65,12 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
     props.type === "monster"
       ? selectedCollection?.monsters.find((m) => m.id === props.monsterId) !==
         undefined
-      : selectedCollection?.items.find((i) => i.id === props.itemId) !==
-        undefined;
+      : props.type === "item"
+        ? selectedCollection?.items.find((i) => i.id === props.itemId) !==
+          undefined
+        : selectedCollection?.spellSchools.find(
+            (s) => s.id === props.spellSchoolId
+          ) !== undefined;
 
   const mutation = useMutation({
     mutationFn: async (data: AddToCollectionForm) => {
@@ -74,9 +80,12 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
       if (props.type === "monster") {
         formData.append("monsterId", props.monsterId);
         return addMonsterToCollection(formData);
-      } else {
+      } else if (props.type === "item") {
         formData.append("itemId", props.itemId);
         return addItemToCollection(formData);
+      } else {
+        formData.append("spellSchoolId", props.spellSchoolId);
+        return addSpellSchoolToCollection(formData);
       }
     },
     onSuccess: () => {
@@ -92,7 +101,12 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
     mutation.mutate(data);
   };
 
-  const entityType = props.type === "monster" ? "monster" : "item";
+  const entityType =
+    props.type === "monster"
+      ? "monster"
+      : props.type === "item"
+        ? "item"
+        : "spell school";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

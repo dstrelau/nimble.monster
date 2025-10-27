@@ -83,6 +83,7 @@ export const toCollectionOverview = (
     createdAt: c.createdAt ?? undefined,
     items: c.itemCollections?.map((ic) => toItemMini(ic.item)) || [],
     itemCount: c.itemCollections?.length || 0,
+    spellSchools: [],
   };
 };
 

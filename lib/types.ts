@@ -130,6 +130,7 @@ export interface Action {
 export interface Collection extends CollectionOverview {
   monsters: Monster[];
   items: Item[];
+  spellSchools: SpellSchool[];
 }
 
 export interface CollectionOverview {
@@ -142,6 +143,7 @@ export interface CollectionOverview {
   standardCount: number;
   items: ItemMini[];
   itemCount: number;
+  spellSchools: SpellSchoolMini[];
   visibility: CollectionVisibilityType;
   createdAt?: Date;
 }
