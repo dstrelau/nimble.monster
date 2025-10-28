@@ -200,15 +200,17 @@ describe("FormattedText - Dice Notation", () => {
     expect(screen.getByText("1d4-2")).toBeInTheDocument();
   });
 
-  it("should parse dice with advantage/disadvantage/vanishing", () => {
+  it("should parse dice with advantage/disadvantage/vicious", () => {
     const content =
-      "Roll 3d6a with advantage or 2d8d with disadvantage or 4d10v vanishing.";
+      "Roll 3d6a with advantage or 2d8d with disadvantage or 4d10v vicious.";
 
-    render(<FormattedText content={content} conditions={[]} />);
+    const { container } = render(
+      <FormattedText content={content} conditions={[]} />
+    );
 
-    expect(screen.getByText("3d6a")).toBeInTheDocument();
-    expect(screen.getByText("2d8d")).toBeInTheDocument();
-    expect(screen.getByText("4d10v")).toBeInTheDocument();
+    expect(container).toHaveTextContent("3d6 ADV");
+    expect(container).toHaveTextContent("2d8 DIS");
+    expect(container).toHaveTextContent("4d10 (Vicious)");
   });
 
   it("should parse multiple dice notations in one text", () => {
