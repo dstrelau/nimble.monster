@@ -12,6 +12,7 @@ import { Card } from "@/app/ui/item/Card";
 import { BuildView } from "@/components/app/BuildView";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
+import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { IconPicker } from "@/components/IconPicker";
 import { Button } from "@/components/ui/button";
 import {
@@ -250,7 +251,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
                   <FormItem className="flex-1">
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Name" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -292,7 +293,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
                   <FormItem className="flex-1">
                     <FormLabel>Kind</FormLabel>
                     <FormControl>
-                      <Input placeholder="Kind" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -305,9 +306,12 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>
+                    Description
+                    <ConditionValidationIcon text={field.value} />
+                  </FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Description" {...field} />
+                    <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -319,9 +323,12 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
               name="moreInfo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>More Info</FormLabel>
+                  <FormLabel>
+                    More Info
+                    <ConditionValidationIcon text={field.value} />
+                  </FormLabel>
                   <FormControl>
-                    <Textarea placeholder="More Info (optional)" {...field} />
+                    <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

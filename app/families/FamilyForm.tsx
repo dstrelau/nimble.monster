@@ -51,6 +51,11 @@ export const FamilyForm = ({
     name: "abilities",
   });
 
+  const watchedDescription = useWatch({
+    control,
+    name: "description",
+  });
+
   return (
     <div className="space-y-4">
       <div>
@@ -65,7 +70,8 @@ export const FamilyForm = ({
 
       <div>
         <Label htmlFor={`description-${id}`} className="mb-2 block">
-          Description (Markdown Supported)
+          Description
+          <ConditionValidationIcon text={watchedDescription || ""} />
         </Label>
         <Textarea
           className="min-h-32"
@@ -109,7 +115,7 @@ export const FamilyForm = ({
                 >
                   Ability Description
                   <ConditionValidationIcon
-                    text={watchedAbilities?.[index]?.description || ""}
+                    text={watchedAbilities?.[index]?.description}
                   />
                 </Label>
                 <Textarea

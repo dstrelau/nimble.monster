@@ -17,6 +17,7 @@ import { BuildView } from "@/components/app/BuildView";
 import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
+import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -399,7 +400,10 @@ export default function BuildSubclassView({
                 name="tagline"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tagline</FormLabel>
+                    <FormLabel>
+                      Tagline
+                      <ConditionValidationIcon text={field.value} />
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -413,7 +417,10 @@ export default function BuildSubclassView({
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>
+                      Description
+                      <ConditionValidationIcon text={field.value} />
+                    </FormLabel>
                     <FormControl>
                       <Textarea {...field} />
                     </FormControl>
@@ -651,7 +658,10 @@ function LevelAbilitiesForm({
                 name={`levels.${levelIndex}.abilities.${abilityIndex}.description`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>
+                      Description
+                      <ConditionValidationIcon text={field.value} />
+                    </FormLabel>
                     <FormControl>
                       <Textarea className="min-h-18" {...field} />
                     </FormControl>

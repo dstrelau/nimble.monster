@@ -182,7 +182,7 @@ const CompanionForm: React.FC<{
         label={
           <div className="flex items-center gap-2">
             More Information
-            <ConditionValidationIcon text={companion.moreInfo || ""} />
+            <ConditionValidationIcon text={companion.moreInfo} />
           </div>
         }
         name="moreInfo"

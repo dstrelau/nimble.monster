@@ -11,6 +11,7 @@ import { Card } from "@/app/ui/ancestry/Card";
 import { SourceSelect } from "@/app/ui/create/SourceSelect";
 import { BuildView } from "@/components/app/BuildView";
 import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
+import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -219,7 +220,10 @@ export default function BuildAncestryView({
                 name="description"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>
+                      Description
+                      <ConditionValidationIcon text={field.value} />
+                    </FormLabel>
                     <FormControl>
                       <Textarea {...field} rows={4} />
                     </FormControl>
@@ -275,7 +279,10 @@ export default function BuildAncestryView({
                       name={`abilities.${index}.description`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Description</FormLabel>
+                          <FormLabel>
+                            Description
+                            <ConditionValidationIcon text={field.value} />
+                          </FormLabel>
                           <FormControl>
                             <Textarea {...field} rows={3} />
                           </FormControl>

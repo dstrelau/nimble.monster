@@ -5,6 +5,7 @@ import {
   CircleCheck,
   CircleQuestionMark,
   Ellipsis,
+  Pilcrow,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { ConditionManagementDialog } from "@/components/ConditionManagementDialog";
@@ -16,10 +17,52 @@ import {
 } from "@/components/ui/tooltip";
 import { extractConditions } from "@/lib/conditions";
 import { useConditions } from "@/lib/hooks/useConditions";
-import { Dialog, DialogTrigger } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+
+const FormattingDialog = () => (
+  <Dialog>
+    <DialogTrigger className="" title="Formatting supported. Click for more.">
+      <Pilcrow className="size-4 stroke-muted-foreground hover:stroke-flame" />
+    </DialogTrigger>
+    <DialogContent className="max-h-[90vh] overflow-y-scroll">
+      <DialogHeader>
+        <DialogTitle>Formatting</DialogTitle>
+      </DialogHeader>
+      <DialogDescription>Basic markdown is supported.</DialogDescription>
+      <div className="prose prose-neutral dark:prose-invert prose-sm">
+        <pre>
+          {`**bold** and  _italic_
+- lists
+- of
+- items`}
+        </pre>
+        <p>Place a full empty line between paragraphs.</p>
+        <pre>{`These lines will be\n\nseparate paragraphs.`}</pre>
+        <p>
+          Conditions can be formatted using double brackets. Official conditions
+          are built-in. Custom conditions can be added.
+        </p>
+        <pre>
+          {`On hit: [[Blinded]]\nApply +1 [[Lethargic]]\n[[Taunted|Taunt]] a target`}
+        </pre>
+        <p className="[&_code]:before:content-[''] [&_code]:after:content-['']">
+          Dice rolls like <code>1d6+2</code> or <code>2d4av</code> will be
+          automatically detected.
+        </p>
+      </div>
+    </DialogContent>
+  </Dialog>
+);
 
 interface ConditionValidationIconProps {
-  text: string;
+  text?: string;
 }
 
 export function ConditionValidationIcon({
@@ -31,9 +74,8 @@ export function ConditionValidationIcon({
   const { allConditions, ownConds, officialConds } = useConditions({
     enabled: wantConditions.length > 0,
   });
-
   if (!wantConditions.length) {
-    return null;
+    return <FormattingDialog />;
   }
 
   let Icon = <Ellipsis className="h-3 w-3 text-muted animate-pulse" />;
@@ -60,31 +102,34 @@ export function ConditionValidationIcon({
   }
 
   return (
-    <Dialog>
-      <Tooltip>
-        <TooltipTrigger asChild>{Icon}</TooltipTrigger>
-        <TooltipContent className="max-w-50 text-center">
-          <div className="space-y-2">
-            <p>{tooltipText}</p>
-            {session ? (
-              <DialogTrigger asChild>
-                <Button
-                  variant="link"
-                  size="sm"
-                  className="p-0 h-auto text-blue-400"
-                >
-                  Manage Conditions
-                </Button>
-              </DialogTrigger>
-            ) : (
-              <p className="text-muted-foreground">
-                Login to define new conditions
-              </p>
-            )}
-          </div>
-        </TooltipContent>
-        <ConditionManagementDialog />
-      </Tooltip>
-    </Dialog>
+    <>
+      <FormattingDialog />
+      <Dialog>
+        <Tooltip>
+          <TooltipTrigger asChild>{Icon}</TooltipTrigger>
+          <TooltipContent className="max-w-50 text-center">
+            <div className="space-y-2">
+              <p>{tooltipText}</p>
+              {session ? (
+                <DialogTrigger asChild>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="p-0 h-auto text-blue-400"
+                  >
+                    Manage Conditions
+                  </Button>
+                </DialogTrigger>
+              ) : (
+                <p className="text-muted-foreground">
+                  Login to define new conditions
+                </p>
+              )}
+            </div>
+          </TooltipContent>
+          <ConditionManagementDialog />
+        </Tooltip>
+      </Dialog>
+    </>
   );
 }

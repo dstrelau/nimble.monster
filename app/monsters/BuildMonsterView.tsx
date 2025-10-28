@@ -343,7 +343,7 @@ const LegendaryForm: React.FC<{
         label={
           <div className="flex items-center gap-2">
             Bloodied
-            <ConditionValidationIcon text={monster.bloodied || ""} />
+            <ConditionValidationIcon text={monster.bloodied} />
           </div>
         }
         name="bloodied"
@@ -355,7 +355,7 @@ const LegendaryForm: React.FC<{
         label={
           <div className="flex items-center gap-2">
             Last Stand
-            <ConditionValidationIcon text={monster.lastStand || ""} />
+            <ConditionValidationIcon text={monster.lastStand} />
           </div>
         }
         name="lastStand"
@@ -367,7 +367,7 @@ const LegendaryForm: React.FC<{
         label={
           <div className="flex items-center gap-2">
             More Information
-            <ConditionValidationIcon text={monster.moreInfo || ""} />
+            <ConditionValidationIcon text={monster.moreInfo} />
           </div>
         }
         name="moreInfo"
@@ -498,7 +498,7 @@ const MinionForm: React.FC<{
         label={
           <div className="flex items-center gap-2">
             More Information
-            <ConditionValidationIcon text={monster.moreInfo || ""} />
+            <ConditionValidationIcon text={monster.moreInfo} />
           </div>
         }
         name="moreInfo"
@@ -644,7 +644,7 @@ const StandardForm: React.FC<{
         label={
           <div className="flex items-center gap-2">
             More Information
-            <ConditionValidationIcon text={monster.moreInfo || ""} />
+            <ConditionValidationIcon text={monster.moreInfo} />
           </div>
         }
         name="moreInfo"

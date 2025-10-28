@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SITE_EMAIL, SITE_NAME } from "@/lib/utils/branding";
 import { Nexus } from "../icons/Nexus";
 import { D20 } from "../icons/PolyhedralDice";
-import { Discord, GitHub } from "../SimpleIcons";
+import { Discord, GitHub } from "../icons/SimpleIcons";
 
 export const Footer = () => {
   const email = SITE_EMAIL;
@@ -63,7 +63,7 @@ export const Footer = () => {
   return (
     <footer>
       <div className="mx-auto max-w-7xl flex flex-wrap-reverse justify-center gap-8 px-4 py-6 mt-16 border-t">
-        <div className="max-w-2xl prose dark:prose-invert text-sm text-muted-foreground ">
+        <div className="max-w-2xl prose prose-neutral dark:prose-invert text-sm text-muted-foreground ">
           <p>
             <Nexus className="size-3 mr-0.5 inline align-baseline stroke-flame" />
             {SITE_NAME} is an independent product published under the Nimble 3rd

@@ -11,6 +11,7 @@ import { Card } from "@/app/ui/school/Card";
 import { BuildView } from "@/components/app/BuildView";
 import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
+import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -302,7 +303,10 @@ export default function BuildSchoolView({
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>
+                      Description
+                      <ConditionValidationIcon text={field.value} />
+                    </FormLabel>
                     <FormControl>
                       <Textarea className="min-h-[100px]" {...field} />
                     </FormControl>
@@ -601,7 +605,10 @@ export default function BuildSchoolView({
                           name={`spells.${index}.description`}
                           render={({ field }) => (
                             <FormItem className="">
-                              <FormLabel>Description</FormLabel>
+                              <FormLabel>
+                                Description
+                                <ConditionValidationIcon text={field.value} />
+                              </FormLabel>
                               <FormControl>
                                 <Textarea className="min-h-16" {...field} />
                               </FormControl>

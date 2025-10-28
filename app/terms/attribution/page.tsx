@@ -1,6 +1,6 @@
 export default function TermsPage() {
   return (
-    <div className="prose dark:prose-invert">
+    <div className="prose prose-neutral dark:prose-invert">
       <p>
         <strong>Last Updated:</strong> 2025-10-16
       </p>

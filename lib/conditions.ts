@@ -1,6 +1,9 @@
 export const CONDITION_REGEX = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
 
-export function extractConditions(text: string): string[] {
+export function extractConditions(text?: string): string[] {
+  if (!text) {
+    return [];
+  }
   const matches = Array.from(text.matchAll(CONDITION_REGEX));
   return matches.map((match) => match[1].trim().toLowerCase());
 }

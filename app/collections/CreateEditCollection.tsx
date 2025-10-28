@@ -22,6 +22,7 @@ import { searchPublicMonsters } from "@/app/actions/monster";
 import { List as ItemList } from "@/app/ui/item/List";
 import { List } from "@/app/ui/monster/List";
 import { SortSelect } from "@/components/app/SortSelect";
+import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -347,11 +348,14 @@ export function CreateEditCollection({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>
+                    Description
+                    <ConditionValidationIcon text={field.value} />
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       className="w-full"
-                      placeholder="Description (optional)"
+                      placeholder="Description"
                       rows={3}
                       {...field}
                     />

@@ -99,7 +99,7 @@ const ActionRow: React.FC<ActionRowProps> = ({
           label={
             <div className="flex items-center gap-2">
               Description
-              <ConditionValidationIcon text={action.description || ""} />
+              <ConditionValidationIcon text={action.description} />
             </div>
           }
           name="action-description"
