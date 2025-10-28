@@ -151,7 +151,7 @@ export interface CreateSpellSchoolInput {
     reaction: boolean;
     target?: SpellTarget;
     damage?: string;
-    description: string;
+    description?: string;
     highLevels?: string;
     concentration?: string;
     upcast?: string;
@@ -228,7 +228,7 @@ export interface UpdateSpellSchoolInput {
     reaction: boolean;
     target?: SpellTarget;
     damage?: string;
-    description: string;
+    description?: string;
     highLevels?: string;
     concentration?: string;
     upcast?: string;

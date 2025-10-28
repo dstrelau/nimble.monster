@@ -96,11 +96,12 @@ describe("Ancestry pagination", () => {
     });
 
     expect(firstPage.nextCursor).toBeTruthy();
+    const cursor = firstPage.nextCursor ?? "";
 
     const secondPage = await paginatePublicAncestries({
       limit: 2,
       sort: "name",
-      cursor: firstPage.nextCursor!,
+      cursor,
       creatorId: testUser.id,
     });
 
@@ -120,12 +121,13 @@ describe("Ancestry pagination", () => {
     expect(firstPage.data).toHaveLength(1);
     expect(firstPage.data[0].name).toBe("Elf");
     expect(firstPage.nextCursor).toBeTruthy();
+    const cursor = firstPage.nextCursor ?? "";
 
     const secondPage = await paginatePublicAncestries({
       limit: 1,
       sort: "name",
       search: "Elf",
-      cursor: firstPage.nextCursor!,
+      cursor,
       creatorId: testUser.id,
     });
 
@@ -144,12 +146,13 @@ describe("Ancestry pagination", () => {
     expect(firstPage.data).toHaveLength(1);
     expect(firstPage.data[0].name).toBe("Wood Elf");
     expect(firstPage.nextCursor).toBeTruthy();
+    const cursor = firstPage.nextCursor ?? "";
 
     const secondPage = await paginatePublicAncestries({
       limit: 1,
       sort: "-name",
       search: "Elf",
-      cursor: firstPage.nextCursor!,
+      cursor,
       creatorId: testUser.id,
     });
 

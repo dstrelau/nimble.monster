@@ -1,6 +1,7 @@
 "use client";
 import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { Link } from "@/components/app/Link";
+import { DiceNotation } from "@/components/DiceNotation";
 import { FormattedText } from "@/components/FormattedText";
 import {
   CardContent,
@@ -114,8 +115,8 @@ export function Card({
 
             return (
               <div key={spell.id}>
-                <div className="flex justify-between">
-                  <div className="items-baseline gap-1">
+                <div className="flex justify-between gap-6 items-baseline">
+                  <div className="gap-1">
                     <h3 className="inline font-extrabold font-slab text-lg mr-1">
                       {spell.name}
                     </h3>
@@ -141,14 +142,18 @@ export function Card({
                             {label}:
                           </strong>
                         )}
-                        {format ? (
+                        {label === "Damage" ? (
+                          <span className="inline mr-1">
+                            <DiceNotation text={value} />
+                          </span>
+                        ) : format ? (
                           <FormattedText
-                            content={value || ""}
+                            content={value}
                             conditions={conditions.allConditions}
                             className="inline [&_div]:inline [&_p]:inline mr-1"
                           />
                         ) : (
-                          <div className="inline mr-1">{value || ""}</div>
+                          <div className="inline mr-1">{value}</div>
                         )}
                       </div>
                     );

@@ -42,7 +42,7 @@ export default async function SchoolPage({ params }: SchoolPageProps) {
         )}
       </div>
 
-      <div className="max-w-xl mx-auto flex flex-col items-center gap-12">
+      <div className="min-w-lg max-w-xl mx-auto flex flex-col items-center gap-12">
         <Card spellSchool={spellSchool} link={false} />
         <MonsterCollections collections={collections} />
       </div>

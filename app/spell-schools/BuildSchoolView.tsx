@@ -90,7 +90,7 @@ const spellSchema = z.object({
     ])
     .optional(),
   damage: z.string().optional(),
-  description: z.string().min(1, "Spell description is required"),
+  description: z.string().optional(),
   highLevels: z.string().optional(),
   concentration: z.string().optional(),
   upcast: z.string().optional(),

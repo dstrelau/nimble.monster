@@ -275,7 +275,7 @@ export interface Spell extends SpellMini {
   schoolId: string;
   reaction: boolean;
   damage?: string;
-  description: string;
+  description?: string;
   highLevels?: string;
   concentration?: string;
   upcast?: string;

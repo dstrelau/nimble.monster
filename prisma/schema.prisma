@@ -276,7 +276,7 @@ model Spell {
   targetKind     String?     @map("target_kind")
   targetDistance Int?        @map("target_distance")
   damage         String?
-  description    String
+  description    String?
   highLevels     String?     @map("high_levels")
   concentration  String?
   upcast         String?

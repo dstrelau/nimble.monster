@@ -82,11 +82,12 @@ describe("Background pagination", () => {
     });
 
     expect(firstPage.nextCursor).toBeTruthy();
+    const cursor = firstPage.nextCursor ?? "";
 
     const secondPage = await paginatePublicBackgrounds({
       limit: 2,
       sort: "name",
-      cursor: firstPage.nextCursor!,
+      cursor,
       creatorId: testUser.id,
     });
 
@@ -106,12 +107,13 @@ describe("Background pagination", () => {
     expect(firstPage.data).toHaveLength(1);
     expect(firstPage.data[0].name).toBe("City Watch");
     expect(firstPage.nextCursor).toBeTruthy();
+    const cursor = firstPage.nextCursor ?? "";
 
     const secondPage = await paginatePublicBackgrounds({
       limit: 1,
       sort: "name",
       search: "i",
-      cursor: firstPage.nextCursor!,
+      cursor,
       creatorId: testUser.id,
     });
 
@@ -130,12 +132,13 @@ describe("Background pagination", () => {
     expect(firstPage.data).toHaveLength(1);
     expect(firstPage.data[0].name).toBe("Soldier");
     expect(firstPage.nextCursor).toBeTruthy();
+    const cursor = firstPage.nextCursor ?? "";
 
     const secondPage = await paginatePublicBackgrounds({
       limit: 1,
       sort: "-name",
       search: "o",
-      cursor: firstPage.nextCursor!,
+      cursor,
       creatorId: testUser.id,
     });
 
