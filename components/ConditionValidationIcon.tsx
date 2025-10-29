@@ -52,6 +52,12 @@ const FormattingDialog = () => (
         <pre>
           {`On hit: [[Blinded]]\nApply +1 [[Lethargic]]\n[[Taunted|Taunt]] a target`}
         </pre>
+        <p>
+          Link other monsters, items, etc by using `@` and the ID from the URL:
+        </p>
+        <pre>
+          {`When crit: spawn 1d4 @monster:63pk8wz2yt95sbdx4fhdzm348v\nTakes double damage from @item:1xwsknyv048pz8304bfakpqbb8`}
+        </pre>
         <p className="[&_code]:before:content-[''] [&_code]:after:content-['']">
           Dice rolls like <code>1d6+2</code> or <code>2d4av</code> will be
           automatically detected.

@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import {
   Crown,
-  Ghost,
   PersonStanding,
   Shield,
   SlidersHorizontal,
@@ -23,6 +22,7 @@ import { List as ItemList } from "@/app/ui/item/List";
 import { List } from "@/app/ui/monster/List";
 import { SortSelect } from "@/components/app/SortSelect";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { Goblin } from "@/components/icons/goblin";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -380,7 +380,7 @@ export function CreateEditCollection({
             <Tabs defaultValue="monsters">
               <TabsList className="min-w-sm">
                 <TabsTrigger className="text-md p-4" value="monsters">
-                  <Ghost className="size-5" />
+                  <Goblin className="size-5" />
                   Monsters
                 </TabsTrigger>
                 <TabsTrigger className="text-md p-4" value="items">

@@ -1,18 +1,28 @@
 "use client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DOMPurify from "isomorphic-dompurify";
 import MarkdownIt from "markdown-it";
+import Link from "next/link";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { DiceNotation } from "@/components/DiceNotation";
 import { useIsClient } from "@/components/SSRSafe";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useEntityQuery } from "@/lib/hooks/useEntityQuery";
 import type { Condition, Condition as ConditionT } from "@/lib/types";
+import {
+  ENTITY_TYPE_ICONS,
+  ENTITY_TYPE_PATHS,
+  type EntityType,
+} from "@/lib/types/entity-links";
 import { cn } from "@/lib/utils";
+import { slugify } from "@/lib/utils/slug";
 
 interface FormattedTextProps {
   content: string;
@@ -50,6 +60,53 @@ function ConditionSpan({
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
+  );
+}
+
+function EntityLinkInner({ type, id }: { type: EntityType; id: string }) {
+  const { data, isLoading, isError } = useEntityQuery(type, id);
+
+  const Icon = ENTITY_TYPE_ICONS[type];
+  if (isLoading) {
+    return (
+      <span className="inline-flex items-center gap-1">
+        <Icon className="stroke-flame size-4" />
+        <Skeleton className="bg-muted h-4 w-18" />
+      </span>
+    );
+  }
+
+  if (isError || !data) {
+    return <span className="text-muted-foreground">{id}</span>;
+  }
+
+  const path = ENTITY_TYPE_PATHS[type];
+  const slug = slugify({ name: data.name, id: data.id });
+
+  return (
+    <Link
+      href={`/${path}/${slug}`}
+      className="inline-flex items-baseline gap-0.5 text-primary-foreground hover:underline"
+    >
+      <Icon className="stroke-flame size-3.5" />
+      <span>{data.name}</span>
+    </Link>
+  );
+}
+
+function EntityLink({
+  type,
+  id,
+  queryClient,
+}: {
+  type: EntityType;
+  id: string;
+  queryClient: QueryClient;
+}) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <EntityLinkInner type={type} id={id} />
+    </QueryClientProvider>
   );
 }
 
@@ -180,6 +237,86 @@ function diceNotationPlugin(md: MarkdownIt) {
   };
 }
 
+// Custom markdown-it plugin for entity link parsing
+function entityLinkPlugin(md: MarkdownIt) {
+  md.inline.ruler.before("emphasis", "entity_link", (state, silent) => {
+    const start = state.pos;
+    const max = state.posMax;
+
+    // Check for @ at current position
+    if (start + 1 >= max || state.src[start] !== "@") {
+      return false;
+    }
+
+    // Find the colon separator
+    let colonPos = -1;
+    let endPos = start + 1;
+
+    while (endPos < max) {
+      const char = state.src[endPos];
+      if (char === ":") {
+        colonPos = endPos;
+        break;
+      }
+      if (!char.match(/[a-z-]/)) {
+        return false;
+      }
+      endPos++;
+    }
+
+    if (colonPos === -1) {
+      return false;
+    }
+
+    // Find the end of the ID (alphanumeric only)
+    let idEnd = colonPos + 1;
+    while (idEnd < max && state.src[idEnd].match(/[a-z0-9]/)) {
+      idEnd++;
+    }
+
+    if (idEnd === colonPos + 1) {
+      return false;
+    }
+
+    const entityType = state.src.slice(start + 1, colonPos);
+    const entityId = state.src.slice(colonPos + 1, idEnd);
+
+    // Validate entity type
+    const validTypes = [
+      "monster",
+      "item",
+      "companion",
+      "family",
+      "collection",
+      "school",
+      "subclass",
+      "ancestry",
+      "background",
+    ];
+    if (!validTypes.includes(entityType)) {
+      return false;
+    }
+
+    if (!silent) {
+      const token = state.push("entity_link", "", 0);
+      token.meta = {
+        entityType,
+        entityId,
+      };
+    }
+
+    state.pos = idEnd;
+    return true;
+  });
+
+  // Add custom renderer that creates HTML with skeleton placeholder
+  md.renderer.rules.entity_link = (tokens, idx) => {
+    const token = tokens[idx];
+    const meta = token.meta;
+    return `<span class="inline-flex items-center gap-1" data-entity-type="${meta.entityType}" data-entity-id="${meta.entityId}"><span class="bg-muted h-4 w-16 rounded-md animate-pulse"></span></span>`;
+  };
+}
+
 const md = new MarkdownIt("zero").enable([
   "paragraph",
   "emphasis",
@@ -188,6 +325,7 @@ const md = new MarkdownIt("zero").enable([
 ]);
 conditionPlugin(md);
 diceNotationPlugin(md);
+entityLinkPlugin(md);
 md.enable(["text"]);
 
 export function FormattedText({
@@ -197,6 +335,15 @@ export function FormattedText({
 }: FormattedTextProps) {
   const isClient = useIsClient();
   const containerRef = useRef<HTMLDivElement>(null);
+  const queryClientRef = useRef<QueryClient>(
+    new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: 60000,
+        },
+      },
+    })
+  );
 
   const { html, placeholders } = useMemo(() => {
     const html = DOMPurify.sanitize(md.render(content));
@@ -257,6 +404,32 @@ export function FormattedText({
       });
 
       diceIndex++;
+    });
+
+    // Replace each entity link span with a placeholder
+    let entityIndex = 0;
+    processedDiv.querySelectorAll("[data-entity-type]").forEach((span) => {
+      const entityType = span.getAttribute("data-entity-type") || "";
+      const entityId = span.getAttribute("data-entity-id") || "";
+
+      const placeholderId = `entity-placeholder-${entityIndex}`;
+      const placeholder = document.createElement("span");
+      placeholder.id = placeholderId;
+      span.parentNode?.replaceChild(placeholder, span);
+
+      placeholders.push({
+        id: placeholderId,
+        component: (
+          <EntityLink
+            key={`${entityType}-${entityId}-${entityIndex}`}
+            type={entityType as EntityType}
+            id={entityId}
+            queryClient={queryClientRef.current}
+          />
+        ),
+      });
+
+      entityIndex++;
     });
 
     return { html: processedDiv.innerHTML, placeholders };

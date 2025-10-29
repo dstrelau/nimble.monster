@@ -1,7 +1,6 @@
 import {
   Box,
   Drama,
-  Ghost,
   HandFist,
   HeartHandshake,
   Scroll,
@@ -10,6 +9,7 @@ import {
   WandSparkles,
 } from "lucide-react";
 import Link from "next/link";
+import { Goblin } from "@/components/icons/goblin";
 import {
   Card,
   CardContent,
@@ -90,7 +90,7 @@ export default async function CreatePage() {
           <div className="flex flex-wrap justify-center gap-6">
             <CreateCard
               href="/monsters/new"
-              icon={<Ghost className="size-16" />}
+              icon={<Goblin className="size-16" />}
               title="Monster"
               description="Traditional monsters and Solo Legendaries."
             />

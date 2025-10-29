@@ -3,7 +3,6 @@
 import {
   Box,
   Drama,
-  Ghost,
   HandFist,
   HeartHandshake,
   Menu,
@@ -22,6 +21,7 @@ import { Logo } from "@/components/app/Logo";
 import { MobileMenuDropdown } from "@/components/app/MobileMenuDropdown";
 import { ModeToggle } from "@/components/app/ModeToggle";
 import { UserAvatar } from "@/components/app/UserAvatar";
+import { Goblin } from "@/components/icons/goblin";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -92,7 +92,7 @@ const Header = () => {
       href: "/monsters",
       label: "Monsters",
       isActive: isActive("/monsters"),
-      icon: Ghost,
+      icon: Goblin,
     },
     {
       href: "/items",
@@ -155,7 +155,7 @@ const Header = () => {
           href: "/my/monsters",
           label: "Monsters",
           isActive: isActive("/my/monsters"),
-          icon: Ghost,
+          icon: Goblin,
         },
         {
           href: "/my/backgrounds",
