@@ -1,12 +1,20 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import {
+  Crown,
   Drama,
+  Gem,
+  Ghost,
   HandFist,
   HeartHandshake,
+  PersonStanding,
   Scroll,
-  Shield,
+  SlidersHorizontal,
+  Square,
+  SquareCheck,
+  User as UserIcon,
   WandSparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -15,8 +23,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createCollection } from "@/app/actions/collection";
+import { searchPublicMonsters } from "@/app/actions/monster";
+import { List as ItemList } from "@/app/ui/item/List";
+import { List } from "@/app/ui/monster/List";
+import { SortSelect } from "@/components/app/SortSelect";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
-import { Goblin } from "@/components/icons/goblin";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -27,15 +38,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { Toggle } from "@/components/ui/toggle";
 import type { Ancestry } from "@/lib/services/ancestries";
 import type { AncestryMini } from "@/lib/services/ancestries/types";
 import type { Background } from "@/lib/services/backgrounds";
 import type { BackgroundMini } from "@/lib/services/backgrounds/types";
-import type { Item, ItemMini } from "@/lib/services/items";
-import type { Monster, MonsterMini } from "@/lib/services/monsters";
+import type { Item, ItemMini, ItemRarityFilter } from "@/lib/services/items";
+import { RARITIES } from "@/lib/services/items";
+import { searchPublicItems } from "@/lib/services/items/repository";
+import type { Monster, MonsterMini, TypeFilter } from "@/lib/services/monsters";
 import type {
   Collection,
   Companion,
@@ -48,13 +69,12 @@ import type {
 import { UNKNOWN_USER } from "@/lib/types";
 import { getCollectionUrl } from "@/lib/utils/url";
 import { CollectionCard } from "../ui/CollectionCard";
+import { SearchInput } from "../ui/SearchInput";
 import { updateCollection } from "./[id]/edit/actions";
 import { VisibilityToggle } from "./[id]/edit/VisibilityToggle";
 import { SelectableAncestryGrid } from "./SelectableAncestryGrid";
 import { SelectableBackgroundGrid } from "./SelectableBackgroundGrid";
 import { SelectableCompanionGrid } from "./SelectableCompanionGrid";
-import { SelectableItemGrid } from "./SelectableItemGrid";
-import { SelectableMonsterGrid } from "./SelectableMonsterGrid";
 import { SelectableSpellSchoolGrid } from "./SelectableSpellSchoolGrid";
 import { SelectableSubclassGrid } from "./SelectableSubclassGrid";
 
@@ -66,8 +86,27 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
+type SortOption =
+  | "name-asc"
+  | "name-desc"
+  | "level-asc"
+  | "level-desc"
+  | "hp-asc"
+  | "hp-desc";
+
+const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+  { value: "name-asc", label: "Name (A→Z)" },
+  { value: "name-desc", label: "Name (Z→A)" },
+  { value: "level-asc", label: "Level (Low→High)" },
+  { value: "level-desc", label: "Level (High→Low)" },
+  { value: "hp-asc", label: "HP (Low→High)" },
+  { value: "hp-desc", label: "HP (High→Low)" },
+];
+
 interface Props {
   collection: Collection;
+  myMonsters: Monster[];
+  myItems?: Item[];
   onSubmit?: (
     data: FormData & { monsters: MonsterMini[]; items: ItemMini[] }
   ) => Promise<void>;
@@ -77,62 +116,29 @@ interface Props {
 
 export function CreateEditCollection({
   collection,
+  myMonsters,
+  myItems = [],
   onSubmit,
   isCreating = false,
   submitLabel = "Save",
 }: Props) {
   const router = useRouter();
+  const [currentMonsters, setCurrentMonsters] = useState<MonsterMini[]>(
+    collection.monsters
+  );
+  const [currentItems, setCurrentItems] = useState<ItemMini[]>(
+    collection.items
+  );
   const { data: session } = useSession();
+  const [onlyMine, setOnlyMine] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [sortOption, setSortOption] = useState<SortOption>("name-asc");
 
-  const [selectedMonsters, setSelectedMonsters] = useState<
-    Map<string, Monster | MonsterMini>
-  >(() => new Map(collection.monsters.map((m) => [m.id, m])));
-
-  const [selectedItems, setSelectedItems] = useState<
-    Map<string, Item | ItemMini>
-  >(() => new Map(collection.items.map((i) => [i.id, i])));
-
-  const selectedMonsterIds = useMemo(
-    () => new Set(selectedMonsters.keys()),
-    [selectedMonsters]
-  );
-  const selectedItemIds = useMemo(
-    () => new Set(selectedItems.keys()),
-    [selectedItems]
-  );
-
-  const currentMonsters = useMemo(
-    () => [...selectedMonsters.values()] as MonsterMini[],
-    [selectedMonsters]
-  );
-  const currentItems = useMemo(
-    () => [...selectedItems.values()] as ItemMini[],
-    [selectedItems]
-  );
-
-  const handleMonsterToggle = (monster: Monster) => {
-    setSelectedMonsters((prev) => {
-      const next = new Map(prev);
-      if (next.has(monster.id)) {
-        next.delete(monster.id);
-      } else {
-        next.set(monster.id, monster);
-      }
-      return next;
-    });
-  };
-
-  const handleItemToggle = (item: Item) => {
-    setSelectedItems((prev) => {
-      const next = new Map(prev);
-      if (next.has(item.id)) {
-        next.delete(item.id);
-      } else {
-        next.set(item.id, item);
-      }
-      return next;
-    });
-  };
+  // Item-specific state
+  const [onlyMineItems, setOnlyMineItems] = useState<boolean>(true);
+  const [itemSearchTerm, setItemSearchTerm] = useState("");
+  const [rarityFilter, setRarityFilter] = useState<ItemRarityFilter>("all");
 
   const [selectedCompanions, setSelectedCompanions] = useState<
     Map<string, Companion | CompanionMini>
@@ -213,11 +219,11 @@ export function CreateEditCollection({
       watchedValues.description !== (collection.description || "") ||
       watchedValues.visibility !== collection.visibility ||
       !arraysEqual(
-        [...selectedMonsterIds],
+        currentMonsters.map((m) => m.id),
         collection.monsters.map((m) => m.id)
       ) ||
       !arraysEqual(
-        [...selectedItemIds],
+        currentItems.map((i) => i.id),
         collection.items.map((i) => i.id)
       ) ||
       !arraysEqual(
@@ -251,6 +257,7 @@ export function CreateEditCollection({
       return;
     }
 
+    // Default submit handler
     if (isCreating) {
       const result = await createCollection({
         name: data.name,
@@ -351,6 +358,86 @@ export function CreateEditCollection({
               ? error.message
               : "Failed to update collection",
         });
+      }
+    }
+  };
+
+  let creatorId: string | undefined;
+  if (onlyMine) {
+    creatorId = session?.user?.discordId;
+  }
+
+  let itemCreatorId: string | undefined;
+  if (onlyMineItems) {
+    itemCreatorId = session?.user?.discordId;
+  }
+
+  const monstersQuery = useQuery({
+    queryKey: ["publicMonsters", searchTerm, typeFilter, sortOption, creatorId],
+    queryFn: async () => {
+      const [sortBy, sortDirection] = sortOption.split("-") as [
+        "name" | "level" | "hp",
+        "asc" | "desc",
+      ];
+
+      return searchPublicMonsters({
+        searchTerm: searchTerm,
+        type: typeFilter,
+        creatorId,
+        sortBy,
+        sortDirection,
+        limit: 50,
+      });
+    },
+    staleTime: 10000,
+  });
+
+  const availableMonsters: MonsterMini[] = monstersQuery.data?.monsters || [];
+
+  const itemsQuery = useQuery({
+    queryKey: ["items", itemSearchTerm, rarityFilter, itemCreatorId],
+    queryFn: () =>
+      searchPublicItems({
+        searchTerm: itemSearchTerm,
+        rarity: rarityFilter,
+        creatorId: itemCreatorId,
+        sortBy: "name",
+        sortDirection: "asc",
+        limit: 50,
+      }),
+    staleTime: 10000,
+  });
+
+  const availableItems: ItemMini[] = itemsQuery.data || [];
+
+  const handleMonsterCheck = (id: string) => {
+    const isInCollection = currentMonsters.some((m) => m.id === id);
+    if (isInCollection) {
+      setCurrentMonsters((prev) => prev.filter((m) => m.id !== id));
+    } else {
+      const clicked =
+        myMonsters.find((m) => m.id === id) ||
+        availableMonsters.find((m) => m.id === id);
+      if (clicked) {
+        setCurrentMonsters((prev) =>
+          [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
+        );
+      }
+    }
+  };
+
+  const handleItemCheck = (id: string) => {
+    const isInCollection = currentItems.some((i) => i.id === id);
+    if (isInCollection) {
+      setCurrentItems((prev) => prev.filter((i) => i.id !== id));
+    } else {
+      const clicked =
+        myItems.find((i) => i.id === id) ||
+        availableItems.find((i) => i.id === id);
+      if (clicked) {
+        setCurrentItems((prev) =>
+          [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
+        );
       }
     }
   };
@@ -463,11 +550,11 @@ export function CreateEditCollection({
                     Companions
                   </TabsTrigger>
                   <TabsTrigger className="text-md" value="monsters">
-                    <Goblin className="size-5" />
+                    <Ghost className="size-5" />
                     Monsters
                   </TabsTrigger>
                   <TabsTrigger className="text-md" value="items">
-                    <Shield className="size-5" />
+                    <Gem className="size-5" />
                     Items
                   </TabsTrigger>
                 </TabsList>
@@ -495,17 +582,141 @@ export function CreateEditCollection({
                 value="monsters"
                 className="flex flex-col gap-4 grow-2"
               >
-                <SelectableMonsterGrid
-                  selectedIds={selectedMonsterIds}
-                  onToggle={handleMonsterToggle}
-                />
+                <div className="flex gap-3 items-center">
+                  <SearchInput
+                    className="grow"
+                    value={searchTerm}
+                    onChange={setSearchTerm}
+                    placeholder="Search monsters"
+                  />
+                  <SortSelect
+                    items={SORT_OPTIONS}
+                    value={sortOption}
+                    onChange={setSortOption}
+                  />
+                </div>
+
+                <div className="flex gap-4">
+                  <Toggle
+                    variant="outline"
+                    aria-label="Toggle Only My Monsters"
+                    pressed={onlyMine}
+                    onPressedChange={setOnlyMine}
+                  >
+                    {onlyMine ? <SquareCheck /> : <Square />}
+                    Only My Monsters
+                  </Toggle>
+
+                  <Select
+                    defaultValue="all"
+                    onValueChange={(s: TypeFilter) => setTypeFilter(s)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Monsters" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">
+                        <SlidersHorizontal />
+                        All Monsters
+                      </SelectItem>
+                      <SelectItem
+                        value="standard"
+                        aria-label="Standard monsters"
+                      >
+                        <UserIcon />
+                        Standard
+                      </SelectItem>
+                      <SelectItem
+                        value="legendary"
+                        aria-label="Legendary monsters"
+                      >
+                        <Crown />
+                        Legendary
+                      </SelectItem>
+                      <SelectItem value="minion" aria-label="Minions">
+                        <PersonStanding />
+                        Minions
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex gap-x-8">
+                  <div>
+                    {monstersQuery.isLoading ? (
+                      <div className="p-4 text-center">Searching...</div>
+                    ) : (monstersQuery.data?.monsters?.length ?? 0) === 0 ? (
+                      <div className="p-4 text-center">No monsters found</div>
+                    ) : (
+                      <List
+                        monsters={availableMonsters}
+                        selectedIds={currentMonsters.map((m) => m.id)}
+                        handleMonsterClick={handleMonsterCheck}
+                        showChecks={true}
+                      />
+                    )}
+                  </div>
+                </div>
               </TabsContent>
 
               <TabsContent value="items" className="flex flex-col gap-4 grow-2">
-                <SelectableItemGrid
-                  selectedIds={selectedItemIds}
-                  onToggle={handleItemToggle}
-                />
+                <div className="flex gap-3 items-center">
+                  <SearchInput
+                    className="grow"
+                    value={itemSearchTerm}
+                    onChange={setItemSearchTerm}
+                    placeholder="Search items"
+                  />
+                </div>
+
+                <div className="flex gap-4">
+                  <Toggle
+                    variant="outline"
+                    aria-label="Toggle Only My Items"
+                    pressed={onlyMineItems}
+                    onPressedChange={setOnlyMineItems}
+                  >
+                    {onlyMineItems ? <SquareCheck /> : <Square />}
+                    Only My Items
+                  </Toggle>
+
+                  <Select
+                    defaultValue="all"
+                    onValueChange={(s: ItemRarityFilter) => setRarityFilter(s)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Rarities" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">
+                        <SlidersHorizontal />
+                        All Rarities
+                      </SelectItem>
+                      {RARITIES.map((rarity) => (
+                        <SelectItem key={rarity.value} value={rarity.value}>
+                          {rarity.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex gap-x-8">
+                  <div>
+                    {itemsQuery.isLoading ? (
+                      <div className="p-4 text-center">Searching...</div>
+                    ) : (itemsQuery.data?.length ?? 0) === 0 ? (
+                      <div className="p-4 text-center">No items found</div>
+                    ) : (
+                      <ItemList
+                        items={availableItems}
+                        selectedIds={currentItems.map((i) => i.id)}
+                        handleItemClick={handleItemCheck}
+                        showChecks={true}
+                      />
+                    )}
+                  </div>
+                </div>
               </TabsContent>
 
               <TabsContent
@@ -560,7 +771,7 @@ export function CreateEditCollection({
             </Tabs>
           </div>
 
-          <div className="hidden sm:block min-w-sm">
+          <div className="hidden sm:block min-w-xs">
             <CollectionCard
               collection={{
                 ...collection,
@@ -574,20 +785,12 @@ export function CreateEditCollection({
                 spellSchools: currentSpellSchools,
                 creator: session?.user || UNKNOWN_USER,
               }}
-              limit={Infinity}
+              limit={5}
               onRemoveMonsterAction={(id) =>
-                setSelectedMonsters((prev) => {
-                  const next = new Map(prev);
-                  next.delete(id);
-                  return next;
-                })
+                setCurrentMonsters((prev) => prev.filter((m) => m.id !== id))
               }
               onRemoveItemAction={(id) =>
-                setSelectedItems((prev) => {
-                  const next = new Map(prev);
-                  next.delete(id);
-                  return next;
-                })
+                setCurrentItems((prev) => prev.filter((i) => i.id !== id))
               }
               onRemoveCompanionAction={(id) =>
                 setSelectedCompanions((prev) => {

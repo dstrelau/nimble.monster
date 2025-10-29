@@ -1,15 +1,17 @@
 import {
+  BookUser,
   Box,
   Drama,
-  HandFist,
+  Gem,
+  Ghost,
   HeartHandshake,
+  ListChecks,
   Scroll,
-  Shield,
+  Split,
   Users,
   WandSparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { Goblin } from "@/components/icons/goblin";
 import {
   Card,
   CardContent,
@@ -81,7 +83,7 @@ export default async function CreatePage() {
 
   return (
     <TooltipProvider>
-      <div className="px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <h2 className="w-full text-4xl text-center font-bold mb-4">
             What would you like to create?
@@ -90,7 +92,7 @@ export default async function CreatePage() {
           <div className="flex flex-wrap justify-center gap-6">
             <CreateCard
               href="/monsters/new"
-              icon={<Goblin className="size-16" />}
+              icon={<Ghost className="size-16" />}
               title="Monster"
               description="Traditional monsters and Solo Legendaries."
             />
@@ -104,7 +106,7 @@ export default async function CreatePage() {
             />
             <CreateCard
               href="/items/new"
-              icon={<Shield className="size-16" />}
+              icon={<Gem className="size-16" />}
               title="Item"
               description="Magical items and equipment."
             />
@@ -132,19 +134,33 @@ export default async function CreatePage() {
               href="/ancestries/new"
               icon={<Scroll className="size-16" />}
               title="Ancestry"
-              description="Character ancestries and lineages."
+              description="Race or species"
             />
             <CreateCard
               href="/backgrounds/new"
               icon={<Drama className="size-16" />}
               title="Background"
-              description="Character backgrounds and origins."
+              description="Character history"
+            />
+            <CreateCard
+              href="/classes/new"
+              icon={<BookUser className="size-16" />}
+              title="Class"
+              description="Defining character abilities"
+              disabledMessage="You must signin to create a Class."
+            />
+            <CreateCard
+              href="/class-options/new"
+              icon={<ListChecks className="size-16" />}
+              title="Class Options"
+              description="Class-specific ability lists"
+              disabledMessage="You must signin to create Class Options."
             />
             <CreateCard
               href="/subclasses/new"
-              icon={<HandFist className="size-16" />}
+              icon={<Split className="size-16" />}
               title="Subclass"
-              description="Character subclasses."
+              description="Specialized class paths"
               disabledMessage="You must signin to create a Subclass."
             />
             <CreateCard

@@ -1,14 +1,17 @@
 "use client";
 
 import {
+  BookUser,
   Box,
   Drama,
-  HandFist,
+  Gem,
+  Ghost,
   HeartHandshake,
+  ListChecks,
   Menu,
   PersonStanding,
   Scroll,
-  Shield,
+  Split,
   SquarePen,
   User as UserIcon,
   WandSparkles,
@@ -21,7 +24,6 @@ import { Logo } from "@/components/app/Logo";
 import { MobileMenuDropdown } from "@/components/app/MobileMenuDropdown";
 import { ModeToggle } from "@/components/app/ModeToggle";
 import { UserAvatar } from "@/components/app/UserAvatar";
-import { Goblin } from "@/components/icons/goblin";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -92,13 +94,13 @@ const Header = () => {
       href: "/monsters",
       label: "Monsters",
       isActive: isActive("/monsters"),
-      icon: Goblin,
+      icon: Ghost,
     },
     {
       href: "/items",
       label: "Items",
       isActive: isActive("/items"),
-      icon: Shield,
+      icon: Gem,
     },
   ];
 
@@ -116,10 +118,22 @@ const Header = () => {
       icon: Drama,
     },
     {
+      href: "/classes",
+      label: "Classes",
+      isActive: isActive("/classes"),
+      icon: BookUser,
+    },
+    {
+      href: "/class-options",
+      label: "Class Options",
+      isActive: isActive("/class-options"),
+      icon: ListChecks,
+    },
+    {
       href: "/subclasses",
       label: "Subclasses",
       isActive: isActive("/subclasses"),
-      icon: HandFist,
+      icon: Split,
     },
     {
       href: "/spell-schools",
@@ -155,7 +169,7 @@ const Header = () => {
           href: "/my/monsters",
           label: "Monsters",
           isActive: isActive("/my/monsters"),
-          icon: Goblin,
+          icon: Ghost,
         },
         {
           href: "/my/backgrounds",
@@ -179,13 +193,13 @@ const Header = () => {
           href: "/my/items",
           label: "Items",
           isActive: isActive("/my/items"),
-          icon: Shield,
+          icon: Gem,
         },
         {
           href: "/my/subclasses",
           label: "Subclasses",
           isActive: isActive("/my/subclasses"),
-          icon: HandFist,
+          icon: Split,
         },
         {
           href: "/my/companions",
@@ -228,7 +242,7 @@ const Header = () => {
 
         {/* Desktop navigation (center) */}
         <NavigationMenu className="hidden md:block" viewport={false}>
-          <NavigationMenuList className="gap-2">
+          <NavigationMenuList className="gap-4">
             {browseItems.map((item) => (
               <NavigationMenuItem key={item.href}>
                 <NavigationMenuLink data-active={item.isActive} asChild>
@@ -247,7 +261,7 @@ const Header = () => {
                 <PersonStanding />
                 Heroes
               </NavigationMenuTrigger>
-              <NavigationMenuContent>
+              <NavigationMenuContent className="min-w-48">
                 <ul>
                   {heroItems.map((item) => (
                     <li key={item.href}>

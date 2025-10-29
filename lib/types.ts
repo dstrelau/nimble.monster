@@ -242,6 +242,7 @@ export interface SubclassMini {
 export interface Subclass extends SubclassMini {
   description?: string;
   levels: SubclassLevel[];
+  abilityLists: ClassAbilityList[];
   creator: User;
   source?: Source;
   awards?: Award[];
@@ -258,6 +259,119 @@ export interface SubclassAbilityDb {
 }
 
 export type SubclassSortOption =
+  | "name-asc"
+  | "name-desc"
+  | "created-asc"
+  | "created-desc";
+
+export const CLASS_VISIBILITY = [
+  { value: "public", label: "Public" },
+  { value: "private", label: "Private" },
+] as const;
+export type ClassVisibility = (typeof CLASS_VISIBILITY)[number]["value"];
+
+export const HIT_DIE_SIZES = ["d4", "d6", "d8", "d10", "d12", "d20"] as const;
+export type HitDieSize = (typeof HIT_DIE_SIZES)[number];
+
+export const STAT_TYPES = ["STR", "DEX", "INT", "WIL"] as const;
+export type StatType = (typeof STAT_TYPES)[number];
+
+export const ARMOR_TYPES = ["cloth", "leather", "mail", "shields"] as const;
+export type ArmorType = (typeof ARMOR_TYPES)[number];
+
+export interface WeaponSpec {
+  kind?: ("blade" | "stave" | "wand")[];
+  type?: "STR" | "DEX";
+  range?: "melee" | "ranged";
+}
+
+export interface ClassAbility {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface ClassLevel {
+  level: number;
+  abilities: ClassAbility[];
+}
+
+export interface ClassAbilityItem {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface ClassAbilityList {
+  id: string;
+  name: string;
+  description: string;
+  characterClass?: SubclassClass;
+  items: ClassAbilityItem[];
+  creator: User;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ClassAbilityListMini {
+  id: string;
+  name: string;
+  description: string;
+  characterClass?: SubclassClass;
+  createdAt: Date;
+}
+
+export interface ClassMini {
+  id: string;
+  name: string;
+  visibility: ClassVisibility;
+  createdAt: Date;
+}
+
+export interface Class extends ClassMini {
+  description: string;
+  keyStats: StatType[];
+  hitDie: HitDieSize;
+  startingHp: number;
+  saves: Record<StatType, number>;
+  armor: ArmorType[];
+  weapons: WeaponSpec;
+  startingGear: string[];
+  levels: ClassLevel[];
+  abilityLists: ClassAbilityList[];
+  creator: User;
+  source?: Source;
+  awards?: Award[];
+  updatedAt: Date;
+}
+
+export interface ClassAbilityDb {
+  id: string;
+  classId: string;
+  level: number;
+  name: string;
+  description: string;
+  orderIndex: number;
+}
+
+export interface ClassAbilityListDb {
+  id: string;
+  name: string;
+  description: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ClassAbilityItemDb {
+  id: string;
+  classAbilityListId: string;
+  name: string;
+  description: string;
+  orderIndex: number;
+}
+
+export type ClassSortOption =
   | "name-asc"
   | "name-desc"
   | "created-asc"

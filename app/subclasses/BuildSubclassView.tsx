@@ -2,9 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import {
   type Control,
   useFieldArray,
@@ -28,6 +29,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
   SelectContent,
@@ -44,6 +46,7 @@ import {
   UNKNOWN_USER,
 } from "@/lib/types";
 import { getSubclassUrl } from "@/lib/utils/url";
+import { getUserClassAbilityLists } from "../actions/classAbilityList";
 import { createSubclass, updateSubclass } from "../actions/subclass";
 
 const abilitySchema = z.object({
@@ -71,6 +74,7 @@ const formSchema = z.object({
   tagline: z.string().optional(),
   description: z.string().optional(),
   levels: z.array(levelSchema),
+  abilityListIds: z.array(z.string()),
   visibility: z.enum(["public", "private"]),
 });
 
@@ -84,6 +88,7 @@ const EXAMPLE_SUBCLASSES: Record<string, Omit<Subclass, "creator">> = {
     className: "Berserker",
     description: "",
     levels: [],
+    abilityLists: [],
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -145,6 +150,7 @@ const EXAMPLE_SUBCLASSES: Record<string, Omit<Subclass, "creator">> = {
         ],
       },
     ],
+    abilityLists: [],
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -161,6 +167,21 @@ export default function BuildSubclassView({
   const router = useRouter();
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [availableLists, setAvailableLists] = useState<
+    Array<{ id: string; name: string; characterClass?: string }>
+  >([]);
+
+  useEffect(() => {
+    async function fetchLists() {
+      if (session?.user) {
+        const result = await getUserClassAbilityLists();
+        if (result.success) {
+          setAvailableLists(result.lists);
+        }
+      }
+    }
+    fetchLists();
+  }, [session]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -180,6 +201,7 @@ export default function BuildSubclassView({
           abilities: [{ id: crypto.randomUUID(), name: "", description: "" }],
         },
       ],
+      abilityListIds: subclass?.abilityLists?.map((list) => list.id) || [],
       visibility: subclass?.visibility || "public",
     },
   });
@@ -197,8 +219,14 @@ export default function BuildSubclassView({
   const watchedValues = watch() as FormData;
 
   const creator = session?.user || UNKNOWN_USER;
-  const previewSubclass = useMemo<Subclass>(
-    () => ({
+  const previewSubclass = useMemo<Subclass>(() => {
+    const selectedListIds = watchedValues.abilityListIds || [];
+    const abilityLists =
+      subclass?.abilityLists?.filter((list) =>
+        selectedListIds.includes(list.id)
+      ) || [];
+
+    return {
       id: subclass?.id || "",
       name: watchedValues.name || "",
       className: watchedValues.className || ("" as SubclassClass),
@@ -206,24 +234,26 @@ export default function BuildSubclassView({
       tagline: watchedValues.tagline || undefined,
       description: watchedValues.description || undefined,
       levels: watchedValues.levels || [],
+      abilityLists,
       visibility: watchedValues.visibility,
       creator: creator,
       createdAt: subclass?.createdAt || new Date(),
       updatedAt: new Date(),
-    }),
-    [
-      watchedValues.name,
-      watchedValues.className,
-      watchedValues.namePreface,
-      watchedValues.tagline,
-      watchedValues.description,
-      watchedValues.levels,
-      watchedValues.visibility,
-      creator,
-      subclass?.id,
-      subclass?.createdAt,
-    ]
-  );
+    };
+  }, [
+    watchedValues.name,
+    watchedValues.className,
+    watchedValues.namePreface,
+    watchedValues.tagline,
+    watchedValues.description,
+    watchedValues.levels,
+    watchedValues.abilityListIds,
+    watchedValues.visibility,
+    creator,
+    subclass?.id,
+    subclass?.createdAt,
+    subclass?.abilityLists,
+  ]);
 
   const handleSubmit = async (data: FormData) => {
     setIsSubmitting(true);
@@ -456,6 +486,48 @@ export default function BuildSubclassView({
                     />
                   </div>
                 ))}
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <FormLabel>Class Options</FormLabel>
+                  <Link href="/class-options/new">
+                    <Button type="button" variant="outline" size="sm">
+                      <Plus className="size-4" />
+                      Create New
+                    </Button>
+                  </Link>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="abilityListIds"
+                  render={({ field }) => {
+                    const currentClassName = watchedValues.className;
+                    const filteredLists = availableLists.filter(
+                      (list) =>
+                        !list.characterClass ||
+                        list.characterClass === currentClassName
+                    );
+
+                    return (
+                      <FormItem>
+                        <FormControl>
+                          <MultiSelect
+                            options={filteredLists.map((list) => ({
+                              value: list.id,
+                              label: list.name,
+                            }))}
+                            selected={field.value}
+                            onChange={field.onChange}
+                            placeholder="Select ability lists..."
+                            emptyText="No lists available. Create one first."
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
               </div>
 
               <div className="mt-10 flex flex-row justify-between items-center my-4">
