@@ -86,7 +86,7 @@ function EntityLinkInner({ type, id }: { type: EntityType; id: string }) {
   return (
     <Link
       href={`/${path}/${slug}`}
-      className="inline-flex items-baseline gap-0.5 text-primary-foreground hover:underline"
+      className="inline-flex items-baseline gap-0.5 hover:underline"
     >
       <Icon className="stroke-flame size-3.5" />
       <span>{data.name}</span>

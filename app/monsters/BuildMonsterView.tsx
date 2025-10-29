@@ -865,7 +865,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
             ? "md:col-span-2"
             : "md:col-span-2"
       )}
-      previewContent={<Card monster={monster} />}
+      previewContent={<Card link={false} monster={monster} />}
       formContent={
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="mb-6 flex justify-center">
@@ -970,7 +970,12 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
             }}
           />
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
-            <Card monster={monster} creator={creator} hideActions={true} />
+            <Card
+              link={false}
+              monster={monster}
+              creator={creator}
+              hideActions={true}
+            />
           </div>
         </>
       }
