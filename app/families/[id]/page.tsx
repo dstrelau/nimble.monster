@@ -75,6 +75,9 @@ export default async function FamilyDetailPage({
   ]);
 
   const isCreator = session?.user?.discordId === family.creatorId;
+  monsters.forEach((m) => {
+    m.families = m.families.filter((f) => f.id !== family.id);
+  });
 
   return (
     <div className="container mx-auto">
@@ -82,12 +85,7 @@ export default async function FamilyDetailPage({
       {monsters.length === 0 ? (
         <p>No public monsters in this family.</p>
       ) : (
-        <CardGrid
-          monsters={monsters}
-          hideFamilyAbilities={true}
-          hideFamilyName={true}
-          hideActions={true}
-        />
+        <CardGrid monsters={monsters} />
       )}
     </div>
   );

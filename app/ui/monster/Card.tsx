@@ -85,9 +85,8 @@ const MonsterTitle: React.FC<{
 
 const MonsterDescription: React.FC<{
   monster: Monster;
-  hideFamilyName?: boolean;
   variant: "legendary" | "minion" | "standard";
-}> = ({ monster, hideFamilyName = false, variant }) => {
+}> = ({ monster, variant }) => {
   const descriptionClasses = cn(
     "font-condensed flex flex-wrap items-baseline gap-2",
     variant === "legendary" && "text-md font-slab font-normal",
@@ -105,7 +104,7 @@ const MonsterDescription: React.FC<{
         {formatSizeKind(monster)}
         {variant === "minion" && " Minion"}
       </p>
-      {monster.families.length > 0 && !hideFamilyName && (
+      {monster.families.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {monster.families.map((family) => (
             <Link
@@ -183,10 +182,10 @@ const MonsterStats: React.FC<{
 
 const MonsterHeader: React.FC<{
   monster: Monster;
-  hideFamilyName?: boolean;
+  hiddenFamilyId?: string;
   link?: boolean;
   variant: "legendary" | "minion" | "standard";
-}> = ({ monster, hideFamilyName = false, link = true, variant }) => {
+}> = ({ monster, link = true, variant }) => {
   const headerClasses = cn(
     "gap-0 flex",
     variant === "minion" &&
@@ -200,11 +199,7 @@ const MonsterHeader: React.FC<{
     >
       <div className="w-fit">
         <MonsterTitle monster={monster} link={link} variant={variant} />
-        <MonsterDescription
-          monster={monster}
-          hideFamilyName={hideFamilyName}
-          variant={variant}
-        />
+        <MonsterDescription monster={monster} variant={variant} />
       </div>
       <MonsterStats
         className="grow items-start justify-end"
@@ -220,8 +215,6 @@ interface CardProps {
   creator?: User;
   link?: boolean;
   hideActions?: boolean;
-  hideFamilyAbilities?: boolean;
-  hideFamilyName?: boolean;
   hideDescription?: boolean;
   className?: string;
 }
@@ -231,8 +224,6 @@ export const Card = ({
   creator,
   link = true,
   hideActions = false,
-  hideFamilyAbilities = false,
-  hideFamilyName = false,
   hideDescription = false,
   className,
 }: CardProps) => {
@@ -244,7 +235,6 @@ export const Card = ({
       <ShadcnCard className={className}>
         <MonsterHeader
           monster={monster}
-          hideFamilyName={hideFamilyName}
           link={link}
           variant={
             monster.legendary
@@ -256,18 +246,15 @@ export const Card = ({
         />
 
         <CardContentWithGap>
-          {((!hideFamilyAbilities &&
-            monster.families.some((f) => f.abilities.length > 0)) ||
+          {(monster.families.some((f) => f.abilities.length > 0) ||
             monster.abilities.length > 0) && (
             <AbilityOverlay
               conditions={conditions}
               abilities={[
-                ...(hideFamilyAbilities
-                  ? []
-                  : monster.families.flatMap((f) => f.abilities)),
+                ...monster.families.flatMap((f) => f.abilities),
                 ...monster.abilities,
               ]}
-              families={hideFamilyAbilities ? undefined : monster.families}
+              families={monster.families}
             />
           )}
 
