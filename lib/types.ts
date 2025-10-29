@@ -195,7 +195,7 @@ export const SUBCLASS_NAME_PREFIXES: Record<SubclassClass, string> = {
   Hexbinder: "Coven of",
   Hunter: "Keeper of the",
   Mage: "Invoker of",
-  Oathsworn: "Oauth of",
+  Oathsworn: "Oath of",
   Shadowmancer: "Pact of the",
   Shepherd: "Luminary of",
   Songweaver: "Herald of",

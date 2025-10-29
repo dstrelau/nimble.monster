@@ -18,13 +18,13 @@ vi.mock("@/lib/auth", () => ({
   auth: vi.fn(),
 }));
 
-const { mockPaginatePublicMonsters } = vi.hoisted(() => {
-  return { mockPaginatePublicMonsters: vi.fn() };
+const { mockPaginateMonsters } = vi.hoisted(() => {
+  return { mockPaginateMonsters: vi.fn() };
 });
 
 vi.mock("@/lib/services/monsters/repository", async () => {
   return {
-    paginatePublicMonsters: mockPaginatePublicMonsters,
+    paginateMonsters: mockPaginateMonsters,
   };
 });
 
@@ -52,8 +52,6 @@ vi.mock("@/lib/utils/cursor", () => ({
 vi.mock("@/lib/telemetry", () => ({
   telemetry: vi.fn((handler) => handler),
 }));
-
-const mockPaginateMonsters = mockPaginatePublicMonsters;
 
 const fakeCreator = {
   id: "12345678-1234-1234-1234-1234567890ab",
@@ -163,6 +161,7 @@ describe("GET /api/monsters", () => {
       cursor: "encoded_name_Goblin_550e8400-e29b-41d4-a716-446655440000",
       limit: 100,
       sort: "name",
+      includePrivate: false,
     });
   });
 
@@ -179,6 +178,7 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 50,
       sort: "name",
+      includePrivate: false,
     });
   });
 
@@ -219,6 +219,7 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "name",
+      includePrivate: false,
     });
   });
 
@@ -237,6 +238,7 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "-name",
+      includePrivate: false,
     });
   });
 
@@ -255,6 +257,7 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "createdAt",
+      includePrivate: false,
     });
   });
 
@@ -273,6 +276,7 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "-createdAt",
+      includePrivate: false,
     });
   });
 
@@ -291,6 +295,7 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "level",
+      includePrivate: false,
     });
   });
 
@@ -309,6 +314,7 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "-level",
+      includePrivate: false,
     });
   });
 

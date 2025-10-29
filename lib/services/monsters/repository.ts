@@ -46,7 +46,7 @@ export const listPublicMonsterMinis = async (): Promise<MonsterMini[]> => {
   ).map(toMonsterMini);
 };
 
-export const paginatePublicMonsters = async ({
+export const paginateMonsters = async ({
   cursor,
   limit = 100,
   sort = "-createdAt",
@@ -54,7 +54,8 @@ export const paginatePublicMonsters = async ({
   type = "all",
   creatorId,
   sourceId,
-}: PaginateMonstersParams): Promise<{
+  includePrivate = false,
+}: PaginateMonstersParams & { includePrivate?: boolean }): Promise<{
   data: Monster[];
   nextCursor: string | null;
 }> => {
@@ -82,7 +83,9 @@ export const paginatePublicMonsters = async ({
   } else {
     orderBy = [{ levelInt: sortDir }, { id: "asc" }];
   }
-  const where: Prisma.MonsterWhereInput = { visibility: "public" };
+  const where: Prisma.MonsterWhereInput = includePrivate
+    ? {}
+    : { visibility: "public" };
 
   if (creatorId) {
     where.userId = creatorId;

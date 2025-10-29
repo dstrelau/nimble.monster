@@ -41,7 +41,22 @@ export class MonstersService {
     params: PaginateMonstersParams
   ): Promise<PaginatePublicMonstersResponse> {
     const parsedParams = PaginateMonstersSchema.parse(params);
-    return repository.paginatePublicMonsters(parsedParams);
+    return repository.paginateMonsters({
+      includePrivate: false,
+      ...parsedParams,
+    });
+  }
+
+  async paginateMyMonsters(
+    creatorId: string,
+    params: PaginateMonstersParams
+  ): Promise<PaginatePublicMonstersResponse> {
+    const parsedParams = PaginateMonstersSchema.parse(params);
+    return repository.paginateMonsters({
+      includePrivate: true,
+      creatorId,
+      ...parsedParams,
+    });
   }
 
   async searchMonsters(params: SearchMonstersParams): Promise<MonsterMini[]> {

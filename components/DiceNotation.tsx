@@ -96,7 +96,11 @@ function DiceDrawer({ diceText }: { diceText: string }) {
             dieToIcon(parsed.dieSize)
           )}
           {parsed.numDice}d{parsed.dieSize}
-          {parsed.modifier ? `+${parsed.modifier}` : ""}
+          {parsed.modifier > 0
+            ? `+${parsed.modifier}`
+            : parsed.modifier < 0
+              ? `${parsed.modifier}`
+              : ""}
           {parsed.vicious && " (Vicious)"}
           {parsed.advantage === 1
             ? " ADV"

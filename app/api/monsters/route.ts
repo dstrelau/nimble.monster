@@ -6,7 +6,6 @@ import { addCorsHeaders } from "@/lib/cors";
 import type { CreateMonsterInput } from "@/lib/services/monsters";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
-import * as repository from "@/lib/services/monsters/repository";
 import { telemetry } from "@/lib/telemetry";
 
 const CONTENT_TYPE = "application/vnd.api+json; nimble.version=202510.beta";
@@ -62,7 +61,7 @@ export const GET = telemetry(async (request: Request) => {
   cursor && span?.setAttributes({ "params.cursor": cursor });
 
   const { data: monsters, nextCursor } =
-    await repository.paginatePublicMonsters({
+    await monstersService.paginatePublicMonsters({
       cursor,
       limit,
       sort,
