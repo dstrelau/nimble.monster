@@ -12,8 +12,5 @@ export const paginateMyMonsters = async (
     throw new Error("Unauthorized");
   }
 
-  return monstersService.paginatePublicMonsters({
-    ...params,
-    creatorId: session.user.id,
-  });
+  return monstersService.paginateMyMonsters(session.user.id, params);
 };
