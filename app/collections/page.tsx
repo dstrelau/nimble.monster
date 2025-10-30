@@ -1,20 +1,41 @@
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { redirect } from "next/navigation";
+import { z } from "zod";
 import { CollectionsListView } from "@/app/ui/collection/CollectionsListView";
-import * as db from "@/lib/db";
+import { getQueryClient } from "@/lib/queryClient";
+import { publicCollectionsInfiniteQueryOptions } from "./actions";
 
-export default async function CollectionsPage() {
-  const collections = await db.listPublicCollectionsHavingMonsters();
+const searchParamsSchema = z.object({
+  sort: z
+    .enum(["createdAt", "-createdAt", "name", "-name"])
+    .default("-createdAt"),
+  search: z.string().optional(),
+});
 
-  if (collections?.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-gray-600">No public collections available yet.</p>
-      </div>
-    );
+type SearchParams = z.infer<typeof searchParamsSchema>;
+
+export default async function CollectionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const rawParams = await searchParams;
+  const parseResult = searchParamsSchema.safeParse(rawParams);
+  if (!parseResult.success) {
+    redirect("/collections");
   }
+  const params = parseResult.data;
+
+  const queryClient = getQueryClient();
+  await queryClient.prefetchInfiniteQuery(
+    publicCollectionsInfiniteQueryOptions(params)
+  );
 
   return (
     <div className="container mx-auto py-3">
-      <CollectionsListView collections={collections} />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <CollectionsListView />
+      </HydrationBoundary>
     </div>
   );
 }

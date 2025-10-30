@@ -1,3 +1,4 @@
+"use server";
 import { toItem, toItemMini } from "@/lib/services/items/converters";
 import { toMonster, toMonsterMini } from "@/lib/services/monsters/converters";
 import type { Collection, CollectionOverview } from "@/lib/types";
@@ -6,6 +7,17 @@ import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
 import { toUser } from "../../db/converters";
 import { prisma } from "../../db/index";
+
+export type CollectionSortBy = "name" | "createdAt";
+export type CollectionSortDirection = "asc" | "desc";
+
+export interface SearchCollectionsParams {
+  searchTerm?: string;
+  sortBy: CollectionSortBy;
+  sortDirection: CollectionSortDirection;
+  limit: number;
+  offset?: number;
+}
 
 export interface ListCollectionsParams {
   cursor?: string;
@@ -152,6 +164,94 @@ export const listPublicCollections = async ({
     }),
     nextCursor,
   };
+};
+
+export const searchPublicCollections = async ({
+  searchTerm,
+  sortBy,
+  sortDirection = "asc",
+  limit,
+  offset,
+}: SearchCollectionsParams): Promise<CollectionOverview[]> => {
+  const whereClause: {
+    visibility: "public";
+    OR?: Array<{
+      name?: { contains: string; mode: "insensitive" };
+      description?: { contains: string; mode: "insensitive" };
+    }>;
+  } = {
+    visibility: "public",
+  };
+
+  if (searchTerm) {
+    whereClause.OR = [
+      { name: { contains: searchTerm, mode: "insensitive" } },
+      { description: { contains: searchTerm, mode: "insensitive" } },
+    ];
+  }
+
+  let orderBy: { name: "asc" | "desc" } | { createdAt: "asc" | "desc" } = {
+    createdAt: sortDirection,
+  };
+
+  if (sortBy === "name") {
+    orderBy = { name: sortDirection };
+  } else if (sortBy === "createdAt") {
+    orderBy = { createdAt: sortDirection };
+  }
+
+  const collections = await prisma.collection.findMany({
+    where: whereClause,
+    orderBy,
+    take: limit,
+    skip: offset,
+    include: {
+      creator: true,
+      monsterCollections: {
+        where: { monster: { visibility: "public" } },
+        include: {
+          monster: {},
+        },
+        orderBy: { monster: { name: "asc" } },
+      },
+      itemCollections: {
+        where: { item: { visibility: "public" } },
+        include: {
+          item: {},
+        },
+        orderBy: { item: { name: "asc" } },
+      },
+      spellSchoolCollections: {
+        include: {
+          spellSchool: true,
+        },
+      },
+    },
+  });
+
+  return collections
+    .filter(
+      (c) => c.monsterCollections.length > 0 || c.itemCollections.length > 0
+    )
+    .map((c) => {
+      const legendaryCount = c.monsterCollections.filter(
+        (m) => m.monster.legendary
+      ).length;
+      return {
+        id: c.id,
+        creator: toUser(c.creator),
+        description: c.description ?? undefined,
+        legendaryCount,
+        monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
+        name: c.name,
+        standardCount: c.monsterCollections.length - legendaryCount,
+        visibility: c.visibility === "private" ? "private" : "public",
+        createdAt: c.createdAt ?? undefined,
+        items: c.itemCollections?.map((ic) => toItemMini(ic.item)) || [],
+        itemCount: c.itemCollections?.length || 0,
+        spellSchools: [],
+      };
+    });
 };
 
 export const findPublicCollectionById = async (

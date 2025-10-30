@@ -1,14 +1,14 @@
 "use client";
 
+import type { CollectionSortOption } from "@/app/collections/actions";
 import { FilterBar } from "@/app/ui/FilterBar";
-import type { CollectionSortOption } from "@/lib/hooks/useCollectionFilters";
 import { CollectionSortSelect } from "./CollectionSortSelect";
 
 interface CollectionFilterBarProps {
-  searchTerm: string;
+  searchTerm: string | null;
   sortOption: CollectionSortOption;
-  onSearch: (value: string) => void;
-  onSortChange: (sort: CollectionSortOption) => void;
+  onSearch: (value: string | null) => void;
+  onSortChange: (sort: string | null) => void;
 }
 
 export const CollectionFilterBar: React.FC<CollectionFilterBarProps> = ({
@@ -18,7 +18,7 @@ export const CollectionFilterBar: React.FC<CollectionFilterBarProps> = ({
   onSortChange,
 }) => {
   return (
-    <FilterBar searchTerm={searchTerm} onSearch={onSearch}>
+    <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v ? v : null)}>
       <CollectionSortSelect value={sortOption} onChange={onSortChange} />
     </FilterBar>
   );

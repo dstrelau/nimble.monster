@@ -1,5 +1,6 @@
 "use client";
 
+import type { CollectionSortOption } from "@/app/collections/actions";
 import {
   Select,
   SelectContent,
@@ -7,18 +8,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { CollectionSortOption } from "@/lib/hooks/useCollectionFilters";
 
 interface CollectionSortSelectProps {
   value: CollectionSortOption;
-  onChange: (value: CollectionSortOption) => void;
+  onChange: (value: string) => void;
 }
 
 const sortOptions: { value: CollectionSortOption; label: string }[] = [
-  { value: "name-asc", label: "Name (A-Z)" },
-  { value: "name-desc", label: "Name (Z-A)" },
-  { value: "created-desc", label: "Newest first" },
-  { value: "created-asc", label: "Oldest first" },
+  { value: "name", label: "Name (A-Z)" },
+  { value: "-name", label: "Name (Z-A)" },
+  { value: "-createdAt", label: "Newest first" },
+  { value: "createdAt", label: "Oldest first" },
 ];
 
 export const CollectionSortSelect: React.FC<CollectionSortSelectProps> = ({

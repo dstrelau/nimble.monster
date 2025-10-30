@@ -1,49 +1,73 @@
 "use client";
 
+import { useDebouncedValue } from "@tanstack/react-pacer";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useQueryState } from "nuqs";
 import type React from "react";
 import { CollectionCard } from "@/app/ui/CollectionCard";
-import { useCollectionFilters } from "@/lib/hooks/useCollectionFilters";
-import type { CollectionOverview } from "@/lib/types";
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+} from "@/app/ui/shared/GridStates";
+import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
+import {
+  type CollectionSortOption,
+  publicCollectionsInfiniteQueryOptions,
+} from "../../collections/actions";
 import { CollectionFilterBar } from "./CollectionFilterBar";
 
-interface CollectionsListViewProps {
-  collections: CollectionOverview[];
-}
+export const CollectionsListView: React.FC = () => {
+  const [rawSearchQuery, setSearchQuery] = useQueryState("search");
+  const [searchQuery] = useDebouncedValue(rawSearchQuery, { wait: 250 });
 
-export const CollectionsListView: React.FC<CollectionsListViewProps> = ({
-  collections,
-}) => {
-  const {
-    searchTerm,
-    sortOption,
-    filteredCollections,
-    handleSearch,
-    setSortOption,
-  } = useCollectionFilters({ collections });
+  const [sortQuery, setSortQuery] = useQueryState("sort", {
+    defaultValue: "-createdAt",
+  });
+
+  const { data, isLoading, isFetching, fetchNextPage, hasNextPage, error } =
+    useInfiniteQuery(
+      publicCollectionsInfiniteQueryOptions({
+        sort: sortQuery,
+        search: searchQuery || undefined,
+      })
+    );
+
+  if (isLoading) {
+    return <LoadingState />;
+  }
+
+  if (error) {
+    return <ErrorState message={error.message} />;
+  }
+
+  const filteredCollections = data?.pages.flatMap((page) => page.data);
 
   return (
     <div className="space-y-6">
       <CollectionFilterBar
-        searchTerm={searchTerm}
-        sortOption={sortOption}
-        onSearch={handleSearch}
-        onSortChange={setSortOption}
+        searchTerm={searchQuery}
+        sortOption={sortQuery as CollectionSortOption}
+        onSearch={setSearchQuery}
+        onSortChange={setSortQuery}
       />
 
-      {filteredCollections.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-600">
-            {searchTerm
-              ? `No collections found matching "${searchTerm}".`
-              : "No collections found."}
-          </p>
-        </div>
+      {!filteredCollections || filteredCollections?.length === 0 ? (
+        <EmptyState entityName="collections" />
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
-          {filteredCollections.map((collection) => (
-            <CollectionCard key={collection.id} collection={collection} />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
+            {filteredCollections.map((collection) => (
+              <CollectionCard key={collection.id} collection={collection} />
+            ))}
+          </div>
+          {hasNextPage && (
+            <LoadMoreButton
+              onClick={() => fetchNextPage()}
+              disabled={isFetching}
+            />
+          )}
+        </>
       )}
     </div>
   );
