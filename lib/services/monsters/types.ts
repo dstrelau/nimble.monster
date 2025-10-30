@@ -55,6 +55,19 @@ export const ARMORS = [
 ] as const;
 export type MonsterArmor = (typeof ARMORS)[number]["value"];
 
+export const MONSTER_ROLES = [
+  { value: "ambusher", label: "Ambusher" },
+  { value: "aoe", label: "AoE" },
+  { value: "controller", label: "Controller" },
+  { value: "defender", label: "Defender" },
+  { value: "melee", label: "Melee" },
+  { value: "ranged", label: "Ranged" },
+  { value: "striker", label: "Striker" },
+  { value: "summoner", label: "Summoner" },
+  { value: "support", label: "Support" },
+] as const;
+export type MonsterRole = (typeof MONSTER_ROLES)[number]["value"];
+
 export type TypeFilter = "all" | "legendary" | "standard" | "minion";
 
 export interface MonsterMini {
@@ -70,6 +83,7 @@ export interface MonsterMini {
   armor: MonsterArmor;
   visibility: "public" | "private";
   createdAt: Date;
+  role?: MonsterRole | null;
 }
 
 export interface Monster extends MonsterMini {
@@ -160,6 +174,7 @@ export interface CreateMonsterInput {
   lastStand?: string;
   saves?: string[];
   sourceId?: string;
+  role?: MonsterRole | null;
 }
 
 export interface UpdateMonsterInput {
@@ -189,4 +204,5 @@ export interface UpdateMonsterInput {
   moreInfo: string;
   families?: { id: string }[];
   sourceId?: string | null;
+  role?: MonsterRole | null;
 }

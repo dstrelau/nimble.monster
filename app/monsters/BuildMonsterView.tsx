@@ -56,6 +56,7 @@ import {
   ARMORS,
   LEGENDARY_MONSTER_LEVELS,
   MONSTER_LEVELS,
+  MONSTER_ROLES,
   SIZES,
 } from "@/lib/services/monsters";
 import { UNKNOWN_USER } from "@/lib/types";
@@ -65,6 +66,7 @@ import { useUserFamiliesQuery } from "../families/hooks";
 import { AbilitiesSection } from "../ui/create/AbilitiesSection";
 import { ActionsSection } from "../ui/create/ActionsSection";
 import { SourceSelect } from "../ui/create/SourceSelect";
+import { updateMonster as updateMonsterAction } from "./actions";
 
 const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
   goblin: {
@@ -553,8 +555,24 @@ const StandardForm: React.FC<{
           label="Kind"
           name="kind"
           value={monster.kind || ""}
-          className="col-span-3"
+          className="col-span-2"
           onChange={(kind) => setMonster({ ...monster, kind })}
+        />
+        <FormSelect
+          label="Role"
+          name="role"
+          choices={[
+            { value: "none", label: "None" },
+            ...MONSTER_ROLES.map((r) => ({
+              value: r.value,
+              label: r.label,
+            })),
+          ]}
+          selected={monster.role || "none"}
+          className="col-span-1"
+          onChange={(role) =>
+            setMonster({ ...monster, role: role === "none" ? null : role })
+          }
         />
       </div>
       <div className="grid grid-cols-3 gap-2">
@@ -811,11 +829,44 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
 
   const mutation = useMutation({
     mutationFn: async (data: Monster) => {
-      const endpoint = data.id ? `/api/monsters/${data.id}` : "/api/monsters";
-      const method = data.id ? "PUT" : "POST";
+      if (data.id) {
+        return updateMonsterAction({
+          id: data.id,
+          name: data.name,
+          level: data.level,
+          levelInt: data.levelInt,
+          hp: data.hp,
+          armor: data.armor,
+          size: data.size,
+          speed: data.speed,
+          fly: data.fly,
+          swim: data.swim,
+          climb: data.climb,
+          teleport: data.teleport,
+          burrow: data.burrow,
+          actions: data.actions,
+          abilities: data.abilities,
+          legendary: data.legendary,
+          minion: data.minion,
+          bloodied: data.bloodied || "",
+          lastStand: data.lastStand || "",
+          saves: data.saves
+            ? Array.isArray(data.saves)
+              ? data.saves
+              : [data.saves]
+            : [],
+          kind: data.kind || "",
+          visibility: data.visibility,
+          actionPreface: data.actionPreface || "",
+          moreInfo: data.moreInfo || "",
+          families: data.families || [],
+          sourceId: data.source?.id ?? null,
+          role: data.role || null,
+        });
+      }
 
-      return fetchApi<Monster>(endpoint, {
-        method,
+      return fetchApi<Monster>("/api/monsters", {
+        method: "POST",
         body: JSON.stringify(data),
       });
     },

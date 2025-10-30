@@ -106,11 +106,7 @@ export class MonstersService {
       throw new Error("Monster name is required");
     }
 
-    const monster = await repository.updateMonster(input, userDiscordId);
-
-    // invalidateEntityImageCache("monster", input.id);
-
-    return monster;
+    return repository.updateMonster(input, userDiscordId);
   }
 
   async deleteMonster(

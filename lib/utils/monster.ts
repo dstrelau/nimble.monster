@@ -19,5 +19,13 @@ export function formatSizeKind(monster: Monster): string {
     parts.push(monster.size);
   }
 
-  return parts.join(" ");
+  const result = parts.join(" ");
+
+  if (monster.role) {
+    const roleLabel =
+      monster.role.charAt(0).toUpperCase() + monster.role.slice(1);
+    return result ? `${result} - ${roleLabel}` : roleLabel;
+  }
+
+  return result;
 }

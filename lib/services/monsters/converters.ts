@@ -40,6 +40,7 @@ export const toMonster = (
   return {
     ...toMonsterMini(m),
     kind: m.kind,
+    role: m.role,
     bloodied: m.bloodied,
     lastStand: m.lastStand,
     speed: m.speed,

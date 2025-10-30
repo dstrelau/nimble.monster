@@ -444,6 +444,7 @@ export const createMonster = async (
     lastStand = "",
     saves = [],
     sourceId,
+    role,
   } = input;
 
   const user = await prisma.user.findUnique({
@@ -485,6 +486,7 @@ export const createMonster = async (
       moreInfo,
       legendary,
       minion,
+      role,
       creator: {
         connect: { id: user.id },
       },
@@ -547,6 +549,7 @@ export const updateMonster = async (
     moreInfo,
     families = [],
     sourceId,
+    role,
   } = input;
 
   if (!isValidUUID(id)) {
@@ -579,6 +582,7 @@ export const updateMonster = async (
       visibility,
       actionPreface,
       moreInfo,
+      role,
       updatedAt: new Date(),
       ...(sourceId !== undefined &&
         sourceId !== null && {

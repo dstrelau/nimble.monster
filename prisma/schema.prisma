@@ -138,6 +138,7 @@ model Monster {
   teleport           Int                   @default(0)
   minion             Boolean               @default(false)
   levelInt           Int                   @default(0) @map("level_int")
+  role               monster_role?
   creator            User                  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   source             Source?               @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
   monsterCollections MonsterInCollection[]
@@ -440,6 +441,18 @@ enum spell_school_visibility {
 enum ancestry_rarity {
   common
   exotic
+}
+
+enum monster_role {
+  melee
+  ranged
+  controller
+  support
+  aoe
+  summoner
+  striker
+  ambusher
+  defender
 }
 
 model Source {
