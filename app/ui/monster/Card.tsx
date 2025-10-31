@@ -105,20 +105,6 @@ const MonsterDescription: React.FC<{
         {formatSizeKind(monster)}
         {variant === "minion" && " Minion"}
       </p>
-      {monster.families.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {monster.families.map((family) => (
-            <Link
-              key={family.id}
-              href={getFamilyUrl(family)}
-              className="text-sm font-sans flex small-caps font-semibold"
-            >
-              <Users className="size-4 mr-1 text-flame" />
-              <span>{family.name}</span>
-            </Link>
-          ))}
-        </div>
-      )}
     </CardDescription>
   );
 };
@@ -128,55 +114,51 @@ const MonsterStats: React.FC<{
   variant: "legendary" | "minion" | "standard";
   className?: string;
 }> = ({ monster, variant, className }) => {
-  const statsClasses =
-    "font-slab font-black flex flex-wrap items-center justify-end min-w-fit";
-
+  const classes = "h-fit flex items-start justify-center font-slab font-black";
   return (
-    <StatsGroup className={className} monster={monster}>
-      <div className={statsClasses}>
-        {(variant === "legendary" || variant === "standard") && (
-          <>
-            {monster.armor === "medium" && <ArmorStat value="M" />}
-            {monster.armor === "heavy" && <ArmorStat value="H" />}
-          </>
-        )}
-        {variant !== "legendary" && (
-          <>
-            <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
-            <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
-            <Stat name="climb" value={monster.climb} SvgIcon={ClimbIcon} />
-            <Stat name="burrow" value={monster.burrow} SvgIcon={BurrowIcon} />
+    <StatsGroup className={cn(classes, className)} monster={monster}>
+      {(variant === "legendary" || variant === "standard") && (
+        <>
+          {monster.armor === "medium" && <ArmorStat value="M" />}
+          {monster.armor === "heavy" && <ArmorStat value="H" />}
+        </>
+      )}
+      {variant !== "legendary" && (
+        <>
+          <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
+          <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
+          <Stat name="climb" value={monster.climb} SvgIcon={ClimbIcon} />
+          <Stat name="burrow" value={monster.burrow} SvgIcon={BurrowIcon} />
+          <Stat
+            name="teleport"
+            value={monster.teleport}
+            SvgIcon={TeleportIcon}
+          />
+          {monster.speed !== 6 && (
             <Stat
-              name="teleport"
-              value={monster.teleport}
-              SvgIcon={TeleportIcon}
+              name="speed"
+              value={monster.speed}
+              SvgIcon={SpeedIcon}
+              showZero={true}
             />
-            {monster.speed !== 6 && (
-              <Stat
-                name="speed"
-                value={monster.speed}
-                SvgIcon={SpeedIcon}
-                showZero={true}
-              />
-            )}
-          </>
-        )}
-        {variant === "legendary" && (
-          <>
-            <HPStat value={monster.hp} />
-            <SavesStat>
-              <div className="flex flex-col">
-                {monster.saves?.split(",").map((save) => (
-                  <span key={save} className="block">
-                    {save}
-                  </span>
-                ))}
-              </div>
-            </SavesStat>
-          </>
-        )}
-        {variant === "standard" && <HPStat value={monster.hp} />}
-      </div>
+          )}
+        </>
+      )}
+      {variant === "legendary" && (
+        <>
+          <HPStat value={monster.hp} />
+          <SavesStat>
+            <div className="flex flex-col">
+              {monster.saves?.split(",").map((save) => (
+                <span key={save} className="block">
+                  {save}
+                </span>
+              ))}
+            </div>
+          </SavesStat>
+        </>
+      )}
+      {variant === "standard" && <HPStat value={monster.hp} />}
     </StatsGroup>
   );
 };
@@ -188,7 +170,7 @@ const MonsterHeader: React.FC<{
   variant: "legendary" | "minion" | "standard";
 }> = ({ monster, link = true, variant }) => {
   const headerClasses = cn(
-    "gap-0 flex",
+    "gap-1 flex flex-col",
     variant === "minion" &&
       "has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0"
   );
@@ -196,17 +178,29 @@ const MonsterHeader: React.FC<{
   return (
     <div
       data-slot="card-header"
-      className={cn("@container/card-header gap-1.5 px-4 grow", headerClasses)}
+      className={cn("@container/card-header gap-1 px-4 grow", headerClasses)}
     >
-      <div className="w-fit">
-        <MonsterTitle monster={monster} link={link} variant={variant} />
-        <MonsterDescription monster={monster} variant={variant} />
+      <div className="flex flex-wrap-reverse items-end">
+        <div className="flex-1">
+          <MonsterTitle monster={monster} link={link} variant={variant} />
+          <MonsterDescription monster={monster} variant={variant} />
+        </div>
+        <MonsterStats monster={monster} variant={variant} />
       </div>
-      <MonsterStats
-        className="grow items-start justify-end"
-        monster={monster}
-        variant={variant}
-      />
+      {monster.families.length > 0 && (
+        <div className="flex flex-wrap gap-x-2">
+          {monster.families.map((family) => (
+            <Link
+              key={family.id}
+              href={getFamilyUrl(family)}
+              className="text-sm font-sans flex gap-0.5 small-caps font-semibold"
+            >
+              <Users className="size-4 text-flame" />
+              <span>{family.name}</span>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -233,7 +227,7 @@ export const Card = ({
   });
   return (
     <div id={`monster-${monster.id}`}>
-      <ShadcnCard className={className}>
+      <ShadcnCard className={cn("min-w-xs", className)}>
         <MonsterHeader
           monster={monster}
           link={link}

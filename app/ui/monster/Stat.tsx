@@ -44,7 +44,7 @@ export const Stat: React.FC<{
     <span
       id={name}
       className={cn(
-        "flex items-center ml-2 text-lg text-content font-bold leading-6",
+        "h-fit flex items-center ml-2 text-lg text-content font-bold leading-6",
         className
       )}
     >

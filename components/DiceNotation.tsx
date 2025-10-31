@@ -88,8 +88,9 @@ function DiceDrawer({ diceText }: { diceText: string }) {
       <DrawerTrigger asChild>
         <span className="inline-flex gap-0.5 items-baseline cursor-pointer hover:text-flame">
           {dieToIcon(parsed.dieSize)}
-          {parsed.tensOnes ? `d${parsed.dieSize.toString().repeat(parsed.numDice)}` :
-            `${parsed.numDice}d${parsed.dieSize}`}
+          {parsed.tensOnes
+            ? `d${parsed.dieSize.toString().repeat(parsed.numDice)}`
+            : `${parsed.numDice}d${parsed.dieSize}`}
           {parsed.modifier > 0
             ? `+${parsed.modifier}`
             : parsed.modifier < 0

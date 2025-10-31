@@ -17,6 +17,10 @@ interface MonsterCardActionsProps {
 export default function CardActions({ monster }: MonsterCardActionsProps) {
   const isPublic = monster.visibility === "public";
 
+  if (!monster.id) {
+    return null;
+  }
+
   return (
     <div className="flex gap-2">
       <ShareMenu disabled={!isPublic}>
