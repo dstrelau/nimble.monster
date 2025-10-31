@@ -421,6 +421,27 @@ export const findMonsterCollections = async (monsterId: string) => {
   }));
 };
 
+export const findMonsterRemixes = async (monsterId: string) => {
+  if (!isValidUUID(monsterId)) return [];
+
+  const remixes = await prisma.monster.findMany({
+    where: {
+      remixedFromId: monsterId,
+      visibility: "public",
+    },
+    include: {
+      creator: true,
+    },
+    orderBy: { name: "asc" },
+  });
+
+  return remixes.map((monster) => ({
+    id: monster.id,
+    name: monster.name,
+    creator: toUser(monster.creator),
+  }));
+};
+
 export const createMonster = async (
   input: CreateMonsterInput,
   discordId: string

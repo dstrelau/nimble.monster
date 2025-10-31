@@ -4,6 +4,7 @@ import { Card } from "@/app/ui/monster/Card";
 import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { MonsterCollections } from "@/components/MonsterCollections";
 import { MonsterDetailActions } from "@/components/MonsterDetailActions";
+import { MonsterRemixes } from "@/components/MonsterRemixes";
 import { auth } from "@/lib/auth";
 import { monstersService } from "@/lib/services/monsters";
 import { cn } from "@/lib/utils";
@@ -81,6 +82,7 @@ export default async function MonsterPage({
   }
 
   const collections = await monstersService.getMonsterCollections(uid);
+  const remixes = await monstersService.getMonsterRemixes(uid);
 
   // if monster is not public, then user must be creator
   const isOwner =
@@ -108,6 +110,7 @@ export default async function MonsterPage({
       >
         <Card monster={monster} creator={monster.creator} link={false} />
         <MonsterCollections collections={collections} />
+        <MonsterRemixes remixes={remixes} />
       </div>
     </div>
   );

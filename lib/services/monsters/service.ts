@@ -79,6 +79,10 @@ export class MonstersService {
     return repository.findMonsterCollections(monsterId);
   }
 
+  async getMonsterRemixes(monsterId: string) {
+    return repository.findMonsterRemixes(monsterId);
+  }
+
   async createMonster(
     input: CreateMonsterInput,
     creatorDiscordId: string

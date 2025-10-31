@@ -294,25 +294,28 @@ export const Card = ({
           )}
 
           {monster.remixedFrom && (
-            <div className="flex items-center gap-1 justify-center text-sm text-muted-foreground">
+            <div className="text-center text-sm text-muted-foreground">
               <span>
                 remixed from{" "}
-                <Link href={getMonsterUrl(monster.remixedFrom)}>
+                <Link
+                  href={getMonsterUrl(monster.remixedFrom)}
+                  className="font-medium"
+                >
                   {monster.remixedFrom.name}
                 </Link>
               </span>
               {monster.creator.discordId !==
                 monster.remixedFrom.creator.discordId && (
                 <>
-                  <span>by</span>
+                  <span> by </span>
                   <Link
                     href={getUserUrl(monster.remixedFrom.creator)}
-                    className="flex items-center gap-1"
+                    className="font-medium inline-flex items-baseline gap-0.5"
                   >
                     <UserAvatar
                       user={monster.remixedFrom.creator}
-                      size={16}
-                      className="inline-block"
+                      size={14}
+                      className="inline"
                     />
                     <span>{monster.remixedFrom.creator.displayName}</span>
                   </Link>
