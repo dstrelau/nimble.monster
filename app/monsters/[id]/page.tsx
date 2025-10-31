@@ -93,9 +93,11 @@ export default async function MonsterPage({
   return (
     <div className="container mx-auto">
       <div className="flex justify-end items-start gap-2 mb-6">
-        {isOwner && <MonsterDetailActions monster={monster} />}
         {session?.user && (
-          <AddToCollectionDialog type="monster" monsterId={monster.id} />
+          <>
+            <MonsterDetailActions monster={monster} isOwner={isOwner} />
+            <AddToCollectionDialog type="monster" monsterId={monster.id} />
+          </>
         )}
       </div>
       <div

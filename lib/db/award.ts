@@ -355,6 +355,7 @@ export async function getEntitiesForAward(awardId: string) {
           source: true,
           monsterConditions: { include: { condition: true } },
           monsterAwards: { include: { award: true } },
+          remixedFrom: { include: { creator: true } },
         },
         orderBy: { name: "asc" },
       })

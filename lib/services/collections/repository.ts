@@ -275,6 +275,7 @@ export const findPublicCollectionById = async (
               source: true,
               monsterConditions: { include: { condition: true } },
               monsterAwards: { include: { award: true } },
+              remixedFrom: { include: { creator: true } },
             },
           },
         },

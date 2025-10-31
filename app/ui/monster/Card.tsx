@@ -7,6 +7,7 @@ import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import { CardContentWithGap } from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
+import { UserAvatar } from "@/components/app/UserAvatar";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { Level } from "@/components/Level";
 import {
@@ -19,7 +20,7 @@ import type { Monster } from "@/lib/services/monsters";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatSizeKind } from "@/lib/utils/monster";
-import { getFamilyUrl, getMonsterUrl } from "@/lib/utils/url";
+import { getFamilyUrl, getMonsterUrl, getUserUrl } from "@/lib/utils/url";
 import CardActions from "./CardActions";
 import {
   ArmorStat,
@@ -290,6 +291,34 @@ export const Card = ({
               moreInfo={monster.moreInfo}
               conditions={conditions}
             />
+          )}
+
+          {monster.remixedFrom && (
+            <div className="flex items-center gap-1 justify-center text-sm text-muted-foreground">
+              <span>
+                remixed from{" "}
+                <Link href={getMonsterUrl(monster.remixedFrom)}>
+                  {monster.remixedFrom.name}
+                </Link>
+              </span>
+              {monster.creator.discordId !==
+                monster.remixedFrom.creator.discordId && (
+                <>
+                  <span>by</span>
+                  <Link
+                    href={getUserUrl(monster.remixedFrom.creator)}
+                    className="flex items-center gap-1"
+                  >
+                    <UserAvatar
+                      user={monster.remixedFrom.creator}
+                      size={16}
+                      className="inline-block"
+                    />
+                    <span>{monster.remixedFrom.creator.displayName}</span>
+                  </Link>
+                </>
+              )}
+            </div>
           )}
         </CardContentWithGap>
 

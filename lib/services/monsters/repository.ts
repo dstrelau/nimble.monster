@@ -151,6 +151,7 @@ export const paginateMonsters = async ({
       source: true,
       monsterConditions: { include: { condition: true } },
       monsterAwards: { include: { award: true } },
+      remixedFrom: { include: { creator: true } },
     },
     orderBy,
     take: limit + 1,
@@ -204,6 +205,7 @@ export const findMonster = async (id: string): Promise<Monster | null> => {
       source: true,
       monsterConditions: { include: { condition: true } },
       monsterAwards: { include: { award: true } },
+      remixedFrom: { include: { creator: true } },
     },
   });
   return monster ? toMonster(monster) : null;
@@ -222,6 +224,7 @@ export const findPublicMonsterById = async (
       source: true,
       monsterConditions: { include: { condition: true } },
       monsterAwards: { include: { award: true } },
+      remixedFrom: { include: { creator: true } },
     },
   });
   return monster ? toMonster(monster) : null;
@@ -241,6 +244,7 @@ export const findMonsterWithCreatorId = async (
       source: true,
       monsterConditions: { include: { condition: true } },
       monsterAwards: { include: { award: true } },
+      remixedFrom: { include: { creator: true } },
     },
   });
   return monster ? toMonster(monster) : null;
@@ -270,6 +274,7 @@ export const listPublicMonstersForUser = async (
         source: true,
         monsterConditions: { include: { condition: true } },
         monsterAwards: { include: { award: true } },
+        remixedFrom: { include: { creator: true } },
       },
       where: {
         userId,
@@ -293,6 +298,7 @@ export const listAllMonstersForDiscordID = async (
         source: true,
         monsterConditions: { include: { condition: true } },
         monsterAwards: { include: { award: true } },
+        remixedFrom: { include: { creator: true } },
       },
       where: { creator: { discordId: id } },
       orderBy: { name: "asc" },
@@ -381,6 +387,7 @@ export const listMonstersByFamilyId = async (
         source: true,
         monsterConditions: { include: { condition: true } },
         monsterAwards: { include: { award: true } },
+        remixedFrom: { include: { creator: true } },
       },
       where: {
         monsterFamilies: { some: { familyId } },
@@ -445,6 +452,7 @@ export const createMonster = async (
     saves = [],
     sourceId,
     role,
+    remixedFromId,
   } = input;
 
   const user = await prisma.user.findUnique({
@@ -491,6 +499,7 @@ export const createMonster = async (
         connect: { id: user.id },
       },
       ...(sourceId && { source: { connect: { id: sourceId } } }),
+      ...(remixedFromId && { remixedFrom: { connect: { id: remixedFromId } } }),
     },
     include: {
       monsterFamilies: { include: { family: { include: { creator: true } } } },
@@ -498,6 +507,7 @@ export const createMonster = async (
       source: true,
       monsterConditions: { include: { condition: true } },
       monsterAwards: { include: { award: true } },
+      remixedFrom: { include: { creator: true } },
     },
   });
 
@@ -598,6 +608,7 @@ export const updateMonster = async (
       source: true,
       monsterConditions: { include: { condition: true } },
       monsterAwards: { include: { award: true } },
+      remixedFrom: { include: { creator: true } },
     },
   });
 

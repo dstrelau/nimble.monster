@@ -32,6 +32,7 @@ export const toMonster = (
         creator: true;
         source: true;
         monsterAwards: { include: { award: true } };
+        remixedFrom: { include: { creator: true } };
       };
     },
     "findMany"
@@ -82,6 +83,14 @@ export const toMonster = (
         createdAt: ma.award.createdAt,
         updatedAt: ma.award.updatedAt,
       })) || undefined,
+    remixedFromId: m.remixedFromId || null,
+    remixedFrom: m.remixedFrom
+      ? {
+          id: m.remixedFrom.id,
+          name: m.remixedFrom.name,
+          creator: toUser(m.remixedFrom.creator),
+        }
+      : null,
   };
 };
 

@@ -113,6 +113,7 @@ model Monster {
   id                 String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userId             String                @map("user_id") @db.Uuid
   sourceId           String?               @map("source_id") @db.Uuid
+  remixedFromId      String?               @map("remixed_from_id") @db.Uuid
   name               String
   level              String
   hp                 Int
@@ -139,8 +140,10 @@ model Monster {
   minion             Boolean               @default(false)
   levelInt           Int                   @default(0) @map("level_int")
   role               monster_role?
-  creator            User                  @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  creator            User                  @relation("MonsterCreator", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   source             Source?               @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  remixedFrom        Monster?              @relation("MonsterRemix", fields: [remixedFromId], references: [id], onUpdate: NoAction)
+  remixes            Monster[]             @relation("MonsterRemix")
   monsterCollections MonsterInCollection[]
   monsterConditions  MonsterCondition[]
   monsterFamilies    MonsterFamily[]
@@ -338,7 +341,7 @@ model User {
   companions   Companion[]
   conditions   Condition[]
   items        Item[]
-  monsters     Monster[]
+  monsters     Monster[]     @relation("MonsterCreator")
   sessions     Session[]
   subclasses   Subclass[]
   Family       Family[]

@@ -107,6 +107,8 @@ export interface Monster extends MonsterMini {
   awards?: Award[];
   updatedAt: Date;
   imageUrl?: string;
+  remixedFromId?: string | null;
+  remixedFrom?: { id: string; name: string; creator: User } | null;
 }
 
 export interface SearchMonstersParams {
@@ -175,6 +177,7 @@ export interface CreateMonsterInput {
   saves?: string[];
   sourceId?: string;
   role?: MonsterRole | null;
+  remixedFromId?: string;
 }
 
 export interface UpdateMonsterInput {

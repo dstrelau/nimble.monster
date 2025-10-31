@@ -813,18 +813,43 @@ const HPInput: React.FC<{
 
 interface BuildMonsterProps {
   existingMonster?: Monster;
+  remixedFromId?: string;
 }
 
-const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
+const BuildMonster: React.FC<BuildMonsterProps> = ({
+  existingMonster,
+  remixedFromId,
+}) => {
   const id = useId();
   const router = useRouter();
 
   const { data: session } = useSession();
   const creator = session?.user || UNKNOWN_USER;
 
-  const [monster, setMonster] = useState<Monster>(
-    () => existingMonster || { ...EXAMPLE_MONSTERS.empty, creator }
-  );
+  const [monster, setMonster] = useState<Monster>(() => {
+    if (existingMonster) {
+      const baseMonster = {
+        ...existingMonster,
+        creator,
+      };
+
+      if (remixedFromId) {
+        return {
+          ...baseMonster,
+          id: "",
+          visibility: "public",
+          remixedFrom: {
+            id: existingMonster.id,
+            name: existingMonster.name,
+            creator: existingMonster.creator,
+          },
+        };
+      }
+
+      return baseMonster;
+    }
+    return { ...EXAMPLE_MONSTERS.empty, creator };
+  });
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -867,7 +892,10 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({ existingMonster }) => {
 
       return fetchApi<Monster>("/api/monsters", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          remixedFromId,
+        }),
       });
     },
     onSuccess: (newMonster) => {
