@@ -456,6 +456,7 @@ enum monster_role {
   striker
   ambusher
   defender
+  skirmisher
 }
 
 model Source {

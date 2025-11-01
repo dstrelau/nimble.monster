@@ -62,6 +62,7 @@ export const MONSTER_ROLES = [
   { value: "defender", label: "Defender" },
   { value: "melee", label: "Melee" },
   { value: "ranged", label: "Ranged" },
+  { value: "skirmisher", label: "Skirmisher" },
   { value: "striker", label: "Striker" },
   { value: "summoner", label: "Summoner" },
   { value: "support", label: "Support" },
