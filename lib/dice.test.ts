@@ -134,17 +134,32 @@ describe("calculateProbabilityDistribution", () => {
     if (!vicious) throw new Error("Failed to parse dice notation");
     const dist = calculateProbabilityDistribution(vicious);
 
+    // With the corrected vicious rules, each max roll gets its own vicious die
+    // Roll 1: miss (0) - prob 1/4
     expect(dist.get(0)).toBe(1 / 4);
     expect(dist.get(1)).toBe(undefined);
-    expect(dist.get(2)).toBe(1 / 4);
-    expect(dist.get(3)).toBe(1 / 4);
-    expect(dist.get(4)).toBe(undefined);
-    expect(dist.get(5)).toBe(undefined);
-    expect(dist.get(6)).toBe((1 / 4) ** 3); // 4,1,1
-    expect(dist.get(7)).toBe(2 * (1 / 4) ** 3); // 4,1,v=2 or 4,2,v=1
 
-    // 4,4,1,v=4; 4,4,2,v=3; 4,4,3,v=2
-    expect(dist.get(13)).toBeCloseTo(3 * (1 / 4) ** 4, 10);
+    // Roll 2: hit (2) - prob 1/4
+    expect(dist.get(2)).toBe(1 / 4);
+
+    // Roll 3: hit (3) - prob 1/4
+    expect(dist.get(3)).toBe(1 / 4);
+
+    // Roll 4: crit! explosion + 1 vicious die
+    // - 4 (explosion) + 1 (vicious) + 1 (final roll) = 6: prob (1/4) * (1/4) * (1/4)
+    expect(dist.get(6)).toBe((1 / 4) ** 3); // 4,v=1,1
+
+    // - 4 + v (any value 1-4) + non-max-roll
+    // Example: 4 + 2 (vicious) + 1 (final) = 7
+    // This can happen as: 4,v=1,2 or 4,v=2,1
+    expect(dist.get(7)).toBe(2 * (1 / 4) ** 3);
+
+    // Double explosion: 4, v1, 4 (explodes again), v2, final
+    // 4 + v1 + 4 + v2 + final where final != 4
+    // Example: 4 + 1 (v1) + 4 + 1 (v2) + 3 (final) = 13
+    // Outcomes that sum to 13: v1 + v2 + final = 5
+    // (1,1,3), (1,2,2), (1,3,1), (2,1,2), (2,2,1), (3,1,1) = 6 combinations
+    expect(dist.get(13)).toBeCloseTo(6 * (1 / 4) ** 5, 10);
   });
 
   it("handles advantage notation parsing", () => {
