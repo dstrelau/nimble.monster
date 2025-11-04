@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 interface PaperforgeImageProps {
   id?: string;
   name?: string;
+  size?: number;
   className?: string;
   alt?: string;
 }
@@ -12,6 +13,7 @@ interface PaperforgeImageProps {
 export function PaperforgeImage({
   id,
   name,
+  size = 400,
   className,
   alt,
 }: PaperforgeImageProps) {
@@ -33,8 +35,8 @@ export function PaperforgeImage({
     <Image
       src={src}
       alt={altText}
-      width={200}
-      height={200}
+      width={size}
+      height={size}
       className={cn(className)}
     />
   );

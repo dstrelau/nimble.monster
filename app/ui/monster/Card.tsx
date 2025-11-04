@@ -1,5 +1,5 @@
 "use client";
-import { Anvil, ExternalLink, Users } from "lucide-react";
+import { Anvil, Users } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
@@ -80,7 +80,8 @@ const MonsterTitle: React.FC<{
       {monster.paperforgeId && (
         <PaperforgeImage
           id={monster.paperforgeId}
-          className="float-left mr-2 w-16 h-16 object-cover"
+          className="float-left mr-2 size-16 object-cover"
+          size={64}
         />
       )}
       {link && monster.id ? (
@@ -180,8 +181,7 @@ const MonsterHeader: React.FC<{
   const headerClasses = cn(
     "gap-1 flex flex-col relative",
     variant === "minion" &&
-      "has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0",
-    // monster.paperforgeId && "pl-20"
+      "has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0"
   );
 
   return (
@@ -302,16 +302,16 @@ export const Card = ({
           {paperforgeEntry && (
             <div className="flex pb-1 gap-1 items-center text-center text-sm text-muted-foreground">
               <Anvil className="size-3 stroke-muted-foreground" />
-                Paper Forge:{" "}
-                <Link
-                  external
-                  href={
-                    paperforgeEntry.postUrl ||
-                    "https://www.patreon.com/c/paperforge"
-                  }
-                >
-                  #{paperforgeEntry.id} {paperforgeEntry?.name}
-                </Link>
+              Paper Forge:{" "}
+              <Link
+                external
+                href={
+                  paperforgeEntry.postUrl ||
+                  "https://www.patreon.com/c/paperforge"
+                }
+              >
+                #{paperforgeEntry.id} {paperforgeEntry?.name}
+              </Link>
             </div>
           )}
           {monster.remixedFrom && (

@@ -14,8 +14,9 @@ export default function TermsPage() {
 
       <h2>Paper Forge</h2>
       <p>
-        Monster images copyright (c) Paper Forge. All rights reserved.
-        Used with permission. Support them on <Link href="https://www.patreon.com/c/paperforge">Patreon</Link>.
+        Monster images copyright (c) Paper Forge. All rights reserved. Used with
+        permission. Support them on{" "}
+        <Link href="https://www.patreon.com/c/paperforge">Patreon</Link>.
       </p>
 
       <h2>Game Icons</h2>
