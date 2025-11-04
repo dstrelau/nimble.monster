@@ -42,7 +42,7 @@ export const PaperforgeImageSelect: React.FC<{
     ...PAPERFORGE_ENTRIES.map((e: PaperForgeEntry) => ({
       value: e.id,
       label: `${e.name} (#${e.id})`,
-    })),
+    })).sort((a, b) => a.label.localeCompare(b.label)),
   ];
 
   const selectedLabel =
