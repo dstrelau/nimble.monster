@@ -473,6 +473,7 @@ export const createMonster = async (
     saves = [],
     sourceId,
     role,
+    paperforgeId,
     remixedFromId,
   } = input;
 
@@ -516,6 +517,7 @@ export const createMonster = async (
       legendary,
       minion,
       role,
+      paperforgeId,
       creator: {
         connect: { id: user.id },
       },
@@ -581,6 +583,7 @@ export const updateMonster = async (
     families = [],
     sourceId,
     role,
+    paperforgeId,
   } = input;
 
   if (!isValidUUID(id)) {
@@ -614,6 +617,7 @@ export const updateMonster = async (
       actionPreface,
       moreInfo,
       role,
+      paperforgeId,
       updatedAt: new Date(),
       ...(sourceId !== undefined &&
         sourceId !== null && {

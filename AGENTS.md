@@ -1,4 +1,5 @@
 # Build Commands
+
 - `pnpm run check` - Lint and type-check (dev-safe, use this during development)
   - You must run this after making changes to ensure there are no type errors or lint errors.
 - `pnpm run lint` - Biome check (linting, formatting, import sorting)
@@ -11,6 +12,7 @@
   - Do not ever run `pnpm run dev`
 
 # Code Style
+
 - Prefer SSR when possible
 - Use the latest Next.js built-in features over external libraries
 - Type all props and state with TypeScript interfaces
@@ -23,11 +25,13 @@
   - Do not modify shadcn components in components/ui without explicit confirmation
 - In this version of Next.js, params are a Promise that need to be awaited.
 - Use OpenTelemetry.
-- Do not add console.* functions permanently (they may be used for temporary debugging).
+- Do not add console.\* functions permanently (they may be used for temporary debugging).
 - Use `cn `from lib/utils.ts for constructing dynamic className attributes. DO NOT use string concatenation for className.
+- You may not use an empty string value="" on a <Select> element. Use "none" and special-case this value to be null/undefined as appropriate.
 - Use lucide icons instead of custom SVGs
 
 # Tests
+
 - `pnpm run test` to run tests.
 - When adding new functionality, make sure you add tests.
 - Use @testing-library/react and vitest.

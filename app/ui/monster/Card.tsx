@@ -1,5 +1,5 @@
 "use client";
-import { Users } from "lucide-react";
+import { Anvil, ExternalLink, Users } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
@@ -10,12 +10,14 @@ import { Link } from "@/components/app/Link";
 import { UserAvatar } from "@/components/app/UserAvatar";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { Level } from "@/components/Level";
+import { PaperforgeImage } from "@/components/PaperforgeImage";
 import {
   CardDescription,
   CardTitle,
   Card as ShadcnCard,
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
+import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
 import type { Monster } from "@/lib/services/monsters";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -75,6 +77,12 @@ const MonsterTitle: React.FC<{
 
   return (
     <CardTitle className={titleClasses}>
+      {monster.paperforgeId && (
+        <PaperforgeImage
+          id={monster.paperforgeId}
+          className="float-left mr-2 w-16 h-16 object-cover"
+        />
+      )}
       {link && monster.id ? (
         <Link href={getMonsterUrl(monster)}>{monster.name}</Link>
       ) : (
@@ -170,9 +178,10 @@ const MonsterHeader: React.FC<{
   variant: "legendary" | "minion" | "standard";
 }> = ({ monster, link = true, variant }) => {
   const headerClasses = cn(
-    "gap-1 flex flex-col",
+    "gap-1 flex flex-col relative",
     variant === "minion" &&
-      "has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0"
+      "has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0",
+    // monster.paperforgeId && "pl-20"
   );
 
   return (
@@ -225,6 +234,9 @@ export const Card = ({
   const { allConditions: conditions } = useConditions({
     creatorId: creator?.discordId,
   });
+  const paperforgeEntry = PAPERFORGE_ENTRIES.find(
+    (e) => e.id === monster.paperforgeId
+  );
   return (
     <div id={`monster-${monster.id}`}>
       <ShadcnCard className={cn("min-w-xs", className)}>
@@ -287,6 +299,21 @@ export const Card = ({
             />
           )}
 
+          {paperforgeEntry && (
+            <div className="flex pb-1 gap-1 items-center text-center text-sm text-muted-foreground">
+              <Anvil className="size-3 stroke-muted-foreground" />
+                Paper Forge:{" "}
+                <Link
+                  external
+                  href={
+                    paperforgeEntry.postUrl ||
+                    "https://www.patreon.com/c/paperforge"
+                  }
+                >
+                  #{paperforgeEntry.id} {paperforgeEntry?.name}
+                </Link>
+            </div>
+          )}
           {monster.remixedFrom && (
             <div className="text-center text-sm text-muted-foreground">
               <span>

@@ -66,6 +66,7 @@ import { useUserFamiliesQuery } from "../families/hooks";
 import { AbilitiesSection } from "../ui/create/AbilitiesSection";
 import { ActionsSection } from "../ui/create/ActionsSection";
 import { SourceSelect } from "../ui/create/SourceSelect";
+import { PaperforgeImageSelect } from "../ui/monster/PaperforgeImageSelect";
 import { updateMonster as updateMonsterAction } from "./actions";
 
 const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
@@ -290,13 +291,18 @@ const LegendaryForm: React.FC<{
         onChange={(kind) => setMonster({ ...monster, kind })}
       />
     </div>
-    <div>
+    <div className="grid grid-cols-3 gap-x-6">
       <FormInput
         label="Name"
         name="name"
         value={monster.name}
-        className="col-span-7"
+        className="col-span-2"
         onChange={(name) => setMonster({ ...monster, name })}
+      />
+      <PaperforgeImageSelect
+        value={monster.paperforgeId}
+        onChange={(paperforgeId) => setMonster({ ...monster, paperforgeId })}
+        className="col-span-1"
       />
     </div>
     <div>
@@ -387,13 +393,18 @@ const MinionForm: React.FC<{
 }> = ({ monster, setMonster }) => {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-x-6">
+      <div className="grid grid-cols-3 gap-x-6">
         <FormInput
           label="Name"
           name="name"
           value={monster.name}
           className="col-span-2"
           onChange={(name) => setMonster({ ...monster, name })}
+        />
+        <PaperforgeImageSelect
+          value={monster.paperforgeId}
+          onChange={(paperforgeId) => setMonster({ ...monster, paperforgeId })}
+          className="col-span-1"
         />
       </div>
       <div className="grid grid-cols-5 gap-x-6">
@@ -518,13 +529,18 @@ const StandardForm: React.FC<{
 }> = ({ monster, setMonster }) => {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-x-6">
+      <div className="grid grid-cols-3 gap-x-6">
         <FormInput
           label="Name"
           name="name"
           value={monster.name}
           className="col-span-2"
           onChange={(name) => setMonster({ ...monster, name })}
+        />
+        <PaperforgeImageSelect
+          value={monster.paperforgeId}
+          onChange={(paperforgeId) => setMonster({ ...monster, paperforgeId })}
+          className="col-span-1"
         />
       </div>
       <div className="grid grid-cols-5 gap-x-6">
@@ -887,6 +903,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           families: data.families || [],
           sourceId: data.source?.id ?? null,
           role: data.role || null,
+          paperforgeId: data.paperforgeId ?? null,
         });
       }
 

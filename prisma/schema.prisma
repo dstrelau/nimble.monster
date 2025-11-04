@@ -11,18 +11,18 @@ datasource db {
 }
 
 model Collection {
-  id                      String                     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  creatorId               String                     @map("user_id") @db.Uuid
-  name                    String
-  public                  Boolean?                   @default(false)
-  createdAt               DateTime?                  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt               DateTime?                  @default(now()) @map("updated_at") @db.Timestamptz(6)
-  description             String                     @default("")
-  visibility              collection_visibility      @default(public)
-  creator                 User                       @relation(fields: [creatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  itemCollections         ItemInCollection[]
-  monsterCollections      MonsterInCollection[]
-  spellSchoolCollections  SpellSchoolInCollection[]
+  id                     String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  creatorId              String                    @map("user_id") @db.Uuid
+  name                   String
+  public                 Boolean?                  @default(false)
+  createdAt              DateTime?                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt              DateTime?                 @default(now()) @map("updated_at") @db.Timestamptz(6)
+  description            String                    @default("")
+  visibility             collection_visibility     @default(public)
+  creator                User                      @relation(fields: [creatorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  itemCollections        ItemInCollection[]
+  monsterCollections     MonsterInCollection[]
+  spellSchoolCollections SpellSchoolInCollection[]
 
   @@index([creatorId], map: "idx_collections_user_id")
   @@map("collections")
@@ -140,6 +140,7 @@ model Monster {
   minion             Boolean               @default(false)
   levelInt           Int                   @default(0) @map("level_int")
   role               monster_role?
+  paperforgeId       String?               @map("paperforge_id")
   creator            User                  @relation("MonsterCreator", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   source             Source?               @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
   remixedFrom        Monster?              @relation("MonsterRemix", fields: [remixedFromId], references: [id], onUpdate: NoAction)
@@ -251,18 +252,18 @@ model SubclassAbility {
 }
 
 model SpellSchool {
-  id                    String                     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name                  String
-  description           String?
-  visibility            spell_school_visibility    @default(public)
-  userId                String                     @map("user_id") @db.Uuid
-  sourceId              String?                    @map("source_id") @db.Uuid
-  createdAt             DateTime                   @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt             DateTime                   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  creator               User                       @relation(fields: [userId], references: [id], onUpdate: NoAction)
-  source                Source?                    @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
-  spells                Spell[]
-  schoolAwards          SpellSchoolAward[]
+  id                     String                    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name                   String
+  description            String?
+  visibility             spell_school_visibility   @default(public)
+  userId                 String                    @map("user_id") @db.Uuid
+  sourceId               String?                   @map("source_id") @db.Uuid
+  createdAt              DateTime                  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt              DateTime                  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  creator                User                      @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  source                 Source?                   @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  spells                 Spell[]
+  schoolAwards           SpellSchoolAward[]
   spellSchoolCollections SpellSchoolInCollection[]
 
   @@index([userId], map: "idx_spell_schools_user_id")

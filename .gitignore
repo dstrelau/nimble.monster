@@ -37,3 +37,5 @@ tmp/
 
 public/game-icons/*
 public/blob-storage/
+data/paperforge*
+!data/paperforge.csv

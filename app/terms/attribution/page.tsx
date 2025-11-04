@@ -1,13 +1,21 @@
+import { Link } from "@/components/app/Link";
+
 export default function TermsPage() {
   return (
     <div className="prose prose-neutral dark:prose-invert">
       <p>
-        <strong>Last Updated:</strong> 2025-10-16
+        <strong>Last Updated:</strong> 2025-11-04
       </p>
       <p>
         Nimble Nexus is an independent product published under the Nimble 3rd
         Party Creator License and is not affiliated with Nimble Co. Nimble ©
         2025 Nimble Co.
+      </p>
+
+      <h2>Paper Forge</h2>
+      <p>
+        Monster images copyright (c) Paper Forge. All rights reserved.
+        Used with permission. Support them on <Link href="https://www.patreon.com/c/paperforge">Patreon</Link>.
       </p>
 
       <h2>Game Icons</h2>

@@ -83,6 +83,7 @@ export interface MonsterMini {
   size: MonsterSize;
   armor: MonsterArmor;
   visibility: "public" | "private";
+  paperforgeId?: string;
   createdAt: Date;
   role?: MonsterRole | null;
 }
@@ -178,6 +179,7 @@ export interface CreateMonsterInput {
   saves?: string[];
   sourceId?: string;
   role?: MonsterRole | null;
+  paperforgeId?: string | null;
   remixedFromId?: string;
 }
 
@@ -209,4 +211,5 @@ export interface UpdateMonsterInput {
   families?: { id: string }[];
   sourceId?: string | null;
   role?: MonsterRole | null;
+  paperforgeId?: string | null;
 }
