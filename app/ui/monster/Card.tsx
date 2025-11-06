@@ -11,11 +11,7 @@ import { UserAvatar } from "@/components/app/UserAvatar";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { Level } from "@/components/Level";
 import { PaperforgeImage } from "@/components/PaperforgeImage";
-import {
-  CardDescription,
-  CardTitle,
-  Card as ShadcnCard,
-} from "@/components/ui/card";
+import { Card as ShadcnCard } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
 import type { Monster } from "@/lib/services/monsters";

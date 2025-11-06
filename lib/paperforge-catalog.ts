@@ -88,6 +88,12 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "0013",
   },
   {
+    id: "14",
+    name: "Halfling Assassin",
+    postUrl: "https://www.patreon.com/posts/free-files-13846536",
+    folder: "0014",
+  },
+  {
     id: "15",
     name: "Large Bear",
     postUrl: "https://www.patreon.com/posts/free-files-13969830",
@@ -118,10 +124,76 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "017c",
   },
   {
+    id: "18",
+    name: "Panther",
+    postUrl: "https://www.patreon.com/posts/free-files-14406874",
+    folder: "0018",
+  },
+  {
+    id: "19",
+    name: "Giant Poisonous Snake",
+    postUrl: "https://www.patreon.com/posts/free-files-14534953",
+    folder: "0019",
+  },
+  {
+    id: "20",
+    name: "Erinyes",
+    postUrl: "https://www.patreon.com/posts/free-files-14651672",
+    folder: "0020",
+  },
+  {
+    id: "21",
+    name: "Griffon",
+    postUrl: "https://www.patreon.com/posts/free-files-14774227",
+    folder: "0021",
+  },
+  {
+    id: "22",
+    name: "Dwarf Fighter",
+    postUrl: "https://www.patreon.com/posts/free-files-14886502",
+    folder: "0022",
+  },
+  {
+    id: "23",
+    name: "Monk",
+    postUrl: "https://www.patreon.com/posts/free-files-15010372",
+    folder: "0023",
+  },
+  {
+    id: "24",
+    name: "Dwarf Fighter #2",
+    postUrl: "https://www.patreon.com/posts/free-files-15136843",
+    folder: "0024",
+  },
+  {
     id: "25",
     name: "Owlbear",
     postUrl: "https://www.patreon.com/posts/free-files-15346895",
     folder: "0025",
+  },
+  {
+    id: "25b",
+    name: "Owlbear Cub",
+    postUrl: "https://www.patreon.com/posts/free-files-15346895",
+    folder: "025b",
+  },
+  {
+    id: "26",
+    name: "Knight",
+    postUrl: "VTT25b_OwlbearCub_Free/Portrait/OwlbearCubf.png",
+    folder: "0026",
+  },
+  {
+    id: "27",
+    name: "Bard",
+    postUrl: "https://www.patreon.com/posts/free-files-15558074",
+    folder: "0027",
+  },
+  {
+    id: "28",
+    name: "Barlgura",
+    postUrl: "https://www.patreon.com/posts/release-28-15724795",
+    folder: "0028",
   },
   {
     id: "29",
@@ -148,6 +220,12 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "0032",
   },
   {
+    id: "33",
+    name: "Gnoll Warrior",
+    postUrl: "https://www.patreon.com/posts/32-33-gnoll-16801938",
+    folder: "0033",
+  },
+  {
     id: "34",
     name: "Flind",
     postUrl: "https://www.patreon.com/posts/34-flind-16933680",
@@ -158,6 +236,12 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     name: "GnollCaster",
     postUrl: "https://www.patreon.com/posts/35-36-gnoll-and-17256502",
     folder: "0035",
+  },
+  {
+    id: "36",
+    name: "Hyena",
+    postUrl: "https://www.patreon.com/posts/35-36-gnoll-and-17256502",
+    folder: "0036",
   },
   {
     id: "37",
@@ -209,13 +293,13 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "45",
-    name: "Worg Riders 2",
+    name: "Worg Riders",
     postUrl: "https://www.patreon.com/posts/45-worg-riders-18897516",
     folder: "0045",
   },
   {
     id: "46",
-    name: "Centaur",
+    name: "Centaur #2",
     postUrl: "https://www.patreon.com/posts/46-centaur-2-19375032",
     folder: "0046",
   },
