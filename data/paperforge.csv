@@ -1,770 +1,771 @@
-id,name,postUrl,tokenPng
-1,Goblin Warrior,https://www.patreon.com/posts/free-files-base-10749718,VTT01_GoblinWarrior_Free.zip/VTT01_GoblinWarrior_Free/Portrait/GoblinWarriorF.png
-2,Goblin Archer,https://www.patreon.com/posts/free-files-11213955,VTT02_GoblinArcher_Free.zip/VTT02_GoblinArcher_Free/Portrait/GoblinArcherf.png
-3,Goblin Spearman,https://www.patreon.com/posts/free-files-11310899,VTT03_GoblinSpearman_Free.zip/VTT03_GoblinSpearman_Free/Portrait/GoblinSpearmanF.png
-4,Goblin Elder,https://www.patreon.com/posts/free-files-11444800,VTT04_GoblinElder_Free.zip/VTT04_GoblinElder_Free/Portrait/GoblinElderF.png
-5,Goblin Boss,https://www.patreon.com/posts/free-files-11589769,VTT05_GoblinBoss_Free.zip/VTT05_GoblinBoss_Free/Portrait/GoblinBossF.png
-6,Barbarian,https://www.patreon.com/posts/free-files-11703527,VTT06_Barbarian_Free.zip/VTT06_Barbarian_Free/Portrait/BarbarianF.png
-7,Spectator,https://www.patreon.com/posts/free-files-11836131,VTT07_Spectator_Free.zip/VTT07_Spectator_Free/Portrait/SpectatorF.png
-8,Ghast,https://www.patreon.com/posts/free-files-12141052,VTT08_Ghast_Free.zip/VTT08_Ghast_Free/Portrait/GhastF.png
-9,Kobold,https://www.patreon.com/posts/free-files-12452706,VTT09_Kobold_Free.zip/VTT09_Kobold_Free/Portrait/KoboldF.png
-10,Kobold Sorceror,https://www.patreon.com/posts/free-files-12874549,VTT10_KoboldSorceror_Free.zip/VTT10_KoboldSorceror_Free/Portrait/KoboldSorcerorF.png
-11,Winged Kobold,https://www.patreon.com/posts/free-files-13082785,VTT11_WingedKobold_Free.zip/VTT11_WingedKobold_Free/Portrait/WingedKoboldF.png
-12,Ogre,https://www.patreon.com/file?h=13276940&m=1008167,VTT12_Ogre_Free.zip/VTT12_Ogre_Free/Portrait/OgreF.png
-13,Human Thief,https://www.patreon.com/posts/free-files-13706016,VTT13_HumanThief_Free.zip/VTT13_HumanThief_Free/Portrait/HumanThiefF.png
-14,Halfling Assassin,https://www.patreon.com/posts/free-files-13846536,VTT14_HalflingAssassin_Free.zip/VTT14_HalflingAssassin_Free/Portait/HalflingAssassinF.png
-15,Large Bear,https://www.patreon.com/posts/free-files-13969830,VTT15_Bear_Free.zip/VTT15_Bear_Free/Portrait/BearF.png
-16,Wolf,https://www.patreon.com/posts/free-files-14085414,VTT16_Wolf_Free.zip/VTT16_Wolf_Free/Portrait/WolfF.png
-17a,Bandit (Crossbow),https://www.patreon.com/posts/free-files-14216453,VTT17_Bandit(Crossbow)_Free.zip/VTT17_Bandit(Crossbow)_Free/Portrait/BanditCrossbowFree.png
-17b,Bandit (Daggers),https://www.patreon.com/posts/free-files-14216453,VTT17_Bandit(Daggers)_Free.zip/VTT17_Bandit(Daggers)_Free/Portrait/Bandit(Daggers)Free.png
-17c,Bandit Captain,https://www.patreon.com/posts/free-files-14216453,VTT17_BanditCaptain_Free.zip/VTT17_BanditCaptain_Free/Portrait/BanditCaptainFree.png
-18,Panther,,VTT18_Panther_Free.zip/VTT18_Panther_Free/Portrait/PantherF.png
-19,Giant Poisonous Snake,,VTT19_GiantPoisonousSnake_Free.zip/VTT19_GiantPoisonousSnake_Free/Portrait/GiantPoisonousSnakeF.png
-20,Erinyes,,VTT20_Erinyes_Free.zip/VTT20_Erinyes_Free/Portrait/ErinyesF.png
-21,Griffon,,VTT21_Griffon_Free.zip/VTT21_Griffon_Free/Portrait/GriffonF.png
-22,Dwarf Fighter,,VTT22_DwarfFighter_Free.zip/VTT22_DwarfFighter_Free/Portrait/DwarfFighterF.png
-23,Monk,,VTT23_Monk_Free.zip/VTT23_Monk_Free/Portrait/Monkf.png
-24,Dwarf Fighter,,VTT24_DwarfFighter_Free.zip/VTT24_DwarfFighter_Free/Portrait/DwarfFighterF.png
-25,Owlbear,https://www.patreon.com/posts/free-files-15346895,VTT25_Owlbear_Free.zip/VTT25_Owlbear_Free/Portrait/Owlbearf.png
-26,Knight,,VTT26_Knight_Free.zip/VTT26_Knight_Free/Portrait/KnightF.png
-27,Bard,,VTT27_Bard_Free.zip/VTT27_Bard_Free/Portrait/BardF.png
-28,Barlgura,,VTT28_Barlgura_Free.zip/VTT28_Barlgura_Free/Portrait/BarlguraF.png
-29,Centaur,https://www.patreon.com/posts/29-centaur-15934826,VTT29_Centaur_Free.zip/VTT29_Centaur_Free/Portrait/Centaurf.png
-30,Ninja,https://www.patreon.com/posts/30-ninja-16277617,VTT30_Ninja_Free.zip/VTT30_Ninja_Free/Portrait/NinjaFree.png
-31,Manes,https://www.patreon.com/posts/31-manes-16541986,VTT31_Manes_Free.zip/VTT31_Manes_Free/Portrait/Manes-Free.png
-32,Gnoll Hunter,https://www.patreon.com/posts/32-33-gnoll-16801938,VTT32_GnollHunter_Free.zip/VTT32_GnollHunter_Free/Portrait/GnollHunterFree.png
-33,Gnoll Warrior,,VTT33_GnollWarrior_Free.zip/VTT33_GnollWarrior_Free/Portrait/GnollWarriorFree.png
-34,Flind,https://www.patreon.com/posts/34-flind-16933680,VTT34_Flind_Free.zip/VTT34_Flind_Free/Portrait/Flind_Free.png
-35,GnollCaster,https://www.patreon.com/posts/35-36-gnoll-and-17256502,VTT35_GnollCaster_Free.zip/VTT35_GnollCaster_Free/Portrait/GnollCasterFree.png
-36,Hyena,,VTT36_Hyena_Free.zip/VTT36_Hyena_Free/Portrait/HyenaFree.png
-37,Whiterling,https://www.patreon.com/posts/37-gnoll-17656550,VTT37_Whiterling_Free.zip/VTT37_Whiterling_Free/Portrait/WitherlingFree.png
-38,Shoosuva,https://www.patreon.com/posts/38-shoosuva-17942958,VTT38_Shoosuva_Free.zip/VTT38_Shoosuva_Free/Portrait/ShoosuvaFree.png
-39,Leucrotta,https://www.patreon.com/posts/39-leucrotta-17943074,VTT39_Leucrotta_Free.zip/VTT39_Leucrotta_Free/Portrait/LeucrottaFree.png
-40,Vistana Tiefling,https://www.patreon.com/posts/40-vistana-18066778,VTT40_VistanaTiefling_Free.zip/VTT40_VistanaTiefling_Free/Portrait/VistanaTieflingFree.png
-41,Giant Gnoll,https://www.patreon.com/posts/41-giant-gnoll-18228101,VTT41_GiantGnoll_Free.zip/VTT41_GiantGnoll_Free/Portrait/GiantGnollFree.png
-42,Treasure Goblin,https://www.patreon.com/posts/42-treasure-18355534,VTT42_TreasureGoblin_Free.zip/VTT42_TreasureGoblin_Free/Portrait/Treasure-Goblin-Free.png
-43,Samurai,https://www.patreon.com/posts/43-samurai-18536874,VTT43_Samurai_Free.zip/VTT43_Samurai_Free/Portrait/Samurai-Free.png
-44,Worg,https://www.patreon.com/posts/44-worg-18897463,VTT44_Worg_Free.zip/VTT44_Worg_Free/Portrait/PaperForge44_WorgPortrait_Free.png
-45,Worg Riders 2,https://www.patreon.com/posts/45-worg-riders-18897516,VTT45_WorgRiders1_Free.zip/VTT45_WorgRiders1_Free/Portrait/GoblinRider-A-Front-3-Free.png
-46,Centaur,https://www.patreon.com/posts/46-centaur-2-19375032,VTT46_Centaur2_Free.zip/VTT46_Centaur2_Free/Portrait/Centaur-Free.png
-47,Minotaur1,,VTT47_Minotaur1_Free.zip/Free.png
-48,Barbarian Axe,,VTT48_Barbarian Axe_Free.zip/Axe_Free/Portrait/48_Barbarian1Portrait-Free.png
-49,Wererat Giant Rat,,VTT49_Wererat GiantRat_Free.zip/GiantRat_Free/Portrait/49_Giant_RatPortrait-Free.png
-50,Wererat Hybrid,,VTT50_Wererat Hybrid_Free.zip/Hybrid_Free/Portrait/50_HybridWereRat_Portrait-Free.png
-51,Wererat Humanoid,,VTT51_Wererat Humanoid_Free.zip/Humanoid_Free/Portrait/51_HumanoidWereRat_Portrait-Free.png
-52,Werewolf Humanoid,https://www.patreon.com/posts/52-werewolf-form-20788219,
-53,Werewolf Hybrid Free,https://www.patreon.com/posts/53-werewolf-form-20951158,
-54,Wolf,https://www.patreon.com/posts/54-55-wolf-21135615,
-55,,,
-56,Large Bear,,
-57,,,
-58,Humanoid Werebear,,
-59,Werebear Hybrid,https://www.patreon.com/posts/59-werebear-21728443,
-60,WereTiger Humanoid,https://www.patreon.com/posts/60-weretiger-21922519,
-61,Headless Horseman,https://www.patreon.com/posts/61-62-headless-22405495,VTT61_HeadlessHorseman_Free.zip/VTT61_HeadlessHorseman_Free/Portrait/61HeadlessHorseman-Free.png
-62,Flaming Horseman,,VTT62_FlamingHorseman_Free.zip/VTT62_FlamingHorseman_Free/Portrait/62FlamingHorseman-Free.png
-63,Kraken,,VTT63_Kraken_Free.zip/VTT63_Kraken_Free/Portrait/63_KrakenPortrait_Free.png
-64,Weretiger Hybrid,https://www.patreon.com/posts/64-weretiger-22859922,
-65,Zombie 2,https://www.patreon.com/posts/65-66-pack-23092833,VTT65_Zombie1_Free.zip/VTT65_Zombie1_Free/Portrait/VTT65-Zombie1-Free.png
-66,Necromancer,,VTT66_Necromancer_Free.zip/VTT66_Necromancer_Free/Portrait/66_necromancer-Free.png
-67,Tiger,,VTT67_Tiger_Free.zip/VTT67_Tiger_Free/Portrait/67_TigerPortrait_Free.png
-68,Were Crocodile,,VTT68_WereCrocodile_Free.zip/VTT68_WereCrocodile_Free/Portrait/68_WereCrocodilePortrait_Free.png
-69,Armored Were Croc,,
-70,Crocodile,,VTT70_Crocodile_Free.zip/VTT70_Crocodile_Free/Portrait/PaperForge70_CrocodilePortrait_Free.png
-71,Werecrocodile Humanoid,,VTT71_WerecrocodileHumanoid_Free.zip/VTT71_WerecrocodileHumanoid_Free/Portrait/PaperForge71_WerecrocodileHumanoidPortrait_Free.png
-72,Dragonborn,,VTT72_Dragonborn_Free.zip/VTT72_Dragonborn_Free/Portrait/PaperForge72_DragonbornPaladinPortrait_Free.png
-73,Dragonborn Ranger,,VTT73_DragonbornRanger_Free.zip/VTT73_DragonbornRanger_Free/Portrait/PaperForge73_DragonbornRangerPortrait_Free.png
-74,Tiefling Sorceress,,VTT74_TieflingSorceress_Free.zip/VTT74_TieflingSorceress_Free/Portrait/TieflingSorceressFree.png
-75,Halfling Ranger,,VTT75_HalflingRanger_Free.zip/VTT75_HalflingRanger_Free/Portrait/PaperForge75_HalflingRanger_Free.png
-76,Half Orc Warrior,,VTT76_HalfOrcWarrior_Free.zip/VTT76_HalfOrcWarrior_Free/Portrait/PaperForge76_HalfOrcWarriorPortrait_Free.png
-77,Forest Spirit Pack,,VTT77_ForestSpiritPack_Free.zip/VTT77_ForestSpiritPack_Free/Portrait/Horns/PaperForge77_ForestSpiritPack_Horns-Free.png
-78,Medusa,,VTT78_Medusa_Free.zip/VTT78_Medusa_Free/Portrait/78_MedusaPortrait-Free.png
-79,,,
-80,,,
-81,,,
-82,Clockwork Golem Pack,,VTT82_ClockworkGolemPack_Free.zip/VTT82_ClockworkGolemPack_Free/Portrait/Bomb/82_BombPortrait-Free.png
-83,Human Cleric,,
-84,Halforc Monk,,
-85,Hydra,https://www.patreon.com/posts/85-hydra-26842819,VTT85_Hydra_Free.zip/VTT85_Hydra_Free/Portrait/85_Hydra-Free.png
-86,Undead Knight A,,
-87,Hook Horror,,
-88,Maw Demon,,
-89,Banshee,,
-90,Herculean,,
-91,Swarm Master,,
-92,,,
-93,Skyscout,,
-94,Mantid,,
-95,Harpy Matriarch,,
-96,Harpy,https://www.patreon.com/posts/96-harpy-29425757,VTT96_Harpy_Free.zip/VTT96_Harpy_Free/Portrait/96_Harpy-Free.png
-97,Giant Spider,,VTT97_GiantSpider_Free.zip/VTT97_GiantSpider_Free/Portrait/GiantSpiderFree.png
-98,Giant Spiderling,,VTT98_GiantSpiderling_Free.zip/VTT98_GiantSpiderling_Free/Portrait/GiantSpiderlingFree.png
-99,Venom Queen,,VTT99_VenomQueen_Free.zip/VTT99_VenomQueen_Free/Portrait/VenomQueenFree.png
-100,,,
-101,Webbed Humanoid,,
-102,Skeletal Bird,,
-103,Human Monk,,
-104,Tavern Keeper,https://www.patreon.com/posts/104-tavern-30147275,VTT104_TavernKeeper_Free.zip/VTT104_TavernKeeper_Free/Portrait/104_TavernKeeper-Free.png
-105,Red Cap,,
-106,Tavern Maiden,https://www.patreon.com/posts/106-tavern-30320800,VTT106_TavernMaiden_Free.zip/VTT106_TavernMaiden_Free/Portrait/106_TavernMaiden-Free.png
-107,Bone Devil,,
-108,Adult Red Dragon,https://www.patreon.com/posts/108-adult-red-30436400,VTT108_AdultRedDragon_Free.zip/VTT108_AdultRedDragon_Free/Portrait/AdultRedDragonF.png
-109,,,
-110,Booze Server Kobold,https://www.patreon.com/posts/110-booze-server-30437329,VTT110_BoozeServerKobold_Free.zip/VTT110_BoozeServerKobold_Free/Portrait/BoozeServerKoboldF.png
-111,Cask Hauler Kobold,https://www.patreon.com/posts/111-cask-hauler-30437528,VTT111_CaskHaulerKobold_Free.zip/VTT111_CaskHaulerKobold_Free/Portrait/CaskHaulerKoboldF.png
-112,Townsman,https://www.patreon.com/posts/112-townsman-30586677,VTT112_Townsman_Free.zip/VTT112_Townsman_Free/Portrait/112_Townsman-Free.png
-113,Townsman,https://www.patreon.com/posts/113-townsman-2-30627219,VTT113_Townsman_Free.zip/VTT113_Townsman_Free/Portrait/113_Townsman-Free.png
-114,Wing Sorcerer Kobold,https://www.patreon.com/posts/114-kobold-wing-30740953,VTT114_WingSorcererKobold_Free.zip/VTT114_WingSorcererKobold_Free/Portrait/KoboldWingSorcF.png
-115,Molten Ooze,,
-116,Drunken Townsman,https://www.patreon.com/posts/116-drunken-30805855,VTT116_DrunkenTownsman_Free.zip/VTT116_DrunkenTownsman_Free/Portrait/116_Drunken-Townsman-Free.png
-117,,,
-118,Reanimated Groundskeeper,,
-119,Ghostly Hound,,
-120,Ghost Matron,,
-121,Wisp Born,,
-122,Crone,https://www.patreon.com/posts/122-crone-31215835,VTT122_Crone_Free.zip/VTT122_Crone_Free/Portrait/122_Crone-Free.png
-123,Vapul,https://www.patreon.com/posts/123-vapul-31215991,
-124,Soul Scorcher Dragon,,
-125,Urchin,https://www.patreon.com/posts/125-urchin-31485841,VTT125_Urchin_Free.zip/VTT125_Urchin_Free/Portrait/125_Urchin-Free.png
-126,Urchin,https://www.patreon.com/posts/126-little-31486132,VTT126_Urchin_Free.zip/VTT126_Urchin_Free/Portrait/126_Urchin-Free.png
-127,TownsWoman,https://www.patreon.com/posts/127-townswoman-31530699,VTT127_Townswoman_Free.zip/VTT127_Townswoman_Free/Portrait/127_Townswoman-Free.png
-128,Cultist Hide,https://www.patreon.com/posts/128-cultist-hide-31961658,VTT128_CultistHide_Free.zip/VTT128_CultistHide_Free/Portrait/128_CultistHide-Free.png
-129,Cultist SM Claw,,
-130,Cultist SM Cats Eye,,
-131,Cultist Warlock,https://www.patreon.com/posts/131-cultist-31962044,VTT131_CultistWarlock_Free.zip/VTT131_CultistWarlock_Free/Portrait/131_CultistWarlock-Free.png
-132,Cultist SM Abomination,,
-133,Black Teztatlipoca,,
-134,,,
-135,,,
-136,,,
-137,Aarakocra Warrior,,
-138,,,
-139,,,
-140,Chameleonfolk Warrior,,
-141,Chameleonfolk Chieftain,,
-142,Elder Coatl,,
-143,Manticore,https://www.patreon.com/posts/143-manticore-32670248,VTT143_Manticore_Free.zip/VTT143_Manticore_Free/Portrait/143_Manticore-Free.png
-144,Mastiff,,
-145,Giant Snake,https://www.patreon.com/posts/145-reskin-giant-33173609,VTT145_GiantSnake_Free.zip/VTT145_GiantSnake_Free/Portrait/Free/145_GiantSnakePortrait-Free-B.png
-146,Remote Traveller,,
-147,Firbolg Druid,,
-148,,,
-149,Warforged Artificer,https://www.patreon.com/posts/149-warforged-33797786,VTT149_WarforgedArtificer_Free.zip/VTT149_WarforgedArtificer_Free/Portrait/149_WarforgedArtificer-Free.png
-150,Steel Defender,,
-151,Gnome Wizard,https://www.patreon.com/posts/151-gnome-wizard-33931545,VTT151_GnomeWizard_Free.zip/VTT151_GnomeWizard_Free/Portrait/151_GnomeWizard-Free.png
-152,Elf Ranger,,
-153,Half Elf Rogue,,
-154,Leprechaun,,
-155,Rakshasa,,
-156,Rakshasa,,VTT156_Rakshasa_Free.zip/VTT156_Rakshasa_Free/Portrait/RakshasaFree.png
-157,Giant Scorpion,https://www.patreon.com/posts/157-giant-35773806,VTT157_GiantScorpion_Free.zip/VTT157_GiantScorpion_Free/Portrait/157_GiantScorpion-Free.png
-158,Bullywug,,VTT158_Bullywug_Free.zip/VTT158_Bullywug_Free/Portrait/BullywugFree.png
-159,,,
-160,Bullywug Queen,,VTT160_BullywugQueen_Free.zip/VTT160_BullywugQueen_Free/Portrait/BullywugQueenFree.png
-161,Bugbear,,
-162,Otyugh,https://www.patreon.com/posts/162-otyugh-36242025,
-163,Giant Centipede,https://www.patreon.com/posts/163-giant-36352514,VTT163_GiantCentipede_Free.zip/VTT163_GiantCentipede_Free/Portrait/GiantCentipedeFree.png
-164,Ogre,,VTT164_Ogre_Free.zip/VTT164_Ogre_Free/Portrait/OgreFree.png
-165,Tiefling Warlock,,VTT165_TieflingWarlock_Free.zip/VTT165_TieflingWarlock_Free/Portrait/TieflingWarlockFree.png
-166,Sleuth,,VTT166_Sleuth_Free.zip/VTT166_Sleuth_Free/Portrait/SpecialistFree.png
-167,Operative,,VTT167_Operative_Free.zip/VTT167_Operative_Free/Portrait/OperativeFree.png
-168,Spectral Agent,,VTT168_SpectralAgent_Free.zip/VTT168_SpectralAgent_Free/Portrait/SpectralAgentFree.png
-169,,,
-170,Half Orc Paladin,,VTT170_HalfOrcPaladin_Free.zip/VTT170_HalfOrcPaladin_Free/Portrait/HalfOrcPaladinFree.png
-171,Paladin,,VTT171_Paladin_Free.zip/VTT171_Paladin_Free/Portrait/PaladinFree.png
-172,,,
-173,Chempunk Ogre,,
-174,Chempunk Scientist,,VTT174_ChempunkScientist_Free.zip/VTT174_ChempunkScientist_Free/Portrait/ChempunkScientistFree.png
-175,Automated Hose,,VTT175_AutomatedHose_Free.zip/VTT175_AutomatedHose_Free/Portrait/chempunkHoseFree.png
-176,Skeleton,,VTT176_Skeleton_Free.zip/VTT176_Skeleton_Free/Portrait/SkeletonFree.png
-177,Skeleton Archer,,VTT177_SkeletonArcher_Free.zip/VTT177_SkeletonArcher_Free/Portrait/Skeleton-ArcherFree.png
-178,Skeleton Rogue,,VTT178_SkeletonRogue_Free.zip/VTT178_SkeletonRogue_Free/Portrait/SkeletonRogueFree.png
-179,Skeleton Spearman,,VTT179_SkeletonSpearman_Free.zip/VTT179_SkeletonSpearman_Free/Portrait/SkeletonSpearmanFree.png
-180,Skeleton Warrior,,VTT180_SkeletonWarrior_Free.zip/VTT180_SkeletonWarrior_Free/Portrait/SkeletonWarriorFree.png
-181,,,
-182,,,
-183,Hogshead,,
-184,Hogshead B,,
-185,Troll,,VTT185_Troll_Free.zip/VTT185_Troll_Free/Portrait/TrollFree.png
-186,,,
-187,Orc Warrior,,
-188,Orc Swordsman,,VTT188_OrcSwordsman_Free.zip/VTT188_OrcSwordsman_Free/Portrait/OrcSwordsmanFree.png
-189,Orc Spearman,,VTT189_OrcSpearman_Free.zip/VTT189_OrcSpearman_Free/Portrait/OrcSpearmanFree.png
-190,,,
-191,,,
-192,Cat,,VTT192_Cat_Free.zip/VTT192_Cat_Free/Portrait/CatFree.png
-193,,,
-194,,,
-195,Weasel,,VTT195_Weasel_Free.zip/VTT195_Weasel_Free/Portrait/WeaselFree.png
-196,Swarmof Centipedes,,VTT196_SwarmofCentipedes_Free.zip/VTT196_SwarmofCentipedes_Free/Portrait/SwarmofCentipedesFree.png
-197,Threndl Keeper,,VTT197_ThrendlKeeper_Free.zip/VTT197_ThrendlKeeper_Free/Portrait/ThrendlKeeperFree.png
-198,Threndl Scout,,VTT198_ThrendlScout_Free.zip/VTT198_ThrendlScout_Free/Portrait/ThrendlScoutFree.png
-199,,,
-200,Satyr Female,,VTT200_SatyrFemale_Free.zip/VTT200_SatyrFemale_Free/Portrait/Satyr01_Free.png
-201,Satyr Male,,VTT201_SatyrMale_Free.zip/VTT201_SatyrMale_Free/Portrait/Satyr02_Free.png
-202,Satyr Bard Female,,VTT202_SatyrBardFemale_Free.zip/VTT202_SatyrBardFemale_Free/Portrait/SatyrBard01_Free.png
-203,Satyr Bard Male,,VTT203_SatyrBardMale_Free.zip/VTT203_SatyrBardMale_Free/Portrait/SatyrBard02_Free.png
-204,Satyr Warrior Female,,VTT204_SatyrWarriorFemale_Free.zip/VTT204_SatyrWarriorFemale_Free/Portrait/SatyrWarrior01_Free.png
-205,Satyr Warrior Male,,VTT205_SatyrWarriorMale_Free.zip/VTT205_SatyrWarriorMale_Free/Portrait/Gold/SatyrWarrior02_1.png
-206,,,
-207,,,
-208,,,
-209,,,
-210,,,
-211,Owl,,VTT211_Owl_Free.zip/VTT211_Owl_Free/Portrait/OwlFree.png
-212,Eldritch Cannon,,VTT212_EldritchCannon_Free.zip/VTT212_EldritchCannon_Free/Portrait/EldritchCannonFree.png
-213,,,
-214,Mechanical Homunculus,,VTT214_MechanicalHomunculus_Free.zip/VTT214_MechanicalHomunculus_Free/Portrait/MechanicalHomunculusFree.png
-215,,,
-216,Lizardfolk,,VTT216_Lizardfolk_Free.zip/VTT216_Lizardfolk_Free/Portrait/LizardfolkFree.png
-217,Lizardfolk Warrior,,VTT217_LizardfolkWarrior_Free.zip/VTT217_LizardfolkWarrior_Free/Portrait/LizardfolkWarriorFree.png
-218,,,
-219,The Pale Outlaw,,VTT219_ThePaleOutlaw_Free.zip/VTT219_ThePaleOutlaw_Free/Portrait/PaleOutlawFree.png
-220,Animated Revolver,,VTT220_AnimatedRevolver_Free.zip/VTT220_AnimatedRevolver_Free/Portrait/AnimatedRevolverFree.png
-221,Terror Weed,,VTT221_TerrorWeed_Free.zip/VTT221_TerrorWeed_Free/Portrait/TerrorWeedFree.png
-222,,,
-223,Dwarf Barbarian,,
-224,Dwarf Barbarian,,VTT224_DwarfBarbarian_Free.zip/Free.png
-225,Dwarf Paladin,,VTT225_DwarfPaladin_Free.zip/VTT225_DwarfPaladin_Free/Portrait/225_DwarfPaladin-Free.png
-226,Dwarf Paladin,,VTT226_DwarfPaladin_Free.zip/VTT226_DwarfPaladin_Free/Portrait/226_DwarfPaladin-Free.png
-227,Dwarf Cleric,,VTT227_DwarfCleric_Free.zip/VTT227_DwarfCleric_Free/Portrait/227_DwarfCleric-Free.png
-228,Dwarf Cleric,,VTT228_DwarfCleric_Free.zip/VTT228_DwarfCleric_Free/Portrait/228_DwarfClericPortrait-Free.png
-229,Bear,,VTT229_Bear_Free.zip/VTT229_Bear_Free/Portrait/229_BearPortrait-Free.png
-230,,,
-231,,,
-232,Ghoul,,VTT232_Ghoul_Free.zip/VTT232_Ghoul_Free/Portrait/232_GhoulPortrait-Free.png
-233,Crawling Hand1,,VTT233_CrawlingHand1_Free.zip/VTT233_CrawlingHand1_Free/Portrait/233_CrawlingHand1Portrait-Free.png
-234,Goblin Alchemist,,VTT234_Goblin Alchemist_Free.zip/Alchemist_Free/Portrait/234_GoblinAlchemistPortrait-Free.png
-235,Giant Fire Beetle,,VTT235_GiantFireBeetle_Free.zip/VTT235_GiantFireBeetle_Free/Portrait/235_GiantFireBeetlePortrait-Free.png
-236,,,
-237,,,
-238,Monk,,VTT238_Monk_Free.zip/VTT238_Monk_Free/Portrait/238_MonkPortrait-Free.png
-239,Flying Hammer,,VTT239_Flying Hammer_Free.zip/Hammer_Free/Portrait/239_FlyingHammerPortrait-Free.png
-240,,,
-241,,,
-242,Flying Sword,,VTT242_FlyingSword_Free.zip/VTT242_FlyingSword_Free/Portrait/243_FlyingSwordPortrait-Free.png
-243,Animated Voodoo Doll,,VTT243_Animated Voodoo Doll_Free.zip/Doll_Free/Portrait/AnimatedVoodooDollPortrait-Free.png
-244,Giant Frog,,VTT244_GiantFrog_Free.zip/VTT244_GiantFrog_Free/Portrait/244_GiantFrogPortrait-Free.png
-245,Monk,,VTT245_Monk_Free.zip/VTT245_Monk_Free/Portrait/245_MonkPortrait-Free.png
-246,,,
-247,Human Sorceress,,VTT247_Human Sorceress_Free.zip/Sorceress_Free/Portrait/247_HumanSorceressPortrait-Free.png
-248,Elf Warrior,,VTT248_Elf Warrior_Free.zip/Free.png
-249,,,
-250,Snow Golem,,VTT250_SnowGolem_Free.zip/VTT250_SnowGolem_Free/Portrait/250_SnowGolemPortrait-Free.png
-251,Treasure Chests,,
-252,Pumpkin Harvester,,VTT252_PumpkinHarvester_Free.zip/VTT252_PumpkinHarvester_Free/Portrait/252_PumpkinHarvesterPortrait-Free.png
-253,Skeletal Mage,,VTT253_Skeletal Mage_Free.zip/Mage_Free/Portrait/253_SkeletalMagePortrait-Free.png
-254,Flameskull,,VTT254_Flameskull_Free.zip/VTT254_Flameskull_Free/Portrait/254_FlameskullPortrait-Free.png
-255,Ghast,,VTT255_Ghast_Free.zip/VTT255_Ghast_Free/Portrait/255_GhastPortrait-Free.png
-256,Gnome Bard,,VTT256_GnomeBard_Free.zip/VTT256_GnomeBard_Free/Portrait/256_GnomeBardPortrait-Free.png
-257,,,
-258,Bandit,,VTT258_Bandit_Free.zip/VTT258_Bandit_Free/Portrait/258_BanditPortrait-Free.png
-259,Bandit,,VTT259_Bandit_Free.zip/VTT259_Bandit_Free/Portrait/259_BanditPortrait-Free.png
-260,Human Rogue,,VTT260_HumanRogue_Free.zip/VTT260_HumanRogue_Free/Portrait/260_HumanRoguePortrait-Free.png
-261,Loxodon Wizard,,VTT261_LoxodonWizard_Free.zip/VTT261_LoxodonWizard_Free/Portrait/261_LoxodonWizardPortrait-Free.png
-262,Loxodon Druid,,VTT262_LoxodonDruid_Free.zip/VTT262_LoxodonDruid_Free/Portrait/262_LoxodonDruidPortrait-Free.png
-263,,,
-264,Tiefling Paladin,,VTT264_TieflingPaladin_Free.zip/VTT264_TieflingPaladin_Free/Portrait/264_TieflingPaladinPortrait-Free.png
-265,Tiefling Paladin,,VTT265_Tiefling Paladin_Free.zip/Paladin_Free/Portrait/265_TieflingPaladinPortrait-Free.png
-266,Ranger,,VTT266_Ranger_Free.zip/VTT266_Ranger_Free/Portrait/266_RangerPortrait-Free.png
-267,,,
-268,Tiefling Ranger,,VTT268_TieflingRanger_Free.zip/VTT268_TieflingRanger_Free/Portrait/268_TieflingRangerPortrait-Free.png
-269,,,
-270,Wizard,,VTT270_Wizard_Free.zip/VTT270_Wizard_Free/Portrait/270_WizardPortrait-Free.png
-271,Tiefling Wizard,,VTT271_TieflingWizard_Free.zip/VTT271_TieflingWizard_Free/Portrait/271_TieflingWizardPortrait-Free.png
-272,,,
-273,Dragonborn Wizard,,VTT273_DragonbornWizard_Free.zip/VTT273_DragonbornWizard_Free/Portrait/273_DragonbornWizardPortrait-Free.png
-274,Dwarf Warrior,,VTT274_DwarfWarrior _Free.zip/_Free/Portrait/274_DwarfWarriorPortrait-Free.png
-275,Flying Dagger,,VTT275_Flying Dagger_Free.zip/Dagger_Free/Portrait/275_FlyingDaggerPortrait-Free.png
-276,,,
-277,Specter,,VTT277_Specter_Free.zip/VTT277_Specter_Free/Portrait/277_SpecterPortrait-Free.png
-278,Wraith,,VTT278_Wraith_Free.zip/VTT278_Wraith_Free/Portrait/278_WraithPortrait-free.png
-279,,,
-280,Charon Ferryman,,VTT280_CharonFerryman_Free.zip/VTT280_CharonFerryman_Free/Portrait/280_CharonPortrait-Free.png
-281,Charon,,VTT281_Charon_Free.zip/VTT281_Charon_Free/Portrait/280_CharonPortrait(B)-Free.png
-282,Charons Ferry,,VTT282_CharonsFerry_Free.zip/VTT282_CharonsFerry_Free/Portrait/282_CharonsFerryPortrait-Free.png
-283,Styxian Soul,,VTT283_StyxianSoul_Free.zip/VTT283_StyxianSoul_Free/Portrait/283_StyxiansoulPortrait-Free.png
-284,Floating Ember,,VTT284_FloatingEmber_Free.zip/VTT284_FloatingEmber_Free/Portrait/284_FloatingEmberPortrait-Free.png
-285,Boar,,VTT285_Boar_Free.zip/VTT285_Boar_Free/Portrait/285_BoarPortrait-Free.png
-286,Boarlet,,VTT286_Boarlet_Free.zip/VTT286_Boarlet_Free/Portrait/286_BoarletPortrait-Free.png
-287,Boar,,VTT287_Boar_Free.zip/VTT287_Boar_Free/Portrait/287_BoarPortrait-Free.png
-288,,,
-289,Pseudodragon,,VTT289_Pseudodragon_Free.zip/VTT289_Pseudodragon_Free/Portrait/289_PseudodragonPortrait-Free.png
-290,,,
-291,Gnome Artificer,,VTT291_GnomeArtificer_Free.zip/VTT291_GnomeArtificer_Free/Portrait/291_GnomeArtificerPortrait-Free.png
-292,Halfling Druid,,VTT292_HalflingDruid_Free.zip/VTT292_HalflingDruid_Free/Portrait/292_HalflingDruidPortrait-Free.png
-293,Tabaxi Monk,,VTT293_TabaxiMonk_Free.zip/VTT293_TabaxiMonk_Free/Portrait/293_TabaxiMonkPortrait-Free.png
-294,Tabaxi Rogue,,VTT294_TabaxiRogue_Free.zip/VTT294_TabaxiRogue_Free/Portrait/294_TabaxiRoguePortrait-Free.png
-295,,,
-296,Tabaxi Monk,,VTT296_Tabaxi Monk_Free.zip/Monk_Free/Portrait/296_TabaxiMonkPortrait-Free.png
-297,Crelid,,VTT297_Crelid_Free.zip/VTT297_Crelid_Free/Portrait/297_CrelidPortrait-Free.png
-298,,,
-299,Cultist Fang,,VTT299_CultistFang_Free.zip/VTT299_CultistFang_Free/Portrait/299_CultistFangPortrait-Free.png
-300,Cult Assassin,,VTT300_CultAssassin_Free.zip/VTT300_CultAssassin_Free/Portrait/300_CultAssassinPortrait-Free.png
-301,Halfling Monk,,VTT301_HalflingMonk_Free.zip/VTT301_HalflingMonk_Free/Portrait/301_HalflingMonkPortrait-Free.png
-302,Cultist Wing,,VTT302_CultistWing_Free.zip/VTT302_CultistWing_Free/Portrait/302_CultistWingPortrait--Free.png
-303,,,
-304,Town Guard,,VTT304_TownGuard_Free.zip/VTT304_TownGuard_Free/Portrait/304_TownGuardPortrait-Free.png
-305,Town Guard,,VTT305_TownGuard_Free.zip/VTT305_TownGuard_Free/Portrait/305_TownGuardPortrait-Free.png
-306,Town Guard,,VTT306_TownGuard_Free.zip/VTT306_TownGuard_Free/Portrait/306_TownGuardPortrait-Free.png
-307,Town Guard,,VTT307_TownGuard_Free.zip/VTT307_TownGuard_Free/Portrait/307_TownGuardPortrait-Free.png
-308,Town Guard,,VTT308_TownGuard_Free.zip/VTT308_TownGuard_Free/Portrait/308_TownGuardPortrait-Free.png
-309,Town Guard,,VTT309_TownGuard_Free.zip/VTT309_TownGuard_Free/Portrait/309_TownGuardPortrait-Free.png
-310,Town Guard,,VTT310_TownGuard_Free.zip/VTT310_TownGuard_Free/Portrait/310_TownGuardPortrait-Free.png
-311,Town Guard,,VTT311_TownGuard_Free.zip/VTT311_TownGuard_Free/Portrait/311_TownGuardPortait-Free.png
-312,Town Guard Captain,,VTT312_TownGuardCaptain_Free.zip/VTT312_TownGuardCaptain_Free/Portrait/312_TownGuardCaptainPortrait-Free.png
-313,Town Guard Captain,,VTT313_TownGuardCaptain_Free.zip/VTT313_TownGuardCaptain_Free/Portrait/313_TownGuardCaptainPortrait-Free.png
-314,,,
-315,,,
-316,,,
-317,Cart,,
-318,Cart,,
-319,Pirate Crew Member,,VTT319_PirateCrewMember_Free.zip/VTT319_PirateCrewMember_Free/Portrait/319_PirateCrewPortrait-Free.png
-320,Pirate Crew Member,,VTT320_PirateCrewMember_Free.zip/VTT320_PirateCrewMember_Free/Portrait/320_PirateCrewMemberPortrait-B-Free.png
-321,Pirate Crew Member,,VTT321_PirateCrewMember_Free.zip/VTT321_PirateCrewMember_Free/Portrait/321_PirateCrewMemberPortrait-Free.png
-322,Pirate Crew Member,,VTT322_PirateCrewMember_Free.zip/VTT322_PirateCrewMember_Free/Portrait/322_PirateCrewMemberPortrait-Free.png
-323,Depth Watcher,,VTT323_DepthWatcher_Free.zip/VTT323_DepthWatcher_Free/Portrait/323_DepthWatcherPortrait-Free.png
-324,Pirate Crew Member,,VTT324_PirateCrewMember_Free.zip/VTT324_PirateCrewMember_Free/Portrait/324_PirateCrewMemberPortrait-B-Free.png
-325,Pirate Captain,,VTT325_PirateCaptain_Free.zip/VTT325_PirateCaptain_Free/Portrait/325_PirateCaptainPortrait-Free-B.png
-326,Pirate Crew Member,,VTT326_PirateCrewMember_Free.zip/VTT326_PirateCrewMember_Free/Portrait/326_PirateCrewMemberPortrait-Free-B.png
-327,Pirate Crew Member,,VTT327_PirateCrewMember_Free.zip/VTT327_PirateCrewMember_Free/Portrait/327_PirateCrewMemberPortrait-Free-B.png
-328,Pirate Crew Member,,VTT328_PirateCrewMember_Free.zip/VTT328_PirateCrewMember_Free/Portrait/328_PirateCrewMemberPortrait-Free-B.png
-329,Pirate Captain,,VTT329_PirateCaptain_Free.zip/VTT329_PirateCaptain_Free/Portrait/329_PirateCaptainPortrait-Free-B.png
-330,Monkey,,VTT330_Monkey_Free.zip/VTT330_Monkey_Free/Portrait/330_MonkeyPortrait-B-Free.png
-331,,,
-332,Parrot,,VTT332_Parrot_Free.zip/VTT332_Parrot_Free/Portrait/332_ParrotPortrait-Free-B.png
-333,,,
-334,,,
-335,,,
-336,,,
-337,,,
-338,,,
-339,,,
-340,Intellect Devourer,,VTT340_IntellectDevourer_Free.zip/VTT340_IntellectDevourer_Free/Portrait/340_IntellectDevourerPortrait-Free.png
-341,Intellect Devourer,,VTT341_IntellectDevourer_Free.zip/VTT341_IntellectDevourer_Free/Portrait/341_IntellectDevourerPortrait-Free.png
-342,,,
-343,,,
-344,,,
-345,Potion Merchant Portrait,,VTT345_PotionMerchantPortrait_Free.zip/VTT345_PotionMerchantPortrait_Free/Portrait/345_PotionMerchantPortrait-Free-B.png
-346,,,
-347,,,
-348,Mind Flayer,,VTT348_MindFlayer_Free.zip/VTT348_MindFlayer_Free/Portrait/348_MindFlayerPortrait-Free.png
-349,,,
-350,Dark Mantle,,VTT350_DarkMantle_Free.zip/VTT350_DarkMantle_Free/Portrait/350_DarkMantlePortrait-Free.png
-351,,,
-352,Griffon,,VTT352_Griffon_Free.zip/VTT352_Griffon_Free/Portrait/352_GriffonPortrait-Free.png
-353,Griffon Fledgling,,VTT353_GriffonFledgling_Free.zip/VTT353_GriffonFledgling_Free/Portrait/353_GriffonFledglingPortrait-Free.png
-354,Griffon Fledgling,,VTT354_GriffonFledgling_Free.zip/VTT354_GriffonFledgling_Free/Portrait/354_GriffonFledglingPortrait-Free.png
-355,,,
-356,,,
-357,Halfling Bard,,VTT357_HalflingBard_Free.zip/VTT357_HalflingBard_Free/Portrait/357_HalflingBardPortrait-Free.png
-358,Halfling Wizard,,VTT358_HalflingWizard_Free.zip/VTT358_HalflingWizard_Free/Portrait/358_HalflingWizardPortrait-Free.png
-359,,,
-360,Gnome Paladin,,VTT360_GnomePaladin_Free.zip/VTT360_GnomePaladin_Free/Portrait/360_GnomePaladinPortrait-free.png
-361,,,
-362,Homunculus,,VTT362_Homunculus_Free.zip/VTT362_Homunculus_Free/Portrait/362_HomunculusPortrait-Free.png
-363,,,
-364,Forgework Dragon,,VTT364_ForgeworkDragon_Free.zip/VTT364_ForgeworkDragon_Free/Portrait/364_ForgeworkDragonPortrait-Free.png
-365,Forgework Dragon Wyrmling,,VTT365_ForgeworkDragonWyrmling_Free.zip/VTT365_ForgeworkDragonWyrmling_Free/Portrait/365_ForgeworkDragonWyrmlingPortrait-Free.png
-366,Forgework Dragon Egg,,
-367,Half Ogre,,VTT367_HalfOgre_Free.zip/VTT367_HalfOgre_Free/Portrait/367_HalfOgrePortrait-Free.png
-368,,,
-369,Hobgoblin Soldier,,VTT369_HobgoblinSoldier_Free.zip/VTT369_HobgoblinSoldier_Free/Portrait/369_HobgoblinSoldierPortrait-Free.png
-370,Doppleganger,,VTT370_Doppleganger_Free.zip/VTT370_Doppleganger_Free/Portrait/370_DopplegangerPortrait-Free.png
-371,,,
-372,,,
-373,,,
-374,,,
-375,,,
-376,,,
-377,,,
-378,Fire Genasi,,VTT378_FireGenasi_Free.zip/VTT378_FireGenasi_Free/Portrait/378_FireGenasiPortrait-Free.png
-379,Fire Genasi Wizard,,VTT379_FireGenasiWizard_Free.zip/VTT379_FireGenasiWizard_Free/Portrait/379_FireGenasiWizardPortrait-Free.png
-380,,,
-381,Fire Genasi,,VTT381_FireGenasi_Free.zip/VTT381_FireGenasi_Free/Portrait/381_FireGenasiPortrait-Free.png
-382,Fire Genasi Wizard,,VTT382_FireGenasiWizard_Free.zip/VTT382_FireGenasiWizard_Free/Portrait/382_FireGenasiWizardPortrait-Free.png
-383,,,
-384,,,
-385,Fairy Sorceress,,VTT385_FairySorceress_Free.zip/VTT385_FairySorceress_Free/Portrait/385_FairySorceressPortrait-Free.png
-386,Fairy Warrior,,VTT386_FairyWarrior_Free.zip/Free.png
-387,,,
-388,Fairy Mage,,VTT388_FairyMage_Free.zip/VTT388_FairyMage_Free/Portrait/388_FairyMagePortrait-Free.png
-389,,,
-390,Yeti,,VTT390_Yeti_Free.zip/VTT390_Yeti_Free/Portrait/390_YetiPortrait-Free.png
-391,Baby Yeti,,VTT391_BabyYeti_Free.zip/VTT391_BabyYeti_Free/Portrait/391_BabyYetiPortrait-Free.png
-392,,,
-393,Flail Snail Tier3,,VTT393_FlailSnail_Tier3_Free.zip/VTT393_FlailSnail_Tier3_Free/Portrait/393_FlailSnailPortrait-Free.png
-394,,,
-395,,,
-396,Hobgoblin Devastator,,VTT396_HobgoblinDevastator_Free.zip/VTT396_HobgoblinDevastator_Free/Portrait/396_HobgoblinDevastatorPortrait-Free.png
-397,,,
-398,Bodak,,VTT398_Bodak_Free.zip/VTT398_Bodak_Free/Portrait/398_BodakPortrait-Free.png
-399,,,
-400,Human Warrior,,VTT400_HumanWarrior_Free.zip/VTT400_HumanWarrior_Free/Portrait/400_HumanWarriorPortrait-Free.png
-401,,,
-402,Cave Fisher,,VTT402_CaveFisher_Free.zip/VTT402_CaveFisher_Free/Portrait/402_CaveFisherPortrait-Free.png
-403,,,
-404,Human Fighter,,VTT404_HumanFighter_Free.zip/VTT404_HumanFighter_Free/Portrait/404_HumanFighterPortrait-Free.png
-405,Vargouille,,VTT405_Vargouille_Free.zip/VTT405_Vargouille_Free/Portrait/405_VargouillePortrait-Free.png
-406,Kirin,,VTT406_Kirin_Free.zip/VTT406_Kirin_Free/Portrait/406_KirinPortrait-Free.png
-407,Zombie,,VTT407_Zombie_Free.zip/VTT407_Zombie_Free/Portrait/407_ZombiePortrait-Free.png
-408,Vargouille,,VTT408_Vargouille_Free.zip/VTT408_Vargouille_Free/Portrait/408_VargouillePortrait-Free.png
-409,Devourer1,,VTT409_Devourer1_Free.zip/VTT409_Devourer1_Free/Portrait/409_DevourerPortrait-Free.png
-410,Devourer(Empty),,VTT410_Devourer(Empty)_Free.zip/VTT410_Devourer(Empty)_Free/Portrait/410_Devourer(Empty)Portrait-1-Free.png
-411,Zombie,,VTT411_Zombie_Free.zip/VTT411_Zombie_Free/Portrait/411_ZombiePortrait-Free.png
-412,Vargouille,,
-413,,,
-414,Zombie,,VTT414_Zombie_Free.zip/VTT414_Zombie_Free/Portrait/414_ZombiePortrait-Free.png
-415,Mimic,,
-416,Mimic,,VTT416_Mimic_Free.zip/VTT416_Mimic_Free/Portrait/416_MimicPortrait-Free.png
-417,,,
-418,Mimic,,VTT418_Mimic_Free.zip/VTT418_Mimic_Free/Portrait/418_MimicPortrait-Free.png
-419,Noble,,VTT419_Noble_Free.zip/VTT419_Noble_Free/Portrait/419_NoblePortrait-Free.png
-420,,,
-421,,,
-422,Wood Woad,,VTT422_WoodWoad_Free.zip/VTT422_WoodWoad_Free/Portrait/422_WoodWoadPortrait-Free.png
-423,Nilbog,,VTT423_Nilbog_Free.zip/VTT423_Nilbog_Free/Portrait/423_NilbogPortrait-Free.png
-424,,,
-425,,,
-426,Babau,,VTT426_Babau_Free.zip/VTT426_Babau_Free/Portrait/426_BabauPortrait-Free.png
-427,,,
-428,,,
-429,Zombie Mage,,VTT429_ZombieMage_Free.zip/VTT429_ZombieMage_Free/Portrait/429_ZombieMagePortrait-Free.png
-430,Hobgoblin Iron Shadow,,VTT430_HobgoblinIronShadow_Free.zip/VTT430_HobgoblinIronShadow_Free/Portrait/430_HobgoblinIronShadowPortrait-Free.png
-431,Goblin Barbarian,,VTT431_GoblinBarbarian_Free.zip/VTT431_GoblinBarbarian_Free/Portrait/431_GoblinBarbarian_Portrait-Free.png
-432,,,
-433,,,
-434,Zombie Crawler,,VTT434_ZombieCrawler_Free.zip/VTT434_ZombieCrawler_Free/Portrait/434_ZombieCrawlerPortrait-Free.png
-435,Hulking Zombie,,VTT435_HulkingZombie_Free.zip/VTT435_HulkingZombie_Free/Portrait/435_HulkingZombiePortrait-Free.png
-436,,,
-437,,,
-438,Flesh Golem,,VTT438_FleshGolem_Free.zip/VTT438_FleshGolem_Free/Portrait/438_FleshGolemPortrait-Free.png
-439,Aaracokra Fighter,,VTT439_AaracokraFighter_Free.zip/VTT439_AaracokraFighter_Free/Portrait/439_AaracokraFighterPortrait-Free.png
-440,Aaracokra Rogue,,VTT440_AaracokraRogue_Free.zip/VTT440_AaracokraRogue_Free/Portrait/440_AaracokraRoguePortrait-Free.png
-441,Shadow Sorcerer,,VTT441_ShadowSorcerer_Free.zip/VTT441_ShadowSorcerer_Free/Portrait/441_ShadowSorcererPortrait-Free.png
-442,Shadow Hound,,VTT442_ShadowHound_Free.zip/VTT442_ShadowHound_Free/Portrait/442_ShadowHoundPortrait-Free.png
-443,,,
-444,,,
-445,Octopus,,VTT445_Octopus_Free.zip/VTT445_Octopus_Free/Portrait/445_OctopusPortrait-Free.png
-446,Giant Octopus,,VTT446_GiantOctopus_Free.zip/VTT446_GiantOctopus_Free/Portrait/446_GiantOctopusPortrait-Free.png
-447,,,
-448,Sandstone Golem,,VTT448_SandstoneGolem_Free.zip/VTT448_SandstoneGolem_Free/Portrait/448_SandstoneGolemPortrait-Free.png
-449,Ruffian,,VTT449_Ruffian_Free.zip/VTT449_Ruffian_Free/Portrait/448_RuffianPortrait-FreeB.png
-450,Ruffian,,VTT450_Ruffian_Free.zip/VTT450_Ruffian_Free/Portrait/450_RuffianPortrait-Free.png
-451,,,
-452,Sahuagin,,VTT452_Sahuagin_Free.zip/VTT452_Sahuagin_Free/Portrait/452_SahuaginPortrait-Free.png
-453,Ruffian,,VTT453_Ruffian_Free.zip/VTT453_Ruffian_Free/Portrait/453_RuffianPortrait-Free.png
-454,Ruffian,,VTT454_Ruffian_Free.zip/VTT454_Ruffian_Free/Portrait/454_RuffianPortrait-Free.png
-455,Reef Shark,,VTT455_ReefShark_Free.zip/VTT455_ReefShark_Free/Portrait/455_ReefSharkPortrait-Free.png
-456,Giant Shark,,VTT456_GiantShark_Free.zip/VTT456_GiantShark_Free/Portrait/456_GiantSharkPortrait-Free.png
-457,Leonin Barbarian,,VTT457_LeoninBarbarian_Free.zip/VTT457_LeoninBarbarian_Free/Portrait/457_LeoninBarbarianPortrait-Free.png
-458,Leonin Fighter,,VTT458_LeoninFighter_Free.zip/VTT458_LeoninFighter_Free/Portrait/458_LeoninFighterPortrait-Free.png
-459,Half Elf Ranger,,VTT459_HalfElfRanger_Free.zip/VTT459_HalfElfRanger_Free/Portrait/459_HalfElfRangerPortrait-Free.png
-460,,,
-461,Monk,,VTT461_Monk_Free.zip/VTT461_Monk_Free/Portrait/461_MonkPortrait-Free.png
-462,,,
-463,Kenku Thief,,VTT463_KenkuThief_Free.zip/VTT463_KenkuThief_Free/Portrait/463_KenkuThiefPortrait-Free.png
-464,,,
-465,,,
-466,Druid,,VTT466_Druid_Free.zip/VTT466_Druid_Free/Portrait/466_DruidPortrait-Free.png
-467,,,
-468,Auto-gnome,,VTT468_Auto-gnome_Free.zip/VTT468_Auto-gnome_Free/Portrait/468_Auto-gnomePortrait-Free.png
-469,,,
-470,,,
-471,,,
-472,,,
-473,Giff Warlord,,VTT473_GiffWarlord_Free.zip/VTT473_GiffWarlord_Free/Portrait/473_GiffWarlordPortrait-Free.png
-474,Brawler,,VTT474_Brawler_Free.zip/VTT474_Brawler_Free/Portrait/474_BrawlerPortrait-Free.png
-475,,,
-476,,,
-477,,,
-478,Vampire,,VTT478_Vampire_Free.zip/VTT478_Vampire_Free/Portrait/478_VampirePortrait-Free.png
-479,,,
-480,Starlancer,,VTT480_Starlancer_Free.zip/VTT480_Starlancer_Free/Portrait/480_StarlancerPortrait-Free.png
-481,Vampire,,VTT481_Vampire_Free.zip/VTT481_Vampire_Free/Portrait/481_VampirePortrait-Free.png
-482,,,
-483,Vampire,,VTT483_Vampire_Free.zip/VTT483_Vampire_Free/Portrait/483_VampirePortrait-Free.png
-484,,,
-485,Scarecrow,,VTT485_Scarecrow_Free.zip/VTT485_Scarecrow_Free/Portrait/485_ScarecrowPortrait-Free.png
-486,,,
-487,,,
-488,Nobleman,,VTT488_Nobleman_Free.zip/VTT488_Nobleman_Free/Portrait/488_NoblemanPortrait-Free.png
-489,Auto-gnome,,
-490,Werewolf,,VTT490_Werewolf_Free.zip/VTT490_Werewolf_Free/Portrait/490_WerewolfPortrait-Free.png
-491,,,
-492,Ooze,https://www.patreon.com/posts/492-ooze-74556588,VTT492_Ooze_Free.zip/VTT492_Ooze_Free/Portrait/492_OozePortrait-Free.png
-493,,,
-494,Bugbear,,VTT494_Bugbear_Free.zip/VTT494_Bugbear_Free/Portrait/494_BugbearPortrait-Free.png
-495,Ettin,,VTT495_Ettin_Free.zip/VTT495_Ettin_Free/Portrait/495_EttinPortrait-Free.png
-496,,,
-497,Fomorian,,VTT497_Fomorian_Free.zip/VTT497_Fomorian_Free/Portrait/497_FomorianPortrait-Free.png
-498,,,
-499,,,
-500,,,
-501,,,
-502,Road Bandit,,VTT502_RoadBandit_Free.zip/VTT502_RoadBandit_Free/Portrait/502_RoadBanditPortrait-Free.png
-503,,,
-504,Gorgon,,VTT504_Gorgon_Free.zip/VTT504_Gorgon_Free/Portrait/504_GorgonPortrait-Free.png
-505,Bandit Spellcaster,,VTT505_BanditSpellcaster_Free.zip/VTT505_BanditSpellcaster_Free/Portrait/505_BanditSpellcasterPortrait-Free.png
-506,Chain Devil,,
-507,Animated Chain,,VTT507_AnimatedChain_Free.zip/VTT507_AnimatedChain_Free/Portrait/507_AnimatedChainPortrait-Free.png
-508,Marilinth,,VTT508_Marilinth_Free.zip/VTT508_Marilinth_Free/Portrait/508_MarilinthPortrait-Free.png
-509,(3d Prop)Chair,,
-510,(3d Prop)Crate,,
-511,Pit Fiend,,VTT511_PitFiend_Free.zip/VTT511_PitFiend_Free/Portrait/511_PitFiendPortrait-Free.png
-512,Bat,,VTT512_Bat_Free.zip/VTT512_Bat_Free/Portrait/512_BatPortrait-Free.png
-513,,,
-514,Vampire Lord,,VTT514_VampireLord_Free.zip/VTT514_VampireLord_Free/Portrait/514_VampireLordPortrait-Free.png
-515,,,
-516,,,
-517,,,
-518,,,
-519,,,
-520,Treant,https://www.patreon.com/posts/treant-and-79348155,VTT520_Treant_Free.zip/VTT520_Treant_Free/Portrait/520_TreantPortrait-Free.png
-521,Awakened Shrub,https://www.patreon.com/posts/treant-and-79348155,VTT521_AwakenedShrub_Free.zip/VTT521_AwakenedShrub_Free/Portrait/521_AwakenedShrubPortrait-Free.png
-522,Awakened Shrub,https://www.patreon.com/posts/treant-and-79348155,VTT522_AwakenedShrub_Free.zip/VTT522_AwakenedShrub_Free/Portrait/522_AwakenedShrubPortrait-Free.png
-523,Goblin,https://www.patreon.com/posts/523-goblin-80067472,VTT523_Goblin_Free.zip/VTT523_Goblin_Free/Portrait/523_GoblinPortrait-fREE.png
-524,Goblin,https://www.patreon.com/posts/goblin-524-80067468,VTT524_Goblin_Free.zip/VTT524_Goblin_Free/Portrait/524_GoblinPortrait-Free.png
-525,Goblin,https://www.patreon.com/posts/525-goblin-80067477,VTT525_Goblin_Free.zip/VTT525_Goblin_Free/Portrait/525_GoblinPortrait-Free.png
-526,Oni,,VTT526_Oni_Free.zip/VTT526_Oni_Free/Portrait/526_OniPortrait-Free.png
-527,Goblin,https://www.patreon.com/posts/527-goblin-80829588,VTT527_Goblin_Free.zip/VTT527_Goblin_Free/Portrait/527_GoblinPortrait-Free.png
-528,Goblin,https://www.patreon.com/posts/528-goblin-80829586,VTT528_Goblin_Free.zip/VTT528_Goblin_Free/Portrait/528_GoblinPortrait-Free.png
-529,,,
-530,,,
-531,Shadow Demon,,VTT531_ShadowDemon_Free.zip/VTT531_ShadowDemon_Free/Portrait/531_ShadowDemonPortrait-Free.png
-532,Sailor,,VTT532_Sailor_Free.zip/VTT532_Sailor_Free/Portrait/532_SailorPortrait-Free.png
-533,,,
-534,Lich,,VTT534_Lich_Free.zip/VTT534_Lich_Free/Portrait/534_LichPortrait-Free.png
-535,,,
-536,Pikeman,,VTT536_Pikeman_Free.zip/VTT536_Pikeman_Free/Portrait/536_PikemanPortrait-Free.png
-537,,,
-538,,,
-539,,,
-540,,,
-541,,,
-542,Draconian Dreadnaught,,VTT542_DraconianDreadnaught_Free.zip/VTT542_DraconianDreadnaught_Free/Portrait/542_DraconianDreadnoughtPortrait-Free.png
-543,,,
-544,,,
-545,Draconian Foot Soldier,,VTT545_DraconianFootSoldier_Free.zip/VTT545_DraconianFootSoldier_Free/Portrait/545_DraconianFootSoldierPortrait-Free.png
-546,,,
-547,Horse,,VTT547_Horse_Free.zip/VTT547_Horse_Free/Portrait/547_HorsePortrait-Free.png
-548,,,
-549,Mule,,VTT549_Mule_Free.zip/VTT549_Mule_Free/Portrait/549_MulePortrait-Free.png
-550,,,
-551,,,
-552,Twig Blight,,VTT552_TwigBlight_Free.zip/VTT552_TwigBlight_Free/Portrait/552_TwigBlightPortrait-Free.png
-553,Twig Blight,,VTT553_TwigBlight_Free.zip/VTT553_TwigBlight_Free/Portrait/553_TwigBlightPortrait-Free.png
-554,,,
-555,,,
-556,Fighter,,VTT556_Fighter_Free.zip/VTT556_Fighter_Free/Portrait/556_FighterPortrait-Free.png
-557,,,
-558,,,
-559,Sahuagin Baron,,VTT559_SahuaginBaron_Free.zip/VTT559_SahuaginBaron_Free/Portrait/559_SahuaginBaronPortrait-Free.png
-560,Sahuagin Priestess,,VTT560_SahuaginPriestess_Free.zip/VTT560_SahuaginPriestess_Free/Portrait/560_SahuaginPriestessPortrait-Free.png
-561,,,
-562,Fox,,VTT562_Fox_Free.zip/VTT562_Fox_Free/Portrait/562_FoxPortrait-Free.png
-563,Stirge,,VTT563_Stirge_Free.zip/VTT563_Stirge_Free/Portrait/563_StirgePortrait-Free.png
-564,,,
-565,,,
-566,Shambling Mound,,VTT566_ShamblingMound_Free.zip/VTT566_ShamblingMound_Free/Portrait/566_ShamblingMoundPortrait-Free.png
-567,Force Ballista,,VTT567_ForceBallista_Free.zip/VTT567_ForceBallista_Free/Portrait/567_ForceBallistaPortrait-Free.png
-568,Flamethrower,,VTT568_Flamethrower_Free.zip/VTT568_Flamethrower_Free/Portrait/568_FlamethrowerPortrait-Free.png
-569,Protector,,VTT569_Protector_Free.zip/VTT569_Protector_Free/Portrait/569_ProtectorPortrait-Free.png
-570,,,
-571,Crab,,VTT571_Crab_Free.zip/VTT571_Crab_Free/Portrait/571_CrabPortrait-Free.png
-572,Magmin,,VTT572_Magmin_Free.zip/VTT572_Magmin_Free/Portrait/572_MagminPortrait-Free.png
-573,,,
-574,,,
-575,Earth Elemental,,VTT575_EarthElemental_Free.zip/VTT575_EarthElemental_Free/Portrait/575_EarthElementalPortrait-Free.png
-576,[Fanart]Merisiel Cutfile,,
-577,Air Elemental,,VTT577_AirElemental_Free.zip/VTT577_AirElemental_Free/Portrait/577_AirElementalPortrait-Free.png
-578,Water Elemental,,VTT578_WaterElemental_Free.zip/VTT578_WaterElemental_Free/Portrait/578_WaterElementalPortrait-Free.png
-579,Magma Mephit,,VTT579_MagmaMephit_Free.zip/VTT579_MagmaMephit_Free/Portrait/579_MagmaMephitPortrait-Free.png
-580,Ice Mephit,,VTT580_IceMephit_Free.zip/VTT580_IceMephit_Free/Portrait/580_IceMephitPortrait-Free.png
-581,Mud Mephit,,VTT581_MudMephit_Free.zip/VTT581_MudMephit_Free/Portrait/581_MudMephitPortrait-Free.png
-582,Smoke Mephit,,VTT582_SmokeMephit_Free.zip/VTT582_SmokeMephit_Free/Portrait/582_SmokeMephitPortrait-Free.png
-583,Fire Elemental,,VTT583_FireElemental_Free.zip/VTT583_FireElemental_Free/Portrait/583_FireElementalPortrait-Free.png
-584,,,
-585,,,
-586,,,
-587,Animated Armor,,VTT587_AnimatedArmor_Free.zip/VTT587_AnimatedArmor_Free/Portrait/587_AnimatedArmorPortrait-Free.png
-588,,,
-589,Animated Armor,,VTT589_AnimatedArmor_Free.zip/VTT589_AnimatedArmor_Free/Portrait/589_AnimatedArmorPortrait-Free.png
-590,,,
-591,Sharklin,,VTT591_Sharklin_Free.zip/VTT591_Sharklin_Free/Portrait/591_SharklinPortrait-Free.png
-592,Sharklin Netter,,
-593,Sharklin Harpoone,,VTT593_SharklinHarpoone_Free.zip/VTT593_SharklinHarpoone_Free/Portrait/593_SharklinHarpoonerPortrait-Free.png
-594,,,
-595,,,
-596,Knight,,VTT596_Knight_Free.zip/VTT596_Knight_Free/Portrait/596_KnightPortrait-Free.png
-597,,,
-598,Gibbering Mouther,,VTT598_GibberingMouther_Free.zip/VTT598_GibberingMouther_Free/Portrait/598_GibberingMoutherPortrait-Free.png
-599,Ranger,,VTT599_Ranger_Free.zip/VTT599_Ranger_Free/Portrait/599_RangerPortrait-Free.png
-600,,,
-601,Hobgoblin Soldier,,VTT601_HobgoblinSoldier_Free.zip/VTT601_HobgoblinSoldier_Free/Portrait/601_HobgoblinSoldierPortrait-Free.png
-602,Hobgoblin Soldier,,VTT602_HobgoblinSoldier_Free.zip/VTT602_HobgoblinSoldier_Free/Portrait/602_HobgoblinSoldierPortrait-Free.png
-603,Hobgoblin Soldier,,
-604,The Overseer,,VTT604_TheOverseer_Free.zip/VTT604_TheOverseer_Free/Portrait/604_TheOverseerPortrait-Free.png
-605,Undead Worker,,VTT605_UndeadWorker_Free.zip/VTT605_UndeadWorker_Free/Portrait/605_UndeadWorkerPortrait-Free.png
-606,Undead Worker,,VTT606_UndeadWorker_Free.zip/VTT606_UndeadWorker_Free/Portrait/606_UndeadWorkerPortrait-Free.png
-607,Giant Rat,,VTT607_GiantRat_Free.zip/VTT607_GiantRat_Free/Portrait/607_GiantRatPortrait-Free.png
-608,Cyclops,,VTT608_Cyclops_Free.zip/VTT608_Cyclops_Free/Portrait/608_CyclopsPortrait-Free.png
-609,,,
-610,,,
-611,,,
-612,,,
-613,,,
-614,,,
-615,Commoner,,VTT615_Commoner_Free.zip/VTT615_Commoner_Free/Portrait/615_CommonerPortrait-Free.png
-616,Commoner,,VTT616_Commoner_Free.zip/VTT616_Commoner_Free/Portrait/616_CommonerPortrait-Free.png
-617,,,
-618,Commoner,,VTT618_Commoner_Free.zip/VTT618_Commoner_Free/Portrait/618_CommonerPortrait-Free.png
-619,Commoner,,VTT619_Commoner_Free.zip/VTT619_Commoner_Free/Portrait/619_CommonerPortrait-Free.png
-620,,,
-621,,,
-622,Priestess,,VTT622_Priestess_Free.zip/VTT622_Priestess_Free/Portrait/622_PriestessPortrait-Free.png
-623,Storm Giant,,VTT623_StormGiant_Free.zip/VTT623_StormGiant_Free/Portrait/623_StormGiantPortrait-Free.png
-624,,,
-625,,,
-626,,,
-627,,,
-628,,,
-629,,,
-630,Vampire Spawn,,VTT630_VampireSpawn_Free.zip/VTT630_VampireSpawn_Free/Portrait/630_VampireSpawnPortrait-Free.png
-631,Infected Townswoman,,VTT631_InfectedTownswoman_Free.zip/VTT631_InfectedTownswoman_Free/Portrait/631_InfectedTownswomanPortrait-Free.png
-632,Snake Priestess,,VTT632_SnakePriestess_Free.zip/VTT632_SnakePriestess_Free/Portrait/632_SnakePriestessPortrait-Free.png
-633,,,
-634,Vampire Spawn,,VTT634_VampireSpawn_Free.zip/VTT634_VampireSpawn_Free/Portrait/634_VampireSpawnPortrait-Free.png
-635,Infected Townsman,,VTT635_InfectedTownsman_Free.zip/VTT635_InfectedTownsman_Free/Portrait/635_InfectedTownsmanPortrait-Free.png
-636,Commoner,,VTT636_Commoner_Free.zip/VTT636_Commoner_Free/Portrait/636_CommonerPortrait-Free.png
-637,Commoner,,VTT637_Commoner_Free.zip/VTT637_Commoner_Free/Portrait/637_CommonerPortrait-Free.png
-638,Commoner,,VTT638_Commoner_Free.zip/VTT638_Commoner_Free/Portrait/638_CommonerPortrait-Free.png
-639,Cleric,,VTT639_Cleric_Free.zip/VTT639_Cleric_Free/Portrait/639_ClericPortrait-Free.png
-640,Acid Zombie,,VTT640_AcidZombie_Free.zip/VTT640_AcidZombie_Free/Portrait/640_AcidZombiePortrait-Free.png
-641,Druid,,VTT641_Druid_Free.zip/VTT641_Druid_Free/Portrait/641_DruidPortrait-Free.png
-642,Dire Bat,,
-643,War Bat,,VTT643_WarBat_Free.zip/VTT643_WarBat_Free/Portrait/643_WarBatPortrait-Free.png
-644,Goblin Bat Rider,,VTT644_GoblinBatRider_Free.zip/VTT644_GoblinBatRider_Free/Portrait/644_GoblinBatRiderPortrait-Free.png
-645,,,
-646,,,
-647,,,
-648,Paper Boy,,VTT648_PaperBoy_Free.zip/VTT648_PaperBoy_Free/Portrait/648_PaperBoyPortrait-Free.png
-649,,,
-650,Guard,,VTT650_Guard_Free.zip/VTT650_Guard_Free/Portrait/650_GuardPortrait-Free.png
-651,Guard,,
-652,Guard,,
-653,Guard,,
-654,Guard,,
-655,Giant Raven,,
-656,Child,,
-657,Child,,
-658,Child,,
-659,Child,,
-660,,,
-661,,,
-662,,,
-663,,,
-664,,,
-665,,,
-666,,,
-667,,,
-668,,,
-669,,,
-670,Gatorling,,
-671,Gatorling,,
-672,,,
-673,,,
-674,,,
-675,Undead Warrior,,
-676,,,
-677,Undead Archer,,
-678,,,
-679,,,
-680,Barbarian,,
-681,,,
-682,,,
-683,Novice Fighter,,
-684,,,
-685,Gelatinous Cube,,
-686,,,
-687,,,
-688,Novice Cleric,,
-689,Novice Rogue,,
-690,Dog,,
-691,Dog,,
-692,,,
-693,,,
-694,,,
-695,,,
-696,Kenku,,
-697,Kenku,,
-698,,,
-699,,,
-700,Novice Monk,,
-701,Mermaid,,
-702,Siren,,
-703,,,
-704,Axe Beak,,
-705,,,
-706,,,
-707,,,
-708,Pit Fighter,,
-709,Pit Fighter,,
-710,Pit Fighter,,
-711,Pit Fighter,,
-712,,,
-713,,,
-714,,,
-715,General Goods Merchant,,
-716,General Goods Merchant,,
-717,,,
-718,,,
-719,,,
-720,Dragon Wyrmling,,
-721,Dragon Eggs,,
-722,Psi Brawler,,
-723,Psi Commander,,
-724,,,
-725,Psi Chosen One,,
-726,Psi Brawler,,
-727,Grick,,
-728,Violet Fungus Necrohulk,,
-729,Githyanki Warrior,,
-730,Githyanki Warrior,,
-731,,,
-732,,,
-733,,,
-734,,,
-735,Ochre Jelly,https://www.patreon.com/posts/735-ochre-jelly-135397333,VTT735_OchreJelly_Free.zip/VTT735_OchreJelly_Free/735_OchreJellyPortrait-BaseGoldB.png
-736,,,
-737,,,
-738,,,
-739,,,
-740,,,
-741,,,
-742,,,
-743,,,
-744,,,
-745,,,
-746,,,
-747,,,
-748,,,
-749,,,
-750,,,
-751,,,
-752,,,
-753,,,
-754,,,
-755,,,
-756,,,
-757,,,
-758,,,
-759,,,
-760,,,
-761,,,
-762,,,
-763,,,
-764,,,
-765,,,
-766,,,
-767,,,
+id,name,postUrl,tokenDownloadUrl,tokenPng
+1,Goblin Warrior,https://www.patreon.com/posts/free-files-base-10749718,,VTT01_GoblinWarrior_Free.zip/VTT01_GoblinWarrior_Free/Portrait/GoblinWarriorF.png
+2,Goblin Archer,https://www.patreon.com/posts/free-files-11213955,,VTT02_GoblinArcher_Free.zip/VTT02_GoblinArcher_Free/Portrait/GoblinArcherf.png
+3,Goblin Spearman,https://www.patreon.com/posts/free-files-11310899,,VTT03_GoblinSpearman_Free.zip/VTT03_GoblinSpearman_Free/Portrait/GoblinSpearmanF.png
+4,Goblin Elder,https://www.patreon.com/posts/free-files-11444800,,VTT04_GoblinElder_Free.zip/VTT04_GoblinElder_Free/Portrait/GoblinElderF.png
+5,Goblin Boss,https://www.patreon.com/posts/free-files-11589769,,VTT05_GoblinBoss_Free.zip/VTT05_GoblinBoss_Free/Portrait/GoblinBossF.png
+6,Barbarian,https://www.patreon.com/posts/free-files-11703527,,VTT06_Barbarian_Free.zip/VTT06_Barbarian_Free/Portrait/BarbarianF.png
+7,Spectator,https://www.patreon.com/posts/free-files-11836131,,VTT07_Spectator_Free.zip/VTT07_Spectator_Free/Portrait/SpectatorF.png
+8,Ghast,https://www.patreon.com/posts/free-files-12141052,,VTT08_Ghast_Free.zip/VTT08_Ghast_Free/Portrait/GhastF.png
+9,Kobold,https://www.patreon.com/posts/free-files-12452706,,VTT09_Kobold_Free.zip/VTT09_Kobold_Free/Portrait/KoboldF.png
+10,Kobold Sorceror,https://www.patreon.com/posts/free-files-12874549,,VTT10_KoboldSorceror_Free.zip/VTT10_KoboldSorceror_Free/Portrait/KoboldSorcerorF.png
+11,Winged Kobold,https://www.patreon.com/posts/free-files-13082785,,VTT11_WingedKobold_Free.zip/VTT11_WingedKobold_Free/Portrait/WingedKoboldF.png
+12,Ogre,https://www.patreon.com/file?h=13276940&m=1008167,,VTT12_Ogre_Free.zip/VTT12_Ogre_Free/Portrait/OgreF.png
+13,Human Thief,https://www.patreon.com/posts/free-files-13706016,,VTT13_HumanThief_Free.zip/VTT13_HumanThief_Free/Portrait/HumanThiefF.png
+14,Halfling Assassin,https://www.patreon.com/posts/free-files-13846536,,VTT14_HalflingAssassin_Free.zip/VTT14_HalflingAssassin_Free/Portait/HalflingAssassinF.png
+15,Large Bear,https://www.patreon.com/posts/free-files-13969830,,VTT15_Bear_Free.zip/VTT15_Bear_Free/Portrait/BearF.png
+16,Wolf,https://www.patreon.com/posts/free-files-14085414,,VTT16_Wolf_Free.zip/VTT16_Wolf_Free/Portrait/WolfF.png
+17a,Bandit (Crossbow),https://www.patreon.com/posts/free-files-14216453,,VTT17_Bandit(Crossbow)_Free.zip/VTT17_Bandit(Crossbow)_Free/Portrait/BanditCrossbowFree.png
+17b,Bandit (Daggers),https://www.patreon.com/posts/free-files-14216453,,VTT17_Bandit(Daggers)_Free.zip/VTT17_Bandit(Daggers)_Free/Portrait/Bandit(Daggers)Free.png
+17c,Bandit Captain,https://www.patreon.com/posts/free-files-14216453,,VTT17_BanditCaptain_Free.zip/VTT17_BanditCaptain_Free/Portrait/BanditCaptainFree.png
+18,Panther,https://www.patreon.com/posts/free-files-14406874,,VTT18_Panther_Free.zip/VTT18_Panther_Free/Portrait/PantherF.png
+19,Giant Poisonous Snake,https://www.patreon.com/posts/free-files-14534953,,VTT19_GiantPoisonousSnake_Free.zip/VTT19_GiantPoisonousSnake_Free/Portrait/GiantPoisonousSnakeF.png
+20,Erinyes,https://www.patreon.com/posts/free-files-14651672,,VTT20_Erinyes_Free.zip/VTT20_Erinyes_Free/Portrait/ErinyesF.png
+21,Griffon,https://www.patreon.com/posts/free-files-14774227,,VTT21_Griffon_Free.zip/VTT21_Griffon_Free/Portrait/GriffonF.png
+22,Dwarf Fighter,https://www.patreon.com/posts/free-files-14886502,,VTT22_DwarfFighter_Free.zip/VTT22_DwarfFighter_Free/Portrait/DwarfFighterF.png
+23,Monk,https://www.patreon.com/posts/free-files-15010372,,VTT23_Monk_Free.zip/VTT23_Monk_Free/Portrait/Monkf.png
+24,Dwarf Fighter #2,https://www.patreon.com/posts/free-files-15136843,,VTT24_DwarfFighter_Free.zip/VTT24_DwarfFighter_Free/Portrait/DwarfFighterF.png
+25,Owlbear,https://www.patreon.com/posts/free-files-15346895,,VTT25_Owlbear_Free.zip/VTT25_Owlbear_Free/Portrait/Owlbearf.png
+25b,Owlbear Cub,https://www.patreon.com/posts/free-files-15346895,,VTT25b_OwlbearCub_Free.zip/VTT25b_OwlbearCub_Free/Portrait/OwlbearCubf.png
+26,Knight,VTT25b_OwlbearCub_Free/Portrait/OwlbearCubf.png,,VTT26_Knight_Free.zip/VTT26_Knight_Free/Portrait/KnightF.png
+27,Bard,https://www.patreon.com/posts/free-files-15558074,,VTT27_Bard_Free.zip/VTT27_Bard_Free/Portrait/BardF.png
+28,Barlgura,https://www.patreon.com/posts/release-28-15724795,,VTT28_Barlgura_Free.zip/VTT28_Barlgura_Free/Portrait/BarlguraF.png
+29,Centaur,https://www.patreon.com/posts/29-centaur-15934826,,VTT29_Centaur_Free.zip/VTT29_Centaur_Free/Portrait/Centaurf.png
+30,Ninja,https://www.patreon.com/posts/30-ninja-16277617,,VTT30_Ninja_Free.zip/VTT30_Ninja_Free/Portrait/NinjaFree.png
+31,Manes,https://www.patreon.com/posts/31-manes-16541986,,VTT31_Manes_Free.zip/VTT31_Manes_Free/Portrait/Manes-Free.png
+32,Gnoll Hunter,https://www.patreon.com/posts/32-33-gnoll-16801938,,VTT32_GnollHunter_Free.zip/VTT32_GnollHunter_Free/Portrait/GnollHunterFree.png
+33,Gnoll Warrior,https://www.patreon.com/posts/32-33-gnoll-16801938,,VTT33_GnollWarrior_Free.zip/VTT33_GnollWarrior_Free/Portrait/GnollWarriorFree.png
+34,Flind,https://www.patreon.com/posts/34-flind-16933680,,VTT34_Flind_Free.zip/VTT34_Flind_Free/Portrait/Flind_Free.png
+35,GnollCaster,https://www.patreon.com/posts/35-36-gnoll-and-17256502,,VTT35_GnollCaster_Free.zip/VTT35_GnollCaster_Free/Portrait/GnollCasterFree.png
+36,Hyena,https://www.patreon.com/posts/35-36-gnoll-and-17256502,,VTT36_Hyena_Free.zip/VTT36_Hyena_Free/Portrait/HyenaFree.png
+37,Whiterling,https://www.patreon.com/posts/37-gnoll-17656550,,VTT37_Whiterling_Free.zip/VTT37_Whiterling_Free/Portrait/WitherlingFree.png
+38,Shoosuva,https://www.patreon.com/posts/38-shoosuva-17942958,,VTT38_Shoosuva_Free.zip/VTT38_Shoosuva_Free/Portrait/ShoosuvaFree.png
+39,Leucrotta,https://www.patreon.com/posts/39-leucrotta-17943074,,VTT39_Leucrotta_Free.zip/VTT39_Leucrotta_Free/Portrait/LeucrottaFree.png
+40,Vistana Tiefling,https://www.patreon.com/posts/40-vistana-18066778,,VTT40_VistanaTiefling_Free.zip/VTT40_VistanaTiefling_Free/Portrait/VistanaTieflingFree.png
+41,Giant Gnoll,https://www.patreon.com/posts/41-giant-gnoll-18228101,,VTT41_GiantGnoll_Free.zip/VTT41_GiantGnoll_Free/Portrait/GiantGnollFree.png
+42,Treasure Goblin,https://www.patreon.com/posts/42-treasure-18355534,,VTT42_TreasureGoblin_Free.zip/VTT42_TreasureGoblin_Free/Portrait/Treasure-Goblin-Free.png
+43,Samurai,https://www.patreon.com/posts/43-samurai-18536874,,VTT43_Samurai_Free.zip/VTT43_Samurai_Free/Portrait/Samurai-Free.png
+44,Worg,https://www.patreon.com/posts/44-worg-18897463,,VTT44_Worg_Free.zip/VTT44_Worg_Free/Portrait/PaperForge44_WorgPortrait_Free.png
+45,Worg Riders,https://www.patreon.com/posts/45-worg-riders-18897516,,VTT45_WorgRiders1_Free.zip/VTT45_WorgRiders1_Free/Portrait/GoblinRider-A-Front-3-Free.png
+46,Centaur #2,https://www.patreon.com/posts/46-centaur-2-19375032,,VTT46_Centaur2_Free.zip/VTT46_Centaur2_Free/Portrait/Centaur-Free.png
+47,Minotaur,https://www.patreon.com/posts/47-minotaurs-19536398,,VTT47_Minotaur1_Free.zip/VTT47_Minotaur1_Free/Portrait/47MinotaurPortrait Free.png
+48,Barbarian,https://www.patreon.com/posts/48-barbarian-2-19763850,,VTT48_Barbarian Axe_Free.zip/VTT48_Barbarian Axe_Free/Portrait/48_Barbarian1Portrait-Free.png
+49,Wererat Giant Rat,https://www.patreon.com/posts/49-50-51-wererat-20415574,,VTT49_Wererat GiantRat_Free.zip/VTT49_Wererat GiantRat_Free/Portrait/49_Giant_RatPortrait-Free.png
+50,Wererat Hybrid,https://www.patreon.com/posts/49-50-51-wererat-20415574,,VTT50_Wererat Hybrid_Free.zip/VTT50_Wererat Hybrid_Free/Portrait/50_HybridWereRat_Portrait-Free.png
+51,Wererat Humanoid,https://www.patreon.com/posts/49-50-51-wererat-20415574,,VTT51_Wererat Humanoid_Free.zip/VTT51_Wererat Humanoid_Free/Portrait/51_HumanoidWereRat_Portrait-Free.png
+52,Werewolf Humanoid,https://www.patreon.com/posts/52-werewolf-form-20788219,,VTT52_Werewolf Humanoid_Free.zip/VTT52_Werewolf Humanoid_Free/Portrait/52_WerewolfHumanoid_Portrait-Free.png
+53,Werewolf Hybrid,https://www.patreon.com/posts/53-werewolf-form-20951158,,VTT53_Werewolf Hybrid-Free.zip/VTT53_Werewolf Hybrid-Free/Portrait/53_Werewolf(Hybrid)-Free.png
+54,Wolf,https://www.patreon.com/posts/54-55-wolf-21135615,,VTT54-Wolf-Free.zip/VTT54-Wolf-Free/Portrait/54-Wolf-Portrait--Free.png
+55,Dire Wolf,https://www.patreon.com/posts/54-55-wolf-21135615,,
+56,Large Bear,,,
+57,,,,
+58,Humanoid Werebear,,,
+59,Werebear Hybrid,https://www.patreon.com/posts/59-werebear-21728443,,
+60,WereTiger Humanoid,https://www.patreon.com/posts/60-weretiger-21922519,,
+61,Headless Horseman,https://www.patreon.com/posts/61-62-headless-22405495,,VTT61_HeadlessHorseman_Free.zip/VTT61_HeadlessHorseman_Free/Portrait/61HeadlessHorseman-Free.png
+62,Flaming Horseman,,,VTT62_FlamingHorseman_Free.zip/VTT62_FlamingHorseman_Free/Portrait/62FlamingHorseman-Free.png
+63,Kraken,,,VTT63_Kraken_Free.zip/VTT63_Kraken_Free/Portrait/63_KrakenPortrait_Free.png
+64,Weretiger Hybrid,https://www.patreon.com/posts/64-weretiger-22859922,,
+65,Zombie 2,https://www.patreon.com/posts/65-66-pack-23092833,,VTT65_Zombie1_Free.zip/VTT65_Zombie1_Free/Portrait/VTT65-Zombie1-Free.png
+66,Necromancer,,,VTT66_Necromancer_Free.zip/VTT66_Necromancer_Free/Portrait/66_necromancer-Free.png
+67,Tiger,,,VTT67_Tiger_Free.zip/VTT67_Tiger_Free/Portrait/67_TigerPortrait_Free.png
+68,Were Crocodile,,,VTT68_WereCrocodile_Free.zip/VTT68_WereCrocodile_Free/Portrait/68_WereCrocodilePortrait_Free.png
+69,Armored Were Croc,,,
+70,Crocodile,,,VTT70_Crocodile_Free.zip/VTT70_Crocodile_Free/Portrait/PaperForge70_CrocodilePortrait_Free.png
+71,Werecrocodile Humanoid,,,VTT71_WerecrocodileHumanoid_Free.zip/VTT71_WerecrocodileHumanoid_Free/Portrait/PaperForge71_WerecrocodileHumanoidPortrait_Free.png
+72,Dragonborn,,,VTT72_Dragonborn_Free.zip/VTT72_Dragonborn_Free/Portrait/PaperForge72_DragonbornPaladinPortrait_Free.png
+73,Dragonborn Ranger,,,VTT73_DragonbornRanger_Free.zip/VTT73_DragonbornRanger_Free/Portrait/PaperForge73_DragonbornRangerPortrait_Free.png
+74,Tiefling Sorceress,,,VTT74_TieflingSorceress_Free.zip/VTT74_TieflingSorceress_Free/Portrait/TieflingSorceressFree.png
+75,Halfling Ranger,,,VTT75_HalflingRanger_Free.zip/VTT75_HalflingRanger_Free/Portrait/PaperForge75_HalflingRanger_Free.png
+76,Half Orc Warrior,,,VTT76_HalfOrcWarrior_Free.zip/VTT76_HalfOrcWarrior_Free/Portrait/PaperForge76_HalfOrcWarriorPortrait_Free.png
+77,Forest Spirit Pack,,,VTT77_ForestSpiritPack_Free.zip/VTT77_ForestSpiritPack_Free/Portrait/Horns/PaperForge77_ForestSpiritPack_Horns-Free.png
+78,Medusa,,,VTT78_Medusa_Free.zip/VTT78_Medusa_Free/Portrait/78_MedusaPortrait-Free.png
+79,,,,
+80,,,,
+81,,,,
+82,Clockwork Golem Pack,,,VTT82_ClockworkGolemPack_Free.zip/VTT82_ClockworkGolemPack_Free/Portrait/Bomb/82_BombPortrait-Free.png
+83,Human Cleric,,,
+84,Halforc Monk,,,
+85,Hydra,https://www.patreon.com/posts/85-hydra-26842819,,VTT85_Hydra_Free.zip/VTT85_Hydra_Free/Portrait/85_Hydra-Free.png
+86,Undead Knight A,,,
+87,Hook Horror,,,
+88,Maw Demon,,,
+89,Banshee,,,
+90,Herculean,,,
+91,Swarm Master,,,
+92,,,,
+93,Skyscout,,,
+94,Mantid,,,
+95,Harpy Matriarch,,,
+96,Harpy,https://www.patreon.com/posts/96-harpy-29425757,,VTT96_Harpy_Free.zip/VTT96_Harpy_Free/Portrait/96_Harpy-Free.png
+97,Giant Spider,https://www.patreon.com/posts/cavern-of-venom-29445967,https://www.patreon.com/file?h=15724974&i=5500334,VTT97_GiantSpider_Free.zip/VTT97_GiantSpider_Free/Portrait/GiantSpiderFree.png
+98,Spiderling,https://www.patreon.com/posts/cavern-of-venom-29445967,https://www.patreon.com/file?h=15724974&i=5500349,VTT98_GiantSpiderling_Free.zip/VTT98_GiantSpiderling_Free/Portrait/GiantSpiderlingFree.png
+99,Venom Queen,https://www.patreon.com/posts/cavern-of-venom-29445967,https://www.patreon.com/file?h=15724974&i=5500366,VTT99_VenomQueen_Free.zip/VTT99_VenomQueen_Free/Portrait/VenomQueenFree.png
+100,,,,
+101,Webbed Humanoid,,,
+102,Skeletal Bird,,,
+103,Human Monk,,,
+104,Tavern Keeper,https://www.patreon.com/posts/104-tavern-30147275,,VTT104_TavernKeeper_Free.zip/VTT104_TavernKeeper_Free/Portrait/104_TavernKeeper-Free.png
+105,Red Cap,,,
+106,Tavern Maiden,https://www.patreon.com/posts/106-tavern-30320800,,VTT106_TavernMaiden_Free.zip/VTT106_TavernMaiden_Free/Portrait/106_TavernMaiden-Free.png
+107,Bone Devil,,,
+108,Adult Red Dragon,https://www.patreon.com/posts/108-adult-red-30436400,,VTT108_AdultRedDragon_Free.zip/VTT108_AdultRedDragon_Free/Portrait/AdultRedDragonF.png
+109,,,,
+110,Booze Server Kobold,https://www.patreon.com/posts/110-booze-server-30437329,,VTT110_BoozeServerKobold_Free.zip/VTT110_BoozeServerKobold_Free/Portrait/BoozeServerKoboldF.png
+111,Cask Hauler Kobold,https://www.patreon.com/posts/111-cask-hauler-30437528,,VTT111_CaskHaulerKobold_Free.zip/VTT111_CaskHaulerKobold_Free/Portrait/CaskHaulerKoboldF.png
+112,Townsman,https://www.patreon.com/posts/112-townsman-30586677,,VTT112_Townsman_Free.zip/VTT112_Townsman_Free/Portrait/112_Townsman-Free.png
+113,Townsman,https://www.patreon.com/posts/113-townsman-2-30627219,,VTT113_Townsman_Free.zip/VTT113_Townsman_Free/Portrait/113_Townsman-Free.png
+114,Wing Sorcerer Kobold,https://www.patreon.com/posts/114-kobold-wing-30740953,,VTT114_WingSorcererKobold_Free.zip/VTT114_WingSorcererKobold_Free/Portrait/KoboldWingSorcF.png
+115,Molten Ooze,,,
+116,Drunken Townsman,https://www.patreon.com/posts/116-drunken-30805855,,VTT116_DrunkenTownsman_Free.zip/VTT116_DrunkenTownsman_Free/Portrait/116_Drunken-Townsman-Free.png
+117,,,,
+118,Reanimated Groundskeeper,,,
+119,Ghostly Hound,,,
+120,Ghost Matron,,,
+121,Wisp Born,,,
+122,Crone,https://www.patreon.com/posts/122-crone-31215835,,VTT122_Crone_Free.zip/VTT122_Crone_Free/Portrait/122_Crone-Free.png
+123,Vapul,https://www.patreon.com/posts/123-vapul-31215991,,
+124,Soul Scorcher Dragon,,,
+125,Urchin,https://www.patreon.com/posts/125-urchin-31485841,,VTT125_Urchin_Free.zip/VTT125_Urchin_Free/Portrait/125_Urchin-Free.png
+126,Urchin,https://www.patreon.com/posts/126-little-31486132,,VTT126_Urchin_Free.zip/VTT126_Urchin_Free/Portrait/126_Urchin-Free.png
+127,TownsWoman,https://www.patreon.com/posts/127-townswoman-31530699,,VTT127_Townswoman_Free.zip/VTT127_Townswoman_Free/Portrait/127_Townswoman-Free.png
+128,Cultist Hide,https://www.patreon.com/posts/128-cultist-hide-31961658,,VTT128_CultistHide_Free.zip/VTT128_CultistHide_Free/Portrait/128_CultistHide-Free.png
+129,Cultist SM Claw,,,
+130,Cultist SM Cats Eye,,,
+131,Cultist Warlock,https://www.patreon.com/posts/131-cultist-31962044,,VTT131_CultistWarlock_Free.zip/VTT131_CultistWarlock_Free/Portrait/131_CultistWarlock-Free.png
+132,Cultist SM Abomination,,,
+133,Black Teztatlipoca,,,
+134,,,,
+135,,,,
+136,,,,
+137,Aarakocra Warrior,,,
+138,,,,
+139,,,,
+140,Chameleonfolk Warrior,,,
+141,Chameleonfolk Chieftain,,,
+142,Elder Coatl,,,
+143,Manticore,https://www.patreon.com/posts/143-manticore-32670248,,VTT143_Manticore_Free.zip/VTT143_Manticore_Free/Portrait/143_Manticore-Free.png
+144,Mastiff,,,
+145,Giant Snake,https://www.patreon.com/posts/145-reskin-giant-33173609,,VTT145_GiantSnake_Free.zip/VTT145_GiantSnake_Free/Portrait/Free/145_GiantSnakePortrait-Free-B.png
+146,Remote Traveller,,,
+147,Firbolg Druid,,,
+148,,,,
+149,Warforged Artificer,https://www.patreon.com/posts/149-warforged-33797786,,VTT149_WarforgedArtificer_Free.zip/VTT149_WarforgedArtificer_Free/Portrait/149_WarforgedArtificer-Free.png
+150,Steel Defender,,,
+151,Gnome Wizard,https://www.patreon.com/posts/151-gnome-wizard-33931545,,VTT151_GnomeWizard_Free.zip/VTT151_GnomeWizard_Free/Portrait/151_GnomeWizard-Free.png
+152,Elf Ranger,,,
+153,Half Elf Rogue,,,
+154,Leprechaun,,,
+155,Rakshasa,,,
+156,Rakshasa,,,VTT156_Rakshasa_Free.zip/VTT156_Rakshasa_Free/Portrait/RakshasaFree.png
+157,Giant Scorpion,https://www.patreon.com/posts/157-giant-35773806,,VTT157_GiantScorpion_Free.zip/VTT157_GiantScorpion_Free/Portrait/157_GiantScorpion-Free.png
+158,Bullywug,,,VTT158_Bullywug_Free.zip/VTT158_Bullywug_Free/Portrait/BullywugFree.png
+159,Bullywug Royal Guard,,,
+160,Bullywug Queen,,,VTT160_BullywugQueen_Free.zip/VTT160_BullywugQueen_Free/Portrait/BullywugQueenFree.png
+161,Bugbear,https://www.patreon.com/posts/161-bugbear-36065977,https://www.patreon.com/file?h=15724974&i=5443676,VTT161_Bugbear_Free.zip/VTT161_Bugbear_Free/Portrait/BugbearFree.png
+162,Otyugh,https://www.patreon.com/posts/162-otyugh-36242025,,
+163,Giant Centipede,https://www.patreon.com/posts/163-giant-36352514,,VTT163_GiantCentipede_Free.zip/VTT163_GiantCentipede_Free/Portrait/GiantCentipedeFree.png
+164,Ogre,,,VTT164_Ogre_Free.zip/VTT164_Ogre_Free/Portrait/OgreFree.png
+165,Tiefling Warlock,,,VTT165_TieflingWarlock_Free.zip/VTT165_TieflingWarlock_Free/Portrait/TieflingWarlockFree.png
+166,Sleuth,,,VTT166_Sleuth_Free.zip/VTT166_Sleuth_Free/Portrait/SpecialistFree.png
+167,Operative,,,VTT167_Operative_Free.zip/VTT167_Operative_Free/Portrait/OperativeFree.png
+168,Spectral Agent,,,VTT168_SpectralAgent_Free.zip/VTT168_SpectralAgent_Free/Portrait/SpectralAgentFree.png
+169,,,,
+170,Half Orc Paladin,,,VTT170_HalfOrcPaladin_Free.zip/VTT170_HalfOrcPaladin_Free/Portrait/HalfOrcPaladinFree.png
+171,Paladin,,,VTT171_Paladin_Free.zip/VTT171_Paladin_Free/Portrait/PaladinFree.png
+172,,,,
+173,Chempunk Ogre,,,
+174,Chempunk Scientist,,,VTT174_ChempunkScientist_Free.zip/VTT174_ChempunkScientist_Free/Portrait/ChempunkScientistFree.png
+175,Automated Hose,,,VTT175_AutomatedHose_Free.zip/VTT175_AutomatedHose_Free/Portrait/chempunkHoseFree.png
+176,Skeleton,,,VTT176_Skeleton_Free.zip/VTT176_Skeleton_Free/Portrait/SkeletonFree.png
+177,Skeleton Archer,,,VTT177_SkeletonArcher_Free.zip/VTT177_SkeletonArcher_Free/Portrait/Skeleton-ArcherFree.png
+178,Skeleton Rogue,,,VTT178_SkeletonRogue_Free.zip/VTT178_SkeletonRogue_Free/Portrait/SkeletonRogueFree.png
+179,Skeleton Spearman,,,VTT179_SkeletonSpearman_Free.zip/VTT179_SkeletonSpearman_Free/Portrait/SkeletonSpearmanFree.png
+180,Skeleton Warrior,,,VTT180_SkeletonWarrior_Free.zip/VTT180_SkeletonWarrior_Free/Portrait/SkeletonWarriorFree.png
+181,,,,
+182,,,,
+183,Hogshead,,,
+184,Hogshead B,,,
+185,Troll,,,VTT185_Troll_Free.zip/VTT185_Troll_Free/Portrait/TrollFree.png
+186,,,,
+187,Orc Warrior,,,
+188,Orc Swordsman,,,VTT188_OrcSwordsman_Free.zip/VTT188_OrcSwordsman_Free/Portrait/OrcSwordsmanFree.png
+189,Orc Spearman,,,VTT189_OrcSpearman_Free.zip/VTT189_OrcSpearman_Free/Portrait/OrcSpearmanFree.png
+190,,,,
+191,,,,
+192,Cat,,,VTT192_Cat_Free.zip/VTT192_Cat_Free/Portrait/CatFree.png
+193,Adult White Dragon,,,
+194,Ice Terrain 1,,,
+195,Weasel,,,VTT195_Weasel_Free.zip/VTT195_Weasel_Free/Portrait/WeaselFree.png
+196,Swarmof Centipedes,,,VTT196_SwarmofCentipedes_Free.zip/VTT196_SwarmofCentipedes_Free/Portrait/SwarmofCentipedesFree.png
+197,Threndl Keeper,,,VTT197_ThrendlKeeper_Free.zip/VTT197_ThrendlKeeper_Free/Portrait/ThrendlKeeperFree.png
+198,Threndl Scout,,,VTT198_ThrendlScout_Free.zip/VTT198_ThrendlScout_Free/Portrait/ThrendlScoutFree.png
+199,,,,
+200,Satyr Female,,,VTT200_SatyrFemale_Free.zip/VTT200_SatyrFemale_Free/Portrait/Satyr01_Free.png
+201,Satyr Male,,,VTT201_SatyrMale_Free.zip/VTT201_SatyrMale_Free/Portrait/Satyr02_Free.png
+202,Satyr Bard Female,,,VTT202_SatyrBardFemale_Free.zip/VTT202_SatyrBardFemale_Free/Portrait/SatyrBard01_Free.png
+203,Satyr Bard Male,,,VTT203_SatyrBardMale_Free.zip/VTT203_SatyrBardMale_Free/Portrait/SatyrBard02_Free.png
+204,Satyr Warrior Female,,,VTT204_SatyrWarriorFemale_Free.zip/VTT204_SatyrWarriorFemale_Free/Portrait/SatyrWarrior01_Free.png
+205,Satyr Warrior Male,,,VTT205_SatyrWarriorMale_Free.zip/VTT205_SatyrWarriorMale_Free/Portrait/Gold/SatyrWarrior02_1.png
+206,,,,
+207,,,,
+208,,,,
+209,,,,
+210,Adult Green Dragon,,,
+211,Owl,,,VTT211_Owl_Free.zip/VTT211_Owl_Free/Portrait/OwlFree.png
+212,Eldritch Cannon,,,VTT212_EldritchCannon_Free.zip/VTT212_EldritchCannon_Free/Portrait/EldritchCannonFree.png
+213,,,,
+214,Mechanical Homunculus,,,VTT214_MechanicalHomunculus_Free.zip/VTT214_MechanicalHomunculus_Free/Portrait/MechanicalHomunculusFree.png
+215,,,,
+216,Lizardfolk,,,VTT216_Lizardfolk_Free.zip/VTT216_Lizardfolk_Free/Portrait/LizardfolkFree.png
+217,Lizardfolk Warrior,,,VTT217_LizardfolkWarrior_Free.zip/VTT217_LizardfolkWarrior_Free/Portrait/LizardfolkWarriorFree.png
+218,,,,
+219,The Pale Outlaw,,,VTT219_ThePaleOutlaw_Free.zip/VTT219_ThePaleOutlaw_Free/Portrait/PaleOutlawFree.png
+220,Animated Revolver,,,VTT220_AnimatedRevolver_Free.zip/VTT220_AnimatedRevolver_Free/Portrait/AnimatedRevolverFree.png
+221,Terror Weed,,,VTT221_TerrorWeed_Free.zip/VTT221_TerrorWeed_Free/Portrait/TerrorWeedFree.png
+222,Reskin FrostTroll,,,
+223,Dwarf Barbarian,,,
+224,Dwarf Barbarian,,,VTT224_DwarfBarbarian_Free.zip/Free.png
+225,Dwarf Paladin,,,VTT225_DwarfPaladin_Free.zip/VTT225_DwarfPaladin_Free/Portrait/225_DwarfPaladin-Free.png
+226,Dwarf Paladin,,,VTT226_DwarfPaladin_Free.zip/VTT226_DwarfPaladin_Free/Portrait/226_DwarfPaladin-Free.png
+227,Dwarf Cleric,,,VTT227_DwarfCleric_Free.zip/VTT227_DwarfCleric_Free/Portrait/227_DwarfCleric-Free.png
+228,Dwarf Cleric,,,VTT228_DwarfCleric_Free.zip/VTT228_DwarfCleric_Free/Portrait/228_DwarfClericPortrait-Free.png
+229,Bear,,,VTT229_Bear_Free.zip/VTT229_Bear_Free/Portrait/229_BearPortrait-Free.png
+230,Reskin Pack Bear,,,
+231,Black Dragon,,,
+232,Ghoul,https://www.patreon.com/posts/232-ghoul-41850230,https://www.patreon.com/file?h=15724974&i=6395275,VTT232_Ghoul_Free.zip/VTT232_Ghoul_Free/Portrait/232_GhoulPortrait-Free.png
+233,Crawling Hand1,,,VTT233_CrawlingHand1_Free.zip/VTT233_CrawlingHand1_Free/Portrait/233_CrawlingHand1Portrait-Free.png
+234,Goblin Alchemist,,,VTT234_Goblin Alchemist_Free.zip/Alchemist_Free/Portrait/234_GoblinAlchemistPortrait-Free.png
+235,Giant Fire Beetle,,,VTT235_GiantFireBeetle_Free.zip/VTT235_GiantFireBeetle_Free/Portrait/235_GiantFireBeetlePortrait-Free.png
+236,Bone Spider,,,
+237,Giant Hercules Beetle,,,
+238,Monk,,,VTT238_Monk_Free.zip/VTT238_Monk_Free/Portrait/238_MonkPortrait-Free.png
+239,Flying Hammer,,,VTT239_Flying Hammer_Free.zip/Hammer_Free/Portrait/239_FlyingHammerPortrait-Free.png
+240,Frying Pan,,,
+241,Flying Dagger 2,,,
+242,Flying Sword,,,VTT242_FlyingSword_Free.zip/VTT242_FlyingSword_Free/Portrait/243_FlyingSwordPortrait-Free.png
+243,Animated Voodoo Doll,,,VTT243_Animated Voodoo Doll_Free.zip/Doll_Free/Portrait/AnimatedVoodooDollPortrait-Free.png
+244,Giant Frog,,,VTT244_GiantFrog_Free.zip/VTT244_GiantFrog_Free/Portrait/244_GiantFrogPortrait-Free.png
+245,Monk,,,VTT245_Monk_Free.zip/VTT245_Monk_Free/Portrait/245_MonkPortrait-Free.png
+246,Frost Giant,,,
+247,Human Sorceress,,,VTT247_Human Sorceress_Free.zip/Sorceress_Free/Portrait/247_HumanSorceressPortrait-Free.png
+248,Elf Warrior,,,VTT248_Elf Warrior_Free.zip/Free.png
+249,Roper,,,
+250,Snow Golem,,,VTT250_SnowGolem_Free.zip/VTT250_SnowGolem_Free/Portrait/250_SnowGolemPortrait-Free.png
+251,Treasure Chests,,,
+252,Pumpkin Harvester,,,VTT252_PumpkinHarvester_Free.zip/VTT252_PumpkinHarvester_Free/Portrait/252_PumpkinHarvesterPortrait-Free.png
+253,Skeletal Mage,,,VTT253_Skeletal Mage_Free.zip/Mage_Free/Portrait/253_SkeletalMagePortrait-Free.png
+254,Flameskull,https://www.patreon.com/posts/254-flameskull-43032281,https://www.patreon.com/file?h=15724974&i=6584196,VTT254_Flameskull_Free.zip/VTT254_Flameskull_Free/Portrait/254_FlameskullPortrait-Free.png
+255,Ghast,,,VTT255_Ghast_Free.zip/VTT255_Ghast_Free/Portrait/255_GhastPortrait-Free.png
+256,Gnome Bard,,,VTT256_GnomeBard_Free.zip/VTT256_GnomeBard_Free/Portrait/256_GnomeBardPortrait-Free.png
+257,Carrion Crawler,,,
+258,Bandit,,,VTT258_Bandit_Free.zip/VTT258_Bandit_Free/Portrait/258_BanditPortrait-Free.png
+259,Bandit,,,VTT259_Bandit_Free.zip/VTT259_Bandit_Free/Portrait/259_BanditPortrait-Free.png
+260,Human Rogue,,,VTT260_HumanRogue_Free.zip/VTT260_HumanRogue_Free/Portrait/260_HumanRoguePortrait-Free.png
+261,Loxodon Wizard,,,VTT261_LoxodonWizard_Free.zip/VTT261_LoxodonWizard_Free/Portrait/261_LoxodonWizardPortrait-Free.png
+262,Loxodon Druid,,,VTT262_LoxodonDruid_Free.zip/VTT262_LoxodonDruid_Free/Portrait/262_LoxodonDruidPortrait-Free.png
+263,Drider,,,
+264,Tiefling Paladin,,,VTT264_TieflingPaladin_Free.zip/VTT264_TieflingPaladin_Free/Portrait/264_TieflingPaladinPortrait-Free.png
+265,Tiefling Paladin,,,VTT265_Tiefling Paladin_Free.zip/Paladin_Free/Portrait/265_TieflingPaladinPortrait-Free.png
+266,Ranger,,,VTT266_Ranger_Free.zip/VTT266_Ranger_Free/Portrait/266_RangerPortrait-Free.png
+267,Fire Giant,,,
+268,Tiefling Ranger,,,VTT268_TieflingRanger_Free.zip/VTT268_TieflingRanger_Free/Portrait/268_TieflingRangerPortrait-Free.png
+269,Frost Giant2,,,
+270,Wizard,,,VTT270_Wizard_Free.zip/VTT270_Wizard_Free/Portrait/270_WizardPortrait-Free.png
+271,Tiefling Wizard,,,VTT271_TieflingWizard_Free.zip/VTT271_TieflingWizard_Free/Portrait/271_TieflingWizardPortrait-Free.png
+272,Stone Giant,,,
+273,Dragonborn Wizard,,,VTT273_DragonbornWizard_Free.zip/VTT273_DragonbornWizard_Free/Portrait/273_DragonbornWizardPortrait-Free.png
+274,Dwarf Warrior,,,VTT274_DwarfWarrior _Free.zip/_Free/Portrait/274_DwarfWarriorPortrait-Free.png
+275,Flying Dagger,,,VTT275_Flying Dagger_Free.zip/Dagger_Free/Portrait/275_FlyingDaggerPortrait-Free.png
+276,Hill Giant,,,
+277,Specter,,,VTT277_Specter_Free.zip/VTT277_Specter_Free/Portrait/277_SpecterPortrait-Free.png
+278,Wraith,,,VTT278_Wraith_Free.zip/VTT278_Wraith_Free/Portrait/278_WraithPortrait-free.png
+279,Cloud Giant,,,
+280,Charon Ferryman,,,VTT280_CharonFerryman_Free.zip/VTT280_CharonFerryman_Free/Portrait/280_CharonPortrait-Free.png
+281,Charon,,,VTT281_Charon_Free.zip/VTT281_Charon_Free/Portrait/280_CharonPortrait(B)-Free.png
+282,Charons Ferry,,,VTT282_CharonsFerry_Free.zip/VTT282_CharonsFerry_Free/Portrait/282_CharonsFerryPortrait-Free.png
+283,Styxian Soul,,,VTT283_StyxianSoul_Free.zip/VTT283_StyxianSoul_Free/Portrait/283_StyxiansoulPortrait-Free.png
+284,Floating Ember,,,VTT284_FloatingEmber_Free.zip/VTT284_FloatingEmber_Free/Portrait/284_FloatingEmberPortrait-Free.png
+285,Boar,,,VTT285_Boar_Free.zip/VTT285_Boar_Free/Portrait/285_BoarPortrait-Free.png
+286,Boarlet,,,VTT286_Boarlet_Free.zip/VTT286_Boarlet_Free/Portrait/286_BoarletPortrait-Free.png
+287,Boar,,,VTT287_Boar_Free.zip/VTT287_Boar_Free/Portrait/287_BoarPortrait-Free.png
+288,Dragon Turtle,,,
+289,Pseudodragon,,,VTT289_Pseudodragon_Free.zip/VTT289_Pseudodragon_Free/Portrait/289_PseudodragonPortrait-Free.png
+290,Nothic,,,
+291,Gnome Artificer,,,VTT291_GnomeArtificer_Free.zip/VTT291_GnomeArtificer_Free/Portrait/291_GnomeArtificerPortrait-Free.png
+292,Halfling Druid,,,VTT292_HalflingDruid_Free.zip/VTT292_HalflingDruid_Free/Portrait/292_HalflingDruidPortrait-Free.png
+293,Tabaxi Monk,,,VTT293_TabaxiMonk_Free.zip/VTT293_TabaxiMonk_Free/Portrait/293_TabaxiMonkPortrait-Free.png
+294,Tabaxi Rogue,,,VTT294_TabaxiRogue_Free.zip/VTT294_TabaxiRogue_Free/Portrait/294_TabaxiRoguePortrait-Free.png
+295,Badger,,,
+296,Tabaxi Monk,,,VTT296_Tabaxi Monk_Free.zip/Monk_Free/Portrait/296_TabaxiMonkPortrait-Free.png
+297,Crelid,,,VTT297_Crelid_Free.zip/VTT297_Crelid_Free/Portrait/297_CrelidPortrait-Free.png
+298,EnvironmentProp Fire,,,
+299,Cultist Fang,,,VTT299_CultistFang_Free.zip/VTT299_CultistFang_Free/Portrait/299_CultistFangPortrait-Free.png
+300,Cult Assassin,,,VTT300_CultAssassin_Free.zip/VTT300_CultAssassin_Free/Portrait/300_CultAssassinPortrait-Free.png
+301,Halfling Monk,,,VTT301_HalflingMonk_Free.zip/VTT301_HalflingMonk_Free/Portrait/301_HalflingMonkPortrait-Free.png
+302,Cultist Wing,,,VTT302_CultistWing_Free.zip/VTT302_CultistWing_Free/Portrait/302_CultistWingPortrait--Free.png
+303,Reskin Astral Self Monk,,,
+304,Town Guard,,,VTT304_TownGuard_Free.zip/VTT304_TownGuard_Free/Portrait/304_TownGuardPortrait-Free.png
+305,Town Guard,,,VTT305_TownGuard_Free.zip/VTT305_TownGuard_Free/Portrait/305_TownGuardPortrait-Free.png
+306,Town Guard,,,VTT306_TownGuard_Free.zip/VTT306_TownGuard_Free/Portrait/306_TownGuardPortrait-Free.png
+307,Town Guard,,,VTT307_TownGuard_Free.zip/VTT307_TownGuard_Free/Portrait/307_TownGuardPortrait-Free.png
+308,Town Guard,,,VTT308_TownGuard_Free.zip/VTT308_TownGuard_Free/Portrait/308_TownGuardPortrait-Free.png
+309,Town Guard,,,VTT309_TownGuard_Free.zip/VTT309_TownGuard_Free/Portrait/309_TownGuardPortrait-Free.png
+310,Town Guard,,,VTT310_TownGuard_Free.zip/VTT310_TownGuard_Free/Portrait/310_TownGuardPortrait-Free.png
+311,Town Guard,,,VTT311_TownGuard_Free.zip/VTT311_TownGuard_Free/Portrait/311_TownGuardPortait-Free.png
+312,Town Guard Captain,,,VTT312_TownGuardCaptain_Free.zip/VTT312_TownGuardCaptain_Free/Portrait/312_TownGuardCaptainPortrait-Free.png
+313,Town Guard Captain,,,VTT313_TownGuardCaptain_Free.zip/VTT313_TownGuardCaptain_Free/Portrait/313_TownGuardCaptainPortrait-Free.png
+314,Reskin Elite Guard,,,
+315,Reskin Elite Guard,,,
+316,Reskin Elite Guard Captain,,,
+317,Cart,,,
+318,Cart,,,
+319,Pirate Crew Member,,,VTT319_PirateCrewMember_Free.zip/VTT319_PirateCrewMember_Free/Portrait/319_PirateCrewPortrait-Free.png
+320,Pirate Crew Member,,,VTT320_PirateCrewMember_Free.zip/VTT320_PirateCrewMember_Free/Portrait/320_PirateCrewMemberPortrait-B-Free.png
+321,Pirate Crew Member,,,VTT321_PirateCrewMember_Free.zip/VTT321_PirateCrewMember_Free/Portrait/321_PirateCrewMemberPortrait-Free.png
+322,Pirate Crew Member,,,VTT322_PirateCrewMember_Free.zip/VTT322_PirateCrewMember_Free/Portrait/322_PirateCrewMemberPortrait-Free.png
+323,Depth Watcher,,,VTT323_DepthWatcher_Free.zip/VTT323_DepthWatcher_Free/Portrait/323_DepthWatcherPortrait-Free.png
+324,Pirate Crew Member,,,VTT324_PirateCrewMember_Free.zip/VTT324_PirateCrewMember_Free/Portrait/324_PirateCrewMemberPortrait-B-Free.png
+325,Pirate Captain,,,VTT325_PirateCaptain_Free.zip/VTT325_PirateCaptain_Free/Portrait/325_PirateCaptainPortrait-Free-B.png
+326,Pirate Crew Member,,,VTT326_PirateCrewMember_Free.zip/VTT326_PirateCrewMember_Free/Portrait/326_PirateCrewMemberPortrait-Free-B.png
+327,Pirate Crew Member,,,VTT327_PirateCrewMember_Free.zip/VTT327_PirateCrewMember_Free/Portrait/327_PirateCrewMemberPortrait-Free-B.png
+328,Pirate Crew Member,,,VTT328_PirateCrewMember_Free.zip/VTT328_PirateCrewMember_Free/Portrait/328_PirateCrewMemberPortrait-Free-B.png
+329,Pirate Captain,,,VTT329_PirateCaptain_Free.zip/VTT329_PirateCaptain_Free/Portrait/329_PirateCaptainPortrait-Free-B.png
+330,Monkey,,,VTT330_Monkey_Free.zip/VTT330_Monkey_Free/Portrait/330_MonkeyPortrait-B-Free.png
+331,Faerie Dragon,,,
+332,Parrot,,,VTT332_Parrot_Free.zip/VTT332_Parrot_Free/Portrait/332_ParrotPortrait-Free-B.png
+333,Succubus,,,
+334,Incubus,,,
+335,Steam Mephit,,,
+336,Dust Mephit,,,
+337,Cambion,,,
+338,Imp,,,
+339,Quasit,,,
+340,Intellect Devourer,,,VTT340_IntellectDevourer_Free.zip/VTT340_IntellectDevourer_Free/Portrait/340_IntellectDevourerPortrait-Free.png
+341,Intellect Devourer,,,VTT341_IntellectDevourer_Free.zip/VTT341_IntellectDevourer_Free/Portrait/341_IntellectDevourerPortrait-Free.png
+342,Chimera,,,
+343,Wyvern,,,
+344,Basilisk,,,
+345,Potion Merchant Portrait,,,VTT345_PotionMerchantPortrait_Free.zip/VTT345_PotionMerchantPortrait_Free/Portrait/345_PotionMerchantPortrait-Free-B.png
+346,Plesiosaurus,,,
+347,Triceratops,,,
+348,Mind Flayer,,,VTT348_MindFlayer_Free.zip/VTT348_MindFlayer_Free/Portrait/348_MindFlayerPortrait-Free.png
+349,Ankylosaurus,,,
+350,Dark Mantle,,,VTT350_DarkMantle_Free.zip/VTT350_DarkMantle_Free/Portrait/350_DarkMantlePortrait-Free.png
+351,Tyrannosaurus Rex,,,
+352,Griffon,,,VTT352_Griffon_Free.zip/VTT352_Griffon_Free/Portrait/352_GriffonPortrait-Free.png
+353,Griffon Fledgling,,,VTT353_GriffonFledgling_Free.zip/VTT353_GriffonFledgling_Free/Portrait/353_GriffonFledglingPortrait-Free.png
+354,Griffon Fledgling,,,VTT354_GriffonFledgling_Free.zip/VTT354_GriffonFledgling_Free/Portrait/354_GriffonFledglingPortrait-Free.png
+355,Cockatrice,,,
+356,Peryton,,,
+357,Halfling Bard,,,VTT357_HalflingBard_Free.zip/VTT357_HalflingBard_Free/Portrait/357_HalflingBardPortrait-Free.png
+358,Halfling Wizard,,,VTT358_HalflingWizard_Free.zip/VTT358_HalflingWizard_Free/Portrait/358_HalflingWizardPortrait-Free.png
+359,Death Knight,,,
+360,Gnome Paladin,,,VTT360_GnomePaladin_Free.zip/VTT360_GnomePaladin_Free/Portrait/360_GnomePaladinPortrait-free.png
+361,Allosaurus,,,
+362,Homunculus,,,VTT362_Homunculus_Free.zip/VTT362_Homunculus_Free/Portrait/362_HomunculusPortrait-Free.png
+363,Pteranodon,,,
+364,Forgework Dragon,,,VTT364_ForgeworkDragon_Free.zip/VTT364_ForgeworkDragon_Free/Portrait/364_ForgeworkDragonPortrait-Free.png
+365,Forgework Dragon Wyrmling,,,VTT365_ForgeworkDragonWyrmling_Free.zip/VTT365_ForgeworkDragonWyrmling_Free/Portrait/365_ForgeworkDragonWyrmlingPortrait-Free.png
+366,Forgework Dragon Egg,,,
+367,Half Ogre,,,VTT367_HalfOgre_Free.zip/VTT367_HalfOgre_Free/Portrait/367_HalfOgrePortrait-Free.png
+368,Oni,,,
+369,Hobgoblin Soldier,https://www.patreon.com/posts/369-hobgoblin-57474300,https://www.patreon.com/file?h=15724974&i=9116401,VTT369_HobgoblinSoldier_Free.zip/VTT369_HobgoblinSoldier_Free/Portrait/369_HobgoblinSoldierPortrait-Free.png
+370,Doppleganger,https://www.patreon.com/posts/370-doppleganger-57751879,https://www.patreon.com/file?h=15724974&i=9166882,VTT370_Doppleganger_Free.zip/VTT370_Doppleganger_Free/Portrait/370_DopplegangerPortrait-Free.png
+371,Displacer Beast,,,
+372,Abishai Green,,,
+373,Abishai White,,,
+374,Abishai Black,,,
+375,Abishai Blue,,,
+376,Abishai Red,,,
+377,Beholder,,,
+378,Fire Genasi,,,VTT378_FireGenasi_Free.zip/VTT378_FireGenasi_Free/Portrait/378_FireGenasiPortrait-Free.png
+379,Fire Genasi Wizard,,,VTT379_FireGenasiWizard_Free.zip/VTT379_FireGenasiWizard_Free/Portrait/379_FireGenasiWizardPortrait-Free.png
+380,Gauth,,,
+381,Fire Genasi,,,VTT381_FireGenasi_Free.zip/VTT381_FireGenasi_Free/Portrait/381_FireGenasiPortrait-Free.png
+382,Fire Genasi Wizard,,,VTT382_FireGenasiWizard_Free.zip/VTT382_FireGenasiWizard_Free/Portrait/382_FireGenasiWizardPortrait-Free.png
+383,Death Tyrant,,,
+384,Spectator,,,
+385,Fairy Sorceress,,,VTT385_FairySorceress_Free.zip/VTT385_FairySorceress_Free/Portrait/385_FairySorceressPortrait-Free.png
+386,Fairy Warrior,,,VTT386_FairyWarrior_Free.zip/Free.png
+387,Sprite,,,
+388,Fairy Mage,,,VTT388_FairyMage_Free.zip/VTT388_FairyMage_Free/Portrait/388_FairyMagePortrait-Free.png
+389,Darkmantle,,,
+390,Yeti,,,VTT390_Yeti_Free.zip/VTT390_Yeti_Free/Portrait/390_YetiPortrait-Free.png
+391,Baby Yeti,,,VTT391_BabyYeti_Free.zip/VTT391_BabyYeti_Free/Portrait/391_BabyYetiPortrait-Free.png
+392,Abominable Yeti,,,
+393,Flail Snail Tier3,,,VTT393_FlailSnail_Tier3_Free.zip/VTT393_FlailSnail_Tier3_Free/Portrait/393_FlailSnailPortrait-Free.png
+394,Blink Dog,,,
+395,Piercer,,,
+396,Hobgoblin Devastator,,,VTT396_HobgoblinDevastator_Free.zip/VTT396_HobgoblinDevastator_Free/Portrait/396_HobgoblinDevastatorPortrait-Free.png
+397,Hobgoblin Iron Shadow,,,
+398,Bodak,,,VTT398_Bodak_Free.zip/VTT398_Bodak_Free/Portrait/398_BodakPortrait-Free.png
+399,Elf Ranger,,,
+400,Human Warrior,,,VTT400_HumanWarrior_Free.zip/VTT400_HumanWarrior_Free/Portrait/400_HumanWarriorPortrait-Free.png
+401,Rust Monster,,,
+402,Cave Fisher,,,VTT402_CaveFisher_Free.zip/VTT402_CaveFisher_Free/Portrait/402_CaveFisherPortrait-Free.png
+403,Roper,,,
+404,Human Fighter,,,VTT404_HumanFighter_Free.zip/VTT404_HumanFighter_Free/Portrait/404_HumanFighterPortrait-Free.png
+405,Vargouille,,,VTT405_Vargouille_Free.zip/VTT405_Vargouille_Free/Portrait/405_VargouillePortrait-Free.png
+406,Kirin,,,VTT406_Kirin_Free.zip/VTT406_Kirin_Free/Portrait/406_KirinPortrait-Free.png
+407,Zombie,,,VTT407_Zombie_Free.zip/VTT407_Zombie_Free/Portrait/407_ZombiePortrait-Free.png
+408,Vargouille,,,VTT408_Vargouille_Free.zip/VTT408_Vargouille_Free/Portrait/408_VargouillePortrait-Free.png
+409,Devourer1,,,VTT409_Devourer1_Free.zip/VTT409_Devourer1_Free/Portrait/409_DevourerPortrait-Free.png
+410,Devourer(Empty),,,VTT410_Devourer(Empty)_Free.zip/VTT410_Devourer(Empty)_Free/Portrait/410_Devourer(Empty)Portrait-1-Free.png
+411,Zombie,,,VTT411_Zombie_Free.zip/VTT411_Zombie_Free/Portrait/411_ZombiePortrait-Free.png
+412,Vargouille,,,
+413,Shadow Mastiff,,,
+414,Zombie,,,VTT414_Zombie_Free.zip/VTT414_Zombie_Free/Portrait/414_ZombiePortrait-Free.png
+415,Mimic,,,
+416,Mimic,,,VTT416_Mimic_Free.zip/VTT416_Mimic_Free/Portrait/416_MimicPortrait-Free.png
+417,Rug of Smothering,,,
+418,Mimic,,,VTT418_Mimic_Free.zip/VTT418_Mimic_Free/Portrait/418_MimicPortrait-Free.png
+419,Noble,,,VTT419_Noble_Free.zip/VTT419_Noble_Free/Portrait/419_NoblePortrait-Free.png
+420,Noble,,,
+421,Shadow Mastiff Alpha,,,
+422,Wood Woad,,,VTT422_WoodWoad_Free.zip/VTT422_WoodWoad_Free/Portrait/422_WoodWoadPortrait-Free.png
+423,Nilbog,,,VTT423_Nilbog_Free.zip/VTT423_Nilbog_Free/Portrait/423_NilbogPortrait-Free.png
+424,Blue Slaad,,,
+425,Death Slaad,,,
+426,Babau,,,VTT426_Babau_Free.zip/VTT426_Babau_Free/Portrait/426_BabauPortrait-Free.png
+427,Green Slaad,,,
+428,Grey Slaad,,,
+429,Zombie Mage,,,VTT429_ZombieMage_Free.zip/VTT429_ZombieMage_Free/Portrait/429_ZombieMagePortrait-Free.png
+430,Hobgoblin Iron Shadow,,,VTT430_HobgoblinIronShadow_Free.zip/VTT430_HobgoblinIronShadow_Free/Portrait/430_HobgoblinIronShadowPortrait-Free.png
+431,Goblin Barbarian,,,VTT431_GoblinBarbarian_Free.zip/VTT431_GoblinBarbarian_Free/Portrait/431_GoblinBarbarian_Portrait-Free.png
+432,Red Slaad,,,
+433,Tarrasque,,,
+434,Zombie Crawler,,,VTT434_ZombieCrawler_Free.zip/VTT434_ZombieCrawler_Free/Portrait/434_ZombieCrawlerPortrait-Free.png
+435,Hulking Zombie,,,VTT435_HulkingZombie_Free.zip/VTT435_HulkingZombie_Free/Portrait/435_HulkingZombiePortrait-Free.png
+436,Beholder Zombie,,,
+437,Clay Golem,,,
+438,Flesh Golem,,,VTT438_FleshGolem_Free.zip/VTT438_FleshGolem_Free/Portrait/438_FleshGolemPortrait-Free.png
+439,Aaracokra Fighter,,,VTT439_AaracokraFighter_Free.zip/VTT439_AaracokraFighter_Free/Portrait/439_AaracokraFighterPortrait-Free.png
+440,Aaracokra Rogue,,,VTT440_AaracokraRogue_Free.zip/VTT440_AaracokraRogue_Free/Portrait/440_AaracokraRoguePortrait-Free.png
+441,Shadow Sorcerer,,,VTT441_ShadowSorcerer_Free.zip/VTT441_ShadowSorcerer_Free/Portrait/441_ShadowSorcererPortrait-Free.png
+442,Shadow Hound,,,VTT442_ShadowHound_Free.zip/VTT442_ShadowHound_Free/Portrait/442_ShadowHoundPortrait-Free.png
+443,Iron Golem,,,
+444,Stone Golem,,,
+445,Octopus,,,VTT445_Octopus_Free.zip/VTT445_Octopus_Free/Portrait/445_OctopusPortrait-Free.png
+446,Giant Octopus,,,VTT446_GiantOctopus_Free.zip/VTT446_GiantOctopus_Free/Portrait/446_GiantOctopusPortrait-Free.png
+447,Claspid,,,
+448,Sandstone Golem,,,VTT448_SandstoneGolem_Free.zip/VTT448_SandstoneGolem_Free/Portrait/448_SandstoneGolemPortrait-Free.png
+449,Ruffian,,,VTT449_Ruffian_Free.zip/VTT449_Ruffian_Free/Portrait/448_RuffianPortrait-FreeB.png
+450,Ruffian,,,VTT450_Ruffian_Free.zip/VTT450_Ruffian_Free/Portrait/450_RuffianPortrait-Free.png
+451,Merfolk,,,
+452,Sahuagin,,,VTT452_Sahuagin_Free.zip/VTT452_Sahuagin_Free/Portrait/452_SahuaginPortrait-Free.png
+453,Ruffian,,,VTT453_Ruffian_Free.zip/VTT453_Ruffian_Free/Portrait/453_RuffianPortrait-Free.png
+454,Ruffian,,,VTT454_Ruffian_Free.zip/VTT454_Ruffian_Free/Portrait/454_RuffianPortrait-Free.png
+455,Reef Shark,,,VTT455_ReefShark_Free.zip/VTT455_ReefShark_Free/Portrait/455_ReefSharkPortrait-Free.png
+456,Giant Shark,,,VTT456_GiantShark_Free.zip/VTT456_GiantShark_Free/Portrait/456_GiantSharkPortrait-Free.png
+457,Leonin Barbarian,,,VTT457_LeoninBarbarian_Free.zip/VTT457_LeoninBarbarian_Free/Portrait/457_LeoninBarbarianPortrait-Free.png
+458,Leonin Fighter,,,VTT458_LeoninFighter_Free.zip/VTT458_LeoninFighter_Free/Portrait/458_LeoninFighterPortrait-Free.png
+459,Half Elf Ranger,,,VTT459_HalfElfRanger_Free.zip/VTT459_HalfElfRanger_Free/Portrait/459_HalfElfRangerPortrait-Free.png
+460,Brontosaurus,,,
+461,Monk,,,VTT461_Monk_Free.zip/VTT461_Monk_Free/Portrait/461_MonkPortrait-Free.png
+462,Purple Worm,,,
+463,Kenku Thief,,,VTT463_KenkuThief_Free.zip/VTT463_KenkuThief_Free/Portrait/463_KenkuThiefPortrait-Free.png
+464,Juvenile Purple Worm,,,
+465,Vedalken Wizard,,,
+466,Druid,,,VTT466_Druid_Free.zip/VTT466_Druid_Free/Portrait/466_DruidPortrait-Free.png
+467,Umber Hulk,,,
+468,Auto-gnome,,,VTT468_Auto-gnome_Free.zip/VTT468_Auto-gnome_Free/Portrait/468_Auto-gnomePortrait-Free.png
+469,Giff Fighter,,,
+470,Giff Captain,,,
+471,Moon Elf,,,
+472,Moon Elf,,,
+473,Giff Warlord,,,VTT473_GiffWarlord_Free.zip/VTT473_GiffWarlord_Free/Portrait/473_GiffWarlordPortrait-Free.png
+474,Brawler,,,VTT474_Brawler_Free.zip/VTT474_Brawler_Free/Portrait/474_BrawlerPortrait-Free.png
+475,Hadozee Shipmate,,,
+476,Hadozee Explorer,,,
+477,Astral Elf Star Priest,,,
+478,Vampire,,,VTT478_Vampire_Free.zip/VTT478_Vampire_Free/Portrait/478_VampirePortrait-Free.png
+479,Plasmoid Warrior,,,
+480,Starlancer,,,VTT480_Starlancer_Free.zip/VTT480_Starlancer_Free/Portrait/480_StarlancerPortrait-Free.png
+481,Vampire,,,VTT481_Vampire_Free.zip/VTT481_Vampire_Free/Portrait/481_VampirePortrait-Free.png
+482,Plasmoid Explorer,,,
+483,Vampire,,,VTT483_Vampire_Free.zip/VTT483_Vampire_Free/Portrait/483_VampirePortrait-Free.png
+484,Thri-Kreen Warrior,,,
+485,Scarecrow,,,VTT485_Scarecrow_Free.zip/VTT485_Scarecrow_Free/Portrait/485_ScarecrowPortrait-Free.png
+486,Thri-Kreen Mystic,,,
+487,Thri-Kreen Gladiator,,,
+488,Nobleman,,,VTT488_Nobleman_Free.zip/VTT488_Nobleman_Free/Portrait/488_NoblemanPortrait-Free.png
+489,Auto-gnome,,,
+490,Werewolf,,,VTT490_Werewolf_Free.zip/VTT490_Werewolf_Free/Portrait/490_WerewolfPortrait-Free.png
+491,Vampire Spawn,,,
+492,Ooze,https://www.patreon.com/posts/492-ooze-74556588,,VTT492_Ooze_Free.zip/VTT492_Ooze_Free/Portrait/492_OozePortrait-Free.png
+493,Black Pudding,,,
+494,Bugbear,https://www.patreon.com/posts/494-bugbear-74816244,https://www.patreon.com/file?h=15724974&i=12333486,VTT494_Bugbear_Free.zip/VTT494_Bugbear_Free/Portrait/494_BugbearPortrait-Free.png
+495,Ettin,,,VTT495_Ettin_Free.zip/VTT495_Ettin_Free/Portrait/495_EttinPortrait-Free.png
+496,Gelatinous Cube,,,
+497,Fomorian,,,VTT497_Fomorian_Free.zip/VTT497_Fomorian_Free/Portrait/497_FomorianPortrait-Free.png
+498,Gray Ooze,,,
+499,Vampiric Mist,,,
+500,Ochre Jelly,,,
+501,White Maw,,,
+502,Road Bandit,,,VTT502_RoadBandit_Free.zip/VTT502_RoadBandit_Free/Portrait/502_RoadBanditPortrait-Free.png
+503,Bandit Captain,,,
+504,Gorgon,,,VTT504_Gorgon_Free.zip/VTT504_Gorgon_Free/Portrait/504_GorgonPortrait-Free.png
+505,Bandit Spellcaster,,,VTT505_BanditSpellcaster_Free.zip/VTT505_BanditSpellcaster_Free/Portrait/505_BanditSpellcasterPortrait-Free.png
+506,Chain Devil,,,
+507,Animated Chain,,,VTT507_AnimatedChain_Free.zip/VTT507_AnimatedChain_Free/Portrait/507_AnimatedChainPortrait-Free.png
+508,Marilinth,,,VTT508_Marilinth_Free.zip/VTT508_Marilinth_Free/Portrait/508_MarilinthPortrait-Free.png
+509,(3d Prop)Chair,,,
+510,(3d Prop)Crate,,,
+511,Pit Fiend,,,VTT511_PitFiend_Free.zip/VTT511_PitFiend_Free/Portrait/511_PitFiendPortrait-Free.png
+512,Bat,,,VTT512_Bat_Free.zip/VTT512_Bat_Free/Portrait/512_BatPortrait-Free.png
+513,Lemure,,,
+514,Vampire Lord,,,VTT514_VampireLord_Free.zip/VTT514_VampireLord_Free/Portrait/514_VampireLordPortrait-Free.png
+515,Horned Devil,,,
+516,Barbed Devil,,,
+517,Bearded Devil,,,
+518,Ice Devil,,,
+519,Spined Devil,,,
+520,Treant,https://www.patreon.com/posts/treant-and-79348155,,VTT520_Treant_Free.zip/VTT520_Treant_Free/Portrait/520_TreantPortrait-Free.png
+521,Awakened Shrub,https://www.patreon.com/posts/treant-and-79348155,,VTT521_AwakenedShrub_Free.zip/VTT521_AwakenedShrub_Free/Portrait/521_AwakenedShrubPortrait-Free.png
+522,Awakened Shrub,https://www.patreon.com/posts/treant-and-79348155,,VTT522_AwakenedShrub_Free.zip/VTT522_AwakenedShrub_Free/Portrait/522_AwakenedShrubPortrait-Free.png
+523,Goblin,https://www.patreon.com/posts/523-goblin-80067472,,VTT523_Goblin_Free.zip/VTT523_Goblin_Free/Portrait/523_GoblinPortrait-fREE.png
+524,Goblin,https://www.patreon.com/posts/goblin-524-80067468,,VTT524_Goblin_Free.zip/VTT524_Goblin_Free/Portrait/524_GoblinPortrait-Free.png
+525,Goblin,https://www.patreon.com/posts/525-goblin-80067477,,VTT525_Goblin_Free.zip/VTT525_Goblin_Free/Portrait/525_GoblinPortrait-Free.png
+526,Oni,,,VTT526_Oni_Free.zip/VTT526_Oni_Free/Portrait/526_OniPortrait-Free.png
+527,Goblin,https://www.patreon.com/posts/527-goblin-80829588,,VTT527_Goblin_Free.zip/VTT527_Goblin_Free/Portrait/527_GoblinPortrait-Free.png
+528,Goblin,https://www.patreon.com/posts/528-goblin-80829586,,VTT528_Goblin_Free.zip/VTT528_Goblin_Free/Portrait/528_GoblinPortrait-Free.png
+529,Erinyes,,,
+530,Bone Devil,,,
+531,Shadow Demon,,,VTT531_ShadowDemon_Free.zip/VTT531_ShadowDemon_Free/Portrait/531_ShadowDemonPortrait-Free.png
+532,Sailor,,,VTT532_Sailor_Free.zip/VTT532_Sailor_Free/Portrait/532_SailorPortrait-Free.png
+533,Sailor,,,
+534,Lich,,,VTT534_Lich_Free.zip/VTT534_Lich_Free/Portrait/534_LichPortrait-Free.png
+535,Demilich,,,
+536,Pikeman,,,VTT536_Pikeman_Free.zip/VTT536_Pikeman_Free/Portrait/536_PikemanPortrait-Free.png
+537,Pikeman,,,
+538,Draco Lich,,,
+539,Invisible Stalker,,,
+540,Helmed Horror,,,
+541,Juiblex,,,
+542,Draconian Dreadnaught,,,VTT542_DraconianDreadnaught_Free.zip/VTT542_DraconianDreadnaught_Free/Portrait/542_DraconianDreadnoughtPortrait-Free.png
+543,Draconian Mage,,,
+544,Draconian Mastermind,,,
+545,Draconian Foot Soldier,,,VTT545_DraconianFootSoldier_Free.zip/VTT545_DraconianFootSoldier_Free/Portrait/545_DraconianFootSoldierPortrait-Free.png
+546,Draconian Scout,,,
+547,Horse,,,VTT547_Horse_Free.zip/VTT547_Horse_Free/Portrait/547_HorsePortrait-Free.png
+548,Riding Horse,,,
+549,Mule,,,VTT549_Mule_Free.zip/VTT549_Mule_Free/Portrait/549_MulePortrait-Free.png
+550,Draft Horse,,,
+551,Needle Blight,,,
+552,Twig Blight,,,VTT552_TwigBlight_Free.zip/VTT552_TwigBlight_Free/Portrait/552_TwigBlightPortrait-Free.png
+553,Twig Blight,,,VTT553_TwigBlight_Free.zip/VTT553_TwigBlight_Free/Portrait/553_TwigBlightPortrait-Free.png
+554,Vine Blight,,,
+555,Gulthias Tree,,,
+556,Fighter,,,VTT556_Fighter_Free.zip/VTT556_Fighter_Free/Portrait/556_FighterPortrait-Free.png
+557,Fighter,,,
+558,Gnoll Pack Lord,,,
+559,Sahuagin Baron,,,VTT559_SahuaginBaron_Free.zip/VTT559_SahuaginBaron_Free/Portrait/559_SahuaginBaronPortrait-Free.png
+560,Sahuagin Priestess,,,VTT560_SahuaginPriestess_Free.zip/VTT560_SahuaginPriestess_Free/Portrait/560_SahuaginPriestessPortrait-Free.png
+561,Hunter Shark,,,
+562,Fox,,,VTT562_Fox_Free.zip/VTT562_Fox_Free/Portrait/562_FoxPortrait-Free.png
+563,Stirge,https://www.patreon.com/posts/563-stirge-87164363,https://www.patreon.com/file?h=15724974&i=15251944,VTT563_Stirge_Free.zip/VTT563_Stirge_Free/Portrait/563_StirgePortrait-Free.png
+564,Young Remorhaz,,,
+565,Remorhaz,,,
+566,Shambling Mound,,,VTT566_ShamblingMound_Free.zip/VTT566_ShamblingMound_Free/Portrait/566_ShamblingMoundPortrait-Free.png
+567,Force Ballista,,,VTT567_ForceBallista_Free.zip/VTT567_ForceBallista_Free/Portrait/567_ForceBallistaPortrait-Free.png
+568,Flamethrower,,,VTT568_Flamethrower_Free.zip/VTT568_Flamethrower_Free/Portrait/568_FlamethrowerPortrait-Free.png
+569,Protector,,,VTT569_Protector_Free.zip/VTT569_Protector_Free/Portrait/569_ProtectorPortrait-Free.png
+570,Defender,,,
+571,Crab,,,VTT571_Crab_Free.zip/VTT571_Crab_Free/Portrait/571_CrabPortrait-Free.png
+572,Magmin,,,VTT572_Magmin_Free.zip/VTT572_Magmin_Free/Portrait/572_MagminPortrait-Free.png
+573,Xorn,,,
+574,Galeb Duhr,,,
+575,Earth Elemental,,,VTT575_EarthElemental_Free.zip/VTT575_EarthElemental_Free/Portrait/575_EarthElementalPortrait-Free.png
+576,[Fanart]Merisiel Cutfile,,,
+577,Air Elemental,,,VTT577_AirElemental_Free.zip/VTT577_AirElemental_Free/Portrait/577_AirElementalPortrait-Free.png
+578,Water Elemental,https://www.patreon.com/posts/578-water-89675933,https://www.patreon.com/file?h=15724974&i=15879588,VTT578_WaterElemental_Free.zip/VTT578_WaterElemental_Free/Portrait/578_WaterElementalPortrait-Free.png
+579,Magma Mephit,,,VTT579_MagmaMephit_Free.zip/VTT579_MagmaMephit_Free/Portrait/579_MagmaMephitPortrait-Free.png
+580,Ice Mephit,,,VTT580_IceMephit_Free.zip/VTT580_IceMephit_Free/Portrait/580_IceMephitPortrait-Free.png
+581,Mud Mephit,,,VTT581_MudMephit_Free.zip/VTT581_MudMephit_Free/Portrait/581_MudMephitPortrait-Free.png
+582,Smoke Mephit,,,VTT582_SmokeMephit_Free.zip/VTT582_SmokeMephit_Free/Portrait/582_SmokeMephitPortrait-Free.png
+583,Fire Elemental,,,VTT583_FireElemental_Free.zip/VTT583_FireElemental_Free/Portrait/583_FireElementalPortrait-Free.png
+584,Azer,,,
+585,Salamander,,,
+586,Dao,,,
+587,Animated Armor,,,VTT587_AnimatedArmor_Free.zip/VTT587_AnimatedArmor_Free/Portrait/587_AnimatedArmorPortrait-Free.png
+588,Flying Carpet,,,
+589,Animated Armor,,,VTT589_AnimatedArmor_Free.zip/VTT589_AnimatedArmor_Free/Portrait/589_AnimatedArmorPortrait-Free.png
+590,Djinni,,,
+591,Sharklin,,,VTT591_Sharklin_Free.zip/VTT591_Sharklin_Free/Portrait/591_SharklinPortrait-Free.png
+592,Sharklin Netter,,,
+593,Sharklin Harpoone,,,VTT593_SharklinHarpoone_Free.zip/VTT593_SharklinHarpoone_Free/Portrait/593_SharklinHarpoonerPortrait-Free.png
+594,Efreeti,,,
+595,Marid,,,
+596,Knight,,,VTT596_Knight_Free.zip/VTT596_Knight_Free/Portrait/596_KnightPortrait-Free.png
+597,Knight,,,
+598,Gibbering Mouther,,,VTT598_GibberingMouther_Free.zip/VTT598_GibberingMouther_Free/Portrait/598_GibberingMoutherPortrait-Free.png
+599,Ranger,,,VTT599_Ranger_Free.zip/VTT599_Ranger_Free/Portrait/599_RangerPortrait-Free.png
+600,Ranger,,,
+601,Hobgoblin Soldier,,,VTT601_HobgoblinSoldier_Free.zip/VTT601_HobgoblinSoldier_Free/Portrait/601_HobgoblinSoldierPortrait-Free.png
+602,Hobgoblin Soldier,,,VTT602_HobgoblinSoldier_Free.zip/VTT602_HobgoblinSoldier_Free/Portrait/602_HobgoblinSoldierPortrait-Free.png
+603,Hobgoblin Soldier,,,
+604,The Overseer,,,VTT604_TheOverseer_Free.zip/VTT604_TheOverseer_Free/Portrait/604_TheOverseerPortrait-Free.png
+605,Undead Worker,,,VTT605_UndeadWorker_Free.zip/VTT605_UndeadWorker_Free/Portrait/605_UndeadWorkerPortrait-Free.png
+606,Undead Worker,,,VTT606_UndeadWorker_Free.zip/VTT606_UndeadWorker_Free/Portrait/606_UndeadWorkerPortrait-Free.png
+607,Giant Rat,,,VTT607_GiantRat_Free.zip/VTT607_GiantRat_Free/Portrait/607_GiantRatPortrait-Free.png
+608,Cyclops,,,VTT608_Cyclops_Free.zip/VTT608_Cyclops_Free/Portrait/608_CyclopsPortrait-Free.png
+609,Brass Dragon Wyrmling,,,
+610,Young Brass Dragon,,,
+611,Adult Brass Dragon,,,
+612,Ancient Brass Dragon,,,
+613,Empyrean,,,
+614,Copper Dragon Wyrmling,,,
+615,Commoner,,,VTT615_Commoner_Free.zip/VTT615_Commoner_Free/Portrait/615_CommonerPortrait-Free.png
+616,Commoner,,,VTT616_Commoner_Free.zip/VTT616_Commoner_Free/Portrait/616_CommonerPortrait-Free.png
+617,Young Copper Dragon,,,
+618,Commoner,,,VTT618_Commoner_Free.zip/VTT618_Commoner_Free/Portrait/618_CommonerPortrait-Free.png
+619,Commoner,,,VTT619_Commoner_Free.zip/VTT619_Commoner_Free/Portrait/619_CommonerPortrait-Free.png
+620,Adult Copper Dragon,,,
+621,Ancient Copper Dragon,,,
+622,Priestess,,,VTT622_Priestess_Free.zip/VTT622_Priestess_Free/Portrait/622_PriestessPortrait-Free.png
+623,Storm Giant,,,VTT623_StormGiant_Free.zip/VTT623_StormGiant_Free/Portrait/623_StormGiantPortrait-Free.png
+624,Bronze Dragon Wyrmling,,,
+625,Young Bronze Dragon,,,
+626,Adult Bronze Dragon,,,
+627,Ancient Bronze Dragon,,,
+628,Silver Dragon Wyrmling,,,
+629,Young Silver Dragon,,,
+630,Vampire Spawn,,,VTT630_VampireSpawn_Free.zip/VTT630_VampireSpawn_Free/Portrait/630_VampireSpawnPortrait-Free.png
+631,Infected Townswoman,,,VTT631_InfectedTownswoman_Free.zip/VTT631_InfectedTownswoman_Free/Portrait/631_InfectedTownswomanPortrait-Free.png
+632,Snake Priestess,,,VTT632_SnakePriestess_Free.zip/VTT632_SnakePriestess_Free/Portrait/632_SnakePriestessPortrait-Free.png
+633,Adult Silver Dragon,,,
+634,Vampire Spawn,,,VTT634_VampireSpawn_Free.zip/VTT634_VampireSpawn_Free/Portrait/634_VampireSpawnPortrait-Free.png
+635,Infected Townsman,,,VTT635_InfectedTownsman_Free.zip/VTT635_InfectedTownsman_Free/Portrait/635_InfectedTownsmanPortrait-Free.png
+636,Commoner,,,VTT636_Commoner_Free.zip/VTT636_Commoner_Free/Portrait/636_CommonerPortrait-Free.png
+637,Commoner,,,VTT637_Commoner_Free.zip/VTT637_Commoner_Free/Portrait/637_CommonerPortrait-Free.png
+638,Commoner,,,VTT638_Commoner_Free.zip/VTT638_Commoner_Free/Portrait/638_CommonerPortrait-Free.png
+639,Cleric,,,VTT639_Cleric_Free.zip/VTT639_Cleric_Free/Portrait/639_ClericPortrait-Free.png
+640,Acid Zombie,,,VTT640_AcidZombie_Free.zip/VTT640_AcidZombie_Free/Portrait/640_AcidZombiePortrait-Free.png
+641,Druid,,,VTT641_Druid_Free.zip/VTT641_Druid_Free/Portrait/641_DruidPortrait-Free.png
+642,Dire Bat,,,
+643,War Bat,,,VTT643_WarBat_Free.zip/VTT643_WarBat_Free/Portrait/643_WarBatPortrait-Free.png
+644,Goblin Bat Rider,,,VTT644_GoblinBatRider_Free.zip/VTT644_GoblinBatRider_Free/Portrait/644_GoblinBatRiderPortrait-Free.png
+645,Ancient Silver Dragon,,,
+646,Gold Dragon Wyrmling,,,
+647,Young Gold Dragon,,,
+648,Paper Boy,,,VTT648_PaperBoy_Free.zip/VTT648_PaperBoy_Free/Portrait/648_PaperBoyPortrait-Free.png
+649,Adult Gold Dragon,,,
+650,Guard,,,VTT650_Guard_Free.zip/VTT650_Guard_Free/Portrait/650_GuardPortrait-Free.png
+651,Guard,,,
+652,Guard,,,
+653,Guard,,,
+654,Guard,,,
+655,Giant Raven,,,
+656,Child,,,
+657,Child,,,
+658,Child,,,
+659,Child,,,
+660,Ancient Gold Dragon,,,
+661,Blue Dragon Wyrmling,,,
+662,Young Blue Dragon,,,
+663,Adult Blue Dragon,,,
+664,Ancient Blue Dragon,,,
+665,Green Dragon Wyrmling,,,
+666,Young Green Dragon,,,
+667,Adult Green Dragon,,,
+668,Ancient Green Dragon,,,
+669,White Dragon Wyrmling,,,
+670,Gatorling,,,
+671,Gatorling,,,
+672,Young White Dragon,,,
+673,Adult White Dragon,,,
+674,Ancient White Dragon,,,
+675,Undead Warrior,,,
+676,Black Dragon Wyrmling,,,
+677,Undead Archer,,,
+678,Young Black Dragon,,,
+679,Adult Black Dragon,,,
+680,Barbarian,,,
+681,Ancient Black Dragon,,,
+682,Red Dragon Wyrmling,,,
+683,Novice Fighter,,,
+684,Young Red Dragon,,,
+685,Gelatinous Cube,,,
+686,Adult Red Dragon,,,
+687,Ancient Red Dragon,,,
+688,Novice Cleric,,,
+689,Novice Rogue,,,
+690,Dog,,,
+691,Dog,,,
+692,Shadow Dragon Wyrmling,,,
+693,Young Shadow Dragon,,,
+694,Adult Shadow Dragon,,,
+695,Ancient Shadow Dragon,,,
+696,Kenku,,,
+697,Kenku,,,
+698,Aarakocra,,,
+699,Aarakocra,,,
+700,Novice Monk,,,
+701,Mermaid,,,
+702,Siren,,,
+703,[Variant] Siren,,,
+704,Axe Beak,https://www.patreon.com/posts/704-axe-beak-124607411,https://www.patreon.com/file?h=15724974&i=5439037,VTT704_AxeBeak_Free.zip/VTT704_AxeBeak_Free/Portrait/704_AxeBeakPortrait-FreeB.png
+705,[Variant] Axe Beak,,,
+706,[Reskin] Siren,,,
+707,[Reskin] Axe Beak,,,
+708,Pit Fighter,,,
+709,Pit Fighter,,,
+710,Pit Fighter,,,
+711,Pit Fighter,,,
+712,Acolyte,,,
+713,Priest,,,
+714,Bugbear Chief,,,
+715,General Goods Merchant,,,
+716,General Goods Merchant,,,
+717,Berserker,,,
+718,Giant Ape,,,
+719,Giant Toad,,,
+720,Dragon Wyrmling,,,
+721,Dragon Eggs,,,
+722,Psi Brawler,,,
+723,Psi Commander,,,
+724,Young Gith,,,
+725,Psi Chosen One,,,
+726,Psi Brawler,,,
+727,Grick,https://www.patreon.com/posts/727-grick-132343067,https://www.patreon.com/file?h=15724974&m=489273333,VTT727_Grick_Free.zip/VTT727_Grick_Free/Portrait/727_GrickPortrait-BaseGoldB.png
+728,Violet Fungus Necrohulk,,,
+729,Githyanki Warrior,,,
+730,Githyanki Warrior,,,
+731,Githyanki Kithrak,,,
+732,Githyanki Gish,,,
+733,Githyanki Supreme Commander,,,
+734,Githzerai Monk,,,
+735,Ochre Jelly,https://www.patreon.com/posts/735-ochre-jelly-135397333,,VTT735_OchreJelly_Free.zip/VTT735_OchreJelly_Free/735_OchreJellyPortrait-BaseGoldB.png
+736,Githzerai Zerth,,,
+737,Githzerai Enlightened,,,
+738,Githzerai Anarch,,,
+739,Githzerai Psion,,,
+740,Githzerai Psion,,,
+741,,,,
+742,,,,
+743,,,,
+744,,,,
+745,,,,
+746,,,,
+747,,,,
+748,,,,
+749,,,,
+750,,,,
+751,,,,
+752,,,,
+753,,,,
+754,Arcanist,,,
+755,Arcanist,,,
+756,Variant Arcanist,,,
+757,Fanart Mind Flayer,,,
+758,Owlbear,,,
+759,Owlbear Cub,,,
+760,Fanart Ulitharid,,,
+761,,,,
+762,,,,
+763,,,,
+764,,,,
+765,,,,
+766,Worg,https://www.patreon.com/posts/766-worg-142465043,https://www.patreon.com/file?h=15724974&m=556906001,VTT766_Worg_Free.zip/VTT766_Worg_Free/Portrait/766_WorgPortrait-BaseGoldB.png
+767,[Reskin] Worg Rider,https://www.patreon.com/posts/767-reskin-worg-142465951,,

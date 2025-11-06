@@ -3,6 +3,7 @@
 import { execSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import AdmZip from "adm-zip";
 
 const CSV_PATH = "data/paperforge.csv";
 const PAPERFORGE_DIR = "data/paperforge";
@@ -13,7 +14,12 @@ interface CSVRow {
   id: string;
   name: string;
   postUrl: string;
+  tokenDownloadUrl: string;
   tokenPng: string;
+}
+
+function escapeShellArg(arg: string): string {
+  return `'${arg.replace(/'/g, "'\\''")}'`;
 }
 
 function parseCSV(content: string): CSVRow[] {
@@ -23,12 +29,33 @@ function parseCSV(content: string): CSVRow[] {
     .slice(1)
     .map((line) => {
       if (!line.trim()) return null;
-      const [id, name, postUrl, tokenPng] = line
+      const [id, name, postUrl, tokenDownloadUrl, tokenPng] = line
         .split(",")
         .map((s) => s.trim());
-      return { id, name, postUrl, tokenPng };
+      return { id, name, postUrl, tokenDownloadUrl, tokenPng };
     })
     .filter(Boolean) as CSVRow[];
+}
+
+function downloadZipFile(url: string, destinationDir: string): boolean {
+  try {
+    if (!fs.existsSync(destinationDir)) {
+      fs.mkdirSync(destinationDir, { recursive: true });
+    }
+
+    execSync(`curl -OJL ${escapeShellArg(url)}`, {
+      cwd: destinationDir,
+      stdio: "pipe",
+    });
+
+    return true;
+  } catch (e) {
+    console.error(
+      `  Error downloading ${url}:`,
+      e instanceof Error ? e.message : e
+    );
+    return false;
+  }
 }
 
 function extractTokenImage(
@@ -43,20 +70,29 @@ function extractTokenImage(
       fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    // Extract the file using unzip
-    // -j = junk paths (don't create directory structure)
-    // -o = overwrite without prompting
-    // -q = quiet
-    execSync(`unzip -joq "${zipPath}" "${internalPath}" -d "${outputDir}"`, {
-      stdio: "pipe",
-    });
+    // Read the zip file
+    const zip = new AdmZip(zipPath);
+    const entry = zip.getEntry(internalPath);
 
-    // The file will be extracted with its original name, so we need to rename it
+    if (!entry) {
+      console.error(`  Entry not found in zip: ${internalPath}`);
+      console.error(`  Available entries:`);
+      for (const e of zip.getEntries()) {
+        if (!e.isDirectory) {
+          console.error(`    ${e.entryName}`);
+        }
+      }
+      return false;
+    }
+
+    // Extract the file directly to the output path
+    zip.extractEntryTo(entry, outputDir, false, true);
+
+    // Rename to portrait.png
     const extractedFilename = path.basename(internalPath);
     const extractedPath = path.join(outputDir, extractedFilename);
 
     if (fs.existsSync(extractedPath)) {
-      // Rename to portrait.png
       fs.renameSync(extractedPath, outputPath);
       return true;
     }
@@ -153,6 +189,7 @@ function syncPaperforge() {
   let errorCount = 0;
 
   const indexEntries: Array<{ id: string; name: string; postUrl: string }> = [];
+  const failures: Array<{ id: string; name: string; reason: string }> = [];
 
   for (const row of completeRows) {
     const folderId = row.id.padStart(4, "0");
@@ -166,9 +203,29 @@ function syncPaperforge() {
     const zipPath = path.join(PAPERFORGE_DIR, zipFilename);
 
     if (!fs.existsSync(zipPath)) {
-      console.log(`  ✗ Zip file not found: ${zipFilename}`);
-      errorCount++;
-      continue;
+      console.log(`  ! Zip file not found: ${zipFilename}`);
+
+      if (row.tokenDownloadUrl) {
+        console.log(`  Attempting to download from ${row.tokenDownloadUrl}`);
+        const downloaded = downloadZipFile(
+          row.tokenDownloadUrl,
+          PAPERFORGE_DIR
+        );
+
+        if (!downloaded || !fs.existsSync(zipPath)) {
+          console.log(`  ✗ Failed to download zip file`);
+          errorCount++;
+          failures.push({ id: row.id, name: row.name, reason: "Failed to download zip file" });
+          continue;
+        }
+
+        console.log(`  ✓ Downloaded ${zipFilename}`);
+      } else {
+        console.log(`  ✗ No download URL available`);
+        errorCount++;
+        failures.push({ id: row.id, name: row.name, reason: "No download URL available" });
+        continue;
+      }
     }
 
     // Extract the image
@@ -180,6 +237,7 @@ function syncPaperforge() {
     } else {
       console.log(`  ✗ Failed to extract`);
       errorCount++;
+      failures.push({ id: row.id, name: row.name, reason: "Failed to extract image from zip" });
     }
   }
 
@@ -191,6 +249,14 @@ function syncPaperforge() {
   console.log(`\n=== Summary ===`);
   console.log(`Processed: ${successCount} extracted, ${errorCount} errors`);
   console.log(`Total entries in index: ${indexEntries.length}`);
+
+  if (failures.length > 0) {
+    console.log(`\n=== Failures ===`);
+    for (const failure of failures) {
+      console.log(`  #${failure.id} ${failure.name}: ${failure.reason}`);
+    }
+    process.exit(1);
+  }
 }
 
 syncPaperforge();
