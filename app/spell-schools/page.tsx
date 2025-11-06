@@ -14,9 +14,5 @@ export default async function SchoolsPage() {
     );
   }
 
-  return (
-    <div className="container mx-auto py-3">
-      <SchoolsListView spellSchools={spellSchools} />
-    </div>
-  );
+  return <SchoolsListView spellSchools={spellSchools} />;
 }

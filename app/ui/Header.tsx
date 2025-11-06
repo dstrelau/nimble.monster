@@ -228,7 +228,7 @@ const Header = () => {
 
         {/* Desktop navigation (center) */}
         <NavigationMenu className="hidden md:block" viewport={false}>
-          <NavigationMenuList className="gap-4">
+          <NavigationMenuList className="gap-2">
             {browseItems.map((item) => (
               <NavigationMenuItem key={item.href}>
                 <NavigationMenuLink data-active={item.isActive} asChild>

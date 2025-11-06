@@ -96,7 +96,7 @@ export default async function ShowCollectionView({
   const hasSpellSchools = collection.spellSchools?.length > 0;
 
   return (
-    <div className="container mx-auto">
+    <div>
       <CollectionHeader
         collection={collection}
         showEditDeleteButtons={isCreator}

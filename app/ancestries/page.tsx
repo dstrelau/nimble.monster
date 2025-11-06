@@ -10,10 +10,8 @@ export default async function AncestriesPage() {
   );
 
   return (
-    <div className="container mx-auto">
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <PaginatedAncestryGrid kind="ancestries" />
-      </HydrationBoundary>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PaginatedAncestryGrid kind="ancestries" />
+    </HydrationBoundary>
   );
 }

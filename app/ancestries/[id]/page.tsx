@@ -69,7 +69,7 @@ export default async function AncestryPage({
     session?.user?.discordId === ancestry.creator?.discordId || false;
 
   return (
-    <div className="container mx-auto">
+    <div>
       <div className="flex justify-end items-start gap-2 mb-6">
         {isOwner && <AncestryDetailActions ancestry={ancestry} />}
       </div>

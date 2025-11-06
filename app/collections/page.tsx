@@ -32,10 +32,8 @@ export default async function CollectionsPage({
   );
 
   return (
-    <div className="container mx-auto py-3">
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <CollectionsListView />
-      </HydrationBoundary>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <CollectionsListView />
+    </HydrationBoundary>
   );
 }

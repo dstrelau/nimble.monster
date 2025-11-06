@@ -13,10 +13,8 @@ export default async function MyAncestriesPage() {
   await queryClient.prefetchInfiniteQuery(myAncestriesInfiniteQueryOptions());
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <PaginatedAncestryGrid kind="my-ancestries" />
-      </HydrationBoundary>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PaginatedAncestryGrid kind="my-ancestries" />
+    </HydrationBoundary>
   );
 }

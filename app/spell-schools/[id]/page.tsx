@@ -31,7 +31,7 @@ export default async function SchoolPage({ params }: SchoolPageProps) {
   const collections = await findSpellSchoolCollections(uid);
 
   return (
-    <div className="container mx-auto">
+    <div>
       <div className="flex justify-end items-start gap-2 mb-6">
         {isOwner && <SchoolActions spellSchool={spellSchool} />}
         {session?.user && (

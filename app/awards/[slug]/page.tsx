@@ -53,7 +53,7 @@ export default async function AwardPage({
     entities.backgrounds.length;
 
   return (
-    <div className="container mx-auto space-y-8">
+    <div className="space-y-8">
       <div className="flex flex-col gap-4">
         <h2 className="flex gap-2 items-baseline text-2xl font-bold font-slab">
           {award.name}

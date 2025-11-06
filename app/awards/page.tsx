@@ -19,7 +19,7 @@ export default async function AwardPage() {
   const awards = await getAllAwards();
 
   return (
-    <div className="container mx-auto max-w-4xl space-y-8">
+    <div className="max-w-4xl space-y-8">
       <div className="flex flex-col items-center gap-4">
         {awards.map((award) => (
           <Item

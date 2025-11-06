@@ -69,7 +69,7 @@ export default async function BackgroundPage({
     session?.user?.discordId === background.creator?.discordId || false;
 
   return (
-    <div className="container mx-auto">
+    <div>
       <div className="flex justify-end items-start gap-2 mb-6">
         {isOwner && <BackgroundDetailActions background={background} />}
       </div>

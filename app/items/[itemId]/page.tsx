@@ -84,7 +84,7 @@ export default async function ItemPage({
   }
 
   return (
-    <div className="container mx-auto">
+    <div>
       <div className="flex justify-end items-start gap-2 mb-6">
         {isOwner && <ItemDetailActions item={item} />}
         {session?.user && (

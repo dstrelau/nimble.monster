@@ -47,10 +47,8 @@ export default async function ItemsPage({
   ]);
 
   return (
-    <div className="container mx-auto">
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <ItemsListView />
-      </HydrationBoundary>{" "}
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ItemsListView />
+    </HydrationBoundary>
   );
 }

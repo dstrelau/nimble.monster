@@ -95,7 +95,7 @@ export default async function CompanionPage({
   }
 
   return (
-    <div className="container mx-auto">
+    <div>
       <div className="flex justify-end items-start mb-6">
         {isOwner && <CompanionDetailActions companion={companion} />}
       </div>

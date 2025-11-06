@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 interface PaperforgeImageProps {
   id?: string;
   name?: string;
+  style?: "portrait" | "full";
   size?: number;
   className?: string;
   alt?: string;
@@ -13,6 +14,7 @@ interface PaperforgeImageProps {
 export function PaperforgeImage({
   id,
   name,
+  style = "portrait",
   size = 400,
   className,
   alt,
@@ -28,7 +30,8 @@ export function PaperforgeImage({
   }
 
   // Map type to actual filename
-  const src = `/paperforge/${entry.folder}/portrait.png`;
+  const filename = style === "portrait" ? "portrait.png" : "full.png";
+  const src = `/paperforge/${entry.folder}/${filename}`;
   const altText = alt || entry.name;
 
   return (

@@ -14,9 +14,5 @@ export default async function SubclassesPage() {
     );
   }
 
-  return (
-    <div className="container mx-auto">
-      <SubclassesListView subclasses={subclasses} />
-    </div>
-  );
+  return <SubclassesListView subclasses={subclasses} />;
 }

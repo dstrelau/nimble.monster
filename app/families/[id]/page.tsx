@@ -80,7 +80,7 @@ export default async function FamilyDetailPage({
   });
 
   return (
-    <div className="container mx-auto">
+    <div>
       <FamilyHeader family={family} showEditDeleteButtons={isCreator} />
       {monsters.length === 0 ? (
         <p>No public monsters in this family.</p>

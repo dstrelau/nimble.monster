@@ -21,7 +21,7 @@ export default async function AdminSourcesPage() {
   const sources = await getAllSources();
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
+    <div className="py-8 space-y-8">
       <div>
         <h1 className="text-3xl font-bold mb-2">Source Management</h1>
         <p className="text-muted-foreground">

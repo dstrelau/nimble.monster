@@ -10,10 +10,8 @@ export default async function BackgroundsPage() {
   );
 
   return (
-    <div className="container mx-auto">
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <PaginatedBackgroundGrid kind="backgrounds" />
-      </HydrationBoundary>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PaginatedBackgroundGrid kind="backgrounds" />
+    </HydrationBoundary>
   );
 }

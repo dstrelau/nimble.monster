@@ -12,7 +12,7 @@ export default async function MySubclassesPage() {
   );
 
   return (
-    <div className="container mx-auto py-3">
+    <div className="py-3">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {subclasses.map((subclass) => (
           <SubclassMiniCard key={subclass.id} subclass={subclass} />

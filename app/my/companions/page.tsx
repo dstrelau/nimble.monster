@@ -12,11 +12,9 @@ export default async function MyCompanionsPage() {
   );
 
   return (
-    <div className="container mx-auto py-3">
-      <CardGrid
-        companions={companions}
-        gridColumns={{ default: 1, md: 1, lg: 2 }}
-      />
-    </div>
+    <CardGrid
+      companions={companions}
+      gridColumns={{ default: 1, md: 1, lg: 2 }}
+    />
   );
 }

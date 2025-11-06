@@ -14,9 +14,5 @@ export default async function MySpellsPage() {
     session.user.discordId
   );
 
-  return (
-    <div className="container mx-auto py-6">
-      <MySpellsView spellSchools={spellSchools} />
-    </div>
-  );
+  return <MySpellsView spellSchools={spellSchools} />;
 }

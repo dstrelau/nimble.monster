@@ -278,7 +278,7 @@ async function generateEntityImageDirect({ url, entityId, entityType }) {
           (params) => {
             const { entityId, entityType } = params;
             // Select the container of the entity card
-            const container = document.querySelector(".container .max-w-2xl");
+            const container = document.querySelector(".max-w-2xl");
 
             // Apply consistent styling for OpenGraph image
             if (container) {

@@ -19,10 +19,8 @@ export default async function MyMonstersPage() {
   ]);
 
   return (
-    <div className="container mx-auto">
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <PaginatedMonsterGrid kind="my-monsters" />
-      </HydrationBoundary>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PaginatedMonsterGrid kind="my-monsters" />
+    </HydrationBoundary>
   );
 }

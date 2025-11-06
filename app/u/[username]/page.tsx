@@ -109,7 +109,7 @@ export default async function UserProfilePage({
   ]);
 
   return (
-    <div className="container mx-auto">
+    <div>
       <div className="flex items-center mb-4">
         <UserAvatar user={user} size={56} className="mr-4" />
         <div>

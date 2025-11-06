@@ -83,7 +83,7 @@ export default async function SubclassPage({
   }
 
   return (
-    <div className="container mx-auto">
+    <div>
       <div className="flex justify-end items-start gap-2 mb-6">
         {isOwner && <SubclassDetailActions subclass={subclass} />}
       </div>

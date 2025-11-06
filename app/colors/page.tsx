@@ -84,7 +84,7 @@ const buttonSizes = [
 
 export default function ColorsPage() {
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="p-6 space-y-6">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Component Colors</h1>
         <ModeToggle />

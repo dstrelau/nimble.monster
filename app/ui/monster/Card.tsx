@@ -1,5 +1,5 @@
 "use client";
-import { Anvil, Users } from "lucide-react";
+import { Anvil, Shuffle, Users } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
@@ -36,86 +36,12 @@ import {
   SwimIcon,
   TeleportIcon,
 } from "./Stat";
-import { StatsTooltip } from "./StatsTooltip";
 
 const StatsGroup: React.FC<{
-  monster: Monster;
   children: React.ReactNode;
   className?: string;
-}> = ({ monster, children, className }) => {
-  const tooltipLines: string[] = [];
-
-  if (monster.armor !== "none")
-    tooltipLines.push(
-      `Armor: ${monster.armor.charAt(0).toUpperCase() + monster.armor.slice(1)}`
-    );
-  if (monster.swim) tooltipLines.push(`Swim: ${monster.swim}`);
-  if (monster.fly) tooltipLines.push(`Fly: ${monster.fly}`);
-  if (monster.climb) tooltipLines.push(`Climb: ${monster.climb}`);
-  if (monster.burrow) tooltipLines.push(`Burrow: ${monster.burrow}`);
-  if (monster.teleport) tooltipLines.push(`Teleport: ${monster.teleport}`);
-  tooltipLines.push(`Speed: ${monster.speed}`);
-  if (monster.hp) tooltipLines.push(`HP: ${monster.hp}`);
-  if (monster.saves) tooltipLines.push(`Saves: ${monster.saves}`);
-
-  return (
-    <StatsTooltip tooltipLines={tooltipLines} className={className}>
-      {children}
-    </StatsTooltip>
-  );
-};
-
-const MonsterTitle: React.FC<{
-  monster: Monster;
-  link?: boolean;
-  variant: "legendary" | "minion" | "standard";
-}> = ({ monster, link = true, variant }) => {
-  const titleClasses = cn(
-    "font-slab font-bold w-fit",
-    variant === "legendary" ? "text-3xl" : "small-caps text-2xl"
-  );
-
-  return (
-    <CardTitle className={titleClasses}>
-      {monster.paperforgeId && (
-        <PaperforgeImage
-          id={monster.paperforgeId}
-          className="float-left mr-2 size-16 object-cover"
-          size={64}
-        />
-      )}
-      {link && monster.id ? (
-        <Link href={getMonsterUrl(monster)}>{monster.name}</Link>
-      ) : (
-        monster.name
-      )}
-    </CardTitle>
-  );
-};
-
-const MonsterDescription: React.FC<{
-  monster: Monster;
-  variant: "legendary" | "minion" | "standard";
-}> = ({ monster, variant }) => {
-  const descriptionClasses = cn(
-    "font-condensed flex flex-wrap items-baseline gap-2",
-    variant === "legendary" && "text-md font-slab font-normal",
-    variant === "minion" && "small-caps col-span-2",
-    variant === "standard" && "small-caps col-span-2"
-  );
-
-  const levelPrefix = variant === "legendary" ? "Level" : "Lvl";
-
-  return (
-    <CardDescription className={descriptionClasses}>
-      <p>
-        {levelPrefix} <Level level={monster.level} />{" "}
-        {variant === "legendary" && "Solo "}
-        {formatSizeKind(monster)}
-        {variant === "minion" && " Minion"}
-      </p>
-    </CardDescription>
-  );
+}> = ({ children, className }) => {
+  return <div className={className}>{children}</div>;
 };
 
 const MonsterStats: React.FC<{
@@ -123,9 +49,25 @@ const MonsterStats: React.FC<{
   variant: "legendary" | "minion" | "standard";
   className?: string;
 }> = ({ monster, variant, className }) => {
-  const classes = "h-fit flex items-start justify-center font-slab font-black";
+  let statCount = 0;
+
+  if (monster.armor !== "none") statCount++;
+  if (monster.swim) statCount++;
+  if (monster.fly) statCount++;
+  if (monster.climb) statCount++;
+  if (monster.burrow) statCount++;
+  if (monster.teleport) statCount++;
+  if (variant !== "legendary" && monster.speed !== 6) statCount++;
+  if (monster.hp) statCount++;
+  if (monster.saves) statCount += 2;
+
+  if (statCount === 0) return null;
+
+  const classes = "flex gap-1 items-center justify-end font-slab font-black";
   return (
-    <StatsGroup className={cn(classes, className)} monster={monster}>
+    <StatsGroup
+      className={cn(statCount > 4 && "flex-wrap", classes, className)}
+    >
       {(variant === "legendary" || variant === "standard") && (
         <>
           {monster.armor === "medium" && <ArmorStat value="M" />}
@@ -180,6 +122,7 @@ const MonsterHeader: React.FC<{
 }> = ({ monster, link = true, variant }) => {
   const headerClasses = cn(
     "gap-1 flex flex-col relative",
+    monster.paperforgeId && "min-h-10",
     variant === "minion" &&
       "has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0"
   );
@@ -189,27 +132,63 @@ const MonsterHeader: React.FC<{
       data-slot="card-header"
       className={cn("@container/card-header gap-1 px-4 grow", headerClasses)}
     >
-      <div className="flex flex-wrap-reverse items-end">
-        <div className="flex-1">
-          <MonsterTitle monster={monster} link={link} variant={variant} />
-          <MonsterDescription monster={monster} variant={variant} />
-        </div>
-        <MonsterStats monster={monster} variant={variant} />
-      </div>
-      {monster.families.length > 0 && (
-        <div className="flex flex-wrap gap-x-2">
-          {monster.families.map((family) => (
-            <Link
-              key={family.id}
-              href={getFamilyUrl(family)}
-              className="text-sm font-sans flex gap-0.5 small-caps font-semibold"
-            >
-              <Users className="size-4 text-flame" />
-              <span>{family.name}</span>
-            </Link>
-          ))}
-        </div>
+      {monster.paperforgeId && (
+        <PaperforgeImage
+          id={monster.paperforgeId}
+          className="absolute -top-7 -left-3 mr-2 size-19 z-10"
+          size={76}
+        />
       )}
+      <div className="flex justify-between items-start">
+        <div className={cn("basis-full", monster.paperforgeId && "ml-14")}>
+          <div className="space-x-1">
+            <div
+              className={cn(
+                "font-slab font-bold inline",
+                variant === "legendary" ? "text-3xl/8" : "small-caps text-2xl/6"
+              )}
+            >
+              {link && monster.id ? (
+                <Link href={getMonsterUrl(monster)}>{monster.name}</Link>
+              ) : (
+                monster.name
+              )}
+            </div>{" "}
+            <div
+              className={cn(
+                "inline text-sm font-condensed font-muted-foreground whitespace-nowrap",
+                variant === "legendary" && "text-md font-slab font-normal",
+                variant === "minion" && "small-caps",
+                variant === "standard" && "small-caps"
+              )}
+            >
+              {variant === "legendary" ? "Level" : "Lvl"}{" "}
+              <Level level={monster.level} />{" "}
+              {variant === "legendary" && "Solo "}
+              {formatSizeKind(monster)}
+            </div>
+          </div>
+          {monster.families.length > 0 && (
+            <div className="flex flex-wrap gap-x-2">
+              {monster.families.map((family) => (
+                <Link
+                  key={family.id}
+                  href={getFamilyUrl(family)}
+                  className="text-sm font-sans flex gap-0.5 small-caps font-semibold"
+                >
+                  <Users className="size-4 text-flame" />
+                  <span>{family.name}</span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+        <MonsterStats
+          monster={monster}
+          variant={variant}
+          // className={cn(monster.paperforgeId && "ml-14")}
+        />
+      </div>
     </div>
   );
 };
@@ -238,8 +217,8 @@ export const Card = ({
     (e) => e.id === monster.paperforgeId
   );
   return (
-    <div id={`monster-${monster.id}`}>
-      <ShadcnCard className={cn("min-w-xs", className)}>
+    <div className="w-full" id={`monster-${monster.id}`}>
+      <ShadcnCard className={cn(className)}>
         <MonsterHeader
           monster={monster}
           link={link}
@@ -299,24 +278,25 @@ export const Card = ({
             />
           )}
 
-          {paperforgeEntry && (
-            <div className="flex pb-1 gap-1 items-center text-center text-sm text-muted-foreground">
-              <Anvil className="size-3 stroke-muted-foreground" />
-              Paper Forge:{" "}
-              <Link
-                external
-                href={
-                  paperforgeEntry.postUrl ||
-                  "https://www.patreon.com/c/paperforge"
-                }
-              >
-                #{paperforgeEntry.id} {paperforgeEntry?.name}
-              </Link>
-            </div>
-          )}
-          {monster.remixedFrom && (
-            <div className="text-center text-sm text-muted-foreground">
-              <span>
+          <div>
+            {paperforgeEntry && (
+              <div className="flex gap-1 items-center text-center text-sm text-muted-foreground">
+                <Anvil className="size-3 stroke-muted-foreground" />
+                Paper Forge:{" "}
+                <Link
+                  external
+                  href={
+                    paperforgeEntry.postUrl ||
+                    "https://www.patreon.com/c/paperforge"
+                  }
+                >
+                  #{paperforgeEntry.id} {paperforgeEntry?.name}
+                </Link>
+              </div>
+            )}
+            {monster.remixedFrom && (
+              <div className="flex gap-1 items-center text-center text-sm text-muted-foreground">
+                <Shuffle className="size-3 stroke-muted-foreground" />
                 remixed from{" "}
                 <Link
                   href={getMonsterUrl(monster.remixedFrom)}
@@ -324,26 +304,26 @@ export const Card = ({
                 >
                   {monster.remixedFrom.name}
                 </Link>
-              </span>
-              {monster.creator.discordId !==
-                monster.remixedFrom.creator.discordId && (
-                <>
-                  <span> by </span>
-                  <Link
-                    href={getUserUrl(monster.remixedFrom.creator)}
-                    className="font-medium inline-flex items-baseline gap-0.5"
-                  >
-                    <UserAvatar
-                      user={monster.remixedFrom.creator}
-                      size={14}
-                      className="inline"
-                    />
-                    <span>{monster.remixedFrom.creator.displayName}</span>
-                  </Link>
-                </>
-              )}
-            </div>
-          )}
+                {monster.creator.discordId !==
+                  monster.remixedFrom.creator.discordId && (
+                  <>
+                    <span> by </span>
+                    <Link
+                      href={getUserUrl(monster.remixedFrom.creator)}
+                      className="font-medium inline-flex items-baseline gap-0.5"
+                    >
+                      <UserAvatar
+                        user={monster.remixedFrom.creator}
+                        size={14}
+                        className="inline"
+                      />
+                      <span>{monster.remixedFrom.creator.displayName}</span>
+                    </Link>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </CardContentWithGap>
 
         <CardFooterLayout

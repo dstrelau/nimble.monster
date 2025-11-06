@@ -93,7 +93,7 @@ export default async function MonsterPage({
   }
 
   return (
-    <div className="container mx-auto">
+    <>
       <div className="flex justify-end items-start gap-2 mb-6">
         {session?.user && (
           <>
@@ -105,13 +105,13 @@ export default async function MonsterPage({
       <div
         className={cn(
           "mx-auto flex flex-col items-center gap-12",
-          monster.legendary ? "max-w-2xl" : "max-w-md"
+          monster.legendary ? "w-2xl" : "w-md"
         )}
       >
         <Card monster={monster} creator={monster.creator} link={false} />
         <MonsterCollections collections={collections} />
         <MonsterRemixes remixes={remixes} />
       </div>
-    </div>
+    </>
   );
 }

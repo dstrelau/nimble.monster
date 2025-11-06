@@ -81,7 +81,7 @@ export default async function CreatePage() {
 
   return (
     <TooltipProvider>
-      <div className="container mx-auto px-4 py-8">
+      <div className="px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <h2 className="w-full text-4xl text-center font-bold mb-4">
             What would you like to create?

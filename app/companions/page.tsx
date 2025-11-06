@@ -39,10 +39,8 @@ export default async function CompanionsPage({
   );
 
   return (
-    <div className="container mx-auto">
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <PaginatedCompanionGrid />
-      </HydrationBoundary>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PaginatedCompanionGrid />
+    </HydrationBoundary>
   );
 }
