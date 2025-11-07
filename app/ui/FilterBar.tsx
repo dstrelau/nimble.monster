@@ -18,16 +18,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   className = "",
 }) => {
   return (
-    <div className={cn("flex flex-col gap-4 sm:flex-row", className)}>
-      <div className="flex-1">
-        <SearchInput
-          value={searchTerm || ""}
-          onChange={onSearch}
-          placeholder={"Search"}
-        />
-      </div>
-
-      {children && <div className="flex flex-shrink-0 gap-4">{children}</div>}
+    <div className={cn("flex flex-wrap gap-4", className)}>
+      <SearchInput
+        value={searchTerm || ""}
+        onChange={onSearch}
+        placeholder={"Search"}
+        className="flex-1 basis-48"
+      />
+      {children}
     </div>
   );
 };

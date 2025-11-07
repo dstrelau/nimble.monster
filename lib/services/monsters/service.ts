@@ -5,6 +5,7 @@ import {
   type CreateMonsterInput,
   type Monster,
   type MonsterMini,
+  MonsterRoleOptions,
   MonsterTypeOptions,
   PaginateMonstersSortOptions,
   type SearchMonstersParams,
@@ -19,6 +20,7 @@ const PaginateMonstersSchema = z.object({
   type: z.enum(MonsterTypeOptions).optional(),
   creatorId: z.string().optional(),
   sourceId: z.string().optional(),
+  role: z.enum(MonsterRoleOptions).optional(),
 });
 
 export type PaginateMonstersParams = z.infer<typeof PaginateMonstersSchema>;

@@ -12,9 +12,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type {
+  MonsterRole,
   MonsterTypeOption,
   PaginateMonstersSortOption,
 } from "@/lib/services/monsters/types";
+import { MONSTER_ROLES } from "@/lib/services/monsters/types";
 
 interface SimpleFilterBarProps {
   searchTerm: string | null;
@@ -25,6 +27,8 @@ interface SimpleFilterBarProps {
   onSortChange: (sort: PaginateMonstersSortOption) => void;
   sourceId: string | null;
   onSourceChange: (sourceId: string | null) => void;
+  role: MonsterRole | null;
+  onRoleChange: (role: MonsterRole | null) => void;
 }
 
 const TYPE_OPTIONS: {
@@ -66,6 +70,8 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
   onSortChange,
   sourceId,
   onSourceChange,
+  role,
+  onRoleChange,
 }) => {
   return (
     <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v ? v : null)}>
@@ -83,6 +89,24 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
         </SelectContent>
       </Select>
       <SourceFilter sourceId={sourceId} onSourceChange={onSourceChange} />
+      <Select
+        value={role ?? "none"}
+        onValueChange={(v) =>
+          onRoleChange(v === "none" ? null : (v as MonsterRole))
+        }
+      >
+        <SelectTrigger className="min-w-36">
+          <SelectValue placeholder="Role" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="none">All Roles</SelectItem>
+          {MONSTER_ROLES.map(({ label, value }) => (
+            <SelectItem key={value} value={value}>
+              {label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <SortSelect
         items={SORT_OPTIONS}
         value={sortOption}

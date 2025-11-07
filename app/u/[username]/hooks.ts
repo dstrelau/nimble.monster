@@ -1,6 +1,7 @@
 import { keepPreviousData } from "@tanstack/react-query";
 import type { PaginatePublicMonstersResponse } from "@/lib/services/monsters/service";
 import type {
+  MonsterRole,
   MonsterTypeOption,
   PaginateMonstersSortOption,
 } from "@/lib/services/monsters/types";
@@ -13,16 +14,18 @@ export function userProfileMonstersInfiniteQueryOptions(
     sort = "-createdAt",
     type = "all",
     sourceId,
+    role,
     limit = 12,
   }: Partial<{
     search?: string;
     sort: PaginateMonstersSortOption;
     type: MonsterTypeOption;
     sourceId?: string;
+    role?: MonsterRole;
     limit?: number;
   }> = {}
 ) {
-  const params = { search, sort, type, sourceId, limit, creatorId };
+  const params = { search, sort, type, sourceId, role, limit, creatorId };
   return {
     queryKey: ["monsters", params],
     queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>

@@ -14,6 +14,7 @@ import {
 } from "@/app/ui/shared/GridStates";
 import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
 import {
+  MONSTER_ROLES,
   MonsterTypeOptions,
   PaginateMonstersSortOptions,
 } from "@/lib/services/monsters/types";
@@ -47,12 +48,17 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
     "sourceId",
     parseAsString
   );
+  const [roleQuery, setRoleQuery] = useQueryState(
+    "role",
+    parseAsStringLiteral(MONSTER_ROLES.map((r) => r.value))
+  );
 
   const params = {
     search: searchQuery ?? undefined,
     sort: sortQuery,
     type: typeQuery,
     sourceId: sourceIdQuery ?? undefined,
+    role: roleQuery ?? undefined,
     limit: 12,
   };
   const queryParams = () => {
@@ -90,6 +96,8 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
         onTypeFilterChange={setTypeQuery}
         sourceId={sourceIdQuery}
         onSourceChange={setSourceIdQuery}
+        role={roleQuery}
+        onRoleChange={setRoleQuery}
       />
 
       {!filteredMonsters || filteredMonsters?.length === 0 ? (

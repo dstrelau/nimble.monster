@@ -9,11 +9,11 @@ import { isValidUUID } from "@/lib/utils/validation";
 import { extractAllConditions, syncMonsterConditions } from "./conditions";
 import { toMonster, toMonsterMini } from "./converters";
 import { syncMonsterFamilies } from "./families";
+import type { PaginateMonstersParams } from "./service";
 import type {
   CreateMonsterInput,
   Monster,
   MonsterMini,
-  PaginateMonstersParams,
   SearchMonstersParams,
   UpdateMonsterInput,
 } from "./types";
@@ -54,6 +54,7 @@ export const paginateMonsters = async ({
   type = "all",
   creatorId,
   sourceId,
+  role,
   includePrivate = false,
 }: PaginateMonstersParams & { includePrivate?: boolean }): Promise<{
   data: Monster[];
@@ -93,6 +94,10 @@ export const paginateMonsters = async ({
 
   if (sourceId) {
     where.sourceId = sourceId;
+  }
+
+  if (role) {
+    where.role = role;
   }
 
   if (type === "legendary") {

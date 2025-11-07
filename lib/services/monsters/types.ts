@@ -69,6 +69,19 @@ export const MONSTER_ROLES = [
 ] as const;
 export type MonsterRole = (typeof MONSTER_ROLES)[number]["value"];
 
+export const MonsterRoleOptions = [
+  "ambusher",
+  "aoe",
+  "controller",
+  "defender",
+  "melee",
+  "ranged",
+  "skirmisher",
+  "striker",
+  "summoner",
+  "support",
+] as const;
+
 export type TypeFilter = "all" | "legendary" | "standard" | "minion";
 
 export interface MonsterMini {
@@ -141,16 +154,6 @@ export const PaginateMonstersSortOptions = [
 ] as const;
 export type PaginateMonstersSortOption =
   (typeof PaginateMonstersSortOptions)[number];
-
-export interface PaginateMonstersParams {
-  search?: string;
-  cursor?: string;
-  limit?: number;
-  sort?: PaginateMonstersSortOption;
-  type?: MonsterTypeOption;
-  creatorId?: string;
-  sourceId?: string;
-}
 
 export interface CreateMonsterInput {
   name: string;
