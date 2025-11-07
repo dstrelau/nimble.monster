@@ -215,7 +215,11 @@ function syncPaperforge() {
         if (!downloaded || !fs.existsSync(zipPath)) {
           console.log(`  ✗ Failed to download zip file`);
           errorCount++;
-          failures.push({ id: row.id, name: row.name, reason: "Failed to download zip file" });
+          failures.push({
+            id: row.id,
+            name: row.name,
+            reason: "Failed to download zip file",
+          });
           continue;
         }
 
@@ -223,7 +227,11 @@ function syncPaperforge() {
       } else {
         console.log(`  ✗ No download URL available`);
         errorCount++;
-        failures.push({ id: row.id, name: row.name, reason: "No download URL available" });
+        failures.push({
+          id: row.id,
+          name: row.name,
+          reason: "No download URL available",
+        });
         continue;
       }
     }
@@ -237,7 +245,11 @@ function syncPaperforge() {
     } else {
       console.log(`  ✗ Failed to extract`);
       errorCount++;
-      failures.push({ id: row.id, name: row.name, reason: "Failed to extract image from zip" });
+      failures.push({
+        id: row.id,
+        name: row.name,
+        reason: "Failed to extract image from zip",
+      });
     }
   }
 
