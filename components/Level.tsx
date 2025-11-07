@@ -14,7 +14,7 @@ export function Level({ level, levelInt, className }: LevelProps) {
   return (
     <span
       className={cn(
-        fallbackLevel.includes("/") && "diagonal-fractions",
+        fallbackLevel.includes("/") && "text-xs diagonal-fractions",
         className
       )}
     >

@@ -152,7 +152,7 @@ const MonsterHeader: React.FC<{
             </div>{" "}
             <div
               className={cn(
-                "inline text-sm font-condensed font-muted-foreground whitespace-nowrap",
+                "text-sm/4 font-condensed font-muted-foreground",
                 variant === "legendary" && "text-md font-slab font-normal",
                 variant === "minion" && "small-caps",
                 variant === "standard" && "small-caps"
@@ -164,20 +164,6 @@ const MonsterHeader: React.FC<{
               {formatSizeKind(monster)}
             </div>
           </div>
-          {monster.families.length > 0 && (
-            <div className="flex flex-wrap gap-x-2">
-              {monster.families.map((family) => (
-                <Link
-                  key={family.id}
-                  href={getFamilyUrl(family)}
-                  className="text-sm font-sans flex gap-0.5 small-caps font-semibold"
-                >
-                  <Users className="size-4 text-flame" />
-                  <span>{family.name}</span>
-                </Link>
-              ))}
-            </div>
-          )}
         </div>
         <MonsterStats
           monster={monster}
@@ -239,7 +225,6 @@ export const Card = ({
               families={monster.families}
             />
           )}
-
           <ActionsList
             actions={monster.actions}
             conditions={conditions}
