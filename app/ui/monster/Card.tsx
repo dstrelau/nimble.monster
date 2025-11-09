@@ -1,5 +1,5 @@
 "use client";
-import { Anvil, Shuffle, Users } from "lucide-react";
+import { Anvil, Shuffle } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
@@ -18,7 +18,7 @@ import type { Monster } from "@/lib/services/monsters";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatSizeKind } from "@/lib/utils/monster";
-import { getFamilyUrl, getMonsterUrl, getUserUrl } from "@/lib/utils/url";
+import { getMonsterUrl, getUserUrl } from "@/lib/utils/url";
 import CardActions from "./CardActions";
 import {
   ArmorStat,

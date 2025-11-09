@@ -2,7 +2,12 @@
 
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
+import {
+  parseAsInteger,
+  parseAsString,
+  parseAsStringLiteral,
+  useQueryState,
+} from "nuqs";
 import type React from "react";
 import { publicMonstersInfiniteQueryOptions } from "@/app/monsters/hooks";
 import { myMonstersInfiniteQueryOptions } from "@/app/my/monsters/hooks";
@@ -52,6 +57,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
     "role",
     parseAsStringLiteral(MONSTER_ROLES.map((r) => r.value))
   );
+  const [levelQuery, setLevelQuery] = useQueryState("level", parseAsInteger);
 
   const params = {
     search: searchQuery ?? undefined,
@@ -59,6 +65,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
     type: typeQuery,
     sourceId: sourceIdQuery ?? undefined,
     role: roleQuery ?? undefined,
+    level: levelQuery ?? undefined,
     limit: 12,
   };
   const queryParams = () => {
@@ -98,6 +105,8 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
         onSourceChange={setSourceIdQuery}
         role={roleQuery}
         onRoleChange={setRoleQuery}
+        level={levelQuery}
+        onLevelChange={setLevelQuery}
       />
 
       {!filteredMonsters || filteredMonsters?.length === 0 ? (

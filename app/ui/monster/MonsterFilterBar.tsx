@@ -16,7 +16,7 @@ import type {
   MonsterTypeOption,
   PaginateMonstersSortOption,
 } from "@/lib/services/monsters/types";
-import { MONSTER_ROLES } from "@/lib/services/monsters/types";
+import { MONSTER_LEVELS, MONSTER_ROLES } from "@/lib/services/monsters/types";
 
 interface SimpleFilterBarProps {
   searchTerm: string | null;
@@ -29,6 +29,8 @@ interface SimpleFilterBarProps {
   onSourceChange: (sourceId: string | null) => void;
   role: MonsterRole | null;
   onRoleChange: (role: MonsterRole | null) => void;
+  level: number | null;
+  onLevelChange: (level: number | null) => void;
 }
 
 const TYPE_OPTIONS: {
@@ -36,17 +38,7 @@ const TYPE_OPTIONS: {
   label: string;
   icon?: React.ReactNode;
 }[] = [
-  {
-    value: "all",
-    label: "All",
-    icon: (
-      <>
-        <User size={4} />
-        <Crown size={4} />
-        <PersonStanding size={4} />
-      </>
-    ),
-  },
+  { value: "all", label: "All Types" },
   { value: "standard", label: "Standard", icon: <User size={4} /> },
   { value: "legendary", label: "Legendary", icon: <Crown size={4} /> },
   { value: "minion", label: "Minion", icon: <PersonStanding size={4} /> },
@@ -72,6 +64,8 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
   onSourceChange,
   role,
   onRoleChange,
+  level,
+  onLevelChange,
 }) => {
   return (
     <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v ? v : null)}>
@@ -102,6 +96,22 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
           <SelectItem value="none">All Roles</SelectItem>
           {MONSTER_ROLES.map(({ label, value }) => (
             <SelectItem key={value} value={value}>
+              {label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Select
+        value={level?.toString() ?? "none"}
+        onValueChange={(v) => onLevelChange(v === "none" ? null : Number(v))}
+      >
+        <SelectTrigger className="min-w-36">
+          <SelectValue placeholder="Level" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="none">All Levels</SelectItem>
+          {MONSTER_LEVELS.map(({ label, value }) => (
+            <SelectItem key={value} value={value.toString()}>
               {label}
             </SelectItem>
           ))}

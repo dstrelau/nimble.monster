@@ -55,6 +55,7 @@ export const paginateMonsters = async ({
   creatorId,
   sourceId,
   role,
+  level,
   includePrivate = false,
 }: PaginateMonstersParams & { includePrivate?: boolean }): Promise<{
   data: Monster[];
@@ -98,6 +99,10 @@ export const paginateMonsters = async ({
 
   if (role) {
     where.role = role;
+  }
+
+  if (level !== undefined) {
+    where.levelInt = level;
   }
 
   if (type === "legendary") {

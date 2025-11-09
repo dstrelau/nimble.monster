@@ -15,6 +15,7 @@ export function userProfileMonstersInfiniteQueryOptions(
     type = "all",
     sourceId,
     role,
+    level,
     limit = 12,
   }: Partial<{
     search?: string;
@@ -22,10 +23,20 @@ export function userProfileMonstersInfiniteQueryOptions(
     type: MonsterTypeOption;
     sourceId?: string;
     role?: MonsterRole;
+    level?: number;
     limit?: number;
   }> = {}
 ) {
-  const params = { search, sort, type, sourceId, role, limit, creatorId };
+  const params = {
+    search,
+    sort,
+    type,
+    sourceId,
+    role,
+    level,
+    limit,
+    creatorId,
+  };
   return {
     queryKey: ["monsters", params],
     queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>
