@@ -43,7 +43,7 @@ function downloadZipFile(url: string, destinationDir: string): boolean {
       fs.mkdirSync(destinationDir, { recursive: true });
     }
 
-    execSync(`curl -OJL ${escapeShellArg(url)}`, {
+    execSync(`curl -sOJL --clobber ${escapeShellArg(url)}`, {
       cwd: destinationDir,
       stdio: "pipe",
     });
@@ -52,7 +52,7 @@ function downloadZipFile(url: string, destinationDir: string): boolean {
   } catch (e) {
     console.error(
       `  Error downloading ${url}:`,
-      e instanceof Error ? e.message : e
+      e instanceof Error ? e.message : String(e)
     );
     return false;
   }
@@ -154,10 +154,8 @@ function syncPaperforge() {
   const content = fs.readFileSync(CSV_PATH, "utf-8");
   const rows = parseCSV(content);
 
-  // Filter to only rows with all data
-  const completeRows = rows.filter(
-    (row) => row.id && row.name && row.postUrl && row.tokenPng
-  );
+  // Filter to rows with at least id, name, and postUrl
+  const completeRows = rows.filter((row) => row.id && row.name && row.postUrl);
 
   // Check for duplicate IDs
   const idCounts = new Map<string, number>();
@@ -187,6 +185,7 @@ function syncPaperforge() {
 
   let successCount = 0;
   let errorCount = 0;
+  let csvUpdated = false;
 
   const indexEntries: Array<{ id: string; name: string; postUrl: string }> = [];
   const failures: Array<{ id: string; name: string; reason: string }> = [];
@@ -195,7 +194,75 @@ function syncPaperforge() {
     const folderId = row.id.padStart(4, "0");
     const outputPath = path.join(OUTPUT_DIR, folderId, "portrait.png");
 
-    console.log(`\nProcessing #${row.id}: ${row.name}`);
+    // Skip if both tokenPng and downloadUrl are '-' (no download available)
+    if (
+      (!row.tokenPng || row.tokenPng === "-") &&
+      (!row.tokenDownloadUrl || row.tokenDownloadUrl === "-")
+    ) {
+      console.log(`⊘ #${row.id} ${row.name}: Non-free`);
+      continue;
+    }
+
+    // Check if tokenPng is missing but downloadUrl exists
+    if (!row.tokenPng && row.tokenDownloadUrl) {
+      const downloaded = downloadZipFile(row.tokenDownloadUrl, PAPERFORGE_DIR);
+
+      if (downloaded) {
+        // Find the downloaded zip file
+        const files = fs
+          .readdirSync(PAPERFORGE_DIR)
+          .filter((f) => f.endsWith(".zip"));
+        const latestZip = files
+          .map((f) => ({
+            name: f,
+            time: fs.statSync(path.join(PAPERFORGE_DIR, f)).mtime,
+          }))
+          .sort((a, b) => b.time.getTime() - a.time.getTime())[0];
+
+        if (latestZip) {
+          const zipPath = path.join(PAPERFORGE_DIR, latestZip.name);
+          const zip = new AdmZip(zipPath);
+
+          // Update CSV with zip filename
+          row.tokenPng = latestZip.name;
+          csvUpdated = true;
+
+          console.log(
+            `⊘ #${row.id} ${row.name}: Downloaded ${latestZip.name}, needs tokenPng path`
+          );
+          console.log(`  Contents:`);
+          for (const entry of zip.getEntries()) {
+            if (!entry.isDirectory) {
+              console.log(`    ${entry.entryName}`);
+            }
+          }
+        }
+      } else {
+        console.log(
+          `⊘ #${row.id} ${row.name}: Failed to download, needs tokenPng path`
+        );
+      }
+
+      errorCount++;
+      failures.push({
+        id: row.id,
+        name: row.name,
+        reason:
+          "No tokenPng path specified - download URL provided for inspection",
+      });
+      continue;
+    }
+
+    if (!row.tokenPng) {
+      console.log(`⊘ #${row.id} ${row.name}: No tokenPng or download URL`);
+      errorCount++;
+      failures.push({
+        id: row.id,
+        name: row.name,
+        reason: "No tokenPng path specified",
+      });
+      continue;
+    }
 
     // Parse tokenPng path: "VTT05_GoblinBoss_Free.zip/VTT05_GoblinBoss_Free/Portrait/GoblinBossF.png"
     const [zipFilename, ...pathParts] = row.tokenPng.split("/");
@@ -203,17 +270,14 @@ function syncPaperforge() {
     const zipPath = path.join(PAPERFORGE_DIR, zipFilename);
 
     if (!fs.existsSync(zipPath)) {
-      console.log(`  ! Zip file not found: ${zipFilename}`);
-
       if (row.tokenDownloadUrl) {
-        console.log(`  Attempting to download from ${row.tokenDownloadUrl}`);
         const downloaded = downloadZipFile(
           row.tokenDownloadUrl,
           PAPERFORGE_DIR
         );
 
         if (!downloaded || !fs.existsSync(zipPath)) {
-          console.log(`  ✗ Failed to download zip file`);
+          console.log(`✗ #${row.id} ${row.name}: Failed to download`);
           errorCount++;
           failures.push({
             id: row.id,
@@ -222,10 +286,8 @@ function syncPaperforge() {
           });
           continue;
         }
-
-        console.log(`  ✓ Downloaded ${zipFilename}`);
       } else {
-        console.log(`  ✗ No download URL available`);
+        console.log(`✗ #${row.id} ${row.name}: No download URL`);
         errorCount++;
         failures.push({
           id: row.id,
@@ -239,11 +301,11 @@ function syncPaperforge() {
     // Extract the image
     const success = extractTokenImage(zipPath, internalPath, outputPath);
     if (success) {
-      console.log(`  ✓ Extracted to ${outputPath}`);
+      console.log(`✓ #${row.id} ${row.name}`);
       successCount++;
       indexEntries.push({ id: row.id, name: row.name, postUrl: row.postUrl });
     } else {
-      console.log(`  ✗ Failed to extract`);
+      console.log(`✗ #${row.id} ${row.name}: Failed to extract`);
       errorCount++;
       failures.push({
         id: row.id,
@@ -256,6 +318,25 @@ function syncPaperforge() {
   // Generate index
   if (indexEntries.length > 0) {
     generateIndex(indexEntries);
+  }
+
+  // Write updated CSV if needed
+  if (csvUpdated) {
+    const header = "id,name,postUrl,tokenDownloadUrl,tokenPng";
+    const csvLines = [
+      header,
+      ...rows.map((row) =>
+        [
+          row.id,
+          row.name,
+          row.postUrl,
+          row.tokenDownloadUrl,
+          row.tokenPng,
+        ].join(",")
+      ),
+    ];
+    fs.writeFileSync(CSV_PATH, `${csvLines.join("\n")}\n`);
+    console.log(`\n✓ Updated CSV with new zip filenames`);
   }
 
   console.log(`\n=== Summary ===`);

@@ -10,651 +10,747 @@ export interface PaperForgeEntry {
 
 export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   {
-    id: "1",
-    name: "Goblin Warrior",
-    postUrl: "https://www.patreon.com/posts/free-files-base-10749718",
-    folder: "0001",
+    "id": "1",
+    "name": "Goblin Warrior",
+    "postUrl": "https://www.patreon.com/posts/free-files-base-10749718",
+    "folder": "0001"
   },
   {
-    id: "2",
-    name: "Goblin Archer",
-    postUrl: "https://www.patreon.com/posts/free-files-11213955",
-    folder: "0002",
+    "id": "2",
+    "name": "Goblin Archer",
+    "postUrl": "https://www.patreon.com/posts/free-files-11213955",
+    "folder": "0002"
   },
   {
-    id: "3",
-    name: "Goblin Spearman",
-    postUrl: "https://www.patreon.com/posts/free-files-11310899",
-    folder: "0003",
+    "id": "3",
+    "name": "Goblin Spearman",
+    "postUrl": "https://www.patreon.com/posts/free-files-11310899",
+    "folder": "0003"
   },
   {
-    id: "4",
-    name: "Goblin Elder",
-    postUrl: "https://www.patreon.com/posts/free-files-11444800",
-    folder: "0004",
+    "id": "4",
+    "name": "Goblin Elder",
+    "postUrl": "https://www.patreon.com/posts/free-files-11444800",
+    "folder": "0004"
   },
   {
-    id: "5",
-    name: "Goblin Boss",
-    postUrl: "https://www.patreon.com/posts/free-files-11589769",
-    folder: "0005",
+    "id": "5",
+    "name": "Goblin Boss",
+    "postUrl": "https://www.patreon.com/posts/free-files-11589769",
+    "folder": "0005"
   },
   {
-    id: "6",
-    name: "Barbarian",
-    postUrl: "https://www.patreon.com/posts/free-files-11703527",
-    folder: "0006",
+    "id": "6",
+    "name": "Barbarian",
+    "postUrl": "https://www.patreon.com/posts/free-files-11703527",
+    "folder": "0006"
   },
   {
-    id: "7",
-    name: "Spectator",
-    postUrl: "https://www.patreon.com/posts/free-files-11836131",
-    folder: "0007",
+    "id": "7",
+    "name": "Spectator",
+    "postUrl": "https://www.patreon.com/posts/free-files-11836131",
+    "folder": "0007"
   },
   {
-    id: "8",
-    name: "Ghast",
-    postUrl: "https://www.patreon.com/posts/free-files-12141052",
-    folder: "0008",
+    "id": "8",
+    "name": "Ghast",
+    "postUrl": "https://www.patreon.com/posts/free-files-12141052",
+    "folder": "0008"
   },
   {
-    id: "9",
-    name: "Kobold",
-    postUrl: "https://www.patreon.com/posts/free-files-12452706",
-    folder: "0009",
+    "id": "9",
+    "name": "Kobold",
+    "postUrl": "https://www.patreon.com/posts/free-files-12452706",
+    "folder": "0009"
   },
   {
-    id: "10",
-    name: "Kobold Sorceror",
-    postUrl: "https://www.patreon.com/posts/free-files-12874549",
-    folder: "0010",
+    "id": "10",
+    "name": "Kobold Sorceror",
+    "postUrl": "https://www.patreon.com/posts/free-files-12874549",
+    "folder": "0010"
   },
   {
-    id: "11",
-    name: "Winged Kobold",
-    postUrl: "https://www.patreon.com/posts/free-files-13082785",
-    folder: "0011",
+    "id": "11",
+    "name": "Winged Kobold",
+    "postUrl": "https://www.patreon.com/posts/free-files-13082785",
+    "folder": "0011"
   },
   {
-    id: "12",
-    name: "Ogre",
-    postUrl: "https://www.patreon.com/file?h=13276940&m=1008167",
-    folder: "0012",
+    "id": "12",
+    "name": "Ogre",
+    "postUrl": "https://www.patreon.com/file?h=13276940&m=1008167",
+    "folder": "0012"
   },
   {
-    id: "13",
-    name: "Human Thief",
-    postUrl: "https://www.patreon.com/posts/free-files-13706016",
-    folder: "0013",
+    "id": "13",
+    "name": "Human Thief",
+    "postUrl": "https://www.patreon.com/posts/free-files-13706016",
+    "folder": "0013"
   },
   {
-    id: "14",
-    name: "Halfling Assassin",
-    postUrl: "https://www.patreon.com/posts/free-files-13846536",
-    folder: "0014",
+    "id": "14",
+    "name": "Halfling Assassin",
+    "postUrl": "https://www.patreon.com/posts/free-files-13846536",
+    "folder": "0014"
   },
   {
-    id: "15",
-    name: "Large Bear",
-    postUrl: "https://www.patreon.com/posts/free-files-13969830",
-    folder: "0015",
+    "id": "15",
+    "name": "Large Bear",
+    "postUrl": "https://www.patreon.com/posts/free-files-13969830",
+    "folder": "0015"
   },
   {
-    id: "16",
-    name: "Wolf",
-    postUrl: "https://www.patreon.com/posts/free-files-14085414",
-    folder: "0016",
+    "id": "16",
+    "name": "Wolf",
+    "postUrl": "https://www.patreon.com/posts/free-files-14085414",
+    "folder": "0016"
   },
   {
-    id: "17a",
-    name: "Bandit (Crossbow)",
-    postUrl: "https://www.patreon.com/posts/free-files-14216453",
-    folder: "017a",
+    "id": "17",
+    "name": "Bandit Captain",
+    "postUrl": "https://www.patreon.com/posts/free-files-14216453",
+    "folder": "0017"
   },
   {
-    id: "17b",
-    name: "Bandit (Daggers)",
-    postUrl: "https://www.patreon.com/posts/free-files-14216453",
-    folder: "017b",
+    "id": "17b",
+    "name": "Bandit (Crossbow)",
+    "postUrl": "https://www.patreon.com/posts/free-files-14216453",
+    "folder": "017b"
   },
   {
-    id: "17c",
-    name: "Bandit Captain",
-    postUrl: "https://www.patreon.com/posts/free-files-14216453",
-    folder: "017c",
+    "id": "17c",
+    "name": "Bandit (Daggers)",
+    "postUrl": "https://www.patreon.com/posts/free-files-14216453",
+    "folder": "017c"
   },
   {
-    id: "18",
-    name: "Panther",
-    postUrl: "https://www.patreon.com/posts/free-files-14406874",
-    folder: "0018",
+    "id": "17d",
+    "name": "Bandit (Sword)",
+    "postUrl": "https://www.patreon.com/posts/free-files-14216453",
+    "folder": "017d"
   },
   {
-    id: "19",
-    name: "Giant Poisonous Snake",
-    postUrl: "https://www.patreon.com/posts/free-files-14534953",
-    folder: "0019",
+    "id": "17e",
+    "name": "Bandit (Axes)",
+    "postUrl": "https://www.patreon.com/posts/free-files-14216453",
+    "folder": "017e"
   },
   {
-    id: "20",
-    name: "Erinyes",
-    postUrl: "https://www.patreon.com/posts/free-files-14651672",
-    folder: "0020",
+    "id": "18",
+    "name": "Panther",
+    "postUrl": "https://www.patreon.com/posts/free-files-14406874",
+    "folder": "0018"
   },
   {
-    id: "21",
-    name: "Griffon",
-    postUrl: "https://www.patreon.com/posts/free-files-14774227",
-    folder: "0021",
+    "id": "19",
+    "name": "Giant Poisonous Snake",
+    "postUrl": "https://www.patreon.com/posts/free-files-14534953",
+    "folder": "0019"
   },
   {
-    id: "22",
-    name: "Dwarf Fighter",
-    postUrl: "https://www.patreon.com/posts/free-files-14886502",
-    folder: "0022",
+    "id": "20",
+    "name": "Erinyes",
+    "postUrl": "https://www.patreon.com/posts/free-files-14651672",
+    "folder": "0020"
   },
   {
-    id: "23",
-    name: "Monk",
-    postUrl: "https://www.patreon.com/posts/free-files-15010372",
-    folder: "0023",
+    "id": "21",
+    "name": "Griffon",
+    "postUrl": "https://www.patreon.com/posts/free-files-14774227",
+    "folder": "0021"
   },
   {
-    id: "24",
-    name: "Dwarf Fighter #2",
-    postUrl: "https://www.patreon.com/posts/free-files-15136843",
-    folder: "0024",
+    "id": "22",
+    "name": "Dwarf Fighter",
+    "postUrl": "https://www.patreon.com/posts/free-files-14886502",
+    "folder": "0022"
   },
   {
-    id: "25",
-    name: "Owlbear",
-    postUrl: "https://www.patreon.com/posts/free-files-15346895",
-    folder: "0025",
+    "id": "23",
+    "name": "Monk",
+    "postUrl": "https://www.patreon.com/posts/free-files-15010372",
+    "folder": "0023"
   },
   {
-    id: "25b",
-    name: "Owlbear Cub",
-    postUrl: "https://www.patreon.com/posts/free-files-15346895",
-    folder: "025b",
+    "id": "24",
+    "name": "Dwarf Fighter #2",
+    "postUrl": "https://www.patreon.com/posts/free-files-15136843",
+    "folder": "0024"
   },
   {
-    id: "26",
-    name: "Knight",
-    postUrl: "VTT25b_OwlbearCub_Free/Portrait/OwlbearCubf.png",
-    folder: "0026",
+    "id": "25",
+    "name": "Owlbear",
+    "postUrl": "https://www.patreon.com/posts/free-files-15346895",
+    "folder": "0025"
   },
   {
-    id: "27",
-    name: "Bard",
-    postUrl: "https://www.patreon.com/posts/free-files-15558074",
-    folder: "0027",
+    "id": "25b",
+    "name": "Owlbear Cub",
+    "postUrl": "https://www.patreon.com/posts/free-files-15346895",
+    "folder": "025b"
   },
   {
-    id: "28",
-    name: "Barlgura",
-    postUrl: "https://www.patreon.com/posts/release-28-15724795",
-    folder: "0028",
+    "id": "26",
+    "name": "Knight",
+    "postUrl": "https://www.patreon.com/posts/free-files-15450981",
+    "folder": "0026"
   },
   {
-    id: "29",
-    name: "Centaur",
-    postUrl: "https://www.patreon.com/posts/29-centaur-15934826",
-    folder: "0029",
+    "id": "26b",
+    "name": "Squire",
+    "postUrl": "https://www.patreon.com/posts/free-files-15450981",
+    "folder": "026b"
   },
   {
-    id: "30",
-    name: "Ninja",
-    postUrl: "https://www.patreon.com/posts/30-ninja-16277617",
-    folder: "0030",
+    "id": "27",
+    "name": "Bard",
+    "postUrl": "https://www.patreon.com/posts/free-files-15558074",
+    "folder": "0027"
   },
   {
-    id: "31",
-    name: "Manes",
-    postUrl: "https://www.patreon.com/posts/31-manes-16541986",
-    folder: "0031",
+    "id": "28",
+    "name": "Barlgura",
+    "postUrl": "https://www.patreon.com/posts/release-28-15724795",
+    "folder": "0028"
   },
   {
-    id: "32",
-    name: "Gnoll Hunter",
-    postUrl: "https://www.patreon.com/posts/32-33-gnoll-16801938",
-    folder: "0032",
+    "id": "29",
+    "name": "Centaur",
+    "postUrl": "https://www.patreon.com/posts/29-centaur-15934826",
+    "folder": "0029"
   },
   {
-    id: "33",
-    name: "Gnoll Warrior",
-    postUrl: "https://www.patreon.com/posts/32-33-gnoll-16801938",
-    folder: "0033",
+    "id": "30",
+    "name": "Ninja",
+    "postUrl": "https://www.patreon.com/posts/30-ninja-16277617",
+    "folder": "0030"
   },
   {
-    id: "34",
-    name: "Flind",
-    postUrl: "https://www.patreon.com/posts/34-flind-16933680",
-    folder: "0034",
+    "id": "31",
+    "name": "Manes",
+    "postUrl": "https://www.patreon.com/posts/31-manes-16541986",
+    "folder": "0031"
   },
   {
-    id: "35",
-    name: "GnollCaster",
-    postUrl: "https://www.patreon.com/posts/35-36-gnoll-and-17256502",
-    folder: "0035",
+    "id": "32",
+    "name": "Gnoll Hunter",
+    "postUrl": "https://www.patreon.com/posts/32-33-gnoll-16801938",
+    "folder": "0032"
   },
   {
-    id: "36",
-    name: "Hyena",
-    postUrl: "https://www.patreon.com/posts/35-36-gnoll-and-17256502",
-    folder: "0036",
+    "id": "33",
+    "name": "Gnoll Warrior",
+    "postUrl": "https://www.patreon.com/posts/32-33-gnoll-16801938",
+    "folder": "0033"
   },
   {
-    id: "37",
-    name: "Whiterling",
-    postUrl: "https://www.patreon.com/posts/37-gnoll-17656550",
-    folder: "0037",
+    "id": "34",
+    "name": "Flind",
+    "postUrl": "https://www.patreon.com/posts/34-flind-16933680",
+    "folder": "0034"
   },
   {
-    id: "38",
-    name: "Shoosuva",
-    postUrl: "https://www.patreon.com/posts/38-shoosuva-17942958",
-    folder: "0038",
+    "id": "35",
+    "name": "GnollCaster",
+    "postUrl": "https://www.patreon.com/posts/35-36-gnoll-and-17256502",
+    "folder": "0035"
   },
   {
-    id: "39",
-    name: "Leucrotta",
-    postUrl: "https://www.patreon.com/posts/39-leucrotta-17943074",
-    folder: "0039",
+    "id": "36",
+    "name": "Hyena",
+    "postUrl": "https://www.patreon.com/posts/35-36-gnoll-and-17256502",
+    "folder": "0036"
   },
   {
-    id: "40",
-    name: "Vistana Tiefling",
-    postUrl: "https://www.patreon.com/posts/40-vistana-18066778",
-    folder: "0040",
+    "id": "37",
+    "name": "Whiterling",
+    "postUrl": "https://www.patreon.com/posts/37-gnoll-17656550",
+    "folder": "0037"
   },
   {
-    id: "41",
-    name: "Giant Gnoll",
-    postUrl: "https://www.patreon.com/posts/41-giant-gnoll-18228101",
-    folder: "0041",
+    "id": "38",
+    "name": "Shoosuva",
+    "postUrl": "https://www.patreon.com/posts/38-shoosuva-17942958",
+    "folder": "0038"
   },
   {
-    id: "42",
-    name: "Treasure Goblin",
-    postUrl: "https://www.patreon.com/posts/42-treasure-18355534",
-    folder: "0042",
+    "id": "39",
+    "name": "Leucrotta",
+    "postUrl": "https://www.patreon.com/posts/39-leucrotta-17943074",
+    "folder": "0039"
   },
   {
-    id: "43",
-    name: "Samurai",
-    postUrl: "https://www.patreon.com/posts/43-samurai-18536874",
-    folder: "0043",
+    "id": "40",
+    "name": "Vistana Tiefling",
+    "postUrl": "https://www.patreon.com/posts/40-vistana-18066778",
+    "folder": "0040"
   },
   {
-    id: "44",
-    name: "Worg",
-    postUrl: "https://www.patreon.com/posts/44-worg-18897463",
-    folder: "0044",
+    "id": "41",
+    "name": "Giant Gnoll",
+    "postUrl": "https://www.patreon.com/posts/41-giant-gnoll-18228101",
+    "folder": "0041"
   },
   {
-    id: "45",
-    name: "Worg Riders",
-    postUrl: "https://www.patreon.com/posts/45-worg-riders-18897516",
-    folder: "0045",
+    "id": "42",
+    "name": "Treasure Goblin",
+    "postUrl": "https://www.patreon.com/posts/42-treasure-18355534",
+    "folder": "0042"
   },
   {
-    id: "46",
-    name: "Centaur #2",
-    postUrl: "https://www.patreon.com/posts/46-centaur-2-19375032",
-    folder: "0046",
+    "id": "43",
+    "name": "Samurai",
+    "postUrl": "https://www.patreon.com/posts/43-samurai-18536874",
+    "folder": "0043"
   },
   {
-    id: "47",
-    name: "Minotaur",
-    postUrl: "https://www.patreon.com/posts/47-minotaurs-19536398",
-    folder: "0047",
+    "id": "44",
+    "name": "Worg",
+    "postUrl": "https://www.patreon.com/posts/44-worg-18897463",
+    "folder": "0044"
   },
   {
-    id: "48",
-    name: "Barbarian",
-    postUrl: "https://www.patreon.com/posts/48-barbarian-2-19763850",
-    folder: "0048",
+    "id": "45",
+    "name": "Worg Riders",
+    "postUrl": "https://www.patreon.com/posts/45-worg-riders-18897516",
+    "folder": "0045"
   },
   {
-    id: "49",
-    name: "Wererat Giant Rat",
-    postUrl: "https://www.patreon.com/posts/49-50-51-wererat-20415574",
-    folder: "0049",
+    "id": "45b",
+    "name": "Worg Riders",
+    "postUrl": "https://www.patreon.com/posts/45-worg-riders-18897516",
+    "folder": "045b"
   },
   {
-    id: "50",
-    name: "Wererat Hybrid",
-    postUrl: "https://www.patreon.com/posts/49-50-51-wererat-20415574",
-    folder: "0050",
+    "id": "46",
+    "name": "Centaur #2",
+    "postUrl": "https://www.patreon.com/posts/46-centaur-2-19375032",
+    "folder": "0046"
   },
   {
-    id: "51",
-    name: "Wererat Humanoid",
-    postUrl: "https://www.patreon.com/posts/49-50-51-wererat-20415574",
-    folder: "0051",
+    "id": "47",
+    "name": "Minotaur",
+    "postUrl": "https://www.patreon.com/posts/47-minotaurs-19536398",
+    "folder": "0047"
   },
   {
-    id: "52",
-    name: "Werewolf Humanoid",
-    postUrl: "https://www.patreon.com/posts/52-werewolf-form-20788219",
-    folder: "0052",
+    "id": "47b",
+    "name": "Minotaur",
+    "postUrl": "https://www.patreon.com/posts/47-minotaurs-19536398",
+    "folder": "047b"
   },
   {
-    id: "53",
-    name: "Werewolf Hybrid",
-    postUrl: "https://www.patreon.com/posts/53-werewolf-form-20951158",
-    folder: "0053",
+    "id": "48",
+    "name": "Barbarian (Axe)",
+    "postUrl": "https://www.patreon.com/posts/48-barbarian-2-19763850",
+    "folder": "0048"
   },
   {
-    id: "54",
-    name: "Wolf",
-    postUrl: "https://www.patreon.com/posts/54-55-wolf-21135615",
-    folder: "0054",
+    "id": "48b",
+    "name": "Barbarian (Sword)",
+    "postUrl": "https://www.patreon.com/posts/48-barbarian-2-19763850",
+    "folder": "048b"
   },
   {
-    id: "61",
-    name: "Headless Horseman",
-    postUrl: "https://www.patreon.com/posts/61-62-headless-22405495",
-    folder: "0061",
+    "id": "49",
+    "name": "Wererat Giant Rat",
+    "postUrl": "https://www.patreon.com/posts/49-50-51-wererat-20415574",
+    "folder": "0049"
   },
   {
-    id: "65",
-    name: "Zombie 2",
-    postUrl: "https://www.patreon.com/posts/65-66-pack-23092833",
-    folder: "0065",
+    "id": "50",
+    "name": "Wererat Hybrid",
+    "postUrl": "https://www.patreon.com/posts/49-50-51-wererat-20415574",
+    "folder": "0050"
   },
   {
-    id: "85",
-    name: "Hydra",
-    postUrl: "https://www.patreon.com/posts/85-hydra-26842819",
-    folder: "0085",
+    "id": "51",
+    "name": "Wererat Humanoid",
+    "postUrl": "https://www.patreon.com/posts/49-50-51-wererat-20415574",
+    "folder": "0051"
   },
   {
-    id: "96",
-    name: "Harpy",
-    postUrl: "https://www.patreon.com/posts/96-harpy-29425757",
-    folder: "0096",
+    "id": "52",
+    "name": "Werewolf Humanoid",
+    "postUrl": "https://www.patreon.com/posts/52-werewolf-form-20788219",
+    "folder": "0052"
   },
   {
-    id: "97",
-    name: "Giant Spider",
-    postUrl: "https://www.patreon.com/posts/cavern-of-venom-29445967",
-    folder: "0097",
+    "id": "53",
+    "name": "Werewolf Hybrid",
+    "postUrl": "https://www.patreon.com/posts/53-werewolf-form-20951158",
+    "folder": "0053"
   },
   {
-    id: "98",
-    name: "Spiderling",
-    postUrl: "https://www.patreon.com/posts/cavern-of-venom-29445967",
-    folder: "0098",
+    "id": "54",
+    "name": "Wolf",
+    "postUrl": "https://www.patreon.com/posts/54-55-wolf-21135615",
+    "folder": "0054"
   },
   {
-    id: "99",
-    name: "Venom Queen",
-    postUrl: "https://www.patreon.com/posts/cavern-of-venom-29445967",
-    folder: "0099",
+    "id": "56",
+    "name": "Large Bear",
+    "postUrl": "https://www.patreon.com/posts/56-57-58-bears-21460503",
+    "folder": "0056"
   },
   {
-    id: "104",
-    name: "Tavern Keeper",
-    postUrl: "https://www.patreon.com/posts/104-tavern-30147275",
-    folder: "0104",
+    "id": "58",
+    "name": "Humanoid Werebear",
+    "postUrl": "https://www.patreon.com/posts/56-57-58-bears-21460503",
+    "folder": "0058"
   },
   {
-    id: "106",
-    name: "Tavern Maiden",
-    postUrl: "https://www.patreon.com/posts/106-tavern-30320800",
-    folder: "0106",
+    "id": "59",
+    "name": "Werebear Hybrid",
+    "postUrl": "https://www.patreon.com/posts/59-werebear-21728443",
+    "folder": "0059"
   },
   {
-    id: "108",
-    name: "Adult Red Dragon",
-    postUrl: "https://www.patreon.com/posts/108-adult-red-30436400",
-    folder: "0108",
+    "id": "60",
+    "name": "WereTiger Humanoid",
+    "postUrl": "https://www.patreon.com/posts/60-weretiger-21922519",
+    "folder": "0060"
   },
   {
-    id: "110",
-    name: "Booze Server Kobold",
-    postUrl: "https://www.patreon.com/posts/110-booze-server-30437329",
-    folder: "0110",
+    "id": "61",
+    "name": "Headless Horseman",
+    "postUrl": "https://www.patreon.com/posts/61-62-headless-22405495",
+    "folder": "0061"
   },
   {
-    id: "111",
-    name: "Cask Hauler Kobold",
-    postUrl: "https://www.patreon.com/posts/111-cask-hauler-30437528",
-    folder: "0111",
+    "id": "64",
+    "name": "Weretiger Hybrid",
+    "postUrl": "https://www.patreon.com/posts/64-weretiger-22859922",
+    "folder": "0064"
   },
   {
-    id: "112",
-    name: "Townsman",
-    postUrl: "https://www.patreon.com/posts/112-townsman-30586677",
-    folder: "0112",
+    "id": "65",
+    "name": "Zombie 1",
+    "postUrl": "https://www.patreon.com/posts/65-66-pack-23092833",
+    "folder": "0065"
   },
   {
-    id: "113",
-    name: "Townsman",
-    postUrl: "https://www.patreon.com/posts/113-townsman-2-30627219",
-    folder: "0113",
+    "id": "65b",
+    "name": "Zombie 1 Shiny",
+    "postUrl": "https://www.patreon.com/posts/65-66-pack-23092833",
+    "folder": "065b"
   },
   {
-    id: "114",
-    name: "Wing Sorcerer Kobold",
-    postUrl: "https://www.patreon.com/posts/114-kobold-wing-30740953",
-    folder: "0114",
+    "id": "65c",
+    "name": "Zombie 2",
+    "postUrl": "https://www.patreon.com/posts/65-66-pack-23092833",
+    "folder": "065c"
   },
   {
-    id: "116",
-    name: "Drunken Townsman",
-    postUrl: "https://www.patreon.com/posts/116-drunken-30805855",
-    folder: "0116",
+    "id": "65d",
+    "name": "Zombie 2 Shiny",
+    "postUrl": "https://www.patreon.com/posts/65-66-pack-23092833",
+    "folder": "065d"
   },
   {
-    id: "122",
-    name: "Crone",
-    postUrl: "https://www.patreon.com/posts/122-crone-31215835",
-    folder: "0122",
+    "id": "65e",
+    "name": "Zombie 3",
+    "postUrl": "https://www.patreon.com/posts/65-66-pack-23092833",
+    "folder": "065e"
   },
   {
-    id: "125",
-    name: "Urchin",
-    postUrl: "https://www.patreon.com/posts/125-urchin-31485841",
-    folder: "0125",
+    "id": "65f",
+    "name": "Zombie 3 Shiny",
+    "postUrl": "https://www.patreon.com/posts/65-66-pack-23092833",
+    "folder": "065f"
   },
   {
-    id: "126",
-    name: "Urchin",
-    postUrl: "https://www.patreon.com/posts/126-little-31486132",
-    folder: "0126",
+    "id": "85",
+    "name": "Hydra",
+    "postUrl": "https://www.patreon.com/posts/85-hydra-26842819",
+    "folder": "0085"
   },
   {
-    id: "127",
-    name: "TownsWoman",
-    postUrl: "https://www.patreon.com/posts/127-townswoman-31530699",
-    folder: "0127",
+    "id": "96",
+    "name": "Harpy",
+    "postUrl": "https://www.patreon.com/posts/96-harpy-29425757",
+    "folder": "0096"
   },
   {
-    id: "128",
-    name: "Cultist Hide",
-    postUrl: "https://www.patreon.com/posts/128-cultist-hide-31961658",
-    folder: "0128",
+    "id": "97",
+    "name": "Giant Spider",
+    "postUrl": "https://www.patreon.com/posts/cavern-of-venom-29445967",
+    "folder": "0097"
   },
   {
-    id: "131",
-    name: "Cultist Warlock",
-    postUrl: "https://www.patreon.com/posts/131-cultist-31962044",
-    folder: "0131",
+    "id": "98",
+    "name": "Spiderling",
+    "postUrl": "https://www.patreon.com/posts/cavern-of-venom-29445967",
+    "folder": "0098"
   },
   {
-    id: "143",
-    name: "Manticore",
-    postUrl: "https://www.patreon.com/posts/143-manticore-32670248",
-    folder: "0143",
+    "id": "99",
+    "name": "Venom Queen",
+    "postUrl": "https://www.patreon.com/posts/cavern-of-venom-29445967",
+    "folder": "0099"
   },
   {
-    id: "145",
-    name: "Giant Snake",
-    postUrl: "https://www.patreon.com/posts/145-reskin-giant-33173609",
-    folder: "0145",
+    "id": "104",
+    "name": "Tavern Keeper",
+    "postUrl": "https://www.patreon.com/posts/104-tavern-30147275",
+    "folder": "0104"
   },
   {
-    id: "149",
-    name: "Warforged Artificer",
-    postUrl: "https://www.patreon.com/posts/149-warforged-33797786",
-    folder: "0149",
+    "id": "106",
+    "name": "Tavern Maiden",
+    "postUrl": "https://www.patreon.com/posts/106-tavern-30320800",
+    "folder": "0106"
   },
   {
-    id: "151",
-    name: "Gnome Wizard",
-    postUrl: "https://www.patreon.com/posts/151-gnome-wizard-33931545",
-    folder: "0151",
+    "id": "108",
+    "name": "Adult Red Dragon",
+    "postUrl": "https://www.patreon.com/posts/108-adult-red-30436400",
+    "folder": "0108"
   },
   {
-    id: "157",
-    name: "Giant Scorpion",
-    postUrl: "https://www.patreon.com/posts/157-giant-35773806",
-    folder: "0157",
+    "id": "110",
+    "name": "Booze Server Kobold",
+    "postUrl": "https://www.patreon.com/posts/110-booze-server-30437329",
+    "folder": "0110"
   },
   {
-    id: "161",
-    name: "Bugbear",
-    postUrl: "https://www.patreon.com/posts/161-bugbear-36065977",
-    folder: "0161",
+    "id": "111",
+    "name": "Cask Hauler Kobold",
+    "postUrl": "https://www.patreon.com/posts/111-cask-hauler-30437528",
+    "folder": "0111"
   },
   {
-    id: "163",
-    name: "Giant Centipede",
-    postUrl: "https://www.patreon.com/posts/163-giant-36352514",
-    folder: "0163",
+    "id": "112",
+    "name": "Townsman",
+    "postUrl": "https://www.patreon.com/posts/112-townsman-30586677",
+    "folder": "0112"
   },
   {
-    id: "232",
-    name: "Ghoul",
-    postUrl: "https://www.patreon.com/posts/232-ghoul-41850230",
-    folder: "0232",
+    "id": "113",
+    "name": "Townsman",
+    "postUrl": "https://www.patreon.com/posts/113-townsman-2-30627219",
+    "folder": "0113"
   },
   {
-    id: "254",
-    name: "Flameskull",
-    postUrl: "https://www.patreon.com/posts/254-flameskull-43032281",
-    folder: "0254",
+    "id": "114",
+    "name": "Wing Sorcerer Kobold",
+    "postUrl": "https://www.patreon.com/posts/114-kobold-wing-30740953",
+    "folder": "0114"
   },
   {
-    id: "369",
-    name: "Hobgoblin Soldier",
-    postUrl: "https://www.patreon.com/posts/369-hobgoblin-57474300",
-    folder: "0369",
+    "id": "116",
+    "name": "Drunken Townsman",
+    "postUrl": "https://www.patreon.com/posts/116-drunken-30805855",
+    "folder": "0116"
   },
   {
-    id: "370",
-    name: "Doppleganger",
-    postUrl: "https://www.patreon.com/posts/370-doppleganger-57751879",
-    folder: "0370",
+    "id": "122",
+    "name": "Crone",
+    "postUrl": "https://www.patreon.com/posts/122-crone-31215835",
+    "folder": "0122"
   },
   {
-    id: "492",
-    name: "Ooze",
-    postUrl: "https://www.patreon.com/posts/492-ooze-74556588",
-    folder: "0492",
+    "id": "125",
+    "name": "Urchin",
+    "postUrl": "https://www.patreon.com/posts/125-urchin-31485841",
+    "folder": "0125"
   },
   {
-    id: "494",
-    name: "Bugbear",
-    postUrl: "https://www.patreon.com/posts/494-bugbear-74816244",
-    folder: "0494",
+    "id": "126",
+    "name": "Urchin",
+    "postUrl": "https://www.patreon.com/posts/126-little-31486132",
+    "folder": "0126"
   },
   {
-    id: "520",
-    name: "Treant",
-    postUrl: "https://www.patreon.com/posts/treant-and-79348155",
-    folder: "0520",
+    "id": "127",
+    "name": "TownsWoman",
+    "postUrl": "https://www.patreon.com/posts/127-townswoman-31530699",
+    "folder": "0127"
   },
   {
-    id: "521",
-    name: "Awakened Shrub",
-    postUrl: "https://www.patreon.com/posts/treant-and-79348155",
-    folder: "0521",
+    "id": "128",
+    "name": "Cultist Hide",
+    "postUrl": "https://www.patreon.com/posts/128-cultist-hide-31961658",
+    "folder": "0128"
   },
   {
-    id: "522",
-    name: "Awakened Shrub",
-    postUrl: "https://www.patreon.com/posts/treant-and-79348155",
-    folder: "0522",
+    "id": "131",
+    "name": "Cultist Warlock",
+    "postUrl": "https://www.patreon.com/posts/131-cultist-31962044",
+    "folder": "0131"
   },
   {
-    id: "523",
-    name: "Goblin",
-    postUrl: "https://www.patreon.com/posts/523-goblin-80067472",
-    folder: "0523",
+    "id": "143",
+    "name": "Manticore",
+    "postUrl": "https://www.patreon.com/posts/143-manticore-32670248",
+    "folder": "0143"
   },
   {
-    id: "524",
-    name: "Goblin",
-    postUrl: "https://www.patreon.com/posts/goblin-524-80067468",
-    folder: "0524",
+    "id": "145",
+    "name": "Giant Snake",
+    "postUrl": "https://www.patreon.com/posts/145-reskin-giant-33173609",
+    "folder": "0145"
   },
   {
-    id: "525",
-    name: "Goblin",
-    postUrl: "https://www.patreon.com/posts/525-goblin-80067477",
-    folder: "0525",
+    "id": "149",
+    "name": "Warforged Artificer",
+    "postUrl": "https://www.patreon.com/posts/149-warforged-33797786",
+    "folder": "0149"
   },
   {
-    id: "527",
-    name: "Goblin",
-    postUrl: "https://www.patreon.com/posts/527-goblin-80829588",
-    folder: "0527",
+    "id": "151",
+    "name": "Gnome Wizard",
+    "postUrl": "https://www.patreon.com/posts/151-gnome-wizard-33931545",
+    "folder": "0151"
   },
   {
-    id: "528",
-    name: "Goblin",
-    postUrl: "https://www.patreon.com/posts/528-goblin-80829586",
-    folder: "0528",
+    "id": "157",
+    "name": "Giant Scorpion",
+    "postUrl": "https://www.patreon.com/posts/157-giant-35773806",
+    "folder": "0157"
   },
   {
-    id: "563",
-    name: "Stirge",
-    postUrl: "https://www.patreon.com/posts/563-stirge-87164363",
-    folder: "0563",
+    "id": "161",
+    "name": "Bugbear",
+    "postUrl": "https://www.patreon.com/posts/161-bugbear-36065977",
+    "folder": "0161"
   },
   {
-    id: "578",
-    name: "Water Elemental",
-    postUrl: "https://www.patreon.com/posts/578-water-89675933",
-    folder: "0578",
+    "id": "163",
+    "name": "Giant Centipede",
+    "postUrl": "https://www.patreon.com/posts/163-giant-36352514",
+    "folder": "0163"
   },
   {
-    id: "704",
-    name: "Axe Beak",
-    postUrl: "https://www.patreon.com/posts/704-axe-beak-124607411",
-    folder: "0704",
+    "id": "232",
+    "name": "Ghoul",
+    "postUrl": "https://www.patreon.com/posts/232-ghoul-41850230",
+    "folder": "0232"
   },
   {
-    id: "727",
-    name: "Grick",
-    postUrl: "https://www.patreon.com/posts/727-grick-132343067",
-    folder: "0727",
+    "id": "254",
+    "name": "Flameskull",
+    "postUrl": "https://www.patreon.com/posts/254-flameskull-43032281",
+    "folder": "0254"
   },
   {
-    id: "735",
-    name: "Ochre Jelly",
-    postUrl: "https://www.patreon.com/posts/735-ochre-jelly-135397333",
-    folder: "0735",
+    "id": "369",
+    "name": "Hobgoblin Soldier",
+    "postUrl": "https://www.patreon.com/posts/369-hobgoblin-57474300",
+    "folder": "0369"
   },
   {
-    id: "766",
-    name: "Worg",
-    postUrl: "https://www.patreon.com/posts/766-worg-142465043",
-    folder: "0766",
+    "id": "370",
+    "name": "Doppleganger",
+    "postUrl": "https://www.patreon.com/posts/370-doppleganger-57751879",
+    "folder": "0370"
   },
+  {
+    "id": "492",
+    "name": "Ooze",
+    "postUrl": "https://www.patreon.com/posts/492-ooze-74556588",
+    "folder": "0492"
+  },
+  {
+    "id": "494",
+    "name": "Bugbear",
+    "postUrl": "https://www.patreon.com/posts/494-bugbear-74816244",
+    "folder": "0494"
+  },
+  {
+    "id": "520",
+    "name": "Treant",
+    "postUrl": "https://www.patreon.com/posts/treant-and-79348155",
+    "folder": "0520"
+  },
+  {
+    "id": "521",
+    "name": "Awakened Shrub",
+    "postUrl": "https://www.patreon.com/posts/treant-and-79348155",
+    "folder": "0521"
+  },
+  {
+    "id": "522",
+    "name": "Awakened Shrub",
+    "postUrl": "https://www.patreon.com/posts/treant-and-79348155",
+    "folder": "0522"
+  },
+  {
+    "id": "523",
+    "name": "Goblin",
+    "postUrl": "https://www.patreon.com/posts/523-goblin-80067472",
+    "folder": "0523"
+  },
+  {
+    "id": "524",
+    "name": "Goblin",
+    "postUrl": "https://www.patreon.com/posts/goblin-524-80067468",
+    "folder": "0524"
+  },
+  {
+    "id": "525",
+    "name": "Goblin",
+    "postUrl": "https://www.patreon.com/posts/525-goblin-80067477",
+    "folder": "0525"
+  },
+  {
+    "id": "527",
+    "name": "Goblin",
+    "postUrl": "https://www.patreon.com/posts/527-goblin-80829588",
+    "folder": "0527"
+  },
+  {
+    "id": "528",
+    "name": "Goblin",
+    "postUrl": "https://www.patreon.com/posts/528-goblin-80829586",
+    "folder": "0528"
+  },
+  {
+    "id": "563",
+    "name": "Stirge",
+    "postUrl": "https://www.patreon.com/posts/563-stirge-87164363",
+    "folder": "0563"
+  },
+  {
+    "id": "578",
+    "name": "Water Elemental",
+    "postUrl": "https://www.patreon.com/posts/578-water-89675933",
+    "folder": "0578"
+  },
+  {
+    "id": "704",
+    "name": "Axe Beak",
+    "postUrl": "https://www.patreon.com/posts/704-axe-beak-124607411",
+    "folder": "0704"
+  },
+  {
+    "id": "727",
+    "name": "Grick",
+    "postUrl": "https://www.patreon.com/posts/727-grick-132343067",
+    "folder": "0727"
+  },
+  {
+    "id": "735",
+    "name": "Ochre Jelly",
+    "postUrl": "https://www.patreon.com/posts/735-ochre-jelly-135397333",
+    "folder": "0735"
+  },
+  {
+    "id": "766",
+    "name": "Worg",
+    "postUrl": "https://www.patreon.com/posts/766-worg-142465043",
+    "folder": "0766"
+  }
 ];
 
 export function getPaperforgeEntry(identifier: string): PaperForgeEntry | null {
   // Try by ID first
-  const byId = PAPERFORGE_ENTRIES.find((e) => e.id === identifier);
+  const byId = PAPERFORGE_ENTRIES.find(e => e.id === identifier);
   if (byId) return byId;
 
   // Try by name (case-insensitive)
   const byName = PAPERFORGE_ENTRIES.find(
-    (e) => e.name.toLowerCase() === identifier.toLowerCase()
+    e => e.name.toLowerCase() === identifier.toLowerCase()
   );
   if (byName) return byName;
 
