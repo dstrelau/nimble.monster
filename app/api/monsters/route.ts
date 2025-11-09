@@ -21,6 +21,8 @@ const querySchema = z.object({
   sort: z
     .enum(["name", "-name", "createdAt", "-createdAt", "level", "-level"])
     .default("name"),
+  search: z.string().optional(),
+  level: z.coerce.number().optional(),
 });
 
 export const GET = telemetry(async (request: Request) => {
@@ -31,6 +33,8 @@ export const GET = telemetry(async (request: Request) => {
     cursor: searchParams.get("cursor") || undefined,
     limit: searchParams.get("limit") || undefined,
     sort: searchParams.get("sort") || undefined,
+    search: searchParams.get("search") || undefined,
+    level: searchParams.get("level") || undefined,
   });
 
   if (!result.success) {
@@ -52,19 +56,23 @@ export const GET = telemetry(async (request: Request) => {
     );
   }
 
-  const { cursor, limit, sort } = result.data;
+  const { cursor, limit, sort, search, level } = result.data;
 
   span?.setAttributes({
     "params.limit": limit,
     "params.sort": sort,
   });
   cursor && span?.setAttributes({ "params.cursor": cursor });
+  search && span?.setAttributes({ "params.search": search });
+  level && span?.setAttributes({ "params.level": level });
 
   const { data: monsters, nextCursor } =
     await monstersService.paginatePublicMonsters({
       cursor,
       limit,
       sort,
+      search,
+      level,
     });
 
   const data = monsters.map(toJsonApiMonster);

@@ -161,6 +161,8 @@ describe("GET /api/monsters", () => {
       cursor: "encoded_name_Goblin_550e8400-e29b-41d4-a716-446655440000",
       limit: 100,
       sort: "name",
+      search: undefined,
+      level: undefined,
       includePrivate: false,
     });
   });
@@ -178,6 +180,8 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 50,
       sort: "name",
+      search: undefined,
+      level: undefined,
       includePrivate: false,
     });
   });
@@ -219,6 +223,8 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "name",
+      search: undefined,
+      level: undefined,
       includePrivate: false,
     });
   });
@@ -238,6 +244,8 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "-name",
+      search: undefined,
+      level: undefined,
       includePrivate: false,
     });
   });
@@ -257,6 +265,8 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "createdAt",
+      search: undefined,
+      level: undefined,
       includePrivate: false,
     });
   });
@@ -276,6 +286,8 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "-createdAt",
+      search: undefined,
+      level: undefined,
       includePrivate: false,
     });
   });
@@ -295,6 +307,8 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "level",
+      search: undefined,
+      level: undefined,
       includePrivate: false,
     });
   });
@@ -314,6 +328,8 @@ describe("GET /api/monsters", () => {
       cursor: undefined,
       limit: 100,
       sort: "-level",
+      search: undefined,
+      level: undefined,
       includePrivate: false,
     });
   });
@@ -329,6 +345,44 @@ describe("GET /api/monsters", () => {
     expect(data.errors).toHaveLength(1);
     expect(data.errors[0].status).toBe("400");
     expect(data.errors[0].title).toBe("Invalid sort parameter");
+  });
+
+  it("should handle search parameter", async () => {
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?search=dragon"
+    );
+    await GET(request);
+
+    expect(mockPaginateMonsters).toHaveBeenCalledWith({
+      cursor: undefined,
+      limit: 100,
+      sort: "name",
+      search: "dragon",
+      includePrivate: false,
+    });
+  });
+
+  it("should handle level parameter", async () => {
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
+      nextCursor: null,
+    });
+
+    const request = new Request("http://localhost:3000/api/monsters?level=5");
+    await GET(request);
+
+    expect(mockPaginateMonsters).toHaveBeenCalledWith({
+      cursor: undefined,
+      limit: 100,
+      sort: "name",
+      level: 5,
+      includePrivate: false,
+    });
   });
 
   it("should validate response conforms to MonsterSchema", async () => {
