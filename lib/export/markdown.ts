@@ -436,7 +436,7 @@ function formatSpellTarget(target: SpellSchool["spells"][0]["target"]): string {
     return parts.join(" ");
   }
 
-  const parts = [target.type];
+  const parts: string[] = [target.type];
   if (target.kind) parts.push(target.kind);
   if (target.distance) parts.push(`${target.distance} ft.`);
   return parts.join(" ");
