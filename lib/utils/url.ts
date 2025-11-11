@@ -94,6 +94,13 @@ export function getCollectionEditUrl(collection: {
   return `/collections/${slugify(collection)}/edit`;
 }
 
+export function getCollectionExportUrl(collection: {
+  name: string;
+  id: string;
+}): string {
+  return `/collections/${slugify(collection)}/export`;
+}
+
 // Family URLs
 export function getFamilyUrl(family: { name: string; id: string }): string {
   return `/families/${slugify(family)}`;

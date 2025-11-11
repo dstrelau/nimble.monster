@@ -1,5 +1,5 @@
 "use client";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Share, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -7,8 +7,14 @@ import { deleteCollection } from "@/app/actions/collection";
 import { Attribution } from "@/app/ui/Attribution";
 import { VisibilityBadge } from "@/app/ui/VisibilityBadge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { Collection, Condition } from "@/lib/types";
-import { getCollectionEditUrl } from "@/lib/utils/url";
+import { getCollectionEditUrl, getCollectionExportUrl } from "@/lib/utils/url";
 import { FormattedText } from "./FormattedText";
 
 interface CollectionHeaderProps {
@@ -26,6 +32,8 @@ export function CollectionHeader({
   const router = useRouter();
 
   const [_isDeleting, setIsDeleting] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+
   const handleDelete = async () => {
     if (!confirm(`Are you sure you want to delete "${collection.name}"?`)) {
       return;
@@ -48,6 +56,33 @@ export function CollectionHeader({
     }
   };
 
+  const handleExportMarkdown = async () => {
+    setIsDownloading(true);
+
+    try {
+      const response = await fetch(getCollectionExportUrl(collection));
+
+      if (!response.ok) {
+        throw new Error("Failed to export collection");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${collection.name}-export.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error exporting collection:", error);
+      alert("Failed to export collection. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div className="flex justify-between items-start mb-6">
       <div className="w-full">
@@ -62,6 +97,19 @@ export function CollectionHeader({
             )}
           </div>
           <div className="flex gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" disabled={isDownloading}>
+                  <Share className="size-4" />
+                  Export
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleExportMarkdown}>
+                  Markdown (zip)
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             {showEditDeleteButtons && (
               <>
                 <Button variant="outline" size="sm" asChild>

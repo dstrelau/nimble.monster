@@ -1,5 +1,6 @@
 import type { Item } from "@/lib/services/items";
 import type { Monster } from "@/lib/services/monsters";
+import type { SpellSchool } from "@/lib/types";
 
 export function monsterToMarkdown(monster: Monster): string {
   const tags = generateTags(monster);
@@ -309,6 +310,153 @@ function generateItemMetadata(item: Item): string {
 
   if (item.awards && item.awards.length > 0) {
     const awardNames = item.awards.map((a) => a.name).join(", ");
+    lines.push(`*Awards: ${awardNames}*`);
+  }
+
+  return lines.join("\n");
+}
+
+export function spellSchoolToMarkdown(spellSchool: SpellSchool): string {
+  const tags = generateSpellSchoolTags(spellSchool);
+  const frontmatter = generateSpellSchoolFrontmatter(spellSchool, tags);
+  const body = generateSpellSchoolBody(spellSchool);
+
+  return `${frontmatter}\n${body}`;
+}
+
+function generateSpellSchoolTags(_spellSchool: SpellSchool): string[] {
+  const tags = ["dnd", "spell-school"];
+
+  return tags;
+}
+
+function generateSpellSchoolFrontmatter(
+  spellSchool: SpellSchool,
+  tags: string[]
+): string {
+  const lines = ["---"];
+
+  lines.push(`name: "${escapeYaml(spellSchool.name)}"`);
+  lines.push(`visibility: ${spellSchool.visibility}`);
+
+  if (spellSchool.source) {
+    lines.push(`source: "${escapeYaml(spellSchool.source.name)}"`);
+  }
+
+  lines.push(`created: ${spellSchool.createdAt.toISOString().split("T")[0]}`);
+  lines.push(`updated: ${spellSchool.updatedAt.toISOString().split("T")[0]}`);
+
+  lines.push(`tags: [${tags.join(", ")}]`);
+
+  lines.push("---");
+  return lines.join("\n");
+}
+
+function generateSpellSchoolBody(spellSchool: SpellSchool): string {
+  const sections: string[] = [];
+
+  sections.push(generateSpellSchoolHeader(spellSchool));
+
+  if (spellSchool.description) {
+    sections.push(generateSpellSchoolDescription(spellSchool.description));
+  }
+
+  if (spellSchool.spells.length > 0) {
+    sections.push(generateSpells(spellSchool.spells));
+  }
+
+  sections.push(generateSpellSchoolMetadata(spellSchool));
+
+  return sections.join("\n\n");
+}
+
+function generateSpellSchoolHeader(spellSchool: SpellSchool): string {
+  return `# ${spellSchool.name}`;
+}
+
+function generateSpellSchoolDescription(description: string): string {
+  return `## Description\n\n${description}`;
+}
+
+function generateSpells(spells: SpellSchool["spells"]): string {
+  const lines = ["## Spells"];
+
+  for (const spell of spells) {
+    const tierLabel = spell.tier === 0 ? "Cantrip" : `Tier ${spell.tier}`;
+    let spellLine = `\n### ${spell.name}`;
+
+    const details = [tierLabel];
+    if (spell.actions > 0)
+      details.push(`${spell.actions} action${spell.actions > 1 ? "s" : ""}`);
+    if (spell.reaction) details.push("Reaction");
+
+    if (details.length > 0) {
+      spellLine += ` *(${details.join(", ")})*`;
+    }
+
+    lines.push(spellLine);
+
+    if (spell.target) {
+      lines.push(`\n**Target**: ${formatSpellTarget(spell.target)}`);
+    }
+
+    if (spell.damage) {
+      lines.push(`**Damage**: ${spell.damage}`);
+    }
+
+    if (spell.concentration) {
+      lines.push(`**Concentration**: ${spell.concentration}`);
+    }
+
+    if (spell.description) {
+      lines.push(`\n${spell.description}`);
+    }
+
+    if (spell.upcast) {
+      lines.push(`\n**Upcast**: ${spell.upcast}`);
+    }
+
+    if (spell.highLevels) {
+      lines.push(`\n**High Levels**: ${spell.highLevels}`);
+    }
+  }
+
+  return lines.join("\n");
+}
+
+function formatSpellTarget(target: SpellSchool["spells"][0]["target"]): string {
+  if (!target) return "";
+
+  if (target.type === "self") return "Self";
+
+  if (target.type === "aoe") {
+    const parts = ["AoE"];
+    if (target.kind) parts.push(target.kind);
+    if (target.distance) parts.push(`${target.distance} ft.`);
+    return parts.join(" ");
+  }
+
+  const parts = [target.type];
+  if (target.kind) parts.push(target.kind);
+  if (target.distance) parts.push(`${target.distance} ft.`);
+  return parts.join(" ");
+}
+
+function generateSpellSchoolMetadata(spellSchool: SpellSchool): string {
+  const lines = ["---"];
+
+  if (spellSchool.creator) {
+    lines.push(
+      `*Created by ${spellSchool.creator.displayName} (@${spellSchool.creator.username})*`
+    );
+  }
+
+  if (spellSchool.source) {
+    lines.push(`*Source: ${spellSchool.source.name}*`);
+  }
+
+  if (spellSchool.awards && spellSchool.awards.length > 0) {
+    const awardNames = spellSchool.awards.map((a) => a.name).join(", ");
     lines.push(`*Awards: ${awardNames}*`);
   }
 
