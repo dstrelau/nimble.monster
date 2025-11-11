@@ -53,6 +53,10 @@ export function getItemImageUrl(item: { name: string; id: string }): string {
   return `/items/${slugify(item)}/image`;
 }
 
+export function getItemMarkdownUrl(item: { name: string; id: string }): string {
+  return `/items/${slugify(item)}/markdown`;
+}
+
 // Companion URLs
 export function getCompanionUrl(companion: {
   id: string;

@@ -1,4 +1,5 @@
 "use client";
+import { FileText } from "lucide-react";
 import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import { Link } from "@/components/app/Link";
@@ -16,12 +17,17 @@ import {
   CardTitle,
   Card as ShadcnCard,
 } from "@/components/ui/card";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Item } from "@/lib/services/items";
 import { RARITIES } from "@/lib/services/items";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { getItemImageUrl, getItemUrl } from "@/lib/utils/url";
+import {
+  getItemImageUrl,
+  getItemMarkdownUrl,
+  getItemUrl,
+} from "@/lib/utils/url";
 
 const formatRarityDisplay = (rarity?: string): string => {
   if (!rarity || rarity === "unspecified") return "";
@@ -261,6 +267,17 @@ export const Card = ({
         actionsSlot={
           item.id && (
             <ShareMenu disabled={item.visibility !== "public"}>
+              <DropdownMenuItem asChild>
+                <a
+                  className="flex gap-2 items-center"
+                  href={getItemMarkdownUrl(item)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FileText className="w-4 h-4" />
+                  Export to Markdown
+                </a>
+              </DropdownMenuItem>
               <ShareMenuDownloadCardItem
                 name={`${item.name}.png`}
                 path={getItemImageUrl(item)}

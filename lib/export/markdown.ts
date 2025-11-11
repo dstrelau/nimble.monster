@@ -1,3 +1,4 @@
+import type { Item } from "@/lib/services/items";
 import type { Monster } from "@/lib/services/monsters";
 
 export function monsterToMarkdown(monster: Monster): string {
@@ -9,7 +10,7 @@ export function monsterToMarkdown(monster: Monster): string {
 }
 
 function generateTags(monster: Monster): string[] {
-  const tags = ["dnd", "monster"];
+  const tags = ["monster"];
 
   if (monster.legendary) tags.push("legendary");
   if (monster.minion) tags.push("minion");
@@ -219,4 +220,97 @@ function generateMetadata(monster: Monster): string {
 
 function escapeYaml(str: string): string {
   return str.replace(/"/g, '\\"');
+}
+
+export function itemToMarkdown(item: Item): string {
+  const tags = generateItemTags(item);
+  const frontmatter = generateItemFrontmatter(item, tags);
+  const body = generateItemBody(item);
+
+  return `${frontmatter}\n${body}`;
+}
+
+function generateItemTags(item: Item): string[] {
+  const tags = ["item"];
+
+  if (item.rarity && item.rarity !== "unspecified") {
+    tags.push(item.rarity.replace(/_/g, "-"));
+  }
+
+  if (item.kind) {
+    tags.push(item.kind.toLowerCase().replace(/\s+/g, "-"));
+  }
+
+  return tags;
+}
+
+function generateItemFrontmatter(item: Item, tags: string[]): string {
+  const lines = ["---"];
+
+  lines.push(`name: "${escapeYaml(item.name)}"`);
+  if (item.kind) lines.push(`kind: "${escapeYaml(item.kind)}"`);
+  if (item.rarity) lines.push(`rarity: ${item.rarity}`);
+  lines.push(`visibility: ${item.visibility}`);
+
+  if (item.source) {
+    lines.push(`source: "${escapeYaml(item.source.name)}"`);
+  }
+  lines.push(`tags: [${tags.join(", ")}]`);
+
+  lines.push("---");
+  return lines.join("\n");
+}
+
+function generateItemBody(item: Item): string {
+  const sections: string[] = [];
+
+  sections.push(generateItemHeader(item));
+  sections.push(item.description);
+
+  if (item.moreInfo) {
+    sections.push(generateItemMoreInfo(item.moreInfo));
+  }
+
+  sections.push(generateItemMetadata(item));
+
+  return sections.join("\n\n");
+}
+
+function generateItemHeader(item: Item): string {
+  const rarityLabel =
+    item.rarity && item.rarity !== "unspecified"
+      ? item.rarity.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+      : "";
+
+  const subtitle = [rarityLabel, item.kind].filter(Boolean).join(" ");
+
+  if (subtitle) {
+    return `# ${item.name}\n\n*${subtitle}*`;
+  }
+  return `# ${item.name}`;
+}
+
+function generateItemMoreInfo(moreInfo: string): string {
+  return `## More Info\n\n${moreInfo}`;
+}
+
+function generateItemMetadata(item: Item): string {
+  const lines = ["---"];
+
+  if (item.creator) {
+    lines.push(
+      `*Created by ${item.creator.displayName} (@${item.creator.username})*`
+    );
+  }
+
+  if (item.source) {
+    lines.push(`*Source: ${item.source.name}*`);
+  }
+
+  if (item.awards && item.awards.length > 0) {
+    const awardNames = item.awards.map((a) => a.name).join(", ");
+    lines.push(`*Awards: ${awardNames}*`);
+  }
+
+  return lines.join("\n");
 }
