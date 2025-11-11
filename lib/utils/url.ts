@@ -33,6 +33,13 @@ export function getMonsterImageUrl(monster: {
   return `/monsters/${slugify(monster)}/image`;
 }
 
+export function getMonsterMarkdownUrl(monster: {
+  name: string;
+  id: string;
+}): string {
+  return `/monsters/${slugify(monster)}/markdown`;
+}
+
 // Item URLs
 export function getItemUrl(item: { name: string; id: string }): string {
   return `/items/${slugify(item)}`;
