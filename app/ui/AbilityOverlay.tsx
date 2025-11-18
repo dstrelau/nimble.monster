@@ -41,12 +41,16 @@ export const AbilityOverlay = ({
                       <>
                         <span className="inline-flex items-baseline gap-1 font-bold">
                           <Users className="size-3.5 text-flame" />
-                          <Link
-                            href={getFamilyUrl(family)}
-                            className="inline-flex items-baseline gap-0.5"
-                          >
-                            {family.name}
-                          </Link>
+                          {family.id ? (
+                            <Link
+                              href={getFamilyUrl(family)}
+                              className="inline-flex items-baseline gap-0.5"
+                            >
+                              {family.name}
+                            </Link>
+                          ) : (
+                            <span>{family.name}</span>
+                          )}
                         </span>
                         :{" "}
                       </>

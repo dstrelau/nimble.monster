@@ -115,7 +115,7 @@ export const FamilyForm = ({
                 >
                   Ability Description
                   <ConditionValidationIcon
-                    text={watchedAbilities?.[index]?.description}
+                    text={watchedAbilities?.[index]?.description || ""}
                   />
                 </Label>
                 <Textarea
