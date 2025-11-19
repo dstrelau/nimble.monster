@@ -186,19 +186,22 @@ function OwlbearExtension() {
         </div>
       )}
 
-      {!loading && !error && monster && (
-        <CompactCard
-          monster={monster}
-          onBack={handleBack}
-          hasSelection={hasSelection}
-          isLinked={selectedMonsterId === monster.id}
-          onLinkToken={handleLinkToken}
-          onAddToScene={handleAddToScene}
-        />
-      )}
-
-      {!loading && !error && !monster && (
-        <MonsterSearch onSelect={handleMonsterSelect} />
+      {!loading && !error && (
+        <>
+          <div className={monster ? "hidden" : ""}>
+            <MonsterSearch onSelect={handleMonsterSelect} />
+          </div>
+          {monster && (
+            <CompactCard
+              monster={monster}
+              onBack={handleBack}
+              hasSelection={hasSelection}
+              isLinked={selectedMonsterId === monster.id}
+              onLinkToken={handleLinkToken}
+              onAddToScene={handleAddToScene}
+            />
+          )}
+        </>
       )}
     </div>
   );

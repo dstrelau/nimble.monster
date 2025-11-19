@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import { paginatePublicMonsters } from "@/app/monsters/actions";
 import { PaperforgeImage } from "@/components/PaperforgeImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { searchMonsters } from "@/lib/api/monsters";
 import type { Monster } from "@/lib/services/monsters/types";
 
 interface MonsterSearchProps {
@@ -28,7 +28,11 @@ export function MonsterSearch({ onSelect }: MonsterSearchProps) {
       setLoading(true);
       setError(null);
       try {
-        const result = await searchMonsters(searchTerm);
+        const result = await paginatePublicMonsters({
+          search: searchTerm,
+          limit: 20,
+          sort: "name",
+        });
         setMonsters(result.data.filter((m) => m.paperforgeId || m.imageUrl));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to search");
