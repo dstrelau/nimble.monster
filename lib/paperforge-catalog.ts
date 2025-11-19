@@ -460,6 +460,18 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "065f",
   },
   {
+    id: "78",
+    name: "Medusa",
+    postUrl: "https://www.patreon.com/posts/78-medusa-25588193",
+    folder: "0078",
+  },
+  {
+    id: "82",
+    name: "Clockwork Golem Pack",
+    postUrl: "https://www.patreon.com/posts/82-clockwork-25953755",
+    folder: "0082",
+  },
+  {
     id: "85",
     name: "Hydra",
     postUrl: "https://www.patreon.com/posts/85-hydra-26842819",
@@ -557,13 +569,13 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "126",
-    name: "Urchin",
+    name: "Little Urchin",
     postUrl: "https://www.patreon.com/posts/126-little-31486132",
     folder: "0126",
   },
   {
     id: "127",
-    name: "TownsWoman",
+    name: "Townswoman",
     postUrl: "https://www.patreon.com/posts/127-townswoman-31530699",
     folder: "0127",
   },
