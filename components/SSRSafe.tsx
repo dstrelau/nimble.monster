@@ -18,7 +18,7 @@ interface SSRSafeProps {
 export function SSRSafe({ children, fallback }: SSRSafeProps) {
   const isClient = useIsClient();
   if (!isClient) {
-    return <>{fallback || children}</>;
+    return <>{fallback}</>;
   }
 
   return <>{children}</>;
