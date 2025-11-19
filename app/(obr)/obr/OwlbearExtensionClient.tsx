@@ -123,7 +123,7 @@ function OwlbearExtension() {
   };
 
   const handleAddToScene = async () => {
-    if (!monster || !monster.imageUrl) return;
+    if (!monster) return;
 
     const sizeToScale: Record<Monster["size"], number> = {
       tiny: 0.5,

@@ -67,12 +67,7 @@ export function CompactCard({
           variant="default"
           size="sm"
           onClick={onAddToScene}
-          disabled={!monster.imageUrl}
-          title={
-            !monster.imageUrl
-              ? "No paperforge icon available for this monster"
-              : "Add token to scene"
-          }
+          title={"Add token to scene"}
           className="w-full"
         >
           Add to Scene
