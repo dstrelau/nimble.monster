@@ -29,7 +29,7 @@ interface DiceNotationProps {
 function DiceDrawer({ diceText }: { diceText: string }) {
   const [rollKey, reroll] = useState(0);
   const [isRolling, setIsRolling] = useState(false);
-  const parsed = parseDiceNotation(diceText);
+  const parsed = useMemo(() => parseDiceNotation(diceText), [diceText]);
 
   const distribution = useMemo(
     () => (parsed ? calculateProbabilityDistribution(parsed) : null),
