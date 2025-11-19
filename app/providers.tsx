@@ -8,7 +8,6 @@ import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import Header from "@/app/ui/Header";
 import { getQueryClient } from "@/lib/queryClient";
 
 export function Providers({
@@ -29,10 +28,7 @@ export function Providers({
             defaultTheme="system"
             enableSystem
           >
-            <Header />
-            <main className="mx-auto w-full max-w-7xl px-4 py-6">
-              {children}
-            </main>
+            {children}
             <Analytics />
             <SpeedInsights />
           </ThemeProvider>

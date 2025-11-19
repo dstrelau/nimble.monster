@@ -1,5 +1,6 @@
 import type { prisma } from "@/lib/db";
 import { toFamilyOverview, toUser } from "@/lib/db/converters";
+import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
 import type { Prisma } from "@/lib/prisma";
 import type { Ability, Action, FamilyOverview } from "@/lib/types";
 import { uuidToIdentifier } from "@/lib/utils/slug";
@@ -141,6 +142,14 @@ export const toZodMonster = (m: Monster) => {
       ? m.level
       : Number.parseInt(m.level, 10);
 
+  let paperforgeImageUrl: string | undefined;
+  if (m.paperforgeId) {
+    const entry = getPaperforgeEntry(m.paperforgeId);
+    if (entry) {
+      paperforgeImageUrl = `/paperforge/${entry.folder}/portrait.png`;
+    }
+  }
+
   const base = {
     id: uuidToIdentifier(m.id),
     name: m.name,
@@ -155,6 +164,8 @@ export const toZodMonster = (m: Monster) => {
     actionsInstructions: m.actionPreface,
     effects: [],
     description: m.moreInfo,
+    paperforgeId: m.paperforgeId || undefined,
+    paperforgeImageUrl,
   };
 
   if (m.legendary) {

@@ -1,6 +1,8 @@
 import "@/app/ui/global.css";
 import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
-import { Footer } from "@/components/app/Footer";
+import { ConditionalFooter } from "@/app/ui/ConditionalFooter";
+import { ConditionalHeader } from "@/app/ui/ConditionalHeader";
+import { ConditionalMain } from "@/app/ui/ConditionalMain";
 import { auth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
@@ -40,8 +42,9 @@ export default async function RootLayout({
         )}
       >
         <Providers session={session}>
-          <div className="min-h-[50rem]">{children}</div>
-          <Footer />
+          <ConditionalHeader />
+          <ConditionalMain>{children}</ConditionalMain>
+          <ConditionalFooter />
         </Providers>
       </body>
     </html>
