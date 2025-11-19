@@ -94,7 +94,7 @@ function OwlbearExtension() {
     );
   }
   const handleMonsterSelect = async (selectedMonster: Monster) => {
-    setMonster(selectedMonster);
+setMonster(selectedMonster);
   };
 
   const handleLinkToken = async () => {
@@ -123,7 +123,7 @@ function OwlbearExtension() {
   };
 
   const handleAddToScene = async () => {
-    if (!monster) return;
+    if (!monster || !monster.imageUrl) return;
 
     const sizeToScale: Record<Monster["size"], number> = {
       tiny: 0.5,
