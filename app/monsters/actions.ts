@@ -21,3 +21,7 @@ export async function updateMonster(input: UpdateMonsterInput) {
 
   return monstersService.updateMonster(input, session.user.discordId);
 }
+
+export const getPublicMonster = async (id: string) => {
+  return monstersService.getPublicMonster(id);
+};

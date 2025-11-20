@@ -33,7 +33,7 @@ export function MonsterSearch({ onSelect }: MonsterSearchProps) {
           limit: 20,
           sort: "name",
         });
-        setMonsters(result.data.filter((m) => m.paperforgeId || m.imageUrl));
+        setMonsters(result.data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to search");
       } finally {

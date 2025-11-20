@@ -2,10 +2,11 @@
 
 import OBR, { buildImage } from "@owlbear-rodeo/sdk";
 import { useEffect, useRef, useState } from "react";
+import { getPublicMonster } from "@/app/monsters/actions";
 import { CompactCard } from "@/app/ui/monster/CompactCard";
 import { MonsterSearch } from "@/app/ui/owlbear/MonsterSearch";
-import { getMonster } from "@/lib/api/monsters";
 import { getPluginId } from "@/lib/owlbear/utils";
+import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
 import type { Monster } from "@/lib/services/monsters/types";
 import { PluginGate } from "./PluginGate";
 
@@ -42,8 +43,13 @@ function OwlbearExtension() {
             setLoading(true);
             setError(null);
             try {
-              const fetchedMonster = await getMonster(monsterId);
-              setMonster(fetchedMonster);
+              const fetchedMonster = await getPublicMonster(monsterId);
+              if (!fetchedMonster) {
+                setError("Monster not found");
+                setMonster(null);
+              } else {
+                setMonster(fetchedMonster);
+              }
             } catch (err) {
               setError(
                 err instanceof Error ? err.message : "Failed to load monster"
@@ -94,7 +100,7 @@ function OwlbearExtension() {
     );
   }
   const handleMonsterSelect = async (selectedMonster: Monster) => {
-setMonster(selectedMonster);
+    setMonster(selectedMonster);
   };
 
   const handleLinkToken = async () => {
@@ -123,7 +129,7 @@ setMonster(selectedMonster);
   };
 
   const handleAddToScene = async () => {
-    if (!monster || !monster.imageUrl) return;
+    if (!monster || !monster.paperforgeId) return;
 
     const sizeToScale: Record<Monster["size"], number> = {
       tiny: 0.5,
@@ -146,7 +152,11 @@ setMonster(selectedMonster);
     const dpi = 100;
     const pixelSize = scale * dpi;
 
-    const imageUrl = `${window.location.origin}/_next/image?url=${encodeURIComponent(monster.imageUrl)}&w=${pixelSize}&q=75`;
+    const entry = getPaperforgeEntry(monster.paperforgeId);
+
+    // Map type to actual filename
+    const src = `/paperforge/${entry?.folder}/portrait.png`;
+    const imageUrl = `${window.location.origin}/_next/image?url=${encodeURIComponent(src)}&w=${pixelSize}&q=75`;
 
     const item = buildImage(
       {
@@ -207,7 +217,7 @@ setMonster(selectedMonster);
   );
 }
 
-export default function OwlbearExtensionPage() {
+export default function OBRClientView() {
   return (
     <PluginGate>
       <OwlbearExtension />
