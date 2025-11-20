@@ -3,12 +3,6 @@ import { PaperforgeImage } from "@/components/PaperforgeImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import type { Monster } from "@/lib/services/monsters/types";
 import {
   ArmorStat,
