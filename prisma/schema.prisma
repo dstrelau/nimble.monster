@@ -201,6 +201,7 @@ model Item {
   visibility      item_visibility    @default(public)
   userId          String             @map("user_id") @db.Uuid
   sourceId        String?            @map("source_id") @db.Uuid
+  remixedFromId   String?            @map("remixed_from_id") @db.Uuid
   createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt       DateTime           @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   imageIcon       String?            @map("image_icon")
@@ -208,8 +209,10 @@ model Item {
   imageBgIcon     String?            @map("image_bg_icon")
   imageColor      String?            @map("image_color")
   imageBgColor    String?            @map("image_bg_color")
-  creator         User               @relation(fields: [userId], references: [id], onUpdate: NoAction)
+  creator         User               @relation("ItemCreator", fields: [userId], references: [id], onUpdate: NoAction)
   source          Source?            @relation(fields: [sourceId], references: [id], onUpdate: NoAction)
+  remixedFrom     Item?              @relation("ItemRemix", fields: [remixedFromId], references: [id], onUpdate: NoAction)
+  remixes         Item[]             @relation("ItemRemix")
   itemCollections ItemInCollection[]
   itemAwards      ItemAward[]
 
@@ -341,7 +344,7 @@ model User {
   collections  Collection[]
   companions   Companion[]
   conditions   Condition[]
-  items        Item[]
+  items        Item[]        @relation("ItemCreator")
   monsters     Monster[]     @relation("MonsterCreator")
   sessions     Session[]
   subclasses   Subclass[]

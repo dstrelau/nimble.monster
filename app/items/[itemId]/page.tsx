@@ -4,6 +4,7 @@ import { Card } from "@/app/ui/item/Card";
 import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { ItemCollections } from "@/components/ItemCollections";
 import { ItemDetailActions } from "@/components/ItemDetailActions";
+import { ItemRemixes } from "@/components/ItemRemixes";
 import { auth } from "@/lib/auth";
 import { itemsService } from "@/lib/services/items";
 import { SITE_NAME } from "@/lib/utils/branding";
@@ -73,11 +74,12 @@ export default async function ItemPage({
   if (itemId !== slugify(item)) {
     return permanentRedirect(getItemUrl(item));
   }
-  //
-  // if item is not public, then user must be creator
-  const isOwner = session?.user?.discordId === item.creator?.discordId || false;
 
   const collections = await itemsService.getItemCollections(uid);
+  const remixes = await itemsService.getItemRemixes(uid);
+
+  // if item is not public, then user must be creator
+  const isOwner = session?.user?.discordId === item.creator?.discordId || false;
 
   if (item.visibility !== "public" && !isOwner) {
     return notFound();
@@ -86,15 +88,18 @@ export default async function ItemPage({
   return (
     <div>
       <div className="flex justify-end items-start gap-2 mb-6">
-        {isOwner && <ItemDetailActions item={item} />}
         {session?.user && (
-          <AddToCollectionDialog type="item" itemId={item.id} />
+          <>
+            <ItemDetailActions item={item} isOwner={isOwner} />
+            <AddToCollectionDialog type="item" itemId={item.id} />
+          </>
         )}
       </div>
       <div className="flex justify-center">
         <div className="flex flex-col items-center gap-12 max-w-sm w-full">
           <Card item={item} creator={item.creator} link={false} />
           <ItemCollections collections={collections} />
+          <ItemRemixes remixes={remixes} />
         </div>
       </div>
     </div>

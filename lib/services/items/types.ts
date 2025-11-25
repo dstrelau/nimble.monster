@@ -32,6 +32,8 @@ export interface Item extends ItemMini {
   creator: User;
   source?: Source;
   awards?: Award[];
+  remixedFromId?: string | null;
+  remixedFrom?: { id: string; name: string; creator: User } | null;
 }
 
 export type ItemSortBy = "name" | "createdAt";
@@ -59,6 +61,7 @@ export interface CreateItemInput {
   rarity?: ItemRarity;
   visibility: "public" | "private";
   sourceId?: string;
+  remixedFromId?: string;
 }
 
 export interface UpdateItemInput {
