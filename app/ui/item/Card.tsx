@@ -1,5 +1,5 @@
 "use client";
-import { FileText } from "lucide-react";
+import { FileText, Shuffle } from "lucide-react";
 import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import { Link } from "@/components/app/Link";
@@ -18,6 +18,7 @@ import {
   Card as ShadcnCard,
 } from "@/components/ui/card";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { UserAvatar } from "@/components/UserAvatar";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Item } from "@/lib/services/items";
 import { RARITIES } from "@/lib/services/items";
@@ -27,6 +28,7 @@ import {
   getItemImageUrl,
   getItemMarkdownUrl,
   getItemUrl,
+  getUserUrl,
 } from "@/lib/utils/url";
 
 const formatRarityDisplay = (rarity?: string): string => {
@@ -255,6 +257,36 @@ export const Card = ({
             moreInfo={item.moreInfo}
             conditions={allConditions}
           />
+
+          {item.remixedFrom && (
+            <div className="flex gap-1 items-center text-center text-sm text-muted-foreground">
+              <Shuffle className="size-3 stroke-muted-foreground" />
+              remixed from{" "}
+              <Link
+                href={getItemUrl(item.remixedFrom)}
+                className="font-medium"
+              >
+                {item.remixedFrom.name}
+              </Link>
+              {item.creator.discordId !==
+                item.remixedFrom.creator.discordId && (
+                <>
+                  <span> by </span>
+                  <Link
+                    href={getUserUrl(item.remixedFrom.creator)}
+                    className="font-medium inline-flex items-baseline gap-0.5"
+                  >
+                    <UserAvatar
+                      user={item.remixedFrom.creator}
+                      size={14}
+                      className="inline"
+                    />
+                    <span>{item.remixedFrom.creator.displayName}</span>
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
         </CardContent>
       )}
 

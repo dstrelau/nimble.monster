@@ -28,6 +28,7 @@ export const toItem = (
         creator: true;
         source: true;
         itemAwards: { include: { award: true } };
+        remixedFrom: { include: { creator: true } };
       };
     },
     "findMany"
@@ -52,6 +53,14 @@ export const toItem = (
         createdAt: ia.award.createdAt,
         updatedAt: ia.award.updatedAt,
       })) || undefined,
+    remixedFromId: i.remixedFromId || null,
+    remixedFrom: i.remixedFrom
+      ? {
+          id: i.remixedFrom.id,
+          name: i.remixedFrom.name,
+          creator: toUser(i.remixedFrom.creator),
+        }
+      : null,
   };
 };
 

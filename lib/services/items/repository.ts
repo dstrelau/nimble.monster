@@ -49,6 +49,7 @@ export const getRandomRecentItems = async (
         creator: true,
         source: true,
         itemAwards: { include: { award: true } },
+        remixedFrom: { include: { creator: true } },
       },
     })
   ).map(toItem);
@@ -64,6 +65,7 @@ export const findItem = async (id: string): Promise<Item | null> => {
       creator: true,
       source: true,
       itemAwards: { include: { award: true } },
+      remixedFrom: { include: { creator: true } },
     },
   });
   return item ? toItem(item) : null;
@@ -99,6 +101,7 @@ export const findPublicItemById = async (id: string): Promise<Item | null> => {
       creator: true,
       source: true,
       itemAwards: { include: { award: true } },
+      remixedFrom: { include: { creator: true } },
     },
   });
   return item ? toItem(item) : null;
@@ -114,6 +117,7 @@ export const findItemWithCreatorDiscordId = async (
       creator: true,
       source: true,
       itemAwards: { include: { award: true } },
+      remixedFrom: { include: { creator: true } },
     },
   });
   return item ? toItem(item) : null;
@@ -128,6 +132,7 @@ export const listPublicItemsForUser = async (
         creator: true,
         source: true,
         itemAwards: { include: { award: true } },
+        remixedFrom: { include: { creator: true } },
       },
       where: {
         userId,
@@ -147,6 +152,7 @@ export const listAllItemsForDiscordID = async (
         creator: true,
         source: true,
         itemAwards: { include: { award: true } },
+        remixedFrom: { include: { creator: true } },
       },
       where: { creator: { discordId } },
       orderBy: { name: "asc" },
@@ -211,6 +217,7 @@ export const searchPublicItems = async ({
         creator: true,
         source: true,
         itemAwards: { include: { award: true } },
+        remixedFrom: { include: { creator: true } },
       },
     })
   ).map(toItem);
@@ -265,6 +272,7 @@ export const createItem = async (
       creator: true,
       source: true,
       itemAwards: { include: { award: true } },
+      remixedFrom: { include: { creator: true } },
     },
   });
 
@@ -318,6 +326,7 @@ export const updateItem = async (
       creator: true,
       source: true,
       itemAwards: { include: { award: true } },
+      remixedFrom: { include: { creator: true } },
     },
   });
 
