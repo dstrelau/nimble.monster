@@ -33,6 +33,10 @@ export class ItemsService {
     return repository.findItemCollections(itemId);
   }
 
+  async getItemRemixes(itemId: string) {
+    return repository.findItemRemixes(itemId);
+  }
+
   async createItem(
     input: CreateItemInput,
     creatorDiscordId: string

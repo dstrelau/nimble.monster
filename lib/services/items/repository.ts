@@ -232,6 +232,7 @@ export const createItem = async (
     rarity,
     visibility,
     sourceId,
+    remixedFromId,
   } = input;
 
   const user = await prisma.user.findUnique({
@@ -258,6 +259,7 @@ export const createItem = async (
         connect: { id: user.id },
       },
       ...(sourceId && { source: { connect: { id: sourceId } } }),
+      ...(remixedFromId && { remixedFrom: { connect: { id: remixedFromId } } }),
     },
     include: {
       creator: true,
@@ -320,4 +322,25 @@ export const updateItem = async (
   });
 
   return toItem(updatedItem);
+};
+
+export const findItemRemixes = async (itemId: string) => {
+  if (!isValidUUID(itemId)) return [];
+
+  const remixes = await prisma.item.findMany({
+    where: {
+      remixedFromId: itemId,
+      visibility: "public",
+    },
+    include: {
+      creator: true,
+    },
+    orderBy: { name: "asc" },
+  });
+
+  return remixes.map((item) => ({
+    id: item.id,
+    name: item.name,
+    creator: toUser(item.creator),
+  }));
 };

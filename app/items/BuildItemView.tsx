@@ -105,9 +105,15 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
 
 interface BuildItemViewProps {
   item?: Item;
+  existingItem?: Item;
+  remixedFromId?: string;
 }
 
-export default function BuildItemView({ item }: BuildItemViewProps) {
+export default function BuildItemView({
+  item,
+  existingItem,
+  remixedFromId,
+}: BuildItemViewProps) {
   const id = useId();
   const router = useRouter();
   const { data: session } = useSession();
@@ -120,20 +126,22 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
     },
   });
 
+  const sourceData = item || existingItem;
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: item?.name || "",
-      kind: item?.kind || "",
-      description: item?.description || "",
-      moreInfo: item?.moreInfo || "",
-      imageIcon: item?.imageIcon || "",
-      imageBgIcon: item?.imageBgIcon || "",
-      imageColor: item?.imageColor || "",
-      imageBgColor: item?.imageBgColor || "",
-      rarity: item?.rarity || "unspecified",
-      visibility: item?.visibility || "public",
-      sourceId: item?.source?.id || "",
+      name: sourceData?.name || "",
+      kind: sourceData?.kind || "",
+      description: sourceData?.description || "",
+      moreInfo: sourceData?.moreInfo || "",
+      imageIcon: sourceData?.imageIcon || "",
+      imageBgIcon: sourceData?.imageBgIcon || "",
+      imageColor: sourceData?.imageColor || "",
+      imageBgColor: sourceData?.imageBgColor || "",
+      rarity: sourceData?.rarity || "unspecified",
+      visibility: sourceData?.visibility || "public",
+      sourceId: sourceData?.source?.id || "",
     },
   });
 
@@ -191,6 +199,7 @@ export default function BuildItemView({ item }: BuildItemViewProps) {
         visibility: data.visibility,
         sourceId:
           data.sourceId && data.sourceId !== "none" ? data.sourceId : undefined,
+        ...(remixedFromId && { remixedFromId }),
       };
       const result = isEditing
         ? await updateItem(item.id, payload)
