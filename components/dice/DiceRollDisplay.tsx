@@ -99,6 +99,21 @@ export function DiceRollDisplay({
   modifier,
   total,
 }: DiceRollDisplayProps) {
+  const sortedResults = results
+    .map((result, index) => ({ result, index }))
+    .sort((a, b) => {
+      const order = {
+        primary: 0,
+        regular: 1,
+        dropped: 1,
+        explosion: 2,
+        vicious: 3,
+      };
+      const orderDiff = order[a.result.type] - order[b.result.type];
+      return orderDiff !== 0 ? orderDiff : a.index - b.index;
+    })
+    .map(({ result }) => result);
+
   return (
     <div
       className={cn(
@@ -106,7 +121,7 @@ export function DiceRollDisplay({
         className
       )}
     >
-      {results.map((result, index) => (
+      {sortedResults.map((result, index) => (
         <DiceRollResult
           key={`${result.type}-${index}`}
           result={result}
