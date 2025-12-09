@@ -157,6 +157,7 @@ export const listAllItemsForDiscordID = async (
 export const searchPublicItems = async ({
   searchTerm,
   rarity,
+  creatorId,
   sourceId,
   sortBy,
   sortDirection = "asc",
@@ -175,6 +176,10 @@ export const searchPublicItems = async ({
   } = {
     visibility: "public",
   };
+
+  if (creatorId) {
+    whereClause.creator = { discordId: creatorId };
+  }
 
   if (searchTerm) {
     whereClause.OR = [
