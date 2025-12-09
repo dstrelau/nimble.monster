@@ -438,7 +438,7 @@ export default function BuildSchoolView({
                                     Multi-Target
                                   </SelectItem>
                                   <SelectItem value="AoE">AoE</SelectItem>
-                                  <SelectItem value="special">
+                                  <SelectItem value="Special">
                                     Special
                                   </SelectItem>
                                 </SelectContent>
