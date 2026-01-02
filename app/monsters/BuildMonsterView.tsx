@@ -268,7 +268,7 @@ const LegendaryForm: React.FC<{
         name="level"
         choices={LEGENDARY_MONSTER_LEVELS.map((l) => ({
           value: l.value.toString(),
-          label: l.display,
+          label: l.label,
         }))}
         selected={monster.levelInt.toString()}
         className="col-span-1"
@@ -416,7 +416,7 @@ const MinionForm: React.FC<{
           name="level"
           choices={MONSTER_LEVELS.map((l) => ({
             value: l.value.toString(),
-            label: l.display,
+            label: l.label,
           }))}
           selected={monster.levelInt.toString()}
           className="col-span-1"
@@ -552,7 +552,7 @@ const StandardForm: React.FC<{
           name="level"
           choices={MONSTER_LEVELS.map((l) => ({
             value: l.value.toString(),
-            label: l.display,
+            label: l.label,
           }))}
           selected={monster.levelInt.toString()}
           className="col-span-1"

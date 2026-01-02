@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  curry,
-  levelIntToDisplay,
-  monstersSortedByLevelInt,
-  stringToLevelInt,
-} from "./utils";
+import { curry, levelIntToDisplay, monstersSortedByLevelInt } from "./utils";
 
 describe("levelIntToDisplay", () => {
   it("converts special values to fractions", () => {
@@ -23,27 +18,6 @@ describe("levelIntToDisplay", () => {
     expect(levelIntToDisplay(0)).toBe("");
     expect(levelIntToDisplay(-1)).toBe("");
     expect(levelIntToDisplay(-5)).toBe("");
-  });
-});
-
-describe("stringToLevelInt", () => {
-  it("converts fractions to special values", () => {
-    expect(stringToLevelInt("1/4")).toBe(-4);
-    expect(stringToLevelInt("1/3")).toBe(-3);
-    expect(stringToLevelInt("1/2")).toBe(-2);
-  });
-
-  it("converts regular level strings to integers", () => {
-    expect(stringToLevelInt("1")).toBe(1);
-    expect(stringToLevelInt("5")).toBe(5);
-    expect(stringToLevelInt("20")).toBe(20);
-  });
-
-  it("handles invalid levels", () => {
-    expect(stringToLevelInt("invalid")).toBe(0);
-    expect(stringToLevelInt("21")).toBe(0); // out of range
-    expect(stringToLevelInt("0")).toBe(0);
-    expect(stringToLevelInt("-1")).toBe(0);
   });
 });
 

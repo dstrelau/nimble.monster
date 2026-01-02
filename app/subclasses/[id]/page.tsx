@@ -8,8 +8,6 @@ import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify } from "@/lib/utils/slug";
 import { getSubclassSlug, getSubclassUrl } from "@/lib/utils/url";
 
-export const experimental_ppr = true;
-
 export async function generateMetadata({
   params,
 }: {

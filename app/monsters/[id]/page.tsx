@@ -12,8 +12,6 @@ import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterImageUrl, getMonsterUrl } from "@/lib/utils/url";
 
-export const experimental_ppr = true;
-
 export async function generateMetadata({
   params,
 }: {

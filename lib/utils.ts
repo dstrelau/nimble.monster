@@ -7,6 +7,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export function levelIntToDisplay(levelInt: number): string {
   switch (levelInt) {
+    case 30:
+      return "30+";
     case -4:
       return "1/4";
     case -3:
@@ -17,21 +19,6 @@ export function levelIntToDisplay(levelInt: number): string {
       return "";
     default:
       return levelInt > 0 ? levelInt.toString() : "";
-  }
-}
-
-export function stringToLevelInt(level: string): number {
-  switch (level) {
-    case "1/4":
-      return -4;
-    case "1/3":
-      return -3;
-    case "1/2":
-      return -2;
-    default: {
-      const parsed = parseInt(level, 10);
-      return !Number.isNaN(parsed) && parsed >= 1 && parsed <= 20 ? parsed : 0;
-    }
   }
 }
 
