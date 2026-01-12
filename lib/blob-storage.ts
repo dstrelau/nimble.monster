@@ -17,7 +17,7 @@ function getConfig() {
   const endpoint = `https://${datacenter}.digitaloceanspaces.com`;
   const cdnUrl =
     process.env.DO_SPACES_CDN_URL ||
-    `https://${bucket}-production.${datacenter}.digitaloceanspaces.com`;
+    `https://${bucket}.${datacenter}.digitaloceanspaces.com`;
 
   return { datacenter, bucket, endpoint, cdnUrl };
 }
