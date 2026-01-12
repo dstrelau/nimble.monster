@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { put } from "@vercel/blob";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 export interface BlobStorageResult {
   url: string;
@@ -9,6 +9,47 @@ export interface BlobStorageResult {
 }
 
 const LOCAL_BLOB_DIR = join(process.cwd(), "public", "blob-storage");
+const S3_REGION = "us-east-1";
+
+function getConfig() {
+  const datacenter = process.env.DO_SPACES_DATACENTER || "nyc3";
+  const bucket = process.env.DO_SPACES_BUCKET || "nimble-nexus";
+  const endpoint = `https://${datacenter}.digitaloceanspaces.com`;
+  const cdnUrl =
+    process.env.DO_SPACES_CDN_URL ||
+    `https://${bucket}-production.${datacenter}.digitaloceanspaces.com`;
+
+  return { datacenter, bucket, endpoint, cdnUrl };
+}
+
+let s3Client: S3Client | null = null;
+
+function getS3Client(): S3Client {
+  if (!s3Client) {
+    const accessKeyId = process.env.DO_SPACES_ACCESS_KEY;
+    const secretAccessKey = process.env.DO_SPACES_SECRET_KEY;
+
+    if (!accessKeyId || !secretAccessKey) {
+      throw new Error(
+        "DO_SPACES_ACCESS_KEY and DO_SPACES_SECRET_KEY environment variables are required"
+      );
+    }
+
+    const { endpoint } = getConfig();
+
+    s3Client = new S3Client({
+      region: S3_REGION,
+      endpoint,
+      credentials: {
+        accessKeyId,
+        secretAccessKey,
+      },
+      forcePathStyle: false,
+    });
+  }
+
+  return s3Client;
+}
 
 async function ensureLocalBlobDir(): Promise<void> {
   if (!existsSync(LOCAL_BLOB_DIR)) {
@@ -22,8 +63,7 @@ export async function uploadBlob(
   contentType: string = "image/png"
 ): Promise<BlobStorageResult> {
   const isLocal =
-    process.env.NODE_ENV === "development" ||
-    !process.env.BLOB_READ_WRITE_TOKEN;
+    process.env.NODE_ENV === "development" || !process.env.DO_SPACES_ACCESS_KEY;
 
   if (isLocal) {
     await ensureLocalBlobDir();
@@ -37,20 +77,30 @@ export async function uploadBlob(
     };
   }
 
-  const blob = await put(filename, buffer, {
-    access: "public",
-    contentType,
-  });
+  try {
+    const { bucket, cdnUrl } = getConfig();
+    const client = getS3Client();
+    await client.send(
+      new PutObjectCommand({
+        Bucket: bucket,
+        Key: filename,
+        Body: buffer,
+        ContentType: contentType,
+        ACL: "public-read",
+      })
+    );
 
-  return {
-    url: blob.url,
-    downloadUrl: blob.downloadUrl,
-  };
+    const url = `${cdnUrl}/${filename}`;
+    return {
+      url,
+      downloadUrl: url,
+    };
+  } catch (error) {
+    throw new Error(
+      `Failed to upload blob to DigitalOcean Spaces: ${error instanceof Error ? error.message : String(error)}`
+    );
+  }
 }
-
-// Note: downloadBlob function removed - we now redirect to blob URLs directly
-// instead of streaming through our app. If needed for other use cases,
-// this function can be restored.
 
 export function generateBlobFilename(
   entityType: "monster" | "companion" | "item",
