@@ -1,0 +1,16 @@
+node_modules
+.cache
+.git
+.gitignore
+.gitkeep
+.DS_Store
+.env
+.env.local
+.env.*.local
+npm-debug.log
+pnpm-debug.log
+yarn-error.log
+*.test.js
+*.md
+Dockerfile
+.dockerignore
