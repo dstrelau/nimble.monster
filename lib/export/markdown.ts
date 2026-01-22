@@ -2,6 +2,246 @@ import type { Item } from "@/lib/services/items";
 import type { Monster } from "@/lib/services/monsters";
 import type { SpellSchool } from "@/lib/types";
 
+export function monsterToBriefMarkdown(monster: Monster): string {
+  if (monster.legendary) {
+    return generateLegendaryBriefMarkdown(monster);
+  }
+  if (monster.minion) {
+    return generateMinionBriefMarkdown(monster);
+  }
+  return generateStandardBriefMarkdown(monster);
+}
+
+function generateStandardBriefMarkdown(monster: Monster): string {
+  const sections: string[] = [];
+
+  // Header: **Name**
+  sections.push(`**${monster.name}**`);
+
+  // Level/Size/Group line
+  const headerLine: string[] = [];
+  headerLine.push(`**Level:** ${monster.level}`);
+  headerLine.push(`**Size:** ${capitalize(monster.size)}`);
+  if (monster.families.length > 0) {
+    const familyNames = monster.families.map((f) => f.name).join(", ");
+    headerLine.push(`**Group:** ${familyNames}`);
+  }
+  sections.push(headerLine.join(" | "));
+
+  // HP/Armor/Speed line
+  sections.push(generateBriefStatLine(monster));
+
+  // Passive abilities (only if present)
+  const abilities = getBriefAbilities(monster);
+  if (abilities.length > 0) {
+    sections.push(generateBriefAbilities(abilities));
+  }
+
+  // Actions
+  if (monster.actions.length > 0) {
+    sections.push(generateBriefActions(monster));
+  }
+
+  return sections.join("\n");
+}
+
+function generateMinionBriefMarkdown(monster: Monster): string {
+  const sections: string[] = [];
+
+  // Header: **Name**
+  sections.push(`**${monster.name}**`);
+
+  // Level/Size/Group line
+  const headerLine: string[] = [];
+  headerLine.push(`**Level:** ${monster.level}`);
+  headerLine.push(`**Size:** ${capitalize(monster.size)}`);
+  if (monster.families.length > 0) {
+    const familyNames = monster.families.map((f) => f.name).join(", ");
+    headerLine.push(`**Group:** ${familyNames}`);
+  }
+  sections.push(headerLine.join(" | "));
+
+  // HP/Armor/Speed
+  const statLine: string[] = [];
+  statLine.push(`**HP:** Minion`);
+  statLine.push(`**Armor:** ${capitalize(monster.armor)}`);
+  statLine.push(`**Speed:** ${getBriefSpeedString(monster)}`);
+  sections.push(statLine.join(" | "));
+
+  // Passive abilities (only if present)
+  const abilities = getBriefAbilities(monster);
+  if (abilities.length > 0) {
+    sections.push(generateBriefAbilities(abilities));
+  }
+
+  // Actions
+  if (monster.actions.length > 0) {
+    sections.push(generateBriefActions(monster));
+  }
+
+  return sections.join("\n");
+}
+
+function generateLegendaryBriefMarkdown(monster: Monster): string {
+  const lines: string[] = [];
+
+  // Header: ## Name
+  lines.push(`## ${monster.name}`);
+
+  // Subtitle: *Level X Solo Size Kind*
+  const subtitleParts: string[] = [];
+  subtitleParts.push(`Level ${monster.level}`);
+  subtitleParts.push("Solo");
+  subtitleParts.push(capitalize(monster.size));
+  if (monster.kind) {
+    subtitleParts.push(monster.kind);
+  }
+  lines.push(`*${subtitleParts.join(" ")}*`);
+
+  // HP/Armor/Speed/Saves line
+  const statLine: string[] = [];
+  statLine.push(`**HP:** ${monster.hp}`);
+  statLine.push(`**Armor:** ${capitalize(monster.armor)}`);
+  statLine.push(`**Speed:** ${getBriefSpeedString(monster)}`);
+  if (monster.saves) {
+    statLine.push(`**Saves:** ${monster.saves}`);
+  }
+  lines.push(statLine.join(" | "));
+
+  // Abilities (no header, just list them, with blank line before)
+  const abilities = getBriefAbilities(monster);
+  if (abilities.length > 0) {
+    lines.push("");
+  }
+  for (const ability of abilities) {
+    lines.push(`* **${ability.name.trim()}.** ${ability.description.trim()}`);
+  }
+
+  // Separator before actions
+  lines.push("---");
+
+  // Actions
+  if (monster.actions.length > 0) {
+    lines.push("**Actions**");
+    if (monster.actionPreface) {
+      lines.push(`*${monster.actionPreface}*`);
+    }
+    for (const action of monster.actions) {
+      lines.push(formatBriefAction(action));
+    }
+  }
+
+  // Separator before bloodied/last stand
+  if (monster.bloodied || monster.lastStand) {
+    lines.push("---");
+    if (monster.bloodied) {
+      lines.push(`* **Bloodied.** ${monster.bloodied}`);
+    }
+    if (monster.lastStand) {
+      lines.push(`* **Last Stand.** ${monster.lastStand}`);
+    }
+  }
+
+  return lines.join("\n");
+}
+
+function generateBriefStatLine(monster: Monster): string {
+  const statLine: string[] = [];
+  statLine.push(`**HP:** ${monster.hp}`);
+  statLine.push(`**Armor:** ${capitalize(monster.armor)}`);
+  statLine.push(`**Speed:** ${getBriefSpeedString(monster)}`);
+
+  if (monster.saves) {
+    statLine.push(`**Saves:** ${monster.saves}`);
+  }
+
+  return statLine.join(" | ");
+}
+
+function getBriefSpeedString(monster: Monster): string {
+  const movement: string[] = [`${monster.speed}`];
+
+  if (monster.fly > 0) movement.push(`Fly ${monster.fly}`);
+  if (monster.swim > 0) movement.push(`Swim ${monster.swim}`);
+  if (monster.climb > 0) movement.push(`Climb ${monster.climb}`);
+  if (monster.burrow > 0) movement.push(`Burrow ${monster.burrow}`);
+  if (monster.teleport > 0) movement.push(`Teleport ${monster.teleport}`);
+
+  return movement.join(", ");
+}
+
+function getBriefAbilities(
+  monster: Monster
+): { name: string; description: string }[] {
+  const abilities: { name: string; description: string }[] = [];
+
+  for (const family of monster.families) {
+    for (const ability of family.abilities) {
+      abilities.push(ability);
+    }
+  }
+
+  for (const ability of monster.abilities) {
+    abilities.push(ability);
+  }
+
+  return abilities;
+}
+
+function generateBriefAbilities(
+  abilities: { name: string; description: string }[]
+): string {
+  const lines: string[] = ["\n**Passive**"];
+
+  for (const ability of abilities) {
+    lines.push(`* **${ability.name.trim()}.** ${ability.description.trim()}`);
+  }
+
+  return lines.join("\n");
+}
+
+function formatBriefAction(action: {
+  name: string;
+  damage?: string;
+  range?: string;
+  description?: string;
+}): string {
+  let actionLine = `* **${action.name}.**`;
+
+  // Build the damage/range part
+  if (action.damage && action.range) {
+    actionLine += ` ${action.damage} (${action.range}).`;
+  } else if (action.damage) {
+    actionLine += ` ${action.damage}.`;
+  } else if (action.range) {
+    actionLine += ` (${action.range}).`;
+  }
+
+  if (action.description) {
+    actionLine += ` ${action.description}`;
+  }
+
+  return actionLine;
+}
+
+function generateBriefActions(monster: Monster): string {
+  const lines: string[] = ["\n**Actions**"];
+
+  if (monster.actionPreface) {
+    lines.push(`*${monster.actionPreface}*`);
+  }
+
+  for (const action of monster.actions) {
+    lines.push(formatBriefAction(action));
+  }
+
+  return lines.join("\n");
+}
+
+function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export function monsterToMarkdown(monster: Monster): string {
   const tags = generateTags(monster);
   const frontmatter = generateFrontmatter(monster, tags);
