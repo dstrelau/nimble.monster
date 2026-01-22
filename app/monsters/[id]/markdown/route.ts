@@ -2,20 +2,23 @@ import { trace } from "@opentelemetry/api";
 import { permanentRedirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { monsterToMarkdown } from "@/lib/export/markdown";
+import {
+  monsterToBriefMarkdown,
+  monsterToMarkdown,
+} from "@/lib/export/markdown";
 import { monstersService } from "@/lib/services/monsters";
 import { telemetry } from "@/lib/telemetry";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterMarkdownUrl } from "@/lib/utils/url";
 
 export const GET = telemetry(
-  async (
-    _request: Request,
-    { params }: { params: Promise<{ id: string }> }
-  ) => {
+  async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: monsterId } = await params;
     const span = trace.getActiveSpan();
     span?.setAttributes({ "params.id": monsterId });
+
+    const url = new URL(request.url);
+    const format = url.searchParams.get("format");
 
     const uid = deslugify(monsterId);
     if (!uid) {
@@ -29,7 +32,11 @@ export const GET = telemetry(
     }
 
     if (monsterId !== slugify(monster)) {
-      return permanentRedirect(getMonsterMarkdownUrl(monster));
+      const redirectUrl = getMonsterMarkdownUrl(monster);
+      const redirectWithFormat = format
+        ? `${redirectUrl}?format=${format}`
+        : redirectUrl;
+      return permanentRedirect(redirectWithFormat);
     }
 
     if (monster.visibility !== "public") {
@@ -46,7 +53,10 @@ export const GET = telemetry(
 
     span?.setAttributes({ "monster.id": monster.id });
 
-    const markdown = monsterToMarkdown(monster);
+    const markdown =
+      format === "brief"
+        ? monsterToBriefMarkdown(monster)
+        : monsterToMarkdown(monster);
 
     return new NextResponse(markdown, {
       headers: {
