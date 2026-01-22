@@ -1,9 +1,10 @@
-import { prisma } from "./index";
+import { asc } from "drizzle-orm";
+import { getDatabase } from "./drizzle";
+import { sources } from "./schema";
 
 export async function getAllSources() {
-  return prisma.source.findMany({
-    orderBy: { name: "asc" },
-  });
+  const db = getDatabase();
+  return db.select().from(sources).orderBy(asc(sources.name));
 }
 
 export async function createSource(data: {
@@ -12,7 +13,7 @@ export async function createSource(data: {
   license: string;
   link: string;
 }) {
-  return prisma.source.create({
-    data,
-  });
+  const db = getDatabase();
+  const result = await db.insert(sources).values(data).returning();
+  return result[0];
 }

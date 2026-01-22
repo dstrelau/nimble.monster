@@ -1,19 +1,24 @@
 import { trace } from "@opentelemetry/api";
-import { prisma } from "@/lib/db";
+import { and, eq } from "drizzle-orm";
+import { getDatabase } from "@/lib/db/drizzle";
 import {
-  type EntityImage,
-  type entity_image_type as EntityImageType,
-  generation_status as GenerationStatus,
-  Prisma,
-} from "@/lib/prisma";
+  type EntityImageRow,
+  type EntityImageType,
+  entityImages,
+  type GenerationStatus,
+} from "@/lib/db/schema";
 
 export interface EntityImageClaim {
   id: string;
   claimed: boolean;
-  existing?: EntityImage | null;
+  existing?: EntityImageRow | null;
 }
 
 const GENERATION_TIMEOUT_MS = 31 * 1000;
+
+function generateId(): string {
+  return crypto.randomUUID();
+}
 
 export async function claimImageGeneration(
   entityType: EntityImageType,
@@ -30,68 +35,113 @@ export async function claimImageGeneration(
   });
 
   try {
-    return await prisma.$transaction(async (tx) => {
-      const now = new Date();
+    const db = await getDatabase();
+    const now = new Date().toISOString();
 
-      const inserted = await tx.$queryRaw<Array<{ id: string }>>(
-        Prisma.sql`
-          INSERT INTO entity_images (id, entity_type, entity_id, entity_version, generation_status, generation_started_at, created_at, updated_at)
-          VALUES (uuid_generate_v4(), CAST(${entityType} AS entity_image_type), CAST(${entityId} AS uuid), ${entityVersion}, 'generating', ${now}, ${now}, ${now})
-          ON CONFLICT (entity_type, entity_id) DO NOTHING
-          RETURNING id
-        `
-      );
+    const existingRows = await db
+      .select()
+      .from(entityImages)
+      .where(
+        and(
+          eq(entityImages.entityType, entityType),
+          eq(entityImages.entityId, entityId)
+        )
+      )
+      .limit(1);
+    const existing = existingRows[0] ?? null;
 
-      if (inserted.length > 0) {
+    if (!existing) {
+      const id = generateId();
+      try {
+        const createdRows = await db
+          .insert(entityImages)
+          .values({
+            id,
+            entityType,
+            entityId,
+            entityVersion,
+            generationStatus: "generating" as GenerationStatus,
+            generationStartedAt: now,
+            createdAt: now,
+            updatedAt: now,
+          })
+          .returning();
+        const created = createdRows[0];
+
         span.setAttributes({
-          "claim.id": inserted[0].id,
+          "claim.id": created.id,
           "claim.claimed": true,
           "record.created": true,
         });
 
         return {
-          id: inserted[0].id,
+          id: created.id,
           claimed: true,
         };
-      }
+      } catch {
+        const raceExistingRows = await db
+          .select()
+          .from(entityImages)
+          .where(
+            and(
+              eq(entityImages.entityType, entityType),
+              eq(entityImages.entityId, entityId)
+            )
+          )
+          .limit(1);
+        const raceExisting = raceExistingRows[0] ?? null;
 
-      const locked = await tx.$queryRaw<
-        Array<{
-          id: string;
-          entity_type: string;
-          entity_id: string;
-          entity_version: string;
-          generation_status: string;
-          generation_started_at: Date;
-          blob_url: string | null;
-          generated_at: Date | null;
-          created_at: Date;
-          updated_at: Date;
-        }>
-      >(
-        Prisma.sql`
-          SELECT * FROM entity_images
-          WHERE entity_type = CAST(${entityType} AS entity_image_type)
-            AND entity_id = CAST(${entityId} AS uuid)
-          FOR UPDATE SKIP LOCKED
-        `
-      );
+        if (raceExisting) {
+          span.setAttributes({
+            "claim.claimed": false,
+            "race.condition": true,
+          });
 
-      if (locked.length === 0) {
-        const existing = await tx.entityImage.findUnique({
-          where: {
-            entityType_entityId: { entityType, entityId },
-          },
-        });
-
-        if (!existing) {
-          throw new Error("Entity image record disappeared");
+          return {
+            id: raceExisting.id,
+            claimed: false,
+            existing: raceExisting,
+          };
         }
+        throw new Error("Failed to create entity image record");
+      }
+    }
 
+    span.setAttributes({
+      "record.id": existing.id,
+      "record.status": existing.generationStatus ?? "",
+      "record.version": existing.entityVersion,
+    });
+
+    if (
+      existing.entityVersion === entityVersion &&
+      existing.generationStatus === "completed"
+    ) {
+      span.setAttributes({
+        "claim.claimed": false,
+        "existing.completed": true,
+      });
+
+      return {
+        id: existing.id,
+        claimed: false,
+        existing,
+      };
+    }
+
+    if (
+      existing.entityVersion === entityVersion &&
+      existing.generationStatus === "generating" &&
+      existing.generationStartedAt
+    ) {
+      const generationAge =
+        Date.now() - new Date(existing.generationStartedAt).getTime();
+
+      if (generationAge <= GENERATION_TIMEOUT_MS) {
         span.setAttributes({
           "claim.claimed": false,
-          "lock.held_by_other": true,
-          "existing.status": existing.generationStatus,
+          "existing.in_progress": true,
+          "generation.age_ms": generationAge,
         });
 
         return {
@@ -100,109 +150,32 @@ export async function claimImageGeneration(
           existing,
         };
       }
+    }
 
-      const record = locked[0];
+    const updatedRows = await db
+      .update(entityImages)
+      .set({
+        entityVersion,
+        generationStatus: "generating" as GenerationStatus,
+        generationStartedAt: now,
+        updatedAt: now,
+        ...(existing.entityVersion !== entityVersion
+          ? { blobUrl: null, generatedAt: null }
+          : {}),
+      })
+      .where(eq(entityImages.id, existing.id))
+      .returning();
+    const updated = updatedRows[0];
 
-      span.setAttributes({
-        "record.id": record.id,
-        "record.status": record.generation_status,
-        "record.version": record.entity_version,
-      });
-
-      if (
-        record.entity_version === entityVersion &&
-        record.generation_status === "completed"
-      ) {
-        span.setAttributes({
-          "claim.claimed": false,
-          "existing.completed": true,
-        });
-
-        const mappedRecord = await tx.entityImage.findUnique({
-          where: { id: record.id },
-        });
-
-        return {
-          id: record.id,
-          claimed: false,
-          existing: mappedRecord,
-        };
-      }
-
-      if (
-        record.entity_version === entityVersion &&
-        record.generation_status === "generating"
-      ) {
-        const generationAge =
-          Date.now() - new Date(record.generation_started_at).getTime();
-
-        if (generationAge <= GENERATION_TIMEOUT_MS) {
-          span.setAttributes({
-            "claim.claimed": false,
-            "existing.in_progress": true,
-            "generation.age_ms": generationAge,
-          });
-
-          const mappedRecord = await tx.entityImage.findUnique({
-            where: { id: record.id },
-          });
-
-          return {
-            id: record.id,
-            claimed: false,
-            existing: mappedRecord,
-          };
-        }
-
-        await tx.entityImage.update({
-          where: { id: record.id },
-          data: {
-            generationStatus: GenerationStatus.generating,
-            generationStartedAt: new Date(),
-          },
-        });
-
-        span.setAttributes({
-          "claim.claimed": true,
-          "takeover.stale": true,
-          "generation.age_ms": generationAge,
-        });
-
-        return {
-          id: record.id,
-          claimed: true,
-        };
-      }
-
-      const needsVersionUpdate = record.entity_version !== entityVersion;
-
-      await tx.entityImage.update({
-        where: { id: record.id },
-        data: {
-          entityVersion,
-          generationStatus: GenerationStatus.generating,
-          generationStartedAt: new Date(),
-          ...(needsVersionUpdate ? { blobUrl: null, generatedAt: null } : {}),
-        },
-      });
-
-      span.setAttributes({
-        "claim.claimed": true,
-        ...(needsVersionUpdate
-          ? {
-              "version.updated": true,
-              "old.version": record.entity_version,
-            }
-          : {
-              "takeover.failed": true,
-            }),
-      });
-
-      return {
-        id: record.id,
-        claimed: true,
-      };
+    span.setAttributes({
+      "claim.claimed": true,
+      "version.updated": existing.entityVersion !== entityVersion,
     });
+
+    return {
+      id: updated.id,
+      claimed: true,
+    };
   } finally {
     span.end();
   }
@@ -211,7 +184,7 @@ export async function claimImageGeneration(
 export async function completeImageGeneration(
   id: string,
   blobUrl: string
-): Promise<EntityImage> {
+): Promise<EntityImageRow> {
   const tracer = trace.getTracer("entity-images");
 
   return tracer.startActiveSpan("complete-image-generation", async (span) => {
@@ -221,22 +194,24 @@ export async function completeImageGeneration(
     });
 
     try {
-      const updatedRecord = await prisma.entityImage.update({
-        where: { id },
-        data: {
-          generationStatus: GenerationStatus.completed,
+      const db = await getDatabase();
+      const updatedRows = await db
+        .update(entityImages)
+        .set({
+          generationStatus: "completed" as GenerationStatus,
           blobUrl,
-          generatedAt: new Date(),
-        },
-      });
+          generatedAt: new Date().toISOString(),
+        })
+        .where(eq(entityImages.id, id))
+        .returning();
 
-      span.setStatus({ code: 1 }); // OK
-      return updatedRecord;
+      span.setStatus({ code: 1 });
+      return updatedRows[0];
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       span.setAttributes({ "error.message": errorMessage });
-      span.setStatus({ code: 2, message: errorMessage }); // ERROR
+      span.setStatus({ code: 2, message: errorMessage });
       throw error;
     } finally {
       span.end();
@@ -247,7 +222,7 @@ export async function completeImageGeneration(
 export async function failImageGeneration(
   id: string,
   error?: string
-): Promise<EntityImage> {
+): Promise<EntityImageRow> {
   const tracer = trace.getTracer("entity-images");
 
   return tracer.startActiveSpan("fail-image-generation", async (span) => {
@@ -257,20 +232,22 @@ export async function failImageGeneration(
     });
 
     try {
-      const updatedRecord = await prisma.entityImage.update({
-        where: { id },
-        data: {
-          generationStatus: GenerationStatus.failed,
-        },
-      });
+      const db = await getDatabase();
+      const updatedRows = await db
+        .update(entityImages)
+        .set({
+          generationStatus: "failed" as GenerationStatus,
+        })
+        .where(eq(entityImages.id, id))
+        .returning();
 
-      span.setStatus({ code: 1 }); // OK
-      return updatedRecord;
+      span.setStatus({ code: 1 });
+      return updatedRows[0];
     } catch (dbError) {
       const errorMessage =
         dbError instanceof Error ? dbError.message : String(dbError);
       span.setAttributes({ "db.error.message": errorMessage });
-      span.setStatus({ code: 2, message: errorMessage }); // ERROR
+      span.setStatus({ code: 2, message: errorMessage });
       throw dbError;
     } finally {
       span.end();
@@ -281,48 +258,57 @@ export async function failImageGeneration(
 export async function getEntityImage(
   entityType: EntityImageType,
   entityId: string
-): Promise<EntityImage | null> {
-  return prisma.entityImage.findUnique({
-    where: {
-      entityType_entityId: {
-        entityType,
-        entityId,
-      },
-    },
-  });
+): Promise<EntityImageRow | null> {
+  const db = await getDatabase();
+  const rows = await db
+    .select()
+    .from(entityImages)
+    .where(
+      and(
+        eq(entityImages.entityType, entityType),
+        eq(entityImages.entityId, entityId)
+      )
+    )
+    .limit(1);
+  return rows[0] ?? null;
 }
 
 export async function waitForImageGeneration(
   id: string,
   maxWaitMs: number = 30000
-): Promise<EntityImage> {
+): Promise<EntityImageRow> {
   const startTime = Date.now();
-  const pollInterval = 1000; // 1 second
+  const pollInterval = 1000;
+  const db = await getDatabase();
 
   while (Date.now() - startTime < maxWaitMs) {
-    const record = await prisma.entityImage.findUnique({
-      where: { id },
-    });
+    const rows = await db
+      .select()
+      .from(entityImages)
+      .where(eq(entityImages.id, id))
+      .limit(1);
+    const record = rows[0] ?? null;
 
     if (!record) {
       throw new Error("Entity image record not found");
     }
 
-    if (record.generationStatus === GenerationStatus.completed) {
+    if (record.generationStatus === "completed") {
       return record;
     }
 
-    if (record.generationStatus === GenerationStatus.failed) {
+    if (record.generationStatus === "failed") {
       throw new Error("Image generation failed");
     }
 
-    // Check if generation has timed out
-    const generationAge = Date.now() - record.generationStartedAt.getTime();
-    if (generationAge > GENERATION_TIMEOUT_MS) {
-      throw new Error("Image generation timed out");
+    if (record.generationStartedAt) {
+      const generationAge =
+        Date.now() - new Date(record.generationStartedAt).getTime();
+      if (generationAge > GENERATION_TIMEOUT_MS) {
+        throw new Error("Image generation timed out");
+      }
     }
 
-    // Wait before next poll
     await new Promise((resolve) => setTimeout(resolve, pollInterval));
   }
 

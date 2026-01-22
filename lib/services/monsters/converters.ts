@@ -1,14 +1,94 @@
-import type { prisma } from "@/lib/db";
 import { toFamilyOverview, toUser } from "@/lib/db/converters";
 import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
-import type { Prisma } from "@/lib/prisma";
 import type { Ability, Action, FamilyOverview } from "@/lib/types";
 import { uuidToIdentifier } from "@/lib/utils/slug";
 import type { Monster, MonsterMini } from "./types";
 
-export const toMonsterMini = (
-  m: Prisma.Result<typeof prisma.monster, object, "findMany">[0]
-): MonsterMini => ({
+interface MonsterRow {
+  id: string;
+  name: string;
+  hp: number;
+  legendary: boolean | null;
+  minion: boolean;
+  level: string;
+  levelInt: number;
+  visibility: string | null;
+  size: string;
+  armor: string;
+  paperforgeId: string | null;
+  createdAt: string | null;
+  kind: string;
+  role: string | null;
+  bloodied: string;
+  lastStand: string;
+  speed: number;
+  fly: number;
+  swim: number;
+  climb: number;
+  teleport: number;
+  burrow: number;
+  saves: string;
+  updatedAt: string | null;
+  abilities: unknown;
+  actions: unknown;
+  actionPreface: string | null;
+  moreInfo: string | null;
+  remixedFromId: string | null;
+}
+
+interface UserRow {
+  id: string;
+  discordId: string | null;
+  username: string | null;
+  displayName: string | null;
+  imageUrl: string | null;
+  avatar: string | null;
+}
+
+interface AwardRow {
+  id: string;
+  slug: string;
+  name: string;
+  abbreviation: string;
+  description: string | null;
+  url: string;
+  color: string;
+  icon: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+interface FamilyRow {
+  id: string;
+  name: string;
+  description: string | null;
+  abilities: unknown;
+  visibility: string | null;
+  creatorId: string;
+  creator: UserRow;
+}
+
+interface MonsterWithRelations extends MonsterRow {
+  creator: UserRow;
+  source: {
+    id: string;
+    name: string;
+    abbreviation: string;
+    license: string;
+    link: string;
+    createdAt?: string | null;
+    updatedAt?: string | null;
+  } | null;
+  monsterFamilies: Array<{ family: FamilyRow }>;
+  monsterAwards?: Array<{ award: AwardRow }>;
+  remixedFrom?: {
+    id: string;
+    name: string;
+    creator: UserRow;
+  } | null;
+}
+
+export const toMonsterMini = (m: MonsterRow): MonsterMini => ({
   id: m.id,
   hp: m.hp,
   legendary: m.legendary || false,
@@ -16,34 +96,21 @@ export const toMonsterMini = (
   level: m.level,
   levelInt: m.levelInt,
   name: m.name,
-  visibility: m.visibility,
-  size: m.size,
-  armor: m.armor === "EMPTY_ENUM_VALUE" ? "none" : m.armor,
+  visibility: (m.visibility ?? "public") as MonsterMini["visibility"],
+  size: m.size as MonsterMini["size"],
+  armor: (m.armor === "" || m.armor === "EMPTY_ENUM_VALUE"
+    ? "none"
+    : m.armor) as MonsterMini["armor"],
   paperforgeId: m.paperforgeId ?? undefined,
-  createdAt: m.createdAt,
+  createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
+  role: m.role as MonsterMini["role"],
 });
 
-export const toMonster = (
-  m: Prisma.Result<
-    typeof prisma.monster,
-    {
-      include: {
-        monsterFamilies: {
-          include: { family: { include: { creator: true } } };
-        };
-        creator: true;
-        source: true;
-        monsterAwards: { include: { award: true } };
-        remixedFrom: { include: { creator: true } };
-      };
-    },
-    "findMany"
-  >[0]
-): Monster => {
+export const toMonster = (m: MonsterWithRelations): Monster => {
   return {
     ...toMonsterMini(m),
     kind: m.kind,
-    role: m.role,
+    role: m.role as Monster["role"],
     bloodied: m.bloodied,
     lastStand: m.lastStand,
     speed: m.speed,
@@ -52,15 +119,15 @@ export const toMonster = (
     climb: m.climb,
     teleport: m.teleport,
     burrow: m.burrow,
-    saves: m.saves.join(" "),
-    updatedAt: m.updatedAt,
-    abilities: (m.abilities as unknown as Omit<Ability, "id">[]).map(
+    saves: m.saves,
+    updatedAt: m.updatedAt ? new Date(m.updatedAt) : new Date(),
+    abilities: ((m.abilities as Omit<Ability, "id">[]) || []).map(
       (ability) => ({
         ...ability,
         id: crypto.randomUUID(),
       })
     ),
-    actions: (m.actions as unknown as Omit<Action, "id">[]).map((action) => ({
+    actions: ((m.actions as Omit<Action, "id">[]) || []).map((action) => ({
       ...action,
       id: crypto.randomUUID(),
     })),
@@ -71,7 +138,17 @@ export const toMonster = (
       .filter((f): f is FamilyOverview => f !== undefined)
       .sort((a, b) => a.name.localeCompare(b.name)),
     creator: toUser(m.creator),
-    source: m.source || undefined,
+    source: m.source
+      ? {
+          ...m.source,
+          createdAt: m.source.createdAt
+            ? new Date(m.source.createdAt)
+            : new Date(),
+          updatedAt: m.source.updatedAt
+            ? new Date(m.source.updatedAt)
+            : new Date(),
+        }
+      : undefined,
     awards:
       m.monsterAwards?.map((ma) => ({
         id: ma.award.id,
@@ -82,8 +159,12 @@ export const toMonster = (
         url: ma.award.url,
         color: ma.award.color,
         icon: ma.award.icon,
-        createdAt: ma.award.createdAt,
-        updatedAt: ma.award.updatedAt,
+        createdAt: ma.award.createdAt
+          ? new Date(ma.award.createdAt)
+          : new Date(),
+        updatedAt: ma.award.updatedAt
+          ? new Date(ma.award.updatedAt)
+          : new Date(),
       })) || undefined,
     remixedFromId: m.remixedFromId || null,
     remixedFrom: m.remixedFrom

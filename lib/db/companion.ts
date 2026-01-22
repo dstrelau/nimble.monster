@@ -1,12 +1,42 @@
+import { and, asc, eq } from "drizzle-orm";
 import type { MonsterSize } from "@/lib/services/monsters";
 import type { Ability, Action, Companion } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
-import type { InputJsonValue } from "../prisma/runtime/library";
 import { toCompanion } from "./converters";
-import { prisma } from "./index";
+import { getDatabase } from "./drizzle";
+import { awards, companions, companionsAwards, sources, users } from "./schema";
 
 const stripActionIds = (actions: Action[]): Omit<Action, "id">[] =>
-  actions.map(({ id, ...action }) => action);
+  actions.map(({ id: _id, ...action }) => action);
+
+async function loadCompanionWithRelations(companionId: string) {
+  const db = getDatabase();
+
+  const companionRows = await db
+    .select()
+    .from(companions)
+    .innerJoin(users, eq(companions.userId, users.id))
+    .leftJoin(sources, eq(companions.sourceId, sources.id))
+    .where(eq(companions.id, companionId))
+    .limit(1);
+
+  if (companionRows.length === 0) return null;
+
+  const row = companionRows[0];
+
+  const awardRows = await db
+    .select({ award: awards })
+    .from(companionsAwards)
+    .innerJoin(awards, eq(companionsAwards.awardId, awards.id))
+    .where(eq(companionsAwards.companionId, companionId));
+
+  return {
+    ...row.companions,
+    creator: row.users,
+    source: row.sources,
+    companionAwards: awardRows.map((r) => ({ award: r.award })),
+  };
+}
 
 export const deleteCompanion = async ({
   id,
@@ -17,104 +47,163 @@ export const deleteCompanion = async ({
 }): Promise<boolean> => {
   if (!isValidUUID(id)) return false;
 
-  const companion = await prisma.companion.delete({
-    where: {
-      id: id,
-      creator: { discordId },
-    },
-  });
+  const db = getDatabase();
 
-  return !!companion;
+  const userResult = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) return false;
+
+  const result = await db
+    .delete(companions)
+    .where(and(eq(companions.id, id), eq(companions.userId, userResult[0].id)));
+
+  return result.rowsAffected > 0;
 };
 
 export const listPublicCompanions = async (): Promise<Companion[]> => {
-  return (
-    await prisma.companion.findMany({
-      where: { visibility: "public" },
-      orderBy: { name: "asc" },
-      include: {
-        creator: true,
-        source: true,
-        companionAwards: { include: { award: true } },
-      },
-    })
-  ).map(toCompanion);
+  const db = getDatabase();
+
+  const rows = await db
+    .select()
+    .from(companions)
+    .innerJoin(users, eq(companions.userId, users.id))
+    .leftJoin(sources, eq(companions.sourceId, sources.id))
+    .where(eq(companions.visibility, "public"))
+    .orderBy(asc(companions.name));
+
+  const results: Companion[] = [];
+  for (const row of rows) {
+    const awardRows = await db
+      .select({ award: awards })
+      .from(companionsAwards)
+      .innerJoin(awards, eq(companionsAwards.awardId, awards.id))
+      .where(eq(companionsAwards.companionId, row.companions.id));
+
+    results.push(
+      toCompanion({
+        ...row.companions,
+        creator: row.users,
+        source: row.sources,
+        companionAwards: awardRows.map((r) => ({ award: r.award })),
+      })
+    );
+  }
+
+  return results;
 };
 
 export const findCompanion = async (id: string): Promise<Companion | null> => {
-  const companion = await prisma.companion.findUnique({
-    where: { id },
-    include: {
-      creator: true,
-      source: true,
-      companionAwards: { include: { award: true } },
-    },
-  });
-  return companion ? toCompanion(companion) : null;
+  const data = await loadCompanionWithRelations(id);
+  return data ? toCompanion(data) : null;
 };
 
 export const findPublicCompanionById = async (
   id: string
 ): Promise<Companion | null> => {
-  const companion = await prisma.companion.findUnique({
-    where: { id: id, visibility: "public" as const },
-    include: {
-      creator: true,
-      source: true,
-      companionAwards: { include: { award: true } },
-    },
-  });
-  return companion ? toCompanion(companion) : null;
+  const db = getDatabase();
+
+  const check = await db
+    .select({ id: companions.id })
+    .from(companions)
+    .where(and(eq(companions.id, id), eq(companions.visibility, "public")))
+    .limit(1);
+
+  if (check.length === 0) return null;
+
+  const data = await loadCompanionWithRelations(id);
+  return data ? toCompanion(data) : null;
 };
 
 export const findCompanionWithCreator = async (
   id: string,
   creatorId: string
 ): Promise<Companion | null> => {
-  const companion = await prisma.companion.findUnique({
-    where: { id, creator: { id: creatorId } },
-    include: {
-      creator: true,
-      source: true,
-      companionAwards: { include: { award: true } },
-    },
-  });
-  return companion ? toCompanion(companion) : null;
+  const db = getDatabase();
+
+  const check = await db
+    .select({ id: companions.id })
+    .from(companions)
+    .where(and(eq(companions.id, id), eq(companions.userId, creatorId)))
+    .limit(1);
+
+  if (check.length === 0) return null;
+
+  const data = await loadCompanionWithRelations(id);
+  return data ? toCompanion(data) : null;
 };
 
 export const listPublicCompanionsForUser = async (
   userId: string
 ): Promise<Companion[]> => {
-  return (
-    await prisma.companion.findMany({
-      include: {
-        creator: true,
-        source: true,
-        companionAwards: { include: { award: true } },
-      },
-      where: {
-        userId,
-        visibility: "public",
-      },
-      orderBy: { name: "asc" },
-    })
-  ).map(toCompanion);
+  const db = getDatabase();
+
+  const rows = await db
+    .select()
+    .from(companions)
+    .innerJoin(users, eq(companions.userId, users.id))
+    .leftJoin(sources, eq(companions.sourceId, sources.id))
+    .where(
+      and(eq(companions.userId, userId), eq(companions.visibility, "public"))
+    )
+    .orderBy(asc(companions.name));
+
+  const results: Companion[] = [];
+  for (const row of rows) {
+    const awardRows = await db
+      .select({ award: awards })
+      .from(companionsAwards)
+      .innerJoin(awards, eq(companionsAwards.awardId, awards.id))
+      .where(eq(companionsAwards.companionId, row.companions.id));
+
+    results.push(
+      toCompanion({
+        ...row.companions,
+        creator: row.users,
+        source: row.sources,
+        companionAwards: awardRows.map((r) => ({ award: r.award })),
+      })
+    );
+  }
+
+  return results;
 };
 
 export const listAllCompanionsForDiscordID = async (
   discordId: string
 ): Promise<Companion[]> => {
-  return (
-    await prisma.companion.findMany({
-      include: {
-        creator: true,
-        source: true,
-        companionAwards: { include: { award: true } },
-      },
-      where: { creator: { discordId: discordId } },
-      orderBy: { name: "asc" },
-    })
-  ).map(toCompanion);
+  const db = getDatabase();
+
+  const rows = await db
+    .select()
+    .from(companions)
+    .innerJoin(users, eq(companions.userId, users.id))
+    .leftJoin(sources, eq(companions.sourceId, sources.id))
+    .where(eq(users.discordId, discordId))
+    .orderBy(asc(companions.name));
+
+  const results: Companion[] = [];
+  for (const row of rows) {
+    const awardRows = await db
+      .select({ award: awards })
+      .from(companionsAwards)
+      .innerJoin(awards, eq(companionsAwards.awardId, awards.id))
+      .where(eq(companionsAwards.companionId, row.companions.id));
+
+    results.push(
+      toCompanion({
+        ...row.companions,
+        creator: row.users,
+        source: row.sources,
+        companionAwards: awardRows.map((r) => ({ award: r.award })),
+      })
+    );
+  }
+
+  return results;
 };
 
 export interface CreateCompanionInput {
@@ -137,60 +226,42 @@ export interface CreateCompanionInput {
 export const createCompanion = async (
   input: CreateCompanionInput
 ): Promise<Companion> => {
-  const {
-    name,
-    kind,
-    class: companionClass,
-    hp_per_level,
-    wounds,
-    size,
-    saves,
-    actions,
-    abilities,
-    actionPreface,
-    dyingRule,
-    moreInfo = "",
-    visibility,
-    discordId,
-  } = input;
+  const db = getDatabase();
 
-  const user = await prisma.user.findUnique({
-    where: { discordId },
-  });
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, input.discordId))
+    .limit(1);
 
-  if (!user) {
+  if (userResult.length === 0) {
     throw new Error("User not found");
   }
 
-  const createdCompanion = await prisma.companion.create({
-    data: {
-      name,
-      kind,
-      class: companionClass,
-      hp_per_level,
-      wounds,
-      size,
-      saves,
-      actions: stripActionIds(actions) as unknown as InputJsonValue[],
-      abilities: abilities as unknown as InputJsonValue[],
-      actionPreface,
-      dyingRule,
-      moreInfo,
-      visibility,
-      creator: {
-        connect: { id: user.id },
-      },
-    },
-    include: {
-      creator: true,
-      source: true,
-      companionAwards: { include: { award: true } },
-    },
-  });
+  const result = await db
+    .insert(companions)
+    .values({
+      name: input.name,
+      kind: input.kind,
+      class: input.class,
+      hpPerLevel: input.hp_per_level,
+      wounds: input.wounds,
+      size: input.size,
+      saves: input.saves,
+      actions: JSON.stringify(stripActionIds(input.actions)),
+      abilities: JSON.stringify(input.abilities),
+      actionPreface: input.actionPreface,
+      dyingRule: input.dyingRule,
+      moreInfo: input.moreInfo || "",
+      visibility: input.visibility,
+      userId: userResult[0].id,
+    })
+    .returning();
 
-  const companion = toCompanion(createdCompanion);
+  const data = await loadCompanionWithRelations(result[0].id);
+  if (!data) throw new Error("Failed to create companion");
 
-  return companion;
+  return toCompanion(data);
 };
 
 export interface UpdateCompanionInput {
@@ -214,60 +285,46 @@ export interface UpdateCompanionInput {
 export const updateCompanion = async (
   input: UpdateCompanionInput
 ): Promise<Companion> => {
-  const {
-    id,
-    name,
-    kind,
-    class: companionClass,
-    hp_per_level,
-    wounds,
-    size,
-    saves,
-    actions,
-    abilities,
-    actionPreface,
-    dyingRule,
-    moreInfo,
-    visibility,
-    discordId,
-  } = input;
-
-  if (!isValidUUID(id)) {
+  if (!isValidUUID(input.id)) {
     throw new Error("Invalid companion ID");
   }
 
-  const updatedCompanion = await prisma.companion.update({
-    where: {
-      id,
-      creator: { discordId },
-    },
-    data: {
-      name,
-      kind,
-      class: companionClass,
-      hp_per_level,
-      wounds,
-      size,
-      saves,
-      actions: stripActionIds(actions) as unknown as InputJsonValue[],
-      abilities: abilities as unknown as InputJsonValue[],
-      actionPreface,
-      dyingRule,
-      moreInfo,
-      visibility,
-      updatedAt: new Date(),
-    },
-    include: {
-      creator: true,
-      source: true,
-      companionAwards: { include: { award: true } },
-    },
-  });
+  const db = getDatabase();
 
-  const companion = toCompanion(updatedCompanion);
+  const userResult = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.discordId, input.discordId))
+    .limit(1);
 
-  // Invalidate old cached image and trigger async pre-generation
-  // invalidateEntityImageCache("companion", companion.id);
+  if (userResult.length === 0) {
+    throw new Error("User not found");
+  }
 
-  return companion;
+  await db
+    .update(companions)
+    .set({
+      name: input.name,
+      kind: input.kind,
+      class: input.class,
+      hpPerLevel: input.hp_per_level,
+      wounds: input.wounds,
+      size: input.size,
+      saves: input.saves,
+      actions: JSON.stringify(stripActionIds(input.actions)),
+      abilities: JSON.stringify(input.abilities),
+      actionPreface: input.actionPreface,
+      dyingRule: input.dyingRule,
+      moreInfo: input.moreInfo,
+      visibility: input.visibility,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(
+      and(eq(companions.id, input.id), eq(companions.userId, userResult[0].id))
+    );
+
+  const data = await loadCompanionWithRelations(input.id);
+  if (!data) throw new Error("Failed to update companion");
+
+  return toCompanion(data);
 };

@@ -1,18 +1,158 @@
 "use server";
-import { prisma } from "@/lib/db/prisma";
-import type { Prisma } from "@/lib/prisma";
+import { and, asc, desc, eq, gt, inArray, like, lt, or } from "drizzle-orm";
+import { getDatabase } from "@/lib/db/drizzle";
+import {
+  type AncestryRow,
+  type AwardRow,
+  ancestries,
+  ancestriesAwards,
+  awards,
+  type SourceRow,
+  sources,
+  type UserRow,
+  users,
+} from "@/lib/db/schema";
+import type { Source, User } from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
-import { toAncestry, toAncestryMini } from "./converters";
 import type { PaginateAncestriesParams } from "./service";
 import type {
   Ancestry,
+  AncestryAbility,
   AncestryMini,
+  AncestryRarity,
+  AncestrySize,
   CreateAncestryInput,
   SearchAncestriesParams,
   UpdateAncestryInput,
 } from "./types";
+
+// Helper converters
+const toUserFromRow = (u: UserRow): User => ({
+  id: u.id,
+  discordId: u.discordId ?? "",
+  username: u.username ?? "",
+  displayName: u.displayName || u.username || "",
+  imageUrl:
+    u.imageUrl ||
+    (u.avatar
+      ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
+      : "https://cdn.discordapp.com/embed/avatars/0.png"),
+});
+
+const toSourceFromRow = (s: SourceRow | null): Source | undefined => {
+  if (!s) return undefined;
+  return {
+    id: s.id,
+    name: s.name,
+    license: s.license,
+    link: s.link,
+    abbreviation: s.abbreviation,
+    createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+    updatedAt: s.updatedAt ? new Date(s.updatedAt) : new Date(),
+  };
+};
+
+const toAwardFromRow = (a: AwardRow) => ({
+  id: a.id,
+  slug: a.slug,
+  name: a.name,
+  abbreviation: a.abbreviation,
+  description: a.description,
+  url: a.url,
+  color: a.color,
+  icon: a.icon,
+  createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),
+  updatedAt: a.updatedAt ? new Date(a.updatedAt) : new Date(),
+});
+
+const parseSizeFromRow = (size: string): AncestrySize[] => {
+  if (!size) return [];
+  try {
+    return JSON.parse(size) as AncestrySize[];
+  } catch {
+    return [];
+  }
+};
+
+const parseAbilitiesFromRow = (abilities: unknown): AncestryAbility[] => {
+  if (!abilities) return [];
+  return abilities as AncestryAbility[];
+};
+
+const toAncestryMiniFromRow = (a: AncestryRow): AncestryMini => ({
+  id: a.id,
+  name: a.name,
+  size: parseSizeFromRow(a.size),
+  rarity: (a.rarity ?? "common") as AncestryRarity,
+  createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),
+  updatedAt: a.updatedAt ? new Date(a.updatedAt) : new Date(),
+});
+
+interface AncestryFullData {
+  ancestry: AncestryRow;
+  creator: UserRow;
+  source: SourceRow | null;
+  awards: AwardRow[];
+}
+
+const toAncestryFromFullData = (data: AncestryFullData): Ancestry => ({
+  id: data.ancestry.id,
+  name: data.ancestry.name,
+  size: parseSizeFromRow(data.ancestry.size),
+  rarity: (data.ancestry.rarity ?? "common") as AncestryRarity,
+  createdAt: data.ancestry.createdAt
+    ? new Date(data.ancestry.createdAt)
+    : new Date(),
+  updatedAt: data.ancestry.updatedAt
+    ? new Date(data.ancestry.updatedAt)
+    : new Date(),
+  description: data.ancestry.description,
+  abilities: parseAbilitiesFromRow(data.ancestry.abilities),
+  creator: toUserFromRow(data.creator),
+  source: toSourceFromRow(data.source),
+  awards: data.awards.map(toAwardFromRow),
+});
+
+async function loadAncestryFullData(
+  db: Awaited<ReturnType<typeof getDatabase>>,
+  ancestryIds: string[]
+): Promise<Map<string, AncestryFullData>> {
+  if (ancestryIds.length === 0) return new Map();
+
+  const ancestryRows = await db
+    .select()
+    .from(ancestries)
+    .innerJoin(users, eq(ancestries.userId, users.id))
+    .leftJoin(sources, eq(ancestries.sourceId, sources.id))
+    .where(inArray(ancestries.id, ancestryIds));
+
+  const awardRows = await db
+    .select({ ancestryId: ancestriesAwards.ancestryId, award: awards })
+    .from(ancestriesAwards)
+    .innerJoin(awards, eq(ancestriesAwards.awardId, awards.id))
+    .where(inArray(ancestriesAwards.ancestryId, ancestryIds));
+
+  const awardsByAncestry = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsByAncestry.get(row.ancestryId) || [];
+    existing.push(row.award);
+    awardsByAncestry.set(row.ancestryId, existing);
+  }
+
+  const result = new Map<string, AncestryFullData>();
+  for (const row of ancestryRows) {
+    result.set(row.ancestries.id, {
+      ancestry: row.ancestries,
+      creator: row.users,
+      source: row.sources,
+      awards: awardsByAncestry.get(row.ancestries.id) || [],
+    });
+  }
+
+  return result;
+}
 
 export const deleteAncestry = async (
   id: string,
@@ -20,22 +160,33 @@ export const deleteAncestry = async (
 ): Promise<boolean> => {
   if (!isValidUUID(id)) return false;
 
-  const ancestry = await prisma.ancestry.delete({
-    where: {
-      id: id,
-      creator: { discordId },
-    },
-  });
+  const db = await getDatabase();
 
-  return !!ancestry;
+  // First find the user by discordId
+  const userResult = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) return false;
+
+  const result = await db
+    .delete(ancestries)
+    .where(and(eq(ancestries.id, id), eq(ancestries.userId, userResult[0].id)));
+
+  return result.rowsAffected > 0;
 };
 
 export const listPublicAncestries = async (): Promise<AncestryMini[]> => {
-  return (
-    await prisma.ancestry.findMany({
-      orderBy: { name: "asc" },
-    })
-  ).map(toAncestryMini);
+  const db = await getDatabase();
+
+  const result = await db
+    .select()
+    .from(ancestries)
+    .orderBy(asc(ancestries.name));
+
+  return result.map(toAncestryMiniFromRow);
 };
 
 export const paginatePublicAncestries = async ({
@@ -59,137 +210,215 @@ export const paginatePublicAncestries = async ({
 
   const isDesc = sort.startsWith("-");
   const sortField = isDesc ? sort.slice(1) : sort;
-  const sortDir = isDesc ? "desc" : "asc";
 
-  let orderBy:
-    | [{ name: "asc" | "desc" }, { id: "asc" | "desc" }]
-    | [{ createdAt: "asc" | "desc" }, { id: "asc" | "desc" }];
+  const db = await getDatabase();
 
-  if (sortField === "name") {
-    orderBy = [{ name: sortDir }, { id: "asc" }];
-  } else {
-    orderBy = [{ createdAt: sortDir }, { id: "asc" }];
-  }
-
-  const where: Prisma.AncestryWhereInput = {};
+  // Build where conditions
+  const conditions: ReturnType<typeof eq>[] = [];
 
   if (creatorId) {
-    where.creator = { id: creatorId };
+    conditions.push(eq(ancestries.userId, creatorId));
   }
 
   if (sourceId) {
-    where.sourceId = sourceId;
+    conditions.push(eq(ancestries.sourceId, sourceId));
   }
 
   if (search) {
-    where.name = { contains: search, mode: "insensitive" };
+    conditions.push(like(ancestries.name, `%${search}%`));
   }
 
+  // Build cursor conditions
+  let cursorConditions: ReturnType<typeof or> | undefined;
   if (cursorData) {
-    const op = isDesc ? "lt" : "gt";
+    const op = isDesc ? lt : gt;
 
     if (sortField === "name") {
-      where.OR = [
-        { name: { [op]: cursorData.value as string } },
-        {
-          AND: [
-            { name: cursorData.value as string },
-            { id: { gt: cursorData.id } },
-          ],
-        },
-      ];
+      cursorConditions = or(
+        op(ancestries.name, cursorData.value as string),
+        and(
+          eq(ancestries.name, cursorData.value as string),
+          gt(ancestries.id, cursorData.id)
+        )
+      );
     } else if (sortField === "createdAt") {
-      const date = new Date(cursorData.value as string);
-      where.OR = [
-        { createdAt: { [op]: date } },
-        { AND: [{ createdAt: date }, { id: { gt: cursorData.id } }] },
-      ];
+      cursorConditions = or(
+        op(ancestries.createdAt, cursorData.value as string),
+        and(
+          eq(ancestries.createdAt, cursorData.value as string),
+          gt(ancestries.id, cursorData.id)
+        )
+      );
     }
   }
 
-  const ancestries = await prisma.ancestry.findMany({
-    where,
-    include: {
-      creator: true,
-      source: true,
-      ancestryAwards: { include: { award: true } },
-    },
-    orderBy,
-    take: limit + 1,
+  const allConditions = [...conditions];
+  if (cursorConditions) {
+    allConditions.push(cursorConditions);
+  }
+
+  // Build order by
+  const orderBy =
+    sortField === "name"
+      ? [
+          isDesc ? desc(ancestries.name) : asc(ancestries.name),
+          asc(ancestries.id),
+        ]
+      : [
+          isDesc ? desc(ancestries.createdAt) : asc(ancestries.createdAt),
+          asc(ancestries.id),
+        ];
+
+  // Query ancestries
+  const rows = await db
+    .select()
+    .from(ancestries)
+    .innerJoin(users, eq(ancestries.userId, users.id))
+    .leftJoin(sources, eq(ancestries.sourceId, sources.id))
+    .where(allConditions.length > 0 ? and(...allConditions) : undefined)
+    .orderBy(...orderBy)
+    .limit(limit + 1);
+
+  const hasMore = rows.length > limit;
+  const resultRows = hasMore ? rows.slice(0, limit) : rows;
+
+  // Get ancestry IDs for award lookup
+  const ancestryIds = resultRows.map((r) => r.ancestries.id);
+
+  // Fetch awards
+  const awardRows =
+    ancestryIds.length > 0
+      ? await db
+          .select({ ancestryId: ancestriesAwards.ancestryId, award: awards })
+          .from(ancestriesAwards)
+          .innerJoin(awards, eq(ancestriesAwards.awardId, awards.id))
+          .where(inArray(ancestriesAwards.ancestryId, ancestryIds))
+      : [];
+
+  const awardsByAncestry = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsByAncestry.get(row.ancestryId) || [];
+    existing.push(row.award);
+    awardsByAncestry.set(row.ancestryId, existing);
+  }
+
+  // Convert to Ancestry objects
+  const results = resultRows.map((row) => {
+    const fullData: AncestryFullData = {
+      ancestry: row.ancestries,
+      creator: row.users,
+      source: row.sources,
+      awards: awardsByAncestry.get(row.ancestries.id) || [],
+    };
+    return toAncestryFromFullData(fullData);
   });
 
-  const hasMore = ancestries.length > limit;
-  const results = hasMore ? ancestries.slice(0, limit) : ancestries;
-
+  // Build next cursor
   let nextCursor: string | null = null;
-  if (hasMore) {
-    const lastAncestry = results[results.length - 1];
-    let cursorData: CursorData;
-
-    if (sortField === "name") {
-      cursorData = {
-        sort: sort as "name" | "-name",
-        value: lastAncestry.name,
-        id: lastAncestry.id,
-      };
-    } else {
-      cursorData = {
-        sort: sort as "createdAt" | "-createdAt",
-        value: lastAncestry.createdAt.toISOString(),
-        id: lastAncestry.id,
-      };
-    }
-
+  if (hasMore && resultRows.length > 0) {
+    const lastRow = resultRows[resultRows.length - 1];
+    const cursorData: CursorData = {
+      sort: sort as "name" | "-name" | "createdAt" | "-createdAt",
+      value:
+        sortField === "name"
+          ? lastRow.ancestries.name
+          : (lastRow.ancestries.createdAt ?? new Date().toISOString()),
+      id: lastRow.ancestries.id,
+    };
     nextCursor = encodeCursor(cursorData);
   }
 
-  return {
-    data: results.map(toAncestry),
-    nextCursor,
-  };
+  return { data: results, nextCursor };
 };
 
 export const findAncestry = async (id: string): Promise<Ancestry | null> => {
-  const ancestry = await prisma.ancestry.findUnique({
-    where: { id },
-    include: {
-      creator: true,
-      source: true,
-      ancestryAwards: { include: { award: true } },
-    },
-  });
-  return ancestry ? toAncestry(ancestry) : null;
+  if (!isValidUUID(id)) return null;
+
+  const db = await getDatabase();
+
+  const fullDataMap = await loadAncestryFullData(db, [id]);
+  const fullData = fullDataMap.get(id);
+
+  return fullData ? toAncestryFromFullData(fullData) : null;
 };
 
 export const findAncestryWithCreatorId = async (
   id: string,
   creatorId: string
 ): Promise<Ancestry | null> => {
-  const ancestry = await prisma.ancestry.findUnique({
-    where: { id, creator: { id: creatorId } },
-    include: {
-      creator: true,
-      source: true,
-      ancestryAwards: { include: { award: true } },
-    },
-  });
-  return ancestry ? toAncestry(ancestry) : null;
+  if (!isValidUUID(id)) return null;
+
+  const db = await getDatabase();
+
+  const result = await db
+    .select()
+    .from(ancestries)
+    .innerJoin(users, eq(ancestries.userId, users.id))
+    .leftJoin(sources, eq(ancestries.sourceId, sources.id))
+    .where(and(eq(ancestries.id, id), eq(ancestries.userId, creatorId)))
+    .limit(1);
+
+  if (result.length === 0) return null;
+
+  const row = result[0];
+
+  // Fetch awards
+  const awardRows = await db
+    .select({ award: awards })
+    .from(ancestriesAwards)
+    .innerJoin(awards, eq(ancestriesAwards.awardId, awards.id))
+    .where(eq(ancestriesAwards.ancestryId, id));
+
+  const fullData: AncestryFullData = {
+    ancestry: row.ancestries,
+    creator: row.users,
+    source: row.sources,
+    awards: awardRows.map((r) => r.award),
+  };
+
+  return toAncestryFromFullData(fullData);
 };
 
 export const listAllAncestriesForDiscordID = async (
   discordId: string
 ): Promise<Ancestry[]> => {
-  return (
-    await prisma.ancestry.findMany({
-      include: {
-        creator: true,
-        source: true,
-        ancestryAwards: { include: { award: true } },
-      },
-      where: { creator: { discordId } },
-      orderBy: { name: "asc" },
-    })
-  ).map(toAncestry);
+  const db = await getDatabase();
+
+  const rows = await db
+    .select()
+    .from(ancestries)
+    .innerJoin(users, eq(ancestries.userId, users.id))
+    .leftJoin(sources, eq(ancestries.sourceId, sources.id))
+    .where(eq(users.discordId, discordId))
+    .orderBy(asc(ancestries.name));
+
+  if (rows.length === 0) return [];
+
+  const ancestryIds = rows.map((r) => r.ancestries.id);
+
+  // Fetch awards
+  const awardRows = await db
+    .select({ ancestryId: ancestriesAwards.ancestryId, award: awards })
+    .from(ancestriesAwards)
+    .innerJoin(awards, eq(ancestriesAwards.awardId, awards.id))
+    .where(inArray(ancestriesAwards.ancestryId, ancestryIds));
+
+  const awardsByAncestry = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsByAncestry.get(row.ancestryId) || [];
+    existing.push(row.award);
+    awardsByAncestry.set(row.ancestryId, existing);
+  }
+
+  return rows.map((row) => {
+    const fullData: AncestryFullData = {
+      ancestry: row.ancestries,
+      creator: row.users,
+      source: row.sources,
+      awards: awardsByAncestry.get(row.ancestries.id) || [],
+    };
+    return toAncestryFromFullData(fullData);
+  });
 };
 
 export const searchPublicAncestries = async ({
@@ -200,44 +429,66 @@ export const searchPublicAncestries = async ({
   limit,
   offset,
 }: SearchAncestriesParams & { offset?: number }): Promise<Ancestry[]> => {
-  const whereClause: {
-    OR?: Array<{
-      name?: { contains: string; mode: "insensitive" };
-    }>;
-    sourceId?: string;
-  } = {};
+  const db = await getDatabase();
+
+  // Build where conditions
+  const conditions: ReturnType<typeof eq>[] = [];
 
   if (searchTerm) {
-    whereClause.OR = [{ name: { contains: searchTerm, mode: "insensitive" } }];
+    conditions.push(like(ancestries.name, `%${searchTerm}%`));
   }
 
   if (sourceId) {
-    whereClause.sourceId = sourceId;
+    conditions.push(eq(ancestries.sourceId, sourceId));
   }
 
-  let orderBy: { name: "asc" | "desc" } | { createdAt: "asc" | "desc" } = {
-    createdAt: sortDirection,
-  };
+  // Build order by
+  const orderBy =
+    sortBy === "name"
+      ? sortDirection === "desc"
+        ? desc(ancestries.name)
+        : asc(ancestries.name)
+      : sortDirection === "desc"
+        ? desc(ancestries.createdAt)
+        : asc(ancestries.createdAt);
 
-  if (sortBy === "name") {
-    orderBy = { name: sortDirection };
-  } else if (sortBy === "createdAt") {
-    orderBy = { createdAt: sortDirection };
+  const rows = await db
+    .select()
+    .from(ancestries)
+    .innerJoin(users, eq(ancestries.userId, users.id))
+    .leftJoin(sources, eq(ancestries.sourceId, sources.id))
+    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .orderBy(orderBy)
+    .limit(limit ?? 100)
+    .offset(offset ?? 0);
+
+  if (rows.length === 0) return [];
+
+  const ancestryIds = rows.map((r) => r.ancestries.id);
+
+  // Fetch awards
+  const awardRows = await db
+    .select({ ancestryId: ancestriesAwards.ancestryId, award: awards })
+    .from(ancestriesAwards)
+    .innerJoin(awards, eq(ancestriesAwards.awardId, awards.id))
+    .where(inArray(ancestriesAwards.ancestryId, ancestryIds));
+
+  const awardsByAncestry = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsByAncestry.get(row.ancestryId) || [];
+    existing.push(row.award);
+    awardsByAncestry.set(row.ancestryId, existing);
   }
 
-  return (
-    await prisma.ancestry.findMany({
-      where: whereClause,
-      orderBy,
-      take: limit,
-      skip: offset,
-      include: {
-        creator: true,
-        source: true,
-        ancestryAwards: { include: { award: true } },
-      },
-    })
-  ).map(toAncestry);
+  return rows.map((row) => {
+    const fullData: AncestryFullData = {
+      ancestry: row.ancestries,
+      creator: row.users,
+      source: row.sources,
+      awards: awardsByAncestry.get(row.ancestries.id) || [],
+    };
+    return toAncestryFromFullData(fullData);
+  });
 };
 
 export const createAncestry = async (
@@ -246,34 +497,54 @@ export const createAncestry = async (
 ): Promise<Ancestry> => {
   const { name, description, size, rarity, abilities, sourceId } = input;
 
-  const user = await prisma.user.findUnique({
-    where: { discordId },
-  });
+  const db = await getDatabase();
 
-  if (!user) {
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) {
     throw new Error("User not found");
   }
 
-  const createdAncestry = await prisma.ancestry.create({
-    data: {
+  const user = userResult[0];
+
+  const result = await db
+    .insert(ancestries)
+    .values({
       name,
       description,
-      size,
+      size: JSON.stringify(size),
       rarity,
-      abilities: abilities as never[],
-      creator: {
-        connect: { id: user.id },
-      },
-      ...(sourceId && { source: { connect: { id: sourceId } } }),
-    },
-    include: {
-      creator: true,
-      source: true,
-      ancestryAwards: { include: { award: true } },
-    },
-  });
+      abilities: abilities,
+      userId: user.id,
+      sourceId: sourceId || null,
+    })
+    .returning();
 
-  return toAncestry(createdAncestry);
+  const createdAncestry = result[0];
+
+  // Get source if specified
+  let source: SourceRow | null = null;
+  if (sourceId) {
+    const sourceResult = await db
+      .select()
+      .from(sources)
+      .where(eq(sources.id, sourceId))
+      .limit(1);
+    source = sourceResult[0] || null;
+  }
+
+  const fullData: AncestryFullData = {
+    ancestry: createdAncestry,
+    creator: user,
+    source,
+    awards: [],
+  };
+
+  return toAncestryFromFullData(fullData);
 };
 
 export const updateAncestry = async (
@@ -287,25 +558,66 @@ export const updateAncestry = async (
     throw new Error("Invalid ancestry ID");
   }
 
-  const updatedAncestry = await prisma.ancestry.update({
-    where: {
-      id,
-      creator: { discordId },
-    },
-    data: {
+  const db = await getDatabase();
+
+  // Find user by discordId
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) {
+    throw new Error("User not found");
+  }
+
+  const user = userResult[0];
+
+  // Update the ancestry
+  const result = await db
+    .update(ancestries)
+    .set({
       name,
       description,
-      size,
+      size: JSON.stringify(size),
       rarity,
-      abilities: abilities as never[],
-      source: sourceId ? { connect: { id: sourceId } } : { disconnect: true },
-    },
-    include: {
-      creator: true,
-      source: true,
-      ancestryAwards: { include: { award: true } },
-    },
-  });
+      abilities: abilities,
+      sourceId: sourceId || null,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(and(eq(ancestries.id, id), eq(ancestries.userId, user.id)))
+    .returning();
 
-  return toAncestry(updatedAncestry);
+  if (result.length === 0) {
+    throw new Error("Ancestry not found or not owned by user");
+  }
+
+  const updatedAncestry = result[0];
+
+  // Get source if specified
+  let source: SourceRow | null = null;
+  if (sourceId) {
+    const sourceResult = await db
+      .select()
+      .from(sources)
+      .where(eq(sources.id, sourceId))
+      .limit(1);
+    source = sourceResult[0] || null;
+  }
+
+  // Fetch awards
+  const awardRows = await db
+    .select({ award: awards })
+    .from(ancestriesAwards)
+    .innerJoin(awards, eq(ancestriesAwards.awardId, awards.id))
+    .where(eq(ancestriesAwards.ancestryId, id));
+
+  const fullData: AncestryFullData = {
+    ancestry: updatedAncestry,
+    creator: user,
+    source,
+    awards: awardRows.map((r) => r.award),
+  };
+
+  return toAncestryFromFullData(fullData);
 };

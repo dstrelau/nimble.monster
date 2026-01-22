@@ -1,44 +1,90 @@
-import type { prisma } from "@/lib/db";
 import { toUser } from "@/lib/db/converters";
-import type { Prisma } from "@/lib/prisma";
 import { uuidToIdentifier } from "@/lib/utils/slug";
 import type { Item, ItemMini, ItemRarity } from "./types";
 
-export const toItemMini = (
-  i: Prisma.Result<typeof prisma.item, object, "findMany">[0]
-): ItemMini => ({
+interface ItemRow {
+  id: string;
+  name: string;
+  kind: string;
+  rarity: string | null;
+  visibility: string | null;
+  imageIcon: string | null;
+  imageBgIcon: string | null;
+  imageColor: string | null;
+  imageBgColor: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  description: string;
+  moreInfo: string | null;
+}
+
+interface UserRow {
+  id: string;
+  discordId: string | null;
+  username: string | null;
+  displayName: string | null;
+  imageUrl: string | null;
+  avatar: string | null;
+}
+
+interface AwardRow {
+  id: string;
+  slug: string;
+  name: string;
+  abbreviation: string;
+  description: string | null;
+  url: string;
+  color: string;
+  icon: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+interface ItemWithRelations extends ItemRow {
+  creator: UserRow;
+  source: {
+    id: string;
+    name: string;
+    abbreviation: string;
+    license: string;
+    link: string;
+    createdAt?: string | null;
+    updatedAt?: string | null;
+  } | null;
+  itemAwards?: Array<{ award: AwardRow }>;
+}
+
+export const toItemMini = (i: ItemRow): ItemMini => ({
   id: i.id,
   name: i.name,
   kind: i.kind || undefined,
-  rarity: i.rarity as ItemRarity,
-  visibility: i.visibility,
+  rarity: (i.rarity ?? "unspecified") as ItemRarity,
+  visibility: i.visibility as ItemMini["visibility"],
   imageIcon: i.imageIcon || undefined,
   imageBgIcon: i.imageBgIcon || undefined,
   imageColor: i.imageColor || undefined,
   imageBgColor: i.imageBgColor || undefined,
-  createdAt: i.createdAt,
-  updatedAt: i.updatedAt,
+  createdAt: i.createdAt ? new Date(i.createdAt) : new Date(),
+  updatedAt: i.updatedAt ? new Date(i.updatedAt) : new Date(),
 });
 
-export const toItem = (
-  i: Prisma.Result<
-    typeof prisma.item,
-    {
-      include: {
-        creator: true;
-        source: true;
-        itemAwards: { include: { award: true } };
-      };
-    },
-    "findMany"
-  >[0]
-): Item => {
+export const toItem = (i: ItemWithRelations): Item => {
   return {
     ...toItemMini(i),
     description: i.description,
     moreInfo: i.moreInfo || undefined,
     creator: toUser(i.creator),
-    source: i.source || undefined,
+    source: i.source
+      ? {
+          ...i.source,
+          createdAt: i.source.createdAt
+            ? new Date(i.source.createdAt)
+            : new Date(),
+          updatedAt: i.source.updatedAt
+            ? new Date(i.source.updatedAt)
+            : new Date(),
+        }
+      : undefined,
     awards:
       i.itemAwards?.map((ia) => ({
         id: ia.award.id,
@@ -49,8 +95,12 @@ export const toItem = (
         url: ia.award.url,
         color: ia.award.color,
         icon: ia.award.icon,
-        createdAt: ia.award.createdAt,
-        updatedAt: ia.award.updatedAt,
+        createdAt: ia.award.createdAt
+          ? new Date(ia.award.createdAt)
+          : new Date(),
+        updatedAt: ia.award.updatedAt
+          ? new Date(ia.award.updatedAt)
+          : new Date(),
       })) || undefined,
   };
 };

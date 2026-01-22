@@ -1,8 +1,19 @@
 "use server";
-import { toUser } from "@/lib/db/converters";
-import { prisma } from "@/lib/db/prisma";
+import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
+import { getDatabase } from "@/lib/db/drizzle";
+import type { AwardRow, SourceRow } from "@/lib/db/schema";
+import {
+  awards,
+  collections,
+  items,
+  itemsAwards,
+  itemsCollections,
+  sources,
+  type UserRow,
+  users,
+} from "@/lib/db/schema";
+import type { Source, User } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
-import { toItem, toItemMini } from "./converters";
 import type {
   CreateItemInput,
   Item,
@@ -12,146 +23,326 @@ import type {
   UpdateItemInput,
 } from "./types";
 
+const toUserFromRow = (u: UserRow): User => ({
+  id: u.id,
+  discordId: u.discordId ?? "",
+  username: u.username ?? "",
+  displayName: u.displayName || u.username || "",
+  imageUrl:
+    u.imageUrl ||
+    (u.avatar
+      ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
+      : "https://cdn.discordapp.com/embed/avatars/0.png"),
+});
+
+const toSourceFromRow = (s: SourceRow | null): Source | undefined => {
+  if (!s) return undefined;
+  return {
+    id: s.id,
+    name: s.name,
+    license: s.license,
+    link: s.link,
+    abbreviation: s.abbreviation,
+    createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+    updatedAt: s.updatedAt ? new Date(s.updatedAt) : new Date(),
+  };
+};
+
+const toAwardFromRow = (a: AwardRow) => ({
+  id: a.id,
+  slug: a.slug,
+  name: a.name,
+  abbreviation: a.abbreviation,
+  description: a.description,
+  url: a.url,
+  color: a.color,
+  icon: a.icon,
+  createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),
+  updatedAt: a.updatedAt ? new Date(a.updatedAt) : new Date(),
+});
+
+interface ItemFullData {
+  item: typeof items.$inferSelect;
+  creator: UserRow;
+  source: SourceRow | null;
+  awards: AwardRow[];
+}
+
+const toItemFromFullData = (data: ItemFullData): Item => ({
+  id: data.item.id,
+  name: data.item.name,
+  kind: data.item.kind || undefined,
+  rarity: (data.item.rarity ?? "unspecified") as ItemRarity,
+  visibility: (data.item.visibility ?? "public") as "public" | "private",
+  imageIcon: data.item.imageIcon || undefined,
+  imageBgIcon: data.item.imageBgIcon || undefined,
+  imageColor: data.item.imageColor || undefined,
+  imageBgColor: data.item.imageBgColor || undefined,
+  createdAt: data.item.createdAt ? new Date(data.item.createdAt) : new Date(),
+  updatedAt: data.item.updatedAt ? new Date(data.item.updatedAt) : new Date(),
+  description: data.item.description,
+  moreInfo: data.item.moreInfo || undefined,
+  creator: toUserFromRow(data.creator),
+  source: toSourceFromRow(data.source),
+  awards: data.awards.map(toAwardFromRow),
+});
+
+const toItemMiniFromRow = (item: typeof items.$inferSelect): ItemMini => ({
+  id: item.id,
+  name: item.name,
+  kind: item.kind || undefined,
+  rarity: (item.rarity ?? "unspecified") as ItemRarity,
+  visibility: (item.visibility ?? "public") as "public" | "private",
+  imageIcon: item.imageIcon || undefined,
+  imageBgIcon: item.imageBgIcon || undefined,
+  imageColor: item.imageColor || undefined,
+  imageBgColor: item.imageBgColor || undefined,
+  createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
+  updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
+});
+
+async function loadItemFullData(
+  db: Awaited<ReturnType<typeof getDatabase>>,
+  itemIds: string[]
+): Promise<Map<string, ItemFullData>> {
+  if (itemIds.length === 0) return new Map();
+
+  // Get base item data with creator and source
+  const itemRows = await db
+    .select()
+    .from(items)
+    .innerJoin(users, eq(items.userId, users.id))
+    .leftJoin(sources, eq(items.sourceId, sources.id))
+    .where(inArray(items.id, itemIds));
+
+  // Get awards for all items
+  const awardRows = await db
+    .select({ itemId: itemsAwards.itemId, award: awards })
+    .from(itemsAwards)
+    .innerJoin(awards, eq(itemsAwards.awardId, awards.id))
+    .where(inArray(itemsAwards.itemId, itemIds));
+
+  // Group awards by item
+  const awardsByItem = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsByItem.get(row.itemId) || [];
+    existing.push(row.award);
+    awardsByItem.set(row.itemId, existing);
+  }
+
+  const result = new Map<string, ItemFullData>();
+  for (const row of itemRows) {
+    result.set(row.items.id, {
+      item: row.items,
+      creator: row.users,
+      source: row.sources,
+      awards: awardsByItem.get(row.items.id) || [],
+    });
+  }
+
+  return result;
+}
+
 export const deleteItem = async (
   id: string,
   discordId: string
 ): Promise<boolean> => {
   if (!isValidUUID(id)) return false;
 
-  const item = await prisma.item.delete({
-    where: {
-      id: id,
-      creator: { discordId },
-    },
-  });
+  const db = await getDatabase();
 
-  return !!item;
+  // Get user by discordId
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) return false;
+  const user = userResult[0];
+
+  // Delete the item (only if it belongs to the user)
+  const result = await db
+    .delete(items)
+    .where(and(eq(items.id, id), eq(items.userId, user.id)));
+
+  return result.rowsAffected > 0;
 };
 
 export const listPublicItems = async (): Promise<ItemMini[]> => {
-  return (
-    await prisma.item.findMany({
-      where: { visibility: "public" },
-      orderBy: { name: "asc" },
-    })
-  ).map(toItemMini);
+  const db = await getDatabase();
+
+  const itemRows = await db
+    .select()
+    .from(items)
+    .where(eq(items.visibility, "public"))
+    .orderBy(asc(items.name));
+
+  return itemRows.map(toItemMiniFromRow);
 };
 
 export const getRandomRecentItems = async (
   limit: number = 3
 ): Promise<Item[]> => {
-  const items = (
-    await prisma.item.findMany({
-      where: { visibility: "public" },
-      orderBy: { createdAt: "desc" },
-      take: limit * 3,
-      include: {
-        creator: true,
-        source: true,
-        itemAwards: { include: { award: true } },
-      },
-    })
-  ).map(toItem);
+  const db = await getDatabase();
 
-  const shuffled = items.sort(() => Math.random() - 0.5);
+  // Get recent public items
+  const itemRows = await db
+    .select()
+    .from(items)
+    .where(eq(items.visibility, "public"))
+    .orderBy(desc(items.createdAt))
+    .limit(limit * 3);
+
+  if (itemRows.length === 0) return [];
+
+  const itemIds = itemRows.map((r) => r.id);
+  const itemDataMap = await loadItemFullData(db, itemIds);
+
+  // Convert to Item array
+  const convertedItems = itemIds
+    .map((id) => itemDataMap.get(id))
+    .filter((i): i is ItemFullData => i !== undefined)
+    .map(toItemFromFullData);
+
+  const shuffled = convertedItems.sort(() => Math.random() - 0.5);
   return shuffled.slice(0, limit);
 };
 
 export const findItem = async (id: string): Promise<Item | null> => {
-  const item = await prisma.item.findUnique({
-    where: { id },
-    include: {
-      creator: true,
-      source: true,
-      itemAwards: { include: { award: true } },
-    },
-  });
-  return item ? toItem(item) : null;
+  const db = await getDatabase();
+
+  const itemDataMap = await loadItemFullData(db, [id]);
+  const itemData = itemDataMap.get(id);
+  return itemData ? toItemFromFullData(itemData) : null;
 };
 
 export const findItemCollections = async (itemId: string) => {
   if (!isValidUUID(itemId)) return [];
 
-  const collections = await prisma.collection.findMany({
-    where: {
-      itemCollections: {
-        some: { itemId },
-      },
-      visibility: "public",
-    },
-    include: {
-      creator: true,
-    },
-    orderBy: { name: "asc" },
-  });
+  const db = await getDatabase();
 
-  return collections.map((collection) => ({
-    id: collection.id,
-    name: collection.name,
-    creator: toUser(collection.creator),
+  // Get collection IDs that contain this item
+  const collectionLinks = await db
+    .select({ collectionId: itemsCollections.collectionId })
+    .from(itemsCollections)
+    .where(eq(itemsCollections.itemId, itemId));
+
+  if (collectionLinks.length === 0) return [];
+
+  const collectionIds = collectionLinks.map((l) => l.collectionId);
+
+  // Get public collections with their creators
+  const collectionRows = await db
+    .select()
+    .from(collections)
+    .innerJoin(users, eq(collections.creatorId, users.id))
+    .where(
+      and(
+        inArray(collections.id, collectionIds),
+        eq(collections.visibility, "public")
+      )
+    )
+    .orderBy(asc(collections.name));
+
+  return collectionRows.map((row) => ({
+    id: row.collections.id,
+    name: row.collections.name,
+    creator: toUserFromRow(row.users),
   }));
 };
 
 export const findPublicItemById = async (id: string): Promise<Item | null> => {
-  const item = await prisma.item.findUnique({
-    where: { id, visibility: "public" },
-    include: {
-      creator: true,
-      source: true,
-      itemAwards: { include: { award: true } },
-    },
-  });
-  return item ? toItem(item) : null;
+  const db = await getDatabase();
+
+  // First check if item is public
+  const itemCheck = await db
+    .select({ id: items.id })
+    .from(items)
+    .where(and(eq(items.id, id), eq(items.visibility, "public")))
+    .limit(1);
+
+  if (itemCheck.length === 0) return null;
+
+  const itemDataMap = await loadItemFullData(db, [id]);
+  const itemData = itemDataMap.get(id);
+  return itemData ? toItemFromFullData(itemData) : null;
 };
 
 export const findItemWithCreatorDiscordId = async (
   id: string,
   creatorId: string
 ): Promise<Item | null> => {
-  const item = await prisma.item.findUnique({
-    where: { id, creator: { id: creatorId } },
-    include: {
-      creator: true,
-      source: true,
-      itemAwards: { include: { award: true } },
-    },
-  });
-  return item ? toItem(item) : null;
+  const db = await getDatabase();
+
+  // Check if item belongs to the specified creator
+  const itemCheck = await db
+    .select({ id: items.id })
+    .from(items)
+    .where(and(eq(items.id, id), eq(items.userId, creatorId)))
+    .limit(1);
+
+  if (itemCheck.length === 0) return null;
+
+  const itemDataMap = await loadItemFullData(db, [id]);
+  const itemData = itemDataMap.get(id);
+  return itemData ? toItemFromFullData(itemData) : null;
 };
 
 export const listPublicItemsForUser = async (
   userId: string
 ): Promise<Item[]> => {
-  return (
-    await prisma.item.findMany({
-      include: {
-        creator: true,
-        source: true,
-        itemAwards: { include: { award: true } },
-      },
-      where: {
-        userId,
-        visibility: "public",
-      },
-      orderBy: { name: "asc" },
-    })
-  ).map(toItem);
+  const db = await getDatabase();
+
+  // Get public item IDs for this user
+  const itemRows = await db
+    .select({ id: items.id })
+    .from(items)
+    .where(and(eq(items.userId, userId), eq(items.visibility, "public")))
+    .orderBy(asc(items.name));
+
+  if (itemRows.length === 0) return [];
+
+  const itemIds = itemRows.map((r) => r.id);
+  const itemDataMap = await loadItemFullData(db, itemIds);
+
+  return itemIds
+    .map((id) => itemDataMap.get(id))
+    .filter((i): i is ItemFullData => i !== undefined)
+    .map(toItemFromFullData);
 };
 
 export const listAllItemsForDiscordID = async (
   discordId: string
 ): Promise<Item[]> => {
-  return (
-    await prisma.item.findMany({
-      include: {
-        creator: true,
-        source: true,
-        itemAwards: { include: { award: true } },
-      },
-      where: { creator: { discordId } },
-      orderBy: { name: "asc" },
-    })
-  ).map(toItem);
+  const db = await getDatabase();
+
+  // Get user by discordId
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) return [];
+  const user = userResult[0];
+
+  // Get all item IDs for this user
+  const itemRows = await db
+    .select({ id: items.id })
+    .from(items)
+    .where(eq(items.userId, user.id))
+    .orderBy(asc(items.name));
+
+  if (itemRows.length === 0) return [];
+
+  const itemIds = itemRows.map((r) => r.id);
+  const itemDataMap = await loadItemFullData(db, itemIds);
+
+  return itemIds
+    .map((id) => itemDataMap.get(id))
+    .filter((i): i is ItemFullData => i !== undefined)
+    .map(toItemFromFullData);
 };
 
 export const searchPublicItems = async ({
@@ -164,67 +355,78 @@ export const searchPublicItems = async ({
   limit,
   offset,
 }: SearchItemsParams & { offset?: number }): Promise<Item[]> => {
-  const whereClause: {
-    creator?: { discordId?: string };
-    visibility: "public";
-    OR?: Array<{
-      name?: { contains: string; mode: "insensitive" };
-      kind?: { contains: string; mode: "insensitive" };
-    }>;
-    rarity?: ItemRarity;
-    sourceId?: string;
-  } = {
-    visibility: "public",
-  };
+  const db = await getDatabase();
+
+  // Build conditions
+  const conditions = [eq(items.visibility, "public")];
 
   if (creatorId) {
-    whereClause.creator = { discordId: creatorId };
+    // Need to join with users to filter by discordId
+    const userResult = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.discordId, creatorId))
+      .limit(1);
+
+    if (userResult.length > 0) {
+      conditions.push(eq(items.userId, userResult[0].id));
+    }
   }
 
   if (searchTerm) {
-    whereClause.OR = [
-      { name: { contains: searchTerm, mode: "insensitive" } },
-      { kind: { contains: searchTerm, mode: "insensitive" } },
-    ];
+    conditions.push(
+      or(
+        like(items.name, `%${searchTerm}%`),
+        like(items.kind, `%${searchTerm}%`)
+      ) as ReturnType<typeof eq>
+    );
   }
 
   if (rarity && rarity !== "all") {
-    whereClause.rarity = rarity;
+    conditions.push(eq(items.rarity, rarity));
   }
 
   if (sourceId) {
-    whereClause.sourceId = sourceId;
+    conditions.push(eq(items.sourceId, sourceId));
   }
 
-  let orderBy: { name: "asc" | "desc" } | { createdAt: "asc" | "desc" } = {
-    createdAt: sortDirection,
-  };
+  // Determine order
+  const orderColumn = sortBy === "name" ? items.name : items.createdAt;
+  const orderFn = sortDirection === "desc" ? desc : asc;
 
-  if (sortBy === "name") {
-    orderBy = { name: sortDirection };
-  } else if (sortBy === "createdAt") {
-    orderBy = { createdAt: sortDirection };
+  // Build query
+  let query = db
+    .select({ id: items.id })
+    .from(items)
+    .where(and(...conditions))
+    .orderBy(orderFn(orderColumn))
+    .$dynamic();
+
+  if (limit) {
+    query = query.limit(limit);
+  }
+  if (offset) {
+    query = query.offset(offset);
   }
 
-  return (
-    await prisma.item.findMany({
-      where: whereClause,
-      orderBy,
-      take: limit,
-      skip: offset,
-      include: {
-        creator: true,
-        source: true,
-        itemAwards: { include: { award: true } },
-      },
-    })
-  ).map(toItem);
+  const itemRows = await query;
+  if (itemRows.length === 0) return [];
+
+  const itemIds = itemRows.map((r) => r.id);
+  const itemDataMap = await loadItemFullData(db, itemIds);
+
+  return itemIds
+    .map((id) => itemDataMap.get(id))
+    .filter((i): i is ItemFullData => i !== undefined)
+    .map(toItemFromFullData);
 };
 
 export const createItem = async (
   input: CreateItemInput,
   discordId: string
 ): Promise<Item> => {
+  const db = await getDatabase();
+
   const {
     name,
     kind = "",
@@ -240,42 +442,46 @@ export const createItem = async (
     remixedFromId,
   } = input;
 
-  const user = await prisma.user.findUnique({
-    where: { discordId },
-  });
+  // Get user by discordId
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
 
-  if (!user) {
+  if (userResult.length === 0) {
     throw new Error("User not found");
   }
+  const user = userResult[0];
 
-  const createdItem = await prisma.item.create({
-    data: {
-      name,
-      kind,
-      description,
-      moreInfo,
-      imageIcon,
-      imageBgIcon,
-      imageColor,
-      imageBgColor,
-      rarity,
-      visibility,
-      creator: {
-        connect: { id: user.id },
-      },
-      ...(sourceId && { source: { connect: { id: sourceId } } }),
-      ...(remixedFromId && { remixedFrom: { connect: { id: remixedFromId } } }),
-    },
-    include: {
-      creator: true,
-      source: true,
-      itemAwards: { include: { award: true } },
-    },
+  // Insert the item
+  const itemId = crypto.randomUUID();
+  await db.insert(items).values({
+    id: itemId,
+    name,
+    kind,
+    description,
+    moreInfo,
+    imageIcon,
+    imageBgIcon,
+    imageColor,
+    imageBgColor,
+    rarity,
+    visibility,
+    userId: user.id,
+    sourceId: sourceId || null,
+    remixedFromId: remixedFromId || null,
   });
 
-  const item = toItem(createdItem);
+  // Load the created item with full data
+  const itemDataMap = await loadItemFullData(db, [itemId]);
+  const itemData = itemDataMap.get(itemId);
 
-  return item;
+  if (!itemData) {
+    throw new Error("Failed to create item");
+  }
+
+  return toItemFromFullData(itemData);
 };
 
 export const updateItem = async (
@@ -283,6 +489,12 @@ export const updateItem = async (
   input: UpdateItemInput,
   discordId: string
 ): Promise<Item> => {
+  if (!isValidUUID(id)) {
+    throw new Error("Invalid item ID");
+  }
+
+  const db = await getDatabase();
+
   const {
     name,
     kind = "",
@@ -297,16 +509,33 @@ export const updateItem = async (
     sourceId,
   } = input;
 
-  if (!isValidUUID(id)) {
-    throw new Error("Invalid item ID");
+  // Get user by discordId
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) {
+    throw new Error("User not found");
+  }
+  const user = userResult[0];
+
+  // Verify item exists and belongs to user
+  const existingItem = await db
+    .select()
+    .from(items)
+    .where(and(eq(items.id, id), eq(items.userId, user.id)))
+    .limit(1);
+
+  if (existingItem.length === 0) {
+    throw new Error("Item not found");
   }
 
-  const updatedItem = await prisma.item.update({
-    where: {
-      id,
-      creator: { discordId },
-    },
-    data: {
+  // Update the item
+  await db
+    .update(items)
+    .set({
       name,
       kind,
       description,
@@ -317,35 +546,36 @@ export const updateItem = async (
       imageBgColor,
       rarity,
       visibility,
-      source: sourceId ? { connect: { id: sourceId } } : { disconnect: true },
-    },
-    include: {
-      creator: true,
-      source: true,
-      itemAwards: { include: { award: true } },
-    },
-  });
+      sourceId: sourceId || null,
+    })
+    .where(eq(items.id, id));
 
-  return toItem(updatedItem);
+  // Load the updated item with full data
+  const itemDataMap = await loadItemFullData(db, [id]);
+  const itemData = itemDataMap.get(id);
+
+  if (!itemData) {
+    throw new Error("Failed to update item");
+  }
+
+  return toItemFromFullData(itemData);
 };
 
 export const findItemRemixes = async (itemId: string) => {
   if (!isValidUUID(itemId)) return [];
 
-  const remixes = await prisma.item.findMany({
-    where: {
-      remixedFromId: itemId,
-      visibility: "public",
-    },
-    include: {
-      creator: true,
-    },
-    orderBy: { name: "asc" },
-  });
+  const db = await getDatabase();
 
-  return remixes.map((item) => ({
-    id: item.id,
-    name: item.name,
-    creator: toUser(item.creator),
+  const remixRows = await db
+    .select()
+    .from(items)
+    .innerJoin(users, eq(items.userId, users.id))
+    .where(and(eq(items.remixedFromId, itemId), eq(items.visibility, "public")))
+    .orderBy(asc(items.name));
+
+  return remixRows.map((row) => ({
+    id: row.items.id,
+    name: row.items.name,
+    creator: toUserFromRow(row.users),
   }));
 };

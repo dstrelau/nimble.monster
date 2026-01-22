@@ -1,7 +1,9 @@
+import { eq } from "drizzle-orm";
 import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
 import "next-auth/jwt";
-import { prisma } from "./db";
+import { getDatabase } from "./db/drizzle";
+import { users } from "./db/schema";
 import type { User } from "./types";
 
 declare module "next-auth" {
@@ -40,21 +42,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     signIn: async ({ profile }) => {
       if (profile?.id) {
-        await prisma.user.upsert({
-          where: { discordId: profile.id },
-          update: {
-            username: (profile.username as string) || "",
-            displayName: (profile.global_name as string) || "",
-            avatar: (profile.avatar as string) || null,
-            imageUrl: (profile.image_url as string) || null,
-          },
-          create: {
+        const db = getDatabase();
+        await db
+          .insert(users)
+          .values({
             discordId: profile.id,
             username: (profile.username as string) || "",
             displayName: (profile.global_name as string) || "",
             avatar: (profile.avatar as string) || null,
-          },
-        });
+          })
+          .onConflictDoUpdate({
+            target: users.discordId,
+            set: {
+              username: (profile.username as string) || "",
+              displayName: (profile.global_name as string) || "",
+              avatar: (profile.avatar as string) || null,
+              imageUrl: (profile.image_url as string) || null,
+            },
+          });
       }
       return true;
     },
@@ -64,24 +69,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.discordId = params.profile.id;
 
         try {
-          const user = await prisma.user.findUnique({
-            where: { discordId: params.profile.id },
-          });
+          const db = getDatabase();
+          const results = await db
+            .select()
+            .from(users)
+            .where(eq(users.discordId, params.profile.id))
+            .limit(1);
+          const user = results[0];
           if (user) {
             token.userId = user.id;
-            token.username = user.username;
-            token.displayName = user.displayName || user.username;
-            token.avatar = user.avatar || undefined;
-            token.imageUrl = user.imageUrl || undefined;
+            token.username = user.username ?? undefined;
+            token.displayName = user.displayName || user.username || "";
+            token.avatar = user.avatar ?? undefined;
+            token.imageUrl = user.imageUrl ?? undefined;
             token.role = user.role;
           }
         } catch {}
       } else if (token.discordId) {
         try {
-          const user = await prisma.user.findUnique({
-            where: { discordId: token.discordId as string },
-            select: { role: true },
-          });
+          const db = getDatabase();
+          const results = await db
+            .select({ role: users.role })
+            .from(users)
+            .where(eq(users.discordId, token.discordId as string))
+            .limit(1);
+          const user = results[0];
           if (user) {
             token.role = user.role;
           }

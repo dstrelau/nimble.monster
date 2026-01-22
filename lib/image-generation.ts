@@ -7,7 +7,7 @@ import {
   failImageGeneration,
   waitForImageGeneration,
 } from "@/lib/db/entity-images";
-import type { entity_image_type as EntityImageType } from "@/lib/prisma";
+import type { EntityImageType } from "@/lib/db/schema";
 
 export interface ImageGenerationOptions {
   baseUrl: string;

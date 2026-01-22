@@ -1,12 +1,43 @@
 "use server";
-import { toItem, toItemMini } from "@/lib/services/items/converters";
-import { toMonster, toMonsterMini } from "@/lib/services/monsters/converters";
-import type { Collection, CollectionOverview } from "@/lib/types";
+import { and, asc, desc, eq, gt, inArray, like, lt, or } from "drizzle-orm";
+import { getDatabase } from "@/lib/db/drizzle";
+import {
+  type AwardRow,
+  awards,
+  type ConditionRow,
+  collections,
+  conditions,
+  type FamilyRow,
+  families,
+  type ItemRow,
+  items,
+  itemsAwards,
+  itemsCollections,
+  type MonsterRow,
+  monsters,
+  monstersAwards,
+  monstersCollections,
+  monstersConditions,
+  monstersFamilies,
+  type SourceRow,
+  sources,
+  type UserRow,
+  users,
+} from "@/lib/db/schema";
+import type {
+  Ability,
+  Action,
+  Collection,
+  CollectionOverview,
+  FamilyOverview,
+  Source,
+  User,
+} from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
-import { toUser } from "../../db/converters";
-import { prisma } from "../../db/index";
+import type { Item, ItemMini, ItemRarity } from "../items/types";
+import type { Monster, MonsterMini, MonsterRole } from "../monsters/types";
 
 export type CollectionSortBy = "name" | "createdAt";
 export type CollectionSortDirection = "asc" | "desc";
@@ -24,6 +55,184 @@ export interface ListCollectionsParams {
   limit?: number;
   sort?: "name" | "-name" | "createdAt" | "-createdAt";
 }
+
+// Helper converters
+const toUserFromRow = (u: UserRow): User => ({
+  id: u.id,
+  discordId: u.discordId ?? "",
+  username: u.username ?? "",
+  displayName: u.displayName || u.username || "",
+  imageUrl:
+    u.imageUrl ||
+    (u.avatar
+      ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
+      : "https://cdn.discordapp.com/embed/avatars/0.png"),
+});
+
+const toSourceFromRow = (s: SourceRow | null): Source | undefined => {
+  if (!s) return undefined;
+  return {
+    id: s.id,
+    name: s.name,
+    license: s.license,
+    link: s.link,
+    abbreviation: s.abbreviation,
+    createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+    updatedAt: s.updatedAt ? new Date(s.updatedAt) : new Date(),
+  };
+};
+
+const toAwardFromRow = (a: AwardRow) => ({
+  id: a.id,
+  slug: a.slug,
+  name: a.name,
+  abbreviation: a.abbreviation,
+  description: a.description,
+  url: a.url,
+  color: a.color,
+  icon: a.icon,
+  createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),
+  updatedAt: a.updatedAt ? new Date(a.updatedAt) : new Date(),
+});
+
+const toAbilitiesFromRow = (abilities: unknown): Ability[] => {
+  return ((abilities as Omit<Ability, "id">[]) || []).map((ability) => ({
+    ...ability,
+    id: crypto.randomUUID(),
+  }));
+};
+
+const toActionsFromRow = (actions: unknown): Action[] => {
+  return ((actions as Omit<Action, "id">[]) || []).map((action) => ({
+    ...action,
+    id: crypto.randomUUID(),
+  }));
+};
+
+const toMonsterMiniFromRow = (m: MonsterRow): MonsterMini => ({
+  id: m.id,
+  hp: m.hp,
+  legendary: m.legendary || false,
+  minion: m.minion,
+  level: m.level,
+  levelInt: m.levelInt,
+  name: m.name,
+  visibility: (m.visibility ?? "public") as "public" | "private",
+  size: m.size,
+  armor: m.armor === "" ? "none" : m.armor,
+  paperforgeId: m.paperforgeId ?? undefined,
+  createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
+  role: m.role as MonsterRole | null,
+});
+
+const toItemMiniFromRow = (item: ItemRow): ItemMini => ({
+  id: item.id,
+  name: item.name,
+  kind: item.kind || undefined,
+  rarity: (item.rarity ?? "unspecified") as ItemRarity,
+  visibility: (item.visibility ?? "public") as "public" | "private",
+  imageIcon: item.imageIcon || undefined,
+  imageBgIcon: item.imageBgIcon || undefined,
+  imageColor: item.imageColor || undefined,
+  imageBgColor: item.imageBgColor || undefined,
+  createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
+  updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
+});
+
+// Full monster data for collection detail view
+interface MonsterFullData {
+  monster: MonsterRow;
+  creator: UserRow;
+  source: SourceRow | null;
+  awards: AwardRow[];
+  families: Array<{ family: FamilyRow; creator: UserRow }>;
+  conditions: Array<{ condition: ConditionRow; inline: boolean }>;
+  remixedFrom: { id: string; name: string; creator: UserRow } | null;
+}
+
+const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
+  id: data.monster.id,
+  hp: data.monster.hp,
+  legendary: data.monster.legendary || false,
+  minion: data.monster.minion,
+  level: data.monster.level,
+  levelInt: data.monster.levelInt,
+  name: data.monster.name,
+  visibility: (data.monster.visibility ?? "public") as "public" | "private",
+  size: data.monster.size,
+  armor: data.monster.armor === "" ? "none" : data.monster.armor,
+  paperforgeId: data.monster.paperforgeId ?? undefined,
+  createdAt: data.monster.createdAt
+    ? new Date(data.monster.createdAt)
+    : new Date(),
+  kind: data.monster.kind,
+  role: data.monster.role as MonsterRole | null,
+  bloodied: data.monster.bloodied,
+  lastStand: data.monster.lastStand,
+  speed: data.monster.speed,
+  fly: data.monster.fly,
+  swim: data.monster.swim,
+  climb: data.monster.climb,
+  teleport: data.monster.teleport,
+  burrow: data.monster.burrow,
+  saves: data.monster.saves,
+  updatedAt: data.monster.updatedAt
+    ? new Date(data.monster.updatedAt)
+    : new Date(),
+  abilities: toAbilitiesFromRow(data.monster.abilities),
+  actions: toActionsFromRow(data.monster.actions),
+  actionPreface: data.monster.actionPreface || "",
+  moreInfo: data.monster.moreInfo || "",
+  families: data.families
+    .map((f) => ({
+      id: f.family.id,
+      name: f.family.name,
+      description: f.family.description ?? undefined,
+      abilities: toAbilitiesFromRow(f.family.abilities),
+      visibility: f.family.visibility ?? "public",
+      creatorId: f.creator.discordId,
+      creator: toUserFromRow(f.creator),
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name)) as FamilyOverview[],
+  creator: toUserFromRow(data.creator),
+  source: toSourceFromRow(data.source),
+  awards: data.awards.map(toAwardFromRow),
+  remixedFromId: data.monster.remixedFromId || null,
+  remixedFrom: data.remixedFrom
+    ? {
+        id: data.remixedFrom.id,
+        name: data.remixedFrom.name,
+        creator: toUserFromRow(data.remixedFrom.creator),
+      }
+    : null,
+});
+
+// Full item data for collection detail view
+interface ItemFullData {
+  item: ItemRow;
+  creator: UserRow;
+  source: SourceRow | null;
+  awards: AwardRow[];
+}
+
+const toItemFromFullData = (data: ItemFullData): Item => ({
+  id: data.item.id,
+  name: data.item.name,
+  kind: data.item.kind || undefined,
+  rarity: (data.item.rarity ?? "unspecified") as ItemRarity,
+  visibility: (data.item.visibility ?? "public") as "public" | "private",
+  imageIcon: data.item.imageIcon || undefined,
+  imageBgIcon: data.item.imageBgIcon || undefined,
+  imageColor: data.item.imageColor || undefined,
+  imageBgColor: data.item.imageBgColor || undefined,
+  createdAt: data.item.createdAt ? new Date(data.item.createdAt) : new Date(),
+  updatedAt: data.item.updatedAt ? new Date(data.item.updatedAt) : new Date(),
+  description: data.item.description,
+  moreInfo: data.item.moreInfo || undefined,
+  creator: toUserFromRow(data.creator),
+  source: toSourceFromRow(data.source),
+  awards: data.awards.map(toAwardFromRow),
+});
 
 export const listPublicCollections = async ({
   cursor,
@@ -43,127 +252,166 @@ export const listPublicCollections = async ({
 
   const isDesc = sort.startsWith("-");
   const sortField = isDesc ? sort.slice(1) : sort;
-  const sortDir = isDesc ? "desc" : "asc";
 
-  let orderBy:
-    | [{ name: "asc" | "desc" }, { id: "asc" | "desc" }]
-    | [{ createdAt: "asc" | "desc" }, { id: "asc" | "desc" }];
+  const db = await getDatabase();
 
-  if (sortField === "name") {
-    orderBy = [{ name: sortDir }, { id: "asc" }];
-  } else {
-    orderBy = [{ createdAt: sortDir }, { id: "asc" }];
-  }
-
-  const where: {
-    visibility: "public";
-    OR?: Array<{
-      name?: { gt?: string; lt?: string };
-      createdAt?: { gt?: Date; lt?: Date };
-      AND?: Array<{
-        name?: string;
-        createdAt?: Date;
-        id?: { gt: string };
-      }>;
-    }>;
-  } = { visibility: "public" };
+  // Build where conditions
+  const whereConditions = [eq(collections.visibility, "public")];
 
   if (cursorData) {
-    const op = isDesc ? "lt" : "gt";
-
+    const op = isDesc ? lt : gt;
     if (sortField === "name") {
-      where.OR = [
-        { name: { [op]: cursorData.value as string } },
-        {
-          AND: [
-            { name: cursorData.value as string },
-            { id: { gt: cursorData.id } },
-          ],
-        },
-      ];
+      const condition = or(
+        op(collections.name, cursorData.value as string),
+        and(
+          eq(collections.name, cursorData.value as string),
+          gt(collections.id, cursorData.id)
+        )
+      );
+      if (condition) whereConditions.push(condition);
     } else if (sortField === "createdAt") {
-      const date = new Date(cursorData.value as string);
-      where.OR = [
-        { createdAt: { [op]: date } },
-        { AND: [{ createdAt: date }, { id: { gt: cursorData.id } }] },
-      ];
+      const condition = or(
+        op(collections.createdAt, cursorData.value as string),
+        and(
+          eq(collections.createdAt, cursorData.value as string),
+          gt(collections.id, cursorData.id)
+        )
+      );
+      if (condition) whereConditions.push(condition);
     }
   }
 
-  const collections = await prisma.collection.findMany({
-    where,
-    include: {
-      creator: true,
-      monsterCollections: {
-        where: { monster: { visibility: "public" } },
-        include: {
-          monster: {},
-        },
-        orderBy: { monster: { name: "asc" } },
-      },
-      itemCollections: {
-        where: { item: { visibility: "public" } },
-        include: {
-          item: {},
-        },
-        orderBy: { item: { name: "asc" } },
-      },
-    },
-    orderBy,
-    take: limit + 1,
+  // Build order by
+  const orderBy =
+    sortField === "name"
+      ? [
+          isDesc ? desc(collections.name) : asc(collections.name),
+          asc(collections.id),
+        ]
+      : [
+          isDesc ? desc(collections.createdAt) : asc(collections.createdAt),
+          asc(collections.id),
+        ];
+
+  // Query collections with creators
+  const collectionRows = await db
+    .select()
+    .from(collections)
+    .innerJoin(users, eq(collections.creatorId, users.id))
+    .where(and(...whereConditions))
+    .orderBy(...orderBy)
+    .limit(limit + 1);
+
+  const collectionIds = collectionRows
+    .slice(0, limit)
+    .map((r) => r.collections.id);
+
+  if (collectionIds.length === 0) {
+    return { collections: [], nextCursor: null };
+  }
+
+  // Fetch public monsters in these collections
+  const monsterJoins = await db
+    .select({
+      collectionId: monstersCollections.collectionId,
+      monster: monsters,
+    })
+    .from(monstersCollections)
+    .innerJoin(monsters, eq(monstersCollections.monsterId, monsters.id))
+    .where(
+      and(
+        inArray(monstersCollections.collectionId, collectionIds),
+        eq(monsters.visibility, "public")
+      )
+    );
+
+  // Fetch public items in these collections
+  const itemJoins = await db
+    .select({
+      collectionId: itemsCollections.collectionId,
+      item: items,
+    })
+    .from(itemsCollections)
+    .innerJoin(items, eq(itemsCollections.itemId, items.id))
+    .where(
+      and(
+        inArray(itemsCollections.collectionId, collectionIds),
+        eq(items.visibility, "public")
+      )
+    );
+
+  // Group by collection
+  const monstersByCollection = new Map<string, MonsterRow[]>();
+  for (const row of monsterJoins) {
+    const existing = monstersByCollection.get(row.collectionId) || [];
+    existing.push(row.monster);
+    monstersByCollection.set(row.collectionId, existing);
+  }
+
+  const itemsByCollection = new Map<string, ItemRow[]>();
+  for (const row of itemJoins) {
+    const existing = itemsByCollection.get(row.collectionId) || [];
+    existing.push(row.item);
+    itemsByCollection.set(row.collectionId, existing);
+  }
+
+  // Filter to collections that have content
+  const filteredRows = collectionRows.filter((r) => {
+    const hasMonsters =
+      (monstersByCollection.get(r.collections.id)?.length ?? 0) > 0;
+    const hasItems = (itemsByCollection.get(r.collections.id)?.length ?? 0) > 0;
+    return hasMonsters || hasItems;
   });
 
-  const filtered = collections.filter(
-    (c) => c.monsterCollections.length > 0 || c.itemCollections.length > 0
-  );
+  const hasMore = filteredRows.length > limit;
+  const resultRows = hasMore ? filteredRows.slice(0, limit) : filteredRows;
 
-  const hasMore = filtered.length > limit;
-  const results = hasMore ? filtered.slice(0, limit) : filtered;
+  // Build results
+  const results: CollectionOverview[] = resultRows.map((row) => {
+    const collectionMonsters =
+      monstersByCollection.get(row.collections.id) || [];
+    const collectionItems = itemsByCollection.get(row.collections.id) || [];
+    const legendaryCount = collectionMonsters.filter((m) => m.legendary).length;
 
+    return {
+      id: row.collections.id,
+      creator: toUserFromRow(row.users),
+      description: row.collections.description ?? undefined,
+      legendaryCount,
+      monsters: collectionMonsters
+        .map(toMonsterMiniFromRow)
+        .sort((a, b) => a.name.localeCompare(b.name)),
+      name: row.collections.name,
+      standardCount: collectionMonsters.length - legendaryCount,
+      visibility:
+        row.collections.visibility === "private" ? "private" : "public",
+      createdAt: row.collections.createdAt
+        ? new Date(row.collections.createdAt)
+        : undefined,
+      items: collectionItems
+        .map(toItemMiniFromRow)
+        .sort((a, b) => a.name.localeCompare(b.name)),
+      itemCount: collectionItems.length,
+      spellSchools: [],
+    };
+  });
+
+  // Build next cursor
   let nextCursor: string | null = null;
-  if (hasMore) {
-    const lastCollection = results[results.length - 1];
-    let cursorData: CursorData;
-
-    if (sortField === "name") {
-      cursorData = {
-        sort: sort as "name" | "-name",
-        value: lastCollection.name,
-        id: lastCollection.id,
-      };
-    } else {
-      cursorData = {
-        sort: sort as "createdAt" | "-createdAt",
-        value: (lastCollection.createdAt ?? new Date()).toISOString(),
-        id: lastCollection.id,
-      };
-    }
-
+  if (hasMore && resultRows.length > 0) {
+    const lastRow = resultRows[resultRows.length - 1];
+    const cursorData: CursorData = {
+      sort: sort as "name" | "-name" | "createdAt" | "-createdAt",
+      value:
+        sortField === "name"
+          ? lastRow.collections.name
+          : (lastRow.collections.createdAt ?? new Date().toISOString()),
+      id: lastRow.collections.id,
+    };
     nextCursor = encodeCursor(cursorData);
   }
 
-  return {
-    collections: results.map((c) => {
-      const legendaryCount = c.monsterCollections.filter(
-        (m) => m.monster.legendary
-      ).length;
-      return {
-        id: c.id,
-        creator: toUser(c.creator),
-        description: c.description ?? undefined,
-        legendaryCount,
-        monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
-        name: c.name,
-        standardCount: c.monsterCollections.length - legendaryCount,
-        visibility: c.visibility === "private" ? "private" : "public",
-        createdAt: c.createdAt ?? undefined,
-        items: c.itemCollections?.map((ic) => toItemMini(ic.item)) || [],
-        itemCount: c.itemCollections?.length || 0,
-        spellSchools: [],
-      };
-    }),
-    nextCursor,
-  };
+  return { collections: results, nextCursor };
 };
 
 export const searchPublicCollections = async ({
@@ -173,82 +421,126 @@ export const searchPublicCollections = async ({
   limit,
   offset,
 }: SearchCollectionsParams): Promise<CollectionOverview[]> => {
-  const whereClause: {
-    visibility: "public";
-    OR?: Array<{
-      name?: { contains: string; mode: "insensitive" };
-      description?: { contains: string; mode: "insensitive" };
-    }>;
-  } = {
-    visibility: "public",
-  };
+  const db = await getDatabase();
+
+  // Build where conditions
+  const whereConditions = [eq(collections.visibility, "public")];
 
   if (searchTerm) {
-    whereClause.OR = [
-      { name: { contains: searchTerm, mode: "insensitive" } },
-      { description: { contains: searchTerm, mode: "insensitive" } },
-    ];
+    const searchCondition = or(
+      like(collections.name, `%${searchTerm}%`),
+      like(collections.description, `%${searchTerm}%`)
+    );
+    if (searchCondition) whereConditions.push(searchCondition);
   }
 
-  let orderBy: { name: "asc" | "desc" } | { createdAt: "asc" | "desc" } = {
-    createdAt: sortDirection,
-  };
+  // Build order by
+  const orderBy =
+    sortBy === "name"
+      ? sortDirection === "desc"
+        ? desc(collections.name)
+        : asc(collections.name)
+      : sortDirection === "desc"
+        ? desc(collections.createdAt)
+        : asc(collections.createdAt);
 
-  if (sortBy === "name") {
-    orderBy = { name: sortDirection };
-  } else if (sortBy === "createdAt") {
-    orderBy = { createdAt: sortDirection };
+  // Query collections with creators
+  const collectionRows = await db
+    .select()
+    .from(collections)
+    .innerJoin(users, eq(collections.creatorId, users.id))
+    .where(and(...whereConditions))
+    .orderBy(orderBy)
+    .limit(limit)
+    .offset(offset ?? 0);
+
+  const collectionIds = collectionRows.map((r) => r.collections.id);
+
+  if (collectionIds.length === 0) {
+    return [];
   }
 
-  const collections = await prisma.collection.findMany({
-    where: whereClause,
-    orderBy,
-    take: limit,
-    skip: offset,
-    include: {
-      creator: true,
-      monsterCollections: {
-        where: { monster: { visibility: "public" } },
-        include: {
-          monster: {},
-        },
-        orderBy: { monster: { name: "asc" } },
-      },
-      itemCollections: {
-        where: { item: { visibility: "public" } },
-        include: {
-          item: {},
-        },
-        orderBy: { item: { name: "asc" } },
-      },
-      spellSchoolCollections: {
-        include: {
-          spellSchool: true,
-        },
-      },
-    },
-  });
+  // Fetch public monsters in these collections
+  const monsterJoins = await db
+    .select({
+      collectionId: monstersCollections.collectionId,
+      monster: monsters,
+    })
+    .from(monstersCollections)
+    .innerJoin(monsters, eq(monstersCollections.monsterId, monsters.id))
+    .where(
+      and(
+        inArray(monstersCollections.collectionId, collectionIds),
+        eq(monsters.visibility, "public")
+      )
+    );
 
-  return collections
-    .filter(
-      (c) => c.monsterCollections.length > 0 || c.itemCollections.length > 0
-    )
-    .map((c) => {
-      const legendaryCount = c.monsterCollections.filter(
-        (m) => m.monster.legendary
+  // Fetch public items in these collections
+  const itemJoins = await db
+    .select({
+      collectionId: itemsCollections.collectionId,
+      item: items,
+    })
+    .from(itemsCollections)
+    .innerJoin(items, eq(itemsCollections.itemId, items.id))
+    .where(
+      and(
+        inArray(itemsCollections.collectionId, collectionIds),
+        eq(items.visibility, "public")
+      )
+    );
+
+  // Group by collection
+  const monstersByCollection = new Map<string, MonsterRow[]>();
+  for (const row of monsterJoins) {
+    const existing = monstersByCollection.get(row.collectionId) || [];
+    existing.push(row.monster);
+    monstersByCollection.set(row.collectionId, existing);
+  }
+
+  const itemsByCollection = new Map<string, ItemRow[]>();
+  for (const row of itemJoins) {
+    const existing = itemsByCollection.get(row.collectionId) || [];
+    existing.push(row.item);
+    itemsByCollection.set(row.collectionId, existing);
+  }
+
+  // Filter and map results
+  return collectionRows
+    .filter((r) => {
+      const hasMonsters =
+        (monstersByCollection.get(r.collections.id)?.length ?? 0) > 0;
+      const hasItems =
+        (itemsByCollection.get(r.collections.id)?.length ?? 0) > 0;
+      return hasMonsters || hasItems;
+    })
+    .map((row) => {
+      const collectionMonsters =
+        monstersByCollection.get(row.collections.id) || [];
+      const collectionItems = itemsByCollection.get(row.collections.id) || [];
+      const legendaryCount = collectionMonsters.filter(
+        (m) => m.legendary
       ).length;
+
       return {
-        id: c.id,
-        creator: toUser(c.creator),
-        description: c.description ?? undefined,
+        id: row.collections.id,
+        creator: toUserFromRow(row.users),
+        description: row.collections.description ?? undefined,
         legendaryCount,
-        monsters: c.monsterCollections.map((mc) => toMonsterMini(mc.monster)),
-        name: c.name,
-        standardCount: c.monsterCollections.length - legendaryCount,
-        visibility: c.visibility === "private" ? "private" : "public",
-        createdAt: c.createdAt ?? undefined,
-        items: c.itemCollections?.map((ic) => toItemMini(ic.item)) || [],
-        itemCount: c.itemCollections?.length || 0,
+        monsters: collectionMonsters
+          .map(toMonsterMiniFromRow)
+          .sort((a, b) => a.name.localeCompare(b.name)),
+        name: row.collections.name,
+        standardCount: collectionMonsters.length - legendaryCount,
+        visibility:
+          row.collections.visibility === "private" ? "private" : "public",
+        createdAt: row.collections.createdAt
+          ? new Date(row.collections.createdAt)
+          : undefined,
+        items: collectionItems
+          .map(toItemMiniFromRow)
+          .sort((a, b) => a.name.localeCompare(b.name)),
+        itemCount: collectionItems.length,
         spellSchools: [],
       };
     });
@@ -259,64 +551,207 @@ export const findPublicCollectionById = async (
 ): Promise<Collection | null> => {
   if (!isValidUUID(id)) return null;
 
-  const c = await prisma.collection.findUnique({
-    where: { id, visibility: "public" },
-    include: {
-      creator: true,
-      monsterCollections: {
-        where: { monster: { visibility: "public" } },
-        include: {
-          monster: {
-            include: {
-              monsterFamilies: {
-                include: { family: { include: { creator: true } } },
-              },
-              creator: true,
-              source: true,
-              monsterConditions: { include: { condition: true } },
-              monsterAwards: { include: { award: true } },
-              remixedFrom: { include: { creator: true } },
-            },
-          },
-        },
-      },
-      itemCollections: {
-        where: { item: { visibility: "public" } },
-        include: {
-          item: {
-            include: {
-              creator: true,
-              source: true,
-              itemAwards: { include: { award: true } },
-            },
-          },
-        },
-      },
-    },
-  });
+  const db = await getDatabase();
 
-  if (!c) return null;
+  // Get collection with creator
+  const collectionResult = await db
+    .select()
+    .from(collections)
+    .innerJoin(users, eq(collections.creatorId, users.id))
+    .where(and(eq(collections.id, id), eq(collections.visibility, "public")))
+    .limit(1);
 
-  const legendaryCount = c.monsterCollections.filter(
-    (m) => m.monster.legendary
-  ).length;
+  if (collectionResult.length === 0) return null;
+
+  const collectionRow = collectionResult[0];
+
+  // Get public monster IDs in this collection
+  const monsterJoins = await db
+    .select({ monsterId: monstersCollections.monsterId })
+    .from(monstersCollections)
+    .innerJoin(monsters, eq(monstersCollections.monsterId, monsters.id))
+    .where(
+      and(
+        eq(monstersCollections.collectionId, id),
+        eq(monsters.visibility, "public")
+      )
+    );
+
+  const monsterIds = monsterJoins.map((r) => r.monsterId);
+
+  // Get public item IDs in this collection
+  const itemJoins = await db
+    .select({ itemId: itemsCollections.itemId })
+    .from(itemsCollections)
+    .innerJoin(items, eq(itemsCollections.itemId, items.id))
+    .where(
+      and(eq(itemsCollections.collectionId, id), eq(items.visibility, "public"))
+    );
+
+  const itemIds = itemJoins.map((r) => r.itemId);
+
+  // Load full monster data
+  const monstersData: Monster[] = [];
+  if (monsterIds.length > 0) {
+    // Get base monster data
+    const monsterRows = await db
+      .select()
+      .from(monsters)
+      .innerJoin(users, eq(monsters.userId, users.id))
+      .leftJoin(sources, eq(monsters.sourceId, sources.id))
+      .where(inArray(monsters.id, monsterIds));
+
+    // Get families
+    const familyJoins = await db
+      .select({
+        monsterId: monstersFamilies.monsterId,
+        family: families,
+        creator: users,
+      })
+      .from(monstersFamilies)
+      .innerJoin(families, eq(monstersFamilies.familyId, families.id))
+      .innerJoin(users, eq(families.creatorId, users.id))
+      .where(inArray(monstersFamilies.monsterId, monsterIds));
+
+    const familiesByMonster = new Map<
+      string,
+      Array<{ family: FamilyRow; creator: UserRow }>
+    >();
+    for (const row of familyJoins) {
+      const existing = familiesByMonster.get(row.monsterId) || [];
+      existing.push({ family: row.family, creator: row.creator });
+      familiesByMonster.set(row.monsterId, existing);
+    }
+
+    // Get conditions
+    const conditionJoins = await db
+      .select({
+        monsterId: monstersConditions.monsterId,
+        condition: conditions,
+        inline: monstersConditions.inline,
+      })
+      .from(monstersConditions)
+      .innerJoin(conditions, eq(monstersConditions.conditionId, conditions.id))
+      .where(inArray(monstersConditions.monsterId, monsterIds));
+
+    const conditionsByMonster = new Map<
+      string,
+      Array<{ condition: ConditionRow; inline: boolean }>
+    >();
+    for (const row of conditionJoins) {
+      const existing = conditionsByMonster.get(row.monsterId) || [];
+      existing.push({ condition: row.condition, inline: row.inline });
+      conditionsByMonster.set(row.monsterId, existing);
+    }
+
+    // Get awards
+    const awardJoins = await db
+      .select({ monsterId: monstersAwards.monsterId, award: awards })
+      .from(monstersAwards)
+      .innerJoin(awards, eq(monstersAwards.awardId, awards.id))
+      .where(inArray(monstersAwards.monsterId, monsterIds));
+
+    const awardsByMonster = new Map<string, AwardRow[]>();
+    for (const row of awardJoins) {
+      const existing = awardsByMonster.get(row.monsterId) || [];
+      existing.push(row.award);
+      awardsByMonster.set(row.monsterId, existing);
+    }
+
+    // Get remixed from data
+    const remixedFromIds = monsterRows
+      .map((r) => r.monsters.remixedFromId)
+      .filter((id): id is string => id !== null);
+
+    const remixedFromMap = new Map<
+      string,
+      { id: string; name: string; creator: UserRow }
+    >();
+    if (remixedFromIds.length > 0) {
+      const remixedFromRows = await db
+        .select()
+        .from(monsters)
+        .innerJoin(users, eq(monsters.userId, users.id))
+        .where(inArray(monsters.id, remixedFromIds));
+
+      for (const row of remixedFromRows) {
+        remixedFromMap.set(row.monsters.id, {
+          id: row.monsters.id,
+          name: row.monsters.name,
+          creator: row.users,
+        });
+      }
+    }
+
+    // Convert to Monster objects
+    for (const row of monsterRows) {
+      const fullData: MonsterFullData = {
+        monster: row.monsters,
+        creator: row.users,
+        source: row.sources,
+        awards: awardsByMonster.get(row.monsters.id) || [],
+        families: familiesByMonster.get(row.monsters.id) || [],
+        conditions: conditionsByMonster.get(row.monsters.id) || [],
+        remixedFrom: row.monsters.remixedFromId
+          ? remixedFromMap.get(row.monsters.remixedFromId) || null
+          : null,
+      };
+      monstersData.push(toMonsterFromFullData(fullData));
+    }
+  }
+
+  // Load full item data
+  const itemsData: Item[] = [];
+  if (itemIds.length > 0) {
+    const itemRows = await db
+      .select()
+      .from(items)
+      .innerJoin(users, eq(items.userId, users.id))
+      .leftJoin(sources, eq(items.sourceId, sources.id))
+      .where(inArray(items.id, itemIds));
+
+    // Get awards for items
+    const itemAwardJoins = await db
+      .select({ itemId: itemsAwards.itemId, award: awards })
+      .from(itemsAwards)
+      .innerJoin(awards, eq(itemsAwards.awardId, awards.id))
+      .where(inArray(itemsAwards.itemId, itemIds));
+
+    const awardsByItem = new Map<string, AwardRow[]>();
+    for (const row of itemAwardJoins) {
+      const existing = awardsByItem.get(row.itemId) || [];
+      existing.push(row.award);
+      awardsByItem.set(row.itemId, existing);
+    }
+
+    for (const row of itemRows) {
+      const fullData: ItemFullData = {
+        item: row.items,
+        creator: row.users,
+        source: row.sources,
+        awards: awardsByItem.get(row.items.id) || [],
+      };
+      itemsData.push(toItemFromFullData(fullData));
+    }
+  }
+
+  const legendaryCount = monstersData.filter((m) => m.legendary).length;
 
   return {
-    id: c.id,
-    name: c.name,
-    description: c.description ?? undefined,
-    visibility: c.visibility === "private" ? "private" : "public",
-    createdAt: c.createdAt ?? undefined,
+    id: collectionRow.collections.id,
+    name: collectionRow.collections.name,
+    description: collectionRow.collections.description ?? undefined,
+    visibility:
+      collectionRow.collections.visibility === "private" ? "private" : "public",
+    createdAt: collectionRow.collections.createdAt
+      ? new Date(collectionRow.collections.createdAt)
+      : undefined,
     legendaryCount,
-    standardCount: c.monsterCollections.length - legendaryCount,
-    creator: toUser(c.creator),
-    monsters: c.monsterCollections
-      .flatMap((mc) => toMonster(mc.monster))
-      .sort((a, b) => a.name.localeCompare(b.name)),
-    items: c.itemCollections
-      .flatMap((ic) => toItem(ic.item))
-      .sort((a, b) => a.name.localeCompare(b.name)),
-    itemCount: c.itemCollections.length,
+    standardCount: monstersData.length - legendaryCount,
+    creator: toUserFromRow(collectionRow.users),
+    monsters: monstersData.sort((a, b) => a.name.localeCompare(b.name)),
+    items: itemsData.sort((a, b) => a.name.localeCompare(b.name)),
+    itemCount: itemsData.length,
     spellSchools: [],
   };
 };

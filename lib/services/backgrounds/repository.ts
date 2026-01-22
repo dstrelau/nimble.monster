@@ -1,10 +1,21 @@
 "use server";
-import { prisma } from "@/lib/db/prisma";
-import type { Prisma } from "@/lib/prisma";
+import { and, asc, desc, eq, gt, inArray, like, lt, or } from "drizzle-orm";
+import { getDatabase } from "@/lib/db/drizzle";
+import {
+  type AwardRow,
+  awards,
+  type BackgroundRow,
+  backgrounds,
+  backgroundsAwards,
+  type SourceRow,
+  sources,
+  type UserRow,
+  users,
+} from "@/lib/db/schema";
+import type { Source, User } from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
-import { toBackground, toBackgroundMini } from "./converters";
 import type { PaginateBackgroundsParams } from "./service";
 import type {
   Background,
@@ -14,28 +25,150 @@ import type {
   UpdateBackgroundInput,
 } from "./types";
 
+// Helper converters
+const toUserFromRow = (u: UserRow): User => ({
+  id: u.id,
+  discordId: u.discordId ?? "",
+  username: u.username ?? "",
+  displayName: u.displayName || u.username || "",
+  imageUrl:
+    u.imageUrl ||
+    (u.avatar
+      ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
+      : "https://cdn.discordapp.com/embed/avatars/0.png"),
+});
+
+const toSourceFromRow = (s: SourceRow | null): Source | undefined => {
+  if (!s) return undefined;
+  return {
+    id: s.id,
+    name: s.name,
+    license: s.license,
+    link: s.link,
+    abbreviation: s.abbreviation,
+    createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+    updatedAt: s.updatedAt ? new Date(s.updatedAt) : new Date(),
+  };
+};
+
+const toAwardFromRow = (a: AwardRow) => ({
+  id: a.id,
+  slug: a.slug,
+  name: a.name,
+  abbreviation: a.abbreviation,
+  description: a.description,
+  url: a.url,
+  color: a.color,
+  icon: a.icon,
+  createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),
+  updatedAt: a.updatedAt ? new Date(a.updatedAt) : new Date(),
+});
+
+const toBackgroundMiniFromRow = (b: BackgroundRow): BackgroundMini => ({
+  id: b.id,
+  name: b.name,
+  requirement: b.requirement || undefined,
+  createdAt: b.createdAt ? new Date(b.createdAt) : new Date(),
+  updatedAt: b.updatedAt ? new Date(b.updatedAt) : new Date(),
+});
+
+interface BackgroundFullData {
+  background: BackgroundRow;
+  creator: UserRow;
+  source: SourceRow | null;
+  awards: AwardRow[];
+}
+
+const toBackgroundFromFullData = (data: BackgroundFullData): Background => ({
+  id: data.background.id,
+  name: data.background.name,
+  requirement: data.background.requirement || undefined,
+  createdAt: data.background.createdAt
+    ? new Date(data.background.createdAt)
+    : new Date(),
+  updatedAt: data.background.updatedAt
+    ? new Date(data.background.updatedAt)
+    : new Date(),
+  description: data.background.description,
+  creator: toUserFromRow(data.creator),
+  source: toSourceFromRow(data.source),
+  awards: data.awards.map(toAwardFromRow),
+});
+
+async function loadBackgroundFullData(
+  db: Awaited<ReturnType<typeof getDatabase>>,
+  backgroundIds: string[]
+): Promise<Map<string, BackgroundFullData>> {
+  if (backgroundIds.length === 0) return new Map();
+
+  const backgroundRows = await db
+    .select()
+    .from(backgrounds)
+    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
+    .where(inArray(backgrounds.id, backgroundIds));
+
+  const awardRows = await db
+    .select({ backgroundId: backgroundsAwards.backgroundId, award: awards })
+    .from(backgroundsAwards)
+    .innerJoin(awards, eq(backgroundsAwards.awardId, awards.id))
+    .where(inArray(backgroundsAwards.backgroundId, backgroundIds));
+
+  const awardsByBackground = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsByBackground.get(row.backgroundId) || [];
+    existing.push(row.award);
+    awardsByBackground.set(row.backgroundId, existing);
+  }
+
+  const result = new Map<string, BackgroundFullData>();
+  for (const row of backgroundRows) {
+    result.set(row.backgrounds.id, {
+      background: row.backgrounds,
+      creator: row.users,
+      source: row.sources,
+      awards: awardsByBackground.get(row.backgrounds.id) || [],
+    });
+  }
+
+  return result;
+}
+
 export const deleteBackground = async (
   id: string,
   discordId: string
 ): Promise<boolean> => {
   if (!isValidUUID(id)) return false;
 
-  const background = await prisma.background.delete({
-    where: {
-      id: id,
-      creator: { discordId },
-    },
-  });
+  const db = await getDatabase();
 
-  return !!background;
+  // First find the user by discordId
+  const userResult = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) return false;
+
+  const result = await db
+    .delete(backgrounds)
+    .where(
+      and(eq(backgrounds.id, id), eq(backgrounds.userId, userResult[0].id))
+    );
+
+  return result.rowsAffected > 0;
 };
 
 export const listPublicBackgrounds = async (): Promise<BackgroundMini[]> => {
-  return (
-    await prisma.background.findMany({
-      orderBy: { name: "asc" },
-    })
-  ).map(toBackgroundMini);
+  const db = await getDatabase();
+
+  const result = await db
+    .select()
+    .from(backgrounds)
+    .orderBy(asc(backgrounds.name));
+
+  return result.map(toBackgroundMiniFromRow);
 };
 
 export const paginatePublicBackgrounds = async ({
@@ -59,139 +192,220 @@ export const paginatePublicBackgrounds = async ({
 
   const isDesc = sort.startsWith("-");
   const sortField = isDesc ? sort.slice(1) : sort;
-  const sortDir = isDesc ? "desc" : "asc";
 
-  let orderBy:
-    | [{ name: "asc" | "desc" }, { id: "asc" | "desc" }]
-    | [{ createdAt: "asc" | "desc" }, { id: "asc" | "desc" }];
+  const db = await getDatabase();
 
-  if (sortField === "name") {
-    orderBy = [{ name: sortDir }, { id: "asc" }];
-  } else {
-    orderBy = [{ createdAt: sortDir }, { id: "asc" }];
-  }
-
-  const where: Prisma.BackgroundWhereInput = {};
+  // Build where conditions
+  const conditions: ReturnType<typeof eq>[] = [];
 
   if (creatorId) {
-    where.creator = { id: creatorId };
+    conditions.push(eq(backgrounds.userId, creatorId));
   }
 
   if (sourceId) {
-    where.sourceId = sourceId;
+    conditions.push(eq(backgrounds.sourceId, sourceId));
   }
 
   if (search) {
-    where.name = { contains: search, mode: "insensitive" };
+    conditions.push(like(backgrounds.name, `%${search}%`));
   }
 
+  // Build cursor conditions
+  let cursorConditions: ReturnType<typeof or> | undefined;
   if (cursorData) {
-    const op = isDesc ? "lt" : "gt";
+    const op = isDesc ? lt : gt;
 
     if (sortField === "name") {
-      where.OR = [
-        { name: { [op]: cursorData.value as string } },
-        {
-          AND: [
-            { name: cursorData.value as string },
-            { id: { gt: cursorData.id } },
-          ],
-        },
-      ];
+      cursorConditions = or(
+        op(backgrounds.name, cursorData.value as string),
+        and(
+          eq(backgrounds.name, cursorData.value as string),
+          gt(backgrounds.id, cursorData.id)
+        )
+      );
     } else if (sortField === "createdAt") {
-      const date = new Date(cursorData.value as string);
-      where.OR = [
-        { createdAt: { [op]: date } },
-        { AND: [{ createdAt: date }, { id: { gt: cursorData.id } }] },
-      ];
+      cursorConditions = or(
+        op(backgrounds.createdAt, cursorData.value as string),
+        and(
+          eq(backgrounds.createdAt, cursorData.value as string),
+          gt(backgrounds.id, cursorData.id)
+        )
+      );
     }
   }
 
-  const backgrounds = await prisma.background.findMany({
-    where,
-    include: {
-      creator: true,
-      source: true,
-      backgroundAwards: { include: { award: true } },
-    },
-    orderBy,
-    take: limit + 1,
+  const allConditions = [...conditions];
+  if (cursorConditions) {
+    allConditions.push(cursorConditions);
+  }
+
+  // Build order by
+  const orderBy =
+    sortField === "name"
+      ? [
+          isDesc ? desc(backgrounds.name) : asc(backgrounds.name),
+          asc(backgrounds.id),
+        ]
+      : [
+          isDesc ? desc(backgrounds.createdAt) : asc(backgrounds.createdAt),
+          asc(backgrounds.id),
+        ];
+
+  // Query backgrounds
+  const rows = await db
+    .select()
+    .from(backgrounds)
+    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
+    .where(allConditions.length > 0 ? and(...allConditions) : undefined)
+    .orderBy(...orderBy)
+    .limit(limit + 1);
+
+  const hasMore = rows.length > limit;
+  const resultRows = hasMore ? rows.slice(0, limit) : rows;
+
+  // Get background IDs for award lookup
+  const backgroundIds = resultRows.map((r) => r.backgrounds.id);
+
+  // Fetch awards
+  const awardRows =
+    backgroundIds.length > 0
+      ? await db
+          .select({
+            backgroundId: backgroundsAwards.backgroundId,
+            award: awards,
+          })
+          .from(backgroundsAwards)
+          .innerJoin(awards, eq(backgroundsAwards.awardId, awards.id))
+          .where(inArray(backgroundsAwards.backgroundId, backgroundIds))
+      : [];
+
+  const awardsByBackground = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsByBackground.get(row.backgroundId) || [];
+    existing.push(row.award);
+    awardsByBackground.set(row.backgroundId, existing);
+  }
+
+  // Convert to Background objects
+  const results = resultRows.map((row) => {
+    const fullData: BackgroundFullData = {
+      background: row.backgrounds,
+      creator: row.users,
+      source: row.sources,
+      awards: awardsByBackground.get(row.backgrounds.id) || [],
+    };
+    return toBackgroundFromFullData(fullData);
   });
 
-  const hasMore = backgrounds.length > limit;
-  const results = hasMore ? backgrounds.slice(0, limit) : backgrounds;
-
+  // Build next cursor
   let nextCursor: string | null = null;
-  if (hasMore) {
-    const lastBackground = results[results.length - 1];
-    let cursorData: CursorData;
-
-    if (sortField === "name") {
-      cursorData = {
-        sort: sort as "name" | "-name",
-        value: lastBackground.name,
-        id: lastBackground.id,
-      };
-    } else {
-      cursorData = {
-        sort: sort as "createdAt" | "-createdAt",
-        value: lastBackground.createdAt.toISOString(),
-        id: lastBackground.id,
-      };
-    }
-
+  if (hasMore && resultRows.length > 0) {
+    const lastRow = resultRows[resultRows.length - 1];
+    const cursorData: CursorData = {
+      sort: sort as "name" | "-name" | "createdAt" | "-createdAt",
+      value:
+        sortField === "name"
+          ? lastRow.backgrounds.name
+          : (lastRow.backgrounds.createdAt ?? new Date().toISOString()),
+      id: lastRow.backgrounds.id,
+    };
     nextCursor = encodeCursor(cursorData);
   }
 
-  return {
-    data: results.map(toBackground),
-    nextCursor,
-  };
+  return { data: results, nextCursor };
 };
 
 export const findBackground = async (
   id: string
 ): Promise<Background | null> => {
-  const background = await prisma.background.findUnique({
-    where: { id },
-    include: {
-      creator: true,
-      source: true,
-      backgroundAwards: { include: { award: true } },
-    },
-  });
-  return background ? toBackground(background) : null;
+  if (!isValidUUID(id)) return null;
+
+  const db = await getDatabase();
+
+  const fullDataMap = await loadBackgroundFullData(db, [id]);
+  const fullData = fullDataMap.get(id);
+
+  return fullData ? toBackgroundFromFullData(fullData) : null;
 };
 
 export const findBackgroundWithCreatorId = async (
   id: string,
   creatorId: string
 ): Promise<Background | null> => {
-  const background = await prisma.background.findUnique({
-    where: { id, creator: { id: creatorId } },
-    include: {
-      creator: true,
-      source: true,
-      backgroundAwards: { include: { award: true } },
-    },
-  });
-  return background ? toBackground(background) : null;
+  if (!isValidUUID(id)) return null;
+
+  const db = await getDatabase();
+
+  const result = await db
+    .select()
+    .from(backgrounds)
+    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
+    .where(and(eq(backgrounds.id, id), eq(backgrounds.userId, creatorId)))
+    .limit(1);
+
+  if (result.length === 0) return null;
+
+  const row = result[0];
+
+  // Fetch awards
+  const awardRows = await db
+    .select({ award: awards })
+    .from(backgroundsAwards)
+    .innerJoin(awards, eq(backgroundsAwards.awardId, awards.id))
+    .where(eq(backgroundsAwards.backgroundId, id));
+
+  const fullData: BackgroundFullData = {
+    background: row.backgrounds,
+    creator: row.users,
+    source: row.sources,
+    awards: awardRows.map((r) => r.award),
+  };
+
+  return toBackgroundFromFullData(fullData);
 };
 
 export const listAllBackgroundsForDiscordID = async (
   discordId: string
 ): Promise<Background[]> => {
-  return (
-    await prisma.background.findMany({
-      include: {
-        creator: true,
-        source: true,
-        backgroundAwards: { include: { award: true } },
-      },
-      where: { creator: { discordId } },
-      orderBy: { name: "asc" },
-    })
-  ).map(toBackground);
+  const db = await getDatabase();
+
+  const rows = await db
+    .select()
+    .from(backgrounds)
+    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
+    .where(eq(users.discordId, discordId))
+    .orderBy(asc(backgrounds.name));
+
+  if (rows.length === 0) return [];
+
+  const backgroundIds = rows.map((r) => r.backgrounds.id);
+
+  // Fetch awards
+  const awardRows = await db
+    .select({ backgroundId: backgroundsAwards.backgroundId, award: awards })
+    .from(backgroundsAwards)
+    .innerJoin(awards, eq(backgroundsAwards.awardId, awards.id))
+    .where(inArray(backgroundsAwards.backgroundId, backgroundIds));
+
+  const awardsByBackground = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsByBackground.get(row.backgroundId) || [];
+    existing.push(row.award);
+    awardsByBackground.set(row.backgroundId, existing);
+  }
+
+  return rows.map((row) => {
+    const fullData: BackgroundFullData = {
+      background: row.backgrounds,
+      creator: row.users,
+      source: row.sources,
+      awards: awardsByBackground.get(row.backgrounds.id) || [],
+    };
+    return toBackgroundFromFullData(fullData);
+  });
 };
 
 export const searchPublicBackgrounds = async ({
@@ -202,44 +416,66 @@ export const searchPublicBackgrounds = async ({
   limit,
   offset,
 }: SearchBackgroundsParams & { offset?: number }): Promise<Background[]> => {
-  const whereClause: {
-    OR?: Array<{
-      name?: { contains: string; mode: "insensitive" };
-    }>;
-    sourceId?: string;
-  } = {};
+  const db = await getDatabase();
+
+  // Build where conditions
+  const conditions: ReturnType<typeof eq>[] = [];
 
   if (searchTerm) {
-    whereClause.OR = [{ name: { contains: searchTerm, mode: "insensitive" } }];
+    conditions.push(like(backgrounds.name, `%${searchTerm}%`));
   }
 
   if (sourceId) {
-    whereClause.sourceId = sourceId;
+    conditions.push(eq(backgrounds.sourceId, sourceId));
   }
 
-  let orderBy: { name: "asc" | "desc" } | { createdAt: "asc" | "desc" } = {
-    createdAt: sortDirection,
-  };
+  // Build order by
+  const orderBy =
+    sortBy === "name"
+      ? sortDirection === "desc"
+        ? desc(backgrounds.name)
+        : asc(backgrounds.name)
+      : sortDirection === "desc"
+        ? desc(backgrounds.createdAt)
+        : asc(backgrounds.createdAt);
 
-  if (sortBy === "name") {
-    orderBy = { name: sortDirection };
-  } else if (sortBy === "createdAt") {
-    orderBy = { createdAt: sortDirection };
+  const rows = await db
+    .select()
+    .from(backgrounds)
+    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
+    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .orderBy(orderBy)
+    .limit(limit ?? 100)
+    .offset(offset ?? 0);
+
+  if (rows.length === 0) return [];
+
+  const backgroundIds = rows.map((r) => r.backgrounds.id);
+
+  // Fetch awards
+  const awardRows = await db
+    .select({ backgroundId: backgroundsAwards.backgroundId, award: awards })
+    .from(backgroundsAwards)
+    .innerJoin(awards, eq(backgroundsAwards.awardId, awards.id))
+    .where(inArray(backgroundsAwards.backgroundId, backgroundIds));
+
+  const awardsByBackground = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsByBackground.get(row.backgroundId) || [];
+    existing.push(row.award);
+    awardsByBackground.set(row.backgroundId, existing);
   }
 
-  return (
-    await prisma.background.findMany({
-      where: whereClause,
-      orderBy,
-      take: limit,
-      skip: offset,
-      include: {
-        creator: true,
-        source: true,
-        backgroundAwards: { include: { award: true } },
-      },
-    })
-  ).map(toBackground);
+  return rows.map((row) => {
+    const fullData: BackgroundFullData = {
+      background: row.backgrounds,
+      creator: row.users,
+      source: row.sources,
+      awards: awardsByBackground.get(row.backgrounds.id) || [],
+    };
+    return toBackgroundFromFullData(fullData);
+  });
 };
 
 export const createBackground = async (
@@ -248,32 +484,52 @@ export const createBackground = async (
 ): Promise<Background> => {
   const { name, description, requirement, sourceId } = input;
 
-  const user = await prisma.user.findUnique({
-    where: { discordId },
-  });
+  const db = await getDatabase();
 
-  if (!user) {
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) {
     throw new Error("User not found");
   }
 
-  const createdBackground = await prisma.background.create({
-    data: {
+  const user = userResult[0];
+
+  const result = await db
+    .insert(backgrounds)
+    .values({
       name,
       description,
-      requirement,
-      creator: {
-        connect: { id: user.id },
-      },
-      ...(sourceId && { source: { connect: { id: sourceId } } }),
-    },
-    include: {
-      creator: true,
-      source: true,
-      backgroundAwards: { include: { award: true } },
-    },
-  });
+      requirement: requirement || null,
+      userId: user.id,
+      sourceId: sourceId || null,
+    })
+    .returning();
 
-  return toBackground(createdBackground);
+  const createdBackground = result[0];
+
+  // Get source if specified
+  let source: SourceRow | null = null;
+  if (sourceId) {
+    const sourceResult = await db
+      .select()
+      .from(sources)
+      .where(eq(sources.id, sourceId))
+      .limit(1);
+    source = sourceResult[0] || null;
+  }
+
+  const fullData: BackgroundFullData = {
+    background: createdBackground,
+    creator: user,
+    source,
+    awards: [],
+  };
+
+  return toBackgroundFromFullData(fullData);
 };
 
 export const updateBackground = async (
@@ -287,23 +543,64 @@ export const updateBackground = async (
     throw new Error("Invalid background ID");
   }
 
-  const updatedBackground = await prisma.background.update({
-    where: {
-      id,
-      creator: { discordId },
-    },
-    data: {
+  const db = await getDatabase();
+
+  // Find user by discordId
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) {
+    throw new Error("User not found");
+  }
+
+  const user = userResult[0];
+
+  // Update the background
+  const result = await db
+    .update(backgrounds)
+    .set({
       name,
       description,
-      requirement,
-      source: sourceId ? { connect: { id: sourceId } } : { disconnect: true },
-    },
-    include: {
-      creator: true,
-      source: true,
-      backgroundAwards: { include: { award: true } },
-    },
-  });
+      requirement: requirement || null,
+      sourceId: sourceId || null,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(and(eq(backgrounds.id, id), eq(backgrounds.userId, user.id)))
+    .returning();
 
-  return toBackground(updatedBackground);
+  if (result.length === 0) {
+    throw new Error("Background not found or not owned by user");
+  }
+
+  const updatedBackground = result[0];
+
+  // Get source if specified
+  let source: SourceRow | null = null;
+  if (sourceId) {
+    const sourceResult = await db
+      .select()
+      .from(sources)
+      .where(eq(sources.id, sourceId))
+      .limit(1);
+    source = sourceResult[0] || null;
+  }
+
+  // Fetch awards
+  const awardRows = await db
+    .select({ award: awards })
+    .from(backgroundsAwards)
+    .innerJoin(awards, eq(backgroundsAwards.awardId, awards.id))
+    .where(eq(backgroundsAwards.backgroundId, id));
+
+  const fullData: BackgroundFullData = {
+    background: updatedBackground,
+    creator: user,
+    source,
+    awards: awardRows.map((r) => r.award),
+  };
+
+  return toBackgroundFromFullData(fullData);
 };

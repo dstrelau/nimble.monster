@@ -2,7 +2,6 @@ import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { addCorsHeaders } from "@/lib/cors";
-import { prisma } from "@/lib/db";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
 import { telemetry } from "@/lib/telemetry";
@@ -118,9 +117,10 @@ export const DELETE = telemetry(
 
     span?.setAttributes({ "monster.id": existingMonster.id });
 
-    await prisma.monster.delete({
-      where: { id: existingMonster.id },
-    });
+    await monstersService.deleteMonster(
+      existingMonster.id,
+      session.user.discordId ?? ""
+    );
 
     return new NextResponse(null, { status: 204 });
   }

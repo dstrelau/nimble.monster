@@ -1,5 +1,7 @@
+import { eq, inArray } from "drizzle-orm";
 import { extractConditions } from "@/lib/conditions";
-import { prisma } from "@/lib/db";
+import { getDatabase } from "@/lib/db/drizzle";
+import { conditions, monstersConditions } from "@/lib/db/schema";
 
 export function extractAllConditions(data: {
   actions: Array<{ description?: string }>;
@@ -25,37 +27,36 @@ export async function syncMonsterConditions(
   monsterId: string,
   conditionNames: string[]
 ): Promise<void> {
+  const db = await getDatabase();
+
   if (conditionNames.length === 0) {
-    await prisma.monsterCondition.deleteMany({
-      where: { monsterId },
-    });
+    await db
+      .delete(monstersConditions)
+      .where(eq(monstersConditions.monsterId, monsterId));
     return;
   }
 
-  const existingConditions = await prisma.condition.findMany({
-    where: {
-      name: {
-        in: conditionNames,
-        mode: "insensitive",
-      },
-    },
-    select: { id: true, name: true },
-  });
+  // Find existing conditions by name
+  const existingConditions = await db
+    .select({ id: conditions.id, name: conditions.name })
+    .from(conditions)
+    .where(inArray(conditions.name, conditionNames));
 
   const foundConditionIds = existingConditions.map((c) => c.id);
 
-  await prisma.monsterCondition.deleteMany({
-    where: { monsterId },
-  });
+  // Delete existing monster-condition links
+  await db
+    .delete(monstersConditions)
+    .where(eq(monstersConditions.monsterId, monsterId));
 
+  // Create new links
   if (foundConditionIds.length > 0) {
-    await prisma.monsterCondition.createMany({
-      data: foundConditionIds.map((conditionId) => ({
+    await db.insert(monstersConditions).values(
+      foundConditionIds.map((conditionId) => ({
         monsterId,
         conditionId,
         inline: false,
-      })),
-      skipDuplicates: true,
-    });
+      }))
+    );
   }
 }

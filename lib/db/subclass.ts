@@ -1,202 +1,339 @@
+import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
 import type {
+  Award,
+  Source,
   Subclass,
+  SubclassAbility,
   SubclassClass,
   SubclassLevel,
   SubclassMini,
-  SubclassVisibility,
+  User,
 } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
-import { toSubclass, toSubclassMini } from "./converters";
-import { prisma } from "./index";
+import { getDatabase } from "./drizzle";
+import {
+  type AwardRow,
+  awards,
+  type SourceRow,
+  type SubclassAbilityRow,
+  type SubclassRow,
+  sources,
+  subclassAbilities,
+  subclasses,
+  subclassesAwards,
+  type UserRow,
+  users,
+} from "./schema";
 
-export const deleteSubclass = async ({
-  id,
-  discordId,
-}: {
+const toUser = (u: UserRow): User => ({
+  id: u.id,
+  discordId: u.discordId ?? "",
+  username: u.username ?? "",
+  displayName: u.displayName || u.username || "",
+  imageUrl:
+    u.imageUrl ||
+    (u.avatar
+      ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
+      : "https://cdn.discordapp.com/embed/avatars/0.png"),
+});
+
+const toSource = (s: SourceRow | null): Source | undefined => {
+  if (!s) return undefined;
+  return {
+    id: s.id,
+    name: s.name,
+    license: s.license,
+    link: s.link,
+    abbreviation: s.abbreviation,
+    createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+    updatedAt: s.updatedAt ? new Date(s.updatedAt) : new Date(),
+  };
+};
+
+const toAward = (a: AwardRow): Award => ({
+  id: a.id,
+  slug: a.slug,
+  name: a.name,
+  abbreviation: a.abbreviation,
+  description: a.description,
+  url: a.url,
+  color: a.color,
+  icon: a.icon,
+  createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),
+  updatedAt: a.updatedAt ? new Date(a.updatedAt) : new Date(),
+});
+
+const toSubclassMini = (s: SubclassRow): SubclassMini => ({
+  id: s.id,
+  name: s.name,
+  className: s.className as SubclassClass,
+  namePreface: s.namePreface || undefined,
+  tagline: s.tagline || undefined,
+  visibility: s.visibility as "public" | "private",
+  createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+});
+
+interface SubclassFullData {
+  subclass: SubclassRow;
+  creator: UserRow;
+  source: SourceRow | null;
+  abilities: SubclassAbilityRow[];
+  awards: AwardRow[];
+}
+
+const toSubclass = (data: SubclassFullData): Subclass => {
+  // Group abilities by level
+  const levelGroups = data.abilities.reduce(
+    (acc, ability) => {
+      if (!acc[ability.level]) {
+        acc[ability.level] = [];
+      }
+      acc[ability.level].push({
+        id: ability.id,
+        name: ability.name,
+        description: ability.description,
+      });
+      return acc;
+    },
+    {} as Record<number, SubclassAbility[]>
+  );
+
+  // Convert to levels array, sorted by level
+  const levels: SubclassLevel[] = Object.entries(levelGroups)
+    .map(([level, abilities]) => ({
+      level: parseInt(level, 10),
+      abilities: abilities.sort((a, b) => a.name.localeCompare(b.name)),
+    }))
+    .sort((a, b) => a.level - b.level);
+
+  return {
+    ...toSubclassMini(data.subclass),
+    description: data.subclass.description || undefined,
+    levels,
+    creator: toUser(data.creator),
+    source: toSource(data.source),
+    awards: data.awards.length > 0 ? data.awards.map(toAward) : undefined,
+    updatedAt: data.subclass.updatedAt
+      ? new Date(data.subclass.updatedAt)
+      : new Date(),
+  };
+};
+
+async function loadSubclassFullData(
+  db: ReturnType<typeof getDatabase>,
+  subclassIds: string[]
+): Promise<Map<string, SubclassFullData>> {
+  if (subclassIds.length === 0) return new Map();
+
+  const subclassRows = await db
+    .select()
+    .from(subclasses)
+    .innerJoin(users, eq(subclasses.userId, users.id))
+    .leftJoin(sources, eq(subclasses.sourceId, sources.id))
+    .where(inArray(subclasses.id, subclassIds));
+
+  const abilityRows = await db
+    .select()
+    .from(subclassAbilities)
+    .where(inArray(subclassAbilities.subclassId, subclassIds))
+    .orderBy(asc(subclassAbilities.level), asc(subclassAbilities.orderIndex));
+
+  const awardRows = await db
+    .select({ subclassId: subclassesAwards.subclassId, award: awards })
+    .from(subclassesAwards)
+    .innerJoin(awards, eq(subclassesAwards.awardId, awards.id))
+    .where(inArray(subclassesAwards.subclassId, subclassIds));
+
+  const abilitiesBySubclass = new Map<string, SubclassAbilityRow[]>();
+  for (const ability of abilityRows) {
+    const existing = abilitiesBySubclass.get(ability.subclassId) || [];
+    existing.push(ability);
+    abilitiesBySubclass.set(ability.subclassId, existing);
+  }
+
+  const awardsBySubclass = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsBySubclass.get(row.subclassId) || [];
+    existing.push(row.award);
+    awardsBySubclass.set(row.subclassId, existing);
+  }
+
+  const result = new Map<string, SubclassFullData>();
+  for (const row of subclassRows) {
+    result.set(row.subclasses.id, {
+      subclass: row.subclasses,
+      creator: row.users,
+      source: row.sources,
+      abilities: abilitiesBySubclass.get(row.subclasses.id) || [],
+      awards: awardsBySubclass.get(row.subclasses.id) || [],
+    });
+  }
+
+  return result;
+}
+
+export const deleteSubclass = async (input: {
   id: string;
   discordId: string;
 }): Promise<boolean> => {
-  if (!isValidUUID(id)) return false;
+  if (!isValidUUID(input.id)) return false;
 
-  const subclass = await prisma.subclass.delete({
-    where: {
-      id: id,
-      creator: { discordId },
-    },
-  });
+  const db = getDatabase();
 
-  return !!subclass;
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, input.discordId))
+    .limit(1);
+
+  if (userResult.length === 0) return false;
+
+  const result = await db
+    .delete(subclasses)
+    .where(
+      and(eq(subclasses.id, input.id), eq(subclasses.userId, userResult[0].id))
+    );
+
+  return result.rowsAffected > 0;
 };
 
 export const listPublicSubclasses = async (): Promise<Subclass[]> => {
-  return (
-    await prisma.subclass.findMany({
-      where: { visibility: "public" },
-      orderBy: { name: "asc" },
-      include: {
-        creator: true,
-        source: true,
-        abilities: {
-          orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
-        },
-        subclassAwards: { include: { award: true } },
-      },
-    })
-  ).map(toSubclass);
+  const db = getDatabase();
+
+  const subclassRows = await db
+    .select({ id: subclasses.id })
+    .from(subclasses)
+    .where(eq(subclasses.visibility, "public"))
+    .orderBy(asc(subclasses.name));
+
+  if (subclassRows.length === 0) return [];
+
+  const ids = subclassRows.map((r) => r.id);
+  const dataMap = await loadSubclassFullData(db, ids);
+
+  return ids
+    .map((id) => dataMap.get(id))
+    .filter((d): d is SubclassFullData => d !== undefined)
+    .map(toSubclass);
+};
+
+export const listSubclassMinis = async (): Promise<SubclassMini[]> => {
+  const db = getDatabase();
+
+  const rows = await db
+    .select()
+    .from(subclasses)
+    .where(eq(subclasses.visibility, "public"))
+    .orderBy(asc(subclasses.name));
+
+  return rows.map(toSubclassMini);
 };
 
 export const findSubclass = async (id: string): Promise<Subclass | null> => {
-  const subclass = await prisma.subclass.findUnique({
-    where: { id },
-    include: {
-      creator: true,
-      source: true,
-      abilities: {
-        orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
-      },
-      subclassAwards: { include: { award: true } },
-    },
-  });
-  return subclass ? toSubclass(subclass) : null;
+  if (!isValidUUID(id)) return null;
+
+  const db = getDatabase();
+  const dataMap = await loadSubclassFullData(db, [id]);
+  const data = dataMap.get(id);
+
+  return data ? toSubclass(data) : null;
 };
 
 export const findPublicSubclassById = async (
   id: string
 ): Promise<Subclass | null> => {
-  const subclass = await prisma.subclass.findUnique({
-    where: { id, visibility: "public" },
-    include: {
-      creator: true,
-      source: true,
-      abilities: {
-        orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
-      },
-      subclassAwards: { include: { award: true } },
-    },
-  });
-  return subclass ? toSubclass(subclass) : null;
+  if (!isValidUUID(id)) return null;
+
+  const db = getDatabase();
+
+  const check = await db
+    .select({ id: subclasses.id })
+    .from(subclasses)
+    .where(and(eq(subclasses.id, id), eq(subclasses.visibility, "public")))
+    .limit(1);
+
+  if (check.length === 0) return null;
+
+  const dataMap = await loadSubclassFullData(db, [id]);
+  const data = dataMap.get(id);
+
+  return data ? toSubclass(data) : null;
 };
 
-export const findSubclassWithCreatorDiscordId = async (
+export const findSubclassWithCreator = async (
   id: string,
-  creatorDiscordId: string
+  creatorId: string
 ): Promise<Subclass | null> => {
-  const subclass = await prisma.subclass.findUnique({
-    where: { id, creator: { discordId: creatorDiscordId } },
-    include: {
-      creator: true,
-      source: true,
-      abilities: {
-        orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
-      },
-      subclassAwards: { include: { award: true } },
-    },
-  });
-  return subclass ? toSubclass(subclass) : null;
+  if (!isValidUUID(id)) return null;
+
+  const db = getDatabase();
+
+  const check = await db
+    .select({ id: subclasses.id })
+    .from(subclasses)
+    .where(and(eq(subclasses.id, id), eq(subclasses.userId, creatorId)))
+    .limit(1);
+
+  if (check.length === 0) return null;
+
+  const dataMap = await loadSubclassFullData(db, [id]);
+  const data = dataMap.get(id);
+
+  return data ? toSubclass(data) : null;
 };
 
 export const listPublicSubclassesForUser = async (
   userId: string
 ): Promise<Subclass[]> => {
-  return (
-    await prisma.subclass.findMany({
-      include: {
-        creator: true,
-        source: true,
-        abilities: {
-          orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
-        },
-        subclassAwards: { include: { award: true } },
-      },
-      where: {
-        userId,
-        visibility: "public",
-      },
-      orderBy: { name: "asc" },
-    })
-  ).map(toSubclass);
+  const db = getDatabase();
+
+  const subclassRows = await db
+    .select({ id: subclasses.id })
+    .from(subclasses)
+    .where(
+      and(eq(subclasses.userId, userId), eq(subclasses.visibility, "public"))
+    )
+    .orderBy(asc(subclasses.name));
+
+  if (subclassRows.length === 0) return [];
+
+  const ids = subclassRows.map((r) => r.id);
+  const dataMap = await loadSubclassFullData(db, ids);
+
+  return ids
+    .map((id) => dataMap.get(id))
+    .filter((d): d is SubclassFullData => d !== undefined)
+    .map(toSubclass);
 };
 
 export const listAllSubclassesForDiscordID = async (
   discordId: string
 ): Promise<Subclass[]> => {
-  return (
-    await prisma.subclass.findMany({
-      include: {
-        creator: true,
-        source: true,
-        abilities: {
-          orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
-        },
-        subclassAwards: { include: { award: true } },
-      },
-      where: { creator: { discordId } },
-      orderBy: { name: "asc" },
-    })
-  ).map(toSubclass);
-};
+  const db = getDatabase();
 
-export interface SearchSubclassesParams {
-  searchTerm?: string;
-  className?: string;
-  creatorId?: string;
-  sortBy?: "name" | "className";
-  sortDirection?: "asc" | "desc";
-  limit?: number;
-}
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
 
-export const searchPublicSubclassMinis = async ({
-  searchTerm,
-  className,
-  creatorId: discordId,
-  sortBy = "name",
-  sortDirection = "asc",
-  limit = 500,
-}: SearchSubclassesParams): Promise<SubclassMini[]> => {
-  const whereClause: {
-    creator?: { discordId?: string };
-    visibility: "public";
-    OR?: Array<{
-      name?: { contains: string; mode: "insensitive" };
-      className?: { contains: string; mode: "insensitive" };
-    }>;
-    className?: { contains: string; mode: "insensitive" };
-  } = {
-    visibility: "public",
-  };
+  if (userResult.length === 0) return [];
 
-  if (discordId) {
-    whereClause.creator = { discordId: discordId };
-  }
+  const subclassRows = await db
+    .select({ id: subclasses.id })
+    .from(subclasses)
+    .where(eq(subclasses.userId, userResult[0].id))
+    .orderBy(asc(subclasses.name));
 
-  if (searchTerm) {
-    whereClause.OR = [
-      { name: { contains: searchTerm, mode: "insensitive" } },
-      { className: { contains: searchTerm, mode: "insensitive" } },
-    ];
-  }
+  if (subclassRows.length === 0) return [];
 
-  if (className) {
-    whereClause.className = { contains: className, mode: "insensitive" };
-  }
+  const ids = subclassRows.map((r) => r.id);
+  const dataMap = await loadSubclassFullData(db, ids);
 
-  let orderBy: { name: "asc" | "desc" } | { className: "asc" | "desc" } = {
-    name: "asc",
-  };
-
-  if (sortBy === "name") {
-    orderBy = { name: sortDirection };
-  } else if (sortBy === "className") {
-    orderBy = { className: sortDirection };
-  }
-
-  return (
-    await prisma.subclass.findMany({
-      where: whereClause,
-      orderBy,
-      take: limit,
-    })
-  ).map(toSubclassMini);
+  return ids
+    .map((id) => dataMap.get(id))
+    .filter((d): d is SubclassFullData => d !== undefined)
+    .map(toSubclass);
 };
 
 export interface CreateSubclassInput {
@@ -205,132 +342,253 @@ export interface CreateSubclassInput {
   namePreface?: string;
   tagline?: string;
   description?: string;
+  visibility: "public" | "private";
   levels: SubclassLevel[];
-  visibility: SubclassVisibility;
   discordId: string;
+  sourceId?: string;
 }
 
 export const createSubclass = async (
   input: CreateSubclassInput
 ): Promise<Subclass> => {
-  const {
-    name,
-    className,
-    namePreface,
-    tagline,
-    description,
-    levels,
-    visibility,
-    discordId,
-  } = input;
+  const db = getDatabase();
 
-  const user = await prisma.user.findUnique({
-    where: { discordId },
-  });
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, input.discordId))
+    .limit(1);
 
-  if (!user) {
+  if (userResult.length === 0) {
     throw new Error("User not found");
   }
 
-  const createdSubclass = await prisma.subclass.create({
-    data: {
-      name,
-      className,
-      namePreface,
-      tagline,
-      description,
-      visibility,
-      creator: {
-        connect: { id: user.id },
-      },
-      abilities: {
-        create: levels.flatMap((level) =>
-          level.abilities.map((ability, index) => ({
-            level: level.level,
-            name: ability.name,
-            description: ability.description,
-            orderIndex: index,
-          }))
-        ),
-      },
-    },
-    include: {
-      creator: true,
-      source: true,
-      abilities: {
-        orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
-      },
-      subclassAwards: { include: { award: true } },
-    },
+  const subclassId = crypto.randomUUID();
+
+  await db.insert(subclasses).values({
+    id: subclassId,
+    name: input.name,
+    className: input.className,
+    namePreface: input.namePreface || undefined,
+    tagline: input.tagline || undefined,
+    description: input.description || undefined,
+    visibility: input.visibility,
+    userId: userResult[0].id,
+    sourceId: input.sourceId || undefined,
   });
 
-  return toSubclass(createdSubclass);
+  // Insert abilities
+  const abilityInserts: {
+    id: string;
+    subclassId: string;
+    level: number;
+    name: string;
+    description: string;
+    orderIndex: number;
+  }[] = [];
+
+  for (const level of input.levels) {
+    level.abilities.forEach((ability, index) => {
+      abilityInserts.push({
+        id: crypto.randomUUID(),
+        subclassId,
+        level: level.level,
+        name: ability.name,
+        description: ability.description,
+        orderIndex: index,
+      });
+    });
+  }
+
+  if (abilityInserts.length > 0) {
+    await db.insert(subclassAbilities).values(abilityInserts);
+  }
+
+  const dataMap = await loadSubclassFullData(db, [subclassId]);
+  const data = dataMap.get(subclassId);
+
+  if (!data) {
+    throw new Error("Failed to create subclass");
+  }
+
+  return toSubclass(data);
 };
 
-export interface UpdateSubclassInput {
+export interface UpdateSubclassInput extends CreateSubclassInput {
   id: string;
-  name: string;
-  className: SubclassClass;
-  namePreface?: string;
-  tagline?: string;
-  description?: string;
-  levels: SubclassLevel[];
-  visibility: SubclassVisibility;
-  discordId: string;
 }
 
 export const updateSubclass = async (
   input: UpdateSubclassInput
 ): Promise<Subclass> => {
-  const {
-    id,
-    name,
-    className,
-    namePreface,
-    tagline,
-    description,
-    levels,
-    visibility,
-    discordId,
-  } = input;
+  const db = getDatabase();
 
-  if (!isValidUUID(id)) {
-    throw new Error("Invalid subclass ID");
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, input.discordId))
+    .limit(1);
+
+  if (userResult.length === 0) {
+    throw new Error("User not found");
   }
 
-  const updatedSubclass = await prisma.subclass.update({
-    where: {
-      id,
-      creator: { discordId },
-    },
-    data: {
-      name,
-      className,
-      namePreface,
-      tagline,
-      description,
-      visibility,
-      abilities: {
-        deleteMany: {},
-        create: levels.flatMap((level) =>
-          level.abilities.map((ability, index) => ({
-            level: level.level,
-            name: ability.name,
-            description: ability.description,
-            orderIndex: index,
-          }))
-        ),
-      },
-    },
-    include: {
-      creator: true,
-      source: true,
-      abilities: {
-        orderBy: [{ level: "asc" }, { orderIndex: "asc" }],
-      },
-      subclassAwards: { include: { award: true } },
-    },
-  });
+  // Verify ownership
+  const existing = await db
+    .select()
+    .from(subclasses)
+    .where(
+      and(eq(subclasses.id, input.id), eq(subclasses.userId, userResult[0].id))
+    )
+    .limit(1);
 
-  return toSubclass(updatedSubclass);
+  if (existing.length === 0) {
+    throw new Error("Subclass not found");
+  }
+
+  await db
+    .update(subclasses)
+    .set({
+      name: input.name,
+      className: input.className,
+      namePreface: input.namePreface || undefined,
+      tagline: input.tagline || undefined,
+      description: input.description || undefined,
+      visibility: input.visibility,
+      sourceId: input.sourceId || undefined,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(subclasses.id, input.id));
+
+  // Replace abilities
+  await db
+    .delete(subclassAbilities)
+    .where(eq(subclassAbilities.subclassId, input.id));
+
+  const abilityInserts: {
+    id: string;
+    subclassId: string;
+    level: number;
+    name: string;
+    description: string;
+    orderIndex: number;
+  }[] = [];
+
+  for (const level of input.levels) {
+    level.abilities.forEach((ability, index) => {
+      abilityInserts.push({
+        id: crypto.randomUUID(),
+        subclassId: input.id,
+        level: level.level,
+        name: ability.name,
+        description: ability.description,
+        orderIndex: index,
+      });
+    });
+  }
+
+  if (abilityInserts.length > 0) {
+    await db.insert(subclassAbilities).values(abilityInserts);
+  }
+
+  const dataMap = await loadSubclassFullData(db, [input.id]);
+  const data = dataMap.get(input.id);
+
+  if (!data) {
+    throw new Error("Failed to update subclass");
+  }
+
+  return toSubclass(data);
+};
+
+export interface SearchSubclassParams {
+  creatorId?: string;
+  searchTerm?: string;
+  className?: string;
+  sortBy?: "name" | "className";
+  sortDirection?: "asc" | "desc";
+  limit?: number;
+}
+
+export const searchPublicSubclassMinis = async (
+  params: SearchSubclassParams
+): Promise<SubclassMini[]> => {
+  const db = getDatabase();
+
+  const conditions: ReturnType<typeof eq>[] = [
+    eq(subclasses.visibility, "public"),
+  ];
+
+  if (params.creatorId) {
+    const userResult = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.discordId, params.creatorId))
+      .limit(1);
+
+    if (userResult.length > 0) {
+      conditions.push(eq(subclasses.userId, userResult[0].id));
+    }
+  }
+
+  if (params.className) {
+    conditions.push(eq(subclasses.className, params.className));
+  }
+
+  let query = db.select().from(subclasses).$dynamic();
+
+  if (params.searchTerm) {
+    const searchCondition = or(
+      like(subclasses.name, `%${params.searchTerm}%`),
+      like(subclasses.tagline, `%${params.searchTerm}%`)
+    );
+    query = query.where(and(...conditions, searchCondition));
+  } else {
+    query = query.where(and(...conditions));
+  }
+
+  // Add ordering
+  const orderFn = params.sortDirection === "desc" ? desc : asc;
+  if (params.sortBy === "className") {
+    query = query.orderBy(orderFn(subclasses.className), asc(subclasses.name));
+  } else {
+    query = query.orderBy(orderFn(subclasses.name));
+  }
+
+  if (params.limit) {
+    query = query.limit(params.limit);
+  }
+
+  const rows = await query;
+  return rows.map(toSubclassMini);
+};
+
+export const findSubclassWithCreatorDiscordId = async (
+  id: string,
+  discordId: string
+): Promise<Subclass | null> => {
+  if (!isValidUUID(id)) return null;
+
+  const db = getDatabase();
+
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) return null;
+
+  const check = await db
+    .select({ id: subclasses.id })
+    .from(subclasses)
+    .where(and(eq(subclasses.id, id), eq(subclasses.userId, userResult[0].id)))
+    .limit(1);
+
+  if (check.length === 0) return null;
+
+  const dataMap = await loadSubclassFullData(db, [id]);
+  const data = dataMap.get(id);
+
+  return data ? toSubclass(data) : null;
 };
