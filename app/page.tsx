@@ -3,7 +3,7 @@ import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
 import { FamilyCard } from "@/components/FamilyCard";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
-import { getRandomFeaturedFamily } from "@/lib/db/family";
+import { getRandomFeaturedFamily } from "@/lib/services/families/repository";
 import { itemsService } from "@/lib/services/items";
 import { Attribution } from "./ui/Attribution";
 import { Card as ItemCard } from "./ui/item/Card";
@@ -26,7 +26,7 @@ export default async function HomePage() {
             Nimble TTRPG
           </span>
         </h1>
-        {!!featuredFamily?.monsters && (
+        {!!featuredFamily?.monsters?.length && (
           <>
             <h2 className="flex flex-wrap gap-2 text-2xl md:text-4xl items-center justify-center text-center italic text-muted-foreground md:max-w-[39rem] mx-auto">
               <span>Explore hundreds of creative monsters like these</span>

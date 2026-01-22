@@ -1,15 +1,142 @@
-import { and, asc, count, eq } from "drizzle-orm";
+import { and, asc, count, eq, inArray } from "drizzle-orm";
 import type { Ability, Family, FamilyOverview } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
+import { toMonster } from "../services/monsters/converters";
 import { toUser } from "./converters";
 import { getDatabase } from "./drizzle";
 import {
+  type AwardRow,
+  awards,
   type FamilyRow,
   families,
+  type MonsterRow,
   monsters,
+  monstersAwards,
   monstersFamilies,
+  type SourceRow,
+  sources,
+  type UserRow,
   users,
 } from "./schema";
+
+interface MonsterFullData {
+  monster: MonsterRow;
+  creator: UserRow;
+  source: SourceRow | null;
+  awards: AwardRow[];
+  families: Array<{ family: FamilyRow; creator: UserRow }>;
+  remixedFrom: { id: string; name: string; creator: UserRow } | null;
+}
+
+async function loadMonsterFullData(
+  db: ReturnType<typeof getDatabase>,
+  monsterIds: string[]
+): Promise<Map<string, MonsterFullData>> {
+  if (monsterIds.length === 0) return new Map();
+
+  const monsterRows = await db
+    .select()
+    .from(monsters)
+    .innerJoin(users, eq(monsters.userId, users.id))
+    .leftJoin(sources, eq(monsters.sourceId, sources.id))
+    .where(inArray(monsters.id, monsterIds));
+
+  const awardRows = await db
+    .select({ monsterId: monstersAwards.monsterId, award: awards })
+    .from(monstersAwards)
+    .innerJoin(awards, eq(monstersAwards.awardId, awards.id))
+    .where(inArray(monstersAwards.monsterId, monsterIds));
+
+  const familyRows = await db
+    .select({
+      monsterId: monstersFamilies.monsterId,
+      family: families,
+      creator: users,
+    })
+    .from(monstersFamilies)
+    .innerJoin(families, eq(monstersFamilies.familyId, families.id))
+    .innerJoin(users, eq(families.creatorId, users.id))
+    .where(inArray(monstersFamilies.monsterId, monsterIds));
+
+  const remixedFromIds = monsterRows
+    .map((r) => r.monsters.remixedFromId)
+    .filter((id): id is string => id !== null);
+
+  const remixedFromMap = new Map<
+    string,
+    { id: string; name: string; creator: UserRow }
+  >();
+  if (remixedFromIds.length > 0) {
+    const remixedFromRows = await db
+      .select({ monster: monsters, creator: users })
+      .from(monsters)
+      .innerJoin(users, eq(monsters.userId, users.id))
+      .where(inArray(monsters.id, remixedFromIds));
+
+    for (const row of remixedFromRows) {
+      remixedFromMap.set(row.monster.id, {
+        id: row.monster.id,
+        name: row.monster.name,
+        creator: row.creator,
+      });
+    }
+  }
+
+  const awardsByMonster = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsByMonster.get(row.monsterId) || [];
+    existing.push(row.award);
+    awardsByMonster.set(row.monsterId, existing);
+  }
+
+  const familiesByMonster = new Map<
+    string,
+    Array<{ family: FamilyRow; creator: UserRow }>
+  >();
+  for (const row of familyRows) {
+    const existing = familiesByMonster.get(row.monsterId) || [];
+    existing.push({ family: row.family, creator: row.creator });
+    familiesByMonster.set(row.monsterId, existing);
+  }
+
+  const result = new Map<string, MonsterFullData>();
+  for (const row of monsterRows) {
+    result.set(row.monsters.id, {
+      monster: row.monsters,
+      creator: row.users,
+      source: row.sources,
+      awards: awardsByMonster.get(row.monsters.id) || [],
+      families: familiesByMonster.get(row.monsters.id) || [],
+      remixedFrom: row.monsters.remixedFromId
+        ? remixedFromMap.get(row.monsters.remixedFromId) || null
+        : null,
+    });
+  }
+
+  return result;
+}
+
+function toMonsterDataForConverter(data: MonsterFullData) {
+  return {
+    ...data.monster,
+    creator: data.creator,
+    source: data.source,
+    monsterFamilies: data.families.map((f) => ({
+      family: {
+        ...f.family,
+        creator: f.creator,
+      },
+    })),
+    monsterAwards: data.awards.map((a) => ({ award: a })),
+    remixedFrom: data.remixedFrom
+      ? {
+          id: data.remixedFrom.id,
+          name: data.remixedFrom.name,
+          creator: data.remixedFrom.creator,
+        }
+      : null,
+  };
+}
 
 const toFamilyOverviewFromRow = (
   family: FamilyRow & { creator: typeof users.$inferSelect },
@@ -54,15 +181,143 @@ export const listFamiliesForUser = async (
 };
 
 export const getUserFamiliesWithMonsters = async (
-  _discordId: string
+  discordId: string
 ): Promise<Family[]> => {
-  return [];
+  const db = getDatabase();
+
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) return [];
+  const user = userResult[0];
+
+  const familyRows = await db
+    .select()
+    .from(families)
+    .where(eq(families.creatorId, user.id))
+    .orderBy(asc(families.name));
+
+  if (familyRows.length === 0) return [];
+
+  const familyIds = familyRows.map((f) => f.id);
+  const monsterLinks = await db
+    .select({
+      familyId: monstersFamilies.familyId,
+      monsterId: monstersFamilies.monsterId,
+    })
+    .from(monstersFamilies)
+    .where(inArray(monstersFamilies.familyId, familyIds));
+
+  const monsterIdsByFamily = new Map<string, string[]>();
+  for (const link of monsterLinks) {
+    const existing = monsterIdsByFamily.get(link.familyId) || [];
+    existing.push(link.monsterId);
+    monsterIdsByFamily.set(link.familyId, existing);
+  }
+
+  const allMonsterIds = [...new Set(monsterLinks.map((l) => l.monsterId))];
+  const monsterDataMap = await loadMonsterFullData(db, allMonsterIds);
+
+  return familyRows.map((family) => {
+    const familyMonsterIds = monsterIdsByFamily.get(family.id) || [];
+    const familyMonsters = familyMonsterIds
+      .map((id) => monsterDataMap.get(id))
+      .filter((m): m is MonsterFullData => m !== undefined)
+      .map((m) => toMonster(toMonsterDataForConverter(m)));
+
+    return {
+      id: family.id,
+      name: family.name,
+      description: family.description ?? undefined,
+      abilities: ((family.abilities as Omit<Ability, "id">[]) || []).map(
+        (ability) => ({
+          ...ability,
+          id: crypto.randomUUID(),
+        })
+      ),
+      visibility: family.visibility as Family["visibility"],
+      monsters: familyMonsters,
+      monsterCount: familyMonsters.length,
+      creatorId: user.discordId ?? "",
+      creator: toUser(user),
+    };
+  });
 };
 
 export const listPublicFamiliesHavingMonstersForUser = async (
-  _creatorId: string
+  creatorId: string
 ): Promise<Family[]> => {
-  return [];
+  const db = getDatabase();
+
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, creatorId))
+    .limit(1);
+
+  if (userResult.length === 0) return [];
+  const user = userResult[0];
+
+  const familyRows = await db
+    .select()
+    .from(families)
+    .where(eq(families.creatorId, creatorId))
+    .orderBy(asc(families.name));
+
+  if (familyRows.length === 0) return [];
+
+  const familyIds = familyRows.map((f) => f.id);
+  const monsterLinks = await db
+    .select({
+      familyId: monstersFamilies.familyId,
+      monsterId: monstersFamilies.monsterId,
+    })
+    .from(monstersFamilies)
+    .innerJoin(monsters, eq(monstersFamilies.monsterId, monsters.id))
+    .where(
+      and(
+        inArray(monstersFamilies.familyId, familyIds),
+        eq(monsters.visibility, "public")
+      )
+    );
+
+  const monsterIdsByFamily = new Map<string, string[]>();
+  for (const link of monsterLinks) {
+    const existing = monsterIdsByFamily.get(link.familyId) || [];
+    existing.push(link.monsterId);
+    monsterIdsByFamily.set(link.familyId, existing);
+  }
+
+  const allMonsterIds = [...new Set(monsterLinks.map((l) => l.monsterId))];
+  const monsterDataMap = await loadMonsterFullData(db, allMonsterIds);
+
+  return familyRows.map((family) => {
+    const familyMonsterIds = monsterIdsByFamily.get(family.id) || [];
+    const familyMonsters = familyMonsterIds
+      .map((id) => monsterDataMap.get(id))
+      .filter((m): m is MonsterFullData => m !== undefined)
+      .map((m) => toMonster(toMonsterDataForConverter(m)));
+
+    return {
+      id: family.id,
+      name: family.name,
+      description: family.description ?? undefined,
+      abilities: ((family.abilities as Omit<Ability, "id">[]) || []).map(
+        (ability) => ({
+          ...ability,
+          id: crypto.randomUUID(),
+        })
+      ),
+      visibility: family.visibility as Family["visibility"],
+      monsters: familyMonsters,
+      monsterCount: familyMonsters.length,
+      creatorId: user.discordId ?? "",
+      creator: toUser(user),
+    };
+  });
 };
 
 export const getUserPublicFamiliesCount = async (

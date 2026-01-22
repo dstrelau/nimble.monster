@@ -10,8 +10,9 @@
  *   --yes, -y   Skip confirmation prompt
  */
 
-import { type InValue, createClient } from "@libsql/client";
+import * as fs from "node:fs";
 import * as readline from "node:readline";
+import { createClient, type InValue } from "@libsql/client";
 import { Pool } from "pg";
 
 const args = process.argv.slice(2);
@@ -232,7 +233,15 @@ async function main() {
   }
 
   console.log("Connecting to Postgres...");
-  const pgPool = new Pool({ connectionString: postgresUrl });
+  const pgPool = new Pool({
+    connectionString: postgresUrl,
+    ssl: process.env.CA_CERT_PATH
+      ? {
+          ca: fs.readFileSync(process.env.CA_CERT_PATH, "utf8"),
+          rejectUnauthorized: false,
+        }
+      : undefined,
+  });
 
   console.log("Connecting to SQLite...");
   const sqlite = createClient({
