@@ -17,6 +17,19 @@ import type {
 } from "@/lib/types";
 import { toMonsterMini } from "../services/monsters/converters";
 
+const parseJsonField = <T>(value: unknown): T[] => {
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return [];
+    }
+  }
+  return [];
+};
+
 // Generic type for family with creator
 interface FamilyWithCreator {
   id: string;
@@ -201,7 +214,7 @@ export const toFamilyOverview = (
     id: f.id,
     name: f.name,
     description: f.description ?? undefined,
-    abilities: (f.abilities as unknown as Omit<Ability, "id">[]).map(
+    abilities: parseJsonField<Omit<Ability, "id">>(f.abilities).map(
       (ability) => ({
         ...ability,
         id: crypto.randomUUID(),
@@ -255,13 +268,13 @@ export const toCompanion = (c: CompanionRow): Companion => {
     size: c.size as Companion["size"],
     saves: c.saves,
     updatedAt: c.updatedAt ? new Date(c.updatedAt) : new Date(),
-    abilities: (c.abilities as unknown as Omit<Ability, "id">[]).map(
+    abilities: parseJsonField<Omit<Ability, "id">>(c.abilities).map(
       (ability) => ({
         ...ability,
         id: crypto.randomUUID(),
       })
     ),
-    actions: (c.actions as unknown as Omit<Action, "id">[]).map((action) => ({
+    actions: parseJsonField<Omit<Action, "id">>(c.actions).map((action) => ({
       ...action,
       id: crypto.randomUUID(),
     })),

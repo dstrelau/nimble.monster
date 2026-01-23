@@ -7,14 +7,16 @@ export function getClient(): Client {
     return client;
   }
 
-  const url = process.env.TURSO_DATABASE_URL || process.env.DATABASE_URL;
+  const url = process.env.DATABASE_URL;
   if (!url) {
-    throw new Error("TURSO_DATABASE_URL or DATABASE_URL is required");
+    throw new Error("DATABASE_URL is required");
   }
 
   client = createClient({
     url,
-    authToken: process.env.TURSO_AUTH_TOKEN,
+    syncUrl: process.env.DATABASE_SYNC_URL,
+    authToken: process.env.DATABASE_AUTH_TOKEN,
+    syncInterval: process.env.DATABASE_SYNC_URL ? 60 : undefined,
   });
 
   return client;

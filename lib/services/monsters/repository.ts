@@ -86,15 +86,28 @@ const toAwardFromRow = (a: AwardRow) => ({
   updatedAt: a.updatedAt ? new Date(a.updatedAt) : new Date(),
 });
 
+const parseJsonField = <T>(value: unknown): T[] => {
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return [];
+    }
+  }
+  return [];
+};
+
 const toAbilitiesFromRow = (abilities: unknown): Ability[] => {
-  return ((abilities as Omit<Ability, "id">[]) || []).map((ability) => ({
+  return parseJsonField<Omit<Ability, "id">>(abilities).map((ability) => ({
     ...ability,
     id: crypto.randomUUID(),
   }));
 };
 
 const toActionsFromRow = (actions: unknown): Action[] => {
-  return ((actions as Omit<Action, "id">[]) || []).map((action) => ({
+  return parseJsonField<Omit<Action, "id">>(actions).map((action) => ({
     ...action,
     id: crypto.randomUUID(),
   }));
@@ -572,6 +585,19 @@ export const findMonster = async (id: string): Promise<Monster | null> => {
   const data = monsterDataMap.get(id);
 
   return data ? toMonsterFromFullData(data) : null;
+};
+
+export const findMonstersByIds = async (ids: string[]): Promise<Monster[]> => {
+  const validIds = ids.filter(isValidUUID);
+  if (validIds.length === 0) return [];
+
+  const db = await getDatabase();
+  const monsterDataMap = await loadMonsterFullData(db, validIds);
+
+  return validIds
+    .map((id) => monsterDataMap.get(id))
+    .filter((m): m is MonsterFullData => m !== undefined)
+    .map(toMonsterFromFullData);
 };
 
 export const findPublicMonsterById = async (

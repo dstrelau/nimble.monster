@@ -9,20 +9,20 @@ pnpm-debug.log*
 lerna-debug.log*
 .playwright-mcp
 
+*.db
+*.sqlite
+*.local
+*.tsbuildinfo
+.next
 bin/
-node_modules
 dist
 dist-ssr
-*.local
-.next
-lib/prisma
+node_modules
 tmp/
-
-# TypeScript
-*.tsbuildinfo
 
 # Editor directories and files
 .env*
+!.env.example
 .vscode/*
 !.vscode/extensions.json
 .idea

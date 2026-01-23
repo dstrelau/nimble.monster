@@ -217,6 +217,19 @@ export const findItem = async (id: string): Promise<Item | null> => {
   return itemData ? toItemFromFullData(itemData) : null;
 };
 
+export const findItemsByIds = async (ids: string[]): Promise<Item[]> => {
+  const validIds = ids.filter(isValidUUID);
+  if (validIds.length === 0) return [];
+
+  const db = await getDatabase();
+  const itemDataMap = await loadItemFullData(db, validIds);
+
+  return validIds
+    .map((id) => itemDataMap.get(id))
+    .filter((i): i is ItemFullData => i !== undefined)
+    .map(toItemFromFullData);
+};
+
 export const findItemCollections = async (itemId: string) => {
   if (!isValidUUID(itemId)) return [];
 

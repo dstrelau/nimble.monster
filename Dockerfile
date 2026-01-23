@@ -14,7 +14,7 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN corepack enable pnpm && pnpm run build
+RUN corepack enable pnpm && pnpm run sync-icons && pnpm run build
 
 FROM base AS runner
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
@@ -26,7 +26,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-RUN if [ -d "/app/public" ]; then cp -r /app/public ./public; fi
+COPY --from=builder /app/public ./public
+RUN mkdir -p .next/cache && chown -R node:node .next
 EXPOSE 3000
 USER node
 CMD ["node", "server.js"]

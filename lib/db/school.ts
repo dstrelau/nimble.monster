@@ -69,6 +69,28 @@ const toSpellSchoolMini = (s: SpellSchoolRow): SpellSchoolMini => ({
   createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
 });
 
+const buildSpellTarget = (s: SpellRow): SpellTarget | undefined => {
+  if (!s.targetType) return undefined;
+  if (s.targetType === "self") {
+    return { type: "self" };
+  }
+  if (s.targetType === "aoe" && s.targetKind) {
+    return {
+      type: "aoe",
+      kind: s.targetKind as "range" | "reach" | "line" | "cone",
+      distance: s.targetDistance ?? undefined,
+    };
+  }
+  if (s.targetKind) {
+    return {
+      type: s.targetType as "single" | "single+" | "multi" | "special",
+      kind: s.targetKind as "range" | "reach",
+      distance: s.targetDistance ?? undefined,
+    };
+  }
+  return undefined;
+};
+
 const toSpell = (s: SpellRow): Spell => ({
   id: s.id,
   name: s.name,
@@ -76,7 +98,7 @@ const toSpell = (s: SpellRow): Spell => ({
   tier: s.tier,
   actions: s.actions,
   reaction: s.reaction || false,
-  target: (s.targetType || undefined) as SpellTarget | undefined,
+  target: buildSpellTarget(s),
   damage: s.damage || undefined,
   description: s.description || undefined,
   highLevels: s.highLevels || undefined,
@@ -229,6 +251,21 @@ export const findSpellSchool = async (
   const data = dataMap.get(id);
 
   return data ? toSpellSchool(data) : null;
+};
+
+export const findSpellSchoolsByIds = async (
+  ids: string[]
+): Promise<SpellSchool[]> => {
+  const validIds = ids.filter(isValidUUID);
+  if (validIds.length === 0) return [];
+
+  const db = getDatabase();
+  const dataMap = await loadSpellSchoolFullData(db, validIds);
+
+  return validIds
+    .map((id) => dataMap.get(id))
+    .filter((d): d is SpellSchoolFullData => d !== undefined)
+    .map(toSpellSchool);
 };
 
 export const findPublicSpellSchoolById = async (

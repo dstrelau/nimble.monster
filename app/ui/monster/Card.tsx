@@ -214,19 +214,19 @@ export const Card = ({
         />
 
         <CardContentWithGap>
-          {(monster.families.some((f) => f.abilities.length > 0) ||
-            monster.abilities.length > 0) && (
+          {((monster.families?.some((f) => f.abilities.length > 0) ?? false) ||
+            (monster.abilities?.length ?? 0) > 0) && (
             <AbilityOverlay
               conditions={conditions}
               abilities={[
-                ...monster.families.flatMap((f) => f.abilities),
-                ...monster.abilities,
+                ...(monster.families?.flatMap((f) => f.abilities) ?? []),
+                ...(monster.abilities ?? []),
               ]}
-              families={monster.families}
+              families={monster.families ?? []}
             />
           )}
           <ActionsList
-            actions={monster.actions}
+            actions={monster.actions ?? []}
             conditions={conditions}
             actionPreface={monster.actionPreface}
           />

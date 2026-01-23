@@ -19,6 +19,19 @@ import {
   users,
 } from "./schema";
 
+const parseJsonField = <T>(value: unknown): T[] => {
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return [];
+    }
+  }
+  return [];
+};
+
 interface MonsterFullData {
   monster: MonsterRow;
   creator: UserRow;
@@ -145,7 +158,7 @@ const toFamilyOverviewFromRow = (
   id: family.id,
   name: family.name,
   description: family.description ?? undefined,
-  abilities: ((family.abilities as Omit<Ability, "id">[]) || []).map(
+  abilities: parseJsonField<Omit<Ability, "id">>(family.abilities).map(
     (ability) => ({
       ...ability,
       id: crypto.randomUUID(),

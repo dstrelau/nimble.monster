@@ -1,10 +1,12 @@
 import { and, asc, count, eq, inArray } from "drizzle-orm";
-import type { Item, ItemMini } from "@/lib/services/items/types";
-import type { Monster, MonsterMini } from "@/lib/services/monsters/types";
+import { findSpellSchoolsByIds } from "@/lib/db/school";
+import { findItemsByIds } from "@/lib/services/items";
+import type { ItemMini } from "@/lib/services/items/types";
+import { findMonstersByIds } from "@/lib/services/monsters";
+import type { MonsterMini } from "@/lib/services/monsters/types";
 import type {
   Collection,
   CollectionOverview,
-  SpellSchool,
   SpellSchoolMini,
   User,
 } from "@/lib/types";
@@ -213,15 +215,7 @@ export const getCollectionByIdWithMonstersItems = async (
   if (collectionResult.length === 0) return null;
   const collection = collectionResult[0];
 
-  // Load full data (would need full Monster/Item loaders - returning Mini for now)
-  const overview = await loadCollectionOverview(db, collection, user);
-
-  return {
-    ...overview,
-    monsters: overview.monsters as unknown as Monster[],
-    items: overview.items as unknown as Item[],
-    spellSchools: overview.spellSchools as unknown as SpellSchool[],
-  };
+  return loadCollectionFull(db, collection, user);
 };
 
 export const getCollectionOverviewByIdWithMonstersItems = async (
@@ -268,18 +262,11 @@ export const getPublicCollectionByIdWithMonstersItems = async (
 
   if (collectionResult.length === 0) return null;
 
-  const overview = await loadCollectionOverview(
+  return loadCollectionFull(
     db,
     collectionResult[0].collection,
     collectionResult[0].creator
   );
-
-  return {
-    ...overview,
-    monsters: overview.monsters as unknown as Monster[],
-    items: overview.items as unknown as Item[],
-    spellSchools: overview.spellSchools as unknown as SpellSchool[],
-  };
 };
 
 export const getUserPublicCollectionsCount = async (
@@ -566,17 +553,11 @@ export const getCollection = async (
         .limit(1);
 
       if (ownedCollection.length > 0) {
-        const overview = await loadCollectionOverview(
+        return loadCollectionFull(
           db,
           ownedCollection[0].collection,
           ownedCollection[0].creator
         );
-        return {
-          ...overview,
-          monsters: overview.monsters as unknown as Monster[],
-          items: overview.items as unknown as Item[],
-          spellSchools: overview.spellSchools as unknown as SpellSchool[],
-        };
       }
     }
   }
@@ -669,7 +650,7 @@ export const listPublicCollectionsHavingMonstersForUser = async (
   const userResult = await db
     .select()
     .from(users)
-    .where(eq(users.discordId, creatorId))
+    .where(eq(users.id, creatorId))
     .limit(1);
 
   if (userResult.length === 0) return [];
@@ -680,7 +661,7 @@ export const listPublicCollectionsHavingMonstersForUser = async (
     .from(collections)
     .where(
       and(
-        eq(collections.creatorId, user.id),
+        eq(collections.creatorId, creatorId),
         eq(collections.visibility, "public")
       )
     )
@@ -740,7 +721,7 @@ export const findSpellSchoolCollections = async (
   return results;
 };
 
-// Helper function
+// Helper function for overview (MonsterMini)
 async function loadCollectionOverview(
   db: ReturnType<typeof getDatabase>,
   collection: CollectionRow,
@@ -786,6 +767,57 @@ async function loadCollectionOverview(
     items: collectionItems.map(toItemMini),
     itemCount: collectionItems.length,
     spellSchools: collectionSchools.map(toSpellSchoolMini),
+    legendaryCount,
+    standardCount,
+    createdAt: collection.createdAt
+      ? new Date(collection.createdAt)
+      : undefined,
+  };
+}
+
+// Helper function for full collection (full Monster data)
+async function loadCollectionFull(
+  db: ReturnType<typeof getDatabase>,
+  collection: CollectionRow,
+  creator: UserRow
+): Promise<Collection> {
+  const monsterLinks = await db
+    .select({ monsterId: monstersCollections.monsterId })
+    .from(monstersCollections)
+    .where(eq(monstersCollections.collectionId, collection.id));
+
+  const itemLinks = await db
+    .select({ itemId: itemsCollections.itemId })
+    .from(itemsCollections)
+    .where(eq(itemsCollections.collectionId, collection.id));
+
+  const schoolLinks = await db
+    .select({ schoolId: spellSchoolsCollections.spellSchoolId })
+    .from(spellSchoolsCollections)
+    .where(eq(spellSchoolsCollections.collectionId, collection.id));
+
+  const monsterIds = monsterLinks.map((l) => l.monsterId);
+  const itemIds = itemLinks.map((l) => l.itemId);
+  const schoolIds = schoolLinks.map((l) => l.schoolId);
+  const collectionMonsters = await findMonstersByIds(monsterIds);
+  const collectionItems = await findItemsByIds(itemIds);
+  const collectionSchools = await findSpellSchoolsByIds(schoolIds);
+
+  const legendaryCount = collectionMonsters.filter((m) => m.legendary).length;
+  const standardCount = collectionMonsters.filter(
+    (m) => !m.legendary && !m.minion
+  ).length;
+
+  return {
+    id: collection.id,
+    name: collection.name,
+    description: collection.description || undefined,
+    visibility: collection.visibility as "public" | "private",
+    creator: toUser(creator),
+    monsters: collectionMonsters,
+    items: collectionItems,
+    itemCount: collectionItems.length,
+    spellSchools: collectionSchools,
     legendaryCount,
     standardCount,
     createdAt: collection.createdAt
