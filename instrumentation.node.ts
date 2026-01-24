@@ -44,7 +44,13 @@ const sdk = new NodeSDK({
   instrumentations: [httpInstrumentation],
 });
 
-const shutdownHandler = () => {
+const shutdownHandler = async () => {
+  try {
+    const { closeBrowser } = await import("@/lib/browser");
+    await closeBrowser();
+  } catch (error) {
+    console.error("Error closing browser:", error);
+  }
   sdk
     .shutdown()
     .catch((error) =>
@@ -57,3 +63,9 @@ process.on("SIGTERM", shutdownHandler);
 process.on("SIGINT", shutdownHandler);
 
 sdk.start();
+
+import("@/lib/browser").then(({ getBrowser }) => {
+  getBrowser().catch((error) =>
+    console.error("Failed to pre-warm browser:", error)
+  );
+});

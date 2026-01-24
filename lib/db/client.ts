@@ -16,7 +16,7 @@ export function getClient(): Client {
     url,
     syncUrl: process.env.DATABASE_SYNC_URL,
     authToken: process.env.DATABASE_AUTH_TOKEN,
-    syncInterval: process.env.DATABASE_SYNC_URL ? 60 : undefined,
+    syncInterval: process.env.DATABASE_SYNC_URL ? 10 : undefined,
   });
 
   return client;

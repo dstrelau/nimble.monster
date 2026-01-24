@@ -9,42 +9,23 @@ export interface BlobStorageResult {
 }
 
 const LOCAL_BLOB_DIR = join(process.cwd(), "public", "blob-storage");
-const S3_REGION = "us-east-1";
-
-function getConfig() {
-  const datacenter = process.env.DO_SPACES_DATACENTER || "nyc3";
-  const bucket = process.env.DO_SPACES_BUCKET || "nimble-nexus";
-  const endpoint = `https://${datacenter}.digitaloceanspaces.com`;
-  const cdnUrl =
-    process.env.DO_SPACES_CDN_URL ||
-    `https://${bucket}.${datacenter}.digitaloceanspaces.com`;
-
-  return { datacenter, bucket, endpoint, cdnUrl };
-}
 
 let s3Client: S3Client | null = null;
 
 function getS3Client(): S3Client {
   if (!s3Client) {
-    const accessKeyId = process.env.DO_SPACES_ACCESS_KEY;
-    const secretAccessKey = process.env.DO_SPACES_SECRET_KEY;
+    const endpoint = process.env.AWS_ENDPOINT_URL_S3;
+    const region = process.env.AWS_REGION;
 
-    if (!accessKeyId || !secretAccessKey) {
+    if (!endpoint || !region) {
       throw new Error(
-        "DO_SPACES_ACCESS_KEY and DO_SPACES_SECRET_KEY environment variables are required"
+        "AWS_ENDPOINT_URL_S3 and AWS_REGION environment variables are required"
       );
     }
 
-    const { endpoint } = getConfig();
-
     s3Client = new S3Client({
-      region: S3_REGION,
+      region,
       endpoint,
-      credentials: {
-        accessKeyId,
-        secretAccessKey,
-      },
-      forcePathStyle: false,
     });
   }
 
@@ -62,8 +43,8 @@ export async function uploadBlob(
   buffer: Buffer,
   contentType: string = "image/png"
 ): Promise<BlobStorageResult> {
-  const isLocal =
-    process.env.NODE_ENV === "development" || !process.env.DO_SPACES_ACCESS_KEY;
+  const bucket = process.env.BUCKET_NAME;
+  const isLocal = process.env.NODE_ENV === "development" || !bucket;
 
   if (isLocal) {
     await ensureLocalBlobDir();
@@ -78,7 +59,6 @@ export async function uploadBlob(
   }
 
   try {
-    const { bucket, cdnUrl } = getConfig();
     const client = getS3Client();
     await client.send(
       new PutObjectCommand({
@@ -90,14 +70,14 @@ export async function uploadBlob(
       })
     );
 
-    const url = `${cdnUrl}/${filename}`;
+    const url = `https://${bucket}.fly.storage.tigris.dev/${filename}`;
     return {
       url,
       downloadUrl: url,
     };
   } catch (error) {
     throw new Error(
-      `Failed to upload blob to DigitalOcean Spaces: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to upload blob to Tigris: ${error instanceof Error ? error.message : String(error)}`
     );
   }
 }

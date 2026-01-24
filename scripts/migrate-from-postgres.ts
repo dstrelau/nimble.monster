@@ -63,7 +63,7 @@ const MIGRATION_ORDER = [
   "backgrounds_awards",
   "ancestries_awards",
   // Other tables
-  "entity_images",
+  // "entity_images",
 ];
 
 // Column mappings from Postgres to SQLite (only where names differ)

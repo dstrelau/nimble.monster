@@ -1,49 +1,24 @@
-import chromium from "@sparticuz/chromium-min";
-import puppeteer from "puppeteer";
-import puppeteerCore from "puppeteer-core";
+import puppeteer, { type Browser } from "puppeteer";
 
-// keep in sync with puppeteer version requirement
-// https://pptr.dev/supported-browsers
-const remoteExecutablePath =
-  "https://github.com/Sparticuz/chromium/releases/download/v138.0.2/chromium-v138.0.2-pack.x64.tar";
+let browser: Browser | null = null;
+let browserPromise: Promise<Browser> | null = null;
 
-// biome-ignore lint/suspicious/noExplicitAny: Browser types make no sense
-let browser: any;
-
-export async function getBrowser() {
+export async function getBrowser(): Promise<Browser> {
   if (browser) return browser;
+  if (browserPromise) return browserPromise;
 
-  if (process.env.VERCEL) {
-    console.log("Launching browser on Vercel with chromium", {
-      remoteExecutablePath,
-      chromiumArgs: chromium.args.length,
-    });
+  browserPromise = puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    headless: true,
+  });
 
-    const executablePath = await chromium.executablePath(remoteExecutablePath);
-    console.log("Chromium executable path resolved:", executablePath);
-
-    browser = await puppeteerCore.launch({
-      args: chromium.args,
-      executablePath,
-      headless: true,
-    });
-
-    console.log("Browser launched successfully on Vercel");
-  } else {
-    console.log("Launching browser locally");
-
-    browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      headless: true,
-    });
-
-    console.log("Browser launched successfully locally");
-  }
+  browser = await browserPromise;
+  browserPromise = null;
 
   return browser;
 }
 
-export async function closeBrowser() {
+export async function closeBrowser(): Promise<void> {
   if (browser) {
     await browser.close();
     browser = null;

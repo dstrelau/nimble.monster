@@ -1,14 +1,10 @@
-app = "nimble-monster"
-primary_region = "ord"
-
-[build.args]
-go_version = "1.25.0"
+app = "nimble-nexus"
+primary_region = "iad"
 
 [env]
 AUTH_TRUST_HOST = "true"
 AUTH_URL = "https://nimble.nexus/api/auth"
 DATABASE_URL = "file:/data/db.sqlite"
-HOSTNAME = "0.0.0.0"
 NEXT_PUBLIC_APP_URL = "https://nimble.nexus"
 NODE_ENV = "production"
 
@@ -20,13 +16,13 @@ internal_port = 3000
 min_machines_running = 0
 processes = [ "app" ]
 
+[mounts]
+source = "data"
+destination="/data"
+auto_extend_size_threshold = 80
+auto_extend_size_increment = "1GB"
+auto_extend_size_limit = "10GB"
+
 [[vm]]
 memory = "1024"
-size = "shared-cpu-1x"
-
-[mounts]
-  source = "data"
-  destination="/data"
-  auto_extend_size_threshold = 80
-  auto_extend_size_increment = "1GB"
-  auto_extend_size_limit = "10GB"
+size = "shared-cpu-2x"

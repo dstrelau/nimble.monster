@@ -9,7 +9,7 @@ export async function GET() {
     version: "1.0.0",
     manifest_version: 1,
     author: "Nimble Monster",
-    homepage_url: process.env.NEXT_PUBLIC_APP_URL + "/obr",
+    homepage_url: `${process.env.NEXT_PUBLIC_APP_URL}/obr`,
     icon: "/obr/icon.svg",
     description: "Search and view Nimble Nexus",
     action: {
