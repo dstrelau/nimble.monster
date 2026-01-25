@@ -1,10 +1,9 @@
-# Contributing to Nimble Monster
+# Contributing to Nimble Nexus
 
 ## Prerequisites
 
-- Node.js
+- Node.js 24+
 - pnpm 10.11.0+
-- Docker (for running PostgreSQL locally)
 
 ## Local Development Setup
 
@@ -14,15 +13,7 @@
 pnpm install
 ```
 
-### 2. Start PostgreSQL with Docker
-
-```bash
-docker compose up -d
-```
-
-This starts a PostgreSQL 16 database with the required uuid-ossp extension.
-
-### 3. Configure Environment Variables
+### 2. Configure Environment Variables
 
 Copy the example environment file:
 
@@ -30,7 +21,11 @@ Copy the example environment file:
 cp .env.example .env
 ```
 
-The default database connection is pre-configured to work with the Docker setup.
+Generate an auth secret:
+
+```bash
+pnpx auth secret
+```
 
 For authentication, you'll need Discord OAuth credentials:
 
@@ -45,19 +40,13 @@ AUTH_DISCORD_ID="your-discord-client-id"
 AUTH_DISCORD_SECRET="your-discord-client-secret"
 ```
 
-### 4. Run Database Migrations
+### 3. Run Database Migrations
 
 ```bash
-pnpm prisma migrate deploy
+pnpm db:migrate
 ```
 
-### 5. Generate Prisma Client
-
-```bash
-pnpm prisma generate
-```
-
-### 6. Start Development Server
+### 4. Start Development Server
 
 ```bash
 pnpm run dev
@@ -94,11 +83,11 @@ pnpx shadcn@latest add <component>
 
 ## Database Changes
 
-After modifying `prisma/schema.prisma`:
+After modifying `lib/db/schema.ts`:
 
 ```bash
-pnpm prisma migrate dev --name description_of_change
-pnpm prisma generate
+pnpm db:generate
+pnpm db:migrate
 ```
 
 ## Running Without Discord Auth
