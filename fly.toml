@@ -4,6 +4,7 @@ primary_region = "iad"
 [env]
 AUTH_TRUST_HOST = "true"
 AUTH_URL = "https://nimble.nexus/api/auth"
+BUCKET_NAME = "nimble-nexus"
 DATABASE_URL = "file:/data/db.sqlite"
 NEXT_PUBLIC_APP_URL = "https://nimble.nexus"
 NODE_ENV = "production"
