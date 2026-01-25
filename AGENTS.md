@@ -6,10 +6,16 @@
   - `--fix` can be added to automatically fix many issues
 - `pnpm run type-check` - TypeScript check only
 - `pnpm run build` - Production build (breaks dev server. Only run when asked. Always run `rm -rf .next` after.)
-- `prisma/scehma.prisma` is the schema file.
-  - lib/prisma is generated with `pnpm prisma generate`
 - Assume the dev server is already running on localhost:3000 and can be accessed via playwright.
   - Do not ever run `pnpm run dev`
+
+# Database
+
+- Uses Drizzle ORM with Turso (SQLite)
+- Schema: `lib/db/schema.ts`
+- `pnpm run db:generate` - Generate migrations
+- `pnpm run db:migrate` - Run migrations
+- `pnpm run db:push` - Push schema changes directly (dev)
 
 # Code Style
 
@@ -20,8 +26,7 @@
 - Organize imports: React/libraries first, then components, then contexts/types
 - File structure: components/, views/, lib/ directories
 - Use tailwind and shadcn for styling
-  - We are migrating from daisyui to shadcn
-  - You may add new shadcn components as needed via `pnpx shadcn@latest add <component>`
+  - Add new shadcn components via `pnpx shadcn@latest add <component>`
   - Do not modify shadcn components in components/ui without explicit confirmation
 - In this version of Next.js, params are a Promise that need to be awaited.
 - Use OpenTelemetry.
