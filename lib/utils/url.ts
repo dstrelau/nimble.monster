@@ -33,11 +33,16 @@ export function getMonsterImageUrl(monster: {
   return `/monsters/${slugify(monster)}/image`;
 }
 
-export function getMonsterMarkdownUrl(monster: {
-  name: string;
-  id: string;
-}): string {
-  return `/monsters/${slugify(monster)}/markdown`;
+export function getMonsterMarkdownUrl(
+  monster: { name: string; id: string },
+  options?: { format?: string }
+): string {
+  const path = `/monsters/${slugify(monster)}/markdown`;
+  if (options?.format) {
+    const params = new URLSearchParams({ format: options.format });
+    return `${path}?${params.toString()}`;
+  }
+  return path;
 }
 
 // Item URLs

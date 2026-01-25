@@ -42,12 +42,23 @@ export default function CardActions({ monster }: MonsterCardActionsProps) {
         <DropdownMenuItem asChild>
           <a
             className="flex gap-2 items-center"
+            href={getMonsterMarkdownUrl(monster, { format: "brief" })}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FileText className="w-4 h-4" />
+            Export to Markdown (Brief)
+          </a>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <a
+            className="flex gap-2 items-center"
             href={getMonsterMarkdownUrl(monster)}
             target="_blank"
             rel="noopener noreferrer"
           >
             <FileText className="w-4 h-4" />
-            Export to Markdown
+            Export to Markdown (Full)
           </a>
         </DropdownMenuItem>
         <ShareMenuDownloadCardItem

@@ -9,13 +9,13 @@ import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterMarkdownUrl } from "@/lib/utils/url";
 
 export const GET = telemetry(
-  async (
-    _request: Request,
-    { params }: { params: Promise<{ id: string }> }
-  ) => {
+  async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: monsterId } = await params;
     const span = trace.getActiveSpan();
     span?.setAttributes({ "params.id": monsterId });
+
+    const url = new URL(request.url);
+    const format = url.searchParams.get("format");
 
     const uid = deslugify(monsterId);
     if (!uid) {
@@ -29,7 +29,11 @@ export const GET = telemetry(
     }
 
     if (monsterId !== slugify(monster)) {
-      return permanentRedirect(getMonsterMarkdownUrl(monster));
+      const redirectUrl = getMonsterMarkdownUrl(
+        monster,
+        format ? { format } : undefined
+      );
+      return permanentRedirect(redirectUrl);
     }
 
     if (monster.visibility !== "public") {
@@ -46,7 +50,7 @@ export const GET = telemetry(
 
     span?.setAttributes({ "monster.id": monster.id });
 
-    const markdown = monsterToMarkdown(monster);
+    const markdown = monsterToMarkdown(monster, { brief: format === "brief" });
 
     return new NextResponse(markdown, {
       headers: {
