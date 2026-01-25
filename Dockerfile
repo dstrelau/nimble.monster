@@ -5,8 +5,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM base AS deps
 WORKDIR /app
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 COPY package.json pnpm-lock.yaml ./
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
