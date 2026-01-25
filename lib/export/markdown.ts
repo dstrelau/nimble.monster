@@ -2,16 +2,6 @@ import type { Item } from "@/lib/services/items";
 import type { Monster } from "@/lib/services/monsters";
 import type { SpellSchool } from "@/lib/types";
 
-export function monsterToBriefMarkdown(monster: Monster): string {
-  if (monster.legendary) {
-    return generateLegendaryBriefMarkdown(monster);
-  }
-  if (monster.minion) {
-    return generateMinionBriefMarkdown(monster);
-  }
-  return generateStandardBriefMarkdown(monster);
-}
-
 function generateStandardBriefMarkdown(monster: Monster): string {
   const sections: string[] = [];
 
@@ -242,7 +232,24 @@ function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export function monsterToMarkdown(monster: Monster): string {
+interface MonsterMarkdownOptions {
+  brief?: boolean;
+}
+
+export function monsterToMarkdown(
+  monster: Monster,
+  options: MonsterMarkdownOptions = {}
+): string {
+  if (options.brief) {
+    if (monster.legendary) {
+      return generateLegendaryBriefMarkdown(monster);
+    }
+    if (monster.minion) {
+      return generateMinionBriefMarkdown(monster);
+    }
+    return generateStandardBriefMarkdown(monster);
+  }
+
   const tags = generateTags(monster);
   const frontmatter = generateFrontmatter(monster, tags);
   const body = generateBody(monster);
