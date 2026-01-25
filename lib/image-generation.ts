@@ -1,6 +1,6 @@
 import { trace } from "@opentelemetry/api";
 import { generateBlobFilename, uploadBlob } from "@/lib/blob-storage";
-import { getBrowser } from "@/lib/browser";
+import { getBrowser, withRenderLimit } from "@/lib/browser";
 import {
   claimImageGeneration,
   completeImageGeneration,
@@ -82,12 +82,14 @@ export async function generateEntityImageWithStorage({
         // We claimed generation, now actually generate the image
         span.setAttributes({ "generation.claimed": true });
 
-        const imageBuffer = await generateEntityImageDirect({
-          baseUrl,
-          entityId,
-          entityUrlPath,
-          entityType,
-        });
+        const imageBuffer = await withRenderLimit(() =>
+          generateEntityImageDirect({
+            baseUrl,
+            entityId,
+            entityUrlPath,
+            entityType,
+          })
+        );
 
         // Upload to blob storage
         const filename = generateBlobFilename(
