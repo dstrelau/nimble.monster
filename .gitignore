@@ -9,7 +9,7 @@ pnpm-debug.log*
 lerna-debug.log*
 .playwright-mcp
 
-db/*.db
+db/*.db*
 db/*.sqlite
 *.local
 *.tsbuildinfo
