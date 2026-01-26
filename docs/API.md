@@ -70,6 +70,69 @@ Retrieve a single monster by ID (26-character identifier).
 }
 ```
 
+### GET /api/items
+
+List public items with pagination and sorting.
+
+**Query Parameters:**
+- `cursor` (string, optional): Pagination cursor for next page
+- `limit` (number, optional): Results per page (1-100, default: 100)
+- `sort` (string, optional): Sort order; '-' prefix for descending
+  - `name`, `-name`
+  - `createdAt`, `-createdAt`
+- `search` (string, optional): Search by name or kind
+- `rarity` (string, optional): Filter by rarity
+  - `all`, `unspecified`, `common`, `uncommon`, `rare`, `very_rare`, `legendary`
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "type": "items",
+      "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+      "attributes": {
+        "name": "Healing Potion",
+        "kind": "Potion",
+        "rarity": "common",
+        "description": "Restores health when consumed",
+        "moreInfo": "..."
+      },
+      "links": {
+        "self": "/api/items/0psvtrh43w8xm9dfbf5b6nkcq1"
+      }
+    }
+  ],
+  "links": {
+    "next": "/api/items?cursor=..."
+  }
+}
+```
+
+### GET /api/items/:id
+
+Retrieve a single item by ID (26-character identifier).
+
+**Response:**
+```json
+{
+  "data": {
+    "type": "items",
+    "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+    "attributes": {
+      "name": "Healing Potion",
+      "kind": "Potion",
+      "rarity": "common",
+      "description": "Restores health when consumed",
+      "moreInfo": "..."
+    },
+    "links": {
+      "self": "/api/items/0psvtrh43w8xm9dfbf5b6nkcq1"
+    }
+  }
+}
+```
+
 ### GET /api/collections
 
 List public collections with pagination and sorting.
