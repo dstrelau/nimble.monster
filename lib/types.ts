@@ -162,6 +162,7 @@ export interface User {
   username: string;
   displayName: string;
   imageUrl?: string;
+  bannerDismissed?: boolean;
 }
 
 export const SUBCLASS_VISIBILITY = [

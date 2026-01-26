@@ -61,6 +61,9 @@ export const users = sqliteTable("users", {
   name: text("name").notNull().default(""),
   email: text("email").unique(),
   emailVerified: integer("email_verified", { mode: "boolean" }).default(false),
+  bannerDismissed: integer("banner_dismissed", { mode: "boolean" }).default(
+    false
+  ),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });

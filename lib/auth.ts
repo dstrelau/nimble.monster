@@ -20,6 +20,7 @@ declare module "next-auth/jwt" {
     displayName: string;
     image?: string;
     role?: string | null;
+    bannerDismissed?: boolean;
   }
 }
 
@@ -83,6 +84,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             token.avatar = user.avatar ?? undefined;
             token.imageUrl = user.imageUrl ?? undefined;
             token.role = user.role;
+            token.bannerDismissed = user.bannerDismissed ?? false;
           }
         } catch {}
       } else if (token.discordId) {
@@ -115,6 +117,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           ? `https://cdn.discordapp.com/avatars/${token.discordId}/${token.avatar}.png`
           : "https://cdn.discordapp.com/embed/avatars/0.png";
       session.user.role = token.role;
+      session.user.bannerDismissed = token.bannerDismissed ?? false;
       return session;
     },
   },
