@@ -44,18 +44,6 @@ export class ItemsService {
     });
   }
 
-  async paginateMyItems(
-    creatorId: string,
-    params: PaginateItemsParams
-  ): Promise<PaginatePublicItemsResponse> {
-    const parsedParams = PaginateItemsSchema.parse(params);
-    return repository.paginateItems({
-      includePrivate: true,
-      creatorId,
-      ...parsedParams,
-    });
-  }
-
   async getPublicItem(itemId: string): Promise<Item | null> {
     return repository.findPublicItemById(itemId);
   }

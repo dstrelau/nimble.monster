@@ -1,14 +1,12 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
 import { addCorsHeaders } from "@/lib/cors";
-import type { CreateItemInput } from "@/lib/services/items";
 import { itemsService } from "@/lib/services/items";
 import { toJsonApiItem } from "@/lib/services/items/converters";
 import { telemetry } from "@/lib/telemetry";
 
-const CONTENT_TYPE = "application/vnd.api+json; nimble.version=202510.beta";
+const CONTENT_TYPE = "application/vnd.api+json";
 
 const querySchema = z.object({
   cursor: z.string().optional(),
@@ -102,36 +100,4 @@ export const GET = telemetry(async (request: Request) => {
   const headers = new Headers({ "Content-Type": CONTENT_TYPE });
   addCorsHeaders(headers);
   return NextResponse.json(response, { headers });
-});
-
-export const POST = telemetry(async (request: Request) => {
-  const session = await auth();
-  const span = trace.getActiveSpan();
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  span?.setAttributes({
-    "user.id": session.user.id,
-  });
-
-  const itemData = await request.json();
-
-  span?.setAttributes({
-    "item.create.data_keys": Object.keys(itemData).join(","),
-    "item.create.data_size": JSON.stringify(itemData).length,
-  });
-
-  const input: CreateItemInput = {
-    ...itemData,
-  };
-
-  const newItem = await itemsService.createItem(input, session.user.discordId);
-
-  span?.setAttributes({
-    "item.id": newItem.id,
-  });
-
-  return NextResponse.json(newItem, { status: 201 });
 });
