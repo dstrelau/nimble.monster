@@ -34,7 +34,7 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 27,Bard,https://www.patreon.com/posts/free-files-15558074,https://www.patreon.com/file?h=15724974&i=5471215,VTT27_Bard_Free.zip/VTT27_Bard_Free/Portrait/BardF.png
 28,Barlgura,https://www.patreon.com/posts/release-28-15724795,https://www.patreon.com/file?h=15724974&i=5471216,VTT28_Barlgura_Free.zip/VTT28_Barlgura_Free/Portrait/BarlguraF.png
 29,Centaur,https://www.patreon.com/posts/29-centaur-15934826,https://www.patreon.com/file?h=15724974&i=5471214,VTT29_Centaur_Free.zip/VTT29_Centaur_Free/Portrait/Centaurf.png
-30,Ninja,https://www.patreon.com/posts/30-ninja-16277617,https://www.patreon.com/file?h=15724974&i=1737440,VTT30_Ninja_Free.zip/VTT30_Ninja_Free/Portrait/NinjaFree.png
+30,Ninja,https://www.patreon.com/posts/30-ninja-16277617,-,-
 31,Manes,https://www.patreon.com/posts/31-manes-16541986,https://www.patreon.com/file?h=15724974&i=6423266,VTT31_Manes_Free.zip/VTT31_Manes_Free/Portrait/Manes-Free.png
 32,Gnoll Hunter,https://www.patreon.com/posts/32-33-gnoll-16801938,https://www.patreon.com/file?h=15724974&i=5549515,VTT32_GnollHunter_Free.zip/VTT32_GnollHunter_Free/Portrait/GnollHunterFree.png
 33,Gnoll Warrior,https://www.patreon.com/posts/32-33-gnoll-16801938,https://www.patreon.com/file?h=15724974&i=5549521,VTT33_GnollWarrior_Free.zip/VTT33_GnollWarrior_Free/Portrait/GnollWarriorFree.png
@@ -69,8 +69,8 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 59,Werebear Hybrid,https://www.patreon.com/posts/59-werebear-21728443,https://www.patreon.com/file?h=15724974&i=6512642,VTT59-Werebear-Hybrid-Free.zip/VTT59-Werebear-Hybrid-Free/Portrait/59-Werebear-hybrid-Free.png
 60,WereTiger Humanoid,https://www.patreon.com/posts/60-weretiger-21922519,https://www.patreon.com/file?h=15724974&i=6512643,VTT60-WereTigerHumanoid-Free.zip/VTT60-WereTigerHumanoid-Free/Portrait/60-WereTigerHumanoid-Free.png
 61,Headless Horseman,https://www.patreon.com/posts/61-62-headless-22405495,https://www.patreon.com/file?h=15724974&i=6560547,VTT61_HeadlessHorseman_Free.zip/VTT61_HeadlessHorseman_Free/Portrait/61HeadlessHorseman-Free.png
-62,Flaming Horseman,,https://www.patreon.com/file?h=15724974&i=6560549,VTT62_FlamingHorseman_Free.zip/VTT62_FlamingHorseman_Free/Portrait/62FlamingHorseman-Free.png
-63,Kraken,,https://www.patreon.com/file?h=15724974&i=11268422,VTT63_Kraken_Free.zip/VTT63_Kraken_Free/Portrait/63_KrakenPortrait_Free.png
+62,Flaming Horseman,https://www.patreon.com/posts/61-62-headless-22405495,https://www.patreon.com/file?h=15724974&i=6560549,VTT62_FlamingHorseman_Free.zip/VTT62_FlamingHorseman_Free/Portrait/62FlamingHorseman-Free.png
+63,Kraken,https://www.patreon.com/posts/release-kraken-22702152,https://www.patreon.com/file?h=15724974&i=11268422,VTT63_Kraken_Free.zip/VTT63_Kraken_Free/Portrait/63_KrakenPortrait_Free.png
 64,Weretiger Hybrid,https://www.patreon.com/posts/64-weretiger-22859922,https://www.patreon.com/file?h=15724974&i=6560550,VTT64_Weretiger Hybrid_Free.zip/VTT64_Weretiger Hybrid_Free/Portrait/64-Weretiger-Hybrid-Portrait-Free.png
 65,Zombie 1,https://www.patreon.com/posts/65-66-pack-23092833,https://www.patreon.com/file?h=15724974&i=6560551,VTT65_Zombie1_Free.zip/VTT65_Zombie1_Free/Portrait/VTT65-Zombie1-Free.png
 65b,Zombie 1 Shiny,https://www.patreon.com/posts/65-66-pack-23092833,https://www.patreon.com/file?h=15724974&i=6560552,VTT65_Zombie1Shiny_Free.zip/VTT65_Zombie1Shiny_Free/Portrait/VTT65-Zombie1Shiny-Free.png
@@ -78,52 +78,52 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 65d,Zombie 2 Shiny,https://www.patreon.com/posts/65-66-pack-23092833,https://www.patreon.com/file?h=15724974&i=6560554,VTT65_Zombie2Shiny_Free.zip/VTT65_Zombie2Shiny_Free/Portrait/65-Zombie-2Shiny-Free.png
 65e,Zombie 3,https://www.patreon.com/posts/65-66-pack-23092833,https://www.patreon.com/file?h=15724974&i=6560555,VTT65_Zombie3_Free.zip/VTT65_Zombie3_Free/Portrait/65_Zombie3_Free.png
 65f,Zombie 3 Shiny,https://www.patreon.com/posts/65-66-pack-23092833,https://www.patreon.com/file?h=15724974&i=6560563,VTT65_Zombie3shiny_Free.zip/VTT65_Zombie3shiny_Free/Portrait/65_Zombie3shiny_Free.png
-66,Necromancer,,https://www.patreon.com/file?h=15724974&i=6560564,VTT66_Necromancer_Free.zip/VTT66_Necromancer_Free/Portrait/66_necromancer-Free.png
-66b,Necromancer,,https://www.patreon.com/file?h=15724974&i=6560565,VTT66b_Necromancer_Free.zip/VTT66_Necromancer_Free/Portrait/66_necromancer-Free.png
-67,Tiger,,https://www.patreon.com/file?h=15724974&i=11268424,VTT67_Tiger_Free.zip/VTT67_Tiger_Free/Portrait/67_TigerPortrait_Free.png
-68,Were Crocodile,,https://www.patreon.com/file?h=15724974&i=11268427,VTT68_WereCrocodile_Free.zip/VTT68_WereCrocodile_Free/Portrait/68_WereCrocodilePortrait_Free.png
-69,Armored Were Croc,,-,-
-70,Crocodile,,https://www.patreon.com/file?h=15724974&i=11268430,VTT70_Crocodile_Free.zip/VTT70_Crocodile_Free/Portrait/PaperForge70_CrocodilePortrait_Free.png
-71,Werecrocodile Humanoid,,https://www.patreon.com/file?h=15724974&i=11268431,VTT71_WerecrocodileHumanoid_Free.zip/VTT71_WerecrocodileHumanoid_Free/Portrait/PaperForge71_WerecrocodileHumanoidPortrait_Free.png
-72,Dragonborn Paladin,,https://www.patreon.com/file?h=15724974&i=11268432,VTT72_Dragonborn_Free.zip/VTT72_Dragonborn_Free/Portrait/PaperForge72_DragonbornPaladinPortrait_Free.png
-73,Dragonborn Ranger,,https://www.patreon.com/file?h=15724974&i=11268433,VTT73_DragonbornRanger_Free.zip/VTT73_DragonbornRanger_Free/Portrait/PaperForge73_DragonbornRangerPortrait_Free.png
-74,Tiefling Sorceress,,https://www.patreon.com/file?h=15724974&i=5500310,VTT74_TieflingSorceress_Free.zip/VTT74_TieflingSorceress_Free/Portrait/TieflingSorceressFree.png
-75,Halfling Ranger,,https://www.patreon.com/file?h=15724974&i=11299440,VTT75_HalflingRanger_Free.zip/VTT75_HalflingRanger_Free/Portrait/PaperForge75_HalflingRanger_Free.png
-76,Half Orc Warrior,,https://www.patreon.com/file?h=15724974&i=11299325,VTT76_HalfOrcWarrior_Free.zip/VTT76_HalfOrcWarrior_Free/Portrait/PaperForge76_HalfOrcWarriorPortrait_Free.png
-77,Forest Spirit (Horns),,https://www.patreon.com/file?h=15724974&i=16056444,VTT77_ForestSpiritPack_Free.zip/VTT77_ForestSpiritPack_Free/Portrait/Horns/PaperForge77_ForestSpiritPack_Horns-Free.png
-77,Forest Spirit (Leafy),,https://www.patreon.com/file?h=15724974&i=16056444,VTT77_ForestSpiritPack_Free.zip/VTT77_ForestSpiritPack_Free/Portrait/Leafy/PaperForge77_ForestSpiritPack_LeafyPortrait-Free.png
-77,Forest Spirit (Spirit),,https://www.patreon.com/file?h=15724974&i=16056444,VTT77_ForestSpiritPack_Free.zip/VTT77_ForestSpiritPack_Free/Portrait/Spirit/PaperForge77_ForestSpiritPack_ForestSpiritportrait-Free.png
-77,Forest Spirit (Viney),,https://www.patreon.com/file?h=15724974&i=16056444,VTT77_ForestSpiritPack_Free.zip/VTT77_ForestSpiritPack_Free/Portrait/Viney/PaperForge77_ForestSpiritPack_Viney-FreeB.png
+66,Necromancer,https://www.patreon.com/posts/65-66-pack-23092833,https://www.patreon.com/file?h=15724974&i=6560564,VTT66_Necromancer_Free.zip/VTT66_Necromancer_Free/Portrait/66_necromancer-Free.png
+66b,Necromancer,https://www.patreon.com/posts/65-66-pack-23092833,-,-
+67,Tiger,https://www.patreon.com/posts/67-tiger-23385993,https://www.patreon.com/file?h=15724974&i=11268424,VTT67_Tiger_Free.zip/VTT67_Tiger_Free/Portrait/67_TigerPortrait_Free.png
+68,Were Crocodile,https://www.patreon.com/posts/68-71-werecrocodile-24057085,https://www.patreon.com/file?h=15724974&i=11268427,VTT68_WereCrocodile_Free.zip/VTT68_WereCrocodile_Free/Portrait/68_WereCrocodilePortrait_Free.png
+69,Armored Were Croc,https://www.patreon.com/posts/69-armored-24057085,-,-
+70,Crocodile,https://www.patreon.com/posts/70-crocodile-24142715,https://www.patreon.com/file?h=15724974&i=11268430,VTT70_Crocodile_Free.zip/VTT70_Crocodile_Free/Portrait/PaperForge70_CrocodilePortrait_Free.png
+71,Werecrocodile Humanoid,https://www.patreon.com/posts/71-werecrocodile-24142971,https://www.patreon.com/file?h=15724974&i=11268431,VTT71_WerecrocodileHumanoid_Free.zip/VTT71_WerecrocodileHumanoid_Free/Portrait/PaperForge71_WerecrocodileHumanoidPortrait_Free.png
+72,Dragonborn Paladin,https://www.patreon.com/posts/72-dragonborn-24299072,https://www.patreon.com/file?h=15724974&i=11268432,VTT72_Dragonborn_Free.zip/VTT72_Dragonborn_Free/Portrait/PaperForge72_DragonbornPaladinPortrait_Free.png
+73,Dragonborn Ranger,https://www.patreon.com/posts/73-dragonborn-24476937,https://www.patreon.com/file?h=15724974&i=11268433,VTT73_DragonbornRanger_Free.zip/VTT73_DragonbornRanger_Free/Portrait/PaperForge73_DragonbornRangerPortrait_Free.png
+74,Tiefling Sorceress,https://www.patreon.com/posts/74-tiefling-24640047,https://www.patreon.com/file?h=15724974&i=5500310,VTT74_TieflingSorceress_Free.zip/VTT74_TieflingSorceress_Free/Portrait/TieflingSorceressFree.png
+75,Halfling Ranger,https://www.patreon.com/posts/halfling-ranger-24681493,https://www.patreon.com/file?h=15724974&i=11299440,VTT75_HalflingRanger_Free.zip/VTT75_HalflingRanger_Free/Portrait/PaperForge75_HalflingRanger_Free.png
+76,Half Orc Warrior,https://www.patreon.com/posts/76-half-orc-24964103,https://www.patreon.com/file?h=15724974&i=11299325,VTT76_HalfOrcWarrior_Free.zip/VTT76_HalfOrcWarrior_Free/Portrait/PaperForge76_HalfOrcWarriorPortrait_Free.png
+77a,Forest Spirit (Horns),https://www.patreon.com/posts/77-forest-spirit-25146221,https://www.patreon.com/file?h=15724974&i=16056444,VTT77_ForestSpiritPack_Free.zip/VTT77_ForestSpiritPack_Free/Portrait/Horns/PaperForge77_ForestSpiritPack_Horns-Free.png
+77b,Forest Spirit (Leafy),https://www.patreon.com/posts/77-forest-spirit-25146221,https://www.patreon.com/file?h=15724974&i=16056444,VTT77_ForestSpiritPack_Free.zip/VTT77_ForestSpiritPack_Free/Portrait/Leafy/PaperForge77_ForestSpiritPack_LeafyPortrait-Free.png
+77c,Forest Spirit (Spirit),https://www.patreon.com/posts/77-forest-spirit-25146221,https://www.patreon.com/file?h=15724974&i=16056444,VTT77_ForestSpiritPack_Free.zip/VTT77_ForestSpiritPack_Free/Portrait/Spirit/PaperForge77_ForestSpiritPack_ForestSpiritportrait-Free.png
+77d,Forest Spirit (Viney),https://www.patreon.com/posts/77-forest-spirit-25146221,https://www.patreon.com/file?h=15724974&i=16056444,VTT77_ForestSpiritPack_Free.zip/VTT77_ForestSpiritPack_Free/Portrait/Viney/PaperForge77_ForestSpiritPack_Viney-FreeB.png
 78,Medusa,https://www.patreon.com/posts/78-medusa-25588193,https://www.patreon.com/file?h=15724974&i=16056443,VTT78_Medusa_Free.zip/VTT78_Medusa_Free/Portrait/78_MedusaPortrait-Free.png
 79,Medusa Preistess,https://www.patreon.com/posts/79-80-81-medusa-25811564,-,-
 80,Medusa Archer,https://www.patreon.com/posts/79-80-81-medusa-25811564,-,-
 81,Medusa Warrior,https://www.patreon.com/posts/79-80-81-medusa-25811564,-,-
 82,Clockwork Golem Pack,https://www.patreon.com/posts/82-clockwork-25953755,https://www.patreon.com/file?h=15724974&i=16056445,VTT82_ClockworkGolemPack_Free.zip/VTT82_ClockworkGolemPack_Free/Portrait/Bomb/82_BombPortrait-Free.png
-83,Human Cleric,https://www.patreon.com/posts/83-cleric-26301525,,
-84,Halforc Monk,https://www.patreon.com/posts/84-half-orc-monk-26465521,,
+83,Human Cleric,https://www.patreon.com/posts/83-cleric-26301525,-,-
+84,Halforc Monk,https://www.patreon.com/posts/84-half-orc-monk-26465521,-,-
 85,Hydra,https://www.patreon.com/posts/85-hydra-26842819,https://www.patreon.com/file?h=15724974&i=6652700,VTT85_Hydra_Free.zip/VTT85_Hydra_Free/Portrait/85_Hydra-Free.png
-86,Undead Knights,https://www.patreon.com/posts/86-undead-27232175,,
-87,Hook Horror,https://www.patreon.com/posts/87-hook-horror-27515174,,
-88,Maw Demon,https://www.patreon.com/posts/88-maw-demon-27665895,,
-89,Banshee,https://www.patreon.com/posts/89-banshee-27834335,,
-90,Herculean,https://www.patreon.com/posts/90-herculean-28088083,,
-91,Swarm Master,https://www.patreon.com/posts/91-92-93-28820225,,
+86,Undead Knights,https://www.patreon.com/posts/86-undead-27232175,-,-
+87,Hook Horror,https://www.patreon.com/posts/87-hook-horror-27515174,-,-
+88,Maw Demon,https://www.patreon.com/posts/88-maw-demon-27665895,-,-
+89,Banshee,https://www.patreon.com/posts/89-banshee-27834335,-,-
+90,Herculean,https://www.patreon.com/posts/90-herculean-28088083,-,-
+91,Swarm Master,https://www.patreon.com/posts/91-92-93-28820225,-,-
 92,https://www.patreon.com/posts/91-92-93-28820225,,,
-93,Skyscout,https://www.patreon.com/posts/91-92-93-28820225,,
-94,Mantid,https://www.patreon.com/posts/94-mantid-29075101,,
-95,Harpy Matriarch,https://www.patreon.com/posts/95-harpy-29227267,,
+93,Skyscout,https://www.patreon.com/posts/91-92-93-28820225,-,-
+94,Mantid,https://www.patreon.com/posts/94-mantid-29075101,-,-
+95,Harpy Matriarch,https://www.patreon.com/posts/95-harpy-29227267,-,-
 96,Harpy,https://www.patreon.com/posts/96-harpy-29425757,https://www.patreon.com/file?h=15724974&i=6652701,VTT96_Harpy_Free.zip/VTT96_Harpy_Free/Portrait/96_Harpy-Free.png
 97,Giant Spider,https://www.patreon.com/posts/cavern-of-venom-29445967,https://www.patreon.com/file?h=15724974&i=5500334,VTT97_GiantSpider_Free.zip/VTT97_GiantSpider_Free/Portrait/GiantSpiderFree.png
 98,Spiderling,https://www.patreon.com/posts/cavern-of-venom-29445967,https://www.patreon.com/file?h=15724974&i=5500349,VTT98_GiantSpiderling_Free.zip/VTT98_GiantSpiderling_Free/Portrait/GiantSpiderlingFree.png
 99,Venom Queen,https://www.patreon.com/posts/cavern-of-venom-29445967,https://www.patreon.com/file?h=15724974&i=5500366,VTT99_VenomQueen_Free.zip/VTT99_VenomQueen_Free/Portrait/VenomQueenFree.png
 100,,,,
 101,Webbed Humanoid,,,
-102,Skeletal Bird,https://www.patreon.com/posts/102-skeletal-29877269,,
-103,Human Monk,https://www.patreon.com/posts/103-human-monk-29877524,,
+102,Skeletal Bird,https://www.patreon.com/posts/102-skeletal-29877269,-,-
+103,Human Monk,https://www.patreon.com/posts/103-human-monk-29877524,-,-
 104,Tavern Keeper,https://www.patreon.com/posts/104-tavern-30147275,https://www.patreon.com/file?h=15724974&i=6652702,VTT104_TavernKeeper_Free.zip/VTT104_TavernKeeper_Free/Portrait/104_TavernKeeper-Free.png
-105,Red Cap,https://www.patreon.com/posts/105-red-cap-30147571,,
+105,Red Cap,https://www.patreon.com/posts/105-red-cap-30147571,-,-
 106,Tavern Maiden,https://www.patreon.com/posts/106-tavern-30320800,https://www.patreon.com/file?h=15724974&i=6652705,VTT106_TavernMaiden_Free.zip/VTT106_TavernMaiden_Free/Portrait/106_TavernMaiden-Free.png
-107,Bone Devil,,,
+107,Bone Devil,https://www.patreon.com/posts/107-bone-devil-30320966,-,-
 108,Adult Red Dragon,https://www.patreon.com/posts/108-adult-red-30436400,https://www.patreon.com/file?h=15724974&i=8046291,VTT108_AdultRedDragon_Free.zip/VTT108_AdultRedDragon_Free/Portrait/AdultRedDragonF.png
 109,Fire Elemental,https://www.patreon.com/posts/109-fire-30437152,-,-
 110,Booze Server Kobold,https://www.patreon.com/posts/110-booze-server-30437329,https://www.patreon.com/file?h=15724974&i=8046290,VTT110_BoozeServerKobold_Free.zip/VTT110_BoozeServerKobold_Free/Portrait/BoozeServerKoboldF.png
@@ -131,67 +131,67 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 112,Townsman,https://www.patreon.com/posts/112-townsman-30586677,https://www.patreon.com/file?h=15724974&i=6652706,VTT112_Townsman_Free.zip/VTT112_Townsman_Free/Portrait/112_Townsman-Free.png
 113,Townsman,https://www.patreon.com/posts/113-townsman-2-30627219,https://www.patreon.com/file?h=15724974&i=6652707,VTT113_Townsman_Free.zip/VTT113_Townsman_Free/Portrait/113_Townsman-Free.png
 114,Wing Sorcerer Kobold,https://www.patreon.com/posts/114-kobold-wing-30740953,https://www.patreon.com/file?h=15724974&i=8046293,VTT114_WingSorcererKobold_Free.zip/VTT114_WingSorcererKobold_Free/Portrait/KoboldWingSorcF.png
-115,Molten Ooze,https://www.patreon.com/posts/115-molten-ooze-30741117,,
+115,Molten Ooze,https://www.patreon.com/posts/115-molten-ooze-30741117,-,-
 116,Drunken Townsman,https://www.patreon.com/posts/116-drunken-30805855,https://www.patreon.com/file?h=15724974&i=6652708,VTT116_DrunkenTownsman_Free.zip/VTT116_DrunkenTownsman_Free/Portrait/116_Drunken-Townsman-Free.png
-117,Legion Erinyes,https://www.patreon.com/posts/117-legion-30932234,,
-118,Reanimated Groundskeeper,https://www.patreon.com/posts/118-reanimated-31139328,,
-119,Ghostly Hound,https://www.patreon.com/posts/119-ghostly-31139575,,
-120,Ghost Matron,https://www.patreon.com/posts/120-ghost-matron-31182213,,
-121,Wisp Born,https://www.patreon.com/posts/121-wispborn-31182347,,
+117,Legion Erinyes,https://www.patreon.com/posts/117-legion-30932234,-,-
+118,Reanimated Groundskeeper,https://www.patreon.com/posts/118-reanimated-31139328,-,-
+119,Ghostly Hound,https://www.patreon.com/posts/119-ghostly-31139575,-,-
+120,Ghost Matron,https://www.patreon.com/posts/120-ghost-matron-31182213,-,-
+121,Wisp Born,https://www.patreon.com/posts/121-wispborn-31182347,-,-
 122,Crone,https://www.patreon.com/posts/122-crone-31215835,https://www.patreon.com/file?h=15724974&i=6652710,VTT122_Crone_Free.zip/VTT122_Crone_Free/Portrait/122_Crone-Free.png
-123,Vapul,https://www.patreon.com/posts/123-vapul-31215991,,
-124,Soul Scorcher Dragon,https://www.patreon.com/posts/124-soulscorcher-31363950,,
+123,Vapul,https://www.patreon.com/posts/123-vapul-31215991,https://www.patreon.com/file?h=15724974&i=6652711,VTT122_Vapul_Free.zip/VTT122_Vapul_Free/Portrait/122_Vapul-Free.png
+124,Soul Scorcher Dragon,https://www.patreon.com/posts/124-soulscorcher-31363950,-,-
 125,Urchin,https://www.patreon.com/posts/125-urchin-31485841,https://www.patreon.com/file?h=15724974&i=6652714,VTT125_Urchin_Free.zip/VTT125_Urchin_Free/Portrait/125_Urchin-Free.png
 126,Little Urchin,https://www.patreon.com/posts/126-little-31486132,https://www.patreon.com/file?h=15724974&i=6652716,VTT126_Urchin_Free.zip/VTT126_Urchin_Free/Portrait/126_Urchin-Free.png
 127,Townswoman,https://www.patreon.com/posts/127-townswoman-31530699,https://www.patreon.com/file?h=15724974&i=6652718,VTT127_Townswoman_Free.zip/VTT127_Townswoman_Free/Portrait/127_Townswoman-Free.png
 128,Cultist Hide,https://www.patreon.com/posts/128-cultist-hide-31961658,https://www.patreon.com/file?h=15724974&i=6652722,VTT128_CultistHide_Free.zip/VTT128_CultistHide_Free/Portrait/128_CultistHide-Free.png
-129,Cultist Claw,https://www.patreon.com/posts/129-cultist-claw-31961828,,
-130,Cultist Cats Eye,https://www.patreon.com/posts/130-cultist-31961919,,
+129,Cultist Claw,https://www.patreon.com/posts/129-cultist-claw-31961828,-,-
+130,Cultist Cats Eye,https://www.patreon.com/posts/130-cultist-31961919,-,-
 131,Cultist Warlock,https://www.patreon.com/posts/131-cultist-31962044,https://www.patreon.com/file?h=15724974&i=6652725,VTT131_CultistWarlock_Free.zip/VTT131_CultistWarlock_Free/Portrait/131_CultistWarlock-Free.png
-132,Cultist Abomination,,,
-133,Black Teztatlipoca,,,
+132,Cultist Abomination,https://www.patreon.com/posts/132-cultist-31962101,-,-
+133,Black Teztatlipoca,https://www.patreon.com/posts/133-black-32161400,-,-
 134,,,,
 135,,,,
 136,,,,
-137,Aarakocra Warrior,,,
+137,Aarakocra Warrior,https://www.patreon.com/posts/137-aarakocra-32269264,-,-
 138,,,,
 139,,,,
-140,Chameleonfolk Warrior,https://www.patreon.com/posts/140-warrior-32441045,https://www.patreon.com/file?h=15724974&i=4860690,PaperForge140_Chameleonfolk Warrior_Free.zip
+140,Chameleonfolk Warrior,https://www.patreon.com/posts/140-warrior-32441045,https://www.patreon.com/file?h=15724974&i=4860690,PaperForge140_Chameleonfolk Warrior_Free.zip/PaperForge140_Chameleonfolk Warrior_Free/PNGs/ChameleonfolkWarrior 1.png
 141,Chameleonfolk Chieftain,https://www.patreon.com/posts/141-chieftain-32473604,-,-
-142,Elder Coatl,https://www.patreon.com/posts/142-elder-couatl-32498319,,
-143,Manticore,https://www.patreon.com/posts/143-manticore-32670248,,VTT143_Manticore_Free.zip/VTT143_Manticore_Free/Portrait/143_Manticore-Free.png
-144,Mastiff,,,
-145,Giant Snake,https://www.patreon.com/posts/145-reskin-giant-33173609,,VTT145_GiantSnake_Free.zip/VTT145_GiantSnake_Free/Portrait/Free/145_GiantSnakePortrait-Free-B.png
-146,Remote Traveller,,,
-147,Firbolg Druid,,,
+142,Elder Coatl,https://www.patreon.com/posts/142-elder-couatl-32498319,-,-
+143,Manticore,https://www.patreon.com/posts/143-manticore-32670248,https://www.patreon.com/file?h=15724974&i=6652728,VTT143_Manticore_Free.zip/VTT143_Manticore_Free/Portrait/143_Manticore-Free.png
+144,Mastiff,https://www.patreon.com/posts/144-mastiff-33141777,-,-
+145,Giant Snake,https://www.patreon.com/posts/145-reskin-giant-33173609,https://www.patreon.com/file?h=15724974&i=8046319,VTT145_GiantSnake_Free.zip/VTT145_GiantSnake_Free/Portrait/Free/145_GiantSnakePortrait-Free-B.png
+146,Remote Traveller,https://www.patreon.com/posts/146-remote-33355464,-,-
+147,Firbolg Druid,https://www.patreon.com/posts/147-firbolg-33516867,-,-
 148,,,,
-149,Warforged Artificer,https://www.patreon.com/posts/149-warforged-33797786,,VTT149_WarforgedArtificer_Free.zip/VTT149_WarforgedArtificer_Free/Portrait/149_WarforgedArtificer-Free.png
-150,Steel Defender,,,
-151,Gnome Wizard,https://www.patreon.com/posts/151-gnome-wizard-33931545,,VTT151_GnomeWizard_Free.zip/VTT151_GnomeWizard_Free/Portrait/151_GnomeWizard-Free.png
-152,Elf Ranger,,,
-153,Half Elf Rogue,,,
-154,Leprechaun,,,
-155,Rakshasa,,,
-156,Rakshasa,,,VTT156_Rakshasa_Free.zip/VTT156_Rakshasa_Free/Portrait/RakshasaFree.png
-157,Giant Scorpion,https://www.patreon.com/posts/157-giant-35773806,,VTT157_GiantScorpion_Free.zip/VTT157_GiantScorpion_Free/Portrait/157_GiantScorpion-Free.png
-158,Bullywug,,,VTT158_Bullywug_Free.zip/VTT158_Bullywug_Free/Portrait/BullywugFree.png
-159,Bullywug Royal Guard,,,
-160,Bullywug Queen,,,VTT160_BullywugQueen_Free.zip/VTT160_BullywugQueen_Free/Portrait/BullywugQueenFree.png
+149,Warforged Artificer,https://www.patreon.com/posts/149-warforged-33797786,https://www.patreon.com/file?h=15724974&i=6652730,VTT149_WarforgedArtificer_Free.zip/VTT149_WarforgedArtificer_Free/Portrait/149_WarforgedArtificer-Free.png
+150,Steel Defender,https://www.patreon.com/posts/150-steel-33826524,-,-
+151,Gnome Wizard,https://www.patreon.com/posts/151-gnome-wizard-33931545,https://www.patreon.com/file?h=15724974&i=6652733,VTT151_GnomeWizard_Free.zip/VTT151_GnomeWizard_Free/Portrait/151_GnomeWizard-Free.png
+152,Elf Ranger,https://www.patreon.com/posts/152-elf-ranger-34963286,-,-
+153,Half Elf Rogue,https://www.patreon.com/posts/153-half-elf-35071324,-,-
+154,Leprechaun,https://www.patreon.com/posts/vtt-154-35121745,-,-
+155,Rakshasa,https://www.patreon.com/posts/155-rakshasa-35463023,-,-
+156,Rakshasa,https://www.patreon.com/posts/vtt-rakshasa-35492814,-,-
+157,Giant Scorpion,https://www.patreon.com/posts/157-giant-35773806,https://www.patreon.com/file?h=15724974&i=6652734,VTT157_GiantScorpion_Free.zip/VTT157_GiantScorpion_Free/Portrait/157_GiantScorpion-Free.png
+158,Bullywug,https://www.patreon.com/posts/vtt-158-bullywug-35878361,-,-
+159,Bullywug Royal Guard,https://www.patreon.com/posts/vtt-reskin-159-35985253,-,-
+160,Bullywug Queen,https://www.patreon.com/posts/vtt-160-bullywug-35985257,-,-
 161,Bugbear,https://www.patreon.com/posts/161-bugbear-36065977,https://www.patreon.com/file?h=15724974&i=5443676,VTT161_Bugbear_Free.zip/VTT161_Bugbear_Free/Portrait/BugbearFree.png
-162,Otyugh,https://www.patreon.com/posts/162-otyugh-36242025,,
-163,Giant Centipede,https://www.patreon.com/posts/163-giant-36352514,,VTT163_GiantCentipede_Free.zip/VTT163_GiantCentipede_Free/Portrait/GiantCentipedeFree.png
-164,Ogre,,,VTT164_Ogre_Free.zip/VTT164_Ogre_Free/Portrait/OgreFree.png
-165,Tiefling Warlock,,,VTT165_TieflingWarlock_Free.zip/VTT165_TieflingWarlock_Free/Portrait/TieflingWarlockFree.png
+162,Otyugh,https://www.patreon.com/posts/162-otyugh-36242025,https://www.patreon.com/file?h=15724974&i=5466684,PaperForge162_Otyugh_Free.zip/PaperForge162_Otyugh_Free/PNGs/Otyugh Free.png
+163,Giant Centipede,https://www.patreon.com/posts/163-giant-36352514,-,-
+164,Ogre,https://www.patreon.com/posts/vtt-164-ogre-36498477,-,-
+165,Tiefling Warlock,https://www.patreon.com/posts/vtt-165-tiefling-36504468,-,-
 166,Sleuth,,,VTT166_Sleuth_Free.zip/VTT166_Sleuth_Free/Portrait/SpecialistFree.png
 167,Operative,,,VTT167_Operative_Free.zip/VTT167_Operative_Free/Portrait/OperativeFree.png
 168,Spectral Agent,,,VTT168_SpectralAgent_Free.zip/VTT168_SpectralAgent_Free/Portrait/SpectralAgentFree.png
 169,,,,
-170,Half Orc Paladin,,,VTT170_HalfOrcPaladin_Free.zip/VTT170_HalfOrcPaladin_Free/Portrait/HalfOrcPaladinFree.png
-171,Paladin,,,VTT171_Paladin_Free.zip/VTT171_Paladin_Free/Portrait/PaladinFree.png
+170,Half Orc Paladin,https://www.patreon.com/posts/paladins-green-37652069,-,-
+171,Paladin,https://www.patreon.com/posts/paladins-green-37652069,-,-
 172,,,,
-173,Chempunk Ogre,,,
-174,Chempunk Scientist,,,VTT174_ChempunkScientist_Free.zip/VTT174_ChempunkScientist_Free/Portrait/ChempunkScientistFree.png
-175,Automated Hose,,,VTT175_AutomatedHose_Free.zip/VTT175_AutomatedHose_Free/Portrait/chempunkHoseFree.png
+173,Chempunk Ogre,https://www.patreon.com/posts/chempunk-set-37811766,-,-
+174,Chempunk Scientist,https://www.patreon.com/posts/chempunk-set-37811766,-,-
+175,Automated Hose,https://www.patreon.com/posts/chempunk-set-37811766,-,-
 176,Skeleton,,,VTT176_Skeleton_Free.zip/VTT176_Skeleton_Free/Portrait/SkeletonFree.png
 177,Skeleton Archer,,,VTT177_SkeletonArcher_Free.zip/VTT177_SkeletonArcher_Free/Portrait/Skeleton-ArcherFree.png
 178,Skeleton Rogue,,,VTT178_SkeletonRogue_Free.zip/VTT178_SkeletonRogue_Free/Portrait/SkeletonRogueFree.png
@@ -199,9 +199,9 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 180,Skeleton Warrior,,,VTT180_SkeletonWarrior_Free.zip/VTT180_SkeletonWarrior_Free/Portrait/SkeletonWarriorFree.png
 181,,,,
 182,,,,
-183,Hogshead,,,
-184,Hogshead B,,,
-185,Troll,,,VTT185_Troll_Free.zip/VTT185_Troll_Free/Portrait/TrollFree.png
+183,Hogshead,https://www.patreon.com/posts/environment-38331073,-,-
+184,Hogshead B,https://www.patreon.com/posts/environment-38331073,-,-
+185,Troll,https://www.patreon.com/posts/trolls-38420626,-,-
 186,,,,
 187,Orc Warrior,,,
 188,Orc Swordsman,,,VTT188_OrcSwordsman_Free.zip/VTT188_OrcSwordsman_Free/Portrait/OrcSwordsmanFree.png
@@ -508,7 +508,7 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 489,Auto-gnome,,,
 490,Werewolf,,,VTT490_Werewolf_Free.zip/VTT490_Werewolf_Free/Portrait/490_WerewolfPortrait-Free.png
 491,Vampire Spawn,,,
-492,Ooze,https://www.patreon.com/posts/492-ooze-74556588,,VTT492_Ooze_Free.zip/VTT492_Ooze_Free/Portrait/492_OozePortrait-Free.png
+492,Ooze,https://www.patreon.com/posts/492-ooze-74556588,-,-
 493,Black Pudding,,,
 494,Bugbear,https://www.patreon.com/posts/494-bugbear-74816244,https://www.patreon.com/file?h=15724974&i=12333486,VTT494_Bugbear_Free.zip/VTT494_Bugbear_Free/Portrait/494_BugbearPortrait-Free.png
 495,Ettin,,,VTT495_Ettin_Free.zip/VTT495_Ettin_Free/Portrait/495_EttinPortrait-Free.png
@@ -536,15 +536,15 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 517,Bearded Devil,,,
 518,Ice Devil,,,
 519,Spined Devil,,,
-520,Treant,https://www.patreon.com/posts/treant-and-79348155,,VTT520_Treant_Free.zip/VTT520_Treant_Free/Portrait/520_TreantPortrait-Free.png
-521,Awakened Shrub,https://www.patreon.com/posts/treant-and-79348155,,VTT521_AwakenedShrub_Free.zip/VTT521_AwakenedShrub_Free/Portrait/521_AwakenedShrubPortrait-Free.png
-522,Awakened Shrub,https://www.patreon.com/posts/treant-and-79348155,,VTT522_AwakenedShrub_Free.zip/VTT522_AwakenedShrub_Free/Portrait/522_AwakenedShrubPortrait-Free.png
-523,Goblin,https://www.patreon.com/posts/523-goblin-80067472,,VTT523_Goblin_Free.zip/VTT523_Goblin_Free/Portrait/523_GoblinPortrait-fREE.png
-524,Goblin,https://www.patreon.com/posts/goblin-524-80067468,,VTT524_Goblin_Free.zip/VTT524_Goblin_Free/Portrait/524_GoblinPortrait-Free.png
-525,Goblin,https://www.patreon.com/posts/525-goblin-80067477,,VTT525_Goblin_Free.zip/VTT525_Goblin_Free/Portrait/525_GoblinPortrait-Free.png
+520,Treant,https://www.patreon.com/posts/treant-and-79348155,-,-
+521,Awakened Shrub,https://www.patreon.com/posts/treant-and-79348155,-,-
+522,Awakened Shrub,https://www.patreon.com/posts/treant-and-79348155,-,-
+523,Goblin,https://www.patreon.com/posts/523-goblin-80067472,-,-
+524,Goblin,https://www.patreon.com/posts/goblin-524-80067468,-,-
+525,Goblin,https://www.patreon.com/posts/525-goblin-80067477,-,-
 526,Oni,,,VTT526_Oni_Free.zip/VTT526_Oni_Free/Portrait/526_OniPortrait-Free.png
-527,Goblin,https://www.patreon.com/posts/527-goblin-80829588,,VTT527_Goblin_Free.zip/VTT527_Goblin_Free/Portrait/527_GoblinPortrait-Free.png
-528,Goblin,https://www.patreon.com/posts/528-goblin-80829586,,VTT528_Goblin_Free.zip/VTT528_Goblin_Free/Portrait/528_GoblinPortrait-Free.png
+527,Goblin,https://www.patreon.com/posts/527-goblin-80829588,-,-
+528,Goblin,https://www.patreon.com/posts/528-goblin-80829586,-,-
 529,Erinyes,,,
 530,Bone Devil,,,
 531,Shadow Demon,,,VTT531_ShadowDemon_Free.zip/VTT531_ShadowDemon_Free/Portrait/531_ShadowDemonPortrait-Free.png
@@ -720,7 +720,7 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 701,Mermaid,,,
 702,Siren,,,
 703,[Variant] Siren,,,
-704,Axe Beak,https://www.patreon.com/posts/704-axe-beak-124607411,https://www.patreon.com/file?h=15724974&i=5439037,VTT704_AxeBeak_Free.zip/VTT704_AxeBeak_Free/Portrait/704_AxeBeakPortrait-FreeB.png
+704,Axe Beak,https://www.patreon.com/posts/704-axe-beak-124607411,-,-
 705,[Variant] Axe Beak,,,
 706,[Reskin] Siren,,,
 707,[Reskin] Axe Beak,,,
@@ -751,7 +751,7 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 732,Githyanki Gish,,,
 733,Githyanki Supreme Commander,,,
 734,Githzerai Monk,,,
-735,Ochre Jelly,https://www.patreon.com/posts/735-ochre-jelly-135397333,,VTT735_OchreJelly_Free.zip/VTT735_OchreJelly_Free/735_OchreJellyPortrait-BaseGoldB.png
+735,Ochre Jelly,https://www.patreon.com/posts/735-ochre-jelly-135397333,-,-
 736,Githzerai Zerth,,,
 737,Githzerai Enlightened,,,
 738,Githzerai Anarch,,,
@@ -783,4 +783,4 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 764,,,,
 765,,,,
 766,Worg,https://www.patreon.com/posts/766-worg-142465043,https://www.patreon.com/file?h=15724974&m=556906001,VTT766_Worg_Free.zip/VTT766_Worg_Free/Portrait/766_WorgPortrait-BaseGoldB.png
-767,[Reskin] Worg Rider,https://www.patreon.com/posts/767-reskin-worg-142465951,,
+767,[Reskin] Worg Rider,https://www.patreon.com/posts/767-reskin-worg-142465951,-,-
