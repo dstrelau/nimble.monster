@@ -78,7 +78,28 @@ export async function claimImageGeneration(
           id: created.id,
           claimed: true,
         };
-      } catch {
+      } catch (insertError) {
+        const insertErrorMessage =
+          insertError instanceof Error
+            ? insertError.message
+            : String(insertError);
+        const insertErrorStack =
+          insertError instanceof Error ? insertError.stack : undefined;
+
+        span.setAttributes({
+          "insert.error": true,
+          "insert.error.message": insertErrorMessage,
+          "insert.error.type":
+            insertError instanceof Error
+              ? insertError.constructor.name
+              : "Unknown",
+        });
+
+        if (insertErrorStack) {
+          span.setAttributes({ "insert.error.stack": insertErrorStack });
+        }
+
+        // Check if another process inserted while we were trying (race condition)
         const raceExistingRows = await db
           .select()
           .from(entityImages)
@@ -103,7 +124,18 @@ export async function claimImageGeneration(
             existing: raceExisting,
           };
         }
-        throw new Error("Failed to create entity image record");
+
+        // No race condition - this is a real insert failure
+        span.setAttributes({
+          "insert.fatal": true,
+        });
+        span.setStatus({ code: 2, message: insertErrorMessage });
+
+        const error = new Error(
+          `Failed to create entity image record for ${entityType}/${entityId}: ${insertErrorMessage}`
+        );
+        error.cause = insertError;
+        throw error;
       }
     }
 
