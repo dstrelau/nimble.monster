@@ -1,7 +1,61 @@
+import { z } from "zod";
 import * as repository from "./repository";
-import type { CreateItemInput, Item, UpdateItemInput } from "./types";
+import {
+  type CreateItemInput,
+  type Item,
+  type PaginateItemsParams,
+  PaginateItemsSortOptions,
+  type UpdateItemInput,
+} from "./types";
+
+const RarityOptions = [
+  "all",
+  "unspecified",
+  "common",
+  "uncommon",
+  "rare",
+  "very_rare",
+  "legendary",
+] as const;
+
+const PaginateItemsSchema = z.object({
+  search: z.string().optional(),
+  sort: z.enum(PaginateItemsSortOptions).default("-createdAt"),
+  limit: z.number().min(1).max(100).default(100),
+  cursor: z.string().optional(),
+  rarity: z.enum(RarityOptions).optional(),
+  creatorId: z.string().optional(),
+  sourceId: z.string().optional(),
+});
+
+export type PaginatePublicItemsResponse = {
+  data: Item[];
+  nextCursor: string | null;
+};
 
 export class ItemsService {
+  async paginatePublicItems(
+    params: PaginateItemsParams
+  ): Promise<PaginatePublicItemsResponse> {
+    const parsedParams = PaginateItemsSchema.parse(params);
+    return repository.paginateItems({
+      includePrivate: false,
+      ...parsedParams,
+    });
+  }
+
+  async paginateMyItems(
+    creatorId: string,
+    params: PaginateItemsParams
+  ): Promise<PaginatePublicItemsResponse> {
+    const parsedParams = PaginateItemsSchema.parse(params);
+    return repository.paginateItems({
+      includePrivate: true,
+      creatorId,
+      ...parsedParams,
+    });
+  }
+
   async getPublicItem(itemId: string): Promise<Item | null> {
     return repository.findPublicItemById(itemId);
   }
