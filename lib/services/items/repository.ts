@@ -1,5 +1,5 @@
 "use server";
-import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
+import { and, asc, desc, eq, gt, inArray, like, lt, or } from "drizzle-orm";
 import { getDatabase } from "@/lib/db/drizzle";
 import type { AwardRow, SourceRow } from "@/lib/db/schema";
 import {
@@ -13,12 +13,15 @@ import {
   users,
 } from "@/lib/db/schema";
 import type { Source, User } from "@/lib/types";
+import type { CursorData } from "@/lib/utils/cursor";
+import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
 import type {
   CreateItemInput,
   Item,
   ItemMini,
   ItemRarity,
+  PaginateItemsParams,
   SearchItemsParams,
   UpdateItemInput,
 } from "./types";
@@ -432,6 +435,198 @@ export const searchPublicItems = async ({
     .map((id) => itemDataMap.get(id))
     .filter((i): i is ItemFullData => i !== undefined)
     .map(toItemFromFullData);
+};
+
+function buildItemCursorCondition(
+  sortField: string,
+  isDesc: boolean,
+  cursorData: CursorData
+) {
+  if (sortField === "name") {
+    const cursorValue = cursorData.value as string;
+    if (isDesc) {
+      return or(
+        lt(items.name, cursorValue),
+        and(eq(items.name, cursorValue), gt(items.id, cursorData.id))
+      );
+    }
+    return or(
+      gt(items.name, cursorValue),
+      and(eq(items.name, cursorValue), gt(items.id, cursorData.id))
+    );
+  }
+
+  if (sortField === "createdAt") {
+    const cursorValue = cursorData.value as string;
+    if (isDesc) {
+      return or(
+        lt(items.createdAt, cursorValue),
+        and(eq(items.createdAt, cursorValue), gt(items.id, cursorData.id))
+      );
+    }
+    return or(
+      gt(items.createdAt, cursorValue),
+      and(eq(items.createdAt, cursorValue), gt(items.id, cursorData.id))
+    );
+  }
+
+  return undefined;
+}
+
+export const paginateItems = async ({
+  cursor,
+  limit = 100,
+  sort = "-createdAt",
+  search,
+  rarity,
+  creatorId,
+  sourceId,
+  includePrivate = false,
+}: PaginateItemsParams & { includePrivate?: boolean }): Promise<{
+  data: Item[];
+  nextCursor: string | null;
+}> => {
+  const db = await getDatabase();
+
+  const cursorData = cursor ? decodeCursor(cursor) : null;
+
+  if (cursorData && cursorData.sort !== sort) {
+    throw new Error(
+      `Cursor sort mismatch: cursor has '${cursorData.sort}' but request has '${sort}'`
+    );
+  }
+
+  const isDesc = sort.startsWith("-");
+  const sortField = isDesc ? sort.slice(1) : sort;
+
+  // Build conditions array
+  const whereConditions: ReturnType<typeof eq>[] = [];
+
+  if (!includePrivate) {
+    whereConditions.push(eq(items.visibility, "public"));
+  }
+
+  if (creatorId) {
+    whereConditions.push(eq(items.userId, creatorId));
+  }
+
+  if (sourceId) {
+    whereConditions.push(eq(items.sourceId, sourceId));
+  }
+
+  if (rarity && rarity !== "all") {
+    whereConditions.push(eq(items.rarity, rarity));
+  }
+
+  // Build the query
+  let query = db.select({ id: items.id }).from(items).$dynamic();
+
+  // Add search condition
+  if (search) {
+    const searchCondition = or(
+      like(items.name, `%${search}%`),
+      like(items.kind, `%${search}%`)
+    );
+    if (whereConditions.length > 0) {
+      query = query.where(and(...whereConditions, searchCondition));
+    } else {
+      query = query.where(searchCondition);
+    }
+  } else if (whereConditions.length > 0) {
+    query = query.where(and(...whereConditions));
+  }
+
+  // Add cursor pagination
+  if (cursorData) {
+    const cursorCondition = buildItemCursorCondition(
+      sortField,
+      isDesc,
+      cursorData
+    );
+    if (cursorCondition) {
+      // Re-build with cursor condition
+      const baseConditions = search
+        ? [
+            ...whereConditions,
+            or(
+              like(items.name, `%${search}%`),
+              like(items.kind, `%${search}%`)
+            ),
+          ]
+        : whereConditions;
+
+      if (baseConditions.length > 0) {
+        query = db
+          .select({ id: items.id })
+          .from(items)
+          .where(and(...baseConditions, cursorCondition))
+          .$dynamic();
+      } else {
+        query = db
+          .select({ id: items.id })
+          .from(items)
+          .where(cursorCondition)
+          .$dynamic();
+      }
+    }
+  }
+
+  // Add ordering
+  if (sortField === "name") {
+    query = query.orderBy(
+      isDesc ? desc(items.name) : asc(items.name),
+      asc(items.id)
+    );
+  } else {
+    query = query.orderBy(
+      isDesc ? desc(items.createdAt) : asc(items.createdAt),
+      asc(items.id)
+    );
+  }
+
+  // Execute with limit + 1 to check for more
+  const itemIdRows = await query.limit(limit + 1);
+
+  const hasMore = itemIdRows.length > limit;
+  const resultIds = hasMore
+    ? itemIdRows.slice(0, limit).map((r) => r.id)
+    : itemIdRows.map((r) => r.id);
+
+  // Load full data for result IDs
+  const itemDataMap = await loadItemFullData(db, resultIds);
+
+  // Convert to Item array maintaining order
+  const results = resultIds
+    .map((id) => itemDataMap.get(id))
+    .filter((i): i is ItemFullData => i !== undefined)
+    .map(toItemFromFullData);
+
+  let nextCursor: string | null = null;
+  if (hasMore && results.length > 0) {
+    const lastItem = results[results.length - 1];
+    let newCursorData: CursorData;
+
+    if (sortField === "name") {
+      newCursorData = {
+        sort: sort as "name" | "-name",
+        value: lastItem.name,
+        id: lastItem.id,
+      };
+    } else {
+      newCursorData = {
+        sort: sort as "createdAt" | "-createdAt",
+        value: lastItem.createdAt.toISOString(),
+        id: lastItem.id,
+      };
+    }
+
+    nextCursor = encodeCursor(newCursorData);
+  }
+
+  return {
+    data: results,
+    nextCursor,
+  };
 };
 
 export const createItem = async (

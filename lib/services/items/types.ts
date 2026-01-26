@@ -39,6 +39,25 @@ export interface Item extends ItemMini {
 export type ItemSortBy = "name" | "createdAt";
 export type ItemSortDirection = "asc" | "desc";
 
+export const PaginateItemsSortOptions = [
+  "createdAt",
+  "-createdAt",
+  "name",
+  "-name",
+] as const;
+
+export type PaginateItemsSortOption = (typeof PaginateItemsSortOptions)[number];
+
+export interface PaginateItemsParams {
+  cursor?: string;
+  limit?: number;
+  sort?: PaginateItemsSortOption;
+  search?: string;
+  rarity?: ItemRarityFilter;
+  creatorId?: string;
+  sourceId?: string;
+}
+
 export interface SearchItemsParams {
   searchTerm?: string;
   rarity?: ItemRarityFilter;
