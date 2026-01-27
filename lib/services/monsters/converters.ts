@@ -5,6 +5,19 @@ import { uuidToIdentifier } from "@/lib/utils/slug";
 import { parseSaves } from "./saves";
 import type { Monster, MonsterMini } from "./types";
 
+const parseJsonField = <T>(value: unknown): T[] => {
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return [];
+    }
+  }
+  return [];
+};
+
 interface MonsterRow {
   id: string;
   name: string;
@@ -122,13 +135,13 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
     burrow: m.burrow,
     saves: m.saves,
     updatedAt: m.updatedAt ? new Date(m.updatedAt) : new Date(),
-    abilities: ((m.abilities as Omit<Ability, "id">[]) || []).map(
+    abilities: parseJsonField<Omit<Ability, "id">>(m.abilities).map(
       (ability) => ({
         ...ability,
         id: crypto.randomUUID(),
       })
     ),
-    actions: ((m.actions as Omit<Action, "id">[]) || []).map((action) => ({
+    actions: parseJsonField<Omit<Action, "id">>(m.actions).map((action) => ({
       ...action,
       id: crypto.randomUUID(),
     })),
