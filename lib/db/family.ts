@@ -245,7 +245,7 @@ export const getUserFamiliesWithMonsters = async (
       id: family.id,
       name: family.name,
       description: family.description ?? undefined,
-      abilities: ((family.abilities as Omit<Ability, "id">[]) || []).map(
+      abilities: parseJsonField<Omit<Ability, "id">>(family.abilities).map(
         (ability) => ({
           ...ability,
           id: crypto.randomUUID(),
@@ -318,7 +318,7 @@ export const listPublicFamiliesHavingMonstersForUser = async (
       id: family.id,
       name: family.name,
       description: family.description ?? undefined,
-      abilities: ((family.abilities as Omit<Ability, "id">[]) || []).map(
+      abilities: parseJsonField<Omit<Ability, "id">>(family.abilities).map(
         (ability) => ({
           ...ability,
           id: crypto.randomUUID(),
@@ -547,7 +547,7 @@ export const getRandomFeaturedFamily = async (): Promise<Family | null> => {
     id: family.id,
     name: family.name,
     description: family.description ?? undefined,
-    abilities: ((family.abilities as Omit<Ability, "id">[]) || []).map(
+    abilities: parseJsonField<Omit<Ability, "id">>(family.abilities).map(
       (ability) => ({
         ...ability,
         id: crypto.randomUUID(),
