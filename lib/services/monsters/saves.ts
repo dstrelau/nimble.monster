@@ -1,24 +1,22 @@
 /**
  * Parsed saves object with ability score modifiers.
- * Each key is an ability abbreviation (str, dex, con, int, wis, cha).
+ * Each key is an ability abbreviation (str, dex, int, wil).
  * Values are integers: positive for bonuses, negative for penalties.
  */
 export type ParsedSaves = {
   str?: number;
   dex?: number;
-  con?: number;
   int?: number;
-  wis?: number;
-  cha?: number;
+  wil?: number;
 };
 
-const ABILITY_ABBREVIATIONS = ["str", "dex", "con", "int", "wis", "cha"];
+const ABILITY_ABBREVIATIONS = ["str", "dex", "int", "wil"];
 
 /**
  * Parses a save string like "STR++ DEX-" into an object like { str: 2, dex: -1 }.
  *
  * Format:
- * - Each save is an ability abbreviation (STR, DEX, CON, INT, WIS, CHA) followed by + or - symbols
+ * - Each save is an ability abbreviation (STR, DEX, INT, WIL) followed by + or - symbols
  * - "STR+" = { str: 1 }, "STR++" = { str: 2 }
  * - "DEX-" = { dex: -1 }, "DEX--" = { dex: -2 }
  * - Multiple saves can be separated by spaces or commas

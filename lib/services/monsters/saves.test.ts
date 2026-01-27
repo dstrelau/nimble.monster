@@ -27,7 +27,7 @@ describe("parseSaves", () => {
   });
 
   it("parses double - modifier", () => {
-    expect(parseSaves("CON--")).toEqual({ con: -2 });
+    expect(parseSaves("WIL--")).toEqual({ wil: -2 });
   });
 
   it("handles lowercase ability abbreviations", () => {
@@ -52,14 +52,12 @@ describe("parseSaves", () => {
     expect(parseSaves("STR+, DEX++")).toEqual({ str: 1, dex: 2 });
   });
 
-  it("parses all six ability saves", () => {
-    expect(parseSaves("STR+ DEX++ CON- INT-- WIS+++ CHA---")).toEqual({
+  it("parses all four ability saves", () => {
+    expect(parseSaves("STR+ DEX++ INT- WIL--")).toEqual({
       str: 1,
       dex: 2,
-      con: -1,
-      int: -2,
-      wis: 3,
-      cha: -3,
+      int: -1,
+      wil: -2,
     });
   });
 
@@ -87,10 +85,14 @@ describe("parseSaves", () => {
   });
 
   it("handles multiple commas and spaces", () => {
-    expect(parseSaves("STR+,  ,DEX++, , CON-")).toEqual({
+    expect(parseSaves("STR+,  ,DEX++, , INT-")).toEqual({
       str: 1,
       dex: 2,
-      con: -1,
+      int: -1,
     });
+  });
+
+  it("ignores old D&D stats (CON, WIS, CHA)", () => {
+    expect(parseSaves("STR+ CON+ WIS+ CHA+")).toEqual({ str: 1 });
   });
 });

@@ -89,7 +89,7 @@ Retrieve a single monster by ID (26-character identifier).
       "legendary": true,
       "bloodied": { "description": "..." },
       "lastStand": { "description": "..." },
-      "saves": { "str": 2, "dex": 1, "con": 2 }
+      "saves": { "str": 2, "dex": 1, "wil": 1 }
     },
     "links": {
       "self": "/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
