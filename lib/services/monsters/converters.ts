@@ -177,6 +177,39 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
   };
 };
 
+const parseSavesString = (
+  savesString: string | undefined
+):
+  | { all: number; str: number; dex: number; int: number; wil: number }
+  | undefined => {
+  if (!savesString || savesString.trim() === "") {
+    return undefined;
+  }
+
+  const upper = savesString.toUpperCase();
+  const saves = {
+    all: 0,
+    str: 0,
+    dex: 0,
+    int: 0,
+    wil: 0,
+  };
+
+  // Check for each stat mentioned in the string
+  if (upper.includes("ALL")) saves.all = 1;
+  if (upper.includes("STR")) saves.str = 1;
+  if (upper.includes("DEX")) saves.dex = 1;
+  if (upper.includes("INT")) saves.int = 1;
+  if (upper.includes("WIL")) saves.wil = 1;
+
+  // Only return saves if at least one stat is set
+  if (saves.all || saves.str || saves.dex || saves.int || saves.wil) {
+    return saves;
+  }
+
+  return undefined;
+};
+
 export const toZodMonster = (m: Monster) => {
   const movement = [];
   if (m.speed > 0) movement.push({ speed: m.speed });
@@ -185,6 +218,8 @@ export const toZodMonster = (m: Monster) => {
   if (m.climb > 0) movement.push({ mode: "climb", speed: m.climb });
   if (m.burrow > 0) movement.push({ mode: "burrow", speed: m.burrow });
   if (m.teleport > 0) movement.push({ mode: "teleport", speed: m.teleport });
+
+  const saves = parseSavesString(m.saves);
 
   const abilities = m.abilities.map((a) => ({
     description: a.description,
@@ -239,6 +274,7 @@ export const toZodMonster = (m: Monster) => {
     size: m.size,
     armor: m.armor === "none" ? ("none" as const) : m.armor,
     kind: m.kind || undefined,
+    saves,
     movement: movement,
     abilities,
     actions,
