@@ -2,6 +2,7 @@ import { toFamilyOverview, toUser } from "@/lib/db/converters";
 import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
 import type { Ability, Action, FamilyOverview } from "@/lib/types";
 import { uuidToIdentifier } from "@/lib/utils/slug";
+import { parseSaves } from "./saves";
 import type { Monster, MonsterMini } from "./types";
 
 interface MonsterRow {
@@ -259,6 +260,7 @@ export const toZodMonster = (m: Monster) => {
       lastStand: {
         description: m.lastStand,
       },
+      saves: parseSaves(m.saves),
     };
   }
 
