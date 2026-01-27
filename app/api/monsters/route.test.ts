@@ -413,7 +413,7 @@ describe("GET /api/monsters", () => {
         creator: fakeCreator,
         createdAt: new Date("2025-01-01"),
         updatedAt: new Date("2025-01-01"),
-        saves: "STR DEX",
+        saves: "STR++ DEX+",
       },
     ];
 
@@ -442,6 +442,13 @@ describe("GET /api/monsters", () => {
       expect(result.data.name).toBe("Dragon");
       expect(result.data.legendary).toBe(true);
       expect(result.data.hp).toBe(200);
+      expect(result.data.saves).toEqual({
+        all: 0,
+        str: 2,
+        dex: 1,
+        int: 0,
+        wil: 0,
+      });
     }
   });
 });
