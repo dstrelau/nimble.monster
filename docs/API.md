@@ -45,7 +45,7 @@ List public monsters with pagination and sorting.
 
 Retrieve a single monster by ID (26-character identifier).
 
-**Response:**
+**Response (standard monster):**
 ```json
 {
   "data": {
@@ -69,6 +69,37 @@ Retrieve a single monster by ID (26-character identifier).
   }
 }
 ```
+
+**Response (legendary monster):**
+```json
+{
+  "data": {
+    "type": "monsters",
+    "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+    "attributes": {
+      "name": "Ancient Dragon",
+      "hp": 200,
+      "level": 15,
+      "size": "gargantuan",
+      "armor": "heavy",
+      "movement": [{ "speed": 8 }, { "mode": "fly", "speed": 12 }],
+      "abilities": [],
+      "actions": [],
+      "effects": [],
+      "legendary": true,
+      "bloodied": { "description": "..." },
+      "lastStand": { "description": "..." },
+      "saves": { "str": 2, "dex": 1, "wil": 1 }
+    },
+    "links": {
+      "self": "/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
+    }
+  }
+}
+```
+
+The `saves` field contains parsed ability save modifiers. Values are derived from
+the raw save string (e.g., "STR++" becomes `{"str": 2}`, "DEX-" becomes `{"dex": -1}`).
 
 ### GET /api/items
 
