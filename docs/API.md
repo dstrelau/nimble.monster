@@ -21,6 +21,8 @@ List public monsters with pagination and sorting.
   - `name`, `-name`
   - `createdAt`, `-createdAt`
   - `level`, `-level`
+- `include` (string, optional): Related resources to include
+  - `families` - Include family data in the response
 
 **Response:**
 ```json
@@ -30,6 +32,13 @@ List public monsters with pagination and sorting.
       "type": "monsters",
       "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
       "attributes": { ... },
+      "relationships": {
+        "families": {
+          "data": [
+            { "type": "families", "id": "0abc123..." }
+          ]
+        }
+      },
       "links": {
         "self": "/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
       }
@@ -41,9 +50,34 @@ List public monsters with pagination and sorting.
 }
 ```
 
+**Response (with include=families):**
+```json
+{
+  "data": [ ... ],
+  "included": [
+    {
+      "type": "families",
+      "id": "0abc123...",
+      "attributes": {
+        "name": "Humanoids",
+        "description": "Bipedal creatures...",
+        "abilities": []
+      },
+      "links": {
+        "self": "/api/families/0abc123..."
+      }
+    }
+  ]
+}
+```
+
 ### GET /api/monsters/:id
 
 Retrieve a single monster by ID (26-character identifier).
+
+**Query Parameters:**
+- `include` (string, optional): Related resources to include
+  - `families` - Include family data in the response
 
 **Response (standard monster):**
 ```json
@@ -62,6 +96,13 @@ Retrieve a single monster by ID (26-character identifier).
       "actions": [],
       "effects": [],
       "legendary": false
+    },
+    "relationships": {
+      "families": {
+        "data": [
+          { "type": "families", "id": "0abc123..." }
+        ]
+      }
     },
     "links": {
       "self": "/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
@@ -91,6 +132,13 @@ Retrieve a single monster by ID (26-character identifier).
       "lastStand": { "description": "..." },
       "saves": { "str": 2, "dex": 1, "wil": 1 }
     },
+    "relationships": {
+      "families": {
+        "data": [
+          { "type": "families", "id": "0def456..." }
+        ]
+      }
+    },
     "links": {
       "self": "/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
     }
@@ -100,6 +148,67 @@ Retrieve a single monster by ID (26-character identifier).
 
 The `saves` field contains parsed ability save modifiers. Values are derived from
 the raw save string (e.g., "STR++" becomes `{"str": 2}`, "DEX-" becomes `{"dex": -1}`).
+
+### GET /api/families
+
+List public monster families with pagination and sorting.
+
+**Query Parameters:**
+- `cursor` (string, optional): Pagination cursor for next page
+- `limit` (number, optional): Results per page (1-100, default: 100)
+- `sort` (string, optional): Sort order; '-' prefix for descending
+  - `name`, `-name`
+  - `createdAt`, `-createdAt`
+- `search` (string, optional): Search by name
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "type": "families",
+      "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+      "attributes": {
+        "name": "Humanoids",
+        "description": "Bipedal creatures with human-like forms",
+        "abilities": [
+          { "name": "Pack Tactics", "description": "..." }
+        ]
+      },
+      "links": {
+        "self": "/api/families/0psvtrh43w8xm9dfbf5b6nkcq1"
+      }
+    }
+  ],
+  "links": {
+    "next": "/api/families?cursor=..."
+  }
+}
+```
+
+### GET /api/families/:id
+
+Retrieve a single family by ID (26-character identifier).
+
+**Response:**
+```json
+{
+  "data": {
+    "type": "families",
+    "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+    "attributes": {
+      "name": "Humanoids",
+      "description": "Bipedal creatures with human-like forms",
+      "abilities": [
+        { "name": "Pack Tactics", "description": "..." }
+      ]
+    },
+    "links": {
+      "self": "/api/families/0psvtrh43w8xm9dfbf5b6nkcq1"
+    }
+  }
+}
+```
 
 ### GET /api/items
 

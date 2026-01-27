@@ -3,21 +3,28 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { addCorsHeaders } from "@/lib/cors";
 import { monstersService } from "@/lib/services/monsters";
-import { toJsonApiMonster } from "@/lib/services/monsters/converters";
+import {
+  toJsonApiFamilyIncluded,
+  toJsonApiMonster,
+} from "@/lib/services/monsters/converters";
 import { telemetry } from "@/lib/telemetry";
 import { deslugify } from "@/lib/utils/slug";
 
 const CONTENT_TYPE = "application/vnd.api+json";
 
 export const GET = telemetry(
-  async (
-    _request: Request,
-    { params }: { params: Promise<{ id: string }> }
-  ) => {
+  async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params;
     const span = trace.getActiveSpan();
+    const { searchParams } = new URL(request.url);
+
+    // Parse include parameter
+    const include = searchParams.get("include");
+    const includeParams = include?.split(",").map((s) => s.trim()) ?? [];
+    const includeFamilies = includeParams.includes("families");
 
     span?.setAttributes({ "params.id": id });
+    include && span?.setAttributes({ "params.include": include });
 
     const uid = deslugify(id);
     if (!uid) {
@@ -59,9 +66,26 @@ export const GET = telemetry(
 
       const data = toJsonApiMonster(monster);
 
+      // Build included families if requested
+      type IncludedFamily = ReturnType<typeof toJsonApiFamilyIncluded>;
+      let included: IncludedFamily[] | undefined;
+
+      if (includeFamilies && monster.families.length > 0) {
+        included = monster.families.map(toJsonApiFamilyIncluded);
+      }
+
+      const response: {
+        data: typeof data;
+        included?: IncludedFamily[];
+      } = { data };
+
+      if (included) {
+        response.included = included;
+      }
+
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
       addCorsHeaders(headers);
-      return NextResponse.json({ data }, { headers });
+      return NextResponse.json(response, { headers });
     } catch (error) {
       span?.setAttributes({ error: String(error) });
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });

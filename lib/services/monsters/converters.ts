@@ -274,12 +274,52 @@ export const toJsonApiMonster = (m: Monster) => {
   const monsterData = toZodMonster(m);
   const { id, ...attributes } = monsterData;
 
-  return {
+  const familyReferences = m.families.map((f) => ({
+    type: "families",
+    id: uuidToIdentifier(f.id),
+  }));
+
+  const result: {
+    type: string;
+    id: string;
+    attributes: typeof attributes;
+    relationships: {
+      families: {
+        data: Array<{ type: string; id: string }>;
+      };
+    };
+    links: { self: string };
+  } = {
     type: "monsters",
     id,
     attributes,
+    relationships: {
+      families: {
+        data: familyReferences,
+      },
+    },
     links: {
       self: `/api/monsters/${id}`,
+    },
+  };
+
+  return result;
+};
+
+export const toJsonApiFamilyIncluded = (f: FamilyOverview) => {
+  return {
+    type: "families",
+    id: uuidToIdentifier(f.id),
+    attributes: {
+      name: f.name,
+      description: f.description,
+      abilities: f.abilities.map((a) => ({
+        name: a.name,
+        description: a.description,
+      })),
+    },
+    links: {
+      self: `/api/families/${uuidToIdentifier(f.id)}`,
     },
   };
 };

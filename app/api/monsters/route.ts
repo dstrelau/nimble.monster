@@ -5,8 +5,12 @@ import { auth } from "@/lib/auth";
 import { addCorsHeaders } from "@/lib/cors";
 import type { CreateMonsterInput } from "@/lib/services/monsters";
 import { monstersService } from "@/lib/services/monsters";
-import { toJsonApiMonster } from "@/lib/services/monsters/converters";
+import {
+  toJsonApiFamilyIncluded,
+  toJsonApiMonster,
+} from "@/lib/services/monsters/converters";
 import { telemetry } from "@/lib/telemetry";
+import { uuidToIdentifier } from "@/lib/utils/slug";
 
 const CONTENT_TYPE = "application/vnd.api+json; nimble.version=202510.beta";
 
@@ -23,6 +27,7 @@ const querySchema = z.object({
     .default("name"),
   search: z.string().optional(),
   level: z.coerce.number().optional(),
+  include: z.string().optional(),
 });
 
 export const GET = telemetry(async (request: Request) => {
@@ -35,6 +40,7 @@ export const GET = telemetry(async (request: Request) => {
     sort: searchParams.get("sort") || undefined,
     search: searchParams.get("search") || undefined,
     level: searchParams.get("level") || undefined,
+    include: searchParams.get("include") || undefined,
   });
 
   if (!result.success) {
@@ -56,7 +62,11 @@ export const GET = telemetry(async (request: Request) => {
     );
   }
 
-  const { cursor, limit, sort, search, level } = result.data;
+  const { cursor, limit, sort, search, level, include } = result.data;
+
+  // Parse include parameter
+  const includeParams = include?.split(",").map((s) => s.trim()) ?? [];
+  const includeFamilies = includeParams.includes("families");
 
   span?.setAttributes({
     "params.limit": limit,
@@ -65,6 +75,7 @@ export const GET = telemetry(async (request: Request) => {
   cursor && span?.setAttributes({ "params.cursor": cursor });
   search && span?.setAttributes({ "params.search": search });
   level && span?.setAttributes({ "params.level": level });
+  include && span?.setAttributes({ "params.include": include });
 
   const { data: monsters, nextCursor } =
     await monstersService.paginatePublicMonsters({
@@ -75,14 +86,42 @@ export const GET = telemetry(async (request: Request) => {
       level,
     });
 
-  const data = monsters.map(toJsonApiMonster);
+  const data = monsters.map((m) => toJsonApiMonster(m));
 
   span?.setAttributes({
     "params.count": data.length,
     "params.has_more": nextCursor !== null,
   });
 
-  const response: { data: typeof data; links?: { next: string } } = { data };
+  // Build included families if requested
+  type IncludedFamily = ReturnType<typeof toJsonApiFamilyIncluded>;
+  let included: IncludedFamily[] | undefined;
+
+  if (includeFamilies) {
+    // Collect all unique families from all monsters
+    const familiesMap = new Map<string, IncludedFamily>();
+    for (const monster of monsters) {
+      for (const family of monster.families) {
+        const familyId = uuidToIdentifier(family.id);
+        if (!familiesMap.has(familyId)) {
+          familiesMap.set(familyId, toJsonApiFamilyIncluded(family));
+        }
+      }
+    }
+    if (familiesMap.size > 0) {
+      included = Array.from(familiesMap.values());
+    }
+  }
+
+  const response: {
+    data: typeof data;
+    included?: IncludedFamily[];
+    links?: { next: string };
+  } = { data };
+
+  if (included) {
+    response.included = included;
+  }
 
   if (nextCursor) {
     const url = new URL(request.url);
