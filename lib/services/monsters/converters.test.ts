@@ -115,5 +115,41 @@ describe("toZodMonster", () => {
       const result = toZodMonster(monster);
       expect(result.saves).toBeUndefined();
     });
+
+    it("should parse double advantage (++)", () => {
+      const monster = createMockMonster({ saves: "STR++" });
+      const result = toZodMonster(monster);
+      expect(result.saves).toEqual({
+        all: 0,
+        str: 2,
+        dex: 0,
+        int: 0,
+        wil: 0,
+      });
+    });
+
+    it("should parse triple advantage (+++)", () => {
+      const monster = createMockMonster({ saves: "DEX+++" });
+      const result = toZodMonster(monster);
+      expect(result.saves).toEqual({
+        all: 0,
+        str: 0,
+        dex: 3,
+        int: 0,
+        wil: 0,
+      });
+    });
+
+    it("should parse mixed advantage levels", () => {
+      const monster = createMockMonster({ saves: "STR+, DEX++, INT" });
+      const result = toZodMonster(monster);
+      expect(result.saves).toEqual({
+        all: 0,
+        str: 1,
+        dex: 2,
+        int: 1,
+        wil: 0,
+      });
+    });
   });
 });

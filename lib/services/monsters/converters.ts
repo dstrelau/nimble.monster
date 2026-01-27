@@ -177,6 +177,20 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
   };
 };
 
+const countAdvantage = (savesString: string, stat: string): number => {
+  // Match patterns like "STR+", "STR++", "STR+++" etc.
+  const regex = new RegExp(`${stat}(\\++)`, "i");
+  const match = savesString.match(regex);
+  if (match) {
+    return match[1].length; // Count the number of + signs
+  }
+  // Check if stat is mentioned without + (defaults to 1)
+  if (new RegExp(`\\b${stat}\\b`, "i").test(savesString)) {
+    return 1;
+  }
+  return 0;
+};
+
 const parseSavesString = (
   savesString: string | undefined
 ):
@@ -186,21 +200,13 @@ const parseSavesString = (
     return undefined;
   }
 
-  const upper = savesString.toUpperCase();
   const saves = {
-    all: 0,
-    str: 0,
-    dex: 0,
-    int: 0,
-    wil: 0,
+    all: countAdvantage(savesString, "ALL"),
+    str: countAdvantage(savesString, "STR"),
+    dex: countAdvantage(savesString, "DEX"),
+    int: countAdvantage(savesString, "INT"),
+    wil: countAdvantage(savesString, "WIL"),
   };
-
-  // Check for each stat mentioned in the string
-  if (upper.includes("ALL")) saves.all = 1;
-  if (upper.includes("STR")) saves.str = 1;
-  if (upper.includes("DEX")) saves.dex = 1;
-  if (upper.includes("INT")) saves.int = 1;
-  if (upper.includes("WIL")) saves.wil = 1;
 
   // Only return saves if at least one stat is set
   if (saves.all || saves.str || saves.dex || saves.int || saves.wil) {
