@@ -132,7 +132,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
           ))}
         </div>
       )}
-      {data?.pages.at(-1)?.data.length === 12 && hasNextPage && (
+      {hasNextPage && (
         <LoadMoreButton onClick={() => fetchNextPage()} disabled={isFetching} />
       )}
     </div>

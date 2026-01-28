@@ -603,24 +603,28 @@ export const paginateItems = async ({
 
   let nextCursor: string | null = null;
   if (hasMore && results.length > 0) {
-    const lastItem = results[results.length - 1];
-    let newCursorData: CursorData;
+    const lastId = resultIds[resultIds.length - 1];
+    const lastItemData = itemDataMap.get(lastId);
+    if (lastItemData) {
+      const lastRow = lastItemData.item;
+      let newCursorData: CursorData;
 
-    if (sortField === "name") {
-      newCursorData = {
-        sort: sort as "name" | "-name",
-        value: lastItem.name,
-        id: lastItem.id,
-      };
-    } else {
-      newCursorData = {
-        sort: sort as "createdAt" | "-createdAt",
-        value: lastItem.createdAt.toISOString(),
-        id: lastItem.id,
-      };
+      if (sortField === "name") {
+        newCursorData = {
+          sort: sort as "name" | "-name",
+          value: lastRow.name,
+          id: lastRow.id,
+        };
+      } else {
+        newCursorData = {
+          sort: sort as "createdAt" | "-createdAt",
+          value: lastRow.createdAt ?? "",
+          id: lastRow.id,
+        };
+      }
+
+      nextCursor = encodeCursor(newCursorData);
     }
-
-    nextCursor = encodeCursor(newCursorData);
   }
 
   return {
