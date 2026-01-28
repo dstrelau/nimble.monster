@@ -494,30 +494,34 @@ export const paginateMonsters = async ({
 
   let nextCursor: string | null = null;
   if (hasMore && results.length > 0) {
-    const lastMonster = results[results.length - 1];
-    let newCursorData: CursorData;
+    const lastId = resultIds[resultIds.length - 1];
+    const lastMonsterData = monsterDataMap.get(lastId);
+    if (lastMonsterData) {
+      const lastRow = lastMonsterData.monster;
+      let newCursorData: CursorData;
 
-    if (sortField === "name") {
-      newCursorData = {
-        sort: sort as "name" | "-name",
-        value: lastMonster.name,
-        id: lastMonster.id,
-      };
-    } else if (sortField === "createdAt") {
-      newCursorData = {
-        sort: sort as "createdAt" | "-createdAt",
-        value: lastMonster.createdAt.toISOString(),
-        id: lastMonster.id,
-      };
-    } else {
-      newCursorData = {
-        sort: sort as "level" | "-level",
-        value: lastMonster.levelInt,
-        id: lastMonster.id,
-      };
+      if (sortField === "name") {
+        newCursorData = {
+          sort: sort as "name" | "-name",
+          value: lastRow.name,
+          id: lastRow.id,
+        };
+      } else if (sortField === "createdAt") {
+        newCursorData = {
+          sort: sort as "createdAt" | "-createdAt",
+          value: lastRow.createdAt ?? "",
+          id: lastRow.id,
+        };
+      } else {
+        newCursorData = {
+          sort: sort as "level" | "-level",
+          value: lastRow.levelInt,
+          id: lastRow.id,
+        };
+      }
+
+      nextCursor = encodeCursor(newCursorData);
     }
-
-    nextCursor = encodeCursor(newCursorData);
   }
 
   return {
