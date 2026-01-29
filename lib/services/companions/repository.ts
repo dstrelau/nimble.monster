@@ -1,4 +1,5 @@
 import { and, asc, desc, eq, gt, like, lt, or } from "drizzle-orm";
+import { parseJsonField } from "@/lib/db/converters";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
   type AwardRow,
@@ -33,21 +34,21 @@ const toUserFromRow = (u: UserRow): User => ({
 });
 
 const toAbilitiesFromRow = (raw: unknown): Ability[] => {
-  const abilities = raw as Array<{ name: string; description: string }>;
-  return abilities.map((a) => ({
-    id: crypto.randomUUID(),
-    name: a.name,
-    description: a.description,
-  }));
+  return parseJsonField<{ name: string; description: string }>(raw).map(
+    (a) => ({
+      id: crypto.randomUUID(),
+      name: a.name,
+      description: a.description,
+    })
+  );
 };
 
 const toActionsFromRow = (raw: unknown): Action[] => {
-  const actions = raw as Array<{
+  return parseJsonField<{
     name: string;
     description: string;
     extended?: boolean;
-  }>;
-  return actions.map((a) => ({
+  }>(raw).map((a) => ({
     id: crypto.randomUUID(),
     name: a.name,
     description: a.description,

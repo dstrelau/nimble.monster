@@ -15,7 +15,13 @@ import type {
 } from "@/lib/types";
 import { toItem } from "../services/items/converters";
 import { toMonster } from "../services/monsters/converters";
-import { toCompanion, toSpellSchool, toSubclass, toUser } from "./converters";
+import {
+  parseJsonField,
+  toCompanion,
+  toSpellSchool,
+  toSubclass,
+  toUser,
+} from "./converters";
 import { getDatabase } from "./drizzle";
 import {
   type AwardRow,
@@ -1065,7 +1071,7 @@ async function loadAncestriesForAward(
         ? new Date(row.ancestries.updatedAt)
         : new Date(),
       description: row.ancestries.description,
-      abilities: row.ancestries.abilities as unknown as AncestryAbility[],
+      abilities: parseJsonField<AncestryAbility>(row.ancestries.abilities),
       creator: toUser(row.users),
       source: row.sources
         ? {

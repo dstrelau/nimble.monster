@@ -1,4 +1,4 @@
-import { toUser } from "@/lib/db/converters";
+import { parseJsonField, toUser } from "@/lib/db/converters";
 import type {
   Ancestry,
   AncestryAbility,
@@ -67,7 +67,7 @@ export const toAncestry = (a: AncestryWithRelations): Ancestry => {
   return {
     ...toAncestryMini(a),
     description: a.description,
-    abilities: (a.abilities as unknown as AncestryAbility[]) || [],
+    abilities: parseJsonField<AncestryAbility>(a.abilities),
     creator: toUser(a.creator),
     source: a.source
       ? {

@@ -17,7 +17,7 @@ import type {
 } from "@/lib/types";
 import { toMonsterMini } from "../services/monsters/converters";
 
-const parseJsonField = <T>(value: unknown): T[] => {
+export const parseJsonField = <T>(value: unknown): T[] => {
   if (!value) return [];
   if (Array.isArray(value)) return value;
   if (typeof value === "string") {
