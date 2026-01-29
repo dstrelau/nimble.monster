@@ -1068,7 +1068,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
               if (monster.name) return UserIcon;
             }}
           />
-          <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
+          <div className="overflow-auto max-h-[calc(100vh-120px)] px-4 pt-7">
             <Card
               link={false}
               monster={monster}
