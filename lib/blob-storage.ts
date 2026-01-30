@@ -1,6 +1,5 @@
-import { existsSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 export interface BlobStorageResult {
@@ -32,12 +31,6 @@ function getS3Client(): S3Client {
   return s3Client;
 }
 
-async function ensureLocalBlobDir(): Promise<void> {
-  if (!existsSync(LOCAL_BLOB_DIR)) {
-    await mkdir(LOCAL_BLOB_DIR, { recursive: true });
-  }
-}
-
 export async function uploadBlob(
   filename: string,
   buffer: Buffer,
@@ -47,8 +40,8 @@ export async function uploadBlob(
   const isLocal = process.env.NODE_ENV === "development" || !bucket;
 
   if (isLocal) {
-    await ensureLocalBlobDir();
     const filePath = join(LOCAL_BLOB_DIR, filename);
+    await mkdir(dirname(filePath), { recursive: true });
     await writeFile(filePath, buffer);
 
     const localUrl = `/blob-storage/${filename}`;
@@ -88,4 +81,13 @@ export function generateBlobFilename(
   version: string
 ): string {
   return `${entityType}-${entityId}-${version}.png`;
+}
+
+export function generateEntityImagePath(
+  entityType: "monster" | "companion" | "item",
+  entityId: string,
+  version: string
+): string {
+  const filename = `${entityType}-${entityId}-${version}.png`;
+  return `card-images/${entityType}/${filename}`;
 }
