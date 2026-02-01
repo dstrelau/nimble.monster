@@ -43,7 +43,7 @@ export async function uploadBlob(
   buffer: Buffer,
   contentType: string = "image/png"
 ): Promise<BlobStorageResult> {
-  const bucket = process.env.BUCKET_NAME;
+  const bucket = process.env.NEXT_PUBLIC_BUCKET_NAME;
   const isLocal = process.env.NODE_ENV === "development" || !bucket;
 
   if (isLocal) {

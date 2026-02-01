@@ -1,7 +1,7 @@
 import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
 import { cn } from "@/lib/utils";
 
-const BUCKET_NAME = process.env.BUCKET_NAME;
+const BUCKET_NAME = process.env.NEXT_PUBLIC_BUCKET_NAME;
 
 const AVAILABLE_SIZES = [50, 100, 200, 400] as const;
 

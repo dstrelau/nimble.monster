@@ -17,7 +17,7 @@ const PAPERFORGE_DIR = "data/paperforge";
 const OUTPUT_DIR = "public/paperforge";
 const INDEX_PATH = "lib/paperforge-catalog.ts";
 
-const BUCKET_NAME = process.env.BUCKET_NAME || "nimble-nexus";
+const BUCKET_NAME = process.env.NEXT_PUBLIC_BUCKET_NAME || "nimble-nexus";
 const IMAGE_SIZES = [50, 100, 200, 400];
 
 const s3 = new S3Client({});
