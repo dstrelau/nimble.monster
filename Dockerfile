@@ -12,6 +12,7 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+ENV NEXT_PUBLIC_BUCKET_NAME=nimble-nexus
 RUN corepack enable pnpm && pnpm run sync-icons && pnpm run build
 
 FROM base AS runner
