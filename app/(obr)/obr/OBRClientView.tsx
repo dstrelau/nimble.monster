@@ -5,8 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import { getPublicMonster } from "@/app/monsters/actions";
 import { CompactCard } from "@/app/ui/monster/CompactCard";
 import { MonsterSearch } from "@/app/ui/owlbear/MonsterSearch";
+import { getPaperforgeImageUrl } from "@/components/PaperforgeImage";
 import { getPluginId } from "@/lib/owlbear/utils";
-import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
+import {
+  getPaperforgeEntry,
+  type PaperForgeEntry,
+} from "@/lib/paperforge-catalog";
 import type { Monster } from "@/lib/services/monsters/types";
 import { PluginGate } from "./PluginGate";
 
@@ -152,11 +156,8 @@ function OwlbearExtension() {
     const dpi = 100;
     const pixelSize = scale * dpi;
 
-    const entry = getPaperforgeEntry(monster.paperforgeId);
-
-    // Map type to actual filename
-    const src = `/paperforge/${entry?.folder}/portrait.png`;
-    const imageUrl = `${window.location.origin}/_next/image?url=${encodeURIComponent(src)}&w=${pixelSize}&q=75`;
+    const entry = getPaperforgeEntry(monster.paperforgeId) as PaperForgeEntry;
+    const imageUrl = getPaperforgeImageUrl(entry.folder, 400);
 
     const item = buildImage(
       {

@@ -1,14 +1,103 @@
 #!/usr/bin/env ts-node
 
+import "dotenv/config";
 import { execSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import {
+  HeadObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import AdmZip from "adm-zip";
+import sharp from "sharp";
 
 const CSV_PATH = "data/paperforge.csv";
 const PAPERFORGE_DIR = "data/paperforge";
 const OUTPUT_DIR = "public/paperforge";
 const INDEX_PATH = "lib/paperforge-catalog.ts";
+
+const BUCKET_NAME = process.env.BUCKET_NAME || "nimble-nexus";
+const IMAGE_SIZES = [50, 100, 200, 400];
+
+const s3 = new S3Client({});
+
+async function uploadSingleSize(
+  localDir: string,
+  folder: string,
+  size: number
+): Promise<boolean> {
+  const key = `paperforge/${folder}/${size}.png`;
+
+  // Check if already exists
+  try {
+    await s3.send(
+      new HeadObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: key,
+      })
+    );
+    return true;
+  } catch {
+    // Object doesn't exist, proceed with upload
+  }
+
+  const localPath = path.join(localDir, `${size}.png`);
+  const buffer = fs.readFileSync(localPath);
+
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: key,
+      Body: buffer,
+      ContentType: "image/png",
+    })
+  );
+  return true;
+}
+
+async function uploadToTigris(
+  localDir: string,
+  folder: string
+): Promise<boolean> {
+  try {
+    await Promise.all(
+      IMAGE_SIZES.map((size) => uploadSingleSize(localDir, folder, size))
+    );
+    return true;
+  } catch (e) {
+    console.error(
+      `  Error uploading to Tigris:`,
+      e instanceof Error ? e.message : String(e)
+    );
+    return false;
+  }
+}
+
+const UPLOAD_CONCURRENCY = 10;
+
+async function uploadAllToTigris(
+  entries: Array<{ folder: string; outputDir: string }>
+): Promise<Map<string, boolean>> {
+  const results = new Map<string, boolean>();
+
+  for (let i = 0; i < entries.length; i += UPLOAD_CONCURRENCY) {
+    const batch = entries.slice(i, i + UPLOAD_CONCURRENCY);
+    const batchResults = await Promise.all(
+      batch.map(async ({ folder, outputDir }) => {
+        const success = await uploadToTigris(outputDir, folder);
+        return { folder, success };
+      })
+    );
+    for (const { folder, success } of batchResults) {
+      results.set(folder, success);
+    }
+  }
+
+  return results;
+}
+
+const shouldUpload = process.argv.includes("--upload");
 
 interface CSVRow {
   id: string;
@@ -43,10 +132,19 @@ function downloadZipFile(url: string, destinationDir: string): boolean {
       fs.mkdirSync(destinationDir, { recursive: true });
     }
 
-    execSync(`curl -sOJL --clobber ${escapeShellArg(url)}`, {
-      cwd: destinationDir,
-      stdio: "pipe",
-    });
+    const result = execSync(
+      `curl -sOJL --clobber -w '\\n%{http_code}' ${escapeShellArg(url)}`,
+      {
+        cwd: destinationDir,
+        encoding: "utf-8",
+      }
+    );
+
+    const httpCode = result.trim().split("\n").pop();
+    if (httpCode && !httpCode.startsWith("2")) {
+      console.error(`  HTTP ${httpCode} downloading ${url}`);
+      return false;
+    }
 
     return true;
   } catch (e) {
@@ -58,19 +156,16 @@ function downloadZipFile(url: string, destinationDir: string): boolean {
   }
 }
 
-function extractTokenImage(
+async function extractTokenImage(
   zipPath: string,
   internalPath: string,
-  outputPath: string
-): boolean {
+  outputDir: string
+): Promise<boolean> {
   try {
-    // Create output directory
-    const outputDir = path.dirname(outputPath);
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    // Read the zip file
     const zip = new AdmZip(zipPath);
     const entry = zip.getEntry(internalPath);
 
@@ -85,19 +180,23 @@ function extractTokenImage(
       return false;
     }
 
-    // Extract the file directly to the output path
-    zip.extractEntryTo(entry, outputDir, false, true);
+    const originalBuffer = entry.getData();
 
-    // Rename to portrait.png
-    const extractedFilename = path.basename(internalPath);
-    const extractedPath = path.join(outputDir, extractedFilename);
+    // Generate all sizes locally
+    for (const size of IMAGE_SIZES) {
+      const resizedBuffer = await sharp(originalBuffer)
+        .ensureAlpha()
+        .resize(size, size, {
+          fit: "contain",
+          background: { r: 0, g: 0, b: 0, alpha: 0 },
+        })
+        .png()
+        .toBuffer();
 
-    if (fs.existsSync(extractedPath)) {
-      fs.renameSync(extractedPath, outputPath);
-      return true;
+      fs.writeFileSync(path.join(outputDir, `${size}.png`), resizedBuffer);
     }
 
-    return false;
+    return true;
   } catch (e) {
     console.error(
       `  Error extracting ${internalPath}:`,
@@ -158,12 +257,20 @@ export function getPaperforgeEntry(identifier: string): PaperForgeEntry | null {
   console.log(`\nGenerated index at ${INDEX_PATH}`);
 }
 
-function syncPaperforge() {
+async function syncPaperforge(singleId?: string) {
   const content = fs.readFileSync(CSV_PATH, "utf-8");
   const rows = parseCSV(content);
 
   // Filter to rows with at least id, name, and postUrl
-  const completeRows = rows.filter((row) => row.id && row.name && row.postUrl);
+  let completeRows = rows.filter((row) => row.id && row.name && row.postUrl);
+
+  if (singleId) {
+    completeRows = completeRows.filter((row) => row.id === singleId);
+    if (completeRows.length === 0) {
+      console.error(`No entry found with id: ${singleId}`);
+      process.exit(1);
+    }
+  }
 
   // Check for duplicate IDs
   const idCounts = new Map<string, number>();
@@ -197,10 +304,16 @@ function syncPaperforge() {
 
   const indexEntries: Array<{ id: string; name: string; postUrl: string }> = [];
   const failures: Array<{ id: string; name: string; reason: string }> = [];
+  const toUpload: Array<{
+    folder: string;
+    outputDir: string;
+    id: string;
+    name: string;
+  }> = [];
 
   for (const row of completeRows) {
     const folderId = row.id.padStart(4, "0");
-    const outputPath = path.join(OUTPUT_DIR, folderId, "portrait.png");
+    const outputDir = path.join(OUTPUT_DIR, folderId);
 
     // Skip if both tokenPng and downloadUrl are '-' (no download available)
     if (
@@ -211,8 +324,12 @@ function syncPaperforge() {
       continue;
     }
 
-    // Check if tokenPng is missing but downloadUrl exists
-    if (!row.tokenPng && row.tokenDownloadUrl) {
+    // Check if tokenPng is missing but downloadUrl exists - try to auto-detect
+    if (
+      (!row.tokenPng || row.tokenPng === "-") &&
+      row.tokenDownloadUrl &&
+      row.tokenDownloadUrl !== "-"
+    ) {
       const downloaded = downloadZipFile(row.tokenDownloadUrl, PAPERFORGE_DIR);
 
       if (downloaded) {
@@ -231,37 +348,50 @@ function syncPaperforge() {
           const zipPath = path.join(PAPERFORGE_DIR, latestZip.name);
           const zip = new AdmZip(zipPath);
 
-          // Update CSV with zip filename
-          row.tokenPng = latestZip.name;
-          csvUpdated = true;
+          // Try to find portrait image: first in Portrait/ subdirectory, then by filename
+          const entries = zip
+            .getEntries()
+            .filter((e) => !e.isDirectory && e.entryName.endsWith(".png"));
+          const portraitEntry =
+            entries.find((e) => /Portrait\/[^/]+\.png$/i.test(e.entryName)) ||
+            entries.find((e) => /Portrait[^/]*\.png$/i.test(e.entryName));
 
-          console.log(
-            `⊘ #${row.id} ${row.name}: Downloaded ${latestZip.name}, needs tokenPng path`
-          );
-          console.log(`  Contents:`);
-          for (const entry of zip.getEntries()) {
-            if (!entry.isDirectory) {
-              console.log(`    ${entry.entryName}`);
+          if (portraitEntry) {
+            row.tokenPng = `${latestZip.name}/${portraitEntry.entryName}`;
+            csvUpdated = true;
+            // Continue to extraction below
+          } else {
+            console.log(
+              `⊘ #${row.id} ${row.name}: Downloaded ${latestZip.name}, no portrait image found`
+            );
+            console.log(`  Contents:`);
+            for (const entry of zip.getEntries()) {
+              if (!entry.isDirectory) {
+                console.log(`    ${entry.entryName}`);
+              }
             }
+            errorCount++;
+            failures.push({
+              id: row.id,
+              name: row.name,
+              reason: "No portrait image found in zip",
+            });
+            continue;
           }
         }
       } else {
-        console.log(
-          `⊘ #${row.id} ${row.name}: Failed to download, needs tokenPng path`
-        );
+        console.log(`✗ #${row.id} ${row.name}: Failed to download`);
+        errorCount++;
+        failures.push({
+          id: row.id,
+          name: row.name,
+          reason: "Failed to download zip file",
+        });
+        continue;
       }
-
-      errorCount++;
-      failures.push({
-        id: row.id,
-        name: row.name,
-        reason:
-          "No tokenPng path specified - download URL provided for inspection",
-      });
-      continue;
     }
 
-    if (!row.tokenPng) {
+    if (!row.tokenPng || row.tokenPng === "-") {
       console.log(`⊘ #${row.id} ${row.name}: No tokenPng or download URL`);
       errorCount++;
       failures.push({
@@ -306,12 +436,20 @@ function syncPaperforge() {
       }
     }
 
-    // Extract the image
-    const success = extractTokenImage(zipPath, internalPath, outputPath);
+    // Extract the image and create sized versions
+    const success = await extractTokenImage(zipPath, internalPath, outputDir);
     if (success) {
       console.log(`✓ #${row.id} ${row.name}`);
       successCount++;
       indexEntries.push({ id: row.id, name: row.name, postUrl: row.postUrl });
+      if (shouldUpload) {
+        toUpload.push({
+          folder: folderId,
+          outputDir,
+          id: row.id,
+          name: row.name,
+        });
+      }
     } else {
       console.log(`✗ #${row.id} ${row.name}: Failed to extract`);
       errorCount++;
@@ -323,9 +461,39 @@ function syncPaperforge() {
     }
   }
 
-  // Generate index
-  if (indexEntries.length > 0) {
-    generateIndex(indexEntries);
+  // Upload to Tigris in parallel batches
+  if (toUpload.length > 0) {
+    console.log(`\nUploading ${toUpload.length} entries to Tigris...`);
+    const uploadResults = await uploadAllToTigris(toUpload);
+    let uploadSuccess = 0;
+    let uploadFailed = 0;
+    for (const { folder, id, name } of toUpload) {
+      if (uploadResults.get(folder)) {
+        uploadSuccess++;
+      } else {
+        uploadFailed++;
+        console.log(`  ✗ #${id} ${name}: upload failed`);
+      }
+    }
+    console.log(`Uploaded: ${uploadSuccess} success, ${uploadFailed} failed`);
+  }
+
+  // Generate index from all entries that have portraits in public/
+  if (indexEntries.length > 0 || singleId) {
+    const allCompleteRows = rows.filter(
+      (row) => row.id && row.name && row.postUrl
+    );
+    const entriesWithPortraits = allCompleteRows.filter((row) => {
+      const folderId = row.id.padStart(4, "0");
+      return fs.existsSync(path.join(OUTPUT_DIR, folderId, "400.png"));
+    });
+    generateIndex(
+      entriesWithPortraits.map((row) => ({
+        id: row.id,
+        name: row.name,
+        postUrl: row.postUrl,
+      }))
+    );
   }
 
   // Write updated CSV if needed
@@ -360,4 +528,5 @@ function syncPaperforge() {
   }
 }
 
-syncPaperforge();
+const singleId = process.argv.filter((a) => !a.startsWith("--"))[2];
+syncPaperforge(singleId);

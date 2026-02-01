@@ -76,6 +76,11 @@ const nextConfig: NextConfig = {
         hostname: "cdn.discordapp.com",
         pathname: "/avatars/**",
       },
+      {
+        protocol: "https",
+        hostname: "nimble-nexus.fly.storage.tigris.dev",
+        pathname: "/paperforge/**",
+      },
     ],
   },
 };
