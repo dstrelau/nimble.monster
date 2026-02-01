@@ -760,6 +760,12 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "0162",
   },
   {
+    id: "163",
+    name: "Giant Centipede",
+    postUrl: "https://www.patreon.com/posts/163-giant-36352514",
+    folder: "0163",
+  },
+  {
     id: "164",
     name: "Ogre",
     postUrl: "https://www.patreon.com/posts/vtt-164-ogre-36498477",
