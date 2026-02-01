@@ -2,12 +2,12 @@ app = "nimble-nexus"
 primary_region = "iad"
 
 [env]
+NODE_ENV = "production"
 AUTH_TRUST_HOST = "true"
 AUTH_URL = "https://nimble.nexus/api/auth"
-BUCKET_NAME = "nimble-nexus"
 DATABASE_URL = "file:/data/db.sqlite"
 NEXT_PUBLIC_APP_URL = "https://nimble.nexus"
-NODE_ENV = "production"
+NEXT_PUBLIC_BUCKET_NAME = "nimble-nexus"
 
 [http_service]
 auto_start_machines = true
