@@ -1,5 +1,5 @@
 import { trace } from "@opentelemetry/api";
-import { generateBlobFilename, uploadBlob } from "@/lib/blob-storage";
+import { generateEntityImagePath, uploadBlob } from "@/lib/blob-storage";
 import { getBrowser, withRenderLimit } from "@/lib/browser";
 import {
   claimImageGeneration,
@@ -92,7 +92,7 @@ export async function generateEntityImageWithStorage({
         );
 
         // Upload to blob storage
-        const filename = generateBlobFilename(
+        const filename = generateEntityImagePath(
           entityType,
           entityId,
           entityVersion
