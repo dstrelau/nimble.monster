@@ -35,171 +35,154 @@ export async function claimImageGeneration(
   });
 
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const now = new Date().toISOString();
 
-    const existingRows = await db
-      .select()
-      .from(entityImages)
-      .where(
-        and(
-          eq(entityImages.entityType, entityType),
-          eq(entityImages.entityId, entityId)
-        )
-      )
-      .limit(1);
-    const existing = existingRows[0] ?? null;
-
-    if (!existing) {
-      const id = generateId();
-      try {
-        const createdRows = await db
-          .insert(entityImages)
-          .values({
-            id,
-            entityType,
-            entityId,
-            entityVersion,
-            generationStatus: "generating" as GenerationStatus,
-            generationStartedAt: now,
-            createdAt: now,
-            updatedAt: now,
-          })
-          .returning();
-        const created = createdRows[0];
-
-        span.setAttributes({
-          "claim.id": created.id,
-          "claim.claimed": true,
-          "record.created": true,
-        });
-
-        return {
-          id: created.id,
-          claimed: true,
-        };
-      } catch (insertError) {
-        const insertErrorMessage =
-          insertError instanceof Error
-            ? insertError.message
-            : String(insertError);
-        const insertErrorStack =
-          insertError instanceof Error ? insertError.stack : undefined;
-        // Extract additional error properties for better diagnostics
-        const errorCode =
-          insertError instanceof Error
-            ? (insertError as Error & { code?: string }).code
-            : undefined;
-        const errorCause =
-          insertError instanceof Error && insertError.cause
-            ? String(insertError.cause)
-            : undefined;
-
-        span.setAttributes({
-          "insert.error": true,
-          "insert.error.message": insertErrorMessage,
-          "insert.error.type":
-            insertError instanceof Error
-              ? insertError.constructor.name
-              : "Unknown",
-        });
-
-        if (insertErrorStack) {
-          span.setAttributes({ "insert.error.stack": insertErrorStack });
-        }
-
-        if (errorCode) {
-          span.setAttributes({ "insert.error.code": errorCode });
-        }
-
-        if (errorCause) {
-          span.setAttributes({ "insert.error.cause": errorCause });
-        }
-
-        // Check if another process inserted while we were trying (race condition)
-        const raceExistingRows = await db
-          .select()
-          .from(entityImages)
-          .where(
-            and(
-              eq(entityImages.entityType, entityType),
-              eq(entityImages.entityId, entityId)
-            )
+    // Use a transaction to ensure consistency between read and write operations.
+    // With embedded replicas, this forces all operations to go through the primary,
+    // preventing stale reads from the local replica if the write fails.
+    return await db.transaction(async (tx) => {
+      const existingRows = await tx
+        .select()
+        .from(entityImages)
+        .where(
+          and(
+            eq(entityImages.entityType, entityType),
+            eq(entityImages.entityId, entityId)
           )
-          .limit(1);
-        const raceExisting = raceExistingRows[0] ?? null;
+        )
+        .limit(1);
+      const existing = existingRows[0] ?? null;
 
-        if (raceExisting) {
+      if (!existing) {
+        const id = generateId();
+        try {
+          const createdRows = await tx
+            .insert(entityImages)
+            .values({
+              id,
+              entityType,
+              entityId,
+              entityVersion,
+              generationStatus: "generating" as GenerationStatus,
+              generationStartedAt: now,
+              createdAt: now,
+              updatedAt: now,
+            })
+            .returning();
+          const created = createdRows[0];
+
           span.setAttributes({
-            "claim.claimed": false,
-            "race.condition": true,
+            "claim.id": created.id,
+            "claim.claimed": true,
+            "record.created": true,
           });
 
           return {
-            id: raceExisting.id,
-            claimed: false,
-            existing: raceExisting,
+            id: created.id,
+            claimed: true,
           };
+        } catch (insertError) {
+          const insertErrorMessage =
+            insertError instanceof Error
+              ? insertError.message
+              : String(insertError);
+          const insertErrorStack =
+            insertError instanceof Error ? insertError.stack : undefined;
+          // Extract additional error properties for better diagnostics
+          const errorCode =
+            insertError instanceof Error
+              ? (insertError as Error & { code?: string }).code
+              : undefined;
+          const errorCause =
+            insertError instanceof Error && insertError.cause
+              ? String(insertError.cause)
+              : undefined;
+
+          span.setAttributes({
+            "insert.error": true,
+            "insert.error.message": insertErrorMessage,
+            "insert.error.type":
+              insertError instanceof Error
+                ? insertError.constructor.name
+                : "Unknown",
+          });
+
+          if (insertErrorStack) {
+            span.setAttributes({ "insert.error.stack": insertErrorStack });
+          }
+
+          if (errorCode) {
+            span.setAttributes({ "insert.error.code": errorCode });
+          }
+
+          if (errorCause) {
+            span.setAttributes({ "insert.error.cause": errorCause });
+          }
+
+          // Check if another process inserted while we were trying (race condition)
+          // This read is within the same transaction, so it will also go to the primary
+          const raceExistingRows = await tx
+            .select()
+            .from(entityImages)
+            .where(
+              and(
+                eq(entityImages.entityType, entityType),
+                eq(entityImages.entityId, entityId)
+              )
+            )
+            .limit(1);
+          const raceExisting = raceExistingRows[0] ?? null;
+
+          if (raceExisting) {
+            span.setAttributes({
+              "claim.claimed": false,
+              "race.condition": true,
+            });
+
+            return {
+              id: raceExisting.id,
+              claimed: false,
+              existing: raceExisting,
+            };
+          }
+
+          // No race condition - this is a real insert failure
+          span.setAttributes({
+            "insert.fatal": true,
+          });
+          span.setStatus({ code: 2, message: insertErrorMessage });
+
+          // Build a more detailed error message
+          const errorDetails = [
+            `message: ${insertErrorMessage}`,
+            errorCode ? `code: ${errorCode}` : null,
+            errorCause ? `cause: ${errorCause}` : null,
+          ]
+            .filter(Boolean)
+            .join(", ");
+
+          const error = new Error(
+            `Failed to create entity image record for ${entityType}/${entityId}: ${errorDetails}`
+          );
+          error.cause = insertError;
+          throw error;
         }
-
-        // No race condition - this is a real insert failure
-        span.setAttributes({
-          "insert.fatal": true,
-        });
-        span.setStatus({ code: 2, message: insertErrorMessage });
-
-        // Build a more detailed error message
-        const errorDetails = [
-          `message: ${insertErrorMessage}`,
-          errorCode ? `code: ${errorCode}` : null,
-          errorCause ? `cause: ${errorCause}` : null,
-        ]
-          .filter(Boolean)
-          .join(", ");
-
-        const error = new Error(
-          `Failed to create entity image record for ${entityType}/${entityId}: ${errorDetails}`
-        );
-        error.cause = insertError;
-        throw error;
       }
-    }
 
-    span.setAttributes({
-      "record.id": existing.id,
-      "record.status": existing.generationStatus ?? "",
-      "record.version": existing.entityVersion,
-    });
-
-    if (
-      existing.entityVersion === entityVersion &&
-      existing.generationStatus === "completed"
-    ) {
       span.setAttributes({
-        "claim.claimed": false,
-        "existing.completed": true,
+        "record.id": existing.id,
+        "record.status": existing.generationStatus ?? "",
+        "record.version": existing.entityVersion,
       });
 
-      return {
-        id: existing.id,
-        claimed: false,
-        existing,
-      };
-    }
-
-    if (
-      existing.entityVersion === entityVersion &&
-      existing.generationStatus === "generating" &&
-      existing.generationStartedAt
-    ) {
-      const generationAge =
-        Date.now() - new Date(existing.generationStartedAt).getTime();
-
-      if (generationAge <= GENERATION_TIMEOUT_MS) {
+      if (
+        existing.entityVersion === entityVersion &&
+        existing.generationStatus === "completed"
+      ) {
         span.setAttributes({
           "claim.claimed": false,
-          "existing.in_progress": true,
-          "generation.age_ms": generationAge,
+          "existing.completed": true,
         });
 
         return {
@@ -208,32 +191,55 @@ export async function claimImageGeneration(
           existing,
         };
       }
-    }
 
-    const updatedRows = await db
-      .update(entityImages)
-      .set({
-        entityVersion,
-        generationStatus: "generating" as GenerationStatus,
-        generationStartedAt: now,
-        updatedAt: now,
-        ...(existing.entityVersion !== entityVersion
-          ? { blobUrl: null, generatedAt: null }
-          : {}),
-      })
-      .where(eq(entityImages.id, existing.id))
-      .returning();
-    const updated = updatedRows[0];
+      if (
+        existing.entityVersion === entityVersion &&
+        existing.generationStatus === "generating" &&
+        existing.generationStartedAt
+      ) {
+        const generationAge =
+          Date.now() - new Date(existing.generationStartedAt).getTime();
 
-    span.setAttributes({
-      "claim.claimed": true,
-      "version.updated": existing.entityVersion !== entityVersion,
+        if (generationAge <= GENERATION_TIMEOUT_MS) {
+          span.setAttributes({
+            "claim.claimed": false,
+            "existing.in_progress": true,
+            "generation.age_ms": generationAge,
+          });
+
+          return {
+            id: existing.id,
+            claimed: false,
+            existing,
+          };
+        }
+      }
+
+      const updatedRows = await tx
+        .update(entityImages)
+        .set({
+          entityVersion,
+          generationStatus: "generating" as GenerationStatus,
+          generationStartedAt: now,
+          updatedAt: now,
+          ...(existing.entityVersion !== entityVersion
+            ? { blobUrl: null, generatedAt: null }
+            : {}),
+        })
+        .where(eq(entityImages.id, existing.id))
+        .returning();
+      const updated = updatedRows[0];
+
+      span.setAttributes({
+        "claim.claimed": true,
+        "version.updated": existing.entityVersion !== entityVersion,
+      });
+
+      return {
+        id: updated.id,
+        claimed: true,
+      };
     });
-
-    return {
-      id: updated.id,
-      claimed: true,
-    };
   } finally {
     span.end();
   }
