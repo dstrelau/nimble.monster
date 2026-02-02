@@ -85,6 +85,15 @@ export async function claimImageGeneration(
             : String(insertError);
         const insertErrorStack =
           insertError instanceof Error ? insertError.stack : undefined;
+        // Extract additional error properties for better diagnostics
+        const errorCode =
+          insertError instanceof Error
+            ? (insertError as Error & { code?: string }).code
+            : undefined;
+        const errorCause =
+          insertError instanceof Error && insertError.cause
+            ? String(insertError.cause)
+            : undefined;
 
         span.setAttributes({
           "insert.error": true,
@@ -97,6 +106,14 @@ export async function claimImageGeneration(
 
         if (insertErrorStack) {
           span.setAttributes({ "insert.error.stack": insertErrorStack });
+        }
+
+        if (errorCode) {
+          span.setAttributes({ "insert.error.code": errorCode });
+        }
+
+        if (errorCause) {
+          span.setAttributes({ "insert.error.cause": errorCause });
         }
 
         // Check if another process inserted while we were trying (race condition)
@@ -131,8 +148,17 @@ export async function claimImageGeneration(
         });
         span.setStatus({ code: 2, message: insertErrorMessage });
 
+        // Build a more detailed error message
+        const errorDetails = [
+          `message: ${insertErrorMessage}`,
+          errorCode ? `code: ${errorCode}` : null,
+          errorCause ? `cause: ${errorCause}` : null,
+        ]
+          .filter(Boolean)
+          .join(", ");
+
         const error = new Error(
-          `Failed to create entity image record for ${entityType}/${entityId}: ${insertErrorMessage}`
+          `Failed to create entity image record for ${entityType}/${entityId}: ${errorDetails}`
         );
         error.cause = insertError;
         throw error;
