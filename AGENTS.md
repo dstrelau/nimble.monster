@@ -11,11 +11,14 @@
 
 # Database
 
-- Uses Drizzle ORM with Turso (SQLite)
+- Uses Drizzle ORM with Turso (SQLite via libsql)
 - Schema: `lib/db/schema.ts`
+- Client: `lib/db/client.ts` - auto-retries on stale connection errors
 - `pnpm run db:generate` - Generate migrations
 - `pnpm run db:migrate` - Run migrations
 - `pnpm run db:push` - Push schema changes directly (dev)
+- Production uses embedded replicas (local SQLite + Turso sync)
+- See `lib/db/CLAUDE.md` for detailed database architecture info
 
 # Code Style
 
