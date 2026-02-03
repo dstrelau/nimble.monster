@@ -42,6 +42,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     signIn: async ({ profile }) => {
+      if (profile?.username === "nimble-co") {
+        return false;
+      }
       if (profile?.id) {
         const db = getDatabase();
         await db

@@ -130,6 +130,7 @@ const toMonsterMiniFromRow = (m: MonsterRow): MonsterMini => ({
   paperforgeId: m.paperforgeId ?? undefined,
   createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
   role: m.role as MonsterRole | null,
+  isOfficial: m.isOfficial ?? false,
 });
 
 // Full monster data loader
@@ -160,6 +161,7 @@ const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
     : new Date(),
   kind: data.monster.kind,
   role: data.monster.role as MonsterRole | null,
+  isOfficial: data.monster.isOfficial ?? false,
   bloodied: data.monster.bloodied,
   lastStand: data.monster.lastStand,
   speed: data.monster.speed,
@@ -986,6 +988,134 @@ export const createMonster = async (
 
   if (!data) {
     throw new Error("Failed to create monster");
+  }
+
+  return toMonsterFromFullData(data);
+};
+
+export const upsertOfficialMonster = async (
+  input: CreateMonsterInput
+): Promise<Monster> => {
+  const db = await getDatabase();
+
+  const {
+    name,
+    kind = "",
+    level,
+    levelInt,
+    hp,
+    armor,
+    size,
+    speed,
+    fly,
+    swim,
+    climb,
+    burrow,
+    teleport,
+    families: familyInputs = [],
+    actions,
+    abilities,
+    actionPreface = "",
+    moreInfo = "",
+    visibility,
+    legendary = false,
+    minion = false,
+    bloodied = "",
+    lastStand = "",
+    saves = [],
+    sourceId,
+    role,
+    paperforgeId,
+    remixedFromId,
+  } = input;
+
+  const OFFICIAL_USER_ID = "00000000-0000-0000-0000-000000000000";
+
+  const existingMonster = await db
+    .select({ id: monsters.id })
+    .from(monsters)
+    .where(and(eq(monsters.name, name), eq(monsters.userId, OFFICIAL_USER_ID)))
+    .limit(1);
+
+  const savesString = legendary
+    ? Array.isArray(saves)
+      ? saves.join(" ")
+      : saves || ""
+    : "";
+
+  const armorValue = (armor === "none" || armor === "" ? "" : armor) as
+    | ""
+    | "medium"
+    | "heavy";
+
+  const monsterValues = {
+    name,
+    kind,
+    level,
+    levelInt,
+    hp,
+    armor: armorValue,
+    size,
+    speed: legendary ? 0 : speed,
+    fly: legendary ? 0 : fly,
+    swim: legendary ? 0 : swim,
+    climb: legendary ? 0 : climb,
+    burrow: legendary ? 0 : burrow,
+    teleport: legendary ? 0 : teleport,
+    actions: JSON.stringify(stripActionIds(actions)),
+    abilities: JSON.stringify(abilities),
+    bloodied: legendary ? bloodied : "",
+    lastStand: legendary ? lastStand : "",
+    saves: savesString,
+    visibility,
+    actionPreface,
+    moreInfo,
+    legendary,
+    minion,
+    role,
+    paperforgeId,
+    isOfficial: true,
+    sourceId: sourceId || null,
+    remixedFromId: remixedFromId || null,
+    updatedAt: new Date().toISOString(),
+  };
+
+  let monsterId: string;
+
+  if (existingMonster.length > 0) {
+    monsterId = existingMonster[0].id;
+    await db
+      .update(monsters)
+      .set(monsterValues)
+      .where(eq(monsters.id, monsterId));
+  } else {
+    monsterId = crypto.randomUUID();
+    await db.insert(monsters).values({
+      id: monsterId,
+      ...monsterValues,
+      userId: OFFICIAL_USER_ID,
+    });
+  }
+
+  const conditionNames = extractAllConditions({
+    actions,
+    abilities,
+    bloodied: legendary ? bloodied : "",
+    lastStand: legendary ? lastStand : "",
+    moreInfo,
+  });
+
+  await syncMonsterConditions(monsterId, conditionNames);
+  await syncMonsterFamilies(
+    monsterId,
+    familyInputs.map((f) => f.id)
+  );
+
+  const monsterDataMap = await loadMonsterFullData(db, [monsterId]);
+  const data = monsterDataMap.get(monsterId);
+
+  if (!data) {
+    throw new Error("Failed to retrieve upserted monster");
   }
 
   return toMonsterFromFullData(data);

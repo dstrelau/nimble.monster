@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { cn } from "lib/utils";
-import { Crown, PersonStanding } from "lucide-react";
+import { BookOpenCheck, Crown, PersonStanding } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Level } from "@/components/Level";
 import type { MonsterMini } from "@/lib/services/monsters";
@@ -67,6 +67,12 @@ export const List = ({
               )}
               <div className="grow">
                 <h3 className="font-bold text-lg">
+                  {monster.isOfficial && (
+                    <BookOpenCheck
+                      size={14}
+                      className="inline align-baseline mr-1 stroke-primary"
+                    />
+                  )}
                   {monster.legendary && (
                     <Crown
                       size={14}

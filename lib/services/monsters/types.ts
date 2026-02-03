@@ -109,6 +109,7 @@ export interface MonsterMini {
   paperforgeId?: string;
   createdAt: Date;
   role?: MonsterRole | null;
+  isOfficial?: boolean;
 }
 
 export interface Monster extends MonsterMini {
@@ -134,6 +135,7 @@ export interface Monster extends MonsterMini {
   imageUrl?: string;
   remixedFromId?: string | null;
   remixedFrom?: { id: string; name: string; creator: User } | null;
+  isOfficial?: boolean;
 }
 
 export interface SearchMonstersParams {

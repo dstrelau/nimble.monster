@@ -1,9 +1,19 @@
 import { fetchApi } from "@/lib/api";
 import type { Monster } from "@/lib/services/monsters/types";
 
-interface JSONAPIMonster {
-  type: "monsters";
+export interface JSONAPIFamily {
+  type: "families";
   id: string;
+  attributes: {
+    name: string;
+    description?: string;
+    abilities: Array<{ name: string; description: string }>;
+  };
+}
+
+export interface JSONAPIMonster {
+  type: "monsters";
+  id?: string;
   attributes: {
     name: string;
     hp: number;
@@ -22,10 +32,19 @@ interface JSONAPIMonster {
     actionsInstructions: string;
     description?: string;
     legendary: boolean;
+    minion?: boolean;
     bloodied?: { description?: string };
     lastStand?: { description?: string };
     paperforgeId?: string;
     paperforgeImageUrl?: string;
+  };
+  relationships?: {
+    family?: {
+      data: {
+        type: "families";
+        id: string;
+      };
+    };
   };
 }
 
@@ -96,7 +115,7 @@ function parseMonster(data: JSONAPIMonster): Monster {
             : 1;
 
   return {
-    id: data.id,
+    id: data.id || crypto.randomUUID(),
     name: attrs.name,
     hp: attrs.hp,
     level: String(attrs.level),
@@ -105,7 +124,7 @@ function parseMonster(data: JSONAPIMonster): Monster {
     armor: attrs.armor as Monster["armor"],
     kind: attrs.kind,
     legendary: attrs.legendary,
-    minion: false,
+    minion: attrs.minion ?? false,
     visibility: "public",
     paperforgeId: attrs.paperforgeId,
     createdAt: new Date(),

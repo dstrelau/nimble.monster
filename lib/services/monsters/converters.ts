@@ -48,6 +48,7 @@ interface MonsterRow {
   actionPreface: string | null;
   moreInfo: string | null;
   remixedFromId: string | null;
+  isOfficial: boolean | null;
 }
 
 interface UserRow {
@@ -118,6 +119,7 @@ export const toMonsterMini = (m: MonsterRow): MonsterMini => ({
   paperforgeId: m.paperforgeId ?? undefined,
   createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
   role: m.role as MonsterMini["role"],
+  isOfficial: m.isOfficial ?? false,
 });
 
 export const toMonster = (m: MonsterWithRelations): Monster => {

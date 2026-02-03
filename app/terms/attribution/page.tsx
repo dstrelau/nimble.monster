@@ -4,12 +4,21 @@ export default function TermsPage() {
   return (
     <div className="prose prose-neutral dark:prose-invert">
       <p>
-        <strong>Last Updated:</strong> 2025-11-04
+        <strong>Last Updated:</strong> 2025-01-26
       </p>
       <p>
-        Nimble Nexus is an independent product published under the Nimble 3rd
-        Party Creator License and is not affiliated with Nimble Co. Nimble ©
-        2025 Nimble Co.
+        Nimble Nexus is an independent product published under the{" "}
+        <Link href="https://nimblerpg.com/pages/creators">
+          Nimble 3rd Party Creator License
+        </Link>{" "}
+        and is not affiliated with Nimble Co. Nimble © 2025 Nimble Co.
+      </p>
+      <p>
+        This tool is free to use for anyone who already owns the content, is
+        trying the system out, or cannot afford to buy it right now. If you
+        enjoy Nimble and are able, please support the game by purchasing the
+        official content at{" "}
+        <Link href="https://nimblerpg.com">nimbleRPG.com</Link>.
       </p>
 
       <h2>Paper Forge</h2>

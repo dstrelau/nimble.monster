@@ -4,6 +4,7 @@ import { PrefixedFormattedText } from "@/components/FormattedText";
 import { maybePeriod } from "@/lib/text";
 import type { Ability, Condition, FamilyOverview } from "@/lib/types";
 import { getFamilyUrl } from "@/lib/utils/url";
+import { isValidUUID } from "@/lib/utils/validation";
 
 export const AbilityOverlay = ({
   abilities,
@@ -41,7 +42,7 @@ export const AbilityOverlay = ({
                       <>
                         <span className="inline-flex items-baseline gap-1 font-bold">
                           <Users className="size-3.5 text-flame" />
-                          {family.id ? (
+                          {isValidUUID(family.id) ? (
                             <Link
                               href={getFamilyUrl(family)}
                               className="inline-flex items-baseline gap-0.5"

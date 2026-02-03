@@ -36,11 +36,30 @@ export function isUUID(param: string): boolean {
  * Convert UUID to 26-character base32 identifier using Crockford alphabet
  */
 export function uuidToIdentifier(uuid: string): string {
+  // Validate UUID format
+  if (!isUUID(uuid)) {
+    throw new Error(
+      `Invalid UUID format: "${uuid}". Expected format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+    );
+  }
+
   // Remove hyphens and convert to lowercase
   const hex = uuid.replace(/-/g, "").toLowerCase();
 
+  // Validate hex string
+  if (!/^[0-9a-f]{32}$/i.test(hex)) {
+    throw new Error(`Invalid hex in UUID: "${uuid}"`);
+  }
+
   // Convert hex string to BigInt to handle 128-bit precision
-  const value = BigInt(`0x${hex}`);
+  let value: bigint;
+  try {
+    value = BigInt(`0x${hex}`);
+  } catch (error) {
+    throw new Error(
+      `Failed to parse UUID "${uuid}": ${error instanceof Error ? error.message : String(error)}`
+    );
+  }
 
   // Crockford base32 alphabet
   const alphabet = "0123456789abcdefghjkmnpqrstvwxyz";

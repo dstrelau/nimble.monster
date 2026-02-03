@@ -2548,12 +2548,6 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "0754",
   },
   {
-    id: "755",
-    name: "Arcanist",
-    postUrl: "https://www.patreon.com/posts/755-arcanist-139859531",
-    folder: "0755",
-  },
-  {
     id: "758",
     name: "Owlbear",
     postUrl: "https://www.patreon.com/posts/758-owlbear-140095271",

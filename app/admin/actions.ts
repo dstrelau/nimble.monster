@@ -2,9 +2,24 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import type { JSONAPIFamily } from "@/lib/api/monsters";
 import { isAdmin } from "@/lib/auth";
 import * as awardDb from "@/lib/db/award";
+import { getDatabase } from "@/lib/db/drizzle";
+import { users } from "@/lib/db/schema";
 import * as sourceDb from "@/lib/db/source";
+import {
+  findOrCreateOfficialFamily,
+  OFFICIAL_USER_ID,
+  parseJSONAPIMonster,
+  validateOfficialMonstersJSON,
+} from "@/lib/services/monsters/official";
+import {
+  deletePreviewSession,
+  readPreviewSession,
+  writePreviewSession,
+} from "@/lib/services/monsters/preview-session";
+import { upsertOfficialMonster } from "@/lib/services/monsters/repository";
 import { awardSlugify } from "@/lib/utils/slug";
 
 export async function createAwardAction(formData: FormData) {
@@ -161,4 +176,102 @@ export async function createSourceAction(formData: FormData) {
   await sourceDb.createSource({ name, abbreviation, license, link });
   revalidatePath("/admin/sources");
   redirect("/admin/sources");
+}
+
+export async function uploadOfficialMonstersAction(formData: FormData) {
+  if (!(await isAdmin())) {
+    throw new Error("Unauthorized");
+  }
+
+  const file = formData.get("file") as File;
+  if (!file) {
+    throw new Error("No file provided");
+  }
+
+  const text = await file.text();
+  const json: unknown = JSON.parse(text);
+
+  const { monsters, families, source } = validateOfficialMonstersJSON(json);
+
+  const sessionKey = crypto.randomUUID();
+  await writePreviewSession(sessionKey, { monsters, families, source });
+
+  redirect(`/admin/monsters/preview?session=${sessionKey}`);
+}
+
+export async function commitOfficialMonstersAction(sessionKey: string) {
+  if (!(await isAdmin())) {
+    throw new Error("Unauthorized");
+  }
+
+  const sessionData = await readPreviewSession(sessionKey);
+  if (!sessionData) {
+    throw new Error("Session expired or invalid");
+  }
+
+  const monsters = sessionData.monsters;
+  const familiesMap = new Map<string, JSONAPIFamily>(sessionData.families);
+  const source = sessionData.source;
+
+  const db = await getDatabase();
+  await db
+    .insert(users)
+    .values({
+      id: OFFICIAL_USER_ID,
+      username: "nimble-co",
+      displayName: "Nimble Co.",
+      imageUrl: "/images/nimble-n.png",
+    })
+    .onConflictDoUpdate({
+      target: users.id,
+      set: {
+        username: "nimble-co",
+        displayName: "Nimble Co.",
+        imageUrl: "/images/nimble-n.png",
+      },
+    });
+
+  let sourceId: string | undefined;
+  if (source) {
+    sourceId = await sourceDb.findOrCreateSource(source);
+  }
+
+  const familyIdMap = new Map<string, string>();
+
+  for (const [familyRefId, familyData] of familiesMap.entries()) {
+    const familyId = await findOrCreateOfficialFamily(
+      familyData.attributes.name,
+      familyData.attributes.description,
+      familyData.attributes.abilities
+    );
+    familyIdMap.set(familyRefId, familyId);
+  }
+
+  for (const monsterData of monsters) {
+    const input = parseJSONAPIMonster(monsterData);
+    if (monsterData.relationships?.family?.data?.id) {
+      const familyRefId = monsterData.relationships.family.data.id;
+      const familyId = familyIdMap.get(familyRefId);
+      if (familyId) {
+        input.families = [{ id: familyId }];
+      }
+    }
+    if (sourceId) {
+      input.sourceId = sourceId;
+    }
+    await upsertOfficialMonster(input);
+  }
+
+  await deletePreviewSession(sessionKey);
+  revalidatePath("/monsters");
+  redirect("/admin/monsters");
+}
+
+export async function cancelOfficialMonstersUploadAction(sessionKey: string) {
+  if (!(await isAdmin())) {
+    throw new Error("Unauthorized");
+  }
+
+  await deletePreviewSession(sessionKey);
+  redirect("/admin/monsters");
 }
