@@ -415,7 +415,7 @@ export const createFamily = async ({
     .values({
       name,
       description: description || null,
-      abilities: JSON.stringify(abilities.map((a) => ({ ...a }))),
+      abilities: abilities.map((a) => ({ ...a })),
       visibility: "public",
       creatorId: creator.id,
     })
@@ -461,13 +461,11 @@ export const updateFamily = async ({
     .set({
       name,
       description: description === "" ? null : description,
-      abilities: JSON.stringify(
-        abilities.map((a) => ({
-          ...a,
-          Name: undefined,
-          Description: undefined,
-        }))
-      ),
+      abilities: abilities.map((a) => ({
+        ...a,
+        Name: undefined,
+        Description: undefined,
+      })),
       updatedAt: new Date().toISOString(),
     })
     .where(and(eq(families.id, id), eq(families.creatorId, creator.id)))

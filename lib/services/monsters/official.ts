@@ -21,19 +21,17 @@ export async function findOrCreateOfficialFamily(
     )
     .limit(1);
 
-  const abilitiesJson = JSON.stringify(
-    abilities.map((a) => ({
-      name: a.name,
-      description: a.description,
-    }))
-  );
+  const abilitiesData = abilities.map((a) => ({
+    name: a.name,
+    description: a.description,
+  }));
 
   if (existingFamily.length > 0) {
     await db
       .update(families)
       .set({
         description: description ?? null,
-        abilities: abilitiesJson,
+        abilities: abilitiesData,
         updatedAt: new Date().toISOString(),
       })
       .where(eq(families.id, existingFamily[0].id));
@@ -45,7 +43,7 @@ export async function findOrCreateOfficialFamily(
     id: newFamilyId,
     name,
     description: description ?? null,
-    abilities: abilitiesJson,
+    abilities: abilitiesData,
     visibility: "public",
     creatorId: OFFICIAL_USER_ID,
   });
