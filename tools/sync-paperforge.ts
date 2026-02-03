@@ -133,6 +133,7 @@ async function uploadAllToTigris(
 
 const shouldUpload = process.argv.includes("--upload");
 const shouldVerify = process.argv.includes("--verify");
+const shouldVerifyRemote = process.argv.includes("--verify-remote");
 const forceUpload = process.argv.includes("--force");
 
 interface CatalogEntry {
@@ -217,6 +218,51 @@ async function verifyUploads() {
     console.log(`  #${entry.id} ${entry.name}: ${issues.join("; ")}`);
   }
   console.log(`\n${failures.length} entries with issues.`);
+  process.exit(1);
+}
+
+let firstErrorLogged = false;
+async function checkSizeExists(folder: string, size: number): Promise<boolean> {
+  const key = `paperforge/${folder}/${size}.png`;
+  try {
+    await s3.send(new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: key }));
+    return true;
+  } catch (e) {
+    if (!firstErrorLogged) {
+      firstErrorLogged = true;
+      console.log(`First check failed: ${BUCKET_NAME}/${key}`);
+      console.log(`Error: ${e instanceof Error ? e.message : String(e)}`);
+    }
+    return false;
+  }
+}
+
+async function verifyEntryRemote(entry: CatalogEntry): Promise<{ entry: CatalogEntry; missing: number[] }> {
+  const results = await Promise.all(
+    IMAGE_SIZES.map(async (size) => ({ size, exists: await checkSizeExists(entry.folder, size) }))
+  );
+  return { entry, missing: results.filter((r) => !r.exists).map((r) => r.size) };
+}
+
+async function verifyRemoteUploads() {
+  const entries = parseCatalog();
+  console.log(`Endpoint: ${process.env.AWS_ENDPOINT_URL_S3 ?? "(not set)"}`);
+  console.log(`Bucket: ${BUCKET_NAME}`);
+  console.log(`Verifying ${entries.length} catalog entries exist in Tigris...`);
+
+  const results = await processInBatches(entries, verifyEntryRemote);
+  const failures = results.filter((r) => r.missing.length > 0);
+
+  if (failures.length === 0) {
+    console.log(`All ${entries.length} entries verified.`);
+    return;
+  }
+
+  console.log(`\n=== Missing Images ===`);
+  for (const { entry, missing } of failures) {
+    console.log(`  #${entry.id} ${entry.name}: missing sizes ${missing.join(", ")}`);
+  }
+  console.log(`\n${failures.length} entries with missing images.`);
   process.exit(1);
 }
 
@@ -649,7 +695,9 @@ async function syncPaperforge(singleId?: string) {
   }
 }
 
-if (shouldVerify) {
+if (shouldVerifyRemote) {
+  verifyRemoteUploads();
+} else if (shouldVerify) {
   verifyUploads();
 } else {
   const singleId = process.argv.filter((a) => !a.startsWith("--"))[2];
