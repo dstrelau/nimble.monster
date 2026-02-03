@@ -2,6 +2,7 @@
 
 import "dotenv/config";
 import { execSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import {
@@ -40,21 +41,18 @@ function getExistingCatalogIds(): Set<string> {
 async function uploadSingleSize(
   localDir: string,
   folder: string,
-  size: number
-): Promise<boolean> {
+  size: number,
+  force: boolean
+): Promise<"exists" | "uploaded"> {
   const key = `paperforge/${folder}/${size}.png`;
 
-  // Check if already exists
-  try {
-    await s3.send(
-      new HeadObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: key,
-      })
-    );
-    return true;
-  } catch {
-    // Object doesn't exist, proceed with upload
+  if (!force) {
+    try {
+      await s3.send(new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: key }));
+      return "exists";
+    } catch {
+      // Object doesn't exist, proceed with upload
+    }
   }
 
   const localPath = path.join(localDir, `${size}.png`);
@@ -68,24 +66,28 @@ async function uploadSingleSize(
       ContentType: "image/png",
     })
   );
-  return true;
+  console.log(`  ↑ ${key}`);
+  return "uploaded";
 }
 
 async function uploadToTigris(
   localDir: string,
-  folder: string
-): Promise<boolean> {
+  folder: string,
+  force: boolean
+): Promise<{ success: boolean; uploaded: number; skipped: number }> {
   try {
-    await Promise.all(
-      IMAGE_SIZES.map((size) => uploadSingleSize(localDir, folder, size))
+    const results = await Promise.all(
+      IMAGE_SIZES.map((size) => uploadSingleSize(localDir, folder, size, force))
     );
-    return true;
+    const uploaded = results.filter((r) => r === "uploaded").length;
+    const skipped = results.filter((r) => r === "exists").length;
+    return { success: true, uploaded, skipped };
   } catch (e) {
     console.error(
       `  Error uploading to Tigris:`,
       e instanceof Error ? e.message : String(e)
     );
-    return false;
+    return { success: false, uploaded: 0, skipped: 0 };
   }
 }
 
@@ -105,20 +107,118 @@ async function processInBatches<T, R>(
 }
 
 async function uploadAllToTigris(
-  entries: Array<{ folder: string; outputDir: string }>
-): Promise<Map<string, boolean>> {
-  const results = new Map<string, boolean>();
+  entries: Array<{ folder: string; outputDir: string }>,
+  force: boolean
+): Promise<{ uploaded: number; skipped: number; failed: number }> {
+  let totalUploaded = 0;
+  let totalSkipped = 0;
+  let totalFailed = 0;
+
   const batchResults = await processInBatches(entries, async ({ folder, outputDir }) => {
-    const success = await uploadToTigris(outputDir, folder);
-    return { folder, success };
+    const result = await uploadToTigris(outputDir, folder, force);
+    return { folder, ...result };
   });
-  for (const { folder, success } of batchResults) {
-    results.set(folder, success);
+
+  for (const { success, uploaded, skipped } of batchResults) {
+    if (success) {
+      totalUploaded += uploaded;
+      totalSkipped += skipped;
+    } else {
+      totalFailed++;
+    }
   }
-  return results;
+
+  return { uploaded: totalUploaded, skipped: totalSkipped, failed: totalFailed };
 }
 
 const shouldUpload = process.argv.includes("--upload");
+const shouldVerify = process.argv.includes("--verify");
+const forceUpload = process.argv.includes("--force");
+
+interface CatalogEntry {
+  id: string;
+  name: string;
+  folder: string;
+}
+
+function parseCatalog(): CatalogEntry[] {
+  const content = fs.readFileSync(INDEX_PATH, "utf-8");
+  const entries: CatalogEntry[] = [];
+  const regex = /\{\s*id:\s*"(\d+)",\s*name:\s*"([^"]+)",[^}]*folder:\s*"(\d+)"/g;
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+    entries.push({ id: match[1], name: match[2], folder: match[3] });
+  }
+  return entries;
+}
+
+type VerifyResult = "match" | "mismatch" | "missing-remote" | "missing-local";
+
+async function verifySizeContent(folder: string, size: number): Promise<VerifyResult> {
+  const key = `paperforge/${folder}/${size}.png`;
+  const localPath = path.join(OUTPUT_DIR, folder, `${size}.png`);
+
+  if (!fs.existsSync(localPath)) {
+    return "missing-local";
+  }
+
+  const localBuffer = fs.readFileSync(localPath);
+  const localMd5 = createHash("md5").update(localBuffer).digest("hex");
+
+  try {
+    const head = await s3.send(new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: key }));
+    const remoteEtag = head.ETag?.replace(/"/g, "");
+    return localMd5 === remoteEtag ? "match" : "mismatch";
+  } catch {
+    return "missing-remote";
+  }
+}
+
+interface VerifyEntryResult {
+  entry: CatalogEntry;
+  mismatches: number[];
+  missingRemote: number[];
+  missingLocal: number[];
+}
+
+async function verifyEntry(entry: CatalogEntry): Promise<VerifyEntryResult> {
+  const results = await Promise.all(
+    IMAGE_SIZES.map(async (size) => ({ size, result: await verifySizeContent(entry.folder, size) }))
+  );
+  return {
+    entry,
+    mismatches: results.filter((r) => r.result === "mismatch").map((r) => r.size),
+    missingRemote: results.filter((r) => r.result === "missing-remote").map((r) => r.size),
+    missingLocal: results.filter((r) => r.result === "missing-local").map((r) => r.size),
+  };
+}
+
+async function verifyUploads() {
+  const entries = parseCatalog();
+  console.log(`Verifying ${entries.length} catalog entries in Tigris...`);
+
+  const results = await processInBatches(entries, verifyEntry);
+
+  const hasIssue = (r: VerifyEntryResult) =>
+    r.mismatches.length > 0 || r.missingRemote.length > 0 || r.missingLocal.length > 0;
+  const failures = results.filter(hasIssue);
+
+  if (failures.length === 0) {
+    console.log(`All ${entries.length} entries verified.`);
+    return;
+  }
+
+  console.log(`\n=== Verification Failures ===`);
+  for (const { entry, mismatches, missingRemote, missingLocal } of failures) {
+    const issues: string[] = [];
+    if (mismatches.length > 0) issues.push(`mismatch: ${mismatches.join(", ")}`);
+    if (missingRemote.length > 0) issues.push(`missing remote: ${missingRemote.join(", ")}`);
+    if (missingLocal.length > 0) issues.push(`missing local: ${missingLocal.join(", ")}`);
+    console.log(`  #${entry.id} ${entry.name}: ${issues.join("; ")}`);
+  }
+  console.log(`\n${failures.length} entries with issues.`);
+  process.exit(1);
+}
 
 interface CSVRow {
   id: string;
@@ -327,11 +427,25 @@ async function syncPaperforge(singleId?: string) {
   async function processRow(row: CSVRow): Promise<ProcessResult> {
     const folderId = row.id.padStart(4, "0");
     const outputDir = path.join(OUTPUT_DIR, folderId);
+    const alreadyExists = fs.existsSync(path.join(outputDir, "400.png"));
 
-    // Skip silently if already processed
-    if (fs.existsSync(path.join(outputDir, "400.png"))) {
+    // Skip silently if already processed (unless single ID mode)
+    if (alreadyExists && !singleId) {
       return { status: "existing" };
     }
+
+    // In single ID mode (without force) with existing images, return success for upload
+    if (alreadyExists && singleId && !forceUpload) {
+      return {
+        status: "success",
+        id: row.id,
+        name: row.name,
+        postUrl: row.postUrl,
+        folder: folderId,
+        outputDir,
+      };
+    }
+    // With --force, fall through to re-download and re-extract
 
     // Skip silently if no download available
     if (
@@ -407,7 +521,7 @@ async function syncPaperforge(singleId?: string) {
     const internalPath = pathParts.join("/");
     const zipPath = path.join(PAPERFORGE_DIR, zipFilename);
 
-    if (!fs.existsSync(zipPath)) {
+    if (!fs.existsSync(zipPath) || forceUpload) {
       if (row.tokenDownloadUrl) {
         const downloaded = downloadZipFile(row.tokenDownloadUrl, PAPERFORGE_DIR);
         if (!downloaded || !fs.existsSync(zipPath)) {
@@ -465,26 +579,6 @@ async function syncPaperforge(singleId?: string) {
   }
 
   const indexEntries = successes.map((s) => ({ id: s.id, name: s.name, postUrl: s.postUrl }));
-  const toUpload = shouldUpload
-    ? successes.map((s) => ({ folder: s.folder, outputDir: s.outputDir, id: s.id, name: s.name }))
-    : [];
-
-  // Upload to Tigris in parallel batches
-  if (toUpload.length > 0) {
-    console.log(`\nUploading ${toUpload.length} entries to Tigris...`);
-    const uploadResults = await uploadAllToTigris(toUpload);
-    let uploadSuccess = 0;
-    let uploadFailed = 0;
-    for (const { folder, id, name } of toUpload) {
-      if (uploadResults.get(folder)) {
-        uploadSuccess++;
-      } else {
-        uploadFailed++;
-        console.log(`  ✗ #${id} ${name}: upload failed`);
-      }
-    }
-    console.log(`Uploaded: ${uploadSuccess} success, ${uploadFailed} failed`);
-  }
 
   // Generate index from all entries that have portraits in public/
   const allCompleteRows = rows.filter(
@@ -497,6 +591,21 @@ async function syncPaperforge(singleId?: string) {
   const newlyAdded = entriesWithPortraits.filter(
     (row) => !existingIds.has(row.id)
   ).length;
+
+  // Upload to Tigris in parallel batches
+  if (shouldUpload && entriesWithPortraits.length > 0) {
+    const entriesToUpload = singleId
+      ? entriesWithPortraits.filter((row) => row.id === singleId)
+      : entriesWithPortraits;
+    const toUpload = entriesToUpload.map((row) => {
+      const folderId = row.id.padStart(4, "0");
+      return { folder: folderId, outputDir: path.join(OUTPUT_DIR, folderId), id: row.id, name: row.name };
+    });
+    console.log(`\nUploading ${toUpload.length} entries to Tigris...`);
+    const { uploaded, skipped, failed } = await uploadAllToTigris(toUpload, forceUpload);
+    console.log(`Uploaded: ${uploaded} new, ${skipped} skipped, ${failed} failed`);
+  }
+
   if (indexEntries.length > 0 || singleId) {
     generateIndex(
       entriesWithPortraits.map((row) => ({
@@ -540,5 +649,13 @@ async function syncPaperforge(singleId?: string) {
   }
 }
 
-const singleId = process.argv.filter((a) => !a.startsWith("--"))[2];
-syncPaperforge(singleId);
+if (shouldVerify) {
+  verifyUploads();
+} else {
+  const singleId = process.argv.filter((a) => !a.startsWith("--"))[2];
+  if (forceUpload && !singleId) {
+    console.error("--force requires a single ID");
+    process.exit(1);
+  }
+  syncPaperforge(singleId);
+}

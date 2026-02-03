@@ -1036,6 +1036,18 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "0259",
   },
   {
+    id: "277",
+    name: "Specter",
+    postUrl: "https://www.patreon.com/posts/277-specter-45883453",
+    folder: "0277",
+  },
+  {
+    id: "278",
+    name: "Wraith",
+    postUrl: "https://www.patreon.com/posts/278-wraith-45922597",
+    folder: "0278",
+  },
+  {
     id: "280",
     name: "Charon Ferryman",
     postUrl: "https://www.patreon.com/posts/280-284-charon-46214994",

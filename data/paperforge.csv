@@ -293,9 +293,9 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 274,Dwarf Warrior,,,VTT274_DwarfWarrior _Free.zip/_Free/Portrait/274_DwarfWarriorPortrait-Free.png
 275,Flying Dagger,,,VTT275_Flying Dagger_Free.zip/Dagger_Free/Portrait/275_FlyingDaggerPortrait-Free.png
 276,Hill Giant,,,
-277,Specter,,,VTT277_Specter_Free.zip/VTT277_Specter_Free/Portrait/277_SpecterPortrait-Free.png
-278,Wraith,,,VTT278_Wraith_Free.zip/VTT278_Wraith_Free/Portrait/278_WraithPortrait-free.png
-279,Cloud Giant,,,
+277,Specter,https://www.patreon.com/posts/277-specter-45883453,https://www.patreon.com/file?h=15724974&i=7098754,VTT277_Specter_Free.zip/VTT277_Specter_Free/Portrait/277_SpecterPortrait-Free.png
+278,Wraith,https://www.patreon.com/posts/278-wraith-45922597,https://www.patreon.com/file?h=15724974&i=7105257,VTT278_Wraith_Free.zip/VTT278_Wraith_Free/Portrait/278_WraithPortrait-free.png
+279,[Reskin] Greater Wraith,-,-,-
 280,Charon Ferryman,https://www.patreon.com/posts/280-284-charon-46214994,https://www.patreon.com/file?h=15724974&i=7166430,VTT280_CharonFerryman_Free.zip/VTT280_CharonFerryman_Free/Portrait/280_CharonPortrait-Free.png
 281,Charon,https://www.patreon.com/posts/280-284-charon-46214994,https://www.patreon.com/file?h=15724974&i=7166432,VTT281_Charon_Free.zip/VTT281_Charon_Free/Portrait/280_CharonPortrait(B)-Free.png
 282,Charons Ferry,https://www.patreon.com/posts/280-284-charon-46214994,https://www.patreon.com/file?h=15724974&i=7166434,VTT282_CharonsFerry_Free.zip/VTT282_CharonsFerry_Free/Portrait/282_CharonsFerryPortrait-Free.png
@@ -771,7 +771,7 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 752,[Variant] Dead Guard,,,
 753,[Variant] Dead Guard,,,
 754,Arcanist,https://www.patreon.com/posts/754-arcanist-139858073,https://www.patreon.com/file?h=15724974&m=539125946,VTT754_Arcanist_Free.zip/VTT754_Arcanist_Free/Portrait/754_ArcanistPortrait-GoldBase.png
-755,Arcanist,https://www.patreon.com/posts/755-arcanist-139859531,,
+755,Arcanist,https://www.patreon.com/posts/755-arcanist-139859531,https://www.patreon.com/file?h=15724974&m=539125945,VTT755_Arcanist_Free.zip/VTT755_Arcanist_Free/Portrait/755_ArcanistPortrait-BaseGold.png
 756,Variant Arcanist,,,
 757,Fanart Mind Flayer,,,
 758,Owlbear,https://www.patreon.com/posts/758-owlbear-140095271,https://www.patreon.com/file?h=15724974&m=540741051,VTT758_Owlbear_Free.zip/VTT758_Owlbear_Free/Portrait/758_OwlbearPortrait-BaseGold.png
@@ -779,7 +779,7 @@ id,name,postUrl,tokenDownloadUrl,tokenPng
 760,Fanart Ulitharid,,,
 761,Goblin Boss,https://www.patreon.com/posts/vtt-master-post-35093024,https://www.patreon.com/file?h=15724974&m=553993539,VTT761_GoblinBoss_Free.zip/VTT761_GoblinBoss_Free/Portrait/761_GoblinBossPortrait-BaseGold.png
 762,Goblin Warrior,https://www.patreon.com/posts/vtt-master-post-35093024,https://www.patreon.com/file?h=15724974&m=553993536,VTT762_GoblinWarrior_Free.zip/VTT762_GoblinWarrior_Free/762_GoblinWarriorPortrait-BaseGold.png
-763,Goblin Warrior,https://www.patreon.com/posts/vtt-master-post-35093024,https://www.patreon.com/file?h=15724974&m=553993537,PaperForge763_GoblinWarrior_Free.zip/PaperForge763_GoblinWarrior_Free/PNGs/763_GoblinWarrior Free.png
+763,Goblin Warrior,https://www.patreon.com/posts/vtt-master-post-35093024,https://www.patreon.com/file?h=15724974&m=553993535,VTT763_GoblinWarrior_Free.zip/VTT763_GoblinWarrior_Free/Portrait/763_GoblinWarriorPortrait-BaseGold.png
 764,Goblin Hexer,https://www.patreon.com/posts/vtt-master-post-35093024,https://www.patreon.com/file?h=15724974&m=553993534,VTT764_GoblinHexer_Free.zip/VTT764_GoblinHexer_Free/764_GoblinHexerPortrait-BaseGold.png
 765,Goblin Minion,https://www.patreon.com/posts/vtt-master-post-35093024,https://www.patreon.com/file?h=15724974&m=553993540,VTT765_GoblinMinion_Free.zip/VTT765_GoblinMinion_Free/Portrait/765_GoblinMinionPortrait-BaseGold.png
 766,Worg,https://www.patreon.com/posts/766-worg-142465043,https://www.patreon.com/file?h=15724974&m=556906001,VTT766_Worg_Free.zip/VTT766_Worg_Free/Portrait/766_WorgPortrait-BaseGold.png
