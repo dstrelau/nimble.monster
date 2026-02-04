@@ -62,7 +62,12 @@ const MonsterStats: React.FC<{
   const classes = "flex gap-1 items-center justify-end font-slab font-black";
   return (
     <StatsGroup
-      className={cn(statCount > 4 && "flex-wrap", classes, className)}
+      className={cn(
+        statCount > 4 && variant !== "legendary" && "flex-wrap",
+        variant === "legendary" && "shrink-0",
+        classes,
+        className
+      )}
     >
       {(variant === "legendary" || variant === "standard") && (
         <>
