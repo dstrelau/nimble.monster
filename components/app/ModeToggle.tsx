@@ -1,6 +1,6 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
+import { Moon, Scroll, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -41,6 +41,15 @@ export function ModeToggle({ className }: ModeToggleProps) {
       >
         <Moon />
         <span className="sr-only">Dark</span>
+      </ToggleGroupItem>
+      <ToggleGroupItem
+        value="parchment"
+        onClick={() =>
+          theme === "parchment" ? setTheme("system") : setTheme("parchment")
+        }
+      >
+        <Scroll />
+        <span className="sr-only">Parchment</span>
       </ToggleGroupItem>
     </ToggleGroup>
   );

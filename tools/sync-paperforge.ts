@@ -2,6 +2,7 @@
 
 import "dotenv/config";
 import { execSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import {
@@ -22,24 +23,36 @@ const IMAGE_SIZES = [50, 100, 200, 400];
 
 const s3 = new S3Client({});
 
+function getExistingCatalogIds(): Set<string> {
+  try {
+    const content = fs.readFileSync(INDEX_PATH, "utf-8");
+    const ids = new Set<string>();
+    const regex = /id:\s*"(\d+)"/g;
+    let match;
+    while ((match = regex.exec(content)) !== null) {
+      ids.add(match[1]);
+    }
+    return ids;
+  } catch {
+    return new Set();
+  }
+}
+
 async function uploadSingleSize(
   localDir: string,
   folder: string,
-  size: number
-): Promise<boolean> {
+  size: number,
+  force: boolean
+): Promise<"exists" | "uploaded"> {
   const key = `paperforge/${folder}/${size}.png`;
 
-  // Check if already exists
-  try {
-    await s3.send(
-      new HeadObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: key,
-      })
-    );
-    return true;
-  } catch {
-    // Object doesn't exist, proceed with upload
+  if (!force) {
+    try {
+      await s3.send(new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: key }));
+      return "exists";
+    } catch {
+      // Object doesn't exist, proceed with upload
+    }
   }
 
   const localPath = path.join(localDir, `${size}.png`);
@@ -53,51 +66,205 @@ async function uploadSingleSize(
       ContentType: "image/png",
     })
   );
-  return true;
+  console.log(`  ↑ ${key}`);
+  return "uploaded";
 }
 
 async function uploadToTigris(
   localDir: string,
-  folder: string
-): Promise<boolean> {
+  folder: string,
+  force: boolean
+): Promise<{ success: boolean; uploaded: number; skipped: number }> {
   try {
-    await Promise.all(
-      IMAGE_SIZES.map((size) => uploadSingleSize(localDir, folder, size))
+    const results = await Promise.all(
+      IMAGE_SIZES.map((size) => uploadSingleSize(localDir, folder, size, force))
     );
-    return true;
+    const uploaded = results.filter((r) => r === "uploaded").length;
+    const skipped = results.filter((r) => r === "exists").length;
+    return { success: true, uploaded, skipped };
   } catch (e) {
     console.error(
       `  Error uploading to Tigris:`,
       e instanceof Error ? e.message : String(e)
     );
+    return { success: false, uploaded: 0, skipped: 0 };
+  }
+}
+
+const CONCURRENCY = 10;
+
+async function processInBatches<T, R>(
+  items: T[],
+  fn: (item: T) => Promise<R>
+): Promise<R[]> {
+  const results: R[] = [];
+  for (let i = 0; i < items.length; i += CONCURRENCY) {
+    const batch = items.slice(i, i + CONCURRENCY);
+    const batchResults = await Promise.all(batch.map(fn));
+    results.push(...batchResults);
+  }
+  return results;
+}
+
+async function uploadAllToTigris(
+  entries: Array<{ folder: string; outputDir: string }>,
+  force: boolean
+): Promise<{ uploaded: number; skipped: number; failed: number }> {
+  let totalUploaded = 0;
+  let totalSkipped = 0;
+  let totalFailed = 0;
+
+  const batchResults = await processInBatches(entries, async ({ folder, outputDir }) => {
+    const result = await uploadToTigris(outputDir, folder, force);
+    return { folder, ...result };
+  });
+
+  for (const { success, uploaded, skipped } of batchResults) {
+    if (success) {
+      totalUploaded += uploaded;
+      totalSkipped += skipped;
+    } else {
+      totalFailed++;
+    }
+  }
+
+  return { uploaded: totalUploaded, skipped: totalSkipped, failed: totalFailed };
+}
+
+const shouldUpload = process.argv.includes("--upload");
+const shouldVerify = process.argv.includes("--verify");
+const shouldVerifyRemote = process.argv.includes("--verify-remote");
+const forceUpload = process.argv.includes("--force");
+
+interface CatalogEntry {
+  id: string;
+  name: string;
+  folder: string;
+}
+
+function parseCatalog(): CatalogEntry[] {
+  const content = fs.readFileSync(INDEX_PATH, "utf-8");
+  const entries: CatalogEntry[] = [];
+  const regex = /\{\s*id:\s*"(\d+)",\s*name:\s*"([^"]+)",[^}]*folder:\s*"(\d+)"/g;
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+    entries.push({ id: match[1], name: match[2], folder: match[3] });
+  }
+  return entries;
+}
+
+type VerifyResult = "match" | "mismatch" | "missing-remote" | "missing-local";
+
+async function verifySizeContent(folder: string, size: number): Promise<VerifyResult> {
+  const key = `paperforge/${folder}/${size}.png`;
+  const localPath = path.join(OUTPUT_DIR, folder, `${size}.png`);
+
+  if (!fs.existsSync(localPath)) {
+    return "missing-local";
+  }
+
+  const localBuffer = fs.readFileSync(localPath);
+  const localMd5 = createHash("md5").update(localBuffer).digest("hex");
+
+  try {
+    const head = await s3.send(new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: key }));
+    const remoteEtag = head.ETag?.replace(/"/g, "");
+    return localMd5 === remoteEtag ? "match" : "mismatch";
+  } catch {
+    return "missing-remote";
+  }
+}
+
+interface VerifyEntryResult {
+  entry: CatalogEntry;
+  mismatches: number[];
+  missingRemote: number[];
+  missingLocal: number[];
+}
+
+async function verifyEntry(entry: CatalogEntry): Promise<VerifyEntryResult> {
+  const results = await Promise.all(
+    IMAGE_SIZES.map(async (size) => ({ size, result: await verifySizeContent(entry.folder, size) }))
+  );
+  return {
+    entry,
+    mismatches: results.filter((r) => r.result === "mismatch").map((r) => r.size),
+    missingRemote: results.filter((r) => r.result === "missing-remote").map((r) => r.size),
+    missingLocal: results.filter((r) => r.result === "missing-local").map((r) => r.size),
+  };
+}
+
+async function verifyUploads() {
+  const entries = parseCatalog();
+  console.log(`Verifying ${entries.length} catalog entries in Tigris...`);
+
+  const results = await processInBatches(entries, verifyEntry);
+
+  const hasIssue = (r: VerifyEntryResult) =>
+    r.mismatches.length > 0 || r.missingRemote.length > 0 || r.missingLocal.length > 0;
+  const failures = results.filter(hasIssue);
+
+  if (failures.length === 0) {
+    console.log(`All ${entries.length} entries verified.`);
+    return;
+  }
+
+  console.log(`\n=== Verification Failures ===`);
+  for (const { entry, mismatches, missingRemote, missingLocal } of failures) {
+    const issues: string[] = [];
+    if (mismatches.length > 0) issues.push(`mismatch: ${mismatches.join(", ")}`);
+    if (missingRemote.length > 0) issues.push(`missing remote: ${missingRemote.join(", ")}`);
+    if (missingLocal.length > 0) issues.push(`missing local: ${missingLocal.join(", ")}`);
+    console.log(`  #${entry.id} ${entry.name}: ${issues.join("; ")}`);
+  }
+  console.log(`\n${failures.length} entries with issues.`);
+  process.exit(1);
+}
+
+let firstErrorLogged = false;
+async function checkSizeExists(folder: string, size: number): Promise<boolean> {
+  const key = `paperforge/${folder}/${size}.png`;
+  try {
+    await s3.send(new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: key }));
+    return true;
+  } catch (e) {
+    if (!firstErrorLogged) {
+      firstErrorLogged = true;
+      console.log(`First check failed: ${BUCKET_NAME}/${key}`);
+      console.log(`Error: ${e instanceof Error ? e.message : String(e)}`);
+    }
     return false;
   }
 }
 
-const UPLOAD_CONCURRENCY = 10;
-
-async function uploadAllToTigris(
-  entries: Array<{ folder: string; outputDir: string }>
-): Promise<Map<string, boolean>> {
-  const results = new Map<string, boolean>();
-
-  for (let i = 0; i < entries.length; i += UPLOAD_CONCURRENCY) {
-    const batch = entries.slice(i, i + UPLOAD_CONCURRENCY);
-    const batchResults = await Promise.all(
-      batch.map(async ({ folder, outputDir }) => {
-        const success = await uploadToTigris(outputDir, folder);
-        return { folder, success };
-      })
-    );
-    for (const { folder, success } of batchResults) {
-      results.set(folder, success);
-    }
-  }
-
-  return results;
+async function verifyEntryRemote(entry: CatalogEntry): Promise<{ entry: CatalogEntry; missing: number[] }> {
+  const results = await Promise.all(
+    IMAGE_SIZES.map(async (size) => ({ size, exists: await checkSizeExists(entry.folder, size) }))
+  );
+  return { entry, missing: results.filter((r) => !r.exists).map((r) => r.size) };
 }
 
-const shouldUpload = process.argv.includes("--upload");
+async function verifyRemoteUploads() {
+  const entries = parseCatalog();
+  console.log(`Endpoint: ${process.env.AWS_ENDPOINT_URL_S3 ?? "(not set)"}`);
+  console.log(`Bucket: ${BUCKET_NAME}`);
+  console.log(`Verifying ${entries.length} catalog entries exist in Tigris...`);
+
+  const results = await processInBatches(entries, verifyEntryRemote);
+  const failures = results.filter((r) => r.missing.length > 0);
+
+  if (failures.length === 0) {
+    console.log(`All ${entries.length} entries verified.`);
+    return;
+  }
+
+  console.log(`\n=== Missing Images ===`);
+  for (const { entry, missing } of failures) {
+    console.log(`  #${entry.id} ${entry.name}: missing sizes ${missing.join(", ")}`);
+  }
+  console.log(`\n${failures.length} entries with missing images.`);
+  process.exit(1);
+}
 
 interface CSVRow {
   id: string;
@@ -106,6 +273,12 @@ interface CSVRow {
   tokenDownloadUrl: string;
   tokenPng: string;
 }
+
+type ProcessResult =
+  | { status: "skipped" }
+  | { status: "existing" }
+  | { status: "success"; id: string; name: string; postUrl: string; folder: string; outputDir: string; csvUpdate?: string }
+  | { status: "error"; id: string; name: string; reason: string };
 
 function escapeShellArg(arg: string): string {
   return `'${arg.replace(/'/g, "'\\''")}'`;
@@ -258,6 +431,7 @@ export function getPaperforgeEntry(identifier: string): PaperForgeEntry | null {
 }
 
 async function syncPaperforge(singleId?: string) {
+  const existingIds = getExistingCatalogIds();
   const content = fs.readFileSync(CSV_PATH, "utf-8");
   const rows = parseCSV(content);
 
@@ -296,35 +470,39 @@ async function syncPaperforge(singleId?: string) {
     process.exit(1);
   }
 
-  console.log(`Found ${completeRows.length} complete entries to sync`);
-
-  let successCount = 0;
-  let errorCount = 0;
-  let csvUpdated = false;
-
-  const indexEntries: Array<{ id: string; name: string; postUrl: string }> = [];
-  const failures: Array<{ id: string; name: string; reason: string }> = [];
-  const toUpload: Array<{
-    folder: string;
-    outputDir: string;
-    id: string;
-    name: string;
-  }> = [];
-
-  for (const row of completeRows) {
+  async function processRow(row: CSVRow): Promise<ProcessResult> {
     const folderId = row.id.padStart(4, "0");
     const outputDir = path.join(OUTPUT_DIR, folderId);
+    const alreadyExists = fs.existsSync(path.join(outputDir, "400.png"));
 
-    // Skip if both tokenPng and downloadUrl are '-' (no download available)
+    // Skip silently if already processed (unless single ID mode)
+    if (alreadyExists && !singleId) {
+      return { status: "existing" };
+    }
+
+    // In single ID mode (without force) with existing images, return success for upload
+    if (alreadyExists && singleId && !forceUpload) {
+      return {
+        status: "success",
+        id: row.id,
+        name: row.name,
+        postUrl: row.postUrl,
+        folder: folderId,
+        outputDir,
+      };
+    }
+    // With --force, fall through to re-download and re-extract
+
+    // Skip silently if no download available
     if (
       (!row.tokenPng || row.tokenPng === "-") &&
       (!row.tokenDownloadUrl || row.tokenDownloadUrl === "-")
     ) {
-      console.log(`⊘ #${row.id} ${row.name}: Non-free`);
-      continue;
+      return { status: "skipped" };
     }
 
-    // Check if tokenPng is missing but downloadUrl exists - try to auto-detect
+    // If tokenPng is missing but downloadUrl exists - try to auto-detect
+    let csvUpdate: string | undefined;
     if (
       (!row.tokenPng || row.tokenPng === "-") &&
       row.tokenDownloadUrl &&
@@ -333,7 +511,6 @@ async function syncPaperforge(singleId?: string) {
       const downloaded = downloadZipFile(row.tokenDownloadUrl, PAPERFORGE_DIR);
 
       if (downloaded) {
-        // Find the downloaded zip file
         const files = fs
           .readdirSync(PAPERFORGE_DIR)
           .filter((f) => f.endsWith(".zip"));
@@ -348,7 +525,6 @@ async function syncPaperforge(singleId?: string) {
           const zipPath = path.join(PAPERFORGE_DIR, latestZip.name);
           const zip = new AdmZip(zipPath);
 
-          // Try to find portrait image: first in Portrait/ subdirectory, then by filename
           const entries = zip
             .getEntries()
             .filter((e) => !e.isDirectory && e.entryName.endsWith(".png"));
@@ -358,135 +534,125 @@ async function syncPaperforge(singleId?: string) {
 
           if (portraitEntry) {
             row.tokenPng = `${latestZip.name}/${portraitEntry.entryName}`;
-            csvUpdated = true;
-            // Continue to extraction below
+            csvUpdate = row.tokenPng;
           } else {
-            console.log(
-              `⊘ #${row.id} ${row.name}: Downloaded ${latestZip.name}, no portrait image found`
-            );
-            console.log(`  Contents:`);
-            for (const entry of zip.getEntries()) {
-              if (!entry.isDirectory) {
-                console.log(`    ${entry.entryName}`);
-              }
-            }
-            errorCount++;
-            failures.push({
+            return {
+              status: "error",
               id: row.id,
               name: row.name,
-              reason: "No portrait image found in zip",
-            });
-            continue;
+              reason: `No portrait image found in ${latestZip.name}`,
+            };
           }
         }
       } else {
-        console.log(`✗ #${row.id} ${row.name}: Failed to download`);
-        errorCount++;
-        failures.push({
+        return {
+          status: "error",
           id: row.id,
           name: row.name,
           reason: "Failed to download zip file",
-        });
-        continue;
+        };
       }
     }
 
     if (!row.tokenPng || row.tokenPng === "-") {
-      console.log(`⊘ #${row.id} ${row.name}: No tokenPng or download URL`);
-      errorCount++;
-      failures.push({
+      return {
+        status: "error",
         id: row.id,
         name: row.name,
         reason: "No tokenPng path specified",
-      });
-      continue;
+      };
     }
 
-    // Parse tokenPng path: "VTT05_GoblinBoss_Free.zip/VTT05_GoblinBoss_Free/Portrait/GoblinBossF.png"
     const [zipFilename, ...pathParts] = row.tokenPng.split("/");
     const internalPath = pathParts.join("/");
     const zipPath = path.join(PAPERFORGE_DIR, zipFilename);
 
-    if (!fs.existsSync(zipPath)) {
+    if (!fs.existsSync(zipPath) || forceUpload) {
       if (row.tokenDownloadUrl) {
-        const downloaded = downloadZipFile(
-          row.tokenDownloadUrl,
-          PAPERFORGE_DIR
-        );
-
+        const downloaded = downloadZipFile(row.tokenDownloadUrl, PAPERFORGE_DIR);
         if (!downloaded || !fs.existsSync(zipPath)) {
-          console.log(`✗ #${row.id} ${row.name}: Failed to download`);
-          errorCount++;
-          failures.push({
+          return {
+            status: "error",
             id: row.id,
             name: row.name,
             reason: "Failed to download zip file",
-          });
-          continue;
+          };
         }
       } else {
-        console.log(`✗ #${row.id} ${row.name}: No download URL`);
-        errorCount++;
-        failures.push({
+        return {
+          status: "error",
           id: row.id,
           name: row.name,
           reason: "No download URL available",
-        });
-        continue;
+        };
       }
     }
 
-    // Extract the image and create sized versions
     const success = await extractTokenImage(zipPath, internalPath, outputDir);
     if (success) {
-      console.log(`✓ #${row.id} ${row.name}`);
-      successCount++;
-      indexEntries.push({ id: row.id, name: row.name, postUrl: row.postUrl });
-      if (shouldUpload) {
-        toUpload.push({
-          folder: folderId,
-          outputDir,
-          id: row.id,
-          name: row.name,
-        });
-      }
-    } else {
-      console.log(`✗ #${row.id} ${row.name}: Failed to extract`);
-      errorCount++;
-      failures.push({
+      return {
+        status: "success",
         id: row.id,
         name: row.name,
-        reason: "Failed to extract image from zip",
-      });
+        postUrl: row.postUrl,
+        folder: folderId,
+        outputDir,
+        csvUpdate,
+      };
     }
+    return {
+      status: "error",
+      id: row.id,
+      name: row.name,
+      reason: "Failed to extract image from zip",
+    };
   }
 
-  // Upload to Tigris in parallel batches
-  if (toUpload.length > 0) {
-    console.log(`\nUploading ${toUpload.length} entries to Tigris...`);
-    const uploadResults = await uploadAllToTigris(toUpload);
-    let uploadSuccess = 0;
-    let uploadFailed = 0;
-    for (const { folder, id, name } of toUpload) {
-      if (uploadResults.get(folder)) {
-        uploadSuccess++;
-      } else {
-        uploadFailed++;
-        console.log(`  ✗ #${id} ${name}: upload failed`);
-      }
-    }
-    console.log(`Uploaded: ${uploadSuccess} success, ${uploadFailed} failed`);
+  const results = await processInBatches(completeRows, processRow);
+
+  const successes = results.filter((r) => r.status === "success") as Extract<ProcessResult, { status: "success" }>[];
+  const failures = results.filter((r) => r.status === "error") as Extract<ProcessResult, { status: "error" }>[];
+
+  for (const s of successes) {
+    console.log(`✓ #${s.id} ${s.name}`);
   }
+
+  const csvUpdates = successes.filter((s) => s.csvUpdate);
+  const csvUpdated = csvUpdates.length > 0;
+  for (const update of csvUpdates) {
+    const row = rows.find((r) => r.id === update.id);
+    if (row) row.tokenPng = update.csvUpdate!;
+  }
+
+  const indexEntries = successes.map((s) => ({ id: s.id, name: s.name, postUrl: s.postUrl }));
 
   // Generate index from all entries that have portraits in public/
-  if (indexEntries.length > 0 || singleId) {
-    const allCompleteRows = rows.filter(
-      (row) => row.id && row.name && row.postUrl
-    );
-    const entriesWithPortraits = allCompleteRows.filter((row) => {
+  const allCompleteRows = rows.filter(
+    (row) => row.id && row.name && row.postUrl
+  );
+  const entriesWithPortraits = allCompleteRows.filter((row) => {
+    const folderId = row.id.padStart(4, "0");
+    return fs.existsSync(path.join(OUTPUT_DIR, folderId, "400.png"));
+  });
+  const newlyAdded = entriesWithPortraits.filter(
+    (row) => !existingIds.has(row.id)
+  ).length;
+
+  // Upload to Tigris in parallel batches
+  if (shouldUpload && entriesWithPortraits.length > 0) {
+    const entriesToUpload = singleId
+      ? entriesWithPortraits.filter((row) => row.id === singleId)
+      : entriesWithPortraits;
+    const toUpload = entriesToUpload.map((row) => {
       const folderId = row.id.padStart(4, "0");
-      return fs.existsSync(path.join(OUTPUT_DIR, folderId, "400.png"));
+      return { folder: folderId, outputDir: path.join(OUTPUT_DIR, folderId), id: row.id, name: row.name };
     });
+    console.log(`\nUploading ${toUpload.length} entries to Tigris...`);
+    const { uploaded, skipped, failed } = await uploadAllToTigris(toUpload, forceUpload);
+    console.log(`Uploaded: ${uploaded} new, ${skipped} skipped, ${failed} failed`);
+  }
+
+  if (indexEntries.length > 0 || singleId) {
     generateIndex(
       entriesWithPortraits.map((row) => ({
         id: row.id,
@@ -516,8 +682,9 @@ async function syncPaperforge(singleId?: string) {
   }
 
   console.log(`\n=== Summary ===`);
-  console.log(`Processed: ${successCount} extracted, ${errorCount} errors`);
-  console.log(`Total entries in index: ${indexEntries.length}`);
+  console.log(`Processed: ${successes.length} extracted, ${failures.length} errors`);
+  console.log(`Newly added to catalog: ${newlyAdded}`);
+  console.log(`Total entries in catalog: ${entriesWithPortraits.length}`);
 
   if (failures.length > 0) {
     console.log(`\n=== Failures ===`);
@@ -528,5 +695,15 @@ async function syncPaperforge(singleId?: string) {
   }
 }
 
-const singleId = process.argv.filter((a) => !a.startsWith("--"))[2];
-syncPaperforge(singleId);
+if (shouldVerifyRemote) {
+  verifyRemoteUploads();
+} else if (shouldVerify) {
+  verifyUploads();
+} else {
+  const singleId = process.argv.filter((a) => !a.startsWith("--"))[2];
+  if (forceUpload && !singleId) {
+    console.error("--force requires a single ID");
+    process.exit(1);
+  }
+  syncPaperforge(singleId);
+}

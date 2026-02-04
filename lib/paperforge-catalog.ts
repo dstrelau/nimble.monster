@@ -778,6 +778,24 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "0165",
   },
   {
+    id: "166",
+    name: "Sleuth",
+    postUrl: "https://www.patreon.com/posts/vtt-master-post-35093024",
+    folder: "0166",
+  },
+  {
+    id: "167",
+    name: "Operative",
+    postUrl: "https://www.patreon.com/posts/vtt-master-post-35093024",
+    folder: "0167",
+  },
+  {
+    id: "168",
+    name: "Spectral Agent",
+    postUrl: "https://www.patreon.com/posts/vtt-master-post-35093024",
+    folder: "0168",
+  },
+  {
     id: "170",
     name: "Half Orc Paladin",
     postUrl: "https://www.patreon.com/posts/paladins-green-37652069",
@@ -1018,6 +1036,18 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "0259",
   },
   {
+    id: "277",
+    name: "Specter",
+    postUrl: "https://www.patreon.com/posts/277-specter-45883453",
+    folder: "0277",
+  },
+  {
+    id: "278",
+    name: "Wraith",
+    postUrl: "https://www.patreon.com/posts/278-wraith-45922597",
+    folder: "0278",
+  },
+  {
     id: "280",
     name: "Charon Ferryman",
     postUrl: "https://www.patreon.com/posts/280-284-charon-46214994",
@@ -1202,6 +1232,12 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     name: "Pirate Crew Member",
     postUrl: "https://www.patreon.com/posts/328-pirate-crew-51634674",
     folder: "0328",
+  },
+  {
+    id: "329",
+    name: "Pirate Captain",
+    postUrl: "https://www.patreon.com/posts/vtt-master-post-35093024",
+    folder: "0329",
   },
   {
     id: "330",
@@ -1784,6 +1820,12 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     name: "Goblin",
     postUrl: "https://www.patreon.com/posts/525-goblin-80067477",
     folder: "0525",
+  },
+  {
+    id: "526",
+    name: "Oni",
+    postUrl: "https://www.patreon.com/posts/526-oni-80431515",
+    folder: "0526",
   },
   {
     id: "527",
@@ -2548,6 +2590,12 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "0754",
   },
   {
+    id: "755",
+    name: "Arcanist",
+    postUrl: "https://www.patreon.com/posts/755-arcanist-139859531",
+    folder: "0755",
+  },
+  {
     id: "758",
     name: "Owlbear",
     postUrl: "https://www.patreon.com/posts/758-owlbear-140095271",
@@ -2558,6 +2606,36 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     name: "Owlbear",
     postUrl: "https://www.patreon.com/posts/759-owlbear-cub-140731939",
     folder: "0759",
+  },
+  {
+    id: "761",
+    name: "Goblin Boss",
+    postUrl: "https://www.patreon.com/posts/vtt-master-post-35093024",
+    folder: "0761",
+  },
+  {
+    id: "762",
+    name: "Goblin Warrior",
+    postUrl: "https://www.patreon.com/posts/vtt-master-post-35093024",
+    folder: "0762",
+  },
+  {
+    id: "763",
+    name: "Goblin Warrior",
+    postUrl: "https://www.patreon.com/posts/vtt-master-post-35093024",
+    folder: "0763",
+  },
+  {
+    id: "764",
+    name: "Goblin Hexer",
+    postUrl: "https://www.patreon.com/posts/vtt-master-post-35093024",
+    folder: "0764",
+  },
+  {
+    id: "765",
+    name: "Goblin Minion",
+    postUrl: "https://www.patreon.com/posts/vtt-master-post-35093024",
+    folder: "0765",
   },
   {
     id: "766",

@@ -6,6 +6,72 @@
 
 @tailwind utilities;
 
+/* Beaufort for LOL - GMG-style header font (parchment theme) */
+@font-face {
+    font-family: beaufort-pro;
+    src: url("/fonts/BeaufortforLOL-Light.ttf");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: beaufort-pro;
+    src: url("/fonts/BeaufortforLOL-LightItalic.ttf");
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: beaufort-pro;
+    src: url("/fonts/BeaufortforLOL-Regular.ttf");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: beaufort-pro;
+    src: url("/fonts/BeaufortforLOL-Italic.ttf");
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: beaufort-pro;
+    src: url("/fonts/BeaufortforLOL-Medium.ttf");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: beaufort-pro;
+    src: url("/fonts/BeaufortforLOL-MediumItalic.ttf");
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: beaufort-pro;
+    src: url("/fonts/BeaufortforLOL-Bold.ttf");
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: beaufort-pro;
+    src: url("/fonts/BeaufortforLOL-BoldItalic.ttf");
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: beaufort-pro;
+    src: url("/fonts/BeaufortforLOL-Heavy.ttf");
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: beaufort-pro;
+    src: url("/fonts/BeaufortforLOL-HeavyItalic.ttf");
+    font-weight: 900;
+    font-style: italic;
+}
+
 @theme {
     --color-success: var(--color-emerald-600);
     --color-success-foreground: var(--color-neutral-900);
@@ -80,10 +146,236 @@
     --ring: var(--color-neutral-700);
 }
 
+@custom-variant parchment (&:where([data-theme=parchment], [data-theme=parchment] *));
+
+[data-theme="parchment"] {
+    --background: #eee6d3;
+    --foreground: #211e1c;
+    --border: #c5bdae;
+
+    --card: #f1e9d8;
+    --card-foreground: var(--foreground);
+    --popover: var(--card);
+    --popover-foreground: var(--foreground);
+
+    --primary: #3d3328;
+    --primary-foreground: #f1e9d8;
+    --accent: #a8a296;
+    --accent-foreground: var(--foreground);
+    --muted: #cac3b6;
+    --muted-foreground: #5e5a54;
+    --destructive: #8b4513;
+    --destructive-foreground: var(--foreground);
+    --secondary: var(--muted);
+
+    --input: #c5bdae;
+    --ring: #878379;
+
+    --color-header: #d8d0be;
+    --color-header-foreground: #211e1c;
+    --color-icon: #5e5a54;
+    --color-icon-border: #878379;
+
+    --notch-size: 8px;
+    --ability-overlay-bg: #d8d2c2;
+
+    /* Apply parchment fonts directly since @theme inline resolves at compile time */
+    body {
+        font-family:
+            var(--font-fira-sans-condensed), var(--font-roboto-sans),
+            ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .font-sans {
+        font-family:
+            var(--font-fira-sans-condensed), var(--font-roboto-sans),
+            ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .font-slab {
+        font-family:
+            beaufort-pro, var(--font-roboto-slab), ui-serif, Georgia, serif;
+    }
+
+    .font-serif {
+        font-family:
+            var(--font-pt-serif), var(--font-roboto-serif), ui-serif, Georgia,
+            serif;
+    }
+
+    .shadow-xs,
+    .shadow-sm,
+    .shadow-md,
+    .shadow-lg,
+    .shadow-xl,
+    .shadow-2xl {
+        /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind v4 utilities */
+        box-shadow: none !important;
+    }
+
+    .drop-shadow-sm,
+    .drop-shadow-md,
+    .drop-shadow-lg,
+    .drop-shadow-xl,
+    .drop-shadow-2xl {
+        /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind v4 utilities */
+        filter: none !important;
+    }
+
+    .rounded-sm,
+    .rounded-md,
+    .rounded-lg,
+    .rounded-xl,
+    .rounded-2xl,
+    .rounded-3xl {
+        /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind v4 utilities */
+        border-radius: 0 !important;
+    }
+
+    /* Notched corner cards - GMG style */
+    /* Note: no clip-path on card itself so content (ability overlays) can extend outside */
+    [data-slot="card"] {
+        --notch: var(--notch-size, 8px);
+        --border-width: 1px;
+        position: relative;
+        border: none;
+        background: transparent;
+    }
+
+    /* Border layer - full notched shape with border color */
+    [data-slot="card"]::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--border);
+        clip-path: polygon(
+            var(--notch) 0,
+            calc(100% - var(--notch)) 0,
+            100% var(--notch),
+            100% calc(100% - var(--notch)),
+            calc(100% - var(--notch)) 100%,
+            var(--notch) 100%,
+            0 calc(100% - var(--notch)),
+            0 var(--notch)
+        );
+        z-index: -2;
+    }
+
+    /* Background layer - inset to reveal border */
+    [data-slot="card"]::after {
+        content: "";
+        position: absolute;
+        inset: var(--border-width);
+        background: var(--card);
+        clip-path: polygon(
+            var(--notch) 0,
+            calc(100% - var(--notch)) 0,
+            100% var(--notch),
+            100% calc(100% - var(--notch)),
+            calc(100% - var(--notch)) 100%,
+            var(--notch) 100%,
+            0 calc(100% - var(--notch)),
+            0 var(--notch)
+        );
+        z-index: -1;
+    }
+
+    /* AbilityOverlay - GMG uses a slightly darker parchment for ability sections */
+    .bg-neutral-100 {
+        background-color: var(--ability-overlay-bg);
+    }
+
+    .text-neutral-800 {
+        color: var(--foreground);
+    }
+
+    /* Size/kind text should be italic (e.g., "5th-level Minion Humanoid") */
+    .font-condensed {
+        font-style: italic;
+    }
+
+    /* Monster names: small caps + italic + bolder like GMG */
+    .small-caps.font-slab {
+        font-style: italic;
+        font-weight: 800;
+    }
+
+    /* Legendary monster names: very bold */
+    .font-slab.text-3xl\/8 {
+        font-weight: 900;
+    }
+
+    /* Stat icons: mid-gray, no outline in parchment theme */
+    .stroke-neutral-300,
+    .stroke-hp {
+        /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind utilities */
+        stroke: none !important;
+    }
+
+    .fill-neutral-200,
+    .fill-hp {
+        /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind utilities */
+        fill: var(--ability-overlay-bg) !important;
+    }
+
+    /* AbilityOverlay - pointed banner edges like GMG, extends outside card */
+    [data-slot="ability-overlay"] {
+        --point: 12px;
+        --border-width: 1px;
+        position: relative;
+        background: transparent;
+        clip-path: polygon(
+            0 50%,
+            var(--point) 0,
+            calc(100% - var(--point)) 0,
+            100% 50%,
+            calc(100% - var(--point)) 100%,
+            var(--point) 100%
+        );
+    }
+
+    /* Border layer for ability overlay */
+    [data-slot="ability-overlay"]::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--border);
+        clip-path: polygon(
+            0 50%,
+            var(--point) 0,
+            calc(100% - var(--point)) 0,
+            100% 50%,
+            calc(100% - var(--point)) 100%,
+            var(--point) 100%
+        );
+        z-index: -2;
+    }
+
+    /* Background layer for ability overlay */
+    [data-slot="ability-overlay"]::after {
+        content: "";
+        position: absolute;
+        inset: var(--border-width);
+        background: var(--ability-overlay-bg);
+        clip-path: polygon(
+            0 50%,
+            var(--point) 0,
+            calc(100% - var(--point)) 0,
+            100% 50%,
+            calc(100% - var(--point)) 100%,
+            var(--point) 100%
+        );
+        z-index: -1;
+    }
+}
+
 @theme inline {
     --font-sans: var(--font-roboto-sans);
     --font-slab: var(--font-roboto-slab);
     --font-serif: var(--font-roboto-serif);
+
+    --font-parchment-sans: var(--font-fira-sans-condensed), var(--font-sans);
+    --font-parchment-serif: var(--font-pt-serif), var(--font-serif);
 
     --color-background: var(--background);
     --color-foreground: var(--foreground);
