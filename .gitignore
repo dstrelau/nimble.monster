@@ -18,7 +18,7 @@ bin/
 dist
 dist-ssr
 node_modules
-tmp/
+tmp
 
 # Editor directories and files
 .env*
@@ -35,8 +35,8 @@ tmp/
 
 **/.claude/settings.local.json
 
-public/game-icons/*
-public/blob-storage/
-public/paperforge/
+public/game-icons
+public/blob-storage
+public/paperforge
 data/paperforge*
 !data/paperforge.csv

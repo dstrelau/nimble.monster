@@ -1,5 +1,5 @@
 "use client";
-import { Anvil, Shuffle } from "lucide-react";
+import { Anvil, ExternalLink, Shuffle } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
@@ -12,6 +12,12 @@ import { PrefixedFormattedText } from "@/components/FormattedText";
 import { Level } from "@/components/Level";
 import { PaperforgeImage } from "@/components/PaperforgeImage";
 import { Card as ShadcnCard } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
 import type { Monster } from "@/lib/services/monsters";
@@ -259,52 +265,35 @@ export const Card = ({
             />
           )}
 
-          <div>
-            {paperforgeEntry && (
-              <div className="flex gap-1 items-center text-center text-sm text-muted-foreground">
-                <Anvil className="size-3 stroke-muted-foreground" />
-                Paper Forge:{" "}
-                <Link
-                  external
-                  href={
-                    paperforgeEntry.postUrl ||
-                    "https://www.patreon.com/c/paperforge"
-                  }
-                >
-                  #{paperforgeEntry.id} {paperforgeEntry?.name}
-                </Link>
-              </div>
-            )}
-            {monster.remixedFrom && (
-              <div className="flex gap-1 items-center text-center text-sm text-muted-foreground">
-                <Shuffle className="size-3 stroke-muted-foreground" />
-                remixed from{" "}
-                <Link
-                  href={getMonsterUrl(monster.remixedFrom)}
-                  className="font-medium"
-                >
-                  {monster.remixedFrom.name}
-                </Link>
-                {monster.creator.discordId !==
-                  monster.remixedFrom.creator.discordId && (
-                  <>
-                    <span> by </span>
-                    <Link
-                      href={getUserUrl(monster.remixedFrom.creator)}
-                      className="font-medium inline-flex items-baseline gap-0.5"
-                    >
-                      <UserAvatar
-                        user={monster.remixedFrom.creator}
-                        size={14}
-                        className="inline"
-                      />
-                      <span>{monster.remixedFrom.creator.displayName}</span>
-                    </Link>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
+          {monster.remixedFrom && (
+            <div className="flex gap-1 items-center text-center text-sm text-muted-foreground">
+              <Shuffle className="size-3 stroke-muted-foreground" />
+              remixed from{" "}
+              <Link
+                href={getMonsterUrl(monster.remixedFrom)}
+                className="font-medium"
+              >
+                {monster.remixedFrom.name}
+              </Link>
+              {monster.creator.discordId !==
+                monster.remixedFrom.creator.discordId && (
+                <>
+                  <span> by </span>
+                  <Link
+                    href={getUserUrl(monster.remixedFrom.creator)}
+                    className="font-medium inline-flex items-baseline gap-0.5"
+                  >
+                    <UserAvatar
+                      user={monster.remixedFrom.creator}
+                      size={14}
+                      className="inline"
+                    />
+                    <span>{monster.remixedFrom.creator.displayName}</span>
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
         </CardContentWithGap>
 
         <CardFooterLayout
@@ -313,6 +302,33 @@ export const Card = ({
           awards={monster.awards}
           hideActions={hideActions}
           actionsSlot={<CardActions monster={monster} />}
+          paperforgeSlot={
+            paperforgeEntry && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <a
+                      href={
+                        paperforgeEntry.postUrl ||
+                        "https://www.patreon.com/c/paperforge"
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <Anvil className="size-4" />
+                    </a>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className="text-sm flex items-baseline gap-1">
+                      Paper Forge: #{paperforgeEntry.id} {paperforgeEntry.name}
+                      <ExternalLink className="size-3" />
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )
+          }
         />
       </ShadcnCard>
     </div>
