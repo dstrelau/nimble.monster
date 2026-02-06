@@ -81,7 +81,7 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
   const attrs = data.attributes;
 
   const speeds = {
-    speed: 0,
+    speed: 6,
     fly: 0,
     swim: 0,
     climb: 0,

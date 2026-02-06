@@ -1316,7 +1316,8 @@
         "kind": "Hill And Field",
         "movement": [
           {
-            "fly": 12
+            "mode": "fly",
+            "speed": 12
           }
         ],
         "abilities": [
@@ -1432,7 +1433,8 @@
         "kind": "Undead",
         "movement": [
           {
-            "fly": 6
+            "mode": "fly",
+            "speed": 6
           }
         ],
         "abilities": [],
@@ -1679,7 +1681,8 @@
         "kind": "Hill And Field",
         "movement": [
           {
-            "fly": 12
+            "mode": "fly",
+            "speed": 12
           }
         ],
         "abilities": [],
@@ -2282,7 +2285,8 @@
         "kind": "Hill And Field",
         "movement": [
           {
-            "burrow": 6
+            "mode": "burrow",
+            "speed": 6
           }
         ],
         "abilities": [
@@ -2365,7 +2369,8 @@
         "kind": "Undead",
         "movement": [
           {
-            "fly": 6
+            "mode": "fly",
+            "speed": 6
           }
         ],
         "abilities": [],
@@ -2522,7 +2527,8 @@
         "kind": "Underground",
         "movement": [
           {
-            "fly": 10
+            "mode": "fly",
+            "speed": 10
           }
         ],
         "abilities": [
@@ -2659,7 +2665,8 @@
         "kind": "Underground",
         "movement": [
           {
-            "burrow": 8
+            "mode": "burrow",
+            "speed": 8
           }
         ],
         "abilities": [
@@ -2700,7 +2707,8 @@
         "kind": "Hill And Field",
         "movement": [
           {
-            "fly": 20
+            "mode": "fly",
+            "speed": 20
           }
         ],
         "abilities": [],
@@ -2782,7 +2790,8 @@
         "kind": "Vampire Lord",
         "movement": [
           {
-            "fly": 8
+            "mode": "fly",
+            "speed": 8
           }
         ],
         "abilities": [
@@ -2886,7 +2895,8 @@
         "kind": "Large Aberration, all TEETH & EYES",
         "movement": [
           {
-            "fly": 6
+            "mode": "fly",
+            "speed": 6
           }
         ],
         "abilities": [
@@ -2935,7 +2945,8 @@
         "kind": "Large Floral Dragon",
         "movement": [
           {
-            "fly": 10
+            "mode": "fly",
+            "speed": 10
           }
         ],
         "abilities": [
@@ -3044,7 +3055,8 @@
         "kind": "Huge Rot Dragon",
         "movement": [
           {
-            "fly": 10
+            "mode": "fly",
+            "speed": 10
           }
         ],
         "abilities": [
@@ -3163,7 +3175,8 @@
         "kind": "Large Grey Drake",
         "movement": [
           {
-            "fly": 8
+            "mode": "fly",
+            "speed": 8
           }
         ],
         "abilities": [
@@ -3310,7 +3323,8 @@
         "kind": "Large Manticore",
         "movement": [
           {
-            "fly": 10
+            "mode": "fly",
+            "speed": 10
           }
         ],
         "abilities": [
@@ -3364,7 +3378,8 @@
         "kind": "World-Ending Cataclysm",
         "movement": [
           {
-            "fly": 12
+            "mode": "fly",
+            "speed": 12
           }
         ],
         "abilities": [
