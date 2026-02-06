@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "honeycomb": {
+      "type": "http",
+      "url": "https://mcp.honeycomb.io/mcp"
+    },
+    "chrome": {
+      "type": "stdio",
+      "command": "pnpx",
+      "args": [
+        "chrome-devtools-mcp@latest"
+      ],
+      "env": {}
+    }
+  }
+}
