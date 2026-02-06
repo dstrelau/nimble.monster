@@ -3,6 +3,16 @@ import { auth } from "@/lib/auth";
 
 export default auth((request) => {
   const { nextUrl, auth: session } = request;
+
+  // Reject POSTs to page routes without Next-Action header (bot noise).
+  if (
+    request.method === "POST" &&
+    !nextUrl.pathname.startsWith("/api/") &&
+    !request.headers.get("next-action")
+  ) {
+    return new Response("Bad Request", { status: 400 });
+  }
+
   const hostname = request.headers.get("host") || "";
 
   // Redirect old domain to new domain
