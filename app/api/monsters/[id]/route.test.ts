@@ -122,6 +122,58 @@ describe("GET /api/monsters/[id]", () => {
       expect(result.data.hp).toBe(10);
       expect(result.data.legendary).toBe(false);
     }
+
+    expect(resource).not.toHaveProperty("relationships");
+  });
+
+  it("should include family relationships when monster has families", async () => {
+    const mockMonster: Monster = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Goblin",
+      level: "1",
+      levelInt: 1,
+      hp: 10,
+      legendary: false,
+      minion: false,
+      armor: "none",
+      size: "small",
+      speed: 6,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      teleport: 0,
+      burrow: 0,
+      visibility: "public",
+      families: [
+        {
+          id: "660e8400-e29b-41d4-a716-446655440001",
+          name: "Goblinoids",
+          abilities: [],
+          creatorId: "user123",
+          creator: fakeCreator,
+        },
+      ],
+      abilities: [],
+      actions: [],
+      actionPreface: "",
+      creator: fakeCreator,
+      createdAt: new Date("2025-01-01"),
+      updatedAt: new Date("2025-01-01"),
+    };
+
+    mockGetPublicMonster.mockResolvedValue(mockMonster);
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters/goblin-abc"
+    );
+    const response = await GET(request, createMockParams("goblin-abc"));
+    const data = await response.json();
+
+    const resource = data.data;
+    expect(resource.relationships.families.data).toHaveLength(1);
+    expect(resource.relationships.families.data[0].type).toBe("families");
+    expect(resource.relationships.families.data[0]).toHaveProperty("id");
+    expect(resource.attributes).not.toHaveProperty("families");
   });
 
   it("should return 404 for non-existent monster", async () => {
@@ -322,5 +374,112 @@ describe("GET /api/monsters/[id]", () => {
     if (result.success) {
       expect(result.data.level).toBe("1/4");
     }
+  });
+
+  it("should include families in included when include=families", async () => {
+    const mockMonster: Monster = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Goblin",
+      level: "1",
+      levelInt: 1,
+      hp: 10,
+      legendary: false,
+      minion: false,
+      armor: "none",
+      size: "small",
+      speed: 6,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      teleport: 0,
+      burrow: 0,
+      visibility: "public",
+      families: [
+        {
+          id: "660e8400-e29b-41d4-a716-446655440001",
+          name: "Goblinoids",
+          abilities: [],
+          creatorId: "user123",
+          creator: fakeCreator,
+        },
+      ],
+      abilities: [],
+      actions: [],
+      actionPreface: "",
+      creator: fakeCreator,
+      createdAt: new Date("2025-01-01"),
+      updatedAt: new Date("2025-01-01"),
+    };
+
+    mockGetPublicMonster.mockResolvedValue(mockMonster);
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters/goblin-abc?include=families"
+    );
+    const response = await GET(request, createMockParams("goblin-abc"));
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.included).toHaveLength(1);
+    expect(data.included[0].type).toBe("families");
+    expect(data.included[0].attributes.name).toBe("Goblinoids");
+  });
+
+  it("should not include families when include is not specified", async () => {
+    const mockMonster: Monster = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Goblin",
+      level: "1",
+      levelInt: 1,
+      hp: 10,
+      legendary: false,
+      minion: false,
+      armor: "none",
+      size: "small",
+      speed: 6,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      teleport: 0,
+      burrow: 0,
+      visibility: "public",
+      families: [
+        {
+          id: "660e8400-e29b-41d4-a716-446655440001",
+          name: "Goblinoids",
+          abilities: [],
+          creatorId: "user123",
+          creator: fakeCreator,
+        },
+      ],
+      abilities: [],
+      actions: [],
+      actionPreface: "",
+      creator: fakeCreator,
+      createdAt: new Date("2025-01-01"),
+      updatedAt: new Date("2025-01-01"),
+    };
+
+    mockGetPublicMonster.mockResolvedValue(mockMonster);
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters/goblin-abc"
+    );
+    const response = await GET(request, createMockParams("goblin-abc"));
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data).not.toHaveProperty("included");
+  });
+
+  it("should reject invalid include parameter", async () => {
+    const request = new Request(
+      "http://localhost:3000/api/monsters/goblin-abc?include=invalid"
+    );
+    const response = await GET(request, createMockParams("goblin-abc"));
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.errors[0].title).toContain("Invalid include parameter");
   });
 });

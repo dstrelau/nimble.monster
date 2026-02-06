@@ -21,6 +21,10 @@ List public monsters with pagination and sorting.
   - `name`, `-name`
   - `createdAt`, `-createdAt`
   - `level`, `-level`
+- `search` (string, optional): Search by name
+- `level` (number, optional): Filter by level
+- `include` (string, optional): Related resources to include. Supports:
+  - `families` - Include family resources referenced by returned monsters
 
 **Response:**
 ```json
@@ -30,9 +34,24 @@ List public monsters with pagination and sorting.
       "type": "monsters",
       "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
       "attributes": { ... },
+      "relationships": {
+        "families": {
+          "data": [
+            { "type": "families", "id": "..." }
+          ]
+        }
+      },
       "links": {
         "self": "/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
       }
+    }
+  ],
+  "included": [
+    {
+      "type": "families",
+      "id": "...",
+      "attributes": { ... },
+      "links": { "self": "/api/families/..." }
     }
   ],
   "links": {
@@ -41,9 +60,17 @@ List public monsters with pagination and sorting.
 }
 ```
 
+The `relationships` field is present only when the monster belongs to one or more
+families. The `included` array is present only when `include=families` is
+specified and at least one family exists.
+
 ### GET /api/monsters/:id
 
 Retrieve a single monster by ID (26-character identifier).
+
+**Query Parameters:**
+- `include` (string, optional): Related resources to include. Supports:
+  - `families` - Include family resources for this monster
 
 **Response (standard monster):**
 ```json
@@ -57,10 +84,13 @@ Retrieve a single monster by ID (26-character identifier).
       "level": 1,
       "size": "small",
       "armor": "none",
+      "kind": "humanoid",
       "movement": [{ "speed": 6 }],
       "abilities": [],
       "actions": [],
+      "actionsInstructions": "",
       "effects": [],
+      "description": "",
       "legendary": false
     },
     "links": {
@@ -82,10 +112,13 @@ Retrieve a single monster by ID (26-character identifier).
       "level": 15,
       "size": "gargantuan",
       "armor": "heavy",
+      "kind": "dragon",
       "movement": [{ "speed": 8 }, { "mode": "fly", "speed": 12 }],
       "abilities": [],
       "actions": [],
+      "actionsInstructions": "",
       "effects": [],
+      "description": "",
       "legendary": true,
       "bloodied": { "description": "..." },
       "lastStand": { "description": "..." },
@@ -100,6 +133,43 @@ Retrieve a single monster by ID (26-character identifier).
 
 The `saves` field contains parsed ability save modifiers. Values are derived from
 the raw save string (e.g., "STR++" becomes `{"str": 2}`, "DEX-" becomes `{"dex": -1}`).
+
+Monsters may also include `paperforgeId` and `paperforgeImageUrl` when a
+Paperforge illustration is associated.
+
+When `include=families` is specified and the monster belongs to families, the
+response includes a `relationships.families` field and an `included` array with
+the full family resources.
+
+### GET /api/families/:id
+
+Retrieve a single family by ID (26-character identifier).
+
+**Response:**
+```json
+{
+  "data": {
+    "type": "families",
+    "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+    "attributes": {
+      "name": "Goblinoids",
+      "description": "A family of goblin-like creatures",
+      "monsterCount": 5
+    },
+    "relationships": {
+      "creator": {
+        "data": {
+          "type": "users",
+          "id": "username"
+        }
+      }
+    },
+    "links": {
+      "self": "/api/families/0psvtrh43w8xm9dfbf5b6nkcq1"
+    }
+  }
+}
+```
 
 ### GET /api/items
 

@@ -2,6 +2,7 @@ import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { addCorsHeaders } from "@/lib/cors";
+import { toJsonApiFamily } from "@/lib/services/families/converters";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
 import { telemetry } from "@/lib/telemetry";
@@ -16,8 +17,36 @@ export const GET = telemetry(
   ) => {
     const { id } = await params;
     const span = trace.getActiveSpan();
+    const { searchParams } = new URL(_request.url);
 
     span?.setAttributes({ "params.id": id });
+
+    const include = searchParams.get("include") || undefined;
+    const includeResources = include
+      ? include.split(",").map((r) => r.trim())
+      : [];
+    const validIncludes = new Set(["families"]);
+    const invalidIncludes = includeResources.filter(
+      (r) => !validIncludes.has(r)
+    );
+
+    if (invalidIncludes.length > 0) {
+      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+      addCorsHeaders(headers);
+      return NextResponse.json(
+        {
+          errors: [
+            {
+              status: "400",
+              title: "Invalid include parameter. Only 'families' is supported.",
+            },
+          ],
+        },
+        { status: 400, headers }
+      );
+    }
+
+    const includeFamilies = includeResources.includes("families");
 
     const uid = deslugify(id);
     if (!uid) {
@@ -59,9 +88,21 @@ export const GET = telemetry(
 
       const data = toJsonApiMonster(monster);
 
+      const response: {
+        data: typeof data;
+        included?: ReturnType<typeof toJsonApiFamily>[];
+      } = { data };
+
+      if (includeFamilies) {
+        const families = monster.families ?? [];
+        if (families.length > 0) {
+          response.included = families.map(toJsonApiFamily);
+        }
+      }
+
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
       addCorsHeaders(headers);
-      return NextResponse.json({ data }, { headers });
+      return NextResponse.json(response, { headers });
     } catch (error) {
       span?.setAttributes({ error: String(error) });
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });

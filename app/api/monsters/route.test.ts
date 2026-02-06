@@ -139,6 +139,61 @@ describe("GET /api/monsters", () => {
       ...resource.attributes,
     });
     expect(result.success).toBe(true);
+
+    expect(resource).not.toHaveProperty("relationships");
+  });
+
+  it("should include family relationships when monster has families", async () => {
+    const mockMonsters = [
+      {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "Goblin",
+        level: "1",
+        levelInt: 1,
+        hp: 10,
+        legendary: false,
+        minion: false,
+        armor: "none",
+        size: "small",
+        speed: 6,
+        fly: 0,
+        swim: 0,
+        climb: 0,
+        teleport: 0,
+        burrow: 0,
+        visibility: "public",
+        families: [
+          {
+            id: "660e8400-e29b-41d4-a716-446655440001",
+            name: "Goblinoids",
+            creatorId: "user123",
+            creator: fakeCreator,
+          },
+        ],
+        abilities: [],
+        actions: [],
+        actionPreface: "",
+        creator: fakeCreator,
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-01"),
+        saves: "",
+      },
+    ];
+
+    mockPaginateMonsters.mockResolvedValue({
+      data: mockMonsters,
+      nextCursor: null,
+    });
+
+    const request = new Request("http://localhost:3000/api/monsters");
+    const response = await GET(request);
+    const data = await response.json();
+
+    const resource = data.data[0];
+    expect(resource.relationships.families.data).toHaveLength(1);
+    expect(resource.relationships.families.data[0].type).toBe("families");
+    expect(resource.relationships.families.data[0]).toHaveProperty("id");
+    expect(resource.attributes).not.toHaveProperty("families");
   });
 
   it("should handle cursor pagination", async () => {
@@ -443,5 +498,201 @@ describe("GET /api/monsters", () => {
       expect(result.data.legendary).toBe(true);
       expect(result.data.hp).toBe(200);
     }
+  });
+
+  it("should include families when include=families is specified", async () => {
+    const mockMonsters = [
+      {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "Goblin",
+        level: "1",
+        levelInt: 1,
+        hp: 10,
+        legendary: false,
+        minion: false,
+        armor: "none",
+        size: "small",
+        speed: 6,
+        fly: 0,
+        swim: 0,
+        climb: 0,
+        teleport: 0,
+        burrow: 0,
+        visibility: "public",
+        families: [
+          {
+            id: "660e8400-e29b-41d4-a716-446655440001",
+            name: "Goblinoids",
+            abilities: [],
+            creatorId: "user123",
+            creator: fakeCreator,
+          },
+        ],
+        abilities: [],
+        actions: [],
+        actionPreface: "",
+        creator: fakeCreator,
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-01"),
+        saves: "",
+      },
+    ];
+
+    mockPaginateMonsters.mockResolvedValue({
+      data: mockMonsters,
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?include=families"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.included).toHaveLength(1);
+    expect(data.included[0].type).toBe("families");
+    expect(data.included[0].attributes.name).toBe("Goblinoids");
+  });
+
+  it("should not include families when include is not specified", async () => {
+    const mockMonsters = [
+      {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "Goblin",
+        level: "1",
+        levelInt: 1,
+        hp: 10,
+        legendary: false,
+        minion: false,
+        armor: "none",
+        size: "small",
+        speed: 6,
+        fly: 0,
+        swim: 0,
+        climb: 0,
+        teleport: 0,
+        burrow: 0,
+        visibility: "public",
+        families: [
+          {
+            id: "660e8400-e29b-41d4-a716-446655440001",
+            name: "Goblinoids",
+            abilities: [],
+            creatorId: "user123",
+            creator: fakeCreator,
+          },
+        ],
+        abilities: [],
+        actions: [],
+        actionPreface: "",
+        creator: fakeCreator,
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-01"),
+        saves: "",
+      },
+    ];
+
+    mockPaginateMonsters.mockResolvedValue({
+      data: mockMonsters,
+      nextCursor: null,
+    });
+
+    const request = new Request("http://localhost:3000/api/monsters");
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data).not.toHaveProperty("included");
+  });
+
+  it("should deduplicate families across monsters in included", async () => {
+    const sharedFamily = {
+      id: "660e8400-e29b-41d4-a716-446655440001",
+      name: "Goblinoids",
+      abilities: [],
+      creatorId: "user123",
+      creator: fakeCreator,
+    };
+
+    const mockMonsters = [
+      {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "Goblin",
+        level: "1",
+        levelInt: 1,
+        hp: 10,
+        legendary: false,
+        minion: false,
+        armor: "none",
+        size: "small",
+        speed: 6,
+        fly: 0,
+        swim: 0,
+        climb: 0,
+        teleport: 0,
+        burrow: 0,
+        visibility: "public",
+        families: [sharedFamily],
+        abilities: [],
+        actions: [],
+        actionPreface: "",
+        creator: fakeCreator,
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-01"),
+        saves: "",
+      },
+      {
+        id: "550e8400-e29b-41d4-a716-446655440099",
+        name: "Hobgoblin",
+        level: "3",
+        levelInt: 3,
+        hp: 30,
+        legendary: false,
+        minion: false,
+        armor: "medium",
+        size: "medium",
+        speed: 6,
+        fly: 0,
+        swim: 0,
+        climb: 0,
+        teleport: 0,
+        burrow: 0,
+        visibility: "public",
+        families: [sharedFamily],
+        abilities: [],
+        actions: [],
+        actionPreface: "",
+        creator: fakeCreator,
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-01"),
+        saves: "",
+      },
+    ];
+
+    mockPaginateMonsters.mockResolvedValue({
+      data: mockMonsters,
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?include=families"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.included).toHaveLength(1);
+  });
+
+  it("should reject invalid include parameter", async () => {
+    const request = new Request(
+      "http://localhost:3000/api/monsters?include=invalid"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.errors[0].title).toContain("Invalid include parameter");
   });
 });

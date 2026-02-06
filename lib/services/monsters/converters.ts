@@ -289,10 +289,25 @@ export const toJsonApiMonster = (m: Monster) => {
   const monsterData = toZodMonster(m);
   const { id, ...attributes } = monsterData;
 
+  const families = m.families ?? [];
+
+  const relationships =
+    families.length > 0
+      ? {
+          families: {
+            data: families.map((f) => ({
+              type: "families",
+              id: uuidToIdentifier(f.id),
+            })),
+          },
+        }
+      : undefined;
+
   return {
     type: "monsters",
     id,
     attributes,
+    ...(relationships && { relationships }),
     links: {
       self: `/api/monsters/${id}`,
     },

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { addCorsHeaders } from "@/lib/cors";
+import { toJsonApiFamily } from "@/lib/services/families/converters";
 import type { CreateMonsterInput } from "@/lib/services/monsters";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
@@ -23,6 +24,7 @@ const querySchema = z.object({
     .default("name"),
   search: z.string().optional(),
   level: z.coerce.number().optional(),
+  include: z.string().optional(),
 });
 
 export const GET = telemetry(async (request: Request) => {
@@ -35,6 +37,7 @@ export const GET = telemetry(async (request: Request) => {
     sort: searchParams.get("sort") || undefined,
     search: searchParams.get("search") || undefined,
     level: searchParams.get("level") || undefined,
+    include: searchParams.get("include") || undefined,
   });
 
   if (!result.success) {
@@ -56,7 +59,31 @@ export const GET = telemetry(async (request: Request) => {
     );
   }
 
-  const { cursor, limit, sort, search, level } = result.data;
+  const { cursor, limit, sort, search, level, include } = result.data;
+
+  const includeResources = include
+    ? include.split(",").map((r) => r.trim())
+    : [];
+  const validIncludes = new Set(["families"]);
+  const invalidIncludes = includeResources.filter((r) => !validIncludes.has(r));
+
+  if (invalidIncludes.length > 0) {
+    const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+    addCorsHeaders(headers);
+    return NextResponse.json(
+      {
+        errors: [
+          {
+            status: "400",
+            title: "Invalid include parameter. Only 'families' is supported.",
+          },
+        ],
+      },
+      { status: 400, headers }
+    );
+  }
+
+  const includeFamilies = includeResources.includes("families");
 
   span?.setAttributes({
     "params.limit": limit,
@@ -82,7 +109,25 @@ export const GET = telemetry(async (request: Request) => {
     "params.has_more": nextCursor !== null,
   });
 
-  const response: { data: typeof data; links?: { next: string } } = { data };
+  const response: {
+    data: typeof data;
+    included?: ReturnType<typeof toJsonApiFamily>[];
+    links?: { next: string };
+  } = { data };
+
+  if (includeFamilies) {
+    const familyMap = new Map<string, ReturnType<typeof toJsonApiFamily>>();
+    for (const monster of monsters) {
+      for (const family of monster.families ?? []) {
+        if (!familyMap.has(family.id)) {
+          familyMap.set(family.id, toJsonApiFamily(family));
+        }
+      }
+    }
+    if (familyMap.size > 0) {
+      response.included = [...familyMap.values()];
+    }
+  }
 
   if (nextCursor) {
     const url = new URL(request.url);
