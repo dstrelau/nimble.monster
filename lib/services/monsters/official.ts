@@ -51,6 +51,32 @@ export async function findOrCreateOfficialFamily(
   return newFamilyId;
 }
 
+function savesObjectToArray(saves: {
+  all?: number;
+  str?: number;
+  dex?: number;
+  int?: number;
+  wil?: number;
+}): string[] {
+  const result: string[] = [];
+  const modifierToString = (n: number) =>
+    n > 0 ? "+".repeat(n) : "-".repeat(-n);
+
+  // If all saves are the same, use ALL format
+  if (saves.all && !saves.str && !saves.dex && !saves.int && !saves.wil) {
+    result.push(`ALL${modifierToString(saves.all)}`);
+    return result;
+  }
+
+  // Otherwise list individual saves
+  if (saves.str) result.push(`STR${modifierToString(saves.str)}`);
+  if (saves.dex) result.push(`DEX${modifierToString(saves.dex)}`);
+  if (saves.int) result.push(`INT${modifierToString(saves.int)}`);
+  if (saves.wil) result.push(`WIL${modifierToString(saves.wil)}`);
+
+  return result;
+}
+
 export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
   const attrs = data.attributes;
 
@@ -148,8 +174,9 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
     actions,
     actionPreface: attrs.actionsInstructions || "",
     moreInfo: attrs.description,
-    bloodied: attrs.bloodied?.description,
-    lastStand: attrs.lastStand?.description,
+    bloodied: attrs.bloodied,
+    lastStand: attrs.lastStand,
+    saves: attrs.saves ? savesObjectToArray(attrs.saves) : undefined,
   };
 }
 

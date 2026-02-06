@@ -33,8 +33,15 @@ export interface JSONAPIMonster {
     description?: string;
     legendary: boolean;
     minion?: boolean;
-    bloodied?: { description?: string };
-    lastStand?: { description?: string };
+    bloodied?: string;
+    lastStand?: string;
+    saves?: {
+      all?: number;
+      str?: number;
+      dex?: number;
+      int?: number;
+      wil?: number;
+    };
     paperforgeId?: string;
     paperforgeImageUrl?: string;
   };
@@ -133,8 +140,8 @@ function parseMonster(data: JSONAPIMonster): Monster {
     actions,
     actionPreface: attrs.actionsInstructions || "",
     moreInfo: attrs.description,
-    bloodied: attrs.bloodied?.description,
-    lastStand: attrs.lastStand?.description,
+    bloodied: attrs.bloodied,
+    lastStand: attrs.lastStand,
     families: [],
     creator: {
       id: "",
