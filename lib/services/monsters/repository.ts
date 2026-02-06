@@ -606,6 +606,38 @@ export const findMonstersByIds = async (ids: string[]): Promise<Monster[]> => {
     .map(toMonsterFromFullData);
 };
 
+const OFFICIAL_USER_ID = "00000000-0000-0000-0000-000000000000";
+
+export const findOfficialMonstersByNames = async (
+  names: string[]
+): Promise<Map<string, Monster>> => {
+  if (names.length === 0) return new Map();
+
+  const db = await getDatabase();
+
+  const monsterIdRows = await db
+    .select({ id: monsters.id, name: monsters.name })
+    .from(monsters)
+    .where(
+      and(eq(monsters.userId, OFFICIAL_USER_ID), inArray(monsters.name, names))
+    );
+
+  if (monsterIdRows.length === 0) return new Map();
+
+  const monsterIds = monsterIdRows.map((r) => r.id);
+  const monsterDataMap = await loadMonsterFullData(db, monsterIds);
+
+  const result = new Map<string, Monster>();
+  for (const row of monsterIdRows) {
+    const data = monsterDataMap.get(row.id);
+    if (data) {
+      result.set(row.name, toMonsterFromFullData(data));
+    }
+  }
+
+  return result;
+};
+
 export const findPublicMonsterById = async (
   id: string
 ): Promise<Monster | null> => {
@@ -1028,8 +1060,6 @@ export const upsertOfficialMonster = async (
     paperforgeId,
     remixedFromId,
   } = input;
-
-  const OFFICIAL_USER_ID = "00000000-0000-0000-0000-000000000000";
 
   const existingMonster = await db
     .select({ id: monsters.id })

@@ -114,10 +114,13 @@ async function uploadAllToTigris(
   let totalSkipped = 0;
   let totalFailed = 0;
 
-  const batchResults = await processInBatches(entries, async ({ folder, outputDir }) => {
-    const result = await uploadToTigris(outputDir, folder, force);
-    return { folder, ...result };
-  });
+  const batchResults = await processInBatches(
+    entries,
+    async ({ folder, outputDir }) => {
+      const result = await uploadToTigris(outputDir, folder, force);
+      return { folder, ...result };
+    }
+  );
 
   for (const { success, uploaded, skipped } of batchResults) {
     if (success) {
@@ -128,7 +131,11 @@ async function uploadAllToTigris(
     }
   }
 
-  return { uploaded: totalUploaded, skipped: totalSkipped, failed: totalFailed };
+  return {
+    uploaded: totalUploaded,
+    skipped: totalSkipped,
+    failed: totalFailed,
+  };
 }
 
 const shouldUpload = process.argv.includes("--upload");
@@ -145,7 +152,8 @@ interface CatalogEntry {
 function parseCatalog(): CatalogEntry[] {
   const content = fs.readFileSync(INDEX_PATH, "utf-8");
   const entries: CatalogEntry[] = [];
-  const regex = /\{\s*id:\s*"(\d+)",\s*name:\s*"([^"]+)",[^}]*folder:\s*"(\d+)"/g;
+  const regex =
+    /\{\s*id:\s*"(\d+)",\s*name:\s*"([^"]+)",[^}]*folder:\s*"(\d+)"/g;
   let match;
   while ((match = regex.exec(content)) !== null) {
     entries.push({ id: match[1], name: match[2], folder: match[3] });
@@ -155,7 +163,10 @@ function parseCatalog(): CatalogEntry[] {
 
 type VerifyResult = "match" | "mismatch" | "missing-remote" | "missing-local";
 
-async function verifySizeContent(folder: string, size: number): Promise<VerifyResult> {
+async function verifySizeContent(
+  folder: string,
+  size: number
+): Promise<VerifyResult> {
   const key = `paperforge/${folder}/${size}.png`;
   const localPath = path.join(OUTPUT_DIR, folder, `${size}.png`);
 
@@ -167,7 +178,9 @@ async function verifySizeContent(folder: string, size: number): Promise<VerifyRe
   const localMd5 = createHash("md5").update(localBuffer).digest("hex");
 
   try {
-    const head = await s3.send(new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: key }));
+    const head = await s3.send(
+      new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: key })
+    );
     const remoteEtag = head.ETag?.replace(/"/g, "");
     return localMd5 === remoteEtag ? "match" : "mismatch";
   } catch {
@@ -184,13 +197,22 @@ interface VerifyEntryResult {
 
 async function verifyEntry(entry: CatalogEntry): Promise<VerifyEntryResult> {
   const results = await Promise.all(
-    IMAGE_SIZES.map(async (size) => ({ size, result: await verifySizeContent(entry.folder, size) }))
+    IMAGE_SIZES.map(async (size) => ({
+      size,
+      result: await verifySizeContent(entry.folder, size),
+    }))
   );
   return {
     entry,
-    mismatches: results.filter((r) => r.result === "mismatch").map((r) => r.size),
-    missingRemote: results.filter((r) => r.result === "missing-remote").map((r) => r.size),
-    missingLocal: results.filter((r) => r.result === "missing-local").map((r) => r.size),
+    mismatches: results
+      .filter((r) => r.result === "mismatch")
+      .map((r) => r.size),
+    missingRemote: results
+      .filter((r) => r.result === "missing-remote")
+      .map((r) => r.size),
+    missingLocal: results
+      .filter((r) => r.result === "missing-local")
+      .map((r) => r.size),
   };
 }
 
@@ -201,7 +223,9 @@ async function verifyUploads() {
   const results = await processInBatches(entries, verifyEntry);
 
   const hasIssue = (r: VerifyEntryResult) =>
-    r.mismatches.length > 0 || r.missingRemote.length > 0 || r.missingLocal.length > 0;
+    r.mismatches.length > 0 ||
+    r.missingRemote.length > 0 ||
+    r.missingLocal.length > 0;
   const failures = results.filter(hasIssue);
 
   if (failures.length === 0) {
@@ -212,9 +236,12 @@ async function verifyUploads() {
   console.log(`\n=== Verification Failures ===`);
   for (const { entry, mismatches, missingRemote, missingLocal } of failures) {
     const issues: string[] = [];
-    if (mismatches.length > 0) issues.push(`mismatch: ${mismatches.join(", ")}`);
-    if (missingRemote.length > 0) issues.push(`missing remote: ${missingRemote.join(", ")}`);
-    if (missingLocal.length > 0) issues.push(`missing local: ${missingLocal.join(", ")}`);
+    if (mismatches.length > 0)
+      issues.push(`mismatch: ${mismatches.join(", ")}`);
+    if (missingRemote.length > 0)
+      issues.push(`missing remote: ${missingRemote.join(", ")}`);
+    if (missingLocal.length > 0)
+      issues.push(`missing local: ${missingLocal.join(", ")}`);
     console.log(`  #${entry.id} ${entry.name}: ${issues.join("; ")}`);
   }
   console.log(`\n${failures.length} entries with issues.`);
@@ -237,11 +264,19 @@ async function checkSizeExists(folder: string, size: number): Promise<boolean> {
   }
 }
 
-async function verifyEntryRemote(entry: CatalogEntry): Promise<{ entry: CatalogEntry; missing: number[] }> {
+async function verifyEntryRemote(
+  entry: CatalogEntry
+): Promise<{ entry: CatalogEntry; missing: number[] }> {
   const results = await Promise.all(
-    IMAGE_SIZES.map(async (size) => ({ size, exists: await checkSizeExists(entry.folder, size) }))
+    IMAGE_SIZES.map(async (size) => ({
+      size,
+      exists: await checkSizeExists(entry.folder, size),
+    }))
   );
-  return { entry, missing: results.filter((r) => !r.exists).map((r) => r.size) };
+  return {
+    entry,
+    missing: results.filter((r) => !r.exists).map((r) => r.size),
+  };
 }
 
 async function verifyRemoteUploads() {
@@ -260,7 +295,9 @@ async function verifyRemoteUploads() {
 
   console.log(`\n=== Missing Images ===`);
   for (const { entry, missing } of failures) {
-    console.log(`  #${entry.id} ${entry.name}: missing sizes ${missing.join(", ")}`);
+    console.log(
+      `  #${entry.id} ${entry.name}: missing sizes ${missing.join(", ")}`
+    );
   }
   console.log(`\n${failures.length} entries with missing images.`);
   process.exit(1);
@@ -277,7 +314,15 @@ interface CSVRow {
 type ProcessResult =
   | { status: "skipped" }
   | { status: "existing" }
-  | { status: "success"; id: string; name: string; postUrl: string; folder: string; outputDir: string; csvUpdate?: string }
+  | {
+      status: "success";
+      id: string;
+      name: string;
+      postUrl: string;
+      folder: string;
+      outputDir: string;
+      csvUpdate?: string;
+    }
   | { status: "error"; id: string; name: string; reason: string };
 
 function escapeShellArg(arg: string): string {
@@ -569,7 +614,10 @@ async function syncPaperforge(singleId?: string) {
 
     if (!fs.existsSync(zipPath) || forceUpload) {
       if (row.tokenDownloadUrl) {
-        const downloaded = downloadZipFile(row.tokenDownloadUrl, PAPERFORGE_DIR);
+        const downloaded = downloadZipFile(
+          row.tokenDownloadUrl,
+          PAPERFORGE_DIR
+        );
         if (!downloaded || !fs.existsSync(zipPath)) {
           return {
             status: "error",
@@ -610,8 +658,14 @@ async function syncPaperforge(singleId?: string) {
 
   const results = await processInBatches(completeRows, processRow);
 
-  const successes = results.filter((r) => r.status === "success") as Extract<ProcessResult, { status: "success" }>[];
-  const failures = results.filter((r) => r.status === "error") as Extract<ProcessResult, { status: "error" }>[];
+  const successes = results.filter((r) => r.status === "success") as Extract<
+    ProcessResult,
+    { status: "success" }
+  >[];
+  const failures = results.filter((r) => r.status === "error") as Extract<
+    ProcessResult,
+    { status: "error" }
+  >[];
 
   for (const s of successes) {
     console.log(`✓ #${s.id} ${s.name}`);
@@ -624,7 +678,11 @@ async function syncPaperforge(singleId?: string) {
     if (row) row.tokenPng = update.csvUpdate!;
   }
 
-  const indexEntries = successes.map((s) => ({ id: s.id, name: s.name, postUrl: s.postUrl }));
+  const indexEntries = successes.map((s) => ({
+    id: s.id,
+    name: s.name,
+    postUrl: s.postUrl,
+  }));
 
   // Generate index from all entries that have portraits in public/
   const allCompleteRows = rows.filter(
@@ -645,11 +703,21 @@ async function syncPaperforge(singleId?: string) {
       : entriesWithPortraits;
     const toUpload = entriesToUpload.map((row) => {
       const folderId = row.id.padStart(4, "0");
-      return { folder: folderId, outputDir: path.join(OUTPUT_DIR, folderId), id: row.id, name: row.name };
+      return {
+        folder: folderId,
+        outputDir: path.join(OUTPUT_DIR, folderId),
+        id: row.id,
+        name: row.name,
+      };
     });
     console.log(`\nUploading ${toUpload.length} entries to Tigris...`);
-    const { uploaded, skipped, failed } = await uploadAllToTigris(toUpload, forceUpload);
-    console.log(`Uploaded: ${uploaded} new, ${skipped} skipped, ${failed} failed`);
+    const { uploaded, skipped, failed } = await uploadAllToTigris(
+      toUpload,
+      forceUpload
+    );
+    console.log(
+      `Uploaded: ${uploaded} new, ${skipped} skipped, ${failed} failed`
+    );
   }
 
   if (indexEntries.length > 0 || singleId) {
@@ -682,7 +750,9 @@ async function syncPaperforge(singleId?: string) {
   }
 
   console.log(`\n=== Summary ===`);
-  console.log(`Processed: ${successes.length} extracted, ${failures.length} errors`);
+  console.log(
+    `Processed: ${successes.length} extracted, ${failures.length} errors`
+  );
   console.log(`Newly added to catalog: ${newlyAdded}`);
   console.log(`Total entries in catalog: ${entriesWithPortraits.length}`);
 

@@ -1,18 +1,19 @@
 import { notFound } from "next/navigation";
-import {
-  cancelOfficialMonstersUploadAction,
-  commitOfficialMonstersAction,
-} from "@/app/admin/actions";
-import { Button } from "@/components/ui/button";
 import type { JSONAPIFamily, JSONAPIMonster } from "@/lib/api/monsters";
 import { isAdmin } from "@/lib/auth";
+import {
+  compareMonsters,
+  computeDiffCounts,
+  type MonsterWithDiff,
+} from "@/lib/services/monsters/diff";
 import {
   type OfficialMonstersSource,
   parseJSONAPIMonster,
 } from "@/lib/services/monsters/official";
 import { readPreviewSession } from "@/lib/services/monsters/preview-session";
+import { findOfficialMonstersByNames } from "@/lib/services/monsters/repository";
 import type { Monster } from "@/lib/services/monsters/types";
-import { FamilySection } from "./FamilySection";
+import { PreviewContent } from "./PreviewContent";
 
 interface PageProps {
   searchParams: Promise<{ session?: string }>;
@@ -55,8 +56,12 @@ export default async function PreviewMonstersPage({ searchParams }: PageProps) {
     });
   }
 
-  // Group monsters by family
-  const monstersByFamily = new Map<string | null, Monster[]>();
+  // Extract all monster names and fetch existing official monsters
+  const monsterNames = monstersData.map((data) => data.attributes.name);
+  const existingMonstersMap = await findOfficialMonstersByNames(monsterNames);
+
+  // Group monsters by family with diff status
+  const monstersByFamily = new Map<string | null, MonsterWithDiff[]>();
 
   for (const data of monstersData) {
     const input = parseJSONAPIMonster(data);
@@ -101,7 +106,7 @@ export default async function PreviewMonstersPage({ searchParams }: PageProps) {
       paperforgeId: input.paperforgeId || undefined,
       createdAt: new Date(),
       isOfficial: true,
-      saves: "",
+      saves: input.saves?.join(" ") ?? "",
       bloodied: input.bloodied,
       lastStand: input.lastStand,
       speed: input.speed,
@@ -137,8 +142,13 @@ export default async function PreviewMonstersPage({ searchParams }: PageProps) {
         : undefined,
     };
 
+    const existingMonster = existingMonstersMap.get(monster.name) || null;
+    const status = compareMonsters(monster, existingMonster);
+
+    const monsterWithDiff: MonsterWithDiff = { monster, status };
+
     const existing = monstersByFamily.get(familyRefId) || [];
-    existing.push(monster);
+    existing.push(monsterWithDiff);
     monstersByFamily.set(familyRefId, existing);
   }
 
@@ -151,54 +161,23 @@ export default async function PreviewMonstersPage({ searchParams }: PageProps) {
     return nameA.localeCompare(nameB);
   });
 
+  // Compute diff counts
+  const allMonstersWithDiff = Array.from(monstersByFamily.values()).flat();
+  const diffCounts = computeDiffCounts(allMonstersWithDiff);
+
   const totalMonsters = monstersData.length;
   const totalFamilies = familiesMap.size;
 
   return (
-    <div className="py-8 space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Preview Official Monsters</h1>
-          <p className="text-muted-foreground">
-            {totalMonsters} monster{totalMonsters !== 1 ? "s" : ""} and{" "}
-            {totalFamilies} famil{totalFamilies !== 1 ? "ies" : "y"} ready to
-            import
-            {source && (
-              <>
-                {" "}
-                from <span className="font-medium">{source.name}</span>
-              </>
-            )}
-          </p>
-        </div>
-        <div className="flex gap-4">
-          <form
-            action={cancelOfficialMonstersUploadAction.bind(null, sessionKey)}
-          >
-            <Button type="submit" variant="destructive">
-              Cancel
-            </Button>
-          </form>
-          <form action={commitOfficialMonstersAction.bind(null, sessionKey)}>
-            <Button type="submit">Approve All</Button>
-          </form>
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        {sortedFamilyIds.map((familyId) => {
-          const monsters = monstersByFamily.get(familyId) || [];
-          const family = familyId ? familyInfoMap.get(familyId) : null;
-
-          return (
-            <FamilySection
-              key={familyId || "no-family"}
-              family={family || null}
-              monsters={monsters}
-            />
-          );
-        })}
-      </div>
-    </div>
+    <PreviewContent
+      sessionKey={sessionKey}
+      sourceName={source?.name}
+      totalMonsters={totalMonsters}
+      totalFamilies={totalFamilies}
+      sortedFamilyIds={sortedFamilyIds}
+      monstersByFamily={monstersByFamily}
+      familyInfoMap={familyInfoMap}
+      diffCounts={diffCounts}
+    />
   );
 }
