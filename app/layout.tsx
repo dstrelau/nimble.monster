@@ -10,6 +10,7 @@ import { ConditionalFooter } from "@/app/ui/ConditionalFooter";
 import { ConditionalHeader } from "@/app/ui/ConditionalHeader";
 import { ConditionalMain } from "@/app/ui/ConditionalMain";
 import { FreeBanner } from "@/app/ui/FreeBanner";
+import { StaleDeploymentBanner } from "@/components/StaleDeploymentBanner";
 import { auth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
@@ -69,6 +70,7 @@ export default async function RootLayout({
           <FreeBanner />
           <ConditionalMain>{children}</ConditionalMain>
           <ConditionalFooter />
+          <StaleDeploymentBanner />
         </Providers>
       </body>
     </html>
