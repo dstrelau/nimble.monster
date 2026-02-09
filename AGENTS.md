@@ -1,10 +1,10 @@
 # Build Commands
 
-- `pnpm run check` - Lint and type-check (dev-safe, use this during development)
+- `make check` - Lint and type-check (dev-safe, use this during development)
   - You must run this after making changes to ensure there are no type errors or lint errors.
-- `pnpm run lint` - Biome check (linting, formatting, import sorting)
-  - `--fix` can be added to automatically fix many issues
-- `pnpm run type-check` - TypeScript check only
+- `make lint` - Biome check (linting, formatting, import sorting)
+- `make type-check` - TypeScript check only
+- `make setup` - Install deps, set up DB, sync icons
 - `pnpm run build` - Production build (breaks dev server. Only run when asked. Always run `rm -rf .next` after.)
 - Assume the dev server is already running on localhost:3000 and can be accessed via playwright.
   - Do not ever run `pnpm run dev`
@@ -40,7 +40,7 @@
 
 # Tests
 
-- `pnpm run test` to run tests.
+- `pnpm run test` to run tests (or `pnpm run test:run` for a single non-watch run).
 - When adding new functionality, make sure you add tests.
 - Use @testing-library/react and vitest.
 - Make sure to add cleanup after each test whenever necessary.
