@@ -17,6 +17,11 @@ const collectionSchema = z.object({
   description: z.string().optional(),
   monsterIds: z.string().array(),
   itemIds: z.string().array().optional(),
+  companionIds: z.string().array().optional(),
+  ancestryIds: z.string().array().optional(),
+  backgroundIds: z.string().array().optional(),
+  subclassIds: z.string().array().optional(),
+  spellSchoolIds: z.string().array().optional(),
 });
 
 export type CollectionFormData = z.infer<typeof collectionSchema>;
@@ -35,6 +40,15 @@ export async function updateCollection(
     description: formData.get("description") || "",
     monsterIds: JSON.parse(formData.get("monsterIds")?.toString() || "[]"),
     itemIds: JSON.parse(formData.get("itemIds")?.toString() || "[]"),
+    companionIds: JSON.parse(formData.get("companionIds")?.toString() || "[]"),
+    ancestryIds: JSON.parse(formData.get("ancestryIds")?.toString() || "[]"),
+    backgroundIds: JSON.parse(
+      formData.get("backgroundIds")?.toString() || "[]"
+    ),
+    subclassIds: JSON.parse(formData.get("subclassIds")?.toString() || "[]"),
+    spellSchoolIds: JSON.parse(
+      formData.get("spellSchoolIds")?.toString() || "[]"
+    ),
   });
 
   // Use the new db function to update the collection
@@ -46,6 +60,11 @@ export async function updateCollection(
     discordId: session.user.discordId,
     monsterIds: parsed.monsterIds,
     itemIds: parsed.itemIds,
+    companionIds: parsed.companionIds,
+    ancestryIds: parsed.ancestryIds,
+    backgroundIds: parsed.backgroundIds,
+    subclassIds: parsed.subclassIds,
+    spellSchoolIds: parsed.spellSchoolIds,
   });
 
   if (!updatedCollection) throw new Error("Failed to update collection");

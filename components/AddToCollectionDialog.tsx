@@ -4,9 +4,13 @@ import { CopyPlus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
+  addAncestryToCollection,
+  addBackgroundToCollection,
+  addCompanionToCollection,
   addItemToCollection,
   addMonsterToCollection,
   addSpellSchoolToCollection,
+  addSubclassToCollection,
   listOwnCollections,
 } from "@/app/actions/collection";
 import { Button } from "@/components/ui/button";
@@ -39,7 +43,11 @@ interface AddToCollectionForm {
 type AddToCollectionDialogProps =
   | { type: "monster"; monsterId: string }
   | { type: "item"; itemId: string }
-  | { type: "spellSchool"; spellSchoolId: string };
+  | { type: "spellSchool"; spellSchoolId: string }
+  | { type: "companion"; companionId: string }
+  | { type: "ancestry"; ancestryId: string }
+  | { type: "background"; backgroundId: string }
+  | { type: "subclass"; subclassId: string };
 
 export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
   const [open, setOpen] = useState(false);
@@ -61,31 +69,65 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
     (c) => c.id === selectedCollectionId
   );
 
-  const isAlreadyInCollection =
-    props.type === "monster"
-      ? selectedCollection?.monsters.find((m) => m.id === props.monsterId) !==
-        undefined
-      : props.type === "item"
-        ? selectedCollection?.items.find((i) => i.id === props.itemId) !==
-          undefined
-        : selectedCollection?.spellSchools.find(
-            (s) => s.id === props.spellSchoolId
-          ) !== undefined;
+  const isAlreadyInCollection = (() => {
+    if (!selectedCollection) return false;
+    switch (props.type) {
+      case "monster":
+        return selectedCollection.monsters.some(
+          (m) => m.id === props.monsterId
+        );
+      case "item":
+        return selectedCollection.items.some((i) => i.id === props.itemId);
+      case "spellSchool":
+        return selectedCollection.spellSchools.some(
+          (s) => s.id === props.spellSchoolId
+        );
+      case "companion":
+        return selectedCollection.companions.some(
+          (c) => c.id === props.companionId
+        );
+      case "ancestry":
+        return selectedCollection.ancestries.some(
+          (a) => a.id === props.ancestryId
+        );
+      case "background":
+        return selectedCollection.backgrounds.some(
+          (b) => b.id === props.backgroundId
+        );
+      case "subclass":
+        return selectedCollection.subclasses.some(
+          (s) => s.id === props.subclassId
+        );
+    }
+  })();
 
   const mutation = useMutation({
     mutationFn: async (data: AddToCollectionForm) => {
       const formData = new FormData();
       formData.append("collectionId", data.collectionId);
 
-      if (props.type === "monster") {
-        formData.append("monsterId", props.monsterId);
-        return addMonsterToCollection(formData);
-      } else if (props.type === "item") {
-        formData.append("itemId", props.itemId);
-        return addItemToCollection(formData);
-      } else {
-        formData.append("spellSchoolId", props.spellSchoolId);
-        return addSpellSchoolToCollection(formData);
+      switch (props.type) {
+        case "monster":
+          formData.append("monsterId", props.monsterId);
+          return addMonsterToCollection(formData);
+        case "item":
+          formData.append("itemId", props.itemId);
+          return addItemToCollection(formData);
+        case "spellSchool":
+          formData.append("spellSchoolId", props.spellSchoolId);
+          return addSpellSchoolToCollection(formData);
+        case "companion":
+          formData.append("companionId", props.companionId);
+          return addCompanionToCollection(formData);
+        case "ancestry":
+          formData.append("ancestryId", props.ancestryId);
+          return addAncestryToCollection(formData);
+        case "background":
+          formData.append("backgroundId", props.backgroundId);
+          return addBackgroundToCollection(formData);
+        case "subclass":
+          formData.append("subclassId", props.subclassId);
+          return addSubclassToCollection(formData);
       }
     },
     onSuccess: () => {
@@ -101,12 +143,16 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
     mutation.mutate(data);
   };
 
-  const entityType =
-    props.type === "monster"
-      ? "monster"
-      : props.type === "item"
-        ? "item"
-        : "spell school";
+  const entityType: Record<AddToCollectionDialogProps["type"], string> = {
+    monster: "monster",
+    item: "item",
+    spellSchool: "spell school",
+    companion: "companion",
+    ancestry: "ancestry",
+    background: "background",
+    subclass: "subclass",
+  };
+  const entityLabel = entityType[props.type];
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -148,7 +194,7 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
             />
             {selectedCollectionId && isAlreadyInCollection && (
               <div className="text-warning text-sm">
-                This {entityType} is already in the selected collection
+                This {entityLabel} is already in the selected collection
               </div>
             )}
             <div className="flex justify-end">

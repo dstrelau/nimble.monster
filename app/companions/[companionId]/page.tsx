@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/companion/Card";
+import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { CompanionDetailActions } from "@/components/CompanionDetailActions";
 import { auth } from "@/lib/auth";
 import {
@@ -96,7 +97,10 @@ export default async function CompanionPage({
 
   return (
     <div>
-      <div className="flex justify-end items-start mb-6">
+      <div className="flex justify-end items-start gap-2 mb-6">
+        {session?.user && (
+          <AddToCollectionDialog type="companion" companionId={companion.id} />
+        )}
         {isOwner && <CompanionDetailActions companion={companion} />}
       </div>
       <div className="max-w-3xl mx-auto">

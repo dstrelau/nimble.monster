@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/background/Card";
+import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { BackgroundDetailActions } from "@/components/BackgroundDetailActions";
 import { auth } from "@/lib/auth";
 import { findBackground } from "@/lib/services/backgrounds";
@@ -71,6 +72,12 @@ export default async function BackgroundPage({
   return (
     <div>
       <div className="flex justify-end items-start gap-2 mb-6">
+        {session?.user && (
+          <AddToCollectionDialog
+            type="background"
+            backgroundId={background.id}
+          />
+        )}
         {isOwner && <BackgroundDetailActions background={background} />}
       </div>
       <div className="mx-auto flex flex-col items-center gap-12 max-w-md">

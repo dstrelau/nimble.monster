@@ -592,3 +592,18 @@ export const findSubclassWithCreatorDiscordId = async (
 
   return data ? toSubclass(data) : null;
 };
+
+export const findSubclassesByIds = async (
+  ids: string[]
+): Promise<Subclass[]> => {
+  const validIds = ids.filter(isValidUUID);
+  if (validIds.length === 0) return [];
+
+  const db = getDatabase();
+  const dataMap = await loadSubclassFullData(db, validIds);
+
+  return validIds
+    .map((id) => dataMap.get(id))
+    .filter((d): d is SubclassFullData => d !== undefined)
+    .map(toSubclass);
+};

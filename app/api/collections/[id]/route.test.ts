@@ -61,6 +61,10 @@ describe("GET /api/collections/[id]", () => {
       monsters: [],
       items: [],
       itemCount: 0,
+      companions: [],
+      ancestries: [],
+      backgrounds: [],
+      subclasses: [],
       spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
@@ -151,6 +155,10 @@ describe("GET /api/collections/[id]", () => {
       ],
       items: [],
       itemCount: 0,
+      companions: [],
+      ancestries: [],
+      backgrounds: [],
+      subclasses: [],
       spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
@@ -216,6 +224,10 @@ describe("GET /api/collections/[id]", () => {
       ],
       items: [],
       itemCount: 0,
+      companions: [],
+      ancestries: [],
+      backgrounds: [],
+      subclasses: [],
       spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
@@ -258,6 +270,10 @@ describe("GET /api/collections/[id]", () => {
         },
       ],
       itemCount: 1,
+      companions: [],
+      ancestries: [],
+      backgrounds: [],
+      subclasses: [],
       spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
@@ -336,6 +352,10 @@ describe("GET /api/collections/[id]", () => {
         },
       ],
       itemCount: 1,
+      companions: [],
+      ancestries: [],
+      backgrounds: [],
+      subclasses: [],
       spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
@@ -389,6 +409,10 @@ describe("GET /api/collections/[id]", () => {
       monsters: [],
       items: [],
       itemCount: 0,
+      companions: [],
+      ancestries: [],
+      backgrounds: [],
+      subclasses: [],
       spellSchools: [],
     };
 

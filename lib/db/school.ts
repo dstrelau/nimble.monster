@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray, like } from "drizzle-orm";
 import type {
   Award,
   Source,
@@ -237,6 +237,47 @@ export const listSpellSchoolMinis = async (): Promise<SpellSchoolMini[]> => {
     .from(spellSchools)
     .where(eq(spellSchools.visibility, "public"))
     .orderBy(asc(spellSchools.name));
+
+  return rows.map(toSpellSchoolMini);
+};
+
+export const searchPublicSpellSchools = async ({
+  searchTerm,
+  creatorId,
+  limit = 50,
+}: {
+  searchTerm?: string;
+  creatorId?: string;
+  limit?: number;
+}): Promise<SpellSchoolMini[]> => {
+  const db = getDatabase();
+
+  const conditions: ReturnType<typeof eq>[] = [
+    eq(spellSchools.visibility, "public"),
+  ];
+
+  if (creatorId) {
+    const userResult = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.discordId, creatorId))
+      .limit(1);
+
+    if (userResult.length > 0) {
+      conditions.push(eq(spellSchools.userId, userResult[0].id));
+    }
+  }
+
+  if (searchTerm) {
+    conditions.push(like(spellSchools.name, `%${searchTerm}%`));
+  }
+
+  const rows = await db
+    .select()
+    .from(spellSchools)
+    .where(and(...conditions))
+    .orderBy(asc(spellSchools.name))
+    .limit(limit);
 
   return rows.map(toSpellSchoolMini);
 };

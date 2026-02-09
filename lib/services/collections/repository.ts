@@ -392,6 +392,10 @@ export const listPublicCollections = async ({
         .map(toItemMiniFromRow)
         .sort((a, b) => a.name.localeCompare(b.name)),
       itemCount: collectionItems.length,
+      companions: [],
+      ancestries: [],
+      backgrounds: [],
+      subclasses: [],
       spellSchools: [],
     };
   });
@@ -541,6 +545,10 @@ export const searchPublicCollections = async ({
           .map(toItemMiniFromRow)
           .sort((a, b) => a.name.localeCompare(b.name)),
         itemCount: collectionItems.length,
+        companions: [],
+        ancestries: [],
+        backgrounds: [],
+        subclasses: [],
         spellSchools: [],
       };
     });
@@ -752,6 +760,10 @@ export const findPublicCollectionById = async (
     monsters: monstersData.sort((a, b) => a.name.localeCompare(b.name)),
     items: itemsData.sort((a, b) => a.name.localeCompare(b.name)),
     itemCount: itemsData.length,
+    companions: [],
+    ancestries: [],
+    backgrounds: [],
+    subclasses: [],
     spellSchools: [],
   };
 };

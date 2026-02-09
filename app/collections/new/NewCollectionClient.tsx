@@ -15,6 +15,10 @@ export function NewCollection() {
     legendaryCount: 0,
     standardCount: 0,
     itemCount: 0,
+    companions: [],
+    ancestries: [],
+    backgrounds: [],
+    subclasses: [],
     spellSchools: [],
   };
 

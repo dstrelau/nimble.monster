@@ -247,6 +247,10 @@ export const toCollectionOverview = (
     createdAt: c.createdAt ? new Date(c.createdAt) : undefined,
     items: c.itemCollections?.map((ic) => toItemMini(ic.item as never)) || [],
     itemCount: c.itemCollections?.length || 0,
+    companions: [],
+    ancestries: [],
+    backgrounds: [],
+    subclasses: [],
     spellSchools: [],
   };
 };

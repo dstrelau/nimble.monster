@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/ancestry/Card";
+import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { AncestryDetailActions } from "@/components/AncestryDetailActions";
 import { auth } from "@/lib/auth";
 import { findAncestry } from "@/lib/services/ancestries";
@@ -71,6 +72,9 @@ export default async function AncestryPage({
   return (
     <div>
       <div className="flex justify-end items-start gap-2 mb-6">
+        {session?.user && (
+          <AddToCollectionDialog type="ancestry" ancestryId={ancestry.id} />
+        )}
         {isOwner && <AncestryDetailActions ancestry={ancestry} />}
       </div>
       <div className="mx-auto flex flex-col items-center gap-12 max-w-md">

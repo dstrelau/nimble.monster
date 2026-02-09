@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gt, like, lt, or } from "drizzle-orm";
+import { and, asc, desc, eq, gt, inArray, like, lt, or } from "drizzle-orm";
 import { parseJsonField } from "@/lib/db/converters";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
@@ -12,9 +12,16 @@ import {
   type UserRow,
   users,
 } from "@/lib/db/schema";
-import type { Ability, Action, Companion, User } from "@/lib/types";
+import type {
+  Ability,
+  Action,
+  Companion,
+  CompanionMini,
+  User,
+} from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
+import { isValidUUID } from "@/lib/utils/validation";
 import type {
   PaginateCompanionsSortOption,
   PaginateMonstersParams,
@@ -269,4 +276,100 @@ export const paginatePublicCompanions = async ({
     data: results,
     nextCursor,
   };
+};
+
+export const findCompanionsByIds = async (
+  ids: string[]
+): Promise<Companion[]> => {
+  const validIds = ids.filter(isValidUUID);
+  if (validIds.length === 0) return [];
+
+  const db = await getDatabase();
+
+  const rows = await db
+    .select()
+    .from(companions)
+    .innerJoin(users, eq(companions.userId, users.id))
+    .leftJoin(sources, eq(companions.sourceId, sources.id))
+    .where(inArray(companions.id, validIds));
+
+  if (rows.length === 0) return [];
+
+  const companionIds = rows.map((r) => r.companions.id);
+
+  const awardRows = await db
+    .select({ companionId: companionsAwards.companionId, award: awards })
+    .from(companionsAwards)
+    .innerJoin(awards, eq(companionsAwards.awardId, awards.id))
+    .where(inArray(companionsAwards.companionId, companionIds));
+
+  const awardsByCompanion = new Map<string, AwardRow[]>();
+  for (const row of awardRows) {
+    const existing = awardsByCompanion.get(row.companionId) || [];
+    existing.push(row.award);
+    awardsByCompanion.set(row.companionId, existing);
+  }
+
+  return rows.map((row) =>
+    toCompanionFromFullData({
+      companion: row.companions,
+      creator: row.users,
+      source: row.sources,
+      awards: awardsByCompanion.get(row.companions.id) || [],
+    })
+  );
+};
+
+export const searchPublicCompanions = async ({
+  searchTerm,
+  creatorId,
+  limit = 50,
+}: {
+  searchTerm?: string;
+  creatorId?: string;
+  limit?: number;
+}): Promise<CompanionMini[]> => {
+  const db = await getDatabase();
+
+  const conditions: ReturnType<typeof eq>[] = [
+    eq(companions.visibility, "public"),
+  ];
+
+  if (creatorId) {
+    const userResult = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.discordId, creatorId))
+      .limit(1);
+
+    if (userResult.length > 0) {
+      conditions.push(eq(companions.userId, userResult[0].id));
+    }
+  }
+
+  if (searchTerm) {
+    const searchCondition = or(
+      like(companions.name, `%${searchTerm}%`),
+      like(companions.kind, `%${searchTerm}%`),
+      like(companions.class, `%${searchTerm}%`)
+    );
+    if (searchCondition) {
+      conditions.push(searchCondition);
+    }
+  }
+
+  const rows = await db
+    .select()
+    .from(companions)
+    .where(and(...conditions))
+    .orderBy(asc(companions.name))
+    .limit(limit);
+
+  return rows.map((c) => ({
+    id: c.id,
+    name: c.name,
+    hp_per_level: c.hpPerLevel,
+    wounds: c.wounds,
+    visibility: (c.visibility ?? "public") as "public" | "private",
+  }));
 };

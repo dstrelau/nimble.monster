@@ -423,6 +423,7 @@ export const listAllAncestriesForDiscordID = async (
 
 export const searchPublicAncestries = async ({
   searchTerm,
+  creatorId,
   sourceId,
   sortBy,
   sortDirection = "asc",
@@ -436,6 +437,18 @@ export const searchPublicAncestries = async ({
 
   if (searchTerm) {
     conditions.push(like(ancestries.name, `%${searchTerm}%`));
+  }
+
+  if (creatorId) {
+    const userResult = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.discordId, creatorId))
+      .limit(1);
+
+    if (userResult.length > 0) {
+      conditions.push(eq(ancestries.userId, userResult[0].id));
+    }
   }
 
   if (sourceId) {
@@ -620,4 +633,19 @@ export const updateAncestry = async (
   };
 
   return toAncestryFromFullData(fullData);
+};
+
+export const findAncestriesByIds = async (
+  ids: string[]
+): Promise<Ancestry[]> => {
+  const validIds = ids.filter(isValidUUID);
+  if (validIds.length === 0) return [];
+
+  const db = await getDatabase();
+  const dataMap = await loadAncestryFullData(db, validIds);
+
+  return validIds
+    .map((id) => dataMap.get(id))
+    .filter((d): d is AncestryFullData => d !== undefined)
+    .map(toAncestryFromFullData);
 };

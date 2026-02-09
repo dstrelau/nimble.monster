@@ -4,6 +4,9 @@ import { revalidatePath } from "next/cache";
 import { forbidden, unauthorized } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import { searchPublicAncestries } from "@/lib/services/ancestries/repository";
+import { searchPublicBackgrounds } from "@/lib/services/backgrounds/repository";
+import { searchPublicCompanions } from "@/lib/services/companions/repository";
 import type { CollectionOverview, CollectionVisibilityType } from "@/lib/types";
 
 export async function deleteCollection(collectionId: string) {
@@ -223,4 +226,160 @@ export async function addSpellSchoolToCollection(formData: FormData) {
 
   await db.addSpellSchoolToCollection({ spellSchoolId, collectionId });
   return { success: true };
+}
+
+export async function addCompanionToCollection(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return unauthorized();
+  }
+
+  const companionId = formData.get("companionId")?.toString();
+  const collectionId = formData.get("collectionId")?.toString();
+  if (!companionId || !collectionId) {
+    return { success: false, error: "Missing companionId or collectionId" };
+  }
+
+  const collection = await db.getCollection(collectionId);
+  if (!collection) {
+    return {
+      success: false,
+      error: "Collection not found or you don't have permission to update it",
+    };
+  }
+
+  if (collection.creator.discordId !== session.user.discordId) {
+    return forbidden();
+  }
+
+  await db.addCompanionToCollection({ companionId, collectionId });
+  return { success: true };
+}
+
+export async function addAncestryToCollection(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return unauthorized();
+  }
+
+  const ancestryId = formData.get("ancestryId")?.toString();
+  const collectionId = formData.get("collectionId")?.toString();
+  if (!ancestryId || !collectionId) {
+    return { success: false, error: "Missing ancestryId or collectionId" };
+  }
+
+  const collection = await db.getCollection(collectionId);
+  if (!collection) {
+    return {
+      success: false,
+      error: "Collection not found or you don't have permission to update it",
+    };
+  }
+
+  if (collection.creator.discordId !== session.user.discordId) {
+    return forbidden();
+  }
+
+  await db.addAncestryToCollection({ ancestryId, collectionId });
+  return { success: true };
+}
+
+export async function addBackgroundToCollection(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return unauthorized();
+  }
+
+  const backgroundId = formData.get("backgroundId")?.toString();
+  const collectionId = formData.get("collectionId")?.toString();
+  if (!backgroundId || !collectionId) {
+    return { success: false, error: "Missing backgroundId or collectionId" };
+  }
+
+  const collection = await db.getCollection(collectionId);
+  if (!collection) {
+    return {
+      success: false,
+      error: "Collection not found or you don't have permission to update it",
+    };
+  }
+
+  if (collection.creator.discordId !== session.user.discordId) {
+    return forbidden();
+  }
+
+  await db.addBackgroundToCollection({ backgroundId, collectionId });
+  return { success: true };
+}
+
+export async function addSubclassToCollection(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return unauthorized();
+  }
+
+  const subclassId = formData.get("subclassId")?.toString();
+  const collectionId = formData.get("collectionId")?.toString();
+  if (!subclassId || !collectionId) {
+    return { success: false, error: "Missing subclassId or collectionId" };
+  }
+
+  const collection = await db.getCollection(collectionId);
+  if (!collection) {
+    return {
+      success: false,
+      error: "Collection not found or you don't have permission to update it",
+    };
+  }
+
+  if (collection.creator.discordId !== session.user.discordId) {
+    return forbidden();
+  }
+
+  await db.addSubclassToCollection({ subclassId, collectionId });
+  return { success: true };
+}
+
+export async function searchCompanionsAction(params: {
+  searchTerm?: string;
+  creatorId?: string;
+  limit?: number;
+}) {
+  return searchPublicCompanions(params);
+}
+
+export async function searchAncestriesAction(params: {
+  searchTerm?: string;
+  creatorId?: string;
+  limit?: number;
+}) {
+  return searchPublicAncestries({
+    searchTerm: params.searchTerm,
+    creatorId: params.creatorId,
+    sortBy: "name",
+    sortDirection: "asc",
+    limit: params.limit ?? 50,
+  });
+}
+
+export async function searchBackgroundsAction(params: {
+  searchTerm?: string;
+  creatorId?: string;
+  limit?: number;
+}) {
+  return searchPublicBackgrounds({
+    searchTerm: params.searchTerm,
+    creatorId: params.creatorId,
+    sortBy: "name",
+    sortDirection: "asc",
+    limit: params.limit ?? 50,
+  });
+}
+
+export async function searchSpellSchoolsAction(params: {
+  searchTerm?: string;
+  creatorId?: string;
+  limit?: number;
+}) {
+  return db.searchPublicSpellSchools(params);
 }

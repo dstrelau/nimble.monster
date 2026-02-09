@@ -506,6 +506,86 @@ export const spellSchoolsCollections = sqliteTable(
   ]
 );
 
+// Companions in collections
+export const companionsCollections = sqliteTable(
+  "companions_collections",
+  {
+    companionId: text("companion_id")
+      .notNull()
+      .references(() => companions.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    collectionId: text("collection_id")
+      .notNull()
+      .references(() => collections.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+  },
+  (table) => [primaryKey({ columns: [table.companionId, table.collectionId] })]
+);
+
+// Ancestries in collections
+export const ancestriesCollections = sqliteTable(
+  "ancestries_collections",
+  {
+    ancestryId: text("ancestry_id")
+      .notNull()
+      .references(() => ancestries.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    collectionId: text("collection_id")
+      .notNull()
+      .references(() => collections.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+  },
+  (table) => [primaryKey({ columns: [table.ancestryId, table.collectionId] })]
+);
+
+// Backgrounds in collections
+export const backgroundsCollections = sqliteTable(
+  "backgrounds_collections",
+  {
+    backgroundId: text("background_id")
+      .notNull()
+      .references(() => backgrounds.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    collectionId: text("collection_id")
+      .notNull()
+      .references(() => collections.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+  },
+  (table) => [primaryKey({ columns: [table.backgroundId, table.collectionId] })]
+);
+
+// Subclasses in collections
+export const subclassesCollections = sqliteTable(
+  "subclasses_collections",
+  {
+    subclassId: text("subclass_id")
+      .notNull()
+      .references(() => subclasses.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    collectionId: text("collection_id")
+      .notNull()
+      .references(() => collections.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+  },
+  (table) => [primaryKey({ columns: [table.subclassId, table.collectionId] })]
+);
+
 // Monsters conditions
 export const monstersConditions = sqliteTable(
   "monsters_conditions",

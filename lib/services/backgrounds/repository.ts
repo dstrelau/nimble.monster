@@ -410,6 +410,7 @@ export const listAllBackgroundsForDiscordID = async (
 
 export const searchPublicBackgrounds = async ({
   searchTerm,
+  creatorId,
   sourceId,
   sortBy,
   sortDirection = "asc",
@@ -423,6 +424,18 @@ export const searchPublicBackgrounds = async ({
 
   if (searchTerm) {
     conditions.push(like(backgrounds.name, `%${searchTerm}%`));
+  }
+
+  if (creatorId) {
+    const userResult = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.discordId, creatorId))
+      .limit(1);
+
+    if (userResult.length > 0) {
+      conditions.push(eq(backgrounds.userId, userResult[0].id));
+    }
   }
 
   if (sourceId) {
@@ -603,4 +616,19 @@ export const updateBackground = async (
   };
 
   return toBackgroundFromFullData(fullData);
+};
+
+export const findBackgroundsByIds = async (
+  ids: string[]
+): Promise<Background[]> => {
+  const validIds = ids.filter(isValidUUID);
+  if (validIds.length === 0) return [];
+
+  const db = await getDatabase();
+  const dataMap = await loadBackgroundFullData(db, validIds);
+
+  return validIds
+    .map((id) => dataMap.get(id))
+    .filter((d): d is BackgroundFullData => d !== undefined)
+    .map(toBackgroundFromFullData);
 };

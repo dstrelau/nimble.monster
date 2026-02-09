@@ -1,3 +1,8 @@
+import type { Ancestry, AncestryMini } from "@/lib/services/ancestries/types";
+import type {
+  Background,
+  BackgroundMini,
+} from "@/lib/services/backgrounds/types";
 import type { Item, ItemMini } from "@/lib/services/items";
 import type {
   Monster,
@@ -131,6 +136,10 @@ export interface Action {
 export interface Collection extends CollectionOverview {
   monsters: Monster[];
   items: Item[];
+  companions: Companion[];
+  ancestries: Ancestry[];
+  backgrounds: Background[];
+  subclasses: Subclass[];
   spellSchools: SpellSchool[];
 }
 
@@ -144,6 +153,10 @@ export interface CollectionOverview {
   standardCount: number;
   items: ItemMini[];
   itemCount: number;
+  companions: CompanionMini[];
+  ancestries: AncestryMini[];
+  backgrounds: BackgroundMini[];
+  subclasses: SubclassMini[];
   spellSchools: SpellSchoolMini[];
   visibility: CollectionVisibilityType;
   createdAt?: Date;

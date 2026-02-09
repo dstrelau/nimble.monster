@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/subclass/Card";
+import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
 import { SubclassDetailActions } from "@/components/SubclassDetailActions";
 import { auth } from "@/lib/auth";
 import { findSubclass } from "@/lib/db";
@@ -83,6 +84,9 @@ export default async function SubclassPage({
   return (
     <div>
       <div className="flex justify-end items-start gap-2 mb-6">
+        {session?.user && (
+          <AddToCollectionDialog type="subclass" subclassId={subclass.id} />
+        )}
         {isOwner && <SubclassDetailActions subclass={subclass} />}
       </div>
       <div className="max-w-2xl mx-auto">
