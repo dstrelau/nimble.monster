@@ -21,6 +21,7 @@ export interface JSONAPIMonster {
     size: string;
     armor: string;
     kind?: string;
+    role?: string;
     movement: Array<{ speed: number } | { mode: string; speed: number }>;
     abilities: Array<{ name: string; description: string }>;
     actions: Array<{
@@ -130,6 +131,7 @@ function parseMonster(data: JSONAPIMonster): Monster {
     size: attrs.size as Monster["size"],
     armor: attrs.armor as Monster["armor"],
     kind: attrs.kind,
+    role: (attrs.role as Monster["role"]) ?? undefined,
     legendary: attrs.legendary,
     minion: attrs.minion ?? false,
     visibility: "public",

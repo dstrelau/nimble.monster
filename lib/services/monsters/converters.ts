@@ -255,6 +255,7 @@ export const toZodMonster = (m: Monster) => {
     size: m.size,
     armor: m.armor === "none" ? ("none" as const) : m.armor,
     kind: m.kind || undefined,
+    role: m.role || undefined,
     movement: movement,
     abilities,
     actions,

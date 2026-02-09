@@ -472,6 +472,49 @@ describe("GET /api/monsters/[id]", () => {
     expect(data).not.toHaveProperty("included");
   });
 
+  it("should include role in monster attributes", async () => {
+    const mockMonster: Monster = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Shield Guardian",
+      level: "5",
+      levelInt: 5,
+      hp: 60,
+      legendary: false,
+      minion: false,
+      armor: "heavy",
+      size: "large",
+      speed: 6,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      teleport: 0,
+      burrow: 0,
+      visibility: "public",
+      families: [],
+      abilities: [],
+      actions: [],
+      actionPreface: "",
+      creator: fakeCreator,
+      createdAt: new Date("2025-01-01"),
+      updatedAt: new Date("2025-01-01"),
+      role: "defender",
+    };
+
+    mockGetPublicMonster.mockResolvedValue(mockMonster);
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters/shield-guardian-abc"
+    );
+    const response = await GET(
+      request,
+      createMockParams("shield-guardian-abc")
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.data.attributes.role).toBe("defender");
+  });
+
   it("should reject invalid include parameter", async () => {
     const request = new Request(
       "http://localhost:3000/api/monsters/goblin-abc?include=invalid"
