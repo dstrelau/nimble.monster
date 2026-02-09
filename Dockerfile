@@ -13,7 +13,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_PUBLIC_BUCKET_NAME=nimble-nexus
-RUN corepack enable && corepack install && pnpm run sync-icons && pnpm run build
+RUN corepack enable && corepack install && node tools/sync-icons.js && pnpm run build
 
 FROM base AS runner
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
