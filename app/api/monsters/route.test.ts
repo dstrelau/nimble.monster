@@ -696,77 +696,24 @@ describe("GET /api/monsters", () => {
     expect(data.errors[0].title).toContain("Invalid include parameter");
   });
 
-  it("should handle type=standard parameter", async () => {
+  it.each([
+    ["standard"],
+    ["legendary"],
+    ["minion"],
+    ["all"],
+  ])("should handle type=%s parameter", async (type) => {
     mockPaginateMonsters.mockResolvedValue({
       data: [],
       nextCursor: null,
     });
 
-    const request = new Request(
-      "http://localhost:3000/api/monsters?type=standard"
-    );
-    await GET(request);
+    const request = new Request(`http://localhost:3000/api/monsters?type=${type}`);
+    const response = await GET(request);
 
+    expect(response.status).toBe(200);
     expect(mockPaginateMonsters).toHaveBeenCalledWith(
       expect.objectContaining({
-        type: "standard",
-        includePrivate: false,
-      })
-    );
-  });
-
-  it("should handle type=legendary parameter", async () => {
-    mockPaginateMonsters.mockResolvedValue({
-      data: [],
-      nextCursor: null,
-    });
-
-    const request = new Request(
-      "http://localhost:3000/api/monsters?type=legendary"
-    );
-    await GET(request);
-
-    expect(mockPaginateMonsters).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: "legendary",
-        includePrivate: false,
-      })
-    );
-  });
-
-  it("should handle type=minion parameter", async () => {
-    mockPaginateMonsters.mockResolvedValue({
-      data: [],
-      nextCursor: null,
-    });
-
-    const request = new Request(
-      "http://localhost:3000/api/monsters?type=minion"
-    );
-    await GET(request);
-
-    expect(mockPaginateMonsters).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: "minion",
-        includePrivate: false,
-      })
-    );
-  });
-
-  it("should handle type=all parameter (equivalent to omitting type)", async () => {
-    mockPaginateMonsters.mockResolvedValue({
-      data: [],
-      nextCursor: null,
-    });
-
-    const request = new Request(
-      "http://localhost:3000/api/monsters?type=all"
-    );
-    await GET(request);
-
-    expect(mockPaginateMonsters).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: "all",
+        type,
         includePrivate: false,
       })
     );
@@ -784,58 +731,33 @@ describe("GET /api/monsters", () => {
     expect(data.errors[0].status).toBe("400");
   });
 
-  it("should handle role parameter", async () => {
+  it.each([
+    ["ambusher"],
+    ["aoe"],
+    ["controller"],
+    ["defender"],
+    ["melee"],
+    ["ranged"],
+    ["skirmisher"],
+    ["striker"],
+    ["summoner"],
+    ["support"],
+  ])("should handle role=%s parameter", async (role) => {
     mockPaginateMonsters.mockResolvedValue({
       data: [],
       nextCursor: null,
     });
 
-    const request = new Request(
-      "http://localhost:3000/api/monsters?role=ambusher"
-    );
-    await GET(request);
+    const request = new Request(`http://localhost:3000/api/monsters?role=${role}`);
+    const response = await GET(request);
 
+    expect(response.status).toBe(200);
     expect(mockPaginateMonsters).toHaveBeenCalledWith(
       expect.objectContaining({
-        role: "ambusher",
+        role,
         includePrivate: false,
       })
     );
-  });
-
-  it("should handle all valid role parameters", async () => {
-    const validRoles = [
-      "ambusher",
-      "aoe",
-      "controller",
-      "defender",
-      "melee",
-      "ranged",
-      "skirmisher",
-      "striker",
-      "summoner",
-      "support",
-    ];
-
-    for (const role of validRoles) {
-      mockPaginateMonsters.mockResolvedValue({
-        data: [],
-        nextCursor: null,
-      });
-
-      const request = new Request(
-        `http://localhost:3000/api/monsters?role=${role}`
-      );
-      const response = await GET(request);
-
-      expect(response.status).toBe(200);
-      expect(mockPaginateMonsters).toHaveBeenCalledWith(
-        expect.objectContaining({
-          role,
-          includePrivate: false,
-        })
-      );
-    }
   });
 
   it("should reject invalid role parameter", async () => {
