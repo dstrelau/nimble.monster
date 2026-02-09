@@ -1124,6 +1124,7 @@ export const upsertOfficialMonster = async (
       id: monsterId,
       ...monsterValues,
       userId: OFFICIAL_USER_ID,
+      createdAt: "2024-01-01 00:00:00",
     });
   }
 

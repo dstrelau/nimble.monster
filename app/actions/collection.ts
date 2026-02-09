@@ -144,7 +144,7 @@ export async function addMonsterToCollection(formData: FormData) {
     return { success: false, error: "Missing monsterId or collectionId" };
   }
 
-  const collection = await db.getCollection(collectionId);
+  const collection = await db.getCollection(collectionId, session.user.discordId);
   if (!collection) {
     return {
       success: false,
@@ -172,7 +172,7 @@ export async function addItemToCollection(formData: FormData) {
     return { success: false, error: "Missing itemId or collectionId" };
   }
 
-  const collection = await db.getCollection(collectionId);
+  const collection = await db.getCollection(collectionId, session.user.discordId);
   if (!collection) {
     return {
       success: false,
@@ -200,7 +200,7 @@ export async function addSpellSchoolToCollection(formData: FormData) {
     return { success: false, error: "Missing spellSchoolId or collectionId" };
   }
 
-  const collection = await db.getCollection(collectionId);
+  const collection = await db.getCollection(collectionId, session.user.discordId);
   if (!collection) {
     return {
       success: false,

@@ -17,7 +17,7 @@ export default async function EditCollectionPage({
 
   const uid = deslugify(id);
   if (!uid) return notFound();
-  const collection = await db.getCollection(uid);
+  const collection = await db.getCollection(uid, session.user.discordId);
   if (!collection) return notFound();
 
   if (id !== slugify(collection)) {
