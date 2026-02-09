@@ -4,17 +4,13 @@
   "version": "0.0.0",
   "scripts": {
     "build": "next build",
-    "check": "pnpm run lint && pnpm run type-check",
     "dev": "next dev --turbopack",
-    "lint": "biome check .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "start": "next start",
-    "sync-icons": "node tools/sync-icons.js",
     "test": "vitest",
-    "test:run": "vitest run",
-    "type-check": "tsc --noEmit"
+    "test:run": "vitest run"
   },
   "node": {
     "child_process": "empty"
