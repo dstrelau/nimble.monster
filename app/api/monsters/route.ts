@@ -7,6 +7,10 @@ import { toJsonApiFamily } from "@/lib/services/families/converters";
 import type { CreateMonsterInput } from "@/lib/services/monsters";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
+import {
+  MonsterRoleOptions,
+  MonsterTypeOptions,
+} from "@/lib/services/monsters/types";
 import { telemetry } from "@/lib/telemetry";
 
 const CONTENT_TYPE = "application/vnd.api+json; nimble.version=202510.beta";
@@ -24,6 +28,8 @@ const querySchema = z.object({
     .default("name"),
   search: z.string().optional(),
   level: z.coerce.number().optional(),
+  type: z.enum(MonsterTypeOptions).optional(),
+  role: z.enum(MonsterRoleOptions).optional(),
   include: z.string().optional(),
 });
 
@@ -37,6 +43,8 @@ export const GET = telemetry(async (request: Request) => {
     sort: searchParams.get("sort") || undefined,
     search: searchParams.get("search") || undefined,
     level: searchParams.get("level") || undefined,
+    type: searchParams.get("type") || undefined,
+    role: searchParams.get("role") || undefined,
     include: searchParams.get("include") || undefined,
   });
 
@@ -59,7 +67,8 @@ export const GET = telemetry(async (request: Request) => {
     );
   }
 
-  const { cursor, limit, sort, search, level, include } = result.data;
+  const { cursor, limit, sort, search, level, type, role, include } =
+    result.data;
 
   const includeResources = include
     ? include.split(",").map((r) => r.trim())
@@ -92,6 +101,8 @@ export const GET = telemetry(async (request: Request) => {
   cursor && span?.setAttributes({ "params.cursor": cursor });
   search && span?.setAttributes({ "params.search": search });
   level && span?.setAttributes({ "params.level": level });
+  type && span?.setAttributes({ "params.type": type });
+  role && span?.setAttributes({ "params.role": role });
 
   const { data: monsters, nextCursor } =
     await monstersService.paginatePublicMonsters({
@@ -100,6 +111,8 @@ export const GET = telemetry(async (request: Request) => {
       sort,
       search,
       level,
+      type,
+      role,
     });
 
   const data = monsters.map(toJsonApiMonster);

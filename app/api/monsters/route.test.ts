@@ -695,4 +695,178 @@ describe("GET /api/monsters", () => {
     expect(response.status).toBe(400);
     expect(data.errors[0].title).toContain("Invalid include parameter");
   });
+
+  it("should handle type=standard parameter", async () => {
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?type=standard"
+    );
+    await GET(request);
+
+    expect(mockPaginateMonsters).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "standard",
+        includePrivate: false,
+      })
+    );
+  });
+
+  it("should handle type=legendary parameter", async () => {
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?type=legendary"
+    );
+    await GET(request);
+
+    expect(mockPaginateMonsters).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "legendary",
+        includePrivate: false,
+      })
+    );
+  });
+
+  it("should handle type=minion parameter", async () => {
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?type=minion"
+    );
+    await GET(request);
+
+    expect(mockPaginateMonsters).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "minion",
+        includePrivate: false,
+      })
+    );
+  });
+
+  it("should handle type=all parameter (equivalent to omitting type)", async () => {
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?type=all"
+    );
+    await GET(request);
+
+    expect(mockPaginateMonsters).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "all",
+        includePrivate: false,
+      })
+    );
+  });
+
+  it("should reject invalid type parameter", async () => {
+    const request = new Request(
+      "http://localhost:3000/api/monsters?type=invalid"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.errors).toHaveLength(1);
+    expect(data.errors[0].status).toBe("400");
+  });
+
+  it("should handle role parameter", async () => {
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?role=ambusher"
+    );
+    await GET(request);
+
+    expect(mockPaginateMonsters).toHaveBeenCalledWith(
+      expect.objectContaining({
+        role: "ambusher",
+        includePrivate: false,
+      })
+    );
+  });
+
+  it("should handle all valid role parameters", async () => {
+    const validRoles = [
+      "ambusher",
+      "aoe",
+      "controller",
+      "defender",
+      "melee",
+      "ranged",
+      "skirmisher",
+      "striker",
+      "summoner",
+      "support",
+    ];
+
+    for (const role of validRoles) {
+      mockPaginateMonsters.mockResolvedValue({
+        data: [],
+        nextCursor: null,
+      });
+
+      const request = new Request(
+        `http://localhost:3000/api/monsters?role=${role}`
+      );
+      const response = await GET(request);
+
+      expect(response.status).toBe(200);
+      expect(mockPaginateMonsters).toHaveBeenCalledWith(
+        expect.objectContaining({
+          role,
+          includePrivate: false,
+        })
+      );
+    }
+  });
+
+  it("should reject invalid role parameter", async () => {
+    const request = new Request(
+      "http://localhost:3000/api/monsters?role=invalid"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.errors).toHaveLength(1);
+    expect(data.errors[0].status).toBe("400");
+  });
+
+  it("should handle combined type and role filters", async () => {
+    mockPaginateMonsters.mockResolvedValue({
+      data: [],
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?type=standard&role=defender"
+    );
+    await GET(request);
+
+    expect(mockPaginateMonsters).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "standard",
+        role: "defender",
+        includePrivate: false,
+      })
+    );
+  });
 });
