@@ -3,11 +3,13 @@ name: Deploy to Fly.io
 on:
   push:
     branches:
-      - main
+      - '**'
+  pull_request:
   workflow_dispatch:
 
 jobs:
   check:
+    if: github.event.pull_request.head.repo.fork != true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,6 +24,7 @@ jobs:
       - run: make check
 
   test:
+    if: github.event.pull_request.head.repo.fork != true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,6 +39,7 @@ jobs:
       - run: pnpm run test:run
 
   deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs: [check, test]
     runs-on: ubuntu-latest
     steps:
