@@ -8,6 +8,10 @@ export const toJsonApiFamily = (f: FamilyOverview) => {
     attributes: {
       name: f.name,
       description: f.description,
+      abilities: f.abilities.map((a) => ({
+        name: a.name,
+        description: a.description,
+      })),
       monsterCount: f.monsterCount,
     },
     relationships: {

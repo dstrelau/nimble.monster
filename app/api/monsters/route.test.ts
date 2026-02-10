@@ -523,7 +523,13 @@ describe("GET /api/monsters", () => {
           {
             id: "660e8400-e29b-41d4-a716-446655440001",
             name: "Goblinoids",
-            abilities: [],
+            abilities: [
+              {
+                id: "abil-1",
+                name: "Pack Tactics",
+                description: "Gains advantage when allies are nearby",
+              },
+            ],
             creatorId: "user123",
             creator: fakeCreator,
           },
@@ -553,6 +559,11 @@ describe("GET /api/monsters", () => {
     expect(data.included).toHaveLength(1);
     expect(data.included[0].type).toBe("families");
     expect(data.included[0].attributes.name).toBe("Goblinoids");
+    expect(data.included[0].attributes.abilities).toHaveLength(1);
+    expect(data.included[0].attributes.abilities[0]).toEqual({
+      name: "Pack Tactics",
+      description: "Gains advantage when allies are nearby",
+    });
   });
 
   it("should not include families when include is not specified", async () => {
