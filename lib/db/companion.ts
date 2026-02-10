@@ -221,6 +221,7 @@ export interface CreateCompanionInput {
   moreInfo?: string;
   visibility: "public" | "private";
   discordId: string;
+  paperforgeId?: string;
 }
 
 export const createCompanion = async (
@@ -255,6 +256,7 @@ export const createCompanion = async (
       moreInfo: input.moreInfo || "",
       visibility: input.visibility,
       userId: userResult[0].id,
+      paperforgeId: input.paperforgeId || null,
     })
     .returning();
 
@@ -280,6 +282,7 @@ export interface UpdateCompanionInput {
   moreInfo: string;
   visibility: "public" | "private";
   discordId: string;
+  paperforgeId?: string;
 }
 
 export const updateCompanion = async (
@@ -317,6 +320,7 @@ export const updateCompanion = async (
       dyingRule: input.dyingRule,
       moreInfo: input.moreInfo,
       visibility: input.visibility,
+      paperforgeId: input.paperforgeId || null,
       updatedAt: new Date().toISOString(),
     })
     .where(
