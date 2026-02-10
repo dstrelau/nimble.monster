@@ -12,6 +12,7 @@ import { ExampleLoader } from "@/components/app/ExampleLoader";
 import { FormInput, FormSelect, FormTextarea } from "@/components/app/Form";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { PaperforgeImageSelect } from "@/components/PaperforgeImageSelect";
 import { Button } from "@/components/ui/button";
 import type { MonsterSize } from "@/lib/services/monsters";
 import { SIZES } from "@/lib/services/monsters";
@@ -90,13 +91,20 @@ const CompanionForm: React.FC<{
 }> = ({ companion, setCompanion }) => {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-x-6">
+      <div className="grid grid-cols-3 gap-x-6">
         <FormInput
           label="Name"
           name="name"
           value={companion.name}
           className="col-span-2"
           onChange={(name) => setCompanion({ ...companion, name })}
+        />
+        <PaperforgeImageSelect
+          value={companion.paperforgeId}
+          onChange={(paperforgeId) =>
+            setCompanion({ ...companion, paperforgeId })
+          }
+          className="col-span-1"
         />
       </div>
       <div className="grid grid-cols-2 gap-x-6">
@@ -240,6 +248,7 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
         dyingRule: companion.dyingRule,
         moreInfo: companion.moreInfo,
         visibility: companion.visibility,
+        paperforgeId: companion.paperforgeId,
       };
 
       const result = companion.id

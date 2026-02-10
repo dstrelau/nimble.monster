@@ -86,6 +86,7 @@ interface CompanionRow {
   actionPreface: string | null;
   dyingRule: string;
   moreInfo: string | null;
+  paperforgeId: string | null;
   updatedAt: string | null;
   creator: UserRow;
   source: {
@@ -281,6 +282,7 @@ export const toCompanion = (c: CompanionRow): Companion => {
     actionPreface: c.actionPreface || "",
     dyingRule: c.dyingRule,
     moreInfo: c.moreInfo || "",
+    paperforgeId: c.paperforgeId || undefined,
     creator: toUser(c.creator),
     source: c.source
       ? {
