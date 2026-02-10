@@ -20,6 +20,7 @@ export async function createCompanion(formData: {
   dyingRule: string;
   moreInfo?: string;
   visibility: "public" | "private";
+  paperforgeId?: string;
 }) {
   try {
     const session = await auth();
@@ -73,6 +74,7 @@ export async function updateCompanion(
     dyingRule: string;
     moreInfo?: string;
     visibility: "public" | "private";
+    paperforgeId?: string;
   }
 ) {
   try {
@@ -112,6 +114,7 @@ export async function updateCompanion(
       dyingRule: formData.dyingRule,
       moreInfo: formData.moreInfo || "",
       visibility: formData.visibility,
+      paperforgeId: formData.paperforgeId,
       discordId: session.user.discordId,
     });
     revalidatePath(getCompanionUrl(companion));

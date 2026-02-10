@@ -37,6 +37,7 @@ import {
 } from "@/components/app/Form";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { PaperforgeImageSelect } from "@/components/PaperforgeImageSelect";
 import { Button } from "@/components/ui/button";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -66,7 +67,6 @@ import { useUserFamiliesQuery } from "../families/hooks";
 import { AbilitiesSection } from "../ui/create/AbilitiesSection";
 import { ActionsSection } from "../ui/create/ActionsSection";
 import { SourceSelect } from "../ui/create/SourceSelect";
-import { PaperforgeImageSelect } from "../ui/monster/PaperforgeImageSelect";
 import { updateMonster as updateMonsterAction } from "./actions";
 
 const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {

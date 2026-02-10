@@ -209,6 +209,7 @@ export const companions = sqliteTable(
     sourceId: text("source_id").references(() => sources.id, {
       onUpdate: "cascade",
     }),
+    paperforgeId: text("paperforge_id"),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },

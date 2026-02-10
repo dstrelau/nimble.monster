@@ -104,6 +104,7 @@ export interface Companion extends CompanionMini {
   awards?: Award[];
   updatedAt: Date;
   imageUrl?: string;
+  paperforgeId?: string;
 }
 
 export interface Condition {

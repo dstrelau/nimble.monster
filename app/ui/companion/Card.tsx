@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "lib/utils";
-import { Circle, Skull } from "lucide-react";
+import { Anvil, Circle, ExternalLink, Skull } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { HPStat, SavesStat } from "@/app/ui/monster/Stat";
@@ -10,6 +10,7 @@ import { CardFooterLayout } from "@/app/ui/shared/CardFooterLayout";
 import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import { Link } from "@/components/app/Link";
 import { PrefixedFormattedText } from "@/components/FormattedText";
+import { PaperforgeImage } from "@/components/PaperforgeImage";
 import {
   ShareMenu,
   ShareMenuCopyURLItem,
@@ -23,7 +24,14 @@ import {
   CardTitle,
   Card as ShadcnCard,
 } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useConditions } from "@/lib/hooks/useConditions";
+import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
 import type { MonsterSize } from "@/lib/services/monsters";
 import type { Companion, User } from "@/lib/types";
 import { getCompanionImageUrl, getCompanionUrl } from "@/lib/utils/url";
@@ -37,7 +45,16 @@ const HeaderCompanion: React.FC<{
   companion: Companion;
   link?: boolean;
 }> = ({ companion, link = true }) => (
-  <CardHeader className="gap-0">
+  <CardHeader
+    className={cn("gap-0 relative", companion.paperforgeId && "min-h-10")}
+  >
+    {companion.paperforgeId && (
+      <PaperforgeImage
+        id={companion.paperforgeId}
+        className="absolute -top-7 -left-3 mr-2 size-19 z-10"
+        size={76}
+      />
+    )}
     <CardAction>
       <div className="flex items-start justify-between">
         <div className={cn("font-slab flex items-center font-black")}>
@@ -50,13 +67,18 @@ const HeaderCompanion: React.FC<{
         </div>
       </div>
     </CardAction>
-    <CardDescription className={cn("font-slab text-md")}>
+    <CardDescription
+      className={cn("font-slab text-md", companion.paperforgeId && "ml-14")}
+    >
       {formatCompanionSize(companion.size)} {companion.kind} Adventuring
       Companion, {companion.class}
     </CardDescription>
 
     <CardTitle
-      className={cn("font-slab font-bold text-2xl leading-tight text-left")}
+      className={cn(
+        "font-slab font-bold text-2xl leading-tight text-left",
+        companion.paperforgeId && "ml-14"
+      )}
     >
       {link && companion.id ? (
         <Link href={getCompanionUrl(companion)}>{companion.name}</Link>
@@ -87,6 +109,9 @@ export const Card = ({
   const { allConditions } = useConditions({
     creatorId: creator.discordId,
   });
+  const paperforgeEntry = PAPERFORGE_ENTRIES.find(
+    (e) => e.id === companion.paperforgeId
+  );
   return (
     <div id={`companion-${companion.id}`}>
       <ShadcnCard className={className}>
@@ -147,6 +172,33 @@ export const Card = ({
                   updatedAt={companion.updatedAt}
                 />
               </ShareMenu>
+            )
+          }
+          paperforgeSlot={
+            paperforgeEntry && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <a
+                      href={
+                        paperforgeEntry.postUrl ||
+                        "https://www.patreon.com/c/paperforge"
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <Anvil className="size-4" />
+                    </a>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className="text-sm flex items-baseline gap-1">
+                      Paper Forge: #{paperforgeEntry.id} {paperforgeEntry.name}
+                      <ExternalLink className="size-3" />
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )
           }
         />
