@@ -1,4 +1,4 @@
-.PHONY: setup sync-icons sync-paperforge check lint type-check
+.PHONY: setup sync-icons sync-paperforge paperforge-catalog check lint type-check
 
 BIN := node_modules/.bin
 
@@ -30,7 +30,10 @@ components/game-icons/index.ts: assets/game-icons
 	node tools/sync-icons.js
 
 sync-paperforge:
-	node tools/sync-paperforge.ts
+	node tools/paperforge.ts all
+
+paperforge-catalog:
+	node tools/paperforge.ts scrape
 
 check: lint type-check
 

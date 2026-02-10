@@ -1,0 +1,756 @@
+{
+  "minis": [
+    {
+      "id": "1",
+      "name": "Goblin Warrior",
+      "url": "https://www.patreon.com/posts/free-files-base-10749718",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5346513",
+      "zipFilename": "VTT01_GoblinWarrior_Free.zip",
+      "portraitPath": "VTT01_GoblinWarrior_Free/Portrait/GoblinWarriorF.png"
+    },
+    {
+      "id": "2",
+      "name": "Goblin Archer",
+      "url": "https://www.patreon.com/posts/free-files-11213955",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5346516",
+      "zipFilename": "VTT02_GoblinArcher_Free.zip",
+      "portraitPath": "VTT02_GoblinArcher_Free/Portrait/GoblinArcherf.png"
+    },
+    {
+      "id": "3",
+      "name": "Goblin Spearman",
+      "url": "https://www.patreon.com/posts/free-files-11310899",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5346518",
+      "zipFilename": "VTT03_GoblinSpearman_Free.zip",
+      "portraitPath": "VTT03_GoblinSpearman_Free/Portrait/GoblinSpearmanF.png"
+    },
+    {
+      "id": "4",
+      "name": "Goblin Elder",
+      "url": "https://www.patreon.com/posts/free-files-11444800",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5346519",
+      "zipFilename": "VTT04_GoblinElder_Free.zip",
+      "portraitPath": "VTT04_GoblinElder_Free/Portrait/GoblinElderF.png"
+    },
+    {
+      "id": "5",
+      "name": "Goblin Boss",
+      "url": "https://www.patreon.com/posts/free-files-11589769",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5346520",
+      "zipFilename": "VTT05_GoblinBoss_Free.zip",
+      "portraitPath": "VTT05_GoblinBoss_Free/Portrait/GoblinBossF.png"
+    },
+    {
+      "id": "6",
+      "name": "Barbarian",
+      "url": "https://www.patreon.com/posts/free-files-11703527",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471186",
+      "zipFilename": "VTT06_Barbarian_Free.zip",
+      "portraitPath": "VTT06_Barbarian_Free/Portrait/BarbarianF.png"
+    },
+    {
+      "id": "7",
+      "name": "Spectator",
+      "url": "https://www.patreon.com/posts/free-files-11836131",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471187",
+      "zipFilename": "VTT07_Spectator_Free.zip",
+      "portraitPath": "VTT07_Spectator_Free/Portrait/SpectatorF.png"
+    },
+    {
+      "id": "8",
+      "name": "Ghast",
+      "url": "https://www.patreon.com/posts/free-files-12141052",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471185",
+      "zipFilename": "VTT08_Ghast_Free.zip",
+      "portraitPath": "VTT08_Ghast_Free/Portrait/GhastF.png"
+    },
+    {
+      "id": "9",
+      "name": "Kobold",
+      "url": "https://www.patreon.com/posts/free-files-12452706",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471188",
+      "zipFilename": "VTT09_Kobold_Free.zip",
+      "portraitPath": "VTT09_Kobold_Free/Portrait/KoboldF.png"
+    },
+    {
+      "id": "10",
+      "name": "Kobold Sorceror",
+      "url": "https://www.patreon.com/posts/free-files-12874549",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471189",
+      "zipFilename": "VTT10_KoboldSorceror_Free.zip",
+      "portraitPath": "VTT10_KoboldSorceror_Free/Portrait/KoboldSorcerorF.png"
+    },
+    {
+      "id": "11",
+      "name": "Winged Kobold",
+      "url": "https://www.patreon.com/posts/free-files-13082785",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471190",
+      "zipFilename": "VTT11_WingedKobold_Free.zip",
+      "portraitPath": "VTT11_WingedKobold_Free/Portrait/WingedKoboldF.png"
+    },
+    {
+      "id": "12",
+      "name": "Ogre",
+      "url": "https://www.patreon.com/file?h=13276940&m=1008167",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471192",
+      "zipFilename": "VTT12_Ogre_Free.zip",
+      "portraitPath": "VTT12_Ogre_Free/Portrait/OgreF.png"
+    },
+    {
+      "id": "13",
+      "name": "Human Thief",
+      "url": "https://www.patreon.com/posts/free-files-13706016",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471191",
+      "zipFilename": "VTT13_HumanThief_Free.zip",
+      "portraitPath": "VTT13_HumanThief_Free/Portrait/HumanThiefF.png"
+    },
+    {
+      "id": "14",
+      "name": "Halfling Assassin",
+      "url": "https://www.patreon.com/posts/free-files-13846536",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471193",
+      "zipFilename": "VTT14_HalflingAssassin_Free.zip",
+      "portraitPath": "VTT14_HalflingAssassin_Free/Portait/HalflingAssassinF.png"
+    },
+    {
+      "id": "15",
+      "name": "Large Bear",
+      "url": "https://www.patreon.com/posts/free-files-13969830",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471196",
+      "zipFilename": "VTT15_Bear_Free.zip",
+      "portraitPath": "VTT15_Bear_Free/Portrait/BearF.png"
+    },
+    {
+      "id": "16",
+      "name": "Wolf",
+      "url": "https://www.patreon.com/posts/free-files-14085414",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471194",
+      "zipFilename": "VTT16_Wolf_Free.zip",
+      "portraitPath": "VTT16_Wolf_Free/Portrait/WolfF.png"
+    },
+    {
+      "id": "17",
+      "name": "Bandit Captain",
+      "url": "https://www.patreon.com/posts/free-files-14216453",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471200",
+      "zipFilename": "VTT17_BanditCaptain_Free.zip",
+      "portraitPath": "VTT17_BanditCaptain_Free/Portrait/BanditCaptainFree.png"
+    },
+    {
+      "id": "17b",
+      "name": "Bandit (Crossbow)",
+      "url": "https://www.patreon.com/posts/free-files-14216453",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471195",
+      "zipFilename": "VTT17_Bandit(Crossbow)_Free.zip",
+      "portraitPath": "VTT17_Bandit(Crossbow)_Free/Portrait/BanditCrossbowFree.png"
+    },
+    {
+      "id": "17c",
+      "name": "Bandit (Daggers)",
+      "url": "https://www.patreon.com/posts/free-files-14216453",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471199",
+      "zipFilename": "VTT17_Bandit(Daggers)_Free.zip",
+      "portraitPath": "VTT17_Bandit(Daggers)_Free/Portrait/Bandit(Daggers)Free.png"
+    },
+    {
+      "id": "17d",
+      "name": "Bandit (Sword)",
+      "url": "https://www.patreon.com/posts/free-files-14216453",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471201",
+      "zipFilename": "VTT17d_Bandit(Sword)_Free.zip",
+      "portraitPath": "VTT17d_Bandit(Sword)_Free/Portrait/Bandit(Swords)Free.png"
+    },
+    {
+      "id": "17e",
+      "name": "Bandit (Axes)",
+      "url": "https://www.patreon.com/posts/free-files-14216453",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471204",
+      "zipFilename": "VTT17e_Bandit(Axes)_Free.zip",
+      "portraitPath": "VTT17e_Bandit(Axes)_Free/Portrait/Bandit(Axes)Free.png"
+    },
+    {
+      "id": "18",
+      "name": "Panther",
+      "url": "https://www.patreon.com/posts/free-files-14406874",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471202",
+      "zipFilename": "VTT18_Panther_Free.zip",
+      "portraitPath": "VTT18_Panther_Free/Portrait/PantherF.png"
+    },
+    {
+      "id": "19",
+      "name": "Giant Poisonous Snake",
+      "url": "https://www.patreon.com/posts/free-files-14534953",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471203",
+      "zipFilename": "VTT19_GiantPoisonousSnake_Free.zip",
+      "portraitPath": "VTT19_GiantPoisonousSnake_Free/Portrait/GiantPoisonousSnakeF.png"
+    },
+    {
+      "id": "20",
+      "name": "Erinyes",
+      "url": "https://www.patreon.com/posts/free-files-14651672",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471206",
+      "zipFilename": "VTT20_Erinyes_Free.zip",
+      "portraitPath": "VTT20_Erinyes_Free/Portrait/ErinyesF.png"
+    },
+    {
+      "id": "21",
+      "name": "Griffon",
+      "url": "https://www.patreon.com/posts/free-files-14774227",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471205",
+      "zipFilename": "VTT21_Griffon_Free.zip",
+      "portraitPath": "VTT21_Griffon_Free/Portrait/GriffonF.png"
+    },
+    {
+      "id": "22",
+      "name": "Dwarf Fighter",
+      "url": "https://www.patreon.com/posts/free-files-14886502",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471207",
+      "zipFilename": "VTT22_DwarfFighter_Free.zip",
+      "portraitPath": "VTT22_DwarfFighter_Free/Portrait/DwarfFighterF.png"
+    },
+    {
+      "id": "23",
+      "name": "Monk",
+      "url": "https://www.patreon.com/posts/free-files-15010372",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471209",
+      "zipFilename": "VTT23_Monk_Free.zip",
+      "portraitPath": "VTT23_Monk_Free/Portrait/Monkf.png"
+    },
+    {
+      "id": "24",
+      "name": "Dwarf Fighter",
+      "url": "https://www.patreon.com/posts/free-files-15136843",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471208",
+      "zipFilename": "VTT24_DwarfFighter_Free.zip",
+      "portraitPath": "VTT24_DwarfFighter_Free/Portrait/DwarfFighterF.png"
+    },
+    {
+      "id": "25",
+      "name": "Owlbear",
+      "url": "https://www.patreon.com/posts/free-files-15346895",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471210",
+      "zipFilename": "VTT25_Owlbear_Free.zip",
+      "portraitPath": "VTT25_Owlbear_Free/Portrait/Owlbearf.png"
+    },
+    {
+      "id": "25b",
+      "name": "Owlbear Cub",
+      "url": "https://www.patreon.com/posts/free-files-15346895",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471211",
+      "zipFilename": "VTT25b_OwlbearCub_Free.zip",
+      "portraitPath": "VTT25b_OwlbearCub_Free/Portrait/OwlbearCubf.png"
+    },
+    {
+      "id": "26",
+      "name": "Knight",
+      "url": "https://www.patreon.com/posts/free-files-15450981",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471212",
+      "zipFilename": "VTT26_Knight_Free.zip",
+      "portraitPath": "VTT26_Knight_Free/Portrait/KnightF.png"
+    },
+    {
+      "id": "26b",
+      "name": "Squire",
+      "url": "https://www.patreon.com/posts/free-files-15450981",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471213",
+      "zipFilename": "VTT26b_Squire_Free.zip",
+      "portraitPath": "VTT26b_Squire_Free/Portrait/SquireFree.png"
+    },
+    {
+      "id": "27",
+      "name": "Bard",
+      "url": "https://www.patreon.com/posts/free-files-15558074",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471215",
+      "zipFilename": "VTT27_Bard_Free.zip",
+      "portraitPath": "VTT27_Bard_Free/Portrait/BardF.png"
+    },
+    {
+      "id": "28",
+      "name": "Barlgura",
+      "url": "https://www.patreon.com/posts/release-28-15724795",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471216",
+      "zipFilename": "VTT28_Barlgura_Free.zip",
+      "portraitPath": "VTT28_Barlgura_Free/Portrait/BarlguraF.png"
+    },
+    {
+      "id": "29",
+      "name": "Centaur",
+      "url": "https://www.patreon.com/posts/29-centaur-15934826",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471214",
+      "zipFilename": "VTT29_Centaur_Free.zip",
+      "portraitPath": "VTT29_Centaur_Free/Portrait/Centaurf.png"
+    },
+    {
+      "id": "30",
+      "name": "Ninja",
+      "url": "https://www.patreon.com/posts/30-ninja-16277617",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5471217",
+      "zipFilename": "VTT30_Ninja_Free.zip",
+      "portraitPath": "VTT30_Ninja_Free/Portrait/NinjaFree.png"
+    },
+    {
+      "id": "31",
+      "name": "Manes",
+      "url": "https://www.patreon.com/posts/31-manes-16541986",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423266",
+      "zipFilename": "VTT31_Manes_Free.zip",
+      "portraitPath": "VTT31_Manes_Free/Portrait/Manes-Free.png"
+    },
+    {
+      "id": "32",
+      "name": "Gnoll Hunter",
+      "url": "https://www.patreon.com/posts/32-33-gnoll-16801938",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5549515",
+      "zipFilename": "VTT32_GnollHunter_Free.zip",
+      "portraitPath": "VTT32_GnollHunter_Free/Portrait/GnollHunterFree.png"
+    },
+    {
+      "id": "33",
+      "name": "Gnoll Warrior",
+      "url": "https://www.patreon.com/posts/32-33-gnoll-16801938",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5549521",
+      "zipFilename": "VTT33_GnollWarrior_Free.zip",
+      "portraitPath": "VTT33_GnollWarrior_Free/Portrait/GnollWarriorFree.png"
+    },
+    {
+      "id": "34",
+      "name": "Flind",
+      "url": "https://www.patreon.com/posts/34-flind-16933680",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5549535",
+      "zipFilename": "VTT34_Flind_Free.zip",
+      "portraitPath": "VTT34_Flind_Free/Portrait/Flind_Free.png"
+    },
+    {
+      "id": "35",
+      "name": "GnollCaster",
+      "url": "https://www.patreon.com/posts/35-36-gnoll-and-17256502",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5549546",
+      "zipFilename": "VTT35_GnollCaster_Free.zip",
+      "portraitPath": "VTT35_GnollCaster_Free/Portrait/GnollCasterFree.png"
+    },
+    {
+      "id": "36",
+      "name": "Hyena",
+      "url": "https://www.patreon.com/posts/35-36-gnoll-and-17256502",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5549553",
+      "zipFilename": "VTT36_Hyena_Free.zip",
+      "portraitPath": "VTT36_Hyena_Free/Portrait/HyenaFree.png"
+    },
+    {
+      "id": "37",
+      "name": "Whiterling",
+      "url": "https://www.patreon.com/posts/37-gnoll-17656550",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5549563",
+      "zipFilename": "VTT37_Whiterling_Free.zip",
+      "portraitPath": "VTT37_Whiterling_Free/Portrait/WitherlingFree.png"
+    },
+    {
+      "id": "38",
+      "name": "Shoosuva",
+      "url": "https://www.patreon.com/posts/38-shoosuva-17942958",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5549573",
+      "zipFilename": "VTT38_Shoosuva_Free.zip",
+      "portraitPath": "VTT38_Shoosuva_Free/Portrait/ShoosuvaFree.png"
+    },
+    {
+      "id": "39",
+      "name": "Leucrotta",
+      "url": "https://www.patreon.com/posts/39-leucrotta-17943074",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5549580",
+      "zipFilename": "VTT39_Leucrotta_Free.zip",
+      "portraitPath": "VTT39_Leucrotta_Free/Portrait/LeucrottaFree.png"
+    },
+    {
+      "id": "40",
+      "name": "Vistana Tiefling",
+      "url": "https://www.patreon.com/posts/40-vistana-18066778",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5549606",
+      "zipFilename": "VTT40_VistanaTiefling_Free.zip",
+      "portraitPath": "VTT40_VistanaTiefling_Free/Portrait/VistanaTieflingFree.png"
+    },
+    {
+      "id": "41",
+      "name": "Giant Gnoll",
+      "url": "https://www.patreon.com/posts/41-giant-gnoll-18228101",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5549609",
+      "zipFilename": "VTT41_GiantGnoll_Free.zip",
+      "portraitPath": "VTT41_GiantGnoll_Free/Portrait/GiantGnollFree.png"
+    },
+    {
+      "id": "42",
+      "name": "Treasure Goblin",
+      "url": "https://www.patreon.com/posts/42-treasure-18355534",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423379",
+      "zipFilename": "VTT42_TreasureGoblin_Free.zip",
+      "portraitPath": "VTT42_TreasureGoblin_Free/Portrait/Treasure-Goblin-Free.png"
+    },
+    {
+      "id": "43",
+      "name": "Samurai",
+      "url": "https://www.patreon.com/posts/43-samurai-18536874",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423383",
+      "zipFilename": "VTT43_Samurai_Free.zip",
+      "portraitPath": "VTT43_Samurai_Free/Portrait/Samurai-Free.png"
+    },
+    {
+      "id": "44",
+      "name": "Worg",
+      "url": "https://www.patreon.com/posts/44-worg-18897463",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=11268421",
+      "zipFilename": "VTT44_Worg_Free.zip",
+      "portraitPath": "VTT44_Worg_Free/Portrait/PaperForge44_WorgPortrait_Free.png"
+    },
+    {
+      "id": "45",
+      "name": "Worg Riders 1",
+      "url": "https://www.patreon.com/posts/45-worg-riders-18897516",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423384",
+      "zipFilename": "VTT45_WorgRiders1_Free.zip",
+      "portraitPath": "VTT45_WorgRiders1_Free/Portrait/GoblinRider-A-Front-3-Free.png"
+    },
+    {
+      "id": "45b",
+      "name": "Worg Riders",
+      "url": "https://www.patreon.com/posts/45-worg-riders-18897516",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423386",
+      "zipFilename": "VTT45_WorgRiders2_Free.zip",
+      "portraitPath": "VTT45_WorgRiders2_Free/Portrait/Goblin-Rider-Z-Free.png"
+    },
+    {
+      "id": "46",
+      "name": "Centaur",
+      "url": "https://www.patreon.com/posts/46-centaur-2-19375032",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423387",
+      "zipFilename": "VTT46_Centaur2_Free.zip",
+      "portraitPath": "VTT46_Centaur2_Free/Portrait/Centaur-Free.png"
+    },
+    {
+      "id": "47",
+      "name": "Minotaur 1",
+      "url": "https://www.patreon.com/posts/47-minotaurs-19536398",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423388",
+      "zipFilename": "VTT47_Minotaur1_Free.zip",
+      "portraitPath": "VTT47_Minotaur1_Free/Portrait/47MinotaurPortrait Free.png"
+    },
+    {
+      "id": "47b",
+      "name": "Minotaur",
+      "url": "https://www.patreon.com/posts/47-minotaurs-19536398",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423390",
+      "zipFilename": "VTT47_Minotaur2_Free.zip",
+      "portraitPath": "VTT47_Minotaur2_Free/Portrait/47MinotaurPortrait2-Free.png"
+    },
+    {
+      "id": "48",
+      "name": "Barbarian (Axe)",
+      "url": "https://www.patreon.com/posts/48-barbarian-2-19763850",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423391",
+      "zipFilename": "VTT48_Barbarian Axe_Free.zip",
+      "portraitPath": "VTT48_Barbarian Axe_Free/Portrait/48_Barbarian1Portrait-Free.png"
+    },
+    {
+      "id": "48b",
+      "name": "Barbarian (Sword)",
+      "url": "https://www.patreon.com/posts/48-barbarian-2-19763850",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423393",
+      "zipFilename": "VTT48_Barbarian Sword_Free.zip",
+      "portraitPath": "VTT48_Barbarian Sword_Free/Portrait/48_Barbarian2Portrait-Free.png"
+    },
+    {
+      "id": "49",
+      "name": "Wererat Giant Rat",
+      "url": "https://www.patreon.com/posts/49-50-51-wererat-20415574",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423394",
+      "zipFilename": "VTT49_Wererat GiantRat_Free.zip",
+      "portraitPath": "VTT49_Wererat GiantRat_Free/Portrait/49_Giant_RatPortrait-Free.png"
+    },
+    {
+      "id": "50",
+      "name": "Wererat Hybrid",
+      "url": "https://www.patreon.com/posts/49-50-51-wererat-20415574",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423395",
+      "zipFilename": "VTT50_Wererat Hybrid_Free.zip",
+      "portraitPath": "VTT50_Wererat Hybrid_Free/Portrait/50_HybridWereRat_Portrait-Free.png"
+    },
+    {
+      "id": "51",
+      "name": "Wererat Humanoid",
+      "url": "https://www.patreon.com/posts/49-50-51-wererat-20415574",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423397",
+      "zipFilename": "VTT51_Wererat Humanoid_Free.zip",
+      "portraitPath": "VTT51_Wererat Humanoid_Free/Portrait/51_HumanoidWereRat_Portrait-Free.png"
+    },
+    {
+      "id": "52",
+      "name": "Werewolf Humanoid",
+      "url": "https://www.patreon.com/posts/52-werewolf-form-20788219",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6423398",
+      "zipFilename": "VTT52_Werewolf Humanoid_Free.zip",
+      "portraitPath": "VTT52_Werewolf Humanoid_Free/Portrait/52_WerewolfHumanoid_Portrait-Free.png"
+    },
+    {
+      "id": "53",
+      "name": "Werewolf Hybrid Free",
+      "url": "https://www.patreon.com/posts/53-werewolf-form-20951158",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6512636",
+      "zipFilename": "VTT53_Werewolf Hybrid-Free.zip",
+      "portraitPath": "VTT53_Werewolf Hybrid-Free/Portrait/53_Werewolf(Hybrid)-Free.png"
+    },
+    {
+      "id": "54",
+      "name": "Wolf",
+      "url": "https://www.patreon.com/posts/54-55-wolf-21135615",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6512637",
+      "zipFilename": "VTT54-Wolf-Free.zip",
+      "portraitPath": "VTT54-Wolf-Free/Portrait/54-Wolf-Portrait--Free.png"
+    },
+    {
+      "id": "56",
+      "name": "Bear",
+      "url": "https://www.patreon.com/posts/56-57-58-bears-21460503",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6512638",
+      "zipFilename": "VTT56-Bear-Free.zip",
+      "portraitPath": "VTT56-Bear-Free/Portrait/56-Bear-Portrait-Free.png"
+    },
+    {
+      "id": "58",
+      "name": "Werebear Humanoid",
+      "url": "https://www.patreon.com/posts/56-57-58-bears-21460503",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6512641",
+      "zipFilename": "VTT58-WereBearHumanoid-Free.zip",
+      "portraitPath": "VTT58-WereBearHumanoid-Free/Portrait/58-WereBearHumanoid-Portrait--Free.png"
+    },
+    {
+      "id": "59",
+      "name": "Werebear Hybrid",
+      "url": "https://www.patreon.com/posts/59-werebear-21728443",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6512642",
+      "zipFilename": "VTT59-Werebear-Hybrid-Free.zip",
+      "portraitPath": "VTT59-Werebear-Hybrid-Free/Portrait/59-Werebear-hybrid-Free.png"
+    },
+    {
+      "id": "60",
+      "name": "WereTiger Humanoid",
+      "url": "https://www.patreon.com/posts/60-weretiger-21922519",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6512643",
+      "zipFilename": "VTT60-WereTigerHumanoid-Free.zip",
+      "portraitPath": "VTT60-WereTigerHumanoid-Free/Portrait/60-WereTigerHumanoid-Free.png"
+    },
+    {
+      "id": "61",
+      "name": "Headless Horseman",
+      "url": "https://www.patreon.com/posts/61-62-headless-22405495",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6560547",
+      "zipFilename": "VTT61_HeadlessHorseman_Free.zip",
+      "portraitPath": "VTT61_HeadlessHorseman_Free/Portrait/61HeadlessHorseman-Free.png"
+    },
+    {
+      "id": "62",
+      "name": "Flaming Horseman",
+      "url": "https://www.patreon.com/posts/61-62-headless-22405495",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6560549",
+      "zipFilename": "VTT62_FlamingHorseman_Free.zip",
+      "portraitPath": "VTT62_FlamingHorseman_Free/Portrait/62FlamingHorseman-Free.png"
+    },
+    {
+      "id": "63",
+      "name": "Kraken",
+      "url": "https://www.patreon.com/posts/release-kraken-22702152",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=11268422",
+      "zipFilename": "VTT63_Kraken_Free.zip",
+      "portraitPath": "VTT63_Kraken_Free/Portrait/63_KrakenPortrait_Free.png"
+    },
+    {
+      "id": "64",
+      "name": "Weretiger Hybrid",
+      "url": "https://www.patreon.com/posts/64-weretiger-22859922",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6560550",
+      "zipFilename": "VTT64_Weretiger Hybrid_Free.zip",
+      "portraitPath": "VTT64_Weretiger Hybrid_Free/Portrait/64-Weretiger-Hybrid-Portrait-Free.png"
+    },
+    {
+      "id": "65",
+      "name": "Zombie 1",
+      "url": "https://www.patreon.com/posts/65-66-pack-23092833",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6560551",
+      "zipFilename": "VTT65_Zombie1_Free.zip",
+      "portraitPath": "VTT65_Zombie1_Free/Portrait/VTT65-Zombie1-Free.png"
+    },
+    {
+      "id": "65b",
+      "name": "Zombie 1 Shiny",
+      "url": "https://www.patreon.com/posts/65-66-pack-23092833",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6560552",
+      "zipFilename": "VTT65_Zombie1Shiny_Free.zip",
+      "portraitPath": "VTT65_Zombie1Shiny_Free/Portrait/VTT65-Zombie1Shiny-Free.png"
+    },
+    {
+      "id": "65c",
+      "name": "Zombie 2",
+      "url": "https://www.patreon.com/posts/65-66-pack-23092833",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6560553",
+      "zipFilename": "VTT65_Zombie2_ Free.zip",
+      "portraitPath": "VTT65_Zombie2_ Free/Portrait/65-Zombie-2-Free.png"
+    },
+    {
+      "id": "65d",
+      "name": "Zombie 2 Shiny",
+      "url": "https://www.patreon.com/posts/65-66-pack-23092833",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6560554",
+      "zipFilename": "VTT65_Zombie2Shiny_Free.zip",
+      "portraitPath": "VTT65_Zombie2Shiny_Free/Portrait/65-Zombie-2Shiny-Free.png"
+    },
+    {
+      "id": "65e",
+      "name": "Zombie 3",
+      "url": "https://www.patreon.com/posts/65-66-pack-23092833",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6560555",
+      "zipFilename": "VTT65_Zombie3_Free.zip",
+      "portraitPath": "VTT65_Zombie3_Free/Portrait/65_Zombie3_Free.png"
+    },
+    {
+      "id": "65f",
+      "name": "Zombie 3 Shiny",
+      "url": "https://www.patreon.com/posts/65-66-pack-23092833",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6560563",
+      "zipFilename": "VTT65_Zombie3shiny_Free.zip",
+      "portraitPath": "VTT65_Zombie3shiny_Free/Portrait/65_Zombie3shiny_Free.png"
+    },
+    {
+      "id": "66",
+      "name": "Necromancer",
+      "url": "https://www.patreon.com/posts/65-66-pack-23092833",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6560564",
+      "zipFilename": "VTT66_Necromancer_Free.zip",
+      "portraitPath": "VTT66_Necromancer_Free/Portrait/66_necromancer-Free.png"
+    },
+    {
+      "id": "67",
+      "name": "Tiger",
+      "url": "https://www.patreon.com/posts/67-tiger-23385993",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=11268424",
+      "zipFilename": "VTT67_Tiger_Free.zip",
+      "portraitPath": "VTT67_Tiger_Free/Portrait/67_TigerPortrait_Free.png"
+    },
+    {
+      "id": "68",
+      "name": "Were Crocodile",
+      "url": "https://www.patreon.com/posts/68-71-werecrocodile-24057085",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=11268427",
+      "zipFilename": "VTT68_WereCrocodile_Free.zip",
+      "portraitPath": "VTT68_WereCrocodile_Free/Portrait/68_WereCrocodilePortrait_Free.png"
+    },
+    {
+      "id": "70",
+      "name": "Crocodile",
+      "url": "https://www.patreon.com/posts/70-crocodile-24142715",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=11268430",
+      "zipFilename": "VTT70_Crocodile_Free.zip",
+      "portraitPath": "VTT70_Crocodile_Free/Portrait/PaperForge70_CrocodilePortrait_Free.png"
+    },
+    {
+      "id": "71",
+      "name": "Werecrocodile Humanoid",
+      "url": "https://www.patreon.com/posts/71-werecrocodile-24142971",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=11268431",
+      "zipFilename": "VTT71_WerecrocodileHumanoid_Free.zip",
+      "portraitPath": "VTT71_WerecrocodileHumanoid_Free/Portrait/PaperForge71_WerecrocodileHumanoidPortrait_Free.png"
+    },
+    {
+      "id": "72",
+      "name": "Dragonborn Paladin",
+      "url": "https://www.patreon.com/posts/72-dragonborn-24299072",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=11268432",
+      "zipFilename": "VTT72_Dragonborn_Free.zip",
+      "portraitPath": "VTT72_Dragonborn_Free/Portrait/PaperForge72_DragonbornPaladinPortrait_Free.png"
+    },
+    {
+      "id": "73",
+      "name": "Dragonborn Ranger",
+      "url": "https://www.patreon.com/posts/73-dragonborn-24476937",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=11268433",
+      "zipFilename": "VTT73_DragonbornRanger_Free.zip",
+      "portraitPath": "VTT73_DragonbornRanger_Free/Portrait/PaperForge73_DragonbornRangerPortrait_Free.png"
+    },
+    {
+      "id": "74",
+      "name": "Tiefling Sorceress",
+      "url": "https://www.patreon.com/posts/74-tiefling-24640047",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5500310",
+      "zipFilename": "VTT74_TieflingSorceress_Free.zip",
+      "portraitPath": "VTT74_TieflingSorceress_Free/Portrait/TieflingSorceressFree.png"
+    },
+    {
+      "id": "75",
+      "name": "Halfling Ranger",
+      "url": "https://www.patreon.com/posts/halfling-ranger-24681493",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=11299440",
+      "zipFilename": "VTT75_HalflingRanger_Free.zip",
+      "portraitPath": "VTT75_HalflingRanger_Free/Portrait/PaperForge75_HalflingRanger_Free.png"
+    },
+    {
+      "id": "76",
+      "name": "Half Orc Warrior",
+      "url": "https://www.patreon.com/posts/76-half-orc-24964103",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=11299325",
+      "zipFilename": "VTT76_HalfOrcWarrior_Free.zip",
+      "portraitPath": "VTT76_HalfOrcWarrior_Free/Portrait/PaperForge76_HalfOrcWarriorPortrait_Free.png"
+    },
+    {
+      "id": "77a",
+      "name": "Forest Spirit (Horns)",
+      "url": "https://www.patreon.com/posts/77-forest-spirit-25146221",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=16056444",
+      "zipFilename": "VTT77_ForestSpiritPack_Free.zip",
+      "portraitPath": "VTT77_ForestSpiritPack_Free/Portrait/Horns/PaperForge77_ForestSpiritPack_Horns-Free.png"
+    },
+    {
+      "id": "77b",
+      "name": "Forest Spirit (Leafy)",
+      "url": "https://www.patreon.com/posts/77-forest-spirit-25146221",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=16056444",
+      "zipFilename": "VTT77_ForestSpiritPack_Free.zip",
+      "portraitPath": "VTT77_ForestSpiritPack_Free/Portrait/Leafy/PaperForge77_ForestSpiritPack_LeafyPortrait-Free.png"
+    },
+    {
+      "id": "77c",
+      "name": "Forest Spirit (Spirit)",
+      "url": "https://www.patreon.com/posts/77-forest-spirit-25146221",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=16056444",
+      "zipFilename": "VTT77_ForestSpiritPack_Free.zip",
+      "portraitPath": "VTT77_ForestSpiritPack_Free/Portrait/Spirit/PaperForge77_ForestSpiritPack_ForestSpiritportrait-Free.png"
+    },
+    {
+      "id": "77d",
+      "name": "Forest Spirit (Viney)",
+      "url": "https://www.patreon.com/posts/77-forest-spirit-25146221",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=16056444",
+      "zipFilename": "VTT77_ForestSpiritPack_Free.zip",
+      "portraitPath": "VTT77_ForestSpiritPack_Free/Portrait/Viney/PaperForge77_ForestSpiritPack_Viney-Free.png"
+    },
+    {
+      "id": "78",
+      "name": "Medusa",
+      "url": "https://www.patreon.com/posts/78-medusa-25588193",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=16056443",
+      "zipFilename": "VTT78_Medusa_Free.zip",
+      "portraitPath": "VTT78_Medusa_Free/Portrait/78_MedusaPortrait-Free.png"
+    },
+    {
+      "id": "82",
+      "name": "Clockwork Golem Pack",
+      "url": "https://www.patreon.com/posts/82-clockwork-25953755",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=16056445",
+      "zipFilename": "VTT82_ClockworkGolemPack_Free.zip",
+      "portraitPath": "VTT82_ClockworkGolemPack_Free/Portrait/Bomb/82_BombPortrait-Free.png"
+    },
+    {
+      "id": "85",
+      "name": "Hydra",
+      "url": "https://www.patreon.com/posts/85-hydra-26842819",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6652700",
+      "zipFilename": "VTT85_Hydra_Free.zip",
+      "portraitPath": "VTT85_Hydra_Free/Portrait/85_Hydra-Free.png"
+    }
+  ]
+}
