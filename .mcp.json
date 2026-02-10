@@ -7,9 +7,7 @@
     "chrome": {
       "type": "stdio",
       "command": "pnpx",
-      "args": [
-        "chrome-devtools-mcp@latest"
-      ],
+      "args": ["chrome-devtools-mcp@latest"],
       "env": {}
     }
   }

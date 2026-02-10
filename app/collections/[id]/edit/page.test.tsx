@@ -76,17 +76,13 @@ describe("EditCollectionPage", () => {
       discordId === CREATOR_DISCORD_ID ? privateCollection : null
     );
 
-    await expect(EditCollectionPage({ params })).rejects.toBe(
-      notFoundSentinel
-    );
+    await expect(EditCollectionPage({ params })).rejects.toBe(notFoundSentinel);
   });
 
   it("returns not found when not logged in", async () => {
     mockAuth.mockResolvedValue(null);
 
-    await expect(EditCollectionPage({ params })).rejects.toBe(
-      notFoundSentinel
-    );
+    await expect(EditCollectionPage({ params })).rejects.toBe(notFoundSentinel);
     expect(mockGetCollection).not.toHaveBeenCalled();
   });
 });

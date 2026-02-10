@@ -707,28 +707,28 @@ describe("GET /api/monsters", () => {
     expect(data.errors[0].title).toContain("Invalid include parameter");
   });
 
-  it.each([
-    ["standard"],
-    ["legendary"],
-    ["minion"],
-    ["all"],
-  ])("should handle type=%s parameter", async (type) => {
-    mockPaginateMonsters.mockResolvedValue({
-      data: [],
-      nextCursor: null,
-    });
+  it.each([["standard"], ["legendary"], ["minion"], ["all"]])(
+    "should handle type=%s parameter",
+    async (type) => {
+      mockPaginateMonsters.mockResolvedValue({
+        data: [],
+        nextCursor: null,
+      });
 
-    const request = new Request(`http://localhost:3000/api/monsters?type=${type}`);
-    const response = await GET(request);
+      const request = new Request(
+        `http://localhost:3000/api/monsters?type=${type}`
+      );
+      const response = await GET(request);
 
-    expect(response.status).toBe(200);
-    expect(mockPaginateMonsters).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type,
-        includePrivate: false,
-      })
-    );
-  });
+      expect(response.status).toBe(200);
+      expect(mockPaginateMonsters).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type,
+          includePrivate: false,
+        })
+      );
+    }
+  );
 
   it("should reject invalid type parameter", async () => {
     const request = new Request(
@@ -759,7 +759,9 @@ describe("GET /api/monsters", () => {
       nextCursor: null,
     });
 
-    const request = new Request(`http://localhost:3000/api/monsters?role=${role}`);
+    const request = new Request(
+      `http://localhost:3000/api/monsters?role=${role}`
+    );
     const response = await GET(request);
 
     expect(response.status).toBe(200);
