@@ -30,12 +30,30 @@ describe("proxy", () => {
     expect(res?.status).toBe(400);
   });
 
-  it("allows POST to page route with Next-Action header", async () => {
+  it("allows POST to page route with Next-Action header and valid origin", async () => {
+    const req = makeRequest("POST", "/monsters/abc-123", {
+      "next-action": "abc123",
+      origin: "https://nimble.nexus",
+    });
+    const res = await proxy(req);
+    expect(res?.status).not.toBe(400);
+  });
+
+  it("rejects POST with Next-Action but spoofed origin", async () => {
+    const req = makeRequest("POST", "/monsters/abc-123", {
+      "next-action": "abc123",
+      origin: "https://evil.com",
+    });
+    const res = await proxy(req);
+    expect(res?.status).toBe(400);
+  });
+
+  it("rejects POST with Next-Action but missing origin", async () => {
     const req = makeRequest("POST", "/monsters/abc-123", {
       "next-action": "abc123",
     });
     const res = await proxy(req);
-    expect(res?.status).not.toBe(400);
+    expect(res?.status).toBe(400);
   });
 
   it("allows POST to /api/ routes", async () => {
