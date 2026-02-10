@@ -39,5 +39,4 @@ public/game-icons
 public/blob-storage
 public/paperforge
 data/paperforge*
-!data/paperforge.csv
 !data/paperforge-legacy.json
