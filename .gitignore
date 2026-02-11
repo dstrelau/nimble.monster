@@ -38,5 +38,4 @@ tmp
 public/game-icons
 public/blob-storage
 public/paperforge
-data/paperforge*
-!data/paperforge-legacy.json
+data/paperforge

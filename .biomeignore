@@ -2,3 +2,4 @@
 prisma/
 lib/prisma/
 tailwind.config.js
+data/paperforge-*.json
