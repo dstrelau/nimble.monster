@@ -13,15 +13,13 @@ interface ChangelogEntry {
 const changelog: ChangelogEntry[] = [
   {
     date: "10 February 2026",
-    entries: [
-      "Add this Changelog.",
-    ],
+    entries: ["Add this Changelog."],
   },
   {
     date: "9 February 2026",
     entries: [
       "Link Paperforge minis to paperforgeminis.com instead of Patreon wherever possible.",
-      "Monsters API: add type and role attributes and filters."
+      "Monsters API: add type and role attributes and filters.",
     ],
   },
   {
@@ -33,9 +31,7 @@ const changelog: ChangelogEntry[] = [
   },
   {
     date: "4 February 2026",
-    entries: [
-      'Add "Parchment" card theme matching the official GMG styling.',
-    ],
+    entries: ['Add "Parchment" card theme matching the official GMG styling.'],
   },
   {
     date: "3 February 2026",
@@ -46,9 +42,7 @@ const changelog: ChangelogEntry[] = [
   },
   {
     date: "2 February 2026",
-    entries: [
-      "Add official monsters from the Nimble GMG.",
-    ],
+    entries: ["Add official monsters from the Nimble GMG."],
   },
   {
     date: "29 January 2026",
