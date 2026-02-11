@@ -4,13 +4,14 @@
  * Values are integers: positive for bonuses, negative for penalties.
  */
 export type ParsedSaves = {
+  all?: number;
   str?: number;
   dex?: number;
   int?: number;
   wil?: number;
 };
 
-const ABILITY_ABBREVIATIONS = ["str", "dex", "int", "wil"];
+const ABILITY_ABBREVIATIONS = ["all", "str", "dex", "int", "wil"];
 
 /**
  * Parses a save string like "STR++ DEX-" into an object like { str: 2, dex: -1 }.

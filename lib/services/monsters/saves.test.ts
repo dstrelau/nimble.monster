@@ -92,6 +92,12 @@ describe("parseSaves", () => {
     });
   });
 
+  it("parses ALL+ and ALL- saves", () => {
+    expect(parseSaves("ALL+")).toEqual({ all: 1 });
+    expect(parseSaves("ALL-")).toEqual({ all: -1 });
+    expect(parseSaves("ALL++")).toEqual({ all: 2 });
+  });
+
   it("ignores old D&D stats (CON, WIS, CHA)", () => {
     expect(parseSaves("STR+ CON+ WIS+ CHA+")).toEqual({ str: 1 });
   });
