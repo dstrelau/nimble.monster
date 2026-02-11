@@ -123,7 +123,9 @@ function loadAllSyncMinis(): SyncMini[] {
   const legacy = loadLegacy();
 
   const catalogMinis: SyncMini[] = getMinisWithFreeVTT(catalog).map((m) => {
-    const vtt = getFreeVTTDownload(m)!;
+    const vtt = getFreeVTTDownload(m);
+    if (!vtt)
+      throw new Error(`Expected free VTT download for mini ${m.number}`);
     return {
       miniId: String(m.number),
       name: m.name,
@@ -137,13 +139,13 @@ function loadAllSyncMinis(): SyncMini[] {
 
   const legacyMinis: SyncMini[] = legacy.minis
     .filter((m) => !catalogIds.has(m.id))
-    .filter((m) => m.downloadUrl)
+    .filter((m): m is LegacyMini & { downloadUrl: string } => !!m.downloadUrl)
     .map((m) => ({
       miniId: m.id,
       name: m.name,
       url: m.url,
       zipFilename: m.zipFilename,
-      downloadUrl: m.downloadUrl!,
+      downloadUrl: m.downloadUrl,
       portraitPath: m.portraitPath,
     }));
 
@@ -459,7 +461,7 @@ async function extractPortraitImage(
 
     const zip = new AdmZip(zipPath);
 
-    let portraitEntry;
+    let portraitEntry: AdmZip.IZipEntry | null | undefined;
     if (explicitPath) {
       portraitEntry = zip.getEntry(explicitPath);
       if (!portraitEntry) {
