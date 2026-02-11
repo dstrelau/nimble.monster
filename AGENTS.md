@@ -20,6 +20,10 @@
 - Production uses embedded replicas (local SQLite + Turso sync)
 - See `lib/db/CLAUDE.md` for detailed database architecture info
 
+# Changelog
+
+- When adding user-facing features or fixes, add an entry to `app/changelog/page.tsx`.
+
 # Code Style
 
 - Prefer SSR when possible

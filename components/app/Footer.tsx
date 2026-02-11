@@ -1,4 +1,11 @@
-import { Beer, Coins, Mail, NotebookPen, ScrollText } from "lucide-react";
+import {
+  Beer,
+  Coins,
+  History,
+  Mail,
+  NotebookPen,
+  ScrollText,
+} from "lucide-react";
 import Link from "next/link";
 import { SITE_EMAIL, SITE_NAME } from "@/lib/utils/branding";
 import { Nexus } from "../icons/Nexus";
@@ -21,6 +28,11 @@ export const Footer = () => {
           icon: <NotebookPen className="size-4" />,
           url: "/terms/attribution",
           text: "Attribution",
+        },
+        {
+          icon: <History className="size-4" />,
+          url: "/changelog",
+          text: "Changelog",
         },
       ],
     },
