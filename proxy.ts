@@ -1,21 +1,9 @@
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
-export default auth((request) => {
+const authProxy = auth((request) => {
   const { nextUrl, auth: session } = request;
-
-  // Reject bot POSTs to page routes: require next-action header and a
-  // matching origin (bots scrape next-action IDs but send spoofed origins,
-  // causing Next.js "Invalid Server Actions request" 500s).
-  if (request.method === "POST" && !nextUrl.pathname.startsWith("/api/")) {
-    const origin = request.headers.get("origin") ?? "";
-    if (
-      !request.headers.get("next-action") ||
-      !origin.includes("nimble.nexus")
-    ) {
-      return new Response("Bad Request", { status: 400 });
-    }
-  }
 
   const hostname = request.headers.get("host") || "";
 
@@ -37,6 +25,28 @@ export default auth((request) => {
 
   return NextResponse.next();
 });
+
+export default function proxy(request: NextRequest) {
+  // Reject bot POSTs to page routes: require next-action header and a
+  // matching origin (bots scrape next-action IDs but send spoofed origins,
+  // causing Next.js "Invalid Server Actions request" 500s).
+  // This runs outside auth() because next-auth/Next.js may short-circuit
+  // requests with next-action headers before the auth callback executes.
+  if (
+    request.method === "POST" &&
+    !request.nextUrl.pathname.startsWith("/api/")
+  ) {
+    const origin = request.headers.get("origin") ?? "";
+    if (
+      !request.headers.get("next-action") ||
+      !origin.includes("nimble.nexus")
+    ) {
+      return new Response("Bad Request", { status: 400 });
+    }
+  }
+
+  return authProxy(request, {} as never);
+}
 
 export const config = {
   matcher: [
