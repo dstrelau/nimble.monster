@@ -14,11 +14,32 @@
 - Uses Drizzle ORM with Turso (SQLite via libsql)
 - Schema: `lib/db/schema.ts`
 - Client: `lib/db/client.ts` - auto-retries on stale connection errors
-- `pnpm run db:generate` - Generate migrations
+- `pnpm run db:generate` - Generate migrations (see workflow below)
 - `pnpm run db:migrate` - Run migrations
 - `pnpm run db:push` - Push schema changes directly (dev)
 - Production uses embedded replicas (local SQLite + Turso sync)
 - See `lib/db/CLAUDE.md` for detailed database architecture info
+
+## Creating Migrations
+
+`drizzle-kit generate` diffs `lib/db/schema.ts` against the last snapshot in `migrations/meta/`.
+If the snapshot is missing or stale, it will regenerate the entire schema as CREATE TABLE statements
+instead of producing incremental ALTER TABLE statements.
+
+Workflow:
+1. Edit `lib/db/schema.ts` with your changes
+2. Run `pnpm run db:generate` to create a migration
+3. **Review the generated SQL** — it should contain only ALTER TABLE / CREATE INDEX etc., not CREATE TABLE for existing tables
+4. If it generated a full schema recreate, the snapshot is out of sync. Fix:
+   - Delete the bad migration and its snapshot from `migrations/meta/`
+   - Revert `migrations/meta/_journal.json` to remove the bad entry
+   - Create a fresh temp DB: `rm -f tmp/migrate.db && mkdir -p tmp`
+   - Apply existing migrations: `DATABASE_URL=file:tmp/migrate.db pnpm run db:migrate`
+   - Regenerate: `DATABASE_URL=file:tmp/migrate.db pnpm run db:generate`
+   - If still wrong, write the migration SQL by hand (e.g. `ALTER TABLE x ADD COLUMN y text;`)
+   - The generated snapshot in `migrations/meta/` is still needed for future diffs — keep it
+5. Run `pnpm run db:push` to apply changes to your dev DB
+6. Test: `rm -f tmp/migrate.db && DATABASE_URL=file:tmp/migrate.db pnpm run db:migrate`
 
 # Changelog
 

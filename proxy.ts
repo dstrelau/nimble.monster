@@ -39,7 +39,7 @@ export default function proxy(request: NextRequest) {
     const origin = request.headers.get("origin") ?? "";
     if (
       !request.headers.get("next-action") ||
-      !origin.includes("nimble.nexus")
+      !(origin.includes("nimble.nexus") || origin.includes("localhost"))
     ) {
       return new Response("Bad Request", { status: 400 });
     }

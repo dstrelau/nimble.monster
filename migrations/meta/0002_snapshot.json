@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "4495e89c-b3a0-4e24-9aca-d0bf7de794ca",
+  "id": "a2a6e9bd-d63e-4ae9-a9e4-845d70e5df65",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "ancestries": {
@@ -94,9 +94,7 @@
       "indexes": {
         "idx_ancestries_user_id": {
           "name": "idx_ancestries_user_id",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -105,12 +103,8 @@
           "name": "ancestries_user_id_users_id_fk",
           "tableFrom": "ancestries",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         },
@@ -118,12 +112,8 @@
           "name": "ancestries_source_id_sources_id_fk",
           "tableFrom": "ancestries",
           "tableTo": "sources",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         }
@@ -156,12 +146,8 @@
           "name": "ancestries_awards_ancestry_id_ancestries_id_fk",
           "tableFrom": "ancestries_awards",
           "tableTo": "ancestries",
-          "columnsFrom": [
-            "ancestry_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["ancestry_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -169,22 +155,15 @@
           "name": "ancestries_awards_award_id_awards_id_fk",
           "tableFrom": "ancestries_awards",
           "tableTo": "awards",
-          "columnsFrom": [
-            "award_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["award_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "ancestries_awards_ancestry_id_award_id_pk": {
-          "columns": [
-            "ancestry_id",
-            "award_id"
-          ],
+          "columns": ["ancestry_id", "award_id"],
           "name": "ancestries_awards_ancestry_id_award_id_pk"
         }
       },
@@ -270,9 +249,7 @@
       "indexes": {
         "awards_slug_unique": {
           "name": "awards_slug_unique",
-          "columns": [
-            "slug"
-          ],
+          "columns": ["slug"],
           "isUnique": true
         }
       },
@@ -354,9 +331,7 @@
       "indexes": {
         "idx_backgrounds_user_id": {
           "name": "idx_backgrounds_user_id",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -365,12 +340,8 @@
           "name": "backgrounds_user_id_users_id_fk",
           "tableFrom": "backgrounds",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         },
@@ -378,12 +349,8 @@
           "name": "backgrounds_source_id_sources_id_fk",
           "tableFrom": "backgrounds",
           "tableTo": "sources",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         }
@@ -416,12 +383,8 @@
           "name": "backgrounds_awards_background_id_backgrounds_id_fk",
           "tableFrom": "backgrounds_awards",
           "tableTo": "backgrounds",
-          "columnsFrom": [
-            "background_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["background_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -429,22 +392,15 @@
           "name": "backgrounds_awards_award_id_awards_id_fk",
           "tableFrom": "backgrounds_awards",
           "tableTo": "awards",
-          "columnsFrom": [
-            "award_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["award_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "backgrounds_awards_background_id_award_id_pk": {
-          "columns": [
-            "background_id",
-            "award_id"
-          ],
+          "columns": ["background_id", "award_id"],
           "name": "backgrounds_awards_background_id_award_id_pk"
         }
       },
@@ -519,9 +475,7 @@
       "indexes": {
         "idx_collections_user_id": {
           "name": "idx_collections_user_id",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -530,12 +484,8 @@
           "name": "collections_user_id_users_id_fk",
           "tableFrom": "collections",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -696,9 +646,7 @@
       "indexes": {
         "idx_companions_user_id": {
           "name": "idx_companions_user_id",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -707,12 +655,8 @@
           "name": "companions_user_id_users_id_fk",
           "tableFrom": "companions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         },
@@ -720,12 +664,8 @@
           "name": "companions_source_id_sources_id_fk",
           "tableFrom": "companions",
           "tableTo": "sources",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         }
@@ -758,12 +698,8 @@
           "name": "companions_awards_companion_id_companions_id_fk",
           "tableFrom": "companions_awards",
           "tableTo": "companions",
-          "columnsFrom": [
-            "companion_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["companion_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -771,22 +707,15 @@
           "name": "companions_awards_award_id_awards_id_fk",
           "tableFrom": "companions_awards",
           "tableTo": "awards",
-          "columnsFrom": [
-            "award_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["award_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "companions_awards_companion_id_award_id_pk": {
-          "columns": [
-            "companion_id",
-            "award_id"
-          ],
+          "columns": ["companion_id", "award_id"],
           "name": "companions_awards_companion_id_award_id_pk"
         }
       },
@@ -855,12 +784,8 @@
           "name": "conditions_creator_id_users_id_fk",
           "tableFrom": "conditions",
           "tableTo": "users",
-          "columnsFrom": [
-            "creator_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["creator_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         }
@@ -950,18 +875,12 @@
       "indexes": {
         "idx_entity_images_status_started": {
           "name": "idx_entity_images_status_started",
-          "columns": [
-            "generation_status",
-            "generation_started_at"
-          ],
+          "columns": ["generation_status", "generation_started_at"],
           "isUnique": false
         },
         "entity_images_entity_type_entity_id_unique": {
           "name": "entity_images_entity_type_entity_id_unique",
-          "columns": [
-            "entity_type",
-            "entity_id"
-          ],
+          "columns": ["entity_type", "entity_id"],
           "isUnique": true
         }
       },
@@ -1048,12 +967,8 @@
           "name": "families_user_id_users_id_fk",
           "tableFrom": "families",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         }
@@ -1188,9 +1103,7 @@
       "indexes": {
         "idx_items_user_id": {
           "name": "idx_items_user_id",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -1199,12 +1112,8 @@
           "name": "items_user_id_users_id_fk",
           "tableFrom": "items",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         },
@@ -1212,12 +1121,8 @@
           "name": "items_source_id_sources_id_fk",
           "tableFrom": "items",
           "tableTo": "sources",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         }
@@ -1250,12 +1155,8 @@
           "name": "items_awards_item_id_items_id_fk",
           "tableFrom": "items_awards",
           "tableTo": "items",
-          "columnsFrom": [
-            "item_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["item_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1263,22 +1164,15 @@
           "name": "items_awards_award_id_awards_id_fk",
           "tableFrom": "items_awards",
           "tableTo": "awards",
-          "columnsFrom": [
-            "award_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["award_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "items_awards_item_id_award_id_pk": {
-          "columns": [
-            "item_id",
-            "award_id"
-          ],
+          "columns": ["item_id", "award_id"],
           "name": "items_awards_item_id_award_id_pk"
         }
       },
@@ -1309,12 +1203,8 @@
           "name": "items_collections_item_id_items_id_fk",
           "tableFrom": "items_collections",
           "tableTo": "items",
-          "columnsFrom": [
-            "item_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["item_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1322,22 +1212,15 @@
           "name": "items_collections_collection_id_collections_id_fk",
           "tableFrom": "items_collections",
           "tableTo": "collections",
-          "columnsFrom": [
-            "collection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["collection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "items_collections_item_id_collection_id_pk": {
-          "columns": [
-            "item_id",
-            "collection_id"
-          ],
+          "columns": ["item_id", "collection_id"],
           "name": "items_collections_item_id_collection_id_pk"
         }
       },
@@ -1596,9 +1479,7 @@
       "indexes": {
         "idx_monsters_user_id": {
           "name": "idx_monsters_user_id",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -1607,12 +1488,8 @@
           "name": "monsters_user_id_users_id_fk",
           "tableFrom": "monsters",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1620,12 +1497,8 @@
           "name": "monsters_source_id_sources_id_fk",
           "tableFrom": "monsters",
           "tableTo": "sources",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         }
@@ -1658,12 +1531,8 @@
           "name": "monsters_awards_monster_id_monsters_id_fk",
           "tableFrom": "monsters_awards",
           "tableTo": "monsters",
-          "columnsFrom": [
-            "monster_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["monster_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1671,22 +1540,15 @@
           "name": "monsters_awards_award_id_awards_id_fk",
           "tableFrom": "monsters_awards",
           "tableTo": "awards",
-          "columnsFrom": [
-            "award_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["award_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "monsters_awards_monster_id_award_id_pk": {
-          "columns": [
-            "monster_id",
-            "award_id"
-          ],
+          "columns": ["monster_id", "award_id"],
           "name": "monsters_awards_monster_id_award_id_pk"
         }
       },
@@ -1717,12 +1579,8 @@
           "name": "monsters_collections_monster_id_monsters_id_fk",
           "tableFrom": "monsters_collections",
           "tableTo": "monsters",
-          "columnsFrom": [
-            "monster_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["monster_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1730,22 +1588,15 @@
           "name": "monsters_collections_collection_id_collections_id_fk",
           "tableFrom": "monsters_collections",
           "tableTo": "collections",
-          "columnsFrom": [
-            "collection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["collection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "monsters_collections_monster_id_collection_id_pk": {
-          "columns": [
-            "monster_id",
-            "collection_id"
-          ],
+          "columns": ["monster_id", "collection_id"],
           "name": "monsters_collections_monster_id_collection_id_pk"
         }
       },
@@ -1783,12 +1634,8 @@
           "name": "monsters_conditions_monster_id_monsters_id_fk",
           "tableFrom": "monsters_conditions",
           "tableTo": "monsters",
-          "columnsFrom": [
-            "monster_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["monster_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1796,22 +1643,15 @@
           "name": "monsters_conditions_condition_id_conditions_id_fk",
           "tableFrom": "monsters_conditions",
           "tableTo": "conditions",
-          "columnsFrom": [
-            "condition_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["condition_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "monsters_conditions_monster_id_condition_id_pk": {
-          "columns": [
-            "monster_id",
-            "condition_id"
-          ],
+          "columns": ["monster_id", "condition_id"],
           "name": "monsters_conditions_monster_id_condition_id_pk"
         }
       },
@@ -1842,12 +1682,8 @@
           "name": "monsters_families_monster_id_monsters_id_fk",
           "tableFrom": "monsters_families",
           "tableTo": "monsters",
-          "columnsFrom": [
-            "monster_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["monster_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1855,22 +1691,15 @@
           "name": "monsters_families_family_id_families_id_fk",
           "tableFrom": "monsters_families",
           "tableTo": "families",
-          "columnsFrom": [
-            "family_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["family_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "monsters_families_monster_id_family_id_pk": {
-          "columns": [
-            "monster_id",
-            "family_id"
-          ],
+          "columns": ["monster_id", "family_id"],
           "name": "monsters_families_monster_id_family_id_pk"
         }
       },
@@ -2004,9 +1833,7 @@
       "indexes": {
         "idx_spell_schools_user_id": {
           "name": "idx_spell_schools_user_id",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -2015,12 +1842,8 @@
           "name": "spell_schools_user_id_users_id_fk",
           "tableFrom": "spell_schools",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         },
@@ -2028,12 +1851,8 @@
           "name": "spell_schools_source_id_sources_id_fk",
           "tableFrom": "spell_schools",
           "tableTo": "sources",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         }
@@ -2066,12 +1885,8 @@
           "name": "spell_schools_awards_school_id_spell_schools_id_fk",
           "tableFrom": "spell_schools_awards",
           "tableTo": "spell_schools",
-          "columnsFrom": [
-            "school_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["school_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2079,22 +1894,15 @@
           "name": "spell_schools_awards_award_id_awards_id_fk",
           "tableFrom": "spell_schools_awards",
           "tableTo": "awards",
-          "columnsFrom": [
-            "award_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["award_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "spell_schools_awards_school_id_award_id_pk": {
-          "columns": [
-            "school_id",
-            "award_id"
-          ],
+          "columns": ["school_id", "award_id"],
           "name": "spell_schools_awards_school_id_award_id_pk"
         }
       },
@@ -2125,12 +1933,8 @@
           "name": "spell_schools_collections_spell_school_id_spell_schools_id_fk",
           "tableFrom": "spell_schools_collections",
           "tableTo": "spell_schools",
-          "columnsFrom": [
-            "spell_school_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["spell_school_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2138,22 +1942,15 @@
           "name": "spell_schools_collections_collection_id_collections_id_fk",
           "tableFrom": "spell_schools_collections",
           "tableTo": "collections",
-          "columnsFrom": [
-            "collection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["collection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "spell_schools_collections_spell_school_id_collection_id_pk": {
-          "columns": [
-            "spell_school_id",
-            "collection_id"
-          ],
+          "columns": ["spell_school_id", "collection_id"],
           "name": "spell_schools_collections_spell_school_id_collection_id_pk"
         }
       },
@@ -2284,9 +2081,7 @@
       "indexes": {
         "idx_spells_school_id": {
           "name": "idx_spells_school_id",
-          "columns": [
-            "school_id"
-          ],
+          "columns": ["school_id"],
           "isUnique": false
         }
       },
@@ -2295,12 +2090,8 @@
           "name": "spells_school_id_spell_schools_id_fk",
           "tableFrom": "spells",
           "tableTo": "spell_schools",
-          "columnsFrom": [
-            "school_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["school_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2358,9 +2149,7 @@
       "indexes": {
         "idx_subclass_abilities_subclass_id": {
           "name": "idx_subclass_abilities_subclass_id",
-          "columns": [
-            "subclass_id"
-          ],
+          "columns": ["subclass_id"],
           "isUnique": false
         }
       },
@@ -2369,12 +2158,8 @@
           "name": "subclass_abilities_subclass_id_subclasses_id_fk",
           "tableFrom": "subclass_abilities",
           "tableTo": "subclasses",
-          "columnsFrom": [
-            "subclass_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["subclass_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2470,9 +2255,7 @@
       "indexes": {
         "idx_subclasses_user_id": {
           "name": "idx_subclasses_user_id",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -2481,12 +2264,8 @@
           "name": "subclasses_user_id_users_id_fk",
           "tableFrom": "subclasses",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         },
@@ -2494,12 +2273,8 @@
           "name": "subclasses_source_id_sources_id_fk",
           "tableFrom": "subclasses",
           "tableTo": "sources",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "cascade"
         }
@@ -2532,12 +2307,8 @@
           "name": "subclasses_awards_subclass_id_subclasses_id_fk",
           "tableFrom": "subclasses_awards",
           "tableTo": "subclasses",
-          "columnsFrom": [
-            "subclass_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["subclass_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2545,22 +2316,15 @@
           "name": "subclasses_awards_award_id_awards_id_fk",
           "tableFrom": "subclasses_awards",
           "tableTo": "awards",
-          "columnsFrom": [
-            "award_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["award_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "subclasses_awards_subclass_id_award_id_pk": {
-          "columns": [
-            "subclass_id",
-            "award_id"
-          ],
+          "columns": ["subclass_id", "award_id"],
           "name": "subclasses_awards_subclass_id_award_id_pk"
         }
       },
@@ -2677,23 +2441,17 @@
       "indexes": {
         "users_discord_id_unique": {
           "name": "users_discord_id_unique",
-          "columns": [
-            "discord_id"
-          ],
+          "columns": ["discord_id"],
           "isUnique": true
         },
         "users_username_unique": {
           "name": "users_username_unique",
-          "columns": [
-            "username"
-          ],
+          "columns": ["username"],
           "isUnique": true
         },
         "users_email_unique": {
           "name": "users_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         }
       },

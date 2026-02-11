@@ -106,6 +106,7 @@ const toCompanionFromFullData = (data: CompanionFullData): Companion => ({
     createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),
     updatedAt: a.updatedAt ? new Date(a.updatedAt) : new Date(),
   })),
+  paperforgeId: data.companion.paperforgeId ?? undefined,
   updatedAt: data.companion.updatedAt
     ? new Date(data.companion.updatedAt)
     : new Date(),

@@ -12,6 +12,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "11 February 2026",
+    entries: ["Add Paperforge image support to companions."],
+  },
+  {
     date: "10 February 2026",
     entries: ["Add this Changelog."],
   },

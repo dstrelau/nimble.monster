@@ -1,5 +1,5 @@
 "use client";
-import { Anvil, ExternalLink, Shuffle } from "lucide-react";
+import { Shuffle } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
@@ -11,13 +11,8 @@ import { UserAvatar } from "@/components/app/UserAvatar";
 import { PrefixedFormattedText } from "@/components/FormattedText";
 import { Level } from "@/components/Level";
 import { PaperforgeImage } from "@/components/PaperforgeImage";
+import { PaperforgeLink } from "@/components/PaperforgeLink";
 import { Card as ShadcnCard } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
 import type { Monster } from "@/lib/services/monsters";
@@ -308,31 +303,7 @@ export const Card = ({
           hideActions={hideActions}
           actionsSlot={<CardActions monster={monster} />}
           paperforgeSlot={
-            paperforgeEntry && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <a
-                      href={
-                        paperforgeEntry.postUrl ||
-                        "https://www.patreon.com/c/paperforge"
-                      }
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <Anvil className="size-4" />
-                    </a>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <div className="text-sm flex items-baseline gap-1">
-                      Paper Forge: #{paperforgeEntry.id} {paperforgeEntry.name}
-                      <ExternalLink className="size-3" />
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )
+            paperforgeEntry && <PaperforgeLink entry={paperforgeEntry} />
           }
         />
       </ShadcnCard>
