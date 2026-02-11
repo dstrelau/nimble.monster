@@ -11,7 +11,7 @@ export default auth((request) => {
     const origin = request.headers.get("origin") ?? "";
     if (
       !request.headers.get("next-action") ||
-      !(origin.includes("nimble.nexus") || origin.includes("nimble.monster"))
+      !origin.includes("nimble.nexus")
     ) {
       return new Response("Bad Request", { status: 400 });
     }
