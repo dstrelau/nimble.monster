@@ -21,16 +21,30 @@ const traceExporter = new OTLPTraceExporter({
   headers: { "x-honeycomb-team": HONEYCOMB_API_KEY },
 });
 
+const CAPTURED_REQUEST_HEADERS = [
+  "host",
+  "origin",
+  "referer",
+  "content-type",
+  "content-length",
+  "next-action",
+  "accept",
+  "accept-language",
+] as const;
+
 const httpInstrumentation = new HttpInstrumentation({
   requestHook: (span, request) => {
-    // For IncomingMessage (server requests), headers is directly available
-    // For ClientRequest (client requests), getHeader method is used
-    if ("headers" in request && request.headers && request.headers.host) {
-      span.setAttribute("http.request.header.host", request.headers.host);
-    } else if ("getHeader" in request) {
-      const host = request.getHeader("host");
-      if (host) {
-        span.setAttribute("http.request.header.host", host.toString());
+    for (const name of CAPTURED_REQUEST_HEADERS) {
+      let value: string | undefined;
+      if ("headers" in request && request.headers) {
+        const raw = request.headers[name];
+        if (raw) value = Array.isArray(raw) ? raw.join(", ") : raw;
+      } else if ("getHeader" in request) {
+        const raw = request.getHeader(name);
+        if (raw) value = Array.isArray(raw) ? raw.join(", ") : String(raw);
+      }
+      if (value) {
+        span.setAttribute(`http.request.header.${name}`, value);
       }
     }
   },
