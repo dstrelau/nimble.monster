@@ -29,6 +29,7 @@ export function publicMonstersInfiniteQueryOptions({
   sourceId,
   role,
   level,
+  creatorId,
   limit = 12,
 }: Partial<{
   search?: string;
@@ -37,9 +38,19 @@ export function publicMonstersInfiniteQueryOptions({
   sourceId?: string;
   role?: MonsterRole;
   level?: number;
+  creatorId?: string;
   limit?: number;
 }> = {}) {
-  const params = { search, sort, type, sourceId, role, level, limit };
+  const params = {
+    search,
+    sort,
+    type,
+    sourceId,
+    role,
+    level,
+    creatorId,
+    limit,
+  };
   return {
     queryKey: ["monsters", params],
     queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>

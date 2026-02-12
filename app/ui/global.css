@@ -280,6 +280,17 @@
         z-index: -1;
     }
 
+    /* Selected card border highlight */
+    [data-slot="card"][data-selected] {
+        --border-width: 2px;
+        /* Hide ring utility — parchment uses ::before pseudo for border */
+        --tw-ring-shadow: 0 0 #0000;
+    }
+
+    [data-slot="card"][data-selected]::before {
+        background: rgb(245, 158, 11);
+    }
+
     /* AbilityOverlay - GMG uses a slightly darker parchment for ability sections */
     .bg-neutral-100 {
         background-color: var(--ability-overlay-bg);

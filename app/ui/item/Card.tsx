@@ -178,6 +178,9 @@ interface CardProps {
   hideActions?: boolean;
   hideDescription?: boolean;
   className?: string;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 export const Card = ({
@@ -187,15 +190,24 @@ export const Card = ({
   hideActions = false,
   hideDescription = false,
   className,
+  selectable = false,
+  selected = false,
+  onSelect,
 }: CardProps) => {
   const { allConditions } = useConditions({
     creatorId: creator.discordId,
     enabled: !hideDescription && !!item.description,
   });
-  return (
+
+  const card = (
     <ShadcnCard
-      className={cn("relative py-0 h-fit", className)}
-      id={`item-${item.id}`}
+      className={cn(
+        "relative py-0 h-fit",
+        className,
+        selectable && selected && "ring-2 ring-amber-500"
+      )}
+      id={selectable ? undefined : `item-${item.id}`}
+      data-selected={selectable && selected ? "" : undefined}
     >
       <div
         className={cn(
@@ -227,7 +239,7 @@ export const Card = ({
       <CardHeader className="text-center gap-0">
         <CardTitle>
           <h2 className={cn("font-slab", "font-black text-2xl leading-tight")}>
-            {link && item.id ? (
+            {!selectable && link && item.id ? (
               <Link href={getItemUrl(item)}>{item.name}</Link>
             ) : (
               item.name
@@ -243,7 +255,12 @@ export const Card = ({
       </CardHeader>
 
       {hideDescription || (
-        <CardContent className="flex flex-col gap-3 relative z-10">
+        <CardContent
+          className={cn(
+            "flex flex-col gap-3 relative z-10",
+            selectable && "pointer-events-none"
+          )}
+        >
           {item.description && (
             <FormattedText
               content={item.description}
@@ -262,8 +279,8 @@ export const Card = ({
         creator={creator}
         source={item.source}
         awards={item.awards}
-        hideActions={hideActions}
-        className="pb-4"
+        hideActions={selectable || hideActions}
+        className={cn("pb-4", selectable && "pointer-events-none")}
         actionsSlot={
           item.id && (
             <ShareMenu disabled={item.visibility !== "public"}>
@@ -292,4 +309,22 @@ export const Card = ({
       />
     </ShadcnCard>
   );
+
+  if (selectable) {
+    return (
+      <button
+        type="button"
+        className={cn(
+          "cursor-pointer relative text-left transition-[filter] duration-150 hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+          selected && "drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+        )}
+        id={`item-${item.id}`}
+        onClick={onSelect}
+      >
+        {card}
+      </button>
+    );
+  }
+
+  return card;
 };

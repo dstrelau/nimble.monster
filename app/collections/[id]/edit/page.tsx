@@ -1,7 +1,6 @@
 import { notFound, permanentRedirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import * as monstersRepo from "@/lib/services/monsters/repository";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getCollectionEditUrl } from "@/lib/utils/url";
 import { CreateEditCollection } from "../../CreateEditCollection";
@@ -24,13 +23,9 @@ export default async function EditCollectionPage({
     return permanentRedirect(getCollectionEditUrl(collection));
   }
 
-  const myMonsters = await monstersRepo.listAllMonstersForDiscordID(
-    session.user.discordId
-  );
-
   return (
     <div>
-      <CreateEditCollection collection={collection} myMonsters={myMonsters} />
+      <CreateEditCollection collection={collection} />
     </div>
   );
 }

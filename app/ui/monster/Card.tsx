@@ -188,6 +188,9 @@ interface CardProps {
   hideActions?: boolean;
   hideDescription?: boolean;
   className?: string;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 export const Card = ({
@@ -197,6 +200,9 @@ export const Card = ({
   hideActions = false,
   hideDescription = false,
   className,
+  selectable = false,
+  selected = false,
+  onSelect,
 }: CardProps) => {
   const { allConditions: conditions } = useConditions({
     creatorId: creator?.discordId,
@@ -204,109 +210,137 @@ export const Card = ({
   const paperforgeEntry = PAPERFORGE_ENTRIES.find(
     (e) => e.id === monster.paperforgeId
   );
+
+  const card = (
+    <ShadcnCard
+      className={cn(
+        className,
+        selectable && selected && "ring-2 ring-amber-500"
+      )}
+      data-selected={selectable && selected ? "" : undefined}
+    >
+      <MonsterHeader
+        monster={monster}
+        link={!selectable && link}
+        variant={
+          monster.legendary
+            ? "legendary"
+            : monster.minion
+              ? "minion"
+              : "standard"
+        }
+      />
+
+      <CardContentWithGap className={cn(selectable && "pointer-events-none")}>
+        {((monster.families?.some((f) => f.abilities.length > 0) ?? false) ||
+          (monster.abilities?.length ?? 0) > 0) && (
+          <AbilityOverlay
+            conditions={conditions}
+            abilities={[
+              ...(monster.families?.flatMap((f) => f.abilities) ?? []),
+              ...(monster.abilities ?? []),
+            ]}
+            families={monster.families ?? []}
+          />
+        )}
+        <ActionsList
+          actions={monster.actions ?? []}
+          conditions={conditions}
+          actionPreface={monster.actionPreface}
+        />
+        {monster.legendary && (
+          <>
+            {monster.bloodied && (
+              <PrefixedFormattedText
+                content={monster.bloodied}
+                conditions={conditions}
+                prefix={<strong>BLOODIED:</strong>}
+              />
+            )}
+
+            {monster.lastStand && (
+              <div>
+                <PrefixedFormattedText
+                  content={monster.lastStand}
+                  conditions={conditions}
+                  prefix={<strong>LAST STAND:</strong>}
+                />
+              </div>
+            )}
+          </>
+        )}
+
+        {hideDescription || (
+          <MoreInfoSection
+            moreInfo={monster.moreInfo}
+            conditions={conditions}
+          />
+        )}
+
+        {!selectable && monster.remixedFrom && (
+          <div className="flex gap-1 items-center text-center text-sm text-muted-foreground">
+            <Shuffle className="size-3 stroke-muted-foreground" />
+            remixed from{" "}
+            <Link
+              href={getMonsterUrl(monster.remixedFrom)}
+              className="font-medium"
+            >
+              {monster.remixedFrom.name}
+            </Link>
+            {monster.creator.discordId !==
+              monster.remixedFrom.creator.discordId && (
+              <>
+                <span> by </span>
+                <Link
+                  href={getUserUrl(monster.remixedFrom.creator)}
+                  className="font-medium inline-flex items-baseline gap-0.5"
+                >
+                  <UserAvatar
+                    user={monster.remixedFrom.creator}
+                    size={14}
+                    className="inline"
+                  />
+                  <span>{monster.remixedFrom.creator.displayName}</span>
+                </Link>
+              </>
+            )}
+          </div>
+        )}
+      </CardContentWithGap>
+
+      <CardFooterLayout
+        creator={creator}
+        source={monster.source}
+        awards={monster.awards}
+        hideActions={selectable || hideActions}
+        className={cn(selectable && "pointer-events-none")}
+        actionsSlot={<CardActions monster={monster} />}
+        paperforgeSlot={
+          paperforgeEntry && <PaperforgeLink entry={paperforgeEntry} />
+        }
+      />
+    </ShadcnCard>
+  );
+
+  if (selectable) {
+    return (
+      <button
+        type="button"
+        className={cn(
+          "w-full cursor-pointer relative text-left transition-[filter] duration-150 hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+          selected && "drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+        )}
+        id={`monster-${monster.id}`}
+        onClick={onSelect}
+      >
+        {card}
+      </button>
+    );
+  }
+
   return (
     <div className="w-full" id={`monster-${monster.id}`}>
-      <ShadcnCard className={cn(className)}>
-        <MonsterHeader
-          monster={monster}
-          link={link}
-          variant={
-            monster.legendary
-              ? "legendary"
-              : monster.minion
-                ? "minion"
-                : "standard"
-          }
-        />
-
-        <CardContentWithGap>
-          {((monster.families?.some((f) => f.abilities.length > 0) ?? false) ||
-            (monster.abilities?.length ?? 0) > 0) && (
-            <AbilityOverlay
-              conditions={conditions}
-              abilities={[
-                ...(monster.families?.flatMap((f) => f.abilities) ?? []),
-                ...(monster.abilities ?? []),
-              ]}
-              families={monster.families ?? []}
-            />
-          )}
-          <ActionsList
-            actions={monster.actions ?? []}
-            conditions={conditions}
-            actionPreface={monster.actionPreface}
-          />
-          {monster.legendary && (
-            <>
-              {monster.bloodied && (
-                <PrefixedFormattedText
-                  content={monster.bloodied}
-                  conditions={conditions}
-                  prefix={<strong>BLOODIED:</strong>}
-                />
-              )}
-
-              {monster.lastStand && (
-                <div>
-                  <PrefixedFormattedText
-                    content={monster.lastStand}
-                    conditions={conditions}
-                    prefix={<strong>LAST STAND:</strong>}
-                  />
-                </div>
-              )}
-            </>
-          )}
-
-          {hideDescription || (
-            <MoreInfoSection
-              moreInfo={monster.moreInfo}
-              conditions={conditions}
-            />
-          )}
-
-          {monster.remixedFrom && (
-            <div className="flex gap-1 items-center text-center text-sm text-muted-foreground">
-              <Shuffle className="size-3 stroke-muted-foreground" />
-              remixed from{" "}
-              <Link
-                href={getMonsterUrl(monster.remixedFrom)}
-                className="font-medium"
-              >
-                {monster.remixedFrom.name}
-              </Link>
-              {monster.creator.discordId !==
-                monster.remixedFrom.creator.discordId && (
-                <>
-                  <span> by </span>
-                  <Link
-                    href={getUserUrl(monster.remixedFrom.creator)}
-                    className="font-medium inline-flex items-baseline gap-0.5"
-                  >
-                    <UserAvatar
-                      user={monster.remixedFrom.creator}
-                      size={14}
-                      className="inline"
-                    />
-                    <span>{monster.remixedFrom.creator.displayName}</span>
-                  </Link>
-                </>
-              )}
-            </div>
-          )}
-        </CardContentWithGap>
-
-        <CardFooterLayout
-          creator={creator}
-          source={monster.source}
-          awards={monster.awards}
-          hideActions={hideActions}
-          actionsSlot={<CardActions monster={monster} />}
-          paperforgeSlot={
-            paperforgeEntry && <PaperforgeLink entry={paperforgeEntry} />
-          }
-        />
-      </ShadcnCard>
+      {card}
     </div>
   );
 };

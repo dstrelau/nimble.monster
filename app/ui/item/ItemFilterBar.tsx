@@ -23,6 +23,7 @@ interface ItemFilterBarProps {
   onRarityChange: (rarity: ItemRarity | "all") => void;
   sourceId: string | null;
   onSourceChange: (sourceId: string | null) => void;
+  beforeFilters?: React.ReactNode;
 }
 
 const SORT_OPTIONS: { value: ItemSortOption; label: string }[] = [
@@ -41,9 +42,11 @@ export const ItemFilterBar: React.FC<ItemFilterBarProps> = ({
   onRarityChange,
   sourceId,
   onSourceChange,
+  beforeFilters,
 }) => {
   return (
     <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v ? v : null)}>
+      {beforeFilters}
       <Select
         value={rarityFilter}
         onValueChange={(value) => onRarityChange(value as ItemRarity | "all")}

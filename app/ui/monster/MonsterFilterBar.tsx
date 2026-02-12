@@ -31,6 +31,7 @@ interface SimpleFilterBarProps {
   onRoleChange: (role: MonsterRole | null) => void;
   level: number | null;
   onLevelChange: (level: number | null) => void;
+  beforeFilters?: React.ReactNode;
 }
 
 const TYPE_OPTIONS: {
@@ -66,9 +67,11 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
   onRoleChange,
   level,
   onLevelChange,
+  beforeFilters,
 }) => {
   return (
     <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v ? v : null)}>
+      {beforeFilters}
       <Select value={typeFilter} onValueChange={onTypeFilterChange}>
         <SelectTrigger className="min-w-36">
           <SelectValue />

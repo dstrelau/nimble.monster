@@ -1,15 +1,9 @@
 "use client";
 
 import { CreateEditCollection } from "@/app/collections/CreateEditCollection";
-import type { Monster } from "@/lib/services/monsters";
 import { type Collection, UNKNOWN_USER } from "@/lib/types";
 
-interface Props {
-  myMonsters: Monster[];
-}
-
-export function NewCollection({ myMonsters }: Props) {
-  // Create empty collection for creation
+export function NewCollection() {
   const emptyCollection: Collection = {
     id: "",
     creator: UNKNOWN_USER,
@@ -28,7 +22,6 @@ export function NewCollection({ myMonsters }: Props) {
     <div className="container max-w-7xl">
       <CreateEditCollection
         collection={emptyCollection}
-        myMonsters={myMonsters}
         isCreating={true}
         submitLabel="Create"
       />

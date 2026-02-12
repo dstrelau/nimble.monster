@@ -377,16 +377,7 @@ export const searchPublicItems = async ({
   const conditions = [eq(items.visibility, "public")];
 
   if (creatorId) {
-    // Need to join with users to filter by discordId
-    const userResult = await db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.discordId, creatorId))
-      .limit(1);
-
-    if (userResult.length > 0) {
-      conditions.push(eq(items.userId, userResult[0].id));
-    }
+    conditions.push(eq(items.userId, creatorId));
   }
 
   if (searchTerm) {

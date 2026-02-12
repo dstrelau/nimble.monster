@@ -4,15 +4,9 @@ const { mockAuth } = vi.hoisted(() => ({ mockAuth: vi.fn() }));
 const { mockGetCollection } = vi.hoisted(() => ({
   mockGetCollection: vi.fn(),
 }));
-const { mockListAllMonstersForDiscordID } = vi.hoisted(() => ({
-  mockListAllMonstersForDiscordID: vi.fn(),
-}));
 
 vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
 vi.mock("@/lib/db", () => ({ getCollection: mockGetCollection }));
-vi.mock("@/lib/services/monsters/repository", () => ({
-  listAllMonstersForDiscordID: mockListAllMonstersForDiscordID,
-}));
 vi.mock("@/lib/utils/slug", () => ({
   deslugify: vi.fn(() => "550e8400-e29b-41d4-a716-446655440000"),
   slugify: vi.fn(
@@ -53,7 +47,6 @@ const params = Promise.resolve({ id: "my-collection-abc" });
 describe("EditCollectionPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockListAllMonstersForDiscordID.mockResolvedValue([]);
   });
 
   it("renders the edit page when logged in as the collection creator", async () => {
