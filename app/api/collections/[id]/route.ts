@@ -11,6 +11,7 @@ import {
 import * as repository from "@/lib/services/collections/repository";
 import { telemetry } from "@/lib/telemetry";
 import { deslugify } from "@/lib/utils/slug";
+import { getAuthenticatedUser } from "@/lib/auth";
 
 const CONTENT_TYPE = "application/vnd.api+json";
 
@@ -93,7 +94,8 @@ export const GET = telemetry(
     }
 
     try {
-      const collection = await repository.findPublicCollectionById(uid);
+      const user = await getAuthenticatedUser(_request);
+      const collection = await repository.findPublicOrPrivateCollectionById(uid, user?.discordId);
 
       if (!collection) {
         const headers = new Headers({ "Content-Type": CONTENT_TYPE });
