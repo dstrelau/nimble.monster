@@ -36,6 +36,16 @@ export class MonstersService {
     return repository.findPublicMonsterById(id);
   }
 
+  async getPublicOrPrivateMonsterForUser(id: string, discordId: string | undefined): Promise<Monster | null> {
+    const monster = await repository.findMonster(id);
+    if (!monster) return null;
+    if (monster.visibility === "private") {
+      if(monster.creator.discordId !== undefined && monster.creator.discordId === discordId) return monster;
+      return null;
+    }
+    return monster;
+  }
+
   async getMonster(monsterId: string): Promise<Monster | null> {
     return repository.findMonster(monsterId);
   }
