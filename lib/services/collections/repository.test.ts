@@ -9,47 +9,47 @@ const fakeCreator = {
 };
 
 describe("allowAccessToCollection", () => {
-  it("returns true for public collection regardless of discordId", () => {
+  it("returns true for public collection regardless of discordId", async () => {
     const collection = {
       visibility: "public" as const,
       creator: fakeCreator,
     };
-    expect(allowAccessToCollection(collection, undefined)).toBe(true);
-    expect(allowAccessToCollection(collection, fakeCreator.discordId)).toBe(true);
-    expect(allowAccessToCollection(collection, "other")).toBe(true);
+    expect(await allowAccessToCollection(collection, undefined)).toBe(true);
+    expect(await allowAccessToCollection(collection, fakeCreator.discordId)).toBe(true);
+    expect(await allowAccessToCollection(collection, "other")).toBe(true);
   });
 
-  it("returns true for private collection when discordId matches creator", () => {
+  it("returns true for private collection when discordId matches creator", async () => {
     const collection = {
       visibility: "private" as const,
       creator: fakeCreator,
     };
-    expect(allowAccessToCollection(collection, fakeCreator.discordId)).toBe(true);
+    expect(await allowAccessToCollection(collection, fakeCreator.discordId)).toBe(true);
   });
 
-  it("returns false for private collection when discordId is undefined", () => {
+  it("returns false for private collection when discordId is undefined", async () => {
     const collection = {
       visibility: "private" as const,
       creator: fakeCreator,
     };
-    expect(allowAccessToCollection(collection, undefined)).toBe(false);
+    expect(await allowAccessToCollection(collection, undefined)).toBe(false);
   });
 
-  it("returns false for private collection when discordId does not match creator", () => {
+  it("returns false for private collection when discordId does not match creator", async () => {
     const collection = {
       visibility: "private" as const,
       creator: fakeCreator,
     };
-    expect(allowAccessToCollection(collection, "other-discord")).toBe(
+    expect(await allowAccessToCollection(collection, "other-discord")).toBe(
       false
     );
   });
 
-  it("returns false for private collection when creator has no discordId", () => {
+  it("returns false for private collection when creator has no discordId", async () => {
     const collection = {
       visibility: "private" as const,
       creator: { ...fakeCreator, discordId: undefined as unknown as string },
     };
-    expect(allowAccessToCollection(collection, fakeCreator.discordId)).toBe(false);
+    expect(await allowAccessToCollection(collection, fakeCreator.discordId)).toBe(false);
   });
 });

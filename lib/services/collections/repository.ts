@@ -763,10 +763,10 @@ export const findCollectionById = async (
   };
 };
 
-export function allowAccessToCollection(
+export const allowAccessToCollection = async(
   collection: Pick<Collection, "visibility" | "creator">,
   discordId: string | undefined
-): boolean {
+): Promise<boolean> => {
   if (collection.visibility !== "private") return true;
   return (
     collection.creator.discordId !== undefined &&
@@ -780,7 +780,7 @@ export const findPublicOrPrivateCollectionById = async (
 ): Promise<Collection | null> => {
   const collection = await findCollectionById(id, false);
   if (!collection) return null;
-  return allowAccessToCollection(collection, discordId)
+  return (await allowAccessToCollection(collection, discordId))
     ? collection
     : null;
 };
