@@ -763,14 +763,24 @@ export const findCollectionById = async (
   };
 };
 
-export const findPublicOrPrivateCollectionById = async (id: string, discordId: string | undefined): Promise<Collection | null> => {
+export function allowAccessToCollection(
+  collection: Pick<Collection, "visibility" | "creator">,
+  discordId: string | undefined
+): boolean {
+  if (collection.visibility !== "private") return true;
+  return (
+    collection.creator.discordId !== undefined &&
+    collection.creator.discordId === discordId
+  );
+}
+
+export const findPublicOrPrivateCollectionById = async (
+  id: string,
+  discordId: string | undefined
+): Promise<Collection | null> => {
   const collection = await findCollectionById(id, false);
   if (!collection) return null;
-  if (collection.visibility === "private") {
-    if (collection.creator.discordId !== undefined && collection.creator.discordId === discordId) return collection;
-
-    return null;
-  }
-
-  return collection;
-}
+  return allowAccessToCollection(collection, discordId)
+    ? collection
+    : null;
+};
