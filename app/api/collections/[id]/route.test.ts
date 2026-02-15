@@ -416,4 +416,65 @@ describe("GET /api/collections/[id]", () => {
     expect(resource.relationships.creator.data.type).toBe("users");
     expect(resource.relationships.creator.data.id).toBe("testuser");
   });
+
+  it("should return private collection when authenticated as owner", async () => {
+    const privateCollection: Collection = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "My Private Collection",
+      legendaryCount: 0,
+      standardCount: 1,
+      creator: fakeCreator,
+      visibility: "private",
+      monsters: [],
+      items: [],
+      itemCount: 0,
+      spellSchools: [],
+      createdAt: new Date("2025-01-01"),
+    };
+
+    const authenticatedUser = {
+      id: fakeCreator.id,
+      discordId: fakeCreator.discordId,
+    };
+    mockGetAuthenticatedUser.mockResolvedValue(authenticatedUser);
+    mockFindPublicOrPrivateCollectionById.mockResolvedValue(privateCollection);
+
+    const request = new Request(
+      "http://localhost:3000/api/collections/my-private-abc"
+    );
+    const response = await GET(
+      request,
+      createMockParams("my-private-abc")
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.data.attributes.name).toBe("My Private Collection");
+    expect(mockFindPublicOrPrivateCollectionById).toHaveBeenCalledWith(
+      "550e8400-e29b-41d4-a716-446655440000",
+      "user123"
+    );
+  });
+
+  it("should return 404 for private collection when authenticated as non-owner", async () => {
+    const otherUser = { id: "other-id", discordId: "other-discord" };
+    mockGetAuthenticatedUser.mockResolvedValue(otherUser);
+    mockFindPublicOrPrivateCollectionById.mockResolvedValue(null);
+
+    const request = new Request(
+      "http://localhost:3000/api/collections/private-collection-abc"
+    );
+    const response = await GET(
+      request,
+      createMockParams("private-collection-abc")
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(404);
+    expect(data.errors[0].title).toBe("Collection not found");
+    expect(mockFindPublicOrPrivateCollectionById).toHaveBeenCalledWith(
+      "550e8400-e29b-41d4-a716-446655440000",
+      "other-discord"
+    );
+  });
 });
