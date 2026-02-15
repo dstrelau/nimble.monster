@@ -139,7 +139,7 @@ export const GET = telemetry(
     }
 
     const response = NextResponse.json(nimbrewData);
-    addCorsHeaders(response.headers, _request);
+    addCorsHeaders(response.headers);
     return response;
   }
 );

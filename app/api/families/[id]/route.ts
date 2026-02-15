@@ -21,7 +21,7 @@ export const GET = telemetry(
     const uid = deslugify(id);
     if (!uid) {
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers, _request);
+      addCorsHeaders(headers);
       return NextResponse.json(
         {
           errors: [
@@ -40,7 +40,7 @@ export const GET = telemetry(
 
       if (!family) {
         const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-        addCorsHeaders(headers, _request);
+        addCorsHeaders(headers);
         return NextResponse.json(
           {
             errors: [
@@ -59,12 +59,12 @@ export const GET = telemetry(
       const data = toJsonApiFamily(family);
 
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers, _request);
+      addCorsHeaders(headers);
       return NextResponse.json({ data }, { headers });
     } catch (error) {
       span?.setAttributes({ error: String(error) });
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers, _request);
+      addCorsHeaders(headers);
       return NextResponse.json(
         {
           errors: [

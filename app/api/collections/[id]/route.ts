@@ -36,7 +36,7 @@ export const GET = telemetry(
 
     if (!queryResult.success) {
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers, _request);
+      addCorsHeaders(headers);
       return NextResponse.json(
         {
           errors: [
@@ -62,7 +62,7 @@ export const GET = telemetry(
 
     if (invalidIncludes.length > 0) {
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers, _request);
+      addCorsHeaders(headers);
       return NextResponse.json(
         {
           errors: [
@@ -79,7 +79,7 @@ export const GET = telemetry(
     const uid = deslugify(id);
     if (!uid) {
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers, _request);
+      addCorsHeaders(headers);
       return NextResponse.json(
         {
           errors: [
@@ -99,7 +99,7 @@ export const GET = telemetry(
 
       if (!collection) {
         const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-        addCorsHeaders(headers, _request);
+        addCorsHeaders(headers);
         return NextResponse.json(
           {
             errors: [
@@ -122,7 +122,7 @@ export const GET = telemetry(
       const includeItems = includeResources.includes("items");
 
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers, _request);
+      addCorsHeaders(headers);
 
       if (includeMonsters && includeItems) {
         const response = toJsonApiCollectionWithBoth(collection);
@@ -144,7 +144,7 @@ export const GET = telemetry(
     } catch (error) {
       span?.setAttributes({ error: String(error) });
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers, _request);
+      addCorsHeaders(headers);
       return NextResponse.json(
         {
           errors: [
