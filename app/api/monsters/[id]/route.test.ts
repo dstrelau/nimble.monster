@@ -11,17 +11,23 @@ vi.mock("@opentelemetry/api", () => ({
   },
 }));
 
-vi.mock("@/lib/auth", () => ({
-  auth: vi.fn(),
+const { mockGetAuthenticatedUser } = vi.hoisted(() => ({
+  mockGetAuthenticatedUser: vi.fn(),
 }));
 
-const { mockGetPublicMonster } = vi.hoisted(() => {
-  return { mockGetPublicMonster: vi.fn() };
-});
+vi.mock("@/lib/auth", () => ({
+  auth: vi.fn(),
+  getAuthenticatedUser: (...args: unknown[]) =>
+    mockGetAuthenticatedUser(...args),
+}));
+
+const { mockGetPublicOrPrivateMonsterForUser } = vi.hoisted(() => ({
+  mockGetPublicOrPrivateMonsterForUser: vi.fn(),
+}));
 
 vi.mock("@/lib/services/monsters", () => ({
   monstersService: {
-    getPublicMonster: mockGetPublicMonster,
+    getPublicOrPrivateMonsterForUser: mockGetPublicOrPrivateMonsterForUser,
   },
 }));
 
@@ -60,6 +66,7 @@ const fakeCreator = {
 describe("GET /api/monsters/[id]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetAuthenticatedUser.mockResolvedValue(null);
   });
 
   const createMockParams = (id: string) => ({
@@ -93,7 +100,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/goblin-abc"
@@ -161,7 +168,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/goblin-abc"
@@ -177,7 +184,7 @@ describe("GET /api/monsters/[id]", () => {
   });
 
   it("should return 404 for non-existent monster", async () => {
-    mockGetPublicMonster.mockResolvedValue(null);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(null);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/nonexistent"
@@ -235,7 +242,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/ancient-dragon-abc"
@@ -298,7 +305,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/water-elemental-abc"
@@ -353,7 +360,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/tiny-rat-abc"
@@ -411,7 +418,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/goblin-abc?include=families"
@@ -460,7 +467,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/goblin-abc"
@@ -500,7 +507,7 @@ describe("GET /api/monsters/[id]", () => {
       role: "defender",
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/shield-guardian-abc"

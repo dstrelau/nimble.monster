@@ -10,12 +10,21 @@ vi.mock("@opentelemetry/api", () => ({
   },
 }));
 
-const { mockFindPublicCollectionById } = vi.hoisted(() => {
-  return { mockFindPublicCollectionById: vi.fn() };
-});
+const { mockGetAuthenticatedUser } = vi.hoisted(() => ({
+  mockGetAuthenticatedUser: vi.fn(),
+}));
+
+vi.mock("@/lib/auth", () => ({
+  getAuthenticatedUser: (...args: unknown[]) =>
+    mockGetAuthenticatedUser(...args),
+}));
+
+const { mockFindPublicOrPrivateCollectionById } = vi.hoisted(() => ({
+  mockFindPublicOrPrivateCollectionById: vi.fn(),
+}));
 
 vi.mock("@/lib/services/collections/repository", () => ({
-  findPublicCollectionById: mockFindPublicCollectionById,
+  findPublicOrPrivateCollectionById: mockFindPublicOrPrivateCollectionById,
 }));
 
 vi.mock("@/lib/telemetry", () => ({
@@ -44,6 +53,7 @@ const fakeCreator = {
 describe("GET /api/collections/[id]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetAuthenticatedUser.mockResolvedValue(null);
   });
 
   const createMockParams = (id: string) => ({
@@ -65,7 +75,7 @@ describe("GET /api/collections/[id]", () => {
       createdAt: new Date("2025-01-01"),
     };
 
-    mockFindPublicCollectionById.mockResolvedValue(mockCollection);
+    mockFindPublicOrPrivateCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
       "http://localhost:3000/api/collections/my-collection-abc"
@@ -87,7 +97,7 @@ describe("GET /api/collections/[id]", () => {
   });
 
   it("should return 404 for non-existent collection", async () => {
-    mockFindPublicCollectionById.mockResolvedValue(null);
+    mockFindPublicOrPrivateCollectionById.mockResolvedValue(null);
 
     const request = new Request(
       "http://localhost:3000/api/collections/nonexistent"
@@ -155,7 +165,7 @@ describe("GET /api/collections/[id]", () => {
       createdAt: new Date("2025-01-01"),
     };
 
-    mockFindPublicCollectionById.mockResolvedValue(mockCollection);
+    mockFindPublicOrPrivateCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
       "http://localhost:3000/api/collections/my-collection-abc?include=monsters"
@@ -220,7 +230,7 @@ describe("GET /api/collections/[id]", () => {
       createdAt: new Date("2025-01-01"),
     };
 
-    mockFindPublicCollectionById.mockResolvedValue(mockCollection);
+    mockFindPublicOrPrivateCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
       "http://localhost:3000/api/collections/my-collection-abc"
@@ -262,7 +272,7 @@ describe("GET /api/collections/[id]", () => {
       createdAt: new Date("2025-01-01"),
     };
 
-    mockFindPublicCollectionById.mockResolvedValue(mockCollection);
+    mockFindPublicOrPrivateCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
       "http://localhost:3000/api/collections/my-collection-abc?include=items"
@@ -340,7 +350,7 @@ describe("GET /api/collections/[id]", () => {
       createdAt: new Date("2025-01-01"),
     };
 
-    mockFindPublicCollectionById.mockResolvedValue(mockCollection);
+    mockFindPublicOrPrivateCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
       "http://localhost:3000/api/collections/my-collection-abc?include=monsters,items"
@@ -392,7 +402,7 @@ describe("GET /api/collections/[id]", () => {
       spellSchools: [],
     };
 
-    mockFindPublicCollectionById.mockResolvedValue(mockCollection);
+    mockFindPublicOrPrivateCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
       "http://localhost:3000/api/collections/test-abc"
