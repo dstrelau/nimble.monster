@@ -33,7 +33,7 @@ export const GET = telemetry(
 
     if (invalidIncludes.length > 0) {
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
+      addCorsHeaders(headers, _request);
       return NextResponse.json(
         {
           errors: [
@@ -52,7 +52,7 @@ export const GET = telemetry(
     const uid = deslugify(id);
     if (!uid) {
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
+      addCorsHeaders(headers, _request);
       return NextResponse.json(
         {
           errors: [
@@ -72,7 +72,7 @@ export const GET = telemetry(
 
       if (!monster) {
         const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-        addCorsHeaders(headers);
+        addCorsHeaders(headers, _request);
         return NextResponse.json(
           {
             errors: [
@@ -103,12 +103,12 @@ export const GET = telemetry(
       }
 
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
+      addCorsHeaders(headers, _request);
       return NextResponse.json(response, { headers });
     } catch (error) {
       span?.setAttributes({ error: String(error) });
       const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
+      addCorsHeaders(headers, _request);
       return NextResponse.json(
         {
           errors: [

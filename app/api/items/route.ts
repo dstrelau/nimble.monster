@@ -48,7 +48,7 @@ export const GET = telemetry(async (request: Request) => {
     const title =
       issue.path[0] === "sort" ? "Invalid sort parameter" : issue.message;
     const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-    addCorsHeaders(headers);
+    addCorsHeaders(headers, request);
     return NextResponse.json(
       {
         errors: [
@@ -98,6 +98,6 @@ export const GET = telemetry(async (request: Request) => {
   }
 
   const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-  addCorsHeaders(headers);
+  addCorsHeaders(headers, request);
   return NextResponse.json(response, { headers });
 });
