@@ -51,28 +51,40 @@ export async function uploadBlob(
     };
   }
 
-  try {
-    const client = getS3Client();
-    await client.send(
-      new PutObjectCommand({
-        Bucket: bucket,
-        Key: filename,
-        Body: buffer,
-        ContentType: contentType,
-        ACL: "public-read",
-      })
-    );
+  const UPLOAD_TIMEOUT_MS = 10_000;
+  const UPLOAD_MAX_ATTEMPTS = 3;
+  const client = getS3Client();
+  const command = new PutObjectCommand({
+    Bucket: bucket,
+    Key: filename,
+    Body: buffer,
+    ContentType: contentType,
+    ACL: "public-read",
+  });
 
-    const url = `https://${bucket}.fly.storage.tigris.dev/${filename}`;
-    return {
-      url,
-      downloadUrl: url,
-    };
-  } catch (error) {
-    throw new Error(
-      `Failed to upload blob to Tigris: ${error instanceof Error ? error.message : String(error)}`
-    );
+  for (let attempt = 1; attempt <= UPLOAD_MAX_ATTEMPTS; attempt++) {
+    try {
+      await client.send(command, {
+        abortSignal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS),
+      });
+
+      const url = `https://${bucket}.fly.storage.tigris.dev/${filename}`;
+      return {
+        url,
+        downloadUrl: url,
+      };
+    } catch (error) {
+      if (attempt === UPLOAD_MAX_ATTEMPTS) {
+        throw new Error(
+          `Failed to upload blob to Tigris after ${UPLOAD_MAX_ATTEMPTS} attempts: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
+    }
   }
+
+  throw new Error(
+    "Failed to upload blob to Tigris: unexpected retry exhaustion"
+  );
 }
 
 export function generateBlobFilename(

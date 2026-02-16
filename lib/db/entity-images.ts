@@ -14,7 +14,7 @@ export interface EntityImageClaim {
   existing?: EntityImageRow | null;
 }
 
-const GENERATION_TIMEOUT_MS = 31 * 1000;
+const GENERATION_TIMEOUT_MS = 60 * 1000;
 
 function generateId(): string {
   return crypto.randomUUID();
