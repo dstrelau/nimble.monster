@@ -28,6 +28,10 @@ export function monstersSortedByLevelInt<T extends { levelInt: number }>(
   return monsters?.slice().sort((a, b) => a.levelInt - b.levelInt);
 }
 
+export function itemsSortedByName<T extends { name: string }>(items: T[]): T[] {
+  return items?.slice().sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export function getRarityColor(rarity: string): string {
   switch (rarity) {
     case "common":

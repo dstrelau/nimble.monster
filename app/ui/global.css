@@ -417,6 +417,7 @@
     * {
         @apply border-border outline-ring/50;
     }
+    /* biome-ignore lint/style/noDescendingSpecificity: @layer base is intentionally lower priority than theme-scoped body */
     body {
         @apply bg-background text-foreground;
         -webkit-font-smoothing: antialiased;
@@ -437,6 +438,7 @@
         font-style: normal;
         font-variation-settings: "slnt" 0;
     }
+    /* biome-ignore lint/style/noDescendingSpecificity: @layer utilities is intentionally lower priority than theme-scoped .font-condensed */
     .font-condensed {
         font-stretch: ultra-condensed;
     }

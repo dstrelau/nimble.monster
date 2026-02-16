@@ -7,6 +7,7 @@ import { CollectionHeader } from "@/components/CollectionHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { listConditionsForDiscordId, listOfficialConditions } from "@/lib/db";
+import { itemsSortedByName, monstersSortedByLevelInt } from "@/lib/utils";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getCollectionUrl } from "@/lib/utils/url";
@@ -104,9 +105,13 @@ export default async function ShowCollectionView({
       />
 
       <div className="space-y-8">
-        {hasMonsters && <CardGrid monsters={collection.monsters} />}
+        {hasMonsters && (
+          <CardGrid monsters={monstersSortedByLevelInt(collection.monsters)} />
+        )}
 
-        {hasItems && <ItemCardGrid items={collection.items} />}
+        {hasItems && (
+          <ItemCardGrid items={itemsSortedByName(collection.items)} />
+        )}
 
         {hasSpellSchools && (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">

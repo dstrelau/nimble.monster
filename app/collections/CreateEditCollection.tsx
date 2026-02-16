@@ -318,7 +318,7 @@ export function CreateEditCollection({
             </Tabs>
           </div>
 
-          <div className="hidden sm:block min-w-xs">
+          <div className="hidden sm:block min-w-sm">
             <CollectionCard
               collection={{
                 ...collection,
@@ -327,7 +327,21 @@ export function CreateEditCollection({
                 items: currentItems,
                 creator: session?.user || UNKNOWN_USER,
               }}
-              limit={5}
+              limit={Infinity}
+              onRemoveMonster={(id) =>
+                setSelectedMonsters((prev) => {
+                  const next = new Map(prev);
+                  next.delete(id);
+                  return next;
+                })
+              }
+              onRemoveItem={(id) =>
+                setSelectedItems((prev) => {
+                  const next = new Map(prev);
+                  next.delete(id);
+                  return next;
+                })
+              }
             />
           </div>
         </div>

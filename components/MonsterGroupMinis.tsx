@@ -1,5 +1,5 @@
 "use client";
-import { Crown, EyeOff, PersonStanding } from "lucide-react";
+import { Crown, EyeOff, PersonStanding, X } from "lucide-react";
 import type { ReactNode } from "react";
 import React from "react";
 import { HPStat } from "@/app/ui/monster/Stat";
@@ -16,19 +16,50 @@ import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { Link } from "./app/Link";
 import { Level } from "./Level";
+import { PaperforgeImage } from "./PaperforgeImage";
 import { Separator } from "./ui/separator";
 
 export const MonsterRow: React.FC<{
   monster: MonsterMini;
-}> = ({ monster }) => (
+  onRemove?: (id: string) => void;
+}> = ({ monster, onRemove }) => (
   <div className="flex gap-1 items-center">
+    {onRemove && (
+      <button
+        type="button"
+        onClick={() => onRemove(monster.id)}
+        className="rounded p-0.5 hover:bg-muted"
+      >
+        <X className="size-4 stroke-muted-foreground" />
+      </button>
+    )}
     <div
       className={cn(
         "font-slab flex-1 flex gap-1 items-center font-medium small-caps italic"
       )}
     >
-      {monster.legendary && (
-        <Crown className="size-5 inline self-center stroke-flame" />
+      {monster.legendary && monster.paperforgeId ? (
+        <div className="flex flex-col items-center">
+          <Crown className="size-4 stroke-flame -mb-1.5" />
+          <PaperforgeImage
+            id={monster.paperforgeId}
+            size={28}
+            className="rounded-sm"
+          />
+        </div>
+      ) : (
+        <>
+          {monster.paperforgeId && (
+            <PaperforgeImage
+              id={monster.paperforgeId}
+              size={28}
+              className="rounded-sm"
+            />
+          )}
+          {monster.legendary && (
+            <Crown className="size-5 inline self-center stroke-flame" />
+          )}
+        </>
       )}
       {monster.minion && (
         <PersonStanding className="size-5 inline self-center stroke-flame" />

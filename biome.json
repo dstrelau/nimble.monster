@@ -6,7 +6,8 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": true
+    "ignoreUnknown": true,
+    "includes": ["**", "!data/paperforge-catalog.json"]
   },
   "formatter": {
     "enabled": true,

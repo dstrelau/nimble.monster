@@ -1,7 +1,7 @@
 "use client";
-import { EyeOff } from "lucide-react";
+import { EyeOff, X } from "lucide-react";
 import { useSession } from "next-auth/react";
-import React from "react";
+
 import { Link } from "@/components/app/Link";
 import { FormattedText } from "@/components/FormattedText";
 import { GameIcon } from "@/components/GameIcon";
@@ -14,21 +14,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+
 import { useConditions } from "@/lib/hooks/useConditions";
 import { RARITIES } from "@/lib/services/items";
 import type { CollectionOverview } from "@/lib/types";
-import { cn, monstersSortedByLevelInt } from "@/lib/utils";
+import { cn, itemsSortedByName, monstersSortedByLevelInt } from "@/lib/utils";
 import { getCollectionUrl, getItemUrl } from "@/lib/utils/url";
 import { CardFooterLayout } from "./shared/CardFooterLayout";
 
-const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
+const ItemRow = ({
+  item,
+  onRemove,
+}: {
+  item: CollectionOverview["items"][0];
+  onRemove?: (id: string) => void;
+}) => {
   const rarityOption = RARITIES.find(
     (r: { value: string; label: string }) => r.value === item.rarity
   );
 
   return (
     <div className="flex gap-1 items-center">
+      {onRemove && (
+        <button
+          type="button"
+          onClick={() => onRemove(item.id)}
+          className="rounded p-0.5 hover:bg-muted"
+        >
+          <X className="size-4 stroke-muted-foreground" />
+        </button>
+      )}
       <div
         className={cn(
           "font-slab",
@@ -74,10 +89,14 @@ const ItemRow = ({ item }: { item: CollectionOverview["items"][0] }) => {
 
 export const CollectionCard = ({
   collection,
-  limit = 5,
+  limit = 7,
+  onRemoveMonster,
+  onRemoveItem,
 }: {
   collection: CollectionOverview;
   limit?: number;
+  onRemoveMonster?: (id: string) => void;
+  onRemoveItem?: (id: string) => void;
 }) => {
   const total = collection.items.length + collection.monsters.length;
   const itemRatio = collection.items.length / total;
@@ -85,12 +104,13 @@ export const CollectionCard = ({
   const limitItems = Math.round(itemRatio * limit);
   const limitMonsters = Math.round(monsterRatio * limit);
 
+  const sortedItems = itemsSortedByName(collection.items);
   const visibleItems = limitItems
-    ? collection.items.slice(0, limitItems)
-    : collection.items;
+    ? sortedItems.slice(0, limitItems)
+    : sortedItems;
   const remainingItemCount =
-    limitItems && collection.items.length > limitItems
-      ? collection.items.length - limitItems
+    limitItems && sortedItems.length > limitItems
+      ? sortedItems.length - limitItems
       : 0;
 
   const sortedMonsters = monstersSortedByLevelInt(collection.monsters);
@@ -141,18 +161,15 @@ export const CollectionCard = ({
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-1 justify-center">
-          {visibleMonsters?.map((monster, index) => (
-            <React.Fragment key={monster.id}>
-              <MonsterRow key={monster.id} monster={monster} />
-              {(visibleItems.length > 0 ||
-                index < visibleMonsters.length - 1) && <Separator />}
-            </React.Fragment>
+          {visibleMonsters?.map((monster) => (
+            <MonsterRow
+              key={monster.id}
+              monster={monster}
+              onRemove={onRemoveMonster}
+            />
           ))}
-          {visibleItems.map((item, index) => (
-            <React.Fragment key={item.id}>
-              <ItemRow item={item} />
-              {index < visibleItems.length - 1 && <Separator />}
-            </React.Fragment>
+          {visibleItems.map((item) => (
+            <ItemRow key={item.id} item={item} onRemove={onRemoveItem} />
           ))}
           {totalRemainingCount > 0 && (
             <div className="text-sm text-muted-foreground mt-2 text-center font-bold">

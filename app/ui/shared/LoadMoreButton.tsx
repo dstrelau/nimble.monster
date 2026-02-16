@@ -11,7 +11,12 @@ export const LoadMoreButton: React.FC<LoadMoreButtonProps> = ({
 }) => {
   return (
     <div className="flex justify-center">
-      <Button className="min-w-2xs" onClick={onClick} disabled={disabled}>
+      <Button
+        type="button"
+        className="min-w-2xs"
+        onClick={onClick}
+        disabled={disabled}
+      >
         Load More
       </Button>
     </div>
