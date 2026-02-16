@@ -13,9 +13,7 @@ interface ChangelogEntry {
 const changelog: ChangelogEntry[] = [
   {
     date: "15 February 2026",
-    entries: [
-      "Improve collection create/edit UI.",
-    ],
+    entries: ["Improve collection create/edit UI."],
   },
   {
     date: "11 February 2026",
