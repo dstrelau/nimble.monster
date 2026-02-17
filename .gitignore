@@ -35,6 +35,7 @@ tmp
 *.sw?
 
 **/.claude/settings.local.json
+**/.claude/CLAUDE.md
 
 public/game-icons
 public/blob-storage
