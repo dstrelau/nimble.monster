@@ -38,32 +38,28 @@ export const MonsterRow: React.FC<{
         "font-slab flex-1 flex gap-1 items-center font-medium small-caps italic"
       )}
     >
-      {monster.legendary && monster.paperforgeId ? (
-        <div className="flex flex-col items-center">
-          <Crown className="size-4 stroke-flame -mb-1.5" />
-          <PaperforgeImage
-            id={monster.paperforgeId}
-            size={28}
-            className="rounded-sm"
-          />
-        </div>
-      ) : (
-        <>
-          {monster.paperforgeId && (
+      <div className="w-7 shrink-0 flex items-center justify-center">
+        {monster.legendary && monster.paperforgeId ? (
+          <div className="flex flex-col items-center">
+            <Crown className="size-5 stroke-flame -mb-2.5" />
             <PaperforgeImage
               id={monster.paperforgeId}
               size={28}
               className="rounded-sm"
             />
-          )}
-          {monster.legendary && (
-            <Crown className="size-5 inline self-center stroke-flame" />
-          )}
-        </>
-      )}
-      {monster.minion && (
-        <PersonStanding className="size-5 inline self-center stroke-flame" />
-      )}
+          </div>
+        ) : monster.paperforgeId ? (
+          <PaperforgeImage
+            id={monster.paperforgeId}
+            size={28}
+            className="rounded-sm"
+          />
+        ) : monster.legendary ? (
+          <Crown className="size-5 stroke-flame" />
+        ) : monster.minion ? (
+          <PersonStanding className="size-5 stroke-flame" />
+        ) : null}
+      </div>
       {monster.visibility === "private" && (
         <EyeOff className="size-5 inline self-center stroke-flame" />
       )}

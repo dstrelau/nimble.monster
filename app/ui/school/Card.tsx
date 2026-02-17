@@ -22,6 +22,9 @@ interface CardProps {
   link?: boolean;
   mini?: boolean;
   className?: string;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 const formatActions = (actions: number): string => {
@@ -54,8 +57,12 @@ export function Card({
   link = true,
   mini = false,
   className,
+  selectable = false,
+  selected = false,
+  onSelect,
 }: CardProps) {
   const conditions = useConditions();
+  const effectiveLink = selectable ? false : link;
 
   const formatDistance = (
     target: SpellTarget | undefined,
@@ -71,11 +78,17 @@ export function Card({
     return target.kind === kind ? `${target.distance}.` : undefined;
   };
 
-  return (
-    <UICard className={className}>
+  const card = (
+    <UICard
+      className={cn(
+        className,
+        selectable && selected && "ring-2 ring-amber-500"
+      )}
+      {...(selectable && selected && { "data-selected": "" })}
+    >
       <CardHeader>
         <CardTitle className="text-3xl font-bold uppercase leading-tight text-center font-slab">
-          {link ? (
+          {effectiveLink ? (
             <Link href={getSpellSchoolUrl(spellSchool)}>
               {spellSchool.name}
             </Link>
@@ -96,7 +109,7 @@ export function Card({
         )}
       </CardHeader>
 
-      <CardContent>
+      <CardContent className={cn(selectable && "pointer-events-none")}>
         <div className={cn(mini ? "space-y-1" : "space-y-6")}>
           {spellSchool.spells.map((spell) => {
             const parts = [
@@ -165,10 +178,28 @@ export function Card({
       </CardContent>
 
       <CardFooterLayout
+        className={cn(selectable && "pointer-events-none")}
         creator={creator || spellSchool.creator}
         source={spellSchool.source}
         awards={spellSchool.awards}
       />
     </UICard>
   );
+
+  if (selectable) {
+    return (
+      <button
+        type="button"
+        className={cn(
+          "w-full cursor-pointer relative text-left transition-[filter] duration-150 hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+          selected && "drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+        )}
+        onClick={onSelect}
+      >
+        {card}
+      </button>
+    );
+  }
+
+  return card;
 }

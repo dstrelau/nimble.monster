@@ -303,6 +303,7 @@ export interface SpellSchoolMini {
   id: string;
   name: string;
   visibility: SpellSchoolVisibility;
+  spellCount?: number;
   createdAt: Date;
 }
 

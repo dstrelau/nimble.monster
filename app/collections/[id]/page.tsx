@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Card as AncestryCard } from "@/app/ui/ancestry/Card";
 import { Card as BackgroundCard } from "@/app/ui/background/Card";
-import { CardGrid as CompanionCardGrid } from "@/app/ui/companion/CardGrid";
-import { CardGrid as ItemCardGrid } from "@/app/ui/item/CardGrid";
-import { CardGrid } from "@/app/ui/monster/CardGrid";
+import { Card as CompanionCard } from "@/app/ui/companion/Card";
+import { Card as ItemCard } from "@/app/ui/item/Card";
+import { Card as MonsterCard } from "@/app/ui/monster/Card";
 import { Card as SchoolCard } from "@/app/ui/school/Card";
-import { Card as SubclassCard } from "@/app/ui/subclass/Card";
+import { SubclassMiniCard } from "@/app/ui/subclass/SubclassMiniCard";
 import { CollectionHeader } from "@/components/CollectionHeader";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
@@ -96,21 +96,14 @@ export default async function ShowCollectionView({
   }
 
   const isCreator = session?.user?.discordId === collection.creator.discordId;
-  const hasMonsters = collection.monsters.length > 0;
-  const hasItems = collection.items?.length > 0;
-  const hasCompanions = collection.companions?.length > 0;
-  const hasAncestries = collection.ancestries?.length > 0;
-  const hasBackgrounds = collection.backgrounds?.length > 0;
-  const hasSubclasses = collection.subclasses?.length > 0;
-  const hasSpellSchools = collection.spellSchools?.length > 0;
   const isEmpty =
-    !hasMonsters &&
-    !hasItems &&
-    !hasCompanions &&
-    !hasAncestries &&
-    !hasBackgrounds &&
-    !hasSubclasses &&
-    !hasSpellSchools;
+    collection.monsters.length === 0 &&
+    collection.items.length === 0 &&
+    collection.companions.length === 0 &&
+    collection.ancestries.length === 0 &&
+    collection.backgrounds.length === 0 &&
+    collection.subclasses.length === 0 &&
+    collection.spellSchools.length === 0;
 
   return (
     <div>
@@ -120,61 +113,35 @@ export default async function ShowCollectionView({
         conditions={conditions}
       />
 
-      <div className="space-y-8">
-        {hasMonsters && (
-          <CardGrid monsters={monstersSortedByLevelInt(collection.monsters)} />
-        )}
-
-        {hasItems && (
-          <ItemCardGrid items={itemsSortedByName(collection.items)} />
-        )}
-
-        {hasCompanions && (
-          <CompanionCardGrid companions={collection.companions} />
-        )}
-
-        {hasAncestries && (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
-            {collection.ancestries.map((ancestry) => (
-              <AncestryCard key={ancestry.id} ancestry={ancestry} />
-            ))}
-          </div>
-        )}
-
-        {hasBackgrounds && (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
-            {collection.backgrounds.map((background) => (
-              <BackgroundCard key={background.id} background={background} />
-            ))}
-          </div>
-        )}
-
-        {hasSubclasses && (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
-            {collection.subclasses.map((subclass) => (
-              <SubclassCard
-                key={subclass.id}
-                subclass={subclass}
-                creator={subclass.creator}
-              />
-            ))}
-          </div>
-        )}
-
-        {hasSpellSchools && (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
-            {collection.spellSchools.map((school) => (
-              <SchoolCard key={school.id} spellSchool={school} mini={true} />
-            ))}
-          </div>
-        )}
-
-        {isEmpty && (
-          <p className="text-center text-muted-foreground py-8">
-            This collection is empty.
-          </p>
-        )}
-      </div>
+      {isEmpty ? (
+        <p className="text-center text-muted-foreground py-8">
+          This collection is empty.
+        </p>
+      ) : (
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start">
+          {monstersSortedByLevelInt(collection.monsters).map((m) => (
+            <MonsterCard key={m.id} monster={m} creator={m.creator} />
+          ))}
+          {itemsSortedByName(collection.items).map((item) => (
+            <ItemCard key={item.id} item={item} creator={item.creator} />
+          ))}
+          {collection.companions.map((c) => (
+            <CompanionCard key={c.id} companion={c} creator={c.creator} />
+          ))}
+          {collection.ancestries.map((ancestry) => (
+            <AncestryCard key={ancestry.id} ancestry={ancestry} />
+          ))}
+          {collection.backgrounds.map((background) => (
+            <BackgroundCard key={background.id} background={background} />
+          ))}
+          {collection.subclasses.map((subclass) => (
+            <SubclassMiniCard key={subclass.id} subclass={subclass} />
+          ))}
+          {collection.spellSchools.map((school) => (
+            <SchoolCard key={school.id} spellSchool={school} mini={true} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

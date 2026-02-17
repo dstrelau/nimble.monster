@@ -23,12 +23,29 @@ interface CardProps {
   link?: boolean;
   hideActions?: boolean;
   className?: string;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
-export function Card({ subclass, creator, link = true, className }: CardProps) {
+export function Card({
+  subclass,
+  creator,
+  link = true,
+  className,
+  selectable = false,
+  selected = false,
+  onSelect,
+}: CardProps) {
   const conditions = useConditions();
   const cardContent = (
-    <UICard className={className}>
+    <UICard
+      className={cn(
+        className,
+        selectable && selected && "ring-2 ring-amber-500"
+      )}
+      {...(selectable && selected && { "data-selected": "" })}
+    >
       <CardHeader className={cn(subclass.description && "pb-3")}>
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
@@ -36,14 +53,29 @@ export function Card({ subclass, creator, link = true, className }: CardProps) {
               <span className="self-center w-fit mb-2 py-1 px-2 bg-muted text-sm font-sab font-normal">
                 {subclass.className}
               </span>
-              {subclass.namePreface && <span>— {subclass.namePreface} —</span>}
-              <span className="text-4xl">{subclass.name}</span>
+              {link ? (
+                <Link href={getSubclassUrl(subclass)}>
+                  {subclass.namePreface && (
+                    <span>— {subclass.namePreface} —</span>
+                  )}
+                  <span className="text-4xl">{subclass.name}</span>
+                </Link>
+              ) : (
+                <>
+                  {subclass.namePreface && (
+                    <span>— {subclass.namePreface} —</span>
+                  )}
+                  <span className="text-4xl">{subclass.name}</span>
+                </>
+              )}
             </CardTitle>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="pt-0 space-y-4">
+      <CardContent
+        className={cn("pt-0 space-y-4", selectable && "pointer-events-none")}
+      >
         {subclass.tagline && (
           <div className="text-center text-sm text-muted-foreground italic">
             <FormattedText
@@ -85,6 +117,7 @@ export function Card({ subclass, creator, link = true, className }: CardProps) {
       </CardContent>
 
       <CardFooterLayout
+        className={cn(selectable && "pointer-events-none")}
         creator={creator || subclass.creator}
         source={subclass.source}
         awards={subclass.awards}
@@ -99,11 +132,18 @@ export function Card({ subclass, creator, link = true, className }: CardProps) {
     </UICard>
   );
 
-  if (link) {
+  if (selectable) {
     return (
-      <Link href={getSubclassUrl(subclass)} className="block">
+      <button
+        type="button"
+        className={cn(
+          "w-full cursor-pointer relative text-left transition-[filter] duration-150 hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+          selected && "drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+        )}
+        onClick={onSelect}
+      >
         {cardContent}
-      </Link>
+      </button>
     );
   }
 

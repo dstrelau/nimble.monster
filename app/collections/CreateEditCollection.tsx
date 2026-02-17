@@ -1,43 +1,20 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
 import {
-  BookOpen,
-  Crown,
-  Dog,
-  Layers,
-  PersonStanding,
+  Drama,
+  HandFist,
+  HeartHandshake,
+  Scroll,
   Shield,
-  SlidersHorizontal,
-  Sparkles,
-  Square,
-  SquareCheck,
-  Swords,
-  User as UserIcon,
+  WandSparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  createCollection,
-  searchAncestriesAction,
-  searchBackgroundsAction,
-  searchCompanionsAction,
-  searchSpellSchoolsAction,
-} from "@/app/actions/collection";
-import { searchPublicMonsters } from "@/app/actions/monster";
-import { searchPublicSubclasses } from "@/app/actions/subclass";
-import { List as AncestryList } from "@/app/ui/ancestry/List";
-import { List as BackgroundList } from "@/app/ui/background/List";
-import { List as CompanionList } from "@/app/ui/companion/List";
-import { List as ItemList } from "@/app/ui/item/List";
-import { List } from "@/app/ui/monster/List";
-import { List as SchoolList } from "@/app/ui/school/List";
-import { List as SubclassList } from "@/app/ui/subclass/List";
-import { SortSelect } from "@/components/app/SortSelect";
+import { createCollection } from "@/app/actions/collection";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Goblin } from "@/components/icons/goblin";
 import { Button } from "@/components/ui/button";
@@ -50,35 +27,36 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Toggle } from "@/components/ui/toggle";
+import type { Ancestry } from "@/lib/services/ancestries";
 import type { AncestryMini } from "@/lib/services/ancestries/types";
+import type { Background } from "@/lib/services/backgrounds";
 import type { BackgroundMini } from "@/lib/services/backgrounds/types";
-import type { Item, ItemMini, ItemRarityFilter } from "@/lib/services/items";
-import { RARITIES } from "@/lib/services/items";
-import { searchPublicItems } from "@/lib/services/items/repository";
-import type { Monster, MonsterMini, TypeFilter } from "@/lib/services/monsters";
+import type { Item, ItemMini } from "@/lib/services/items";
+import type { Monster, MonsterMini } from "@/lib/services/monsters";
 import type {
   Collection,
+  Companion,
   CompanionMini,
+  SpellSchool,
   SpellSchoolMini,
+  Subclass,
   SubclassMini,
 } from "@/lib/types";
 import { UNKNOWN_USER } from "@/lib/types";
 import { getCollectionUrl } from "@/lib/utils/url";
 import { CollectionCard } from "../ui/CollectionCard";
-import { SearchInput } from "../ui/SearchInput";
 import { updateCollection } from "./[id]/edit/actions";
 import { VisibilityToggle } from "./[id]/edit/VisibilityToggle";
+import { SelectableAncestryGrid } from "./SelectableAncestryGrid";
+import { SelectableBackgroundGrid } from "./SelectableBackgroundGrid";
+import { SelectableCompanionGrid } from "./SelectableCompanionGrid";
+import { SelectableItemGrid } from "./SelectableItemGrid";
+import { SelectableMonsterGrid } from "./SelectableMonsterGrid";
+import { SelectableSpellSchoolGrid } from "./SelectableSpellSchoolGrid";
+import { SelectableSubclassGrid } from "./SelectableSubclassGrid";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -88,27 +66,8 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-type SortOption =
-  | "name-asc"
-  | "name-desc"
-  | "level-asc"
-  | "level-desc"
-  | "hp-asc"
-  | "hp-desc";
-
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: "name-asc", label: "Name (A→Z)" },
-  { value: "name-desc", label: "Name (Z→A)" },
-  { value: "level-asc", label: "Level (Low→High)" },
-  { value: "level-desc", label: "Level (High→Low)" },
-  { value: "hp-asc", label: "HP (Low→High)" },
-  { value: "hp-desc", label: "HP (High→Low)" },
-];
-
 interface Props {
   collection: Collection;
-  myMonsters: Monster[];
-  myItems?: Item[];
   onSubmit?: (
     data: FormData & { monsters: MonsterMini[]; items: ItemMini[] }
   ) => Promise<void>;
@@ -118,57 +77,120 @@ interface Props {
 
 export function CreateEditCollection({
   collection,
-  myMonsters,
-  myItems = [],
   onSubmit,
   isCreating = false,
   submitLabel = "Save",
 }: Props) {
   const router = useRouter();
-  const [currentMonsters, setCurrentMonsters] = useState<MonsterMini[]>(
-    collection.monsters
-  );
-  const [currentItems, setCurrentItems] = useState<ItemMini[]>(
-    collection.items
-  );
-  const [currentCompanions, setCurrentCompanions] = useState<CompanionMini[]>(
-    collection.companions ?? []
-  );
-  const [currentAncestries, setCurrentAncestries] = useState<AncestryMini[]>(
-    collection.ancestries ?? []
-  );
-  const [currentBackgrounds, setCurrentBackgrounds] = useState<
-    BackgroundMini[]
-  >(collection.backgrounds ?? []);
-  const [currentSubclasses, setCurrentSubclasses] = useState<SubclassMini[]>(
-    collection.subclasses ?? []
-  );
-  const [currentSpellSchools, setCurrentSpellSchools] = useState<
-    SpellSchoolMini[]
-  >(collection.spellSchools ?? []);
-
   const { data: session } = useSession();
-  const [onlyMine, setOnlyMine] = useState<boolean>(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
-  const [sortOption, setSortOption] = useState<SortOption>("name-asc");
 
-  // Item-specific state
-  const [onlyMineItems, setOnlyMineItems] = useState<boolean>(true);
-  const [itemSearchTerm, setItemSearchTerm] = useState("");
-  const [rarityFilter, setRarityFilter] = useState<ItemRarityFilter>("all");
+  const [selectedMonsters, setSelectedMonsters] = useState<
+    Map<string, Monster | MonsterMini>
+  >(() => new Map(collection.monsters.map((m) => [m.id, m])));
 
-  // New tab states
-  const [companionSearch, setCompanionSearch] = useState("");
-  const [onlyMineCompanions, setOnlyMineCompanions] = useState(true);
-  const [ancestrySearch, setAncestrySearch] = useState("");
-  const [onlyMineAncestries, setOnlyMineAncestries] = useState(true);
-  const [backgroundSearch, setBackgroundSearch] = useState("");
-  const [onlyMineBackgrounds, setOnlyMineBackgrounds] = useState(true);
-  const [subclassSearch, setSubclassSearch] = useState("");
-  const [onlyMineSubclasses, setOnlyMineSubclasses] = useState(true);
-  const [schoolSearch, setSchoolSearch] = useState("");
-  const [onlyMineSchools, setOnlyMineSchools] = useState(true);
+  const [selectedItems, setSelectedItems] = useState<
+    Map<string, Item | ItemMini>
+  >(() => new Map(collection.items.map((i) => [i.id, i])));
+
+  const selectedMonsterIds = useMemo(
+    () => new Set(selectedMonsters.keys()),
+    [selectedMonsters]
+  );
+  const selectedItemIds = useMemo(
+    () => new Set(selectedItems.keys()),
+    [selectedItems]
+  );
+
+  const currentMonsters = useMemo(
+    () => [...selectedMonsters.values()] as MonsterMini[],
+    [selectedMonsters]
+  );
+  const currentItems = useMemo(
+    () => [...selectedItems.values()] as ItemMini[],
+    [selectedItems]
+  );
+
+  const handleMonsterToggle = (monster: Monster) => {
+    setSelectedMonsters((prev) => {
+      const next = new Map(prev);
+      if (next.has(monster.id)) {
+        next.delete(monster.id);
+      } else {
+        next.set(monster.id, monster);
+      }
+      return next;
+    });
+  };
+
+  const handleItemToggle = (item: Item) => {
+    setSelectedItems((prev) => {
+      const next = new Map(prev);
+      if (next.has(item.id)) {
+        next.delete(item.id);
+      } else {
+        next.set(item.id, item);
+      }
+      return next;
+    });
+  };
+
+  const [selectedCompanions, setSelectedCompanions] = useState<
+    Map<string, Companion | CompanionMini>
+  >(() => new Map((collection.companions ?? []).map((c) => [c.id, c])));
+  const [selectedAncestries, setSelectedAncestries] = useState<
+    Map<string, Ancestry | AncestryMini>
+  >(() => new Map((collection.ancestries ?? []).map((a) => [a.id, a])));
+  const [selectedBackgrounds, setSelectedBackgrounds] = useState<
+    Map<string, Background | BackgroundMini>
+  >(() => new Map((collection.backgrounds ?? []).map((b) => [b.id, b])));
+  const [selectedSubclasses, setSelectedSubclasses] = useState<
+    Map<string, Subclass | SubclassMini>
+  >(() => new Map((collection.subclasses ?? []).map((s) => [s.id, s])));
+  const [selectedSpellSchools, setSelectedSpellSchools] = useState<
+    Map<string, SpellSchool | SpellSchoolMini>
+  >(() => new Map((collection.spellSchools ?? []).map((s) => [s.id, s])));
+
+  const selectedCompanionIds = useMemo(
+    () => new Set(selectedCompanions.keys()),
+    [selectedCompanions]
+  );
+  const selectedAncestryIds = useMemo(
+    () => new Set(selectedAncestries.keys()),
+    [selectedAncestries]
+  );
+  const selectedBackgroundIds = useMemo(
+    () => new Set(selectedBackgrounds.keys()),
+    [selectedBackgrounds]
+  );
+  const selectedSubclassIds = useMemo(
+    () => new Set(selectedSubclasses.keys()),
+    [selectedSubclasses]
+  );
+  const selectedSpellSchoolIds = useMemo(
+    () => new Set(selectedSpellSchools.keys()),
+    [selectedSpellSchools]
+  );
+
+  const currentCompanions = useMemo(
+    () => [...selectedCompanions.values()] as CompanionMini[],
+    [selectedCompanions]
+  );
+  const currentAncestries = useMemo(
+    () => [...selectedAncestries.values()] as AncestryMini[],
+    [selectedAncestries]
+  );
+  const currentBackgrounds = useMemo(
+    () => [...selectedBackgrounds.values()] as BackgroundMini[],
+    [selectedBackgrounds]
+  );
+  const currentSubclasses = useMemo(
+    () => [...selectedSubclasses.values()] as SubclassMini[],
+    [selectedSubclasses]
+  );
+  const currentSpellSchools = useMemo(
+    () => [...selectedSpellSchools.values()] as SpellSchoolMini[],
+    [selectedSpellSchools]
+  );
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -191,31 +213,31 @@ export function CreateEditCollection({
       watchedValues.description !== (collection.description || "") ||
       watchedValues.visibility !== collection.visibility ||
       !arraysEqual(
-        currentMonsters.map((m) => m.id),
+        [...selectedMonsterIds],
         collection.monsters.map((m) => m.id)
       ) ||
       !arraysEqual(
-        currentItems.map((i) => i.id),
+        [...selectedItemIds],
         collection.items.map((i) => i.id)
       ) ||
       !arraysEqual(
-        currentCompanions.map((c) => c.id),
+        [...selectedCompanionIds],
         (collection.companions ?? []).map((c) => c.id)
       ) ||
       !arraysEqual(
-        currentAncestries.map((a) => a.id),
+        [...selectedAncestryIds],
         (collection.ancestries ?? []).map((a) => a.id)
       ) ||
       !arraysEqual(
-        currentBackgrounds.map((b) => b.id),
+        [...selectedBackgroundIds],
         (collection.backgrounds ?? []).map((b) => b.id)
       ) ||
       !arraysEqual(
-        currentSubclasses.map((s) => s.id),
+        [...selectedSubclassIds],
         (collection.subclasses ?? []).map((s) => s.id)
       ) ||
       !arraysEqual(
-        currentSpellSchools.map((s) => s.id),
+        [...selectedSpellSchoolIds],
         (collection.spellSchools ?? []).map((s) => s.id)
       );
 
@@ -229,7 +251,6 @@ export function CreateEditCollection({
       return;
     }
 
-    // Default submit handler
     if (isCreating) {
       const result = await createCollection({
         name: data.name,
@@ -271,7 +292,16 @@ export function CreateEditCollection({
           JSON.stringify(currentSpellSchools.map((s) => s.id))
         );
 
-        await updateCollection(result.collection.id, updateFormData);
+        const updateResult = await updateCollection(
+          result.collection.id,
+          updateFormData
+        );
+        if (!updateResult.success) {
+          form.setError("root", {
+            message: "Failed to add content to collection",
+          });
+          return;
+        }
         router.push(getCollectionUrl(result.collection));
       } else {
         form.setError("root", {
@@ -325,223 +355,27 @@ export function CreateEditCollection({
     }
   };
 
-  let creatorId: string | undefined;
-  if (onlyMine) {
-    creatorId = session?.user?.discordId;
-  }
-
-  let itemCreatorId: string | undefined;
-  if (onlyMineItems) {
-    itemCreatorId = session?.user?.discordId;
-  }
-
-  const companionCreatorId = onlyMineCompanions
-    ? session?.user?.discordId
-    : undefined;
-  const ancestryCreatorId = onlyMineAncestries
-    ? session?.user?.discordId
-    : undefined;
-  const backgroundCreatorId = onlyMineBackgrounds
-    ? session?.user?.discordId
-    : undefined;
-  const subclassCreatorId = onlyMineSubclasses
-    ? session?.user?.discordId
-    : undefined;
-  const schoolCreatorId = onlyMineSchools
-    ? session?.user?.discordId
-    : undefined;
-
-  const monstersQuery = useQuery({
-    queryKey: ["publicMonsters", searchTerm, typeFilter, sortOption, creatorId],
-    queryFn: async () => {
-      const [sortBy, sortDirection] = sortOption.split("-") as [
-        "name" | "level" | "hp",
-        "asc" | "desc",
-      ];
-
-      return searchPublicMonsters({
-        searchTerm: searchTerm,
-        type: typeFilter,
-        creatorId,
-        sortBy,
-        sortDirection,
-        limit: 50,
+  const makeToggle = <T extends { id: string }>(
+    setter: React.Dispatch<React.SetStateAction<Map<string, T>>>
+  ) => {
+    return (entity: T) => {
+      setter((prev) => {
+        const next = new Map(prev);
+        if (next.has(entity.id)) {
+          next.delete(entity.id);
+        } else {
+          next.set(entity.id, entity);
+        }
+        return next;
       });
-    },
-    staleTime: 10000,
-  });
-
-  const availableMonsters: MonsterMini[] = monstersQuery.data?.monsters || [];
-
-  const itemsQuery = useQuery({
-    queryKey: ["items", itemSearchTerm, rarityFilter, itemCreatorId],
-    queryFn: () =>
-      searchPublicItems({
-        searchTerm: itemSearchTerm,
-        rarity: rarityFilter,
-        creatorId: itemCreatorId,
-        sortBy: "name",
-        sortDirection: "asc",
-        limit: 50,
-      }),
-    staleTime: 10000,
-  });
-
-  const availableItems: ItemMini[] = itemsQuery.data || [];
-
-  const companionsQuery = useQuery({
-    queryKey: ["companions", companionSearch, companionCreatorId],
-    queryFn: () =>
-      searchCompanionsAction({
-        searchTerm: companionSearch,
-        creatorId: companionCreatorId,
-        limit: 50,
-      }),
-    staleTime: 10000,
-  });
-
-  const ancestriesQuery = useQuery({
-    queryKey: ["ancestries", ancestrySearch, ancestryCreatorId],
-    queryFn: () =>
-      searchAncestriesAction({
-        searchTerm: ancestrySearch,
-        creatorId: ancestryCreatorId,
-        limit: 50,
-      }),
-    staleTime: 10000,
-  });
-
-  const backgroundsQuery = useQuery({
-    queryKey: ["backgrounds", backgroundSearch, backgroundCreatorId],
-    queryFn: () =>
-      searchBackgroundsAction({
-        searchTerm: backgroundSearch,
-        creatorId: backgroundCreatorId,
-        limit: 50,
-      }),
-    staleTime: 10000,
-  });
-
-  const subclassesQuery = useQuery({
-    queryKey: ["subclasses", subclassSearch, subclassCreatorId],
-    queryFn: async () => {
-      const result = await searchPublicSubclasses({
-        searchTerm: subclassSearch,
-        creatorId: subclassCreatorId,
-        limit: 50,
-      });
-      return result.subclasses ?? [];
-    },
-    staleTime: 10000,
-  });
-
-  const schoolsQuery = useQuery({
-    queryKey: ["spellSchools", schoolSearch, schoolCreatorId],
-    queryFn: () =>
-      searchSpellSchoolsAction({
-        searchTerm: schoolSearch,
-        creatorId: schoolCreatorId,
-        limit: 50,
-      }),
-    staleTime: 10000,
-  });
-
-  const handleMonsterCheck = (id: string) => {
-    const isInCollection = currentMonsters.some((m) => m.id === id);
-    if (isInCollection) {
-      setCurrentMonsters((prev) => prev.filter((m) => m.id !== id));
-    } else {
-      const clicked =
-        myMonsters.find((m) => m.id === id) ||
-        availableMonsters.find((m) => m.id === id);
-      if (clicked) {
-        setCurrentMonsters((prev) =>
-          [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
-        );
-      }
-    }
+    };
   };
 
-  const handleItemCheck = (id: string) => {
-    const isInCollection = currentItems.some((i) => i.id === id);
-    if (isInCollection) {
-      setCurrentItems((prev) => prev.filter((i) => i.id !== id));
-    } else {
-      const clicked =
-        myItems.find((i) => i.id === id) ||
-        availableItems.find((i) => i.id === id);
-      if (clicked) {
-        setCurrentItems((prev) =>
-          [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
-        );
-      }
-    }
-  };
-
-  const handleCompanionCheck = (id: string) => {
-    if (currentCompanions.some((c) => c.id === id)) {
-      setCurrentCompanions((prev) => prev.filter((c) => c.id !== id));
-    } else {
-      const clicked = (companionsQuery.data ?? []).find((c) => c.id === id);
-      if (clicked) {
-        setCurrentCompanions((prev) =>
-          [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
-        );
-      }
-    }
-  };
-
-  const handleAncestryCheck = (id: string) => {
-    if (currentAncestries.some((a) => a.id === id)) {
-      setCurrentAncestries((prev) => prev.filter((a) => a.id !== id));
-    } else {
-      const clicked = (ancestriesQuery.data ?? []).find((a) => a.id === id);
-      if (clicked) {
-        setCurrentAncestries((prev) =>
-          [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
-        );
-      }
-    }
-  };
-
-  const handleBackgroundCheck = (id: string) => {
-    if (currentBackgrounds.some((b) => b.id === id)) {
-      setCurrentBackgrounds((prev) => prev.filter((b) => b.id !== id));
-    } else {
-      const clicked = (backgroundsQuery.data ?? []).find((b) => b.id === id);
-      if (clicked) {
-        setCurrentBackgrounds((prev) =>
-          [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
-        );
-      }
-    }
-  };
-
-  const handleSubclassCheck = (id: string) => {
-    if (currentSubclasses.some((s) => s.id === id)) {
-      setCurrentSubclasses((prev) => prev.filter((s) => s.id !== id));
-    } else {
-      const clicked = (subclassesQuery.data ?? []).find((s) => s.id === id);
-      if (clicked) {
-        setCurrentSubclasses((prev) =>
-          [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
-        );
-      }
-    }
-  };
-
-  const handleSchoolCheck = (id: string) => {
-    if (currentSpellSchools.some((s) => s.id === id)) {
-      setCurrentSpellSchools((prev) => prev.filter((s) => s.id !== id));
-    } else {
-      const clicked = (schoolsQuery.data ?? []).find((s) => s.id === id);
-      if (clicked) {
-        setCurrentSpellSchools((prev) =>
-          [...prev, clicked].sort((a, b) => a.name.localeCompare(b.name))
-        );
-      }
-    }
-  };
+  const handleCompanionToggle = makeToggle(setSelectedCompanions);
+  const handleAncestryToggle = makeToggle(setSelectedAncestries);
+  const handleBackgroundToggle = makeToggle(setSelectedBackgrounds);
+  const handleSubclassToggle = makeToggle(setSelectedSubclasses);
+  const handleSpellSchoolToggle = makeToggle(setSelectedSpellSchools);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -555,59 +389,6 @@ export function CreateEditCollection({
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [isDirty]);
-
-  const renderSimpleTab = (
-    label: string,
-    searchValue: string,
-    setSearch: (v: string) => void,
-    onlyMineValue: boolean,
-    setOnlyMineValue: (v: boolean) => void,
-    query: { isLoading: boolean; data: unknown },
-    dataArray: { id: string; name: string }[],
-    selectedIds: string[],
-    // biome-ignore lint/suspicious/noExplicitAny: generic list component
-    ListComponent: React.ComponentType<any>,
-    listProps: Record<string, unknown>
-  ) => (
-    <>
-      <div className="flex gap-3 items-center">
-        <SearchInput
-          className="grow"
-          value={searchValue}
-          onChange={setSearch}
-          placeholder={`Search ${label.toLowerCase()}`}
-        />
-      </div>
-      <div className="flex gap-4">
-        <Toggle
-          variant="outline"
-          aria-label={`Toggle Only My ${label}`}
-          pressed={onlyMineValue}
-          onPressedChange={setOnlyMineValue}
-        >
-          {onlyMineValue ? <SquareCheck /> : <Square />}
-          Only My {label}
-        </Toggle>
-      </div>
-      <div className="flex gap-x-8">
-        <div>
-          {query.isLoading ? (
-            <div className="p-4 text-center">Searching...</div>
-          ) : dataArray.length === 0 ? (
-            <div className="p-4 text-center">
-              No {label.toLowerCase()} found
-            </div>
-          ) : (
-            <ListComponent
-              {...listProps}
-              selectedIds={selectedIds}
-              showChecks={true}
-            />
-          )}
-        </div>
-      </div>
-    </>
-  );
 
   return (
     <Form {...form}>
@@ -674,296 +455,175 @@ export function CreateEditCollection({
             />
 
             <Separator />
-            <Tabs defaultValue="monsters">
-              <TabsList className="min-w-sm flex-wrap h-auto">
-                <TabsTrigger className="text-md p-4" value="monsters">
-                  <Goblin className="size-5" />
-                  Monsters
-                </TabsTrigger>
-                <TabsTrigger className="text-md p-4" value="items">
-                  <Shield className="size-5" />
-                  Items
-                </TabsTrigger>
-                <TabsTrigger className="text-md p-4" value="companions">
-                  <Dog className="size-5" />
-                  Companions
-                </TabsTrigger>
-                <TabsTrigger className="text-md p-4" value="ancestries">
-                  <Layers className="size-5" />
-                  Ancestries
-                </TabsTrigger>
-                <TabsTrigger className="text-md p-4" value="backgrounds">
-                  <BookOpen className="size-5" />
-                  Backgrounds
-                </TabsTrigger>
-                <TabsTrigger className="text-md p-4" value="subclasses">
-                  <Swords className="size-5" />
-                  Subclasses
-                </TabsTrigger>
-                <TabsTrigger className="text-md p-4" value="spellSchools">
-                  <Sparkles className="size-5" />
-                  Spell Schools
-                </TabsTrigger>
-              </TabsList>
+            <Tabs defaultValue="companions">
+              <div className="flex flex-col gap-1">
+                <TabsList className="grid grid-cols-3 h-auto w-full">
+                  <TabsTrigger className="text-md" value="companions">
+                    <HeartHandshake className="size-5" />
+                    Companions
+                  </TabsTrigger>
+                  <TabsTrigger className="text-md" value="monsters">
+                    <Goblin className="size-5" />
+                    Monsters
+                  </TabsTrigger>
+                  <TabsTrigger className="text-md" value="items">
+                    <Shield className="size-5" />
+                    Items
+                  </TabsTrigger>
+                </TabsList>
+                <TabsList className="grid grid-cols-4 h-auto w-full">
+                  <TabsTrigger className="text-md" value="ancestries">
+                    <Scroll className="size-5" />
+                    Ancestries
+                  </TabsTrigger>
+                  <TabsTrigger className="text-md" value="backgrounds">
+                    <Drama className="size-5" />
+                    Backgrounds
+                  </TabsTrigger>
+                  <TabsTrigger className="text-md" value="subclasses">
+                    <HandFist className="size-5" />
+                    Subclasses
+                  </TabsTrigger>
+                  <TabsTrigger className="text-md" value="spellSchools">
+                    <WandSparkles className="size-5" />
+                    Spells
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent
                 value="monsters"
                 className="flex flex-col gap-4 grow-2"
               >
-                <div className="flex gap-3 items-center">
-                  <SearchInput
-                    className="grow"
-                    value={searchTerm}
-                    onChange={setSearchTerm}
-                    placeholder="Search monsters"
-                  />
-                  <SortSelect
-                    items={SORT_OPTIONS}
-                    value={sortOption}
-                    onChange={setSortOption}
-                  />
-                </div>
-
-                <div className="flex gap-4">
-                  <Toggle
-                    variant="outline"
-                    aria-label="Toggle Only My Monsters"
-                    pressed={onlyMine}
-                    onPressedChange={setOnlyMine}
-                  >
-                    {onlyMine ? <SquareCheck /> : <Square />}
-                    Only My Monsters
-                  </Toggle>
-
-                  <Select
-                    defaultValue="all"
-                    onValueChange={(s: TypeFilter) => setTypeFilter(s)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="All Monsters" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">
-                        <SlidersHorizontal />
-                        All Monsters
-                      </SelectItem>
-                      <SelectItem
-                        value="standard"
-                        aria-label="Standard monsters"
-                      >
-                        <UserIcon />
-                        Standard
-                      </SelectItem>
-                      <SelectItem
-                        value="legendary"
-                        aria-label="Legendary monsters"
-                      >
-                        <Crown />
-                        Legendary
-                      </SelectItem>
-                      <SelectItem value="minion" aria-label="Minions">
-                        <PersonStanding />
-                        Minions
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex gap-x-8">
-                  <div>
-                    {monstersQuery.isLoading ? (
-                      <div className="p-4 text-center">Searching...</div>
-                    ) : (monstersQuery.data?.monsters?.length ?? 0) === 0 ? (
-                      <div className="p-4 text-center">No monsters found</div>
-                    ) : (
-                      <List
-                        monsters={availableMonsters}
-                        selectedIds={currentMonsters.map((m) => m.id)}
-                        handleMonsterClick={handleMonsterCheck}
-                        showChecks={true}
-                      />
-                    )}
-                  </div>
-                </div>
+                <SelectableMonsterGrid
+                  selectedIds={selectedMonsterIds}
+                  onToggle={handleMonsterToggle}
+                />
               </TabsContent>
 
               <TabsContent value="items" className="flex flex-col gap-4 grow-2">
-                <div className="flex gap-3 items-center">
-                  <SearchInput
-                    className="grow"
-                    value={itemSearchTerm}
-                    onChange={setItemSearchTerm}
-                    placeholder="Search items"
-                  />
-                </div>
-
-                <div className="flex gap-4">
-                  <Toggle
-                    variant="outline"
-                    aria-label="Toggle Only My Items"
-                    pressed={onlyMineItems}
-                    onPressedChange={setOnlyMineItems}
-                  >
-                    {onlyMineItems ? <SquareCheck /> : <Square />}
-                    Only My Items
-                  </Toggle>
-
-                  <Select
-                    defaultValue="all"
-                    onValueChange={(s: ItemRarityFilter) => setRarityFilter(s)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="All Rarities" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">
-                        <SlidersHorizontal />
-                        All Rarities
-                      </SelectItem>
-                      {RARITIES.map((rarity) => (
-                        <SelectItem key={rarity.value} value={rarity.value}>
-                          {rarity.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex gap-x-8">
-                  <div>
-                    {itemsQuery.isLoading ? (
-                      <div className="p-4 text-center">Searching...</div>
-                    ) : (itemsQuery.data?.length ?? 0) === 0 ? (
-                      <div className="p-4 text-center">No items found</div>
-                    ) : (
-                      <ItemList
-                        items={availableItems}
-                        selectedIds={currentItems.map((i) => i.id)}
-                        handleItemClick={handleItemCheck}
-                        showChecks={true}
-                      />
-                    )}
-                  </div>
-                </div>
+                <SelectableItemGrid
+                  selectedIds={selectedItemIds}
+                  onToggle={handleItemToggle}
+                />
               </TabsContent>
 
               <TabsContent
                 value="companions"
                 className="flex flex-col gap-4 grow-2"
               >
-                {renderSimpleTab(
-                  "Companions",
-                  companionSearch,
-                  setCompanionSearch,
-                  onlyMineCompanions,
-                  setOnlyMineCompanions,
-                  companionsQuery,
-                  companionsQuery.data ?? [],
-                  currentCompanions.map((c) => c.id),
-                  CompanionList,
-                  {
-                    companions: companionsQuery.data ?? [],
-                    handleCompanionClick: handleCompanionCheck,
-                  }
-                )}
+                <SelectableCompanionGrid
+                  selectedIds={selectedCompanionIds}
+                  onToggle={handleCompanionToggle}
+                />
               </TabsContent>
 
               <TabsContent
                 value="ancestries"
                 className="flex flex-col gap-4 grow-2"
               >
-                {renderSimpleTab(
-                  "Ancestries",
-                  ancestrySearch,
-                  setAncestrySearch,
-                  onlyMineAncestries,
-                  setOnlyMineAncestries,
-                  ancestriesQuery,
-                  ancestriesQuery.data ?? [],
-                  currentAncestries.map((a) => a.id),
-                  AncestryList,
-                  {
-                    ancestries: ancestriesQuery.data ?? [],
-                    handleAncestryClick: handleAncestryCheck,
-                  }
-                )}
+                <SelectableAncestryGrid
+                  selectedIds={selectedAncestryIds}
+                  onToggle={handleAncestryToggle}
+                />
               </TabsContent>
 
               <TabsContent
                 value="backgrounds"
                 className="flex flex-col gap-4 grow-2"
               >
-                {renderSimpleTab(
-                  "Backgrounds",
-                  backgroundSearch,
-                  setBackgroundSearch,
-                  onlyMineBackgrounds,
-                  setOnlyMineBackgrounds,
-                  backgroundsQuery,
-                  backgroundsQuery.data ?? [],
-                  currentBackgrounds.map((b) => b.id),
-                  BackgroundList,
-                  {
-                    backgrounds: backgroundsQuery.data ?? [],
-                    handleBackgroundClick: handleBackgroundCheck,
-                  }
-                )}
+                <SelectableBackgroundGrid
+                  selectedIds={selectedBackgroundIds}
+                  onToggle={handleBackgroundToggle}
+                />
               </TabsContent>
 
               <TabsContent
                 value="subclasses"
                 className="flex flex-col gap-4 grow-2"
               >
-                {renderSimpleTab(
-                  "Subclasses",
-                  subclassSearch,
-                  setSubclassSearch,
-                  onlyMineSubclasses,
-                  setOnlyMineSubclasses,
-                  subclassesQuery,
-                  subclassesQuery.data ?? [],
-                  currentSubclasses.map((s) => s.id),
-                  SubclassList,
-                  {
-                    subclasses: subclassesQuery.data ?? [],
-                    handleSubclassClick: handleSubclassCheck,
-                  }
-                )}
+                <SelectableSubclassGrid
+                  selectedIds={selectedSubclassIds}
+                  onToggle={handleSubclassToggle}
+                />
               </TabsContent>
 
               <TabsContent
                 value="spellSchools"
                 className="flex flex-col gap-4 grow-2"
               >
-                {renderSimpleTab(
-                  "Spell Schools",
-                  schoolSearch,
-                  setSchoolSearch,
-                  onlyMineSchools,
-                  setOnlyMineSchools,
-                  schoolsQuery,
-                  schoolsQuery.data ?? [],
-                  currentSpellSchools.map((s) => s.id),
-                  SchoolList,
-                  {
-                    schools: schoolsQuery.data ?? [],
-                    handleSchoolClick: handleSchoolCheck,
-                  }
-                )}
+                <SelectableSpellSchoolGrid
+                  selectedIds={selectedSpellSchoolIds}
+                  onToggle={handleSpellSchoolToggle}
+                />
               </TabsContent>
             </Tabs>
           </div>
 
-          <div className="hidden sm:block min-w-xs">
+          <div className="hidden sm:block min-w-sm">
             <CollectionCard
               collection={{
                 ...collection,
                 name: watchedValues.name,
                 monsters: currentMonsters,
                 items: currentItems,
+                companions: currentCompanions,
+                ancestries: currentAncestries,
+                backgrounds: currentBackgrounds,
+                subclasses: currentSubclasses,
+                spellSchools: currentSpellSchools,
                 creator: session?.user || UNKNOWN_USER,
               }}
-              limit={5}
+              limit={Infinity}
+              onRemoveMonsterAction={(id) =>
+                setSelectedMonsters((prev) => {
+                  const next = new Map(prev);
+                  next.delete(id);
+                  return next;
+                })
+              }
+              onRemoveItemAction={(id) =>
+                setSelectedItems((prev) => {
+                  const next = new Map(prev);
+                  next.delete(id);
+                  return next;
+                })
+              }
+              onRemoveCompanionAction={(id) =>
+                setSelectedCompanions((prev) => {
+                  const next = new Map(prev);
+                  next.delete(id);
+                  return next;
+                })
+              }
+              onRemoveAncestryAction={(id) =>
+                setSelectedAncestries((prev) => {
+                  const next = new Map(prev);
+                  next.delete(id);
+                  return next;
+                })
+              }
+              onRemoveBackgroundAction={(id) =>
+                setSelectedBackgrounds((prev) => {
+                  const next = new Map(prev);
+                  next.delete(id);
+                  return next;
+                })
+              }
+              onRemoveSubclassAction={(id) =>
+                setSelectedSubclasses((prev) => {
+                  const next = new Map(prev);
+                  next.delete(id);
+                  return next;
+                })
+              }
+              onRemoveSpellSchoolAction={(id) =>
+                setSelectedSpellSchools((prev) => {
+                  const next = new Map(prev);
+                  next.delete(id);
+                  return next;
+                })
+              }
             />
           </div>
         </div>

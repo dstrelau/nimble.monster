@@ -14,6 +14,7 @@ import { useConditions } from "@/lib/hooks/useConditions";
 import type { Ancestry } from "@/lib/services/ancestries";
 import { SIZES } from "@/lib/services/ancestries";
 import type { User } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { getAncestryUrl } from "@/lib/utils/url";
 
 interface AncestryCardProps {
@@ -21,6 +22,9 @@ interface AncestryCardProps {
   ancestry: Ancestry;
   creator?: User;
   link?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 export const Card = ({
@@ -28,10 +32,14 @@ export const Card = ({
   ancestry,
   creator,
   link = true,
+  selectable = false,
+  selected = false,
+  onSelect,
 }: AncestryCardProps) => {
   const { allConditions: conditions } = useConditions({
     creatorId: creator?.discordId,
   });
+  const effectiveLink = selectable ? false : link;
 
   const sizeOrder = ["tiny", "small", "medium", "large", "huge", "gargantuan"];
   const sizeLabels = ancestry.size
@@ -39,11 +47,17 @@ export const Card = ({
     .map((s) => SIZES.find((size) => size.value === s)?.label || s)
     .join("/");
 
-  return (
-    <ShadcnCard className="h-full flex flex-col">
+  const card = (
+    <ShadcnCard
+      className={cn(
+        "h-full flex flex-col",
+        selectable && selected && "ring-2 ring-amber-500"
+      )}
+      {...(selectable && selected && { "data-selected": "" })}
+    >
       <CardHeader>
         <CardTitle className="text-xl font-bold font-slab flex items-center gap-2">
-          {link && ancestry.id ? (
+          {effectiveLink && ancestry.id ? (
             <Link href={getAncestryUrl(ancestry)}>{ancestry.name}</Link>
           ) : (
             ancestry.name
@@ -58,7 +72,12 @@ export const Card = ({
           )}
         </CardAction>
       </CardHeader>
-      <CardContent className="flex-grow space-y-4">
+      <CardContent
+        className={cn(
+          "flex-grow space-y-4",
+          selectable && "pointer-events-none"
+        )}
+      >
         {!hideDescription && (
           <FormattedText
             className="text-muted-foreground italic"
@@ -85,4 +104,21 @@ export const Card = ({
       />
     </ShadcnCard>
   );
+
+  if (selectable) {
+    return (
+      <button
+        type="button"
+        className={cn(
+          "w-full cursor-pointer relative text-left transition-[filter] duration-150 hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+          selected && "drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+        )}
+        onClick={onSelect}
+      >
+        {card}
+      </button>
+    );
+  }
+
+  return card;
 };

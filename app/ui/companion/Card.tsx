@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "lib/utils";
 import { Circle, Skull } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
@@ -29,6 +28,7 @@ import { useConditions } from "@/lib/hooks/useConditions";
 import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
 import type { MonsterSize } from "@/lib/services/monsters";
 import type { Companion, User } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { getCompanionImageUrl, getCompanionUrl } from "@/lib/utils/url";
 
 // Helper function to format companion size
@@ -91,6 +91,9 @@ interface CardProps {
   hideActions?: boolean;
   hideDescription?: boolean;
   className?: string;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 export const Card = ({
@@ -100,6 +103,9 @@ export const Card = ({
   hideActions = false,
   hideDescription = false,
   className,
+  selectable = false,
+  selected = false,
+  onSelect,
 }: CardProps) => {
   const { allConditions } = useConditions({
     creatorId: creator.discordId,
@@ -107,73 +113,102 @@ export const Card = ({
   const paperforgeEntry = PAPERFORGE_ENTRIES.find(
     (e) => e.id === companion.paperforgeId
   );
-  return (
-    <div id={`companion-${companion.id}`}>
-      <ShadcnCard className={className}>
-        <HeaderCompanion companion={companion} link={link} />
 
-        <CardContent className="flex flex-col gap-3 pt-0 pb-4">
-          {companion.abilities.length > 0 && (
-            <AbilityOverlay
-              conditions={allConditions}
-              abilities={companion.abilities}
-            />
-          )}
+  const card = (
+    <ShadcnCard
+      className={cn(
+        className,
+        selectable && selected && "ring-2 ring-amber-500"
+      )}
+      {...(selectable && selected && { "data-selected": "" })}
+    >
+      <HeaderCompanion companion={companion} link={!selectable && link} />
 
-          <ActionsList
-            actions={companion.actions}
+      <CardContent
+        className={cn(
+          "flex flex-col gap-3 pt-0 pb-4",
+          selectable && "pointer-events-none"
+        )}
+      >
+        {companion.abilities.length > 0 && (
+          <AbilityOverlay
             conditions={allConditions}
-            actionPreface={companion.actionPreface}
+            abilities={companion.abilities}
           />
+        )}
 
-          {companion.dyingRule && (
-            <PrefixedFormattedText
-              prefix={<strong>Dying: </strong>}
-              content={companion.dyingRule}
-              conditions={allConditions}
-            />
-          )}
-
-          <div className="flex items-center justify-center gap-1">
-            <strong className={cn("font-sans text-xs")}>WOUNDS:</strong>
-            {Array.from({ length: companion.wounds }, (_, i) => (
-              <Circle key={`${companion.id}-wound-${i}`} className="w-6 h-6" />
-            ))}
-            <Skull className="w-6 h-6" />
-          </div>
-
-          {hideDescription || (
-            <MoreInfoSection
-              moreInfo={companion.moreInfo}
-              conditions={allConditions}
-            />
-          )}
-        </CardContent>
-
-        <CardFooterLayout
-          creator={creator}
-          source={companion.source}
-          awards={companion.awards}
-          hideActions={hideActions}
-          actionsSlot={
-            companion.id && (
-              <ShareMenu disabled={companion.visibility !== "public"}>
-                <ShareMenuDownloadCardItem
-                  name={`${companion.name}.png`}
-                  path={getCompanionImageUrl(companion)}
-                />
-                <ShareMenuCopyURLItem
-                  path={getCompanionUrl(companion)}
-                  updatedAt={companion.updatedAt}
-                />
-              </ShareMenu>
-            )
-          }
-          paperforgeSlot={
-            paperforgeEntry && <PaperforgeLink entry={paperforgeEntry} />
-          }
+        <ActionsList
+          actions={companion.actions}
+          conditions={allConditions}
+          actionPreface={companion.actionPreface}
         />
-      </ShadcnCard>
-    </div>
+
+        {companion.dyingRule && (
+          <PrefixedFormattedText
+            prefix={<strong>Dying: </strong>}
+            content={companion.dyingRule}
+            conditions={allConditions}
+          />
+        )}
+
+        <div className="flex items-center justify-center gap-1">
+          <strong className={cn("font-sans text-xs")}>WOUNDS:</strong>
+          {Array.from({ length: companion.wounds }, (_, i) => (
+            <Circle key={`${companion.id}-wound-${i}`} className="w-6 h-6" />
+          ))}
+          <Skull className="w-6 h-6" />
+        </div>
+
+        {hideDescription || (
+          <MoreInfoSection
+            moreInfo={companion.moreInfo}
+            conditions={allConditions}
+          />
+        )}
+      </CardContent>
+
+      <CardFooterLayout
+        creator={creator}
+        source={companion.source}
+        awards={companion.awards}
+        hideActions={selectable || hideActions}
+        className={cn(selectable && "pointer-events-none")}
+        actionsSlot={
+          companion.id && (
+            <ShareMenu disabled={companion.visibility !== "public"}>
+              <ShareMenuDownloadCardItem
+                name={`${companion.name}.png`}
+                path={getCompanionImageUrl(companion)}
+              />
+              <ShareMenuCopyURLItem
+                path={getCompanionUrl(companion)}
+                updatedAt={companion.updatedAt}
+              />
+            </ShareMenu>
+          )
+        }
+        paperforgeSlot={
+          paperforgeEntry && <PaperforgeLink entry={paperforgeEntry} />
+        }
+      />
+    </ShadcnCard>
   );
+
+  if (selectable) {
+    return (
+      <button
+        type="button"
+        className={cn(
+          "w-full cursor-pointer relative text-left transition-[filter] duration-150 hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+          selected && "drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+        )}
+        id={`companion-${companion.id}`}
+        onClick={onSelect}
+      >
+        {card}
+      </button>
+    );
+  }
+
+  return <div id={`companion-${companion.id}`}>{card}</div>;
 };

@@ -12,28 +12,43 @@ import {
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Background } from "@/lib/services/backgrounds";
 import type { User } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { getBackgroundUrl } from "@/lib/utils/url";
 
 interface BackgroundCardProps {
   background: Background;
   creator?: User;
   link?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 export const Card = ({
   background,
   creator,
   link = true,
+  selectable = false,
+  selected = false,
+  onSelect,
 }: BackgroundCardProps) => {
   const { allConditions: conditions } = useConditions({
     creatorId: creator?.discordId,
   });
 
-  return (
-    <ShadcnCard className="flex flex-col">
+  const effectiveLink = selectable ? false : link;
+
+  const card = (
+    <ShadcnCard
+      className={cn(
+        "flex flex-col",
+        selectable && selected && "ring-2 ring-amber-500"
+      )}
+      {...(selectable && selected && { "data-selected": "" })}
+    >
       <CardHeader>
         <CardTitle className="text-xl font-bold font-slab">
-          {link && background.id ? (
+          {effectiveLink && background.id ? (
             <Link href={getBackgroundUrl(background)}>{background.name}</Link>
           ) : (
             background.name
@@ -45,7 +60,9 @@ export const Card = ({
           </CardDescription>
         )}
       </CardHeader>
-      <CardContent className="flex-grow">
+      <CardContent
+        className={cn("flex-grow", selectable && "pointer-events-none")}
+      >
         <FormattedText
           content={background.description}
           conditions={conditions}
@@ -55,7 +72,25 @@ export const Card = ({
         creator={creator || background.creator}
         source={background.source}
         awards={background.awards}
+        className={cn(selectable && "pointer-events-none")}
       />
     </ShadcnCard>
   );
+
+  if (selectable) {
+    return (
+      <button
+        type="button"
+        className={cn(
+          "w-full cursor-pointer relative text-left transition-[filter] duration-150 hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+          selected && "drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+        )}
+        onClick={onSelect}
+      >
+        {card}
+      </button>
+    );
+  }
+
+  return card;
 };

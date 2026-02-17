@@ -217,7 +217,7 @@ export const Card = ({
         className,
         selectable && selected && "ring-2 ring-amber-500"
       )}
-      data-selected={selectable && selected ? "" : undefined}
+      {...(selectable && selected && { "data-selected": "" })}
     >
       <MonsterHeader
         monster={monster}

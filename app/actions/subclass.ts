@@ -131,3 +131,7 @@ export async function deleteSubclass(subclassId: string) {
     error: "Could not delete the subclass. Please try again.",
   };
 }
+
+export async function listPublicSubclassesAction() {
+  return db.listPublicSubclasses();
+}

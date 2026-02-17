@@ -15,6 +15,7 @@ interface CardFooterLayoutProps {
   actionsSlot?: React.ReactNode;
   paperforgeSlot?: React.ReactNode;
   className?: string;
+  disableLink?: boolean;
 }
 
 export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
@@ -25,13 +26,18 @@ export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
   actionsSlot,
   paperforgeSlot,
   className,
+  disableLink = false,
 }) => {
   return (
     <>
       <Separator />
       <CardFooter className={cn("flex-col items-stretch", className)}>
         <div className="flex items-center justify-between gap-2">
-          {creator ? <Attribution user={creator} /> : <div />}
+          {creator ? (
+            <Attribution user={creator} disableLink={disableLink} />
+          ) : (
+            <div />
+          )}
 
           <div className="flex items-center gap-2">
             {awards.map((award) => (

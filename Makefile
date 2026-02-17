@@ -23,10 +23,10 @@ db/dev.db: | db node_modules
 
 sync-icons: components/game-icons/index.ts
 
-assets/game-icons: | assets
-	git clone https://github.com/game-icons/icons.git assets/game-icons
+assets/game-icons/.git:
+	git submodule update --init assets/game-icons
 
-components/game-icons/index.ts: assets/game-icons
+components/game-icons/index.ts: assets/game-icons/.git
 	node tools/sync-icons.js
 
 sync-paperforge:

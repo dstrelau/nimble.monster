@@ -122,6 +122,10 @@ export async function updateSpellSchool(
   }
 }
 
+export async function listPublicSpellSchoolsAction() {
+  return db.listPublicSpellSchools();
+}
+
 export async function deleteSpellSchool(spellSchoolId: string) {
   try {
     const session = await auth();

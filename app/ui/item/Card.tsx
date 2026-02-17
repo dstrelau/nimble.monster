@@ -207,7 +207,7 @@ export const Card = ({
         selectable && selected && "ring-2 ring-amber-500"
       )}
       id={selectable ? undefined : `item-${item.id}`}
-      data-selected={selectable && selected ? "" : undefined}
+      {...(selectable && selected && { "data-selected": "" })}
     >
       <div
         className={cn(

@@ -11,17 +11,19 @@ import {
 } from "@/lib/types";
 import { getCollectionUrl } from "@/lib/utils/url";
 
+const uuidArray = z.uuid().array();
+
 const collectionSchema = z.object({
   name: z.string().min(1, "Collection name is required"),
   visibility: z.enum(ValidCollectionVisibilities),
   description: z.string().optional(),
-  monsterIds: z.string().array(),
-  itemIds: z.string().array().optional(),
-  companionIds: z.string().array().optional(),
-  ancestryIds: z.string().array().optional(),
-  backgroundIds: z.string().array().optional(),
-  subclassIds: z.string().array().optional(),
-  spellSchoolIds: z.string().array().optional(),
+  monsterIds: uuidArray,
+  itemIds: uuidArray.optional(),
+  companionIds: uuidArray.optional(),
+  ancestryIds: uuidArray.optional(),
+  backgroundIds: uuidArray.optional(),
+  subclassIds: uuidArray.optional(),
+  spellSchoolIds: uuidArray.optional(),
 });
 
 export type CollectionFormData = z.infer<typeof collectionSchema>;
@@ -33,22 +35,25 @@ export async function updateCollection(
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
 
-  // Parse form data
+  const safeJsonParse = (value: FormDataEntryValue | null): unknown => {
+    try {
+      return JSON.parse(value?.toString() || "[]");
+    } catch {
+      return [];
+    }
+  };
+
   const parsed = collectionSchema.parse({
     name: formData.get("name"),
     visibility: formData.get("visibility"),
     description: formData.get("description") || "",
-    monsterIds: JSON.parse(formData.get("monsterIds")?.toString() || "[]"),
-    itemIds: JSON.parse(formData.get("itemIds")?.toString() || "[]"),
-    companionIds: JSON.parse(formData.get("companionIds")?.toString() || "[]"),
-    ancestryIds: JSON.parse(formData.get("ancestryIds")?.toString() || "[]"),
-    backgroundIds: JSON.parse(
-      formData.get("backgroundIds")?.toString() || "[]"
-    ),
-    subclassIds: JSON.parse(formData.get("subclassIds")?.toString() || "[]"),
-    spellSchoolIds: JSON.parse(
-      formData.get("spellSchoolIds")?.toString() || "[]"
-    ),
+    monsterIds: safeJsonParse(formData.get("monsterIds")),
+    itemIds: safeJsonParse(formData.get("itemIds")),
+    companionIds: safeJsonParse(formData.get("companionIds")),
+    ancestryIds: safeJsonParse(formData.get("ancestryIds")),
+    backgroundIds: safeJsonParse(formData.get("backgroundIds")),
+    subclassIds: safeJsonParse(formData.get("subclassIds")),
+    spellSchoolIds: safeJsonParse(formData.get("spellSchoolIds")),
   });
 
   // Use the new db function to update the collection

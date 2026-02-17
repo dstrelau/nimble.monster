@@ -1,11 +1,31 @@
 "use server";
-import { and, asc, desc, eq, gt, inArray, like, lt, or } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gt,
+  inArray,
+  like,
+  lt,
+  or,
+} from "drizzle-orm";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
+  type AncestryRow,
   type AwardRow,
+  ancestries,
+  ancestriesCollections,
   awards,
+  type BackgroundRow,
+  backgrounds,
+  backgroundsCollections,
+  type CompanionRow,
   type ConditionRow,
   collections,
+  companions,
+  companionsCollections,
   conditions,
   type FamilyRow,
   families,
@@ -20,17 +40,34 @@ import {
   monstersConditions,
   monstersFamilies,
   type SourceRow,
+  type SpellSchoolRow,
+  type SubclassRow,
   sources,
+  spellSchools,
+  spellSchoolsCollections,
+  spells,
+  subclasses,
+  subclassesCollections,
   type UserRow,
   users,
 } from "@/lib/db/schema";
+import { findSpellSchoolsByIds } from "@/lib/db/school";
+import { findSubclassesByIds } from "@/lib/db/subclass";
+import { findAncestriesByIds } from "@/lib/services/ancestries/repository";
+import type { AncestryMini } from "@/lib/services/ancestries/types";
+import { findBackgroundsByIds } from "@/lib/services/backgrounds/repository";
+import type { BackgroundMini } from "@/lib/services/backgrounds/types";
+import { findCompanionsByIds } from "@/lib/services/companions/repository";
 import type {
   Ability,
   Action,
   Collection,
   CollectionOverview,
+  CompanionMini,
   FamilyOverview,
   Source,
+  SpellSchoolMini,
+  SubclassMini,
   User,
 } from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
@@ -138,6 +175,210 @@ const toItemMiniFromRow = (item: ItemRow): ItemMini => ({
   createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
   updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
 });
+
+const toCompanionMiniFromRow = (c: CompanionRow): CompanionMini => ({
+  id: c.id,
+  name: c.name,
+  hp_per_level: c.hpPerLevel,
+  wounds: c.wounds,
+  visibility: (c.visibility ?? "public") as "public" | "private",
+});
+
+const toAncestryMiniFromRow = (a: AncestryRow): AncestryMini => {
+  const sizes =
+    typeof a.size === "string" && a.size
+      ? a.size.includes(",")
+        ? a.size.split(",")
+        : [a.size]
+      : [];
+  return {
+    id: a.id,
+    name: a.name,
+    size: sizes as AncestryMini["size"],
+    rarity: (a.rarity ?? "common") as AncestryMini["rarity"],
+    createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),
+    updatedAt: a.updatedAt ? new Date(a.updatedAt) : new Date(),
+  };
+};
+
+const toBackgroundMiniFromRow = (b: BackgroundRow): BackgroundMini => ({
+  id: b.id,
+  name: b.name,
+  requirement: b.requirement ?? undefined,
+  createdAt: b.createdAt ? new Date(b.createdAt) : new Date(),
+  updatedAt: b.updatedAt ? new Date(b.updatedAt) : new Date(),
+});
+
+const toSubclassMiniFromRow = (s: SubclassRow): SubclassMini => ({
+  id: s.id,
+  name: s.name,
+  className: s.className as SubclassMini["className"],
+  namePreface: s.namePreface ?? undefined,
+  tagline: s.tagline ?? undefined,
+  visibility: (s.visibility ?? "public") as SubclassMini["visibility"],
+  createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+});
+
+const toSpellSchoolMiniFromRow = (
+  s: SpellSchoolRow,
+  spellCount?: number
+): SpellSchoolMini => ({
+  id: s.id,
+  name: s.name,
+  visibility: (s.visibility ?? "public") as "public" | "private",
+  spellCount,
+  createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+});
+
+async function loadCollectionEntityMinis(
+  db: ReturnType<typeof getDatabase>,
+  collectionIds: string[]
+) {
+  const [
+    companionJoins,
+    ancestryJoins,
+    backgroundJoins,
+    subclassJoins,
+    schoolJoins,
+  ] = await Promise.all([
+    db
+      .select({
+        collectionId: companionsCollections.collectionId,
+        companion: companions,
+      })
+      .from(companionsCollections)
+      .innerJoin(
+        companions,
+        eq(companionsCollections.companionId, companions.id)
+      )
+      .where(
+        and(
+          inArray(companionsCollections.collectionId, collectionIds),
+          eq(companions.visibility, "public")
+        )
+      ),
+    db
+      .select({
+        collectionId: ancestriesCollections.collectionId,
+        ancestry: ancestries,
+      })
+      .from(ancestriesCollections)
+      .innerJoin(
+        ancestries,
+        eq(ancestriesCollections.ancestryId, ancestries.id)
+      )
+      .where(
+        and(
+          inArray(ancestriesCollections.collectionId, collectionIds),
+          eq(ancestries.visibility, "public")
+        )
+      ),
+    db
+      .select({
+        collectionId: backgroundsCollections.collectionId,
+        background: backgrounds,
+      })
+      .from(backgroundsCollections)
+      .innerJoin(
+        backgrounds,
+        eq(backgroundsCollections.backgroundId, backgrounds.id)
+      )
+      .where(
+        and(
+          inArray(backgroundsCollections.collectionId, collectionIds),
+          eq(backgrounds.visibility, "public")
+        )
+      ),
+    db
+      .select({
+        collectionId: subclassesCollections.collectionId,
+        subclass: subclasses,
+      })
+      .from(subclassesCollections)
+      .innerJoin(
+        subclasses,
+        eq(subclassesCollections.subclassId, subclasses.id)
+      )
+      .where(
+        and(
+          inArray(subclassesCollections.collectionId, collectionIds),
+          eq(subclasses.visibility, "public")
+        )
+      ),
+    db
+      .select({
+        collectionId: spellSchoolsCollections.collectionId,
+        school: spellSchools,
+      })
+      .from(spellSchoolsCollections)
+      .innerJoin(
+        spellSchools,
+        eq(spellSchoolsCollections.spellSchoolId, spellSchools.id)
+      )
+      .where(
+        and(
+          inArray(spellSchoolsCollections.collectionId, collectionIds),
+          eq(spellSchools.visibility, "public")
+        )
+      ),
+  ]);
+
+  // Spell counts
+  const schoolIds = [...new Set(schoolJoins.map((l) => l.school.id))];
+  const spellCountMap = new Map<string, number>();
+  if (schoolIds.length > 0) {
+    const spellCounts = await db
+      .select({ schoolId: spells.schoolId, count: count() })
+      .from(spells)
+      .where(inArray(spells.schoolId, schoolIds))
+      .groupBy(spells.schoolId);
+    for (const row of spellCounts) {
+      spellCountMap.set(row.schoolId, row.count);
+    }
+  }
+
+  // Group by collection
+  const companionsByCollection = new Map<string, CompanionMini[]>();
+  for (const row of companionJoins) {
+    const existing = companionsByCollection.get(row.collectionId) || [];
+    existing.push(toCompanionMiniFromRow(row.companion));
+    companionsByCollection.set(row.collectionId, existing);
+  }
+  const ancestriesByCollection = new Map<string, AncestryMini[]>();
+  for (const row of ancestryJoins) {
+    const existing = ancestriesByCollection.get(row.collectionId) || [];
+    existing.push(toAncestryMiniFromRow(row.ancestry));
+    ancestriesByCollection.set(row.collectionId, existing);
+  }
+  const backgroundsByCollection = new Map<string, BackgroundMini[]>();
+  for (const row of backgroundJoins) {
+    const existing = backgroundsByCollection.get(row.collectionId) || [];
+    existing.push(toBackgroundMiniFromRow(row.background));
+    backgroundsByCollection.set(row.collectionId, existing);
+  }
+  const subclassesByCollection = new Map<string, SubclassMini[]>();
+  for (const row of subclassJoins) {
+    const existing = subclassesByCollection.get(row.collectionId) || [];
+    existing.push(toSubclassMiniFromRow(row.subclass));
+    subclassesByCollection.set(row.collectionId, existing);
+  }
+  const schoolsByCollection = new Map<string, SpellSchoolMini[]>();
+  for (const row of schoolJoins) {
+    const existing = schoolsByCollection.get(row.collectionId) || [];
+    existing.push(
+      toSpellSchoolMiniFromRow(row.school, spellCountMap.get(row.school.id))
+    );
+    schoolsByCollection.set(row.collectionId, existing);
+  }
+
+  return {
+    companionsByCollection,
+    ancestriesByCollection,
+    backgroundsByCollection,
+    subclassesByCollection,
+    schoolsByCollection,
+  };
+}
 
 // Full monster data for collection detail view
 interface MonsterFullData {
@@ -340,6 +581,9 @@ export const listPublicCollections = async ({
       )
     );
 
+  // Load new entity types
+  const entityMinis = await loadCollectionEntityMinis(db, collectionIds);
+
   // Group by collection
   const monstersByCollection = new Map<string, MonsterRow[]>();
   for (const row of monsterJoins) {
@@ -357,10 +601,16 @@ export const listPublicCollections = async ({
 
   // Filter to collections that have content
   const filteredRows = collectionRows.filter((r) => {
-    const hasMonsters =
-      (monstersByCollection.get(r.collections.id)?.length ?? 0) > 0;
-    const hasItems = (itemsByCollection.get(r.collections.id)?.length ?? 0) > 0;
-    return hasMonsters || hasItems;
+    const cid = r.collections.id;
+    return (
+      (monstersByCollection.get(cid)?.length ?? 0) > 0 ||
+      (itemsByCollection.get(cid)?.length ?? 0) > 0 ||
+      (entityMinis.companionsByCollection.get(cid)?.length ?? 0) > 0 ||
+      (entityMinis.ancestriesByCollection.get(cid)?.length ?? 0) > 0 ||
+      (entityMinis.backgroundsByCollection.get(cid)?.length ?? 0) > 0 ||
+      (entityMinis.subclassesByCollection.get(cid)?.length ?? 0) > 0 ||
+      (entityMinis.schoolsByCollection.get(cid)?.length ?? 0) > 0
+    );
   });
 
   const hasMore = filteredRows.length > limit;
@@ -368,13 +618,13 @@ export const listPublicCollections = async ({
 
   // Build results
   const results: CollectionOverview[] = resultRows.map((row) => {
-    const collectionMonsters =
-      monstersByCollection.get(row.collections.id) || [];
-    const collectionItems = itemsByCollection.get(row.collections.id) || [];
+    const cid = row.collections.id;
+    const collectionMonsters = monstersByCollection.get(cid) || [];
+    const collectionItems = itemsByCollection.get(cid) || [];
     const legendaryCount = collectionMonsters.filter((m) => m.legendary).length;
 
     return {
-      id: row.collections.id,
+      id: cid,
       creator: toUserFromRow(row.users),
       description: row.collections.description ?? undefined,
       legendaryCount,
@@ -392,11 +642,11 @@ export const listPublicCollections = async ({
         .map(toItemMiniFromRow)
         .sort((a, b) => a.name.localeCompare(b.name)),
       itemCount: collectionItems.length,
-      companions: [],
-      ancestries: [],
-      backgrounds: [],
-      subclasses: [],
-      spellSchools: [],
+      companions: entityMinis.companionsByCollection.get(cid) ?? [],
+      ancestries: entityMinis.ancestriesByCollection.get(cid) ?? [],
+      backgrounds: entityMinis.backgroundsByCollection.get(cid) ?? [],
+      subclasses: entityMinis.subclassesByCollection.get(cid) ?? [],
+      spellSchools: entityMinis.schoolsByCollection.get(cid) ?? [],
     };
   });
 
@@ -494,6 +744,9 @@ export const searchPublicCollections = async ({
       )
     );
 
+  // Load new entity types
+  const entityMinis = await loadCollectionEntityMinis(db, collectionIds);
+
   // Group by collection
   const monstersByCollection = new Map<string, MonsterRow[]>();
   for (const row of monsterJoins) {
@@ -512,22 +765,27 @@ export const searchPublicCollections = async ({
   // Filter and map results
   return collectionRows
     .filter((r) => {
-      const hasMonsters =
-        (monstersByCollection.get(r.collections.id)?.length ?? 0) > 0;
-      const hasItems =
-        (itemsByCollection.get(r.collections.id)?.length ?? 0) > 0;
-      return hasMonsters || hasItems;
+      const cid = r.collections.id;
+      return (
+        (monstersByCollection.get(cid)?.length ?? 0) > 0 ||
+        (itemsByCollection.get(cid)?.length ?? 0) > 0 ||
+        (entityMinis.companionsByCollection.get(cid)?.length ?? 0) > 0 ||
+        (entityMinis.ancestriesByCollection.get(cid)?.length ?? 0) > 0 ||
+        (entityMinis.backgroundsByCollection.get(cid)?.length ?? 0) > 0 ||
+        (entityMinis.subclassesByCollection.get(cid)?.length ?? 0) > 0 ||
+        (entityMinis.schoolsByCollection.get(cid)?.length ?? 0) > 0
+      );
     })
     .map((row) => {
-      const collectionMonsters =
-        monstersByCollection.get(row.collections.id) || [];
-      const collectionItems = itemsByCollection.get(row.collections.id) || [];
+      const cid = row.collections.id;
+      const collectionMonsters = monstersByCollection.get(cid) || [];
+      const collectionItems = itemsByCollection.get(cid) || [];
       const legendaryCount = collectionMonsters.filter(
         (m) => m.legendary
       ).length;
 
       return {
-        id: row.collections.id,
+        id: cid,
         creator: toUserFromRow(row.users),
         description: row.collections.description ?? undefined,
         legendaryCount,
@@ -545,11 +803,11 @@ export const searchPublicCollections = async ({
           .map(toItemMiniFromRow)
           .sort((a, b) => a.name.localeCompare(b.name)),
         itemCount: collectionItems.length,
-        companions: [],
-        ancestries: [],
-        backgrounds: [],
-        subclasses: [],
-        spellSchools: [],
+        companions: entityMinis.companionsByCollection.get(cid) ?? [],
+        ancestries: entityMinis.ancestriesByCollection.get(cid) ?? [],
+        backgrounds: entityMinis.backgroundsByCollection.get(cid) ?? [],
+        subclasses: entityMinis.subclassesByCollection.get(cid) ?? [],
+        spellSchools: entityMinis.schoolsByCollection.get(cid) ?? [],
       };
     });
 };
@@ -743,6 +1001,95 @@ export const findPublicCollectionById = async (
     }
   }
 
+  // Load new entity IDs
+  const [
+    companionJoins,
+    ancestryJoins,
+    backgroundJoins,
+    subclassJoins,
+    schoolJoins,
+  ] = await Promise.all([
+    db
+      .select({ companionId: companionsCollections.companionId })
+      .from(companionsCollections)
+      .innerJoin(
+        companions,
+        eq(companionsCollections.companionId, companions.id)
+      )
+      .where(
+        and(
+          eq(companionsCollections.collectionId, id),
+          eq(companions.visibility, "public")
+        )
+      ),
+    db
+      .select({ ancestryId: ancestriesCollections.ancestryId })
+      .from(ancestriesCollections)
+      .innerJoin(
+        ancestries,
+        eq(ancestriesCollections.ancestryId, ancestries.id)
+      )
+      .where(
+        and(
+          eq(ancestriesCollections.collectionId, id),
+          eq(ancestries.visibility, "public")
+        )
+      ),
+    db
+      .select({ backgroundId: backgroundsCollections.backgroundId })
+      .from(backgroundsCollections)
+      .innerJoin(
+        backgrounds,
+        eq(backgroundsCollections.backgroundId, backgrounds.id)
+      )
+      .where(
+        and(
+          eq(backgroundsCollections.collectionId, id),
+          eq(backgrounds.visibility, "public")
+        )
+      ),
+    db
+      .select({ subclassId: subclassesCollections.subclassId })
+      .from(subclassesCollections)
+      .innerJoin(
+        subclasses,
+        eq(subclassesCollections.subclassId, subclasses.id)
+      )
+      .where(
+        and(
+          eq(subclassesCollections.collectionId, id),
+          eq(subclasses.visibility, "public")
+        )
+      ),
+    db
+      .select({ schoolId: spellSchoolsCollections.spellSchoolId })
+      .from(spellSchoolsCollections)
+      .innerJoin(
+        spellSchools,
+        eq(spellSchoolsCollections.spellSchoolId, spellSchools.id)
+      )
+      .where(
+        and(
+          eq(spellSchoolsCollections.collectionId, id),
+          eq(spellSchools.visibility, "public")
+        )
+      ),
+  ]);
+
+  const [
+    companionsData,
+    ancestriesData,
+    backgroundsData,
+    subclassesData,
+    schoolsData,
+  ] = await Promise.all([
+    findCompanionsByIds(companionJoins.map((r) => r.companionId)),
+    findAncestriesByIds(ancestryJoins.map((r) => r.ancestryId)),
+    findBackgroundsByIds(backgroundJoins.map((r) => r.backgroundId)),
+    findSubclassesByIds(subclassJoins.map((r) => r.subclassId)),
+    findSpellSchoolsByIds(schoolJoins.map((r) => r.schoolId)),
+  ]);
+
   const legendaryCount = monstersData.filter((m) => m.legendary).length;
 
   return {
@@ -760,10 +1107,10 @@ export const findPublicCollectionById = async (
     monsters: monstersData.sort((a, b) => a.name.localeCompare(b.name)),
     items: itemsData.sort((a, b) => a.name.localeCompare(b.name)),
     itemCount: itemsData.length,
-    companions: [],
-    ancestries: [],
-    backgrounds: [],
-    subclasses: [],
-    spellSchools: [],
+    companions: companionsData,
+    ancestries: ancestriesData,
+    backgrounds: backgroundsData,
+    subclasses: subclassesData,
+    spellSchools: schoolsData,
   };
 };

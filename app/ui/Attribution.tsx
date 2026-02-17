@@ -22,6 +22,7 @@ interface AttributionProps {
   size?: keyof typeof SIZE_SETTINGS;
   className?: string;
   showUsername?: boolean;
+  disableLink?: boolean;
 }
 
 export const Attribution = ({
@@ -29,17 +30,26 @@ export const Attribution = ({
   size = "default",
   className,
   showUsername = true,
+  disableLink = false,
 }: AttributionProps) => {
   const settings = SIZE_SETTINGS[size];
-  return (
-    <Link
-      href={getUserUrl(user)}
-      className={clsx("flex items-center", settings.gap, className)}
-    >
+  const content = (
+    <>
       <UserAvatar user={user} size={settings.avatarSize} />
       {showUsername && (
         <span className={settings.textClass}>{user.displayName}</span>
       )}
+    </>
+  );
+  const sharedClassName = clsx("flex items-center", settings.gap, className);
+
+  if (disableLink) {
+    return <span className={sharedClassName}>{content}</span>;
+  }
+
+  return (
+    <Link href={getUserUrl(user)} className={sharedClassName}>
+      {content}
     </Link>
   );
 };
