@@ -1,6 +1,9 @@
-import type { prisma } from "@/lib/db";
 import { toUser } from "@/lib/db/converters";
-import type { Prisma } from "@/lib/prisma";
+import type {
+  ClassAbilityItemRow,
+  ClassAbilityListRow,
+  UserRow,
+} from "@/lib/db/schema";
 import type {
   ClassAbilityItem,
   ClassAbilityList,
@@ -9,7 +12,7 @@ import type {
 } from "@/lib/types";
 
 export const toClassAbilityListMini = (
-  list: Prisma.Result<typeof prisma.classAbilityList, object, "findMany">[0]
+  list: ClassAbilityListRow
 ): ClassAbilityListMini => ({
   id: list.id,
   name: list.name,
@@ -17,31 +20,22 @@ export const toClassAbilityListMini = (
   characterClass: list.characterClass
     ? (list.characterClass as SubclassClass)
     : undefined,
-  createdAt: list.createdAt,
+  createdAt: list.createdAt ? new Date(list.createdAt) : new Date(),
 });
 
 export const toClassAbilityList = (
-  list: Prisma.Result<
-    typeof prisma.classAbilityList,
-    {
-      include: {
-        creator: true;
-        items: true;
-      };
-    },
-    "findMany"
-  >[0]
-): ClassAbilityList => {
-  return {
-    ...toClassAbilityListMini(list),
-    updatedAt: list.updatedAt,
-    creator: toUser(list.creator),
-    items: list.items.map(
-      (item): ClassAbilityItem => ({
-        id: item.id,
-        name: item.name,
-        description: item.description,
-      })
-    ),
-  };
-};
+  list: ClassAbilityListRow,
+  creator: UserRow,
+  items: ClassAbilityItemRow[]
+): ClassAbilityList => ({
+  ...toClassAbilityListMini(list),
+  updatedAt: list.updatedAt ? new Date(list.updatedAt) : new Date(),
+  creator: toUser(creator),
+  items: items.map(
+    (item): ClassAbilityItem => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+    })
+  ),
+});

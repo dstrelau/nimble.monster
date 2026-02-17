@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { CharacterClassCard } from "@/app/ui/class/CharacterClassCard";
+import { ClassDetailActions } from "@/components/ClassDetailActions";
 import { auth } from "@/lib/auth";
 import { findClass } from "@/lib/db";
 import { SITE_NAME } from "@/lib/utils/branding";
@@ -81,6 +82,9 @@ export default async function ClassPage({
 
   return (
     <div className="container mx-auto">
+      <div className="flex justify-end items-start gap-2 mb-6">
+        {isOwner && <ClassDetailActions classEntity={classEntity} />}
+      </div>
       <div className="max-w-2xl mx-auto">
         <CharacterClassCard
           className="w-full"

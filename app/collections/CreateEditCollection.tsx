@@ -105,7 +105,7 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 
 interface Props {
   collection: Collection;
-  myMonsters: Monster[];
+  myMonsters?: Monster[];
   myItems?: Item[];
   onSubmit?: (
     data: FormData & { monsters: MonsterMini[]; items: ItemMini[] }
@@ -116,7 +116,7 @@ interface Props {
 
 export function CreateEditCollection({
   collection,
-  myMonsters,
+  myMonsters = [],
   myItems = [],
   onSubmit,
   isCreating = false,

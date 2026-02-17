@@ -1,11 +1,62 @@
+import { asc, eq } from "drizzle-orm";
 import type {
   ClassAbilityItem,
   ClassAbilityList,
   ClassAbilityListMini,
+  SubclassClass,
+  User,
 } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
-import { toClassAbilityList } from "./converters";
-import { prisma } from "./index";
+import { getDatabase } from "./drizzle";
+import {
+  type ClassAbilityItemRow,
+  type ClassAbilityListRow,
+  classAbilityItems,
+  classAbilityLists,
+  type UserRow,
+  users,
+} from "./schema";
+
+const toUser = (u: UserRow): User => ({
+  id: u.id,
+  discordId: u.discordId ?? "",
+  username: u.username ?? "",
+  displayName: u.displayName || u.username || "",
+  imageUrl:
+    u.imageUrl ||
+    (u.avatar
+      ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
+      : "https://cdn.discordapp.com/embed/avatars/0.png"),
+});
+
+const toClassAbilityListMini = (
+  list: ClassAbilityListRow
+): ClassAbilityListMini => ({
+  id: list.id,
+  name: list.name,
+  description: list.description,
+  characterClass: list.characterClass
+    ? (list.characterClass as SubclassClass)
+    : undefined,
+  createdAt: list.createdAt ? new Date(list.createdAt) : new Date(),
+});
+
+const toClassAbilityList = (
+  list: ClassAbilityListRow,
+  creator: UserRow,
+  items: ClassAbilityItemRow[]
+): ClassAbilityList => ({
+  ...toClassAbilityListMini(list),
+  updatedAt: list.updatedAt ? new Date(list.updatedAt) : new Date(),
+  creator: toUser(creator),
+  items: items.map(
+    (item): ClassAbilityItem => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+    })
+  ),
+});
 
 export const deleteClassAbilityList = async ({
   id,
@@ -16,59 +67,69 @@ export const deleteClassAbilityList = async ({
 }): Promise<boolean> => {
   if (!isValidUUID(id)) return false;
 
-  const list = await prisma.classAbilityList.delete({
-    where: {
-      id: id,
-      creator: { discordId },
-    },
-  });
+  const db = getDatabase();
 
-  return !!list;
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) return false;
+
+  const result = await db
+    .delete(classAbilityLists)
+    .where(eq(classAbilityLists.id, id));
+
+  return result.rowsAffected > 0;
 };
 
 export const findClassAbilityList = async (
   id: string
 ): Promise<ClassAbilityList | null> => {
-  const list = await prisma.classAbilityList.findUnique({
-    where: { id },
-    include: {
-      creator: true,
-      items: {
-        orderBy: { orderIndex: "asc" },
-      },
-    },
-  });
-  return list ? toClassAbilityList(list) : null;
+  if (!isValidUUID(id)) return null;
+
+  const db = getDatabase();
+
+  const listRows = await db
+    .select()
+    .from(classAbilityLists)
+    .innerJoin(users, eq(classAbilityLists.userId, users.id))
+    .where(eq(classAbilityLists.id, id))
+    .limit(1);
+
+  if (listRows.length === 0) return null;
+
+  const row = listRows[0];
+  const items = await db
+    .select()
+    .from(classAbilityItems)
+    .where(eq(classAbilityItems.classAbilityListId, id))
+    .orderBy(asc(classAbilityItems.orderIndex));
+
+  return toClassAbilityList(row.class_ability_lists, row.users, items);
 };
 
 export const getUserClassAbilityLists = async (
   discordId: string
 ): Promise<ClassAbilityListMini[]> => {
-  const user = await prisma.user.findUnique({
-    where: { discordId },
-  });
+  const db = getDatabase();
 
-  if (!user) {
-    return [];
-  }
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
 
-  const lists = await prisma.classAbilityList.findMany({
-    where: { userId: user.id },
-    orderBy: { name: "asc" },
-    select: {
-      id: true,
-      name: true,
-      description: true,
-      characterClass: true,
-      createdAt: true,
-    },
-  });
+  if (userResult.length === 0) return [];
 
-  return lists.map((list) => ({
-    ...list,
-    characterClass:
-      list.characterClass as ClassAbilityListMini["characterClass"],
-  }));
+  const lists = await db
+    .select()
+    .from(classAbilityLists)
+    .where(eq(classAbilityLists.userId, userResult[0].id))
+    .orderBy(asc(classAbilityLists.name));
+
+  return lists.map(toClassAbilityListMini);
 };
 
 export interface CreateClassAbilityListInput {
@@ -82,41 +143,53 @@ export interface CreateClassAbilityListInput {
 export const createClassAbilityList = async (
   input: CreateClassAbilityListInput
 ): Promise<ClassAbilityList> => {
-  const { name, description, characterClass, items, discordId } = input;
+  const db = getDatabase();
 
-  const user = await prisma.user.findUnique({
-    where: { discordId },
-  });
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, input.discordId))
+    .limit(1);
 
-  if (!user) {
+  if (userResult.length === 0) {
     throw new Error("User not found");
   }
 
-  const createdList = await prisma.classAbilityList.create({
-    data: {
-      name,
-      description,
-      characterClass,
-      creator: {
-        connect: { id: user.id },
-      },
-      items: {
-        create: items.map((item, index) => ({
-          name: item.name,
-          description: item.description,
-          orderIndex: index,
-        })),
-      },
-    },
-    include: {
-      creator: true,
-      items: {
-        orderBy: { orderIndex: "asc" },
-      },
-    },
+  const listId = crypto.randomUUID();
+
+  await db.insert(classAbilityLists).values({
+    id: listId,
+    name: input.name,
+    description: input.description,
+    characterClass: input.characterClass || null,
+    userId: userResult[0].id,
   });
 
-  return toClassAbilityList(createdList);
+  if (input.items.length > 0) {
+    await db.insert(classAbilityItems).values(
+      input.items.map((item, index) => ({
+        id: crypto.randomUUID(),
+        classAbilityListId: listId,
+        name: item.name,
+        description: item.description,
+        orderIndex: index,
+      }))
+    );
+  }
+
+  const items = await db
+    .select()
+    .from(classAbilityItems)
+    .where(eq(classAbilityItems.classAbilityListId, listId))
+    .orderBy(asc(classAbilityItems.orderIndex));
+
+  const listRows = await db
+    .select()
+    .from(classAbilityLists)
+    .where(eq(classAbilityLists.id, listId))
+    .limit(1);
+
+  return toClassAbilityList(listRows[0], userResult[0], items);
 };
 
 export interface UpdateClassAbilityListInput {
@@ -131,37 +204,60 @@ export interface UpdateClassAbilityListInput {
 export const updateClassAbilityList = async (
   input: UpdateClassAbilityListInput
 ): Promise<ClassAbilityList> => {
-  const { id, name, description, characterClass, items, discordId } = input;
-
-  if (!isValidUUID(id)) {
+  if (!isValidUUID(input.id)) {
     throw new Error("Invalid class ability list ID");
   }
 
-  const updatedList = await prisma.classAbilityList.update({
-    where: {
-      id,
-      creator: { discordId },
-    },
-    data: {
-      name,
-      description,
-      characterClass,
-      items: {
-        deleteMany: {},
-        create: items.map((item, index) => ({
-          name: item.name,
-          description: item.description,
-          orderIndex: index,
-        })),
-      },
-    },
-    include: {
-      creator: true,
-      items: {
-        orderBy: { orderIndex: "asc" },
-      },
-    },
-  });
+  const db = getDatabase();
 
-  return toClassAbilityList(updatedList);
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, input.discordId))
+    .limit(1);
+
+  if (userResult.length === 0) {
+    throw new Error("User not found");
+  }
+
+  await db
+    .update(classAbilityLists)
+    .set({
+      name: input.name,
+      description: input.description,
+      characterClass: input.characterClass || null,
+      updatedAt: new Date().toISOString(),
+    })
+    .where(eq(classAbilityLists.id, input.id));
+
+  // Replace items
+  await db
+    .delete(classAbilityItems)
+    .where(eq(classAbilityItems.classAbilityListId, input.id));
+
+  if (input.items.length > 0) {
+    await db.insert(classAbilityItems).values(
+      input.items.map((item, index) => ({
+        id: crypto.randomUUID(),
+        classAbilityListId: input.id,
+        name: item.name,
+        description: item.description,
+        orderIndex: index,
+      }))
+    );
+  }
+
+  const items = await db
+    .select()
+    .from(classAbilityItems)
+    .where(eq(classAbilityItems.classAbilityListId, input.id))
+    .orderBy(asc(classAbilityItems.orderIndex));
+
+  const listRows = await db
+    .select()
+    .from(classAbilityLists)
+    .where(eq(classAbilityLists.id, input.id))
+    .limit(1);
+
+  return toClassAbilityList(listRows[0], userResult[0], items);
 };

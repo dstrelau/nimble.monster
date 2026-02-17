@@ -410,6 +410,7 @@ export const toSubclass = (s: SubclassRow): Subclass => {
           ? new Date(sa.award.updatedAt)
           : new Date(),
       })) || undefined,
+    abilityLists: [],
     updatedAt: s.updatedAt ? new Date(s.updatedAt) : new Date(),
   };
 };

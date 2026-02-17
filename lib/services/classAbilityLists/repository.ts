@@ -1,6 +1,8 @@
 "use server";
-import { prisma } from "@/lib/db/prisma";
-import type { Prisma } from "@/lib/prisma";
+
+import { and, asc, desc, eq, gt, inArray, like, lt, or } from "drizzle-orm";
+import { getDatabase } from "@/lib/db/drizzle";
+import { classAbilityItems, classAbilityLists, users } from "@/lib/db/schema";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { toClassAbilityList } from "./converters";
@@ -26,98 +28,133 @@ export const paginatePublicClassAbilityLists = async ({
     );
   }
 
+  const db = getDatabase();
+
   const isDesc = sort.startsWith("-");
   const sortField = isDesc ? sort.slice(1) : sort;
-  const sortDir = isDesc ? "desc" : "asc";
 
-  let orderBy:
-    | [{ name: "asc" | "desc" }, { id: "asc" | "desc" }]
-    | [{ createdAt: "asc" | "desc" }, { id: "asc" | "desc" }];
-
-  if (sortField === "name") {
-    orderBy = [{ name: sortDir }, { id: "asc" }];
-  } else {
-    orderBy = [{ createdAt: sortDir }, { id: "asc" }];
-  }
-
-  const where: Prisma.ClassAbilityListWhereInput = {};
+  const conditions: ReturnType<typeof eq>[] = [];
 
   if (creatorId) {
-    where.creator = { id: creatorId };
-  }
+    const userResult = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.id, creatorId))
+      .limit(1);
 
-  if (characterClass) {
-    where.characterClass = characterClass;
-  }
-
-  if (search) {
-    where.OR = [
-      { name: { contains: search, mode: "insensitive" } },
-      { description: { contains: search, mode: "insensitive" } },
-    ];
-  }
-
-  if (cursorData) {
-    const op = isDesc ? "lt" : "gt";
-
-    if (sortField === "name") {
-      where.OR = [
-        { name: { [op]: cursorData.value as string } },
-        {
-          AND: [
-            { name: cursorData.value as string },
-            { id: { gt: cursorData.id } },
-          ],
-        },
-      ];
-    } else if (sortField === "createdAt") {
-      const date = new Date(cursorData.value as string);
-      where.OR = [
-        { createdAt: { [op]: date } },
-        { AND: [{ createdAt: date }, { id: { gt: cursorData.id } }] },
-      ];
+    if (userResult.length > 0) {
+      conditions.push(eq(classAbilityLists.userId, userResult[0].id));
     }
   }
 
-  const lists = await prisma.classAbilityList.findMany({
-    where,
-    include: {
-      creator: true,
-      items: {
-        orderBy: { orderIndex: "asc" },
-      },
-    },
-    orderBy,
-    take: limit + 1,
-  });
+  if (characterClass) {
+    conditions.push(eq(classAbilityLists.characterClass, characterClass));
+  }
 
-  const hasMore = lists.length > limit;
-  const results = hasMore ? lists.slice(0, limit) : lists;
+  if (search) {
+    const searchCondition = or(
+      like(classAbilityLists.name, `%${search}%`),
+      like(classAbilityLists.description, `%${search}%`)
+    );
+    if (searchCondition) {
+      conditions.push(searchCondition);
+    }
+  }
+
+  if (cursorData) {
+    const op = isDesc ? lt : gt;
+    if (sortField === "name") {
+      const cursorCondition = or(
+        op(classAbilityLists.name, cursorData.value as string),
+        and(
+          eq(classAbilityLists.name, cursorData.value as string),
+          gt(classAbilityLists.id, cursorData.id)
+        )
+      );
+      if (cursorCondition) conditions.push(cursorCondition);
+    } else if (sortField === "createdAt") {
+      const cursorCondition = or(
+        op(classAbilityLists.createdAt, cursorData.value as string),
+        and(
+          eq(classAbilityLists.createdAt, cursorData.value as string),
+          gt(classAbilityLists.id, cursorData.id)
+        )
+      );
+      if (cursorCondition) conditions.push(cursorCondition);
+    }
+  }
+
+  const orderBy =
+    sortField === "name"
+      ? isDesc
+        ? [desc(classAbilityLists.name), asc(classAbilityLists.id)]
+        : [asc(classAbilityLists.name), asc(classAbilityLists.id)]
+      : isDesc
+        ? [desc(classAbilityLists.createdAt), asc(classAbilityLists.id)]
+        : [asc(classAbilityLists.createdAt), asc(classAbilityLists.id)];
+
+  const listRows = await db
+    .select()
+    .from(classAbilityLists)
+    .innerJoin(users, eq(classAbilityLists.userId, users.id))
+    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .orderBy(...orderBy)
+    .limit(limit + 1);
+
+  const hasMore = listRows.length > limit;
+  const results = hasMore ? listRows.slice(0, limit) : listRows;
+
+  // Load items for all lists
+  const listIds = results.map((r) => r.class_ability_lists.id);
+  const itemsByList = new Map<
+    string,
+    (typeof classAbilityItems.$inferSelect)[]
+  >();
+
+  if (listIds.length > 0) {
+    const itemRows = await db
+      .select()
+      .from(classAbilityItems)
+      .where(inArray(classAbilityItems.classAbilityListId, listIds))
+      .orderBy(asc(classAbilityItems.orderIndex));
+
+    for (const item of itemRows) {
+      const existing = itemsByList.get(item.classAbilityListId) || [];
+      existing.push(item);
+      itemsByList.set(item.classAbilityListId, existing);
+    }
+  }
 
   let nextCursor: string | null = null;
-  if (hasMore) {
-    const lastList = results[results.length - 1];
-    let cursorData: CursorData;
+  if (hasMore && results.length > 0) {
+    const lastList = results[results.length - 1].class_ability_lists;
+    let cursorDataOut: CursorData;
 
     if (sortField === "name") {
-      cursorData = {
+      cursorDataOut = {
         sort: sort as "name" | "-name",
         value: lastList.name,
         id: lastList.id,
       };
     } else {
-      cursorData = {
+      cursorDataOut = {
         sort: sort as "createdAt" | "-createdAt",
-        value: lastList.createdAt.toISOString(),
+        value: lastList.createdAt ?? "",
         id: lastList.id,
       };
     }
 
-    nextCursor = encodeCursor(cursorData);
+    nextCursor = encodeCursor(cursorDataOut);
   }
 
   return {
-    data: results.map(toClassAbilityList),
+    data: results.map((r) =>
+      toClassAbilityList(
+        r.class_ability_lists,
+        r.users,
+        itemsByList.get(r.class_ability_lists.id) || []
+      )
+    ),
     nextCursor,
   };
 };

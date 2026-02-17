@@ -4,14 +4,13 @@ import {
   BookUser,
   Box,
   Drama,
-  Gem,
-  Ghost,
+  HandFist,
   HeartHandshake,
   ListChecks,
   Menu,
   PersonStanding,
   Scroll,
-  Split,
+  Shield,
   SquarePen,
   User as UserIcon,
   WandSparkles,
@@ -24,6 +23,7 @@ import { Logo } from "@/components/app/Logo";
 import { MobileMenuDropdown } from "@/components/app/MobileMenuDropdown";
 import { ModeToggle } from "@/components/app/ModeToggle";
 import { UserAvatar } from "@/components/app/UserAvatar";
+import { Goblin } from "@/components/icons/goblin";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -94,13 +94,13 @@ const Header = () => {
       href: "/monsters",
       label: "Monsters",
       isActive: isActive("/monsters"),
-      icon: Ghost,
+      icon: Goblin,
     },
     {
       href: "/items",
       label: "Items",
       isActive: isActive("/items"),
-      icon: Gem,
+      icon: Shield,
     },
   ];
 
@@ -133,7 +133,7 @@ const Header = () => {
       href: "/subclasses",
       label: "Subclasses",
       isActive: isActive("/subclasses"),
-      icon: Split,
+      icon: HandFist,
     },
     {
       href: "/spell-schools",
@@ -169,7 +169,7 @@ const Header = () => {
           href: "/my/monsters",
           label: "Monsters",
           isActive: isActive("/my/monsters"),
-          icon: Ghost,
+          icon: Goblin,
         },
         {
           href: "/my/backgrounds",
@@ -193,13 +193,19 @@ const Header = () => {
           href: "/my/items",
           label: "Items",
           isActive: isActive("/my/items"),
-          icon: Gem,
+          icon: Shield,
+        },
+        {
+          href: "/my/classes",
+          label: "Classes",
+          isActive: isActive("/my/classes"),
+          icon: BookUser,
         },
         {
           href: "/my/subclasses",
           label: "Subclasses",
           isActive: isActive("/my/subclasses"),
-          icon: Split,
+          icon: HandFist,
         },
         {
           href: "/my/companions",
