@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "17 February 2026",
+    entries: [
+      "Allow all types of objects to be put into collections: companions, ancestries, backgrounds, subclasses, and spell schools.",
+    ],
+  },
+  {
     date: "15 February 2026",
     entries: ["Improve collection create/edit UI."],
   },
