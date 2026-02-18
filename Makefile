@@ -3,6 +3,7 @@
 BIN := node_modules/.bin
 
 setup: node_modules db/dev.db sync-icons
+	pnpm run db:push
 	@echo "Setup complete"
 
 node_modules: package.json pnpm-lock.yaml
@@ -23,10 +24,10 @@ db/dev.db: | db node_modules
 
 sync-icons: components/game-icons/index.ts
 
-assets/game-icons/.git:
+assets/game-icons:
 	git submodule update --init assets/game-icons
 
-components/game-icons/index.ts: assets/game-icons/.git
+components/game-icons/index.ts: | assets/game-icons
 	node tools/sync-icons.js
 
 sync-paperforge:
