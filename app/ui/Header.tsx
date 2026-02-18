@@ -146,6 +146,8 @@ const Header = () => {
   const isHeroActive = () =>
     isActive("/ancestries") ||
     isActive("/backgrounds") ||
+    isActive("/classes") ||
+    isActive("/class-options") ||
     isActive("/subclasses") ||
     isActive("/spell-schools");
 
@@ -248,7 +250,7 @@ const Header = () => {
 
         {/* Desktop navigation (center) */}
         <NavigationMenu className="hidden md:block" viewport={false}>
-          <NavigationMenuList className="gap-4">
+          <NavigationMenuList className="gap-2">
             {browseItems.map((item) => (
               <NavigationMenuItem key={item.href}>
                 <NavigationMenuLink data-active={item.isActive} asChild>
@@ -267,7 +269,7 @@ const Header = () => {
                 <PersonStanding />
                 Heroes
               </NavigationMenuTrigger>
-              <NavigationMenuContent className="min-w-48">
+              <NavigationMenuContent>
                 <ul>
                   {heroItems.map((item) => (
                     <li key={item.href}>

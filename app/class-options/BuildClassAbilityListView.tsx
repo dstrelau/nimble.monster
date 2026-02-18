@@ -31,6 +31,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import type { ClassAbilityList, SubclassClass } from "@/lib/types";
 import { SUBCLASS_CLASSES, UNKNOWN_USER } from "@/lib/types";
+import { randomUUID } from "@/lib/utils";
 import { getClassAbilityListUrl } from "@/lib/utils/url";
 import {
   createClassAbilityList,
@@ -77,9 +78,7 @@ export default function BuildClassAbilityListView({
       name: list?.name || "",
       description: list?.description || "",
       characterClass: list?.characterClass || undefined,
-      items: list?.items || [
-        { id: crypto.randomUUID(), name: "", description: "" },
-      ],
+      items: list?.items || [{ id: randomUUID(), name: "", description: "" }],
     },
   });
 
@@ -239,7 +238,7 @@ export default function BuildClassAbilityListView({
                     size="sm"
                     onClick={() =>
                       appendItem({
-                        id: crypto.randomUUID(),
+                        id: randomUUID(),
                         name: "",
                         description: "",
                       })

@@ -45,6 +45,7 @@ import {
   type SubclassClass,
   UNKNOWN_USER,
 } from "@/lib/types";
+import { randomUUID } from "@/lib/utils";
 import { getSubclassUrl } from "@/lib/utils/url";
 import { getUserClassAbilityLists } from "../actions/classAbilityList";
 import { createSubclass, updateSubclass } from "../actions/subclass";
@@ -198,7 +199,7 @@ export default function BuildSubclassView({
       levels: subclass?.levels || [
         {
           level: 3,
-          abilities: [{ id: crypto.randomUUID(), name: "", description: "" }],
+          abilities: [{ id: randomUUID(), name: "", description: "" }],
         },
       ],
       abilityListIds: subclass?.abilityLists?.map((list) => list.id) || [],
@@ -321,7 +322,7 @@ export default function BuildSubclassView({
       level: nextLevel,
       abilities: [
         {
-          id: crypto.randomUUID(),
+          id: randomUUID(),
           name: "",
           description: "",
         },
@@ -631,7 +632,7 @@ function LevelAbilitiesForm({
 
   const addAbility = () => {
     appendAbility({
-      id: crypto.randomUUID(),
+      id: randomUUID(),
       name: "",
       description: "",
     });

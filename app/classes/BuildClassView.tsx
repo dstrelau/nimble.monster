@@ -45,6 +45,7 @@ import {
   STAT_TYPES,
   UNKNOWN_USER,
 } from "@/lib/types";
+import { randomUUID } from "@/lib/utils";
 import { getClassUrl } from "@/lib/utils/url";
 import { createClass, updateClass } from "../actions/class";
 import { getUserClassAbilityLists } from "../actions/classAbilityList";
@@ -220,7 +221,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
       levels: classEntity?.levels || [
         {
           level: 1,
-          abilities: [{ id: crypto.randomUUID(), name: "", description: "" }],
+          abilities: [{ id: randomUUID(), name: "", description: "" }],
         },
       ],
       abilityListIds: classEntity?.abilityLists?.map((list) => list.id) || [],
@@ -354,7 +355,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
       level: nextLevel,
       abilities: [
         {
-          id: crypto.randomUUID(),
+          id: randomUUID(),
           name: "",
           description: "",
         },
@@ -829,7 +830,7 @@ function LevelAbilitiesForm({
 
   const addAbility = () => {
     appendAbility({
-      id: crypto.randomUUID(),
+      id: randomUUID(),
       name: "",
       description: "",
     });
