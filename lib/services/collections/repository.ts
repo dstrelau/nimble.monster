@@ -815,6 +815,13 @@ export const searchPublicCollections = async ({
 export const findPublicCollectionById = async (
   id: string
 ): Promise<Collection | null> => {
+  return findCollectionById(id, true);
+}
+
+export const findCollectionById = async (
+  id: string,
+  onlyPublic: boolean = true
+): Promise<Collection | null> => {
   if (!isValidUUID(id)) return null;
 
   const db = await getDatabase();
@@ -824,7 +831,7 @@ export const findPublicCollectionById = async (
     .select()
     .from(collections)
     .innerJoin(users, eq(collections.creatorId, users.id))
-    .where(and(eq(collections.id, id), eq(collections.visibility, "public")))
+    .where(and(eq(collections.id, id), onlyPublic ? eq(collections.visibility, "public") : undefined))
     .limit(1);
 
   if (collectionResult.length === 0) return null;
@@ -1113,4 +1120,26 @@ export const findPublicCollectionById = async (
     subclasses: subclassesData,
     spellSchools: schoolsData,
   };
+};
+
+export const allowAccessToCollection = async(
+  collection: Pick<Collection, "visibility" | "creator">,
+  discordId: string | undefined
+): Promise<boolean> => {
+  if (collection.visibility !== "private") return true;
+  return (
+    collection.creator.discordId !== undefined &&
+    collection.creator.discordId === discordId
+  );
+}
+
+export const findPublicOrPrivateCollectionById = async (
+  id: string,
+  discordId: string | undefined
+): Promise<Collection | null> => {
+  const collection = await findCollectionById(id, false);
+  if (!collection) return null;
+  return (await allowAccessToCollection(collection, discordId))
+    ? collection
+    : null;
 };
