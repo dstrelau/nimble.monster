@@ -10,16 +10,16 @@ export function myItemsInfiniteQueryOptions({
   search,
   sort = "-createdAt",
   rarity = "all",
-  sourceId,
+  source,
   limit = 12,
 }: Partial<{
   search?: string;
   sort: PaginateItemsSortOption;
   rarity: ItemRarityFilter;
-  sourceId?: string;
+  source?: string;
   limit?: number;
 }> = {}) {
-  const params = { search, sort, rarity, sourceId, limit };
+  const params = { search, sort, rarity, source, limit };
   return {
     queryKey: ["my-items", params],
     queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>

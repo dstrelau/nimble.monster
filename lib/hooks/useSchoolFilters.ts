@@ -1,76 +1,36 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useDebouncedValue } from "@tanstack/react-pacer";
+import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
+import { useMemo } from "react";
 import type { SpellSchool, SpellSchoolSortOption } from "@/lib/types";
+
+const SpellSchoolSortOptions = [
+  "name-asc",
+  "name-desc",
+  "created-asc",
+  "created-desc",
+] as const;
 
 interface UseSchoolFiltersProps {
   spellSchools: SpellSchool[];
 }
 
 export const useSchoolFilters = ({ spellSchools }: UseSchoolFiltersProps) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [rawSearchTerm, setSearchTerm] = useQueryState("search");
+  const [searchTerm] = useDebouncedValue(rawSearchTerm, { wait: 250 });
 
-  const initialSearch = searchParams.get("search") || "";
-  const initialSort =
-    (searchParams.get("sort") as SpellSchoolSortOption) || "created-desc";
-
-  const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(initialSearch);
-  const [sortOption, setSortOption] = useState<SpellSchoolSortOption>(
-    initialSort &&
-      (initialSort.includes("name") || initialSort.includes("created"))
-      ? initialSort
-      : "created-desc"
+  const [sortOption, setSortOption] = useQueryState(
+    "sort",
+    parseAsStringLiteral(SpellSchoolSortOptions).withDefault("created-desc")
   );
-
-  useEffect(() => {
-    const currentSearch = searchParams.get("search") || "";
-    const currentSort =
-      (searchParams.get("sort") as SpellSchoolSortOption) || "created-desc";
-
-    setSearchTerm(currentSearch);
-    setDebouncedSearchTerm(currentSearch);
-    setSortOption(currentSort);
-  }, [searchParams]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-
-    if (debouncedSearchTerm) {
-      params.set("search", debouncedSearchTerm);
-    } else {
-      params.delete("search");
-    }
-
-    if (sortOption !== "created-desc") {
-      params.set("sort", sortOption);
-    } else {
-      params.delete("sort");
-    }
-
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  }, [debouncedSearchTerm, sortOption, pathname, router, searchParams]);
-
-  const handleSearch = useCallback((q: string) => {
-    setSearchTerm(q);
-  }, []);
+  const [source, setSource] = useQueryState("source", parseAsString);
 
   const filteredSchools = useMemo((): SpellSchool[] => {
     return spellSchools
       .filter((school) => {
-        if (debouncedSearchTerm) {
-          const searchLower = debouncedSearchTerm.toLowerCase();
+        if (searchTerm) {
+          const searchLower = searchTerm.toLowerCase();
           const nameMatch = school.name.toLowerCase().includes(searchLower);
           const descriptionMatch = school.description
             ?.toLowerCase()
@@ -81,6 +41,10 @@ export const useSchoolFilters = ({ spellSchools }: UseSchoolFiltersProps) => {
           if (!nameMatch && !descriptionMatch && !spellMatch) {
             return false;
           }
+        }
+
+        if (source) {
+          if (school.source?.abbreviation !== source) return false;
         }
 
         return true;
@@ -102,13 +66,19 @@ export const useSchoolFilters = ({ spellSchools }: UseSchoolFiltersProps) => {
 
         return 0;
       });
-  }, [spellSchools, debouncedSearchTerm, sortOption]);
+  }, [spellSchools, searchTerm, sortOption, source]);
+
+  const handleSearch = (q: string | null) => {
+    setSearchTerm(q);
+  };
 
   return {
-    searchTerm,
-    sortOption,
+    searchTerm: rawSearchTerm,
+    sortOption: sortOption as SpellSchoolSortOption,
+    source,
     filteredSchools,
     handleSearch,
     setSortOption,
+    setSource,
   };
 };

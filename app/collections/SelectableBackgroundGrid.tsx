@@ -28,12 +28,14 @@ export function SelectableBackgroundGrid({
   const [sort, setSort] = useState<
     "-createdAt" | "createdAt" | "name" | "-name"
   >("-createdAt");
+  const [source, setSourceId] = useState<string | null>(null);
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage, error } =
     useInfiniteQuery(
       publicBackgroundsInfiniteQueryOptions({
         search: search ?? undefined,
         sort,
+        source: source ?? undefined,
         limit: 12,
       })
     );
@@ -47,6 +49,8 @@ export function SelectableBackgroundGrid({
         sortOption={sort}
         onSearch={setRawSearch}
         onSortChange={setSort}
+        source={source}
+        onSourceChange={setSourceId}
       />
 
       {isLoading ? (

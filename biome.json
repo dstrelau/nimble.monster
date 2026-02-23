@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!data/paperforge-catalog.json"]
+    "includes": ["**", "!data/paperforge-catalog.json", "!tools"]
   },
   "formatter": {
     "enabled": true,

@@ -21,7 +21,7 @@ export type BackgroundSortDirection = "asc" | "desc";
 export interface SearchBackgroundsParams {
   searchTerm?: string;
   creatorId?: string;
-  sourceId?: string;
+  source?: string;
   sortBy?: BackgroundSortBy;
   sortDirection?: BackgroundSortDirection;
   limit?: number;

@@ -2,7 +2,7 @@
 
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { parseAsStringLiteral, useQueryState } from "nuqs";
+import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { publicAncestriesInfiniteQueryOptions } from "@/app/ancestries/hooks";
 import { myAncestriesInfiniteQueryOptions } from "@/app/my/ancestries/hooks";
@@ -41,10 +41,12 @@ export const PaginatedAncestryGrid: React.FC<PaginatedAncestryGridProps> = (
       "-createdAt"
     )
   );
+  const [sourceQuery, setSourceQuery] = useQueryState("source", parseAsString);
 
   const params = {
     search: searchQuery ?? undefined,
     sort: sortQuery,
+    source: sourceQuery ?? undefined,
     limit: 12,
   };
 
@@ -79,6 +81,8 @@ export const PaginatedAncestryGrid: React.FC<PaginatedAncestryGridProps> = (
         sortOption={sortQuery}
         onSearch={setSearchQuery}
         onSortChange={setSortQuery}
+        source={sourceQuery}
+        onSourceChange={setSourceQuery}
       />
 
       {!filteredAncestries || filteredAncestries?.length === 0 ? (

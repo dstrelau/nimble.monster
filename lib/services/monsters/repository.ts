@@ -357,7 +357,7 @@ export const paginateMonsters = async ({
   search,
   type = "all",
   creatorId,
-  sourceId,
+  source,
   role,
   level,
   includePrivate = false,
@@ -389,8 +389,14 @@ export const paginateMonsters = async ({
     whereConditions.push(eq(monsters.userId, creatorId));
   }
 
-  if (sourceId) {
-    whereConditions.push(eq(monsters.sourceId, sourceId));
+  if (source) {
+    const sourceRow = await db
+      .select({ id: sources.id })
+      .from(sources)
+      .where(eq(sources.abbreviation, source))
+      .limit(1);
+    if (sourceRow.length === 0) return { data: [], nextCursor: null };
+    whereConditions.push(eq(monsters.sourceId, sourceRow[0].id));
   }
 
   if (role) {

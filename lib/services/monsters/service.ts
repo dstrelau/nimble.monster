@@ -19,7 +19,7 @@ const PaginateMonstersSchema = z.object({
   cursor: z.string().optional(),
   type: z.enum(MonsterTypeOptions).optional(),
   creatorId: z.string().optional(),
-  sourceId: z.string().optional(),
+  source: z.string().optional(),
   role: z.enum(MonsterRoleOptions).optional(),
   level: z.number().optional(),
 });

@@ -37,7 +37,7 @@ export function SelectableMonsterGrid({
   const [search] = useDebouncedValue(rawSearch, { wait: 250 });
   const [sort, setSort] = useState<PaginateMonstersSortOption>("-createdAt");
   const [type, setType] = useState<MonsterTypeOption>("all");
-  const [sourceId, setSourceId] = useState<string | null>(null);
+  const [source, setSourceId] = useState<string | null>(null);
   const [role, setRole] = useState<MonsterRole | null>(null);
   const [level, setLevel] = useState<number | null>(null);
   const { data: session } = useSession();
@@ -46,7 +46,7 @@ export function SelectableMonsterGrid({
     search: search ?? undefined,
     sort,
     type,
-    sourceId: sourceId ?? undefined,
+    source: source ?? undefined,
     role: role ?? undefined,
     level: level ?? undefined,
     limit: 12,
@@ -74,7 +74,7 @@ export function SelectableMonsterGrid({
         onSortChange={setSort}
         typeFilter={type}
         onTypeFilterChange={setType}
-        sourceId={sourceId}
+        source={source}
         onSourceChange={setSourceId}
         role={role}
         onRoleChange={setRole}

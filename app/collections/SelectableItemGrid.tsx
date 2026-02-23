@@ -34,14 +34,14 @@ export function SelectableItemGrid({
   const [search] = useDebouncedValue(rawSearch, { wait: 250 });
   const [sort, setSort] = useState<ItemSortOption>("-createdAt");
   const [rarity, setRarity] = useState<ItemRarityFilter>("all");
-  const [sourceId, setSourceId] = useState<string | null>(null);
+  const [source, setSourceId] = useState<string | null>(null);
   const { data: session } = useSession();
 
   const params = {
     search: search ?? undefined,
     sort,
     rarity,
-    sourceId: sourceId ?? undefined,
+    source: source ?? undefined,
     limit: 12,
   };
 
@@ -74,7 +74,7 @@ export function SelectableItemGrid({
         onSearch={setRawSearch}
         onSortChange={setSort}
         onRarityChange={setRarity}
-        sourceId={sourceId}
+        source={source}
         onSourceChange={setSourceId}
         beforeFilters={
           <CreatorCombobox

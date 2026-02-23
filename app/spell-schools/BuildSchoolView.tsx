@@ -74,6 +74,7 @@ const spellSchema = z.object({
   tier: z.number().min(0).max(9),
   actions: z.coerce.number().max(10),
   reaction: z.boolean(),
+  utility: z.boolean(),
   target: z
     .union([
       z.object({ type: z.literal("self") }),
@@ -142,6 +143,7 @@ export default function BuildSchoolView({
               tier: spell.tier,
               actions: spell.actions,
               reaction: spell.reaction || false,
+              utility: spell.utility || false,
               target:
                 spell.target?.type === "self"
                   ? { type: "self" as const }
@@ -189,6 +191,7 @@ export default function BuildSchoolView({
       tier: spell?.tier ?? 0,
       actions: Number(spell?.actions) || 1,
       reaction: spell?.reaction || false,
+      utility: spell?.utility || false,
       target: spell?.target
         ? {
             ...spell.target,
@@ -241,6 +244,7 @@ export default function BuildSchoolView({
       tier: 0,
       actions: 1,
       reaction: false,
+      utility: false,
       target: { type: "single", kind: "range", distance: 0 },
       damage: "",
       description: "",
@@ -479,6 +483,23 @@ export default function BuildSchoolView({
                         render={({ field }) => (
                           <FormItem className="flex flex-col py-2">
                             <FormLabel className="pb-1">Reaction</FormLabel>
+                            <FormControl>
+                              <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                size="default"
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`spells.${index}.utility`}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col py-2">
+                            <FormLabel className="pb-1">Utility</FormLabel>
                             <FormControl>
                               <Switch
                                 checked={field.value}

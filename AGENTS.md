@@ -62,6 +62,7 @@ Workflow:
 - Use `cn `from lib/utils.ts for constructing dynamic className attributes. DO NOT use string concatenation for className.
 - You may not use an empty string value="" on a <Select> element. Use "none" and special-case this value to be null/undefined as appropriate.
 - Use lucide icons instead of custom SVGs
+- Always prefer reusing existing components over creating new ones. Before building a new component to display an entity, search for how that entity is already rendered elsewhere (e.g. detail pages, list cards) and reuse those components.
 
 # Tests
 

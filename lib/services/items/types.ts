@@ -55,14 +55,14 @@ export interface PaginateItemsParams {
   search?: string;
   rarity?: ItemRarityFilter;
   creatorId?: string;
-  sourceId?: string;
+  source?: string;
 }
 
 export interface SearchItemsParams {
   searchTerm?: string;
   rarity?: ItemRarityFilter;
   creatorId?: string;
-  sourceId?: string;
+  source?: string;
   sortBy?: ItemSortBy;
   sortDirection?: ItemSortDirection;
   limit?: number;

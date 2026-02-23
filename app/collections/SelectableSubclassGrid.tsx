@@ -21,10 +21,11 @@ export function SelectableSubclassGrid({
   selectedIds,
   onToggle,
 }: SelectableSubclassGridProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string | null>(null);
   const [sortOption, setSortOption] =
     useState<SubclassSortOption>("created-desc");
   const [classNameFilter, setClassNameFilter] = useState("all");
+  const [source, setSourceId] = useState<string | null>(null);
 
   const {
     data: subclasses,
@@ -51,6 +52,9 @@ export function SelectableSubclassGrid({
         if (classNameFilter && classNameFilter !== "all") {
           if (subclass.className !== classNameFilter) return false;
         }
+        if (source) {
+          if (subclass.source?.id !== source) return false;
+        }
         return true;
       })
       .sort((a, b) => {
@@ -67,7 +71,7 @@ export function SelectableSubclassGrid({
         }
         return 0;
       });
-  }, [subclasses, searchTerm, sortOption, classNameFilter]);
+  }, [subclasses, searchTerm, sortOption, classNameFilter, source]);
 
   return (
     <div className="space-y-6">
@@ -75,9 +79,11 @@ export function SelectableSubclassGrid({
         searchTerm={searchTerm}
         sortOption={sortOption}
         classNameFilter={classNameFilter}
+        source={source}
         onSearch={setSearchTerm}
         onSortChange={setSortOption}
         onClassNameChange={setClassNameFilter}
+        onSourceChange={setSourceId}
       />
 
       {isLoading ? (

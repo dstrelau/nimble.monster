@@ -2,7 +2,7 @@
 
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { parseAsStringLiteral, useQueryState } from "nuqs";
+import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { publicBackgroundsInfiniteQueryOptions } from "@/app/backgrounds/hooks";
 import { myBackgroundsInfiniteQueryOptions } from "@/app/my/backgrounds/hooks";
@@ -41,10 +41,12 @@ export const PaginatedBackgroundGrid: React.FC<PaginatedBackgroundGridProps> = (
       "-createdAt"
     )
   );
+  const [sourceQuery, setSourceQuery] = useQueryState("source", parseAsString);
 
   const params = {
     search: searchQuery ?? undefined,
     sort: sortQuery,
+    source: sourceQuery ?? undefined,
     limit: 12,
   };
 
@@ -79,6 +81,8 @@ export const PaginatedBackgroundGrid: React.FC<PaginatedBackgroundGridProps> = (
         sortOption={sortQuery}
         onSearch={setSearchQuery}
         onSortChange={setSortQuery}
+        source={sourceQuery}
+        onSourceChange={setSourceQuery}
       />
 
       {!filteredBackgrounds || filteredBackgrounds?.length === 0 ? (

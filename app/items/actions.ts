@@ -19,7 +19,7 @@ export async function paginatePublicItems(params: {
   sort: string;
   rarity: string;
   search: string | null;
-  sourceId?: string;
+  source?: string;
   creatorId?: string;
   limit: number;
   pageParam: number;
@@ -33,7 +33,7 @@ export async function paginatePublicItems(params: {
     sortBy: sortBy,
     sortDirection,
     rarity: params.rarity as ItemRarityFilter,
-    sourceId: params.sourceId,
+    source: params.source,
     creatorId: params.creatorId,
     limit: params.limit,
     offset: params.pageParam * params.limit,
@@ -46,18 +46,18 @@ export function publicItemsInfiniteQueryOptions({
   search = null,
   sort = "-createdAt",
   rarity = "all",
-  sourceId,
+  source,
   creatorId,
   limit = 12,
 }: Partial<{
   search?: string | null;
   sort: string;
   rarity: string;
-  sourceId?: string;
+  source?: string;
   creatorId?: string;
   limit?: number;
 }> = {}) {
-  const params = { search, sort, rarity, sourceId, creatorId, limit };
+  const params = { search, sort, rarity, source, creatorId, limit };
   return {
     queryKey: ["items", params],
     queryFn: ({ pageParam }: { pageParam: number }) =>

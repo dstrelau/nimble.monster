@@ -42,7 +42,7 @@ async function GET(request: NextRequest) {
         imageUrl: user.imageUrl ?? undefined,
         bannerDismissed: user.bannerDismissed ?? false,
       },
-      secret: process.env.AUTH_SECRET!,
+      secret: process.env.AUTH_SECRET ?? "",
       salt: "authjs.session-token",
     });
 

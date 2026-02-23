@@ -12,6 +12,7 @@ import {
   type UserRow,
   users,
 } from "@/lib/db/schema";
+import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import type { Source, User } from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
@@ -177,7 +178,7 @@ export const paginatePublicBackgrounds = async ({
   sort = "-createdAt",
   search,
   creatorId,
-  sourceId,
+  source,
 }: PaginateBackgroundsParams): Promise<{
   data: Background[];
   nextCursor: string | null;
@@ -202,8 +203,8 @@ export const paginatePublicBackgrounds = async ({
     conditions.push(eq(backgrounds.userId, creatorId));
   }
 
-  if (sourceId) {
-    conditions.push(eq(backgrounds.sourceId, sourceId));
+  if (source) {
+    conditions.push(eq(sources.abbreviation, source));
   }
 
   if (search) {
@@ -411,7 +412,7 @@ export const listAllBackgroundsForDiscordID = async (
 export const searchPublicBackgrounds = async ({
   searchTerm,
   creatorId,
-  sourceId,
+  source,
   sortBy,
   sortDirection = "asc",
   limit,
@@ -438,8 +439,8 @@ export const searchPublicBackgrounds = async ({
     }
   }
 
-  if (sourceId) {
-    conditions.push(eq(backgrounds.sourceId, sourceId));
+  if (source) {
+    conditions.push(eq(sources.abbreviation, source));
   }
 
   // Build order by
@@ -631,4 +632,75 @@ export const findBackgroundsByIds = async (
     .map((id) => dataMap.get(id))
     .filter((d): d is BackgroundFullData => d !== undefined)
     .map(toBackgroundFromFullData);
+};
+
+export const upsertOfficialBackground = async (
+  input: CreateBackgroundInput
+): Promise<void> => {
+  const db = await getDatabase();
+
+  const existing = await db
+    .select({ id: backgrounds.id })
+    .from(backgrounds)
+    .where(
+      and(
+        eq(backgrounds.name, input.name),
+        eq(backgrounds.userId, OFFICIAL_USER_ID)
+      )
+    )
+    .limit(1);
+
+  const values = {
+    name: input.name,
+    description: input.description,
+    requirement: input.requirement || null,
+    visibility: "public",
+    sourceId: input.sourceId || null,
+    updatedAt: new Date().toISOString(),
+  };
+
+  if (existing.length > 0) {
+    await db
+      .update(backgrounds)
+      .set(values)
+      .where(eq(backgrounds.id, existing[0].id));
+  } else {
+    await db.insert(backgrounds).values({
+      id: crypto.randomUUID(),
+      ...values,
+      userId: OFFICIAL_USER_ID,
+      createdAt: "2024-01-01 00:00:00",
+    });
+  }
+};
+
+export const findOfficialBackgroundsByNames = async (
+  names: string[]
+): Promise<Map<string, Background>> => {
+  if (names.length === 0) return new Map();
+  const db = await getDatabase();
+
+  const rows = await db
+    .select()
+    .from(backgrounds)
+    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
+    .where(
+      and(
+        inArray(backgrounds.name, names),
+        eq(backgrounds.userId, OFFICIAL_USER_ID)
+      )
+    );
+
+  const result = new Map<string, Background>();
+  for (const row of rows) {
+    const background = toBackgroundFromFullData({
+      background: row.backgrounds,
+      creator: row.users,
+      source: row.sources,
+      awards: [],
+    });
+    result.set(background.name, background);
+  }
+  return result;
 };

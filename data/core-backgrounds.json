@@ -1,0 +1,175 @@
+{
+  "source": {
+    "name": "Nimble Core Rules",
+    "abbreviation": "Core",
+    "license": "Nimble 3rd Party Creator License v2.0",
+    "link": "https://nimblerpg.com/"
+  },
+  "data": [
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Back Out of Retirement",
+        "description": "You've forgotten more than most adventurers these days know! Talk with your GM, what made you come out of retirement?\n- **Let's see if I remember how to do this...** You may gain 1 Wound to use an ability or cast a spell as if you were 1 level higher.\n- **These old bones.** Your age has long since started to show. –1 max Wounds."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Devoted Protector",
+        "description": "Choose 1 ally in your party. You can survive +3 max Wounds as long as they are nearby. Whenever they take a Wound, you do too."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Academy Dropout",
+        "description": "School just isn't for everyone! You learn by experience in the real world (or at least that's what you tell yourself). Learn any 1 Utility Spell."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Made a BAD Choice",
+        "description": "Start with 500 or 1000 extra gold, or an uncommon/rare magical item (that your GM allows). Gain an equally powerful curse or enemy who wants it back. If you choose this background, your GM may allow you to choose another."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Haunted Past",
+        "description": "You are haunted by voices that occasionally give you cryptic advice. The voices are sometimes VERY helpful. Other times they only want to see you suffer. Advantage against fear. Ear to the Ground. Advantage on checks to know or obtain gossip for events that will soon happen or have happened less than 1 year ago."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "What? I've Been Around",
+        "description": "1/per location (or at the GM's discretion). You happen to know JUST the person who has the information you're looking for, or could get you out of a jam, and… Roll 1d20:\n- **1–5.** They want you DEAD.\n- **6–12.** You owe them money.\n- **13–19.** They can be convinced to help you..\n- **20.** They are your biggest fan/are madly in love with you."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Acrobat",
+        "description": "Can be thrown by a larger ally, REALLY far. Half damage from falling and forced movement."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Wild One",
+        "description": "Whether it is the sticks or flowers in your hair, your smell, or the way you carry yourself, wild creatures are less frightened of you and more willing to aid you. +1 Naturecraft. While Field Resting, roll your Hit Dice with advantage while in the wild."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Fey Touched",
+        "description": "You take half damage from all magical effects, double from weapons made of metal (before armor is applied)."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Survivalist",
+        "description": "You never run out of your own personal rations. Anything can be food if you try hard enough! Advantage against poison saves. +1 max Hit Die."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Home at Sea",
+        "description": "Recover twice as many Wounds and HP while resting on a ship or near water. You can fill in for a first mate or captain in a pinch. Advantage on water-related skill checks."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "At Home Underground",
+        "description": "You can dig twice as fast as others. Safe resting locations underground always count as Lavish lodging for you. You struggle to rest (INT save) while it's raining. \"Water… from the SKY?!\""
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Raised by Goblins",
+        "description": "You speak Goblin natively (much better than one who has learned it later in life). You automatically notice and can avoid crudely-made traps and have advantage to notice and disarm more sophisticated traps."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "History Buff",
+        "description": "Advantage on all Lore checks related to knowledge about items, facts, or events that happened more than 100 years ago."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "(Former) Con Artist",
+        "description": "You can forge most documents or mimic voices flawlessly. You have a criminal contact in most major cities. However, your reputation often precedes you—until you prove yourself to be trustworthy."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "(Secretly) Undead",
+        "description": "Unnatural Resilience: You are immune to disease and do not need to eat, drink, or breathe. Children, animals, and Celestials are uneasy in your presence; many will be horrified to discover your true nature."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Taste for the Finer Things",
+        "description": "You always have up-to-date knowledge of the customs and dress of the upper classes and may even know many of their secrets. Advantage on Influence checks with the upper class."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Fearless",
+        "description": "You are immune to the Frightened condition. +1 Initiative. –1 Armor."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "So Dumb I'm Smart Sometimes",
+        "description": "(Req. 0 or negative INT at character creation.) Reroll an INT-related skill check, 1/day. Reroll a failed INT save with advantage, 1/Safe Rest.",
+        "requirement": "0 or negative INT at character creation"
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Wily Underdog",
+        "description": "(Req. 0 or negative STR at character creation.) Reroll a failed STR-related roll (e.g., STR attack, STR save, Might check) and use another stat instead, 1/day.",
+        "requirement": "0 or negative STR at character creation"
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Bumblewise",
+        "description": "(Req. 0 or negative WIL at character creation.) A result of 1 or less on any WIL-related roll counts as a natural 20 (WIL save, Naturecraft, Perception, Influence, or Insight check).",
+        "requirement": "0 or negative WIL at character creation"
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Accidental Acrobat",
+        "description": "(Req. 0 or negative DEX at character creation.) Whenever you fail a DEX-related roll (e.g., DEX attack, DEX save, Stealth check, Finesse check), you may roll again. If you still fail, the consequences are BAD.",
+        "requirement": "0 or negative DEX at character creation"
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Tradesman/Artisan",
+        "description": "Choose a profession (Baker/Cook, Smith, Stonemason, Weaver, Leatherworker, etc.). Checks you make related to that profession are made with advantage. You also retain special knowledge related to your profession."
+      }
+    }
+  ]
+}

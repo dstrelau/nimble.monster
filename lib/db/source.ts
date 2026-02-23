@@ -18,6 +18,24 @@ export async function createSource(data: {
   return result[0];
 }
 
+export async function updateSource(
+  id: string,
+  data: {
+    name: string;
+    abbreviation: string;
+    license: string;
+    link: string;
+  }
+) {
+  const db = getDatabase();
+  await db.update(sources).set(data).where(eq(sources.id, id));
+}
+
+export async function deleteSource(id: string) {
+  const db = getDatabase();
+  await db.delete(sources).where(eq(sources.id, id));
+}
+
 export async function findOrCreateSource(data: {
   name: string;
   abbreviation: string;

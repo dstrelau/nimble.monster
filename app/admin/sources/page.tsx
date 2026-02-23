@@ -1,6 +1,13 @@
+import { Trash2 } from "lucide-react";
 import { notFound } from "next/navigation";
-import { createSourceAction } from "@/app/admin/actions";
+import {
+  createSourceAction,
+  deleteSourceAction,
+  updateSourceAction,
+} from "@/app/admin/actions";
+import { EditSourceDialog } from "@/components/admin/EditSourceDialog";
 import { SourceForm } from "@/components/admin/SourceForm";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -52,6 +59,7 @@ export default async function AdminSourcesPage() {
                 <TableHead>Abbreviation</TableHead>
                 <TableHead>License</TableHead>
                 <TableHead>Link</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -69,6 +77,24 @@ export default async function AdminSourcesPage() {
                     >
                       {source.link}
                     </a>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <EditSourceDialog
+                        source={source}
+                        onSubmit={updateSourceAction.bind(null, source.id)}
+                      />
+                      <form action={deleteSourceAction.bind(null, source.id)}>
+                        <Button
+                          type="submit"
+                          variant="ghost"
+                          size="sm"
+                          className="text-destructive"
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </form>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

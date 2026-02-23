@@ -28,10 +28,7 @@ export const ItemsListView: React.FC = () => {
   const [rarityQuery, setRarityQuery] = useQueryState("rarity", {
     defaultValue: "all",
   });
-  const [sourceIdQuery, setSourceIdQuery] = useQueryState(
-    "sourceId",
-    parseAsString
-  );
+  const [sourceQuery, setSourceQuery] = useQueryState("source", parseAsString);
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage, error } =
     useInfiniteQuery(
@@ -39,7 +36,7 @@ export const ItemsListView: React.FC = () => {
         rarity: rarityQuery,
         sort: sortQuery,
         search: searchQuery || undefined,
-        sourceId: sourceIdQuery ?? undefined,
+        source: sourceQuery ?? undefined,
       })
     );
 
@@ -62,8 +59,8 @@ export const ItemsListView: React.FC = () => {
         onSearch={setSearchQuery}
         onSortChange={setSortQuery}
         onRarityChange={setRarityQuery}
-        sourceId={sourceIdQuery}
-        onSourceChange={setSourceIdQuery}
+        source={sourceQuery}
+        onSourceChange={setSourceQuery}
       />
 
       {!filteredItems || filteredItems?.length === 0 ? (

@@ -2,12 +2,15 @@
 
 import { FilterBar } from "@/app/ui/FilterBar";
 import { SortSelect } from "@/components/app/SortSelect";
+import { SourceFilter } from "@/components/app/SourceFilter";
 
 interface FilterBarProps {
   searchTerm: string | null;
   sortOption: string;
   onSearch: (search: string | null) => void;
   onSortChange: (sort: "name" | "createdAt" | "-name" | "-createdAt") => void;
+  source: string | null;
+  onSourceChange: (source: string | null) => void;
 }
 
 const SORT_OPTIONS: {
@@ -25,9 +28,16 @@ export const BackgroundFilterBar = ({
   sortOption,
   onSearch,
   onSortChange,
+  source,
+  onSourceChange,
 }: FilterBarProps) => {
   return (
     <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v || null)}>
+      <SourceFilter
+        source={source}
+        onSourceChange={onSourceChange}
+        entityType="backgrounds"
+      />
       <SortSelect
         items={SORT_OPTIONS}
         value={sortOption}

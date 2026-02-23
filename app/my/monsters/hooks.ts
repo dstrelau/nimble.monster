@@ -11,7 +11,7 @@ export function myMonstersInfiniteQueryOptions({
   search,
   sort = "-createdAt",
   type = "all",
-  sourceId,
+  source,
   role,
   level,
   limit = 12,
@@ -19,12 +19,12 @@ export function myMonstersInfiniteQueryOptions({
   search?: string;
   sort: PaginateMonstersSortOption;
   type: MonsterTypeOption;
-  sourceId?: string;
+  source?: string;
   role?: MonsterRole;
   level?: number;
   limit?: number;
 }> = {}) {
-  const params = { search, sort, type, sourceId, role, level, limit };
+  const params = { search, sort, type, source, role, level, limit };
   return {
     queryKey: ["my-monsters", params],
     queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>

@@ -45,7 +45,7 @@ export type AncestrySortDirection = "asc" | "desc";
 export interface SearchAncestriesParams {
   searchTerm?: string;
   creatorId?: string;
-  sourceId?: string;
+  source?: string;
   sortBy?: AncestrySortBy;
   sortDirection?: AncestrySortDirection;
   limit?: number;

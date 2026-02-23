@@ -26,7 +26,7 @@ export function publicMonstersInfiniteQueryOptions({
   search,
   sort = "-createdAt",
   type = "all",
-  sourceId,
+  source,
   role,
   level,
   creatorId,
@@ -35,7 +35,7 @@ export function publicMonstersInfiniteQueryOptions({
   search?: string;
   sort: PaginateMonstersSortOption;
   type: MonsterTypeOption;
-  sourceId?: string;
+  source?: string;
   role?: MonsterRole;
   level?: number;
   creatorId?: string;
@@ -45,7 +45,7 @@ export function publicMonstersInfiniteQueryOptions({
     search,
     sort,
     type,
-    sourceId,
+    source,
     role,
     level,
     creatorId,

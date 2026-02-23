@@ -321,6 +321,7 @@ export const spells = sqliteTable(
     highLevels: text("high_levels"),
     concentration: text("concentration"),
     upcast: text("upcast"),
+    utility: integer("utility", { mode: "boolean" }).notNull().default(false),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },

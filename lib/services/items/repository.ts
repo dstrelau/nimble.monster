@@ -365,7 +365,7 @@ export const searchPublicItems = async ({
   searchTerm,
   rarity,
   creatorId,
-  sourceId,
+  source,
   sortBy,
   sortDirection = "asc",
   limit,
@@ -393,8 +393,17 @@ export const searchPublicItems = async ({
     conditions.push(eq(items.rarity, rarity));
   }
 
-  if (sourceId) {
-    conditions.push(eq(items.sourceId, sourceId));
+  if (source) {
+    const sourceRow = await db
+      .select({ id: sources.id })
+      .from(sources)
+      .where(eq(sources.abbreviation, source))
+      .limit(1);
+    if (sourceRow.length > 0) {
+      conditions.push(eq(items.sourceId, sourceRow[0].id));
+    } else {
+      return [];
+    }
   }
 
   // Determine order
@@ -471,7 +480,7 @@ export const paginateItems = async ({
   search,
   rarity,
   creatorId,
-  sourceId,
+  source,
   includePrivate = false,
 }: PaginateItemsParams & { includePrivate?: boolean }): Promise<{
   data: Item[];
@@ -501,8 +510,14 @@ export const paginateItems = async ({
     whereConditions.push(eq(items.userId, creatorId));
   }
 
-  if (sourceId) {
-    whereConditions.push(eq(items.sourceId, sourceId));
+  if (source) {
+    const sourceRow = await db
+      .select({ id: sources.id })
+      .from(sources)
+      .where(eq(sources.abbreviation, source))
+      .limit(1);
+    if (sourceRow.length === 0) return { data: [], nextCursor: null };
+    whereConditions.push(eq(items.sourceId, sourceRow[0].id));
   }
 
   if (rarity && rarity !== "all") {

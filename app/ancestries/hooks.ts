@@ -5,15 +5,15 @@ import { paginatePublicAncestries } from "./actions";
 export function publicAncestriesInfiniteQueryOptions({
   search,
   sort = "-createdAt",
-  sourceId,
+  source,
   limit = 12,
 }: Partial<{
   search?: string;
   sort: "-createdAt" | "createdAt" | "name" | "-name";
-  sourceId?: string;
+  source?: string;
   limit?: number;
 }> = {}) {
-  const params = { search, sort, sourceId, limit };
+  const params = { search, sort, source, limit };
   return {
     queryKey: ["ancestries", params],
     queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>

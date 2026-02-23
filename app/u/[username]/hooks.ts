@@ -13,7 +13,7 @@ export function userProfileMonstersInfiniteQueryOptions(
     search,
     sort = "-createdAt",
     type = "all",
-    sourceId,
+    source,
     role,
     level,
     limit = 12,
@@ -21,7 +21,7 @@ export function userProfileMonstersInfiniteQueryOptions(
     search?: string;
     sort: PaginateMonstersSortOption;
     type: MonsterTypeOption;
-    sourceId?: string;
+    source?: string;
     role?: MonsterRole;
     level?: number;
     limit?: number;
@@ -31,7 +31,7 @@ export function userProfileMonstersInfiniteQueryOptions(
     search,
     sort,
     type,
-    sourceId,
+    source,
     role,
     level,
     limit,

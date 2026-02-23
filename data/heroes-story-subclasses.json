@@ -1,0 +1,181 @@
+{
+  "source": {
+    "name": "Nimble Heroes Book",
+    "abbreviation": "Heroes",
+    "license": "Nimble 3rd Party Creator License v2.0",
+    "link": "https://nimblerpg.com/"
+  },
+  "data": [
+    {
+      "type": "subclasses",
+      "attributes": {
+        "name": "Spellblade",
+        "className": "Commander",
+        "tagline": "STEEL MEETS SPELL",
+        "description": "**Arcane Command**\nYour focus on the arcane causes you to lose access to Weapon Mastery and Combat Tactics, but you now gain INT mana when you roll Initiative (this mana is lost if unspent when combat ends). Whenever you could choose a Combat Tactic or Weapon Mastery, instead choose another Commander's Order or a tier 1 (or lower) spell from any spell school. Your Commander's Orders are also empowered with magical power:\n\n* **Face Me! (Glimmering Decree).** Reaction (after an ally within 12 spaces is crit): That enemy takes STR d8 radiant damage (ignoring armor), is pulled up to 4 spaces toward you, and is Taunted by you until you drop to 0 HP.\n* **Move it! Move it! (Borne upon the Wind).** When you roll Initiative, you may give yourself and an ally advantage on the roll, +3 speed, and the ability to fly for 1 round. Then, you both can also move for free.\n* **Hold the Line! (Crystalline Armor).** (1/encounter) Reaction (when an ally drops to 0 HP): Command them to continue the fight! Set their HP to 3× your LVL. Additionally, they gain that many temp HP. Enemies who reduce this temp HP in melee have their speed halved until the end of their next turn.\n* **Reposition! (Flashstep).** Action/Reaction (on an ally's turn): Command 1 ally to move up to their speed (or 2 allies up to half their speed) for free. You may exchange places with one of them.\n* **I Can Do This ALL DAY! (Rising Phoenix).** (1/encounter) Reaction, (when you would drop to 0 HP): You may expend any number of Hit Dice, set your HP to the sum rolled instead, and deal that much fire damage to each enemy within 2 spaces of you. They gain the Smoldering condition.\n* **Coordinated Strike! (Withering Strike).** Any attacks made this way deal additional Necrotic damage equal to the max value of your Combat Die. An enemy damaged this way is considered undead for 1 round.",
+        "levels": [
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Firebrand",
+                "description": "When you roll Initiative you may cast Enchant Weapon for free (can be upcast as normal by spending additional mana)."
+              },
+              {
+                "name": "Deep Knowledge (1)",
+                "description": "Choose any tier 1 (or lower) spell and any Utility Spell."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Deep Knowledge (2)",
+                "description": "Choose any tier 2 (or lower) spell and any Utility Spell."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Deep Knowledge (3)",
+                "description": "Choose any tier 3 (or lower) spell and any Utility Spell."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Deep Knowledge (4)",
+                "description": "Choose any tier 4 (or lower) spell and any Utility Spell."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "subclasses",
+      "attributes": {
+        "name": "Beastmaster",
+        "className": "Hunter",
+        "tagline": "TOGETHER, UNSTOPPABLE",
+        "description": "**Beastmaster**\nChoose a Small, Medium, or Large animal as your companion. Instead of your first 2 Thrill of the Hunt (TotH) abilities, you can select Go for the Throat! and Protect Me! to use with your companion.\n\n# Small Companion\n\n*(Cat, Bat, Hawk, Raccoon, Rooster, Ferret, etc.)*\n\n**Keen Eyes**\n(1/encounter) Mark a target for free. **Level 7.** 2/encounter. **Level 11.** 3/encounter.\n\n**Protect me!**\n(1/encounter) Whenever you Defend, your companion distracts the attacker, causing the attack to miss, and you move up to half your speed away. **Level 7.** 2/encounter.\n\n**Go for the Throat!**\n(1/encounter) Costs 1 TotH charge: Your companion attacks your quarry for 1d4+LVL damage for free (ignoring armor). **Level 11.** 2/encounter, 1/round. **Level 15.** 3/encounter, 1/round.\n\n# Medium Companion\n\n*(Wolf, Boar, Panther, Vulture, Giant Spider, etc.) Req. Level 3.*\n\n**Ferocious**\nWhenever you or your companion crit your quarry, your companion attacks again for LVL damage (ignoring armor), and you can move up to 2 spaces for free. **Level 7.** 4 spaces. **Level 15.** 6 spaces.\n\n**Protect me!**\nWhen you Defend, your companion may first attack that creature for 1d4+LVL damage.\n\n**Go for the Throat!**\n(1/encounter) Costs 1 TotH charge, action: Your companion attacks your quarry, for 1d8+(3×LVL) damage (ignoring armor). **Level 11.** 2/encounter.\n\n# Large Companion\n\n*(Lion, Owlbear, Elk, Giant Scorpion, Drake, etc.) Req. Level 3.*\n\n**Alpha Protector**\nDamage from the first attack against you each round is halved.\n\n**Protect me!**\n(1/encounter) After you gain a Wound, your companion can whisk you away to safety up to 12 spaces. **Level 7.** You are whisked away before gaining the Wound. **Level 15.** 2/encounter.\n\n**Go for the Throat!**\n(1/encounter) Costs 2 TotH charges, 2 actions: Your companion attacks your quarry for 1d12+(4×LVL) damage (ignoring armor). If that creature dies, you may deal half as much to another creature within Reach 4. **Level 11.** 2/encounter.",
+        "levels": []
+      }
+    },
+    {
+      "type": "subclasses",
+      "attributes": {
+        "name": "Oathbreaker",
+        "className": "Oathsworn",
+        "tagline": "FALLEN, SEEKING REDEMPTION",
+        "description": "**Dark Benediction**\nFallen from the light, but not entirely. You lose access to the following Radiant spells: True Strike, Heal, and Warding Bond; and gain access to the following Necrotic spells: Entice, Shadowtrap, and Dread Visage. Whenever you can choose a Utility Spell, you may choose a Radiant or Necrotic one.\n\n**Paragon of Power**\n(Replaces Paragon of Virtue) Advantage on Might checks when attempting to intimidate others.\n\n**Aura of Suffering**\nYou gain an aura with a Reach of 4 and can Interpose for an ally anywhere within your aura; however, your Radiant Judgment ability no longer triggers when attacked. Instead, it triggers whenever you *could* Interpose *but don't.*",
+        "levels": [
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "We All Suffer",
+                "description": "Gain +2 max Wounds. When an ally within your aura would gain any Wounds or fail a save, you may suffer the effect instead and trigger your Radiant Judgment ability."
+              },
+              {
+                "name": "Bring Me Your Pain",
+                "description": "Reaction (When a willing ally within your aura would drop to 0 HP): Switch HP with them (if your current HP is higher than their max HP, they gain Temp HP equal to the difference), dropping to 0 hp and gaining the Wound instead."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Torment",
+                "description": "Your Lay on Hands heals you for twice as much, and others for half as much. When you deal damage, you can expend healing power from your Lay on Hands pool to increase the damage dealt by an amount equal to the points spent (ignoring armor)."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Exploit",
+                "description": "Reaction (whenever an ally within your aura Defends), you may expend your Judgment Dice to force an enemy within your Aura to Interpose (a creature cannot interpose against its own attack)."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Bloody Terror",
+                "description": "Attacks against you gain 1 instance of disadvantage for each Wound you have (max 3)."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "subclasses",
+      "attributes": {
+        "name": "Reaver",
+        "className": "Shadowmancer",
+        "tagline": "CAST ASIDE, BORN ANEW",
+        "description": "**Hollow One**\nCut off from your patron, you can no longer cast Shadow Blast and you can no longer cast tiered spells using Pilfered Power. However, as a parting token, you have stolen a secret from your patron: The magical Bonescythe, a weapon of sinew and bone, infused with shadowy magic.\n\n**Bonescythe**\nAction: Summon a magical Bonescythe, a melee weapon: 2d12 slashing+DEX necrotic damage to each die (Reach: 2). It shatters after you hit with it (or when combat ends). Any Invocations affecting Shadow Blast affect your Bonescythe Instead.\n\n**High Levels.** Every 5 levels, add 1 extra damage die (Level 5: 3d12, Level 10: 4d12, etc.).",
+        "levels": [
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Shadow Exploit",
+                "description": "Sacrifice a shadow minion to cast a spell at the highest tier you have unlocked. Each subsequent spell you cast in this encounter costs 1 additional minion."
+              },
+              {
+                "name": "Martyr Spawn",
+                "description": "Whenever you Defend, you can sacrifice a shadow minion to take no damage."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Grim Harrow",
+                "description": "When you strike with your Bonescythe, you may divide the dice as you choose amongst any number of adjacent targets within Reach."
+              },
+              {
+                "name": "Reap",
+                "description": "When your Bonescythe crits, or kills a creature, summon a shadow minion for free."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "My Blood, My Power",
+                "description": "You may take 1 Wound to cast a tiered spell you know at the highest tier you have unlocked."
+              },
+              {
+                "name": "Otherworldly Might",
+                "description": "Advantage on concentration checks if you have any shadow minions."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "I'm the Patron Now!",
+                "description": "Summon 2 shadow minions for free when you roll Initiative."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

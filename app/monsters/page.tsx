@@ -5,7 +5,7 @@ import { PaginatedMonsterGrid } from "@/app/ui/monster/PaginatedMonsterGrid";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { monstersService } from "@/lib/services/monsters";
-import { sourcesQueryOptions } from "@/lib/services/sources";
+import { sourcesForEntityTypeQueryOptions } from "@/lib/services/sources";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { publicMonstersInfiniteQueryOptions } from "./hooks";
 
@@ -41,7 +41,7 @@ export default async function MonstersPage({
 
   const queryClient = getQueryClient();
   await Promise.all([
-    queryClient.prefetchQuery(sourcesQueryOptions()),
+    queryClient.prefetchQuery(sourcesForEntityTypeQueryOptions("monsters")),
     queryClient.prefetchQuery(officialConditionsQueryOptions()),
     queryClient.prefetchInfiniteQuery(
       publicMonstersInfiniteQueryOptions(params)

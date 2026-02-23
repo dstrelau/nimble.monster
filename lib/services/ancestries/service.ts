@@ -20,7 +20,7 @@ const PaginateAncestriesSchema = z.object({
   limit: z.number().min(1).max(100).default(10),
   cursor: z.string().optional(),
   creatorId: z.string().optional(),
-  sourceId: z.string().optional(),
+  source: z.string().optional(),
 });
 
 export type PaginateAncestriesParams = z.infer<typeof PaginateAncestriesSchema>;

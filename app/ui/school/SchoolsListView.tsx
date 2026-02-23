@@ -1,6 +1,8 @@
 "use client";
 
 import { FilterBar } from "@/app/ui/FilterBar";
+import { EmptyState } from "@/app/ui/shared/GridStates";
+import { SourceFilter } from "@/components/app/SourceFilter";
 import { useSchoolFilters } from "@/lib/hooks/useSchoolFilters";
 import type { SpellSchool } from "@/lib/types";
 import { Card } from "./Card";
@@ -14,25 +16,29 @@ export function SchoolsListView({ spellSchools }: SchoolsListViewProps) {
   const {
     searchTerm,
     sortOption,
+    source,
     filteredSchools,
     handleSearch,
     setSortOption,
+    setSource,
   } = useSchoolFilters({ spellSchools });
 
   return (
     <div className="space-y-6">
-      <FilterBar searchTerm={searchTerm} onSearch={handleSearch}>
+      <FilterBar
+        searchTerm={searchTerm}
+        onSearch={(v) => handleSearch(v || null)}
+      >
+        <SourceFilter
+          source={source}
+          onSourceChange={setSource}
+          entityType="spell_schools"
+        />
         <SchoolSortSelect value={sortOption} onChange={setSortOption} />
       </FilterBar>
 
       {filteredSchools.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">
-            {searchTerm
-              ? "No spell schools found matching your filters."
-              : "No spell schools found."}
-          </p>
-        </div>
+        <EmptyState entityName="spell schools" />
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
           {filteredSchools.map((school) => (

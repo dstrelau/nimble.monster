@@ -5,12 +5,19 @@ import { useId } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { SourceRow } from "@/lib/db/schema";
 
 interface SourceFormProps {
+  source?: SourceRow;
   onSubmit: (formData: FormData) => void;
+  submitLabel?: string;
 }
 
-export function SourceForm({ onSubmit }: SourceFormProps) {
+export function SourceForm({
+  source,
+  onSubmit,
+  submitLabel = "Create Source",
+}: SourceFormProps) {
   const nameId = useId();
   const abbreviationId = useId();
   const licenseId = useId();
@@ -20,7 +27,13 @@ export function SourceForm({ onSubmit }: SourceFormProps) {
     <form action={onSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor={nameId}>Name</Label>
-        <Input id={nameId} name="name" required placeholder="Core Rulebook" />
+        <Input
+          id={nameId}
+          name="name"
+          defaultValue={source?.name}
+          required
+          placeholder="Core Rulebook"
+        />
       </div>
 
       <div className="space-y-2">
@@ -28,6 +41,7 @@ export function SourceForm({ onSubmit }: SourceFormProps) {
         <Input
           id={abbreviationId}
           name="abbreviation"
+          defaultValue={source?.abbreviation}
           required
           placeholder="CR"
         />
@@ -35,7 +49,13 @@ export function SourceForm({ onSubmit }: SourceFormProps) {
 
       <div className="space-y-2">
         <Label htmlFor={licenseId}>License</Label>
-        <Input id={licenseId} name="license" required placeholder="CC BY 4.0" />
+        <Input
+          id={licenseId}
+          name="license"
+          defaultValue={source?.license}
+          required
+          placeholder="CC BY 4.0"
+        />
       </div>
 
       <div className="space-y-2">
@@ -44,6 +64,7 @@ export function SourceForm({ onSubmit }: SourceFormProps) {
           id={linkId}
           name="link"
           type="url"
+          defaultValue={source?.link}
           required
           placeholder="https://example.com/rulebook"
         />
@@ -51,7 +72,7 @@ export function SourceForm({ onSubmit }: SourceFormProps) {
 
       <Button type="submit" className="flex items-center gap-2">
         <BookOpen className="size-4" />
-        Create Source
+        {submitLabel}
       </Button>
     </form>
   );

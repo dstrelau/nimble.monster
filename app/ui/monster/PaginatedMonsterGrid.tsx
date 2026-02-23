@@ -49,10 +49,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
     "type",
     parseAsStringLiteral(MonsterTypeOptions).withDefault("all")
   );
-  const [sourceIdQuery, setSourceIdQuery] = useQueryState(
-    "sourceId",
-    parseAsString
-  );
+  const [sourceQuery, setSourceQuery] = useQueryState("source", parseAsString);
   const [roleQuery, setRoleQuery] = useQueryState(
     "role",
     parseAsStringLiteral(MONSTER_ROLES.map((r) => r.value))
@@ -63,7 +60,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
     search: searchQuery ?? undefined,
     sort: sortQuery,
     type: typeQuery,
-    sourceId: sourceIdQuery ?? undefined,
+    source: sourceQuery ?? undefined,
     role: roleQuery ?? undefined,
     level: levelQuery ?? undefined,
     limit: 12,
@@ -101,8 +98,8 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
         onSortChange={setSortQuery}
         typeFilter={typeQuery}
         onTypeFilterChange={setTypeQuery}
-        sourceId={sourceIdQuery}
-        onSourceChange={setSourceIdQuery}
+        source={sourceQuery}
+        onSourceChange={setSourceQuery}
         role={roleQuery}
         onRoleChange={setRoleQuery}
         level={levelQuery}

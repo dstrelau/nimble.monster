@@ -34,6 +34,7 @@ export async function createSpellSchool(formData: {
     tier: number;
     actions: number;
     reaction: boolean;
+    utility?: boolean;
     target?: SpellTarget;
     damage?: string;
     description?: string;
@@ -81,6 +82,7 @@ export async function updateSpellSchool(
       tier: number;
       actions: number;
       reaction: boolean;
+      utility?: boolean;
       target?: SpellTarget;
       damage?: string;
       description?: string;

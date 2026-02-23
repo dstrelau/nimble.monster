@@ -284,6 +284,7 @@ export interface SpellMini {
   tier: number;
   actions: number;
   target?: SpellTarget;
+  utility?: boolean;
 }
 
 export interface Spell extends SpellMini {

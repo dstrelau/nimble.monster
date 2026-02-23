@@ -34,9 +34,11 @@ const formatActions = (actions: number): string => {
 
 const formatTierTarget = (
   tier: number,
-  target: SpellSchool["spells"][0]["target"]
+  target: SpellSchool["spells"][0]["target"],
+  utility?: boolean
 ): string => {
-  const tierStr = tier === 0 ? "Cantrip" : `Tier ${tier}`;
+  const tierStr =
+    tier === 0 && utility ? "" : tier === 0 ? "Cantrip" : `Tier ${tier}`;
   if (!target) return tierStr;
 
   const typeStr = {
@@ -48,8 +50,79 @@ const formatTierTarget = (
     special: "Special",
   }[target.type];
 
+  if (!tierStr) return typeStr;
   return `${tierStr}, ${typeStr}`;
 };
+
+function SpellEntry({
+  spell,
+  mini,
+  conditions,
+  formatDistance,
+}: {
+  spell: SpellSchool["spells"][0];
+  mini: boolean;
+  conditions: ReturnType<typeof useConditions>;
+  formatDistance: (
+    target: SpellTarget | undefined,
+    kind: "range" | "reach"
+  ) => string | undefined;
+}) {
+  const parts = [
+    ["Concentration", maybePeriod(spell.concentration), false],
+    ["Range", formatDistance(spell.target, "range"), false],
+    ["Reach", formatDistance(spell.target, "reach"), false],
+    ["Damage", maybePeriod(spell.damage), false],
+    [spell.reaction ? "Reaction" : "", maybePeriod(spell.description), true],
+    ["Upcast", maybePeriod(spell.upcast), false],
+    ["High Levels", maybePeriod(spell.highLevels), false],
+  ].filter(([_, v]) => Boolean(v)) as [string, string, boolean][];
+
+  return (
+    <div>
+      <div className="flex justify-between gap-6 items-baseline">
+        <div className="gap-1">
+          <h3 className="inline font-extrabold font-slab text-lg mr-1">
+            {spell.name}
+          </h3>
+          <span className="text-sm text-muted-foreground italic text-nowrap">
+            {formatTierTarget(spell.tier, spell.target, spell.utility)}
+          </span>
+        </div>
+        <span className="text-sm font-bold italic small-caps text-nowrap">
+          {" "}
+          {formatActions(spell.actions)}
+        </span>
+      </div>
+
+      {mini ||
+        parts.map(([label, value, format]) => {
+          return (
+            <div key={label} className="space-y-0 inline overflow-auto">
+              {label && (
+                <strong className="mr-1 small-caps font-extrabold font-stretch-condensed italic">
+                  {label}:
+                </strong>
+              )}
+              {label === "Damage" ? (
+                <span className="inline mr-1">
+                  <DiceNotation text={value} />
+                </span>
+              ) : format ? (
+                <FormattedText
+                  content={value}
+                  conditions={conditions.allConditions}
+                  className="inline [&_div]:inline [&_p]:inline mr-1"
+                />
+              ) : (
+                <div className="inline mr-1">{value}</div>
+              )}
+            </div>
+          );
+        })}
+    </div>
+  );
+}
 
 export function Card({
   spellSchool,
@@ -69,6 +142,7 @@ export function Card({
     kind: "range" | "reach"
   ): string | undefined => {
     if (!target || target.type === "self") return undefined;
+    if (target.distance == null) return undefined;
     if (kind === "reach" && target.kind === "line") {
       return `Line ${target.distance}.`;
     }
@@ -111,69 +185,43 @@ export function Card({
 
       <CardContent className={cn(selectable && "pointer-events-none")}>
         <div className={cn(mini ? "space-y-1" : "space-y-6")}>
-          {spellSchool.spells.map((spell) => {
-            const parts = [
-              ["Concentration", maybePeriod(spell.concentration), false],
-              ["Range", formatDistance(spell.target, "range"), false],
-              ["Reach", formatDistance(spell.target, "reach"), false],
-              ["Damage", maybePeriod(spell.damage), false],
-              [
-                spell.reaction ? "Reaction" : "",
-                maybePeriod(spell.description),
-                true,
-              ],
-              ["Upcast", maybePeriod(spell.upcast), false],
-              ["High Levels", maybePeriod(spell.highLevels), false],
-            ].filter(([_, v]) => Boolean(v)) as [string, string, boolean][];
-
+          {(() => {
+            const regularSpells = spellSchool.spells.filter((s) => !s.utility);
+            const utilitySpells = spellSchool.spells.filter((s) => s.utility);
             return (
-              <div key={spell.id}>
-                <div className="flex justify-between gap-6 items-baseline">
-                  <div className="gap-1">
-                    <h3 className="inline font-extrabold font-slab text-lg mr-1">
-                      {spell.name}
-                    </h3>
-                    <span className="text-sm text-muted-foreground italic text-nowrap">
-                      {formatTierTarget(spell.tier, spell.target)}
-                    </span>
-                  </div>
-                  <span className="text-sm font-bold italic small-caps text-nowrap">
-                    {" "}
-                    {formatActions(spell.actions)}
-                  </span>
-                </div>
-
-                {mini ||
-                  parts.map(([label, value, format]) => {
-                    return (
-                      <div
-                        key={label}
-                        className="space-y-0 inline overflow-auto"
-                      >
-                        {label && (
-                          <strong className="mr-1 small-caps font-extrabold font-stretch-condensed italic">
-                            {label}:
-                          </strong>
-                        )}
-                        {label === "Damage" ? (
-                          <span className="inline mr-1">
-                            <DiceNotation text={value} />
-                          </span>
-                        ) : format ? (
-                          <FormattedText
-                            content={value}
-                            conditions={conditions.allConditions}
-                            className="inline [&_div]:inline [&_p]:inline mr-1"
-                          />
-                        ) : (
-                          <div className="inline mr-1">{value}</div>
-                        )}
-                      </div>
-                    );
-                  })}
-              </div>
+              <>
+                {regularSpells.map((spell) => (
+                  <SpellEntry
+                    key={spell.id}
+                    spell={spell}
+                    mini={mini}
+                    conditions={conditions}
+                    formatDistance={formatDistance}
+                  />
+                ))}
+                {utilitySpells.length > 0 && (
+                  <>
+                    <div className="flex items-center gap-3 pt-2">
+                      <div className="h-px flex-1 bg-border" />
+                      <span className="text-xs text-muted-foreground italic uppercase tracking-wider">
+                        Utility
+                      </span>
+                      <div className="h-px flex-1 bg-border" />
+                    </div>
+                    {utilitySpells.map((spell) => (
+                      <SpellEntry
+                        key={spell.id}
+                        spell={spell}
+                        mini={mini}
+                        conditions={conditions}
+                        formatDistance={formatDistance}
+                      />
+                    ))}
+                  </>
+                )}
+              </>
             );
-          })}
+          })()}
         </div>
       </CardContent>
 

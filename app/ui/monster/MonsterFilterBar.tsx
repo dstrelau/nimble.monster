@@ -25,8 +25,8 @@ interface SimpleFilterBarProps {
   sortOption: PaginateMonstersSortOption;
   onSearch: (value: string | null) => void;
   onSortChange: (sort: PaginateMonstersSortOption) => void;
-  sourceId: string | null;
-  onSourceChange: (sourceId: string | null) => void;
+  source: string | null;
+  onSourceChange: (source: string | null) => void;
   role: MonsterRole | null;
   onRoleChange: (role: MonsterRole | null) => void;
   level: number | null;
@@ -61,7 +61,7 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
   sortOption,
   onSearch,
   onSortChange,
-  sourceId,
+  source,
   onSourceChange,
   role,
   onRoleChange,
@@ -85,7 +85,11 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
           ))}
         </SelectContent>
       </Select>
-      <SourceFilter sourceId={sourceId} onSourceChange={onSourceChange} />
+      <SourceFilter
+        source={source}
+        onSourceChange={onSourceChange}
+        entityType="monsters"
+      />
       <Select
         value={role ?? "none"}
         onValueChange={(v) =>

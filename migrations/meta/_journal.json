@@ -36,6 +36,13 @@
       "when": 1771346000000,
       "tag": "0004_add_classes",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1771886400000,
+      "tag": "0005_add_spell_utility",
+      "breakpoints": true
     }
   ]
 }

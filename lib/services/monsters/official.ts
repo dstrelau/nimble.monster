@@ -2,6 +2,10 @@ import { and, eq } from "drizzle-orm";
 import type { JSONAPIFamily, JSONAPIMonster } from "@/lib/api/monsters";
 import { getDatabase } from "@/lib/db/drizzle";
 import { families } from "@/lib/db/schema";
+import {
+  type OfficialSource,
+  validateOfficialSource,
+} from "@/lib/services/validate-source";
 import type { CreateMonsterInput } from "./types";
 
 export const OFFICIAL_USER_ID = "00000000-0000-0000-0000-000000000000";
@@ -180,17 +184,12 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
   };
 }
 
-export interface OfficialMonstersSource {
-  name: string;
-  abbreviation: string;
-  license: string;
-  link: string;
-}
+export type { OfficialSource as OfficialMonstersSource } from "@/lib/services/validate-source";
 
 export function validateOfficialMonstersJSON(data: unknown): {
   monsters: JSONAPIMonster[];
   families: Map<string, JSONAPIFamily>;
-  source?: OfficialMonstersSource;
+  source?: OfficialSource;
 } {
   if (!data || typeof data !== "object") {
     throw new Error("Invalid JSON: expected an object");
@@ -201,33 +200,7 @@ export function validateOfficialMonstersJSON(data: unknown): {
   }
 
   const dataField = (data as { data: unknown }).data;
-
-  let source: OfficialMonstersSource | undefined;
-  const sourceField = (data as { source?: unknown }).source;
-  if (sourceField) {
-    if (typeof sourceField !== "object" || sourceField === null) {
-      throw new Error("Invalid JSON: 'source' must be an object");
-    }
-    const s = sourceField as Record<string, unknown>;
-    if (!s.name || typeof s.name !== "string") {
-      throw new Error("Invalid source: missing or invalid 'name'");
-    }
-    if (!s.abbreviation || typeof s.abbreviation !== "string") {
-      throw new Error("Invalid source: missing or invalid 'abbreviation'");
-    }
-    if (!s.license || typeof s.license !== "string") {
-      throw new Error("Invalid source: missing or invalid 'license'");
-    }
-    if (!s.link || typeof s.link !== "string") {
-      throw new Error("Invalid source: missing or invalid 'link'");
-    }
-    source = {
-      name: s.name,
-      abbreviation: s.abbreviation,
-      license: s.license,
-      link: s.link,
-    };
-  }
+  const source = validateOfficialSource((data as { source?: unknown }).source);
 
   if (!Array.isArray(dataField)) {
     throw new Error("Invalid JSON: 'data' must be an array");
