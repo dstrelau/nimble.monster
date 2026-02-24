@@ -14,7 +14,8 @@ const changelog: ChangelogEntry[] = [
   {
     date: "23 February 2026",
     entries: [
-      "Add official classes.",
+      "Add new pages for classes and class options. These are read-only currently. Creating new classes is coming soon.",
+      "Add official ancestries, backgrounds, classes, subclasses, and spell schools.",
       "Links in descriptions now support custom display text: @type:[id|display text].",
     ],
   },
