@@ -174,7 +174,7 @@ export function Card({
           <CardDescription>
             {spellSchool.description && (
               <FormattedText
-                className="text-center text-sm text-muted-foreground italic [&_p_~_p]:mt-0.5"
+                className="text-center text-base text-muted-foreground italic [&_p_~_p]:mt-0.5"
                 content={spellSchool.description}
                 conditions={conditions.allConditions}
               />

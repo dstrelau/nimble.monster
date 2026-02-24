@@ -529,6 +529,9 @@ export const classAbilityLists = sqliteTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onUpdate: "cascade" }),
+    sourceId: text("source_id").references(() => sources.id, {
+      onUpdate: "cascade",
+    }),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },

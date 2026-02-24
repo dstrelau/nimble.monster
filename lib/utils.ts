@@ -1,5 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { StatType } from "./types";
+import { STAT_TYPES } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -49,6 +51,15 @@ export function getRarityColor(rarity: string): string {
   }
 }
 
+export function formatSaves(saves: Record<StatType, number>): string {
+  return STAT_TYPES.filter((s) => saves[s] !== 0)
+    .map(
+      (s) =>
+        `${s}${saves[s] > 0 ? "+".repeat(saves[s]) : "-".repeat(-saves[s])}`
+    )
+    .join(", ");
+}
+
 type Curry<P extends unknown[], R> = <T extends unknown[]>(
   ...args: T
 ) => T extends [...P]
@@ -58,25 +69,6 @@ type Curry<P extends unknown[], R> = <T extends unknown[]>(
       ? never
       : Curry<[...{ [K in keyof P]: K extends keyof T1 ? never : P[K] }], R>
     : never;
-
-/**
- * Generate a UUID that works in non-secure contexts (plain HTTP).
- * crypto.randomUUID() requires a secure context (HTTPS or localhost),
- * so this provides a Math.random fallback for dev environments.
- */
-export function randomUUID(): string {
-  if (
-    typeof crypto !== "undefined" &&
-    typeof crypto.randomUUID === "function"
-  ) {
-    return crypto.randomUUID();
-  }
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
 
 export function curry<P extends unknown[], R>(
   fn: (...args: P) => R

@@ -320,13 +320,13 @@
     .stroke-neutral-300,
     .stroke-hp {
         /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind utilities */
-        stroke: none !important;
+        stroke: var(--accent) !important;
     }
 
     .fill-neutral-200,
     .fill-hp {
         /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind utilities */
-        fill: var(--ability-overlay-bg) !important;
+        fill: var(--accent) !important;
     }
 
     /* AbilityOverlay - pointed banner edges like GMG, extends outside card */
@@ -417,7 +417,6 @@
     * {
         @apply border-border outline-ring/50;
     }
-    /* biome-ignore lint/style/noDescendingSpecificity: @layer base is intentionally lower priority than theme-scoped body */
     body {
         @apply bg-background text-foreground;
         -webkit-font-smoothing: antialiased;
@@ -438,7 +437,6 @@
         font-style: normal;
         font-variation-settings: "slnt" 0;
     }
-    /* biome-ignore lint/style/noDescendingSpecificity: @layer utilities is intentionally lower priority than theme-scoped .font-condensed */
     .font-condensed {
         font-stretch: ultra-condensed;
     }

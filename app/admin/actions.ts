@@ -16,6 +16,11 @@ import {
   validateOfficialBackgroundsJSON,
 } from "@/lib/services/backgrounds/official";
 import { upsertOfficialBackground } from "@/lib/services/backgrounds/repository";
+import {
+  type ClassSessionData,
+  validateOfficialClassesJSON,
+} from "@/lib/services/classes/official";
+import { upsertOfficialClass } from "@/lib/services/classes/repository";
 import { ensureOfficialUser } from "@/lib/services/ensure-official-user";
 import {
   findOrCreateOfficialFamily,
@@ -262,13 +267,15 @@ export async function uploadOfficialContentAction(formData: FormData) {
       return uploadOfficialAncestriesFromJSON(json);
     case "backgrounds":
       return uploadOfficialBackgroundsFromJSON(json);
+    case "classes":
+      return uploadOfficialClassesFromJSON(json);
     case "subclasses":
       return uploadOfficialSubclassesFromJSON(json);
     case "spell-schools":
       return uploadOfficialSpellSchoolsFromJSON(json);
     default:
       throw new Error(
-        `Unknown content type: "${contentType}". Expected "monsters", "ancestries", "backgrounds", "subclasses", or "spell-schools".`
+        `Unknown content type: "${contentType}". Expected "monsters", "ancestries", "backgrounds", "classes", "subclasses", or "spell-schools".`
       );
   }
 }
@@ -460,6 +467,71 @@ export async function cancelOfficialBackgroundsUploadAction(
   }
 
   await deleteGenericPreviewSession("backgrounds", sessionKey);
+  redirect("/admin");
+}
+
+// --- Classes ---
+
+async function uploadOfficialClassesFromJSON(json: unknown) {
+  const { classes: classesData, source } = validateOfficialClassesJSON(json);
+
+  const sessionKey = crypto.randomUUID();
+  await writeGenericPreviewSession<ClassSessionData>("classes", sessionKey, {
+    classes: classesData,
+    source,
+  });
+
+  redirect(`/admin/classes/preview?session=${sessionKey}`);
+}
+
+export async function commitOfficialClassesAction(sessionKey: string) {
+  if (!(await isAdmin())) {
+    throw new Error("Unauthorized");
+  }
+
+  const sessionData = await readGenericPreviewSession<ClassSessionData>(
+    "classes",
+    sessionKey
+  );
+  if (!sessionData) {
+    throw new Error("Session expired or invalid");
+  }
+
+  await ensureOfficialUser();
+
+  let sourceId: string | undefined;
+  if (sessionData.source) {
+    sourceId = await sourceDb.findOrCreateSource(sessionData.source);
+  }
+
+  for (const cls of sessionData.classes) {
+    await upsertOfficialClass({
+      name: cls.attributes.name,
+      description: cls.attributes.description,
+      keyStats: cls.attributes.keyStats,
+      hitDie: cls.attributes.hitDie,
+      startingHp: cls.attributes.startingHp,
+      saves: cls.attributes.saves,
+      armor: cls.attributes.armor,
+      weapons: cls.attributes.weapons,
+      startingGear: cls.attributes.startingGear,
+      levels: cls.attributes.levels,
+      abilityLists: cls.attributes.abilityLists,
+      sourceId,
+    });
+  }
+
+  await deleteGenericPreviewSession("classes", sessionKey);
+  revalidatePath("/classes");
+  redirect("/admin");
+}
+
+export async function cancelOfficialClassesUploadAction(sessionKey: string) {
+  if (!(await isAdmin())) {
+    throw new Error("Unauthorized");
+  }
+
+  await deleteGenericPreviewSession("classes", sessionKey);
   redirect("/admin");
 }
 

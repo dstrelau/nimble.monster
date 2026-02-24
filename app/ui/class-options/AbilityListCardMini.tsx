@@ -33,7 +33,7 @@ export const AbilityListCardMini = ({ abilityList }: ClassAbilityCardProps) => {
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         {items.map((item) => (
-          <div className="text-sm" key={item.id}>
+          <div className="text-base" key={item.id}>
             <h4 className="font-bold font-stretch-ultra-condensed">
               {item.name}
             </h4>

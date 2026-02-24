@@ -43,7 +43,7 @@ export const AbilityListCard = ({ abilityList }: ClassAbilityCardProps) => {
         {abilityList.items &&
           abilityList.items.length > 0 &&
           abilityList.items.map((item) => (
-            <div className="text-sm" key={item.id}>
+            <div className="text-base" key={item.id}>
               <h4 className="font-bold">{item.name}</h4>
               <p>{item.description}</p>
             </div>

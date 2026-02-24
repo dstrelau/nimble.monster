@@ -13,7 +13,7 @@ import {
   useWatch,
 } from "react-hook-form";
 import { z } from "zod";
-import { CharacterClassCard } from "@/app/ui/class/CharacterClassCard";
+import { ClassDetailView } from "@/app/ui/class/ClassDetailView";
 import { BuildView } from "@/components/app/BuildView";
 import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
@@ -45,7 +45,6 @@ import {
   STAT_TYPES,
   UNKNOWN_USER,
 } from "@/lib/types";
-import { randomUUID } from "@/lib/utils";
 import { getClassUrl } from "@/lib/utils/url";
 import { createClass, updateClass } from "../actions/class";
 import { getUserClassAbilityLists } from "../actions/classAbilityList";
@@ -221,7 +220,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
       levels: classEntity?.levels || [
         {
           level: 1,
-          abilities: [{ id: randomUUID(), name: "", description: "" }],
+          abilities: [{ id: crypto.randomUUID(), name: "", description: "" }],
         },
       ],
       abilityListIds: classEntity?.abilityLists?.map((list) => list.id) || [],
@@ -355,7 +354,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
       level: nextLevel,
       abilities: [
         {
-          id: randomUUID(),
+          id: crypto.randomUUID(),
           name: "",
           description: "",
         },
@@ -699,12 +698,14 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <FormLabel>Class Options</FormLabel>
-                  <Link href="/class-options/new">
-                    <Button type="button" variant="outline" size="sm">
-                      <Plus className="size-4" />
-                      Create New
-                    </Button>
-                  </Link>
+                  {process.env.NEXT_PUBLIC_ENABLE_CLASS_CREATION === "true" && (
+                    <Link href="/class-options/new">
+                      <Button type="button" variant="outline" size="sm">
+                        <Plus className="size-4" />
+                        Create New
+                      </Button>
+                    </Link>
+                  )}
                 </div>
                 <FormField
                   control={form.control}
@@ -774,12 +775,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
         </>
       }
       previewContent={
-        <CharacterClassCard
-          classEntity={previewClass}
-          creator={creator}
-          link={false}
-          hideActions
-        />
+        <ClassDetailView classEntity={previewClass} creator={creator} />
       }
       desktopPreviewContent={
         <>
@@ -788,12 +784,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
             onLoadExample={loadExample}
           />
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
-            <CharacterClassCard
-              classEntity={previewClass}
-              creator={creator}
-              link={false}
-              hideActions
-            />
+            <ClassDetailView classEntity={previewClass} creator={creator} />
           </div>
         </>
       }
@@ -830,7 +821,7 @@ function LevelAbilitiesForm({
 
   const addAbility = () => {
     appendAbility({
-      id: randomUUID(),
+      id: crypto.randomUUID(),
       name: "",
       description: "",
     });

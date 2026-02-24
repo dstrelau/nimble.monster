@@ -144,3 +144,45 @@ export const D4 = ({
     </svg>
   );
 };
+
+import { Box } from "lucide-react";
+
+const DIE_COMPONENTS: Record<
+  number,
+  React.FC<{ className?: string; style?: React.CSSProperties }>
+> = {
+  4: D4,
+  6: Box,
+  8: D8,
+  10: D10,
+  12: D12,
+  20: D20,
+};
+
+export const Die = ({
+  sides,
+  className,
+  style,
+}: {
+  sides: number;
+  className?: string;
+  style?: React.CSSProperties;
+}) => {
+  const Component = DIE_COMPONENTS[sides];
+  if (!Component) return null;
+  return <Component className={className} style={style} />;
+};
+
+export const DieFromNotation = ({
+  die,
+  className,
+  style,
+}: {
+  die: string;
+  className?: string;
+  style?: React.CSSProperties;
+}) => {
+  const match = die.match(/^d(\d+)$/i);
+  if (!match) return null;
+  return <Die sides={Number(match[1])} className={className} style={style} />;
+};

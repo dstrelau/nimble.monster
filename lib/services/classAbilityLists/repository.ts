@@ -1,5 +1,3 @@
-"use server";
-
 import { and, asc, desc, eq, gt, inArray, like, lt, or } from "drizzle-orm";
 import { getDatabase } from "@/lib/db/drizzle";
 import { classAbilityItems, classAbilityLists, users } from "@/lib/db/schema";

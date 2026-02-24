@@ -63,7 +63,15 @@ function ConditionSpan({
   );
 }
 
-function EntityLinkInner({ type, id }: { type: EntityType; id: string }) {
+function EntityLinkInner({
+  type,
+  id,
+  displayName,
+}: {
+  type: EntityType;
+  id: string;
+  displayName?: string;
+}) {
   const { data, isLoading, isError } = useEntityQuery(type, id);
 
   const Icon = ENTITY_TYPE_ICONS[type];
@@ -89,7 +97,7 @@ function EntityLinkInner({ type, id }: { type: EntityType; id: string }) {
       className="inline-flex items-baseline gap-0.5 hover:underline"
     >
       <Icon className="stroke-flame size-3.5" />
-      <span>{data.name}</span>
+      <span>{displayName ?? data.name}</span>
     </Link>
   );
 }
@@ -97,15 +105,17 @@ function EntityLinkInner({ type, id }: { type: EntityType; id: string }) {
 function EntityLink({
   type,
   id,
+  displayName,
   queryClient,
 }: {
   type: EntityType;
   id: string;
+  displayName?: string;
   queryClient: QueryClient;
 }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <EntityLinkInner type={type} id={id} />
+      <EntityLinkInner type={type} id={id} displayName={displayName} />
     </QueryClientProvider>
   );
 }
@@ -268,18 +278,7 @@ function entityLinkPlugin(md: MarkdownIt) {
       return false;
     }
 
-    // Find the end of the ID (alphanumeric only)
-    let idEnd = colonPos + 1;
-    while (idEnd < max && state.src[idEnd].match(/[a-z0-9]/)) {
-      idEnd++;
-    }
-
-    if (idEnd === colonPos + 1) {
-      return false;
-    }
-
     const entityType = state.src.slice(start + 1, colonPos);
-    const entityId = state.src.slice(colonPos + 1, idEnd);
 
     // Validate entity type
     const validTypes = [
@@ -292,9 +291,40 @@ function entityLinkPlugin(md: MarkdownIt) {
       "subclass",
       "ancestry",
       "background",
+      "class-option",
     ];
     if (!validTypes.includes(entityType)) {
       return false;
+    }
+
+    // Parse ID and optional display name.
+    // Formats: @type:ID  or  @type:[ID|Display Text]
+    let entityId: string;
+    let displayName: string | undefined;
+    let finalPos: number;
+
+    if (state.src[colonPos + 1] === "[") {
+      // Bracketed form: [ID|Display Text] or [ID]
+      const closeBracket = state.src.indexOf("]", colonPos + 2);
+      if (closeBracket === -1) return false;
+      const inner = state.src.slice(colonPos + 2, closeBracket);
+      const pipeIdx = inner.indexOf("|");
+      if (pipeIdx === -1) {
+        entityId = inner;
+      } else {
+        entityId = inner.slice(0, pipeIdx);
+        displayName = inner.slice(pipeIdx + 1);
+      }
+      finalPos = closeBracket + 1;
+    } else {
+      // Plain form: ID (alphanumeric only)
+      let idEnd = colonPos + 1;
+      while (idEnd < max && state.src[idEnd].match(/[a-z0-9]/)) {
+        idEnd++;
+      }
+      if (idEnd === colonPos + 1) return false;
+      entityId = state.src.slice(colonPos + 1, idEnd);
+      finalPos = idEnd;
     }
 
     if (!silent) {
@@ -302,10 +332,11 @@ function entityLinkPlugin(md: MarkdownIt) {
       token.meta = {
         entityType,
         entityId,
+        displayName,
       };
     }
 
-    state.pos = idEnd;
+    state.pos = finalPos;
     return true;
   });
 
@@ -313,7 +344,10 @@ function entityLinkPlugin(md: MarkdownIt) {
   md.renderer.rules.entity_link = (tokens, idx) => {
     const token = tokens[idx];
     const meta = token.meta;
-    return `<span class="inline-flex items-center gap-1" data-entity-type="${meta.entityType}" data-entity-id="${meta.entityId}"><span class="bg-muted h-4 w-16 rounded-md animate-pulse"></span></span>`;
+    const displayAttr = meta.displayName
+      ? ` data-display-name="${meta.displayName}"`
+      : "";
+    return `<span class="inline-flex items-center gap-1" data-entity-type="${meta.entityType}" data-entity-id="${meta.entityId}"${displayAttr}><span class="bg-muted h-4 w-16 rounded-md animate-pulse"></span></span>`;
   };
 }
 
@@ -411,6 +445,7 @@ export function FormattedText({
     processedDiv.querySelectorAll("[data-entity-type]").forEach((span) => {
       const entityType = span.getAttribute("data-entity-type") || "";
       const entityId = span.getAttribute("data-entity-id") || "";
+      const displayName = span.getAttribute("data-display-name") || undefined;
 
       const placeholderId = `entity-placeholder-${entityIndex}`;
       const placeholder = document.createElement("span");
@@ -424,6 +459,7 @@ export function FormattedText({
             key={`${entityType}-${entityId}-${entityIndex}`}
             type={entityType as EntityType}
             id={entityId}
+            displayName={displayName}
             queryClient={queryClientRef.current}
           />
         ),

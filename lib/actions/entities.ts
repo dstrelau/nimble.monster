@@ -1,5 +1,6 @@
 "use server";
 
+import { findClassAbilityListName } from "@/lib/db/classAbilityList";
 import { getCollection } from "@/lib/db/collection";
 import { findPublicCompanionById } from "@/lib/db/companion";
 import { getFamily } from "@/lib/db/family";
@@ -50,6 +51,9 @@ export async function getEntityById(
         break;
       case "background":
         entity = await backgroundsService.getBackground(uuid);
+        break;
+      case "class-option":
+        entity = await findClassAbilityListName(uuid);
         break;
     }
 

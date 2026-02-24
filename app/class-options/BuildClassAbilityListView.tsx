@@ -31,7 +31,6 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import type { ClassAbilityList, SubclassClass } from "@/lib/types";
 import { SUBCLASS_CLASSES, UNKNOWN_USER } from "@/lib/types";
-import { randomUUID } from "@/lib/utils";
 import { getClassAbilityListUrl } from "@/lib/utils/url";
 import {
   createClassAbilityList,
@@ -78,7 +77,9 @@ export default function BuildClassAbilityListView({
       name: list?.name || "",
       description: list?.description || "",
       characterClass: list?.characterClass || undefined,
-      items: list?.items || [{ id: randomUUID(), name: "", description: "" }],
+      items: list?.items || [
+        { id: crypto.randomUUID(), name: "", description: "" },
+      ],
     },
   });
 
@@ -207,13 +208,19 @@ export default function BuildClassAbilityListView({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Character Class</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={(v) =>
+                        field.onChange(v === "none" ? undefined : v)
+                      }
+                      value={field.value ?? "none"}
+                    >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a class" />
+                          <SelectValue />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
+                        <SelectItem value="none">Any class</SelectItem>
                         {SUBCLASS_CLASSES.map((classOption) => (
                           <SelectItem
                             key={classOption.value}
@@ -238,7 +245,7 @@ export default function BuildClassAbilityListView({
                     size="sm"
                     onClick={() =>
                       appendItem({
-                        id: randomUUID(),
+                        id: crypto.randomUUID(),
                         name: "",
                         description: "",
                       })

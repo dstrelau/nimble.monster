@@ -190,6 +190,7 @@ export const findOfficialSubclassesByNames = async (
       createdAt: row.createdAt ? new Date(row.createdAt) : new Date(),
       updatedAt: row.updatedAt ? new Date(row.updatedAt) : new Date(),
       levels,
+      abilityLists: [],
       creator: {
         id: OFFICIAL_USER_ID,
         discordId: "",

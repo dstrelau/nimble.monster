@@ -67,6 +67,7 @@ export default async function PreviewSubclassesPage({
           description: ability.description,
         })),
       })),
+      abilityLists: [],
       creator: {
         id: OFFICIAL_USER_ID,
         discordId: "",

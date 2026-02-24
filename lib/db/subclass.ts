@@ -312,6 +312,29 @@ export const listPublicSubclasses = async (): Promise<Subclass[]> => {
     .map(toSubclass);
 };
 
+export const listSubclassMinisForClass = async (
+  className: string
+): Promise<(SubclassMini & { creator: User })[]> => {
+  const db = getDatabase();
+
+  const rows = await db
+    .select()
+    .from(subclasses)
+    .innerJoin(users, eq(subclasses.userId, users.id))
+    .where(
+      and(
+        eq(subclasses.className, className),
+        eq(subclasses.visibility, "public")
+      )
+    )
+    .orderBy(asc(subclasses.name));
+
+  return rows.map((r) => ({
+    ...toSubclassMini(r.subclasses),
+    creator: toUser(r.users),
+  }));
+};
+
 export const listSubclassMinis = async (): Promise<SubclassMini[]> => {
   const db = getDatabase();
 

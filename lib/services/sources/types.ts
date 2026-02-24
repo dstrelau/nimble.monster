@@ -8,5 +8,6 @@ export type EntityType =
   | "monsters"
   | "ancestries"
   | "backgrounds"
+  | "classes"
   | "subclasses"
   | "spell_schools";

@@ -4,6 +4,7 @@ import { getDatabase } from "@/lib/db/drizzle";
 import {
   ancestries,
   backgrounds,
+  classes,
   monsters,
   sources,
   spellSchools,
@@ -29,6 +30,7 @@ const entityTables = {
   monsters,
   ancestries,
   backgrounds,
+  classes,
   subclasses,
   spell_schools: spellSchools,
 } as const;

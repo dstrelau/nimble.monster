@@ -31,7 +31,6 @@ export default async function AdminPage() {
             <form action={uploadOfficialContentAction} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="file">JSON File</Label>
-                {/* biome-ignore lint/correctness/useUniqueElementIds: Server component renders once */}
                 <Input
                   id="file"
                   name="file"

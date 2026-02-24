@@ -12,6 +12,13 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "23 February 2026",
+    entries: [
+      "Add official classes.",
+      "Links in descriptions now support custom display text: @type:[id|display text].",
+    ],
+  },
+  {
     date: "17 February 2026",
     entries: [
       "Allow all types of objects to be put into collections: companions, ancestries, backgrounds, subclasses, and spell schools.",

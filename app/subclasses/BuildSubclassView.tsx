@@ -45,7 +45,6 @@ import {
   type SubclassClass,
   UNKNOWN_USER,
 } from "@/lib/types";
-import { randomUUID } from "@/lib/utils";
 import { getSubclassUrl } from "@/lib/utils/url";
 import { getUserClassAbilityLists } from "../actions/classAbilityList";
 import { createSubclass, updateSubclass } from "../actions/subclass";
@@ -199,7 +198,7 @@ export default function BuildSubclassView({
       levels: subclass?.levels || [
         {
           level: 3,
-          abilities: [{ id: randomUUID(), name: "", description: "" }],
+          abilities: [{ id: crypto.randomUUID(), name: "", description: "" }],
         },
       ],
       abilityListIds: subclass?.abilityLists?.map((list) => list.id) || [],
@@ -322,7 +321,7 @@ export default function BuildSubclassView({
       level: nextLevel,
       abilities: [
         {
-          id: randomUUID(),
+          id: crypto.randomUUID(),
           name: "",
           description: "",
         },
@@ -492,12 +491,14 @@ export default function BuildSubclassView({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <FormLabel>Class Options</FormLabel>
-                  <Link href="/class-options/new">
-                    <Button type="button" variant="outline" size="sm">
-                      <Plus className="size-4" />
-                      Create New
-                    </Button>
-                  </Link>
+                  {process.env.NEXT_PUBLIC_ENABLE_CLASS_CREATION === "true" && (
+                    <Link href="/class-options/new">
+                      <Button type="button" variant="outline" size="sm">
+                        <Plus className="size-4" />
+                        Create New
+                      </Button>
+                    </Link>
+                  )}
                 </div>
                 <FormField
                   control={form.control}
@@ -632,7 +633,7 @@ function LevelAbilitiesForm({
 
   const addAbility = () => {
     appendAbility({
-      id: randomUUID(),
+      id: crypto.randomUUID(),
       name: "",
       description: "",
     });

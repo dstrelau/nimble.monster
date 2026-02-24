@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { CharacterClassCard } from "@/app/ui/class/CharacterClassCard";
+import { ClassDetailView } from "@/app/ui/class/ClassDetailView";
 import { ClassDetailActions } from "@/components/ClassDetailActions";
+import { ClassSubclasses } from "@/components/ClassSubclasses";
 import { auth } from "@/lib/auth";
-import { findClass } from "@/lib/db";
+import { findClass, listSubclassMinisForClass } from "@/lib/db";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify } from "@/lib/utils/slug";
 import { getClassSlug, getClassUrl } from "@/lib/utils/url";
-
-export const experimental_ppr = true;
 
 export async function generateMetadata({
   params,
@@ -80,18 +79,27 @@ export default async function ClassPage({
     return notFound();
   }
 
+  const subclasses = (await listSubclassMinisForClass(classEntity.name)).sort(
+    (a, b) => {
+      const aMatch = a.creator.id === classEntity.creator.id ? 0 : 1;
+      const bMatch = b.creator.id === classEntity.creator.id ? 0 : 1;
+      return aMatch - bMatch;
+    }
+  );
+
   return (
     <div className="container mx-auto">
-      <div className="flex justify-end items-start gap-2 mb-6">
-        {isOwner && <ClassDetailActions classEntity={classEntity} />}
-      </div>
-      <div className="max-w-2xl mx-auto">
-        <CharacterClassCard
-          className="w-full"
+      {isOwner && (
+        <div className="flex justify-end items-start gap-2 mb-6">
+          <ClassDetailActions classEntity={classEntity} />
+        </div>
+      )}
+      <div className="max-w-3xl mx-auto flex flex-col items-center gap-12">
+        <ClassDetailView
           classEntity={classEntity}
           creator={classEntity.creator}
-          link={false}
         />
+        <ClassSubclasses subclasses={subclasses} />
       </div>
     </div>
   );

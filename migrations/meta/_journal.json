@@ -43,6 +43,13 @@
       "when": 1771886400000,
       "tag": "0005_add_spell_utility",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1771890095523,
+      "tag": "0006_naive_satana",
+      "breakpoints": true
     }
   ]
 }

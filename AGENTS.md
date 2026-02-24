@@ -2,6 +2,7 @@
 
 - `make check` - Lint and type-check (dev-safe, use this during development)
   - You must run this after making changes to ensure there are no type errors or lint errors.
+  - Never dismiss type errors as "pre-existing" and skip them. If `make type-check` fails, you must fix ALL errors, even if they weren't introduced by your changes.
 - `make lint` - Biome check (linting, formatting, import sorting)
 - `make type-check` - TypeScript check only
 - `make setup` - Install deps, set up DB, sync icons

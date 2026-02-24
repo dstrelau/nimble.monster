@@ -77,7 +77,7 @@ export function Card({
         className={cn("pt-0 space-y-4", selectable && "pointer-events-none")}
       >
         {subclass.tagline && (
-          <div className="text-center text-sm text-muted-foreground italic">
+          <div className="text-center text-base text-muted-foreground italic">
             <FormattedText
               className="[&_p_~_p]:mt-0.5"
               content={subclass.tagline}
@@ -88,7 +88,7 @@ export function Card({
 
         {subclass.description && (
           <FormattedText
-            className="text-sm [&_p_~_p]:mt-0.5"
+            className="text-base [&_p_~_p]:mt-0.5"
             content={subclass.description}
             conditions={conditions.allConditions}
           />
@@ -96,12 +96,12 @@ export function Card({
 
         {subclass.levels.map((levelData) => (
           <div key={levelData.level}>
-            <h4 className="font-stretch-condensed font-bold uppercase italic text-sm text-muted-foreground">
+            <h4 className="font-stretch-condensed font-bold uppercase italic text-base text-muted-foreground">
               Level {levelData.level}
             </h4>
             <div className="space-y-3">
               {levelData.abilities.map((ability) => (
-                <div key={ability.id} className="space-y-1 text-sm">
+                <div key={ability.id} className="space-y-1 text-base">
                   <PrefixedFormattedText
                     prefix={
                       <h5 className="font-semibold inline">{ability.name}.</h5>

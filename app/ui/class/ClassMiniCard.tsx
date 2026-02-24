@@ -1,6 +1,8 @@
 "use client";
 
+import { Star } from "lucide-react";
 import { Link } from "@/components/app/Link";
+import { DieFromNotation } from "@/components/icons/PolyhedralDice";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -11,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import type { Class } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { getClassUrl } from "@/lib/utils/url";
+import { getClassAbilityListUrl, getClassUrl } from "@/lib/utils/url";
 import { CardFooterLayout } from "../shared/CardFooterLayout";
 
 interface ClassMiniCardProps {
@@ -29,24 +31,33 @@ export function ClassMiniCard({ classEntity, className }: ClassMiniCardProps) {
           </Link>
         </CardTitle>
         <CardAction>
-          <Badge variant="secondary">
-            {classEntity.hitDie} | {classEntity.keyStats.join("/")}
-          </Badge>
+          <div className="flex gap-3 items-center">
+            <div className="flex items-center">
+              <DieFromNotation
+                className="size-6 -mr-2 stroke-neutral-400 fill-none dark:stroke-neutral-500"
+                die={classEntity.hitDie}
+              />
+              <span className="text-sm font-bold">{classEntity.hitDie}</span>
+            </div>
+            <div className="flex items-center">
+              <Star className="size-5 -mr-1.5 stroke-neutral-300 fill-neutral-200 dark:stroke-neutral-600 dark:fill-neutral-700" />
+              <span className="text-sm font-bold uppercase">
+                {classEntity.keyStats.join(" ")}
+              </span>
+            </div>
+          </div>
         </CardAction>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-1">
-        <div className="text-sm line-clamp-2">{classEntity.description}</div>
-        {classEntity.levels.length > 0 && (
-          <div className="text-sm text-muted-foreground mt-2">
-            {classEntity.levels.length} level
-            {classEntity.levels.length !== 1 ? "s" : ""} of abilities
-          </div>
-        )}
+        <div className="text-base line-clamp-2">{classEntity.description}</div>
         {classEntity.abilityLists.length > 0 && (
-          <div className="text-sm text-muted-foreground">
-            {classEntity.abilityLists.length} ability list
-            {classEntity.abilityLists.length !== 1 ? "s" : ""}
+          <div className="flex flex-wrap gap-1 mt-1">
+            {classEntity.abilityLists.map((list) => (
+              <Link key={list.id} href={getClassAbilityListUrl(list)}>
+                <Badge variant="secondary">{list.name}</Badge>
+              </Link>
+            ))}
           </div>
         )}
       </CardContent>

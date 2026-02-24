@@ -80,6 +80,8 @@ function CreateCard({
 export default async function CreatePage() {
   const session = await auth();
   const isAuthenticated = !!session?.user?.id;
+  const classCreationEnabled =
+    process.env.NEXT_PUBLIC_ENABLE_CLASS_CREATION === "true";
 
   return (
     <TooltipProvider>
@@ -147,14 +149,24 @@ export default async function CreatePage() {
               icon={<BookUser className="size-16" />}
               title="Class"
               description="Defining character abilities"
-              disabledMessage="You must signin to create a Class."
+              disabled={!classCreationEnabled || !isAuthenticated}
+              disabledMessage={
+                !classCreationEnabled
+                  ? "Coming soon"
+                  : "You must signin to create a Class."
+              }
             />
             <CreateCard
               href="/class-options/new"
               icon={<ListChecks className="size-16" />}
               title="Class Options"
               description="Class-specific ability lists"
-              disabledMessage="You must signin to create Class Options."
+              disabled={!classCreationEnabled || !isAuthenticated}
+              disabledMessage={
+                !classCreationEnabled
+                  ? "Coming soon"
+                  : "You must signin to create Class Options."
+              }
             />
             <CreateCard
               href="/subclasses/new"

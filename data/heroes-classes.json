@@ -1,0 +1,3650 @@
+{
+  "source": {
+    "name": "Nimble Heroes Book",
+    "abbreviation": "Heroes",
+    "license": "Nimble 3rd Party Creator License v2.0",
+    "link": "https://nimblerpg.com/"
+  },
+  "data": [
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "Berserker",
+        "description": "Wrath and Ruin. The Berserker is destruction. He knows not fatigue nor caution—both surely driven away from him in a relentless fury. Those of barbaric nature are said to eat only the dust of war and drink naught but the blood of those felled by their own hand.\n\nDeath is no stranger, for it is said that even death fears to take a Berserker before his battle Rage is satiated. Once a Berserker has begun to fight, he only grows stronger, fueled by battle-lust and an unending Rage. The deadliest among them is not the well-rested, but those who are pushed to the brink through combat.",
+        "keyStats": ["STR", "DEX"],
+        "hitDie": "d12",
+        "startingHp": 20,
+        "saves": {
+          "STR": 1,
+          "DEX": 0,
+          "INT": -1,
+          "WIL": 0
+        },
+        "armor": [],
+        "weapons": {
+          "type": "STR"
+        },
+        "startingGear": ["Battleaxe", "Rations (meat)", "Rope (50 ft.)"],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Rage",
+                "description": "(1/turn) Action: Roll a Fury Die (1d4) and set it aside. Add it to every STR attack you make. You can have a max of KEY Fury Dice; they are lost when your Rage ends."
+              },
+              {
+                "name": "That all you got?!",
+                "description": "When you are attacked, you may expend 1 or more Fury Dice to reduce the damage taken by STR+DEX for each die spent."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Intensifying Fury",
+                "description": "If you are Raging at the beginning of your turn, roll 1 Fury Die for free."
+              },
+              {
+                "name": "One with the Ancients",
+                "description": "(1/Safe Rest) When faced with a decision about which direction or course of action to take, you can call upon your ancestors to guide you toward the most dangerous or challenging path."
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Choose a Berserker subclass."
+              },
+              {
+                "name": "Bloodlust",
+                "description": "Expend 1 or more Fury Dice on your turn, move DEX spaces per die spent for free."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "Enduring Rage",
+                "description": "While Dying, you Rage automatically for free at the beginning of your turn, have a max of 2 actions instead of 1, and ignore the STR saves to make attacks."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or DEX."
+              },
+              {
+                "name": "Savage Arsenal",
+                "description": "Choose 1 ability from the @class-option:2yqpnht06g9jmvtj13yrnxggb0."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "Rage (2)",
+                "description": "Whenever you Rage, gain 2 Fury Dice instead."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "Savage Arsenal (2)",
+                "description": "Choose a 2nd @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+              },
+              {
+                "name": "Intensifying Fury (2)",
+                "description": "Your Fury Dice are now d6s."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Berserker subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Savage Arsenal (3)",
+                "description": "Choose a 3rd @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "Intensifying Fury (3)",
+                "description": "Your Fury Dice are now d8s."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Savage Arsenal (4)",
+                "description": "Choose a 4th @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Berserker subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Savage Arsenal (5)",
+                "description": "Choose a 5th @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Intensifying Fury (4)",
+                "description": "Your Fury Dice are now d10s."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "Savage Arsenal (6)",
+                "description": "Choose a 6th @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Berserker subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Savage Arsenal (7)",
+                "description": "Choose a 7th @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Intensifying Fury (5)",
+                "description": "Your Fury Dice are now d12s."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "DEEP RAGE",
+                "description": "Dropping to 0 HP does not cause your Rage to end."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "BOUNDLESS RAGE",
+                "description": "+1 to any 2 of your stats. Anytime you roll less than 6 on a Fury Die, change it to 6 instead."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Savage Arsenal",
+            "description": "Choose Savage Arsenal abilities as you level up.",
+            "items": [
+              {
+                "name": "Death Blow",
+                "description": "After you deal damage from a crit, you may expend any number of Fury Dice. Sum the dice and deal double that amount of damage."
+              },
+              {
+                "name": "Deathless Rage",
+                "description": "(1/turn) While Dying, you may suffer 1 Wound to gain 1 action."
+              },
+              {
+                "name": "Eager for Battle",
+                "description": "Gain advantage on Initiative. Move 2×DEX spaces for free on your first turn each encounter."
+              },
+              {
+                "name": "Into the Fray",
+                "description": "Action: Leap up to 2×DEX spaces toward an enemy. If you land adjacent to at least 2 enemies, make an attack against 1 of them for free."
+              },
+              {
+                "name": "Mighty Endurance",
+                "description": "You can now survive an additional 4 Wounds before death."
+              },
+              {
+                "name": "MORE BLOOD!",
+                "description": "Whenever an enemy crits you, gain 1 Fury Die."
+              },
+              {
+                "name": "Rampage",
+                "description": "(1/turn) After you land a hit, you may treat your next attack this turn as if you rolled that same amount instead of rolling again."
+              },
+              {
+                "name": "Swift Fury",
+                "description": "Whenever you gain one or more Fury Dice, move up to DEX spaces for free, ignoring difficult terrain."
+              },
+              {
+                "name": "Thunderous Steps",
+                "description": "After moving at least 4 spaces while Raging, you may deal STR Bludgeoning damage to all adjacent creatures where you stop."
+              },
+              {
+                "name": "Unstoppable Force",
+                "description": "While Dying and Raging, taking damage causes 1 Wound (instead of 2) and critical hits inflict 2 Wounds (instead of 3)."
+              },
+              {
+                "name": "Whirlwind",
+                "description": "2 actions: Attack ALL targets within your melee weapon's reach."
+              },
+              {
+                "name": "You're Next!",
+                "description": "Action: While Raging, you can make a Might skill check to demoralize an enemy within Reach 12 (DC: their current HP). On a success, they immediately flee the battle."
+              }
+            ],
+            "id": "5ebdab1d-00d0-4ca9-bd48-23f62bd84160"
+          }
+        ]
+      }
+    },
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "The Cheat",
+        "description": "Cloak and dagger… and dagger. The common Cheat doesn't call herself a Cheat, of course—rather, a streetsmart rogue, a survivalist, or a liberator of unused goods. They are masters of stealth, pickpocketing, and smooth talking. Some of the more vicious ilk are masters of death-dealing as well.\n\nCheats can be found in every city and byway under countless different names, but they all believe something similar: It's a cruel, merciless world, and those who aim to survive don't have time for silly things like \"morals\" or \"honor.\"",
+        "keyStats": ["DEX", "INT"],
+        "hitDie": "d6",
+        "startingHp": 10,
+        "saves": {
+          "STR": 0,
+          "DEX": 1,
+          "INT": 0,
+          "WIL": -1
+        },
+        "armor": ["leather"],
+        "weapons": {
+          "type": "DEX"
+        },
+        "startingGear": ["2 Daggers", "Sling", "Cheap Hides", "Chalk"],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Sneak Attack",
+                "description": "(1/turn) When you crit, deal +1d6 damage."
+              },
+              {
+                "name": "Vicious Opportunist",
+                "description": "(1/turn) When you hit a Distracted target with a melee attack, you may change the Primary Die roll to whatever you like (changing it to the max value counts as a crit). A target is Distracted if it is adjacent to or Taunted by an ally, or if it cannot see you."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Cheat",
+                "description": "You're a well-rounded cheater. (1/round) You may either Move or Hide for free. (1/day) You may change any skill check to 10+INT. If you roll less than 10 on Initiative, you may change it to 10 instead. You may gain advantage on skill checks while playing any games, competitions, or placing wagers."
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Choose a Cheat subclass."
+              },
+              {
+                "name": "Sneak Attack (2)",
+                "description": "Your Sneak Attack becomes 1d8."
+              },
+              {
+                "name": "Thieves' Cant",
+                "description": "You learn the secret language of rogues and scoundrels."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or INT."
+              },
+              {
+                "name": "Underhanded Ability",
+                "description": "Choose an @class-option:47x3p6xsb192pbe8yedcvxkab1."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "Twist the Blade",
+                "description": "Action: Change one of your Sneak Attack dice to whatever you like."
+              },
+              {
+                "name": "Quick Read",
+                "description": "(1/encounter) Gain advantage on an Assess check. (1/day) Gain advantage on an Examination check."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 WIL or STR."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "Underhanded Ability (2)",
+                "description": "Choose a 2nd @class-option:47x3p6xsb192pbe8yedcvxkab1."
+              },
+              {
+                "name": "THAT'S Not What Happened!",
+                "description": "(1/Safe Rest) Action: After a Distracted enemy attacks you, you may change the Primary Die roll to whatever you like (changing the die to the minimum value counts as a miss)."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Cheat subclass feature."
+              },
+              {
+                "name": "Sneak Attack (3)",
+                "description": "Your Sneak Attack becomes 2d8."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Underhanded Ability (3)",
+                "description": "Choose a 3rd @class-option:47x3p6xsb192pbe8yedcvxkab1."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or INT."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "Sneak Attack (4)",
+                "description": "Your Sneak Attack becomes 2d10."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 WIL or STR."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Underhanded Ability (4)",
+                "description": "Choose a 4th @class-option:47x3p6xsb192pbe8yedcvxkab1."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Cheat subclass feature."
+              },
+              {
+                "name": "Sneak Attack (5)",
+                "description": "Your Sneak Attack becomes 2d12."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Underhanded Ability (5)",
+                "description": "Choose a 5th @class-option:47x3p6xsb192pbe8yedcvxkab1."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or INT."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Twist the Blade (2)",
+                "description": "(1/turn) You can Twist the Blade for free."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 WIL or STR."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "Underhanded Ability (6)",
+                "description": "Choose a 6th @class-option:47x3p6xsb192pbe8yedcvxkab1."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Cheat subclass feature."
+              },
+              {
+                "name": "Sneak Attack (6)",
+                "description": "Your Sneak Attack becomes 2d20."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Underhanded Ability (7)",
+                "description": "Choose a 7th @class-option:47x3p6xsb192pbe8yedcvxkab1."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or INT."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Sneak Attack (7)",
+                "description": "Your Sneak Attack becomes 3d20."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 WIL or STR."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "Underhanded Ability (8)",
+                "description": "Choose an 8th @class-option:47x3p6xsb192pbe8yedcvxkab1."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "Supreme Execution",
+                "description": "+1 to any 2 of your stats. When you attack with a blade, you do not require targets to be Distracted to trigger Vicious Opportunist."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Underhanded Abilities",
+            "description": "Choose Underhanded Abilities as you level up.",
+            "items": [
+              {
+                "name": "\"Creative\" Accounting",
+                "description": "Steal up to INT actions from your next turn (Gain up to INT actions now. The next time you would gain actions, subtract the number stolen). You cannot use this 2 turns in a row."
+              },
+              {
+                "name": "Exploit Weakness",
+                "description": "Action: Make a contested INT check against an enemy. If you win, you can use Vicious Opportunist against them, even if they are not Distracted. This lasts for 1 minute or until you use this ability against another target."
+              },
+              {
+                "name": "Feinting Attack",
+                "description": "If you miss for the 2nd time in a single round, you may change the primary die roll to any result instead."
+              },
+              {
+                "name": "How'd YOU get here?!",
+                "description": "2 actions: \"Teleport\" up to 4 spaces away, adjacent to a Distracted target, and make a melee attack against them. If you crit, you may \"teleport\" again."
+              },
+              {
+                "name": "I'm Outta Here!",
+                "description": "When an ally within 4 spaces is crit, you may turn invisible until the end of your next turn and then move up to half your speed for free."
+              },
+              {
+                "name": "Misdirection",
+                "description": "Gain INT armor. Whenever you Defend, you may halve the damage instead."
+              },
+              {
+                "name": "Steal Tempo",
+                "description": "When you land a critical hit for the second time on a turn, your target loses 1 action and you gain 1 action."
+              },
+              {
+                "name": "Sunder Armor (Medium)",
+                "description": "Action: When you crit an enemy with medium armor, sunder their armor. Until the start of your next turn, ALL melee attacks against that target ignore its armor."
+              },
+              {
+                "name": "Sunder Armor (Heavy)",
+                "description": "Req. Sunder Armor (Medium). Your Sunder Armor ability now also applies to enemies wearing heavy armor."
+              },
+              {
+                "name": "Trickshot",
+                "description": "When you throw a dagger, it returns back to your hand at the end of your turn. On a hit, it ricochets to another creature within 2 spaces, dealing half as much damage to them."
+              }
+            ],
+            "id": "87e8ec6e-e561-48ac-b723-ce6b37d9a961"
+          }
+        ]
+      }
+    },
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "Commander",
+        "description": "Soldier… Warrior… Fearless Leader. Among the most skilled soldiers in the world, Commanders are masters of every weapon and form of close combat. A small cohort of soldiers led by a trained Commander is more feared than innumerable legions without one.\n\nCommanders are defined by their Tactical Commands, Weapon Mastery, and Strategic Leadership. They issue powerful orders to allies, exert mastery over all weapon types, and exploit tactical prowess to outwit and outmaneuver foes.",
+        "keyStats": ["STR", "INT"],
+        "hitDie": "d10",
+        "startingHp": 17,
+        "saves": {
+          "STR": 1,
+          "DEX": -1,
+          "INT": 0,
+          "WIL": 0
+        },
+        "armor": ["mail", "shields"],
+        "weapons": {
+          "type": "STR"
+        },
+        "startingGear": ["Hand Axe", "Javelins (4)", "Rusty Mail"],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Coordinated Strike!",
+                "description": "Gain the Coordinated Strike! Commander's Order."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Commander's Orders",
+                "description": "Choose 2 @class-option:0tamp5r49b8dy8t1pvbz4ttgfw."
+              },
+              {
+                "name": "Field Medic",
+                "description": "Roll 1 additional die for any health potion you administer. Whenever you or an ally spends any number of Hit Dice to recover HP, if you spent at least ten minutes examining their wounds, they can add your Examination bonus to the HP recovered."
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Choose a Commander subclass."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "Fit for Any Battlefield",
+                "description": "Choose a @class-option:065x2brd8z8nwsce15pvwdpsm9. When you roll Initiative, gain STR Combat Dice, each a d6. (1/attack) You may expend a Combat Die to perform a special maneuver. Combat Dice are lost when combat ends."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or INT."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "Master Commander",
+                "description": "When you roll Initiative, regain 1 spent use of Coordinated Strike (lost if not spent during that encounter). Attacks made from your Coordinated Strikes also now ignore disadvantage."
+              },
+              {
+                "name": "Combat Tactics",
+                "description": "Your Combat Dice are now d8s."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 DEX or WIL."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "Fit for Any Battlefield (2)",
+                "description": "Choose another @class-option:065x2brd8z8nwsce15pvwdpsm9 or gain +1 max Combat Dice."
+              },
+              {
+                "name": "Weapon Mastery",
+                "description": "You may sheathe a weapon and draw a different one 2×/round for free. Choose a weapon type to specialize in."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Commander subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Fit for Any Battlefield (3)",
+                "description": "Choose another @class-option:065x2brd8z8nwsce15pvwdpsm9 or gain +1 max Combat Dice."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or INT."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "Master Commander (2)",
+                "description": "+1 use of Coordinated Strike/Safe Rest."
+              },
+              {
+                "name": "Combat Tactics (2)",
+                "description": "Your Combat Dice are now d10s."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 DEX or WIL."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Fit for Any Battlefield (4)",
+                "description": "Choose another @class-option:065x2brd8z8nwsce15pvwdpsm9 or gain +1 max Combat Dice."
+              },
+              {
+                "name": "Weapon Mastery (2)",
+                "description": "Choose a 2nd weapon type to specialize in."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Commander subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Fit for Any Battlefield (5)",
+                "description": "Choose another @class-option:065x2brd8z8nwsce15pvwdpsm9 or gain +1 max Combat Dice."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or INT."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Master Commander (3)",
+                "description": "+1 use of Coordinated Strike/Safe Rest."
+              },
+              {
+                "name": "Combat Tactics (3)",
+                "description": "Your Combat Dice are now d12s."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 DEX or WIL."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "Weapon Mastery (3)",
+                "description": "You have complete mastery of all weapon types."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Commander subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Fit for Any Battlefield (6)",
+                "description": "Choose another @class-option:065x2brd8z8nwsce15pvwdpsm9 or gain +1 max Combat Dice."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or INT."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Master Commander (4)",
+                "description": "+1 use of Coordinated Strike/Safe Rest."
+              },
+              {
+                "name": "Combat Tactics (4)",
+                "description": "Your Combat Dice are now d20s."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 DEX or WIL."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "Unparalleled Tactics",
+                "description": "The first time each encounter you use Coordinated Strike, an ally who can hear you also gains 1 action to use on their next turn."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "Captain of Legions",
+                "description": "+1 to any 2 of your stats. The first time each encounter you use Coordinated Strike, EVERY ally within 12 spaces gains +1 action (replaces Unparalleled Tactics)."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Commander's Orders",
+            "description": "Choose Commander's Orders as you level up.",
+            "items": [
+              {
+                "name": "Coordinated Strike!",
+                "description": "(1/round) Free action: you and an ally within 6 spaces both immediately make a weapon attack or cast a cantrip for free. You can do this INT times/Safe Rest."
+              },
+              {
+                "name": "Face Me!",
+                "description": "Reaction (after an ally is crit within 12 spaces): Taunt that enemy until you drop to 0 HP."
+              },
+              {
+                "name": "Hold the Line!",
+                "description": "(1/encounter) Reaction (when an ally drops to 0 HP): Command them to continue the fight! Set their HP to 3× your LVL."
+              },
+              {
+                "name": "I Can Do This ALL DAY!",
+                "description": "(1/encounter) Reaction (when you would drop to 0 HP): You may expend any number of Hit Dice and set your HP to the sum rolled instead (do not add your STR)."
+              },
+              {
+                "name": "Move it! Move it!",
+                "description": "When you roll Initiative you may give yourself and an ally advantage on the roll and +3 speed for 1 round."
+              },
+              {
+                "name": "Reposition!",
+                "description": "Action/Reaction (on an ally's turn): Command 1 ally to move up to their speed (or 2 allies up to half their speed) for free."
+              }
+            ],
+            "id": "1a552c5c-112b-437c-8d06-db5fc9ad41fc"
+          },
+          {
+            "name": "Combat Tactics",
+            "description": "1/attack, you can expend a Combat Die to add one of the following effects to your attack.",
+            "items": [
+              {
+                "name": "Commanding Presence",
+                "description": "Action: Shout a command up to 2 words long at an enemy. On a failed WIL save (DC 10+STR), they must spend their entire next turn obeying it to the best of their ability, provided it is not obviously harmful to themselves."
+              },
+              {
+                "name": "Heavy Strike",
+                "description": "When you hit, push a Medium creature STR spaces and deal extra damage equal to a roll of your Combat Die. A Small creature is pushed twice as far; Large, pushed half as far."
+              },
+              {
+                "name": "Inerrant Strike",
+                "description": "Reroll a missed attack, add 1 to the Primary Die, and deal extra damage equal to a roll of your Combat Die."
+              },
+              {
+                "name": "Lunging Strike",
+                "description": "Gain +1 Reach on an attack and deal extra damage equal to 2× a roll of your Combat Die."
+              },
+              {
+                "name": "Sweeping Strike",
+                "description": "2 actions: Select any contiguous area within your weapon's Reach and damage ALL targets there. This attack does not miss on a 1."
+              }
+            ],
+            "id": "062f44bc-351f-4579-9638-25b6f8db6689"
+          },
+          {
+            "name": "Weapon Mastery",
+            "description": "Choose a weapon mastery at levels 6, 10, and 14.",
+            "items": [
+              {
+                "name": "Slashing",
+                "description": "Your attacks with slashing weapons cannot miss unarmored enemies."
+              },
+              {
+                "name": "Bludgeoning",
+                "description": "When your primary die rolls a 7 or higher with a bludgeoning weapon, ignore Heavy Armor."
+              },
+              {
+                "name": "Piercing",
+                "description": "Your attacks with piercing weapons ignore Medium Armor."
+              }
+            ],
+            "id": "8396a1c8-064e-4455-9d1c-9119d5e9220d"
+          }
+        ]
+      }
+    },
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "Hunter",
+        "description": "Respect the forest and her children, and she will bestow upon you many gifts. Long before the first stones of the grand kingdoms had been laid, there was The Wild. Hunters called groves and fields home, just as the elk and boar still do.\n\nHunters are Relentless Trackers, Masters of the Wild, and Deadly from Afar or Up Close. As an expert survivalist, you mark your prey, becoming a shadow in pursuit, relentless and precise.",
+        "keyStats": ["DEX", "WIL"],
+        "hitDie": "d8",
+        "startingHp": 13,
+        "saves": {
+          "STR": 0,
+          "DEX": 1,
+          "INT": -1,
+          "WIL": 0
+        },
+        "armor": ["leather"],
+        "weapons": {
+          "type": "DEX"
+        },
+        "startingGear": ["Shortbow", "Cheap Hides", "Dagger", "Hunting Trap"],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Hunter's Mark",
+                "description": "Action: A creature you can see is marked as your quarry for 1 day (or until you mark another creature). It can't be hidden from you, and your attacks against it gain your choice of advantage OR +LVL damage (choose before each attack)."
+              },
+              {
+                "name": "Forager",
+                "description": "Gain advantage on skill checks to find food and water in the wild."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Thrill of the Hunt",
+                "description": "Choose 2 @class-option:5bcyt9bxca9gy9pntpxf9h5j7v (TotH) abilities. Gain a charge to use these abilities during that encounter whenever your quarry dies, you hit your quarry in melee, or crit your quarry at range."
+              },
+              {
+                "name": "Roll & Strike",
+                "description": "Action: If you have no Thrill of the Hunt charges, move up to your speed toward your quarry. If you end adjacent to them, make a melee attack against them for free."
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Choose a Hunter subclass."
+              },
+              {
+                "name": "Tracker's Intuition",
+                "description": "You can discern the events of a past encounter by studying tracks and other subtle environmental clues, accurately determining the kind and amount of creatures, their direction, key actions, and passage of time."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "Thrill of the Hunt (2)",
+                "description": "Choose a 3rd @class-option:5bcyt9bxca9gy9pntpxf9h5j7v ability."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or WIL."
+              },
+              {
+                "name": "Explorer of the Wilds",
+                "description": "+2 speed; gain a climbing speed."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "Hunter's Resolve",
+                "description": "Whenever you have no Thrill of the Hunt charges, gain Hunter's Resolve until the end of your turn: treat all creatures as your quarry for the purposes of movement and melee attacks."
+              },
+              {
+                "name": "Final Takedown",
+                "description": "Action: Spend 1 Thrill of the Hunt charge to make a melee attack against your Bloodied quarry. Turn it into a crit and double the damage of your Hunter's Mark. If they survive, they crit you back."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or INT."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "Versatile Bowmaster",
+                "description": "Whenever you attack with a Longbow, you may roll 2d4 instead of 1d8; or with a Crossbow, 2d8 instead of 4d4."
+              },
+              {
+                "name": "Thrill of the Hunt (3)",
+                "description": "Choose a 4th @class-option:5bcyt9bxca9gy9pntpxf9h5j7v ability."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Hunter subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Thrill of the Hunt (4)",
+                "description": "Choose a 5th @class-option:5bcyt9bxca9gy9pntpxf9h5j7v ability."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or WIL."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "No Escape",
+                "description": "Whenever you see one or more allies make an opportunity attack, you may also make a ranged opportunity attack against the same target."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or INT."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Veteran Stalker",
+                "description": "Gain a Thrill of the Hunt charge whenever you are first Bloodied in an encounter and for every Wound you gain."
+              },
+              {
+                "name": "Keen Eye, Steady Hand",
+                "description": "Add WIL to your ranged weapon damage."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Hunter subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Thrill of the Hunt (5)",
+                "description": "Choose a 6th @class-option:5bcyt9bxca9gy9pntpxf9h5j7v ability."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or WIL."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Keen Sight",
+                "description": "Advantage on Perception checks."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or INT."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "Thrill of the Hunt (6)",
+                "description": "Choose a 7th @class-option:5bcyt9bxca9gy9pntpxf9h5j7v ability."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Hunter subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or WIL."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Peerless Hunter",
+                "description": "You can Defend against your quarry for free."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or INT."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "Wild Endurance",
+                "description": "Gain 1 Thrill of the Hunt charge at the start of your turns."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "Nemesis",
+                "description": "+1 to any 2 of your stats. Your Hunter's Mark can target any number of creatures simultaneously."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Thrill of the Hunt",
+            "description": "Choose Thrill of the Hunt abilities as you level up. Each ability costs 1 charge to use and cannot miss unless otherwise noted. Unused charges are lost when combat ends.",
+            "items": [
+              {
+                "name": "Addling Arrow",
+                "description": "Action: Attack with a ranged weapon. The next attack the target makes must be against the closest other creature, chosen at random."
+              },
+              {
+                "name": "Come Get Some!",
+                "description": "Action: Attack a target. It is Taunted by you until the end of their next turn."
+              },
+              {
+                "name": "Decoy",
+                "description": "When you Defend: The attack misses instead, and you can move up to half your speed away (where you really were all along!)."
+              },
+              {
+                "name": "Fleet Feet",
+                "description": "Move up to your speed for free, ignoring difficult terrain."
+              },
+              {
+                "name": "Grease Trap",
+                "description": "(1/encounter) Reaction (when an enemy moves adjacent to you or an ally within 6 spaces): Target falls Prone, is vulnerable to the next fire damage it takes, and is treated as if it is Smoldering."
+              },
+              {
+                "name": "Hail of Arrows",
+                "description": "(Half range) 2 actions: Shoot all creatures within a 3×3 area. Their speed is halved until the end of their next turn."
+              },
+              {
+                "name": "Heavy Shot",
+                "description": "(Half range) Action: Attack with a ranged weapon and push your target: 4 spaces for a small creature, 2 for a medium creature, 1 for a large creature."
+              },
+              {
+                "name": "Incendiary Shot",
+                "description": "(Half range) Action: Attack with a ranged weapon, add WIL d8 fire damage."
+              },
+              {
+                "name": "Multishot",
+                "description": "(Half range) Action: Attack your quarry with a ranged weapon and load an extra projectile. Select a 2nd target within 2 spaces of them to take the same amount of damage."
+              },
+              {
+                "name": "Pinning Shot",
+                "description": "Spend 3 actions shooting your quarry. They are Restrained until they can escape (DC 10+WIL)."
+              },
+              {
+                "name": "Snare Trap",
+                "description": "(1/encounter) Reaction (when an enemy moves adjacent to you or an ally within 6 spaces): Move them back 1 space, they are Restrained until they can escape (DC 10+WIL)."
+              },
+              {
+                "name": "Sharpshooter",
+                "description": "Action: If you have not moved this turn and your quarry is 4 or more spaces away, attack them for double damage."
+              },
+              {
+                "name": "Vital Shot",
+                "description": "(Half Range) Action: Attack your Hampered quarry with a ranged weapon, ignoring their armor or doubling your Hunter's Mark damage bonus if they have none."
+              },
+              {
+                "name": "Wild Instinct",
+                "description": "(1/round, costs 0 TotH charges if you have none.) Assess for free, with advantage."
+              }
+            ],
+            "id": "ab67b495-f58a-4c3c-9b57-56ebd312c8fb"
+          }
+        ]
+      }
+    },
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "Mage",
+        "description": "Elemental power flows through all things… find it, study it, and harness it. A mage is bestowed their first strand of the Tapestry at birth; however, true mastery eludes those who idly rest upon this innate endowment. Instead, they diligently refine their natural gifts through scholarly pursuit.\n\nMages are Spellshapers who customize the spells they cast, masters of Elemental Mastery who harness fire, ice, and lightning, and must choose between Chaos or Control.",
+        "keyStats": ["INT", "WIL"],
+        "hitDie": "d6",
+        "startingHp": 10,
+        "saves": {
+          "STR": -1,
+          "DEX": 0,
+          "INT": 1,
+          "WIL": 0
+        },
+        "armor": ["cloth"],
+        "weapons": {
+          "kind": ["blade", "stave", "wand"]
+        },
+        "startingGear": ["Adventurer's Garb", "Staff", "Soap"],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Elemental Spellcasting",
+                "description": "You know Fire, Ice, and Lightning cantrips."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Mana and Unlock Tier 1 Spells",
+                "description": "You unlock tier 1 Fire, Ice, and Lightning spells and gain a mana pool. Maximum is always equal to (INT×3)+LVL and recharges on a Safe Rest."
+              },
+              {
+                "name": "Talented Researcher",
+                "description": "Gain advantage on Arcana or Lore checks when you have access to a large amount of books and time to study them."
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Choose a Mage subclass."
+              },
+              {
+                "name": "Elemental Mastery",
+                "description": "Learn the Utility Spells from 1 spell school you know."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "Spellshaper",
+                "description": "You gain the ability to enhance your spells with powerful effects by spending additional mana. Choose 2 @class-option:0qv8rys60t97n9fd7bm5neh9tz abilities."
+              },
+              {
+                "name": "Tier 2 Spells",
+                "description": "You may now cast tier 2 spells and upcast spells at tier 2."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "Elemental Surge",
+                "description": "When you roll Initiative, regain WIL mana (this expires at the end of combat if unused)."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "Tier 3 Spells",
+                "description": "You may now cast tier 3 spells and upcast spells at tier 3."
+              },
+              {
+                "name": "Elemental Mastery (2)",
+                "description": "Learn the Utility Spells from a 2nd spell school you know."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Mage subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Tier 4 Spells",
+                "description": "You may now cast tier 4 spells and upcast spells at tier 4."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "Spellshaper (2)",
+                "description": "Choose 1 additional @class-option:0qv8rys60t97n9fd7bm5neh9tz ability."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Elemental Surge (2)",
+                "description": "Your Elemental Surge ability now regains WIL+1d4 mana."
+              },
+              {
+                "name": "Tier 5 Spells",
+                "description": "You may now cast tier 5 spells and upcast spells at tier 5."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Mage subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Tier 6 Spells",
+                "description": "You may now cast tier 6 spells and upcast spells at tier 6."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Spellshaper (3)",
+                "description": "Choose 1 additional @class-option:0qv8rys60t97n9fd7bm5neh9tz ability."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "Tier 7 Spells",
+                "description": "You may now cast tier 7 spells and upcast spells at tier 7."
+              },
+              {
+                "name": "Elemental Mastery (3)",
+                "description": "Learn the Utility Spells from a 3rd spell school you know."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Mage subclass feature."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Tier 8 Spells",
+                "description": "You may now cast tier 8 spells and upcast spells at tier 8."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Elemental Surge (3)",
+                "description": "Your Elemental Surge ability now regains WIL+2d4 mana."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "Tier 9 Spells",
+                "description": "You may now cast tier 9 spells and upcast spells at tier 9."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "Archmage",
+                "description": "+1 to any 2 of your stats. The first tiered spell you cast each encounter costs 1 action less and 5 fewer mana."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Spellshaper",
+            "description": "Gain Spellshaper abilities as you level up. You may use 1/turn.",
+            "items": [
+              {
+                "name": "Dimensional Compression",
+                "description": "(1 or more mana) +4 range to a spell for each additional mana spent."
+              },
+              {
+                "name": "Echo Casting",
+                "description": "(2×mana, min. 1 mana) When you cast a tiered, single-target spell, you may cast a copy of that spell on a 2nd target for free."
+              },
+              {
+                "name": "Elemental Destruction",
+                "description": "(1 or more mana) After you hit with a spell, you may spend 1 or more mana (up to your WIL) to reroll 1 die per mana spent."
+              },
+              {
+                "name": "Elemental Transmutation",
+                "description": "(1 mana) Change the damage type of a spell to: Fire, Ice, Lightning, Necrotic, or Radiant."
+              },
+              {
+                "name": "Extra-Dimensional Vision",
+                "description": "(2 mana) You may ignore the line of sight requirement of a spell. Your spell will phase through barriers and obstacles to reach a target you know of within range."
+              },
+              {
+                "name": "Methodical Spellweaver",
+                "description": "(–2 mana) Spend 1 additional action to reduce the mana cost of a spell by 2 (min 1)."
+              },
+              {
+                "name": "Precise Casting",
+                "description": "(1+ mana) Choose 1 creature per mana spent to be unaffected by a spell you cast."
+              },
+              {
+                "name": "Stretch Time",
+                "description": "(2 mana) Reduce the action cost of a spell by 1 (min 1)."
+              }
+            ],
+            "id": "17da31ec-981a-49ea-97b4-eba16ae8a75f"
+          }
+        ]
+      }
+    },
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "Oathsworn",
+        "description": "I will protect my companions and vanquish evil at all costs. Various orders of these zealous, holy warriors have attained great physical and radiant strength through absolute devotion to a higher power in the form of oaths. Through their strength, both physical and radiant, nothing can sway them from their hunger for justice.\n\nOathsworn defend with devotion, divinely protect allies, and shine as beacons of virtue.",
+        "keyStats": ["STR", "WIL"],
+        "hitDie": "d10",
+        "startingHp": 17,
+        "saves": {
+          "STR": 1,
+          "DEX": -1,
+          "INT": 0,
+          "WIL": 0
+        },
+        "armor": ["cloth", "leather", "mail", "shields"],
+        "weapons": {
+          "type": "STR"
+        },
+        "startingGear": ["Mace", "Rusty Mail", "Wooden Buckler", "Manacles"],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Radiant Judgment",
+                "description": "Whenever an enemy attacks you, if you have no Judgment Dice, roll your Judgment dice (2d6). On your next melee attack this encounter, if you hit, deal that much additional radiant damage. The dice are expended whether you hit or miss."
+              },
+              {
+                "name": "Lay on Hands",
+                "description": "Gain a magical pool of healing power equal to 5×LVL, recharges on a Safe Rest. Action: Touch a target and spend any amount of remaining healing power to restore that many HP."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Mana and Radiant Spellcasting",
+                "description": "You know Radiant cantrips, tier 1 Radiant spells, and gain a mana pool equal to WIL + LVL, recharges on a Safe Rest."
+              },
+              {
+                "name": "Zealot",
+                "description": "Whenever you attack with a melee weapon, you may spend mana (up to your highest unlocked spell tier) to choose one for each mana spent: Condemning Strike (+5 radiant damage) or Blessed Aim (decrease target's armor by 1 step)."
+              },
+              {
+                "name": "Paragon of Virtue",
+                "description": "Advantage on Influence checks to convince someone when you are forthrightly telling the truth, disadvantage when misleading."
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Commit yourself to an Oath and gain its benefits."
+              },
+              {
+                "name": "Radiant Judgment (2)",
+                "description": "Your Judgment Dice are d8s."
+              },
+              {
+                "name": "Sacred Decree",
+                "description": "Learn 1 @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "My Life, for My Friends",
+                "description": "You can Interpose for free."
+              },
+              {
+                "name": "Tier 2 Spells",
+                "description": "You may now cast tier 2 spells and upcast spells at tier 2."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or WIL."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "Radiant Judgment (3)",
+                "description": "Your Judgment Dice are d10s."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 DEX or INT."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "Tier 3 Spells",
+                "description": "You may now cast tier 3 spells and upcast spells at tier 3."
+              },
+              {
+                "name": "Sacred Decree (2)",
+                "description": "Learn a 2nd @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Oathsworn subclass feature."
+              },
+              {
+                "name": "Master of Radiance",
+                "description": "Choose 1 Radiant Utility Spell."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Tier 4 Spells",
+                "description": "You may now cast tier 4 spells and upcast spells at tier 4."
+              },
+              {
+                "name": "Radiant Judgment (4)",
+                "description": "Your Judgment Dice are d12s."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or WIL."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "Sacred Decree (3)",
+                "description": "Learn a 3rd @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 DEX or INT."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Tier 5 Spells",
+                "description": "You may now cast tier 5 spells and upcast spells at tier 5."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              },
+              {
+                "name": "Radiant Judgment (5)",
+                "description": "Your Judgment Dice are d20s."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Oathsworn subclass feature."
+              },
+              {
+                "name": "Master of Radiance (2)",
+                "description": "Choose a 2nd Radiant Utility Spell."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Sacred Decree (4)",
+                "description": "Learn a 4th @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or WIL."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Tier 6 Spells",
+                "description": "You may now cast tier 6 spells and upcast spells at tier 6."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 DEX or INT."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "Sacred Decree (5)",
+                "description": "Learn a 5th @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+              },
+              {
+                "name": "Radiant Judgment (6)",
+                "description": "Whenever you roll Judgment Dice, roll 1 more."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Oathsworn subclass feature."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Sacred Decree (6)",
+                "description": "Learn a 6th @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 STR or WIL."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Tier 7 Spells",
+                "description": "You may now cast tier 7 spells and upcast spells at tier 7."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 DEX or INT."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "Unending Judgment",
+                "description": "While you have no Judgment Dice, gain +5 damage to melee attacks."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "Glorious Paragon",
+                "description": "+1 to any 2 of your stats. Defend for free whenever you Interpose."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Sacred Decrees",
+            "description": "Learn Sacred Decrees as you level up.",
+            "items": [
+              {
+                "name": "Blinding Aura",
+                "description": "(1/Safe Rest) Action: Enemies in your aura are Blinded until the end of their next turn."
+              },
+              {
+                "name": "Courage!",
+                "description": "(1/encounter) When you or an ally in your aura would drop to 0 HP, set their HP to 1 instead."
+              },
+              {
+                "name": "Explosive Judgment",
+                "description": "(1/encounter) 2 actions: Expend your Judgment Dice, deal that much radiant damage to all enemies in your aura."
+              },
+              {
+                "name": "Improved Aura",
+                "description": "+2 aura Reach."
+              },
+              {
+                "name": "Radiant Aura",
+                "description": "Action: End any single harmful condition or effect on yourself or another willing creature within your aura. You may use this ability WIL times/Safe Rest."
+              },
+              {
+                "name": "Reliable Justice",
+                "description": "Whenever you roll Judgment Dice, roll with advantage (roll one extra and drop the lowest)."
+              },
+              {
+                "name": "Shining Mandate",
+                "description": "The first time each round you are attacked while you already have Judgment Dice, select an ally within your aura to roll one and apply it to their next attack. You have advantage on skill checks to see through illusions."
+              },
+              {
+                "name": "Stand Fast, Friends!",
+                "description": "When you roll Initiative, grant allies temp HP equal to your STR+WIL. You and allies within your aura have advantage against fear and effects that would move or knock Prone."
+              },
+              {
+                "name": "Unstoppable Protector",
+                "description": "Gain +1 speed. You may Interpose even if you are restrained, stunned, or otherwise incapacitated. If you Interpose for a non-combatant NPC, you may Interpose again this round."
+              },
+              {
+                "name": "Well Armored",
+                "description": "Whenever you Interpose, gain temp HP equal to your STR."
+              }
+            ],
+            "id": "9be06f06-d46c-45cf-b7c5-3c4c0c759807"
+          }
+        ]
+      }
+    },
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "Shadowmancer",
+        "description": "Totally NOT evil. Great power sometimes comes from horrible places. Who'd want to waste their lives reading books—learning magic the hard way? Just scheme up a way to take what you need from someone who won't miss it—ancient horrors don't guard their power nearly as well as you'd think!\n\nShadowmancers use Unspeakable Power from pacts with ancient entities to crush foes and bend the shadows to their will, and Master Shadow Minions—legions of shadowy minions to overwhelm adversaries.",
+        "keyStats": ["INT", "DEX"],
+        "hitDie": "d8",
+        "startingHp": 13,
+        "saves": {
+          "STR": 0,
+          "DEX": 0,
+          "INT": 1,
+          "WIL": -1
+        },
+        "armor": ["cloth"],
+        "weapons": {
+          "kind": ["blade", "wand"]
+        },
+        "startingGear": ["Adventurer's Garb", "Sickle", "Shovel"],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Shadow Blast",
+                "description": "(Necrotic cantrip) Action: (1/turn) Range: 8. Damage: 1d12+KEY. High Levels: +1d12 damage every 5 levels."
+              },
+              {
+                "name": "Summon Shadows",
+                "description": "(Necrotic cantrip) Action: Summon a shadow minion within Reach 1 (max of INT or LVL minions). Action: (1/turn) Command ALL of your minions to move 6 then attack (Reach 1, 1d12 each). High Levels: +1 Reach every 5 levels."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Master of Darkness",
+                "description": "Your Patron grants you knowledge of Necrotic cantrips and tier 1 spells."
+              },
+              {
+                "name": "Pilfered Power",
+                "description": "You may steal power from your patron to cast tiered spells, always at the highest tier you have unlocked. You can do this DEX times before your patron takes notice. Each time you exceed this limit, your patron damages you for half your max HP. Resets on Safe Rest."
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "THE PACT IS SEALED",
+                "description": "Choose a subclass and 1 @class-option:7h9nev6pmv8t8brmaj73e8vdb8."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or DEX."
+              },
+              {
+                "name": "A Gift from the Master",
+                "description": "Choose 1 @class-option:4kcmt1f8qk9t4sn30tf086hp3z."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "Tier 2 Spells",
+                "description": "You may now cast tier 2 spells; all of your spells are cast at this tier."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or WIL."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "A Gift from the Master (2)",
+                "description": "Choose a 2nd @class-option:4kcmt1f8qk9t4sn30tf086hp3z."
+              },
+              {
+                "name": "Shadowmastery",
+                "description": "Choose 1 Necrotic Utility Spell."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Shadowmancer subclass feature."
+              },
+              {
+                "name": "Tier 3 Spells",
+                "description": "You may now cast tier 3 spells; all of your spells are cast at this tier."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or DEX."
+              },
+              {
+                "name": "Lesser Invocation",
+                "description": "Choose a 2nd @class-option:7h9nev6pmv8t8brmaj73e8vdb8."
+              },
+              {
+                "name": "Shadowmastery (2)",
+                "description": "Choose a 2nd Necrotic Utility Spell."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "A Gift from the Master (3)",
+                "description": "Choose a 3rd @class-option:4kcmt1f8qk9t4sn30tf086hp3z."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or WIL."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Tier 4 Spells",
+                "description": "You may now cast tier 4 spells; all of your spells are cast at this tier."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Shadowmancer subclass feature."
+              },
+              {
+                "name": "Lesser Invocation (2)",
+                "description": "Choose a 3rd @class-option:7h9nev6pmv8t8brmaj73e8vdb8."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Greedy Pact",
+                "description": "When you would take damage from Pilfered Power, make a STR save: 1–9: Suffer damage as normal. 10–19: Suffer only 10 HP of damage. 20+: Suffer no damage and cast the spell as if it were 1 tier higher."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or DEX."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Tier 5 Spells",
+                "description": "You may now cast tier 5 spells; all of your spells are cast at this tier."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or WIL."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "A Gift from the Master (4)",
+                "description": "Choose a 4th @class-option:4kcmt1f8qk9t4sn30tf086hp3z."
+              },
+              {
+                "name": "Shadowmastery (3)",
+                "description": "You know all Necrotic Utility Spells."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Shadowmancer subclass feature."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Tier 6 Spells",
+                "description": "You may now cast tier 6 spells; all of your spells are cast at this tier."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or DEX."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Dire Shadows",
+                "description": "Attacks against your shadow minions are made with disadvantage. They take no damage from successful saves."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or WIL."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "A Gift from the Master (5)",
+                "description": "Choose a 5th @class-option:4kcmt1f8qk9t4sn30tf086hp3z."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon."
+              },
+              {
+                "name": "Tier 7 Spells",
+                "description": "You may now cast tier 7 spells; all of your spells are cast at this tier."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "Eldritch Usurper",
+                "description": "+1 to any 2 of your stats. Whenever you summon a single shadow minion, summon 2 instead. They die only when they receive 12 or more damage at one time."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Lesser Invocations",
+            "description": "Choose Lesser Shadow Invocations as you level up.",
+            "items": [
+              {
+                "name": "Abhorrent Speech",
+                "description": "You can communicate with horrible creatures (aberrations, undead, etc.)."
+              },
+              {
+                "name": "Beguiling Influence",
+                "description": "(1/day) You may reroll an Influence check."
+              },
+              {
+                "name": "Blood Sight",
+                "description": "(1/day) You may reroll an Examination check. Additionally, you can detect traces of blood on a surface, even after it has been cleaned."
+              },
+              {
+                "name": "Devoted Acolyte",
+                "description": "Learn 2 of the following languages: Celestial, Draconic, Deep Speak, Infernal, or Primordial. Advantage on Lore checks related to those 2 languages."
+              },
+              {
+                "name": "Eldritch Sense",
+                "description": "You can sense the presence of any shapechanger or creature concealed by magic while within 6 spaces of them."
+              },
+              {
+                "name": "Gaze of Two Minds",
+                "description": "Touch a willing creature and perceive through its senses instead of your own for as long as you hold concentration."
+              },
+              {
+                "name": "Knowledge from Beyond",
+                "description": "Whenever you fail an Insight or Arcana check, you may suffer 1 Wound to succeed instead."
+              },
+              {
+                "name": "My Favored Pet",
+                "description": "One shadow minion can begrudgingly tolerate you outside of combat. It can (very creepily) do any menial task a below average commoner could."
+              },
+              {
+                "name": "Voice of the Dark",
+                "description": "You can communicate telepathically with a humanoid within 6 spaces."
+              },
+              {
+                "name": "Whispers of the Grave",
+                "description": "(1/day) You can ask a dead creature 3 yes/no questions. It can never be questioned this way again."
+              }
+            ],
+            "id": "f14d5db3-5a9b-4690-bc51-5238dc8db568"
+          },
+          {
+            "name": "Greater Invocations",
+            "description": "Choose Greater Shadow Invocations as you level up.",
+            "items": [
+              {
+                "name": "Armor of Shadows",
+                "description": "Reduce all damage you receive by an amount equal to the number of minions you have."
+              },
+              {
+                "name": "Fiendish Boon",
+                "description": "Increase your DEX or INT by 1. You have 1 fewer maximum Hit Dice."
+              },
+              {
+                "name": "Hungering Shadows",
+                "description": "Whenever one of your shadows would crit, the next tiered spell you cast this encounter does not cost a use of Pilfered Power."
+              },
+              {
+                "name": "One with Shadows",
+                "description": "Action: When you are in an area of dim light or darkness, you may become Invisible until you move or attack."
+              },
+              {
+                "name": "Repelling Blast",
+                "description": "When you hit a Medium or smaller creature with Shadow Blast, you can push the creature up to 2 spaces away from yourself."
+              },
+              {
+                "name": "Shadow Magus",
+                "description": "Your minions gain +4 Reach and deal d10 damage instead."
+              },
+              {
+                "name": "Shadow Spear",
+                "description": "Your Shadow Blast can target creatures twice as far away, it ignores cover, and you may attack Prone targets with advantage with it."
+              },
+              {
+                "name": "Shadow Rush",
+                "description": "When your shadow minions attack, instead of rolling damage, you may have any of them deal the max amount, then die."
+              },
+              {
+                "name": "Shadow Warp",
+                "description": "Action: Switch places with a creature within 12 spaces that has been dealt necrotic damage this turn."
+              },
+              {
+                "name": "Swarming Shadows",
+                "description": "Whenever one of your shadows would crit, summon another shadow minion adjacent to the target."
+              },
+              {
+                "name": "Vengeful Blast",
+                "description": "Whenever a minion dies, you may cast Shadow Blast as a reaction (even if you already cast it this turn)."
+              }
+            ],
+            "id": "93653417-a2f3-4e89-9a8c-1a781068d87f"
+          }
+        ]
+      }
+    },
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "Shepherd",
+        "description": "Let all who are afflicted come. I will mend thy bones and soothe thy wounds. The Shepherd embodies the forces of Life and Death, wielding spells from chosen domains and leading a faithful Lifebinding Spirit companion.\n\nShepherds Embrace the Balance between healing and harm, Lead a Faithful Companion spirit, and tend to those in need.",
+        "keyStats": ["WIL", "STR"],
+        "hitDie": "d10",
+        "startingHp": 17,
+        "saves": {
+          "STR": 0,
+          "DEX": -1,
+          "INT": 0,
+          "WIL": 1
+        },
+        "armor": ["mail", "shields"],
+        "weapons": {
+          "type": "STR"
+        },
+        "startingGear": ["Rusty Mail", "Mace", "Wooden Buckler", "Bell"],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Keeper of Life & Death",
+                "description": "You know Radiant and Necrotic cantrips."
+              },
+              {
+                "name": "Searing Light",
+                "description": "(WIL times/Safe Rest) Action: Heal or Inflict grievous injuries: Heal WIL d8 HP to a Dying creature within Reach 6, OR Inflict WIL d8 radiant damage to an undead or Bloodied enemy within Reach 6."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Mana and Unlock Tier 1 Spells",
+                "description": "You unlock tier 1 Radiant and Necrotic spells and gain a mana pool equal to (WIL×3)+LVL, recharges on a Safe Rest."
+              },
+              {
+                "name": "Lifebinding Spirit",
+                "description": "(Radiant Spell, Tier 1) Action: Summon a spirit companion that follows you and is immune to harm. It lasts until you cast this spell again, take a Safe Rest, or it heals a number of times equal to the mana spent summoning it. Action: It attacks or heals a creature within Reach 4 for 1d6+WIL radiant damage (ignoring armor) or heals for the same amount. Upcasting: Increment its die size by 1 (max d12), +1 healing use."
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Choose a Shepherd subclass."
+              },
+              {
+                "name": "Master of Twilight",
+                "description": "Choose 1 Necrotic and 1 Radiant Utility Spell."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "Tier 2 Spells",
+                "description": "You may now cast tier 2 spells and upcast spells at tier 2."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or STR."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or DEX."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              },
+              {
+                "name": "Sacred Grace",
+                "description": "Choose 2 @class-option:67dymrc9m98cw9atxh1sh0k118."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "Tier 3 Spells",
+                "description": "You may now cast tier 3 spells and upcast spells at tier 3."
+              },
+              {
+                "name": "Master of Twilight (2)",
+                "description": "Choose a 2nd Necrotic and Radiant Utility Spell."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Shepherd subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Tier 4 Spells",
+                "description": "You may now cast tier 4 spells and upcast spells at tier 4."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or STR."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "Sacred Grace (2)",
+                "description": "Choose a 3rd @class-option:67dymrc9m98cw9atxh1sh0k118."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or DEX."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Tier 5 Spells",
+                "description": "You may now cast tier 5 spells and upcast spells at tier 5."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Shepherd subclass feature."
+              },
+              {
+                "name": "Master of Twilight (3)",
+                "description": "You know all Necrotic and Radiant Utility Spells."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Tier 6 Spells",
+                "description": "You may now cast tier 6 spells and upcast spells at tier 6."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or STR."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Sacred Grace (3)",
+                "description": "Choose a 4th @class-option:67dymrc9m98cw9atxh1sh0k118."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or DEX."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "Tier 7 Spells",
+                "description": "You may now cast tier 7 spells and upcast spells at tier 7."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Shepherd subclass feature."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Tier 8 Spells",
+                "description": "You may now cast tier 8 spells and upcast spells at tier 8."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or STR."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Revitalizing Blessing",
+                "description": "(1/round) Whenever you roll a 6 or higher on one or more healing die, the target may recover one Wound."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or DEX."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "Tier 9 Spells",
+                "description": "You may now cast tier 9 spells and upcast spells at tier 9."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "Twilight Sage",
+                "description": "+1 to any 2 of your stats. Your Lifebinding Spirit rolls twice as many dice."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Sacred Graces",
+            "description": "Choose Sacred Graces as you level up.",
+            "items": [
+              {
+                "name": "Assist Me, My Friend!",
+                "description": "Whenever you make your first melee attack each round, you may add your Lifebinding Spirit's damage to the attack."
+              },
+              {
+                "name": "Empowered Companion",
+                "description": "Whenever you spend mana to call forth your Lifebinding Spirit, you cast it as if you spent 1 additional mana (ignoring the typical spell tier restrictions). The maximum die size is now a d20."
+              },
+              {
+                "name": "Guiding Spirit",
+                "description": "When your Lifebinding Spirit rolls a 6 or higher on its damage die, the target begins to glow with radiant light. The next attack against that target has advantage."
+              },
+              {
+                "name": "Hasty Companion",
+                "description": "+4 Reach for your Lifebinding Spirit. It can also act for free when summoned."
+              },
+              {
+                "name": "Illuminate Soul",
+                "description": "Action: A creature within 6 spaces begins to glow with radiant light. For 1 Round, attacks against them are made with your choice of advantage or disadvantage. You may do this WIL times per Safe Rest."
+              },
+              {
+                "name": "Light Bearer",
+                "description": "Regain 1 use of Searing Light when you roll Initiative (this expires if unspent at the end of combat)."
+              },
+              {
+                "name": "Not Beyond MY Reach",
+                "description": "You may target creatures who have been dead less than 1 round for healing. For every 10 HP a dead creature is healed this way, you may have them recover 1 Wound instead (you must heal at least 1 Wound to revive them)."
+              },
+              {
+                "name": "Vengeful Spirit",
+                "description": "Action: Your Lifebinding Spirit sacrifices itself to transform into a swirling vortex of radiant light that damages all enemies within 3 spaces of you, ignoring armor and cover. This lasts for a number of rounds equal to the healing charges left on the Lifebinding Spirit."
+              }
+            ],
+            "id": "c76fa986-2689-4338-956b-b10e62098428"
+          }
+        ]
+      }
+    },
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "Songweaver",
+        "description": "Just TRY and resist my charm… Each Songweaver holds a spark granted to them by a muse at birth; a spark which fuels their creative energy in the form of a sharp wit, relentless humor, or moving art.\n\nSongweavers Charm allies and inspire them to new heights, Use Lyrical Weaponry to dominate enemies, and Control the Battlefield with chords of chaos or debilitating rhapsodies.",
+        "keyStats": ["WIL", "INT"],
+        "hitDie": "d8",
+        "startingHp": 13,
+        "saves": {
+          "STR": -1,
+          "DEX": 0,
+          "INT": 0,
+          "WIL": 1
+        },
+        "armor": ["cloth", "leather"],
+        "weapons": {
+          "type": "DEX"
+        },
+        "startingGear": ["Adventurer's Garb", "Instrument", "Dagger", "Mirror"],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Wind Spellcasting",
+                "description": "You know cantrips from the Wind school and 1 other school of your choice. You also know the cantrip Vicious Mockery: (Wind cantrip) Action: Range: 12. Damage: 1d4+INT psychic (ignoring armor). On hit: the target is Taunted during their next turn. High Levels: +2 damage every 5 levels."
+              },
+              {
+                "name": "Songweaver's Inspiration",
+                "description": "(2×WIL times/Safe Rest) Free Reaction: Allow an ally to reroll a single die related to an attack or save (must keep either result)."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Mana and Unlock Tier 1 Spells",
+                "description": "You unlock tier 1 spells in the schools you know and gain a mana pool equal to (INT×3)+LVL, recharges on a Safe Rest."
+              },
+              {
+                "name": "Jack of All Trades",
+                "description": "When you Safe Rest, you may move a skill point as if you just leveled up."
+              },
+              {
+                "name": "Song of Rest",
+                "description": "(1/day) Whenever you Field Rest, you may play a song and allow anyone who spends Hit Dice to heal additional HP equal to your WIL."
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Choose a Songweaver subclass."
+              },
+              {
+                "name": "Quick Wit",
+                "description": "When you roll Initiative, you may regain 2 spent uses of your Songweaver's Inspiration (these expire at the end of combat if left unused)."
+              },
+              {
+                "name": "Windbag",
+                "description": "Choose 1 Utility Spell from each spell school you know."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "Tier 2 Spells",
+                "description": "You may now cast tier 2 spells and upcast spells at tier 2."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or INT."
+              },
+              {
+                "name": "Lyrical Weaponry",
+                "description": "Choose 1 ability from the @class-option:5qcwvmqybq9xdr9d1zkg3deq39 list."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "A \"People\" Person",
+                "description": "You've met many people in your travels; some have even agreed to come to your aid should you need it. Choose 2 friends you know: you can temporarily summon them via song (1/Safe Rest each)."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "Tier 3 Spells",
+                "description": "You may now cast tier 3 spells and upcast spells at tier 3."
+              },
+              {
+                "name": "Windbag (2)",
+                "description": "Choose a 2nd Utility Spell from each spell school you know."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Songweaver subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Tier 4 Spells",
+                "description": "You may now cast tier 4 spells and upcast spells at tier 4."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or INT."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "Lyrical Weaponry (2)",
+                "description": "Choose a 2nd ability from the @class-option:5qcwvmqybq9xdr9d1zkg3deq39 list."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Tier 5 Spells",
+                "description": "You may now cast tier 5 spells and upcast spells at tier 5."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Songweaver subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Tier 6 Spells",
+                "description": "You may now cast tier 6 spells and upcast spells at tier 6."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or INT."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Lyrical Weaponry (3)",
+                "description": "Choose a 3rd ability from the @class-option:5qcwvmqybq9xdr9d1zkg3deq39 list."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "Tier 7 Spells",
+                "description": "You may now cast tier 7 spells and upcast spells at tier 7."
+              },
+              {
+                "name": "Windbag (3)",
+                "description": "You know all Utility Spells from the spell schools you know."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Songweaver subclass feature."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Tier 8 Spells",
+                "description": "You may now cast tier 8 spells and upcast spells at tier 8."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or INT."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Lyrical Weaponry (4)",
+                "description": "Choose a 4th ability from the @class-option:5qcwvmqybq9xdr9d1zkg3deq39 list."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "Tier 9 Spells",
+                "description": "You may now cast tier 9 spells and upcast spells at tier 9."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "I'm So Famous!",
+                "description": "+1 to any 2 of your stats. Your Songweaver's Inspiration cannot fail (your target succeeds)."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Lyrical Weaponry",
+            "description": "Choose Lyrical Weaponry abilities as you level up.",
+            "items": [
+              {
+                "name": "Heroic Ballad",
+                "description": "+2 max Songweaver's Inspiration charges. When used to reroll an ally's attack, your Songweaver's Inspiration also grants them +WIL damage on the attack."
+              },
+              {
+                "name": "Inspiring Anthem",
+                "description": "(1/encounter) Action: Grant all friendly Dying creatures who can hear you 1 HP and 1 action."
+              },
+              {
+                "name": "Not My Beautiful Faaace!",
+                "description": "(1/encounter) When you Defend, force the attacker to choose another target within range on a failed WIL save (if there is none, the attack fails). If they fail by 5 or more, they attack themselves instead."
+              },
+              {
+                "name": "Rhapsody of the Normal",
+                "description": "When you roll 4 or more on your Vicious Mockery, you may spend a Songweaver's Inspiration charge to temporarily suppress any special abilities they have until the end of their next turn."
+              },
+              {
+                "name": "Song of Domination",
+                "description": "(1/encounter) 2 actions: Play a bewitching tune, and all enemies within 6 spaces who hear it must make a WIL save. If they fail, you move them up to 6 spaces in any direction, and they cannot move on their next turn."
+              }
+            ],
+            "id": "b767374b-f977-4f5b-84b4-3f9c06d75c69"
+          }
+        ]
+      }
+    },
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "Stormshifter",
+        "description": "The trees whisper their excitement, the clouds sing with glee. Rejoice! The Master of Storm & Fang arrives. Those who traverse the woodlands may feel the vigilant gaze of a Stormshifter upon them.\n\nStormshifters aid allies in whatever role is most needed, wade into the fray as shapeshifted beasts ranging from friendly to vicious to horrible, and cast powerful spells from a distance.",
+        "keyStats": ["WIL", "DEX"],
+        "hitDie": "d8",
+        "startingHp": 13,
+        "saves": {
+          "STR": -1,
+          "DEX": 0,
+          "INT": 0,
+          "WIL": 1
+        },
+        "armor": ["cloth", "leather"],
+        "weapons": {
+          "kind": ["stave", "wand"]
+        },
+        "startingGear": ["Cheap Hides", "Staff", "Strange Plant"],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Master of Storms",
+                "description": "You know cantrips from the Lightning and Wind schools."
+              },
+              {
+                "name": "Beastshift",
+                "description": "Action: You can transform into a harmless beast (squirrel, pigeon, etc.). While transformed, you can speak with animals. This form lasts until you drop to 0 HP, cast a spell, or if you end it on your turn for free. You have DEX Beastshift charges; they reset on a Safe Rest."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Direbeast Form",
+                "description": "You can Beastshift into a @class-option:[5mehnkzt4y8aqtp9kwp8h9n3zp|Fearsome Beast]."
+              },
+              {
+                "name": "Mana and Unlock Tier 1 Spells",
+                "description": "You unlock tier 1 Wind and Lightning spells and gain a mana pool equal to (WIL×3)+LVL, recharges on a Safe Rest."
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Choose a Stormshifter subclass."
+              },
+              {
+                "name": "Direbeast Form (2)",
+                "description": "You can Beastshift into a @class-option:[5mehnkzt4y8aqtp9kwp8h9n3zp|Beast of the Pack]."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "Tier 2 Spells",
+                "description": "You may now cast tier 2 spells and upcast spells at tier 2."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or DEX."
+              },
+              {
+                "name": "Stormcaller",
+                "description": "Learn a Utility Spell from each spell school you know."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "Direbeast Form (3)",
+                "description": "You can Beastshift into a @class-option:[5mehnkzt4y8aqtp9kwp8h9n3zp|Beast of Nightmares]."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or INT."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "Chimeric Boon",
+                "description": "Choose 2 @class-option:5wqe566dfz84894cxkpswk1pcj. Whenever you shapeshift into a Direbeast form, you may modify it with 1 @class-option:5wqe566dfz84894cxkpswk1pcj you know."
+              },
+              {
+                "name": "Expert Shifter",
+                "description": "Gain 1 additional use of Beastshift per Safe Rest."
+              },
+              {
+                "name": "Tier 3 Spells",
+                "description": "You may now cast tier 3 spells and upcast spells at tier 3."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Stormshifter subclass feature."
+              },
+              {
+                "name": "Stormcaller (2)",
+                "description": "Learn a 2nd Utility Spell from each spell school you know."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Tier 4 Spells",
+                "description": "You may now cast tier 4 spells and upcast spells at tier 4."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or DEX."
+              },
+              {
+                "name": "Stormborn",
+                "description": "Gain resistance to lightning damage. (1/day) You may gain advantage on a Naturecraft check or Concentration check."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "Chimeric Boon (2)",
+                "description": "Choose a 3rd @class-option:5wqe566dfz84894cxkpswk1pcj."
+              },
+              {
+                "name": "Expert Shifter (2)",
+                "description": "Gain 1 additional use of Beastshift per Safe Rest."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or INT."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Tier 5 Spells",
+                "description": "You may now cast tier 5 spells and upcast spells at tier 5."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Stormshifter subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Tier 6 Spells",
+                "description": "You may now cast tier 6 spells and upcast spells at tier 6."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or DEX."
+              },
+              {
+                "name": "Chimeric Boon (3)",
+                "description": "Select a 4th @class-option:5wqe566dfz84894cxkpswk1pcj."
+              },
+              {
+                "name": "Expert Shifter (3)",
+                "description": "Gain 1 additional use of Beastshift per Safe Rest."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or INT."
+              },
+              {
+                "name": "Stormborn (2)",
+                "description": "Instead of rolling dice, deal the max damage of a Wind spell by spending a charge of your Beastshift feature. Whenever you end Beastshift, you may cast a cantrip for free."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "Tier 7 Spells",
+                "description": "You may now cast tier 7 spells and upcast spells at tier 7."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Stormshifter subclass feature."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Tier 8 Spells",
+                "description": "You may now cast tier 8 spells and upcast spells at tier 8."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 WIL or DEX."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Chimeric Boon (4)",
+                "description": "Select a 5th @class-option:5wqe566dfz84894cxkpswk1pcj."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or INT."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "Tier 9 Spells",
+                "description": "You may now cast tier 9 spells and upcast spells at tier 9."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "Archdruid",
+                "description": "+1 to any 2 of your stats. (1/encounter) Cast a spell up to tier 4 for free when you enter or leave a Beastshift form."
+              },
+              {
+                "name": "Upgraded Cantrips",
+                "description": "Your cantrips grow stronger."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Beastshift Forms",
+            "description": "Direbeast forms available to Beastshift into.",
+            "items": [
+              {
+                "name": "Fearsome Beast",
+                "description": "(Large) Transform into any Large beast. Gain DEX+LVL temp HP (until Beastshift ends), the Gore attack, and Fearsome. Gore: Action: 1d6+LVL damage, on hit: Gain LVL temp HP. Fearsome: Whenever you Interpose or Defend, you may spend 1 mana to force them to reroll the attack."
+              },
+              {
+                "name": "Beast of the Pack",
+                "description": "(Medium) Transform into a Medium beast. Gain +DEX speed, Supercharge, and the Thunderfang attack. Thunderfang: Action: 1d4+LVL piercing damage. Cumulative +1d4 lightning damage on crit or kill. Supercharge: Spend up to WIL mana for +1d8 lightning damage per mana spent on next Thunderfang (you take this damage on a miss)."
+              },
+              {
+                "name": "Beast of Nightmares",
+                "description": "(Tiny) Transform into any Tiny beast or insect. Sting: (1/round) Action: Reach 0. 1d4 piercing + 3×LVL acid damage (ignoring armor), on crit: 4×LVL damage. Silent But Deadly: Speed 2. You cannot Defend or Interpose. Attackers cannot target you until you become conspicuous."
+              }
+            ],
+            "id": "b4746b3f-e89e-42af-ab26-7cb2229a8ff6"
+          },
+          {
+            "name": "Chimeric Boons",
+            "description": "Choose Chimeric Boons as you level up. Apply 1 to a Direbeast form when you shift.",
+            "items": [
+              {
+                "name": "Beast of the Sea",
+                "description": "Can move, breathe, and fight underwater without penalty."
+              },
+              {
+                "name": "Climber",
+                "description": "Can walk across walls and ceilings; ignores difficult terrain."
+              },
+              {
+                "name": "Fleet Footed",
+                "description": "+2 speed. Advantage on Stealth checks and against the Grappled condition."
+              },
+              {
+                "name": "Earthwalker",
+                "description": "+2 armor. Can burrow through dirt and unworked rock at half speed (leaving a tunnel behind). Advantage against the Prone condition."
+              },
+              {
+                "name": "Keen Senses",
+                "description": "Advantage on Perception and Assess checks. Unaffected by Blinded."
+              },
+              {
+                "name": "Leader of the Pack",
+                "description": "Advantage against fear and charm effects for yourself and allies within 6 spaces."
+              },
+              {
+                "name": "Phasebeast",
+                "description": "Whenever you shift between this form and your normal form (and vice versa), you may teleport up to 6 spaces away to a place you can see."
+              },
+              {
+                "name": "Prehensile Tail",
+                "description": "Creatures you hit in melee that are your size or smaller are Grappled. If you hit a larger creature, you may move with it when it moves."
+              },
+              {
+                "name": "Winged",
+                "description": "Gain a flying speed. Forced movement moves you twice as far while flying."
+              }
+            ],
+            "id": "bcbb8a63-35ff-4110-9233-b3b67930d992"
+          }
+        ]
+      }
+    },
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "Zephyr",
+        "description": "A Zephyr dedicates their life to the relentless pursuit of kinetic perfection. They hone their bodies into blurs of motion, training from a young age in remote wilds or mountain monasteries, wielding speed to unleash blows that echo through their foes and slip past attacks like a whispering wind.\n\nZephyrs are Unarmed and Dangerous, relentless forces on the battlefield, and Graceful Combatants who move with unparalleled speed and turn enemy strikes into opportunities.",
+        "keyStats": ["DEX", "STR"],
+        "hitDie": "d8",
+        "startingHp": 13,
+        "saves": {
+          "STR": 0,
+          "DEX": 1,
+          "INT": -1,
+          "WIL": 0
+        },
+        "armor": [],
+        "weapons": {
+          "range": "melee"
+        },
+        "startingGear": ["Staff", "Traveling Robes & Sandals"],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Iron Defense",
+                "description": "Your armor equals DEX+STR as long as you are unarmored."
+              },
+              {
+                "name": "Swift Fists",
+                "description": "Your unarmed strikes are not subject to disadvantage imposed by Rushed Attacks, and their damage is 1d4+STR."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Swift Feet",
+                "description": "While unarmored, gain +2 speed and +LVL Initiative."
+              },
+              {
+                "name": "Burst of Speed",
+                "description": "When you roll Initiative, gain DEX Bursts of Speed. (1/turn) Spend 1 Burst to use for free: Slipstream (Defend, attack misses), Whirling Defense (Defend, apply armor to every attack this round), Swiftstrike (Attack, ignore Rushed Attack disadvantage), or Windstep (Move, ignore difficult terrain)."
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Choose a Zephyr subclass."
+              },
+              {
+                "name": "Kinetic Momentum",
+                "description": "Whenever you gain a Wound, gain a Burst of Speed."
+              },
+              {
+                "name": "Ethereal Projection",
+                "description": "(1/day) By meditating for at least 10 minutes, you can project an ethereal version of yourself up to 30 ft. away, passing through solid objects or barriers. You see through your projection's eyes. It lasts for up to 10 minutes."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "Unyielding Resolve",
+                "description": "Ignore the first Wound you would suffer each encounter (when-Wounded abilities, such as Kinetic Momentum, still trigger)."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or STR."
+              },
+              {
+                "name": "Martial Master",
+                "description": "Choose a @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "Reverberating Strikes",
+                "description": "You learn to focus your energy and transfer it as an additional concussive force into your foes. Add LVL bludgeoning damage to all of your melee attacks."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "Martial Master (2)",
+                "description": "Choose a 2nd @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+              },
+              {
+                "name": "Infuse Strength",
+                "description": "Action: Make an unarmed strike against an ally and infuse them with a portion of your own strength. Expend any number of Hit Dice and heal them as you would heal yourself during a Field Rest (roll them and add your STR to each)."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Zephyr subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Martial Master (3)",
+                "description": "Choose a 3rd @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or STR."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "Swift Feet (2)",
+                "description": "Gain an additional +2 speed as long as you are unarmored."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Martial Master (4)",
+                "description": "Choose a 4th @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+              },
+              {
+                "name": "Unyielding Resolve (2)",
+                "description": "Ignore the first 2 Wounds you would suffer each encounter."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Zephyr subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Martial Master (5)",
+                "description": "Choose a 5th @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or STR."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Iron Defense (2)",
+                "description": "Your armor is doubled while unarmored."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "Martial Master (6)",
+                "description": "Choose a 6th @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Zephyr subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Martial Master (7)",
+                "description": "Choose a 7th @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 DEX or STR."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Unyielding Resolve (3)",
+                "description": "Ignore the first 3 Wounds you would suffer each encounter. You have advantage on STR saves while Dying."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "Martial Master (8)",
+                "description": "Choose an 8th @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "Windborne",
+                "description": "+1 to any 2 of your stats. +1 additional burst of speed when you roll Initiative. Permanently gain 1 action (while Dying, you have a max of 2 actions)."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Martial Arts Abilities",
+            "description": "Choose Martial Arts Abilities as you level up.",
+            "items": [
+              {
+                "name": "Airshift",
+                "description": "You cannot be Grappled while conscious. While moving, you may travel across all terrain as normal ground, ignoring all ill effects (e.g., walls/ceilings, water, treetops, lava, spikes, clouds)."
+              },
+              {
+                "name": "Blur",
+                "description": "(1/encounter) When you Defend, you may first move up to half your speed away, taking no damage if you are now out of range or have Full Cover."
+              },
+              {
+                "name": "Bodily Discipline",
+                "description": "You may spend 1 action to end any non-Wound condition on yourself."
+              },
+              {
+                "name": "Enduring Soul",
+                "description": "Each time you roll Initiative, gain Hit Dice equal to the actions you get on your first turn. These Hit Dice expire at the end of combat if unused."
+              },
+              {
+                "name": "I Jump On His Back!",
+                "description": "While moving with your Windstep, if you move into the space of a creature your size or larger, you may jump onto its back. While on a creature this way, gain advantage on melee attacks against it, and any damage you avoid is dealt to it instead."
+              },
+              {
+                "name": "Kinetic Barrage",
+                "description": "Whenever you miss an attack, gain a cumulative +STR bonus to all damage you do for the rest of this encounter."
+              },
+              {
+                "name": "Mighty Soul",
+                "description": "You cannot be moved against your will. Whenever you would fail a saving throw, you may gain a Wound in order to add your STR to the result you rolled. You may repeat this any number of times."
+              },
+              {
+                "name": "Quickstrike",
+                "description": "When you Interpose, you may first make an unarmed strike against the enemy for free."
+              },
+              {
+                "name": "Use Momentum",
+                "description": "Whenever you avoid all of the damage of a melee attack (whether it misses or you Defend), you may swap places with the attacker and then choose another target that is now within the attack's reach, and they are hit instead."
+              },
+              {
+                "name": "Vital Rejuvenation",
+                "description": "When you receive healing for the first time on a turn, you may heal another target within 6 spaces HP equal to your STR."
+              },
+              {
+                "name": "Windstrider",
+                "description": "If you move through the space of a willing creature while using Windstep, they can move with you and choose any space adjacent to your path of movement to end in."
+              }
+            ],
+            "id": "384e0823-e593-4df5-abf4-9c3bf83cc054"
+          }
+        ]
+      }
+    }
+  ]
+}

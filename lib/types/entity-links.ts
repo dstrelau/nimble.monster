@@ -4,6 +4,7 @@ import {
   Drama,
   HandFist,
   HeartHandshake,
+  ListChecks,
   Scroll,
   Shield,
   Users,
@@ -20,7 +21,8 @@ export type EntityType =
   | "school"
   | "subclass"
   | "ancestry"
-  | "background";
+  | "background"
+  | "class-option";
 
 export interface EntityReference {
   id: string;
@@ -38,6 +40,7 @@ export const ENTITY_TYPE_ICONS: Record<EntityType, LucideIcon> = {
   subclass: HandFist,
   ancestry: Scroll,
   background: Drama,
+  "class-option": ListChecks,
 };
 
 export const ENTITY_TYPE_PATHS: Record<EntityType, string> = {
@@ -50,4 +53,5 @@ export const ENTITY_TYPE_PATHS: Record<EntityType, string> = {
   subclass: "subclasses",
   ancestry: "ancestries",
   background: "backgrounds",
+  "class-option": "class-options",
 };

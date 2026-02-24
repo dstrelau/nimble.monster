@@ -6,7 +6,6 @@ import {
   Drama,
   HandFist,
   HeartHandshake,
-  ListChecks,
   Menu,
   PersonStanding,
   Scroll,
@@ -123,12 +122,12 @@ const Header = () => {
       isActive: isActive("/classes"),
       icon: BookUser,
     },
-    {
-      href: "/class-options",
-      label: "Class Options",
-      isActive: isActive("/class-options"),
-      icon: ListChecks,
-    },
+    // {
+    //   href: "/class-options",
+    //   label: "Class Options",
+    //   isActive: isActive("/class-options"),
+    //   icon: ListChecks,
+    // },
     {
       href: "/subclasses",
       label: "Subclasses",
@@ -146,8 +145,6 @@ const Header = () => {
   const isHeroActive = () =>
     isActive("/ancestries") ||
     isActive("/backgrounds") ||
-    isActive("/classes") ||
-    isActive("/class-options") ||
     isActive("/subclasses") ||
     isActive("/spell-schools");
 
@@ -196,12 +193,6 @@ const Header = () => {
           label: "Items",
           isActive: isActive("/my/items"),
           icon: Shield,
-        },
-        {
-          href: "/my/classes",
-          label: "Classes",
-          isActive: isActive("/my/classes"),
-          icon: BookUser,
         },
         {
           href: "/my/subclasses",

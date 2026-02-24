@@ -13,10 +13,10 @@ import type {
   Source,
   StatType,
   SubclassClass,
-  User,
   WeaponSpec,
 } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
+import { toUser } from "./converters";
 import { getDatabase } from "./drizzle";
 import {
   type AwardRow,
@@ -36,18 +36,6 @@ import {
   type UserRow,
   users,
 } from "./schema";
-
-const toUser = (u: UserRow): User => ({
-  id: u.id,
-  discordId: u.discordId ?? "",
-  username: u.username ?? "",
-  displayName: u.displayName || u.username || "",
-  imageUrl:
-    u.imageUrl ||
-    (u.avatar
-      ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
-      : "https://cdn.discordapp.com/embed/avatars/0.png"),
-});
 
 const toSource = (s: SourceRow | null): Source | undefined => {
   if (!s) return undefined;
@@ -510,21 +498,6 @@ export const createClass = async (input: CreateClassInput): Promise<Class> => {
 
   const classId = crypto.randomUUID();
 
-  await db.insert(classes).values({
-    id: classId,
-    name: input.name,
-    description: input.description,
-    keyStats: input.keyStats,
-    hitDie: input.hitDie,
-    startingHp: input.startingHp,
-    saves: input.saves,
-    armor: input.armor,
-    weapons: input.weapons,
-    startingGear: input.startingGear,
-    visibility: input.visibility,
-    userId: userResult[0].id,
-  });
-
   const abilityInserts = input.levels.flatMap((level) =>
     level.abilities.map((ability, index) => ({
       id: crypto.randomUUID(),
@@ -536,19 +509,36 @@ export const createClass = async (input: CreateClassInput): Promise<Class> => {
     }))
   );
 
-  if (abilityInserts.length > 0) {
-    await db.insert(classAbilities).values(abilityInserts);
-  }
+  await db.transaction(async (tx) => {
+    await tx.insert(classes).values({
+      id: classId,
+      name: input.name,
+      description: input.description,
+      keyStats: input.keyStats,
+      hitDie: input.hitDie,
+      startingHp: input.startingHp,
+      saves: input.saves,
+      armor: input.armor,
+      weapons: input.weapons,
+      startingGear: input.startingGear,
+      visibility: input.visibility,
+      userId: userResult[0].id,
+    });
 
-  if (input.abilityListIds.length > 0) {
-    await db.insert(classesClassAbilityLists).values(
-      input.abilityListIds.map((listId, index) => ({
-        classId,
-        abilityListId: listId,
-        orderIndex: index,
-      }))
-    );
-  }
+    if (abilityInserts.length > 0) {
+      await tx.insert(classAbilities).values(abilityInserts);
+    }
+
+    if (input.abilityListIds.length > 0) {
+      await tx.insert(classesClassAbilityLists).values(
+        input.abilityListIds.map((listId, index) => ({
+          classId,
+          abilityListId: listId,
+          orderIndex: index,
+        }))
+      );
+    }
+  });
 
   const dataMap = await loadClassFullData(db, [classId]);
   const data = dataMap.get(classId);
@@ -587,25 +577,6 @@ export const updateClass = async (input: UpdateClassInput): Promise<Class> => {
     throw new Error("Class not found");
   }
 
-  await db
-    .update(classes)
-    .set({
-      name: input.name,
-      description: input.description,
-      keyStats: input.keyStats,
-      hitDie: input.hitDie,
-      startingHp: input.startingHp,
-      saves: input.saves,
-      armor: input.armor,
-      weapons: input.weapons,
-      startingGear: input.startingGear,
-      visibility: input.visibility,
-      updatedAt: new Date().toISOString(),
-    })
-    .where(eq(classes.id, input.id));
-
-  await db.delete(classAbilities).where(eq(classAbilities.classId, input.id));
-
   const abilityInserts = input.levels.flatMap((level) =>
     level.abilities.map((ability, index) => ({
       id: crypto.randomUUID(),
@@ -617,23 +588,44 @@ export const updateClass = async (input: UpdateClassInput): Promise<Class> => {
     }))
   );
 
-  if (abilityInserts.length > 0) {
-    await db.insert(classAbilities).values(abilityInserts);
-  }
+  await db.transaction(async (tx) => {
+    await tx
+      .update(classes)
+      .set({
+        name: input.name,
+        description: input.description,
+        keyStats: input.keyStats,
+        hitDie: input.hitDie,
+        startingHp: input.startingHp,
+        saves: input.saves,
+        armor: input.armor,
+        weapons: input.weapons,
+        startingGear: input.startingGear,
+        visibility: input.visibility,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(classes.id, input.id));
 
-  await db
-    .delete(classesClassAbilityLists)
-    .where(eq(classesClassAbilityLists.classId, input.id));
+    await tx.delete(classAbilities).where(eq(classAbilities.classId, input.id));
 
-  if (input.abilityListIds.length > 0) {
-    await db.insert(classesClassAbilityLists).values(
-      input.abilityListIds.map((listId, index) => ({
-        classId: input.id,
-        abilityListId: listId,
-        orderIndex: index,
-      }))
-    );
-  }
+    if (abilityInserts.length > 0) {
+      await tx.insert(classAbilities).values(abilityInserts);
+    }
+
+    await tx
+      .delete(classesClassAbilityLists)
+      .where(eq(classesClassAbilityLists.classId, input.id));
+
+    if (input.abilityListIds.length > 0) {
+      await tx.insert(classesClassAbilityLists).values(
+        input.abilityListIds.map((listId, index) => ({
+          classId: input.id,
+          abilityListId: listId,
+          orderIndex: index,
+        }))
+      );
+    }
+  });
 
   const dataMap = await loadClassFullData(db, [input.id]);
   const data = dataMap.get(input.id);

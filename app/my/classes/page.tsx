@@ -24,9 +24,11 @@ export default async function MyClassesPage() {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">My Classes</h1>
-        <Button asChild>
-          <Link href="/classes/new">Create New Class</Link>
-        </Button>
+        {process.env.NEXT_PUBLIC_ENABLE_CLASS_CREATION === "true" && (
+          <Button asChild>
+            <Link href="/classes/new">Create New Class</Link>
+          </Button>
+        )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {classes.map((classEntity) => (

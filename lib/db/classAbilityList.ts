@@ -1,12 +1,12 @@
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import type {
   ClassAbilityItem,
   ClassAbilityList,
   ClassAbilityListMini,
   SubclassClass,
-  User,
 } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
+import { toUser } from "./converters";
 import { getDatabase } from "./drizzle";
 import {
   type ClassAbilityItemRow,
@@ -16,18 +16,6 @@ import {
   type UserRow,
   users,
 } from "./schema";
-
-const toUser = (u: UserRow): User => ({
-  id: u.id,
-  discordId: u.discordId ?? "",
-  username: u.username ?? "",
-  displayName: u.displayName || u.username || "",
-  imageUrl:
-    u.imageUrl ||
-    (u.avatar
-      ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
-      : "https://cdn.discordapp.com/embed/avatars/0.png"),
-});
 
 const toClassAbilityListMini = (
   list: ClassAbilityListRow
@@ -79,9 +67,29 @@ export const deleteClassAbilityList = async ({
 
   const result = await db
     .delete(classAbilityLists)
-    .where(eq(classAbilityLists.id, id));
+    .where(
+      and(
+        eq(classAbilityLists.id, id),
+        eq(classAbilityLists.userId, userResult[0].id)
+      )
+    );
 
   return result.rowsAffected > 0;
+};
+
+export const findClassAbilityListName = async (
+  id: string
+): Promise<{ id: string; name: string } | null> => {
+  if (!isValidUUID(id)) return null;
+
+  const db = getDatabase();
+  const rows = await db
+    .select({ id: classAbilityLists.id, name: classAbilityLists.name })
+    .from(classAbilityLists)
+    .where(eq(classAbilityLists.id, id))
+    .limit(1);
+
+  return rows.length > 0 ? rows[0] : null;
 };
 
 export const findClassAbilityList = async (
@@ -157,25 +165,27 @@ export const createClassAbilityList = async (
 
   const listId = crypto.randomUUID();
 
-  await db.insert(classAbilityLists).values({
-    id: listId,
-    name: input.name,
-    description: input.description,
-    characterClass: input.characterClass || null,
-    userId: userResult[0].id,
-  });
+  await db.transaction(async (tx) => {
+    await tx.insert(classAbilityLists).values({
+      id: listId,
+      name: input.name,
+      description: input.description,
+      characterClass: input.characterClass || null,
+      userId: userResult[0].id,
+    });
 
-  if (input.items.length > 0) {
-    await db.insert(classAbilityItems).values(
-      input.items.map((item, index) => ({
-        id: crypto.randomUUID(),
-        classAbilityListId: listId,
-        name: item.name,
-        description: item.description,
-        orderIndex: index,
-      }))
-    );
-  }
+    if (input.items.length > 0) {
+      await tx.insert(classAbilityItems).values(
+        input.items.map((item, index) => ({
+          id: crypto.randomUUID(),
+          classAbilityListId: listId,
+          name: item.name,
+          description: item.description,
+          orderIndex: index,
+        }))
+      );
+    }
+  });
 
   const items = await db
     .select()
@@ -220,7 +230,7 @@ export const updateClassAbilityList = async (
     throw new Error("User not found");
   }
 
-  await db
+  const updateResult = await db
     .update(classAbilityLists)
     .set({
       name: input.name,
@@ -228,24 +238,35 @@ export const updateClassAbilityList = async (
       characterClass: input.characterClass || null,
       updatedAt: new Date().toISOString(),
     })
-    .where(eq(classAbilityLists.id, input.id));
+    .where(
+      and(
+        eq(classAbilityLists.id, input.id),
+        eq(classAbilityLists.userId, userResult[0].id)
+      )
+    );
+
+  if (updateResult.rowsAffected === 0) {
+    throw new Error("Class ability list not found or access denied");
+  }
 
   // Replace items
-  await db
-    .delete(classAbilityItems)
-    .where(eq(classAbilityItems.classAbilityListId, input.id));
+  await db.transaction(async (tx) => {
+    await tx
+      .delete(classAbilityItems)
+      .where(eq(classAbilityItems.classAbilityListId, input.id));
 
-  if (input.items.length > 0) {
-    await db.insert(classAbilityItems).values(
-      input.items.map((item, index) => ({
-        id: crypto.randomUUID(),
-        classAbilityListId: input.id,
-        name: item.name,
-        description: item.description,
-        orderIndex: index,
-      }))
-    );
-  }
+    if (input.items.length > 0) {
+      await tx.insert(classAbilityItems).values(
+        input.items.map((item, index) => ({
+          id: crypto.randomUUID(),
+          classAbilityListId: input.id,
+          name: item.name,
+          description: item.description,
+          orderIndex: index,
+        }))
+      );
+    }
+  });
 
   const items = await db
     .select()
