@@ -4,6 +4,7 @@ import {
   validateOfficialSource,
 } from "@/lib/services/validate-source";
 import type { User } from "@/lib/types";
+import { normalizeWeapons } from "@/lib/utils/weapons";
 
 export type { OfficialSource };
 export { OFFICIAL_USER_ID };
@@ -181,11 +182,7 @@ export function validateOfficialClassesJSON(data: unknown): {
       }
     }
 
-    if (!Array.isArray(attrs.weapons)) {
-      throw new Error(
-        `Invalid class at index ${index} ("${attrs.name}"): missing or invalid weapons`
-      );
-    }
+    attrs.weapons = normalizeWeapons(attrs.weapons);
 
     if (!Array.isArray(attrs.startingGear)) {
       throw new Error(
