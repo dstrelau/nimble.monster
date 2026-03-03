@@ -122,9 +122,7 @@ const toSubclass = (data: SubclassFullData): Subclass => {
     id: al.list.id,
     name: al.list.name,
     description: al.list.description,
-    characterClass: al.list.characterClass
-      ? (al.list.characterClass as SubclassClass)
-      : undefined,
+    characterClass: al.list.characterClass || undefined,
     creator: toUser(al.creator),
     createdAt: al.list.createdAt ? new Date(al.list.createdAt) : new Date(),
     updatedAt: al.list.updatedAt ? new Date(al.list.updatedAt) : new Date(),

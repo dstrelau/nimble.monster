@@ -170,7 +170,12 @@ export const ActionsSection: React.FC<ActionsSectionProps> = ({
         onClick={() =>
           onChange([
             ...actions,
-            { id: crypto.randomUUID(), name: "", damage: "", description: "" },
+            {
+              id: Math.random().toString(36).slice(2),
+              name: "",
+              damage: "",
+              description: "",
+            },
           ])
         }
       >

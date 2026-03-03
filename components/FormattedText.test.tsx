@@ -368,6 +368,19 @@ describe("FormattedText - Entity Links", () => {
     expect(entityPlaceholder).toBeInTheDocument();
   });
 
+  it("should parse @class: entity links and display the entity name", async () => {
+    const content = "See @class:abc123 for details.";
+
+    render(<FormattedText content={content} conditions={[]} />);
+
+    // Wait for the entity name to appear (rendered asynchronously via createRoot)
+    const entityText = await screen.findByText("Test Entity");
+    expect(entityText.closest("a")).toHaveAttribute(
+      "href",
+      expect.stringContaining("/classes/")
+    );
+  });
+
   it("should not parse invalid entity types", () => {
     const content = "This @invalidtype:abc123 should not parse.";
 

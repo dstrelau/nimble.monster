@@ -213,18 +213,3 @@ export function getClassEditUrl(classEntity: {
 }): string {
   return `/classes/${getClassSlug(classEntity)}/edit`;
 }
-
-// Class Options URLs
-export function getClassAbilityListUrl(list: {
-  name: string;
-  id: string;
-}): string {
-  return `/class-options/${slugify(list)}`;
-}
-
-export function getClassAbilityListEditUrl(list: {
-  name: string;
-  id: string;
-}): string {
-  return `/class-options/${slugify(list)}/edit`;
-}

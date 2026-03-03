@@ -288,10 +288,10 @@ function entityLinkPlugin(md: MarkdownIt) {
       "family",
       "collection",
       "school",
+      "class",
       "subclass",
       "ancestry",
       "background",
-      "class-option",
     ];
     if (!validTypes.includes(entityType)) {
       return false;

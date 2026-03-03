@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "2 March 2026",
+    entries: [
+      "Custom class creation. Class options (Combat Tactics, Sacred Decrees, etc) now display inline on the class page.",
+    ],
+  },
+  {
     date: "23 February 2026",
     entries: [
       "Add new pages for classes and class options. These are read-only currently. Creating new classes is coming soon.",

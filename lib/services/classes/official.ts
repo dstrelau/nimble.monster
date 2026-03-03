@@ -48,7 +48,7 @@ export interface JSONAPIClass {
     startingHp: number;
     saves: Record<string, number>;
     armor: string[];
-    weapons: object;
+    weapons: import("@/lib/types").WeaponSpec[];
     startingGear: string[];
     levels: JSONAPIClassLevel[];
     abilityLists: JSONAPIClassAbilityList[];
@@ -181,11 +181,7 @@ export function validateOfficialClassesJSON(data: unknown): {
       }
     }
 
-    if (
-      !attrs.weapons ||
-      typeof attrs.weapons !== "object" ||
-      Array.isArray(attrs.weapons)
-    ) {
+    if (!Array.isArray(attrs.weapons)) {
       throw new Error(
         `Invalid class at index ${index} ("${attrs.name}"): missing or invalid weapons`
       );

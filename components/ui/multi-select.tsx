@@ -24,24 +24,44 @@ export type Option = {
   label: string;
 };
 
-interface MultiSelectProps {
+export type OptionGroup = {
+  label: string;
   options: Option[];
+};
+
+interface MultiSelectProps {
+  options?: Option[];
+  groups?: OptionGroup[];
   selected: string[];
   onChange: (selected: string[]) => void;
   placeholder?: string;
   emptyText?: string;
   className?: string;
+  popoverClassName?: string;
+  itemClassName?: string;
+  showSearch?: boolean;
+  icon?: React.ReactNode;
 }
 
 export function MultiSelect({
   options,
+  groups,
   selected,
   onChange,
   placeholder = "Select options...",
   emptyText = "No options found.",
   className,
+  popoverClassName,
+  itemClassName,
+  showSearch = true,
+  icon,
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false);
+
+  const allOptions = React.useMemo(
+    () => groups?.flatMap((g) => g.options) ?? options ?? [],
+    [groups, options]
+  );
 
   const handleSelect = React.useCallback(
     (value: string) => {
@@ -57,14 +77,33 @@ export function MultiSelect({
     () =>
       selected
         .sort((a, b) => {
-          const aIndex = options.findIndex((opt) => opt.value === a);
-          const bIndex = options.findIndex((opt) => opt.value === b);
+          const aIndex = allOptions.findIndex((opt) => opt.value === a);
+          const bIndex = allOptions.findIndex((opt) => opt.value === b);
           return aIndex - bIndex;
         })
-        .map((value) => options.find((option) => option.value === value)?.label)
+        .map(
+          (value) => allOptions.find((option) => option.value === value)?.label
+        )
         .filter(Boolean)
         .join(", "),
-    [selected, options]
+    [selected, allOptions]
+  );
+
+  const renderItem = (option: Option) => (
+    <CommandItem
+      key={option.value}
+      value={option.label}
+      onSelect={() => handleSelect(option.value)}
+      className={itemClassName}
+    >
+      {option.label}
+      <Check
+        className={cn(
+          "ml-auto h-4 w-4",
+          selected.includes(option.value) ? "opacity-100" : "opacity-0"
+        )}
+      />
+    </CommandItem>
   );
 
   return (
@@ -76,36 +115,29 @@ export function MultiSelect({
           aria-expanded={open}
           className={cn("w-full justify-between", className)}
         >
-          <span className="truncate">
+          {icon}
+          <span className={cn("truncate", itemClassName)}>
             {selected.length > 0 ? selectedLabels : placeholder}
           </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className={cn("w-full p-0", popoverClassName)}>
         <Command>
-          <CommandInput placeholder="Search..." className="h-9" />
+          {showSearch && (
+            <CommandInput placeholder="Search..." className="h-9" />
+          )}
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.label}
-                  onSelect={() => handleSelect(option.value)}
-                >
-                  {option.label}
-                  <Check
-                    className={cn(
-                      "ml-auto h-4 w-4",
-                      selected.includes(option.value)
-                        ? "opacity-100"
-                        : "opacity-0"
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            {groups
+              ? groups.map((group) => (
+                  <CommandGroup key={group.label} heading={group.label}>
+                    {group.options.map(renderItem)}
+                  </CommandGroup>
+                ))
+              : (options ?? []).length > 0 && (
+                  <CommandGroup>{(options ?? []).map(renderItem)}</CommandGroup>
+                )}
           </CommandList>
         </Command>
       </PopoverContent>

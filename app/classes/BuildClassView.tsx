@@ -1,24 +1,45 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowBigDown, ArrowBigUp, Plus, Trash2 } from "lucide-react";
-import Link from "next/link";
+import {
+  ArrowBigDown,
+  ArrowBigUp,
+  Eye,
+  Heart,
+  Plus,
+  Shield,
+  Star,
+  Swords,
+  Trash2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useId, useMemo, useState } from "react";
 import {
   type Control,
+  type FieldArrayWithId,
   useFieldArray,
   useForm,
-  useWatch,
 } from "react-hook-form";
 import { z } from "zod";
 import { ClassDetailView } from "@/app/ui/class/ClassDetailView";
-import { BuildView } from "@/components/app/BuildView";
 import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
-import { ExampleLoader } from "@/components/app/ExampleLoader";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
+import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { DieFromNotation } from "@/components/icons/PolyhedralDice";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -28,6 +49,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupPrefix } from "@/components/ui/input-group";
 import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Select,
@@ -36,34 +58,71 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TagsInput } from "@/components/ui/tags-input";
 import { Textarea } from "@/components/ui/textarea";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Toggle } from "@/components/ui/toggle";
+import { useClassDraft } from "@/lib/hooks/useClassDraft";
 import {
   ARMOR_TYPES,
+  type ArmorType,
   type Class,
   HIT_DIE_SIZES,
   STAT_TYPES,
   UNKNOWN_USER,
 } from "@/lib/types";
+import { cn, randomUUID } from "@/lib/utils";
 import { getClassUrl } from "@/lib/utils/url";
 import { createClass, updateClass } from "../actions/class";
-import { getUserClassAbilityLists } from "../actions/classAbilityList";
 
-const weaponSpecSchema = z.object({
-  kind: z.array(z.enum(["blade", "stave", "wand"])),
-  type: z.enum(["STR", "DEX"]).optional(),
-  range: z.enum(["melee", "ranged"]).optional(),
-});
+const weaponSpecSchema = z.union([
+  z.object({ kind: z.enum(["blade", "stave", "wand"]) }),
+  z.object({ type: z.enum(["STR", "DEX"]) }),
+  z.object({ range: z.enum(["melee", "ranged"]) }),
+]);
 
-const abilitySchema = z.object({
-  id: z.uuid(),
-  name: z.string().min(1, "Ability name is required"),
-  description: z.string().min(1, "Ability description is required"),
-});
+const abilitySchema = z
+  .object({
+    id: z.uuid(),
+    name: z.string(),
+    description: z.string(),
+  })
+  .superRefine((a, ctx) => {
+    const nameEmpty = !a.name.trim();
+    const descEmpty = !a.description.trim();
+    if (!nameEmpty || !descEmpty) {
+      if (nameEmpty)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Ability name is required",
+          path: ["name"],
+        });
+      if (descEmpty)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Ability description is required",
+          path: ["description"],
+        });
+    }
+  });
 
 const levelSchema = z.object({
   level: z.number(),
   abilities: z.array(abilitySchema),
+});
+
+const classOptionItemSchema = z.object({
+  name: z.string().min(1, "Option name is required"),
+  description: z.string().optional(),
+});
+
+const classOptionListSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  items: z
+    .array(classOptionItemSchema)
+    .min(1, "At least one option is required"),
 });
 
 const formSchema = z.object({
@@ -74,107 +133,29 @@ const formSchema = z.object({
     .length(2, "Must select exactly 2 stats"),
   hitDie: z.enum(HIT_DIE_SIZES),
   startingHp: z.number().min(1),
-  saves: z.object({
-    STR: z.number(),
-    DEX: z.number(),
-    INT: z.number(),
-    WIL: z.number(),
-  }),
+  saves: z
+    .object({
+      STR: z.number(),
+      DEX: z.number(),
+      INT: z.number(),
+      WIL: z.number(),
+    })
+    .refine((saves) => Object.values(saves).some((v) => v === 1), {
+      message: "Must select an advantage save",
+    })
+    .refine((saves) => Object.values(saves).some((v) => v === -1), {
+      message: "Must select a disadvantage save",
+    }),
   armor: z.array(z.enum(ARMOR_TYPES)),
-  weapons: weaponSpecSchema,
+  weapons: z.array(weaponSpecSchema),
   startingGear: z.array(z.string()),
   levels: z.array(levelSchema),
-  abilityListIds: z.array(z.string()),
+  abilityLists: z.array(classOptionListSchema),
   visibility: z.enum(["public", "private"]),
 });
 
 type FormData = z.infer<typeof formSchema>;
-
-const EXAMPLE_CLASSES: Record<string, Omit<Class, "creator">> = {
-  Empty: {
-    visibility: "public",
-    id: "",
-    name: "",
-    description: "",
-    keyStats: [],
-    hitDie: "d8",
-    startingHp: 8,
-    saves: { STR: 0, DEX: 0, INT: 0, WIL: 0 },
-    armor: [],
-    weapons: { kind: [], type: undefined, range: undefined },
-    startingGear: [],
-    levels: [],
-    abilityLists: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  "The Cheat": {
-    visibility: "public",
-    id: "",
-    name: "The Cheat",
-    description: "Cloak and dagger…and dagger.",
-    keyStats: ["DEX", "INT"],
-    hitDie: "d6",
-    startingHp: 10,
-    saves: { STR: 0, DEX: 1, INT: 0, WIL: -1 },
-    armor: ["leather"],
-    weapons: { kind: ["blade"], type: "DEX", range: "melee" },
-    startingGear: ["2 Daggers", "Sling", "Cheap Hides", "Chalk"],
-    levels: [
-      {
-        level: 1,
-        abilities: [
-          {
-            id: "1",
-            name: "Sneak Attack",
-            description: "(1/turn) When you crit, deal +1d6 damage.",
-          },
-          {
-            id: "2",
-            name: "Vicious Opportunist",
-            description:
-              "(1/turn) When you hit a [[Distracted]] target with a melee attack, you may change this Primary Die roll to whatever you like (changing it to the max value counts as a crit).",
-          },
-        ],
-      },
-      {
-        level: 2,
-        abilities: [
-          {
-            id: "",
-            name: "Cheat",
-            description:
-              "You're a well-rounded cheater. Gain the following abilities:\n- (1/round) You may either Move or Hide for free.\n- (1/day) You may change any skill check to 10+INT\n- If you roll less than 10 on Initiative, you may change it to 10 instead.\n- You may gain advantage on skill checks while playing any games, competitions, or placing wagers. If you're caught though...",
-          },
-        ],
-      },
-      {
-        level: 3,
-        abilities: [
-          {
-            id: "1",
-            name: "Subclass",
-            description: "Choose a Cheat subclass.",
-          },
-          {
-            id: "2",
-            name: "Sneak Attack (2)",
-            description: "Your Sneak Attack becomes 1d8.",
-          },
-          {
-            id: "3",
-            name: "Theives' Cant",
-            description:
-              "You learn the secret language of rogues and scoundrels.",
-          },
-        ],
-      },
-    ],
-    abilityLists: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-};
+type EditorMode = "preview" | "edit";
 
 interface BuildClassViewProps {
   classEntity?: Class;
@@ -185,21 +166,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
   const router = useRouter();
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [availableLists, setAvailableLists] = useState<
-    Array<{ id: string; name: string }>
-  >([]);
-
-  useEffect(() => {
-    async function fetchLists() {
-      if (session?.user) {
-        const result = await getUserClassAbilityLists();
-        if (result.success) {
-          setAvailableLists(result.lists);
-        }
-      }
-    }
-    fetchLists();
-  }, [session]);
+  const [mode, setMode] = useState<EditorMode>("edit");
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -211,52 +178,67 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
       startingHp: classEntity?.startingHp || 8,
       saves: classEntity?.saves || { STR: 1, DEX: -1, INT: 0, WIL: 0 },
       armor: classEntity?.armor || [],
-      weapons: classEntity?.weapons || {
-        kind: [],
-        type: undefined,
-        range: undefined,
-      },
+      weapons: classEntity?.weapons || [],
       startingGear: classEntity?.startingGear || [],
-      levels: classEntity?.levels || [
-        {
-          level: 1,
-          abilities: [{ id: crypto.randomUUID(), name: "", description: "" }],
-        },
-      ],
-      abilityListIds: classEntity?.abilityLists?.map((list) => list.id) || [],
+      levels: Array.from({ length: 20 }, (_, i) => {
+        const existing = classEntity?.levels?.find((l) => l.level === i + 1);
+        return (
+          existing ?? {
+            level: i + 1,
+            abilities: [{ id: randomUUID(), name: "", description: "" }],
+          }
+        );
+      }),
+      abilityLists:
+        classEntity?.abilityLists?.map((l) => ({
+          name: l.name,
+          description: l.description || "",
+          items: l.items.map((i) => ({
+            name: i.name,
+            description: i.description || "",
+          })),
+        })) || [],
       visibility: classEntity?.visibility || "public",
     },
   });
 
   const {
-    fields: levelFields,
-    append: appendLevel,
-    remove: removeLevel,
-  } = useFieldArray({
+    draftState,
+    draftData,
+    lastSavedAt,
+    restoreDraft,
+    discardDraft,
+    onFormChange,
+    deleteDraftOnSave,
+  } = useClassDraft<FormData>({
+    classId: classEntity?.id ?? null,
+    classUpdatedAt: classEntity?.updatedAt,
+    isLoggedIn: !!session?.user?.id,
+    enabled: process.env.NEXT_PUBLIC_FEATURE_CLASS_AUTOSAVE === "true",
+  });
+
+  // Watch form changes and auto-save
+  useEffect(() => {
+    const subscription = form.watch((data) => {
+      onFormChange(data);
+    });
+    return () => subscription.unsubscribe();
+  }, [onFormChange, form.watch]);
+
+  const handleRestoreDraft = () => {
+    if (draftData) form.reset(draftData);
+    restoreDraft();
+  };
+
+  const { fields: levelFields } = useFieldArray({
     control: form.control,
     name: "levels",
   });
 
-  const {
-    fields: gearFields,
-    append: appendGear,
-    remove: removeGear,
-  } = useFieldArray({
-    control: form.control,
-    name: "startingGear" as never,
-  });
-
-  const { watch } = form;
-  const watchedValues = watch() as FormData;
+  const watchedValues = form.watch() as FormData;
 
   const creator = session?.user || UNKNOWN_USER;
   const previewClass = useMemo<Class>(() => {
-    const selectedListIds = watchedValues.abilityListIds || [];
-    const abilityLists =
-      classEntity?.abilityLists?.filter((list) =>
-        selectedListIds.includes(list.id)
-      ) || [];
-
     return {
       id: classEntity?.id || "",
       name: watchedValues.name || "",
@@ -268,20 +250,33 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
       armor: watchedValues.armor || [],
       weapons: watchedValues.weapons || [],
       startingGear: watchedValues.startingGear || [],
-      levels: watchedValues.levels || [],
-      abilityLists,
+      levels: (watchedValues.levels || [])
+        .map((l) => ({
+          ...l,
+          abilities: l.abilities.filter(
+            (a) => a.name.trim() || a.description.trim()
+          ),
+        }))
+        .filter((l) => l.abilities.length > 0),
+      abilityLists: (watchedValues.abilityLists || []).map((l) => ({
+        id: randomUUID(),
+        name: l.name,
+        description: l.description || "",
+        items: (l.items || []).map((item) => ({
+          id: randomUUID(),
+          name: item.name,
+          description: item.description || "",
+        })),
+        creator,
+        createdAt: classEntity?.createdAt || new Date(),
+        updatedAt: new Date(),
+      })),
       visibility: watchedValues.visibility,
-      creator: creator,
+      creator,
       createdAt: classEntity?.createdAt || new Date(),
       updatedAt: new Date(),
     };
-  }, [
-    watchedValues,
-    creator,
-    classEntity?.id,
-    classEntity?.createdAt,
-    classEntity?.abilityLists,
-  ]);
+  }, [watchedValues, creator, classEntity?.id, classEntity?.createdAt]);
 
   const handleSubmit = async (data: FormData) => {
     setIsSubmitting(true);
@@ -298,8 +293,22 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
         armor: data.armor,
         weapons: data.weapons,
         startingGear: data.startingGear,
-        levels: data.levels,
-        abilityListIds: data.abilityListIds,
+        levels: data.levels
+          .map((l) => ({
+            ...l,
+            abilities: l.abilities.filter(
+              (a) => a.name.trim() || a.description.trim()
+            ),
+          }))
+          .filter((l) => l.abilities.length > 0),
+        abilityLists: data.abilityLists.map((l) => ({
+          name: l.name.trim(),
+          description: l.description?.trim() || "",
+          items: l.items.map((i) => ({
+            name: i.name.trim(),
+            description: i.description?.trim() || "",
+          })),
+        })),
         visibility: data.visibility,
       };
 
@@ -308,6 +317,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
         : await createClass(payload);
 
       if (result.success && result.class) {
+        await deleteDraftOnSave();
         router.push(getClassUrl(result.class));
       } else {
         form.setError("root", {
@@ -325,484 +335,633 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
     }
   };
 
-  const loadExample = (exampleKey: string) => {
-    const example = EXAMPLE_CLASSES[exampleKey];
-    if (example) {
-      form.reset({
-        name: example.name,
-        description: example.description,
-        keyStats: example.keyStats,
-        hitDie: example.hitDie,
-        startingHp: example.startingHp,
-        saves: example.saves,
-        armor: example.armor,
-        weapons: example.weapons,
-        startingGear: example.startingGear,
-        levels: example.levels,
-        abilityListIds: [],
-        visibility: example.visibility,
-      });
-    }
-  };
-
-  const addLevel = () => {
-    const usedLevels = levelFields.map((field) => field.level);
-    const maxUsedLevel = Math.max(...usedLevels, 0);
-    const nextLevel = Math.min(maxUsedLevel + 1, 20);
-
-    appendLevel({
-      level: nextLevel,
-      abilities: [
-        {
-          id: crypto.randomUUID(),
-          name: "",
-          description: "",
-        },
-      ],
-    });
-  };
-
   return (
-    <BuildView
-      entityName={
-        watchedValues.name || (classEntity?.id ? "Edit Class" : "New Class")
-      }
-      previewTitle="Class Preview"
-      formClassName="md:col-span-3"
-      previewClassName="md:col-span-3"
-      formContent={
-        <>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-4"
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit, () => setMode("edit"))}
+        className="space-y-4 pb-10"
+      >
+        <div className="mx-auto w-full max-w-3xl flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-2">
+            <Toggle
+              variant="outline"
+              pressed={mode === "preview"}
+              onPressedChange={(pressed) =>
+                setMode(pressed ? "preview" : "edit")
+              }
+              aria-label="Toggle preview"
             >
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex flex-wrap gap-4">
-                <FormField
-                  control={form.control}
-                  name="keyStats"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Key Stats (Select 2)</FormLabel>
-                      <FormControl>
-                        <ToggleGroup
-                          type="multiple"
-                          value={field.value}
-                          onValueChange={field.onChange}
-                        >
-                          {STAT_TYPES.map((stat) => (
-                            <ToggleGroupItem key={stat} value={stat}>
-                              {stat}
-                            </ToggleGroupItem>
-                          ))}
-                        </ToggleGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="hitDie"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Hit Die</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-24">
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {HIT_DIE_SIZES.map((die) => (
-                            <SelectItem key={die} value={die}>
-                              {die}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="startingHp"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Starting HP</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(parseInt(e.target.value, 10))
-                          }
-                          className="w-24"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div>
-                <FormLabel>Saves</FormLabel>
-                <div className="flex gap-2">
-                  {STAT_TYPES.map((stat) => (
-                    <FormField
-                      key={stat}
-                      control={form.control}
-                      name={`saves.${stat}`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <div className="flex items-center">
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="size-8"
-                                onClick={(_v) =>
-                                  field.onChange(field.value === -1 ? 0 : -1)
-                                }
-                              >
-                                <ArrowBigDown
-                                  className={
-                                    field.value === -1 ? "fill-current" : ""
-                                  }
-                                />
-                              </Button>
-                              <span className="text-sm font-medium w-6 text-center">
-                                {stat}
-                              </span>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="size-8"
-                                onClick={(_v) =>
-                                  field.onChange(field.value === 1 ? 0 : 1)
-                                }
-                              >
-                                <ArrowBigUp
-                                  className={
-                                    field.value === 1 ? "fill-current" : ""
-                                  }
-                                />
-                              </Button>
-                            </div>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <FormField
-                control={form.control}
-                name="armor"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Armor</FormLabel>
-                    <FormControl>
-                      <ToggleGroup
-                        className="justify-start"
-                        type="multiple"
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        {ARMOR_TYPES.map((armor) => (
-                          <ToggleGroupItem
-                            key={armor}
-                            value={armor}
-                            className="capitalize"
-                          >
-                            {armor}
-                          </ToggleGroupItem>
-                        ))}
-                      </ToggleGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormItem>
-                <FormLabel>Weapons</FormLabel>
-                <div className="flex gap-2">
-                  <FormControl>
-                    <FormField
-                      control={form.control}
-                      name="weapons.kind"
-                      render={({ field }) => (
-                        <ToggleGroup
-                          className="justify-start"
-                          type="multiple"
-                          value={field.value}
-                          onValueChange={field.onChange}
-                        >
-                          <ToggleGroupItem value="blade" className="capitalize">
-                            Blades
-                          </ToggleGroupItem>
-                          <ToggleGroupItem value="stave" className="capitalize">
-                            Staves
-                          </ToggleGroupItem>
-                          <ToggleGroupItem value="wand" className="capitalize">
-                            Wands
-                          </ToggleGroupItem>
-                        </ToggleGroup>
-                      )}
-                    />
-                  </FormControl>
-                  <FormField
-                    control={form.control}
-                    name="weapons.type"
-                    render={({ field }) => (
-                      <ToggleGroup
-                        className="justify-start"
-                        type="single"
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <ToggleGroupItem value="STR">STR</ToggleGroupItem>
-                        <ToggleGroupItem value="DEX">DEX</ToggleGroupItem>
-                      </ToggleGroup>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="weapons.range"
-                    render={({ field }) => (
-                      <ToggleGroup
-                        className="justify-start"
-                        type="single"
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <ToggleGroupItem value="melee" className="capitalize">
-                          Melee
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="ranged" className="capitalize">
-                          Ranged
-                        </ToggleGroupItem>
-                      </ToggleGroup>
-                    )}
-                  />
-                  <FormMessage />
-                </div>
-              </FormItem>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <FormLabel>Starting Gear</FormLabel>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => appendGear("")}
-                  >
-                    <Plus className="size-4" />
-                    Add Item
+              <Eye />
+              Preview
+            </Toggle>
+            {mode === "edit" && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button type="button" variant="destructive">
+                    Clear
                   </Button>
-                </div>
-                {gearFields.map((field, index) => (
-                  <div key={field.id} className="flex gap-2">
-                    <FormField
-                      control={form.control}
-                      name={`startingGear.${index}`}
-                      render={({ field }) => (
-                        <FormItem className="flex-1">
-                          <FormControl>
-                            <Input {...field} placeholder="Item name" />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => removeGear(index)}
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">Level Abilities</h3>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addLevel}
-                    disabled={levelFields.length >= 20}
-                  >
-                    <Plus className="size-4" />
-                    Add Level
-                  </Button>
-                </div>
-
-                {levelFields.map((levelField, levelIndex) => (
-                  <div
-                    key={levelField.id}
-                    className="border rounded-lg p-4 space-y-4"
-                  >
-                    <LevelAbilitiesForm
-                      control={form.control}
-                      levelIndex={levelIndex}
-                      removeLevel={removeLevel}
-                    />
-                  </div>
-                ))}
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <FormLabel>Class Options</FormLabel>
-                  {process.env.NEXT_PUBLIC_ENABLE_CLASS_CREATION === "true" && (
-                    <Link href="/class-options/new">
-                      <Button type="button" variant="outline" size="sm">
-                        <Plus className="size-4" />
-                        Create New
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-                <FormField
-                  control={form.control}
-                  name="abilityListIds"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <MultiSelect
-                          options={availableLists.map((list) => ({
-                            value: list.id,
-                            label: list.name,
-                          }))}
-                          selected={field.value}
-                          onChange={field.onChange}
-                          placeholder="Select ability lists..."
-                          emptyText="No lists available. Create one first."
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="mt-10 flex flex-row justify-between items-center my-4">
-                <div className="flex items-center gap-2">
-                  {session?.user.id && (
-                    <Button type="submit" disabled={isSubmitting}>
-                      {isSubmitting
-                        ? "Saving..."
-                        : classEntity?.id
-                          ? "Update"
-                          : "Save"}
-                    </Button>
-                  )}
-                </div>
-                <fieldset className="space-y-2">
-                  <FormField
-                    control={form.control}
-                    name="visibility"
-                    render={({ field }) => (
-                      <VisibilityToggle
-                        id={`class-visibility-toggle-${id}`}
-                        checked={field.value === "public"}
-                        onCheckedChange={(checked) =>
-                          field.onChange(checked ? "public" : "private")
-                        }
-                        entityType="Class"
-                      />
-                    )}
-                  />
-                </fieldset>
-              </div>
-              {form.formState.errors.root && (
-                <div className="text-destructive text-sm">
-                  {form.formState.errors.root.message}
-                </div>
-              )}
-            </form>
-          </Form>
-          {!session?.user && (
-            <div className="flex items-center gap-2 py-4">
-              <DiscordLoginButton className="px-2 py-1" />
-              {" to save"}
+                </AlertDialogTrigger>
+                <AlertDialogContent className="duration-0 [animation-duration:0s]">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Clear form?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will reset all fields. Any unsaved changes will be
+                      lost.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => form.reset()}>
+                      Clear
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
+          {(draftState === "available" || draftState === "stale") && (
+            <div className="flex items-center gap-3 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/50 dark:text-amber-200">
+              <span className="flex-1">
+                {draftState === "stale"
+                  ? "An older draft was found. Restore it?"
+                  : "You have an unsaved draft. Restore it?"}
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => discardDraft()}
+              >
+                Discard
+              </Button>
+              <Button type="button" size="sm" onClick={handleRestoreDraft}>
+                Restore
+              </Button>
             </div>
           )}
-        </>
-      }
-      previewContent={
-        <ClassDetailView classEntity={previewClass} creator={creator} />
-      }
-      desktopPreviewContent={
-        <>
-          <ExampleLoader
-            examples={EXAMPLE_CLASSES}
-            onLoadExample={loadExample}
-          />
-          <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
+          {mode === "preview" ? (
             <ClassDetailView classEntity={previewClass} creator={creator} />
+          ) : (
+            <EditableClassCard
+              control={form.control}
+              levelFields={levelFields}
+            />
+          )}
+          <div className="flex items-center gap-3">
+            <fieldset>
+              <FormField
+                control={form.control}
+                name="visibility"
+                render={({ field }) => (
+                  <VisibilityToggle
+                    id={`class-visibility-toggle-${id}`}
+                    checked={field.value === "public"}
+                    onCheckedChange={(checked) =>
+                      field.onChange(checked ? "public" : "private")
+                    }
+                    entityType="Class"
+                  />
+                )}
+              />
+            </fieldset>
+            {session?.user.id && (
+              <div className="flex items-center gap-3 ml-auto">
+                {lastSavedAt && (
+                  <span className="text-xs text-muted-foreground">
+                    Draft saved at{" "}
+                    {lastSavedAt.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                )}
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting
+                    ? "Saving..."
+                    : classEntity?.id
+                      ? "Update"
+                      : "Save"}
+                </Button>
+              </div>
+            )}
           </div>
-        </>
-      }
-    />
+        </div>
+
+        {form.formState.errors.root && (
+          <div className="text-destructive text-sm">
+            {form.formState.errors.root.message}
+          </div>
+        )}
+
+        {!session?.user && mode === "edit" && (
+          <div className="flex items-center gap-2 py-2">
+            <DiscordLoginButton className="px-2 py-1" />
+            {" to save"}
+          </div>
+        )}
+      </form>
+    </Form>
   );
 }
 
-interface LevelAbilitiesFormProps {
+interface EditableClassCardProps {
   control: Control<FormData>;
-  levelIndex: number;
-  removeLevel: (index: number) => void;
+  levelFields: FieldArrayWithId<FormData, "levels">[];
 }
 
-function LevelAbilitiesForm({
+function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
+  const mutedIconClass = "stroke-neutral-400 dark:stroke-neutral-500";
+
+  return (
+    <Card>
+      <CardHeader className="text-center space-y-3">
+        <FormField
+          control={control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  className="h-auto text-center font-slab text-4xl md:text-4xl"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Description
+                <ConditionValidationIcon text={field.value} />
+              </FormLabel>
+              <FormControl>
+                <Textarea {...field} className="min-h-18 text-sm" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </CardHeader>
+
+      <CardContent className="pt-6 space-y-6">
+        <div className="relative w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem] py-3 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm space-y-4">
+          <div className="flex flex-col items-center gap-3 text-sm">
+            <div className="flex w-full flex-wrap justify-between gap-6">
+              <div className="flex flex-col items-start gap-1.5">
+                <span className="font-bold">Hit Die</span>
+                <div className="flex items-center gap-2">
+                  <FormField
+                    control={control}
+                    name="hitDie"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="text-xl font-bold">
+                              <div className="flex items-center gap-1">
+                                <SelectValue />
+                              </div>
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="text-lg">
+                            {HIT_DIE_SIZES.map((die) => (
+                              <SelectItem key={die} value={die}>
+                                <div className="flex items-center gap-2">
+                                  <DieFromNotation
+                                    className="size-5 stroke-neutral-400 fill-none dark:stroke-neutral-500"
+                                    die={die}
+                                  />
+                                  <span className="text-xl font-bold">
+                                    {die}
+                                  </span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col items-start gap-1.5">
+                <span className="font-bold">HP</span>
+                <FormField
+                  control={control}
+                  name="startingHp"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <InputGroup>
+                          <InputGroupPrefix>
+                            <Heart className={cn("size-5", mutedIconClass)} />
+                          </InputGroupPrefix>
+                          <Input
+                            type="number"
+                            min={1}
+                            value={field.value}
+                            onChange={(event) => {
+                              const next = Number.parseInt(
+                                event.target.value,
+                                10
+                              );
+                              field.onChange(Number.isNaN(next) ? 0 : next);
+                            }}
+                            className="w-24 pl-8 text-center text-xl md:text-xl font-bold shadow-none focus-visible:ring-0"
+                          />
+                        </InputGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex flex-col items-start gap-1.5">
+                <span className="font-bold">Armor</span>
+                <FormField
+                  control={control}
+                  name="armor"
+                  render={({ field }) => (
+                    <FormItem className="">
+                      <FormControl>
+                        <MultiSelect
+                          showSearch={false}
+                          icon={
+                            <Shield
+                              className={cn("size-5 shrink-0", mutedIconClass)}
+                            />
+                          }
+                          options={ARMOR_TYPES.map((armor) => ({
+                            value: armor,
+                            label:
+                              armor.charAt(0).toUpperCase() + armor.slice(1),
+                          }))}
+                          selected={field.value}
+                          onChange={(values) =>
+                            field.onChange(values as ArmorType[])
+                          }
+                          placeholder="None"
+                          itemClassName="text-xl font-bold"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex flex-col items-start gap-1.5 min-w-64">
+                <span className="font-bold">Weapons</span>
+                <FormField
+                  control={control}
+                  name="weapons"
+                  render={({ field }) => {
+                    const selected = field.value.map((spec) =>
+                      "kind" in spec
+                        ? spec.kind
+                        : "type" in spec
+                          ? spec.type
+                          : spec.range
+                    );
+                    return (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <MultiSelect
+                            showSearch={false}
+                            popoverClassName="min-w-48 px-2"
+                            icon={
+                              <Swords
+                                className={cn(
+                                  "size-5 shrink-0",
+                                  mutedIconClass
+                                )}
+                              />
+                            }
+                            groups={[
+                              {
+                                label: "Kind",
+                                options: [
+                                  { value: "blade", label: "Blades" },
+                                  { value: "stave", label: "Staves" },
+                                  { value: "wand", label: "Wands" },
+                                ],
+                              },
+                              {
+                                label: "Type",
+                                options: [
+                                  { value: "STR", label: "STR" },
+                                  { value: "DEX", label: "DEX" },
+                                ],
+                              },
+                              {
+                                label: "Range",
+                                options: [
+                                  { value: "melee", label: "Melee" },
+                                  { value: "ranged", label: "Ranged" },
+                                ],
+                              },
+                            ]}
+                            selected={selected}
+                            onChange={(values) =>
+                              field.onChange(
+                                values.flatMap(
+                                  (v): z.infer<typeof weaponSpecSchema>[] => {
+                                    if (
+                                      v === "blade" ||
+                                      v === "stave" ||
+                                      v === "wand"
+                                    )
+                                      return [{ kind: v }];
+                                    if (v === "STR" || v === "DEX")
+                                      return [{ type: v }];
+                                    if (v === "melee" || v === "ranged")
+                                      return [{ range: v }];
+                                    return [];
+                                  }
+                                )
+                              )
+                            }
+                            placeholder="None"
+                            className="h-10 max-w-xs text-xl font-bold"
+                            itemClassName="text-xl font-bold"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-start justify-center gap-16">
+            <div className="flex flex-col items-center gap-1.5">
+              <span className="font-bold">Key Stats</span>
+              <FormField
+                control={control}
+                name="keyStats"
+                render={({ field }) => {
+                  const [stat1 = "STR", stat2 = "DEX"] = field.value;
+                  return (
+                    <FormItem>
+                      <FormControl>
+                        <div className="flex items-center gap-2">
+                          <Select
+                            value={stat1}
+                            onValueChange={(v) => field.onChange([v, stat2])}
+                          >
+                            <SelectTrigger className="text-xl font-bold">
+                              <div className="flex items-center gap-1.5">
+                                <Star
+                                  className={cn(
+                                    "size-5 shrink-0",
+                                    mutedIconClass
+                                  )}
+                                />
+                                <SelectValue />
+                              </div>
+                            </SelectTrigger>
+                            <SelectContent className="text-lg">
+                              {STAT_TYPES.map((s) => (
+                                <SelectItem
+                                  className="text-lg font-bold"
+                                  key={s}
+                                  value={s}
+                                  disabled={s === stat2}
+                                >
+                                  {s}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <Select
+                            value={stat2}
+                            onValueChange={(v) => field.onChange([stat1, v])}
+                          >
+                            <SelectTrigger className="text-xl font-bold">
+                              <div className="flex items-center gap-1.5">
+                                <Star
+                                  className={cn(
+                                    "size-5 shrink-0",
+                                    mutedIconClass
+                                  )}
+                                />
+                                <SelectValue />
+                              </div>
+                            </SelectTrigger>
+                            <SelectContent className="text-lg">
+                              {STAT_TYPES.map((s) => (
+                                <SelectItem
+                                  className="text-lg font-bold"
+                                  key={s}
+                                  value={s}
+                                  disabled={s === stat1}
+                                >
+                                  {s}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+            </div>
+
+            <div className="flex flex-col items-center gap-1.5">
+              <span className="font-bold">Saves</span>
+              <FormField
+                control={control}
+                name="saves"
+                render={({ field }) => {
+                  const advStat =
+                    STAT_TYPES.find((k) => field.value[k] === 1) ?? "none";
+                  const disStat =
+                    STAT_TYPES.find((k) => field.value[k] === -1) ?? "none";
+
+                  const handleAdvChange = (newStat: string) => {
+                    const newSaves = { ...field.value };
+                    if (advStat !== "none") newSaves[advStat] = 0;
+                    const matched = STAT_TYPES.find((s) => s === newStat);
+                    if (matched) {
+                      if (disStat === newStat) newSaves[matched] = 0;
+                      newSaves[matched] = 1;
+                    }
+                    field.onChange(newSaves);
+                  };
+
+                  const handleDisChange = (newStat: string) => {
+                    const newSaves = { ...field.value };
+                    if (disStat !== "none") newSaves[disStat] = 0;
+                    const matched = STAT_TYPES.find((s) => s === newStat);
+                    if (matched) {
+                      if (advStat === newStat) newSaves[matched] = 0;
+                      newSaves[matched] = -1;
+                    }
+                    field.onChange(newSaves);
+                  };
+
+                  return (
+                    <FormItem>
+                      <FormControl>
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-1.5">
+                            <Select
+                              value={advStat}
+                              onValueChange={handleAdvChange}
+                            >
+                              <SelectTrigger className="text-xl font-bold">
+                                <div className="flex items-center gap-1.5">
+                                  <ArrowBigUp
+                                    className={cn(
+                                      "size-5 shrink-0",
+                                      mutedIconClass
+                                    )}
+                                  />
+                                  <SelectValue />
+                                </div>
+                              </SelectTrigger>
+                              <SelectContent className="text-lg">
+                                <SelectItem
+                                  className="text-lg font-bold"
+                                  value="none"
+                                >
+                                  —
+                                </SelectItem>
+                                {STAT_TYPES.map((s) => (
+                                  <SelectItem
+                                    className="text-lg font-bold"
+                                    key={s}
+                                    value={s}
+                                  >
+                                    {s}+
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <Select
+                              value={disStat}
+                              onValueChange={handleDisChange}
+                            >
+                              <SelectTrigger className="text-xl font-bold">
+                                <div className="flex items-center gap-1.5">
+                                  <ArrowBigDown
+                                    className={cn(
+                                      "size-5 shrink-0",
+                                      mutedIconClass
+                                    )}
+                                  />
+                                  <SelectValue />
+                                </div>
+                              </SelectTrigger>
+                              <SelectContent className="text-lg">
+                                <SelectItem
+                                  className="text-lg font-bold"
+                                  value="none"
+                                >
+                                  —
+                                </SelectItem>
+                                {STAT_TYPES.map((s) => (
+                                  <SelectItem
+                                    className="text-lg font-bold"
+                                    key={s}
+                                    value={s}
+                                  >
+                                    {s}–
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col items-start gap-2 w-full">
+            <span className="font-bold">Gear</span>
+            <FormField
+              control={control}
+              name="startingGear"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <TagsInput value={field.value} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <Tabs defaultValue="levels" className="mt-2">
+          <TabsList className="w-full">
+            <TabsTrigger value="levels">Level Abilities</TabsTrigger>
+            <TabsTrigger value="options">Class Options</TabsTrigger>
+          </TabsList>
+          <TabsContent value="levels">
+            <EditableLevels control={control} levelFields={levelFields} />
+          </TabsContent>
+          <TabsContent value="options">
+            <EditableOptions control={control} />
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
+  );
+}
+
+function EditableLevels({
+  control,
+  levelFields,
+}: {
+  control: Control<FormData>;
+  levelFields: FieldArrayWithId<FormData, "levels">[];
+}) {
+  return (
+    <div className="space-y-5">
+      {levelFields.map((levelField, levelIndex) => (
+        <EditableLevelCard
+          key={levelField.id}
+          control={control}
+          levelIndex={levelIndex}
+        />
+      ))}
+    </div>
+  );
+}
+
+function EditableLevelCard({
   control,
   levelIndex,
-  removeLevel,
-}: LevelAbilitiesFormProps) {
+}: {
+  control: Control<FormData>;
+  levelIndex: number;
+}) {
   const {
     fields: abilityFields,
     remove: removeAbility,
@@ -812,126 +971,254 @@ function LevelAbilitiesForm({
     name: `levels.${levelIndex}.abilities`,
   });
 
-  const allLevels = useWatch({ control, name: "levels" }) || [];
-  const usedLevels = allLevels
-    .map((level: { level: number }, index: number) =>
-      index === levelIndex ? null : level?.level
-    )
-    .filter((level: number | null) => level !== null) as number[];
-
-  const addAbility = () => {
-    appendAbility({
-      id: crypto.randomUUID(),
-      name: "",
-      description: "",
-    });
-  };
-
   return (
-    <>
-      <div className="flex items-center justify-between">
-        <FormField
-          control={control}
-          name={`levels.${levelIndex}.level`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Level</FormLabel>
-              <Select
-                onValueChange={(value) => field.onChange(Number(value))}
-                defaultValue={String(field.value)}
-              >
-                <FormControl>
-                  <SelectTrigger className="w-18">
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Array.from({ length: 20 }, (_, i) => i + 1).map((level) => (
-                    <SelectItem
-                      key={level}
-                      value={String(level)}
-                      disabled={usedLevels.includes(level)}
-                    >
-                      {level}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex gap-2 items-center justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={addAbility}
-          >
-            <Plus className="size-4" />
-            Add Ability
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => removeLevel(levelIndex)}
-          >
-            <Trash2 className="size-4" />
-            Level
-          </Button>
-        </div>
+    <div className="flex gap-5">
+      <div className="w-12 text-right">
+        <span className="font-stretch-condensed font-bold uppercase italic text-base text-muted-foreground">
+          LVL {levelIndex + 1}
+        </span>
       </div>
-      <div className="space-y-4">
-        {abilityFields.map((abilityField, abilityIndex) => (
-          <div key={abilityField.id}>
-            {abilityIndex > 0 && <hr className="my-4" />}
-            <div className="space-y-3">
+      <div className="flex-1 space-y-2">
+        <div className="space-y-5">
+          {abilityFields.map((abilityField, abilityIndex) => (
+            <div className="flex flex-col gap-2" key={abilityField.id}>
               <div className="flex gap-2 items-end justify-between">
                 <FormField
                   control={control}
                   name={`levels.${levelIndex}.abilities.${abilityIndex}.name`}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex-1">
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input className="min-w-56" {...field} />
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                {abilityFields.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => removeAbility(abilityIndex)}
-                    className="mb-0.5"
-                  >
-                    <Trash2 className="size-4" />
-                    Ability
-                  </Button>
-                )}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => removeAbility(abilityIndex)}
+                  aria-label="Remove ability"
+                  className="mb-0.5"
+                >
+                  <Trash2 className="size-4" />
+                </Button>
               </div>
-
               <FormField
                 control={control}
                 name={`levels.${levelIndex}.abilities.${abilityIndex}.description`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>
+                      Description
+                      <ConditionValidationIcon text={field.value} />
+                    </FormLabel>
                     <FormControl>
-                      <Textarea className="min-h-18" {...field} />
+                      <Textarea {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <div className="flex justify-end">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              appendAbility({
+                id: randomUUID(),
+                name: "",
+                description: "",
+              })
+            }
+          >
+            <Plus className="size-4" />
+            Ability
+          </Button>
+        </div>
       </div>
-    </>
+    </div>
+  );
+}
+
+function EditableOptions({ control }: { control: Control<FormData> }) {
+  const {
+    fields: listFields,
+    append: appendList,
+    remove: removeList,
+  } = useFieldArray({
+    control,
+    name: "abilityLists",
+  });
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <h5 className="font-stretch-condensed font-bold uppercase italic text-base text-muted-foreground">
+          Class Options
+        </h5>
+      </div>
+      {listFields.map((listField, listIndex) => (
+        <div key={listField.id}>
+          {listIndex > 0 && <Separator className="mb-5" />}
+          <EditableOptionList
+            control={control}
+            listIndex={listIndex}
+            onRemove={() => removeList(listIndex)}
+          />
+        </div>
+      ))}
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={() =>
+          appendList({
+            name: "",
+            description: "",
+            items: [{ name: "", description: "" }],
+          })
+        }
+      >
+        <Plus className="size-4" />
+        Add Option List
+      </Button>
+    </div>
+  );
+}
+
+function EditableOptionList({
+  control,
+  listIndex,
+  onRemove,
+}: {
+  control: Control<FormData>;
+  listIndex: number;
+  onRemove: () => void;
+}) {
+  const {
+    fields: itemFields,
+    append: appendItem,
+    remove: removeItem,
+  } = useFieldArray({
+    control,
+    name: `abilityLists.${listIndex}.items`,
+  });
+
+  return (
+    <div className="flex gap-5">
+      <div className="flex-1 space-y-3">
+        <div className="flex gap-2 items-end justify-between">
+          <FormField
+            control={control}
+            name={`abilityLists.${listIndex}.name`}
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onRemove}
+            aria-label="Remove option list"
+            className="mb-0.5"
+          >
+            <Trash2 className="size-4" />
+          </Button>
+        </div>
+
+        <FormField
+          control={control}
+          name={`abilityLists.${listIndex}.description`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Description
+                <ConditionValidationIcon text={field.value} />
+              </FormLabel>
+              <FormControl>
+                <Textarea {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="pl-4 space-y-3 border-l border-neutral-200 dark:border-neutral-700">
+          <span className="text-sm font-medium text-muted-foreground">
+            Options
+          </span>
+          {itemFields.map((itemField, itemIndex) => (
+            <div key={itemField.id} className="flex flex-col gap-2">
+              <div className="flex gap-2 items-end">
+                <FormField
+                  control={control}
+                  name={`abilityLists.${listIndex}.items.${itemIndex}.name`}
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {itemFields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => removeItem(itemIndex)}
+                    className="mb-0.5"
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                )}
+              </div>
+              <FormField
+                control={control}
+                name={`abilityLists.${listIndex}.items.${itemIndex}.description`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Description
+                      <ConditionValidationIcon text={field.value} />
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          ))}
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => appendItem({ name: "", description: "" })}
+          >
+            <Plus className="size-4" />
+            Option
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }

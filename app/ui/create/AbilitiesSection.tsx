@@ -84,7 +84,11 @@ export const AbilitiesSection: React.FC<AbilitiesSectionProps> = ({
       onClick={() =>
         onChange([
           ...abilities,
-          { id: crypto.randomUUID(), name: "", description: "" },
+          {
+            id: Math.random().toString(36).slice(2),
+            name: "",
+            description: "",
+          },
         ])
       }
     >

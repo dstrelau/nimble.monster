@@ -60,7 +60,8 @@ Workflow:
 - In this version of Next.js, params are a Promise that need to be awaited.
 - Use OpenTelemetry.
 - Do not add console.\* functions permanently (they may be used for temporary debugging).
-- Use `cn `from lib/utils.ts for constructing dynamic className attributes. DO NOT use string concatenation for className.
+- Use `cn` from lib/utils.ts for constructing dynamic className attributes. DO NOT use string concatenation for className.
+- Never use `crypto.randomUUID()` directly in client components — it requires a secure context (HTTPS/localhost) and will throw on plain HTTP. Use `randomUUID()` from `lib/utils.ts` instead, which has a `Math.random` fallback.
 - You may not use an empty string value="" on a <Select> element. Use "none" and special-case this value to be null/undefined as appropriate.
 - Use lucide icons instead of custom SVGs
 - Always prefer reusing existing components over creating new ones. Before building a new component to display an entity, search for how that entity is already rendered elsewhere (e.g. detail pages, list cards) and reuse those components.

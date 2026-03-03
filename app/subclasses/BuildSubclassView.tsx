@@ -2,10 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
-import Link from "next/link";
+
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useId, useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import {
   type Control,
   useFieldArray,
@@ -29,7 +29,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { MultiSelect } from "@/components/ui/multi-select";
+
 import {
   Select,
   SelectContent,
@@ -46,7 +46,6 @@ import {
   UNKNOWN_USER,
 } from "@/lib/types";
 import { getSubclassUrl } from "@/lib/utils/url";
-import { getUserClassAbilityLists } from "../actions/classAbilityList";
 import { createSubclass, updateSubclass } from "../actions/subclass";
 
 const abilitySchema = z.object({
@@ -74,7 +73,6 @@ const formSchema = z.object({
   tagline: z.string().optional(),
   description: z.string().optional(),
   levels: z.array(levelSchema),
-  abilityListIds: z.array(z.string()),
   visibility: z.enum(["public", "private"]),
 });
 
@@ -167,22 +165,6 @@ export default function BuildSubclassView({
   const router = useRouter();
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [availableLists, setAvailableLists] = useState<
-    Array<{ id: string; name: string; characterClass?: string }>
-  >([]);
-
-  useEffect(() => {
-    async function fetchLists() {
-      if (session?.user) {
-        const result = await getUserClassAbilityLists();
-        if (result.success) {
-          setAvailableLists(result.lists);
-        }
-      }
-    }
-    fetchLists();
-  }, [session]);
-
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -198,10 +180,16 @@ export default function BuildSubclassView({
       levels: subclass?.levels || [
         {
           level: 3,
-          abilities: [{ id: crypto.randomUUID(), name: "", description: "" }],
+          abilities: [
+            {
+              id: Math.random().toString(36).slice(2),
+              name: "",
+              description: "",
+            },
+          ],
         },
       ],
-      abilityListIds: subclass?.abilityLists?.map((list) => list.id) || [],
+
       visibility: subclass?.visibility || "public",
     },
   });
@@ -220,12 +208,6 @@ export default function BuildSubclassView({
 
   const creator = session?.user || UNKNOWN_USER;
   const previewSubclass = useMemo<Subclass>(() => {
-    const selectedListIds = watchedValues.abilityListIds || [];
-    const abilityLists =
-      subclass?.abilityLists?.filter((list) =>
-        selectedListIds.includes(list.id)
-      ) || [];
-
     return {
       id: subclass?.id || "",
       name: watchedValues.name || "",
@@ -234,7 +216,7 @@ export default function BuildSubclassView({
       tagline: watchedValues.tagline || undefined,
       description: watchedValues.description || undefined,
       levels: watchedValues.levels || [],
-      abilityLists,
+      abilityLists: subclass?.abilityLists || [],
       visibility: watchedValues.visibility,
       creator: creator,
       createdAt: subclass?.createdAt || new Date(),
@@ -247,7 +229,6 @@ export default function BuildSubclassView({
     watchedValues.tagline,
     watchedValues.description,
     watchedValues.levels,
-    watchedValues.abilityListIds,
     watchedValues.visibility,
     creator,
     subclass?.id,
@@ -321,7 +302,7 @@ export default function BuildSubclassView({
       level: nextLevel,
       abilities: [
         {
-          id: crypto.randomUUID(),
+          id: Math.random().toString(36).slice(2),
           name: "",
           description: "",
         },
@@ -488,50 +469,6 @@ export default function BuildSubclassView({
                 ))}
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <FormLabel>Class Options</FormLabel>
-                  {process.env.NEXT_PUBLIC_ENABLE_CLASS_CREATION === "true" && (
-                    <Link href="/class-options/new">
-                      <Button type="button" variant="outline" size="sm">
-                        <Plus className="size-4" />
-                        Create New
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-                <FormField
-                  control={form.control}
-                  name="abilityListIds"
-                  render={({ field }) => {
-                    const currentClassName = watchedValues.className;
-                    const filteredLists = availableLists.filter(
-                      (list) =>
-                        !list.characterClass ||
-                        list.characterClass === currentClassName
-                    );
-
-                    return (
-                      <FormItem>
-                        <FormControl>
-                          <MultiSelect
-                            options={filteredLists.map((list) => ({
-                              value: list.id,
-                              label: list.name,
-                            }))}
-                            selected={field.value}
-                            onChange={field.onChange}
-                            placeholder="Select ability lists..."
-                            emptyText="No lists available. Create one first."
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-              </div>
-
               <div className="mt-10 flex flex-row justify-between items-center my-4">
                 <div className="flex items-center gap-2">
                   {session?.user.id && (
@@ -633,7 +570,7 @@ function LevelAbilitiesForm({
 
   const addAbility = () => {
     appendAbility({
-      id: crypto.randomUUID(),
+      id: Math.random().toString(36).slice(2),
       name: "",
       description: "",
     });

@@ -78,7 +78,7 @@
               },
               {
                 "name": "Savage Arsenal",
-                "description": "Choose 1 ability from the @class-option:2yqpnht06g9jmvtj13yrnxggb0."
+                "description": "Choose 1 ability from the Savage Arsenal."
               }
             ]
           },
@@ -100,7 +100,7 @@
             "abilities": [
               {
                 "name": "Savage Arsenal (2)",
-                "description": "Choose a 2nd @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+                "description": "Choose a 2nd Savage Arsenal ability."
               },
               {
                 "name": "Intensifying Fury (2)",
@@ -122,7 +122,7 @@
             "abilities": [
               {
                 "name": "Savage Arsenal (3)",
-                "description": "Choose a 3rd @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+                "description": "Choose a 3rd Savage Arsenal ability."
               },
               {
                 "name": "Key Stat Increase",
@@ -148,7 +148,7 @@
             "abilities": [
               {
                 "name": "Savage Arsenal (4)",
-                "description": "Choose a 4th @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+                "description": "Choose a 4th Savage Arsenal ability."
               }
             ]
           },
@@ -166,7 +166,7 @@
             "abilities": [
               {
                 "name": "Savage Arsenal (5)",
-                "description": "Choose a 5th @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+                "description": "Choose a 5th Savage Arsenal ability."
               },
               {
                 "name": "Key Stat Increase",
@@ -192,7 +192,7 @@
             "abilities": [
               {
                 "name": "Savage Arsenal (6)",
-                "description": "Choose a 6th @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+                "description": "Choose a 6th Savage Arsenal ability."
               }
             ]
           },
@@ -210,7 +210,7 @@
             "abilities": [
               {
                 "name": "Savage Arsenal (7)",
-                "description": "Choose a 7th @class-option:2yqpnht06g9jmvtj13yrnxggb0 ability."
+                "description": "Choose a 7th Savage Arsenal ability."
               },
               {
                 "name": "Key Stat Increase",
@@ -386,7 +386,7 @@
               },
               {
                 "name": "Underhanded Ability",
-                "description": "Choose an @class-option:47x3p6xsb192pbe8yedcvxkab1."
+                "description": "Choose an Underhanded Abilities."
               }
             ]
           },
@@ -412,7 +412,7 @@
             "abilities": [
               {
                 "name": "Underhanded Ability (2)",
-                "description": "Choose a 2nd @class-option:47x3p6xsb192pbe8yedcvxkab1."
+                "description": "Choose a 2nd Underhanded Abilities."
               },
               {
                 "name": "THAT'S Not What Happened!",
@@ -438,7 +438,7 @@
             "abilities": [
               {
                 "name": "Underhanded Ability (3)",
-                "description": "Choose a 3rd @class-option:47x3p6xsb192pbe8yedcvxkab1."
+                "description": "Choose a 3rd Underhanded Abilities."
               },
               {
                 "name": "Key Stat Increase",
@@ -464,7 +464,7 @@
             "abilities": [
               {
                 "name": "Underhanded Ability (4)",
-                "description": "Choose a 4th @class-option:47x3p6xsb192pbe8yedcvxkab1."
+                "description": "Choose a 4th Underhanded Abilities."
               }
             ]
           },
@@ -486,7 +486,7 @@
             "abilities": [
               {
                 "name": "Underhanded Ability (5)",
-                "description": "Choose a 5th @class-option:47x3p6xsb192pbe8yedcvxkab1."
+                "description": "Choose a 5th Underhanded Abilities."
               },
               {
                 "name": "Key Stat Increase",
@@ -512,7 +512,7 @@
             "abilities": [
               {
                 "name": "Underhanded Ability (6)",
-                "description": "Choose a 6th @class-option:47x3p6xsb192pbe8yedcvxkab1."
+                "description": "Choose a 6th Underhanded Abilities."
               }
             ]
           },
@@ -534,7 +534,7 @@
             "abilities": [
               {
                 "name": "Underhanded Ability (7)",
-                "description": "Choose a 7th @class-option:47x3p6xsb192pbe8yedcvxkab1."
+                "description": "Choose a 7th Underhanded Abilities."
               },
               {
                 "name": "Key Stat Increase",
@@ -560,7 +560,7 @@
             "abilities": [
               {
                 "name": "Underhanded Ability (8)",
-                "description": "Choose an 8th @class-option:47x3p6xsb192pbe8yedcvxkab1."
+                "description": "Choose an 8th Underhanded Abilities."
               }
             ]
           },
@@ -668,7 +668,7 @@
             "abilities": [
               {
                 "name": "Commander's Orders",
-                "description": "Choose 2 @class-option:0tamp5r49b8dy8t1pvbz4ttgfw."
+                "description": "Choose 2 Commander's Orders."
               },
               {
                 "name": "Field Medic",
@@ -690,7 +690,7 @@
             "abilities": [
               {
                 "name": "Fit for Any Battlefield",
-                "description": "Choose a @class-option:065x2brd8z8nwsce15pvwdpsm9. When you roll Initiative, gain STR Combat Dice, each a d6. (1/attack) You may expend a Combat Die to perform a special maneuver. Combat Dice are lost when combat ends."
+                "description": "Choose a Combat Tactics. When you roll Initiative, gain STR Combat Dice, each a d6. (1/attack) You may expend a Combat Die to perform a special maneuver. Combat Dice are lost when combat ends."
               },
               {
                 "name": "Key Stat Increase",
@@ -720,7 +720,7 @@
             "abilities": [
               {
                 "name": "Fit for Any Battlefield (2)",
-                "description": "Choose another @class-option:065x2brd8z8nwsce15pvwdpsm9 or gain +1 max Combat Dice."
+                "description": "Choose another Combat Tactics or gain +1 max Combat Dice."
               },
               {
                 "name": "Weapon Mastery",
@@ -742,7 +742,7 @@
             "abilities": [
               {
                 "name": "Fit for Any Battlefield (3)",
-                "description": "Choose another @class-option:065x2brd8z8nwsce15pvwdpsm9 or gain +1 max Combat Dice."
+                "description": "Choose another Combat Tactics or gain +1 max Combat Dice."
               },
               {
                 "name": "Key Stat Increase",
@@ -772,7 +772,7 @@
             "abilities": [
               {
                 "name": "Fit for Any Battlefield (4)",
-                "description": "Choose another @class-option:065x2brd8z8nwsce15pvwdpsm9 or gain +1 max Combat Dice."
+                "description": "Choose another Combat Tactics or gain +1 max Combat Dice."
               },
               {
                 "name": "Weapon Mastery (2)",
@@ -794,7 +794,7 @@
             "abilities": [
               {
                 "name": "Fit for Any Battlefield (5)",
-                "description": "Choose another @class-option:065x2brd8z8nwsce15pvwdpsm9 or gain +1 max Combat Dice."
+                "description": "Choose another Combat Tactics or gain +1 max Combat Dice."
               },
               {
                 "name": "Key Stat Increase",
@@ -842,7 +842,7 @@
             "abilities": [
               {
                 "name": "Fit for Any Battlefield (6)",
-                "description": "Choose another @class-option:065x2brd8z8nwsce15pvwdpsm9 or gain +1 max Combat Dice."
+                "description": "Choose another Combat Tactics or gain +1 max Combat Dice."
               },
               {
                 "name": "Key Stat Increase",
@@ -1014,7 +1014,7 @@
             "abilities": [
               {
                 "name": "Thrill of the Hunt",
-                "description": "Choose 2 @class-option:5bcyt9bxca9gy9pntpxf9h5j7v (TotH) abilities. Gain a charge to use these abilities during that encounter whenever your quarry dies, you hit your quarry in melee, or crit your quarry at range."
+                "description": "Choose 2 Thrill of the Hunt (TotH) abilities. Gain a charge to use these abilities during that encounter whenever your quarry dies, you hit your quarry in melee, or crit your quarry at range."
               },
               {
                 "name": "Roll & Strike",
@@ -1040,7 +1040,7 @@
             "abilities": [
               {
                 "name": "Thrill of the Hunt (2)",
-                "description": "Choose a 3rd @class-option:5bcyt9bxca9gy9pntpxf9h5j7v ability."
+                "description": "Choose a 3rd Thrill of the Hunt ability."
               },
               {
                 "name": "Key Stat Increase",
@@ -1078,7 +1078,7 @@
               },
               {
                 "name": "Thrill of the Hunt (3)",
-                "description": "Choose a 4th @class-option:5bcyt9bxca9gy9pntpxf9h5j7v ability."
+                "description": "Choose a 4th Thrill of the Hunt ability."
               }
             ]
           },
@@ -1096,7 +1096,7 @@
             "abilities": [
               {
                 "name": "Thrill of the Hunt (4)",
-                "description": "Choose a 5th @class-option:5bcyt9bxca9gy9pntpxf9h5j7v ability."
+                "description": "Choose a 5th Thrill of the Hunt ability."
               },
               {
                 "name": "Key Stat Increase",
@@ -1144,7 +1144,7 @@
             "abilities": [
               {
                 "name": "Thrill of the Hunt (5)",
-                "description": "Choose a 6th @class-option:5bcyt9bxca9gy9pntpxf9h5j7v ability."
+                "description": "Choose a 6th Thrill of the Hunt ability."
               },
               {
                 "name": "Key Stat Increase",
@@ -1170,7 +1170,7 @@
             "abilities": [
               {
                 "name": "Thrill of the Hunt (6)",
-                "description": "Choose a 7th @class-option:5bcyt9bxca9gy9pntpxf9h5j7v ability."
+                "description": "Choose a 7th Thrill of the Hunt ability."
               }
             ]
           },
@@ -1360,7 +1360,7 @@
             "abilities": [
               {
                 "name": "Spellshaper",
-                "description": "You gain the ability to enhance your spells with powerful effects by spending additional mana. Choose 2 @class-option:0qv8rys60t97n9fd7bm5neh9tz abilities."
+                "description": "You gain the ability to enhance your spells with powerful effects by spending additional mana. Choose 2 Spellshaper abilities."
               },
               {
                 "name": "Tier 2 Spells",
@@ -1429,7 +1429,7 @@
             "abilities": [
               {
                 "name": "Spellshaper (2)",
-                "description": "Choose 1 additional @class-option:0qv8rys60t97n9fd7bm5neh9tz ability."
+                "description": "Choose 1 additional Spellshaper ability."
               },
               {
                 "name": "Secondary Stat Increase",
@@ -1481,7 +1481,7 @@
             "abilities": [
               {
                 "name": "Spellshaper (3)",
-                "description": "Choose 1 additional @class-option:0qv8rys60t97n9fd7bm5neh9tz ability."
+                "description": "Choose 1 additional Spellshaper ability."
               },
               {
                 "name": "Secondary Stat Increase",
@@ -1679,7 +1679,7 @@
               },
               {
                 "name": "Sacred Decree",
-                "description": "Learn 1 @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+                "description": "Learn 1 Sacred Decrees."
               }
             ]
           },
@@ -1726,7 +1726,7 @@
               },
               {
                 "name": "Sacred Decree (2)",
-                "description": "Learn a 2nd @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+                "description": "Learn a 2nd Sacred Decrees."
               }
             ]
           },
@@ -1765,7 +1765,7 @@
             "abilities": [
               {
                 "name": "Sacred Decree (3)",
-                "description": "Learn a 3rd @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+                "description": "Learn a 3rd Sacred Decrees."
               },
               {
                 "name": "Secondary Stat Increase",
@@ -1808,7 +1808,7 @@
             "abilities": [
               {
                 "name": "Sacred Decree (4)",
-                "description": "Learn a 4th @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+                "description": "Learn a 4th Sacred Decrees."
               },
               {
                 "name": "Key Stat Increase",
@@ -1834,7 +1834,7 @@
             "abilities": [
               {
                 "name": "Sacred Decree (5)",
-                "description": "Learn a 5th @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+                "description": "Learn a 5th Sacred Decrees."
               },
               {
                 "name": "Radiant Judgment (6)",
@@ -1860,7 +1860,7 @@
             "abilities": [
               {
                 "name": "Sacred Decree (6)",
-                "description": "Learn a 6th @class-option:4vw1qgdn3c8q7vfh9w9g67b607."
+                "description": "Learn a 6th Sacred Decrees."
               },
               {
                 "name": "Key Stat Increase",
@@ -2015,7 +2015,7 @@
             "abilities": [
               {
                 "name": "THE PACT IS SEALED",
-                "description": "Choose a subclass and 1 @class-option:7h9nev6pmv8t8brmaj73e8vdb8."
+                "description": "Choose a subclass and 1 Lesser Invocations."
               }
             ]
           },
@@ -2028,7 +2028,7 @@
               },
               {
                 "name": "A Gift from the Master",
-                "description": "Choose 1 @class-option:4kcmt1f8qk9t4sn30tf086hp3z."
+                "description": "Choose 1 Greater Invocations."
               }
             ]
           },
@@ -2054,7 +2054,7 @@
             "abilities": [
               {
                 "name": "A Gift from the Master (2)",
-                "description": "Choose a 2nd @class-option:4kcmt1f8qk9t4sn30tf086hp3z."
+                "description": "Choose a 2nd Greater Invocations."
               },
               {
                 "name": "Shadowmastery",
@@ -2084,7 +2084,7 @@
               },
               {
                 "name": "Lesser Invocation",
-                "description": "Choose a 2nd @class-option:7h9nev6pmv8t8brmaj73e8vdb8."
+                "description": "Choose a 2nd Lesser Invocations."
               },
               {
                 "name": "Shadowmastery (2)",
@@ -2097,7 +2097,7 @@
             "abilities": [
               {
                 "name": "A Gift from the Master (3)",
-                "description": "Choose a 3rd @class-option:4kcmt1f8qk9t4sn30tf086hp3z."
+                "description": "Choose a 3rd Greater Invocations."
               },
               {
                 "name": "Secondary Stat Increase",
@@ -2127,7 +2127,7 @@
               },
               {
                 "name": "Lesser Invocation (2)",
-                "description": "Choose a 3rd @class-option:7h9nev6pmv8t8brmaj73e8vdb8."
+                "description": "Choose a 3rd Lesser Invocations."
               }
             ]
           },
@@ -2162,7 +2162,7 @@
             "abilities": [
               {
                 "name": "A Gift from the Master (4)",
-                "description": "Choose a 4th @class-option:4kcmt1f8qk9t4sn30tf086hp3z."
+                "description": "Choose a 4th Greater Invocations."
               },
               {
                 "name": "Shadowmastery (3)",
@@ -2214,7 +2214,7 @@
             "abilities": [
               {
                 "name": "A Gift from the Master (5)",
-                "description": "Choose a 5th @class-option:4kcmt1f8qk9t4sn30tf086hp3z."
+                "description": "Choose a 5th Greater Invocations."
               }
             ]
           },
@@ -2432,7 +2432,7 @@
               },
               {
                 "name": "Sacred Grace",
-                "description": "Choose 2 @class-option:67dymrc9m98cw9atxh1sh0k118."
+                "description": "Choose 2 Sacred Graces."
               }
             ]
           },
@@ -2476,7 +2476,7 @@
             "abilities": [
               {
                 "name": "Sacred Grace (2)",
-                "description": "Choose a 3rd @class-option:67dymrc9m98cw9atxh1sh0k118."
+                "description": "Choose a 3rd Sacred Graces."
               },
               {
                 "name": "Secondary Stat Increase",
@@ -2528,7 +2528,7 @@
             "abilities": [
               {
                 "name": "Sacred Grace (3)",
-                "description": "Choose a 4th @class-option:67dymrc9m98cw9atxh1sh0k118."
+                "description": "Choose a 4th Sacred Graces."
               },
               {
                 "name": "Secondary Stat Increase",
@@ -2739,7 +2739,7 @@
               },
               {
                 "name": "Lyrical Weaponry",
-                "description": "Choose 1 ability from the @class-option:5qcwvmqybq9xdr9d1zkg3deq39 list."
+                "description": "Choose 1 ability from the Lyrical Weaponry list."
               }
             ]
           },
@@ -2800,7 +2800,7 @@
             "abilities": [
               {
                 "name": "Lyrical Weaponry (2)",
-                "description": "Choose a 2nd ability from the @class-option:5qcwvmqybq9xdr9d1zkg3deq39 list."
+                "description": "Choose a 2nd ability from the Lyrical Weaponry list."
               },
               {
                 "name": "Secondary Stat Increase",
@@ -2848,7 +2848,7 @@
             "abilities": [
               {
                 "name": "Lyrical Weaponry (3)",
-                "description": "Choose a 3rd ability from the @class-option:5qcwvmqybq9xdr9d1zkg3deq39 list."
+                "description": "Choose a 3rd ability from the Lyrical Weaponry list."
               },
               {
                 "name": "Secondary Stat Increase",
@@ -2900,7 +2900,7 @@
             "abilities": [
               {
                 "name": "Lyrical Weaponry (4)",
-                "description": "Choose a 4th ability from the @class-option:5qcwvmqybq9xdr9d1zkg3deq39 list."
+                "description": "Choose a 4th ability from the Lyrical Weaponry list."
               },
               {
                 "name": "Secondary Stat Increase",
@@ -3009,7 +3009,7 @@
             "abilities": [
               {
                 "name": "Direbeast Form",
-                "description": "You can Beastshift into a @class-option:[5mehnkzt4y8aqtp9kwp8h9n3zp|Fearsome Beast]."
+                "description": "You can Beastshift into a Fearsome Beast."
               },
               {
                 "name": "Mana and Unlock Tier 1 Spells",
@@ -3026,7 +3026,7 @@
               },
               {
                 "name": "Direbeast Form (2)",
-                "description": "You can Beastshift into a @class-option:[5mehnkzt4y8aqtp9kwp8h9n3zp|Beast of the Pack]."
+                "description": "You can Beastshift into a Beast of the Pack."
               }
             ]
           },
@@ -3052,7 +3052,7 @@
             "abilities": [
               {
                 "name": "Direbeast Form (3)",
-                "description": "You can Beastshift into a @class-option:[5mehnkzt4y8aqtp9kwp8h9n3zp|Beast of Nightmares]."
+                "description": "You can Beastshift into a Beast of Nightmares."
               },
               {
                 "name": "Upgraded Cantrips",
@@ -3069,7 +3069,7 @@
             "abilities": [
               {
                 "name": "Chimeric Boon",
-                "description": "Choose 2 @class-option:5wqe566dfz84894cxkpswk1pcj. Whenever you shapeshift into a Direbeast form, you may modify it with 1 @class-option:5wqe566dfz84894cxkpswk1pcj you know."
+                "description": "Choose 2 Chimeric Boons. Whenever you shapeshift into a Direbeast form, you may modify it with 1 Chimeric Boons you know."
               },
               {
                 "name": "Expert Shifter",
@@ -3116,7 +3116,7 @@
             "abilities": [
               {
                 "name": "Chimeric Boon (2)",
-                "description": "Choose a 3rd @class-option:5wqe566dfz84894cxkpswk1pcj."
+                "description": "Choose a 3rd Chimeric Boons."
               },
               {
                 "name": "Expert Shifter (2)",
@@ -3163,7 +3163,7 @@
               },
               {
                 "name": "Chimeric Boon (3)",
-                "description": "Select a 4th @class-option:5wqe566dfz84894cxkpswk1pcj."
+                "description": "Select a 4th Chimeric Boons."
               },
               {
                 "name": "Expert Shifter (3)",
@@ -3224,7 +3224,7 @@
             "abilities": [
               {
                 "name": "Chimeric Boon (4)",
-                "description": "Select a 5th @class-option:5wqe566dfz84894cxkpswk1pcj."
+                "description": "Select a 5th Chimeric Boons."
               },
               {
                 "name": "Secondary Stat Increase",
@@ -3406,7 +3406,7 @@
               },
               {
                 "name": "Martial Master",
-                "description": "Choose a @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+                "description": "Choose a Martial Arts Abilities."
               }
             ]
           },
@@ -3428,7 +3428,7 @@
             "abilities": [
               {
                 "name": "Martial Master (2)",
-                "description": "Choose a 2nd @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+                "description": "Choose a 2nd Martial Arts Abilities."
               },
               {
                 "name": "Infuse Strength",
@@ -3450,7 +3450,7 @@
             "abilities": [
               {
                 "name": "Martial Master (3)",
-                "description": "Choose a 3rd @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+                "description": "Choose a 3rd Martial Arts Abilities."
               },
               {
                 "name": "Key Stat Increase",
@@ -3476,7 +3476,7 @@
             "abilities": [
               {
                 "name": "Martial Master (4)",
-                "description": "Choose a 4th @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+                "description": "Choose a 4th Martial Arts Abilities."
               },
               {
                 "name": "Unyielding Resolve (2)",
@@ -3498,7 +3498,7 @@
             "abilities": [
               {
                 "name": "Martial Master (5)",
-                "description": "Choose a 5th @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+                "description": "Choose a 5th Martial Arts Abilities."
               },
               {
                 "name": "Key Stat Increase",
@@ -3524,7 +3524,7 @@
             "abilities": [
               {
                 "name": "Martial Master (6)",
-                "description": "Choose a 6th @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+                "description": "Choose a 6th Martial Arts Abilities."
               }
             ]
           },
@@ -3542,7 +3542,7 @@
             "abilities": [
               {
                 "name": "Martial Master (7)",
-                "description": "Choose a 7th @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+                "description": "Choose a 7th Martial Arts Abilities."
               },
               {
                 "name": "Key Stat Increase",
@@ -3568,7 +3568,7 @@
             "abilities": [
               {
                 "name": "Martial Master (8)",
-                "description": "Choose an 8th @class-option:1r9r427sck9qttqx4w7fw3sg2m."
+                "description": "Choose an 8th Martial Arts Abilities."
               }
             ]
           },

@@ -468,7 +468,10 @@ export const classes = sqliteTable(
       .$type<string[]>()
       .notNull()
       .default([]),
-    weapons: text("weapons", { mode: "json" }).notNull().default("{}"),
+    weapons: text("weapons", { mode: "json" })
+      .$type<import("@/lib/types").WeaponSpec[]>()
+      .notNull()
+      .default([]),
     startingGear: text("starting_gear", { mode: "json" })
       .$type<string[]>()
       .notNull()
@@ -529,9 +532,7 @@ export const classAbilityLists = sqliteTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onUpdate: "cascade" }),
-    sourceId: text("source_id").references(() => sources.id, {
-      onUpdate: "cascade",
-    }),
+    sourceId: text("source_id").references(() => sources.id),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },
@@ -951,6 +952,29 @@ export const ancestriesAwards = sqliteTable(
   (table) => [primaryKey({ columns: [table.ancestryId, table.awardId] })]
 );
 
+export const CLASS_DRAFT_NEW_SENTINEL = "__new__";
+
+// Class drafts table (auto-save form state)
+export const classDrafts = sqliteTable(
+  "class_drafts",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    classId: text("class_id").notNull().default(CLASS_DRAFT_NEW_SENTINEL),
+    data: text("data", { mode: "json" }).notNull(),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [
+    unique().on(table.userId, table.classId),
+    index("idx_class_drafts_user_id").on(table.userId),
+  ]
+);
+
 // Type exports for row types
 export type UserRow = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
@@ -992,3 +1016,5 @@ export type ClassAbilityListRow = typeof classAbilityLists.$inferSelect;
 export type ClassAbilityListInsert = typeof classAbilityLists.$inferInsert;
 export type ClassAbilityItemRow = typeof classAbilityItems.$inferSelect;
 export type ClassAbilityItemInsert = typeof classAbilityItems.$inferInsert;
+export type ClassDraftRow = typeof classDrafts.$inferSelect;
+export type ClassDraftInsert = typeof classDrafts.$inferInsert;

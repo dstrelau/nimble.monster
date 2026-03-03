@@ -32,7 +32,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { type SpellSchool, UNKNOWN_USER } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, randomUUID } from "@/lib/utils";
 import { getSpellSchoolUrl } from "@/lib/utils/url";
 import { createSpellSchool, updateSpellSchool } from "../spell-schools/actions";
 
@@ -185,7 +185,7 @@ export default function BuildSchoolView({
   let previewSchool: SpellSchool;
   try {
     const spells = (watchedValues.spells || []).map((spell) => ({
-      id: spell?.id || crypto.randomUUID(),
+      id: spell?.id || Math.random().toString(36).slice(2),
       schoolId: "",
       name: spell?.name || "",
       tier: spell?.tier ?? 0,
@@ -212,7 +212,7 @@ export default function BuildSchoolView({
     }));
 
     previewSchool = {
-      id: watchedValues.id || crypto.randomUUID(),
+      id: watchedValues.id || Math.random().toString(36).slice(2),
       name: watchedValues.name || "Untitled School",
       description: watchedValues.description || undefined,
       visibility: watchedValues.visibility,
@@ -226,7 +226,7 @@ export default function BuildSchoolView({
     };
   } catch {
     previewSchool = {
-      id: crypto.randomUUID(),
+      id: Math.random().toString(36).slice(2),
       name: "Untitled School",
       description: undefined,
       visibility: "public",
@@ -239,7 +239,7 @@ export default function BuildSchoolView({
 
   const addSpell = () => {
     append({
-      id: crypto.randomUUID(),
+      id: randomUUID(),
       name: "",
       tier: 0,
       actions: 1,
@@ -287,7 +287,12 @@ export default function BuildSchoolView({
       formContent={
         <>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form
+              onSubmit={form.handleSubmit(onSubmit, () =>
+                setError("Please fix the errors above before submitting.")
+              )}
+              className="space-y-6"
+            >
               <FormField
                 control={form.control}
                 name="name"

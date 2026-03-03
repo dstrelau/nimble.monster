@@ -60,6 +60,26 @@ export function formatSaves(saves: Record<StatType, number>): string {
     .join(", ");
 }
 
+/**
+ * Generate a UUID that works in non-secure contexts (plain HTTP).
+ * crypto.randomUUID() requires a secure context (HTTPS or localhost),
+ * so this provides a Math.random fallback for dev environments.
+ * Always use this instead of crypto.randomUUID() in client components.
+ */
+export function randomUUID(): string {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
+    return crypto.randomUUID();
+  }
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 type Curry<P extends unknown[], R> = <T extends unknown[]>(
   ...args: T
 ) => T extends [...P]

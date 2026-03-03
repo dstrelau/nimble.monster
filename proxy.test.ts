@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { describe, expect, it, vi } from "vitest";
 
+vi.stubEnv("ALLOWED_ORIGINS", "tail26991.ts.net");
+
 vi.mock("@/lib/auth", () => ({
   auth: (callback: (req: NextRequest) => Response | undefined) => {
     return (request: NextRequest) =>
@@ -67,6 +69,15 @@ describe("proxy", () => {
 
   it("allows POST to /api/ routes", async () => {
     const req = makeRequest("POST", "/api/monsters");
+    const res = await proxy(req);
+    expect(res?.status).not.toBe(400);
+  });
+
+  it("allows POST with Next-Action and ALLOWED_ORIGINS origin", async () => {
+    const req = makeRequest("POST", "/monsters/abc-123", {
+      "next-action": "abc123",
+      origin: "http://devbox.tail26991.ts.net:3000",
+    });
     const res = await proxy(req);
     expect(res?.status).not.toBe(400);
   });

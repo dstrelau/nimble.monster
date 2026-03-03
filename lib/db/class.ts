@@ -12,10 +12,11 @@ import type {
   HitDieSize,
   Source,
   StatType,
-  SubclassClass,
+  User,
   WeaponSpec,
 } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
+import { normalizeWeapons } from "@/lib/utils/weapons";
 import { toUser } from "./converters";
 import { getDatabase } from "./drizzle";
 import {
@@ -111,9 +112,7 @@ const toClass = (data: ClassFullData): Class => {
       id: al.list.id,
       name: al.list.name,
       description: al.list.description,
-      characterClass: al.list.characterClass
-        ? (al.list.characterClass as SubclassClass)
-        : undefined,
+      characterClass: al.list.characterClass || undefined,
       creator: toUser(al.creator),
       createdAt: al.list.createdAt ? new Date(al.list.createdAt) : new Date(),
       updatedAt: al.list.updatedAt ? new Date(al.list.updatedAt) : new Date(),
@@ -135,7 +134,7 @@ const toClass = (data: ClassFullData): Class => {
     startingHp: data.class.startingHp,
     saves: (data.class.saves ?? {}) as Record<StatType, number>,
     armor: (data.class.armor ?? []) as ArmorType[],
-    weapons: (data.class.weapons ?? {}) as WeaponSpec,
+    weapons: normalizeWeapons(data.class.weapons),
     startingGear: (data.class.startingGear ?? []) as string[],
     levels,
     abilityLists: abilityListsResult,
@@ -467,6 +466,30 @@ export const searchPublicClassMinis = async (
   return rows.map(toClassMini);
 };
 
+export const searchPublicClassesWithCreator = async (
+  searchTerm?: string
+): Promise<(ClassMini & { creator: User })[]> => {
+  const db = getDatabase();
+
+  const conditions = [eq(classes.visibility, "public")];
+
+  if (searchTerm) {
+    conditions.push(like(classes.name, `%${searchTerm}%`));
+  }
+
+  const rows = await db
+    .select({ class: classes, user: users })
+    .from(classes)
+    .innerJoin(users, eq(classes.userId, users.id))
+    .where(and(...conditions))
+    .orderBy(asc(classes.name));
+
+  return rows.map((r) => ({
+    ...toClassMini(r.class),
+    creator: toUser(r.user),
+  }));
+};
+
 export interface CreateClassInput {
   name: string;
   description: string;
@@ -475,10 +498,14 @@ export interface CreateClassInput {
   startingHp: number;
   saves: Record<StatType, number>;
   armor: ArmorType[];
-  weapons: WeaponSpec;
+  weapons: WeaponSpec[];
   startingGear: string[];
   levels: ClassLevel[];
-  abilityListIds: string[];
+  abilityLists: Array<{
+    name: string;
+    description: string;
+    items: Array<{ name: string; description: string }>;
+  }>;
   visibility: ClassVisibility;
   discordId: string;
 }
@@ -529,14 +556,30 @@ export const createClass = async (input: CreateClassInput): Promise<Class> => {
       await tx.insert(classAbilities).values(abilityInserts);
     }
 
-    if (input.abilityListIds.length > 0) {
-      await tx.insert(classesClassAbilityLists).values(
-        input.abilityListIds.map((listId, index) => ({
-          classId,
-          abilityListId: listId,
-          orderIndex: index,
-        }))
-      );
+    for (const [index, list] of input.abilityLists.entries()) {
+      const listId = crypto.randomUUID();
+      await tx.insert(classAbilityLists).values({
+        id: listId,
+        name: list.name,
+        description: list.description,
+        userId: userResult[0].id,
+      });
+      if (list.items.length > 0) {
+        await tx.insert(classAbilityItems).values(
+          list.items.map((item, itemIndex) => ({
+            id: crypto.randomUUID(),
+            classAbilityListId: listId,
+            name: item.name,
+            description: item.description,
+            orderIndex: itemIndex,
+          }))
+        );
+      }
+      await tx.insert(classesClassAbilityLists).values({
+        classId,
+        abilityListId: listId,
+        orderIndex: index,
+      });
     }
   });
 
@@ -612,18 +655,43 @@ export const updateClass = async (input: UpdateClassInput): Promise<Class> => {
       await tx.insert(classAbilities).values(abilityInserts);
     }
 
-    await tx
-      .delete(classesClassAbilityLists)
+    // Delete old ability lists (cascades to items and join table entries)
+    const existingLinks = await tx
+      .select({ abilityListId: classesClassAbilityLists.abilityListId })
+      .from(classesClassAbilityLists)
       .where(eq(classesClassAbilityLists.classId, input.id));
+    const existingListIds = existingLinks.map((l) => l.abilityListId);
+    if (existingListIds.length > 0) {
+      await tx
+        .delete(classAbilityLists)
+        .where(inArray(classAbilityLists.id, existingListIds));
+    }
 
-    if (input.abilityListIds.length > 0) {
-      await tx.insert(classesClassAbilityLists).values(
-        input.abilityListIds.map((listId, index) => ({
-          classId: input.id,
-          abilityListId: listId,
-          orderIndex: index,
-        }))
-      );
+    // Create new ability lists
+    for (const [index, list] of input.abilityLists.entries()) {
+      const listId = crypto.randomUUID();
+      await tx.insert(classAbilityLists).values({
+        id: listId,
+        name: list.name,
+        description: list.description,
+        userId: userResult[0].id,
+      });
+      if (list.items.length > 0) {
+        await tx.insert(classAbilityItems).values(
+          list.items.map((item, itemIndex) => ({
+            id: crypto.randomUUID(),
+            classAbilityListId: listId,
+            name: item.name,
+            description: item.description,
+            orderIndex: itemIndex,
+          }))
+        );
+      }
+      await tx.insert(classesClassAbilityLists).values({
+        classId: input.id,
+        abilityListId: listId,
+        orderIndex: index,
+      });
     }
   });
 

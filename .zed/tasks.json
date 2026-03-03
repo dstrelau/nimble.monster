@@ -1,0 +1,26 @@
+[
+  {
+    "label": "pnpm dev",
+    "command": "pnpm dev",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "reveal": "never",
+    "reveal_target": "dock",
+    "hide": "on_success",
+    "shell": "system",
+    "show_summary": true,
+    "show_command": true
+  },
+  {
+    "label": "pnpm test",
+    "command": "pnpm test",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "reveal": "never",
+    "reveal_target": "dock",
+    "hide": "on_success",
+    "shell": "system",
+    "show_summary": true,
+    "show_command": true
+  }
+]

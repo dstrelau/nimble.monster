@@ -53,7 +53,7 @@ export function CreateEditFamily({
     setError(null);
     startTransition(async () => {
       const abilitiesWithIds = data.abilities.map((ability) => ({
-        id: ability.id ?? crypto.randomUUID(),
+        id: ability.id ?? Math.random().toString(36).slice(2),
         name: ability.name,
         description: ability.description,
       }));
@@ -95,7 +95,7 @@ export function CreateEditFamily({
       watchedValues.abilities
         ?.filter((a) => a.name && a.description)
         .map((ability) => ({
-          id: ability.id ?? crypto.randomUUID(),
+          id: ability.id ?? Math.random().toString(36).slice(2),
           name: ability.name ?? "",
           description: ability.description ?? "",
         })) ?? family.abilities,

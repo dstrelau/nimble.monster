@@ -122,12 +122,6 @@ const Header = () => {
       isActive: isActive("/classes"),
       icon: BookUser,
     },
-    // {
-    //   href: "/class-options",
-    //   label: "Class Options",
-    //   isActive: isActive("/class-options"),
-    //   icon: ListChecks,
-    // },
     {
       href: "/subclasses",
       label: "Subclasses",
@@ -193,6 +187,12 @@ const Header = () => {
           label: "Items",
           isActive: isActive("/my/items"),
           icon: Shield,
+        },
+        {
+          href: "/my/classes",
+          label: "Classes",
+          isActive: isActive("/my/Classes"),
+          icon: BookUser,
         },
         {
           href: "/my/subclasses",

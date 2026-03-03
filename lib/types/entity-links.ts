@@ -1,10 +1,10 @@
 import type { LucideIcon } from "lucide-react";
 import {
+  BookUser,
   Box,
   Drama,
   HandFist,
   HeartHandshake,
-  ListChecks,
   Scroll,
   Shield,
   Users,
@@ -19,10 +19,10 @@ export type EntityType =
   | "family"
   | "collection"
   | "school"
+  | "class"
   | "subclass"
   | "ancestry"
-  | "background"
-  | "class-option";
+  | "background";
 
 export interface EntityReference {
   id: string;
@@ -37,10 +37,10 @@ export const ENTITY_TYPE_ICONS: Record<EntityType, LucideIcon> = {
   family: Users,
   collection: Box,
   school: WandSparkles,
+  class: BookUser,
   subclass: HandFist,
   ancestry: Scroll,
   background: Drama,
-  "class-option": ListChecks,
 };
 
 export const ENTITY_TYPE_PATHS: Record<EntityType, string> = {
@@ -50,8 +50,8 @@ export const ENTITY_TYPE_PATHS: Record<EntityType, string> = {
   family: "families",
   collection: "collections",
   school: "spell-schools",
+  class: "classes",
   subclass: "subclasses",
   ancestry: "ancestries",
   background: "backgrounds",
-  "class-option": "class-options",
 };

@@ -26,6 +26,11 @@ const authProxy = auth((request) => {
   return NextResponse.next();
 });
 
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 export default function proxy(request: NextRequest) {
   // Reject bot POSTs to page routes: require next-action header and a
   // matching origin (bots scrape next-action IDs but send spoofed origins,
@@ -39,7 +44,11 @@ export default function proxy(request: NextRequest) {
     const origin = request.headers.get("origin") ?? "";
     if (
       !request.headers.get("next-action") ||
-      !(origin.includes("nimble.nexus") || origin.includes("localhost"))
+      !(
+        origin.includes("nimble.nexus") ||
+        origin.includes("localhost") ||
+        allowedOrigins.some((allowed) => origin.includes(allowed))
+      )
     ) {
       return new Response("Bad Request", { status: 400 });
     }

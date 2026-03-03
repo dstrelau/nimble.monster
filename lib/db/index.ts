@@ -1,5 +1,4 @@
 export * from "./class";
-export * from "./classAbilityList";
 export * from "./collection";
 export * from "./companion";
 export * from "./condition";

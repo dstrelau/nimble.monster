@@ -91,20 +91,20 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     families: [],
     abilities: [
       {
-        id: crypto.randomUUID(),
+        id: Math.random().toString(36).slice(2),
         name: "Meat Shield",
         description: "Can force other goblins to Interpose for him.",
       },
     ],
     actions: [
       {
-        id: crypto.randomUUID(),
+        id: Math.random().toString(36).slice(2),
         name: "Stab",
         damage: "1d6+2",
         description: "(or Shoot, Range 8).",
       },
       {
-        id: crypto.randomUUID(),
+        id: Math.random().toString(36).slice(2),
         name: "Get in here!",
         damage: "",
         description: "Call a goblin minion to the fight.",
@@ -138,7 +138,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     families: [],
     abilities: [
       {
-        id: crypto.randomUUID(),
+        id: Math.random().toString(36).slice(2),
         name: "Feral Instinct",
         description: "Whenever Ravager is crit, he can fly 10.",
       },
@@ -156,7 +156,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
         name: "Move & Claw",
         description: "Fly 10, attack for 1d12+6 damage.",
       },
-    ].map((a) => ({ ...a, id: crypto.randomUUID() })),
+    ].map((a) => ({ ...a, id: Math.random().toString(36).slice(2) })),
     bloodied: "At 65 HP, his Venomous Stinger recharges.",
     lastStand:
       "The Ravager is dying! 40 more damage and he dies. Until then, the first time each turn he takes damage, he uses Move & Claw.",
@@ -188,7 +188,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     abilities: [],
     actions: [
       {
-        id: crypto.randomUUID(),
+        id: Math.random().toString(36).slice(2),
         name: "Slash",
         description: "1d6 (follows minion rules)",
       },

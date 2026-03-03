@@ -2,16 +2,15 @@ import {
   BookUser,
   Box,
   Drama,
-  Gem,
-  Ghost,
+  HandFist,
   HeartHandshake,
-  ListChecks,
   Scroll,
-  Split,
+  Shield,
   Users,
   WandSparkles,
 } from "lucide-react";
 import Link from "next/link";
+import { Goblin } from "@/components/icons/goblin";
 import {
   Card,
   CardContent,
@@ -80,9 +79,6 @@ function CreateCard({
 export default async function CreatePage() {
   const session = await auth();
   const isAuthenticated = !!session?.user?.id;
-  const classCreationEnabled =
-    process.env.NEXT_PUBLIC_ENABLE_CLASS_CREATION === "true";
-
   return (
     <TooltipProvider>
       <div className="container mx-auto px-4 py-8">
@@ -94,7 +90,7 @@ export default async function CreatePage() {
           <div className="flex flex-wrap justify-center gap-6">
             <CreateCard
               href="/monsters/new"
-              icon={<Ghost className="size-16" />}
+              icon={<Goblin className="size-16" />}
               title="Monster"
               description="Traditional monsters and Solo Legendaries."
             />
@@ -108,7 +104,7 @@ export default async function CreatePage() {
             />
             <CreateCard
               href="/items/new"
-              icon={<Gem className="size-16" />}
+              icon={<Shield className="size-16" />}
               title="Item"
               description="Magical items and equipment."
             />
@@ -149,28 +145,12 @@ export default async function CreatePage() {
               icon={<BookUser className="size-16" />}
               title="Class"
               description="Defining character abilities"
-              disabled={!classCreationEnabled || !isAuthenticated}
-              disabledMessage={
-                !classCreationEnabled
-                  ? "Coming soon"
-                  : "You must signin to create a Class."
-              }
-            />
-            <CreateCard
-              href="/class-options/new"
-              icon={<ListChecks className="size-16" />}
-              title="Class Options"
-              description="Class-specific ability lists"
-              disabled={!classCreationEnabled || !isAuthenticated}
-              disabledMessage={
-                !classCreationEnabled
-                  ? "Coming soon"
-                  : "You must signin to create Class Options."
-              }
+              disabled={!isAuthenticated}
+              disabledMessage="You must signin to create a Class."
             />
             <CreateCard
               href="/subclasses/new"
-              icon={<Split className="size-16" />}
+              icon={<HandFist className="size-16" />}
               title="Subclass"
               description="Specialized class paths"
               disabledMessage="You must signin to create a Subclass."

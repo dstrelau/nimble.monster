@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import type { Class } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { getClassAbilityListUrl, getClassUrl } from "@/lib/utils/url";
+import { getClassUrl } from "@/lib/utils/url";
 import { CardFooterLayout } from "../shared/CardFooterLayout";
 
 interface ClassMiniCardProps {
@@ -51,15 +51,6 @@ export function ClassMiniCard({ classEntity, className }: ClassMiniCardProps) {
 
       <CardContent className="flex flex-col gap-1">
         <div className="text-base line-clamp-2">{classEntity.description}</div>
-        {classEntity.abilityLists.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-1">
-            {classEntity.abilityLists.map((list) => (
-              <Link key={list.id} href={getClassAbilityListUrl(list)}>
-                <Badge variant="secondary">{list.name}</Badge>
-              </Link>
-            ))}
-          </div>
-        )}
       </CardContent>
       <CardFooterLayout
         creator={classEntity.creator}

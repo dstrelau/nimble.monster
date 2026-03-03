@@ -25,6 +25,11 @@ export function ClassSubclasses({ subclasses }: ClassSubclassesProps) {
               href={getSubclassUrl(subclass)}
               className="text-lg font-medium"
             >
+              {subclass.namePreface && (
+                <span className="text-muted-foreground font-normal">
+                  {subclass.namePreface}{" "}
+                </span>
+              )}
               {subclass.name}
             </Link>
             <Attribution user={subclass.creator} showUsername={false} />

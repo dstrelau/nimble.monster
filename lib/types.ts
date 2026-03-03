@@ -279,11 +279,10 @@ export type StatType = (typeof STAT_TYPES)[number];
 export const ARMOR_TYPES = ["cloth", "leather", "mail", "shields"] as const;
 export type ArmorType = (typeof ARMOR_TYPES)[number];
 
-export interface WeaponSpec {
-  kind?: ("blade" | "stave" | "wand")[];
-  type?: "STR" | "DEX";
-  range?: "melee" | "ranged";
-}
+export type WeaponSpec =
+  | { kind: "blade" | "stave" | "wand" }
+  | { type: "STR" | "DEX" }
+  | { range: "melee" | "ranged" };
 
 export interface ClassAbility {
   id: string;
@@ -306,7 +305,7 @@ export interface ClassAbilityList {
   id: string;
   name: string;
   description: string;
-  characterClass?: SubclassClass;
+  characterClass?: string;
   items: ClassAbilityItem[];
   creator: User;
   createdAt: Date;
@@ -317,7 +316,7 @@ export interface ClassAbilityListMini {
   id: string;
   name: string;
   description: string;
-  characterClass?: SubclassClass;
+  characterClass?: string;
   createdAt: Date;
 }
 
@@ -335,7 +334,7 @@ export interface Class extends ClassMini {
   startingHp: number;
   saves: Record<StatType, number>;
   armor: ArmorType[];
-  weapons: WeaponSpec;
+  weapons: WeaponSpec[];
   startingGear: string[];
   levels: ClassLevel[];
   abilityLists: ClassAbilityList[];

@@ -13,6 +13,7 @@ import {
   OFFICIAL_USER_ID,
 } from "@/lib/services/classes/official";
 import type { Class } from "@/lib/types";
+import { normalizeWeapons } from "@/lib/utils/weapons";
 
 export const upsertOfficialClass = async (input: {
   id?: string;
@@ -23,7 +24,7 @@ export const upsertOfficialClass = async (input: {
   startingHp: number;
   saves: Record<string, number>;
   armor: string[];
-  weapons: object;
+  weapons: import("@/lib/types").WeaponSpec[];
   startingGear: string[];
   levels: Array<{
     level: number;
@@ -307,8 +308,7 @@ export const findOfficialClassesByNames = async (
         id: list.id,
         name: list.name,
         description: list.description,
-        characterClass:
-          list.characterClass as Class["abilityLists"][number]["characterClass"],
+        characterClass: list.characterClass || undefined,
         items,
         creator: OFFICIAL_CREATOR,
         createdAt: list.createdAt ? new Date(list.createdAt) : new Date(),
@@ -325,7 +325,7 @@ export const findOfficialClassesByNames = async (
       startingHp: row.startingHp,
       saves: (row.saves || {}) as Class["saves"],
       armor: (row.armor || []) as Class["armor"],
-      weapons: (row.weapons || {}) as Class["weapons"],
+      weapons: normalizeWeapons(row.weapons as unknown),
       startingGear: (row.startingGear || []) as Class["startingGear"],
       visibility: (row.visibility ?? "public") as "public" | "private",
       levels,

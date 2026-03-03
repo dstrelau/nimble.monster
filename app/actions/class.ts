@@ -37,10 +37,14 @@ export async function createClass(formData: {
   startingHp: number;
   saves: Record<StatType, number>;
   armor: ArmorType[];
-  weapons: WeaponSpec;
+  weapons: WeaponSpec[];
   startingGear: string[];
   levels: ClassLevel[];
-  abilityListIds: string[];
+  abilityLists: Array<{
+    name: string;
+    description: string;
+    items: Array<{ name: string; description: string }>;
+  }>;
   visibility: ClassVisibility;
 }) {
   try {
@@ -75,10 +79,14 @@ export async function updateClass(
     startingHp: number;
     saves: Record<StatType, number>;
     armor: ArmorType[];
-    weapons: WeaponSpec;
+    weapons: WeaponSpec[];
     startingGear: string[];
     levels: ClassLevel[];
-    abilityListIds: string[];
+    abilityLists: Array<{
+      name: string;
+      description: string;
+      items: Array<{ name: string; description: string }>;
+    }>;
     visibility: ClassVisibility;
   }
 ) {

@@ -34,13 +34,13 @@ const EXAMPLE_COMPANIONS: Record<string, Omit<Companion, "creator">> = {
     wounds: 3,
     abilities: [
       {
-        id: crypto.randomUUID(),
+        id: Math.random().toString(36).slice(2),
         name: "Companion",
         description:
           "Can Interpose for friends (but you'll never hear the end of it!)",
       },
       {
-        id: crypto.randomUUID(),
+        id: Math.random().toString(36).slice(2),
         name: "Pocket Sand!",
         description:
           "(1/encounter) force an adjacent enemy to reroll an attack with disadvantage.",
@@ -48,14 +48,14 @@ const EXAMPLE_COMPANIONS: Record<string, Omit<Companion, "creator">> = {
     ],
     actions: [
       {
-        id: crypto.randomUUID(),
+        id: Math.random().toString(36).slice(2),
         name: "Stab!",
         damage: "1d4",
         description:
           "(Advantage VS Distracted targets). On Crit: +LVL damage (instead of rolling additional dice)",
       },
       {
-        id: crypto.randomUUID(),
+        id: Math.random().toString(36).slice(2),
         name: "Shadowstep",
         damage: "",
         description:

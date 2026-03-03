@@ -1,6 +1,6 @@
 "use server";
 
-import { findClassAbilityListName } from "@/lib/db/classAbilityList";
+import { findPublicClassById } from "@/lib/db/class";
 import { getCollection } from "@/lib/db/collection";
 import { findPublicCompanionById } from "@/lib/db/companion";
 import { getFamily } from "@/lib/db/family";
@@ -43,6 +43,9 @@ export async function getEntityById(
       case "school":
         entity = await findSpellSchool(uuid);
         break;
+      case "class":
+        entity = await findPublicClassById(uuid);
+        break;
       case "subclass":
         entity = await findPublicSubclassById(uuid);
         break;
@@ -51,9 +54,6 @@ export async function getEntityById(
         break;
       case "background":
         entity = await backgroundsService.getBackground(uuid);
-        break;
-      case "class-option":
-        entity = await findClassAbilityListName(uuid);
         break;
     }
 
