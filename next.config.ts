@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
+const allowedOrigins = process.env.ALLOWED_DEV_ORIGINS
+  ? process.env.ALLOWED_DEV_ORIGINS.split(",").map((o) => o.trim())
+  : [];
+
 const nextConfig: NextConfig = {
+  allowedDevOrigins: allowedOrigins,
   output: "standalone",
   experimental: {
     useCache: true,
