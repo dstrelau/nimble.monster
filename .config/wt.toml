@@ -1,0 +1,20 @@
+[post-create]
+setup = """
+main="{{ primary_worktree_path }}"
+if [ -f "$main/.env.local" ] && [ ! -f ".env.local" ]; then
+  cp "$main/.env.local" .env.local
+fi
+if [ -f "$main/db/dev.db" ] && [ ! -f "db/dev.db" ]; then
+  mkdir -p db
+  cp "$main/db/dev.db" db/dev.db
+fi
+if [ -d "$main/data/paperforge" ] && [ ! -d "data/paperforge" ]; then
+  mkdir -p data
+  cp -r "$main/data/paperforge" data/paperforge
+fi
+if [ -d "$main/public/paperforge" ] && [ ! -e "public/paperforge" ]; then
+  mkdir -p public
+  ln -sfn "$main/public/paperforge" public/paperforge
+fi
+"""
+install = "make setup"

@@ -1,14 +1,18 @@
+# Worktrees (wt)
+
+This project uses [worktrunk](https://worktrunk.dev) (`wt`) for parallel worktree workflows. Config: `.config/wt.toml`.
+
+- Worktrees are created as sibling directories: `../nimble.nexus.<branch-name>`
+- On create, the hook copies `db/dev.db`, `.env.local`, and `data/paperforge` from main, symlinks `public/paperforge`, then runs `make setup`
+
 # Build Commands
 
 - `make check` - Lint and type-check (dev-safe, use this during development)
   - You must run this after making changes to ensure there are no type errors or lint errors.
-  - Never dismiss type errors as "pre-existing" and skip them. If `make type-check` fails, you must fix ALL errors, even if they weren't introduced by your changes.
+  - Never dismiss type errors as "pre-existing" and skip them. If `make check` fails, you must fix ALL errors, even if they weren't introduced by your changes.
 - `make lint` - Biome check (linting, formatting, import sorting)
-- `make type-check` - TypeScript check only
 - `make setup` - Install deps, set up DB, sync icons
 - `pnpm run build` - Production build (breaks dev server. Only run when asked. Always run `rm -rf .next` after.)
-- Assume the dev server is already running on localhost:3000 and can be accessed via playwright.
-  - Do not ever run `pnpm run dev`
 
 # Database
 
