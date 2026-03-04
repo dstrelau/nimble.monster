@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -165,6 +166,9 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add to Collection</DialogTitle>
+          <DialogDescription className="sr-only">
+            Select a collection to add this item to.
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

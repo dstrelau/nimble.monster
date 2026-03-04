@@ -38,8 +38,6 @@ export async function deleteCollection(collectionId: string) {
       error: "Could not delete the collection. Please try again.",
     };
   } catch (error) {
-    console.error("Error deleting collection:", error);
-
     // Handle specific database errors
     const errorMessage = error instanceof Error ? error.message : "";
 
@@ -82,7 +80,6 @@ export async function createCollection(formData: {
 
     return { success: true, collection: collection as CollectionOverview };
   } catch (error) {
-    console.error("Error creating collection:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
@@ -124,7 +121,6 @@ export async function updateCollection(
 
     return { success: true, collection };
   } catch (error) {
-    console.error("Error updating collection:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
