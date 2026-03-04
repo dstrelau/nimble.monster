@@ -69,7 +69,11 @@ const toSpellSchoolMini = (s: SpellSchoolRow): SpellSchoolMini => ({
   createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
 });
 
-const buildSpellTarget = (s: SpellRow): SpellTarget | undefined => {
+export const buildSpellTarget = (s: {
+  targetType?: string | null;
+  targetKind?: string | null;
+  targetDistance?: number | null;
+}): SpellTarget | undefined => {
   if (!s.targetType) return undefined;
   if (s.targetType === "self") {
     return { type: "self" };
@@ -89,6 +93,34 @@ const buildSpellTarget = (s: SpellRow): SpellTarget | undefined => {
     };
   }
   return undefined;
+};
+
+export const spellTargetToDbColumns = (
+  target: SpellTarget | undefined
+): {
+  targetType: string | undefined;
+  targetKind: string | undefined;
+  targetDistance: number | undefined;
+} => {
+  if (!target) {
+    return {
+      targetType: undefined,
+      targetKind: undefined,
+      targetDistance: undefined,
+    };
+  }
+  if (target.type === "self") {
+    return {
+      targetType: "self",
+      targetKind: undefined,
+      targetDistance: undefined,
+    };
+  }
+  return {
+    targetType: target.type,
+    targetKind: target.kind,
+    targetDistance: target.distance,
+  };
 };
 
 const toSpell = (s: SpellRow): Spell => ({
@@ -468,7 +500,7 @@ export const createSpellSchool = async (
         actions: spell.actions,
         reaction: spell.reaction || false,
         utility: spell.utility || false,
-        target: spell.target || undefined,
+        ...spellTargetToDbColumns(spell.target),
         damage: spell.damage || undefined,
         description: spell.description || undefined,
         highLevels: spell.highLevels || undefined,
@@ -547,7 +579,7 @@ export const updateSpellSchool = async (
         actions: spell.actions,
         reaction: spell.reaction || false,
         utility: spell.utility || false,
-        target: spell.target || undefined,
+        ...spellTargetToDbColumns(spell.target),
         damage: spell.damage || undefined,
         description: spell.description || undefined,
         highLevels: spell.highLevels || undefined,
