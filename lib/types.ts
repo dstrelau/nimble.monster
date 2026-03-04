@@ -276,7 +276,13 @@ export type HitDieSize = (typeof HIT_DIE_SIZES)[number];
 export const STAT_TYPES = ["STR", "DEX", "INT", "WIL"] as const;
 export type StatType = (typeof STAT_TYPES)[number];
 
-export const ARMOR_TYPES = ["cloth", "leather", "mail", "shields"] as const;
+export const ARMOR_TYPES = [
+  "cloth",
+  "leather",
+  "mail",
+  "plate",
+  "shields",
+] as const;
 export type ArmorType = (typeof ARMOR_TYPES)[number];
 
 export type WeaponSpec =
