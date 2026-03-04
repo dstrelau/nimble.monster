@@ -113,6 +113,7 @@ export function TagsInput({
         value={inputValue}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
+        onBlur={() => addTag(inputValue)}
         placeholder={tags.length === 0 ? placeholder : undefined}
         className="flex-1 min-w-24 bg-transparent outline-none placeholder:text-muted-foreground"
       />
