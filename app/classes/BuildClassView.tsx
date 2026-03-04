@@ -419,7 +419,6 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
                     onCheckedChange={(checked) =>
                       field.onChange(checked ? "public" : "private")
                     }
-                    entityType="Class"
                   />
                 )}
               />

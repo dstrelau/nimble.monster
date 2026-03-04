@@ -689,7 +689,6 @@ export default function BuildSchoolView({
                         onCheckedChange={(checked) =>
                           field.onChange(checked ? "public" : "private")
                         }
-                        entityType="Subclass"
                       />
                     </FormControl>
                     <FormMessage />

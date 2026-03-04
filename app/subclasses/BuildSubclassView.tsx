@@ -492,7 +492,6 @@ export default function BuildSubclassView({
                         onCheckedChange={(checked) =>
                           field.onChange(checked ? "public" : "private")
                         }
-                        entityType="Subclass"
                       />
                     )}
                   />

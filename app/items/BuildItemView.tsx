@@ -439,7 +439,6 @@ export default function BuildItemView({
                         onCheckedChange={(checked) =>
                           field.onChange(checked ? "public" : "private")
                         }
-                        entityType="Item"
                       />
                     )}
                   />

@@ -1046,7 +1046,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
                           visibility: checked ? "public" : "private",
                         });
                       }}
-                      entityType="Monster"
                     />
                   </div>
                 </div>

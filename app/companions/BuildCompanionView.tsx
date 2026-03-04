@@ -311,7 +311,6 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
                         visibility: checked ? "public" : "private",
                       });
                     }}
-                    entityType="Companion"
                   />
                 </div>
               </fieldset>

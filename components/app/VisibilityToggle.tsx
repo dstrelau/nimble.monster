@@ -1,29 +1,30 @@
 "use client";
 
-import { Switch } from "@/components/ui/switch";
+import { Lock, LockOpen } from "lucide-react";
+
+import { Toggle } from "@/components/ui/toggle";
 
 interface VisibilityToggleProps {
   id: string;
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
-  entityType: "Monster" | "Companion" | "Item" | "Subclass" | "Class";
 }
 
 export const VisibilityToggle: React.FC<VisibilityToggleProps> = ({
   id,
   checked,
   onCheckedChange,
-  entityType,
 }) => {
+  const isPrivate = !checked;
   return (
-    <div className="flex items-center space-x-2">
-      <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} />
-      <label
-        htmlFor={id}
-        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-      >
-        Publish to Public {entityType}s
-      </label>
-    </div>
+    <Toggle
+      id={id}
+      variant="outline"
+      pressed={isPrivate}
+      onPressedChange={(pressed) => onCheckedChange(!pressed)}
+    >
+      {isPrivate ? <Lock /> : <LockOpen />}
+      {isPrivate ? "Private" : "Public"}
+    </Toggle>
   );
 };
