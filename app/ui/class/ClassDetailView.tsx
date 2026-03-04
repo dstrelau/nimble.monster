@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useConditions } from "@/lib/hooks/useConditions";
-import type { Class, StatType, User } from "@/lib/types";
+import { ARMOR_TYPES, type Class, type StatType, type User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatWeaponsDisplay } from "@/lib/utils/weapons";
 
@@ -60,6 +60,19 @@ export function ClassDetailView({
         <div className="relative w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem] py-3 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm space-y-3">
           <div className="flex flex-col items-center gap-3">
             <div className="flex flex-wrap justify-center gap-6">
+              {classEntity.keyStats.length > 0 && (
+                <div className="flex flex-col text-center items-center gap-1.5">
+                  <span className="font-normal">Key Stats</span>
+                  <div className="flex items-center gap-1.5">
+                    {classEntity.keyStats.map((stat) => (
+                      <div key={stat} className="flex items-center">
+                        <Star className={mutedIconClass} />
+                        <span className="text-xl font-bold">{stat}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="flex flex-col items-center gap-1.5">
                 <span className="font-normal">Hit Die</span>
                 <div className="flex items-center">
@@ -81,15 +94,43 @@ export function ClassDetailView({
                   </span>
                 </div>
               </div>
+            </div>
+            <div className="flex flex-wrap justify-center gap-6">
+              {(Object.values(classEntity.saves) as number[]).some(
+                (v) => v !== 0
+              ) && (
+                <div className="flex flex-col text-center items-center gap-1.5">
+                  <span className="font-normal">Saves</span>
+                  <div className="flex items-center gap-1.5">
+                    {(Object.entries(classEntity.saves) as [StatType, number][])
+                      .filter(([, v]) => v !== 0)
+                      .map(([stat, value]) => (
+                        <div key={stat} className="flex items-center">
+                          {value > 0 ? (
+                            <ArrowBigUp className={mutedIconClass} />
+                          ) : (
+                            <ArrowBigDown className={mutedIconClass} />
+                          )}
+                          <span className="text-xl font-bold">
+                            {stat}
+                            {value > 0 ? "+" : "–"}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
               <div className="flex flex-col text-center items-center gap-1.5">
                 <span className="font-normal">Armor</span>
                 <div className="flex items-center">
                   <Shield className={mutedIconClass} />
                   <span className="text-xl font-bold">
                     {classEntity.armor.length > 0
-                      ? classEntity.armor
-                          .map((a) => a.charAt(0).toUpperCase() + a.slice(1))
-                          .join(", ")
+                      ? classEntity.armor.length === ARMOR_TYPES.length
+                        ? "All"
+                        : classEntity.armor
+                            .map((a) => a.charAt(0).toUpperCase() + a.slice(1))
+                            .join(", ")
                       : "None"}
                   </span>
                 </div>
@@ -103,52 +144,6 @@ export function ClassDetailView({
                   </div>
                 </div>
               )}
-            </div>
-            <div className="flex flex-wrap justify-center gap-8">
-              {classEntity.keyStats.length > 0 && (
-                <div className="flex flex-col text-center items-center gap-1.5">
-                  <span className="font-normal">Key Stats</span>
-                  <div className="flex items-center gap-1.5">
-                    {classEntity.keyStats.map((stat) => (
-                      <div key={stat} className="flex items-center">
-                        <Star className={mutedIconClass} />
-                        <span className="text-xl font-bold">{stat}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              <div className="flex flex-wrap justify-center gap-8">
-                {(Object.values(classEntity.saves) as number[]).some(
-                  (v) => v !== 0
-                ) && (
-                  <div className="flex flex-col text-center items-center gap-1.5">
-                    <span className="font-normal">Saves</span>
-                    <div className="flex items-center gap-1.5">
-                      {(
-                        Object.entries(classEntity.saves) as [
-                          StatType,
-                          number,
-                        ][]
-                      )
-                        .filter(([, v]) => v !== 0)
-                        .map(([stat, value]) => (
-                          <div key={stat} className="flex items-center">
-                            {value > 0 ? (
-                              <ArrowBigUp className={mutedIconClass} />
-                            ) : (
-                              <ArrowBigDown className={mutedIconClass} />
-                            )}
-                            <span className="text-xl font-bold">
-                              {stat}
-                              {value > 0 ? "+" : "–"}
-                            </span>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
             {classEntity.startingGear.length > 0 && (
               <div className="flex items-center gap-1.5">

@@ -510,8 +510,83 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
 
       <CardContent className="pt-6 space-y-6">
         <div className="relative w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem] py-3 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm space-y-4">
-          <div className="flex flex-col items-center gap-3 text-sm">
-            <div className="flex w-full flex-wrap justify-between gap-6">
+          <div className="flex flex-col items-center gap-3">
+            <div className="flex w-full justify-center flex-wrap gap-y-6 gap-x-8">
+              <div className="flex flex-col items-center gap-1.5">
+                <span className="font-bold">Key Stats</span>
+                <FormField
+                  control={control}
+                  name="keyStats"
+                  render={({ field }) => {
+                    const [stat1 = "STR", stat2 = "DEX"] = field.value;
+                    return (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              value={stat1}
+                              onValueChange={(v) => field.onChange([v, stat2])}
+                            >
+                              <SelectTrigger className="w-28 text-lg font-bold">
+                                <div className="flex items-center gap-1.5">
+                                  <Star
+                                    className={cn(
+                                      "size-5 shrink-0",
+                                      mutedIconClass
+                                    )}
+                                  />
+                                  <SelectValue />
+                                </div>
+                              </SelectTrigger>
+                              <SelectContent className="text-lg">
+                                {STAT_TYPES.map((s) => (
+                                  <SelectItem
+                                    className="text-lg font-bold"
+                                    key={s}
+                                    value={s}
+                                    disabled={s === stat2}
+                                  >
+                                    {s}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Select
+                              value={stat2}
+                              onValueChange={(v) => field.onChange([stat1, v])}
+                            >
+                              <SelectTrigger className="w-28 text-lg font-bold">
+                                <div className="flex items-center gap-1.5">
+                                  <Star
+                                    className={cn(
+                                      "size-5 shrink-0",
+                                      mutedIconClass
+                                    )}
+                                  />
+                                  <SelectValue />
+                                </div>
+                              </SelectTrigger>
+                              <SelectContent className="text-lg">
+                                {STAT_TYPES.map((s) => (
+                                  <SelectItem
+                                    className="text-lg font-bold"
+                                    key={s}
+                                    value={s}
+                                    disabled={s === stat1}
+                                  >
+                                    {s}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+              </div>
               <div className="flex flex-col items-start gap-1.5">
                 <span className="font-bold">Hit Die</span>
                 <div className="flex items-center gap-2">
@@ -525,7 +600,7 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
                           onValueChange={field.onChange}
                         >
                           <FormControl>
-                            <SelectTrigger className="text-xl font-bold">
+                            <SelectTrigger className="w-28 text-lg font-bold">
                               <div className="flex items-center gap-1">
                                 <SelectValue />
                               </div>
@@ -539,7 +614,7 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
                                     className="size-5 stroke-neutral-400 fill-none dark:stroke-neutral-500"
                                     die={die}
                                   />
-                                  <span className="text-xl font-bold">
+                                  <span className="text-lg font-bold">
                                     {die}
                                   </span>
                                 </div>
@@ -553,9 +628,8 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
                   />
                 </div>
               </div>
-
               <div className="flex flex-col items-start gap-1.5">
-                <span className="font-bold">HP</span>
+                <span className="font-bold">Starting HP</span>
                 <FormField
                   control={control}
                   name="startingHp"
@@ -577,7 +651,7 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
                               );
                               field.onChange(Number.isNaN(next) ? 0 : next);
                             }}
-                            className="w-24 pl-8 text-center text-xl md:text-xl font-bold shadow-none focus-visible:ring-0"
+                            className="w-28 pl-8 text-center text-lg md:text-lg font-bold shadow-none focus-visible:ring-0"
                           />
                         </InputGroup>
                       </FormControl>
@@ -586,7 +660,124 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
                   )}
                 />
               </div>
+            </div>
 
+            <div className="flex flex-wrap items-center justify-center gap-y-6 gap-x-8">
+              <div className="flex flex-col items-center gap-1.5">
+                <span className="font-bold">Saves</span>
+                <FormField
+                  control={control}
+                  name="saves"
+                  render={({ field }) => {
+                    const advStat =
+                      STAT_TYPES.find((k) => field.value[k] === 1) ?? "none";
+                    const disStat =
+                      STAT_TYPES.find((k) => field.value[k] === -1) ?? "none";
+
+                    const handleAdvChange = (newStat: string) => {
+                      const newSaves = { ...field.value };
+                      if (advStat !== "none") newSaves[advStat] = 0;
+                      const matched = STAT_TYPES.find((s) => s === newStat);
+                      if (matched) {
+                        if (disStat === newStat) newSaves[matched] = 0;
+                        newSaves[matched] = 1;
+                      }
+                      field.onChange(newSaves);
+                    };
+
+                    const handleDisChange = (newStat: string) => {
+                      const newSaves = { ...field.value };
+                      if (disStat !== "none") newSaves[disStat] = 0;
+                      const matched = STAT_TYPES.find((s) => s === newStat);
+                      if (matched) {
+                        if (advStat === newStat) newSaves[matched] = 0;
+                        newSaves[matched] = -1;
+                      }
+                      field.onChange(newSaves);
+                    };
+
+                    return (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1.5">
+                              <Select
+                                value={advStat}
+                                onValueChange={handleAdvChange}
+                              >
+                                <SelectTrigger className="w-30 text-lg font-bold">
+                                  <div className="flex items-center gap-1.5">
+                                    <ArrowBigUp
+                                      className={cn(
+                                        "size-5 shrink-0",
+                                        mutedIconClass
+                                      )}
+                                    />
+                                    <SelectValue />
+                                  </div>
+                                </SelectTrigger>
+                                <SelectContent className="text-lg">
+                                  <SelectItem
+                                    className="text-lg font-bold"
+                                    value="none"
+                                  >
+                                    —
+                                  </SelectItem>
+                                  {STAT_TYPES.map((s) => (
+                                    <SelectItem
+                                      className="text-lg font-bold"
+                                      key={s}
+                                      value={s}
+                                    >
+                                      {s}+
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <Select
+                                value={disStat}
+                                onValueChange={handleDisChange}
+                              >
+                                <SelectTrigger className="w-30 text-lg font-bold">
+                                  <div className="flex items-center gap-1.5">
+                                    <ArrowBigDown
+                                      className={cn(
+                                        "size-5 shrink-0",
+                                        mutedIconClass
+                                      )}
+                                    />
+                                    <SelectValue />
+                                  </div>
+                                </SelectTrigger>
+                                <SelectContent className="text-lg">
+                                  <SelectItem
+                                    className="text-lg font-bold"
+                                    value="none"
+                                  >
+                                    —
+                                  </SelectItem>
+                                  {STAT_TYPES.map((s) => (
+                                    <SelectItem
+                                      className="text-lg font-bold"
+                                      key={s}
+                                      value={s}
+                                    >
+                                      {s}–
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+              </div>
               <div className="flex flex-col items-start gap-1.5">
                 <span className="font-bold">Armor</span>
                 <FormField
@@ -608,11 +799,21 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
                               armor.charAt(0).toUpperCase() + armor.slice(1),
                           }))}
                           selected={field.value}
+                          displayValue={
+                            field.value.length === 0
+                              ? "None"
+                              : ARMOR_TYPES.every((t) =>
+                                    field.value.includes(t)
+                                  )
+                                ? "All"
+                                : undefined
+                          }
                           onChange={(values) =>
                             field.onChange(values as ArmorType[])
                           }
-                          placeholder="None"
-                          itemClassName="text-xl font-bold"
+                          popoverClassName="w-52"
+                          className="font-bold w-52"
+                          itemClassName="text-lg font-bold"
                         />
                       </FormControl>
                       <FormMessage />
@@ -620,8 +821,7 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
                   )}
                 />
               </div>
-
-              <div className="flex flex-col items-start gap-1.5 min-w-64">
+              <div className="flex flex-col items-start gap-1.5">
                 <span className="font-bold">Weapons</span>
                 <FormField
                   control={control}
@@ -639,7 +839,6 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
                         <FormControl>
                           <MultiSelect
                             showSearch={false}
-                            popoverClassName="min-w-48 px-2"
                             icon={
                               <Swords
                                 className={cn(
@@ -693,8 +892,9 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
                               )
                             }
                             placeholder="None"
-                            className="h-10 max-w-xs text-xl font-bold"
-                            itemClassName="text-xl font-bold"
+                            popoverClassName="w-52"
+                            className="text-lg font-bold w-52"
+                            itemClassName="text-lg font-bold"
                           />
                         </FormControl>
                         <FormMessage />
@@ -703,200 +903,6 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
                   }}
                 />
               </div>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-start justify-center gap-16">
-            <div className="flex flex-col items-center gap-1.5">
-              <span className="font-bold">Key Stats</span>
-              <FormField
-                control={control}
-                name="keyStats"
-                render={({ field }) => {
-                  const [stat1 = "STR", stat2 = "DEX"] = field.value;
-                  return (
-                    <FormItem>
-                      <FormControl>
-                        <div className="flex items-center gap-2">
-                          <Select
-                            value={stat1}
-                            onValueChange={(v) => field.onChange([v, stat2])}
-                          >
-                            <SelectTrigger className="text-xl font-bold">
-                              <div className="flex items-center gap-1.5">
-                                <Star
-                                  className={cn(
-                                    "size-5 shrink-0",
-                                    mutedIconClass
-                                  )}
-                                />
-                                <SelectValue />
-                              </div>
-                            </SelectTrigger>
-                            <SelectContent className="text-lg">
-                              {STAT_TYPES.map((s) => (
-                                <SelectItem
-                                  className="text-lg font-bold"
-                                  key={s}
-                                  value={s}
-                                  disabled={s === stat2}
-                                >
-                                  {s}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <Select
-                            value={stat2}
-                            onValueChange={(v) => field.onChange([stat1, v])}
-                          >
-                            <SelectTrigger className="text-xl font-bold">
-                              <div className="flex items-center gap-1.5">
-                                <Star
-                                  className={cn(
-                                    "size-5 shrink-0",
-                                    mutedIconClass
-                                  )}
-                                />
-                                <SelectValue />
-                              </div>
-                            </SelectTrigger>
-                            <SelectContent className="text-lg">
-                              {STAT_TYPES.map((s) => (
-                                <SelectItem
-                                  className="text-lg font-bold"
-                                  key={s}
-                                  value={s}
-                                  disabled={s === stat1}
-                                >
-                                  {s}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-            </div>
-
-            <div className="flex flex-col items-center gap-1.5">
-              <span className="font-bold">Saves</span>
-              <FormField
-                control={control}
-                name="saves"
-                render={({ field }) => {
-                  const advStat =
-                    STAT_TYPES.find((k) => field.value[k] === 1) ?? "none";
-                  const disStat =
-                    STAT_TYPES.find((k) => field.value[k] === -1) ?? "none";
-
-                  const handleAdvChange = (newStat: string) => {
-                    const newSaves = { ...field.value };
-                    if (advStat !== "none") newSaves[advStat] = 0;
-                    const matched = STAT_TYPES.find((s) => s === newStat);
-                    if (matched) {
-                      if (disStat === newStat) newSaves[matched] = 0;
-                      newSaves[matched] = 1;
-                    }
-                    field.onChange(newSaves);
-                  };
-
-                  const handleDisChange = (newStat: string) => {
-                    const newSaves = { ...field.value };
-                    if (disStat !== "none") newSaves[disStat] = 0;
-                    const matched = STAT_TYPES.find((s) => s === newStat);
-                    if (matched) {
-                      if (advStat === newStat) newSaves[matched] = 0;
-                      newSaves[matched] = -1;
-                    }
-                    field.onChange(newSaves);
-                  };
-
-                  return (
-                    <FormItem>
-                      <FormControl>
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-1.5">
-                            <Select
-                              value={advStat}
-                              onValueChange={handleAdvChange}
-                            >
-                              <SelectTrigger className="text-xl font-bold">
-                                <div className="flex items-center gap-1.5">
-                                  <ArrowBigUp
-                                    className={cn(
-                                      "size-5 shrink-0",
-                                      mutedIconClass
-                                    )}
-                                  />
-                                  <SelectValue />
-                                </div>
-                              </SelectTrigger>
-                              <SelectContent className="text-lg">
-                                <SelectItem
-                                  className="text-lg font-bold"
-                                  value="none"
-                                >
-                                  —
-                                </SelectItem>
-                                {STAT_TYPES.map((s) => (
-                                  <SelectItem
-                                    className="text-lg font-bold"
-                                    key={s}
-                                    value={s}
-                                  >
-                                    {s}+
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <Select
-                              value={disStat}
-                              onValueChange={handleDisChange}
-                            >
-                              <SelectTrigger className="text-xl font-bold">
-                                <div className="flex items-center gap-1.5">
-                                  <ArrowBigDown
-                                    className={cn(
-                                      "size-5 shrink-0",
-                                      mutedIconClass
-                                    )}
-                                  />
-                                  <SelectValue />
-                                </div>
-                              </SelectTrigger>
-                              <SelectContent className="text-lg">
-                                <SelectItem
-                                  className="text-lg font-bold"
-                                  value="none"
-                                >
-                                  —
-                                </SelectItem>
-                                {STAT_TYPES.map((s) => (
-                                  <SelectItem
-                                    className="text-lg font-bold"
-                                    key={s}
-                                    value={s}
-                                  >
-                                    {s}–
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
             </div>
           </div>
 

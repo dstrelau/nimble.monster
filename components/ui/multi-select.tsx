@@ -41,6 +41,7 @@ interface MultiSelectProps {
   itemClassName?: string;
   showSearch?: boolean;
   icon?: React.ReactNode;
+  displayValue?: string;
 }
 
 export function MultiSelect({
@@ -55,6 +56,7 @@ export function MultiSelect({
   itemClassName,
   showSearch = true,
   icon,
+  displayValue,
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -113,16 +115,20 @@ export function MultiSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between", className)}
+          className={cn("justify-between", className)}
         >
           {icon}
           <span className={cn("truncate", itemClassName)}>
-            {selected.length > 0 ? selectedLabels : placeholder}
+            {displayValue ??
+              (selected.length > 0 ? selectedLabels : placeholder)}
           </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("w-full p-0", popoverClassName)}>
+      <PopoverContent
+        align="start"
+        className={cn("w-full p-0", popoverClassName)}
+      >
         <Command>
           {showSearch && (
             <CommandInput placeholder="Search..." className="h-9" />
