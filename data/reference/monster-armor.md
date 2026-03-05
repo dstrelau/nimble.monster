@@ -1,0 +1,23 @@
+---
+title: "Monster Armor"
+slug: "monster-armor"
+category: "combat"
+---
+
+The GM controls the monsters during combat. Monsters do not use Heroic Actions/Reactions. They can move, use the actions listed on their stat block, and their turn ends. Monsters die when they reach 0 HP.
+
+# Monster Armor
+
+While most monsters are unarmored, some creatures are tougher to take down:
+- **Medium Armor: Just the Dice.** Monsters with Medium Armor (M) ignore all damage modifiers from stats and other effects, taking damage from the sum of the dice only.
+- **Heavy Armor: Half the Dice.** Monsters with Heavy Armor (H) ignore damage modifiers and take half the sum of the dice (rounding up).
+
+> Tell Your Players!
+> When a monster has armor, it shouldn’t be a secret. Regular goblins are unarmored. That goblin? He’s holding a shield; he has Medium Armor. A golem that’s completely made out of metal? Heavy Armor.
+
+**Dealing With Armor?**
+Heroes’ critical hits, some spells, and damage type vulnerabilities ignore monster armor altogether. This means certain weapons and spells are better or worse against armored foes! This is also a great opportunity to remind your players about the Assess action.
+
+# Default Monster Stats
+
+Unless otherwise noted, assume that monsters are **medium**-sized, **unarmored**, have **{{term:speed}} 6** (can replace an attack to move again, or replace either one of those to retry a save), attacks have **Reach 1**, and roll **1d20 for all saves** (though some monsters may have advantaged / disadvantaged saves or checks when appropriate).

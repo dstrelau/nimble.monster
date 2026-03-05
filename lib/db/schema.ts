@@ -1018,3 +1018,25 @@ export type ClassAbilityItemRow = typeof classAbilityItems.$inferSelect;
 export type ClassAbilityItemInsert = typeof classAbilityItems.$inferInsert;
 export type ClassDraftRow = typeof classDrafts.$inferSelect;
 export type ClassDraftInsert = typeof classDrafts.$inferInsert;
+
+// Reference entries table
+export const referenceEntries = sqliteTable(
+  "reference_entries",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    slug: text("slug").notNull().unique(),
+    title: text("title").notNull(),
+    category: text("category").notNull(),
+    content: text("content").notNull(),
+    sourceFile: text("source_file").notNull(),
+    orderIndex: integer("order_index").notNull().default(0),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [index("idx_reference_entries_category").on(table.category)]
+);
+
+export type ReferenceEntryRow = typeof referenceEntries.$inferSelect;
+export type ReferenceEntryInsert = typeof referenceEntries.$inferInsert;

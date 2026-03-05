@@ -57,6 +57,13 @@
       "when": 1772466306564,
       "tag": "0007_burly_wolf_cub",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1772753455000,
+      "tag": "0008_reference_entries",
+      "breakpoints": true
     }
   ]
 }

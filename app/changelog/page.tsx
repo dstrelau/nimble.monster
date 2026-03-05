@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "5 March 2026",
+    entries: [
+      "Added a comprehensive Rules Reference section with full-text search, covering all core rules, character creation, magic, equipment, exploration, and GM tools.",
+    ],
+  },
+  {
     date: "2 March 2026",
     entries: [
       "Custom class creation. Class options (Combat Tactics, Sacred Decrees, etc) now display inline on the class page.",

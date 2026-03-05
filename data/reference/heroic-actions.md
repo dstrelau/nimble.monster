@@ -1,0 +1,42 @@
+---
+title: "Heroic Actions"
+slug: "heroic-actions"
+category: "combat"
+---
+
+On your turn, heroes get 3 actions to attack, move around the battlefield, cast spells, etc. Generally doing any single thing in combat costs 1 action. Some very strong spells or special abilities may take more time and thus cost more actions.
+
+All 3 actions recharge at the end of your turn, so there’s no need to save them up. Spend them all on your turn and when you’re done, you get them all back!
+
+> Free Actions
+> These do not cost an action or any other resource (e.g., mana) unless otherwise specified. Heroes can do simple tasks (open an unlocked door, shout a simple phrase, drop an item, end {{term:concentration}}, etc.) for free 1/ turn.
+
+# Attack
+
+Any spell or ability that can harm an enemy counts as an attack. Roll the die listed on the spell, weapon, or ability, and deal that much damage. However, if you roll a 1, you miss, and the attack has no effect. For attacks with multiple dice, the leftmost die is called the **Primary Die**. It determines whether the attack is a hit or a miss.
+
+**Exploding Critical Hits**. Rolling the max on a Primary Die is a critical hit (crit). When you crit, roll the Primary Die again, and add the result to the total. Repeat this each time you roll the maximum—there’s no limit, except your luck! Crits also ignore monster armor (see pg. 15).
+
+**Rushed Attacks.** A hero may attack more than once on their turn, but these additional attacks are rushed, imposing cumulative {{term:disadvantage}} for each additional attack after the first—increasing the chance to miss and lowering the average damage for subsequent attacks. For abilities that trigger a save (e.g. {{term:Grappling}}), enemies roll with increasing instances of {{term:advantage}} instead.
+
+# Cast Spell
+
+Casting a spell requires a hero to have 1 hand free (or a held {{term:spellcasting}} focus), the ability to speak, and may require mana as well. A spell’s mana cost is equal to its spell tier; cantrips cost no mana (see “Spells” on page 45 for more).
+
+**Upcasting Spells.** Some spells have a greater effect for each additional mana spent on them. A hero can upcast a spell only up to the tier they have unlocked.
+
+# Move
+
+A character can move up to their {{term:speed}} (6 spaces, unless otherwise noted). This movement can be broken up with other actions if desired, and a hero can use multiple actions to Move multiple times in one turn. When in **Difficult Terrain**, movement {{term:speed}} is halved. Moving on a climbable surface (trees, a cliffside, certain buildings, etc.) counts as Difficult Terrain.
+
+# Assess
+
+A great way to include creativity and role-playing in combat. Choose one of the following and then make a **DC 12** skill check to:
+* **Ask a Question.** About a weakness, ability, or immediate plans of enemies, the environment, story, etc. The GM will answer honestly.
+* **Create an Opening.** Increase the next Primary Die Roll against a target by 1 this round.
+* **Anticipate Danger.** Reduce all Primary Dice rolled against you by 1 this round.
+
+> Notes on Assessing
+> **Which Skill To Use?** Whatever skill you use must make sense based on the circumstances. For example, if you’re close to an enemy, you could use Might to create an opening, but against an enemy that is far away, that may not make sense. Or if you want to ask a question about the weaknesses of an elemental, you’d likely use Arcana.
+> 
+> **Monsters Are Smart!** You cannot assess using the same skill more than once in a single encounter, as your foes adapt to your tactics. You’ll need to stay creative!

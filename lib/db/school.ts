@@ -630,3 +630,27 @@ export const findSpellSchoolWithCreatorDiscordId = async (
 
   return data ? toSpellSchool(data) : null;
 };
+
+export const getSpellSchoolUrlsByName = async (
+  names: string[]
+): Promise<Map<string, string>> => {
+  if (names.length === 0) return new Map();
+
+  const db = getDatabase();
+  const rows = await db
+    .select({ id: spellSchools.id, name: spellSchools.name })
+    .from(spellSchools)
+    .where(
+      and(
+        inArray(spellSchools.name, names),
+        eq(spellSchools.visibility, "public")
+      )
+    );
+
+  const { getSpellSchoolUrl } = await import("@/lib/utils/url");
+  const result = new Map<string, string>();
+  for (const row of rows) {
+    result.set(row.name, getSpellSchoolUrl(row));
+  }
+  return result;
+};

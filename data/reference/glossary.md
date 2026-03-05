@@ -1,0 +1,51 @@
+---
+title: "Glossary"
+slug: "glossary"
+category: "more"
+---
+
+- **{{term:Advantage}} X.** Roll X additional dice and drop the X lowest dice (removing dice from the left to right in the case of a tie).
+- **Ally.** A friendly creature, not yourself.
+- **Assess.** An action to strategically analyze the situation in combat.
+- **Attack.** Any offensive action. Swinging with a weapon, casting a harmful spell, {{term:Grappling}}, etc.
+- **Blindsight X.** You can sense creatures and obstacles normally within X spaces, ignoring {{term:Blinded}}, darkness, and invisibility.
+- **Cantrip.** A basic spell. Costs 0 mana to cast, and their power increases as you level up.
+- **Climbing.** A creature with a climbing {{term:speed}} can move across vertical surfaces as flat ground.
+- **{{term:Concentration}}.** Can only Concentrate on 1 thing at a time. DC 10 STR save when crit or lose {{term:concentration}}.
+- **Cone X.** Starts at the character and extends X spaces outward, becoming up to X spaces wide at the farthest edge.
+- **Cover.** If partially obscured, incoming attacks have {{term:disadvantage}}. If completely obscured, cannot be targeted.
+- **d44, d66, d88.** Roll 2 of the same dice, the leftmost die is the tens place, and the second is the ones. These rolls cannot miss or crit.
+- **Darkvision X.** Can see normally in the dark, up to X spaces.
+- **Decrement/Increment.** Use a die one size smaller or larger (d4 » d6 » d8 » d10 » d12 » d20).
+- **Difficult Terrain.** {{term:Speed}} halved while here. (e.g., moving through the space of an enemy).
+- **{{term:Disadvantage}} X.** Roll X additional dice and drop the X highest dice.
+- **Distracted.** A target is distracted if it is adjacent to or {{term:Taunted}} by an ally, or if it cannot see you.
+- **Encounter.** An encounter begins when Initiative is rolled and ends when hostilities do.
+- **Falling.** Suffer 1d6 damage per 10 ft. fallen.
+- **{{term:Field Rest}}/Safe Rest.** Spend time to recover some of your resources.
+- **Free.** Does not cost an action or any other resource (e.g., mana) unless otherwise stated.
+- **{{term:Hampered}}.** Any creature with their actions or movement reduced (e.g., {{term:Dazed}}, {{term:Grappled}}, {{term:Prone}}, Difficult Terrain).
+- **KEY.** Use either of your KEY attributes.
+- **Knockback/Push X.** Forcibly move a creature X spaces, ignoring Difficult Terrain. Other creatures or the environment may halt movement prematurely and deal damage.
+- **Line X.** A straight line extending up to X spaces in one direction.
+- **LVL.** Replace this with your Hero’s level.
+- **Mana.** Used to fuel {{term:spellcasting}}. See the Heroes book for more info on how classes gain mana.
+- **Move X.** Move up to that many spaces.
+- **Paralyzed, Stunned, Unconscious.** {{term:Incapacitated}}. Can’t do anything. Attacks against you have {{term:advantage}}, and melee attacks that hit, crit.
+- **Reach X.** The area within X spaces around a character; forming your choice of a cube or sphere.
+- **Range X.** Ranged attacks are made with {{term:disadvantage}} if ANY enemy is adjacent. Range can be extended.
+- **Resistance.** Take half as much damage.
+- **{{term:Restrained}}.** Same effect as {{term:Grappled}}, objects Restrain, creatures {{term:Grapple}}.
+- **Round.** The time in combat when each Hero and enemy has a chance to act.
+- **Rushed Attacks.** Attacking more than once on a turn imposes a cumulative {{term:disadvantage}} penalty (e.g., attacking with a short sword for the third time on a turn, you would roll 3d6 and take the lowest result).
+- **Skill Points.** Use them to increase your skills. Start with 4 at level 1 and gain 1 each level.
+- **{{term:Spellcasting}} Focus.** Can be used instead of an empty hand to cast spells.
+- **Stats.** The core attributes of a character.
+- **Surprise.** When combat starts before all sides are aware.
+- **Target.** A selected creature or object. It must be within Range/Reach and able to be sensed.
+- **Teleport.** Move instantaneously. Does not provoke opportunity attacks.
+- **Temp HP.** HP that do not replenish.
+- **Turn.** The primary time allotted for an individual hero or monster group to act.
+- **Unheld.** Not touched, worn, or held by anyone.
+- **Vulnerable.** When a creature is vulnerable to a damage type, that kind of damage ignores its armor; if unarmored, they take double the damage instead.
+- **{{term:Wound}}.** A measure of how close a hero is to death. Typically 6 and you’re dead.

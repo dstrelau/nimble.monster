@@ -1,0 +1,8 @@
+---
+title: "Advantage & Disadvantage"
+slug: "advantage-disadvantage"
+category: "core-rules"
+---
+If you are ever in a favorable situation, the GM may allow you to roll with advantage. To do this, roll 1 additional die of the same type and remove the lowest. Alternatively, if the situation is grim or your idea is a long shot, you may have to roll with disadvantage (removing the highest die instead). 
+
+If you have multiple instances of advantage or disadvantage, for each one, roll an extra die and remove the lowest (for advantage) or the highest (for disadvantage). Each instance of advantage cancels out one instance of disadvantage before you roll.

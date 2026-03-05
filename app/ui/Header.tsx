@@ -1,19 +1,6 @@
 "use client";
 
-import {
-  BookUser,
-  Box,
-  Drama,
-  HandFist,
-  HeartHandshake,
-  Menu,
-  PersonStanding,
-  Scroll,
-  Shield,
-  SquarePen,
-  User as UserIcon,
-  WandSparkles,
-} from "lucide-react";
+import { BookOpen, Menu, SquarePen, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -22,7 +9,6 @@ import { Logo } from "@/components/app/Logo";
 import { MobileMenuDropdown } from "@/components/app/MobileMenuDropdown";
 import { ModeToggle } from "@/components/app/ModeToggle";
 import { UserAvatar } from "@/components/app/UserAvatar";
-import { Goblin } from "@/components/icons/goblin";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -30,18 +16,86 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
 import { Separator } from "@/components/ui/separator";
 import type { User } from "@/lib/types";
+import { ENTITY_TYPE_ICONS } from "@/lib/types/entity-links";
 import { cn } from "@/lib/utils";
 import { getUserUrl } from "@/lib/utils/url";
+
+const BROWSE_CREATURES_ITEMS = [
+  { href: "/monsters", label: "Monsters", icon: ENTITY_TYPE_ICONS.monster },
+  {
+    href: "/companions",
+    label: "Companions",
+    icon: ENTITY_TYPE_ICONS.companion,
+  },
+  { href: "/items", label: "Items", icon: ENTITY_TYPE_ICONS.item },
+  {
+    href: "/collections",
+    label: "Collections",
+    icon: ENTITY_TYPE_ICONS.collection,
+  },
+  { href: "/reference", label: "Rules", icon: BookOpen },
+];
+
+const BROWSE_CHARACTER_ITEMS = [
+  {
+    href: "/ancestries",
+    label: "Ancestries",
+    icon: ENTITY_TYPE_ICONS.ancestry,
+  },
+  {
+    href: "/backgrounds",
+    label: "Backgrounds",
+    icon: ENTITY_TYPE_ICONS.background,
+  },
+  { href: "/classes", label: "Classes", icon: ENTITY_TYPE_ICONS.class },
+  {
+    href: "/subclasses",
+    label: "Subclasses",
+    icon: ENTITY_TYPE_ICONS.subclass,
+  },
+  { href: "/spell-schools", label: "Spells", icon: ENTITY_TYPE_ICONS.school },
+];
+
+const ALL_BROWSE_ITEMS = [...BROWSE_CREATURES_ITEMS, ...BROWSE_CHARACTER_ITEMS];
+
+const MY_ITEMS = [
+  { href: "/my/monsters", label: "Monsters", icon: ENTITY_TYPE_ICONS.monster },
+  {
+    href: "/my/ancestries",
+    label: "Ancestries",
+    icon: ENTITY_TYPE_ICONS.ancestry,
+  },
+  {
+    href: "/my/companions",
+    label: "Companions",
+    icon: ENTITY_TYPE_ICONS.companion,
+  },
+  {
+    href: "/my/backgrounds",
+    label: "Backgrounds",
+    icon: ENTITY_TYPE_ICONS.background,
+  },
+  { href: "/my/items", label: "Items", icon: ENTITY_TYPE_ICONS.item },
+  { href: "/my/classes", label: "Classes", icon: ENTITY_TYPE_ICONS.class },
+  {
+    href: "/my/collections",
+    label: "Collections",
+    icon: ENTITY_TYPE_ICONS.collection,
+  },
+  {
+    href: "/my/subclasses",
+    label: "Subclasses",
+    icon: ENTITY_TYPE_ICONS.subclass,
+  },
+  { href: "/my/families", label: "Families", icon: ENTITY_TYPE_ICONS.family },
+  {
+    href: "/my/spell-schools",
+    label: "Spells",
+    icon: ENTITY_TYPE_ICONS.school,
+  },
+];
 
 const UserAvatarButton = ({
   user,
@@ -67,153 +121,16 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileUserMenuOpen, setMobileUserMenuOpen] = useState(false);
 
-  const isActive = (path: string) => pathname === path;
-
-  const isCreateActive = () =>
-    isActive("/create") ||
-    isActive("/monsters/new") ||
-    isActive("/companions/new") ||
-    isActive("/items/new") ||
-    isActive("/spell-schools/new");
-
-  const browseItems = [
-    {
-      href: "/collections",
-      label: "Collections",
-      isActive: isActive("/collections"),
-      icon: Box,
-    },
-    {
-      href: "/companions",
-      label: "Companions",
-      isActive: isActive("/companions"),
-      icon: HeartHandshake,
-    },
-    {
-      href: "/monsters",
-      label: "Monsters",
-      isActive: isActive("/monsters"),
-      icon: Goblin,
-    },
-    {
-      href: "/items",
-      label: "Items",
-      isActive: isActive("/items"),
-      icon: Shield,
-    },
-  ];
-
-  const heroItems = [
-    {
-      href: "/ancestries",
-      label: "Ancestries",
-      isActive: isActive("/ancestries"),
-      icon: Scroll,
-    },
-    {
-      href: "/backgrounds",
-      label: "Backgrounds",
-      isActive: isActive("/backgrounds"),
-      icon: Drama,
-    },
-    {
-      href: "/classes",
-      label: "Classes",
-      isActive: isActive("/classes"),
-      icon: BookUser,
-    },
-    {
-      href: "/subclasses",
-      label: "Subclasses",
-      isActive: isActive("/subclasses"),
-      icon: HandFist,
-    },
-    {
-      href: "/spell-schools",
-      label: "Spells",
-      isActive: isActive("/spell-schools"),
-      icon: WandSparkles,
-    },
-  ];
-
-  const isHeroActive = () =>
-    isActive("/ancestries") ||
-    isActive("/backgrounds") ||
-    isActive("/subclasses") ||
-    isActive("/spell-schools");
-
-  const userMenuItems = currentUser
-    ? [
-        {
-          href: currentUser.username ? getUserUrl(currentUser) : "#",
-          label: "View Profile",
-          isActive: currentUser.username
-            ? isActive(getUserUrl(currentUser))
-            : false,
-          icon: UserIcon,
-        },
-        {
-          href: "/my/ancestries",
-          label: "Ancestries",
-          isActive: isActive("/my/ancestries"),
-          icon: Scroll,
-        },
-        {
-          href: "/my/monsters",
-          label: "Monsters",
-          isActive: isActive("/my/monsters"),
-          icon: Goblin,
-        },
-        {
-          href: "/my/backgrounds",
-          label: "Backgrounds",
-          isActive: isActive("/my/backgrounds"),
-          icon: Drama,
-        },
-        {
-          href: "/my/families",
-          label: "Families",
-          isActive: isActive("/my/families"),
-          icon: PersonStanding,
-        },
-        {
-          href: "/my/spell-schools",
-          label: "Spells",
-          isActive: isActive("/my/spell-schools"),
-          icon: WandSparkles,
-        },
-        {
-          href: "/my/items",
-          label: "Items",
-          isActive: isActive("/my/items"),
-          icon: Shield,
-        },
-        {
-          href: "/my/classes",
-          label: "Classes",
-          isActive: isActive("/my/Classes"),
-          icon: BookUser,
-        },
-        {
-          href: "/my/subclasses",
-          label: "Subclasses",
-          isActive: isActive("/my/subclasses"),
-          icon: HandFist,
-        },
-        {
-          href: "/my/companions",
-          label: "Companions",
-          isActive: isActive("/my/companions"),
-          icon: HeartHandshake,
-        },
-        {
-          href: "/my/collections",
-          label: "Collections",
-          isActive: isActive("/my/collections"),
-          icon: Box,
-        },
-      ]
-    : [];
+  const profileItem = currentUser
+    ? {
+        href: currentUser.username ? getUserUrl(currentUser) : "#",
+        label: "View Profile",
+        isActive: currentUser.username
+          ? pathname === getUserUrl(currentUser)
+          : false,
+        icon: UserIcon,
+      }
+    : null;
 
   const handleSignOut = () => signOut({ redirectTo: "/" });
   const handleSignIn = () => signIn("discord", { redirectTo: "/my/monsters" });
@@ -240,67 +157,43 @@ const Header = () => {
         <Logo showText={false} className="md:hidden" />
 
         {/* Desktop navigation (center) */}
-        <NavigationMenu className="hidden md:block" viewport={false}>
-          <NavigationMenuList className="gap-2">
-            {browseItems.map((item) => (
-              <NavigationMenuItem key={item.href}>
-                <NavigationMenuLink data-active={item.isActive} asChild>
-                  <Link
-                    href={item.href}
-                    className="flex-row items-center gap-1"
-                  >
-                    <item.icon />
-                    {item.label}
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
+        <div className="hidden md:flex flex-col items-center gap-1">
+          <div className="flex gap-x-6">
+            {BROWSE_CREATURES_ITEMS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-1.5 hover:text-flame",
+                  pathname === item.href && "text-flame"
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
             ))}
-            <NavigationMenuItem className="z-10">
-              <NavigationMenuTrigger data-active={isHeroActive()}>
-                <PersonStanding />
-                Heroes
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul>
-                  {heroItems.map((item) => (
-                    <li key={item.href}>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={item.href}
-                          className={cn(
-                            "",
-                            item.isActive && "text-flame font-bold"
-                          )}
-                        >
-                          <div className="text-sm font-medium leading-none flex items-center gap-2">
-                            <item.icon className="h-4 w-4" />
-                            {item.label}
-                          </div>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink data-active={isCreateActive()} asChild>
-                <Link
-                  href="/create"
-                  className="px-3 border-2 border-border flex-row items-center gap-1"
-                >
-                  <SquarePen />
-                  Create
-                </Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+          </div>
+          <div className="flex gap-x-6">
+            {BROWSE_CHARACTER_ITEMS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-1.5 hover:text-flame",
+                  pathname === item.href && "text-flame"
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
         {/* Desktop User menu */}
         <div className="hidden md:flex items-center gap-2">
           {currentUser ? (
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
@@ -312,31 +205,41 @@ const Header = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64">
                 <div className="p-1">
-                  {userMenuItems[0] && (
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href={userMenuItems[0].href}
-                        className={cn(
-                          "flex justify-center items-center gap-1",
-                          userMenuItems[0].isActive && "font-bold bg-accent"
-                        )}
-                      >
-                        {(() => {
-                          const Icon = userMenuItems[0].icon;
-                          return <Icon className="size-4" />;
-                        })()}
-                        {userMenuItems[0].label}
-                      </Link>
-                    </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/create"
+                      className={cn("flex justify-center items-center gap-1")}
+                    >
+                      <SquarePen className="size-4" />
+                      Create
+                    </Link>
+                  </DropdownMenuItem>
+                  <Separator className="my-1" />
+                  {profileItem && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={profileItem.href}
+                          className={cn(
+                            "flex justify-center items-center gap-1",
+                            profileItem.isActive && "font-bold bg-accent"
+                          )}
+                        >
+                          <profileItem.icon className="size-4" />
+                          {profileItem.label}
+                        </Link>
+                      </DropdownMenuItem>
+                      <Separator className="my-1" />
+                    </>
                   )}
                   <div className="grid grid-cols-2 gap-1">
-                    {userMenuItems.slice(1).map((item) => (
+                    {MY_ITEMS.map((item) => (
                       <DropdownMenuItem key={item.href} asChild>
                         <Link
                           href={item.href}
                           className={cn(
                             "flex justify-center items-center gap-2 flex-col",
-                            item.isActive && "font-bold bg-accent"
+                            pathname === item.href && "font-bold bg-accent"
                           )}
                         >
                           <item.icon className="h-4 w-4" />
@@ -377,30 +280,29 @@ const Header = () => {
       {/* Mobile menu dropdowns */}
       <MobileMenuDropdown
         isOpen={mobileMenuOpen}
-        links={[
-          {
-            href: "/create",
-            label: "Create",
-            isActive: isCreateActive(),
-            onClick: () => setMobileMenuOpen(false),
-          },
-          ...browseItems.map((link) => ({
-            ...link,
-            onClick: () => setMobileMenuOpen(false),
-          })),
-          ...heroItems.map((link) => ({
-            ...link,
-            onClick: () => setMobileMenuOpen(false),
-          })),
-        ]}
+        links={ALL_BROWSE_ITEMS.map((link) => ({
+          ...link,
+          onClick: () => setMobileMenuOpen(false),
+        }))}
       />
 
       <MobileMenuDropdown
         isOpen={mobileUserMenuOpen && !!currentUser}
-        links={userMenuItems.map((link) => ({
-          ...link,
-          onClick: () => setMobileUserMenuOpen(false),
-        }))}
+        links={[
+          {
+            href: "/create",
+            label: "Create",
+            onClick: () => setMobileUserMenuOpen(false),
+          },
+          ...(profileItem
+            ? [{ ...profileItem, onClick: () => setMobileUserMenuOpen(false) }]
+            : []),
+          ...MY_ITEMS.map((item) => ({
+            ...item,
+            isActive: pathname === item.href,
+            onClick: () => setMobileUserMenuOpen(false),
+          })),
+        ]}
         buttons={[
           {
             label: "Logout",

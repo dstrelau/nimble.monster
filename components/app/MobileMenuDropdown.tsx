@@ -1,9 +1,11 @@
+import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface MobileMenuLink {
   href: string;
   label: string;
+  icon?: LucideIcon | React.FC<React.SVGProps<SVGSVGElement>>;
   isActive?: boolean;
   onClick?: () => void;
 }
@@ -38,11 +40,12 @@ export const MobileMenuDropdown: React.FC<MobileMenuDropdownProps> = ({
             key={link.href}
             href={link.href}
             className={cn(
-              "block px-3 py-2 rounded-md text-foreground hover:bg-white/10 transition-colors",
+              "flex items-center gap-2 px-3 py-2 rounded-md text-foreground hover:bg-white/10 transition-colors",
               link.isActive && "font-bold bg-accent"
             )}
             onClick={link.onClick}
           >
+            {link.icon && <link.icon className="h-4 w-4 shrink-0" />}
             {link.label}
           </Link>
         ))}

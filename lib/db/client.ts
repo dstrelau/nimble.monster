@@ -23,7 +23,7 @@ function isHranaStreamError(error: unknown): boolean {
  * Creates the raw libsql client.
  */
 function createRawClient(): Client {
-  const url = process.env.DATABASE_URL;
+  const url = process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL;
   if (!url) {
     throw new Error("DATABASE_URL is required");
   }
@@ -31,7 +31,7 @@ function createRawClient(): Client {
   return createClient({
     url,
     syncUrl: process.env.DATABASE_SYNC_URL,
-    authToken: process.env.DATABASE_AUTH_TOKEN,
+    authToken: process.env.DATABASE_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN,
     syncInterval: process.env.DATABASE_SYNC_URL ? 10 : undefined,
   });
 }
