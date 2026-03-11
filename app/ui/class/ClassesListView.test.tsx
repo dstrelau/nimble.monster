@@ -36,6 +36,7 @@ const makeClass = (
   overrides: Partial<Class> & { id: string; name: string }
 ): Class => ({
   visibility: "public",
+  subclassNamePreface: "",
   createdAt: new Date("2024-01-01"),
   updatedAt: new Date("2024-01-01"),
   description: "",

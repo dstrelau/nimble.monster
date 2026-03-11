@@ -57,6 +57,7 @@ export default async function PreviewClassesPage({ searchParams }: PageProps) {
     const classEntity: Class = {
       id: "",
       name,
+      subclassNamePreface: "",
       description,
       keyStats: keyStats as Class["keyStats"],
       hitDie: hitDie as Class["hitDie"],

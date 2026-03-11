@@ -3,11 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import type {
-  SubclassClass,
-  SubclassLevel,
-  SubclassVisibility,
-} from "@/lib/types";
+import type { SubclassLevel, SubclassVisibility } from "@/lib/types";
 import { getSubclassUrl } from "@/lib/utils/url";
 
 export async function searchPublicSubclasses(params: {
@@ -29,7 +25,8 @@ export async function searchPublicSubclasses(params: {
 
 export async function createSubclass(formData: {
   name: string;
-  className: SubclassClass;
+  classId?: string | null;
+  className: string;
   namePreface?: string;
   tagline?: string;
   description?: string;
@@ -63,7 +60,8 @@ export async function updateSubclass(
   subclassId: string,
   formData: {
     name: string;
-    className: SubclassClass;
+    classId?: string | null;
+    className: string;
     namePreface?: string;
     tagline?: string;
     description?: string;

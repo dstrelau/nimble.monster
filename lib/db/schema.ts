@@ -257,6 +257,7 @@ export const subclasses = sqliteTable(
       .$defaultFn(() => crypto.randomUUID()),
     name: text("name").notNull(),
     className: text("class_name").notNull(),
+    classId: text("class_id"),
     namePreface: text("name_preface"),
     description: text("description"),
     visibility: text("visibility")
@@ -272,7 +273,10 @@ export const subclasses = sqliteTable(
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
     tagline: text("tagline"),
   },
-  (table) => [index("idx_subclasses_user_id").on(table.userId)]
+  (table) => [
+    index("idx_subclasses_user_id").on(table.userId),
+    index("idx_subclasses_class_id").on(table.classId),
+  ]
 );
 
 // Subclass abilities table
@@ -456,6 +460,7 @@ export const classes = sqliteTable(
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
     name: text("name").notNull(),
+    subclassNamePreface: text("subclass_name_preface").notNull().default(""),
     description: text("description").notNull(),
     keyStats: text("key_stats", { mode: "json" })
       .$type<string[]>()

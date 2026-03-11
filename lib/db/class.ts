@@ -67,6 +67,7 @@ const toAward = (a: AwardRow): Award => ({
 const toClassMini = (c: ClassRow): ClassMini => ({
   id: c.id,
   name: c.name,
+  subclassNamePreface: c.subclassNamePreface,
   visibility: c.visibility as ClassVisibility,
   createdAt: c.createdAt ? new Date(c.createdAt) : new Date(),
 });
@@ -703,4 +704,94 @@ export const updateClass = async (input: UpdateClassInput): Promise<Class> => {
   }
 
   return toClass(data);
+};
+
+export interface SubclassClassOption {
+  id: string;
+  name: string;
+  subclassNamePreface: string;
+  creatorImageUrl: string;
+  bucket: "owned" | "official" | "public";
+}
+
+export const searchClassesForSubclass = async (params: {
+  userId?: string;
+  searchTerm?: string;
+}): Promise<SubclassClassOption[]> => {
+  const db = getDatabase();
+  const OFFICIAL_USER_ID = "00000000-0000-0000-0000-000000000000";
+
+  const conditions = [eq(classes.visibility, "public")];
+  if (params.searchTerm) {
+    conditions.push(like(classes.name, `%${params.searchTerm}%`));
+  }
+
+  const rows = await db
+    .select({
+      id: classes.id,
+      name: classes.name,
+      subclassNamePreface: classes.subclassNamePreface,
+      userId: classes.userId,
+      user: users,
+    })
+    .from(classes)
+    .innerJoin(users, eq(classes.userId, users.id))
+    .where(and(...conditions))
+    .orderBy(asc(classes.name))
+    .limit(50);
+
+  // If user is logged in, also fetch their private classes
+  let ownedRows: typeof rows = [];
+  if (params.userId) {
+    const ownedConditions = [eq(classes.userId, params.userId)];
+    if (params.searchTerm) {
+      ownedConditions.push(like(classes.name, `%${params.searchTerm}%`));
+    }
+    ownedRows = await db
+      .select({
+        id: classes.id,
+        name: classes.name,
+        subclassNamePreface: classes.subclassNamePreface,
+        userId: classes.userId,
+        user: users,
+      })
+      .from(classes)
+      .innerJoin(users, eq(classes.userId, users.id))
+      .where(and(...ownedConditions))
+      .orderBy(asc(classes.name))
+      .limit(50);
+  }
+
+  const seenIds = new Set<string>();
+  const results: SubclassClassOption[] = [];
+
+  // User's own classes first
+  for (const row of ownedRows) {
+    if (!seenIds.has(row.id)) {
+      seenIds.add(row.id);
+      results.push({
+        id: row.id,
+        name: row.name,
+        subclassNamePreface: row.subclassNamePreface,
+        creatorImageUrl: toUser(row.user).imageUrl ?? "",
+        bucket: "owned",
+      });
+    }
+  }
+
+  // Then official, then other public
+  for (const row of rows) {
+    if (!seenIds.has(row.id)) {
+      seenIds.add(row.id);
+      results.push({
+        id: row.id,
+        name: row.name,
+        subclassNamePreface: row.subclassNamePreface,
+        creatorImageUrl: toUser(row.user).imageUrl ?? "",
+        bucket: row.userId === OFFICIAL_USER_ID ? "official" : "public",
+      });
+    }
+  }
+
+  return results;
 };

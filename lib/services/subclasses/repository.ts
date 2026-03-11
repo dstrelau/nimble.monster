@@ -182,7 +182,7 @@ export const findOfficialSubclassesByNames = async (
     result.set(key, {
       id: row.id,
       name: row.name,
-      className: row.className as Subclass["className"],
+      className: row.className,
       namePreface: row.namePreface || undefined,
       tagline: row.tagline || undefined,
       description: row.description || undefined,

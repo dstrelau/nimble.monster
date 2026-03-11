@@ -6,7 +6,6 @@ import type {
   Source,
   Subclass,
   SubclassAbility,
-  SubclassClass,
   SubclassLevel,
   SubclassMini,
   User,
@@ -73,7 +72,8 @@ const toAward = (a: AwardRow): Award => ({
 const toSubclassMini = (s: SubclassRow): SubclassMini => ({
   id: s.id,
   name: s.name,
-  className: s.className as SubclassClass,
+  classId: s.classId || undefined,
+  className: s.className,
   namePreface: s.namePreface || undefined,
   tagline: s.tagline || undefined,
   visibility: s.visibility as "public" | "private",
@@ -454,7 +454,8 @@ export const listAllSubclassesForDiscordID = async (
 
 export interface CreateSubclassInput {
   name: string;
-  className: SubclassClass;
+  classId?: string | null;
+  className: string;
   namePreface?: string;
   tagline?: string;
   description?: string;
@@ -485,6 +486,7 @@ export const createSubclass = async (
   await db.insert(subclasses).values({
     id: subclassId,
     name: input.name,
+    classId: input.classId || undefined,
     className: input.className,
     namePreface: input.namePreface || undefined,
     tagline: input.tagline || undefined,
@@ -579,6 +581,7 @@ export const updateSubclass = async (
     .update(subclasses)
     .set({
       name: input.name,
+      classId: input.classId || null,
       className: input.className,
       namePreface: input.namePreface || undefined,
       tagline: input.tagline || undefined,

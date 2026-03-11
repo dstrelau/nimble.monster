@@ -15,7 +15,7 @@ import {
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Subclass, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { getSubclassUrl } from "@/lib/utils/url";
+import { getClassUrl, getSubclassUrl } from "@/lib/utils/url";
 
 interface CardProps {
   subclass: Subclass;
@@ -50,9 +50,21 @@ export function Card({
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <CardTitle className="flex flex-col text-xl font-bold uppercase leading-tight text-center font-slab">
-              <span className="self-center w-fit mb-2 py-1 px-2 bg-muted text-sm font-sab font-normal">
-                {subclass.className}
-              </span>
+              {subclass.classId ? (
+                <Link
+                  href={getClassUrl({
+                    id: subclass.classId,
+                    name: subclass.className,
+                  })}
+                  className="self-center w-fit mb-2 py-1 px-2 bg-muted text-sm font-sab font-normal hover:underline"
+                >
+                  {subclass.className}
+                </Link>
+              ) : (
+                <span className="self-center w-fit mb-2 py-1 px-2 bg-muted text-sm font-sab font-normal">
+                  {subclass.className}
+                </span>
+              )}
               {link ? (
                 <Link href={getSubclassUrl(subclass)}>
                   {subclass.namePreface && (

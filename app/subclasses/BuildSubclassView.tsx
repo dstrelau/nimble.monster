@@ -1,11 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2 } from "lucide-react";
-
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import {
   type Control,
   useFieldArray,
@@ -13,13 +12,21 @@ import {
   useWatch,
 } from "react-hook-form";
 import { z } from "zod";
+import { subclassClassOptionsQueryOptions } from "@/app/subclasses/hooks";
 import { Card } from "@/app/ui/subclass/Card";
 import { BuildView } from "@/components/app/BuildView";
 import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
+import { EditableLevelAbilities } from "@/components/app/EditableLevelAbilities";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Combobox,
+  type ComboboxGroup,
+  type ComboboxItem,
+} from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -29,32 +36,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  SUBCLASS_CLASSES,
-  SUBCLASS_NAME_PREFIXES,
-  type Subclass,
-  type SubclassClass,
-  UNKNOWN_USER,
-} from "@/lib/types";
+import { type Subclass, UNKNOWN_USER } from "@/lib/types";
+import { randomUUID } from "@/lib/utils";
 import { getSubclassUrl } from "@/lib/utils/url";
 import { createSubclass, updateSubclass } from "../actions/subclass";
 
-const abilitySchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1, "Ability name is required"),
-  description: z.string().min(1, "Ability description is required"),
-  actionType: z.enum(["ability", "action", "reaction", "passive"]).optional(),
-  trigger: z.string().optional(),
-});
+const abilitySchema = z
+  .object({
+    id: z.string().min(1),
+    name: z.string(),
+    description: z.string(),
+    actionType: z.enum(["ability", "action", "reaction", "passive"]).optional(),
+    trigger: z.string().optional(),
+  })
+  .superRefine((a, ctx) => {
+    const nameEmpty = !a.name.trim();
+    const descEmpty = !a.description.trim();
+    if (!nameEmpty || !descEmpty) {
+      if (nameEmpty)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Ability name is required",
+          path: ["name"],
+        });
+      if (descEmpty)
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Ability description is required",
+          path: ["description"],
+        });
+    }
+  });
 
 const levelSchema = z.object({
   level: z.number(),
@@ -63,12 +76,8 @@ const levelSchema = z.object({
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  className: z.enum(
-    SUBCLASS_CLASSES.map((cls) => cls.value) as [
-      SubclassClass,
-      ...SubclassClass[],
-    ]
-  ),
+  classId: z.string().nullable().optional(),
+  className: z.string().min(1, "Class is required"),
   namePreface: z.string().optional(),
   tagline: z.string().optional(),
   description: z.string().optional(),
@@ -154,6 +163,11 @@ const EXAMPLE_SUBCLASSES: Record<string, Omit<Subclass, "creator">> = {
   },
 };
 
+interface ClassComboboxItem extends ComboboxItem {
+  subclassNamePreface: string;
+  creatorImageUrl: string;
+}
+
 interface BuildSubclassViewProps {
   subclass?: Subclass;
 }
@@ -165,57 +179,76 @@ export default function BuildSubclassView({
   const router = useRouter();
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [classSearch, setClassSearch] = useState<string>("");
+  const lastPrefaceFromClass = useRef<string>("");
+
+  const { data: classOptions = [], isLoading: classSearchLoading } = useQuery(
+    subclassClassOptionsQueryOptions(classSearch)
+  );
+
+  const classComboboxGroups = useMemo<
+    ComboboxGroup<ClassComboboxItem>[]
+  >(() => {
+    const bucketOrder = ["owned", "official", "public"] as const;
+    return bucketOrder.map((bucket) => ({
+      items: classOptions
+        .filter((c) => c.bucket === bucket)
+        .map((c) => ({
+          id: c.id,
+          label: c.name,
+          subclassNamePreface: c.subclassNamePreface,
+          creatorImageUrl: c.creatorImageUrl,
+        })),
+    }));
+  }, [classOptions]);
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: subclass?.name || "",
-      className: subclass?.className || "Berserker",
-      namePreface:
-        subclass?.namePreface ||
-        (subclass?.className
-          ? SUBCLASS_NAME_PREFIXES[subclass.className]
-          : SUBCLASS_NAME_PREFIXES.Berserker),
+      classId: subclass?.classId || null,
+      className: subclass?.className || "",
+      namePreface: subclass?.namePreface || "",
       tagline: subclass?.tagline || "",
       description: subclass?.description || "",
-      levels: subclass?.levels || [
-        {
-          level: 3,
-          abilities: [
-            {
-              id: Math.random().toString(36).slice(2),
-              name: "",
-              description: "",
-            },
-          ],
-        },
-      ],
+      levels: [3, 7, 11, 15].map((level) => {
+        const existing = subclass?.levels?.find((l) => l.level === level);
+        return (
+          existing ?? {
+            level,
+            abilities: [{ id: randomUUID(), name: "", description: "" }],
+          }
+        );
+      }),
 
       visibility: subclass?.visibility || "public",
     },
   });
 
-  const {
-    fields: levelFields,
-    append: appendLevel,
-    remove: removeLevel,
-  } = useFieldArray({
+  const { fields: levelFields } = useFieldArray({
     control: form.control,
     name: "levels",
   });
 
-  const { watch } = form;
-  const watchedValues = watch() as FormData;
+  const watchedValues = useWatch({ control: form.control }) as FormData;
 
   const creator = session?.user || UNKNOWN_USER;
   const previewSubclass = useMemo<Subclass>(() => {
     return {
       id: subclass?.id || "",
       name: watchedValues.name || "",
-      className: watchedValues.className || ("" as SubclassClass),
+      classId: watchedValues.classId || undefined,
+      className: watchedValues.className || "",
       namePreface: watchedValues.namePreface || undefined,
       tagline: watchedValues.tagline || undefined,
       description: watchedValues.description || undefined,
-      levels: watchedValues.levels || [],
+      levels: (watchedValues.levels || [])
+        .map((l) => ({
+          ...l,
+          abilities: l.abilities.filter(
+            (a) => a.name.trim() || a.description.trim()
+          ),
+        }))
+        .filter((l) => l.abilities.length > 0),
       abilityLists: subclass?.abilityLists || [],
       visibility: watchedValues.visibility,
       creator: creator,
@@ -224,6 +257,7 @@ export default function BuildSubclassView({
     };
   }, [
     watchedValues.name,
+    watchedValues.classId,
     watchedValues.className,
     watchedValues.namePreface,
     watchedValues.tagline,
@@ -240,15 +274,22 @@ export default function BuildSubclassView({
     setIsSubmitting(true);
     try {
       const isEditing = !!subclass?.id;
-      const processedLevels = data.levels;
 
       const payload = {
         name: data.name.trim(),
+        classId: data.classId || undefined,
         className: data.className,
         namePreface: data.namePreface?.trim() || undefined,
         tagline: data.tagline?.trim() || undefined,
         description: data.description?.trim() || undefined,
-        levels: processedLevels,
+        levels: data.levels
+          .map((l) => ({
+            ...l,
+            abilities: l.abilities.filter(
+              (a) => a.name.trim() || a.description.trim()
+            ),
+          }))
+          .filter((l) => l.abilities.length > 0),
         visibility: data.visibility,
       };
       const result = isEditing
@@ -276,38 +317,22 @@ export default function BuildSubclassView({
   const loadExample = (exampleKey: string) => {
     const example = EXAMPLE_SUBCLASSES[exampleKey];
     if (example) {
-      const processedLevels = example.levels;
-
       form.reset({
         name: example.name,
-        className: example.className as FormData["className"],
+        className: example.className,
         description: example.description || "",
-        levels: processedLevels,
+        levels: [3, 7, 11, 15].map((level) => {
+          const existing = example.levels.find((l) => l.level === level);
+          return (
+            existing ?? {
+              level,
+              abilities: [{ id: randomUUID(), name: "", description: "" }],
+            }
+          );
+        }),
         visibility: example.visibility,
       });
     }
-  };
-
-  const addLevel = () => {
-    // select the next default level after the max used level
-    const defaultLevels = [3, 7, 11, 15] as const;
-    const usedLevels = levelFields.map((field) => field.level);
-    const maxUsedLevel = Math.max(...usedLevels, 0);
-    const nextDefaultLevel = defaultLevels.find(
-      (level) => level > maxUsedLevel
-    );
-    const nextLevel = nextDefaultLevel || Math.min(maxUsedLevel + 1, 20);
-
-    appendLevel({
-      level: nextLevel,
-      abilities: [
-        {
-          id: Math.random().toString(36).slice(2),
-          name: "",
-          description: "",
-        },
-      ],
-    });
   };
 
   return (
@@ -325,64 +350,58 @@ export default function BuildSubclassView({
               onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-4"
             >
-              <div className="flex flex-wrap gap-4">
-                <FormField
-                  control={form.control}
-                  name="className"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Class</FormLabel>
-                      <Select
-                        onValueChange={(value) => {
-                          const currentNamePreface =
-                            form.getValues("namePreface");
-                          const previousClassName = field.value;
-                          const previousDefaultPrefix =
-                            SUBCLASS_NAME_PREFIXES[
-                              previousClassName as keyof typeof SUBCLASS_NAME_PREFIXES
-                            ];
-
-                          field.onChange(value);
-
-                          // Auto-set namePreface based on class if field is empty or matches previous default
-                          const defaultPrefix =
-                            SUBCLASS_NAME_PREFIXES[
-                              value as keyof typeof SUBCLASS_NAME_PREFIXES
-                            ];
+              <FormField
+                control={form.control}
+                name="className"
+                render={({ field }) => (
+                  <FormItem className="flex-1 flex flex-col">
+                    <FormLabel>Class</FormLabel>
+                    <FormControl>
+                      <Combobox<ClassComboboxItem>
+                        groups={classComboboxGroups}
+                        value={form.getValues("classId") || undefined}
+                        onSelect={(item) => {
+                          const currentPreface = form.getValues("namePreface");
+                          form.setValue("classId", item.id);
+                          field.onChange(item.label);
                           if (
-                            !currentNamePreface ||
-                            currentNamePreface === previousDefaultPrefix
+                            !currentPreface ||
+                            currentPreface === lastPrefaceFromClass.current
                           ) {
-                            form.setValue("namePreface", defaultPrefix);
+                            form.setValue(
+                              "namePreface",
+                              item.subclassNamePreface
+                            );
                           }
+                          lastPrefaceFromClass.current =
+                            item.subclassNamePreface;
                         }}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-40">
-                            <SelectValue placeholder="Select a class" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {SUBCLASS_CLASSES.map((classOption) => (
-                            <SelectItem
-                              key={classOption.value}
-                              value={classOption.value}
-                            >
-                              {classOption.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        onSearch={setClassSearch}
+                        renderItem={(item) => (
+                          <span className="flex flex-1 items-center gap-2">
+                            <Avatar className="size-5">
+                              <AvatarImage src={item.creatorImageUrl} />
+                            </Avatar>
+                            {item.label}
+                          </span>
+                        )}
+                        placeholder="Select a class"
+                        searchPlaceholder="Search classes..."
+                        emptyMessage="No classes found."
+                        loading={classSearchLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex flex-wrap gap-4">
                 <FormField
                   control={form.control}
                   name="namePreface"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex-1">
                       <FormLabel>Preface</FormLabel>
                       <FormControl>
                         <Input {...field} />
@@ -395,7 +414,7 @@ export default function BuildSubclassView({
                   control={form.control}
                   name="name"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex-1">
                       <FormLabel>Name</FormLabel>
                       <FormControl>
                         <Input {...field} />
@@ -440,32 +459,13 @@ export default function BuildSubclassView({
                 )}
               />
 
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">Levels</h3>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addLevel}
-                    disabled={levelFields.length >= 20}
-                  >
-                    <Plus className="size-4" />
-                    Add Level
-                  </Button>
-                </div>
-
+              <div className="space-y-5">
                 {levelFields.map((levelField, levelIndex) => (
-                  <div
+                  <SubclassLevelCard
                     key={levelField.id}
-                    className="border rounded-lg p-4 space-y-4"
-                  >
-                    <LevelAbilitiesForm
-                      control={form.control}
-                      levelIndex={levelIndex}
-                      removeLevel={removeLevel}
-                    />
-                  </div>
+                    control={form.control}
+                    levelIndex={levelIndex}
+                  />
                 ))}
               </div>
 
@@ -500,6 +500,11 @@ export default function BuildSubclassView({
               {form.formState.errors.root && (
                 <div className="text-destructive text-sm">
                   {form.formState.errors.root.message}
+                </div>
+              )}
+              {!form.formState.isValid && form.formState.isSubmitted && (
+                <div className="text-destructive text-sm">
+                  Please fix the errors above before saving.
                 </div>
               )}
             </form>
@@ -540,149 +545,28 @@ export default function BuildSubclassView({
   );
 }
 
-interface LevelAbilitiesFormProps {
-  control: Control<FormData>;
-  levelIndex: number;
-  removeLevel: (index: number) => void;
-}
+const SUBCLASS_LEVELS = [3, 7, 11, 15] as const;
 
-function LevelAbilitiesForm({
+function SubclassLevelCard({
   control,
   levelIndex,
-  removeLevel,
-}: LevelAbilitiesFormProps) {
-  const {
-    fields: abilityFields,
-    remove: removeAbility,
-    append: appendAbility,
-  } = useFieldArray({
-    control,
-    name: `levels.${levelIndex}.abilities`,
-  });
-
-  const allLevels = useWatch({ control, name: "levels" }) || [];
-  const usedLevels = allLevels
-    .map((level: { level: number }, index: number) =>
-      index === levelIndex ? null : level?.level
-    )
-    .filter((level: number | null) => level !== null) as number[];
-
-  const addAbility = () => {
-    appendAbility({
-      id: Math.random().toString(36).slice(2),
-      name: "",
-      description: "",
-    });
-  };
-
+}: {
+  control: Control<FormData>;
+  levelIndex: number;
+}) {
   return (
-    <>
-      <div className="flex items-center justify-between">
-        <FormField
+    <div className="flex gap-5">
+      <div className="w-12 text-right">
+        <span className="font-stretch-condensed font-bold uppercase italic text-base text-muted-foreground">
+          LVL {SUBCLASS_LEVELS[levelIndex]}
+        </span>
+      </div>
+      <div className="flex-1">
+        <EditableLevelAbilities
           control={control}
-          name={`levels.${levelIndex}.level`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Level</FormLabel>
-              <Select
-                onValueChange={(value) => field.onChange(Number(value))}
-                defaultValue={String(field.value)}
-              >
-                <FormControl>
-                  <SelectTrigger className="w-18">
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Array.from({ length: 20 }, (_, i) => i + 1).map((level) => (
-                    <SelectItem
-                      key={level}
-                      value={String(level)}
-                      disabled={usedLevels.includes(level)}
-                    >
-                      {level}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+          name={`levels.${levelIndex}.abilities`}
         />
-        <div className="flex gap-2 items-center justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={addAbility}
-          >
-            <Plus className="size-4" />
-            Add Ability
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => removeLevel(levelIndex)}
-          >
-            <Trash2 className="size-4" />
-            Level
-          </Button>
-        </div>
       </div>
-      <div className="space-y-4">
-        {abilityFields.map((abilityField, abilityIndex) => (
-          <div key={abilityField.id}>
-            {abilityIndex > 0 && <hr className="my-4" />}
-            <div className="space-y-3">
-              <div className="flex gap-2 items-end justify-between">
-                <FormField
-                  control={control}
-                  name={`levels.${levelIndex}.abilities.${abilityIndex}.name`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input className="min-w-56" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {abilityFields.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => removeAbility(abilityIndex)}
-                    className="mb-0.5"
-                  >
-                    <Trash2 className="size-4" />
-                    Ability
-                  </Button>
-                )}
-              </div>
-
-              <FormField
-                control={control}
-                name={`levels.${levelIndex}.abilities.${abilityIndex}.description`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Description
-                      <ConditionValidationIcon text={field.value} />
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea className="min-h-18" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </>
+    </div>
   );
 }

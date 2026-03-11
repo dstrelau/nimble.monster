@@ -13,6 +13,15 @@ import type {
 } from "@/lib/types";
 import { getClassUrl } from "@/lib/utils/url";
 
+export async function searchClassesForSubclass(searchTerm?: string) {
+  const session = await auth();
+  const classes = await db.searchClassesForSubclass({
+    userId: session?.user?.id,
+    searchTerm,
+  });
+  return classes;
+}
+
 export async function searchPublicClasses(params: {
   creatorId?: string;
   searchTerm?: string;

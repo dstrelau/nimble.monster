@@ -54,7 +54,7 @@ export default async function PreviewSubclassesPage({
     const subclass: Subclass = {
       id: "",
       name,
-      className: className as SubclassClass,
+      className,
       namePreface,
       tagline,
       description,

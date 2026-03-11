@@ -24,6 +24,7 @@ import {
 import { z } from "zod";
 import { ClassDetailView } from "@/app/ui/class/ClassDetailView";
 import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
+import { EditableLevelAbilities } from "@/components/app/EditableLevelAbilities";
 import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { DieFromNotation } from "@/components/icons/PolyhedralDice";
@@ -242,6 +243,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
     return {
       id: classEntity?.id || "",
       name: watchedValues.name || "",
+      subclassNamePreface: classEntity?.subclassNamePreface || "",
       description: watchedValues.description || "",
       keyStats: watchedValues.keyStats || [],
       hitDie: watchedValues.hitDie || "d8",
@@ -276,7 +278,13 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
       createdAt: classEntity?.createdAt || new Date(),
       updatedAt: new Date(),
     };
-  }, [watchedValues, creator, classEntity?.id, classEntity?.createdAt]);
+  }, [
+    watchedValues,
+    creator,
+    classEntity?.id,
+    classEntity?.createdAt,
+    classEntity?.subclassNamePreface,
+  ]);
 
   const handleSubmit = async (data: FormData) => {
     setIsSubmitting(true);
@@ -967,15 +975,6 @@ function EditableLevelCard({
   control: Control<FormData>;
   levelIndex: number;
 }) {
-  const {
-    fields: abilityFields,
-    remove: removeAbility,
-    append: appendAbility,
-  } = useFieldArray({
-    control,
-    name: `levels.${levelIndex}.abilities`,
-  });
-
   return (
     <div className="flex gap-5">
       <div className="w-12 text-right">
@@ -983,71 +982,11 @@ function EditableLevelCard({
           LVL {levelIndex + 1}
         </span>
       </div>
-      <div className="flex-1 space-y-2">
-        <div className="space-y-5">
-          {abilityFields.map((abilityField, abilityIndex) => (
-            <div className="flex flex-col gap-2" key={abilityField.id}>
-              <div className="flex gap-2 items-end justify-between">
-                <FormField
-                  control={control}
-                  name={`levels.${levelIndex}.abilities.${abilityIndex}.name`}
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => removeAbility(abilityIndex)}
-                  aria-label="Remove ability"
-                  className="mb-0.5"
-                >
-                  <Trash2 className="size-4" />
-                </Button>
-              </div>
-              <FormField
-                control={control}
-                name={`levels.${levelIndex}.abilities.${abilityIndex}.description`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Description
-                      <ConditionValidationIcon text={field.value} />
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-end">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              appendAbility({
-                id: randomUUID(),
-                name: "",
-                description: "",
-              })
-            }
-          >
-            <Plus className="size-4" />
-            Ability
-          </Button>
-        </div>
+      <div className="flex-1">
+        <EditableLevelAbilities
+          control={control}
+          name={`levels.${levelIndex}.abilities`}
+        />
       </div>
     </div>
   );

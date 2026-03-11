@@ -64,6 +64,13 @@
       "when": 1772753455000,
       "tag": "0008_reference_entries",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1773003202481,
+      "tag": "0009_tough_enchantress",
+      "breakpoints": true
     }
   ]
 }

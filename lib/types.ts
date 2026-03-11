@@ -232,7 +232,8 @@ export interface SubclassLevel {
 export interface SubclassMini {
   id: string;
   name: string;
-  className: SubclassClass;
+  classId?: string | null;
+  className: string;
   namePreface?: string;
   tagline?: string;
   visibility: SubclassVisibility;
@@ -329,6 +330,7 @@ export interface ClassAbilityListMini {
 export interface ClassMini {
   id: string;
   name: string;
+  subclassNamePreface: string;
   visibility: ClassVisibility;
   createdAt: Date;
 }

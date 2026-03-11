@@ -319,6 +319,7 @@ export const findOfficialClassesByNames = async (
     result.set(row.name, {
       id: row.id,
       name: row.name,
+      subclassNamePreface: row.subclassNamePreface ?? "",
       description: row.description,
       keyStats: (row.keyStats || []) as Class["keyStats"],
       hitDie: row.hitDie as Class["hitDie"],

@@ -12,6 +12,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "10 March 2026",
+    entries: ["Allow creating subclasses for homebrew classes."],
+  },
+  {
     date: "5 March 2026",
     entries: [
       "Added a comprehensive Rules Reference section with full-text search, covering all core rules, character creation, magic, equipment, exploration, and GM tools.",
