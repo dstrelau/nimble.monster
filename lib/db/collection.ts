@@ -1,5 +1,7 @@
 import { and, asc, count, eq, inArray, or } from "drizzle-orm";
+import { findClassesByIds } from "@/lib/db/class";
 import {
+  toClassMini,
   toCompanionMini,
   toSpellSchoolMini,
   toSubclassMini,
@@ -25,8 +27,11 @@ import {
   type BackgroundRow,
   backgrounds,
   backgroundsCollections,
+  type ClassRow,
   type CollectionRow,
   type CompanionRow,
+  classes,
+  classesCollections,
   collections,
   companions,
   companionsCollections,
@@ -203,6 +208,16 @@ export const listCollectionsWithMonstersForUser = async (
     .innerJoin(subclasses, eq(subclassesCollections.subclassId, subclasses.id))
     .where(inArray(subclassesCollections.collectionId, collectionIds));
 
+  // Get classes for each collection
+  const classLinks = await db
+    .select({
+      collectionId: classesCollections.collectionId,
+      class: classes,
+    })
+    .from(classesCollections)
+    .innerJoin(classes, eq(classesCollections.classId, classes.id))
+    .where(inArray(classesCollections.collectionId, collectionIds));
+
   // Group by collection
   const monstersByCollection = new Map<string, MonsterRow[]>();
   for (const link of monsterLinks) {
@@ -253,6 +268,13 @@ export const listCollectionsWithMonstersForUser = async (
     subclassesByCollection.set(link.collectionId, existing);
   }
 
+  const classesByCollection = new Map<string, ClassRow[]>();
+  for (const link of classLinks) {
+    const existing = classesByCollection.get(link.collectionId) || [];
+    existing.push(link.class);
+    classesByCollection.set(link.collectionId, existing);
+  }
+
   return collectionRows.map((c) => {
     const collectionMonsters = monstersByCollection.get(c.id) || [];
     const collectionItems = itemsByCollection.get(c.id) || [];
@@ -261,6 +283,7 @@ export const listCollectionsWithMonstersForUser = async (
     const collectionAncestries = ancestriesByCollection.get(c.id) || [];
     const collectionBackgrounds = backgroundsByCollection.get(c.id) || [];
     const collectionSubclasses = subclassesByCollection.get(c.id) || [];
+    const collectionClasses = classesByCollection.get(c.id) || [];
 
     const legendaryCount = collectionMonsters.filter((m) => m.legendary).length;
     const standardCount = collectionMonsters.filter(
@@ -280,6 +303,7 @@ export const listCollectionsWithMonstersForUser = async (
       ancestries: collectionAncestries.map(toAncestryMini),
       backgrounds: collectionBackgrounds.map(toBackgroundMini),
       subclasses: collectionSubclasses.map(toSubclassMini),
+      classes: collectionClasses.map(toClassMini),
       spellSchools: collectionSchools.map((s) => ({
         ...toSpellSchoolMini(s),
         spellCount: spellCountMap.get(s.id),
@@ -419,6 +443,7 @@ export interface UpdateCollectionInput extends CreateCollectionInput {
   backgroundIds?: string[];
   subclassIds?: string[];
   spellSchoolIds?: string[];
+  classIds?: string[];
 }
 
 export const createCollection = async (
@@ -702,6 +727,33 @@ export const updateCollection = async (
           accessible.map((s) => ({
             collectionId: input.id,
             subclassId: s.id,
+          }))
+        );
+      }
+    }
+  }
+
+  // Sync classes
+  if (input.classIds) {
+    await db
+      .delete(classesCollections)
+      .where(eq(classesCollections.collectionId, input.id));
+
+    if (input.classIds.length > 0) {
+      const accessible = await db
+        .select({ id: classes.id })
+        .from(classes)
+        .where(
+          and(
+            inArray(classes.id, input.classIds),
+            or(eq(classes.visibility, "public"), eq(classes.userId, user.id))
+          )
+        );
+      if (accessible.length > 0) {
+        await db.insert(classesCollections).values(
+          accessible.map((c) => ({
+            collectionId: input.id,
+            classId: c.id,
           }))
         );
       }
@@ -1008,6 +1060,31 @@ export const addSubclassToCollection = async (input: {
   }
 };
 
+export const addClassToCollection = async (input: {
+  classId: string;
+  collectionId: string;
+}): Promise<void> => {
+  const db = getDatabase();
+
+  const existing = await db
+    .select()
+    .from(classesCollections)
+    .where(
+      and(
+        eq(classesCollections.collectionId, input.collectionId),
+        eq(classesCollections.classId, input.classId)
+      )
+    )
+    .limit(1);
+
+  if (existing.length === 0) {
+    await db.insert(classesCollections).values({
+      collectionId: input.collectionId,
+      classId: input.classId,
+    });
+  }
+};
+
 export const listPublicCollectionsHavingMonstersForUser = async (
   creatorId: string
 ): Promise<CollectionOverview[]> => {
@@ -1101,6 +1178,7 @@ async function loadCollectionOverview(
     ancestryLinks,
     backgroundLinks,
     subclassLinks,
+    classLinks,
   ] = await Promise.all([
     db
       .select({ monster: monsters })
@@ -1152,6 +1230,11 @@ async function loadCollectionOverview(
         eq(subclassesCollections.subclassId, subclasses.id)
       )
       .where(eq(subclassesCollections.collectionId, collection.id)),
+    db
+      .select({ class: classes })
+      .from(classesCollections)
+      .innerJoin(classes, eq(classesCollections.classId, classes.id))
+      .where(eq(classesCollections.collectionId, collection.id)),
   ]);
 
   const collectionMonsters = monsterLinks.map((l) => l.monster);
@@ -1189,6 +1272,7 @@ async function loadCollectionOverview(
     ancestries: ancestryLinks.map((l) => toAncestryMini(l.ancestry)),
     backgrounds: backgroundLinks.map((l) => toBackgroundMini(l.background)),
     subclasses: subclassLinks.map((l) => toSubclassMini(l.subclass)),
+    classes: classLinks.map((l) => toClassMini(l.class)),
     spellSchools: collectionSchools.map((s) => ({
       ...toSpellSchoolMini(s),
       spellCount: overviewSpellCountMap.get(s.id),
@@ -1215,6 +1299,7 @@ async function loadCollectionFull(
     ancestryLinks,
     backgroundLinks,
     subclassLinks,
+    classLinks,
   ] = await Promise.all([
     db
       .select({ monsterId: monstersCollections.monsterId })
@@ -1244,6 +1329,10 @@ async function loadCollectionFull(
       .select({ subclassId: subclassesCollections.subclassId })
       .from(subclassesCollections)
       .where(eq(subclassesCollections.collectionId, collection.id)),
+    db
+      .select({ classId: classesCollections.classId })
+      .from(classesCollections)
+      .where(eq(classesCollections.collectionId, collection.id)),
   ]);
 
   const [
@@ -1254,6 +1343,7 @@ async function loadCollectionFull(
     collectionAncestries,
     collectionBackgrounds,
     collectionSubclasses,
+    collectionClasses,
   ] = await Promise.all([
     findMonstersByIds(monsterLinks.map((l) => l.monsterId)),
     findItemsByIds(itemLinks.map((l) => l.itemId)),
@@ -1262,6 +1352,7 @@ async function loadCollectionFull(
     findAncestriesByIds(ancestryLinks.map((l) => l.ancestryId)),
     findBackgroundsByIds(backgroundLinks.map((l) => l.backgroundId)),
     findSubclassesByIds(subclassLinks.map((l) => l.subclassId)),
+    findClassesByIds(classLinks.map((l) => l.classId)),
   ]);
 
   const legendaryCount = collectionMonsters.filter((m) => m.legendary).length;
@@ -1282,6 +1373,7 @@ async function loadCollectionFull(
     ancestries: collectionAncestries,
     backgrounds: collectionBackgrounds,
     subclasses: collectionSubclasses,
+    classes: collectionClasses,
     spellSchools: collectionSchools,
     legendaryCount,
     standardCount,

@@ -784,6 +784,26 @@ export const subclassesCollections = sqliteTable(
   (table) => [primaryKey({ columns: [table.subclassId, table.collectionId] })]
 );
 
+// Classes in collections
+export const classesCollections = sqliteTable(
+  "classes_collections",
+  {
+    classId: text("class_id")
+      .notNull()
+      .references(() => classes.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    collectionId: text("collection_id")
+      .notNull()
+      .references(() => collections.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+  },
+  (table) => [primaryKey({ columns: [table.classId, table.collectionId] })]
+);
+
 // Monsters conditions
 export const monstersConditions = sqliteTable(
   "monsters_conditions",

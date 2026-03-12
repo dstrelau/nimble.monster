@@ -71,6 +71,13 @@
       "when": 1773003202481,
       "tag": "0009_tough_enchantress",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1773278792486,
+      "tag": "0010_busy_freak",
+      "breakpoints": true
     }
   ]
 }

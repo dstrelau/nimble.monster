@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Card as AncestryCard } from "@/app/ui/ancestry/Card";
 import { Card as BackgroundCard } from "@/app/ui/background/Card";
+import { ClassMiniCard } from "@/app/ui/class/ClassMiniCard";
 import { Card as CompanionCard } from "@/app/ui/companion/Card";
 import { Card as ItemCard } from "@/app/ui/item/Card";
 import { Card as MonsterCard } from "@/app/ui/monster/Card";
@@ -103,7 +104,8 @@ export default async function ShowCollectionView({
     collection.ancestries.length === 0 &&
     collection.backgrounds.length === 0 &&
     collection.subclasses.length === 0 &&
-    collection.spellSchools.length === 0;
+    collection.spellSchools.length === 0 &&
+    collection.classes.length === 0;
 
   return (
     <div>
@@ -139,6 +141,9 @@ export default async function ShowCollectionView({
           ))}
           {collection.spellSchools.map((school) => (
             <SchoolCard key={school.id} spellSchool={school} mini={true} />
+          ))}
+          {collection.classes.map((c) => (
+            <ClassMiniCard key={c.id} classEntity={c} />
           ))}
         </div>
       )}

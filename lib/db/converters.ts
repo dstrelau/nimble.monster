@@ -2,6 +2,8 @@ import { toItemMini } from "@/lib/services/items/converters";
 import type {
   Ability,
   Action,
+  ClassMini,
+  ClassVisibility,
   CollectionOverview,
   Companion,
   CompanionMini,
@@ -251,6 +253,7 @@ export const toCollectionOverview = (
     ancestries: [],
     backgrounds: [],
     subclasses: [],
+    classes: [],
     spellSchools: [],
   };
 };
@@ -329,6 +332,20 @@ export const toUser = (u: UserRow): User => ({
     (u.avatar
       ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
       : "https://cdn.discordapp.com/embed/avatars/0.png"),
+});
+
+export const toClassMini = (c: {
+  id: string;
+  name: string;
+  subclassNamePreface: string;
+  visibility: string | null;
+  createdAt: string | null;
+}): ClassMini => ({
+  id: c.id,
+  name: c.name,
+  subclassNamePreface: c.subclassNamePreface,
+  visibility: (c.visibility ?? "public") as ClassVisibility,
+  createdAt: c.createdAt ? new Date(c.createdAt) : new Date(),
 });
 
 export const toSubclassMini = (

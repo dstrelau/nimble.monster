@@ -5,6 +5,7 @@ import {
   HandFist,
   HeartHandshake,
   Scroll,
+  Swords,
   WandSparkles,
   X,
 } from "lucide-react";
@@ -28,6 +29,7 @@ import type { AncestryMini } from "@/lib/services/ancestries/types";
 import type { BackgroundMini } from "@/lib/services/backgrounds/types";
 import { RARITIES } from "@/lib/services/items";
 import type {
+  ClassMini,
   CollectionOverview,
   CompanionMini,
   SpellSchoolMini,
@@ -227,6 +229,21 @@ const SpellSchoolRow = ({
   />
 );
 
+const ClassRow = ({
+  classEntity,
+  onRemove,
+}: {
+  classEntity: ClassMini;
+  onRemove?: (id: string) => void;
+}) => (
+  <EntityRow
+    id={classEntity.id}
+    icon={<Swords className="size-5 stroke-muted-foreground" />}
+    name={classEntity.name}
+    onRemove={onRemove}
+  />
+);
+
 export const CollectionCard = ({
   collection,
   limit = 7,
@@ -236,6 +253,7 @@ export const CollectionCard = ({
   onRemoveAncestryAction,
   onRemoveBackgroundAction,
   onRemoveSubclassAction,
+  onRemoveClassAction,
   onRemoveSpellSchoolAction,
 }: {
   collection: CollectionOverview;
@@ -246,18 +264,26 @@ export const CollectionCard = ({
   onRemoveAncestryAction?: (id: string) => void;
   onRemoveBackgroundAction?: (id: string) => void;
   onRemoveSubclassAction?: (id: string) => void;
+  onRemoveClassAction?: (id: string) => void;
   onRemoveSpellSchoolAction?: (id: string) => void;
 }) => {
   const sortedMonsters = monstersSortedByLevelInt(collection.monsters);
   const sortedItems = itemsSortedByName(collection.items);
-  const { companions, ancestries, backgrounds, subclasses, spellSchools } =
-    collection;
+  const {
+    companions,
+    ancestries,
+    backgrounds,
+    subclasses,
+    classes: classEntities,
+    spellSchools,
+  } = collection;
 
   const otherCount =
     companions.length +
     ancestries.length +
     backgrounds.length +
     subclasses.length +
+    (classEntities?.length ?? 0) +
     spellSchools.length;
   const total = sortedMonsters.length + sortedItems.length + otherCount;
 
@@ -279,6 +305,10 @@ export const CollectionCard = ({
     ...ancestries.map((a) => ({ type: "ancestry" as const, entity: a })),
     ...backgrounds.map((b) => ({ type: "background" as const, entity: b })),
     ...subclasses.map((s) => ({ type: "subclass" as const, entity: s })),
+    ...(classEntities ?? []).map((c) => ({
+      type: "class" as const,
+      entity: c,
+    })),
     ...spellSchools.map((s) => ({ type: "spellSchool" as const, entity: s })),
   ];
   const visibleOther = limitOther ? allOther.slice(0, limitOther) : allOther;
@@ -365,6 +395,14 @@ export const CollectionCard = ({
                     key={entity.id}
                     subclass={entity}
                     onRemove={onRemoveSubclassAction}
+                  />
+                );
+              case "class":
+                return (
+                  <ClassRow
+                    key={entity.id}
+                    classEntity={entity}
+                    onRemove={onRemoveClassAction}
                   />
                 );
               case "spellSchool":

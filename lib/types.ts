@@ -141,6 +141,7 @@ export interface Collection extends CollectionOverview {
   backgrounds: Background[];
   subclasses: Subclass[];
   spellSchools: SpellSchool[];
+  classes: Class[];
 }
 
 export interface CollectionOverview {
@@ -158,6 +159,7 @@ export interface CollectionOverview {
   backgrounds: BackgroundMini[];
   subclasses: SubclassMini[];
   spellSchools: SpellSchoolMini[];
+  classes: ClassMini[];
   visibility: CollectionVisibilityType;
   createdAt?: Date;
 }

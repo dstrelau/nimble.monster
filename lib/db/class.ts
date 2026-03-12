@@ -795,3 +795,16 @@ export const searchClassesForSubclass = async (params: {
 
   return results;
 };
+
+export const findClassesByIds = async (ids: string[]): Promise<Class[]> => {
+  const validIds = ids.filter(isValidUUID);
+  if (validIds.length === 0) return [];
+
+  const db = getDatabase();
+  const dataMap = await loadClassFullData(db, validIds);
+
+  return validIds
+    .map((id) => dataMap.get(id))
+    .filter((d): d is ClassFullData => d !== undefined)
+    .map(toClass);
+};

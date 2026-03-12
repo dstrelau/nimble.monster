@@ -19,16 +19,35 @@ import { CardFooterLayout } from "../shared/CardFooterLayout";
 interface ClassMiniCardProps {
   classEntity: Class;
   className?: string;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
-export function ClassMiniCard({ classEntity, className }: ClassMiniCardProps) {
-  return (
-    <Card className={className}>
+export function ClassMiniCard({
+  classEntity,
+  className,
+  selectable = false,
+  selected = false,
+  onSelect,
+}: ClassMiniCardProps) {
+  const card = (
+    <Card
+      className={cn(
+        className,
+        selectable && selected && "ring-2 ring-amber-500"
+      )}
+      {...(selectable && selected && { "data-selected": "" })}
+    >
       <CardHeader>
         <CardTitle className={cn("font-slab small-caps font-bold text-2xl")}>
-          <Link href={getClassUrl(classEntity)} className="block">
-            {classEntity.name}
-          </Link>
+          {selectable ? (
+            <span className="block">{classEntity.name}</span>
+          ) : (
+            <Link href={getClassUrl(classEntity)} className="block">
+              {classEntity.name}
+            </Link>
+          )}
         </CardTitle>
         <CardAction>
           <div className="flex gap-3 items-center">
@@ -49,10 +68,16 @@ export function ClassMiniCard({ classEntity, className }: ClassMiniCardProps) {
         </CardAction>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-1">
+      <CardContent
+        className={cn(
+          "flex flex-col gap-1",
+          selectable && "pointer-events-none"
+        )}
+      >
         <div className="text-base line-clamp-2">{classEntity.description}</div>
       </CardContent>
       <CardFooterLayout
+        className={cn(selectable && "pointer-events-none")}
         creator={classEntity.creator}
         source={classEntity.source}
         awards={classEntity.awards}
@@ -66,4 +91,21 @@ export function ClassMiniCard({ classEntity, className }: ClassMiniCardProps) {
       />
     </Card>
   );
+
+  if (selectable) {
+    return (
+      <button
+        type="button"
+        className={cn(
+          "w-full cursor-pointer relative text-left transition-[filter] duration-150 hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
+          selected && "drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+        )}
+        onClick={onSelect}
+      >
+        {card}
+      </button>
+    );
+  }
+
+  return card;
 }

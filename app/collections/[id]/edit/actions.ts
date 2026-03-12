@@ -24,6 +24,7 @@ const collectionSchema = z.object({
   backgroundIds: uuidArray.optional(),
   subclassIds: uuidArray.optional(),
   spellSchoolIds: uuidArray.optional(),
+  classIds: uuidArray.optional(),
 });
 
 export type CollectionFormData = z.infer<typeof collectionSchema>;
@@ -54,6 +55,7 @@ export async function updateCollection(
     backgroundIds: safeJsonParse(formData.get("backgroundIds")),
     subclassIds: safeJsonParse(formData.get("subclassIds")),
     spellSchoolIds: safeJsonParse(formData.get("spellSchoolIds")),
+    classIds: safeJsonParse(formData.get("classIds")),
   });
 
   // Use the new db function to update the collection
@@ -70,6 +72,7 @@ export async function updateCollection(
     backgroundIds: parsed.backgroundIds,
     subclassIds: parsed.subclassIds,
     spellSchoolIds: parsed.spellSchoolIds,
+    classIds: parsed.classIds,
   });
 
   if (!updatedCollection) throw new Error("Failed to update collection");

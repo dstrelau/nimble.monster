@@ -140,6 +140,10 @@ export async function findPublicClass(classId: string) {
   }
 }
 
+export async function listPublicClassesAction() {
+  return db.listPublicClasses();
+}
+
 export async function deleteClass(classId: string) {
   const session = await auth();
   if (!session?.user?.id) {

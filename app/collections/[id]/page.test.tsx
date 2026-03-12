@@ -79,6 +79,11 @@ vi.mock("@/app/ui/school/Card", () => ({
     <div data-testid="school-card">{spellSchool.name}</div>
   ),
 }));
+vi.mock("@/app/ui/class/ClassMiniCard", () => ({
+  ClassMiniCard: ({ classEntity }: { classEntity: { name: string } }) => (
+    <div data-testid="class-card">{classEntity.name}</div>
+  ),
+}));
 vi.mock("@/components/CollectionHeader", () => ({
   CollectionHeader: () => <div data-testid="collection-header" />,
 }));
@@ -106,6 +111,7 @@ function makeCollection(overrides = {}) {
     backgrounds: [],
     subclasses: [],
     spellSchools: [],
+    classes: [],
     ...overrides,
   };
 }

@@ -19,6 +19,7 @@ export function NewCollection() {
     ancestries: [],
     backgrounds: [],
     subclasses: [],
+    classes: [],
     spellSchools: [],
   };
 

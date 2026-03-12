@@ -11,6 +11,7 @@ import {
   lt,
   or,
 } from "drizzle-orm";
+import { findClassesByIds } from "@/lib/db/class";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
   type AncestryRow,
@@ -21,8 +22,11 @@ import {
   type BackgroundRow,
   backgrounds,
   backgroundsCollections,
+  type ClassRow,
   type CompanionRow,
   type ConditionRow,
+  classes,
+  classesCollections,
   collections,
   companions,
   companionsCollections,
@@ -61,6 +65,8 @@ import { findCompanionsByIds } from "@/lib/services/companions/repository";
 import type {
   Ability,
   Action,
+  ClassMini,
+  ClassVisibility,
   Collection,
   CollectionOverview,
   CompanionMini,
@@ -219,6 +225,14 @@ const toSubclassMiniFromRow = (s: SubclassRow): SubclassMini => ({
   createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
 });
 
+const toClassMiniFromRow = (c: ClassRow): ClassMini => ({
+  id: c.id,
+  name: c.name,
+  subclassNamePreface: c.subclassNamePreface,
+  visibility: (c.visibility ?? "public") as ClassVisibility,
+  createdAt: c.createdAt ? new Date(c.createdAt) : new Date(),
+});
+
 const toSpellSchoolMiniFromRow = (
   s: SpellSchoolRow,
   spellCount?: number
@@ -240,6 +254,7 @@ async function loadCollectionEntityMinis(
     backgroundJoins,
     subclassJoins,
     schoolJoins,
+    classJoins,
   ] = await Promise.all([
     db
       .select({
@@ -321,6 +336,19 @@ async function loadCollectionEntityMinis(
           eq(spellSchools.visibility, "public")
         )
       ),
+    db
+      .select({
+        collectionId: classesCollections.collectionId,
+        class: classes,
+      })
+      .from(classesCollections)
+      .innerJoin(classes, eq(classesCollections.classId, classes.id))
+      .where(
+        and(
+          inArray(classesCollections.collectionId, collectionIds),
+          eq(classes.visibility, "public")
+        )
+      ),
   ]);
 
   // Spell counts
@@ -370,6 +398,12 @@ async function loadCollectionEntityMinis(
     );
     schoolsByCollection.set(row.collectionId, existing);
   }
+  const classesByCollection = new Map<string, ClassMini[]>();
+  for (const row of classJoins) {
+    const existing = classesByCollection.get(row.collectionId) || [];
+    existing.push(toClassMiniFromRow(row.class));
+    classesByCollection.set(row.collectionId, existing);
+  }
 
   return {
     companionsByCollection,
@@ -377,6 +411,7 @@ async function loadCollectionEntityMinis(
     backgroundsByCollection,
     subclassesByCollection,
     schoolsByCollection,
+    classesByCollection,
   };
 }
 
@@ -646,6 +681,7 @@ export const listPublicCollections = async ({
       ancestries: entityMinis.ancestriesByCollection.get(cid) ?? [],
       backgrounds: entityMinis.backgroundsByCollection.get(cid) ?? [],
       subclasses: entityMinis.subclassesByCollection.get(cid) ?? [],
+      classes: entityMinis.classesByCollection.get(cid) ?? [],
       spellSchools: entityMinis.schoolsByCollection.get(cid) ?? [],
     };
   });
@@ -807,6 +843,7 @@ export const searchPublicCollections = async ({
         ancestries: entityMinis.ancestriesByCollection.get(cid) ?? [],
         backgrounds: entityMinis.backgroundsByCollection.get(cid) ?? [],
         subclasses: entityMinis.subclassesByCollection.get(cid) ?? [],
+        classes: entityMinis.classesByCollection.get(cid) ?? [],
         spellSchools: entityMinis.schoolsByCollection.get(cid) ?? [],
       };
     });
@@ -1007,6 +1044,7 @@ export const findPublicCollectionById = async (
     ancestryJoins,
     backgroundJoins,
     subclassJoins,
+    classJoins,
     schoolJoins,
   ] = await Promise.all([
     db
@@ -1062,6 +1100,16 @@ export const findPublicCollectionById = async (
         )
       ),
     db
+      .select({ classId: classesCollections.classId })
+      .from(classesCollections)
+      .innerJoin(classes, eq(classesCollections.classId, classes.id))
+      .where(
+        and(
+          eq(classesCollections.collectionId, id),
+          eq(classes.visibility, "public")
+        )
+      ),
+    db
       .select({ schoolId: spellSchoolsCollections.spellSchoolId })
       .from(spellSchoolsCollections)
       .innerJoin(
@@ -1081,12 +1129,14 @@ export const findPublicCollectionById = async (
     ancestriesData,
     backgroundsData,
     subclassesData,
+    classesData,
     schoolsData,
   ] = await Promise.all([
     findCompanionsByIds(companionJoins.map((r) => r.companionId)),
     findAncestriesByIds(ancestryJoins.map((r) => r.ancestryId)),
     findBackgroundsByIds(backgroundJoins.map((r) => r.backgroundId)),
     findSubclassesByIds(subclassJoins.map((r) => r.subclassId)),
+    findClassesByIds(classJoins.map((r) => r.classId)),
     findSpellSchoolsByIds(schoolJoins.map((r) => r.schoolId)),
   ]);
 
@@ -1111,6 +1161,7 @@ export const findPublicCollectionById = async (
     ancestries: ancestriesData,
     backgrounds: backgroundsData,
     subclasses: subclassesData,
+    classes: classesData,
     spellSchools: schoolsData,
   };
 };
