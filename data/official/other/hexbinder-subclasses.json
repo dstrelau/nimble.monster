@@ -1,0 +1,100 @@
+{
+  "source": {
+    "name": "Hexbinder",
+    "abbreviation": "Hexbinder",
+    "license": "Nimble 3rd Party Creator License v2.0",
+    "link": "https://nimblerpg.com/"
+  },
+  "data": [
+    {
+      "type": "subclasses",
+      "attributes": {
+        "name": "Hex",
+        "className": "Hexbinder",
+        "levels": [
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Haunted",
+                "description": "When an Afflicted creature dies, apply all of their Afflictions to another enemy within Reach 8 of them."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Spitecurse",
+                "description": "When an Afflicted creature misses an attack, they suffer the damage instead."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Cursespitter",
+                "description": "Learn the Pestilent Affliction, double its Reach."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Hexcaster",
+                "description": "Your Enfeebled Affliction also Dazes the target. You can inflict Doomed 2/encounter."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "subclasses",
+      "attributes": {
+        "name": "Hunt",
+        "className": "Hexbinder",
+        "levels": [
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Hexbinder's Familiar",
+                "description": "Choose any small animal to become your familiar (owl, cat, rooster, fox, etc.). Your familiar retains any abilities the animal has, can speak to you, and will generally obey your commands (though it may refuse instructions that would put it in danger). Choose 1 Familiar Boon:\n\n- **Protective.** Acts as a shield that grants +WIL armor\n- **Resourceful.** Gain WIL+INT max Hit Dice, these can be given to any ally\n- **Sly.** +WIL Initiative. When you roll Initiative, regain 2 mana (this expires at the end of combat if unused).\n- **Scavenger.** Gain 3×WIL temp HP when you roll initiative.\n- **Mystical.** You can cast spells from an ally's position INT times/encounter.\n- **Swift.** You may move WIL spaces for free on each of your turns"
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Bind Malady",
+                "description": "Reaction. INT/Safe Rest. Command your familiar to remove any single harmful condition from a creature within Reach 8. (Ending \"Dying\" grants 1 HP, ending \"Dazed\" grants 1 action, etc.)"
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Empowered Familiar",
+                "description": "Choose a 2nd Familiar Boon."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Mighty Familiar",
+                "description": "Choose a 3rd Familiar Boon."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

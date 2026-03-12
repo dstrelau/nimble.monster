@@ -1,0 +1,369 @@
+{
+  "source": {
+    "name": "Hexbinder",
+    "abbreviation": "HEX",
+    "license": "Nimble 3rd Party Creator License v2.0",
+    "link": "https://nimblerpg.com/"
+  },
+  "data": [
+    {
+      "type": "classes",
+      "attributes": {
+        "name": "Hexbinder",
+        "description": "_Plagued by a cough, my lovely? A festering wound? A stain on your spirit? Sip this down, you'll feel right as rain by morning–don’t mind the taste, it’s meant to be bitter!_\n\n They come to her with trembling pleas: a child’s fever, a lover’s betrayal, a shadow too heavy to lift. She listens, sharp-eyed, and offers what fits—balm or bane, as the need demands. But cross her, and you’ll learn: the tongue that soothes can whisper your doom, and the hands that mend can twist your fate to ruin. \n\nA hexbinder's magic isn't flashy nor kind. It’s practical, rooted in the muck and murmur of the old world—salves whispered over flame, curses knotted into thread, remedies older than the hills. She mends the broken and breaks the foolish, her hands stained with both mercy and malice. The Hexbinder:\n\n- Commands the powers of affliction and remedy. Mastering both healing and hexing to mend allies or curse foes. \n- Weaves mystical sigils. To control, transform, and bind to her will.\n- Peers beyond the veil with ancient rites. Gain forbidden knowledge and twist fate with uncanny foresight.",
+        "keyStats": ["INT", "WIL"],
+        "hitDie": "d8",
+        "startingHp": 13,
+        "saves": {
+          "STR": 0,
+          "DEX": -1,
+          "INT": 0,
+          "WIL": 1
+        },
+        "armor": ["cloth"],
+        "weapons": [{ "kind": "blade" }, { "kind": "wand" }],
+        "startingGear": [
+          "Adventurer's Garb",
+          "Dagger",
+          "Portable Cauldron (bucket)"
+        ],
+        "levels": [
+          {
+            "level": 1,
+            "abilities": [
+              {
+                "name": "Hex",
+                "description": "Reach 4, Action: 1d4+LVL damage, OR apply an Affliction on hit instead. On crit: do both."
+              },
+              {
+                "name": "Afflictions",
+                "description": "You know the Withered and Frenzied Afflictions."
+              }
+            ]
+          },
+          {
+            "level": 2,
+            "abilities": [
+              {
+                "name": "Mana and Tier 1 Spells",
+                "description": "You unlock tier 1 Hexbinder spells and a mana pool to cast them. Your max mana pool is always equal to WIL+LVL and recharges on a Safe Rest."
+              },
+              {
+                "name": "Diminution",
+                "description": "Reduce the mana cost of spells by 1 for each condition chosen:\n\n- **Humble.** (the Range/Reach of the spell is halved).\n- **Weak.** (roll with disadvantage, or enemies save with advantage).\n- **Slow.** (spend 1 additional action (can't be used with Reaction spells).\n\n_You can choose each condition only once per spell, and can't choose an effect that a spell does not have (e.g., Humble on a spell with no Range/Reach)._"
+              }
+            ]
+          },
+          {
+            "level": 3,
+            "abilities": [
+              {
+                "name": "Hexbinder Subclass",
+                "description": "Choose a Hexbinder subclass."
+              },
+              {
+                "name": "Consult the BONES",
+                "description": "1/Safe Rest. Spend 10 minutes performing a ceremony to obtain information not otherwise available to you on a successful Insight check; rolled with disadvantage."
+              },
+              {
+                "name": "Afflictions (3)",
+                "description": "Choose a 3rd Affliction."
+              },
+              {
+                "name": "Bubble, Bubble!",
+                "description": "You may choose different Hexbinder options whenever you brew at your cauldron during a Safe Rest."
+              }
+            ]
+          },
+          {
+            "level": 4,
+            "abilities": [
+              {
+                "name": "Mystic Mark",
+                "description": "Choose 1 Mystic Mark."
+              },
+              {
+                "name": "Tier 2 Spells",
+                "description": "You may now cast tier 2 Hexbinder spells."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 5,
+            "abilities": [
+              {
+                "name": "Soothsayer",
+                "description": "Whenever combat begins, roll a Futuresight Die {{dice:1d6}}. Expend it to add or subtract its result from any die a creature within Reach 4 rolls during this encounter. _As usual, if a Primary Die is reduced to 1, it misses; if increased to its max value, it crits._"
+              },
+              {
+                "name": "Blightwielder's Touch",
+                "description": "Gain advantage with Hex at Reach 1."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 6,
+            "abilities": [
+              {
+                "name": "Mystic Mark (2)",
+                "description": "Choose a 2nd Mystic Mark."
+              },
+              {
+                "name": "Tier 3 Spells",
+                "description": "You may now cast tier 3 Hexbinder spells."
+              }
+            ]
+          },
+          {
+            "level": 7,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Hexbinder subclass feature."
+              },
+              {
+                "name": "Afflictions (4)",
+                "description": "Choose a 4th Affliction."
+              }
+            ]
+          },
+          {
+            "level": 8,
+            "abilities": [
+              {
+                "name": "Tier 4 Spells",
+                "description": "You may now cast tier 4 Hexbinder spells."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 9,
+            "abilities": [
+              {
+                "name": "Mystic Mark (3)",
+                "description": "Choose a 3rd Mystic Mark."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 10,
+            "abilities": [
+              {
+                "name": "Soothsayer (2)",
+                "description": "Roll 2 Futuresight Dice instead, they have Reach 8."
+              },
+              {
+                "name": "Tier 5 Spells",
+                "description": "You may now cast tier 5 Hexbinder spells."
+              }
+            ]
+          },
+          {
+            "level": 11,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Hexbinder subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 12,
+            "abilities": [
+              {
+                "name": "Mystic Mark (4)",
+                "description": "Choose a 4th Mystic Mark."
+              },
+              {
+                "name": "Afflictions (5)",
+                "description": "Choose a 5th Affliction."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 13,
+            "abilities": [
+              {
+                "name": "Misery Maker",
+                "description": "Increase the max number of Afflictions you can apply by 1."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 14,
+            "abilities": [
+              {
+                "name": "Soothsayer (3)",
+                "description": "Roll your Futuresight Dice with advantage."
+              }
+            ]
+          },
+          {
+            "level": 15,
+            "abilities": [
+              {
+                "name": "Subclass",
+                "description": "Gain your Hexbinder subclass feature."
+              }
+            ]
+          },
+          {
+            "level": 16,
+            "abilities": [
+              {
+                "name": "Mystic Mark (5)",
+                "description": "Choose a 5th Mystic Mark."
+              },
+              {
+                "name": "Key Stat Increase",
+                "description": "+1 INT or WIL."
+              }
+            ]
+          },
+          {
+            "level": 17,
+            "abilities": [
+              {
+                "name": "Soothsayer (4)",
+                "description": "Increase your Futuresight Dice to d8s."
+              },
+              {
+                "name": "Secondary Stat Increase",
+                "description": "+1 STR or DEX."
+              }
+            ]
+          },
+          {
+            "level": 18,
+            "abilities": [
+              {
+                "name": "Doombringer",
+                "description": "You may spend 1 mana to ignore the Doomed Affliction's encounter limit."
+              }
+            ]
+          },
+          {
+            "level": 19,
+            "abilities": [
+              {
+                "name": "Epic Boon",
+                "description": "Choose an Epic Boon (see pg. 23 of the GM's Guide)."
+              }
+            ]
+          },
+          {
+            "level": 20,
+            "abilities": [
+              {
+                "name": "Sage of Banes",
+                "description": "Increase any 2 stats by 1. Hex and Misery apply 1 additional Affliction."
+              }
+            ]
+          }
+        ],
+        "abilityLists": [
+          {
+            "name": "Mystic Marks",
+            "description": "Choose Mystic Marks as you level up.",
+            "items": [
+              {
+                "name": "Bramble Mark",
+                "description": "Action: Touch an ally and grant them an aura of mystical thorns (max 1 ally at a time). Attackers take damage equal to the ally's armor whenever they Defend. The thorns last for WIL attacks or 1 min."
+              },
+              {
+                "name": "Broom Flight",
+                "description": "Spend 1 mana to gain flying for 1 hour (or until you fall). When crit while flying, you fall, landing Prone."
+              },
+              {
+                "name": "Coven",
+                "description": "Choose 1 spell school a close ally knows; you can cast tiered spells from that school. Healer of the Old Ways: non-Hexbinder healing spells cannot be Diminished."
+              },
+              {
+                "name": "Mark of Protection",
+                "description": "Creatures you heal can ignore 1 negative condition they would receive within the next minute."
+              },
+              {
+                "name": "Pact of Enmity",
+                "description": "Whenever you would apply an Affliction, you may instead bind yourself to the creature with a pact of mutual destruction. Both of you deal MAX damage to each other (instead of rolling dice)."
+              },
+              {
+                "name": "Sigil of Journey",
+                "description": "Action: You (or another willing creature you touch) exchange places with an Afflicted creature within Reach 8 (provided the Afflicted creature is no more than 1 size larger)."
+              },
+              {
+                "name": "Sigil of Root",
+                "description": "(1/encounter) Your Enfeebled affliction also Restrains for 1 round."
+              },
+              {
+                "name": "Word of Decay",
+                "description": "Whenever you use a Futuresight Die against an Afflicted target, take the max value. When your Afflicted target dies, regain 1 spent Futuresight Die (roll it)."
+              }
+            ]
+          },
+          {
+            "name": "Afflictions",
+            "description": "You can Afflict a max of 1 creature at a time with a max of INT different Afflictions. Afflictions last for as long as you maintain Concentration (DC 10 STR save on crit).",
+            "items": [
+              {
+                "name": "Brittle",
+                "description": "Target suffers 1 damage for each space it moves (or is moved). Level 10: 2 damage/space."
+              },
+              {
+                "name": "Dimmed",
+                "description": "Target has disadvantage 2 when attacking beyond Range/Reach 1."
+              },
+              {
+                "name": "Doomed",
+                "description": "(1/encounter) Maximize the next roll against the Afflicted target."
+              },
+              {
+                "name": "Enfeebled",
+                "description": "Target falls Prone at the end of each of your turns."
+              },
+              {
+                "name": "Frenzied",
+                "description": "Target's first attack each round MUST be against the nearest random creature (acts first amongst monsters)."
+              },
+              {
+                "name": "Pestilent",
+                "description": "On death of target: creatures within Reach 2 of it suffer LVL damage (ignoring armor)."
+              },
+              {
+                "name": "Sundered",
+                "description": "Target's armor reduced 1 step."
+              },
+              {
+                "name": "Withered",
+                "description": "Target's first attack each round against a friendly creature is made with disadvantage."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

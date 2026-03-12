@@ -1,0 +1,119 @@
+{
+  "source": {
+    "name": "Hexbinder",
+    "abbreviation": "HEX",
+    "license": "Nimble 3rd Party Creator License v2.0",
+    "link": "https://nimblerpg.com/"
+  },
+  "data": [
+    {
+      "type": "spell-schools",
+      "attributes": {
+        "name": "Hexbinder Spells",
+        "description": "",
+        "spells": [
+          {
+            "name": "Misery",
+            "tier": 1,
+            "actions": 2,
+            "target": {
+              "type": "single",
+              "kind": "reach",
+              "distance": 8
+            },
+            "damage": "1d8+LVL. On hit: apply an Affliction. On crit: apply 2 instead."
+          },
+          {
+            "name": "Life Bloom",
+            "tier": 1,
+            "actions": 1,
+            "target": {
+              "type": "single+",
+              "kind": "reach",
+              "distance": 8
+            },
+            "description": "Consume 1 of your own Hit Dice, and 1 more from a willing target. Heal your target and another creature within Reach the sum of those dice."
+          },
+          {
+            "name": "Twitch Curse",
+            "tier": 2,
+            "actions": 1,
+            "reaction": true,
+            "target": {
+              "type": "single",
+              "kind": "reach",
+              "distance": 8
+            },
+            "description": "When attacked by a creature within Reach 8, Defend for free. First move the attacker 1 space (+1 space for each Affliction they have). Opportunity attacks triggered this way are made with advantage instead of disadvantage. If you are no longer a valid target (e.g., the attacker is dead, you are out of line of sight/Reach/Range), the triggering attack misses."
+          },
+          {
+            "name": "Bloodcurse",
+            "tier": 2,
+            "actions": 2,
+            "target": {
+              "type": "single",
+              "kind": "reach",
+              "distance": 8
+            },
+            "damage": "1d4+LVL (increment the die size for each Affliction they have). On hit: target becomes secretly Bloodcursed, suffering 2× the next damage they deal (ignoring armor)."
+          },
+          {
+            "name": "Wyrding Strands",
+            "tier": 3,
+            "actions": 2,
+            "target": {
+              "type": "aoe",
+              "kind": "reach",
+              "distance": 8
+            },
+            "description": "Move creatures in a 4×4 area a total of 2d6 spaces, divided among them as you choose. Large or larger creatures move half as far."
+          },
+          {
+            "name": "Frogify",
+            "tier": 3,
+            "actions": 2,
+            "target": {
+              "type": "single",
+              "kind": "reach",
+              "distance": 8
+            },
+            "description": "On a failed WIL save, turn a creature into a harmless, armorless, tiny FROG for up to 1 min. They can still move but not attack. On a save, they are partially transformed, only reducing their armor to none instead. Damage or casting this again ends the effect."
+          },
+          {
+            "name": "Malediction",
+            "tier": 4,
+            "actions": 2,
+            "target": {
+              "type": "multi",
+              "kind": "reach",
+              "distance": 4
+            },
+            "description": "Attack up to KEY creatures for 1d4 each. On hit, deal LVL damage instead (ignoring armor)."
+          },
+          {
+            "name": "Circle of Thorns",
+            "tier": 4,
+            "actions": 2,
+            "target": {
+              "type": "aoe",
+              "kind": "reach",
+              "distance": 8
+            },
+            "description": "Fill every empty adjacent space around a creature with a growth of thorns. Creatures who enter the area must make a DEX save or take KEYd6 damage and become Restrained; on save, half damage only. Lasts up to 1 min or until it has dealt damage 3 times."
+          },
+          {
+            "name": "Terror",
+            "tier": 5,
+            "actions": 2,
+            "target": {
+              "type": "single",
+              "kind": "reach",
+              "distance": 8
+            },
+            "damage": "LVL×1d4 (ignoring armor). Advantage for each Affliction on the target."
+          }
+        ]
+      }
+    }
+  ]
+}
