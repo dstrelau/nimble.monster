@@ -10,6 +10,7 @@ import {
 } from "@/lib/reference/crosslinks";
 import { previewMap } from "@/lib/reference/terms";
 import { SITE_NAME } from "@/lib/utils/branding";
+import { AdvantageDisadvantageExamples } from "./AdvantageDisadvantageExamples";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -46,6 +47,7 @@ export default async function ReferenceEntryPage({ params }: PageProps) {
       <article className="prose dark:prose-invert max-w-none">
         <ReferenceMarkdown content={linkedMarkdown} previewMap={previewMap} />
       </article>
+      {slug === "advantage-disadvantage" && <AdvantageDisadvantageExamples />}
     </div>
   );
 }

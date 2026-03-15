@@ -57,7 +57,7 @@ function DiceRollResult({
       : result.type === "vicious"
         ? "text-flame"
         : result.type === "dropped"
-          ? "text-muted-foreground"
+          ? "text-neutral-300 dark:text-neutral-600 parchment:text-neutral-400"
           : "";
   if (pending && (result.type === "vicious" || result.type === "explosion")) {
     return null;
@@ -90,6 +90,7 @@ interface DiceRollDisplayProps {
   results: DieResult[];
   modifier: number;
   total: number;
+  hideTotal?: boolean;
 }
 
 export function DiceRollDisplay({
@@ -98,6 +99,7 @@ export function DiceRollDisplay({
   results,
   modifier,
   total,
+  hideTotal,
 }: DiceRollDisplayProps) {
   const sortedResults = results
     .map((result, index) => ({ result, index }))
@@ -128,13 +130,15 @@ export function DiceRollDisplay({
           pending={pending}
         />
       ))}
-      {modifier !== 0 && (
+      {!hideTotal && modifier !== 0 && (
         <span className="flex items-center">
           {modifier > 0 ? "+ " : ""}
           {modifier}
         </span>
       )}
-      <span className="min-w-18">= {pending ? "  " : total}</span>
+      {!hideTotal && (
+        <span className="min-w-18">= {pending ? "  " : total}</span>
+      )}
     </div>
   );
 }
