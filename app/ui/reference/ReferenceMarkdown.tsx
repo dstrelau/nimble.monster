@@ -2,6 +2,7 @@ import { Link as LinkIcon } from "lucide-react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { AdvantageDisadvantageExamples } from "@/app/reference/[slug]/AdvantageDisadvantageExamples";
+import { HashHighlight } from "./HashHighlight";
 import { ReferenceLink } from "./ReferenceLink";
 
 function slugify(text: string): string {
@@ -22,16 +23,18 @@ function Heading({
   const text = String(children);
   const id = slugify(text);
   return (
-    <Tag id={id} className="group">
-      {children}
-      <a
-        href={`#${id}`}
-        className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity inline-block align-middle"
-        aria-label={`Link to ${text}`}
-      >
-        <LinkIcon className="size-4 text-muted-foreground" />
-      </a>
-    </Tag>
+    <HashHighlight id={id}>
+      <Tag id={id} className="group">
+        {children}
+        <a
+          href={`#${id}`}
+          className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity inline-block align-middle"
+          aria-label={`Link to ${text}`}
+        >
+          <LinkIcon className="size-4 text-muted-foreground" />
+        </a>
+      </Tag>
+    </HashHighlight>
   );
 }
 
