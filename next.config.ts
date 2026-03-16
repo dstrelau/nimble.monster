@@ -7,6 +7,7 @@ const allowedOrigins = process.env.ALLOWED_DEV_ORIGINS
 const nextConfig: NextConfig = {
   allowedDevOrigins: allowedOrigins,
   output: "standalone",
+  transpilePackages: ["next-mdx-remote"],
   experimental: {
     useCache: true,
   },
@@ -64,6 +65,11 @@ const nextConfig: NextConfig = {
       {
         source: "/m/:path*",
         destination: "/monsters/:path*",
+        permanent: true,
+      },
+      {
+        source: "/reference/speed",
+        destination: "/reference/movement",
         permanent: true,
       },
     ];

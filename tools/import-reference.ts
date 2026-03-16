@@ -35,7 +35,7 @@ function collectMdFiles(dir: string): string[] {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) {
       files.push(...collectMdFiles(full));
-    } else if (entry.endsWith(".md")) {
+    } else if (entry.endsWith(".mdx")) {
       files.push(full);
     }
   }

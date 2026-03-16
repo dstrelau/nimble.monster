@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ReferenceCategoryIcon } from "@/app/ui/reference/ReferenceCategoryIcon";
 import { ReferenceSearchInput } from "@/app/ui/reference/ReferenceSearchInput";
-import { listAllReferenceEntries, searchReference } from "@/lib/db/reference";
+import { searchReference } from "@/lib/db/reference";
 import { CATEGORIES } from "@/lib/reference/categories";
+import { getAllReferenceFrontmatter } from "@/lib/reference/filesystem";
 import { SITE_NAME } from "@/lib/utils/branding";
 
 export const metadata: Metadata = {
@@ -75,7 +76,7 @@ export default async function ReferencePage({ searchParams }: PageProps) {
     );
   }
 
-  const allEntries = await listAllReferenceEntries();
+  const allEntries = getAllReferenceFrontmatter();
   const entriesByCategory = new Map<
     string,
     Array<{ slug: string; title: string }>

@@ -1,15 +1,39 @@
-"use client";
-
-import { WandSparkles } from "lucide-react";
-import Link from "next/link";
-import ReactMarkdown from "react-markdown";
+import { Link as LinkIcon } from "lucide-react";
+import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
-import { DiceNotation } from "@/components/DiceNotation";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { AdvantageDisadvantageExamples } from "@/app/reference/[slug]/AdvantageDisadvantageExamples";
+import { ReferenceLink } from "./ReferenceLink";
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-");
+}
+
+function Heading({
+  level,
+  children,
+}: {
+  level: number;
+  children: React.ReactNode;
+}) {
+  const Tag = `h${level}` as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  const text = String(children);
+  const id = slugify(text);
+  return (
+    <Tag id={id} className="group">
+      {children}
+      <a
+        href={`#${id}`}
+        className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity inline-block align-middle"
+        aria-label={`Link to ${text}`}
+      >
+        <LinkIcon className="size-4 text-muted-foreground" />
+      </a>
+    </Tag>
+  );
+}
 
 interface ReferenceMarkdownProps {
   content: string;
@@ -21,60 +45,27 @@ export function ReferenceMarkdown({
   previewMap,
 }: ReferenceMarkdownProps) {
   return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      components={{
-        a({ href, children }) {
-          if (href?.startsWith("/dice/")) {
-            const diceText = decodeURIComponent(href.slice(6));
-            return <DiceNotation text={diceText} />;
-          }
-          if (href?.startsWith("/reference/")) {
-            const term = String(children).toLowerCase();
-            const preview = previewMap[term];
-            if (preview) {
-              return (
-                <HoverCard openDelay={300} closeDelay={100}>
-                  <HoverCardTrigger asChild>
-                    <Link href={href} className="reference-link">
-                      {children}
-                    </Link>
-                  </HoverCardTrigger>
-                  <HoverCardContent side="top" className="w-80 text-sm">
-                    <ReactMarkdown
-                      components={{
-                        p: ({ children: pChildren }) => (
-                          <p className="text-sm">{pChildren}</p>
-                        ),
-                      }}
-                    >
-                      {preview}
-                    </ReactMarkdown>
-                  </HoverCardContent>
-                </HoverCard>
-              );
-            }
-            return <Link href={href}>{children}</Link>;
-          }
-          if (href?.startsWith("/spell-schools/")) {
-            return (
-              <Link
-                href={href}
-                className="inline-flex items-baseline gap-0.5 hover:underline"
-              >
-                <WandSparkles className="stroke-flame size-3.5" />
-                <span>{children}</span>
-              </Link>
-            );
-          }
-          if (href?.startsWith("/")) {
-            return <Link href={href}>{children}</Link>;
-          }
-          return <a href={href}>{String(children)}</a>;
+    <MDXRemote
+      source={content}
+      options={{
+        mdxOptions: {
+          remarkPlugins: [remarkGfm],
         },
       }}
-    >
-      {content}
-    </ReactMarkdown>
+      components={{
+        h1: ({ children }) => <Heading level={1}>{children}</Heading>,
+        h2: ({ children }) => <Heading level={2}>{children}</Heading>,
+        h3: ({ children }) => <Heading level={3}>{children}</Heading>,
+        h4: ({ children }) => <Heading level={4}>{children}</Heading>,
+        h5: ({ children }) => <Heading level={5}>{children}</Heading>,
+        h6: ({ children }) => <Heading level={6}>{children}</Heading>,
+        a: ({ href, children }) => (
+          <ReferenceLink href={href} previewMap={previewMap}>
+            {children}
+          </ReferenceLink>
+        ),
+        AdvantageDisadvantageExamples,
+      }}
+    />
   );
 }

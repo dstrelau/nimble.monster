@@ -1,34 +1,40 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { ReferenceMarkdown } from "@/app/ui/reference/ReferenceMarkdown";
-import { getReferenceEntry } from "@/lib/db/reference";
 import {
   resolveDiceNotationLinks,
   resolveSpellSchoolLinks,
   resolveTermLinks,
 } from "@/lib/reference/crosslinks";
+import {
+  getAllReferenceSlugs,
+  getReferenceFileBySlug,
+} from "@/lib/reference/filesystem";
 import { previewMap } from "@/lib/reference/terms";
 import { SITE_NAME } from "@/lib/utils/branding";
-import { AdvantageDisadvantageExamples } from "./AdvantageDisadvantageExamples";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  return getAllReferenceSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const entry = await getReferenceEntry(slug);
+  const entry = getReferenceFileBySlug(slug);
   if (!entry) return {};
   return { title: `${entry.title} - Rules Reference - ${SITE_NAME}` };
 }
 
 export default async function ReferenceEntryPage({ params }: PageProps) {
   const { slug } = await params;
-  const entry = await getReferenceEntry(slug);
-  if (!entry) notFound();
+  const entry = getReferenceFileBySlug(slug);
+  if (!entry) redirect("/reference");
 
   const diceResolved = resolveDiceNotationLinks(entry.content);
   const resolvedContent = await resolveSpellSchoolLinks(diceResolved);
@@ -47,7 +53,6 @@ export default async function ReferenceEntryPage({ params }: PageProps) {
       <article className="prose dark:prose-invert max-w-none">
         <ReferenceMarkdown content={linkedMarkdown} previewMap={previewMap} />
       </article>
-      {slug === "advantage-disadvantage" && <AdvantageDisadvantageExamples />}
     </div>
   );
 }

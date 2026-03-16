@@ -21,27 +21,31 @@ export default function TermsPage() {
         <Link href="https://nimblerpg.com">nimbleRPG.com</Link>.
       </p>
 
+      <h2>Reference Images</h2>
+      <p>
+        Reference images on for <Link href="/reference/movement">Movement</Link>{" "}
+        and <Link href="/reference/measuring-spaces">Measuring Spaces</Link>{" "}
+        illustrated by Josh Park (swingsetpark).
+      </p>
+
       <h2>Paper Forge</h2>
       <p>
         Monster images copyright (c) Paper Forge. All rights reserved. Used with
         permission. Support them on{" "}
         <Link href="https://www.patreon.com/c/paperforge">Patreon</Link>.
       </p>
-
       <h2>Game Icons</h2>
       <p>
         Icons from https://game-icons.net licensed under CC 3.0 and/or CC0 by
         author as at
         https://github.com/game-icons/icons/blob/master/license.txt.
       </p>
-
       <h2>Lucide Icons</h2>
       <p>
         Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2023 as
         part of Feather (MIT). All other copyright (c) for Lucide are held by
         Lucide Contributors 2025.
       </p>
-
       <p>
         Permission to use, copy, modify, and/or distribute this software for any
         purpose with or without fee is hereby granted, provided that the above
@@ -80,7 +84,6 @@ export default function TermsPage() {
         TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
         SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       </p>
-
       <h2>System Reference Document v5.2</h2>
       <p>
         This work includes material from the System Reference Document 5.2.1
