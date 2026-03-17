@@ -37,28 +37,32 @@ export async function searchReference(
   query: string
 ): Promise<ReferenceSearchResult[]> {
   const client = getClient();
-  const result = await client.execute({
-    sql: `
-      SELECT
-        r.slug,
-        r.title,
-        r.category,
-        snippet(reference_entries_fts, 2, '<mark>', '</mark>', '…', 32) as excerpt
-      FROM reference_entries_fts
-      JOIN reference_entries r ON r.rowid = reference_entries_fts.rowid
-      WHERE reference_entries_fts MATCH ?
-      ORDER BY rank
-      LIMIT 20
-    `,
-    args: [query],
-  });
+  try {
+    const result = await client.execute({
+      sql: `
+        SELECT
+          r.slug,
+          r.title,
+          r.category,
+          snippet(reference_entries_fts, 2, '<mark>', '</mark>', '…', 32) as excerpt
+        FROM reference_entries_fts
+        JOIN reference_entries r ON r.rowid = reference_entries_fts.rowid
+        WHERE reference_entries_fts MATCH ?
+        ORDER BY rank
+        LIMIT 20
+      `,
+      args: [query],
+    });
 
-  return result.rows.map((row) => ({
-    slug: String(row.slug),
-    title: String(row.title),
-    category: String(row.category),
-    excerpt: String(row.excerpt),
-  }));
+    return result.rows.map((row) => ({
+      slug: String(row.slug),
+      title: String(row.title),
+      category: String(row.category),
+      excerpt: String(row.excerpt),
+    }));
+  } catch {
+    return [];
+  }
 }
 
 export interface ReferenceIndexEntry {
