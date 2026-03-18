@@ -462,6 +462,11 @@ export interface CreateSubclassInput {
   visibility: "public" | "private";
   levels: SubclassLevel[];
   abilityListIds?: string[];
+  abilityLists?: Array<{
+    name: string;
+    description: string;
+    items: Array<{ name: string; description: string }>;
+  }>;
   discordId: string;
   sourceId?: string;
 }
@@ -523,7 +528,7 @@ export const createSubclass = async (
     await db.insert(subclassAbilities).values(abilityInserts);
   }
 
-  // Insert ability list links
+  // Insert ability list links for existing lists
   const abilityListIds = input.abilityListIds || [];
   if (abilityListIds.length > 0) {
     await db.insert(subclassesClassAbilityLists).values(
@@ -533,6 +538,34 @@ export const createSubclass = async (
         orderIndex: index,
       }))
     );
+  }
+
+  // Create inline ability lists
+  const inlineLists = input.abilityLists || [];
+  for (const [index, list] of inlineLists.entries()) {
+    const listId = crypto.randomUUID();
+    await db.insert(classAbilityLists).values({
+      id: listId,
+      name: list.name,
+      description: list.description,
+      userId: userResult[0].id,
+    });
+    if (list.items.length > 0) {
+      await db.insert(classAbilityItems).values(
+        list.items.map((item, itemIndex) => ({
+          id: crypto.randomUUID(),
+          classAbilityListId: listId,
+          name: item.name,
+          description: item.description,
+          orderIndex: itemIndex,
+        }))
+      );
+    }
+    await db.insert(subclassesClassAbilityLists).values({
+      subclassId,
+      abilityListId: listId,
+      orderIndex: abilityListIds.length + index,
+    });
   }
 
   const dataMap = await loadSubclassFullData(db, [subclassId]);
@@ -623,11 +656,23 @@ export const updateSubclass = async (
     await db.insert(subclassAbilities).values(abilityInserts);
   }
 
-  // Replace ability list links
+  // Delete old inline ability lists (those linked to this subclass)
+  const existingLinks = await db
+    .select({ abilityListId: subclassesClassAbilityLists.abilityListId })
+    .from(subclassesClassAbilityLists)
+    .where(eq(subclassesClassAbilityLists.subclassId, input.id));
+  const existingListIds = existingLinks.map((l) => l.abilityListId);
+  if (existingListIds.length > 0) {
+    await db
+      .delete(classAbilityLists)
+      .where(inArray(classAbilityLists.id, existingListIds));
+  }
+
   await db
     .delete(subclassesClassAbilityLists)
     .where(eq(subclassesClassAbilityLists.subclassId, input.id));
 
+  // Re-link existing ability list IDs
   const abilityListIds = input.abilityListIds || [];
   if (abilityListIds.length > 0) {
     await db.insert(subclassesClassAbilityLists).values(
@@ -637,6 +682,34 @@ export const updateSubclass = async (
         orderIndex: index,
       }))
     );
+  }
+
+  // Create inline ability lists
+  const inlineLists = input.abilityLists || [];
+  for (const [index, list] of inlineLists.entries()) {
+    const listId = crypto.randomUUID();
+    await db.insert(classAbilityLists).values({
+      id: listId,
+      name: list.name,
+      description: list.description,
+      userId: userResult[0].id,
+    });
+    if (list.items.length > 0) {
+      await db.insert(classAbilityItems).values(
+        list.items.map((item, itemIndex) => ({
+          id: crypto.randomUUID(),
+          classAbilityListId: listId,
+          name: item.name,
+          description: item.description,
+          orderIndex: itemIndex,
+        }))
+      );
+    }
+    await db.insert(subclassesClassAbilityLists).values({
+      subclassId: input.id,
+      abilityListId: listId,
+      orderIndex: abilityListIds.length + index,
+    });
   }
 
   const dataMap = await loadSubclassFullData(db, [input.id]);

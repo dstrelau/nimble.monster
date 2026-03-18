@@ -12,6 +12,7 @@ import {
   CardTitle,
   Card as UICard,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Subclass, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -126,6 +127,38 @@ export function Card({
             </div>
           </div>
         ))}
+
+        {subclass.abilityLists.length > 0 && <Separator />}
+
+        <div className="flex flex-col gap-10">
+          {subclass.abilityLists.map((list) => (
+            <div key={list.id}>
+              <div className="flex justify-center items-center gap-1.5 mb-2">
+                <h5 className="text-2xl font-slab font-semibold">
+                  {list.name}
+                </h5>
+              </div>
+              {list.description && (
+                <FormattedText
+                  className="text-sm text-muted-foreground mb-3"
+                  content={list.description}
+                  conditions={conditions.allConditions}
+                />
+              )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {list.items.map((item) => (
+                  <div key={item.id} className="text-base">
+                    <PrefixedFormattedText
+                      prefix={<h6 className="font-semibold">{item.name}</h6>}
+                      content={item.description}
+                      conditions={conditions.allConditions}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </CardContent>
 
       <CardFooterLayout

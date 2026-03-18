@@ -12,6 +12,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "17 March 2026",
+    entries: ["Allow option lists on subclasses."],
+  },
+  {
     date: "15 March 2026",
     entries: [
       "Add interactive advantage/disadvantage examples to rules reference.",
