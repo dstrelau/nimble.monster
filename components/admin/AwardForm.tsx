@@ -1,7 +1,7 @@
 "use client";
 
 import { Award as AwardIcon } from "lucide-react";
-import { useId } from "react";
+import { useActionState, useId } from "react";
 import { AWARD_COLOR_CLASSES, AWARD_COLORS } from "@/components/AwardBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,9 +17,14 @@ import { Textarea } from "@/components/ui/textarea";
 import type { Award } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
+type AwardFormAction = (
+  prevState: { error: string | null },
+  formData: FormData
+) => Promise<{ error: string | null }>;
+
 interface AwardFormProps {
   award?: Award;
-  onSubmit: (formData: FormData) => void;
+  onSubmit: AwardFormAction;
   submitLabel?: string;
 }
 
@@ -28,6 +33,7 @@ export function AwardForm({
   onSubmit,
   submitLabel = "Create Award",
 }: AwardFormProps) {
+  const [state, formAction] = useActionState(onSubmit, { error: null });
   const nameId = useId();
   const abbreviationId = useId();
   const descriptionId = useId();
@@ -36,7 +42,8 @@ export function AwardForm({
   const iconId = useId();
 
   return (
-    <form action={onSubmit} className="space-y-4">
+    <form action={formAction} className="space-y-4">
+      {state.error && <p className="text-sm text-destructive">{state.error}</p>}
       <div className="space-y-2">
         <Label htmlFor={nameId}>Name</Label>
         <Input

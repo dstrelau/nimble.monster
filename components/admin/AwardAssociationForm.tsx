@@ -17,7 +17,7 @@ import type { Award } from "@/lib/types";
 
 interface AwardAssociationFormProps {
   awards: Award[];
-  onSubmit: (formData: FormData) => void;
+  onSubmit: (formData: FormData) => Promise<{ error: string } | undefined>;
 }
 
 interface Entity {
@@ -37,6 +37,7 @@ export function AwardAssociationForm({
   const [searchResults, setSearchResults] = useState<Entity[]>([]);
   const [selectedEntities, setSelectedEntities] = useState<Entity[]>([]);
   const [selectedAwardId, setSelectedAwardId] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSearch = async () => {
     if (searchQuery.length < 2) return;
@@ -58,6 +59,7 @@ export function AwardAssociationForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (selectedEntities.length === 0 || !selectedAwardId) return;
 
     for (const entity of selectedEntities) {
@@ -65,7 +67,11 @@ export function AwardAssociationForm({
       formData.append("entityType", entityType);
       formData.append("entityId", entity.id);
       formData.append("awardId", selectedAwardId);
-      await onSubmit(formData);
+      const result = await onSubmit(formData);
+      if (result?.error) {
+        setError(result.error);
+        return;
+      }
     }
 
     setSelectedEntities([]);
@@ -74,6 +80,7 @@ export function AwardAssociationForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {error && <p className="text-sm text-destructive">{error}</p>}
       <div className="space-y-2">
         <Label htmlFor={entityTypeId}>Entity Type</Label>
         <Select

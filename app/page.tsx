@@ -28,7 +28,7 @@ export default async function HomePage() {
               The <em>Un</em>official digital companion for
             </span>
           ) : (
-            "Your homebrew hub for"
+            "Everything you need for"
           )}{" "}
           <br />
           <span className="pr-3 font-slab font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600">

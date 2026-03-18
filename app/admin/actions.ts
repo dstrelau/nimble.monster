@@ -50,9 +50,12 @@ import {
 import { upsertOfficialSubclass } from "@/lib/services/subclasses/repository";
 import { awardSlugify } from "@/lib/utils/slug";
 
-export async function createAwardAction(formData: FormData) {
+export async function createAwardAction(
+  _prevState: { error: string | null },
+  formData: FormData
+): Promise<{ error: string | null }> {
   if (!(await isAdmin())) {
-    throw new Error("Unauthorized");
+    return { error: "Unauthorized" };
   }
 
   const name = formData.get("name") as string;
@@ -63,22 +66,30 @@ export async function createAwardAction(formData: FormData) {
   const icon = formData.get("icon") as string;
   const slug = awardSlugify(abbreviation);
 
-  await awardDb.createAward({
-    name,
-    abbreviation,
-    description,
-    slug,
-    url,
-    color,
-    icon,
-  });
+  try {
+    await awardDb.createAward({
+      name,
+      abbreviation,
+      description,
+      slug,
+      url,
+      color,
+      icon,
+    });
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Failed to create award" };
+  }
   revalidatePath("/admin/awards");
   redirect("/admin/awards");
 }
 
-export async function updateAwardAction(id: string, formData: FormData) {
+export async function updateAwardAction(
+  id: string,
+  _prevState: { error: string | null },
+  formData: FormData
+): Promise<{ error: string | null }> {
   if (!(await isAdmin())) {
-    throw new Error("Unauthorized");
+    return { error: "Unauthorized" };
   }
 
   const name = formData.get("name") as string;
@@ -89,15 +100,19 @@ export async function updateAwardAction(id: string, formData: FormData) {
   const icon = formData.get("icon") as string;
   const slug = awardSlugify(abbreviation);
 
-  await awardDb.updateAward(id, {
-    name,
-    abbreviation,
-    description,
-    slug,
-    url,
-    color,
-    icon,
-  });
+  try {
+    await awardDb.updateAward(id, {
+      name,
+      abbreviation,
+      description,
+      slug,
+      url,
+      color,
+      icon,
+    });
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Failed to update award" };
+  }
   revalidatePath("/admin/awards");
   redirect("/admin/awards");
 }
@@ -111,37 +126,45 @@ export async function deleteAwardAction(id: string) {
   revalidatePath("/admin/awards");
 }
 
-export async function addAwardAssociationAction(formData: FormData) {
+export async function addAwardAssociationAction(
+  formData: FormData
+): Promise<{ error: string } | undefined> {
   if (!(await isAdmin())) {
-    throw new Error("Unauthorized");
+    return { error: "Unauthorized" };
   }
 
   const entityType = formData.get("entityType") as string;
   const entityId = formData.get("entityId") as string;
   const awardId = formData.get("awardId") as string;
 
-  switch (entityType) {
-    case "monster":
-      await awardDb.addAwardToMonster(entityId, awardId);
-      break;
-    case "item":
-      await awardDb.addAwardToItem(entityId, awardId);
-      break;
-    case "companion":
-      await awardDb.addAwardToCompanion(entityId, awardId);
-      break;
-    case "subclass":
-      await awardDb.addAwardToSubclass(entityId, awardId);
-      break;
-    case "school":
-      await awardDb.addAwardToSchool(entityId, awardId);
-      break;
-    case "ancestry":
-      await awardDb.addAwardToAncestry(entityId, awardId);
-      break;
-    case "background":
-      await awardDb.addAwardToBackground(entityId, awardId);
-      break;
+  try {
+    switch (entityType) {
+      case "monster":
+        await awardDb.addAwardToMonster(awardId, entityId);
+        break;
+      case "item":
+        await awardDb.addAwardToItem(awardId, entityId);
+        break;
+      case "companion":
+        await awardDb.addAwardToCompanion(awardId, entityId);
+        break;
+      case "subclass":
+        await awardDb.addAwardToSubclass(awardId, entityId);
+        break;
+      case "school":
+        await awardDb.addAwardToSchool(awardId, entityId);
+        break;
+      case "ancestry":
+        await awardDb.addAwardToAncestry(awardId, entityId);
+        break;
+      case "background":
+        await awardDb.addAwardToBackground(awardId, entityId);
+        break;
+    }
+  } catch (e) {
+    return {
+      error: e instanceof Error ? e.message : "Failed to add association",
+    };
   }
 
   revalidatePath("/admin/awards");
@@ -158,25 +181,25 @@ export async function removeAwardAssociationAction(
 
   switch (entityType) {
     case "monster":
-      await awardDb.removeAwardFromMonster(entityId, awardId);
+      await awardDb.removeAwardFromMonster(awardId, entityId);
       break;
     case "item":
-      await awardDb.removeAwardFromItem(entityId, awardId);
+      await awardDb.removeAwardFromItem(awardId, entityId);
       break;
     case "companion":
-      await awardDb.removeAwardFromCompanion(entityId, awardId);
+      await awardDb.removeAwardFromCompanion(awardId, entityId);
       break;
     case "subclass":
-      await awardDb.removeAwardFromSubclass(entityId, awardId);
+      await awardDb.removeAwardFromSubclass(awardId, entityId);
       break;
     case "school":
-      await awardDb.removeAwardFromSchool(entityId, awardId);
+      await awardDb.removeAwardFromSchool(awardId, entityId);
       break;
     case "ancestry":
-      await awardDb.removeAwardFromAncestry(entityId, awardId);
+      await awardDb.removeAwardFromAncestry(awardId, entityId);
       break;
     case "background":
-      await awardDb.removeAwardFromBackground(entityId, awardId);
+      await awardDb.removeAwardFromBackground(awardId, entityId);
       break;
   }
 

@@ -15,7 +15,10 @@ import type { Award } from "@/lib/types";
 
 interface EditAwardDialogProps {
   award: Award;
-  onSubmit: (formData: FormData) => void;
+  onSubmit: (
+    prevState: { error: string | null },
+    formData: FormData
+  ) => Promise<{ error: string | null }>;
 }
 
 export function EditAwardDialog({ award, onSubmit }: EditAwardDialogProps) {
