@@ -6,13 +6,16 @@ import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { OfficialOnlyContext } from "@/lib/hooks/useOfficialOnly";
 import { getQueryClient } from "@/lib/queryClient";
 
 export function Providers({
   session,
+  officialOnly,
   children,
 }: {
   session: Session | null;
+  officialOnly: boolean;
   children: React.ReactNode;
 }) {
   const queryClient = getQueryClient();
@@ -21,14 +24,16 @@ export function Providers({
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
         <NuqsAdapter>
-          <ThemeProvider
-            attribute="data-theme"
-            defaultTheme="system"
-            enableSystem
-            themes={["light", "dark", "parchment"]}
-          >
-            {children}
-          </ThemeProvider>
+          <OfficialOnlyContext.Provider value={officialOnly}>
+            <ThemeProvider
+              attribute="data-theme"
+              defaultTheme="system"
+              enableSystem
+              themes={["light", "dark", "parchment"]}
+            >
+              {children}
+            </ThemeProvider>
+          </OfficialOnlyContext.Provider>
         </NuqsAdapter>
       </SessionProvider>
       <ReactQueryDevtools initialIsOpen={false} />

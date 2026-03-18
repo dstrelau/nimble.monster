@@ -197,7 +197,8 @@ export const paginatePublicAncestries = async ({
   search,
   creatorId,
   source,
-}: PaginateAncestriesParams): Promise<{
+  officialOnly = false,
+}: PaginateAncestriesParams & { officialOnly?: boolean }): Promise<{
   data: Ancestry[];
   nextCursor: string | null;
 }> => {
@@ -216,6 +217,10 @@ export const paginatePublicAncestries = async ({
 
   // Build where conditions
   const conditions: ReturnType<typeof eq>[] = [];
+
+  if (officialOnly) {
+    conditions.push(eq(ancestries.userId, OFFICIAL_USER_ID));
+  }
 
   if (creatorId) {
     conditions.push(eq(ancestries.userId, creatorId));

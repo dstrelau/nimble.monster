@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import { isOfficialOnlyDomain } from "@/lib/domain";
 import { listAllSources, monstersService } from "@/lib/services/monsters";
 import type { PaginateMonstersParams } from "@/lib/services/monsters/service";
 import type { UpdateMonsterInput } from "@/lib/services/monsters/types";
@@ -10,7 +11,8 @@ export const listAllMonsterSources = async () => listAllSources();
 export const paginatePublicMonsters = async (
   params: PaginateMonstersParams
 ) => {
-  return monstersService.paginatePublicMonsters(params);
+  const officialOnly = await isOfficialOnlyDomain();
+  return monstersService.paginatePublicMonsters(params, officialOnly);
 };
 
 export async function updateMonster(input: UpdateMonsterInput) {
@@ -23,5 +25,6 @@ export async function updateMonster(input: UpdateMonsterInput) {
 }
 
 export const getPublicMonster = async (id: string) => {
-  return monstersService.getPublicMonster(id);
+  const officialOnly = await isOfficialOnlyDomain();
+  return monstersService.getPublicMonster(id, officialOnly);
 };

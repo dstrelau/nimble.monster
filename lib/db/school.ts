@@ -1,4 +1,5 @@
 import { and, asc, eq, inArray, like } from "drizzle-orm";
+import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import type {
   Award,
   Source,
@@ -242,13 +243,19 @@ export const deleteSpellSchool = async (input: {
   return result.rowsAffected > 0;
 };
 
-export const listPublicSpellSchools = async (): Promise<SpellSchool[]> => {
+export const listPublicSpellSchools = async (
+  officialOnly = false
+): Promise<SpellSchool[]> => {
   const db = getDatabase();
 
+  const conditions = [eq(spellSchools.visibility, "public")];
+  if (officialOnly) {
+    conditions.push(eq(spellSchools.userId, OFFICIAL_USER_ID));
+  }
   const schoolRows = await db
     .select({ id: spellSchools.id })
     .from(spellSchools)
-    .where(eq(spellSchools.visibility, "public"))
+    .where(and(...conditions))
     .orderBy(asc(spellSchools.name));
 
   if (schoolRows.length === 0) return [];

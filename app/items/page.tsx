@@ -2,6 +2,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { ItemsListView } from "@/app/items/ItemsListView";
+import { isOfficialOnlyDomain } from "@/lib/domain";
 import { getQueryClient } from "@/lib/queryClient";
 import * as items from "@/lib/services/items/repository";
 import { sourcesQueryOptions } from "@/lib/services/sources";
@@ -40,10 +41,13 @@ export default async function ItemsPage({
     if (item) redirect(getItemUrl(item));
   }
 
+  const officialOnly = await isOfficialOnlyDomain();
   const queryClient = getQueryClient();
   await Promise.all([
     queryClient.prefetchQuery(sourcesQueryOptions()),
-    queryClient.prefetchInfiniteQuery(publicItemsInfiniteQueryOptions(params)),
+    queryClient.prefetchInfiniteQuery(
+      publicItemsInfiniteQueryOptions({ ...params, officialOnly })
+    ),
   ]);
 
   return (

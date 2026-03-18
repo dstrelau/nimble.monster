@@ -1,8 +1,10 @@
 import { SchoolsListView } from "@/app/ui/school/SchoolsListView";
 import { listPublicSpellSchools } from "@/lib/db/school";
+import { isOfficialOnlyDomain } from "@/lib/domain";
 
 export default async function SchoolsPage() {
-  const spellSchools = await listPublicSpellSchools();
+  const officialOnly = await isOfficialOnlyDomain();
+  const spellSchools = await listPublicSpellSchools(officialOnly);
 
   if (spellSchools?.length === 0) {
     return (

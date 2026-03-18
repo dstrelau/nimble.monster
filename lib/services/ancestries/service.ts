@@ -36,10 +36,14 @@ export class AncestriesService {
   }
 
   async paginatePublicAncestries(
-    params: PaginateAncestriesParams
+    params: PaginateAncestriesParams,
+    officialOnly?: boolean
   ): Promise<PaginatePublicAncestriesResponse> {
     const parsedParams = PaginateAncestriesSchema.parse(params);
-    return repository.paginatePublicAncestries(parsedParams);
+    return repository.paginatePublicAncestries({
+      ...parsedParams,
+      officialOnly,
+    });
   }
 
   async searchAncestries(params: SearchAncestriesParams): Promise<Ancestry[]> {

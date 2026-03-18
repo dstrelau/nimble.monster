@@ -75,8 +75,11 @@ export class ItemsService {
     return repository.listPublicItemsForUser(userId);
   }
 
-  async getRandomRecentItems(limit?: number): Promise<Item[]> {
-    return repository.getRandomRecentItems(limit);
+  async getRandomRecentItems(
+    limit?: number,
+    officialOnly?: boolean
+  ): Promise<Item[]> {
+    return repository.getRandomRecentItems(limit, officialOnly);
   }
 
   async listItemsForUser(discordId: string): Promise<Item[]> {

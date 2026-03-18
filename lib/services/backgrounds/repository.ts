@@ -179,7 +179,8 @@ export const paginatePublicBackgrounds = async ({
   search,
   creatorId,
   source,
-}: PaginateBackgroundsParams): Promise<{
+  officialOnly = false,
+}: PaginateBackgroundsParams & { officialOnly?: boolean }): Promise<{
   data: Background[];
   nextCursor: string | null;
 }> => {
@@ -198,6 +199,10 @@ export const paginatePublicBackgrounds = async ({
 
   // Build where conditions
   const conditions: ReturnType<typeof eq>[] = [];
+
+  if (officialOnly) {
+    conditions.push(eq(backgrounds.userId, OFFICIAL_USER_ID));
+  }
 
   if (creatorId) {
     conditions.push(eq(backgrounds.userId, creatorId));
