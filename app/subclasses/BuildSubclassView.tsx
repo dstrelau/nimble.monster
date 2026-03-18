@@ -2,10 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, Trash2 } from "lucide-react";
+import { Eye, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   type Control,
   useFieldArray,
@@ -15,7 +15,6 @@ import {
 import { z } from "zod";
 import { subclassClassOptionsQueryOptions } from "@/app/subclasses/hooks";
 import { Card } from "@/app/ui/subclass/Card";
-import { BuildView } from "@/components/app/BuildView";
 import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
 import { EditableLevelAbilities } from "@/components/app/EditableLevelAbilities";
 import { ExampleLoader } from "@/components/app/ExampleLoader";
@@ -23,6 +22,7 @@ import { VisibilityToggle } from "@/components/app/VisibilityToggle";
 import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { CardContent, CardHeader, Card as UICard } from "@/components/ui/card";
 import {
   Combobox,
   type ComboboxGroup,
@@ -39,6 +39,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { Toggle } from "@/components/ui/toggle";
+import { useClassDraft } from "@/lib/hooks/useClassDraft";
 import { type Subclass, UNKNOWN_USER } from "@/lib/types";
 import { randomUUID } from "@/lib/utils";
 import { getSubclassUrl } from "@/lib/utils/url";
@@ -195,6 +197,7 @@ export default function BuildSubclassView({
   const router = useRouter();
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mode, setMode] = useState<"preview" | "edit">("edit");
   const [classSearch, setClassSearch] = useState<string>("");
   const lastPrefaceFromClass = useRef<string>("");
 
@@ -247,6 +250,34 @@ export default function BuildSubclassView({
       visibility: subclass?.visibility || "public",
     },
   });
+
+  const {
+    draftState,
+    draftData,
+    lastSavedAt,
+    restoreDraft,
+    discardDraft,
+    onFormChange,
+    deleteDraftOnSave,
+  } = useClassDraft<FormData>({
+    classId: subclass?.id ?? null,
+    classUpdatedAt: subclass?.updatedAt,
+    isLoggedIn: !!session?.user?.id,
+    enabled: process.env.NEXT_PUBLIC_FEATURE_CLASS_AUTOSAVE === "true",
+  });
+
+  // Watch form changes and auto-save
+  useEffect(() => {
+    const subscription = form.watch((data) => {
+      onFormChange(data);
+    });
+    return () => subscription.unsubscribe();
+  }, [onFormChange, form.watch]);
+
+  const handleRestoreDraft = () => {
+    if (draftData) form.reset(draftData);
+    restoreDraft();
+  };
 
   const { fields: levelFields } = useFieldArray({
     control: form.control,
@@ -341,6 +372,7 @@ export default function BuildSubclassView({
         : await createSubclass(payload);
 
       if (result.success && result.subclass) {
+        await deleteDraftOnSave();
         router.push(getSubclassUrl(result.subclass));
       } else {
         form.setError("root", {
@@ -381,214 +413,245 @@ export default function BuildSubclassView({
   };
 
   return (
-    <BuildView
-      entityName={
-        watchedValues.name || (subclass?.id ? "Edit Subclass" : "New Subclass")
-      }
-      previewTitle="Subclass Preview"
-      formClassName="md:col-span-3"
-      previewClassName="md:col-span-3"
-      formContent={
-        <>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-4"
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit, () => setMode("edit"))}
+        className="space-y-4 pb-10"
+      >
+        <div className="mx-auto w-full max-w-3xl flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-2">
+            <Toggle
+              variant="outline"
+              pressed={mode === "preview"}
+              onPressedChange={(pressed) =>
+                setMode(pressed ? "preview" : "edit")
+              }
+              aria-label="Toggle preview"
             >
-              <FormField
-                control={form.control}
-                name="className"
-                render={({ field }) => (
-                  <FormItem className="flex-1 flex flex-col">
-                    <FormLabel>Class</FormLabel>
-                    <FormControl>
-                      <Combobox<ClassComboboxItem>
-                        groups={classComboboxGroups}
-                        value={form.getValues("classId") || undefined}
-                        onSelect={(item) => {
-                          const currentPreface = form.getValues("namePreface");
-                          form.setValue("classId", item.id);
-                          field.onChange(item.label);
-                          if (
-                            !currentPreface ||
-                            currentPreface === lastPrefaceFromClass.current
-                          ) {
-                            form.setValue(
-                              "namePreface",
-                              item.subclassNamePreface
-                            );
-                          }
-                          lastPrefaceFromClass.current =
-                            item.subclassNamePreface;
-                        }}
-                        onSearch={setClassSearch}
-                        renderItem={(item) => (
-                          <span className="flex flex-1 items-center gap-2">
-                            <Avatar className="size-5">
-                              <AvatarImage src={item.creatorImageUrl} />
-                            </Avatar>
-                            {item.label}
-                          </span>
-                        )}
-                        placeholder="Select a class"
-                        searchPlaceholder="Search classes..."
-                        emptyMessage="No classes found."
-                        loading={classSearchLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+              <Eye />
+              Preview
+            </Toggle>
+            {mode === "edit" && !subclass?.id && (
+              <ExampleLoader
+                examples={EXAMPLE_SUBCLASSES}
+                onLoadExample={loadExample}
               />
-
-              <div className="flex flex-wrap gap-4">
-                <FormField
-                  control={form.control}
-                  name="namePreface"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Preface</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="tagline"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Tagline
-                      <ConditionValidationIcon text={field.value} />
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Description
-                      <ConditionValidationIcon text={field.value} />
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="space-y-5">
-                {levelFields.map((levelField, levelIndex) => (
-                  <SubclassLevelCard
-                    key={levelField.id}
-                    control={form.control}
-                    levelIndex={levelIndex}
-                  />
-                ))}
-              </div>
-
-              <EditableOptions control={form.control} />
-
-              <div className="mt-10 flex flex-row justify-between items-center my-4">
-                <div className="flex items-center gap-2">
-                  {session?.user.id && (
-                    <Button type="submit" disabled={isSubmitting}>
-                      {isSubmitting
-                        ? "Saving..."
-                        : subclass?.id
-                          ? "Update"
-                          : "Save"}
-                    </Button>
-                  )}
-                </div>
-                <fieldset className="space-y-2">
-                  <FormField
-                    control={form.control}
-                    name="visibility"
-                    render={({ field }) => (
-                      <VisibilityToggle
-                        id={`subclass-visibility-toggle-${id}`}
-                        checked={field.value === "public"}
-                        onCheckedChange={(checked) =>
-                          field.onChange(checked ? "public" : "private")
-                        }
-                      />
-                    )}
-                  />
-                </fieldset>
-              </div>
-              {form.formState.errors.root && (
-                <div className="text-destructive text-sm">
-                  {form.formState.errors.root.message}
-                </div>
-              )}
-              {!form.formState.isValid && form.formState.isSubmitted && (
-                <div className="text-destructive text-sm">
-                  Please fix the errors above before saving.
-                </div>
-              )}
-            </form>
-          </Form>
-          {!session?.user && (
-            <div className="flex items-center gap-2 py-4">
-              <DiscordLoginButton className="px-2 py-1" />
-              {" to save"}
+            )}
+          </div>
+          {(draftState === "available" || draftState === "stale") && (
+            <div className="flex items-center gap-3 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/50 dark:text-amber-200">
+              <span className="flex-1">
+                {draftState === "stale"
+                  ? "An older draft was found. Restore it?"
+                  : "You have an unsaved draft. Restore it?"}
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => discardDraft()}
+              >
+                Discard
+              </Button>
+              <Button type="button" size="sm" onClick={handleRestoreDraft}>
+                Restore
+              </Button>
             </div>
           )}
-        </>
-      }
-      previewContent={
-        <Card
-          subclass={previewSubclass}
-          creator={creator}
-          link={false}
-          hideActions
-        />
-      }
-      desktopPreviewContent={
-        <>
-          <ExampleLoader
-            examples={EXAMPLE_SUBCLASSES}
-            onLoadExample={loadExample}
-          />
-          <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
+          {mode === "preview" ? (
             <Card
               subclass={previewSubclass}
               creator={creator}
               link={false}
               hideActions
             />
+          ) : (
+            <UICard>
+              <CardHeader className="space-y-3">
+                <FormField
+                  control={form.control}
+                  name="className"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Class</FormLabel>
+                      <FormControl>
+                        <Combobox<ClassComboboxItem>
+                          groups={classComboboxGroups}
+                          value={form.getValues("classId") || undefined}
+                          onSelect={(item) => {
+                            const currentPreface =
+                              form.getValues("namePreface");
+                            form.setValue("classId", item.id);
+                            field.onChange(item.label);
+                            if (
+                              !currentPreface ||
+                              currentPreface === lastPrefaceFromClass.current
+                            ) {
+                              form.setValue(
+                                "namePreface",
+                                item.subclassNamePreface
+                              );
+                            }
+                            lastPrefaceFromClass.current =
+                              item.subclassNamePreface;
+                          }}
+                          onSearch={setClassSearch}
+                          renderItem={(item) => (
+                            <span className="flex flex-1 items-center gap-2">
+                              <Avatar className="size-5">
+                                <AvatarImage src={item.creatorImageUrl} />
+                              </Avatar>
+                              {item.label}
+                            </span>
+                          )}
+                          placeholder="Select a class"
+                          searchPlaceholder="Search classes..."
+                          emptyMessage="No classes found."
+                          loading={classSearchLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex gap-4">
+                  <FormField
+                    control={form.control}
+                    name="namePreface"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Preface</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardHeader>
+
+              <CardContent className="pt-0 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="tagline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Tagline
+                        <ConditionValidationIcon text={field.value} />
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Description
+                        <ConditionValidationIcon text={field.value} />
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="space-y-5">
+                  {levelFields.map((levelField, levelIndex) => (
+                    <SubclassLevelCard
+                      key={levelField.id}
+                      control={form.control}
+                      levelIndex={levelIndex}
+                    />
+                  ))}
+                </div>
+
+                <EditableOptions control={form.control} />
+              </CardContent>
+            </UICard>
+          )}
+          <div className="flex items-center gap-3">
+            <fieldset>
+              <FormField
+                control={form.control}
+                name="visibility"
+                render={({ field }) => (
+                  <VisibilityToggle
+                    id={`subclass-visibility-toggle-${id}`}
+                    checked={field.value === "public"}
+                    onCheckedChange={(checked) =>
+                      field.onChange(checked ? "public" : "private")
+                    }
+                  />
+                )}
+              />
+            </fieldset>
+            {session?.user.id && (
+              <div className="flex items-center gap-3 ml-auto">
+                {lastSavedAt && (
+                  <span className="text-xs text-muted-foreground">
+                    Draft saved at{" "}
+                    {lastSavedAt.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                )}
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting
+                    ? "Saving..."
+                    : subclass?.id
+                      ? "Update"
+                      : "Save"}
+                </Button>
+              </div>
+            )}
           </div>
-        </>
-      }
-    />
+        </div>
+
+        {form.formState.errors.root && (
+          <div className="text-destructive text-sm">
+            {form.formState.errors.root.message}
+          </div>
+        )}
+        {!form.formState.isValid && form.formState.isSubmitted && (
+          <div className="text-destructive text-sm">
+            Please fix the errors above before saving.
+          </div>
+        )}
+
+        {!session?.user && mode === "edit" && (
+          <div className="flex items-center gap-2 py-2">
+            <DiscordLoginButton className="px-2 py-1" />
+            {" to save"}
+          </div>
+        )}
+      </form>
+    </Form>
   );
 }
 
