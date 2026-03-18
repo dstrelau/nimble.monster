@@ -49,11 +49,7 @@ export async function generateMetadata({
     }
   } catch {}
 
-  return {
-    title: `Dice Roller - ${SITE_NAME}`,
-    description:
-      "Roll dice with exploding mechanics for the Nimble TTRPG system",
-  };
+  return {};
 }
 
 export default async function DiceRollerPage({ searchParams }: Props) {
