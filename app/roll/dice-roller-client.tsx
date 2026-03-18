@@ -1,5 +1,5 @@
 "use client";
-import { Box, CircleAlert, Dices, RotateCw } from "lucide-react";
+import { Box, CircleAlert, Dices, Info, RotateCw } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useEffect, useId, useMemo, useState } from "react";
 import { DiceRollDisplay } from "@/components/dice/DiceRollDisplay";
@@ -12,6 +12,14 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -21,6 +29,7 @@ import {
   type ProbabilityDistribution,
   parseDiceNotation,
   simulateRoll,
+  VALID_DIE_SIZES,
 } from "../../lib/dice";
 
 type Props = {
@@ -64,12 +73,24 @@ export function DiceRollerClient({ initialDice }: Props) {
       const diceRoll = parseDiceNotation(diceNotation);
       if (!diceRoll) {
         setIsValidDice(false);
+        const dieSizeMatch = diceNotation.toLowerCase().match(/\dd(\d+)/);
+        const dieSize = dieSizeMatch
+          ? Number.parseInt(dieSizeMatch[1], 10)
+          : null;
         const advantageMatch = diceNotation.toLowerCase().match(/a(\d+)/);
-        const disadvantageMatch = diceNotation
-          .toLowerCase()
-          .match(/[^d]d(\d+)(?![d\d])/);
+        const disadvantageMatch = diceNotation.toLowerCase().match(/d(\d+)$/);
 
-        if (advantageMatch && Number.parseInt(advantageMatch[1], 10) >= 7) {
+        if (
+          dieSize !== null &&
+          !(VALID_DIE_SIZES as readonly number[]).includes(dieSize)
+        ) {
+          setErrorMessage(
+            `d${dieSize} is not a valid die size. Valid sizes: ${VALID_DIE_SIZES.map((s) => `d${s}`).join(", ")}`
+          );
+        } else if (
+          advantageMatch &&
+          Number.parseInt(advantageMatch[1], 10) >= 7
+        ) {
           setErrorMessage(
             "Advantage values over 6 are not supported for performance reasons"
           );
@@ -80,6 +101,8 @@ export function DiceRollerClient({ initialDice }: Props) {
           setErrorMessage(
             "Disadvantage values over 6 are not supported for performance reasons"
           );
+        } else {
+          setErrorMessage("Invalid dice notation");
         }
         return;
       }
@@ -137,6 +160,50 @@ export function DiceRollerClient({ initialDice }: Props) {
             className="text-sm font-medium mb-2 flex items-center gap-1"
           >
             Dice Notation
+            <Dialog>
+              <DialogTrigger>
+                <Info className="cursor-pointer size-4" />
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Dice Notation</DialogTitle>
+                  <DialogDescription asChild className="space-y-3">
+                    <div>
+                      <p>
+                        Basic format: <code>XdY+Z</code> — roll X dice of size
+                        Y, add modifier Z.
+                      </p>
+                      <p>
+                        Valid die sizes:{" "}
+                        {VALID_DIE_SIZES.map((s) => (
+                          <code key={s}>d{s} </code>
+                        ))}
+                      </p>
+                      <p className="font-semibold">
+                        Flags (added after the die size):
+                      </p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>
+                          <code>v</code> — <strong>Vicious:</strong> each
+                          explosion adds an extra non-exploding die. E.g.{" "}
+                          <code>1d8v</code>
+                        </li>
+                        <li>
+                          <code>a</code> / <code>aN</code> —{" "}
+                          <strong>Advantage:</strong> roll N extra dice, keep
+                          the highest. E.g. <code>2d20a</code>
+                        </li>
+                        <li>
+                          <code>d</code> / <code>dN</code> —{" "}
+                          <strong>Disadvantage:</strong> roll N extra dice, keep
+                          the lowest. E.g. <code>3d6d2-1</code>
+                        </li>
+                      </ul>
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
             {!isValidDice && <CircleAlert className="size-4 stroke-error" />}
           </Label>
           <Input

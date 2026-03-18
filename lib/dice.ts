@@ -46,6 +46,8 @@
 const MAX_EXPLOSIONS = 4;
 const MAX_ADVANTAGE_DISADVANTAGE = 7;
 
+export const VALID_DIE_SIZES = [4, 6, 8, 10, 12, 20, 44, 66, 88] as const;
+
 export type DiceRoll = {
   numDice: number;
   dieSize: number;
@@ -153,8 +155,13 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
   const numDice = Number.parseInt(match[1], 10);
   const dieSize = Number.parseInt(match[2], 10);
 
-  // Reject die sizes 44, 66, 88 for standard notation (these are tensOnes only)
-  if (dieSize === 44 || dieSize === 66 || dieSize === 88) {
+  // tensOnes dice are only valid in dXX notation (handled above), not XdYY
+  if (
+    !(VALID_DIE_SIZES as readonly number[]).includes(dieSize) ||
+    dieSize === 44 ||
+    dieSize === 66 ||
+    dieSize === 88
+  ) {
     return null;
   }
 
