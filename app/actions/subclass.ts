@@ -32,6 +32,11 @@ export async function createSubclass(formData: {
   description?: string;
   levels: SubclassLevel[];
   abilityListIds?: string[];
+  abilityLists?: Array<{
+    name: string;
+    description: string;
+    items: Array<{ name: string; description: string }>;
+  }>;
   visibility: SubclassVisibility;
 }) {
   try {
@@ -67,6 +72,11 @@ export async function updateSubclass(
     description?: string;
     levels: SubclassLevel[];
     abilityListIds?: string[];
+    abilityLists?: Array<{
+      name: string;
+      description: string;
+      items: Array<{ name: string; description: string }>;
+    }>;
     visibility: SubclassVisibility;
   }
 ) {

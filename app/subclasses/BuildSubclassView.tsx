@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
+import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useId, useMemo, useRef, useState } from "react";
@@ -36,6 +37,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { type Subclass, UNKNOWN_USER } from "@/lib/types";
 import { randomUUID } from "@/lib/utils";
@@ -74,6 +76,19 @@ const levelSchema = z.object({
   abilities: z.array(abilitySchema),
 });
 
+const classOptionItemSchema = z.object({
+  name: z.string().min(1, "Option name is required"),
+  description: z.string().optional(),
+});
+
+const classOptionListSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  items: z
+    .array(classOptionItemSchema)
+    .min(1, "At least one option is required"),
+});
+
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   classId: z.string().nullable().optional(),
@@ -82,6 +97,7 @@ const formSchema = z.object({
   tagline: z.string().optional(),
   description: z.string().optional(),
   levels: z.array(levelSchema),
+  abilityLists: z.array(classOptionListSchema),
   visibility: z.enum(["public", "private"]),
 });
 
@@ -219,7 +235,15 @@ export default function BuildSubclassView({
           }
         );
       }),
-
+      abilityLists:
+        subclass?.abilityLists?.map((l) => ({
+          name: l.name,
+          description: l.description || "",
+          items: l.items.map((i) => ({
+            name: i.name,
+            description: i.description || "",
+          })),
+        })) || [],
       visibility: subclass?.visibility || "public",
     },
   });
@@ -249,7 +273,19 @@ export default function BuildSubclassView({
           ),
         }))
         .filter((l) => l.abilities.length > 0),
-      abilityLists: subclass?.abilityLists || [],
+      abilityLists: (watchedValues.abilityLists || []).map((l) => ({
+        id: randomUUID(),
+        name: l.name,
+        description: l.description || "",
+        items: (l.items || []).map((item) => ({
+          id: randomUUID(),
+          name: item.name,
+          description: item.description || "",
+        })),
+        creator,
+        createdAt: subclass?.createdAt || new Date(),
+        updatedAt: new Date(),
+      })),
       visibility: watchedValues.visibility,
       creator: creator,
       createdAt: subclass?.createdAt || new Date(),
@@ -263,11 +299,11 @@ export default function BuildSubclassView({
     watchedValues.tagline,
     watchedValues.description,
     watchedValues.levels,
+    watchedValues.abilityLists,
     watchedValues.visibility,
     creator,
     subclass?.id,
     subclass?.createdAt,
-    subclass?.abilityLists,
   ]);
 
   const handleSubmit = async (data: FormData) => {
@@ -290,6 +326,14 @@ export default function BuildSubclassView({
             ),
           }))
           .filter((l) => l.abilities.length > 0),
+        abilityLists: data.abilityLists.map((l) => ({
+          name: l.name.trim(),
+          description: l.description?.trim() || "",
+          items: l.items.map((i) => ({
+            name: i.name.trim(),
+            description: i.description?.trim() || "",
+          })),
+        })),
         visibility: data.visibility,
       };
       const result = isEditing
@@ -330,6 +374,7 @@ export default function BuildSubclassView({
             }
           );
         }),
+        abilityLists: [],
         visibility: example.visibility,
       });
     }
@@ -469,6 +514,8 @@ export default function BuildSubclassView({
                 ))}
               </div>
 
+              <EditableOptions control={form.control} />
+
               <div className="mt-10 flex flex-row justify-between items-center my-4">
                 <div className="flex items-center gap-2">
                   {session?.user.id && (
@@ -566,6 +613,181 @@ function SubclassLevelCard({
           control={control}
           name={`levels.${levelIndex}.abilities`}
         />
+      </div>
+    </div>
+  );
+}
+
+function EditableOptions({ control }: { control: Control<FormData> }) {
+  const {
+    fields: listFields,
+    append: appendList,
+    remove: removeList,
+  } = useFieldArray({
+    control,
+    name: "abilityLists",
+  });
+
+  return (
+    <div className="space-y-5">
+      {listFields.length > 0 && (
+        <h5 className="font-stretch-condensed font-bold uppercase italic text-base text-muted-foreground">
+          Class Options
+        </h5>
+      )}
+      {listFields.map((listField, listIndex) => (
+        <div key={listField.id}>
+          {listIndex > 0 && <Separator className="mb-5" />}
+          <EditableOptionList
+            control={control}
+            listIndex={listIndex}
+            onRemove={() => removeList(listIndex)}
+          />
+        </div>
+      ))}
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={() =>
+          appendList({
+            name: "",
+            description: "",
+            items: [{ name: "", description: "" }],
+          })
+        }
+      >
+        <Plus className="size-4" />
+        Add Option List
+      </Button>
+    </div>
+  );
+}
+
+function EditableOptionList({
+  control,
+  listIndex,
+  onRemove,
+}: {
+  control: Control<FormData>;
+  listIndex: number;
+  onRemove: () => void;
+}) {
+  const {
+    fields: itemFields,
+    append: appendItem,
+    remove: removeItem,
+  } = useFieldArray({
+    control,
+    name: `abilityLists.${listIndex}.items`,
+  });
+
+  return (
+    <div className="flex gap-5">
+      <div className="flex-1 space-y-3">
+        <div className="flex gap-2 items-end justify-between">
+          <FormField
+            control={control}
+            name={`abilityLists.${listIndex}.name`}
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onRemove}
+            aria-label="Remove option list"
+            className="mb-0.5"
+          >
+            <Trash2 className="size-4" />
+          </Button>
+        </div>
+
+        <FormField
+          control={control}
+          name={`abilityLists.${listIndex}.description`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Description
+                <ConditionValidationIcon text={field.value} />
+              </FormLabel>
+              <FormControl>
+                <Textarea {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="pl-4 space-y-3 border-l border-neutral-200 dark:border-neutral-700">
+          <span className="text-sm font-medium text-muted-foreground">
+            Options
+          </span>
+          {itemFields.map((itemField, itemIndex) => (
+            <div key={itemField.id} className="flex flex-col gap-2">
+              <div className="flex gap-2 items-end">
+                <FormField
+                  control={control}
+                  name={`abilityLists.${listIndex}.items.${itemIndex}.name`}
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {itemFields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => removeItem(itemIndex)}
+                    className="mb-0.5"
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                )}
+              </div>
+              <FormField
+                control={control}
+                name={`abilityLists.${listIndex}.items.${itemIndex}.description`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Description
+                      <ConditionValidationIcon text={field.value} />
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          ))}
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => appendItem({ name: "", description: "" })}
+          >
+            <Plus className="size-4" />
+            Option
+          </Button>
+        </div>
       </div>
     </div>
   );
