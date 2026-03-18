@@ -67,7 +67,11 @@ export default async function RootLayout({
           ptSerif.variable
         )}
       >
-        <Providers session={session} officialOnly={officialOnly}>
+        <Providers
+          session={session}
+          officialOnly={officialOnly}
+          defaultTheme={officialOnly ? "parchment" : undefined}
+        >
           <ConditionalHeader />
           <FreeBanner />
           <ConditionalMain>{children}</ConditionalMain>

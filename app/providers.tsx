@@ -12,10 +12,12 @@ import { getQueryClient } from "@/lib/queryClient";
 export function Providers({
   session,
   officialOnly,
+  defaultTheme,
   children,
 }: {
   session: Session | null;
   officialOnly: boolean;
+  defaultTheme?: string;
   children: React.ReactNode;
 }) {
   const queryClient = getQueryClient();
@@ -27,8 +29,8 @@ export function Providers({
           <OfficialOnlyContext.Provider value={officialOnly}>
             <ThemeProvider
               attribute="data-theme"
-              defaultTheme="system"
-              enableSystem
+              defaultTheme={defaultTheme ?? "system"}
+              enableSystem={!defaultTheme}
               themes={["light", "dark", "parchment"]}
             >
               {children}
