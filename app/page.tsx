@@ -23,9 +23,13 @@ export default async function HomePage() {
     <div>
       <div className="max-w-4xl mx-auto flex flex-col items-center gap-8">
         <h1 className="text-4xl md:text-6xl text-center font-semibold grade-100">
-          {officialOnly
-            ? "The official digital companion for"
-            : "Your homebrew hub for"}{" "}
+          {officialOnly ? (
+            <span>
+              The <em>Un</em>official digital companion for
+            </span>
+          ) : (
+            "Your homebrew hub for"
+          )}{" "}
           <br />
           <span className="pr-3 font-slab font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-600 to-indigo-600">
             Nimble TTRPG
@@ -48,7 +52,6 @@ export default async function HomePage() {
               )}
               <CornerRightDown className="w-8 h-8" />
             </h2>
-
             <div className="flex flex-wrap gap-4 items-center">
               <div className="flex-1">
                 <FamilyCard
@@ -64,7 +67,6 @@ export default async function HomePage() {
             </div>
           </>
         )}
-
         <div className="dark:prose-invert">
           <div className="flex justify-center mb-8 gap-4">
             {!officialOnly && !session?.user && <DiscordLoginButton />}
@@ -76,7 +78,6 @@ export default async function HomePage() {
             </Button>
           </div>
         </div>
-
         {!officialOnly && recentItems.length > 0 && (
           <>
             <h2 className="flex flex-wrap gap-2 text-2xl md:text-4xl text-center italic text-muted-foreground">
