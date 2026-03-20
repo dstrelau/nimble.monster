@@ -26,7 +26,7 @@ function buildRoll(
       isMiss: false,
     });
   }
-  return { results, modifier: 0, total };
+  return { results, modifier: 0, primaryMod: 0, total };
 }
 
 interface ExampleCardProps {

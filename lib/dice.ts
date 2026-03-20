@@ -636,19 +636,23 @@ export type DieResult = {
 export type RollResult = {
   results: DieResult[];
   modifier: number;
+  primaryMod: number;
   total: number;
 };
 
 function simulateExplosion(
   dieSize: number,
-  vicious: boolean
+  vicious: boolean,
+  // The raw die value to display; may differ from dieSize when primaryMod promotes
+  // a sub-max roll to a crit. The total still starts from dieSize regardless.
+  displayValue: number = dieSize
 ): { dice: DieResult[]; total: number } {
   const dice: DieResult[] = [];
   let total = 0;
 
-  // Initial max roll
+  // Initial max roll — display the raw value, but total counts dieSize
   dice.push({
-    value: dieSize,
+    value: displayValue,
     dieSize,
     type: "primary",
     isCrit: true,
@@ -821,8 +825,8 @@ function simulateAdvantageRoll(
     primaryDie.type = "primary";
     total = 0;
   } else if (primaryEffective >= dieSize) {
-    // Crit — explosion starts from dieSize
-    const explosion = simulateExplosion(dieSize, vicious);
+    // Crit — explosion starts from dieSize, but display shows the raw roll
+    const explosion = simulateExplosion(dieSize, vicious, primaryDie.value);
     explosionDice = explosion.dice;
     total += explosion.total;
 
@@ -893,8 +897,8 @@ function simulateStandardRoll(
     });
     total = 0;
   } else if (primaryEffective >= dieSize) {
-    // Crit — explosion starts from dieSize
-    const explosion = simulateExplosion(dieSize, vicious);
+    // Crit — explosion starts from dieSize, but display shows the raw roll
+    const explosion = simulateExplosion(dieSize, vicious, primaryValue);
     explosionDice = explosion.dice;
     total += explosion.total;
   } else {
@@ -975,5 +979,5 @@ export function simulateRoll(diceRoll: DiceRoll): RollResult {
     total += modifier;
   }
 
-  return { results, modifier, total };
+  return { results, modifier, primaryMod, total };
 }

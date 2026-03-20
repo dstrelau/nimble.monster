@@ -59,11 +59,11 @@ export function DiceRollerClient({ initialDice }: Props) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: rollKey is used to trigger re-rolls
   const sampleRoll = useMemo(() => {
     if (!mounted) {
-      return { results: [], modifier: 0, total: 0 };
+      return { results: [], modifier: 0, primaryMod: 0, total: 0 };
     }
     const diceRoll = parseDiceNotation(lastValidDice);
     if (!diceRoll) {
-      return { results: [], modifier: 0, total: 0 };
+      return { results: [], modifier: 0, primaryMod: 0, total: 0 };
     }
     return simulateRoll(diceRoll);
   }, [lastValidDice, rollKey, mounted]);
@@ -198,6 +198,13 @@ export function DiceRollerClient({ initialDice }: Props) {
                           <strong>Disadvantage:</strong> roll N extra dice, keep
                           the lowest. E.g. <code>3d6d2-1</code>
                         </li>
+                        <li>
+                          <code>^N</code> / <code>^-N</code> —{" "}
+                          <strong>Primary modifier:</strong> shift the primary
+                          die&apos;s effective value, changing miss and crit
+                          thresholds. E.g. <code>1d6^2</code> (rolls 1–3 hit,
+                          rolls 4–6 crit)
+                        </li>
                       </ul>
                     </div>
                   </DialogDescription>
@@ -237,6 +244,7 @@ export function DiceRollerClient({ initialDice }: Props) {
             <DiceRollDisplay
               results={sampleRoll.results}
               modifier={sampleRoll.modifier}
+              primaryMod={sampleRoll.primaryMod}
               total={sampleRoll.total}
             />
           </CardContent>

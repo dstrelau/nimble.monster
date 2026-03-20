@@ -33,9 +33,11 @@ function DiceIcon({
 
 function DiceRollResult({
   result,
+  primaryMod,
   pending,
 }: {
   result: DieResult;
+  primaryMod?: number;
   pending?: boolean;
 }) {
   const [randomValue, setRandomValue] = React.useState(
@@ -79,6 +81,15 @@ function DiceRollResult({
         )}
       >
         {pending ? randomValue : result.value}
+        {!pending &&
+        result.type === "primary" &&
+        primaryMod &&
+        result.value + primaryMod >= 1 &&
+        result.value + primaryMod <= result.dieSize ? (
+          <span className="ml-1">
+            {primaryMod > 0 ? `+ ${primaryMod}` : `- ${Math.abs(primaryMod)}`}
+          </span>
+        ) : null}
       </span>
     </div>
   );
@@ -89,6 +100,7 @@ interface DiceRollDisplayProps {
   pending?: boolean;
   results: DieResult[];
   modifier: number;
+  primaryMod?: number;
   total: number;
   hideTotal?: boolean;
 }
@@ -98,6 +110,7 @@ export function DiceRollDisplay({
   pending,
   results,
   modifier,
+  primaryMod,
   total,
   hideTotal,
 }: DiceRollDisplayProps) {
@@ -127,6 +140,7 @@ export function DiceRollDisplay({
         <DiceRollResult
           key={`${result.type}-${index}`}
           result={result}
+          primaryMod={primaryMod}
           pending={pending}
         />
       ))}

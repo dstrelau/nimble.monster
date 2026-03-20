@@ -12,6 +12,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "19 March 2026",
+    entries: ["Allow primary die modifiers on rolls. E.g. 1d6^1"],
+  },
+  {
     date: "17 March 2026",
     entries: ["Allow option lists on subclasses."],
   },
