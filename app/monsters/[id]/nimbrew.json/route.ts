@@ -77,10 +77,13 @@ export const GET = telemetry(
       desc: [a.damage, a.description].join(" "),
     }));
 
-    const lvl = monster.legendary
-      ? `Level ${monster.level} Solo`
-      : `Lvl ${monster.level}`;
-    const cr = [lvl, formatSizeKind(monster)].join(" ");
+    const lvl =
+      monster.levelInt === 0
+        ? ""
+        : monster.legendary
+          ? `Level ${monster.level} Solo`
+          : `Lvl ${monster.level}`;
+    const cr = [lvl, formatSizeKind(monster)].filter(Boolean).join(" ");
 
     const nimbrewData: {
       name: string;

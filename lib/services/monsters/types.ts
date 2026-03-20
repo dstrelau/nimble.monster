@@ -18,6 +18,7 @@ export const SIZES = [
 export type MonsterSize = (typeof SIZES)[number]["value"];
 
 export const MONSTER_LEVELS = [
+  { value: 0, label: "-" },
   { value: -4, label: "1/4" },
   { value: -3, label: "1/3" },
   { value: -2, label: "1/2" },

@@ -111,6 +111,7 @@ function parseMonster(data: JSONAPIMonster): Monster {
     description: a.description,
   }));
 
+  const parsedLevel = Number.parseInt(String(attrs.level), 10);
   const levelInt =
     typeof attrs.level === "number"
       ? attrs.level
@@ -120,7 +121,9 @@ function parseMonster(data: JSONAPIMonster): Monster {
           ? -3
           : attrs.level === "1/2"
             ? -2
-            : 1;
+            : Number.isNaN(parsedLevel)
+              ? 1
+              : parsedLevel;
 
   return {
     id: data.id || crypto.randomUUID(),

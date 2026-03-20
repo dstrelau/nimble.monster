@@ -78,7 +78,11 @@ export const MonsterRow: React.FC<{
             "font-sans font-medium text-muted-foreground text-sm small-caps not-italic text-nowrap"
           )}
         >
-          Lvl <Level level={monster.level} />
+          {monster.levelInt !== 0 && (
+            <>
+              Lvl <Level level={monster.level} />
+            </>
+          )}
         </span>
       </span>
     </div>

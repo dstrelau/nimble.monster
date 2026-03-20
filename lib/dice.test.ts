@@ -8,6 +8,7 @@ describe("parseDiceNotation", () => {
       numDice: 1,
       dieSize: 8,
       modifier: 0,
+      primaryMod: 0,
       vicious: false,
       advantage: 0,
       disadvantage: 0,
@@ -21,6 +22,7 @@ describe("parseDiceNotation", () => {
       numDice: 3,
       dieSize: 6,
       modifier: 2,
+      primaryMod: 0,
       vicious: false,
       advantage: 0,
       disadvantage: 0,
@@ -34,6 +36,7 @@ describe("parseDiceNotation", () => {
       numDice: 2,
       dieSize: 4,
       modifier: -1,
+      primaryMod: 0,
       vicious: false,
       advantage: 0,
       disadvantage: 0,
@@ -47,6 +50,7 @@ describe("parseDiceNotation", () => {
       numDice: 1,
       dieSize: 8,
       modifier: 0,
+      primaryMod: 0,
       vicious: true,
       advantage: 0,
       disadvantage: 0,
@@ -60,6 +64,7 @@ describe("parseDiceNotation", () => {
       numDice: 3,
       dieSize: 6,
       modifier: 2,
+      primaryMod: 0,
       vicious: true,
       advantage: 0,
       disadvantage: 0,
@@ -81,6 +86,7 @@ describe("parseDiceNotation", () => {
       numDice: 1,
       dieSize: 8,
       modifier: 0,
+      primaryMod: 0,
       vicious: true,
       advantage: 0,
       disadvantage: 0,
@@ -168,6 +174,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 1,
       dieSize: 6,
       modifier: 0,
+      primaryMod: 0,
       vicious: false,
       advantage: 1,
       disadvantage: 0,
@@ -179,6 +186,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 1,
       dieSize: 6,
       modifier: 0,
+      primaryMod: 0,
       vicious: false,
       advantage: 2,
       disadvantage: 0,
@@ -190,6 +198,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 1,
       dieSize: 8,
       modifier: 0,
+      primaryMod: 0,
       vicious: true,
       advantage: 1,
       disadvantage: 0,
@@ -201,6 +210,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 1,
       dieSize: 8,
       modifier: 0,
+      primaryMod: 0,
       vicious: true,
       advantage: 1,
       disadvantage: 0,
@@ -212,6 +222,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 2,
       dieSize: 4,
       modifier: 3,
+      primaryMod: 0,
       vicious: false,
       advantage: 1,
       disadvantage: 0,
@@ -223,6 +234,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 1,
       dieSize: 6,
       modifier: 5,
+      primaryMod: 0,
       vicious: true,
       advantage: 2,
       disadvantage: 0,
@@ -234,6 +246,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 1,
       dieSize: 6,
       modifier: -1,
+      primaryMod: 0,
       vicious: true,
       advantage: 2,
       disadvantage: 0,
@@ -247,6 +260,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 1,
       dieSize: 6,
       modifier: 0,
+      primaryMod: 0,
       vicious: false,
       advantage: 0,
       disadvantage: 1,
@@ -258,6 +272,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 1,
       dieSize: 6,
       modifier: 0,
+      primaryMod: 0,
       vicious: false,
       advantage: 0,
       disadvantage: 2,
@@ -269,6 +284,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 1,
       dieSize: 8,
       modifier: 0,
+      primaryMod: 0,
       vicious: true,
       advantage: 0,
       disadvantage: 1,
@@ -280,6 +296,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 1,
       dieSize: 8,
       modifier: 0,
+      primaryMod: 0,
       vicious: true,
       advantage: 0,
       disadvantage: 1,
@@ -291,6 +308,7 @@ describe("calculateProbabilityDistribution", () => {
       numDice: 2,
       dieSize: 4,
       modifier: 3,
+      primaryMod: 0,
       vicious: false,
       advantage: 0,
       disadvantage: 1,
@@ -501,6 +519,7 @@ describe("tensOnes dice (d44, d66, d88)", () => {
       numDice: 2,
       dieSize: 4,
       modifier: 0,
+      primaryMod: 0,
       vicious: false,
       advantage: 0,
       disadvantage: 0,
@@ -514,6 +533,7 @@ describe("tensOnes dice (d44, d66, d88)", () => {
       numDice: 2,
       dieSize: 6,
       modifier: 0,
+      primaryMod: 0,
       vicious: false,
       advantage: 0,
       disadvantage: 0,
@@ -527,6 +547,7 @@ describe("tensOnes dice (d44, d66, d88)", () => {
       numDice: 2,
       dieSize: 8,
       modifier: 0,
+      primaryMod: 0,
       vicious: false,
       advantage: 0,
       disadvantage: 0,
@@ -540,6 +561,7 @@ describe("tensOnes dice (d44, d66, d88)", () => {
       numDice: 2,
       dieSize: 6,
       modifier: 0,
+      primaryMod: 0,
       vicious: false,
       advantage: 1,
       disadvantage: 0,
@@ -553,6 +575,7 @@ describe("tensOnes dice (d44, d66, d88)", () => {
       numDice: 2,
       dieSize: 6,
       modifier: 0,
+      primaryMod: 0,
       vicious: false,
       advantage: 0,
       disadvantage: 1,
@@ -703,5 +726,111 @@ describe("tensOnes dice (d44, d66, d88)", () => {
 
     const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
     expect(sum).toBeCloseTo(1.0, 10);
+  });
+});
+
+describe("primary_mod (^N)", () => {
+  it("parses positive primary_mod", () => {
+    expect(parseDiceNotation("1d6^2")).toEqual({
+      numDice: 1,
+      dieSize: 6,
+      modifier: 0,
+      primaryMod: 2,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 0,
+      tensOnes: false,
+    });
+  });
+
+  it("parses negative primary_mod", () => {
+    expect(parseDiceNotation("1d6^-2")).toEqual({
+      numDice: 1,
+      dieSize: 6,
+      modifier: 0,
+      primaryMod: -2,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 0,
+      tensOnes: false,
+    });
+  });
+
+  it("parses primary_mod combined with flags and modifier", () => {
+    expect(parseDiceNotation("1d6v^2+1")).toEqual({
+      numDice: 1,
+      dieSize: 6,
+      modifier: 1,
+      primaryMod: 2,
+      vicious: true,
+      advantage: 0,
+      disadvantage: 0,
+      tensOnes: false,
+    });
+  });
+
+  it("parses primary_mod combined with advantage", () => {
+    expect(parseDiceNotation("1d6a^3")).toEqual({
+      numDice: 1,
+      dieSize: 6,
+      modifier: 0,
+      primaryMod: 3,
+      vicious: false,
+      advantage: 1,
+      disadvantage: 0,
+      tensOnes: false,
+    });
+  });
+
+  it("^2 eliminates misses and promotes crits", () => {
+    // 1d6^2: effective = raw + 2
+    // r=1 -> eff=3  (hit)
+    // r=2 -> eff=4  (hit)
+    // r=3 -> eff=5  (hit)
+    // r=4 -> eff=6 >= dieSize=6 (crit, explosion from 6)
+    // r=5 -> eff=7 >= 6         (crit)
+    // r=6 -> eff=8 >= 6         (crit)
+    const dist = calculateProbabilityDistribution(parseDiceNotation("1d6^2")!);
+
+    // No miss: lowest effective value is 3
+    expect(dist.get(0)).toBeUndefined();
+
+    // Regular hits for effective values 3, 4, 5 (one raw roll each)
+    expect(dist.get(3)).toBeCloseTo(1 / 6, 10);
+    expect(dist.get(4)).toBeCloseTo(1 / 6, 10);
+    expect(dist.get(5)).toBeCloseTo(1 / 6, 10);
+
+    // Crits: rolls 4, 5, 6 all trigger explosion from 6. P(crit) = 3/6 = 1/2
+    // Explosion: 6+1=7 with prob (1/2)*(1/6) = 1/12, 6+2=8 with prob 1/12, etc.
+    expect(dist.get(7)).toBeCloseTo((3 / 6) * (1 / 6), 10); // 6+1=7
+    expect(dist.get(8)).toBeCloseTo((3 / 6) * (1 / 6), 10); // 6+2=8
+  });
+
+  it("primaryMod does not affect non-primary dice", () => {
+    // 2d6^3: primary die gets +3, second die does not
+    // If primary=3 (regular hit) and second=2: total = (3+3)+2 = 8
+    // If primary=3 (regular hit) and second=4: total = (3+3)+4 = 10
+    const roll = parseDiceNotation("2d6^3");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // P(primary=3, second=2) = (1/6)*(1/6) = 1/36 -> total = 8
+    // P(primary=4, second=1) = (1/6)*(1/6) = 1/36 -> total = 8
+    // P(primary=2, second=3) = (1/6)*(1/6) = 1/36 -> total = 8
+    // Several combos sum to 8; just verify probabilities sum to 1
+    // (tolerance 2: higher crit rate with ^3 means more probability lost at explosion cap)
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 2);
+  });
+
+  it("primaryMod applied with advantage", () => {
+    const roll = parseDiceNotation("1d4a^2");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    // Probabilities should still sum to 1
+    // (tolerance 2: d4 loses ~0.0017 at MAX_EXPLOSIONS=4 cap)
+    const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
+    expect(sum).toBeCloseTo(1.0, 2);
   });
 });

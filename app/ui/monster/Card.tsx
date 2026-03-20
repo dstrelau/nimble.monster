@@ -164,8 +164,12 @@ const MonsterHeader: React.FC<{
                 variant === "standard" && "small-caps"
               )}
             >
-              {variant === "legendary" ? "Level" : "Lvl"}{" "}
-              <Level level={monster.level} />{" "}
+              {monster.levelInt !== 0 && (
+                <>
+                  {variant === "legendary" ? "Level" : "Lvl"}{" "}
+                  <Level level={monster.level} />{" "}
+                </>
+              )}
               {variant === "legendary" && "Solo "}
               {formatSizeKind(monster)}
             </div>
