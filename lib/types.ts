@@ -3,12 +3,34 @@ import type {
   Background,
   BackgroundMini,
 } from "@/lib/services/backgrounds/types";
-import type { Item, ItemMini } from "@/lib/services/items";
+import type { Item, ItemMini } from "@/lib/services/items/types";
 import type {
   Monster,
   MonsterMini,
   MonsterSize,
-} from "@/lib/services/monsters";
+} from "@/lib/services/monsters/types";
+import type {
+  Ability,
+  Action,
+  Award,
+  FamilyOverview,
+  Source,
+  User,
+} from "@/lib/types/base";
+
+// Re-export base types for backwards compatibility
+export {
+  type Ability,
+  type Action,
+  type Award,
+  type Condition,
+  FAMILY_VISIBILITY,
+  type FamilyOverview,
+  type FamilyVisibility,
+  type Source,
+  UNKNOWN_USER,
+  type User,
+} from "@/lib/types/base";
 
 export const CollectionVisibility = {
   PUBLIC: "public",
@@ -53,24 +75,6 @@ export const COLOR_VARIANTS = [200, 400, 600] as const;
 export type TailwindColor = (typeof TAILWIND_COLORS)[number];
 export type ColorVariant = (typeof COLOR_VARIANTS)[number];
 
-export const FAMILY_VISIBILITY = [
-  { value: "public", label: "Public" },
-  { value: "secret", label: "Secret" },
-  { value: "private", label: "Private" },
-] as const;
-export type FamilyVisibility = (typeof FAMILY_VISIBILITY)[number]["value"];
-
-export interface FamilyOverview {
-  id: string;
-  name: string;
-  description?: string;
-  abilities: Ability[];
-  visibility?: FamilyVisibility;
-  monsterCount?: number;
-  creatorId: string;
-  creator: User;
-}
-
 export interface Family extends FamilyOverview {
   monsters: Monster[];
 }
@@ -112,27 +116,6 @@ export interface Companion extends CompanionMini {
   paperforgeId?: string;
 }
 
-export interface Condition {
-  id: string;
-  name: string;
-  description: string;
-  official: boolean;
-}
-
-export interface Ability {
-  id: string;
-  name: string;
-  description: string;
-}
-
-export interface Action {
-  id: string;
-  name: string;
-  damage?: string;
-  range?: string;
-  description?: string;
-}
-
 export interface Collection extends CollectionOverview {
   monsters: Monster[];
   items: Item[];
@@ -160,23 +143,6 @@ export interface CollectionOverview {
   spellSchools: SpellSchoolMini[];
   visibility: CollectionVisibilityType;
   createdAt?: Date;
-}
-
-export const UNKNOWN_USER: User = {
-  id: "",
-  discordId: "",
-  username: "",
-  displayName: "",
-  imageUrl: "",
-};
-
-export interface User {
-  id: string;
-  discordId: string;
-  username: string;
-  displayName: string;
-  imageUrl?: string;
-  bannerDismissed?: boolean;
 }
 
 export const SUBCLASS_VISIBILITY = [
@@ -321,26 +287,3 @@ export type SpellSchoolSortOption =
   | "name-desc"
   | "created-asc"
   | "created-desc";
-
-export interface Source {
-  id: string;
-  name: string;
-  license: string;
-  link: string;
-  abbreviation: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Award {
-  id: string;
-  slug: string;
-  name: string;
-  abbreviation: string;
-  description?: string | null;
-  url: string;
-  color: string;
-  icon: string;
-  createdAt: Date;
-  updatedAt: Date;
-}

@@ -1,4 +1,4 @@
-import type { Award, Source, User } from "@/lib/types";
+import type { Award, Source, User } from "@/lib/types/base";
 
 export interface BackgroundMini {
   id: string;
@@ -17,6 +17,30 @@ export interface Background extends BackgroundMini {
 
 export type BackgroundSortBy = "name" | "createdAt";
 export type BackgroundSortDirection = "asc" | "desc";
+
+export const PaginateBackgroundsSortOptions = [
+  "-createdAt",
+  "createdAt",
+  "name",
+  "-name",
+] as const;
+
+export type PaginateBackgroundsSortOption =
+  (typeof PaginateBackgroundsSortOptions)[number];
+
+export interface PaginateBackgroundsParams {
+  search?: string;
+  sort?: PaginateBackgroundsSortOption;
+  limit?: number;
+  cursor?: string;
+  creatorId?: string;
+  sourceId?: string;
+}
+
+export interface PaginatePublicBackgroundsResponse {
+  data: Background[];
+  nextCursor: string | null;
+}
 
 export interface SearchBackgroundsParams {
   searchTerm?: string;

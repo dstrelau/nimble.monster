@@ -1,4 +1,4 @@
-import { toUser } from "@/lib/db/converters";
+import { toUser } from "@/lib/db/shared-converters";
 import { uuidToIdentifier } from "@/lib/utils/slug";
 import type { Item, ItemMini, ItemRarity } from "./types";
 

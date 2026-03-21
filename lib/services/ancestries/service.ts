@@ -1,18 +1,17 @@
 import { z } from "zod";
 import * as repository from "./repository";
-import type {
-  Ancestry,
-  CreateAncestryInput,
-  SearchAncestriesParams,
-  UpdateAncestryInput,
+import {
+  type Ancestry,
+  type CreateAncestryInput,
+  type PaginateAncestriesParams,
+  PaginateAncestriesSortOptions,
+  type PaginatePublicAncestriesResponse,
+  type SearchAncestriesParams,
+  type UpdateAncestryInput,
 } from "./types";
 
-const PaginateAncestriesSortOptions = [
-  "-createdAt",
-  "createdAt",
-  "name",
-  "-name",
-] as const;
+// Re-export pagination types for backwards compatibility
+export type { PaginateAncestriesParams, PaginatePublicAncestriesResponse };
 
 const PaginateAncestriesSchema = z.object({
   search: z.string().optional(),
@@ -22,13 +21,6 @@ const PaginateAncestriesSchema = z.object({
   creatorId: z.string().optional(),
   sourceId: z.string().optional(),
 });
-
-export type PaginateAncestriesParams = z.infer<typeof PaginateAncestriesSchema>;
-
-export type PaginatePublicAncestriesResponse = {
-  data: Ancestry[];
-  nextCursor: string | null;
-};
 
 export class AncestriesService {
   async getAncestry(id: string): Promise<Ancestry | null> {

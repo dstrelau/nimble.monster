@@ -5,7 +5,7 @@ import type {
   FamilyOverview,
   Source,
   User,
-} from "@/lib/types";
+} from "@/lib/types/base";
 
 export const SIZES = [
   { value: "tiny", label: "Tiny" },
@@ -166,6 +166,23 @@ export const PaginateMonstersSortOptions = [
 ] as const;
 export type PaginateMonstersSortOption =
   (typeof PaginateMonstersSortOptions)[number];
+
+export interface PaginateMonstersParams {
+  search?: string;
+  sort?: PaginateMonstersSortOption;
+  limit?: number;
+  cursor?: string;
+  type?: MonsterTypeOption;
+  creatorId?: string;
+  sourceId?: string;
+  role?: MonsterRole;
+  level?: number;
+}
+
+export interface PaginatePublicMonstersResponse {
+  data: Monster[];
+  nextCursor: string | null;
+}
 
 export interface CreateMonsterInput {
   name: string;

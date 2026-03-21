@@ -1,18 +1,17 @@
 import { z } from "zod";
 import * as repository from "./repository";
-import type {
-  Background,
-  CreateBackgroundInput,
-  SearchBackgroundsParams,
-  UpdateBackgroundInput,
+import {
+  type Background,
+  type CreateBackgroundInput,
+  type PaginateBackgroundsParams,
+  PaginateBackgroundsSortOptions,
+  type PaginatePublicBackgroundsResponse,
+  type SearchBackgroundsParams,
+  type UpdateBackgroundInput,
 } from "./types";
 
-const PaginateBackgroundsSortOptions = [
-  "-createdAt",
-  "createdAt",
-  "name",
-  "-name",
-] as const;
+// Re-export pagination types for backwards compatibility
+export type { PaginateBackgroundsParams, PaginatePublicBackgroundsResponse };
 
 const PaginateBackgroundsSchema = z.object({
   search: z.string().optional(),
@@ -22,15 +21,6 @@ const PaginateBackgroundsSchema = z.object({
   creatorId: z.string().optional(),
   sourceId: z.string().optional(),
 });
-
-export type PaginateBackgroundsParams = z.infer<
-  typeof PaginateBackgroundsSchema
->;
-
-export type PaginatePublicBackgroundsResponse = {
-  data: Background[];
-  nextCursor: string | null;
-};
 
 export class BackgroundsService {
   async getBackground(id: string): Promise<Background | null> {

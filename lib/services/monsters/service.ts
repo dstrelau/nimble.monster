@@ -7,10 +7,15 @@ import {
   type MonsterMini,
   MonsterRoleOptions,
   MonsterTypeOptions,
+  type PaginateMonstersParams,
   PaginateMonstersSortOptions,
+  type PaginatePublicMonstersResponse,
   type SearchMonstersParams,
   type UpdateMonsterInput,
 } from "./types";
+
+// Re-export pagination types for backwards compatibility
+export type { PaginateMonstersParams, PaginatePublicMonstersResponse };
 
 const PaginateMonstersSchema = z.object({
   search: z.string().optional(),
@@ -23,13 +28,6 @@ const PaginateMonstersSchema = z.object({
   role: z.enum(MonsterRoleOptions).optional(),
   level: z.number().optional(),
 });
-
-export type PaginateMonstersParams = z.infer<typeof PaginateMonstersSchema>;
-
-export type PaginatePublicMonstersResponse = {
-  data: Monster[];
-  nextCursor: string | null;
-};
 
 export class MonstersService {
   async getPublicMonster(id: string): Promise<Monster | null> {

@@ -1,4 +1,4 @@
-import type { Award, Source, User } from "@/lib/types";
+import type { Award, Source, User } from "@/lib/types/base";
 
 export const RARITIES = [
   { value: "unspecified", label: "Unspecified" },

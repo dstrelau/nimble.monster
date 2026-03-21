@@ -1,4 +1,4 @@
-import type { Award, Source, User } from "@/lib/types";
+import type { Award, Source, User } from "@/lib/types/base";
 
 export const SIZES = [
   { value: "tiny", label: "Tiny" },
@@ -41,6 +41,30 @@ export interface Ancestry extends AncestryMini {
 
 export type AncestrySortBy = "name" | "createdAt";
 export type AncestrySortDirection = "asc" | "desc";
+
+export const PaginateAncestriesSortOptions = [
+  "-createdAt",
+  "createdAt",
+  "name",
+  "-name",
+] as const;
+
+export type PaginateAncestriesSortOption =
+  (typeof PaginateAncestriesSortOptions)[number];
+
+export interface PaginateAncestriesParams {
+  search?: string;
+  sort?: PaginateAncestriesSortOption;
+  limit?: number;
+  cursor?: string;
+  creatorId?: string;
+  sourceId?: string;
+}
+
+export interface PaginatePublicAncestriesResponse {
+  data: Ancestry[];
+  nextCursor: string | null;
+}
 
 export interface SearchAncestriesParams {
   searchTerm?: string;

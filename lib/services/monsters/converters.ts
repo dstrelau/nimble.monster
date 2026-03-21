@@ -1,4 +1,4 @@
-import { toFamilyOverview, toUser } from "@/lib/db/converters";
+import { toFamilyOverview, toUser } from "@/lib/db/shared-converters";
 import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
 import type { Ability, Action, FamilyOverview } from "@/lib/types";
 import { uuidToIdentifier } from "@/lib/utils/slug";

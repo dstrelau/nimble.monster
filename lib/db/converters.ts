@@ -1,11 +1,11 @@
 import { toItemMini } from "@/lib/services/items/converters";
+import { toMonsterMini } from "@/lib/services/monsters/converters";
 import type {
   Ability,
   Action,
   CollectionOverview,
   Companion,
   CompanionMini,
-  FamilyOverview,
   Spell,
   SpellSchool,
   SpellSchoolMini,
@@ -13,43 +13,24 @@ import type {
   SubclassAbility,
   SubclassLevel,
   SubclassMini,
-  User,
 } from "@/lib/types";
-import { toMonsterMini } from "../services/monsters/converters";
+import {
+  type ConverterUserRow,
+  parseJsonField,
+  toFamilyOverview,
+  toUser,
+} from "./shared-converters";
 
-export const parseJsonField = <T>(value: unknown): T[] => {
-  if (!value) return [];
-  if (Array.isArray(value)) return value;
-  if (typeof value === "string") {
-    try {
-      return JSON.parse(value);
-    } catch {
-      return [];
-    }
-  }
-  return [];
-};
+// Re-export shared converters for backwards compatibility
+export {
+  type ConverterUserRow,
+  parseJsonField,
+  toFamilyOverview,
+  toUser,
+} from "./shared-converters";
 
-// Generic type for family with creator
-interface FamilyWithCreator {
-  id: string;
-  name: string;
-  description: string | null;
-  abilities: unknown;
-  visibility: string | null;
-  creatorId: string;
-  creator: UserRow;
-}
-
-// Generic type for user row
-interface UserRow {
-  id: string;
-  discordId: string | null;
-  username: string | null;
-  displayName: string | null;
-  imageUrl: string | null;
-  avatar: string | null;
-}
+// Type alias for backwards compatibility
+type UserRow = ConverterUserRow;
 
 // Generic type for collection with relations
 interface CollectionWithRelations {
@@ -205,28 +186,6 @@ interface SpellWithSchool extends SpellDbRow {
   };
 }
 
-export const toFamilyOverview = (
-  f: FamilyWithCreator | null
-): FamilyOverview | undefined => {
-  if (!f) {
-    return undefined;
-  }
-  return {
-    id: f.id,
-    name: f.name,
-    description: f.description ?? undefined,
-    abilities: parseJsonField<Omit<Ability, "id">>(f.abilities).map(
-      (ability) => ({
-        ...ability,
-        id: crypto.randomUUID(),
-      })
-    ),
-    visibility: f.visibility as FamilyOverview["visibility"],
-    creatorId: f.creatorId,
-    creator: toUser(f.creator),
-  };
-};
-
 export const toCollectionOverview = (
   c: CollectionWithRelations
 ): CollectionOverview => {
@@ -318,18 +277,6 @@ export const toCompanion = (c: CompanionRow): Companion => {
       })) || undefined,
   };
 };
-
-export const toUser = (u: UserRow): User => ({
-  id: u.id,
-  discordId: u.discordId ?? "",
-  username: u.username ?? "",
-  displayName: u.displayName || u.username || "",
-  imageUrl:
-    u.imageUrl ||
-    (u.avatar
-      ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
-      : "https://cdn.discordapp.com/embed/avatars/0.png"),
-});
 
 export const toSubclassMini = (
   s: Pick<

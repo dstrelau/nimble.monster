@@ -16,11 +16,11 @@ import type { Source, User } from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
-import type { PaginateBackgroundsParams } from "./service";
 import type {
   Background,
   BackgroundMini,
   CreateBackgroundInput,
+  PaginateBackgroundsParams,
   SearchBackgroundsParams,
   UpdateBackgroundInput,
 } from "./types";

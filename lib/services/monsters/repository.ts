@@ -37,12 +37,12 @@ import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
 import { extractAllConditions, syncMonsterConditions } from "./conditions";
 import { syncMonsterFamilies } from "./families";
-import type { PaginateMonstersParams } from "./service";
 import type {
   CreateMonsterInput,
   Monster,
   MonsterMini,
   MonsterRole,
+  PaginateMonstersParams,
   SearchMonstersParams,
   UpdateMonsterInput,
 } from "./types";
