@@ -1,10 +1,8 @@
 import { SubclassesListView } from "@/app/ui/subclass/SubclassesListView";
 import { listPublicSubclasses } from "@/lib/db/subclass";
-import { isOfficialOnlyDomain } from "@/lib/domain";
 
 export default async function SubclassesPage() {
-  const officialOnly = await isOfficialOnlyDomain();
-  const subclasses = await listPublicSubclasses(officialOnly);
+  const subclasses = await listPublicSubclasses();
 
   if (subclasses?.length === 0) {
     return (

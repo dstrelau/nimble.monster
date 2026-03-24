@@ -361,11 +361,7 @@ export const paginateMonsters = async ({
   role,
   level,
   includePrivate = false,
-  officialOnly = false,
-}: PaginateMonstersParams & {
-  includePrivate?: boolean;
-  officialOnly?: boolean;
-}): Promise<{
+}: PaginateMonstersParams & { includePrivate?: boolean }): Promise<{
   data: Monster[];
   nextCursor: string | null;
 }> => {
@@ -409,10 +405,6 @@ export const paginateMonsters = async ({
 
   if (level !== undefined) {
     whereConditions.push(eq(monsters.levelInt, level));
-  }
-
-  if (officialOnly) {
-    whereConditions.push(eq(monsters.isOfficial, true));
   }
 
   if (type === "legendary") {
@@ -653,25 +645,17 @@ export const findOfficialMonstersByNames = async (
 };
 
 export const findPublicMonsterById = async (
-  id: string,
-  officialOnly = false
+  id: string
 ): Promise<Monster | null> => {
   if (!isValidUUID(id)) return null;
 
   const db = await getDatabase();
 
   // First check if monster exists and is public
-  const checkConditions = [
-    eq(monsters.id, id),
-    eq(monsters.visibility, "public"),
-  ];
-  if (officialOnly) {
-    checkConditions.push(eq(monsters.isOfficial, true));
-  }
   const monsterCheck = await db
     .select({ id: monsters.id })
     .from(monsters)
-    .where(and(...checkConditions))
+    .where(and(eq(monsters.id, id), eq(monsters.visibility, "public")))
     .limit(1);
 
   if (monsterCheck.length === 0) return null;

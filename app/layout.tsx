@@ -12,7 +12,6 @@ import { ConditionalMain } from "@/app/ui/ConditionalMain";
 import { FreeBanner } from "@/app/ui/FreeBanner";
 import { StaleDeploymentBanner } from "@/components/StaleDeploymentBanner";
 import { auth } from "@/lib/auth";
-import { isOfficialOnlyDomain } from "@/lib/domain";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
 
@@ -53,7 +52,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  const officialOnly = await isOfficialOnlyDomain();
   return (
     <html lang="en" suppressHydrationWarning>
       <head></head>
@@ -67,11 +65,7 @@ export default async function RootLayout({
           ptSerif.variable
         )}
       >
-        <Providers
-          session={session}
-          officialOnly={officialOnly}
-          defaultTheme={officialOnly ? "parchment" : undefined}
-        >
+        <Providers session={session}>
           <ConditionalHeader />
           <FreeBanner />
           <ConditionalMain>{children}</ConditionalMain>

@@ -12,7 +12,6 @@ import {
   type UserRow,
   users,
 } from "@/lib/db/schema";
-import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import type { Source, User } from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
@@ -186,20 +185,15 @@ export const listPublicItems = async (): Promise<ItemMini[]> => {
 };
 
 export const getRandomRecentItems = async (
-  limit: number = 3,
-  officialOnly = false
+  limit: number = 3
 ): Promise<Item[]> => {
   const db = await getDatabase();
 
   // Get recent public items
-  const conditions = [eq(items.visibility, "public")];
-  if (officialOnly) {
-    conditions.push(eq(items.userId, OFFICIAL_USER_ID));
-  }
   const itemRows = await db
     .select()
     .from(items)
-    .where(and(...conditions))
+    .where(eq(items.visibility, "public"))
     .orderBy(desc(items.createdAt))
     .limit(limit * 3);
 
@@ -376,18 +370,11 @@ export const searchPublicItems = async ({
   sortDirection = "asc",
   limit,
   offset,
-  officialOnly = false,
-}: SearchItemsParams & { offset?: number; officialOnly?: boolean }): Promise<
-  Item[]
-> => {
+}: SearchItemsParams & { offset?: number }): Promise<Item[]> => {
   const db = await getDatabase();
 
   // Build conditions
   const conditions = [eq(items.visibility, "public")];
-
-  if (officialOnly) {
-    conditions.push(eq(items.userId, OFFICIAL_USER_ID));
-  }
 
   if (creatorId) {
     conditions.push(eq(items.userId, creatorId));

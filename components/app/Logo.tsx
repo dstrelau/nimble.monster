@@ -5,13 +5,11 @@ import { Nexus } from "../icons/Nexus";
 interface LogoProps {
   showText?: boolean;
   className?: string;
-  siteName?: string;
 }
 
 export const Logo: React.FC<LogoProps> = ({
   showText = true,
   className = "",
-  siteName = "Nimble Nexus",
 }) => {
   return (
     <Link
@@ -24,7 +22,7 @@ export const Logo: React.FC<LogoProps> = ({
       <Nexus className="h-8 w-8" />
       {showText && (
         <span className="ml-2 font-stretch-ultra-condensed font-bold text-header-foreground">
-          {siteName}
+          Nimble Nexus
         </span>
       )}
     </Link>

@@ -1,5 +1,4 @@
 import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
-import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import type {
   Award,
   ClassAbilityItem,
@@ -291,19 +290,13 @@ export const deleteSubclass = async (input: {
   return result.rowsAffected > 0;
 };
 
-export const listPublicSubclasses = async (
-  officialOnly = false
-): Promise<Subclass[]> => {
+export const listPublicSubclasses = async (): Promise<Subclass[]> => {
   const db = getDatabase();
 
-  const conditions = [eq(subclasses.visibility, "public")];
-  if (officialOnly) {
-    conditions.push(eq(subclasses.userId, OFFICIAL_USER_ID));
-  }
   const subclassRows = await db
     .select({ id: subclasses.id })
     .from(subclasses)
-    .where(and(...conditions))
+    .where(eq(subclasses.visibility, "public"))
     .orderBy(asc(subclasses.name));
 
   if (subclassRows.length === 0) return [];

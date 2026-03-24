@@ -12,7 +12,6 @@ import {
   type UserRow,
   users,
 } from "@/lib/db/schema";
-import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import type {
   Ability,
   Action,
@@ -127,10 +126,7 @@ export const paginatePublicCompanions = async ({
   search,
   class: companionClass = "all",
   creatorId,
-  officialOnly = false,
-}: PaginateMonstersParams & {
-  officialOnly?: boolean;
-}): Promise<PaginatePublicCompanionsResponse> => {
+}: PaginateMonstersParams): Promise<PaginatePublicCompanionsResponse> => {
   const cursorData = cursor ? decodeCursor(cursor) : null;
 
   if (cursorData && cursorData.sort !== sort) {
@@ -146,10 +142,6 @@ export const paginatePublicCompanions = async ({
 
   // Build where conditions
   const conditions = [eq(companions.visibility, "public")];
-
-  if (officialOnly) {
-    conditions.push(eq(companions.userId, OFFICIAL_USER_ID));
-  }
 
   if (creatorId) {
     conditions.push(eq(companions.userId, creatorId));

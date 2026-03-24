@@ -38,14 +38,10 @@ export class BackgroundsService {
   }
 
   async paginatePublicBackgrounds(
-    params: PaginateBackgroundsParams,
-    officialOnly?: boolean
+    params: PaginateBackgroundsParams
   ): Promise<PaginatePublicBackgroundsResponse> {
     const parsedParams = PaginateBackgroundsSchema.parse(params);
-    return repository.paginatePublicBackgrounds({
-      ...parsedParams,
-      officialOnly,
-    });
+    return repository.paginatePublicBackgrounds(parsedParams);
   }
 
   async searchBackgrounds(

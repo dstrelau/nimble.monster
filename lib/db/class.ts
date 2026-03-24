@@ -1,5 +1,4 @@
 import { and, asc, desc, eq, inArray, like } from "drizzle-orm";
-import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import type {
   ArmorType,
   Award,
@@ -286,19 +285,13 @@ export const deleteClass = async (input: {
   return result.rowsAffected > 0;
 };
 
-export const listPublicClasses = async (
-  officialOnly = false
-): Promise<Class[]> => {
+export const listPublicClasses = async (): Promise<Class[]> => {
   const db = getDatabase();
 
-  const conditions = [eq(classes.visibility, "public")];
-  if (officialOnly) {
-    conditions.push(eq(classes.userId, OFFICIAL_USER_ID));
-  }
   const classRows = await db
     .select({ id: classes.id })
     .from(classes)
-    .where(and(...conditions))
+    .where(eq(classes.visibility, "public"))
     .orderBy(asc(classes.name));
 
   if (classRows.length === 0) return [];

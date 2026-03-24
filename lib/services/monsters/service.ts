@@ -32,11 +32,8 @@ export type PaginatePublicMonstersResponse = {
 };
 
 export class MonstersService {
-  async getPublicMonster(
-    id: string,
-    officialOnly?: boolean
-  ): Promise<Monster | null> {
-    return repository.findPublicMonsterById(id, officialOnly);
+  async getPublicMonster(id: string): Promise<Monster | null> {
+    return repository.findPublicMonsterById(id);
   }
 
   async getMonster(monsterId: string): Promise<Monster | null> {
@@ -44,13 +41,11 @@ export class MonstersService {
   }
 
   async paginatePublicMonsters(
-    params: PaginateMonstersParams,
-    officialOnly?: boolean
+    params: PaginateMonstersParams
   ): Promise<PaginatePublicMonstersResponse> {
     const parsedParams = PaginateMonstersSchema.parse(params);
     return repository.paginateMonsters({
       includePrivate: false,
-      officialOnly,
       ...parsedParams,
     });
   }
