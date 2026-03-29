@@ -45,6 +45,10 @@ export function getMonsterMarkdownUrl(
   return path;
 }
 
+export function getMonsterJsonUrl(monster: { id: string },) {
+  return `/api/monsters/${monster.id}`;
+}
+
 // Item URLs
 export function getItemUrl(item: { name: string; id: string }): string {
   return `/items/${slugify(item)}`;
