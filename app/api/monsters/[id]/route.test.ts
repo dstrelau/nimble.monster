@@ -11,17 +11,23 @@ vi.mock("@opentelemetry/api", () => ({
   },
 }));
 
-vi.mock("@/lib/auth", () => ({
-  auth: vi.fn(),
+const { mockGetAuthenticatedUser } = vi.hoisted(() => ({
+  mockGetAuthenticatedUser: vi.fn(),
 }));
 
-const { mockGetPublicMonster } = vi.hoisted(() => {
-  return { mockGetPublicMonster: vi.fn() };
-});
+vi.mock("@/lib/auth", () => ({
+  auth: vi.fn(),
+  getAuthenticatedUser: (...args: unknown[]) =>
+    mockGetAuthenticatedUser(...args),
+}));
+
+const { mockGetPublicOrPrivateMonsterForUser } = vi.hoisted(() => ({
+  mockGetPublicOrPrivateMonsterForUser: vi.fn(),
+}));
 
 vi.mock("@/lib/services/monsters", () => ({
   monstersService: {
-    getPublicMonster: mockGetPublicMonster,
+    getPublicOrPrivateMonsterForUser: mockGetPublicOrPrivateMonsterForUser,
   },
 }));
 
@@ -60,6 +66,7 @@ const fakeCreator = {
 describe("GET /api/monsters/[id]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetAuthenticatedUser.mockResolvedValue(null);
   });
 
   const createMockParams = (id: string) => ({
@@ -93,7 +100,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/goblin-abc"
@@ -161,7 +168,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/goblin-abc"
@@ -177,7 +184,7 @@ describe("GET /api/monsters/[id]", () => {
   });
 
   it("should return 404 for non-existent monster", async () => {
-    mockGetPublicMonster.mockResolvedValue(null);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(null);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/nonexistent"
@@ -235,7 +242,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/ancient-dragon-abc"
@@ -298,7 +305,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/water-elemental-abc"
@@ -353,7 +360,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/tiny-rat-abc"
@@ -411,7 +418,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/goblin-abc?include=families"
@@ -460,7 +467,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/goblin-abc"
@@ -500,7 +507,7 @@ describe("GET /api/monsters/[id]", () => {
       role: "defender",
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/shield-guardian-abc"
@@ -524,5 +531,78 @@ describe("GET /api/monsters/[id]", () => {
 
     expect(response.status).toBe(400);
     expect(data.errors[0].title).toContain("Invalid include parameter");
+  });
+
+  it("should return private monster when authenticated as owner", async () => {
+    const privateMonster: Monster = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Secret Goblin",
+      level: "1",
+      levelInt: 1,
+      hp: 10,
+      legendary: false,
+      minion: false,
+      armor: "none",
+      size: "small",
+      speed: 6,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      teleport: 0,
+      burrow: 0,
+      visibility: "private",
+      families: [],
+      abilities: [],
+      actions: [],
+      actionPreface: "",
+      creator: fakeCreator,
+      createdAt: new Date("2025-01-01"),
+      updatedAt: new Date("2025-01-01"),
+    };
+
+    const authenticatedUser = {
+      id: fakeCreator.id,
+      discordId: fakeCreator.discordId,
+    };
+    mockGetAuthenticatedUser.mockResolvedValue(authenticatedUser);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(privateMonster);
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters/secret-goblin-abc"
+    );
+    const response = await GET(
+      request,
+      createMockParams("secret-goblin-abc")
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.data.attributes.name).toBe("Secret Goblin");
+    expect(mockGetPublicOrPrivateMonsterForUser).toHaveBeenCalledWith(
+      "550e8400-e29b-41d4-a716-446655440000",
+      "user123"
+    );
+  });
+
+  it("should return 404 for private monster when authenticated as non-owner", async () => {
+    const otherUser = { id: "other-id", discordId: "other-discord" };
+    mockGetAuthenticatedUser.mockResolvedValue(otherUser);
+    mockGetPublicOrPrivateMonsterForUser.mockResolvedValue(null);
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters/private-goblin-abc"
+    );
+    const response = await GET(
+      request,
+      createMockParams("private-goblin-abc")
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(404);
+    expect(data.errors[0].title).toBe("Monster not found");
+    expect(mockGetPublicOrPrivateMonsterForUser).toHaveBeenCalledWith(
+      "550e8400-e29b-41d4-a716-446655440000",
+      "other-discord"
+    );
   });
 });

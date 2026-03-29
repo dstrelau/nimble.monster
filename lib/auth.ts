@@ -130,3 +130,12 @@ export async function isAdmin() {
   const session = await auth();
   return session?.user?.role === "admin";
 }
+
+export async function getAuthenticatedUser(request: Request) {
+  const session = await auth();
+  if (!session?.user?.id || !session?.user?.discordId) {
+    return null;
+  }
+  
+  return session.user;
+}

@@ -12,6 +12,7 @@ lerna-debug.log*
 db/*.db*
 db/*.sqlite
 local.db*
+dev.db
 *.local
 *.tsbuildinfo
 .next
