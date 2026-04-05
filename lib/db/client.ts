@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import { type Client, createClient } from "@libsql/client";
 
 let rawClient: Client | null = null;
@@ -20,7 +21,46 @@ function isHranaStreamError(error: unknown): boolean {
 }
 
 /**
+ * Check if an error is a WAL conflict (corrupted local replica).
+ * This happens when the local SQLite WAL diverges from the remote Turso DB,
+ * e.g. after a Fly.io machine suspend/resume cycle.
+ */
+function isWalConflictError(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  const message = error.message || "";
+  const causeMessage =
+    error.cause instanceof Error ? error.cause.message : String(error.cause);
+  return (
+    message.includes("WAL frame") ||
+    message.includes("FrameConflict") ||
+    message.includes("InvalidPushFrame") ||
+    causeMessage.includes("WAL frame") ||
+    causeMessage.includes("FrameConflict") ||
+    causeMessage.includes("InvalidPushFrame")
+  );
+}
+
+/**
+ * Delete the local replica files so the next client recreates them from remote.
+ */
+function deleteLocalReplica(): void {
+  const url = process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL;
+  if (!url?.startsWith("file:")) return;
+
+  const dbPath = url.slice("file:".length);
+  for (const suffix of ["", "-wal", "-shm"]) {
+    const filePath = `${dbPath}${suffix}`;
+    try {
+      fs.unlinkSync(filePath);
+    } catch {
+      // File may not exist, that's fine
+    }
+  }
+}
+
+/**
  * Creates the raw libsql client.
+ * Uses a 60s sync interval to limit quota usage while keeping data reasonably fresh.
  */
 function createRawClient(): Client {
   const url = process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL;
@@ -32,7 +72,7 @@ function createRawClient(): Client {
     url,
     syncUrl: process.env.DATABASE_SYNC_URL,
     authToken: process.env.DATABASE_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN,
-    syncInterval: process.env.DATABASE_SYNC_URL ? 10 : undefined,
+    syncInterval: process.env.DATABASE_SYNC_URL ? 60 : undefined,
   });
 }
 
@@ -54,11 +94,27 @@ function getRawClient(): Client {
 }
 
 /**
+ * Handle a WAL conflict by deleting the corrupted local replica and
+ * recreating the client. The new client will re-sync from remote.
+ */
+function handleWalConflict(): void {
+  console.error(
+    "libsql: WAL conflict detected, deleting local replica and recreating client"
+  );
+  resetClient();
+  deleteLocalReplica();
+}
+
+/**
  * Get the database client with automatic retry on stale connection errors.
  *
  * This client automatically detects Hrana "stream not found" errors (which occur
  * when Turso expires a connection but the client doesn't know) and retries once
  * with a fresh connection.
+ *
+ * It also detects WAL frame conflicts (which occur when the local replica diverges
+ * from remote, e.g. after a Fly.io machine suspend/resume) and recovers by deleting
+ * the local replica and recreating the client.
  *
  * All async methods (execute, batch, migrate, transaction, executeMultiple, sync)
  * are wrapped to retry once if a stale connection error occurs.
@@ -97,6 +153,14 @@ export function getClient(): Client {
           try {
             return await method.apply(client, args);
           } catch (error) {
+            if (isWalConflictError(error)) {
+              handleWalConflict();
+              const freshClient = getRawClient();
+              const freshMethod = freshClient[
+                prop as keyof Client
+              ] as AsyncMethod;
+              return await freshMethod.apply(freshClient, args);
+            }
             if (isHranaStreamError(error)) {
               // Reset and retry with fresh client
               resetClient();

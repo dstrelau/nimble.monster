@@ -1033,7 +1033,9 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
 
           {session?.user && (
             <div className="flex flex-row justify-between items-center my-4">
-              <Button type="submit">Save</Button>
+              <Button type="submit" disabled={mutation.isPending}>
+                Save
+              </Button>
               <fieldset className="space-y-2">
                 <div>
                   <div className="flex items-center space-x-2">

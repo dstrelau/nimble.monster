@@ -1,5 +1,6 @@
 "use server";
 
+import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import {
@@ -8,6 +9,8 @@ import {
   type TypeFilter,
 } from "@/lib/services/monsters";
 import type { Ability, Action } from "@/lib/types";
+
+const tracer = trace.getTracer("monster-actions");
 
 export async function findPublicMonster(id: string) {
   const session = await auth();
@@ -103,22 +106,58 @@ export async function createMonster(formData: {
 }
 
 export async function deleteMonster(monsterId: string) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return { success: false, error: "Not authenticated" };
-  }
+  return tracer.startActiveSpan("deleteMonster", async (span) => {
+    span.setAttribute("monster.id", monsterId);
 
-  const deleted = await monstersService.deleteMonster(
-    monsterId,
-    session.user.discordId
-  );
+    try {
+      const session = await auth();
+      if (!session?.user?.id) {
+        span.setAttribute("delete.result", "unauthenticated");
+        span.end();
+        return { success: false, error: "Not authenticated" };
+      }
+      span.setAttribute("user.id", session.user.id);
 
-  if (deleted) {
-    revalidatePath("/my/monsters");
-    return { success: true, error: null };
-  }
-  return {
-    success: false,
-    error: "Could not delete the monster. Please try again.",
-  };
+      const deleted = await monstersService.deleteMonster(
+        monsterId,
+        session.user.discordId
+      );
+
+      span.setAttribute("delete.rows_affected", deleted ? 1 : 0);
+
+      if (deleted) {
+        span.setAttribute("delete.result", "success");
+        span.end();
+        revalidatePath("/my/monsters");
+        return { success: true, error: null };
+      }
+
+      span.setAttribute("delete.result", "not_found");
+      span.setStatus({
+        code: SpanStatusCode.ERROR,
+        message: "Delete affected 0 rows",
+      });
+      span.end();
+      return {
+        success: false,
+        error: "Could not delete the monster. Please try again.",
+      };
+    } catch (error) {
+      span.setAttribute("delete.result", "error");
+      if (error instanceof Error) {
+        span.recordException(error);
+      }
+      span.setStatus({
+        code: SpanStatusCode.ERROR,
+        message:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      });
+      span.end();
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      };
+    }
+  });
 }
