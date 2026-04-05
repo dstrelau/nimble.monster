@@ -61,6 +61,8 @@ function deleteLocalReplica(): void {
 /**
  * Creates the raw libsql client.
  * Uses a 60s sync interval to limit quota usage while keeping data reasonably fresh.
+ * Starts a periodic checkpoint to compact the WAL, since auto-checkpoint is disabled
+ * for sync databases (see https://docs.turso.tech/sync/checkpoint).
  */
 function createRawClient(): Client {
   const url = process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL;
@@ -68,12 +70,35 @@ function createRawClient(): Client {
     throw new Error("DATABASE_URL is required");
   }
 
-  return createClient({
+  const client = createClient({
     url,
     syncUrl: process.env.DATABASE_SYNC_URL,
     authToken: process.env.DATABASE_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN,
     syncInterval: process.env.DATABASE_SYNC_URL ? 60 : undefined,
   });
+
+  if (process.env.DATABASE_SYNC_URL) {
+    const CHECKPOINT_INTERVAL_MS = 5 * 60 * 1000;
+    setInterval(() => {
+      client
+        .execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        .catch((err: unknown) => {
+          console.error("libsql: WAL checkpoint failed", err);
+        });
+    }, CHECKPOINT_INTERVAL_MS);
+  }
+
+  return client;
+}
+
+/**
+ * Checkpoint the WAL to reclaim disk space.
+ * Auto-checkpoint is disabled for sync databases, so this must be called
+ * explicitly after bulk writes (e.g. admin imports).
+ */
+export async function checkpoint(): Promise<void> {
+  const client = getRawClient();
+  await client.execute("PRAGMA wal_checkpoint(TRUNCATE)");
 }
 
 /**

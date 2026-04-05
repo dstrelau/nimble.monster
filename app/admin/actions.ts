@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import type { JSONAPIFamily } from "@/lib/api/monsters";
 import { isAdmin } from "@/lib/auth";
 import * as awardDb from "@/lib/db/award";
+import { checkpoint } from "@/lib/db/client";
 import * as sourceDb from "@/lib/db/source";
 import {
   type AncestrySessionData,
@@ -360,6 +361,7 @@ export async function commitOfficialMonstersAction(sessionKey: string) {
   }
 
   await deletePreviewSession(sessionKey);
+  await checkpoint();
   revalidatePath("/monsters");
   redirect("/admin");
 }
@@ -420,6 +422,7 @@ export async function commitOfficialAncestriesAction(sessionKey: string) {
   }
 
   await deleteGenericPreviewSession("ancestries", sessionKey);
+  await checkpoint();
   revalidatePath("/ancestries");
   redirect("/admin");
 }
@@ -478,6 +481,7 @@ export async function commitOfficialBackgroundsAction(sessionKey: string) {
   }
 
   await deleteGenericPreviewSession("backgrounds", sessionKey);
+  await checkpoint();
   revalidatePath("/backgrounds");
   redirect("/admin");
 }
@@ -545,6 +549,7 @@ export async function commitOfficialClassesAction(sessionKey: string) {
   }
 
   await deleteGenericPreviewSession("classes", sessionKey);
+  await checkpoint();
   revalidatePath("/classes");
   redirect("/admin");
 }
@@ -605,6 +610,7 @@ export async function commitOfficialSubclassesAction(sessionKey: string) {
   }
 
   await deleteGenericPreviewSession("subclasses", sessionKey);
+  await checkpoint();
   revalidatePath("/subclasses");
   redirect("/admin");
 }
@@ -684,6 +690,7 @@ export async function commitOfficialSpellSchoolsAction(sessionKey: string) {
   }
 
   await deleteGenericPreviewSession("spell-schools", sessionKey);
+  await checkpoint();
   revalidatePath("/spell-schools");
   redirect("/admin");
 }
