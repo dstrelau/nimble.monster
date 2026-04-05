@@ -790,7 +790,9 @@ describe("primary_mod (^N)", () => {
     // r=4 -> eff=6 >= dieSize=6 (crit, explosion from 6)
     // r=5 -> eff=7 >= 6         (crit)
     // r=6 -> eff=8 >= 6         (crit)
-    const dist = calculateProbabilityDistribution(parseDiceNotation("1d6^2")!);
+    const roll = parseDiceNotation("1d6^2");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
 
     // No miss: lowest effective value is 3
     expect(dist.get(0)).toBeUndefined();
