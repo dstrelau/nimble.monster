@@ -77,7 +77,7 @@ export const ShareMenuDownloadCardItem = ({
 };
 
 interface ShareMenuProps {
-  children: ReactNode;
+  children?: ReactNode;
   disabled?: boolean;
 }
 

@@ -7,6 +7,7 @@ import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
 import { telemetry } from "@/lib/telemetry";
 import { deslugify } from "@/lib/utils/slug";
+import { getAuthenticatedUser } from "@/lib/auth";
 
 const CONTENT_TYPE = "application/vnd.api+json";
 
@@ -66,7 +67,8 @@ export const GET = telemetry(
     }
 
     try {
-      const monster = await monstersService.getPublicMonster(uid);
+      const user = await getAuthenticatedUser(_request);
+      const monster = await monstersService.getPublicOrPrivateMonsterForUser(uid, user?.discordId);
 
       if (!monster) {
         const headers = new Headers({ "Content-Type": CONTENT_TYPE });
