@@ -48,7 +48,7 @@ function deleteLocalReplica(): void {
   if (!url?.startsWith("file:")) return;
 
   const dbPath = url.slice("file:".length);
-  for (const suffix of ["", "-wal", "-shm"]) {
+  for (const suffix of ["", "-wal", "-shm", "-info"]) {
     const filePath = `${dbPath}${suffix}`;
     try {
       fs.unlinkSync(filePath);

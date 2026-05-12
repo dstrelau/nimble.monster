@@ -178,10 +178,22 @@ export const POST = telemetry(async (request: Request) => {
     ...monsterData,
   };
 
-  const newMonster = await monstersService.createMonster(
-    input,
-    session.user.discordId
-  );
+  let newMonster: Awaited<ReturnType<typeof monstersService.createMonster>>;
+  try {
+    newMonster = await monstersService.createMonster(
+      input,
+      session.user.discordId
+    );
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      (error.message === "Monster name is required" ||
+        error.message === "Creator Discord ID is required")
+    ) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    throw error;
+  }
 
   span?.setAttributes({
     "monster.id": newMonster.id,

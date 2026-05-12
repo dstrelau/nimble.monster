@@ -31,7 +31,9 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "")
   .map((s) => s.trim())
   .filter(Boolean);
 
-export default function proxy(request: NextRequest) {
+const HTTP_METHOD_BODY_RE = /^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS) \//;
+
+export default async function proxy(request: NextRequest) {
   // Reject bot POSTs to page routes: require next-action header and a
   // matching origin (bots scrape next-action IDs but send spoofed origins,
   // causing Next.js "Invalid Server Actions request" 500s).
@@ -51,6 +53,15 @@ export default function proxy(request: NextRequest) {
       )
     ) {
       return new Response("Bad Request", { status: 400 });
+    }
+
+    // Reject crafted Server Action requests with HTTP-method-line bodies
+    // (attack traffic that spoofs origin but sends malformed action payloads).
+    if (request.headers.get("content-type")?.startsWith("text/plain")) {
+      const body = await request.clone().text();
+      if (HTTP_METHOD_BODY_RE.test(body)) {
+        return new Response("Bad Request", { status: 400 });
+      }
     }
   }
 
