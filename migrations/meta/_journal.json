@@ -78,6 +78,13 @@
       "when": 1773278792486,
       "tag": "0010_busy_freak",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1778530315939,
+      "tag": "0011_add_monster_encounter_guidelines",
+      "breakpoints": true
     }
   ]
 }

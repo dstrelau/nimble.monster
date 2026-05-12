@@ -178,6 +178,8 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
     actions,
     actionPreface: attrs.actionsInstructions || "",
     moreInfo: attrs.description,
+    peaceful: attrs.peaceful,
+    deadly: attrs.deadly,
     bloodied: attrs.bloodied,
     lastStand: attrs.lastStand,
     saves: attrs.saves ? savesObjectToArray(attrs.saves) : undefined,

@@ -47,6 +47,8 @@ interface MonsterRow {
   actions: unknown;
   actionPreface: string | null;
   moreInfo: string | null;
+  peaceful: string | null;
+  deadly: string | null;
   remixedFromId: string | null;
   isOfficial: boolean | null;
 }
@@ -149,6 +151,8 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
     })),
     actionPreface: m.actionPreface || "",
     moreInfo: m.moreInfo || "",
+    peaceful: m.peaceful || "",
+    deadly: m.deadly || "",
     families: m.monsterFamilies
       .map((mf) => toFamilyOverview(mf.family))
       .filter((f): f is FamilyOverview => f !== undefined)
@@ -262,6 +266,8 @@ export const toZodMonster = (m: Monster) => {
     actionsInstructions: m.actionPreface,
     effects: [],
     description: m.moreInfo,
+    peaceful: m.peaceful || undefined,
+    deadly: m.deadly || undefined,
     paperforgeId: m.paperforgeId || undefined,
     paperforgeImageUrl,
   };

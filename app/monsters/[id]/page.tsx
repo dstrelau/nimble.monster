@@ -106,7 +106,12 @@ export default async function MonsterPage({
           monster.legendary ? "w-2xl" : "w-md"
         )}
       >
-        <Card monster={monster} creator={monster.creator} link={false} />
+        <Card
+          monster={monster}
+          creator={monster.creator}
+          link={false}
+          showEncounterGuidelines
+        />
         <MonsterCollections collections={collections} />
         <MonsterRemixes remixes={remixes} />
       </div>

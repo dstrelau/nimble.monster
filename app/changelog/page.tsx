@@ -12,6 +12,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "12 May 2026",
+    entries: ["Add peaceful/deadly encounter guideline fields to Monsters."],
+  },
+  {
     date: "19 March 2026",
     entries: ["Allow primary die modifiers on rolls. E.g. 1d6^1"],
   },

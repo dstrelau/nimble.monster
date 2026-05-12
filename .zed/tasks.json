@@ -22,5 +22,22 @@
     "shell": "system",
     "show_summary": true,
     "show_command": true
+  },
+  {
+    "label": "Set up worktree",
+    "command": "bash",
+    "args": [
+      "-lc",
+      "set -e; main=\"$ZED_MAIN_GIT_WORKTREE\"; cd \"$ZED_WORKTREE_ROOT\"; if [ -f \"$main/.env.local\" ] && [ ! -f .env.local ]; then cp \"$main/.env.local\" .env.local; fi; if [ -f \"$main/db/dev.db\" ] && [ ! -f db/dev.db ]; then mkdir -p db && cp \"$main/db/dev.db\" db/dev.db; fi; if [ -d \"$main/data/paperforge\" ] && [ ! -d data/paperforge ]; then mkdir -p data && cp -r \"$main/data/paperforge\" data/paperforge; fi; if [ -d \"$main/public/paperforge\" ] && [ ! -e public/paperforge ]; then mkdir -p public && ln -sfn \"$main/public/paperforge\" public/paperforge; fi; make setup"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "hooks": ["create_worktree"],
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "on_success",
+    "shell": "system",
+    "show_summary": true,
+    "show_command": true
   }
 ]

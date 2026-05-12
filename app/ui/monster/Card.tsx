@@ -1,5 +1,5 @@
 "use client";
-import { Shuffle } from "lucide-react";
+import { Bird, Shuffle, Skull } from "lucide-react";
 import type React from "react";
 import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
 import { ActionsList } from "@/app/ui/shared/ActionsList";
@@ -8,7 +8,10 @@ import { MoreInfoSection } from "@/app/ui/shared/MoreInfoSection";
 import { CardContentWithGap } from "@/app/ui/shared/StyledComponents";
 import { Link } from "@/components/app/Link";
 import { UserAvatar } from "@/components/app/UserAvatar";
-import { PrefixedFormattedText } from "@/components/FormattedText";
+import {
+  FormattedText,
+  PrefixedFormattedText,
+} from "@/components/FormattedText";
 import { Level } from "@/components/Level";
 import { PaperforgeImage } from "@/components/PaperforgeImage";
 import { PaperforgeLink } from "@/components/PaperforgeLink";
@@ -191,6 +194,7 @@ interface CardProps {
   link?: boolean;
   hideActions?: boolean;
   hideDescription?: boolean;
+  showEncounterGuidelines?: boolean;
   className?: string;
   selectable?: boolean;
   selected?: boolean;
@@ -203,6 +207,7 @@ export const Card = ({
   link = true,
   hideActions = false,
   hideDescription = false,
+  showEncounterGuidelines = false,
   className,
   selectable = false,
   selected = false,
@@ -279,6 +284,20 @@ export const Card = ({
             moreInfo={monster.moreInfo}
             conditions={conditions}
           />
+        )}
+
+        {showEncounterGuidelines && monster.peaceful && (
+          <div className="flex gap-2 italic text-muted-foreground">
+            <Bird className="size-5 shrink-0 mt-0.5" />
+            <FormattedText content={monster.peaceful} conditions={conditions} />
+          </div>
+        )}
+
+        {showEncounterGuidelines && monster.deadly && (
+          <div className="flex gap-2 italic text-muted-foreground">
+            <Skull className="size-5 shrink-0 mt-0.5" />
+            <FormattedText content={monster.deadly} conditions={conditions} />
+          </div>
         )}
 
         {!selectable && monster.remixedFrom && (

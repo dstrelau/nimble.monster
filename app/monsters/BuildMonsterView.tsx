@@ -3,10 +3,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import {
+  Bird,
   CircleAlert,
   CircleCheck,
   Crown,
   PersonStanding,
+  Skull,
   Target,
   TriangleAlert,
   User as UserIcon,
@@ -257,6 +259,40 @@ const FamilySection: React.FC<{
   );
 };
 
+const EncounterGuidelinesFields: React.FC<{
+  monster: Monster;
+  setMonster: (m: Monster) => void;
+}> = ({ monster, setMonster }) => (
+  <>
+    <FormTextarea
+      label={
+        <div className="flex items-center gap-2">
+          <Bird className="size-4" />
+          Peaceful Encounter
+          <ConditionValidationIcon text={monster.peaceful} />
+        </div>
+      }
+      name="peaceful"
+      value={monster.peaceful || ""}
+      rows={3}
+      onChange={(peaceful: string) => setMonster({ ...monster, peaceful })}
+    />
+    <FormTextarea
+      label={
+        <div className="flex items-center gap-2">
+          <Skull className="size-4" />
+          Deadly Encounter
+          <ConditionValidationIcon text={monster.deadly} />
+        </div>
+      }
+      name="deadly"
+      value={monster.deadly || ""}
+      rows={3}
+      onChange={(deadly: string) => setMonster({ ...monster, deadly })}
+    />
+  </>
+);
+
 const LegendaryForm: React.FC<{
   monster: Monster;
   setMonster: (m: Monster) => void;
@@ -386,6 +422,7 @@ const LegendaryForm: React.FC<{
         rows={4}
         onChange={(moreInfo: string) => setMonster({ ...monster, moreInfo })}
       />
+      <EncounterGuidelinesFields monster={monster} setMonster={setMonster} />
     </div>
   </div>
 );
@@ -522,6 +559,7 @@ const MinionForm: React.FC<{
         rows={4}
         onChange={(moreInfo: string) => setMonster({ ...monster, moreInfo })}
       />
+      <EncounterGuidelinesFields monster={monster} setMonster={setMonster} />
     </div>
   );
 };
@@ -689,6 +727,7 @@ const StandardForm: React.FC<{
         rows={4}
         onChange={(moreInfo: string) => setMonster({ ...monster, moreInfo })}
       />
+      <EncounterGuidelinesFields monster={monster} setMonster={setMonster} />
     </div>
   );
 };
@@ -903,6 +942,8 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           visibility: data.visibility,
           actionPreface: data.actionPreface || "",
           moreInfo: data.moreInfo || "",
+          peaceful: data.peaceful || "",
+          deadly: data.deadly || "",
           families: data.families || [],
           sourceId: data.source?.id ?? null,
           role: data.role || null,
@@ -964,7 +1005,9 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
             ? "md:col-span-2"
             : "md:col-span-2"
       )}
-      previewContent={<Card link={false} monster={monster} />}
+      previewContent={
+        <Card link={false} monster={monster} showEncounterGuidelines />
+      }
       formContent={
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="mb-6 flex justify-center">
@@ -1075,6 +1118,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
               monster={monster}
               creator={creator}
               hideActions={true}
+              showEncounterGuidelines
             />
           </div>
         </>

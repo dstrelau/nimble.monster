@@ -137,6 +137,8 @@ export const monsters = sqliteTable(
     visibility: text("visibility").$type<MonsterVisibility>().default("public"),
     actionPreface: text("action_preface"),
     moreInfo: text("more_info").default(""),
+    peaceful: text("peaceful").default(""),
+    deadly: text("deadly").default(""),
     burrow: integer("burrow").notNull().default(0),
     climb: integer("climb").notNull().default(0),
     teleport: integer("teleport").notNull().default(0),

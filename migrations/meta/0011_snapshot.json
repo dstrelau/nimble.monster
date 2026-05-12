@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "238c7a06-d7d1-4ca1-9928-30dd02126964",
-  "prevId": "4f3906e5-243b-4f04-8396-36829c87652b",
+  "id": "d4e1a000-0666-4838-8564-a2db8dfa0658",
+  "prevId": "e2257d0a-e2dd-46a7-ac9f-c5c9fdb000ff",
   "tables": {
     "ancestries": {
       "name": "ancestries",
@@ -718,6 +718,82 @@
           "columnsFrom": ["source_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "class_drafts": {
+      "name": "class_drafts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "class_id": {
+          "name": "class_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'__new__'"
+        },
+        "data": {
+          "name": "data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "idx_class_drafts_user_id": {
+          "name": "idx_class_drafts_user_id",
+          "columns": ["user_id"],
+          "isUnique": false
+        },
+        "class_drafts_user_id_class_id_unique": {
+          "name": "class_drafts_user_id_class_id_unique",
+          "columns": ["user_id", "class_id"],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "class_drafts_user_id_users_id_fk": {
+          "name": "class_drafts_user_id_users_id_fk",
+          "tableFrom": "class_drafts",
+          "tableTo": "users",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
           "onUpdate": "cascade"
         }
       },
@@ -741,6 +817,14 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "subclass_name_preface": {
+          "name": "subclass_name_preface",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
         },
         "description": {
           "name": "description",
@@ -793,7 +877,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'{}'"
+          "default": "'[]'"
         },
         "starting_gear": {
           "name": "starting_gear",
@@ -977,6 +1061,54 @@
         "classes_class_ability_lists_class_id_ability_list_id_pk": {
           "columns": ["class_id", "ability_list_id"],
           "name": "classes_class_ability_lists_class_id_ability_list_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "classes_collections": {
+      "name": "classes_collections",
+      "columns": {
+        "class_id": {
+          "name": "class_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "collection_id": {
+          "name": "collection_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "classes_collections_class_id_classes_id_fk": {
+          "name": "classes_collections_class_id_classes_id_fk",
+          "tableFrom": "classes_collections",
+          "tableTo": "classes",
+          "columnsFrom": ["class_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "classes_collections_collection_id_collections_id_fk": {
+          "name": "classes_collections_collection_id_collections_id_fk",
+          "tableFrom": "classes_collections",
+          "tableTo": "collections",
+          "columnsFrom": ["collection_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "classes_collections_class_id_collection_id_pk": {
+          "columns": ["class_id", "collection_id"],
+          "name": "classes_collections_class_id_collection_id_pk"
         }
       },
       "uniqueConstraints": {},
@@ -2036,6 +2168,22 @@
           "autoincrement": false,
           "default": "''"
         },
+        "peaceful": {
+          "name": "peaceful",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "deadly": {
+          "name": "deadly",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "''"
+        },
         "burrow": {
           "name": "burrow",
           "type": "integer",
@@ -2326,6 +2474,93 @@
           "name": "monsters_families_monster_id_family_id_pk"
         }
       },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "reference_entries": {
+      "name": "reference_entries",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source_file": {
+          "name": "source_file",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "order_index": {
+          "name": "order_index",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "reference_entries_slug_unique": {
+          "name": "reference_entries_slug_unique",
+          "columns": ["slug"],
+          "isUnique": true
+        },
+        "idx_reference_entries_category": {
+          "name": "idx_reference_entries_category",
+          "columns": ["category"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
@@ -2823,6 +3058,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "class_id": {
+          "name": "class_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "name_preface": {
           "name": "name_preface",
           "type": "text",
@@ -2887,6 +3129,11 @@
         "idx_subclasses_user_id": {
           "name": "idx_subclasses_user_id",
           "columns": ["user_id"],
+          "isUnique": false
+        },
+        "idx_subclasses_class_id": {
+          "name": "idx_subclasses_class_id",
+          "columns": ["class_id"],
           "isUnique": false
         }
       },
