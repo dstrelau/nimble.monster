@@ -268,7 +268,7 @@ const EncounterGuidelinesFields: React.FC<{
       label={
         <div className="flex items-center gap-2">
           <Bird className="size-4" />
-          Peaceful Encounter
+          Mild Encounter
           <ConditionValidationIcon text={monster.peaceful} />
         </div>
       }
@@ -281,7 +281,7 @@ const EncounterGuidelinesFields: React.FC<{
       label={
         <div className="flex items-center gap-2">
           <Skull className="size-4" />
-          Deadly Encounter
+          Spicy Encounter
           <ConditionValidationIcon text={monster.deadly} />
         </div>
       }

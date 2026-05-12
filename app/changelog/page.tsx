@@ -13,7 +13,7 @@ interface ChangelogEntry {
 const changelog: ChangelogEntry[] = [
   {
     date: "12 May 2026",
-    entries: ["Add peaceful/deadly encounter guideline fields to Monsters."],
+    entries: ["Add mild/spicy encounter guideline fields to Monsters."],
   },
   {
     date: "19 March 2026",
