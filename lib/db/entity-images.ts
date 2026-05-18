@@ -3,6 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
   type EntityImageRow,
+  type EntityImageTheme,
   type EntityImageType,
   entityImages,
   type GenerationStatus,
@@ -23,7 +24,8 @@ function generateId(): string {
 export async function claimImageGeneration(
   entityType: EntityImageType,
   entityId: string,
-  entityVersion: string
+  entityVersion: string,
+  theme: EntityImageTheme
 ): Promise<EntityImageClaim> {
   const tracer = trace.getTracer("entity-images");
   const span = tracer.startSpan("claim-image-generation", {
@@ -31,6 +33,7 @@ export async function claimImageGeneration(
       "entity.type": entityType,
       "entity.id": entityId,
       "entity.version": entityVersion,
+      "entity.theme": theme,
     },
   });
 
@@ -48,7 +51,8 @@ export async function claimImageGeneration(
         .where(
           and(
             eq(entityImages.entityType, entityType),
-            eq(entityImages.entityId, entityId)
+            eq(entityImages.entityId, entityId),
+            eq(entityImages.theme, theme)
           )
         )
         .limit(1);
@@ -63,6 +67,7 @@ export async function claimImageGeneration(
               id,
               entityType,
               entityId,
+              theme,
               entityVersion,
               generationStatus: "generating" as GenerationStatus,
               generationStartedAt: now,
@@ -128,7 +133,8 @@ export async function claimImageGeneration(
             .where(
               and(
                 eq(entityImages.entityType, entityType),
-                eq(entityImages.entityId, entityId)
+                eq(entityImages.entityId, entityId),
+                eq(entityImages.theme, theme)
               )
             )
             .limit(1);
@@ -317,24 +323,6 @@ export async function failImageGeneration(
       span.end();
     }
   });
-}
-
-export async function getEntityImage(
-  entityType: EntityImageType,
-  entityId: string
-): Promise<EntityImageRow | null> {
-  const db = await getDatabase();
-  const rows = await db
-    .select()
-    .from(entityImages)
-    .where(
-      and(
-        eq(entityImages.entityType, entityType),
-        eq(entityImages.entityId, entityId)
-      )
-    )
-    .limit(1);
-  return rows[0] ?? null;
 }
 
 export async function waitForImageGeneration(

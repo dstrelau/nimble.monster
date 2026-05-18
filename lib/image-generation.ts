@@ -8,13 +8,14 @@ import {
   failImageGeneration,
   waitForImageGeneration,
 } from "@/lib/db/entity-images";
-import type { EntityImageType } from "@/lib/db/schema";
+import type { EntityImageTheme, EntityImageType } from "@/lib/db/schema";
 
 export interface ImageGenerationOptions {
   baseUrl: string;
   entityId: string;
   entityUrlPath: string;
   entityType: "monster" | "companion" | "item";
+  theme: EntityImageTheme;
 }
 
 export async function generateEntityImageWithStorage({
@@ -23,6 +24,7 @@ export async function generateEntityImageWithStorage({
   entityUrlPath,
   entityType,
   entityVersion,
+  theme,
 }: ImageGenerationOptions & { entityVersion: string }): Promise<string> {
   const tracer = trace.getTracer("image-generation");
 
@@ -33,6 +35,7 @@ export async function generateEntityImageWithStorage({
         "entity.id": entityId,
         "entity.type": entityType,
         "entity.version": entityVersion,
+        "entity.theme": theme,
         "page.base_url": baseUrl,
       });
 
@@ -44,7 +47,8 @@ export async function generateEntityImageWithStorage({
         claim = await claimImageGeneration(
           entityImageType,
           entityId,
-          entityVersion
+          entityVersion,
+          theme
         );
 
         span.setAttributes({
@@ -88,6 +92,7 @@ export async function generateEntityImageWithStorage({
             entityId,
             entityUrlPath,
             entityType,
+            theme,
           })
         );
 
@@ -95,6 +100,7 @@ export async function generateEntityImageWithStorage({
         const filename = generateEntityImagePath(
           entityType,
           entityId,
+          theme,
           entityVersion
         );
         const uploadStartTime = Date.now();
@@ -153,6 +159,7 @@ async function generateEntityImageDirect({
   entityId,
   entityUrlPath,
   entityType,
+  theme,
 }: ImageGenerationOptions): Promise<Buffer> {
   const tracer = trace.getTracer("image-generation");
   const entityPageUrl = `${baseUrl}${entityUrlPath}`;
@@ -163,6 +170,7 @@ async function generateEntityImageDirect({
       span.setAttributes({
         "entity.id": entityId,
         "entity.type": entityType,
+        "entity.theme": theme,
         "page.url": entityPageUrl,
         "page.base_url": baseUrl,
       });
@@ -215,6 +223,15 @@ async function generateEntityImageDirect({
 
         try {
           page = await browser.newPage();
+
+          // Force the requested theme by seeding localStorage before any page
+          // script runs. next-themes reads this on mount and applies it via
+          // the `data-theme` attribute on <html>.
+          await page.evaluateOnNewDocument((selectedTheme: string) => {
+            try {
+              window.localStorage.setItem("theme", selectedTheme);
+            } catch {}
+          }, theme);
 
           // Set a realistic User-Agent to avoid bot detection
           await page.setUserAgent(
@@ -464,6 +481,9 @@ async function generateEntityImageDirect({
             if (entityCard) {
               entityCard.style.padding = "20px";
             }
+
+            document.documentElement.style.background = "transparent";
+            document.body.style.background = "transparent";
           },
           { entityId, entityType }
         );

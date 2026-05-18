@@ -90,16 +90,19 @@ export async function uploadBlob(
 export function generateBlobFilename(
   entityType: "monster" | "companion" | "item",
   entityId: string,
+  theme: "light" | "dark" | "parchment",
   version: string
 ): string {
-  return `${entityType}-${entityId}-${version}.png`;
+  const themePart = theme === "light" ? "" : `-${theme}`;
+  return `${entityType}-${entityId}${themePart}-${version}.png`;
 }
 
 export function generateEntityImagePath(
   entityType: "monster" | "companion" | "item",
   entityId: string,
+  theme: "light" | "dark" | "parchment",
   version: string
 ): string {
-  const filename = `${entityType}-${entityId}-${version}.png`;
+  const filename = generateBlobFilename(entityType, entityId, theme, version);
   return `card-images/${entityType}/${filename}`;
 }

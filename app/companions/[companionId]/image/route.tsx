@@ -20,7 +20,8 @@ export async function GET(
     return new Response("Companion not found", { status: 404 });
   }
   if (companionId !== slugify(companion)) {
-    return permanentRedirect(getCompanionImageUrl(companion));
+    const search = new URL(request.url).search;
+    return permanentRedirect(`${getCompanionImageUrl(companion)}${search}`);
   }
   return createImageResponse(request, companion, "companion");
 }

@@ -30,6 +30,7 @@ export type ItemRarity =
   | "very_rare"
   | "legendary";
 export type EntityImageType = "monster" | "companion" | "item";
+export type EntityImageTheme = "light" | "dark" | "parchment";
 export type GenerationStatus = "generating" | "completed" | "failed";
 export type SubclassVisibility = "public" | "private";
 export type SpellSchoolVisibility = "public" | "private";
@@ -431,6 +432,7 @@ export const entityImages = sqliteTable(
       .$defaultFn(() => crypto.randomUUID()),
     entityType: text("entity_type").$type<EntityImageType>().notNull(),
     entityId: text("entity_id").notNull(),
+    theme: text("theme").$type<EntityImageTheme>().notNull().default("light"),
     blobUrl: text("blob_url"),
     generatedAt: text("generated_at"),
     entityVersion: text("entity_version").notNull(),
@@ -444,7 +446,7 @@ export const entityImages = sqliteTable(
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },
   (table) => [
-    unique().on(table.entityType, table.entityId),
+    unique().on(table.entityType, table.entityId, table.theme),
     index("idx_entity_images_status_started").on(
       table.generationStatus,
       table.generationStartedAt

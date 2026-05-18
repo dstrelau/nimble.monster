@@ -20,7 +20,8 @@ export async function GET(
     return new Response("Monster not found", { status: 404 });
   }
   if (monsterId !== slugify(monster)) {
-    return permanentRedirect(getMonsterImageUrl(monster));
+    const search = new URL(request.url).search;
+    return permanentRedirect(`${getMonsterImageUrl(monster)}${search}`);
   }
 
   return createImageResponse(request, monster, "monster");

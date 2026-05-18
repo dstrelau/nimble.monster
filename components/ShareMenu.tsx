@@ -1,4 +1,7 @@
+"use client";
+
 import { Download, LinkIcon, Share } from "lucide-react";
+import { useTheme } from "next-themes";
 import type { ReactNode } from "react";
 import { Badge } from "./ui/badge";
 import {
@@ -67,7 +70,13 @@ export const ShareMenuDownloadCardItem = ({
   name: string;
   path: string;
 }) => {
-  const onClick = () => downloadCard(name, path);
+  const { resolvedTheme } = useTheme();
+  const downloadTheme =
+    resolvedTheme === "dark" || resolvedTheme === "parchment"
+      ? resolvedTheme
+      : "light";
+  const pathWithTheme = `${path}?theme=${downloadTheme}`;
+  const onClick = () => downloadCard(name, pathWithTheme);
   return (
     <ShareMenuItem onClick={onClick}>
       <Download className="w-4 h-4" />

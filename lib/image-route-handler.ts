@@ -1,5 +1,6 @@
 import { trace } from "@opentelemetry/api";
 import type { NextRequest } from "next/server";
+import type { EntityImageTheme } from "@/lib/db/schema";
 import { generateEntityImageWithStorage } from "@/lib/image-generation";
 import { getCompanionUrl, getItemUrl, getMonsterUrl } from "./utils/url";
 
@@ -10,6 +11,12 @@ type Entity = {
 };
 
 type EntityType = "monster" | "companion" | "item";
+
+export function parseThemeParam(request: NextRequest): EntityImageTheme {
+  const raw = new URL(request.url).searchParams.get("theme");
+  if (raw === "dark" || raw === "parchment") return raw;
+  return "light";
+}
 
 export async function createImageResponse(
   request: NextRequest,
@@ -22,18 +29,20 @@ export async function createImageResponse(
     const host = request.headers.get("host") || "localhost:3000";
     const protocol = new URL(request.url).protocol;
     const baseUrl = `${protocol}//${host}`;
+    const theme = parseThemeParam(request);
 
     span.setAttributes({
       "entity.id": entity.id,
       "entity.type": entityType,
       "entity.name": entity.name,
+      "entity.theme": theme,
       "request.host": host,
       "request.protocol": protocol,
     });
 
     try {
       const version = new Date(entity.updatedAt).getTime().toString();
-      const etag = `"${version}"`;
+      const etag = `"${version}-${theme}"`;
 
       span.setAttributes({
         "entity.version": version,
@@ -74,6 +83,7 @@ export async function createImageResponse(
         entityUrlPath,
         entityType,
         entityVersion: version,
+        theme,
       });
 
       const generationTime = Date.now() - startTime;
