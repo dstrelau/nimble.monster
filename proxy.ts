@@ -7,8 +7,11 @@ const authProxy = auth((request) => {
 
   const hostname = request.headers.get("host") || "";
 
-  // Redirect old domain to new domain
-  if (hostname.includes("nimble.monster")) {
+  // Redirect old domain to new domain, except nimbrew.json routes
+  if (
+    hostname.includes("nimble.monster") &&
+    !nextUrl.pathname.endsWith("/nimbrew.json")
+  ) {
     const url = nextUrl.clone();
     url.host = url.host.replace("nimble.monster", "nimble.nexus");
     return NextResponse.redirect(url, { status: 308 });

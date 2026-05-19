@@ -96,4 +96,12 @@ describe("proxy", () => {
     expect(res?.status).toBe(308);
     expect(res?.headers.get("location")).toContain("nimble.nexus");
   });
+
+  it("does not redirect nimble.monster nimbrew.json routes", async () => {
+    const req = makeRequest("GET", "/monsters/abc-123/nimbrew.json", {
+      host: "nimble.monster",
+    });
+    const res = await proxy(req);
+    expect(res?.status).not.toBe(308);
+  });
 });
