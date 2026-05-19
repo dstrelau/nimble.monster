@@ -151,8 +151,8 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
     })),
     actionPreface: m.actionPreface || "",
     moreInfo: m.moreInfo || "",
-    peaceful: m.peaceful || "",
-    deadly: m.deadly || "",
+    mild_encounter: m.peaceful || "",
+    spicy_encounter: m.deadly || "",
     families: m.monsterFamilies
       .map((mf) => toFamilyOverview(mf.family))
       .filter((f): f is FamilyOverview => f !== undefined)
@@ -266,8 +266,8 @@ export const toZodMonster = (m: Monster) => {
     actionsInstructions: m.actionPreface,
     effects: [],
     description: m.moreInfo,
-    peaceful: m.peaceful || undefined,
-    deadly: m.deadly || undefined,
+    mild_encounter: m.mild_encounter || undefined,
+    spicy_encounter: m.spicy_encounter || undefined,
     paperforgeId: m.paperforgeId || undefined,
     paperforgeImageUrl,
   };

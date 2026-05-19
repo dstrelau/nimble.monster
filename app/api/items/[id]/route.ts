@@ -4,7 +4,7 @@ import { addCorsHeaders } from "@/lib/cors";
 import { itemsService } from "@/lib/services/items";
 import { toJsonApiItem } from "@/lib/services/items/converters";
 import { telemetry } from "@/lib/telemetry";
-import { deslugify } from "@/lib/utils/slug";
+import { deslugify, slugify } from "@/lib/utils/slug";
 
 const CONTENT_TYPE = "application/vnd.api+json";
 
@@ -55,6 +55,14 @@ export const GET = telemetry(
       }
 
       span?.setAttributes({ "item.id": item.id });
+
+      if (id !== slugify(item)) {
+        const url = new URL(_request.url);
+        url.pathname = `/api/items/${slugify(item)}`;
+        const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+        addCorsHeaders(headers);
+        return NextResponse.redirect(url.toString(), { status: 301, headers });
+      }
 
       const data = toJsonApiItem(item);
 

@@ -286,17 +286,23 @@ export const Card = ({
           />
         )}
 
-        {showEncounterGuidelines && monster.peaceful && (
+        {showEncounterGuidelines && monster.mild_encounter && (
           <div className="flex gap-2 italic text-muted-foreground">
             <Bird className="size-5 shrink-0 mt-0.5" />
-            <FormattedText content={monster.peaceful} conditions={conditions} />
+            <FormattedText
+              content={monster.mild_encounter}
+              conditions={conditions}
+            />
           </div>
         )}
 
-        {showEncounterGuidelines && monster.deadly && (
+        {showEncounterGuidelines && monster.spicy_encounter && (
           <div className="flex gap-2 italic text-muted-foreground">
             <Skull className="size-5 shrink-0 mt-0.5" />
-            <FormattedText content={monster.deadly} conditions={conditions} />
+            <FormattedText
+              content={monster.spicy_encounter}
+              conditions={conditions}
+            />
           </div>
         )}
 

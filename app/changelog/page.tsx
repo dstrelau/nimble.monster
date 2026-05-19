@@ -12,6 +12,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "18 May 2026",
+    entries: ["Images are now generated in your currently selected theme."],
+  },
+  {
     date: "12 May 2026",
     entries: ["Add mild/spicy encounter guideline fields to Monsters."],
   },

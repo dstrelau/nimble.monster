@@ -128,8 +128,8 @@ export interface Monster extends MonsterMini {
   actions: Action[];
   actionPreface: string;
   moreInfo?: string;
-  peaceful?: string;
-  deadly?: string;
+  mild_encounter?: string;
+  spicy_encounter?: string;
   families: FamilyOverview[];
   creator: User;
   source?: Source;
@@ -189,8 +189,8 @@ export interface CreateMonsterInput {
   abilities: Ability[];
   actionPreface: string;
   moreInfo?: string;
-  peaceful?: string;
-  deadly?: string;
+  mild_encounter?: string;
+  spicy_encounter?: string;
   visibility: "public" | "private";
   legendary?: boolean;
   minion?: boolean;
@@ -228,8 +228,8 @@ export interface UpdateMonsterInput {
   visibility: "public" | "private";
   actionPreface: string;
   moreInfo: string;
-  peaceful?: string;
-  deadly?: string;
+  mild_encounter?: string;
+  spicy_encounter?: string;
   families?: { id: string }[];
   sourceId?: string | null;
   role?: MonsterRole | null;

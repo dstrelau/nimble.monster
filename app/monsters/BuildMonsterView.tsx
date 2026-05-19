@@ -269,26 +269,30 @@ const EncounterGuidelinesFields: React.FC<{
         <div className="flex items-center gap-2">
           <Bird className="size-4" />
           Mild Encounter
-          <ConditionValidationIcon text={monster.peaceful} />
+          <ConditionValidationIcon text={monster.mild_encounter} />
         </div>
       }
-      name="peaceful"
-      value={monster.peaceful || ""}
+      name="mild_encounter"
+      value={monster.mild_encounter || ""}
       rows={3}
-      onChange={(peaceful: string) => setMonster({ ...monster, peaceful })}
+      onChange={(mild_encounter: string) =>
+        setMonster({ ...monster, mild_encounter })
+      }
     />
     <FormTextarea
       label={
         <div className="flex items-center gap-2">
           <Skull className="size-4" />
           Spicy Encounter
-          <ConditionValidationIcon text={monster.deadly} />
+          <ConditionValidationIcon text={monster.spicy_encounter} />
         </div>
       }
-      name="deadly"
-      value={monster.deadly || ""}
+      name="spicy_encounter"
+      value={monster.spicy_encounter || ""}
       rows={3}
-      onChange={(deadly: string) => setMonster({ ...monster, deadly })}
+      onChange={(spicy_encounter: string) =>
+        setMonster({ ...monster, spicy_encounter })
+      }
     />
   </>
 );
@@ -942,8 +946,8 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           visibility: data.visibility,
           actionPreface: data.actionPreface || "",
           moreInfo: data.moreInfo || "",
-          peaceful: data.peaceful || "",
-          deadly: data.deadly || "",
+          mild_encounter: data.mild_encounter || "",
+          spicy_encounter: data.spicy_encounter || "",
           families: data.families || [],
           sourceId: data.source?.id ?? null,
           role: data.role || null,

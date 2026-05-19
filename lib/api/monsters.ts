@@ -32,8 +32,8 @@ export interface JSONAPIMonster {
     }>;
     actionsInstructions: string;
     description?: string;
-    peaceful?: string;
-    deadly?: string;
+    mild_encounter?: string;
+    spicy_encounter?: string;
     legendary: boolean;
     minion?: boolean;
     bloodied?: string;
@@ -147,8 +147,8 @@ function parseMonster(data: JSONAPIMonster): Monster {
     actions,
     actionPreface: attrs.actionsInstructions || "",
     moreInfo: attrs.description,
-    peaceful: attrs.peaceful,
-    deadly: attrs.deadly,
+    mild_encounter: attrs.mild_encounter,
+    spicy_encounter: attrs.spicy_encounter,
     bloodied: attrs.bloodied,
     lastStand: attrs.lastStand,
     families: [],

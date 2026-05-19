@@ -4,7 +4,7 @@ import { addCorsHeaders } from "@/lib/cors";
 import { getFamily } from "@/lib/db/family";
 import { toJsonApiFamily } from "@/lib/services/families/converters";
 import { telemetry } from "@/lib/telemetry";
-import { deslugify } from "@/lib/utils/slug";
+import { deslugify, slugify } from "@/lib/utils/slug";
 
 const CONTENT_TYPE = "application/vnd.api+json";
 
@@ -55,6 +55,14 @@ export const GET = telemetry(
       }
 
       span?.setAttributes({ "family.id": family.id });
+
+      if (id !== slugify(family)) {
+        const url = new URL(_request.url);
+        url.pathname = `/api/families/${slugify(family)}`;
+        const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+        addCorsHeaders(headers);
+        return NextResponse.redirect(url.toString(), { status: 301, headers });
+      }
 
       const data = toJsonApiFamily(family);
 

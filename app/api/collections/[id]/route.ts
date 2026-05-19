@@ -10,7 +10,7 @@ import {
 } from "@/lib/services/collections/converters";
 import * as repository from "@/lib/services/collections/repository";
 import { telemetry } from "@/lib/telemetry";
-import { deslugify } from "@/lib/utils/slug";
+import { deslugify, slugify } from "@/lib/utils/slug";
 
 const CONTENT_TYPE = "application/vnd.api+json";
 
@@ -115,6 +115,14 @@ export const GET = telemetry(
         "collection.id": collection.id,
         "collection.include": include || "none",
       });
+
+      if (id !== slugify(collection)) {
+        const url = new URL(_request.url);
+        url.pathname = `/api/collections/${slugify(collection)}`;
+        const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+        addCorsHeaders(headers);
+        return NextResponse.redirect(url.toString(), { status: 301, headers });
+      }
 
       const includeMonsters = includeResources.includes("monsters");
       const includeItems = includeResources.includes("items");
