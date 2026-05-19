@@ -39,6 +39,13 @@ vi.mock("@/lib/utils/slug", () => ({
   uuidToIdentifier: vi.fn(() => {
     return "0psvtrh43w8xm9dfbf5b6nkcq1";
   }),
+  slugify: vi.fn(({ name }: { name: string }) => {
+    const kebab = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    return `${kebab}-0psvtrh43w8xm9dfbf5b6nkcq1`;
+  }),
 }));
 
 vi.mock("@/lib/db", () => ({
@@ -96,9 +103,12 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/goblin-abc"
+      "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1"
     );
-    const response = await GET(request, createMockParams("goblin-abc"));
+    const response = await GET(
+      request,
+      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
     const data = await response.json();
 
     expect(response.status).toBe(200);
@@ -164,9 +174,12 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/goblin-abc"
+      "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1"
     );
-    const response = await GET(request, createMockParams("goblin-abc"));
+    const response = await GET(
+      request,
+      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
     const data = await response.json();
 
     const resource = data.data;
@@ -238,9 +251,12 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/ancient-dragon-abc"
+      "http://localhost:3000/api/monsters/ancient-dragon-0psvtrh43w8xm9dfbf5b6nkcq1"
     );
-    const response = await GET(request, createMockParams("ancient-dragon-abc"));
+    const response = await GET(
+      request,
+      createMockParams("ancient-dragon-0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
     const data = await response.json();
 
     expect(response.status).toBe(200);
@@ -301,11 +317,11 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/water-elemental-abc"
+      "http://localhost:3000/api/monsters/water-elemental-0psvtrh43w8xm9dfbf5b6nkcq1"
     );
     const response = await GET(
       request,
-      createMockParams("water-elemental-abc")
+      createMockParams("water-elemental-0psvtrh43w8xm9dfbf5b6nkcq1")
     );
     const data = await response.json();
 
@@ -356,9 +372,12 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/tiny-rat-abc"
+      "http://localhost:3000/api/monsters/tiny-rat-0psvtrh43w8xm9dfbf5b6nkcq1"
     );
-    const response = await GET(request, createMockParams("tiny-rat-abc"));
+    const response = await GET(
+      request,
+      createMockParams("tiny-rat-0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
     const data = await response.json();
 
     expect(response.status).toBe(200);
@@ -414,9 +433,12 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/goblin-abc?include=families"
+      "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1?include=families"
     );
-    const response = await GET(request, createMockParams("goblin-abc"));
+    const response = await GET(
+      request,
+      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
     const data = await response.json();
 
     expect(response.status).toBe(200);
@@ -463,9 +485,12 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/goblin-abc"
+      "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1"
     );
-    const response = await GET(request, createMockParams("goblin-abc"));
+    const response = await GET(
+      request,
+      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
     const data = await response.json();
 
     expect(response.status).toBe(200);
@@ -503,11 +528,11 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/shield-guardian-abc"
+      "http://localhost:3000/api/monsters/shield-guardian-0psvtrh43w8xm9dfbf5b6nkcq1"
     );
     const response = await GET(
       request,
-      createMockParams("shield-guardian-abc")
+      createMockParams("shield-guardian-0psvtrh43w8xm9dfbf5b6nkcq1")
     );
     const data = await response.json();
 
@@ -517,12 +542,59 @@ describe("GET /api/monsters/[id]", () => {
 
   it("should reject invalid include parameter", async () => {
     const request = new Request(
-      "http://localhost:3000/api/monsters/goblin-abc?include=invalid"
+      "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1?include=invalid"
     );
-    const response = await GET(request, createMockParams("goblin-abc"));
+    const response = await GET(
+      request,
+      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
     const data = await response.json();
 
     expect(response.status).toBe(400);
     expect(data.errors[0].title).toContain("Invalid include parameter");
+  });
+
+  it("should include minion=true in attributes for a minion monster", async () => {
+    const mockMonster: Monster = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Animated Armor Piece (Minion)",
+      level: "2",
+      levelInt: 2,
+      hp: 5,
+      legendary: false,
+      minion: true,
+      armor: "heavy",
+      size: "small",
+      speed: 5,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      teleport: 0,
+      burrow: 0,
+      visibility: "public",
+      families: [],
+      abilities: [],
+      actions: [],
+      actionPreface: "",
+      creator: fakeCreator,
+      createdAt: new Date("2025-01-01"),
+      updatedAt: new Date("2025-01-01"),
+    };
+
+    mockGetPublicMonster.mockResolvedValue(mockMonster);
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters/animated-armor-piece-minion-0psvtrh43w8xm9dfbf5b6nkcq1"
+    );
+    const response = await GET(
+      request,
+      createMockParams("animated-armor-piece-minion-0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.data.attributes.subtype).toBe("minion");
+    expect(data.data.attributes.minion).toBe(true);
+    expect(data.data.attributes.legendary).toBe(false);
   });
 });

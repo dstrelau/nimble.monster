@@ -27,6 +27,13 @@ vi.mock("@/lib/utils/slug", () => ({
     return "660e8400-e29b-41d4-a716-446655440001";
   }),
   uuidToIdentifier: vi.fn(() => "1abc2def3ghi4jkl5mno6pqrs7"),
+  slugify: vi.fn(({ name }: { name: string }) => {
+    const kebab = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    return `${kebab}-1abc2def3ghi4jkl5mno6pqrs7`;
+  }),
 }));
 
 const fakeCreator = {
@@ -58,9 +65,12 @@ describe("GET /api/families/[id]", () => {
     });
 
     const request = new Request(
-      "http://localhost:3000/api/families/goblinoids-abc"
+      "http://localhost:3000/api/families/goblinoids-1abc2def3ghi4jkl5mno6pqrs7"
     );
-    const response = await GET(request, createMockParams("goblinoids-abc"));
+    const response = await GET(
+      request,
+      createMockParams("goblinoids-1abc2def3ghi4jkl5mno6pqrs7")
+    );
     const data = await response.json();
 
     expect(response.status).toBe(200);

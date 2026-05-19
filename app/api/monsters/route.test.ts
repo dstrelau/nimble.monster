@@ -787,6 +787,53 @@ describe("GET /api/monsters", () => {
     expect(data.errors[0].status).toBe("400");
   });
 
+  it("should include minion=true in attributes for minion monsters", async () => {
+    const mockMonsters = [
+      {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "Animated Armor Piece (Minion)",
+        level: "2",
+        levelInt: 2,
+        hp: 5,
+        legendary: false,
+        minion: true,
+        armor: "heavy",
+        size: "small",
+        speed: 5,
+        fly: 0,
+        swim: 0,
+        climb: 0,
+        teleport: 0,
+        burrow: 0,
+        visibility: "public",
+        families: [],
+        abilities: [],
+        actions: [],
+        actionPreface: "",
+        creator: fakeCreator,
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-01"),
+        saves: "",
+      },
+    ];
+
+    mockPaginateMonsters.mockResolvedValue({
+      data: mockMonsters,
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?type=minion"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.data[0].attributes.subtype).toBe("minion");
+    expect(data.data[0].attributes.minion).toBe(true);
+    expect(data.data[0].attributes.legendary).toBe(false);
+  });
+
   it("should include role in monster attributes", async () => {
     const mockMonsters = [
       {
