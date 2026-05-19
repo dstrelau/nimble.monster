@@ -896,8 +896,9 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
       };
 
       if (remixedFromId) {
+        const { source: _, ...baseWithoutSource } = baseMonster;
         return {
-          ...baseMonster,
+          ...baseWithoutSource,
           id: "",
           visibility: "public",
           remixedFrom: {

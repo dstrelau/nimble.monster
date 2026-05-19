@@ -141,7 +141,7 @@ export default function BuildItemView({
       imageBgColor: sourceData?.imageBgColor || "",
       rarity: sourceData?.rarity || "unspecified",
       visibility: sourceData?.visibility || "public",
-      sourceId: sourceData?.source?.id || "",
+      sourceId: remixedFromId ? "" : sourceData?.source?.id || "",
     },
   });
 
