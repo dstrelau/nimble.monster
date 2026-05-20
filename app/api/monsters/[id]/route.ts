@@ -6,7 +6,7 @@ import { toJsonApiFamily } from "@/lib/services/families/converters";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
 import { telemetry } from "@/lib/telemetry";
-import { deslugify, slugify } from "@/lib/utils/slug";
+import { deslugify } from "@/lib/utils/slug";
 
 const CONTENT_TYPE = "application/vnd.api+json";
 
@@ -65,6 +65,14 @@ export const GET = telemetry(
       );
     }
 
+    if (id !== uid) {
+      const url = new URL(_request.url);
+      url.pathname = `/api/monsters/${uid}`;
+      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
+      addCorsHeaders(headers);
+      return NextResponse.redirect(url.toString(), { status: 301, headers });
+    }
+
     try {
       const monster = await monstersService.getPublicMonster(uid);
 
@@ -85,14 +93,6 @@ export const GET = telemetry(
       }
 
       span?.setAttributes({ "monster.id": monster.id });
-
-      if (id !== slugify(monster)) {
-        const url = new URL(_request.url);
-        url.pathname = `/api/monsters/${slugify(monster)}`;
-        const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-        addCorsHeaders(headers);
-        return NextResponse.redirect(url.toString(), { status: 301, headers });
-      }
 
       const data = toJsonApiMonster(monster);
 

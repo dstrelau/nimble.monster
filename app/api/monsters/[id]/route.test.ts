@@ -73,7 +73,22 @@ describe("GET /api/monsters/[id]", () => {
     params: Promise.resolve({ id }),
   });
 
-  it("should return a monster by slug", async () => {
+  it("should redirect from slug to UUID", async () => {
+    const request = new Request(
+      "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1"
+    );
+    const response = await GET(
+      request,
+      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
+
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe(
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000"
+    );
+  });
+
+  it("should return a monster by UUID", async () => {
     const mockMonster: Monster = {
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Goblin",
@@ -103,11 +118,11 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1"
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000"
     );
     const response = await GET(
       request,
-      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("550e8400-e29b-41d4-a716-446655440000")
     );
     const data = await response.json();
 
@@ -174,11 +189,11 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1"
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000"
     );
     const response = await GET(
       request,
-      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("550e8400-e29b-41d4-a716-446655440000")
     );
     const data = await response.json();
 
@@ -193,9 +208,12 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(null);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/nonexistent"
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000"
     );
-    const response = await GET(request, createMockParams("nonexistent"));
+    const response = await GET(
+      request,
+      createMockParams("550e8400-e29b-41d4-a716-446655440000")
+    );
     const data = await response.json();
 
     expect(response.status).toBe(404);
@@ -251,11 +269,11 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/ancient-dragon-0psvtrh43w8xm9dfbf5b6nkcq1"
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000"
     );
     const response = await GET(
       request,
-      createMockParams("ancient-dragon-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("550e8400-e29b-41d4-a716-446655440000")
     );
     const data = await response.json();
 
@@ -317,11 +335,11 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/water-elemental-0psvtrh43w8xm9dfbf5b6nkcq1"
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000"
     );
     const response = await GET(
       request,
-      createMockParams("water-elemental-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("550e8400-e29b-41d4-a716-446655440000")
     );
     const data = await response.json();
 
@@ -372,11 +390,11 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/tiny-rat-0psvtrh43w8xm9dfbf5b6nkcq1"
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000"
     );
     const response = await GET(
       request,
-      createMockParams("tiny-rat-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("550e8400-e29b-41d4-a716-446655440000")
     );
     const data = await response.json();
 
@@ -433,11 +451,11 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1?include=families"
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000?include=families"
     );
     const response = await GET(
       request,
-      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("550e8400-e29b-41d4-a716-446655440000")
     );
     const data = await response.json();
 
@@ -485,11 +503,11 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1"
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000"
     );
     const response = await GET(
       request,
-      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("550e8400-e29b-41d4-a716-446655440000")
     );
     const data = await response.json();
 
@@ -528,11 +546,11 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/shield-guardian-0psvtrh43w8xm9dfbf5b6nkcq1"
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000"
     );
     const response = await GET(
       request,
-      createMockParams("shield-guardian-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("550e8400-e29b-41d4-a716-446655440000")
     );
     const data = await response.json();
 
@@ -542,11 +560,11 @@ describe("GET /api/monsters/[id]", () => {
 
   it("should reject invalid include parameter", async () => {
     const request = new Request(
-      "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1?include=invalid"
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000?include=invalid"
     );
     const response = await GET(
       request,
-      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("550e8400-e29b-41d4-a716-446655440000")
     );
     const data = await response.json();
 
@@ -584,11 +602,11 @@ describe("GET /api/monsters/[id]", () => {
     mockGetPublicMonster.mockResolvedValue(mockMonster);
 
     const request = new Request(
-      "http://localhost:3000/api/monsters/animated-armor-piece-minion-0psvtrh43w8xm9dfbf5b6nkcq1"
+      "http://localhost:3000/api/monsters/550e8400-e29b-41d4-a716-446655440000"
     );
     const response = await GET(
       request,
-      createMockParams("animated-armor-piece-minion-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("550e8400-e29b-41d4-a716-446655440000")
     );
     const data = await response.json();
 
