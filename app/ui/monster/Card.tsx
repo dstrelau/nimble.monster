@@ -368,7 +368,13 @@ export const Card = ({
   }
 
   return (
-    <div className="w-full" id={`monster-${monster.id}`}>
+    <div
+      className={cn(
+        "w-full",
+        monster.legendary && "sm:col-span-2 md:col-span-2 print:col-span-2"
+      )}
+      id={`monster-${monster.id}`}
+    >
       {card}
     </div>
   );

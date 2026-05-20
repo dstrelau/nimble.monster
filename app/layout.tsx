@@ -54,7 +54,9 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <html lang="en" suppressHydrationWarning>
-      <head></head>
+      <head>
+        <style>{`@media print { html { font-size: 87.5%; } }`}</style>
+      </head>
       <body
         className={cn(
           "font-sans",

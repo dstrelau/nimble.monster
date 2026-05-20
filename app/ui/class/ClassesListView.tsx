@@ -114,7 +114,7 @@ export const ClassesListView: React.FC<ClassesListViewProps> = ({
       {filtered.length === 0 ? (
         <EmptyState entityName="classes" />
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
           {filtered.map((c) => (
             <ClassMiniCard key={c.id} classEntity={c} />
           ))}

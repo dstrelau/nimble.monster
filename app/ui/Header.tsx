@@ -136,7 +136,7 @@ const Header = () => {
   const handleSignIn = () => signIn("discord", { redirectTo: "/my/monsters" });
 
   return (
-    <nav className="p-0 shadow-sm bg-header text-header-foreground">
+    <nav className="p-0 shadow-sm bg-header text-header-foreground print:hidden">
       <div className="mx-auto max-w-7xl w-full px-4 flex justify-between items-center h-16">
         {/* Mobile left menu button */}
         <Button

@@ -88,7 +88,7 @@ export const PaginatedBackgroundGrid: React.FC<PaginatedBackgroundGridProps> = (
       {!filteredBackgrounds || filteredBackgrounds?.length === 0 ? (
         <EmptyState entityName="backgrounds" />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 gap-4">
           {filteredBackgrounds.map((background) => (
             <div key={background.id} className="w-full max-w-sm mx-auto">
               <Card background={background} creator={background.creator} />

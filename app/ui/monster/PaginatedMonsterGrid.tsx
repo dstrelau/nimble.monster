@@ -109,12 +109,13 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
       {!filteredMonsters || filteredMonsters?.length === 0 ? (
         <EmptyState entityName="monsters" />
       ) : (
-        <div className="flex flex-col md:grid md:grid-flow-dense md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex flex-col md:grid md:grid-flow-dense md:grid-cols-2 lg:grid-cols-3 print:grid print:grid-cols-3 gap-8">
           {filteredMonsters.map((monster) => (
             <div
               key={monster.id}
               className={cn(
-                monster.legendary && "sm:col-span-2 md:col-span-2",
+                monster.legendary &&
+                  "sm:col-span-2 md:col-span-2 print:col-span-2",
                 monster.legendary &&
                   typeQuery === "legendary" &&
                   "md:col-span-3"

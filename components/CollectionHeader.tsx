@@ -96,7 +96,7 @@ export function CollectionHeader({
               />
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 print:hidden">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" disabled={isDownloading}>

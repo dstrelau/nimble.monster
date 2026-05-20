@@ -22,7 +22,7 @@ export function MySpellsView({ spellSchools }: MySpellsViewProps) {
           </Button>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3">
           {spellSchools.map((school) => (
             <Card key={school.id} spellSchool={school} mini={true} />
           ))}

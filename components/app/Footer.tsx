@@ -73,7 +73,7 @@ export const Footer = () => {
     },
   ];
   return (
-    <footer>
+    <footer className="print:hidden">
       <div className="mx-auto max-w-7xl flex flex-wrap-reverse justify-center gap-8 px-4 py-6 mt-16 border-t">
         <div className="max-w-2xl prose prose-neutral dark:prose-invert text-sm text-muted-foreground ">
           <p>

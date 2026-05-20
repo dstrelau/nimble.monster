@@ -88,7 +88,7 @@ export const PaginatedAncestryGrid: React.FC<PaginatedAncestryGridProps> = (
       {!filteredAncestries || filteredAncestries?.length === 0 ? (
         <EmptyState entityName="ancestries" />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 gap-4">
           {filteredAncestries.map((ancestry) => (
             <div key={ancestry.id} className="w-full max-w-sm mx-auto">
               <Card

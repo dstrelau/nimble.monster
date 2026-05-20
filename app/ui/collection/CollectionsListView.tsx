@@ -56,7 +56,7 @@ export const CollectionsListView: React.FC = () => {
         <EmptyState entityName="collections" />
       ) : (
         <>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
             {filteredCollections.map((collection) => (
               <CollectionCard key={collection.id} collection={collection} />
             ))}

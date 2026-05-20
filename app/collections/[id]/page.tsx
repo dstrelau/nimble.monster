@@ -120,7 +120,7 @@ export default async function ShowCollectionView({
           This collection is empty.
         </p>
       ) : (
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
           {monstersSortedByLevelInt(collection.monsters).map((m) => (
             <MonsterCard key={m.id} monster={m} creator={m.creator} />
           ))}
