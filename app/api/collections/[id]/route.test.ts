@@ -22,6 +22,10 @@ vi.mock("@/lib/telemetry", () => ({
   telemetry: vi.fn((handler) => handler),
 }));
 
+vi.mock("next/navigation", () => ({
+  permanentRedirect: vi.fn(),
+}));
+
 vi.mock("@/lib/utils/slug", () => ({
   deslugify: vi.fn((slug: string) => {
     if (slug === "invalid-slug") {
@@ -80,11 +84,11 @@ describe("GET /api/collections/[id]", () => {
     mockFindPublicCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
-      "http://localhost:3000/api/collections/my-collection-0psvtrh43w8xm9dfbf5b6nkcq1"
+      "http://localhost:3000/api/collections/0psvtrh43w8xm9dfbf5b6nkcq1"
     );
     const response = await GET(
       request,
-      createMockParams("my-collection-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
     );
     const data = await response.json();
 
@@ -105,9 +109,12 @@ describe("GET /api/collections/[id]", () => {
     mockFindPublicCollectionById.mockResolvedValue(null);
 
     const request = new Request(
-      "http://localhost:3000/api/collections/nonexistent"
+      "http://localhost:3000/api/collections/0psvtrh43w8xm9dfbf5b6nkcq1"
     );
-    const response = await GET(request, createMockParams("nonexistent"));
+    const response = await GET(
+      request,
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
     const data = await response.json();
 
     expect(response.status).toBe(404);
@@ -178,11 +185,11 @@ describe("GET /api/collections/[id]", () => {
     mockFindPublicCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
-      "http://localhost:3000/api/collections/my-collection-0psvtrh43w8xm9dfbf5b6nkcq1?include=monsters"
+      "http://localhost:3000/api/collections/0psvtrh43w8xm9dfbf5b6nkcq1?include=monsters"
     );
     const response = await GET(
       request,
-      createMockParams("my-collection-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
     );
     const data = await response.json();
 
@@ -251,11 +258,11 @@ describe("GET /api/collections/[id]", () => {
     mockFindPublicCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
-      "http://localhost:3000/api/collections/my-collection-0psvtrh43w8xm9dfbf5b6nkcq1"
+      "http://localhost:3000/api/collections/0psvtrh43w8xm9dfbf5b6nkcq1"
     );
     const response = await GET(
       request,
-      createMockParams("my-collection-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
     );
     const data = await response.json();
 
@@ -301,11 +308,11 @@ describe("GET /api/collections/[id]", () => {
     mockFindPublicCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
-      "http://localhost:3000/api/collections/my-collection-0psvtrh43w8xm9dfbf5b6nkcq1?include=items"
+      "http://localhost:3000/api/collections/0psvtrh43w8xm9dfbf5b6nkcq1?include=items"
     );
     const response = await GET(
       request,
-      createMockParams("my-collection-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
     );
     const data = await response.json();
 
@@ -387,11 +394,11 @@ describe("GET /api/collections/[id]", () => {
     mockFindPublicCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
-      "http://localhost:3000/api/collections/my-collection-0psvtrh43w8xm9dfbf5b6nkcq1?include=monsters,items"
+      "http://localhost:3000/api/collections/0psvtrh43w8xm9dfbf5b6nkcq1?include=monsters,items"
     );
     const response = await GET(
       request,
-      createMockParams("my-collection-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
     );
     const data = await response.json();
 
@@ -414,11 +421,11 @@ describe("GET /api/collections/[id]", () => {
 
   it("should return 400 for invalid include parameter", async () => {
     const request = new Request(
-      "http://localhost:3000/api/collections/my-collection-0psvtrh43w8xm9dfbf5b6nkcq1?include=foo"
+      "http://localhost:3000/api/collections/0psvtrh43w8xm9dfbf5b6nkcq1?include=foo"
     );
     const response = await GET(
       request,
-      createMockParams("my-collection-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
     );
     const data = await response.json();
 
@@ -450,11 +457,11 @@ describe("GET /api/collections/[id]", () => {
     mockFindPublicCollectionById.mockResolvedValue(mockCollection);
 
     const request = new Request(
-      "http://localhost:3000/api/collections/test-collection-0psvtrh43w8xm9dfbf5b6nkcq1"
+      "http://localhost:3000/api/collections/0psvtrh43w8xm9dfbf5b6nkcq1"
     );
     const response = await GET(
       request,
-      createMockParams("test-collection-0psvtrh43w8xm9dfbf5b6nkcq1")
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
     );
     const data = await response.json();
 

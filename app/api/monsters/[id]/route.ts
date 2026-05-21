@@ -1,4 +1,5 @@
 import { trace } from "@opentelemetry/api";
+import { permanentRedirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { addCorsHeaders } from "@/lib/cors";
@@ -6,7 +7,7 @@ import { toJsonApiFamily } from "@/lib/services/families/converters";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
 import { telemetry } from "@/lib/telemetry";
-import { deslugify } from "@/lib/utils/slug";
+import { deslugify, uuidToIdentifier } from "@/lib/utils/slug";
 
 const CONTENT_TYPE = "application/vnd.api+json";
 
@@ -65,12 +66,9 @@ export const GET = telemetry(
       );
     }
 
-    if (id !== uid) {
-      const url = new URL(_request.url);
-      url.pathname = `/api/monsters/${uid}`;
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.redirect(url.toString(), { status: 301, headers });
+    const identifier = uuidToIdentifier(uid);
+    if (id !== identifier) {
+      return permanentRedirect(`/api/monsters/${identifier}`);
     }
 
     try {

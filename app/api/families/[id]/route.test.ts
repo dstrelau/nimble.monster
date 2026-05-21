@@ -21,6 +21,10 @@ vi.mock("@/lib/telemetry", () => ({
   telemetry: vi.fn((handler) => handler),
 }));
 
+vi.mock("next/navigation", () => ({
+  permanentRedirect: vi.fn(),
+}));
+
 vi.mock("@/lib/utils/slug", () => ({
   deslugify: vi.fn((slug: string) => {
     if (slug === "invalid-slug") return null;
@@ -65,11 +69,11 @@ describe("GET /api/families/[id]", () => {
     });
 
     const request = new Request(
-      "http://localhost:3000/api/families/goblinoids-1abc2def3ghi4jkl5mno6pqrs7"
+      "http://localhost:3000/api/families/1abc2def3ghi4jkl5mno6pqrs7"
     );
     const response = await GET(
       request,
-      createMockParams("goblinoids-1abc2def3ghi4jkl5mno6pqrs7")
+      createMockParams("1abc2def3ghi4jkl5mno6pqrs7")
     );
     const data = await response.json();
 
@@ -95,9 +99,12 @@ describe("GET /api/families/[id]", () => {
     mockGetFamily.mockResolvedValue(null);
 
     const request = new Request(
-      "http://localhost:3000/api/families/nonexistent"
+      "http://localhost:3000/api/families/1abc2def3ghi4jkl5mno6pqrs7"
     );
-    const response = await GET(request, createMockParams("nonexistent"));
+    const response = await GET(
+      request,
+      createMockParams("1abc2def3ghi4jkl5mno6pqrs7")
+    );
     const data = await response.json();
 
     expect(response.status).toBe(404);
