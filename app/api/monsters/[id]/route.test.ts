@@ -56,10 +56,6 @@ vi.mock("@/lib/utils/url", () => ({
   getMonsterUrl: vi.fn(),
 }));
 
-vi.mock("next/navigation", () => ({
-  permanentRedirect: vi.fn(),
-}));
-
 const fakeCreator = {
   id: "12345678-1234-1234-1234-1234567890ab",
   discordId: "user123",
@@ -78,17 +74,19 @@ describe("GET /api/monsters/[id]", () => {
   });
 
   it("should redirect from slug to identifier", async () => {
-    const mockPermanentRedirect = vi.mocked(
-      (await import("next/navigation")).permanentRedirect
-    );
     const request = new Request(
       "http://localhost:3000/api/monsters/goblin-0psvtrh43w8xm9dfbf5b6nkcq1"
     );
-    await GET(request, createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1"));
-
-    expect(mockPermanentRedirect).toHaveBeenCalledWith(
-      "/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
+    const response = await GET(
+      request,
+      createMockParams("goblin-0psvtrh43w8xm9dfbf5b6nkcq1")
     );
+
+    expect(response.status).toBe(308);
+    expect(response.headers.get("Location")).toBe(
+      "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
+    );
+    expect(response.headers.get("Access-Control-Allow-Origin")).toBe("*");
   });
 
   it("should return a monster by identifier", async () => {

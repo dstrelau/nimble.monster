@@ -1,6 +1,6 @@
 import { trace } from "@opentelemetry/api";
-import { permanentRedirect } from "next/navigation";
 import { NextResponse } from "next/server";
+import { apiRedirect } from "@/lib/api";
 import { addCorsHeaders } from "@/lib/cors";
 import { getFamily } from "@/lib/db/family";
 import { toJsonApiFamily } from "@/lib/services/families/converters";
@@ -38,7 +38,7 @@ export const GET = telemetry(
 
     const identifier = uuidToIdentifier(uid);
     if (id !== identifier) {
-      return permanentRedirect(`/api/families/${identifier}`);
+      return apiRedirect(_request, `/api/families/${identifier}`);
     }
 
     try {

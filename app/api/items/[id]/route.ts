@@ -1,6 +1,6 @@
 import { trace } from "@opentelemetry/api";
-import { permanentRedirect } from "next/navigation";
 import { NextResponse } from "next/server";
+import { apiRedirect } from "@/lib/api";
 import { addCorsHeaders } from "@/lib/cors";
 import { itemsService } from "@/lib/services/items";
 import { toJsonApiItem } from "@/lib/services/items/converters";
@@ -38,7 +38,7 @@ export const GET = telemetry(
 
     const identifier = uuidToIdentifier(uid);
     if (id !== identifier) {
-      return permanentRedirect(`/api/items/${identifier}`);
+      return apiRedirect(_request, `/api/items/${identifier}`);
     }
 
     try {

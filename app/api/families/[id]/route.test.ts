@@ -21,10 +21,6 @@ vi.mock("@/lib/telemetry", () => ({
   telemetry: vi.fn((handler) => handler),
 }));
 
-vi.mock("next/navigation", () => ({
-  permanentRedirect: vi.fn(),
-}));
-
 vi.mock("@/lib/utils/slug", () => ({
   deslugify: vi.fn((slug: string) => {
     if (slug === "invalid-slug") return null;
