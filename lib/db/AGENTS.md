@@ -3,47 +3,49 @@
 ## Architecture
 
 - **ORM**: Drizzle ORM
-- **Database**: Turso (hosted SQLite via libsql)
-- **Production mode**: Embedded replicas
-  - Local SQLite file at `/data/db.sqlite` for fast reads
-  - Syncs with remote Turso for writes
-  - Configured via `DATABASE_URL` (local) + `DATABASE_SYNC_URL` (remote)
+- **Database**: Plain SQLite via libsql client (no remote sync)
+  - Local SQLite file at `/data/db.sqlite` on the Fly volume
+  - Configured via `DATABASE_URL=file:/data/db.sqlite`
+- **Backup**: [Litestream](https://litestream.io) streams the WAL to Tigris
+  (Fly's S3-compatible storage) for point-in-time recovery. Litestream runs
+  in the same container as the Node process, wrapping it via
+  `litestream replicate -exec "node server.js"`. See `litestream.yml` and
+  the `runner` stage of the `Dockerfile`.
 
 ## Key Files
 
-- `client.ts` - libsql client with auto-retry wrapper
+- `client.ts` - libsql client (plain local file)
 - `drizzle.ts` - Drizzle ORM instance
 - `schema.ts` - Database schema definitions
 - `entity-images.ts` - Image generation claim/status tracking
 
-## Hrana Stream Errors
+## WAL Checkpoints
 
-Turso uses the Hrana protocol over HTTP/WebSocket. Connections can go stale
-when Turso expires them server-side but the client doesn't know.
+Auto-checkpoint is on for plain SQLite, but after bulk writes (e.g. admin
+imports) call `checkpoint()` from `client.ts` explicitly to truncate the WAL
+and keep Litestream snapshots small.
 
-**Symptom**: `Hrana(Api("status=404 Not Found, body={"error":"stream not found: ..."}")))`
+## Restoring from Backup
 
-**Solution**: The client in `client.ts` wraps all async methods with retry logic.
-On Hrana stream errors, it resets the connection and retries once.
+If `/data/db.sqlite` is lost (volume failure, fresh machine, etc.) Litestream
+will restore from S3 on first run. To restore manually:
 
-**Important**: Transaction objects returned by `client.transaction()` are NOT
-wrapped. If a Hrana error occurs mid-transaction, the transaction is invalid
-and the caller must retry their entire transaction logic.
+```bash
+fly ssh console -a nimble-nexus
+litestream restore -o /data/db.sqlite s3://nimble-nexus-litestream/db.sqlite
+```
 
 ## Debugging Database Issues
 
 ```bash
-# Check Fly.io logs for database errors
-fly logs -a nimble-nexus --no-tail | grep -i "hrana\|stream not found\|Failed query"
-
-# Look for the [cause] in error logs - it contains the actual database error
-fly logs -a nimble-nexus --no-tail | grep -B2 -A2 "cause"
+# Tail fly logs for db / litestream errors
+fly logs -a nimble-nexus --no-tail | grep -iE "litestream|sqlite|Failed query"
 ```
 
 ## Transactions
 
 When using `db.transaction()`:
-- All operations go through the remote Turso (not local replica)
-- This ensures consistency for read-after-write scenarios
+- All operations are local (no network round-trip)
 - If the transaction fails mid-way, nothing is committed
-- The caller is responsible for retry logic if needed
+- Litestream replicates committed WAL frames; in-flight transactions are not
+  visible to replicas until commit

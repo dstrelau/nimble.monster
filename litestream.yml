@@ -1,0 +1,12 @@
+dbs:
+  - path: /data/db.sqlite
+    replicas:
+      - type: s3
+        bucket: nimble-nexus-litestream
+        path: db.sqlite
+        endpoint: https://fly.storage.tigris.dev
+        region: auto
+        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}
+        retention: 168h
+        snapshot-interval: 24h

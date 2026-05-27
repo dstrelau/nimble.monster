@@ -21,12 +21,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates chromium chromium-sandbox \
     fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf \
     && rm -rf /var/lib/apt/lists/*
+COPY --from=litestream/litestream:0.3.13 /usr/local/bin/litestream /usr/local/bin/litestream
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
+COPY litestream.yml /etc/litestream.yml
 RUN mkdir -p .next/cache && chown -R node:node .next
 EXPOSE 3000
 USER node
-CMD ["node", "server.js"]
+CMD ["litestream", "replicate", "-exec", "node server.js"]
