@@ -1,3 +1,8 @@
+import { migrate } from "drizzle-orm/libsql/migrator";
+import { getDatabase } from "@/lib/db/drizzle";
+
+await migrate(getDatabase(), { migrationsFolder: "./migrations" });
+
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { resourceFromAttributes } from "@opentelemetry/resources";
