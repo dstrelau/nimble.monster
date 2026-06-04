@@ -20,6 +20,16 @@ export const getUserByUsername = async (
   return toUser(user);
 };
 
+export const getUserById = async (id: string): Promise<User | null> => {
+  const db = getDatabase();
+
+  const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+
+  const user = result[0];
+  if (!user) return null;
+  return toUser(user);
+};
+
 export const getUserPublicMonstersCount = async (
   username: string
 ): Promise<number> => {

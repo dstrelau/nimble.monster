@@ -149,7 +149,11 @@ describe("GET /api/monsters/[id]", () => {
       expect(result.data.legendary).toBe(false);
     }
 
-    expect(resource).not.toHaveProperty("relationships");
+    expect(resource.relationships.creator.data.type).toBe("users");
+    expect(resource.relationships.creator.data.id).toBe(
+      "0psvtrh43w8xm9dfbf5b6nkcq1"
+    );
+    expect(resource.relationships).not.toHaveProperty("families");
   });
 
   it("should include family relationships when monster has families", async () => {

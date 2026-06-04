@@ -140,7 +140,11 @@ describe("GET /api/monsters", () => {
     });
     expect(result.success).toBe(true);
 
-    expect(resource).not.toHaveProperty("relationships");
+    expect(resource.relationships.creator.data.type).toBe("users");
+    expect(resource.relationships.creator.data.id).toBe(
+      "0j6hb7g4hm28t14d0j6hb7h45b"
+    );
+    expect(resource.relationships).not.toHaveProperty("families");
   });
 
   it("should include family relationships when monster has families", async () => {

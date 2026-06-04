@@ -273,6 +273,8 @@ describe("GET /api/collections", () => {
     expect(resource.type).toBe("collections");
     expect(resource.relationships).toHaveProperty("creator");
     expect(resource.relationships.creator.data.type).toBe("users");
-    expect(resource.relationships.creator.data.id).toBe("testuser");
+    expect(resource.relationships.creator.data.id).toBe(
+      "0j6hb7g4hm28t14d0j6hb7h45b"
+    );
   });
 });

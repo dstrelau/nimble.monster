@@ -87,7 +87,9 @@ describe("GET /api/families/[id]", () => {
     );
     expect(resource.attributes.monsterCount).toBe(3);
     expect(resource.relationships.creator.data.type).toBe("users");
-    expect(resource.relationships.creator.data.id).toBe("testuser");
+    expect(resource.relationships.creator.data.id).toBe(
+      "1abc2def3ghi4jkl5mno6pqrs7"
+    );
     expect(resource.links.self).toContain("/api/families/");
   });
 

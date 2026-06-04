@@ -18,7 +18,7 @@ export const toJsonApiCollection = (c: CollectionOverview) => {
       creator: {
         data: {
           type: "users",
-          id: c.creator.username,
+          id: uuidToIdentifier(c.creator.id),
         },
       },
     },
@@ -43,7 +43,7 @@ export const toJsonApiCollectionWithMonsters = (c: Collection) => {
       creator: {
         data: {
           type: "users",
-          id: c.creator.username,
+          id: uuidToIdentifier(c.creator.id),
         },
       },
       monsters: {
@@ -78,7 +78,7 @@ export const toJsonApiCollectionWithItems = (c: Collection) => {
       creator: {
         data: {
           type: "users",
-          id: c.creator.username,
+          id: uuidToIdentifier(c.creator.id),
         },
       },
       items: {
@@ -113,7 +113,7 @@ export const toJsonApiCollectionWithBoth = (c: Collection) => {
       creator: {
         data: {
           type: "users",
-          id: c.creator.username,
+          id: uuidToIdentifier(c.creator.id),
         },
       },
       monsters: {

@@ -301,23 +301,32 @@ export const toJsonApiMonster = (m: Monster) => {
 
   const families = m.families ?? [];
 
-  const relationships =
-    families.length > 0
-      ? {
-          families: {
-            data: families.map((f) => ({
-              type: "families",
-              id: uuidToIdentifier(f.id),
-            })),
-          },
-        }
-      : undefined;
+  const relationships: {
+    creator: { data: { type: "users"; id: string } };
+    families?: { data: Array<{ type: "families"; id: string }> };
+  } = {
+    creator: {
+      data: {
+        type: "users",
+        id: uuidToIdentifier(m.creator.id),
+      },
+    },
+  };
+
+  if (families.length > 0) {
+    relationships.families = {
+      data: families.map((f) => ({
+        type: "families",
+        id: uuidToIdentifier(f.id),
+      })),
+    };
+  }
 
   return {
     type: "monsters",
     id,
     attributes,
-    ...(relationships && { relationships }),
+    relationships,
     links: {
       self: `/api/monsters/${id}`,
     },

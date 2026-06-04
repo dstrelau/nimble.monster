@@ -10,7 +10,7 @@ describe("toJsonApiFamily", () => {
     abilities: [],
     creatorId: "user123",
     creator: {
-      id: "user123",
+      id: "12345678-1234-1234-1234-1234567890ab",
       discordId: "discord123",
       username: "testuser",
       displayName: "Test User",

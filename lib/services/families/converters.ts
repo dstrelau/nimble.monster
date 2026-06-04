@@ -18,7 +18,7 @@ export const toJsonApiFamily = (f: FamilyOverview) => {
       creator: {
         data: {
           type: "users",
-          id: f.creator.username,
+          id: uuidToIdentifier(f.creator.id),
         },
       },
     },

@@ -35,6 +35,9 @@ List public monsters with pagination and sorting.
       "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
       "attributes": { ... },
       "relationships": {
+        "creator": {
+          "data": { "type": "users", "id": "0psvtrh43w8xm9dfbf5b6nkcq1" }
+        },
         "families": {
           "data": [
             { "type": "families", "id": "..." }
@@ -60,9 +63,10 @@ List public monsters with pagination and sorting.
 }
 ```
 
-The `relationships` field is present only when the monster belongs to one or more
-families. The `included` array is present only when `include=families` is
-specified and at least one family exists.
+The `relationships.creator` field is always present. The
+`relationships.families` field is present only when the monster belongs to one
+or more families. The `included` array is present only when `include=families`
+is specified and at least one family exists.
 
 ### GET /api/monsters/:id
 
@@ -160,7 +164,7 @@ Retrieve a single family by ID (26-character identifier).
       "creator": {
         "data": {
           "type": "users",
-          "id": "username"
+          "id": "0psvtrh43w8xm9dfbf5b6nkcq1"
         }
       }
     },
@@ -199,6 +203,11 @@ List public items with pagination and sorting.
         "description": "Restores health when consumed",
         "moreInfo": "..."
       },
+      "relationships": {
+        "creator": {
+          "data": { "type": "users", "id": "0psvtrh43w8xm9dfbf5b6nkcq1" }
+        }
+      },
       "links": {
         "self": "/api/items/0psvtrh43w8xm9dfbf5b6nkcq1"
       }
@@ -227,8 +236,74 @@ Retrieve a single item by ID (26-character identifier).
       "description": "Restores health when consumed",
       "moreInfo": "..."
     },
+    "relationships": {
+      "creator": {
+        "data": { "type": "users", "id": "0psvtrh43w8xm9dfbf5b6nkcq1" }
+      }
+    },
     "links": {
       "self": "/api/items/0psvtrh43w8xm9dfbf5b6nkcq1"
+    }
+  }
+}
+```
+
+### GET /api/users
+
+Look up a user by username. Returns only public profile information. Users are
+**not** enumerable — there is no way to list all users, so `username` is
+required.
+
+**Query Parameters:**
+- `username` (string, required): The exact username to look up. Usernames are
+  unique, so the response is a collection containing at most one user. Use this
+  to resolve a (mutable) username to a user's stable `id`.
+
+Requests without a `username` return a `400` error.
+
+**Response:**
+
+`GET /api/users?username=gandalf` returns a collection with the single matching
+user, or an empty `data` array if no user has that username:
+
+```json
+{
+  "data": [
+    {
+      "type": "users",
+      "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+      "attributes": {
+        "username": "gandalf",
+        "displayName": "Gandalf",
+        "imageUrl": "https://cdn.discordapp.com/avatars/.../avatar.png"
+      },
+      "links": {
+        "self": "/api/users/0psvtrh43w8xm9dfbf5b6nkcq1"
+      }
+    }
+  ]
+}
+```
+
+### GET /api/users/:id
+
+Retrieve a single user by stable identifier (26-character). Returns only public
+profile information. Requests using a legacy UUID are redirected to the
+canonical identifier.
+
+**Response:**
+```json
+{
+  "data": {
+    "type": "users",
+    "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+    "attributes": {
+      "username": "username",
+      "displayName": "Display Name",
+      "imageUrl": "https://cdn.discordapp.com/avatars/.../avatar.png"
+    },
+    "links": {
+      "self": "/api/users/0psvtrh43w8xm9dfbf5b6nkcq1"
     }
   }
 }
@@ -263,7 +338,7 @@ List public collections with pagination and sorting.
         "creator": {
           "data": {
             "type": "users",
-            "id": "username"
+            "id": "0psvtrh43w8xm9dfbf5b6nkcq1"
           }
         }
       },
@@ -305,7 +380,7 @@ Retrieve a single collection by ID (26-character identifier).
       "creator": {
         "data": {
           "type": "users",
-          "id": "username"
+          "id": "0psvtrh43w8xm9dfbf5b6nkcq1"
         }
       },
       "monsters": {

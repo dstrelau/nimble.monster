@@ -465,6 +465,8 @@ describe("GET /api/collections/[id]", () => {
     const resource = data.data;
     expect(resource.relationships).toHaveProperty("creator");
     expect(resource.relationships.creator.data.type).toBe("users");
-    expect(resource.relationships.creator.data.id).toBe("testuser");
+    expect(resource.relationships.creator.data.id).toBe(
+      "0psvtrh43w8xm9dfbf5b6nkcq1"
+    );
   });
 });

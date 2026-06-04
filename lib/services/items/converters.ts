@@ -116,6 +116,14 @@ export const toJsonApiItem = (item: Item) => {
       description: item.description,
       moreInfo: item.moreInfo,
     },
+    relationships: {
+      creator: {
+        data: {
+          type: "users",
+          id: uuidToIdentifier(item.creator.id),
+        },
+      },
+    },
     links: {
       self: `/api/items/${uuidToIdentifier(item.id)}`,
     },
