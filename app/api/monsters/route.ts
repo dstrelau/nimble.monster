@@ -1,8 +1,8 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { jsonApiError, jsonApiHeaders, parseInclude } from "@/lib/api";
 import { auth } from "@/lib/auth";
-import { addCorsHeaders } from "@/lib/cors";
 import { toJsonApiFamily } from "@/lib/services/families/converters";
 import type { CreateMonsterInput } from "@/lib/services/monsters";
 import { monstersService } from "@/lib/services/monsters";
@@ -11,9 +11,8 @@ import {
   MonsterRoleOptions,
   MonsterTypeOptions,
 } from "@/lib/services/monsters/types";
+import { collectCreators } from "@/lib/services/users/converters";
 import { telemetry } from "@/lib/telemetry";
-
-const CONTENT_TYPE = "application/vnd.api+json; nimble.version=202510.beta";
 
 const querySchema = z.object({
   cursor: z.string().optional(),
@@ -30,7 +29,6 @@ const querySchema = z.object({
   level: z.coerce.number().optional(),
   type: z.enum(MonsterTypeOptions).optional(),
   role: z.enum(MonsterRoleOptions).optional(),
-  include: z.string().optional(),
 });
 
 export const GET = telemetry(async (request: Request) => {
@@ -45,54 +43,23 @@ export const GET = telemetry(async (request: Request) => {
     level: searchParams.get("level") || undefined,
     type: searchParams.get("type") || undefined,
     role: searchParams.get("role") || undefined,
-    include: searchParams.get("include") || undefined,
   });
 
   if (!result.success) {
     const issue = result.error.issues[0];
     const title =
       issue.path[0] === "sort" ? "Invalid sort parameter" : issue.message;
-    const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-    addCorsHeaders(headers);
-    return NextResponse.json(
-      {
-        errors: [
-          {
-            status: "400",
-            title,
-          },
-        ],
-      },
-      { status: 400, headers }
-    );
+    return jsonApiError(400, title);
   }
 
-  const { cursor, limit, sort, search, level, type, role, include } =
-    result.data;
+  const { cursor, limit, sort, search, level, type, role } = result.data;
 
-  const includeResources = include
-    ? include.split(",").map((r) => r.trim())
-    : [];
-  const validIncludes = new Set(["families"]);
-  const invalidIncludes = includeResources.filter((r) => !validIncludes.has(r));
-
-  if (invalidIncludes.length > 0) {
-    const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-    addCorsHeaders(headers);
-    return NextResponse.json(
-      {
-        errors: [
-          {
-            status: "400",
-            title: "Invalid include parameter. Only 'families' is supported.",
-          },
-        ],
-      },
-      { status: 400, headers }
-    );
+  const includeResult = parseInclude(searchParams, ["families", "creator"]);
+  if (!includeResult.ok) {
+    return includeResult.response;
   }
-
-  const includeFamilies = includeResources.includes("families");
+  const includeFamilies = includeResult.resources.includes("families");
+  const includeCreator = includeResult.resources.includes("creator");
 
   span?.setAttributes({
     "params.limit": limit,
@@ -122,11 +89,10 @@ export const GET = telemetry(async (request: Request) => {
     "params.has_more": nextCursor !== null,
   });
 
-  const response: {
-    data: typeof data;
-    included?: ReturnType<typeof toJsonApiFamily>[];
-    links?: { next: string };
-  } = { data };
+  const included: Array<
+    | ReturnType<typeof toJsonApiFamily>
+    | ReturnType<typeof collectCreators>[number]
+  > = [];
 
   if (includeFamilies) {
     const familyMap = new Map<string, ReturnType<typeof toJsonApiFamily>>();
@@ -137,9 +103,21 @@ export const GET = telemetry(async (request: Request) => {
         }
       }
     }
-    if (familyMap.size > 0) {
-      response.included = [...familyMap.values()];
-    }
+    included.push(...familyMap.values());
+  }
+
+  if (includeCreator) {
+    included.push(...collectCreators(monsters));
+  }
+
+  const response: {
+    data: typeof data;
+    included?: typeof included;
+    links?: { next: string };
+  } = { data };
+
+  if (included.length > 0) {
+    response.included = included;
   }
 
   if (nextCursor) {
@@ -150,9 +128,7 @@ export const GET = telemetry(async (request: Request) => {
     };
   }
 
-  const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-  addCorsHeaders(headers);
-  return NextResponse.json(response, { headers });
+  return NextResponse.json(response, { headers: jsonApiHeaders() });
 });
 
 export const POST = telemetry(async (request: Request) => {

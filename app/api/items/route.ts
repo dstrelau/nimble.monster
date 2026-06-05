@@ -1,12 +1,11 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { addCorsHeaders } from "@/lib/cors";
+import { jsonApiError, jsonApiHeaders, parseInclude } from "@/lib/api";
 import { itemsService } from "@/lib/services/items";
 import { toJsonApiItem } from "@/lib/services/items/converters";
+import { collectCreators } from "@/lib/services/users/converters";
 import { telemetry } from "@/lib/telemetry";
-
-const CONTENT_TYPE = "application/vnd.api+json";
 
 const querySchema = z.object({
   cursor: z.string().optional(),
@@ -47,22 +46,16 @@ export const GET = telemetry(async (request: Request) => {
     const issue = result.error.issues[0];
     const title =
       issue.path[0] === "sort" ? "Invalid sort parameter" : issue.message;
-    const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-    addCorsHeaders(headers);
-    return NextResponse.json(
-      {
-        errors: [
-          {
-            status: "400",
-            title,
-          },
-        ],
-      },
-      { status: 400, headers }
-    );
+    return jsonApiError(400, title);
   }
 
   const { cursor, limit, sort, search, rarity } = result.data;
+
+  const includeResult = parseInclude(searchParams, ["creator"]);
+  if (!includeResult.ok) {
+    return includeResult.response;
+  }
+  const includeCreator = includeResult.resources.includes("creator");
 
   span?.setAttributes({
     "params.limit": limit,
@@ -87,7 +80,18 @@ export const GET = telemetry(async (request: Request) => {
     "params.has_more": nextCursor !== null,
   });
 
-  const response: { data: typeof data; links?: { next: string } } = { data };
+  const response: {
+    data: typeof data;
+    included?: ReturnType<typeof collectCreators>;
+    links?: { next: string };
+  } = { data };
+
+  if (includeCreator) {
+    const included = collectCreators(items);
+    if (included.length > 0) {
+      response.included = included;
+    }
+  }
 
   if (nextCursor) {
     const url = new URL(request.url);
@@ -97,7 +101,5 @@ export const GET = telemetry(async (request: Request) => {
     };
   }
 
-  const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-  addCorsHeaders(headers);
-  return NextResponse.json(response, { headers });
+  return NextResponse.json(response, { headers: jsonApiHeaders() });
 });

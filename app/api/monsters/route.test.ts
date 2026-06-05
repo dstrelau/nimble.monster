@@ -711,6 +711,83 @@ describe("GET /api/monsters", () => {
     expect(data.errors[0].title).toContain("Invalid include parameter");
   });
 
+  it("should include deduplicated creators when include=creator", async () => {
+    const mockMonsters = [
+      {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "Goblin",
+        level: "1",
+        levelInt: 1,
+        hp: 10,
+        legendary: false,
+        minion: false,
+        armor: "none",
+        size: "small",
+        speed: 6,
+        fly: 0,
+        swim: 0,
+        climb: 0,
+        teleport: 0,
+        burrow: 0,
+        visibility: "public",
+        families: [],
+        abilities: [],
+        actions: [],
+        actionPreface: "",
+        creator: fakeCreator,
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-01"),
+        saves: "",
+      },
+      {
+        id: "550e8400-e29b-41d4-a716-446655440099",
+        name: "Hobgoblin",
+        level: "3",
+        levelInt: 3,
+        hp: 30,
+        legendary: false,
+        minion: false,
+        armor: "medium",
+        size: "medium",
+        speed: 6,
+        fly: 0,
+        swim: 0,
+        climb: 0,
+        teleport: 0,
+        burrow: 0,
+        visibility: "public",
+        families: [],
+        abilities: [],
+        actions: [],
+        actionPreface: "",
+        creator: fakeCreator,
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-01"),
+        saves: "",
+      },
+    ];
+
+    mockPaginateMonsters.mockResolvedValue({
+      data: mockMonsters,
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?include=creator"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    // Both monsters share a creator, so it is included exactly once.
+    expect(data.included).toHaveLength(1);
+    expect(data.included[0].type).toBe("users");
+    expect(data.included[0].id).toBe(
+      data.data[0].relationships.creator.data.id
+    );
+    expect(data.included[0].attributes).not.toHaveProperty("discordId");
+  });
+
   it.each([
     ["standard"],
     ["legendary"],

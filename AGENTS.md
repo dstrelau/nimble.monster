@@ -49,6 +49,15 @@ Workflow:
 # Changelog
 
 - When adding user-facing features or fixes, add an entry to `app/changelog/page.tsx`.
+- We generally do NOT changelog API changes (new endpoints, relationships, query params, etc.). The changelog targets end users of the site, not API consumers. Document API changes in `docs/API.md` instead.
+
+# API Routes (app/api)
+
+- Responses follow JSON:API (`application/vnd.api+json`). Shared helpers live in `lib/api.ts` (`apiRedirect`, `fetchApi`).
+- `?include=` tokens are JSON:API relationship NAMES, not arbitrary labels. The creator relationship is named `creator` (singular), so the token is `include=creator` even if a request phrases it as "creators". Don't rename to match user phrasing.
+- The `include` parse → validate → 400-error and the CORS error-response blocks are duplicated across every route. When adding/editing them, copy an existing route verbatim (e.g. `app/api/monsters/route.ts`) rather than hand-writing — it's faster and avoids subtle drift. A shared `parseInclude(searchParams, validIncludes)` + error helper in `lib/api.ts` would eliminate this boilerplate; consider extracting it if you touch many routes at once.
+- Reuse the dedup helper `collectCreators` (in `lib/services/users/converters.ts`) for list endpoints; use `toJsonApiUser` for single-resource endpoints.
+- Biome enforces formatting and line length. Run `node_modules/.bin/biome check --write <changed files>` BEFORE `make check` — otherwise `make check` fails on format-only diffs and costs an extra round-trip.
 
 # Code Style
 

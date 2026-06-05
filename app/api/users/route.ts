@@ -1,12 +1,10 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { addCorsHeaders } from "@/lib/cors";
+import { jsonApiError, jsonApiHeaders } from "@/lib/api";
 import { getUserByUsername } from "@/lib/db/user";
 import { toJsonApiUser } from "@/lib/services/users/converters";
 import { telemetry } from "@/lib/telemetry";
-
-const CONTENT_TYPE = "application/vnd.api+json";
 
 // Users are not enumerable: the only supported query is an exact lookup by
 // username, which resolves a (mutable) username to a user's stable id.
@@ -23,20 +21,7 @@ export const GET = telemetry(async (request: Request) => {
   });
 
   if (!result.success) {
-    const issue = result.error.issues[0];
-    const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-    addCorsHeaders(headers);
-    return NextResponse.json(
-      {
-        errors: [
-          {
-            status: "400",
-            title: issue.message,
-          },
-        ],
-      },
-      { status: 400, headers }
-    );
+    return jsonApiError(400, result.error.issues[0].message);
   }
 
   const { username } = result.data;
@@ -49,7 +34,5 @@ export const GET = telemetry(async (request: Request) => {
 
   span?.setAttributes({ "params.count": data.length });
 
-  const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-  addCorsHeaders(headers);
-  return NextResponse.json({ data }, { headers });
+  return NextResponse.json({ data }, { headers: jsonApiHeaders() });
 });

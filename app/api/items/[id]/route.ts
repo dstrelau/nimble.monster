@@ -1,13 +1,16 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
-import { apiRedirect } from "@/lib/api";
-import { addCorsHeaders } from "@/lib/cors";
+import {
+  apiRedirect,
+  jsonApiError,
+  jsonApiHeaders,
+  parseInclude,
+} from "@/lib/api";
 import { itemsService } from "@/lib/services/items";
 import { toJsonApiItem } from "@/lib/services/items/converters";
+import { toJsonApiUser } from "@/lib/services/users/converters";
 import { telemetry } from "@/lib/telemetry";
 import { deslugify, uuidToIdentifier } from "@/lib/utils/slug";
-
-const CONTENT_TYPE = "application/vnd.api+json";
 
 export const GET = telemetry(
   async (
@@ -16,24 +19,19 @@ export const GET = telemetry(
   ) => {
     const { id } = await params;
     const span = trace.getActiveSpan();
+    const { searchParams } = new URL(_request.url);
 
     span?.setAttributes({ "params.id": id });
 
+    const includeResult = parseInclude(searchParams, ["creator"]);
+    if (!includeResult.ok) {
+      return includeResult.response;
+    }
+    const includeCreator = includeResult.resources.includes("creator");
+
     const uid = deslugify(id);
     if (!uid) {
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json(
-        {
-          errors: [
-            {
-              status: "404",
-              title: "Item not found",
-            },
-          ],
-        },
-        { status: 404, headers }
-      );
+      return jsonApiError(404, "Item not found");
     }
 
     const identifier = uuidToIdentifier(uid);
@@ -45,43 +43,26 @@ export const GET = telemetry(
       const item = await itemsService.getPublicItem(uid);
 
       if (!item) {
-        const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-        addCorsHeaders(headers);
-        return NextResponse.json(
-          {
-            errors: [
-              {
-                status: "404",
-                title: "Item not found",
-              },
-            ],
-          },
-          { status: 404, headers }
-        );
+        return jsonApiError(404, "Item not found");
       }
 
       span?.setAttributes({ "item.id": item.id });
 
       const data = toJsonApiItem(item);
 
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json({ data }, { headers });
+      const response: {
+        data: typeof data;
+        included?: ReturnType<typeof toJsonApiUser>[];
+      } = { data };
+
+      if (includeCreator) {
+        response.included = [toJsonApiUser(item.creator)];
+      }
+
+      return NextResponse.json(response, { headers: jsonApiHeaders() });
     } catch (error) {
       span?.setAttributes({ error: String(error) });
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json(
-        {
-          errors: [
-            {
-              status: "404",
-              title: "Item not found",
-            },
-          ],
-        },
-        { status: 404, headers }
-      );
+      return jsonApiError(404, "Item not found");
     }
   }
 );

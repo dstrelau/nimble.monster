@@ -1,29 +1,12 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
-import { apiRedirect } from "@/lib/api";
-import { addCorsHeaders } from "@/lib/cors";
+import { apiRedirect, jsonApiError, jsonApiHeaders } from "@/lib/api";
 import { getUserById } from "@/lib/db/user";
 import { toJsonApiUser } from "@/lib/services/users/converters";
 import { telemetry } from "@/lib/telemetry";
 import { deslugify, uuidToIdentifier } from "@/lib/utils/slug";
 
-const CONTENT_TYPE = "application/vnd.api+json";
-
-const notFound = () => {
-  const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-  addCorsHeaders(headers);
-  return NextResponse.json(
-    {
-      errors: [
-        {
-          status: "404",
-          title: "User not found",
-        },
-      ],
-    },
-    { status: 404, headers }
-  );
-};
+const notFound = () => jsonApiError(404, "User not found");
 
 export const GET = telemetry(
   async (
@@ -56,9 +39,7 @@ export const GET = telemetry(
 
       const data = toJsonApiUser(user);
 
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json({ data }, { headers });
+      return NextResponse.json({ data }, { headers: jsonApiHeaders() });
     } catch (error) {
       span?.setAttributes({ error: String(error) });
       return notFound();

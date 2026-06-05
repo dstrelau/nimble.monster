@@ -1,8 +1,11 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
-import { z } from "zod";
-import { apiRedirect } from "@/lib/api";
-import { addCorsHeaders } from "@/lib/cors";
+import {
+  apiRedirect,
+  jsonApiError,
+  jsonApiHeaders,
+  parseInclude,
+} from "@/lib/api";
 import {
   toJsonApiCollection,
   toJsonApiCollectionWithBoth,
@@ -10,14 +13,9 @@ import {
   toJsonApiCollectionWithMonsters,
 } from "@/lib/services/collections/converters";
 import * as repository from "@/lib/services/collections/repository";
+import { toJsonApiUser } from "@/lib/services/users/converters";
 import { telemetry } from "@/lib/telemetry";
 import { deslugify, uuidToIdentifier } from "@/lib/utils/slug";
-
-const CONTENT_TYPE = "application/vnd.api+json";
-
-const querySchema = z.object({
-  include: z.string().optional(),
-});
 
 export const GET = telemetry(
   async (
@@ -30,67 +28,19 @@ export const GET = telemetry(
 
     span?.setAttributes({ "params.id": id });
 
-    const queryResult = querySchema.safeParse({
-      include: searchParams.get("include") || undefined,
-    });
-
-    if (!queryResult.success) {
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json(
-        {
-          errors: [
-            {
-              status: "400",
-              title: "Invalid query parameter",
-            },
-          ],
-        },
-        { status: 400, headers }
-      );
+    const includeResult = parseInclude(searchParams, [
+      "monsters",
+      "items",
+      "creator",
+    ]);
+    if (!includeResult.ok) {
+      return includeResult.response;
     }
-
-    const { include } = queryResult.data;
-
-    const includeResources = include
-      ? include.split(",").map((r) => r.trim())
-      : [];
-    const validIncludes = new Set(["monsters", "items"]);
-    const invalidIncludes = includeResources.filter(
-      (r) => !validIncludes.has(r)
-    );
-
-    if (invalidIncludes.length > 0) {
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json(
-        {
-          errors: [
-            {
-              status: "400",
-              title: `Invalid include parameter. Only 'monsters' and 'items' are supported.`,
-            },
-          ],
-        },
-        { status: 400, headers }
-      );
-    }
+    const includeResources = includeResult.resources;
 
     const uid = deslugify(id);
     if (!uid) {
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json(
-        {
-          errors: [
-            {
-              status: "404",
-              title: "Collection not found",
-            },
-          ],
-        },
-        { status: 404, headers }
-      );
+      return jsonApiError(404, "Collection not found");
     }
 
     const identifier = uuidToIdentifier(uid);
@@ -102,64 +52,59 @@ export const GET = telemetry(
       const collection = await repository.findPublicCollectionById(uid);
 
       if (!collection) {
-        const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-        addCorsHeaders(headers);
-        return NextResponse.json(
-          {
-            errors: [
-              {
-                status: "404",
-                title: "Collection not found",
-              },
-            ],
-          },
-          { status: 404, headers }
-        );
+        return jsonApiError(404, "Collection not found");
       }
 
       span?.setAttributes({
         "collection.id": collection.id,
-        "collection.include": include || "none",
+        "collection.include": includeResources.join(",") || "none",
       });
 
       const includeMonsters = includeResources.includes("monsters");
       const includeItems = includeResources.includes("items");
+      const includeCreator = includeResources.includes("creator");
 
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
+      const headers = jsonApiHeaders();
+
+      const creatorIncluded = includeCreator
+        ? [toJsonApiUser(collection.creator)]
+        : [];
 
       if (includeMonsters && includeItems) {
-        const response = toJsonApiCollectionWithBoth(collection);
-        return NextResponse.json(response, { headers });
+        const { data, included } = toJsonApiCollectionWithBoth(collection);
+        return NextResponse.json(
+          { data, included: [...included, ...creatorIncluded] },
+          { headers }
+        );
       }
 
       if (includeMonsters) {
-        const response = toJsonApiCollectionWithMonsters(collection);
-        return NextResponse.json(response, { headers });
+        const { data, included } = toJsonApiCollectionWithMonsters(collection);
+        return NextResponse.json(
+          { data, included: [...included, ...creatorIncluded] },
+          { headers }
+        );
       }
 
       if (includeItems) {
-        const response = toJsonApiCollectionWithItems(collection);
-        return NextResponse.json(response, { headers });
+        const { data, included } = toJsonApiCollectionWithItems(collection);
+        return NextResponse.json(
+          { data, included: [...included, ...creatorIncluded] },
+          { headers }
+        );
       }
 
       const data = toJsonApiCollection(collection);
+      if (creatorIncluded.length > 0) {
+        return NextResponse.json(
+          { data, included: creatorIncluded },
+          { headers }
+        );
+      }
       return NextResponse.json({ data }, { headers });
     } catch (error) {
       span?.setAttributes({ error: String(error) });
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json(
-        {
-          errors: [
-            {
-              status: "404",
-              title: "Collection not found",
-            },
-          ],
-        },
-        { status: 404, headers }
-      );
+      return jsonApiError(404, "Collection not found");
     }
   }
 );

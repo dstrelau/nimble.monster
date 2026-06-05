@@ -93,6 +93,48 @@ describe("GET /api/families/[id]", () => {
     expect(resource.links.self).toContain("/api/families/");
   });
 
+  it("should include the creator when include=creator", async () => {
+    mockGetFamily.mockResolvedValue({
+      id: "660e8400-e29b-41d4-a716-446655440001",
+      name: "Goblinoids",
+      description: "A family of goblin-like creatures",
+      abilities: [],
+      monsterCount: 3,
+      creatorId: "user123",
+      creator: fakeCreator,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/families/1abc2def3ghi4jkl5mno6pqrs7?include=creator"
+    );
+    const response = await GET(
+      request,
+      createMockParams("1abc2def3ghi4jkl5mno6pqrs7")
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.included).toHaveLength(1);
+    expect(data.included[0].type).toBe("users");
+    expect(data.included[0].id).toBe(data.data.relationships.creator.data.id);
+    expect(data.included[0].attributes.username).toBe("testuser");
+    expect(data.included[0].attributes).not.toHaveProperty("discordId");
+  });
+
+  it("should reject an invalid include parameter", async () => {
+    const request = new Request(
+      "http://localhost:3000/api/families/1abc2def3ghi4jkl5mno6pqrs7?include=bogus"
+    );
+    const response = await GET(
+      request,
+      createMockParams("1abc2def3ghi4jkl5mno6pqrs7")
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.errors[0].title).toContain("Invalid include parameter");
+  });
+
   it("should return 404 for non-existent family", async () => {
     mockGetFamily.mockResolvedValue(null);
 

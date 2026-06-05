@@ -1,15 +1,18 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
-import { apiRedirect } from "@/lib/api";
+import {
+  apiRedirect,
+  jsonApiError,
+  jsonApiHeaders,
+  parseInclude,
+} from "@/lib/api";
 import { auth } from "@/lib/auth";
-import { addCorsHeaders } from "@/lib/cors";
 import { toJsonApiFamily } from "@/lib/services/families/converters";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
+import { toJsonApiUser } from "@/lib/services/users/converters";
 import { telemetry } from "@/lib/telemetry";
 import { deslugify, uuidToIdentifier } from "@/lib/utils/slug";
-
-const CONTENT_TYPE = "application/vnd.api+json";
 
 export const GET = telemetry(
   async (
@@ -22,48 +25,16 @@ export const GET = telemetry(
 
     span?.setAttributes({ "params.id": id });
 
-    const include = searchParams.get("include") || undefined;
-    const includeResources = include
-      ? include.split(",").map((r) => r.trim())
-      : [];
-    const validIncludes = new Set(["families"]);
-    const invalidIncludes = includeResources.filter(
-      (r) => !validIncludes.has(r)
-    );
-
-    if (invalidIncludes.length > 0) {
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json(
-        {
-          errors: [
-            {
-              status: "400",
-              title: "Invalid include parameter. Only 'families' is supported.",
-            },
-          ],
-        },
-        { status: 400, headers }
-      );
+    const includeResult = parseInclude(searchParams, ["families", "creator"]);
+    if (!includeResult.ok) {
+      return includeResult.response;
     }
-
-    const includeFamilies = includeResources.includes("families");
+    const includeFamilies = includeResult.resources.includes("families");
+    const includeCreator = includeResult.resources.includes("creator");
 
     const uid = deslugify(id);
     if (!uid) {
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json(
-        {
-          errors: [
-            {
-              status: "404",
-              title: "Monster not found",
-            },
-          ],
-        },
-        { status: 404, headers }
-      );
+      return jsonApiError(404, "Monster not found");
     }
 
     const identifier = uuidToIdentifier(uid);
@@ -75,55 +46,38 @@ export const GET = telemetry(
       const monster = await monstersService.getPublicMonster(uid);
 
       if (!monster) {
-        const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-        addCorsHeaders(headers);
-        return NextResponse.json(
-          {
-            errors: [
-              {
-                status: "404",
-                title: "Monster not found",
-              },
-            ],
-          },
-          { status: 404, headers }
-        );
+        return jsonApiError(404, "Monster not found");
       }
 
       span?.setAttributes({ "monster.id": monster.id });
 
       const data = toJsonApiMonster(monster);
 
-      const response: {
-        data: typeof data;
-        included?: ReturnType<typeof toJsonApiFamily>[];
-      } = { data };
+      const included: Array<
+        ReturnType<typeof toJsonApiFamily> | ReturnType<typeof toJsonApiUser>
+      > = [];
 
       if (includeFamilies) {
-        const families = monster.families ?? [];
-        if (families.length > 0) {
-          response.included = families.map(toJsonApiFamily);
-        }
+        included.push(...(monster.families ?? []).map(toJsonApiFamily));
       }
 
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json(response, { headers });
+      if (includeCreator) {
+        included.push(toJsonApiUser(monster.creator));
+      }
+
+      const response: {
+        data: typeof data;
+        included?: typeof included;
+      } = { data };
+
+      if (included.length > 0) {
+        response.included = included;
+      }
+
+      return NextResponse.json(response, { headers: jsonApiHeaders() });
     } catch (error) {
       span?.setAttributes({ error: String(error) });
-      const headers = new Headers({ "Content-Type": CONTENT_TYPE });
-      addCorsHeaders(headers);
-      return NextResponse.json(
-        {
-          errors: [
-            {
-              status: "404",
-              title: "Monster not found",
-            },
-          ],
-        },
-        { status: 404, headers }
-      );
+      return jsonApiError(404, "Monster not found");
     }
   }
 );

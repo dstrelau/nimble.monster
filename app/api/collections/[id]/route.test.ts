@@ -428,7 +428,9 @@ describe("GET /api/collections/[id]", () => {
     expect(response.status).toBe(400);
     expect(data.errors).toHaveLength(1);
     expect(data.errors[0].status).toBe("400");
-    expect(data.errors[0].title).toContain("Only 'monsters' and 'items'");
+    expect(data.errors[0].title).toContain(
+      "Only 'monsters', 'items', and 'creator'"
+    );
   });
 
   it("should include relationships in response", async () => {
@@ -468,5 +470,44 @@ describe("GET /api/collections/[id]", () => {
     expect(resource.relationships.creator.data.id).toBe(
       "0psvtrh43w8xm9dfbf5b6nkcq1"
     );
+  });
+
+  it("should include creator resource when include=creator", async () => {
+    const mockCollection: Collection = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Test Collection",
+      legendaryCount: 0,
+      standardCount: 1,
+      creator: fakeCreator,
+      visibility: "public",
+      monsters: [],
+      items: [],
+      itemCount: 0,
+      companions: [],
+      ancestries: [],
+      backgrounds: [],
+      subclasses: [],
+      classes: [],
+      spellSchools: [],
+    };
+
+    mockFindPublicCollectionById.mockResolvedValue(mockCollection);
+
+    const request = new Request(
+      "http://localhost:3000/api/collections/0psvtrh43w8xm9dfbf5b6nkcq1?include=creator"
+    );
+    const response = await GET(
+      request,
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.included).toBeDefined();
+    const creator = data.included.find(
+      (r: { type: string }) => r.type === "users"
+    );
+    expect(creator).toBeDefined();
+    expect(creator.id).toBe("0psvtrh43w8xm9dfbf5b6nkcq1");
   });
 });

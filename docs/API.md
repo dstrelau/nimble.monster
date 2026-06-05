@@ -23,8 +23,10 @@ List public monsters with pagination and sorting.
   - `level`, `-level`
 - `search` (string, optional): Search by name
 - `level` (number, optional): Filter by level
-- `include` (string, optional): Related resources to include. Supports:
+- `include` (string, optional): Related resources to include (comma-separated).
+  Supports:
   - `families` - Include family resources referenced by returned monsters
+  - `creator` - Include the user resources that created the returned monsters
 
 **Response:**
 ```json
@@ -65,16 +67,19 @@ List public monsters with pagination and sorting.
 
 The `relationships.creator` field is always present. The
 `relationships.families` field is present only when the monster belongs to one
-or more families. The `included` array is present only when `include=families`
-is specified and at least one family exists.
+or more families. The `included` array is present only when `include` is
+specified; it contains the requested family resources (`include=families`)
+and/or the deduplicated creator user resources (`include=creator`).
 
 ### GET /api/monsters/:id
 
 Retrieve a single monster by ID (26-character identifier).
 
 **Query Parameters:**
-- `include` (string, optional): Related resources to include. Supports:
+- `include` (string, optional): Related resources to include (comma-separated).
+  Supports:
   - `families` - Include family resources for this monster
+  - `creator` - Include the user resource that created this monster
 
 **Response (standard monster):**
 ```json
@@ -143,11 +148,16 @@ Paperforge illustration is associated.
 
 When `include=families` is specified and the monster belongs to families, the
 response includes a `relationships.families` field and an `included` array with
-the full family resources.
+the full family resources. When `include=creator` is specified, the creator user
+resource is added to the `included` array.
 
 ### GET /api/families/:id
 
 Retrieve a single family by ID (26-character identifier).
+
+**Query Parameters:**
+- `include` (string, optional): Related resources to include. Supports:
+  - `creator` - Include the user resource that created this family
 
 **Response:**
 ```json
@@ -188,6 +198,8 @@ List public items with pagination and sorting.
 - `search` (string, optional): Search by name or kind
 - `rarity` (string, optional): Filter by rarity
   - `all`, `unspecified`, `common`, `uncommon`, `rare`, `very_rare`, `legendary`
+- `include` (string, optional): Related resources to include. Supports:
+  - `creator` - Include the user resources that created the returned items
 
 **Response:**
 ```json
@@ -222,6 +234,10 @@ List public items with pagination and sorting.
 ### GET /api/items/:id
 
 Retrieve a single item by ID (26-character identifier).
+
+**Query Parameters:**
+- `include` (string, optional): Related resources to include. Supports:
+  - `creator` - Include the user resource that created this item
 
 **Response:**
 ```json
@@ -319,6 +335,8 @@ List public collections with pagination and sorting.
 - `sort` (string, optional): Sort order; '-' prefix for descending
   - `name`, `-name`
   - `createdAt`, `-createdAt`
+- `include` (string, optional): Related resources to include. Supports:
+  - `creator` - Include the user resources that created the returned collections
 
 **Response:**
 ```json
@@ -361,7 +379,8 @@ Retrieve a single collection by ID (26-character identifier).
 - `include` (string, optional): Related resources to include. Supports:
   - `monsters` - Include all monsters in the collection
   - `items` - Include all items in the collection
-  - `monsters,items` - Include both monsters and items (comma-separated)
+  - `creator` - Include the user resource that created this collection
+  - Values may be combined (comma-separated), e.g. `monsters,items,creator`
 
 **Response (with include=monsters,items):**
 ```json

@@ -277,4 +277,50 @@ describe("GET /api/collections", () => {
       "0j6hb7g4hm28t14d0j6hb7h45b"
     );
   });
+
+  it("should include the creator when include=creator", async () => {
+    const mockCollections = [
+      {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "My Collection",
+        visibility: "public" as const,
+        legendaryCount: 0,
+        standardCount: 3,
+        creator: fakeCreator,
+        monsters: [],
+        items: [],
+        itemCount: 0,
+      },
+    ];
+
+    mockListPublicCollections.mockResolvedValue({
+      collections: mockCollections,
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/collections?include=creator"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.included).toHaveLength(1);
+    expect(data.included[0].type).toBe("users");
+    expect(data.included[0].id).toBe(
+      data.data[0].relationships.creator.data.id
+    );
+    expect(data.included[0].attributes).not.toHaveProperty("discordId");
+  });
+
+  it("should reject an invalid include parameter", async () => {
+    const request = new Request(
+      "http://localhost:3000/api/collections?include=bogus"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.errors[0].title).toContain("Invalid include parameter");
+  });
 });
