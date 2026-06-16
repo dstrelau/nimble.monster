@@ -35,25 +35,8 @@ describe("parseMonster - minion detection", () => {
     expect(result.minion).toBe(false);
   });
 
-  it("sets minion true when subtype is 'minion' and minion is absent", () => {
-    const result = parseMonster(makeMonster({ subtype: "minion" }));
-    expect(result.minion).toBe(true);
-  });
-
-  it("sets minion false when subtype is 'standard' and minion is absent", () => {
-    const result = parseMonster(makeMonster({ subtype: "standard" }));
-    expect(result.minion).toBe(false);
-  });
-
-  it("sets minion false when neither minion nor subtype is present", () => {
+  it("sets minion false when minion attribute is absent", () => {
     const result = parseMonster(makeMonster());
-    expect(result.minion).toBe(false);
-  });
-
-  it("does not override explicit minion:false with subtype:'minion'", () => {
-    const result = parseMonster(
-      makeMonster({ minion: false, subtype: "minion" })
-    );
     expect(result.minion).toBe(false);
   });
 });

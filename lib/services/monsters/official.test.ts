@@ -34,25 +34,8 @@ describe("parseJSONAPIMonster - minion detection", () => {
     expect(result.minion).toBe(false);
   });
 
-  it("sets minion true when subtype is 'minion' and minion is absent", () => {
-    const result = parseJSONAPIMonster(makeMonster({ subtype: "minion" }));
-    expect(result.minion).toBe(true);
-  });
-
-  it("sets minion false when subtype is 'standard' and minion is absent", () => {
-    const result = parseJSONAPIMonster(makeMonster({ subtype: "standard" }));
-    expect(result.minion).toBe(false);
-  });
-
-  it("sets minion false when neither minion nor subtype is present", () => {
+  it("sets minion false when minion attribute is absent", () => {
     const result = parseJSONAPIMonster(makeMonster());
-    expect(result.minion).toBe(false);
-  });
-
-  it("does not override explicit minion:false with subtype:'minion'", () => {
-    const result = parseJSONAPIMonster(
-      makeMonster({ minion: false, subtype: "minion" })
-    );
     expect(result.minion).toBe(false);
   });
 });

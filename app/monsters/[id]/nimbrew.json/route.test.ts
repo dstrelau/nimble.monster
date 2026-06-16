@@ -310,6 +310,55 @@ describe("GET /monsters/[id]/nimbrew.json", () => {
     expect(data.actions[0].type).toBe("single");
   });
 
+  it("should include Minion in CR for minion monsters", async () => {
+    mockFormatSizeKind.mockReturnValue("Small Humanoid");
+
+    const mockMonster = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Kobold Minion",
+      visibility: "public",
+      creator: fakeCreator,
+      level: "1",
+      levelInt: 1,
+      hp: 1,
+      legendary: false,
+      minion: true,
+      armor: "none",
+      size: "small",
+      speed: 6,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      teleport: 0,
+      burrow: 0,
+      saves: "",
+      families: [],
+      abilities: [],
+      actions: [
+        {
+          id: "test-id-minion",
+          name: "Dagger",
+          damage: "1",
+          description: "Melee weapon attack",
+        },
+      ],
+      actionPreface: "",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } satisfies Partial<Monster>;
+
+    const slug = "kobold-minion-abcdefghijklmnopqrstuvw";
+    mockDeslugify.mockReturnValue("550e8400-e29b-41d4-a716-446655440000");
+    mockSlugify.mockReturnValue(slug);
+    mockFindMonster.mockResolvedValue(mockMonster);
+
+    const response = await GET(mockRequest, createMockParams(slug));
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.CR).toBe("Lvl 1 Minion Small Humanoid");
+  });
+
   it("should handle monster with single action", async () => {
     mockFormatSizeKind.mockReturnValue("Small Beast");
 

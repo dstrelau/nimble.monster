@@ -82,7 +82,9 @@ export const GET = telemetry(
         ? ""
         : monster.legendary
           ? `Level ${monster.level} Solo`
-          : `Lvl ${monster.level}`;
+          : monster.minion
+            ? `Lvl ${monster.level} Minion`
+            : `Lvl ${monster.level}`;
     const cr = [lvl, formatSizeKind(monster)].filter(Boolean).join(" ");
 
     const nimbrewData: {

@@ -139,7 +139,7 @@ export function parseMonster(data: JSONAPIMonster): Monster {
     kind: attrs.kind,
     role: (attrs.role as Monster["role"]) ?? undefined,
     legendary: attrs.legendary,
-    minion: attrs.minion ?? attrs.subtype === "minion",
+    minion: attrs.minion ?? false,
     visibility: "public",
     paperforgeId: attrs.paperforgeId,
     createdAt: new Date(),
