@@ -35,6 +35,7 @@ export interface JSONAPIMonster {
     mild_encounter?: string;
     spicy_encounter?: string;
     legendary: boolean;
+    subtype?: string;
     minion?: boolean;
     bloodied?: string;
     lastStand?: string;
@@ -138,7 +139,7 @@ function parseMonster(data: JSONAPIMonster): Monster {
     kind: attrs.kind,
     role: (attrs.role as Monster["role"]) ?? undefined,
     legendary: attrs.legendary,
-    minion: attrs.minion ?? false,
+    minion: attrs.minion ?? attrs.subtype === "minion",
     visibility: "public",
     paperforgeId: attrs.paperforgeId,
     createdAt: new Date(),

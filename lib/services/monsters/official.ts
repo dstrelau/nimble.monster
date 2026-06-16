@@ -170,7 +170,7 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
         : (attrs.armor as CreateMonsterInput["armor"]),
     kind: attrs.kind,
     legendary: attrs.legendary,
-    minion: attrs.minion ?? false,
+    minion: attrs.minion ?? attrs.subtype === "minion",
     visibility: "public",
     paperforgeId: attrs.paperforgeId || null,
     ...speeds,
