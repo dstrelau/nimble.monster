@@ -75,7 +75,7 @@ export interface MonsterSearchResult {
   nextCursor?: string;
 }
 
-function parseMonster(data: JSONAPIMonster): Monster {
+export function parseMonster(data: JSONAPIMonster): Monster {
   const attrs = data.attributes;
 
   const speeds = {
