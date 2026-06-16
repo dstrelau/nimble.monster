@@ -82,9 +82,7 @@ export const GET = telemetry(
         ? ""
         : monster.legendary
           ? `Level ${monster.level} Solo`
-          : monster.minion
-            ? `Lvl ${monster.level} Minion`
-            : `Lvl ${monster.level}`;
+          : `Lvl ${monster.level}`;
     const cr = [lvl, formatSizeKind(monster)].filter(Boolean).join(" ");
 
     const nimbrewData: {
@@ -104,6 +102,7 @@ export const GET = telemetry(
       theme: object;
       bloodied?: string;
       laststand?: string;
+      minion?: boolean;
     } = {
       name: monster.name,
       CR: cr,
@@ -133,6 +132,10 @@ export const GET = telemetry(
         borderOpacity: "1",
       },
     };
+
+    if (monster.minion) {
+      nimbrewData.minion = true;
+    }
 
     if (monster.legendary) {
       if (monster.bloodied) {

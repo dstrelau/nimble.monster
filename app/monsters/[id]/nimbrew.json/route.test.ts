@@ -356,7 +356,8 @@ describe("GET /monsters/[id]/nimbrew.json", () => {
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data.CR).toBe("Lvl 1 Minion Small Humanoid");
+    expect(data.CR).toBe("Lvl 1 Small Humanoid");
+    expect(data.minion).toBe(true);
   });
 
   it("should handle monster with single action", async () => {
