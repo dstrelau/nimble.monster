@@ -13,17 +13,9 @@ node_modules: package.json pnpm-lock.yaml
 db:
 	mkdir -p db
 
-TURSO := $(shell command -v turso 2>/dev/null || echo ~/.turso/turso)
-
 db/dev.db: | db node_modules
-	@if $(TURSO) db list 2>/dev/null | grep -q nexus-production; then \
-		echo "Exporting production database..."; \
-		rm -f db/dev.db db/dev.db-shm db/dev.db-wal; \
-		$(TURSO) db export nexus-production --output-file db/dev.db; \
-	else \
-		echo "Creating empty database..."; \
-		DATABASE_URL=file:db/dev.db $(BIN)/drizzle-kit migrate; \
-	fi
+	@rm -f db/dev.db-shm db/dev.db-wal
+	fly sftp get /data/db.sqlite db/dev.db
 
 sync-icons: components/game-icons/index.ts
 
