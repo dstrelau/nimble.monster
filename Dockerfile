@@ -18,7 +18,7 @@ RUN corepack enable && corepack install && node tools/sync-icons.js && pnpm run 
 FROM base AS runner
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates chromium chromium-sandbox \
+    ca-certificates chromium chromium-sandbox sqlite3 \
     fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=litestream/litestream:0.3.13 /usr/local/bin/litestream /usr/local/bin/litestream
