@@ -200,6 +200,56 @@ describe("GET /api/monsters", () => {
     expect(resource.attributes).not.toHaveProperty("families");
   });
 
+  it("should include hpPerHero in attributes when set, and omit it when null", async () => {
+    const baseMonster = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Goblin",
+      level: "1",
+      levelInt: 1,
+      hp: 10,
+      legendary: false,
+      minion: false,
+      armor: "none",
+      size: "small",
+      speed: 6,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      teleport: 0,
+      burrow: 0,
+      visibility: "public",
+      families: [],
+      abilities: [],
+      actions: [],
+      actionPreface: "",
+      creator: fakeCreator,
+      createdAt: new Date("2025-01-01"),
+      updatedAt: new Date("2025-01-01"),
+      saves: "",
+    };
+
+    mockPaginateMonsters.mockResolvedValue({
+      data: [
+        { ...baseMonster, hpPerHero: 48 },
+        {
+          ...baseMonster,
+          id: "550e8400-e29b-41d4-a716-446655440001",
+          hpPerHero: null,
+        },
+      ],
+      nextCursor: null,
+    });
+
+    const request = new Request("http://localhost:3000/api/monsters");
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.data[0].attributes.hp).toBe(10);
+    expect(data.data[0].attributes.hpPerHero).toBe(48);
+    expect(data.data[1].attributes).not.toHaveProperty("hpPerHero");
+  });
+
   it("should handle cursor pagination", async () => {
     const encodedCursor =
       "encoded_name_Dragon_550e8400-e29b-41d4-a716-446655440001";

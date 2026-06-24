@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { Card } from "@/app/ui/monster/Card";
 import {
   ArmorIcon,
@@ -43,6 +43,7 @@ import { PaperforgeImageSelect } from "@/components/PaperforgeImageSelect";
 import { Button } from "@/components/ui/button";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Toggle } from "@/components/ui/toggle";
 import {
   Tooltip,
   TooltipContent,
@@ -63,7 +64,7 @@ import {
   SIZES,
 } from "@/lib/services/monsters";
 import { UNKNOWN_USER } from "@/lib/types";
-import { levelIntToDisplay } from "@/lib/utils";
+import { cn, levelIntToDisplay } from "@/lib/utils";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { useUserFamiliesQuery } from "../families/hooks";
 import { AbilitiesSection } from "../ui/create/AbilitiesSection";
@@ -352,8 +353,9 @@ const LegendaryForm: React.FC<{
       <div className="grid grid-cols-14 gap-x-6">
         <HPInput
           monster={monster}
-          className="col-span-3"
+          className="col-span-5"
           onChange={(hp) => setMonster({ ...monster, hp: Math.max(0, hp) })}
+          onPerHeroChange={(hpPerHero) => setMonster({ ...monster, hpPerHero })}
         />
         <IconFormSelect
           icon={ArmorIcon}
@@ -362,14 +364,16 @@ const LegendaryForm: React.FC<{
           choices={ARMORS}
           selected={monster.armor}
           className="col-span-4"
+          labelClassName="h-8"
           onChange={(armor) => setMonster({ ...monster, armor })}
         />
-        <div className="col-span-7">
+        <div className="col-span-5">
           <IconFormInput
             name="saves"
             text="Saves"
             icon={SavesIcon}
             value={monster.saves || ""}
+            labelClassName="h-8"
             onChange={(e) => setMonster({ ...monster, saves: e })}
           />
         </div>
@@ -643,6 +647,7 @@ const StandardForm: React.FC<{
           name="armor"
           choices={ARMORS}
           selected={monster.armor}
+          labelClassName="h-8"
           onChange={(armor) => setMonster({ ...monster, armor })}
         />
         <IconFormInput
@@ -650,6 +655,7 @@ const StandardForm: React.FC<{
           text="Speed"
           name="speed"
           value={monster.speed}
+          labelClassName="h-8"
           onChange={(speed) =>
             setMonster({ ...monster, speed: Math.max(0, speed) })
           }
@@ -657,6 +663,7 @@ const StandardForm: React.FC<{
         <HPInput
           monster={monster}
           onChange={(hp) => setMonster({ ...monster, hp: Math.max(0, hp) })}
+          onPerHeroChange={(hpPerHero) => setMonster({ ...monster, hpPerHero })}
         />
       </div>
 
@@ -790,6 +797,35 @@ const HP_RECOMMENDATION_LEGENDARY: Record<number, Record<string, number>> = {
   20: { none: 525, medium: 525, heavy: 415, lastStand: 200 },
 };
 
+// Recommended HP per hero for legendary monsters, keyed by monster level
+// (player level == monster level for legendary monsters). A null entry means
+// that armor type has no recommendation at that level.
+const HP_PER_HERO_RECOMMENDATION_LEGENDARY: Record<
+  number,
+  Partial<Record<MonsterArmor, number>>
+> = {
+  1: { none: 22 },
+  2: { none: 28, medium: 20 },
+  3: { none: 40, medium: 28, heavy: 18 },
+  4: { none: 44, medium: 31, heavy: 20 },
+  5: { none: 48, medium: 34, heavy: 22 },
+  6: { none: 56, medium: 39, heavy: 25 },
+  7: { none: 64, medium: 44, heavy: 29 },
+  8: { none: 71, medium: 50, heavy: 32 },
+  9: { none: 79, medium: 55, heavy: 35 },
+  10: { none: 86, medium: 60, heavy: 39 },
+  11: { none: 94, medium: 67, heavy: 44 },
+  12: { none: 102, medium: 74, heavy: 50 },
+  13: { none: 109, medium: 82, heavy: 56 },
+  14: { none: 117, medium: 89, heavy: 63 },
+  15: { none: 125, medium: 97, heavy: 70 },
+  16: { none: 132, medium: 104, heavy: 77 },
+  17: { none: 140, medium: 111, heavy: 84 },
+  18: { none: 147, medium: 118, heavy: 91 },
+  19: { none: 155, medium: 126, heavy: 99 },
+  20: { none: 166, medium: 136, heavy: 110 },
+};
+
 const getRecommendedHPStandard = (
   levelInt: number,
   armor: MonsterArmor
@@ -806,70 +842,144 @@ const getRecommendedHPLegendary = (
   return HP_RECOMMENDATION_LEGENDARY[levelInt][armor] || null;
 };
 
+const getRecommendedHPPerHeroLegendary = (
+  levelInt: number,
+  armor: MonsterArmor
+): number | null => {
+  if (levelInt === 0 || !HP_PER_HERO_RECOMMENDATION_LEGENDARY[levelInt])
+    return null;
+  return HP_PER_HERO_RECOMMENDATION_LEGENDARY[levelInt][armor] ?? null;
+};
+
 const HPInput: React.FC<{
   monster: Monster;
   onChange: (hp: number) => void;
+  onPerHeroChange: (hpPerHero: number | null) => void;
   className?: string;
-}> = ({ monster, onChange, className }) => {
-  const recommendedHP = useMemo(() => {
+}> = ({ monster, onChange, onPerHeroChange, className }) => {
+  const perHeroId = useId();
+  const perHeroEnabled = monster.hpPerHero != null;
+
+  // Remember the last per-hero value so toggling off and back on restores it
+  // instead of resetting to 0 (the value lives in monster.hpPerHero, which is
+  // cleared to null while the toggle is off).
+  const lastPerHeroValue = useRef(monster.hpPerHero ?? 0);
+  if (monster.hpPerHero != null) {
+    lastPerHeroValue.current = monster.hpPerHero;
+  }
+
+  // When per-hero HP is used:
+  //  - legendary monsters use the per-hero recommendation table
+  //  - regular monsters have no recommendation (tooltip disabled completely)
+  // Otherwise the total-HP recommendation tables are used.
+  const recommended = useMemo(() => {
+    if (perHeroEnabled) {
+      return monster.legendary
+        ? getRecommendedHPPerHeroLegendary(monster.levelInt, monster.armor)
+        : null;
+    }
     return monster.legendary
       ? getRecommendedHPLegendary(monster.levelInt, monster.armor)
       : getRecommendedHPStandard(monster.levelInt, monster.armor);
-  }, [monster.legendary, monster.levelInt, monster.armor]);
+  }, [perHeroEnabled, monster.legendary, monster.levelInt, monster.armor]);
+
+  const currentValue = perHeroEnabled ? (monster.hpPerHero ?? 0) : monster.hp;
 
   const percentDiff = useMemo(() => {
-    if (!recommendedHP || monster.hp === 0) return 0;
-    const diff = monster.hp - recommendedHP;
-    return Math.abs(diff) / recommendedHP;
-  }, [recommendedHP, monster.hp]);
+    if (!recommended || currentValue === 0) return 0;
+    return Math.abs(currentValue - recommended) / recommended;
+  }, [recommended, currentValue]);
 
   const warning = percentDiff > 0.2 && percentDiff < 0.4;
   const critical = percentDiff > 0.4;
 
-  return (
-    <FormInput
-      name="hp"
-      className={className}
-      value={monster.hp}
-      onChange={onChange}
-      label={
-        <TooltipProvider>
-          <span className="flex-1">
-            <HPIcon className="h-4 w-4 mr-0.5 inline stroke-hp" />
-            HP
-          </span>{" "}
-          {recommendedHP && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="flex items-center leading-4 mr-[1px]">
-                  {monster.hp === 0 ? (
-                    <Target className="h-4" />
-                  ) : warning ? (
-                    <TriangleAlert className="h-4 text-warning" />
-                  ) : critical ? (
-                    <CircleAlert className="h-4 text-error" />
-                  ) : (
-                    <CircleCheck className="h-4 text-success" />
-                  )}
-                  {recommendedHP}
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  {monster.hp === 0
-                    ? "GM Guide Recommended HP"
-                    : warning
-                      ? ">20% from recommended"
-                      : critical
-                        ? ">40% from recommended"
-                        : "Within 20% of recommended"}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          )}
-        </TooltipProvider>
+  const perHeroToggle = (
+    <Toggle
+      id={`hp-per-hero-${perHeroId}`}
+      variant="outline"
+      size="sm"
+      pressed={perHeroEnabled}
+      onPressedChange={(pressed) =>
+        onPerHeroChange(pressed ? lastPerHeroValue.current : null)
       }
-    />
+    >
+      per hero
+    </Toggle>
+  );
+
+  const recommendationIndicator = recommended ? (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="flex items-center leading-4 mr-[1px]">
+            {currentValue === 0 ? (
+              <Target className="h-4" />
+            ) : warning ? (
+              <TriangleAlert className="h-4 text-warning" />
+            ) : critical ? (
+              <CircleAlert className="h-4 text-error" />
+            ) : (
+              <CircleCheck className="h-4 text-success" />
+            )}
+            {recommended}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>
+            {currentValue === 0
+              ? "GM Guide Recommended HP"
+              : warning
+                ? ">20% from recommended"
+                : critical
+                  ? ">40% from recommended"
+                  : "Within 20% of recommended"}
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  ) : null;
+
+  return (
+    <div className={cn("space-y-2", className)}>
+      {!perHeroEnabled && (
+        <FormInput
+          name="hp"
+          value={monster.hp}
+          onChange={onChange}
+          labelClassName="h-8"
+          label={
+            <>
+              <span>
+                <HPIcon className="h-4 w-4 mr-0.5 inline stroke-hp" />
+                HP
+              </span>
+              {perHeroToggle}
+              <span className="flex-1" />
+              {recommendationIndicator}
+            </>
+          }
+        />
+      )}
+      {perHeroEnabled && (
+        <FormInput
+          name="hpPerHero"
+          value={monster.hpPerHero ?? 0}
+          onChange={(value) => onPerHeroChange(Math.max(0, value))}
+          labelClassName="h-8"
+          label={
+            <>
+              <span>
+                <HPIcon className="h-4 w-4 mr-0.5 inline stroke-hp" />
+                HP
+              </span>
+              {perHeroToggle}
+              <span className="flex-1" />
+              {recommendationIndicator}
+            </>
+          }
+        />
+      )}
+    </div>
   );
 };
 
@@ -923,7 +1033,8 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           name: data.name,
           level: data.level,
           levelInt: data.levelInt,
-          hp: data.hp,
+          hp: data.hpPerHero != null ? 0 : data.hp,
+          hpPerHero: data.hpPerHero ?? null,
           armor: data.armor,
           size: data.size,
           speed: data.speed,
@@ -960,6 +1071,8 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
         method: "POST",
         body: JSON.stringify({
           ...data,
+          hp: data.hpPerHero != null ? 0 : data.hp,
+          hpPerHero: data.hpPerHero ?? null,
           remixedFromId,
         }),
       });

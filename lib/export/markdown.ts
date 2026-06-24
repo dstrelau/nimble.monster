@@ -1,6 +1,7 @@
 import type { Item } from "@/lib/services/items";
 import type { Monster } from "@/lib/services/monsters";
 import type { SpellSchool } from "@/lib/types";
+import { formatHp } from "@/lib/utils/monster";
 
 function generateStandardBriefMarkdown(monster: Monster): string {
   const sections: string[] = [];
@@ -90,7 +91,7 @@ function generateLegendaryBriefMarkdown(monster: Monster): string {
 
   // HP/Armor/Speed/Saves line
   const statLine: string[] = [];
-  statLine.push(`**HP:** ${monster.hp}`);
+  statLine.push(`**HP:** ${formatHp(monster)}`);
   statLine.push(`**Armor:** ${capitalize(monster.armor)}`);
   statLine.push(`**Speed:** ${getBriefSpeedString(monster)}`);
   if (monster.saves) {
@@ -137,7 +138,7 @@ function generateLegendaryBriefMarkdown(monster: Monster): string {
 
 function generateBriefStatLine(monster: Monster): string {
   const statLine: string[] = [];
-  statLine.push(`**HP:** ${monster.hp}`);
+  statLine.push(`**HP:** ${formatHp(monster)}`);
   statLine.push(`**Armor:** ${capitalize(monster.armor)}`);
   statLine.push(`**Speed:** ${getBriefSpeedString(monster)}`);
 
@@ -280,7 +281,7 @@ function generateFrontmatter(monster: Monster, tags: string[]): string {
   if (monster.kind) lines.push(`kind: "${escapeYaml(monster.kind)}"`);
   if (monster.role) lines.push(`role: ${monster.role}`);
 
-  lines.push(`hp: ${monster.hp}`);
+  lines.push(`hp: ${formatHp(monster)}`);
   lines.push(`armor: ${monster.armor}`);
   lines.push(`size: ${monster.size}`);
   lines.push(`visibility: ${monster.visibility}`);
@@ -347,7 +348,7 @@ function generateHeader(monster: Monster): string {
 function generateStats(monster: Monster): string {
   const lines = ["## Stats"];
 
-  lines.push(`- **HP**: ${monster.hp}`);
+  lines.push(`- **HP**: ${formatHp(monster)}`);
   lines.push(`- **Armor**: ${monster.armor}`);
   lines.push(`- **Size**: ${monster.size}`);
 

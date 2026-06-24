@@ -50,7 +50,7 @@ export const Stat: React.FC<{
     >
       <SvgIcon
         className={cn(
-          "w-7 h-7 -mr-[4px] stroke-neutral-300 fill-neutral-200 dark:stroke-neutral-600 dark:fill-neutral-700",
+          "w-7 h-7 shrink-0 -mr-[4px] stroke-neutral-300 fill-neutral-200 dark:stroke-neutral-600 dark:fill-neutral-700",
           iconClassName
         )}
       />

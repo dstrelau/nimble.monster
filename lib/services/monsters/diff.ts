@@ -77,6 +77,8 @@ export function compareMonsters(
   // Compare scalars
   if (uploaded.name !== existing.name) return "updated";
   if (uploaded.hp !== existing.hp) return "updated";
+  if ((uploaded.hpPerHero ?? null) !== (existing.hpPerHero ?? null))
+    return "updated";
   if (uploaded.level !== existing.level) return "updated";
   if (uploaded.levelInt !== existing.levelInt) return "updated";
   if (uploaded.size !== existing.size) return "updated";

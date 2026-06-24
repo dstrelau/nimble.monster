@@ -21,7 +21,7 @@ import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
 import type { Monster } from "@/lib/services/monsters";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { formatSizeKind } from "@/lib/utils/monster";
+import { formatHp, formatSizeKind } from "@/lib/utils/monster";
 import { getMonsterUrl, getUserUrl } from "@/lib/utils/url";
 import CardActions from "./CardActions";
 import {
@@ -102,7 +102,7 @@ const MonsterStats: React.FC<{
       )}
       {variant === "legendary" && (
         <>
-          <HPStat value={monster.hp} />
+          <HPStat value={formatHp(monster)} />
           <SavesStat>
             <div className="flex flex-col">
               {monster.saves?.split(",").map((save) => (
@@ -114,7 +114,7 @@ const MonsterStats: React.FC<{
           </SavesStat>
         </>
       )}
-      {variant === "standard" && <HPStat value={monster.hp} />}
+      {variant === "standard" && <HPStat value={formatHp(monster)} />}
     </StatsGroup>
   );
 };

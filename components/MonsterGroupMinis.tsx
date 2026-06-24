@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import type { MonsterMini } from "@/lib/services/monsters";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
+import { formatHp } from "@/lib/utils/monster";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { Link } from "./app/Link";
 import { Level } from "./Level";
@@ -91,7 +92,9 @@ export const MonsterRow: React.FC<{
         "font-slab flex flex-wrap items-baseline justify-end font-black italic"
       )}
     >
-      {monster.minion || <HPStat value={monster.hp} className="min-w-14" />}
+      {monster.minion || (
+        <HPStat value={formatHp(monster)} className="min-w-14" />
+      )}
     </div>
   </div>
 );

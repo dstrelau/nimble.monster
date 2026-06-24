@@ -17,6 +17,7 @@ export interface FormInputProps<T extends string | number> {
   value: T;
   type?: string;
   className?: string;
+  labelClassName?: string;
   onChange: (value: T) => void;
 }
 
@@ -26,6 +27,7 @@ export function FormInput<T extends string | number>({
   value,
   type,
   className,
+  labelClassName,
   onChange,
 }: FormInputProps<T>) {
   if (!type) {
@@ -38,7 +40,7 @@ export function FormInput<T extends string | number>({
   };
   return (
     <div className={cn("space-y-2", className)}>
-      <Label className="gap-1" htmlFor={name}>
+      <Label className={cn("gap-1", labelClassName)} htmlFor={name}>
         {label}
       </Label>
       <Input
@@ -89,6 +91,7 @@ export interface FormSelectProps<T extends string> {
   label: React.ReactNode;
   name: string;
   className?: string;
+  labelClassName?: string;
   choices: ReadonlyArray<{ readonly value: T; readonly label: string }>;
   selected: T;
   onChange: (value: T) => void;
@@ -98,13 +101,14 @@ export function FormSelect<T extends string>({
   label,
   name,
   className,
+  labelClassName,
   choices,
   selected,
   onChange,
 }: FormSelectProps<T>) {
   return (
     <div className={cn("width-full space-y-2", className)}>
-      <Label className="gap-1" htmlFor={name}>
+      <Label className={cn("gap-1", labelClassName)} htmlFor={name}>
         {label}
       </Label>
       <Select value={selected} onValueChange={onChange}>
@@ -130,6 +134,7 @@ export interface IconFormInputProps<T extends string | number> {
   value: T;
   type?: string;
   className?: string;
+  labelClassName?: string;
   onChange: (value: T) => void;
 }
 
@@ -140,6 +145,7 @@ export function IconFormInput<T extends string | number>({
   value,
   type,
   className = "",
+  labelClassName,
   onChange,
 }: IconFormInputProps<T>) {
   return (
@@ -154,6 +160,7 @@ export function IconFormInput<T extends string | number>({
       value={value}
       type={type}
       className={className}
+      labelClassName={labelClassName}
       onChange={onChange}
     />
   );
@@ -166,6 +173,7 @@ export interface IconFormSelectProps<T extends string> {
   choices: ReadonlyArray<{ readonly value: T; readonly label: string }>;
   selected: T;
   className?: string;
+  labelClassName?: string;
   onChange: (value: T) => void;
 }
 
@@ -176,6 +184,7 @@ export function IconFormSelect<T extends string>({
   choices,
   selected,
   className = "",
+  labelClassName,
   onChange,
 }: IconFormSelectProps<T>) {
   return (
@@ -190,6 +199,7 @@ export function IconFormSelect<T extends string>({
         name={name}
         choices={choices}
         selected={selected}
+        labelClassName={labelClassName}
         onChange={onChange}
       />
     </div>

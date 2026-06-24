@@ -1,0 +1,1 @@
+ALTER TABLE `monsters` ADD `hp_per_hero` integer;

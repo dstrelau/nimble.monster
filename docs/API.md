@@ -118,6 +118,7 @@ Retrieve a single monster by ID (26-character identifier).
     "attributes": {
       "name": "Ancient Dragon",
       "hp": 200,
+      "hpPerHero": 48,
       "level": 15,
       "size": "gargantuan",
       "armor": "heavy",
@@ -139,6 +140,12 @@ Retrieve a single monster by ID (26-character identifier).
   }
 }
 ```
+
+The `hp` field is always present and holds the monster's fixed total HP. Monsters
+that scale their HP with party size (the "X/hero" format) additionally include an
+`hpPerHero` integer; when present, clients should display HP as `{hpPerHero}/hero`.
+The field is omitted when a monster does not use per-hero HP. `hp` remains
+populated in both cases for backwards compatibility.
 
 The `saves` field contains parsed ability save modifiers. Values are derived from
 the raw save string (e.g., "STR++" becomes `{"str": 2}`, "DEX-" becomes `{"dex": -1}`).

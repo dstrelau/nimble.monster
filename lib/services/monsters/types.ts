@@ -98,6 +98,7 @@ export type TypeFilter = "all" | "legendary" | "standard" | "minion";
 export interface MonsterMini {
   id: string;
   hp: number;
+  hpPerHero?: number | null;
   kind?: string;
   legendary: boolean;
   minion: boolean;
@@ -176,6 +177,7 @@ export interface CreateMonsterInput {
   level: string;
   levelInt: number;
   hp: number;
+  hpPerHero?: number | null;
   armor: MonsterArmor | "";
   size: MonsterSize;
   speed: number;
@@ -209,6 +211,7 @@ export interface UpdateMonsterInput {
   level: string;
   levelInt: number;
   hp: number;
+  hpPerHero?: number | null;
   armor: MonsterArmor;
   size: MonsterSize;
   speed: number;

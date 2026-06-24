@@ -161,6 +161,7 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
   return {
     name: attrs.name,
     hp: attrs.hp,
+    hpPerHero: attrs.hpPerHero ?? null,
     level: String(attrs.level),
     levelInt,
     size: attrs.size as CreateMonsterInput["size"],
@@ -302,6 +303,16 @@ export function validateOfficialMonstersJSON(data: unknown): {
     if (typeof attrs.hp !== "number") {
       throw new Error(
         `Invalid monster at index ${index} ("${attrs.name}"): missing or invalid hp`
+      );
+    }
+
+    if (
+      attrs.hpPerHero !== undefined &&
+      attrs.hpPerHero !== null &&
+      typeof attrs.hpPerHero !== "number"
+    ) {
+      throw new Error(
+        `Invalid monster at index ${index} ("${attrs.name}"): hpPerHero must be a number if provided`
       );
     }
 

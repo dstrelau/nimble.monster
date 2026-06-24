@@ -4,6 +4,7 @@ import { BookOpenCheck, Crown, PersonStanding } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Level } from "@/components/Level";
 import type { MonsterMini } from "@/lib/services/monsters";
+import { formatHp } from "@/lib/utils/monster";
 import { ArmorStat, HPStat } from "./Stat";
 
 type ListProps = {
@@ -103,7 +104,7 @@ export const List = ({
                 >
                   {monster.armor === "medium" && <ArmorStat value="M" />}
                   {monster.armor === "heavy" && <ArmorStat value="H" />}
-                  {monster.minion || <HPStat value={monster.hp} />}
+                  {monster.minion || <HPStat value={formatHp(monster)} />}
                 </div>
               </div>
             </div>

@@ -1,4 +1,12 @@
-import type { Monster } from "@/lib/services/monsters";
+import type { Monster, MonsterMini } from "@/lib/services/monsters";
+
+export function formatHp(
+  monster: Pick<MonsterMini, "hp" | "hpPerHero">
+): string {
+  return monster.hpPerHero != null
+    ? `${monster.hpPerHero}/hero`
+    : String(monster.hp);
+}
 
 export function formatSizeKind(monster: Monster): string {
   const parts = [];

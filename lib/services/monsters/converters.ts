@@ -22,6 +22,7 @@ interface MonsterRow {
   id: string;
   name: string;
   hp: number;
+  hpPerHero: number | null;
   legendary: boolean | null;
   minion: boolean;
   level: string;
@@ -108,6 +109,7 @@ interface MonsterWithRelations extends MonsterRow {
 export const toMonsterMini = (m: MonsterRow): MonsterMini => ({
   id: m.id,
   hp: m.hp,
+  hpPerHero: m.hpPerHero ?? null,
   legendary: m.legendary || false,
   minion: m.minion,
   level: m.level,
@@ -255,6 +257,7 @@ export const toZodMonster = (m: Monster) => {
     id: uuidToIdentifier(m.id),
     name: m.name,
     hp: m.hp,
+    hpPerHero: m.hpPerHero ?? undefined,
     level: parsedLevel,
     size: m.size,
     armor: m.armor === "none" ? ("none" as const) : m.armor,

@@ -17,6 +17,7 @@ export interface JSONAPIMonster {
   attributes: {
     name: string;
     hp: number;
+    hpPerHero?: number;
     level: number | string;
     size: string;
     armor: string;

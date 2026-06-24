@@ -121,6 +121,7 @@ export const monsters = sqliteTable(
     name: text("name").notNull(),
     level: text("level").notNull(),
     hp: integer("hp").notNull(),
+    hpPerHero: integer("hp_per_hero"),
     armor: text("armor").$type<ArmorType>().notNull(),
     size: text("size").$type<SizeType>().notNull().default("medium"),
     speed: integer("speed").notNull().default(0),

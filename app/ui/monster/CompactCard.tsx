@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Monster } from "@/lib/services/monsters/types";
+import { formatHp } from "@/lib/utils/monster";
 import {
   ArmorStat,
   BurrowIcon,
@@ -109,7 +110,7 @@ export function CompactCard({
           </div>
 
           <div className="flex flex-wrap gap-2 items-center font-slab font-black">
-            <HPStat value={monster.hp} />
+            <HPStat value={formatHp(monster)} />
             {monster.armor === "medium" && <ArmorStat value="M" />}
             {monster.armor === "heavy" && <ArmorStat value="H" />}
             {monster.saves && (
