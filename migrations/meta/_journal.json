@@ -99,6 +99,20 @@
       "when": 1782234348106,
       "tag": "0013_chunky_logan",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1782912230983,
+      "tag": "0014_fast_matthew_murdock",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1782931915663,
+      "tag": "0015_slimy_revanche",
+      "breakpoints": true
     }
   ]
 }

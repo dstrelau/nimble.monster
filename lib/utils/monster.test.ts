@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatHp } from "./monster";
+import { formatHp, monsterLevelValue } from "./monster";
 
 describe("formatHp", () => {
   it("returns the fixed hp as a string when hpPerHero is null", () => {
@@ -20,5 +20,27 @@ describe("formatHp", () => {
 
   it("treats hpPerHero of 0 as a per-hero value", () => {
     expect(formatHp({ hp: 100, hpPerHero: 0 })).toBe("0/hero");
+  });
+});
+
+describe("monsterLevelValue", () => {
+  it("returns positive levelInt values as-is", () => {
+    expect(monsterLevelValue(5)).toBe(5);
+  });
+
+  it("returns 0 for level '-'", () => {
+    expect(monsterLevelValue(0)).toBe(0);
+  });
+
+  it("converts -4 to 1/4", () => {
+    expect(monsterLevelValue(-4)).toBeCloseTo(0.25);
+  });
+
+  it("converts -3 to 1/3", () => {
+    expect(monsterLevelValue(-3)).toBeCloseTo(1 / 3);
+  });
+
+  it("converts -2 to 1/2", () => {
+    expect(monsterLevelValue(-2)).toBeCloseTo(0.5);
   });
 });

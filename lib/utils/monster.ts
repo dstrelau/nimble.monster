@@ -8,6 +8,12 @@ export function formatHp(
     : String(monster.hp);
 }
 
+// Fractional legendary levels are stored as negative reciprocals:
+// -4 => 1/4, -3 => 1/3, -2 => 1/2 (see MONSTER_LEVELS).
+export function monsterLevelValue(levelInt: number): number {
+  return levelInt < 0 ? 1 / Math.abs(levelInt) : levelInt;
+}
+
 export function formatSizeKind(monster: Monster): string {
   const parts = [];
 

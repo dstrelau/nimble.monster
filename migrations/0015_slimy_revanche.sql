@@ -1,0 +1,1 @@
+ALTER TABLE `encounters` ADD `hero_level` integer DEFAULT 1 NOT NULL;

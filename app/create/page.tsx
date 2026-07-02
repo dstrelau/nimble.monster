@@ -6,6 +6,7 @@ import {
   HeartHandshake,
   Scroll,
   Shield,
+  Swords,
   Users,
   WandSparkles,
 } from "lucide-react";
@@ -122,6 +123,14 @@ export default async function CreatePage() {
               description="Organize your favorites."
               disabled={!isAuthenticated}
               disabledMessage="You must signin to create a Collection."
+            />
+            <CreateCard
+              href="/encounters/new"
+              icon={<Swords className="size-16" />}
+              title="Encounter"
+              description="Groups of monsters for combat."
+              disabled={!isAuthenticated}
+              disabledMessage="You must signin to create an Encounter."
             />
 
             <h2 className="w-full text-4xl text-center font-bold mb-4">

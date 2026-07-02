@@ -18,6 +18,7 @@ export type SizeType =
   | "huge"
   | "gargantuan";
 export type CollectionVisibility = "public" | "private";
+export type EncounterVisibility = "public" | "private";
 export type FamilyVisibility = "public" | "secret" | "private";
 export type MonsterVisibility = "public" | "private";
 export type CompanionVisibility = "public" | "private";
@@ -89,6 +90,29 @@ export const collections = sqliteTable(
       .default("public"),
   },
   (table) => [index("idx_collections_user_id").on(table.creatorId)]
+);
+
+// Encounters table
+export const encounters = sqliteTable(
+  "encounters",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    creatorId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description").notNull().default(""),
+    visibility: text("visibility")
+      .$type<EncounterVisibility>()
+      .default("public"),
+    heroCount: integer("hero_count").notNull().default(4),
+    heroLevel: integer("hero_level").notNull().default(1),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [index("idx_encounters_user_id").on(table.creatorId)]
 );
 
 // Sources table
@@ -670,6 +694,30 @@ export const monstersCollections = sqliteTable(
   (table) => [primaryKey({ columns: [table.monsterId, table.collectionId] })]
 );
 
+// Monsters in encounters
+export const monstersEncounters = sqliteTable(
+  "monsters_encounters",
+  {
+    monsterId: text("monster_id")
+      .notNull()
+      .references(() => monsters.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    encounterId: text("encounter_id")
+      .notNull()
+      .references(() => encounters.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    quantity: integer("quantity").notNull().default(1),
+    isPerHero: integer("is_per_hero", { mode: "boolean" })
+      .notNull()
+      .default(false),
+  },
+  (table) => [primaryKey({ columns: [table.monsterId, table.encounterId] })]
+);
+
 // Items in collections
 export const itemsCollections = sqliteTable(
   "items_collections",
@@ -1016,6 +1064,9 @@ export type CompanionRow = typeof companions.$inferSelect;
 export type CompanionInsert = typeof companions.$inferInsert;
 export type CollectionRow = typeof collections.$inferSelect;
 export type CollectionInsert = typeof collections.$inferInsert;
+export type EncounterRow = typeof encounters.$inferSelect;
+export type EncounterInsert = typeof encounters.$inferInsert;
+export type MonsterEncounterRow = typeof monstersEncounters.$inferSelect;
 export type FamilyRow = typeof families.$inferSelect;
 export type FamilyInsert = typeof families.$inferInsert;
 export type ConditionRow = typeof conditions.$inferSelect;

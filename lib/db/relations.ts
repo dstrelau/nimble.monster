@@ -9,6 +9,7 @@ import {
   companions,
   companionsAwards,
   conditions,
+  encounters,
   families,
   items,
   itemsAwards,
@@ -17,6 +18,7 @@ import {
   monstersAwards,
   monstersCollections,
   monstersConditions,
+  monstersEncounters,
   monstersFamilies,
   sources,
   spellSchools,
@@ -32,6 +34,7 @@ import {
 // User relations
 export const usersRelations = relations(users, ({ many }) => ({
   collections: many(collections),
+  encounters: many(encounters),
   companions: many(companions),
   conditions: many(conditions),
   items: many(items),
@@ -54,6 +57,15 @@ export const collectionsRelations = relations(collections, ({ one, many }) => ({
   spellSchoolCollections: many(spellSchoolsCollections),
 }));
 
+// Encounter relations
+export const encountersRelations = relations(encounters, ({ one, many }) => ({
+  creator: one(users, {
+    fields: [encounters.creatorId],
+    references: [users.id],
+  }),
+  monsterEncounters: many(monstersEncounters),
+}));
+
 // Monster relations
 export const monstersRelations = relations(monsters, ({ one, many }) => ({
   creator: one(users, {
@@ -71,6 +83,7 @@ export const monstersRelations = relations(monsters, ({ one, many }) => ({
   }),
   remixes: many(monsters, { relationName: "monsterRemix" }),
   monsterCollections: many(monstersCollections),
+  monsterEncounters: many(monstersEncounters),
   monsterConditions: many(monstersConditions),
   monsterFamilies: many(monstersFamilies),
   monsterAwards: many(monstersAwards),
@@ -238,6 +251,20 @@ export const monstersCollectionsRelations = relations(
     collection: one(collections, {
       fields: [monstersCollections.collectionId],
       references: [collections.id],
+    }),
+  })
+);
+
+export const monstersEncountersRelations = relations(
+  monstersEncounters,
+  ({ one }) => ({
+    monster: one(monsters, {
+      fields: [monstersEncounters.monsterId],
+      references: [monsters.id],
+    }),
+    encounter: one(encounters, {
+      fields: [monstersEncounters.encounterId],
+      references: [encounters.id],
     }),
   })
 );

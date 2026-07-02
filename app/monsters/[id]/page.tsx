@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Card } from "@/app/ui/monster/Card";
 import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
+import { AddToEncounterDialog } from "@/components/AddToEncounterDialog";
 import { MonsterCollections } from "@/components/MonsterCollections";
 import { MonsterDetailActions } from "@/components/MonsterDetailActions";
 import { MonsterRemixes } from "@/components/MonsterRemixes";
@@ -97,6 +98,7 @@ export default async function MonsterPage({
           <>
             <MonsterDetailActions monster={monster} isOwner={isOwner} />
             <AddToCollectionDialog type="monster" monsterId={monster.id} />
+            <AddToEncounterDialog monsterId={monster.id} />
           </>
         )}
       </div>

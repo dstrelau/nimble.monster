@@ -8,6 +8,7 @@ import { publicMonstersInfiniteQueryOptions } from "@/app/monsters/hooks";
 import { myMonstersInfiniteQueryOptions } from "@/app/my/monsters/hooks";
 import { Card } from "@/app/ui/monster/Card";
 import { MonsterFilterBar } from "@/app/ui/monster/MonsterFilterBar";
+import { CreatorCombobox } from "@/app/ui/shared/CreatorCombobox";
 import {
   EmptyState,
   ErrorState,
@@ -21,7 +22,6 @@ import type {
   PaginateMonstersSortOption,
 } from "@/lib/services/monsters/types";
 import { cn } from "@/lib/utils";
-import { CreatorCombobox } from "./CreatorCombobox";
 
 interface SelectableMonsterGridProps {
   selectedIds: Set<string>;

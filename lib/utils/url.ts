@@ -106,6 +106,21 @@ export function getCollectionExportUrl(collection: {
   return `/collections/${slugify(collection)}/export`;
 }
 
+// Encounter URLs
+export function getEncounterUrl(encounter: {
+  name: string;
+  id: string;
+}): string {
+  return `/encounters/${slugify(encounter)}`;
+}
+
+export function getEncounterEditUrl(encounter: {
+  name: string;
+  id: string;
+}): string {
+  return `/encounters/${slugify(encounter)}/edit`;
+}
+
 // Family URLs
 export function getFamilyUrl(family: { name: string; id: string }): string {
   return `/families/${slugify(family)}`;

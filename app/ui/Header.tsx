@@ -1,6 +1,12 @@
 "use client";
 
-import { BookOpen, Menu, SquarePen, User as UserIcon } from "lucide-react";
+import {
+  BookOpen,
+  Menu,
+  SquarePen,
+  Swords,
+  User as UserIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -35,6 +41,7 @@ const BROWSE_CREATURES_ITEMS = [
     label: "Collections",
     icon: ENTITY_TYPE_ICONS.collection,
   },
+  { href: "/encounters", label: "Encounters", icon: Swords },
   { href: "/reference", label: "Rules", icon: BookOpen },
 ];
 
@@ -84,6 +91,7 @@ const MY_ITEMS = [
     label: "Collections",
     icon: ENTITY_TYPE_ICONS.collection,
   },
+  { href: "/my/encounters", label: "Encounters", icon: Swords },
   {
     href: "/my/subclasses",
     label: "Subclasses",

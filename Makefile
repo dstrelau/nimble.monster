@@ -1,4 +1,4 @@
-.PHONY: setup sync-icons sync-paperforge paperforge-catalog check lint type-check
+.PHONY: setup sync-icons sync-paperforge paperforge-catalog check fix lint type-check
 
 BIN := node_modules/.bin
 
@@ -32,6 +32,9 @@ paperforge-catalog:
 	node tools/paperforge.ts scrape
 
 check: lint type-check
+
+fix: | node_modules
+	$(BIN)/biome check --write --unsafe .
 
 lint: | node_modules
 	$(BIN)/biome check .

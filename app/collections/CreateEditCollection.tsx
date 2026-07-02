@@ -51,6 +51,7 @@ import type {
 import { UNKNOWN_USER } from "@/lib/types";
 import { getCollectionUrl } from "@/lib/utils/url";
 import { CollectionCard } from "../ui/CollectionCard";
+import { SelectableMonsterGrid } from "../ui/monster/SelectableMonsterGrid";
 import { updateCollection } from "./[id]/edit/actions";
 import { VisibilityToggle } from "./[id]/edit/VisibilityToggle";
 import { SelectableAncestryGrid } from "./SelectableAncestryGrid";
@@ -58,7 +59,6 @@ import { SelectableBackgroundGrid } from "./SelectableBackgroundGrid";
 import { SelectableClassGrid } from "./SelectableClassGrid";
 import { SelectableCompanionGrid } from "./SelectableCompanionGrid";
 import { SelectableItemGrid } from "./SelectableItemGrid";
-import { SelectableMonsterGrid } from "./SelectableMonsterGrid";
 import { SelectableSpellSchoolGrid } from "./SelectableSpellSchoolGrid";
 import { SelectableSubclassGrid } from "./SelectableSubclassGrid";
 

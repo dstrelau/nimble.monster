@@ -11,6 +11,7 @@ import {
 import { myItemsInfiniteQueryOptions } from "@/app/my/items/hooks";
 import { Card } from "@/app/ui/item/Card";
 import { ItemFilterBar } from "@/app/ui/item/ItemFilterBar";
+import { CreatorCombobox } from "@/app/ui/shared/CreatorCombobox";
 import {
   EmptyState,
   ErrorState,
@@ -18,7 +19,6 @@ import {
 } from "@/app/ui/shared/GridStates";
 import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
 import type { Item, ItemRarityFilter } from "@/lib/services/items";
-import { CreatorCombobox } from "./CreatorCombobox";
 
 interface SelectableItemGridProps {
   selectedIds: Set<string>;

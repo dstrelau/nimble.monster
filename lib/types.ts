@@ -164,6 +164,34 @@ export interface CollectionOverview {
   createdAt?: Date;
 }
 
+export interface EncounterMonsterEntry {
+  monster: MonsterMini;
+  quantity: number;
+  isPerHero: boolean;
+}
+
+export interface EncounterOverview {
+  id: string;
+  creator: User;
+  name: string;
+  description?: string;
+  visibility: CollectionVisibilityType;
+  heroCount: number;
+  heroLevel: number;
+  monsters: EncounterMonsterEntry[];
+  createdAt?: Date;
+}
+
+export interface EncounterMonsterEntryFull {
+  monster: Monster;
+  quantity: number;
+  isPerHero: boolean;
+}
+
+export interface Encounter extends Omit<EncounterOverview, "monsters"> {
+  monsters: EncounterMonsterEntryFull[];
+}
+
 export const UNKNOWN_USER: User = {
   id: "",
   discordId: "",

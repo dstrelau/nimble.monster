@@ -3,6 +3,7 @@ export * from "./collection";
 export * from "./companion";
 export * from "./condition";
 export { getDatabase } from "./drizzle";
+export * from "./encounter";
 export * from "./family";
 export * from "./reference";
 export * from "./schema";
