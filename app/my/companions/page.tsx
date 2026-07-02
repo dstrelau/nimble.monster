@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { CardGrid } from "@/app/ui/companion/CardGrid";
+import { CardGrid } from "@/components/companion/CardGrid";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 

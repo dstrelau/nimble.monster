@@ -1,6 +1,6 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { PaginatedMonsterGrid } from "@/app/ui/monster/PaginatedMonsterGrid";
+import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
 import { auth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/queryClient";
 import { sourcesQueryOptions } from "@/lib/services/sources";

@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { deleteFamily } from "@/app/families/actions";
-import { AbilityOverlay } from "@/app/ui/AbilityOverlay";
-import { Attribution } from "@/app/ui/Attribution";
+import { AbilityOverlay } from "@/components/shared/AbilityOverlay";
+import { Attribution } from "@/components/shared/Attribution";
+import { FormattedText } from "@/components/shared/FormattedText";
 import { Button } from "@/components/ui/button";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { FamilyOverview } from "@/lib/types";
 import { getFamilyEditUrl } from "@/lib/utils/url";
-import { FormattedText } from "../../components/FormattedText";
 
 interface FamilyHeaderProps {
   family: FamilyOverview;

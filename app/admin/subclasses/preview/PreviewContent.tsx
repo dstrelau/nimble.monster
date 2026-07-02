@@ -5,7 +5,7 @@ import {
   cancelOfficialSubclassesUploadAction,
   commitOfficialSubclassesAction,
 } from "@/app/admin/actions";
-import { Card as SubclassCard } from "@/app/ui/subclass/Card";
+import { Card as SubclassCard } from "@/components/subclass/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

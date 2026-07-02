@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { Card } from "@/app/ui/item/Card";
-import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
-import { ItemCollections } from "@/components/ItemCollections";
-import { ItemDetailActions } from "@/components/ItemDetailActions";
-import { ItemRemixes } from "@/components/ItemRemixes";
+import { ItemCollections } from "@/app/items/ItemCollections";
+import { ItemDetailActions } from "@/app/items/ItemDetailActions";
+import { ItemRemixes } from "@/app/items/ItemRemixes";
+import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { Card } from "@/components/item/Card";
 import { auth } from "@/lib/auth";
 import { itemsService } from "@/lib/services/items";
 import { SITE_NAME } from "@/lib/utils/branding";

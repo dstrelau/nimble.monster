@@ -1,6 +1,6 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { PaginatedBackgroundGrid } from "@/app/ui/background/PaginatedBackgroundGrid";
+import { PaginatedBackgroundGrid } from "@/components/background/PaginatedBackgroundGrid";
 import { auth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/queryClient";
 import { myBackgroundsInfiniteQueryOptions } from "./hooks";

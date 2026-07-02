@@ -4,14 +4,14 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { publicAncestriesInfiniteQueryOptions } from "@/app/ancestries/hooks";
-import { AncestryFilterBar } from "@/app/ui/ancestry/AncestryFilterBar";
-import { Card } from "@/app/ui/ancestry/Card";
+import { AncestryFilterBar } from "@/components/ancestry/AncestryFilterBar";
+import { Card } from "@/components/ancestry/Card";
 import {
   EmptyState,
   ErrorState,
   LoadingState,
-} from "@/app/ui/shared/GridStates";
-import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
+} from "@/components/shared/GridStates";
+import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 import type { Ancestry } from "@/lib/services/ancestries";
 
 interface SelectableAncestryGridProps {

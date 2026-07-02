@@ -7,11 +7,11 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
-import { Card } from "@/app/ui/school/Card";
-import { BuildView } from "@/components/app/BuildView";
-import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
-import { VisibilityToggle } from "@/components/app/VisibilityToggle";
-import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
+import { DiscordLoginButton } from "@/components/layout/DiscordLoginButton";
+import { Card } from "@/components/school/Card";
+import { BuildView } from "@/components/shared/BuildView";
+import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
 import {
   Form,

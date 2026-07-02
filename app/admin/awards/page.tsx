@@ -8,10 +8,10 @@ import {
   removeAwardAssociationAction,
   updateAwardAction,
 } from "@/app/admin/actions";
-import { AwardBadge } from "@/components/AwardBadge";
 import { AwardAssociationForm } from "@/components/admin/AwardAssociationForm";
 import { AwardForm } from "@/components/admin/AwardForm";
 import { EditAwardDialog } from "@/components/admin/EditAwardDialog";
+import { AwardBadge } from "@/components/award/AwardBadge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {

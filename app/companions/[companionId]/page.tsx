@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { Card } from "@/app/ui/companion/Card";
-import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
-import { CompanionDetailActions } from "@/components/CompanionDetailActions";
+import { CompanionDetailActions } from "@/app/companions/CompanionDetailActions";
+import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { Card } from "@/components/companion/Card";
 import { auth } from "@/lib/auth";
 import {
   findCompanion,

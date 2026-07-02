@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import { Card } from "@/app/ui/school/Card";
-import { SchoolActions } from "@/app/ui/school/SchoolActions";
-import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
-import { MonsterCollections } from "@/components/MonsterCollections";
+import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { MonsterCollections } from "@/components/monster/MonsterCollections";
+import { Card } from "@/components/school/Card";
+import { SchoolActions } from "@/components/school/SchoolActions";
 import { auth } from "@/lib/auth";
 import { findSpellSchool, findSpellSchoolCollections } from "@/lib/db";
 import { deslugify } from "@/lib/utils/slug";

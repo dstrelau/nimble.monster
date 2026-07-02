@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { MySpellsView } from "@/app/ui/school/MySpellsView";
+import { MySpellsView } from "@/components/school/MySpellsView";
 import { auth } from "@/lib/auth";
 import { listAllSpellSchoolsForDiscordID } from "@/lib/db/school";
 

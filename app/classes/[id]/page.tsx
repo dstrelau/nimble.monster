@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { ClassDetailView } from "@/app/ui/class/ClassDetailView";
-import { ClassDetailActions } from "@/components/ClassDetailActions";
-import { ClassSubclasses } from "@/components/ClassSubclasses";
+import { ClassDetailActions } from "@/app/classes/ClassDetailActions";
+import { ClassSubclasses } from "@/app/classes/ClassSubclasses";
+import { ClassDetailView } from "@/components/class/ClassDetailView";
 import { auth } from "@/lib/auth";
 import { findClass, listSubclassMinisForClass } from "@/lib/db";
 import { SITE_NAME } from "@/lib/utils/branding";

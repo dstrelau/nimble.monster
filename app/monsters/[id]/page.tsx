@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { Card } from "@/app/ui/monster/Card";
-import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
-import { AddToEncounterDialog } from "@/components/AddToEncounterDialog";
-import { MonsterCollections } from "@/components/MonsterCollections";
-import { MonsterDetailActions } from "@/components/MonsterDetailActions";
-import { MonsterRemixes } from "@/components/MonsterRemixes";
+import { AddToEncounterDialog } from "@/app/monsters/AddToEncounterDialog";
+import { MonsterDetailActions } from "@/app/monsters/MonsterDetailActions";
+import { MonsterRemixes } from "@/app/monsters/MonsterRemixes";
+import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { Card } from "@/components/monster/Card";
+import { MonsterCollections } from "@/components/monster/MonsterCollections";
 import { auth } from "@/lib/auth";
 import { monstersService } from "@/lib/services/monsters";
 import { cn } from "@/lib/utils";

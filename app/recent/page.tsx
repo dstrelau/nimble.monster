@@ -1,8 +1,8 @@
-import { CollectionCard } from "@/app/ui/CollectionCard";
-import { Card as CompanionCard } from "@/app/ui/companion/Card";
-import { Card as ItemCard } from "@/app/ui/item/Card";
-import { Card as MonsterCard } from "@/app/ui/monster/Card";
-import { FamilyCard } from "@/components/FamilyCard";
+import { CollectionCard } from "@/components/collection/CollectionCard";
+import { Card as CompanionCard } from "@/components/companion/Card";
+import { FamilyCard } from "@/components/family/FamilyCard";
+import { Card as ItemCard } from "@/components/item/Card";
+import { Card as MonsterCard } from "@/components/monster/Card";
 import { getRecentPublicContent } from "@/lib/db/recent";
 
 export const revalidate = 60;

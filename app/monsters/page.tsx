@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { PaginatedMonsterGrid } from "@/app/ui/monster/PaginatedMonsterGrid";
+import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { monstersService } from "@/lib/services/monsters";

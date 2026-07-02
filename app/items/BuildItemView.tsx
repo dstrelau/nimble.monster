@@ -7,13 +7,13 @@ import { useSession } from "next-auth/react";
 import { useId, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { IconPicker } from "@/app/items/IconPicker";
 import { listAllMonsterSources } from "@/app/monsters/actions";
-import { Card } from "@/app/ui/item/Card";
-import { BuildView } from "@/components/app/BuildView";
-import { ExampleLoader } from "@/components/app/ExampleLoader";
-import { VisibilityToggle } from "@/components/app/VisibilityToggle";
-import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
-import { IconPicker } from "@/components/IconPicker";
+import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
+import { Card } from "@/components/item/Card";
+import { BuildView } from "@/components/shared/BuildView";
+import { ExampleLoader } from "@/components/shared/ExampleLoader";
+import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
 import {
   Form,

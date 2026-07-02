@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ClassesListView } from "@/app/ui/class/ClassesListView";
+import { ClassesListView } from "@/components/class/ClassesListView";
 import { listPublicClasses } from "@/lib/db";
 import { SITE_NAME } from "@/lib/utils/branding";
 

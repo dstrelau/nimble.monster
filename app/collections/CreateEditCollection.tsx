@@ -16,8 +16,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createCollection } from "@/app/actions/collection";
-import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { CollectionCard } from "@/components/collection/CollectionCard";
+import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { Goblin } from "@/components/icons/goblin";
+import { SelectableMonsterGrid } from "@/components/monster/SelectableMonsterGrid";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -50,8 +52,6 @@ import type {
 } from "@/lib/types";
 import { UNKNOWN_USER } from "@/lib/types";
 import { getCollectionUrl } from "@/lib/utils/url";
-import { CollectionCard } from "../ui/CollectionCard";
-import { SelectableMonsterGrid } from "../ui/monster/SelectableMonsterGrid";
 import { updateCollection } from "./[id]/edit/actions";
 import { VisibilityToggle } from "./[id]/edit/VisibilityToggle";
 import { SelectableAncestryGrid } from "./SelectableAncestryGrid";

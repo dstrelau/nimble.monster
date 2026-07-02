@@ -4,15 +4,15 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { parseAsString, useQueryState } from "nuqs";
 import type React from "react";
+import { Card } from "@/components/item/Card";
+import { ItemFilterBar } from "@/components/item/ItemFilterBar";
 import {
   EmptyState,
   ErrorState,
   LoadingState,
-} from "@/app/ui/shared/GridStates";
-import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
+} from "@/components/shared/GridStates";
+import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 import type { ItemRarityFilter } from "@/lib/services/items";
-import { Card } from "../ui/item/Card";
-import { ItemFilterBar } from "../ui/item/ItemFilterBar";
 import {
   type ItemSortOption,
   publicItemsInfiniteQueryOptions,

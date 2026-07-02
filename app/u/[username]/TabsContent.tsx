@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { CollectionCard } from "@/app/ui/CollectionCard";
-import { CardGrid as CompanionCardGrid } from "@/app/ui/companion/CardGrid";
-import { CardGrid as ItemCardGrid } from "@/app/ui/item/CardGrid";
-import { PaginatedMonsterGrid } from "@/app/ui/monster/PaginatedMonsterGrid";
-import { FamilyCard } from "@/components/FamilyCard";
+import { CollectionCard } from "@/components/collection/CollectionCard";
+import { CardGrid as CompanionCardGrid } from "@/components/companion/CardGrid";
+import { FamilyCard } from "@/components/family/FamilyCard";
+import { CardGrid as ItemCardGrid } from "@/components/item/CardGrid";
+import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
 import {
   TabsContent as ShadcnTabsContent,
   Tabs,

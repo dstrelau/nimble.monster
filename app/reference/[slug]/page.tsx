@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ReferenceMarkdown } from "@/app/ui/reference/ReferenceMarkdown";
+import { ReferenceMarkdown } from "@/components/reference/ReferenceMarkdown";
 import {
   resolveDiceNotationLinks,
   resolveSpellSchoolLinks,

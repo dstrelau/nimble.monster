@@ -1,4 +1,4 @@
-import { SubclassesListView } from "@/app/ui/subclass/SubclassesListView";
+import { SubclassesListView } from "@/components/subclass/SubclassesListView";
 import { listPublicSubclasses } from "@/lib/db/subclass";
 
 export default async function SubclassesPage() {

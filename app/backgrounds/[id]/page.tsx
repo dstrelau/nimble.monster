@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { Card } from "@/app/ui/background/Card";
-import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
-import { BackgroundDetailActions } from "@/components/BackgroundDetailActions";
+import { BackgroundDetailActions } from "@/app/backgrounds/BackgroundDetailActions";
+import { Card } from "@/components/background/Card";
+import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
 import { auth } from "@/lib/auth";
 import { findBackground } from "@/lib/services/backgrounds";
 import { SITE_NAME } from "@/lib/utils/branding";

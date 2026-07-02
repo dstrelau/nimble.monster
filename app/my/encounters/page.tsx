@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { EncounterCard } from "@/app/ui/EncounterCard";
+import { EncounterCard } from "@/components/encounter/EncounterCard";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 

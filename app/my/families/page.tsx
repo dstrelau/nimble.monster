@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { FamilyCard } from "@/components/FamilyCard";
+import { FamilyCard } from "@/components/family/FamilyCard";
 import { auth } from "@/lib/auth";
 import { getUserFamiliesWithMonsters } from "@/lib/db";
 

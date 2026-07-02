@@ -1,6 +1,6 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { PaginatedAncestryGrid } from "@/app/ui/ancestry/PaginatedAncestryGrid";
+import { PaginatedAncestryGrid } from "@/components/ancestry/PaginatedAncestryGrid";
 import { auth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/queryClient";
 import { myAncestriesInfiniteQueryOptions } from "./hooks";

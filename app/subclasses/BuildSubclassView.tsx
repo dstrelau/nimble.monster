@@ -14,12 +14,12 @@ import {
 } from "react-hook-form";
 import { z } from "zod";
 import { subclassClassOptionsQueryOptions } from "@/app/subclasses/hooks";
-import { Card } from "@/app/ui/subclass/Card";
-import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
-import { EditableLevelAbilities } from "@/components/app/EditableLevelAbilities";
-import { ExampleLoader } from "@/components/app/ExampleLoader";
-import { VisibilityToggle } from "@/components/app/VisibilityToggle";
-import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
+import { DiscordLoginButton } from "@/components/layout/DiscordLoginButton";
+import { EditableLevelAbilities } from "@/components/shared/EditableLevelAbilities";
+import { ExampleLoader } from "@/components/shared/ExampleLoader";
+import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
+import { Card } from "@/components/subclass/Card";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, Card as UICard } from "@/components/ui/card";

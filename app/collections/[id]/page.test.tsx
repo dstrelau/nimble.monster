@@ -44,47 +44,47 @@ vi.mock("next/navigation", () => ({
 }));
 
 // Mock all card components to simple stubs
-vi.mock("@/app/ui/monster/Card", () => ({
+vi.mock("@/components/monster/Card", () => ({
   Card: ({ monster }: { monster: { name: string } }) => (
     <div data-testid="monster-card">{monster.name}</div>
   ),
 }));
-vi.mock("@/app/ui/item/Card", () => ({
+vi.mock("@/components/item/Card", () => ({
   Card: ({ item }: { item: { name: string } }) => (
     <div data-testid="item-card">{item.name}</div>
   ),
 }));
-vi.mock("@/app/ui/companion/Card", () => ({
+vi.mock("@/components/companion/Card", () => ({
   Card: ({ companion }: { companion: { name: string } }) => (
     <div data-testid="companion-card">{companion.name}</div>
   ),
 }));
-vi.mock("@/app/ui/ancestry/Card", () => ({
+vi.mock("@/components/ancestry/Card", () => ({
   Card: ({ ancestry }: { ancestry: { name: string } }) => (
     <div data-testid="ancestry-card">{ancestry.name}</div>
   ),
 }));
-vi.mock("@/app/ui/background/Card", () => ({
+vi.mock("@/components/background/Card", () => ({
   Card: ({ background }: { background: { name: string } }) => (
     <div data-testid="background-card">{background.name}</div>
   ),
 }));
-vi.mock("@/app/ui/subclass/SubclassMiniCard", () => ({
+vi.mock("@/components/subclass/SubclassMiniCard", () => ({
   SubclassMiniCard: ({ subclass }: { subclass: { name: string } }) => (
     <div data-testid="subclass-card">{subclass.name}</div>
   ),
 }));
-vi.mock("@/app/ui/school/Card", () => ({
+vi.mock("@/components/school/Card", () => ({
   Card: ({ spellSchool }: { spellSchool: { name: string } }) => (
     <div data-testid="school-card">{spellSchool.name}</div>
   ),
 }));
-vi.mock("@/app/ui/class/ClassMiniCard", () => ({
+vi.mock("@/components/class/ClassMiniCard", () => ({
   ClassMiniCard: ({ classEntity }: { classEntity: { name: string } }) => (
     <div data-testid="class-card">{classEntity.name}</div>
   ),
 }));
-vi.mock("@/components/CollectionHeader", () => ({
+vi.mock("@/app/collections/CollectionHeader", () => ({
   CollectionHeader: () => <div data-testid="collection-header" />,
 }));
 

@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { PaginatedCompanionGrid } from "@/app/ui/companion/PaginatedCompanionGrid";
+import { PaginatedCompanionGrid } from "@/components/companion/PaginatedCompanionGrid";
 import { getQueryClient } from "@/lib/queryClient";
 import { SUBCLASS_CLASSES } from "@/lib/types";
 import { publicCompanionsInfiniteQueryOptions } from "./hooks";

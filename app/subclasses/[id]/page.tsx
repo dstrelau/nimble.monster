@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { Card } from "@/app/ui/subclass/Card";
-import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
-import { SubclassDetailActions } from "@/components/SubclassDetailActions";
+import { SubclassDetailActions } from "@/app/subclasses/SubclassDetailActions";
+import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { Card } from "@/components/subclass/Card";
 import { auth } from "@/lib/auth";
 import { findSubclass } from "@/lib/db";
 import { SITE_NAME } from "@/lib/utils/branding";

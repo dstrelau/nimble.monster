@@ -3,9 +3,9 @@
 import OBR, { buildImage } from "@owlbear-rodeo/sdk";
 import { useEffect, useRef, useState } from "react";
 import { getPublicMonster } from "@/app/monsters/actions";
-import { CompactCard } from "@/app/ui/monster/CompactCard";
-import { MonsterSearch } from "@/app/ui/owlbear/MonsterSearch";
-import { getPaperforgeImageUrl } from "@/components/PaperforgeImage";
+import { CompactCard } from "@/components/monster/CompactCard";
+import { MonsterSearch } from "@/components/owlbear/MonsterSearch";
+import { getPaperforgeImageUrl } from "@/components/paperforge/PaperforgeImage";
 import { getPluginId } from "@/lib/owlbear/utils";
 import {
   getPaperforgeEntry,

@@ -2,7 +2,10 @@
 
 import { Award as AwardIcon } from "lucide-react";
 import { useActionState, useId } from "react";
-import { AWARD_COLOR_CLASSES, AWARD_COLORS } from "@/components/AwardBadge";
+import {
+  AWARD_COLOR_CLASSES,
+  AWARD_COLORS,
+} from "@/components/award/AwardBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

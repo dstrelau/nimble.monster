@@ -22,12 +22,12 @@ import {
   useForm,
 } from "react-hook-form";
 import { z } from "zod";
-import { ClassDetailView } from "@/app/ui/class/ClassDetailView";
-import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
-import { EditableLevelAbilities } from "@/components/app/EditableLevelAbilities";
-import { VisibilityToggle } from "@/components/app/VisibilityToggle";
-import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { ClassDetailView } from "@/components/class/ClassDetailView";
+import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { DieFromNotation } from "@/components/icons/PolyhedralDice";
+import { DiscordLoginButton } from "@/components/layout/DiscordLoginButton";
+import { EditableLevelAbilities } from "@/components/shared/EditableLevelAbilities";
+import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import {
   AlertDialog,
   AlertDialogAction,

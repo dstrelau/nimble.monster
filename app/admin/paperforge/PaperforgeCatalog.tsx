@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { SearchInput } from "@/app/ui/SearchInput";
-import { getPaperforgeImageUrl } from "@/components/PaperforgeImage";
+import { getPaperforgeImageUrl } from "@/components/paperforge/PaperforgeImage";
+import { SearchInput } from "@/components/shared/SearchInput";
 import type { PaperForgeEntry } from "@/lib/paperforge-catalog";
 
 interface PaperforgeCatalogProps {

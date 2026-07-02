@@ -1,4 +1,4 @@
-import { Link } from "@/components/app/Link";
+import { Link } from "@/components/layout/Link";
 
 export default function TermsPage() {
   return (

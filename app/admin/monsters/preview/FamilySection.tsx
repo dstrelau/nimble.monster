@@ -2,7 +2,7 @@
 
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
-import { Card } from "@/app/ui/monster/Card";
+import { Card } from "@/components/monster/Card";
 import { Badge } from "@/components/ui/badge";
 import {
   Collapsible,

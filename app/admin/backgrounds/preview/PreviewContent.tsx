@@ -5,7 +5,7 @@ import {
   cancelOfficialBackgroundsUploadAction,
   commitOfficialBackgroundsAction,
 } from "@/app/admin/actions";
-import { Card as BackgroundCard } from "@/app/ui/background/Card";
+import { Card as BackgroundCard } from "@/components/background/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

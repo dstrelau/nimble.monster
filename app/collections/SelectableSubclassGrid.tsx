@@ -7,9 +7,9 @@ import {
   EmptyState,
   ErrorState,
   LoadingState,
-} from "@/app/ui/shared/GridStates";
-import { SubclassFilterBar } from "@/app/ui/subclass/SubclassFilterBar";
-import { SubclassMiniCard } from "@/app/ui/subclass/SubclassMiniCard";
+} from "@/components/shared/GridStates";
+import { SubclassFilterBar } from "@/components/subclass/SubclassFilterBar";
+import { SubclassMiniCard } from "@/components/subclass/SubclassMiniCard";
 import type { Subclass, SubclassSortOption } from "@/lib/types";
 
 interface SelectableSubclassGridProps {

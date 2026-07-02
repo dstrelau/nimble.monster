@@ -4,14 +4,14 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { publicCompanionsInfiniteQueryOptions } from "@/app/companions/hooks";
-import { Card } from "@/app/ui/companion/Card";
-import { CompanionFilterBar } from "@/app/ui/companion/CompanionFilterBar";
+import { Card } from "@/components/companion/Card";
+import { CompanionFilterBar } from "@/components/companion/CompanionFilterBar";
 import {
   EmptyState,
   ErrorState,
   LoadingState,
-} from "@/app/ui/shared/GridStates";
-import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
+} from "@/components/shared/GridStates";
+import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 import type {
   CompanionClassOption,
   PaginateCompanionsSortOption,

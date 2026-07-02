@@ -16,7 +16,11 @@ import {
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useId, useMemo, useRef, useState } from "react";
-import { Card } from "@/app/ui/monster/Card";
+import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
+import { AbilitiesSection } from "@/components/create/AbilitiesSection";
+import { ActionsSection } from "@/components/create/ActionsSection";
+import { SourceSelect } from "@/components/create/SourceSelect";
+import { Card } from "@/components/monster/Card";
 import {
   ArmorIcon,
   BurrowIcon,
@@ -27,19 +31,18 @@ import {
   SpeedIcon,
   SwimIcon,
   TeleportIcon,
-} from "@/app/ui/monster/Stat";
-import { BuildView } from "@/components/app/BuildView";
-import { ExampleLoader } from "@/components/app/ExampleLoader";
+} from "@/components/monster/Stat";
+import { PaperforgeImageSelect } from "@/components/paperforge/PaperforgeImageSelect";
+import { BuildView } from "@/components/shared/BuildView";
+import { ExampleLoader } from "@/components/shared/ExampleLoader";
 import {
   FormInput,
   FormSelect,
   FormTextarea,
   IconFormInput,
   IconFormSelect,
-} from "@/components/app/Form";
-import { VisibilityToggle } from "@/components/app/VisibilityToggle";
-import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
-import { PaperforgeImageSelect } from "@/components/PaperforgeImageSelect";
+} from "@/components/shared/Form";
+import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -67,9 +70,6 @@ import { UNKNOWN_USER } from "@/lib/types";
 import { cn, levelIntToDisplay } from "@/lib/utils";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { useUserFamiliesQuery } from "../families/hooks";
-import { AbilitiesSection } from "../ui/create/AbilitiesSection";
-import { ActionsSection } from "../ui/create/ActionsSection";
-import { SourceSelect } from "../ui/create/SourceSelect";
 import { updateMonster as updateMonsterAction } from "./actions";
 
 const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {

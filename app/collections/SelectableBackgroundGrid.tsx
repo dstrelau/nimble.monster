@@ -4,14 +4,14 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { publicBackgroundsInfiniteQueryOptions } from "@/app/backgrounds/hooks";
-import { BackgroundFilterBar } from "@/app/ui/background/BackgroundFilterBar";
-import { Card } from "@/app/ui/background/Card";
+import { BackgroundFilterBar } from "@/components/background/BackgroundFilterBar";
+import { Card } from "@/components/background/Card";
 import {
   EmptyState,
   ErrorState,
   LoadingState,
-} from "@/app/ui/shared/GridStates";
-import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
+} from "@/components/shared/GridStates";
+import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 import type { Background } from "@/lib/services/backgrounds";
 
 interface SelectableBackgroundGridProps {

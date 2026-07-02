@@ -8,8 +8,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createEncounter } from "@/app/actions/encounter";
 import { VisibilityToggle } from "@/app/collections/[id]/edit/VisibilityToggle";
-import { SelectableMonsterGrid } from "@/app/ui/monster/SelectableMonsterGrid";
-import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
+import { EncounterCard } from "@/components/encounter/EncounterCard";
+import { SelectableMonsterGrid } from "@/components/monster/SelectableMonsterGrid";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -29,7 +30,6 @@ import {
   UNKNOWN_USER,
 } from "@/lib/types";
 import { getEncounterUrl } from "@/lib/utils/url";
-import { EncounterCard } from "../ui/EncounterCard";
 import { updateEncounter } from "./[id]/edit/actions";
 
 const formSchema = z.object({

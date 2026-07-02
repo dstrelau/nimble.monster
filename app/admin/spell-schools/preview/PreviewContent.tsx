@@ -5,7 +5,7 @@ import {
   cancelOfficialSpellSchoolsUploadAction,
   commitOfficialSpellSchoolsAction,
 } from "@/app/admin/actions";
-import { Card as SpellSchoolCard } from "@/app/ui/school/Card";
+import { Card as SpellSchoolCard } from "@/components/school/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

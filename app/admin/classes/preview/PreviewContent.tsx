@@ -5,7 +5,7 @@ import {
   cancelOfficialClassesUploadAction,
   commitOfficialClassesAction,
 } from "@/app/admin/actions";
-import { ClassDetailView } from "@/app/ui/class/ClassDetailView";
+import { ClassDetailView } from "@/components/class/ClassDetailView";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

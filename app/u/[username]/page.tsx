@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 import { monsterSourcesQueryOptions } from "@/app/monsters/hooks";
-import { UserAvatar } from "@/components/app/UserAvatar";
+import { UserAvatar } from "@/components/layout/UserAvatar";
 import * as db from "@/lib/db";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";

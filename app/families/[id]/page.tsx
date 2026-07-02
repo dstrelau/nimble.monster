@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { FamilyHeader } from "@/app/families/FamilyHeader";
-import { CardGrid } from "@/app/ui/monster/CardGrid";
+import { CardGrid } from "@/components/monster/CardGrid";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import * as monstersRepo from "@/lib/services/monsters/repository";

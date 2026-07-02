@@ -1,5 +1,8 @@
-import { AWARD_COLOR_CLASSES, AWARD_COLORS } from "@/components/AwardBadge";
-import { ModeToggle } from "@/components/app/ModeToggle";
+import {
+  AWARD_COLOR_CLASSES,
+  AWARD_COLORS,
+} from "@/components/award/AwardBadge";
+import { ModeToggle } from "@/components/layout/ModeToggle";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 

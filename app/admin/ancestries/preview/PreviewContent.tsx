@@ -5,7 +5,7 @@ import {
   cancelOfficialAncestriesUploadAction,
   commitOfficialAncestriesAction,
 } from "@/app/admin/actions";
-import { Card as AncestryCard } from "@/app/ui/ancestry/Card";
+import { Card as AncestryCard } from "@/components/ancestry/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

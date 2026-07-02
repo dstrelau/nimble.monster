@@ -9,15 +9,15 @@ import {
   publicItemsInfiniteQueryOptions,
 } from "@/app/items/actions";
 import { myItemsInfiniteQueryOptions } from "@/app/my/items/hooks";
-import { Card } from "@/app/ui/item/Card";
-import { ItemFilterBar } from "@/app/ui/item/ItemFilterBar";
-import { CreatorCombobox } from "@/app/ui/shared/CreatorCombobox";
+import { Card } from "@/components/item/Card";
+import { ItemFilterBar } from "@/components/item/ItemFilterBar";
+import { CreatorCombobox } from "@/components/shared/CreatorCombobox";
 import {
   EmptyState,
   ErrorState,
   LoadingState,
-} from "@/app/ui/shared/GridStates";
-import { LoadMoreButton } from "@/app/ui/shared/LoadMoreButton";
+} from "@/components/shared/GridStates";
+import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 import type { Item, ItemRarityFilter } from "@/lib/services/items";
 
 interface SelectableItemGridProps {

@@ -1,8 +1,8 @@
 import { ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ReferenceCategoryIcon } from "@/app/ui/reference/ReferenceCategoryIcon";
-import { ReferenceSearchInput } from "@/app/ui/reference/ReferenceSearchInput";
+import { ReferenceCategoryIcon } from "@/components/reference/ReferenceCategoryIcon";
+import { ReferenceSearchInput } from "@/components/reference/ReferenceSearchInput";
 import { searchReference } from "@/lib/db/reference";
 import { CATEGORIES } from "@/lib/reference/categories";
 import { getAllReferenceFrontmatter } from "@/lib/reference/filesystem";

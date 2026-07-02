@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { CardGrid } from "@/app/ui/item/CardGrid";
+import { CardGrid } from "@/components/item/CardGrid";
 import { auth } from "@/lib/auth";
 import { itemsService } from "@/lib/services/items";
 

@@ -1,4 +1,4 @@
-import { SchoolsListView } from "@/app/ui/school/SchoolsListView";
+import { SchoolsListView } from "@/components/school/SchoolsListView";
 import { listPublicSpellSchools } from "@/lib/db/school";
 
 export default async function SchoolsPage() {

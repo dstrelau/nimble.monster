@@ -6,11 +6,11 @@ import {
   Roboto_Serif,
   Roboto_Slab,
 } from "next/font/google";
-import { ConditionalFooter } from "@/app/ui/ConditionalFooter";
-import { ConditionalHeader } from "@/app/ui/ConditionalHeader";
-import { ConditionalMain } from "@/app/ui/ConditionalMain";
-import { FreeBanner } from "@/app/ui/FreeBanner";
-import { StaleDeploymentBanner } from "@/components/StaleDeploymentBanner";
+import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
+import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
+import { ConditionalMain } from "@/components/layout/ConditionalMain";
+import { FreeBanner } from "@/components/layout/FreeBanner";
+import { StaleDeploymentBanner } from "@/components/layout/StaleDeploymentBanner";
 import { auth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";

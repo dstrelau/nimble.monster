@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ClassMiniCard } from "@/app/ui/class/ClassMiniCard";
+import { ClassMiniCard } from "@/components/class/ClassMiniCard";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { listAllClassesForDiscordID } from "@/lib/db";

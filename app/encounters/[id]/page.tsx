@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { Card as MonsterCard } from "@/app/ui/monster/Card";
-import { EncounterCombatTracker } from "@/components/EncounterCombatTracker";
-import { EncounterHeader } from "@/components/EncounterHeader";
-import { EncounterStatsPanel } from "@/components/EncounterStatsPanel";
+import { EncounterCombatTracker } from "@/app/encounters/EncounterCombatTracker";
+import { EncounterHeader } from "@/app/encounters/EncounterHeader";
+import { EncounterStatsPanel } from "@/app/encounters/EncounterStatsPanel";
+import { Card as MonsterCard } from "@/components/monster/Card";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { listConditionsForDiscordId, listOfficialConditions } from "@/lib/db";

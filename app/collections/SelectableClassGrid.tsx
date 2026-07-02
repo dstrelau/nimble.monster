@@ -3,14 +3,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { listPublicClassesAction } from "@/app/actions/class";
-import { ClassMiniCard } from "@/app/ui/class/ClassMiniCard";
-import { FilterBar } from "@/app/ui/FilterBar";
+import { ClassMiniCard } from "@/components/class/ClassMiniCard";
+import { FilterBar } from "@/components/shared/FilterBar";
 import {
   EmptyState,
   ErrorState,
   LoadingState,
-} from "@/app/ui/shared/GridStates";
-import { SourceFilter } from "@/components/app/SourceFilter";
+} from "@/components/shared/GridStates";
+import { SourceFilter } from "@/components/shared/SourceFilter";
 import {
   Select,
   SelectContent,

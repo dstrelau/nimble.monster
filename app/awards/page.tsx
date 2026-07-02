@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { AwardBadge } from "@/components/AwardBadge";
-import { Link } from "@/components/app/Link";
+import { AwardBadge } from "@/components/award/AwardBadge";
+import { Link } from "@/components/layout/Link";
 import { Item } from "@/components/ui/item";
 import { getAllAwards } from "@/lib/db/award";
 import { SITE_NAME } from "@/lib/utils/branding";

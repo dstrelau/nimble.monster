@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { CollectionsListView } from "@/app/ui/collection/CollectionsListView";
+import { CollectionsListView } from "@/components/collection/CollectionsListView";
 import { getQueryClient } from "@/lib/queryClient";
 import { publicCollectionsInfiniteQueryOptions } from "./actions";
 

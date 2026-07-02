@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { EncountersListView } from "@/app/ui/encounter/EncountersListView";
+import { EncountersListView } from "@/components/encounter/EncountersListView";
 import { getQueryClient } from "@/lib/queryClient";
 import { publicEncountersInfiniteQueryOptions } from "./actions";
 

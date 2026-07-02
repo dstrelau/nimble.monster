@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { Card } from "@/app/ui/ancestry/Card";
-import { AddToCollectionDialog } from "@/components/AddToCollectionDialog";
-import { AncestryDetailActions } from "@/components/AncestryDetailActions";
+import { AncestryDetailActions } from "@/app/ancestries/AncestryDetailActions";
+import { Card } from "@/components/ancestry/Card";
+import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
 import { auth } from "@/lib/auth";
 import { findAncestry } from "@/lib/services/ancestries";
 import { SITE_NAME } from "@/lib/utils/branding";

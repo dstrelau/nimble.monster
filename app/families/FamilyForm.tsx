@@ -8,7 +8,7 @@ import {
   useWatch,
 } from "react-hook-form";
 import { z } from "zod";
-import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

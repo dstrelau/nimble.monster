@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { SubclassMiniCard } from "@/app/ui/subclass/SubclassMiniCard";
+import { SubclassMiniCard } from "@/components/subclass/SubclassMiniCard";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 

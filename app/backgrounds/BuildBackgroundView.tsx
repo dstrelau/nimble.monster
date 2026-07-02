@@ -6,11 +6,11 @@ import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Card } from "@/app/ui/background/Card";
-import { SourceSelect } from "@/app/ui/create/SourceSelect";
-import { BuildView } from "@/components/app/BuildView";
-import { DiscordLoginButton } from "@/components/app/DiscordLoginButton";
-import { ConditionValidationIcon } from "@/components/ConditionValidationIcon";
+import { Card } from "@/components/background/Card";
+import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
+import { SourceSelect } from "@/components/create/SourceSelect";
+import { DiscordLoginButton } from "@/components/layout/DiscordLoginButton";
+import { BuildView } from "@/components/shared/BuildView";
 import { Button } from "@/components/ui/button";
 import {
   Form,

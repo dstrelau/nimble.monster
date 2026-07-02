@@ -3,14 +3,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { listPublicSpellSchoolsAction } from "@/app/spell-schools/actions";
-import { FilterBar } from "@/app/ui/FilterBar";
-import { Card } from "@/app/ui/school/Card";
-import { SchoolSortSelect } from "@/app/ui/school/SchoolSortSelect";
+import { Card } from "@/components/school/Card";
+import { SchoolSortSelect } from "@/components/school/SchoolSortSelect";
+import { FilterBar } from "@/components/shared/FilterBar";
 import {
   EmptyState,
   ErrorState,
   LoadingState,
-} from "@/app/ui/shared/GridStates";
+} from "@/components/shared/GridStates";
 import type { SpellSchool, SpellSchoolSortOption } from "@/lib/types";
 
 interface SelectableSpellSchoolGridProps {
