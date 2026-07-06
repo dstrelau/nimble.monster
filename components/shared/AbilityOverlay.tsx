@@ -29,7 +29,7 @@ export const AbilityOverlay = ({
   return (
     <div
       data-slot="ability-overlay"
-      className="font-stretch-extra-condensed relative p-2 w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem] bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm"
+      className="font-stretch-extra-condensed relative p-2 w-[calc(100%+2rem)] -translate-x-4 px-4 bg-muted text-foreground dark:shadow-sm"
     >
       <div className="flex flex-col gap-3 leading-5.5">
         {abilities?.map((ability) => {

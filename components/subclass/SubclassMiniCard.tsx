@@ -67,7 +67,7 @@ export function SubclassMiniCard({
             key={level.level}
             className="flex gap-x-4 items-baseline text-base"
           >
-            <span className="font-stretch-condensed font-bold uppercase italic text-base text-muted-foreground w-16 flex-shrink-0">
+            <span className="font-stretch-condensed font-bold uppercase italic text-base text-muted-foreground w-18 flex-shrink-0">
               Level {level.level}
             </span>
             <span className="font-semibold">

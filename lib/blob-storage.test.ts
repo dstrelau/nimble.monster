@@ -12,11 +12,6 @@ describe("generateBlobFilename", () => {
     expect(filename).toBe("companion-xyz789-dark-v2.png");
   });
 
-  it("parchment theme includes theme segment", () => {
-    const filename = generateBlobFilename("item", "def456", "parchment", "v3");
-    expect(filename).toBe("item-def456-parchment-v3.png");
-  });
-
   it("handles special characters in ids", () => {
     const filename = generateBlobFilename(
       "monster",
@@ -46,10 +41,5 @@ describe("generateEntityImagePath", () => {
   it("dark theme includes theme in path", () => {
     const path = generateEntityImagePath("companion", "xyz789", "dark", "v2");
     expect(path).toBe("card-images/companion/companion-xyz789-dark-v2.png");
-  });
-
-  it("parchment theme includes theme in path", () => {
-    const path = generateEntityImagePath("item", "def456", "parchment", "v3");
-    expect(path).toBe("card-images/item/item-def456-parchment-v3.png");
   });
 });

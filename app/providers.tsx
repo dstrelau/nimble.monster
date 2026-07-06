@@ -25,7 +25,7 @@ export function Providers({
             attribute="data-theme"
             defaultTheme="system"
             enableSystem
-            themes={["light", "dark", "parchment"]}
+            themes={["light", "dark"]}
           >
             {children}
           </ThemeProvider>

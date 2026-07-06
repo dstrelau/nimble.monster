@@ -90,7 +90,7 @@ export async function uploadBlob(
 export function generateBlobFilename(
   entityType: "monster" | "companion" | "item",
   entityId: string,
-  theme: "light" | "dark" | "parchment",
+  theme: "light" | "dark",
   version: string
 ): string {
   const themePart = theme === "light" ? "" : `-${theme}`;
@@ -100,7 +100,7 @@ export function generateBlobFilename(
 export function generateEntityImagePath(
   entityType: "monster" | "companion" | "item",
   entityId: string,
-  theme: "light" | "dark" | "parchment",
+  theme: "light" | "dark",
   version: string
 ): string {
   const filename = generateBlobFilename(entityType, entityId, theme, version);

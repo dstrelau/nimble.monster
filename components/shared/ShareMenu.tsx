@@ -71,10 +71,7 @@ export const ShareMenuDownloadCardItem = ({
   path: string;
 }) => {
   const { resolvedTheme } = useTheme();
-  const downloadTheme =
-    resolvedTheme === "dark" || resolvedTheme === "parchment"
-      ? resolvedTheme
-      : "light";
+  const downloadTheme = resolvedTheme === "dark" ? resolvedTheme : "light";
   const pathWithTheme = `${path}?theme=${downloadTheme}`;
   const onClick = () => downloadCard(name, pathWithTheme);
   return (
@@ -99,7 +96,7 @@ export const ShareMenu = ({ children, disabled = false }: ShareMenuProps) =>
     <TooltipProvider>
       <DropdownMenu>
         <DropdownMenuTrigger className="hover:opacity-70">
-          <Share className="w-5 h-5 text-base-content/50" />
+          <Share className="w-5 h-5 text-muted-foreground" />
         </DropdownMenuTrigger>
         <DropdownMenuContent side="top" align="end" className="min-w-38">
           {children}

@@ -6,72 +6,6 @@
 
 @tailwind utilities;
 
-/* Beaufort for LOL - GMG-style header font (parchment theme) */
-@font-face {
-    font-family: beaufort-pro;
-    src: url("/fonts/BeaufortforLOL-Light.ttf");
-    font-weight: 300;
-}
-
-@font-face {
-    font-family: beaufort-pro;
-    src: url("/fonts/BeaufortforLOL-LightItalic.ttf");
-    font-weight: 300;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: beaufort-pro;
-    src: url("/fonts/BeaufortforLOL-Regular.ttf");
-    font-weight: 400;
-}
-
-@font-face {
-    font-family: beaufort-pro;
-    src: url("/fonts/BeaufortforLOL-Italic.ttf");
-    font-weight: 400;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: beaufort-pro;
-    src: url("/fonts/BeaufortforLOL-Medium.ttf");
-    font-weight: 500;
-}
-
-@font-face {
-    font-family: beaufort-pro;
-    src: url("/fonts/BeaufortforLOL-MediumItalic.ttf");
-    font-weight: 500;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: beaufort-pro;
-    src: url("/fonts/BeaufortforLOL-Bold.ttf");
-    font-weight: 700;
-}
-
-@font-face {
-    font-family: beaufort-pro;
-    src: url("/fonts/BeaufortforLOL-BoldItalic.ttf");
-    font-weight: 700;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: beaufort-pro;
-    src: url("/fonts/BeaufortforLOL-Heavy.ttf");
-    font-weight: 900;
-}
-
-@font-face {
-    font-family: beaufort-pro;
-    src: url("/fonts/BeaufortforLOL-HeavyItalic.ttf");
-    font-weight: 900;
-    font-style: italic;
-}
-
 @theme {
     --color-success: var(--color-emerald-600);
     --color-success-foreground: var(--color-neutral-900);
@@ -84,6 +18,7 @@
 
     --color-icon: var(--color-neutral-400);
     --color-icon-border: var(--color-neutral-200);
+    --color-stat-icon: var(--color-neutral-400);
     --color-hp: oklab(from var(--color-orange-700) calc(l + 0.05) b a);
 
     --color-header: var(--color-neutral-200);
@@ -94,299 +29,71 @@
 :root {
     --radius: 0.25rem;
 
-    --background: var(--color-neutral-50);
-    --foreground: var(--color-neutral-700);
-    --border: var(--color-neutral-100);
+    --background: #faf5ea;
+    --foreground: #3a3226;
+    --border: #e2d7c1;
 
-    --card: var(--color-white);
-    --card-foreground: var(--color-neutral-900);
-    --popover: var(--color-white);
+    --card: #fffdf8;
+    --card-foreground: #241f18;
+    --popover: #fffdf8;
     --popover-foreground: var(--color-foreground);
 
-    --primary: var(--color-neutral-950);
-    --primary-foreground: var(--color-neutral-300);
-    --accent: var(--color-violet-200);
-    --accent-foreground: var(--color-black);
-    --muted: var(--color-neutral-100);
-    --muted-foreground: var(--color-neutral-500);
+    --primary: #b1490f;
+    --primary-foreground: #fffdf8;
+    --accent: #f4ecda;
+    --accent-foreground: #241f18;
+    --muted: #f4ede0;
+    --muted-foreground: #8a7a60;
     --destructive: var(--color-warning);
     --destructive-foreground: var(--foreground);
     --secondary: var(--muted);
 
-    --input: var(--color-neutral-200);
-    --ring: var(--color-neutral-300);
+    --input: #e2d7c1;
+    --ring: #b1490f;
+
+    --color-header: #e9dfc7;
+    --color-header-foreground: #241f18;
+    --color-icon: #8a7a60;
+    --color-icon-border: #e2d7c1;
+    --color-stat-icon: #a89a83;
+    --color-hp: #cc4e12;
 }
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 [data-theme="dark"] {
-    --background: var(--color-neutral-950);
-    --foreground: var(--color-neutral-200);
+    --background: #171310;
+    --foreground: #cbbda0;
     --tw-prose-body: var(--foreground);
-    --border: var(--color-neutral-800);
+    --border: #33291d;
 
-    --color-header: var(--color-neutral-900);
-    --color-header-foreground: var(--color-neutral-300);
-    --color-icon: var(--color-neutral-600);
-    --color-icon-border: var(--color-neutral-400);
+    --color-header: #241d15;
+    --color-header-foreground: #f0e9db;
+    --color-icon: #8a7c63;
+    --color-icon-border: #33291d;
+    --color-stat-icon: #6f6552;
+    --color-hp: #e0641f;
 
-    --card: var(--color-neutral-900);
-    --card-foreground: var(--color-neutral-300);
-    --popover: var(--color-neutral-950);
-    --popover-foreground: var(--color-neutral-300);
+    --card: #2a2118;
+    --card-foreground: #f0e9db;
+    --popover: #2a2118;
+    --popover-foreground: #f0e9db;
 
-    --primary: var(--color-neutral-700);
-    --primary-foreground: var(--color-neutral-300);
-    --accent: var(--color-indigo-500);
-    --accent-foreground: var(--color-neutral-50);
-    --muted: var(--color-neutral-800);
-    --muted-foreground: var(--color-neutral-400);
+    --primary: #cc5a1a;
+    --primary-foreground: #f0e9db;
+    --accent: #2e2619;
+    --accent-foreground: #f0e9db;
+    --muted: #211a13;
+    --muted-foreground: #8a7c63;
 
-    --input: var(--color-neutral-700);
-    --ring: var(--color-neutral-700);
-}
-
-@custom-variant parchment (&:where([data-theme=parchment], [data-theme=parchment] *));
-
-[data-theme="parchment"] {
-    --background: #eee6d3;
-    --foreground: #211e1c;
-    --border: #c5bdae;
-
-    --card: #f1e9d8;
-    --card-foreground: var(--foreground);
-    --popover: var(--card);
-    --popover-foreground: var(--foreground);
-
-    --primary: #3d3328;
-    --primary-foreground: #f1e9d8;
-    --accent: #a8a296;
-    --accent-foreground: var(--foreground);
-    --muted: #cac3b6;
-    --muted-foreground: #5e5a54;
-    --destructive: #8b4513;
-    --destructive-foreground: var(--foreground);
-    --secondary: var(--muted);
-
-    --input: #c5bdae;
-    --ring: #878379;
-
-    --color-header: #d8d0be;
-    --color-header-foreground: #211e1c;
-    --color-icon: #5e5a54;
-    --color-icon-border: #878379;
-
-    --notch-size: 8px;
-    --ability-overlay-bg: #d8d2c2;
-
-    /* Apply parchment fonts directly since @theme inline resolves at compile time */
-    body {
-        font-family:
-            var(--font-fira-sans-condensed), var(--font-roboto-sans),
-            ui-sans-serif, system-ui, sans-serif;
-    }
-
-    .font-sans {
-        font-family:
-            var(--font-fira-sans-condensed), var(--font-roboto-sans),
-            ui-sans-serif, system-ui, sans-serif;
-    }
-
-    .font-slab {
-        font-family:
-            beaufort-pro, var(--font-roboto-slab), ui-serif, Georgia, serif;
-    }
-
-    .font-serif {
-        font-family:
-            var(--font-pt-serif), var(--font-roboto-serif), ui-serif, Georgia,
-            serif;
-    }
-
-    .shadow-xs,
-    .shadow-sm,
-    .shadow-md,
-    .shadow-lg,
-    .shadow-xl,
-    .shadow-2xl {
-        /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind v4 utilities */
-        box-shadow: none !important;
-    }
-
-    .drop-shadow-sm,
-    .drop-shadow-md,
-    .drop-shadow-lg,
-    .drop-shadow-xl,
-    .drop-shadow-2xl {
-        /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind v4 utilities */
-        filter: none !important;
-    }
-
-    .rounded-sm,
-    .rounded-md,
-    .rounded-lg,
-    .rounded-xl,
-    .rounded-2xl,
-    .rounded-3xl {
-        /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind v4 utilities */
-        border-radius: 0 !important;
-    }
-
-    /* Notched corner cards - GMG style */
-    /* Note: no clip-path on card itself so content (ability overlays) can extend outside */
-    [data-slot="card"] {
-        --notch: var(--notch-size, 8px);
-        --border-width: 1px;
-        position: relative;
-        border: none;
-        background: transparent;
-    }
-
-    /* Border layer - full notched shape with border color */
-    [data-slot="card"]::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: var(--border);
-        clip-path: polygon(
-            var(--notch) 0,
-            calc(100% - var(--notch)) 0,
-            100% var(--notch),
-            100% calc(100% - var(--notch)),
-            calc(100% - var(--notch)) 100%,
-            var(--notch) 100%,
-            0 calc(100% - var(--notch)),
-            0 var(--notch)
-        );
-        z-index: -2;
-    }
-
-    /* Background layer - inset to reveal border */
-    [data-slot="card"]::after {
-        content: "";
-        position: absolute;
-        inset: var(--border-width);
-        background: var(--card);
-        clip-path: polygon(
-            var(--notch) 0,
-            calc(100% - var(--notch)) 0,
-            100% var(--notch),
-            100% calc(100% - var(--notch)),
-            calc(100% - var(--notch)) 100%,
-            var(--notch) 100%,
-            0 calc(100% - var(--notch)),
-            0 var(--notch)
-        );
-        z-index: -1;
-    }
-
-    /* Selected card border highlight */
-    [data-slot="card"][data-selected] {
-        --border-width: 2px;
-        /* Hide ring utility — parchment uses ::before pseudo for border */
-        --tw-ring-shadow: 0 0 #0000;
-    }
-
-    [data-slot="card"][data-selected]::before {
-        background: rgb(245, 158, 11);
-    }
-
-    /* AbilityOverlay - GMG uses a slightly darker parchment for ability sections */
-    .bg-neutral-100 {
-        background-color: var(--ability-overlay-bg);
-    }
-
-    .text-neutral-800 {
-        color: var(--foreground);
-    }
-
-    /* Size/kind text should be italic (e.g., "5th-level Minion Humanoid") */
-    .font-condensed {
-        font-style: italic;
-    }
-
-    /* Monster names: small caps + italic + bolder like GMG */
-    .small-caps.font-slab {
-        font-style: italic;
-        font-weight: 800;
-    }
-
-    /* Legendary monster names: very bold */
-    .font-slab.text-3xl\/8 {
-        font-weight: 900;
-    }
-
-    /* Stat icons: mid-gray, no outline in parchment theme */
-    .stroke-neutral-300,
-    .stroke-hp {
-        /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind utilities */
-        stroke: var(--accent) !important;
-    }
-
-    .fill-neutral-200,
-    .fill-hp {
-        /* biome-ignore lint/complexity/noImportantStyles: necessary to override Tailwind utilities */
-        fill: var(--accent) !important;
-    }
-
-    /* AbilityOverlay - pointed banner edges like GMG, extends outside card */
-    [data-slot="ability-overlay"] {
-        --point: 12px;
-        --border-width: 1px;
-        position: relative;
-        background: transparent;
-        clip-path: polygon(
-            0 50%,
-            var(--point) 0,
-            calc(100% - var(--point)) 0,
-            100% 50%,
-            calc(100% - var(--point)) 100%,
-            var(--point) 100%
-        );
-    }
-
-    /* Border layer for ability overlay */
-    [data-slot="ability-overlay"]::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: var(--border);
-        clip-path: polygon(
-            0 50%,
-            var(--point) 0,
-            calc(100% - var(--point)) 0,
-            100% 50%,
-            calc(100% - var(--point)) 100%,
-            var(--point) 100%
-        );
-        z-index: -2;
-    }
-
-    /* Background layer for ability overlay */
-    [data-slot="ability-overlay"]::after {
-        content: "";
-        position: absolute;
-        inset: var(--border-width);
-        background: var(--ability-overlay-bg);
-        clip-path: polygon(
-            0 50%,
-            var(--point) 0,
-            calc(100% - var(--point)) 0,
-            100% 50%,
-            calc(100% - var(--point)) 100%,
-            var(--point) 100%
-        );
-        z-index: -1;
-    }
+    --input: #33291d;
+    --ring: #cc5a1a;
 }
 
 @theme inline {
     --font-sans: var(--font-roboto-sans);
     --font-slab: var(--font-roboto-slab);
     --font-serif: var(--font-roboto-serif);
-
-    --font-parchment-sans: var(--font-fira-sans-condensed), var(--font-sans);
-    --font-parchment-serif: var(--font-pt-serif), var(--font-serif);
 
     --color-background: var(--background);
     --color-foreground: var(--foreground);

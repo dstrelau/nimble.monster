@@ -1,11 +1,5 @@
 import "@/app/ui/global.css";
-import {
-  Fira_Sans_Condensed,
-  PT_Serif,
-  Roboto_Flex,
-  Roboto_Serif,
-  Roboto_Slab,
-} from "next/font/google";
+import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
 import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
 import { ConditionalMain } from "@/components/layout/ConditionalMain";
@@ -32,20 +26,6 @@ const serif = Roboto_Serif({
   variable: "--font-roboto-serif",
 });
 
-const firaSansCondensed = Fira_Sans_Condensed({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-fira-sans-condensed",
-});
-
-const ptSerif = PT_Serif({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-pt-serif",
-});
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -62,9 +42,7 @@ export default async function RootLayout({
           "font-sans",
           sans.variable,
           slab.variable,
-          serif.variable,
-          firaSansCondensed.variable,
-          ptSerif.variable
+          serif.variable
         )}
       >
         <Providers session={session}>

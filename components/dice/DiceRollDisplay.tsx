@@ -59,7 +59,7 @@ function DiceRollResult({
       : result.type === "vicious"
         ? "text-flame"
         : result.type === "dropped"
-          ? "text-neutral-300 dark:text-neutral-600 parchment:text-neutral-400"
+          ? "text-neutral-300 dark:text-neutral-600"
           : "";
   if (pending && (result.type === "vicious" || result.type === "explosion")) {
     return null;

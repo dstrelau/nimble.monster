@@ -31,7 +31,7 @@ export type ItemRarity =
   | "very_rare"
   | "legendary";
 export type EntityImageType = "monster" | "companion" | "item";
-export type EntityImageTheme = "light" | "dark" | "parchment";
+export type EntityImageTheme = "light" | "dark";
 export type GenerationStatus = "generating" | "completed" | "failed";
 export type SubclassVisibility = "public" | "private";
 export type SpellSchoolVisibility = "public" | "private";

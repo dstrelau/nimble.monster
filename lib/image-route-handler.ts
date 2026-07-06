@@ -14,7 +14,7 @@ type EntityType = "monster" | "companion" | "item";
 
 export function parseThemeParam(request: NextRequest): EntityImageTheme {
   const raw = new URL(request.url).searchParams.get("theme");
-  if (raw === "dark" || raw === "parchment") return raw;
+  if (raw === "dark") return raw;
   return "light";
 }
 

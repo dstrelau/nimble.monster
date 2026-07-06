@@ -63,7 +63,7 @@ const MonsterStats: React.FC<{
 
   if (statCount === 0) return null;
 
-  const classes = "flex gap-1 items-center justify-end font-slab font-black";
+  const classes = "flex gap-2 items-center justify-end font-slab font-black";
   return (
     <StatsGroup
       className={cn(
@@ -127,7 +127,7 @@ const MonsterHeader: React.FC<{
 }> = ({ monster, link = true, variant }) => {
   const headerClasses = cn(
     "gap-1 flex flex-col relative",
-    monster.paperforgeId && "min-h-10",
+    monster.paperforgeId && "z-10 -ml-6",
     variant === "minion" &&
       "has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0"
   );
@@ -140,12 +140,12 @@ const MonsterHeader: React.FC<{
       {monster.paperforgeId && (
         <PaperforgeImage
           id={monster.paperforgeId}
-          className="absolute -top-7 -left-3 mr-2 size-19 z-10"
-          size={76}
+          className="absolute left-3 top-1/2 -translate-y-1/2 size-22 z-20"
+          size={88}
         />
       )}
       <div className="flex justify-between items-start">
-        <div className={cn("basis-full", monster.paperforgeId && "ml-14")}>
+        <div className={cn("basis-full", monster.paperforgeId && "ml-24")}>
           <div className="space-x-1">
             <div
               className={cn(

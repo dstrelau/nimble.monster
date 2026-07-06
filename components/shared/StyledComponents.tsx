@@ -5,11 +5,7 @@ import { cn } from "@/lib/utils";
 export const InlineConditionsBox: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
-  <div
-    className={cn(
-      "font-sans p-2 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm"
-    )}
-  >
+  <div className={cn("font-sans p-2 bg-muted text-foreground dark:shadow-sm")}>
     {children}
   </div>
 );
