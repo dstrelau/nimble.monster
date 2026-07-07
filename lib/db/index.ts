@@ -1,3 +1,6 @@
+export * from "./adventures";
+export * from "./bestiary";
+export * from "./character-options";
 export * from "./class";
 export * from "./collection";
 export * from "./companion";
@@ -5,6 +8,8 @@ export * from "./condition";
 export { getDatabase } from "./drizzle";
 export * from "./encounter";
 export * from "./family";
+export * from "./gear";
+export * from "./my-library";
 export * from "./reference";
 export * from "./schema";
 export * from "./school";

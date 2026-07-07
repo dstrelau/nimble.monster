@@ -12,6 +12,14 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "7 July 2026",
+    entries: ["Redesign site navigation."],
+  },
+  {
+    date: "6 July 2026",
+    entries: ["Remove 'parchment' theme and update light/dark themes."],
+  },
+  {
     date: "1 July 2026",
     entries: ["Add Encounters."],
   },

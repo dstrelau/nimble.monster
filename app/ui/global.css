@@ -23,7 +23,7 @@
 
     --color-header: var(--color-neutral-200);
     --color-header-foreground: var(--color-neutral-900);
-    --color-flame: var(--color-warning);
+    --color-flame: var(--color-yellow-600);
 }
 
 :root {
@@ -49,7 +49,8 @@
     --secondary: var(--muted);
 
     --input: #e2d7c1;
-    --ring: #b1490f;
+    --border-strong: #d8cdb4;
+    --accent-text-strong: #8f3a0a;
 
     --color-header: #e9dfc7;
     --color-header-foreground: #241f18;
@@ -87,7 +88,8 @@
     --muted-foreground: #8a7c63;
 
     --input: #33291d;
-    --ring: #cc5a1a;
+    --border-strong: #4a3d2c;
+    --accent-text-strong: #f0b483;
 }
 
 @theme inline {
@@ -113,7 +115,9 @@
     --color-destructive-foreground: var(--destructive-foreground);
     --color-border: var(--border);
     --color-input: var(--input);
-    --color-ring: var(--ring);
+    --color-ring: var(--primary);
+    --color-border-strong: var(--border-strong);
+    --color-accent-text-strong: var(--accent-text-strong);
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);

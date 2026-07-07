@@ -1,3 +1,5 @@
+"use client";
+
 import {
   AWARD_COLOR_CLASSES,
   AWARD_COLORS,
@@ -65,8 +67,9 @@ const singleColors = [
   { name: "hp", variable: "--color-hp" },
   { name: "flame", variable: "--color-flame" },
   { name: "border", variable: "--border" },
+  { name: "border-strong", variable: "--border-strong" },
   { name: "input", variable: "--input" },
-  { name: "ring", variable: "--ring" },
+  { name: "accent-text-strong", variable: "--accent-text-strong" },
 ];
 
 const buttonVariants = [
@@ -99,22 +102,22 @@ export default function ColorsPage() {
       ].map(({ title, data }) => (
         <div key={title} className="space-y-4">
           <h2 className="text-xl font-semibold">{title}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
             {data.map(({ backgroundVar, foregroundVar }) => (
               <div
                 key={backgroundVar + foregroundVar}
-                className="border rounded-lg p-4 bg-card"
+                className="border rounded-lg p-2 bg-card"
               >
                 <div
-                  className="w-full h-16 rounded-md mb-3 border flex items-center justify-center relative overflow-hidden"
+                  className="w-full h-8 rounded-md mb-2 border flex items-center justify-center relative overflow-hidden"
                   style={{
                     background: `var(${backgroundVar}, linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3))`,
                     color: `var(${foregroundVar}, linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3))`,
                   }}
                 >
-                  <span className="font-medium relative z-10">Sample Text</span>
+                  <span className="text-xs font-medium relative z-10">Aa</span>
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs text-muted-foreground truncate">
                   <code>{backgroundVar}</code>
                   <br />
                   <code>{foregroundVar}</code>
@@ -126,17 +129,21 @@ export default function ColorsPage() {
       ))}
 
       <h1 className="text-3xl font-bold">Other Colors</h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
         {singleColors.map(({ name, variable }) => (
-          <div key={name} className="border rounded-lg p-4 bg-card">
+          <div key={name} className="border rounded-lg p-2 bg-card">
             <div
-              className="w-full h-16 rounded-md mb-3 border relative overflow-hidden"
+              className="w-full h-8 rounded-md mb-2 border relative overflow-hidden"
               style={{
                 background: `var(${variable}, linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3))`,
               }}
             />
-            <h3 className="font-medium text-card-foreground">{name}</h3>
-            <code className="text-sm text-muted-foreground">{variable}</code>
+            <h3 className="text-xs font-medium text-card-foreground truncate">
+              {name}
+            </h3>
+            <code className="text-xs text-muted-foreground truncate block">
+              {variable}
+            </code>
           </div>
         ))}
       </div>
