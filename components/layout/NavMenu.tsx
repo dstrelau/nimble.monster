@@ -32,10 +32,43 @@ interface SubNavItemProps {
   active?: boolean;
 }
 
+function SubNavItemContent({
+  icon: Icon,
+  label,
+  count,
+  active,
+}: Omit<SubNavItemProps, "href">) {
+  return (
+    <>
+      <span
+        className={cn(
+          "flex size-8 shrink-0 items-center justify-center border-0 rounded-xl bg-muted text-muted-foreground",
+          active && "text-hp"
+        )}
+      >
+        <Icon className="size-4" />
+      </span>
+      <span
+        className={cn(
+          "flex-1 font-slab",
+          active ? "font-extrabold" : "font-bold"
+        )}
+      >
+        {label}
+      </span>
+      {count !== undefined && (
+        <span className="font-slab font-bold text-sm text-muted-foreground">
+          {count}
+        </span>
+      )}
+    </>
+  );
+}
+
 export function SubNavItem({
   href,
   label,
-  icon: Icon,
+  icon,
   count,
   active,
 }: SubNavItemProps) {
@@ -49,29 +82,47 @@ export function SubNavItem({
         )}
       >
         <Link href={href}>
-          <span
-            className={cn(
-              "flex size-8 shrink-0 items-center justify-center border-0 rounded-xl bg-muted text-muted-foreground",
-              active && "text-hp"
-            )}
-          >
-            <Icon className="size-4" />
-          </span>
-          <span
-            className={cn(
-              "flex-1 font-slab",
-              active ? "font-extrabold" : "font-bold"
-            )}
-          >
-            {label}
-          </span>
-          {count !== undefined && (
-            <span className="font-slab font-bold text-sm text-muted-foreground">
-              {count}
-            </span>
-          )}
+          <SubNavItemContent
+            icon={icon}
+            label={label}
+            count={count}
+            active={active}
+          />
         </Link>
       </NavigationMenuLink>
+    </li>
+  );
+}
+
+interface MobileSubNavItemProps extends SubNavItemProps {
+  onClick?: () => void;
+}
+
+export function MobileSubNavItem({
+  href,
+  label,
+  icon,
+  count,
+  active,
+  onClick,
+}: MobileSubNavItemProps) {
+  return (
+    <li>
+      <Link
+        href={href}
+        onClick={onClick}
+        className={cn(
+          "flex items-center gap-3 px-4 py-2.5 border-l-2 border-transparent text-popover-foreground hover:border-flame",
+          active && "border-hp bg-accent"
+        )}
+      >
+        <SubNavItemContent
+          icon={icon}
+          label={label}
+          count={count}
+          active={active}
+        />
+      </Link>
     </li>
   );
 }

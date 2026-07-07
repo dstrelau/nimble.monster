@@ -1,6 +1,8 @@
 "use client";
 
-import { BookOpen, Menu, Swords } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { BookOpen, Menu, Plus, Swords, X } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { getNavCountsAction } from "@/app/actions/nav";
@@ -8,7 +10,10 @@ import { CountedNavMenu } from "@/components/layout/CountedNavMenu";
 import { Logo } from "@/components/layout/Logo";
 import { MobileMenuDropdown } from "@/components/layout/MobileMenuDropdown";
 import { NavItem } from "@/components/layout/NavItem";
-import type { NavMenuItem } from "@/components/layout/NavMenu";
+import {
+  MobileSubNavItem,
+  type NavMenuItem,
+} from "@/components/layout/NavMenu";
 import { UserNavItem } from "@/components/layout/UserNavItem";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +28,11 @@ import type {
   GearCounts,
 } from "@/lib/db";
 import { ENTITY_TYPE_ICONS } from "@/lib/types/entity-links";
+
+type AllNavCounts = BestiaryCounts &
+  CharacterOptionCounts &
+  GearCounts &
+  AdventureCounts;
 
 const BESTIARY_ITEMS: (Omit<NavMenuItem, "count"> & {
   countKey: keyof BestiaryCounts;
@@ -107,18 +117,25 @@ const UTILITY_ITEMS: NavMenuItem[] = [
   { href: "/reference", label: "Rules", icon: BookOpen },
 ];
 
-const ALL_BROWSE_ITEMS: NavMenuItem[] = [
-  ...BESTIARY_ITEMS,
-  ...BROWSE_CHARACTER_ITEMS,
-  ...GEAR_ITEMS,
-  ...ADVENTURE_ITEMS,
-  ...UTILITY_ITEMS,
+const NAV_GROUPS: {
+  label: string;
+  items: (Omit<NavMenuItem, "count"> & { countKey: keyof AllNavCounts })[];
+}[] = [
+  { label: "Bestiary", items: BESTIARY_ITEMS },
+  { label: "Heroes", items: BROWSE_CHARACTER_ITEMS },
+  { label: "Gear", items: GEAR_ITEMS },
+  { label: "Adventures", items: ADVENTURE_ITEMS },
 ];
 
 const Header = () => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileUserMenuOpen, setMobileUserMenuOpen] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const { data: counts } = useQuery({
+    queryKey: ["nav-counts"],
+    queryFn: getNavCountsAction,
+    staleTime: 60_000,
+  });
 
   return (
     <nav className="relative p-0 shadow-sm bg-header text-header-foreground print:hidden">
@@ -130,10 +147,14 @@ const Header = () => {
           className="md:hidden"
           onClick={() => {
             setMobileMenuOpen(!mobileMenuOpen);
-            setMobileUserMenuOpen(false);
+            setAccountMenuOpen(false);
           }}
         >
-          <Menu className="h-8 w-8" />
+          {mobileMenuOpen ? (
+            <X className="h-8 w-8" strokeWidth={4} />
+          ) : (
+            <Menu className="h-8 w-8" strokeWidth={4} />
+          )}
         </Button>
 
         {/* Desktop logo (left) */}
@@ -190,22 +211,57 @@ const Header = () => {
         </div>
 
         <UserNavItem
-          mobileMenuOpen={mobileUserMenuOpen}
-          onMobileMenuOpenChange={(open) => {
-            setMobileUserMenuOpen(open);
+          open={accountMenuOpen}
+          onOpenChange={(open) => {
+            setAccountMenuOpen(open);
             if (open) setMobileMenuOpen(false);
           }}
         />
       </div>
 
-      {/* Mobile browse menu */}
-      <MobileMenuDropdown
-        isOpen={mobileMenuOpen}
-        links={ALL_BROWSE_ITEMS.map((link) => ({
-          ...link,
-          onClick: () => setMobileMenuOpen(false),
-        }))}
-      />
+      {/* Mobile navigation drawer */}
+      <MobileMenuDropdown isOpen={mobileMenuOpen}>
+        <Button asChild className="w-full gap-2 mb-3">
+          <Link href="/create" onClick={() => setMobileMenuOpen(false)}>
+            <Plus className="size-4" />
+            Create
+          </Link>
+        </Button>
+        <div className="space-y-4">
+          {NAV_GROUPS.map((group) => (
+            <div key={group.label}>
+              <div className="px-1 pb-1.5 font-condensed font-bold text-sm uppercase tracking-wide text-muted-foreground">
+                {group.label}
+              </div>
+              <ul className="rounded-md border border-border bg-popover overflow-hidden">
+                {group.items.map((item) => (
+                  <MobileSubNavItem
+                    key={item.href}
+                    href={item.href}
+                    label={item.label}
+                    icon={item.icon}
+                    count={counts?.[item.countKey] ?? "–"}
+                    active={pathname === item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                  />
+                ))}
+              </ul>
+            </div>
+          ))}
+          <ul className="rounded-md border border-border bg-popover overflow-hidden">
+            {UTILITY_ITEMS.map((item) => (
+              <MobileSubNavItem
+                key={item.href}
+                href={item.href}
+                label={item.label}
+                icon={item.icon}
+                active={pathname === item.href}
+                onClick={() => setMobileMenuOpen(false)}
+              />
+            ))}
+          </ul>
+        </div>
+      </MobileMenuDropdown>
     </nav>
   );
 };
