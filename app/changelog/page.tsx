@@ -12,6 +12,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "8 July 2026",
+    entries: ["Item card redesign. Add new backdrop options."],
+  },
+  {
     date: "7 July 2026",
     entries: ["Redesign site navigation."],
   },

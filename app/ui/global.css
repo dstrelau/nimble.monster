@@ -157,6 +157,70 @@
     }
 }
 
+/* Backdrop effects (Glow / Sunburst): color-mixed reads of the foreground
+   icon color, unclipped and layered under the icon directly on the card's
+   own background. Motes is a scatter of individual star elements instead
+   (.item-mote, below). The Icon backdrop renders the background icon
+   itself as a large, low-opacity shape instead (see ItemImageStage); Bare
+   has no fill layer at all. */
+.item-backdrop-glow-fill {
+    position: absolute;
+    inset: 10%;
+    z-index: 0;
+    background: radial-gradient(
+        circle,
+        color-mix(in oklab, var(--backdrop-c1) 70%, transparent) 0%,
+        transparent 70%
+    );
+    filter: blur(14px);
+}
+.item-backdrop-sunburst-fill {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: repeating-conic-gradient(
+        from 0deg,
+        color-mix(in oklab, var(--backdrop-c1) 60%, transparent) 0deg 3deg,
+        transparent 3deg 14deg
+    );
+    mask-image: radial-gradient(circle, black 22%, transparent 76%);
+    -webkit-mask-image: radial-gradient(circle, black 22%, transparent 76%);
+}
+
+/* A single 4-pointed sparkle/star shape, scattered at varying positions and
+   sizes by ItemImageStage to make up the Motes backdrop. Colored via the
+   same --backdrop-c1 variable as the other color-driven backdrops. */
+.item-mote {
+    position: absolute;
+    z-index: 0;
+    background-color: var(--backdrop-c1);
+    clip-path: polygon(
+        50% 0%,
+        63% 37%,
+        100% 50%,
+        63% 63%,
+        50% 100%,
+        37% 63%,
+        0% 50%,
+        37% 37%
+    );
+    filter: drop-shadow(0 0 2px var(--backdrop-c1));
+}
+
+/* Very Rare card treatment: a violet wash fading in from the top edge.
+   Fixed background-size (not a percentage) so the fade band stays the same
+   height regardless of how tall the card grows with content. */
+.rarity-gradient-top {
+    background-image: linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--color-violet-400) 30%, transparent),
+        transparent
+    );
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: 100% 2rem;
+}
+
 .formatted-text p {
     display: inline;
     margin: 0;

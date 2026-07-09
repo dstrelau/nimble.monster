@@ -78,6 +78,7 @@ export async function createItem(formData: {
   imageBgIcon?: string;
   imageColor?: string;
   imageBgColor?: string;
+  imageBackdrop?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
   sourceId?: string;
@@ -115,6 +116,7 @@ export async function updateItem(
     imageBgIcon?: string;
     imageColor?: string;
     imageBgColor?: string;
+    imageBackdrop?: string;
     rarity?: ItemRarity;
     visibility: "public" | "private";
     sourceId?: string;

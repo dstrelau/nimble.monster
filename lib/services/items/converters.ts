@@ -12,6 +12,7 @@ interface ItemRow {
   imageBgIcon: string | null;
   imageColor: string | null;
   imageBgColor: string | null;
+  imageBackdrop: string | null;
   createdAt: string | null;
   updatedAt: string | null;
   description: string;
@@ -73,6 +74,7 @@ export const toItem = (i: ItemWithRelations): Item => {
     ...toItemMini(i),
     description: i.description,
     moreInfo: i.moreInfo || undefined,
+    imageBackdrop: i.imageBackdrop || undefined,
     creator: toUser(i.creator),
     source: i.source
       ? {

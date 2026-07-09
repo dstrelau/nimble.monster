@@ -7,10 +7,16 @@ import { useSession } from "next-auth/react";
 import { useId, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { BackdropPicker } from "@/app/items/BackdropPicker";
+import { ColorPicker } from "@/app/items/ColorPicker";
 import { IconPicker } from "@/app/items/IconPicker";
 import { listAllMonsterSources } from "@/app/monsters/actions";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { Card } from "@/components/item/Card";
+import {
+  resolveItemBackdrop,
+  resolveItemColor,
+} from "@/components/item/colors";
 import { BuildView } from "@/components/shared/BuildView";
 import { ExampleLoader } from "@/components/shared/ExampleLoader";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
@@ -47,6 +53,7 @@ const formSchema = z.object({
   imageBgIcon: z.string().optional(),
   imageColor: z.string().optional(),
   imageBgColor: z.string().optional(),
+  imageBackdrop: z.string().optional(),
   rarity: z.enum([
     "unspecified",
     "common",
@@ -79,8 +86,9 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
       "**_ACTION_**. Consume (or administer to an adjacent creature) to heal **3d6+6** HP.",
     imageIcon: "health-potion",
     imageBgIcon: "sparkles",
-    imageColor: "rose-200",
-    imageBgColor: "red-100",
+    imageColor: "pink-700",
+    imageBgColor: "red-700",
+    imageBackdrop: "icon",
     rarity: "uncommon",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -94,9 +102,8 @@ const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
     moreInfo:
       "These magical gems are always crafted in pairs and can have any number of willing creatures magically bound to them.",
     imageIcon: "emerald",
-    imageBgIcon: "fire-dash",
-    imageColor: "purple-400",
-    imageBgColor: "purple-100",
+    imageColor: "violet-600",
+    imageBackdrop: "sunburst",
     rarity: "very_rare",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -137,8 +144,9 @@ export default function BuildItemView({
       moreInfo: sourceData?.moreInfo || "",
       imageIcon: sourceData?.imageIcon || "",
       imageBgIcon: sourceData?.imageBgIcon || "",
-      imageColor: sourceData?.imageColor || "",
-      imageBgColor: sourceData?.imageBgColor || "",
+      imageColor: resolveItemColor(sourceData?.imageColor) || "",
+      imageBgColor: resolveItemColor(sourceData?.imageBgColor) || "",
+      imageBackdrop: sourceData?.imageBackdrop || "",
       rarity: sourceData?.rarity || "unspecified",
       visibility: sourceData?.visibility || "public",
       sourceId: remixedFromId ? "" : sourceData?.source?.id || "",
@@ -147,6 +155,10 @@ export default function BuildItemView({
 
   const { watch } = form;
   const watchedValues = watch();
+  const resolvedBackdrop = resolveItemBackdrop({
+    imageBackdrop: watchedValues.imageBackdrop,
+    imageBgIcon: watchedValues.imageBgIcon,
+  });
 
   const creator = session?.user || UNKNOWN_USER;
   const previewItem = useMemo<Item>(
@@ -160,6 +172,7 @@ export default function BuildItemView({
       imageBgIcon: watchedValues.imageBgIcon || undefined,
       imageColor: watchedValues.imageColor || undefined,
       imageBgColor: watchedValues.imageBgColor || undefined,
+      imageBackdrop: watchedValues.imageBackdrop || undefined,
       rarity: watchedValues.rarity,
       visibility: watchedValues.visibility,
       creator: creator,
@@ -175,6 +188,7 @@ export default function BuildItemView({
       watchedValues.imageBgIcon,
       watchedValues.imageColor,
       watchedValues.imageBgColor,
+      watchedValues.imageBackdrop,
       watchedValues.rarity,
       watchedValues.visibility,
       creator,
@@ -195,6 +209,7 @@ export default function BuildItemView({
         imageBgIcon: data.imageBgIcon,
         imageColor: data.imageColor,
         imageBgColor: data.imageBgColor,
+        imageBackdrop: data.imageBackdrop,
         rarity: data.rarity,
         visibility: data.visibility,
         sourceId:
@@ -234,6 +249,7 @@ export default function BuildItemView({
         imageBgIcon: example.imageBgIcon || "",
         imageColor: example.imageColor || "",
         imageBgColor: example.imageBgColor || "",
+        imageBackdrop: example.imageBackdrop || "",
         rarity: example.rarity || "unspecified",
         visibility: example.visibility,
       });
@@ -344,7 +360,7 @@ export default function BuildItemView({
               )}
             />
 
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-4">
               <FormField
                 control={form.control}
                 name="imageIcon"
@@ -369,25 +385,65 @@ export default function BuildItemView({
 
               <FormField
                 control={form.control}
-                name="imageBgIcon"
+                name="imageBackdrop"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Background Icon</FormLabel>
+                    <FormLabel>Backdrop</FormLabel>
                     <FormControl>
-                      <IconPicker
-                        selectedIcon={field.value || undefined}
-                        selectedColor={watchedValues.imageBgColor || undefined}
-                        onIconSelect={(iconId) => field.onChange(iconId || "")}
-                        onColorSelect={(color) =>
-                          form.setValue("imageBgColor", color || "")
+                      <BackdropPicker
+                        selectedBackdrop={field.value || undefined}
+                        imageIcon={watchedValues.imageIcon || undefined}
+                        imageBgIcon={watchedValues.imageBgIcon || undefined}
+                        imageColor={watchedValues.imageColor || undefined}
+                        imageBgColor={watchedValues.imageBgColor || undefined}
+                        onBackdropSelect={(backdrop) =>
+                          field.onChange(backdrop)
                         }
-                        showColorPicker={true}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="imageBgColor"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Backdrop Color</FormLabel>
+                    <FormControl>
+                      <ColorPicker
+                        selectedColor={field.value || undefined}
+                        onColorSelect={(color) => field.onChange(color || "")}
+                        variant="backdrop"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {resolvedBackdrop === "icon" && (
+                <FormField
+                  control={form.control}
+                  name="imageBgIcon"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Background Icon</FormLabel>
+                      <FormControl>
+                        <IconPicker
+                          selectedIcon={field.value || undefined}
+                          onIconSelect={(iconId) =>
+                            field.onChange(iconId || "")
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
 
             {sourcesQuery.data && sourcesQuery.data.length > 0 && (

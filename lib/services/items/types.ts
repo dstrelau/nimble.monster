@@ -29,6 +29,7 @@ export interface ItemMini {
 export interface Item extends ItemMini {
   description: string;
   moreInfo?: string;
+  imageBackdrop?: string;
   creator: User;
   source?: Source;
   awards?: Award[];
@@ -77,6 +78,7 @@ export interface CreateItemInput {
   imageBgIcon?: string;
   imageColor?: string;
   imageBgColor?: string;
+  imageBackdrop?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
   sourceId?: string;
@@ -92,6 +94,7 @@ export interface UpdateItemInput {
   imageBgIcon?: string;
   imageColor?: string;
   imageBgColor?: string;
+  imageBackdrop?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
   sourceId?: string;

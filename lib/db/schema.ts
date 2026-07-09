@@ -30,6 +30,7 @@ export type ItemRarity =
   | "rare"
   | "very_rare"
   | "legendary";
+export type ItemBackdrop = "glow" | "sunburst" | "motes" | "icon" | "bare";
 export type EntityImageType = "monster" | "companion" | "item";
 export type EntityImageTheme = "light" | "dark";
 export type GenerationStatus = "generating" | "completed" | "failed";
@@ -205,6 +206,7 @@ export const items = sqliteTable(
     imageBgIcon: text("image_bg_icon"),
     imageColor: text("image_color"),
     imageBgColor: text("image_bg_color"),
+    imageBackdrop: text("image_backdrop"),
   },
   (table) => [index("idx_items_user_id").on(table.userId)]
 );
