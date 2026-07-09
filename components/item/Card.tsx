@@ -124,7 +124,7 @@ export const Card = ({
       <CardHeader
         className={cn(
           "relative z-10 text-center gap-0",
-          !(item.imageIcon || item.imageBgIcon) && "pt-4"
+          !(item.imageIcon || item.imageBgIcon) && "pt-8 pb-4"
         )}
       >
         {getRarityLabel(item.rarity) && (

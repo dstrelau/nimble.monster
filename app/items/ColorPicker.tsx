@@ -1,6 +1,5 @@
 "use client";
 
-import { CircleX } from "lucide-react";
 import type React from "react";
 import { ITEM_COLOR_KEYS } from "@/components/item/colors";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface ColorPickerProps {
   selectedColor?: string;
-  onColorSelect: (color: string | undefined) => void;
+  onColorSelect: (color: string) => void;
   // "backdrop" previews the color the way it actually renders as a Glow
   // backdrop (color-mix'd 70% over the card background) instead of a solid
   // swatch, so the picker doesn't look more saturated than the result.
@@ -22,18 +21,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
 }) => {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button
-        type="button"
-        size="icon"
-        onClick={() => onColorSelect(undefined)}
-        className={cn(
-          "size-8 p-0 rounded-lg border-2 border-card ring-1 ring-icon hover:border-accent hover:ring-flame",
-          !selectedColor && "ring-primary ring-2"
-        )}
-        title="Default"
-      >
-        <CircleX className="size-4" />
-      </Button>
       {ITEM_COLOR_KEYS.map((colorValue) => {
         const isSelected = selectedColor === colorValue;
 

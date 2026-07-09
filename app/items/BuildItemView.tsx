@@ -144,8 +144,8 @@ export default function BuildItemView({
       moreInfo: sourceData?.moreInfo || "",
       imageIcon: sourceData?.imageIcon || "",
       imageBgIcon: sourceData?.imageBgIcon || "",
-      imageColor: resolveItemColor(sourceData?.imageColor) || "",
-      imageBgColor: resolveItemColor(sourceData?.imageBgColor) || "",
+      imageColor: resolveItemColor(sourceData?.imageColor) || "stone-800",
+      imageBgColor: resolveItemColor(sourceData?.imageBgColor) || "stone-800",
       imageBackdrop: sourceData?.imageBackdrop || "",
       rarity: sourceData?.rarity || "unspecified",
       visibility: sourceData?.visibility || "public",
@@ -247,8 +247,8 @@ export default function BuildItemView({
         moreInfo: example.moreInfo || "",
         imageIcon: example.imageIcon || "",
         imageBgIcon: example.imageBgIcon || "",
-        imageColor: example.imageColor || "",
-        imageBgColor: example.imageBgColor || "",
+        imageColor: example.imageColor || "stone-800",
+        imageBgColor: example.imageBgColor || "stone-800",
         imageBackdrop: example.imageBackdrop || "",
         rarity: example.rarity || "unspecified",
         visibility: example.visibility,
@@ -415,7 +415,7 @@ export default function BuildItemView({
                     <FormControl>
                       <ColorPicker
                         selectedColor={field.value || undefined}
-                        onColorSelect={(color) => field.onChange(color || "")}
+                        onColorSelect={(color) => field.onChange(color)}
                         variant="backdrop"
                       />
                     </FormControl>
