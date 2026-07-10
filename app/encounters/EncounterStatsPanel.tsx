@@ -5,12 +5,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { Encounter } from "@/lib/types";
+import type { EncounterOverview } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { monsterLevelValue } from "@/lib/utils/monster";
 
 interface EncounterStatsPanelProps {
-  encounter: Encounter;
+  encounter: EncounterOverview;
 }
 
 const RATIO_VERY_LOW_THRESHOLD = 0.5;
@@ -29,7 +29,7 @@ function difficultyForLevelPercent(percent: number): Difficulty {
 }
 
 const resolvedCount = (
-  entry: Encounter["monsters"][number],
+  entry: EncounterOverview["monsters"][number],
   heroCount: number
 ) => (entry.isPerHero ? entry.quantity * heroCount : entry.quantity);
 
