@@ -31,6 +31,7 @@ import {
 } from "@/lib/types";
 import { getEncounterUrl } from "@/lib/utils/url";
 import { updateEncounter } from "./[id]/edit/actions";
+import { EncounterStatsPanel } from "./EncounterStatsPanel";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -363,7 +364,15 @@ export function CreateEditEncounter({
             />
           </div>
 
-          <div className="hidden sm:block min-w-sm">
+          <div className="hidden sm:flex flex-col gap-6 min-w-sm">
+            <EncounterStatsPanel
+              encounter={{
+                ...encounter,
+                heroCount: watchedValues.heroCount,
+                heroLevel: watchedValues.heroLevel,
+                monsters: currentEntries,
+              }}
+            />
             <EncounterCard
               encounter={{
                 ...encounter,
