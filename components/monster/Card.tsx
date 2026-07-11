@@ -135,7 +135,7 @@ const MonsterHeader: React.FC<{
   return (
     <div
       data-slot="card-header"
-      className={cn("@container/card-header gap-1 px-4 grow", headerClasses)}
+      className={cn("gap-1 px-4 grow", headerClasses)}
     >
       {monster.paperforgeId && (
         <PaperforgeImage
@@ -367,7 +367,7 @@ export const Card = ({
     <div
       className={cn(
         "w-full",
-        monster.legendary && "sm:col-span-2 md:col-span-2 print:col-span-2"
+        monster.legendary && "md:col-span-2 print:col-span-2"
       )}
       id={`monster-${monster.id}`}
     >
