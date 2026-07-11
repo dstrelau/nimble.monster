@@ -12,6 +12,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "11 July 2026",
+    entries: ["Standard monsters can now have a Bloodied field."],
+  },
+  {
     date: "8 July 2026",
     entries: ["Item card redesign. Add new backdrop options."],
   },

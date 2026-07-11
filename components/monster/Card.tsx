@@ -257,26 +257,22 @@ export const Card = ({
           conditions={conditions}
           actionPreface={monster.actionPreface}
         />
-        {monster.legendary && (
-          <>
-            {monster.bloodied && (
-              <PrefixedFormattedText
-                content={monster.bloodied}
-                conditions={conditions}
-                prefix={<strong>BLOODIED:</strong>}
-              />
-            )}
+        {!monster.minion && monster.bloodied && (
+          <PrefixedFormattedText
+            content={monster.bloodied}
+            conditions={conditions}
+            prefix={<strong>BLOODIED:</strong>}
+          />
+        )}
 
-            {monster.lastStand && (
-              <div>
-                <PrefixedFormattedText
-                  content={monster.lastStand}
-                  conditions={conditions}
-                  prefix={<strong>LAST STAND:</strong>}
-                />
-              </div>
-            )}
-          </>
+        {monster.legendary && monster.lastStand && (
+          <div>
+            <PrefixedFormattedText
+              content={monster.lastStand}
+              conditions={conditions}
+              prefix={<strong>LAST STAND:</strong>}
+            />
+          </div>
         )}
 
         {hideDescription || (

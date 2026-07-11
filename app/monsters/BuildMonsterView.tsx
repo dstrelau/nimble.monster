@@ -729,6 +729,18 @@ const StandardForm: React.FC<{
       <FormTextarea
         label={
           <div className="flex items-center gap-2">
+            Bloodied
+            <ConditionValidationIcon text={monster.bloodied} />
+          </div>
+        }
+        name="bloodied"
+        value={monster.bloodied || ""}
+        rows={2}
+        onChange={(bloodied: string) => setMonster({ ...monster, bloodied })}
+      />
+      <FormTextarea
+        label={
+          <div className="flex items-center gap-2">
             More Information
             <ConditionValidationIcon text={monster.moreInfo} />
           </div>

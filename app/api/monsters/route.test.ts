@@ -965,6 +965,146 @@ describe("GET /api/monsters", () => {
     expect(data.data[0].attributes.legendary).toBe(false);
   });
 
+  it("should include bloodied in attributes for standard monsters", async () => {
+    const mockMonsters = [
+      {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "Ogre",
+        level: "3",
+        levelInt: 3,
+        hp: 45,
+        legendary: false,
+        minion: false,
+        armor: "medium",
+        size: "large",
+        speed: 6,
+        fly: 0,
+        swim: 0,
+        climb: 0,
+        teleport: 0,
+        burrow: 0,
+        visibility: "public",
+        families: [],
+        bloodied: "The ogre flies into a rage.",
+        abilities: [],
+        actions: [],
+        actionPreface: "",
+        creator: fakeCreator,
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-01"),
+        saves: "",
+      },
+    ];
+
+    mockPaginateMonsters.mockResolvedValue({
+      data: mockMonsters,
+      nextCursor: null,
+    });
+
+    const request = new Request("http://localhost:3000/api/monsters");
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.data[0].attributes.bloodied).toEqual({
+      description: "The ogre flies into a rage.",
+    });
+
+    const result = MonsterSchema.safeParse({
+      id: data.data[0].id,
+      ...data.data[0].attributes,
+    });
+    expect(result.success, JSON.stringify(result.error)).toBe(true);
+  });
+
+  it("should omit bloodied from attributes when unset", async () => {
+    const mockMonsters = [
+      {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "Goblin",
+        level: "1",
+        levelInt: 1,
+        hp: 10,
+        legendary: false,
+        minion: false,
+        armor: "none",
+        size: "small",
+        speed: 6,
+        fly: 0,
+        swim: 0,
+        climb: 0,
+        teleport: 0,
+        burrow: 0,
+        visibility: "public",
+        families: [],
+        bloodied: "",
+        abilities: [],
+        actions: [],
+        actionPreface: "",
+        creator: fakeCreator,
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-01"),
+        saves: "",
+      },
+    ];
+
+    mockPaginateMonsters.mockResolvedValue({
+      data: mockMonsters,
+      nextCursor: null,
+    });
+
+    const request = new Request("http://localhost:3000/api/monsters");
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(data.data[0].attributes).not.toHaveProperty("bloodied");
+  });
+
+  it("should omit bloodied from attributes for minions even when set", async () => {
+    const mockMonsters = [
+      {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "Animated Armor Piece (Minion)",
+        level: "2",
+        levelInt: 2,
+        hp: 5,
+        legendary: false,
+        minion: true,
+        armor: "heavy",
+        size: "small",
+        speed: 5,
+        fly: 0,
+        swim: 0,
+        climb: 0,
+        teleport: 0,
+        burrow: 0,
+        visibility: "public",
+        families: [],
+        bloodied: "This should never be shown.",
+        abilities: [],
+        actions: [],
+        actionPreface: "",
+        creator: fakeCreator,
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-01"),
+        saves: "",
+      },
+    ];
+
+    mockPaginateMonsters.mockResolvedValue({
+      data: mockMonsters,
+      nextCursor: null,
+    });
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters?type=minion"
+    );
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(data.data[0].attributes).not.toHaveProperty("bloodied");
+  });
+
   it("should include role in monster attributes", async () => {
     const mockMonsters = [
       {
