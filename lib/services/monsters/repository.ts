@@ -998,7 +998,7 @@ export const createMonster = async (
     teleport: legendary ? 0 : teleport,
     actions: stripActionIds(actions),
     abilities: abilities,
-    bloodied: legendary ? bloodied : "",
+    bloodied: minion ? "" : bloodied,
     lastStand: legendary ? lastStand : "",
     saves: savesString,
     visibility,
@@ -1019,7 +1019,7 @@ export const createMonster = async (
   const conditionNames = extractAllConditions({
     actions,
     abilities,
-    bloodied: legendary ? bloodied : "",
+    bloodied: minion ? "" : bloodied,
     lastStand: legendary ? lastStand : "",
     moreInfo,
   });
@@ -1114,7 +1114,7 @@ export const upsertOfficialMonster = async (
     teleport: legendary ? 0 : teleport,
     actions: stripActionIds(actions),
     abilities: abilities,
-    bloodied: legendary ? bloodied : "",
+    bloodied: minion ? "" : bloodied,
     lastStand: legendary ? lastStand : "",
     saves: savesString,
     visibility,
@@ -1153,7 +1153,7 @@ export const upsertOfficialMonster = async (
   const conditionNames = extractAllConditions({
     actions,
     abilities,
-    bloodied: legendary ? bloodied : "",
+    bloodied: minion ? "" : bloodied,
     lastStand: legendary ? lastStand : "",
     moreInfo,
   });

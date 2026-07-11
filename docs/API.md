@@ -109,6 +109,9 @@ Retrieve a single monster by ID (26-character identifier).
 }
 ```
 
+Standard (non-minion) monsters may also include a `bloodied` attribute
+(`{ "description": "..." }`) when one is set; it is omitted otherwise.
+
 **Response (legendary monster):**
 ```json
 {

@@ -295,6 +295,9 @@ export const toZodMonster = (m: Monster) => {
     subtype: (m.minion ? "minion" : "standard") as "minion" | "standard",
     legendary: false as const,
     minion: m.minion,
+    ...(m.minion || !m.bloodied
+      ? {}
+      : { bloodied: { description: m.bloodied } }),
   };
 };
 
