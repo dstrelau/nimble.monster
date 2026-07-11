@@ -1,9 +1,21 @@
 "use client";
 
-import { Crown, PersonStanding, User } from "lucide-react";
+import {
+  ArrowDownUp,
+  Crown,
+  PersonStanding,
+  SlidersHorizontal,
+  User,
+} from "lucide-react";
 import { FilterBar } from "@/components/shared/FilterBar";
 import { SortSelect } from "@/components/shared/SortSelect";
 import { SourceFilter } from "@/components/shared/SourceFilter";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -32,6 +44,8 @@ interface SimpleFilterBarProps {
   level: number | null;
   onLevelChange: (level: number | null) => void;
   beforeFilters?: React.ReactNode;
+  /** Collapse creator/type/source/role/level/sort into a single popover menu. */
+  compact?: boolean;
 }
 
 const TYPE_OPTIONS: {
@@ -68,12 +82,12 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
   level,
   onLevelChange,
   beforeFilters,
+  compact = false,
 }) => {
-  return (
-    <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v ? v : null)}>
-      {beforeFilters}
+  const filterControls = (
+    <>
       <Select value={typeFilter} onValueChange={onTypeFilterChange}>
-        <SelectTrigger className="min-w-36">
+        <SelectTrigger className={compact ? "w-full" : "min-w-36"}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -96,7 +110,7 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
           onRoleChange(v === "none" ? null : (v as MonsterRole))
         }
       >
-        <SelectTrigger className="min-w-36">
+        <SelectTrigger className={compact ? "w-full" : "min-w-36"}>
           <SelectValue placeholder="Role" />
         </SelectTrigger>
         <SelectContent>
@@ -112,7 +126,7 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
         value={level?.toString() ?? "none"}
         onValueChange={(v) => onLevelChange(v === "none" ? null : Number(v))}
       >
-        <SelectTrigger className="min-w-36">
+        <SelectTrigger className={compact ? "w-full" : "min-w-36"}>
           <SelectValue placeholder="Level" />
         </SelectTrigger>
         <SelectContent>
@@ -124,11 +138,70 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
           ))}
         </SelectContent>
       </Select>
-      <SortSelect
-        items={SORT_OPTIONS}
-        value={sortOption}
-        onChange={onSortChange}
-      />
+    </>
+  );
+
+  const sortControl = (
+    <SortSelect
+      items={SORT_OPTIONS}
+      value={sortOption}
+      onChange={onSortChange}
+    />
+  );
+
+  if (!compact) {
+    return (
+      <FilterBar
+        searchTerm={searchTerm}
+        onSearch={(v) => onSearch(v ? v : null)}
+      >
+        {beforeFilters}
+        {filterControls}
+        {sortControl}
+      </FilterBar>
+    );
+  }
+
+  const activeFilterCount = [
+    typeFilter !== "all",
+    source !== null,
+    role !== null,
+    level !== null,
+  ].filter(Boolean).length;
+
+  return (
+    <FilterBar searchTerm={searchTerm} onSearch={(v) => onSearch(v ? v : null)}>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" size="icon" className="relative shrink-0">
+            <SlidersHorizontal />
+            {activeFilterCount > 0 && (
+              <span className="-top-1.5 -right-1.5 absolute flex size-4 items-center justify-center rounded-full bg-flame text-[10px] text-white">
+                {activeFilterCount}
+              </span>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="flex w-56 flex-col gap-2">
+          {beforeFilters}
+          {filterControls}
+        </PopoverContent>
+      </Popover>
+      <Select value={sortOption} onValueChange={onSortChange}>
+        <SelectTrigger
+          aria-label="Sort"
+          className="size-9 shrink-0 justify-center p-0 [&>svg:last-child]:hidden"
+        >
+          <ArrowDownUp />
+        </SelectTrigger>
+        <SelectContent align="end">
+          {SORT_OPTIONS.map(({ label, value }) => (
+            <SelectItem key={value} value={value}>
+              {label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </FilterBar>
   );
 };

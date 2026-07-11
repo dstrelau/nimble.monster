@@ -1,5 +1,6 @@
 import { CircleAlert, Scale, Swords, TriangleAlert, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Tooltip,
   TooltipContent,
@@ -11,6 +12,8 @@ import { monsterLevelValue } from "@/lib/utils/monster";
 
 interface EncounterStatsPanelProps {
   encounter: EncounterOverview;
+  onHeroCountChange?: (value: number) => void;
+  onHeroLevelChange?: (value: number) => void;
 }
 
 const RATIO_VERY_LOW_THRESHOLD = 0.5;
@@ -59,32 +62,43 @@ const StatRow = ({
   </div>
 );
 
-export function EncounterStatsPanel({ encounter }: EncounterStatsPanelProps) {
-  const totalMonsterCount = encounter.monsters.reduce(
-    (sum, entry) => sum + resolvedCount(entry, encounter.heroCount),
-    0
-  );
-  const totalMonsterLevel = encounter.monsters.reduce(
-    (sum, entry) =>
-      sum +
-      monsterLevelValue(entry.monster.levelInt) *
-        resolvedCount(entry, encounter.heroCount),
-    0
+export function EncounterStatsPanel({
+  encounter,
+  onHeroCountChange,
+  onHeroLevelChange,
+}: EncounterStatsPanelProps) {
+  const editableHeroes = Boolean(onHeroCountChange && onHeroLevelChange);
+  const {
+    totalMonsterCount,
+    totalMonsterLevel,
+    totalMonsterHP,
+    minionCount,
+    nonMinionCount,
+  } = encounter.monsters.reduce(
+    (acc, entry) => {
+      const count = resolvedCount(entry, encounter.heroCount);
+      acc.totalMonsterCount += count;
+      acc.totalMonsterLevel +=
+        monsterLevelValue(entry.monster.levelInt) * count;
+      acc.totalMonsterHP += entry.monster.hp * count;
+      if (entry.monster.minion) {
+        acc.minionCount += count;
+      } else {
+        acc.nonMinionCount += count;
+      }
+      return acc;
+    },
+    {
+      totalMonsterCount: 0,
+      totalMonsterLevel: 0,
+      totalMonsterHP: 0,
+      minionCount: 0,
+      nonMinionCount: 0,
+    }
   );
   const displayedTotalMonsterLevel = Number(totalMonsterLevel.toFixed(2));
   const totalHeroLevel = encounter.heroCount * encounter.heroLevel;
 
-  const { minionCount, nonMinionCount } = encounter.monsters.reduce(
-    (acc, entry) => {
-      if (entry.monster.minion) {
-        acc.minionCount += resolvedCount(entry, encounter.heroCount);
-      } else {
-        acc.nonMinionCount += resolvedCount(entry, encounter.heroCount);
-      }
-      return acc;
-    },
-    { minionCount: 0, nonMinionCount: 0 }
-  );
   const monsterToHeroRatio =
     encounter.heroCount > 0 ? nonMinionCount / encounter.heroCount : 0;
   const ratioWarning: {
@@ -136,7 +150,38 @@ export function EncounterStatsPanel({ encounter }: EncounterStatsPanelProps) {
           <SectionHeader icon={Users} label="Heroes" />
           <StatRow
             label="Count"
-            value={`${encounter.heroCount} × LVL ${encounter.heroLevel}`}
+            value={
+              editableHeroes ? (
+                <span className="flex flex-1 items-center gap-1.5">
+                  <Input
+                    type="number"
+                    min={1}
+                    className="max-w-16 flex-1 font-sans font-normal tabular-nums"
+                    value={encounter.heroCount}
+                    onChange={(e) =>
+                      onHeroCountChange?.(Math.max(1, Number(e.target.value)))
+                    }
+                  />
+                  <span className="shrink-0 text-sm font-normal text-muted-foreground">
+                    × LVL
+                  </span>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={20}
+                    className="max-w-16 flex-1 font-sans font-normal tabular-nums"
+                    value={encounter.heroLevel}
+                    onChange={(e) =>
+                      onHeroLevelChange?.(
+                        Math.max(1, Math.min(20, Number(e.target.value)))
+                      )
+                    }
+                  />
+                </span>
+              ) : (
+                `${encounter.heroCount} × LVL ${encounter.heroLevel}`
+              )
+            }
           />
           <StatRow label="Total Levels" value={totalHeroLevel} />
         </div>
@@ -144,9 +189,13 @@ export function EncounterStatsPanel({ encounter }: EncounterStatsPanelProps) {
           <SectionHeader icon={Swords} label="Monsters" />
           <StatRow
             label="Count"
-            value={`${totalMonsterCount}${minionCount && " (excl. minions)"}`}
+            value={`${totalMonsterCount}${minionCount > 0 ? " (excl. minions)" : ""}`}
           />
           <StatRow label="Total Levels" value={displayedTotalMonsterLevel} />
+          <StatRow
+            label="Total HP"
+            value={`${totalMonsterHP}${minionCount > 0 ? " (excl. minions)" : ""}`}
+          />
         </div>
         <div className="flex flex-col gap-1.5 py-2.5 first:pt-0 last:pb-0">
           <SectionHeader icon={Scale} label="Encounter" />

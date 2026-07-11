@@ -71,6 +71,7 @@ Workflow:
 - Use tailwind and shadcn for styling
   - Add new shadcn components via `pnpx shadcn@latest add <component>`
   - Do not modify shadcn components in components/ui without explicit confirmation
+  - Always use standard shadcn form components (Input, Select, Checkbox, Toggle, Button, etc.) with their default styling for form controls. Do not build custom controls (raw `<button>` steppers, hand-styled toggles, custom color overrides) unless explicitly told to build something custom.
 - In this version of Next.js, params are a Promise that need to be awaited.
 - Use OpenTelemetry.
 - Do not add console.\* functions permanently (they may be used for temporary debugging).
