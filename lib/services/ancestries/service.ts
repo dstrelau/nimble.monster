@@ -7,12 +7,16 @@ import type {
   UpdateAncestryInput,
 } from "./types";
 
-const PaginateAncestriesSortOptions = [
+export const PaginateAncestriesSortOptions = [
   "-createdAt",
   "createdAt",
   "name",
   "-name",
+  "-likes",
 ] as const;
+
+export type PaginateAncestriesSortOption =
+  (typeof PaginateAncestriesSortOptions)[number];
 
 const PaginateAncestriesSchema = z.object({
   search: z.string().optional(),

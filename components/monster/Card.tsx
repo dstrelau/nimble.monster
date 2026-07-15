@@ -1,6 +1,7 @@
 "use client";
 import { Bird, Shuffle, Skull } from "lucide-react";
 import type React from "react";
+import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { UserAvatar } from "@/components/layout/UserAvatar";
 import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
@@ -340,6 +341,9 @@ export const Card = ({
         hideActions={selectable || hideActions}
         className={cn(selectable && "pointer-events-none")}
         actionsSlot={<CardActions monster={monster} />}
+        reactionsSlot={
+          <EntityReactions entityType="monster" entityId={monster.id} />
+        }
         paperforgeSlot={
           paperforgeEntry && <PaperforgeLink entry={paperforgeEntry} />
         }

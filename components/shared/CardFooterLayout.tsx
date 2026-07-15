@@ -13,6 +13,7 @@ interface CardFooterLayoutProps {
   awards?: Award[];
   hideActions?: boolean;
   actionsSlot?: React.ReactNode;
+  reactionsSlot?: React.ReactNode;
   paperforgeSlot?: React.ReactNode;
   className?: string;
   disableLink?: boolean;
@@ -24,6 +25,7 @@ export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
   awards = [],
   hideActions = false,
   actionsSlot,
+  reactionsSlot,
   paperforgeSlot,
   className,
   disableLink = false,
@@ -43,6 +45,7 @@ export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
             {awards.map((award) => (
               <AwardBadge key={award.id} award={award} />
             ))}
+            {!hideActions && reactionsSlot}
             {paperforgeSlot}
             {source && <SourceBadge source={source} />}
             {!hideActions && actionsSlot}

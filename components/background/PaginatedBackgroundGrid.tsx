@@ -12,15 +12,9 @@ import {
   LoadingState,
 } from "@/components/shared/GridStates";
 import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
+import { PaginateBackgroundsSortOptions } from "@/lib/services/backgrounds/service";
 import { BackgroundFilterBar } from "./BackgroundFilterBar";
 import { Card } from "./Card";
-
-const PaginateBackgroundsSortOptions = [
-  "-createdAt",
-  "createdAt",
-  "name",
-  "-name",
-] as const;
 
 export type PaginatedBackgroundGridProps =
   | { kind: "backgrounds" | "my-backgrounds" }

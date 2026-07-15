@@ -1,4 +1,5 @@
 "use client";
+import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
 import { FormattedText } from "@/components/shared/FormattedText";
@@ -101,6 +102,11 @@ export const Card = ({
         creator={creator || ancestry.creator}
         source={ancestry.source}
         awards={ancestry.awards}
+        reactionsSlot={
+          ancestry.id && (
+            <EntityReactions entityType="ancestry" entityId={ancestry.id} />
+          )
+        }
       />
     </ShadcnCard>
   );

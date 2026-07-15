@@ -12,15 +12,9 @@ import {
   LoadingState,
 } from "@/components/shared/GridStates";
 import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
+import { PaginateAncestriesSortOptions } from "@/lib/services/ancestries/service";
 import { AncestryFilterBar } from "./AncestryFilterBar";
 import { Card } from "./Card";
-
-const PaginateAncestriesSortOptions = [
-  "-createdAt",
-  "createdAt",
-  "name",
-  "-name",
-] as const;
 
 export type PaginatedAncestryGridProps =
   | { kind: "ancestries" | "my-ancestries" }

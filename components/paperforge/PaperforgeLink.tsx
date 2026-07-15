@@ -1,4 +1,5 @@
 import { Anvil, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -13,14 +14,16 @@ export const PaperforgeLink: React.FC<{ entry: PaperForgeEntry }> = ({
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger asChild>
-        <a
-          href={entry.postUrl || "https://www.patreon.com/c/paperforge"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <Anvil className="size-4" />
-        </a>
+        <Button variant="menu-trigger" size="icon-sm" asChild>
+          <a
+            href={entry.postUrl || "https://www.patreon.com/c/paperforge"}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="paperforge"
+          >
+            <Anvil className="size-5" />
+          </a>
+        </Button>
       </TooltipTrigger>
       <TooltipContent>
         <div className="text-sm flex items-baseline gap-1">

@@ -130,6 +130,7 @@ interface SubclassRow {
   visibility: string | null;
   createdAt: string | null;
   updatedAt: string | null;
+  likeCount?: number;
   creator: UserRow;
   source: {
     id: string;
@@ -340,12 +341,14 @@ export const toClassMini = (c: {
   subclassNamePreface: string;
   visibility: string | null;
   createdAt: string | null;
+  likeCount?: number;
 }): ClassMini => ({
   id: c.id,
   name: c.name,
   subclassNamePreface: c.subclassNamePreface,
   visibility: (c.visibility ?? "public") as ClassVisibility,
   createdAt: c.createdAt ? new Date(c.createdAt) : new Date(),
+  likeCount: c.likeCount,
 });
 
 export const toSubclassMini = (
@@ -358,6 +361,7 @@ export const toSubclassMini = (
     | "tagline"
     | "visibility"
     | "createdAt"
+    | "likeCount"
   >
 ): SubclassMini => ({
   id: s.id,
@@ -367,6 +371,7 @@ export const toSubclassMini = (
   tagline: s.tagline || undefined,
   visibility: s.visibility as SubclassMini["visibility"],
   createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+  likeCount: s.likeCount,
 });
 
 export const toSubclass = (s: SubclassRow): Subclass => {

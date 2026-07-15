@@ -7,12 +7,16 @@ import type {
   UpdateBackgroundInput,
 } from "./types";
 
-const PaginateBackgroundsSortOptions = [
+export const PaginateBackgroundsSortOptions = [
   "-createdAt",
   "createdAt",
   "name",
   "-name",
+  "-likes",
 ] as const;
+
+export type PaginateBackgroundsSortOption =
+  (typeof PaginateBackgroundsSortOptions)[number];
 
 const PaginateBackgroundsSchema = z.object({
   search: z.string().optional(),

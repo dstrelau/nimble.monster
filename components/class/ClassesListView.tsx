@@ -22,6 +22,7 @@ const SortOptions = [
   "name-desc",
   "created-asc",
   "created-desc",
+  "likes-desc",
 ] as const;
 
 type SortOption = (typeof SortOptions)[number];
@@ -31,6 +32,7 @@ const SORT_LABELS: { value: SortOption; label: string }[] = [
   { value: "name-desc", label: "Name Z-A" },
   { value: "created-desc", label: "Newest First" },
   { value: "created-asc", label: "Oldest First" },
+  { value: "likes-desc", label: "Most Liked" },
 ];
 
 interface ClassesListViewProps {
@@ -75,6 +77,9 @@ export const ClassesListView: React.FC<ClassesListViewProps> = ({
           const dateB = b.createdAt || new Date(0);
           const result = dateA.getTime() - dateB.getTime();
           return direction === "asc" ? result : -result;
+        }
+        if (field === "likes") {
+          return (b.likeCount ?? 0) - (a.likeCount ?? 0);
         }
         return 0;
       });

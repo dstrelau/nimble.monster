@@ -32,6 +32,7 @@ const CLASS_OPTIONS: {
 const SORT_OPTIONS: { value: PaginateCompanionsSortOption; label: string }[] = [
   { value: "-createdAt", label: "Newest First" },
   { value: "createdAt", label: "Oldest First" },
+  { value: "-likes", label: "Most Liked" },
   { value: "name", label: "Name (A→Z)" },
   { value: "-name", label: "Name (Z→A)" },
 ];

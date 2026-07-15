@@ -87,7 +87,9 @@ export default async function SubclassPage({
         {session?.user && (
           <AddToCollectionDialog type="subclass" subclassId={subclass.id} />
         )}
-        {isOwner && <SubclassDetailActions subclass={subclass} />}
+        {session?.user && (
+          <SubclassDetailActions subclass={subclass} isOwner={isOwner} />
+        )}
       </div>
       <div className="max-w-2xl mx-auto">
         <Card

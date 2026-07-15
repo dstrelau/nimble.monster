@@ -3,7 +3,8 @@ import { decode, encode } from "@msgpack/msgpack";
 export type CursorData =
   | { sort: "name" | "-name"; value: string; id: string }
   | { sort: "createdAt" | "-createdAt"; value: string; id: string }
-  | { sort: "level" | "-level"; value: number; id: string };
+  | { sort: "level" | "-level"; value: number; id: string }
+  | { sort: "-likes"; value: number; id: string };
 
 export function encodeCursor(data: CursorData): string {
   const packed = encode(data);

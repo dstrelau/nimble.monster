@@ -8,6 +8,7 @@ import {
   Star,
   Swords,
 } from "lucide-react";
+import { EntityReactions } from "@/components/EntityReactions";
 import { DieFromNotation } from "@/components/icons/PolyhedralDice";
 import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
 import {
@@ -215,6 +216,11 @@ export function ClassDetailView({
         creator={creator || classEntity.creator}
         source={classEntity.source}
         awards={classEntity.awards}
+        reactionsSlot={
+          classEntity.id && (
+            <EntityReactions entityType="class" entityId={classEntity.id} />
+          )
+        }
         actionsSlot={
           <div className="flex items-center gap-2">
             {classEntity.visibility === "private" && (

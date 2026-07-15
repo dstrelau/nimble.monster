@@ -89,9 +89,9 @@ export default async function ClassPage({
 
   return (
     <div className="container mx-auto">
-      {isOwner && (
+      {session?.user && (
         <div className="flex justify-end items-start gap-2 mb-6">
-          <ClassDetailActions classEntity={classEntity} />
+          <ClassDetailActions classEntity={classEntity} isOwner={isOwner} />
         </div>
       )}
       <div className="max-w-3xl mx-auto flex flex-col items-center gap-12">

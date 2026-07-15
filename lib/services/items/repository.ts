@@ -408,7 +408,12 @@ export const searchPublicItems = async ({
   }
 
   // Determine order
-  const orderColumn = sortBy === "name" ? items.name : items.createdAt;
+  const orderColumn =
+    sortBy === "name"
+      ? items.name
+      : sortBy === "likes"
+        ? items.likeCount
+        : items.createdAt;
   const orderFn = sortDirection === "desc" ? desc : asc;
 
   // Build query
@@ -468,6 +473,14 @@ function buildItemCursorCondition(
     return or(
       gt(items.createdAt, cursorValue),
       and(eq(items.createdAt, cursorValue), gt(items.id, cursorData.id))
+    );
+  }
+
+  if (sortField === "likes") {
+    const cursorValue = cursorData.value as number;
+    return or(
+      lt(items.likeCount, cursorValue),
+      and(eq(items.likeCount, cursorValue), gt(items.id, cursorData.id))
     );
   }
 
@@ -584,6 +597,8 @@ export const paginateItems = async ({
       isDesc ? desc(items.name) : asc(items.name),
       asc(items.id)
     );
+  } else if (sortField === "likes") {
+    query = query.orderBy(desc(items.likeCount), asc(items.id));
   } else {
     query = query.orderBy(
       isDesc ? desc(items.createdAt) : asc(items.createdAt),
@@ -620,6 +635,12 @@ export const paginateItems = async ({
         newCursorData = {
           sort: sort as "name" | "-name",
           value: lastRow.name,
+          id: lastRow.id,
+        };
+      } else if (sortField === "likes") {
+        newCursorData = {
+          sort: "-likes",
+          value: lastRow.likeCount,
           id: lastRow.id,
         };
       } else {

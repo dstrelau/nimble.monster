@@ -4,15 +4,14 @@ import { z } from "zod";
 import { ItemsListView } from "@/app/items/ItemsListView";
 import { getQueryClient } from "@/lib/queryClient";
 import * as items from "@/lib/services/items/repository";
+import { PaginateItemsSortOptions } from "@/lib/services/items/types";
 import { sourcesQueryOptions } from "@/lib/services/sources";
 import { getItemUrl } from "@/lib/utils/url";
 import { publicItemsInfiniteQueryOptions } from "./actions";
 
 const searchParamsSchema = z.object({
   id: z.string().optional(),
-  sort: z
-    .enum(["createdAt", "-createdAt", "name", "-name"])
-    .default("-createdAt"),
+  sort: z.enum(PaginateItemsSortOptions).default("-createdAt"),
   rarity: z
     .enum(["all", "common", "uncommon", "rare", "epic", "legendary"])
     .default("all"),

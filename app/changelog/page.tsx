@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "14 July 2026",
+    entries: [
+      "Add likes and reporting to monsters, items, companions, subclasses, classes, spell schools, backgrounds, and ancestries, plus a Most Liked sort option.",
+    ],
+  },
+  {
     date: "11 July 2026",
     entries: ["Standard monsters can now have a Bloodied field."],
   },

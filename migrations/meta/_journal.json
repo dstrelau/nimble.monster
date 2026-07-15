@@ -120,6 +120,20 @@
       "when": 1783542614418,
       "tag": "0016_fixed_galactus",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "6",
+      "when": 1784085559988,
+      "tag": "0017_aromatic_lizard",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "6",
+      "when": 1784123343759,
+      "tag": "0018_wide_spirit",
+      "breakpoints": true
     }
   ]
 }

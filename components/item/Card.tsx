@@ -1,5 +1,6 @@
 "use client";
 import { FileText } from "lucide-react";
+import { EntityReactions } from "@/components/EntityReactions";
 import {
   resolveItemBackdrop,
   resolveItemColor,
@@ -180,6 +181,9 @@ export const Card = ({
         awards={item.awards}
         hideActions={selectable || hideActions}
         className={cn("pb-4", selectable && "pointer-events-none")}
+        reactionsSlot={
+          item.id && <EntityReactions entityType="item" entityId={item.id} />
+        }
         actionsSlot={
           item.id && (
             <ShareMenu disabled={item.visibility !== "public"}>

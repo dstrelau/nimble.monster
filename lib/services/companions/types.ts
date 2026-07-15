@@ -11,6 +11,7 @@ export const PaginateCompanionsSortOptions = [
   "-name",
   "createdAt",
   "-createdAt",
+  "-likes",
 ] as const;
 
 export type PaginateCompanionsSortOption =

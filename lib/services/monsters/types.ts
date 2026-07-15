@@ -167,6 +167,7 @@ export const PaginateMonstersSortOptions = [
   "-level",
   "name",
   "-name",
+  "-likes",
 ] as const;
 export type PaginateMonstersSortOption =
   (typeof PaginateMonstersSortOptions)[number];

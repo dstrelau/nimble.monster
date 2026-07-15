@@ -5,6 +5,8 @@ import {
   ShareMenu,
   ShareMenuCopyURLItem,
   ShareMenuDownloadCardItem,
+  shareMenuIconClassName,
+  shareMenuItemClassName,
 } from "@/components/shared/ShareMenu";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import type { Monster } from "@/lib/services/monsters";
@@ -28,36 +30,33 @@ export default function CardActions({ monster }: MonsterCardActionsProps) {
   return (
     <div className="flex gap-2">
       <ShareMenu disabled={!isPublic}>
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem asChild className={shareMenuItemClassName}>
           <a
-            className="flex gap-2 items-center"
             href={`http://nimbrew.net/${monster.legendary ? "statblock-legendary" : "statblock-generic"}?urlJson=https://nimble.monster${getMonsterUrl(monster)}/nimbrew.json`}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <ExternalLink className="w-4 h-4" />
+            <ExternalLink className={shareMenuIconClassName} />
             Send to Nimbrew
           </a>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem asChild className={shareMenuItemClassName}>
           <a
-            className="flex gap-2 items-center"
             href={getMonsterMarkdownUrl(monster, { format: "brief" })}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FileText className="w-4 h-4" />
+            <FileText className={shareMenuIconClassName} />
             Export to Markdown (Brief)
           </a>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem asChild className={shareMenuItemClassName}>
           <a
-            className="flex gap-2 items-center"
             href={getMonsterMarkdownUrl(monster)}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FileText className="w-4 h-4" />
+            <FileText className={shareMenuIconClassName} />
             Export to Markdown (Full)
           </a>
         </DropdownMenuItem>

@@ -3,22 +3,24 @@
 import { FilterBar } from "@/components/shared/FilterBar";
 import { SortSelect } from "@/components/shared/SortSelect";
 import { SourceFilter } from "@/components/shared/SourceFilter";
+import type { PaginateBackgroundsSortOption } from "@/lib/services/backgrounds/service";
 
 interface FilterBarProps {
   searchTerm: string | null;
   sortOption: string;
   onSearch: (search: string | null) => void;
-  onSortChange: (sort: "name" | "createdAt" | "-name" | "-createdAt") => void;
+  onSortChange: (sort: PaginateBackgroundsSortOption) => void;
   source: string | null;
   onSourceChange: (source: string | null) => void;
 }
 
 const SORT_OPTIONS: {
-  value: "name" | "createdAt" | "-name" | "-createdAt";
+  value: PaginateBackgroundsSortOption;
   label: string;
 }[] = [
   { value: "-createdAt", label: "Newest" },
   { value: "createdAt", label: "Oldest" },
+  { value: "-likes", label: "Most Liked" },
   { value: "name", label: "Name (A-Z)" },
   { value: "-name", label: "Name (Z-A)" },
 ];
@@ -41,9 +43,7 @@ export const BackgroundFilterBar = ({
       <SortSelect
         items={SORT_OPTIONS}
         value={sortOption}
-        onChange={(v) =>
-          onSortChange(v as "name" | "createdAt" | "-name" | "-createdAt")
-        }
+        onChange={(v) => onSortChange(v as PaginateBackgroundsSortOption)}
       />
     </FilterBar>
   );

@@ -23,7 +23,6 @@ import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
 import type {
-  PaginateCompanionsSortOption,
   PaginateMonstersParams,
   PaginatePublicCompanionsResponse,
 } from "./types";
@@ -170,6 +169,15 @@ export const paginatePublicCompanions = async ({
         op(companions.createdAt, dateStr),
         and(eq(companions.createdAt, dateStr), gt(companions.id, cursorData.id))
       );
+    } else if (sortField === "likes") {
+      const likeCountValue = cursorData.value as number;
+      cursorConditions = or(
+        lt(companions.likeCount, likeCountValue),
+        and(
+          eq(companions.likeCount, likeCountValue),
+          gt(companions.id, cursorData.id)
+        )
+      );
     }
   }
 
@@ -199,10 +207,12 @@ export const paginatePublicCompanions = async ({
           isDesc ? desc(companions.name) : asc(companions.name),
           asc(companions.id),
         ]
-      : [
-          isDesc ? desc(companions.createdAt) : asc(companions.createdAt),
-          asc(companions.id),
-        ];
+      : sortField === "likes"
+        ? [desc(companions.likeCount), asc(companions.id)]
+        : [
+            isDesc ? desc(companions.createdAt) : asc(companions.createdAt),
+            asc(companions.id),
+          ];
 
   // Query companions with joins
   const rows = await db
@@ -261,14 +271,26 @@ export const paginatePublicCompanions = async ({
   let nextCursor: string | null = null;
   if (hasMore && results.length > 0) {
     const lastCompanion = resultRows[resultRows.length - 1].companions;
-    const cursorData: CursorData = {
-      sort: sort as PaginateCompanionsSortOption,
-      value:
-        sortField === "name"
-          ? lastCompanion.name
-          : (lastCompanion.createdAt ?? new Date().toISOString()),
-      id: lastCompanion.id,
-    };
+    let cursorData: CursorData;
+    if (sortField === "name") {
+      cursorData = {
+        sort: sort as "name" | "-name",
+        value: lastCompanion.name,
+        id: lastCompanion.id,
+      };
+    } else if (sortField === "likes") {
+      cursorData = {
+        sort: "-likes",
+        value: lastCompanion.likeCount,
+        id: lastCompanion.id,
+      };
+    } else {
+      cursorData = {
+        sort: sort as "createdAt" | "-createdAt",
+        value: lastCompanion.createdAt ?? new Date().toISOString(),
+        id: lastCompanion.id,
+      };
+    }
     nextCursor = encodeCursor(cursorData);
   }
 

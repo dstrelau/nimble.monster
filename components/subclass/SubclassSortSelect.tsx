@@ -19,6 +19,7 @@ const SORT_OPTIONS: { value: SubclassSortOption; label: string }[] = [
   { value: "name-desc", label: "Name Z-A" },
   { value: "created-desc", label: "Newest First" },
   { value: "created-asc", label: "Oldest First" },
+  { value: "likes-desc", label: "Most Liked" },
 ];
 
 export const SubclassSortSelect: React.FC<SubclassSortSelectProps> = ({

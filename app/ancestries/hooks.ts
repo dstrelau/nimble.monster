@@ -1,5 +1,8 @@
 import { keepPreviousData } from "@tanstack/react-query";
-import type { PaginatePublicAncestriesResponse } from "@/lib/services/ancestries/service";
+import type {
+  PaginateAncestriesSortOption,
+  PaginatePublicAncestriesResponse,
+} from "@/lib/services/ancestries/service";
 import { paginatePublicAncestries } from "./actions";
 
 export function publicAncestriesInfiniteQueryOptions({
@@ -9,7 +12,7 @@ export function publicAncestriesInfiniteQueryOptions({
   limit = 12,
 }: Partial<{
   search?: string;
-  sort: "-createdAt" | "createdAt" | "name" | "-name";
+  sort: PaginateAncestriesSortOption;
   source?: string;
   limit?: number;
 }> = {}) {

@@ -250,6 +250,15 @@ export const paginatePublicAncestries = async ({
           gt(ancestries.id, cursorData.id)
         )
       );
+    } else if (sortField === "likes") {
+      const likeCountValue = cursorData.value as number;
+      cursorConditions = or(
+        lt(ancestries.likeCount, likeCountValue),
+        and(
+          eq(ancestries.likeCount, likeCountValue),
+          gt(ancestries.id, cursorData.id)
+        )
+      );
     }
   }
 
@@ -265,10 +274,12 @@ export const paginatePublicAncestries = async ({
           isDesc ? desc(ancestries.name) : asc(ancestries.name),
           asc(ancestries.id),
         ]
-      : [
-          isDesc ? desc(ancestries.createdAt) : asc(ancestries.createdAt),
-          asc(ancestries.id),
-        ];
+      : sortField === "likes"
+        ? [desc(ancestries.likeCount), asc(ancestries.id)]
+        : [
+            isDesc ? desc(ancestries.createdAt) : asc(ancestries.createdAt),
+            asc(ancestries.id),
+          ];
 
   // Query ancestries
   const rows = await db
@@ -318,14 +329,26 @@ export const paginatePublicAncestries = async ({
   let nextCursor: string | null = null;
   if (hasMore && resultRows.length > 0) {
     const lastRow = resultRows[resultRows.length - 1];
-    const cursorData: CursorData = {
-      sort: sort as "name" | "-name" | "createdAt" | "-createdAt",
-      value:
-        sortField === "name"
-          ? lastRow.ancestries.name
-          : (lastRow.ancestries.createdAt ?? new Date().toISOString()),
-      id: lastRow.ancestries.id,
-    };
+    let cursorData: CursorData;
+    if (sortField === "name") {
+      cursorData = {
+        sort: sort as "name" | "-name",
+        value: lastRow.ancestries.name,
+        id: lastRow.ancestries.id,
+      };
+    } else if (sortField === "likes") {
+      cursorData = {
+        sort: "-likes",
+        value: lastRow.ancestries.likeCount,
+        id: lastRow.ancestries.id,
+      };
+    } else {
+      cursorData = {
+        sort: sort as "createdAt" | "-createdAt",
+        value: lastRow.ancestries.createdAt ?? new Date().toISOString(),
+        id: lastRow.ancestries.id,
+      };
+    }
     nextCursor = encodeCursor(cursorData);
   }
 

@@ -176,6 +176,7 @@ export const monsters = sqliteTable(
     isOfficial: integer("is_official", { mode: "boolean" })
       .notNull()
       .default(false),
+    likeCount: integer("like_count").notNull().default(0),
   },
   (table) => [index("idx_monsters_user_id").on(table.userId)]
 );
@@ -207,6 +208,7 @@ export const items = sqliteTable(
     imageColor: text("image_color"),
     imageBgColor: text("image_bg_color"),
     imageBackdrop: text("image_backdrop"),
+    likeCount: integer("like_count").notNull().default(0),
   },
   (table) => [index("idx_items_user_id").on(table.userId)]
 );
@@ -242,6 +244,7 @@ export const companions = sqliteTable(
     paperforgeId: text("paperforge_id"),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+    likeCount: integer("like_count").notNull().default(0),
   },
   (table) => [index("idx_companions_user_id").on(table.userId)]
 );
@@ -302,6 +305,7 @@ export const subclasses = sqliteTable(
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
     tagline: text("tagline"),
+    likeCount: integer("like_count").notNull().default(0),
   },
   (table) => [
     index("idx_subclasses_user_id").on(table.userId),
@@ -382,6 +386,7 @@ export const spellSchools = sqliteTable(
     }),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+    likeCount: integer("like_count").notNull().default(0),
   },
   (table) => [index("idx_spell_schools_user_id").on(table.userId)]
 );
@@ -405,6 +410,7 @@ export const backgrounds = sqliteTable(
     }),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+    likeCount: integer("like_count").notNull().default(0),
   },
   (table) => [index("idx_backgrounds_user_id").on(table.userId)]
 );
@@ -430,6 +436,7 @@ export const ancestries = sqliteTable(
     }),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+    likeCount: integer("like_count").notNull().default(0),
   },
   (table) => [index("idx_ancestries_user_id").on(table.userId)]
 );
@@ -524,6 +531,7 @@ export const classes = sqliteTable(
     }),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+    likeCount: integer("like_count").notNull().default(0),
   },
   (table) => [index("idx_classes_user_id").on(table.userId)]
 );
@@ -920,6 +928,76 @@ export const monstersAwards = sqliteTable(
   },
   (table) => [primaryKey({ columns: [table.monsterId, table.awardId] })]
 );
+
+// Entities that support upvote/downvote reactions and abuse reports.
+// entity_id is not FK-constrained (SQLite can't FK a polymorphic column);
+// referential integrity for it is enforced at the service layer instead.
+export type ReactableEntityType =
+  | "monster"
+  | "item"
+  | "companion"
+  | "subclass"
+  | "class"
+  | "spellSchool"
+  | "background"
+  | "ancestry";
+
+export type ReactionType = "thumbs_up" | "thumbs_down";
+
+export const reactions = sqliteTable(
+  "reactions",
+  {
+    entityType: text("entity_type").$type<ReactableEntityType>().notNull(),
+    entityId: text("entity_id").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    reactionType: text("reaction_type").$type<ReactionType>().notNull(),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [
+    primaryKey({
+      columns: [
+        table.entityType,
+        table.entityId,
+        table.userId,
+        table.reactionType,
+      ],
+    }),
+    index("idx_reactions_entity").on(table.entityType, table.entityId),
+  ]
+);
+
+export type ReportReason =
+  | "inappropriate"
+  | "spam"
+  | "plagiarism"
+  | "inaccurate"
+  | "other";
+
+export const reports = sqliteTable(
+  "reports",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    entityType: text("entity_type").$type<ReactableEntityType>().notNull(),
+    entityId: text("entity_id").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    reason: text("reason").$type<ReportReason>().notNull(),
+    details: text("details").notNull().default(""),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [
+    index("idx_reports_entity").on(table.entityType, table.entityId),
+    unique().on(table.entityType, table.entityId, table.userId),
+  ]
+);
+
+export type ReportRow = typeof reports.$inferSelect;
+export type ReportInsert = typeof reports.$inferInsert;
 
 export const itemsAwards = sqliteTable(
   "items_awards",

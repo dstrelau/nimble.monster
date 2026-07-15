@@ -1,5 +1,6 @@
 "use client";
 
+import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -81,6 +82,12 @@ export function SubclassMiniCard({
         creator={subclass.creator}
         source={subclass.source}
         awards={subclass.awards}
+        reactionsSlot={
+          !selectable &&
+          subclass.id && (
+            <EntityReactions entityType="subclass" entityId={subclass.id} />
+          )
+        }
         actionsSlot={
           subclass.visibility === "private" && (
             <Badge variant="default" className="h-6">

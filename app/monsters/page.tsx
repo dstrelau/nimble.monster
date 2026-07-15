@@ -5,15 +5,14 @@ import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid"
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { monstersService } from "@/lib/services/monsters";
+import { PaginateMonstersSortOptions } from "@/lib/services/monsters/types";
 import { sourcesForEntityTypeQueryOptions } from "@/lib/services/sources";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { publicMonstersInfiniteQueryOptions } from "./hooks";
 
 const searchParamsSchema = z.object({
   id: z.string().optional(),
-  sort: z
-    .enum(["createdAt", "-createdAt", "level", "-level", "name", "-name"])
-    .default("-createdAt"),
+  sort: z.enum(PaginateMonstersSortOptions).default("-createdAt"),
   type: z.enum(["all", "standard", "legendary", "minion"]).default("all"),
   search: z.string().optional(),
   sourceId: z.string().optional(),

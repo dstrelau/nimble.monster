@@ -1,5 +1,8 @@
 import { keepPreviousData } from "@tanstack/react-query";
-import type { PaginatePublicBackgroundsResponse } from "@/lib/services/backgrounds/service";
+import type {
+  PaginateBackgroundsSortOption,
+  PaginatePublicBackgroundsResponse,
+} from "@/lib/services/backgrounds/service";
 import { paginateMyBackgrounds } from "./actions";
 
 export function myBackgroundsInfiniteQueryOptions({
@@ -9,7 +12,7 @@ export function myBackgroundsInfiniteQueryOptions({
   limit = 12,
 }: Partial<{
   search?: string;
-  sort: "-createdAt" | "createdAt" | "name" | "-name";
+  sort: PaginateBackgroundsSortOption;
   source?: string;
   limit?: number;
 }> = {}) {

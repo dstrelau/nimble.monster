@@ -37,7 +37,7 @@ export interface Item extends ItemMini {
   remixedFrom?: { id: string; name: string; creator: User } | null;
 }
 
-export type ItemSortBy = "name" | "createdAt";
+export type ItemSortBy = "name" | "createdAt" | "likes";
 export type ItemSortDirection = "asc" | "desc";
 
 export const PaginateItemsSortOptions = [
@@ -45,6 +45,7 @@ export const PaginateItemsSortOptions = [
   "-createdAt",
   "name",
   "-name",
+  "-likes",
 ] as const;
 
 export type PaginateItemsSortOption = (typeof PaginateItemsSortOptions)[number];

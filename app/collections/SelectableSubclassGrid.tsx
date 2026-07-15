@@ -69,6 +69,9 @@ export function SelectableSubclassGrid({
           const result = dateA.getTime() - dateB.getTime();
           return direction === "asc" ? result : -result;
         }
+        if (field === "likes") {
+          return (b.likeCount ?? 0) - (a.likeCount ?? 0);
+        }
         return 0;
       });
   }, [subclasses, searchTerm, sortOption, classNameFilter, source]);

@@ -1,4 +1,5 @@
 "use client";
+import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
 import { FormattedText } from "@/components/shared/FormattedText";
@@ -73,6 +74,11 @@ export const Card = ({
         source={background.source}
         awards={background.awards}
         className={cn(selectable && "pointer-events-none")}
+        reactionsSlot={
+          background.id && (
+            <EntityReactions entityType="background" entityId={background.id} />
+          )
+        }
       />
     </ShadcnCard>
   );

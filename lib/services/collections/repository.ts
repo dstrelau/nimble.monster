@@ -223,6 +223,7 @@ const toSubclassMiniFromRow = (s: SubclassRow): SubclassMini => ({
   tagline: s.tagline ?? undefined,
   visibility: (s.visibility ?? "public") as SubclassMini["visibility"],
   createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+  likeCount: s.likeCount,
 });
 
 const toClassMiniFromRow = (c: ClassRow): ClassMini => ({
@@ -231,6 +232,7 @@ const toClassMiniFromRow = (c: ClassRow): ClassMini => ({
   subclassNamePreface: c.subclassNamePreface,
   visibility: (c.visibility ?? "public") as ClassVisibility,
   createdAt: c.createdAt ? new Date(c.createdAt) : new Date(),
+  likeCount: c.likeCount,
 });
 
 const toSpellSchoolMiniFromRow = (
@@ -242,6 +244,7 @@ const toSpellSchoolMiniFromRow = (
   visibility: (s.visibility ?? "public") as "public" | "private",
   spellCount,
   createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+  likeCount: s.likeCount,
 });
 
 async function loadCollectionEntityMinis(

@@ -101,7 +101,9 @@ export default async function CompanionPage({
         {session?.user && (
           <AddToCollectionDialog type="companion" companionId={companion.id} />
         )}
-        {isOwner && <CompanionDetailActions companion={companion} />}
+        {session?.user && (
+          <CompanionDetailActions companion={companion} isOwner={isOwner} />
+        )}
       </div>
       <div className="max-w-3xl mx-auto">
         <Card companion={companion} creator={companion.creator} link={false} />

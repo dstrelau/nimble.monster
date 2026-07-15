@@ -268,6 +268,7 @@ export interface SubclassMini {
   tagline?: string;
   visibility: SubclassVisibility;
   createdAt: Date;
+  likeCount?: number;
 }
 
 export interface Subclass extends SubclassMini {
@@ -293,7 +294,8 @@ export type SubclassSortOption =
   | "name-asc"
   | "name-desc"
   | "created-asc"
-  | "created-desc";
+  | "created-desc"
+  | "likes-desc";
 
 export const CLASS_VISIBILITY = [
   { value: "public", label: "Public" },
@@ -363,6 +365,7 @@ export interface ClassMini {
   subclassNamePreface: string;
   visibility: ClassVisibility;
   createdAt: Date;
+  likeCount?: number;
 }
 
 export interface Class extends ClassMini {
@@ -412,7 +415,8 @@ export type ClassSortOption =
   | "name-asc"
   | "name-desc"
   | "created-asc"
-  | "created-desc";
+  | "created-desc"
+  | "likes-desc";
 
 export type SpellSchoolVisibility = "public" | "private";
 
@@ -457,6 +461,7 @@ export interface SpellSchoolMini {
   visibility: SpellSchoolVisibility;
   spellCount?: number;
   createdAt: Date;
+  likeCount?: number;
 }
 
 export interface SpellSchool extends SpellSchoolMini {
@@ -472,7 +477,8 @@ export type SpellSchoolSortOption =
   | "name-asc"
   | "name-desc"
   | "created-asc"
-  | "created-desc";
+  | "created-desc"
+  | "likes-desc";
 
 export interface Source {
   id: string;

@@ -480,6 +480,8 @@ export const paginateMonsters = async ({
       isDesc ? desc(monsters.createdAt) : asc(monsters.createdAt),
       asc(monsters.id)
     );
+  } else if (sortField === "likes") {
+    query = query.orderBy(desc(monsters.likeCount), asc(monsters.id));
   } else {
     query = query.orderBy(
       isDesc ? desc(monsters.levelInt) : asc(monsters.levelInt),
@@ -522,6 +524,12 @@ export const paginateMonsters = async ({
         newCursorData = {
           sort: sort as "createdAt" | "-createdAt",
           value: lastRow.createdAt ?? "",
+          id: lastRow.id,
+        };
+      } else if (sortField === "likes") {
+        newCursorData = {
+          sort: "-likes",
+          value: lastRow.likeCount,
           id: lastRow.id,
         };
       } else {
@@ -586,6 +594,14 @@ function buildCursorCondition(
     return or(
       gt(monsters.levelInt, cursorValue),
       and(eq(monsters.levelInt, cursorValue), gt(monsters.id, cursorData.id))
+    );
+  }
+
+  if (sortField === "likes") {
+    const cursorValue = cursorData.value as number;
+    return or(
+      lt(monsters.likeCount, cursorValue),
+      and(eq(monsters.likeCount, cursorValue), gt(monsters.id, cursorData.id))
     );
   }
 

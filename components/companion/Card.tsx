@@ -2,6 +2,7 @@
 
 import { Circle, Skull } from "lucide-react";
 import type React from "react";
+import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { HPStat, SavesStat } from "@/components/monster/Stat";
 import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
@@ -173,6 +174,11 @@ export const Card = ({
         awards={companion.awards}
         hideActions={selectable || hideActions}
         className={cn(selectable && "pointer-events-none")}
+        reactionsSlot={
+          companion.id && (
+            <EntityReactions entityType="companion" entityId={companion.id} />
+          )
+        }
         actionsSlot={
           companion.id && (
             <ShareMenu disabled={companion.visibility !== "public"}>

@@ -10,6 +10,7 @@ const SpellSchoolSortOptions = [
   "name-desc",
   "created-asc",
   "created-desc",
+  "likes-desc",
 ] as const;
 
 interface UseSchoolFiltersProps {
@@ -62,6 +63,10 @@ export const useSchoolFilters = ({ spellSchools }: UseSchoolFiltersProps) => {
           const dateB = b.createdAt || new Date(0);
           const result = dateA.getTime() - dateB.getTime();
           return direction === "asc" ? result : -result;
+        }
+
+        if (field === "likes") {
+          return (b.likeCount ?? 0) - (a.likeCount ?? 0);
         }
 
         return 0;

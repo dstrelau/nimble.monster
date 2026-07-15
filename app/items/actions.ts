@@ -6,9 +6,10 @@ import type {
   ItemRarityFilter,
   ItemSortBy,
   ItemSortDirection,
+  PaginateItemsSortOption,
 } from "@/lib/services/items/types";
 
-export type ItemSortOption = "name" | "-name" | "createdAt" | "-createdAt";
+export type ItemSortOption = PaginateItemsSortOption;
 
 export type PaginatedItemResponse = {
   data: Item[];
@@ -27,7 +28,12 @@ export async function paginatePublicItems(params: {
   const desc = params.sort?.startsWith("-");
   const sortDirection: ItemSortDirection = desc ? "desc" : "asc";
   const sortField = desc ? params.sort.slice(1) : params.sort;
-  const sortBy: ItemSortBy = sortField === "name" ? "name" : "createdAt";
+  const sortBy: ItemSortBy =
+    sortField === "name"
+      ? "name"
+      : sortField === "likes"
+        ? "likes"
+        : "createdAt";
   const opts = {
     searchTerm: params.search || undefined,
     sortBy: sortBy,

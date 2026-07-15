@@ -1,6 +1,7 @@
 "use client";
 
 import { Star } from "lucide-react";
+import { EntityReactions } from "@/components/EntityReactions";
 import { DieFromNotation } from "@/components/icons/PolyhedralDice";
 import { Link } from "@/components/layout/Link";
 import { Badge } from "@/components/ui/badge";
@@ -81,6 +82,12 @@ export function ClassMiniCard({
         creator={classEntity.creator}
         source={classEntity.source}
         awards={classEntity.awards}
+        reactionsSlot={
+          !selectable &&
+          classEntity.id && (
+            <EntityReactions entityType="class" entityId={classEntity.id} />
+          )
+        }
         actionsSlot={
           classEntity.visibility === "private" && (
             <Badge variant="default" className="h-6">

@@ -70,6 +70,7 @@ const toClassMini = (c: ClassRow): ClassMini => ({
   subclassNamePreface: c.subclassNamePreface,
   visibility: c.visibility as ClassVisibility,
   createdAt: c.createdAt ? new Date(c.createdAt) : new Date(),
+  likeCount: c.likeCount,
 });
 
 interface ClassFullData {

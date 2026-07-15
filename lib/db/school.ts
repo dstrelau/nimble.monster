@@ -67,6 +67,7 @@ const toSpellSchoolMini = (s: SpellSchoolRow): SpellSchoolMini => ({
   name: s.name,
   visibility: s.visibility as "public" | "private",
   createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+  likeCount: s.likeCount,
 });
 
 export const buildSpellTarget = (s: {

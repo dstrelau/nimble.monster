@@ -292,7 +292,7 @@ async function generateEntityImageDirect({ url, entityId, entityType }) {
 
             // Remove unnecessary UI elements that shouldn't appear in the image
             const actionsToRemove = document.querySelectorAll(
-              `[id^="${entityType}-"] button`
+              `[id^="${entityType}-"] button, [id^="${entityType}-"] [data-card-export-hide]`
             );
             actionsToRemove.forEach((el) => {
               el.style.display = "none";

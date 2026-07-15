@@ -4,6 +4,7 @@ import { Download, LinkIcon, Share } from "lucide-react";
 import { useTheme } from "next-themes";
 import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,8 +44,17 @@ interface ShareMenuItemProps {
   children: ReactNode;
 }
 
+export const shareMenuItemClassName =
+  "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium focus:bg-accent focus:text-accent-foreground focus:font-semibold";
+export const shareMenuIconClassName =
+  "size-4 text-muted-foreground group-focus:text-primary";
+
 export const ShareMenuItem = ({ onClick, children }: ShareMenuItemProps) => {
-  return <DropdownMenuItem onClick={onClick}>{children}</DropdownMenuItem>;
+  return (
+    <DropdownMenuItem onClick={onClick} className={shareMenuItemClassName}>
+      {children}
+    </DropdownMenuItem>
+  );
 };
 
 export const ShareMenuCopyURLItem = ({
@@ -57,7 +67,7 @@ export const ShareMenuCopyURLItem = ({
   const onClick = () => copyLinkToClipboard(path, updatedAt);
   return (
     <ShareMenuItem onClick={onClick}>
-      <LinkIcon className="w-4 h-4" />
+      <LinkIcon className={shareMenuIconClassName} />
       Copy Link
     </ShareMenuItem>
   );
@@ -76,7 +86,7 @@ export const ShareMenuDownloadCardItem = ({
   const onClick = () => downloadCard(name, pathWithTheme);
   return (
     <ShareMenuItem onClick={onClick}>
-      <Download className="w-4 h-4" />
+      <Download className={shareMenuIconClassName} />
       Card Image
     </ShareMenuItem>
   );
@@ -95,10 +105,16 @@ export const ShareMenu = ({ children, disabled = false }: ShareMenuProps) =>
   ) : (
     <TooltipProvider>
       <DropdownMenu>
-        <DropdownMenuTrigger className="hover:opacity-70">
-          <Share className="w-5 h-5 text-muted-foreground" />
+        <DropdownMenuTrigger asChild>
+          <Button variant="menu-trigger" size="icon-sm" aria-label="share">
+            <Share className="size-5" />
+          </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="top" align="end" className="min-w-38">
+        <DropdownMenuContent
+          side="top"
+          align="end"
+          className="min-w-56 rounded-xl p-1.5 shadow-lg"
+        >
           {children}
         </DropdownMenuContent>
       </DropdownMenu>

@@ -13,6 +13,7 @@ import {
 } from "@/components/shared/GridStates";
 import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 import type { Background } from "@/lib/services/backgrounds";
+import type { PaginateBackgroundsSortOption } from "@/lib/services/backgrounds/service";
 
 interface SelectableBackgroundGridProps {
   selectedIds: Set<string>;
@@ -25,9 +26,7 @@ export function SelectableBackgroundGrid({
 }: SelectableBackgroundGridProps) {
   const [rawSearch, setRawSearch] = useState<string | null>(null);
   const [search] = useDebouncedValue(rawSearch, { wait: 250 });
-  const [sort, setSort] = useState<
-    "-createdAt" | "createdAt" | "name" | "-name"
-  >("-createdAt");
+  const [sort, setSort] = useState<PaginateBackgroundsSortOption>("-createdAt");
   const [source, setSourceId] = useState<string | null>(null);
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage, error } =

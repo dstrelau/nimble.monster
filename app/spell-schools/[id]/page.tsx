@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
 import { MonsterCollections } from "@/components/monster/MonsterCollections";
+import { ReportEntityDialog } from "@/components/ReportEntityDialog";
 import { Card } from "@/components/school/Card";
 import { SchoolActions } from "@/components/school/SchoolActions";
 import { auth } from "@/lib/auth";
@@ -38,6 +39,13 @@ export default async function SchoolPage({ params }: SchoolPageProps) {
           <AddToCollectionDialog
             type="spellSchool"
             spellSchoolId={spellSchool.id}
+          />
+        )}
+        {session?.user && (
+          <ReportEntityDialog
+            entityType="spellSchool"
+            entityId={spellSchool.id}
+            entityLabel="Spell School"
           />
         )}
       </div>

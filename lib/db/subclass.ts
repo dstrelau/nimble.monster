@@ -78,6 +78,7 @@ const toSubclassMini = (s: SubclassRow): SubclassMini => ({
   tagline: s.tagline || undefined,
   visibility: s.visibility as "public" | "private",
   createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+  likeCount: s.likeCount,
 });
 
 interface SubclassFullData {

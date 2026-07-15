@@ -14,6 +14,7 @@ const SubclassSortOptions = [
   "name-desc",
   "created-asc",
   "created-desc",
+  "likes-desc",
 ] as const;
 
 interface SubclassesListViewProps {
@@ -66,6 +67,9 @@ export const SubclassesListView: React.FC<SubclassesListViewProps> = ({
           const dateB = b.createdAt || new Date(0);
           const result = dateA.getTime() - dateB.getTime();
           return direction === "asc" ? result : -result;
+        }
+        if (field === "likes") {
+          return (b.likeCount ?? 0) - (a.likeCount ?? 0);
         }
         return 0;
       });

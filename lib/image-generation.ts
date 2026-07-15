@@ -451,7 +451,7 @@ async function generateEntityImageDirect({
             }
 
             const actionsToRemove = document.querySelectorAll(
-              `[id^="${entityType}-"] button`
+              `[id^="${entityType}-"] button, [id^="${entityType}-"] [data-card-export-hide]`
             );
             actionsToRemove.forEach((el) => {
               (el as HTMLElement).style.display = "none";

@@ -78,7 +78,9 @@ export default async function BackgroundPage({
             backgroundId={background.id}
           />
         )}
-        {isOwner && <BackgroundDetailActions background={background} />}
+        {session?.user && (
+          <BackgroundDetailActions background={background} isOwner={isOwner} />
+        )}
       </div>
       <div className="mx-auto flex flex-col items-center gap-12 max-w-md">
         <Card background={background} link={false} />

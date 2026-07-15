@@ -1,5 +1,6 @@
 "use client";
 import { DiceNotation } from "@/components/dice/DiceNotation";
+import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
 import { FormattedText } from "@/components/shared/FormattedText";
@@ -230,6 +231,14 @@ export function Card({
         creator={creator || spellSchool.creator}
         source={spellSchool.source}
         awards={spellSchool.awards}
+        reactionsSlot={
+          spellSchool.id && (
+            <EntityReactions
+              entityType="spellSchool"
+              entityId={spellSchool.id}
+            />
+          )
+        }
       />
     </UICard>
   );

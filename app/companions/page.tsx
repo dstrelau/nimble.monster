@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { PaginatedCompanionGrid } from "@/components/companion/PaginatedCompanionGrid";
 import { getQueryClient } from "@/lib/queryClient";
+import { PaginateCompanionsSortOptions } from "@/lib/services/companions/types";
 import { SUBCLASS_CLASSES } from "@/lib/types";
 import { publicCompanionsInfiniteQueryOptions } from "./hooks";
 
@@ -12,9 +13,7 @@ const companionClassValues = [
 ] as const;
 
 const searchParamsSchema = z.object({
-  sort: z
-    .enum(["name", "-name", "createdAt", "-createdAt"])
-    .default("-createdAt"),
+  sort: z.enum(PaginateCompanionsSortOptions).default("-createdAt"),
   class: z.enum(companionClassValues).default("all"),
   search: z.string().optional(),
 });

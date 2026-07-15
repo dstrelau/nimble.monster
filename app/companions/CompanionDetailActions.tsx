@@ -1,59 +1,31 @@
 "use client";
-import { Pencil, Trash2 } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useTransition } from "react";
 import { deleteCompanion } from "@/app/actions/companion";
-import { Button } from "@/components/ui/button";
+import { EntityDetailActions } from "@/components/EntityDetailActions";
 import type { Companion } from "@/lib/types";
 import { getCompanionEditUrl } from "@/lib/utils/url";
 
 interface CompanionDetailActionsProps {
   companion: Companion;
+  isOwner: boolean;
 }
 
 export function CompanionDetailActions({
   companion,
+  isOwner,
 }: CompanionDetailActionsProps) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-
   if (!companion?.id) {
     return null;
   }
 
-  const handleDelete = async () => {
-    if (!window.confirm("Really? This is permanent.")) {
-      return;
-    }
-
-    startTransition(async () => {
-      const result = await deleteCompanion(companion.id);
-      if (!result.success && result.error) {
-        alert(`Error deleting companion: ${result.error}`);
-      } else if (result.success) {
-        router.push("/my/companions");
-      }
-    });
-  };
-
   return (
-    <div className="flex gap-2">
-      <Button variant="outline" size="sm" asChild>
-        <Link href={getCompanionEditUrl(companion)}>
-          <Pencil className="w-4 h-4" />
-          Edit
-        </Link>
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleDelete}
-        disabled={isPending}
-      >
-        <Trash2 className="w-4 h-4" />
-        Delete
-      </Button>
-    </div>
+    <EntityDetailActions
+      isOwner={isOwner}
+      editUrl={getCompanionEditUrl(companion)}
+      onDelete={() => deleteCompanion(companion.id)}
+      redirectTo="/my/companions"
+      entityType="companion"
+      entityId={companion.id}
+      entityLabel="Companion"
+    />
   );
 }

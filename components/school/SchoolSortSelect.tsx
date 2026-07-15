@@ -19,6 +19,7 @@ const SORT_OPTIONS: { value: SpellSchoolSortOption; label: string }[] = [
   { value: "name-desc", label: "Name Z-A" },
   { value: "created-desc", label: "Newest First" },
   { value: "created-asc", label: "Oldest First" },
+  { value: "likes-desc", label: "Most Liked" },
 ];
 
 export const SchoolSortSelect: React.FC<SchoolSortSelectProps> = ({

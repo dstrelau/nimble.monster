@@ -75,7 +75,9 @@ export default async function AncestryPage({
         {session?.user && (
           <AddToCollectionDialog type="ancestry" ancestryId={ancestry.id} />
         )}
-        {isOwner && <AncestryDetailActions ancestry={ancestry} />}
+        {session?.user && (
+          <AncestryDetailActions ancestry={ancestry} isOwner={isOwner} />
+        )}
       </div>
       <div className="mx-auto flex flex-col items-center gap-12 max-w-md">
         <Card ancestry={ancestry} link={false} />

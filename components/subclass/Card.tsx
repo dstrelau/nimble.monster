@@ -1,4 +1,5 @@
 "use client";
+import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
 import {
@@ -166,6 +167,11 @@ export function Card({
         creator={creator || subclass.creator}
         source={subclass.source}
         awards={subclass.awards}
+        reactionsSlot={
+          subclass.id && (
+            <EntityReactions entityType="subclass" entityId={subclass.id} />
+          )
+        }
         actionsSlot={
           subclass.visibility === "private" && (
             <Badge variant="default" className="h-6">

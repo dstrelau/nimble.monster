@@ -232,6 +232,15 @@ export const paginatePublicBackgrounds = async ({
           gt(backgrounds.id, cursorData.id)
         )
       );
+    } else if (sortField === "likes") {
+      const likeCountValue = cursorData.value as number;
+      cursorConditions = or(
+        lt(backgrounds.likeCount, likeCountValue),
+        and(
+          eq(backgrounds.likeCount, likeCountValue),
+          gt(backgrounds.id, cursorData.id)
+        )
+      );
     }
   }
 
@@ -247,10 +256,12 @@ export const paginatePublicBackgrounds = async ({
           isDesc ? desc(backgrounds.name) : asc(backgrounds.name),
           asc(backgrounds.id),
         ]
-      : [
-          isDesc ? desc(backgrounds.createdAt) : asc(backgrounds.createdAt),
-          asc(backgrounds.id),
-        ];
+      : sortField === "likes"
+        ? [desc(backgrounds.likeCount), asc(backgrounds.id)]
+        : [
+            isDesc ? desc(backgrounds.createdAt) : asc(backgrounds.createdAt),
+            asc(backgrounds.id),
+          ];
 
   // Query backgrounds
   const rows = await db
@@ -303,14 +314,26 @@ export const paginatePublicBackgrounds = async ({
   let nextCursor: string | null = null;
   if (hasMore && resultRows.length > 0) {
     const lastRow = resultRows[resultRows.length - 1];
-    const cursorData: CursorData = {
-      sort: sort as "name" | "-name" | "createdAt" | "-createdAt",
-      value:
-        sortField === "name"
-          ? lastRow.backgrounds.name
-          : (lastRow.backgrounds.createdAt ?? new Date().toISOString()),
-      id: lastRow.backgrounds.id,
-    };
+    let cursorData: CursorData;
+    if (sortField === "name") {
+      cursorData = {
+        sort: sort as "name" | "-name",
+        value: lastRow.backgrounds.name,
+        id: lastRow.backgrounds.id,
+      };
+    } else if (sortField === "likes") {
+      cursorData = {
+        sort: "-likes",
+        value: lastRow.backgrounds.likeCount,
+        id: lastRow.backgrounds.id,
+      };
+    } else {
+      cursorData = {
+        sort: sort as "createdAt" | "-createdAt",
+        value: lastRow.backgrounds.createdAt ?? new Date().toISOString(),
+        id: lastRow.backgrounds.id,
+      };
+    }
     nextCursor = encodeCursor(cursorData);
   }
 

@@ -64,6 +64,7 @@ const FIGHTER = makeClass({
   name: "Fighter",
   description: "A warrior",
   createdAt: new Date("2024-01-01"),
+  likeCount: 1,
   source: {
     id: "s1",
     name: "Core",
@@ -80,6 +81,7 @@ const WIZARD = makeClass({
   name: "Wizard",
   description: "A spellcaster who studies arcane magic",
   createdAt: new Date("2024-06-01"),
+  likeCount: 5,
 });
 
 const ROGUE = makeClass({
@@ -87,6 +89,7 @@ const ROGUE = makeClass({
   name: "Rogue",
   description: "A sneaky character",
   createdAt: new Date("2024-03-01"),
+  likeCount: 3,
   source: {
     id: "s2",
     name: "Expansion",
@@ -196,5 +199,14 @@ describe("ClassesListView", () => {
       .getAllByTestId("class-card")
       .map((el) => el.textContent?.trim());
     expect(names).toEqual(["Fighter", "Rogue", "Wizard"]);
+  });
+
+  it("sorts by most liked", () => {
+    setupQueryState(null, "likes-desc", null);
+    render(<ClassesListView classes={ALL} />);
+    const names = screen
+      .getAllByTestId("class-card")
+      .map((el) => el.textContent?.trim());
+    expect(names).toEqual(["Wizard", "Rogue", "Fighter"]);
   });
 });
