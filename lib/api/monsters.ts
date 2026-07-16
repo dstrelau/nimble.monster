@@ -48,6 +48,11 @@ export interface JSONAPIMonster {
     };
     paperforgeId?: string;
     paperforgeImageUrl?: string;
+    // Content versioning: an explicit version number (order) and an optional
+    // human description for this version. When present on an official upload,
+    // a new version is recorded rather than overwriting history in place.
+    version?: number;
+    versionDescription?: string;
   };
   relationships?: {
     family?: {

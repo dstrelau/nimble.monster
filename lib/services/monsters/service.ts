@@ -7,6 +7,7 @@ import {
   type MonsterMini,
   MonsterRoleOptions,
   MonsterTypeOptions,
+  type MonsterVersionMeta,
   PaginateMonstersSortOptions,
   type SearchMonstersParams,
   type UpdateMonsterInput,
@@ -38,6 +39,17 @@ export class MonstersService {
 
   async getMonster(monsterId: string): Promise<Monster | null> {
     return repository.findMonster(monsterId);
+  }
+
+  async listMonsterVersions(monsterId: string): Promise<MonsterVersionMeta[]> {
+    return repository.listMonsterVersions(monsterId);
+  }
+
+  async getMonsterAtVersion(
+    monsterId: string,
+    versionNumber: number
+  ): Promise<Monster | null> {
+    return repository.getMonsterAtVersion(monsterId, versionNumber);
   }
 
   async paginatePublicMonsters(

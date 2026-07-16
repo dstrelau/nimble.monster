@@ -142,6 +142,12 @@ export interface Monster extends MonsterMini {
   isOfficial?: boolean;
 }
 
+export interface MonsterVersionMeta {
+  number: number;
+  description: string | null;
+  isCurrent: boolean;
+}
+
 export interface SearchMonstersParams {
   searchTerm?: string;
   type?: TypeFilter;
@@ -204,6 +210,10 @@ export interface CreateMonsterInput {
   role?: MonsterRole | null;
   paperforgeId?: string | null;
   remixedFromId?: string;
+  // Content versioning: when set (official uploads), records a new version
+  // instead of overwriting the current one in place.
+  versionNumber?: number;
+  versionDescription?: string;
 }
 
 export interface UpdateMonsterInput {

@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { AddToEncounterDialog } from "@/app/monsters/AddToEncounterDialog";
 import { MonsterDetailActions } from "@/app/monsters/MonsterDetailActions";
 import { MonsterRemixes } from "@/app/monsters/MonsterRemixes";
+import { MonsterVersionSelect } from "@/app/monsters/MonsterVersionSelect";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
 import { Card } from "@/components/monster/Card";
 import { MonsterCollections } from "@/components/monster/MonsterCollections";
@@ -13,12 +14,21 @@ import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterImageUrl, getMonsterUrl } from "@/lib/utils/url";
 
+function versionQuerySuffix(v: string | string[] | undefined): string {
+  return typeof v === "string" && v.length > 0
+    ? `?${new URLSearchParams({ v }).toString()}`
+    : "";
+}
+
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ v?: string }>;
 }): Promise<Metadata> {
   const { id: monsterId } = await params;
+  const { v } = await searchParams;
   const uid = deslugify(monsterId);
   if (!uid) return {};
   const monster = await monstersService.getMonster(uid);
@@ -26,7 +36,9 @@ export async function generateMetadata({
   if (!monster) return {};
 
   if (monsterId !== slugify(monster)) {
-    return permanentRedirect(getMonsterUrl(monster));
+    return permanentRedirect(
+      `${getMonsterUrl(monster)}${versionQuerySuffix(v)}`
+    );
   }
 
   const creatorText = monster.creator
@@ -65,11 +77,14 @@ export async function generateMetadata({
 
 export default async function MonsterPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ v?: string }>;
 }) {
   const session = await auth();
   const { id: monsterId } = await params;
+  const { v } = await searchParams;
 
   const uid = deslugify(monsterId);
   if (!uid) return notFound();
@@ -77,7 +92,9 @@ export default async function MonsterPage({
   if (!monster) return notFound();
 
   if (monsterId !== slugify(monster)) {
-    return permanentRedirect(getMonsterUrl(monster));
+    return permanentRedirect(
+      `${getMonsterUrl(monster)}${versionQuerySuffix(v)}`
+    );
   }
 
   const collections = await monstersService.getMonsterCollections(uid);
@@ -89,6 +106,29 @@ export default async function MonsterPage({
 
   if (monster.visibility !== "public" && !isOwner) {
     return notFound();
+  }
+
+  // Resolve which version to display. The live row is always the latest; an
+  // older version is shown only when a valid ?v points at an archived version.
+  const versions = await monstersService.listMonsterVersions(monster.id);
+  const currentNumber = versions.find((entry) => entry.isCurrent)?.number ?? 1;
+  const requested = typeof v === "string" ? Number.parseInt(v, 10) : Number.NaN;
+
+  let displayMonster = monster;
+  let selectedNumber = currentNumber;
+  if (
+    !Number.isNaN(requested) &&
+    requested !== currentNumber &&
+    versions.some((entry) => entry.number === requested)
+  ) {
+    const snapshot = await monstersService.getMonsterAtVersion(
+      monster.id,
+      requested
+    );
+    if (snapshot) {
+      displayMonster = snapshot;
+      selectedNumber = requested;
+    }
   }
 
   return (
@@ -108,9 +148,15 @@ export default async function MonsterPage({
           monster.legendary ? "w-2xl" : "w-md"
         )}
       >
+        {versions.length > 1 && (
+          <MonsterVersionSelect
+            versions={versions}
+            selectedVersion={selectedNumber}
+          />
+        )}
         <Card
-          monster={monster}
-          creator={monster.creator}
+          monster={displayMonster}
+          creator={displayMonster.creator}
           link={false}
           showEncounterGuidelines
         />

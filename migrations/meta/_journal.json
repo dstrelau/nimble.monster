@@ -134,6 +134,13 @@
       "when": 1784123343759,
       "tag": "0018_wide_spirit",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1784212569820,
+      "tag": "0019_secret_argent",
+      "breakpoints": true
     }
   ]
 }

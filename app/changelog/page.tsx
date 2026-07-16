@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "16 July 2026",
+    entries: [
+      "Official monsters can now have multiple versions. When a monster has more than one, a version picker appears on its page so you can view earlier versions.",
+    ],
+  },
+  {
     date: "14 July 2026",
     entries: [
       "Add likes and reporting to monsters, items, companions, subclasses, classes, spell schools, backgrounds, and ancestries, plus a Most Liked sort option.",

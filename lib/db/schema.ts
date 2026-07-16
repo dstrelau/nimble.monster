@@ -49,6 +49,18 @@ export type MonsterRole =
   | "defender"
   | "skirmisher";
 
+// A single historical version of a piece of content, stored inline on the
+// owning row (mirroring how actions/abilities are stored as JSON). `snapshot`
+// is the full domain object needed to render that version; it is typed as
+// `unknown` here and revived through a per-content-type Zod schema at the read
+// boundary (see lib/services/monsters/snapshot.ts) to avoid a type cycle
+// between the schema and the service layer.
+export type StoredContentVersion = {
+  number: number;
+  description: string | null;
+  snapshot: unknown;
+};
+
 // Users table
 export const users = sqliteTable("users", {
   id: text("id")
@@ -177,6 +189,16 @@ export const monsters = sqliteTable(
       .notNull()
       .default(false),
     likeCount: integer("like_count").notNull().default(0),
+    // Content versioning (currently populated for official content only).
+    // The row itself always holds the newest version; `versionNumber` and
+    // `versionDescription` describe it, while `versions` holds snapshots of
+    // prior versions.
+    versionNumber: integer("version_number").notNull().default(1),
+    versionDescription: text("version_description"),
+    versions: text("versions", { mode: "json" })
+      .$type<StoredContentVersion[]>()
+      .notNull()
+      .default([]),
   },
   (table) => [index("idx_monsters_user_id").on(table.userId)]
 );

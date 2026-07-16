@@ -27,6 +27,7 @@ import {
   monstersConditions,
   monstersFamilies,
   type SourceRow,
+  type StoredContentVersion,
   sources,
   type UserRow,
   users,
@@ -38,11 +39,13 @@ import { isValidUUID } from "@/lib/utils/validation";
 import { extractAllConditions, syncMonsterConditions } from "./conditions";
 import { syncMonsterFamilies } from "./families";
 import type { PaginateMonstersParams } from "./service";
+import { parseMonsterSnapshot } from "./snapshot";
 import type {
   CreateMonsterInput,
   Monster,
   MonsterMini,
   MonsterRole,
+  MonsterVersionMeta,
   SearchMonstersParams,
   UpdateMonsterInput,
 } from "./types";
@@ -619,6 +622,83 @@ export const findMonster = async (id: string): Promise<Monster | null> => {
   return data ? toMonsterFromFullData(data) : null;
 };
 
+/**
+ * List every version of a monster (newest first). The current version comes
+ * from the live row; older versions come from the archived snapshots. A monster
+ * that has never been versioned yields a single entry (its live row), so
+ * callers show a version picker only when more than one entry is returned. An
+ * empty array means the monster id was not found.
+ */
+export const listMonsterVersions = async (
+  id: string
+): Promise<MonsterVersionMeta[]> => {
+  if (!isValidUUID(id)) return [];
+
+  const db = await getDatabase();
+  const rows = await db
+    .select({
+      versionNumber: monsters.versionNumber,
+      versionDescription: monsters.versionDescription,
+      versions: monsters.versions,
+    })
+    .from(monsters)
+    .where(eq(monsters.id, id))
+    .limit(1);
+
+  if (rows.length === 0) return [];
+  const row = rows[0];
+
+  const metas: MonsterVersionMeta[] = [
+    {
+      number: row.versionNumber,
+      description: row.versionDescription ?? null,
+      isCurrent: true,
+    },
+    ...row.versions.map((v) => ({
+      number: v.number,
+      description: v.description,
+      isCurrent: false,
+    })),
+  ];
+
+  return metas.sort((a, b) => b.number - a.number);
+};
+
+/**
+ * Resolve a specific version of a monster to a renderable `Monster`. The
+ * current version returns the live row; older versions are revived from their
+ * stored snapshot. Returns null if the version does not exist or the snapshot
+ * cannot be parsed.
+ */
+export const getMonsterAtVersion = async (
+  id: string,
+  versionNumber: number
+): Promise<Monster | null> => {
+  if (!isValidUUID(id)) return null;
+
+  const db = await getDatabase();
+  const rows = await db
+    .select({
+      versionNumber: monsters.versionNumber,
+      versions: monsters.versions,
+    })
+    .from(monsters)
+    .where(eq(monsters.id, id))
+    .limit(1);
+
+  if (rows.length === 0) return null;
+  const row = rows[0];
+
+  if (row.versionNumber === versionNumber) {
+    return findMonster(id);
+  }
+
+  const entry = row.versions.find((v) => v.number === versionNumber);
+  if (!entry) return null;
+
+  return parseMonsterSnapshot(entry.snapshot);
+};
+
 export const findMonstersByIds = async (ids: string[]): Promise<Monster[]> => {
   const validIds = ids.filter(isValidUUID);
   if (validIds.length === 0) return [];
@@ -1096,11 +1176,61 @@ export const upsertOfficialMonster = async (
     remixedFromId,
   } = input;
 
+  const { versionNumber, versionDescription } = input;
+
   const existingMonster = await db
-    .select({ id: monsters.id })
+    .select({
+      id: monsters.id,
+      versionNumber: monsters.versionNumber,
+      versionDescription: monsters.versionDescription,
+      versions: monsters.versions,
+    })
     .from(monsters)
     .where(and(eq(monsters.name, name), eq(monsters.userId, OFFICIAL_USER_ID)))
     .limit(1);
+
+  // Versioning is opt-in: only uploads that carry an explicit version number or
+  // description record a new version. Plain re-uploads keep overwriting the
+  // current version in place (unchanged behaviour), so routine re-imports don't
+  // inflate the version history.
+  const versionRequested =
+    versionNumber !== undefined || versionDescription !== undefined;
+  let versionColumns: {
+    versionNumber: number;
+    versionDescription: string | null;
+    versions: StoredContentVersion[];
+  } | null = null;
+
+  if (versionRequested) {
+    const existing = existingMonster[0];
+    const nextNumber = versionNumber ?? (existing?.versionNumber ?? 0) + 1;
+    let archived: StoredContentVersion[] = existing?.versions ?? [];
+
+    if (existing) {
+      // Snapshot the currently-live version before we overwrite the row.
+      const currentMonster = await findMonster(existing.id);
+      if (currentMonster) {
+        archived = [
+          ...archived,
+          {
+            number: existing.versionNumber,
+            description: existing.versionDescription ?? null,
+            snapshot: currentMonster,
+          },
+        ];
+      }
+    }
+
+    // The new version becomes the live row, so it must not also live in the
+    // archive (handles re-uploading/correcting an existing version number).
+    archived = archived.filter((v) => v.number !== nextNumber);
+
+    versionColumns = {
+      versionNumber: nextNumber,
+      versionDescription: versionDescription ?? null,
+      versions: archived,
+    };
+  }
 
   const savesString = legendary
     ? Array.isArray(saves)
@@ -1154,13 +1284,14 @@ export const upsertOfficialMonster = async (
     monsterId = existingMonster[0].id;
     await db
       .update(monsters)
-      .set(monsterValues)
+      .set({ ...monsterValues, ...(versionColumns ?? {}) })
       .where(eq(monsters.id, monsterId));
   } else {
     monsterId = crypto.randomUUID();
     await db.insert(monsters).values({
       id: monsterId,
       ...monsterValues,
+      ...(versionColumns ?? {}),
       userId: OFFICIAL_USER_ID,
       createdAt: "2024-01-01 00:00:00",
     });

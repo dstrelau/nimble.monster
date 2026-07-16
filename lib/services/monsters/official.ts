@@ -184,6 +184,8 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
     bloodied: attrs.bloodied,
     lastStand: attrs.lastStand,
     saves: attrs.saves ? savesObjectToArray(attrs.saves) : undefined,
+    versionNumber: attrs.version,
+    versionDescription: attrs.versionDescription,
   };
 }
 
@@ -313,6 +315,28 @@ export function validateOfficialMonstersJSON(data: unknown): {
     ) {
       throw new Error(
         `Invalid monster at index ${index} ("${attrs.name}"): hpPerHero must be a number if provided`
+      );
+    }
+
+    if (
+      attrs.version !== undefined &&
+      attrs.version !== null &&
+      (typeof attrs.version !== "number" ||
+        !Number.isInteger(attrs.version) ||
+        attrs.version < 1)
+    ) {
+      throw new Error(
+        `Invalid monster at index ${index} ("${attrs.name}"): version must be a positive integer if provided`
+      );
+    }
+
+    if (
+      attrs.versionDescription !== undefined &&
+      attrs.versionDescription !== null &&
+      typeof attrs.versionDescription !== "string"
+    ) {
+      throw new Error(
+        `Invalid monster at index ${index} ("${attrs.name}"): versionDescription must be a string if provided`
       );
     }
 
