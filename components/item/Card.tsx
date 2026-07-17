@@ -43,10 +43,15 @@ const RARITY_CARD_CLASSES: Partial<Record<ItemRarity, string>> = {
   common: "border-x-0 border-b-0 border-t-4 border-t-muted-foreground",
   uncommon: "border-x-0 border-b-0 border-t-4 border-t-green-700",
   rare: "border-x-0 border-b-0 border-t-4 border-t-indigo-800 dark:border-t-indigo-500",
+  // Very Rare and Legendary use an opaque bg-card base with their tint applied
+  // as a ::before overlay, rather than a translucent bg color. A translucent
+  // card surface renders transparent in the generated card image (the
+  // screenshot forces a transparent page background), which looks broken on
+  // dark backgrounds.
   very_rare:
-    "border-x-0 border-b-0 border-t-4 border-violet-400 rarity-gradient-top bg-slate-100/40 dark:bg-slate-800/40",
+    "border-x-0 border-b-0 border-t-4 border-violet-400 rarity-gradient-top bg-card before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-slate-100/40 dark:before:bg-slate-800/40 before:content-['']",
   legendary:
-    "border-x-0 border-b-0 border-t-4 border-t-amber-700 bg-orange-100/40 dark:bg-orange-800/20",
+    "border-x-0 border-b-0 border-t-4 border-t-amber-700 bg-card before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-orange-100/40 dark:before:bg-orange-800/20 before:content-['']",
 };
 
 // Rarity label text color, matching the design's pairing of a pale border
