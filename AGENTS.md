@@ -22,8 +22,28 @@ This project uses [worktrunk](https://worktrunk.dev) (`wt`) for parallel worktre
 - `pnpm run db:generate` - Generate migrations (see workflow below)
 - `pnpm run db:migrate` - Run migrations
 - `pnpm run db:push` - Push schema changes directly (dev)
+- `pnpm run db:seed` - Seed the dev DB with official content from `data/official`
 - Production uses embedded replicas (local SQLite + Turso sync)
 - See `lib/db/CLAUDE.md` for detailed database architecture info
+
+## Seeding a dev database
+
+The dev database is populated from the official content bundled in
+`data/official` (the GMG bestiary + character options) rather than from a
+production copy. This means **all the official monsters, ancestries, classes,
+etc. are available out of the box** — never hand-craft test monsters, they're
+already seeded.
+
+- `make setup` creates an empty DB, migrates it, then seeds it. The
+  `.claude/hooks/session-init.sh` SessionStart hook does the same on every web
+  session, so a seeded DB should already be present when you start work.
+- If a DB is missing or you want to reset the official content, run `make seed`
+  (or `pnpm run db:seed`). Seeding is idempotent (upserts against the official
+  user), so it's always safe to re-run.
+- Seed logic lives in `tools/seed-official.ts` and reuses the same validate +
+  upsert path as the admin JSON upload flow (`app/admin/actions.ts`).
+- To work against real production data instead, run `make db-from-prod`
+  (requires `fly` access, which is unavailable in the web environment).
 
 ## Creating Migrations
 

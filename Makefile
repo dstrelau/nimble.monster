@@ -1,10 +1,16 @@
-.PHONY: setup sync-icons sync-paperforge paperforge-catalog check fix lint type-check
+.PHONY: setup seed db-from-prod sync-icons sync-paperforge paperforge-catalog check fix lint type-check
 
 BIN := node_modules/.bin
 
 setup: node_modules db/dev.db sync-icons
 	DATABASE_URL=file:db/dev.db pnpm run db:migrate
+	DATABASE_URL=file:db/dev.db pnpm run db:seed
 	@echo "Setup complete"
+
+# Re-seed the official content (monsters, ancestries, classes, etc.) into an
+# existing dev database. Idempotent — safe to run any time.
+seed: | node_modules
+	DATABASE_URL=file:db/dev.db pnpm run db:seed
 
 node_modules: package.json pnpm-lock.yaml
 	pnpm install
@@ -13,9 +19,19 @@ node_modules: package.json pnpm-lock.yaml
 db:
 	mkdir -p db
 
+# A fresh dev database. It starts empty; `make setup` then migrates and seeds it
+# with the official content from data/official. To work against a copy of
+# production data instead, run `make db-from-prod`.
 db/dev.db: | db node_modules
 	@rm -f db/dev.db-shm db/dev.db-wal
+	touch db/dev.db
+
+# Pull a copy of the production database (requires fly access). This overwrites
+# your local dev database.
+db-from-prod: | db node_modules
+	@rm -f db/dev.db db/dev.db-shm db/dev.db-wal
 	fly sftp get /data/db.sqlite db/dev.db
+	DATABASE_URL=file:db/dev.db pnpm run db:migrate
 
 sync-icons: components/game-icons/index.ts
 
