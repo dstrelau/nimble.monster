@@ -7,8 +7,7 @@ setup: node_modules db/dev.db sync-icons
 	DATABASE_URL=file:db/dev.db pnpm run db:seed
 	@echo "Setup complete"
 
-# Re-seed the official content (monsters, ancestries, classes, etc.) into an
-# existing dev database. Idempotent — safe to run any time.
+# Re-seed official content into the dev DB. Idempotent.
 seed: | node_modules
 	DATABASE_URL=file:db/dev.db pnpm run db:seed
 
@@ -19,15 +18,13 @@ node_modules: package.json pnpm-lock.yaml
 db:
 	mkdir -p db
 
-# A fresh dev database. It starts empty; `make setup` then migrates and seeds it
-# with the official content from data/official. To work against a copy of
-# production data instead, run `make db-from-prod`.
+# Fresh, empty dev DB; `make setup` migrates and seeds it. For prod data
+# instead, run `make db-from-prod`.
 db/dev.db: | db node_modules
 	@rm -f db/dev.db-shm db/dev.db-wal
 	touch db/dev.db
 
-# Pull a copy of the production database (requires fly access). This overwrites
-# your local dev database.
+# Pull production data (requires fly access). Overwrites the local dev DB.
 db-from-prod: | db node_modules
 	@rm -f db/dev.db db/dev.db-shm db/dev.db-wal
 	fly sftp get /data/db.sqlite db/dev.db

@@ -1,20 +1,6 @@
-/**
- * Seed the database with the official Nimble content bundled in `data/official`.
- *
- * This is the default way to populate a fresh dev database — it gives you all
- * the official monsters (the GMG bestiary), ancestries, backgrounds, classes,
- * subclasses, and spell schools without needing access to the production DB.
- *
- * It reuses the exact same validate + upsert logic as the admin JSON upload
- * flow (see `app/admin/actions.ts`), so what you get locally matches what an
- * admin upload of these files would produce.
- *
- * Idempotent: official content is upserted against the official user, so it is
- * safe to run repeatedly (e.g. on every `make setup`) and safe to run on top of
- * a database that was pulled from production.
- *
- * Run via `pnpm run db:seed` (which boots jiti with the `@/` alias configured).
- */
+// Seed official content from data/official, reusing the admin upload flow's
+// validate + upsert logic (app/admin/actions.ts). Idempotent. Run via
+// `pnpm run db:seed`.
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -40,8 +26,7 @@ import { upsertOfficialSubclass } from "@/lib/services/subclasses/repository";
 
 const DATA_DIR = join(process.cwd(), "data", "official");
 
-// Processed in dependency order: classes before subclasses (subclasses
-// reference their class by name).
+// Classes before subclasses (subclasses reference their class by name).
 const FILES = [
   "core/ancestries.json",
   "core/backgrounds.json",
@@ -185,8 +170,7 @@ async function seedSpellSchools(json: unknown): Promise<number> {
       id: school.id,
       name: school.attributes.name,
       description: school.attributes.description,
-      // Mirror the target normalization from the admin upload flow
-      // (app/admin/actions.ts). Line/cone AoEs collapse to "range".
+      // Target normalization mirrors app/admin/actions.ts.
       spells: school.attributes.spells.map((s) => ({
         ...s,
         target: s.target

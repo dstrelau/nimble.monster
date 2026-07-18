@@ -1,25 +1,7 @@
-/**
- * Seed dev-only test users and some content they own.
- *
- * All official content is owned by the official user (`nimble-co`), which you
- * cannot log in as. To exercise the authenticated-user flows — creating,
- * editing, and viewing your own content — you need a regular user to act as.
- *
- * This seeds two such users and a little content owned by the normal one:
- *   - `dev`   — a normal (non-admin) user
- *   - `admin` — an admin user, for testing the admin upload flow
- *
- * Log in as either while running `pnpm dev` (NODE_ENV=development) by visiting:
- *   /api/auth?dev-login&username=dev
- *   /api/auth?dev-login&username=admin
- * (see app/api/auth/[...nextauth]/route.ts).
- *
- * This is dev-only scaffolding: it is skipped entirely when
- * NODE_ENV=production, so it can never create fake users in the real database.
- * Users are upserted by fixed id (idempotent). Sample content is only created
- * when the `dev` user owns no monsters yet, so re-seeding never clobbers work
- * you did while logged in as `dev`.
- */
+// Dev-only test users to exercise authenticated flows (official content is
+// owned by nimble-co, which you can't log in as). Creates `dev` (normal) and
+// `admin`. Log in via /api/auth/dev-login?dev-login&username=dev while running
+// `pnpm dev`. Skipped when NODE_ENV=production; idempotent.
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -87,9 +69,7 @@ async function upsertDevUser(u: DevUser): Promise<void> {
     });
 }
 
-// Build a couple of monsters (owned by the dev user) from official bestiary
-// data, so there is content to view and edit out of the box. Reusing official
-// stat blocks avoids hand-crafting monsters.
+// Two dev-owned monsters built from official stat blocks (avoids hand-crafting).
 async function seedDevMonsters(): Promise<string[]> {
   const bestiaryPath = join(
     process.cwd(),
@@ -107,9 +87,7 @@ async function seedDevMonsters(): Promise<string[]> {
   for (const [index, monsterData] of samples.entries()) {
     const input = parseJSONAPIMonster(monsterData);
     input.name = `Dev's ${input.name}`;
-    // One public, one private, to exercise both visibility states.
     input.visibility = index === 0 ? "public" : "private";
-    // Don't attach official families to the dev-owned copy.
     input.families = [];
     const created = await createMonster(input, DEV_USER.discordId);
     createdIds.push(created.id);
@@ -138,8 +116,6 @@ export async function seedDevData(): Promise<void> {
   if (existing.length === 0) {
     const monsterIds = await seedDevMonsters();
 
-    // A collection owned by the dev user, mixing their monsters with an
-    // official one, so collection viewing/editing is testable too.
     const officialMonster = await db
       .select({ id: monsters.id })
       .from(monsters)

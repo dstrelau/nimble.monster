@@ -28,42 +28,28 @@ This project uses [worktrunk](https://worktrunk.dev) (`wt`) for parallel worktre
 
 ## Seeding a dev database
 
-The dev database is populated from the official content bundled in
-`data/official` (the GMG bestiary + character options) rather than from a
-production copy. This means **all the official monsters, ancestries, classes,
-etc. are available out of the box** — never hand-craft test monsters, they're
-already seeded.
+The dev DB is seeded from `data/official` (GMG bestiary + character options),
+not a production copy. **All official monsters, ancestries, classes, etc. are
+available out of the box — never hand-craft test monsters.**
 
-- `make setup` creates an empty DB, migrates it, then seeds it. The
-  `.claude/hooks/session-init.sh` SessionStart hook does the same on every web
-  session, so a seeded DB should already be present when you start work.
-- If a DB is missing or you want to reset the official content, run `make seed`
-  (or `pnpm run db:seed`). Seeding is idempotent (upserts against the official
-  user), so it's always safe to re-run.
-- Seed logic lives in `tools/seed-official.ts` and reuses the same validate +
-  upsert path as the admin JSON upload flow (`app/admin/actions.ts`).
-- To work against real production data instead, run `make db-from-prod`
-  (requires `fly` access, which is unavailable in the web environment).
+- `make setup` (and the `.claude/hooks/session-init.sh` web-session hook)
+  creates an empty DB, migrates, and seeds it.
+- `make seed` / `pnpm run db:seed` re-seeds. Idempotent (upserts).
+- Logic: `tools/seed-official.ts`, reusing the admin upload path
+  (`app/admin/actions.ts`).
+- For real production data: `make db-from-prod` (needs `fly` access).
 
 ### Testing as an authenticated user
 
-All official content is owned by the official user (`nimble-co`), which you
-can't log in as. To exercise the authenticated flows (creating, editing,
-viewing your own content), the seed also creates two dev-only users plus a
-little content owned by `dev` (`tools/seed-dev.ts`, skipped when
+Official content is owned by `nimble-co`, which you can't log in as. The seed
+also creates two dev-only users (`tools/seed-dev.ts`, skipped when
 `NODE_ENV=production`):
 
-- `dev` — a normal (non-admin) user; owns two sample monsters and a collection.
-- `admin` — an admin user, for the admin upload flow.
+- `dev` — normal user; owns two sample monsters and a collection.
+- `admin` — admin user, for the admin upload flow.
 
-While running `pnpm dev`, log in by visiting (any path segment under
-`/api/auth/` works, the `dev-login` query param is what matters):
-
-- `/api/auth/dev-login?dev-login&username=dev`
-- `/api/auth/dev-login?dev-login&username=admin`
-
-`dev-login` only works when `NODE_ENV=development` (see
-`app/api/auth/[...nextauth]/route.ts`).
+While running `pnpm dev` (`NODE_ENV=development`), log in via
+`/api/auth/dev-login?dev-login&username=dev` (or `=admin`).
 
 ## Creating Migrations
 
