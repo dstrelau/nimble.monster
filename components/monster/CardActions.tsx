@@ -10,6 +10,7 @@ import {
 } from "@/components/shared/ShareMenu";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import type { Monster } from "@/lib/services/monsters";
+import { slugify } from "@/lib/utils/slug";
 import {
   getMonsterImageUrl,
   getMonsterMarkdownUrl,
@@ -32,7 +33,7 @@ export default function CardActions({ monster }: MonsterCardActionsProps) {
       <ShareMenu disabled={!isPublic}>
         <DropdownMenuItem asChild className={shareMenuItemClassName}>
           <a
-            href={`http://nimbrew.net/${monster.legendary ? "statblock-legendary" : "statblock-generic"}?urlJson=https://nimble.monster${getMonsterUrl(monster)}/nimbrew.json`}
+            href={`https://nimbrew.net/create/monster?nexus=${slugify(monster)}`}
             target="_blank"
             rel="noopener noreferrer"
           >
