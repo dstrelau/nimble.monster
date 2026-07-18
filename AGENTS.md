@@ -45,6 +45,26 @@ already seeded.
 - To work against real production data instead, run `make db-from-prod`
   (requires `fly` access, which is unavailable in the web environment).
 
+### Testing as an authenticated user
+
+All official content is owned by the official user (`nimble-co`), which you
+can't log in as. To exercise the authenticated flows (creating, editing,
+viewing your own content), the seed also creates two dev-only users plus a
+little content owned by `dev` (`tools/seed-dev.ts`, skipped when
+`NODE_ENV=production`):
+
+- `dev` — a normal (non-admin) user; owns two sample monsters and a collection.
+- `admin` — an admin user, for the admin upload flow.
+
+While running `pnpm dev`, log in by visiting (any path segment under
+`/api/auth/` works, the `dev-login` query param is what matters):
+
+- `/api/auth/dev-login?dev-login&username=dev`
+- `/api/auth/dev-login?dev-login&username=admin`
+
+`dev-login` only works when `NODE_ENV=development` (see
+`app/api/auth/[...nextauth]/route.ts`).
+
 ## Creating Migrations
 
 `drizzle-kit generate` diffs `lib/db/schema.ts` against the last snapshot in `migrations/meta/`.

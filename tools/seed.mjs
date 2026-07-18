@@ -19,6 +19,8 @@ const jiti = createJiti(import.meta.url, { alias: { "@": root } });
 const { seedOfficial } = await jiti.import(
   path.join(root, "tools/seed-official.ts")
 );
+const { seedDevData } = await jiti.import(path.join(root, "tools/seed-dev.ts"));
 
 await seedOfficial();
+await seedDevData();
 process.exit(0);
