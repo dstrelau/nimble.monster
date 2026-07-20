@@ -105,7 +105,9 @@ export default async function MonsterPage({
       <div
         className={cn(
           "mx-auto flex flex-col items-center gap-12",
-          monster.legendary ? "w-2xl" : "w-md"
+          monster.legendary || (monster.members?.length ?? 0) > 0
+            ? "w-2xl"
+            : "w-md"
         )}
       >
         <Card

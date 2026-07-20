@@ -114,7 +114,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
             <div
               key={monster.id}
               className={cn(
-                monster.legendary &&
+                (monster.legendary || (monster.members?.length ?? 0) > 0) &&
                   "sm:col-span-2 md:col-span-2 print:col-span-2",
                 monster.legendary &&
                   typeQuery === "legendary" &&

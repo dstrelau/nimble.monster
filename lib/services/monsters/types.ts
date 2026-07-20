@@ -114,7 +114,25 @@ export interface MonsterMini {
   isOfficial?: boolean;
 }
 
+// A single member of a "team" (legendary duo) stat block. Each member carries
+// its own combat stats and abilities/actions; the shared name, level, kind,
+// bloodied, last stand, and team-wide abilities live on the parent Monster.
+export interface MonsterTeamMember {
+  id: string;
+  name: string;
+  paperforgeId?: string;
+  hp: number;
+  hpPerHero?: number | null;
+  armor: MonsterArmor;
+  size: MonsterSize;
+  saves?: string;
+  actionPreface?: string;
+  abilities: Ability[];
+  actions: Action[];
+}
+
 export interface Monster extends MonsterMini {
+  members?: MonsterTeamMember[];
   saves?: string;
   bloodied?: string;
   lastStand?: string;
@@ -190,6 +208,7 @@ export interface CreateMonsterInput {
   families?: { id: string }[];
   actions: Action[];
   abilities: Ability[];
+  members?: MonsterTeamMember[];
   actionPreface: string;
   moreInfo?: string;
   mild_encounter?: string;
@@ -223,6 +242,7 @@ export interface UpdateMonsterInput {
   burrow?: number;
   actions: Action[];
   abilities: Ability[];
+  members?: MonsterTeamMember[];
   legendary: boolean;
   minion: boolean;
   bloodied: string;

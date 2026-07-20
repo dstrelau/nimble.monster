@@ -143,7 +143,10 @@ export function SelectableMonsterGrid({
       {monsters.map((monster) => (
         <div
           key={monster.id}
-          className={cn(monster.legendary && "sm:col-span-2 md:col-span-2")}
+          className={cn(
+            (monster.legendary || (monster.members?.length ?? 0) > 0) &&
+              "sm:col-span-2 md:col-span-2"
+          )}
         >
           <Card
             monster={monster}
