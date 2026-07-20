@@ -134,6 +134,13 @@
       "when": 1784123343759,
       "tag": "0018_wide_spirit",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1784580036655,
+      "tag": "0019_quiet_amazoness",
+      "breakpoints": true
     }
   ]
 }

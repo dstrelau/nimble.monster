@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "20 July 2026",
+    entries: [
+      "Add Team monsters: build a single stat block for a legendary duo (or larger group) of creatures, each with their own HP, armor, saves, and abilities.",
+    ],
+  },
+  {
     date: "14 July 2026",
     entries: [
       "Add likes and reporting to monsters, items, companions, subclasses, classes, spell schools, backgrounds, and ancestries, plus a Most Liked sort option.",

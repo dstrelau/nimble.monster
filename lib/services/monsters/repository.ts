@@ -37,6 +37,11 @@ import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
 import { extractAllConditions, syncMonsterConditions } from "./conditions";
 import { syncMonsterFamilies } from "./families";
+import {
+  collectMemberConditionSources,
+  parseMembers,
+  stripMemberIds,
+} from "./members";
 import type { PaginateMonstersParams } from "./service";
 import type {
   CreateMonsterInput,
@@ -178,6 +183,7 @@ const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
     : new Date(),
   abilities: toAbilitiesFromRow(data.monster.abilities),
   actions: toActionsFromRow(data.monster.actions),
+  members: parseMembers(data.monster.members),
   actionPreface: data.monster.actionPreface || "",
   moreInfo: data.monster.moreInfo || "",
   mild_encounter: data.monster.peaceful || "",
@@ -958,6 +964,7 @@ export const createMonster = async (
     families: familyInputs = [],
     actions,
     abilities,
+    members = [],
     actionPreface = "",
     moreInfo = "",
     mild_encounter = "",
@@ -985,6 +992,9 @@ export const createMonster = async (
     throw new Error("User not found");
   }
   const user = userResult[0];
+
+  // Teams keep a shared last stand even though they are not flagged legendary.
+  const isTeam = members.length > 0;
 
   const savesString = legendary
     ? Array.isArray(saves)
@@ -1014,8 +1024,9 @@ export const createMonster = async (
     teleport: legendary ? 0 : teleport,
     actions: stripActionIds(actions),
     abilities: abilities,
+    members: stripMemberIds(members),
     bloodied: minion ? "" : bloodied,
-    lastStand: legendary ? lastStand : "",
+    lastStand: legendary || isTeam ? lastStand : "",
     saves: savesString,
     visibility,
     actionPreface,
@@ -1032,11 +1043,12 @@ export const createMonster = async (
   });
 
   // Sync conditions
+  const memberConditionSources = collectMemberConditionSources(members);
   const conditionNames = extractAllConditions({
-    actions,
-    abilities,
+    actions: [...actions, ...memberConditionSources.actions],
+    abilities: [...abilities, ...memberConditionSources.abilities],
     bloodied: minion ? "" : bloodied,
-    lastStand: legendary ? lastStand : "",
+    lastStand: legendary || isTeam ? lastStand : "",
     moreInfo,
   });
 
@@ -1080,6 +1092,7 @@ export const upsertOfficialMonster = async (
     families: familyInputs = [],
     actions,
     abilities,
+    members = [],
     actionPreface = "",
     moreInfo = "",
     mild_encounter = "",
@@ -1101,6 +1114,8 @@ export const upsertOfficialMonster = async (
     .from(monsters)
     .where(and(eq(monsters.name, name), eq(monsters.userId, OFFICIAL_USER_ID)))
     .limit(1);
+
+  const isTeam = members.length > 0;
 
   const savesString = legendary
     ? Array.isArray(saves)
@@ -1130,8 +1145,9 @@ export const upsertOfficialMonster = async (
     teleport: legendary ? 0 : teleport,
     actions: stripActionIds(actions),
     abilities: abilities,
+    members: stripMemberIds(members),
     bloodied: minion ? "" : bloodied,
-    lastStand: legendary ? lastStand : "",
+    lastStand: legendary || isTeam ? lastStand : "",
     saves: savesString,
     visibility,
     actionPreface,
@@ -1166,11 +1182,12 @@ export const upsertOfficialMonster = async (
     });
   }
 
+  const upsertMemberConditionSources = collectMemberConditionSources(members);
   const conditionNames = extractAllConditions({
-    actions,
-    abilities,
+    actions: [...actions, ...upsertMemberConditionSources.actions],
+    abilities: [...abilities, ...upsertMemberConditionSources.abilities],
     bloodied: minion ? "" : bloodied,
-    lastStand: legendary ? lastStand : "",
+    lastStand: legendary || isTeam ? lastStand : "",
     moreInfo,
   });
 
@@ -1213,6 +1230,7 @@ export const updateMonster = async (
     burrow,
     actions,
     abilities,
+    members = [],
     legendary,
     minion,
     bloodied,
@@ -1278,6 +1296,7 @@ export const updateMonster = async (
       burrow,
       actions: stripActionIds(actions),
       abilities: abilities,
+      members: stripMemberIds(members),
       legendary,
       minion,
       bloodied,
@@ -1297,9 +1316,10 @@ export const updateMonster = async (
     .where(eq(monsters.id, id));
 
   // Sync conditions
+  const memberConditionSources = collectMemberConditionSources(members);
   const conditionNames = extractAllConditions({
-    actions: actions || [],
-    abilities: abilities || [],
+    actions: [...(actions || []), ...memberConditionSources.actions],
+    abilities: [...(abilities || []), ...memberConditionSources.abilities],
     bloodied: bloodied || "",
     lastStand: lastStand || "",
     moreInfo: moreInfo || "",

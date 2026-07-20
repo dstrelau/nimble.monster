@@ -144,6 +144,68 @@ Standard (non-minion) monsters may also include a `bloodied` attribute
 }
 ```
 
+**Response (team monster):**
+
+A team ("legendary duo") is a single stat block containing two or more named
+members that share a level, kind, bloodied, and last stand. Teams are
+identified by `subtype: "team"` and carry a `members` array; each member holds
+its own combat stats and abilities/actions. Top-level `abilities`/`actions`
+hold team-wide rules (e.g. the "Legendary Duo" turn-order rule).
+
+```json
+{
+  "data": {
+    "type": "monsters",
+    "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+    "attributes": {
+      "name": "Kelebek & Poppy",
+      "level": 3,
+      "kind": "Bug Druid & His Stinky Pet",
+      "legendary": true,
+      "subtype": "team",
+      "abilities": [
+        { "name": "Legendary Duo", "description": "After each hero's turn, choose Kelebek or Poppy to act." }
+      ],
+      "actions": [],
+      "members": [
+        {
+          "name": "Kelebek",
+          "kind": "Entomancer",
+          "hp": 0,
+          "hpPerHero": 20,
+          "armor": "none",
+          "size": "medium",
+          "saves": { "int": 1, "wil": 1 },
+          "abilities": [],
+          "actions": [{ "name": "Vinelash", "description": "Move 6, then 2d6..." }]
+        },
+        {
+          "name": "Poppy",
+          "kind": "Giant Stinkbug",
+          "hp": 0,
+          "hpPerHero": 14,
+          "armor": "medium",
+          "size": "large",
+          "abilities": [{ "name": "Stink Cloud", "description": "..." }],
+          "actions": [{ "name": "Crushing Mandibles", "description": "..." }]
+        }
+      ],
+      "bloodied": { "description": "When Kelebek is bloodied, Poppy always Interposes for him." },
+      "lastStand": { "description": "When Poppy dies, the room fills with noxious gas..." }
+    },
+    "links": {
+      "self": "/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
+    }
+  }
+}
+```
+
+Each member's `hpPerHero` and `kind` are omitted when unset, mirroring the
+top-level monster fields. A member's `saves` field is present only when the
+member has saves and uses the same parsed shape as a legendary monster's
+`saves`. The top-level `hp` on a team is `0`; per-member HP lives on each
+member.
+
 The `hp` field is always present and holds the monster's fixed total HP. Monsters
 that scale their HP with party size (the "X/hero" format) additionally include an
 `hpPerHero` integer; when present, clients should display HP as `{hpPerHero}/hero`.

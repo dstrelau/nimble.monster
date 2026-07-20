@@ -19,8 +19,8 @@ import { CardContentWithGap } from "@/components/shared/StyledComponents";
 import { Card as ShadcnCard } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
-import type { Monster } from "@/lib/services/monsters";
-import type { User } from "@/lib/types";
+import type { Monster, MonsterTeamMember } from "@/lib/services/monsters";
+import type { Condition, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatHp, formatSizeKind } from "@/lib/utils/monster";
 import { getMonsterUrl, getUserUrl } from "@/lib/utils/url";
@@ -189,6 +189,80 @@ const MonsterHeader: React.FC<{
   );
 };
 
+const MemberStats: React.FC<{ member: MonsterTeamMember }> = ({ member }) => (
+  <div className="flex gap-2 items-center justify-end font-slab font-black shrink-0">
+    {member.armor === "medium" && <ArmorStat value="M" />}
+    {member.armor === "heavy" && <ArmorStat value="H" />}
+    {(member.hp > 0 || member.hpPerHero != null) && (
+      <HPStat value={formatHp(member)} />
+    )}
+    {member.saves && (
+      <SavesStat>
+        <div className="flex flex-col">
+          {member.saves.split(",").map((save) => (
+            <span key={save} className="block">
+              {save.trim()}
+            </span>
+          ))}
+        </div>
+      </SavesStat>
+    )}
+  </div>
+);
+
+const MemberBlock: React.FC<{
+  member: MonsterTeamMember;
+  conditions: Condition[];
+}> = ({ member, conditions }) => (
+  <div className="flex flex-col gap-2">
+    <div className="flex justify-between items-start gap-2">
+      <div className="font-slab font-bold small-caps text-2xl/6">
+        {member.name}
+        {member.kind && (
+          <span className="text-sm/4 font-condensed text-muted-foreground small-caps">
+            {", "}
+            {member.kind}
+          </span>
+        )}
+      </div>
+      <MemberStats member={member} />
+    </div>
+    {member.abilities.length > 0 && (
+      <AbilityOverlay abilities={member.abilities} conditions={conditions} />
+    )}
+    <ActionsList
+      actions={member.actions}
+      conditions={conditions}
+      actionPreface={member.actionPreface || ""}
+    />
+  </div>
+);
+
+const TeamHeader: React.FC<{ monster: Monster; link?: boolean }> = ({
+  monster,
+  link = true,
+}) => (
+  <div data-slot="card-header" className="gap-1 px-4 grow flex flex-col">
+    <div className="space-x-1">
+      <div className="font-slab font-bold inline text-3xl/8">
+        {link && monster.id ? (
+          <Link href={getMonsterUrl(monster)}>{monster.name}</Link>
+        ) : (
+          monster.name
+        )}
+      </div>{" "}
+      <div className="text-md font-slab font-normal text-muted-foreground">
+        {monster.levelInt !== 0 && (
+          <>
+            Level <Level level={monster.level} />{" "}
+          </>
+        )}
+        {monster.kind}
+      </div>
+    </div>
+  </div>
+);
+
 interface CardProps {
   monster: Monster;
   creator?: User;
@@ -220,6 +294,7 @@ export const Card = ({
   const paperforgeEntry = PAPERFORGE_ENTRIES.find(
     (e) => e.id === monster.paperforgeId
   );
+  const isTeam = (monster.members?.length ?? 0) > 0;
 
   const card = (
     <ShadcnCard
@@ -229,17 +304,21 @@ export const Card = ({
       )}
       {...(selectable && selected && { "data-selected": "" })}
     >
-      <MonsterHeader
-        monster={monster}
-        link={!selectable && link}
-        variant={
-          monster.legendary
-            ? "legendary"
-            : monster.minion
-              ? "minion"
-              : "standard"
-        }
-      />
+      {isTeam ? (
+        <TeamHeader monster={monster} link={!selectable && link} />
+      ) : (
+        <MonsterHeader
+          monster={monster}
+          link={!selectable && link}
+          variant={
+            monster.legendary
+              ? "legendary"
+              : monster.minion
+                ? "minion"
+                : "standard"
+          }
+        />
+      )}
 
       <CardContentWithGap className={cn(selectable && "pointer-events-none")}>
         {((monster.families?.some((f) => f.abilities.length > 0) ?? false) ||
@@ -258,6 +337,14 @@ export const Card = ({
           conditions={conditions}
           actionPreface={monster.actionPreface}
         />
+        {isTeam &&
+          monster.members?.map((member) => (
+            <MemberBlock
+              key={member.id}
+              member={member}
+              conditions={conditions}
+            />
+          ))}
         {!monster.minion && monster.bloodied && (
           <PrefixedFormattedText
             content={monster.bloodied}
@@ -266,7 +353,7 @@ export const Card = ({
           />
         )}
 
-        {monster.legendary && monster.lastStand && (
+        {(monster.legendary || isTeam) && monster.lastStand && (
           <div>
             <PrefixedFormattedText
               content={monster.lastStand}
@@ -371,7 +458,7 @@ export const Card = ({
     <div
       className={cn(
         "w-full",
-        monster.legendary && "md:col-span-2 print:col-span-2"
+        (monster.legendary || isTeam) && "md:col-span-2 print:col-span-2"
       )}
       id={`monster-${monster.id}`}
     >

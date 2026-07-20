@@ -19,9 +19,11 @@ export const ActionsList: React.FC<ActionsListProps> = ({
 
   return (
     <div>
-      <div>
-        <strong>{actionPreface}</strong>
-      </div>
+      {actionPreface && (
+        <div>
+          <strong>{actionPreface}</strong>
+        </div>
+      )}
       <ul className="text-base leading-5.5 space-y-1">
         {actions?.map(
           (action) =>

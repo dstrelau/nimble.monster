@@ -2,8 +2,9 @@ import { toFamilyOverview, toUser } from "@/lib/db/converters";
 import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
 import type { Ability, Action, FamilyOverview } from "@/lib/types";
 import { uuidToIdentifier } from "@/lib/utils/slug";
+import { parseMembers } from "./members";
 import { parseSaves } from "./saves";
-import type { Monster, MonsterMini } from "./types";
+import type { Monster, MonsterMini, MonsterTeamMember } from "./types";
 
 const parseJsonField = <T>(value: unknown): T[] => {
   if (!value) return [];
@@ -46,6 +47,7 @@ interface MonsterRow {
   updatedAt: string | null;
   abilities: unknown;
   actions: unknown;
+  members: unknown;
   actionPreface: string | null;
   moreInfo: string | null;
   peaceful: string | null;
@@ -151,6 +153,7 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
       ...action,
       id: crypto.randomUUID(),
     })),
+    members: parseMembers(m.members),
     actionPreface: m.actionPreface || "",
     moreInfo: m.moreInfo || "",
     mild_encounter: m.peaceful || "",
@@ -198,6 +201,26 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
       : null,
   };
 };
+
+const toZodMember = (member: MonsterTeamMember) => ({
+  name: member.name,
+  kind: member.kind || undefined,
+  hp: member.hp,
+  hpPerHero: member.hpPerHero ?? undefined,
+  armor: member.armor === "none" ? ("none" as const) : member.armor,
+  size: member.size,
+  saves: member.saves ? parseSaves(member.saves) : undefined,
+  abilities: member.abilities.map((a) => ({
+    name: a.name,
+    description: a.description,
+  })),
+  actions: member.actions.map((a) => ({
+    name: a.name,
+    description: [a.damage, a.description].filter(Boolean).join(". "),
+    ...(a.damage ? { damage: { roll: a.damage } } : {}),
+  })),
+  actionsInstructions: member.actionPreface || undefined,
+});
 
 export const toZodMonster = (m: Monster) => {
   const movement = [];
@@ -274,6 +297,17 @@ export const toZodMonster = (m: Monster) => {
     paperforgeId: m.paperforgeId || undefined,
     paperforgeImageUrl,
   };
+
+  if (m.members && m.members.length > 0) {
+    return {
+      ...base,
+      subtype: "team" as const,
+      legendary: true as const,
+      members: m.members.map(toZodMember),
+      ...(m.bloodied ? { bloodied: { description: m.bloodied } } : {}),
+      ...(m.lastStand ? { lastStand: { description: m.lastStand } } : {}),
+    };
+  }
 
   if (m.legendary) {
     return {

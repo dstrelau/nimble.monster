@@ -154,6 +154,10 @@ export const monsters = sqliteTable(
     swim: integer("swim").notNull().default(0),
     actions: text("actions", { mode: "json" }).notNull().default("[]"),
     abilities: text("abilities", { mode: "json" }).notNull().default("[]"),
+    // Team ("legendary duo") members. Null/empty for ordinary monsters; a
+    // non-empty array marks this stat block as a team of 2+ creatures, each
+    // holding its own hp/armor/saves/size/abilities/actions.
+    members: text("members", { mode: "json" }),
     legendary: integer("legendary", { mode: "boolean" }).default(false),
     bloodied: text("bloodied").notNull().default(""),
     lastStand: text("last_stand").notNull().default(""),
