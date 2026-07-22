@@ -42,9 +42,15 @@ export default async function proxy(request: NextRequest) {
   // causing Next.js "Invalid Server Actions request" 500s).
   // This runs outside auth() because next-auth/Next.js may short-circuit
   // requests with next-action headers before the auth callback executes.
+  //
+  // /api/ and /_actions/ are exempt: these are our own route handlers, not
+  // Next Server Actions, so they don't carry next-action headers. They're
+  // cookie-authenticated and same-origin (SameSite cookies), so this gate
+  // (which only guards page-route Server Actions) doesn't apply to them.
   if (
     request.method === "POST" &&
-    !request.nextUrl.pathname.startsWith("/api/")
+    !request.nextUrl.pathname.startsWith("/api/") &&
+    !request.nextUrl.pathname.startsWith("/_actions/")
   ) {
     const origin = request.headers.get("origin") ?? "";
     if (

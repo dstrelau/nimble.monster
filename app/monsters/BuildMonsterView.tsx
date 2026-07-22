@@ -53,7 +53,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { fetchApi } from "@/lib/api";
+import { call } from "@/lib/contract";
+import { createMonster, updateMonster } from "@/lib/contracts/monster";
 import type {
   Monster,
   MonsterArmor,
@@ -70,7 +71,6 @@ import { UNKNOWN_USER } from "@/lib/types";
 import { cn, levelIntToDisplay } from "@/lib/utils";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { useUserFamiliesQuery } from "../families/hooks";
-import { updateMonster as updateMonsterAction } from "./actions";
 
 const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
   goblin: {
@@ -1040,7 +1040,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
   const mutation = useMutation({
     mutationFn: async (data: Monster) => {
       if (data.id) {
-        return updateMonsterAction({
+        return call(updateMonster, {
           id: data.id,
           name: data.name,
           level: data.level,
@@ -1079,14 +1079,12 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
         });
       }
 
-      return fetchApi<Monster>("/api/monsters", {
-        method: "POST",
-        body: JSON.stringify({
-          ...data,
-          hp: data.hpPerHero != null ? 0 : data.hp,
-          hpPerHero: data.hpPerHero ?? null,
-          remixedFromId,
-        }),
+      return call(createMonster, {
+        ...data,
+        hp: data.hpPerHero != null ? 0 : data.hp,
+        hpPerHero: data.hpPerHero ?? null,
+        saves: data.saves ? [data.saves] : [],
+        remixedFromId,
       });
     },
     onSuccess: (newMonster) => {

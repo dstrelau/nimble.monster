@@ -73,6 +73,12 @@ describe("proxy", () => {
     expect(res?.status).not.toBe(400);
   });
 
+  it("allows POST to /_actions/ routes", async () => {
+    const req = makeRequest("POST", "/_actions/createMonster");
+    const res = await proxy(req);
+    expect(res?.status).not.toBe(400);
+  });
+
   it("allows POST with Next-Action and ALLOWED_ORIGINS origin", async () => {
     const req = makeRequest("POST", "/monsters/abc-123", {
       "next-action": "abc123",
