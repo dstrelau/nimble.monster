@@ -842,6 +842,7 @@ describe("GET /api/monsters", () => {
     ["standard"],
     ["legendary"],
     ["minion"],
+    ["teams"],
     ["all"],
   ])("should handle type=%s parameter", async (type) => {
     mockPaginateMonsters.mockResolvedValue({

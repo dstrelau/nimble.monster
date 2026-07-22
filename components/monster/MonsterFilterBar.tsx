@@ -6,6 +6,7 @@ import {
   PersonStanding,
   SlidersHorizontal,
   User,
+  Users,
 } from "lucide-react";
 import { FilterBar } from "@/components/shared/FilterBar";
 import { SortSelect } from "@/components/shared/SortSelect";
@@ -57,6 +58,7 @@ const TYPE_OPTIONS: {
   { value: "standard", label: "Standard", icon: <User size={4} /> },
   { value: "legendary", label: "Legendary", icon: <Crown size={4} /> },
   { value: "minion", label: "Minion", icon: <PersonStanding size={4} /> },
+  { value: "teams", label: "Teams", icon: <Users size={4} /> },
 ];
 
 const SORT_OPTIONS: { value: PaginateMonstersSortOption; label: string }[] = [

@@ -175,6 +175,7 @@ export const MonsterTypeOptions = [
   "standard",
   "legendary",
   "minion",
+  "teams",
 ] as const;
 export type MonsterTypeOption = (typeof MonsterTypeOptions)[number];
 

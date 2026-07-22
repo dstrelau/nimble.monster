@@ -10,6 +10,8 @@ import {
   like,
   lt,
   or,
+  type SQL,
+  sql,
 } from "drizzle-orm";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
@@ -389,7 +391,7 @@ export const paginateMonsters = async ({
   const sortField = isDesc ? sort.slice(1) : sort;
 
   // Build conditions array
-  const whereConditions: ReturnType<typeof eq>[] = [];
+  const whereConditions: SQL[] = [];
 
   if (!includePrivate) {
     whereConditions.push(eq(monsters.visibility, "public"));
@@ -424,6 +426,8 @@ export const paginateMonsters = async ({
   } else if (type === "standard") {
     whereConditions.push(eq(monsters.minion, false));
     whereConditions.push(eq(monsters.legendary, false));
+  } else if (type === "teams") {
+    whereConditions.push(sql`json_array_length(${monsters.members}) > 0`);
   }
 
   // Build the query
