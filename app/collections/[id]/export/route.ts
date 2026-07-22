@@ -108,7 +108,7 @@ export const GET = telemetry(
     const zipBuffer = zip.toBuffer();
     const zipFilename = `${sanitizeFilename(collection.name)}-export.zip`;
 
-    return new NextResponse(zipBuffer, {
+    return new NextResponse(new Uint8Array(zipBuffer), {
       headers: {
         "Content-Type": "application/zip",
         "Content-Disposition": `attachment; filename="${zipFilename}"`,
