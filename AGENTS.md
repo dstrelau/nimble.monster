@@ -86,6 +86,27 @@ Workflow:
 - Reuse the dedup helper `collectCreators` (in `lib/services/users/converters.ts`) for list endpoints; use `toJsonApiUser` for single-resource endpoints.
 - Biome enforces formatting and line length. Run `node_modules/.bin/biome check --write <changed files>` BEFORE `make check` — otherwise `make check` fails on format-only diffs and costs an extra round-trip.
 
+# Internal write actions (`/_actions`) — MIGRATION IN PROGRESS
+
+**Do not add new Server Actions for user-facing form saves. Use the `/_actions` pattern below.**
+
+Why: a Server Action is dispatched by a per-build hashed action id baked into the client bundle. After a deploy, a browser tab still running the old bundle holds stale ids the new server doesn't recognize, so the action fails — and because our mutation `onError`s only logged, the save silently did nothing. This is the "save buttons stop working once the 'new version available' banner appears" bug. Route handlers live at stable URLs, so an old tab still reaches a live endpoint after a deploy.
+
+The standard pattern (a small typed-RPC layer that keeps Server-Action DX — no manual serialization, input types checked across the network boundary — over a stable URL):
+
+1. Define a contract in `lib/contracts/<entity>.ts` with `defineRoute<Input, Output>` from `lib/contract.ts`. Reuse the service's existing input/output types (e.g. `CreateMonsterInput`, `Monster`) so client and server share one source of truth. Import them with `import type` — the contract module is imported by client components, so it must not pull in server code.
+2. Add the handler at `app/%5Factions/<name>/route.ts`. The folder MUST be `%5Factions`, not `_actions` — Next treats a leading-underscore folder as a private (non-routable) folder, so `%5F` (URL-encoded `_`) is required to serve the literal `/_actions/*` path. Authenticate with `auth()` and return plain JSON (NOT the JSON:API envelope — that's the public read API only; see below).
+3. Call it from the client via `call(contract, input)` inside a react-query `mutationFn`.
+4. `proxy.ts` exempts `/_actions/` from the Server-Action origin gate (alongside `/api/`). These are cookie-authenticated, same-origin route handlers, not Next Server Actions, so they carry no `next-action` header. Keep them same-origin — do NOT add CORS headers (that would open a CSRF surface on an authenticated write).
+
+Keep this surface separate from the public JSON:API under `app/api` (unauthenticated, CORS-open, JSON:API envelope, versioned for third parties). `/_actions` is internal, authenticated, same-origin, plain JSON.
+
+Migration status:
+- **Done:** monster create + edit (`app/%5Factions/createMonster`, `app/%5Factions/updateMonster`), reference implementation.
+- **Pending:** every other entity form (items, backgrounds, ancestries, collections, encounters, companions, sources, families, etc.) still saves via Server Actions and will still break on a stale tab. Migrate them to this pattern as you touch them.
+
+Centralized failure handling (already in place): `lib/queryClient.ts` sets a global `MutationCache.onError`. On any mutation failure it re-checks the build id; if a newer deployment is live the `StaleDeploymentBanner` prompts a refresh, otherwise a transient `MutationErrorToast` is shown. A mutation that renders its own error UI opts out with `meta: { suppressErrorToast: true }`.
+
 # Code Style
 
 - Prefer SSR when possible
