@@ -1,9 +1,9 @@
 import clsx from "clsx";
-import { cn } from "lib/utils";
 import { BookOpenCheck, Crown, PersonStanding } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Level } from "@/components/shared/Level";
 import type { MonsterMini } from "@/lib/services/monsters";
+import { cn } from "@/lib/utils";
 import { formatHp } from "@/lib/utils/monster";
 import { ArmorStat, HPStat } from "./Stat";
 

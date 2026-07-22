@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   experimental: {
     useCache: true,
     authInterrupts: true,
+    useTypeScriptCli: true,
   },
   reactStrictMode: true,
   async headers() {

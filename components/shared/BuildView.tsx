@@ -6,10 +6,10 @@ import {
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
 import clsx from "clsx";
-import { cn } from "lib/utils";
 import { Eye, X } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface BuildViewProps {
   entityName: string;

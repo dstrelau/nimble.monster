@@ -93,7 +93,7 @@ export default async function CreatePage() {
               href="/monsters/new"
               icon={<Goblin className="size-16" />}
               title="Monster"
-              description="Traditional monsters and Solo Legendaries."
+              description="Monsters, Minions, Legendaries, and Teams"
             />
             <CreateCard
               href="/families/new"

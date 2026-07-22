@@ -12,6 +12,7 @@ import {
   Target,
   TriangleAlert,
   User as UserIcon,
+  Users,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -19,6 +20,10 @@ import { useId, useMemo, useRef, useState } from "react";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { AbilitiesSection } from "@/components/create/AbilitiesSection";
 import { ActionsSection } from "@/components/create/ActionsSection";
+import {
+  emptyMember,
+  MembersSection,
+} from "@/components/create/MembersSection";
 import { SourceSelect } from "@/components/create/SourceSelect";
 import { Card } from "@/components/monster/Card";
 import {
@@ -166,6 +171,89 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     actionPreface: "After each hero's turn, choose one.",
     moreInfo:
       "A mythical beast with the body of a lion, the wings of a dragon, and the face of a human. Known for their deadly tail spikes.",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  team: {
+    visibility: "public",
+    id: "",
+    legendary: false,
+    minion: false,
+    name: "Kelebek & Poppy",
+    kind: "Legendary Bug Druid & His Stinky Pet",
+    level: "3",
+    levelInt: 3,
+    size: "medium" as MonsterSize,
+    armor: "none" as MonsterArmor,
+    hp: 0,
+    speed: 0,
+    swim: 0,
+    fly: 0,
+    climb: 0,
+    teleport: 0,
+    burrow: 0,
+    families: [],
+    abilities: [
+      {
+        id: Math.random().toString(36).slice(2),
+        name: "Legendary Duo",
+        description: "After each hero's turn, choose Kelebek or Poppy to act.",
+      },
+    ],
+    actions: [],
+    members: [
+      {
+        id: Math.random().toString(36).slice(2),
+        name: "Kelebek, Entomancer",
+        paperforgeId: "790",
+        hp: 0,
+        hpPerHero: 20,
+        armor: "none" as MonsterArmor,
+        size: "medium" as MonsterSize,
+        saves: "INT+, WIL+",
+        actionPreface: "",
+        abilities: [],
+        actions: [
+          {
+            id: Math.random().toString(36).slice(2),
+            name: "Vinelash",
+            description:
+              "Move 6, then 2d6. On damage: move target to an unoccupied space within Reach 6.",
+          },
+        ],
+      },
+      {
+        id: Math.random().toString(36).slice(2),
+        name: "Poppy, Giant Stinkbug",
+        hp: 0,
+        paperforgeId: "235",
+        hpPerHero: 14,
+        armor: "medium" as MonsterArmor,
+        size: "large" as MonsterSize,
+        saves: "STR+",
+        actionPreface: "",
+        abilities: [
+          {
+            id: Math.random().toString(36).slice(2),
+            name: "Stink Cloud",
+            description:
+              "When damaged, (Reach 2) enemies make a STR save (DC 10 or the damage done, whichever is higher). On a failure, they spend their next action vomiting, and they cannot take reactions this round.",
+          },
+        ],
+        actions: [
+          {
+            id: Math.random().toString(36).slice(2),
+            name: "Crushing Mandibles",
+            description: "Move 6. 2d6 damage, up to 2 adjacent creatures.",
+          },
+        ],
+      },
+    ],
+    actionPreface: "",
+    bloodied: "When Kelebek is bloodied, Poppy always Interposes for him.",
+    lastStand:
+      "When Poppy dies, the room is filled with noxious gas: all heroes have a max of 2 actions each turn.",
+    moreInfo: "",
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -392,6 +480,92 @@ const LegendaryForm: React.FC<{
       onPrefaceChange={(actionPreface) =>
         setMonster({ ...monster, actionPreface })
       }
+    />
+    <div className="space-y-6">
+      <FormTextarea
+        label={
+          <div className="flex items-center gap-2">
+            Bloodied
+            <ConditionValidationIcon text={monster.bloodied} />
+          </div>
+        }
+        name="bloodied"
+        value={monster.bloodied || ""}
+        rows={2}
+        onChange={(bloodied: string) => setMonster({ ...monster, bloodied })}
+      />
+      <FormTextarea
+        label={
+          <div className="flex items-center gap-2">
+            Last Stand
+            <ConditionValidationIcon text={monster.lastStand} />
+          </div>
+        }
+        name="lastStand"
+        value={monster.lastStand || ""}
+        rows={2}
+        onChange={(lastStand: string) => setMonster({ ...monster, lastStand })}
+      />
+      <FormTextarea
+        label={
+          <div className="flex items-center gap-2">
+            More Information
+            <ConditionValidationIcon text={monster.moreInfo} />
+          </div>
+        }
+        name="moreInfo"
+        value={monster.moreInfo || ""}
+        rows={4}
+        onChange={(moreInfo: string) => setMonster({ ...monster, moreInfo })}
+      />
+      <EncounterGuidelinesFields monster={monster} setMonster={setMonster} />
+    </div>
+  </div>
+);
+
+const TeamForm: React.FC<{
+  monster: Monster;
+  setMonster: (m: Monster) => void;
+}> = ({ monster, setMonster }) => (
+  <div className="space-y-4">
+    <div className="grid grid-cols-7 gap-x-6">
+      <FormSelect
+        label="Lvl"
+        name="level"
+        choices={LEGENDARY_MONSTER_LEVELS.map((l) => ({
+          value: l.value.toString(),
+          label: l.label,
+        }))}
+        selected={monster.levelInt.toString()}
+        className="col-span-1"
+        onChange={(levelStr) => {
+          const levelInt = parseInt(levelStr, 10);
+          const level = levelIntToDisplay(levelInt);
+          setMonster({ ...monster, level, levelInt });
+        }}
+      />
+      <FormInput
+        label="Kind"
+        name="kind"
+        value={monster.kind || ""}
+        className="col-span-6"
+        onChange={(kind) => setMonster({ ...monster, kind })}
+      />
+    </div>
+    <FormInput
+      label="Name"
+      name="name"
+      value={monster.name}
+      onChange={(name) => setMonster({ ...monster, name })}
+    />
+    <FamilySection monster={monster} setMonster={setMonster} />
+    <AbilitiesSection
+      abilities={monster.abilities}
+      onChange={(abilities) => setMonster({ ...monster, abilities })}
+    />
+    <MembersSection
+      members={monster.members ?? []}
+      onChange={(members) => setMonster({ ...monster, members })}
     />
     <div className="space-y-6">
       <FormTextarea
@@ -1057,6 +1231,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           burrow: data.burrow,
           actions: data.actions,
           abilities: data.abilities,
+          members: data.members ?? [],
           legendary: data.legendary,
           minion: data.minion,
           bloodied: data.bloodied || "",
@@ -1113,25 +1288,19 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
     });
   };
 
+  const isWidePreview = monster.legendary || (monster.members?.length ?? 0) > 0;
+
   return (
     <BuildView
       entityName={monster.name}
       previewTitle="Monster Preview"
       formClassName={clsx(
         "col-span-6",
-        monster.legendary
-          ? "md:col-span-3"
-          : monster.minion
-            ? "md:col-span-4"
-            : "md:col-span-4"
+        isWidePreview ? "md:col-span-3" : "md:col-span-4"
       )}
       previewClassName={clsx(
         "hidden md:block",
-        monster.legendary
-          ? "md:col-span-3"
-          : monster.minion
-            ? "md:col-span-2"
-            : "md:col-span-2"
+        isWidePreview ? "md:col-span-3" : "md:col-span-2"
       )}
       previewContent={
         <Card link={false} monster={monster} showEncounterGuidelines />
@@ -1141,19 +1310,35 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           <div className="mb-6 flex justify-center">
             <Tabs
               value={
-                monster.legendary
-                  ? "legendary"
-                  : monster.minion
-                    ? "minion"
-                    : "standard"
+                (monster.members?.length ?? 0) > 0
+                  ? "team"
+                  : monster.legendary
+                    ? "legendary"
+                    : monster.minion
+                      ? "minion"
+                      : "standard"
               }
-              onValueChange={(value: string) =>
-                setMonster({
-                  ...monster,
-                  legendary: value === "legendary",
-                  minion: value === "minion",
-                })
-              }
+              onValueChange={(value: string) => {
+                if (value === "team") {
+                  setMonster({
+                    ...monster,
+                    legendary: false,
+                    minion: false,
+                    hp: 0,
+                    actions: [],
+                    members: monster.members?.length
+                      ? monster.members
+                      : [emptyMember(), emptyMember()],
+                  });
+                } else {
+                  setMonster({
+                    ...monster,
+                    legendary: value === "legendary",
+                    minion: value === "minion",
+                    members: [],
+                  });
+                }
+              }}
             >
               <TabsList>
                 <TabsTrigger value="minion" className="px-3">
@@ -1168,6 +1353,10 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
                   <Crown className="h-4 w-4" />
                   Legendary
                 </TabsTrigger>
+                <TabsTrigger value="team" className="px-3">
+                  <Users className="h-4 w-4" />
+                  Team
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="standard" className="mt-6">
                 <StandardForm monster={monster} setMonster={setMonster} />
@@ -1177,6 +1366,9 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
               </TabsContent>
               <TabsContent value="minion" className="mt-6">
                 <MinionForm monster={monster} setMonster={setMonster} />
+              </TabsContent>
+              <TabsContent value="team" className="mt-6">
+                <TeamForm monster={monster} setMonster={setMonster} />
               </TabsContent>
             </Tabs>
           </div>
@@ -1235,6 +1427,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
               loadExample(type as keyof typeof EXAMPLE_MONSTERS)
             }
             getIcon={(monster) => {
+              if ((monster.members?.length ?? 0) > 0) return Users;
               if (monster.legendary) return Crown;
               if (monster.minion) return PersonStanding;
               if (monster.name) return UserIcon;

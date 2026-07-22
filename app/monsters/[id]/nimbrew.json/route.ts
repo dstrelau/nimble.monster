@@ -56,6 +56,8 @@ export const GET = telemetry(
     if (monster.burrow) speedParts.push(`Burrow ${monster.burrow}`);
     if (monster.teleport) speedParts.push(`Teleport ${monster.teleport}`);
 
+    const isTeam = (monster.members?.length ?? 0) > 0;
+
     const passives: { type: string; name: string; desc: string }[] = [
       ...(monster.families?.flatMap((family) =>
         family.abilities.map((passive) => ({
@@ -69,6 +71,15 @@ export const GET = telemetry(
         name: ability.name,
         desc: ability.description,
       })) || []),
+      // Team members expose their own passive abilities, prefixed with the
+      // member name so they remain attributable in the flattened export.
+      ...(monster.members?.flatMap((member) =>
+        member.abilities.map((ability) => ({
+          type: "single",
+          name: `${member.name}: ${ability.name}`,
+          desc: ability.description,
+        }))
+      ) || []),
     ];
 
     const actions = monster.actions?.map((a) => ({
@@ -77,10 +88,23 @@ export const GET = telemetry(
       desc: [a.damage, a.description].join(" "),
     }));
 
+    // Each team member's actions become a "multi" group named for the member.
+    const memberActionGroups =
+      monster.members?.map((member) => ({
+        type: "multi",
+        name: member.name,
+        desc: "",
+        actions: member.actions.map((a) => ({
+          type: "single",
+          name: a.name,
+          desc: [a.damage, a.description].filter(Boolean).join(" "),
+        })),
+      })) || [];
+
     const lvl =
       monster.levelInt === 0
         ? ""
-        : monster.legendary
+        : monster.legendary || isTeam
           ? `Level ${monster.level} Solo`
           : `Lvl ${monster.level}`;
     const cr = [lvl, formatSizeKind(monster)].filter(Boolean).join(" ");
@@ -107,12 +131,21 @@ export const GET = telemetry(
       CR: cr,
       armor:
         monster.armor === "medium" ? "M" : monster.armor === "heavy" ? "H" : "",
-      hp: monster.hp.toString(),
+      hp: isTeam
+        ? (monster.members
+            ?.map((member) =>
+              member.hpPerHero != null
+                ? `${member.name} ${member.hpPerHero}/hero`
+                : `${member.name} ${member.hp}`
+            )
+            .join(", ") ?? "")
+        : monster.hp.toString(),
       saves: monster.saves,
       speed: speedParts.join(", "),
       passives: passives,
-      actions:
-        monster.actions?.length > 1
+      actions: isTeam
+        ? memberActionGroups
+        : monster.actions?.length > 1
           ? [
               {
                 type: "multi",
@@ -132,7 +165,7 @@ export const GET = telemetry(
       },
     };
 
-    if (monster.legendary) {
+    if (monster.legendary || isTeam) {
       if (monster.bloodied) {
         nimbrewData.bloodied = monster.bloodied;
       }
