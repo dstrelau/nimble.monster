@@ -4,6 +4,7 @@ import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
 import { ConditionalMain } from "@/components/layout/ConditionalMain";
 import { FreeBanner } from "@/components/layout/FreeBanner";
+import { MutationErrorToast } from "@/components/layout/MutationErrorToast";
 import { StaleDeploymentBanner } from "@/components/layout/StaleDeploymentBanner";
 import { auth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -51,6 +52,7 @@ export default async function RootLayout({
           <ConditionalMain>{children}</ConditionalMain>
           <ConditionalFooter />
           <StaleDeploymentBanner />
+          <MutationErrorToast />
         </Providers>
       </body>
     </html>
