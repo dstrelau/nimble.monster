@@ -1,10 +1,13 @@
 import { eq } from "drizzle-orm";
 import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import Discord from "next-auth/providers/discord";
 import "next-auth/jwt";
 import { getDatabase } from "./db/drizzle";
 import { users } from "./db/schema";
 import type { User } from "./types";
+
+const isDev = process.env.NODE_ENV === "development";
 
 declare module "next-auth" {
   interface Session {
@@ -39,6 +42,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         params: { scope: "identify" },
       },
     }),
+    // Dev-only bypass so we can sign in as an existing local user without
+    // going through Discord OAuth. Registered only under `next dev`
+    // (NODE_ENV=development), and authorize() re-checks the same condition
+    // in case this ever gets imported somewhere with a different NODE_ENV.
+    ...(isDev
+      ? [
+          Credentials({
+            id: "dev",
+            name: "Dev Login (local only)",
+            credentials: {
+              discordId: { label: "Discord ID", type: "text" },
+            },
+            authorize: async (credentials) => {
+              if (!isDev) return null;
+              const discordId = credentials?.discordId;
+              if (!discordId || typeof discordId !== "string") return null;
+
+              const db = getDatabase();
+              const results = await db
+                .select()
+                .from(users)
+                .where(eq(users.discordId, discordId))
+                .limit(1);
+              const user = results[0];
+              if (!user) return null;
+
+              return {
+                id: user.id,
+                discordId: user.discordId,
+                name: user.displayName || user.username,
+              };
+            },
+          }),
+        ]
+      : []),
   ],
   callbacks: {
     signIn: async ({ profile }) => {
@@ -69,15 +107,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async jwt(params) {
       const token = params.token;
-      if (params.profile?.id) {
-        token.discordId = params.profile.id;
+      const devDiscordId =
+        isDev && params.account?.provider === "dev"
+          ? (params.user as { discordId?: string } | undefined)?.discordId
+          : undefined;
+      const discordId = params.profile?.id ?? devDiscordId;
+      if (discordId) {
+        token.discordId = discordId;
 
         try {
           const db = getDatabase();
           const results = await db
             .select()
             .from(users)
-            .where(eq(users.discordId, params.profile.id))
+            .where(eq(users.discordId, discordId))
             .limit(1);
           const user = results[0];
           if (user) {
