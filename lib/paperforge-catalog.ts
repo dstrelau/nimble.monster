@@ -621,11 +621,24 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "0096",
   },
   {
+    id: "97",
+    name: "Giant Spider",
+    postUrl: "https://www.patreon.com/posts/cavern-of-venom-29445967",
+    folder: "0097",
+  },
+  {
     id: "98",
     name: "Venom Crawler Hatchling",
     postUrl:
       "https://www.paperforgeminis.com/minis/f60957d6-7f45-49db-9087-5509998dd439",
     folder: "0098",
+  },
+  {
+    id: "99",
+    name: "Venom Queen",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/b1ab5af4-c640-4d01-b363-8edf106e2a46",
+    folder: "0099",
   },
   {
     id: "104",
@@ -640,6 +653,27 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     postUrl:
       "https://www.paperforgeminis.com/minis/003b4e96-5b4d-4d30-ac48-6d44048852ed",
     folder: "0106",
+  },
+  {
+    id: "108",
+    name: "Adult Red Dragon",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/9084c6a9-4486-44e5-b31e-b30471f6521e",
+    folder: "0108",
+  },
+  {
+    id: "110",
+    name: "Booze Server Kobold",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/47b22075-8237-4f11-8ab7-d70df2eed766",
+    folder: "0110",
+  },
+  {
+    id: "111",
+    name: "Cask Hauler Kobold",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/ed844f73-3dff-4c83-aa8c-9ba0d91aa080",
+    folder: "0111",
   },
   {
     id: "112",
@@ -731,6 +765,34 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     postUrl:
       "https://www.paperforgeminis.com/minis/0acff80f-e44f-426e-8b57-223d43c011ef",
     folder: "0141",
+  },
+  {
+    id: "143",
+    name: "Manticore",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/ac41d175-7a56-43bf-9067-3d1901cb93dd",
+    folder: "0143",
+  },
+  {
+    id: "145",
+    name: "Giant Snake",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/634af3dc-d901-4751-b245-1d77cc61adcc",
+    folder: "0145",
+  },
+  {
+    id: "149",
+    name: "Warforged Artificer",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/8662ba00-3f0b-4a1a-947a-5e9d0ad5a6e7",
+    folder: "0149",
+  },
+  {
+    id: "151",
+    name: "Gnome Wirzard",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/682c8eaa-c19c-4537-9642-6a78ea32f0c8",
+    folder: "0151",
   },
   {
     id: "155",
@@ -1447,6 +1509,12 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     folder: "0297",
   },
   {
+    id: "298",
+    name: "EnvironmentProp Fire",
+    postUrl: "https://www.patreon.com/posts/298-fire-47986093",
+    folder: "0298",
+  },
+  {
     id: "299",
     name: "Cultist Fang",
     postUrl:
@@ -1543,6 +1611,20 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     postUrl:
       "https://www.paperforgeminis.com/minis/a9ae2522-5977-49e9-9674-abe0d7b03ee2",
     folder: "0313",
+  },
+  {
+    id: "317",
+    name: "Cart Empty",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/fc740813-d54d-4e25-94d3-19e8e9bfc0a0",
+    folder: "0317",
+  },
+  {
+    id: "318",
+    name: "Cart Full",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/9a4ecc77-1dac-4579-bdd6-e32bc1a068cd",
+    folder: "0318",
   },
   {
     id: "319",
@@ -1760,6 +1842,13 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     postUrl:
       "https://www.paperforgeminis.com/minis/53f6a170-b74f-40c6-8bad-f35229157b58",
     folder: "0365",
+  },
+  {
+    id: "366",
+    name: "Forgework Dragon Egg",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/cc62d3ad-e2fe-4382-85e8-ab5876726947",
+    folder: "0366",
   },
   {
     id: "367",
@@ -2628,6 +2717,12 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     postUrl:
       "https://www.paperforgeminis.com/minis/a6a9bb2a-24e1-4569-a13e-d869418f972b",
     folder: "0578",
+  },
+  {
+    id: "579",
+    name: "Magma Mephit",
+    postUrl: "https://www.patreon.com/posts/579-magma-mephit-89982402",
+    folder: "0579",
   },
   {
     id: "580",

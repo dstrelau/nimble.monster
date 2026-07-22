@@ -751,6 +751,118 @@
       "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6652700",
       "zipFilename": "VTT85_Hydra_Free.zip",
       "portraitPath": "VTT85_Hydra_Free/Portrait/85_Hydra-Free.png"
+    },
+    {
+      "id": "97",
+      "name": "Giant Spider",
+      "url": "https://www.patreon.com/posts/cavern-of-venom-29445967",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5500334",
+      "zipFilename": "VTT97_GiantSpider_Free.zip",
+      "portraitPath": "VTT97_GiantSpider_Free/Portrait/GiantSpiderFree.png"
+    },
+    {
+      "id": "99",
+      "name": "Venom Queen",
+      "url": "https://www.paperforgeminis.com/minis/b1ab5af4-c640-4d01-b363-8edf106e2a46",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=5500366",
+      "zipFilename": "VTT99_VenomQueen_Free.zip",
+      "portraitPath": "VTT99_VenomQueen_Free/Portrait/VenomQueenFree.png"
+    },
+    {
+      "id": "108",
+      "name": "Adult Red Dragon",
+      "url": "https://www.paperforgeminis.com/minis/9084c6a9-4486-44e5-b31e-b30471f6521e",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=8046291",
+      "zipFilename": "VTT108_AdultRedDragon_Free.zip",
+      "portraitPath": "VTT108_AdultRedDragon_Free/Portrait/AdultRedDragonF.png"
+    },
+    {
+      "id": "110",
+      "name": "Booze Server Kobold",
+      "url": "https://www.paperforgeminis.com/minis/47b22075-8237-4f11-8ab7-d70df2eed766",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=8046290",
+      "zipFilename": "VTT110_BoozeServerKobold_Free.zip",
+      "portraitPath": "VTT110_BoozeServerKobold_Free/Portrait/BoozeServerKoboldF.png"
+    },
+    {
+      "id": "111",
+      "name": "Cask Hauler Kobold",
+      "url": "https://www.paperforgeminis.com/minis/ed844f73-3dff-4c83-aa8c-9ba0d91aa080",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=8046292",
+      "zipFilename": "VTT111_CaskHaulerKobold_Free.zip",
+      "portraitPath": "VTT111_CaskHaulerKobold_Free/Portrait/CaskHaulerKoboldF.png"
+    },
+    {
+      "id": "143",
+      "name": "Manticore",
+      "url": "https://www.paperforgeminis.com/minis/ac41d175-7a56-43bf-9067-3d1901cb93dd",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6652728",
+      "zipFilename": "VTT143_Manticore_Free.zip",
+      "portraitPath": "VTT143_Manticore_Free/Portrait/143_Manticore-Free.png"
+    },
+    {
+      "id": "145",
+      "name": "Giant Snake",
+      "url": "https://www.paperforgeminis.com/minis/634af3dc-d901-4751-b245-1d77cc61adcc",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=8046319",
+      "zipFilename": "VTT145_GiantSnake_Free.zip",
+      "portraitPath": "VTT145_GiantSnake_Free/Portrait/Free/145_GiantSnakePortrait-Free-B.png"
+    },
+    {
+      "id": "149",
+      "name": "Warforged Artificer",
+      "url": "https://www.paperforgeminis.com/minis/8662ba00-3f0b-4a1a-947a-5e9d0ad5a6e7",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6652730",
+      "zipFilename": "VTT149_WarforgedArtificer_Free.zip",
+      "portraitPath": "VTT149_WarforgedArtificer_Free/Portrait/149_WarforgedArtificer-Free.png"
+    },
+    {
+      "id": "151",
+      "name": "Gnome Wirzard",
+      "url": "https://www.paperforgeminis.com/minis/682c8eaa-c19c-4537-9642-6a78ea32f0c8",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=6652733",
+      "zipFilename": "VTT151_GnomeWizard_Free.zip",
+      "portraitPath": "VTT151_GnomeWizard_Free/Portrait/151_GnomeWizard-Free.png"
+    },
+    {
+      "id": "298",
+      "name": "EnvironmentProp Fire",
+      "url": "https://www.patreon.com/posts/298-fire-47986093",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=7476791",
+      "zipFilename": "VTT298[EnvironmentProp]Fire_Free.zip",
+      "portraitPath": "VTT298[EnvironmentProp]Fire_Free/298_MediumFire1/298_MediumFire1 - 1.png"
+    },
+    {
+      "id": "317",
+      "name": "Cart Empty",
+      "url": "https://www.paperforgeminis.com/minis/fc740813-d54d-4e25-94d3-19e8e9bfc0a0",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=7824366",
+      "zipFilename": "VTT317_Cart_Free.zip",
+      "portraitPath": "VTT317_Cart_Free/Fullbody/317_CartFullBody-1.png"
+    },
+    {
+      "id": "318",
+      "name": "Cart Full",
+      "url": "https://www.paperforgeminis.com/minis/9a4ecc77-1dac-4579-bdd6-e32bc1a068cd",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=7824369",
+      "zipFilename": "VTT318_Cart_Free.zip",
+      "portraitPath": "VTT318_Cart_Free/Fullbody/318_CartFullBody-1.png"
+    },
+    {
+      "id": "366",
+      "name": "Forgework Dragon Egg",
+      "url": "https://www.paperforgeminis.com/minis/cc62d3ad-e2fe-4382-85e8-ab5876726947",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=9000278",
+      "zipFilename": "VTT366_ForgeworkDragonEgg_Free.zip",
+      "portraitPath": "VTT366_ForgeworkDragonEgg_Free/Fullbody/366_ForgeworkDragonEggFullbody-1.png"
+    },
+    {
+      "id": "579",
+      "name": "Magma Mephit",
+      "url": "https://www.patreon.com/posts/579-magma-mephit-89982402",
+      "downloadUrl": "https://www.patreon.com/file?h=15724974&i=15953979",
+      "zipFilename": "VTT579_MagmaMephit_Free.zip",
+      "portraitPath": "VTT579_MagmaMephit_Free/Portrait/579_MagmaMephitPortrait-Free.png"
     }
   ]
 }
