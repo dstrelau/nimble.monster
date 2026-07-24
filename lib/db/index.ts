@@ -5,6 +5,7 @@ export * from "./class";
 export * from "./collection";
 export * from "./companion";
 export * from "./condition";
+export * from "./custom-rule";
 export { getDatabase } from "./drizzle";
 export * from "./encounter";
 export * from "./family";

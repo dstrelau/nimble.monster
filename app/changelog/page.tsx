@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "23 July 2026",
+    entries: [
+      "Add Custom Rules: write your own house rules and link them to official rules reference sections.",
+    ],
+  },
+  {
     date: "21 July 2026",
     entries: ["Add monster Teams: multiple foes in a single statblock."],
   },

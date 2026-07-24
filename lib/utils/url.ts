@@ -122,6 +122,17 @@ export function getEncounterEditUrl(encounter: {
 }
 
 // Family URLs
+export function getCustomRuleUrl(rule: { name: string; id: string }): string {
+  return `/custom-rules/${slugify(rule)}`;
+}
+
+export function getCustomRuleEditUrl(rule: {
+  name: string;
+  id: string;
+}): string {
+  return `/custom-rules/${slugify(rule)}/edit`;
+}
+
 export function getFamilyUrl(family: { name: string; id: string }): string {
   return `/families/${slugify(family)}`;
 }

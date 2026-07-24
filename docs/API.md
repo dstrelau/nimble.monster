@@ -336,6 +336,77 @@ Retrieve a single item by ID (26-character identifier).
 }
 ```
 
+### GET /api/custom-rules
+
+List public custom rules (user-authored house rules and variants), sorted by
+name.
+
+**Query Parameters:**
+- `include` (string, optional): Related resources to include (comma-separated).
+  Supports:
+  - `creator` - Include the user resources that created the returned rules
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "type": "custom-rules",
+      "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+      "attributes": {
+        "name": "Zone of Control",
+        "content": "Moving while adjacent to an enemy costs 1 extra space.",
+        "sectionSlugs": ["movement"]
+      },
+      "relationships": {
+        "creator": {
+          "data": { "type": "users", "id": "0psvtrh43w8xm9dfbf5b6nkcq1" }
+        }
+      },
+      "links": {
+        "self": "/api/custom-rules/0psvtrh43w8xm9dfbf5b6nkcq1"
+      }
+    }
+  ]
+}
+```
+
+The `attributes.sectionSlugs` array holds the slugs of the official rules
+reference sections this rule is linked to (each maps to `/reference/<slug>`).
+The `included` array is present only when `include=creator` is specified; it
+contains the deduplicated creator user resources.
+
+### GET /api/custom-rules/:id
+
+Retrieve a single public custom rule by ID (26-character identifier).
+
+**Query Parameters:**
+- `include` (string, optional): Related resources to include. Supports:
+  - `creator` - Include the user resource that created this rule
+
+**Response:**
+```json
+{
+  "data": {
+    "type": "custom-rules",
+    "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+    "attributes": {
+      "name": "Zone of Control",
+      "content": "Moving while adjacent to an enemy costs 1 extra space.",
+      "sectionSlugs": ["movement"]
+    },
+    "relationships": {
+      "creator": {
+        "data": { "type": "users", "id": "0psvtrh43w8xm9dfbf5b6nkcq1" }
+      }
+    },
+    "links": {
+      "self": "/api/custom-rules/0psvtrh43w8xm9dfbf5b6nkcq1"
+    }
+  }
+}
+```
+
 ### GET /api/users
 
 Look up a user by username. Returns only public profile information. Users are

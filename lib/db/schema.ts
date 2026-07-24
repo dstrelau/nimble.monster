@@ -1205,3 +1205,58 @@ export const referenceEntries = sqliteTable(
 
 export type ReferenceEntryRow = typeof referenceEntries.$inferSelect;
 export type ReferenceEntryInsert = typeof referenceEntries.$inferInsert;
+
+// User-authored custom rules. Each rule may link to zero or more official
+// reference "sections" by slug (see customRulesReferenceSections).
+export type CustomRuleVisibility = "public" | "private";
+
+export const customRules = sqliteTable(
+  "custom_rules",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    name: text("name").notNull(),
+    content: text("content").notNull().default(""),
+    visibility: text("visibility")
+      .$type<CustomRuleVisibility>()
+      .notNull()
+      .default("public"),
+    likeCount: integer("like_count").notNull().default(0),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [index("idx_custom_rules_user_id").on(table.userId)]
+);
+
+// Links a custom rule to an official reference section. `referenceSlug` is
+// plain text, NOT an FK: reference_entries rows are wiped/reinserted with fresh
+// ids on every import, so a cascade FK would delete all links. Slug integrity
+// is validated at the service layer against the reference filesystem. The
+// column also supports finer-grained anchors later (e.g. "movement#falling").
+export const customRulesReferenceSections = sqliteTable(
+  "custom_rules_reference_sections",
+  {
+    customRuleId: text("custom_rule_id")
+      .notNull()
+      .references(() => customRules.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    referenceSlug: text("reference_slug").notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.customRuleId, table.referenceSlug] }),
+    index("idx_custom_rules_reference_sections_rule").on(table.customRuleId),
+  ]
+);
+
+export type CustomRuleRow = typeof customRules.$inferSelect;
+export type CustomRuleInsert = typeof customRules.$inferInsert;
+export type CustomRuleReferenceSectionRow =
+  typeof customRulesReferenceSections.$inferSelect;
+export type CustomRuleReferenceSectionInsert =
+  typeof customRulesReferenceSections.$inferInsert;
