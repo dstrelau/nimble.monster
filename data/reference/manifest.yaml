@@ -1,0 +1,293 @@
+# Reference page composition. Page slugs MUST match the original 37 entry
+# slugs so existing /reference/<slug> URLs keep working. Each page lists its
+# section slugs in render order. Section bodies live in <page-slug>/*.mdx.
+pages:
+  - slug: 5e-conversion
+    title: "5e Conversion"
+    category: gm-reference
+    sections:
+      - 5e-conversion__adventures
+      - 5e-conversion__saving-throws
+      - 5e-conversion__skill-checks
+      - 5e-conversion__conditions
+      - 5e-conversion__monsters
+      - 5e-conversion__5e-legendary-monsters
+      - 5e-conversion__optional-tweaks
+      - 5e-conversion__5e-spells
+      - 5e-conversion__5e-magical-items
+      - 5e-conversion__5e-races-classes
+      - 5e-conversion__monster-skill-checks
+  - slug: advantage-disadvantage
+    title: "Advantage & Disadvantage"
+    category: core-rules
+    sections:
+      - advantage-disadvantage
+  - slug: combat-structure
+    title: "Combat Structure"
+    category: combat
+    sections:
+      - combat-structure__initiative
+      - combat-structure__surprise
+      - combat-structure__turn-order
+      - combat-structure__turns-rounds-encounters
+      - combat-structure__acting-over-multiple-turns
+  - slug: concentration
+    title: "Concentration"
+    category: magic
+    sections:
+      - concentration
+  - slug: conditions
+    title: "Conditions"
+    category: core-rules
+    sections:
+      - conditions
+  - slug: cover-hiding
+    title: "Cover & Hiding"
+    category: core-rules
+    sections:
+      - cover-hiding__cover
+      - cover-hiding__hiding
+  - slug: downtime
+    title: "Downtime"
+    category: resting-downtime
+    sections:
+      - downtime
+      - downtime__example-downtime-activities
+  - slug: encounter-guidelines
+    title: "Encounter Guidelines"
+    category: gm-reference
+    sections:
+      - encounter-guidelines__monster-levels
+      - encounter-guidelines__encounters-per-rest
+      - encounter-guidelines__encounter-difficulties
+      - encounter-guidelines__easy
+      - encounter-guidelines__medium
+      - encounter-guidelines__hard
+      - encounter-guidelines__deadly
+      - encounter-guidelines__very-deadly
+      - encounter-guidelines__resting-and-recovery
+      - encounter-guidelines__armor-variety
+  - slug: equipment-rules
+    title: "Equipment Rules"
+    category: equipment
+    sections:
+      - equipment-rules__equipment-proficiency
+      - equipment-rules__swapping-equipment
+      - equipment-rules__weapon-properties
+      - equipment-rules__dual-wielding
+      - equipment-rules__unarmed-strikes
+      - equipment-rules__improvised-weapons
+      - equipment-rules__customizing-weapons
+  - slug: field-rests
+    title: "Field Rests"
+    category: resting-downtime
+    sections:
+      - field-rests__field-rests
+      - field-rests__safe-rests
+      - field-rests__lodging
+  - slug: fine-tuning-difficulty
+    title: "Fine Tuning Difficulty"
+    category: gm-reference
+    sections:
+      - fine-tuning-difficulty
+      - fine-tuning-difficulty__balancing-with-tactics
+      - fine-tuning-difficulty__balancing-with-minions
+      - fine-tuning-difficulty__suggested-minion-die-size-by-party-level
+  - slug: flavorful-monster-abilities
+    title: "Flavorful Monster Abilities"
+    category: gm-reference
+    sections:
+      - flavorful-monster-abilities
+  - slug: glossary
+    title: "Glossary"
+    category: more
+    sections:
+      - glossary
+  - slug: grappling
+    title: "Grappling"
+    category: core-rules
+    sections:
+      - grappling
+  - slug: heroic-actions
+    title: "Heroic Actions"
+    category: combat
+    sections:
+      - heroic-actions
+      - heroic-actions__attack
+      - heroic-actions__cast-spell
+      - heroic-actions__move
+      - heroic-actions__assess
+  - slug: heroic-reactions
+    title: "Heroic Reactions"
+    category: combat
+    sections:
+      - heroic-reactions
+      - heroic-reactions__defend
+      - heroic-reactions__interpose
+      - heroic-reactions__opportunity-attack
+      - heroic-reactions__help
+  - slug: hit-dice
+    title: "Hit Dice"
+    category: core-rules
+    sections:
+      - hit-dice
+  - slug: hit-points-dying-wounds
+    title: "Hit Points, Dying & Wounds"
+    category: core-rules
+    sections:
+      - hit-points-dying-wounds
+  - slug: legendary-monster-builder
+    title: "Legendary Monster Builder"
+    category: gm-reference
+    sections:
+      - legendary-monster-builder
+  - slug: leveling-up
+    title: "Leveling Up"
+    category: character-creation
+    sections:
+      - leveling-up
+  - slug: lodging-boons
+    title: "Lodging Boons"
+    category: gm-reference
+    sections:
+      - lodging-boons
+  - slug: measuring-spaces
+    title: "Measuring Spaces"
+    category: core-rules
+    sections:
+      - measuring-spaces
+      - measuring-spaces__diagonal-spaces
+      - measuring-spaces__cones-lines
+  - slug: minions
+    title: "Minions & Flunkies"
+    category: gm-reference
+    sections:
+      - minions__minions
+      - minions__flunkies
+  - slug: monster-armor
+    title: "Monster Armor"
+    category: combat
+    sections:
+      - monster-armor
+      - monster-armor__default-monster-stats
+  - slug: monster-builder
+    title: "Monster Builder"
+    category: gm-reference
+    sections:
+      - monster-builder
+      - monster-builder__what-die-size-to-use
+  - slug: movement
+    title: "Movement"
+    category: core-rules
+    sections:
+      - movement
+      - movement__falling-and-forced-movement
+  - slug: range-reach
+    title: "Range & Reach"
+    category: core-rules
+    sections:
+      - range-reach
+  - slug: running-legendary-monsters
+    title: "Running Legendary Monsters"
+    category: gm-reference
+    sections:
+      - running-legendary-monsters
+      - running-legendary-monsters__saves
+      - running-legendary-monsters__bloodied
+      - running-legendary-monsters__last-stand
+      - running-legendary-monsters__optional-actions
+  - slug: size
+    title: "Size"
+    category: core-rules
+    sections:
+      - size
+  - slug: skill-checks-and-saves
+    title: "Skill Checks and Saves"
+    category: core-rules
+    sections:
+      - skill-checks-and-saves__skill-checks
+      - skill-checks-and-saves__saves
+      - skill-checks-and-saves__heroes-and-saves
+  - slug: skills
+    title: "Skills"
+    category: core-rules
+    sections:
+      - skills
+      - skills__arcana-int
+      - skills__examination-int
+      - skills__finesse-dex
+      - skills__influence-wil
+      - skills__insight-wil
+      - skills__might-str
+      - skills__lore-int
+      - skills__naturecraft-wil
+      - skills__perception-wil
+      - skills__stealth-dex
+  - slug: spellcasting
+    title: "Spellcasting"
+    category: magic
+    sections:
+      - spellcasting__mana
+      - spellcasting__upcasting
+      - spellcasting__multi-targetarea-of-effect-aoe
+      - spellcasting__save-spells
+      - spellcasting__range-and-reach
+      - spellcasting__spell-schools
+      - spellcasting__secret-spells
+  - slug: stats
+    title: "Stats"
+    category: core-rules
+    sections:
+      - stats
+      - stats__strength-str
+      - stats__dexterity-dex
+      - stats__intelligence-int
+      - stats__will-wil
+  - slug: the-character-sheet
+    title: "The Character Sheet"
+    category: character-creation
+    sections:
+      - the-character-sheet
+      - the-character-sheet__step-1-choose-your-class
+      - the-character-sheet__step-2-choose-your-ancestry-background
+      - the-character-sheet__step-3-fill-in-your-character-sheet
+      - the-character-sheet__the-character-sheet
+      - the-character-sheet__1-basic-details-stats
+      - the-character-sheet__2-skill-points
+      - the-character-sheet__3-secondary-stats
+      - the-character-sheet__4-equipment-money
+      - the-character-sheet__5-languages
+      - the-character-sheet__6-other-abilities
+      - the-character-sheet__7-inventory-slots
+  - slug: unique-encounters
+    title: "Unique Encounters"
+    category: gm-reference
+    sections:
+      - unique-encounters
+  - slug: variant-rules
+    title: "Variant Rules"
+    category: more
+    sections:
+      - variant-rules
+      - variant-rules__multiclassing
+      - variant-rules__small-groups
+      - variant-rules__large-groups
+      - variant-rules__fast-resting
+      - variant-rules__critical-healing
+      - variant-rules__i-had-the-high-ground
+      - variant-rules__thrown-potions
+      - variant-rules__sucker-punch
+      - variant-rules__playing-dead
+      - variant-rules__inspiration
+      - variant-rules__retreat
+      - variant-rules__different-key-stats
+      - variant-rules__complex-characters
+      - variant-rules__custom-weapon-dice
+  - slug: wealth
+    title: "Wealth"
+    category: equipment
+    sections:
+      - wealth__gold-currency
+      - wealth__how-much-gold
+      - wealth__on-buying-magical-items
+      - wealth__too-much-gold

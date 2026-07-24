@@ -10,6 +10,7 @@ import {
 import {
   getAllReferenceSlugs,
   getReferenceFileBySlug,
+  getSectionsForPage,
 } from "@/lib/reference/filesystem";
 import { previewMap } from "@/lib/reference/terms";
 import { SITE_NAME } from "@/lib/utils/branding";
@@ -36,9 +37,15 @@ export default async function ReferenceEntryPage({ params }: PageProps) {
   const entry = getReferenceFileBySlug(slug);
   if (!entry) redirect("/reference");
 
-  const diceResolved = resolveDiceNotationLinks(entry.content);
-  const resolvedContent = await resolveSpellSchoolLinks(diceResolved);
-  const linkedMarkdown = resolveTermLinks(resolvedContent);
+  const sections = getSectionsForPage(slug);
+  const rendered = await Promise.all(
+    sections.map(async (section) => {
+      const diceResolved = resolveDiceNotationLinks(section.content);
+      const resolvedContent = await resolveSpellSchoolLinks(diceResolved);
+      const linkedMarkdown = resolveTermLinks(resolvedContent);
+      return { slug: section.slug, content: linkedMarkdown };
+    })
+  );
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
@@ -51,7 +58,18 @@ export default async function ReferenceEntryPage({ params }: PageProps) {
       </nav>
       <h1 className="mb-6 text-3xl font-bold">{entry.title}</h1>
       <article className="prose dark:prose-invert max-w-none">
-        <ReferenceMarkdown content={linkedMarkdown} previewMap={previewMap} />
+        {rendered.map((section) => (
+          <section
+            key={section.slug}
+            id={section.slug}
+            className="scroll-mt-20"
+          >
+            <ReferenceMarkdown
+              content={section.content}
+              previewMap={previewMap}
+            />
+          </section>
+        ))}
       </article>
     </div>
   );

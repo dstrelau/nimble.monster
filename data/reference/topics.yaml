@@ -1,0 +1,559 @@
+# Finer-grained rule topics for tagging custom rules.
+# GENERATED once from the reference MDX by content analysis; hand-editable afterward.
+# `refs[].entry` must be an existing reference slug; `anchor` (optional) must be a
+# real slugified heading in that entry. `category` is one of the CATEGORIES slugs.
+topics:
+  # ── Combat structure ──────────────────────────────────────────────────────
+  - slug: initiative
+    label: Initiative
+    category: combat
+    refs:
+      - entry: combat-structure
+        anchor: initiative
+  - slug: surprise
+    label: Surprise
+    category: combat
+    refs:
+      - entry: combat-structure
+        anchor: surprise
+  - slug: turn-order
+    label: Turn Order
+    category: combat
+    refs:
+      - entry: combat-structure
+        anchor: turn-order
+  - slug: rounds-and-turns
+    label: Rounds & Turns
+    category: combat
+    refs:
+      - entry: combat-structure
+        anchor: turns-rounds-encounters
+  - slug: acting-over-multiple-turns
+    label: Acting Over Multiple Turns
+    category: combat
+    refs:
+      - entry: combat-structure
+        anchor: acting-over-multiple-turns
+
+  # ── Actions & reactions ───────────────────────────────────────────────────
+  - slug: actions
+    label: Actions
+    category: combat
+    refs:
+      - entry: heroic-actions
+  - slug: free-actions
+    label: Free Actions
+    category: combat
+    refs:
+      - entry: heroic-actions
+  - slug: attacks
+    label: Attacks
+    category: combat
+    refs:
+      - entry: heroic-actions
+        anchor: attack
+  - slug: critical-hits
+    label: Critical Hits
+    category: combat
+    refs:
+      - entry: heroic-actions
+        anchor: attack
+      - entry: monster-armor
+  - slug: rushed-attacks
+    label: Rushed Attacks
+    category: combat
+    refs:
+      - entry: heroic-actions
+        anchor: attack
+  - slug: assess
+    label: Assess
+    category: combat
+    refs:
+      - entry: heroic-actions
+        anchor: assess
+  - slug: reactions
+    label: Reactions
+    category: combat
+    refs:
+      - entry: heroic-reactions
+  - slug: defend
+    label: Defend
+    category: combat
+    refs:
+      - entry: heroic-reactions
+        anchor: defend
+  - slug: interpose
+    label: Interpose
+    category: combat
+    refs:
+      - entry: heroic-reactions
+        anchor: interpose
+  - slug: opportunity-attack
+    label: Opportunity Attack
+    category: combat
+    refs:
+      - entry: heroic-reactions
+        anchor: opportunity-attack
+  - slug: help
+    label: Help
+    category: combat
+    refs:
+      - entry: heroic-reactions
+        anchor: help
+
+  # ── Core mechanics ────────────────────────────────────────────────────────
+  - slug: advantage-disadvantage
+    label: Advantage & Disadvantage
+    category: core-rules
+    refs:
+      - entry: advantage-disadvantage
+  - slug: skill-checks
+    label: Skill Checks
+    category: core-rules
+    refs:
+      - entry: skill-checks-and-saves
+        anchor: skill-checks
+  - slug: saves
+    label: Saves
+    category: core-rules
+    refs:
+      - entry: skill-checks-and-saves
+        anchor: saves
+  - slug: difficulty-class
+    label: Difficulty Class (DC)
+    category: core-rules
+    refs:
+      - entry: skill-checks-and-saves
+        anchor: skill-checks
+  - slug: skills
+    label: Skills
+    category: core-rules
+    refs:
+      - entry: skills
+  - slug: stats
+    label: Stats
+    category: core-rules
+    refs:
+      - entry: stats
+  - slug: cover
+    label: Cover
+    category: core-rules
+    refs:
+      - entry: cover-hiding
+        anchor: cover
+  - slug: hiding
+    label: Hiding
+    category: core-rules
+    refs:
+      - entry: cover-hiding
+        anchor: hiding
+  - slug: grappling
+    label: Grappling
+    category: core-rules
+    refs:
+      - entry: grappling
+  - slug: size
+    label: Size
+    category: core-rules
+    refs:
+      - entry: size
+  - slug: range-and-reach
+    label: Range & Reach
+    category: core-rules
+    refs:
+      - entry: range-reach
+      - entry: spellcasting
+        anchor: range-and-reach
+  - slug: difficult-terrain
+    label: Difficult Terrain
+    category: core-rules
+    refs:
+      - entry: movement
+  - slug: resistance-and-vulnerability
+    label: Resistance & Vulnerability
+    category: core-rules
+    refs:
+      - entry: glossary
+      - entry: monster-armor
+
+  # ── Movement & spaces ─────────────────────────────────────────────────────
+  - slug: movement
+    label: Movement
+    category: core-rules
+    refs:
+      - entry: movement
+  - slug: falling-and-forced-movement
+    label: Falling & Forced Movement
+    category: core-rules
+    refs:
+      - entry: movement
+        anchor: falling-and-forced-movement
+  - slug: diagonal-movement
+    label: Diagonal Movement
+    category: optional-rules
+    refs:
+      - entry: measuring-spaces
+        anchor: diagonal-spaces
+  - slug: cones-and-lines
+    label: Cones & Lines
+    category: optional-rules
+    refs:
+      - entry: measuring-spaces
+        anchor: cones-lines
+
+  # ── Health, damage & recovery ─────────────────────────────────────────────
+  - slug: hit-points
+    label: Hit Points
+    category: core-rules
+    refs:
+      - entry: hit-points-dying-wounds
+  - slug: dying
+    label: Dying
+    category: core-rules
+    refs:
+      - entry: hit-points-dying-wounds
+  - slug: wounds
+    label: Wounds
+    category: core-rules
+    refs:
+      - entry: hit-points-dying-wounds
+  - slug: temporary-hp
+    label: Temporary HP
+    category: core-rules
+    refs:
+      - entry: hit-points-dying-wounds
+  - slug: hit-dice
+    label: Hit Dice
+    category: core-rules
+    refs:
+      - entry: hit-dice
+
+  # ── Conditions ────────────────────────────────────────────────────────────
+  - slug: conditions
+    label: Conditions
+    category: core-rules
+    refs:
+      - entry: conditions
+  - slug: blinded
+    label: Blinded
+    category: core-rules
+    refs:
+      - entry: conditions
+  - slug: bloodied
+    label: Bloodied
+    category: core-rules
+    refs:
+      - entry: conditions
+  - slug: charmed
+    label: Charmed
+    category: core-rules
+    refs:
+      - entry: conditions
+  - slug: dazed
+    label: Dazed
+    category: core-rules
+    refs:
+      - entry: conditions
+  - slug: frightened
+    label: Frightened
+    category: core-rules
+    refs:
+      - entry: conditions
+  - slug: incapacitated
+    label: Incapacitated
+    category: core-rules
+    refs:
+      - entry: conditions
+  - slug: invisible
+    label: Invisible
+    category: core-rules
+    refs:
+      - entry: conditions
+  - slug: poisoned
+    label: Poisoned
+    category: core-rules
+    refs:
+      - entry: conditions
+  - slug: prone
+    label: Prone
+    category: core-rules
+    refs:
+      - entry: conditions
+
+  # ── Magic ─────────────────────────────────────────────────────────────────
+  - slug: spellcasting
+    label: Spellcasting
+    category: magic
+    refs:
+      - entry: spellcasting
+      - entry: heroic-actions
+        anchor: cast-spell
+  - slug: mana
+    label: Mana
+    category: magic
+    refs:
+      - entry: spellcasting
+        anchor: mana
+  - slug: upcasting
+    label: Upcasting
+    category: magic
+    refs:
+      - entry: spellcasting
+        anchor: upcasting
+  - slug: area-of-effect
+    label: Area of Effect (AoE)
+    category: magic
+    refs:
+      - entry: spellcasting
+        anchor: multi-targetarea-of-effect-aoe
+  - slug: save-spells
+    label: Save Spells
+    category: magic
+    refs:
+      - entry: spellcasting
+        anchor: save-spells
+  - slug: spell-schools
+    label: Spell Schools
+    category: magic
+    refs:
+      - entry: spellcasting
+        anchor: spell-schools
+  - slug: concentration
+    label: Concentration
+    category: magic
+    refs:
+      - entry: concentration
+
+  # ── Resting & downtime ────────────────────────────────────────────────────
+  - slug: field-rests
+    label: Field Rests
+    category: resting-downtime
+    refs:
+      - entry: field-rests
+        anchor: field-rests
+  - slug: safe-rests
+    label: Safe Rests
+    category: resting-downtime
+    refs:
+      - entry: field-rests
+        anchor: safe-rests
+  - slug: downtime
+    label: Downtime
+    category: resting-downtime
+    refs:
+      - entry: downtime
+  - slug: lodging
+    label: Lodging
+    category: resting-downtime
+    refs:
+      - entry: field-rests
+        anchor: lodging
+      - entry: lodging-boons
+
+  # ── Character creation ────────────────────────────────────────────────────
+  - slug: character-creation
+    label: Character Creation
+    category: character-creation
+    refs:
+      - entry: the-character-sheet
+  - slug: classes
+    label: Classes
+    category: character-creation
+    refs:
+      - entry: the-character-sheet
+        anchor: step-1-choose-your-class
+  - slug: ancestry-and-background
+    label: Ancestry & Background
+    category: character-creation
+    refs:
+      - entry: the-character-sheet
+        anchor: step-2-choose-your-ancestry-background
+  - slug: languages
+    label: Languages
+    category: character-creation
+    refs:
+      - entry: the-character-sheet
+        anchor: 5-languages
+  - slug: inventory-slots
+    label: Inventory Slots
+    category: character-creation
+    refs:
+      - entry: the-character-sheet
+        anchor: 7-inventory-slots
+  - slug: skill-points
+    label: Skill Points
+    category: character-creation
+    refs:
+      - entry: the-character-sheet
+        anchor: 2-skill-points
+  - slug: leveling-up
+    label: Leveling Up
+    category: character-creation
+    refs:
+      - entry: leveling-up
+
+  # ── Equipment ─────────────────────────────────────────────────────────────
+  - slug: armor
+    label: Armor
+    category: equipment
+    refs:
+      - entry: monster-armor
+      - entry: equipment-rules
+        anchor: equipment-proficiency
+  - slug: weapon-properties
+    label: Weapon Properties
+    category: equipment
+    refs:
+      - entry: equipment-rules
+        anchor: weapon-properties
+  - slug: dual-wielding
+    label: Dual Wielding
+    category: equipment
+    refs:
+      - entry: equipment-rules
+        anchor: dual-wielding
+  - slug: unarmed-strikes
+    label: Unarmed Strikes
+    category: equipment
+    refs:
+      - entry: equipment-rules
+        anchor: unarmed-strikes
+  - slug: improvised-weapons
+    label: Improvised Weapons
+    category: equipment
+    refs:
+      - entry: equipment-rules
+        anchor: improvised-weapons
+  - slug: customizing-weapons
+    label: Customizing Weapons
+    category: equipment
+    refs:
+      - entry: equipment-rules
+        anchor: customizing-weapons
+  - slug: equipment-proficiency
+    label: Equipment Proficiency
+    category: equipment
+    refs:
+      - entry: equipment-rules
+        anchor: equipment-proficiency
+  - slug: swapping-equipment
+    label: Swapping Equipment
+    category: equipment
+    refs:
+      - entry: equipment-rules
+        anchor: swapping-equipment
+  - slug: currency
+    label: Currency
+    category: equipment
+    refs:
+      - entry: wealth
+        anchor: gold-currency
+  - slug: buying-magic-items
+    label: Buying Magic Items
+    category: equipment
+    refs:
+      - entry: wealth
+        anchor: on-buying-magical-items
+
+  # ── GM reference ──────────────────────────────────────────────────────────
+  - slug: encounter-building
+    label: Encounter Building
+    category: gm-reference
+    refs:
+      - entry: encounter-guidelines
+        anchor: monster-levels
+  - slug: encounter-difficulty
+    label: Encounter Difficulty
+    category: gm-reference
+    refs:
+      - entry: encounter-guidelines
+        anchor: encounter-difficulties
+  - slug: fine-tuning-difficulty
+    label: Fine-Tuning Difficulty
+    category: gm-reference
+    refs:
+      - entry: fine-tuning-difficulty
+  - slug: monster-builder
+    label: Monster Builder
+    category: gm-reference
+    refs:
+      - entry: monster-builder
+  - slug: default-monster-stats
+    label: Default Monster Stats
+    category: gm-reference
+    refs:
+      - entry: monster-armor
+        anchor: default-monster-stats
+  - slug: flavorful-monster-abilities
+    label: Flavorful Monster Abilities
+    category: gm-reference
+    refs:
+      - entry: flavorful-monster-abilities
+  - slug: legendary-monsters
+    label: Legendary Monsters
+    category: gm-reference
+    refs:
+      - entry: running-legendary-monsters
+      - entry: legendary-monster-builder
+  - slug: last-stand
+    label: Last Stand
+    category: gm-reference
+    refs:
+      - entry: running-legendary-monsters
+        anchor: last-stand
+  - slug: minions
+    label: Minions
+    category: gm-reference
+    refs:
+      - entry: minions
+        anchor: minions
+      - entry: fine-tuning-difficulty
+        anchor: balancing-with-minions
+  - slug: flunkies
+    label: Flunkies
+    category: gm-reference
+    refs:
+      - entry: minions
+        anchor: flunkies
+  - slug: unique-encounters
+    label: Unique Encounters
+    category: gm-reference
+    refs:
+      - entry: unique-encounters
+  - slug: 5e-conversion
+    label: 5e Conversion
+    category: gm-reference
+    refs:
+      - entry: 5e-conversion
+
+  # ── Optional & variant rules ──────────────────────────────────────────────
+  - slug: variant-rules
+    label: Variant Rules
+    category: optional-rules
+    refs:
+      - entry: variant-rules
+  - slug: multiclassing
+    label: Multiclassing
+    category: optional-rules
+    refs:
+      - entry: variant-rules
+        anchor: multiclassing
+  - slug: sidekicks
+    label: Sidekicks
+    category: optional-rules
+    refs:
+      - entry: variant-rules
+        anchor: small-groups
+  - slug: inspiration
+    label: Inspiration
+    category: optional-rules
+    refs:
+      - entry: variant-rules
+        anchor: inspiration
+
+  # ── Glossary ──────────────────────────────────────────────────────────────
+  - slug: glossary
+    label: Glossary
+    category: more
+    refs:
+      - entry: glossary
