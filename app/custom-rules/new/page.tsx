@@ -22,7 +22,7 @@ export default async function NewCustomRulePage() {
           name: "",
           content: "",
           visibility: "public",
-          sectionSlugs: [],
+          links: [],
         }}
         sectionGroups={buildSectionGroups()}
         isCreating

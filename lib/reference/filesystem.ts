@@ -201,6 +201,10 @@ export function getSectionBySlug(sectionSlug: string): ReferenceSection | null {
   return getData().sectionBySlug.get(sectionSlug) ?? null;
 }
 
+export function getValidSectionSlugs(): Set<string> {
+  return new Set(getData().sectionBySlug.keys());
+}
+
 export function getSectionsForPage(pageSlug: string): ReferenceSection[] {
   return getData().sectionsByPage.get(pageSlug) ?? [];
 }

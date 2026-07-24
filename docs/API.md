@@ -356,7 +356,9 @@ name.
       "attributes": {
         "name": "Zone of Control",
         "content": "Moving while adjacent to an enemy costs 1 extra space.",
-        "sectionSlugs": ["movement"]
+        "sections": [
+          { "slug": "combat-structure__initiative", "relation": "augments" }
+        ]
       },
       "relationships": {
         "creator": {
@@ -371,10 +373,14 @@ name.
 }
 ```
 
-The `attributes.sectionSlugs` array holds the slugs of the official rules
-reference sections this rule is linked to (each maps to `/reference/<slug>`).
-The `included` array is present only when `include=creator` is specified; it
-contains the deduplicated creator user resources.
+The `attributes.sections` array holds the official rules reference sections this
+rule is linked to. Each entry has a `slug` (a section slug of the form
+`<page-slug>__<heading>`, or a bare page slug for a page's lead section) and a
+`relation` of either `replaces` (the rule overrides the section) or `augments`
+(the rule adds to or clarifies it). A section's page is reachable at
+`/reference/<page-slug>#<section-slug>`. The `included` array is present only
+when `include=creator` is specified; it contains the deduplicated creator user
+resources.
 
 ### GET /api/custom-rules/:id
 
@@ -393,7 +399,9 @@ Retrieve a single public custom rule by ID (26-character identifier).
     "attributes": {
       "name": "Zone of Control",
       "content": "Moving while adjacent to an enemy costs 1 extra space.",
-      "sectionSlugs": ["movement"]
+      "sections": [
+        { "slug": "combat-structure__initiative", "relation": "augments" }
+      ]
     },
     "relationships": {
       "creator": {
@@ -406,6 +414,10 @@ Retrieve a single public custom rule by ID (26-character identifier).
   }
 }
 ```
+
+The `attributes.sections` array follows the same shape as the list endpoint:
+each entry carries the section `slug` and its `relation` (`replaces` or
+`augments`).
 
 ### GET /api/users
 

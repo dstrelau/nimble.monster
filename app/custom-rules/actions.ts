@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import {
   type CustomRule,
+  type CustomRuleSectionLink,
   createCustomRule,
   deleteCustomRule,
   updateCustomRule,
@@ -14,7 +15,7 @@ interface CustomRuleFormData {
   name: string;
   content: string;
   visibility: CustomRuleVisibility;
-  sectionSlugs: string[];
+  links: CustomRuleSectionLink[];
 }
 
 type ActionResult =
@@ -35,7 +36,7 @@ export async function createCustomRuleAction(
       name: data.name,
       content: data.content,
       visibility: data.visibility,
-      sectionSlugs: data.sectionSlugs,
+      links: data.links,
     });
     revalidatePath("/custom-rules");
     return { success: true, rule };
@@ -63,7 +64,7 @@ export async function updateCustomRuleAction(
       name: data.name,
       content: data.content,
       visibility: data.visibility,
-      sectionSlugs: data.sectionSlugs,
+      links: data.links,
     });
     revalidatePath("/custom-rules");
     revalidatePath(`/custom-rules/${id}`);

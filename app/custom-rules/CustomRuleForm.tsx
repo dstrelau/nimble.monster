@@ -23,6 +23,12 @@ import type { CustomRule } from "@/lib/db/custom-rule";
 import { getCustomRuleUrl } from "@/lib/utils/url";
 import { createCustomRuleAction, updateCustomRuleAction } from "./actions";
 
+const slugsForRelation = (
+  links: CustomRule["links"],
+  relation: "replaces" | "augments"
+): string[] =>
+  links.filter((l) => l.relation === relation).map((l) => l.sectionSlug);
+
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   content: z.string(),
@@ -32,19 +38,30 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 interface Props {
-  rule: Pick<
-    CustomRule,
-    "id" | "name" | "content" | "visibility" | "sectionSlugs"
-  >;
+  rule: Pick<CustomRule, "id" | "name" | "content" | "visibility" | "links">;
   sectionGroups: OptionGroup[];
   isCreating?: boolean;
 }
 
 export function CustomRuleForm({ rule, sectionGroups, isCreating }: Props) {
   const router = useRouter();
-  const [selectedSlugs, setSelectedSlugs] = useState<string[]>(
-    rule.sectionSlugs
+  const [replacesSlugs, setReplacesSlugs] = useState<string[]>(
+    slugsForRelation(rule.links, "replaces")
   );
+  const [augmentsSlugs, setAugmentsSlugs] = useState<string[]>(
+    slugsForRelation(rule.links, "augments")
+  );
+
+  // A section may appear in only one list. Selecting it in one drops it from
+  // the other.
+  const handleReplacesChange = (next: string[]) => {
+    setReplacesSlugs(next);
+    setAugmentsSlugs((prev) => prev.filter((s) => !next.includes(s)));
+  };
+  const handleAugmentsChange = (next: string[]) => {
+    setAugmentsSlugs(next);
+    setReplacesSlugs((prev) => prev.filter((s) => !next.includes(s)));
+  };
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -56,7 +73,17 @@ export function CustomRuleForm({ rule, sectionGroups, isCreating }: Props) {
   });
 
   const handleSubmit = async (data: FormData) => {
-    const payload = { ...data, sectionSlugs: selectedSlugs };
+    const links = [
+      ...replacesSlugs.map((sectionSlug) => ({
+        sectionSlug,
+        relation: "replaces" as const,
+      })),
+      ...augmentsSlugs.map((sectionSlug) => ({
+        sectionSlug,
+        relation: "augments" as const,
+      })),
+    ];
+    const payload = { ...data, links };
     const result = isCreating
       ? await createCustomRuleAction(payload)
       : await updateCustomRuleAction(rule.id, payload);
@@ -110,17 +137,32 @@ export function CustomRuleForm({ rule, sectionGroups, isCreating }: Props) {
         />
 
         <FormItem>
-          <FormLabel>Linked reference sections</FormLabel>
+          <FormLabel>Replaces</FormLabel>
           <MultiSelect
             groups={sectionGroups}
-            selected={selectedSlugs}
-            onChange={setSelectedSlugs}
+            selected={replacesSlugs}
+            onChange={handleReplacesChange}
             placeholder="Select sections..."
             className="w-full md:w-96"
             popoverClassName="w-96"
           />
           <FormDescription>
-            Official rules sections this custom rule relates to.
+            Official sections this rule overrides.
+          </FormDescription>
+        </FormItem>
+
+        <FormItem>
+          <FormLabel>Augments</FormLabel>
+          <MultiSelect
+            groups={sectionGroups}
+            selected={augmentsSlugs}
+            onChange={handleAugmentsChange}
+            placeholder="Select sections..."
+            className="w-full md:w-96"
+            popoverClassName="w-96"
+          />
+          <FormDescription>
+            Official sections this rule adds to or clarifies.
           </FormDescription>
         </FormItem>
 

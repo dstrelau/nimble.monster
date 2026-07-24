@@ -1,94 +1,126 @@
 import { describe, expect, it } from "vitest";
 import {
-  baseReferenceSlug,
-  diffSectionSlugs,
-  validateSectionSlugs,
+  type CustomRuleSectionLink,
+  diffSectionLinks,
+  validateSectionLinks,
 } from "./custom-rule";
 
-const VALID = ["movement", "monster-armor", "combat-structure"];
+const VALID = ["movement", "monster-armor", "combat-structure__initiative"];
 
-describe("baseReferenceSlug", () => {
-  it("returns the slug unchanged when there is no anchor", () => {
-    expect(baseReferenceSlug("movement")).toBe("movement");
-  });
+const link = (
+  sectionSlug: string,
+  relation: CustomRuleSectionLink["relation"]
+): CustomRuleSectionLink => ({ sectionSlug, relation });
 
-  it("strips the #anchor suffix", () => {
-    expect(baseReferenceSlug("movement#falling")).toBe("movement");
-  });
-
-  it("keeps only the part before the first #", () => {
-    expect(baseReferenceSlug("a#b#c")).toBe("a");
-  });
-});
-
-describe("validateSectionSlugs", () => {
-  it("returns valid slugs unchanged", () => {
-    expect(validateSectionSlugs(["movement", "monster-armor"], VALID)).toEqual([
-      "movement",
-      "monster-armor",
-    ]);
-  });
-
-  it("accepts anchored slugs whose base is valid", () => {
-    expect(validateSectionSlugs(["movement#falling"], VALID)).toEqual([
-      "movement#falling",
-    ]);
-  });
-
-  it("trims whitespace and drops empty entries", () => {
-    expect(validateSectionSlugs(["  movement  ", "", "   "], VALID)).toEqual([
-      "movement",
-    ]);
-  });
-
-  it("dedupes while preserving order", () => {
+describe("validateSectionLinks", () => {
+  it("returns valid links unchanged", () => {
     expect(
-      validateSectionSlugs(["monster-armor", "movement", "movement"], VALID)
-    ).toEqual(["monster-armor", "movement"]);
+      validateSectionLinks(
+        [link("movement", "replaces"), link("monster-armor", "augments")],
+        VALID
+      )
+    ).toEqual([
+      link("movement", "replaces"),
+      link("monster-armor", "augments"),
+    ]);
   });
 
-  it("throws when a base slug is not a known reference entry", () => {
-    expect(() => validateSectionSlugs(["not-a-rule"], VALID)).toThrow(
-      /Unknown reference section/
-    );
+  it("defaults a missing relation to augments", () => {
+    expect(validateSectionLinks([{ sectionSlug: "movement" }], VALID)).toEqual([
+      link("movement", "augments"),
+    ]);
   });
 
-  it("throws when an anchored slug's base is unknown", () => {
-    expect(() => validateSectionSlugs(["bogus#falling"], VALID)).toThrow(
-      /bogus#falling/
-    );
+  it("trims whitespace and drops empty slugs", () => {
+    expect(
+      validateSectionLinks(
+        [
+          { sectionSlug: "  movement  ", relation: "replaces" },
+          { sectionSlug: "", relation: "augments" },
+          { sectionSlug: "   ", relation: "augments" },
+        ],
+        VALID
+      )
+    ).toEqual([link("movement", "replaces")]);
+  });
+
+  it("dedupes by slug, first occurrence wins", () => {
+    expect(
+      validateSectionLinks(
+        [link("movement", "replaces"), link("movement", "augments")],
+        VALID
+      )
+    ).toEqual([link("movement", "replaces")]);
+  });
+
+  it("accepts section slugs of the form page__heading", () => {
+    expect(
+      validateSectionLinks(
+        [link("combat-structure__initiative", "augments")],
+        VALID
+      )
+    ).toEqual([link("combat-structure__initiative", "augments")]);
+  });
+
+  it("throws when a slug is not a known reference section", () => {
+    expect(() =>
+      validateSectionLinks([link("not-a-section", "augments")], VALID)
+    ).toThrow(/Unknown reference section/);
   });
 
   it("returns an empty array for no input", () => {
-    expect(validateSectionSlugs([], VALID)).toEqual([]);
+    expect(validateSectionLinks([], VALID)).toEqual([]);
   });
 });
 
-describe("diffSectionSlugs", () => {
-  it("computes additions and removals", () => {
+describe("diffSectionLinks", () => {
+  it("computes additions and removals by slug", () => {
     expect(
-      diffSectionSlugs(["movement", "monster-armor"], ["movement", "combat"])
-    ).toEqual({ toAdd: ["combat"], toRemove: ["monster-armor"] });
-  });
-
-  it("is a no-op when unchanged", () => {
-    expect(diffSectionSlugs(["movement"], ["movement"])).toEqual({
-      toAdd: [],
-      toRemove: [],
+      diffSectionLinks(
+        [link("movement", "replaces"), link("monster-armor", "augments")],
+        [
+          link("movement", "replaces"),
+          link("combat-structure__initiative", "augments"),
+        ]
+      )
+    ).toEqual({
+      toAdd: [link("combat-structure__initiative", "augments")],
+      toRemove: [link("monster-armor", "augments")],
     });
   });
 
+  it("treats a relation change as remove + add of the same slug", () => {
+    expect(
+      diffSectionLinks(
+        [link("movement", "augments")],
+        [link("movement", "replaces")]
+      )
+    ).toEqual({
+      toAdd: [link("movement", "replaces")],
+      toRemove: [link("movement", "augments")],
+    });
+  });
+
+  it("is a no-op when unchanged", () => {
+    expect(
+      diffSectionLinks(
+        [link("movement", "replaces")],
+        [link("movement", "replaces")]
+      )
+    ).toEqual({ toAdd: [], toRemove: [] });
+  });
+
   it("handles going from empty to populated", () => {
-    expect(diffSectionSlugs([], ["movement", "combat"])).toEqual({
-      toAdd: ["movement", "combat"],
+    expect(diffSectionLinks([], [link("movement", "replaces")])).toEqual({
+      toAdd: [link("movement", "replaces")],
       toRemove: [],
     });
   });
 
   it("handles clearing all links", () => {
-    expect(diffSectionSlugs(["movement", "combat"], [])).toEqual({
+    expect(diffSectionLinks([link("movement", "augments")], [])).toEqual({
       toAdd: [],
-      toRemove: ["movement", "combat"],
+      toRemove: [link("movement", "augments")],
     });
   });
 });

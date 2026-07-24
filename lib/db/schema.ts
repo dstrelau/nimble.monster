@@ -1207,7 +1207,7 @@ export type ReferenceEntryRow = typeof referenceEntries.$inferSelect;
 export type ReferenceEntryInsert = typeof referenceEntries.$inferInsert;
 
 // User-authored custom rules. Each rule may link to zero or more official
-// reference "sections" by slug (see customRulesReferenceSections).
+// reference "sections" via the polymorphic `relations` table.
 export type CustomRuleVisibility = "public" | "private";
 
 export const customRules = sqliteTable(
@@ -1232,31 +1232,39 @@ export const customRules = sqliteTable(
   (table) => [index("idx_custom_rules_user_id").on(table.userId)]
 );
 
-// Links a custom rule to an official reference section. `referenceSlug` is
-// plain text, NOT an FK: reference_entries rows are wiped/reinserted with fresh
-// ids on every import, so a cascade FK would delete all links. Slug integrity
-// is validated at the service layer against the reference filesystem. The
-// column also supports finer-grained anchors later (e.g. "movement#falling").
-export const customRulesReferenceSections = sqliteTable(
-  "custom_rules_reference_sections",
+export type CustomRuleRow = typeof customRules.$inferSelect;
+export type CustomRuleInsert = typeof customRules.$inferInsert;
+
+// Polymorphic typed relations between entities. Ids are validated TEXT, NOT
+// foreign keys: section ids come from the reference filesystem (no table to
+// FK), and keeping the column uniformly polymorphic lets a single table wire
+// up heterogeneous edges. Referential integrity for the ids is enforced at the
+// service layer (mirrors `reactions`/`reports`).
+//
+// Current use: `custom_rule` -> `section` rows with relation `replaces` |
+// `augments`. `related` and section<->section edges are reserved for later.
+export type RelationFromType = "custom_rule" | "section";
+export type RelationToType = "section";
+export type RelationType = "replaces" | "augments" | "related";
+
+export const relations = sqliteTable(
+  "relations",
   {
-    customRuleId: text("custom_rule_id")
-      .notNull()
-      .references(() => customRules.id, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    referenceSlug: text("reference_slug").notNull(),
+    fromType: text("from_type").$type<RelationFromType>().notNull(),
+    fromId: text("from_id").notNull(),
+    toType: text("to_type").$type<RelationToType>().notNull(),
+    toId: text("to_id").notNull(),
+    relation: text("relation").$type<RelationType>().notNull(),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
   },
   (table) => [
-    primaryKey({ columns: [table.customRuleId, table.referenceSlug] }),
-    index("idx_custom_rules_reference_sections_rule").on(table.customRuleId),
+    primaryKey({
+      columns: [table.fromType, table.fromId, table.toType, table.toId],
+    }),
+    index("idx_relations_from").on(table.fromType, table.fromId),
+    index("idx_relations_to").on(table.toType, table.toId),
   ]
 );
 
-export type CustomRuleRow = typeof customRules.$inferSelect;
-export type CustomRuleInsert = typeof customRules.$inferInsert;
-export type CustomRuleReferenceSectionRow =
-  typeof customRulesReferenceSections.$inferSelect;
-export type CustomRuleReferenceSectionInsert =
-  typeof customRulesReferenceSections.$inferInsert;
+export type RelationRow = typeof relations.$inferSelect;
+export type RelationInsert = typeof relations.$inferInsert;
