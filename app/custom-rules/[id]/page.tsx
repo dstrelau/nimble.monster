@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { EntityReactions } from "@/components/EntityReactions";
+import { ReportEntityDialog } from "@/components/ReportEntityDialog";
 import { ReferenceMarkdown } from "@/components/reference/ReferenceMarkdown";
 import { auth } from "@/lib/auth";
 import type {
@@ -147,7 +149,17 @@ export default async function CustomRulePage({ params }: PageProps) {
             by {rule.creator.displayName}
           </p>
         </div>
-        {isOwner && <CustomRuleActions rule={rule} />}
+        <div className="flex flex-col items-end gap-2">
+          <EntityReactions entityType="customRule" entityId={rule.id} />
+          <div className="flex gap-2">
+            {isOwner && <CustomRuleActions rule={rule} />}
+            <ReportEntityDialog
+              entityType="customRule"
+              entityId={rule.id}
+              entityLabel="Custom Rule"
+            />
+          </div>
+        </div>
       </div>
 
       <CustomRuleBody

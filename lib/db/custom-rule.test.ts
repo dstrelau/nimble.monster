@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   type CustomRuleSectionLink,
   diffSectionLinks,
+  groupCustomRuleReverseLinks,
   validateSectionLinks,
 } from "./custom-rule";
 
@@ -121,6 +122,54 @@ describe("diffSectionLinks", () => {
     expect(diffSectionLinks([link("movement", "augments")], [])).toEqual({
       toAdd: [],
       toRemove: [link("movement", "augments")],
+    });
+  });
+});
+
+describe("groupCustomRuleReverseLinks", () => {
+  const ID_A = "11111111-1111-1111-1111-111111111111";
+  const ID_B = "22222222-2222-2222-2222-222222222222";
+
+  it("splits rows by relation with resolved urls", () => {
+    const result = groupCustomRuleReverseLinks([
+      { id: ID_A, name: "Gritty Wounds", relation: "replaces" },
+      { id: ID_B, name: "Slow Healing", relation: "augments" },
+    ]);
+    expect(result.replaces).toEqual([
+      {
+        id: ID_A,
+        name: "Gritty Wounds",
+        url: expect.stringContaining("/custom-rules/gritty-wounds-"),
+      },
+    ]);
+    expect(result.augments).toEqual([
+      {
+        id: ID_B,
+        name: "Slow Healing",
+        url: expect.stringContaining("/custom-rules/slow-healing-"),
+      },
+    ]);
+  });
+
+  it("dedupes a rule that links several sections under one relation", () => {
+    const result = groupCustomRuleReverseLinks([
+      { id: ID_A, name: "Gritty Wounds", relation: "replaces" },
+      { id: ID_A, name: "Gritty Wounds", relation: "replaces" },
+    ]);
+    expect(result.replaces).toHaveLength(1);
+  });
+
+  it("ignores rows whose relation is not replaces/augments", () => {
+    const result = groupCustomRuleReverseLinks([
+      { id: ID_A, name: "Gritty Wounds", relation: "related" },
+    ]);
+    expect(result).toEqual({ replaces: [], augments: [] });
+  });
+
+  it("returns empty groups for no rows", () => {
+    expect(groupCustomRuleReverseLinks([])).toEqual({
+      replaces: [],
+      augments: [],
     });
   });
 });

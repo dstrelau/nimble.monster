@@ -15,6 +15,7 @@ const changelog: ChangelogEntry[] = [
     date: "24 July 2026",
     entries: [
       "Rules reference now links related sections together, and each condition is individually linkable.",
+      "Custom Rules are now a first-class section: browse them from the nav, see which custom rules replace or augment a reference section, and like or report them.",
     ],
   },
   {

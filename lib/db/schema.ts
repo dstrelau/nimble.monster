@@ -944,7 +944,8 @@ export type ReactableEntityType =
   | "class"
   | "spellSchool"
   | "background"
-  | "ancestry";
+  | "ancestry"
+  | "customRule";
 
 export type ReactionType = "thumbs_up" | "thumbs_down";
 

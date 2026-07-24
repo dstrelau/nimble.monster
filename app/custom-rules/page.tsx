@@ -12,7 +12,8 @@ export const metadata: Metadata = {
 };
 
 export default async function CustomRulesPage() {
-  const [rules, session] = await Promise.all([listPublicCustomRules(), auth()]);
+  const session = await auth();
+  const rules = await listPublicCustomRules(session?.user?.id);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">

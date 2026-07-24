@@ -1,6 +1,7 @@
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray, or } from "drizzle-orm";
 import { getValidSectionSlugs } from "@/lib/reference/filesystem";
 import type { User } from "@/lib/types";
+import { getCustomRuleUrl } from "@/lib/utils/url";
 import { isValidUUID } from "@/lib/utils/validation";
 import { toUser } from "./converters";
 import { getDatabase } from "./drizzle";
@@ -72,6 +73,42 @@ export function validateSectionLinks(
     throw new Error(`Unknown reference section(s): ${invalid.join(", ")}`);
   }
   return result;
+}
+
+// --- Reverse view: custom rules that link to a reference section ---
+
+export interface CustomRuleReverseRef {
+  id: string;
+  name: string;
+  url: string;
+}
+
+export interface CustomRuleReverseGroups {
+  replaces: CustomRuleReverseRef[];
+  augments: CustomRuleReverseRef[];
+}
+
+// Group reverse-link rows by relation, deduping by rule id within each relation
+// (a rule may link several of a page's sections under the same relation).
+export function groupCustomRuleReverseLinks(
+  rows: { id: string; name: string; relation: RelationType }[]
+): CustomRuleReverseGroups {
+  const seen: Record<CustomRuleSectionRelation, Set<string>> = {
+    replaces: new Set(),
+    augments: new Set(),
+  };
+  const groups: CustomRuleReverseGroups = { replaces: [], augments: [] };
+  for (const row of rows) {
+    if (row.relation !== "replaces" && row.relation !== "augments") continue;
+    if (seen[row.relation].has(row.id)) continue;
+    seen[row.relation].add(row.id);
+    groups[row.relation].push({
+      id: row.id,
+      name: row.name,
+      url: getCustomRuleUrl(row),
+    });
+  }
+  return groups;
 }
 
 // Compute the minimal set of link inserts/deletes to move from `current` to
@@ -160,12 +197,19 @@ async function loadCustomRulesFullData(
   return result;
 }
 
-export async function listPublicCustomRules(): Promise<CustomRule[]> {
+// Rules for the public index: all public rules, plus the viewer's own private
+// rules when a viewer is signed in.
+export async function listPublicCustomRules(
+  viewerId?: string
+): Promise<CustomRule[]> {
   const db = getDatabase();
+  const visible = viewerId
+    ? or(eq(customRules.visibility, "public"), eq(customRules.userId, viewerId))
+    : eq(customRules.visibility, "public");
   const rows = await db
     .select({ id: customRules.id })
     .from(customRules)
-    .where(eq(customRules.visibility, "public"))
+    .where(visible)
     .orderBy(asc(customRules.name));
 
   const ids = rows.map((r) => r.id);
@@ -189,6 +233,33 @@ export async function findPublicCustomRule(
   const rule = await findCustomRule(id);
   if (!rule || rule.visibility !== "public") return null;
   return rule;
+}
+
+// Public custom rules that replace or augment any of the given reference
+// sections, grouped by relation. Powers the reverse view on reference pages.
+export async function listPublicCustomRulesForSections(
+  sectionSlugs: string[]
+): Promise<CustomRuleReverseGroups> {
+  if (sectionSlugs.length === 0) return { replaces: [], augments: [] };
+  const db = getDatabase();
+  const rows = await db
+    .select({
+      id: customRules.id,
+      name: customRules.name,
+      relation: relations.relation,
+    })
+    .from(relations)
+    .innerJoin(customRules, eq(relations.fromId, customRules.id))
+    .where(
+      and(
+        eq(relations.fromType, "custom_rule"),
+        eq(relations.toType, "section"),
+        inArray(relations.toId, sectionSlugs),
+        eq(customRules.visibility, "public")
+      )
+    )
+    .orderBy(asc(customRules.name));
+  return groupCustomRuleReverseLinks(rows);
 }
 
 const toRelationInsert = (ruleId: string, link: CustomRuleSectionLink) => ({

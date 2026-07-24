@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ReferenceMarkdown } from "@/components/reference/ReferenceMarkdown";
+import { SectionCustomRules } from "@/components/reference/SectionCustomRules";
 import { getRelatedSectionsByPage } from "@/lib/db/section-relations";
 import {
   resolveDiceNotationLinks,
@@ -98,6 +99,7 @@ export default async function ReferenceEntryPage({ params }: PageProps) {
           </section>
         ))}
       </article>
+      <SectionCustomRules sectionSlugs={sections.map((s) => s.slug)} />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen, Menu, Plus, Swords, X } from "lucide-react";
+import { BookOpen, Menu, Plus, ScrollText, Swords, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -115,6 +115,7 @@ const UTILITY_ITEMS: NavMenuItem[] = [
     icon: ENTITY_TYPE_ICONS.collection,
   },
   { href: "/reference", label: "Rules", icon: BookOpen },
+  { href: "/custom-rules", label: "Custom Rules", icon: ScrollText },
 ];
 
 const NAV_GROUPS: {

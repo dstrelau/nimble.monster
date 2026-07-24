@@ -5,6 +5,7 @@ import {
   backgrounds,
   classes,
   companions,
+  customRules,
   items,
   monsters,
   type ReactableEntityType,
@@ -16,6 +17,7 @@ import {
   getBackgroundUrl,
   getClassUrl,
   getCompanionUrl,
+  getCustomRuleUrl,
   getItemUrl,
   getMonsterUrl,
   getSpellSchoolUrl,
@@ -129,6 +131,19 @@ const RESOLVERS: Record<ReactableEntityType, ResolveMany> = {
       rows.map((row) => [row.id, { name: row.name, url: getAncestryUrl(row) }])
     );
   },
+  customRule: async (ids) => {
+    const db = getDatabase();
+    const rows = await db
+      .select({ id: customRules.id, name: customRules.name })
+      .from(customRules)
+      .where(inArray(customRules.id, ids));
+    return new Map(
+      rows.map((row) => [
+        row.id,
+        { name: row.name, url: getCustomRuleUrl(row) },
+      ])
+    );
+  },
 };
 
 export const ENTITY_TYPE_LABELS: Record<ReactableEntityType, string> = {
@@ -140,6 +155,7 @@ export const ENTITY_TYPE_LABELS: Record<ReactableEntityType, string> = {
   spellSchool: "Spell School",
   background: "Background",
   ancestry: "Ancestry",
+  customRule: "Custom Rule",
 };
 
 export async function resolveEntities(
@@ -206,6 +222,12 @@ export async function syncLikeCount(
         .update(ancestries)
         .set({ likeCount: thumbsUpCount })
         .where(eq(ancestries.id, entityId));
+      return;
+    case "customRule":
+      await db
+        .update(customRules)
+        .set({ likeCount: thumbsUpCount })
+        .where(eq(customRules.id, entityId));
       return;
   }
 }
