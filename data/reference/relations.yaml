@@ -1,0 +1,23 @@
+# Curated section-to-section "related" edges between official reference
+# sections. This is a hand-curation STARTING POINT, not an exhaustive graph —
+# add pairs you'd want a reader to jump between. Each edge is symmetric and is
+# stored once; the reference page renders a "Related" link under BOTH sections.
+#
+# Format (one flow-mapping per line):
+#   - { from: <page-slug>__<section>, to: <page-slug>__<section> }
+#
+# Section slugs must be valid (see manifest.yaml / getValidSectionSlugs); the
+# import (tools/import-reference.ts) validates every slug and fails on a typo.
+# A page's lead/preamble section uses the bare page slug (e.g. `grappling`).
+pairs:
+  # Cover and hiding are two halves of the same tactic.
+  - { from: cover-hiding__cover, to: cover-hiding__hiding }
+
+  # Positioning cluster: how you move, how far things reach, how you count it.
+  - { from: movement, to: range-reach }
+  - { from: movement, to: measuring-spaces }
+  - { from: range-reach, to: measuring-spaces }
+
+  # Grappling pins a creature; the Prone condition is the adjacent movement
+  # penalty a reader will want next.
+  - { from: grappling, to: conditions__prone }

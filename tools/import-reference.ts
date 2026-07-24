@@ -5,10 +5,16 @@ import {
   rebuildReferenceSearchIndex,
   upsertReferenceEntry,
 } from "../lib/db/reference";
+import { seedSectionRelations } from "../lib/db/section-relations";
 import {
   getAllReferenceFrontmatter,
   getReferenceFileBySlug,
+  getValidSectionSlugs,
 } from "../lib/reference/filesystem";
+import {
+  buildRelatedPairs,
+  loadRelatedPairs,
+} from "../lib/reference/relations";
 import { termIndex } from "../lib/reference/terms";
 
 async function main() {
@@ -58,6 +64,11 @@ async function main() {
 
   console.log("\nRebuilding FTS index...");
   await rebuildReferenceSearchIndex();
+
+  console.log("Seeding section relations...");
+  const pairs = buildRelatedPairs(loadRelatedPairs(), getValidSectionSlugs());
+  await seedSectionRelations(pairs);
+  console.log(`  ${pairs.length} related pair(s) seeded`);
 
   console.log(`\nDone: ${imported} imported, ${errors} errors`);
   process.exit(errors > 0 ? 1 : 0);

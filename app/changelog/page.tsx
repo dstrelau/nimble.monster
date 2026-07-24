@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "24 July 2026",
+    entries: [
+      "Rules reference now links related sections together, and each condition is individually linkable.",
+    ],
+  },
+  {
     date: "23 July 2026",
     entries: [
       "Add Custom Rules: write your own house rules and link them to official rules reference sections.",

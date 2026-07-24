@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ReferenceMarkdown } from "@/components/reference/ReferenceMarkdown";
+import { getRelatedSectionsByPage } from "@/lib/db/section-relations";
 import {
   resolveDiceNotationLinks,
   resolveSpellSchoolLinks,
@@ -10,6 +11,7 @@ import {
 import {
   getAllReferenceSlugs,
   getReferenceFileBySlug,
+  getSectionBySlug,
   getSectionsForPage,
 } from "@/lib/reference/filesystem";
 import { previewMap } from "@/lib/reference/terms";
@@ -38,12 +40,21 @@ export default async function ReferenceEntryPage({ params }: PageProps) {
   if (!entry) redirect("/reference");
 
   const sections = getSectionsForPage(slug);
+  const relatedBySection = await getRelatedSectionsByPage(
+    sections.map((s) => s.slug)
+  );
   const rendered = await Promise.all(
     sections.map(async (section) => {
       const diceResolved = resolveDiceNotationLinks(section.content);
       const resolvedContent = await resolveSpellSchoolLinks(diceResolved);
       const linkedMarkdown = resolveTermLinks(resolvedContent);
-      return { slug: section.slug, content: linkedMarkdown };
+      const related = (relatedBySection.get(section.slug) ?? []).flatMap(
+        (relatedSlug) => {
+          const target = getSectionBySlug(relatedSlug);
+          return target ? [target] : [];
+        }
+      );
+      return { slug: section.slug, content: linkedMarkdown, related };
     })
   );
 
@@ -68,6 +79,22 @@ export default async function ReferenceEntryPage({ params }: PageProps) {
               content={section.content}
               previewMap={previewMap}
             />
+            {section.related.length > 0 && (
+              <p className="text-sm text-muted-foreground">
+                <span className="font-medium">Related:</span>{" "}
+                {section.related.map((target, i) => (
+                  <span key={target.slug}>
+                    {i > 0 && ", "}
+                    <Link
+                      href={`/reference/${target.pageSlug}#${target.slug}`}
+                      className="underline hover:text-foreground"
+                    >
+                      {target.title}
+                    </Link>
+                  </span>
+                ))}
+              </p>
+            )}
           </section>
         ))}
       </article>

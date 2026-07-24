@@ -41,6 +41,24 @@ pages:
     category: core-rules
     sections:
       - conditions
+      - conditions__blinded
+      - conditions__bloodied
+      - conditions__charmed
+      - conditions__dazed
+      - conditions__dying
+      - conditions__frightened
+      - conditions__grappled-restrained
+      - conditions__hampered
+      - conditions__incapacitated
+      - conditions__invisible
+      - conditions__petrified
+      - conditions__poisoned
+      - conditions__prone
+      - conditions__riding
+      - conditions__slowed
+      - conditions__taunted
+      - conditions__wounded
+      - conditions__other-minor-statuses
   - slug: cover-hiding
     title: "Cover & Hiding"
     category: core-rules
@@ -136,6 +154,9 @@ pages:
     category: core-rules
     sections:
       - hit-points-dying-wounds
+      - hit-points-dying-wounds__wounds
+      - hit-points-dying-wounds__death
+      - hit-points-dying-wounds__temporary-hp
   - slug: legendary-monster-builder
     title: "Legendary Monster Builder"
     category: gm-reference

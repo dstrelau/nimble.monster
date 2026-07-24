@@ -239,46 +239,55 @@ topics:
     category: core-rules
     refs:
       - entry: conditions
+        anchor: blinded
   - slug: bloodied
     label: Bloodied
     category: core-rules
     refs:
       - entry: conditions
+        anchor: bloodied
   - slug: charmed
     label: Charmed
     category: core-rules
     refs:
       - entry: conditions
+        anchor: charmed
   - slug: dazed
     label: Dazed
     category: core-rules
     refs:
       - entry: conditions
+        anchor: dazed
   - slug: frightened
     label: Frightened
     category: core-rules
     refs:
       - entry: conditions
+        anchor: frightened
   - slug: incapacitated
     label: Incapacitated
     category: core-rules
     refs:
       - entry: conditions
+        anchor: incapacitated
   - slug: invisible
     label: Invisible
     category: core-rules
     refs:
       - entry: conditions
+        anchor: invisible
   - slug: poisoned
     label: Poisoned
     category: core-rules
     refs:
       - entry: conditions
+        anchor: poisoned
   - slug: prone
     label: Prone
     category: core-rules
     refs:
       - entry: conditions
+        anchor: prone
 
   # ── Magic ─────────────────────────────────────────────────────────────────
   - slug: spellcasting
