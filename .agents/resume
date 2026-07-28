@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$repo_root"
+
+missing=()
+[[ -x "$HOME/.local/node-24/bin/node" ]] || missing+=("Node.js 24")
+[[ -d node_modules ]] || missing+=("node_modules")
+[[ -f .env.local ]] || missing+=(".env.local")
+[[ -f db/dev.db ]] || missing+=("db/dev.db")
+
+if ((${#missing[@]})); then
+  printf 'Orb setup is incomplete; missing: %s\n' "$(IFS=', '; echo "${missing[*]}")" >&2
+  printf 'Run .agents/setup to repair it.\n' >&2
+  exit 1
+fi
+
+echo "Orb prerequisites are ready."
