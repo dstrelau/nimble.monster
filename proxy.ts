@@ -19,6 +19,22 @@ const authProxy = auth((request) => {
 
   const path = nextUrl.pathname;
 
+  if (
+    !session &&
+    process.env.NODE_ENV === "development" &&
+    process.env.NIMBLE_DEV_AUTO_LOGIN_USERNAME &&
+    request.method === "GET" &&
+    !path.startsWith("/api/")
+  ) {
+    const url = new URL("/api/auth/dev-login", process.env.AUTH_URL ?? nextUrl);
+    url.searchParams.set("dev-login", "");
+    url.searchParams.set(
+      "username",
+      process.env.NIMBLE_DEV_AUTO_LOGIN_USERNAME
+    );
+    return NextResponse.redirect(url);
+  }
+
   // Protect /my/* routes
   if (path.startsWith("/my/")) {
     if (!session) {
