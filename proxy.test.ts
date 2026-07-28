@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.stubEnv("ALLOWED_ORIGINS", "tail26991.ts.net");
 
@@ -13,6 +13,10 @@ vi.mock("@/lib/auth", () => ({
 const { default: proxy } = (await import("./proxy")) as unknown as {
   default: (req: NextRequest) => Promise<Response | undefined>;
 };
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 function makeRequest(
   method: string,
@@ -85,6 +89,30 @@ describe("proxy", () => {
   it("allows GET requests", async () => {
     const req = makeRequest("GET", "/monsters/abc-123");
     const res = await proxy(req);
+    expect(res?.status).toBe(200);
+  });
+
+  it("automatically logs portal users in with the configured dev user", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("NIMBLE_DEV_AUTO_LOGIN_USERNAME", "admin");
+    vi.stubEnv("AUTH_URL", "https://portal.example.com");
+
+    const req = makeRequest("GET", "/");
+    const res = await proxy(req);
+
+    expect(res?.status).toBe(307);
+    expect(res?.headers.get("location")).toBe(
+      "https://portal.example.com/api/auth/dev-login?dev-login=&username=admin"
+    );
+  });
+
+  it("does not redirect auth API requests when dev auto-login is enabled", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("NIMBLE_DEV_AUTO_LOGIN_USERNAME", "admin");
+
+    const req = makeRequest("GET", "/api/auth/session");
+    const res = await proxy(req);
+
     expect(res?.status).toBe(200);
   });
 

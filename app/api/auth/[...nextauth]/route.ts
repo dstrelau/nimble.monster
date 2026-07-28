@@ -62,7 +62,9 @@ async function GET(request: NextRequest) {
       path: "/",
     });
 
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(
+      new URL("/", process.env.AUTH_URL ?? request.url)
+    );
   }
 
   return authGET(request);
