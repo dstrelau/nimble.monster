@@ -11,7 +11,6 @@ export default async function DevLoginPage() {
   const db = getDatabase();
   const allUsers = await db
     .select({
-      discordId: users.discordId,
       username: users.username,
       displayName: users.displayName,
     })

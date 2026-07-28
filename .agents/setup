@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$repo_root"
+
+echo "Installing system prerequisites..."
+packages=()
+command -v curl >/dev/null 2>&1 || packages+=(curl)
+command -v chromium >/dev/null 2>&1 || packages+=(chromium)
+if ((${#packages[@]})); then
+  sudo apt-get update
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y "${packages[@]}"
+fi
+
+node_home="$HOME/.local/node-24"
+if [[ ! -x "$node_home/bin/node" ]]; then
+  echo "Installing Node.js 24..."
+  case "$(uname -m)" in
+    x86_64) node_arch="x64" ;;
+    aarch64 | arm64) node_arch="arm64" ;;
+    *) echo "Unsupported architecture: $(uname -m)" >&2; exit 1 ;;
+  esac
+
+  temp_dir="$(mktemp -d)"
+  trap 'rm -rf "$temp_dir"' EXIT
+  curl --fail --location --silent --show-error \
+    https://nodejs.org/dist/latest-v24.x/SHASUMS256.txt \
+    --output "$temp_dir/SHASUMS256.txt"
+  archive="$(awk -v arch="$node_arch" '$2 ~ "node-v.*-linux-" arch "[.]tar[.]xz$" { print $2; exit }' "$temp_dir/SHASUMS256.txt")"
+  if [[ -z "$archive" ]]; then
+    echo "Could not find a Node.js 24 archive for $node_arch" >&2
+    exit 1
+  fi
+  curl --fail --location --silent --show-error \
+    "https://nodejs.org/dist/latest-v24.x/$archive" \
+    --output "$temp_dir/$archive"
+  (
+    cd "$temp_dir"
+    grep " $archive\$" SHASUMS256.txt | sha256sum --check -
+  )
+  mkdir -p "$HOME/.local"
+  rm -rf "$node_home.tmp"
+  mkdir "$node_home.tmp"
+  tar -xJf "$temp_dir/$archive" --strip-components=1 -C "$node_home.tmp"
+  rm -rf "$node_home"
+  mv "$node_home.tmp" "$node_home"
+fi
+
+export PATH="$node_home/bin:$PATH"
+
+profile_marker="# nimble-nexus orb Node.js 24"
+if ! grep -Fqx "$profile_marker" "$HOME/.bash_profile" 2>/dev/null; then
+  cat >> "$HOME/.bash_profile" <<'EOF'
+
+# nimble-nexus orb Node.js 24
+if [[ -d "$HOME/.local/node-24/bin" ]]; then
+  export PATH="$HOME/.local/node-24/bin:$PATH"
+fi
+EOF
+fi
+
+echo "Enabling the repository's pinned pnpm version..."
+corepack enable
+corepack install
+
+echo "Installing JavaScript dependencies..."
+pnpm install --frozen-lockfile
+
+if [[ ! -f .env.local ]]; then
+  echo "Creating .env.local..."
+  cp -- .env.example .env.local
+  auth_secret="$(node -e "process.stdout.write(require('node:crypto').randomBytes(32).toString('hex'))")"
+  sed -i "s|^AUTH_SECRET=.*|AUTH_SECRET=\"$auth_secret\"|" .env.local
+  sed -i 's|^PUPPETEER_EXECUTABLE_PATH=.*|PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium"|' .env.local
+fi
+
+echo "Initializing and seeding the development database..."
+make setup
+
+echo "Ensuring supervised orb services are running..."
+amp orb services ensure
+
+echo "Orb setup complete."
