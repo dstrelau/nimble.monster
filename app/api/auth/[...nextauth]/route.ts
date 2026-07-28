@@ -31,6 +31,13 @@ async function GET(request: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    const isSecure =
+      request.headers.get("x-forwarded-proto") === "https" ||
+      url.protocol === "https:" ||
+      process.env.AUTH_URL?.startsWith("https://") === true;
+    const sessionCookieName = isSecure
+      ? "__Secure-authjs.session-token"
+      : "authjs.session-token";
     const token = await encode({
       token: {
         userId: user.id,
@@ -43,13 +50,15 @@ async function GET(request: NextRequest) {
         bannerDismissed: user.bannerDismissed ?? false,
       },
       secret: process.env.AUTH_SECRET ?? "",
-      salt: "authjs.session-token",
+      salt: sessionCookieName,
     });
 
     const cookieStore = await cookies();
-    cookieStore.set("authjs.session-token", token, {
+    cookieStore.set(sessionCookieName, token, {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: isSecure ? "none" : "lax",
+      secure: isSecure,
+      partitioned: isSecure,
       path: "/",
     });
 

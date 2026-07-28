@@ -1,0 +1,11 @@
+services:
+  web:
+    command: >-
+      export AUTH_URL="$(node -p 'process.env.PUBLIC_URL')";
+      export ALLOWED_DEV_ORIGINS="$(node -p
+      'new URL(process.env.PUBLIC_URL).hostname')";
+      export NEXT_PUBLIC_BUCKET_NAME="nimble-nexus";
+      exec pnpm dev
+    portal:
+      title: Nimble Nexus
+      description: Development server

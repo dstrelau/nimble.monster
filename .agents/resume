@@ -16,4 +16,6 @@ if ((${#missing[@]})); then
   exit 1
 fi
 
+amp orb services ensure
+
 echo "Orb prerequisites are ready."

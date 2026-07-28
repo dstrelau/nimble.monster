@@ -78,4 +78,7 @@ fi
 echo "Initializing and seeding the development database..."
 make setup
 
+echo "Ensuring supervised orb services are running..."
+amp orb services ensure
+
 echo "Orb setup complete."
