@@ -108,6 +108,51 @@ describe("RuleSearchInput", () => {
     );
   });
 
+  it("selects results with arrow keys and opens the selection with Enter", async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        results: [
+          {
+            slug: "skills",
+            title: "Skills",
+            category: "fundamentals",
+          },
+          {
+            slug: "movement",
+            title: "Movement",
+            category: "fundamentals",
+          },
+        ],
+      }),
+    });
+    render(<RuleSearchInput defaultValue="rules" />);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(250);
+    });
+
+    const search = screen.getByRole("combobox");
+    const skills = screen.getByRole("option", { name: /Skills/ });
+    const movement = screen.getByRole("option", { name: /Movement/ });
+
+    fireEvent.keyDown(search, { key: "ArrowDown" });
+    expect(skills).toHaveAttribute("data-selected", "true");
+    expect(search).toHaveAttribute("aria-activedescendant", skills.id);
+
+    fireEvent.keyDown(search, { key: "ArrowDown" });
+    expect(movement).toHaveAttribute("data-selected", "true");
+
+    fireEvent.keyDown(search, { key: "ArrowUp" });
+    expect(skills).toHaveAttribute("data-selected", "true");
+
+    fireEvent.keyDown(search, { key: "ArrowUp" });
+    expect(movement).toHaveAttribute("data-selected", "true");
+
+    fireEvent.keyDown(search, { key: "Enter" });
+    expect(mockPush).toHaveBeenCalledWith("/rules/movement");
+  });
+
   it("labels and opens an official FAQ result", async () => {
     mockFetch.mockResolvedValue({
       ok: true,

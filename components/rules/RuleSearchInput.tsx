@@ -2,7 +2,7 @@
 
 import { LoaderCircle, NotebookPen, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Command,
@@ -38,7 +38,9 @@ export function RuleSearchInput({
     defaultValue.trim() ? "loading" : "idle"
   );
   const [open, setOpen] = useState(Boolean(defaultValue.trim()));
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const resultRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const q = value.trim();
@@ -56,10 +58,12 @@ export function RuleSearchInput({
         if (!response.ok) throw new Error("Rule search failed");
         const data: RuleSearchResponse = await response.json();
         setResults(data.results);
+        setSelectedIndex(-1);
         setStatus("ready");
       } catch {
         if (controller.signal.aborted) return;
         setResults([]);
+        setSelectedIndex(-1);
         setStatus("error");
       }
     }, 250);
@@ -85,6 +89,7 @@ export function RuleSearchInput({
   function handleChange(nextValue: string) {
     setValue(nextValue);
     setResults([]);
+    setSelectedIndex(-1);
     setStatus(nextValue.trim() ? "loading" : "idle");
     setOpen(Boolean(nextValue.trim()));
   }
@@ -92,6 +97,7 @@ export function RuleSearchInput({
   function handleIncludeHomebrewChange(pressed: boolean) {
     setIncludeHomebrew(pressed);
     setResults([]);
+    setSelectedIndex(-1);
     setStatus(value.trim() ? "loading" : "idle");
     setOpen(Boolean(value.trim()));
   }
@@ -107,6 +113,37 @@ export function RuleSearchInput({
   function selectResult(result: RuleSearchResult) {
     setOpen(false);
     router.push(resultHref(result));
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Escape") {
+      setOpen(false);
+      setSelectedIndex(-1);
+      return;
+    }
+
+    if (results.length === 0) return;
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setOpen(true);
+      setSelectedIndex((current) => (current + 1) % results.length);
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setOpen(true);
+      setSelectedIndex((current) =>
+        current <= 0 ? results.length - 1 : current - 1
+      );
+      return;
+    }
+
+    if (event.key === "Enter" && open && selectedIndex >= 0) {
+      event.preventDefault();
+      selectResult(results[selectedIndex]);
+    }
   }
 
   return (
@@ -131,30 +168,48 @@ export function RuleSearchInput({
           value={value}
           onChange={(event) => handleChange(event.target.value)}
           onFocus={() => setOpen(Boolean(value.trim()))}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") setOpen(false);
-          }}
+          onKeyDown={handleKeyDown}
           placeholder="Search"
           className="bg-muted/50 pl-9"
           role="combobox"
           aria-autocomplete="list"
           aria-controls="rule-search-results"
           aria-expanded={open && results.length > 0}
+          aria-activedescendant={
+            open && selectedIndex >= 0
+              ? resultRefs.current[selectedIndex]?.id
+              : undefined
+          }
         />
         {open && results.length > 0 && (
           <Command
             shouldFilter={false}
+            value={
+              selectedIndex >= 0
+                ? `${results[selectedIndex].slug}-${results[selectedIndex].anchor ?? ""}`
+                : "rule-search-no-selection"
+            }
+            onValueChange={(selectedValue) => {
+              const index = results.findIndex(
+                (result) =>
+                  `${result.slug}-${result.anchor ?? ""}` === selectedValue
+              );
+              setSelectedIndex(index);
+            }}
             className="absolute top-full mt-2 h-auto w-full border shadow-lg"
           >
             <CommandList id="rule-search-results" className="max-h-96">
               <CommandGroup heading="Rules">
-                {results.map((result) => {
+                {results.map((result, index) => {
                   const category = CATEGORIES.find(
                     (candidate) => candidate.slug === result.category
                   );
                   return (
                     <CommandItem
                       key={`${result.slug}#${result.anchor ?? ""}`}
+                      ref={(element) => {
+                        resultRefs.current[index] = element;
+                      }}
                       value={`${result.slug}-${result.anchor ?? ""}`}
                       onSelect={() => selectResult(result)}
                       className="items-start py-3"
