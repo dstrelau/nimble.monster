@@ -14,6 +14,7 @@ import { ruleUrl } from "@/lib/rules/rule-index";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify } from "@/lib/utils/slug";
 import { CustomRuleActions } from "../CustomRuleActions";
+import { CustomRuleBody } from "../CustomRuleBody";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -140,7 +141,10 @@ export default async function CustomRulePage({ params }: PageProps) {
         </div>
       </div>
 
-      <RuleContent content={rule.content} />
+      <CustomRuleBody
+        content={rule.content}
+        creatorDiscordId={rule.creator.discordId}
+      />
 
       <LinkedRules title="Replaces" rules={replaces} />
       <LinkedRules title="Augments" rules={augments} />
