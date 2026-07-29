@@ -21,7 +21,7 @@ This project uses [worktrunk](https://worktrunk.dev) (`wt`) for parallel worktre
 - Client: `lib/db/client.ts` - auto-retries on stale connection errors
 - `pnpm run db:generate` - Generate migrations (see workflow below)
 - `pnpm run db:migrate` - Run migrations
-- `pnpm run db:push` - Push schema changes directly (dev)
+- `pnpm run db:push` - Prototyping only; it does not update the migration ledger
 - `pnpm run db:seed` - Seed the dev DB with official content from `data/official`
 - Production uses embedded replicas (local SQLite + Turso sync)
 - See `lib/db/CLAUDE.md` for detailed database architecture info
@@ -69,7 +69,7 @@ Workflow:
    - Regenerate: `DATABASE_URL=file:tmp/migrate.db pnpm run db:generate`
    - If still wrong, write the migration SQL by hand (e.g. `ALTER TABLE x ADD COLUMN y text;`)
    - The generated snapshot in `migrations/meta/` is still needed for future diffs — keep it
-5. Run `pnpm run db:push` to apply changes to your dev DB
+5. Run `pnpm run db:migrate` to apply the generated migration to your dev DB
 6. Test: `rm -f tmp/migrate.db && DATABASE_URL=file:tmp/migrate.db pnpm run db:migrate`
 
 # Changelog

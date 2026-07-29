@@ -5,6 +5,7 @@ import {
   Drama,
   HandFist,
   HeartHandshake,
+  NotebookPen,
   Scroll,
   Shield,
   Swords,
@@ -69,6 +70,12 @@ export const MY_LIBRARY_ITEMS: {
     label: "Monsters",
     icon: ENTITY_TYPE_ICONS.monster,
     key: "monsters",
+  },
+  {
+    href: "/my/rules",
+    label: "Rules",
+    icon: NotebookPen,
+    key: "rules",
   },
   {
     href: "/my/ancestries",

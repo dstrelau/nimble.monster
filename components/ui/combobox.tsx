@@ -44,6 +44,7 @@ interface ComboboxProps<T extends ComboboxItem> {
   loading?: boolean;
   className?: string;
   align?: "start" | "center" | "end";
+  ariaLabel?: string;
 }
 
 function Combobox<T extends ComboboxItem>({
@@ -59,6 +60,7 @@ function Combobox<T extends ComboboxItem>({
   loading = false,
   className,
   align = "start",
+  ariaLabel,
 }: ComboboxProps<T>) {
   const [open, setOpen] = useState(false);
 
@@ -83,6 +85,7 @@ function Combobox<T extends ComboboxItem>({
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          aria-label={ariaLabel}
           className={cn(
             "w-48 justify-between",
             !selectedItem && "text-muted-foreground",
@@ -95,8 +98,11 @@ function Combobox<T extends ComboboxItem>({
           <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-48 p-0" align={align}>
-        <Command shouldFilter={false}>
+      <PopoverContent
+        className="w-(--radix-popover-trigger-width) p-0"
+        align={align}
+      >
+        <Command shouldFilter={!onSearch}>
           <CommandInput
             placeholder={searchPlaceholder}
             onValueChange={onSearch}
@@ -116,7 +122,7 @@ function Combobox<T extends ComboboxItem>({
                       {group.items.map((item) => (
                         <CommandItem
                           key={item.id}
-                          value={item.id}
+                          value={`${item.label} ${item.id}`}
                           onSelect={() => {
                             onSelect(item);
                             setOpen(false);

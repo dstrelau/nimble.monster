@@ -6,6 +6,7 @@ import {
   classes,
   collections,
   companions,
+  customRules,
   encounters,
   families,
   items,
@@ -16,6 +17,7 @@ import {
 
 export interface MyLibraryCounts {
   monsters: number;
+  rules: number;
   ancestries: number;
   companions: number;
   backgrounds: number;
@@ -34,6 +36,7 @@ export async function getMyLibraryCounts(
   const db = getDatabase();
   const [
     monsterCount,
+    ruleCount,
     ancestryCount,
     companionCount,
     backgroundCount,
@@ -49,6 +52,10 @@ export async function getMyLibraryCounts(
       .select({ count: count() })
       .from(monsters)
       .where(eq(monsters.userId, userId)),
+    db
+      .select({ count: count() })
+      .from(customRules)
+      .where(eq(customRules.userId, userId)),
     db
       .select({ count: count() })
       .from(ancestries)
@@ -90,6 +97,7 @@ export async function getMyLibraryCounts(
 
   return {
     monsters: monsterCount[0]?.count ?? 0,
+    rules: ruleCount[0]?.count ?? 0,
     ancestries: ancestryCount[0]?.count ?? 0,
     companions: companionCount[0]?.count ?? 0,
     backgrounds: backgroundCount[0]?.count ?? 0,

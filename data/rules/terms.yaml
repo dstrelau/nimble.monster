@@ -1,0 +1,163 @@
+# Cross-linkable terms for the rules reference.
+# Each entry maps a display term (and optional aliases) to a rule
+# and a hover-card preview snippet (Markdown).
+
+# ── Conditions ─────────────────────────────────────────────────────────────
+- term: "Blind"
+  aliases: ["Blinded"]
+  href: "/rules/conditions#blind"
+  preview: "**Blind.** Can't see. Attacks against you have advantage, and your attacks have disadvantage."
+
+- term: "Silenced"
+  href: "/rules/conditions#silenced"
+  preview: "**Silenced.** Cannot cast spells or use other abilities that require speaking."
+
+- term: "Charged"
+  href: "/rules/conditions#other-minor-statuses"
+  preview: "**Charged.** Become Charged when you take lightning damage. Lasts 1 minute or until combat ends."
+
+- term: "Smoldering"
+  href: "/rules/conditions#other-minor-statuses"
+  preview: "**Smoldering.** Has no effect on its own; some spells and abilities gain additional effects against Smoldering creatures."
+
+- term: "Bloodied"
+  href: "/rules/conditions#bloodied"
+  preview: "**Bloodied.** At half HP or less."
+
+- term: "Charmed"
+  href: "/rules/conditions#charmed"
+  preview: "**Charmed.** Sees the charmer as an ally. Charmer has advantage on social interactions with you."
+
+- term: "Dazed"
+  href: "/rules/conditions#dazed"
+  preview: "**Dazed.** Heroes: lose 1 action; monsters: can perform one less action on their next turn."
+
+- term: "Frightened"
+  href: "/rules/conditions#frightened"
+  preview: "**Frightened.** Disadvantage on rolls when source of fear is nearby; speed halved when moving closer to it."
+
+- term: "Grappled/Restrained"
+  href: "/rules/conditions#grappled-restrained"
+  preview: "**Grappled/Restrained.** Cannot move. Attacks against you have advantage."
+
+- term: "Grappled"
+  href: "/rules/conditions#grappled-restrained"
+  preview: "**Grappled/Restrained.** Cannot move. Attacks against you have advantage."
+
+- term: "Restrained"
+  href: "/rules/conditions#grappled-restrained"
+  preview: "**Grappled/Restrained.** Cannot move. Attacks against you have advantage."
+
+- term: "Hampered"
+  href: "/rules/conditions#hampered"
+  preview: "**Hampered.** Any creature with actions or movement reduced (e.g., Dazed, Grappled/Restrained, Prone, Slowed, in Difficult Terrain)."
+
+- term: "Incapacitated"
+  href: "/rules/conditions#incapacitated"
+  preview: "**Incapacitated.** Can't do anything. Attacks against you have advantage, and melee attacks that hit, crit."
+
+- term: "Invisible"
+  href: "/rules/conditions#invisible"
+  preview: "**Invisible.** Cannot be seen. Your attacks have advantage, and attacks against you have disadvantage."
+
+- term: "Petrified"
+  href: "/rules/conditions#petrified"
+  preview: "**Petrified.** Incapacitated. Immune to most damage except from large explosions, picks, or similar tools."
+
+- term: "Poisoned"
+  href: "/rules/conditions#poisoned"
+  preview: "**Poisoned.** Disadvantage on rolls (typically, healing ends)."
+
+- term: "Prone"
+  href: "/rules/conditions#prone"
+  preview: "**Prone.** Movement costs twice as much, and disadvantage on attacks. Melee attacks against you have advantage; Ranged have disadvantage. Spend 3 spaces of Speed to stand up."
+
+- term: "Slowed"
+  href: "/rules/conditions#slowed"
+  preview: "**Slowed.** Speed halved during your next turn."
+
+- term: "Taunted"
+  href: "/rules/conditions#taunted"
+  preview: "**Taunted.** Disadvantage on attacks except against the most recent taunter."
+
+- term: "Wounded"
+  href: "/rules/conditions#wounded"
+  preview: "**Wounded.** Has any Wounds (typically 6 Wounds and a hero is dead)."
+
+# ── Hit Points, Dying & Wounds ─────────────────────────────────────────────
+- term: "Dying"
+  href: "/rules/conditions#dying"
+  preview: "**Dying.** At 0 HP. Actions are limited to 1 and Concentration is broken. Attacking or taking damage causes additional Wounds."
+
+- term: "Hit Points"
+  aliases: ["Hit Point"]
+  href: "/rules/hit-points-dying-wounds"
+  preview: "Hit Points (HP) represent your ability to endure damage. Damage reduces your HP (minimum 0). At 0 HP you gain 1 Wound and the Dying condition."
+
+- term: "Wounds"
+  aliases: ["Wound"]
+  href: "/rules/wounds"
+  preview: "Wounds are serious injuries and a long-term gauge of how close you are to death. HP recovers quickly; Wounds take many days (typically 1 per Safe Rest). At 6 Wounds, you die."
+
+# ── Hit Dice ───────────────────────────────────────────────────────────────
+- term: "Hit Dice"
+  aliases: ["Hit Die"]
+  href: "/rules/hit-dice"
+  preview: "Hit Dice (HD) represent your ability to recuperate from minor injuries and are spent to regain HP. Your HD max starts at 1 and increases each level."
+
+# ── Advantage & Disadvantage ───────────────────────────────────────────────
+- term: "Disadvantage"
+  href: "/rules/advantage-disadvantage"
+  preview: "Roll with disadvantage when the situation is grim: roll 1 extra die of the same type and remove the highest."
+
+- term: "Advantage"
+  href: "/rules/advantage-disadvantage"
+  preview: "Roll with advantage when in a favorable situation: roll 1 extra die of the same type and remove the lowest."
+
+# ── Grappling ──────────────────────────────────────────────────────────────
+- term: "Grappling"
+  href: "/rules/grappling"
+  preview: "Attempt to grab a creature within Reach with at least 1 arm free. On a failed STR or DEX save (DC 10+STR or DEX), a target your size or smaller is Grappled."
+
+- term: "Grapple"
+  href: "/rules/grappling"
+  preview: "Attempt to grab a creature within Reach with at least 1 arm free. On a failed STR or DEX save (DC 10+STR or DEX), a target your size or smaller is Grappled."
+
+# ── Magic ──────────────────────────────────────────────────────────────────
+- term: "Concentration"
+  href: "/rules/concentration"
+  preview: "Some activities require Concentration to maintain — only one at a time. When critted while concentrating, make a DC 10 STR save or Concentration breaks. Automatically broken at 0 HP or Incapacitated."
+
+- term: "Spellcasting"
+  href: "/rules/mana"
+  preview: "Tiered spells require mana to cast (mana cost = tier). Cantrips are free. Spend additional mana to upcast a spell and make it stronger."
+
+# ── Resting & Downtime ────────────────────────────────────────────────────
+- term: "Downtime"
+  href: "/rules/downtime"
+  preview: "Time not spent adventuring. Spend Downtime to retrain abilities, gather information, buy & sell, craft, socialize, or pursue personal goals."
+
+- term: "Field Rests"
+  aliases: ["Field Rest"]
+  href: "/rules/field-rests"
+  preview: "**Catch Breath** (10 min): Expend Hit Dice and add STR to regain HP. **Make Camp** (8 hrs): Take max HD value instead of rolling. **Safe Rest**: Recover all HP, HD, and class resources."
+
+- term: "Long Rests"
+  aliases: ["Long Rest"]
+  href: "/rules/field-rests"
+  preview: "**Catch Breath** (10 min): Expend Hit Dice and add STR to regain HP. **Make Camp** (8 hrs): Take max HD value instead of rolling. **Safe Rest**: Recover all HP, HD, and class resources."
+
+- term: "Short Rests"
+  aliases: ["Short Rest"]
+  href: "/rules/field-rests"
+  preview: "**Catch Breath** (10 min): Expend Hit Dice and add STR to regain HP. **Make Camp** (8 hrs): Take max HD value instead of rolling."
+
+# ── Combat ─────────────────────────────────────────────────────────────────
+- term: "Speed"
+  href: "/rules/movement"
+  preview: "A character's Speed is how fast they can move (default: 6 spaces). On a grid, 1 square ≈ 5 ft. You can move through allies but can't end in an occupied space."
+
+# ── Character Creation ────────────────────────────────────────────────────
+- term: "Leveling Up"
+  href: "/rules/leveling-up"
+  preview: "Gain a level while Safe Resting after completing a challenging quest or adventure. Increase max HP, Hit Die max, and skill points, and gain new class features."

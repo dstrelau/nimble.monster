@@ -78,7 +78,7 @@ export function MultiSelect({
 
   const selectedLabels = React.useMemo(
     () =>
-      selected
+      [...selected]
         .sort((a, b) => {
           const aIndex = allOptions.findIndex((opt) => opt.value === a);
           const bIndex = allOptions.findIndex((opt) => opt.value === b);

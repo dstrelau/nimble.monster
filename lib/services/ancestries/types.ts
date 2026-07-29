@@ -11,6 +11,7 @@ export const SIZES = [
 
 export const RARITIES = [
   { value: "common", label: "Common" },
+  { value: "uncommon", label: "Uncommon" },
   { value: "exotic", label: "Exotic" },
 ] as const;
 

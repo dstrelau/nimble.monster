@@ -114,7 +114,7 @@ const UTILITY_ITEMS: NavMenuItem[] = [
     label: "Collections",
     icon: ENTITY_TYPE_ICONS.collection,
   },
-  { href: "/reference", label: "Rules", icon: BookOpen },
+  { href: "/rules", label: "Rules", icon: BookOpen },
 ];
 
 const NAV_GROUPS: {

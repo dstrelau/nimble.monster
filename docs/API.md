@@ -336,6 +336,88 @@ Retrieve a single item by ID (26-character identifier).
 }
 ```
 
+### GET /api/custom-rules
+
+List public custom rules (user-authored house rules and variants), sorted by
+name.
+
+**Query Parameters:**
+- `include` (string, optional): Related resources to include (comma-separated).
+  Supports:
+  - `creator` - Include the user resources that created the returned rules
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "type": "custom-rules",
+      "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+      "attributes": {
+        "name": "Zone of Control",
+        "content": "Moving while adjacent to an enemy costs 1 extra space.",
+        "rules": [
+          { "slug": "initiative", "relation": "augments" }
+        ]
+      },
+      "relationships": {
+        "creator": {
+          "data": { "type": "users", "id": "0psvtrh43w8xm9dfbf5b6nkcq1" }
+        }
+      },
+      "links": {
+        "self": "/api/custom-rules/0psvtrh43w8xm9dfbf5b6nkcq1"
+      }
+    }
+  ]
+}
+```
+
+The `attributes.rules` array holds the official rules this custom rule is linked
+to. Each entry has a `slug` (a flat rule slug, e.g. `initiative`) and a
+`relation` of either `replaces` (the custom rule overrides the official one) or
+`augments` (it adds to or clarifies it). Each official rule is readable at
+`/rules/<slug>`. The `included` array is present only
+when `include=creator` is specified; it contains the deduplicated creator user
+resources.
+
+### GET /api/custom-rules/:id
+
+Retrieve a single public custom rule by ID (26-character identifier).
+
+**Query Parameters:**
+- `include` (string, optional): Related resources to include. Supports:
+  - `creator` - Include the user resource that created this rule
+
+**Response:**
+```json
+{
+  "data": {
+    "type": "custom-rules",
+    "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+    "attributes": {
+      "name": "Zone of Control",
+      "content": "Moving while adjacent to an enemy costs 1 extra space.",
+      "rules": [
+        { "slug": "initiative", "relation": "augments" }
+      ]
+    },
+    "relationships": {
+      "creator": {
+        "data": { "type": "users", "id": "0psvtrh43w8xm9dfbf5b6nkcq1" }
+      }
+    },
+    "links": {
+      "self": "/api/custom-rules/0psvtrh43w8xm9dfbf5b6nkcq1"
+    }
+  }
+}
+```
+
+The `attributes.rules` array follows the same shape as the list endpoint:
+each entry carries the section `slug` and its `relation` (`replaces` or
+`augments`).
+
 ### GET /api/users
 
 Look up a user by username. Returns only public profile information. Users are

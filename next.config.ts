@@ -70,8 +70,8 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/reference/speed",
-        destination: "/reference/movement",
+        source: "/reference/:path*",
+        destination: "/rules",
         permanent: true,
       },
     ];

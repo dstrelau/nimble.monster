@@ -36,7 +36,7 @@ export type EntityImageTheme = "light" | "dark";
 export type GenerationStatus = "generating" | "completed" | "failed";
 export type SubclassVisibility = "public" | "private";
 export type SpellSchoolVisibility = "public" | "private";
-export type AncestryRarity = "common" | "exotic";
+export type AncestryRarity = "common" | "uncommon" | "exotic";
 export type MonsterRole =
   | "melee"
   | "ranged"
@@ -944,7 +944,8 @@ export type ReactableEntityType =
   | "class"
   | "spellSchool"
   | "background"
-  | "ancestry";
+  | "ancestry"
+  | "customRule";
 
 export type ReactionType = "thumbs_up" | "thumbs_down";
 
@@ -1184,24 +1185,59 @@ export type ClassAbilityItemInsert = typeof classAbilityItems.$inferInsert;
 export type ClassDraftRow = typeof classDrafts.$inferSelect;
 export type ClassDraftInsert = typeof classDrafts.$inferInsert;
 
-// Reference entries table
-export const referenceEntries = sqliteTable(
-  "reference_entries",
+// User-authored custom rules. Each rule may link to zero or more official
+// rules via `custom_rule_links`.
+export type CustomRuleVisibility = "public" | "private";
+
+export const customRules = sqliteTable(
+  "custom_rules",
   {
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
-    slug: text("slug").notNull().unique(),
-    title: text("title").notNull(),
-    category: text("category").notNull(),
-    content: text("content").notNull(),
-    sourceFile: text("source_file").notNull(),
-    orderIndex: integer("order_index").notNull().default(0),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    name: text("name").notNull(),
+    keywords: text("keywords").notNull().default(""),
+    content: text("content").notNull().default(""),
+    visibility: text("visibility")
+      .$type<CustomRuleVisibility>()
+      .notNull()
+      .default("public"),
+    likeCount: integer("like_count").notNull().default(0),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },
-  (table) => [index("idx_reference_entries_category").on(table.category)]
+  (table) => [index("idx_custom_rules_user_id").on(table.userId)]
 );
 
-export type ReferenceEntryRow = typeof referenceEntries.$inferSelect;
-export type ReferenceEntryInsert = typeof referenceEntries.$inferInsert;
+export type CustomRuleRow = typeof customRules.$inferSelect;
+export type CustomRuleInsert = typeof customRules.$inferInsert;
+
+// Typed links from a user's custom rule to an official rule (by flat slug).
+// Official rule-to-rule "related" edges are curated in data/rules/relations.yaml,
+// not stored here.
+export type CustomRuleRelationType = "replaces" | "augments";
+
+export const customRuleLinks = sqliteTable(
+  "custom_rule_links",
+  {
+    customRuleId: text("custom_rule_id")
+      .notNull()
+      .references(() => customRules.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    ruleSlug: text("rule_slug").notNull(),
+    relation: text("relation").$type<CustomRuleRelationType>().notNull(),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [
+    primaryKey({ columns: [table.customRuleId, table.ruleSlug] }),
+    index("idx_custom_rule_links_rule_slug").on(table.ruleSlug),
+  ]
+);
+
+export type CustomRuleLinkRow = typeof customRuleLinks.$inferSelect;
+export type CustomRuleLinkInsert = typeof customRuleLinks.$inferInsert;

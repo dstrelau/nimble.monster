@@ -169,4 +169,20 @@ describe("EntityReactions", () => {
       expect(upvoteButton).toHaveTextContent("");
     });
   });
+
+  it("renders a labeled button when requested", async () => {
+    mockGetMyReactions.mockResolvedValue({
+      counts: { thumbs_up: 2, thumbs_down: 0 },
+      mine: [],
+    });
+
+    render(
+      <EntityReactions entityType="customRule" entityId="rule-1" showLabel />,
+      { wrapper: createWrapper() }
+    );
+
+    expect(
+      await screen.findByRole("button", { name: "Like" })
+    ).toHaveTextContent("Like 2");
+  });
 });

@@ -121,7 +121,22 @@ export function getEncounterEditUrl(encounter: {
   return `/encounters/${slugify(encounter)}/edit`;
 }
 
+// Custom rules are browsed inline in the rules reference, behind the homebrew
+// toggle; only the detail and edit pages live under /custom-rules.
+export const CUSTOM_RULES_URL = "/rules?homebrew=1#all-rules";
+
 // Family URLs
+export function getCustomRuleUrl(rule: { name: string; id: string }): string {
+  return `/custom-rules/${slugify(rule)}`;
+}
+
+export function getCustomRuleEditUrl(rule: {
+  name: string;
+  id: string;
+}): string {
+  return `/custom-rules/${slugify(rule)}/edit`;
+}
+
 export function getFamilyUrl(family: { name: string; id: string }): string {
   return `/families/${slugify(family)}`;
 }

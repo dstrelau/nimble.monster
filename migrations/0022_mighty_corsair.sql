@@ -1,0 +1,1 @@
+ALTER TABLE `custom_rules` ADD `keywords` text DEFAULT '' NOT NULL;

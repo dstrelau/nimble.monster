@@ -12,6 +12,13 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "27 July 2026",
+    entries: [
+      "Rules redesign: Better organization and search. Rules now show related rules, alternate rules, homebrew rules, and FAQs.",
+      "Add Custom Rules",
+    ],
+  },
+  {
     date: "21 July 2026",
     entries: ["Add monster Teams: multiple foes in a single statblock."],
   },
@@ -75,7 +82,7 @@ const changelog: ChangelogEntry[] = [
   {
     date: "5 March 2026",
     entries: [
-      "Added a comprehensive Rules Reference section with full-text search, covering all core rules, character creation, magic, equipment, exploration, and GM tools.",
+      "Added a comprehensive, searchable Rules Reference section covering all core rules, character creation, magic, equipment, exploration, and GM tools.",
     ],
   },
   {

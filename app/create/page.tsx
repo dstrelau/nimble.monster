@@ -1,4 +1,5 @@
 import {
+  BookOpenText,
   BookUser,
   Box,
   Drama,
@@ -132,6 +133,14 @@ export default async function CreatePage() {
               disabled={!isAuthenticated}
               disabledMessage="You must signin to create an Encounter."
             />
+            {isAuthenticated && (
+              <CreateCard
+                href="/custom-rules/new"
+                icon={<BookOpenText className="size-16" />}
+                title="Rule"
+                description="Create a custom rule or rules clarification."
+              />
+            )}
 
             <h2 className="w-full text-4xl text-center font-bold mb-4">
               Heroes

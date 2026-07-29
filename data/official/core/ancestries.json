@@ -31,7 +31,7 @@
         "abilities": [
           {
             "name": "Stout",
-            "description": "+2 max Hit Dice, +1 max Wounds, –1 Speed. You know Dwarvish if your INT is not negative."
+            "description": "+2 max Hit Dice, +1 max Wounds, –1 Speed. You know Dwarvish if your INT isn't negative."
           }
         ]
       }
@@ -46,7 +46,7 @@
         "abilities": [
           {
             "name": "Lithe",
-            "description": "Advantage on Initiative, +1 Speed. You know Elvish if your INT is not negative."
+            "description": "Advantage on Initiative, +1 Speed. You know Elvish if your INT isn't negative."
           }
         ]
       }
@@ -61,7 +61,7 @@
         "abilities": [
           {
             "name": "Elusive",
-            "description": "+1 to Stealth. If you fail a save, you can succeed instead, 1/Safe Rest."
+            "description": "+1 to Stealth. (1/Safe Rest) If you fail a save, you can succeed instead."
           }
         ]
       }
@@ -76,7 +76,7 @@
         "abilities": [
           {
             "name": "Optimistic",
-            "description": "Allow an ally within Reach 6 to reroll any single die, resets when healed to your max HP. –1 Speed. You know Dwarvish if your INT is not negative (but you call it Gnomish, of course)."
+            "description": "(Free Reaction, Reach 6) Allow an ally to reroll any 1 die; resets when healed to max HP. –1 Speed. You know Dwarvish if your INT isn't negative (but you call it Gnomish, of course)."
           }
         ]
       }
@@ -86,12 +86,12 @@
       "attributes": {
         "name": "Bunbun",
         "size": ["small"],
-        "rarity": "exotic",
+        "rarity": "uncommon",
         "description": "Bunbun are agile and unpredictable, using their powerful legs to leap great distances and catch foes off guard. Facing a Bunbun means contending with an opponent who can strike from unexpected angles and swiftly reposition themselves in the heat of battle.",
         "abilities": [
           {
             "name": "Bunny Legs",
-            "description": "Before Interposing or after Defending (after damage), hop up to your Speed in any direction for free, 1/encounter."
+            "description": "(1/encounter) Before Interposing or after Defending (after damage), hop up to your Speed in any direction for free."
           }
         ]
       }
@@ -101,12 +101,12 @@
       "attributes": {
         "name": "Dragonborn",
         "size": ["medium"],
-        "rarity": "exotic",
-        "description": "The soul of a dragon burns within you, the scales of your body are like forged steel. You are a kiln and your heritage the coals that stoke your flames. Call upon your wrath, to speak in the tongue of your ancestors and imbue unbridled fury into your attacks.",
+        "rarity": "uncommon",
+        "description": "The soul of a dragon burns within you, the scales of your body are like forged steel. You are a kiln and your heritage the coals that stoke your flames. Call upon your wrath to speak in the tongue of your ancestors and imbue unbridled fury into your attacks.",
         "abilities": [
           {
             "name": "Draconic Heritage",
-            "description": "+1 Armor. When you attack: deal an additional LVL+KEY damage (ignoring armor) divided as you choose among any of your targets; recharges whenever you Safe Rest or gain a Wound. You know Draconic if your INT is not negative."
+            "description": "+1 Defense. (1/Safe Rest) Deal an additional LVL+KEY damage on an attack (ignoring armor) divided as you choose among any of the attack's targets (recharges whenever you gain a Wound). You know Draconic if your INT isn't negative."
           }
         ]
       }
@@ -116,12 +116,12 @@
       "attributes": {
         "name": "Fiendkin",
         "size": ["medium"],
-        "rarity": "exotic",
-        "description": "Said to have been born from the union of man and fiend, or from a cursed bloodline, Fiendkin often find themselves outcasts in society. Yet, they embody determination in the face of adversity. Their ancestors didn't emerge from the depths of the Everflame to succumb to minor setbacks!",
+        "rarity": "uncommon",
+        "description": "Said to have been born from a cursed bloodline or from the union of man and fiend, Fiendkin often find themselves outcasts in society. Yet, they embody determination in the face of adversity. Their ancestors didn't emerge from the depths of the Everflame to succumb to minor setbacks!",
         "abilities": [
           {
             "name": "Flameborn",
-            "description": "1 of your neutral saves is advantaged instead. You know Infernal if your INT is not negative."
+            "description": "1 neutral save is advantaged instead. You know Infernal if your INT isn't negative."
           }
         ]
       }
@@ -131,12 +131,12 @@
       "attributes": {
         "name": "Goblin",
         "size": ["small"],
-        "rarity": "exotic",
+        "rarity": "uncommon",
         "description": "Green, cunning, and perpetually vilified, Goblins thrive on the edge of chaos. For a Goblin, vanishing into the shadows is not just a skill—it's an identity. After all, what kind of Goblin would you be if you couldn't slip away unnoticed?",
         "abilities": [
           {
             "name": "Skedaddle",
-            "description": "Can move 2 spaces for free after you become the target of an attack or negative effect (after damage, ignoring difficult terrain). You know Goblin if your INT is not negative."
+            "description": "Can move 2 spaces for free after you become the target of an attack or negative effect (after damage, ignoring difficult terrain). You know Goblin if your INT isn't negative."
           }
         ]
       }
@@ -146,12 +146,12 @@
       "attributes": {
         "name": "Kobold",
         "size": ["small"],
-        "rarity": "exotic",
-        "description": "Small, often maniacal, and dragon–obsessed. Kobolds thrive in the shadows, finding ingenious ways to survive despite their diminutive size. Underestimated by many, Kobolds prove time and again that even the smallest among us can wield great power.",
+        "rarity": "uncommon",
+        "description": "Small, often maniacal, and dragon–obsessed. Kobolds thrive in familial groups, working together and finding ingenious ways to survive despite their diminutive size. Underestimated by many, Kobolds prove time and again that even the smallest among us can wield great power.",
         "abilities": [
           {
             "name": "Wily",
-            "description": "Force an enemy to reroll a non-critical attack against you, 1/encounter. +3 to Influence friendly characters. Advantage on skill checks related to dragons. You know Draconic if your INT is not negative."
+            "description": "Advantage on skill checks related to dragons and to Influence friendly creatures. (1/encounter) Force an enemy to reroll a non-critical attack against you. You know Draconic if your INT isn't negative."
           }
         ]
       }
@@ -161,12 +161,12 @@
       "attributes": {
         "name": "Orc",
         "size": ["medium"],
-        "rarity": "exotic",
+        "rarity": "uncommon",
         "description": "Just when you think you've bested a mighty Orc, you've merely succeeded in rousing their anger. Engaging in combat with an Orc is no endeavor for the weak-willed. While others may cower before death's approach, Orcs boldly defy its grasp.",
         "abilities": [
           {
             "name": "Relentless",
-            "description": "When you would drop to 0 HP, you may set your HP to LVL instead, 1/Safe Rest. +1 Might. You know Goblin if your INT is not negative (but you call it Orcish, of course)."
+            "description": "(1/Safe Rest) When you would drop to 0 HP, you may set your HP to LVL instead. +1 Might. You know Goblin if your INT isn't negative (but you call it Orcish, of course)."
           }
         ]
       }
@@ -181,7 +181,7 @@
         "abilities": [
           {
             "name": "Hollow Bones",
-            "description": "You have a fly Speed as long as you are wearing armor no heavier than Leather. Crits against you are Vicious (the attacker rolls 1 additional die). Forced movement moves you twice as far."
+            "description": "You can fly as long as you are wearing armor no heavier than Leather. Crits against you are Vicious (the attacker rolls 1 additional die). Forced movement moves you twice as far."
           }
         ]
       }
@@ -211,7 +211,7 @@
         "abilities": [
           {
             "name": "New Place, New Face",
-            "description": "+2 shifting skill points. You may take on the appearance of any ancestry. When you do, you may place your 2 shifting skill points into any 1 skill. 1/day."
+            "description": "+2 Shifting Skill Points. You take on the appearance of any ancestry (transformation time 10 min). When you do, you may move your 2 Shifting Skill Points into any 1 skill."
           }
         ]
       }
@@ -226,7 +226,7 @@
         "abilities": [
           {
             "name": "Reflective Aura",
-            "description": "When you Defend, gain KEY armor and deal KEY damage back to the attacker. 1/encounter."
+            "description": "(1/encounter) When you Defend, gain KEY Defense and deal KEY damage back to the attacker (ignoring their armor)."
           }
         ]
       }
@@ -241,7 +241,7 @@
         "abilities": [
           {
             "name": "Danger Pollen/Spores",
-            "description": "Whenever an enemy causes you one or more Wounds, you excrete soporific spores: all adjacent enemies are Dazed. You know Elvish if your INT is not negative."
+            "description": "Whenever you gain one or more Wounds, you excrete soporific spores: all adjacent enemies are Dazed. You know Elvish if your INT isn't negative."
           }
         ]
       }
@@ -256,7 +256,7 @@
         "abilities": [
           {
             "name": "Strength of Stone",
-            "description": "Force an enemy to reroll a crit against you, 1/encounter. +2 Might. You know Dwarvish if your INT is not negative."
+            "description": "(1/encounter) Force an enemy to reroll a crit against you. +2 Might. You know Dwarvish if your INT isn't negative (but you call it Giant, of course)."
           }
         ]
       }
@@ -271,7 +271,7 @@
         "abilities": [
           {
             "name": "Charge",
-            "description": "When you move at least 4 spaces, you can push a creature in your path. Medium: 1 space; Small/Tiny: up to 2 spaces. 1/turn."
+            "description": "When you move at least 4 spaces, you can push a creature in your path 1 space."
           }
         ]
       }
@@ -301,7 +301,7 @@
         "abilities": [
           {
             "name": "Planeshift",
-            "description": "Whenever you Defend, you can gain 1 Wound to temporarily phase out of the material plane and ignore the damage. –2 max Wounds."
+            "description": "–2 max Wounds. Whenever you Defend, you can gain 1 Wound to temporarily phase out of the material plane and ignore all effects of the attack."
           }
         ]
       }
@@ -316,7 +316,7 @@
         "abilities": [
           {
             "name": "Scurry",
-            "description": "Gain +2 armor if you moved on your last turn."
+            "description": "Gain +2 Defense if you moved on your last turn. +1 Speed."
           }
         ]
       }
@@ -339,14 +339,14 @@
     {
       "type": "ancestries",
       "attributes": {
-        "name": "Turtlefolk",
+        "name": "Turtlefolk/Stonefolk",
         "size": ["small", "medium"],
         "rarity": "exotic",
-        "description": "Turtlefolk take their time in everything they do; they are patient, sturdy, and slow to anger. They rely on their thick shells for protection, making them difficult to harm, but their cautious movements come at the cost of speed.",
+        "description": "Turtlefolk and Stonefolk take their time in everything they do; they are patient, sturdy, and slow to anger. They rely on their thick shells for protection, making them difficult to harm, but their cautious movements come at the cost of Speed.",
         "abilities": [
           {
             "name": "Slow & Steady",
-            "description": "+4 Armor, –2 speed."
+            "description": "+4 Defense, –2 Speed."
           }
         ]
       }
@@ -361,7 +361,7 @@
         "abilities": [
           {
             "name": "Chaotic Surge",
-            "description": "Whenever you or a willing ally within Reach 6 casts a tiered spell, you may allow them to roll on the Chaos Table. 1/encounter."
+            "description": "(1/encounter) Whenever you or a willing ally within Reach 6 casts a Tiered spell, you may allow them to roll on the Chaos Table."
           }
         ]
       }

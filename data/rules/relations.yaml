@@ -1,0 +1,104 @@
+# Curated "related rule" edges. Hand-maintained; every slug must be a real rule
+# in data/rules/ or the build fails (see lib/rules/relations.ts). Edges are
+# symmetric and stored once — both rules render a link to the other.
+#
+#   groups: a clique — every member links to every other member. Keep to ~6.
+#   hubs:   a star — every member links to the hub only. Use for big families,
+#           where a clique would put 17 links under each member.
+
+groups:
+  # ── Damage, dying and recovery ──────────────────────────────────────────
+  - [hit-points-dying-wounds, wounds, conditions, death]
+  - [hit-points-dying-wounds, temporary-hp, conditions]
+  - [conditions, death, safe-rests]
+  - [wounds, safe-rests, fast-resting]
+
+  # ── Resting ─────────────────────────────────────────────────────────────
+  - [hit-dice, field-rests, safe-rests]
+  - [field-rests, safe-rests, lodging, lodging-boons]
+  - [downtime, example-downtime-activities, safe-rests]
+  - [resting-and-recovery, encounters-per-rest, field-rests]
+  - [hit-dice, leveling-up, the-character-sheet]
+
+  # ── Combat structure ────────────────────────────────────────────────────
+  - [turns-rounds-encounters, initiative, turn-order, surprise]
+  - [initiative, stats, acting-over-multiple-turns]
+  - [heroic-actions, heroic-reactions, turns-rounds-encounters]
+
+  # ── Attacking ───────────────────────────────────────────────────────────
+  - [attack, advantage-disadvantage, cover, opportunity-attack]
+  - [attack, unarmed-strikes, improvised-weapons, dual-wielding]
+  - [advantage-disadvantage, help, assess, i-had-the-high-ground]
+
+  # ── Positioning and movement ────────────────────────────────────────────
+  - [movement, range-reach, measuring-spaces, size]
+  - [measuring-spaces, diagonal-spaces, cones-lines]
+  - [movement, falling-and-forced-movement, conditions]
+  - [move, movement, opportunity-attack]
+  - [cover, hiding, conditions, skills]
+  - [grappling, conditions, skills]
+
+  # ── Magic ───────────────────────────────────────────────────────────────
+  - [mana, cast-spell, upcasting, spell-schools]
+  - [concentration, conditions, cast-spell]
+  - [save-spells, saves, heroes-and-saves]
+  - [multi-target-area-of-effect-aoe, cones-lines, range-and-reach]
+  - [range-and-reach, range-reach, secret-spells]
+
+  # ── Checks, stats and skills ────────────────────────────────────────────
+  - [skill-checks, saves, heroes-and-saves, skills]
+  - [stats, skills, different-key-stats]
+  - [stats, the-character-sheet]
+  - [skill-checks, monster-skill-checks, advantage-disadvantage]
+
+  # ── Making a character ──────────────────────────────────────────────────
+  - [choose-your-class-ancestry-background, the-character-sheet]
+  - [leveling-up, the-character-sheet, multiclassing, complex-characters]
+
+  # ── Equipment and wealth ────────────────────────────────────────────────
+  - [equipment-proficiency, armor-defense, weapon-properties, customizing-weapons, custom-weapon-dice]
+  - [the-character-sheet, swapping-equipment]
+  - [gold-currency, how-much-gold, too-much-gold, on-buying-magical-items]
+  - [thrown-potions, on-buying-magical-items]
+
+  # ── Monsters ────────────────────────────────────────────────────────────
+  - [monsters, monster-builder, monster-levels, what-die-size-to-use]
+  - [monster-builder, default-monster-stats, monster-armor, armor-variety]
+  - [minions, flunkies, balancing-with-minions, suggested-minion-die-size-by-party-level]
+  - [flavorful-monster-abilities, monster-builder, optional-actions]
+
+  # ── Legendary monsters ──────────────────────────────────────────────────
+  - [running-legendary-monsters, legendary-monster-builder, last-stand]
+  - [running-legendary-monsters, legendary-bloodied, legendary-saves, optional-actions]
+  - [legendary-bloodied, conditions]
+  - [legendary-saves, saves]
+
+  # ── Running encounters ──────────────────────────────────────────────────
+  - [encounter-difficulties, fine-tuning-difficulty, balancing-with-tactics, encounters-per-rest]
+  - [unique-encounters, balancing-with-tactics, adventures]
+
+hubs:
+  stats: [skills]
+
+  heroic-actions: [attack, move, cast-spell, assess]
+
+  heroic-reactions: [opportunity-attack, defend, interpose, help]
+
+  # The 5e conversion guide and its per-topic notes.
+  adventures:
+    [
+      saving-throws, skill-checks-in-5e, conditions-in-5e, monsters,
+      5e-legendary-monsters, optional-tweaks, 5e-spells, 5e-magical-items,
+      5e-races-classes, monster-skill-checks,
+    ]
+
+  variant-rules:
+    [
+      abstracted-distances, blaze-of-glory, boon-bane-actions,
+      cant-cut-corners, complex-characters, critical-healing,
+      custom-weapon-dice, deflect, diagonals-not-adjacent,
+      different-key-stats, dramatic-leveling, fast-resting,
+      gridless, i-had-the-high-ground, inspiration, level-0-funnels,
+      mighty-healing, multiclassing, playing-dead, retreat,
+      simpler-characters, sucker-punch, thrown-potions, 1-2-1,
+    ]

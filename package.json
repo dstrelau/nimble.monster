@@ -11,8 +11,7 @@
     "db:seed": "node tools/seed.mjs",
     "start": "next start",
     "test": "vitest",
-    "test:run": "vitest run",
-    "reference:import": "jiti tools/import-reference.ts"
+    "test:run": "vitest run"
   },
   "node": {
     "child_process": "empty"
