@@ -59,82 +59,115 @@ export const ENTITY_TYPE_PATHS: Record<EntityType, string> = {
   background: "backgrounds",
 };
 
-export const MY_LIBRARY_ITEMS: {
+export interface MyLibraryItem {
   href: string;
   label: string;
   icon: LucideIcon;
   key: keyof MyLibraryCounts;
+}
+
+export const MY_LIBRARY_GROUPS: {
+  label?: string;
+  items: MyLibraryItem[];
 }[] = [
   {
-    href: "/my/monsters",
-    label: "Monsters",
-    icon: ENTITY_TYPE_ICONS.monster,
-    key: "monsters",
+    label: "Bestiary",
+    items: [
+      {
+        href: "/my/monsters",
+        label: "Monsters",
+        icon: ENTITY_TYPE_ICONS.monster,
+        key: "monsters",
+      },
+      {
+        href: "/my/families",
+        label: "Families",
+        icon: ENTITY_TYPE_ICONS.family,
+        key: "families",
+      },
+      {
+        href: "/my/companions",
+        label: "Companions",
+        icon: ENTITY_TYPE_ICONS.companion,
+        key: "companions",
+      },
+    ],
   },
   {
-    href: "/my/rules",
-    label: "Rules",
-    icon: NotebookPen,
-    key: "rules",
+    label: "Heroes",
+    items: [
+      {
+        href: "/my/ancestries",
+        label: "Ancestries",
+        icon: ENTITY_TYPE_ICONS.ancestry,
+        key: "ancestries",
+      },
+      {
+        href: "/my/backgrounds",
+        label: "Backgrounds",
+        icon: ENTITY_TYPE_ICONS.background,
+        key: "backgrounds",
+      },
+      {
+        href: "/my/classes",
+        label: "Classes",
+        icon: ENTITY_TYPE_ICONS.class,
+        key: "classes",
+      },
+      {
+        href: "/my/subclasses",
+        label: "Subclasses",
+        icon: ENTITY_TYPE_ICONS.subclass,
+        key: "subclasses",
+      },
+      {
+        href: "/my/spell-schools",
+        label: "Spells",
+        icon: ENTITY_TYPE_ICONS.school,
+        key: "spell-schools",
+      },
+    ],
   },
   {
-    href: "/my/ancestries",
-    label: "Ancestries",
-    icon: ENTITY_TYPE_ICONS.ancestry,
-    key: "ancestries",
+    label: "Gear",
+    items: [
+      {
+        href: "/my/items",
+        label: "Items",
+        icon: ENTITY_TYPE_ICONS.item,
+        key: "items",
+      },
+    ],
   },
   {
-    href: "/my/companions",
-    label: "Companions",
-    icon: ENTITY_TYPE_ICONS.companion,
-    key: "companions",
+    label: "Adventures",
+    items: [
+      {
+        href: "/my/encounters",
+        label: "Encounters",
+        icon: Swords,
+        key: "encounters",
+      },
+    ],
   },
   {
-    href: "/my/backgrounds",
-    label: "Backgrounds",
-    icon: ENTITY_TYPE_ICONS.background,
-    key: "backgrounds",
-  },
-  {
-    href: "/my/items",
-    label: "Items",
-    icon: ENTITY_TYPE_ICONS.item,
-    key: "items",
-  },
-  {
-    href: "/my/classes",
-    label: "Classes",
-    icon: ENTITY_TYPE_ICONS.class,
-    key: "classes",
-  },
-  {
-    href: "/my/collections",
-    label: "Collections",
-    icon: ENTITY_TYPE_ICONS.collection,
-    key: "collections",
-  },
-  {
-    href: "/my/encounters",
-    label: "Encounters",
-    icon: Swords,
-    key: "encounters",
-  },
-  {
-    href: "/my/subclasses",
-    label: "Subclasses",
-    icon: ENTITY_TYPE_ICONS.subclass,
-    key: "subclasses",
-  },
-  {
-    href: "/my/families",
-    label: "Families",
-    icon: ENTITY_TYPE_ICONS.family,
-    key: "families",
-  },
-  {
-    href: "/my/spell-schools",
-    label: "Spells",
-    icon: ENTITY_TYPE_ICONS.school,
-    key: "spell-schools",
+    items: [
+      {
+        href: "/my/collections",
+        label: "Collections",
+        icon: ENTITY_TYPE_ICONS.collection,
+        key: "collections",
+      },
+      {
+        href: "/my/rules",
+        label: "Custom Rules",
+        icon: NotebookPen,
+        key: "rules",
+      },
+    ],
   },
 ];
+
+export const MY_LIBRARY_ITEMS = MY_LIBRARY_GROUPS.flatMap(
+  (group) => group.items
+);

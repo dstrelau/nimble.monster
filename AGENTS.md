@@ -106,6 +106,7 @@ Workflow:
 - You may not use an empty string value="" on a <Select> element. Use "none" and special-case this value to be null/undefined as appropriate.
 - Use lucide icons instead of custom SVGs
 - Always prefer reusing existing components over creating new ones. Before building a new component to display an entity, search for how that entity is already rendered elsewhere (e.g. detail pages, list cards) and reuse those components.
+- Avoid cluttering the UI with redundant copy. Do not repeat nearby navigation labels in page headings or add explanatory subtitles and placeholder text unless they help the user take an action.
 
 # Tests
 

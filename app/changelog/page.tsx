@@ -12,6 +12,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "29 July 2026",
+    entries: ["Add library navigation to every page containing your work."],
+  },
+  {
     date: "27 July 2026",
     entries: [
       "Rules redesign: Better organization and search. Rules now show related rules, alternate rules, homebrew rules, and FAQs.",

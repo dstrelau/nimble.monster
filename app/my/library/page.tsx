@@ -1,34 +1,25 @@
+import { LibraryBig, Plus } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { auth } from "@/lib/auth";
-import * as db from "@/lib/db";
-import { MY_LIBRARY_ITEMS } from "@/lib/types/entity-links";
+import { Button } from "@/components/ui/button";
 
-export default async function MyLibraryPage() {
-  const session = await auth();
-  if (!session?.user?.id) notFound();
-
-  const counts = await db.getMyLibraryCounts(session.user.id);
-
+export default function MyLibraryPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">My Library</h1>
-      </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-        {MY_LIBRARY_ITEMS.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="flex items-center gap-2 rounded-md border bg-card p-3 text-card-foreground hover:bg-accent transition-colors"
-          >
-            <item.icon className="size-5 shrink-0" />
-            <span className="flex-1">{item.label}</span>
-            <span className="text-sm text-muted-foreground">
-              {counts[item.key]}
-            </span>
+    <div className="flex min-h-80 items-center justify-center rounded-xl border bg-card px-6 py-12 text-center shadow-sm">
+      <div className="max-w-lg">
+        <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-full bg-accent text-primary">
+          <LibraryBig className="size-7" />
+        </div>
+        <h1 className="font-slab text-2xl font-bold">Build your next idea</h1>
+        <p className="mt-2 text-muted-foreground">
+          Choose a section from the library navigation to revisit your work, or
+          start creating something new for your table.
+        </p>
+        <Button asChild className="mt-6">
+          <Link href="/create">
+            <Plus />
+            Create something
           </Link>
-        ))}
+        </Button>
       </div>
     </div>
   );
