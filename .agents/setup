@@ -13,6 +13,25 @@ if ((${#packages[@]})); then
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y "${packages[@]}"
 fi
 
+flyctl_install="$HOME/.fly"
+if [[ ! -x "$flyctl_install/bin/fly" ]]; then
+  echo "Installing flyctl..."
+  curl --fail --location --silent --show-error https://fly.io/install.sh \
+    | FLYCTL_INSTALL="$flyctl_install" sh
+fi
+export FLYCTL_INSTALL="$flyctl_install"
+export PATH="$FLYCTL_INSTALL/bin:$PATH"
+
+flyctl_profile_marker="# nimble-nexus orb flyctl"
+if ! grep -Fqx "$flyctl_profile_marker" "$HOME/.bash_profile" 2>/dev/null; then
+  cat >> "$HOME/.bash_profile" <<'EOF'
+
+# nimble-nexus orb flyctl
+export FLYCTL_INSTALL="$HOME/.fly"
+export PATH="$FLYCTL_INSTALL/bin:$PATH"
+EOF
+fi
+
 node_home="$HOME/.local/node-24"
 if [[ ! -x "$node_home/bin/node" ]]; then
   echo "Installing Node.js 24..."
