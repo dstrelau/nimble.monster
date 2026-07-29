@@ -9,8 +9,8 @@ export const toJsonApiCustomRule = (rule: CustomRule) => {
     attributes: {
       name: rule.name,
       content: rule.content,
-      sections: rule.links.map((link) => ({
-        slug: link.sectionSlug,
+      rules: rule.links.map((link) => ({
+        slug: link.ruleSlug,
         relation: link.relation,
       })),
     },

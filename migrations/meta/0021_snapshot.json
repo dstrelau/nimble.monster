@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "5044d5c8-4623-447e-a0df-3596ad2221a8",
-  "prevId": "9d68e9c6-a764-42cf-b37d-5d9b2d19a780",
+  "id": "220d2530-67cc-47bd-99b6-ec0db90edeb2",
+  "prevId": "b1571da1-9cd9-4528-ba6b-fff0e1acaeb2",
   "tables": {
     "ancestries": {
       "name": "ancestries",
@@ -1581,6 +1581,66 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+    "custom_rule_links": {
+      "name": "custom_rule_links",
+      "columns": {
+        "custom_rule_id": {
+          "name": "custom_rule_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rule_slug": {
+          "name": "rule_slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "relation": {
+          "name": "relation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "idx_custom_rule_links_rule_slug": {
+          "name": "idx_custom_rule_links_rule_slug",
+          "columns": ["rule_slug"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "custom_rule_links_custom_rule_id_custom_rules_id_fk": {
+          "name": "custom_rule_links_custom_rule_id_custom_rules_id_fk",
+          "tableFrom": "custom_rule_links",
+          "tableTo": "custom_rules",
+          "columnsFrom": ["custom_rule_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "custom_rule_links_custom_rule_id_rule_slug_pk": {
+          "columns": ["custom_rule_id", "rule_slug"],
+          "name": "custom_rule_links_custom_rule_id_rule_slug_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "custom_rules": {
       "name": "custom_rules",
       "columns": {
@@ -2862,162 +2922,6 @@
         "reactions_entity_type_entity_id_user_id_reaction_type_pk": {
           "columns": ["entity_type", "entity_id", "user_id", "reaction_type"],
           "name": "reactions_entity_type_entity_id_user_id_reaction_type_pk"
-        }
-      },
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "reference_entries": {
-      "name": "reference_entries",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "slug": {
-          "name": "slug",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "category": {
-          "name": "category",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "source_file": {
-          "name": "source_file",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "order_index": {
-          "name": "order_index",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {
-        "reference_entries_slug_unique": {
-          "name": "reference_entries_slug_unique",
-          "columns": ["slug"],
-          "isUnique": true
-        },
-        "idx_reference_entries_category": {
-          "name": "idx_reference_entries_category",
-          "columns": ["category"],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "relations": {
-      "name": "relations",
-      "columns": {
-        "from_type": {
-          "name": "from_type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "from_id": {
-          "name": "from_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "to_type": {
-          "name": "to_type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "to_id": {
-          "name": "to_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "relation": {
-          "name": "relation",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {
-        "idx_relations_from": {
-          "name": "idx_relations_from",
-          "columns": ["from_type", "from_id"],
-          "isUnique": false
-        },
-        "idx_relations_to": {
-          "name": "idx_relations_to",
-          "columns": ["to_type", "to_id"],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "relations_from_type_from_id_to_type_to_id_pk": {
-          "columns": ["from_type", "from_id", "to_type", "to_id"],
-          "name": "relations_from_type_from_id_to_type_to_id_pk"
         }
       },
       "uniqueConstraints": {},

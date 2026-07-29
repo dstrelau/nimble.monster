@@ -3,97 +3,88 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EntityReactions } from "@/components/EntityReactions";
 import { ReportEntityDialog } from "@/components/ReportEntityDialog";
-import { ReferenceMarkdown } from "@/components/reference/ReferenceMarkdown";
+import { RuleMarkdown } from "@/components/rules/RuleMarkdown";
 import { auth } from "@/lib/auth";
-import type {
-  CustomRule,
-  CustomRuleSectionRelation,
-} from "@/lib/db/custom-rule";
+import type { CustomRule, CustomRuleRelation } from "@/lib/db/custom-rule";
 import { findCustomRule } from "@/lib/db/custom-rule";
 import {
   resolveDiceNotationLinks,
   resolveSpellSchoolLinks,
   resolveTermLinks,
-} from "@/lib/reference/crosslinks";
-import {
-  getPageForSection,
-  getSectionBySlug,
-} from "@/lib/reference/filesystem";
-import { previewMap } from "@/lib/reference/terms";
+} from "@/lib/rules/crosslinks";
+import { getRule } from "@/lib/rules/filesystem";
+import { ruleUrl } from "@/lib/rules/rule-index";
+import { previewMap } from "@/lib/rules/terms";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify } from "@/lib/utils/slug";
 import { CustomRuleActions } from "../CustomRuleActions";
 import { CustomRuleBody } from "../CustomRuleBody";
-import { referenceSectionTitle } from "../sections";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-interface RenderedSection {
-  sectionSlug: string;
+interface RenderedRule {
+  ruleSlug: string;
   title: string;
   href: string;
   content: string | null;
 }
 
-// Resolve a linked section's official content through the same crosslink
-// pipeline the reference pages use, so embedded rules render identically.
+// Resolve a linked official rule through the same crosslink pipeline the rule
+// pages use, so embedded rules render identically.
 async function renderLinks(
   links: CustomRule["links"],
-  relation: CustomRuleSectionRelation
-): Promise<RenderedSection[]> {
+  relation: CustomRuleRelation
+): Promise<RenderedRule[]> {
   return Promise.all(
     links
       .filter((link) => link.relation === relation)
       .map(async (link) => {
-        const section = getSectionBySlug(link.sectionSlug);
-        const page = getPageForSection(link.sectionSlug);
+        const rule = getRule(link.ruleSlug);
         let content: string | null = null;
-        if (section) {
-          const diceResolved = resolveDiceNotationLinks(section.content);
+        if (rule) {
+          const diceResolved = resolveDiceNotationLinks(rule.content);
           const resolved = await resolveSpellSchoolLinks(diceResolved);
           content = resolveTermLinks(resolved);
         }
         return {
-          sectionSlug: link.sectionSlug,
-          title: referenceSectionTitle(link.sectionSlug),
-          href: page
-            ? `/reference/${page.slug}#${link.sectionSlug}`
-            : `/reference/${link.sectionSlug}`,
+          ruleSlug: link.ruleSlug,
+          title: rule?.title ?? link.ruleSlug,
+          href: ruleUrl(link.ruleSlug),
           content,
         };
       })
   );
 }
 
-function LinkedSections({
+function LinkedRules({
   title,
-  sections,
+  rules,
 }: {
   title: string;
-  sections: RenderedSection[];
+  rules: RenderedRule[];
 }) {
-  if (sections.length === 0) return null;
+  if (rules.length === 0) return null;
   return (
     <section className="mt-10 border-t border-border pt-6">
       <h2 className="mb-4 text-sm font-semibold text-muted-foreground uppercase tracking-wide">
         {title}
       </h2>
       <div className="flex flex-col gap-6">
-        {sections.map((section) => (
-          <div key={section.sectionSlug}>
+        {rules.map((rule) => (
+          <div key={rule.ruleSlug}>
             <Link
-              href={section.href}
+              href={rule.href}
               className="text-base font-semibold hover:underline"
             >
-              {section.title}
+              {rule.title}
             </Link>
-            {section.content && (
+            {rule.content && (
               <blockquote className="mt-2 rounded-md border border-border bg-muted/40 px-4 py-3">
                 <article className="prose dark:prose-invert max-w-none">
-                  <ReferenceMarkdown
-                    content={section.content}
+                  <RuleMarkdown
+                    content={rule.content}
                     previewMap={previewMap}
                   />
                 </article>
@@ -167,8 +158,8 @@ export default async function CustomRulePage({ params }: PageProps) {
         creatorDiscordId={rule.creator.discordId}
       />
 
-      <LinkedSections title="Replaces" sections={replaces} />
-      <LinkedSections title="Augments" sections={augments} />
+      <LinkedRules title="Replaces" rules={replaces} />
+      <LinkedRules title="Augments" rules={augments} />
     </div>
   );
 }

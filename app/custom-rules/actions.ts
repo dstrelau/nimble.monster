@@ -4,11 +4,11 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import {
   type CustomRule,
+  type CustomRuleLink,
   type CustomRuleReverseGroups,
-  type CustomRuleSectionLink,
   createCustomRule,
   deleteCustomRule,
-  listPublicCustomRulesForSections,
+  listPublicCustomRulesForRules,
   updateCustomRule,
 } from "@/lib/db/custom-rule";
 import type { CustomRuleVisibility } from "@/lib/db/schema";
@@ -17,7 +17,7 @@ interface CustomRuleFormData {
   name: string;
   content: string;
   visibility: CustomRuleVisibility;
-  links: CustomRuleSectionLink[];
+  links: CustomRuleLink[];
 }
 
 type ActionResult =
@@ -26,10 +26,10 @@ type ActionResult =
 
 // Fetched at runtime by the reference page's reverse-view client component so
 // the statically generated page picks up live custom-rule data on hydration.
-export async function getPublicCustomRulesForSections(
-  sectionSlugs: string[]
+export async function getPublicCustomRulesForRules(
+  ruleSlugs: string[]
 ): Promise<CustomRuleReverseGroups> {
-  return listPublicCustomRulesForSections(sectionSlugs);
+  return listPublicCustomRulesForRules(ruleSlugs);
 }
 
 export async function createCustomRuleAction(

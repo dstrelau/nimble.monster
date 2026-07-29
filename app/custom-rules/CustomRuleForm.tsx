@@ -27,7 +27,7 @@ const slugsForRelation = (
   links: CustomRule["links"],
   relation: "replaces" | "augments"
 ): string[] =>
-  links.filter((l) => l.relation === relation).map((l) => l.sectionSlug);
+  links.filter((l) => l.relation === relation).map((l) => l.ruleSlug);
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -39,11 +39,11 @@ type FormData = z.infer<typeof formSchema>;
 
 interface Props {
   rule: Pick<CustomRule, "id" | "name" | "content" | "visibility" | "links">;
-  sectionGroups: OptionGroup[];
+  ruleGroups: OptionGroup[];
   isCreating?: boolean;
 }
 
-export function CustomRuleForm({ rule, sectionGroups, isCreating }: Props) {
+export function CustomRuleForm({ rule, ruleGroups, isCreating }: Props) {
   const router = useRouter();
   const [replacesSlugs, setReplacesSlugs] = useState<string[]>(
     slugsForRelation(rule.links, "replaces")
@@ -52,7 +52,7 @@ export function CustomRuleForm({ rule, sectionGroups, isCreating }: Props) {
     slugsForRelation(rule.links, "augments")
   );
 
-  // A section may appear in only one list. Selecting it in one drops it from
+  // A rule may appear in only one list. Selecting it in one drops it from
   // the other.
   const handleReplacesChange = (next: string[]) => {
     setReplacesSlugs(next);
@@ -74,12 +74,12 @@ export function CustomRuleForm({ rule, sectionGroups, isCreating }: Props) {
 
   const handleSubmit = async (data: FormData) => {
     const links = [
-      ...replacesSlugs.map((sectionSlug) => ({
-        sectionSlug,
+      ...replacesSlugs.map((ruleSlug) => ({
+        ruleSlug,
         relation: "replaces" as const,
       })),
-      ...augmentsSlugs.map((sectionSlug) => ({
-        sectionSlug,
+      ...augmentsSlugs.map((ruleSlug) => ({
+        ruleSlug,
         relation: "augments" as const,
       })),
     ];
@@ -139,30 +139,28 @@ export function CustomRuleForm({ rule, sectionGroups, isCreating }: Props) {
         <FormItem>
           <FormLabel>Replaces</FormLabel>
           <MultiSelect
-            groups={sectionGroups}
+            groups={ruleGroups}
             selected={replacesSlugs}
             onChange={handleReplacesChange}
-            placeholder="Select sections..."
+            placeholder="Select rules..."
             className="w-full md:w-96"
             popoverClassName="w-96"
           />
-          <FormDescription>
-            Official sections this rule overrides.
-          </FormDescription>
+          <FormDescription>Official rules this replaces.</FormDescription>
         </FormItem>
 
         <FormItem>
           <FormLabel>Augments</FormLabel>
           <MultiSelect
-            groups={sectionGroups}
+            groups={ruleGroups}
             selected={augmentsSlugs}
             onChange={handleAugmentsChange}
-            placeholder="Select sections..."
+            placeholder="Select rules..."
             className="w-full md:w-96"
             popoverClassName="w-96"
           />
           <FormDescription>
-            Official sections this rule adds to or clarifies.
+            Official rules this adds to or clarifies.
           </FormDescription>
         </FormItem>
 

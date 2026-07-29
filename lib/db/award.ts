@@ -1063,7 +1063,7 @@ async function loadAncestriesForAward(
       id: row.ancestries.id,
       name: row.ancestries.name,
       size: parseSize(row.ancestries.size),
-      rarity: (row.ancestries.rarity ?? "common") as "common" | "exotic",
+      rarity: row.ancestries.rarity ?? "common",
       createdAt: row.ancestries.createdAt
         ? new Date(row.ancestries.createdAt)
         : new Date(),

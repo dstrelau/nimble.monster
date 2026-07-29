@@ -678,13 +678,17 @@ export const upsertOfficialAncestry = async (
   input: CreateAncestryInput
 ): Promise<void> => {
   const db = await getDatabase();
+  const names =
+    input.name === "Turtlefolk/Stonefolk"
+      ? [input.name, "Turtlefolk"]
+      : [input.name];
 
   const existing = await db
     .select({ id: ancestries.id })
     .from(ancestries)
     .where(
       and(
-        eq(ancestries.name, input.name),
+        inArray(ancestries.name, names),
         eq(ancestries.userId, OFFICIAL_USER_ID)
       )
     )

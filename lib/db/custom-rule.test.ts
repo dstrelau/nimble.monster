@@ -1,22 +1,22 @@
 import { describe, expect, it } from "vitest";
 import {
-  type CustomRuleSectionLink,
-  diffSectionLinks,
+  type CustomRuleLink,
+  diffRuleLinks,
   groupCustomRuleReverseLinks,
-  validateSectionLinks,
+  validateRuleLinks,
 } from "./custom-rule";
 
 const VALID = ["movement", "monster-armor", "combat-structure__initiative"];
 
 const link = (
-  sectionSlug: string,
-  relation: CustomRuleSectionLink["relation"]
-): CustomRuleSectionLink => ({ sectionSlug, relation });
+  ruleSlug: string,
+  relation: CustomRuleLink["relation"]
+): CustomRuleLink => ({ ruleSlug, relation });
 
-describe("validateSectionLinks", () => {
+describe("validateRuleLinks", () => {
   it("returns valid links unchanged", () => {
     expect(
-      validateSectionLinks(
+      validateRuleLinks(
         [link("movement", "replaces"), link("monster-armor", "augments")],
         VALID
       )
@@ -27,18 +27,18 @@ describe("validateSectionLinks", () => {
   });
 
   it("defaults a missing relation to augments", () => {
-    expect(validateSectionLinks([{ sectionSlug: "movement" }], VALID)).toEqual([
+    expect(validateRuleLinks([{ ruleSlug: "movement" }], VALID)).toEqual([
       link("movement", "augments"),
     ]);
   });
 
   it("trims whitespace and drops empty slugs", () => {
     expect(
-      validateSectionLinks(
+      validateRuleLinks(
         [
-          { sectionSlug: "  movement  ", relation: "replaces" },
-          { sectionSlug: "", relation: "augments" },
-          { sectionSlug: "   ", relation: "augments" },
+          { ruleSlug: "  movement  ", relation: "replaces" },
+          { ruleSlug: "", relation: "augments" },
+          { ruleSlug: "   ", relation: "augments" },
         ],
         VALID
       )
@@ -47,7 +47,7 @@ describe("validateSectionLinks", () => {
 
   it("dedupes by slug, first occurrence wins", () => {
     expect(
-      validateSectionLinks(
+      validateRuleLinks(
         [link("movement", "replaces"), link("movement", "augments")],
         VALID
       )
@@ -56,7 +56,7 @@ describe("validateSectionLinks", () => {
 
   it("accepts section slugs of the form page__heading", () => {
     expect(
-      validateSectionLinks(
+      validateRuleLinks(
         [link("combat-structure__initiative", "augments")],
         VALID
       )
@@ -65,19 +65,19 @@ describe("validateSectionLinks", () => {
 
   it("throws when a slug is not a known reference section", () => {
     expect(() =>
-      validateSectionLinks([link("not-a-section", "augments")], VALID)
-    ).toThrow(/Unknown reference section/);
+      validateRuleLinks([link("not-a-section", "augments")], VALID)
+    ).toThrow(/Unknown rule/);
   });
 
   it("returns an empty array for no input", () => {
-    expect(validateSectionLinks([], VALID)).toEqual([]);
+    expect(validateRuleLinks([], VALID)).toEqual([]);
   });
 });
 
-describe("diffSectionLinks", () => {
+describe("diffRuleLinks", () => {
   it("computes additions and removals by slug", () => {
     expect(
-      diffSectionLinks(
+      diffRuleLinks(
         [link("movement", "replaces"), link("monster-armor", "augments")],
         [
           link("movement", "replaces"),
@@ -92,7 +92,7 @@ describe("diffSectionLinks", () => {
 
   it("treats a relation change as remove + add of the same slug", () => {
     expect(
-      diffSectionLinks(
+      diffRuleLinks(
         [link("movement", "augments")],
         [link("movement", "replaces")]
       )
@@ -104,7 +104,7 @@ describe("diffSectionLinks", () => {
 
   it("is a no-op when unchanged", () => {
     expect(
-      diffSectionLinks(
+      diffRuleLinks(
         [link("movement", "replaces")],
         [link("movement", "replaces")]
       )
@@ -112,14 +112,14 @@ describe("diffSectionLinks", () => {
   });
 
   it("handles going from empty to populated", () => {
-    expect(diffSectionLinks([], [link("movement", "replaces")])).toEqual({
+    expect(diffRuleLinks([], [link("movement", "replaces")])).toEqual({
       toAdd: [link("movement", "replaces")],
       toRemove: [],
     });
   });
 
   it("handles clearing all links", () => {
-    expect(diffSectionLinks([link("movement", "augments")], [])).toEqual({
+    expect(diffRuleLinks([link("movement", "augments")], [])).toEqual({
       toAdd: [],
       toRemove: [link("movement", "augments")],
     });
@@ -157,13 +157,6 @@ describe("groupCustomRuleReverseLinks", () => {
       { id: ID_A, name: "Gritty Wounds", relation: "replaces" },
     ]);
     expect(result.replaces).toHaveLength(1);
-  });
-
-  it("ignores rows whose relation is not replaces/augments", () => {
-    const result = groupCustomRuleReverseLinks([
-      { id: ID_A, name: "Gritty Wounds", relation: "related" },
-    ]);
-    expect(result).toEqual({ replaces: [], augments: [] });
   });
 
   it("returns empty groups for no rows", () => {

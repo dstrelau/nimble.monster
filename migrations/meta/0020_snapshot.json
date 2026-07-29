@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "9d68e9c6-a764-42cf-b37d-5d9b2d19a780",
+  "id": "b1571da1-9cd9-4528-ba6b-fff0e1acaeb2",
   "prevId": "5c414e4d-0b30-4321-b5ef-ca0da281b679",
   "tables": {
     "ancestries": {
@@ -1581,6 +1581,66 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+    "custom_rule_links": {
+      "name": "custom_rule_links",
+      "columns": {
+        "custom_rule_id": {
+          "name": "custom_rule_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rule_slug": {
+          "name": "rule_slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "relation": {
+          "name": "relation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {
+        "idx_custom_rule_links_rule_slug": {
+          "name": "idx_custom_rule_links_rule_slug",
+          "columns": ["rule_slug"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "custom_rule_links_custom_rule_id_custom_rules_id_fk": {
+          "name": "custom_rule_links_custom_rule_id_custom_rules_id_fk",
+          "tableFrom": "custom_rule_links",
+          "tableTo": "custom_rules",
+          "columnsFrom": ["custom_rule_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "custom_rule_links_custom_rule_id_rule_slug_pk": {
+          "columns": ["custom_rule_id", "rule_slug"],
+          "name": "custom_rule_links_custom_rule_id_rule_slug_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "custom_rules": {
       "name": "custom_rules",
       "columns": {
@@ -1665,51 +1725,6 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {}
-    },
-    "custom_rules_reference_sections": {
-      "name": "custom_rules_reference_sections",
-      "columns": {
-        "custom_rule_id": {
-          "name": "custom_rule_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "reference_slug": {
-          "name": "reference_slug",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        }
-      },
-      "indexes": {
-        "idx_custom_rules_reference_sections_rule": {
-          "name": "idx_custom_rules_reference_sections_rule",
-          "columns": ["custom_rule_id"],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {
-        "custom_rules_reference_sections_custom_rule_id_custom_rules_id_fk": {
-          "name": "custom_rules_reference_sections_custom_rule_id_custom_rules_id_fk",
-          "tableFrom": "custom_rules_reference_sections",
-          "tableTo": "custom_rules",
-          "columnsFrom": ["custom_rule_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
-        }
-      },
-      "compositePrimaryKeys": {
-        "custom_rules_reference_sections_custom_rule_id_reference_slug_pk": {
-          "columns": ["custom_rule_id", "reference_slug"],
-          "name": "custom_rules_reference_sections_custom_rule_id_reference_slug_pk"
-        }
-      },
       "uniqueConstraints": {},
       "checkConstraints": {}
     },

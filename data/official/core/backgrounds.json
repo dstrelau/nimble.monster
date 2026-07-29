@@ -10,7 +10,7 @@
       "type": "backgrounds",
       "attributes": {
         "name": "Back Out of Retirement",
-        "description": "You've forgotten more than most adventurers these days know! Talk with your GM, what made you come out of retirement?\n- **Let's see if I remember how to do this...** You may gain 1 Wound to use an ability or cast a spell as if you were 1 level higher.\n- **These old bones.** Your age has long since started to show. –1 max Wounds."
+        "description": "You've forgotten more than most adventurers these days know! Talk with your GM, what made you come out of retirement?\n- **Let's see if I remember how to do this...** Gain 1 Wound to use an ability or cast a spell as if you were 1 level higher.\n- **These old bones…** Your age has long since started to show. –1 max Wounds."
       }
     },
     {
@@ -38,14 +38,21 @@
       "type": "backgrounds",
       "attributes": {
         "name": "Haunted Past",
-        "description": "You are haunted by voices that occasionally give you cryptic advice. The voices are sometimes VERY helpful. Other times they only want to see you suffer. Advantage against fear. Ear to the Ground. Advantage on checks to know or obtain gossip for events that will soon happen or have happened less than 1 year ago."
+        "description": "You are haunted by voices that occasionally give you cryptic advice. The voices are sometimes VERY helpful. Other times they only want to see you suffer. Advantage against fear."
+      }
+    },
+    {
+      "type": "backgrounds",
+      "attributes": {
+        "name": "Ear to the Ground",
+        "description": "Advantage on checks to know or obtain gossip for events that will soon happen or have happened less than 1 year ago."
       }
     },
     {
       "type": "backgrounds",
       "attributes": {
         "name": "What? I've Been Around",
-        "description": "1/per location (or at the GM's discretion). You happen to know JUST the person who has the information you're looking for, or could get you out of a jam, and… Roll 1d20:\n- **1–5.** They want you DEAD.\n- **6–12.** You owe them money.\n- **13–19.** They can be convinced to help you..\n- **20.** They are your biggest fan/are madly in love with you."
+        "description": "(1/per location; or at the GM's discretion). You happen to know JUST the person who has the information you're looking for, or could get you out of a jam, and… Roll 1d20:\n- **1–5.** They want you DEAD.\n- **6–12.** You owe them money.\n- **13–19.** They can be convinced to help you.\n- **20.** They are your biggest fan/are madly in love with you."
       }
     },
     {
@@ -59,42 +66,42 @@
       "type": "backgrounds",
       "attributes": {
         "name": "Wild One",
-        "description": "Whether it is the sticks or flowers in your hair, your smell, or the way you carry yourself, wild creatures are less frightened of you and more willing to aid you. +1 Naturecraft. While Field Resting, roll your Hit Dice with advantage while in the wild."
+        "description": "Whether it is the sticks or flowers in your hair, your smell, or the way you carry yourself, wild creatures are less frightened of you and more willing to aid you. +1 Naturecraft. While Field Resting in the wild, your Hit Dice recover +KEY HP."
       }
     },
     {
       "type": "backgrounds",
       "attributes": {
         "name": "Fey Touched",
-        "description": "You take half damage from all magical effects, double from weapons made of metal (before armor is applied)."
+        "description": "You take half damage from all magical effects, double from weapons made of metal (before Defense is applied)."
       }
     },
     {
       "type": "backgrounds",
       "attributes": {
         "name": "Survivalist",
-        "description": "You never run out of your own personal rations. Anything can be food if you try hard enough! Advantage against poison saves. +1 max Hit Die."
+        "description": "You never run out of your own personal rations. Anything can be food if you try hard enough! (1/Safe Rest) End poison on yourself. Advantage against poison saves. +1 max Hit Die."
       }
     },
     {
       "type": "backgrounds",
       "attributes": {
         "name": "Home at Sea",
-        "description": "Recover twice as many Wounds and HP while resting on a ship or near water. You can fill in for a first mate or captain in a pinch. Advantage on water-related skill checks."
+        "description": "Recover twice as many Wounds and HP while Resting on a ship or near water. You can fill in for a first mate or captain in a pinch. Advantage on water-related skill checks."
       }
     },
     {
       "type": "backgrounds",
       "attributes": {
         "name": "At Home Underground",
-        "description": "You can dig twice as fast as others. Safe resting locations underground always count as Lavish lodging for you. You struggle to rest (INT save) while it's raining. \"Water… from the SKY?!\""
+        "description": "You can dig twice as fast as others. Safe Resting locations underground always count as Lavish lodging for you. You struggle to rest (INT save) while it's raining. \"Water… from the SKY?!\""
       }
     },
     {
       "type": "backgrounds",
       "attributes": {
         "name": "Raised by Goblins",
-        "description": "You speak Goblin natively (much better than one who has learned it later in life). You automatically notice and can avoid crudely-made traps and have advantage to notice and disarm more sophisticated traps."
+        "description": "You speak Goblin natively (much better than one who has learned it later in life). You automatically notice and can avoid crudely-made traps and have advantage to notice and disarm more sophisticated traps. **Change It Up!** You can choose any other ancestry to be raised by instead, and exchange the known language and get 1 helpful/iconic ability those people would inculcate (e.g., Dwarves know Dwarvish and are very good with smithing or stonecraft)."
       }
     },
     {
@@ -129,14 +136,14 @@
       "type": "backgrounds",
       "attributes": {
         "name": "Fearless",
-        "description": "You are immune to the Frightened condition. +1 Initiative. –1 Armor."
+        "description": "You are immune to the Frightened condition. +1 Initiative. –1 Defense."
       }
     },
     {
       "type": "backgrounds",
       "attributes": {
         "name": "So Dumb I'm Smart Sometimes",
-        "description": "(Req. 0 or negative INT at character creation.) Reroll an INT-related skill check, 1/day. Reroll a failed INT save with advantage, 1/Safe Rest.",
+        "description": "Req. 0 or negative INT at character creation. (2/Safe Rest) Reroll a failed INT-related skill or Save with advantage.",
         "requirement": "0 or negative INT at character creation"
       }
     },
@@ -144,7 +151,7 @@
       "type": "backgrounds",
       "attributes": {
         "name": "Wily Underdog",
-        "description": "(Req. 0 or negative STR at character creation.) Reroll a failed STR-related roll (e.g., STR attack, STR save, Might check) and use another stat instead, 1/day.",
+        "description": "Req. 0 or negative STR at character creation. (2/Safe Rest) Reroll a failed STR attack, STR save, or Might check and use another stat instead.",
         "requirement": "0 or negative STR at character creation"
       }
     },
@@ -152,7 +159,7 @@
       "type": "backgrounds",
       "attributes": {
         "name": "Bumblewise",
-        "description": "(Req. 0 or negative WIL at character creation.) A result of 1 or less on any WIL-related roll counts as a natural 20 (WIL save, Naturecraft, Perception, Influence, or Insight check).",
+        "description": "Req. 0 or negative WIL at character creation. A result of 1 or less on any WIL-related roll counts as a natural 20 (WIL save, Naturecraft, Perception, Influence, or Insight check).",
         "requirement": "0 or negative WIL at character creation"
       }
     },
@@ -160,7 +167,7 @@
       "type": "backgrounds",
       "attributes": {
         "name": "Accidental Acrobat",
-        "description": "(Req. 0 or negative DEX at character creation.) Whenever you fail a DEX-related roll (e.g., DEX attack, DEX save, Stealth check, Finesse check), you may roll again. If you still fail, the consequences are BAD.",
+        "description": "Req. 0 or negative DEX at character creation. Whenever you fail a DEX-related roll (e.g., DEX attack, DEX save, Stealth check, Finesse check), you may roll again. If you still fail, the consequences are BAD.",
         "requirement": "0 or negative DEX at character creation"
       }
     },

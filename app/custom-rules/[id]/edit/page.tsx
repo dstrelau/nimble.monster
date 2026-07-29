@@ -5,7 +5,7 @@ import { findCustomRule } from "@/lib/db/custom-rule";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify } from "@/lib/utils/slug";
 import { CustomRuleForm } from "../../CustomRuleForm";
-import { buildSectionGroups } from "../../sections";
+import { buildRuleGroups } from "../../rule-options";
 
 export const metadata: Metadata = {
   title: `Edit Custom Rule - ${SITE_NAME}`,
@@ -27,7 +27,7 @@ export default async function EditCustomRulePage({ params }: PageProps) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="mb-6 text-3xl font-bold">Edit Custom Rule</h1>
-      <CustomRuleForm rule={rule} sectionGroups={buildSectionGroups()} />
+      <CustomRuleForm rule={rule} ruleGroups={buildRuleGroups()} />
     </div>
   );
 }

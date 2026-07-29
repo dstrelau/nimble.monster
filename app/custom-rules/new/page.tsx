@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { CustomRuleForm } from "../CustomRuleForm";
-import { buildSectionGroups } from "../sections";
+import { buildRuleGroups } from "../rule-options";
 
 export const metadata: Metadata = {
   title: `New Custom Rule - ${SITE_NAME}`,
@@ -24,7 +24,7 @@ export default async function NewCustomRulePage() {
           visibility: "public",
           links: [],
         }}
-        sectionGroups={buildSectionGroups()}
+        ruleGroups={buildRuleGroups()}
         isCreating
       />
     </div>

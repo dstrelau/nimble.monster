@@ -1,30 +1,27 @@
 import { and, asc, eq, inArray, or } from "drizzle-orm";
-import { getValidSectionSlugs } from "@/lib/reference/filesystem";
+import { getValidRuleSlugs } from "@/lib/rules/filesystem";
 import type { User } from "@/lib/types";
 import { getCustomRuleUrl } from "@/lib/utils/url";
 import { isValidUUID } from "@/lib/utils/validation";
 import { toUser } from "./converters";
 import { getDatabase } from "./drizzle";
 import {
+  type CustomRuleRelationType,
   type CustomRuleVisibility,
+  customRuleLinks,
   customRules,
-  type RelationType,
-  relations,
   type UserRow,
   users,
 } from "./schema";
 
-// The relation kinds a custom rule may declare against a reference section.
-export type CustomRuleSectionRelation = Extract<
-  RelationType,
-  "replaces" | "augments"
->;
+// The relation kinds a custom rule may declare against an official rule.
+export type CustomRuleRelation = CustomRuleRelationType;
 
-export const DEFAULT_SECTION_RELATION: CustomRuleSectionRelation = "augments";
+export const DEFAULT_RELATION: CustomRuleRelation = "augments";
 
-export interface CustomRuleSectionLink {
-  sectionSlug: string;
-  relation: CustomRuleSectionRelation;
+export interface CustomRuleLink {
+  ruleSlug: string;
+  relation: CustomRuleRelation;
 }
 
 export interface CustomRule {
@@ -35,47 +32,46 @@ export interface CustomRule {
   likeCount: number;
   createdAt: Date;
   updatedAt: Date;
-  links: CustomRuleSectionLink[];
+  links: CustomRuleLink[];
   creator: User;
 }
 
 // --- Pure helpers (no DB / no filesystem access; unit-tested directly) ---
 
-// Normalize and validate section links against the set of valid section slugs.
-// Trims slugs, drops empties, defaults a missing relation to `augments`,
-// dedupes by slug (order-preserving; first occurrence wins, which enforces that
-// a section appears under a single relation), and throws if any slug is not a
-// known reference section.
-export function validateSectionLinks(
-  links: { sectionSlug: string; relation?: CustomRuleSectionRelation }[],
+// Normalize and validate links against the set of valid rule slugs. Trims
+// slugs, drops empties, defaults a missing relation to `augments`, dedupes by
+// slug (order-preserving; first occurrence wins, which enforces that a rule
+// appears under a single relation), and throws on an unknown slug.
+export function validateRuleLinks(
+  links: { ruleSlug: string; relation?: CustomRuleRelation }[],
   validSlugs: Iterable<string>
-): CustomRuleSectionLink[] {
+): CustomRuleLink[] {
   const valid = new Set(validSlugs);
   const seen = new Set<string>();
-  const result: CustomRuleSectionLink[] = [];
+  const result: CustomRuleLink[] = [];
   const invalid: string[] = [];
 
   for (const raw of links) {
-    const sectionSlug = raw.sectionSlug.trim();
-    if (!sectionSlug || seen.has(sectionSlug)) continue;
-    seen.add(sectionSlug);
-    if (valid.has(sectionSlug)) {
+    const ruleSlug = raw.ruleSlug.trim();
+    if (!ruleSlug || seen.has(ruleSlug)) continue;
+    seen.add(ruleSlug);
+    if (valid.has(ruleSlug)) {
       result.push({
-        sectionSlug,
-        relation: raw.relation ?? DEFAULT_SECTION_RELATION,
+        ruleSlug,
+        relation: raw.relation ?? DEFAULT_RELATION,
       });
     } else {
-      invalid.push(sectionSlug);
+      invalid.push(ruleSlug);
     }
   }
 
   if (invalid.length > 0) {
-    throw new Error(`Unknown reference section(s): ${invalid.join(", ")}`);
+    throw new Error(`Unknown rule(s): ${invalid.join(", ")}`);
   }
   return result;
 }
 
-// --- Reverse view: custom rules that link to a reference section ---
+// --- Reverse view: custom rules that link to an official rule ---
 
 export interface CustomRuleReverseRef {
   id: string;
@@ -89,17 +85,16 @@ export interface CustomRuleReverseGroups {
 }
 
 // Group reverse-link rows by relation, deduping by rule id within each relation
-// (a rule may link several of a page's sections under the same relation).
+// (a custom rule may link several official rules under the same relation).
 export function groupCustomRuleReverseLinks(
-  rows: { id: string; name: string; relation: RelationType }[]
+  rows: { id: string; name: string; relation: CustomRuleRelation }[]
 ): CustomRuleReverseGroups {
-  const seen: Record<CustomRuleSectionRelation, Set<string>> = {
+  const seen: Record<CustomRuleRelation, Set<string>> = {
     replaces: new Set(),
     augments: new Set(),
   };
   const groups: CustomRuleReverseGroups = { replaces: [], augments: [] };
   for (const row of rows) {
-    if (row.relation !== "replaces" && row.relation !== "augments") continue;
     if (seen[row.relation].has(row.id)) continue;
     seen[row.relation].add(row.id);
     groups[row.relation].push({
@@ -114,19 +109,19 @@ export function groupCustomRuleReverseLinks(
 // Compute the minimal set of link inserts/deletes to move from `current` to
 // `next`. A slug whose relation changed appears in both `toRemove` and `toAdd`
 // so callers can delete-then-insert it.
-export function diffSectionLinks(
-  current: CustomRuleSectionLink[],
-  next: CustomRuleSectionLink[]
-): { toAdd: CustomRuleSectionLink[]; toRemove: CustomRuleSectionLink[] } {
-  const currentBySlug = new Map(current.map((l) => [l.sectionSlug, l]));
-  const nextBySlug = new Map(next.map((l) => [l.sectionSlug, l]));
+export function diffRuleLinks(
+  current: CustomRuleLink[],
+  next: CustomRuleLink[]
+): { toAdd: CustomRuleLink[]; toRemove: CustomRuleLink[] } {
+  const currentBySlug = new Map(current.map((l) => [l.ruleSlug, l]));
+  const nextBySlug = new Map(next.map((l) => [l.ruleSlug, l]));
   return {
     toAdd: next.filter((l) => {
-      const prev = currentBySlug.get(l.sectionSlug);
+      const prev = currentBySlug.get(l.ruleSlug);
       return !prev || prev.relation !== l.relation;
     }),
     toRemove: current.filter((l) => {
-      const now = nextBySlug.get(l.sectionSlug);
+      const now = nextBySlug.get(l.ruleSlug);
       return !now || now.relation !== l.relation;
     }),
   };
@@ -137,7 +132,7 @@ export function diffSectionLinks(
 interface CustomRuleFullData {
   rule: typeof customRules.$inferSelect;
   creator: UserRow;
-  links: CustomRuleSectionLink[];
+  links: CustomRuleLink[];
 }
 
 const toCustomRule = (data: CustomRuleFullData): CustomRule => ({
@@ -164,29 +159,22 @@ async function loadCustomRulesFullData(
     .innerJoin(users, eq(customRules.userId, users.id))
     .where(inArray(customRules.id, ruleIds));
 
-  const relationRows = await db
+  const linkRows = await db
     .select()
-    .from(relations)
-    .where(
-      and(
-        eq(relations.fromType, "custom_rule"),
-        eq(relations.toType, "section"),
-        inArray(relations.fromId, ruleIds)
-      )
-    );
+    .from(customRuleLinks)
+    .where(inArray(customRuleLinks.customRuleId, ruleIds));
 
-  const linksByRule = new Map<string, CustomRuleSectionLink[]>();
-  for (const row of relationRows) {
-    if (row.relation !== "replaces" && row.relation !== "augments") continue;
-    const existing = linksByRule.get(row.fromId) ?? [];
-    existing.push({ sectionSlug: row.toId, relation: row.relation });
-    linksByRule.set(row.fromId, existing);
+  const linksByRule = new Map<string, CustomRuleLink[]>();
+  for (const row of linkRows) {
+    const existing = linksByRule.get(row.customRuleId) ?? [];
+    existing.push({ ruleSlug: row.ruleSlug, relation: row.relation });
+    linksByRule.set(row.customRuleId, existing);
   }
 
   const result = new Map<string, CustomRuleFullData>();
   for (const row of ruleRows) {
     const links = (linksByRule.get(row.custom_rules.id) ?? []).sort((a, b) =>
-      a.sectionSlug.localeCompare(b.sectionSlug)
+      a.ruleSlug.localeCompare(b.ruleSlug)
     );
     result.set(row.custom_rules.id, {
       rule: row.custom_rules,
@@ -236,25 +224,23 @@ export async function findPublicCustomRule(
 }
 
 // Public custom rules that replace or augment any of the given reference
-// sections, grouped by relation. Powers the reverse view on reference pages.
-export async function listPublicCustomRulesForSections(
-  sectionSlugs: string[]
+// official rules, grouped by relation. Powers the reverse view on rule pages.
+export async function listPublicCustomRulesForRules(
+  ruleSlugs: string[]
 ): Promise<CustomRuleReverseGroups> {
-  if (sectionSlugs.length === 0) return { replaces: [], augments: [] };
+  if (ruleSlugs.length === 0) return { replaces: [], augments: [] };
   const db = getDatabase();
   const rows = await db
     .select({
       id: customRules.id,
       name: customRules.name,
-      relation: relations.relation,
+      relation: customRuleLinks.relation,
     })
-    .from(relations)
-    .innerJoin(customRules, eq(relations.fromId, customRules.id))
+    .from(customRuleLinks)
+    .innerJoin(customRules, eq(customRuleLinks.customRuleId, customRules.id))
     .where(
       and(
-        eq(relations.fromType, "custom_rule"),
-        eq(relations.toType, "section"),
-        inArray(relations.toId, sectionSlugs),
+        inArray(customRuleLinks.ruleSlug, ruleSlugs),
         eq(customRules.visibility, "public")
       )
     )
@@ -262,11 +248,58 @@ export async function listPublicCustomRulesForSections(
   return groupCustomRuleReverseLinks(rows);
 }
 
-const toRelationInsert = (ruleId: string, link: CustomRuleSectionLink) => ({
-  fromType: "custom_rule" as const,
-  fromId: ruleId,
-  toType: "section" as const,
-  toId: link.sectionSlug,
+export interface RelationCounts {
+  replaces: number;
+  augments: number;
+}
+
+export interface CustomRuleIndex {
+  /** Per-rule counts, keyed by rule slug. Rules with no links are absent. */
+  byRule: Map<string, RelationCounts>;
+  /** Distinct public rules declaring each relation. */
+  ruleTotals: RelationCounts;
+}
+
+// Counts of public custom rules linked to every official rule, in one query,
+// for the rules index (per-row badges plus the sidebar totals).
+export async function getCustomRuleIndex(): Promise<CustomRuleIndex> {
+  const db = getDatabase();
+  const rows = await db
+    .select({
+      ruleId: customRules.id,
+      ruleSlug: customRuleLinks.ruleSlug,
+      relation: customRuleLinks.relation,
+    })
+    .from(customRuleLinks)
+    .innerJoin(customRules, eq(customRuleLinks.customRuleId, customRules.id))
+    .where(eq(customRules.visibility, "public"));
+
+  const byRule = new Map<string, RelationCounts>();
+  const ruleIds: Record<CustomRuleRelation, Set<string>> = {
+    replaces: new Set(),
+    augments: new Set(),
+  };
+  for (const row of rows) {
+    const counts = byRule.get(row.ruleSlug) ?? {
+      replaces: 0,
+      augments: 0,
+    };
+    counts[row.relation] += 1;
+    byRule.set(row.ruleSlug, counts);
+    ruleIds[row.relation].add(row.ruleId);
+  }
+  return {
+    byRule,
+    ruleTotals: {
+      replaces: ruleIds.replaces.size,
+      augments: ruleIds.augments.size,
+    },
+  };
+}
+
+const toLinkInsert = (customRuleId: string, link: CustomRuleLink) => ({
+  customRuleId,
+  ruleSlug: link.ruleSlug,
   relation: link.relation,
 });
 
@@ -275,7 +308,7 @@ interface CreateCustomRuleInput {
   name: string;
   content: string;
   visibility: CustomRuleVisibility;
-  links: CustomRuleSectionLink[];
+  links: CustomRuleLink[];
 }
 
 export async function createCustomRule(
@@ -284,7 +317,7 @@ export async function createCustomRule(
   const name = input.name.trim();
   if (!name) throw new Error("Custom rule name is required");
 
-  const links = validateSectionLinks(input.links, getValidSectionSlugs());
+  const links = validateRuleLinks(input.links, getValidRuleSlugs());
   const db = getDatabase();
   const id = crypto.randomUUID();
 
@@ -298,8 +331,8 @@ export async function createCustomRule(
     });
     if (links.length > 0) {
       await tx
-        .insert(relations)
-        .values(links.map((link) => toRelationInsert(id, link)));
+        .insert(customRuleLinks)
+        .values(links.map((link) => toLinkInsert(id, link)));
     }
   });
 
@@ -314,7 +347,7 @@ interface UpdateCustomRuleInput {
   name: string;
   content: string;
   visibility: CustomRuleVisibility;
-  links: CustomRuleSectionLink[];
+  links: CustomRuleLink[];
 }
 
 export async function updateCustomRule(
@@ -324,7 +357,7 @@ export async function updateCustomRule(
   const name = input.name.trim();
   if (!name) throw new Error("Custom rule name is required");
 
-  const nextLinks = validateSectionLinks(input.links, getValidSectionSlugs());
+  const nextLinks = validateRuleLinks(input.links, getValidRuleSlugs());
   const db = getDatabase();
 
   const existing = await db
@@ -336,22 +369,14 @@ export async function updateCustomRule(
     .limit(1);
   if (existing.length === 0) throw new Error("Custom rule not found");
 
-  const currentRows = await db
-    .select({ toId: relations.toId, relation: relations.relation })
-    .from(relations)
-    .where(
-      and(
-        eq(relations.fromType, "custom_rule"),
-        eq(relations.fromId, input.id),
-        eq(relations.toType, "section")
-      )
-    );
-  const current: CustomRuleSectionLink[] = currentRows.flatMap((r) =>
-    r.relation === "replaces" || r.relation === "augments"
-      ? [{ sectionSlug: r.toId, relation: r.relation }]
-      : []
-  );
-  const { toAdd, toRemove } = diffSectionLinks(current, nextLinks);
+  const current: CustomRuleLink[] = await db
+    .select({
+      ruleSlug: customRuleLinks.ruleSlug,
+      relation: customRuleLinks.relation,
+    })
+    .from(customRuleLinks)
+    .where(eq(customRuleLinks.customRuleId, input.id));
+  const { toAdd, toRemove } = diffRuleLinks(current, nextLinks);
 
   await db.transaction(async (tx) => {
     await tx
@@ -365,22 +390,20 @@ export async function updateCustomRule(
       .where(eq(customRules.id, input.id));
 
     if (toRemove.length > 0) {
-      await tx.delete(relations).where(
+      await tx.delete(customRuleLinks).where(
         and(
-          eq(relations.fromType, "custom_rule"),
-          eq(relations.fromId, input.id),
-          eq(relations.toType, "section"),
+          eq(customRuleLinks.customRuleId, input.id),
           inArray(
-            relations.toId,
-            toRemove.map((l) => l.sectionSlug)
+            customRuleLinks.ruleSlug,
+            toRemove.map((l) => l.ruleSlug)
           )
         )
       );
     }
     if (toAdd.length > 0) {
       await tx
-        .insert(relations)
-        .values(toAdd.map((link) => toRelationInsert(input.id, link)));
+        .insert(customRuleLinks)
+        .values(toAdd.map((link) => toLinkInsert(input.id, link)));
     }
   });
 
@@ -395,18 +418,9 @@ export async function deleteCustomRule(
 ): Promise<boolean> {
   if (!isValidUUID(id)) return false;
   const db = getDatabase();
-  const deleted = await db.transaction(async (tx) => {
-    const result = await tx
-      .delete(customRules)
-      .where(and(eq(customRules.id, id), eq(customRules.userId, userId)));
-    if (result.rowsAffected > 0) {
-      await tx
-        .delete(relations)
-        .where(
-          and(eq(relations.fromType, "custom_rule"), eq(relations.fromId, id))
-        );
-    }
-    return result.rowsAffected > 0;
-  });
-  return deleted;
+  // custom_rule_links cascades on delete.
+  const result = await db
+    .delete(customRules)
+    .where(and(eq(customRules.id, id), eq(customRules.userId, userId)));
+  return result.rowsAffected > 0;
 }

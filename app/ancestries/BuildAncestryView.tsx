@@ -36,7 +36,7 @@ const formSchema = z.object({
   size: z
     .array(z.enum(["tiny", "small", "medium", "large", "huge", "gargantuan"]))
     .min(1, "At least one size is required"),
-  rarity: z.enum(["common", "exotic"]),
+  rarity: z.enum(["common", "uncommon", "exotic"]),
   abilities: z.array(
     z.object({
       name: z.string().min(1, "Ability name is required"),

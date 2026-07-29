@@ -23,9 +23,9 @@ export default function TermsPage() {
 
       <h2>Reference Images</h2>
       <p>
-        Reference images on for <Link href="/reference/movement">Movement</Link>{" "}
-        and <Link href="/reference/measuring-spaces">Measuring Spaces</Link>{" "}
-        illustrated by Josh Park (swingsetpark).
+        Reference images on for <Link href="/rules/movement">Movement</Link> and{" "}
+        <Link href="/rules/measuring-spaces">Measuring Spaces</Link> illustrated
+        by Josh Park (swingsetpark).
       </p>
 
       <h2>Paper Forge</h2>

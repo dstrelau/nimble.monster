@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { Ancestry } from "@/lib/services/ancestries";
-import { SIZES } from "@/lib/services/ancestries";
+import { RARITIES, SIZES } from "@/lib/services/ancestries";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { getAncestryUrl } from "@/lib/utils/url";
@@ -47,6 +47,9 @@ export const Card = ({
     .sort((a, b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b))
     .map((s) => SIZES.find((size) => size.value === s)?.label || s)
     .join("/");
+  const rarityLabel = RARITIES.find(
+    (rarity) => rarity.value === ancestry.rarity
+  )?.label;
 
   const card = (
     <ShadcnCard
@@ -68,8 +71,8 @@ export const Card = ({
           )}
         </CardTitle>
         <CardAction>
-          {ancestry.rarity === "exotic" && (
-            <Badge variant="secondary">Exotic</Badge>
+          {ancestry.rarity !== "common" && rarityLabel && (
+            <Badge variant="secondary">{rarityLabel}</Badge>
           )}
         </CardAction>
       </CardHeader>

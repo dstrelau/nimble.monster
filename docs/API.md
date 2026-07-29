@@ -356,8 +356,8 @@ name.
       "attributes": {
         "name": "Zone of Control",
         "content": "Moving while adjacent to an enemy costs 1 extra space.",
-        "sections": [
-          { "slug": "combat-structure__initiative", "relation": "augments" }
+        "rules": [
+          { "slug": "initiative", "relation": "augments" }
         ]
       },
       "relationships": {
@@ -373,12 +373,11 @@ name.
 }
 ```
 
-The `attributes.sections` array holds the official rules reference sections this
-rule is linked to. Each entry has a `slug` (a section slug of the form
-`<page-slug>__<heading>`, or a bare page slug for a page's lead section) and a
-`relation` of either `replaces` (the rule overrides the section) or `augments`
-(the rule adds to or clarifies it). A section's page is reachable at
-`/reference/<page-slug>#<section-slug>`. The `included` array is present only
+The `attributes.rules` array holds the official rules this custom rule is linked
+to. Each entry has a `slug` (a flat rule slug, e.g. `initiative`) and a
+`relation` of either `replaces` (the custom rule overrides the official one) or
+`augments` (it adds to or clarifies it). Each official rule is readable at
+`/rules/<slug>`. The `included` array is present only
 when `include=creator` is specified; it contains the deduplicated creator user
 resources.
 
@@ -399,8 +398,8 @@ Retrieve a single public custom rule by ID (26-character identifier).
     "attributes": {
       "name": "Zone of Control",
       "content": "Moving while adjacent to an enemy costs 1 extra space.",
-      "sections": [
-        { "slug": "combat-structure__initiative", "relation": "augments" }
+      "rules": [
+        { "slug": "initiative", "relation": "augments" }
       ]
     },
     "relationships": {
@@ -415,7 +414,7 @@ Retrieve a single public custom rule by ID (26-character identifier).
 }
 ```
 
-The `attributes.sections` array follows the same shape as the list endpoint:
+The `attributes.rules` array follows the same shape as the list endpoint:
 each entry carries the section `slug` and its `relation` (`replaces` or
 `augments`).
 

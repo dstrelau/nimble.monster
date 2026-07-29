@@ -3,7 +3,7 @@ import {
   type OfficialSource,
   validateOfficialSource,
 } from "@/lib/services/validate-source";
-import type { AncestrySize } from "./types";
+import type { AncestryRarity, AncestrySize } from "./types";
 
 export type { OfficialSource };
 export { OFFICIAL_USER_ID };
@@ -14,7 +14,7 @@ export interface JSONAPIAncestry {
   attributes: {
     name: string;
     size: AncestrySize[];
-    rarity: "common" | "exotic";
+    rarity: AncestryRarity;
     description: string;
     abilities: Array<{ name: string; description: string }>;
   };
@@ -87,9 +87,13 @@ export function validateOfficialAncestriesJSON(data: unknown): {
       }
     }
 
-    if (attrs.rarity !== "common" && attrs.rarity !== "exotic") {
+    if (
+      attrs.rarity !== "common" &&
+      attrs.rarity !== "uncommon" &&
+      attrs.rarity !== "exotic"
+    ) {
       throw new Error(
-        `Invalid ancestry at index ${index} ("${attrs.name}"): rarity must be "common" or "exotic"`
+        `Invalid ancestry at index ${index} ("${attrs.name}"): rarity must be "common", "uncommon", or "exotic"`
       );
     }
 

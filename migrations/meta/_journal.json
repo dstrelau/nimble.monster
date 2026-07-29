@@ -145,15 +145,15 @@
     {
       "idx": 20,
       "version": "6",
-      "when": 1784860485282,
-      "tag": "0020_green_rick_jones",
+      "when": 1785117814838,
+      "tag": "0020_late_valkyrie",
       "breakpoints": true
     },
     {
       "idx": 21,
       "version": "6",
-      "when": 1784918707154,
-      "tag": "0021_orange_starhawk",
+      "when": 1785117826015,
+      "tag": "0021_open_loa",
       "breakpoints": true
     }
   ]

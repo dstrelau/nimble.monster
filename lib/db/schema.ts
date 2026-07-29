@@ -36,7 +36,7 @@ export type EntityImageTheme = "light" | "dark";
 export type GenerationStatus = "generating" | "completed" | "failed";
 export type SubclassVisibility = "public" | "private";
 export type SpellSchoolVisibility = "public" | "private";
-export type AncestryRarity = "common" | "exotic";
+export type AncestryRarity = "common" | "uncommon" | "exotic";
 export type MonsterRole =
   | "melee"
   | "ranged"
@@ -1185,30 +1185,8 @@ export type ClassAbilityItemInsert = typeof classAbilityItems.$inferInsert;
 export type ClassDraftRow = typeof classDrafts.$inferSelect;
 export type ClassDraftInsert = typeof classDrafts.$inferInsert;
 
-// Reference entries table
-export const referenceEntries = sqliteTable(
-  "reference_entries",
-  {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
-    slug: text("slug").notNull().unique(),
-    title: text("title").notNull(),
-    category: text("category").notNull(),
-    content: text("content").notNull(),
-    sourceFile: text("source_file").notNull(),
-    orderIndex: integer("order_index").notNull().default(0),
-    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
-    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
-  },
-  (table) => [index("idx_reference_entries_category").on(table.category)]
-);
-
-export type ReferenceEntryRow = typeof referenceEntries.$inferSelect;
-export type ReferenceEntryInsert = typeof referenceEntries.$inferInsert;
-
 // User-authored custom rules. Each rule may link to zero or more official
-// reference "sections" via the polymorphic `relations` table.
+// rules via `custom_rule_links`.
 export type CustomRuleVisibility = "public" | "private";
 
 export const customRules = sqliteTable(
@@ -1236,36 +1214,29 @@ export const customRules = sqliteTable(
 export type CustomRuleRow = typeof customRules.$inferSelect;
 export type CustomRuleInsert = typeof customRules.$inferInsert;
 
-// Polymorphic typed relations between entities. Ids are validated TEXT, NOT
-// foreign keys: section ids come from the reference filesystem (no table to
-// FK), and keeping the column uniformly polymorphic lets a single table wire
-// up heterogeneous edges. Referential integrity for the ids is enforced at the
-// service layer (mirrors `reactions`/`reports`).
-//
-// Current use: `custom_rule` -> `section` rows with relation `replaces` |
-// `augments`. `related` and section<->section edges are reserved for later.
-export type RelationFromType = "custom_rule" | "section";
-export type RelationToType = "section";
-export type RelationType = "replaces" | "augments" | "related";
+// Typed links from a user's custom rule to an official rule (by flat slug).
+// Official rule-to-rule "related" edges are curated in data/rules/relations.yaml,
+// not stored here.
+export type CustomRuleRelationType = "replaces" | "augments";
 
-export const relations = sqliteTable(
-  "relations",
+export const customRuleLinks = sqliteTable(
+  "custom_rule_links",
   {
-    fromType: text("from_type").$type<RelationFromType>().notNull(),
-    fromId: text("from_id").notNull(),
-    toType: text("to_type").$type<RelationToType>().notNull(),
-    toId: text("to_id").notNull(),
-    relation: text("relation").$type<RelationType>().notNull(),
+    customRuleId: text("custom_rule_id")
+      .notNull()
+      .references(() => customRules.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    ruleSlug: text("rule_slug").notNull(),
+    relation: text("relation").$type<CustomRuleRelationType>().notNull(),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
   },
   (table) => [
-    primaryKey({
-      columns: [table.fromType, table.fromId, table.toType, table.toId],
-    }),
-    index("idx_relations_from").on(table.fromType, table.fromId),
-    index("idx_relations_to").on(table.toType, table.toId),
+    primaryKey({ columns: [table.customRuleId, table.ruleSlug] }),
+    index("idx_custom_rule_links_rule_slug").on(table.ruleSlug),
   ]
 );
 
-export type RelationRow = typeof relations.$inferSelect;
-export type RelationInsert = typeof relations.$inferInsert;
+export type CustomRuleLinkRow = typeof customRuleLinks.$inferSelect;
+export type CustomRuleLinkInsert = typeof customRuleLinks.$inferInsert;

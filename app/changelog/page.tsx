@@ -14,8 +14,7 @@ const changelog: ChangelogEntry[] = [
   {
     date: "24 July 2026",
     entries: [
-      "Rules reference now links related sections together, and each condition is individually linkable.",
-      "Custom Rules are now a first-class section: browse them from the nav, see which custom rules replace or augment a reference section, and like or report them.",
+      "Rules redesign: the rules reference now lives at /rules, with every rule on its own page and linked to related rules. One index browses them A–Z or by category, with guided reading paths and custom rules folded in — each rule shows which community custom rules replace or augment it, and those rules can be liked or reported.",
     ],
   },
   {
