@@ -4,6 +4,7 @@ import { ItemCollections } from "@/app/items/ItemCollections";
 import { ItemDetailActions } from "@/app/items/ItemDetailActions";
 import { ItemRemixes } from "@/app/items/ItemRemixes";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { Card } from "@/components/item/Card";
 import { auth } from "@/lib/auth";
 import { itemsService } from "@/lib/services/items";
@@ -84,22 +85,30 @@ export default async function ItemPage({
   }
 
   return (
-    <div>
-      <div className="flex justify-end items-start gap-2 mb-6">
-        {session?.user && (
-          <>
-            <ItemDetailActions item={item} isOwner={isOwner} />
-            <AddToCollectionDialog type="item" itemId={item.id} />
-          </>
-        )}
-      </div>
-      <div className="flex justify-center">
-        <div className="flex flex-col items-center gap-12 max-w-sm w-full">
-          <Card item={item} creator={item.creator} link={false} />
-          <ItemCollections collections={collections} />
-          <ItemRemixes remixes={remixes} />
+    <HydratedEntityDetail
+      authenticated={Boolean(session?.user?.id)}
+      entityType="item"
+      entityId={item.id}
+      creatorDiscordId={item.creator?.discordId}
+      viewerDiscordId={session?.user?.discordId}
+    >
+      <div>
+        <div className="flex justify-end items-start gap-2 mb-6">
+          {session?.user && (
+            <>
+              <ItemDetailActions item={item} isOwner={isOwner} />
+              <AddToCollectionDialog type="item" itemId={item.id} />
+            </>
+          )}
+        </div>
+        <div className="flex justify-center">
+          <div className="flex flex-col items-center gap-12 max-w-sm w-full">
+            <Card item={item} creator={item.creator} link={false} />
+            <ItemCollections collections={collections} />
+            <ItemRemixes remixes={remixes} />
+          </div>
         </div>
       </div>
-    </div>
+    </HydratedEntityDetail>
   );
 }

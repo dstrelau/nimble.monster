@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { HydratedCollectionEditor } from "../HydratedCollectionEditor";
 import { NewCollection } from "./NewCollectionClient";
 
 export default async function NewCollectionPage() {
@@ -9,5 +10,9 @@ export default async function NewCollectionPage() {
     redirect("/create");
   }
 
-  return <NewCollection />;
+  return (
+    <HydratedCollectionEditor>
+      <NewCollection />
+    </HydratedCollectionEditor>
+  );
 }

@@ -11,8 +11,8 @@ import {
   addMonsterToCollection,
   addSpellSchoolToCollection,
   addSubclassToCollection,
-  listOwnCollections,
 } from "@/app/actions/collection";
+import { ownCollectionsQueryOptions } from "@/app/collections/ownCollectionsQueryOptions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -54,10 +54,7 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const availableCollections = useQuery({
-    queryKey: ["listOwnCollections"],
-    queryFn: listOwnCollections,
-  });
+  const availableCollections = useQuery(ownCollectionsQueryOptions());
 
   const form = useForm<AddToCollectionForm>({
     defaultValues: {
@@ -135,7 +132,7 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
       setOpen(false);
       form.reset();
       return queryClient.invalidateQueries({
-        queryKey: ["listOwnCollections"],
+        queryKey: ownCollectionsQueryOptions().queryKey,
       });
     },
   });

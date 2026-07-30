@@ -10,7 +10,6 @@ import { z } from "zod";
 import { BackdropPicker } from "@/app/items/BackdropPicker";
 import { ColorPicker } from "@/app/items/ColorPicker";
 import { IconPicker } from "@/app/items/IconPicker";
-import { listAllMonsterSources } from "@/app/monsters/actions";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { Card } from "@/components/item/Card";
 import {
@@ -40,6 +39,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import type { Item } from "@/lib/services/items";
 import { RARITIES } from "@/lib/services/items";
+import { sourcesQueryOptions } from "@/lib/services/sources";
 import { UNKNOWN_USER } from "@/lib/types";
 import { getItemUrl } from "@/lib/utils/url";
 import { createItem, updateItem } from "../actions/item";
@@ -126,12 +126,7 @@ export default function BuildItemView({
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const sourcesQuery = useQuery({
-    queryKey: ["sources"],
-    queryFn: async () => {
-      return await listAllMonsterSources();
-    },
-  });
+  const sourcesQuery = useQuery(sourcesQueryOptions());
 
   const sourceData = item || existingItem;
 

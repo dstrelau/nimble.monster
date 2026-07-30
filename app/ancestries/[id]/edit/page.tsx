@@ -1,8 +1,7 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound, permanentRedirect, unauthorized } from "next/navigation";
 import BuildAncestryView from "@/app/ancestries/BuildAncestryView";
+import { HydratedBuilderData } from "@/components/HydratedBuilderData";
 import { auth } from "@/lib/auth";
-import { getQueryClient } from "@/lib/queryClient";
 import { findAncestryWithCreatorId } from "@/lib/services/ancestries";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getAncestryEditUrl } from "@/lib/utils/url";
@@ -27,11 +26,9 @@ export default async function EditAncestryPage({
     return permanentRedirect(getAncestryEditUrl(ancestry));
   }
 
-  const queryClient = getQueryClient();
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydratedBuilderData includeSources>
       <BuildAncestryView ancestry={ancestry} />
-    </HydrationBoundary>
+    </HydratedBuilderData>
   );
 }

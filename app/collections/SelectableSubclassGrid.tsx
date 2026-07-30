@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { listPublicSubclassesAction } from "@/app/actions/subclass";
 import {
   EmptyState,
   ErrorState,
@@ -10,6 +9,7 @@ import {
 } from "@/components/shared/GridStates";
 import { SubclassFilterBar } from "@/components/subclass/SubclassFilterBar";
 import { SubclassMiniCard } from "@/components/subclass/SubclassMiniCard";
+import { publicSubclassesQueryOptions } from "@/lib/queryOptions";
 import type { Subclass, SubclassSortOption } from "@/lib/types";
 
 interface SelectableSubclassGridProps {
@@ -31,11 +31,7 @@ export function SelectableSubclassGrid({
     data: subclasses,
     isLoading,
     error,
-  } = useQuery({
-    queryKey: ["subclasses-all"],
-    queryFn: () => listPublicSubclassesAction(),
-    staleTime: 30000,
-  });
+  } = useQuery(publicSubclassesQueryOptions());
 
   const filteredSubclasses = useMemo(() => {
     if (!subclasses) return [];

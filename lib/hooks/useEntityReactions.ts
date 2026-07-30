@@ -1,8 +1,9 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { getMyReactions, toggleMyReaction } from "@/app/actions/reactions";
+import { toggleMyReaction } from "@/app/actions/reactions";
 import type { ReactableEntityType, ReactionType } from "@/lib/db/schema";
+import { entityReactionsQueryOptions } from "./entityReactionsQueryOptions";
 
 export function useEntityReactions(
   entityType: ReactableEntityType,
@@ -13,8 +14,7 @@ export function useEntityReactions(
   const queryKey = ["reactions", entityType, entityId] as const;
 
   const query = useQuery({
-    queryKey,
-    queryFn: () => getMyReactions(entityType, entityId),
+    ...entityReactionsQueryOptions(entityType, entityId),
     enabled: status === "authenticated",
   });
 

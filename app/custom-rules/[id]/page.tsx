@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { EntityReactions } from "@/components/EntityReactions";
+import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { ReportEntityDialog } from "@/components/ReportEntityDialog";
 import { RuleContent } from "@/components/rules/RuleContent";
 import { Attribution } from "@/components/shared/Attribution";
@@ -112,42 +113,51 @@ export default async function CustomRulePage({ params }: PageProps) {
   const augments = getLinkedRules(rule.links, "augments");
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
-      <nav className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/custom-rules" className="hover:text-foreground">
-          Custom Rules
-        </Link>
-        <span>/</span>
-        <span className="text-foreground">{rule.name}</span>
-      </nav>
+    <HydratedEntityDetail
+      authenticated={Boolean(session?.user?.id)}
+      entityType="customRule"
+      entityId={rule.id}
+      creatorDiscordId={rule.creator.discordId}
+      viewerDiscordId={session?.user?.discordId}
+      includeCollections={false}
+    >
+      <div className="mx-auto max-w-3xl px-4 py-8">
+        <nav className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
+          <Link href="/custom-rules" className="hover:text-foreground">
+            Custom Rules
+          </Link>
+          <span>/</span>
+          <span className="text-foreground">{rule.name}</span>
+        </nav>
 
-      <div className="mb-6 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">{rule.name}</h1>
-          <Attribution user={rule.creator} className="mt-2" />
+        <div className="mb-6 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">{rule.name}</h1>
+            <Attribution user={rule.creator} className="mt-2" />
+          </div>
+          <div className="flex items-center gap-2">
+            {isOwner && <CustomRuleActions rule={rule} />}
+            <ReportEntityDialog
+              entityType="customRule"
+              entityId={rule.id}
+              entityLabel="Custom Rule"
+            />
+            <EntityReactions
+              entityType="customRule"
+              entityId={rule.id}
+              showLabel
+            />
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          {isOwner && <CustomRuleActions rule={rule} />}
-          <ReportEntityDialog
-            entityType="customRule"
-            entityId={rule.id}
-            entityLabel="Custom Rule"
-          />
-          <EntityReactions
-            entityType="customRule"
-            entityId={rule.id}
-            showLabel
-          />
-        </div>
+
+        <CustomRuleBody
+          content={rule.content}
+          creatorDiscordId={rule.creator.discordId}
+        />
+
+        <LinkedRules title="Replaces" rules={replaces} />
+        <LinkedRules title="Augments" rules={augments} />
       </div>
-
-      <CustomRuleBody
-        content={rule.content}
-        creatorDiscordId={rule.creator.discordId}
-      />
-
-      <LinkedRules title="Replaces" rules={replaces} />
-      <LinkedRules title="Augments" rules={augments} />
-    </div>
+    </HydratedEntityDetail>
   );
 }

@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { CompanionDetailActions } from "@/app/companions/CompanionDetailActions";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
 import { Card } from "@/components/companion/Card";
+import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { auth } from "@/lib/auth";
 import {
   findCompanion,
@@ -96,18 +97,33 @@ export default async function CompanionPage({
   }
 
   return (
-    <div>
-      <div className="flex justify-end items-start gap-2 mb-6">
-        {session?.user && (
-          <AddToCollectionDialog type="companion" companionId={companion.id} />
-        )}
-        {session?.user && (
-          <CompanionDetailActions companion={companion} isOwner={isOwner} />
-        )}
+    <HydratedEntityDetail
+      authenticated={Boolean(session?.user?.id)}
+      entityType="companion"
+      entityId={companion.id}
+      creatorDiscordId={companion.creator?.discordId}
+      viewerDiscordId={session?.user?.discordId}
+    >
+      <div>
+        <div className="flex justify-end items-start gap-2 mb-6">
+          {session?.user && (
+            <AddToCollectionDialog
+              type="companion"
+              companionId={companion.id}
+            />
+          )}
+          {session?.user && (
+            <CompanionDetailActions companion={companion} isOwner={isOwner} />
+          )}
+        </div>
+        <div className="max-w-3xl mx-auto">
+          <Card
+            companion={companion}
+            creator={companion.creator}
+            link={false}
+          />
+        </div>
       </div>
-      <div className="max-w-3xl mx-auto">
-        <Card companion={companion} creator={companion.creator} link={false} />
-      </div>
-    </div>
+    </HydratedEntityDetail>
   );
 }

@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { ClassDetailActions } from "@/app/classes/ClassDetailActions";
 import { ClassSubclasses } from "@/app/classes/ClassSubclasses";
 import { ClassDetailView } from "@/components/class/ClassDetailView";
+import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { auth } from "@/lib/auth";
 import { findClass, listSubclassMinisForClass } from "@/lib/db";
 import { SITE_NAME } from "@/lib/utils/branding";
@@ -88,19 +89,27 @@ export default async function ClassPage({
   );
 
   return (
-    <div className="container mx-auto">
-      {session?.user && (
-        <div className="flex justify-end items-start gap-2 mb-6">
-          <ClassDetailActions classEntity={classEntity} isOwner={isOwner} />
+    <HydratedEntityDetail
+      authenticated={Boolean(session?.user?.id)}
+      entityType="class"
+      entityId={classEntity.id}
+      includeCollections={false}
+      viewerDiscordId={session?.user?.discordId}
+    >
+      <div className="container mx-auto">
+        {session?.user && (
+          <div className="flex justify-end items-start gap-2 mb-6">
+            <ClassDetailActions classEntity={classEntity} isOwner={isOwner} />
+          </div>
+        )}
+        <div className="max-w-3xl mx-auto flex flex-col items-center gap-12">
+          <ClassDetailView
+            classEntity={classEntity}
+            creator={classEntity.creator}
+          />
+          <ClassSubclasses subclasses={subclasses} />
         </div>
-      )}
-      <div className="max-w-3xl mx-auto flex flex-col items-center gap-12">
-        <ClassDetailView
-          classEntity={classEntity}
-          creator={classEntity.creator}
-        />
-        <ClassSubclasses subclasses={subclasses} />
       </div>
-    </div>
+    </HydratedEntityDetail>
   );
 }

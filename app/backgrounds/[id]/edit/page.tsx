@@ -1,8 +1,7 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound, permanentRedirect, unauthorized } from "next/navigation";
 import BuildBackgroundView from "@/app/backgrounds/BuildBackgroundView";
+import { HydratedBuilderData } from "@/components/HydratedBuilderData";
 import { auth } from "@/lib/auth";
-import { getQueryClient } from "@/lib/queryClient";
 import { findBackgroundWithCreatorId } from "@/lib/services/backgrounds";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getBackgroundEditUrl } from "@/lib/utils/url";
@@ -27,11 +26,9 @@ export default async function EditBackgroundPage({
     return permanentRedirect(getBackgroundEditUrl(background));
   }
 
-  const queryClient = getQueryClient();
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydratedBuilderData includeSources>
       <BuildBackgroundView background={background} />
-    </HydrationBoundary>
+    </HydratedBuilderData>
   );
 }

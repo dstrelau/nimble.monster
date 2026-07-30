@@ -2,6 +2,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound, permanentRedirect, unauthorized } from "next/navigation";
 import BuildSubclass from "@/app/subclasses/BuildSubclassView";
 import { subclassClassOptionsQueryOptions } from "@/app/subclasses/hooks";
+import { HydratedBuilderData } from "@/components/HydratedBuilderData";
 import { auth } from "@/lib/auth";
 import { findSubclassWithCreatorDiscordId } from "@/lib/db/subclass";
 import { getQueryClient } from "@/lib/queryClient";
@@ -35,8 +36,10 @@ export default async function EditSubclassPage({
   await queryClient.prefetchQuery(subclassClassOptionsQueryOptions());
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <BuildSubclass subclass={subclass} />
-    </HydrationBoundary>
+    <HydratedBuilderData>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <BuildSubclass subclass={subclass} />
+      </HydrationBoundary>
+    </HydratedBuilderData>
   );
 }

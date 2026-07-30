@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { listPublicSpellSchoolsAction } from "@/app/spell-schools/actions";
 import { Card } from "@/components/school/Card";
 import { SchoolSortSelect } from "@/components/school/SchoolSortSelect";
 import { FilterBar } from "@/components/shared/FilterBar";
@@ -11,6 +10,7 @@ import {
   ErrorState,
   LoadingState,
 } from "@/components/shared/GridStates";
+import { publicSpellSchoolsQueryOptions } from "@/lib/queryOptions";
 import type { SpellSchool, SpellSchoolSortOption } from "@/lib/types";
 
 interface SelectableSpellSchoolGridProps {
@@ -30,11 +30,7 @@ export function SelectableSpellSchoolGrid({
     data: spellSchools,
     isLoading,
     error,
-  } = useQuery({
-    queryKey: ["spellSchools-all"],
-    queryFn: () => listPublicSpellSchoolsAction(),
-    staleTime: 30000,
-  });
+  } = useQuery(publicSpellSchoolsQueryOptions());
 
   const filteredSchools = useMemo(() => {
     if (!spellSchools) return [];

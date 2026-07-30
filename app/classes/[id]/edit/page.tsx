@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BuildClassView from "@/app/classes/BuildClassView";
+import { HydratedBuilderData } from "@/components/HydratedBuilderData";
 import { auth } from "@/lib/auth";
 import { findClass } from "@/lib/db";
 import { SITE_NAME } from "@/lib/utils/branding";
@@ -32,5 +33,9 @@ export default async function EditClassPage({
     return notFound();
   }
 
-  return <BuildClassView classEntity={classEntity} />;
+  return (
+    <HydratedBuilderData>
+      <BuildClassView classEntity={classEntity} />
+    </HydratedBuilderData>
+  );
 }

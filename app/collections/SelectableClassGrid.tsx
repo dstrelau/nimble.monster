@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { listPublicClassesAction } from "@/app/actions/class";
 import { ClassMiniCard } from "@/components/class/ClassMiniCard";
 import { FilterBar } from "@/components/shared/FilterBar";
 import {
@@ -18,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { publicClassesQueryOptions } from "@/lib/queryOptions";
 import type { Class, ClassSortOption } from "@/lib/types";
 
 const SORT_LABELS: { value: ClassSortOption; label: string }[] = [
@@ -45,11 +45,7 @@ export function SelectableClassGrid({
     data: classes,
     isLoading,
     error,
-  } = useQuery({
-    queryKey: ["classes-all"],
-    queryFn: () => listPublicClassesAction(),
-    staleTime: 30000,
-  });
+  } = useQuery(publicClassesQueryOptions());
 
   const filteredClasses = useMemo(() => {
     if (!classes) return [];

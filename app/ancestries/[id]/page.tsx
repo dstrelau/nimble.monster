@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { AncestryDetailActions } from "@/app/ancestries/AncestryDetailActions";
 import { Card } from "@/components/ancestry/Card";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { auth } from "@/lib/auth";
 import { findAncestry } from "@/lib/services/ancestries";
 import { SITE_NAME } from "@/lib/utils/branding";
@@ -70,18 +71,26 @@ export default async function AncestryPage({
     session?.user?.discordId === ancestry.creator?.discordId || false;
 
   return (
-    <div>
-      <div className="flex justify-end items-start gap-2 mb-6">
-        {session?.user && (
-          <AddToCollectionDialog type="ancestry" ancestryId={ancestry.id} />
-        )}
-        {session?.user && (
-          <AncestryDetailActions ancestry={ancestry} isOwner={isOwner} />
-        )}
+    <HydratedEntityDetail
+      authenticated={Boolean(session?.user?.id)}
+      entityType="ancestry"
+      entityId={ancestry.id}
+      creatorDiscordId={ancestry.creator?.discordId}
+      viewerDiscordId={session?.user?.discordId}
+    >
+      <div>
+        <div className="flex justify-end items-start gap-2 mb-6">
+          {session?.user && (
+            <AddToCollectionDialog type="ancestry" ancestryId={ancestry.id} />
+          )}
+          {session?.user && (
+            <AncestryDetailActions ancestry={ancestry} isOwner={isOwner} />
+          )}
+        </div>
+        <div className="mx-auto flex flex-col items-center gap-12 max-w-md">
+          <Card ancestry={ancestry} link={false} />
+        </div>
       </div>
-      <div className="mx-auto flex flex-col items-center gap-12 max-w-md">
-        <Card ancestry={ancestry} link={false} />
-      </div>
-    </div>
+    </HydratedEntityDetail>
   );
 }

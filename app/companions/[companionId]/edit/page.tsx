@@ -1,5 +1,6 @@
 import { notFound, permanentRedirect, unauthorized } from "next/navigation";
 import BuildCompanionView from "@/app/companions/BuildCompanionView";
+import { HydratedBuilderData } from "@/components/HydratedBuilderData";
 import { auth } from "@/lib/auth";
 import { findCompanionWithCreator } from "@/lib/db/companion";
 import { deslugify, slugify } from "@/lib/utils/slug";
@@ -25,5 +26,9 @@ export default async function EditCompanionPage({
     return permanentRedirect(getCompanionUrl(companion));
   }
 
-  return <BuildCompanionView existingCompanion={companion} />;
+  return (
+    <HydratedBuilderData>
+      <BuildCompanionView existingCompanion={companion} />
+    </HydratedBuilderData>
+  );
 }

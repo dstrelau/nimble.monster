@@ -1,5 +1,10 @@
+import { HydratedBuilderData } from "@/components/HydratedBuilderData";
 import BuildAncestryView from "../BuildAncestryView";
 
 export default function NewAncestryPage() {
-  return <BuildAncestryView />;
+  return (
+    <HydratedBuilderData includeSources>
+      <BuildAncestryView />
+    </HydratedBuilderData>
+  );
 }

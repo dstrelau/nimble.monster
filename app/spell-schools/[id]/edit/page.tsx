@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import BuildSchoolView from "@/app/spell-schools/BuildSchoolView";
+import { HydratedBuilderData } from "@/components/HydratedBuilderData";
 import { auth } from "@/lib/auth";
 import { findSpellSchoolWithCreatorDiscordId } from "@/lib/db/school";
 
@@ -26,5 +27,9 @@ export default async function EditSchoolPage({ params }: EditSchoolPageProps) {
     notFound();
   }
 
-  return <BuildSchoolView existingSchool={spellSchool} />;
+  return (
+    <HydratedBuilderData>
+      <BuildSchoolView existingSchool={spellSchool} />
+    </HydratedBuilderData>
+  );
 }

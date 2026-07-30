@@ -1,7 +1,10 @@
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound, permanentRedirect, unauthorized } from "next/navigation";
 import BuildItemView from "@/app/items/BuildItemView";
 import { auth } from "@/lib/auth";
+import { getQueryClient } from "@/lib/queryClient";
 import { itemsService } from "@/lib/services/items";
+import { sourcesQueryOptions } from "@/lib/services/sources";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getItemEditUrl } from "@/lib/utils/url";
 
@@ -25,5 +28,12 @@ export default async function EditItemPage({
     return permanentRedirect(getItemEditUrl(item));
   }
 
-  return <BuildItemView item={item} />;
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery(sourcesQueryOptions());
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <BuildItemView item={item} />
+    </HydrationBoundary>
+  );
 }

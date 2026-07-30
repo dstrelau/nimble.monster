@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { MonsterCollections } from "@/components/monster/MonsterCollections";
 import { ReportEntityDialog } from "@/components/ReportEntityDialog";
 import { Card } from "@/components/school/Card";
@@ -32,28 +33,35 @@ export default async function SchoolPage({ params }: SchoolPageProps) {
   const collections = await findSpellSchoolCollections(uid);
 
   return (
-    <div>
-      <div className="flex justify-end items-start gap-2 mb-6">
-        {isOwner && <SchoolActions spellSchool={spellSchool} />}
-        {session?.user && (
-          <AddToCollectionDialog
-            type="spellSchool"
-            spellSchoolId={spellSchool.id}
-          />
-        )}
-        {session?.user && (
-          <ReportEntityDialog
-            entityType="spellSchool"
-            entityId={spellSchool.id}
-            entityLabel="Spell School"
-          />
-        )}
-      </div>
+    <HydratedEntityDetail
+      authenticated={Boolean(session?.user?.id)}
+      entityType="spellSchool"
+      entityId={spellSchool.id}
+      viewerDiscordId={session?.user?.discordId}
+    >
+      <div>
+        <div className="flex justify-end items-start gap-2 mb-6">
+          {isOwner && <SchoolActions spellSchool={spellSchool} />}
+          {session?.user && (
+            <AddToCollectionDialog
+              type="spellSchool"
+              spellSchoolId={spellSchool.id}
+            />
+          )}
+          {session?.user && (
+            <ReportEntityDialog
+              entityType="spellSchool"
+              entityId={spellSchool.id}
+              entityLabel="Spell School"
+            />
+          )}
+        </div>
 
-      <div className="min-w-lg max-w-xl mx-auto flex flex-col items-center gap-12">
-        <Card spellSchool={spellSchool} link={false} />
-        <MonsterCollections collections={collections} />
+        <div className="min-w-lg max-w-xl mx-auto flex flex-col items-center gap-12">
+          <Card spellSchool={spellSchool} link={false} />
+          <MonsterCollections collections={collections} />
+        </div>
       </div>
-    </div>
+    </HydratedEntityDetail>
   );
 }

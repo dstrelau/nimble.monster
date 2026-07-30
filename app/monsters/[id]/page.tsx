@@ -4,6 +4,7 @@ import { AddToEncounterDialog } from "@/app/monsters/AddToEncounterDialog";
 import { MonsterDetailActions } from "@/app/monsters/MonsterDetailActions";
 import { MonsterRemixes } from "@/app/monsters/MonsterRemixes";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { Card } from "@/components/monster/Card";
 import { MonsterCollections } from "@/components/monster/MonsterCollections";
 import { auth } from "@/lib/auth";
@@ -92,7 +93,14 @@ export default async function MonsterPage({
   }
 
   return (
-    <>
+    <HydratedEntityDetail
+      authenticated={Boolean(session?.user?.id)}
+      entityType="monster"
+      entityId={monster.id}
+      creatorDiscordId={monster.creator?.discordId}
+      viewerDiscordId={session?.user?.discordId}
+      includeEncounters
+    >
       <div className="flex justify-end items-start gap-2 mb-6">
         {session?.user && (
           <>
@@ -119,6 +127,6 @@ export default async function MonsterPage({
         <MonsterCollections collections={collections} />
         <MonsterRemixes remixes={remixes} />
       </div>
-    </>
+    </HydratedEntityDetail>
   );
 }

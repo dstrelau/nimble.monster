@@ -4,6 +4,7 @@ import * as db from "@/lib/db";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getCollectionEditUrl } from "@/lib/utils/url";
 import { CreateEditCollection } from "../../CreateEditCollection";
+import { HydratedCollectionEditor } from "../../HydratedCollectionEditor";
 
 export default async function EditCollectionPage({
   params,
@@ -24,8 +25,10 @@ export default async function EditCollectionPage({
   }
 
   return (
-    <div>
-      <CreateEditCollection collection={collection} />
-    </div>
+    <HydratedCollectionEditor>
+      <div>
+        <CreateEditCollection collection={collection} />
+      </div>
+    </HydratedCollectionEditor>
   );
 }

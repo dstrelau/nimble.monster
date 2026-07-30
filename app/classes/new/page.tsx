@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import BuildClassView from "@/app/classes/BuildClassView";
+import { HydratedBuilderData } from "@/components/HydratedBuilderData";
 import { SITE_NAME } from "@/lib/utils/branding";
 
 export const metadata: Metadata = {
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function NewClassPage() {
-  return <BuildClassView />;
+  return (
+    <HydratedBuilderData>
+      <BuildClassView />
+    </HydratedBuilderData>
+  );
 }

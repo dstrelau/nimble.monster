@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { BackgroundDetailActions } from "@/app/backgrounds/BackgroundDetailActions";
 import { Card } from "@/components/background/Card";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { auth } from "@/lib/auth";
 import { findBackground } from "@/lib/services/backgrounds";
 import { SITE_NAME } from "@/lib/utils/branding";
@@ -70,21 +71,32 @@ export default async function BackgroundPage({
     session?.user?.discordId === background.creator?.discordId || false;
 
   return (
-    <div>
-      <div className="flex justify-end items-start gap-2 mb-6">
-        {session?.user && (
-          <AddToCollectionDialog
-            type="background"
-            backgroundId={background.id}
-          />
-        )}
-        {session?.user && (
-          <BackgroundDetailActions background={background} isOwner={isOwner} />
-        )}
+    <HydratedEntityDetail
+      authenticated={Boolean(session?.user?.id)}
+      entityType="background"
+      entityId={background.id}
+      creatorDiscordId={background.creator?.discordId}
+      viewerDiscordId={session?.user?.discordId}
+    >
+      <div>
+        <div className="flex justify-end items-start gap-2 mb-6">
+          {session?.user && (
+            <AddToCollectionDialog
+              type="background"
+              backgroundId={background.id}
+            />
+          )}
+          {session?.user && (
+            <BackgroundDetailActions
+              background={background}
+              isOwner={isOwner}
+            />
+          )}
+        </div>
+        <div className="mx-auto flex flex-col items-center gap-12 max-w-md">
+          <Card background={background} link={false} />
+        </div>
       </div>
-      <div className="mx-auto flex flex-col items-center gap-12 max-w-md">
-        <Card background={background} link={false} />
-      </div>
-    </div>
+    </HydratedEntityDetail>
   );
 }

@@ -3,10 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CopyPlus, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  addMonsterToEncounter,
-  listOwnEncounters,
-} from "@/app/actions/encounter";
+import { addMonsterToEncounter } from "@/app/actions/encounter";
+import { ownEncountersQueryOptions } from "@/app/encounters/ownEncountersQueryOptions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,10 +40,7 @@ export const AddToEncounterDialog = ({ monsterId }: { monsterId: string }) => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const availableEncounters = useQuery({
-    queryKey: ["listOwnEncounters"],
-    queryFn: listOwnEncounters,
-  });
+  const availableEncounters = useQuery(ownEncountersQueryOptions());
 
   const form = useForm<AddToEncounterForm>({
     defaultValues: {
@@ -77,7 +72,7 @@ export const AddToEncounterDialog = ({ monsterId }: { monsterId: string }) => {
       setOpen(false);
       form.reset();
       return queryClient.invalidateQueries({
-        queryKey: ["listOwnEncounters"],
+        queryKey: ownEncountersQueryOptions().queryKey,
       });
     },
   });
