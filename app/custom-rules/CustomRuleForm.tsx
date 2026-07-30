@@ -250,7 +250,7 @@ export function CustomRuleForm({
                     onValueChange={(value) => updateRelation(link.id, value)}
                   >
                     <SelectTrigger
-                      className="w-full"
+                      className="col-span-2 w-full sm:col-span-1"
                       aria-label="Relationship to official rule"
                     >
                       <SelectValue />

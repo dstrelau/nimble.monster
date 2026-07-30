@@ -119,10 +119,15 @@ Workflow:
 # Browser QA and debugging
 
 - Static checks and unit tests are not sufficient for route or data-loading UI changes. Browser-test every affected route and entity type, and verify that loading completes, the correct navigation is active, requests succeed, and there are no console errors, page errors, hydration warnings, or relevant server-log errors.
+- For UI fixes, include screenshot evidence in the final response whenever browser access makes it practical.
 - After changing output shared by server and client components, wait for the dev compiler to settle and test both normal client navigation and a full reload. Do not dismiss hydration errors as stale HMR state without finding and removing avoidable server/client output differences.
 - For equivalent entity-list routes, prefer a consistent loading contract: server-load or dehydrate the active entity's initial page, fetch only that entity plus shared counts, and use client requests for filtering and pagination. Do not load every entity dataset for each route.
 - Audit all call sites before changing shared URL or rendering helpers. If only one navigation surface needs a section-specific destination, construct that link locally rather than changing the shared canonical entity URL.
 - Treat debugging conclusions as hypotheses until the relevant logs or network trace verify them. Browser automation's high-level request headers may omit security-relevant headers; inspect raw CDP network events (including extra request headers) before concluding that headers such as `Origin` were not sent.
+
+# User preferences
+
+- When the user asks the agent to remember something, persist it in this project-level `AGENTS.md` rather than relying only on the current thread's conversation context.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
