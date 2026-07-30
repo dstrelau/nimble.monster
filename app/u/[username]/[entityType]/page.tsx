@@ -211,7 +211,7 @@ export default async function UserProfileEntityPage({
   const { username, entityType } = await params;
   const rawSearchParams = await searchParams;
   if (!isProfileEntityType(entityType)) notFound();
-k
+
   const user = await db.getUserByUsername(username.toLowerCase());
   if (!user) notFound();
 
