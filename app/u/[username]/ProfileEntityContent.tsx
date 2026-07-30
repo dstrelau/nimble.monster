@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { PaginatedAncestryGrid } from "@/components/ancestry/PaginatedAncestryGrid";
 import { PaginatedBackgroundGrid } from "@/components/background/PaginatedBackgroundGrid";
@@ -12,7 +10,8 @@ import { CardGrid as ItemCardGrid } from "@/components/item/CardGrid";
 import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
 import { SchoolsListView } from "@/components/school/SchoolsListView";
 import { SubclassesListView } from "@/components/subclass/SubclassesListView";
-import type { CustomRule } from "@/lib/db/custom-rule";
+import type { CustomRule, CustomRuleRelation } from "@/lib/db/custom-rule";
+import { getRule } from "@/lib/rules/filesystem";
 import type { Item } from "@/lib/services/items";
 import type {
   Class,
@@ -37,6 +36,16 @@ export type ProfileEntityContentProps =
   | { entityType: "subclasses"; subclasses: Subclass[] }
   | { entityType: "spell-schools"; spellSchools: SpellSchool[] }
   | { entityType: "rules"; rules: CustomRule[] };
+
+function linkedRuleTitles(
+  rule: CustomRule,
+  relation: CustomRuleRelation
+): string {
+  return rule.links
+    .filter((link) => link.relation === relation)
+    .map((link) => getRule(link.ruleSlug)?.title ?? link.ruleSlug)
+    .join(", ");
+}
 
 export default function ProfileEntityContent(props: ProfileEntityContentProps) {
   switch (props.entityType) {
@@ -120,22 +129,31 @@ export default function ProfileEntityContent(props: ProfileEntityContentProps) {
         </p>
       ) : (
         <div className="grid gap-3 md:grid-cols-2">
-          {props.rules.map((rule) => (
-            <Link
-              key={rule.id}
-              href={getCustomRuleUrl(rule)}
-              className="group rounded-md border bg-card p-4 text-card-foreground transition-colors hover:bg-accent"
-            >
-              <h2 className="font-semibold group-hover:underline">
-                {rule.name}
-              </h2>
-              <p className="mt-3 text-sm text-muted-foreground">
-                {rule.links.length === 0
-                  ? "No linked official rules"
-                  : `${rule.links.length} linked official ${rule.links.length === 1 ? "rule" : "rules"}`}
-              </p>
-            </Link>
-          ))}
+          {props.rules.map((rule) => {
+            const replaces = linkedRuleTitles(rule, "replaces");
+            const augments = linkedRuleTitles(rule, "augments");
+            return (
+              <Link
+                key={rule.id}
+                href={getCustomRuleUrl(rule)}
+                className="group rounded-md border bg-card p-4 text-card-foreground transition-colors hover:bg-accent"
+              >
+                <h2 className="font-semibold group-hover:underline">
+                  {rule.name}
+                </h2>
+                {rule.links.length === 0 ? (
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    No linked official rules
+                  </p>
+                ) : (
+                  <div className="mt-3 space-y-1 text-sm text-muted-foreground">
+                    {replaces && <p>Replaces: {replaces}</p>}
+                    {augments && <p>Augments: {augments}</p>}
+                  </div>
+                )}
+              </Link>
+            );
+          })}
         </div>
       );
   }
