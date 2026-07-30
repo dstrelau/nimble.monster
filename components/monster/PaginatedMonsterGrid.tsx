@@ -90,7 +90,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
   const filteredMonsters = data?.pages.flatMap((page) => page.data);
 
   return (
-    <div className="space-y-6">
+    <div className="@container space-y-6">
       <MonsterFilterBar
         searchTerm={searchQuery}
         sortOption={sortQuery}
@@ -109,16 +109,16 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
       {!filteredMonsters || filteredMonsters?.length === 0 ? (
         <EmptyState entityName="monsters" />
       ) : (
-        <div className="flex flex-col md:grid md:grid-flow-dense md:grid-cols-2 lg:grid-cols-3 print:grid print:grid-cols-3 gap-8">
+        <div className="grid grid-flow-dense grid-cols-1 gap-8 @min-[44rem]:grid-cols-2 @min-[70rem]:grid-cols-3 print:grid-cols-3">
           {filteredMonsters.map((monster) => (
             <div
               key={monster.id}
               className={cn(
                 (monster.legendary || (monster.members?.length ?? 0) > 0) &&
-                  "sm:col-span-2 md:col-span-2 print:col-span-2",
+                  "@min-[44rem]:col-span-2 print:col-span-2",
                 monster.legendary &&
                   typeQuery === "legendary" &&
-                  "md:col-span-3"
+                  "@min-[70rem]:col-span-3"
               )}
             >
               <Card

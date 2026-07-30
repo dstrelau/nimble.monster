@@ -138,7 +138,14 @@ const MonsterHeader: React.FC<{
           size={88}
         />
       )}
-      <div className="flex justify-between items-start">
+      <div
+        className={cn(
+          "flex items-start",
+          variant === "legendary"
+            ? "flex-col gap-2 sm:flex-row sm:justify-between sm:gap-0"
+            : "justify-between"
+        )}
+      >
         <div className={cn("basis-full", monster.paperforgeId && "ml-24")}>
           <div className="space-x-1">
             <div
@@ -175,7 +182,7 @@ const MonsterHeader: React.FC<{
         <MonsterStats
           monster={monster}
           variant={variant}
-          // className={cn(monster.paperforgeId && "ml-14")}
+          className={cn(variant === "legendary" && "self-end sm:self-auto")}
         />
       </div>
     </div>
@@ -296,6 +303,10 @@ export const Card = ({
     (e) => e.id === monster.paperforgeId
   );
   const isTeam = (monster.members?.length ?? 0) > 0;
+  const hasAbilities =
+    (monster.families?.some((family) => family.abilities.length > 0) ??
+      false) ||
+    (monster.abilities?.length ?? 0) > 0;
 
   const card = (
     <ShadcnCard
@@ -321,9 +332,13 @@ export const Card = ({
         />
       )}
 
-      <CardContentWithGap className={cn(selectable && "pointer-events-none")}>
-        {((monster.families?.some((f) => f.abilities.length > 0) ?? false) ||
-          (monster.abilities?.length ?? 0) > 0) && (
+      <CardContentWithGap
+        className={cn(
+          selectable && "pointer-events-none",
+          monster.paperforgeId && !isTeam && !hasAbilities && "pt-4"
+        )}
+      >
+        {hasAbilities && (
           <AbilityOverlay
             conditions={conditions}
             abilities={[
