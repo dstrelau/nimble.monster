@@ -277,7 +277,9 @@ export const listPublicFamiliesHavingMonstersForUser = async (
   const familyRows = await db
     .select()
     .from(families)
-    .where(eq(families.creatorId, creatorId))
+    .where(
+      and(eq(families.creatorId, creatorId), eq(families.visibility, "public"))
+    )
     .orderBy(asc(families.name));
 
   if (familyRows.length === 0) return [];

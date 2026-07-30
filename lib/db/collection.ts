@@ -1114,7 +1114,7 @@ export const listPublicCollectionsHavingMonstersForUser = async (
 
   const results: CollectionOverview[] = [];
   for (const c of collectionRows) {
-    const overview = await loadCollectionOverview(db, c, user);
+    const overview = await loadCollectionOverview(db, c, user, true);
     if (overview.monsters.length > 0) {
       results.push(overview);
     }
@@ -1168,7 +1168,8 @@ export const findSpellSchoolCollections = async (
 async function loadCollectionOverview(
   db: ReturnType<typeof getDatabase>,
   collection: CollectionRow,
-  creator: UserRow
+  creator: UserRow,
+  publicOnly = false
 ): Promise<CollectionOverview> {
   const [
     monsterLinks,
@@ -1184,12 +1185,26 @@ async function loadCollectionOverview(
       .select({ monster: monsters })
       .from(monstersCollections)
       .innerJoin(monsters, eq(monstersCollections.monsterId, monsters.id))
-      .where(eq(monstersCollections.collectionId, collection.id)),
+      .where(
+        publicOnly
+          ? and(
+              eq(monstersCollections.collectionId, collection.id),
+              eq(monsters.visibility, "public")
+            )
+          : eq(monstersCollections.collectionId, collection.id)
+      ),
     db
       .select({ item: items })
       .from(itemsCollections)
       .innerJoin(items, eq(itemsCollections.itemId, items.id))
-      .where(eq(itemsCollections.collectionId, collection.id)),
+      .where(
+        publicOnly
+          ? and(
+              eq(itemsCollections.collectionId, collection.id),
+              eq(items.visibility, "public")
+            )
+          : eq(itemsCollections.collectionId, collection.id)
+      ),
     db
       .select({ school: spellSchools })
       .from(spellSchoolsCollections)
@@ -1197,7 +1212,14 @@ async function loadCollectionOverview(
         spellSchools,
         eq(spellSchoolsCollections.spellSchoolId, spellSchools.id)
       )
-      .where(eq(spellSchoolsCollections.collectionId, collection.id)),
+      .where(
+        publicOnly
+          ? and(
+              eq(spellSchoolsCollections.collectionId, collection.id),
+              eq(spellSchools.visibility, "public")
+            )
+          : eq(spellSchoolsCollections.collectionId, collection.id)
+      ),
     db
       .select({ companion: companions })
       .from(companionsCollections)
@@ -1205,7 +1227,14 @@ async function loadCollectionOverview(
         companions,
         eq(companionsCollections.companionId, companions.id)
       )
-      .where(eq(companionsCollections.collectionId, collection.id)),
+      .where(
+        publicOnly
+          ? and(
+              eq(companionsCollections.collectionId, collection.id),
+              eq(companions.visibility, "public")
+            )
+          : eq(companionsCollections.collectionId, collection.id)
+      ),
     db
       .select({ ancestry: ancestries })
       .from(ancestriesCollections)
@@ -1213,7 +1242,14 @@ async function loadCollectionOverview(
         ancestries,
         eq(ancestriesCollections.ancestryId, ancestries.id)
       )
-      .where(eq(ancestriesCollections.collectionId, collection.id)),
+      .where(
+        publicOnly
+          ? and(
+              eq(ancestriesCollections.collectionId, collection.id),
+              eq(ancestries.visibility, "public")
+            )
+          : eq(ancestriesCollections.collectionId, collection.id)
+      ),
     db
       .select({ background: backgrounds })
       .from(backgroundsCollections)
@@ -1221,7 +1257,14 @@ async function loadCollectionOverview(
         backgrounds,
         eq(backgroundsCollections.backgroundId, backgrounds.id)
       )
-      .where(eq(backgroundsCollections.collectionId, collection.id)),
+      .where(
+        publicOnly
+          ? and(
+              eq(backgroundsCollections.collectionId, collection.id),
+              eq(backgrounds.visibility, "public")
+            )
+          : eq(backgroundsCollections.collectionId, collection.id)
+      ),
     db
       .select({ subclass: subclasses })
       .from(subclassesCollections)
@@ -1229,12 +1272,26 @@ async function loadCollectionOverview(
         subclasses,
         eq(subclassesCollections.subclassId, subclasses.id)
       )
-      .where(eq(subclassesCollections.collectionId, collection.id)),
+      .where(
+        publicOnly
+          ? and(
+              eq(subclassesCollections.collectionId, collection.id),
+              eq(subclasses.visibility, "public")
+            )
+          : eq(subclassesCollections.collectionId, collection.id)
+      ),
     db
       .select({ class: classes })
       .from(classesCollections)
       .innerJoin(classes, eq(classesCollections.classId, classes.id))
-      .where(eq(classesCollections.collectionId, collection.id)),
+      .where(
+        publicOnly
+          ? and(
+              eq(classesCollections.collectionId, collection.id),
+              eq(classes.visibility, "public")
+            )
+          : eq(classesCollections.collectionId, collection.id)
+      ),
   ]);
 
   const collectionMonsters = monsterLinks.map((l) => l.monster);

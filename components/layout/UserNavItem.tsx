@@ -51,16 +51,19 @@ export function UserNavItem({ open, onOpenChange }: UserNavItemProps) {
   const { data: session } = useSession();
   const currentUser = session?.user;
   const pathname = usePathname();
-  const isOnMyPages =
-    pathname?.startsWith("/my/") || pathname === `/u/${currentUser?.username}`;
+  const profilePath = currentUser?.username
+    ? `/u/${currentUser.username}`
+    : undefined;
+  const isOnProfile = profilePath
+    ? pathname === profilePath || pathname?.startsWith(`${profilePath}/`)
+    : false;
+  const isOnMyPages = pathname?.startsWith("/my/") || isOnProfile;
 
   const profileItem = currentUser
     ? {
         href: currentUser.username ? getUserUrl(currentUser) : "#",
         label: "View Profile",
-        isActive: currentUser.username
-          ? pathname === getUserUrl(currentUser)
-          : false,
+        isActive: isOnProfile,
         icon: UserIcon,
       }
     : null;

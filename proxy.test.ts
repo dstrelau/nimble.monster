@@ -45,6 +45,16 @@ describe("proxy", () => {
     expect(res?.status).not.toBe(400);
   });
 
+  it("allows POST from the request host on a development portal", async () => {
+    const req = makeRequest("POST", "https://portal.example.com/monsters", {
+      host: "portal.example.com",
+      "next-action": "abc123",
+      origin: "https://portal.example.com",
+    });
+    const res = await proxy(req);
+    expect(res?.status).not.toBe(400);
+  });
+
   it("rejects POST with Next-Action but spoofed origin", async () => {
     const req = makeRequest("POST", "/monsters/abc-123", {
       "next-action": "abc123",
@@ -66,6 +76,26 @@ describe("proxy", () => {
   it("rejects POST with Next-Action but missing origin", async () => {
     const req = makeRequest("POST", "/monsters/abc-123", {
       "next-action": "abc123",
+    });
+    const res = await proxy(req);
+    expect(res?.status).toBe(400);
+  });
+
+  it("allows a same-origin browser POST when Origin is omitted", async () => {
+    const req = makeRequest("POST", "/monsters/abc-123", {
+      "next-action": "abc123",
+      referer: "http://nimble.nexus/monsters/abc-123",
+      "sec-fetch-site": "same-origin",
+    });
+    const res = await proxy(req);
+    expect(res?.status).not.toBe(400);
+  });
+
+  it("rejects an origin-less cross-site browser POST", async () => {
+    const req = makeRequest("POST", "/monsters/abc-123", {
+      "next-action": "abc123",
+      referer: "https://evil.com/attack",
+      "sec-fetch-site": "cross-site",
     });
     const res = await proxy(req);
     expect(res?.status).toBe(400);

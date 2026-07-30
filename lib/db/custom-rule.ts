@@ -274,6 +274,13 @@ export async function listCustomRulesForUser(
   return [...map.values()].map(toCustomRule);
 }
 
+export async function listPublicCustomRulesForUser(
+  userId: string
+): Promise<CustomRule[]> {
+  const map = await loadCustomRulesFullData(undefined, "public", userId);
+  return [...map.values()].map(toCustomRule);
+}
+
 export async function findPublicCustomRule(
   id: string
 ): Promise<CustomRule | null> {

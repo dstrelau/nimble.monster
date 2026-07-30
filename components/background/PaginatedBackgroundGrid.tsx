@@ -47,7 +47,10 @@ export const PaginatedBackgroundGrid: React.FC<PaginatedBackgroundGridProps> = (
   const queryParams = () => {
     switch (props.kind) {
       case "user-backgrounds":
-        throw new Error("Not implemented");
+        return publicBackgroundsInfiniteQueryOptions({
+          ...params,
+          creatorId: props.creatorId,
+        });
       case "my-backgrounds":
         return myBackgroundsInfiniteQueryOptions(params);
       case "backgrounds":

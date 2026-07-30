@@ -9,14 +9,16 @@ export function publicAncestriesInfiniteQueryOptions({
   search,
   sort = "-createdAt",
   source,
+  creatorId,
   limit = 12,
 }: Partial<{
   search?: string;
   sort: PaginateAncestriesSortOption;
   source?: string;
+  creatorId?: string;
   limit?: number;
 }> = {}) {
-  const params = { search, sort, source, limit };
+  const params = { search, sort, source, creatorId, limit };
   return {
     queryKey: ["ancestries", params],
     queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>

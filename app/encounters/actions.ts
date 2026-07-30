@@ -17,6 +17,7 @@ export async function paginatePublicEncounters(params: {
   search: string | null;
   limit: number;
   pageParam: number;
+  creatorId?: string;
 }): Promise<PaginatedEncounterResponse> {
   const desc = params.sort?.startsWith("-");
   const sortDirection: EncounterSortDirection = desc ? "desc" : "asc";
@@ -28,6 +29,7 @@ export async function paginatePublicEncounters(params: {
     sortDirection,
     limit: params.limit,
     offset: params.pageParam * params.limit,
+    creatorId: params.creatorId,
   };
   const data = await encounters.searchPublicEncounters(opts);
   return { data };
@@ -37,12 +39,14 @@ export function publicEncountersInfiniteQueryOptions({
   search = null,
   sort = "-createdAt",
   limit = 12,
+  creatorId,
 }: Partial<{
   search?: string | null;
   sort: string;
   limit?: number;
+  creatorId?: string;
 }> = {}) {
-  const params = { search, sort, limit };
+  const params = { search, sort, limit, creatorId };
   return {
     queryKey: ["encounters", params],
     queryFn: ({ pageParam }: { pageParam: number }) =>

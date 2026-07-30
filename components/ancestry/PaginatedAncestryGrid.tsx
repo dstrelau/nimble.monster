@@ -47,7 +47,10 @@ export const PaginatedAncestryGrid: React.FC<PaginatedAncestryGridProps> = (
   const queryParams = () => {
     switch (props.kind) {
       case "user-ancestries":
-        throw new Error("Not implemented");
+        return publicAncestriesInfiniteQueryOptions({
+          ...params,
+          creatorId: props.creatorId,
+        });
       case "my-ancestries":
         return myAncestriesInfiniteQueryOptions(params);
       case "ancestries":

@@ -23,6 +23,7 @@ export type EncounterSortDirection = "asc" | "desc";
 
 export interface SearchEncountersParams {
   searchTerm?: string;
+  creatorId?: string;
   sortBy: EncounterSortBy;
   sortDirection: EncounterSortDirection;
   limit: number;
@@ -199,6 +200,7 @@ export const listPublicEncounters = async ({
 
 export const searchPublicEncounters = async ({
   searchTerm,
+  creatorId,
   sortBy,
   sortDirection = "asc",
   limit,
@@ -207,6 +209,10 @@ export const searchPublicEncounters = async ({
   const db = await getDatabase();
 
   const whereConditions = [eq(encounters.visibility, "public")];
+
+  if (creatorId) {
+    whereConditions.push(eq(encounters.creatorId, creatorId));
+  }
 
   if (searchTerm) {
     const searchCondition = or(

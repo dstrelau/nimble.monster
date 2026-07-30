@@ -16,13 +16,19 @@ import { cn } from "@/lib/utils";
 
 interface MyLibrarySidebarProps {
   counts: MyLibraryCounts;
+  profileHref?: string;
+  title?: string | null;
 }
 
 interface LibraryNavigationProps extends MyLibrarySidebarProps {
   onNavigate?: () => void;
 }
 
-function LibraryNavigation({ counts, onNavigate }: LibraryNavigationProps) {
+function LibraryNavigation({
+  counts,
+  profileHref,
+  onNavigate,
+}: LibraryNavigationProps) {
   const pathname = usePathname();
 
   return (
@@ -39,12 +45,17 @@ function LibraryNavigation({ counts, onNavigate }: LibraryNavigationProps) {
           )}
           <ul className="space-y-0.5">
             {group.items.map((item) => {
-              const active = pathname === item.href;
+              const href = profileHref
+                ? `${profileHref}/${item.key}`
+                : item.href;
+              const active = profileHref
+                ? pathname === href
+                : pathname === item.href;
 
               return (
-                <li key={item.href}>
+                <li key={item.key}>
                   <Link
-                    href={item.href}
+                    href={href}
                     aria-current={active ? "page" : undefined}
                     onClick={onNavigate}
                     className={cn(
@@ -76,25 +87,37 @@ function LibraryNavigation({ counts, onNavigate }: LibraryNavigationProps) {
   );
 }
 
-export function MyLibrarySidebar({ counts }: MyLibrarySidebarProps) {
+export function MyLibrarySidebar({
+  counts,
+  profileHref,
+  title = "My Library",
+}: MyLibrarySidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const activeItem = MY_LIBRARY_GROUPS.flatMap((group) => group.items).find(
-    (item) => item.href === pathname
+    (item) =>
+      profileHref
+        ? pathname === `${profileHref}/${item.key}`
+        : item.href === pathname
   );
+  const navigationLabel = profileHref
+    ? "Public library sidebar"
+    : "My library sidebar";
 
   return (
     <>
       <aside className="hidden lg:block">
         <div className="sticky top-6 max-h-[calc(100vh-3rem)] overflow-y-auto rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
-          <div className="mb-5">
-            <span className="flex items-center gap-2 font-slab text-xl font-bold">
-              <Library className="size-5 text-primary" />
-              My Library
-            </span>
-          </div>
-          <nav aria-label="My library sidebar">
-            <LibraryNavigation counts={counts} />
+          {title && (
+            <div className="mb-5">
+              <span className="flex items-center gap-2 font-slab text-xl font-bold">
+                <Library className="size-5 text-primary" />
+                {title}
+              </span>
+            </div>
+          )}
+          <nav aria-label={navigationLabel}>
+            <LibraryNavigation counts={counts} profileHref={profileHref} />
           </nav>
         </div>
       </aside>
@@ -111,8 +134,10 @@ export function MyLibrarySidebar({ counts }: MyLibrarySidebarProps) {
           >
             <Library className="size-5 text-primary" />
             <span className="min-w-0 flex-1">
-              <span className="block font-slab font-bold">My Library</span>
-              {activeItem && (
+              <span className="block font-slab font-bold">
+                {title ?? activeItem?.label ?? "Library"}
+              </span>
+              {title && activeItem && (
                 <span className="block truncate text-xs font-normal text-muted-foreground">
                   {activeItem.label}
                 </span>
@@ -123,11 +148,12 @@ export function MyLibrarySidebar({ counts }: MyLibrarySidebarProps) {
         </CollapsibleTrigger>
         <CollapsibleContent>
           <nav
-            aria-label="My library menu"
+            aria-label={profileHref ? "Public library menu" : "My library menu"}
             className="mt-2 rounded-lg border bg-card p-4 shadow-sm"
           >
             <LibraryNavigation
               counts={counts}
+              profileHref={profileHref}
               onNavigate={() => setMobileOpen(false)}
             />
           </nav>

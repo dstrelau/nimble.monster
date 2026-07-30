@@ -13,7 +13,7 @@ interface ChangelogEntry {
 const changelog: ChangelogEntry[] = [
   {
     date: "29 July 2026",
-    entries: ["Add library navigation to every page containing your work."],
+    entries: ["new navigation for My Library and user profile pages."],
   },
   {
     date: "27 July 2026",

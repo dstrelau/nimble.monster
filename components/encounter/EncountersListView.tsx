@@ -17,7 +17,13 @@ import {
 import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 import { EncounterFilterBar } from "./EncounterFilterBar";
 
-export const EncountersListView: React.FC = () => {
+interface EncountersListViewProps {
+  creatorId?: string;
+}
+
+export const EncountersListView: React.FC<EncountersListViewProps> = ({
+  creatorId,
+}) => {
   const [rawSearchQuery, setSearchQuery] = useQueryState("search");
   const [searchQuery] = useDebouncedValue(rawSearchQuery, { wait: 250 });
 
@@ -30,6 +36,7 @@ export const EncountersListView: React.FC = () => {
       publicEncountersInfiniteQueryOptions({
         sort: sortQuery,
         search: searchQuery || undefined,
+        creatorId,
       })
     );
 

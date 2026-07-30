@@ -215,7 +215,9 @@ export const paginatePublicAncestries = async ({
   const db = await getDatabase();
 
   // Build where conditions
-  const conditions: ReturnType<typeof eq>[] = [];
+  const conditions: ReturnType<typeof eq>[] = [
+    eq(ancestries.visibility, "public"),
+  ];
 
   if (creatorId) {
     conditions.push(eq(ancestries.userId, creatorId));

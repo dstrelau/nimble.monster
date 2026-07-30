@@ -52,6 +52,42 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "")
 
 const HTTP_METHOD_BODY_RE = /^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS) \//;
 
+function isAllowedServerActionOrigin(origin: string): boolean {
+  try {
+    const { hostname } = new URL(origin);
+    return (
+      hostname === "nimble.nexus" ||
+      hostname === "localhost" ||
+      allowedOrigins.some(
+        (allowed) => hostname === allowed || hostname.endsWith(`.${allowed}`)
+      )
+    );
+  } catch {
+    return false;
+  }
+}
+
+function matchesRequestHost(origin: string, request: NextRequest): boolean {
+  try {
+    return new URL(origin).host === request.headers.get("host");
+  } catch {
+    return false;
+  }
+}
+
+function isSameOriginBrowserRequest(request: NextRequest): boolean {
+  if (request.headers.get("sec-fetch-site") !== "same-origin") return false;
+
+  const referer = request.headers.get("referer");
+  if (!referer) return false;
+
+  try {
+    return new URL(referer).origin === request.nextUrl.origin;
+  } catch {
+    return false;
+  }
+}
+
 export default async function proxy(request: NextRequest) {
   // Reject bot POSTs to page routes: require next-action header and a
   // matching origin (bots scrape next-action IDs but send spoofed origins,
@@ -66,9 +102,9 @@ export default async function proxy(request: NextRequest) {
     if (
       !request.headers.get("next-action") ||
       !(
-        origin.includes("nimble.nexus") ||
-        origin.includes("localhost") ||
-        allowedOrigins.some((allowed) => origin.includes(allowed))
+        isAllowedServerActionOrigin(origin) ||
+        matchesRequestHost(origin, request) ||
+        (!origin && isSameOriginBrowserRequest(request))
       )
     ) {
       return new Response("Bad Request", { status: 400 });

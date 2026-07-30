@@ -197,7 +197,9 @@ export const paginatePublicBackgrounds = async ({
   const db = await getDatabase();
 
   // Build where conditions
-  const conditions: ReturnType<typeof eq>[] = [];
+  const conditions: ReturnType<typeof eq>[] = [
+    eq(backgrounds.visibility, "public"),
+  ];
 
   if (creatorId) {
     conditions.push(eq(backgrounds.userId, creatorId));
