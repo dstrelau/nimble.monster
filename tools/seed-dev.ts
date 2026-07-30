@@ -8,7 +8,13 @@ import { join } from "node:path";
 import { eq } from "drizzle-orm";
 import { createCollection } from "@/lib/db/collection";
 import { getDatabase } from "@/lib/db/drizzle";
-import { monsters, users } from "@/lib/db/schema";
+import {
+  collections,
+  items,
+  itemsCollections,
+  monsters,
+  users,
+} from "@/lib/db/schema";
 import {
   OFFICIAL_USER_ID,
   parseJSONAPIMonster,
@@ -41,6 +47,8 @@ const DEV_ADMIN: DevUser = {
 };
 
 const DEFAULT_AVATAR = "https://cdn.discordapp.com/embed/avatars/0.png";
+const DEV_ITEM_ID = "33333333-3333-3333-3333-333333333333";
+const DEV_ITEM_COLLECTION_ID = "44444444-4444-4444-4444-444444444444";
 
 async function upsertDevUser(u: DevUser): Promise<void> {
   const db = await getDatabase();
@@ -107,6 +115,37 @@ export async function seedDevData(): Promise<void> {
   await upsertDevUser(DEV_ADMIN);
 
   const db = await getDatabase();
+
+  await db
+    .insert(items)
+    .values({
+      id: DEV_ITEM_ID,
+      name: "Dev's Bottomless Bag",
+      kind: "Wondrous item",
+      description: "A sample magic item owned by the dev user.",
+      rarity: "uncommon",
+      visibility: "public",
+      userId: DEV_USER.id,
+    })
+    .onConflictDoNothing();
+  await db
+    .insert(collections)
+    .values({
+      id: DEV_ITEM_COLLECTION_ID,
+      creatorId: DEV_USER.id,
+      name: "Dev's Magic Items",
+      description: "Sample collection containing only magic items.",
+      visibility: "public",
+    })
+    .onConflictDoNothing();
+  await db
+    .insert(itemsCollections)
+    .values({
+      itemId: DEV_ITEM_ID,
+      collectionId: DEV_ITEM_COLLECTION_ID,
+    })
+    .onConflictDoNothing();
+
   const existing = await db
     .select({ id: monsters.id })
     .from(monsters)
@@ -139,6 +178,8 @@ export async function seedDevData(): Promise<void> {
   } else {
     console.log('  "dev" already owns content — leaving it untouched');
   }
+
+  console.log('  ensured 1 magic-item-only collection owned by "dev"');
 
   console.log(
     'Dev users ready. Log in via /api/auth?dev-login&username=dev (or =admin).'

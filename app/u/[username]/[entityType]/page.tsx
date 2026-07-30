@@ -190,7 +190,7 @@ async function loadProfileEntityContent(
         <ProfileEntityContent
           entityType="collections"
           collections={
-            await db.listPublicCollectionsHavingMonstersForUser(userId)
+            await db.listPublicCollectionsHavingContentForUser(userId)
           }
         />
       );

@@ -74,7 +74,7 @@ Workflow:
 
 # Changelog
 
-- When adding user-facing features or fixes, add an entry to `app/changelog/page.tsx`.
+- Only add changelog entries for new user-facing features. Do not add entries for bug fixes or behind-the-scenes improvements.
 - Changelog entries are per feature, not per change/commit/PR. A single feature developed over many commits gets one entry. Do not add or suggest an entry for each individual change within a feature.
 - We generally do NOT changelog API changes (new endpoints, relationships, query params, etc.). The changelog targets end users of the site, not API consumers. Document API changes in `docs/API.md` instead.
 
