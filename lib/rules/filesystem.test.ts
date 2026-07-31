@@ -21,7 +21,7 @@ describe("the rule corpus", () => {
   const rules = getAllRules();
 
   it("loads every rule with a title and a known category", () => {
-    expect(rules).toHaveLength(128);
+    expect(rules).toHaveLength(129);
     const known = new Set(CATEGORIES.map((c) => c.slug));
     for (const rule of rules) {
       expect(rule.title.trim()).not.toBe("");
