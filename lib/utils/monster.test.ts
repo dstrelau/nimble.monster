@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { formatHp, monsterLevelValue } from "./monster";
+import {
+  encounterMonsterLevelTotal,
+  formatHp,
+  hasLegendaryEncounterConflict,
+  legendaryEncounterDifficulty,
+  monsterLevelValue,
+  resolvedEncounterMonsterCount,
+} from "./monster";
 
 describe("formatHp", () => {
   it("returns the fixed hp as a string when hpPerHero is null", () => {
@@ -42,5 +49,95 @@ describe("monsterLevelValue", () => {
 
   it("converts -2 to 1/2", () => {
     expect(monsterLevelValue(-2)).toBeCloseTo(0.5);
+  });
+});
+
+describe("resolvedEncounterMonsterCount", () => {
+  it("resolves a static count", () => {
+    expect(
+      resolvedEncounterMonsterCount(
+        { quantity: 2, isPerHero: false, heroesPerMonster: 4 },
+        6
+      )
+    ).toBe(2);
+  });
+
+  it("resolves a per-hero ratio below one", () => {
+    expect(
+      resolvedEncounterMonsterCount(
+        { quantity: 1, isPerHero: true, heroesPerMonster: 4 },
+        6
+      )
+    ).toBe(1.5);
+  });
+
+  it("treats a legendary monster as a static solo", () => {
+    expect(
+      resolvedEncounterMonsterCount(
+        {
+          monster: { legendary: true },
+          quantity: 3,
+          isPerHero: true,
+          heroesPerMonster: 1,
+        },
+        6
+      )
+    ).toBe(1);
+  });
+});
+
+describe("encounterMonsterLevelTotal", () => {
+  it("counts a legendary monster's level once per hero", () => {
+    expect(
+      encounterMonsterLevelTotal({ legendary: true, levelInt: 5 }, 1, 4)
+    ).toBe(20);
+  });
+
+  it("counts a standard monster's level once per monster", () => {
+    expect(
+      encounterMonsterLevelTotal({ legendary: false, levelInt: 5 }, 2, 4)
+    ).toBe(10);
+  });
+});
+
+describe("legendaryEncounterDifficulty", () => {
+  it.each([
+    [8, 10, "Easy"],
+    [9, 10, "Medium"],
+    [10, 10, "Hard"],
+    [11, 10, "Deadly"],
+    [12, 10, "Very Deadly"],
+  ] as const)("reports a level %i legendary encounter against level %i heroes as %s", (encounterLevel, heroLevel, expected) => {
+    expect(legendaryEncounterDifficulty(encounterLevel, heroLevel)).toBe(
+      expected
+    );
+  });
+});
+
+describe("hasLegendaryEncounterConflict", () => {
+  it("allows a legendary monster to run alone", () => {
+    expect(
+      hasLegendaryEncounterConflict([
+        { monster: { legendary: true, minion: false } },
+      ])
+    ).toBe(false);
+  });
+
+  it("allows a legendary monster with minions", () => {
+    expect(
+      hasLegendaryEncounterConflict([
+        { monster: { legendary: true, minion: false } },
+        { monster: { legendary: false, minion: true } },
+      ])
+    ).toBe(false);
+  });
+
+  it("warns when a legendary monster has non-minion support", () => {
+    expect(
+      hasLegendaryEncounterConflict([
+        { monster: { legendary: true, minion: false } },
+        { monster: { legendary: false, minion: false } },
+      ])
+    ).toBe(true);
   });
 });

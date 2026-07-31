@@ -192,5 +192,22 @@ describe("AddToEncounterDialog", () => {
     expect(formData.get("encounterId")).toBe("enc-2");
     expect(formData.get("quantity")).toBe("1");
     expect(formData.get("isPerHero")).toBe("false");
+    expect(formData.get("heroesPerMonster")).toBe("1");
+  });
+
+  it("does not offer per-hero counts for legendary monsters", async () => {
+    render(<AddToEncounterDialog monsterId="m1" legendary />, {
+      wrapper: createWrapper(),
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /add to encounter/i }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("encounter-select")).toBeInTheDocument();
+    });
+    expect(
+      screen.queryByRole("button", { name: /per hero/i })
+    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("spinbutton")).not.toBeInTheDocument();
   });
 });

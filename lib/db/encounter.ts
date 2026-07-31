@@ -29,6 +29,7 @@ async function loadEncounterOverview(
       monster: monsters,
       quantity: monstersEncounters.quantity,
       isPerHero: monstersEncounters.isPerHero,
+      heroesPerMonster: monstersEncounters.heroesPerMonster,
     })
     .from(monstersEncounters)
     .innerJoin(monsters, eq(monstersEncounters.monsterId, monsters.id))
@@ -38,6 +39,7 @@ async function loadEncounterOverview(
     monster: toMonsterMini(link.monster),
     quantity: link.quantity,
     isPerHero: link.isPerHero,
+    heroesPerMonster: link.heroesPerMonster,
   }));
 
   return {
@@ -63,6 +65,7 @@ async function loadEncounterFull(
       monsterId: monstersEncounters.monsterId,
       quantity: monstersEncounters.quantity,
       isPerHero: monstersEncounters.isPerHero,
+      heroesPerMonster: monstersEncounters.heroesPerMonster,
     })
     .from(monstersEncounters)
     .where(eq(monstersEncounters.encounterId, encounter.id));
@@ -72,14 +75,19 @@ async function loadEncounterFull(
   );
   const monstersById = new Map(fullMonsters.map((m) => [m.id, m]));
 
-  const entries: EncounterMonsterEntryFull[] = monsterLinks
-    .map((link) => {
-      const monster = monstersById.get(link.monsterId);
-      return monster
-        ? { monster, quantity: link.quantity, isPerHero: link.isPerHero }
-        : null;
-    })
-    .filter((entry): entry is EncounterMonsterEntryFull => entry !== null);
+  const entries: EncounterMonsterEntryFull[] = monsterLinks.flatMap((link) => {
+    const monster = monstersById.get(link.monsterId);
+    return monster
+      ? [
+          {
+            monster,
+            quantity: link.quantity,
+            isPerHero: link.isPerHero,
+            heroesPerMonster: link.heroesPerMonster,
+          },
+        ]
+      : [];
+  });
 
   return {
     id: encounter.id,
@@ -122,6 +130,7 @@ export const listEncountersWithMonstersForUser = async (
       monster: monsters,
       quantity: monstersEncounters.quantity,
       isPerHero: monstersEncounters.isPerHero,
+      heroesPerMonster: monstersEncounters.heroesPerMonster,
     })
     .from(monstersEncounters)
     .innerJoin(monsters, eq(monstersEncounters.monsterId, monsters.id))
@@ -139,6 +148,7 @@ export const listEncountersWithMonstersForUser = async (
       monster: toMonsterMini(link.monster),
       quantity: link.quantity,
       isPerHero: link.isPerHero,
+      heroesPerMonster: link.heroesPerMonster,
     });
     entriesByEncounter.set(link.encounterId, existing);
   }
@@ -224,7 +234,12 @@ export interface CreateEncounterInput {
   visibility: "public" | "private";
   heroCount: number;
   heroLevel: number;
-  monsters?: Array<{ monsterId: string; quantity: number; isPerHero: boolean }>;
+  monsters?: Array<{
+    monsterId: string;
+    quantity: number;
+    isPerHero: boolean;
+    heroesPerMonster?: number;
+  }>;
 }
 
 export interface UpdateEncounterInput extends CreateEncounterInput {
@@ -266,6 +281,7 @@ export const createEncounter = async (
         monsterId: m.monsterId,
         quantity: m.quantity,
         isPerHero: m.isPerHero,
+        heroesPerMonster: m.heroesPerMonster ?? 1,
       }))
     );
   }
@@ -325,7 +341,7 @@ export const updateEncounter = async (
     if (input.monsters.length > 0) {
       const qtyMap = new Map(input.monsters.map((m) => [m.monsterId, m]));
       const accessible = await db
-        .select({ id: monsters.id })
+        .select({ id: monsters.id, legendary: monsters.legendary })
         .from(monsters)
         .where(
           and(
@@ -341,8 +357,9 @@ export const updateEncounter = async (
             return {
               encounterId: input.id,
               monsterId: m.id,
-              quantity: entry?.quantity ?? 1,
-              isPerHero: entry?.isPerHero ?? false,
+              quantity: m.legendary ? 1 : (entry?.quantity ?? 1),
+              isPerHero: m.legendary ? false : (entry?.isPerHero ?? false),
+              heroesPerMonster: entry?.heroesPerMonster ?? 1,
             };
           })
         );
@@ -434,6 +451,7 @@ export const addMonsterToEncounter = async (input: {
   encounterId: string;
   quantity: number;
   isPerHero: boolean;
+  heroesPerMonster?: number;
 }): Promise<void> => {
   const db = getDatabase();
 
@@ -454,11 +472,16 @@ export const addMonsterToEncounter = async (input: {
       monsterId: input.monsterId,
       quantity: input.quantity,
       isPerHero: input.isPerHero,
+      heroesPerMonster: input.heroesPerMonster ?? 1,
     });
   } else {
     await db
       .update(monstersEncounters)
-      .set({ quantity: input.quantity, isPerHero: input.isPerHero })
+      .set({
+        quantity: input.quantity,
+        isPerHero: input.isPerHero,
+        heroesPerMonster: input.heroesPerMonster ?? 1,
+      })
       .where(
         and(
           eq(monstersEncounters.encounterId, input.encounterId),

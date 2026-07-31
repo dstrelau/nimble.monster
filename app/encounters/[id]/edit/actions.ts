@@ -15,6 +15,7 @@ const encounterMonsterSchema = z.object({
   monsterId: z.uuid(),
   quantity: z.coerce.number().int().min(1),
   isPerHero: z.boolean(),
+  heroesPerMonster: z.coerce.number().int().min(1).default(1),
 });
 
 const encounterSchema = z.object({

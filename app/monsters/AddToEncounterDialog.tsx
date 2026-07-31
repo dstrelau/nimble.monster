@@ -1,9 +1,10 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CopyPlus, Minus, Plus } from "lucide-react";
+import { CopyPlus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { addMonsterToEncounter } from "@/app/actions/encounter";
+import { EncounterCountControl } from "@/app/encounters/EncounterCountControl";
 import { ownEncountersQueryOptions } from "@/app/encounters/ownEncountersQueryOptions";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,15 +29,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Toggle } from "@/components/ui/toggle";
 
 interface AddToEncounterForm {
   encounterId: string;
   quantity: number;
   isPerHero: boolean;
+  heroesPerMonster: number;
 }
 
-export const AddToEncounterDialog = ({ monsterId }: { monsterId: string }) => {
+export const AddToEncounterDialog = ({
+  monsterId,
+  legendary = false,
+}: {
+  monsterId: string;
+  legendary?: boolean;
+}) => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -47,6 +54,7 @@ export const AddToEncounterDialog = ({ monsterId }: { monsterId: string }) => {
       encounterId: "",
       quantity: 1,
       isPerHero: false,
+      heroesPerMonster: 1,
     },
   });
 
@@ -64,8 +72,9 @@ export const AddToEncounterDialog = ({ monsterId }: { monsterId: string }) => {
       const formData = new FormData();
       formData.append("encounterId", data.encounterId);
       formData.append("monsterId", monsterId);
-      formData.append("quantity", String(data.quantity));
-      formData.append("isPerHero", String(data.isPerHero));
+      formData.append("quantity", String(legendary ? 1 : data.quantity));
+      formData.append("isPerHero", String(!legendary && data.isPerHero));
+      formData.append("heroesPerMonster", String(data.heroesPerMonster));
       return addMonsterToEncounter(formData);
     },
     onSuccess: () => {
@@ -123,55 +132,18 @@ export const AddToEncounterDialog = ({ monsterId }: { monsterId: string }) => {
               )}
             />
 
-            <div className="flex items-center gap-1">
-              <FormField
-                control={form.control}
-                name="quantity"
-                render={({ field }) => (
-                  <>
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="ghost"
-                      className="size-7"
-                      onClick={() =>
-                        field.onChange(Math.max(1, field.value - 1))
-                      }
-                      disabled={field.value <= 1}
-                    >
-                      <Minus />
-                    </Button>
-                    <span className="w-5 text-center font-slab font-black">
-                      {field.value}
-                    </span>
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="ghost"
-                      className="size-7"
-                      onClick={() => field.onChange(field.value + 1)}
-                    >
-                      <Plus />
-                    </Button>
-                  </>
-                )}
+            {!legendary && (
+              <EncounterCountControl
+                quantity={form.watch("quantity")}
+                isPerHero={form.watch("isPerHero")}
+                heroesPerMonster={form.watch("heroesPerMonster")}
+                onQuantityChange={(value) => form.setValue("quantity", value)}
+                onIsPerHeroChange={(value) => form.setValue("isPerHero", value)}
+                onHeroesPerMonsterChange={(value) =>
+                  form.setValue("heroesPerMonster", value)
+                }
               />
-
-              <FormField
-                control={form.control}
-                name="isPerHero"
-                render={({ field }) => (
-                  <Toggle
-                    size="sm"
-                    pressed={field.value}
-                    onPressedChange={field.onChange}
-                    className="font-sans text-xs not-italic"
-                  >
-                    /hero
-                  </Toggle>
-                )}
-              />
-            </div>
+            )}
 
             {selectedEncounterId && isAlreadyInEncounter && (
               <div className="text-warning text-sm">

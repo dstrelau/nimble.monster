@@ -7,7 +7,7 @@ import { Card as MonsterCard } from "@/components/monster/Card";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { listConditionsForDiscordId, listOfficialConditions } from "@/lib/db";
-import { monstersSortedByLevelInt } from "@/lib/utils";
+import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getEncounterUrl } from "@/lib/utils/url";
@@ -109,18 +109,30 @@ export default async function ShowEncounterView({
         </p>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 print:grid-cols-3 gap-6 items-start">
-          <div className="lg:col-span-2 print:col-span-2 grid gap-6 grid-cols-1 md:grid-cols-2 print:grid-cols-2 items-start">
+          <div className="lg:col-span-2 print:col-span-2 grid grid-flow-row-dense gap-6 grid-cols-1 md:grid-cols-2 print:grid-cols-2 items-start">
             {sortedEntries.map((entry) =>
               entry ? (
-                <div key={entry.monster.id} className="relative">
-                  <div className="absolute -top-3 -right-3 z-10 flex items-center gap-1 rounded-full bg-flame px-2.5 py-1 font-slab font-black text-sm text-white shadow-md">
-                    &times;{entry.quantity}
-                    {entry.isPerHero && (
-                      <span className="font-sans text-xs font-normal">
-                        /hero
-                      </span>
-                    )}
-                  </div>
+                <div
+                  key={entry.monster.id}
+                  className={cn(
+                    "relative",
+                    entry.monster.legendary && "md:col-span-2 print:col-span-2"
+                  )}
+                >
+                  {!entry.monster.legendary && (
+                    <div className="absolute -top-3 -right-3 z-10 flex items-center gap-1 rounded-full bg-flame px-2.5 py-1 font-slab font-black text-sm text-white shadow-md">
+                      {entry.isPerHero ? (
+                        <span className="font-sans text-xs font-normal">
+                          {entry.quantity} per {entry.heroesPerMonster ?? 1}{" "}
+                          {(entry.heroesPerMonster ?? 1) === 1
+                            ? "hero"
+                            : "heroes"}
+                        </span>
+                      ) : (
+                        <>&times;{entry.quantity}</>
+                      )}
+                    </div>
+                  )}
                   <MonsterCard
                     monster={entry.monster}
                     creator={entry.monster.creator}

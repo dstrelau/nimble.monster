@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/collapsible";
 import type { Encounter } from "@/lib/types";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
-import { formatHp } from "@/lib/utils/monster";
+import { formatHp, resolvedEncounterMonsterCount } from "@/lib/utils/monster";
 
 type TrackedMonster = Encounter["monsters"][number]["monster"];
 
@@ -44,7 +44,7 @@ function buildTrackerGroups(
   return sortedMonsters.flatMap((monster) => {
     const entry = entriesByMonsterId.get(monster.id);
     if (!entry) return [];
-    const count = entry.isPerHero ? entry.quantity * heroCount : entry.quantity;
+    const count = resolvedEncounterMonsterCount(entry, heroCount);
     const hp =
       entry.monster.hpPerHero != null
         ? entry.monster.hpPerHero * heroCount

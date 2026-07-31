@@ -106,7 +106,10 @@ export default async function MonsterPage({
           <>
             <MonsterDetailActions monster={monster} isOwner={isOwner} />
             <AddToCollectionDialog type="monster" monsterId={monster.id} />
-            <AddToEncounterDialog monsterId={monster.id} />
+            <AddToEncounterDialog
+              monsterId={monster.id}
+              legendary={monster.legendary}
+            />
           </>
         )}
       </div>

@@ -28,13 +28,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Toggle } from "@/components/ui/toggle";
 import type { Monster } from "@/lib/services/monsters";
 import type { Encounter, EncounterMonsterEntryFull } from "@/lib/types";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
-import { monsterLevelValue } from "@/lib/utils/monster";
+import {
+  encounterMonsterLevelTotal,
+  resolvedEncounterMonsterCount,
+} from "@/lib/utils/monster";
 import { getEncounterUrl } from "@/lib/utils/url";
 import { updateEncounter } from "./[id]/edit/actions";
+import { EncounterCountControl } from "./EncounterCountControl";
 import { EncounterStatsPanel } from "./EncounterStatsPanel";
 
 const formSchema = z.object({
@@ -63,17 +66,20 @@ function EditableMonsterCard({
   onRemove,
   onQuantityChange,
   onIsPerHeroToggle,
+  onHeroesPerMonsterChange,
 }: {
   entry: EncounterMonsterEntryFull;
   heroCount: number;
   onRemove: (id: string) => void;
   onQuantityChange: (id: string, quantity: number) => void;
   onIsPerHeroToggle: (id: string, isPerHero: boolean) => void;
+  onHeroesPerMonsterChange: (id: string, heroesPerMonster: number) => void;
 }) {
   const { monster, quantity, isPerHero } = entry;
-  const resolvedQuantity = isPerHero ? quantity * heroCount : quantity;
+  const heroesPerMonster = entry.heroesPerMonster ?? 1;
+  const resolvedQuantity = resolvedEncounterMonsterCount(entry, heroCount);
   const totalLevels = Number(
-    (monsterLevelValue(monster.levelInt) * resolvedQuantity).toFixed(2)
+    encounterMonsterLevelTotal(monster, resolvedQuantity, heroCount).toFixed(2)
   );
   const perMonsterHp =
     monster.hpPerHero != null ? monster.hpPerHero * heroCount : monster.hp;
@@ -81,41 +87,38 @@ function EditableMonsterCard({
 
   return (
     <div className={cn(monster.legendary && "sm:col-span-2")}>
-      <div className="flex items-center justify-between gap-2 rounded-t-xl bg-header px-3 py-2 font-slab text-header-foreground">
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
-            onClick={() => onRemove(monster.id)}
-          >
-            <X />
-            <span className="sr-only">Remove {monster.name}</span>
-          </Button>
-          <Input
-            type="number"
-            min={1}
-            className="h-8 w-16 bg-background text-center font-sans not-italic tabular-nums"
-            value={quantity}
-            onChange={(e) =>
-              onQuantityChange(monster.id, Math.max(1, Number(e.target.value)))
+      <div className="flex min-w-0 items-start gap-2 rounded-t-xl bg-header px-3 py-2 font-slab text-header-foreground">
+        <Button
+          type="button"
+          size="icon"
+          variant="ghost"
+          className="mt-0.5 size-8 shrink-0"
+          onClick={() => onRemove(monster.id)}
+        >
+          <X />
+          <span className="sr-only">Remove {monster.name}</span>
+        </Button>
+        {!monster.legendary ? (
+          <EncounterCountControl
+            quantity={quantity}
+            isPerHero={isPerHero}
+            heroesPerMonster={heroesPerMonster}
+            onQuantityChange={(value) => onQuantityChange(monster.id, value)}
+            onIsPerHeroChange={(value) => onIsPerHeroToggle(monster.id, value)}
+            onHeroesPerMonsterChange={(value) =>
+              onHeroesPerMonsterChange(monster.id, value)
+            }
+            summary={
+              <>
+                Total: {totalLevels} levels, {totalHp} hp
+              </>
             }
           />
-          <Toggle
-            size="sm"
-            variant="outline"
-            pressed={isPerHero}
-            onPressedChange={(pressed) =>
-              onIsPerHeroToggle(monster.id, pressed)
-            }
-            className="bg-background font-sans not-italic"
-          >
-            /hero
-          </Toggle>
-        </div>
-        <div className="whitespace-nowrap text-sm tabular-nums">
-          Total: {totalLevels} levels, {totalHp} hp
-        </div>
+        ) : (
+          <div className="ml-auto pt-2 whitespace-nowrap text-sm tabular-nums">
+            Total: {totalLevels} levels, {totalHp} hp
+          </div>
+        )}
       </div>
       <MonsterCard
         monster={monster}
@@ -135,7 +138,22 @@ export function CreateEditEncounter({
 
   const [selectedMonsters, setSelectedMonsters] = useState<
     Map<string, EncounterMonsterEntryFull>
-  >(() => new Map(encounter.monsters.map((e) => [e.monster.id, e])));
+  >(
+    () =>
+      new Map(
+        encounter.monsters.map((entry) => [
+          entry.monster.id,
+          entry.monster.legendary
+            ? {
+                ...entry,
+                quantity: 1,
+                isPerHero: false,
+                heroesPerMonster: 1,
+              }
+            : entry,
+        ])
+      )
+  );
   const [monstersSectionOpen, setMonstersSectionOpen] = useState(
     () => encounter.monsters.length === 0
   );
@@ -166,7 +184,12 @@ export function CreateEditEncounter({
       if (next.has(monster.id)) {
         next.delete(monster.id);
       } else {
-        next.set(monster.id, { monster, quantity: 1, isPerHero: false });
+        next.set(monster.id, {
+          monster,
+          quantity: 1,
+          isPerHero: false,
+          heroesPerMonster: 1,
+        });
       }
       return next;
     });
@@ -188,6 +211,22 @@ export function CreateEditEncounter({
       if (!entry) return prev;
       const next = new Map(prev);
       next.set(monsterId, { ...entry, isPerHero });
+      return next;
+    });
+  };
+
+  const handleHeroesPerMonsterChange = (
+    monsterId: string,
+    heroesPerMonster: number
+  ) => {
+    setSelectedMonsters((prev) => {
+      const entry = prev.get(monsterId);
+      if (!entry) return prev;
+      const next = new Map(prev);
+      next.set(monsterId, {
+        ...entry,
+        heroesPerMonster: Math.max(1, heroesPerMonster),
+      });
       return next;
     });
   };
@@ -225,6 +264,7 @@ export function CreateEditEncounter({
             monsterId: e.monster.id,
             quantity: e.quantity,
             isPerHero: e.isPerHero,
+            heroesPerMonster: e.heroesPerMonster ?? 1,
           }))
           .sort((x, y) => x.monsterId.localeCompare(y.monsterId))
       );
@@ -264,6 +304,7 @@ export function CreateEditEncounter({
               monsterId: e.monster.id,
               quantity: e.quantity,
               isPerHero: e.isPerHero,
+              heroesPerMonster: e.heroesPerMonster ?? 1,
             }))
           )
         );
@@ -298,6 +339,7 @@ export function CreateEditEncounter({
             monsterId: e.monster.id,
             quantity: e.quantity,
             isPerHero: e.isPerHero,
+            heroesPerMonster: e.heroesPerMonster ?? 1,
           }))
         )
       );
@@ -407,7 +449,7 @@ export function CreateEditEncounter({
         )}
 
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
-          <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2 lg:col-span-2">
+          <div className="grid grid-flow-row-dense grid-cols-1 items-start gap-6 md:grid-cols-2 lg:col-span-2">
             {sortedEntries.length === 0 ? (
               <p className="col-span-full rounded-lg border border-dashed py-8 text-center text-muted-foreground">
                 No monsters yet. Add some below.
@@ -422,6 +464,7 @@ export function CreateEditEncounter({
                     onRemove={handleRemoveMonster}
                     onQuantityChange={handleQuantityChange}
                     onIsPerHeroToggle={handleIsPerHeroToggle}
+                    onHeroesPerMonsterChange={handleHeroesPerMonsterChange}
                   />
                 ) : null
               )

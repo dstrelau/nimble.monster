@@ -68,11 +68,13 @@ export const toJsonApiEncounterWithMonsters = (e: EncounterOverview) => {
         },
       },
       monsters: {
-        data: e.monsters.map(({ monster, quantity, isPerHero }) => ({
-          type: "monsters",
-          id: uuidToIdentifier(monster.id),
-          meta: { quantity, isPerHero },
-        })),
+        data: e.monsters.map(
+          ({ monster, quantity, isPerHero, heroesPerMonster }) => ({
+            type: "monsters",
+            id: uuidToIdentifier(monster.id),
+            meta: { quantity, isPerHero, heroesPerMonster },
+          })
+        ),
       },
     },
     links: {

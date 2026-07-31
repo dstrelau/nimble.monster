@@ -8,7 +8,12 @@ import {
 } from "@/components/ui/tooltip";
 import type { EncounterOverview } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { monsterLevelValue } from "@/lib/utils/monster";
+import {
+  encounterMonsterLevelTotal,
+  hasLegendaryEncounterConflict,
+  legendaryEncounterDifficulty,
+  resolvedEncounterMonsterCount,
+} from "@/lib/utils/monster";
 
 interface EncounterStatsPanelProps {
   encounter: EncounterOverview;
@@ -20,6 +25,10 @@ const RATIO_VERY_LOW_THRESHOLD = 0.5;
 const RATIO_LOW_THRESHOLD = 1.5;
 const RATIO_HIGH_THRESHOLD = 3;
 const RATIO_VERY_HIGH_THRESHOLD = 4;
+const LEGENDARY_COMPOSITION_WARNING = {
+  title: "Legendary monsters are meant to be run solo.",
+  detail: "This encounter may be difficult to run and harder than expected.",
+};
 
 type Difficulty = "Easy" | "Medium" | "Hard" | "Deadly" | "Very Deadly";
 
@@ -30,11 +39,6 @@ function difficultyForLevelPercent(percent: number): Difficulty {
   if (percent <= 125) return "Deadly";
   return "Very Deadly";
 }
-
-const resolvedCount = (
-  entry: EncounterOverview["monsters"][number],
-  heroCount: number
-) => (entry.isPerHero ? entry.quantity * heroCount : entry.quantity);
 
 const SectionHeader = ({
   icon: Icon,
@@ -68,34 +72,34 @@ export function EncounterStatsPanel({
   onHeroLevelChange,
 }: EncounterStatsPanelProps) {
   const editableHeroes = Boolean(onHeroCountChange && onHeroLevelChange);
-  const {
-    totalMonsterCount,
-    totalMonsterLevel,
-    totalMonsterHP,
-    minionCount,
-    nonMinionCount,
-  } = encounter.monsters.reduce(
-    (acc, entry) => {
-      const count = resolvedCount(entry, encounter.heroCount);
-      acc.totalMonsterCount += count;
-      acc.totalMonsterLevel +=
-        monsterLevelValue(entry.monster.levelInt) * count;
-      acc.totalMonsterHP += entry.monster.hp * count;
-      if (entry.monster.minion) {
-        acc.minionCount += count;
-      } else {
-        acc.nonMinionCount += count;
+  const { totalMonsterLevel, totalMonsterHP, minionCount, nonMinionCount } =
+    encounter.monsters.reduce(
+      (acc, entry) => {
+        const count = resolvedEncounterMonsterCount(entry, encounter.heroCount);
+        acc.totalMonsterLevel += encounterMonsterLevelTotal(
+          entry.monster,
+          count,
+          encounter.heroCount
+        );
+        const monsterHp =
+          entry.monster.hpPerHero != null
+            ? entry.monster.hpPerHero * encounter.heroCount
+            : entry.monster.hp;
+        if (entry.monster.minion) {
+          acc.minionCount += count;
+        } else {
+          acc.nonMinionCount += count;
+          acc.totalMonsterHP += monsterHp * count;
+        }
+        return acc;
+      },
+      {
+        totalMonsterLevel: 0,
+        totalMonsterHP: 0,
+        minionCount: 0,
+        nonMinionCount: 0,
       }
-      return acc;
-    },
-    {
-      totalMonsterCount: 0,
-      totalMonsterLevel: 0,
-      totalMonsterHP: 0,
-      minionCount: 0,
-      nonMinionCount: 0,
-    }
-  );
+    );
   const displayedTotalMonsterLevel = Number(totalMonsterLevel.toFixed(2));
   const totalHeroLevel = encounter.heroCount * encounter.heroLevel;
 
@@ -138,10 +142,21 @@ export function EncounterStatsPanel({
                 }
               : null;
 
+  const hasLegendaryMonster = encounter.monsters.some(
+    (entry) => entry.monster.legendary
+  );
+  const hasLegendaryConflict = hasLegendaryEncounterConflict(
+    encounter.monsters
+  );
   const difficulty =
-    totalHeroLevel > 0
-      ? difficultyForLevelPercent((totalMonsterLevel / totalHeroLevel) * 100)
-      : null;
+    totalHeroLevel <= 0
+      ? null
+      : hasLegendaryMonster
+        ? legendaryEncounterDifficulty(
+            totalMonsterLevel / encounter.heroCount,
+            encounter.heroLevel
+          )
+        : difficultyForLevelPercent((totalMonsterLevel / totalHeroLevel) * 100);
 
   return (
     <Card>
@@ -189,7 +204,7 @@ export function EncounterStatsPanel({
           <SectionHeader icon={Swords} label="Monsters" />
           <StatRow
             label="Count"
-            value={`${totalMonsterCount}${minionCount > 0 ? " (excl. minions)" : ""}`}
+            value={`${nonMinionCount}${minionCount > 0 ? " (excl. minions)" : ""}`}
           />
           <StatRow label="Total Levels" value={displayedTotalMonsterLevel} />
           <StatRow
@@ -219,7 +234,28 @@ export function EncounterStatsPanel({
               </span>
             }
           />
-          <StatRow label="Difficulty" value={difficulty ?? "—"} />
+          <StatRow
+            label="Difficulty"
+            value={
+              <span className="flex items-center gap-1.5">
+                {hasLegendaryConflict && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TriangleAlert className="size-4 text-warning" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        {LEGENDARY_COMPOSITION_WARNING.title}
+                        <br />
+                        {LEGENDARY_COMPOSITION_WARNING.detail}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                {hasLegendaryConflict ? "Unknown" : (difficulty ?? "—")}
+              </span>
+            }
+          />
         </div>
       </CardContent>
     </Card>

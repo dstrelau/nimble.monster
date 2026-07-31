@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "31 July 2026",
+    entries: [
+      "Encounter monster counts can now be static or expressed as a per-hero ratio.",
+    ],
+  },
+  {
     date: "29 July 2026",
     entries: ["new navigation for My Library and user profile pages."],
   },

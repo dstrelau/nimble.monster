@@ -14,6 +14,53 @@ export function monsterLevelValue(levelInt: number): number {
   return levelInt < 0 ? 1 / Math.abs(levelInt) : levelInt;
 }
 
+export function resolvedEncounterMonsterCount(
+  entry: {
+    quantity: number;
+    isPerHero: boolean;
+    heroesPerMonster?: number;
+    monster?: Pick<MonsterMini, "legendary">;
+  },
+  heroCount: number
+): number {
+  if (entry.monster?.legendary) return 1;
+  if (!entry.isPerHero) return entry.quantity;
+  return (entry.quantity * heroCount) / (entry.heroesPerMonster ?? 1);
+}
+
+export function encounterMonsterLevelTotal(
+  monster: Pick<MonsterMini, "legendary" | "levelInt">,
+  count: number,
+  heroCount: number
+): number {
+  const levelMultiplier = monster.legendary ? heroCount : 1;
+  return monsterLevelValue(monster.levelInt) * count * levelMultiplier;
+}
+
+export function legendaryEncounterDifficulty(
+  encounterLevel: number,
+  heroLevel: number
+): "Easy" | "Medium" | "Hard" | "Deadly" | "Very Deadly" {
+  const levelDifference = encounterLevel - heroLevel;
+  if (levelDifference <= -2) return "Easy";
+  if (levelDifference < 0) return "Medium";
+  if (levelDifference === 0) return "Hard";
+  if (levelDifference < 2) return "Deadly";
+  return "Very Deadly";
+}
+
+export function hasLegendaryEncounterConflict(
+  entries: Array<{
+    monster: Pick<MonsterMini, "legendary" | "minion">;
+  }>
+): boolean {
+  const hasLegendary = entries.some((entry) => entry.monster.legendary);
+  const hasOtherNonMinion = entries.some(
+    (entry) => !entry.monster.legendary && !entry.monster.minion
+  );
+  return hasLegendary && hasOtherNonMinion;
+}
+
 export function formatSizeKind(monster: Monster): string {
   const parts = [];
 

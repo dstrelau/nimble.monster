@@ -45,7 +45,12 @@ vi.mock("next/cache", () => ({ revalidatePath: mockRevalidatePath }));
 vi.mock("@/lib/db/drizzle", () => ({ getDatabase: mockGetDatabase }));
 vi.mock("@/lib/db/schema", () => ({
   encounters: { id: "e.id", creatorId: "e.creatorId" },
-  monsters: { id: "m.id", visibility: "m.vis", userId: "m.uid" },
+  monsters: {
+    id: "m.id",
+    legendary: "m.legendary",
+    visibility: "m.vis",
+    userId: "m.uid",
+  },
 }));
 vi.mock("drizzle-orm", () => ({
   and: vi.fn((...args: unknown[]) => args),
@@ -328,6 +333,7 @@ describe("addMonsterToEncounter", () => {
         encounterId: "e1",
         quantity: "3",
         isPerHero: "true",
+        heroesPerMonster: "4",
       })
     );
     expect(result).toEqual({ success: true });
@@ -336,6 +342,7 @@ describe("addMonsterToEncounter", () => {
       encounterId: "e1",
       quantity: 3,
       isPerHero: true,
+      heroesPerMonster: 4,
     });
   });
 
@@ -352,6 +359,29 @@ describe("addMonsterToEncounter", () => {
       encounterId: "e1",
       quantity: 1,
       isPerHero: false,
+      heroesPerMonster: 1,
+    });
+  });
+
+  it("ignores per-hero counts for legendary monsters", async () => {
+    mockAuth.mockResolvedValue(SESSION);
+    mockLimit
+      .mockResolvedValueOnce([{ id: "e1" }])
+      .mockResolvedValueOnce([{ id: "m1", legendary: true }]);
+    await addMonsterToEncounter(
+      buildFormData({
+        monsterId: "m1",
+        encounterId: "e1",
+        quantity: "3",
+        isPerHero: "true",
+      })
+    );
+    expect(mockAddMonsterToEncounter).toHaveBeenCalledWith({
+      monsterId: "m1",
+      encounterId: "e1",
+      quantity: 1,
+      isPerHero: false,
+      heroesPerMonster: 1,
     });
   });
 });

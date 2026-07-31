@@ -81,7 +81,7 @@ export const EncounterMonsterRow = ({
           </span>
         </span>
       </div>
-      {editable ? (
+      {monster.legendary ? null : editable ? (
         <div className="flex items-center gap-1 shrink-0">
           <Button
             type="button"
@@ -96,6 +96,12 @@ export const EncounterMonsterRow = ({
           <span className="w-5 text-center font-slab font-black">
             {quantity}
           </span>
+          {isPerHero && !monster.legendary && (
+            <span className="font-sans text-xs not-italic">
+              per {entry.heroesPerMonster ?? 1}{" "}
+              {(entry.heroesPerMonster ?? 1) === 1 ? "hero" : "heroes"}
+            </span>
+          )}
           <Button
             type="button"
             size="icon"
@@ -105,21 +111,29 @@ export const EncounterMonsterRow = ({
           >
             <Plus />
           </Button>
-          <Toggle
-            size="sm"
-            pressed={isPerHero}
-            onPressedChange={(pressed) =>
-              onIsPerHeroToggle?.(monster.id, pressed)
-            }
-            className="font-sans text-xs not-italic"
-          >
-            /hero
-          </Toggle>
+          {!monster.legendary && (
+            <Toggle
+              size="sm"
+              pressed={isPerHero}
+              onPressedChange={(pressed) =>
+                onIsPerHeroToggle?.(monster.id, pressed)
+              }
+              className="font-sans text-xs not-italic"
+            >
+              Per hero
+            </Toggle>
+          )}
         </div>
       ) : (
         <div className="font-slab font-black italic text-sm shrink-0">
-          &times;{quantity}
-          {isPerHero && <span className="font-sans text-xs">/hero</span>}
+          {isPerHero && !monster.legendary ? (
+            <span className="font-sans text-xs not-italic">
+              {quantity} per {entry.heroesPerMonster ?? 1}{" "}
+              {(entry.heroesPerMonster ?? 1) === 1 ? "hero" : "heroes"}
+            </span>
+          ) : (
+            <>&times;{quantity}</>
+          )}
         </div>
       )}
     </div>

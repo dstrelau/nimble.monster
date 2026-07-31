@@ -52,6 +52,7 @@ interface MonsterEncounterJoinRow {
   monster: MonsterRow;
   quantity: number;
   isPerHero: boolean;
+  heroesPerMonster: number;
 }
 
 const toEncounterMonsterEntries = (
@@ -62,6 +63,7 @@ const toEncounterMonsterEntries = (
       monster: toMonsterMini(row.monster),
       quantity: row.quantity,
       isPerHero: row.isPerHero,
+      heroesPerMonster: row.heroesPerMonster,
     }))
     .sort((a, b) => a.monster.name.localeCompare(b.monster.name));
 
@@ -144,6 +146,7 @@ export const listPublicEncounters = async ({
       monster: monsters,
       quantity: monstersEncounters.quantity,
       isPerHero: monstersEncounters.isPerHero,
+      heroesPerMonster: monstersEncounters.heroesPerMonster,
     })
     .from(monstersEncounters)
     .innerJoin(monsters, eq(monstersEncounters.monsterId, monsters.id))
@@ -161,6 +164,7 @@ export const listPublicEncounters = async ({
       monster: row.monster,
       quantity: row.quantity,
       isPerHero: row.isPerHero,
+      heroesPerMonster: row.heroesPerMonster,
     });
     monstersByEncounter.set(row.encounterId, existing);
   }
@@ -252,6 +256,7 @@ export const searchPublicEncounters = async ({
       monster: monsters,
       quantity: monstersEncounters.quantity,
       isPerHero: monstersEncounters.isPerHero,
+      heroesPerMonster: monstersEncounters.heroesPerMonster,
     })
     .from(monstersEncounters)
     .innerJoin(monsters, eq(monstersEncounters.monsterId, monsters.id))
@@ -269,6 +274,7 @@ export const searchPublicEncounters = async ({
       monster: row.monster,
       quantity: row.quantity,
       isPerHero: row.isPerHero,
+      heroesPerMonster: row.heroesPerMonster,
     });
     monstersByEncounter.set(row.encounterId, existing);
   }
@@ -313,6 +319,7 @@ export const findPublicEncounterById = async (
       monster: monsters,
       quantity: monstersEncounters.quantity,
       isPerHero: monstersEncounters.isPerHero,
+      heroesPerMonster: monstersEncounters.heroesPerMonster,
     })
     .from(monstersEncounters)
     .innerJoin(monsters, eq(monstersEncounters.monsterId, monsters.id))

@@ -148,8 +148,12 @@ export async function addMonsterToEncounter(formData: FormData) {
     return { success: false, error: "Missing monsterId or encounterId" };
   }
 
-  const quantity = Math.max(1, Number(formData.get("quantity")) || 1);
-  const isPerHero = formData.get("isPerHero") === "true";
+  const requestedQuantity = Math.max(1, Number(formData.get("quantity")) || 1);
+  const requestedPerHero = formData.get("isPerHero") === "true";
+  const heroesPerMonster = Math.max(
+    1,
+    Number(formData.get("heroesPerMonster")) || 1
+  );
 
   const entityDb = getDatabase();
 
@@ -171,7 +175,7 @@ export async function addMonsterToEncounter(formData: FormData) {
   }
 
   const accessible = await entityDb
-    .select({ id: monsters.id })
+    .select({ id: monsters.id, legendary: monsters.legendary })
     .from(monsters)
     .where(
       and(
@@ -186,12 +190,15 @@ export async function addMonsterToEncounter(formData: FormData) {
   if (accessible.length === 0) {
     return forbidden();
   }
+  const quantity = accessible[0].legendary ? 1 : requestedQuantity;
+  const isPerHero = !accessible[0].legendary && requestedPerHero;
 
   await db.addMonsterToEncounter({
     monsterId,
     encounterId,
     quantity,
     isPerHero,
+    heroesPerMonster,
   });
   return { success: true };
 }

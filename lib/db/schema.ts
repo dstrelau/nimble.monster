@@ -728,6 +728,7 @@ export const monstersEncounters = sqliteTable(
     isPerHero: integer("is_per_hero", { mode: "boolean" })
       .notNull()
       .default(false),
+    heroesPerMonster: integer("heroes_per_monster").notNull().default(1),
   },
   (table) => [primaryKey({ columns: [table.monsterId, table.encounterId] })]
 );

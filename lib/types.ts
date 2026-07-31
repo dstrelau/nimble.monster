@@ -168,6 +168,7 @@ export interface EncounterMonsterEntry {
   monster: MonsterMini;
   quantity: number;
   isPerHero: boolean;
+  heroesPerMonster?: number;
 }
 
 export interface EncounterOverview {
@@ -186,6 +187,7 @@ export interface EncounterMonsterEntryFull {
   monster: Monster;
   quantity: number;
   isPerHero: boolean;
+  heroesPerMonster?: number;
 }
 
 export interface Encounter extends Omit<EncounterOverview, "monsters"> {
