@@ -137,6 +137,7 @@ describe("GET /api/encounters/[id]", () => {
         {
           monster: {
             id: "monster-id-1",
+            hazard: false,
             name: "Goblin",
             level: "1",
             levelInt: 1,

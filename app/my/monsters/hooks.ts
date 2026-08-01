@@ -24,7 +24,16 @@ export function myMonstersInfiniteQueryOptions({
   level?: number;
   limit?: number;
 }> = {}) {
-  const params = { search, sort, type, source, role, level, limit };
+  const creatureType = type === "hazard" ? "all" : type;
+  const params = {
+    search,
+    sort,
+    type: creatureType,
+    source,
+    role,
+    level,
+    limit,
+  };
   return {
     queryKey: ["my-monsters", params],
     queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>

@@ -174,6 +174,7 @@ export const monsters = sqliteTable(
     climb: integer("climb").notNull().default(0),
     teleport: integer("teleport").notNull().default(0),
     minion: integer("minion", { mode: "boolean" }).notNull().default(false),
+    hazard: integer("hazard", { mode: "boolean" }).notNull().default(false),
     levelInt: integer("level_int").notNull().default(0),
     role: text("role").$type<MonsterRole>(),
     paperforgeId: text("paperforge_id"),

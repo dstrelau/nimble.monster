@@ -18,6 +18,12 @@ const changelog: ChangelogEntry[] = [
     ],
   },
   {
+    date: "30 July 2026",
+    entries: [
+      "Add Hazard statblocks, including encounter and collection support.",
+    ],
+  },
+  {
     date: "29 July 2026",
     entries: ["new navigation for My Library and user profile pages."],
   },

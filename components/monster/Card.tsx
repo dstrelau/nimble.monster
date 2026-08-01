@@ -20,7 +20,10 @@ import { CardContentWithGap } from "@/components/shared/StyledComponents";
 import { Card as ShadcnCard } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
-import type { Monster, MonsterTeamMember } from "@/lib/services/monsters";
+import type {
+  MonsterFormState,
+  MonsterTeamMember,
+} from "@/lib/services/monsters";
 import type { Condition, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatHp, formatSizeKind } from "@/lib/utils/monster";
@@ -47,10 +50,12 @@ const StatsGroup: React.FC<{
 };
 
 const MonsterStats: React.FC<{
-  monster: Monster;
-  variant: "legendary" | "minion" | "standard";
+  monster: MonsterFormState;
+  variant: "hazard" | "legendary" | "minion" | "standard";
   className?: string;
 }> = ({ monster, variant, className }) => {
+  if (variant === "hazard") return null;
+
   let statCount = 0;
 
   if (monster.armor !== "none") statCount++;
@@ -114,10 +119,10 @@ const MonsterStats: React.FC<{
 };
 
 const MonsterHeader: React.FC<{
-  monster: Monster;
+  monster: MonsterFormState;
   hiddenFamilyId?: string;
   link?: boolean;
-  variant: "legendary" | "minion" | "standard";
+  variant: "hazard" | "legendary" | "minion" | "standard";
 }> = ({ monster, link = true, variant }) => {
   const headerClasses = cn(
     "gap-1 flex flex-col relative",
@@ -165,7 +170,7 @@ const MonsterHeader: React.FC<{
                 "text-sm/4 font-condensed font-muted-foreground",
                 variant === "legendary" && "text-md font-slab font-normal",
                 variant === "minion" && "small-caps",
-                variant === "standard" && "small-caps"
+                (variant === "standard" || variant === "hazard") && "small-caps"
               )}
             >
               {monster.levelInt !== 0 && (
@@ -175,7 +180,7 @@ const MonsterHeader: React.FC<{
                 </>
               )}
               {variant === "legendary" && "Solo "}
-              {formatSizeKind(monster)}
+              {variant !== "hazard" && formatSizeKind(monster)}
             </div>
           </div>
         </div>
@@ -246,7 +251,7 @@ const MemberDivider: React.FC = () => (
   </div>
 );
 
-const TeamHeader: React.FC<{ monster: Monster; link?: boolean }> = ({
+const TeamHeader: React.FC<{ monster: MonsterFormState; link?: boolean }> = ({
   monster,
   link = true,
 }) => (
@@ -272,7 +277,7 @@ const TeamHeader: React.FC<{ monster: Monster; link?: boolean }> = ({
 );
 
 interface CardProps {
-  monster: Monster;
+  monster: MonsterFormState;
   creator?: User;
   link?: boolean;
   hideActions?: boolean;
@@ -323,11 +328,13 @@ export const Card = ({
           monster={monster}
           link={!selectable && link}
           variant={
-            monster.legendary
-              ? "legendary"
-              : monster.minion
-                ? "minion"
-                : "standard"
+            monster.hazard
+              ? "hazard"
+              : monster.legendary
+                ? "legendary"
+                : monster.minion
+                  ? "minion"
+                  : "standard"
           }
         />
       )}
@@ -360,7 +367,7 @@ export const Card = ({
               <MemberDivider />
             </Fragment>
           ))}
-        {!monster.minion && monster.bloodied && (
+        {!monster.hazard && !monster.minion && monster.bloodied && (
           <PrefixedFormattedText
             content={monster.bloodied}
             conditions={conditions}

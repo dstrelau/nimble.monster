@@ -92,7 +92,7 @@ vi.mock("@/lib/services/monsters", () => ({
 }));
 
 vi.mock("@/lib/services/monsters/converters", () => ({
-  toMonsterMini: vi.fn(),
+  toBestiaryEntryMini: vi.fn(),
 }));
 
 vi.mock("@/lib/utils/validation", () => ({
@@ -102,7 +102,7 @@ vi.mock("@/lib/utils/validation", () => ({
 import { eq, inArray } from "drizzle-orm";
 import { toUser } from "@/lib/db/converters";
 import { findMonstersByIds } from "@/lib/services/monsters";
-import { toMonsterMini } from "@/lib/services/monsters/converters";
+import { toBestiaryEntryMini } from "@/lib/services/monsters/converters";
 import type { Monster, MonsterMini } from "@/lib/services/monsters/types";
 import type { User } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
@@ -131,6 +131,7 @@ const makeUser = (overrides: Partial<User> = {}): User => ({
 
 const makeMini = (overrides: Partial<MonsterMini> = {}): MonsterMini => ({
   id: "m0",
+  hazard: false,
   hp: 10,
   legendary: false,
   minion: false,
@@ -165,7 +166,7 @@ beforeEach(() => {
   mockResultQueue.length = 0;
   vi.mocked(isValidUUID).mockReturnValue(true);
   vi.mocked(toUser).mockImplementation((u) => makeUser({ id: u.id }));
-  vi.mocked(toMonsterMini).mockImplementation((m) =>
+  vi.mocked(toBestiaryEntryMini).mockImplementation((m) =>
     makeMini({ id: m.id, name: m.name })
   );
   vi.mocked(findMonstersByIds).mockResolvedValue([]);

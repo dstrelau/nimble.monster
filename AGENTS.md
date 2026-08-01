@@ -119,6 +119,7 @@ Workflow:
 # Browser QA and debugging
 
 - Static checks and unit tests are not sufficient for route or data-loading UI changes. Browser-test every affected route and entity type, and verify that loading completes, the correct navigation is active, requests succeed, and there are no console errors, page errors, hydration warnings, or relevant server-log errors.
+- Chromium requires at least a medium-sized orb. When testing image generation, use a new medium-or-larger orb if the current orb cannot boot Chromium or lacks sufficient resources.
 - For UI fixes, include screenshot evidence in the final response whenever browser access makes it practical.
 - After changing output shared by server and client components, wait for the dev compiler to settle and test both normal client navigation and a full reload. Do not dismiss hydration errors as stale HMR state without finding and removing avoidable server/client output differences.
 - For equivalent entity-list routes, prefer a consistent loading contract: server-load or dehydrate the active entity's initial page, fetch only that entity plus shared counts, and use client requests for filtering and pagination. Do not load every entity dataset for each route.

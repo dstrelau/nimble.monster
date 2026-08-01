@@ -8,7 +8,7 @@ import {
   monstersEncounters,
   users,
 } from "@/lib/db/schema";
-import { toMonsterMini } from "@/lib/services/monsters/converters";
+import { toBestiaryEntryMini } from "@/lib/services/monsters/converters";
 import type {
   EncounterMonsterEntry,
   EncounterOverview,
@@ -60,7 +60,7 @@ const toEncounterMonsterEntries = (
 ): EncounterMonsterEntry[] =>
   rows
     .map((row) => ({
-      monster: toMonsterMini(row.monster),
+      monster: toBestiaryEntryMini(row.monster),
       quantity: row.quantity,
       isPerHero: row.isPerHero,
       heroesPerMonster: row.heroesPerMonster,

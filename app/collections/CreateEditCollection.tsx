@@ -38,7 +38,7 @@ import type { AncestryMini } from "@/lib/services/ancestries/types";
 import type { Background } from "@/lib/services/backgrounds";
 import type { BackgroundMini } from "@/lib/services/backgrounds/types";
 import type { Item, ItemMini } from "@/lib/services/items";
-import type { Monster, MonsterMini } from "@/lib/services/monsters";
+import type { BestiaryEntry, BestiaryEntryMini } from "@/lib/services/monsters";
 import type {
   Class,
   ClassMini,
@@ -73,7 +73,7 @@ type FormData = z.infer<typeof formSchema>;
 interface Props {
   collection: Collection;
   onSubmit?: (
-    data: FormData & { monsters: MonsterMini[]; items: ItemMini[] }
+    data: FormData & { monsters: BestiaryEntryMini[]; items: ItemMini[] }
   ) => Promise<void>;
   isCreating?: boolean;
   submitLabel?: string;
@@ -89,7 +89,7 @@ export function CreateEditCollection({
   const { data: session } = useSession();
 
   const [selectedMonsters, setSelectedMonsters] = useState<
-    Map<string, Monster | MonsterMini>
+    Map<string, BestiaryEntry | BestiaryEntryMini>
   >(() => new Map(collection.monsters.map((m) => [m.id, m])));
 
   const [selectedItems, setSelectedItems] = useState<
@@ -106,7 +106,7 @@ export function CreateEditCollection({
   );
 
   const currentMonsters = useMemo(
-    () => [...selectedMonsters.values()] as MonsterMini[],
+    () => [...selectedMonsters.values()],
     [selectedMonsters]
   );
   const currentItems = useMemo(
@@ -114,7 +114,7 @@ export function CreateEditCollection({
     [selectedItems]
   );
 
-  const handleMonsterToggle = (monster: Monster) => {
+  const handleMonsterToggle = (monster: BestiaryEntry) => {
     setSelectedMonsters((prev) => {
       const next = new Map(prev);
       if (next.has(monster.id)) {

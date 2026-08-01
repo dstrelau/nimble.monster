@@ -1,4 +1,4 @@
-import type { Monster, MonsterMini } from "@/lib/services/monsters";
+import type { MonsterMini } from "@/lib/services/monsters";
 
 export function formatHp(
   monster: Pick<MonsterMini, "hp" | "hpPerHero">
@@ -61,7 +61,9 @@ export function hasLegendaryEncounterConflict(
   return hasLegendary && hasOtherNonMinion;
 }
 
-export function formatSizeKind(monster: Monster): string {
+export function formatSizeKind(
+  monster: Pick<MonsterMini, "legendary" | "kind" | "size" | "role">
+): string {
   const parts = [];
 
   if (monster.legendary) {

@@ -8,16 +8,19 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockListOwnCollections, mockAddCompanionToCollection } = vi.hoisted(
-  () => ({
-    mockListOwnCollections: vi.fn(),
-    mockAddCompanionToCollection: vi.fn(),
-  })
-);
+const {
+  mockListOwnCollections,
+  mockAddMonsterToCollection,
+  mockAddCompanionToCollection,
+} = vi.hoisted(() => ({
+  mockListOwnCollections: vi.fn(),
+  mockAddMonsterToCollection: vi.fn(),
+  mockAddCompanionToCollection: vi.fn(),
+}));
 
 vi.mock("@/app/actions/collection", () => ({
   listOwnCollections: mockListOwnCollections,
-  addMonsterToCollection: vi.fn(),
+  addMonsterToCollection: mockAddMonsterToCollection,
   addItemToCollection: vi.fn(),
   addSpellSchoolToCollection: vi.fn(),
   addCompanionToCollection: mockAddCompanionToCollection,
@@ -161,6 +164,48 @@ describe("AddToCollectionDialog", () => {
     });
 
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
+  });
+
+  it("detects a duplicate hazard through the collection monsters", async () => {
+    render(<AddToCollectionDialog type="hazard" monsterId="m-existing" />, {
+      wrapper: createWrapper(),
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
+    await screen.findByText("My Monsters");
+
+    fireEvent.change(screen.getByTestId("collection-select"), {
+      target: { value: "col-1" },
+    });
+
+    expect(
+      await screen.findByText(
+        "This hazard is already in the selected collection"
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
+  });
+
+  it("adds a hazard through the monster collection action", async () => {
+    mockAddMonsterToCollection.mockResolvedValue({ success: true });
+    render(<AddToCollectionDialog type="hazard" monsterId="hazard-1" />, {
+      wrapper: createWrapper(),
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
+    await screen.findByText("Empty Collection");
+
+    fireEvent.change(screen.getByTestId("collection-select"), {
+      target: { value: "col-2" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
+
+    await waitFor(() => {
+      expect(mockAddMonsterToCollection).toHaveBeenCalledOnce();
+    });
+    const formData = mockAddMonsterToCollection.mock.calls[0][0] as FormData;
+    expect(formData.get("monsterId")).toBe("hazard-1");
+    expect(formData.get("collectionId")).toBe("col-2");
   });
 
   it("submits form with correct entity type and collection", async () => {

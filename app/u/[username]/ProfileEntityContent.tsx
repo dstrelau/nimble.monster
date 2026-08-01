@@ -25,7 +25,12 @@ import { getCustomRuleUrl } from "@/lib/utils/url";
 
 export type ProfileEntityContentProps =
   | {
-      entityType: "monsters" | "ancestries" | "backgrounds" | "encounters";
+      entityType:
+        | "monsters"
+        | "hazards"
+        | "ancestries"
+        | "backgrounds"
+        | "encounters";
       creatorId: string;
     }
   | { entityType: "collections"; collections: CollectionOverview[] }
@@ -54,6 +59,14 @@ export default function ProfileEntityContent(props: ProfileEntityContentProps) {
         <PaginatedMonsterGrid
           kind="user-monsters"
           creatorId={props.creatorId}
+        />
+      );
+    case "hazards":
+      return (
+        <PaginatedMonsterGrid
+          kind="user-monsters"
+          creatorId={props.creatorId}
+          entityType="hazards"
         />
       );
     case "ancestries":

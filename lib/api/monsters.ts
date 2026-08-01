@@ -16,6 +16,7 @@ export interface JSONAPIMonster {
   id?: string;
   attributes: {
     name: string;
+    hazard?: boolean;
     hp: number;
     hpPerHero?: number;
     level: number | string;
@@ -140,6 +141,7 @@ function parseMonster(data: JSONAPIMonster): Monster {
     role: (attrs.role as Monster["role"]) ?? undefined,
     legendary: attrs.legendary,
     minion: attrs.minion ?? false,
+    hazard: false,
     visibility: "public",
     paperforgeId: attrs.paperforgeId,
     createdAt: new Date(),

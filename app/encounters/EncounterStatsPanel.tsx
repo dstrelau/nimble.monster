@@ -75,7 +75,16 @@ export function EncounterStatsPanel({
   const { totalMonsterLevel, totalMonsterHP, minionCount, nonMinionCount } =
     encounter.monsters.reduce(
       (acc, entry) => {
-        const count = resolvedEncounterMonsterCount(entry, encounter.heroCount);
+        if (entry.monster.hazard) return acc;
+        const count = resolvedEncounterMonsterCount(
+          {
+            quantity: entry.quantity,
+            isPerHero: entry.isPerHero,
+            heroesPerMonster: entry.heroesPerMonster,
+            monster: entry.monster,
+          },
+          encounter.heroCount
+        );
         acc.totalMonsterLevel += encounterMonsterLevelTotal(
           entry.monster,
           count,
@@ -143,11 +152,12 @@ export function EncounterStatsPanel({
               : null;
 
   const hasLegendaryMonster = encounter.monsters.some(
-    (entry) => entry.monster.legendary
+    (entry) => !entry.monster.hazard && entry.monster.legendary
   );
-  const hasLegendaryConflict = hasLegendaryEncounterConflict(
-    encounter.monsters
+  const combatantEntries = encounter.monsters.flatMap((entry) =>
+    entry.monster.hazard ? [] : [{ monster: entry.monster }]
   );
+  const hasLegendaryConflict = hasLegendaryEncounterConflict(combatantEntries);
   const difficulty =
     totalHeroLevel <= 0
       ? null

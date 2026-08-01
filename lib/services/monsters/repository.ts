@@ -46,13 +46,22 @@ import {
 } from "./members";
 import type { PaginateMonstersParams } from "./service";
 import type {
+  BestiaryEntry,
+  CreateHazardInput,
   CreateMonsterInput,
+  Hazard,
   Monster,
   MonsterMini,
   MonsterRole,
   SearchMonstersParams,
+  UpdateHazardInput,
   UpdateMonsterInput,
 } from "./types";
+
+type CreateBestiaryEntryCommand = CreateMonsterInput &
+  ({ hazard: false } | { hazard: true });
+type UpdateBestiaryEntryCommand = UpdateMonsterInput &
+  ({ hazard: false } | { hazard: true });
 
 // Helper converters
 const toUserFromRow = (u: UserRow): User => ({
@@ -129,6 +138,7 @@ const toMonsterMiniFromRow = (m: MonsterRow): MonsterMini => ({
   hpPerHero: m.hpPerHero ?? null,
   legendary: m.legendary || false,
   minion: m.minion,
+  hazard: false,
   level: m.level,
   levelInt: m.levelInt,
   name: m.name,
@@ -149,7 +159,12 @@ interface MonsterFullData {
   awards: AwardRow[];
   families: Array<{ family: FamilyRow; creator: UserRow }>;
   conditions: Array<{ condition: ConditionRow; inline: boolean }>;
-  remixedFrom: { id: string; name: string; creator: UserRow } | null;
+  remixedFrom: {
+    id: string;
+    name: string;
+    hazard: boolean;
+    creator: UserRow;
+  } | null;
 }
 
 const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
@@ -158,6 +173,7 @@ const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
   hpPerHero: data.monster.hpPerHero ?? null,
   legendary: data.monster.legendary || false,
   minion: data.monster.minion,
+  hazard: false,
   level: data.monster.level,
   levelInt: data.monster.levelInt,
   name: data.monster.name,
@@ -206,17 +222,58 @@ const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
   awards: data.awards.map(toAwardFromRow),
   remixedFromId: data.monster.remixedFromId || null,
   remixedFrom: data.remixedFrom
-    ? {
-        id: data.remixedFrom.id,
-        name: data.remixedFrom.name,
-        creator: toUserFromRow(data.remixedFrom.creator),
-      }
+    ? data.remixedFrom.hazard
+      ? {
+          id: data.remixedFrom.id,
+          name: data.remixedFrom.name,
+          hazard: true,
+          creator: toUserFromRow(data.remixedFrom.creator),
+        }
+      : {
+          id: data.remixedFrom.id,
+          name: data.remixedFrom.name,
+          hazard: false,
+          creator: toUserFromRow(data.remixedFrom.creator),
+        }
     : null,
 });
 
+const toHazardFromFullData = (data: MonsterFullData): Hazard => {
+  const entry = toMonsterFromFullData(data);
+  return {
+    id: entry.id,
+    hazard: true,
+    level: entry.level,
+    levelInt: entry.levelInt,
+    name: entry.name,
+    visibility: entry.visibility,
+    createdAt: entry.createdAt,
+    abilities: entry.abilities,
+    actions: entry.actions,
+    actionPreface: entry.actionPreface,
+    moreInfo: entry.moreInfo,
+    mild_encounter: entry.mild_encounter,
+    spicy_encounter: entry.spicy_encounter,
+    creator: entry.creator,
+    source: entry.source,
+    awards: entry.awards,
+    updatedAt: entry.updatedAt,
+    imageUrl: entry.imageUrl,
+    remixedFromId: entry.remixedFromId,
+    remixedFrom: entry.remixedFrom,
+    isOfficial: entry.isOfficial,
+  };
+};
+
+const toBestiaryEntryFromFullData = (data: MonsterFullData): BestiaryEntry =>
+  data.monster.hazard
+    ? toHazardFromFullData(data)
+    : toMonsterFromFullData(data);
+
 async function loadMonsterFullData(
   db: Awaited<ReturnType<typeof getDatabase>>,
-  monsterIds: string[]
+  monsterIds: string[],
+  hazard?: boolean
 ): Promise<Map<string, MonsterFullData>> {
   if (monsterIds.length === 0) return new Map();
 
@@ -225,7 +282,11 @@ async function loadMonsterFullData(
     .from(monsters)
     .innerJoin(users, eq(monsters.userId, users.id))
     .leftJoin(sources, eq(monsters.sourceId, sources.id))
-    .where(inArray(monsters.id, monsterIds));
+    .where(
+      hazard === undefined
+        ? inArray(monsters.id, monsterIds)
+        : and(inArray(monsters.id, monsterIds), eq(monsters.hazard, hazard))
+    );
 
   const awardRows = await db
     .select({ monsterId: monstersAwards.monsterId, award: awards })
@@ -260,7 +321,7 @@ async function loadMonsterFullData(
 
   const remixedFromMap = new Map<
     string,
-    { id: string; name: string; creator: UserRow }
+    { id: string; name: string; hazard: boolean; creator: UserRow }
   >();
   if (remixedFromIds.length > 0) {
     const remixedFromRows = await db
@@ -273,6 +334,7 @@ async function loadMonsterFullData(
       remixedFromMap.set(row.monster.id, {
         id: row.monster.id,
         name: row.monster.name,
+        hazard: row.monster.hazard,
         creator: row.creator,
       });
     }
@@ -345,7 +407,41 @@ export const deleteMonster = async (
 
   const result = await db
     .delete(monsters)
-    .where(and(eq(monsters.id, id), eq(monsters.userId, user.id)));
+    .where(
+      and(
+        eq(monsters.id, id),
+        eq(monsters.userId, user.id),
+        eq(monsters.hazard, false)
+      )
+    );
+
+  return result.rowsAffected > 0;
+};
+
+export const deleteHazard = async (
+  id: string,
+  discordId: string
+): Promise<boolean> => {
+  if (!isValidUUID(id)) return false;
+
+  const db = await getDatabase();
+  const userResult = await db
+    .select()
+    .from(users)
+    .where(eq(users.discordId, discordId))
+    .limit(1);
+
+  if (userResult.length === 0) return false;
+
+  const result = await db
+    .delete(monsters)
+    .where(
+      and(
+        eq(monsters.id, id),
+        eq(monsters.userId, userResult[0].id),
+        eq(monsters.hazard, true)
+      )
+    );
 
   return result.rowsAffected > 0;
 };
@@ -362,7 +458,11 @@ export const listPublicMonsterMinis = async (): Promise<MonsterMini[]> => {
   return monsterRows.map(toMonsterMiniFromRow);
 };
 
-export const paginateMonsters = async ({
+type PaginatedBestiaryParams = PaginateMonstersParams & {
+  includePrivate?: boolean;
+};
+
+const paginateBestiaryEntries = async ({
   cursor,
   limit = 100,
   sort = "-createdAt",
@@ -373,8 +473,9 @@ export const paginateMonsters = async ({
   role,
   level,
   includePrivate = false,
-}: PaginateMonstersParams & { includePrivate?: boolean }): Promise<{
-  data: Monster[];
+  hazardOnly,
+}: PaginatedBestiaryParams & { hazardOnly: boolean }): Promise<{
+  data: BestiaryEntry[];
   nextCursor: string | null;
 }> => {
   const db = await getDatabase();
@@ -429,6 +530,7 @@ export const paginateMonsters = async ({
   } else if (type === "teams") {
     whereConditions.push(sql`json_array_length(${monsters.members}) > 0`);
   }
+  whereConditions.push(eq(monsters.hazard, hazardOnly));
 
   // Build the query
   let query = db.select({ id: monsters.id }).from(monsters).$dynamic();
@@ -514,7 +616,9 @@ export const paginateMonsters = async ({
   const results = resultIds
     .map((id) => monsterDataMap.get(id))
     .filter((m): m is MonsterFullData => m !== undefined)
-    .map(toMonsterFromFullData);
+    .map((data) =>
+      hazardOnly ? toHazardFromFullData(data) : toMonsterFromFullData(data)
+    );
 
   let nextCursor: string | null = null;
   if (hasMore && results.length > 0) {
@@ -557,6 +661,29 @@ export const paginateMonsters = async ({
   return {
     data: results,
     nextCursor,
+  };
+};
+
+export const paginateMonsters = async (
+  params: PaginatedBestiaryParams
+): Promise<{ data: Monster[]; nextCursor: string | null }> => {
+  const result = await paginateBestiaryEntries({
+    ...params,
+    hazardOnly: false,
+  });
+  return {
+    data: result.data.filter((entry): entry is Monster => !entry.hazard),
+    nextCursor: result.nextCursor,
+  };
+};
+
+export const paginateHazards = async (
+  params: Omit<PaginatedBestiaryParams, "type" | "role">
+): Promise<{ data: Hazard[]; nextCursor: string | null }> => {
+  const result = await paginateBestiaryEntries({ ...params, hazardOnly: true });
+  return {
+    data: result.data.filter((entry): entry is Hazard => entry.hazard),
+    nextCursor: result.nextCursor,
   };
 };
 
@@ -618,7 +745,9 @@ function buildCursorCondition(
   return undefined;
 }
 
-export const findMonster = async (id: string): Promise<Monster | null> => {
+export const findBestiaryEntry = async (
+  id: string
+): Promise<BestiaryEntry | null> => {
   if (!isValidUUID(id)) return null;
 
   const db = await getDatabase();
@@ -626,7 +755,38 @@ export const findMonster = async (id: string): Promise<Monster | null> => {
   const monsterDataMap = await loadMonsterFullData(db, [id]);
   const data = monsterDataMap.get(id);
 
+  return data ? toBestiaryEntryFromFullData(data) : null;
+};
+
+export const findPublicBestiaryEntryById = async (
+  id: string
+): Promise<BestiaryEntry | null> => {
+  if (!isValidUUID(id)) return null;
+
+  const db = await getDatabase();
+  const rows = await db
+    .select({ id: monsters.id })
+    .from(monsters)
+    .where(and(eq(monsters.id, id), eq(monsters.visibility, "public")))
+    .limit(1);
+
+  if (rows.length === 0) return null;
+  const data = (await loadMonsterFullData(db, [id])).get(id);
+  return data ? toBestiaryEntryFromFullData(data) : null;
+};
+
+export const findMonster = async (id: string): Promise<Monster | null> => {
+  if (!isValidUUID(id)) return null;
+  const db = await getDatabase();
+  const data = (await loadMonsterFullData(db, [id], false)).get(id);
   return data ? toMonsterFromFullData(data) : null;
+};
+
+export const findHazard = async (id: string): Promise<Hazard | null> => {
+  if (!isValidUUID(id)) return null;
+  const db = await getDatabase();
+  const data = (await loadMonsterFullData(db, [id], true)).get(id);
+  return data ? toHazardFromFullData(data) : null;
 };
 
 export const findMonstersByIds = async (ids: string[]): Promise<Monster[]> => {
@@ -634,12 +794,25 @@ export const findMonstersByIds = async (ids: string[]): Promise<Monster[]> => {
   if (validIds.length === 0) return [];
 
   const db = await getDatabase();
-  const monsterDataMap = await loadMonsterFullData(db, validIds);
+  const monsterDataMap = await loadMonsterFullData(db, validIds, false);
 
   return validIds
     .map((id) => monsterDataMap.get(id))
     .filter((m): m is MonsterFullData => m !== undefined)
     .map(toMonsterFromFullData);
+};
+
+export const findBestiaryEntriesByIds = async (
+  ids: string[]
+): Promise<BestiaryEntry[]> => {
+  const validIds = ids.filter(isValidUUID);
+  if (validIds.length === 0) return [];
+  const db = await getDatabase();
+  const entries = await loadMonsterFullData(db, validIds);
+  return validIds
+    .map((id) => entries.get(id))
+    .filter((entry): entry is MonsterFullData => entry !== undefined)
+    .map(toBestiaryEntryFromFullData);
 };
 
 const OFFICIAL_USER_ID = "00000000-0000-0000-0000-000000000000";
@@ -685,12 +858,18 @@ export const findPublicMonsterById = async (
   const monsterCheck = await db
     .select({ id: monsters.id })
     .from(monsters)
-    .where(and(eq(monsters.id, id), eq(monsters.visibility, "public")))
+    .where(
+      and(
+        eq(monsters.id, id),
+        eq(monsters.visibility, "public"),
+        eq(monsters.hazard, false)
+      )
+    )
     .limit(1);
 
   if (monsterCheck.length === 0) return null;
 
-  const monsterDataMap = await loadMonsterFullData(db, [id]);
+  const monsterDataMap = await loadMonsterFullData(db, [id], false);
   const data = monsterDataMap.get(id);
 
   return data ? toMonsterFromFullData(data) : null;
@@ -708,15 +887,64 @@ export const findMonsterWithCreatorId = async (
   const monsterCheck = await db
     .select({ id: monsters.id })
     .from(monsters)
-    .where(and(eq(monsters.id, id), eq(monsters.userId, creatorId)))
+    .where(
+      and(
+        eq(monsters.id, id),
+        eq(monsters.userId, creatorId),
+        eq(monsters.hazard, false)
+      )
+    )
     .limit(1);
 
   if (monsterCheck.length === 0) return null;
 
-  const monsterDataMap = await loadMonsterFullData(db, [id]);
+  const monsterDataMap = await loadMonsterFullData(db, [id], false);
   const data = monsterDataMap.get(id);
 
   return data ? toMonsterFromFullData(data) : null;
+};
+
+export const findPublicHazardById = async (
+  id: string
+): Promise<Hazard | null> => {
+  if (!isValidUUID(id)) return null;
+  const db = await getDatabase();
+  const rows = await db
+    .select({ id: monsters.id })
+    .from(monsters)
+    .where(
+      and(
+        eq(monsters.id, id),
+        eq(monsters.visibility, "public"),
+        eq(monsters.hazard, true)
+      )
+    )
+    .limit(1);
+  if (rows.length === 0) return null;
+  const data = (await loadMonsterFullData(db, [id], true)).get(id);
+  return data ? toHazardFromFullData(data) : null;
+};
+
+export const findHazardWithCreatorId = async (
+  id: string,
+  creatorId: string
+): Promise<Hazard | null> => {
+  if (!isValidUUID(id)) return null;
+  const db = await getDatabase();
+  const rows = await db
+    .select({ id: monsters.id })
+    .from(monsters)
+    .where(
+      and(
+        eq(monsters.id, id),
+        eq(monsters.userId, creatorId),
+        eq(monsters.hazard, true)
+      )
+    )
+    .limit(1);
+  if (rows.length === 0) return null;
+  const data = (await loadMonsterFullData(db, [id], true)).get(id);
+  return data ? toHazardFromFullData(data) : null;
 };
 
 export const countPublicMonstersForUser = async (
@@ -727,7 +955,13 @@ export const countPublicMonstersForUser = async (
   const result = await db
     .select({ count: count() })
     .from(monsters)
-    .where(and(eq(monsters.userId, userId), eq(monsters.visibility, "public")));
+    .where(
+      and(
+        eq(monsters.userId, userId),
+        eq(monsters.visibility, "public"),
+        eq(monsters.hazard, false)
+      )
+    );
 
   return result[0]?.count || 0;
 };
@@ -740,7 +974,13 @@ export const listPublicMonstersForUser = async (
   const monsterIdRows = await db
     .select({ id: monsters.id })
     .from(monsters)
-    .where(and(eq(monsters.userId, userId), eq(monsters.visibility, "public")))
+    .where(
+      and(
+        eq(monsters.userId, userId),
+        eq(monsters.visibility, "public"),
+        eq(monsters.hazard, false)
+      )
+    )
     .orderBy(asc(monsters.name));
 
   if (monsterIdRows.length === 0) return [];
@@ -772,7 +1012,7 @@ export const listAllMonstersForDiscordID = async (
   const monsterIdRows = await db
     .select({ id: monsters.id })
     .from(monsters)
-    .where(eq(monsters.userId, user.id))
+    .where(and(eq(monsters.userId, user.id), eq(monsters.hazard, false)))
     .orderBy(asc(monsters.name));
 
   if (monsterIdRows.length === 0) return [];
@@ -816,10 +1056,17 @@ export const searchPublicMonsterMinis = async ({
   if (type === "standard") {
     whereConditions.push(eq(monsters.legendary, false));
     whereConditions.push(eq(monsters.minion, false));
+    whereConditions.push(eq(monsters.hazard, false));
   } else if (type === "legendary") {
     whereConditions.push(eq(monsters.legendary, true));
+    whereConditions.push(eq(monsters.hazard, false));
   } else if (type === "minion") {
     whereConditions.push(eq(monsters.minion, true));
+    whereConditions.push(eq(monsters.hazard, false));
+  } else if (type === "hazard") {
+    whereConditions.push(eq(monsters.hazard, true));
+  } else {
+    whereConditions.push(eq(monsters.hazard, false));
   }
 
   let query = db.select().from(monsters).$dynamic();
@@ -869,7 +1116,8 @@ export const listMonstersByFamilyId = async (
     .where(
       and(
         eq(monstersFamilies.familyId, familyId),
-        eq(monsters.visibility, "public")
+        eq(monsters.visibility, "public"),
+        eq(monsters.hazard, false)
       )
     );
 
@@ -940,14 +1188,15 @@ export const findMonsterRemixes = async (monsterId: string) => {
   return remixRows.map((row) => ({
     id: row.monsters.id,
     name: row.monsters.name,
+    hazard: row.monsters.hazard,
     creator: toUserFromRow(row.users),
   }));
 };
 
-export const createMonster = async (
-  input: CreateMonsterInput,
+const createBestiaryEntry = async (
+  input: CreateBestiaryEntryCommand,
   discordId: string
-): Promise<Monster> => {
+): Promise<BestiaryEntry> => {
   const db = await getDatabase();
 
   const {
@@ -976,6 +1225,7 @@ export const createMonster = async (
     visibility,
     legendary = false,
     minion = false,
+    hazard,
     bloodied = "",
     lastStand = "",
     saves = [],
@@ -998,7 +1248,7 @@ export const createMonster = async (
   const user = userResult[0];
 
   // Teams keep a shared last stand even though they are not flagged legendary.
-  const isTeam = members.length > 0;
+  const isTeam = !hazard && members.length > 0;
 
   const savesString = legendary
     ? Array.isArray(saves)
@@ -1013,34 +1263,35 @@ export const createMonster = async (
   await db.insert(monsters).values({
     id: monsterId,
     name,
-    kind,
+    kind: hazard ? "" : kind,
     level,
     levelInt,
-    hp,
-    hpPerHero,
-    armor: armorValue,
-    size,
-    speed: legendary ? 0 : speed,
-    fly: legendary ? 0 : fly,
-    swim: legendary ? 0 : swim,
-    climb: legendary ? 0 : climb,
-    burrow: legendary ? 0 : burrow,
-    teleport: legendary ? 0 : teleport,
+    hp: hazard ? 0 : hp,
+    hpPerHero: hazard ? null : hpPerHero,
+    armor: hazard ? "" : armorValue,
+    size: hazard ? "medium" : size,
+    speed: legendary || hazard ? 0 : speed,
+    fly: legendary || hazard ? 0 : fly,
+    swim: legendary || hazard ? 0 : swim,
+    climb: legendary || hazard ? 0 : climb,
+    burrow: legendary || hazard ? 0 : burrow,
+    teleport: legendary || hazard ? 0 : teleport,
     actions: stripActionIds(actions),
     abilities: abilities,
-    members: stripMemberIds(members),
-    bloodied: minion ? "" : bloodied,
-    lastStand: legendary || isTeam ? lastStand : "",
-    saves: savesString,
+    members: hazard ? [] : stripMemberIds(members),
+    bloodied: minion || hazard ? "" : bloodied,
+    lastStand: !hazard && (legendary || isTeam) ? lastStand : "",
+    saves: hazard ? "" : savesString,
     visibility,
     actionPreface,
     moreInfo,
     peaceful: mild_encounter,
     deadly: spicy_encounter,
-    legendary,
-    minion,
-    role,
-    paperforgeId,
+    legendary: hazard ? false : legendary,
+    minion: hazard ? false : minion,
+    hazard,
+    role: hazard ? null : role,
+    paperforgeId: hazard ? null : paperforgeId,
     userId: user.id,
     sourceId: sourceId || null,
     remixedFromId: remixedFromId || null,
@@ -1051,15 +1302,15 @@ export const createMonster = async (
   const conditionNames = extractAllConditions({
     actions: [...actions, ...memberConditionSources.actions],
     abilities: [...abilities, ...memberConditionSources.abilities],
-    bloodied: minion ? "" : bloodied,
-    lastStand: legendary || isTeam ? lastStand : "",
+    bloodied: minion || hazard ? "" : bloodied,
+    lastStand: !hazard && (legendary || isTeam) ? lastStand : "",
     moreInfo,
   });
 
   await syncMonsterConditions(monsterId, conditionNames);
   await syncMonsterFamilies(
     monsterId,
-    familyInputs.map((f) => f.id)
+    hazard ? [] : familyInputs.map((f) => f.id)
   );
 
   // Load and return the created monster
@@ -1070,7 +1321,54 @@ export const createMonster = async (
     throw new Error("Failed to create monster");
   }
 
-  return toMonsterFromFullData(data);
+  return toBestiaryEntryFromFullData(data);
+};
+
+export const createMonster = async (
+  input: CreateMonsterInput,
+  discordId: string
+): Promise<Monster> => {
+  const entry = await createBestiaryEntry(
+    { ...input, hazard: false },
+    discordId
+  );
+  if (entry.hazard) throw new Error("Created entry was not a monster");
+  return entry;
+};
+
+export const createHazard = async (
+  input: CreateHazardInput,
+  discordId: string
+): Promise<Hazard> => {
+  const entry = await createBestiaryEntry(
+    {
+      ...input,
+      hazard: true,
+      hp: 0,
+      hpPerHero: null,
+      armor: "none",
+      size: "medium",
+      speed: 0,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      burrow: 0,
+      teleport: 0,
+      families: [],
+      members: [],
+      legendary: false,
+      minion: false,
+      bloodied: "",
+      lastStand: "",
+      saves: [],
+      kind: "",
+      role: null,
+      paperforgeId: null,
+    },
+    discordId
+  );
+  if (!entry.hazard) throw new Error("Created entry was not a hazard");
+  return entry;
 };
 
 export const upsertOfficialMonster = async (
@@ -1113,13 +1411,15 @@ export const upsertOfficialMonster = async (
     remixedFromId,
   } = input;
 
+  const hazard = false;
+
   const existingMonster = await db
     .select({ id: monsters.id })
     .from(monsters)
     .where(and(eq(monsters.name, name), eq(monsters.userId, OFFICIAL_USER_ID)))
     .limit(1);
 
-  const isTeam = members.length > 0;
+  const isTeam = !hazard && members.length > 0;
 
   const savesString = legendary
     ? Array.isArray(saves)
@@ -1138,30 +1438,31 @@ export const upsertOfficialMonster = async (
     level,
     levelInt,
     hp,
-    hpPerHero,
-    armor: armorValue,
-    size,
-    speed: legendary ? 0 : speed,
-    fly: legendary ? 0 : fly,
-    swim: legendary ? 0 : swim,
-    climb: legendary ? 0 : climb,
-    burrow: legendary ? 0 : burrow,
-    teleport: legendary ? 0 : teleport,
+    hpPerHero: hazard ? null : hpPerHero,
+    armor: hazard ? "" : armorValue,
+    size: hazard ? "medium" : size,
+    speed: legendary || hazard ? 0 : speed,
+    fly: legendary || hazard ? 0 : fly,
+    swim: legendary || hazard ? 0 : swim,
+    climb: legendary || hazard ? 0 : climb,
+    burrow: legendary || hazard ? 0 : burrow,
+    teleport: legendary || hazard ? 0 : teleport,
     actions: stripActionIds(actions),
     abilities: abilities,
-    members: stripMemberIds(members),
-    bloodied: minion ? "" : bloodied,
-    lastStand: legendary || isTeam ? lastStand : "",
-    saves: savesString,
+    members: hazard ? [] : stripMemberIds(members),
+    bloodied: minion || hazard ? "" : bloodied,
+    lastStand: !hazard && (legendary || isTeam) ? lastStand : "",
+    saves: hazard ? "" : savesString,
     visibility,
     actionPreface,
     moreInfo,
     peaceful: mild_encounter,
     deadly: spicy_encounter,
-    legendary,
-    minion,
-    role,
-    paperforgeId,
+    legendary: hazard ? false : legendary,
+    minion: hazard ? false : minion,
+    hazard: false,
+    role: hazard ? null : role,
+    paperforgeId: hazard ? null : paperforgeId,
     isOfficial: true,
     sourceId: sourceId || null,
     remixedFromId: remixedFromId || null,
@@ -1190,15 +1491,15 @@ export const upsertOfficialMonster = async (
   const conditionNames = extractAllConditions({
     actions: [...actions, ...upsertMemberConditionSources.actions],
     abilities: [...abilities, ...upsertMemberConditionSources.abilities],
-    bloodied: minion ? "" : bloodied,
-    lastStand: legendary || isTeam ? lastStand : "",
+    bloodied: minion || hazard ? "" : bloodied,
+    lastStand: !hazard && (legendary || isTeam) ? lastStand : "",
     moreInfo,
   });
 
   await syncMonsterConditions(monsterId, conditionNames);
   await syncMonsterFamilies(
     monsterId,
-    familyInputs.map((f) => f.id)
+    hazard ? [] : familyInputs.map((f) => f.id)
   );
 
   const monsterDataMap = await loadMonsterFullData(db, [monsterId]);
@@ -1211,10 +1512,10 @@ export const upsertOfficialMonster = async (
   return toMonsterFromFullData(data);
 };
 
-export const updateMonster = async (
-  input: UpdateMonsterInput,
+const updateBestiaryEntry = async (
+  input: UpdateBestiaryEntryCommand,
   discordId: string
-): Promise<Monster> => {
+): Promise<BestiaryEntry> => {
   const db = await getDatabase();
 
   const {
@@ -1237,6 +1538,7 @@ export const updateMonster = async (
     members = [],
     legendary,
     minion,
+    hazard,
     bloodied,
     lastStand,
     saves,
@@ -1272,7 +1574,13 @@ export const updateMonster = async (
   const existingMonster = await db
     .select()
     .from(monsters)
-    .where(and(eq(monsters.id, id), eq(monsters.userId, user.id)))
+    .where(
+      and(
+        eq(monsters.id, id),
+        eq(monsters.userId, user.id),
+        eq(monsters.hazard, hazard)
+      )
+    )
     .limit(1);
 
   if (existingMonster.length === 0) {
@@ -1288,52 +1596,50 @@ export const updateMonster = async (
       name,
       level,
       levelInt,
-      hp,
-      hpPerHero,
-      armor: armorValue,
-      size,
-      speed,
-      fly,
-      swim,
-      climb,
-      teleport,
-      burrow,
+      hp: hazard ? 0 : hp,
+      hpPerHero: hazard ? null : hpPerHero,
+      armor: hazard ? "" : armorValue,
+      size: hazard ? "medium" : size,
+      speed: hazard ? 0 : speed,
+      fly: hazard ? 0 : fly,
+      swim: hazard ? 0 : swim,
+      climb: hazard ? 0 : climb,
+      teleport: hazard ? 0 : teleport,
+      burrow: hazard ? 0 : burrow,
       actions: stripActionIds(actions),
       abilities: abilities,
-      members: stripMemberIds(members),
-      legendary,
-      minion,
-      bloodied,
-      lastStand,
-      saves: Array.isArray(saves) ? saves.join(" ") : saves || "",
-      kind,
+      members: hazard ? [] : stripMemberIds(members),
+      legendary: hazard ? false : legendary,
+      minion: hazard ? false : minion,
+      hazard,
+      bloodied: hazard ? "" : bloodied,
+      lastStand: hazard ? "" : lastStand,
+      saves: hazard ? "" : Array.isArray(saves) ? saves.join(" ") : saves || "",
+      kind: hazard ? "" : kind,
       visibility,
       actionPreface,
       moreInfo,
       peaceful: mild_encounter,
       deadly: spicy_encounter,
-      role,
-      paperforgeId,
+      role: hazard ? null : role,
+      paperforgeId: hazard ? null : paperforgeId,
       sourceId: sourceId ?? null,
       updatedAt: new Date().toISOString(),
     })
-    .where(eq(monsters.id, id));
+    .where(and(eq(monsters.id, id), eq(monsters.hazard, hazard)));
 
   // Sync conditions
   const memberConditionSources = collectMemberConditionSources(members);
   const conditionNames = extractAllConditions({
     actions: [...(actions || []), ...memberConditionSources.actions],
     abilities: [...(abilities || []), ...memberConditionSources.abilities],
-    bloodied: bloodied || "",
-    lastStand: lastStand || "",
+    bloodied: hazard ? "" : bloodied || "",
+    lastStand: hazard ? "" : lastStand || "",
     moreInfo: moreInfo || "",
   });
 
   await syncMonsterConditions(id, conditionNames);
-  await syncMonsterFamilies(
-    id,
-    familyInputs.map((f) => f.id)
-  );
+  await syncMonsterFamilies(id, hazard ? [] : familyInputs.map((f) => f.id));
 
   // Load and return the updated monster
   const monsterDataMap = await loadMonsterFullData(db, [id]);
@@ -1343,7 +1649,55 @@ export const updateMonster = async (
     throw new Error("Failed to update monster");
   }
 
-  return toMonsterFromFullData(data);
+  return toBestiaryEntryFromFullData(data);
+};
+
+export const updateMonster = async (
+  input: UpdateMonsterInput,
+  discordId: string
+): Promise<Monster> => {
+  const entry = await updateBestiaryEntry(
+    { ...input, hazard: false },
+    discordId
+  );
+  if (entry.hazard) throw new Error("Updated entry was not a monster");
+  return entry;
+};
+
+export const updateHazard = async (
+  input: UpdateHazardInput,
+  discordId: string
+): Promise<Hazard> => {
+  await updateBestiaryEntry(
+    {
+      ...input,
+      hazard: true,
+      hp: 0,
+      hpPerHero: null,
+      armor: "none",
+      size: "medium",
+      speed: 0,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      burrow: 0,
+      teleport: 0,
+      families: [],
+      members: [],
+      legendary: false,
+      minion: false,
+      bloodied: "",
+      lastStand: "",
+      saves: [],
+      kind: "",
+      role: null,
+      paperforgeId: null,
+    },
+    discordId
+  );
+  const hazard = await findHazard(input.id);
+  if (!hazard) throw new Error("Hazard not found");
+  return hazard;
 };
 
 export const listAllSources = async (): Promise<Source[]> => {

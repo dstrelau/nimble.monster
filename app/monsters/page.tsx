@@ -13,7 +13,9 @@ import { publicMonstersInfiniteQueryOptions } from "./hooks";
 const searchParamsSchema = z.object({
   id: z.string().optional(),
   sort: z.enum(PaginateMonstersSortOptions).default("-createdAt"),
-  type: z.enum(["all", "standard", "legendary", "minion"]).default("all"),
+  type: z
+    .enum(["all", "standard", "legendary", "minion", "teams", "hazard"])
+    .default("all"),
   search: z.string().optional(),
   sourceId: z.string().optional(),
 });

@@ -88,6 +88,7 @@ export function compareMonsters(
   if ((uploaded.role ?? null) !== (existing.role ?? null)) return "updated";
   if (uploaded.legendary !== existing.legendary) return "updated";
   if (uploaded.minion !== existing.minion) return "updated";
+  if (uploaded.hazard !== existing.hazard) return "updated";
 
   // Compare movement
   if (uploaded.speed !== existing.speed) return "updated";

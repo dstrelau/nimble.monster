@@ -289,6 +289,17 @@ async function generateEntityImageDirect({
             timeout: 15000,
           });
 
+          if (
+            process.env.NODE_ENV === "development" &&
+            process.env.NIMBLE_DEV_AUTO_LOGIN_USERNAME &&
+            response?.url() !== entityPageUrl
+          ) {
+            response = await page.goto(entityPageUrl, {
+              waitUntil: "domcontentloaded",
+              timeout: 15000,
+            });
+          }
+
           span.setAttributes({
             "page.navigation_phase": "domcontentloaded_success",
             "page.navigation_time_ms": Date.now() - navigationStartTime,

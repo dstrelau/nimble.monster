@@ -35,10 +35,14 @@ function buildTrackerGroups(
   heroCount: number
 ): TrackerGroup[] {
   const entriesByMonsterId = new Map(
-    monsters.map((entry) => [entry.monster.id, entry])
+    monsters
+      .filter((entry) => !entry.monster.hazard)
+      .map((entry) => [entry.monster.id, entry])
   );
   const sortedMonsters = monstersSortedByLevelInt(
-    monsters.map((entry) => entry.monster)
+    monsters
+      .filter((entry) => !entry.monster.hazard)
+      .map((entry) => entry.monster)
   );
 
   return sortedMonsters.flatMap((monster) => {

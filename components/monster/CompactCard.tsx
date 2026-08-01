@@ -3,7 +3,7 @@ import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { Monster } from "@/lib/services/monsters/types";
+import type { MonsterFormState } from "@/lib/services/monsters/types";
 import { formatHp } from "@/lib/utils/monster";
 import {
   ArmorStat,
@@ -19,7 +19,7 @@ import {
 } from "./Stat";
 
 interface CompactCardProps {
-  monster: Monster;
+  monster: MonsterFormState;
   onBack: () => void;
   hasSelection: boolean;
   isLinked: boolean;
@@ -91,9 +91,14 @@ export function CompactCard({
                 {monster.name}
               </h2>
               <p className="text-sm text-muted-foreground">
-                Level {monster.level} {monster.size}{" "}
-                {monster.kind && `${monster.kind} `}
-                {monster.legendary && "(Legendary)"}
+                Level {monster.level}
+                {!monster.hazard && (
+                  <>
+                    {" "}
+                    {monster.size} {monster.kind && `${monster.kind} `}
+                    {monster.legendary && "(Legendary)"}
+                  </>
+                )}
               </p>
             </div>
             {monster.creator.displayName && (
@@ -109,32 +114,34 @@ export function CompactCard({
             )}
           </div>
 
-          <div className="flex flex-wrap gap-2 items-center font-slab font-black">
-            <HPStat value={formatHp(monster)} />
-            {monster.armor === "medium" && <ArmorStat value="M" />}
-            {monster.armor === "heavy" && <ArmorStat value="H" />}
-            {monster.saves && (
-              <SavesStat>
-                <div className="flex flex-col">
-                  {monster.saves.split(",").map((save) => (
-                    <span key={save} className="block">
-                      {save}
-                    </span>
-                  ))}
-                </div>
-              </SavesStat>
-            )}
-            <Stat name="speed" value={monster.speed} SvgIcon={SpeedIcon} />
-            <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
-            <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
-            <Stat name="climb" value={monster.climb} SvgIcon={ClimbIcon} />
-            <Stat name="burrow" value={monster.burrow} SvgIcon={BurrowIcon} />
-            <Stat
-              name="teleport"
-              value={monster.teleport}
-              SvgIcon={TeleportIcon}
-            />
-          </div>
+          {!monster.hazard && (
+            <div className="flex flex-wrap gap-2 items-center font-slab font-black">
+              <HPStat value={formatHp(monster)} />
+              {monster.armor === "medium" && <ArmorStat value="M" />}
+              {monster.armor === "heavy" && <ArmorStat value="H" />}
+              {monster.saves && (
+                <SavesStat>
+                  <div className="flex flex-col">
+                    {monster.saves.split(",").map((save) => (
+                      <span key={save} className="block">
+                        {save}
+                      </span>
+                    ))}
+                  </div>
+                </SavesStat>
+              )}
+              <Stat name="speed" value={monster.speed} SvgIcon={SpeedIcon} />
+              <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
+              <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
+              <Stat name="climb" value={monster.climb} SvgIcon={ClimbIcon} />
+              <Stat name="burrow" value={monster.burrow} SvgIcon={BurrowIcon} />
+              <Stat
+                name="teleport"
+                value={monster.teleport}
+                SvgIcon={TeleportIcon}
+              />
+            </div>
+          )}
 
           {allAbilities.length > 0 && (
             <div className="space-y-2">

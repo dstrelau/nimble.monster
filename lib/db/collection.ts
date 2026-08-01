@@ -15,8 +15,8 @@ import { findBackgroundsByIds } from "@/lib/services/backgrounds/repository";
 import { findCompanionsByIds } from "@/lib/services/companions/repository";
 import { findItemsByIds } from "@/lib/services/items";
 import type { ItemMini } from "@/lib/services/items/types";
-import { findMonstersByIds } from "@/lib/services/monsters";
-import type { MonsterMini } from "@/lib/services/monsters/types";
+import { findBestiaryEntriesByIds } from "@/lib/services/monsters";
+import type { BestiaryEntryMini } from "@/lib/services/monsters/types";
 import type { Collection, CollectionOverview, User } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
 import { getDatabase } from "./drizzle";
@@ -64,21 +64,33 @@ const toUser = (u: UserRow): User => ({
       : "https://cdn.discordapp.com/embed/avatars/0.png"),
 });
 
-const toMonsterMini = (m: MonsterRow): MonsterMini => ({
-  id: m.id,
-  hp: m.hp,
-  legendary: m.legendary || false,
-  minion: m.minion,
-  level: m.level,
-  levelInt: m.levelInt,
-  name: m.name,
-  visibility: (m.visibility ?? "public") as "public" | "private",
-  size: m.size,
-  armor: m.armor === "" ? "none" : m.armor,
-  paperforgeId: m.paperforgeId ?? undefined,
-  createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
-  role: m.role as MonsterMini["role"],
-});
+const toMonsterMini = (m: MonsterRow): BestiaryEntryMini =>
+  m.hazard
+    ? {
+        id: m.id,
+        hazard: true,
+        level: m.level,
+        levelInt: m.levelInt,
+        name: m.name,
+        visibility: m.visibility === "private" ? "private" : "public",
+        createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
+      }
+    : {
+        id: m.id,
+        hazard: false,
+        hp: m.hp,
+        legendary: m.legendary || false,
+        minion: m.minion,
+        level: m.level,
+        levelInt: m.levelInt,
+        name: m.name,
+        visibility: (m.visibility ?? "public") as "public" | "private",
+        size: m.size,
+        armor: m.armor === "" ? "none" : m.armor,
+        paperforgeId: m.paperforgeId ?? undefined,
+        createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
+        role: m.role,
+      };
 
 const toItemMini = (i: ItemRow): ItemMini => ({
   id: i.id,
@@ -1322,9 +1334,11 @@ async function loadCollectionOverview(
     }
   }
 
-  const legendaryCount = collectionMonsters.filter((m) => m.legendary).length;
+  const legendaryCount = collectionMonsters.filter(
+    (m) => !m.hazard && m.legendary
+  ).length;
   const standardCount = collectionMonsters.filter(
-    (m) => !m.legendary && !m.minion
+    (m) => !m.hazard && !m.legendary && !m.minion
   ).length;
 
   return {
@@ -1413,7 +1427,7 @@ async function loadCollectionFull(
     collectionSubclasses,
     collectionClasses,
   ] = await Promise.all([
-    findMonstersByIds(monsterLinks.map((l) => l.monsterId)),
+    findBestiaryEntriesByIds(monsterLinks.map((l) => l.monsterId)),
     findItemsByIds(itemLinks.map((l) => l.itemId)),
     findSpellSchoolsByIds(schoolLinks.map((l) => l.schoolId)),
     findCompanionsByIds(companionLinks.map((l) => l.companionId)),
@@ -1423,9 +1437,11 @@ async function loadCollectionFull(
     findClassesByIds(classLinks.map((l) => l.classId)),
   ]);
 
-  const legendaryCount = collectionMonsters.filter((m) => m.legendary).length;
+  const legendaryCount = collectionMonsters.filter(
+    (m) => !m.hazard && m.legendary
+  ).length;
   const standardCount = collectionMonsters.filter(
-    (m) => !m.legendary && !m.minion
+    (m) => !m.hazard && !m.legendary && !m.minion
   ).length;
 
   return {

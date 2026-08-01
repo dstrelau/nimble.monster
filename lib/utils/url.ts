@@ -15,15 +15,20 @@ export function getBaseUrl(request?: Request): string {
 }
 
 // Monster URLs
-export function getMonsterUrl(monster: { name: string; id: string }): string {
-  return `/monsters/${slugify(monster)}`;
+export function getMonsterUrl(monster: {
+  name: string;
+  id: string;
+  hazard?: boolean;
+}): string {
+  return `/${monster.hazard ? "hazards" : "monsters"}/${slugify(monster)}`;
 }
 
 export function getMonsterEditUrl(monster: {
   name: string;
   id: string;
+  hazard?: boolean;
 }): string {
-  return `/monsters/${slugify(monster)}/edit`;
+  return `/${monster.hazard ? "hazards" : "monsters"}/${slugify(monster)}/edit`;
 }
 
 export function getMonsterImageUrl(monster: {

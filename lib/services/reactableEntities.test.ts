@@ -76,3 +76,17 @@ describe("resolveEntities customRule", () => {
     expect(result.has(ID)).toBe(false);
   });
 });
+
+describe("resolveEntities monster", () => {
+  const ID = "11111111-1111-1111-1111-111111111111";
+
+  it("uses the canonical hazard route for hazard-backed monster resources", async () => {
+    mockSelectWhere.mockResolvedValue([
+      { id: ID, name: "Goblin Pit Trap", hazard: true },
+    ]);
+
+    const result = await resolveEntities("monster", [ID]);
+
+    expect(result.get(ID)?.url).toContain("/hazards/");
+  });
+});

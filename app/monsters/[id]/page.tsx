@@ -26,6 +26,10 @@ export async function generateMetadata({
 
   if (!monster) return {};
 
+  if (monster.hazard) {
+    return permanentRedirect(getMonsterUrl(monster));
+  }
+
   if (monsterId !== slugify(monster)) {
     return permanentRedirect(getMonsterUrl(monster));
   }
@@ -76,6 +80,10 @@ export default async function MonsterPage({
   if (!uid) return notFound();
   const monster = await monstersService.getMonster(uid);
   if (!monster) return notFound();
+
+  if (monster.hazard) {
+    return permanentRedirect(getMonsterUrl(monster));
+  }
 
   if (monsterId !== slugify(monster)) {
     return permanentRedirect(getMonsterUrl(monster));

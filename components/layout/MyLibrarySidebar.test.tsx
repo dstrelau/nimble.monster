@@ -22,6 +22,7 @@ afterEach(() => {
 
 const counts: MyLibraryCounts = {
   monsters: 12,
+  hazards: 14,
   families: 3,
   companions: 2,
   encounters: 4,
@@ -49,9 +50,10 @@ describe("MyLibrarySidebar", () => {
         .getAllByRole("heading", { level: 2 })
         .map((heading) => heading.textContent)
     ).toEqual(["Bestiary", "Heroes", "Gear", "Adventures"]);
-    expect(links).toHaveLength(12);
+    expect(links).toHaveLength(13);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/my/monsters",
+      "/my/hazards",
       "/my/families",
       "/my/companions",
       "/my/ancestries",
@@ -98,9 +100,10 @@ describe("MyLibrarySidebar", () => {
     });
     const links = within(navigation).getAllByRole("link");
 
-    expect(links).toHaveLength(12);
+    expect(links).toHaveLength(13);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/u/creator/monsters",
+      "/u/creator/hazards",
       "/u/creator/families",
       "/u/creator/companions",
       "/u/creator/ancestries",

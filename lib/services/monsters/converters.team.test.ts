@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
+import { monsterToMarkdown } from "@/lib/export/markdown";
 import type { User } from "@/lib/types";
+import { getMonsterUrl } from "@/lib/utils/url";
 import { toJsonApiMonster, toZodMonster } from "./converters";
-import type { Monster } from "./types";
+import type { Hazard, Monster } from "./types";
 
 const creator: User = {
   id: "00000000-0000-0000-0000-000000000001",
@@ -12,6 +14,7 @@ const creator: User = {
 
 const teamMonster: Monster = {
   id: "00000000-0000-0000-0000-0000000000aa",
+  hazard: false,
   name: "Kelebek & Poppy",
   kind: "Legendary Bug Druid & His Stinky Pet",
   hp: 0,
@@ -119,5 +122,51 @@ describe("toJsonApiMonster (team)", () => {
       2
     );
     expect(doc.relationships.creator.data.type).toBe("users");
+  });
+});
+
+describe("hazard conversion", () => {
+  const hazard: Hazard = {
+    id: "00000000-0000-0000-0000-0000000000bb",
+    name: "Goblin Pit Trap",
+    hazard: true,
+    level: "3",
+    levelInt: 3,
+    visibility: "public",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    creator,
+    actions: [],
+    actionPreface: "",
+    moreInfo: "",
+    abilities: [
+      {
+        id: "hidden-trap",
+        name: "Hidden Trap!",
+        description: "DC 12 Perception to spot it.",
+      },
+    ],
+  };
+
+  it("exposes the hazard discriminator through JSON:API", () => {
+    const document = toJsonApiMonster(hazard);
+
+    expect(document.type).toBe("monsters");
+    expect(document.attributes.hazard).toBe(true);
+    expect("hp" in document.attributes).toBe(false);
+  });
+
+  it("uses the hazards canonical route", () => {
+    expect(getMonsterUrl(hazard)).toBe(
+      "/hazards/goblin-pit-trap-0000000000000000000000005v"
+    );
+  });
+
+  it("omits creature stats from markdown exports", () => {
+    const markdown = monsterToMarkdown(hazard);
+
+    expect(markdown).toContain("Hazard");
+    expect(markdown).not.toContain("## Stats");
+    expect(markdown).not.toContain("hp:");
   });
 });

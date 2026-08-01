@@ -300,6 +300,12 @@ export function validateOfficialMonstersJSON(data: unknown): {
       );
     }
 
+    if (attrs.hazard !== undefined && typeof attrs.hazard !== "boolean") {
+      throw new Error(
+        `Invalid monster at index ${index} ("${attrs.name}"): hazard must be a boolean if provided`
+      );
+    }
+
     if (typeof attrs.hp !== "number") {
       throw new Error(
         `Invalid monster at index ${index} ("${attrs.name}"): missing or invalid hp`

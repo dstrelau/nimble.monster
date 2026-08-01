@@ -11,7 +11,10 @@ import { publicAncestriesInfiniteQueryOptions } from "@/app/ancestries/hooks";
 import { publicBackgroundsInfiniteQueryOptions } from "@/app/backgrounds/hooks";
 import { publicEncountersInfiniteQueryOptions } from "@/app/encounters/actions";
 import { monsterSourcesQueryOptions } from "@/app/monsters/hooks";
-import { userProfileMonstersInfiniteQueryOptions } from "@/app/u/[username]/hooks";
+import {
+  userProfileHazardsInfiniteQueryOptions,
+  userProfileMonstersInfiniteQueryOptions,
+} from "@/app/u/[username]/hooks";
 import ProfileEntityContent from "@/app/u/[username]/ProfileEntityContent";
 import { MyLibrarySidebar } from "@/components/layout/MyLibrarySidebar";
 import { UserAvatar } from "@/components/layout/UserAvatar";
@@ -30,7 +33,7 @@ const monsterSearchParamsSchema = z.object({
     .catch("-createdAt")
     .default("-createdAt"),
   type: z
-    .enum(["all", "standard", "legendary", "minion"])
+    .enum(["all", "standard", "legendary", "minion", "teams", "hazard"])
     .catch("all")
     .default("all"),
   search: z.string().optional().catch(undefined),
@@ -102,6 +105,13 @@ async function loadProfileEntityContent(
         userProfileMonstersInfiniteQueryOptions(userId, searchParams)
       );
       return <ProfileEntityContent entityType="monsters" creatorId={userId} />;
+    }
+    case "hazards": {
+      const searchParams = monsterSearchParamsSchema.parse(rawSearchParams);
+      await queryClient.prefetchInfiniteQuery(
+        userProfileHazardsInfiniteQueryOptions(userId, searchParams)
+      );
+      return <ProfileEntityContent entityType="hazards" creatorId={userId} />;
     }
     case "ancestries": {
       const searchParams =

@@ -69,6 +69,8 @@ export const generateCompendiumPack = (
     version: collection.createdAt
       ? collection.createdAt.getTime().toString()
       : Date.now().toString(),
-    documents: monsters.map(convertMonsterToOBR),
+    documents: monsters
+      .filter((monster) => !monster.hazard)
+      .map(convertMonsterToOBR),
   };
 };

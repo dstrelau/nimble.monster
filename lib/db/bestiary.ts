@@ -1,19 +1,26 @@
-import { count, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { getDatabase } from "./drizzle";
 import { companions, monsters } from "./schema";
 
 export interface BestiaryCounts {
   monsters: number;
+  hazards: number;
   companions: number;
 }
 
 export async function getBestiaryCounts(): Promise<BestiaryCounts> {
   const db = getDatabase();
-  const [monsterCount, companionCount] = await Promise.all([
+  const [monsterCount, hazardCount, companionCount] = await Promise.all([
     db
       .select({ count: count() })
       .from(monsters)
-      .where(eq(monsters.visibility, "public")),
+      .where(
+        and(eq(monsters.visibility, "public"), eq(monsters.hazard, false))
+      ),
+    db
+      .select({ count: count() })
+      .from(monsters)
+      .where(and(eq(monsters.visibility, "public"), eq(monsters.hazard, true))),
     db
       .select({ count: count() })
       .from(companions)
@@ -22,6 +29,7 @@ export async function getBestiaryCounts(): Promise<BestiaryCounts> {
 
   return {
     monsters: monsterCount[0]?.count ?? 0,
+    hazards: hazardCount[0]?.count ?? 0,
     companions: companionCount[0]?.count ?? 0,
   };
 }

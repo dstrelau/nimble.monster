@@ -4,7 +4,13 @@ import type { Ability, Action, FamilyOverview } from "@/lib/types";
 import { uuidToIdentifier } from "@/lib/utils/slug";
 import { parseMembers } from "./members";
 import { parseSaves } from "./saves";
-import type { Monster, MonsterMini, MonsterTeamMember } from "./types";
+import type {
+  BestiaryEntry,
+  BestiaryEntryMini,
+  Monster,
+  MonsterMini,
+  MonsterTeamMember,
+} from "./types";
 
 const parseJsonField = <T>(value: unknown): T[] => {
   if (!value) return [];
@@ -26,6 +32,7 @@ interface MonsterRow {
   hpPerHero: number | null;
   legendary: boolean | null;
   minion: boolean;
+  hazard: boolean;
   level: string;
   levelInt: number;
   visibility: string | null;
@@ -104,6 +111,7 @@ interface MonsterWithRelations extends MonsterRow {
   remixedFrom?: {
     id: string;
     name: string;
+    hazard?: boolean;
     creator: UserRow;
   } | null;
 }
@@ -114,6 +122,7 @@ export const toMonsterMini = (m: MonsterRow): MonsterMini => ({
   hpPerHero: m.hpPerHero ?? null,
   legendary: m.legendary || false,
   minion: m.minion,
+  hazard: false,
   level: m.level,
   levelInt: m.levelInt,
   name: m.name,
@@ -127,6 +136,20 @@ export const toMonsterMini = (m: MonsterRow): MonsterMini => ({
   role: m.role as MonsterMini["role"],
   isOfficial: m.isOfficial ?? false,
 });
+
+export const toBestiaryEntryMini = (m: MonsterRow): BestiaryEntryMini =>
+  m.hazard
+    ? {
+        id: m.id,
+        hazard: true,
+        level: m.level,
+        levelInt: m.levelInt,
+        name: m.name,
+        visibility: m.visibility === "private" ? "private" : "public",
+        createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
+        isOfficial: m.isOfficial ?? false,
+      }
+    : toMonsterMini(m);
 
 export const toMonster = (m: MonsterWithRelations): Monster => {
   return {
@@ -193,11 +216,19 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
       })) || undefined,
     remixedFromId: m.remixedFromId || null,
     remixedFrom: m.remixedFrom
-      ? {
-          id: m.remixedFrom.id,
-          name: m.remixedFrom.name,
-          creator: toUser(m.remixedFrom.creator),
-        }
+      ? m.remixedFrom.hazard
+        ? {
+            id: m.remixedFrom.id,
+            name: m.remixedFrom.name,
+            hazard: true,
+            creator: toUser(m.remixedFrom.creator),
+          }
+        : {
+            id: m.remixedFrom.id,
+            name: m.remixedFrom.name,
+            hazard: false,
+            creator: toUser(m.remixedFrom.creator),
+          }
       : null,
   };
 };
@@ -290,6 +321,7 @@ export const toZodMonster = (m: Monster) => {
   const base = {
     id: uuidToIdentifier(m.id),
     name: m.name,
+    hazard: m.hazard,
     hp: m.hp,
     hpPerHero: m.hpPerHero ?? undefined,
     level: parsedLevel,
@@ -346,7 +378,37 @@ export const toZodMonster = (m: Monster) => {
   };
 };
 
-export const toJsonApiMonster = (m: Monster) => {
+export const toJsonApiMonster = (m: BestiaryEntry) => {
+  if (m.hazard) {
+    const id = uuidToIdentifier(m.id);
+    return {
+      type: "monsters",
+      id,
+      attributes: {
+        name: m.name,
+        hazard: true,
+        level: m.level,
+        levelInt: m.levelInt,
+        abilities: m.abilities.map(({ name, description }) => ({
+          name,
+          description,
+        })),
+        actions: m.actions.map(({ name, description, damage }) => ({
+          name,
+          description,
+          damage,
+        })),
+        actionsInstructions: m.actionPreface,
+        description: m.moreInfo,
+      },
+      relationships: {
+        creator: {
+          data: { type: "users", id: uuidToIdentifier(m.creator.id) },
+        },
+      },
+      links: { self: `/api/monsters/${id}` },
+    };
+  }
   const monsterData = toZodMonster(m);
   const { id, ...attributes } = monsterData;
 

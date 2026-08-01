@@ -5,6 +5,7 @@ import {
   Crown,
   PersonStanding,
   SlidersHorizontal,
+  TriangleAlert,
   User,
   Users,
 } from "lucide-react";
@@ -47,6 +48,7 @@ interface SimpleFilterBarProps {
   beforeFilters?: React.ReactNode;
   /** Collapse creator/type/source/role/level/sort into a single popover menu. */
   compact?: boolean;
+  hazardsOnly?: boolean;
 }
 
 const TYPE_OPTIONS: {
@@ -59,6 +61,11 @@ const TYPE_OPTIONS: {
   { value: "legendary", label: "Legendary", icon: <Crown size={4} /> },
   { value: "minion", label: "Minion", icon: <PersonStanding size={4} /> },
   { value: "teams", label: "Teams", icon: <Users size={4} /> },
+  {
+    value: "hazard",
+    label: "Hazards",
+    icon: <TriangleAlert size={4} />,
+  },
 ];
 
 const SORT_OPTIONS: { value: PaginateMonstersSortOption; label: string }[] = [
@@ -86,45 +93,50 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
   onLevelChange,
   beforeFilters,
   compact = false,
+  hazardsOnly = false,
 }) => {
   const filterControls = (
     <>
-      <Select value={typeFilter} onValueChange={onTypeFilterChange}>
-        <SelectTrigger className={compact ? "w-full" : "min-w-36"}>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {TYPE_OPTIONS.map(({ label, value, icon }) => (
-            <SelectItem key={value} value={value}>
-              {icon}
-              {label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {!hazardsOnly && (
+        <Select value={typeFilter} onValueChange={onTypeFilterChange}>
+          <SelectTrigger className={compact ? "w-full" : "min-w-36"}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {TYPE_OPTIONS.map(({ label, value, icon }) => (
+              <SelectItem key={value} value={value}>
+                {icon}
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
       <SourceFilter
         source={source}
         onSourceChange={onSourceChange}
         entityType="monsters"
       />
-      <Select
-        value={role ?? "none"}
-        onValueChange={(v) =>
-          onRoleChange(v === "none" ? null : (v as MonsterRole))
-        }
-      >
-        <SelectTrigger className={compact ? "w-full" : "min-w-36"}>
-          <SelectValue placeholder="Role" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="none">All Roles</SelectItem>
-          {MONSTER_ROLES.map(({ label, value }) => (
-            <SelectItem key={value} value={value}>
-              {label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {!hazardsOnly && (
+        <Select
+          value={role ?? "none"}
+          onValueChange={(v) =>
+            onRoleChange(v === "none" ? null : (v as MonsterRole))
+          }
+        >
+          <SelectTrigger className={compact ? "w-full" : "min-w-36"}>
+            <SelectValue placeholder="Role" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">All Roles</SelectItem>
+            {MONSTER_ROLES.map(({ label, value }) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
       <Select
         value={level?.toString() ?? "none"}
         onValueChange={(v) => onLevelChange(v === "none" ? null : Number(v))}

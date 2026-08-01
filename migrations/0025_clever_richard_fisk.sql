@@ -1,0 +1,1 @@
+ALTER TABLE `monsters` ADD `hazard` integer DEFAULT false NOT NULL;

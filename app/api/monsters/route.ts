@@ -4,6 +4,7 @@ import { z } from "zod";
 import { jsonApiError, jsonApiHeaders, parseInclude } from "@/lib/api";
 import { auth } from "@/lib/auth";
 import { toJsonApiFamily } from "@/lib/services/families/converters";
+import { paginatePublicHazards } from "@/lib/services/hazards";
 import type { CreateMonsterInput } from "@/lib/services/monsters";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
@@ -71,16 +72,15 @@ export const GET = telemetry(async (request: Request) => {
   type && span?.setAttributes({ "params.type": type });
   role && span?.setAttributes({ "params.role": role });
 
+  const paginationParams = { cursor, limit, sort, search, level };
   const { data: monsters, nextCursor } =
-    await monstersService.paginatePublicMonsters({
-      cursor,
-      limit,
-      sort,
-      search,
-      level,
-      type,
-      role,
-    });
+    type === "hazard"
+      ? await paginatePublicHazards(paginationParams)
+      : await monstersService.paginatePublicMonsters({
+          ...paginationParams,
+          type,
+          role,
+        });
 
   const data = monsters.map(toJsonApiMonster);
 
@@ -97,6 +97,7 @@ export const GET = telemetry(async (request: Request) => {
   if (includeFamilies) {
     const familyMap = new Map<string, ReturnType<typeof toJsonApiFamily>>();
     for (const monster of monsters) {
+      if (monster.hazard) continue;
       for (const family of monster.families ?? []) {
         if (!familyMap.has(family.id)) {
           familyMap.set(family.id, toJsonApiFamily(family));

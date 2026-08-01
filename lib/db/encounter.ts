@@ -1,7 +1,7 @@
 import { and, asc, eq, inArray, or } from "drizzle-orm";
 import { toUser } from "@/lib/db/converters";
 import { findMonstersByIds } from "@/lib/services/monsters";
-import { toMonsterMini } from "@/lib/services/monsters/converters";
+import { toBestiaryEntryMini } from "@/lib/services/monsters/converters";
 import type {
   Encounter,
   EncounterMonsterEntry,
@@ -36,7 +36,7 @@ async function loadEncounterOverview(
     .where(eq(monstersEncounters.encounterId, encounter.id));
 
   const entries: EncounterMonsterEntry[] = monsterLinks.map((link) => ({
-    monster: toMonsterMini(link.monster),
+    monster: toBestiaryEntryMini(link.monster),
     quantity: link.quantity,
     isPerHero: link.isPerHero,
     heroesPerMonster: link.heroesPerMonster,
@@ -145,7 +145,7 @@ export const listEncountersWithMonstersForUser = async (
   for (const link of monsterLinks) {
     const existing = entriesByEncounter.get(link.encounterId) ?? [];
     existing.push({
-      monster: toMonsterMini(link.monster),
+      monster: toBestiaryEntryMini(link.monster),
       quantity: link.quantity,
       isPerHero: link.isPerHero,
       heroesPerMonster: link.heroesPerMonster,

@@ -43,6 +43,7 @@ interface AddToCollectionForm {
 
 type AddToCollectionDialogProps =
   | { type: "monster"; monsterId: string }
+  | { type: "hazard"; monsterId: string }
   | { type: "item"; itemId: string }
   | { type: "spellSchool"; spellSchoolId: string }
   | { type: "companion"; companionId: string }
@@ -71,6 +72,10 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
     if (!selectedCollection) return false;
     switch (props.type) {
       case "monster":
+        return selectedCollection.monsters.some(
+          (m) => m.id === props.monsterId
+        );
+      case "hazard":
         return selectedCollection.monsters.some(
           (m) => m.id === props.monsterId
         );
@@ -108,6 +113,9 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
         case "monster":
           formData.append("monsterId", props.monsterId);
           return addMonsterToCollection(formData);
+        case "hazard":
+          formData.append("monsterId", props.monsterId);
+          return addMonsterToCollection(formData);
         case "item":
           formData.append("itemId", props.itemId);
           return addItemToCollection(formData);
@@ -143,6 +151,7 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
 
   const entityType: Record<AddToCollectionDialogProps["type"], string> = {
     monster: "monster",
+    hazard: "hazard",
     item: "item",
     spellSchool: "spell school",
     companion: "companion",

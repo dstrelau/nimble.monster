@@ -35,7 +35,7 @@ const RESOLVERS: Record<ReactableEntityType, ResolveMany> = {
   monster: async (ids) => {
     const db = getDatabase();
     const rows = await db
-      .select({ id: monsters.id, name: monsters.name })
+      .select({ id: monsters.id, name: monsters.name, hazard: monsters.hazard })
       .from(monsters)
       .where(inArray(monsters.id, ids));
     return new Map(

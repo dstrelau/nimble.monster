@@ -24,6 +24,7 @@ export const EncounterMonsterRow = ({
 }: EncounterMonsterRowProps) => {
   const { monster, quantity, isPerHero } = entry;
   const editable = Boolean(onQuantityChange);
+  const legendary = !monster.hazard && monster.legendary;
 
   return (
     <div className="flex gap-1 items-center">
@@ -38,7 +39,7 @@ export const EncounterMonsterRow = ({
       )}
       <div className="font-slab flex-1 flex gap-1 items-center font-medium small-caps italic">
         <div className="w-7 shrink-0 flex items-center justify-center">
-          {monster.legendary && monster.paperforgeId ? (
+          {!monster.hazard && monster.legendary && monster.paperforgeId ? (
             <div className="flex flex-col items-center">
               <Crown className="size-5 stroke-flame -mb-2.5" />
               <PaperforgeImage
@@ -47,15 +48,15 @@ export const EncounterMonsterRow = ({
                 className="rounded-sm"
               />
             </div>
-          ) : monster.paperforgeId ? (
+          ) : !monster.hazard && monster.paperforgeId ? (
             <PaperforgeImage
               id={monster.paperforgeId}
               size={28}
               className="rounded-sm"
             />
-          ) : monster.legendary ? (
+          ) : !monster.hazard && monster.legendary ? (
             <Crown className="size-5 stroke-flame" />
-          ) : monster.minion ? (
+          ) : !monster.hazard && monster.minion ? (
             <PersonStanding className="size-5 stroke-flame" />
           ) : null}
         </div>
@@ -81,7 +82,7 @@ export const EncounterMonsterRow = ({
           </span>
         </span>
       </div>
-      {monster.legendary ? null : editable ? (
+      {legendary ? null : editable ? (
         <div className="flex items-center gap-1 shrink-0">
           <Button
             type="button"
@@ -96,7 +97,7 @@ export const EncounterMonsterRow = ({
           <span className="w-5 text-center font-slab font-black">
             {quantity}
           </span>
-          {isPerHero && !monster.legendary && (
+          {isPerHero && !legendary && (
             <span className="font-sans text-xs not-italic">
               per {entry.heroesPerMonster ?? 1}{" "}
               {(entry.heroesPerMonster ?? 1) === 1 ? "hero" : "heroes"}
@@ -111,7 +112,7 @@ export const EncounterMonsterRow = ({
           >
             <Plus />
           </Button>
-          {!monster.legendary && (
+          {!legendary && (
             <Toggle
               size="sm"
               pressed={isPerHero}
@@ -126,7 +127,7 @@ export const EncounterMonsterRow = ({
         </div>
       ) : (
         <div className="font-slab font-black italic text-sm shrink-0">
-          {isPerHero && !monster.legendary ? (
+          {isPerHero && !legendary ? (
             <span className="font-sans text-xs not-italic">
               {quantity} per {entry.heroesPerMonster ?? 1}{" "}
               {(entry.heroesPerMonster ?? 1) === 1 ? "hero" : "heroes"}

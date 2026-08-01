@@ -7,6 +7,7 @@ import { getMonsterUrl } from "@/lib/utils/url";
 interface Remix {
   id: string;
   name: string;
+  hazard?: boolean;
   creator: User;
 }
 

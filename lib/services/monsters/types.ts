@@ -93,26 +93,39 @@ export const MonsterRoleOptions = [
   "support",
 ] as const;
 
-export type TypeFilter = "all" | "legendary" | "standard" | "minion";
+export type TypeFilter = "all" | "legendary" | "standard" | "minion" | "hazard";
 
-export interface MonsterMini {
+interface BestiaryEntryMiniBase {
   id: string;
+  level: string;
+  levelInt: number;
+  name: string;
+  visibility: "public" | "private";
+  createdAt: Date;
+  isOfficial?: boolean;
+}
+
+export interface MonsterMini extends BestiaryEntryMiniBase {
+  hazard: false;
   hp: number;
   hpPerHero?: number | null;
   kind?: string;
   legendary: boolean;
   minion: boolean;
-  level: string;
-  levelInt: number;
-  name: string;
   size: MonsterSize;
   armor: MonsterArmor;
-  visibility: "public" | "private";
   paperforgeId?: string;
-  createdAt: Date;
   role?: MonsterRole | null;
-  isOfficial?: boolean;
 }
+
+export interface HazardMini extends BestiaryEntryMiniBase {
+  hazard: true;
+}
+
+export type CreatureMonsterMini = MonsterMini;
+
+/** A deliberately mixed, strictly discriminated bestiary result. */
+export type BestiaryEntryMini = HazardMini | CreatureMonsterMini;
 
 // A single member of a "team" (legendary duo) stat block. Each member carries
 // its own combat stats and abilities/actions; the shared name, level, kind,
@@ -131,7 +144,40 @@ export interface MonsterTeamMember {
   actions: Action[];
 }
 
-export interface Monster extends MonsterMini {
+interface BestiaryEntryBase {
+  abilities: Ability[];
+  actions: Action[];
+  actionPreface: string;
+  moreInfo?: string;
+  mild_encounter?: string;
+  spicy_encounter?: string;
+  creator: User;
+  source?: Source;
+  awards?: Award[];
+  updatedAt: Date;
+  imageUrl?: string;
+  remixedFromId?: string | null;
+  remixedFrom?:
+    | (
+        | {
+            id: string;
+            name: string;
+            hazard: false;
+            creator: User;
+          }
+        | {
+            id: string;
+            name: string;
+            hazard: true;
+            creator: User;
+          }
+      )
+    | null;
+  isOfficial?: boolean;
+}
+
+export interface Monster extends MonsterMini, BestiaryEntryBase {
+  families: FamilyOverview[];
   members?: MonsterTeamMember[];
   saves?: string;
   bloodied?: string;
@@ -143,22 +189,19 @@ export interface Monster extends MonsterMini {
   teleport: number;
   burrow: number;
   size: MonsterSize;
-  abilities: Ability[];
-  actions: Action[];
-  actionPreface: string;
-  moreInfo?: string;
-  mild_encounter?: string;
-  spicy_encounter?: string;
-  families: FamilyOverview[];
-  creator: User;
-  source?: Source;
-  awards?: Award[];
-  updatedAt: Date;
-  imageUrl?: string;
-  remixedFromId?: string | null;
-  remixedFrom?: { id: string; name: string; creator: User } | null;
-  isOfficial?: boolean;
 }
+
+export interface Hazard extends BestiaryEntryMiniBase, BestiaryEntryBase {
+  hazard: true;
+}
+
+export type CreatureMonster = Monster;
+
+/** Full record for code that intentionally handles both creatures and hazards. */
+export type BestiaryEntry = Hazard | CreatureMonster;
+
+/** Storage-shaped state used only by the shared creature/hazard editor UI. */
+export type MonsterFormState = Omit<Monster, "hazard"> & { hazard: boolean };
 
 export interface SearchMonstersParams {
   searchTerm?: string;
@@ -176,8 +219,17 @@ export const MonsterTypeOptions = [
   "legendary",
   "minion",
   "teams",
+  "hazard",
 ] as const;
 export type MonsterTypeOption = (typeof MonsterTypeOptions)[number];
+export const CreatureTypeOptions = [
+  "all",
+  "standard",
+  "legendary",
+  "minion",
+  "teams",
+] as const;
+export type CreatureTypeOption = (typeof CreatureTypeOptions)[number];
 
 export const PaginateMonstersSortOptions = [
   "createdAt",
@@ -259,4 +311,25 @@ export interface UpdateMonsterInput {
   sourceId?: string | null;
   role?: MonsterRole | null;
   paperforgeId?: string | null;
+}
+
+export interface CreateHazardInput {
+  name: string;
+  level: string;
+  levelInt: number;
+  actions: Action[];
+  abilities: Ability[];
+  actionPreface: string;
+  moreInfo?: string;
+  mild_encounter?: string;
+  spicy_encounter?: string;
+  visibility: "public" | "private";
+  sourceId?: string;
+  remixedFromId?: string;
+}
+
+export interface UpdateHazardInput extends Omit<CreateHazardInput, "sourceId"> {
+  id: string;
+  moreInfo: string;
+  sourceId?: string | null;
 }

@@ -8,6 +8,7 @@ import {
 } from "@/lib/api";
 import { auth } from "@/lib/auth";
 import { toJsonApiFamily } from "@/lib/services/families/converters";
+import { deleteHazard } from "@/lib/services/hazards";
 import { monstersService } from "@/lib/services/monsters";
 import { toJsonApiMonster } from "@/lib/services/monsters/converters";
 import { toJsonApiUser } from "@/lib/services/users/converters";
@@ -43,7 +44,7 @@ export const GET = telemetry(
     }
 
     try {
-      const monster = await monstersService.getPublicMonster(uid);
+      const monster = await monstersService.getPublicBestiaryEntry(uid);
 
       if (!monster) {
         return jsonApiError(404, "Monster not found");
@@ -57,8 +58,8 @@ export const GET = telemetry(
         ReturnType<typeof toJsonApiFamily> | ReturnType<typeof toJsonApiUser>
       > = [];
 
-      if (includeFamilies) {
-        included.push(...(monster.families ?? []).map(toJsonApiFamily));
+      if (includeFamilies && !monster.hazard) {
+        included.push(...monster.families.map(toJsonApiFamily));
       }
 
       if (includeCreator) {
@@ -103,7 +104,7 @@ export const DELETE = telemetry(
 
     span?.setAttributes({ "user.id": session.user.id });
 
-    const existingMonster = await monstersService.getMonster(uid);
+    const existingMonster = await monstersService.getBestiaryEntry(uid);
 
     if (!existingMonster) {
       return NextResponse.json({ error: "Monster not found" }, { status: 404 });
@@ -118,10 +119,14 @@ export const DELETE = telemetry(
 
     span?.setAttributes({ "monster.id": existingMonster.id });
 
-    await monstersService.deleteMonster(
-      existingMonster.id,
-      session.user.discordId ?? ""
-    );
+    if (existingMonster.hazard) {
+      await deleteHazard(existingMonster.id, session.user.discordId ?? "");
+    } else {
+      await monstersService.deleteMonster(
+        existingMonster.id,
+        session.user.discordId ?? ""
+      );
+    }
 
     return new NextResponse(null, { status: 204 });
   }

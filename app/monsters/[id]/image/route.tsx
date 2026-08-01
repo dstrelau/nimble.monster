@@ -14,9 +14,9 @@ export async function GET(
   if (!uid) {
     return new Response("Monster not found", { status: 404 });
   }
-  const monster = await monstersService.getMonster(uid);
+  const monster = await monstersService.getPublicBestiaryEntry(uid);
 
-  if (!monster || monster.visibility !== "public") {
+  if (!monster) {
     return new Response("Monster not found", { status: 404 });
   }
   if (monsterId !== slugify(monster)) {

@@ -2,11 +2,12 @@ import { z } from "zod";
 import type { Source } from "@/lib/types";
 import * as repository from "./repository";
 import {
+  type BestiaryEntry,
   type CreateMonsterInput,
+  CreatureTypeOptions,
   type Monster,
   type MonsterMini,
   MonsterRoleOptions,
-  MonsterTypeOptions,
   PaginateMonstersSortOptions,
   type SearchMonstersParams,
   type UpdateMonsterInput,
@@ -17,7 +18,7 @@ const PaginateMonstersSchema = z.object({
   sort: z.enum(PaginateMonstersSortOptions).default("-createdAt"),
   limit: z.number().min(1).max(100).default(10),
   cursor: z.string().optional(),
-  type: z.enum(MonsterTypeOptions).optional(),
+  type: z.enum(CreatureTypeOptions).optional(),
   creatorId: z.string().optional(),
   source: z.string().optional(),
   role: z.enum(MonsterRoleOptions).optional(),
@@ -32,6 +33,14 @@ export type PaginatePublicMonstersResponse = {
 };
 
 export class MonstersService {
+  async getBestiaryEntry(id: string): Promise<BestiaryEntry | null> {
+    return repository.findBestiaryEntry(id);
+  }
+
+  async getPublicBestiaryEntry(id: string): Promise<BestiaryEntry | null> {
+    return repository.findPublicBestiaryEntryById(id);
+  }
+
   async getPublicMonster(id: string): Promise<Monster | null> {
     return repository.findPublicMonsterById(id);
   }

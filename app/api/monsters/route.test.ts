@@ -18,12 +18,16 @@ vi.mock("@/lib/auth", () => ({
   auth: vi.fn(),
 }));
 
-const { mockPaginateMonsters } = vi.hoisted(() => {
-  return { mockPaginateMonsters: vi.fn() };
+const { mockPaginateHazards, mockPaginateMonsters } = vi.hoisted(() => {
+  return {
+    mockPaginateHazards: vi.fn(),
+    mockPaginateMonsters: vi.fn(),
+  };
 });
 
 vi.mock("@/lib/services/monsters/repository", async () => {
   return {
+    paginateHazards: mockPaginateHazards,
     paginateMonsters: mockPaginateMonsters,
   };
 });
@@ -862,6 +866,44 @@ describe("GET /api/monsters", () => {
         includePrivate: false,
       })
     );
+  });
+
+  it("dispatches type=hazard to typed hazard pagination", async () => {
+    mockPaginateHazards.mockResolvedValue({
+      data: [
+        {
+          id: "550e8400-e29b-41d4-a716-446655440000",
+          name: "Rockfall",
+          hazard: true,
+          level: "2",
+          levelInt: 2,
+          visibility: "public",
+          abilities: [],
+          actions: [],
+          actionPreface: "",
+          creator: fakeCreator,
+          createdAt: new Date("2025-01-01"),
+          updatedAt: new Date("2025-01-01"),
+        },
+      ],
+      nextCursor: null,
+    });
+
+    const response = await GET(
+      new Request("http://localhost:3000/api/monsters?type=hazard")
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockPaginateHazards).toHaveBeenCalledOnce();
+    expect(mockPaginateMonsters).not.toHaveBeenCalled();
+    expect(body.data[0].attributes).toMatchObject({
+      hazard: true,
+      name: "Rockfall",
+    });
+    expect(body.data[0].attributes).not.toHaveProperty("hp");
+    expect(body.data[0].attributes).not.toHaveProperty("size");
+    expect(body.data[0].attributes).not.toHaveProperty("movement");
   });
 
   it("should reject invalid type parameter", async () => {

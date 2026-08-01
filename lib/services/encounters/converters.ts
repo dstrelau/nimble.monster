@@ -1,21 +1,26 @@
-import type { MonsterMini } from "@/lib/services/monsters/types";
+import type { BestiaryEntryMini } from "@/lib/services/monsters/types";
 import type { EncounterOverview } from "@/lib/types";
 import { uuidToIdentifier } from "@/lib/utils/slug";
 
-const toJsonApiMonsterMini = (m: MonsterMini) => ({
+const toJsonApiMonsterMini = (m: BestiaryEntryMini) => ({
   type: "monsters",
   id: uuidToIdentifier(m.id),
   attributes: {
     name: m.name,
     level: m.level,
     levelInt: m.levelInt,
-    hp: m.hp,
-    hpPerHero: m.hpPerHero,
-    armor: m.armor,
-    size: m.size,
-    legendary: m.legendary,
-    minion: m.minion,
-    role: m.role,
+    hazard: m.hazard,
+    ...(!m.hazard
+      ? {
+          hp: m.hp,
+          hpPerHero: m.hpPerHero,
+          armor: m.armor,
+          size: m.size,
+          legendary: m.legendary,
+          minion: m.minion,
+          role: m.role,
+        }
+      : {}),
   },
   links: {
     self: `/api/monsters/${uuidToIdentifier(m.id)}`,

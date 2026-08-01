@@ -8,6 +8,7 @@ import {
   Scroll,
   Shield,
   Swords,
+  TriangleAlert,
   Users,
   WandSparkles,
 } from "lucide-react";
@@ -95,6 +96,12 @@ export default async function CreatePage() {
               icon={<Goblin className="size-16" />}
               title="Monster"
               description="Monsters, Minions, Legendaries, and Teams"
+            />
+            <CreateCard
+              href="/hazards/new"
+              icon={<TriangleAlert className="size-16" />}
+              title="Hazard"
+              description="Environmental threats and static weapons."
             />
             <CreateCard
               href="/families/new"

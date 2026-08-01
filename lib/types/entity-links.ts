@@ -9,6 +9,7 @@ import {
   Scroll,
   Shield,
   Swords,
+  TriangleAlert,
   Users,
   WandSparkles,
 } from "lucide-react";
@@ -78,6 +79,12 @@ export const MY_LIBRARY_GROUPS: {
         label: "Monsters",
         icon: ENTITY_TYPE_ICONS.monster,
         key: "monsters",
+      },
+      {
+        href: "/my/hazards",
+        label: "Hazards",
+        icon: TriangleAlert,
+        key: "hazards",
       },
       {
         href: "/my/families",

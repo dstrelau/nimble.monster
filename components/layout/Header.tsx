@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen, Menu, Plus, Swords, X } from "lucide-react";
+import { BookOpen, Menu, Plus, Swords, TriangleAlert, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -42,6 +42,12 @@ const BESTIARY_ITEMS: (Omit<NavMenuItem, "count"> & {
     label: "Monsters",
     icon: ENTITY_TYPE_ICONS.monster,
     countKey: "monsters",
+  },
+  {
+    href: "/hazards",
+    label: "Hazards",
+    icon: TriangleAlert,
+    countKey: "hazards",
   },
   {
     href: "/companions",

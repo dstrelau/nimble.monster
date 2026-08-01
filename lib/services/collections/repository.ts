@@ -62,6 +62,7 @@ import type { AncestryMini } from "@/lib/services/ancestries/types";
 import { findBackgroundsByIds } from "@/lib/services/backgrounds/repository";
 import type { BackgroundMini } from "@/lib/services/backgrounds/types";
 import { findCompanionsByIds } from "@/lib/services/companions/repository";
+import { toBestiaryEntryMini } from "@/lib/services/monsters/converters";
 import type {
   Ability,
   Action,
@@ -80,7 +81,11 @@ import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
 import type { Item, ItemMini, ItemRarity } from "../items/types";
-import type { Monster, MonsterMini, MonsterRole } from "../monsters/types";
+import type {
+  BestiaryEntry,
+  BestiaryEntryMini,
+  MonsterRole,
+} from "../monsters/types";
 
 export type CollectionSortBy = "name" | "createdAt";
 export type CollectionSortDirection = "asc" | "desc";
@@ -152,21 +157,8 @@ const toActionsFromRow = (actions: unknown): Action[] => {
   }));
 };
 
-const toMonsterMiniFromRow = (m: MonsterRow): MonsterMini => ({
-  id: m.id,
-  hp: m.hp,
-  legendary: m.legendary || false,
-  minion: m.minion,
-  level: m.level,
-  levelInt: m.levelInt,
-  name: m.name,
-  visibility: (m.visibility ?? "public") as "public" | "private",
-  size: m.size,
-  armor: m.armor === "" ? "none" : m.armor,
-  paperforgeId: m.paperforgeId ?? undefined,
-  createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
-  role: m.role as MonsterRole | null,
-});
+const toMonsterMiniFromRow = (m: MonsterRow): BestiaryEntryMini =>
+  toBestiaryEntryMini(m);
 
 const toItemMiniFromRow = (item: ItemRow): ItemMini => ({
   id: item.id,
@@ -426,65 +418,106 @@ interface MonsterFullData {
   awards: AwardRow[];
   families: Array<{ family: FamilyRow; creator: UserRow }>;
   conditions: Array<{ condition: ConditionRow; inline: boolean }>;
-  remixedFrom: { id: string; name: string; creator: UserRow } | null;
+  remixedFrom: {
+    id: string;
+    name: string;
+    hazard: boolean;
+    creator: UserRow;
+  } | null;
 }
 
-const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
-  id: data.monster.id,
-  hp: data.monster.hp,
-  legendary: data.monster.legendary || false,
-  minion: data.monster.minion,
-  level: data.monster.level,
-  levelInt: data.monster.levelInt,
-  name: data.monster.name,
-  visibility: (data.monster.visibility ?? "public") as "public" | "private",
-  size: data.monster.size,
-  armor: data.monster.armor === "" ? "none" : data.monster.armor,
-  paperforgeId: data.monster.paperforgeId ?? undefined,
-  createdAt: data.monster.createdAt
-    ? new Date(data.monster.createdAt)
-    : new Date(),
-  kind: data.monster.kind,
-  role: data.monster.role as MonsterRole | null,
-  bloodied: data.monster.bloodied,
-  lastStand: data.monster.lastStand,
-  speed: data.monster.speed,
-  fly: data.monster.fly,
-  swim: data.monster.swim,
-  climb: data.monster.climb,
-  teleport: data.monster.teleport,
-  burrow: data.monster.burrow,
-  saves: data.monster.saves,
-  updatedAt: data.monster.updatedAt
-    ? new Date(data.monster.updatedAt)
-    : new Date(),
-  abilities: toAbilitiesFromRow(data.monster.abilities),
-  actions: toActionsFromRow(data.monster.actions),
-  actionPreface: data.monster.actionPreface || "",
-  moreInfo: data.monster.moreInfo || "",
-  families: data.families
-    .map((f) => ({
-      id: f.family.id,
-      name: f.family.name,
-      description: f.family.description ?? undefined,
-      abilities: toAbilitiesFromRow(f.family.abilities),
-      visibility: f.family.visibility ?? "public",
-      creatorId: f.creator.discordId,
-      creator: toUserFromRow(f.creator),
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name)) as FamilyOverview[],
-  creator: toUserFromRow(data.creator),
-  source: toSourceFromRow(data.source),
-  awards: data.awards.map(toAwardFromRow),
-  remixedFromId: data.monster.remixedFromId || null,
-  remixedFrom: data.remixedFrom
-    ? {
-        id: data.remixedFrom.id,
-        name: data.remixedFrom.name,
-        creator: toUserFromRow(data.remixedFrom.creator),
-      }
-    : null,
-});
+const toMonsterFromFullData = (data: MonsterFullData): BestiaryEntry => {
+  if (data.monster.hazard) {
+    return {
+      ...toBestiaryEntryMini(data.monster),
+      hazard: true,
+      updatedAt: data.monster.updatedAt
+        ? new Date(data.monster.updatedAt)
+        : new Date(),
+      abilities: toAbilitiesFromRow(data.monster.abilities),
+      actions: toActionsFromRow(data.monster.actions),
+      actionPreface: data.monster.actionPreface || "",
+      moreInfo: data.monster.moreInfo || "",
+      creator: toUserFromRow(data.creator),
+      source: toSourceFromRow(data.source),
+      awards: data.awards.map(toAwardFromRow),
+      remixedFromId: data.monster.remixedFromId || null,
+      remixedFrom: data.remixedFrom
+        ? data.remixedFrom.hazard
+          ? {
+              id: data.remixedFrom.id,
+              name: data.remixedFrom.name,
+              hazard: true,
+              creator: toUserFromRow(data.remixedFrom.creator),
+            }
+          : {
+              id: data.remixedFrom.id,
+              name: data.remixedFrom.name,
+              hazard: false,
+              creator: toUserFromRow(data.remixedFrom.creator),
+            }
+        : null,
+    };
+  }
+  return {
+    id: data.monster.id,
+    hazard: false,
+    hp: data.monster.hp,
+    legendary: data.monster.legendary || false,
+    minion: data.monster.minion,
+    level: data.monster.level,
+    levelInt: data.monster.levelInt,
+    name: data.monster.name,
+    visibility: (data.monster.visibility ?? "public") as "public" | "private",
+    size: data.monster.size,
+    armor: data.monster.armor === "" ? "none" : data.monster.armor,
+    paperforgeId: data.monster.paperforgeId ?? undefined,
+    createdAt: data.monster.createdAt
+      ? new Date(data.monster.createdAt)
+      : new Date(),
+    kind: data.monster.kind,
+    role: data.monster.role as MonsterRole | null,
+    bloodied: data.monster.bloodied,
+    lastStand: data.monster.lastStand,
+    speed: data.monster.speed,
+    fly: data.monster.fly,
+    swim: data.monster.swim,
+    climb: data.monster.climb,
+    teleport: data.monster.teleport,
+    burrow: data.monster.burrow,
+    saves: data.monster.saves,
+    updatedAt: data.monster.updatedAt
+      ? new Date(data.monster.updatedAt)
+      : new Date(),
+    abilities: toAbilitiesFromRow(data.monster.abilities),
+    actions: toActionsFromRow(data.monster.actions),
+    actionPreface: data.monster.actionPreface || "",
+    moreInfo: data.monster.moreInfo || "",
+    families: data.families
+      .map((f) => ({
+        id: f.family.id,
+        name: f.family.name,
+        description: f.family.description ?? undefined,
+        abilities: toAbilitiesFromRow(f.family.abilities),
+        visibility: f.family.visibility ?? "public",
+        creatorId: f.creator.discordId,
+        creator: toUserFromRow(f.creator),
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name)) as FamilyOverview[],
+    creator: toUserFromRow(data.creator),
+    source: toSourceFromRow(data.source),
+    awards: data.awards.map(toAwardFromRow),
+    remixedFromId: data.monster.remixedFromId || null,
+    remixedFrom: data.remixedFrom
+      ? {
+          id: data.remixedFrom.id,
+          name: data.remixedFrom.name,
+          hazard: data.remixedFrom.hazard,
+          creator: toUserFromRow(data.remixedFrom.creator),
+        }
+      : null,
+  };
+};
 
 // Full item data for collection detail view
 interface ItemFullData {
@@ -897,7 +930,7 @@ export const findPublicCollectionById = async (
   const itemIds = itemJoins.map((r) => r.itemId);
 
   // Load full monster data
-  const monstersData: Monster[] = [];
+  const monstersData: BestiaryEntry[] = [];
   if (monsterIds.length > 0) {
     // Get base monster data
     const monsterRows = await db
@@ -971,7 +1004,7 @@ export const findPublicCollectionById = async (
 
     const remixedFromMap = new Map<
       string,
-      { id: string; name: string; creator: UserRow }
+      { id: string; name: string; hazard: boolean; creator: UserRow }
     >();
     if (remixedFromIds.length > 0) {
       const remixedFromRows = await db
@@ -984,6 +1017,7 @@ export const findPublicCollectionById = async (
         remixedFromMap.set(row.monsters.id, {
           id: row.monsters.id,
           name: row.monsters.name,
+          hazard: row.monsters.hazard,
           creator: row.users,
         });
       }
@@ -1143,7 +1177,9 @@ export const findPublicCollectionById = async (
     findSpellSchoolsByIds(schoolJoins.map((r) => r.schoolId)),
   ]);
 
-  const legendaryCount = monstersData.filter((m) => m.legendary).length;
+  const legendaryCount = monstersData.filter(
+    (m) => !m.hazard && m.legendary
+  ).length;
 
   return {
     id: collectionRow.collections.id,

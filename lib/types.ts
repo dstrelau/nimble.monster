@@ -5,8 +5,9 @@ import type {
 } from "@/lib/services/backgrounds/types";
 import type { Item, ItemMini } from "@/lib/services/items";
 import type {
+  BestiaryEntry,
+  BestiaryEntryMini,
   Monster,
-  MonsterMini,
   MonsterSize,
 } from "@/lib/services/monsters";
 
@@ -134,7 +135,7 @@ export interface Action {
 }
 
 export interface Collection extends CollectionOverview {
-  monsters: Monster[];
+  monsters: BestiaryEntry[];
   items: Item[];
   companions: Companion[];
   ancestries: Ancestry[];
@@ -149,7 +150,7 @@ export interface CollectionOverview {
   creator: User;
   description?: string;
   legendaryCount: number;
-  monsters: MonsterMini[];
+  monsters: BestiaryEntryMini[];
   name: string;
   standardCount: number;
   items: ItemMini[];
@@ -165,7 +166,7 @@ export interface CollectionOverview {
 }
 
 export interface EncounterMonsterEntry {
-  monster: MonsterMini;
+  monster: BestiaryEntryMini;
   quantity: number;
   isPerHero: boolean;
   heroesPerMonster?: number;

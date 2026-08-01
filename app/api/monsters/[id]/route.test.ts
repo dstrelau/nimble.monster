@@ -1,6 +1,6 @@
 import { MonsterSchema } from "nimble-schemas/zod/monster";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Monster } from "@/lib/services/monsters";
+import type { Hazard, Monster } from "@/lib/services/monsters";
 import { GET } from "./route";
 
 vi.mock("@opentelemetry/api", () => ({
@@ -15,13 +15,13 @@ vi.mock("@/lib/auth", () => ({
   auth: vi.fn(),
 }));
 
-const { mockGetPublicMonster } = vi.hoisted(() => {
-  return { mockGetPublicMonster: vi.fn() };
+const { mockGetPublicBestiaryEntry } = vi.hoisted(() => {
+  return { mockGetPublicBestiaryEntry: vi.fn() };
 });
 
 vi.mock("@/lib/services/monsters", () => ({
   monstersService: {
-    getPublicMonster: mockGetPublicMonster,
+    getPublicBestiaryEntry: mockGetPublicBestiaryEntry,
   },
 }));
 
@@ -91,6 +91,7 @@ describe("GET /api/monsters/[id]", () => {
 
   it("should return a monster by identifier", async () => {
     const mockMonster: Monster = {
+      hazard: false,
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Goblin",
       level: "1",
@@ -116,7 +117,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
@@ -156,8 +157,52 @@ describe("GET /api/monsters/[id]", () => {
     expect(resource.relationships).not.toHaveProperty("families");
   });
 
+  it("should return a hazard without creature-only attributes", async () => {
+    const mockHazard: Hazard = {
+      hazard: true,
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Pit Trap",
+      level: "1",
+      levelInt: 1,
+      visibility: "public",
+      abilities: [],
+      actions: [],
+      actionPreface: "On a failed save:",
+      moreInfo: "The pit is ten feet deep.",
+      creator: fakeCreator,
+      createdAt: new Date("2025-01-01"),
+      updatedAt: new Date("2025-01-01"),
+    };
+
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockHazard);
+
+    const request = new Request(
+      "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1?include=creator,families"
+    );
+    const response = await GET(
+      request,
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.data.attributes).toMatchObject({
+      name: "Pit Trap",
+      hazard: true,
+      level: "1",
+      actionsInstructions: "On a failed save:",
+      description: "The pit is ten feet deep.",
+    });
+    expect(body.data.attributes).not.toHaveProperty("hp");
+    expect(body.data.attributes).not.toHaveProperty("size");
+    expect(body.data.attributes).not.toHaveProperty("movement");
+    expect(body.included).toHaveLength(1);
+    expect(body.included[0].type).toBe("users");
+  });
+
   it("should include family relationships when monster has families", async () => {
     const mockMonster: Monster = {
+      hazard: false,
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Goblin",
       level: "1",
@@ -191,7 +236,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
@@ -211,6 +256,7 @@ describe("GET /api/monsters/[id]", () => {
 
   it("should include the creator when include=creator", async () => {
     const mockMonster: Monster = {
+      hazard: false,
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Goblin",
       level: "1",
@@ -236,7 +282,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1?include=creator"
@@ -271,7 +317,7 @@ describe("GET /api/monsters/[id]", () => {
   });
 
   it("should return 404 for non-existent monster", async () => {
-    mockGetPublicMonster.mockResolvedValue(null);
+    mockGetPublicBestiaryEntry.mockResolvedValue(null);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
@@ -303,6 +349,7 @@ describe("GET /api/monsters/[id]", () => {
 
   it("should validate legendary monster conforms to MonsterSchema", async () => {
     const mockMonster: Monster = {
+      hazard: false,
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Ancient Dragon",
       level: "15",
@@ -332,7 +379,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
@@ -373,6 +420,7 @@ describe("GET /api/monsters/[id]", () => {
 
   it("should handle monster with multiple movement modes", async () => {
     const mockMonster: Monster = {
+      hazard: false,
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Water Elemental",
       level: "5",
@@ -398,7 +446,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
@@ -428,6 +476,7 @@ describe("GET /api/monsters/[id]", () => {
 
   it("should handle fractional level monsters", async () => {
     const mockMonster: Monster = {
+      hazard: false,
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Tiny Rat",
       level: "1/4",
@@ -453,7 +502,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
@@ -481,6 +530,7 @@ describe("GET /api/monsters/[id]", () => {
 
   it("should include families in included when include=families", async () => {
     const mockMonster: Monster = {
+      hazard: false,
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Goblin",
       level: "1",
@@ -514,7 +564,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1?include=families"
@@ -533,6 +583,7 @@ describe("GET /api/monsters/[id]", () => {
 
   it("should not include families when include is not specified", async () => {
     const mockMonster: Monster = {
+      hazard: false,
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Goblin",
       level: "1",
@@ -566,7 +617,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
@@ -583,6 +634,7 @@ describe("GET /api/monsters/[id]", () => {
 
   it("should include role in monster attributes", async () => {
     const mockMonster: Monster = {
+      hazard: false,
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Shield Guardian",
       level: "5",
@@ -609,7 +661,7 @@ describe("GET /api/monsters/[id]", () => {
       role: "defender",
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
@@ -640,6 +692,7 @@ describe("GET /api/monsters/[id]", () => {
 
   it("should include minion=true in attributes for a minion monster", async () => {
     const mockMonster: Monster = {
+      hazard: false,
       id: "550e8400-e29b-41d4-a716-446655440000",
       name: "Animated Armor Piece (Minion)",
       level: "2",
@@ -665,7 +718,7 @@ describe("GET /api/monsters/[id]", () => {
       updatedAt: new Date("2025-01-01"),
     };
 
-    mockGetPublicMonster.mockResolvedValue(mockMonster);
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
 
     const request = new Request(
       "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"

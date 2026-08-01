@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createEncounter } from "@/app/actions/encounter";
+import { EncounterMonsterRow } from "@/app/encounters/EncounterMonsterRow";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { Card as MonsterCard } from "@/components/monster/Card";
 import { SelectableMonsterGrid } from "@/components/monster/SelectableMonsterGrid";
@@ -76,6 +77,16 @@ function EditableMonsterCard({
   onHeroesPerMonsterChange: (id: string, heroesPerMonster: number) => void;
 }) {
   const { monster, quantity, isPerHero } = entry;
+  if (monster.hazard) {
+    return (
+      <EncounterMonsterRow
+        entry={entry}
+        onRemove={onRemove}
+        onQuantityChange={onQuantityChange}
+        onIsPerHeroToggle={onIsPerHeroToggle}
+      />
+    );
+  }
   const heroesPerMonster = entry.heroesPerMonster ?? 1;
   const resolvedQuantity = resolvedEncounterMonsterCount(entry, heroCount);
   const totalLevels = Number(

@@ -15,13 +15,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { MonsterMini } from "@/lib/services/monsters";
+import type { BestiaryEntryMini } from "@/lib/services/monsters";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import { formatHp } from "@/lib/utils/monster";
 import { getMonsterUrl } from "@/lib/utils/url";
 
 export const MonsterRow: React.FC<{
-  monster: MonsterMini;
+  monster: BestiaryEntryMini;
   onRemove?: (id: string) => void;
 }> = ({ monster, onRemove }) => (
   <div className="flex gap-1 items-center">
@@ -40,7 +40,7 @@ export const MonsterRow: React.FC<{
       )}
     >
       <div className="w-7 shrink-0 flex items-center justify-center">
-        {monster.legendary && monster.paperforgeId ? (
+        {!monster.hazard && monster.legendary && monster.paperforgeId ? (
           <div className="flex flex-col items-center">
             <Crown className="size-5 stroke-flame -mb-2.5" />
             <PaperforgeImage
@@ -49,15 +49,15 @@ export const MonsterRow: React.FC<{
               className="rounded-sm"
             />
           </div>
-        ) : monster.paperforgeId ? (
+        ) : !monster.hazard && monster.paperforgeId ? (
           <PaperforgeImage
             id={monster.paperforgeId}
             size={28}
             className="rounded-sm"
           />
-        ) : monster.legendary ? (
+        ) : !monster.hazard && monster.legendary ? (
           <Crown className="size-5 stroke-flame" />
-        ) : monster.minion ? (
+        ) : !monster.hazard && monster.minion ? (
           <PersonStanding className="size-5 stroke-flame" />
         ) : null}
       </div>
@@ -92,7 +92,9 @@ export const MonsterRow: React.FC<{
         "font-slab flex flex-wrap items-baseline justify-end font-black italic"
       )}
     >
-      {monster.minion || (
+      {monster.hazard ? (
+        <span className="text-sm text-muted-foreground">Hazard</span>
+      ) : monster.minion ? null : (
         <HPStat value={formatHp(monster)} className="min-w-14" />
       )}
     </div>
@@ -102,7 +104,7 @@ export const MonsterRow: React.FC<{
 interface MonsterGroupMinisProps {
   name: string;
   href?: string;
-  monsters?: MonsterMini[];
+  monsters?: BestiaryEntryMini[];
   children?: ReactNode;
   badge?: ReactNode;
   attribution?: ReactNode;

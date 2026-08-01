@@ -12,6 +12,7 @@ import { SubclassMiniCard } from "@/components/subclass/SubclassMiniCard";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { listConditionsForDiscordId, listOfficialConditions } from "@/lib/db";
+import { toHazardMonsterView } from "@/lib/services/hazards";
 import { itemsSortedByName, monstersSortedByLevelInt } from "@/lib/utils";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
@@ -122,7 +123,11 @@ export default async function ShowCollectionView({
       ) : (
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
           {monstersSortedByLevelInt(collection.monsters).map((m) => (
-            <MonsterCard key={m.id} monster={m} creator={m.creator} />
+            <MonsterCard
+              key={m.id}
+              monster={m.hazard ? toHazardMonsterView(m) : m}
+              creator={m.creator}
+            />
           ))}
           {itemsSortedByName(collection.items).map((item) => (
             <ItemCard key={item.id} item={item} creator={item.creator} />

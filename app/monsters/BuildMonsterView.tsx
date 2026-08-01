@@ -62,6 +62,7 @@ import { fetchApi } from "@/lib/api";
 import type {
   Monster,
   MonsterArmor,
+  MonsterFormState,
   MonsterSize,
 } from "@/lib/services/monsters";
 import {
@@ -75,10 +76,15 @@ import { UNKNOWN_USER } from "@/lib/types";
 import { cn, levelIntToDisplay } from "@/lib/utils";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { useUserFamiliesQuery } from "../families/hooks";
-import { updateMonster as updateMonsterAction } from "./actions";
+import {
+  createHazard as createHazardAction,
+  updateHazard as updateHazardAction,
+  updateMonster as updateMonsterAction,
+} from "./actions";
 
 const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
   goblin: {
+    hazard: false,
     visibility: "public",
     id: "",
     legendary: false,
@@ -124,6 +130,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     updatedAt: new Date(),
   },
   manticore: {
+    hazard: false,
     visibility: "public",
     id: "",
     legendary: true,
@@ -175,6 +182,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     updatedAt: new Date(),
   },
   team: {
+    hazard: false,
     visibility: "public",
     id: "",
     legendary: false,
@@ -258,6 +266,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     updatedAt: new Date(),
   },
   kobold: {
+    hazard: false,
     visibility: "public",
     id: "",
     legendary: false,
@@ -290,6 +299,7 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
     updatedAt: new Date(),
   },
   empty: {
+    hazard: false,
     visibility: "public",
     id: "",
     legendary: false,
@@ -317,8 +327,8 @@ const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
 };
 
 const FamilySection: React.FC<{
-  monster: Monster;
-  setMonster: (m: Monster) => void;
+  monster: MonsterFormState;
+  setMonster: (m: MonsterFormState) => void;
 }> = ({ monster, setMonster }) => {
   const { data: session } = useSession();
   const userFamilies = useUserFamiliesQuery({
@@ -349,8 +359,8 @@ const FamilySection: React.FC<{
 };
 
 const EncounterGuidelinesFields: React.FC<{
-  monster: Monster;
-  setMonster: (m: Monster) => void;
+  monster: MonsterFormState;
+  setMonster: (m: MonsterFormState) => void;
 }> = ({ monster, setMonster }) => (
   <>
     <FormTextarea
@@ -387,8 +397,8 @@ const EncounterGuidelinesFields: React.FC<{
 );
 
 const LegendaryForm: React.FC<{
-  monster: Monster;
-  setMonster: (m: Monster) => void;
+  monster: MonsterFormState;
+  setMonster: (m: MonsterFormState) => void;
 }> = ({ monster, setMonster }) => (
   <div className="space-y-4">
     <div className="grid grid-cols-7 gap-x-6">
@@ -524,8 +534,8 @@ const LegendaryForm: React.FC<{
 );
 
 const TeamForm: React.FC<{
-  monster: Monster;
-  setMonster: (m: Monster) => void;
+  monster: MonsterFormState;
+  setMonster: (m: MonsterFormState) => void;
 }> = ({ monster, setMonster }) => (
   <div className="space-y-4">
     <div className="grid grid-cols-7 gap-x-6">
@@ -610,8 +620,8 @@ const TeamForm: React.FC<{
 );
 
 const MinionForm: React.FC<{
-  monster: Monster;
-  setMonster: (m: Monster) => void;
+  monster: MonsterFormState;
+  setMonster: (m: MonsterFormState) => void;
 }> = ({ monster, setMonster }) => {
   return (
     <div className="space-y-4">
@@ -747,8 +757,8 @@ const MinionForm: React.FC<{
 };
 
 const StandardForm: React.FC<{
-  monster: Monster;
-  setMonster: (m: Monster) => void;
+  monster: MonsterFormState;
+  setMonster: (m: MonsterFormState) => void;
 }> = ({ monster, setMonster }) => {
   return (
     <div className="space-y-4">
@@ -1038,7 +1048,7 @@ const getRecommendedHPPerHeroLegendary = (
 };
 
 const HPInput: React.FC<{
-  monster: Monster;
+  monster: MonsterFormState;
   onChange: (hp: number) => void;
   onPerHeroChange: (hpPerHero: number | null) => void;
   className?: string;
@@ -1169,14 +1179,75 @@ const HPInput: React.FC<{
   );
 };
 
+const HazardForm: React.FC<{
+  monster: MonsterFormState;
+  setMonster: (m: MonsterFormState) => void;
+}> = ({ monster, setMonster }) => (
+  <div className="space-y-4">
+    <div className="grid grid-cols-4 gap-x-6">
+      <FormInput
+        label="Name"
+        name="name"
+        value={monster.name}
+        className="col-span-3"
+        onChange={(name) => setMonster({ ...monster, name })}
+      />
+      <FormSelect
+        label="Lvl"
+        name="level"
+        choices={MONSTER_LEVELS.map((level) => ({
+          value: level.value.toString(),
+          label: level.label,
+        }))}
+        selected={monster.levelInt.toString()}
+        onChange={(levelString) => {
+          const levelInt = Number.parseInt(levelString, 10);
+          setMonster({
+            ...monster,
+            level: levelIntToDisplay(levelInt),
+            levelInt,
+          });
+        }}
+      />
+    </div>
+    <AbilitiesSection
+      abilities={monster.abilities}
+      onChange={(abilities) => setMonster({ ...monster, abilities })}
+    />
+    <ActionsSection
+      actions={monster.actions}
+      actionPreface={monster.actionPreface}
+      showDamage={false}
+      onChange={(actions) => setMonster({ ...monster, actions })}
+      onPrefaceChange={(actionPreface) =>
+        setMonster({ ...monster, actionPreface })
+      }
+    />
+    <FormTextarea
+      label={
+        <div className="flex items-center gap-2">
+          More Information
+          <ConditionValidationIcon text={monster.moreInfo} />
+        </div>
+      }
+      name="moreInfo"
+      value={monster.moreInfo || ""}
+      rows={4}
+      onChange={(moreInfo: string) => setMonster({ ...monster, moreInfo })}
+    />
+  </div>
+);
+
 interface BuildMonsterProps {
-  existingMonster?: Monster;
+  existingMonster?: MonsterFormState;
   remixedFromId?: string;
+  hazard?: boolean;
 }
 
 const BuildMonster: React.FC<BuildMonsterProps> = ({
   existingMonster,
   remixedFromId,
+  hazard = false,
 }) => {
   const id = useId();
   const router = useRouter();
@@ -1184,7 +1255,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
   const { data: session } = useSession();
   const creator = session?.user || UNKNOWN_USER;
 
-  const [monster, setMonster] = useState<Monster>(() => {
+  const [monster, setMonster] = useState<MonsterFormState>(() => {
     if (existingMonster) {
       const baseMonster = {
         ...existingMonster,
@@ -1200,6 +1271,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           remixedFrom: {
             id: existingMonster.id,
             name: existingMonster.name,
+            hazard: existingMonster.hazard,
             creator: existingMonster.creator,
           },
         };
@@ -1207,13 +1279,34 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
 
       return baseMonster;
     }
-    return { ...EXAMPLE_MONSTERS.empty, creator };
+    return {
+      ...EXAMPLE_MONSTERS.empty,
+      hazard,
+      speed: hazard ? 0 : 6,
+      creator,
+    };
   });
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async (data: Monster) => {
+    mutationFn: async (data: MonsterFormState) => {
       if (data.id) {
+        if (data.hazard) {
+          return updateHazardAction({
+            id: data.id,
+            name: data.name,
+            level: data.level,
+            levelInt: data.levelInt,
+            actions: data.actions,
+            abilities: data.abilities,
+            actionPreface: data.actionPreface,
+            moreInfo: data.moreInfo || "",
+            mild_encounter: data.mild_encounter,
+            spicy_encounter: data.spicy_encounter,
+            visibility: data.visibility,
+            sourceId: data.source?.id ?? null,
+          });
+        }
         return updateMonsterAction({
           id: data.id,
           name: data.name,
@@ -1254,6 +1347,23 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
         });
       }
 
+      if (data.hazard) {
+        return createHazardAction({
+          name: data.name,
+          level: data.level,
+          levelInt: data.levelInt,
+          actions: data.actions,
+          abilities: data.abilities,
+          actionPreface: data.actionPreface,
+          moreInfo: data.moreInfo || "",
+          mild_encounter: data.mild_encounter,
+          spicy_encounter: data.spicy_encounter,
+          visibility: data.visibility,
+          sourceId: data.source?.id,
+          remixedFromId,
+        });
+      }
+
       return fetchApi<Monster>("/api/monsters", {
         method: "POST",
         body: JSON.stringify({
@@ -1266,6 +1376,8 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
     },
     onSuccess: (newMonster) => {
       queryClient.invalidateQueries({ queryKey: ["monsters"] });
+      queryClient.invalidateQueries({ queryKey: ["hazards"] });
+      queryClient.invalidateQueries({ queryKey: ["nav-counts"] });
       queryClient.invalidateQueries({ queryKey: ["monster", newMonster.id] });
       router.push(getMonsterUrl(newMonster));
     },
@@ -1295,7 +1407,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
   return (
     <BuildView
       entityName={monster.name}
-      previewTitle="Monster Preview"
+      previewTitle={monster.hazard ? "Hazard Preview" : "Monster Preview"}
       formClassName={clsx(
         "col-span-6",
         isWidePreview ? "md:col-span-3" : "md:col-span-4"
@@ -1309,71 +1421,75 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
       }
       formContent={
         <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="mb-6 flex justify-center">
-            <Tabs
-              value={
-                (monster.members?.length ?? 0) > 0
-                  ? "team"
-                  : monster.legendary
-                    ? "legendary"
-                    : monster.minion
-                      ? "minion"
-                      : "standard"
-              }
-              onValueChange={(value: string) => {
-                if (value === "team") {
-                  setMonster({
-                    ...monster,
-                    legendary: false,
-                    minion: false,
-                    hp: 0,
-                    actions: [],
-                    members: monster.members?.length
-                      ? monster.members
-                      : [emptyMember(), emptyMember()],
-                  });
-                } else {
-                  setMonster({
-                    ...monster,
-                    legendary: value === "legendary",
-                    minion: value === "minion",
-                    members: [],
-                  });
+          {monster.hazard ? (
+            <HazardForm monster={monster} setMonster={setMonster} />
+          ) : (
+            <div className="mb-6 flex justify-center">
+              <Tabs
+                value={
+                  (monster.members?.length ?? 0) > 0
+                    ? "team"
+                    : monster.legendary
+                      ? "legendary"
+                      : monster.minion
+                        ? "minion"
+                        : "standard"
                 }
-              }}
-            >
-              <TabsList>
-                <TabsTrigger value="minion" className="px-3">
-                  <PersonStanding className="h-4 w-4" />
-                  Minion
-                </TabsTrigger>
-                <TabsTrigger value="standard" className="px-3">
-                  <UserIcon className="h-4 w-4" />
-                  Standard
-                </TabsTrigger>
-                <TabsTrigger value="legendary" className="px-3">
-                  <Crown className="h-4 w-4" />
-                  Legendary
-                </TabsTrigger>
-                <TabsTrigger value="team" className="px-3">
-                  <Users className="h-4 w-4" />
-                  Team
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="standard" className="mt-6">
-                <StandardForm monster={monster} setMonster={setMonster} />
-              </TabsContent>
-              <TabsContent value="legendary" className="mt-6">
-                <LegendaryForm monster={monster} setMonster={setMonster} />
-              </TabsContent>
-              <TabsContent value="minion" className="mt-6">
-                <MinionForm monster={monster} setMonster={setMonster} />
-              </TabsContent>
-              <TabsContent value="team" className="mt-6">
-                <TeamForm monster={monster} setMonster={setMonster} />
-              </TabsContent>
-            </Tabs>
-          </div>
+                onValueChange={(value: string) => {
+                  if (value === "team") {
+                    setMonster({
+                      ...monster,
+                      legendary: false,
+                      minion: false,
+                      hp: 0,
+                      actions: [],
+                      members: monster.members?.length
+                        ? monster.members
+                        : [emptyMember(), emptyMember()],
+                    });
+                  } else {
+                    setMonster({
+                      ...monster,
+                      legendary: value === "legendary",
+                      minion: value === "minion",
+                      members: [],
+                    });
+                  }
+                }}
+              >
+                <TabsList>
+                  <TabsTrigger value="minion" className="px-3">
+                    <PersonStanding className="h-4 w-4" />
+                    Minion
+                  </TabsTrigger>
+                  <TabsTrigger value="standard" className="px-3">
+                    <UserIcon className="h-4 w-4" />
+                    Standard
+                  </TabsTrigger>
+                  <TabsTrigger value="legendary" className="px-3">
+                    <Crown className="h-4 w-4" />
+                    Legendary
+                  </TabsTrigger>
+                  <TabsTrigger value="team" className="px-3">
+                    <Users className="h-4 w-4" />
+                    Team
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="standard" className="mt-6">
+                  <StandardForm monster={monster} setMonster={setMonster} />
+                </TabsContent>
+                <TabsContent value="legendary" className="mt-6">
+                  <LegendaryForm monster={monster} setMonster={setMonster} />
+                </TabsContent>
+                <TabsContent value="minion" className="mt-6">
+                  <MinionForm monster={monster} setMonster={setMonster} />
+                </TabsContent>
+                <TabsContent value="team" className="mt-6">
+                  <TeamForm monster={monster} setMonster={setMonster} />
+                </TabsContent>
+              </Tabs>
+            </div>
+          )}
 
           <SourceSelect
             source={monster.source}
@@ -1423,18 +1539,20 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
       }
       desktopPreviewContent={
         <>
-          <ExampleLoader
-            examples={EXAMPLE_MONSTERS}
-            onLoadExample={(type) =>
-              loadExample(type as keyof typeof EXAMPLE_MONSTERS)
-            }
-            getIcon={(monster) => {
-              if ((monster.members?.length ?? 0) > 0) return Users;
-              if (monster.legendary) return Crown;
-              if (monster.minion) return PersonStanding;
-              if (monster.name) return UserIcon;
-            }}
-          />
+          {!monster.hazard && (
+            <ExampleLoader
+              examples={EXAMPLE_MONSTERS}
+              onLoadExample={(type) =>
+                loadExample(type as keyof typeof EXAMPLE_MONSTERS)
+              }
+              getIcon={(monster) => {
+                if ((monster.members?.length ?? 0) > 0) return Users;
+                if (monster.legendary) return Crown;
+                if (monster.minion) return PersonStanding;
+                if (monster.name) return UserIcon;
+              }}
+            />
+          )}
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4 pt-7">
             <Card
               link={false}

@@ -126,6 +126,7 @@ export async function getRandomFeaturedFamily(): Promise<Family | null> {
 
         fullMonsters.push({
           id: link.monsters.id,
+          hazard: false,
           hp: link.monsters.hp,
           legendary: link.monsters.legendary || false,
           minion: link.monsters.minion,

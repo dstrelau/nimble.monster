@@ -17,6 +17,7 @@ import {
 
 export interface MyLibraryCounts {
   monsters: number;
+  hazards: number;
   rules: number;
   ancestries: number;
   companions: number;
@@ -36,6 +37,7 @@ export async function getMyLibraryCounts(
   const db = getDatabase();
   const [
     monsterCount,
+    hazardCount,
     ruleCount,
     ancestryCount,
     companionCount,
@@ -51,7 +53,11 @@ export async function getMyLibraryCounts(
     db
       .select({ count: count() })
       .from(monsters)
-      .where(eq(monsters.userId, userId)),
+      .where(and(eq(monsters.userId, userId), eq(monsters.hazard, false))),
+    db
+      .select({ count: count() })
+      .from(monsters)
+      .where(and(eq(monsters.userId, userId), eq(monsters.hazard, true))),
     db
       .select({ count: count() })
       .from(customRules)
@@ -97,6 +103,7 @@ export async function getMyLibraryCounts(
 
   return {
     monsters: monsterCount[0]?.count ?? 0,
+    hazards: hazardCount[0]?.count ?? 0,
     rules: ruleCount[0]?.count ?? 0,
     ancestries: ancestryCount[0]?.count ?? 0,
     companions: companionCount[0]?.count ?? 0,
@@ -117,6 +124,7 @@ export async function getPublicLibraryCounts(
   const db = getDatabase();
   const [
     monsterCount,
+    hazardCount,
     ruleCount,
     ancestryCount,
     companionCount,
@@ -133,7 +141,21 @@ export async function getPublicLibraryCounts(
       .select({ count: count() })
       .from(monsters)
       .where(
-        and(eq(monsters.userId, userId), eq(monsters.visibility, "public"))
+        and(
+          eq(monsters.userId, userId),
+          eq(monsters.visibility, "public"),
+          eq(monsters.hazard, false)
+        )
+      ),
+    db
+      .select({ count: count() })
+      .from(monsters)
+      .where(
+        and(
+          eq(monsters.userId, userId),
+          eq(monsters.visibility, "public"),
+          eq(monsters.hazard, true)
+        )
       ),
     db
       .select({ count: count() })
@@ -216,6 +238,7 @@ export async function getPublicLibraryCounts(
 
   return {
     monsters: monsterCount[0]?.count ?? 0,
+    hazards: hazardCount[0]?.count ?? 0,
     rules: ruleCount[0]?.count ?? 0,
     ancestries: ancestryCount[0]?.count ?? 0,
     companions: companionCount[0]?.count ?? 0,

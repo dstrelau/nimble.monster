@@ -102,6 +102,7 @@ export default async function PreviewMonstersPage({ searchParams }: PageProps) {
       kind: input.kind,
       legendary: input.legendary || false,
       minion: input.minion || false,
+      hazard: false,
       visibility: input.visibility,
       paperforgeId: input.paperforgeId || undefined,
       createdAt: new Date(),

@@ -1,5 +1,5 @@
 import type { Item } from "@/lib/services/items";
-import type { Monster } from "@/lib/services/monsters";
+import type { BestiaryEntry, Hazard, Monster } from "@/lib/services/monsters";
 import type { SpellSchool } from "@/lib/types";
 import { formatHp } from "@/lib/utils/monster";
 
@@ -33,6 +33,14 @@ function generateStandardBriefMarkdown(monster: Monster): string {
     sections.push(generateBriefActions(monster));
   }
 
+  return sections.join("\n");
+}
+
+function generateHazardBriefMarkdown(monster: Hazard): string {
+  const sections = [`**${monster.name}**`, `**Level:** ${monster.level}`];
+  const abilities = monster.abilities;
+  if (abilities.length > 0) sections.push(generateBriefAbilities(abilities));
+  if (monster.actions.length > 0) sections.push(generateBriefActions(monster));
   return sections.join("\n");
 }
 
@@ -215,7 +223,7 @@ function formatBriefAction(action: {
   return actionLine;
 }
 
-function generateBriefActions(monster: Monster): string {
+function generateBriefActions(monster: BestiaryEntry): string {
   const lines: string[] = ["\n**Actions**"];
 
   if (monster.actionPreface) {
@@ -238,10 +246,13 @@ interface MonsterMarkdownOptions {
 }
 
 export function monsterToMarkdown(
-  monster: Monster,
+  monster: BestiaryEntry,
   options: MonsterMarkdownOptions = {}
 ): string {
   if (options.brief) {
+    if (monster.hazard) {
+      return generateHazardBriefMarkdown(monster);
+    }
     if (monster.legendary) {
       return generateLegendaryBriefMarkdown(monster);
     }
@@ -258,8 +269,13 @@ export function monsterToMarkdown(
   return `${frontmatter}\n${body}`;
 }
 
-function generateTags(monster: Monster): string[] {
-  const tags = ["monster"];
+function generateTags(monster: BestiaryEntry): string[] {
+  const tags = [monster.hazard ? "hazard" : "monster"];
+
+  if (monster.hazard) {
+    if (monster.level) tags.push(`lvl-${monster.level}`);
+    return tags;
+  }
 
   if (monster.legendary) tags.push("legendary");
   if (monster.minion) tags.push("minion");
@@ -273,17 +289,18 @@ function generateTags(monster: Monster): string[] {
   return tags;
 }
 
-function generateFrontmatter(monster: Monster, tags: string[]): string {
+function generateFrontmatter(monster: BestiaryEntry, tags: string[]): string {
   const lines = ["---"];
 
   lines.push(`name: "${escapeYaml(monster.name)}"`);
   lines.push(`level: ${monster.level}`);
-  if (monster.kind) lines.push(`kind: "${escapeYaml(monster.kind)}"`);
-  if (monster.role) lines.push(`role: ${monster.role}`);
-
-  lines.push(`hp: ${formatHp(monster)}`);
-  lines.push(`armor: ${monster.armor}`);
-  lines.push(`size: ${monster.size}`);
+  if (!monster.hazard) {
+    if (monster.kind) lines.push(`kind: "${escapeYaml(monster.kind)}"`);
+    if (monster.role) lines.push(`role: ${monster.role}`);
+    lines.push(`hp: ${formatHp(monster)}`);
+    lines.push(`armor: ${monster.armor}`);
+    lines.push(`size: ${monster.size}`);
+  }
   lines.push(`visibility: ${monster.visibility}`);
 
   if (monster.source) {
@@ -296,10 +313,17 @@ function generateFrontmatter(monster: Monster, tags: string[]): string {
   return lines.join("\n");
 }
 
-function generateBody(monster: Monster): string {
+function generateBody(monster: BestiaryEntry): string {
   const sections: string[] = [];
 
   sections.push(generateHeader(monster));
+  if (monster.hazard) {
+    if (monster.abilities.length > 0) sections.push(generateAbilities(monster));
+    if (monster.actions.length > 0) sections.push(generateActions(monster));
+    if (monster.moreInfo) sections.push(generateMoreInfo(monster.moreInfo));
+    sections.push(generateMetadata(monster));
+    return sections.join("\n\n");
+  }
   sections.push(generateStats(monster));
 
   if (monster.saves) {
@@ -327,12 +351,17 @@ function generateBody(monster: Monster): string {
   return sections.join("\n\n");
 }
 
-function generateHeader(monster: Monster): string {
-  const typeLabel = monster.legendary
-    ? "Legendary"
-    : monster.minion
-      ? "Minion"
-      : "";
+function generateHeader(monster: BestiaryEntry): string {
+  if (monster.hazard) {
+    return `# ${monster.name}\n\n*Level ${monster.level} Hazard*`;
+  }
+  const typeLabel = monster.hazard
+    ? "Hazard"
+    : monster.legendary
+      ? "Legendary"
+      : monster.minion
+        ? "Minion"
+        : "";
   const subtitle = [
     `Level ${monster.level}`,
     monster.kind,
@@ -368,10 +397,10 @@ function generateSaves(saves: string): string {
   return `## Saves\n\n${saves}`;
 }
 
-function generateAbilities(monster: Monster): string {
+function generateAbilities(monster: BestiaryEntry): string {
   const lines = ["## Abilities"];
 
-  if (monster.families.length > 0) {
+  if (!monster.hazard && monster.families.length > 0) {
     for (const family of monster.families) {
       if (family.abilities.length > 0) {
         lines.push(`\n### ${family.name}`);
@@ -394,7 +423,7 @@ function generateAbilities(monster: Monster): string {
   return lines.join("\n");
 }
 
-function generateActions(monster: Monster): string {
+function generateActions(monster: BestiaryEntry): string {
   const lines = ["## Actions"];
 
   if (monster.actionPreface) {
@@ -440,7 +469,7 @@ function generateMoreInfo(moreInfo: string): string {
   return `## More Info\n\n${moreInfo}`;
 }
 
-function generateMetadata(monster: Monster): string {
+function generateMetadata(monster: BestiaryEntry): string {
   const lines = ["---"];
 
   if (monster.creator) {

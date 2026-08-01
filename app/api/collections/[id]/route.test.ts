@@ -143,6 +143,7 @@ describe("GET /api/collections/[id]", () => {
       monsters: [
         {
           id: "monster-id-1",
+          hazard: false,
           name: "Goblin",
           level: "1",
           levelInt: 1,
@@ -216,6 +217,7 @@ describe("GET /api/collections/[id]", () => {
       monsters: [
         {
           id: "monster-id-1",
+          hazard: false,
           name: "Goblin",
           level: "1",
           levelInt: 1,
@@ -339,6 +341,7 @@ describe("GET /api/collections/[id]", () => {
       monsters: [
         {
           id: "monster-id-1",
+          hazard: false,
           name: "Goblin",
           level: "1",
           levelInt: 1,

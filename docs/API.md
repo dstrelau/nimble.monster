@@ -5,14 +5,18 @@
 The Nimble Monster API follows the [JSON:API v1.1](https://jsonapi.org/format/)
 specification. All responses use the `application/vnd.api+json` content type.
 
-Responses conform to schemas defined in
-[nimble-schemas](https://github.com/dstrelau/nimble-schemas).
+Monster responses generally conform to schemas defined in
+[nimble-schemas](https://github.com/dstrelau/nimble-schemas). Hazard resources
+are currently a Nexus extension: the upstream monster schema does not
+yet model `hazard` or statblocks without creature combat stats.
 
 ## Endpoints
 
 ### GET /api/monsters
 
-List public monsters with pagination and sorting.
+List public monsters and hazards with pagination and sorting. Hazards use the
+existing `monsters` JSON:API resource type and are identified by
+`attributes.hazard: true`.
 
 **Query Parameters:**
 - `cursor` (string, optional): Pagination cursor for next page
@@ -23,6 +27,8 @@ List public monsters with pagination and sorting.
   - `level`, `-level`
 - `search` (string, optional): Search by name
 - `level` (number, optional): Filter by level
+- `type` (string, optional): `all`, `standard`, `legendary`, `minion`, `teams`,
+  or `hazard`. `all` excludes hazards; use `hazard` to list hazards.
 - `include` (string, optional): Related resources to include (comma-separated).
   Supports:
   - `families` - Include family resources referenced by returned monsters
@@ -89,6 +95,7 @@ Retrieve a single monster by ID (26-character identifier).
     "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
     "attributes": {
       "name": "Goblin",
+      "hazard": false,
       "hp": 10,
       "level": 1,
       "size": "small",
@@ -111,6 +118,38 @@ Retrieve a single monster by ID (26-character identifier).
 
 Standard (non-minion) monsters may also include a `bloodied` attribute
 (`{ "description": "..." }`) when one is set; it is omitted otherwise.
+
+**Response (hazard):**
+```json
+{
+  "data": {
+    "type": "monsters",
+    "id": "0psvtrh43w8xm9dfbf5b6nkcq1",
+    "attributes": {
+      "name": "Goblin Pit Trap",
+      "hazard": true,
+      "hp": 0,
+      "level": 1,
+      "size": "medium",
+      "armor": "none",
+      "movement": [],
+      "abilities": [
+        { "name": "Hidden Trap!", "description": "DC 12 Perception to spot it." }
+      ],
+      "actions": [],
+      "actionsInstructions": "",
+      "effects": [],
+      "description": "",
+      "legendary": false,
+      "minion": false
+    }
+  }
+}
+```
+
+Hazards retain neutral values for fields required by the shared monster API
+contract (`hp`, `size`, and `armor`), but they do not have HP, movement, armor,
+size, saves, Bloodied, or Last Stand mechanics in the application.
 
 **Response (legendary monster):**
 ```json
@@ -206,7 +245,8 @@ member has saves and uses the same parsed shape as a legendary monster's
 `saves`. The top-level `hp` on a team is `0`; per-member HP lives on each
 member.
 
-The `hp` field is always present and holds the monster's fixed total HP. Monsters
+The `hp` field is always present and holds the monster's fixed total HP. Hazards
+use `0` solely as a neutral shared-resource value. Monsters
 that scale their HP with party size (the "X/hero" format) additionally include an
 `hpPerHero` integer; when present, clients should display HP as `{hpPerHero}/hero`.
 The field is omitted when a monster does not use per-hero HP. `hp` remains

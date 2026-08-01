@@ -41,10 +41,11 @@ export function publicMonstersInfiniteQueryOptions({
   creatorId?: string;
   limit?: number;
 }> = {}) {
+  const creatureType = type === "hazard" ? "all" : type;
   const params = {
     search,
     sort,
-    type,
+    type: creatureType,
     source,
     role,
     level,
