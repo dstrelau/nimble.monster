@@ -428,6 +428,7 @@ export function FormattedText({
       const placeholderId = `dice-placeholder-${diceIndex}`;
       const placeholder = document.createElement("span");
       placeholder.id = placeholderId;
+      placeholder.textContent = diceText;
       span.parentNode?.replaceChild(placeholder, span);
 
       placeholders.push({

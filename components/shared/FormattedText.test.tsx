@@ -198,6 +198,19 @@ describe("FormattedText - Dice Notation", () => {
     expect(screen.getByText("1d6")).toBeInTheDocument();
   });
 
+  it("should update dice notation when another digit is entered", async () => {
+    const { rerender } = render(
+      <FormattedText content="Roll 1d2" conditions={[]} />
+    );
+
+    expect(await screen.findByText("1d2")).toBeInTheDocument();
+
+    rerender(<FormattedText content="Roll 1d20" conditions={[]} />);
+
+    expect(await screen.findByText("1d20")).toBeInTheDocument();
+    expect(screen.queryByText("1d2")).not.toBeInTheDocument();
+  });
+
   it("should parse dice notation with modifiers", () => {
     const content = "Attack for 2d8+3 damage.";
 
