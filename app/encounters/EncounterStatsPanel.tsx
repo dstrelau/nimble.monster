@@ -111,6 +111,9 @@ export function EncounterStatsPanel({
     );
   const displayedTotalMonsterLevel = Number(totalMonsterLevel.toFixed(2));
   const totalHeroLevel = encounter.heroCount * encounter.heroLevel;
+  const hasLegendaryMonster = encounter.monsters.some(
+    (entry) => !entry.monster.hazard && entry.monster.legendary
+  );
 
   const monsterToHeroRatio =
     encounter.heroCount > 0 ? nonMinionCount / encounter.heroCount : 0;
@@ -119,7 +122,7 @@ export function EncounterStatsPanel({
     className: string;
     message: string;
   } | null =
-    encounter.heroCount === 0
+    encounter.heroCount === 0 || hasLegendaryMonster
       ? null
       : monsterToHeroRatio > RATIO_VERY_HIGH_THRESHOLD
         ? {
@@ -151,9 +154,6 @@ export function EncounterStatsPanel({
                 }
               : null;
 
-  const hasLegendaryMonster = encounter.monsters.some(
-    (entry) => !entry.monster.hazard && entry.monster.legendary
-  );
   const combatantEntries = encounter.monsters.flatMap((entry) =>
     entry.monster.hazard ? [] : [{ monster: entry.monster }]
   );
@@ -240,7 +240,9 @@ export function EncounterStatsPanel({
                     </TooltipContent>
                   </Tooltip>
                 )}
-                {Number(monsterToHeroRatio.toFixed(1))}:1
+                {hasLegendaryMonster
+                  ? "N/A"
+                  : `${Number(monsterToHeroRatio.toFixed(1))}:1`}
               </span>
             }
           />

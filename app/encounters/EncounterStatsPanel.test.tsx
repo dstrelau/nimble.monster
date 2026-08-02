@@ -1,7 +1,9 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import type { EncounterOverview } from "@/lib/types";
 import { EncounterStatsPanel } from "./EncounterStatsPanel";
+
+afterEach(cleanup);
 
 const creator = {
   id: "user-1",
@@ -38,6 +40,46 @@ const hazard = {
 };
 
 describe("EncounterStatsPanel", () => {
+  it("does not apply a monster-to-hero ratio to a legendary encounter", () => {
+    const encounter: EncounterOverview = {
+      id: "encounter-1",
+      creator,
+      name: "Legendary encounter",
+      visibility: "public",
+      heroCount: 4,
+      heroLevel: 5,
+      monsters: [
+        {
+          monster: {
+            ...combatant,
+            hp: 0,
+            hpPerHero: 35,
+            legendary: true,
+            level: "5",
+            levelInt: 5,
+            name: "Legendary Monster",
+          },
+          quantity: 1,
+          isPerHero: false,
+        },
+      ],
+    };
+
+    render(<EncounterStatsPanel encounter={encounter} />);
+
+    expect(
+      screen.getByText("Monsters per Hero").nextElementSibling
+    ).toHaveTextContent("N/A");
+    expect(
+      screen.queryByText(
+        "This monster:hero ratio is not recommended — use a legendary monster instead."
+      )
+    ).not.toBeInTheDocument();
+    expect(screen.getByText("Difficulty").nextElementSibling).toHaveTextContent(
+      "Hard"
+    );
+  });
+
   it("excludes hazards and resolves per-hero HP for combatants", () => {
     const encounter: EncounterOverview = {
       id: "encounter-1",
