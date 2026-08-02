@@ -54,13 +54,13 @@ export function ClassMiniCard({
           <div className="flex gap-3 items-center">
             <div className="flex items-center">
               <DieFromNotation
-                className="size-6 -mr-2 stroke-neutral-400 fill-none dark:stroke-neutral-500"
+                className="size-6 -mr-2 text-muted-foreground fill-none"
                 die={classEntity.hitDie}
               />
               <span className="text-sm font-bold">{classEntity.hitDie}</span>
             </div>
             <div className="flex items-center">
-              <Star className="size-5 -mr-1.5 stroke-neutral-300 fill-neutral-200 dark:stroke-neutral-600 dark:fill-neutral-700" />
+              <Star className="size-5 -mr-1.5 text-muted-foreground fill-muted-foreground" />
               <span className="text-sm font-bold uppercase">
                 {classEntity.keyStats.join(" ")}
               </span>

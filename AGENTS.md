@@ -129,6 +129,7 @@ Workflow:
 # User preferences
 
 - When the user asks the agent to remember something, persist it in this project-level `AGENTS.md` rather than relying only on the current thread's conversation context.
+- For color changes, always show the final result in both light and dark mode.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

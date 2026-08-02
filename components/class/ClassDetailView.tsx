@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 import { formatWeaponsDisplay } from "@/lib/utils/weapons";
 
 const mutedIconClass =
-  "size-8 -mr-2 stroke-neutral-400 dark:stroke-neutral-600 fill-neutral-400 dark:fill-neutral-600";
+  "size-8 -mr-2 text-muted-foreground fill-muted-foreground";
 
 interface ClassDetailViewProps {
   classEntity: Class;
@@ -58,7 +58,7 @@ export function ClassDetailView({
 
       <CardContent className="pt-6 space-y-6">
         {/* Combat Stats + Saves Overlay */}
-        <div className="relative w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem] py-3 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm space-y-3">
+        <div className="relative w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem] py-3 bg-muted text-foreground dark:shadow-sm space-y-3">
           <div className="flex flex-col items-center gap-3">
             <div className="flex flex-wrap justify-center gap-6">
               {classEntity.keyStats.length > 0 && (
