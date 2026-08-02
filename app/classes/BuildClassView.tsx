@@ -22,11 +22,16 @@ import {
   useForm,
 } from "react-hook-form";
 import { z } from "zod";
+import {
+  EXAMPLE_CLASSES,
+  exampleClassToFormValues,
+} from "@/app/classes/exampleClasses";
 import { ClassDetailView } from "@/components/class/ClassDetailView";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { DieFromNotation } from "@/components/icons/PolyhedralDice";
 import { DiscordLoginButton } from "@/components/layout/DiscordLoginButton";
 import { EditableLevelAbilities } from "@/components/shared/EditableLevelAbilities";
+import { ExampleLoader } from "@/components/shared/ExampleLoader";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import {
   AlertDialog,
@@ -286,6 +291,11 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
     classEntity?.subclassNamePreface,
   ]);
 
+  const loadExample = (exampleKey: string) => {
+    const example = EXAMPLE_CLASSES[exampleKey];
+    if (example) form.reset(exampleClassToFormValues(example));
+  };
+
   const handleSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
@@ -363,28 +373,37 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
               Preview
             </Toggle>
             {mode === "edit" && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button type="button" variant="destructive">
-                    Clear
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className="duration-0 [animation-duration:0s]">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Clear form?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This will reset all fields. Any unsaved changes will be
-                      lost.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => form.reset()}>
+              <div className="flex items-center gap-2">
+                {!classEntity?.id && (
+                  <ExampleLoader
+                    examples={EXAMPLE_CLASSES}
+                    onLoadExample={loadExample}
+                    className="mb-0 mr-0"
+                  />
+                )}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button type="button" variant="destructive">
                       Clear
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="duration-0 [animation-duration:0s]">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Clear form?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will reset all fields. Any unsaved changes will be
+                        lost.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => form.reset()}>
+                        Clear
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             )}
           </div>
           {(draftState === "available" || draftState === "stale") && (

@@ -2,20 +2,23 @@
 
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface ExampleLoaderProps<T> {
   examples: Record<string, T>;
   onLoadExample: (type: string) => void;
   getIcon?: (example: T) => LucideIcon | undefined;
+  className?: string;
 }
 
 export function ExampleLoader<T>({
   examples,
   onLoadExample,
   getIcon,
+  className,
 }: ExampleLoaderProps<T>) {
   return (
-    <div className="flex mb-6 mr-5 justify-end">
+    <div className={cn("flex mb-6 mr-5 justify-end", className)}>
       <div className="flex items-center">
         <span className="text-sm font-bold mr-2">Load:</span>
         {Object.keys(examples).map((type) => {
@@ -23,6 +26,7 @@ export function ExampleLoader<T>({
           return (
             <Button
               key={type}
+              type="button"
               variant="ghost"
               className="small-caps text-sm"
               onClick={() => onLoadExample(type)}
