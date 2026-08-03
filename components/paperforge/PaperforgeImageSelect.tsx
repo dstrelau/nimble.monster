@@ -114,10 +114,13 @@ export const PaperforgeImageSelect: React.FC<{
                         {/* biome-ignore lint/performance/noImgElement: Using pre-sized Tigris images */}
                         <img
                           src={getPaperforgeImageUrl(option.folder, 50)}
+                          srcSet={`${getPaperforgeImageUrl(option.folder, 50)} 1x, ${getPaperforgeImageUrl(option.folder, 100)} 2x`}
                           alt=""
+                          width={50}
+                          height={50}
                           loading="lazy"
                           className={cn(
-                            "size-full rounded-full object-contain transition-[filter] duration-150 group-hover:drop-shadow-[0_0_10px_rgba(245,158,11,0.4)]",
+                            "size-[50px] rounded-full object-contain transition-[filter] duration-150 group-hover:drop-shadow-[0_0_10px_rgba(245,158,11,0.4)]",
                             value === option.value &&
                               "bg-accent ring-2 ring-amber-500 drop-shadow-[0_0_12px_rgba(245,158,11,0.5)] group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
                           )}

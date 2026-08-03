@@ -36,6 +36,10 @@ describe("PaperforgeImageSelect", () => {
       "src",
       "/paperforge/0002/50.png"
     );
+    expect(document.querySelector("[cmdk-item] img")).toHaveAttribute(
+      "srcset",
+      "/paperforge/0002/50.png 1x, /paperforge/0002/100.png 2x"
+    );
     expect(document.querySelector("[cmdk-item] img")).toHaveClass(
       "group-hover:drop-shadow-[0_0_10px_rgba(245,158,11,0.4)]"
     );
