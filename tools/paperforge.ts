@@ -224,6 +224,13 @@ function extractTierFromFilename(filename: string): string | null {
   return null;
 }
 
+function normalizeMiniName(name: string): string {
+  const trimmed = name.trim();
+  const withoutFanartPrefix = trimmed.replace(/^\[Fanart\]\s*/i, "").trim();
+  if (withoutFanartPrefix === trimmed) return trimmed;
+  return withoutFanartPrefix ? `${withoutFanartPrefix} [Fanart]` : "[Fanart]";
+}
+
 function extractMinisFromHtml(html: string): RawMini[] {
   let bigScript: string | null = null;
   const scriptRe = /<script[^>]*>([\s\S]*?)<\/script>/g;
@@ -281,9 +288,10 @@ function extractMinisFromHtml(html: string): RawMini[] {
 }
 
 function processRawMini(mini: RawMini): CatalogMini {
+  const name = normalizeMiniName(mini.name);
   let number = mini.number;
   if (number === null) {
-    const nameMatch = mini.name.match(/^(\d+)/);
+    const nameMatch = name.match(/^(\d+)/);
     if (nameMatch) {
       number = parseInt(nameMatch[1], 10);
     }
@@ -323,7 +331,7 @@ function processRawMini(mini: RawMini): CatalogMini {
   return {
     id: mini.id,
     number,
-    name: mini.name,
+    name,
     url: `https://www.paperforgeminis.com/minis/${mini.id}`,
     enabled: mini.enabled ?? true,
     releaseDate: mini.releaseDate,

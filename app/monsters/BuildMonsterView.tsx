@@ -433,18 +433,18 @@ const LegendaryForm: React.FC<{
         onChange={(kind) => setMonster({ ...monster, kind })}
       />
     </div>
-    <div className="grid grid-cols-3 gap-x-6">
+    <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
       <FormInput
         label="Name"
         name="name"
         value={monster.name}
-        className="col-span-2"
+        className="sm:col-span-2"
         onChange={(name) => setMonster({ ...monster, name })}
       />
       <PaperforgeImageSelect
         value={monster.paperforgeId}
         onChange={(paperforgeId) => setMonster({ ...monster, paperforgeId })}
-        className="col-span-1"
+        className="sm:col-span-1"
       />
     </div>
     <div>
@@ -625,18 +625,18 @@ const MinionForm: React.FC<{
 }> = ({ monster, setMonster }) => {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-x-6">
+      <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
         <FormInput
           label="Name"
           name="name"
           value={monster.name}
-          className="col-span-2"
+          className="sm:col-span-2"
           onChange={(name) => setMonster({ ...monster, name })}
         />
         <PaperforgeImageSelect
           value={monster.paperforgeId}
           onChange={(paperforgeId) => setMonster({ ...monster, paperforgeId })}
-          className="col-span-1"
+          className="sm:col-span-1"
         />
       </div>
       <div className="grid grid-cols-5 gap-x-6">
@@ -762,18 +762,18 @@ const StandardForm: React.FC<{
 }> = ({ monster, setMonster }) => {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-x-6">
+      <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-3">
         <FormInput
           label="Name"
           name="name"
           value={monster.name}
-          className="col-span-2"
+          className="sm:col-span-2"
           onChange={(name) => setMonster({ ...monster, name })}
         />
         <PaperforgeImageSelect
           value={monster.paperforgeId}
           onChange={(paperforgeId) => setMonster({ ...monster, paperforgeId })}
-          className="col-span-1"
+          className="sm:col-span-1"
         />
       </div>
       <div className="grid grid-cols-5 gap-x-6">

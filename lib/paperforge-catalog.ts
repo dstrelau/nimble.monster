@@ -359,7 +359,7 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "48",
-    name: "Barbarian ",
+    name: "Barbarian",
     postUrl:
       "https://www.paperforgeminis.com/minis/3af197ac-7c12-4494-a1b4-74d83807ff08",
     folder: "0048",
@@ -1125,21 +1125,21 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "224",
-    name: "Dwarf Barbarian ",
+    name: "Dwarf Barbarian",
     postUrl:
       "https://www.paperforgeminis.com/minis/dcf5fdb4-b956-4d9a-aa27-2652fbbd6c0f",
     folder: "0224",
   },
   {
     id: "225",
-    name: "Dwarf Paladin ",
+    name: "Dwarf Paladin",
     postUrl:
       "https://www.paperforgeminis.com/minis/5576305d-bc2c-4f38-9003-03af417215c5",
     folder: "0225",
   },
   {
     id: "226",
-    name: "Dwarf Paladin ",
+    name: "Dwarf Paladin",
     postUrl:
       "https://www.paperforgeminis.com/minis/90659bc3-075e-47c0-adbb-0b22c59ba9fa",
     folder: "0226",
@@ -1286,7 +1286,7 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "256",
-    name: " Gnome Bard",
+    name: "Gnome Bard",
     postUrl:
       "https://www.paperforgeminis.com/minis/a1d18cf9-002a-4755-8f7f-d2022fdead70",
     folder: "0256",
@@ -1803,7 +1803,7 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "357",
-    name: "Halfling Bard ",
+    name: "Halfling Bard",
     postUrl:
       "https://www.paperforgeminis.com/minis/cc1ca782-743e-4971-9dd1-c4622647c811",
     folder: "0357",
@@ -1999,14 +1999,14 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "407",
-    name: "Zombie ",
+    name: "Zombie",
     postUrl:
       "https://www.paperforgeminis.com/minis/58742da8-b2b7-4414-a97d-335bd7bfa137",
     folder: "0407",
   },
   {
     id: "408",
-    name: "Vargouille ",
+    name: "Vargouille",
     postUrl:
       "https://www.paperforgeminis.com/minis/b8d50fa3-a578-410c-84df-cd468f536cab",
     folder: "0408",
@@ -2713,7 +2713,7 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "578",
-    name: " Water Elemental",
+    name: "Water Elemental",
     postUrl:
       "https://www.paperforgeminis.com/minis/a6a9bb2a-24e1-4569-a13e-d869418f972b",
     folder: "0578",
@@ -2915,7 +2915,7 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "619",
-    name: "Commoner ",
+    name: "Commoner",
     postUrl:
       "https://www.paperforgeminis.com/minis/34a6a275-9529-4c6c-bb42-3a59f15cf4d6",
     folder: "0619",
@@ -3580,7 +3580,7 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "760",
-    name: "[Fanart]Ulitharid",
+    name: "Ulitharid [Fanart]",
     postUrl:
       "https://www.paperforgeminis.com/minis/2e946ece-9206-4852-8a28-cf1e2028eeaa",
     folder: "0760",
@@ -3622,7 +3622,7 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "766",
-    name: "Worg ",
+    name: "Worg",
     postUrl:
       "https://www.paperforgeminis.com/minis/59fe0a23-d576-48bf-93b5-c204504140e2",
     folder: "0766",
@@ -3678,7 +3678,7 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "775",
-    name: "Skeleton ",
+    name: "Skeleton",
     postUrl:
       "https://www.paperforgeminis.com/minis/e758ed9e-1787-4864-9dd3-61a1f8d2b9d8",
     folder: "0775",
@@ -3720,21 +3720,21 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "782",
-    name: "Bandit ",
+    name: "Bandit",
     postUrl:
       "https://www.paperforgeminis.com/minis/5ccba69c-2df0-4d51-ad73-60545bb57b71",
     folder: "0782",
   },
   {
     id: "783",
-    name: "Bandit ",
+    name: "Bandit",
     postUrl:
       "https://www.paperforgeminis.com/minis/9460a16d-ae3e-4198-87d2-e7fa9793b190",
     folder: "0783",
   },
   {
     id: "784",
-    name: "Bandit ",
+    name: "Bandit",
     postUrl:
       "https://www.paperforgeminis.com/minis/b7b0e96e-5a62-4ac8-b7ac-f94b856ab7fc",
     folder: "0784",
