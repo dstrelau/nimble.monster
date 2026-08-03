@@ -72,7 +72,7 @@ const spellSchema = z.object({
   id: z.union([z.enum([""]), z.uuid()]),
   name: z.string().min(1, "Spell name is required"),
   tier: z.number().min(0).max(9),
-  actions: z.coerce.number().max(10),
+  actions: z.coerce.number().min(0).max(10),
   reaction: z.boolean(),
   utility: z.boolean(),
   target: z
@@ -189,7 +189,7 @@ export default function BuildSchoolView({
       schoolId: "",
       name: spell?.name || "",
       tier: spell?.tier ?? 0,
-      actions: Number(spell?.actions) || 1,
+      actions: spell?.actions === undefined ? 1 : Number(spell.actions),
       reaction: spell?.reaction || false,
       utility: spell?.utility || false,
       target: spell?.target
@@ -466,7 +466,7 @@ export default function BuildSchoolView({
                             <FormControl>
                               <Input
                                 type="number"
-                                min="1"
+                                min="0"
                                 className="mb-2"
                                 value={field.value as number}
                                 onChange={(e) =>
