@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -21,11 +22,13 @@ export default async function MyClassesPage() {
   const classes = await listAllClassesForDiscordID(session.user.discordId);
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">My Classes</h1>
+    <div className="space-y-6">
+      <div className="flex justify-end">
         <Button asChild>
-          <Link href="/classes/new">Create New Class</Link>
+          <Link href="/classes/new">
+            <Plus />
+            Create New Class
+          </Link>
         </Button>
       </div>
       {classes.length === 0 ? (
