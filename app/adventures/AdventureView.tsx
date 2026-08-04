@@ -1,7 +1,6 @@
 "use client";
 
 import { CircleSlash2 } from "lucide-react";
-import { Fragment } from "react";
 import {
   getAdventureCalloutPresentation,
   normalizeAdventureCalloutPresentation,
@@ -13,7 +12,6 @@ import { Card as MonsterCard } from "@/components/monster/Card";
 import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
 import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import type { Adventure, AdventureNode } from "@/lib/db/adventures";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { toHazardMonsterView } from "@/lib/services/hazards/converters";
@@ -21,10 +19,19 @@ import type { Condition } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface AdventureViewProps {
-  adventure: Pick<
-    Adventure,
-    "name" | "tagline" | "summary" | "creator" | "nodes"
-  >;
+  adventure: Pick<Adventure, "name" | "tagline" | "creator" | "nodes">;
+}
+
+export const ADVENTURE_SECTION_MARKER_COLORS = [
+  "text-orange-700 dark:text-orange-400",
+  "text-cyan-700 dark:text-cyan-400",
+  "text-emerald-700 dark:text-emerald-400",
+  "text-violet-700 dark:text-violet-400",
+];
+
+interface SectionMarkerData {
+  number: string;
+  colorClassName: string;
 }
 
 function NodeHeading({
@@ -35,12 +42,48 @@ function NodeHeading({
   children: React.ReactNode;
 }) {
   if (depth === 0) {
-    return <h2 className="text-2xl font-bold">{children}</h2>;
+    return (
+      <h2 className="font-slab text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
+        {children}
+      </h2>
+    );
   }
   if (depth === 1) {
-    return <h3 className="text-xl font-semibold">{children}</h3>;
+    return (
+      <h3 className="font-slab text-xl font-bold leading-tight sm:text-2xl">
+        {children}
+      </h3>
+    );
   }
-  return <h4 className="text-lg font-semibold">{children}</h4>;
+  return (
+    <h4 className="font-slab text-lg font-bold leading-tight sm:text-xl">
+      {children}
+    </h4>
+  );
+}
+
+function SectionMarker({ marker }: { marker: SectionMarkerData }) {
+  return (
+    <div
+      data-testid="adventure-section-marker"
+      className="flex items-center gap-4"
+    >
+      <span
+        data-testid="adventure-section-marker-number"
+        className={cn(
+          "font-slab text-base font-bold tracking-[0.08em] tabular-nums sm:text-lg",
+          marker.colorClassName
+        )}
+      >
+        {marker.number}
+      </span>
+      <span
+        data-testid="adventure-section-rule"
+        aria-hidden="true"
+        className="h-px flex-1 bg-border-strong"
+      />
+    </div>
+  );
 }
 
 function RemovedContent() {
@@ -68,28 +111,39 @@ function AdventureNodeList({
     .sort((a, b) => a.orderIndex - b.orderIndex);
   if (children.length === 0) return null;
 
+  const sectionMarkers = new Map<string, SectionMarkerData>();
+  if (depth === 0) {
+    children
+      .filter((child) => child.kind === "section")
+      .forEach((child, index) => {
+        sectionMarkers.set(child.id, {
+          number: String(index + 1).padStart(2, "0"),
+          colorClassName:
+            ADVENTURE_SECTION_MARKER_COLORS[
+              index % ADVENTURE_SECTION_MARKER_COLORS.length
+            ],
+        });
+      });
+  }
+
   return (
-    <div className="grid grid-cols-1 gap-1 md:grid-cols-2 xl:grid-cols-3">
-      {children.map((child, index) => (
-        <Fragment key={child.id}>
-          {depth === 0 && index > 0 && (
-            <Separator className="col-span-full mx-auto my-4 data-[orientation=horizontal]:w-1/2" />
+    <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 xl:grid-cols-3">
+      {children.map((child) => (
+        <div
+          key={child.id}
+          id={getAdventureNodeAnchorId(child.id)}
+          className={cn(
+            child.kind !== "encounter" && "md:col-span-2 xl:col-span-3"
           )}
-          <div
-            id={getAdventureNodeAnchorId(child.id)}
-            className={cn(
-              child.kind !== "encounter" && "md:col-span-2 xl:col-span-3",
-              depth === 0 && index > 0 && "[&>section]:mt-0"
-            )}
-          >
-            <AdventureNodeView
-              node={child}
-              nodes={nodes}
-              depth={depth}
-              conditions={conditions}
-            />
-          </div>
-        </Fragment>
+        >
+          <AdventureNodeView
+            node={child}
+            nodes={nodes}
+            depth={depth}
+            sectionMarker={sectionMarkers.get(child.id)}
+            conditions={conditions}
+          />
+        </div>
       ))}
     </div>
   );
@@ -99,11 +153,13 @@ function AdventureNodeView({
   node,
   nodes,
   depth,
+  sectionMarker,
   conditions,
 }: {
   node: AdventureNode;
   nodes: AdventureNode[];
   depth: number;
+  sectionMarker?: SectionMarkerData;
   conditions: Condition[];
 }) {
   const children = nodes
@@ -124,37 +180,37 @@ function AdventureNodeView({
         )}
         data-testid="adventure-callout"
         className={cn(
-          "relative my-4 overflow-hidden border border-l-4 p-0 shadow-sm",
+          "relative my-2 overflow-hidden border border-l-4 p-0 shadow-sm",
           presentation.panelClassName
         )}
       >
         <div
           aria-hidden="true"
           className={cn(
-            "pointer-events-none absolute -top-20 -right-16 size-44 rounded-full border-2 opacity-50",
+            "pointer-events-none absolute -top-14 -right-12 size-32 rounded-full border-2 opacity-50",
             presentation.decorationClassName
           )}
         />
         <div
           aria-hidden="true"
           className={cn(
-            "pointer-events-none absolute -top-10 -right-6 size-24 rounded-full opacity-40",
+            "pointer-events-none absolute -top-7 -right-4 size-16 rounded-full opacity-40",
             presentation.decorationClassName
           )}
         />
-        <div className="relative z-10 p-5 sm:p-6">
-          <div className="flex items-center gap-3">
+        <div className="relative z-10 p-2.5">
+          <div className="flex items-center gap-1.5">
             <span
               className={cn(
-                "flex size-9 shrink-0 items-center justify-center rounded-lg",
+                "flex size-6 shrink-0 items-center justify-center rounded-md",
                 presentation.badgeClassName
               )}
             >
-              <Icon className="size-5" aria-hidden="true" />
+              <Icon className="size-3.5" aria-hidden="true" />
             </span>
             <span
               className={cn(
-                "font-sans text-sm font-bold uppercase tracking-[0.24em]",
+                "font-sans text-[9px] font-bold uppercase tracking-[0.18em]",
                 presentation.accentClassName
               )}
             >
@@ -166,14 +222,14 @@ function AdventureNodeView({
             />
           </div>
           {node.title && (
-            <h3 className="mt-5 font-slab text-2xl font-bold leading-tight sm:text-3xl">
+            <h3 className="mt-1.5 font-slab text-sm font-bold leading-tight sm:text-base">
               {node.title}
             </h3>
           )}
           {content && (
             <div
               className={cn(
-                "mt-4 text-base leading-8 sm:text-lg",
+                "mt-1.5 text-xs leading-4",
                 presentation.accentClassName
               )}
             >
@@ -240,12 +296,36 @@ function AdventureNodeView({
     );
   }
 
+  const isSection = node.kind === "section";
+  const sectionClassName = cn(
+    "space-y-4",
+    depth === 0 ? "mt-12" : "mt-8",
+    isSection && depth === 1 && "border-l-4 border-border-strong pl-4 sm:pl-6",
+    isSection && depth >= 2 && "border-l-2 border-border-strong/70 pl-3 sm:pl-5"
+  );
+
   return (
-    <section className="space-y-1 mt-4">
-      {node.kind === "section" && node.title && (
+    <section
+      data-adventure-section-depth={isSection ? depth : undefined}
+      className={sectionClassName}
+    >
+      {isSection && depth === 0 && sectionMarker && (
+        <SectionMarker marker={sectionMarker} />
+      )}
+      {isSection && node.title && (
         <NodeHeading depth={depth}>{node.title}</NodeHeading>
       )}
-      {content}
+      {content && (
+        <div
+          className={cn(
+            depth === 0
+              ? "text-base leading-7 sm:text-lg sm:leading-8"
+              : "text-sm leading-6 sm:text-base sm:leading-7"
+          )}
+        >
+          {content}
+        </div>
+      )}
       {children.length > 0 && (
         <AdventureNodeList
           nodes={nodes}
@@ -268,21 +348,24 @@ export function AdventureView({ adventure }: AdventureViewProps) {
     .sort((a, b) => a.orderIndex - b.orderIndex);
   return (
     <article>
-      <header className="border-b pb-8 text-center">
-        <h1 className="font-slab text-4xl font-bold tracking-tight sm:text-5xl">
+      <header className="text-center">
+        <h1 className="font-slab text-3xl font-bold tracking-tight sm:text-4xl">
           {adventure.name.trim() || "Untitled adventure"}
         </h1>
         {adventure.tagline && (
-          <p className="mt-3 text-lg italic text-muted-foreground">
+          <p className="mt-3 text-base italic text-muted-foreground">
             {adventure.tagline}
           </p>
         )}
         <Attribution user={adventure.creator} className="mt-3 justify-center" />
+        <div
+          data-testid="adventure-header-rule"
+          aria-hidden="true"
+          className="mt-8 border-t-4 border-foreground/70 pt-1"
+        >
+          <div className="h-px bg-border-strong" />
+        </div>
       </header>
-
-      {adventure.summary && (
-        <p className="mt-8 text-lg leading-relaxed">{adventure.summary}</p>
-      )}
 
       {roots.length > 0 ? (
         <AdventureNodeList

@@ -27,7 +27,6 @@ import {
 } from "@/app/adventures/calloutPresentations";
 import { SelectableItemGrid } from "@/app/collections/SelectableItemGrid";
 import {
-  ADVENTURE_SECTION_COLORS,
   AdventureOutline,
   type AdventureOutlineNode,
   getAdventureNodeAnchorId,
@@ -75,7 +74,10 @@ import type { BestiaryEntry } from "@/lib/services/monsters";
 import type { EncounterOverview, User } from "@/lib/types";
 import { cn, randomUUID } from "@/lib/utils";
 import { getAdventureUrl } from "@/lib/utils/url";
-import { AdventureView } from "./AdventureView";
+import {
+  ADVENTURE_SECTION_MARKER_COLORS,
+  AdventureView,
+} from "./AdventureView";
 
 interface AdventureFormProps {
   adventureId?: string;
@@ -346,6 +348,16 @@ export function AdventureForm({
     const siblingIndex = siblings.findIndex(
       (candidate) => candidate.id === node.id
     );
+    const topLevelSectionIndex =
+      depth === 0 && node.kind === "section"
+        ? draft.nodes
+            .filter(
+              (candidate) =>
+                candidate.parentId === null && candidate.kind === "section"
+            )
+            .sort((a, b) => a.orderIndex - b.orderIndex)
+            .findIndex((candidate) => candidate.id === node.id)
+        : -1;
     const selectedEncounter =
       node.kind === "encounter" && !removedNodeIds.has(node.id)
         ? availableEncounters.find(
@@ -358,15 +370,29 @@ export function AdventureForm({
         key={node.id}
         id={getAdventureNodeAnchorId(node.id)}
         className={cn(
-          depth > 0
-            ? "ml-2 border-l pl-3 sm:ml-4 sm:pl-4"
-            : "border-b border-l-4 pb-5 pl-3 last:border-b-0 sm:pl-4",
-          depth === 0 &&
-            ADVENTURE_SECTION_COLORS[
-              siblingIndex % ADVENTURE_SECTION_COLORS.length
-            ].border
+          depth === 0 && "py-5",
+          depth === 1 && "border-l-4 border-border-strong pl-4 sm:pl-6",
+          depth >= 2 && "border-l-2 border-border-strong/70 pl-3 sm:pl-5"
         )}
       >
+        {topLevelSectionIndex >= 0 && (
+          <div
+            data-testid="adventure-form-section-marker"
+            className="mb-4 flex items-center gap-4"
+          >
+            <span
+              className={cn(
+                "font-slab text-base font-bold tracking-[0.08em] tabular-nums sm:text-lg",
+                ADVENTURE_SECTION_MARKER_COLORS[
+                  topLevelSectionIndex % ADVENTURE_SECTION_MARKER_COLORS.length
+                ]
+              )}
+            >
+              {String(topLevelSectionIndex + 1).padStart(2, "0")}
+            </span>
+            <span aria-hidden="true" className="h-px flex-1 bg-border-strong" />
+          </div>
+        )}
         <div className="space-y-3 py-2">
           <div className="flex flex-wrap items-center gap-2">
             <Select
@@ -497,11 +523,11 @@ export function AdventureForm({
                         value={presentation.value}
                         aria-label={presentation.label}
                         className={cn(
-                          "h-10 rounded-full border bg-transparent px-3 shadow-none",
+                          "h-8 gap-1.5 rounded-full border bg-transparent px-2.5 text-xs shadow-none",
                           presentation.pillClassName
                         )}
                       >
-                        <Icon className="size-4" aria-hidden="true" />
+                        <Icon className="size-3.5" aria-hidden="true" />
                         {presentation.label}
                       </ToggleGroupItem>
                     );
@@ -741,13 +767,13 @@ export function AdventureForm({
             </div>
           ) : (
             <div className="space-y-6">
-              <Card>
-                <CardHeader className="space-y-5 border-b pb-8 text-center">
+              <Card className="border-0 bg-transparent shadow-none">
+                <CardHeader className="space-y-5 p-0 text-center">
                   <div className="space-y-2 text-left">
                     <Label htmlFor="adventure-name">Name</Label>
                     <Input
                       id="adventure-name"
-                      className="h-auto py-3 text-center font-slab text-4xl font-bold tracking-tight md:text-5xl"
+                      className="h-auto py-3 text-center font-slab text-3xl font-bold tracking-tight md:text-4xl"
                       required
                       value={draft.name}
                       onChange={(event) =>
@@ -762,7 +788,7 @@ export function AdventureForm({
                     <Label htmlFor="adventure-tagline">Tagline</Label>
                     <Input
                       id="adventure-tagline"
-                      className="h-auto text-center text-lg italic md:text-lg"
+                      className="h-auto text-center text-base italic md:text-base"
                       value={draft.tagline}
                       onChange={(event) =>
                         setDraft((current) => ({
@@ -777,13 +803,21 @@ export function AdventureForm({
                     className="justify-center"
                     disableLink
                   />
+                  <div
+                    data-testid="adventure-form-header-rule"
+                    aria-hidden="true"
+                    className="border-t-4 border-foreground/70 pt-1"
+                  >
+                    <div className="h-px bg-border-strong" />
+                  </div>
                 </CardHeader>
-                <CardContent className="pt-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="adventure-summary">Summary</Label>
+                <CardContent className="px-0 pt-6">
+                  <div className="space-y-2 rounded-lg border border-dashed bg-muted/20 p-4">
+                    <Label htmlFor="adventure-summary">
+                      Summary (shown in lists and link previews)
+                    </Label>
                     <Textarea
                       id="adventure-summary"
-                      className="min-h-28 text-lg leading-relaxed md:text-lg"
                       rows={3}
                       value={draft.summary}
                       onChange={(event) =>
@@ -800,7 +834,9 @@ export function AdventureForm({
               <div className="space-y-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h2 className="text-2xl font-bold">Adventure content</h2>
+                    <h2 className="font-slab text-xl font-bold">
+                      Adventure content
+                    </h2>
                     <p className="text-sm text-muted-foreground">
                       Most text boxes support site formatting{" "}
                       <span className="inline-flex align-middle">

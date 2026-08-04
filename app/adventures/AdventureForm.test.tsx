@@ -29,6 +29,12 @@ vi.mock("@/components/monster/SelectableMonsterGrid", () => ({
   SelectableMonsterGrid: () => <div data-testid="monster-grid" />,
 }));
 vi.mock("./AdventureView", () => ({
+  ADVENTURE_SECTION_MARKER_COLORS: [
+    "text-orange-700 dark:text-orange-400",
+    "text-cyan-700 dark:text-cyan-400",
+    "text-emerald-700 dark:text-emerald-400",
+    "text-violet-700 dark:text-violet-400",
+  ],
   AdventureView: () => <div data-testid="adventure-preview" />,
 }));
 
@@ -142,19 +148,74 @@ describe("AdventureForm", () => {
     expect(screen.getByLabelText("Name")).toHaveClass(
       "text-center",
       "font-slab",
-      "text-4xl",
+      "text-3xl",
+      "md:text-4xl",
       "font-bold"
     );
     expect(screen.getByLabelText("Tagline")).toHaveClass(
       "text-center",
-      "text-lg",
+      "text-base",
       "italic"
     );
-    expect(screen.getByLabelText("Summary")).toHaveClass(
-      "text-lg",
-      "leading-relaxed"
-    );
+    expect(
+      screen.getByLabelText("Summary (shown in lists and link previews)")
+    ).toHaveClass("min-h-16", "md:text-sm");
     expect(screen.getByText("Test Author")).toBeVisible();
+    expect(screen.getByTestId("adventure-form-header-rule")).toHaveClass(
+      "border-t-4",
+      "border-foreground/70",
+      "pt-1"
+    );
+    expect(screen.getByText("Adventure content")).toHaveClass(
+      "font-slab",
+      "text-xl"
+    );
+  });
+
+  it("mirrors the rendered section markers and nested hierarchy", () => {
+    const nestedValue: AdventureInput = {
+      ...initialValue,
+      nodes: [
+        initialValue.nodes[0],
+        {
+          ...initialValue.nodes[1],
+          id: "nested-section",
+          parentId: initialValue.nodes[0].id,
+          orderIndex: 0,
+          title: "Nested section",
+        },
+        {
+          ...initialValue.nodes[2],
+          id: "deep-section",
+          parentId: "nested-section",
+          orderIndex: 0,
+          title: "Deep section",
+        },
+      ],
+    };
+
+    const { container } = renderForm(nestedValue);
+
+    const markers = screen.getAllByTestId("adventure-form-section-marker");
+    expect(markers.map((marker) => marker.textContent)).toEqual(["01"]);
+    expect(markers[0].firstElementChild).toHaveClass(
+      "text-orange-700",
+      "dark:text-orange-400"
+    );
+    expect(screen.getByDisplayValue("Section 1")).toHaveClass("h-9");
+    expect(screen.getAllByLabelText("section content")[0]).toHaveClass(
+      "min-h-16",
+      "md:text-sm"
+    );
+    expect(screen.getByDisplayValue("Nested section")).toHaveClass("h-9");
+    expect(
+      container.querySelector("#adventure-node-nested-section")
+    ).toHaveClass("border-l-4", "pl-4", "sm:pl-6");
+    expect(container.querySelector("#adventure-node-deep-section")).toHaveClass(
+      "border-l-2",
+      "pl-3",
+      "sm:pl-5"
+    );
   });
 
   it("keeps the desktop preview toggle and outline together in a sticky sidebar", () => {
@@ -185,6 +246,18 @@ describe("AdventureForm", () => {
     expect(within(group).getByRole("radio", { name: "Note" })).toHaveAttribute(
       "aria-checked",
       "true"
+    );
+    expect(within(group).getByRole("radio", { name: "Note" })).toHaveClass(
+      "h-8",
+      "gap-1.5",
+      "px-2.5",
+      "text-xs",
+      "hover:text-[#755f3d]",
+      "dark:hover:text-[#e1cc9e]"
+    );
+    expect(screen.getByLabelText("callout content")).toHaveClass(
+      "min-h-16",
+      "md:text-sm"
     );
     expect(
       within(group).getByRole("radio", { name: "GM Tip" })

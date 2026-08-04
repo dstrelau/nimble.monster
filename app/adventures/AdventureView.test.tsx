@@ -132,9 +132,13 @@ describe("AdventureView", () => {
     expect(panel).toHaveClass("border-l-4", panelClass);
     expect(screen.getByText(label)).toBeVisible();
     expect(panel.querySelector(`svg.${iconClass}`)).not.toBeNull();
+    expect(panel).toHaveClass("my-2");
+    const icon = panel.querySelector(`svg.${iconClass}`);
+    expect(icon).toHaveClass("size-3.5");
+    expect(icon?.parentElement).toHaveClass("size-6", "rounded-md");
     expect(
       screen.getByRole("heading", { name: "A Callout Title" })
-    ).toHaveClass("font-slab");
+    ).toHaveClass("font-slab", "text-sm", "sm:text-base", "mt-1.5");
   });
 
   it("normalizes legacy rules callouts to a selected note presentation", () => {
@@ -271,7 +275,28 @@ describe("AdventureView", () => {
 
     const title = screen.getByRole("heading", { name: "A Perilous Test" });
     expect(title).toBeVisible();
-    expect(title).toHaveClass("font-slab");
+    expect(title).toHaveClass("font-slab", "text-3xl", "sm:text-4xl");
+    expect(
+      screen.queryByText("A short test adventure.")
+    ).not.toBeInTheDocument();
+    const headerRule = screen.getByTestId("adventure-header-rule");
+    expect(headerRule).toHaveClass(
+      "border-t-4",
+      "border-foreground/70",
+      "pt-1"
+    );
+    expect(headerRule.firstElementChild).toHaveClass(
+      "h-px",
+      "bg-border-strong"
+    );
+    expect(screen.getByRole("heading", { name: "First Stop" })).toHaveClass(
+      "text-2xl",
+      "sm:text-3xl"
+    );
+    expect(screen.getByRole("heading", { name: "Watch Out" })).toHaveClass(
+      "text-sm",
+      "sm:text-base"
+    );
     expect(screen.getByText("Test Author")).toBeVisible();
     expect(screen.getByText("heroes").tagName.toLowerCase()).toBe("strong");
     expect(screen.getByText("Watch Out")).toBeVisible();
@@ -291,17 +316,170 @@ describe("AdventureView", () => {
       screen.queryByText("The heroes find this item.")
     ).not.toBeInTheDocument();
     expect(screen.getByText("Removed content")).toBeVisible();
-    const separators = container.querySelectorAll('[data-slot="separator"]');
-    expect(separators).toHaveLength(1);
-    expect(separators[0]).toHaveClass(
-      "col-span-full",
-      "mx-auto",
-      "data-[orientation=horizontal]:w-1/2"
+    expect(container.querySelectorAll('[data-slot="separator"]')).toHaveLength(
+      0
     );
+    expect(screen.getAllByTestId("adventure-section-marker")).toHaveLength(2);
+    expect(screen.getByRole("heading", { name: "Second Stop" })).toHaveClass(
+      "font-slab"
+    );
+  });
+
+  it("numbers only top-level regular sections with integrated rules", () => {
+    const adventure = calloutAdventure("note");
+    adventure.nodes = [
+      {
+        ...adventure.nodes[0],
+        id: "first-section",
+        kind: "section",
+        title: "First Section",
+      },
+      {
+        ...adventure.nodes[0],
+        id: "root-callout",
+        kind: "callout",
+        title: "A Note",
+        presentation: "note",
+        orderIndex: 1,
+      },
+      {
+        ...adventure.nodes[0],
+        id: "second-section",
+        kind: "section",
+        title: "Second Section",
+        orderIndex: 2,
+      },
+      {
+        ...adventure.nodes[0],
+        id: "root-encounter",
+        kind: "encounter",
+        title: "",
+        content: "",
+        encounter: null,
+        orderIndex: 3,
+      },
+      {
+        ...adventure.nodes[0],
+        id: "root-statblock",
+        kind: "statblock",
+        title: "",
+        content: "",
+        statblock: null,
+        orderIndex: 4,
+      },
+    ];
+
+    const { container } = render(<AdventureView adventure={adventure} />);
+
+    const markers = screen.getAllByTestId("adventure-section-marker");
+    expect(markers.map((marker) => marker.textContent)).toEqual(["01", "02"]);
+    expect(screen.getAllByTestId("adventure-section-rule")).toHaveLength(2);
+    expect(markers[0]).toHaveClass("flex", "items-center");
     expect(
-      screen.getByRole("heading", { name: "Second Stop" }).parentElement
-        ?.parentElement
-    ).toHaveClass("[&>section]:mt-0");
+      markers[0].querySelector("[data-testid=adventure-section-rule]")
+    ).toHaveClass("flex-1");
+    expect(container.querySelectorAll('[data-slot="separator"]')).toHaveLength(
+      0
+    );
+    expect(screen.queryByText("A Note")).toBeVisible();
+    expect(
+      screen
+        .getByTestId("adventure-callout")
+        .querySelector('[data-testid="adventure-section-marker"]')
+    ).toBeNull();
+  });
+
+  it("uses rails and responsive insets for nested regular sections", () => {
+    const adventure = calloutAdventure("note");
+    adventure.nodes = [
+      {
+        ...adventure.nodes[0],
+        id: "top-section",
+        kind: "section",
+        title: "Top Section",
+        content: "Top content",
+      },
+      {
+        ...adventure.nodes[0],
+        id: "nested-section",
+        parentId: "top-section",
+        kind: "section",
+        title: "Nested Section",
+        content: "Nested content",
+      },
+      {
+        ...adventure.nodes[0],
+        id: "deep-section",
+        parentId: "nested-section",
+        kind: "section",
+        title: "Deep Section",
+        content: "Deep content",
+      },
+    ];
+
+    render(<AdventureView adventure={adventure} />);
+
+    const nested = screen.getByRole("heading", {
+      name: "Nested Section",
+    }).parentElement;
+    const deep = screen.getByRole("heading", {
+      name: "Deep Section",
+    }).parentElement;
+    expect(nested).toHaveAttribute("data-adventure-section-depth", "1");
+    expect(nested).toHaveClass("border-l-4", "pl-4", "sm:pl-6");
+    expect(deep).toHaveAttribute("data-adventure-section-depth", "2");
+    expect(deep).toHaveClass("border-l-2", "pl-3", "sm:pl-5");
+    expect(screen.getByRole("heading", { name: "Nested Section" })).toHaveClass(
+      "font-slab"
+    );
+  });
+
+  it("cycles the four readable marker colors by top-level section index", () => {
+    const adventure = calloutAdventure("note");
+    const sections: Adventure["nodes"] = [];
+    for (let index = 0; index < 5; index++) {
+      sections.push({
+        ...adventure.nodes[0],
+        id: `section-${index}`,
+        kind: "section",
+        title: `Section ${index + 1}`,
+        orderIndex: index,
+      });
+    }
+    adventure.nodes = sections;
+
+    render(<AdventureView adventure={adventure} />);
+
+    const markerNumbers = screen.getAllByTestId(
+      "adventure-section-marker-number"
+    );
+    expect(markerNumbers.map((marker) => marker.textContent)).toEqual([
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+    ]);
+    expect(markerNumbers[0]).toHaveClass(
+      "text-orange-700",
+      "dark:text-orange-400"
+    );
+    expect(markerNumbers[1]).toHaveClass("text-cyan-700", "dark:text-cyan-400");
+    expect(markerNumbers[2]).toHaveClass(
+      "text-emerald-700",
+      "dark:text-emerald-400"
+    );
+    expect(markerNumbers[3]).toHaveClass(
+      "text-violet-700",
+      "dark:text-violet-400"
+    );
+    expect(markerNumbers[4]).toHaveClass(
+      "text-orange-700",
+      "dark:text-orange-400"
+    );
+    expect(screen.getAllByTestId("adventure-section-rule")[0]).toHaveClass(
+      "bg-border-strong"
+    );
   });
 
   it("provides a valid loadable sample tree", () => {
