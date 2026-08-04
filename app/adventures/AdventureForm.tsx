@@ -25,6 +25,7 @@ import {
 } from "@/components/adventure/AdventureOutline";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { Goblin } from "@/components/icons/goblin";
+import { MonsterRow } from "@/components/monster/MonsterGroupMinis";
 import { SelectableMonsterGrid } from "@/components/monster/SelectableMonsterGrid";
 import { ExampleLoader } from "@/components/shared/ExampleLoader";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
@@ -52,6 +53,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
@@ -345,6 +347,12 @@ export function AdventureForm({
     const siblingIndex = siblings.findIndex(
       (candidate) => candidate.id === node.id
     );
+    const selectedEncounter =
+      node.kind === "encounter" && !removedNodeIds.has(node.id)
+        ? availableEncounters.find(
+            (encounter) => encounter.id === node.encounterId
+          )
+        : undefined;
 
     return (
       <div
@@ -522,6 +530,18 @@ export function AdventureForm({
                     ))}
                   </SelectContent>
                 </Select>
+                {selectedEncounter && selectedEncounter.monsters.length > 0 && (
+                  <div className="flex flex-col gap-1 rounded-md border p-3">
+                    {selectedEncounter.monsters.map(
+                      (entry, index, monsters) => (
+                        <div key={entry.monster.id}>
+                          <MonsterRow monster={entry.monster} />
+                          {index < monsters.length - 1 && <Separator />}
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
               </div>
             )}
 

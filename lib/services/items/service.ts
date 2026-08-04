@@ -25,7 +25,7 @@ const PaginateItemsSchema = z.object({
   cursor: z.string().optional(),
   rarity: z.enum(RarityOptions).optional(),
   creatorId: z.string().optional(),
-  sourceId: z.string().optional(),
+  source: z.string().optional(),
 });
 
 export type PaginatePublicItemsResponse = {

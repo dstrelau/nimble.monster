@@ -5,10 +5,6 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { Crown, PersonStanding } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { publicHazardsInfiniteQueryOptions } from "@/app/hazards/hooks";
-import { publicMonstersInfiniteQueryOptions } from "@/app/monsters/hooks";
-import { myHazardsInfiniteQueryOptions } from "@/app/my/hazards/hooks";
-import { myMonstersInfiniteQueryOptions } from "@/app/my/monsters/hooks";
 import { Card } from "@/components/monster/Card";
 import { MonsterFilterBar } from "@/components/monster/MonsterFilterBar";
 import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
@@ -28,6 +24,12 @@ import type {
   MonsterTypeOption,
   PaginateMonstersSortOption,
 } from "@/lib/services/monsters/types";
+import {
+  pickerMyHazardsInfiniteQueryOptions,
+  pickerMyMonstersInfiniteQueryOptions,
+  pickerPublicHazardsInfiniteQueryOptions,
+  pickerPublicMonstersInfiniteQueryOptions,
+} from "@/lib/statblock-picker-queries";
 import { cn } from "@/lib/utils";
 import { formatSizeKind } from "@/lib/utils/monster";
 
@@ -126,18 +128,21 @@ export function SelectableMonsterGrid({
   const isMyContent =
     !publicOnly && creatorId !== null && creatorId === session?.user?.id;
   const publicMonsterQuery = useInfiniteQuery({
-    ...publicMonstersInfiniteQueryOptions({
+    ...pickerPublicMonstersInfiniteQueryOptions({
       ...params,
       creatorId: creatorId ?? undefined,
     }),
     enabled: includesCreatures && !isMyContent,
   });
   const myMonsterQuery = useInfiniteQuery({
-    ...myMonstersInfiniteQueryOptions(params),
+    ...pickerMyMonstersInfiniteQueryOptions({
+      ...params,
+      ownerId: session?.user?.id,
+    }),
     enabled: includesCreatures && isMyContent,
   });
   const publicHazardQuery = useInfiniteQuery({
-    ...publicHazardsInfiniteQueryOptions({
+    ...pickerPublicHazardsInfiniteQueryOptions({
       search: params.search,
       sort: params.sort,
       source: params.source,
@@ -148,12 +153,13 @@ export function SelectableMonsterGrid({
     enabled: includesHazards && !isMyContent,
   });
   const myHazardQuery = useInfiniteQuery({
-    ...myHazardsInfiniteQueryOptions({
+    ...pickerMyHazardsInfiniteQueryOptions({
       search: params.search,
       sort: params.sort,
       source: params.source,
       level: params.level,
       limit: params.limit,
+      ownerId: session?.user?.id,
     }),
     enabled: includesHazards && isMyContent,
   });
