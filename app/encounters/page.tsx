@@ -33,7 +33,7 @@ export default async function EncountersPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <EncountersListView />
+      <EncountersListView kind="encounters" />
     </HydrationBoundary>
   );
 }

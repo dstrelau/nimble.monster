@@ -12,6 +12,18 @@ export type PaginatedEncounterResponse = {
   data: EncounterOverview[];
 };
 
+export function parseEncounterSort(sort: string): {
+  sortBy: EncounterSortBy;
+  sortDirection: EncounterSortDirection;
+} {
+  const desc = sort?.startsWith("-");
+  const sortField = desc ? sort.slice(1) : sort;
+  return {
+    sortBy: sortField === "name" ? "name" : "createdAt",
+    sortDirection: desc ? "desc" : "asc",
+  };
+}
+
 export async function paginatePublicEncounters(params: {
   sort: string;
   search: string | null;
@@ -19,19 +31,13 @@ export async function paginatePublicEncounters(params: {
   pageParam: number;
   creatorId?: string;
 }): Promise<PaginatedEncounterResponse> {
-  const desc = params.sort?.startsWith("-");
-  const sortDirection: EncounterSortDirection = desc ? "desc" : "asc";
-  const sortField = desc ? params.sort.slice(1) : params.sort;
-  const sortBy: EncounterSortBy = sortField === "name" ? "name" : "createdAt";
-  const opts = {
+  const data = await encounters.searchPublicEncounters({
+    ...parseEncounterSort(params.sort),
     searchTerm: params.search || undefined,
-    sortBy: sortBy,
-    sortDirection,
     limit: params.limit,
     offset: params.pageParam * params.limit,
     creatorId: params.creatorId,
-  };
-  const data = await encounters.searchPublicEncounters(opts);
+  });
   return { data };
 }
 

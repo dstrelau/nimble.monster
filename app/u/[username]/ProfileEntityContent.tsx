@@ -87,7 +87,12 @@ export default function ProfileEntityContent(props: ProfileEntityContentProps) {
         />
       );
     case "encounters":
-      return <EncountersListView creatorId={props.creatorId} />;
+      return (
+        <EncountersListView
+          kind="user-encounters"
+          creatorId={props.creatorId}
+        />
+      );
     case "adventures":
       return (
         <AdventureList

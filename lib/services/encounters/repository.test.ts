@@ -72,6 +72,7 @@ import { isValidUUID } from "@/lib/utils/validation";
 import {
   findPublicEncounterById,
   listPublicEncounters,
+  searchEncountersForCreator,
   searchPublicEncounters,
 } from "./repository";
 
@@ -167,6 +168,28 @@ const monsterVisibilityFilterPresent = (whereCallIndex: number): boolean => {
       (p as { col: unknown }).col === "monsters.visibility" &&
       "val" in p &&
       (p as { val: unknown }).val === "public"
+  );
+};
+
+// The eq predicates recorded inside the and(...) passed to a given .where call.
+const eqPredicates = (
+  whereCallIndex: number
+): { col: unknown; val: unknown }[] => {
+  const arg = chain.where.mock.calls[whereCallIndex][0];
+  if (
+    !arg ||
+    typeof arg !== "object" ||
+    !("args" in arg) ||
+    !Array.isArray((arg as { args: unknown[] }).args)
+  ) {
+    return [];
+  }
+  return (arg as { args: unknown[] }).args.filter(
+    (p): p is { _type: string; col: unknown; val: unknown } =>
+      !!p &&
+      typeof p === "object" &&
+      "_type" in p &&
+      (p as { _type: unknown })._type === "eq"
   );
 };
 
@@ -284,6 +307,80 @@ describe("encounters repository", () => {
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe("enc-1");
       expect(result[0].monsters[0].monster.name).toBe("Goblin");
+    });
+
+    it("restricts to public encounters, optionally scoped to a creator", async () => {
+      queryQueue = [
+        [makeEncounterRow("enc-1", "Alpha")],
+        [makeMonsterJoinRow("enc-1", makeMonsterRow("mon-1", "Goblin"))],
+      ];
+
+      await searchPublicEncounters({ ...params, creatorId: "user-1" });
+
+      const predicates = eqPredicates(0);
+      expect(predicates).toContainEqual(
+        expect.objectContaining({
+          col: "encounters.visibility",
+          val: "public",
+        })
+      );
+      expect(predicates).toContainEqual(
+        expect.objectContaining({ col: "encounters.creatorId", val: "user-1" })
+      );
+    });
+  });
+
+  describe("searchEncountersForCreator", () => {
+    const params = {
+      creatorId: "user-1",
+      sortBy: "name" as const,
+      sortDirection: "asc" as const,
+      limit: 10,
+    };
+
+    it("scopes to the creator without filtering by encounter visibility", async () => {
+      queryQueue = [
+        [makeEncounterRow("enc-1", "Alpha")],
+        [makeMonsterJoinRow("enc-1", makeMonsterRow("mon-1", "Goblin"))],
+      ];
+
+      await searchEncountersForCreator(params);
+
+      const predicates = eqPredicates(0);
+      expect(predicates).toContainEqual(
+        expect.objectContaining({ col: "encounters.creatorId", val: "user-1" })
+      );
+      expect(predicates).not.toContainEqual(
+        expect.objectContaining({ col: "encounters.visibility" })
+      );
+    });
+
+    it("does not hide the owner's private monsters from their encounters", async () => {
+      queryQueue = [
+        [makeEncounterRow("enc-1", "Alpha")],
+        [
+          makeMonsterJoinRow(
+            "enc-1",
+            makeMonsterRow("mon-1", "Secret Goblin", "private")
+          ),
+        ],
+      ];
+
+      const result = await searchEncountersForCreator(params);
+
+      expect(monsterVisibilityFilterPresent(1)).toBe(false);
+      expect(result[0].monsters.map((m) => m.monster.name)).toEqual([
+        "Secret Goblin",
+      ]);
+    });
+
+    it("returns [] without querying monsters when no encounters", async () => {
+      queryQueue = [[]];
+
+      const result = await searchEncountersForCreator(params);
+
+      expect(result).toEqual([]);
+      expect(queryQueue).toHaveLength(0);
     });
   });
 

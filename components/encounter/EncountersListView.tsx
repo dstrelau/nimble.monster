@@ -8,6 +8,7 @@ import {
   type EncounterSortOption,
   publicEncountersInfiniteQueryOptions,
 } from "@/app/encounters/actions";
+import { myEncountersInfiniteQueryOptions } from "@/app/my/encounters/hooks";
 import { EncounterCard } from "@/components/encounter/EncounterCard";
 import {
   EmptyState,
@@ -17,13 +18,15 @@ import {
 import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 import { EncounterFilterBar } from "./EncounterFilterBar";
 
-interface EncountersListViewProps {
-  creatorId?: string;
-}
+// we can't directly pass the queryOptions fn here because props to client
+// components must be serializable.
+export type EncountersListViewProps =
+  | { kind: "encounters" | "my-encounters" }
+  | { kind: "user-encounters"; creatorId: string };
 
-export const EncountersListView: React.FC<EncountersListViewProps> = ({
-  creatorId,
-}) => {
+export const EncountersListView: React.FC<EncountersListViewProps> = (
+  props
+) => {
   const [rawSearchQuery, setSearchQuery] = useQueryState("search");
   const [searchQuery] = useDebouncedValue(rawSearchQuery, { wait: 250 });
 
@@ -31,14 +34,26 @@ export const EncountersListView: React.FC<EncountersListViewProps> = ({
     defaultValue: "-createdAt",
   });
 
+  const params = {
+    sort: sortQuery,
+    search: searchQuery || undefined,
+  };
+  const queryOptions = () => {
+    switch (props.kind) {
+      case "user-encounters":
+        return publicEncountersInfiniteQueryOptions({
+          ...params,
+          creatorId: props.creatorId,
+        });
+      case "my-encounters":
+        return myEncountersInfiniteQueryOptions(params);
+      case "encounters":
+        return publicEncountersInfiniteQueryOptions(params);
+    }
+  };
+
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage, error } =
-    useInfiniteQuery(
-      publicEncountersInfiniteQueryOptions({
-        sort: sortQuery,
-        search: searchQuery || undefined,
-        creatorId,
-      })
-    );
+    useInfiniteQuery(queryOptions());
 
   if (isLoading) {
     return <LoadingState />;

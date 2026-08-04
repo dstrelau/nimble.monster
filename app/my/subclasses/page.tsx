@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { SubclassMiniCard } from "@/components/subclass/SubclassMiniCard";
+import { SubclassesListView } from "@/components/subclass/SubclassesListView";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 
@@ -13,12 +13,7 @@ export default async function MySubclassesPage() {
 
   return (
     <div className="py-3">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {subclasses.map((subclass) => (
-          <SubclassMiniCard key={subclass.id} subclass={subclass} />
-        ))}
-      </div>
-      {subclasses.length === 0 && (
+      {subclasses.length === 0 ? (
         <div className="text-center text-muted-foreground py-8">
           No subclasses found.{" "}
           <a href="/subclasses/new" className="text-primary hover:underline">
@@ -26,6 +21,8 @@ export default async function MySubclassesPage() {
           </a>
           .
         </div>
+      ) : (
+        <SubclassesListView subclasses={subclasses} />
       )}
     </div>
   );

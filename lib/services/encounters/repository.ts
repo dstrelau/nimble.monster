@@ -1,5 +1,16 @@
 "use server";
-import { and, asc, desc, eq, gt, inArray, like, lt, or } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  gt,
+  inArray,
+  like,
+  lt,
+  or,
+  type SQL,
+} from "drizzle-orm";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
   encounters,
@@ -202,21 +213,21 @@ export const listPublicEncounters = async ({
   return { encounters: results, nextCursor };
 };
 
-export const searchPublicEncounters = async ({
+const searchEncounters = async ({
+  scopeConditions,
+  onlyPublicMonsters,
   searchTerm,
-  creatorId,
   sortBy,
   sortDirection = "asc",
   limit,
   offset,
-}: SearchEncountersParams): Promise<EncounterOverview[]> => {
+}: SearchEncountersParams & {
+  scopeConditions: SQL[];
+  onlyPublicMonsters: boolean;
+}): Promise<EncounterOverview[]> => {
   const db = await getDatabase();
 
-  const whereConditions = [eq(encounters.visibility, "public")];
-
-  if (creatorId) {
-    whereConditions.push(eq(encounters.creatorId, creatorId));
-  }
+  const whereConditions = [...scopeConditions];
 
   if (searchTerm) {
     const searchCondition = or(
@@ -263,7 +274,7 @@ export const searchPublicEncounters = async ({
     .where(
       and(
         inArray(monstersEncounters.encounterId, encounterIds),
-        eq(monsters.visibility, "public")
+        ...(onlyPublicMonsters ? [eq(monsters.visibility, "public")] : [])
       )
     );
 
@@ -295,6 +306,31 @@ export const searchPublicEncounters = async ({
       : undefined,
   }));
 };
+
+export const searchPublicEncounters = async (
+  params: SearchEncountersParams
+): Promise<EncounterOverview[]> =>
+  searchEncounters({
+    ...params,
+    scopeConditions: [
+      eq(encounters.visibility, "public"),
+      ...(params.creatorId ? [eq(encounters.creatorId, params.creatorId)] : []),
+    ],
+    onlyPublicMonsters: true,
+  });
+
+/**
+ * Encounters owned by a single creator, regardless of visibility. Only ever
+ * call this for the signed-in user's own id.
+ */
+export const searchEncountersForCreator = async (
+  params: SearchEncountersParams & { creatorId: string }
+): Promise<EncounterOverview[]> =>
+  searchEncounters({
+    ...params,
+    scopeConditions: [eq(encounters.creatorId, params.creatorId)],
+    onlyPublicMonsters: false,
+  });
 
 export const findPublicEncounterById = async (
   id: string

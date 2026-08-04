@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ClassMiniCard } from "@/components/class/ClassMiniCard";
+import { ClassesListView } from "@/components/class/ClassesListView";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { listAllClassesForDiscordID } from "@/lib/db";
@@ -28,15 +28,12 @@ export default async function MyClassesPage() {
           <Link href="/classes/new">Create New Class</Link>
         </Button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {classes.map((classEntity) => (
-          <ClassMiniCard key={classEntity.id} classEntity={classEntity} />
-        ))}
-      </div>
-      {classes.length === 0 && (
+      {classes.length === 0 ? (
         <p className="text-muted-foreground text-center py-8">
           You haven't created any classes yet.
         </p>
+      ) : (
+        <ClassesListView classes={classes} />
       )}
     </div>
   );
