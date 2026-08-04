@@ -185,7 +185,7 @@ export interface EncounterOverview {
 }
 
 export interface EncounterMonsterEntryFull {
-  monster: Monster;
+  monster: BestiaryEntry;
   quantity: number;
   isPerHero: boolean;
   heroesPerMonster?: number;

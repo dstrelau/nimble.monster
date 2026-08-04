@@ -3662,6 +3662,47 @@
         "legendary": true
       },
       "relationships": {}
+    },
+    {
+      "type": "monsters",
+      "attributes": {
+        "name": "Wax Golem",
+        "hp": 28,
+        "level": 1,
+        "size": "medium",
+        "armor": "none",
+        "kind": "Underground",
+        "movement": [
+          {
+            "speed": 6
+          }
+        ],
+        "abilities": [
+          {
+            "name": "Sticky",
+            "description": "Grapples target on hit. Can Grapple any number of creatures. When crit: release 1 creature (attacker's choice)."
+          }
+        ],
+        "actions": [
+          {
+            "name": "Wax Grip",
+            "damage": {
+              "roll": "1d4"
+            },
+            "description": "(escape DC 10)."
+          },
+          {
+            "name": "Crush",
+            "damage": {
+              "roll": "1d12"
+            },
+            "description": "(A Grappled creature)"
+          }
+        ],
+        "actionsInstructions": "Choose one:",
+        "description": "",
+        "legendary": false
+      }
     }
   ],
   "included": [

@@ -23,11 +23,14 @@ import type { Item, ItemRarityFilter } from "@/lib/services/items";
 interface SelectableItemGridProps {
   selectedIds: Set<string>;
   onToggle: (item: Item) => void;
+  /** Limit selection to public items, even when filtering to the current user. */
+  publicOnly?: boolean;
 }
 
 export function SelectableItemGrid({
   selectedIds,
   onToggle,
+  publicOnly = false,
 }: SelectableItemGridProps) {
   const [creatorId, setCreatorId] = useState<string | null>(null);
   const [rawSearch, setRawSearch] = useState<string | null>(null);
@@ -45,7 +48,8 @@ export function SelectableItemGrid({
     limit: 12,
   };
 
-  const isMyContent = creatorId !== null && creatorId === session?.user?.id;
+  const isMyContent =
+    !publicOnly && creatorId !== null && creatorId === session?.user?.id;
 
   const publicQuery = useInfiniteQuery({
     ...publicItemsInfiniteQueryOptions({
@@ -68,7 +72,7 @@ export function SelectableItemGrid({
   return (
     <div className="space-y-6">
       <ItemFilterBar
-        searchTerm={search}
+        searchTerm={rawSearch}
         sortOption={sort}
         rarityFilter={rarity}
         onSearch={setRawSearch}

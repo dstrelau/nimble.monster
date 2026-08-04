@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  type AnySQLiteColumn,
   index,
   integer,
   primaryKey,
@@ -1243,3 +1244,100 @@ export const customRuleLinks = sqliteTable(
 
 export type CustomRuleLinkRow = typeof customRuleLinks.$inferSelect;
 export type CustomRuleLinkInsert = typeof customRuleLinks.$inferInsert;
+
+export type AdventureVisibility = "public" | "private";
+export type AdventureNodeKind =
+  | "section"
+  | "text"
+  | "callout"
+  | "encounter"
+  | "statblock";
+export type AdventureNodePresentation = "note" | "tip" | "warning" | "rules";
+
+export const adventures = sqliteTable(
+  "adventures",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    sourceId: text("source_id").references(() => sources.id, {
+      onUpdate: "cascade",
+    }),
+    remixedFromId: text("remixed_from_id").references(
+      (): AnySQLiteColumn => adventures.id,
+      { onDelete: "set null", onUpdate: "cascade" }
+    ),
+    name: text("name").notNull(),
+    tagline: text("tagline").notNull().default(""),
+    summary: text("summary").notNull().default(""),
+    visibility: text("visibility")
+      .$type<AdventureVisibility>()
+      .notNull()
+      .default("public"),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [
+    index("idx_adventures_user_id").on(table.userId),
+    index("idx_adventures_visibility_updated_at").on(
+      table.visibility,
+      table.updatedAt
+    ),
+  ]
+);
+
+export const adventureNodes = sqliteTable(
+  "adventure_nodes",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    adventureId: text("adventure_id")
+      .notNull()
+      .references(() => adventures.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    parentId: text("parent_id").references(
+      (): AnySQLiteColumn => adventureNodes.id,
+      { onDelete: "cascade", onUpdate: "cascade" }
+    ),
+    kind: text("kind").$type<AdventureNodeKind>().notNull(),
+    orderIndex: integer("order_index").notNull(),
+    title: text("title").notNull().default(""),
+    content: text("content").notNull().default(""),
+    encounterId: text("encounter_id").references(() => encounters.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    monsterId: text("monster_id").references(() => monsters.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    itemId: text("item_id").references(() => items.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    presentation: text("presentation").$type<AdventureNodePresentation>(),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [
+    index("idx_adventure_nodes_parent_order").on(
+      table.adventureId,
+      table.parentId,
+      table.orderIndex
+    ),
+    index("idx_adventure_nodes_encounter_id").on(table.encounterId),
+    index("idx_adventure_nodes_monster_id").on(table.monsterId),
+    index("idx_adventure_nodes_item_id").on(table.itemId),
+  ]
+);
+
+export type AdventureRow = typeof adventures.$inferSelect;
+export type AdventureInsert = typeof adventures.$inferInsert;
+export type AdventureNodeRow = typeof adventureNodes.$inferSelect;
+export type AdventureNodeInsert = typeof adventureNodes.$inferInsert;

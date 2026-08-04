@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { Monster } from "@/lib/services/monsters";
+import type { BestiaryEntry } from "@/lib/services/monsters";
 import type { Encounter, EncounterMonsterEntryFull } from "@/lib/types";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import {
@@ -88,7 +88,10 @@ function EditableMonsterCard({
     );
   }
   const heroesPerMonster = entry.heroesPerMonster ?? 1;
-  const resolvedQuantity = resolvedEncounterMonsterCount(entry, heroCount);
+  const resolvedQuantity = resolvedEncounterMonsterCount(
+    { ...entry, monster },
+    heroCount
+  );
   const totalLevels = Number(
     encounterMonsterLevelTotal(monster, resolvedQuantity, heroCount).toFixed(2)
   );
@@ -154,7 +157,7 @@ export function CreateEditEncounter({
       new Map(
         encounter.monsters.map((entry) => [
           entry.monster.id,
-          entry.monster.legendary
+          !entry.monster.hazard && entry.monster.legendary
             ? {
                 ...entry,
                 quantity: 1,
@@ -189,7 +192,7 @@ export function CreateEditEncounter({
     );
   }, [currentEntries]);
 
-  const handleMonsterToggle = (monster: Monster) => {
+  const handleMonsterToggle = (monster: BestiaryEntry) => {
     setSelectedMonsters((prev) => {
       const next = new Map(prev);
       if (next.has(monster.id)) {
@@ -512,7 +515,7 @@ export function CreateEditEncounter({
                           monstersSectionOpen && "rotate-90"
                         )}
                       />
-                      Add Monsters
+                      Add Monsters & Hazards
                     </CardTitle>
                   </CardHeader>
                 </CollapsibleTrigger>

@@ -1,6 +1,6 @@
 import { and, asc, eq, inArray, or } from "drizzle-orm";
 import { toUser } from "@/lib/db/converters";
-import { findMonstersByIds } from "@/lib/services/monsters";
+import { findBestiaryEntriesByIds } from "@/lib/services/monsters";
 import { toBestiaryEntryMini } from "@/lib/services/monsters/converters";
 import type {
   Encounter,
@@ -55,6 +55,97 @@ async function loadEncounterOverview(
   };
 }
 
+interface EncounterWithCreator {
+  encounter: EncounterRow;
+  creator: UserRow;
+}
+
+async function loadEncounterOverviews(
+  db: ReturnType<typeof getDatabase>,
+  rows: EncounterWithCreator[]
+): Promise<EncounterOverview[]> {
+  if (rows.length === 0) return [];
+
+  const monsterLinks = await db
+    .select({
+      encounterId: monstersEncounters.encounterId,
+      monster: monsters,
+      quantity: monstersEncounters.quantity,
+      isPerHero: monstersEncounters.isPerHero,
+      heroesPerMonster: monstersEncounters.heroesPerMonster,
+    })
+    .from(monstersEncounters)
+    .innerJoin(monsters, eq(monstersEncounters.monsterId, monsters.id))
+    .where(
+      inArray(
+        monstersEncounters.encounterId,
+        rows.map(({ encounter }) => encounter.id)
+      )
+    );
+
+  const entriesByEncounter = new Map<string, EncounterMonsterEntry[]>();
+  const encountersById = new Map(
+    rows.map(({ encounter }) => [encounter.id, encounter])
+  );
+  for (const link of monsterLinks) {
+    const encounter = encountersById.get(link.encounterId);
+    const canDisplayMonster =
+      link.monster.visibility === "public" ||
+      (encounter?.visibility === "private" &&
+        link.monster.userId === encounter.creatorId);
+    if (!canDisplayMonster) continue;
+    const existing = entriesByEncounter.get(link.encounterId) ?? [];
+    existing.push({
+      monster: toBestiaryEntryMini(link.monster),
+      quantity: link.quantity,
+      isPerHero: link.isPerHero,
+      heroesPerMonster: link.heroesPerMonster,
+    });
+    entriesByEncounter.set(link.encounterId, existing);
+  }
+
+  return rows.map(({ encounter, creator }) => ({
+    id: encounter.id,
+    name: encounter.name,
+    description: encounter.description || undefined,
+    visibility: encounter.visibility === "private" ? "private" : "public",
+    heroCount: encounter.heroCount,
+    heroLevel: encounter.heroLevel,
+    creator: toUser(creator),
+    monsters: entriesByEncounter.get(encounter.id) ?? [],
+    createdAt: encounter.createdAt ? new Date(encounter.createdAt) : undefined,
+  }));
+}
+
+export const findEncounterOverviewsByIds = async (
+  ids: string[]
+): Promise<EncounterOverview[]> => {
+  const validIds = [...new Set(ids.filter(isValidUUID))];
+  if (validIds.length === 0) return [];
+  const db = getDatabase();
+  const rows = await db
+    .select({ encounter: encounters, creator: users })
+    .from(encounters)
+    .innerJoin(users, eq(encounters.creatorId, users.id))
+    .where(inArray(encounters.id, validIds));
+  return loadEncounterOverviews(db, rows);
+};
+
+export const listAccessibleEncounterOverviews = async (
+  userId: string
+): Promise<EncounterOverview[]> => {
+  const db = getDatabase();
+  const rows = await db
+    .select({ encounter: encounters, creator: users })
+    .from(encounters)
+    .innerJoin(users, eq(encounters.creatorId, users.id))
+    .where(
+      or(eq(encounters.visibility, "public"), eq(encounters.creatorId, userId))
+    )
+    .orderBy(asc(encounters.name));
+  return loadEncounterOverviews(db, rows);
+};
+
 async function loadEncounterFull(
   db: ReturnType<typeof getDatabase>,
   encounter: EncounterRow,
@@ -70,7 +161,7 @@ async function loadEncounterFull(
     .from(monstersEncounters)
     .where(eq(monstersEncounters.encounterId, encounter.id));
 
-  const fullMonsters = await findMonstersByIds(
+  const fullMonsters = await findBestiaryEntriesByIds(
     monsterLinks.map((link) => link.monsterId)
   );
   const monstersById = new Map(fullMonsters.map((m) => [m.id, m]));
@@ -164,6 +255,19 @@ export const listEncountersWithMonstersForUser = async (
     monsters: entriesByEncounter.get(encounter.id) ?? [],
     createdAt: encounter.createdAt ? new Date(encounter.createdAt) : undefined,
   }));
+};
+
+export const listAccessibleEncounterReferences = async (
+  userId: string
+): Promise<Array<{ id: string; name: string }>> => {
+  const db = getDatabase();
+  return db
+    .select({ id: encounters.id, name: encounters.name })
+    .from(encounters)
+    .where(
+      or(eq(encounters.visibility, "public"), eq(encounters.creatorId, userId))
+    )
+    .orderBy(asc(encounters.name));
 };
 
 export const getPublicEncounterById = async (
