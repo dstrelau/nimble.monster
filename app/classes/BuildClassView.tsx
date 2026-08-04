@@ -536,7 +536,7 @@ function EditableClassCard({ control, levelFields }: EditableClassCardProps) {
       </CardHeader>
 
       <CardContent className="pt-6 space-y-6">
-        <div className="relative w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem] py-3 bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300 dark:shadow-sm space-y-4">
+        <div className="relative w-[calc(100%+3rem)] transform-[translateX(-1.5rem)] px-[1.5rem] py-3 bg-muted text-foreground dark:shadow-sm space-y-4">
           <div className="flex flex-col items-center gap-3">
             <div className="flex w-full justify-center flex-wrap gap-y-6 gap-x-8">
               <div className="flex flex-col items-center gap-1.5">
