@@ -151,6 +151,13 @@ async function loadProfileEntityContent(
         <ProfileEntityContent entityType="encounters" creatorId={userId} />
       );
     }
+    case "adventures":
+      return (
+        <ProfileEntityContent
+          entityType="adventures"
+          adventures={await db.listPublicAdventuresForUser(userId)}
+        />
+      );
     case "families": {
       const families = await db.listPublicFamiliesHavingMonstersForUser(userId);
       return (

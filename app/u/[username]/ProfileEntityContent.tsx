@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdventureList } from "@/components/adventure/AdventureList";
 import { PaginatedAncestryGrid } from "@/components/ancestry/PaginatedAncestryGrid";
 import { PaginatedBackgroundGrid } from "@/components/background/PaginatedBackgroundGrid";
 import { ClassesListView } from "@/components/class/ClassesListView";
@@ -10,6 +11,7 @@ import { CardGrid as ItemCardGrid } from "@/components/item/CardGrid";
 import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
 import { SchoolsListView } from "@/components/school/SchoolsListView";
 import { SubclassesListView } from "@/components/subclass/SubclassesListView";
+import type { AdventureOverview } from "@/lib/db/adventures";
 import type { CustomRule, CustomRuleRelation } from "@/lib/db/custom-rule";
 import { getRule } from "@/lib/rules/filesystem";
 import type { Item } from "@/lib/services/items";
@@ -33,6 +35,7 @@ export type ProfileEntityContentProps =
         | "encounters";
       creatorId: string;
     }
+  | { entityType: "adventures"; adventures: AdventureOverview[] }
   | { entityType: "collections"; collections: CollectionOverview[] }
   | { entityType: "families"; families: Family[] }
   | { entityType: "companions"; companions: Companion[] }
@@ -85,6 +88,13 @@ export default function ProfileEntityContent(props: ProfileEntityContentProps) {
       );
     case "encounters":
       return <EncountersListView creatorId={props.creatorId} />;
+    case "adventures":
+      return (
+        <AdventureList
+          adventures={props.adventures}
+          emptyMessage="No public adventures available"
+        />
+      );
     case "collections":
       return props.collections.length === 0 ? (
         <p className="py-8 text-center text-muted-foreground">

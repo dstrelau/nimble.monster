@@ -1,3 +1,5 @@
+"use client";
+
 import { CircleSlash2 } from "lucide-react";
 import { getAdventureNodeAnchorId } from "@/components/adventure/AdventureOutline";
 import { EncounterCard } from "@/components/encounter/EncounterCard";
@@ -7,7 +9,9 @@ import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Adventure, AdventureNode } from "@/lib/db/adventures";
+import { useConditions } from "@/lib/hooks/useConditions";
 import { toHazardMonsterView } from "@/lib/services/hazards/converters";
+import type { Condition } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface AdventureViewProps {
@@ -46,10 +50,12 @@ function AdventureNodeList({
   nodes,
   parentId,
   depth,
+  conditions,
 }: {
   nodes: AdventureNode[];
   parentId: string | null;
   depth: number;
+  conditions: Condition[];
 }) {
   const children = nodes
     .filter((node) => node.parentId === parentId)
@@ -66,7 +72,12 @@ function AdventureNodeList({
             child.kind !== "encounter" && "md:col-span-2 xl:col-span-3"
           )}
         >
-          <AdventureNodeView node={child} nodes={nodes} depth={depth} />
+          <AdventureNodeView
+            node={child}
+            nodes={nodes}
+            depth={depth}
+            conditions={conditions}
+          />
         </div>
       ))}
     </div>
@@ -77,16 +88,18 @@ function AdventureNodeView({
   node,
   nodes,
   depth,
+  conditions,
 }: {
   node: AdventureNode;
   nodes: AdventureNode[];
   depth: number;
+  conditions: Condition[];
 }) {
   const children = nodes
     .filter((candidate) => candidate.parentId === node.id)
     .sort((a, b) => a.orderIndex - b.orderIndex);
   const content = node.content.trim() ? (
-    <FormattedText content={node.content} conditions={[]} />
+    <FormattedText content={node.content} conditions={conditions} />
   ) : null;
 
   if (node.kind === "callout") {
@@ -118,6 +131,7 @@ function AdventureNodeView({
             nodes={nodes}
             parentId={node.id}
             depth={depth + 1}
+            conditions={conditions}
           />
         )}
       </section>
@@ -155,6 +169,7 @@ function AdventureNodeView({
             nodes={nodes}
             parentId={node.id}
             depth={depth + 1}
+            conditions={conditions}
           />
         )}
       </section>
@@ -168,13 +183,22 @@ function AdventureNodeView({
       )}
       {content}
       {children.length > 0 && (
-        <AdventureNodeList nodes={nodes} parentId={node.id} depth={depth + 1} />
+        <AdventureNodeList
+          nodes={nodes}
+          parentId={node.id}
+          depth={depth + 1}
+          conditions={conditions}
+        />
       )}
     </section>
   );
 }
 
 export function AdventureView({ adventure }: AdventureViewProps) {
+  const { allConditions: conditions, isLoading: conditionsLoading } =
+    useConditions({
+      creatorId: adventure.creator.discordId,
+    });
   const roots = adventure.nodes
     .filter((node) => node.parentId === null)
     .sort((a, b) => a.orderIndex - b.orderIndex);
@@ -197,7 +221,13 @@ export function AdventureView({ adventure }: AdventureViewProps) {
       )}
 
       {roots.length > 0 ? (
-        <AdventureNodeList nodes={adventure.nodes} parentId={null} depth={0} />
+        <AdventureNodeList
+          key={conditionsLoading ? "conditions-loading" : "conditions-ready"}
+          nodes={adventure.nodes}
+          parentId={null}
+          depth={0}
+          conditions={conditionsLoading ? [] : conditions}
+        />
       ) : (
         <p className="mt-10 text-muted-foreground">
           This adventure does not have any sections yet.

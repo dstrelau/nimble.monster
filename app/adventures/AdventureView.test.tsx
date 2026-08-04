@@ -1,8 +1,12 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Adventure } from "@/lib/db/adventures";
 import { AdventureView } from "./AdventureView";
 import { getExampleAdventures } from "./exampleAdventures";
+
+const { mockUseConditions } = vi.hoisted(() => ({
+  mockUseConditions: vi.fn(),
+}));
 
 vi.mock("@/components/item/Card", () => ({
   Card: ({ item }: { item: { name: string } }) => (
@@ -19,8 +23,28 @@ vi.mock("@/components/encounter/EncounterCard", () => ({
     <div>Encounter card: {encounter.name}</div>
   ),
 }));
+vi.mock("@/lib/hooks/useConditions", () => ({
+  useConditions: mockUseConditions,
+}));
 
-afterEach(cleanup);
+const officialBlinded = {
+  id: "official-blinded",
+  name: "Blinded",
+  description: "You cannot see.",
+  official: true,
+};
+
+beforeEach(() => {
+  mockUseConditions.mockReturnValue({
+    allConditions: [officialBlinded],
+    isLoading: false,
+  });
+});
+
+afterEach(() => {
+  cleanup();
+  mockUseConditions.mockReset();
+});
 
 describe("AdventureView", () => {
   it("renders ordered nested content, callouts, and encounter cards", () => {
@@ -203,5 +227,90 @@ describe("AdventureView", () => {
         }),
       ])
     );
+  });
+
+  it("passes official conditions to formatted adventure content", () => {
+    const adventure: Pick<
+      Adventure,
+      "name" | "tagline" | "summary" | "creator" | "nodes"
+    > = {
+      name: "Condition Test",
+      tagline: "",
+      summary: "",
+      creator: {
+        id: "creator",
+        discordId: "creator-discord",
+        username: "test-author",
+        displayName: "Test Author",
+      },
+      nodes: [
+        {
+          id: "condition-node",
+          parentId: null,
+          kind: "text",
+          orderIndex: 0,
+          title: "",
+          content: "The hero is [[Blinded]].",
+          encounter: null,
+          statblock: null,
+          referenceRemoved: false,
+          presentation: null,
+        },
+      ],
+    };
+
+    render(<AdventureView adventure={adventure} />);
+
+    expect(screen.getByText("Blinded")).toHaveClass("cursor-default");
+  });
+
+  it("keeps content visible while conditions load and resolves it after ready", async () => {
+    const adventure: Pick<
+      Adventure,
+      "name" | "tagline" | "summary" | "creator" | "nodes"
+    > = {
+      name: "Loading Conditions",
+      tagline: "",
+      summary: "",
+      creator: {
+        id: "creator",
+        discordId: "creator-discord",
+        username: "test-author",
+        displayName: "Test Author",
+      },
+      nodes: [
+        {
+          id: "loading-node",
+          parentId: null,
+          kind: "section",
+          orderIndex: 0,
+          title: "Loading Section",
+          content: "The hero is [[Blinded]].",
+          encounter: null,
+          statblock: null,
+          referenceRemoved: false,
+          presentation: null,
+        },
+      ],
+    };
+    mockUseConditions
+      .mockReturnValueOnce({ allConditions: [], isLoading: true })
+      .mockReturnValueOnce({
+        allConditions: [officialBlinded],
+        isLoading: false,
+      });
+
+    const { rerender } = render(<AdventureView adventure={adventure} />);
+
+    expect(
+      screen.getByRole("heading", { name: "Loading Section" })
+    ).toBeVisible();
+    expect(screen.getByText("Blinded")).toHaveClass("cursor-help");
+
+    rerender(<AdventureView adventure={adventure} />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Blinded")).toHaveClass("cursor-default");
+    });
   });
 });

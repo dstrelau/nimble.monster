@@ -601,12 +601,9 @@ export function AdventureForm({
 
             {node.kind !== "encounter" && node.kind !== "statblock" && (
               <div className="space-y-2">
-                <Label htmlFor={`content-${node.id}`}>
-                  Content
-                  <ConditionValidationIcon text={node.content} />
-                </Label>
                 <Textarea
                   id={`content-${node.id}`}
+                  aria-label={`${node.kind} content`}
                   rows={6}
                   value={node.content}
                   onChange={(event) =>
@@ -661,6 +658,7 @@ export function AdventureForm({
     <form onSubmit={handleSubmit} className="space-y-6 pb-12">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Toggle
+          className="lg:hidden"
           type="button"
           variant="outline"
           pressed={showPreview}
@@ -687,10 +685,19 @@ export function AdventureForm({
 
       <div className="lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-8">
         <aside className="hidden lg:block">
-          <AdventureOutline
-            nodes={outlineNodes}
-            className="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto pr-3"
-          />
+          <div className="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto pr-3">
+            <Toggle
+              type="button"
+              variant="outline"
+              pressed={showPreview}
+              onPressedChange={setShowPreview}
+              aria-label="Toggle preview"
+            >
+              <Eye />
+              Preview
+            </Toggle>
+            <AdventureOutline nodes={outlineNodes} className="mt-4" />
+          </div>
         </aside>
         <div className="min-w-0">
           {showPreview ? (
@@ -757,8 +764,10 @@ export function AdventureForm({
                   <div>
                     <h2 className="text-2xl font-bold">Adventure content</h2>
                     <p className="text-sm text-muted-foreground">
-                      Arrange sections, callouts, text, encounters, and
-                      statblocks in reading order.
+                      Most text boxes support site formatting{" "}
+                      <span className="inline-flex align-middle">
+                        <ConditionValidationIcon />
+                      </span>
                     </p>
                   </div>
                   <Button

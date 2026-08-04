@@ -33,8 +33,9 @@ export const POST = telemetry(async (request: Request) => {
       session.user.id,
       parsed.data.adventure
     );
-    revalidatePath("/adventures");
-    revalidatePath(`/adventures/${parsed.data.id}`);
+    revalidatePath("/my/adventures");
+    revalidatePath("/adventures/[id]", "page");
+    revalidatePath(`/u/${session.user.username}/adventures`);
     trace.getActiveSpan()?.setAttribute("adventure.id", adventure.id);
     const result: AdventureMutationResult = {
       id: adventure.id,

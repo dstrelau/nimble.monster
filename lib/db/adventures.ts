@@ -60,6 +60,17 @@ export interface Adventure {
   updatedAt: Date;
 }
 
+export interface AdventureOverview {
+  id: string;
+  name: string;
+  tagline: string;
+  summary: string;
+  visibility: AdventureVisibility;
+  creator: User;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface AdventureNodeInput {
   id: string;
   parentId: string | null;
@@ -91,6 +102,54 @@ export async function getAdventureCounts(): Promise<AdventureCounts> {
   return {
     encounters: encounterCount?.count ?? 0,
   };
+}
+
+export async function listAdventuresForUser(
+  userId: string
+): Promise<AdventureOverview[]> {
+  const db = getDatabase();
+  const rows = await db
+    .select({ adventure: adventures, creator: users })
+    .from(adventures)
+    .innerJoin(users, eq(adventures.userId, users.id))
+    .where(eq(adventures.userId, userId))
+    .orderBy(asc(adventures.name));
+
+  return rows.map(({ adventure, creator }) => ({
+    id: adventure.id,
+    name: adventure.name,
+    tagline: adventure.tagline,
+    summary: adventure.summary,
+    visibility: adventure.visibility,
+    creator: toUser(creator),
+    createdAt: adventure.createdAt ? new Date(adventure.createdAt) : new Date(),
+    updatedAt: adventure.updatedAt ? new Date(adventure.updatedAt) : new Date(),
+  }));
+}
+
+export async function listPublicAdventuresForUser(
+  userId: string
+): Promise<AdventureOverview[]> {
+  const db = getDatabase();
+  const rows = await db
+    .select({ adventure: adventures, creator: users })
+    .from(adventures)
+    .innerJoin(users, eq(adventures.userId, users.id))
+    .where(
+      and(eq(adventures.userId, userId), eq(adventures.visibility, "public"))
+    )
+    .orderBy(asc(adventures.name));
+
+  return rows.map(({ adventure, creator }) => ({
+    id: adventure.id,
+    name: adventure.name,
+    tagline: adventure.tagline,
+    summary: adventure.summary,
+    visibility: adventure.visibility,
+    creator: toUser(creator),
+    createdAt: adventure.createdAt ? new Date(adventure.createdAt) : new Date(),
+    updatedAt: adventure.updatedAt ? new Date(adventure.updatedAt) : new Date(),
+  }));
 }
 
 export async function findAdventure(id: string): Promise<Adventure | null> {
