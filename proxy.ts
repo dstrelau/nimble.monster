@@ -96,7 +96,8 @@ export default async function proxy(request: NextRequest) {
   // requests with next-action headers before the auth callback executes.
   if (
     request.method === "POST" &&
-    !request.nextUrl.pathname.startsWith("/api/")
+    !request.nextUrl.pathname.startsWith("/api/") &&
+    !request.nextUrl.pathname.startsWith("/_actions/")
   ) {
     const origin = request.headers.get("origin") ?? "";
     if (

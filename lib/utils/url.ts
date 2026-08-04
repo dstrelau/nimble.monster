@@ -126,6 +126,21 @@ export function getEncounterEditUrl(encounter: {
   return `/encounters/${slugify(encounter)}/edit`;
 }
 
+// Adventure URLs
+export function getAdventureUrl(adventure: {
+  name: string;
+  id: string;
+}): string {
+  return `/adventures/${slugify(adventure)}`;
+}
+
+export function getAdventureEditUrl(adventure: {
+  name: string;
+  id: string;
+}): string {
+  return `/adventures/${slugify(adventure)}/edit`;
+}
+
 // Custom rules are browsed inline in the rules reference, behind the homebrew
 // toggle; only the detail and edit pages live under /custom-rules.
 export const CUSTOM_RULES_URL = "/rules?homebrew=1#all-rules";

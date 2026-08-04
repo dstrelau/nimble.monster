@@ -88,7 +88,7 @@ vi.mock("@/lib/db/converters", () => ({
 }));
 
 vi.mock("@/lib/services/monsters", () => ({
-  findMonstersByIds: vi.fn(),
+  findBestiaryEntriesByIds: vi.fn(),
 }));
 
 vi.mock("@/lib/services/monsters/converters", () => ({
@@ -101,9 +101,13 @@ vi.mock("@/lib/utils/validation", () => ({
 
 import { eq, inArray } from "drizzle-orm";
 import { toUser } from "@/lib/db/converters";
-import { findMonstersByIds } from "@/lib/services/monsters";
+import { findBestiaryEntriesByIds } from "@/lib/services/monsters";
 import { toBestiaryEntryMini } from "@/lib/services/monsters/converters";
-import type { Monster, MonsterMini } from "@/lib/services/monsters/types";
+import type {
+  Hazard,
+  Monster,
+  MonsterMini,
+} from "@/lib/services/monsters/types";
 import type { User } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
 import {
@@ -111,8 +115,10 @@ import {
   createEncounter,
   deleteEncounter,
   deleteMonsterFromEncounter,
+  findEncounterOverviewsByIds,
   getEncounter,
   getPublicEncounterById,
+  listAccessibleEncounterReferences,
   listEncountersWithMonstersForUser,
   updateEncounter,
 } from "./encounter";
@@ -162,6 +168,22 @@ const makeMonster = (overrides: Partial<Monster> = {}): Monster => ({
   ...overrides,
 });
 
+const makeHazard = (overrides: Partial<Hazard> = {}): Hazard => ({
+  id: "h0",
+  hazard: true,
+  level: "1",
+  levelInt: 1,
+  name: "Hazard",
+  visibility: "public",
+  createdAt: new Date("2026-01-01"),
+  abilities: [],
+  actions: [],
+  actionPreface: "",
+  creator: makeUser(),
+  updatedAt: new Date("2026-01-01"),
+  ...overrides,
+});
+
 beforeEach(() => {
   mockResultQueue.length = 0;
   vi.mocked(isValidUUID).mockReturnValue(true);
@@ -169,7 +191,7 @@ beforeEach(() => {
   vi.mocked(toBestiaryEntryMini).mockImplementation((m) =>
     makeMini({ id: m.id, name: m.name })
   );
-  vi.mocked(findMonstersByIds).mockResolvedValue([]);
+  vi.mocked(findBestiaryEntriesByIds).mockResolvedValue([]);
 });
 
 afterEach(() => {
@@ -239,7 +261,7 @@ describe("listEncountersWithMonstersForUser", () => {
 
     expect(toUser).toHaveBeenCalledWith(user);
     expect(result[0].creator.id).toBe("user-1");
-    expect(findMonstersByIds).not.toHaveBeenCalled();
+    expect(findBestiaryEntriesByIds).not.toHaveBeenCalled();
   });
 
   it("returns [] when the user is not found", async () => {
@@ -258,6 +280,106 @@ describe("listEncountersWithMonstersForUser", () => {
 
     expect(result).toEqual([]);
     expect(mockInnerJoin).not.toHaveBeenCalled();
+  });
+});
+
+describe("listAccessibleEncounterReferences", () => {
+  it("returns public and user-owned encounters ordered by name", async () => {
+    queueDb([
+      { id: "official", name: "Spider Lair" },
+      { id: "owned", name: "Wax-Chamber Maze" },
+    ]);
+
+    const result = await listAccessibleEncounterReferences("user-1");
+
+    expect(result).toEqual([
+      { id: "official", name: "Spider Lair" },
+      { id: "owned", name: "Wax-Chamber Maze" },
+    ]);
+    expect(mockWhere).toHaveBeenCalledTimes(1);
+    expect(mockOrderBy).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("findEncounterOverviewsByIds", () => {
+  it("loads multiple encounters and all of their monsters in two queries", async () => {
+    queueDb(
+      [
+        {
+          encounter: {
+            id: "encounter-1",
+            name: "Spider Lair",
+            creatorId: "user-1",
+            visibility: "public",
+            heroCount: 4,
+            heroLevel: 1,
+          },
+          creator: { id: "user-1" },
+        },
+        {
+          encounter: {
+            id: "encounter-2",
+            name: "Wax-Chamber Maze",
+            creatorId: "user-1",
+            visibility: "public",
+            heroCount: 4,
+            heroLevel: 2,
+          },
+          creator: { id: "user-1" },
+        },
+      ],
+      [
+        {
+          encounterId: "encounter-1",
+          monster: {
+            id: "spider",
+            name: "Giant Spider",
+            visibility: "public",
+          },
+          quantity: 1,
+          isPerHero: true,
+          heroesPerMonster: 1,
+        },
+        {
+          encounterId: "encounter-2",
+          monster: {
+            id: "golem",
+            name: "Wax Golem",
+            visibility: "public",
+          },
+          quantity: 2,
+          isPerHero: false,
+          heroesPerMonster: 1,
+        },
+      ]
+    );
+
+    const result = await findEncounterOverviewsByIds([
+      "encounter-1",
+      "encounter-2",
+      "encounter-1",
+    ]);
+
+    expect(mockSelect).toHaveBeenCalledTimes(2);
+    expect(mockWhere).toHaveBeenCalledTimes(2);
+    expect(result.map((encounter) => encounter.name)).toEqual([
+      "Spider Lair",
+      "Wax-Chamber Maze",
+    ]);
+    expect(result[0].monsters[0].monster.name).toBe("Giant Spider");
+    expect(result[1].monsters[0].monster.name).toBe("Wax Golem");
+    expect(inArray).toHaveBeenCalledWith("encounters.id", [
+      "encounter-1",
+      "encounter-2",
+    ]);
+  });
+
+  it("does not query when no IDs are valid", async () => {
+    vi.mocked(isValidUUID).mockReturnValue(false);
+
+    await expect(findEncounterOverviewsByIds(["invalid"])).resolves.toEqual([]);
+
+    expect(mockSelect).not.toHaveBeenCalled();
   });
 });
 
@@ -321,18 +443,23 @@ describe("getEncounter", () => {
     queueDb(
       [{ id: "user-1" }],
       [{ encounter: owned, creator: { id: "user-1" } }],
-      [{ monsterId: "m1", quantity: 2, isPerHero: false }]
+      [
+        { monsterId: "m1", quantity: 2, isPerHero: false },
+        { monsterId: "h1", quantity: 1, isPerHero: false },
+      ]
     );
-    vi.mocked(findMonstersByIds).mockResolvedValue([
+    vi.mocked(findBestiaryEntriesByIds).mockResolvedValue([
       makeMonster({ id: "m1", name: "Goblin" }),
+      makeHazard({ id: "h1", name: "Falling Rocks" }),
     ]);
 
     const result = await getEncounter("e1", "d1");
 
     expect(result?.name).toBe("Owned");
-    expect(result?.monsters).toHaveLength(1);
+    expect(result?.monsters).toHaveLength(2);
     expect(result?.monsters[0].monster.id).toBe("m1");
-    expect(findMonstersByIds).toHaveBeenCalledWith(["m1"]);
+    expect(result?.monsters[1].monster.hazard).toBe(true);
+    expect(findBestiaryEntriesByIds).toHaveBeenCalledWith(["m1", "h1"]);
     expect(eq).not.toHaveBeenCalledWith("encounters.visibility", "public");
   });
 
@@ -352,7 +479,7 @@ describe("getEncounter", () => {
       [{ encounter: pub, creator: { id: "owner" } }],
       [{ monsterId: "m2", quantity: 1, isPerHero: true }]
     );
-    vi.mocked(findMonstersByIds).mockResolvedValue([
+    vi.mocked(findBestiaryEntriesByIds).mockResolvedValue([
       makeMonster({ id: "m2", name: "Orc" }),
     ]);
 
@@ -410,7 +537,7 @@ describe("getPublicEncounterById", () => {
       [{ encounter: enc, creator: { id: "owner" } }],
       [{ monsterId: "m1", quantity: 3, isPerHero: false }]
     );
-    vi.mocked(findMonstersByIds).mockResolvedValue([
+    vi.mocked(findBestiaryEntriesByIds).mockResolvedValue([
       makeMonster({ id: "m1", name: "Goblin" }),
     ]);
 

@@ -34,6 +34,7 @@ const counts: MyLibraryCounts = {
   items: 10,
   collections: 11,
   rules: 13,
+  adventures: 2,
 };
 
 describe("MyLibrarySidebar", () => {
@@ -50,7 +51,7 @@ describe("MyLibrarySidebar", () => {
         .getAllByRole("heading", { level: 2 })
         .map((heading) => heading.textContent)
     ).toEqual(["Bestiary", "Heroes", "Gear", "Adventures"]);
-    expect(links).toHaveLength(13);
+    expect(links).toHaveLength(14);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/my/monsters",
       "/my/hazards",
@@ -63,6 +64,7 @@ describe("MyLibrarySidebar", () => {
       "/my/spell-schools",
       "/my/items",
       "/my/encounters",
+      "/my/adventures",
       "/my/collections",
       "/my/rules",
     ]);
@@ -75,6 +77,9 @@ describe("MyLibrarySidebar", () => {
     expect(
       within(navigation).getByRole("link", { name: "Custom Rules 13" })
     ).toHaveAttribute("href", "/my/rules");
+    expect(
+      within(navigation).getByRole("link", { name: "Adventures 2" })
+    ).toHaveAttribute("href", "/my/adventures");
   });
 
   it("opens the library navigation on smaller screens", () => {
@@ -100,7 +105,7 @@ describe("MyLibrarySidebar", () => {
     });
     const links = within(navigation).getAllByRole("link");
 
-    expect(links).toHaveLength(13);
+    expect(links).toHaveLength(14);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/u/creator/monsters",
       "/u/creator/hazards",
@@ -113,6 +118,7 @@ describe("MyLibrarySidebar", () => {
       "/u/creator/spell-schools",
       "/u/creator/items",
       "/u/creator/encounters",
+      "/u/creator/adventures",
       "/u/creator/collections",
       "/u/creator/rules",
     ]);
@@ -122,6 +128,43 @@ describe("MyLibrarySidebar", () => {
     expect(screen.queryByText("Public Library")).not.toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Monsters" })
+    ).toBeInTheDocument();
+  });
+
+  it("hides only the Adventures item when its count is zero", () => {
+    render(
+      <MyLibrarySidebar counts={{ ...counts, adventures: 0, monsters: 0 }} />
+    );
+
+    const navigation = screen.getByRole("navigation", {
+      name: "My library sidebar",
+    });
+    expect(
+      within(navigation).queryByRole("link", { name: /Adventures/ })
+    ).not.toBeInTheDocument();
+    expect(
+      within(navigation).getByRole("link", { name: "Monsters 0" })
+    ).toBeInTheDocument();
+  });
+
+  it("hides Adventures for a profile with only private adventures", () => {
+    pathname = "/u/creator/adventures";
+    render(
+      <MyLibrarySidebar
+        counts={{ ...counts, adventures: 0 }}
+        profileHref="/u/creator"
+        title={null}
+      />
+    );
+
+    const navigation = screen.getByRole("navigation", {
+      name: "Public library sidebar",
+    });
+    expect(
+      within(navigation).queryByRole("link", { name: /Adventures/ })
+    ).not.toBeInTheDocument();
+    expect(
+      within(navigation).getByRole("link", { name: "Monsters 12" })
     ).toBeInTheDocument();
   });
 });

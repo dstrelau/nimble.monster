@@ -1,6 +1,7 @@
 import { and, count, eq } from "drizzle-orm";
 import { getDatabase } from "./drizzle";
 import {
+  adventures,
   ancestries,
   backgrounds,
   classes,
@@ -26,6 +27,7 @@ export interface MyLibraryCounts {
   classes: number;
   collections: number;
   encounters: number;
+  adventures: number;
   subclasses: number;
   families: number;
   "spell-schools": number;
@@ -46,6 +48,7 @@ export async function getMyLibraryCounts(
     classCount,
     collectionCount,
     encounterCount,
+    adventureCount,
     subclassCount,
     familyCount,
     schoolCount,
@@ -89,6 +92,10 @@ export async function getMyLibraryCounts(
       .where(eq(encounters.creatorId, userId)),
     db
       .select({ count: count() })
+      .from(adventures)
+      .where(eq(adventures.userId, userId)),
+    db
+      .select({ count: count() })
       .from(subclasses)
       .where(eq(subclasses.userId, userId)),
     db
@@ -112,6 +119,7 @@ export async function getMyLibraryCounts(
     classes: classCount[0]?.count ?? 0,
     collections: collectionCount[0]?.count ?? 0,
     encounters: encounterCount[0]?.count ?? 0,
+    adventures: adventureCount[0]?.count ?? 0,
     subclasses: subclassCount[0]?.count ?? 0,
     families: familyCount[0]?.count ?? 0,
     "spell-schools": schoolCount[0]?.count ?? 0,
@@ -133,6 +141,7 @@ export async function getPublicLibraryCounts(
     classCount,
     collectionCount,
     encounterCount,
+    adventureCount,
     subclassCount,
     familyCount,
     schoolCount,
@@ -215,6 +224,12 @@ export async function getPublicLibraryCounts(
       ),
     db
       .select({ count: count() })
+      .from(adventures)
+      .where(
+        and(eq(adventures.userId, userId), eq(adventures.visibility, "public"))
+      ),
+    db
+      .select({ count: count() })
       .from(subclasses)
       .where(
         and(eq(subclasses.userId, userId), eq(subclasses.visibility, "public"))
@@ -247,6 +262,7 @@ export async function getPublicLibraryCounts(
     classes: classCount[0]?.count ?? 0,
     collections: collectionCount[0]?.count ?? 0,
     encounters: encounterCount[0]?.count ?? 0,
+    adventures: adventureCount[0]?.count ?? 0,
     subclasses: subclassCount[0]?.count ?? 0,
     families: familyCount[0]?.count ?? 0,
     "spell-schools": schoolCount[0]?.count ?? 0,

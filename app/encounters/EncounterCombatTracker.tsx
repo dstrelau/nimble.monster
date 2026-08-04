@@ -17,11 +17,22 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import type { Encounter } from "@/lib/types";
+import type { Monster } from "@/lib/services/monsters";
+import type { Encounter, EncounterMonsterEntryFull } from "@/lib/types";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import { formatHp, resolvedEncounterMonsterCount } from "@/lib/utils/monster";
 
-type TrackedMonster = Encounter["monsters"][number]["monster"];
+type CreatureEncounterEntry = EncounterMonsterEntryFull & {
+  monster: Monster;
+};
+
+function isCreatureEntry(
+  entry: EncounterMonsterEntryFull
+): entry is CreatureEncounterEntry {
+  return !entry.monster.hazard;
+}
+
+type TrackedMonster = Monster;
 
 interface TrackerGroup {
   key: string;
@@ -34,15 +45,12 @@ function buildTrackerGroups(
   monsters: Encounter["monsters"],
   heroCount: number
 ): TrackerGroup[] {
+  const creatureEntries = monsters.filter(isCreatureEntry);
   const entriesByMonsterId = new Map(
-    monsters
-      .filter((entry) => !entry.monster.hazard)
-      .map((entry) => [entry.monster.id, entry])
+    creatureEntries.map((entry) => [entry.monster.id, entry])
   );
   const sortedMonsters = monstersSortedByLevelInt(
-    monsters
-      .filter((entry) => !entry.monster.hazard)
-      .map((entry) => entry.monster)
+    creatureEntries.map((entry) => entry.monster)
   );
 
   return sortedMonsters.flatMap((monster) => {

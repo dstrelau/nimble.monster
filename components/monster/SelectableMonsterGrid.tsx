@@ -5,7 +5,9 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { Crown, PersonStanding } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import { publicHazardsInfiniteQueryOptions } from "@/app/hazards/hooks";
 import { publicMonstersInfiniteQueryOptions } from "@/app/monsters/hooks";
+import { myHazardsInfiniteQueryOptions } from "@/app/my/hazards/hooks";
 import { myMonstersInfiniteQueryOptions } from "@/app/my/monsters/hooks";
 import { Card } from "@/components/monster/Card";
 import { MonsterFilterBar } from "@/components/monster/MonsterFilterBar";
@@ -19,7 +21,8 @@ import {
 import { Level } from "@/components/shared/Level";
 import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { Monster } from "@/lib/services/monsters";
+import { toHazardMonsterView } from "@/lib/services/hazards/converters";
+import type { BestiaryEntry } from "@/lib/services/monsters";
 import type {
   MonsterRole,
   MonsterTypeOption,
@@ -30,9 +33,11 @@ import { formatSizeKind } from "@/lib/utils/monster";
 
 interface SelectableMonsterGridProps {
   selectedIds: Set<string>;
-  onToggle: (monster: Monster) => void;
+  onToggle: (monster: BestiaryEntry) => void;
   /** Render a dense single-column list instead of full monster cards, for narrow spaces like a sidebar. */
   compact?: boolean;
+  /** Limit selection to public entries, even when filtering to the current user. */
+  publicOnly?: boolean;
 }
 
 function CompactMonsterOption({
@@ -40,7 +45,7 @@ function CompactMonsterOption({
   selected,
   onSelect,
 }: {
-  monster: Monster;
+  monster: BestiaryEntry;
   selected: boolean;
   onSelect: () => void;
 }) {
@@ -54,15 +59,15 @@ function CompactMonsterOption({
       )}
     >
       <div className="flex w-6 shrink-0 items-center justify-center">
-        {monster.paperforgeId ? (
+        {!monster.hazard && monster.paperforgeId ? (
           <PaperforgeImage
             id={monster.paperforgeId}
             size={24}
             className="rounded-sm"
           />
-        ) : monster.legendary ? (
+        ) : !monster.hazard && monster.legendary ? (
           <Crown className="size-4 stroke-flame" />
-        ) : monster.minion ? (
+        ) : !monster.hazard && monster.minion ? (
           <PersonStanding className="size-4 stroke-flame" />
         ) : null}
       </div>
@@ -71,12 +76,18 @@ function CompactMonsterOption({
           {monster.name}
         </div>
         <div className="truncate text-muted-foreground text-xs">
-          {monster.levelInt !== 0 && (
+          {monster.hazard ? (
+            "Hazard"
+          ) : (
             <>
-              Lvl <Level level={monster.level} />{" "}
+              {monster.levelInt !== 0 && (
+                <>
+                  Lvl <Level level={monster.level} />{" "}
+                </>
+              )}
+              {formatSizeKind(monster)}
             </>
           )}
-          {formatSizeKind(monster)}
         </div>
       </div>
     </button>
@@ -87,6 +98,7 @@ export function SelectableMonsterGrid({
   selectedIds,
   onToggle,
   compact = false,
+  publicOnly = false,
 }: SelectableMonsterGridProps) {
   const [creatorId, setCreatorId] = useState<string | null>(null);
   const [rawSearch, setRawSearch] = useState<string | null>(null);
@@ -108,18 +120,76 @@ export function SelectableMonsterGrid({
     limit: compact ? 50 : 12,
   };
 
-  const isMyContent = creatorId !== null && creatorId === session?.user?.id;
-  const queryOptions = isMyContent
-    ? myMonstersInfiniteQueryOptions(params)
-    : publicMonstersInfiniteQueryOptions({
-        ...params,
-        creatorId: creatorId ?? undefined,
-      });
-
-  const { data, isLoading, isFetching, fetchNextPage, hasNextPage, error } =
-    useInfiniteQuery(queryOptions);
-
-  const monsters = data?.pages.flatMap((page) => page.data);
+  const isHazard = type === "hazard";
+  const includesHazards = type === "all" || isHazard;
+  const includesCreatures = !isHazard;
+  const isMyContent =
+    !publicOnly && creatorId !== null && creatorId === session?.user?.id;
+  const publicMonsterQuery = useInfiniteQuery({
+    ...publicMonstersInfiniteQueryOptions({
+      ...params,
+      creatorId: creatorId ?? undefined,
+    }),
+    enabled: includesCreatures && !isMyContent,
+  });
+  const myMonsterQuery = useInfiniteQuery({
+    ...myMonstersInfiniteQueryOptions(params),
+    enabled: includesCreatures && isMyContent,
+  });
+  const publicHazardQuery = useInfiniteQuery({
+    ...publicHazardsInfiniteQueryOptions({
+      search: params.search,
+      sort: params.sort,
+      source: params.source,
+      level: params.level,
+      creatorId: creatorId ?? undefined,
+      limit: params.limit,
+    }),
+    enabled: includesHazards && !isMyContent,
+  });
+  const myHazardQuery = useInfiniteQuery({
+    ...myHazardsInfiniteQueryOptions({
+      search: params.search,
+      sort: params.sort,
+      source: params.source,
+      level: params.level,
+      limit: params.limit,
+    }),
+    enabled: includesHazards && isMyContent,
+  });
+  const creatureQuery = isMyContent ? myMonsterQuery : publicMonsterQuery;
+  const hazardQuery = isMyContent ? myHazardQuery : publicHazardQuery;
+  const creatures = includesCreatures
+    ? creatureQuery.data?.pages.flatMap((page) => page.data)
+    : [];
+  const hazards = includesHazards
+    ? hazardQuery.data?.pages.flatMap((page) => page.data)
+    : [];
+  const monsters: BestiaryEntry[] | undefined =
+    creatures && hazards ? [...creatures, ...hazards] : undefined;
+  const isLoading =
+    (includesCreatures && creatureQuery.isLoading) ||
+    (includesHazards && hazardQuery.isLoading);
+  const isFetching =
+    (includesCreatures && creatureQuery.isFetching) ||
+    (includesHazards && hazardQuery.isFetching);
+  const hasNextPage =
+    (includesCreatures && creatureQuery.hasNextPage) ||
+    (includesHazards && hazardQuery.hasNextPage) ||
+    false;
+  const error =
+    (includesCreatures ? creatureQuery.error : null) ??
+    (includesHazards ? hazardQuery.error : null);
+  const fetchNextPage = () => {
+    const requests = [];
+    if (includesCreatures && creatureQuery.hasNextPage) {
+      requests.push(creatureQuery.fetchNextPage());
+    }
+    if (includesHazards && hazardQuery.hasNextPage) {
+      requests.push(hazardQuery.fetchNextPage());
+    }
+    return Promise.all(requests);
+  };
 
   const results = isLoading ? (
     <LoadingState />
@@ -144,12 +214,13 @@ export function SelectableMonsterGrid({
         <div
           key={monster.id}
           className={cn(
-            (monster.legendary || (monster.members?.length ?? 0) > 0) &&
+            !monster.hazard &&
+              (monster.legendary || (monster.members?.length ?? 0) > 0) &&
               "sm:col-span-2 md:col-span-2"
           )}
         >
           <Card
-            monster={monster}
+            monster={monster.hazard ? toHazardMonsterView(monster) : monster}
             creator={monster.creator}
             hideDescription={true}
             selectable
@@ -168,7 +239,7 @@ export function SelectableMonsterGrid({
   return (
     <div className={cn(compact ? "flex flex-col gap-3" : "space-y-6")}>
       <MonsterFilterBar
-        searchTerm={search}
+        searchTerm={rawSearch}
         sortOption={sort}
         onSearch={setRawSearch}
         onSortChange={setSort}

@@ -7,6 +7,7 @@ import { Card as MonsterCard } from "@/components/monster/Card";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { listConditionsForDiscordId, listOfficialConditions } from "@/lib/db";
+import { toHazardMonsterView } from "@/lib/services/hazards/converters";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
@@ -116,10 +117,12 @@ export default async function ShowEncounterView({
                   key={entry.monster.id}
                   className={cn(
                     "relative",
-                    entry.monster.legendary && "md:col-span-2 print:col-span-2"
+                    !entry.monster.hazard &&
+                      entry.monster.legendary &&
+                      "md:col-span-2 print:col-span-2"
                   )}
                 >
-                  {!entry.monster.legendary && (
+                  {(entry.monster.hazard || !entry.monster.legendary) && (
                     <div className="absolute -top-3 -right-3 z-10 flex items-center gap-1 rounded-full bg-flame px-2.5 py-1 font-slab font-black text-sm text-white shadow-md">
                       {entry.isPerHero ? (
                         <span className="font-sans text-xs font-normal">
@@ -134,7 +137,11 @@ export default async function ShowEncounterView({
                     </div>
                   )}
                   <MonsterCard
-                    monster={entry.monster}
+                    monster={
+                      entry.monster.hazard
+                        ? toHazardMonsterView(entry.monster)
+                        : entry.monster
+                    }
                     creator={entry.monster.creator}
                   />
                 </div>

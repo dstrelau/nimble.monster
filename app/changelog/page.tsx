@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "2 August 2026",
+    entries: [
+      "Add Adventures with ordered sections, callouts, encounter embeds, attribution, and formatted previews.",
+    ],
+  },
+  {
     date: "31 July 2026",
     entries: [
       "Encounter monster counts can now be static or expressed as a per-hero ratio.",
