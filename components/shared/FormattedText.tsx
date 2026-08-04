@@ -351,6 +351,17 @@ function entityLinkPlugin(md: MarkdownIt) {
   };
 }
 
+function listStylePlugin(md: MarkdownIt) {
+  md.renderer.rules.bullet_list_open = (tokens, idx, options, _env, self) => {
+    tokens[idx].attrJoin("class", "list-disc pl-5");
+    return self.renderToken(tokens, idx, options);
+  };
+  md.renderer.rules.ordered_list_open = (tokens, idx, options, _env, self) => {
+    tokens[idx].attrJoin("class", "list-decimal pl-5");
+    return self.renderToken(tokens, idx, options);
+  };
+}
+
 const md = new MarkdownIt("zero").enable([
   "paragraph",
   "emphasis",
@@ -360,6 +371,7 @@ const md = new MarkdownIt("zero").enable([
 conditionPlugin(md);
 diceNotationPlugin(md);
 entityLinkPlugin(md);
+listStylePlugin(md);
 md.enable(["text"]);
 
 export function FormattedText({
@@ -503,14 +515,7 @@ export function FormattedText({
     );
 
   return (
-    <div
-      className={cn(
-        "[&_p_~_p]:mt-1.5 [&_ul,&_li]:list-disc [&_ul,&_li]:list-inside",
-        className
-      )}
-    >
-      {renderedContent}
-    </div>
+    <div className={cn("[&_p_~_p]:mt-1.5", className)}>{renderedContent}</div>
   );
 }
 

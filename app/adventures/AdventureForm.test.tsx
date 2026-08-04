@@ -1,5 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AdventureInput } from "@/lib/db/adventures";
 import type { BestiaryEntryMini } from "@/lib/services/monsters";
@@ -99,6 +105,19 @@ const encounterValue: AdventureInput = {
   ],
 };
 
+const calloutValue: AdventureInput = {
+  ...initialValue,
+  nodes: [
+    {
+      ...initialValue.nodes[0],
+      kind: "callout",
+      title: "A Callout",
+      content: "Callout content",
+      presentation: "note",
+    },
+  ],
+};
+
 function renderForm(
   value: AdventureInput = initialValue,
   encounters: EncounterOverview[] = []
@@ -116,6 +135,28 @@ function renderForm(
 }
 
 describe("AdventureForm", () => {
+  it("styles adventure details like the rendered adventure header", () => {
+    renderForm();
+
+    expect(screen.queryByText("Adventure details")).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Name")).toHaveClass(
+      "text-center",
+      "font-slab",
+      "text-4xl",
+      "font-bold"
+    );
+    expect(screen.getByLabelText("Tagline")).toHaveClass(
+      "text-center",
+      "text-lg",
+      "italic"
+    );
+    expect(screen.getByLabelText("Summary")).toHaveClass(
+      "text-lg",
+      "leading-relaxed"
+    );
+    expect(screen.getByText("Test Author")).toBeVisible();
+  });
+
   it("keeps the desktop preview toggle and outline together in a sticky sidebar", () => {
     renderForm();
 
@@ -130,6 +171,50 @@ describe("AdventureForm", () => {
     expect(stickySidebar).toHaveClass("sticky");
     expect(stickySidebar).toContainElement(outline);
     expect(outline).not.toHaveClass("sticky");
+  });
+
+  it("renders the accessible colored callout presentation pills", () => {
+    renderForm(calloutValue);
+
+    const group = screen.getByRole("group", { name: "Callout style" });
+    expect(
+      within(group)
+        .getAllByRole("radio")
+        .map((button) => button.textContent)
+    ).toEqual(["Note", "Read Aloud", "Warning", "GM Tip", "Optional"]);
+    expect(within(group).getByRole("radio", { name: "Note" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
+    expect(
+      within(group).getByRole("radio", { name: "GM Tip" })
+    ).toHaveAttribute("aria-checked", "false");
+
+    fireEvent.click(within(group).getByRole("radio", { name: "GM Tip" }));
+
+    expect(
+      within(group).getByRole("radio", { name: "GM Tip" })
+    ).toHaveAttribute("aria-checked", "true");
+    expect(within(group).getByRole("radio", { name: "Note" })).toHaveAttribute(
+      "aria-checked",
+      "false"
+    );
+  });
+
+  it("falls back to Note when editing a legacy rules callout", () => {
+    renderForm({
+      ...calloutValue,
+      nodes: [{ ...calloutValue.nodes[0], presentation: "rules" }],
+    });
+
+    const group = screen.getByRole("group", { name: "Callout style" });
+    expect(within(group).getByRole("radio", { name: "Note" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
+    expect(
+      within(group).getByRole("radio", { name: "GM Tip" })
+    ).toHaveAttribute("aria-checked", "false");
   });
 
   it("uses one formatting help trigger and accessible content textareas", () => {

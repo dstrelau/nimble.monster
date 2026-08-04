@@ -164,6 +164,28 @@ describe("FormattedText", () => {
     expect(boldElement.tagName.toLowerCase()).toBe("strong");
   });
 
+  it("renders nested unordered and ordered lists with visible indentation", () => {
+    const content = [
+      "- Parent",
+      "  1. First child",
+      "     - Grandchild",
+      "  2. Second child",
+      "- Sibling",
+    ].join("\n");
+
+    const { container } = render(
+      <FormattedText content={content} conditions={[]} />
+    );
+
+    const lists = container.querySelectorAll("ul, ol");
+    expect([...lists].map((list) => list.tagName)).toEqual(["UL", "OL", "UL"]);
+    expect(lists[0].querySelector(":scope > li > ol")).toBe(lists[1]);
+    expect(lists[1].querySelector(":scope > li > ul")).toBe(lists[2]);
+    expect(lists[0]).toHaveClass("list-disc", "pl-5");
+    expect(lists[1]).toHaveClass("list-decimal", "pl-5");
+    expect(lists[2]).toHaveClass("list-disc", "pl-5");
+  });
+
   it("should handle edge cases and malformed syntax", () => {
     const content =
       "[[InvalidCondition]] incomplete [ syntax and [[Poisoned]] normal";

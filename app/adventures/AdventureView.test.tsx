@@ -1,6 +1,7 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Adventure } from "@/lib/db/adventures";
+import type { AdventureNodePresentation } from "@/lib/db/schema";
 import { AdventureView } from "./AdventureView";
 import { getExampleAdventures } from "./exampleAdventures";
 
@@ -34,6 +35,75 @@ const officialBlinded = {
   official: true,
 };
 
+const calloutVariants: Array<{
+  presentation: Exclude<AdventureNodePresentation, "rules">;
+  label: string;
+  iconClass: string;
+  panelClass: string;
+}> = [
+  {
+    presentation: "note",
+    label: "Note",
+    iconClass: "lucide-info",
+    panelClass: "bg-[#f8f1e4]",
+  },
+  {
+    presentation: "read-aloud",
+    label: "Read Aloud",
+    iconClass: "lucide-book-open",
+    panelClass: "bg-[#edf5f6]",
+  },
+  {
+    presentation: "warning",
+    label: "Warning",
+    iconClass: "lucide-triangle-alert",
+    panelClass: "bg-[#fff0eb]",
+  },
+  {
+    presentation: "tip",
+    label: "GM Tip",
+    iconClass: "lucide-lightbulb",
+    panelClass: "bg-[#f2f7ed]",
+  },
+  {
+    presentation: "optional",
+    label: "Optional",
+    iconClass: "lucide-bookmark",
+    panelClass: "bg-[#f6f0fe]",
+  },
+];
+
+function calloutAdventure(
+  presentation: AdventureNodePresentation,
+  title = "A Callout Title"
+): Pick<Adventure, "name" | "tagline" | "summary" | "creator" | "nodes"> {
+  return {
+    name: "Callout Test",
+    tagline: "",
+    summary: "",
+    creator: {
+      id: "creator",
+      discordId: "creator-discord",
+      username: "test-author",
+      displayName: "Test Author",
+    },
+    nodes: [
+      {
+        id: "callout",
+        parentId: null,
+        kind: "callout",
+        orderIndex: 0,
+        title,
+        content: "Callout body.",
+        encounter: null,
+        statblock: null,
+        referenceRemoved: false,
+        presentation,
+      },
+    ],
+  };
+}
+
 beforeEach(() => {
   mockUseConditions.mockReturnValue({
     allConditions: [officialBlinded],
@@ -47,6 +117,35 @@ afterEach(() => {
 });
 
 describe("AdventureView", () => {
+  it.each(
+    calloutVariants
+  )("renders the $label callout with its shared icon and color treatment", ({
+    presentation,
+    label,
+    iconClass,
+    panelClass,
+  }) => {
+    render(<AdventureView adventure={calloutAdventure(presentation)} />);
+
+    const panel = screen.getByTestId("adventure-callout");
+    expect(panel).toHaveAttribute("data-callout-presentation", presentation);
+    expect(panel).toHaveClass("border-l-4", panelClass);
+    expect(screen.getByText(label)).toBeVisible();
+    expect(panel.querySelector(`svg.${iconClass}`)).not.toBeNull();
+    expect(
+      screen.getByRole("heading", { name: "A Callout Title" })
+    ).toHaveClass("font-slab");
+  });
+
+  it("normalizes legacy rules callouts to a selected note presentation", () => {
+    render(<AdventureView adventure={calloutAdventure("rules")} />);
+
+    const panel = screen.getByTestId("adventure-callout");
+    expect(panel).toHaveAttribute("data-callout-presentation", "note");
+    expect(screen.getByText("Note")).toBeVisible();
+    expect(panel.querySelector("svg.lucide-info")).not.toBeNull();
+  });
+
   it("renders ordered nested content, callouts, and encounter cards", () => {
     const adventure: Pick<
       Adventure,
@@ -153,14 +252,26 @@ describe("AdventureView", () => {
           referenceRemoved: true,
           presentation: null,
         },
+        {
+          id: "second-root",
+          parentId: null,
+          kind: "section",
+          orderIndex: 1,
+          title: "Second Stop",
+          content: "The journey continues.",
+          encounter: null,
+          statblock: null,
+          referenceRemoved: false,
+          presentation: null,
+        },
       ],
     };
 
-    render(<AdventureView adventure={adventure} />);
+    const { container } = render(<AdventureView adventure={adventure} />);
 
-    expect(
-      screen.getByRole("heading", { name: "A Perilous Test" })
-    ).toBeVisible();
+    const title = screen.getByRole("heading", { name: "A Perilous Test" });
+    expect(title).toBeVisible();
+    expect(title).toHaveClass("font-slab");
     expect(screen.getByText("Test Author")).toBeVisible();
     expect(screen.getByText("heroes").tagName.toLowerCase()).toBe("strong");
     expect(screen.getByText("Watch Out")).toBeVisible();
@@ -180,6 +291,17 @@ describe("AdventureView", () => {
       screen.queryByText("The heroes find this item.")
     ).not.toBeInTheDocument();
     expect(screen.getByText("Removed content")).toBeVisible();
+    const separators = container.querySelectorAll('[data-slot="separator"]');
+    expect(separators).toHaveLength(1);
+    expect(separators[0]).toHaveClass(
+      "col-span-full",
+      "mx-auto",
+      "data-[orientation=horizontal]:w-1/2"
+    );
+    expect(
+      screen.getByRole("heading", { name: "Second Stop" }).parentElement
+        ?.parentElement
+    ).toHaveClass("[&>section]:mt-0");
   });
 
   it("provides a valid loadable sample tree", () => {

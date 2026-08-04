@@ -17,7 +17,9 @@ export const adventureInputSchema = z.object({
         encounterId: z.string().uuid().nullable(),
         monsterId: z.string().uuid().nullable(),
         itemId: z.string().uuid().nullable(),
-        presentation: z.enum(["note", "tip", "warning", "rules"]).nullable(),
+        presentation: z
+          .enum(["note", "tip", "warning", "rules", "read-aloud", "optional"])
+          .nullable(),
       })
     )
     .max(200),

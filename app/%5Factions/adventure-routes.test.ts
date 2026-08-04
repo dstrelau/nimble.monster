@@ -89,4 +89,37 @@ describe("adventure mutation route invalidation", () => {
       ["/u/creator/adventures"],
     ]);
   });
+
+  it.each([
+    "read-aloud",
+    "optional",
+    "rules",
+  ])("accepts the %s callout presentation value", async (presentation) => {
+    const input = {
+      ...adventureInput,
+      nodes: [
+        {
+          id: "callout-node",
+          parentId: null,
+          kind: "callout",
+          orderIndex: 0,
+          title: "A callout",
+          content: "Callout content",
+          encounterId: null,
+          monsterId: null,
+          itemId: null,
+          presentation,
+        },
+      ],
+    };
+    mockCreateAdventure.mockResolvedValue({
+      id: "new-adventure",
+      name: input.name,
+    });
+
+    const response = await createAdventurePost(request(input));
+
+    expect(response.status).toBe(201);
+    expect(mockCreateAdventure).toHaveBeenCalledWith("owner", input);
+  });
 });

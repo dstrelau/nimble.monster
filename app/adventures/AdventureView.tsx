@@ -1,13 +1,19 @@
 "use client";
 
 import { CircleSlash2 } from "lucide-react";
+import { Fragment } from "react";
+import {
+  getAdventureCalloutPresentation,
+  normalizeAdventureCalloutPresentation,
+} from "@/app/adventures/calloutPresentations";
 import { getAdventureNodeAnchorId } from "@/components/adventure/AdventureOutline";
 import { EncounterCard } from "@/components/encounter/EncounterCard";
 import { Card as ItemCard } from "@/components/item/Card";
 import { Card as MonsterCard } from "@/components/monster/Card";
 import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import type { Adventure, AdventureNode } from "@/lib/db/adventures";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { toHazardMonsterView } from "@/lib/services/hazards/converters";
@@ -63,22 +69,27 @@ function AdventureNodeList({
   if (children.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {children.map((child) => (
-        <div
-          key={child.id}
-          id={getAdventureNodeAnchorId(child.id)}
-          className={cn(
-            child.kind !== "encounter" && "md:col-span-2 xl:col-span-3"
+    <div className="grid grid-cols-1 gap-1 md:grid-cols-2 xl:grid-cols-3">
+      {children.map((child, index) => (
+        <Fragment key={child.id}>
+          {depth === 0 && index > 0 && (
+            <Separator className="col-span-full mx-auto my-4 data-[orientation=horizontal]:w-1/2" />
           )}
-        >
-          <AdventureNodeView
-            node={child}
-            nodes={nodes}
-            depth={depth}
-            conditions={conditions}
-          />
-        </div>
+          <div
+            id={getAdventureNodeAnchorId(child.id)}
+            className={cn(
+              child.kind !== "encounter" && "md:col-span-2 xl:col-span-3",
+              depth === 0 && index > 0 && "[&>section]:mt-0"
+            )}
+          >
+            <AdventureNodeView
+              node={child}
+              nodes={nodes}
+              depth={depth}
+              conditions={conditions}
+            />
+          </div>
+        </Fragment>
       ))}
     </div>
   );
@@ -103,20 +114,73 @@ function AdventureNodeView({
   ) : null;
 
   if (node.kind === "callout") {
+    const presentation = getAdventureCalloutPresentation(node.presentation);
+    const Icon = presentation.Icon;
+
     return (
       <Card
+        data-callout-presentation={normalizeAdventureCalloutPresentation(
+          node.presentation
+        )}
+        data-testid="adventure-callout"
         className={cn(
-          "my-4 bg-muted/40 shadow-none",
-          node.presentation === "warning" &&
-            "border-amber-500/50 bg-amber-500/10"
+          "relative my-4 overflow-hidden border border-l-4 p-0 shadow-sm",
+          presentation.panelClassName
         )}
       >
-        {node.title && (
-          <CardHeader>
-            <CardTitle>{node.title}</CardTitle>
-          </CardHeader>
-        )}
-        <CardContent>{content}</CardContent>
+        <div
+          aria-hidden="true"
+          className={cn(
+            "pointer-events-none absolute -top-20 -right-16 size-44 rounded-full border-2 opacity-50",
+            presentation.decorationClassName
+          )}
+        />
+        <div
+          aria-hidden="true"
+          className={cn(
+            "pointer-events-none absolute -top-10 -right-6 size-24 rounded-full opacity-40",
+            presentation.decorationClassName
+          )}
+        />
+        <div className="relative z-10 p-5 sm:p-6">
+          <div className="flex items-center gap-3">
+            <span
+              className={cn(
+                "flex size-9 shrink-0 items-center justify-center rounded-lg",
+                presentation.badgeClassName
+              )}
+            >
+              <Icon className="size-5" aria-hidden="true" />
+            </span>
+            <span
+              className={cn(
+                "font-sans text-sm font-bold uppercase tracking-[0.24em]",
+                presentation.accentClassName
+              )}
+            >
+              {presentation.label}
+            </span>
+            <span
+              aria-hidden="true"
+              className={cn("h-px min-w-6 flex-1", presentation.ruleClassName)}
+            />
+          </div>
+          {node.title && (
+            <h3 className="mt-5 font-slab text-2xl font-bold leading-tight sm:text-3xl">
+              {node.title}
+            </h3>
+          )}
+          {content && (
+            <div
+              className={cn(
+                "mt-4 text-base leading-8 sm:text-lg",
+                presentation.accentClassName
+              )}
+            >
+              {content}
+            </div>
+          )}
+        </div>
       </Card>
     );
   }
@@ -177,7 +241,7 @@ function AdventureNodeView({
   }
 
   return (
-    <section className={cn("space-y-3", depth === 0 ? "mt-10" : "mt-6")}>
+    <section className="space-y-1 mt-4">
       {node.kind === "section" && node.title && (
         <NodeHeading depth={depth}>{node.title}</NodeHeading>
       )}
@@ -205,7 +269,7 @@ export function AdventureView({ adventure }: AdventureViewProps) {
   return (
     <article>
       <header className="border-b pb-8 text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+        <h1 className="font-slab text-4xl font-bold tracking-tight sm:text-5xl">
           {adventure.name.trim() || "Untitled adventure"}
         </h1>
         {adventure.tagline && (

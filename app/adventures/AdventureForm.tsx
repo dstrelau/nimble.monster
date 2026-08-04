@@ -20,6 +20,11 @@ import {
   createAdventure,
   updateAdventure,
 } from "@/app/%5Factions/_adventure/contract";
+import {
+  ADVENTURE_CALLOUT_PRESENTATIONS,
+  isAdventureCalloutPresentation,
+  normalizeAdventureCalloutPresentation,
+} from "@/app/adventures/calloutPresentations";
 import { SelectableItemGrid } from "@/app/collections/SelectableItemGrid";
 import {
   ADVENTURE_SECTION_COLORS,
@@ -31,16 +36,11 @@ import { ConditionValidationIcon } from "@/components/condition/ConditionValidat
 import { Goblin } from "@/components/icons/goblin";
 import { MonsterRow } from "@/components/monster/MonsterGroupMinis";
 import { SelectableMonsterGrid } from "@/components/monster/SelectableMonsterGrid";
+import { Attribution } from "@/components/shared/Attribution";
 import { ExampleLoader } from "@/components/shared/ExampleLoader";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -61,6 +61,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { call } from "@/lib/contract";
 import type {
   Adventure,
@@ -68,10 +69,7 @@ import type {
   AdventureNodeInput,
   AdventureStatblock,
 } from "@/lib/db/adventures";
-import type {
-  AdventureNodeKind,
-  AdventureNodePresentation,
-} from "@/lib/db/schema";
+import type { AdventureNodeKind } from "@/lib/db/schema";
 import type { Item } from "@/lib/services/items";
 import type { BestiaryEntry } from "@/lib/services/monsters";
 import type { EncounterOverview, User } from "@/lib/types";
@@ -475,26 +473,40 @@ export function AdventureForm({
           <div className="space-y-3">
             {node.kind === "callout" && (
               <div className="space-y-2">
-                <Label htmlFor={`presentation-${node.id}`}>Callout style</Label>
-                <Select
-                  value={node.presentation ?? "note"}
-                  onValueChange={(presentation: AdventureNodePresentation) =>
-                    updateNode(node.id, { presentation })
-                  }
+                <Label id={`presentation-label-${node.id}`}>
+                  Callout style
+                </Label>
+                <ToggleGroup
+                  type="single"
+                  value={normalizeAdventureCalloutPresentation(
+                    node.presentation
+                  )}
+                  onValueChange={(presentation) => {
+                    if (isAdventureCalloutPresentation(presentation)) {
+                      updateNode(node.id, { presentation });
+                    }
+                  }}
+                  aria-labelledby={`presentation-label-${node.id}`}
+                  className="flex flex-wrap justify-start gap-2"
                 >
-                  <SelectTrigger
-                    id={`presentation-${node.id}`}
-                    className="w-full"
-                  >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="note">Note</SelectItem>
-                    <SelectItem value="tip">Tip</SelectItem>
-                    <SelectItem value="warning">Warning</SelectItem>
-                    <SelectItem value="rules">Rules</SelectItem>
-                  </SelectContent>
-                </Select>
+                  {ADVENTURE_CALLOUT_PRESENTATIONS.map((presentation) => {
+                    const Icon = presentation.Icon;
+                    return (
+                      <ToggleGroupItem
+                        key={presentation.value}
+                        value={presentation.value}
+                        aria-label={presentation.label}
+                        className={cn(
+                          "h-10 rounded-full border bg-transparent px-3 shadow-none",
+                          presentation.pillClassName
+                        )}
+                      >
+                        <Icon className="size-4" aria-hidden="true" />
+                        {presentation.label}
+                      </ToggleGroupItem>
+                    );
+                  })}
+                </ToggleGroup>
               </div>
             )}
 
@@ -730,18 +742,12 @@ export function AdventureForm({
           ) : (
             <div className="space-y-6">
               <Card>
-                <CardHeader>
-                  <CardTitle>Adventure details</CardTitle>
-                  <CardDescription>
-                    Information shown in the adventure header and search
-                    results.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-5">
-                  <div className="space-y-2">
+                <CardHeader className="space-y-5 border-b pb-8 text-center">
+                  <div className="space-y-2 text-left">
                     <Label htmlFor="adventure-name">Name</Label>
                     <Input
                       id="adventure-name"
+                      className="h-auto py-3 text-center font-slab text-4xl font-bold tracking-tight md:text-5xl"
                       required
                       value={draft.name}
                       onChange={(event) =>
@@ -752,10 +758,11 @@ export function AdventureForm({
                       }
                     />
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 text-left">
                     <Label htmlFor="adventure-tagline">Tagline</Label>
                     <Input
                       id="adventure-tagline"
+                      className="h-auto text-center text-lg italic md:text-lg"
                       value={draft.tagline}
                       onChange={(event) =>
                         setDraft((current) => ({
@@ -765,10 +772,18 @@ export function AdventureForm({
                       }
                     />
                   </div>
+                  <Attribution
+                    user={creator}
+                    className="justify-center"
+                    disableLink
+                  />
+                </CardHeader>
+                <CardContent className="pt-6">
                   <div className="space-y-2">
                     <Label htmlFor="adventure-summary">Summary</Label>
                     <Textarea
                       id="adventure-summary"
+                      className="min-h-28 text-lg leading-relaxed md:text-lg"
                       rows={3}
                       value={draft.summary}
                       onChange={(event) =>

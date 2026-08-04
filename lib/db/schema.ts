@@ -1252,7 +1252,13 @@ export type AdventureNodeKind =
   | "callout"
   | "encounter"
   | "statblock";
-export type AdventureNodePresentation = "note" | "tip" | "warning" | "rules";
+export type AdventureNodePresentation =
+  | "note"
+  | "tip"
+  | "warning"
+  | "rules"
+  | "read-aloud"
+  | "optional";
 
 export const adventures = sqliteTable(
   "adventures",
