@@ -75,7 +75,6 @@ import type { EncounterOverview, User } from "@/lib/types";
 import { cn, randomUUID } from "@/lib/utils";
 import { getAdventureUrl } from "@/lib/utils/url";
 import { AdventureView } from "./AdventureView";
-import { getExampleAdventures } from "./exampleAdventures";
 
 interface AdventureFormProps {
   adventureId?: string;
@@ -84,6 +83,7 @@ interface AdventureFormProps {
   creator: User;
   initialStatblocks?: AdventureStatblock[];
   initialRemovedNodeIds?: string[];
+  exampleAdventures?: Record<string, AdventureInput>;
 }
 
 function formDraft(
@@ -149,6 +149,7 @@ export function AdventureForm({
   creator,
   initialStatblocks = [],
   initialRemovedNodeIds = [],
+  exampleAdventures = {},
 }: AdventureFormProps) {
   const router = useRouter();
   const [draft, setDraft] = useState<AdventureInput>(() =>
@@ -191,9 +192,6 @@ export function AdventureForm({
     },
     meta: { suppressErrorToast: true },
   });
-  const examples = getExampleAdventures(
-    encounters.filter((encounter) => encounter.visibility === "public")
-  );
   const availableEncounters = encounters.filter(
     (encounter) =>
       draft.visibility === "private" || encounter.visibility === "public"
@@ -688,19 +686,21 @@ export function AdventureForm({
           <Eye />
           Preview
         </Toggle>
-        {!showPreview && !adventureId && (
-          <ExampleLoader
-            examples={examples}
-            onLoadExample={(key) => {
-              const example = examples[key];
-              if (example) {
-                setDraft(formDraft(example, true));
-                setRemovedNodeIds(new Set());
-              }
-            }}
-            className="mb-0 mr-0"
-          />
-        )}
+        {!showPreview &&
+          !adventureId &&
+          Object.keys(exampleAdventures).length > 0 && (
+            <ExampleLoader
+              examples={exampleAdventures}
+              onLoadExample={(key) => {
+                const example = exampleAdventures[key];
+                if (example) {
+                  setDraft(formDraft(example, true));
+                  setRemovedNodeIds(new Set());
+                }
+              }}
+              className="mb-0 mr-0"
+            />
+          )}
       </div>
 
       <div className="lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-8">

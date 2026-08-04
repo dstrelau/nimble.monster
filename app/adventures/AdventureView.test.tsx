@@ -183,10 +183,10 @@ describe("AdventureView", () => {
   });
 
   it("provides a valid loadable sample tree", () => {
-    const sample = getExampleAdventures([
-      { id: "spiders", name: "Spider Lair" },
-      { id: "wax", name: "Wax-Chamber Maze" },
-    ])["hidden honey cavern"];
+    const sample = getExampleAdventures({
+      giantSpiderId: "giant-spider",
+      waxGolemId: "wax-golem",
+    })["hidden honey cavern"];
     const ids = new Set(sample.nodes.map((node) => node.id));
     const nodesById = new Map(sample.nodes.map((node) => [node.id, node]));
 
@@ -213,20 +213,40 @@ describe("AdventureView", () => {
         return depth <= 2;
       })
     ).toBe(true);
-    expect(sample.nodes).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          kind: "encounter",
-          parentId: "spider-lair",
-          encounterId: "spiders",
-        }),
-        expect.objectContaining({
-          kind: "encounter",
-          parentId: "wax-maze",
-          encounterId: "wax",
-        }),
-      ])
+    expect(
+      sample.nodes.filter((node) => node.kind === "encounter")
+    ).toHaveLength(0);
+    const statblockNodes = sample.nodes.filter(
+      (node) => node.kind === "statblock"
     );
+    expect(statblockNodes).toHaveLength(2);
+    expect(
+      statblockNodes.map(({ parentId, monsterId }) => ({
+        parentId,
+        monsterId,
+      }))
+    ).toEqual([
+      { parentId: "spider-lair", monsterId: "giant-spider" },
+      { parentId: "wax-maze", monsterId: "wax-golem" },
+    ]);
+  });
+
+  it("omits an example statblock when its official monster is unavailable", () => {
+    const sample = getExampleAdventures({ giantSpiderId: "giant-spider" })[
+      "hidden honey cavern"
+    ];
+
+    expect(sample.nodes.filter((node) => node.kind === "statblock")).toEqual([
+      expect.objectContaining({
+        parentId: "spider-lair",
+        monsterId: "giant-spider",
+      }),
+    ]);
+    expect(
+      sample.nodes.some(
+        (node) => node.parentId === "wax-maze" && node.kind === "statblock"
+      )
+    ).toBe(false);
   });
 
   it("passes official conditions to formatted adventure content", () => {

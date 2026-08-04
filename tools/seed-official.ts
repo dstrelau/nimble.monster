@@ -4,14 +4,6 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { and, eq, inArray } from "drizzle-orm";
-import { z } from "zod";
-import { getDatabase } from "@/lib/db/drizzle";
-import {
-  encounters,
-  monsters,
-  monstersEncounters,
-} from "@/lib/db/schema";
 import * as sourceDb from "@/lib/db/source";
 import { checkpoint } from "@/lib/db/client";
 import { validateOfficialAncestriesJSON } from "@/lib/services/ancestries/official";
@@ -23,7 +15,6 @@ import { upsertOfficialClass } from "@/lib/services/classes/repository";
 import { ensureOfficialUser } from "@/lib/services/ensure-official-user";
 import {
   findOrCreateOfficialFamily,
-  OFFICIAL_USER_ID,
   parseJSONAPIMonster,
   validateOfficialMonstersJSON,
 } from "@/lib/services/monsters/official";
@@ -47,39 +38,7 @@ const FILES = [
   "other/hexbinder-subclasses.json",
   "other/hexbinder-spells.json",
   "gmg/bestiary.json",
-  "gmg/encounters.json",
 ];
-
-const officialEncountersSchema = z.object({
-  data: z.array(
-    z.object({
-      type: z.literal("encounters"),
-      id: z.uuid(),
-      attributes: z.object({
-        name: z.string().min(1),
-        description: z.string(),
-        heroCount: z.number().int().positive(),
-        heroLevel: z.number().int().positive(),
-      }),
-      relationships: z.object({
-        monsters: z.object({
-          data: z.array(
-            z.object({
-              type: z.literal("monsters"),
-              id: z.string().min(1),
-              meta: z.object({
-                name: z.string().min(1),
-                quantity: z.number().int().positive(),
-                isPerHero: z.boolean(),
-                heroesPerMonster: z.number().int().positive(),
-              }),
-            })
-          ),
-        }),
-      }),
-    })
-  ),
-});
 
 function readJSON(relPath: string): unknown {
   return JSON.parse(readFileSync(join(DATA_DIR, relPath), "utf8"));
@@ -124,86 +83,6 @@ async function seedMonsters(json: unknown): Promise<number> {
   }
 
   return monsters.length;
-}
-
-async function seedEncounters(json: unknown): Promise<number> {
-  const { data } = officialEncountersSchema.parse(json);
-  const monsterNames = [
-    ...new Set(
-      data.flatMap((encounter) =>
-        encounter.relationships.monsters.data.map(
-          (monster) => monster.meta.name
-        )
-      )
-    ),
-  ];
-  const db = getDatabase();
-  const monsterRows = await db
-    .select({ id: monsters.id, name: monsters.name })
-    .from(monsters)
-    .where(
-      and(
-        eq(monsters.userId, OFFICIAL_USER_ID),
-        inArray(monsters.name, monsterNames)
-      )
-    );
-  const monsterIdsByName = new Map(
-    monsterRows.map((monster) => [monster.name, monster.id])
-  );
-
-  for (const encounter of data) {
-    const monsterLinks = encounter.relationships.monsters.data.map(
-      (monster) => {
-        const monsterId = monsterIdsByName.get(monster.meta.name);
-        if (!monsterId) {
-          throw new Error(
-            `Official encounter "${encounter.attributes.name}" references missing monster "${monster.meta.name}"`
-          );
-        }
-        return {
-          encounterId: encounter.id,
-          monsterId,
-          quantity: monster.meta.quantity,
-          isPerHero: monster.meta.isPerHero,
-          heroesPerMonster: monster.meta.heroesPerMonster,
-        };
-      }
-    );
-
-    await db.transaction(async (tx) => {
-      await tx
-        .insert(encounters)
-        .values({
-          id: encounter.id,
-          creatorId: OFFICIAL_USER_ID,
-          name: encounter.attributes.name,
-          description: encounter.attributes.description,
-          visibility: "public",
-          heroCount: encounter.attributes.heroCount,
-          heroLevel: encounter.attributes.heroLevel,
-          createdAt: "2024-01-01 00:00:00",
-        })
-        .onConflictDoUpdate({
-          target: encounters.id,
-          set: {
-            name: encounter.attributes.name,
-            description: encounter.attributes.description,
-            visibility: "public",
-            heroCount: encounter.attributes.heroCount,
-            heroLevel: encounter.attributes.heroLevel,
-            updatedAt: new Date().toISOString(),
-          },
-        });
-      await tx
-        .delete(monstersEncounters)
-        .where(eq(monstersEncounters.encounterId, encounter.id));
-      if (monsterLinks.length > 0) {
-        await tx.insert(monstersEncounters).values(monsterLinks);
-      }
-    });
-  }
-
-  return data.length;
 }
 
 async function seedAncestries(json: unknown): Promise<number> {
@@ -347,9 +226,6 @@ async function seedFile(relPath: string): Promise<void> {
       break;
     case "spell-schools":
       count = await seedSpellSchools(json);
-      break;
-    case "encounters":
-      count = await seedEncounters(json);
       break;
     default:
       throw new Error(`${relPath}: unknown content type "${firstType}"`);
