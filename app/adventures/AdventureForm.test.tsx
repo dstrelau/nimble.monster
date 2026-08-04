@@ -1,7 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AdventureInput } from "@/lib/db/adventures";
+import type { BestiaryEntryMini } from "@/lib/services/monsters";
 import type { EncounterOverview, User } from "@/lib/types";
 import { AdventureForm } from "./AdventureForm";
 
@@ -53,13 +54,60 @@ const initialValue: AdventureInput = {
   })),
 };
 
-function renderForm() {
+const encounterMonster: BestiaryEntryMini = {
+  id: "11111111-1111-4111-8111-111111111111",
+  hazard: false,
+  level: "2",
+  levelInt: 2,
+  name: "Giant Spider",
+  visibility: "public",
+  createdAt: new Date(),
+  isOfficial: true,
+  hp: 30,
+  legendary: false,
+  minion: false,
+  size: "large",
+  armor: "medium",
+};
+
+const encounter: EncounterOverview = {
+  id: "22222222-2222-4222-8222-222222222222",
+  creator,
+  name: "Spider Lair",
+  visibility: "public",
+  heroCount: 4,
+  heroLevel: 2,
+  monsters: [
+    {
+      monster: encounterMonster,
+      quantity: 1,
+      isPerHero: false,
+    },
+  ],
+};
+
+const encounterValue: AdventureInput = {
+  ...initialValue,
+  nodes: [
+    {
+      ...initialValue.nodes[0],
+      kind: "encounter",
+      title: "",
+      content: "",
+      encounterId: encounter.id,
+    },
+  ],
+};
+
+function renderForm(
+  value: AdventureInput = initialValue,
+  encounters: EncounterOverview[] = []
+) {
   const queryClient = new QueryClient();
-  const encounters: EncounterOverview[] = [];
   return render(
     <QueryClientProvider client={queryClient}>
       <AdventureForm
-        initialValue={initialValue}
+        initialValue={value}
         encounters={encounters}
         creator={creator}
       />
@@ -93,5 +141,24 @@ describe("AdventureForm", () => {
     expect(screen.getAllByTestId("formatting-trigger")).toHaveLength(1);
     expect(screen.queryByText("Content")).not.toBeInTheDocument();
     expect(screen.getAllByLabelText("section content")).toHaveLength(5);
+  });
+
+  it("renders the selected encounter's monster minis beneath its selector", () => {
+    renderForm(encounterValue, [encounter]);
+
+    expect(screen.getByRole("link", { name: "Giant Spider" })).toBeVisible();
+  });
+
+  it("removes monster minis when the encounter selection is cleared", async () => {
+    renderForm(encounterValue, [encounter]);
+
+    fireEvent.click(screen.getByRole("combobox", { name: "Encounter" }));
+    fireEvent.click(
+      await screen.findByRole("option", { name: "Select an encounter" })
+    );
+
+    expect(
+      screen.queryByRole("link", { name: "Giant Spider" })
+    ).not.toBeInTheDocument();
   });
 });

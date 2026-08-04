@@ -1,8 +1,4 @@
-import type {
-  AdventureEncounterReference,
-  AdventureInput,
-  AdventureNodeInput,
-} from "@/lib/db/adventures";
+import type { AdventureInput, AdventureNodeInput } from "@/lib/db/adventures";
 
 const section = (
   id: string,
@@ -42,19 +38,19 @@ const callout = (
   presentation: "note",
 });
 
-const encounter = (
+const statblock = (
   id: string,
-  encounterId: string,
+  monsterId: string,
   parentId: string
 ): AdventureNodeInput => ({
   id,
   parentId,
-  kind: "encounter",
+  kind: "statblock",
   orderIndex: 0,
   title: "",
   content: "",
-  encounterId,
-  monsterId: null,
+  encounterId: null,
+  monsterId,
   itemId: null,
   presentation: null,
 });
@@ -204,29 +200,25 @@ const hiddenHoneyCavern: AdventureInput = {
   ],
 };
 
-export function getExampleAdventures(
-  encounters: AdventureEncounterReference[]
-): Record<string, AdventureInput> {
-  const spiderLair = encounters.find(
-    (candidate) =>
-      candidate.name === "Spider Lair" && candidate.visibility !== "private"
-  );
-  const waxChamberMaze = encounters.find(
-    (candidate) =>
-      candidate.name === "Wax-Chamber Maze" &&
-      candidate.visibility !== "private"
-  );
+export interface HiddenHoneyCavernMonsterIds {
+  giantSpiderId?: string;
+  waxGolemId?: string;
+}
 
+export function getExampleAdventures({
+  giantSpiderId,
+  waxGolemId,
+}: HiddenHoneyCavernMonsterIds = {}): Record<string, AdventureInput> {
   return {
     "hidden honey cavern": {
       ...hiddenHoneyCavern,
       nodes: [
         ...hiddenHoneyCavern.nodes,
-        ...(spiderLair
-          ? [encounter("spider-lair-encounter", spiderLair.id, "spider-lair")]
+        ...(giantSpiderId
+          ? [statblock("spider-lair-monster", giantSpiderId, "spider-lair")]
           : []),
-        ...(waxChamberMaze
-          ? [encounter("wax-maze-encounter", waxChamberMaze.id, "wax-maze")]
+        ...(waxGolemId
+          ? [statblock("wax-maze-monster", waxGolemId, "wax-maze")]
           : []),
       ],
     },

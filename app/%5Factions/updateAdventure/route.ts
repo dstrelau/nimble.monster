@@ -2,10 +2,10 @@ import { trace } from "@opentelemetry/api";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import type { AdventureMutationResult } from "@/app/%5Factions/_adventure/contract";
+import { adventureInputSchema } from "@/app/%5Factions/_adventure/input";
 import { auth } from "@/lib/auth";
-import type { AdventureMutationResult } from "@/lib/contracts/adventure";
 import { updateAdventure } from "@/lib/db/adventures";
-import { adventureInputSchema } from "@/lib/services/adventures/input";
 import { telemetry } from "@/lib/telemetry";
 
 const updateAdventureSchema = z.object({

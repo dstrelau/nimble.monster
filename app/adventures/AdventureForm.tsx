@@ -16,6 +16,10 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import {
+  createAdventure,
+  updateAdventure,
+} from "@/app/%5Factions/_adventure/contract";
 import { SelectableItemGrid } from "@/app/collections/SelectableItemGrid";
 import {
   ADVENTURE_SECTION_COLORS,
@@ -25,6 +29,7 @@ import {
 } from "@/components/adventure/AdventureOutline";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { Goblin } from "@/components/icons/goblin";
+import { MonsterRow } from "@/components/monster/MonsterGroupMinis";
 import { SelectableMonsterGrid } from "@/components/monster/SelectableMonsterGrid";
 import { ExampleLoader } from "@/components/shared/ExampleLoader";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
@@ -52,11 +57,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { call } from "@/lib/contract";
-import { createAdventure, updateAdventure } from "@/lib/contracts/adventure";
 import type {
   Adventure,
   AdventureInput,
@@ -73,7 +78,6 @@ import type { EncounterOverview, User } from "@/lib/types";
 import { cn, randomUUID } from "@/lib/utils";
 import { getAdventureUrl } from "@/lib/utils/url";
 import { AdventureView } from "./AdventureView";
-import { getExampleAdventures } from "./exampleAdventures";
 
 interface AdventureFormProps {
   adventureId?: string;
@@ -82,6 +86,7 @@ interface AdventureFormProps {
   creator: User;
   initialStatblocks?: AdventureStatblock[];
   initialRemovedNodeIds?: string[];
+  exampleAdventures?: Record<string, AdventureInput>;
 }
 
 function formDraft(
@@ -147,6 +152,7 @@ export function AdventureForm({
   creator,
   initialStatblocks = [],
   initialRemovedNodeIds = [],
+  exampleAdventures = {},
 }: AdventureFormProps) {
   const router = useRouter();
   const [draft, setDraft] = useState<AdventureInput>(() =>
@@ -189,9 +195,6 @@ export function AdventureForm({
     },
     meta: { suppressErrorToast: true },
   });
-  const examples = getExampleAdventures(
-    encounters.filter((encounter) => encounter.visibility === "public")
-  );
   const availableEncounters = encounters.filter(
     (encounter) =>
       draft.visibility === "private" || encounter.visibility === "public"
@@ -345,6 +348,12 @@ export function AdventureForm({
     const siblingIndex = siblings.findIndex(
       (candidate) => candidate.id === node.id
     );
+    const selectedEncounter =
+      node.kind === "encounter" && !removedNodeIds.has(node.id)
+        ? availableEncounters.find(
+            (encounter) => encounter.id === node.encounterId
+          )
+        : undefined;
 
     return (
       <div
@@ -522,6 +531,18 @@ export function AdventureForm({
                     ))}
                   </SelectContent>
                 </Select>
+                {selectedEncounter && selectedEncounter.monsters.length > 0 && (
+                  <div className="flex flex-col gap-1 rounded-md border p-3">
+                    {selectedEncounter.monsters.map(
+                      (entry, index, monsters) => (
+                        <div key={entry.monster.id}>
+                          <MonsterRow monster={entry.monster} />
+                          {index < monsters.length - 1 && <Separator />}
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -668,19 +689,21 @@ export function AdventureForm({
           <Eye />
           Preview
         </Toggle>
-        {!showPreview && !adventureId && (
-          <ExampleLoader
-            examples={examples}
-            onLoadExample={(key) => {
-              const example = examples[key];
-              if (example) {
-                setDraft(formDraft(example, true));
-                setRemovedNodeIds(new Set());
-              }
-            }}
-            className="mb-0 mr-0"
-          />
-        )}
+        {!showPreview &&
+          !adventureId &&
+          Object.keys(exampleAdventures).length > 0 && (
+            <ExampleLoader
+              examples={exampleAdventures}
+              onLoadExample={(key) => {
+                const example = exampleAdventures[key];
+                if (example) {
+                  setDraft(formDraft(example, true));
+                  setRemovedNodeIds(new Set());
+                }
+              }}
+              className="mb-0 mr-0"
+            />
+          )}
       </div>
 
       <div className="lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-8">
