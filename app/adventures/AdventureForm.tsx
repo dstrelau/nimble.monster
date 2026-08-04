@@ -16,6 +16,10 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import {
+  createAdventure,
+  updateAdventure,
+} from "@/app/%5Factions/_adventure/contract";
 import { SelectableItemGrid } from "@/app/collections/SelectableItemGrid";
 import {
   ADVENTURE_SECTION_COLORS,
@@ -58,7 +62,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { call } from "@/lib/contract";
-import { createAdventure, updateAdventure } from "@/lib/contracts/adventure";
 import type {
   Adventure,
   AdventureInput,

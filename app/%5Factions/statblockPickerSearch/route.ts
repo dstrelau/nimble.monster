@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import {
-  type StatblockPickerSearchInput,
-  statblockPickerSearchSchema,
-} from "@/lib/contracts/statblock-picker";
-import {
   paginateMyHazards,
   paginatePublicHazards,
 } from "@/lib/services/hazards";
 import { itemsService } from "@/lib/services/items";
 import { monstersService } from "@/lib/services/monsters";
 import { telemetry } from "@/lib/telemetry";
+import {
+  type StatblockPickerSearchInput,
+  statblockPickerSearchSchema,
+} from "./contract";
 
 export const POST = telemetry(async (request: Request) => {
   let body: unknown;

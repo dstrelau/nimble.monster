@@ -1,14 +1,5 @@
 import { keepPreviousData } from "@tanstack/react-query";
 import { call } from "@/lib/contract";
-import {
-  type Jsonify,
-  type PickerHazardsSearchInput,
-  type PickerItemsSearchInput,
-  type PickerMonstersSearchInput,
-  type StatblockPickerSearchResponse,
-  type StatblockPickerSearchWireResponse,
-  statblockPickerSearch,
-} from "@/lib/contracts/statblock-picker";
 import type {
   Item,
   ItemRarityFilter,
@@ -22,6 +13,15 @@ import type {
   PaginateMonstersSortOption,
 } from "@/lib/services/monsters/types";
 import type { Award, Source } from "@/lib/types";
+import {
+  type Jsonify,
+  type PickerHazardsSearchInput,
+  type PickerItemsSearchInput,
+  type PickerMonstersSearchInput,
+  type StatblockPickerSearchResponse,
+  type StatblockPickerSearchWireResponse,
+  statblockPickerSearch,
+} from "./contract";
 
 type PickerMonstersWirePage = Extract<
   StatblockPickerSearchWireResponse,

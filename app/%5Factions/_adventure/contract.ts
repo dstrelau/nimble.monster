@@ -1,4 +1,5 @@
 import { defineRoute } from "@/lib/contract";
+
 import type { AdventureInput } from "@/lib/db/adventures";
 
 export interface AdventureMutationResult {

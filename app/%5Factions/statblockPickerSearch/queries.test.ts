@@ -6,7 +6,7 @@ import {
   pickerPublicHazardsInfiniteQueryOptions,
   pickerPublicItemsInfiniteQueryOptions,
   pickerPublicMonstersInfiniteQueryOptions,
-} from "./statblock-picker-queries";
+} from "./queries";
 
 afterEach(() => {
   vi.unstubAllGlobals();

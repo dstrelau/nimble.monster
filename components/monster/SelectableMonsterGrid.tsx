@@ -5,6 +5,12 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { Crown, PersonStanding } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import {
+  pickerMyHazardsInfiniteQueryOptions,
+  pickerMyMonstersInfiniteQueryOptions,
+  pickerPublicHazardsInfiniteQueryOptions,
+  pickerPublicMonstersInfiniteQueryOptions,
+} from "@/app/%5Factions/statblockPickerSearch/queries";
 import { Card } from "@/components/monster/Card";
 import { MonsterFilterBar } from "@/components/monster/MonsterFilterBar";
 import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
@@ -24,12 +30,6 @@ import type {
   MonsterTypeOption,
   PaginateMonstersSortOption,
 } from "@/lib/services/monsters/types";
-import {
-  pickerMyHazardsInfiniteQueryOptions,
-  pickerMyMonstersInfiniteQueryOptions,
-  pickerPublicHazardsInfiniteQueryOptions,
-  pickerPublicMonstersInfiniteQueryOptions,
-} from "@/lib/statblock-picker-queries";
 import { cn } from "@/lib/utils";
 import { formatSizeKind } from "@/lib/utils/monster";
 

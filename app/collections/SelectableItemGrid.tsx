@@ -4,6 +4,10 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import {
+  pickerMyItemsInfiniteQueryOptions,
+  pickerPublicItemsInfiniteQueryOptions,
+} from "@/app/%5Factions/statblockPickerSearch/queries";
 import { Card } from "@/components/item/Card";
 import { ItemFilterBar } from "@/components/item/ItemFilterBar";
 import { CreatorCombobox } from "@/components/shared/CreatorCombobox";
@@ -15,10 +19,6 @@ import {
 import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 import type { Item, ItemRarityFilter } from "@/lib/services/items";
 import type { PaginateItemsSortOption } from "@/lib/services/items/types";
-import {
-  pickerMyItemsInfiniteQueryOptions,
-  pickerPublicItemsInfiniteQueryOptions,
-} from "@/lib/statblock-picker-queries";
 
 interface SelectableItemGridProps {
   selectedIds: Set<string>;
