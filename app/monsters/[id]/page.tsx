@@ -4,6 +4,7 @@ import { AddToEncounterDialog } from "@/app/monsters/AddToEncounterDialog";
 import { MonsterDetailActions } from "@/app/monsters/MonsterDetailActions";
 import { MonsterRemixes } from "@/app/monsters/MonsterRemixes";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { DetailActionBar } from "@/components/DetailActionBar";
 import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { Card } from "@/components/monster/Card";
 import { MonsterCollections } from "@/components/monster/MonsterCollections";
@@ -109,7 +110,7 @@ export default async function MonsterPage({
       viewerDiscordId={session?.user?.discordId}
       includeEncounters
     >
-      <div className="flex justify-end items-start gap-2 mb-6">
+      <DetailActionBar>
         {session?.user && (
           <>
             <MonsterDetailActions monster={monster} isOwner={isOwner} />
@@ -120,13 +121,13 @@ export default async function MonsterPage({
             />
           </>
         )}
-      </div>
+      </DetailActionBar>
       <div
         className={cn(
-          "mx-auto flex flex-col items-center gap-12",
+          "mx-auto flex w-full flex-col items-center gap-12",
           monster.legendary || (monster.members?.length ?? 0) > 0
-            ? "w-2xl"
-            : "w-md"
+            ? "max-w-2xl"
+            : "max-w-md"
         )}
       >
         <Card

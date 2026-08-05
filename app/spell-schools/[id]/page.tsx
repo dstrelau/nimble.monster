@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { DetailActionBar } from "@/components/DetailActionBar";
 import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { MonsterCollections } from "@/components/monster/MonsterCollections";
 import { ReportEntityDialog } from "@/components/ReportEntityDialog";
@@ -40,7 +41,7 @@ export default async function SchoolPage({ params }: SchoolPageProps) {
       viewerDiscordId={session?.user?.discordId}
     >
       <div>
-        <div className="flex justify-end items-start gap-2 mb-6">
+        <DetailActionBar>
           {isOwner && <SchoolActions spellSchool={spellSchool} />}
           {session?.user && (
             <AddToCollectionDialog
@@ -55,9 +56,9 @@ export default async function SchoolPage({ params }: SchoolPageProps) {
               entityLabel="Spell School"
             />
           )}
-        </div>
+        </DetailActionBar>
 
-        <div className="min-w-lg max-w-xl mx-auto flex flex-col items-center gap-12">
+        <div className="w-full max-w-xl mx-auto flex flex-col items-center gap-12">
           <Card spellSchool={spellSchool} link={false} />
           <MonsterCollections collections={collections} />
         </div>

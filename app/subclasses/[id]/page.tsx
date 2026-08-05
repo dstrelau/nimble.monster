@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { SubclassDetailActions } from "@/app/subclasses/SubclassDetailActions";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { DetailActionBar } from "@/components/DetailActionBar";
 import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { Card } from "@/components/subclass/Card";
 import { auth } from "@/lib/auth";
@@ -90,14 +91,14 @@ export default async function SubclassPage({
       viewerDiscordId={session?.user?.discordId}
     >
       <div>
-        <div className="flex justify-end items-start gap-2 mb-6">
+        <DetailActionBar>
           {session?.user && (
             <AddToCollectionDialog type="subclass" subclassId={subclass.id} />
           )}
           {session?.user && (
             <SubclassDetailActions subclass={subclass} isOwner={isOwner} />
           )}
-        </div>
+        </DetailActionBar>
         <div className="max-w-2xl mx-auto">
           <Card
             className="w-full"

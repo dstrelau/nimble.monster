@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { AncestryDetailActions } from "@/app/ancestries/AncestryDetailActions";
 import { Card } from "@/components/ancestry/Card";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { DetailActionBar } from "@/components/DetailActionBar";
 import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { auth } from "@/lib/auth";
 import { findAncestry } from "@/lib/services/ancestries";
@@ -79,14 +80,14 @@ export default async function AncestryPage({
       viewerDiscordId={session?.user?.discordId}
     >
       <div>
-        <div className="flex justify-end items-start gap-2 mb-6">
+        <DetailActionBar>
           {session?.user && (
             <AddToCollectionDialog type="ancestry" ancestryId={ancestry.id} />
           )}
           {session?.user && (
             <AncestryDetailActions ancestry={ancestry} isOwner={isOwner} />
           )}
-        </div>
+        </DetailActionBar>
         <div className="mx-auto flex flex-col items-center gap-12 max-w-md">
           <Card ancestry={ancestry} link={false} />
         </div>

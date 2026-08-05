@@ -21,7 +21,7 @@ export function ItemCollections({ collections }: ItemCollectionsProps) {
   }
 
   return (
-    <div className="w-md">
+    <div className="w-full max-w-md">
       <h3 className={cn("font-sans text-lg pb-1 border-b-2 mb-4")}>
         Collected In
       </h3>

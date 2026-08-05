@@ -4,6 +4,7 @@ import { AddToEncounterDialog } from "@/app/monsters/AddToEncounterDialog";
 import { MonsterDetailActions } from "@/app/monsters/MonsterDetailActions";
 import { MonsterRemixes } from "@/app/monsters/MonsterRemixes";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { DetailActionBar } from "@/components/DetailActionBar";
 import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { Card } from "@/components/monster/Card";
 import { MonsterCollections } from "@/components/monster/MonsterCollections";
@@ -83,7 +84,7 @@ export default async function HazardPage({
       viewerDiscordId={session?.user?.discordId}
       includeEncounters
     >
-      <div className="flex justify-end items-start gap-2 mb-6">
+      <DetailActionBar>
         {session?.user && (
           <>
             <MonsterDetailActions
@@ -94,8 +95,8 @@ export default async function HazardPage({
             <AddToEncounterDialog monsterId={hazard.id} />
           </>
         )}
-      </div>
-      <div className="mx-auto flex w-md flex-col items-center gap-12">
+      </DetailActionBar>
+      <div className="mx-auto flex w-full max-w-md flex-col items-center gap-12">
         <Card
           monster={toHazardMonsterView(hazard)}
           creator={hazard.creator}

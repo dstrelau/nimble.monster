@@ -4,6 +4,7 @@ import { ItemCollections } from "@/app/items/ItemCollections";
 import { ItemDetailActions } from "@/app/items/ItemDetailActions";
 import { ItemRemixes } from "@/app/items/ItemRemixes";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
+import { DetailActionBar } from "@/components/DetailActionBar";
 import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { Card } from "@/components/item/Card";
 import { auth } from "@/lib/auth";
@@ -93,14 +94,14 @@ export default async function ItemPage({
       viewerDiscordId={session?.user?.discordId}
     >
       <div>
-        <div className="flex justify-end items-start gap-2 mb-6">
+        <DetailActionBar>
           {session?.user && (
             <>
               <ItemDetailActions item={item} isOwner={isOwner} />
               <AddToCollectionDialog type="item" itemId={item.id} />
             </>
           )}
-        </div>
+        </DetailActionBar>
         <div className="flex justify-center">
           <div className="flex flex-col items-center gap-12 max-w-sm w-full">
             <Card item={item} creator={item.creator} link={false} />

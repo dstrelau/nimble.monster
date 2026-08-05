@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { ClassDetailActions } from "@/app/classes/ClassDetailActions";
 import { ClassSubclasses } from "@/app/classes/ClassSubclasses";
 import { ClassDetailView } from "@/components/class/ClassDetailView";
+import { DetailActionBar } from "@/components/DetailActionBar";
 import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { auth } from "@/lib/auth";
 import { findClass, listSubclassMinisForClass } from "@/lib/db";
@@ -98,9 +99,9 @@ export default async function ClassPage({
     >
       <div className="container mx-auto">
         {session?.user && (
-          <div className="flex justify-end items-start gap-2 mb-6">
+          <DetailActionBar>
             <ClassDetailActions classEntity={classEntity} isOwner={isOwner} />
-          </div>
+          </DetailActionBar>
         )}
         <div className="max-w-3xl mx-auto flex flex-col items-center gap-12">
           <ClassDetailView

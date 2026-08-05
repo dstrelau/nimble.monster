@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { CompanionDetailActions } from "@/app/companions/CompanionDetailActions";
 import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
 import { Card } from "@/components/companion/Card";
+import { DetailActionBar } from "@/components/DetailActionBar";
 import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { auth } from "@/lib/auth";
 import {
@@ -105,7 +106,7 @@ export default async function CompanionPage({
       viewerDiscordId={session?.user?.discordId}
     >
       <div>
-        <div className="flex justify-end items-start gap-2 mb-6">
+        <DetailActionBar>
           {session?.user && (
             <AddToCollectionDialog
               type="companion"
@@ -115,7 +116,7 @@ export default async function CompanionPage({
           {session?.user && (
             <CompanionDetailActions companion={companion} isOwner={isOwner} />
           )}
-        </div>
+        </DetailActionBar>
         <div className="max-w-3xl mx-auto">
           <Card
             companion={companion}
