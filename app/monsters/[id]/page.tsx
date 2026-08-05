@@ -43,9 +43,6 @@ export async function generateMetadata({
     .join(" ");
 
   return {
-    metadataBase: process.env.NEXT_PUBLIC_APP_URL
-      ? new URL(process.env.NEXT_PUBLIC_APP_URL)
-      : undefined,
     title: monster.name,
     description: `${monster.name} - ${monsterInfo}${creatorText} | ${SITE_NAME}`,
     openGraph: {

@@ -32,9 +32,6 @@ export async function generateMetadata({
   const itemInfo = item.kind || "Item";
 
   return {
-    metadataBase: process.env.NEXT_PUBLIC_APP_URL
-      ? new URL(process.env.NEXT_PUBLIC_APP_URL)
-      : undefined,
     title: item.name,
     description: `${item.name} - ${itemInfo}${creatorText} | ${SITE_NAME}`,
     openGraph: {

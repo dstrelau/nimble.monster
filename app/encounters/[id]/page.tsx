@@ -40,9 +40,6 @@ export async function generateMetadata({
   const description = `${countText}${creatorText}`;
 
   return {
-    metadataBase: process.env.NEXT_PUBLIC_APP_URL
-      ? new URL(process.env.NEXT_PUBLIC_APP_URL)
-      : undefined,
     title: encounter.name,
     description: `${encounter.name} - ${countText}${creatorText} | ${SITE_NAME}`,
     openGraph: {

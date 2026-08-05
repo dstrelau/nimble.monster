@@ -38,9 +38,6 @@ export async function generateMetadata({
   const title = classEntity.name;
 
   return {
-    metadataBase: process.env.NEXT_PUBLIC_APP_URL
-      ? new URL(process.env.NEXT_PUBLIC_APP_URL)
-      : undefined,
     title,
     description: `${classEntity.name} - Class${creatorText} | ${SITE_NAME}`,
     openGraph: {

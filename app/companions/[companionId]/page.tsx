@@ -38,9 +38,6 @@ export async function generateMetadata({
     .join(" ");
 
   return {
-    metadataBase: process.env.NEXT_PUBLIC_APP_URL
-      ? new URL(process.env.NEXT_PUBLIC_APP_URL)
-      : undefined,
     title: companion.name,
     description: `${companion.name} - ${companionInfo}${creatorText} | ${SITE_NAME}`,
     openGraph: {

@@ -1,4 +1,5 @@
 import "@/app/ui/global.css";
+import type { Metadata } from "next";
 import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
 import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
@@ -25,6 +26,15 @@ const serif = Roboto_Serif({
   style: ["normal", "italic"],
   variable: "--font-roboto-serif",
 });
+
+// Inherited by every route, so relative openGraph/twitter image URLs resolve
+// against the real origin instead of Next's http://localhost:3000 fallback.
+// Without this, link unfurlers (Discord, Slack, ...) get an unreachable image.
+export const metadata: Metadata = {
+  metadataBase: process.env.NEXT_PUBLIC_APP_URL
+    ? new URL(process.env.NEXT_PUBLIC_APP_URL)
+    : undefined,
+};
 
 export default async function RootLayout({
   children,

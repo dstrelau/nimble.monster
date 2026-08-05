@@ -7,9 +7,6 @@ import { SITE_NAME } from "@/lib/utils/branding";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    metadataBase: process.env.NEXT_PUBLIC_APP_URL
-      ? new URL(process.env.NEXT_PUBLIC_APP_URL)
-      : undefined,
     title: "Awards",
     description: `Awards | ${SITE_NAME}`,
   };

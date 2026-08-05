@@ -39,9 +39,6 @@ export async function generateMetadata({
   const title = `${subclass.namePreface} ${subclass.name}`;
 
   return {
-    metadataBase: process.env.NEXT_PUBLIC_APP_URL
-      ? new URL(process.env.NEXT_PUBLIC_APP_URL)
-      : undefined,
     title,
     description: `${subclass.name} - ${subclassInfo}${creatorText} | ${SITE_NAME}`,
     openGraph: {

@@ -32,9 +32,6 @@ export async function generateMetadata({
     : "";
 
   return {
-    metadataBase: process.env.NEXT_PUBLIC_APP_URL
-      ? new URL(process.env.NEXT_PUBLIC_APP_URL)
-      : undefined,
     title: background.name,
     description: `${background.name}${creatorText} | ${SITE_NAME}`,
     openGraph: {
