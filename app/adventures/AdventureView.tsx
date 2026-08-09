@@ -297,12 +297,7 @@ function AdventureNodeView({
   }
 
   const isSection = node.kind === "section";
-  const sectionClassName = cn(
-    "space-y-4",
-    depth === 0 ? "mt-12" : "mt-8",
-    isSection && depth === 1 && "border-l-4 border-border-strong pl-4 sm:pl-6",
-    isSection && depth >= 2 && "border-l-2 border-border-strong/70 pl-3 sm:pl-5"
-  );
+  const sectionClassName = cn("space-y-4", depth === 0 ? "mt-12" : "mt-8");
 
   return (
     <section

@@ -32,21 +32,16 @@ import {
   getAdventureNodeAnchorId,
 } from "@/components/adventure/AdventureOutline";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
+import { EncounterCard } from "@/components/encounter/EncounterCard";
 import { Goblin } from "@/components/icons/goblin";
-import { MonsterRow } from "@/components/monster/MonsterGroupMinis";
+import { Card as ItemCard } from "@/components/item/Card";
+import { Card as MonsterCard } from "@/components/monster/Card";
 import { SelectableMonsterGrid } from "@/components/monster/SelectableMonsterGrid";
 import { Attribution } from "@/components/shared/Attribution";
 import { ExampleLoader } from "@/components/shared/ExampleLoader";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -56,7 +51,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
@@ -69,6 +63,7 @@ import type {
   AdventureStatblock,
 } from "@/lib/db/adventures";
 import type { AdventureNodeKind } from "@/lib/db/schema";
+import { toHazardMonsterView } from "@/lib/services/hazards/converters";
 import type { Item } from "@/lib/services/items";
 import type { BestiaryEntry } from "@/lib/services/monsters";
 import type { EncounterOverview, User } from "@/lib/types";
@@ -159,9 +154,6 @@ export function AdventureForm({
     formDraft(initialValue, false)
   );
   const [showPreview, setShowPreview] = useState(false);
-  const [statblockPickerNodeId, setStatblockPickerNodeId] = useState<
-    string | null
-  >(null);
   const [statblocks, setStatblocks] = useState(
     () =>
       new Map(
@@ -233,7 +225,6 @@ export function AdventureForm({
       return next;
     });
     updateNode(nodeId, { monsterId: entity.id, itemId: null });
-    setStatblockPickerNodeId(null);
   };
 
   const selectItemStatblock = (nodeId: string, entity: Item) => {
@@ -248,7 +239,6 @@ export function AdventureForm({
       return next;
     });
     updateNode(nodeId, { monsterId: null, itemId: entity.id });
-    setStatblockPickerNodeId(null);
   };
 
   const removeNode = (id: string) => {
@@ -363,6 +353,10 @@ export function AdventureForm({
         ? availableEncounters.find(
             (encounter) => encounter.id === node.encounterId
           )
+        : undefined;
+    const selectedStatblock =
+      node.kind === "statblock" && !removedNodeIds.has(node.id)
+        ? statblocks.get(node.monsterId ?? node.itemId ?? "")
         : undefined;
 
     return (
@@ -569,92 +563,79 @@ export function AdventureForm({
                     ))}
                   </SelectContent>
                 </Select>
-                {selectedEncounter && selectedEncounter.monsters.length > 0 && (
-                  <div className="flex flex-col gap-1 rounded-md border p-3">
-                    {selectedEncounter.monsters.map(
-                      (entry, index, monsters) => (
-                        <div key={entry.monster.id}>
-                          <MonsterRow monster={entry.monster} />
-                          {index < monsters.length - 1 && <Separator />}
-                        </div>
-                      )
-                    )}
+                {selectedEncounter && (
+                  <div className="mx-auto w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333333%-1rem)]">
+                    <EncounterCard encounter={selectedEncounter} limit={3} />
                   </div>
                 )}
               </div>
             )}
 
             {node.kind === "statblock" && (
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <Label>Statblock</Label>
-                <div className="flex flex-wrap items-center gap-3 rounded-md border p-3">
-                  <span className="min-w-0 flex-1">
-                    {removedNodeIds.has(node.id)
-                      ? "Removed content"
-                      : node.monsterId || node.itemId
-                        ? (statblocks.get(node.monsterId ?? node.itemId ?? "")
-                            ?.entity.name ?? "Selected statblock")
-                        : "No statblock selected"}
-                  </span>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setStatblockPickerNodeId(node.id)}
-                  >
-                    {node.monsterId || node.itemId ? "Change" : "Select"}
-                  </Button>
-                </div>
-                <Dialog
-                  open={statblockPickerNodeId === node.id}
-                  onOpenChange={(open) =>
-                    setStatblockPickerNodeId(open ? node.id : null)
-                  }
-                >
-                  <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-6xl">
-                    <DialogHeader>
-                      <DialogTitle>Select a statblock</DialogTitle>
-                      <DialogDescription>
-                        Choose one monster, hazard, or item to display in this
-                        adventure.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <Tabs defaultValue="monsters">
-                      <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="monsters">
-                          <Goblin />
-                          Monsters & hazards
-                        </TabsTrigger>
-                        <TabsTrigger value="items">
-                          <Shield />
-                          Items
-                        </TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="monsters" className="pt-4">
-                        <SelectableMonsterGrid
-                          compact
-                          publicOnly={draft.visibility === "public"}
-                          selectedIds={
-                            new Set(node.monsterId ? [node.monsterId] : [])
-                          }
-                          onToggle={(entity) =>
-                            selectMonsterStatblock(node.id, entity)
-                          }
-                        />
-                      </TabsContent>
-                      <TabsContent value="items" className="pt-4">
-                        <SelectableItemGrid
-                          publicOnly={draft.visibility === "public"}
-                          selectedIds={
-                            new Set(node.itemId ? [node.itemId] : [])
-                          }
-                          onToggle={(entity) =>
-                            selectItemStatblock(node.id, entity)
-                          }
-                        />
-                      </TabsContent>
-                    </Tabs>
-                  </DialogContent>
-                </Dialog>
+                {selectedStatblock?.entityType === "monster" && (
+                  <div className="mx-auto w-full max-w-2xl">
+                    <MonsterCard
+                      monster={
+                        selectedStatblock.entity.hazard
+                          ? toHazardMonsterView(selectedStatblock.entity)
+                          : selectedStatblock.entity
+                      }
+                      creator={selectedStatblock.entity.creator}
+                      hideActions
+                      link={false}
+                    />
+                  </div>
+                )}
+                {selectedStatblock?.entityType === "item" && (
+                  <div className="mx-auto w-full max-w-sm">
+                    <ItemCard
+                      item={selectedStatblock.entity}
+                      creator={selectedStatblock.entity.creator}
+                      hideActions
+                      link={false}
+                    />
+                  </div>
+                )}
+                {removedNodeIds.has(node.id) && (
+                  <div className="rounded-md border border-dashed p-3 text-muted-foreground">
+                    Removed content
+                  </div>
+                )}
+                <Tabs defaultValue="monsters">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="monsters">
+                      <Goblin />
+                      Monsters & hazards
+                    </TabsTrigger>
+                    <TabsTrigger value="items">
+                      <Shield />
+                      Items
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="monsters" className="pt-4">
+                    <SelectableMonsterGrid
+                      compact
+                      publicOnly={draft.visibility === "public"}
+                      selectedIds={
+                        new Set(node.monsterId ? [node.monsterId] : [])
+                      }
+                      onToggle={(entity) =>
+                        selectMonsterStatblock(node.id, entity)
+                      }
+                    />
+                  </TabsContent>
+                  <TabsContent value="items" className="pt-4">
+                    <SelectableItemGrid
+                      publicOnly={draft.visibility === "public"}
+                      selectedIds={new Set(node.itemId ? [node.itemId] : [])}
+                      onToggle={(entity) =>
+                        selectItemStatblock(node.id, entity)
+                      }
+                    />
+                  </TabsContent>
+                </Tabs>
               </div>
             )}
 

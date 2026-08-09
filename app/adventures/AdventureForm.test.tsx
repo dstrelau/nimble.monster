@@ -7,7 +7,8 @@ import {
   within,
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { AdventureInput } from "@/lib/db/adventures";
+import type { AdventureInput, AdventureStatblock } from "@/lib/db/adventures";
+import type { Item } from "@/lib/services/items";
 import type { BestiaryEntryMini } from "@/lib/services/monsters";
 import type { EncounterOverview, User } from "@/lib/types";
 import { AdventureForm } from "./AdventureForm";
@@ -22,11 +23,54 @@ vi.mock("@/components/condition/ConditionValidationIcon", () => ({
     </button>
   ),
 }));
+vi.mock("@/components/encounter/EncounterCard", () => ({
+  EncounterCard: ({
+    encounter,
+    limit,
+  }: {
+    encounter: { name: string };
+    limit?: number;
+  }) => (
+    <div>
+      Condensed encounter: {encounter.name} (limit {limit})
+    </div>
+  ),
+}));
 vi.mock("@/app/collections/SelectableItemGrid", () => ({
   SelectableItemGrid: () => <div data-testid="item-grid" />,
 }));
 vi.mock("@/components/monster/SelectableMonsterGrid", () => ({
   SelectableMonsterGrid: () => <div data-testid="monster-grid" />,
+}));
+vi.mock("@/components/item/Card", () => ({
+  Card: ({
+    item,
+    hideActions,
+    link,
+  }: {
+    item: { name: string };
+    hideActions?: boolean;
+    link?: boolean;
+  }) => (
+    <div data-hide-actions={hideActions} data-link={link}>
+      Selected item statblock: {item.name}
+    </div>
+  ),
+}));
+vi.mock("@/components/monster/Card", () => ({
+  Card: ({
+    monster,
+    hideActions,
+    link,
+  }: {
+    monster: { name: string };
+    hideActions?: boolean;
+    link?: boolean;
+  }) => (
+    <div data-hide-actions={hideActions} data-link={link}>
+      Selected monster statblock: {monster.name}
+    </div>
+  ),
 }));
 vi.mock("./AdventureView", () => ({
   ADVENTURE_SECTION_MARKER_COLORS: [
@@ -124,9 +168,34 @@ const calloutValue: AdventureInput = {
   ],
 };
 
+const item: Item = {
+  id: "33333333-3333-4333-8333-333333333333",
+  name: "Honey Wand",
+  rarity: "uncommon",
+  visibility: "public",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  description: "A particularly sweet wand.",
+  creator,
+};
+
+const itemStatblockValue: AdventureInput = {
+  ...initialValue,
+  nodes: [
+    {
+      ...initialValue.nodes[0],
+      kind: "statblock",
+      title: "",
+      content: "",
+      itemId: item.id,
+    },
+  ],
+};
+
 function renderForm(
   value: AdventureInput = initialValue,
-  encounters: EncounterOverview[] = []
+  encounters: EncounterOverview[] = [],
+  initialStatblocks: AdventureStatblock[] = []
 ) {
   const queryClient = new QueryClient();
   return render(
@@ -135,6 +204,7 @@ function renderForm(
         initialValue={value}
         encounters={encounters}
         creator={creator}
+        initialStatblocks={initialStatblocks}
       />
     </QueryClientProvider>
   );
@@ -301,13 +371,23 @@ describe("AdventureForm", () => {
     expect(screen.getAllByLabelText("section content")).toHaveLength(5);
   });
 
-  it("renders the selected encounter's monster minis beneath its selector", () => {
+  it("renders a condensed selected encounter beneath its selector", () => {
     renderForm(encounterValue, [encounter]);
 
-    expect(screen.getByRole("link", { name: "Giant Spider" })).toBeVisible();
+    expect(
+      screen.getByText("Condensed encounter: Spider Lair (limit 3)")
+    ).toBeVisible();
+    expect(
+      screen.getByText("Condensed encounter: Spider Lair (limit 3)")
+        .parentElement
+    ).toHaveClass(
+      "mx-auto",
+      "md:w-[calc(50%-0.75rem)]",
+      "lg:w-[calc(33.333333%-1rem)]"
+    );
   });
 
-  it("removes monster minis when the encounter selection is cleared", async () => {
+  it("removes the encounter card when the selection is cleared", async () => {
     renderForm(encounterValue, [encounter]);
 
     fireEvent.click(screen.getByRole("combobox", { name: "Encounter" }));
@@ -316,7 +396,33 @@ describe("AdventureForm", () => {
     );
 
     expect(
-      screen.queryByRole("link", { name: "Giant Spider" })
+      screen.queryByText("Condensed encounter: Spider Lair (limit 3)")
     ).not.toBeInTheDocument();
+  });
+
+  it("renders the statblock picker inline when no statblock is selected", () => {
+    renderForm({
+      ...itemStatblockValue,
+      nodes: [{ ...itemStatblockValue.nodes[0], itemId: null }],
+    });
+
+    expect(screen.getByTestId("monster-grid")).toBeVisible();
+    expect(screen.getByRole("tab", { name: "Items" })).toBeVisible();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("shows the selected statblock above the inline picker", () => {
+    renderForm(itemStatblockValue, [], [{ entityType: "item", entity: item }]);
+
+    const card = screen.getByText("Selected item statblock: Honey Wand");
+    const picker = screen.getByTestId("monster-grid");
+    expect(card).toBeVisible();
+    expect(card).toHaveAttribute("data-hide-actions", "true");
+    expect(card).toHaveAttribute("data-link", "false");
+    expect(picker).toBeVisible();
+    expect(card.compareDocumentPosition(picker)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING
+    );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });

@@ -389,7 +389,7 @@ describe("AdventureView", () => {
     ).toBeNull();
   });
 
-  it("uses rails and responsive insets for nested regular sections", () => {
+  it("renders nested regular sections without rails or left insets", () => {
     const adventure = calloutAdventure("note");
     adventure.nodes = [
       {
@@ -426,9 +426,19 @@ describe("AdventureView", () => {
       name: "Deep Section",
     }).parentElement;
     expect(nested).toHaveAttribute("data-adventure-section-depth", "1");
-    expect(nested).toHaveClass("border-l-4", "pl-4", "sm:pl-6");
+    expect(nested).not.toHaveClass(
+      "border-l-4",
+      "border-border-strong",
+      "pl-4",
+      "sm:pl-6"
+    );
     expect(deep).toHaveAttribute("data-adventure-section-depth", "2");
-    expect(deep).toHaveClass("border-l-2", "pl-3", "sm:pl-5");
+    expect(deep).not.toHaveClass(
+      "border-l-2",
+      "border-border-strong/70",
+      "pl-3",
+      "sm:pl-5"
+    );
     expect(screen.getByRole("heading", { name: "Nested Section" })).toHaveClass(
       "font-slab"
     );
