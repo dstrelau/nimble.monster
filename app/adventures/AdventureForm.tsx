@@ -7,6 +7,7 @@ import {
   ArrowUp,
   BookOpen,
   Eye,
+  ImageIcon,
   ListTree,
   MessageSquareWarning,
   Plus,
@@ -55,6 +56,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { getAdventureImageUrls } from "@/lib/adventure-images";
 import { call } from "@/lib/contract";
 import type {
   Adventure,
@@ -69,6 +71,7 @@ import type { BestiaryEntry } from "@/lib/services/monsters";
 import type { EncounterOverview, User } from "@/lib/types";
 import { cn, randomUUID } from "@/lib/utils";
 import { getAdventureUrl } from "@/lib/utils/url";
+import { AdventureImageUpload } from "./AdventureImageUpload";
 import {
   ADVENTURE_SECTION_MARKER_COLORS,
   AdventureView,
@@ -115,6 +118,9 @@ function emptyNode(
     encounterId: null,
     monsterId: null,
     itemId: null,
+    imageId: null,
+    imageExtension: null,
+    caption: "",
     presentation: null,
   };
 }
@@ -130,12 +136,15 @@ function normalizeOrder(nodes: AdventureNodeInput[]): AdventureNodeInput[] {
     const siblings = (byParent.get(node.parentId) ?? []).sort(
       (a, b) => a.orderIndex - b.orderIndex
     );
-    const isReference = node.kind === "encounter" || node.kind === "statblock";
+    const hasNoTextContent =
+      node.kind === "encounter" ||
+      node.kind === "statblock" ||
+      node.kind === "image";
     return {
       ...node,
       orderIndex: siblings.findIndex((item) => item.id === node.id),
-      title: isReference ? "" : node.title,
-      content: isReference ? "" : node.content,
+      title: hasNoTextContent ? "" : node.title,
+      content: hasNoTextContent ? "" : node.content,
     };
   });
 }
@@ -201,6 +210,13 @@ export function AdventureForm({
     }));
   };
 
+  const discardAdventureImage = (imageId: string | null | undefined) => {
+    if (!imageId) return;
+    void fetch(`/_actions/adventureImage/${imageId}`, {
+      method: "DELETE",
+    }).catch(() => undefined);
+  };
+
   const addNode = (parentId: string | null) => {
     setDraft((current) => {
       const orderIndex = current.nodes.filter(
@@ -242,29 +258,30 @@ export function AdventureForm({
   };
 
   const removeNode = (id: string) => {
-    setDraft((current) => {
-      const removed = new Set([id]);
-      let changed = true;
-      while (changed) {
-        changed = false;
-        for (const node of current.nodes) {
-          if (
-            node.parentId &&
-            removed.has(node.parentId) &&
-            !removed.has(node.id)
-          ) {
-            removed.add(node.id);
-            changed = true;
-          }
+    const removed = new Set([id]);
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (const node of draft.nodes) {
+        if (
+          node.parentId &&
+          removed.has(node.parentId) &&
+          !removed.has(node.id)
+        ) {
+          removed.add(node.id);
+          changed = true;
         }
       }
-      return {
-        ...current,
-        nodes: normalizeOrder(
-          current.nodes.filter((node) => !removed.has(node.id))
-        ),
-      };
-    });
+    }
+    for (const node of draft.nodes) {
+      if (removed.has(node.id)) discardAdventureImage(node.imageId);
+    }
+    setDraft((current) => ({
+      ...current,
+      nodes: normalizeOrder(
+        current.nodes.filter((node) => !removed.has(node.id))
+      ),
+    }));
   };
 
   const moveNode = (id: string, direction: -1 | 1) => {
@@ -315,6 +332,11 @@ export function AdventureForm({
       orderIndex: node.orderIndex,
       title: node.title,
       content: node.content,
+      image:
+        node.imageId && node.imageExtension
+          ? getAdventureImageUrls(creator.id, node.imageId, node.imageExtension)
+          : null,
+      caption: node.caption ?? "",
       presentation: node.presentation,
       encounter:
         encounters.find((encounter) => encounter.id === node.encounterId) ??
@@ -392,15 +414,23 @@ export function AdventureForm({
             <Select
               value={node.kind}
               onValueChange={(kind: AdventureNodeKind) => {
-                const isReference =
-                  kind === "encounter" || kind === "statblock";
+                if (node.kind === "image" && kind !== "image") {
+                  discardAdventureImage(node.imageId);
+                }
+                const hasNoTextContent =
+                  kind === "encounter" ||
+                  kind === "statblock" ||
+                  kind === "image";
                 updateNode(node.id, {
                   kind,
-                  title: isReference ? "" : node.title,
-                  content: isReference ? "" : node.content,
+                  title: hasNoTextContent ? "" : node.title,
+                  content: hasNoTextContent ? "" : node.content,
                   encounterId: kind === "encounter" ? node.encounterId : null,
                   monsterId: kind === "statblock" ? node.monsterId : null,
                   itemId: kind === "statblock" ? node.itemId : null,
+                  imageId: kind === "image" ? node.imageId : null,
+                  imageExtension: kind === "image" ? node.imageExtension : null,
+                  caption: kind === "image" ? node.caption : "",
                   presentation: kind === "callout" ? "note" : null,
                 });
                 setRemovedNodeIds((current) => {
@@ -430,6 +460,10 @@ export function AdventureForm({
                   <MessageSquareWarning />
                   Callout
                 </SelectItem>
+                <SelectItem value="image" disabled={children.length > 0}>
+                  <ImageIcon />
+                  Image
+                </SelectItem>
                 <SelectItem value="encounter" disabled={children.length > 0}>
                   <Swords />
                   Encounter
@@ -441,6 +475,7 @@ export function AdventureForm({
               </SelectContent>
             </Select>
             {node.kind !== "text" &&
+              node.kind !== "image" &&
               node.kind !== "encounter" &&
               node.kind !== "statblock" && (
                 <div className="min-w-48 flex-1">
@@ -639,19 +674,57 @@ export function AdventureForm({
               </div>
             )}
 
-            {node.kind !== "encounter" && node.kind !== "statblock" && (
-              <div className="space-y-2">
-                <Textarea
-                  id={`content-${node.id}`}
-                  aria-label={`${node.kind} content`}
-                  rows={6}
-                  value={node.content}
-                  onChange={(event) =>
-                    updateNode(node.id, { content: event.target.value })
+            {node.kind === "image" && (
+              <div className="space-y-3">
+                <AdventureImageUpload
+                  image={
+                    node.imageId && node.imageExtension
+                      ? getAdventureImageUrls(
+                          creator.id,
+                          node.imageId,
+                          node.imageExtension
+                        )
+                      : null
                   }
+                  onChange={(image) => {
+                    if (!image) discardAdventureImage(node.imageId);
+                    updateNode(node.id, {
+                      imageId: image?.id ?? null,
+                      imageExtension: image?.extension ?? null,
+                    });
+                  }}
                 />
+                <div className="space-y-2">
+                  <Label htmlFor={`caption-${node.id}`}>
+                    Caption (optional)
+                  </Label>
+                  <Input
+                    id={`caption-${node.id}`}
+                    value={node.caption ?? ""}
+                    maxLength={500}
+                    onChange={(event) =>
+                      updateNode(node.id, { caption: event.target.value })
+                    }
+                  />
+                </div>
               </div>
             )}
+
+            {node.kind !== "image" &&
+              node.kind !== "encounter" &&
+              node.kind !== "statblock" && (
+                <div className="space-y-2">
+                  <Textarea
+                    id={`content-${node.id}`}
+                    aria-label={`${node.kind} content`}
+                    rows={6}
+                    value={node.content}
+                    onChange={(event) =>
+                      updateNode(node.id, { content: event.target.value })
+                    }
+                  />
+                </div>
+              )}
 
             {node.kind === "section" && depth < 2 && (
               <Button
@@ -716,6 +789,9 @@ export function AdventureForm({
               onLoadExample={(key) => {
                 const example = exampleAdventures[key];
                 if (example) {
+                  for (const node of draft.nodes) {
+                    discardAdventureImage(node.imageId);
+                  }
                   setDraft(formDraft(example, true));
                   setRemovedNodeIds(new Set());
                 }

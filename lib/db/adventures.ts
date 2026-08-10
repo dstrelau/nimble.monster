@@ -1,4 +1,9 @@
 import { and, asc, count, eq, inArray, or } from "drizzle-orm";
+import {
+  type AdventureImageAsset,
+  getAdventureImageUrls,
+} from "@/lib/adventure-images";
+import { deleteAdventureImageIfUnreferenced } from "@/lib/services/adventure-images";
 import { findItemsByIds, type Item } from "@/lib/services/items";
 import {
   type BestiaryEntry,
@@ -10,9 +15,11 @@ import { toUser } from "./converters";
 import { getDatabase } from "./drizzle";
 import { findEncounterOverviewsByIds } from "./encounter";
 import {
+  type AdventureImageExtension,
   type AdventureNodeKind,
   type AdventureNodePresentation,
   type AdventureVisibility,
+  adventureImages,
   adventureNodes,
   adventures,
   encounters,
@@ -44,6 +51,8 @@ export interface AdventureNode {
   content: string;
   encounter: EncounterOverview | null;
   statblock: AdventureStatblock | null;
+  image?: AdventureImageAsset | null;
+  caption?: string;
   referenceRemoved: boolean;
   presentation: AdventureNodePresentation | null;
 }
@@ -81,6 +90,9 @@ export interface AdventureNodeInput {
   encounterId: string | null;
   monsterId: string | null;
   itemId: string | null;
+  imageId?: string | null;
+  imageExtension?: AdventureImageExtension | null;
+  caption?: string;
   presentation: AdventureNodePresentation | null;
 }
 
@@ -239,6 +251,15 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
         content: node.content,
         encounter,
         statblock,
+        image:
+          node.kind === "image" && node.imageId && node.imageExtension
+            ? getAdventureImageUrls(
+                row.adventure.userId,
+                node.imageId,
+                node.imageExtension
+              )
+            : null,
+        caption: node.caption,
         referenceRemoved:
           (node.kind === "encounter" && !encounter) ||
           (node.kind === "statblock" && !statblock),
@@ -262,6 +283,7 @@ function validateAdventureInput(input: AdventureInput) {
   }
 
   const nodeIds = new Set<string>();
+  const imageIds = new Set<string>();
   for (const node of input.nodes) {
     if (!node.id || nodeIds.has(node.id)) {
       throw new Error("Adventure sections must have unique IDs");
@@ -272,6 +294,21 @@ function validateAdventureInput(input: AdventureInput) {
     }
     if (node.kind === "encounter" && !node.encounterId) {
       throw new Error("Encounter sections must select an encounter");
+    }
+    if (
+      node.kind === "image" &&
+      (!node.imageId ||
+        !isValidUUID(node.imageId) ||
+        !node.imageExtension ||
+        !["jpg", "png", "webp"].includes(node.imageExtension))
+    ) {
+      throw new Error("Image sections must upload an image");
+    }
+    if (node.kind === "image" && node.imageId) {
+      if (imageIds.has(node.imageId)) {
+        throw new Error("Each adventure image may be used only once");
+      }
+      imageIds.add(node.imageId);
     }
     if (
       node.kind === "statblock" &&
@@ -433,6 +470,10 @@ async function insertAdventureChildren(
           encounterId: node.kind === "encounter" ? node.encounterId : undefined,
           monsterId: node.kind === "statblock" ? node.monsterId : undefined,
           itemId: node.kind === "statblock" ? node.itemId : undefined,
+          imageId: node.kind === "image" ? node.imageId : undefined,
+          imageExtension:
+            node.kind === "image" ? node.imageExtension : undefined,
+          caption: node.kind === "image" ? node.caption?.trim() : "",
           presentation:
             node.kind === "callout" ? (node.presentation ?? "note") : undefined,
         };
@@ -443,6 +484,75 @@ async function insertAdventureChildren(
       if (readyIds.has(pending[index].id)) pending.splice(index, 1);
     }
   }
+}
+
+async function attachAdventureImages(
+  tx: Parameters<
+    Parameters<ReturnType<typeof getDatabase>["transaction"]>[0]
+  >[0],
+  adventureId: string,
+  userId: string,
+  nodes: AdventureNodeInput[]
+) {
+  const requestedImages = new Map(
+    nodes.flatMap((node) =>
+      node.kind === "image" && node.imageId && node.imageExtension
+        ? [[node.imageId, node.imageExtension]]
+        : []
+    )
+  );
+  if (requestedImages.size === 0) return;
+
+  const imageIds = [...requestedImages.keys()];
+  const availableImages = await tx
+    .select({
+      id: adventureImages.id,
+      extension: adventureImages.extension,
+      status: adventureImages.status,
+    })
+    .from(adventureImages)
+    .where(
+      and(
+        eq(adventureImages.userId, userId),
+        inArray(adventureImages.id, imageIds)
+      )
+    );
+  const existingReferences = await tx
+    .select({
+      adventureId: adventureNodes.adventureId,
+      imageId: adventureNodes.imageId,
+    })
+    .from(adventureNodes)
+    .where(inArray(adventureNodes.imageId, imageIds));
+  const referencedAdventureByImage = new Map(
+    existingReferences.flatMap((reference) =>
+      reference.imageId ? [[reference.imageId, reference.adventureId]] : []
+    )
+  );
+  if (
+    availableImages.length !== requestedImages.size ||
+    availableImages.some(
+      (image) =>
+        requestedImages.get(image.id) !== image.extension ||
+        (image.status !== "ready" &&
+          !(
+            image.status === "attached" &&
+            referencedAdventureByImage.get(image.id) === adventureId
+          ))
+    )
+  ) {
+    throw new Error("One or more adventure images are unavailable");
+  }
+
+  await tx
+    .update(adventureImages)
+    .set({ status: "attached", updatedAt: new Date().toISOString() })
+    .where(
+      and(
+        inArray(adventureImages.id, imageIds),
+        eq(adventureImages.status, "ready")
+      )
+    );
 }
 
 export async function createAdventure(
@@ -458,6 +568,7 @@ export async function createAdventure(
   const id = crypto.randomUUID();
 
   await db.transaction(async (tx) => {
+    await attachAdventureImages(tx, id, userId, input.nodes);
     await tx.insert(adventures).values({
       id,
       userId,
@@ -492,8 +603,17 @@ export async function updateAdventure(
     .where(and(eq(adventures.id, id), eq(adventures.userId, userId)))
     .limit(1);
   if (!existing) throw new Error("Adventure not found");
+  const previousImageIds = new Set(
+    (
+      await db
+        .select({ imageId: adventureNodes.imageId })
+        .from(adventureNodes)
+        .where(eq(adventureNodes.adventureId, id))
+    ).flatMap((node) => (node.imageId ? [node.imageId] : []))
+  );
 
   await db.transaction(async (tx) => {
+    await attachAdventureImages(tx, id, userId, input.nodes);
     await tx
       .update(adventures)
       .set({
@@ -510,5 +630,13 @@ export async function updateAdventure(
 
   const adventure = await findAdventure(id);
   if (!adventure) throw new Error("Failed to update adventure");
+  const currentImageIds = new Set(
+    input.nodes.flatMap((node) => (node.imageId ? [node.imageId] : []))
+  );
+  await Promise.all(
+    [...previousImageIds]
+      .filter((imageId) => !currentImageIds.has(imageId))
+      .map((imageId) => deleteAdventureImageIfUnreferenced(imageId, userId))
+  );
   return adventure;
 }

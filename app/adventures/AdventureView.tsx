@@ -12,6 +12,14 @@ import { Card as MonsterCard } from "@/components/monster/Card";
 import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
 import { Card } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import type { Adventure, AdventureNode } from "@/lib/db/adventures";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { toHazardMonsterView } from "@/lib/services/hazards/converters";
@@ -275,6 +283,51 @@ function AdventureNodeView({
           />
         )}
       </section>
+    );
+  }
+
+  if (node.kind === "image") {
+    if (!node.image) return null;
+    return (
+      <figure className={cn("space-y-2", depth === 0 ? "my-8" : "my-5")}>
+        <Dialog>
+          <DialogTrigger asChild>
+            <button
+              type="button"
+              className="mx-auto block max-w-full cursor-zoom-in overflow-hidden rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:max-w-[50%]"
+              aria-label={
+                node.caption
+                  ? `View full size: ${node.caption}`
+                  : "View image full size"
+              }
+            >
+              {/* biome-ignore lint/performance/noImgElement: This is an already pre-sized Tigris image. */}
+              <img
+                src={node.image.displayUrl}
+                alt={node.caption}
+                className="max-h-[70vh] w-auto max-w-full object-contain"
+              />
+            </button>
+          </DialogTrigger>
+          <DialogContent className="max-h-[calc(100vh-2rem)] max-w-[calc(100vw-2rem)] border-0 bg-black/90 p-4 sm:max-w-[calc(100vw-2rem)]">
+            <DialogHeader className="sr-only">
+              <DialogTitle>{node.caption || "Adventure image"}</DialogTitle>
+              <DialogDescription>Full-size adventure image</DialogDescription>
+            </DialogHeader>
+            {/* biome-ignore lint/performance/noImgElement: The lightbox intentionally displays the full-resolution original. */}
+            <img
+              src={node.image.originalUrl}
+              alt={node.caption}
+              className="mx-auto max-h-[calc(100vh-4rem)] max-w-full object-contain"
+            />
+          </DialogContent>
+        </Dialog>
+        {node.caption && (
+          <figcaption className="text-center text-sm italic text-muted-foreground">
+            {node.caption}
+          </figcaption>
+        )}
+      </figure>
     );
   }
 

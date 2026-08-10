@@ -82,7 +82,10 @@ vi.mock("./AdventureView", () => ({
   AdventureView: () => <div data-testid="adventure-preview" />,
 }));
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 const creator: User = {
   id: "creator",
@@ -188,6 +191,32 @@ const itemStatblockValue: AdventureInput = {
       title: "",
       content: "",
       itemId: item.id,
+    },
+  ],
+};
+
+const imageValue: AdventureInput = {
+  ...initialValue,
+  nodes: [
+    {
+      ...initialValue.nodes[0],
+      kind: "image",
+      title: "",
+      content: "",
+      imageId: null,
+      imageExtension: null,
+      caption: "",
+    },
+  ],
+};
+
+const uploadedImageValue: AdventureInput = {
+  ...imageValue,
+  nodes: [
+    {
+      ...imageValue.nodes[0],
+      imageId: "11111111-1111-4111-8111-111111111111",
+      imageExtension: "png",
     },
   ],
 };
@@ -405,6 +434,39 @@ describe("AdventureForm", () => {
       "md:w-[calc(50%-0.75rem)]",
       "lg:w-[calc(33.333333%-1rem)]"
     );
+  });
+
+  it("shows a drop target, file picker, and optional caption for images", () => {
+    renderForm(imageValue);
+
+    expect(
+      screen.getByRole("group", { name: "Adventure image upload" })
+    ).toHaveClass("border-dashed");
+    expect(screen.getByRole("button", { name: "Choose file" })).toBeVisible();
+    expect(screen.getByLabelText("Choose adventure image")).toHaveAttribute(
+      "accept",
+      "image/jpeg,image/png,image/webp"
+    );
+    expect(screen.getByLabelText("Caption (optional)")).toBeVisible();
+    expect(screen.queryByLabelText("image content")).not.toBeInTheDocument();
+  });
+
+  it("requests safe cleanup when an uploaded image is removed", () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response(null, { status: 204 }));
+    vi.stubGlobal("fetch", fetchMock);
+    renderForm(uploadedImageValue);
+
+    fireEvent.click(screen.getByRole("button", { name: "Remove image" }));
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/_actions/adventureImage/11111111-1111-4111-8111-111111111111",
+      { method: "DELETE" }
+    );
+    expect(
+      screen.getByRole("group", { name: "Adventure image upload" })
+    ).toBeVisible();
   });
 
   it("removes the encounter card when the selection is cleared", async () => {

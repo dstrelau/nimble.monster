@@ -130,6 +130,7 @@ Workflow:
 
 - When the user asks the agent to remember something, persist it in this project-level `AGENTS.md` rather than relying only on the current thread's conversation context.
 - For color changes, always show the final result in both light and dark mode.
+- After significant feature additions or subsequent changes that add or alter material functionality, end the turn with a technical explanation covering the architecture and data flow, code reused/extended/added, environment-specific behavior, validation and security boundaries, and any important limitations or follow-up concerns.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

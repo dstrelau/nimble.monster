@@ -1250,8 +1250,15 @@ export type AdventureNodeKind =
   | "section"
   | "text"
   | "callout"
+  | "image"
   | "encounter"
   | "statblock";
+export type AdventureImageExtension = "jpg" | "png" | "webp";
+export type AdventureImageStatus =
+  | "uploading"
+  | "ready"
+  | "attached"
+  | "deleting";
 export type AdventureNodePresentation =
   | "note"
   | "tip"
@@ -1295,6 +1302,30 @@ export const adventures = sqliteTable(
   ]
 );
 
+export const adventureImages = sqliteTable(
+  "adventure_images",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    extension: text("extension").$type<AdventureImageExtension>().notNull(),
+    status: text("status")
+      .$type<AdventureImageStatus>()
+      .notNull()
+      .default("uploading"),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [
+    index("idx_adventure_images_user_id").on(table.userId),
+    index("idx_adventure_images_status_created_at").on(
+      table.status,
+      table.createdAt
+    ),
+  ]
+);
+
 export const adventureNodes = sqliteTable(
   "adventure_nodes",
   {
@@ -1327,11 +1358,18 @@ export const adventureNodes = sqliteTable(
       onDelete: "set null",
       onUpdate: "cascade",
     }),
+    imageId: text("image_id").references(() => adventureImages.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    imageExtension: text("image_extension").$type<AdventureImageExtension>(),
+    caption: text("caption").notNull().default(""),
     presentation: text("presentation").$type<AdventureNodePresentation>(),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },
   (table) => [
+    unique("adventure_nodes_image_id_unique").on(table.imageId),
     index("idx_adventure_nodes_parent_order").on(
       table.adventureId,
       table.parentId,
@@ -1347,3 +1385,4 @@ export type AdventureRow = typeof adventures.$inferSelect;
 export type AdventureInsert = typeof adventures.$inferInsert;
 export type AdventureNodeRow = typeof adventureNodes.$inferSelect;
 export type AdventureNodeInsert = typeof adventureNodes.$inferInsert;
+export type AdventureImageRow = typeof adventureImages.$inferSelect;

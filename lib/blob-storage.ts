@@ -1,12 +1,17 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectsCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 export interface BlobStorageResult {
   url: string;
   downloadUrl: string;
 }
 
+export const LOCAL_BLOB_URL_PREFIX = "/blob-storage";
 const LOCAL_BLOB_DIR = join(process.cwd(), "public", "blob-storage");
 
 let s3Client: S3Client | null = null;
@@ -44,7 +49,7 @@ export async function uploadBlob(
     await mkdir(dirname(filePath), { recursive: true });
     await writeFile(filePath, buffer);
 
-    const localUrl = `/blob-storage/${filename}`;
+    const localUrl = `${LOCAL_BLOB_URL_PREFIX}/${filename}`;
     return {
       url: localUrl,
       downloadUrl: localUrl,
@@ -85,6 +90,34 @@ export async function uploadBlob(
   throw new Error(
     "Failed to upload blob to Tigris: unexpected retry exhaustion"
   );
+}
+
+export async function deleteBlobs(filenames: string[]): Promise<void> {
+  if (filenames.length === 0) return;
+  const bucket = process.env.NEXT_PUBLIC_BUCKET_NAME;
+  const isLocal = process.env.NODE_ENV === "development" || !bucket;
+
+  if (isLocal) {
+    await Promise.all(
+      filenames.map((filename) =>
+        rm(join(LOCAL_BLOB_DIR, filename), { force: true })
+      )
+    );
+    return;
+  }
+
+  const result = await getS3Client().send(
+    new DeleteObjectsCommand({
+      Bucket: bucket,
+      Delete: {
+        Objects: filenames.map((filename) => ({ Key: filename })),
+        Quiet: true,
+      },
+    })
+  );
+  if (result.Errors && result.Errors.length > 0) {
+    throw new Error(`Failed to delete ${result.Errors.length} blob object(s)`);
+  }
 }
 
 export function generateBlobFilename(

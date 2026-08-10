@@ -57,4 +57,22 @@ describe("adventure nesting validation", () => {
       )
     ).rejects.toThrow("Adventure content may be nested only two levels");
   });
+
+  it("rejects using the same image in multiple sections", async () => {
+    const imageId = "11111111-1111-4111-8111-111111111111";
+    const firstImage: AdventureNodeInput = {
+      ...node("first-image", "image", null),
+      imageId,
+      imageExtension: "png",
+    };
+    const secondImage: AdventureNodeInput = {
+      ...node("second-image", "image", null),
+      imageId,
+      imageExtension: "png",
+    };
+
+    await expect(
+      createAdventure("user-1", adventure([firstImage, secondImage]))
+    ).rejects.toThrow("Each adventure image may be used only once");
+  });
 });

@@ -62,6 +62,9 @@ export default async function EditAdventurePage({ params }: PageProps) {
               node.statblock?.entityType === "item"
                 ? node.statblock.entity.id
                 : null,
+            imageId: node.image?.id ?? null,
+            imageExtension: node.image?.extension ?? null,
+            caption: node.caption,
             presentation: node.presentation,
           })),
         }}

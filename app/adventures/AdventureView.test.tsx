@@ -1,4 +1,10 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Adventure } from "@/lib/db/adventures";
 import type { AdventureNodePresentation } from "@/lib/db/schema";
@@ -648,5 +654,65 @@ describe("AdventureView", () => {
     await waitFor(() => {
       expect(screen.getByText("Blinded")).toHaveClass("cursor-default");
     });
+  });
+
+  it("renders an image caption and opens the original in a lightbox", () => {
+    const adventure: Pick<
+      Adventure,
+      "name" | "tagline" | "summary" | "creator" | "nodes"
+    > = {
+      name: "Mapped Adventure",
+      tagline: "",
+      summary: "",
+      creator: {
+        id: "creator",
+        discordId: "creator-discord",
+        username: "test-author",
+        displayName: "Test Author",
+      },
+      nodes: [
+        {
+          id: "map",
+          parentId: null,
+          kind: "image",
+          orderIndex: 0,
+          title: "",
+          content: "",
+          encounter: null,
+          statblock: null,
+          image: {
+            id: "image-id",
+            extension: "png",
+            originalUrl: "/original.png",
+            thumbnailUrl: "/thumbnail.webp",
+            displayUrl: "/display.webp",
+          },
+          caption: "Map of the haunted keep",
+          referenceRemoved: false,
+          presentation: null,
+        },
+      ],
+    };
+
+    render(<AdventureView adventure={adventure} />);
+
+    const caption = screen.getByText("Map of the haunted keep");
+    expect(caption.tagName.toLowerCase()).toBe("figcaption");
+    expect(caption).toHaveClass("italic");
+    const trigger = screen.getByRole("button", {
+      name: "View full size: Map of the haunted keep",
+    });
+    expect(trigger).toHaveClass("max-w-full", "sm:max-w-[50%]");
+    expect(trigger.querySelector("img")).toHaveAttribute(
+      "src",
+      "/display.webp"
+    );
+
+    fireEvent.click(trigger);
+
+    expect(screen.getByRole("dialog").querySelector("img")).toHaveAttribute(
+      "src",
+      "/original.png"
+    );
   });
 });
