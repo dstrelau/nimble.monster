@@ -29,6 +29,7 @@ import {
 } from "./schema";
 
 export interface AdventureCounts {
+  adventures: number;
   encounters: number;
 }
 
@@ -106,14 +107,33 @@ export interface AdventureInput {
 
 export async function getAdventureCounts(): Promise<AdventureCounts> {
   const db = getDatabase();
-  const [encounterCount] = await db
-    .select({ count: count() })
-    .from(encounters)
-    .where(eq(encounters.visibility, "public"));
+  const [[adventureCount], [encounterCount]] = await Promise.all([
+    db
+      .select({ count: count() })
+      .from(adventures)
+      .where(eq(adventures.visibility, "public")),
+    db
+      .select({ count: count() })
+      .from(encounters)
+      .where(eq(encounters.visibility, "public")),
+  ]);
 
   return {
+    adventures: adventureCount?.count ?? 0,
     encounters: encounterCount?.count ?? 0,
   };
+}
+
+export async function listPublicAdventures(): Promise<AdventureOverview[]> {
+  const db = getDatabase();
+  const rows = await db
+    .select({ adventure: adventures, creator: users })
+    .from(adventures)
+    .innerJoin(users, eq(adventures.userId, users.id))
+    .where(eq(adventures.visibility, "public"))
+    .orderBy(asc(adventures.name));
+
+  return rows.map(toAdventureOverview);
 }
 
 export async function listAdventuresForUser(
@@ -127,7 +147,17 @@ export async function listAdventuresForUser(
     .where(eq(adventures.userId, userId))
     .orderBy(asc(adventures.name));
 
-  return rows.map(({ adventure, creator }) => ({
+  return rows.map(toAdventureOverview);
+}
+
+function toAdventureOverview({
+  adventure,
+  creator,
+}: {
+  adventure: typeof adventures.$inferSelect;
+  creator: typeof users.$inferSelect;
+}): AdventureOverview {
+  return {
     id: adventure.id,
     name: adventure.name,
     tagline: adventure.tagline,
@@ -136,7 +166,7 @@ export async function listAdventuresForUser(
     creator: toUser(creator),
     createdAt: adventure.createdAt ? new Date(adventure.createdAt) : new Date(),
     updatedAt: adventure.updatedAt ? new Date(adventure.updatedAt) : new Date(),
-  }));
+  };
 }
 
 export async function listPublicAdventuresForUser(
@@ -152,16 +182,7 @@ export async function listPublicAdventuresForUser(
     )
     .orderBy(asc(adventures.name));
 
-  return rows.map(({ adventure, creator }) => ({
-    id: adventure.id,
-    name: adventure.name,
-    tagline: adventure.tagline,
-    summary: adventure.summary,
-    visibility: adventure.visibility,
-    creator: toUser(creator),
-    createdAt: adventure.createdAt ? new Date(adventure.createdAt) : new Date(),
-    updatedAt: adventure.updatedAt ? new Date(adventure.updatedAt) : new Date(),
-  }));
+  return rows.map(toAdventureOverview);
 }
 
 export async function findAdventure(id: string): Promise<Adventure | null> {

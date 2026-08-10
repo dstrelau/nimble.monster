@@ -125,6 +125,7 @@ vi.mock("drizzle-orm", () => ({
 
 import {
   listAdventuresForUser,
+  listPublicAdventures,
   listPublicAdventuresForUser,
 } from "./adventures";
 
@@ -154,6 +155,21 @@ beforeEach(() => {
 });
 
 describe("adventure privacy-aware listings", () => {
+  it("lists public adventures across all creators", async () => {
+    mockState.queueRows([
+      row("owner-public", "owner", "public"),
+      row("owner-private", "owner", "private"),
+      row("other-public", "other", "public"),
+    ]);
+
+    const result = await listPublicAdventures();
+
+    expect(result.map((adventure) => adventure.id)).toEqual([
+      "owner-public",
+      "other-public",
+    ]);
+  });
+
   it("lists both owner visibilities but excludes other owners", async () => {
     mockState.queueRows([
       row("owner-public", "owner", "public"),

@@ -5,6 +5,7 @@ import {
   Drama,
   HandFist,
   HeartHandshake,
+  Map as MapIcon,
   Scroll,
   Shield,
   Swords,
@@ -139,6 +140,14 @@ export default async function CreatePage() {
               description="Groups of monsters for combat."
               disabled={!isAuthenticated}
               disabledMessage="You must signin to create an Encounter."
+            />
+            <CreateCard
+              href="/adventures/new"
+              icon={<MapIcon className="size-16" />}
+              title="Adventure"
+              description="Build an adventure from scenes, encounters, and references."
+              disabled={!isAuthenticated}
+              disabledMessage="You must signin to create an Adventure."
             />
             {isAuthenticated && (
               <CreateCard
