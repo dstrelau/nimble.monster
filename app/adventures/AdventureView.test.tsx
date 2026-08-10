@@ -293,6 +293,12 @@ describe("AdventureView", () => {
       "text-2xl",
       "sm:text-3xl"
     );
+    expect(
+      screen.getByRole("link", { name: "Link to First Stop" })
+    ).toHaveAttribute("href", "#adventure-node-root");
+    expect(
+      screen.getByRole("link", { name: "Link to First Stop" })
+    ).toHaveClass("opacity-0", "group-hover:opacity-100");
     expect(screen.getByRole("heading", { name: "Watch Out" })).toHaveClass(
       "text-sm",
       "sm:text-base"

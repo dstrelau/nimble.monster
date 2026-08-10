@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleSlash2 } from "lucide-react";
+import { CircleSlash2, Hash } from "lucide-react";
 import {
   getAdventureCalloutPresentation,
   normalizeAdventureCalloutPresentation,
@@ -36,28 +36,48 @@ interface SectionMarkerData {
 
 function NodeHeading({
   depth,
-  children,
+  title,
+  anchorId,
 }: {
   depth: number;
-  children: React.ReactNode;
+  title: string;
+  anchorId: string;
 }) {
+  const content = (
+    <>
+      {title}
+      <a
+        href={`#${anchorId}`}
+        aria-label={`Link to ${title}`}
+        className="text-muted-foreground opacity-0 hover:text-foreground group-hover:opacity-100 focus-visible:opacity-100"
+      >
+        <Hash className="size-5" aria-hidden="true" />
+      </a>
+    </>
+  );
+  const className =
+    "group flex w-fit items-center gap-1.5 font-slab font-bold leading-tight";
+
   if (depth === 0) {
     return (
-      <h2 className="font-slab text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
-        {children}
+      <h2
+        aria-label={title}
+        className={cn(className, "text-2xl tracking-tight sm:text-3xl")}
+      >
+        {content}
       </h2>
     );
   }
   if (depth === 1) {
     return (
-      <h3 className="font-slab text-xl font-bold leading-tight sm:text-2xl">
-        {children}
+      <h3 aria-label={title} className={cn(className, "text-xl sm:text-2xl")}>
+        {content}
       </h3>
     );
   }
   return (
-    <h4 className="font-slab text-lg font-bold leading-tight sm:text-xl">
-      {children}
+    <h4 aria-label={title} className={cn(className, "text-lg sm:text-xl")}>
+      {content}
     </h4>
   );
 }
@@ -308,7 +328,11 @@ function AdventureNodeView({
         <SectionMarker marker={sectionMarker} />
       )}
       {isSection && node.title && (
-        <NodeHeading depth={depth}>{node.title}</NodeHeading>
+        <NodeHeading
+          depth={depth}
+          title={node.title}
+          anchorId={getAdventureNodeAnchorId(node.id)}
+        />
       )}
       {content && (
         <div
