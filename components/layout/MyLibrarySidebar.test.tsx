@@ -131,7 +131,7 @@ describe("MyLibrarySidebar", () => {
     ).toBeInTheDocument();
   });
 
-  it("hides only the Adventures item when its count is zero", () => {
+  it("shows Adventures when its count is zero", () => {
     render(
       <MyLibrarySidebar counts={{ ...counts, adventures: 0, monsters: 0 }} />
     );
@@ -140,14 +140,14 @@ describe("MyLibrarySidebar", () => {
       name: "My library sidebar",
     });
     expect(
-      within(navigation).queryByRole("link", { name: /Adventures/ })
-    ).not.toBeInTheDocument();
+      within(navigation).getByRole("link", { name: "Adventures 0" })
+    ).toHaveAttribute("href", "/my/adventures");
     expect(
       within(navigation).getByRole("link", { name: "Monsters 0" })
     ).toBeInTheDocument();
   });
 
-  it("hides Adventures for a profile with only private adventures", () => {
+  it("shows Adventures for a profile with no public adventures", () => {
     pathname = "/u/creator/adventures";
     render(
       <MyLibrarySidebar
@@ -161,8 +161,8 @@ describe("MyLibrarySidebar", () => {
       name: "Public library sidebar",
     });
     expect(
-      within(navigation).queryByRole("link", { name: /Adventures/ })
-    ).not.toBeInTheDocument();
+      within(navigation).getByRole("link", { name: "Adventures 0" })
+    ).toHaveAttribute("href", "/u/creator/adventures");
     expect(
       within(navigation).getByRole("link", { name: "Monsters 12" })
     ).toBeInTheDocument();

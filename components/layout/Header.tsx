@@ -1,7 +1,15 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen, Menu, Plus, Swords, TriangleAlert, X } from "lucide-react";
+import {
+  BookOpen,
+  Map as MapIcon,
+  Menu,
+  Plus,
+  Swords,
+  TriangleAlert,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -106,6 +114,12 @@ const GEAR_ITEMS: (Omit<NavMenuItem, "count"> & {
 const ADVENTURE_ITEMS: (Omit<NavMenuItem, "count"> & {
   countKey: keyof AdventureCounts;
 })[] = [
+  {
+    href: "/adventures",
+    label: "Adventures",
+    icon: MapIcon,
+    countKey: "adventures",
+  },
   {
     href: "/encounters",
     label: "Encounters",

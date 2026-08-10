@@ -24,13 +24,6 @@ interface LibraryNavigationProps extends MyLibrarySidebarProps {
   onNavigate?: () => void;
 }
 
-function isLibraryItemVisible(
-  item: (typeof MY_LIBRARY_GROUPS)[number]["items"][number],
-  counts: MyLibraryCounts
-) {
-  return item.key !== "adventures" || counts.adventures > 0;
-}
-
 function LibraryNavigation({
   counts,
   profileHref,
@@ -51,44 +44,42 @@ function LibraryNavigation({
             </h2>
           )}
           <ul className="space-y-0.5">
-            {group.items
-              .filter((item) => isLibraryItemVisible(item, counts))
-              .map((item) => {
-                const href = profileHref
-                  ? `${profileHref}/${item.key}`
-                  : item.href;
-                const active = profileHref
-                  ? pathname === href
-                  : pathname === item.href;
+            {group.items.map((item) => {
+              const href = profileHref
+                ? `${profileHref}/${item.key}`
+                : item.href;
+              const active = profileHref
+                ? pathname === href
+                : pathname === item.href;
 
-                return (
-                  <li key={item.key}>
-                    <Link
-                      href={href}
-                      aria-current={active ? "page" : undefined}
-                      onClick={onNavigate}
+              return (
+                <li key={item.key}>
+                  <Link
+                    href={href}
+                    aria-current={active ? "page" : undefined}
+                    onClick={onNavigate}
+                    className={cn(
+                      "group flex items-center gap-2 rounded-md border border-transparent px-2 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
+                      active &&
+                        "border-border bg-accent text-accent-foreground shadow-xs"
+                    )}
+                  >
+                    <item.icon
                       className={cn(
-                        "group flex items-center gap-2 rounded-md border border-transparent px-2 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
-                        active &&
-                          "border-border bg-accent text-accent-foreground shadow-xs"
+                        "size-4 shrink-0 text-muted-foreground group-hover:text-primary",
+                        active && "text-primary"
                       )}
-                    >
-                      <item.icon
-                        className={cn(
-                          "size-4 shrink-0 text-muted-foreground group-hover:text-primary",
-                          active && "text-primary"
-                        )}
-                      />
-                      <span className="min-w-0 flex-1 truncate">
-                        {item.label}
-                      </span>
-                      <span className="text-xs tabular-nums text-muted-foreground">
-                        {counts[item.key]}
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
+                    />
+                    <span className="min-w-0 flex-1 truncate">
+                      {item.label}
+                    </span>
+                    <span className="text-xs tabular-nums text-muted-foreground">
+                      {counts[item.key]}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </section>
       ))}
@@ -105,10 +96,9 @@ export function MyLibrarySidebar({
   const [mobileOpen, setMobileOpen] = useState(false);
   const activeItem = MY_LIBRARY_GROUPS.flatMap((group) => group.items).find(
     (item) =>
-      isLibraryItemVisible(item, counts) &&
-      (profileHref
+      profileHref
         ? pathname === `${profileHref}/${item.key}`
-        : item.href === pathname)
+        : item.href === pathname
   );
   const navigationLabel = profileHref
     ? "Public library sidebar"
