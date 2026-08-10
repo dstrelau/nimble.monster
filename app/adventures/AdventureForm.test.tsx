@@ -304,6 +304,26 @@ describe("AdventureForm", () => {
     expect(outline).not.toHaveClass("sticky");
   });
 
+  it("renders the preview without a card-style wrapper", () => {
+    renderForm();
+
+    fireEvent.click(
+      screen.getAllByRole("button", { name: "Toggle preview" })[0]
+    );
+
+    expect(
+      screen.getByTestId("adventure-preview").parentElement
+    ).not.toHaveClass(
+      "max-w-5xl",
+      "rounded-xl",
+      "border",
+      "bg-card",
+      "px-6",
+      "py-10",
+      "sm:px-10"
+    );
+  });
+
   it("renders the accessible colored callout presentation pills", () => {
     renderForm(calloutValue);
 

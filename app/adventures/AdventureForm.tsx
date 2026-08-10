@@ -743,9 +743,7 @@ export function AdventureForm({
         </aside>
         <div className="min-w-0">
           {showPreview ? (
-            <div className="mx-auto w-full max-w-5xl rounded-xl border bg-card px-6 py-10 sm:px-10">
-              <AdventureView adventure={previewAdventure} />
-            </div>
+            <AdventureView adventure={previewAdventure} />
           ) : (
             <div className="space-y-6">
               <Card className="border-0 bg-transparent shadow-none">
