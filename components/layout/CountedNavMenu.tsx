@@ -7,7 +7,7 @@ interface CountedNavMenuProps<
   TCounts extends { [K in keyof TCounts]: number },
 > {
   label: string;
-  items: (Omit<NavMenuItem, "count"> & { countKey: keyof TCounts })[];
+  items: (Omit<NavMenuItem, "count"> & { countKey?: keyof TCounts })[];
   queryKey: string;
   queryFn: () => Promise<TCounts>;
 }
@@ -23,7 +23,7 @@ export function CountedNavMenu<
 
   const navItems: NavMenuItem[] = items.map(({ countKey, ...item }) => ({
     ...item,
-    count: counts?.[countKey],
+    count: countKey ? counts?.[countKey] : undefined,
   }));
 
   return <NavMenu label={label} items={navItems} />;

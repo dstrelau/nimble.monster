@@ -1,16 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  BookOpen,
-  Map as MapIcon,
-  Menu,
-  Plus,
-  Swords,
-  TriangleAlert,
-  X,
-} from "lucide-react";
-import Link from "next/link";
+import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { getNavCountsAction } from "@/app/actions/nav";
@@ -34,99 +25,41 @@ import type {
   BestiaryCounts,
   CharacterOptionCounts,
   GearCounts,
+  RuleCounts,
 } from "@/lib/db";
-import { ENTITY_TYPE_ICONS } from "@/lib/types/entity-links";
+import {
+  ENTITY_TYPE_ICONS,
+  SITE_NAVIGATION_GROUPS,
+  type SiteNavigationItemKey,
+} from "@/lib/types/entity-links";
 
-type AllNavCounts = BestiaryCounts &
+export type AllNavCounts = BestiaryCounts &
   CharacterOptionCounts &
   GearCounts &
-  AdventureCounts;
+  AdventureCounts &
+  RuleCounts;
 
-const BESTIARY_ITEMS: (Omit<NavMenuItem, "count"> & {
-  countKey: keyof BestiaryCounts;
-})[] = [
-  {
-    href: "/monsters",
-    label: "Monsters",
-    icon: ENTITY_TYPE_ICONS.monster,
-    countKey: "monsters",
-  },
-  {
-    href: "/hazards",
-    label: "Hazards",
-    icon: TriangleAlert,
-    countKey: "hazards",
-  },
-  {
-    href: "/companions",
-    label: "Companions",
-    icon: ENTITY_TYPE_ICONS.companion,
-    countKey: "companions",
-  },
-];
+interface HeaderProps {
+  initialCounts: AllNavCounts;
+}
 
-const BROWSE_CHARACTER_ITEMS: (Omit<NavMenuItem, "count"> & {
-  countKey: keyof CharacterOptionCounts;
-})[] = [
-  {
-    href: "/ancestries",
-    label: "Ancestries",
-    icon: ENTITY_TYPE_ICONS.ancestry,
-    countKey: "ancestries",
-  },
-  {
-    href: "/backgrounds",
-    label: "Backgrounds",
-    icon: ENTITY_TYPE_ICONS.background,
-    countKey: "backgrounds",
-  },
-  {
-    href: "/classes",
-    label: "Classes",
-    icon: ENTITY_TYPE_ICONS.class,
-    countKey: "classes",
-  },
-  {
-    href: "/subclasses",
-    label: "Subclasses",
-    icon: ENTITY_TYPE_ICONS.subclass,
-    countKey: "subclasses",
-  },
-  {
-    href: "/spell-schools",
-    label: "Spells",
-    icon: ENTITY_TYPE_ICONS.school,
-    countKey: "spellSchools",
-  },
-];
-
-const GEAR_ITEMS: (Omit<NavMenuItem, "count"> & {
-  countKey: keyof GearCounts;
-})[] = [
-  {
-    href: "/items",
-    label: "Items",
-    icon: ENTITY_TYPE_ICONS.item,
-    countKey: "items",
-  },
-];
-
-const ADVENTURE_ITEMS: (Omit<NavMenuItem, "count"> & {
-  countKey: keyof AdventureCounts;
-})[] = [
-  {
-    href: "/adventures",
-    label: "Adventures",
-    icon: MapIcon,
-    countKey: "adventures",
-  },
-  {
-    href: "/encounters",
-    label: "Encounters",
-    icon: Swords,
-    countKey: "encounters",
-  },
-];
+const HEADER_ITEM_CONFIG: Record<
+  SiteNavigationItemKey,
+  { href: string; countKey?: keyof AllNavCounts }
+> = {
+  monsters: { href: "/monsters", countKey: "monsters" },
+  hazards: { href: "/hazards", countKey: "hazards" },
+  companions: { href: "/companions", countKey: "companions" },
+  ancestries: { href: "/ancestries", countKey: "ancestries" },
+  backgrounds: { href: "/backgrounds", countKey: "backgrounds" },
+  classes: { href: "/classes", countKey: "classes" },
+  subclasses: { href: "/subclasses", countKey: "subclasses" },
+  "spell-schools": { href: "/spell-schools", countKey: "spellSchools" },
+  items: { href: "/items", countKey: "items" },
+  adventures: { href: "/adventures", countKey: "adventures" },
+  encounters: { href: "/encounters", countKey: "encounters" },
+  rules: { href: "/rules", countKey: "rules" },
+};
 
 const UTILITY_ITEMS: NavMenuItem[] = [
   {
@@ -134,26 +67,27 @@ const UTILITY_ITEMS: NavMenuItem[] = [
     label: "Collections",
     icon: ENTITY_TYPE_ICONS.collection,
   },
-  { href: "/rules", label: "Rules", icon: BookOpen },
 ];
 
 const NAV_GROUPS: {
   label: string;
-  items: (Omit<NavMenuItem, "count"> & { countKey: keyof AllNavCounts })[];
-}[] = [
-  { label: "Bestiary", items: BESTIARY_ITEMS },
-  { label: "Heroes", items: BROWSE_CHARACTER_ITEMS },
-  { label: "Gear", items: GEAR_ITEMS },
-  { label: "Adventures", items: ADVENTURE_ITEMS },
-];
+  items: (Omit<NavMenuItem, "count"> & { countKey?: keyof AllNavCounts })[];
+}[] = SITE_NAVIGATION_GROUPS.map((group) => ({
+  label: group.label,
+  items: group.items.map((item) => ({
+    ...item,
+    ...HEADER_ITEM_CONFIG[item.key],
+  })),
+}));
 
-const Header = () => {
+const Header = ({ initialCounts }: HeaderProps) => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const { data: counts } = useQuery({
     queryKey: ["nav-counts"],
     queryFn: getNavCountsAction,
+    initialData: initialCounts,
     staleTime: 60_000,
   });
 
@@ -186,30 +120,15 @@ const Header = () => {
         <div className="hidden md:flex items-center h-full gap-6">
           <NavigationMenu viewport={false} className="max-w-none flex-none">
             <NavigationMenuList className="gap-2">
-              <CountedNavMenu
-                label="Bestiary"
-                items={BESTIARY_ITEMS}
-                queryKey="nav-counts"
-                queryFn={getNavCountsAction}
-              />
-              <CountedNavMenu
-                label="Heroes"
-                items={BROWSE_CHARACTER_ITEMS}
-                queryKey="nav-counts"
-                queryFn={getNavCountsAction}
-              />
-              <CountedNavMenu
-                label="Gear"
-                items={GEAR_ITEMS}
-                queryKey="nav-counts"
-                queryFn={getNavCountsAction}
-              />
-              <CountedNavMenu
-                label="Adventures"
-                items={ADVENTURE_ITEMS}
-                queryKey="nav-counts"
-                queryFn={getNavCountsAction}
-              />
+              {NAV_GROUPS.map((group) => (
+                <CountedNavMenu
+                  key={group.label}
+                  label={group.label}
+                  items={group.items}
+                  queryKey="nav-counts"
+                  queryFn={getNavCountsAction}
+                />
+              ))}
             </NavigationMenuList>
           </NavigationMenu>
 
@@ -241,12 +160,6 @@ const Header = () => {
 
       {/* Mobile navigation drawer */}
       <MobileMenuDropdown isOpen={mobileMenuOpen}>
-        <Button asChild className="w-full gap-2 mb-3">
-          <Link href="/create" onClick={() => setMobileMenuOpen(false)}>
-            <Plus className="size-4" />
-            Create
-          </Link>
-        </Button>
         <div className="space-y-4">
           {NAV_GROUPS.map((group) => (
             <div key={group.label}>
@@ -260,7 +173,11 @@ const Header = () => {
                     href={item.href}
                     label={item.label}
                     icon={item.icon}
-                    count={counts?.[item.countKey] ?? "–"}
+                    count={
+                      item.countKey
+                        ? (counts?.[item.countKey] ?? "–")
+                        : undefined
+                    }
                     active={pathname === item.href}
                     onClick={() => setMobileMenuOpen(false)}
                   />

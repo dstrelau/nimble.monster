@@ -76,83 +76,83 @@ export function UserNavItem({ open, onOpenChange }: UserNavItemProps) {
   };
 
   const handleSignOut = () => signOut({ redirectTo: "/" });
-  const handleSignIn = () => signIn("discord", { redirectTo: "/my/library" });
+  const handleSignIn = () => signIn("discord", { redirectTo: "/create" });
 
   if (!currentUser) {
     return (
-      <AccountNavItem user={undefined} label="Login" onClick={handleSignIn} />
+      <AccountNavItem
+        user={undefined}
+        label="Login to Create"
+        onClick={handleSignIn}
+      />
     );
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        variant="default"
-        size="sm"
-        className="mr-2 hidden md:inline-flex"
-        asChild
-      >
-        <Link href="/create">
-          <Plus className="size-4" />
-          Create
-        </Link>
-      </Button>
-      <NavigationMenu
-        viewport={false}
-        value={open ? "account" : ""}
-        onValueChange={(value) => onOpenChange(value === "account")}
-      >
-        <NavigationMenuList>
-          <NavigationMenuItem value="account">
-            <NavigationMenuTrigger
-              className={cn(
-                "h-16 px-3 gap-2 rounded-none border-b-2 border-transparent text-header-foreground bg-transparent hover:text-header-foreground focus:text-header-foreground data-[state=open]:bg-accent data-[state=open]:border-flame",
-                isOnMyPages && "border-hp"
-              )}
-            >
-              <UserAvatar
-                user={currentUser}
-                size="md"
-                className="ring-1 ring-border-strong"
+    <NavigationMenu
+      viewport={false}
+      value={open ? "account" : ""}
+      onValueChange={(value) => onOpenChange(value === "account")}
+    >
+      <NavigationMenuList>
+        <NavigationMenuItem value="account">
+          <NavigationMenuTrigger
+            className={cn(
+              "h-16 px-3 gap-2 rounded-none border-b-2 border-transparent text-header-foreground bg-transparent hover:text-header-foreground focus:text-header-foreground data-[state=open]:bg-accent data-[state=open]:border-flame",
+              isOnMyPages && "border-hp"
+            )}
+          >
+            <UserAvatar
+              user={currentUser}
+              size="md"
+              className="ring-1 ring-border-strong"
+            />
+            <span className="font-slab font-bold hidden md:block">
+              {currentUser.displayName}
+            </span>
+          </NavigationMenuTrigger>
+          <NavigationMenuContent className="absolute left-auto right-0 w-72 p-0">
+            <div className="p-3">
+              <Button asChild className="w-full gap-2">
+                <Link href="/create">
+                  <Plus className="size-4" />
+                  Create
+                </Link>
+              </Button>
+            </div>
+            <Separator />
+            <ul className="py-1">
+              <SubNavItem
+                href={myLibraryItem.href}
+                label={myLibraryItem.label}
+                icon={myLibraryItem.icon}
+                active={myLibraryItem.isActive}
               />
-              <span className="font-slab font-bold hidden md:block">
-                {currentUser.displayName}
-              </span>
-            </NavigationMenuTrigger>
-            <NavigationMenuContent className="absolute left-auto right-0 w-72 p-0">
-              <ul className="py-1">
-                {profileItem && (
-                  <SubNavItem
-                    href={profileItem.href}
-                    label={profileItem.label}
-                    icon={profileItem.icon}
-                    active={profileItem.isActive}
-                  />
-                )}
+              {profileItem && (
                 <SubNavItem
-                  href={myLibraryItem.href}
-                  label={myLibraryItem.label}
-                  icon={myLibraryItem.icon}
-                  active={myLibraryItem.isActive}
+                  href={profileItem.href}
+                  label={profileItem.label}
+                  icon={profileItem.icon}
+                  active={profileItem.isActive}
                 />
-              </ul>
-              <Separator />
-              <div className="flex items-center justify-between gap-2 px-3 py-2 bg-muted rounded-b-md">
-                <ModeToggle />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="gap-1.5 text-muted-foreground hover:bg-transparent hover:text-accent-text-strong"
-                  onClick={handleSignOut}
-                >
-                  <LogOut className="size-3.5" />
-                  Logout
-                </Button>
-              </div>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-    </div>
+              )}
+            </ul>
+            <Separator />
+            <div className="flex items-center justify-between gap-2 px-3 py-2 bg-muted rounded-b-md">
+              <ModeToggle />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1.5 text-muted-foreground hover:bg-transparent hover:text-accent-text-strong"
+                onClick={handleSignOut}
+              >
+                <LogOut className="size-3.5" />
+                Logout
+              </Button>
+            </div>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 }

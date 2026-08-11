@@ -1,6 +1,7 @@
 import "@/app/ui/global.css";
 import type { Metadata } from "next";
 import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
+import { getNavCountsAction } from "@/app/actions/nav";
 import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
 import { ConditionalMain } from "@/components/layout/ConditionalMain";
@@ -41,7 +42,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  const [session, navCounts] = await Promise.all([
+    auth(),
+    getNavCountsAction(),
+  ]);
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -56,7 +60,7 @@ export default async function RootLayout({
         )}
       >
         <Providers session={session}>
-          <ConditionalHeader />
+          <ConditionalHeader initialCounts={navCounts} />
           <FreeBanner />
           <ConditionalMain>{children}</ConditionalMain>
           <ConditionalFooter />

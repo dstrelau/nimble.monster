@@ -1,5 +1,5 @@
-import { and, asc, eq, inArray } from "drizzle-orm";
-import { getValidRuleSlugs } from "@/lib/rules/filesystem";
+import { and, asc, count, eq, inArray } from "drizzle-orm";
+import { getAllRules, getValidRuleSlugs } from "@/lib/rules/filesystem";
 import { tokenizeForSearch } from "@/lib/rules/keyword-search";
 import type { User } from "@/lib/types";
 import { getCustomRuleUrl } from "@/lib/utils/url";
@@ -36,6 +36,10 @@ export interface CustomRule {
   updatedAt: Date;
   links: CustomRuleLink[];
   creator: User;
+}
+
+export interface RuleCounts {
+  rules: number;
 }
 
 // --- Pure helpers (no DB / no filesystem access; unit-tested directly) ---
@@ -233,6 +237,18 @@ async function loadCustomRulesFullData(
 export async function listPublicCustomRules(): Promise<CustomRule[]> {
   const map = await loadCustomRulesFullData(undefined, "public");
   return [...map.values()].map(toCustomRule);
+}
+
+export async function getRuleCounts(): Promise<RuleCounts> {
+  const db = getDatabase();
+  const [publicCustomRuleCount] = await db
+    .select({ count: count() })
+    .from(customRules)
+    .where(eq(customRules.visibility, "public"));
+
+  return {
+    rules: getAllRules().length + (publicCustomRuleCount?.count ?? 0),
+  };
 }
 
 export async function findCustomRule(id: string): Promise<CustomRule | null> {

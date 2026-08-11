@@ -1,14 +1,18 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Header from "@/components/layout/Header";
+import Header, { type AllNavCounts } from "@/components/layout/Header";
 
-export function ConditionalHeader() {
+interface ConditionalHeaderProps {
+  initialCounts: AllNavCounts;
+}
+
+export function ConditionalHeader({ initialCounts }: ConditionalHeaderProps) {
   const pathname = usePathname();
 
   if (pathname.startsWith("/obr")) {
     return null;
   }
 
-  return <Header />;
+  return <Header initialCounts={initialCounts} />;
 }

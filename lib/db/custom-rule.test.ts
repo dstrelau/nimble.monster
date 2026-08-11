@@ -1,13 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { getAllRules } from "@/lib/rules/filesystem";
 
-const { mockExecute, mockSelect } = vi.hoisted(() => {
+const { mockExecute, mockSelect, mockWhere } = vi.hoisted(() => {
   const mockExecute = vi.fn();
   const mockWhere = vi.fn();
   const mockFrom = vi.fn(() => ({ where: mockWhere }));
   const mockSelect = vi.fn((_selection: Record<string, unknown>) => ({
     from: mockFrom,
   }));
-  return { mockExecute, mockSelect };
+  return { mockExecute, mockSelect, mockWhere };
 });
 
 vi.mock("./client", () => ({
@@ -21,6 +22,7 @@ vi.mock("./drizzle", () => ({
 import {
   type CustomRuleLink,
   diffRuleLinks,
+  getRuleCounts,
   groupCustomRuleReverseLinks,
   searchPublicCustomRules,
   validateRuleLinks,
@@ -243,5 +245,15 @@ describe("searchPublicCustomRules", () => {
   it("does not query the search index for an empty tokenized query", async () => {
     await expect(searchPublicCustomRules("!!!", 2)).resolves.toEqual([]);
     expect(mockExecute).not.toHaveBeenCalled();
+  });
+});
+
+describe("getRuleCounts", () => {
+  it("combines official and public homebrew rules", async () => {
+    mockWhere.mockResolvedValueOnce([{ count: 8 }]);
+
+    await expect(getRuleCounts()).resolves.toEqual({
+      rules: getAllRules().length + 8,
+    });
   });
 });

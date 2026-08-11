@@ -50,7 +50,7 @@ describe("MyLibrarySidebar", () => {
       within(navigation)
         .getAllByRole("heading", { level: 2 })
         .map((heading) => heading.textContent)
-    ).toEqual(["Bestiary", "Heroes", "Gear", "Adventures"]);
+    ).toEqual(["Bestiary", "Heroes", "Gear", "Play"]);
     expect(links).toHaveLength(14);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/my/monsters",
@@ -63,10 +63,10 @@ describe("MyLibrarySidebar", () => {
       "/my/subclasses",
       "/my/spell-schools",
       "/my/items",
-      "/my/encounters",
       "/my/adventures",
-      "/my/collections",
+      "/my/encounters",
       "/my/rules",
+      "/my/collections",
     ]);
     expect(
       within(navigation).getByRole("link", { name: "Monsters 12" })
@@ -117,10 +117,10 @@ describe("MyLibrarySidebar", () => {
       "/u/creator/subclasses",
       "/u/creator/spell-schools",
       "/u/creator/items",
-      "/u/creator/encounters",
       "/u/creator/adventures",
-      "/u/creator/collections",
+      "/u/creator/encounters",
       "/u/creator/rules",
+      "/u/creator/collections",
     ]);
     expect(
       within(navigation).getByRole("link", { name: "Monsters 12" })

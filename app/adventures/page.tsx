@@ -12,8 +12,7 @@ export default async function AdventuresPage() {
   const adventures = await listPublicAdventures();
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="mb-6 text-4xl font-bold">Adventures</h1>
+    <main className="container mx-auto px-4 py-4">
       <AdventureList
         adventures={adventures}
         emptyMessage="No public adventures available"
