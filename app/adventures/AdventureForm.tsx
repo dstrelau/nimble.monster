@@ -1032,6 +1032,7 @@ export function AdventureForm({
     id: node.id,
     parentId: node.parentId,
     orderIndex: node.orderIndex,
+    kind: node.kind,
     label:
       (node.kind === "encounter" && node.encounterId
         ? encounters.find((encounter) => encounter.id === node.encounterId)

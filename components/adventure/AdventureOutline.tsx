@@ -1,9 +1,11 @@
+import type { AdventureNodeKind } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 
 export interface AdventureOutlineNode {
   id: string;
   parentId: string | null;
   orderIndex: number;
+  kind: AdventureNodeKind;
   label: string;
 }
 
@@ -46,6 +48,7 @@ interface AdventureOutlineProps {
 export function AdventureOutline({ nodes, className }: AdventureOutlineProps) {
   const childrenByParent = new Map<string | null, AdventureOutlineNode[]>();
   for (const node of nodes) {
+    if (node.kind !== "section") continue;
     const children = childrenByParent.get(node.parentId) ?? [];
     children.push(node);
     childrenByParent.set(node.parentId, children);

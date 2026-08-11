@@ -57,6 +57,7 @@ export default async function AdventurePage({ params }: PageProps) {
     id: node.id,
     parentId: node.parentId,
     orderIndex: node.orderIndex,
+    kind: node.kind,
     label:
       node.title ||
       node.encounter?.name ||

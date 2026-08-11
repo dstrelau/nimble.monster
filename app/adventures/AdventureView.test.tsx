@@ -155,19 +155,30 @@ describe("AdventureView", () => {
     const panel = screen.getByTestId("adventure-callout");
     expect(panel).toHaveAttribute("data-callout-presentation", presentation);
     expect(panel).toHaveClass("border-l-4", panelClass);
-    expect(screen.getByText(label)).toBeVisible();
+    expect(screen.getByText("A Callout Title")).toHaveClass("text-xs");
+    expect(screen.queryByText(label)).not.toBeInTheDocument();
     expect(panel.querySelector(`svg.${iconClass}`)).not.toBeNull();
     expect(panel).toHaveClass("my-2");
     const icon = panel.querySelector(`svg.${iconClass}`);
     expect(icon).toHaveClass("size-3.5");
     expect(icon?.parentElement).toHaveClass("size-6", "rounded-md");
     expect(
-      screen.getByRole("heading", { name: "A Callout Title" })
-    ).toHaveClass("font-slab", "text-sm", "sm:text-base", "mt-1.5");
+      screen.queryByRole("heading", { name: "A Callout Title" })
+    ).not.toBeInTheDocument();
+    expect(panel.querySelector("div.text-sm")).toHaveClass(
+      "text-sm",
+      "leading-5"
+    );
+  });
+
+  it("displays the callout style when the callout has no title", () => {
+    render(<AdventureView adventure={calloutAdventure("note", "")} />);
+
+    expect(screen.getByText("Note")).toBeVisible();
   });
 
   it("normalizes legacy rules callouts to a selected note presentation", () => {
-    render(<AdventureView adventure={calloutAdventure("rules")} />);
+    render(<AdventureView adventure={calloutAdventure("rules", "")} />);
 
     const panel = screen.getByTestId("adventure-callout");
     expect(panel).toHaveAttribute("data-callout-presentation", "note");
@@ -335,13 +346,12 @@ describe("AdventureView", () => {
     expect(
       screen.getByRole("link", { name: "Link to First Stop" })
     ).toHaveClass("opacity-0", "group-hover:opacity-100");
-    expect(screen.getByRole("heading", { name: "Watch Out" })).toHaveClass(
-      "text-sm",
-      "sm:text-base"
-    );
+    expect(screen.getByText("Watch Out")).toHaveClass("text-xs");
+    expect(
+      screen.queryByRole("heading", { name: "Watch Out" })
+    ).not.toBeInTheDocument();
     expect(screen.getByText("Test Author")).toBeVisible();
     expect(screen.getByText("heroes").tagName.toLowerCase()).toBe("strong");
-    expect(screen.getByText("Watch Out")).toBeVisible();
     const encounterCard = screen.getByText("Encounter card: Den Defenders");
     expect(encounterCard).toBeVisible();
     expect(encounterCard.closest(".grid")).toHaveClass(

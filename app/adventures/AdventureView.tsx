@@ -238,26 +238,21 @@ function AdventureNodeView({
             </span>
             <span
               className={cn(
-                "font-sans text-[9px] font-bold uppercase tracking-[0.18em]",
+                "font-sans text-xs font-bold uppercase tracking-[0.18em]",
                 presentation.accentClassName
               )}
             >
-              {presentation.label}
+              {node.title || presentation.label}
             </span>
             <span
               aria-hidden="true"
               className={cn("h-px min-w-6 flex-1", presentation.ruleClassName)}
             />
           </div>
-          {node.title && (
-            <h3 className="mt-1.5 font-slab text-sm font-bold leading-tight sm:text-base">
-              {node.title}
-            </h3>
-          )}
           {content && (
             <div
               className={cn(
-                "mt-1.5 text-xs leading-4",
+                "mt-1.5 text-sm leading-5",
                 presentation.accentClassName
               )}
             >
