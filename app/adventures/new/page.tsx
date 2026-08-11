@@ -33,8 +33,9 @@ const EMPTY_ADVENTURE: AdventureInput = {
     title,
     content: "",
     encounterId: null,
-    monsterId: null,
-    itemId: null,
+    monsterIds: [],
+    itemIds: [],
+    missingStatblockCount: 0,
     presentation: null,
   })),
 };

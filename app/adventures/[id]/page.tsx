@@ -60,7 +60,8 @@ export default async function AdventurePage({ params }: PageProps) {
     label:
       node.title ||
       node.encounter?.name ||
-      node.statblock?.entity.name ||
+      node.monsters[0]?.name ||
+      node.items[0]?.name ||
       "Untitled content",
   }));
 

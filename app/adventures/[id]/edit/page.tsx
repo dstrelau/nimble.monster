@@ -54,14 +54,9 @@ export default async function EditAdventurePage({ params }: PageProps) {
             title: node.title,
             content: node.content,
             encounterId: node.encounter?.id ?? null,
-            monsterId:
-              node.statblock?.entityType === "monster"
-                ? node.statblock.entity.id
-                : null,
-            itemId:
-              node.statblock?.entityType === "item"
-                ? node.statblock.entity.id
-                : null,
+            monsterIds: node.monsters.map((monster) => monster.id),
+            itemIds: node.items.map((item) => item.id),
+            missingStatblockCount: node.missingStatblockCount,
             imageId: node.image?.id ?? null,
             imageExtension: node.image?.extension ?? null,
             caption: node.caption,
@@ -73,9 +68,16 @@ export default async function EditAdventurePage({ params }: PageProps) {
         initialRemovedNodeIds={adventure.nodes.flatMap((node) =>
           node.referenceRemoved ? [node.id] : []
         )}
-        initialStatblocks={adventure.nodes.flatMap((node) =>
-          node.statblock ? [node.statblock] : []
-        )}
+        initialStatblocks={adventure.nodes.flatMap((node) => [
+          ...node.monsters.map((entity) => ({
+            entityType: "monster" as const,
+            entity,
+          })),
+          ...node.items.map((entity) => ({
+            entityType: "item" as const,
+            entity,
+          })),
+        ])}
       />
     </main>
   );

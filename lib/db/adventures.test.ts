@@ -15,8 +15,9 @@ function node(
     title: kind === "section" ? id : "",
     content: "",
     encounterId: null,
-    monsterId: null,
-    itemId: null,
+    monsterIds: [],
+    itemIds: [],
+    missingStatblockCount: 0,
     presentation: null,
   };
 }
@@ -74,5 +75,44 @@ describe("adventure nesting validation", () => {
     await expect(
       createAdventure("user-1", adventure([firstImage, secondImage]))
     ).rejects.toThrow("Each adventure image may be used only once");
+  });
+
+  it.each([
+    -1,
+    0.5,
+    Number.NaN,
+    11,
+  ])("rejects an invalid missing statblock count of %s", async (missingStatblockCount) => {
+    await expect(
+      createAdventure(
+        "user-1",
+        adventure([
+          {
+            ...node("monsters", "monsters", null),
+            missingStatblockCount,
+          },
+        ])
+      )
+    ).rejects.toThrow(
+      "Missing statblock count must be an integer from 0 to 10"
+    );
+  });
+
+  it("rejects more than ten live and missing statblock references", async () => {
+    await expect(
+      createAdventure(
+        "user-1",
+        adventure([
+          {
+            ...node("monsters", "monsters", null),
+            monsterIds: Array.from(
+              { length: 10 },
+              (_, index) => `monster-${index}`
+            ),
+            missingStatblockCount: 1,
+          },
+        ])
+      )
+    ).rejects.toThrow("Statblock groups may contain at most 10 references");
   });
 });

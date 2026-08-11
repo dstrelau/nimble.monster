@@ -5,7 +5,6 @@ import {
   AlignLeft,
   ArrowDown,
   ArrowUp,
-  BookOpen,
   Eye,
   ImageIcon,
   ListTree,
@@ -52,7 +51,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -111,13 +109,14 @@ function emptyNode(
   return {
     id: randomUUID(),
     parentId,
-    kind: "section",
+    kind: parentId ? "text" : "section",
     orderIndex,
     title: "",
     content: "",
     encounterId: null,
-    monsterId: null,
-    itemId: null,
+    monsterIds: [],
+    itemIds: [],
+    missingStatblockCount: 0,
     imageId: null,
     imageExtension: null,
     caption: "",
@@ -138,12 +137,14 @@ function normalizeOrder(nodes: AdventureNodeInput[]): AdventureNodeInput[] {
     );
     const hasNoTextContent =
       node.kind === "encounter" ||
-      node.kind === "statblock" ||
+      node.kind === "monsters" ||
+      node.kind === "items" ||
       node.kind === "image";
+    const hasNoTitle = node.kind === "encounter" || node.kind === "image";
     return {
       ...node,
       orderIndex: siblings.findIndex((item) => item.id === node.id),
-      title: hasNoTextContent ? "" : node.title,
+      title: hasNoTitle ? "" : node.title,
       content: hasNoTextContent ? "" : node.content,
     };
   });
@@ -178,6 +179,7 @@ export function AdventureForm({
   const [removedNodeIds, setRemovedNodeIds] = useState(
     () => new Set(initialRemovedNodeIds)
   );
+  const [pickerNodeId, setPickerNodeId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const saveMutation = useMutation({
     mutationFn: (input: AdventureInput) =>
@@ -240,7 +242,21 @@ export function AdventureForm({
       next.delete(nodeId);
       return next;
     });
-    updateNode(nodeId, { monsterId: entity.id, itemId: null });
+    setDraft((current) => ({
+      ...current,
+      nodes: current.nodes.map((node) =>
+        node.id === nodeId &&
+        node.monsterIds.length < 10 &&
+        !node.monsterIds.includes(entity.id)
+          ? {
+              ...node,
+              monsterIds: [...node.monsterIds, entity.id],
+              missingStatblockCount: 0,
+            }
+          : node
+      ),
+    }));
+    setPickerNodeId(null);
   };
 
   const selectItemStatblock = (nodeId: string, entity: Item) => {
@@ -254,7 +270,21 @@ export function AdventureForm({
       next.delete(nodeId);
       return next;
     });
-    updateNode(nodeId, { monsterId: null, itemId: entity.id });
+    setDraft((current) => ({
+      ...current,
+      nodes: current.nodes.map((node) =>
+        node.id === nodeId &&
+        node.itemIds.length < 10 &&
+        !node.itemIds.includes(entity.id)
+          ? {
+              ...node,
+              itemIds: [...node.itemIds, entity.id],
+              missingStatblockCount: 0,
+            }
+          : node
+      ),
+    }));
+    setPickerNodeId(null);
   };
 
   const removeNode = (id: string) => {
@@ -282,6 +312,9 @@ export function AdventureForm({
         current.nodes.filter((node) => !removed.has(node.id))
       ),
     }));
+    setPickerNodeId((current) =>
+      current && removed.has(current) ? null : current
+    );
   };
 
   const moveNode = (id: string, direction: -1 | 1) => {
@@ -341,11 +374,15 @@ export function AdventureForm({
       encounter:
         encounters.find((encounter) => encounter.id === node.encounterId) ??
         null,
-      statblock: node.monsterId
-        ? (statblocks.get(node.monsterId) ?? null)
-        : node.itemId
-          ? (statblocks.get(node.itemId) ?? null)
-          : null,
+      monsters: node.monsterIds.flatMap((id) => {
+        const value = statblocks.get(id);
+        return value?.entityType === "monster" ? [value.entity] : [];
+      }),
+      items: node.itemIds.flatMap((id) => {
+        const value = statblocks.get(id);
+        return value?.entityType === "item" ? [value.entity] : [];
+      }),
+      missingStatblockCount: node.missingStatblockCount,
       referenceRemoved: removedNodeIds.has(node.id),
     })),
   };
@@ -376,10 +413,83 @@ export function AdventureForm({
             (encounter) => encounter.id === node.encounterId
           )
         : undefined;
-    const selectedStatblock =
-      node.kind === "statblock" && !removedNodeIds.has(node.id)
-        ? statblocks.get(node.monsterId ?? node.itemId ?? "")
-        : undefined;
+    const selectedStatblocks = (
+      node.kind === "monsters" ? node.monsterIds : node.itemIds
+    ).flatMap((id) => {
+      const value = statblocks.get(id);
+      return value ? [value] : [];
+    });
+    const selectedMonsters = selectedStatblocks.flatMap((statblock) =>
+      statblock.entityType === "monster" ? [statblock.entity] : []
+    );
+    const normalMonsters = selectedMonsters.filter(
+      (monster) =>
+        monster.hazard || (!monster.legendary && !monster.members?.length)
+    );
+    const wideMonsters = selectedMonsters.filter(
+      (monster) =>
+        !monster.hazard &&
+        (monster.legendary || Boolean(monster.members?.length))
+    );
+    const selectedItems = selectedStatblocks.flatMap((statblock) =>
+      statblock.entityType === "item" ? [statblock.entity] : []
+    );
+    const selectedIds =
+      node.kind === "monsters" ? node.monsterIds : node.itemIds;
+    const canAddStatblock =
+      selectedIds.length < 10 || node.missingStatblockCount > 0;
+
+    const renderMonster = (monster: BestiaryEntry) => (
+      <div key={monster.id} className="group relative">
+        <MonsterCard
+          monster={monster.hazard ? toHazardMonsterView(monster) : monster}
+          creator={monster.creator}
+          hideActions
+          noInteractive
+          link={false}
+        />
+        <Button
+          type="button"
+          size="icon"
+          variant="outline"
+          aria-label={`Remove ${monster.name}`}
+          className="adventure-remove-button invisible absolute top-2 right-2 z-10 rounded-md group-hover:visible group-focus-within:visible"
+          onClick={() =>
+            updateNode(node.id, {
+              monsterIds: node.monsterIds.filter((id) => id !== monster.id),
+            })
+          }
+        >
+          <Trash2 />
+        </Button>
+      </div>
+    );
+
+    const renderItem = (item: Item) => (
+      <div key={item.id} className="group relative">
+        <ItemCard
+          item={item}
+          creator={item.creator}
+          hideActions
+          noInteractive
+          link={false}
+        />
+        <Button
+          type="button"
+          size="icon"
+          variant="outline"
+          aria-label={`Remove ${item.name}`}
+          className="adventure-remove-button invisible absolute top-2 right-2 z-10 rounded-md group-hover:visible group-focus-within:visible"
+          onClick={() =>
+            updateNode(node.id, {
+              itemIds: node.itemIds.filter((id) => id !== item.id),
+            })
+          }
+        >
+          <Trash2 />
+        </Button>
+      </div>
+    );
 
     return (
       <div
@@ -414,20 +524,29 @@ export function AdventureForm({
             <Select
               value={node.kind}
               onValueChange={(kind: AdventureNodeKind) => {
+                setPickerNodeId((current) =>
+                  current === node.id ? null : current
+                );
                 if (node.kind === "image" && kind !== "image") {
                   discardAdventureImage(node.imageId);
                 }
                 const hasNoTextContent =
                   kind === "encounter" ||
-                  kind === "statblock" ||
+                  kind === "monsters" ||
+                  kind === "items" ||
                   kind === "image";
                 updateNode(node.id, {
                   kind,
-                  title: hasNoTextContent ? "" : node.title,
+                  title:
+                    kind === "encounter" || kind === "image" ? "" : node.title,
                   content: hasNoTextContent ? "" : node.content,
                   encounterId: kind === "encounter" ? node.encounterId : null,
-                  monsterId: kind === "statblock" ? node.monsterId : null,
-                  itemId: kind === "statblock" ? node.itemId : null,
+                  monsterIds: kind === "monsters" ? node.monsterIds : [],
+                  itemIds: kind === "items" ? node.itemIds : [],
+                  missingStatblockCount:
+                    kind === "monsters" || kind === "items"
+                      ? node.missingStatblockCount
+                      : 0,
                   imageId: kind === "image" ? node.imageId : null,
                   imageExtension: kind === "image" ? node.imageExtension : null,
                   caption: kind === "image" ? node.caption : "",
@@ -468,16 +587,21 @@ export function AdventureForm({
                   <Swords />
                   Encounter
                 </SelectItem>
-                <SelectItem value="statblock" disabled={children.length > 0}>
-                  <BookOpen />
-                  Statblock
+                <SelectItem value="monsters" disabled={children.length > 0}>
+                  <Goblin />
+                  Monsters
+                </SelectItem>
+                <SelectItem value="items" disabled={children.length > 0}>
+                  <Shield />
+                  Items
                 </SelectItem>
               </SelectContent>
             </Select>
             {node.kind !== "text" &&
               node.kind !== "image" &&
               node.kind !== "encounter" &&
-              node.kind !== "statblock" && (
+              node.kind !== "monsters" &&
+              node.kind !== "items" && (
                 <div className="min-w-48 flex-1">
                   <Label htmlFor={`title-${node.id}`} className="sr-only">
                     Title
@@ -606,71 +730,113 @@ export function AdventureForm({
               </div>
             )}
 
-            {node.kind === "statblock" && (
+            {(node.kind === "monsters" || node.kind === "items") && (
               <div className="space-y-4">
-                <Label>Statblock</Label>
-                {selectedStatblock?.entityType === "monster" && (
-                  <div className="mx-auto w-full max-w-2xl">
-                    <MonsterCard
-                      monster={
-                        selectedStatblock.entity.hazard
-                          ? toHazardMonsterView(selectedStatblock.entity)
-                          : selectedStatblock.entity
-                      }
-                      creator={selectedStatblock.entity.creator}
-                      hideActions
-                      link={false}
-                    />
+                <Label htmlFor={`title-${node.id}`}>Title (optional)</Label>
+                <Input
+                  id={`title-${node.id}`}
+                  value={node.title}
+                  onChange={(event) =>
+                    updateNode(node.id, { title: event.target.value })
+                  }
+                />
+                {node.kind === "monsters" ? (
+                  <>
+                    {(normalMonsters.length > 0 ||
+                      (canAddStatblock && pickerNodeId !== node.id)) && (
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {normalMonsters.map(renderMonster)}
+                        {canAddStatblock && pickerNodeId !== node.id && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="!h-full min-h-48 w-full border-dashed"
+                            onClick={() => setPickerNodeId(node.id)}
+                          >
+                            <Plus />
+                            Add monster
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                    {wideMonsters.map((monster) => (
+                      <div key={monster.id} className="mx-auto w-full md:w-3/5">
+                        {renderMonster(monster)}
+                      </div>
+                    ))}
+                    {node.missingStatblockCount > 0 && (
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {Array.from(
+                          { length: node.missingStatblockCount },
+                          (_, index) => (
+                            <div
+                              // biome-ignore lint/suspicious/noArrayIndexKey: Tombstones have no entity ID by design.
+                              key={`missing-${index}`}
+                              className="rounded-md border border-dashed p-3 text-muted-foreground"
+                            >
+                              Removed content
+                            </div>
+                          )
+                        )}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-3">
+                    {selectedItems.map(renderItem)}
+                    {Array.from(
+                      { length: node.missingStatblockCount },
+                      (_, index) => (
+                        <div
+                          // biome-ignore lint/suspicious/noArrayIndexKey: Tombstones have no entity ID by design.
+                          key={`missing-${index}`}
+                          className="rounded-md border border-dashed p-3 text-muted-foreground"
+                        >
+                          Removed content
+                        </div>
+                      )
+                    )}
+                    {canAddStatblock && pickerNodeId !== node.id && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="!h-full min-h-48 w-full border-dashed"
+                        onClick={() => setPickerNodeId(node.id)}
+                      >
+                        <Plus />
+                        Add item
+                      </Button>
+                    )}
                   </div>
                 )}
-                {selectedStatblock?.entityType === "item" && (
-                  <div className="mx-auto w-full max-w-sm">
-                    <ItemCard
-                      item={selectedStatblock.entity}
-                      creator={selectedStatblock.entity.creator}
-                      hideActions
-                      link={false}
-                    />
+                {removedNodeIds.has(node.id) &&
+                  node.missingStatblockCount === 0 && (
+                    <div className="rounded-md border border-dashed p-3 text-muted-foreground">
+                      Removed content
+                    </div>
+                  )}
+                {canAddStatblock && pickerNodeId === node.id && (
+                  <div className="rounded-lg border border-dashed p-4">
+                    {node.kind === "monsters" ? (
+                      <SelectableMonsterGrid
+                        compact
+                        publicOnly={draft.visibility === "public"}
+                        selectedIds={new Set(node.monsterIds)}
+                        onToggle={(entity) =>
+                          selectMonsterStatblock(node.id, entity)
+                        }
+                      />
+                    ) : (
+                      <SelectableItemGrid
+                        publicOnly={draft.visibility === "public"}
+                        selectedIds={new Set(node.itemIds)}
+                        onToggle={(entity) =>
+                          selectItemStatblock(node.id, entity)
+                        }
+                      />
+                    )}
                   </div>
                 )}
-                {removedNodeIds.has(node.id) && (
-                  <div className="rounded-md border border-dashed p-3 text-muted-foreground">
-                    Removed content
-                  </div>
-                )}
-                <Tabs defaultValue="monsters">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="monsters">
-                      <Goblin />
-                      Monsters & hazards
-                    </TabsTrigger>
-                    <TabsTrigger value="items">
-                      <Shield />
-                      Items
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="monsters" className="pt-4">
-                    <SelectableMonsterGrid
-                      compact
-                      publicOnly={draft.visibility === "public"}
-                      selectedIds={
-                        new Set(node.monsterId ? [node.monsterId] : [])
-                      }
-                      onToggle={(entity) =>
-                        selectMonsterStatblock(node.id, entity)
-                      }
-                    />
-                  </TabsContent>
-                  <TabsContent value="items" className="pt-4">
-                    <SelectableItemGrid
-                      publicOnly={draft.visibility === "public"}
-                      selectedIds={new Set(node.itemId ? [node.itemId] : [])}
-                      onToggle={(entity) =>
-                        selectItemStatblock(node.id, entity)
-                      }
-                    />
-                  </TabsContent>
-                </Tabs>
               </div>
             )}
 
@@ -712,7 +878,8 @@ export function AdventureForm({
 
             {node.kind !== "image" &&
               node.kind !== "encounter" &&
-              node.kind !== "statblock" && (
+              node.kind !== "monsters" &&
+              node.kind !== "items" && (
                 <div className="space-y-2">
                   <Textarea
                     id={`content-${node.id}`}
@@ -760,8 +927,8 @@ export function AdventureForm({
         ? encounters.find((encounter) => encounter.id === node.encounterId)
             ?.name
         : undefined) ||
-      (node.kind === "statblock" && (node.monsterId || node.itemId)
-        ? statblocks.get(node.monsterId ?? node.itemId ?? "")?.entity.name
+      ((node.kind === "monsters" || node.kind === "items") && node.title
+        ? node.title
         : undefined) ||
       node.title.trim() ||
       `${node.kind.charAt(0).toUpperCase()}${node.kind.slice(1)}`,
@@ -794,6 +961,7 @@ export function AdventureForm({
                   }
                   setDraft(formDraft(example, true));
                   setRemovedNodeIds(new Set());
+                  setPickerNodeId(null);
                 }
               }}
               className="mb-0 mr-0"
@@ -933,12 +1101,16 @@ export function AdventureForm({
                               (candidate) => candidate.id === node.encounterId
                             )
                           : undefined;
-                        const statblock = statblocks.get(
-                          node.monsterId ?? node.itemId ?? ""
-                        );
+                        const selected = [
+                          ...node.monsterIds,
+                          ...node.itemIds,
+                        ].map((id) => statblocks.get(id));
                         return (
                           encounter?.visibility === "private" ||
-                          statblock?.entity.visibility === "private"
+                          selected.some(
+                            (statblock) =>
+                              statblock?.entity.visibility === "private"
+                          )
                         );
                       });
                       if (hasPrivateContent) {

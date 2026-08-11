@@ -14,8 +14,9 @@ const section = (
   title,
   content,
   encounterId: null,
-  monsterId: null,
-  itemId: null,
+  monsterIds: [],
+  itemIds: [],
+  missingStatblockCount: 0,
   presentation: null,
 });
 
@@ -33,8 +34,9 @@ const callout = (
   title,
   content,
   encounterId: null,
-  monsterId: null,
-  itemId: null,
+  monsterIds: [],
+  itemIds: [],
+  missingStatblockCount: 0,
   presentation: "note",
 });
 
@@ -45,13 +47,14 @@ const statblock = (
 ): AdventureNodeInput => ({
   id,
   parentId,
-  kind: "statblock",
+  kind: "monsters",
   orderIndex: 0,
   title: "",
   content: "",
   encounterId: null,
-  monsterId,
-  itemId: null,
+  monsterIds: [monsterId],
+  itemIds: [],
+  missingStatblockCount: 0,
   presentation: null,
 });
 

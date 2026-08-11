@@ -8,12 +8,14 @@ interface ActionsListProps {
   actions: Action[];
   conditions: Condition[];
   actionPreface?: string;
+  noInteractive?: boolean;
 }
 
 export const ActionsList: React.FC<ActionsListProps> = ({
   actions,
   conditions,
   actionPreface = "ACTIONS:",
+  noInteractive = false,
 }) => {
   if (actions.length === 0) return null;
 
@@ -32,6 +34,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({
                 <PrefixedFormattedText
                   content={action.description || ""}
                   conditions={conditions}
+                  noInteractive={noInteractive}
                   prefix={
                     <>
                       {actions.length > 1 && (

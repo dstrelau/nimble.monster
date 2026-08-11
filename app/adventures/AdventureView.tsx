@@ -331,32 +331,79 @@ function AdventureNodeView({
     );
   }
 
-  if (node.kind === "statblock") {
+  if (node.kind === "monsters" || node.kind === "items") {
+    const normalMonsters = node.monsters.filter(
+      (monster) =>
+        monster.hazard || (!monster.legendary && !monster.members?.length)
+    );
+    const wideMonsters = node.monsters.filter(
+      (monster) =>
+        !monster.hazard &&
+        (monster.legendary || Boolean(monster.members?.length))
+    );
     return (
       <section className={cn("space-y-4", depth === 0 ? "mt-10" : "mt-6")}>
-        {node.statblock?.entityType === "monster" && (
-          <div className="mx-auto w-full max-w-2xl">
-            <MonsterCard
-              monster={
-                node.statblock.entity.hazard
-                  ? toHazardMonsterView(node.statblock.entity)
-                  : node.statblock.entity
-              }
-              creator={node.statblock.entity.creator}
-              hideActions
-            />
+        {node.title && (
+          <NodeHeading
+            depth={depth}
+            title={node.title}
+            anchorId={getAdventureNodeAnchorId(node.id)}
+          />
+        )}
+        <div
+          className={cn(
+            "grid gap-4",
+            node.kind === "items" ? "md:grid-cols-3" : "md:grid-cols-2"
+          )}
+        >
+          {normalMonsters.map((monster) => (
+            <div key={monster.id}>
+              <MonsterCard
+                monster={
+                  monster.hazard ? toHazardMonsterView(monster) : monster
+                }
+                creator={monster.creator}
+                hideActions
+                noInteractive
+              />
+            </div>
+          ))}
+          {node.items.map((item) => (
+            <div key={item.id}>
+              <ItemCard
+                item={item}
+                creator={item.creator}
+                hideActions
+                noInteractive
+              />
+            </div>
+          ))}
+          {node.kind === "items" &&
+            Array.from({ length: node.missingStatblockCount }, (_, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: Tombstones have no entity ID by design.
+              <RemovedContent key={`missing-${index}`} />
+            ))}
+        </div>
+        {wideMonsters.map((monster) => (
+          <div key={monster.id} className="mx-auto w-full md:w-3/5">
+            {!monster.hazard && (
+              <MonsterCard
+                monster={monster}
+                creator={monster.creator}
+                hideActions
+                noInteractive
+              />
+            )}
+          </div>
+        ))}
+        {node.kind === "monsters" && node.missingStatblockCount > 0 && (
+          <div className="grid gap-4 md:grid-cols-2">
+            {Array.from({ length: node.missingStatblockCount }, (_, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: Tombstones have no entity ID by design.
+              <RemovedContent key={`missing-${index}`} />
+            ))}
           </div>
         )}
-        {node.statblock?.entityType === "item" && (
-          <div className="mx-auto w-full max-w-sm">
-            <ItemCard
-              item={node.statblock.entity}
-              creator={node.statblock.entity.creator}
-              hideActions
-            />
-          </div>
-        )}
-        {node.referenceRemoved && <RemovedContent />}
         {children.length > 0 && (
           <AdventureNodeList
             nodes={nodes}

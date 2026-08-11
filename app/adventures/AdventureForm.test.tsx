@@ -4,9 +4,11 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
   within,
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { call } from "@/lib/contract";
 import type { AdventureInput, AdventureStatblock } from "@/lib/db/adventures";
 import type { Item } from "@/lib/services/items";
 import type { BestiaryEntryMini } from "@/lib/services/monsters";
@@ -15,6 +17,10 @@ import { AdventureForm } from "./AdventureForm";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
+}));
+vi.mock("@/lib/contract", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/contract")>()),
+  call: vi.fn(() => new Promise(() => undefined)),
 }));
 vi.mock("@/components/condition/ConditionValidationIcon", () => ({
   ConditionValidationIcon: () => (
@@ -37,7 +43,32 @@ vi.mock("@/components/encounter/EncounterCard", () => ({
   ),
 }));
 vi.mock("@/app/collections/SelectableItemGrid", () => ({
-  SelectableItemGrid: () => <div data-testid="item-grid" />,
+  SelectableItemGrid: ({ onToggle }: { onToggle: (item: Item) => void }) => (
+    <div data-testid="item-grid">
+      <button
+        type="button"
+        onClick={() =>
+          onToggle({
+            id: "44444444-4444-4444-8444-444444444444",
+            name: "Picker Item",
+            rarity: "common",
+            visibility: "public",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            description: "",
+            creator: {
+              id: "picker-creator",
+              discordId: "picker-discord",
+              username: "picker",
+              displayName: "Picker",
+            },
+          })
+        }
+      >
+        Select picker item
+      </button>
+    </div>
+  ),
 }));
 vi.mock("@/components/monster/SelectableMonsterGrid", () => ({
   SelectableMonsterGrid: () => <div data-testid="monster-grid" />,
@@ -47,12 +78,18 @@ vi.mock("@/components/item/Card", () => ({
     item,
     hideActions,
     link,
+    noInteractive,
   }: {
     item: { name: string };
     hideActions?: boolean;
     link?: boolean;
+    noInteractive?: boolean;
   }) => (
-    <div data-hide-actions={hideActions} data-link={link}>
+    <div
+      data-hide-actions={hideActions}
+      data-link={link}
+      data-no-interactive={noInteractive}
+    >
       Selected item statblock: {item.name}
     </div>
   ),
@@ -62,12 +99,18 @@ vi.mock("@/components/monster/Card", () => ({
     monster,
     hideActions,
     link,
+    noInteractive,
   }: {
     monster: { name: string };
     hideActions?: boolean;
     link?: boolean;
+    noInteractive?: boolean;
   }) => (
-    <div data-hide-actions={hideActions} data-link={link}>
+    <div
+      data-hide-actions={hideActions}
+      data-link={link}
+      data-no-interactive={noInteractive}
+    >
       Selected monster statblock: {monster.name}
     </div>
   ),
@@ -107,8 +150,9 @@ const initialValue: AdventureInput = {
     title: `Section ${orderIndex + 1}`,
     content: "",
     encounterId: null,
-    monsterId: null,
-    itemId: null,
+    monsterIds: [],
+    itemIds: [],
+    missingStatblockCount: 0,
     presentation: null,
   })),
 };
@@ -187,10 +231,10 @@ const itemStatblockValue: AdventureInput = {
   nodes: [
     {
       ...initialValue.nodes[0],
-      kind: "statblock",
+      kind: "items",
       title: "",
       content: "",
-      itemId: item.id,
+      itemIds: [item.id],
     },
   ],
 };
@@ -240,6 +284,22 @@ function renderForm(
 }
 
 describe("AdventureForm", () => {
+  it("defaults top-level nodes to sections and child nodes to text", () => {
+    renderForm({ ...initialValue, nodes: [] });
+
+    fireEvent.click(screen.getByRole("button", { name: "Add section" }));
+    expect(screen.getAllByRole("combobox")).toHaveLength(1);
+    expect(screen.getByRole("combobox")).toHaveTextContent("Section");
+
+    fireEvent.click(screen.getByRole("button", { name: "Add child" }));
+    expect(screen.getAllByRole("combobox")).toHaveLength(2);
+    expect(
+      screen
+        .getAllByRole("combobox")
+        .some((combobox) => combobox.textContent?.includes("Text"))
+    ).toBe(true);
+  });
+
   it("styles adventure details like the rendered adventure header", () => {
     renderForm();
 
@@ -482,29 +542,63 @@ describe("AdventureForm", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders the statblock picker inline when no statblock is selected", () => {
+  it("opens the item picker from the add tile", () => {
     renderForm({
       ...itemStatblockValue,
-      nodes: [{ ...itemStatblockValue.nodes[0], itemId: null }],
+      nodes: [{ ...itemStatblockValue.nodes[0], itemIds: [] }],
     });
 
-    expect(screen.getByTestId("monster-grid")).toBeVisible();
-    expect(screen.getByRole("tab", { name: "Items" })).toBeVisible();
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("item-grid")).not.toBeInTheDocument();
+    const addButton = screen.getByRole("button", { name: "Add item" });
+    expect(addButton.parentElement).toHaveClass("grid", "md:grid-cols-3");
+    fireEvent.click(addButton);
+    expect(screen.getByTestId("item-grid")).toBeVisible();
+    expect(
+      screen.queryByRole("button", { name: "Add item" })
+    ).not.toBeInTheDocument();
   });
 
-  it("shows the selected statblock above the inline picker", () => {
+  it("adds a selected item once and closes the picker", () => {
     renderForm(itemStatblockValue, [], [{ entityType: "item", entity: item }]);
 
     const card = screen.getByText("Selected item statblock: Honey Wand");
-    const picker = screen.getByTestId("monster-grid");
     expect(card).toBeVisible();
     expect(card).toHaveAttribute("data-hide-actions", "true");
     expect(card).toHaveAttribute("data-link", "false");
-    expect(picker).toBeVisible();
-    expect(card.compareDocumentPosition(picker)).toBe(
+    expect(card).toHaveAttribute("data-no-interactive", "true");
+    const addButton = screen.getByRole("button", { name: "Add item" });
+    expect(card.compareDocumentPosition(addButton)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING
     );
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    fireEvent.click(addButton);
+    fireEvent.click(screen.getByRole("button", { name: "Select picker item" }));
+
+    expect(
+      screen.getByText("Selected item statblock: Picker Item")
+    ).toBeVisible();
+    expect(screen.queryByTestId("item-grid")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add item" })).toBeVisible();
+  });
+
+  it("preserves an item group title in the submitted payload", async () => {
+    renderForm(itemStatblockValue, [], [{ entityType: "item", entity: item }]);
+    fireEvent.change(screen.getByLabelText("Name"), {
+      target: { value: "Titled Adventure" },
+    });
+    fireEvent.change(screen.getByLabelText("Title (optional)"), {
+      target: { value: "Treasure Cache" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Create" }));
+
+    await waitFor(() =>
+      expect(call).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          nodes: [expect.objectContaining({ title: "Treasure Cache" })],
+        })
+      )
+    );
   });
 });

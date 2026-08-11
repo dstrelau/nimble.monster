@@ -43,11 +43,17 @@ export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
 
           <div className="flex items-center gap-2">
             {awards.map((award) => (
-              <AwardBadge key={award.id} award={award} />
+              <AwardBadge
+                key={award.id}
+                award={award}
+                disableLink={disableLink}
+              />
             ))}
             {!hideActions && reactionsSlot}
             {paperforgeSlot}
-            {source && <SourceBadge source={source} />}
+            {source && (
+              <SourceBadge source={source} disableLink={disableLink} />
+            )}
             {!hideActions && actionsSlot}
           </div>
         </div>

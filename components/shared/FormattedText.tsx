@@ -28,6 +28,7 @@ interface FormattedTextProps {
   content: string;
   conditions: ConditionT[];
   className?: string;
+  noInteractive?: boolean;
 }
 
 function ConditionSpan({
@@ -67,10 +68,12 @@ function EntityLinkInner({
   type,
   id,
   displayName,
+  noInteractive,
 }: {
   type: EntityType;
   id: string;
   displayName?: string;
+  noInteractive: boolean;
 }) {
   const { data, isLoading, isError } = useEntityQuery(type, id);
 
@@ -90,14 +93,25 @@ function EntityLinkInner({
 
   const path = ENTITY_TYPE_PATHS[type];
   const slug = slugify({ name: data.name, id: data.id });
+  const content = (
+    <>
+      <Icon className="stroke-flame size-3.5" />
+      <span>{displayName ?? data.name}</span>
+    </>
+  );
+
+  if (noInteractive) {
+    return (
+      <span className="inline-flex items-baseline gap-0.5">{content}</span>
+    );
+  }
 
   return (
     <Link
       href={`/${path}/${slug}`}
       className="inline-flex items-baseline gap-0.5 hover:underline"
     >
-      <Icon className="stroke-flame size-3.5" />
-      <span>{displayName ?? data.name}</span>
+      {content}
     </Link>
   );
 }
@@ -107,15 +121,22 @@ function EntityLink({
   id,
   displayName,
   queryClient,
+  noInteractive,
 }: {
   type: EntityType;
   id: string;
   displayName?: string;
   queryClient: QueryClient;
+  noInteractive: boolean;
 }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <EntityLinkInner type={type} id={id} displayName={displayName} />
+      <EntityLinkInner
+        type={type}
+        id={id}
+        displayName={displayName}
+        noInteractive={noInteractive}
+      />
     </QueryClientProvider>
   );
 }
@@ -378,6 +399,7 @@ export function FormattedText({
   content,
   conditions,
   className = "",
+  noInteractive = false,
 }: FormattedTextProps) {
   const isClient = useIsClient();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -474,6 +496,7 @@ export function FormattedText({
             id={entityId}
             displayName={displayName}
             queryClient={queryClientRef.current}
+            noInteractive={noInteractive}
           />
         ),
       });
@@ -482,7 +505,7 @@ export function FormattedText({
     });
 
     return { html: processedDiv.innerHTML, placeholders };
-  }, [content, conditions, isClient]);
+  }, [content, conditions, isClient, noInteractive]);
 
   useLayoutEffect(() => {
     if (!containerRef.current || placeholders.length === 0) return;
@@ -523,13 +546,19 @@ export const PrefixedFormattedText = ({
   prefix,
   content,
   conditions,
+  noInteractive = false,
 }: {
   prefix: React.ReactNode;
   content: string;
   conditions: Condition[];
+  noInteractive?: boolean;
 }) => (
   <div className="overflow-auto">
     <span className="float-left mr-1 flex gap-1">{prefix}</span>
-    <FormattedText content={content} conditions={conditions} />
+    <FormattedText
+      content={content}
+      conditions={conditions}
+      noInteractive={noInteractive}
+    />
   </div>
 );

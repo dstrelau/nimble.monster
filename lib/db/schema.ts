@@ -1252,7 +1252,8 @@ export type AdventureNodeKind =
   | "callout"
   | "image"
   | "encounter"
-  | "statblock";
+  | "monsters"
+  | "items";
 export type AdventureImageExtension = "jpg" | "png" | "webp";
 export type AdventureImageStatus =
   | "uploading"
@@ -1350,14 +1351,6 @@ export const adventureNodes = sqliteTable(
       onDelete: "set null",
       onUpdate: "cascade",
     }),
-    monsterId: text("monster_id").references(() => monsters.id, {
-      onDelete: "set null",
-      onUpdate: "cascade",
-    }),
-    itemId: text("item_id").references(() => items.id, {
-      onDelete: "set null",
-      onUpdate: "cascade",
-    }),
     imageId: text("image_id").references(() => adventureImages.id, {
       onDelete: "set null",
       onUpdate: "cascade",
@@ -1376,8 +1369,56 @@ export const adventureNodes = sqliteTable(
       table.orderIndex
     ),
     index("idx_adventure_nodes_encounter_id").on(table.encounterId),
-    index("idx_adventure_nodes_monster_id").on(table.monsterId),
-    index("idx_adventure_nodes_item_id").on(table.itemId),
+  ]
+);
+
+export const adventureNodeMonsters = sqliteTable(
+  "adventure_node_monsters",
+  {
+    nodeId: text("node_id")
+      .notNull()
+      .references(() => adventureNodes.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    orderIndex: integer("order_index").notNull(),
+    monsterId: text("monster_id").references(() => monsters.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+  },
+  (table) => [
+    primaryKey({ columns: [table.nodeId, table.orderIndex] }),
+    unique("adventure_node_monsters_node_entity_unique").on(
+      table.nodeId,
+      table.monsterId
+    ),
+    index("idx_adventure_node_monsters_monster_id").on(table.monsterId),
+  ]
+);
+
+export const adventureNodeItems = sqliteTable(
+  "adventure_node_items",
+  {
+    nodeId: text("node_id")
+      .notNull()
+      .references(() => adventureNodes.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    orderIndex: integer("order_index").notNull(),
+    itemId: text("item_id").references(() => items.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+  },
+  (table) => [
+    primaryKey({ columns: [table.nodeId, table.orderIndex] }),
+    unique("adventure_node_items_node_entity_unique").on(
+      table.nodeId,
+      table.itemId
+    ),
+    index("idx_adventure_node_items_item_id").on(table.itemId),
   ]
 );
 
@@ -1385,4 +1426,6 @@ export type AdventureRow = typeof adventures.$inferSelect;
 export type AdventureInsert = typeof adventures.$inferInsert;
 export type AdventureNodeRow = typeof adventureNodes.$inferSelect;
 export type AdventureNodeInsert = typeof adventureNodes.$inferInsert;
+export type AdventureNodeMonsterRow = typeof adventureNodeMonsters.$inferSelect;
+export type AdventureNodeItemRow = typeof adventureNodeItems.$inferSelect;
 export type AdventureImageRow = typeof adventureImages.$inferSelect;

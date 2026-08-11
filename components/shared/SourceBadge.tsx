@@ -11,9 +11,13 @@ import type { Source } from "@/lib/types";
 
 interface SourceBadgeProps {
   source: Source;
+  disableLink?: boolean;
 }
 
-export const SourceBadge = ({ source }: SourceBadgeProps) => {
+export const SourceBadge = ({
+  source,
+  disableLink = false,
+}: SourceBadgeProps) => {
   return (
     <TooltipProvider>
       <Tooltip>
@@ -26,7 +30,7 @@ export const SourceBadge = ({ source }: SourceBadgeProps) => {
         </TooltipTrigger>
         <TooltipContent>
           <div className="text-sm">
-            {source.link ? (
+            {source.link && !disableLink ? (
               <Link
                 href={source.link}
                 className="flex items-baseline gap-1 font-semibold"

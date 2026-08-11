@@ -16,13 +16,27 @@ const { mockUseConditions } = vi.hoisted(() => ({
 }));
 
 vi.mock("@/components/item/Card", () => ({
-  Card: ({ item }: { item: { name: string } }) => (
-    <div>Item statblock: {item.name}</div>
+  Card: ({
+    item,
+    noInteractive,
+  }: {
+    item: { name: string };
+    noInteractive?: boolean;
+  }) => (
+    <div data-no-interactive={noInteractive}>Item statblock: {item.name}</div>
   ),
 }));
 vi.mock("@/components/monster/Card", () => ({
-  Card: ({ monster }: { monster: { name: string } }) => (
-    <div>Monster statblock: {monster.name}</div>
+  Card: ({
+    monster,
+    noInteractive,
+  }: {
+    monster: { name: string };
+    noInteractive?: boolean;
+  }) => (
+    <div data-no-interactive={noInteractive}>
+      Monster statblock: {monster.name}
+    </div>
   ),
 }));
 vi.mock("@/components/encounter/EncounterCard", () => ({
@@ -102,7 +116,9 @@ function calloutAdventure(
         title,
         content: "Callout body.",
         encounter: null,
-        statblock: null,
+        monsters: [],
+        items: [],
+        missingStatblockCount: 0,
         referenceRemoved: false,
         presentation,
       },
@@ -179,7 +195,9 @@ describe("AdventureView", () => {
           title: "First Stop",
           content: "Welcome, **heroes**.",
           encounter: null,
-          statblock: null,
+          monsters: [],
+          items: [],
+          missingStatblockCount: 0,
           referenceRemoved: false,
           presentation: null,
         },
@@ -191,7 +209,9 @@ describe("AdventureView", () => {
           title: "Watch Out",
           content: "The floor is trapped.",
           encounter: null,
-          statblock: null,
+          monsters: [],
+          items: [],
+          missingStatblockCount: 0,
           referenceRemoved: false,
           presentation: "warning",
         },
@@ -217,21 +237,23 @@ describe("AdventureView", () => {
             },
             monsters: [],
           },
-          statblock: null,
+          monsters: [],
+          items: [],
+          missingStatblockCount: 0,
           referenceRemoved: false,
           presentation: null,
         },
         {
           id: "treasure",
           parentId: "root",
-          kind: "statblock",
+          kind: "items",
           orderIndex: 2,
           title: "Reward",
           content: "The heroes find this item.",
           encounter: null,
-          statblock: {
-            entityType: "item",
-            entity: {
+          monsters: [],
+          items: [
+            {
               id: "00000000-0000-0000-0000-000000000002",
               name: "Honey Wand",
               description: "A very sticky wand.",
@@ -246,7 +268,8 @@ describe("AdventureView", () => {
                 displayName: "Test Author",
               },
             },
-          },
+          ],
+          missingStatblockCount: 0,
           referenceRemoved: false,
           presentation: null,
         },
@@ -258,7 +281,9 @@ describe("AdventureView", () => {
           title: "Lost encounter",
           content: "",
           encounter: null,
-          statblock: null,
+          monsters: [],
+          items: [],
+          missingStatblockCount: 0,
           referenceRemoved: true,
           presentation: null,
         },
@@ -270,7 +295,9 @@ describe("AdventureView", () => {
           title: "Second Stop",
           content: "The journey continues.",
           encounter: null,
-          statblock: null,
+          monsters: [],
+          items: [],
+          missingStatblockCount: 0,
           referenceRemoved: false,
           presentation: null,
         },
@@ -322,8 +349,11 @@ describe("AdventureView", () => {
     expect(
       screen.queryByText("The monsters defend their den.")
     ).not.toBeInTheDocument();
-    expect(screen.getByText("Item statblock: Honey Wand")).toBeVisible();
-    expect(screen.queryByText("Reward")).not.toBeInTheDocument();
+    expect(screen.getByText("Item statblock: Honey Wand")).toHaveAttribute(
+      "data-no-interactive",
+      "true"
+    );
+    expect(screen.getByText("Reward")).toBeVisible();
     expect(
       screen.queryByText("The heroes find this item.")
     ).not.toBeInTheDocument();
@@ -373,10 +403,12 @@ describe("AdventureView", () => {
       {
         ...adventure.nodes[0],
         id: "root-statblock",
-        kind: "statblock",
+        kind: "monsters",
         title: "",
         content: "",
-        statblock: null,
+        monsters: [],
+        items: [],
+        missingStatblockCount: 0,
         orderIndex: 4,
       },
     ];
@@ -539,13 +571,13 @@ describe("AdventureView", () => {
       sample.nodes.filter((node) => node.kind === "encounter")
     ).toHaveLength(0);
     const statblockNodes = sample.nodes.filter(
-      (node) => node.kind === "statblock"
+      (node) => node.kind === "monsters"
     );
     expect(statblockNodes).toHaveLength(2);
     expect(
-      statblockNodes.map(({ parentId, monsterId }) => ({
+      statblockNodes.map(({ parentId, monsterIds }) => ({
         parentId,
-        monsterId,
+        monsterId: monsterIds[0],
       }))
     ).toEqual([
       { parentId: "spider-lair", monsterId: "giant-spider" },
@@ -558,15 +590,15 @@ describe("AdventureView", () => {
       "hidden honey cavern"
     ];
 
-    expect(sample.nodes.filter((node) => node.kind === "statblock")).toEqual([
+    expect(sample.nodes.filter((node) => node.kind === "monsters")).toEqual([
       expect.objectContaining({
         parentId: "spider-lair",
-        monsterId: "giant-spider",
+        monsterIds: ["giant-spider"],
       }),
     ]);
     expect(
       sample.nodes.some(
-        (node) => node.parentId === "wax-maze" && node.kind === "statblock"
+        (node) => node.parentId === "wax-maze" && node.kind === "monsters"
       )
     ).toBe(false);
   });
@@ -594,7 +626,9 @@ describe("AdventureView", () => {
           title: "",
           content: "The hero is [[Blinded]].",
           encounter: null,
-          statblock: null,
+          monsters: [],
+          items: [],
+          missingStatblockCount: 0,
           referenceRemoved: false,
           presentation: null,
         },
@@ -629,7 +663,9 @@ describe("AdventureView", () => {
           title: "Loading Section",
           content: "The hero is [[Blinded]].",
           encounter: null,
-          statblock: null,
+          monsters: [],
+          items: [],
+          missingStatblockCount: 0,
           referenceRemoved: false,
           presentation: null,
         },
@@ -679,7 +715,9 @@ describe("AdventureView", () => {
           title: "",
           content: "",
           encounter: null,
-          statblock: null,
+          monsters: [],
+          items: [],
+          missingStatblockCount: 0,
           image: {
             id: "image-id",
             extension: "png",

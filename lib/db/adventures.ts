@@ -20,6 +20,8 @@ import {
   type AdventureNodePresentation,
   type AdventureVisibility,
   adventureImages,
+  adventureNodeItems,
+  adventureNodeMonsters,
   adventureNodes,
   adventures,
   encounters,
@@ -50,7 +52,9 @@ export interface AdventureNode {
   title: string;
   content: string;
   encounter: EncounterOverview | null;
-  statblock: AdventureStatblock | null;
+  monsters: BestiaryEntry[];
+  items: Item[];
+  missingStatblockCount: number;
   image?: AdventureImageAsset | null;
   caption?: string;
   referenceRemoved: boolean;
@@ -88,8 +92,9 @@ export interface AdventureNodeInput {
   title: string;
   content: string;
   encounterId: string | null;
-  monsterId: string | null;
-  itemId: string | null;
+  monsterIds: string[];
+  itemIds: string[];
+  missingStatblockCount: number;
   imageId?: string | null;
   imageExtension?: AdventureImageExtension | null;
   caption?: string;
@@ -180,16 +185,37 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
     .from(adventureNodes)
     .where(eq(adventureNodes.adventureId, id))
     .orderBy(asc(adventureNodes.orderIndex));
+  const nodeIds = nodeRows.map((node) => node.id);
+  const monsterRelations =
+    nodeIds.length > 0
+      ? await db
+          .select()
+          .from(adventureNodeMonsters)
+          .where(inArray(adventureNodeMonsters.nodeId, nodeIds))
+          .orderBy(asc(adventureNodeMonsters.orderIndex))
+      : [];
+  const itemRelations =
+    nodeIds.length > 0
+      ? await db
+          .select()
+          .from(adventureNodeItems)
+          .where(inArray(adventureNodeItems.nodeId, nodeIds))
+          .orderBy(asc(adventureNodeItems.orderIndex))
+      : [];
   const [encounterOverviews, statblockMonsters, statblockItems] =
     await Promise.all([
       findEncounterOverviewsByIds(
         nodeRows.flatMap((node) => (node.encounterId ? [node.encounterId] : []))
       ),
       findBestiaryEntriesByIds(
-        nodeRows.flatMap((node) => (node.monsterId ? [node.monsterId] : []))
+        monsterRelations.flatMap((relation) =>
+          relation.monsterId ? [relation.monsterId] : []
+        )
       ),
       findItemsByIds(
-        nodeRows.flatMap((node) => (node.itemId ? [node.itemId] : []))
+        itemRelations.flatMap((relation) =>
+          relation.itemId ? [relation.itemId] : []
+        )
       ),
     ]);
   const encounterMap = new Map(
@@ -216,21 +242,6 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
       ? encounter
       : null;
   };
-  const getStatblock = (node: typeof adventureNodes.$inferSelect) => {
-    const monster = node.monsterId
-      ? statblockMonsterMap.get(node.monsterId)
-      : undefined;
-    if (monster && canDisplayStatblock(monster)) {
-      return {
-        entityType: "monster",
-        entity: monster,
-      } satisfies AdventureStatblock;
-    }
-    const item = node.itemId ? statblockItemMap.get(node.itemId) : undefined;
-    return item && canDisplayStatblock(item)
-      ? ({ entityType: "item", entity: item } satisfies AdventureStatblock)
-      : null;
-  };
 
   return {
     id: row.adventure.id,
@@ -241,7 +252,26 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
     creator: toUser(row.creator),
     nodes: nodeRows.map((node) => {
       const encounter = getEncounter(node);
-      const statblock = getStatblock(node);
+      const nodeMonsterRelations = monsterRelations.filter(
+        (relation) => relation.nodeId === node.id
+      );
+      const nodeItemRelations = itemRelations.filter(
+        (relation) => relation.nodeId === node.id
+      );
+      const nodeMonsters = nodeMonsterRelations.flatMap((relation) => {
+        const monster = relation.monsterId
+          ? statblockMonsterMap.get(relation.monsterId)
+          : undefined;
+        return monster && canDisplayStatblock(monster) ? [monster] : [];
+      });
+      const nodeItems = nodeItemRelations.flatMap((relation) => {
+        const item = relation.itemId
+          ? statblockItemMap.get(relation.itemId)
+          : undefined;
+        return item && canDisplayStatblock(item) ? [item] : [];
+      });
+      const relationCount =
+        nodeMonsterRelations.length + nodeItemRelations.length;
       return {
         id: node.id,
         parentId: node.parentId,
@@ -250,7 +280,12 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
         title: node.title,
         content: node.content,
         encounter,
-        statblock,
+        monsters: nodeMonsters,
+        items: nodeItems,
+        missingStatblockCount: Math.max(
+          0,
+          relationCount - nodeMonsters.length - nodeItems.length
+        ),
         image:
           node.kind === "image" && node.imageId && node.imageExtension
             ? getAdventureImageUrls(
@@ -260,9 +295,7 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
               )
             : null,
         caption: node.caption,
-        referenceRemoved:
-          (node.kind === "encounter" && !encounter) ||
-          (node.kind === "statblock" && !statblock),
+        referenceRemoved: (node.kind === "encounter" && !encounter) || false,
         presentation: node.presentation,
       };
     }),
@@ -311,10 +344,29 @@ function validateAdventureInput(input: AdventureInput) {
       imageIds.add(node.imageId);
     }
     if (
-      node.kind === "statblock" &&
-      Number(Boolean(node.monsterId)) + Number(Boolean(node.itemId)) !== 1
+      !Number.isInteger(node.missingStatblockCount) ||
+      node.missingStatblockCount < 0 ||
+      node.missingStatblockCount > 10
     ) {
-      throw new Error("Statblock sections must select one monster or item");
+      throw new Error(
+        "Missing statblock count must be an integer from 0 to 10"
+      );
+    }
+    const references =
+      (node.kind === "monsters" ? node.monsterIds.length : 0) +
+      (node.kind === "items" ? node.itemIds.length : 0) +
+      node.missingStatblockCount;
+    if (
+      (node.kind === "monsters" || node.kind === "items") &&
+      references > 10
+    ) {
+      throw new Error("Statblock groups may contain at most 10 references");
+    }
+    if (
+      new Set(node.monsterIds).size !== node.monsterIds.length ||
+      new Set(node.itemIds).size !== node.itemIds.length
+    ) {
+      throw new Error("Statblock groups cannot contain duplicates");
     }
   }
 
@@ -353,6 +405,9 @@ function validateAdventureInput(input: AdventureInput) {
 }
 
 async function validateEncounterAccess(
+  db: Parameters<
+    Parameters<ReturnType<typeof getDatabase>["transaction"]>[0]
+  >[0],
   userId: string,
   visibility: AdventureVisibility,
   nodes: AdventureNodeInput[]
@@ -364,7 +419,6 @@ async function validateEncounterAccess(
   ];
   if (encounterIds.length === 0) return;
 
-  const db = getDatabase();
   const encounterVisibility =
     visibility === "public"
       ? eq(encounters.visibility, "public")
@@ -382,27 +436,25 @@ async function validateEncounterAccess(
 }
 
 async function validateStatblockAccess(
+  db: Parameters<
+    Parameters<ReturnType<typeof getDatabase>["transaction"]>[0]
+  >[0],
   userId: string,
   visibility: AdventureVisibility,
   nodes: AdventureNodeInput[]
 ) {
   const monsterIds = [
     ...new Set(
-      nodes.flatMap((node) =>
-        node.kind === "statblock" && node.monsterId ? [node.monsterId] : []
-      )
+      nodes.flatMap((node) => (node.kind === "monsters" ? node.monsterIds : []))
     ),
   ];
   const itemIds = [
     ...new Set(
-      nodes.flatMap((node) =>
-        node.kind === "statblock" && node.itemId ? [node.itemId] : []
-      )
+      nodes.flatMap((node) => (node.kind === "items" ? node.itemIds : []))
     ),
   ];
   if (monsterIds.length === 0 && itemIds.length === 0) return;
 
-  const db = getDatabase();
   const monsterVisibility =
     visibility === "public"
       ? eq(monsters.visibility, "public")
@@ -411,20 +463,20 @@ async function validateStatblockAccess(
     visibility === "public"
       ? eq(items.visibility, "public")
       : or(eq(items.visibility, "public"), eq(items.userId, userId));
-  const [accessibleMonsters, accessibleItems] = await Promise.all([
+  const accessibleMonsters =
     monsterIds.length > 0
-      ? db
+      ? await db
           .select({ id: monsters.id })
           .from(monsters)
           .where(and(inArray(monsters.id, monsterIds), monsterVisibility))
-      : [],
+      : [];
+  const accessibleItems =
     itemIds.length > 0
-      ? db
+      ? await db
           .select({ id: items.id })
           .from(items)
           .where(and(inArray(items.id, itemIds), itemVisibility))
-      : [],
-  ]);
+      : [];
   if (
     accessibleMonsters.length !== monsterIds.length ||
     accessibleItems.length !== itemIds.length
@@ -451,25 +503,22 @@ async function insertAdventureChildren(
     }
     await tx.insert(adventureNodes).values(
       ready.map((node) => {
-        const id = crypto.randomUUID();
-        insertedIds.set(node.id, id);
+        const persistedId = crypto.randomUUID();
+        insertedIds.set(node.id, persistedId);
         return {
-          id,
+          id: persistedId,
           adventureId,
           parentId: node.parentId ? insertedIds.get(node.parentId) : undefined,
           kind: node.kind,
           orderIndex: node.orderIndex,
-          title:
-            node.kind === "encounter" || node.kind === "statblock"
-              ? ""
-              : node.title.trim(),
+          title: node.kind === "encounter" ? "" : node.title.trim(),
           content:
-            node.kind === "encounter" || node.kind === "statblock"
+            node.kind === "encounter" ||
+            node.kind === "monsters" ||
+            node.kind === "items"
               ? ""
               : node.content,
           encounterId: node.kind === "encounter" ? node.encounterId : undefined,
-          monsterId: node.kind === "statblock" ? node.monsterId : undefined,
-          itemId: node.kind === "statblock" ? node.itemId : undefined,
           imageId: node.kind === "image" ? node.imageId : undefined,
           imageExtension:
             node.kind === "image" ? node.imageExtension : undefined,
@@ -479,6 +528,40 @@ async function insertAdventureChildren(
         };
       })
     );
+    for (const node of ready) {
+      const nodeId = insertedIds.get(node.id);
+      if (!nodeId) throw new Error("Adventure section was not inserted");
+      const ids =
+        node.kind === "monsters"
+          ? node.monsterIds
+          : node.kind === "items"
+            ? node.itemIds
+            : [];
+      const values = [
+        ...ids.map((entityId, orderIndex) => ({ entityId, orderIndex })),
+        ...Array.from({ length: node.missingStatblockCount }, (_, offset) => ({
+          entityId: null,
+          orderIndex: ids.length + offset,
+        })),
+      ];
+      if (node.kind === "monsters" && values.length > 0) {
+        await tx.insert(adventureNodeMonsters).values(
+          values.map(({ entityId, orderIndex }) => ({
+            nodeId,
+            monsterId: entityId,
+            orderIndex,
+          }))
+        );
+      } else if (node.kind === "items" && values.length > 0) {
+        await tx.insert(adventureNodeItems).values(
+          values.map(({ entityId, orderIndex }) => ({
+            nodeId,
+            itemId: entityId,
+            orderIndex,
+          }))
+        );
+      }
+    }
     const readyIds = new Set(ready.map((node) => node.id));
     for (let index = pending.length - 1; index >= 0; index--) {
       if (readyIds.has(pending[index].id)) pending.splice(index, 1);
@@ -560,14 +643,12 @@ export async function createAdventure(
   input: AdventureInput
 ): Promise<Adventure> {
   const name = validateAdventureInput(input);
-  await Promise.all([
-    validateEncounterAccess(userId, input.visibility, input.nodes),
-    validateStatblockAccess(userId, input.visibility, input.nodes),
-  ]);
   const db = getDatabase();
   const id = crypto.randomUUID();
 
   await db.transaction(async (tx) => {
+    await validateEncounterAccess(tx, userId, input.visibility, input.nodes);
+    await validateStatblockAccess(tx, userId, input.visibility, input.nodes);
     await attachAdventureImages(tx, id, userId, input.nodes);
     await tx.insert(adventures).values({
       id,
@@ -592,27 +673,25 @@ export async function updateAdventure(
 ): Promise<Adventure> {
   if (!isValidUUID(id)) throw new Error("Invalid adventure ID");
   const name = validateAdventureInput(input);
-  await Promise.all([
-    validateEncounterAccess(userId, input.visibility, input.nodes),
-    validateStatblockAccess(userId, input.visibility, input.nodes),
-  ]);
   const db = getDatabase();
-  const [existing] = await db
-    .select({ id: adventures.id })
-    .from(adventures)
-    .where(and(eq(adventures.id, id), eq(adventures.userId, userId)))
-    .limit(1);
-  if (!existing) throw new Error("Adventure not found");
-  const previousImageIds = new Set(
-    (
-      await db
-        .select({ imageId: adventureNodes.imageId })
-        .from(adventureNodes)
-        .where(eq(adventureNodes.adventureId, id))
-    ).flatMap((node) => (node.imageId ? [node.imageId] : []))
-  );
-
+  let previousImageIds = new Set<string>();
   await db.transaction(async (tx) => {
+    const [existing] = await tx
+      .select({ id: adventures.id })
+      .from(adventures)
+      .where(and(eq(adventures.id, id), eq(adventures.userId, userId)))
+      .limit(1);
+    if (!existing) throw new Error("Adventure not found");
+    previousImageIds = new Set(
+      (
+        await tx
+          .select({ imageId: adventureNodes.imageId })
+          .from(adventureNodes)
+          .where(eq(adventureNodes.adventureId, id))
+      ).flatMap((node) => (node.imageId ? [node.imageId] : []))
+    );
+    await validateEncounterAccess(tx, userId, input.visibility, input.nodes);
+    await validateStatblockAccess(tx, userId, input.visibility, input.nodes);
     await attachAdventureImages(tx, id, userId, input.nodes);
     await tx
       .update(adventures)

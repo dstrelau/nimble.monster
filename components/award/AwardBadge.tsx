@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 
 interface AwardBadgeProps {
   award: Pick<Award, "slug" | "color" | "abbreviation" | "name">;
+  disableLink?: boolean;
 }
 
 export const AWARD_COLOR_CLASSES: Record<string, string> = {
@@ -34,7 +35,7 @@ export const AWARD_COLOR_CLASSES: Record<string, string> = {
 
 export const AWARD_COLORS = Object.keys(AWARD_COLOR_CLASSES);
 
-export const AwardBadge = ({ award }: AwardBadgeProps) => {
+export const AwardBadge = ({ award, disableLink = false }: AwardBadgeProps) => {
   const pathname = usePathname();
   const isCurrentPage = pathname === `/awards/${award.slug}`;
 
@@ -54,7 +55,7 @@ export const AwardBadge = ({ award }: AwardBadgeProps) => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          {isCurrentPage ? (
+          {isCurrentPage || disableLink ? (
             <span className={className}>{content}</span>
           ) : (
             <Link href={`/awards/${award.slug}`} className={className}>

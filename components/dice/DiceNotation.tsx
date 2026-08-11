@@ -86,7 +86,10 @@ function DiceDrawer({ diceText }: { diceText: string }) {
   return (
     <Drawer onOpenChange={(open) => open && handleReroll()}>
       <DrawerTrigger asChild>
-        <span className="inline-flex gap-0.5 items-baseline cursor-pointer hover:text-flame">
+        <span
+          data-dice-notation
+          className="inline-flex gap-0.5 items-baseline cursor-pointer hover:text-flame"
+        >
           {dieToIcon(parsed.dieSize)}
           {parsed.tensOnes
             ? `d${parsed.dieSize.toString().repeat(parsed.numDice)}`

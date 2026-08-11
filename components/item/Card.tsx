@@ -70,6 +70,7 @@ interface CardProps {
   item: Item;
   creator: User;
   link?: boolean;
+  noInteractive?: boolean;
   hideActions?: boolean;
   hideDescription?: boolean;
   className?: string;
@@ -82,6 +83,7 @@ export const Card = ({
   item,
   creator,
   link = true,
+  noInteractive = false,
   hideActions = false,
   hideDescription = false,
   className,
@@ -98,6 +100,19 @@ export const Card = ({
   const imageBgColor = resolveItemColor(item.imageBgColor);
   const backdrop = resolveItemBackdrop(item);
   const isLegendary = item.rarity === "legendary";
+  const preventNonDiceInteraction = (event: React.MouseEvent<HTMLElement>) => {
+    if (!(event.target instanceof Element)) return;
+    if (event.target.closest("[data-dice-notation]")) return;
+    if (
+      !event.target.closest(
+        'a, button, [role="button"], [role="link"], [data-state]'
+      )
+    ) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+  };
 
   const card = (
     <ShadcnCard
@@ -108,6 +123,7 @@ export const Card = ({
         selectable && selected && "ring-2 ring-amber-500"
       )}
       id={selectable ? undefined : `item-${item.id}`}
+      onClickCapture={noInteractive ? preventNonDiceInteraction : undefined}
       {...(selectable && selected && { "data-selected": "" })}
     >
       {isLegendary && (
@@ -145,7 +161,7 @@ export const Card = ({
         )}
         <CardTitle>
           <h2 className={cn("font-slab", "font-black text-2xl leading-tight")}>
-            {!selectable && link && item.id ? (
+            {!selectable && link && !noInteractive && item.id ? (
               <Link href={getItemUrl(item)}>{item.name}</Link>
             ) : (
               item.name
@@ -170,12 +186,14 @@ export const Card = ({
             <FormattedText
               content={item.description}
               conditions={allConditions}
+              noInteractive={noInteractive}
             />
           )}
 
           <MoreInfoSection
             moreInfo={item.moreInfo}
             conditions={allConditions}
+            noInteractive={noInteractive}
           />
         </CardContent>
       )}
@@ -184,8 +202,9 @@ export const Card = ({
         creator={creator}
         source={item.source}
         awards={item.awards}
-        hideActions={selectable || hideActions}
+        hideActions={selectable || hideActions || noInteractive}
         className={cn("pb-4", selectable && "pointer-events-none")}
+        disableLink={noInteractive}
         reactionsSlot={
           item.id && <EntityReactions entityType="item" entityId={item.id} />
         }

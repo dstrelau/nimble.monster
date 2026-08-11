@@ -208,7 +208,8 @@ const MemberStats: React.FC<{ member: MonsterTeamMember }> = ({ member }) => (
 const MemberBlock: React.FC<{
   member: MonsterTeamMember;
   conditions: Condition[];
-}> = ({ member, conditions }) => (
+  noInteractive?: boolean;
+}> = ({ member, conditions, noInteractive = false }) => (
   <div className="flex flex-col gap-2">
     <div className="flex justify-between items-center gap-2">
       <div className="flex items-center gap-2">
@@ -233,12 +234,17 @@ const MemberBlock: React.FC<{
       <MemberStats member={member} />
     </div>
     {member.abilities.length > 0 && (
-      <AbilityOverlay abilities={member.abilities} conditions={conditions} />
+      <AbilityOverlay
+        abilities={member.abilities}
+        conditions={conditions}
+        noInteractive={noInteractive}
+      />
     )}
     <ActionsList
       actions={member.actions}
       conditions={conditions}
       actionPreface={member.actionPreface || ""}
+      noInteractive={noInteractive}
     />
   </div>
 );
@@ -280,6 +286,7 @@ interface CardProps {
   monster: MonsterFormState;
   creator?: User;
   link?: boolean;
+  noInteractive?: boolean;
   hideActions?: boolean;
   hideDescription?: boolean;
   showEncounterGuidelines?: boolean;
@@ -293,6 +300,7 @@ export const Card = ({
   monster,
   creator,
   link = true,
+  noInteractive = false,
   hideActions = false,
   hideDescription = false,
   showEncounterGuidelines = false,
@@ -312,6 +320,19 @@ export const Card = ({
     (monster.families?.some((family) => family.abilities.length > 0) ??
       false) ||
     (monster.abilities?.length ?? 0) > 0;
+  const preventNonDiceInteraction = (event: React.MouseEvent<HTMLElement>) => {
+    if (!(event.target instanceof Element)) return;
+    if (event.target.closest("[data-dice-notation]")) return;
+    if (
+      !event.target.closest(
+        'a, button, [role="button"], [role="link"], [data-state]'
+      )
+    ) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+  };
 
   const card = (
     <ShadcnCard
@@ -319,14 +340,18 @@ export const Card = ({
         className,
         selectable && selected && "ring-2 ring-amber-500"
       )}
+      onClickCapture={noInteractive ? preventNonDiceInteraction : undefined}
       {...(selectable && selected && { "data-selected": "" })}
     >
       {isTeam ? (
-        <TeamHeader monster={monster} link={!selectable && link} />
+        <TeamHeader
+          monster={monster}
+          link={!selectable && link && !noInteractive}
+        />
       ) : (
         <MonsterHeader
           monster={monster}
-          link={!selectable && link}
+          link={!selectable && link && !noInteractive}
           variant={
             monster.hazard
               ? "hazard"
@@ -353,17 +378,23 @@ export const Card = ({
               ...(monster.abilities ?? []),
             ]}
             families={monster.families ?? []}
+            noInteractive={noInteractive}
           />
         )}
         <ActionsList
           actions={monster.actions ?? []}
           conditions={conditions}
           actionPreface={monster.actionPreface}
+          noInteractive={noInteractive}
         />
         {isTeam &&
           monster.members?.map((member) => (
             <Fragment key={member.id}>
-              <MemberBlock member={member} conditions={conditions} />
+              <MemberBlock
+                member={member}
+                conditions={conditions}
+                noInteractive={noInteractive}
+              />
               <MemberDivider />
             </Fragment>
           ))}
@@ -372,6 +403,7 @@ export const Card = ({
             content={monster.bloodied}
             conditions={conditions}
             prefix={<strong>BLOODIED:</strong>}
+            noInteractive={noInteractive}
           />
         )}
 
@@ -381,6 +413,7 @@ export const Card = ({
               content={monster.lastStand}
               conditions={conditions}
               prefix={<strong>LAST STAND:</strong>}
+              noInteractive={noInteractive}
             />
           </div>
         )}
@@ -389,6 +422,7 @@ export const Card = ({
           <MoreInfoSection
             moreInfo={monster.moreInfo}
             conditions={conditions}
+            noInteractive={noInteractive}
           />
         )}
 
@@ -398,6 +432,7 @@ export const Card = ({
             <FormattedText
               content={monster.mild_encounter}
               conditions={conditions}
+              noInteractive={noInteractive}
             />
           </div>
         )}
@@ -408,11 +443,12 @@ export const Card = ({
             <FormattedText
               content={monster.spicy_encounter}
               conditions={conditions}
+              noInteractive={noInteractive}
             />
           </div>
         )}
 
-        {!selectable && monster.remixedFrom && (
+        {!selectable && !noInteractive && monster.remixedFrom && (
           <div className="flex gap-1 items-center text-center text-sm text-muted-foreground">
             <Shuffle className="size-3 stroke-muted-foreground" />
             remixed from{" "}
@@ -447,13 +483,15 @@ export const Card = ({
         creator={creator}
         source={monster.source}
         awards={monster.awards}
-        hideActions={selectable || hideActions}
+        hideActions={selectable || hideActions || noInteractive}
         className={cn(selectable && "pointer-events-none")}
+        disableLink={noInteractive}
         actionsSlot={<CardActions monster={monster} />}
         reactionsSlot={
           <EntityReactions entityType="monster" entityId={monster.id} />
         }
         paperforgeSlot={
+          !noInteractive &&
           paperforgeEntry && <PaperforgeLink entry={paperforgeEntry} />
         }
       />

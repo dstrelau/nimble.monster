@@ -246,3 +246,20 @@ summary::-webkit-details-marker {
 .animate-fade-out {
     animation: fade-out 2s ease-out forwards;
 }
+
+button.adventure-remove-button {
+    isolation: isolate;
+    opacity: 1 !important;
+    background-color: var(--card) !important;
+    background-image: none !important;
+    color: var(--card-foreground) !important;
+    mix-blend-mode: normal;
+    backdrop-filter: none;
+}
+
+button.adventure-remove-button:hover {
+    opacity: 1 !important;
+    background-color: var(--color-yellow-600) !important;
+    background-image: none !important;
+    color: var(--destructive-foreground) !important;
+}

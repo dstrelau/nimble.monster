@@ -10,10 +10,12 @@ export const AbilityOverlay = ({
   abilities,
   families = [],
   conditions,
+  noInteractive = false,
 }: {
   abilities: Ability[];
   families?: FamilyOverview[];
   conditions: Condition[];
+  noInteractive?: boolean;
 }) => {
   if (abilities.length === 0) return null;
 
@@ -45,7 +47,7 @@ export const AbilityOverlay = ({
                       <>
                         <span className="inline-flex items-baseline gap-1 font-bold">
                           <Users className="size-3.5 text-flame" />
-                          {isValidUUID(family.id) ? (
+                          {isValidUUID(family.id) && !noInteractive ? (
                             <Link
                               href={getFamilyUrl(family)}
                               className="inline-flex items-baseline gap-0.5"
@@ -64,6 +66,7 @@ export const AbilityOverlay = ({
                 }
                 content={ability.description || ""}
                 conditions={conditions}
+                noInteractive={noInteractive}
               />
             </div>
           );
