@@ -207,6 +207,20 @@ describe("AdventureView", () => {
           kind: "section",
           orderIndex: 0,
           title: "First Stop",
+          content: "",
+          encounter: null,
+          monsters: [],
+          items: [],
+          missingStatblockCount: 0,
+          referenceRemoved: false,
+          presentation: null,
+        },
+        {
+          id: "introduction",
+          parentId: "root",
+          kind: "text",
+          orderIndex: 0,
+          title: "",
           content: "Welcome, **heroes**.",
           encounter: null,
           monsters: [],
@@ -219,7 +233,7 @@ describe("AdventureView", () => {
           id: "warning",
           parentId: "root",
           kind: "callout",
-          orderIndex: 0,
+          orderIndex: 1,
           title: "Watch Out",
           content: "The floor is trapped.",
           encounter: null,
@@ -233,7 +247,7 @@ describe("AdventureView", () => {
           id: "fight",
           parentId: "root",
           kind: "encounter",
-          orderIndex: 1,
+          orderIndex: 2,
           title: "",
           content: "The monsters defend their den.",
           encounter: {
@@ -261,7 +275,7 @@ describe("AdventureView", () => {
           id: "treasure",
           parentId: "root",
           kind: "items",
-          orderIndex: 2,
+          orderIndex: 3,
           title: "Reward",
           content: "The heroes find this item.",
           encounter: null,
@@ -291,7 +305,7 @@ describe("AdventureView", () => {
           id: "removed",
           parentId: "root",
           kind: "encounter",
-          orderIndex: 3,
+          orderIndex: 4,
           title: "Lost encounter",
           content: "",
           encounter: null,
@@ -564,6 +578,16 @@ describe("AdventureView", () => {
     expect(
       sample.nodes.every((node) => !node.parentId || ids.has(node.parentId))
     ).toBe(true);
+    expect(
+      sample.nodes.every(
+        (node) => node.parentId !== null || node.kind === "section"
+      )
+    ).toBe(true);
+    expect(
+      sample.nodes.every(
+        (node) => node.kind !== "section" || node.content === ""
+      )
+    ).toBe(true);
     expect(sample.nodes.some((node) => node.kind === "callout")).toBe(true);
     expect(sample.nodes.filter((node) => node.kind === "image")).toEqual([
       expect.objectContaining({
@@ -647,11 +671,25 @@ describe("AdventureView", () => {
       },
       nodes: [
         {
-          id: "condition-node",
+          id: "condition-section",
           parentId: null,
+          kind: "section",
+          orderIndex: 0,
+          title: "Conditions",
+          content: "",
+          encounter: null,
+          monsters: [],
+          items: [],
+          missingStatblockCount: 0,
+          referenceRemoved: false,
+          presentation: null,
+        },
+        {
+          id: "condition-node",
+          parentId: "condition-section",
           kind: "text",
           orderIndex: 0,
-          title: "",
+          title: "Status",
           content: "The hero is [[Blinded]].",
           encounter: null,
           monsters: [],
@@ -665,6 +703,7 @@ describe("AdventureView", () => {
 
     render(<AdventureView adventure={adventure} />);
 
+    expect(screen.getByRole("heading", { name: "Status" })).toBeVisible();
     expect(screen.getByText("Blinded")).toHaveClass("cursor-default");
   });
 
@@ -689,6 +728,20 @@ describe("AdventureView", () => {
           kind: "section",
           orderIndex: 0,
           title: "Loading Section",
+          content: "",
+          encounter: null,
+          monsters: [],
+          items: [],
+          missingStatblockCount: 0,
+          referenceRemoved: false,
+          presentation: null,
+        },
+        {
+          id: "loading-text",
+          parentId: "loading-node",
+          kind: "text",
+          orderIndex: 0,
+          title: "",
           content: "The hero is [[Blinded]].",
           encounter: null,
           monsters: [],

@@ -47,5 +47,5 @@ export const adventureInputSchema = z.object({
           }
         })
     )
-    .max(200),
+    .max(400),
 });

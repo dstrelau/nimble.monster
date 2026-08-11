@@ -311,8 +311,8 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
 function validateAdventureInput(input: AdventureInput) {
   const name = input.name.trim();
   if (!name) throw new Error("Adventure name is required");
-  if (input.nodes.length > 200) {
-    throw new Error("Adventures may contain at most 200 sections");
+  if (input.nodes.length > 400) {
+    throw new Error("Adventures may contain at most 400 content blocks");
   }
 
   const nodeIds = new Set<string>();
@@ -324,6 +324,9 @@ function validateAdventureInput(input: AdventureInput) {
     nodeIds.add(node.id);
     if (node.kind === "section" && !node.title.trim()) {
       throw new Error("Section titles are required");
+    }
+    if (node.kind === "section" && node.content) {
+      throw new Error("Sections cannot contain text content");
     }
     if (node.kind === "encounter" && !node.encounterId) {
       throw new Error("Encounter sections must select an encounter");
@@ -371,6 +374,9 @@ function validateAdventureInput(input: AdventureInput) {
   }
 
   for (const node of input.nodes) {
+    if (!node.parentId && node.kind !== "section") {
+      throw new Error("Only sections may appear at the top level");
+    }
     if (node.parentId && !nodeIds.has(node.parentId)) {
       throw new Error("Adventure section parent was not found");
     }
@@ -384,7 +390,7 @@ function validateAdventureInput(input: AdventureInput) {
       const grandparent = parent.parentId
         ? input.nodes.find((candidate) => candidate.id === parent.parentId)
         : undefined;
-      if (grandparent?.parentId) {
+      if (node.kind === "section" && grandparent?.parentId) {
         throw new Error("Adventure content may be nested only two levels");
       }
     }

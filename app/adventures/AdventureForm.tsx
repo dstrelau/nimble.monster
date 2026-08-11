@@ -172,6 +172,7 @@ function normalizeOrder(nodes: AdventureNodeInput[]): AdventureNodeInput[] {
       (a, b) => a.orderIndex - b.orderIndex
     );
     const hasNoTextContent =
+      node.kind === "section" ||
       node.kind === "encounter" ||
       node.kind === "monsters" ||
       node.kind === "items" ||
@@ -641,6 +642,7 @@ export function AdventureForm({
                   discardAdventureImage(node.imageId);
                 }
                 const hasNoTextContent =
+                  kind === "section" ||
                   kind === "encounter" ||
                   kind === "monsters" ||
                   kind === "items" ||
@@ -681,34 +683,51 @@ export function AdventureForm({
                   <ListTree />
                   Section
                 </SelectItem>
-                <SelectItem value="text" disabled={children.length > 0}>
+                <SelectItem
+                  value="text"
+                  disabled={depth === 0 || children.length > 0}
+                >
                   <AlignLeft />
                   Text
                 </SelectItem>
-                <SelectItem value="callout" disabled={children.length > 0}>
+                <SelectItem
+                  value="callout"
+                  disabled={depth === 0 || children.length > 0}
+                >
                   <MessageSquareWarning />
                   Callout
                 </SelectItem>
-                <SelectItem value="image" disabled={children.length > 0}>
+                <SelectItem
+                  value="image"
+                  disabled={depth === 0 || children.length > 0}
+                >
                   <ImageIcon />
                   Image
                 </SelectItem>
-                <SelectItem value="encounter" disabled={children.length > 0}>
+                <SelectItem
+                  value="encounter"
+                  disabled={depth === 0 || children.length > 0}
+                >
                   <Swords />
                   Encounter
                 </SelectItem>
-                <SelectItem value="monsters" disabled={children.length > 0}>
+                <SelectItem
+                  value="monsters"
+                  disabled={depth === 0 || children.length > 0}
+                >
                   <Goblin />
                   Monsters
                 </SelectItem>
-                <SelectItem value="items" disabled={children.length > 0}>
+                <SelectItem
+                  value="items"
+                  disabled={depth === 0 || children.length > 0}
+                >
                   <Shield />
                   Items
                 </SelectItem>
               </SelectContent>
             </Select>
-            {node.kind !== "text" &&
-              node.kind !== "image" &&
+            {node.kind !== "image" &&
               node.kind !== "encounter" &&
               node.kind !== "monsters" &&
               node.kind !== "items" && (
@@ -720,7 +739,9 @@ export function AdventureForm({
                     id={`title-${node.id}`}
                     value={node.title}
                     required={node.kind === "section"}
-                    placeholder="Title"
+                    placeholder={
+                      node.kind === "section" ? "Title" : "Title (optional)"
+                    }
                     onChange={(event) =>
                       updateNode(node.id, { title: event.target.value })
                     }
@@ -986,7 +1007,8 @@ export function AdventureForm({
               </div>
             )}
 
-            {node.kind !== "image" &&
+            {node.kind !== "section" &&
+              node.kind !== "image" &&
               node.kind !== "encounter" &&
               node.kind !== "monsters" &&
               node.kind !== "items" && (

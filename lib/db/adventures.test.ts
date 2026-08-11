@@ -38,11 +38,27 @@ describe("adventure nesting validation", () => {
       createAdventure(
         "user-1",
         adventure([
-          node("text", "text", null),
+          node("root", "section", null),
+          node("text", "text", "root"),
           node("child", "section", "text"),
         ])
       )
     ).rejects.toThrow("Only sections may contain child content");
+  });
+
+  it("allows only sections at the top level", async () => {
+    await expect(
+      createAdventure("user-1", adventure([node("text", "text", null)]))
+    ).rejects.toThrow("Only sections may appear at the top level");
+  });
+
+  it("rejects text content stored directly on sections", async () => {
+    await expect(
+      createAdventure(
+        "user-1",
+        adventure([{ ...node("root", "section", null), content: "Body" }])
+      )
+    ).rejects.toThrow("Sections cannot contain text content");
   });
 
   it("rejects content nested more than two levels", async () => {

@@ -298,6 +298,8 @@ describe("AdventureForm", () => {
         .getAllByRole("combobox")
         .some((combobox) => combobox.textContent?.includes("Text"))
     ).toBe(true);
+    expect(screen.getByPlaceholderText("Title (optional)")).toBeVisible();
+    expect(screen.getByLabelText("text content")).toBeVisible();
   });
 
   it("copies bundled images into the user's account when loading an example", async () => {
@@ -435,10 +437,7 @@ describe("AdventureForm", () => {
       "dark:text-orange-400"
     );
     expect(screen.getByDisplayValue("Section 1")).toHaveClass("h-9");
-    expect(screen.getAllByLabelText("section content")[0]).toHaveClass(
-      "min-h-16",
-      "md:text-sm"
-    );
+    expect(screen.queryByLabelText("section content")).not.toBeInTheDocument();
     expect(screen.getByDisplayValue("Nested section")).toHaveClass("h-9");
     expect(
       container.querySelector("#adventure-node-nested-section")
@@ -550,7 +549,7 @@ describe("AdventureForm", () => {
     ).toBeVisible();
     expect(screen.getAllByTestId("formatting-trigger")).toHaveLength(1);
     expect(screen.queryByText("Content")).not.toBeInTheDocument();
-    expect(screen.getAllByLabelText("section content")).toHaveLength(5);
+    expect(screen.queryByLabelText("section content")).not.toBeInTheDocument();
   });
 
   it("renders a condensed selected encounter beneath its selector", () => {

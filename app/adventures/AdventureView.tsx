@@ -193,9 +193,10 @@ function AdventureNodeView({
   const children = nodes
     .filter((candidate) => candidate.parentId === node.id)
     .sort((a, b) => a.orderIndex - b.orderIndex);
-  const content = node.content.trim() ? (
-    <FormattedText content={node.content} conditions={conditions} />
-  ) : null;
+  const content =
+    node.kind !== "section" && node.content.trim() ? (
+      <FormattedText content={node.content} conditions={conditions} />
+    ) : null;
 
   if (node.kind === "callout") {
     const presentation = getAdventureCalloutPresentation(node.presentation);
@@ -422,7 +423,7 @@ function AdventureNodeView({
       {isSection && depth === 0 && sectionMarker && (
         <SectionMarker marker={sectionMarker} />
       )}
-      {isSection && node.title && (
+      {node.title && (
         <NodeHeading
           depth={depth}
           title={node.title}
