@@ -300,6 +300,79 @@ describe("AdventureForm", () => {
     ).toBe(true);
   });
 
+  it("copies bundled images into the user's account when loading an example", async () => {
+    const imageId = "55555555-5555-4555-8555-555555555555";
+    vi.mocked(call).mockClear();
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        blob: async () => new Blob(["map"], { type: "image/jpeg" }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ id: imageId, extension: "jpg" }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
+    const queryClient = new QueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AdventureForm
+          initialValue={initialValue}
+          encounters={[]}
+          creator={creator}
+          exampleAdventures={{
+            sample: { ...imageValue, name: "Sample Adventure" },
+          }}
+          exampleAdventureImages={{
+            sample: [
+              {
+                nodeId: imageValue.nodes[0].id,
+                path: "/images/adventures/sample-map.jpg",
+              },
+            ],
+          }}
+        />
+      </QueryClientProvider>
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Sample" }));
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      1,
+      "/images/adventures/sample-map.jpg"
+    );
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      "/_actions/uploadAdventureImage",
+      expect.objectContaining({ method: "POST" })
+    );
+    expect(
+      await screen.findByAltText("Uploaded adventure map preview")
+    ).toHaveAttribute(
+      "src",
+      `/blob-storage/adventure-images/${creator.id}/${imageId}/thumbnail-480.webp`
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Create" }));
+    await waitFor(() =>
+      expect(call).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          name: "Sample Adventure",
+          nodes: [
+            expect.objectContaining({
+              kind: "image",
+              imageId,
+              imageExtension: "jpg",
+            }),
+          ],
+        })
+      )
+    );
+  });
+
   it("styles adventure details like the rendered adventure header", () => {
     renderForm();
 

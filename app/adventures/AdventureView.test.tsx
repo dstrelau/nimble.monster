@@ -9,7 +9,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Adventure } from "@/lib/db/adventures";
 import type { AdventureNodePresentation } from "@/lib/db/schema";
 import { AdventureView } from "./AdventureView";
-import { getExampleAdventures } from "./exampleAdventures";
+import {
+  EXAMPLE_ADVENTURE_IMAGES,
+  getExampleAdventures,
+} from "./exampleAdventures";
 
 const { mockUseConditions } = vi.hoisted(() => ({
   mockUseConditions: vi.fn(),
@@ -538,18 +541,33 @@ describe("AdventureView", () => {
 
   it("provides a valid loadable sample tree", () => {
     const sample = getExampleAdventures({
-      giantSpiderId: "giant-spider",
-      waxGolemId: "wax-golem",
-    })["hidden honey cavern"];
+      goblinMinionId: "goblin-minion",
+      goblinId: "goblin",
+      bugbearId: "bugbear",
+      skeletonId: "skeleton",
+    })["delian tomb"];
     const ids = new Set(sample.nodes.map((node) => node.id));
     const nodesById = new Map(sample.nodes.map((node) => [node.id, node]));
 
-    expect(sample.name).toBe("The Hidden Honey Cavern");
+    expect(sample.name).toBe("The Delian Tomb");
     expect(sample.nodes.length).toBeGreaterThan(10);
     expect(
       sample.nodes.every((node) => !node.parentId || ids.has(node.parentId))
     ).toBe(true);
     expect(sample.nodes.some((node) => node.kind === "callout")).toBe(true);
+    expect(sample.nodes.filter((node) => node.kind === "image")).toEqual([
+      expect.objectContaining({
+        id: "tomb-map",
+        parentId: "locations",
+        imageId: null,
+      }),
+    ]);
+    expect(EXAMPLE_ADVENTURE_IMAGES["delian tomb"]).toEqual([
+      {
+        nodeId: "tomb-map",
+        path: "/images/adventures/delian-tomb/map.jpg",
+      },
+    ]);
     expect(
       sample.nodes.every((node) => {
         if (!node.parentId) return true;
@@ -573,32 +591,32 @@ describe("AdventureView", () => {
     const statblockNodes = sample.nodes.filter(
       (node) => node.kind === "monsters"
     );
-    expect(statblockNodes).toHaveLength(2);
+    expect(statblockNodes).toHaveLength(4);
     expect(
       statblockNodes.map(({ parentId, monsterIds }) => ({
         parentId,
         monsterId: monsterIds[0],
       }))
     ).toEqual([
-      { parentId: "spider-lair", monsterId: "giant-spider" },
-      { parentId: "wax-maze", monsterId: "wax-golem" },
+      { parentId: "following-trail", monsterId: "goblin-minion" },
+      { parentId: "entrance", monsterId: "goblin" },
+      { parentId: "ritual-chamber", monsterId: "bugbear" },
+      { parentId: "hidden-crypt", monsterId: "skeleton" },
     ]);
   });
 
   it("omits an example statblock when its official monster is unavailable", () => {
-    const sample = getExampleAdventures({ giantSpiderId: "giant-spider" })[
-      "hidden honey cavern"
-    ];
+    const sample = getExampleAdventures({ goblinId: "goblin" })["delian tomb"];
 
     expect(sample.nodes.filter((node) => node.kind === "monsters")).toEqual([
       expect.objectContaining({
-        parentId: "spider-lair",
-        monsterIds: ["giant-spider"],
+        parentId: "entrance",
+        monsterIds: ["goblin"],
       }),
     ]);
     expect(
       sample.nodes.some(
-        (node) => node.parentId === "wax-maze" && node.kind === "monsters"
+        (node) => node.parentId === "hidden-crypt" && node.kind === "monsters"
       )
     ).toBe(false);
   });

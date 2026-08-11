@@ -9,6 +9,7 @@ interface ExampleLoaderProps<T> {
   onLoadExample: (type: string) => void;
   getIcon?: (example: T) => LucideIcon | undefined;
   className?: string;
+  disabled?: boolean;
 }
 
 export function ExampleLoader<T>({
@@ -16,6 +17,7 @@ export function ExampleLoader<T>({
   onLoadExample,
   getIcon,
   className,
+  disabled = false,
 }: ExampleLoaderProps<T>) {
   return (
     <div className={cn("flex mb-6 mr-5 justify-end", className)}>
@@ -30,6 +32,7 @@ export function ExampleLoader<T>({
               variant="ghost"
               className="small-caps text-sm"
               onClick={() => onLoadExample(type)}
+              disabled={disabled}
             >
               {IconComponent && <IconComponent className="h-4 w-4" />}
               {type.charAt(0).toUpperCase() + type.slice(1)}

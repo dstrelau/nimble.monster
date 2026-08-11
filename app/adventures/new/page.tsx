@@ -6,7 +6,10 @@ import { listAccessibleEncounterOverviews } from "@/lib/db/encounter";
 import { findOfficialMonstersByNames } from "@/lib/services/monsters/repository";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { AdventureForm } from "../AdventureForm";
-import { getExampleAdventures } from "../exampleAdventures";
+import {
+  EXAMPLE_ADVENTURE_IMAGES,
+  getExampleAdventures,
+} from "../exampleAdventures";
 
 export const metadata: Metadata = {
   title: `New Adventure - ${SITE_NAME}`,
@@ -46,11 +49,18 @@ export default async function NewAdventurePage() {
 
   const [encounters, officialMonsters] = await Promise.all([
     listAccessibleEncounterOverviews(session.user.id),
-    findOfficialMonstersByNames(["Giant Spider", "Wax Golem"]),
+    findOfficialMonstersByNames([
+      "Goblin Minion",
+      "Goblin",
+      "Bugbear",
+      "Skeleton",
+    ]),
   ]);
   const exampleAdventures = getExampleAdventures({
-    giantSpiderId: officialMonsters.get("Giant Spider")?.id,
-    waxGolemId: officialMonsters.get("Wax Golem")?.id,
+    goblinMinionId: officialMonsters.get("Goblin Minion")?.id,
+    goblinId: officialMonsters.get("Goblin")?.id,
+    bugbearId: officialMonsters.get("Bugbear")?.id,
+    skeletonId: officialMonsters.get("Skeleton")?.id,
   });
   const initialStatblocks = [...officialMonsters.values()].map((entity) => ({
     entityType: "monster",
@@ -65,6 +75,7 @@ export default async function NewAdventurePage() {
         creator={session.user}
         initialStatblocks={initialStatblocks}
         exampleAdventures={exampleAdventures}
+        exampleAdventureImages={EXAMPLE_ADVENTURE_IMAGES}
       />
     </main>
   );

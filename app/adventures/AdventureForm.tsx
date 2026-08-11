@@ -62,7 +62,10 @@ import type {
   AdventureNodeInput,
   AdventureStatblock,
 } from "@/lib/db/adventures";
-import type { AdventureNodeKind } from "@/lib/db/schema";
+import type {
+  AdventureImageExtension,
+  AdventureNodeKind,
+} from "@/lib/db/schema";
 import { toHazardMonsterView } from "@/lib/services/hazards/converters";
 import type { Item } from "@/lib/services/items";
 import type { BestiaryEntry } from "@/lib/services/monsters";
@@ -83,6 +86,39 @@ interface AdventureFormProps {
   initialStatblocks?: AdventureStatblock[];
   initialRemovedNodeIds?: string[];
   exampleAdventures?: Record<string, AdventureInput>;
+  exampleAdventureImages?: Record<
+    string,
+    readonly { nodeId: string; path: string }[]
+  >;
+}
+
+interface UploadedExampleImage {
+  id: string;
+  extension: AdventureImageExtension;
+}
+
+function isUploadedExampleImage(value: unknown): value is UploadedExampleImage {
+  if (!value || typeof value !== "object") return false;
+  return (
+    "id" in value &&
+    typeof value.id === "string" &&
+    "extension" in value &&
+    (value.extension === "jpg" ||
+      value.extension === "png" ||
+      value.extension === "webp")
+  );
+}
+
+function uploadErrorMessage(value: unknown): string | null {
+  if (
+    value &&
+    typeof value === "object" &&
+    "error" in value &&
+    typeof value.error === "string"
+  ) {
+    return value.error;
+  }
+  return null;
 }
 
 function formDraft(
@@ -158,6 +194,7 @@ export function AdventureForm({
   initialStatblocks = [],
   initialRemovedNodeIds = [],
   exampleAdventures = {},
+  exampleAdventureImages = {},
 }: AdventureFormProps) {
   const router = useRouter();
   const [draft, setDraft] = useState<AdventureInput>(() =>
@@ -179,6 +216,7 @@ export function AdventureForm({
   const [removedNodeIds, setRemovedNodeIds] = useState(
     () => new Set(initialRemovedNodeIds)
   );
+  const [isLoadingExample, setIsLoadingExample] = useState(false);
   const [pickerNodeId, setPickerNodeId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const saveMutation = useMutation({
@@ -348,6 +386,78 @@ export function AdventureForm({
       nodes: normalizeOrder(draft.nodes),
     };
     saveMutation.mutate(payload);
+  };
+
+  const loadExample = async (key: string) => {
+    const example = exampleAdventures[key];
+    if (!example || isLoadingExample) return;
+
+    setError(null);
+    setIsLoadingExample(true);
+    const uploadedImageIds: string[] = [];
+    try {
+      const imagesByNodeId = new Map<string, UploadedExampleImage>();
+      for (const bundledImage of exampleAdventureImages[key] ?? []) {
+        const sourceResponse = await fetch(bundledImage.path);
+        if (!sourceResponse.ok) {
+          throw new Error("Could not load an example adventure image");
+        }
+        const source = await sourceResponse.blob();
+        const body = new FormData();
+        body.set(
+          "image",
+          new File([source], bundledImage.path.split("/").at(-1) ?? "image", {
+            type: source.type,
+          })
+        );
+        const uploadResponse = await fetch("/_actions/uploadAdventureImage", {
+          method: "POST",
+          body,
+        });
+        const result: unknown = await uploadResponse.json();
+        if (!uploadResponse.ok || !isUploadedExampleImage(result)) {
+          throw new Error(
+            uploadErrorMessage(result) ??
+              "Could not copy an example adventure image"
+          );
+        }
+        uploadedImageIds.push(result.id);
+        imagesByNodeId.set(bundledImage.nodeId, result);
+      }
+
+      for (const node of draft.nodes) {
+        discardAdventureImage(node.imageId);
+      }
+      setDraft(
+        formDraft(
+          {
+            ...example,
+            nodes: example.nodes.map((node) => {
+              const uploadedImage = imagesByNodeId.get(node.id);
+              return uploadedImage
+                ? {
+                    ...node,
+                    imageId: uploadedImage.id,
+                    imageExtension: uploadedImage.extension,
+                  }
+                : node;
+            }),
+          },
+          true
+        )
+      );
+      setRemovedNodeIds(new Set());
+      setPickerNodeId(null);
+    } catch (loadError) {
+      for (const imageId of uploadedImageIds) discardAdventureImage(imageId);
+      setError(
+        loadError instanceof Error
+          ? loadError.message
+          : "Could not load the example adventure"
+      );
+    } finally {
+      setIsLoadingExample(false);
+    }
   };
 
   const previewAdventure: Pick<
@@ -953,17 +1063,8 @@ export function AdventureForm({
           Object.keys(exampleAdventures).length > 0 && (
             <ExampleLoader
               examples={exampleAdventures}
-              onLoadExample={(key) => {
-                const example = exampleAdventures[key];
-                if (example) {
-                  for (const node of draft.nodes) {
-                    discardAdventureImage(node.imageId);
-                  }
-                  setDraft(formDraft(example, true));
-                  setRemovedNodeIds(new Set());
-                  setPickerNodeId(null);
-                }
-              }}
+              onLoadExample={(key) => void loadExample(key)}
+              disabled={isLoadingExample}
               className="mb-0 mr-0"
             />
           )}
