@@ -3,9 +3,12 @@
 import { findPublicClassById } from "@/lib/db/class";
 import { getCollection } from "@/lib/db/collection";
 import { findPublicCompanionById } from "@/lib/db/companion";
+import { findPublicCustomRule } from "@/lib/db/custom-rule";
 import { getFamily } from "@/lib/db/family";
 import { findSpellSchool } from "@/lib/db/school";
 import { findPublicSubclassById } from "@/lib/db/subclass";
+import { getRule } from "@/lib/rules/filesystem";
+import { ruleUrl, variantParentUrl } from "@/lib/rules/rule-index";
 import { ancestriesService } from "@/lib/services/ancestries";
 import { backgroundsService } from "@/lib/services/backgrounds";
 import { itemsService } from "@/lib/services/items";
@@ -18,6 +21,20 @@ export async function getEntityById(
   id: string
 ): Promise<EntityReference | null> {
   try {
+    if (type === "rule") {
+      const officialRule = getRule(id);
+      if (officialRule) {
+        return {
+          id: officialRule.slug,
+          name: officialRule.title,
+          type,
+          href: officialRule.variantOf
+            ? variantParentUrl(officialRule.variantOf, officialRule.slug)
+            : ruleUrl(officialRule.slug),
+        };
+      }
+    }
+
     // Convert base32 identifier to UUID
     const uuid = deslugify(id);
     if (!uuid) return null;
@@ -54,6 +71,9 @@ export async function getEntityById(
         break;
       case "background":
         entity = await backgroundsService.getBackground(uuid);
+        break;
+      case "rule":
+        entity = await findPublicCustomRule(uuid);
         break;
     }
 

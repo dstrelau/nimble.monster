@@ -6,15 +6,25 @@ import { FormattedText, PrefixedFormattedText } from "./FormattedText";
 // Mock useEntityQuery to avoid QueryClient context issues in tests
 // Entity links use createRoot which creates isolated React trees
 vi.mock("@/lib/hooks/useEntityQuery", () => ({
-  useEntityQuery: () => ({
-    data: {
-      id: "00000000-0000-0000-0000-000000000001",
-      name: "Test Entity",
-      type: "monster",
-    },
-    isLoading: false,
-    isError: false,
-  }),
+  useEntityQuery: (type: string, id: string) => {
+    const officialRule = type === "rule" && id === "encounter-difficulties";
+    return {
+      data: officialRule
+        ? {
+            id,
+            name: "Encounter Difficulties",
+            type,
+            href: "/rules/encounter-difficulties",
+          }
+        : {
+            id: "00000000-0000-0000-0000-000000000001",
+            name: "Test Entity",
+            type: "monster",
+          },
+      isLoading: false,
+      isError: false,
+    };
+  },
 }));
 
 afterEach(() => {
@@ -413,6 +423,43 @@ describe("FormattedText - Entity Links", () => {
     expect(entityText.closest("a")).toHaveAttribute(
       "href",
       expect.stringContaining("/classes/")
+    );
+  });
+
+  it("parses @rule: entity links", async () => {
+    const content = "See @rule:00000000000000000000000001 for details.";
+
+    render(<FormattedText content={content} conditions={[]} />);
+
+    const entityText = await screen.findByText("Test Entity");
+    expect(entityText.closest("a")).toHaveAttribute(
+      "href",
+      "/custom-rules/test-entity-00000000000000000000000001"
+    );
+  });
+
+  it("parses official rule slugs", async () => {
+    const content = "See @rule:encounter-difficulties for details.";
+
+    render(<FormattedText content={content} conditions={[]} />);
+
+    const entityText = await screen.findByText("Encounter Difficulties");
+    expect(entityText.closest("a")).toHaveAttribute(
+      "href",
+      "/rules/encounter-difficulties"
+    );
+  });
+
+  it("supports custom display text for @rule: entity links", async () => {
+    const content =
+      "See @rule:[00000000000000000000000001|this optional rule].";
+
+    render(<FormattedText content={content} conditions={[]} />);
+
+    const entityText = await screen.findByText("this optional rule");
+    expect(entityText.closest("a")).toHaveAttribute(
+      "href",
+      "/custom-rules/test-entity-00000000000000000000000001"
     );
   });
 

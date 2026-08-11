@@ -17,22 +17,31 @@ import {
 import { Goblin } from "@/components/icons/goblin";
 import type { MyLibraryCounts } from "@/lib/db/my-library";
 
-export type EntityType =
-  | "monster"
-  | "item"
-  | "companion"
-  | "family"
-  | "collection"
-  | "school"
-  | "class"
-  | "subclass"
-  | "ancestry"
-  | "background";
+export const ENTITY_TYPES = [
+  "monster",
+  "item",
+  "companion",
+  "family",
+  "collection",
+  "school",
+  "class",
+  "subclass",
+  "ancestry",
+  "background",
+  "rule",
+] as const;
+
+export type EntityType = (typeof ENTITY_TYPES)[number];
+
+export function isEntityType(value: string): value is EntityType {
+  return ENTITY_TYPES.some((type) => type === value);
+}
 
 export interface EntityReference {
   id: string;
   name: string;
   type: EntityType;
+  href?: string;
 }
 
 export const ENTITY_TYPE_ICONS: Record<EntityType, LucideIcon> = {
@@ -46,6 +55,7 @@ export const ENTITY_TYPE_ICONS: Record<EntityType, LucideIcon> = {
   subclass: HandFist,
   ancestry: Scroll,
   background: Drama,
+  rule: NotebookPen,
 };
 
 export const ENTITY_TYPE_PATHS: Record<EntityType, string> = {
@@ -59,6 +69,7 @@ export const ENTITY_TYPE_PATHS: Record<EntityType, string> = {
   subclass: "subclasses",
   ancestry: "ancestries",
   background: "backgrounds",
+  rule: "custom-rules",
 };
 
 export interface MyLibraryItem {

@@ -20,6 +20,7 @@ import {
   ENTITY_TYPE_ICONS,
   ENTITY_TYPE_PATHS,
   type EntityType,
+  isEntityType,
 } from "@/lib/types/entity-links";
 import { cn } from "@/lib/utils";
 import { slugify } from "@/lib/utils/slug";
@@ -92,7 +93,8 @@ function EntityLinkInner({
   }
 
   const path = ENTITY_TYPE_PATHS[type];
-  const slug = slugify({ name: data.name, id: data.id });
+  const href =
+    data.href ?? `/${path}/${slugify({ name: data.name, id: data.id })}`;
   const content = (
     <>
       <Icon className="stroke-flame size-3.5" />
@@ -108,7 +110,7 @@ function EntityLinkInner({
 
   return (
     <Link
-      href={`/${path}/${slug}`}
+      href={href}
       className="inline-flex items-baseline gap-0.5 hover:underline"
     >
       {content}
@@ -302,19 +304,7 @@ function entityLinkPlugin(md: MarkdownIt) {
     const entityType = state.src.slice(start + 1, colonPos);
 
     // Validate entity type
-    const validTypes = [
-      "monster",
-      "item",
-      "companion",
-      "family",
-      "collection",
-      "school",
-      "class",
-      "subclass",
-      "ancestry",
-      "background",
-    ];
-    if (!validTypes.includes(entityType)) {
+    if (!isEntityType(entityType)) {
       return false;
     }
 
@@ -338,9 +328,10 @@ function entityLinkPlugin(md: MarkdownIt) {
       }
       finalPos = closeBracket + 1;
     } else {
-      // Plain form: ID (alphanumeric only)
+      // Plain form: entity ID or official rule slug
       let idEnd = colonPos + 1;
-      while (idEnd < max && state.src[idEnd].match(/[a-z0-9]/)) {
+      const idCharacter = entityType === "rule" ? /[a-z0-9-]/ : /[a-z0-9]/;
+      while (idEnd < max && state.src[idEnd].match(idCharacter)) {
         idEnd++;
       }
       if (idEnd === colonPos + 1) return false;
@@ -482,6 +473,8 @@ export function FormattedText({
       const entityId = span.getAttribute("data-entity-id") || "";
       const displayName = span.getAttribute("data-display-name") || undefined;
 
+      if (!isEntityType(entityType)) return;
+
       const placeholderId = `entity-placeholder-${entityIndex}`;
       const placeholder = document.createElement("span");
       placeholder.id = placeholderId;
@@ -492,7 +485,7 @@ export function FormattedText({
         component: (
           <EntityLink
             key={`${entityType}-${entityId}-${entityIndex}`}
-            type={entityType as EntityType}
+            type={entityType}
             id={entityId}
             displayName={displayName}
             queryClient={queryClientRef.current}
