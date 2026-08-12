@@ -80,6 +80,26 @@ describe("FormattedText", () => {
     expect(screen.getByText("italic").tagName.toLowerCase()).toBe("em");
   });
 
+  it("renders headings when enabled", () => {
+    const content = "# Main section\n\n## Subsection\n\nRule text";
+
+    render(<FormattedText content={content} conditions={[]} enableHeadings />);
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Main section"
+    );
+    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
+      "Subsection"
+    );
+  });
+
+  it("does not render headings by default", () => {
+    render(<FormattedText content="# Main section" conditions={[]} />);
+
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.getByText("# Main section")).toBeInTheDocument();
+  });
+
   it("should handle conditions without markdown", () => {
     const content = "You are [[Poisoned]].";
 

@@ -14,5 +14,11 @@ export function CustomRuleBody({ content, creatorDiscordId }: Props) {
     enabled: !!content,
   });
 
-  return <FormattedText content={content} conditions={allConditions} />;
+  return (
+    <FormattedText
+      content={content}
+      conditions={allConditions}
+      enableHeadings
+    />
+  );
 }

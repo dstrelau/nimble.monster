@@ -29,6 +29,7 @@ interface FormattedTextProps {
   content: string;
   conditions: ConditionT[];
   className?: string;
+  enableHeadings?: boolean;
   noInteractive?: boolean;
 }
 
@@ -374,22 +375,30 @@ function listStylePlugin(md: MarkdownIt) {
   };
 }
 
-const md = new MarkdownIt("zero").enable([
-  "paragraph",
-  "emphasis",
-  "newline",
-  "list",
-]);
-conditionPlugin(md);
-diceNotationPlugin(md);
-entityLinkPlugin(md);
-listStylePlugin(md);
-md.enable(["text"]);
+function createMarkdown(enableHeadings = false) {
+  const markdown = new MarkdownIt("zero").enable([
+    "paragraph",
+    "emphasis",
+    "newline",
+    "list",
+    ...(enableHeadings ? ["heading"] : []),
+  ]);
+  conditionPlugin(markdown);
+  diceNotationPlugin(markdown);
+  entityLinkPlugin(markdown);
+  listStylePlugin(markdown);
+  markdown.enable(["text"]);
+  return markdown;
+}
+
+const md = createMarkdown();
+const mdWithHeadings = createMarkdown(true);
 
 export function FormattedText({
   content,
   conditions,
   className = "",
+  enableHeadings = false,
   noInteractive = false,
 }: FormattedTextProps) {
   const isClient = useIsClient();
@@ -405,7 +414,8 @@ export function FormattedText({
   );
 
   const { html, placeholders } = useMemo(() => {
-    const html = DOMPurify.sanitize(md.render(content));
+    const markdown = enableHeadings ? mdWithHeadings : md;
+    const html = DOMPurify.sanitize(markdown.render(content));
 
     if (!isClient) {
       return { html, placeholders: [] };
@@ -498,7 +508,7 @@ export function FormattedText({
     });
 
     return { html: processedDiv.innerHTML, placeholders };
-  }, [content, conditions, isClient, noInteractive]);
+  }, [content, conditions, enableHeadings, isClient, noInteractive]);
 
   useLayoutEffect(() => {
     if (!containerRef.current || placeholders.length === 0) return;
@@ -531,7 +541,16 @@ export function FormattedText({
     );
 
   return (
-    <div className={cn("[&_p_~_p]:mt-1.5", className)}>{renderedContent}</div>
+    <div
+      className={cn(
+        "[&_p_~_p]:mt-1.5",
+        enableHeadings &&
+          "[&_h1]:mt-6 [&_h1]:mb-2 [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:mt-5 [&_h2]:mb-2 [&_h2]:text-xl [&_h2]:font-bold [&_h3]:mt-4 [&_h3]:mb-1.5 [&_h3]:text-lg [&_h3]:font-semibold [&_h4]:mt-3 [&_h4]:mb-1 [&_h4]:font-semibold [&_h5]:mt-3 [&_h5]:mb-1 [&_h5]:font-semibold [&_h6]:mt-3 [&_h6]:mb-1 [&_h6]:font-semibold [&_h1:first-child]:mt-0 [&_h2:first-child]:mt-0 [&_h3:first-child]:mt-0 [&_h4:first-child]:mt-0 [&_h5:first-child]:mt-0 [&_h6:first-child]:mt-0",
+        className
+      )}
+    >
+      {renderedContent}
+    </div>
   );
 }
 
