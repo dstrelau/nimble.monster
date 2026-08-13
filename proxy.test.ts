@@ -152,6 +152,16 @@ describe("proxy", () => {
     expect(res?.status).toBe(200);
   });
 
+  it("does not redirect the dev login page when dev auto-login is enabled", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("NIMBLE_DEV_AUTO_LOGIN_USERNAME", "admin");
+
+    const req = makeRequest("GET", "/dev-login");
+    const res = await proxy(req);
+
+    expect(res?.status).toBe(200);
+  });
+
   it("redirects nimble.monster to nimble.nexus", async () => {
     const req = makeRequest("GET", "/monsters", {
       host: "nimble.monster",

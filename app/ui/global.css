@@ -226,12 +226,12 @@
     background-size: 100% 2rem;
 }
 
-.formatted-text p {
+.formatted-text--inline p {
     display: inline;
     margin: 0;
 }
 
-.formatted-text p + p::before {
+.formatted-text--inline p + p::before {
     content: " ";
 }
 

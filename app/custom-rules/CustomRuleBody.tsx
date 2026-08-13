@@ -18,6 +18,7 @@ export function CustomRuleBody({ content, creatorDiscordId }: Props) {
     <FormattedText
       content={content}
       conditions={allConditions}
+      blockStyles
       enableHeadings
     />
   );

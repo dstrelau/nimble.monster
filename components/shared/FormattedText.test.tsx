@@ -123,6 +123,24 @@ describe("FormattedText", () => {
     expect(paragraphs[1]).toHaveTextContent("Two.");
   });
 
+  it("uses inline paragraph styles by default but can preserve block paragraphs", () => {
+    const { container, rerender } = render(
+      <FormattedText content="One.\n\nTwo." conditions={mockConditions} />
+    );
+
+    expect(container.firstChild).toHaveClass("formatted-text--inline");
+
+    rerender(
+      <FormattedText
+        content="One.\n\nTwo."
+        conditions={mockConditions}
+        blockStyles
+      />
+    );
+
+    expect(container.firstChild).not.toHaveClass("formatted-text--inline");
+  });
+
   it("should handle unknown conditions", () => {
     const content = "You are [[Blinded]].";
 
