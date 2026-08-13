@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { getNavCountsAction } from "@/app/actions/nav";
 import { CountedNavMenu } from "@/components/layout/CountedNavMenu";
+import { GlobalSearchDialog } from "@/components/layout/GlobalSearchDialog";
 import { Logo } from "@/components/layout/Logo";
 import { MobileMenuDropdown } from "@/components/layout/MobileMenuDropdown";
 import { NavItem } from "@/components/layout/NavItem";
@@ -176,6 +177,7 @@ const Header = ({ initialCounts }: HeaderProps) => {
             if (open) setMobileMenuOpen(false);
           }}
         />
+        <GlobalSearchDialog />
       </div>
 
       {/* Mobile navigation drawer */}

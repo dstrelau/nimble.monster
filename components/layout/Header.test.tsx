@@ -7,6 +7,7 @@ import Header, { type AllNavCounts } from "./Header";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
+  useRouter: () => ({ push: vi.fn() }),
 }));
 
 vi.mock("@/app/actions/nav", () => ({

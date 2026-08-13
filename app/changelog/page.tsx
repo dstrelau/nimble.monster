@@ -28,6 +28,10 @@ const changelog: ChangelogEntry[] = [
     ],
   },
   {
+    date: "13 August 2026",
+    entries: ["Add global search with Cmd/Ctrl-K across public site content."],
+  },
+  {
     date: "31 July 2026",
     entries: [
       "Encounter monster counts can now be static or expressed as a per-hero ratio.",

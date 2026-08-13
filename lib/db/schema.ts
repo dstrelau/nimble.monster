@@ -1309,6 +1309,37 @@ export const customRules = sqliteTable(
 export type CustomRuleRow = typeof customRules.$inferSelect;
 export type CustomRuleInsert = typeof customRules.$inferInsert;
 
+// Search metadata is intentionally separate from entity repositories. The
+// FTS virtual table and synchronization triggers live in the migration because
+// Drizzle does not model SQLite FTS5 virtual tables.
+export const globalSearchCatalog = sqliteTable(
+  "global_search_catalog",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    entityType: text("entity_type").notNull(),
+    entityId: text("entity_id").notNull(),
+    creatorId: text("creator_id"),
+    visibility: text("visibility").notNull(),
+    sourceId: text("source_id"),
+    name: text("name").notNull(),
+    subtitle: text("subtitle").notNull().default(""),
+    keywords: text("keywords").notNull().default(""),
+    summary: text("summary").notNull().default(""),
+    body: text("body").notNull().default(""),
+  },
+  (table) => [
+    unique("global_search_catalog_entity_unique").on(
+      table.entityType,
+      table.entityId
+    ),
+    index("idx_global_search_catalog_type_visibility").on(
+      table.entityType,
+      table.visibility
+    ),
+    index("idx_global_search_catalog_creator").on(table.creatorId),
+  ]
+);
+
 // Typed links from a user's custom rule to an official rule (by flat slug).
 // Official rule-to-rule "related" edges are curated in data/rules/relations.yaml,
 // not stored here.
