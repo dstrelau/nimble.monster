@@ -99,6 +99,21 @@ describe("global search repository", () => {
     expect(statement.sql).toContain("global_search_fts MATCH ?");
   });
 
+  it("does not overstate a cross-field multi-term match", async () => {
+    mockExecute.mockResolvedValue({
+      rows: [
+        catalogRow({
+          name: "Frost Wyrm",
+          body: "This dragon hunts at night.",
+        }),
+      ],
+    });
+
+    const [result] = await searchGlobal("frost dragon");
+
+    expect(result?.matchedField).toBeUndefined();
+  });
+
   it("passes type and creator filters to the public catalog query", async () => {
     await searchGlobal("frost", {
       types: ["hazard", "rule"],

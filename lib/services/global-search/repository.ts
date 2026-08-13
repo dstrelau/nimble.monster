@@ -72,13 +72,8 @@ function matchedField(
   fields: { field: GlobalSearchResult["matchedField"]; value: string }[],
   queryWords: string[]
 ): GlobalSearchResult["matchedField"] {
-  return (
-    fields.find(({ value }) => hasAllPrefixMatches([value], queryWords))
-      ?.field ??
-    fields.find(({ value }) =>
-      hasAllPrefixMatches([value], queryWords.slice(0, 1))
-    )?.field
-  );
+  return fields.find(({ value }) => hasAllPrefixMatches([value], queryWords))
+    ?.field;
 }
 
 function fieldWeight(field: GlobalSearchResult["matchedField"]): number {
@@ -238,7 +233,6 @@ function searchOfficialRules(
       queryWords
     );
     if (
-      !field ||
       !hasAllPrefixMatches(
         [rule.title, rule.keywords.join(" "), rule.content],
         queryWords
@@ -256,7 +250,7 @@ function searchOfficialRules(
           href: rule.variantOf
             ? `/rules/${rule.variantOf}#variant-${rule.slug}`
             : `/rules/${rule.slug}`,
-          matchedField: field,
+          ...(field ? { matchedField: field } : {}),
         },
         score: rankingScore(rule.title, query, field),
       },
@@ -274,7 +268,6 @@ function searchOfficialRules(
       queryWords
     );
     if (
-      !field ||
       !hasAllPrefixMatches(
         [faq.question, faq.keywords.join(" "), faq.answer],
         queryWords
@@ -290,7 +283,7 @@ function searchOfficialRules(
         name: faq.question,
         subtitle: "Official rule FAQ",
         href: ruleFaqUrl(faq),
-        matchedField: field,
+        ...(field ? { matchedField: field } : {}),
       },
       score: rankingScore(faq.question, query, field),
     });

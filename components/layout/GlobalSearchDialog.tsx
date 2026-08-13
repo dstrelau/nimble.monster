@@ -213,7 +213,7 @@ export function GlobalSearchDialog() {
               </PopoverContent>
             </Popover>
             <CreatorCombobox
-              kind="monsters"
+              kind="global"
               value={creatorId}
               onChange={setCreatorId}
             />
