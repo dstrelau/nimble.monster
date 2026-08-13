@@ -148,6 +148,11 @@
         font-style: normal;
         font-variation-settings: "slnt" 0;
     }
+
+    .formatted-text em {
+        font-style: normal;
+        font-variation-settings: "slnt" -10;
+    }
     .font-condensed {
         font-stretch: ultra-condensed;
     }
