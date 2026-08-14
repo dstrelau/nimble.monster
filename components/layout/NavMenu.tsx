@@ -151,7 +151,7 @@ export function NavMenu({ label, items }: NavMenuProps) {
               href={item.href}
               label={item.label}
               icon={item.icon}
-              count={item.count ?? "–"}
+              count={item.count}
               active={pathname === item.href}
             />
           ))}

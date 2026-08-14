@@ -65,6 +65,10 @@ describe("Header", () => {
       "href",
       "/rules"
     );
+    expect(screen.getByRole("link", { name: "Dice Roller" })).toHaveAttribute(
+      "href",
+      "/roll"
+    );
     expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
     expect(
       screen.queryByRole("link", { name: "Create" })

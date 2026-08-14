@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Menu, X } from "lucide-react";
+import { Dices, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { getNavCountsAction } from "@/app/actions/nav";
@@ -74,10 +74,15 @@ const NAV_GROUPS: {
   items: (Omit<NavMenuItem, "count"> & { countKey?: keyof AllNavCounts })[];
 }[] = SITE_NAVIGATION_GROUPS.map((group) => ({
   label: group.label,
-  items: group.items.map((item) => ({
-    ...item,
-    ...HEADER_ITEM_CONFIG[item.key],
-  })),
+  items: [
+    ...group.items.map((item) => ({
+      ...item,
+      ...HEADER_ITEM_CONFIG[item.key],
+    })),
+    ...(group.label === "Play"
+      ? [{ href: "/roll", label: "Dice Roller", icon: Dices }]
+      : []),
+  ],
 }));
 
 const Header = ({ initialCounts }: HeaderProps) => {
