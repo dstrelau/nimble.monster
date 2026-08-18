@@ -186,6 +186,7 @@ export const Card = ({
             <FormattedText
               content={item.description}
               conditions={allConditions}
+              blockStyles
               noInteractive={noInteractive}
             />
           )}
