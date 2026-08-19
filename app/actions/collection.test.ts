@@ -3,8 +3,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const { mockAuth } = vi.hoisted(() => ({ mockAuth: vi.fn() }));
 const {
   mockDeleteCollection,
-  mockCreateCollection,
-  mockUpdateCollection,
   mockListCollectionsWithMonstersForUser,
   mockGetCollection,
   mockAddMonsterToCollection,
@@ -16,8 +14,6 @@ const {
   mockAddSubclassToCollection,
 } = vi.hoisted(() => ({
   mockDeleteCollection: vi.fn(),
-  mockCreateCollection: vi.fn(),
-  mockUpdateCollection: vi.fn(),
   mockListCollectionsWithMonstersForUser: vi.fn(),
   mockGetCollection: vi.fn(),
   mockAddMonsterToCollection: vi.fn(),
@@ -82,8 +78,6 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/lib/db", () => ({
   deleteCollection: mockDeleteCollection,
-  createCollection: mockCreateCollection,
-  updateCollection: mockUpdateCollection,
   listCollectionsWithMonstersForUser: mockListCollectionsWithMonstersForUser,
   getCollection: mockGetCollection,
   addMonsterToCollection: mockAddMonsterToCollection,
@@ -113,10 +107,8 @@ import {
   addMonsterToCollection,
   addSpellSchoolToCollection,
   addSubclassToCollection,
-  createCollection,
   deleteCollection,
   listOwnCollections,
-  updateCollection,
 } from "./collection";
 
 const SESSION = {
@@ -183,96 +175,6 @@ describe("deleteCollection", () => {
     const result = await deleteCollection("col-1");
     expect(result.success).toBe(false);
     expect(result.error).toContain("error occurred");
-  });
-});
-
-describe("createCollection", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("returns error when unauthenticated", async () => {
-    mockAuth.mockResolvedValue(null);
-    const result = await createCollection({
-      name: "Test",
-      visibility: "public",
-    });
-    expect(result).toEqual({ success: false, error: "Not authenticated" });
-  });
-
-  it("creates collection and revalidates", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    const created = { id: "new-col", name: "Test" };
-    mockCreateCollection.mockResolvedValue(created);
-
-    const result = await createCollection({
-      name: "Test",
-      visibility: "public",
-      description: "desc",
-    });
-
-    expect(result.success).toBe(true);
-    expect(mockCreateCollection).toHaveBeenCalledWith({
-      name: "Test",
-      visibility: "public",
-      description: "desc",
-      discordId: "discord-123",
-    });
-    expect(mockRevalidatePath).toHaveBeenCalledWith("/my/collections");
-  });
-
-  it("returns error on db failure", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockCreateCollection.mockRejectedValue(new Error("duplicate name"));
-    const result = await createCollection({
-      name: "Test",
-      visibility: "public",
-    });
-    expect(result.success).toBe(false);
-    expect(result.error).toBe("duplicate name");
-  });
-});
-
-describe("updateCollection", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("returns error when unauthenticated", async () => {
-    mockAuth.mockResolvedValue(null);
-    const result = await updateCollection("col-1", {
-      name: "New",
-      visibility: "public",
-    });
-    expect(result).toEqual({ success: false, error: "Not authenticated" });
-  });
-
-  it("returns error when collection not found", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockUpdateCollection.mockResolvedValue(null);
-    const result = await updateCollection("col-1", {
-      name: "New",
-      visibility: "public",
-    });
-    expect(result.success).toBe(false);
-    expect(result.error).toContain("not found");
-  });
-
-  it("updates and revalidates on success", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    const updated = { id: "col-1", name: "New" };
-    mockUpdateCollection.mockResolvedValue(updated);
-
-    const result = await updateCollection("col-1", {
-      name: "New",
-      visibility: "private",
-    });
-
-    expect(result.success).toBe(true);
-    expect(mockUpdateCollection).toHaveBeenCalledWith({
-      id: "col-1",
-      name: "New",
-      visibility: "private",
-      description: undefined,
-      discordId: "discord-123",
-    });
-    expect(mockRevalidatePath).toHaveBeenCalledWith("/my/collections");
   });
 });
 

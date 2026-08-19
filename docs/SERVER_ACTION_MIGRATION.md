@@ -438,7 +438,7 @@ contract compatibility window that a future migration must preserve.
 | Adventure create/update | Complete | Stable, hardened `/_actions` JSON routes |
 | Adventure statblock picker | Complete | Hardened internal search route; private cache isolation and date revival covered |
 | Adventure image operations | Complete | Hardened upload and delete route handlers |
-| Core content builders | In progress | Monster, hazard, and item create/update use stable `/_actions` JSON routes; encounter and collection remain |
+| Core content builders | Complete | Monster, hazard, item, encounter, and collection create/update use stable `/_actions` JSON routes |
 | Character-option builders | Not started | Wave 1 |
 | Drafts | Not started | Wave 1 |
 | Deletes and relationship writes | Not started | Wave 2 |

@@ -7,7 +7,6 @@ import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { getDatabase } from "@/lib/db/drizzle";
 import { encounters, monsters } from "@/lib/db/schema";
-import type { CollectionVisibilityType } from "@/lib/types";
 
 export async function deleteEncounter(encounterId: string) {
   try {
@@ -44,83 +43,6 @@ export async function deleteEncounter(encounterId: string) {
       success: false,
       error:
         "An error occurred while deleting the encounter. Please try again later.",
-    };
-  }
-}
-
-export async function createEncounter(formData: {
-  name: string;
-  visibility: CollectionVisibilityType;
-  description?: string;
-  heroCount: number;
-  heroLevel: number;
-}) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const encounter = await db.createEncounter({
-      name: formData.name,
-      visibility: formData.visibility,
-      description: formData.description,
-      heroCount: formData.heroCount,
-      heroLevel: formData.heroLevel,
-      discordId: session.user.discordId,
-    });
-
-    revalidatePath("/my/encounters");
-
-    return { success: true, encounter };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-}
-
-export async function updateEncounter(
-  encounterId: string,
-  formData: {
-    name: string;
-    visibility: CollectionVisibilityType;
-    description?: string;
-    heroCount: number;
-    heroLevel: number;
-  }
-) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const encounter = await db.updateEncounter({
-      id: encounterId,
-      name: formData.name,
-      visibility: formData.visibility,
-      description: formData.description,
-      heroCount: formData.heroCount,
-      heroLevel: formData.heroLevel,
-      discordId: session.user.discordId,
-    });
-
-    if (!encounter) {
-      return {
-        success: false,
-        error: "Encounter not found or you don't have permission to update it",
-      };
-    }
-
-    revalidatePath("/my/encounters");
-
-    return { success: true, encounter };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }
 }

@@ -15,7 +15,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { createCollection } from "@/app/actions/collection";
+import { saveCollection } from "@/app/%5Factions/_editors/contract";
 import { CollectionCard } from "@/components/collection/CollectionCard";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { Goblin } from "@/components/icons/goblin";
@@ -33,6 +33,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { call } from "@/lib/contract";
 import type { Ancestry } from "@/lib/services/ancestries";
 import type { AncestryMini } from "@/lib/services/ancestries/types";
 import type { Background } from "@/lib/services/backgrounds";
@@ -52,7 +53,6 @@ import type {
 } from "@/lib/types";
 import { UNKNOWN_USER } from "@/lib/types";
 import { getCollectionUrl } from "@/lib/utils/url";
-import { updateCollection } from "./[id]/edit/actions";
 import { VisibilityToggle } from "./[id]/edit/VisibilityToggle";
 import { SelectableAncestryGrid } from "./SelectableAncestryGrid";
 import { SelectableBackgroundGrid } from "./SelectableBackgroundGrid";
@@ -87,6 +87,7 @@ export function CreateEditCollection({
 }: Props) {
   const router = useRouter();
   const { data: session } = useSession();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [selectedMonsters, setSelectedMonsters] = useState<
     Map<string, BestiaryEntry | BestiaryEntryMini>
@@ -261,124 +262,43 @@ export function CreateEditCollection({
       );
 
   const handleSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
     if (onSubmit) {
-      await onSubmit({
-        ...data,
-        monsters: currentMonsters,
-        items: currentItems,
-      });
+      try {
+        await onSubmit({
+          ...data,
+          monsters: currentMonsters,
+          items: currentItems,
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
       return;
     }
 
-    if (isCreating) {
-      const result = await createCollection({
+    try {
+      const result = await call(saveCollection, {
+        id: isCreating ? undefined : collection.id,
         name: data.name,
         visibility: data.visibility,
         description: data.description || undefined,
+        monsterIds: currentMonsters.map((entity) => entity.id),
+        itemIds: currentItems.map((entity) => entity.id),
+        companionIds: currentCompanions.map((entity) => entity.id),
+        ancestryIds: currentAncestries.map((entity) => entity.id),
+        backgroundIds: currentBackgrounds.map((entity) => entity.id),
+        subclassIds: currentSubclasses.map((entity) => entity.id),
+        spellSchoolIds: currentSpellSchools.map((entity) => entity.id),
+        classIds: currentClasses.map((entity) => entity.id),
       });
-
-      if (result.success && result.collection) {
-        const updateFormData = new FormData();
-        updateFormData.append("name", data.name);
-        updateFormData.append("visibility", data.visibility);
-        updateFormData.append("description", data.description || "");
-        updateFormData.append(
-          "monsterIds",
-          JSON.stringify(currentMonsters.map((m) => m.id))
-        );
-        updateFormData.append(
-          "itemIds",
-          JSON.stringify(currentItems.map((i) => i.id))
-        );
-        updateFormData.append(
-          "companionIds",
-          JSON.stringify(currentCompanions.map((c) => c.id))
-        );
-        updateFormData.append(
-          "ancestryIds",
-          JSON.stringify(currentAncestries.map((a) => a.id))
-        );
-        updateFormData.append(
-          "backgroundIds",
-          JSON.stringify(currentBackgrounds.map((b) => b.id))
-        );
-        updateFormData.append(
-          "subclassIds",
-          JSON.stringify(currentSubclasses.map((s) => s.id))
-        );
-        updateFormData.append(
-          "spellSchoolIds",
-          JSON.stringify(currentSpellSchools.map((s) => s.id))
-        );
-        updateFormData.append(
-          "classIds",
-          JSON.stringify(currentClasses.map((c) => c.id))
-        );
-
-        const updateResult = await updateCollection(
-          result.collection.id,
-          updateFormData
-        );
-        if (!updateResult.success) {
-          form.setError("root", {
-            message: "Failed to add content to collection",
-          });
-          return;
-        }
-        router.push(getCollectionUrl(result.collection));
-      } else {
-        form.setError("root", {
-          message: result.error || "Failed to create collection",
-        });
-      }
-    } else {
-      const updateFormData = new FormData();
-      updateFormData.append("name", data.name);
-      updateFormData.append("visibility", data.visibility);
-      updateFormData.append("description", data.description || "");
-      updateFormData.append(
-        "monsterIds",
-        JSON.stringify(currentMonsters.map((m) => m.id))
-      );
-      updateFormData.append(
-        "itemIds",
-        JSON.stringify(currentItems.map((i) => i.id))
-      );
-      updateFormData.append(
-        "companionIds",
-        JSON.stringify(currentCompanions.map((c) => c.id))
-      );
-      updateFormData.append(
-        "ancestryIds",
-        JSON.stringify(currentAncestries.map((a) => a.id))
-      );
-      updateFormData.append(
-        "backgroundIds",
-        JSON.stringify(currentBackgrounds.map((b) => b.id))
-      );
-      updateFormData.append(
-        "subclassIds",
-        JSON.stringify(currentSubclasses.map((s) => s.id))
-      );
-      updateFormData.append(
-        "spellSchoolIds",
-        JSON.stringify(currentSpellSchools.map((s) => s.id))
-      );
-      updateFormData.append(
-        "classIds",
-        JSON.stringify(currentClasses.map((c) => c.id))
-      );
-
-      try {
-        await updateCollection(collection.id, updateFormData);
-      } catch (error) {
-        form.setError("root", {
-          message:
-            error instanceof Error
-              ? error.message
-              : "Failed to update collection",
-        });
-      }
+      router.push(getCollectionUrl(result));
+    } catch (error) {
+      form.setError("root", {
+        message:
+          error instanceof Error ? error.message : "Failed to save collection",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -442,8 +362,8 @@ export function CreateEditCollection({
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={!isDirty}>
-            {isCreating ? "Create" : submitLabel}
+          <Button type="submit" disabled={!isDirty || isSubmitting}>
+            {isSubmitting ? "Saving…" : isCreating ? "Create" : submitLabel}
           </Button>
         </div>
 

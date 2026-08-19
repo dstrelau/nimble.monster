@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { createEncounter } from "@/app/actions/encounter";
+import { saveEncounter } from "@/app/%5Factions/_editors/contract";
 import { EncounterMonsterRow } from "@/app/encounters/EncounterMonsterRow";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { Card as MonsterCard } from "@/components/monster/Card";
@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { call } from "@/lib/contract";
 import type { BestiaryEntry } from "@/lib/services/monsters";
 import type { Encounter, EncounterMonsterEntryFull } from "@/lib/types";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
@@ -37,7 +38,6 @@ import {
   resolvedEncounterMonsterCount,
 } from "@/lib/utils/monster";
 import { getEncounterUrl } from "@/lib/utils/url";
-import { updateEncounter } from "./[id]/edit/actions";
 import { EncounterCountControl } from "./EncounterCountControl";
 import { EncounterStatsPanel } from "./EncounterStatsPanel";
 
@@ -181,6 +181,7 @@ export function CreateEditEncounter({
     () => [...selectedMonsters.values()],
     [selectedMonsters]
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const sortedEntries = useMemo(() => {
     const sortedMonsters = monstersSortedByLevelInt(
@@ -295,79 +296,30 @@ export function CreateEditEncounter({
       !entriesEqual(currentEntries, encounter.monsters);
 
   const handleSubmit = async (data: FormData) => {
-    if (isCreating) {
-      const result = await createEncounter({
+    setIsSubmitting(true);
+    try {
+      const result = await call(saveEncounter, {
+        id: isCreating ? undefined : encounter.id,
         name: data.name,
         visibility: data.visibility,
         description: data.description || undefined,
         heroCount: data.heroCount,
         heroLevel: data.heroLevel,
+        monsters: currentEntries.map((entry) => ({
+          monsterId: entry.monster.id,
+          quantity: entry.quantity,
+          isPerHero: entry.isPerHero,
+          heroesPerMonster: entry.heroesPerMonster ?? 1,
+        })),
       });
-
-      if (result.success && result.encounter) {
-        const updateFormData = new FormData();
-        updateFormData.append("name", data.name);
-        updateFormData.append("visibility", data.visibility);
-        updateFormData.append("description", data.description || "");
-        updateFormData.append("heroCount", String(data.heroCount));
-        updateFormData.append("heroLevel", String(data.heroLevel));
-        updateFormData.append(
-          "monsters",
-          JSON.stringify(
-            currentEntries.map((e) => ({
-              monsterId: e.monster.id,
-              quantity: e.quantity,
-              isPerHero: e.isPerHero,
-              heroesPerMonster: e.heroesPerMonster ?? 1,
-            }))
-          )
-        );
-
-        const updateResult = await updateEncounter(
-          result.encounter.id,
-          updateFormData
-        );
-        if (!updateResult.success) {
-          form.setError("root", {
-            message: "Failed to add monsters to encounter",
-          });
-          return;
-        }
-        router.push(getEncounterUrl(result.encounter));
-      } else {
-        form.setError("root", {
-          message: result.error || "Failed to create encounter",
-        });
-      }
-    } else {
-      const updateFormData = new FormData();
-      updateFormData.append("name", data.name);
-      updateFormData.append("visibility", data.visibility);
-      updateFormData.append("description", data.description || "");
-      updateFormData.append("heroCount", String(data.heroCount));
-      updateFormData.append("heroLevel", String(data.heroLevel));
-      updateFormData.append(
-        "monsters",
-        JSON.stringify(
-          currentEntries.map((e) => ({
-            monsterId: e.monster.id,
-            quantity: e.quantity,
-            isPerHero: e.isPerHero,
-            heroesPerMonster: e.heroesPerMonster ?? 1,
-          }))
-        )
-      );
-
-      try {
-        await updateEncounter(encounter.id, updateFormData);
-      } catch (error) {
-        form.setError("root", {
-          message:
-            error instanceof Error
-              ? error.message
-              : "Failed to update encounter",
-        });
-      }
+      router.push(getEncounterUrl(result));
+    } catch (error) {
+      form.setError("root", {
+        message:
+          error instanceof Error ? error.message : "Failed to save encounter",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -427,8 +379,8 @@ export function CreateEditEncounter({
                   />
                 )}
               />
-              <Button type="submit" disabled={!isDirty}>
-                {isCreating ? "Create" : submitLabel}
+              <Button type="submit" disabled={!isDirty || isSubmitting}>
+                {isSubmitting ? "Saving…" : isCreating ? "Create" : submitLabel}
               </Button>
             </div>
           </div>

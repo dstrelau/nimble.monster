@@ -3,14 +3,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const { mockAuth } = vi.hoisted(() => ({ mockAuth: vi.fn() }));
 const {
   mockDeleteEncounter,
-  mockCreateEncounter,
-  mockUpdateEncounter,
   mockListEncountersWithMonstersForUser,
   mockAddMonsterToEncounter,
 } = vi.hoisted(() => ({
   mockDeleteEncounter: vi.fn(),
-  mockCreateEncounter: vi.fn(),
-  mockUpdateEncounter: vi.fn(),
   mockListEncountersWithMonstersForUser: vi.fn(),
   mockAddMonsterToEncounter: vi.fn(),
 }));
@@ -71,18 +67,14 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/lib/db", () => ({
   deleteEncounter: mockDeleteEncounter,
-  createEncounter: mockCreateEncounter,
-  updateEncounter: mockUpdateEncounter,
   listEncountersWithMonstersForUser: mockListEncountersWithMonstersForUser,
   addMonsterToEncounter: mockAddMonsterToEncounter,
 }));
 
 import {
   addMonsterToEncounter,
-  createEncounter,
   deleteEncounter,
   listOwnEncounters,
-  updateEncounter,
 } from "./encounter";
 
 const SESSION = {
@@ -145,112 +137,6 @@ describe("deleteEncounter", () => {
     const result = await deleteEncounter("enc-1");
     expect(result.success).toBe(false);
     expect(result.error).toContain("error occurred");
-  });
-});
-
-describe("createEncounter", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("returns error when unauthenticated", async () => {
-    mockAuth.mockResolvedValue(null);
-    const result = await createEncounter({
-      name: "Test",
-      visibility: "public",
-      heroCount: 4,
-      heroLevel: 1,
-    });
-    expect(result).toEqual({ success: false, error: "Not authenticated" });
-  });
-
-  it("creates encounter and revalidates", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    const created = { id: "new-enc", name: "Test" };
-    mockCreateEncounter.mockResolvedValue(created);
-
-    const result = await createEncounter({
-      name: "Test",
-      visibility: "public",
-      description: "desc",
-      heroCount: 4,
-      heroLevel: 3,
-    });
-
-    expect(result).toEqual({ success: true, encounter: created });
-    expect(mockCreateEncounter).toHaveBeenCalledWith({
-      name: "Test",
-      visibility: "public",
-      description: "desc",
-      heroCount: 4,
-      heroLevel: 3,
-      discordId: "discord-123",
-    });
-    expect(mockRevalidatePath).toHaveBeenCalledWith("/my/encounters");
-  });
-
-  it("returns error on db failure", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockCreateEncounter.mockRejectedValue(new Error("duplicate name"));
-    const result = await createEncounter({
-      name: "Test",
-      visibility: "public",
-      heroCount: 4,
-      heroLevel: 1,
-    });
-    expect(result.success).toBe(false);
-    expect(result.error).toBe("duplicate name");
-  });
-});
-
-describe("updateEncounter", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("returns error when unauthenticated", async () => {
-    mockAuth.mockResolvedValue(null);
-    const result = await updateEncounter("enc-1", {
-      name: "New",
-      visibility: "public",
-      heroCount: 4,
-      heroLevel: 1,
-    });
-    expect(result).toEqual({ success: false, error: "Not authenticated" });
-  });
-
-  it("returns error when encounter not found", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockUpdateEncounter.mockResolvedValue(null);
-    const result = await updateEncounter("enc-1", {
-      name: "New",
-      visibility: "public",
-      heroCount: 4,
-      heroLevel: 1,
-    });
-    expect(result.success).toBe(false);
-    expect(result.error).toContain("not found");
-  });
-
-  it("updates and revalidates on success", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    const updated = { id: "enc-1", name: "New" };
-    mockUpdateEncounter.mockResolvedValue(updated);
-
-    const result = await updateEncounter("enc-1", {
-      name: "New",
-      visibility: "private",
-      heroCount: 5,
-      heroLevel: 2,
-    });
-
-    expect(result).toEqual({ success: true, encounter: updated });
-    expect(mockUpdateEncounter).toHaveBeenCalledWith({
-      id: "enc-1",
-      name: "New",
-      visibility: "private",
-      description: undefined,
-      heroCount: 5,
-      heroLevel: 2,
-      discordId: "discord-123",
-    });
-    expect(mockRevalidatePath).toHaveBeenCalledWith("/my/encounters");
   });
 });
 
