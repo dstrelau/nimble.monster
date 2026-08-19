@@ -29,16 +29,25 @@ export const POST = internalAction("application/json", async (request) => {
 
   try {
     const { id, ...input } = parsed.data;
-    const encounter = id
-      ? await db.updateEncounter({
-          id,
-          ...input,
-          discordId: session.user.discordId,
-        })
-      : await db.createEncounter({
-          ...input,
-          discordId: session.user.discordId,
-        });
+    let encounter: Awaited<ReturnType<typeof db.updateEncounter>>;
+    if (id) {
+      encounter = await db.updateEncounter({
+        id,
+        ...input,
+        discordId: session.user.discordId,
+      });
+    } else {
+      const created = await db.createEncounter({
+        ...input,
+        monsters: undefined,
+        discordId: session.user.discordId,
+      });
+      encounter = await db.updateEncounter({
+        id: created.id,
+        ...input,
+        discordId: session.user.discordId,
+      });
+    }
 
     revalidatePath("/my/encounters");
     if (id) revalidatePath("/encounters/[id]", "page");

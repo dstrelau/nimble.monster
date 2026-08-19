@@ -1,5 +1,8 @@
 import { z } from "zod";
 import { MonsterRoleOptions, SIZES } from "@/lib/services/monsters/types";
+import { isValidUUID } from "@/lib/utils/validation";
+
+const uuid = z.string().refine(isValidUUID, "Invalid UUID");
 
 const actionSchema = z.object({
   id: z.string(),
@@ -40,16 +43,16 @@ const sharedSchema = z.object({
   mild_encounter: z.string().optional(),
   spicy_encounter: z.string().optional(),
   visibility: z.enum(["public", "private"]),
-  sourceId: z.string().uuid().nullable().optional(),
+  sourceId: uuid.nullable().optional(),
 });
 
 const createHazardSchema = sharedSchema.extend({
-  sourceId: z.string().uuid().optional(),
-  remixedFromId: z.string().uuid().optional(),
+  sourceId: uuid.optional(),
+  remixedFromId: uuid.optional(),
 });
 
 const updateHazardSchema = sharedSchema.extend({
-  id: z.string().uuid(),
+  id: uuid,
   moreInfo: z.string(),
 });
 
@@ -65,7 +68,7 @@ const monsterFields = {
   climb: z.number().optional(),
   burrow: z.number().optional(),
   teleport: z.number().optional(),
-  families: z.array(z.object({ id: z.string().uuid() })).optional(),
+  families: z.array(z.object({ id: uuid })).optional(),
   members: z.array(memberSchema).optional(),
   legendary: z.boolean().optional(),
   minion: z.boolean().optional(),
@@ -78,18 +81,18 @@ const monsterFields = {
 
 const createMonsterSchema = sharedSchema.extend({
   ...monsterFields,
-  sourceId: z.string().uuid().optional(),
+  sourceId: uuid.optional(),
   fly: z.number(),
   swim: z.number(),
   climb: z.number(),
   burrow: z.number(),
   teleport: z.number(),
-  remixedFromId: z.string().uuid().optional(),
+  remixedFromId: uuid.optional(),
 });
 
 const updateMonsterSchema = sharedSchema.extend({
   ...monsterFields,
-  id: z.string().uuid(),
+  id: uuid,
   armor: z.enum(["none", "medium", "heavy"]),
   kind: z.string(),
   legendary: z.boolean(),

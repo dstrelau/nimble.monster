@@ -53,7 +53,7 @@ vi.mock("@opentelemetry/api", () => ({
 import { POST as createPost } from "./createBestiaryEntry/route";
 import { POST as updatePost } from "./updateBestiaryEntry/route";
 
-const id = "550e8400-e29b-41d4-a716-446655440000";
+const id = "22222222-2222-2222-2222-222222222222";
 const session = {
   user: { id: "owner", discordId: "discord-owner", username: "creator" },
 };

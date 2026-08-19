@@ -43,7 +43,7 @@ vi.mock("@opentelemetry/api", () => ({
 import { POST as saveCollectionPost } from "./saveCollection/route";
 import { POST as saveEncounterPost } from "./saveEncounter/route";
 
-const id = "550e8400-e29b-41d4-a716-446655440000";
+const id = "44444444-4444-4444-4444-444444444444";
 const encounterInput = {
   name: "Bridge Ambush",
   description: "Bandits block the bridge.",
@@ -95,11 +95,18 @@ beforeEach(() => {
 describe("encounter and collection save routes", () => {
   it("creates an encounter with its monsters in one request", async () => {
     mockCreateEncounter.mockResolvedValue({ id, name: encounterInput.name });
+    mockUpdateEncounter.mockResolvedValue({ id, name: encounterInput.name });
 
     const response = await saveEncounterPost(request(encounterInput));
 
     expect(response.status).toBe(201);
     expect(mockCreateEncounter).toHaveBeenCalledWith({
+      ...encounterInput,
+      monsters: undefined,
+      discordId: "discord-owner",
+    });
+    expect(mockUpdateEncounter).toHaveBeenCalledWith({
+      id,
       ...encounterInput,
       discordId: "discord-owner",
     });
@@ -136,7 +143,6 @@ describe("encounter and collection save routes", () => {
       name: collectionInput.name,
       description: collectionInput.description,
       visibility: collectionInput.visibility,
-      monsterIds: collectionInput.monsterIds,
       discordId: "discord-owner",
     });
     expect(mockUpdateCollection).toHaveBeenCalledWith({

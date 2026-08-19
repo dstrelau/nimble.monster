@@ -87,15 +87,20 @@ describe("item mutation routes", () => {
   });
 
   it("updates an owned item and invalidates list and detail", async () => {
-    mockUpdateItem.mockResolvedValue({ id, name: input.name });
+    const existingId = "33333333-3333-3333-3333-333333333333";
+    mockUpdateItem.mockResolvedValue({ id: existingId, name: input.name });
 
-    const response = await updatePost(request({ id, input }));
+    const response = await updatePost(request({ id: existingId, input }));
 
     expect(response.status).toBe(200);
-    expect(mockUpdateItem).toHaveBeenCalledWith(id, input, "discord-owner");
+    expect(mockUpdateItem).toHaveBeenCalledWith(
+      existingId,
+      input,
+      "discord-owner"
+    );
     expect(mockRevalidatePath.mock.calls).toEqual([
       ["/my/items"],
-      ["/items/[id]", "page"],
+      ["/items/[itemId]", "page"],
     ]);
   });
 

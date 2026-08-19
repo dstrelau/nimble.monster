@@ -34,7 +34,7 @@ export const POST = internalAction("application/json", async (request) => {
       session.user.discordId
     );
     revalidatePath("/my/items");
-    revalidatePath("/items/[id]", "page");
+    revalidatePath("/items/[itemId]", "page");
     trace.getActiveSpan()?.setAttributes({
       "item.id": item.id,
       "user.id": session.user.id,

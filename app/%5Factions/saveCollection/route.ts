@@ -41,7 +41,6 @@ export const POST = internalAction("application/json", async (request) => {
         name: input.name,
         description: input.description,
         visibility: input.visibility,
-        monsterIds: input.monsterIds,
         discordId: session.user.discordId,
       });
       collection = await db.updateCollection({
