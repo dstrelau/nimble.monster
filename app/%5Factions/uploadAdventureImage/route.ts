@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { ADVENTURE_IMAGE_MAX_FILE_SIZE } from "@/lib/adventure-images";
 import { auth } from "@/lib/auth";
-import { uploadAdventureImage } from "@/lib/services/adventure-images";
-import { telemetry } from "@/lib/telemetry";
+import { internalAction } from "@/lib/internal-action";
+import {
+  AdventureImageInputError,
+  uploadAdventureImage,
+} from "@/lib/services/adventure-images";
 
-export const POST = telemetry(async (request: Request) => {
+export const POST = internalAction("multipart/form-data", async (request) => {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -21,8 +24,17 @@ export const POST = telemetry(async (request: Request) => {
     );
   }
 
+  let formData: FormData;
   try {
-    const formData = await request.formData();
+    formData = await request.formData();
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid multipart body" },
+      { status: 400 }
+    );
+  }
+
+  try {
     const file = formData.get("image");
     if (!(file instanceof File)) {
       return NextResponse.json(
@@ -33,8 +45,9 @@ export const POST = telemetry(async (request: Request) => {
     const image = await uploadAdventureImage(session.user.id, file);
     return NextResponse.json(image, { status: 201 });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Could not upload image";
-    return NextResponse.json({ error: message }, { status: 400 });
+    if (error instanceof AdventureImageInputError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    throw error;
   }
 });

@@ -1,4 +1,4 @@
-.PHONY: setup seed db-from-prod sync-icons sync-paperforge paperforge-catalog check fix lint type-check
+.PHONY: setup seed db-from-prod sync-icons sync-paperforge paperforge-catalog check server-action-ratchet fix lint type-check
 
 BIN := node_modules/.bin
 
@@ -44,7 +44,10 @@ sync-paperforge:
 paperforge-catalog:
 	node tools/paperforge.ts scrape
 
-check: lint type-check
+check: server-action-ratchet lint type-check
+
+server-action-ratchet: | node_modules
+	pnpm run check:server-actions
 
 fix: | node_modules
 	$(BIN)/biome check --write --unsafe .

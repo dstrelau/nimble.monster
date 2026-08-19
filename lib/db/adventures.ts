@@ -30,6 +30,8 @@ import {
   users,
 } from "./schema";
 
+export class AdventureInputError extends Error {}
+
 export interface AdventureCounts {
   adventures: number;
   encounters: number;
@@ -331,26 +333,30 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
 
 function validateAdventureInput(input: AdventureInput) {
   const name = input.name.trim();
-  if (!name) throw new Error("Adventure name is required");
+  if (!name) throw new AdventureInputError("Adventure name is required");
   if (input.nodes.length > 400) {
-    throw new Error("Adventures may contain at most 400 content blocks");
+    throw new AdventureInputError(
+      "Adventures may contain at most 400 content blocks"
+    );
   }
 
   const nodeIds = new Set<string>();
   const imageIds = new Set<string>();
   for (const node of input.nodes) {
     if (!node.id || nodeIds.has(node.id)) {
-      throw new Error("Adventure sections must have unique IDs");
+      throw new AdventureInputError("Adventure sections must have unique IDs");
     }
     nodeIds.add(node.id);
     if (node.kind === "section" && !node.title.trim()) {
-      throw new Error("Section titles are required");
+      throw new AdventureInputError("Section titles are required");
     }
     if (node.kind === "section" && node.content) {
-      throw new Error("Sections cannot contain text content");
+      throw new AdventureInputError("Sections cannot contain text content");
     }
     if (node.kind === "encounter" && !node.encounterId) {
-      throw new Error("Encounter sections must select an encounter");
+      throw new AdventureInputError(
+        "Encounter sections must select an encounter"
+      );
     }
     if (
       node.kind === "image" &&
@@ -359,11 +365,13 @@ function validateAdventureInput(input: AdventureInput) {
         !node.imageExtension ||
         !["jpg", "png", "webp"].includes(node.imageExtension))
     ) {
-      throw new Error("Image sections must upload an image");
+      throw new AdventureInputError("Image sections must upload an image");
     }
     if (node.kind === "image" && node.imageId) {
       if (imageIds.has(node.imageId)) {
-        throw new Error("Each adventure image may be used only once");
+        throw new AdventureInputError(
+          "Each adventure image may be used only once"
+        );
       }
       imageIds.add(node.imageId);
     }
@@ -372,7 +380,7 @@ function validateAdventureInput(input: AdventureInput) {
       node.missingStatblockCount < 0 ||
       node.missingStatblockCount > 10
     ) {
-      throw new Error(
+      throw new AdventureInputError(
         "Missing statblock count must be an integer from 0 to 10"
       );
     }
@@ -384,42 +392,54 @@ function validateAdventureInput(input: AdventureInput) {
       (node.kind === "monsters" || node.kind === "items") &&
       references > 10
     ) {
-      throw new Error("Statblock groups may contain at most 10 references");
+      throw new AdventureInputError(
+        "Statblock groups may contain at most 10 references"
+      );
     }
     if (
       new Set(node.monsterIds).size !== node.monsterIds.length ||
       new Set(node.itemIds).size !== node.itemIds.length
     ) {
-      throw new Error("Statblock groups cannot contain duplicates");
+      throw new AdventureInputError(
+        "Statblock groups cannot contain duplicates"
+      );
     }
   }
 
   for (const node of input.nodes) {
     if (!node.parentId && node.kind !== "section") {
-      throw new Error("Only sections may appear at the top level");
+      throw new AdventureInputError(
+        "Only sections may appear at the top level"
+      );
     }
     if (node.parentId && !nodeIds.has(node.parentId)) {
-      throw new Error("Adventure section parent was not found");
+      throw new AdventureInputError("Adventure section parent was not found");
     }
     if (node.parentId) {
       const parent = input.nodes.find(
         (candidate) => candidate.id === node.parentId
       );
       if (parent?.kind !== "section") {
-        throw new Error("Only sections may contain child content");
+        throw new AdventureInputError(
+          "Only sections may contain child content"
+        );
       }
       const grandparent = parent.parentId
         ? input.nodes.find((candidate) => candidate.id === parent.parentId)
         : undefined;
       if (node.kind === "section" && grandparent?.parentId) {
-        throw new Error("Adventure content may be nested only two levels");
+        throw new AdventureInputError(
+          "Adventure content may be nested only two levels"
+        );
       }
     }
     const ancestors = new Set([node.id]);
     let parentId = node.parentId;
     while (parentId) {
       if (ancestors.has(parentId)) {
-        throw new Error("Adventure sections cannot contain a cycle");
+        throw new AdventureInputError(
+          "Adventure sections cannot contain a cycle"
+        );
       }
       ancestors.add(parentId);
       parentId =
@@ -458,7 +478,7 @@ async function validateEncounterAccess(
     .from(encounters)
     .where(and(inArray(encounters.id, encounterIds), encounterVisibility));
   if (accessible.length !== encounterIds.length) {
-    throw new Error("One or more encounters are unavailable");
+    throw new AdventureInputError("One or more encounters are unavailable");
   }
 }
 
@@ -508,7 +528,7 @@ async function validateStatblockAccess(
     accessibleMonsters.length !== monsterIds.length ||
     accessibleItems.length !== itemIds.length
   ) {
-    throw new Error("One or more statblocks are unavailable");
+    throw new AdventureInputError("One or more statblocks are unavailable");
   }
 }
 
@@ -651,7 +671,9 @@ async function attachAdventureImages(
           ))
     )
   ) {
-    throw new Error("One or more adventure images are unavailable");
+    throw new AdventureInputError(
+      "One or more adventure images are unavailable"
+    );
   }
 
   await tx
@@ -698,7 +720,7 @@ export async function updateAdventure(
   userId: string,
   input: AdventureInput
 ): Promise<Adventure> {
-  if (!isValidUUID(id)) throw new Error("Invalid adventure ID");
+  if (!isValidUUID(id)) throw new AdventureInputError("Invalid adventure ID");
   const name = validateAdventureInput(input);
   const db = getDatabase();
   let previousImageIds = new Set<string>();
@@ -708,7 +730,7 @@ export async function updateAdventure(
       .from(adventures)
       .where(and(eq(adventures.id, id), eq(adventures.userId, userId)))
       .limit(1);
-    if (!existing) throw new Error("Adventure not found");
+    if (!existing) throw new AdventureInputError("Adventure not found");
     previousImageIds = new Set(
       (
         await tx

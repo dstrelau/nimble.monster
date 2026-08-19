@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { internalAction } from "@/lib/internal-action";
 import { deleteAdventureImageIfUnreferenced } from "@/lib/services/adventure-images";
-import { telemetry } from "@/lib/telemetry";
 import { isValidUUID } from "@/lib/utils/validation";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
-export const DELETE = telemetry(
+export const DELETE = internalAction(
+  null,
   async (_request: Request, context: RouteContext) => {
     const session = await auth();
     if (!session?.user?.id) {

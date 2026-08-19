@@ -71,6 +71,9 @@ The app will be available at http://localhost:3000.
 - Use TypeScript with proper typing (avoid `as` type assertions)
 - Use Tailwind CSS and shadcn/ui for styling
 - Prefer server-side rendering (SSR) when possible
+- Do not add new Server Actions. Follow the phased
+  [Server Action migration plan](docs/SERVER_ACTION_MIGRATION.md) for browser
+  reads and writes.
 - Use `cn()` from `lib/utils.ts` for dynamic classNames
 - Use lucide-react for icons
 - Organize imports: React/libraries first, then components, then contexts/types

@@ -47,7 +47,10 @@ function request(body: unknown) {
   return new Request("http://localhost/_actions/statblockPickerSearch", {
     method: "POST",
     body: JSON.stringify(body),
-    headers: { "content-type": "application/json" },
+    headers: {
+      "content-type": "application/json",
+      origin: "http://localhost",
+    },
   });
 }
 
@@ -206,7 +209,7 @@ describe("statblock picker search route", () => {
     });
   });
 
-  it("returns useful errors for invalid input and service failures", async () => {
+  it("returns useful errors for invalid input", async () => {
     const invalidResponse = await POST(
       request({
         kind: "monsters",
@@ -219,9 +222,11 @@ describe("statblock picker search route", () => {
 
     expect(invalidResponse.status).toBe(400);
     expect((await invalidResponse.json()).error).toContain("Invalid option");
+  });
 
+  it("returns a generic 500 for unexpected service failures", async () => {
     mockPaginatePublicMonsters.mockRejectedValue(
-      new Error("Cursor sort mismatch")
+      new Error("database credentials leaked")
     );
     const failedResponse = await POST(
       request({
@@ -233,7 +238,9 @@ describe("statblock picker search route", () => {
       })
     );
 
-    expect(failedResponse.status).toBe(400);
-    expect((await failedResponse.json()).error).toBe("Cursor sort mismatch");
+    expect(failedResponse.status).toBe(500);
+    expect(await failedResponse.json()).toEqual({
+      error: "Internal Server Error",
+    });
   });
 });

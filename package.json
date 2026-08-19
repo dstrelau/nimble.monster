@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "next build",
+    "check:server-actions": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON tools/check-server-actions.ts",
     "dev": "next dev --turbopack",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",

@@ -1,18 +1,19 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { internalAction } from "@/lib/internal-action";
 import {
   paginateMyHazards,
   paginatePublicHazards,
 } from "@/lib/services/hazards";
 import { itemsService } from "@/lib/services/items";
 import { monstersService } from "@/lib/services/monsters";
-import { telemetry } from "@/lib/telemetry";
+import { decodeCursor } from "@/lib/utils/cursor";
 import {
   type StatblockPickerSearchInput,
   statblockPickerSearchSchema,
 } from "./contract";
 
-export const POST = telemetry(async (request: Request) => {
+export const POST = internalAction("application/json", async (request) => {
   let body: unknown;
   try {
     body = await request.json();
@@ -29,78 +30,75 @@ export const POST = telemetry(async (request: Request) => {
   }
 
   const input: StatblockPickerSearchInput = parsed.data;
+  const cursor = input.cursor ? decodeCursor(input.cursor) : null;
+  if (cursor && cursor.sort !== input.sort) {
+    return NextResponse.json(
+      { error: "Cursor sort mismatch" },
+      { status: 400 }
+    );
+  }
   const session = input.scope === "mine" ? await auth() : null;
   const userId = session?.user?.id ?? "";
   if (input.scope === "mine" && !userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  try {
-    switch (input.kind) {
-      case "monsters": {
-        const params = {
-          cursor: input.cursor,
-          limit: input.limit,
-          sort: input.sort,
-          search: input.search,
-          type: input.type,
-          source: input.source,
-          role: input.role,
-          level: input.level,
-        };
-        const result =
-          input.scope === "mine"
-            ? await monstersService.paginateMyMonsters(userId, params)
-            : await monstersService.paginatePublicMonsters({
-                ...params,
-                creatorId: input.creatorId,
-              });
-        return NextResponse.json({ kind: "monsters", ...result });
-      }
-      case "hazards": {
-        const params = {
-          cursor: input.cursor,
-          limit: input.limit,
-          sort: input.sort,
-          search: input.search,
-          source: input.source,
-          level: input.level,
-        };
-        const result =
-          input.scope === "mine"
-            ? await paginateMyHazards(userId, params)
-            : await paginatePublicHazards({
-                ...params,
-                creatorId: input.creatorId,
-              });
-        return NextResponse.json({ kind: "hazards", ...result });
-      }
-      case "items": {
-        const params = {
-          cursor: input.cursor,
-          limit: input.limit,
-          sort: input.sort,
-          search: input.search,
-          rarity: input.rarity,
-          source: input.source,
-        };
-        const result =
-          input.scope === "mine"
-            ? await itemsService.paginateMyItems(userId, params)
-            : await itemsService.paginatePublicItems({
-                ...params,
-                creatorId: input.creatorId,
-              });
-        return NextResponse.json({ kind: "items", ...result });
-      }
+  switch (input.kind) {
+    case "monsters": {
+      const params = {
+        cursor: input.cursor,
+        limit: input.limit,
+        sort: input.sort,
+        search: input.search,
+        type: input.type,
+        source: input.source,
+        role: input.role,
+        level: input.level,
+      };
+      const result =
+        input.scope === "mine"
+          ? await monstersService.paginateMyMonsters(userId, params)
+          : await monstersService.paginatePublicMonsters({
+              ...params,
+              creatorId: input.creatorId,
+            });
+      return NextResponse.json({ kind: "monsters", ...result });
     }
-  } catch (error) {
-    return NextResponse.json(
-      {
-        error:
-          error instanceof Error ? error.message : "Could not search content",
-      },
-      { status: 400 }
-    );
+    case "hazards": {
+      const params = {
+        cursor: input.cursor,
+        limit: input.limit,
+        sort: input.sort,
+        search: input.search,
+        source: input.source,
+        level: input.level,
+      };
+      const result =
+        input.scope === "mine"
+          ? await paginateMyHazards(userId, params)
+          : await paginatePublicHazards({
+              ...params,
+              creatorId: input.creatorId,
+            });
+      return NextResponse.json({ kind: "hazards", ...result });
+    }
+    case "items": {
+      const params = {
+        cursor: input.cursor,
+        limit: input.limit,
+        sort: input.sort,
+        search: input.search,
+        rarity: input.rarity,
+        source: input.source,
+      };
+      const result =
+        input.scope === "mine"
+          ? await itemsService.paginateMyItems(userId, params)
+          : await itemsService.paginatePublicItems({
+              ...params,
+              creatorId: input.creatorId,
+            });
+      return NextResponse.json({ kind: "items", ...result });
+    }
   }
 });

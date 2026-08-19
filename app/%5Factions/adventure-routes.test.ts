@@ -14,6 +14,7 @@ const {
 
 vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
 vi.mock("@/lib/db/adventures", () => ({
+  AdventureInputError: class extends Error {},
   createAdventure: mockCreateAdventure,
   updateAdventure: mockUpdateAdventure,
 }));
@@ -46,7 +47,10 @@ function request(body: unknown) {
   return new Request("http://localhost/_actions/adventure", {
     method: "POST",
     body: JSON.stringify(body),
-    headers: { "content-type": "application/json" },
+    headers: {
+      "content-type": "application/json",
+      origin: "http://localhost",
+    },
   });
 }
 
@@ -122,5 +126,33 @@ describe("adventure mutation route invalidation", () => {
 
     expect(response.status).toBe(201);
     expect(mockCreateAdventure).toHaveBeenCalledWith("owner", input);
+  });
+
+  it("returns an intentional 400 for malformed JSON", async () => {
+    const response = await createAdventurePost(
+      new Request("http://localhost/_actions/createAdventure", {
+        method: "POST",
+        body: "{broken",
+        headers: {
+          "content-type": "application/json",
+          origin: "http://localhost",
+        },
+      })
+    );
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ error: "Invalid JSON body" });
+    expect(mockCreateAdventure).not.toHaveBeenCalled();
+  });
+
+  it("does not leak an unexpected adventure service failure", async () => {
+    mockCreateAdventure.mockRejectedValue(
+      new Error("SQLITE_BUSY while writing secret table")
+    );
+
+    const response = await createAdventurePost(request(adventureInput));
+
+    expect(response.status).toBe(500);
+    expect(await response.json()).toEqual({ error: "Internal Server Error" });
   });
 });

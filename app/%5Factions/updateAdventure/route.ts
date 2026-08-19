@@ -5,21 +5,27 @@ import { z } from "zod";
 import type { AdventureMutationResult } from "@/app/%5Factions/_adventure/contract";
 import { adventureInputSchema } from "@/app/%5Factions/_adventure/input";
 import { auth } from "@/lib/auth";
-import { updateAdventure } from "@/lib/db/adventures";
-import { telemetry } from "@/lib/telemetry";
+import { AdventureInputError, updateAdventure } from "@/lib/db/adventures";
+import { internalAction } from "@/lib/internal-action";
 
 const updateAdventureSchema = z.object({
   id: z.string().uuid(),
   adventure: adventureInputSchema,
 });
 
-export const POST = telemetry(async (request: Request) => {
+export const POST = internalAction("application/json", async (request) => {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const parsed = updateAdventureSchema.safeParse(await request.json());
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+  const parsed = updateAdventureSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
       { error: parsed.error.issues[0].message },
@@ -43,8 +49,9 @@ export const POST = telemetry(async (request: Request) => {
     };
     return NextResponse.json(result);
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Could not save adventure";
-    return NextResponse.json({ error: message }, { status: 400 });
+    if (error instanceof AdventureInputError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    throw error;
   }
 });

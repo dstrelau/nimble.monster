@@ -21,6 +21,8 @@ const ALLOWED_FORMATS = new Map<string, AdventureImageExtension>([
   ["webp", "webp"],
 ]);
 
+export class AdventureImageInputError extends Error {}
+
 interface AdventureImageFile {
   size: number;
   arrayBuffer(): Promise<ArrayBuffer>;
@@ -30,9 +32,11 @@ export async function uploadAdventureImage(
   userId: string,
   file: AdventureImageFile
 ) {
-  if (file.size === 0) throw new Error("Choose an image to upload");
+  if (file.size === 0) {
+    throw new AdventureImageInputError("Choose an image to upload");
+  }
   if (file.size > ADVENTURE_IMAGE_MAX_FILE_SIZE) {
-    throw new Error("Images must be 10 MB or smaller");
+    throw new AdventureImageInputError("Images must be 10 MB or smaller");
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -44,20 +48,22 @@ export async function uploadAdventureImage(
   try {
     metadata = await source.metadata();
   } catch {
-    throw new Error("The file is not a supported image");
+    throw new AdventureImageInputError("The file is not a supported image");
   }
   const extension = metadata.format
     ? ALLOWED_FORMATS.get(metadata.format)
     : undefined;
   if (!extension || !metadata.width || !metadata.height) {
-    throw new Error("Only JPEG, PNG, and WebP images are supported");
+    throw new AdventureImageInputError(
+      "Only JPEG, PNG, and WebP images are supported"
+    );
   }
   if (
     metadata.width > ADVENTURE_IMAGE_MAX_DIMENSION ||
     metadata.height > ADVENTURE_IMAGE_MAX_DIMENSION ||
     metadata.width * metadata.height > ADVENTURE_IMAGE_MAX_PIXELS
   ) {
-    throw new Error(
+    throw new AdventureImageInputError(
       "Images may be at most 12,000 pixels wide or tall and 40 megapixels"
     );
   }
