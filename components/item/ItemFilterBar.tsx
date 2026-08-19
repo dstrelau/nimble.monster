@@ -14,6 +14,10 @@ import {
 } from "@/components/ui/select";
 import { type ItemRarity, RARITIES } from "@/lib/services/items";
 
+function isItemRarityFilter(value: string): value is ItemRarity | "all" {
+  return value === "all" || RARITIES.some((rarity) => rarity.value === value);
+}
+
 interface ItemFilterBarProps {
   searchTerm: string | null;
   sortOption: ItemSortOption;
@@ -50,7 +54,9 @@ export const ItemFilterBar: React.FC<ItemFilterBarProps> = ({
       {beforeFilters}
       <Select
         value={rarityFilter}
-        onValueChange={(value) => onRarityChange(value as ItemRarity | "all")}
+        onValueChange={(value) => {
+          if (isItemRarityFilter(value)) onRarityChange(value);
+        }}
       >
         <SelectTrigger>
           <SelectValue placeholder="All Rarities" />

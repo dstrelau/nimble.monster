@@ -39,6 +39,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import type { Item } from "@/lib/services/items";
 import { RARITIES } from "@/lib/services/items";
+import { ITEM_EXAMPLES } from "@/lib/services/items/examples";
 import { sourcesQueryOptions } from "@/lib/services/sources";
 import { UNKNOWN_USER } from "@/lib/types";
 import { getItemUrl } from "@/lib/utils/url";
@@ -67,48 +68,6 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
-
-const EXAMPLE_ITEMS: Record<string, Omit<Item, "creator">> = {
-  Empty: {
-    visibility: "public",
-    id: "",
-    name: "",
-    description: "",
-    rarity: "unspecified",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  "Healing Potion": {
-    visibility: "public",
-    id: "",
-    name: "Greater Healing Potion",
-    description:
-      "**_ACTION_**. Consume (or administer to an adjacent creature) to heal **3d6+6** HP.",
-    imageIcon: "health-potion",
-    imageBgIcon: "sparkles",
-    imageColor: "pink-700",
-    imageBgColor: "red-700",
-    imageBackdrop: "icon",
-    rarity: "uncommon",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  "Gem of Escape": {
-    visibility: "public",
-    id: "",
-    name: "Gem of Escape",
-    description:
-      "**_ACTION_**. Crush one in case of emergency to instantly teleport ALL who are bound to one to the location of the other gem.",
-    moreInfo:
-      "These magical gems are always crafted in pairs and can have any number of willing creatures magically bound to them.",
-    imageIcon: "emerald",
-    imageColor: "violet-600",
-    imageBackdrop: "sunburst",
-    rarity: "very_rare",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-};
 
 interface BuildItemViewProps {
   item?: Item;
@@ -233,7 +192,7 @@ export default function BuildItemView({
   };
 
   const loadExample = (exampleKey: string) => {
-    const example = EXAMPLE_ITEMS[exampleKey];
+    const example = ITEM_EXAMPLES[exampleKey];
     if (example) {
       form.reset({
         name: example.name,
@@ -509,7 +468,7 @@ export default function BuildItemView({
       }
       desktopPreviewContent={
         <>
-          <ExampleLoader examples={EXAMPLE_ITEMS} onLoadExample={loadExample} />
+          <ExampleLoader examples={ITEM_EXAMPLES} onLoadExample={loadExample} />
           <div className="overflow-auto max-h-[calc(100vh-120px)] px-4">
             <Card
               item={previewItem}
