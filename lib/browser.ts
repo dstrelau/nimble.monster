@@ -62,10 +62,12 @@ export async function getBrowser(): Promise<Browser> {
     ],
   });
 
-  browser = await browserPromise;
-  browserPromise = null;
-
-  return browser;
+  try {
+    browser = await browserPromise;
+    return browser;
+  } finally {
+    browserPromise = null;
+  }
 }
 
 export async function closeBrowser(): Promise<void> {
