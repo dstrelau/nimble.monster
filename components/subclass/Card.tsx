@@ -96,6 +96,7 @@ export function Card({
               className="[&_p_~_p]:mt-0.5"
               content={subclass.tagline}
               conditions={conditions.allConditions}
+              blockStyles={false}
             />
           </div>
         )}

@@ -345,6 +345,7 @@ export const CollectionCard = ({
             <FormattedText
               content={truncatedDescription}
               conditions={conditions}
+              blockStyles={false}
             />
           </CardDescription>
         )}

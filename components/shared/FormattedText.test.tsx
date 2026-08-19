@@ -123,22 +123,22 @@ describe("FormattedText", () => {
     expect(paragraphs[1]).toHaveTextContent("Two.");
   });
 
-  it("uses inline paragraph styles by default but can preserve block paragraphs", () => {
+  it("uses block paragraph styles by default but can render compact inline paragraphs", () => {
     const { container, rerender } = render(
       <FormattedText content="One.\n\nTwo." conditions={mockConditions} />
     );
 
-    expect(container.firstChild).toHaveClass("formatted-text--inline");
+    expect(container.firstChild).not.toHaveClass("formatted-text--inline");
 
     rerender(
       <FormattedText
         content="One.\n\nTwo."
         conditions={mockConditions}
-        blockStyles
+        blockStyles={false}
       />
     );
 
-    expect(container.firstChild).not.toHaveClass("formatted-text--inline");
+    expect(container.firstChild).toHaveClass("formatted-text--inline");
   });
 
   it("should handle unknown conditions", () => {
@@ -580,5 +580,19 @@ describe("PrefixedFormattedText", () => {
     expect(screen.getByText("bold").tagName.toLowerCase()).toBe("strong");
     expect(screen.getByText("Poisoned")).toHaveClass("underline");
     expect(screen.getByText("Poisoned")).toHaveClass("decoration-dotted");
+  });
+
+  it("preserves paragraphs after an inline prefix", () => {
+    const { container } = render(
+      <PrefixedFormattedText
+        prefix={<strong>Ability.</strong>}
+        content={"First paragraph.\n\nSecond paragraph."}
+        conditions={[]}
+      />
+    );
+
+    const formattedText = container.querySelector(".formatted-text");
+    expect(formattedText).not.toHaveClass("formatted-text--inline");
+    expect(formattedText?.querySelectorAll("p")).toHaveLength(2);
   });
 });

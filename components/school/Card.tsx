@@ -114,6 +114,7 @@ function SpellEntry({
                   content={value}
                   conditions={conditions.allConditions}
                   className="inline [&_div]:inline [&_p]:inline mr-1"
+                  blockStyles={false}
                 />
               ) : (
                 <div className="inline mr-1">{value}</div>

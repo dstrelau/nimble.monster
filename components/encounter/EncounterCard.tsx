@@ -70,6 +70,7 @@ export const EncounterCard = ({
             <FormattedText
               content={truncatedDescription}
               conditions={conditions}
+              blockStyles={false}
             />
           </CardDescription>
         )}

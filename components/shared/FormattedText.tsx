@@ -400,7 +400,7 @@ export function FormattedText({
   conditions,
   className = "",
   enableHeadings = false,
-  blockStyles = false,
+  blockStyles = true,
   noInteractive = false,
 }: FormattedTextProps) {
   const isClient = useIsClient();
