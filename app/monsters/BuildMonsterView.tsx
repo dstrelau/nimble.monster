@@ -17,6 +17,10 @@ import {
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useId, useMemo, useRef, useState } from "react";
+import {
+  createBestiaryEntry,
+  updateBestiaryEntry,
+} from "@/app/%5Factions/_bestiary/contract";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { AbilitiesSection } from "@/components/create/AbilitiesSection";
 import { ActionsSection } from "@/components/create/ActionsSection";
@@ -58,7 +62,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { fetchApi } from "@/lib/api";
+import { call } from "@/lib/contract";
 import type {
   Monster,
   MonsterArmor,
@@ -76,11 +80,6 @@ import { UNKNOWN_USER } from "@/lib/types";
 import { cn, levelIntToDisplay } from "@/lib/utils";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { useUserFamiliesQuery } from "../families/hooks";
-import {
-  createHazard as createHazardAction,
-  updateHazard as updateHazardAction,
-  updateMonster as updateMonsterAction,
-} from "./actions";
 
 const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
   goblin: {
@@ -1292,8 +1291,71 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
     mutationFn: async (data: MonsterFormState) => {
       if (data.id) {
         if (data.hazard) {
-          return updateHazardAction({
+          return call(updateBestiaryEntry, {
+            kind: "hazard",
+            input: {
+              id: data.id,
+              name: data.name,
+              level: data.level,
+              levelInt: data.levelInt,
+              actions: data.actions,
+              abilities: data.abilities,
+              actionPreface: data.actionPreface,
+              moreInfo: data.moreInfo || "",
+              mild_encounter: data.mild_encounter,
+              spicy_encounter: data.spicy_encounter,
+              visibility: data.visibility,
+              sourceId: data.source?.id ?? null,
+            },
+          });
+        }
+        return call(updateBestiaryEntry, {
+          kind: "monster",
+          input: {
             id: data.id,
+            name: data.name,
+            level: data.level,
+            levelInt: data.levelInt,
+            hp: data.hpPerHero != null ? 0 : data.hp,
+            hpPerHero: data.hpPerHero ?? null,
+            armor: data.armor,
+            size: data.size,
+            speed: data.speed,
+            fly: data.fly,
+            swim: data.swim,
+            climb: data.climb,
+            teleport: data.teleport,
+            burrow: data.burrow,
+            actions: data.actions,
+            abilities: data.abilities,
+            members: data.members ?? [],
+            legendary: data.legendary,
+            minion: data.minion,
+            bloodied: data.bloodied || "",
+            lastStand: data.lastStand || "",
+            saves: data.saves
+              ? Array.isArray(data.saves)
+                ? data.saves
+                : [data.saves]
+              : [],
+            kind: data.kind || "",
+            visibility: data.visibility,
+            actionPreface: data.actionPreface || "",
+            moreInfo: data.moreInfo || "",
+            mild_encounter: data.mild_encounter || "",
+            spicy_encounter: data.spicy_encounter || "",
+            families: data.families || [],
+            sourceId: data.source?.id ?? null,
+            role: data.role || null,
+            paperforgeId: data.paperforgeId ?? null,
+          },
+        });
+      }
+
+      if (data.hazard) {
+        return call(createBestiaryEntry, {
+          kind: "hazard",
+          input: {
             name: data.name,
             level: data.level,
             levelInt: data.levelInt,
@@ -1304,12 +1366,17 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
             mild_encounter: data.mild_encounter,
             spicy_encounter: data.spicy_encounter,
             visibility: data.visibility,
-            sourceId: data.source?.id ?? null,
-          });
-        }
-        return updateMonsterAction({
-          id: data.id,
+            sourceId: data.source?.id,
+            remixedFromId,
+          },
+        });
+      }
+
+      return call(createBestiaryEntry, {
+        kind: "monster",
+        input: {
           name: data.name,
+          kind: data.kind,
           level: data.level,
           levelInt: data.levelInt,
           hp: data.hpPerHero != null ? 0 : data.hp,
@@ -1322,56 +1389,29 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           climb: data.climb,
           teleport: data.teleport,
           burrow: data.burrow,
+          families: data.families,
           actions: data.actions,
           abilities: data.abilities,
-          members: data.members ?? [],
+          members: data.members,
+          actionPreface: data.actionPreface,
+          moreInfo: data.moreInfo,
+          mild_encounter: data.mild_encounter,
+          spicy_encounter: data.spicy_encounter,
+          visibility: data.visibility,
           legendary: data.legendary,
           minion: data.minion,
-          bloodied: data.bloodied || "",
-          lastStand: data.lastStand || "",
+          bloodied: data.bloodied,
+          lastStand: data.lastStand,
           saves: data.saves
             ? Array.isArray(data.saves)
               ? data.saves
               : [data.saves]
             : [],
-          kind: data.kind || "",
-          visibility: data.visibility,
-          actionPreface: data.actionPreface || "",
-          moreInfo: data.moreInfo || "",
-          mild_encounter: data.mild_encounter || "",
-          spicy_encounter: data.spicy_encounter || "",
-          families: data.families || [],
-          sourceId: data.source?.id ?? null,
-          role: data.role || null,
-          paperforgeId: data.paperforgeId ?? null,
-        });
-      }
-
-      if (data.hazard) {
-        return createHazardAction({
-          name: data.name,
-          level: data.level,
-          levelInt: data.levelInt,
-          actions: data.actions,
-          abilities: data.abilities,
-          actionPreface: data.actionPreface,
-          moreInfo: data.moreInfo || "",
-          mild_encounter: data.mild_encounter,
-          spicy_encounter: data.spicy_encounter,
-          visibility: data.visibility,
           sourceId: data.source?.id,
+          role: data.role,
+          paperforgeId: data.paperforgeId,
           remixedFromId,
-        });
-      }
-
-      return fetchApi<Monster>("/api/monsters", {
-        method: "POST",
-        body: JSON.stringify({
-          ...data,
-          hp: data.hpPerHero != null ? 0 : data.hp,
-          hpPerHero: data.hpPerHero ?? null,
-          remixedFromId,
-        }),
+        },
       });
     },
     onSuccess: (newMonster) => {
@@ -1380,9 +1420,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
       queryClient.invalidateQueries({ queryKey: ["nav-counts"] });
       queryClient.invalidateQueries({ queryKey: ["monster", newMonster.id] });
       router.push(getMonsterUrl(newMonster));
-    },
-    onError: (error) => {
-      console.error("Failed to save monster:", error);
     },
   });
 
@@ -1513,27 +1550,34 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           />
 
           {session?.user && (
-            <div className="flex flex-row justify-between items-center my-4">
-              <Button type="submit" disabled={mutation.isPending}>
-                Save
-              </Button>
-              <fieldset className="space-y-2">
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <VisibilityToggle
-                      id={`public-toggle-${id}`}
-                      checked={monster.visibility === "public"}
-                      onCheckedChange={(checked) => {
-                        setMonster({
-                          ...monster,
-                          visibility: checked ? "public" : "private",
-                        });
-                      }}
-                    />
+            <>
+              {mutation.error && (
+                <p className="text-destructive" role="alert">
+                  {mutation.error.message}
+                </p>
+              )}
+              <div className="flex flex-row justify-between items-center my-4">
+                <Button type="submit" disabled={mutation.isPending}>
+                  {mutation.isPending ? "Saving…" : "Save"}
+                </Button>
+                <fieldset className="space-y-2">
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <VisibilityToggle
+                        id={`public-toggle-${id}`}
+                        checked={monster.visibility === "public"}
+                        onCheckedChange={(checked) => {
+                          setMonster({
+                            ...monster,
+                            visibility: checked ? "public" : "private",
+                          });
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-              </fieldset>
-            </div>
+                </fieldset>
+              </div>
+            </>
           )}
         </form>
       }
