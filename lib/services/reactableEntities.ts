@@ -1,11 +1,14 @@
 import { eq, inArray } from "drizzle-orm";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
+  adventures,
   ancestries,
   backgrounds,
   classes,
+  collections,
   companions,
   customRules,
+  encounters,
   items,
   monsters,
   type ReactableEntityType,
@@ -13,11 +16,14 @@ import {
   subclasses,
 } from "@/lib/db/schema";
 import {
+  getAdventureUrl,
   getAncestryUrl,
   getBackgroundUrl,
   getClassUrl,
+  getCollectionUrl,
   getCompanionUrl,
   getCustomRuleUrl,
+  getEncounterUrl,
   getItemUrl,
   getMonsterUrl,
   getSpellSchoolUrl,
@@ -144,6 +150,39 @@ const RESOLVERS: Record<ReactableEntityType, ResolveMany> = {
       ])
     );
   },
+  collection: async (ids) => {
+    const db = getDatabase();
+    const rows = await db
+      .select({ id: collections.id, name: collections.name })
+      .from(collections)
+      .where(inArray(collections.id, ids));
+    return new Map(
+      rows.map((row) => [
+        row.id,
+        { name: row.name, url: getCollectionUrl(row) },
+      ])
+    );
+  },
+  adventure: async (ids) => {
+    const db = getDatabase();
+    const rows = await db
+      .select({ id: adventures.id, name: adventures.name })
+      .from(adventures)
+      .where(inArray(adventures.id, ids));
+    return new Map(
+      rows.map((row) => [row.id, { name: row.name, url: getAdventureUrl(row) }])
+    );
+  },
+  encounter: async (ids) => {
+    const db = getDatabase();
+    const rows = await db
+      .select({ id: encounters.id, name: encounters.name })
+      .from(encounters)
+      .where(inArray(encounters.id, ids));
+    return new Map(
+      rows.map((row) => [row.id, { name: row.name, url: getEncounterUrl(row) }])
+    );
+  },
 };
 
 export const ENTITY_TYPE_LABELS: Record<ReactableEntityType, string> = {
@@ -156,6 +195,9 @@ export const ENTITY_TYPE_LABELS: Record<ReactableEntityType, string> = {
   background: "Background",
   ancestry: "Ancestry",
   customRule: "Custom Rule",
+  collection: "Collection",
+  adventure: "Adventure",
+  encounter: "Encounter",
 };
 
 export async function resolveEntities(
@@ -228,6 +270,24 @@ export async function syncLikeCount(
         .update(customRules)
         .set({ likeCount: thumbsUpCount })
         .where(eq(customRules.id, entityId));
+      return;
+    case "collection":
+      await db
+        .update(collections)
+        .set({ likeCount: thumbsUpCount })
+        .where(eq(collections.id, entityId));
+      return;
+    case "adventure":
+      await db
+        .update(adventures)
+        .set({ likeCount: thumbsUpCount })
+        .where(eq(adventures.id, entityId));
+      return;
+    case "encounter":
+      await db
+        .update(encounters)
+        .set({ likeCount: thumbsUpCount })
+        .where(eq(encounters.id, entityId));
       return;
   }
 }

@@ -10,6 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { EntityReactions } from "@/components/EntityReactions";
 import { GameIcon } from "@/components/icons/GameIcon";
 import { Link } from "@/components/layout/Link";
 import { MonsterRow } from "@/components/monster/MonsterGroupMinis";
@@ -431,6 +432,11 @@ export const CollectionCard = ({
       </CardContent>
       <CardFooterLayout
         creator={collection.creator}
+        reactionsSlot={
+          collection.id && (
+            <EntityReactions entityType="collection" entityId={collection.id} />
+          )
+        }
         actionsSlot={
           collection.visibility === "private" && (
             <Badge variant="default" className="h-6">

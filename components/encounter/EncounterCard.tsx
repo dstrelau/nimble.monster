@@ -1,6 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { EncounterMonsterRow } from "@/app/encounters/EncounterMonsterRow";
+import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
 import { FormattedText } from "@/components/shared/FormattedText";
@@ -101,6 +102,11 @@ export const EncounterCard = ({
       </CardContent>
       <CardFooterLayout
         creator={encounter.creator}
+        reactionsSlot={
+          encounter.id && (
+            <EntityReactions entityType="encounter" entityId={encounter.id} />
+          )
+        }
         actionsSlot={
           encounter.visibility === "private" && (
             <Badge variant="default" className="h-6">

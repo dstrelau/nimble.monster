@@ -87,6 +87,7 @@ export const collections = sqliteTable(
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
     description: text("description").notNull().default(""),
+    likeCount: integer("like_count").notNull().default(0),
     visibility: text("visibility")
       .$type<CollectionVisibility>()
       .default("public"),
@@ -111,6 +112,7 @@ export const encounters = sqliteTable(
       .default("public"),
     heroCount: integer("hero_count").notNull().default(4),
     heroLevel: integer("hero_level").notNull().default(1),
+    likeCount: integer("like_count").notNull().default(0),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },
@@ -948,7 +950,10 @@ export type ReactableEntityType =
   | "spellSchool"
   | "background"
   | "ancestry"
-  | "customRule";
+  | "customRule"
+  | "collection"
+  | "adventure"
+  | "encounter";
 
 export type ReactionType = "thumbs_up" | "thumbs_down";
 
@@ -1287,6 +1292,7 @@ export const adventures = sqliteTable(
     name: text("name").notNull(),
     tagline: text("tagline").notNull().default(""),
     summary: text("summary").notNull().default(""),
+    likeCount: integer("like_count").notNull().default(0),
     visibility: text("visibility")
       .$type<AdventureVisibility>()
       .notNull()

@@ -2,6 +2,9 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { CustomRule } from "@/lib/db/custom-rule";
 
+vi.mock("@/components/adventure/AdventureList", () => ({
+  AdventureList: () => null,
+}));
 vi.mock("@/components/ancestry/PaginatedAncestryGrid", () => ({
   PaginatedAncestryGrid: () => null,
 }));

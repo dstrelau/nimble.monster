@@ -8,6 +8,7 @@ import {
   AdventureOutline,
   type AdventureOutlineNode,
 } from "@/components/adventure/AdventureOutline";
+import { EntityReactions } from "@/components/EntityReactions";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { findAdventure } from "@/lib/db/adventures";
@@ -75,16 +76,21 @@ export default async function AdventurePage({ params }: PageProps) {
         />
       </aside>
       <div className="min-w-0">
-        {isOwner && (
-          <div className="mb-6 flex justify-end">
+        <div className="mb-6 flex justify-end gap-2">
+          <EntityReactions
+            entityType="adventure"
+            entityId={adventure.id}
+            showLabel
+          />
+          {isOwner && (
             <Button variant="outline" size="sm" asChild>
               <Link href={getAdventureEditUrl(adventure)}>
                 <Pencil />
                 Edit
               </Link>
             </Button>
-          </div>
-        )}
+          )}
+        </div>
         <AdventureView adventure={adventure} />
       </div>
     </main>

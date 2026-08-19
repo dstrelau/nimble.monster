@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteCollection } from "@/app/actions/collection";
+import { EntityReactions } from "@/components/EntityReactions";
 import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
 import { VisibilityBadge } from "@/components/shared/VisibilityBadge";
@@ -97,6 +98,11 @@ export function CollectionHeader({
             )}
           </div>
           <div className="flex gap-2 print:hidden">
+            <EntityReactions
+              entityType="collection"
+              entityId={collection.id}
+              showLabel
+            />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" disabled={isDownloading}>

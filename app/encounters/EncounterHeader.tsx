@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteEncounter } from "@/app/actions/encounter";
+import { EntityReactions } from "@/components/EntityReactions";
 import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
 import { VisibilityBadge } from "@/components/shared/VisibilityBadge";
@@ -62,6 +63,11 @@ export function EncounterHeader({
             )}
           </div>
           <div className="flex gap-2 print:hidden">
+            <EntityReactions
+              entityType="encounter"
+              entityId={encounter.id}
+              showLabel
+            />
             {showEditDeleteButtons && (
               <>
                 <Button variant="outline" size="sm" asChild>

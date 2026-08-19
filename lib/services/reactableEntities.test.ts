@@ -15,11 +15,14 @@ vi.mock("@/lib/db/drizzle", () => ({
 
 import type { ReactableEntityType } from "@/lib/db/schema";
 import {
+  adventures,
   ancestries,
   backgrounds,
   classes,
+  collections,
   companions,
   customRules,
+  encounters,
   items,
   monsters,
   spellSchools,
@@ -42,6 +45,9 @@ describe("syncLikeCount", () => {
     ["background", backgrounds],
     ["ancestry", ancestries],
     ["customRule", customRules],
+    ["collection", collections],
+    ["adventure", adventures],
+    ["encounter", encounters],
   ];
 
   it.each(
@@ -74,6 +80,23 @@ describe("resolveEntities customRule", () => {
     const result = await resolveEntities("customRule", [ID]);
 
     expect(result.has(ID)).toBe(false);
+  });
+});
+
+describe.each([
+  ["collection", collections, "/collections/"],
+  ["adventure", adventures, "/adventures/"],
+  ["encounter", encounters, "/encounters/"],
+] as const)("resolveEntities %s", (entityType, table, path) => {
+  const ID = "11111111-1111-1111-1111-111111111111";
+
+  it("resolves ids to the canonical detail route", async () => {
+    mockSelectWhere.mockResolvedValue([{ id: ID, name: "Test Entity" }]);
+
+    const result = await resolveEntities(entityType, [ID]);
+
+    expect(mockFrom).toHaveBeenCalledWith(table);
+    expect(result.get(ID)?.url).toContain(path);
   });
 });
 

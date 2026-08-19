@@ -1,7 +1,13 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AdventureOverview } from "@/lib/db/adventures";
 import { AdventureList } from "./AdventureList";
+
+vi.mock("@/components/EntityReactions", () => ({
+  EntityReactions: ({ entityType }: { entityType: string }) => (
+    <button type="button">Like {entityType}</button>
+  ),
+}));
 
 afterEach(cleanup);
 
@@ -32,6 +38,9 @@ describe("AdventureList", () => {
       "/adventures/the-hidden-honey-cavern-00000000000000000000000001"
     );
     expect(screen.getByText("A sticky quest")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Like adventure" })
+    ).toBeInTheDocument();
   });
 
   it("renders an empty state", () => {
