@@ -1,6 +1,7 @@
 import { trace } from "@opentelemetry/api";
 import type { NextRequest } from "next/server";
 import type { EntityImageTheme } from "@/lib/db/schema";
+import { getEntityImageVersion } from "@/lib/entity-image-version";
 import { generateEntityImageWithStorage } from "@/lib/image-generation";
 import { getCompanionUrl, getItemUrl, getMonsterUrl } from "./utils/url";
 
@@ -41,7 +42,7 @@ export async function createImageResponse(
     });
 
     try {
-      const version = new Date(entity.updatedAt).getTime().toString();
+      const version = getEntityImageVersion(entity);
       const etag = `"${version}-${theme}"`;
 
       span.setAttributes({

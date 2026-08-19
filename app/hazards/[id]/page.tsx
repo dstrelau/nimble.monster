@@ -9,6 +9,7 @@ import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { Card } from "@/components/monster/Card";
 import { MonsterCollections } from "@/components/monster/MonsterCollections";
 import { auth } from "@/lib/auth";
+import { getEntityImageVersion } from "@/lib/entity-image-version";
 import {
   getPublicOrOwnedHazard,
   toHazardMonsterView,
@@ -45,7 +46,7 @@ export async function generateMetadata({
       url: getMonsterUrl(hazard),
       images: [
         {
-          url: `${getMonsterImageUrl(hazard)}?${hazard.updatedAt.getTime()}`,
+          url: `${getMonsterImageUrl(hazard)}?${getEntityImageVersion(hazard)}`,
           alt: hazard.name,
         },
       ],

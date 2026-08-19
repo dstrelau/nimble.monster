@@ -791,6 +791,7 @@ export const updateItem = async (
       rarity,
       visibility,
       sourceId: sourceId || null,
+      updatedAt: new Date().toISOString(),
     })
     .where(eq(items.id, id));
 

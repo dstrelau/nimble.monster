@@ -9,6 +9,7 @@ import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { Card } from "@/components/monster/Card";
 import { MonsterCollections } from "@/components/monster/MonsterCollections";
 import { auth } from "@/lib/auth";
+import { getEntityImageVersion } from "@/lib/entity-image-version";
 import { monstersService } from "@/lib/services/monsters";
 import { cn } from "@/lib/utils";
 import { SITE_NAME } from "@/lib/utils/branding";
@@ -41,6 +42,7 @@ export async function generateMetadata({
   const monsterInfo = [monster.legendary ? "Legendary" : "", monster.kind || ""]
     .filter(Boolean)
     .join(" ");
+  const imageUrl = `${getMonsterImageUrl(monster)}?${getEntityImageVersion(monster)}`;
 
   return {
     title: monster.name,
@@ -52,7 +54,7 @@ export async function generateMetadata({
       url: getMonsterUrl(monster),
       images: [
         {
-          url: `${getMonsterImageUrl(monster)}?${monster.updatedAt.getTime()}`,
+          url: imageUrl,
           alt: monster.name,
         },
       ],
@@ -61,7 +63,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: monster.name,
       description: `${monsterInfo}${creatorText}`,
-      images: [`/monsters/${monster.id}/image`],
+      images: [imageUrl],
     },
   };
 }

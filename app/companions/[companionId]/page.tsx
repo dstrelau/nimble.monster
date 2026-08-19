@@ -11,6 +11,7 @@ import {
   listConditionsForDiscordId,
   listOfficialConditions,
 } from "@/lib/db";
+import { getEntityImageVersion } from "@/lib/entity-image-version";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getCompanionImageUrl, getCompanionUrl } from "@/lib/utils/url";
@@ -36,6 +37,7 @@ export async function generateMetadata({
   const companionInfo = [companion.kind, companion.class]
     .filter(Boolean)
     .join(" ");
+  const imageUrl = `${getCompanionImageUrl(companion)}?${getEntityImageVersion(companion)}`;
 
   return {
     title: companion.name,
@@ -47,7 +49,7 @@ export async function generateMetadata({
       url: getCompanionUrl(companion),
       images: [
         {
-          url: `${getCompanionImageUrl(companion)}?${companion.updatedAt.getTime()}`,
+          url: imageUrl,
           alt: companion.name,
         },
       ],
@@ -56,9 +58,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: companion.name,
       description: `${companionInfo}${creatorText}`,
-      images: [
-        `${getCompanionImageUrl(companion)}?${companion.updatedAt.getTime()}`,
-      ],
+      images: [imageUrl],
     },
   };
 }

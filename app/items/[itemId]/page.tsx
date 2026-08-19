@@ -8,6 +8,7 @@ import { DetailActionBar } from "@/components/DetailActionBar";
 import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { Card } from "@/components/item/Card";
 import { auth } from "@/lib/auth";
+import { getEntityImageVersion } from "@/lib/entity-image-version";
 import { itemsService } from "@/lib/services/items";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
@@ -30,6 +31,7 @@ export async function generateMetadata({
 
   const creatorText = item.creator ? ` by ${item.creator.displayName}` : "";
   const itemInfo = item.kind || "Item";
+  const imageUrl = `${getItemImageUrl(item)}?${getEntityImageVersion(item)}`;
 
   return {
     title: item.name,
@@ -41,7 +43,7 @@ export async function generateMetadata({
       url: getItemUrl(item),
       images: [
         {
-          url: `${getItemImageUrl(item)}?${item.updatedAt.getTime()}`,
+          url: imageUrl,
           alt: item.name,
         },
       ],
@@ -50,7 +52,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: item.name,
       description: `${itemInfo}${creatorText}`,
-      images: [`${getItemImageUrl(item)}?${item.updatedAt.getTime()}`],
+      images: [imageUrl],
     },
   };
 }
