@@ -9,7 +9,7 @@ export const serverActionBaseline = {
     "app/actions/companion.ts": 4,
     "app/actions/conditions.ts": 4,
     "app/actions/encounter.ts": 5,
-    "app/actions/item.ts": 4,
+    "app/actions/item.ts": 2,
     "app/actions/monster.ts": 3,
     "app/actions/nav.ts": 1,
     "app/actions/reactions.ts": 2,

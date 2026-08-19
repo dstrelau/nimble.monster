@@ -7,6 +7,10 @@ import { useSession } from "next-auth/react";
 import { useId, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  createItem as createItemRoute,
+  updateItem as updateItemRoute,
+} from "@/app/%5Factions/_item/contract";
 import { BackdropPicker } from "@/app/items/BackdropPicker";
 import { ColorPicker } from "@/app/items/ColorPicker";
 import { IconPicker } from "@/app/items/IconPicker";
@@ -37,13 +41,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { call } from "@/lib/contract";
 import type { Item } from "@/lib/services/items";
 import { RARITIES } from "@/lib/services/items";
 import { ITEM_EXAMPLES } from "@/lib/services/items/examples";
 import { sourcesQueryOptions } from "@/lib/services/sources";
 import { UNKNOWN_USER } from "@/lib/types";
 import { getItemUrl } from "@/lib/utils/url";
-import { createItem, updateItem } from "../actions/item";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -171,17 +175,10 @@ export default function BuildItemView({
         ...(remixedFromId && { remixedFromId }),
       };
       const result = isEditing
-        ? await updateItem(item.id, payload)
-        : await createItem(payload);
+        ? await call(updateItemRoute, { id: item.id, input: payload })
+        : await call(createItemRoute, payload);
 
-      if (result.success && result.item) {
-        router.push(getItemUrl(result.item));
-      } else {
-        form.setError("root", {
-          message:
-            result.error || `Failed to ${isEditing ? "update" : "create"} item`,
-        });
-      }
+      router.push(getItemUrl(result));
     } catch (error) {
       form.setError("root", {
         message: `Error ${item?.id ? "updating" : "creating"} item: ${error instanceof Error ? error.message : String(error)}`,

@@ -2,9 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import type { ItemRarity } from "@/lib/services/items";
 import { itemsService } from "@/lib/services/items";
-import { getItemUrl } from "@/lib/utils/url";
 
 // export async function searchPublicItems(params: {
 //   creatorId?: string;
@@ -68,83 +66,6 @@ import { getItemUrl } from "@/lib/utils/url";
 //     };
 //   }
 // }
-
-export async function createItem(formData: {
-  name: string;
-  kind?: string;
-  description: string;
-  moreInfo?: string;
-  imageIcon?: string;
-  imageBgIcon?: string;
-  imageColor?: string;
-  imageBgColor?: string;
-  imageBackdrop?: string;
-  rarity?: ItemRarity;
-  visibility: "public" | "private";
-  sourceId?: string;
-}) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const item = await itemsService.createItem(
-      formData,
-      session.user.discordId
-    );
-
-    revalidatePath("/my/items");
-
-    return { success: true, item };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-}
-
-export async function updateItem(
-  itemId: string,
-  formData: {
-    name: string;
-    kind?: string;
-    description: string;
-    moreInfo?: string;
-    imageIcon?: string;
-    imageBgIcon?: string;
-    imageColor?: string;
-    imageBgColor?: string;
-    imageBackdrop?: string;
-    rarity?: ItemRarity;
-    visibility: "public" | "private";
-    sourceId?: string;
-  }
-) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const item = await itemsService.updateItem(
-      itemId,
-      formData,
-      session.user.discordId
-    );
-
-    revalidatePath(getItemUrl(item));
-    revalidatePath("/my/items");
-
-    return { success: true, item };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-}
 
 export async function findPublicItem(itemId: string) {
   try {
