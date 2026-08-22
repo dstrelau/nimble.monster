@@ -3,6 +3,14 @@ import puppeteer, { type Browser } from "puppeteer-core";
 let browser: Browser | null = null;
 let browserPromise: Promise<Browser> | null = null;
 
+interface BrowserConnection {
+  isConnected(): boolean;
+}
+
+export function isUsableBrowser(candidate: BrowserConnection | null): boolean {
+  return candidate?.isConnected() ?? false;
+}
+
 class Semaphore {
   private permits: number;
   private waiting: Array<() => void> = [];
@@ -43,7 +51,8 @@ export async function withRenderLimit<T>(fn: () => Promise<T>): Promise<T> {
 }
 
 export async function getBrowser(): Promise<Browser> {
-  if (browser) return browser;
+  if (browser && isUsableBrowser(browser)) return browser;
+  browser = null;
   if (browserPromise) return browserPromise;
 
   const executablePath =
@@ -63,8 +72,14 @@ export async function getBrowser(): Promise<Browser> {
   });
 
   try {
-    browser = await browserPromise;
-    return browser;
+    const launchedBrowser = await browserPromise;
+    browser = launchedBrowser;
+    launchedBrowser.once("disconnected", () => {
+      if (browser === launchedBrowser) {
+        browser = null;
+      }
+    });
+    return launchedBrowser;
   } finally {
     browserPromise = null;
   }

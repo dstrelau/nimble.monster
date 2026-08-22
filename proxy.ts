@@ -52,6 +52,17 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "")
   .filter(Boolean);
 
 const HTTP_METHOD_BODY_RE = /^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS) \//;
+const IMAGE_ROUTE_RE = /^\/(?:monsters|items|companions)\/[^/]+\/image$/;
+const BLOCKED_IMAGE_BOT_USER_AGENTS = [/ahrefsbot/i, /amazonbot/i, /bingbot/i];
+
+function isBlockedImageBot(request: NextRequest): boolean {
+  if (!IMAGE_ROUTE_RE.test(request.nextUrl.pathname)) return false;
+
+  const userAgent = request.headers.get("user-agent") ?? "";
+  return BLOCKED_IMAGE_BOT_USER_AGENTS.some((pattern) =>
+    pattern.test(userAgent)
+  );
+}
 
 function isAllowedServerActionOrigin(origin: string): boolean {
   try {
@@ -90,6 +101,13 @@ function isSameOriginBrowserRequest(request: NextRequest): boolean {
 }
 
 export default async function proxy(request: NextRequest) {
+  // These crawlers request every dynamic entity image, which triggers an
+  // expensive Chromium render. Keep regular users and social preview bots
+  // eligible to fetch images.
+  if (request.method === "GET" && isBlockedImageBot(request)) {
+    return new Response("Forbidden", { status: 403 });
+  }
+
   // Reject bot POSTs to page routes: require next-action header and a
   // matching origin (bots scrape next-action IDs but send spoofed origins,
   // causing Next.js "Invalid Server Actions request" 500s).

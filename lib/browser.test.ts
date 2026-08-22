@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer-core";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getBrowser } from "./browser";
+import { getBrowser, isUsableBrowser } from "./browser";
 
 vi.mock("puppeteer-core", () => ({
   default: {
@@ -22,5 +22,13 @@ describe("getBrowser", () => {
     await expect(getBrowser()).rejects.toThrow("second launch failed");
 
     expect(puppeteer.launch).toHaveBeenCalledTimes(2);
+  });
+
+  it("identifies disconnected browsers", () => {
+    const connected = { isConnected: () => true };
+    const disconnected = { isConnected: () => false };
+
+    expect(isUsableBrowser(connected)).toBe(true);
+    expect(isUsableBrowser(disconnected)).toBe(false);
   });
 });
