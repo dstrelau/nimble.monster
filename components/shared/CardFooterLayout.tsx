@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 
 interface CardFooterLayoutProps {
   creator?: User;
+  attributionSize?: React.ComponentProps<typeof Attribution>["size"];
   source?: Source;
   awards?: Award[];
   hideActions?: boolean;
@@ -21,6 +22,7 @@ interface CardFooterLayoutProps {
 
 export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
   creator,
+  attributionSize = "default",
   source,
   awards = [],
   hideActions = false,
@@ -36,7 +38,11 @@ export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
       <CardFooter className={cn("flex-col items-stretch", className)}>
         <div className="flex items-center justify-between gap-2">
           {creator ? (
-            <Attribution user={creator} disableLink={disableLink} />
+            <Attribution
+              user={creator}
+              size={attributionSize}
+              disableLink={disableLink}
+            />
           ) : (
             <div />
           )}

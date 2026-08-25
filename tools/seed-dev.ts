@@ -6,6 +6,11 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { eq } from "drizzle-orm";
+import {
+  ITEM_BACKDROP_FIXTURES,
+  ITEM_CONTENT_FIXTURES,
+  ITEM_RARITY_FIXTURES,
+} from "@/app/dev/entities/items/fixtures";
 import { createCollection } from "@/lib/db/collection";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
@@ -104,6 +109,38 @@ async function seedDevMonsters(): Promise<string[]> {
   return createdIds;
 }
 
+async function seedDevItems(): Promise<number> {
+  const db = await getDatabase();
+  const fixtureItems = [
+    ...ITEM_RARITY_FIXTURES.map(({ item }) => item),
+    ...ITEM_BACKDROP_FIXTURES.map(({ item }) => item),
+    ...ITEM_CONTENT_FIXTURES.map(({ item }) => item),
+  ];
+
+  await db
+    .insert(items)
+    .values(
+      fixtureItems.map((item) => ({
+        id: item.id,
+        name: item.name,
+        kind: item.kind,
+        description: item.description,
+        moreInfo: item.moreInfo,
+        rarity: item.rarity,
+        visibility: item.visibility,
+        userId: DEV_USER.id,
+        imageIcon: item.imageIcon,
+        imageBgIcon: item.imageBgIcon,
+        imageColor: item.imageColor,
+        imageBgColor: item.imageBgColor,
+        imageBackdrop: item.imageBackdrop,
+      }))
+    )
+    .onConflictDoNothing();
+
+  return fixtureItems.length;
+}
+
 export async function seedDevData(): Promise<void> {
   if (process.env.NODE_ENV === "production") {
     console.log("Skipping dev user seed (NODE_ENV=production).");
@@ -146,6 +183,8 @@ export async function seedDevData(): Promise<void> {
     })
     .onConflictDoNothing();
 
+  const fixtureItemCount = await seedDevItems();
+
   const existing = await db
     .select({ id: monsters.id })
     .from(monsters)
@@ -179,7 +218,9 @@ export async function seedDevData(): Promise<void> {
     console.log('  "dev" already owns content — leaving it untouched');
   }
 
-  console.log('  ensured 1 magic-item-only collection owned by "dev"');
+  console.log(
+    `  ensured ${fixtureItemCount + 1} varied items + 1 magic-item-only collection owned by "dev"`
+  );
 
   console.log(
     'Dev users ready. Log in via /api/auth?dev-login&username=dev (or =admin).'

@@ -6,6 +6,111 @@
 
 @tailwind utilities;
 
+.item-card-print-sheet {
+    --background: #faf5ea;
+    --foreground: #3a3226;
+    --border: #e2d7c1;
+    --card: #fffdf8;
+    --card-foreground: #241f18;
+    --muted: #f4ede0;
+    --muted-foreground: #8a7a60;
+    --primary: #b1490f;
+    --accent: #f4ecda;
+    --accent-foreground: #241f18;
+    box-sizing: border-box;
+    align-content: start;
+    justify-content: start;
+    color: var(--foreground);
+}
+
+.item-card-print-sheet[data-active="false"] {
+    display: none;
+}
+
+.item-card-print-placeholder {
+    box-sizing: border-box;
+    border: 0.2mm dashed #b8aa90;
+    background: #faf8f3;
+}
+
+.item-card-print-frame > [data-slot="card"] {
+    border: 0.2mm solid #3a3226;
+    background: #fff;
+    color: #241f18;
+}
+
+.item-card-print-frame > [data-slot="card"][data-rarity="common"] {
+    border-top: 1mm solid #8a7a60;
+}
+
+.item-card-print-frame > [data-slot="card"][data-rarity="uncommon"] {
+    border-top: 1mm solid #15803d;
+}
+
+.item-card-print-frame > [data-slot="card"][data-rarity="rare"] {
+    border-top: 1mm solid #3730a3;
+}
+
+.item-card-print-frame > [data-slot="card"][data-rarity="very_rare"] {
+    border-top: 1mm solid #a78bfa;
+}
+
+.item-card-print-frame > [data-slot="card"][data-rarity="legendary"] {
+    border-top: 1mm solid #b45309;
+}
+
+.item-card-print-frame > [data-slot="card"]::before {
+    inset: 0.8mm;
+}
+
+.item-card-print-frame > [data-slot="card"] > [data-slot="separator"] {
+    margin-top: auto;
+}
+
+@media print {
+    body:has(.item-card-printer) {
+        background: white !important;
+    }
+
+    body:has(.item-card-printer) > :not(main),
+    .item-card-printer .printer-controls,
+    .item-card-printer .printer-picker,
+    .item-card-printer .item-card-print-placeholder {
+        display: none !important;
+    }
+
+    body:has(.item-card-printer) main {
+        width: auto;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .item-card-printer,
+    .item-card-printer .printer-preview {
+        margin: 0;
+        padding: 0;
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        background: white;
+    }
+
+    .item-card-printer .item-card-print-sheet {
+        display: grid;
+        margin: 0;
+        box-shadow: none;
+        break-after: page;
+        break-inside: avoid;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .item-card-printer .item-card-print-sheet:last-child {
+        break-after: auto;
+    }
+}
+
 @theme {
     --color-success: var(--color-emerald-600);
     --color-success-foreground: var(--color-neutral-900);

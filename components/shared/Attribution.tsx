@@ -10,6 +10,11 @@ const SIZE_SETTINGS = {
     avatarSize: 24,
     textClass: "text-sm font-bold",
   },
+  print: {
+    gap: "gap-[0.3rem]",
+    avatarSize: 14.4,
+    textClass: "text-[0.525rem] font-bold",
+  },
   "4xl": {
     gap: "gap-2",
     avatarSize: 42,
@@ -41,7 +46,11 @@ export const Attribution = ({
       )}
     </>
   );
-  const sharedClassName = clsx("flex items-center", settings.gap, className);
+  const sharedClassName = clsx(
+    "entity-attribution flex items-center",
+    settings.gap,
+    className
+  );
 
   if (disableLink) {
     return <span className={sharedClassName}>{content}</span>;

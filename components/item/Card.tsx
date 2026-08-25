@@ -73,6 +73,7 @@ interface CardProps {
   noInteractive?: boolean;
   hideActions?: boolean;
   hideDescription?: boolean;
+  compact?: boolean;
   className?: string;
   selectable?: boolean;
   selected?: boolean;
@@ -86,6 +87,7 @@ export const Card = ({
   noInteractive = false,
   hideActions = false,
   hideDescription = false,
+  compact = false,
   className,
   selectable = false,
   selected = false,
@@ -119,9 +121,11 @@ export const Card = ({
       className={cn(
         "relative py-0 h-fit",
         RARITY_CARD_CLASSES[item.rarity],
+        compact && "gap-1 pt-2 pb-1 text-xs",
         className,
         selectable && selected && "ring-2 ring-amber-500"
       )}
+      data-rarity={item.rarity}
       id={selectable ? undefined : `item-${item.id}`}
       onClickCapture={noInteractive ? preventNonDiceInteraction : undefined}
       {...(selectable && selected && { "data-selected": "" })}
@@ -133,26 +137,35 @@ export const Card = ({
         </>
       )}
       {(item.imageIcon || item.imageBgIcon) && (
-        <div className="relative flex flex-col items-center pt-2 -mb-5">
+        <div
+          className={cn(
+            "relative flex flex-col items-center pt-2 -mb-5",
+            compact && "pt-1 -mb-4"
+          )}
+        >
           <ItemImageStage
             backdrop={backdrop}
             imageIcon={item.imageIcon}
             imageBgIcon={item.imageBgIcon}
             imageColor={imageColor}
             imageBgColor={imageBgColor}
+            size={compact ? "print" : "default"}
           />
         </div>
       )}
       <CardHeader
         className={cn(
           "relative z-10 text-center gap-0",
-          !(item.imageIcon || item.imageBgIcon) && "pt-8 pb-4"
+          !(item.imageIcon || item.imageBgIcon) && "pt-8 pb-4",
+          compact && "px-2",
+          compact && !(item.imageIcon || item.imageBgIcon) && "pt-3 pb-1"
         )}
       >
         {getRarityLabel(item.rarity) && (
           <div
             className={cn(
               "font-slab text-sm font-extrabold tracking-widest text-muted-foreground uppercase",
+              compact && "text-[0.625rem]",
               RARITY_TEXT_CLASSES[item.rarity]
             )}
           >
@@ -160,7 +173,12 @@ export const Card = ({
           </div>
         )}
         <CardTitle>
-          <h2 className={cn("font-slab", "font-black text-2xl leading-tight")}>
+          <h2
+            className={cn(
+              "font-slab font-black text-2xl leading-tight",
+              compact && "text-base"
+            )}
+          >
             {!selectable && link && !noInteractive && item.id ? (
               <Link href={getItemUrl(item)}>{item.name}</Link>
             ) : (
@@ -169,7 +187,9 @@ export const Card = ({
           </h2>
         </CardTitle>
         {item.kind && (
-          <CardDescription className="font-sans text-md italic">
+          <CardDescription
+            className={cn("font-sans text-md italic", compact && "text-xs")}
+          >
             {item.kind}
           </CardDescription>
         )}
@@ -179,6 +199,7 @@ export const Card = ({
         <CardContent
           className={cn(
             "flex flex-col gap-3 relative z-10",
+            compact && "gap-1 px-2 text-xs leading-snug",
             selectable && "pointer-events-none"
           )}
         >
@@ -201,10 +222,15 @@ export const Card = ({
 
       <CardFooterLayout
         creator={creator}
+        attributionSize={compact ? "print" : "default"}
         source={item.source}
         awards={item.awards}
         hideActions={selectable || hideActions || noInteractive}
-        className={cn("pb-4", selectable && "pointer-events-none")}
+        className={cn(
+          "pb-4",
+          compact && "px-2 pb-1 text-[0.625rem]",
+          selectable && "pointer-events-none"
+        )}
         disableLink={noInteractive}
         reactionsSlot={
           item.id && <EntityReactions entityType="item" entityId={item.id} />

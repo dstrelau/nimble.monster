@@ -14,15 +14,20 @@ interface ItemImageStageProps {
   imageBgIcon?: string;
   imageColor?: string;
   imageBgColor?: string;
-  size?: "default" | "sm";
+  size?: "default" | "print" | "sm";
   className?: string;
 }
 
 const SIZE_CLASSES: Record<
-  "default" | "sm",
+  "default" | "print" | "sm",
   { stage: string; icon: string; bgIcon: string }
 > = {
   default: { stage: "size-64", icon: "size-32", bgIcon: "size-64" },
+  print: {
+    stage: "aspect-square w-full max-w-56",
+    icon: "h-1/2 w-1/2",
+    bgIcon: "size-full",
+  },
   sm: { stage: "size-16", icon: "size-9", bgIcon: "size-16" },
 };
 
@@ -50,10 +55,11 @@ const MOTE_POSITIONS: {
 ];
 
 const MOTE_SIZE_CLASSES: Record<
-  "default" | "sm",
+  "default" | "print" | "sm",
   Record<"sm" | "md" | "lg", string>
 > = {
   default: { sm: "size-2", md: "size-2.5", lg: "size-3" },
+  print: { sm: "size-2", md: "size-2.5", lg: "size-3" },
   sm: { sm: "size-1", md: "size-1.5", lg: "size-2" },
 };
 
