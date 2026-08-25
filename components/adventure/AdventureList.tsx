@@ -1,6 +1,14 @@
-import Link from "next/link";
 import { EntityReactions } from "@/components/EntityReactions";
+import { Link } from "@/components/layout/Link";
+import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
 import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { AdventureOverview } from "@/lib/db/adventures";
 import { getAdventureUrl } from "@/lib/utils/url";
 
@@ -22,37 +30,40 @@ export function AdventureList({
   return (
     <div className="grid items-start gap-6 md:grid-cols-2 lg:grid-cols-3">
       {adventures.map((adventure) => (
-        <div
-          key={adventure.id}
-          className="rounded-lg border bg-card text-card-foreground shadow-sm"
-        >
-          <Link
-            href={getAdventureUrl(adventure)}
-            className="group block p-5 transition-colors hover:bg-accent"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <h2 className="font-slab text-xl font-bold group-hover:underline">
-                {adventure.name}
+        <Card key={adventure.id}>
+          <CardHeader>
+            <CardTitle className="font-slab text-xl font-bold">
+              <h2>
+                <Link href={getAdventureUrl(adventure)}>{adventure.name}</Link>
               </h2>
-              <Badge variant="outline" className="shrink-0">
-                {adventure.visibility === "public" ? "Public" : "Private"}
-              </Badge>
-            </div>
+            </CardTitle>
             {adventure.tagline && (
-              <p className="mt-2 text-sm italic text-muted-foreground">
+              <CardDescription className="italic">
                 {adventure.tagline}
-              </p>
+              </CardDescription>
             )}
-            {adventure.summary && (
-              <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">
+          </CardHeader>
+          {adventure.summary && (
+            <CardContent>
+              <p className="line-clamp-3 text-sm text-muted-foreground">
                 {adventure.summary}
               </p>
-            )}
-          </Link>
-          <div className="flex justify-end px-5 pb-4">
-            <EntityReactions entityType="adventure" entityId={adventure.id} />
-          </div>
-        </div>
+            </CardContent>
+          )}
+          <CardFooterLayout
+            creator={adventure.creator}
+            reactionsSlot={
+              <EntityReactions entityType="adventure" entityId={adventure.id} />
+            }
+            actionsSlot={
+              adventure.visibility === "private" && (
+                <Badge variant="default" className="h-6">
+                  Private
+                </Badge>
+              )
+            }
+          />
+        </Card>
       ))}
     </div>
   );
