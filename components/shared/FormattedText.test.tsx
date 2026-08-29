@@ -313,7 +313,8 @@ describe("FormattedText - Dice Notation", () => {
   it("should parse normal dice notation", () => {
     render(<FormattedText content="Roll 1d20n+3." conditions={[]} />);
 
-    expect(screen.getByText("1d20+3 (Normal)")).toBeInTheDocument();
+    expect(screen.getByText("1d20+3")).toBeInTheDocument();
+    expect(screen.queryByText(/Normal/)).not.toBeInTheDocument();
   });
 
   it("should parse compound dice notation", () => {

@@ -110,7 +110,6 @@ function DiceDrawer({ diceText }: { diceText: string }) {
                 : parsed.modifier < 0
                   ? `${parsed.modifier}`
                   : ""}
-              {parsed.normal && " (Normal)"}
               {parsed.vicious && " (Vicious)"}
               {parsed.advantage === 1
                 ? " ADV"
