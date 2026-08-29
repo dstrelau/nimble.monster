@@ -310,6 +310,20 @@ describe("FormattedText - Dice Notation", () => {
     expect(container).toHaveTextContent("4d10 (Vicious)");
   });
 
+  it("should parse normal dice notation", () => {
+    render(<FormattedText content="Roll 1d20n+3." conditions={[]} />);
+
+    expect(screen.getByText("1d20+3 (Normal)")).toBeInTheDocument();
+  });
+
+  it("should parse compound dice notation", () => {
+    render(
+      <FormattedText content="Deal 1d20+1d10+3 damage." conditions={[]} />
+    );
+
+    expect(screen.getByText("1d20+1d10+3")).toBeInTheDocument();
+  });
+
   it("should parse multiple dice notations in one text", () => {
     const content = "Attack 1d6 and defend with 2d8+2.";
 

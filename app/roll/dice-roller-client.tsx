@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   calculateAverageDamageOnHit,
+  calculateMissProbability,
   calculateProbabilityDistribution,
   calculateTotalAverageDamage,
   type ProbabilityDistribution,
@@ -110,7 +111,7 @@ export function DiceRollerClient({ initialDice }: Props) {
       setErrorMessage(null);
       setLastValidDice(diceNotation);
       const distribution = calculateProbabilityDistribution(diceRoll);
-      const average = calculateAverageDamageOnHit(distribution);
+      const average = calculateAverageDamageOnHit(distribution, diceRoll);
       const totalAverage = calculateTotalAverageDamage(distribution);
       setAverageRoll(average);
       setTotalAverageRoll(totalAverage);
@@ -121,10 +122,13 @@ export function DiceRollerClient({ initialDice }: Props) {
     }
   }, [diceNotation]);
 
-  const missProbability = probabilities.get(0) || 0;
+  const parsedDice = parseDiceNotation(lastValidDice);
+  const missProbability = parsedDice
+    ? calculateMissProbability(probabilities, parsedDice)
+    : 0;
 
   const filteredProbabilities = Array.from(probabilities.entries())
-    .filter(([r, p]) => r > 0 && p > 0.005)
+    .filter(([r, p]) => p > 0.005 && (parsedDice?.normal === true || r > 0))
     .sort(([_, a], [__, b]) => b - a)
     .sort(([a], [b]) => a - b);
 
@@ -199,6 +203,12 @@ export function DiceRollerClient({ initialDice }: Props) {
                           the lowest. E.g. <code>3d6d2-1</code>
                         </li>
                         <li>
+                          <code>n</code> — <strong>Normal:</strong> disable
+                          misses and exploding critical hits. Cannot be combined
+                          with <code>v</code> or <code>^N</code>. E.g.{" "}
+                          <code>3d6n+2</code>
+                        </li>
+                        <li>
                           <code>^N</code> / <code>^-N</code> —{" "}
                           <strong>Primary modifier:</strong> shift the primary
                           die&apos;s effective value, changing miss and crit
@@ -206,6 +216,11 @@ export function DiceRollerClient({ initialDice }: Props) {
                           rolls 4–6 crit)
                         </li>
                       </ul>
+                      <p>
+                        <strong>Compound rolls</strong> such as{" "}
+                        <code>1d20+1d10+3</code> are always normal and cannot
+                        use special flags.
+                      </p>
                     </div>
                   </DialogDescription>
                 </DialogHeader>
@@ -289,7 +304,8 @@ export function DiceRollerClient({ initialDice }: Props) {
               >
                 {barsToDisplay.map(([outcome, probability], index) => {
                   const height = Math.max(1, probability * scaleFactor);
-                  const isGap = index === 0 && outcome === 0;
+                  const isGap =
+                    missProbability > 0 && index === 0 && outcome === 0;
                   const xOffset = isGap ? 0 : index * 42 + 12 + 24;
 
                   return (

@@ -209,7 +209,7 @@ function diceNotationPlugin(md: MarkdownIt) {
     Token: any
   ) {
     const diceRegex =
-      /(\d+d\d+(?:[vad]\d*)?(?:[+-]\d+)?|d(?:44|66|88)(?:[ad]\d*)?)/gi;
+      /(\d+d\d+(?:(?:[vadn]\d*)+)?(?:\^-?\d+)?(?:\+\d+d\d+)*(?:[+-]\d+)?|d(?:44|66|88)(?:[ad]\d*)?)/gi;
     const result = [];
     let lastIndex = 0;
 

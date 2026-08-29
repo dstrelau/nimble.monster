@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SITE_NAME } from "@/lib/utils/branding";
 import {
   calculateAverageDamageOnHit,
+  calculateMissProbability,
   calculateProbabilityDistribution,
   calculateTotalAverageDamage,
   type DiceRoll,
@@ -25,9 +26,9 @@ export async function generateMetadata({
     }
     if (diceRoll) {
       const distribution = calculateProbabilityDistribution(diceRoll);
-      const avgOnHit = calculateAverageDamageOnHit(distribution);
+      const avgOnHit = calculateAverageDamageOnHit(distribution, diceRoll);
       const totalAvg = calculateTotalAverageDamage(distribution);
-      const missProbability = distribution.get(0) || 0;
+      const missProbability = calculateMissProbability(distribution, diceRoll);
 
       const title = `Dice Roller - ${SITE_NAME}`;
       const description = `${dice}\nAvg ${totalAvg.toFixed(1)} (${avgOnHit.toFixed(1)} on hit)\n${(100 * missProbability).toFixed(1)}% miss`;

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/tooltip";
 import {
   calculateAverageDamageOnHit,
+  calculateMissProbability,
   calculateProbabilityDistribution,
   parseDiceNotation,
 } from "@/lib/dice";
@@ -30,19 +31,24 @@ const ActionRow: React.FC<ActionRowProps> = ({
   onChange,
   onRemove,
 }) => {
-  const distribution = useMemo(() => {
+  const rollStats = useMemo(() => {
     if (!action.damage || !showDamage) return null;
     const diceRoll = parseDiceNotation(action.damage);
     if (!diceRoll) return null;
     const distribution = calculateProbabilityDistribution(diceRoll);
-    return distribution;
+    return { diceRoll, distribution };
   }, [action.damage, showDamage]);
 
   let avgDamage: number | undefined;
   let missPercent: number | undefined;
-  if (distribution) {
-    avgDamage = calculateAverageDamageOnHit(distribution);
-    missPercent = 100 * (distribution.get(0) || 0);
+  if (rollStats) {
+    avgDamage = calculateAverageDamageOnHit(
+      rollStats.distribution,
+      rollStats.diceRoll
+    );
+    missPercent =
+      100 *
+      calculateMissProbability(rollStats.distribution, rollStats.diceRoll);
   }
 
   return (

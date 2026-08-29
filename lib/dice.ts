@@ -5,8 +5,9 @@
  *
  * NOTATION FORMAT:
  * - Basic: XdY+Z where X = number of dice, Y = die size, Z = modifier
- * - Flags can be added after dY: v (vicious), a/aN (advantage), d/dN (disadvantage)
- * - Examples: "3d6+2", "1d8v", "2d20a", "3d6d2-1"
+ * - Flags can be added after dY: v (vicious), a/aN (advantage), d/dN (disadvantage), n (normal)
+ * - Compound rolls add differently sized pools; they are always normal
+ * - Examples: "3d6+2", "1d8v", "2d20a", "3d6d2-1", "1d20n", "1d20+1d10"
  *
  * PRIMARY DIE RULES:
  * The "primary die" is the first (leftmost) kept die after advantage/disadvantage.
@@ -48,6 +49,11 @@ const MAX_ADVANTAGE_DISADVANTAGE = 7;
 
 export const VALID_DIE_SIZES = [4, 6, 8, 10, 12, 20, 44, 66, 88] as const;
 
+type DicePool = {
+  numDice: number;
+  dieSize: number;
+};
+
 export type DiceRoll = {
   numDice: number;
   dieSize: number;
@@ -57,6 +63,8 @@ export type DiceRoll = {
   advantage: number;
   disadvantage: number;
   tensOnes: boolean;
+  normal?: true;
+  additionalDice?: DicePool[];
 };
 
 export type ProbabilityDistribution = Map<number, number>;
@@ -98,6 +106,48 @@ function selectKeptDice(
 
 export function parseDiceNotation(notation: string): DiceRoll | null {
   const trimmed = notation.trim().toLowerCase();
+
+  // Compound rolls contain at least two plain dice pools and may end with a
+  // numeric modifier. They are normal rolls: no pool has a primary die.
+  const compoundMatch = trimmed.match(
+    /^((?:\d+d\d+\+)+\d+d\d+)(?:([+-])(\d+))?$/
+  );
+  if (compoundMatch) {
+    const dicePools = compoundMatch[1].split("+").map((term) => {
+      const [numDice, dieSize] = term.split("d").map(Number);
+      return { numDice, dieSize };
+    });
+
+    if (
+      dicePools.some(
+        ({ numDice, dieSize }) =>
+          numDice <= 0 ||
+          !(VALID_DIE_SIZES as readonly number[]).includes(dieSize) ||
+          dieSize === 44 ||
+          dieSize === 66 ||
+          dieSize === 88
+      )
+    ) {
+      return null;
+    }
+
+    let modifier = compoundMatch[3] ? Number.parseInt(compoundMatch[3], 10) : 0;
+    if (compoundMatch[2] === "-") {
+      modifier = -modifier;
+    }
+
+    return {
+      ...dicePools[0],
+      modifier,
+      primaryMod: 0,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 0,
+      tensOnes: false,
+      normal: true,
+      additionalDice: dicePools.slice(1),
+    };
+  }
 
   // Check for tensOnes notation: d44, d66, d88
   const tensOnesMatch = trimmed.match(/^d(44|66|88)([ad]\d*)?$/);
@@ -148,7 +198,7 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
 
   // Standard dice notation
   // Groups: 1=numDice 2=dieSize 3=flags 4=primaryMod sign 5=primaryMod digits 6=modifier sign 7=modifier digits
-  const diceRegex = /^(\d+)d(\d+)([vad\d]+)?(?:\^(-?)(\d+))?(?:([+-])(\d+))?$/;
+  const diceRegex = /^(\d+)d(\d+)([vadn\d]+)?(?:\^(-?)(\d+))?(?:([+-])(\d+))?$/;
   const match = trimmed.match(diceRegex);
 
   if (!match) {
@@ -173,9 +223,11 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
   let vicious = false;
   let advantage = 0;
   let disadvantage = 0;
+  let normal = false;
 
   if (flags) {
     vicious = flags.includes("v");
+    normal = flags.includes("n");
     const advantageMatch = flags.match(/a(\d+)?/);
     if (advantageMatch) {
       advantage = advantageMatch[1]
@@ -214,6 +266,10 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
     return null;
   }
 
+  if (normal && (vicious || primaryMod !== 0)) {
+    return null;
+  }
+
   if (
     advantage >= MAX_ADVANTAGE_DISADVANTAGE ||
     disadvantage >= MAX_ADVANTAGE_DISADVANTAGE
@@ -221,7 +277,7 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
     return null;
   }
 
-  return {
+  const result: DiceRoll = {
     numDice,
     dieSize,
     modifier,
@@ -231,6 +287,12 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
     disadvantage,
     tensOnes: false,
   };
+
+  if (normal) {
+    result.normal = true;
+  }
+
+  return result;
 }
 
 function primaryDie(
@@ -464,6 +526,34 @@ function calculateAdvantageDistribution(
   return result;
 }
 
+function calculateNormalAdvantageDistribution(
+  numDice: number,
+  dieSize: number,
+  advantage: number,
+  disadvantage: number
+): ProbabilityDistribution {
+  const extraDice = advantage > 0 ? advantage : disadvantage;
+  const totalDice = numDice + extraDice;
+  const result: ProbabilityDistribution = new Map();
+
+  generateAllOutcomes(totalDice, dieSize, (currentRolls) => {
+    const indexedRolls = currentRolls.map((value, index) => ({ value, index }));
+    const { keptIndices } = selectKeptDice(
+      indexedRolls,
+      numDice,
+      advantage > 0
+    );
+    const total = keptIndices.reduce(
+      (sum, index) => sum + indexedRolls[index].value,
+      0
+    );
+    const probability = (1 / dieSize) ** totalDice;
+    result.set(total, (result.get(total) || 0) + probability);
+  });
+
+  return result;
+}
+
 // Calculate the distribution of an exploding die that starts with max value
 // Returns distribution of (max + explosion outcomes + vicious dice if applicable)
 // With vicious, adds one extra die for each max roll in the explosion chain
@@ -561,12 +651,31 @@ export function calculateProbabilityDistribution(
     advantage,
     disadvantage,
     tensOnes,
+    normal,
+    additionalDice = [],
   } = diceRoll;
 
   let result: ProbabilityDistribution;
 
   if (tensOnes) {
     result = calculateTensOnesDistribution(dieSize, advantage, disadvantage);
+  } else if (normal) {
+    result =
+      advantage > 0 || disadvantage > 0
+        ? calculateNormalAdvantageDistribution(
+            numDice,
+            dieSize,
+            advantage,
+            disadvantage
+          )
+        : regularDiceDistribution(numDice, dieSize);
+
+    for (const pool of additionalDice) {
+      result = combineProbabilityDistributions(
+        result,
+        regularDiceDistribution(pool.numDice, pool.dieSize)
+      );
+    }
   } else if (advantage > 0 || disadvantage > 0) {
     result = calculateAdvantageDistribution(
       numDice,
@@ -595,9 +704,10 @@ export function calculateProbabilityDistribution(
 }
 
 export function calculateAverageDamageOnHit(
-  distribution: ProbabilityDistribution
+  distribution: ProbabilityDistribution,
+  diceRoll?: DiceRoll
 ): number {
-  const missP = distribution.get(0) || 0;
+  const missP = calculateMissProbability(distribution, diceRoll);
   const hitP = 1 - missP;
 
   // If there's no miss possibility (like tensOnes dice), return total average
@@ -613,6 +723,13 @@ export function calculateAverageDamageOnHit(
   }
 
   return sum;
+}
+
+export function calculateMissProbability(
+  distribution: ProbabilityDistribution,
+  diceRoll?: DiceRoll
+): number {
+  return diceRoll?.normal ? 0 : distribution.get(0) || 0;
 }
 
 export function calculateTotalAverageDamage(
@@ -870,6 +987,68 @@ function simulateAdvantageRoll(
   return { results, total };
 }
 
+function simulateNormalRoll(
+  numDice: number,
+  dieSize: number,
+  advantage: number,
+  disadvantage: number,
+  additionalDice: DicePool[]
+): { results: DieResult[]; total: number } {
+  const results: DieResult[] = [];
+  let total = 0;
+  const extraDice = advantage > 0 ? advantage : disadvantage;
+  const totalDice = numDice + extraDice;
+  const firstPool = Array.from({ length: totalDice }, (_, index) => ({
+    value: Math.floor(Math.random() * dieSize) + 1,
+    index,
+  }));
+
+  if (extraDice > 0) {
+    const { keptIndices } = selectKeptDice(firstPool, numDice, advantage > 0);
+    const keptSet = new Set(keptIndices);
+    for (const die of firstPool) {
+      const kept = keptSet.has(die.index);
+      if (kept) {
+        total += die.value;
+      }
+      results.push({
+        value: die.value,
+        dieSize,
+        type: kept ? "regular" : "dropped",
+        isCrit: false,
+        isMiss: false,
+      });
+    }
+  } else {
+    for (const die of firstPool) {
+      total += die.value;
+      results.push({
+        value: die.value,
+        dieSize,
+        type: "regular",
+        isCrit: false,
+        isMiss: false,
+      });
+    }
+  }
+
+  for (const pool of additionalDice) {
+    for (let i = 0; i < pool.numDice; i++) {
+      const value = Math.floor(Math.random() * pool.dieSize) + 1;
+      total += value;
+      results.push({
+        value,
+        dieSize: pool.dieSize,
+        type: "regular",
+        isCrit: false,
+        isMiss: false,
+      });
+    }
+  }
+
+  return { results, total };
+}
+
 function simulateStandardRoll(
   numDice: number,
   dieSize: number,
@@ -946,6 +1125,8 @@ export function simulateRoll(diceRoll: DiceRoll): RollResult {
     advantage,
     disadvantage,
     tensOnes,
+    normal,
+    additionalDice = [],
   } = diceRoll;
 
   let results: DieResult[];
@@ -956,6 +1137,14 @@ export function simulateRoll(diceRoll: DiceRoll): RollResult {
       dieSize,
       advantage,
       disadvantage
+    ));
+  } else if (normal) {
+    ({ results, total } = simulateNormalRoll(
+      numDice,
+      dieSize,
+      advantage,
+      disadvantage,
+      additionalDice
     ));
   } else if (advantage > 0 || disadvantage > 0) {
     ({ results, total } = simulateAdvantageRoll(
@@ -975,7 +1164,7 @@ export function simulateRoll(diceRoll: DiceRoll): RollResult {
     ));
   }
 
-  if (total > 0) {
+  if (normal || total > 0) {
     total += modifier;
   }
 

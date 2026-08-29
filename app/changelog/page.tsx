@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "29 August 2026",
+    entries: [
+      "Dice notation now supports non-attack rolls (1d20n) and better supports multiple different dice (1d20+1d10).",
+    ],
+  },
+  {
     date: "31 July 2026",
     entries: [
       "Encounter monster counts can now be static or expressed as a per-hero ratio.",

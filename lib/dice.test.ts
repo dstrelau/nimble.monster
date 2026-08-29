@@ -1,5 +1,11 @@
-import { describe, expect, it } from "vitest";
-import { calculateProbabilityDistribution, parseDiceNotation } from "./dice";
+import { describe, expect, it, vi } from "vitest";
+import {
+  calculateAverageDamageOnHit,
+  calculateMissProbability,
+  calculateProbabilityDistribution,
+  parseDiceNotation,
+  simulateRoll,
+} from "./dice";
 
 describe("parseDiceNotation", () => {
   it("parses basic dice notation", () => {
@@ -115,6 +121,55 @@ describe("parseDiceNotation", () => {
   it("accepts advantage/disadvantage up to 6", () => {
     expect(parseDiceNotation("1d6a6")).not.toBeNull();
     expect(parseDiceNotation("1d6d6")).not.toBeNull();
+  });
+
+  it("parses normal dice notation", () => {
+    expect(parseDiceNotation("3d6n+2")).toEqual({
+      numDice: 3,
+      dieSize: 6,
+      modifier: 2,
+      primaryMod: 0,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 0,
+      tensOnes: false,
+      normal: true,
+    });
+    expect(parseDiceNotation("1d20na")).toMatchObject({
+      normal: true,
+      advantage: 1,
+    });
+  });
+
+  it("rejects normal rolls with critical-only flags", () => {
+    expect(parseDiceNotation("1d6nv")).toBeNull();
+    expect(parseDiceNotation("1d6n^2")).toBeNull();
+  });
+
+  it("parses compound rolls as normal", () => {
+    expect(parseDiceNotation("1d20+1d10+3")).toEqual({
+      numDice: 1,
+      dieSize: 20,
+      modifier: 3,
+      primaryMod: 0,
+      vicious: false,
+      advantage: 0,
+      disadvantage: 0,
+      tensOnes: false,
+      normal: true,
+      additionalDice: [{ numDice: 1, dieSize: 10 }],
+    });
+    expect(parseDiceNotation("2d6+1d8-2")).toMatchObject({
+      modifier: -2,
+      additionalDice: [{ numDice: 1, dieSize: 8 }],
+    });
+  });
+
+  it("rejects flags and invalid die sizes in compound rolls", () => {
+    expect(parseDiceNotation("1d20v+1d10")).toBeNull();
+    expect(parseDiceNotation("1d20+1d10a")).toBeNull();
+    expect(parseDiceNotation("1d20n+1d10")).toBeNull();
+    expect(parseDiceNotation("1d20+1d7")).toBeNull();
   });
 });
 
@@ -509,6 +564,84 @@ describe("calculateProbabilityDistribution", () => {
 
     const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
     expect(sum).toBeCloseTo(1.0, 3);
+  });
+
+  it("calculates normal rolls without misses or explosions", () => {
+    const roll = parseDiceNotation("1d4n");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    expect(dist).toEqual(
+      new Map([
+        [1, 1 / 4],
+        [2, 1 / 4],
+        [3, 1 / 4],
+        [4, 1 / 4],
+      ])
+    );
+    expect(calculateMissProbability(dist, roll)).toBe(0);
+  });
+
+  it("calculates normal rolls with advantage", () => {
+    const roll = parseDiceNotation("1d4na");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    expect(dist.get(1)).toBeCloseTo(1 / 16, 10);
+    expect(dist.get(4)).toBeCloseTo(7 / 16, 10);
+    expect(dist.get(0)).toBeUndefined();
+    expect(dist.get(5)).toBeUndefined();
+  });
+
+  it("calculates compound roll distributions", () => {
+    const roll = parseDiceNotation("1d4+1d6+2");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    expect(Math.min(...dist.keys())).toBe(4);
+    expect(Math.max(...dist.keys())).toBe(12);
+    expect(calculateAverageDamageOnHit(dist, roll)).toBeCloseTo(8, 10);
+    expect(calculateMissProbability(dist, roll)).toBe(0);
+  });
+
+  it("does not interpret a normal total of zero as a miss", () => {
+    const roll = parseDiceNotation("1d4n-1");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+
+    expect(dist.get(0)).toBe(1 / 4);
+    expect(calculateMissProbability(dist, roll)).toBe(0);
+    expect(calculateAverageDamageOnHit(dist, roll)).toBeCloseTo(1.5, 10);
+  });
+
+  it("simulates normal and compound rolls without critical results", () => {
+    const random = vi
+      .spyOn(Math, "random")
+      .mockReturnValueOnce(0)
+      .mockReturnValueOnce(0.999);
+    const roll = parseDiceNotation("1d20+1d10");
+    if (!roll) throw new Error("Failed to parse");
+
+    const result = simulateRoll(roll);
+
+    expect(result.total).toBe(11);
+    expect(result.results).toEqual([
+      {
+        value: 1,
+        dieSize: 20,
+        type: "regular",
+        isCrit: false,
+        isMiss: false,
+      },
+      {
+        value: 10,
+        dieSize: 10,
+        type: "regular",
+        isCrit: false,
+        isMiss: false,
+      },
+    ]);
+    random.mockRestore();
   });
 });
 

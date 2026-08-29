@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/drawer";
 import {
   calculateAverageDamageOnHit,
+  calculateMissProbability,
   calculateProbabilityDistribution,
   calculateTotalAverageDamage,
   parseDiceNotation,
@@ -36,16 +37,22 @@ function DiceDrawer({ diceText }: { diceText: string }) {
     [parsed]
   );
   const averageRoll = useMemo(
-    () => (distribution ? calculateAverageDamageOnHit(distribution) : 0),
-    [distribution]
+    () =>
+      distribution && parsed
+        ? calculateAverageDamageOnHit(distribution, parsed)
+        : 0,
+    [distribution, parsed]
   );
   const totalAverageRoll = useMemo(
     () => (distribution ? calculateTotalAverageDamage(distribution) : 0),
     [distribution]
   );
   const missProbability = useMemo(
-    () => distribution?.get(0) || 0,
-    [distribution]
+    () =>
+      distribution && parsed
+        ? calculateMissProbability(distribution, parsed)
+        : 0,
+    [distribution, parsed]
   );
   // biome-ignore lint/correctness/useExhaustiveDependencies: rollKey triggers reroll
   const sampleRoll = useMemo(
@@ -91,25 +98,32 @@ function DiceDrawer({ diceText }: { diceText: string }) {
           className="inline-flex gap-0.5 items-baseline cursor-pointer hover:text-flame"
         >
           {dieToIcon(parsed.dieSize)}
-          {parsed.tensOnes
-            ? `d${parsed.dieSize.toString().repeat(parsed.numDice)}`
-            : `${parsed.numDice}d${parsed.dieSize}`}
-          {parsed.modifier > 0
-            ? `+${parsed.modifier}`
-            : parsed.modifier < 0
-              ? `${parsed.modifier}`
-              : ""}
-          {parsed.vicious && " (Vicious)"}
-          {parsed.advantage === 1
-            ? " ADV"
-            : parsed.advantage > 0
-              ? ` ADV ${parsed.advantage}`
-              : ""}
-          {parsed.disadvantage === 1
-            ? " DIS"
-            : parsed.disadvantage > 0
-              ? ` DIS ${parsed.disadvantage}`
-              : ""}
+          {parsed.additionalDice?.length ? (
+            diceText
+          ) : (
+            <>
+              {parsed.tensOnes
+                ? `d${parsed.dieSize.toString().repeat(parsed.numDice)}`
+                : `${parsed.numDice}d${parsed.dieSize}`}
+              {parsed.modifier > 0
+                ? `+${parsed.modifier}`
+                : parsed.modifier < 0
+                  ? `${parsed.modifier}`
+                  : ""}
+              {parsed.normal && " (Normal)"}
+              {parsed.vicious && " (Vicious)"}
+              {parsed.advantage === 1
+                ? " ADV"
+                : parsed.advantage > 0
+                  ? ` ADV ${parsed.advantage}`
+                  : ""}
+              {parsed.disadvantage === 1
+                ? " DIS"
+                : parsed.disadvantage > 0
+                  ? ` DIS ${parsed.disadvantage}`
+                  : ""}
+            </>
+          )}
         </span>
       </DrawerTrigger>
       <DrawerContent>
@@ -158,7 +172,7 @@ function DiceDrawer({ diceText }: { diceText: string }) {
 
 export function DiceNotation({ text }: DiceNotationProps) {
   const diceRegex =
-    /\b(\d+d\d+(?:[vad]\d*)?(?:[+-]\d+)?|d(?:44|66|88)(?:[ad]\d*)?)\b/gi;
+    /\b(\d+d\d+(?:(?:[vadn]\d*)+)?(?:\^-?\d+)?(?:\+\d+d\d+)*(?:[+-]\d+)?|d(?:44|66|88)(?:[ad]\d*)?)\b/gi;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
 
