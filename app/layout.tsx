@@ -2,10 +2,9 @@ import "@/app/ui/global.css";
 import type { Metadata } from "next";
 import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
 import { getNavCountsAction } from "@/app/actions/nav";
-import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
-import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
-import { ConditionalMain } from "@/components/layout/ConditionalMain";
+import { Footer } from "@/components/layout/Footer";
 import { FreeBanner } from "@/components/layout/FreeBanner";
+import Header from "@/components/layout/Header";
 import { StaleDeploymentBanner } from "@/components/layout/StaleDeploymentBanner";
 import { auth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
@@ -60,10 +59,10 @@ export default async function RootLayout({
         )}
       >
         <Providers session={session}>
-          <ConditionalHeader initialCounts={navCounts} />
+          <Header initialCounts={navCounts} />
           <FreeBanner />
-          <ConditionalMain>{children}</ConditionalMain>
-          <ConditionalFooter />
+          <main className="mx-auto w-full max-w-7xl px-4 py-6">{children}</main>
+          <Footer />
           <StaleDeploymentBanner />
         </Providers>
       </body>

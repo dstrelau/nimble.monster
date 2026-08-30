@@ -9,16 +9,9 @@ vi.mock("next/font/google", () => {
 vi.mock("@/app/ui/global.css", () => ({}));
 vi.mock("@/lib/auth", () => ({ auth: vi.fn() }));
 vi.mock("./providers", () => ({ Providers: () => null }));
-vi.mock("@/components/layout/ConditionalFooter", () => ({
-  ConditionalFooter: () => null,
-}));
-vi.mock("@/components/layout/ConditionalHeader", () => ({
-  ConditionalHeader: () => null,
-}));
-vi.mock("@/components/layout/ConditionalMain", () => ({
-  ConditionalMain: () => null,
-}));
+vi.mock("@/components/layout/Footer", () => ({ Footer: () => null }));
 vi.mock("@/components/layout/FreeBanner", () => ({ FreeBanner: () => null }));
+vi.mock("@/components/layout/Header", () => ({ default: () => null }));
 vi.mock("@/components/layout/StaleDeploymentBanner", () => ({
   StaleDeploymentBanner: () => null,
 }));

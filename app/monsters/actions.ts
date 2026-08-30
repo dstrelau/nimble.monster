@@ -22,7 +22,3 @@ export async function deleteHazard(id: string) {
     error: deleted ? null : "Could not delete the hazard. Please try again.",
   };
 }
-
-export const getPublicMonster = async (id: string) => {
-  return monstersService.getPublicMonster(id);
-};

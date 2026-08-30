@@ -23,7 +23,7 @@ export const serverActionBaseline = {
     "app/custom-rules/actions.ts": 3,
     "app/families/actions.ts": 4,
     "app/hazards/actions.ts": 1,
-    "app/monsters/actions.ts": 4,
+    "app/monsters/actions.ts": 3,
     "app/my/ancestries/actions.ts": 1,
     "app/my/backgrounds/actions.ts": 1,
     "app/my/encounters/actions.ts": 1,

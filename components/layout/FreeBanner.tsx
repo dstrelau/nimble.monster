@@ -2,7 +2,6 @@
 
 import { X } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { dismissBanner } from "@/app/actions/user";
@@ -11,7 +10,6 @@ import { Button } from "@/components/ui/button";
 const STORAGE_KEY = "nimble-nexus-banner-dismissed";
 
 export function FreeBanner() {
-  const pathname = usePathname();
   const { data: session } = useSession();
   const [dismissed, setDismissed] = useState(true);
 
@@ -29,7 +27,7 @@ export function FreeBanner() {
     }
   };
 
-  if (pathname.startsWith("/obr") || dismissed) {
+  if (dismissed) {
     return null;
   }
 

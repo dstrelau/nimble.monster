@@ -14,44 +14,6 @@ const nextConfig: NextConfig = {
     useTypeScriptCli: true,
   },
   reactStrictMode: true,
-  async headers() {
-    return [
-      {
-        source: "/_next/image",
-        headers: [
-          {
-            key: "Access-Control-Allow-Origin",
-            value: "https://www.owlbear.rodeo",
-          },
-          {
-            key: "Access-Control-Allow-Methods",
-            value: "GET, OPTIONS",
-          },
-          {
-            key: "Access-Control-Allow-Headers",
-            value: "Content-Type",
-          },
-        ],
-      },
-      {
-        source: "/obr/:path*",
-        headers: [
-          {
-            key: "Access-Control-Allow-Origin",
-            value: "https://www.owlbear.rodeo",
-          },
-          {
-            key: "Access-Control-Allow-Methods",
-            value: "GET, OPTIONS",
-          },
-          {
-            key: "Access-Control-Allow-Headers",
-            value: "Content-Type",
-          },
-        ],
-      },
-    ];
-  },
   async redirects() {
     return [
       {
