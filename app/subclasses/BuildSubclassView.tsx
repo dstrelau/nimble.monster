@@ -40,6 +40,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
+import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import { useClassDraft } from "@/lib/hooks/useClassDraft";
 import { type Subclass, UNKNOWN_USER } from "@/lib/types";
 import { randomUUID } from "@/lib/utils";
@@ -196,6 +197,7 @@ export default function BuildSubclassView({
   const id = useId();
   const router = useRouter();
   const { data: session } = useSession();
+  const autosaveEnabled = useFeatureFlag("class-draft-autosave");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mode, setMode] = useState<"preview" | "edit">("edit");
   const [classSearch, setClassSearch] = useState<string>("");
@@ -263,7 +265,7 @@ export default function BuildSubclassView({
     classId: subclass?.id ?? null,
     classUpdatedAt: subclass?.updatedAt,
     isLoggedIn: !!session?.user?.id,
-    enabled: process.env.NEXT_PUBLIC_FEATURE_CLASS_AUTOSAVE === "true",
+    enabled: autosaveEnabled,
   });
 
   // Watch form changes and auto-save

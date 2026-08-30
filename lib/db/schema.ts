@@ -72,6 +72,20 @@ export const users = sqliteTable("users", {
   updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
+// Per-user runtime feature flags. Unknown or missing flags are disabled.
+export const userFeatureFlags = sqliteTable(
+  "user_feature_flags",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    feature: text("feature").notNull(),
+    enabled: integer("enabled", { mode: "boolean" }).notNull().default(false),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [primaryKey({ columns: [table.userId, table.feature] })]
+);
+
 // Collections table
 export const collections = sqliteTable(
   "collections",
@@ -1149,6 +1163,7 @@ export const classDrafts = sqliteTable(
 // Type exports for row types
 export type UserRow = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
+export type UserFeatureFlagRow = typeof userFeatureFlags.$inferSelect;
 export type MonsterRow = typeof monsters.$inferSelect;
 export type MonsterInsert = typeof monsters.$inferInsert;
 export type ItemRow = typeof items.$inferSelect;

@@ -218,6 +218,13 @@
       "when": 1787110143017,
       "tag": "0030_abandoned_lilith",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "6",
+      "when": 1788109296731,
+      "tag": "0031_happy_jack_power",
+      "breakpoints": true
     }
   ]
 }

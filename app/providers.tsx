@@ -6,13 +6,17 @@ import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { FeatureFlagsProvider } from "@/lib/contexts/FeatureFlagsContext";
 import { getQueryClient } from "@/lib/queryClient";
+import type { FeatureFlag } from "@/lib/services/featureFlags";
 
 export function Providers({
   session,
+  enabledFeatures,
   children,
 }: {
   session: Session | null;
+  enabledFeatures: readonly FeatureFlag[];
   children: React.ReactNode;
 }) {
   const queryClient = getQueryClient();
@@ -20,16 +24,18 @@ export function Providers({
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        <NuqsAdapter>
-          <ThemeProvider
-            attribute="data-theme"
-            defaultTheme="system"
-            enableSystem
-            themes={["light", "dark"]}
-          >
-            {children}
-          </ThemeProvider>
-        </NuqsAdapter>
+        <FeatureFlagsProvider enabledFeatures={enabledFeatures}>
+          <NuqsAdapter>
+            <ThemeProvider
+              attribute="data-theme"
+              defaultTheme="system"
+              enableSystem
+              themes={["light", "dark"]}
+            >
+              {children}
+            </ThemeProvider>
+          </NuqsAdapter>
+        </FeatureFlagsProvider>
       </SessionProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

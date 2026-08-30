@@ -69,6 +69,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TagsInput } from "@/components/ui/tags-input";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
+import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import { useClassDraft } from "@/lib/hooks/useClassDraft";
 import {
   ARMOR_TYPES,
@@ -171,6 +172,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
   const id = useId();
   const router = useRouter();
   const { data: session } = useSession();
+  const autosaveEnabled = useFeatureFlag("class-draft-autosave");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mode, setMode] = useState<EditorMode>("edit");
 
@@ -220,7 +222,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
     classId: classEntity?.id ?? null,
     classUpdatedAt: classEntity?.updatedAt,
     isLoggedIn: !!session?.user?.id,
-    enabled: process.env.NEXT_PUBLIC_FEATURE_CLASS_AUTOSAVE === "true",
+    enabled: autosaveEnabled,
   });
 
   // Watch form changes and auto-save

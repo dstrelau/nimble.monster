@@ -10,6 +10,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:seed": "node tools/seed.mjs",
+    "feature-flag": "node tools/set-feature-flag.mjs",
     "start": "next start",
     "test": "vitest",
     "test:run": "vitest run"

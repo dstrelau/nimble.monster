@@ -28,8 +28,12 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/migrations ./migrations
+COPY --from=builder /app/tools/set-feature-flag.mjs /app/set-feature-flag.mjs
 COPY litestream.yml /etc/litestream.yml
-RUN mkdir -p .next/cache && chown -R node:node .next
+RUN chmod +x /app/set-feature-flag.mjs \
+    && ln -s /app/set-feature-flag.mjs /usr/local/bin/set-feature-flag \
+    && mkdir -p .next/cache \
+    && chown -R node:node .next
 EXPOSE 3000
 USER node
 CMD ["litestream", "replicate", "-exec", "node server.js"]

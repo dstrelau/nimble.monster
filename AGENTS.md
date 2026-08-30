@@ -26,6 +26,23 @@ This project uses [worktrunk](https://worktrunk.dev) (`wt`) for parallel worktre
 - Production uses embedded replicas (local SQLite + Turso sync)
 - See `lib/db/CLAUDE.md` for detailed database architecture info
 
+## Feature flags
+
+- Runtime flags are per-user rows in `user_feature_flags`; missing rows and
+  unknown flags are disabled. Registered names and database helpers live in
+  `lib/services/featureFlags.ts`.
+- Server layouts load enabled flags into `FeatureFlagsProvider`, so client
+  behavior updates after a hard refresh. Security-sensitive server actions
+  must also call `isFeatureFlagEnabled`; never rely on the client context for
+  authorization or enforcement.
+- Change a local flag with
+  `pnpm feature-flag <username> <feature> <true|false>`.
+- Change a production flag without deploying or restarting with
+  `fly ssh console -a nimble-nexus -C 'set-feature-flag <username> <feature> <true|false>'`.
+  The production username for the project owner is `_byteslicer`.
+- When adding a flag, update both the `FeatureFlag` registry and the validated
+  names in `tools/set-feature-flag.mjs`.
+
 ## Seeding a dev database
 
 The dev DB is seeded from `data/official` (GMG bestiary + character options),

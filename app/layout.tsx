@@ -7,6 +7,7 @@ import { FreeBanner } from "@/components/layout/FreeBanner";
 import Header from "@/components/layout/Header";
 import { StaleDeploymentBanner } from "@/components/layout/StaleDeploymentBanner";
 import { auth } from "@/lib/auth";
+import { getEnabledFeatureFlags } from "@/lib/services/featureFlags";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
 
@@ -45,6 +46,7 @@ export default async function RootLayout({
     auth(),
     getNavCountsAction(),
   ]);
+  const enabledFeatures = await getEnabledFeatureFlags(session?.user.id);
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -58,7 +60,7 @@ export default async function RootLayout({
           serif.variable
         )}
       >
-        <Providers session={session}>
+        <Providers session={session} enabledFeatures={enabledFeatures}>
           <Header initialCounts={navCounts} />
           <FreeBanner />
           <main className="mx-auto w-full max-w-7xl px-4 py-6">{children}</main>
