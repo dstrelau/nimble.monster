@@ -11,7 +11,7 @@ export * from "./encounter";
 export * from "./family";
 export * from "./gear";
 export * from "./my-library";
-
+export * from "./random-table";
 export * from "./schema";
 export * from "./school";
 export * from "./spell";

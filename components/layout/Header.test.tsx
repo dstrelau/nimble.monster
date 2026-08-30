@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { getNavCountsAction } from "@/app/actions/nav";
+import { FeatureFlagsProvider } from "@/lib/contexts/FeatureFlagsContext";
 import Header, { type AllNavCounts } from "./Header";
 
 vi.mock("next/navigation", () => ({
@@ -70,9 +71,33 @@ describe("Header", () => {
       "/roll"
     );
     expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
+    expect(screen.queryByText("Random Tables")).not.toBeInTheDocument();
     expect(
       screen.queryByRole("link", { name: "Create" })
     ).not.toBeInTheDocument();
     expect(getNavCountsAction).not.toHaveBeenCalled();
+  });
+
+  it("shows random tables only when its feature is enabled", () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    const { container } = render(
+      <FeatureFlagsProvider enabledFeatures={["random-tables"]}>
+        <QueryClientProvider client={queryClient}>
+          <Header initialCounts={counts} />
+        </QueryClientProvider>
+      </FeatureFlagsProvider>
+    );
+
+    const mobileMenuButton = container.querySelector("nav button");
+    expect(mobileMenuButton).not.toBeNull();
+    if (!mobileMenuButton) return;
+    fireEvent.click(mobileMenuButton);
+
+    expect(screen.getByRole("link", { name: "Random Tables" })).toHaveAttribute(
+      "href",
+      "/random-tables"
+    );
   });
 });

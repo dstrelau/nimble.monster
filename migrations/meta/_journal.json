@@ -225,6 +225,13 @@
       "when": 1788109296731,
       "tag": "0031_happy_jack_power",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "6",
+      "when": 1788125868659,
+      "tag": "0032_late_masque",
+      "breakpoints": true
     }
   ]
 }

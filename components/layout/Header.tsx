@@ -20,6 +20,7 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Separator } from "@/components/ui/separator";
+import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import type {
   AdventureCounts,
   BestiaryCounts,
@@ -80,13 +81,27 @@ const NAV_GROUPS: {
       ...HEADER_ITEM_CONFIG[item.key],
     })),
     ...(group.label === "Play"
-      ? [{ href: "/roll", label: "Dice Roller", icon: Dices }]
+      ? [
+          {
+            href: "/random-tables",
+            label: "Random Tables",
+            icon: Dices,
+          },
+          { href: "/roll", label: "Dice Roller", icon: Dices },
+        ]
       : []),
   ],
 }));
 
 const Header = ({ initialCounts }: HeaderProps) => {
   const pathname = usePathname();
+  const randomTablesEnabled = useFeatureFlag("random-tables");
+  const navGroups = NAV_GROUPS.map((group) => ({
+    ...group,
+    items: group.items.filter(
+      (item) => item.href !== "/random-tables" || randomTablesEnabled
+    ),
+  }));
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const { data: counts } = useQuery({
@@ -125,7 +140,7 @@ const Header = ({ initialCounts }: HeaderProps) => {
         <div className="hidden md:flex items-center h-full gap-6">
           <NavigationMenu viewport={false} className="max-w-none flex-none">
             <NavigationMenuList className="gap-2">
-              {NAV_GROUPS.map((group) => (
+              {navGroups.map((group) => (
                 <CountedNavMenu
                   key={group.label}
                   label={group.label}
@@ -166,7 +181,7 @@ const Header = ({ initialCounts }: HeaderProps) => {
       {/* Mobile navigation drawer */}
       <MobileMenuDropdown isOpen={mobileMenuOpen}>
         <div className="space-y-4">
-          {NAV_GROUPS.map((group) => (
+          {navGroups.map((group) => (
             <div key={group.label}>
               <div className="px-1 pb-1.5 font-condensed font-bold text-sm uppercase tracking-wide text-muted-foreground">
                 {group.label}

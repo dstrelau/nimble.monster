@@ -2,6 +2,7 @@ import {
   BookOpenText,
   BookUser,
   Box,
+  Dices,
   Drama,
   HandFist,
   HeartHandshake,
@@ -29,6 +30,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { auth } from "@/lib/auth";
+import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 
 interface CreateCardProps {
   href: string;
@@ -83,6 +85,10 @@ function CreateCard({
 export default async function CreatePage() {
   const session = await auth();
   const isAuthenticated = !!session?.user?.id;
+  const randomTablesEnabled = await isFeatureFlagEnabled(
+    session?.user?.id,
+    "random-tables"
+  );
   return (
     <TooltipProvider>
       <div className="container mx-auto px-4 py-8">
@@ -155,6 +161,14 @@ export default async function CreatePage() {
                 icon={<BookOpenText className="size-16" />}
                 title="Rule"
                 description="Create a custom rule or rules clarification."
+              />
+            )}
+            {randomTablesEnabled && (
+              <CreateCard
+                href="/random-tables/new"
+                icon={<Dices className="size-16" />}
+                title="Random Table"
+                description="Roll for random results."
               />
             )}
 

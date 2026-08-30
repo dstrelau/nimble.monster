@@ -12,6 +12,7 @@ import {
   families,
   items,
   monsters,
+  randomTables,
   spellSchools,
   subclasses,
 } from "./schema";
@@ -28,13 +29,15 @@ export interface MyLibraryCounts {
   collections: number;
   encounters: number;
   adventures: number;
+  "random-tables": number;
   subclasses: number;
   families: number;
   "spell-schools": number;
 }
 
 export async function getMyLibraryCounts(
-  userId: string
+  userId: string,
+  includeRandomTables = false
 ): Promise<MyLibraryCounts> {
   const db = getDatabase();
   const [
@@ -49,6 +52,7 @@ export async function getMyLibraryCounts(
     collectionCount,
     encounterCount,
     adventureCount,
+    randomTableCount,
     subclassCount,
     familyCount,
     schoolCount,
@@ -94,6 +98,12 @@ export async function getMyLibraryCounts(
       .select({ count: count() })
       .from(adventures)
       .where(eq(adventures.userId, userId)),
+    includeRandomTables
+      ? db
+          .select({ count: count() })
+          .from(randomTables)
+          .where(eq(randomTables.creatorId, userId))
+      : Promise.resolve([]),
     db
       .select({ count: count() })
       .from(subclasses)
@@ -120,6 +130,7 @@ export async function getMyLibraryCounts(
     collections: collectionCount[0]?.count ?? 0,
     encounters: encounterCount[0]?.count ?? 0,
     adventures: adventureCount[0]?.count ?? 0,
+    "random-tables": randomTableCount[0]?.count ?? 0,
     subclasses: subclassCount[0]?.count ?? 0,
     families: familyCount[0]?.count ?? 0,
     "spell-schools": schoolCount[0]?.count ?? 0,
@@ -263,6 +274,7 @@ export async function getPublicLibraryCounts(
     collections: collectionCount[0]?.count ?? 0,
     encounters: encounterCount[0]?.count ?? 0,
     adventures: adventureCount[0]?.count ?? 0,
+    "random-tables": 0,
     subclasses: subclassCount[0]?.count ?? 0,
     families: familyCount[0]?.count ?? 0,
     "spell-schools": schoolCount[0]?.count ?? 0,

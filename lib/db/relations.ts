@@ -20,6 +20,9 @@ import {
   monstersConditions,
   monstersEncounters,
   monstersFamilies,
+  randomSubtableRows,
+  randomSubtables,
+  randomTables,
   sources,
   spellSchools,
   spellSchoolsAwards,
@@ -65,6 +68,39 @@ export const encountersRelations = relations(encounters, ({ one, many }) => ({
   }),
   monsterEncounters: many(monstersEncounters),
 }));
+
+// Random table relations
+export const randomTablesRelations = relations(
+  randomTables,
+  ({ one, many }) => ({
+    creator: one(users, {
+      fields: [randomTables.creatorId],
+      references: [users.id],
+    }),
+    subtables: many(randomSubtables),
+  })
+);
+
+export const randomSubtablesRelations = relations(
+  randomSubtables,
+  ({ one, many }) => ({
+    randomTable: one(randomTables, {
+      fields: [randomSubtables.randomTableId],
+      references: [randomTables.id],
+    }),
+    rows: many(randomSubtableRows),
+  })
+);
+
+export const randomSubtableRowsRelations = relations(
+  randomSubtableRows,
+  ({ one }) => ({
+    subtable: one(randomSubtables, {
+      fields: [randomSubtableRows.subtableId],
+      references: [randomSubtables.id],
+    }),
+  })
+);
 
 // Monster relations
 export const monstersRelations = relations(monsters, ({ one, many }) => ({

@@ -195,6 +195,30 @@ export interface Encounter extends Omit<EncounterOverview, "monsters"> {
   monsters: EncounterMonsterEntryFull[];
 }
 
+export interface SubtableRow {
+  id?: string;
+  low: number;
+  high: number;
+  result: string;
+}
+
+export interface Subtable {
+  id?: string;
+  title: string;
+  notation: string;
+  rows: SubtableRow[];
+}
+
+export interface RandomTable {
+  id: string;
+  creator: User;
+  name: string;
+  description?: string;
+  visibility: CollectionVisibilityType;
+  subtables: Subtable[];
+  createdAt?: Date;
+}
+
 export const UNKNOWN_USER: User = {
   id: "",
   discordId: "",

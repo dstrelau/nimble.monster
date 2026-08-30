@@ -20,6 +20,7 @@ export type SizeType =
   | "gargantuan";
 export type CollectionVisibility = "public" | "private";
 export type EncounterVisibility = "public" | "private";
+export type RandomTableVisibility = "public" | "private";
 export type FamilyVisibility = "public" | "secret" | "private";
 export type MonsterVisibility = "public" | "private";
 export type CompanionVisibility = "public" | "private";
@@ -131,6 +132,72 @@ export const encounters = sqliteTable(
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },
   (table) => [index("idx_encounters_user_id").on(table.creatorId)]
+);
+
+// Random tables table
+export const randomTables = sqliteTable(
+  "random_tables",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    creatorId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description").notNull().default(""),
+    visibility: text("visibility")
+      .$type<RandomTableVisibility>()
+      .default("public"),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [index("idx_random_tables_user_id").on(table.creatorId)]
+);
+
+// Individual tables within a random table
+export const randomSubtables = sqliteTable(
+  "random_subtables",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    randomTableId: text("random_table_id")
+      .notNull()
+      .references(() => randomTables.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    title: text("title").notNull(),
+    notation: text("notation").notNull(),
+    orderIndex: integer("order_index").notNull(),
+  },
+  (table) => [
+    index("idx_random_subtables_random_table_id").on(table.randomTableId),
+  ]
+);
+
+// Rows within an individual table
+export const randomSubtableRows = sqliteTable(
+  "random_subtable_rows",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    subtableId: text("subtable_id")
+      .notNull()
+      .references(() => randomSubtables.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    low: integer("low").notNull(),
+    high: integer("high").notNull(),
+    result: text("result").notNull(),
+    orderIndex: integer("order_index").notNull(),
+  },
+  (table) => [
+    index("idx_random_subtable_rows_subtable_id").on(table.subtableId),
+  ]
 );
 
 // Sources table
@@ -1175,6 +1242,9 @@ export type CollectionInsert = typeof collections.$inferInsert;
 export type EncounterRow = typeof encounters.$inferSelect;
 export type EncounterInsert = typeof encounters.$inferInsert;
 export type MonsterEncounterRow = typeof monstersEncounters.$inferSelect;
+export type RandomTableRowRecord = typeof randomTables.$inferSelect;
+export type RandomSubtableRow = typeof randomSubtables.$inferSelect;
+export type RandomSubtableRowRow = typeof randomSubtableRows.$inferSelect;
 export type FamilyRow = typeof families.$inferSelect;
 export type FamilyInsert = typeof families.$inferInsert;
 export type ConditionRow = typeof conditions.$inferSelect;

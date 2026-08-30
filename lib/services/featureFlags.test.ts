@@ -51,17 +51,20 @@ afterEach(() => {
 describe("feature flags", () => {
   it("recognizes registered feature names", () => {
     expect(isFeatureFlag("class-draft-autosave")).toBe(true);
+    expect(isFeatureFlag("random-tables")).toBe(true);
     expect(isFeatureFlag("unknown-feature")).toBe(false);
   });
 
   it("returns only registered enabled features for a user", async () => {
     mockRows.push([
       { feature: "class-draft-autosave" },
+      { feature: "random-tables" },
       { feature: "removed-feature" },
     ]);
 
     await expect(getEnabledFeatureFlags("user-1")).resolves.toEqual([
       "class-draft-autosave",
+      "random-tables",
     ]);
   });
 

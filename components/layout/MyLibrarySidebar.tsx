@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Library } from "lucide-react";
+import { ChevronDown, Dices, Library } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -10,8 +10,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import type { MyLibraryCounts } from "@/lib/db/my-library";
-import { MY_LIBRARY_GROUPS } from "@/lib/types/entity-links";
+import {
+  MY_LIBRARY_GROUPS,
+  type MyLibraryItem,
+} from "@/lib/types/entity-links";
 import { cn } from "@/lib/utils";
 
 interface MyLibrarySidebarProps {
@@ -21,19 +25,21 @@ interface MyLibrarySidebarProps {
 }
 
 interface LibraryNavigationProps extends MyLibrarySidebarProps {
+  groups: { label?: string; items: MyLibraryItem[] }[];
   onNavigate?: () => void;
 }
 
 function LibraryNavigation({
   counts,
   profileHref,
+  groups,
   onNavigate,
 }: LibraryNavigationProps) {
   const pathname = usePathname();
 
   return (
     <div className="space-y-5">
-      {MY_LIBRARY_GROUPS.map((group, index) => (
+      {groups.map((group, index) => (
         <section
           key={group.label ?? "collections"}
           className={cn(index > 0 && !group.label && "border-t pt-5")}
@@ -94,12 +100,29 @@ export function MyLibrarySidebar({
 }: MyLibrarySidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const activeItem = MY_LIBRARY_GROUPS.flatMap((group) => group.items).find(
-    (item) =>
+  const randomTablesEnabled = useFeatureFlag("random-tables");
+  const groups = MY_LIBRARY_GROUPS.map((group) => ({
+    ...group,
+    items:
+      !profileHref && group.label === "Play" && randomTablesEnabled
+        ? [
+            ...group.items,
+            {
+              href: "/my/random-tables",
+              label: "Random Tables",
+              icon: Dices,
+              key: "random-tables" as const,
+            },
+          ]
+        : group.items,
+  }));
+  const activeItem = groups
+    .flatMap((group) => group.items)
+    .find((item) =>
       profileHref
         ? pathname === `${profileHref}/${item.key}`
         : item.href === pathname
-  );
+    );
   const navigationLabel = profileHref
     ? "Public library sidebar"
     : "My library sidebar";
@@ -117,7 +140,11 @@ export function MyLibrarySidebar({
             </div>
           )}
           <nav aria-label={navigationLabel}>
-            <LibraryNavigation counts={counts} profileHref={profileHref} />
+            <LibraryNavigation
+              counts={counts}
+              profileHref={profileHref}
+              groups={groups}
+            />
           </nav>
         </div>
       </aside>
@@ -154,6 +181,7 @@ export function MyLibrarySidebar({
             <LibraryNavigation
               counts={counts}
               profileHref={profileHref}
+              groups={groups}
               onNavigate={() => setMobileOpen(false)}
             />
           </nav>

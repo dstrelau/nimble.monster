@@ -4,12 +4,12 @@ import { createClient } from "@libsql/client";
 
 const usage = `Usage: set-feature-flag <username> <feature> <true|false>
 
-Features: class-draft-autosave`;
+Features: class-draft-autosave, random-tables`;
 
 const [username, feature, enabledValue, ...extraArgs] = process.argv.slice(2);
 if (
   !username ||
-  feature !== "class-draft-autosave" ||
+  !["class-draft-autosave", "random-tables"].includes(feature) ||
   !["true", "false"].includes(enabledValue) ||
   extraArgs.length > 0
 ) {

@@ -43,6 +43,9 @@ const mockState = vi.hoisted(() => {
       visibility: "monsters.visibility",
       hazard: "monsters.hazard",
     },
+    randomTables: {
+      creatorId: "random_tables.user_id",
+    },
     spellSchools: {
       userId: "spell_schools.user_id",
       visibility: "spell_schools.visibility",
@@ -85,9 +88,18 @@ const mockState = vi.hoisted(() => {
       wherePredicates.length = 0;
       vi.clearAllMocks();
     },
-    queueCounts(adventureCount: number) {
-      for (let index = 0; index < 14; index += 1) {
-        queuedResults.push([{ count: index === 10 ? adventureCount : 0 }]);
+    queueCounts(adventureCount: number, randomTableCount = 0) {
+      for (let index = 0; index < 15; index += 1) {
+        queuedResults.push([
+          {
+            count:
+              index === 10
+                ? adventureCount
+                : index === 11
+                  ? randomTableCount
+                  : 0,
+          },
+        ]);
       }
     },
   };
@@ -113,16 +125,28 @@ beforeEach(() => {
 
 describe("adventure library counts", () => {
   it("counts an owner's public and private adventures", async () => {
-    mockState.queueCounts(2);
+    mockState.queueCounts(2, 3);
 
-    const counts = await getMyLibraryCounts("owner");
+    const counts = await getMyLibraryCounts("owner", true);
 
     expect(counts.adventures).toBe(2);
+    expect(counts["random-tables"]).toBe(3);
     expect(mockState.wherePredicates[10]).toEqual({
       type: "eq",
       column: mockState.tables.adventures.userId,
       value: "owner",
     });
+  });
+
+  it("does not query random tables when they are disabled", async () => {
+    mockState.queueCounts(2, 3);
+
+    const counts = await getMyLibraryCounts("owner");
+
+    expect(counts["random-tables"]).toBe(0);
+    expect(mockState.chain.from).not.toHaveBeenCalledWith(
+      mockState.tables.randomTables
+    );
   });
 
   it("counts only public adventures for a public profile", async () => {

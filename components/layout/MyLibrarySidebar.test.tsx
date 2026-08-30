@@ -6,6 +6,7 @@ import {
   within,
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { FeatureFlagsProvider } from "@/lib/contexts/FeatureFlagsContext";
 import type { MyLibraryCounts } from "@/lib/db/my-library";
 import { MyLibrarySidebar } from "./MyLibrarySidebar";
 
@@ -35,6 +36,7 @@ const counts: MyLibraryCounts = {
   collections: 11,
   rules: 13,
   adventures: 2,
+  "random-tables": 5,
 };
 
 describe("MyLibrarySidebar", () => {
@@ -80,6 +82,9 @@ describe("MyLibrarySidebar", () => {
     expect(
       within(navigation).getByRole("link", { name: "Adventures 2" })
     ).toHaveAttribute("href", "/my/adventures");
+    expect(
+      within(navigation).queryByText("Random Tables")
+    ).not.toBeInTheDocument();
   });
 
   it("opens the library navigation on smaller screens", () => {
@@ -166,5 +171,34 @@ describe("MyLibrarySidebar", () => {
     expect(
       within(navigation).getByRole("link", { name: "Monsters 12" })
     ).toBeInTheDocument();
+  });
+
+  it("shows random tables only in an enabled user's own library", () => {
+    render(
+      <FeatureFlagsProvider enabledFeatures={["random-tables"]}>
+        <MyLibrarySidebar counts={counts} />
+      </FeatureFlagsProvider>
+    );
+
+    const navigation = screen.getByRole("navigation", {
+      name: "My library sidebar",
+    });
+    expect(
+      within(navigation).getByRole("link", { name: "Random Tables 5" })
+    ).toHaveAttribute("href", "/my/random-tables");
+  });
+
+  it("does not add random tables to public profiles", () => {
+    render(
+      <FeatureFlagsProvider enabledFeatures={["random-tables"]}>
+        <MyLibrarySidebar
+          counts={counts}
+          profileHref="/u/creator"
+          title={null}
+        />
+      </FeatureFlagsProvider>
+    );
+
+    expect(screen.queryByText("Random Tables")).not.toBeInTheDocument();
   });
 });

@@ -141,6 +141,18 @@ export function getAdventureEditUrl(adventure: {
   return `/adventures/${slugify(adventure)}/edit`;
 }
 
+// Random table URLs
+export function getRandomTableUrl(table: { name: string; id: string }): string {
+  return `/random-tables/${slugify(table)}`;
+}
+
+export function getRandomTableEditUrl(table: {
+  name: string;
+  id: string;
+}): string {
+  return `/random-tables/${slugify(table)}/edit`;
+}
+
 // Custom rules are browsed inline in the rules reference, behind the homebrew
 // toggle; only the detail and edit pages live under /custom-rules.
 export const CUSTOM_RULES_URL = "/rules?homebrew=1#all-rules";

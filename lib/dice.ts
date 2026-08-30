@@ -69,6 +69,38 @@ export type DiceRoll = {
 
 export type ProbabilityDistribution = Map<number, number>;
 
+/**
+ * Parses notation for a random table lookup: a plain roll of the dice, with no
+ * miss/explode/vicious rules. Unlike attack notation, a bare "d8" is allowed
+ * and means "1d8".
+ */
+export function parseTableNotation(notation: string): DiceRoll | null {
+  const trimmed = notation.trim().toLowerCase();
+  const roll = parseDiceNotation(
+    /^d\d+$/.test(trimmed) && !/^d(44|66|88)$/.test(trimmed)
+      ? `1${trimmed}`
+      : trimmed
+  );
+  if (!roll) return null;
+  if (roll.vicious || roll.advantage > 0 || roll.disadvantage > 0) return null;
+  return roll;
+}
+
+/** The lowest and highest values a plain roll of this notation can produce. */
+export function tableNotationRange(roll: DiceRoll): {
+  min: number;
+  max: number;
+} {
+  // tensOnes (d44/d66/d88) reads two dice as digits: 11 through e.g. 66.
+  if (roll.tensOnes) {
+    return { min: 11, max: roll.dieSize * 11 };
+  }
+  return {
+    min: roll.numDice + roll.modifier,
+    max: roll.numDice * roll.dieSize + roll.modifier,
+  };
+}
+
 type IndexedValue = { value: number; index: number };
 
 function selectKeptDice(

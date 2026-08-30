@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import { auth } from "@/lib/auth";
+import {
+  type FeatureFlag,
+  isFeatureFlagEnabled,
+} from "@/lib/services/featureFlags";
 import { SITE_NAME } from "@/lib/utils/branding";
 
 export const metadata: Metadata = {
@@ -8,6 +13,7 @@ export const metadata: Metadata = {
 interface ChangelogEntry {
   date: string;
   entries: string[];
+  feature?: FeatureFlag;
 }
 
 const changelog: ChangelogEntry[] = [
@@ -49,6 +55,11 @@ const changelog: ChangelogEntry[] = [
     entries: [
       "Add likes and reporting to monsters, items, companions, subclasses, classes, spell schools, backgrounds, and ancestries, plus a Most Liked sort option.",
     ],
+  },
+  {
+    date: "13 July 2026",
+    entries: ["Add Random Tables."],
+    feature: "random-tables",
   },
   {
     date: "11 July 2026",
@@ -201,11 +212,20 @@ const changelog: ChangelogEntry[] = [
   },
 ];
 
-export default function ChangelogPage() {
+export default async function ChangelogPage() {
+  const session = await auth();
+  const randomTablesEnabled = await isFeatureFlagEnabled(
+    session?.user?.id,
+    "random-tables"
+  );
+  const visibleChangelog = changelog.filter(
+    (group) => group.feature !== "random-tables" || randomTablesEnabled
+  );
+
   return (
     <div className="prose prose-neutral dark:prose-invert">
       <h1>Changelog</h1>
-      {changelog.map((group) => (
+      {visibleChangelog.map((group) => (
         <section key={group.date}>
           <h2>{group.date}</h2>
           <ul>
