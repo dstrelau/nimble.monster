@@ -246,6 +246,20 @@ export function GlobalSearchDialog() {
                       </CommandItem>
                     );
                   })}
+                  {group.id === "play" && (
+                    <CommandItem
+                      value="browse:collections"
+                      className="group hover:bg-accent hover:text-accent-foreground"
+                      onSelect={() => {
+                        setQuery("");
+                        setResults([]);
+                        setSelectedType("collection");
+                      }}
+                    >
+                      <ENTITY_TYPE_ICONS.collection className="text-muted-foreground group-hover:text-primary group-data-[selected=true]:text-primary" />
+                      Collections
+                    </CommandItem>
+                  )}
                 </CommandGroup>
               ))}
             </div>

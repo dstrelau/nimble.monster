@@ -49,6 +49,7 @@ describe("GlobalSearchDialog", () => {
     expect(screen.getByPlaceholderText("Search")).toBeInTheDocument();
     expect(screen.getByText("Bestiary")).toBeInTheDocument();
     expect(screen.getByText("Heroes")).toBeInTheDocument();
+    expect(screen.getByText("Collections")).toBeInTheDocument();
 
     fireEvent.keyDown(screen.getByPlaceholderText("Search"), { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
@@ -168,6 +169,14 @@ describe("GlobalSearchDialog", () => {
     );
     expect(screen.getByPlaceholderText("Search")).toBeInTheDocument();
     expect(screen.getByText("Bestiary")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText("Collections"));
+    expect(
+      screen.getByPlaceholderText("Search Collections")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Clear Collections filter" })
+    ).toBeInTheDocument();
   });
 
   it("groups results by type and renders available entity images", async () => {
