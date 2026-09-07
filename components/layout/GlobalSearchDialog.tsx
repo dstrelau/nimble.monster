@@ -284,7 +284,7 @@ export function GlobalSearchDialog() {
                     key={`${result.type}:${result.id}`}
                     value={`${result.type}:${result.id}`}
                     onSelect={() => selectResult(result)}
-                    className="group items-center !py-2 hover:bg-accent hover:text-accent-foreground"
+                    className="group items-center !py-1 hover:bg-accent hover:text-accent-foreground"
                   >
                     {result.paperforgeId ? (
                       <PaperforgeImage
