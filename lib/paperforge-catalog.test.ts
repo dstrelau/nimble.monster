@@ -9,7 +9,7 @@ describe("Paperforge catalog", () => {
     }
 
     expect(PAPERFORGE_ENTRIES.find((entry) => entry.id === "760")?.name).toBe(
-      "Ulitharid [Fanart]"
+      "Ulitharid"
     );
   });
 });
