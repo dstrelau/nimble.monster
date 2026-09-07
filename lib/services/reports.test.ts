@@ -189,4 +189,29 @@ describe("getAllReports", () => {
 
     expect(result).toEqual([]);
   });
+
+  it("labels a report when its entity has no name", async () => {
+    queueDb([
+      {
+        id: "r1",
+        entityType: "monster",
+        entityId: "m1",
+        reporterName: "Reporter",
+        reporterUsername: "reporter",
+        reason: "inaccurate",
+        details: "",
+        createdAt: "2026-07-14",
+      },
+    ]);
+    mockResolveEntities.mockResolvedValue(
+      new Map([["m1", { name: "", url: "/monsters/-m1" }]])
+    );
+
+    const result = await getAllReports();
+
+    expect(result[0]).toMatchObject({
+      entityName: "Unnamed Monster",
+      entityUrl: "/monsters/-m1",
+    });
+  });
 });

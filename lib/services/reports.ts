@@ -93,10 +93,11 @@ export async function getAllReports(): Promise<ReportWithDetails[]> {
     const info = entityInfoByType.get(row.entityType)?.get(row.entityId);
     // Entity may have been deleted after being reported; drop it from view.
     if (!info) continue;
+    const entityTypeLabel = ENTITY_TYPE_LABELS[row.entityType];
     withDetails.push({
       ...row,
-      entityTypeLabel: ENTITY_TYPE_LABELS[row.entityType],
-      entityName: info.name,
+      entityTypeLabel,
+      entityName: info.name.trim() || `Unnamed ${entityTypeLabel}`,
       entityUrl: info.url,
     });
   }
