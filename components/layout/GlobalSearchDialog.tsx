@@ -172,12 +172,13 @@ export function GlobalSearchDialog() {
                       <CommandItem
                         key={item.key}
                         value={`browse:${item.key}`}
+                        className="group hover:bg-accent hover:text-accent-foreground"
                         onSelect={() => {
                           handleOpenChange(false);
                           router.push(`/${item.key}`);
                         }}
                       >
-                        <Icon />
+                        <Icon className="text-muted-foreground group-hover:text-primary group-data-[selected=true]:text-primary" />
                         {item.label}
                       </CommandItem>
                     );
@@ -201,7 +202,7 @@ export function GlobalSearchDialog() {
                     key={`${result.type}:${result.id}`}
                     value={`${result.type}:${result.id}`}
                     onSelect={() => selectResult(result)}
-                    className="items-start py-3"
+                    className="group items-start py-3 hover:bg-accent hover:text-accent-foreground"
                   >
                     {result.paperforgeId ? (
                       <PaperforgeImage
@@ -212,10 +213,10 @@ export function GlobalSearchDialog() {
                     ) : result.imageIcon ? (
                       <GameIcon
                         iconId={result.imageIcon}
-                        className="size-10 shrink-0 fill-icon/50"
+                        className="size-10 shrink-0 fill-muted-foreground group-hover:fill-primary group-data-[selected=true]:fill-primary"
                       />
                     ) : (
-                      <Icon className="mt-0.5" />
+                      <Icon className="mt-0.5 text-muted-foreground group-hover:text-primary group-data-[selected=true]:text-primary" />
                     )}
                     <span className="min-w-0 flex-1">
                       <span className="block truncate font-medium">
