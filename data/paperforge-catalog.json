@@ -1,5 +1,5 @@
 {
-  "totalMinis": 750,
+  "totalMinis": 771,
   "s3BaseUrl": "https://paperforgedev.s3.us-east-2.amazonaws.com/",
   "minis": [
     {
@@ -73865,255 +73865,129 @@
       "releaseDate": "2025-10-01T10:28:47.758Z",
       "downloads": [
         {
-          "filename": "758_Owlbear_FREE_PDF.pdf",
-          "category": "pdf",
-          "tier": "FREE",
-          "tierName": "Free",
-          "tierNumber": 0,
-          "filenameTier": "FREE",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_FREE_PDF.pdf"
-        },
-        {
-          "filename": "758_Owlbear_FREE_PNGs.zip",
-          "category": "png",
-          "tier": "FREE",
-          "tierName": "Free",
-          "tierNumber": 0,
-          "filenameTier": "FREE",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_FREE_PNGs.zip"
-        },
-        {
-          "filename": "758_Owlbear_FREE_VTT.zip",
-          "category": "vtt",
-          "tier": "FREE",
-          "tierName": "Free",
-          "tierNumber": 0,
-          "filenameTier": "FREE",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_FREE_VTT.zip"
-        },
-        {
-          "filename": "758_Owlbear_T1_PDF.pdf",
-          "category": "pdf",
-          "tier": "COPPER",
-          "tierName": "Copper",
-          "tierNumber": 1,
-          "filenameTier": "T1",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_T1_PDF.pdf"
-        },
-        {
-          "filename": "758_Owlbear_T1_PNGs.zip",
-          "category": "png",
-          "tier": "COPPER",
-          "tierName": "Copper",
-          "tierNumber": 1,
-          "filenameTier": "T1",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_T1_PNGs.zip"
-        },
-        {
-          "filename": "758_Owlbear_T1_VTT.zip",
-          "category": "vtt",
-          "tier": "COPPER",
-          "tierName": "Copper",
-          "tierNumber": 1,
-          "filenameTier": "T1",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_T1_VTT.zip"
-        },
-        {
-          "filename": "758_Owlbear_T2_PDF.pdf",
-          "category": "pdf",
-          "tier": "IRON",
-          "tierName": "Iron",
-          "tierNumber": 2,
-          "filenameTier": "T2",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_T2_PDF.pdf"
-        },
-        {
-          "filename": "758_Owlbear_T2_PNGs.zip",
-          "category": "png",
-          "tier": "IRON",
-          "tierName": "Iron",
-          "tierNumber": 2,
-          "filenameTier": "T2",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_T2_PNGs.zip"
-        },
-        {
-          "filename": "758_Owlbear_T2_VTT.zip",
-          "category": "vtt",
-          "tier": "IRON",
-          "tierName": "Iron",
-          "tierNumber": 2,
-          "filenameTier": "T2",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_T2_VTT.zip"
-        },
-        {
-          "filename": "758_Owlbear_T3_VTT.zip",
-          "category": "vtt",
-          "tier": "STEEL",
-          "tierName": "Steel",
-          "tierNumber": 3,
-          "filenameTier": "T3",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_T3_VTT.zip"
-        },
-        {
-          "filename": "758_Owlbear_T4_CUTFILE.zip",
+          "filename": "PaperForge758_Owlbear_FREE_CUTFILE.zip",
           "category": "cutfile",
-          "tier": "TITANIUM",
-          "tierName": "Titanium",
-          "tierNumber": 4,
-          "filenameTier": "T4",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_T4_CUTFILE.zip"
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/PaperForge758_Owlbear_FREE_CUTFILE.zip"
         },
         {
-          "filename": "758_Owlbear_T4_PNGs.zip",
+          "filename": "PaperForge758_Owlbear_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/PaperForge758_Owlbear_FREE_PDF.pdf"
+        },
+        {
+          "filename": "PaperForge758_Owlbear_FREE_HDPNGs.zip",
           "category": "png",
-          "tier": "TITANIUM",
-          "tierName": "Titanium",
-          "tierNumber": 4,
-          "filenameTier": "T4",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_T4_PNGs.zip"
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/PaperForge758_Owlbear_FREE_HDPNGs.zip"
         },
         {
-          "filename": "758_Owlbear_T8_PSD.zip",
+          "filename": "PaperForge758_Owlbear_FREE_PNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/PaperForge758_Owlbear_FREE_PNGs.zip"
+        },
+        {
+          "filename": "PaperForge758_Owlbear_FREE_PSD.zip",
           "category": "psd",
-          "tier": "MITHRIL",
-          "tierName": "Mithril",
-          "tierNumber": 8,
-          "filenameTier": "T8",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/758_Owlbear_T8_PSD.zip"
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/PaperForge758_Owlbear_FREE_PSD.zip"
+        },
+        {
+          "filename": "PaperForge758_Owlbear_FREE_VTT.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/PaperForge758_Owlbear_FREE_VTT.zip"
         }
       ]
     },
     {
       "id": "a8225e5c-acc9-4145-9c4d-28c0b249b83f",
       "number": 759,
-      "name": "OwlbearCub",
+      "name": "Owlbear Cub",
       "url": "https://www.paperforgeminis.com/minis/a8225e5c-acc9-4145-9c4d-28c0b249b83f",
       "enabled": true,
       "releaseDate": "2025-11-24T16:33:32.931Z",
       "downloads": [
         {
-          "filename": "759_OwlbearCub_FREE_PDF.pdf",
-          "category": "pdf",
-          "tier": "FREE",
-          "tierName": "Free",
-          "tierNumber": 0,
-          "filenameTier": "FREE",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_FREE_PDF.pdf"
-        },
-        {
-          "filename": "759_OwlbearCub_FREE_PNGs.zip",
-          "category": "png",
-          "tier": "FREE",
-          "tierName": "Free",
-          "tierNumber": 0,
-          "filenameTier": "FREE",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_FREE_PNGs.zip"
-        },
-        {
-          "filename": "759_OwlbearCub_FREE_VTT.zip",
-          "category": "vtt",
-          "tier": "FREE",
-          "tierName": "Free",
-          "tierNumber": 0,
-          "filenameTier": "FREE",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_FREE_VTT.zip"
-        },
-        {
-          "filename": "759_OwlbearCub_T1_PDF.pdf",
-          "category": "pdf",
-          "tier": "COPPER",
-          "tierName": "Copper",
-          "tierNumber": 1,
-          "filenameTier": "T1",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_T1_PDF.pdf"
-        },
-        {
-          "filename": "759_OwlbearCub_T1_PNGs.zip",
-          "category": "png",
-          "tier": "COPPER",
-          "tierName": "Copper",
-          "tierNumber": 1,
-          "filenameTier": "T1",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_T1_PNGs.zip"
-        },
-        {
-          "filename": "759_OwlbearCub_T1_VTT.zip",
-          "category": "vtt",
-          "tier": "COPPER",
-          "tierName": "Copper",
-          "tierNumber": 1,
-          "filenameTier": "T1",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_T1_VTT.zip"
-        },
-        {
-          "filename": "759_OwlbearCub_T2_PDF.pdf",
-          "category": "pdf",
-          "tier": "IRON",
-          "tierName": "Iron",
-          "tierNumber": 2,
-          "filenameTier": "T2",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_T2_PDF.pdf"
-        },
-        {
-          "filename": "759_OwlbearCub_T2_PNGs.zip",
-          "category": "png",
-          "tier": "IRON",
-          "tierName": "Iron",
-          "tierNumber": 2,
-          "filenameTier": "T2",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_T2_PNGs.zip"
-        },
-        {
-          "filename": "759_OwlbearCub_T2_VTT.zip",
-          "category": "vtt",
-          "tier": "IRON",
-          "tierName": "Iron",
-          "tierNumber": 2,
-          "filenameTier": "T2",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_T2_VTT.zip"
-        },
-        {
-          "filename": "759_OwlbearCub_T3_VTT.zip",
-          "category": "vtt",
-          "tier": "STEEL",
-          "tierName": "Steel",
-          "tierNumber": 3,
-          "filenameTier": "T3",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_T3_VTT.zip"
-        },
-        {
-          "filename": "759_OwlbearCub_T4_CUTFILE.zip",
+          "filename": "759_Fanart_OwlbearCub_FREE_CUTFILE.zip",
           "category": "cutfile",
-          "tier": "TITANIUM",
-          "tierName": "Titanium",
-          "tierNumber": 4,
-          "filenameTier": "T4",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_T4_CUTFILE.zip"
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_Fanart_OwlbearCub_FREE_CUTFILE.zip"
         },
         {
-          "filename": "759_OwlbearCub_T4_PNGs.zip",
+          "filename": "PaperForge759_OwlbearCub_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/PaperForge759_OwlbearCub_FREE_PDF.pdf"
+        },
+        {
+          "filename": "759_Fanart_OwlbearCub_FREE_HDPNGs.zip",
           "category": "png",
-          "tier": "TITANIUM",
-          "tierName": "Titanium",
-          "tierNumber": 4,
-          "filenameTier": "T4",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_T4_PNGs.zip"
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_Fanart_OwlbearCub_FREE_HDPNGs.zip"
         },
         {
-          "filename": "759_OwlbearCub_T8_PSD.zip",
+          "filename": "759_Fanart_OwlbearCub_FREE_PNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_Fanart_OwlbearCub_FREE_PNGs.zip"
+        },
+        {
+          "filename": "759_Fanart_OwlbearCub_FREE_PSD.zip",
           "category": "psd",
-          "tier": "MITHRIL",
-          "tierName": "Mithril",
-          "tierNumber": 8,
-          "filenameTier": "T8",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_OwlbearCub_T8_PSD.zip"
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_Fanart_OwlbearCub_FREE_PSD.zip"
+        },
+        {
+          "filename": "759_Fanart_OwlbearCub_FREE_VTT.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/759_Fanart_OwlbearCub_FREE_VTT.zip"
         }
       ]
     },
     {
       "id": "2e946ece-9206-4852-8a28-cf1e2028eeaa",
       "number": 760,
-      "name": "Ulitharid [Fanart]",
+      "name": "Ulitharid",
       "url": "https://www.paperforgeminis.com/minis/2e946ece-9206-4852-8a28-cf1e2028eeaa",
       "enabled": true,
       "releaseDate": "2025-11-24T16:36:59.120Z",
@@ -79708,7 +79582,7 @@
     {
       "id": "f07f8b9b-a697-471a-834e-e6de32189947",
       "number": 811,
-      "name": "Ruined Ornamental Tiles",
+      "name": "Ruined Ornamented Tiles",
       "url": "https://www.paperforgeminis.com/minis/f07f8b9b-a697-471a-834e-e6de32189947",
       "enabled": true,
       "releaseDate": "2026-06-13T03:19:28.094Z",
@@ -80201,6 +80075,1665 @@
           "tierNumber": 8,
           "filenameTier": "T8",
           "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/814__Variant_BrainInAJar_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "a09622b8-6b0c-492d-99c0-dbe47e4052b3",
+      "number": 815,
+      "name": "Earth Elemental",
+      "url": "https://www.paperforgeminis.com/minis/a09622b8-6b0c-492d-99c0-dbe47e4052b3",
+      "enabled": true,
+      "releaseDate": "2026-06-27T01:02:03.356Z",
+      "downloads": [
+        {
+          "filename": "815__Reskin_EarthElemental_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/815__Reskin_EarthElemental_T3_PDF.pdf"
+        },
+        {
+          "filename": "815__Reskin_EarthElemental_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/815__Reskin_EarthElemental_T3_PNGs.zip"
+        },
+        {
+          "filename": "815__Reskin_EarthElemental_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/815__Reskin_EarthElemental_T3_VTT.zip"
+        },
+        {
+          "filename": "815__Reskin_EarthElemental_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/815__Reskin_EarthElemental_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "815__Reskin_EarthElemental_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/815__Reskin_EarthElemental_T4_PNGs.zip"
+        },
+        {
+          "filename": "815__Reskin_EarthElemental_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/815__Reskin_EarthElemental_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "21a64da8-6d7e-4048-be71-5c6015d70014",
+      "number": 816,
+      "name": "Strahd Skeleton",
+      "url": "https://www.paperforgeminis.com/minis/21a64da8-6d7e-4048-be71-5c6015d70014",
+      "enabled": true,
+      "releaseDate": "2026-07-01T13:25:53.180Z",
+      "downloads": [
+        {
+          "filename": "816__Fanart_StrahdSkeleton_FREE_CUTFILE_2.zip",
+          "category": "cutfile",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/816__Fanart_StrahdSkeleton_FREE_CUTFILE_2.zip"
+        },
+        {
+          "filename": "816__Fanart_StrahdSkeleton_FREE_PDF_2.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/816__Fanart_StrahdSkeleton_FREE_PDF_2.pdf"
+        },
+        {
+          "filename": "816__Fanart_StrahdSkeleton_FREE_HDPNGs_2.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/816__Fanart_StrahdSkeleton_FREE_HDPNGs_2.zip"
+        },
+        {
+          "filename": "816__Fanart_StrahdSkeleton_FREE_PNGs_2.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/816__Fanart_StrahdSkeleton_FREE_PNGs_2.zip"
+        },
+        {
+          "filename": "816__Fanart_StrahdSkeleton_FREE_PSD_2.zip",
+          "category": "psd",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/816__Fanart_StrahdSkeleton_FREE_PSD_2.zip"
+        },
+        {
+          "filename": "816__Fanart_StrahdSkeleton_FREE_VTT_2.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/816__Fanart_StrahdSkeleton_FREE_VTT_2.zip"
+        }
+      ]
+    },
+    {
+      "id": "dd49aa23-48b2-4522-867e-c56e25fb5281",
+      "number": 817,
+      "name": "Strahd Skeleton",
+      "url": "https://www.paperforgeminis.com/minis/dd49aa23-48b2-4522-867e-c56e25fb5281",
+      "enabled": true,
+      "releaseDate": "2026-07-01T13:35:53.476Z",
+      "downloads": [
+        {
+          "filename": "817__Fanart_StrahdSkeleton_FREE_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/817__Fanart_StrahdSkeleton_FREE_CUTFILE.zip"
+        },
+        {
+          "filename": "817__Fanart_StrahdSkeleton_FREE_PDF_1.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/817__Fanart_StrahdSkeleton_FREE_PDF_1.pdf"
+        },
+        {
+          "filename": "817__Fanart_StrahdSkeleton_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/817__Fanart_StrahdSkeleton_FREE_PDF.pdf"
+        },
+        {
+          "filename": "817__Fanart_StrahdSkeleton_FREE_HDPNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/817__Fanart_StrahdSkeleton_FREE_HDPNGs.zip"
+        },
+        {
+          "filename": "817__Fanart_StrahdSkeleton_FREE_PNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/817__Fanart_StrahdSkeleton_FREE_PNGs.zip"
+        },
+        {
+          "filename": "817__Fanart_StrahdSkeleton_FREE_PSD.zip",
+          "category": "psd",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/817__Fanart_StrahdSkeleton_FREE_PSD.zip"
+        },
+        {
+          "filename": "817__Fanart_StrahdSkeleton_FREE_VTT.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/817__Fanart_StrahdSkeleton_FREE_VTT.zip"
+        }
+      ]
+    },
+    {
+      "id": "4a091d01-58db-42d9-8ad9-57779e28d7a7",
+      "number": 818,
+      "name": "Skeleton",
+      "url": "https://www.paperforgeminis.com/minis/4a091d01-58db-42d9-8ad9-57779e28d7a7",
+      "enabled": true,
+      "releaseDate": "2026-07-04T00:52:39.777Z",
+      "downloads": [
+        {
+          "filename": "818__Reskin_Skeleton_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/818__Reskin_Skeleton_T3_PDF.pdf"
+        },
+        {
+          "filename": "818__Reskin_Skeleton_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/818__Reskin_Skeleton_T3_PNGs.zip"
+        },
+        {
+          "filename": "818__Reskin_Skeleton_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/818__Reskin_Skeleton_T3_VTT.zip"
+        },
+        {
+          "filename": "818__Reskin_Skeleton_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/818__Reskin_Skeleton_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "818__Reskin_Skeleton_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/818__Reskin_Skeleton_T4_PNGs.zip"
+        },
+        {
+          "filename": "818__Reskin_Skeleton_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/818__Reskin_Skeleton_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "9c635101-970e-49b5-b9d6-b5d4439c7c7e",
+      "number": 819,
+      "name": "Skeleton",
+      "url": "https://www.paperforgeminis.com/minis/9c635101-970e-49b5-b9d6-b5d4439c7c7e",
+      "enabled": true,
+      "releaseDate": "2026-07-04T00:56:09.088Z",
+      "downloads": [
+        {
+          "filename": "819__Reskin_Skeleton_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/819__Reskin_Skeleton_T3_PDF.pdf"
+        },
+        {
+          "filename": "819__Reskin_Skeleton_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/819__Reskin_Skeleton_T3_PNGs.zip"
+        },
+        {
+          "filename": "819__Reskin_Skeleton_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/819__Reskin_Skeleton_T3_VTT.zip"
+        },
+        {
+          "filename": "819__Reskin_Skeleton_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/819__Reskin_Skeleton_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "819__Reskin_Skeleton_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/819__Reskin_Skeleton_T4_PNGs.zip"
+        },
+        {
+          "filename": "819__Reskin_Skeleton_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/819__Reskin_Skeleton_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "cfc5343c-0613-422b-b51b-48432c26a5d5",
+      "number": 820,
+      "name": "Gallows Speaker",
+      "url": "https://www.paperforgeminis.com/minis/cfc5343c-0613-422b-b51b-48432c26a5d5",
+      "enabled": true,
+      "releaseDate": "2026-07-11T12:59:23.712Z",
+      "downloads": [
+        {
+          "filename": "820__Fanart_GallowsSpeaker_FREE_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/820__Fanart_GallowsSpeaker_FREE_CUTFILE.zip"
+        },
+        {
+          "filename": "820__Fanart_GallowsSpeaker_Base_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/820__Fanart_GallowsSpeaker_Base_FREE_PDF.pdf"
+        },
+        {
+          "filename": "820__Fanart_GallowsSpeaker_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/820__Fanart_GallowsSpeaker_FREE_PDF.pdf"
+        },
+        {
+          "filename": "820__Fanart_GallowsSpeaker_FREE_HDPNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/820__Fanart_GallowsSpeaker_FREE_HDPNGs.zip"
+        },
+        {
+          "filename": "820__Fanart_GallowsSpeaker_FREE_PNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/820__Fanart_GallowsSpeaker_FREE_PNGs.zip"
+        },
+        {
+          "filename": "820__Fanart_GallowsSpeaker_FREE_PSD.zip",
+          "category": "psd",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/820__Fanart_GallowsSpeaker_FREE_PSD.zip"
+        },
+        {
+          "filename": "820__Fanart_GallowsSpeaker_FREE_VTT.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/820__Fanart_GallowsSpeaker_FREE_VTT.zip"
+        }
+      ]
+    },
+    {
+      "id": "d14d074e-37b0-4c47-9eca-3f0a0b1a1b88",
+      "number": 821,
+      "name": "Owlbear",
+      "url": "https://www.paperforgeminis.com/minis/d14d074e-37b0-4c47-9eca-3f0a0b1a1b88",
+      "enabled": true,
+      "releaseDate": "2026-07-26T15:18:18.893Z",
+      "downloads": [
+        {
+          "filename": "821__Fanart_Owlbear_FREE_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/821__Fanart_Owlbear_FREE_CUTFILE.zip"
+        },
+        {
+          "filename": "821__Fanart_Owlbear_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/821__Fanart_Owlbear_FREE_PDF.pdf"
+        },
+        {
+          "filename": "821__Fanart_Owlbear_HDPNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/821__Fanart_Owlbear_HDPNGs.zip"
+        },
+        {
+          "filename": "821__Fanart_Owlbear_PNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/821__Fanart_Owlbear_PNGs.zip"
+        },
+        {
+          "filename": "821__Fanart_Owlbear_FREE_PSD.zip",
+          "category": "psd",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/821__Fanart_Owlbear_FREE_PSD.zip"
+        },
+        {
+          "filename": "821__Fanart_Owlbear_FREE_VTT.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/821__Fanart_Owlbear_FREE_VTT.zip"
+        }
+      ]
+    },
+    {
+      "id": "fe030d6a-41e5-4477-96e5-1ff6a8a094d2",
+      "number": 822,
+      "name": "Black Cane Wizard",
+      "url": "https://www.paperforgeminis.com/minis/fe030d6a-41e5-4477-96e5-1ff6a8a094d2",
+      "enabled": true,
+      "releaseDate": "2026-08-01T13:04:05.964Z",
+      "downloads": [
+        {
+          "filename": "822_BlackCaneWizard_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_FREE_PDF.pdf"
+        },
+        {
+          "filename": "822_BlackCaneWizard_FREE_PNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_FREE_PNGs.zip"
+        },
+        {
+          "filename": "822_BlackCaneWizard_FREE_VTT.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_FREE_VTT.zip"
+        },
+        {
+          "filename": "822_BlackCaneWizard_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_T1_PDF.pdf"
+        },
+        {
+          "filename": "822_BlackCaneWizard_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_T1_PNGs.zip"
+        },
+        {
+          "filename": "822_BlackCaneWizard_T1_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_T1_VTT.zip"
+        },
+        {
+          "filename": "822_BlackCaneWizard_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_T2_PDF.pdf"
+        },
+        {
+          "filename": "822_BlackCaneWizard_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_T2_PNGs.zip"
+        },
+        {
+          "filename": "822_BlackCaneWizard_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_T2_VTT.zip"
+        },
+        {
+          "filename": "822_BlackCaneWizard_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_T3_VTT.zip"
+        },
+        {
+          "filename": "822_BlackCaneWizard_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "822_BlackCaneWizard_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_T4_PNGs.zip"
+        },
+        {
+          "filename": "822_BlackCaneWizard_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/822_BlackCaneWizard_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "1b9569a7-3360-404b-8c64-7ff9ca576a6e",
+      "number": 823,
+      "name": "Black Cane Wizard",
+      "url": "https://www.paperforgeminis.com/minis/1b9569a7-3360-404b-8c64-7ff9ca576a6e",
+      "enabled": true,
+      "releaseDate": "2026-08-01T13:17:36.891Z",
+      "downloads": [
+        {
+          "filename": "823_BlackCaneWizard_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_FREE_PDF.pdf"
+        },
+        {
+          "filename": "823_BlackCaneWizard_FREE_PNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_FREE_PNGs.zip"
+        },
+        {
+          "filename": "823_BlackCaneWizard_FREE_VTT.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_FREE_VTT.zip"
+        },
+        {
+          "filename": "823_BlackCaneWizard_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_T1_PDF.pdf"
+        },
+        {
+          "filename": "823_BlackCaneWizard_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_T1_PNGs.zip"
+        },
+        {
+          "filename": "823_BlackCaneWizard_T1_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_T1_VTT.zip"
+        },
+        {
+          "filename": "823_BlackCaneWizard_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_T2_PDF.pdf"
+        },
+        {
+          "filename": "823_BlackCaneWizard_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_T2_PNGs.zip"
+        },
+        {
+          "filename": "823_BlackCaneWizard_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_T2_VTT.zip"
+        },
+        {
+          "filename": "823_BlackCaneWizard_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_T3_VTT.zip"
+        },
+        {
+          "filename": "823_BlackCaneWizard_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "823_BlackCaneWizard_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_T4_PNGs.zip"
+        },
+        {
+          "filename": "823_BlackCaneWizard_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/823_BlackCaneWizard_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "5cee2f3c-7f7a-41c1-a52c-3161149da7f2",
+      "number": 824,
+      "name": "Blue Slaad",
+      "url": "https://www.paperforgeminis.com/minis/5cee2f3c-7f7a-41c1-a52c-3161149da7f2",
+      "enabled": true,
+      "releaseDate": "2026-08-14T02:16:13.801Z",
+      "downloads": [
+        {
+          "filename": "824__Fanart_BlueSlaad_FREE_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/824__Fanart_BlueSlaad_FREE_CUTFILE.zip"
+        },
+        {
+          "filename": "824__Fanart_BlueSlaad_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/824__Fanart_BlueSlaad_FREE_PDF.pdf"
+        },
+        {
+          "filename": "824__Fanart_BlueSlaad_FREE_HDPNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/824__Fanart_BlueSlaad_FREE_HDPNGs.zip"
+        },
+        {
+          "filename": "824__Fanart_BlueSlaad_FREE_PNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/824__Fanart_BlueSlaad_FREE_PNGs.zip"
+        },
+        {
+          "filename": "824__Fanart_BlueSlaad_FREE_PSD.zip",
+          "category": "psd",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/824__Fanart_BlueSlaad_FREE_PSD.zip"
+        },
+        {
+          "filename": "824__Fanart_BlueSlaad_FREE_VTT.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/824__Fanart_BlueSlaad_FREE_VTT.zip"
+        }
+      ]
+    },
+    {
+      "id": "500fcbf0-8d50-4a42-acf2-e3e78c00bb03",
+      "number": 825,
+      "name": "Red Slaad",
+      "url": "https://www.paperforgeminis.com/minis/500fcbf0-8d50-4a42-acf2-e3e78c00bb03",
+      "enabled": true,
+      "releaseDate": "2026-08-17T21:36:47.082Z",
+      "downloads": [
+        {
+          "filename": "825__Fanart_RedSlaad_FREE_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/825__Fanart_RedSlaad_FREE_CUTFILE.zip"
+        },
+        {
+          "filename": "825__Fanart_RedSlaad_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/825__Fanart_RedSlaad_FREE_PDF.pdf"
+        },
+        {
+          "filename": "825__Fanart_RedSlaad_FREE_HDPNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/825__Fanart_RedSlaad_FREE_HDPNGs.zip"
+        },
+        {
+          "filename": "825__Fanart_RedSlaad_FREE_PNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/825__Fanart_RedSlaad_FREE_PNGs.zip"
+        },
+        {
+          "filename": "825__Fanart_RedSlaad_FREE_PSD.zip",
+          "category": "psd",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/825__Fanart_RedSlaad_FREE_PSD.zip"
+        },
+        {
+          "filename": "825__Fanart_RedSlaad_FREE_VTT.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/825__Fanart_RedSlaad_FREE_VTT.zip"
+        }
+      ]
+    },
+    {
+      "id": "2a33fe49-3cb0-4ef5-9ece-61a9c5702b5d",
+      "number": 826,
+      "name": "Green Slaad",
+      "url": "https://www.paperforgeminis.com/minis/2a33fe49-3cb0-4ef5-9ece-61a9c5702b5d",
+      "enabled": true,
+      "releaseDate": "2026-08-18T03:25:54.186Z",
+      "downloads": [
+        {
+          "filename": "826__Fanart_GreenSlaad_FREE_CUTFILE_1.zip",
+          "category": "cutfile",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/826__Fanart_GreenSlaad_FREE_CUTFILE_1.zip"
+        },
+        {
+          "filename": "826__Fanart_GreenSlaad_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/826__Fanart_GreenSlaad_FREE_PDF.pdf"
+        },
+        {
+          "filename": "826__Fanart_GreenSlaad_FREE_HDPNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/826__Fanart_GreenSlaad_FREE_HDPNGs.zip"
+        },
+        {
+          "filename": "826__Fanart_GreenSlaad_FREE_PNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/826__Fanart_GreenSlaad_FREE_PNGs.zip"
+        },
+        {
+          "filename": "826__Fanart_GreenSlaad_FREE_PSD.zip",
+          "category": "psd",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/826__Fanart_GreenSlaad_FREE_PSD.zip"
+        },
+        {
+          "filename": "826__Fanart_GreenSlaad_FREE_VTT.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/826__Fanart_GreenSlaad_FREE_VTT.zip"
+        }
+      ]
+    },
+    {
+      "id": "cad770d8-4d93-41f6-966e-cb76345445fd",
+      "number": 827,
+      "name": "SpellBlade",
+      "url": "https://www.paperforgeminis.com/minis/cad770d8-4d93-41f6-966e-cb76345445fd",
+      "enabled": true,
+      "releaseDate": "2026-08-18T03:32:16.829Z",
+      "downloads": [
+        {
+          "filename": "827_SpellBlade_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/827_SpellBlade_T1_PDF.pdf"
+        },
+        {
+          "filename": "827_SpellBlade_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/827_SpellBlade_T1_PNGs.zip"
+        },
+        {
+          "filename": "827_SpellBlade_T1_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/827_SpellBlade_T1_VTT.zip"
+        },
+        {
+          "filename": "827_SpellBlade_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/827_SpellBlade_T2_PDF.pdf"
+        },
+        {
+          "filename": "827_SpellBlade_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/827_SpellBlade_T2_PNGs.zip"
+        },
+        {
+          "filename": "827_SpellBlade_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/827_SpellBlade_T2_VTT.zip"
+        },
+        {
+          "filename": "827_SpellBlade_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/827_SpellBlade_T3_VTT.zip"
+        },
+        {
+          "filename": "827_SpellBlade_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/827_SpellBlade_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "827_SpellBlade_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/827_SpellBlade_T4_PNGs.zip"
+        },
+        {
+          "filename": "827_SpellBlade_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/827_SpellBlade_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "e7927890-40f9-4b90-a175-d4991c2dfb98",
+      "number": 828,
+      "name": "SpellBlade",
+      "url": "https://www.paperforgeminis.com/minis/e7927890-40f9-4b90-a175-d4991c2dfb98",
+      "enabled": true,
+      "releaseDate": "2026-08-18T03:29:34.396Z",
+      "downloads": [
+        {
+          "filename": "828__Reskin_SpellBlade_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/828__Reskin_SpellBlade_T3_PDF.pdf"
+        },
+        {
+          "filename": "828__Reskin_SpellBlade_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/828__Reskin_SpellBlade_T3_PNGs.zip"
+        },
+        {
+          "filename": "828__Reskin_SpellBlade_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/828__Reskin_SpellBlade_T3_VTT.zip"
+        },
+        {
+          "filename": "828__Reskin_SpellBlade_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/828__Reskin_SpellBlade_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "828__Reskin_SpellBlade_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/828__Reskin_SpellBlade_T4_PNGs.zip"
+        },
+        {
+          "filename": "828__Reskin_SpellBlade_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/828__Reskin_SpellBlade_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "2e88f515-57a1-4f11-9c9f-978b75aa72f6",
+      "number": 829,
+      "name": "Slaad Tadpole",
+      "url": "https://www.paperforgeminis.com/minis/2e88f515-57a1-4f11-9c9f-978b75aa72f6",
+      "enabled": true,
+      "releaseDate": "2026-08-18T03:34:19.167Z",
+      "downloads": [
+        {
+          "filename": "829__Fanart_SlaadTadpole_FREE_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/829__Fanart_SlaadTadpole_FREE_CUTFILE.zip"
+        },
+        {
+          "filename": "829__Fanart_SlaadTadpole_FREE_PDF.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/829__Fanart_SlaadTadpole_FREE_PDF.pdf"
+        },
+        {
+          "filename": "829__Fanart_SlaadTadpole_FREE_HDPNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/829__Fanart_SlaadTadpole_FREE_HDPNGs.zip"
+        },
+        {
+          "filename": "829__Fanart_SlaadTadpole_FREE_PNGs.zip",
+          "category": "png",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/829__Fanart_SlaadTadpole_FREE_PNGs.zip"
+        },
+        {
+          "filename": "829__Fanart_SlaadTadpole_FREE_PSD.zip",
+          "category": "psd",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/829__Fanart_SlaadTadpole_FREE_PSD.zip"
+        },
+        {
+          "filename": "829__Fanart_SlaadTadpole_FREE_VTT.zip",
+          "category": "vtt",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": "FREE",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/829__Fanart_SlaadTadpole_FREE_VTT.zip"
+        }
+      ]
+    },
+    {
+      "id": "d136fa00-1d85-45b9-bbea-dfffef5de200",
+      "number": 830,
+      "name": "Dire Wolf",
+      "url": "https://www.paperforgeminis.com/minis/d136fa00-1d85-45b9-bbea-dfffef5de200",
+      "enabled": true,
+      "releaseDate": "2026-08-28T13:09:45.831Z",
+      "downloads": [
+        {
+          "filename": "830_DireWolf_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/830_DireWolf_T1_PDF.pdf"
+        },
+        {
+          "filename": "830_DireWolf_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/830_DireWolf_T1_PNGs.zip"
+        },
+        {
+          "filename": "830_DireWolf_T1_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/830_DireWolf_T1_VTT.zip"
+        },
+        {
+          "filename": "830_DireWolf_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/830_DireWolf_T2_PDF.pdf"
+        },
+        {
+          "filename": "830_DireWolf_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/830_DireWolf_T2_PNGs.zip"
+        },
+        {
+          "filename": "830_DireWolf_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/830_DireWolf_T2_VTT.zip"
+        },
+        {
+          "filename": "830_DireWolf_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/830_DireWolf_T3_VTT.zip"
+        },
+        {
+          "filename": "830_DireWolf_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/830_DireWolf_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "830_DireWolf_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/830_DireWolf_T4_PNGs.zip"
+        },
+        {
+          "filename": "830_DireWolf_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/830_DireWolf_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "616a9328-1484-44cb-8133-29dfa559ac0e",
+      "number": 831,
+      "name": "Dire Wolf",
+      "url": "https://www.paperforgeminis.com/minis/616a9328-1484-44cb-8133-29dfa559ac0e",
+      "enabled": true,
+      "releaseDate": "2026-08-29T13:35:27.698Z",
+      "downloads": [
+        {
+          "filename": "831_DireWolf_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/831_DireWolf_T1_PDF.pdf"
+        },
+        {
+          "filename": "831_DireWolf_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/831_DireWolf_T1_PNGs.zip"
+        },
+        {
+          "filename": "831_DireWolf_T1_VTT_1.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/831_DireWolf_T1_VTT_1.zip"
+        },
+        {
+          "filename": "831_DireWolf_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/831_DireWolf_T2_PDF.pdf"
+        },
+        {
+          "filename": "831_DireWolf_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/831_DireWolf_T2_PNGs.zip"
+        },
+        {
+          "filename": "831_DireWolf_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/831_DireWolf_T2_VTT.zip"
+        },
+        {
+          "filename": "831_DireWolf_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/831_DireWolf_T3_VTT.zip"
+        },
+        {
+          "filename": "831_DireWolf_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/831_DireWolf_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "831_DireWolf_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/831_DireWolf_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "af0ab569-5780-4e3b-ade1-7a37fef2492b",
+      "number": 832,
+      "name": "Dire Wolf Pup",
+      "url": "https://www.paperforgeminis.com/minis/af0ab569-5780-4e3b-ade1-7a37fef2492b",
+      "enabled": true,
+      "releaseDate": "2026-08-31T03:44:11.452Z",
+      "downloads": [
+        {
+          "filename": "832_DireWolfPup_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/832_DireWolfPup_T1_PDF.pdf"
+        },
+        {
+          "filename": "832_DireWolfPup_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/832_DireWolfPup_T1_PNGs.zip"
+        },
+        {
+          "filename": "832_DireWolfPup_T1_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/832_DireWolfPup_T1_VTT.zip"
+        },
+        {
+          "filename": "832_DireWolfPup_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/832_DireWolfPup_T2_PDF.pdf"
+        },
+        {
+          "filename": "832_DireWolfPup_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/832_DireWolfPup_T2_PNGs.zip"
+        },
+        {
+          "filename": "832_DireWolfPup_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/832_DireWolfPup_T2_VTT.zip"
+        },
+        {
+          "filename": "832_DireWolfPup_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/832_DireWolfPup_T3_VTT.zip"
+        },
+        {
+          "filename": "832_DireWolfPup_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/832_DireWolfPup_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "832_DireWolfPup_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/832_DireWolfPup_T4_PNGs.zip"
+        },
+        {
+          "filename": "832_DireWolfPup_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/832_DireWolfPup_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "9e1fbed5-40bb-411c-a8d8-58cfa2e21ea4",
+      "number": 833,
+      "name": "Swashbuckler",
+      "url": "https://www.paperforgeminis.com/minis/9e1fbed5-40bb-411c-a8d8-58cfa2e21ea4",
+      "enabled": true,
+      "releaseDate": "2026-09-03T04:38:16.963Z",
+      "downloads": [
+        {
+          "filename": "833__Reskin_Swashbuckler_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/833__Reskin_Swashbuckler_T3_PDF.pdf"
+        },
+        {
+          "filename": "833__Reskin_Swashbuckler_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/833__Reskin_Swashbuckler_T3_PNGs.zip"
+        },
+        {
+          "filename": "833__Reskin_Swashbuckler_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/833__Reskin_Swashbuckler_T3_VTT.zip"
+        },
+        {
+          "filename": "833__Reskin_Swashbuckler_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/833__Reskin_Swashbuckler_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "833__Reskin_Swashbuckler_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/833__Reskin_Swashbuckler_T4_PNGs.zip"
+        },
+        {
+          "filename": "833__Reskin_Swashbuckler_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/833__Reskin_Swashbuckler_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "afe4040f-b2bd-4d41-887c-259f9a0b6c59",
+      "number": 834,
+      "name": "Swashbuckler",
+      "url": "https://www.paperforgeminis.com/minis/afe4040f-b2bd-4d41-887c-259f9a0b6c59",
+      "enabled": true,
+      "releaseDate": "2026-09-05T02:26:34.439Z",
+      "downloads": [
+        {
+          "filename": "834__Reskin_Swashbuckler_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/834__Reskin_Swashbuckler_T3_PDF.pdf"
+        },
+        {
+          "filename": "834__Reskin_Swashbuckler_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/834__Reskin_Swashbuckler_T3_PNGs.zip"
+        },
+        {
+          "filename": "834__Reskin_Swashbuckler_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/834__Reskin_Swashbuckler_T3_VTT.zip"
+        },
+        {
+          "filename": "834__Reskin_Swashbuckler_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/834__Reskin_Swashbuckler_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "834__Reskin_Swashbuckler_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/834__Reskin_Swashbuckler_T4_PNGs.zip"
+        },
+        {
+          "filename": "834__Reskin_Swashbuckler_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/834__Reskin_Swashbuckler_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "0cae924e-4141-45ce-ae1c-f355db77faf4",
+      "number": 835,
+      "name": "Hawk",
+      "url": "https://www.paperforgeminis.com/minis/0cae924e-4141-45ce-ae1c-f355db77faf4",
+      "enabled": true,
+      "releaseDate": "2026-09-07T03:31:15.404Z",
+      "downloads": [
+        {
+          "filename": "835_Hawk_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/835_Hawk_T1_PDF.pdf"
+        },
+        {
+          "filename": "835_Hawk_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/835_Hawk_T1_PNGs.zip"
+        },
+        {
+          "filename": "835_Hawk_T1_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/835_Hawk_T1_VTT.zip"
+        },
+        {
+          "filename": "835_Hawk_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/835_Hawk_T2_PDF.pdf"
+        },
+        {
+          "filename": "835_Hawk_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/835_Hawk_T2_PNGs.zip"
+        },
+        {
+          "filename": "835_Hawk_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/835_Hawk_T2_VTT.zip"
+        },
+        {
+          "filename": "835_Hawk_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/835_Hawk_T3_VTT.zip"
+        },
+        {
+          "filename": "835_Hawk_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/835_Hawk_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "835_Hawk_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/835_Hawk_T4_PNGs.zip"
+        },
+        {
+          "filename": "835_Hawk_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/835_Hawk_T8_PSD.zip"
         }
       ]
     }

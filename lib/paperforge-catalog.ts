@@ -3573,14 +3573,14 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
   },
   {
     id: "759",
-    name: "OwlbearCub",
+    name: "Owlbear Cub",
     postUrl:
       "https://www.paperforgeminis.com/minis/a8225e5c-acc9-4145-9c4d-28c0b249b83f",
     folder: "0759",
   },
   {
     id: "760",
-    name: "Ulitharid [Fanart]",
+    name: "Ulitharid",
     postUrl:
       "https://www.paperforgeminis.com/minis/2e946ece-9206-4852-8a28-cf1e2028eeaa",
     folder: "0760",
@@ -3815,6 +3815,76 @@ export const PAPERFORGE_ENTRIES: PaperForgeEntry[] = [
     postUrl:
       "https://www.paperforgeminis.com/minis/649be59f-3817-4901-b937-b636b6524f86",
     folder: "0813",
+  },
+  {
+    id: "816",
+    name: "Strahd Skeleton",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/21a64da8-6d7e-4048-be71-5c6015d70014",
+    folder: "0816",
+  },
+  {
+    id: "817",
+    name: "Strahd Skeleton",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/dd49aa23-48b2-4522-867e-c56e25fb5281",
+    folder: "0817",
+  },
+  {
+    id: "820",
+    name: "Gallows Speaker",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/cfc5343c-0613-422b-b51b-48432c26a5d5",
+    folder: "0820",
+  },
+  {
+    id: "821",
+    name: "Owlbear",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/d14d074e-37b0-4c47-9eca-3f0a0b1a1b88",
+    folder: "0821",
+  },
+  {
+    id: "822",
+    name: "Black Cane Wizard",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/fe030d6a-41e5-4477-96e5-1ff6a8a094d2",
+    folder: "0822",
+  },
+  {
+    id: "823",
+    name: "Black Cane Wizard",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/1b9569a7-3360-404b-8c64-7ff9ca576a6e",
+    folder: "0823",
+  },
+  {
+    id: "824",
+    name: "Blue Slaad",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/5cee2f3c-7f7a-41c1-a52c-3161149da7f2",
+    folder: "0824",
+  },
+  {
+    id: "825",
+    name: "Red Slaad",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/500fcbf0-8d50-4a42-acf2-e3e78c00bb03",
+    folder: "0825",
+  },
+  {
+    id: "826",
+    name: "Green Slaad",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/2a33fe49-3cb0-4ef5-9ece-61a9c5702b5d",
+    folder: "0826",
+  },
+  {
+    id: "829",
+    name: "Slaad Tadpole",
+    postUrl:
+      "https://www.paperforgeminis.com/minis/2e88f515-57a1-4f11-9c9f-978b75aa72f6",
+    folder: "0829",
   },
 ];
 
