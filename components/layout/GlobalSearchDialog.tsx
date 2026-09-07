@@ -3,7 +3,6 @@
 import type { LucideIcon } from "lucide-react";
 import { BookOpen, Map as MapIcon, Swords, TriangleAlert } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import { GameIcon } from "@/components/icons/GameIcon";
 import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
@@ -17,14 +16,16 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   GLOBAL_SEARCH_ENTITY_LABELS,
   type GlobalSearchEntityType,
   type GlobalSearchResponse,
   type GlobalSearchResult,
 } from "@/lib/services/global-search/contract";
-import { ENTITY_TYPE_ICONS } from "@/lib/types/entity-links";
+import {
+  ENTITY_TYPE_ICONS,
+  SITE_NAVIGATION_GROUPS,
+} from "@/lib/types/entity-links";
 
 const TYPE_ICONS: Record<GlobalSearchEntityType, LucideIcon> = {
   monster: ENTITY_TYPE_ICONS.monster,
@@ -44,15 +45,12 @@ const TYPE_ICONS: Record<GlobalSearchEntityType, LucideIcon> = {
 };
 
 type SearchStatus = "idle" | "loading" | "ready" | "error";
-type SearchScope = "all" | "mine";
 
 export function GlobalSearchDialog() {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [scope, setScope] = useState<SearchScope>("all");
   const [results, setResults] = useState<GlobalSearchResult[]>([]);
   const [status, setStatus] = useState<SearchStatus>("idle");
   const requestId = useRef(0);
@@ -88,7 +86,6 @@ export function GlobalSearchDialog() {
     const timer = window.setTimeout(async () => {
       try {
         const params = new URLSearchParams({ q: trimmedQuery });
-        if (scope === "mine") params.set("scope", "mine");
         const response = await fetch(`/_actions/search?${params.toString()}`, {
           signal: controller.signal,
         });
@@ -113,7 +110,7 @@ export function GlobalSearchDialog() {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [query, scope]);
+  }, [query]);
 
   function handleOpenChange(nextOpen: boolean) {
     setOpen(nextOpen);
@@ -148,32 +145,14 @@ export function GlobalSearchDialog() {
       >
         <DialogTitle className="sr-only">Global search</DialogTitle>
         <DialogDescription className="sr-only">
-          Search public site content or your library.
+          Search public site content.
         </DialogDescription>
         <CommandInput
           value={query}
           onValueChange={setQuery}
-          placeholder="Search monsters, rules, items..."
+          placeholder="Search"
           autoFocus
         />
-        <div className="border-b px-3 py-2">
-          <ToggleGroup
-            type="single"
-            value={scope}
-            onValueChange={(value: SearchScope) => {
-              if (value) setScope(value);
-            }}
-            variant="outline"
-            size="sm"
-            className="justify-start"
-            aria-label="Search scope"
-          >
-            <ToggleGroupItem value="all">All</ToggleGroupItem>
-            <ToggleGroupItem value="mine" disabled={!session?.user?.id}>
-              My Library
-            </ToggleGroupItem>
-          </ToggleGroup>
-        </div>
         <CommandList className="max-h-none flex-1 pb-2">
           {status === "error" && (
             <div
@@ -184,8 +163,27 @@ export function GlobalSearchDialog() {
             </div>
           )}
           {status === "idle" && (
-            <div className="py-6 text-center text-sm text-muted-foreground">
-              Type to search the site.
+            <div className="grid grid-cols-2 gap-x-2">
+              {SITE_NAVIGATION_GROUPS.map((group) => (
+                <CommandGroup key={group.id} heading={group.label}>
+                  {group.items.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <CommandItem
+                        key={item.key}
+                        value={`browse:${item.key}`}
+                        onSelect={() => {
+                          handleOpenChange(false);
+                          router.push(`/${item.key}`);
+                        }}
+                      >
+                        <Icon />
+                        {item.label}
+                      </CommandItem>
+                    );
+                  })}
+                </CommandGroup>
+              ))}
             </div>
           )}
           {status === "ready" && results.length === 0 && (

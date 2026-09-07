@@ -18,10 +18,6 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
-vi.mock("next-auth/react", () => ({
-  useSession: () => ({ data: { user: { id: "user-1" } } }),
-}));
-
 vi.mock("@/components/paperforge/PaperforgeImage", () => ({
   PaperforgeImage: ({ id }: { id: string }) => (
     <div data-testid={`paperforge-${id}`} />
@@ -50,26 +46,20 @@ describe("GlobalSearchDialog", () => {
 
     fireEvent.keyDown(document, { key: "k", ctrlKey: true });
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText("Search monsters, rules, items...")
-    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Search")).toBeInTheDocument();
+    expect(screen.getByText("Bestiary")).toBeInTheDocument();
+    expect(screen.getByText("Heroes")).toBeInTheDocument();
 
-    fireEvent.keyDown(
-      screen.getByPlaceholderText("Search monsters, rules, items..."),
-      { key: "Escape" }
-    );
+    fireEvent.keyDown(screen.getByPlaceholderText("Search"), { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
 
     fireEvent.keyDown(document, { key: "k", metaKey: true });
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
-    fireEvent.keyDown(
-      screen.getByPlaceholderText("Search monsters, rules, items..."),
-      { key: "Escape" }
-    );
+    fireEvent.keyDown(screen.getByPlaceholderText("Search"), { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
   });
 
-  it("aborts stale searches and sends selected filter parameters", async () => {
+  it("aborts stale searches and sends the latest query", async () => {
     vi.useFakeTimers();
     const resolvers: ((response: Response) => void)[] = [];
     vi.spyOn(globalThis, "fetch").mockImplementation(
@@ -80,9 +70,7 @@ describe("GlobalSearchDialog", () => {
     );
     render(<GlobalSearchDialog />);
     fireEvent.keyDown(document, { key: "k", ctrlKey: true });
-    const input = screen.getByPlaceholderText(
-      "Search monsters, rules, items..."
-    );
+    const input = screen.getByPlaceholderText("Search");
 
     fireEvent.change(input, { target: { value: "first" } });
     act(() => {
@@ -90,13 +78,12 @@ describe("GlobalSearchDialog", () => {
     });
     expect(fetch).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(screen.getByRole("radio", { name: "My Library" }));
     fireEvent.change(input, { target: { value: "second" } });
     act(() => {
       vi.advanceTimersByTime(225);
     });
     expect(fetch).toHaveBeenCalledTimes(2);
-    expect(String(vi.mocked(fetch).mock.calls[1]?.[0])).toContain("scope=mine");
+    expect(String(vi.mocked(fetch).mock.calls[1]?.[0])).toContain("q=second");
 
     await act(async () => {
       resolvers[0]?.(
@@ -157,10 +144,9 @@ describe("GlobalSearchDialog", () => {
     );
     render(<GlobalSearchDialog />);
     fireEvent.keyDown(document, { key: "k", ctrlKey: true });
-    fireEvent.change(
-      screen.getByPlaceholderText("Search monsters, rules, items..."),
-      { target: { value: "frost" } }
-    );
+    fireEvent.change(screen.getByPlaceholderText("Search"), {
+      target: { value: "frost" },
+    });
 
     await act(async () => {
       vi.advanceTimersByTime(225);
