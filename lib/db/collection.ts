@@ -1097,7 +1097,7 @@ export const addClassToCollection = async (input: {
   }
 };
 
-export const listPublicCollectionsHavingContentForUser = async (
+export const listPublicCollectionsForUser = async (
   creatorId: string
 ): Promise<CollectionOverview[]> => {
   const db = getDatabase();
@@ -1127,20 +1127,7 @@ export const listPublicCollectionsHavingContentForUser = async (
   const results: CollectionOverview[] = [];
   for (const c of collectionRows) {
     const overview = await loadCollectionOverview(db, c, user, true);
-    if (
-      [
-        overview.monsters,
-        overview.items,
-        overview.companions,
-        overview.ancestries,
-        overview.backgrounds,
-        overview.subclasses,
-        overview.classes,
-        overview.spellSchools,
-      ].some((entities) => entities.length > 0)
-    ) {
-      results.push(overview);
-    }
+    results.push(overview);
   }
 
   return results;

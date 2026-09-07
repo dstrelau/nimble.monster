@@ -260,7 +260,7 @@ export const getUserFamiliesWithMonsters = async (
   });
 };
 
-export const listPublicFamiliesHavingMonstersForUser = async (
+export const listPublicFamiliesForUser = async (
   creatorId: string
 ): Promise<Family[]> => {
   const db = getDatabase();

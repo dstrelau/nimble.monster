@@ -159,13 +159,8 @@ async function loadProfileEntityContent(
         />
       );
     case "families": {
-      const families = await db.listPublicFamiliesHavingMonstersForUser(userId);
-      return (
-        <ProfileEntityContent
-          entityType="families"
-          families={families.filter((family) => !!family.monsterCount)}
-        />
-      );
+      const families = await db.listPublicFamiliesForUser(userId);
+      return <ProfileEntityContent entityType="families" families={families} />;
     }
     case "companions":
       return (
@@ -206,9 +201,7 @@ async function loadProfileEntityContent(
       return (
         <ProfileEntityContent
           entityType="collections"
-          collections={
-            await db.listPublicCollectionsHavingContentForUser(userId)
-          }
+          collections={await db.listPublicCollectionsForUser(userId)}
         />
       );
     case "rules":
