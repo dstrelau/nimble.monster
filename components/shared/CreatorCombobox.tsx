@@ -22,14 +22,13 @@ import {
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
-  getTopGlobalSearchCreators,
   getTopItemCreators,
   getTopMonsterCreators,
   searchCreators,
 } from "./search-creators-action";
 
 interface CreatorComboboxProps {
-  kind: "global" | "monsters" | "items";
+  kind: "monsters" | "items";
   value: string | null;
   onChange: (userId: string | null) => void;
 }
@@ -58,10 +57,8 @@ export function CreatorCombobox({
     : null;
 
   useEffect(() => {
-    const fetcher = (() => {
-      if (kind === "global") return getTopGlobalSearchCreators;
-      return kind === "monsters" ? getTopMonsterCreators : getTopItemCreators;
-    })();
+    const fetcher =
+      kind === "monsters" ? getTopMonsterCreators : getTopItemCreators;
     fetcher().then(setTopCreators);
   }, [kind]);
 

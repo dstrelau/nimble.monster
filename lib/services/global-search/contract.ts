@@ -52,6 +52,8 @@ export interface GlobalSearchResult {
   href: string;
   creator?: GlobalSearchCreator;
   matchedField?: "name" | "keywords" | "summary" | "body";
+  paperforgeId?: string;
+  imageIcon?: string;
 }
 
 export interface GlobalSearchFilters {

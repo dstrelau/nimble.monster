@@ -4,6 +4,7 @@ import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
 import { getNavCountsAction } from "@/app/actions/nav";
 import { Footer } from "@/components/layout/Footer";
 import { FreeBanner } from "@/components/layout/FreeBanner";
+import { GlobalSearchDialog } from "@/components/layout/GlobalSearchDialog";
 import Header from "@/components/layout/Header";
 import { StaleDeploymentBanner } from "@/components/layout/StaleDeploymentBanner";
 import { auth } from "@/lib/auth";
@@ -62,6 +63,7 @@ export default async function RootLayout({
       >
         <Providers session={session} enabledFeatures={enabledFeatures}>
           <Header initialCounts={navCounts} />
+          <GlobalSearchDialog />
           <FreeBanner />
           <main className="mx-auto w-full max-w-7xl px-4 py-6">{children}</main>
           <Footer />

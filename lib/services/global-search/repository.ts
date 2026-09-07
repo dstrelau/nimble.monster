@@ -40,6 +40,8 @@ type CatalogRow = {
   summary: unknown;
   body: unknown;
   rank: unknown;
+  paperforge_id: unknown;
+  image_icon: unknown;
 };
 
 interface RankedResult {
@@ -170,6 +172,8 @@ function toCatalogResult(row: CatalogRow, query: string): RankedResult | null {
   const creatorId = row.creator_id == null ? "" : stringValue(row.creator_id);
   const creatorName = stringValue(row.creator_name);
   const creatorUsername = stringValue(row.creator_username);
+  const paperforgeId = stringValue(row.paperforge_id);
+  const imageIcon = stringValue(row.image_icon);
 
   return {
     result: {
@@ -188,6 +192,8 @@ function toCatalogResult(row: CatalogRow, query: string): RankedResult | null {
           }
         : {}),
       ...(field ? { matchedField: field } : {}),
+      ...(paperforgeId ? { paperforgeId } : {}),
+      ...(imageIcon ? { imageIcon } : {}),
     },
     score: rankingScore(
       name,
@@ -211,6 +217,8 @@ function toCatalogRow(row: Row): CatalogRow {
     summary: row.summary,
     body: row.body,
     rank: row.rank,
+    paperforge_id: row.paperforge_id,
+    image_icon: row.image_icon,
   };
 }
 
@@ -341,11 +349,17 @@ export async function searchGlobal(
         catalog.keywords,
         catalog.summary,
         catalog.body,
-        bm25(global_search_fts, 12.0, 5.0, 2.0, 1.0) AS rank
+        bm25(global_search_fts, 12.0, 5.0, 2.0, 1.0) AS rank,
+        monsters.paperforge_id,
+        items.image_icon
       FROM global_search_fts
       INNER JOIN global_search_catalog AS catalog
         ON catalog.id = global_search_fts.rowid
       LEFT JOIN users ON users.id = catalog.creator_id
+      LEFT JOIN monsters
+        ON catalog.entity_type = 'monster' AND monsters.id = catalog.entity_id
+      LEFT JOIN items
+        ON catalog.entity_type = 'item' AND items.id = catalog.entity_id
       WHERE ${where.join(" AND ")}
       ORDER BY rank ASC, catalog.name COLLATE NOCASE ASC, catalog.entity_id ASC
       LIMIT ?

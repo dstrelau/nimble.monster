@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 import {
   GLOBAL_SEARCH_ENTITY_TYPES,
   type GlobalSearchEntityType,
@@ -40,6 +41,7 @@ function parseTypes(
 export function parseSearchRequest(request: Request): {
   query: string;
   filters: GlobalSearchFilters;
+  scope: "all" | "mine";
 } {
   const { searchParams } = new URL(request.url);
   const rawQuery = searchParams.get("q");
@@ -72,6 +74,11 @@ export function parseSearchRequest(request: Request): {
     throw new Error("Invalid creator filter");
   }
 
+  const rawScope = searchParams.get("scope");
+  if (rawScope !== null && rawScope !== "mine") {
+    throw new Error("Invalid search scope");
+  }
+
   return {
     query,
     filters: {
@@ -79,6 +86,7 @@ export function parseSearchRequest(request: Request): {
       ...(creatorId ? { creatorId } : {}),
       limit,
     },
+    scope: rawScope === "mine" ? "mine" : "all",
   };
 }
 
@@ -97,6 +105,13 @@ export const GET = telemetry(async (request: Request) => {
   }
 
   try {
+    if (parsed.scope === "mine") {
+      const session = await auth();
+      if (!session?.user?.id) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      parsed.filters.creatorId = session.user.id;
+    }
     const response: GlobalSearchResponse = {
       results: await searchGlobal(parsed.query, parsed.filters),
     };

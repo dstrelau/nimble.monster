@@ -36,6 +36,8 @@ function catalogRow(
     summary: string;
     body: string;
     rank: number;
+    paperforge_id: string | null;
+    image_icon: string | null;
   }> = {}
 ) {
   return {
@@ -50,6 +52,8 @@ function catalogRow(
     summary: "",
     body: "",
     rank: 0,
+    paperforge_id: null,
+    image_icon: null,
     ...values,
   };
 }
@@ -160,5 +164,28 @@ describe("global search repository", () => {
         username: "dungeon-smith",
       },
     });
+  });
+
+  it("returns available monster and item image identifiers", async () => {
+    mockExecute.mockResolvedValue({
+      rows: [
+        catalogRow({ paperforge_id: "5" }),
+        catalogRow({
+          entity_type: "item",
+          entity_id: bodyMatchId,
+          name: "Frost Wand",
+          image_icon: "emerald",
+        }),
+      ],
+    });
+
+    const results = await searchGlobal("frost");
+
+    expect(results).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ paperforgeId: "5" }),
+        expect.objectContaining({ imageIcon: "emerald" }),
+      ])
+    );
   });
 });

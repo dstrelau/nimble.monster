@@ -18,15 +18,19 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
-vi.mock("@/components/shared/CreatorCombobox", () => ({
-  CreatorCombobox: ({
-    onChange,
-  }: {
-    onChange: (creatorId: string | null) => void;
-  }) => (
-    <button type="button" onClick={() => onChange("creator-1")}>
-      All Creators
-    </button>
+vi.mock("next-auth/react", () => ({
+  useSession: () => ({ data: { user: { id: "user-1" } } }),
+}));
+
+vi.mock("@/components/paperforge/PaperforgeImage", () => ({
+  PaperforgeImage: ({ id }: { id: string }) => (
+    <div data-testid={`paperforge-${id}`} />
+  ),
+}));
+
+vi.mock("@/components/icons/GameIcon", () => ({
+  GameIcon: ({ iconId }: { iconId: string }) => (
+    <div data-testid={`game-icon-${iconId}`} />
   ),
 }));
 
@@ -75,7 +79,7 @@ describe("GlobalSearchDialog", () => {
         })
     );
     render(<GlobalSearchDialog />);
-    fireEvent.click(screen.getByRole("button", { name: "Global search" }));
+    fireEvent.keyDown(document, { key: "k", ctrlKey: true });
     const input = screen.getByPlaceholderText(
       "Search monsters, rules, items..."
     );
@@ -86,16 +90,13 @@ describe("GlobalSearchDialog", () => {
     });
     expect(fetch).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(screen.getByRole("button", { name: "Filter by type" }));
-    fireEvent.click(screen.getByRole("checkbox", { name: "Monsters" }));
+    fireEvent.click(screen.getByRole("radio", { name: "My Library" }));
     fireEvent.change(input, { target: { value: "second" } });
     act(() => {
       vi.advanceTimersByTime(225);
     });
     expect(fetch).toHaveBeenCalledTimes(2);
-    expect(String(vi.mocked(fetch).mock.calls[1]?.[0])).toContain(
-      "types=monster"
-    );
+    expect(String(vi.mocked(fetch).mock.calls[1]?.[0])).toContain("scope=mine");
 
     await act(async () => {
       resolvers[0]?.(
@@ -132,16 +133,30 @@ describe("GlobalSearchDialog", () => {
     expect(mockPush).toHaveBeenCalledWith("/fresh");
   });
 
-  it("sends both type and creator filters", async () => {
+  it("groups results by type and renders available entity images", async () => {
     vi.useFakeTimers();
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      Response.json({ results: [] })
+      Response.json({
+        results: [
+          {
+            type: "monster",
+            id: "monster-1",
+            name: "Frost Wyrm",
+            href: "/monsters/frost-wyrm-1",
+            paperforgeId: "5",
+          },
+          {
+            type: "item",
+            id: "item-1",
+            name: "Frost Wand",
+            href: "/items/frost-wand-1",
+            imageIcon: "emerald",
+          },
+        ],
+      })
     );
     render(<GlobalSearchDialog />);
-    fireEvent.click(screen.getByRole("button", { name: "Global search" }));
-    fireEvent.click(screen.getByRole("button", { name: "Filter by type" }));
-    fireEvent.click(screen.getByRole("checkbox", { name: "Monsters" }));
-    fireEvent.click(screen.getByRole("button", { name: "All Creators" }));
+    fireEvent.keyDown(document, { key: "k", ctrlKey: true });
     fireEvent.change(
       screen.getByPlaceholderText("Search monsters, rules, items..."),
       { target: { value: "frost" } }
@@ -150,10 +165,18 @@ describe("GlobalSearchDialog", () => {
     await act(async () => {
       vi.advanceTimersByTime(225);
       await Promise.resolve();
+      await Promise.resolve();
     });
 
-    const [url] = vi.mocked(fetch).mock.calls[0] ?? [];
-    expect(String(url)).toContain("types=monster");
-    expect(String(url)).toContain("creatorId=creator-1");
+    expect(
+      document.querySelector("[cmdk-group-heading][id]")?.textContent
+    ).toBe("Monsters");
+    expect(
+      [...document.querySelectorAll("[cmdk-group-heading]")].map(
+        (heading) => heading.textContent
+      )
+    ).toEqual(["Monsters", "Items"]);
+    expect(screen.getByTestId("paperforge-5")).toBeInTheDocument();
+    expect(screen.getByTestId("game-icon-emerald")).toBeInTheDocument();
   });
 });
