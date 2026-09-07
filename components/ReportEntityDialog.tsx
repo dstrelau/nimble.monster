@@ -16,6 +16,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import type { ReactableEntityType, ReportReason } from "@/lib/db/schema";
 import { useEntityReport } from "@/lib/hooks/useEntityReport";
+import { cn } from "@/lib/utils";
 
 const REPORT_REASONS: { value: ReportReason; label: string }[] = [
   { value: "inappropriate", label: "Inappropriate content" },
@@ -68,8 +69,8 @@ export function ReportEntityDialog({
           }
           disabled={hasReported}
         >
-          <Flag className="w-4 h-4" />
-          Report
+          <Flag className={cn("w-4 h-4", hasReported && "fill-current")} />
+          {hasReported ? "Reported" : "Report"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">

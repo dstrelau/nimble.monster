@@ -107,7 +107,7 @@ describe("ReportEntityDialog", () => {
     ).toBeDisabled();
   });
 
-  it("disables the report trigger when the user already reported this entity", async () => {
+  it("shows a disabled filled Reported trigger when already reported", async () => {
     mockGetMyReport.mockResolvedValue(true);
 
     render(
@@ -120,7 +120,9 @@ describe("ReportEntityDialog", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Report" })).toBeDisabled();
+      const button = screen.getByRole("button", { name: "Reported" });
+      expect(button).toBeDisabled();
+      expect(button.querySelector("svg")).toHaveClass("fill-current");
     });
   });
 
@@ -148,7 +150,7 @@ describe("ReportEntityDialog", () => {
     fireEvent.click(within(dialog).getByRole("button", { name: "Report" }));
 
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Report" })).toBeDisabled();
+      expect(screen.getByRole("button", { name: "Reported" })).toBeDisabled();
     });
   });
 });
