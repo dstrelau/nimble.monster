@@ -130,6 +130,7 @@ describe("GlobalSearchDialog", () => {
             id: "recent-monster",
             name: "Recent Monster",
             href: "/monsters/recent-monster",
+            creator: { id: "creator-1", name: "Nimble Co." },
           },
         ],
       })
@@ -154,6 +155,8 @@ describe("GlobalSearchDialog", () => {
     );
     expect(String(vi.mocked(fetch).mock.calls[0]?.[0])).toContain("limit=12");
     expect(screen.getByText("Recent Monster")).toBeInTheDocument();
+    expect(screen.getByText("Nimble Co.")).toBeInTheDocument();
+    expect(screen.queryByText("Monsters · Nimble Co.")).toBeNull();
     expect(
       [...document.querySelectorAll("[cmdk-group-heading]")].map(
         (heading) => heading.textContent

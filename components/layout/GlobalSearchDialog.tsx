@@ -260,36 +260,45 @@ export function GlobalSearchDialog() {
             >
               {group.results.map((result) => {
                 const Icon = TYPE_ICONS[result.type];
+                const metadata = result.subtitle
+                  ? result.creator
+                    ? `${result.subtitle} · ${result.creator.name}`
+                    : result.subtitle
+                  : result.creator?.name;
                 return (
                   <CommandItem
                     key={`${result.type}:${result.id}`}
                     value={`${result.type}:${result.id}`}
                     onSelect={() => selectResult(result)}
-                    className="group items-start py-3 hover:bg-accent hover:text-accent-foreground"
+                    className="group items-center !py-2 hover:bg-accent hover:text-accent-foreground"
                   >
                     {result.paperforgeId ? (
                       <PaperforgeImage
                         id={result.paperforgeId}
-                        size={50}
-                        className="size-12 shrink-0 rounded-sm object-contain"
+                        size={40}
+                        className="size-9 shrink-0 rounded-sm object-contain"
                       />
                     ) : result.imageIcon ? (
-                      <GameIcon
-                        iconId={result.imageIcon}
-                        className="size-10 shrink-0 fill-muted-foreground group-hover:fill-primary group-data-[selected=true]:fill-primary"
-                      />
+                      <span className="flex size-9 shrink-0 items-center justify-center">
+                        <GameIcon
+                          iconId={result.imageIcon}
+                          className="!size-8 fill-muted-foreground group-hover:fill-primary group-data-[selected=true]:fill-primary"
+                        />
+                      </span>
                     ) : (
-                      <Icon className="mt-0.5 text-muted-foreground group-hover:text-primary group-data-[selected=true]:text-primary" />
+                      <span className="flex size-9 shrink-0 items-center justify-center">
+                        <Icon className="text-muted-foreground group-hover:text-primary group-data-[selected=true]:text-primary" />
+                      </span>
                     )}
                     <span className="min-w-0 flex-1">
                       <span className="block truncate font-medium">
                         {result.name}
                       </span>
-                      <span className="block truncate text-xs text-muted-foreground">
-                        {result.subtitle ??
-                          GLOBAL_SEARCH_ENTITY_LABELS[result.type]}
-                        {result.creator ? ` · ${result.creator.name}` : ""}
-                      </span>
+                      {metadata && (
+                        <span className="block truncate text-xs text-muted-foreground">
+                          {metadata}
+                        </span>
+                      )}
                     </span>
                   </CommandItem>
                 );

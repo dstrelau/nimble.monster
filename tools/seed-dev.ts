@@ -26,6 +26,7 @@ import {
   validateOfficialMonstersJSON,
 } from "@/lib/services/monsters/official";
 import { createMonster } from "@/lib/services/monsters/repository";
+import { ITEM_EXAMPLES } from "@/lib/services/items/examples";
 
 interface DevUser {
   id: string;
@@ -53,6 +54,8 @@ const DEV_ADMIN: DevUser = {
 
 const DEFAULT_AVATAR = "https://cdn.discordapp.com/embed/avatars/0.png";
 const DEV_ITEM_ID = "33333333-3333-3333-3333-333333333333";
+const DEV_HEALING_POTION_ID = "55555555-5555-4555-8555-555555555555";
+const DEV_GEM_OF_ESCAPE_ID = "66666666-6666-4666-8666-666666666666";
 const DEV_ITEM_COLLECTION_ID = "44444444-4444-4444-4444-444444444444";
 
 async function upsertDevUser(u: DevUser): Promise<void> {
@@ -153,9 +156,8 @@ export async function seedDevData(): Promise<void> {
 
   const db = await getDatabase();
 
-  await db
-    .insert(items)
-    .values({
+  const devItems = [
+    {
       id: DEV_ITEM_ID,
       name: "Dev's Bottomless Bag",
       kind: "Wondrous item",
@@ -163,8 +165,24 @@ export async function seedDevData(): Promise<void> {
       rarity: "uncommon",
       visibility: "public",
       userId: DEV_USER.id,
-    })
-    .onConflictDoNothing();
+    },
+    {
+      id: DEV_HEALING_POTION_ID,
+      ...ITEM_EXAMPLES["Healing Potion"],
+      userId: DEV_USER.id,
+    },
+    {
+      id: DEV_GEM_OF_ESCAPE_ID,
+      ...ITEM_EXAMPLES["Gem of Escape"],
+      userId: DEV_USER.id,
+    },
+  ] satisfies (typeof items.$inferInsert)[];
+  for (const item of devItems) {
+    await db.insert(items).values(item).onConflictDoUpdate({
+      target: items.id,
+      set: item,
+    });
+  }
   await db
     .insert(collections)
     .values({
@@ -175,13 +193,15 @@ export async function seedDevData(): Promise<void> {
       visibility: "public",
     })
     .onConflictDoNothing();
-  await db
-    .insert(itemsCollections)
-    .values({
-      itemId: DEV_ITEM_ID,
-      collectionId: DEV_ITEM_COLLECTION_ID,
-    })
-    .onConflictDoNothing();
+  for (const item of devItems) {
+    await db
+      .insert(itemsCollections)
+      .values({
+        itemId: item.id,
+        collectionId: DEV_ITEM_COLLECTION_ID,
+      })
+      .onConflictDoNothing();
+  }
 
   const fixtureItemCount = await seedDevItems();
 
@@ -219,7 +239,7 @@ export async function seedDevData(): Promise<void> {
   }
 
   console.log(
-    `  ensured ${fixtureItemCount + 1} varied items + 1 magic-item-only collection owned by "dev"`
+    `  ensured ${fixtureItemCount + devItems.length} varied items + 1 magic-item-only collection owned by "dev"`
   );
 
   console.log(

@@ -1,18 +1,14 @@
-import type { Item } from "./types";
+import type { CreateItemInput } from "./types";
 
-export const ITEM_EXAMPLES: Record<string, Omit<Item, "creator">> = {
+export const ITEM_EXAMPLES: Record<string, CreateItemInput> = {
   Empty: {
     visibility: "public",
-    id: "",
     name: "",
     description: "",
     rarity: "unspecified",
-    createdAt: new Date(),
-    updatedAt: new Date(),
   },
   "Healing Potion": {
     visibility: "public",
-    id: "",
     name: "Greater Healing Potion",
     description:
       "**_ACTION_**. Consume (or administer to an adjacent creature) to heal **3d6+6** HP.",
@@ -22,12 +18,9 @@ export const ITEM_EXAMPLES: Record<string, Omit<Item, "creator">> = {
     imageBgColor: "red-700",
     imageBackdrop: "icon",
     rarity: "uncommon",
-    createdAt: new Date(),
-    updatedAt: new Date(),
   },
   "Gem of Escape": {
     visibility: "public",
-    id: "",
     name: "Gem of Escape",
     description:
       "**_ACTION_**. Crush one in case of emergency to instantly teleport ALL who are bound to one to the location of the other gem.",
@@ -37,7 +30,5 @@ export const ITEM_EXAMPLES: Record<string, Omit<Item, "creator">> = {
     imageColor: "violet-600",
     imageBackdrop: "sunburst",
     rarity: "very_rare",
-    createdAt: new Date(),
-    updatedAt: new Date(),
   },
 };
