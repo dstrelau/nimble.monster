@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import type {
+  GlobalSearchEntityType,
   GlobalSearchFilters,
   GlobalSearchResponse,
 } from "@/lib/services/global-search/contract";
+import { GLOBAL_SEARCH_ENTITY_TYPES } from "@/lib/services/global-search/contract";
 import {
+  listRecentGlobal,
   MAX_LIMIT,
   searchGlobal,
 } from "@/lib/services/global-search/repository";
@@ -14,19 +17,24 @@ const DEFAULT_LIMIT = 20;
 
 export function parseSearchRequest(request: Request): {
   query: string;
+  type?: GlobalSearchEntityType;
   filters: GlobalSearchFilters;
 } {
   const { searchParams } = new URL(request.url);
   const rawQuery = searchParams.get("q");
-  if (rawQuery === null) throw new Error("Search query is required");
-
-  const query = rawQuery.trim();
-  if (!query) throw new Error("Search query is required");
-  if (query.length > MAX_QUERY_LENGTH) {
+  const query = rawQuery?.trim();
+  if (query && query.length > MAX_QUERY_LENGTH) {
     throw new Error(
       `Search query must be ${MAX_QUERY_LENGTH} characters or fewer`
     );
   }
+
+  const rawType = searchParams.get("type");
+  const type = GLOBAL_SEARCH_ENTITY_TYPES.find(
+    (entityType) => entityType === rawType
+  );
+  if (rawType !== null && !type) throw new Error("Invalid search type");
+  if (!query && !type) throw new Error("Search query or type is required");
 
   const rawLimit = searchParams.get("limit");
   const limit = rawLimit === null ? DEFAULT_LIMIT : Number(rawLimit);
@@ -40,8 +48,10 @@ export function parseSearchRequest(request: Request): {
   }
 
   return {
-    query,
+    query: query ?? "",
+    ...(type ? { type } : {}),
     filters: {
+      ...(type ? { types: [type] } : {}),
       limit,
     },
   };
@@ -62,8 +72,13 @@ export const GET = telemetry(async (request: Request) => {
   }
 
   try {
+    const results = parsed.query
+      ? await searchGlobal(parsed.query, parsed.filters)
+      : parsed.type
+        ? await listRecentGlobal(parsed.type, parsed.filters.limit)
+        : [];
     const response: GlobalSearchResponse = {
-      results: await searchGlobal(parsed.query, parsed.filters),
+      results,
     };
     return NextResponse.json(response);
   } catch {

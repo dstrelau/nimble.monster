@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockSearchGlobal } = vi.hoisted(() => ({
+const { mockListRecentGlobal, mockSearchGlobal } = vi.hoisted(() => ({
+  mockListRecentGlobal: vi.fn(),
   mockSearchGlobal: vi.fn(),
 }));
 
 vi.mock("@/lib/services/global-search/repository", () => ({
+  listRecentGlobal: mockListRecentGlobal,
   MAX_LIMIT: 50,
   searchGlobal: mockSearchGlobal,
 }));
@@ -13,6 +15,8 @@ import { GET, parseSearchRequest } from "./route";
 
 describe("GET /_actions/search", () => {
   beforeEach(() => {
+    mockListRecentGlobal.mockReset();
+    mockListRecentGlobal.mockResolvedValue([]);
     mockSearchGlobal.mockReset();
     mockSearchGlobal.mockResolvedValue([]);
   });
@@ -25,8 +29,47 @@ describe("GET /_actions/search", () => {
       GET(new Request("http://localhost/_actions/search?q=one&limit=51"))
     ).resolves.toMatchObject({ status: 400 });
     await expect(
+      GET(new Request("http://localhost/_actions/search?type=invalid"))
+    ).resolves.toMatchObject({ status: 400 });
+    await expect(
       GET(new Request(`http://localhost/_actions/search?q=${"x".repeat(101)}`))
     ).resolves.toMatchObject({ status: 400 });
+  });
+
+  it("lists one recent page for a selected type without a query", async () => {
+    const parsed = parseSearchRequest(
+      new Request("http://localhost/_actions/search?type=monster&limit=12")
+    );
+
+    expect(parsed).toEqual({
+      query: "",
+      type: "monster",
+      filters: {
+        types: ["monster"],
+        limit: 12,
+      },
+    });
+
+    const response = await GET(
+      new Request("http://localhost/_actions/search?type=monster&limit=12")
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockListRecentGlobal).toHaveBeenCalledWith("monster", 12);
+    expect(mockSearchGlobal).not.toHaveBeenCalled();
+  });
+
+  it("filters a query to the selected type", async () => {
+    await GET(
+      new Request(
+        "http://localhost/_actions/search?q=frost&type=hazard&limit=12"
+      )
+    );
+
+    expect(mockSearchGlobal).toHaveBeenCalledWith("frost", {
+      types: ["hazard"],
+      limit: 12,
+    });
   });
 
   it("parses the query and limit", () => {

@@ -1,7 +1,13 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, Map as MapIcon, Swords, TriangleAlert } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  Map as MapIcon,
+  Swords,
+  TriangleAlert,
+} from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { GameIcon } from "@/components/icons/GameIcon";
@@ -25,7 +31,9 @@ import {
 import {
   ENTITY_TYPE_ICONS,
   SITE_NAVIGATION_GROUPS,
+  type SiteNavigationItemKey,
 } from "@/lib/types/entity-links";
+import { cn } from "@/lib/utils";
 
 const TYPE_ICONS: Record<GlobalSearchEntityType, LucideIcon> = {
   monster: ENTITY_TYPE_ICONS.monster,
@@ -44,6 +52,21 @@ const TYPE_ICONS: Record<GlobalSearchEntityType, LucideIcon> = {
   rule: BookOpen,
 };
 
+const NAVIGATION_SEARCH_TYPES = {
+  monsters: "monster",
+  hazards: "hazard",
+  companions: "companion",
+  ancestries: "ancestry",
+  backgrounds: "background",
+  classes: "class",
+  subclasses: "subclass",
+  "spell-schools": "spellSchool",
+  items: "item",
+  adventures: "adventure",
+  encounters: "encounter",
+  rules: "rule",
+} satisfies Record<SiteNavigationItemKey, GlobalSearchEntityType>;
+
 type SearchStatus = "idle" | "loading" | "ready" | "error";
 
 export function GlobalSearchDialog() {
@@ -51,8 +74,11 @@ export function GlobalSearchDialog() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [selectedType, setSelectedType] =
+    useState<GlobalSearchEntityType | null>(null);
   const [results, setResults] = useState<GlobalSearchResult[]>([]);
   const [status, setStatus] = useState<SearchStatus>("idle");
+  const inputRef = useRef<HTMLInputElement>(null);
   const requestId = useRef(0);
 
   useEffect(() => {
@@ -71,7 +97,7 @@ export function GlobalSearchDialog() {
 
   useEffect(() => {
     const trimmedQuery = query.trim();
-    if (!trimmedQuery) {
+    if (!trimmedQuery && !selectedType) {
       requestId.current += 1;
       setResults([]);
       setStatus("idle");
@@ -85,7 +111,9 @@ export function GlobalSearchDialog() {
 
     const timer = window.setTimeout(async () => {
       try {
-        const params = new URLSearchParams({ q: trimmedQuery });
+        const params = new URLSearchParams({ limit: "12" });
+        if (trimmedQuery) params.set("q", trimmedQuery);
+        if (selectedType) params.set("type", selectedType);
         const response = await fetch(`/_actions/search?${params.toString()}`, {
           signal: controller.signal,
         });
@@ -110,12 +138,13 @@ export function GlobalSearchDialog() {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [query]);
+  }, [query, selectedType]);
 
   function handleOpenChange(nextOpen: boolean) {
     setOpen(nextOpen);
     if (!nextOpen) {
       setQuery("");
+      setSelectedType(null);
       setResults([]);
       setStatus("idle");
     }
@@ -136,23 +165,56 @@ export function GlobalSearchDialog() {
     else groups.push({ type: result.type, results: [result] });
     return groups;
   }, []);
+  const displayedGroups = selectedType
+    ? [{ type: selectedType, results }]
+    : groupedResults;
+  const SelectedTypeIcon = selectedType ? TYPE_ICONS[selectedType] : null;
+  const selectedTypeLabel =
+    selectedType === "spellSchool"
+      ? "Spells"
+      : selectedType
+        ? GLOBAL_SEARCH_ENTITY_LABELS[selectedType]
+        : null;
 
   return (
     <CommandDialog open={open} onOpenChange={handleOpenChange}>
       <Command
         shouldFilter={false}
-        className="h-[min(70vh,36rem)] rounded-none"
+        className={cn(
+          "h-[min(70vh,36rem)] rounded-none",
+          selectedType && "[&_[cmdk-input-wrapper]>svg]:invisible"
+        )}
       >
         <DialogTitle className="sr-only">Global search</DialogTitle>
         <DialogDescription className="sr-only">
           Search public site content.
         </DialogDescription>
-        <CommandInput
-          value={query}
-          onValueChange={setQuery}
-          placeholder="Search"
-          autoFocus
-        />
+        <div className="relative">
+          {selectedType && SelectedTypeIcon && (
+            <button
+              type="button"
+              className="group/type absolute top-3.5 left-3 z-10 size-5 text-muted-foreground hover:text-primary"
+              aria-label={`Clear ${selectedTypeLabel} filter`}
+              title={`Clear ${selectedTypeLabel} filter`}
+              onClick={() => {
+                setSelectedType(null);
+                inputRef.current?.focus();
+              }}
+            >
+              <SelectedTypeIcon className="size-5 group-hover/type:hidden group-focus/type:hidden" />
+              <ArrowLeft className="hidden size-5 group-hover/type:block group-focus/type:block" />
+            </button>
+          )}
+          <CommandInput
+            ref={inputRef}
+            value={query}
+            onValueChange={setQuery}
+            placeholder={
+              selectedType ? `Search ${selectedTypeLabel}` : "Search"
+            }
+            autoFocus
+          />
+        </div>
         <CommandList className="max-h-none flex-1 pb-2">
           {status === "error" && (
             <div
@@ -162,7 +224,7 @@ export function GlobalSearchDialog() {
               Search is temporarily unavailable.
             </div>
           )}
-          {status === "idle" && (
+          {status === "idle" && !selectedType && (
             <div className="grid grid-cols-2 gap-x-2">
               {SITE_NAVIGATION_GROUPS.map((group) => (
                 <CommandGroup key={group.id} heading={group.label}>
@@ -174,8 +236,9 @@ export function GlobalSearchDialog() {
                         value={`browse:${item.key}`}
                         className="group hover:bg-accent hover:text-accent-foreground"
                         onSelect={() => {
-                          handleOpenChange(false);
-                          router.push(`/${item.key}`);
+                          setQuery("");
+                          setResults([]);
+                          setSelectedType(NAVIGATION_SEARCH_TYPES[item.key]);
                         }}
                       >
                         <Icon className="text-muted-foreground group-hover:text-primary group-data-[selected=true]:text-primary" />
@@ -190,7 +253,7 @@ export function GlobalSearchDialog() {
           {status === "ready" && results.length === 0 && (
             <CommandEmpty>No matching public content.</CommandEmpty>
           )}
-          {groupedResults.map((group) => (
+          {displayedGroups.map((group) => (
             <CommandGroup
               key={group.type}
               heading={GLOBAL_SEARCH_ENTITY_LABELS[group.type]}

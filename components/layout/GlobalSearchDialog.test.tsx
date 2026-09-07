@@ -120,6 +120,53 @@ describe("GlobalSearchDialog", () => {
     expect(mockPush).toHaveBeenCalledWith("/fresh");
   });
 
+  it("selects and clears a type filter and loads its recent results", async () => {
+    vi.useFakeTimers();
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      Response.json({
+        results: [
+          {
+            type: "monster",
+            id: "recent-monster",
+            name: "Recent Monster",
+            href: "/monsters/recent-monster",
+          },
+        ],
+      })
+    );
+    render(<GlobalSearchDialog />);
+    fireEvent.keyDown(document, { key: "k", ctrlKey: true });
+
+    fireEvent.click(screen.getByText("Monsters"));
+    expect(screen.getByPlaceholderText("Search Monsters")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Clear Monsters filter" })
+    ).toBeInTheDocument();
+
+    await act(async () => {
+      vi.advanceTimersByTime(225);
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(String(vi.mocked(fetch).mock.calls[0]?.[0])).toContain(
+      "type=monster"
+    );
+    expect(String(vi.mocked(fetch).mock.calls[0]?.[0])).toContain("limit=12");
+    expect(screen.getByText("Recent Monster")).toBeInTheDocument();
+    expect(
+      [...document.querySelectorAll("[cmdk-group-heading]")].map(
+        (heading) => heading.textContent
+      )
+    ).toEqual(["Monsters"]);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Clear Monsters filter" })
+    );
+    expect(screen.getByPlaceholderText("Search")).toBeInTheDocument();
+    expect(screen.getByText("Bestiary")).toBeInTheDocument();
+  });
+
   it("groups results by type and renders available entity images", async () => {
     vi.useFakeTimers();
     vi.spyOn(globalThis, "fetch").mockResolvedValue(

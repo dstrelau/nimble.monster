@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockExecute } = vi.hoisted(() => ({
+const { mockExecute, mockGetAllRules } = vi.hoisted(() => ({
   mockExecute: vi.fn(),
+  mockGetAllRules: vi.fn(),
 }));
 
 vi.mock("@/lib/db/client", () => ({
@@ -9,7 +10,7 @@ vi.mock("@/lib/db/client", () => ({
 }));
 
 vi.mock("@/lib/rules/filesystem", () => ({
-  getAllRules: () => [],
+  getAllRules: mockGetAllRules,
 }));
 
 vi.mock("@/lib/rules/faqs", () => ({
@@ -17,7 +18,7 @@ vi.mock("@/lib/rules/faqs", () => ({
   ruleFaqUrl: () => "/rules/test",
 }));
 
-import { searchGlobal } from "./repository";
+import { listRecentGlobal, searchGlobal } from "./repository";
 
 const exactNameId = "11111111-1111-4111-8111-111111111111";
 const bodyMatchId = "22222222-2222-4222-8222-222222222222";
@@ -62,6 +63,8 @@ describe("global search repository", () => {
   beforeEach(() => {
     mockExecute.mockReset();
     mockExecute.mockResolvedValue({ rows: [] });
+    mockGetAllRules.mockReset();
+    mockGetAllRules.mockReturnValue([]);
   });
 
   it("ranks exact and prefix names above lower-weight body matches", async () => {
@@ -187,5 +190,44 @@ describe("global search repository", () => {
         expect.objectContaining({ imageIcon: "emerald" }),
       ])
     );
+  });
+
+  it("lists recent public results from the selected entity table", async () => {
+    mockExecute.mockResolvedValue({
+      rows: [catalogRow({ entity_type: "hazard", name: "Fresh Trap" })],
+    });
+
+    const results = await listRecentGlobal("hazard", 12);
+
+    const statement = mockExecute.mock.calls[0]?.[0];
+    expect(statement.sql).toContain("INNER JOIN monsters AS entity");
+    expect(statement.sql).toContain("ORDER BY entity.created_at DESC");
+    expect(statement.args).toEqual(["public", "hazard", 12]);
+    expect(results[0]).toMatchObject({
+      type: "hazard",
+      name: "Fresh Trap",
+    });
+  });
+
+  it("fills the recent rules page with official rules", async () => {
+    mockGetAllRules.mockReturnValue([
+      {
+        slug: "making-checks",
+        title: "Making Checks",
+        keywords: [],
+        content: "Roll the dice.",
+      },
+    ]);
+
+    const results = await listRecentGlobal("rule", 12);
+
+    expect(results).toEqual([
+      expect.objectContaining({
+        type: "rule",
+        id: "making-checks",
+        name: "Making Checks",
+        href: "/rules/making-checks",
+      }),
+    ]);
   });
 });

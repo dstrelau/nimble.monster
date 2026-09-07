@@ -74,6 +74,7 @@ function matchedField(
   fields: { field: GlobalSearchResult["matchedField"]; value: string }[],
   queryWords: string[]
 ): GlobalSearchResult["matchedField"] {
+  if (queryWords.length === 0) return undefined;
   return fields.find(({ value }) => hasAllPrefixMatches([value], queryWords))
     ?.field;
 }
@@ -306,6 +307,87 @@ function compareRankedResults(a: RankedResult, b: RankedResult): number {
     a.result.type.localeCompare(b.result.type) ||
     a.result.id.localeCompare(b.result.id)
   );
+}
+
+function sourceTable(type: GlobalSearchEntityType): string {
+  switch (type) {
+    case "monster":
+    case "hazard":
+      return "monsters";
+    case "item":
+      return "items";
+    case "companion":
+      return "companions";
+    case "ancestry":
+      return "ancestries";
+    case "background":
+      return "backgrounds";
+    case "class":
+      return "classes";
+    case "subclass":
+      return "subclasses";
+    case "spellSchool":
+      return "spell_schools";
+    case "collection":
+      return "collections";
+    case "encounter":
+      return "encounters";
+    case "adventure":
+      return "adventures";
+    case "family":
+      return "families";
+    case "rule":
+      return "custom_rules";
+  }
+}
+
+export async function listRecentGlobal(
+  type: GlobalSearchEntityType,
+  limit = DEFAULT_LIMIT
+): Promise<GlobalSearchResult[]> {
+  const boundedLimit = Math.min(Math.max(limit, 1), MAX_LIMIT);
+  const table = sourceTable(type);
+  const dbResults = await getClient().execute({
+    sql: `
+      SELECT
+        catalog.entity_type,
+        catalog.entity_id,
+        catalog.creator_id,
+        COALESCE(NULLIF(users.display_name, ''), NULLIF(users.username, ''), NULLIF(users.name, ''), '') AS creator_name,
+        users.username AS creator_username,
+        catalog.name,
+        catalog.subtitle,
+        catalog.keywords,
+        catalog.summary,
+        catalog.body,
+        0 AS rank,
+        monsters.paperforge_id,
+        items.image_icon
+      FROM global_search_catalog AS catalog
+      INNER JOIN ${table} AS entity ON entity.id = catalog.entity_id
+      LEFT JOIN users ON users.id = catalog.creator_id
+      LEFT JOIN monsters
+        ON catalog.entity_type = 'monster' AND monsters.id = catalog.entity_id
+      LEFT JOIN items
+        ON catalog.entity_type = 'item' AND items.id = catalog.entity_id
+      WHERE catalog.visibility = ? AND catalog.entity_type = ?
+      ORDER BY entity.created_at DESC, catalog.id DESC
+      LIMIT ?
+    `,
+    args: ["public", type, boundedLimit],
+  });
+
+  const results = dbResults.rows.flatMap((row) => {
+    const ranked = toCatalogResult(toCatalogRow(row), "");
+    return ranked ? [ranked.result] : [];
+  });
+  if (type !== "rule" || results.length >= boundedLimit) return results;
+
+  const resultIds = new Set(results.map((result) => result.id));
+  const officialRules = searchOfficialRules("", { types: ["rule"] })
+    .map(({ result }) => result)
+    .filter((result) => !resultIds.has(result.id));
+  return [...results, ...officialRules].slice(0, boundedLimit);
 }
 
 export async function searchGlobal(
