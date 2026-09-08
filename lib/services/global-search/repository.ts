@@ -40,6 +40,7 @@ type CatalogRow = {
   summary: unknown;
   body: unknown;
   rank: unknown;
+  name_priority: unknown;
   paperforge_id: unknown;
   image_icon: unknown;
 };
@@ -79,32 +80,15 @@ function matchedField(
     ?.field;
 }
 
-function fieldWeight(field: GlobalSearchResult["matchedField"]): number {
-  switch (field) {
-    case "name":
-      return 10_000;
-    case "keywords":
-      return 1_000;
-    case "summary":
-      return 100;
-    case "body":
-      return 10;
-    default:
-      return 0;
-  }
-}
-
-function rankingScore(
-  name: string,
-  query: string,
-  field: GlobalSearchResult["matchedField"],
-  bm25Rank = 0
-): number {
+function namePriority(name: string, query: string): number {
   const normalizedName = normalizedPhrase(name);
   const normalizedQuery = normalizedPhrase(query);
-  const exactBoost = normalizedName === normalizedQuery ? 1_000_000 : 0;
-  const prefixBoost = normalizedName.startsWith(normalizedQuery) ? 100_000 : 0;
-  return exactBoost + prefixBoost + fieldWeight(field) - bm25Rank;
+  if (normalizedName === normalizedQuery) return 2;
+  return normalizedName.startsWith(normalizedQuery) ? 1 : 0;
+}
+
+function rankingScore(priority: number, bm25Rank = 0): number {
+  return priority * 1_000_000 - bm25Rank;
 }
 
 function resultHref(
@@ -197,9 +181,9 @@ function toCatalogResult(row: CatalogRow, query: string): RankedResult | null {
       ...(imageIcon ? { imageIcon } : {}),
     },
     score: rankingScore(
-      name,
-      query,
-      field,
+      Number.isFinite(Number(row.name_priority))
+        ? Number(row.name_priority)
+        : namePriority(name, query),
       Number.isFinite(Number(row.rank)) ? Number(row.rank) : 0
     ),
   };
@@ -218,6 +202,7 @@ function toCatalogRow(row: Row): CatalogRow {
     summary: row.summary,
     body: row.body,
     rank: row.rank,
+    name_priority: row.name_priority,
     paperforge_id: row.paperforge_id,
     image_icon: row.image_icon,
   };
@@ -261,7 +246,7 @@ function searchOfficialRules(
             : `/rules/${rule.slug}`,
           ...(field ? { matchedField: field } : {}),
         },
-        score: rankingScore(rule.title, query, field),
+        score: rankingScore(namePriority(rule.title, query)),
       },
     ];
   });
@@ -294,7 +279,7 @@ function searchOfficialRules(
         href: ruleFaqUrl(faq),
         ...(field ? { matchedField: field } : {}),
       },
-      score: rankingScore(faq.question, query, field),
+      score: rankingScore(namePriority(faq.question, query)),
     });
   }
   return ranked;
@@ -361,6 +346,7 @@ export async function listRecentGlobal(
         catalog.summary,
         catalog.body,
         0 AS rank,
+        0 AS name_priority,
         monsters.paperforge_id,
         items.image_icon
       FROM global_search_catalog AS catalog
@@ -403,8 +389,14 @@ export async function searchGlobal(
   );
   const selectedTypes = filters.types?.filter(isGlobalSearchEntityType) ?? [];
   const matchQuery = queryWords.map((word) => `"${word}"*`).join(" AND ");
+  const namePrefixQuery = `name:^"${queryWords.join(" ")}"*`;
   const where = ["catalog.visibility = ?", "global_search_fts MATCH ?"];
-  const args: (string | number)[] = ["public", matchQuery];
+  const args: (string | number)[] = [
+    namePrefixQuery,
+    query.trim().toLowerCase(),
+    "public",
+    matchQuery,
+  ];
 
   if (selectedTypes.length > 0) {
     where.push(
@@ -420,6 +412,11 @@ export async function searchGlobal(
 
   const dbResults = await getClient().execute({
     sql: `
+      WITH name_prefix_matches AS (
+        SELECT rowid
+        FROM global_search_fts
+        WHERE global_search_fts MATCH ?
+      )
       SELECT
         catalog.entity_type,
         catalog.entity_id,
@@ -432,18 +429,25 @@ export async function searchGlobal(
         catalog.summary,
         catalog.body,
         bm25(global_search_fts, 12.0, 5.0, 2.0, 1.0) AS rank,
+        CASE
+          WHEN lower(trim(catalog.name)) = ? THEN 2
+          WHEN name_prefix_matches.rowid IS NOT NULL THEN 1
+          ELSE 0
+        END AS name_priority,
         monsters.paperforge_id,
         items.image_icon
       FROM global_search_fts
       INNER JOIN global_search_catalog AS catalog
         ON catalog.id = global_search_fts.rowid
+      LEFT JOIN name_prefix_matches
+        ON name_prefix_matches.rowid = global_search_fts.rowid
       LEFT JOIN users ON users.id = catalog.creator_id
       LEFT JOIN monsters
         ON catalog.entity_type = 'monster' AND monsters.id = catalog.entity_id
       LEFT JOIN items
         ON catalog.entity_type = 'item' AND items.id = catalog.entity_id
       WHERE ${where.join(" AND ")}
-      ORDER BY rank ASC, catalog.name COLLATE NOCASE ASC, catalog.entity_id ASC
+      ORDER BY name_priority DESC, rank ASC, catalog.name COLLATE NOCASE ASC, catalog.entity_id ASC
       LIMIT ?
     `,
     args,

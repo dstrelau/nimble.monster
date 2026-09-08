@@ -37,6 +37,7 @@ function catalogRow(
     summary: string;
     body: string;
     rank: number;
+    name_priority: number;
     paperforge_id: string | null;
     image_icon: string | null;
   }> = {}
@@ -53,6 +54,7 @@ function catalogRow(
     summary: "",
     body: "",
     rank: 0,
+    name_priority: 0,
     paperforge_id: null,
     image_icon: null,
     ...values,
@@ -70,7 +72,7 @@ describe("global search repository", () => {
   it("ranks exact and prefix names above lower-weight body matches", async () => {
     mockExecute.mockResolvedValue({
       rows: [
-        catalogRow(),
+        catalogRow({ name_priority: 2 }),
         catalogRow({
           entity_id: bodyMatchId,
           name: "Glacier Wyrm",
@@ -101,8 +103,9 @@ describe("global search repository", () => {
 
     const statement = mockExecute.mock.calls[0]?.[0];
     expect(statement).toMatchObject({
-      args: expect.arrayContaining(['"fros"* AND "dra"*']),
+      args: expect.arrayContaining(['name:^"fros dra"*', '"fros"* AND "dra"*']),
     });
+    expect(statement.sql).toContain("ORDER BY name_priority DESC, rank ASC");
     expect(statement.sql).toContain("global_search_fts MATCH ?");
   });
 
@@ -133,6 +136,8 @@ describe("global search repository", () => {
     expect(statement.sql).toContain("catalog.entity_type IN (?, ?)");
     expect(statement.sql).toContain("catalog.creator_id = ?");
     expect(statement.args).toEqual([
+      'name:^"frost"*',
+      "frost",
       "public",
       '"frost"*',
       "hazard",
