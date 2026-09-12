@@ -643,6 +643,23 @@ describe("calculateProbabilityDistribution", () => {
     ]);
     random.mockRestore();
   });
+
+  it("simulates a primary miss as zero for the entire roll", () => {
+    const random = vi
+      .spyOn(Math, "random")
+      .mockReturnValueOnce(0)
+      .mockReturnValueOnce(0.5)
+      .mockReturnValueOnce(0.999);
+    const roll = parseDiceNotation("3d6+2");
+    if (!roll) throw new Error("Failed to parse");
+
+    const result = simulateRoll(roll);
+
+    expect(result.results.map(({ value }) => value)).toEqual([1, 4, 6]);
+    expect(result.results[0].isMiss).toBe(true);
+    expect(result.total).toBe(0);
+    random.mockRestore();
+  });
 });
 
 describe("tensOnes dice (d44, d66, d88)", () => {

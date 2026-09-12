@@ -1133,7 +1133,9 @@ function simulateStandardRoll(
       isCrit: false,
       isMiss: false,
     });
-    total += value;
+    if (primaryEffective > 1) {
+      total += value;
+    }
   }
 
   // Add all original dice first
