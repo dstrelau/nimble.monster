@@ -1,5 +1,5 @@
 {
-  "totalMinis": 771,
+  "totalMinis": 775,
   "s3BaseUrl": "https://paperforgedev.s3.us-east-2.amazonaws.com/",
   "minis": [
     {
@@ -81734,6 +81734,298 @@
           "tierNumber": 8,
           "filenameTier": "T8",
           "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/835_Hawk_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "8aab6308-a20b-465e-95b4-2cd928508b1e",
+      "number": 836,
+      "name": "Blood Hawk",
+      "url": "https://www.paperforgeminis.com/minis/8aab6308-a20b-465e-95b4-2cd928508b1e",
+      "enabled": true,
+      "releaseDate": "2026-09-08T13:27:21.063Z",
+      "downloads": [
+        {
+          "filename": "836__Reskin_BloodHawk_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/836__Reskin_BloodHawk_T3_PDF.pdf"
+        },
+        {
+          "filename": "836__Reskin_BloodHawk_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/836__Reskin_BloodHawk_T3_PNGs.zip"
+        },
+        {
+          "filename": "836__Reskin_BloodHawk_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/836__Reskin_BloodHawk_T3_VTT.zip"
+        },
+        {
+          "filename": "836__Reskin_BloodHawk_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/836__Reskin_BloodHawk_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "836__Reskin_BloodHawk_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/836__Reskin_BloodHawk_T4_PNGs.zip"
+        },
+        {
+          "filename": "836__Reskin_BloodHawk_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/836__Reskin_BloodHawk_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "3e63575a-ee21-42f6-a1cb-538736ede070",
+      "number": 837,
+      "name": "Zombie Rat",
+      "url": "https://www.paperforgeminis.com/minis/3e63575a-ee21-42f6-a1cb-538736ede070",
+      "enabled": true,
+      "releaseDate": "2026-09-10T02:48:24.630Z",
+      "downloads": [
+        {
+          "filename": "837__Reskin_ZombieRat_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/837__Reskin_ZombieRat_T3_PDF.pdf"
+        },
+        {
+          "filename": "837__Reskin_ZombieRat_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/837__Reskin_ZombieRat_T3_PNGs.zip"
+        },
+        {
+          "filename": "837__Reskin_ZombieRat_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/837__Reskin_ZombieRat_T3_VTT.zip"
+        },
+        {
+          "filename": "837__Reskin_ZombieRat_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/837__Reskin_ZombieRat_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "837__Reskin_ZombieRat_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/837__Reskin_ZombieRat_T4_PNGs.zip"
+        },
+        {
+          "filename": "837__Reskin_ZombieRat_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/837__Reskin_ZombieRat_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "a5a2741d-503a-4d7e-9793-8342342d1750",
+      "number": 838,
+      "name": "Zombie Dog",
+      "url": "https://www.paperforgeminis.com/minis/a5a2741d-503a-4d7e-9793-8342342d1750",
+      "enabled": true,
+      "releaseDate": "2026-09-10T02:56:00.423Z",
+      "downloads": [
+        {
+          "filename": "838__Reskin_ZombieDog_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/838__Reskin_ZombieDog_T3_PDF.pdf"
+        },
+        {
+          "filename": "838__Reskin_ZombieDog_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/838__Reskin_ZombieDog_T3_PNGs.zip"
+        },
+        {
+          "filename": "838__Reskin_ZombieDog_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/838__Reskin_ZombieDog_T3_VTT.zip"
+        },
+        {
+          "filename": "838__Reskin_ZombieDog_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/838__Reskin_ZombieDog_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "838__Reskin_ZombieDog_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/838__Reskin_ZombieDog_T4_PNGs.zip"
+        },
+        {
+          "filename": "838__Reskin_ZombieDog_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/838__Reskin_ZombieDog_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "3ab0c816-e3f4-4bbe-b19c-7a8d709cd8ce",
+      "number": 839,
+      "name": "Flying Snake",
+      "url": "https://www.paperforgeminis.com/minis/3ab0c816-e3f4-4bbe-b19c-7a8d709cd8ce",
+      "enabled": true,
+      "releaseDate": "2026-09-14T03:59:15.975Z",
+      "downloads": [
+        {
+          "filename": "839_FlyingSnake_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/839_FlyingSnake_T1_PDF.pdf"
+        },
+        {
+          "filename": "839_FlyingSnake_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/839_FlyingSnake_T1_PNGs.zip"
+        },
+        {
+          "filename": "839_FlyingSnake_T1_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/839_FlyingSnake_T1_VTT.zip"
+        },
+        {
+          "filename": "839_FlyingSnake_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/839_FlyingSnake_T2_PDF.pdf"
+        },
+        {
+          "filename": "839_FlyingSnake_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/839_FlyingSnake_T2_PNGs.zip"
+        },
+        {
+          "filename": "839_FlyingSnake_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/839_FlyingSnake_T2_VTT.zip"
+        },
+        {
+          "filename": "839_FlyingSnake_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/839_FlyingSnake_T3_VTT.zip"
+        },
+        {
+          "filename": "839_FlyingSnake_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/839_FlyingSnake_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "839_FlyingSnake_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/839_FlyingSnake_T4_PNGs.zip"
+        },
+        {
+          "filename": "839_FlyingSnake_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/839_FlyingSnake_T8_PSD.zip"
         }
       ]
     }
