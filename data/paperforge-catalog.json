@@ -1,5 +1,5 @@
 {
-  "totalMinis": 775,
+  "totalMinis": 779,
   "s3BaseUrl": "https://paperforgedev.s3.us-east-2.amazonaws.com/",
   "minis": [
     {
@@ -82026,6 +82026,262 @@
           "tierNumber": 8,
           "filenameTier": "T8",
           "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/839_FlyingSnake_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "972166f0-1123-4ecc-82fa-e4b8e74e4012",
+      "number": 840,
+      "name": "Flying Snake",
+      "url": "https://www.paperforgeminis.com/minis/972166f0-1123-4ecc-82fa-e4b8e74e4012",
+      "enabled": true,
+      "releaseDate": "2026-09-15T04:27:03.964Z",
+      "downloads": [
+        {
+          "filename": "840__Reskin_FlyingSnake_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/840__Reskin_FlyingSnake_T3_PDF.pdf"
+        },
+        {
+          "filename": "840__Reskin_FlyingSnake_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/840__Reskin_FlyingSnake_T3_PNGs.zip"
+        },
+        {
+          "filename": "840__Reskin_FlyingSnake_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/840__Reskin_FlyingSnake_T3_VTT.zip"
+        },
+        {
+          "filename": "840__Reskin_FlyingSnake_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/840__Reskin_FlyingSnake_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "840__Reskin_FlyingSnake_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/840__Reskin_FlyingSnake_T4_PNGs.zip"
+        },
+        {
+          "filename": "840__Reskin_FlyingSnake_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/840__Reskin_FlyingSnake_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "e0a42e5e-86ef-440c-b82d-4c8e5079bb1e",
+      "number": 841,
+      "name": "Winter Wolf",
+      "url": "https://www.paperforgeminis.com/minis/e0a42e5e-86ef-440c-b82d-4c8e5079bb1e",
+      "enabled": true,
+      "releaseDate": "2026-09-17T13:41:31.866Z",
+      "downloads": [
+        {
+          "filename": "841__Reskin_WinterWolf_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/841__Reskin_WinterWolf_T3_PDF.pdf"
+        },
+        {
+          "filename": "841__Reskin_WinterWolf_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/841__Reskin_WinterWolf_T3_PNGs.zip"
+        },
+        {
+          "filename": "841__Reskin_WinterWolf_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/841__Reskin_WinterWolf_T3_VTT.zip"
+        },
+        {
+          "filename": "841__Reskin_WinterWolf_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/841__Reskin_WinterWolf_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "841__Reskin_WinterWolf_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/841__Reskin_WinterWolf_T4_PNGs.zip"
+        },
+        {
+          "filename": "841__Reskin_WinterWolf_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/841__Reskin_WinterWolf_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "f89e0514-8307-47fa-88b3-e465aada5c25",
+      "number": 842,
+      "name": "Winter Wolf",
+      "url": "https://www.paperforgeminis.com/minis/f89e0514-8307-47fa-88b3-e465aada5c25",
+      "enabled": true,
+      "releaseDate": "2026-09-18T02:59:55.586Z",
+      "downloads": [
+        {
+          "filename": "842__Reskin_WinterWol_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/842__Reskin_WinterWol_T3_PDF.pdf"
+        },
+        {
+          "filename": "842__Reskin_WinterWolf_T3_PNGS.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/842__Reskin_WinterWolf_T3_PNGS.zip"
+        },
+        {
+          "filename": "842__Reskin_WinterWolf_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/842__Reskin_WinterWolf_T3_VTT.zip"
+        },
+        {
+          "filename": "842__Reskin_WinterWolf_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/842__Reskin_WinterWolf_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "842__Reskin_WinterWolf_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/842__Reskin_WinterWolf_T4_PNGs.zip"
+        },
+        {
+          "filename": "842__Reskin_WinterWolf_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/842__Reskin_WinterWolf_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "2cb133c8-3692-4bbd-b2c7-9af82be19739",
+      "number": 843,
+      "name": "Winter Wolf Pup",
+      "url": "https://www.paperforgeminis.com/minis/2cb133c8-3692-4bbd-b2c7-9af82be19739",
+      "enabled": true,
+      "releaseDate": "2026-09-21T04:14:53.433Z",
+      "downloads": [
+        {
+          "filename": "843__Reskin_WinterWolfPup_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/843__Reskin_WinterWolfPup_T3_PDF.pdf"
+        },
+        {
+          "filename": "843__Reskin_WinterWolfPup_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/843__Reskin_WinterWolfPup_T3_PNGs.zip"
+        },
+        {
+          "filename": "843__Reskin_WinterWolfPup_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/843__Reskin_WinterWolfPup_T3_VTT.zip"
+        },
+        {
+          "filename": "843__Reskin_WinterWolfPup_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/843__Reskin_WinterWolfPup_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "843__Reskin_WinterWolfPup_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/843__Reskin_WinterWolfPup_T4_PNGs.zip"
+        },
+        {
+          "filename": "843__Reskin_WinterWolfPup_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/843__Reskin_WinterWolfPup_T8_PSD.zip"
         }
       ]
     }
