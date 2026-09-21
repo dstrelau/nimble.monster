@@ -10,6 +10,7 @@ import {
 import { RenderQueue, RenderQueueFullError } from "./queue";
 import {
   extractTraceContext,
+  flushTelemetry,
   rendererTracer,
   setMemoryAttributes,
 } from "./telemetry";
@@ -100,9 +101,10 @@ createServer(async (request, response) => {
       {},
       extractTraceContext(request.headers),
       async (span) => {
-        response.writeHead(204, { "Cache-Control": "no-store" }).end();
         span.setStatus({ code: SpanStatusCode.OK });
         span.end();
+        await flushTelemetry();
+        response.writeHead(204, { "Cache-Control": "no-store" }).end();
       }
     );
     return;
@@ -143,6 +145,9 @@ createServer(async (request, response) => {
     extractTraceContext(request.headers),
     async (span) => {
       const queuedAt = performance.now();
+      let responseBody: Buffer | undefined;
+      let responseHeaders: Record<string, string | number> = {};
+      let responseStatus = 500;
       await setMemoryAttributes(span, "start");
       try {
         const image = await renderQueue.run(async () => {
@@ -157,29 +162,32 @@ createServer(async (request, response) => {
           "renderer.outcome": "success",
         });
         span.setStatus({ code: SpanStatusCode.OK });
-        response.writeHead(200, {
+        responseStatus = 200;
+        responseHeaders = {
           "Content-Type": "image/png",
           "Content-Length": image.byteLength,
           "Cache-Control": "no-store",
-        });
-        response.end(image);
+        };
+        responseBody = image;
       } catch (error) {
         if (error instanceof RenderQueueFullError) {
           span.setAttribute("renderer.outcome", "queue_full");
-          response.writeHead(503, { "Retry-After": "10" }).end();
+          responseStatus = 503;
+          responseHeaders = { "Retry-After": "10" };
         } else {
           span.setAttributes({
             "renderer.outcome": "render_error",
             "error.type":
               error instanceof Error ? error.constructor.name : "Unknown",
           });
-          response.writeHead(500).end();
         }
         span.setStatus({ code: SpanStatusCode.ERROR });
       } finally {
         await setMemoryAttributes(span, "end");
         span.end();
+        await flushTelemetry();
       }
+      response.writeHead(responseStatus, responseHeaders).end(responseBody);
     }
   );
 }).listen(8080, "0.0.0.0");

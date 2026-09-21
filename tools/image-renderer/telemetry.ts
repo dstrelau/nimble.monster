@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import type { IncomingHttpHeaders } from "node:http";
+import { setTimeout as delay } from "node:timers/promises";
 import {
   propagation,
   ROOT_CONTEXT,
@@ -21,15 +22,21 @@ const traceExporter = new OTLPTraceExporter({
   url: "https://api.honeycomb.io/v1/traces",
   headers: { "x-honeycomb-team": honeycombApiKey },
 });
+const spanProcessor = new tracing.SimpleSpanProcessor(traceExporter);
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
     [ATTR_SERVICE_NAME]: "nimble.image-renderer",
   }),
-  spanProcessors: [new tracing.SimpleSpanProcessor(traceExporter)],
+  spanProcessors: [spanProcessor],
 });
 sdk.start();
 
 export const rendererTracer = trace.getTracer("nimble.image-renderer");
+
+export async function flushTelemetry(): Promise<void> {
+  const flush = spanProcessor.forceFlush().catch(() => undefined);
+  await Promise.race([flush, delay(1_000, undefined, { ref: false })]);
+}
 
 export function extractTraceContext(headers: IncomingHttpHeaders): Context {
   const carrier: Record<string, string> = {};
