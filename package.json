@@ -11,7 +11,7 @@
     "db:push": "drizzle-kit push",
     "db:seed": "node tools/seed.mjs",
     "feature-flag": "node tools/set-feature-flag.mjs",
-    "image-renderer:bundle": "esbuild tools/image-renderer/server.ts --bundle --platform=node --format=esm --target=node24 --external:puppeteer-core --outfile=tmp/image-renderer.mjs",
+    "image-renderer:bundle": "esbuild tools/image-renderer/server.ts --bundle --platform=node --format=esm --target=node24 --external:puppeteer-core --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\" --outfile=tmp/image-renderer.mjs",
     "image-renderer:deploy": "pnpm run image-renderer:bundle && node tools/image-renderer/deploy.mjs tmp/image-renderer.mjs",
     "start": "next start",
     "test": "vitest",

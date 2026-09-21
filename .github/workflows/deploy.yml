@@ -64,6 +64,7 @@ jobs:
       - name: Deploy image renderer to Sprite
         run: pnpm run image-renderer:deploy
         env:
+          HONEYCOMB_API_KEY: ${{ secrets.HONEYCOMB_API_KEY }}
           IMAGE_RENDERER_SPRITE: nimble-nexus-renderer
           IMAGE_RENDERER_SECRET: ${{ secrets.IMAGE_RENDERER_SECRET }}
           SPRITES_TOKEN: ${{ secrets.SPRITES_TOKEN }}

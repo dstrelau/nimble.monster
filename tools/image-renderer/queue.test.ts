@@ -18,11 +18,13 @@ describe("RenderQueue", () => {
     });
 
     await vi.waitFor(() => expect(starts).toEqual(["first"]));
+    expect(queue.size).toBe(2);
     first.resolve("first result");
     await expect(firstResult).resolves.toBe("first result");
     await vi.waitFor(() => expect(starts).toEqual(["first", "second"]));
     second.resolve("second result");
     await expect(secondResult).resolves.toBe("second result");
+    expect(queue.size).toBe(0);
   });
 
   it("continues processing after a render fails", async () => {

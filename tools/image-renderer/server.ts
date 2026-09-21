@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { createServer } from "node:http";
+import { SpanStatusCode } from "@opentelemetry/api";
 import { z } from "zod";
 import { withBrowser } from "../../lib/browser";
 import {
@@ -7,6 +8,11 @@ import {
   renderEntityImage,
 } from "../../lib/entity-image-renderer";
 import { RenderQueue, RenderQueueFullError } from "./queue";
+import {
+  extractTraceContext,
+  rendererTracer,
+  setMemoryAttributes,
+} from "./telemetry";
 
 function requireEnvironmentVariable(name: string): string {
   const value = process.env[name];
@@ -89,7 +95,16 @@ createServer(async (request, response) => {
     return;
   }
   if (isHealthRequest) {
-    response.writeHead(204, { "Cache-Control": "no-store" }).end();
+    await rendererTracer.startActiveSpan(
+      "image-renderer.health",
+      {},
+      extractTraceContext(request.headers),
+      async (span) => {
+        response.writeHead(204, { "Cache-Control": "no-store" }).end();
+        span.setStatus({ code: SpanStatusCode.OK });
+        span.end();
+      }
+    );
     return;
   }
   const chunks: Buffer[] = [];
@@ -115,21 +130,56 @@ createServer(async (request, response) => {
     return;
   }
 
-  try {
-    const image = await renderQueue.run(() =>
-      withBrowser((browser) => renderEntityImage(options, browser))
-    );
-    response.writeHead(200, {
-      "Content-Type": "image/png",
-      "Content-Length": image.byteLength,
-      "Cache-Control": "no-store",
-    });
-    response.end(image);
-  } catch (error) {
-    if (error instanceof RenderQueueFullError) {
-      response.writeHead(503, { "Retry-After": "10" }).end();
-      return;
+  await rendererTracer.startActiveSpan(
+    "image-renderer.render",
+    {
+      attributes: {
+        "renderer.entity.type": options.entityType,
+        "renderer.theme": options.theme,
+        "renderer.queue.size": renderQueue.size,
+        "renderer.queue.capacity": 8,
+      },
+    },
+    extractTraceContext(request.headers),
+    async (span) => {
+      const queuedAt = performance.now();
+      await setMemoryAttributes(span, "start");
+      try {
+        const image = await renderQueue.run(async () => {
+          span.setAttribute(
+            "renderer.queue.wait_ms",
+            performance.now() - queuedAt
+          );
+          return withBrowser((browser) => renderEntityImage(options, browser));
+        });
+        span.setAttributes({
+          "renderer.output.bytes": image.byteLength,
+          "renderer.outcome": "success",
+        });
+        span.setStatus({ code: SpanStatusCode.OK });
+        response.writeHead(200, {
+          "Content-Type": "image/png",
+          "Content-Length": image.byteLength,
+          "Cache-Control": "no-store",
+        });
+        response.end(image);
+      } catch (error) {
+        if (error instanceof RenderQueueFullError) {
+          span.setAttribute("renderer.outcome", "queue_full");
+          response.writeHead(503, { "Retry-After": "10" }).end();
+        } else {
+          span.setAttributes({
+            "renderer.outcome": "render_error",
+            "error.type":
+              error instanceof Error ? error.constructor.name : "Unknown",
+          });
+          response.writeHead(500).end();
+        }
+        span.setStatus({ code: SpanStatusCode.ERROR });
+      } finally {
+        await setMemoryAttributes(span, "end");
+        span.end();
+      }
     }
-    response.writeHead(500).end();
-  }
+  );
 }).listen(8080, "0.0.0.0");

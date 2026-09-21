@@ -1,3 +1,4 @@
+import { trace } from "@opentelemetry/api";
 import type { Browser } from "puppeteer-core";
 import type { EntityImageTheme } from "@/lib/db/schema";
 
@@ -19,6 +20,7 @@ export async function renderEntityImage(
   }: EntityImageRenderOptions,
   browser: Browser
 ): Promise<Buffer> {
+  const span = trace.getActiveSpan();
   const page = await browser.newPage();
   const entityPageUrl = new URL(entityUrlPath, baseUrl).toString();
   const selector = `#${entityType}-${entityId}`;
@@ -33,6 +35,7 @@ export async function renderEntityImage(
       deviceScaleFactor: 2,
     });
 
+    const navigationStartedAt = performance.now();
     let response = await page.goto(entityPageUrl, {
       waitUntil: "domcontentloaded",
       timeout: 15_000,
@@ -47,6 +50,10 @@ export async function renderEntityImage(
         timeout: 15_000,
       });
     }
+    span?.setAttributes({
+      "page.navigation.duration_ms": performance.now() - navigationStartedAt,
+      "page.response.status_code": response?.status() ?? 0,
+    });
 
     if (!response || response.status() !== 200) {
       throw new Error(
@@ -54,6 +61,7 @@ export async function renderEntityImage(
       );
     }
 
+    const assetsStartedAt = performance.now();
     await page
       .waitForFunction(
         () =>
@@ -70,10 +78,19 @@ export async function renderEntityImage(
         timeout: 3_000,
       })
       .catch(() => undefined);
+    span?.setAttribute(
+      "page.assets.wait_duration_ms",
+      performance.now() - assetsStartedAt
+    );
 
+    const selectorStartedAt = performance.now();
     const entityCard = await page.waitForSelector(selector, {
       timeout: 10_000,
     });
+    span?.setAttribute(
+      "page.selector.wait_duration_ms",
+      performance.now() - selectorStartedAt
+    );
     if (!entityCard) {
       throw new Error(`${entityType} card element not found`);
     }
@@ -113,12 +130,20 @@ export async function renderEntityImage(
       throw new Error(`Could not determine ${entityType} card dimensions`);
     }
 
+    const screenshotStartedAt = performance.now();
     const screenshot = await page.screenshot({
       clip: boundingBox,
       omitBackground: true,
       type: "png",
     });
-    return Buffer.from(screenshot);
+    const image = Buffer.from(screenshot);
+    span?.setAttributes({
+      "page.screenshot.duration_ms": performance.now() - screenshotStartedAt,
+      "page.screenshot.width": boundingBox.width,
+      "page.screenshot.height": boundingBox.height,
+      "page.screenshot.bytes": image.byteLength,
+    });
+    return image;
   } finally {
     await page.close();
   }

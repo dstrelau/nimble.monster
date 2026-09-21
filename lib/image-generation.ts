@@ -1,4 +1,9 @@
-import { trace } from "@opentelemetry/api";
+import {
+  context,
+  propagation,
+  SpanStatusCode,
+  trace,
+} from "@opentelemetry/api";
 import { generateEntityImagePath, uploadBlob } from "@/lib/blob-storage";
 import { withBrowser } from "@/lib/browser";
 import {
@@ -29,6 +34,38 @@ export class ImageRendererUnavailableError extends Error {
   }
 }
 
+async function fetchRenderer(
+  requestType: "health" | "render",
+  url: URL,
+  init: RequestInit & { headers: Record<string, string> }
+): Promise<Response> {
+  const tracer = trace.getTracer("image-generation");
+  return tracer.startActiveSpan(
+    `image-renderer.${requestType}`,
+    { attributes: { "renderer.request.type": requestType } },
+    async (span) => {
+      propagation.inject(context.active(), init.headers);
+      try {
+        const response = await fetch(url, init);
+        span.setAttribute("http.response.status_code", response.status);
+        span.setStatus({
+          code: response.ok ? SpanStatusCode.OK : SpanStatusCode.ERROR,
+        });
+        return response;
+      } catch (error) {
+        span.setAttribute(
+          "error.type",
+          error instanceof Error ? error.constructor.name : "Unknown"
+        );
+        span.setStatus({ code: SpanStatusCode.ERROR });
+        throw error;
+      } finally {
+        span.end();
+      }
+    }
+  );
+}
+
 async function requestRenderedImage(
   options: ImageGenerationOptions
 ): Promise<Buffer> {
@@ -39,30 +76,38 @@ async function requestRenderedImage(
   }
 
   try {
-    const healthResponse = await fetch(new URL("/health", rendererUrl), {
-      headers: { "x-image-renderer-secret": rendererSecret },
-      cache: "no-store",
-      signal: AbortSignal.timeout(RENDERER_WAKE_TIMEOUT_MS),
-    });
+    const healthResponse = await fetchRenderer(
+      "health",
+      new URL("/health", rendererUrl),
+      {
+        headers: { "x-image-renderer-secret": rendererSecret },
+        cache: "no-store",
+        signal: AbortSignal.timeout(RENDERER_WAKE_TIMEOUT_MS),
+      }
+    );
     if (!healthResponse.ok) {
       throw new ImageRendererUnavailableError("Image renderer failed to wake");
     }
 
-    const response = await fetch(new URL("/render", rendererUrl), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-image-renderer-secret": rendererSecret,
-      },
-      body: JSON.stringify({
-        entityId: options.entityId,
-        entityUrlPath: options.entityUrlPath,
-        entityType: options.entityType,
-        theme: options.theme,
-      }),
-      cache: "no-store",
-      signal: AbortSignal.timeout(RENDERER_REQUEST_TIMEOUT_MS),
-    });
+    const response = await fetchRenderer(
+      "render",
+      new URL("/render", rendererUrl),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-image-renderer-secret": rendererSecret,
+        },
+        body: JSON.stringify({
+          entityId: options.entityId,
+          entityUrlPath: options.entityUrlPath,
+          entityType: options.entityType,
+          theme: options.theme,
+        }),
+        cache: "no-store",
+        signal: AbortSignal.timeout(RENDERER_REQUEST_TIMEOUT_MS),
+      }
+    );
     if (response.status === 503) {
       throw new ImageRendererUnavailableError("Image renderer is busy");
     }

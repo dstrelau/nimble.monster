@@ -11,6 +11,10 @@ export class RenderQueue {
 
   constructor(private readonly maximumPending: number) {}
 
+  get size(): number {
+    return this.pending;
+  }
+
   async run<T>(render: () => Promise<T>): Promise<T> {
     if (this.pending >= this.maximumPending) {
       throw new RenderQueueFullError();

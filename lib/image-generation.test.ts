@@ -1,3 +1,4 @@
+import { propagation } from "@opentelemetry/api";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { generateEntityImagePath, uploadBlob } from "@/lib/blob-storage";
 import {
@@ -33,6 +34,14 @@ const options: ImageGenerationOptions & { entityVersion: string } = {
 
 describe("production image rendering", () => {
   beforeEach(() => {
+    vi.spyOn(propagation, "inject").mockImplementation((_context, carrier) => {
+      if (typeof carrier === "object" && carrier !== null) {
+        Object.assign(carrier, {
+          traceparent:
+            "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+        });
+      }
+    });
     vi.stubEnv("NODE_ENV", "production");
     vi.stubEnv("IMAGE_RENDERER_URL", "https://nimble-nexus-renderer.example");
     vi.stubEnv("IMAGE_RENDERER_SECRET", "renderer-secret");
@@ -64,6 +73,7 @@ describe("production image rendering", () => {
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.clearAllMocks();
     vi.unstubAllEnvs();
     vi.unstubAllGlobals();
@@ -77,7 +87,11 @@ describe("production image rendering", () => {
       1,
       new URL("https://nimble-nexus-renderer.example/health"),
       expect.objectContaining({
-        headers: { "x-image-renderer-secret": "renderer-secret" },
+        headers: expect.objectContaining({
+          traceparent:
+            "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+          "x-image-renderer-secret": "renderer-secret",
+        }),
         cache: "no-store",
         signal: expect.any(AbortSignal),
       })
@@ -87,10 +101,12 @@ describe("production image rendering", () => {
       new URL("https://nimble-nexus-renderer.example/render"),
       expect.objectContaining({
         method: "POST",
-        headers: {
+        headers: expect.objectContaining({
           "Content-Type": "application/json",
+          traceparent:
+            "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
           "x-image-renderer-secret": "renderer-secret",
-        },
+        }),
         body: JSON.stringify({
           entityId: options.entityId,
           entityUrlPath: options.entityUrlPath,

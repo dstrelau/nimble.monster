@@ -4,11 +4,18 @@ import { SpritesClient } from "@fly/sprites";
 const token = process.env.SPRITES_TOKEN;
 const spriteName = process.env.IMAGE_RENDERER_SPRITE;
 const rendererSecret = process.env.IMAGE_RENDERER_SECRET;
+const honeycombApiKey = process.env.HONEYCOMB_API_KEY;
 const bundlePath = process.argv[2];
 
-if (!token || !spriteName || !rendererSecret || !bundlePath) {
+if (
+  !token ||
+  !spriteName ||
+  !rendererSecret ||
+  !honeycombApiKey ||
+  !bundlePath
+) {
   throw new Error(
-    "SPRITES_TOKEN, IMAGE_RENDERER_SPRITE, IMAGE_RENDERER_SECRET, and the renderer bundle path are required"
+    "SPRITES_TOKEN, IMAGE_RENDERER_SPRITE, IMAGE_RENDERER_SECRET, HONEYCOMB_API_KEY, and the renderer bundle path are required"
   );
 }
 
@@ -94,6 +101,7 @@ const serviceEvents = await sprite.createService(
     args: [`${rendererDirectory}/render.mjs`],
     dir: rendererDirectory,
     env: {
+      HONEYCOMB_API_KEY: honeycombApiKey,
       IMAGE_RENDER_SOURCE_URL: "https://nimble.nexus",
       IMAGE_RENDERER_SECRET: rendererSecret,
       PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome",
