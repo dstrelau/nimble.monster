@@ -5,9 +5,11 @@ import {
   claimImageGeneration,
   completeImageGeneration,
   failImageGeneration,
+  findCompletedEntityImage,
 } from "@/lib/db/entity-images";
 import {
   generateEntityImageWithStorage,
+  ImageGenerationDeniedError,
   type ImageGenerationOptions,
   ImageRendererUnavailableError,
 } from "./image-generation";
@@ -21,6 +23,7 @@ vi.mock("@/lib/db/entity-images", () => ({
   claimImageGeneration: vi.fn(),
   completeImageGeneration: vi.fn(),
   failImageGeneration: vi.fn(),
+  findCompletedEntityImage: vi.fn(),
 }));
 
 const options: ImageGenerationOptions & { entityVersion: string } = {
@@ -56,6 +59,7 @@ describe("production image rendering", () => {
     });
     vi.mocked(completeImageGeneration).mockResolvedValue(Object.create(null));
     vi.mocked(failImageGeneration).mockResolvedValue(Object.create(null));
+    vi.mocked(findCompletedEntityImage).mockResolvedValue(null);
     vi.stubGlobal(
       "fetch",
       vi
@@ -206,6 +210,41 @@ describe("production image rendering", () => {
       "Image generation is already in progress"
     );
 
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("serves a completed image without rendering when generation is denied", async () => {
+    vi.mocked(findCompletedEntityImage).mockResolvedValue({
+      id: "image-row",
+      entityType: "monster",
+      entityId: options.entityId,
+      theme: "dark",
+      blobUrl: "https://images.example/cached.png",
+      generatedAt: "2026-09-21T00:00:00.000Z",
+      entityVersion: "version-1",
+      generationStatus: "completed",
+      generationToken: "attempt-token",
+      generationStartedAt: "2026-09-21T00:00:00.000Z",
+      createdAt: "2026-09-21T00:00:00.000Z",
+      updatedAt: "2026-09-21T00:00:00.000Z",
+    });
+
+    const result = await generateEntityImageWithStorage({
+      ...options,
+      allowGeneration: false,
+    });
+
+    expect(result).toBe("https://images.example/cached.png");
+    expect(claimImageGeneration).not.toHaveBeenCalled();
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("rejects an uncached image without claiming or rendering it", async () => {
+    await expect(
+      generateEntityImageWithStorage({ ...options, allowGeneration: false })
+    ).rejects.toThrow(ImageGenerationDeniedError);
+
+    expect(claimImageGeneration).not.toHaveBeenCalled();
     expect(fetch).not.toHaveBeenCalled();
   });
 });

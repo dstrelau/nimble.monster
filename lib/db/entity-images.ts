@@ -27,6 +27,30 @@ function generateId(): string {
   return crypto.randomUUID();
 }
 
+export async function findCompletedEntityImage(
+  entityType: EntityImageType,
+  entityId: string,
+  entityVersion: string,
+  theme: EntityImageTheme
+): Promise<EntityImageRow | null> {
+  const db = getDatabase();
+  const rows = await db
+    .select()
+    .from(entityImages)
+    .where(
+      and(
+        eq(entityImages.entityType, entityType),
+        eq(entityImages.entityId, entityId),
+        eq(entityImages.entityVersion, entityVersion),
+        eq(entityImages.theme, theme),
+        eq(entityImages.generationStatus, "completed")
+      )
+    )
+    .limit(1);
+
+  return rows[0] ?? null;
+}
+
 export async function claimImageGeneration(
   entityType: EntityImageType,
   entityId: string,

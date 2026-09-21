@@ -4,6 +4,7 @@ import type { EntityImageTheme } from "@/lib/db/schema";
 import { getEntityImageVersion } from "@/lib/entity-image-version";
 import {
   generateEntityImageWithStorage,
+  ImageGenerationDeniedError,
   ImageRendererUnavailableError,
 } from "@/lib/image-generation";
 import { getCompanionUrl, getItemUrl, getMonsterUrl } from "./utils/url";
@@ -15,6 +16,37 @@ type Entity = {
 };
 
 type EntityType = "monster" | "companion" | "item";
+
+const IMAGE_PREVIEW_BOT_USER_AGENTS = [
+  /Discordbot/i,
+  /facebookexternalhit/i,
+  /LinkedInBot/i,
+  /Slackbot-LinkExpanding/i,
+  /Twitterbot/i,
+];
+
+function canGenerateEntityImage(request: NextRequest): boolean {
+  if (process.env.NODE_ENV !== "production") return true;
+
+  const userAgent = request.headers.get("user-agent") ?? "";
+  if (
+    IMAGE_PREVIEW_BOT_USER_AGENTS.some((pattern) => pattern.test(userAgent))
+  ) {
+    return true;
+  }
+
+  if (request.headers.get("sec-fetch-site") !== "same-origin") return false;
+
+  const referer = request.headers.get("referer");
+  const requestHost = request.headers.get("host");
+  if (!referer || !requestHost) return false;
+
+  try {
+    return new URL(referer).host === requestHost;
+  } catch {
+    return false;
+  }
+}
 
 export function parseThemeParam(request: NextRequest): EntityImageTheme {
   const raw = new URL(request.url).searchParams.get("theme");
@@ -34,6 +66,7 @@ export async function createImageResponse(
     const protocol = new URL(request.url).protocol;
     const baseUrl = `${protocol}//${host}`;
     const theme = parseThemeParam(request);
+    const allowGeneration = canGenerateEntityImage(request);
 
     span.setAttributes({
       "entity.id": entity.id,
@@ -42,6 +75,7 @@ export async function createImageResponse(
       "entity.theme": theme,
       "request.host": host,
       "request.protocol": protocol,
+      "generation.allowed": allowGeneration,
     });
 
     try {
@@ -82,6 +116,7 @@ export async function createImageResponse(
 
       // Use blob storage for image generation
       const blobUrl = await generateEntityImageWithStorage({
+        allowGeneration,
         baseUrl,
         entityId: entity.id,
         entityUrlPath,
@@ -125,36 +160,59 @@ export async function createImageResponse(
       const errorStack = error instanceof Error ? error.stack : undefined;
       const rendererUnavailable =
         error instanceof ImageRendererUnavailableError;
-      const responseStatus = rendererUnavailable ? 503 : 500;
+      const generationDenied = error instanceof ImageGenerationDeniedError;
+      const responseStatus = generationDenied
+        ? 403
+        : rendererUnavailable
+          ? 503
+          : 500;
 
       span.setAttributes({
-        "error.message": errorMessage,
-        "error.type":
-          error instanceof Error ? error.constructor.name : "Unknown",
+        ...(generationDenied
+          ? { "generation.denied": true }
+          : {
+              "error.message": errorMessage,
+              "error.type":
+                error instanceof Error ? error.constructor.name : "Unknown",
+            }),
         "response.status": responseStatus,
       });
 
-      if (errorStack) {
+      if (errorStack && !generationDenied) {
         span.setAttributes({ "error.stack": errorStack });
       }
 
-      span.setStatus({ code: 2, message: errorMessage }); // ERROR
+      span.setStatus(
+        generationDenied ? { code: 1 } : { code: 2, message: errorMessage }
+      );
 
-      console.error(`Error generating ${entityType} image for ${entity.id}:`, {
-        entityId: entity.id,
-        entityType,
-        entityName: entity.name,
-        host,
-        error: errorMessage,
-        stack: errorStack,
-      });
+      if (!generationDenied) {
+        console.error(
+          `Error generating ${entityType} image for ${entity.id}:`,
+          {
+            entityId: entity.id,
+            entityType,
+            entityName: entity.name,
+            host,
+            error: errorMessage,
+            stack: errorStack,
+          }
+        );
+      }
 
-      return new Response(`Error generating image: ${errorMessage}`, {
-        status: responseStatus,
-        headers: rendererUnavailable
-          ? { "Retry-After": "5", "Cache-Control": "no-store" }
-          : undefined,
-      });
+      return new Response(
+        generationDenied
+          ? "Image generation is not permitted"
+          : `Error generating image: ${errorMessage}`,
+        {
+          status: responseStatus,
+          headers: generationDenied
+            ? { "Cache-Control": "no-store" }
+            : rendererUnavailable
+              ? { "Retry-After": "5", "Cache-Control": "no-store" }
+              : undefined,
+        }
+      );
     } finally {
       span.end();
     }

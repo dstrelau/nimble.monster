@@ -11,6 +11,7 @@ import {
   completeImageGeneration,
   type EntityImageClaim,
   failImageGeneration,
+  findCompletedEntityImage,
 } from "@/lib/db/entity-images";
 import type { EntityImageTheme } from "@/lib/db/schema";
 import { renderEntityImage } from "@/lib/entity-image-renderer";
@@ -31,6 +32,13 @@ export class ImageRendererUnavailableError extends Error {
   constructor(message: string, options?: ErrorOptions) {
     super(message, options);
     this.name = "ImageRendererUnavailableError";
+  }
+}
+
+export class ImageGenerationDeniedError extends Error {
+  constructor() {
+    super("Image generation is not permitted for this request");
+    this.name = "ImageGenerationDeniedError";
   }
 }
 
@@ -150,13 +158,17 @@ async function generateImage(options: ImageGenerationOptions): Promise<Buffer> {
 }
 
 export async function generateEntityImageWithStorage({
+  allowGeneration = true,
   baseUrl,
   entityId,
   entityUrlPath,
   entityType,
   entityVersion,
   theme,
-}: ImageGenerationOptions & { entityVersion: string }): Promise<string> {
+}: ImageGenerationOptions & {
+  allowGeneration?: boolean;
+  entityVersion: string;
+}): Promise<string> {
   const tracer = trace.getTracer("image-generation");
 
   return tracer.startActiveSpan(
@@ -173,6 +185,31 @@ export async function generateEntityImageWithStorage({
       let claim: EntityImageClaim | null = null;
 
       try {
+        if (!allowGeneration) {
+          const existing = await findCompletedEntityImage(
+            entityType,
+            entityId,
+            entityVersion,
+            theme
+          );
+          if (existing?.blobUrl) {
+            span.setAttributes({
+              "cache.hit": true,
+              "blob.url": existing.blobUrl,
+              "generation.allowed": false,
+            });
+            span.setStatus({ code: SpanStatusCode.OK });
+            return existing.blobUrl;
+          }
+
+          span.setAttributes({
+            "cache.hit": false,
+            "generation.allowed": false,
+            "generation.denied": true,
+          });
+          throw new ImageGenerationDeniedError();
+        }
+
         // Try to claim generation or get existing result
         claim = await claimImageGeneration(
           entityType,
@@ -245,6 +282,12 @@ export async function generateEntityImageWithStorage({
         const errorMessage =
           error instanceof Error ? error.message : String(error);
         const errorStack = error instanceof Error ? error.stack : undefined;
+
+        if (error instanceof ImageGenerationDeniedError) {
+          span.setAttribute("generation.denied", true);
+          span.setStatus({ code: SpanStatusCode.OK });
+          throw error;
+        }
 
         span.setAttributes({
           "error.message": errorMessage,
