@@ -9,13 +9,19 @@ import {
   type GenerationStatus,
 } from "@/lib/db/schema";
 
-export interface EntityImageClaim {
-  id: string;
-  claimed: boolean;
-  existing?: EntityImageRow | null;
-}
+export type EntityImageClaim =
+  | {
+      id: string;
+      claimed: true;
+      generationToken: string;
+    }
+  | {
+      id: string;
+      claimed: false;
+      existing?: EntityImageRow | null;
+    };
 
-const GENERATION_TIMEOUT_MS = 60 * 1000;
+const GENERATION_TIMEOUT_MS = 7 * 60 * 1000;
 
 function generateId(): string {
   return crypto.randomUUID();
@@ -60,6 +66,7 @@ export async function claimImageGeneration(
 
       if (!existing) {
         const id = generateId();
+        const generationToken = generateId();
         try {
           const createdRows = await tx
             .insert(entityImages)
@@ -70,6 +77,7 @@ export async function claimImageGeneration(
               theme,
               entityVersion,
               generationStatus: "generating" as GenerationStatus,
+              generationToken,
               generationStartedAt: now,
               createdAt: now,
               updatedAt: now,
@@ -86,6 +94,7 @@ export async function claimImageGeneration(
           return {
             id: created.id,
             claimed: true,
+            generationToken,
           };
         } catch (insertError) {
           const insertErrorMessage =
@@ -221,11 +230,13 @@ export async function claimImageGeneration(
         }
       }
 
+      const generationToken = generateId();
       const updatedRows = await tx
         .update(entityImages)
         .set({
           entityVersion,
           generationStatus: "generating" as GenerationStatus,
+          generationToken,
           generationStartedAt: now,
           updatedAt: now,
           ...(existing.entityVersion !== entityVersion
@@ -244,6 +255,7 @@ export async function claimImageGeneration(
       return {
         id: updated.id,
         claimed: true,
+        generationToken,
       };
     });
   } finally {
@@ -253,6 +265,8 @@ export async function claimImageGeneration(
 
 export async function completeImageGeneration(
   id: string,
+  generationToken: string,
+  entityVersion: string,
   blobUrl: string
 ): Promise<EntityImageRow> {
   const tracer = trace.getTracer("entity-images");
@@ -260,6 +274,8 @@ export async function completeImageGeneration(
   return tracer.startActiveSpan("complete-image-generation", async (span) => {
     span.setAttributes({
       "record.id": id,
+      "generation.token": generationToken,
+      "entity.version": entityVersion,
       "blob.url": blobUrl,
     });
 
@@ -272,8 +288,19 @@ export async function completeImageGeneration(
           blobUrl,
           generatedAt: new Date().toISOString(),
         })
-        .where(eq(entityImages.id, id))
+        .where(
+          and(
+            eq(entityImages.id, id),
+            eq(entityImages.generationToken, generationToken),
+            eq(entityImages.entityVersion, entityVersion),
+            eq(entityImages.generationStatus, "generating")
+          )
+        )
         .returning();
+
+      if (!updatedRows[0]) {
+        throw new Error("Image generation claim is no longer current");
+      }
 
       span.setStatus({ code: 1 });
       return updatedRows[0];
@@ -291,6 +318,8 @@ export async function completeImageGeneration(
 
 export async function failImageGeneration(
   id: string,
+  generationToken: string,
+  entityVersion: string,
   error?: string
 ): Promise<EntityImageRow> {
   const tracer = trace.getTracer("entity-images");
@@ -298,6 +327,8 @@ export async function failImageGeneration(
   return tracer.startActiveSpan("fail-image-generation", async (span) => {
     span.setAttributes({
       "record.id": id,
+      "generation.token": generationToken,
+      "entity.version": entityVersion,
       "error.message": error || "Unknown error",
     });
 
@@ -308,8 +339,19 @@ export async function failImageGeneration(
         .set({
           generationStatus: "failed" as GenerationStatus,
         })
-        .where(eq(entityImages.id, id))
+        .where(
+          and(
+            eq(entityImages.id, id),
+            eq(entityImages.generationToken, generationToken),
+            eq(entityImages.entityVersion, entityVersion),
+            eq(entityImages.generationStatus, "generating")
+          )
+        )
         .returning();
+
+      if (!updatedRows[0]) {
+        throw new Error("Image generation claim is no longer current");
+      }
 
       span.setStatus({ code: 1 });
       return updatedRows[0];
@@ -323,46 +365,4 @@ export async function failImageGeneration(
       span.end();
     }
   });
-}
-
-export async function waitForImageGeneration(
-  id: string,
-  maxWaitMs: number = 30000
-): Promise<EntityImageRow> {
-  const startTime = Date.now();
-  const pollInterval = 1000;
-  const db = await getDatabase();
-
-  while (Date.now() - startTime < maxWaitMs) {
-    const rows = await db
-      .select()
-      .from(entityImages)
-      .where(eq(entityImages.id, id))
-      .limit(1);
-    const record = rows[0] ?? null;
-
-    if (!record) {
-      throw new Error("Entity image record not found");
-    }
-
-    if (record.generationStatus === "completed") {
-      return record;
-    }
-
-    if (record.generationStatus === "failed") {
-      throw new Error("Image generation failed");
-    }
-
-    if (record.generationStartedAt) {
-      const generationAge =
-        Date.now() - new Date(record.generationStartedAt).getTime();
-      if (generationAge > GENERATION_TIMEOUT_MS) {
-        throw new Error("Image generation timed out");
-      }
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, pollInterval));
-  }
-
-  throw new Error("Timeout waiting for image generation");
 }

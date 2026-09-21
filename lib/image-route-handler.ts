@@ -2,7 +2,10 @@ import { trace } from "@opentelemetry/api";
 import type { NextRequest } from "next/server";
 import type { EntityImageTheme } from "@/lib/db/schema";
 import { getEntityImageVersion } from "@/lib/entity-image-version";
-import { generateEntityImageWithStorage } from "@/lib/image-generation";
+import {
+  generateEntityImageWithStorage,
+  ImageRendererUnavailableError,
+} from "@/lib/image-generation";
 import { getCompanionUrl, getItemUrl, getMonsterUrl } from "./utils/url";
 
 type Entity = {
@@ -120,12 +123,15 @@ export async function createImageResponse(
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
+      const rendererUnavailable =
+        error instanceof ImageRendererUnavailableError;
+      const responseStatus = rendererUnavailable ? 503 : 500;
 
       span.setAttributes({
         "error.message": errorMessage,
         "error.type":
           error instanceof Error ? error.constructor.name : "Unknown",
-        "response.status": 500,
+        "response.status": responseStatus,
       });
 
       if (errorStack) {
@@ -144,7 +150,10 @@ export async function createImageResponse(
       });
 
       return new Response(`Error generating image: ${errorMessage}`, {
-        status: 500,
+        status: responseStatus,
+        headers: rendererUnavailable
+          ? { "Retry-After": "5", "Cache-Control": "no-store" }
+          : undefined,
       });
     } finally {
       span.end();

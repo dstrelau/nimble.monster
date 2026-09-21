@@ -562,6 +562,7 @@ export const entityImages = sqliteTable(
     generationStatus: text("generation_status")
       .$type<GenerationStatus>()
       .default("generating"),
+    generationToken: text("generation_token"),
     generationStartedAt: text("generation_started_at").default(
       sql`CURRENT_TIMESTAMP`
     ),

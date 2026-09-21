@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer-core";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { getBrowser, isUsableBrowser } from "./browser";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { withBrowser } from "./browser";
 
 vi.mock("puppeteer-core", () => ({
   default: {
@@ -8,27 +8,57 @@ vi.mock("puppeteer-core", () => ({
   },
 }));
 
-describe("getBrowser", () => {
+function browserMock(close = vi.fn().mockResolvedValue(undefined)) {
+  return Object.assign(Object.create(null), { close });
+}
+
+describe("withBrowser", () => {
   beforeEach(() => {
+    vi.stubEnv("PUPPETEER_EXECUTABLE_PATH", "/test/chromium");
     vi.mocked(puppeteer.launch).mockReset();
   });
 
-  it("retries after browser launch fails", async () => {
-    vi.mocked(puppeteer.launch)
-      .mockRejectedValueOnce(new Error("first launch failed"))
-      .mockRejectedValueOnce(new Error("second launch failed"));
-
-    await expect(getBrowser()).rejects.toThrow("first launch failed");
-    await expect(getBrowser()).rejects.toThrow("second launch failed");
-
-    expect(puppeteer.launch).toHaveBeenCalledTimes(2);
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
-  it("identifies disconnected browsers", () => {
-    const connected = { isConnected: () => true };
-    const disconnected = { isConnected: () => false };
+  it("uses a fresh browser for each render and closes it", async () => {
+    const firstClose = vi.fn().mockResolvedValue(undefined);
+    const secondClose = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(puppeteer.launch)
+      .mockResolvedValueOnce(browserMock(firstClose))
+      .mockResolvedValueOnce(browserMock(secondClose));
 
-    expect(isUsableBrowser(connected)).toBe(true);
-    expect(isUsableBrowser(disconnected)).toBe(false);
+    await withBrowser(async () => "first");
+    await withBrowser(async () => "second");
+
+    expect(puppeteer.launch).toHaveBeenCalledTimes(2);
+    expect(puppeteer.launch).toHaveBeenCalledWith({
+      executablePath: "/test/chromium",
+      headless: true,
+      timeout: 10_000,
+      protocolTimeout: 30_000,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+      ],
+    });
+    expect(firstClose).toHaveBeenCalledOnce();
+    expect(secondClose).toHaveBeenCalledOnce();
+  });
+
+  it("closes the browser after a failed render", async () => {
+    const close = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(puppeteer.launch).mockResolvedValue(browserMock(close));
+
+    await expect(
+      withBrowser(async () => {
+        throw new Error("render failed");
+      })
+    ).rejects.toThrow("render failed");
+
+    expect(close).toHaveBeenCalledOnce();
   });
 });

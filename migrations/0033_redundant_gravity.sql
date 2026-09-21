@@ -1,0 +1,1 @@
+ALTER TABLE `entity_images` ADD `generation_token` text;

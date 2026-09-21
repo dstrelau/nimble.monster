@@ -61,6 +61,12 @@ jobs:
           AWS_REGION: auto
           BUCKET_NAME: nimble-nexus
       - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy image renderer to Sprite
+        run: pnpm run image-renderer:deploy
+        env:
+          IMAGE_RENDERER_SPRITE: nimble-nexus-renderer
+          IMAGE_RENDERER_SECRET: ${{ secrets.IMAGE_RENDERER_SECRET }}
+          SPRITES_TOKEN: ${{ secrets.SPRITES_TOKEN }}
       - run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

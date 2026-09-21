@@ -1,14 +1,14 @@
 import { trace } from "@opentelemetry/api";
 import { generateEntityImagePath, uploadBlob } from "@/lib/blob-storage";
-import { getBrowser, withRenderLimit } from "@/lib/browser";
+import { withBrowser } from "@/lib/browser";
 import {
   claimImageGeneration,
   completeImageGeneration,
   type EntityImageClaim,
   failImageGeneration,
-  waitForImageGeneration,
 } from "@/lib/db/entity-images";
-import type { EntityImageTheme, EntityImageType } from "@/lib/db/schema";
+import type { EntityImageTheme } from "@/lib/db/schema";
+import { renderEntityImage } from "@/lib/entity-image-renderer";
 
 export interface ImageGenerationOptions {
   baseUrl: string;
@@ -16,6 +16,92 @@ export interface ImageGenerationOptions {
   entityUrlPath: string;
   entityType: "monster" | "companion" | "item";
   theme: EntityImageTheme;
+}
+
+const RENDERER_REQUEST_TIMEOUT_MS = 6 * 60_000;
+const RENDERER_WAKE_TIMEOUT_MS = 30_000;
+const MAX_RENDERED_IMAGE_BYTES = 5 * 1024 * 1024;
+
+export class ImageRendererUnavailableError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = "ImageRendererUnavailableError";
+  }
+}
+
+async function requestRenderedImage(
+  options: ImageGenerationOptions
+): Promise<Buffer> {
+  const rendererUrl = process.env.IMAGE_RENDERER_URL;
+  const rendererSecret = process.env.IMAGE_RENDERER_SECRET;
+  if (!rendererUrl || !rendererSecret) {
+    throw new ImageRendererUnavailableError("Image renderer is not configured");
+  }
+
+  try {
+    const healthResponse = await fetch(new URL("/health", rendererUrl), {
+      headers: { "x-image-renderer-secret": rendererSecret },
+      cache: "no-store",
+      signal: AbortSignal.timeout(RENDERER_WAKE_TIMEOUT_MS),
+    });
+    if (!healthResponse.ok) {
+      throw new ImageRendererUnavailableError("Image renderer failed to wake");
+    }
+
+    const response = await fetch(new URL("/render", rendererUrl), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-image-renderer-secret": rendererSecret,
+      },
+      body: JSON.stringify({
+        entityId: options.entityId,
+        entityUrlPath: options.entityUrlPath,
+        entityType: options.entityType,
+        theme: options.theme,
+      }),
+      cache: "no-store",
+      signal: AbortSignal.timeout(RENDERER_REQUEST_TIMEOUT_MS),
+    });
+    if (response.status === 503) {
+      throw new ImageRendererUnavailableError("Image renderer is busy");
+    }
+    if (!response.ok || response.headers.get("content-type") !== "image/png") {
+      throw new ImageRendererUnavailableError("Image renderer request failed");
+    }
+
+    const contentLength = Number(response.headers.get("content-length"));
+    if (
+      (Number.isFinite(contentLength) &&
+        contentLength > MAX_RENDERED_IMAGE_BYTES) ||
+      contentLength < 0
+    ) {
+      throw new ImageRendererUnavailableError(
+        "Image renderer response exceeded the size limit"
+      );
+    }
+
+    const image = Buffer.from(await response.arrayBuffer());
+    if (image.byteLength > MAX_RENDERED_IMAGE_BYTES) {
+      throw new ImageRendererUnavailableError(
+        "Image renderer response exceeded the size limit"
+      );
+    }
+    return image;
+  } catch (error) {
+    if (error instanceof ImageRendererUnavailableError) throw error;
+    throw new ImageRendererUnavailableError("Image renderer request failed", {
+      cause: error,
+    });
+  }
+}
+
+async function generateImage(options: ImageGenerationOptions): Promise<Buffer> {
+  if (process.env.NODE_ENV === "production") {
+    return requestRenderedImage(options);
+  }
+
+  return withBrowser((browser) => renderEntityImage(options, browser));
 }
 
 export async function generateEntityImageWithStorage({
@@ -39,13 +125,12 @@ export async function generateEntityImageWithStorage({
         "page.base_url": baseUrl,
       });
 
-      const entityImageType = entityType as EntityImageType;
       let claim: EntityImageClaim | null = null;
 
       try {
         // Try to claim generation or get existing result
         claim = await claimImageGeneration(
-          entityImageType,
+          entityType,
           entityId,
           entityVersion,
           theme
@@ -67,41 +152,29 @@ export async function generateEntityImageWithStorage({
             return claim.existing.blobUrl;
           }
 
-          // Wait for ongoing generation
-          span.setAttributes({ "waiting.for_generation": true });
-          const completedRecord = await waitForImageGeneration(claim.id);
-
-          if (!completedRecord.blobUrl) {
-            throw new Error("Completed image generation has no blob URL");
-          }
-
-          span.setAttributes({
-            "cache.wait_hit": true,
-            "blob.url": completedRecord.blobUrl,
-          });
-          span.setStatus({ code: 1 }); // OK
-          return completedRecord.blobUrl;
+          span.setAttributes({ "generation.in_progress": true });
+          throw new ImageRendererUnavailableError(
+            "Image generation is already in progress"
+          );
         }
 
         // We claimed generation, now actually generate the image
         span.setAttributes({ "generation.claimed": true });
 
-        const imageBuffer = await withRenderLimit(() =>
-          generateEntityImageDirect({
-            baseUrl,
-            entityId,
-            entityUrlPath,
-            entityType,
-            theme,
-          })
-        );
+        const imageBuffer = await generateImage({
+          baseUrl,
+          entityId,
+          entityUrlPath,
+          entityType,
+          theme,
+        });
 
         // Upload to blob storage
         const filename = generateEntityImagePath(
           entityType,
           entityId,
           theme,
-          entityVersion
+          `${entityVersion}-${claim.generationToken}`
         );
         const uploadStartTime = Date.now();
         const blobResult = await uploadBlob(filename, imageBuffer, "image/png");
@@ -114,7 +187,12 @@ export async function generateEntityImageWithStorage({
         });
 
         // Mark generation as complete
-        await completeImageGeneration(claim.id, blobResult.url);
+        await completeImageGeneration(
+          claim.id,
+          claim.generationToken,
+          entityVersion,
+          blobResult.url
+        );
 
         span.setStatus({ code: 1 }); // OK
         return blobResult.url;
@@ -136,7 +214,12 @@ export async function generateEntityImageWithStorage({
         // Mark generation as failed if we claimed it
         if (claim?.claimed) {
           try {
-            await failImageGeneration(claim.id, errorMessage);
+            await failImageGeneration(
+              claim.id,
+              claim.generationToken,
+              entityVersion,
+              errorMessage
+            );
           } catch (failError) {
             console.warn(
               "Failed to mark image generation as failed:",
@@ -148,423 +231,6 @@ export async function generateEntityImageWithStorage({
         span.setStatus({ code: 2, message: errorMessage }); // ERROR
         throw error;
       } finally {
-        span.end();
-      }
-    }
-  );
-}
-
-async function generateEntityImageDirect({
-  baseUrl,
-  entityId,
-  entityUrlPath,
-  entityType,
-  theme,
-}: ImageGenerationOptions): Promise<Buffer> {
-  const tracer = trace.getTracer("image-generation");
-  const entityPageUrl = `${baseUrl}${entityUrlPath}`;
-
-  return tracer.startActiveSpan(
-    `generate-${entityType}-image-direct`,
-    async (span) => {
-      span.setAttributes({
-        "entity.id": entityId,
-        "entity.type": entityType,
-        "entity.theme": theme,
-        "page.url": entityPageUrl,
-        "page.base_url": baseUrl,
-      });
-
-      // biome-ignore lint/suspicious/noExplicitAny: browser types
-      let browser: any;
-      // biome-ignore lint/suspicious/noExplicitAny: browser types
-      let page: any;
-
-      try {
-        const browserStartTime = Date.now();
-
-        span.setAttributes({
-          "browser.node_env": process.env.NODE_ENV || "unknown",
-        });
-
-        try {
-          browser = await getBrowser();
-          const browserTime = Date.now() - browserStartTime;
-
-          span.setAttributes({
-            "browser.acquisition_time_ms": browserTime,
-            "browser.acquisition_success": true,
-          });
-        } catch (browserError) {
-          const browserTime = Date.now() - browserStartTime;
-          const browserErrorMessage =
-            browserError instanceof Error
-              ? browserError.message
-              : String(browserError);
-
-          span.setAttributes({
-            "browser.acquisition_time_ms": browserTime,
-            "browser.acquisition_success": false,
-            "browser.acquisition_error": browserErrorMessage,
-          });
-
-          throw new Error(
-            `Browser acquisition failed after ${browserTime}ms: ${browserErrorMessage}`
-          );
-        }
-
-        const pageStartTime = Date.now();
-
-        const avatarRequests: Array<{
-          url: string;
-          status: number;
-          method: string;
-        }> = [];
-
-        try {
-          page = await browser.newPage();
-
-          // Force the requested theme by seeding localStorage before any page
-          // script runs. next-themes reads this on mount and applies it via
-          // the `data-theme` attribute on <html>.
-          await page.evaluateOnNewDocument((selectedTheme: string) => {
-            try {
-              window.localStorage.setItem("theme", selectedTheme);
-            } catch {}
-          }, theme);
-
-          // Monitor network requests for avatar loading debugging
-          // biome-ignore lint/suspicious/noExplicitAny: browser types
-          page.on("response", (response: any) => {
-            const url = response.url();
-            if (url.includes("cdn.discordapp.com")) {
-              avatarRequests.push({
-                url,
-                status: response.status(),
-                method: response.request().method(),
-              });
-            }
-          });
-
-          const pageCreationTime = Date.now() - pageStartTime;
-
-          span.setAttributes({
-            "page.creation_time_ms": pageCreationTime,
-            "page.creation_success": true,
-          });
-        } catch (pageError) {
-          const pageCreationTime = Date.now() - pageStartTime;
-          const pageErrorMessage =
-            pageError instanceof Error ? pageError.message : String(pageError);
-
-          span.setAttributes({
-            "page.creation_time_ms": pageCreationTime,
-            "page.creation_success": false,
-            "page.creation_error": pageErrorMessage,
-          });
-
-          throw new Error(
-            `Page creation failed after ${pageCreationTime}ms: ${pageErrorMessage}`
-          );
-        }
-
-        await page.setViewport({
-          width: 1200,
-          height: 630,
-          deviceScaleFactor: 2,
-        });
-
-        const navigationStartTime = Date.now();
-
-        span.setAttributes({
-          "page.navigation_start": true,
-          "page.url_attempting": entityPageUrl,
-        });
-
-        // biome-ignore lint/suspicious/noExplicitAny: browser types
-        let response: any;
-        try {
-          response = await page.goto(entityPageUrl, {
-            waitUntil: "domcontentloaded",
-            timeout: 15000,
-          });
-
-          if (
-            process.env.NODE_ENV === "development" &&
-            process.env.NIMBLE_DEV_AUTO_LOGIN_USERNAME &&
-            response?.url() !== entityPageUrl
-          ) {
-            response = await page.goto(entityPageUrl, {
-              waitUntil: "domcontentloaded",
-              timeout: 15000,
-            });
-          }
-
-          span.setAttributes({
-            "page.navigation_phase": "domcontentloaded_success",
-            "page.navigation_time_ms": Date.now() - navigationStartTime,
-          });
-        } catch (navigationError) {
-          const navigationTime = Date.now() - navigationStartTime;
-          const errorMessage =
-            navigationError instanceof Error
-              ? navigationError.message
-              : String(navigationError);
-
-          span.setAttributes({
-            "page.navigation_phase": "initial_navigation_failed",
-            "page.navigation_time_ms": navigationTime,
-            "page.navigation_error": errorMessage,
-          });
-
-          throw new Error(
-            `Navigation failed after ${navigationTime}ms: ${errorMessage}`
-          );
-        }
-
-        const responseStatus = response?.status();
-        const navigationTime = Date.now() - navigationStartTime;
-
-        span.setAttributes({
-          "page.navigation_time_ms": navigationTime,
-          "page.response_status": responseStatus || 0,
-          "page.response_ok": response?.ok() || false,
-          "page.response_url": response?.url() || "unknown",
-        });
-
-        if (!response || responseStatus !== 200) {
-          const responseText = response
-            ? await response.text().catch(() => "Could not read response")
-            : "No response";
-          span.setAttributes({
-            "page.response_text_preview": responseText.substring(0, 500),
-          });
-
-          throw new Error(
-            `Failed to load ${entityType} page: ${responseStatus || "no response"} - ${responseText.substring(0, 200)}`
-          );
-        }
-
-        // Wait for avatar images to load
-        const avatarWaitStartTime = Date.now();
-        try {
-          await page.waitForFunction(
-            () => {
-              const avatarImages = Array.from(
-                document.querySelectorAll('img[src*="cdn.discordapp.com"]')
-              );
-              return avatarImages.every(
-                (img) =>
-                  (img as HTMLImageElement).complete &&
-                  (img as HTMLImageElement).naturalHeight !== 0
-              );
-            },
-            { timeout: 5000 }
-          );
-
-          const avatarWaitTime = Date.now() - avatarWaitStartTime;
-
-          span.setAttributes({
-            "page.avatar_wait_time_ms": avatarWaitTime,
-            "page.avatar_load_state": "loaded",
-            "page.avatar_requests_count": avatarRequests.length,
-            "page.avatar_request_statuses": avatarRequests
-              .map((r) => r.status)
-              .join(","),
-          });
-        } catch (avatarError) {
-          const avatarWaitTime = Date.now() - avatarWaitStartTime;
-
-          const avatarImageInfo: {
-            src: string;
-            complete: boolean;
-            naturalHeight: number;
-            naturalWidth: number;
-          }[] = await page.evaluate(() => {
-            const avatarImages = Array.from(
-              document.querySelectorAll('img[src*="cdn.discordapp.com"]')
-            );
-            return avatarImages.map((img) => {
-              const imgEl = img as HTMLImageElement;
-              return {
-                src: imgEl.src,
-                complete: imgEl.complete,
-                naturalHeight: imgEl.naturalHeight,
-                naturalWidth: imgEl.naturalWidth,
-              };
-            });
-          });
-
-          span.setAttributes({
-            "page.avatar_wait_time_ms": avatarWaitTime,
-            "page.avatar_load_state": "timeout_but_continuing",
-            "page.avatar_error":
-              avatarError instanceof Error
-                ? avatarError.message
-                : String(avatarError),
-            "page.avatar_requests_count": avatarRequests.length,
-            "page.avatar_request_statuses": avatarRequests
-              .map((r) => r.status)
-              .join(","),
-            "page.avatar_image_count": avatarImageInfo.length,
-            "page.avatar_images_failed": avatarImageInfo.filter(
-              (img) => !img.complete || img.naturalHeight === 0
-            ).length,
-            "page.avatar_blocking_urls": avatarImageInfo
-              .filter((img) => !img.complete || img.naturalHeight === 0)
-              .map((img) => img.src)
-              .join(",")
-              .substring(0, 500),
-          });
-        }
-
-        try {
-          await page.waitForFunction('document.readyState === "complete"', {
-            timeout: 3000,
-          });
-
-          span.setAttributes({
-            "page.final_load_state": "complete",
-          });
-        } catch (loadStateError) {
-          span.setAttributes({
-            "page.final_load_state": "timeout_but_continuing",
-            "page.load_state_error":
-              loadStateError instanceof Error
-                ? loadStateError.message
-                : String(loadStateError),
-          });
-        }
-
-        const selectorStartTime = Date.now();
-        await page.waitForSelector(`#${entityType}-${entityId}`);
-        const selectorWaitTime = Date.now() - selectorStartTime;
-
-        span.setAttributes({
-          "page.selector_wait_time_ms": selectorWaitTime,
-        });
-
-        const evaluateStartTime = Date.now();
-        await page.evaluate(
-          (params: { entityId: string; entityType: string }) => {
-            const { entityId, entityType } = params;
-            const container = document.querySelector(
-              ".container .max-w-2xl"
-            ) as HTMLElement | null;
-
-            if (container) {
-              container.style.boxSizing = "border-box";
-              container.style.display = "flex";
-              container.style.justifyContent = "center";
-              container.style.alignItems = "center";
-              container.style.margin = "0";
-              container.style.padding = "0";
-            }
-
-            const actionsToRemove = document.querySelectorAll(
-              `[id^="${entityType}-"] button, [id^="${entityType}-"] [data-card-export-hide]`
-            );
-            actionsToRemove.forEach((el) => {
-              (el as HTMLElement).style.display = "none";
-            });
-
-            const entityCard = document.querySelector(
-              `#${entityType}-${entityId}`
-            ) as HTMLElement | null;
-            if (entityCard) {
-              entityCard.style.padding = "20px";
-            }
-
-            document.documentElement.style.background = "transparent";
-            document.body.style.background = "transparent";
-          },
-          { entityId, entityType }
-        );
-        const evaluateTime = Date.now() - evaluateStartTime;
-
-        span.setAttributes({
-          "page.dom_manipulation_time_ms": evaluateTime,
-        });
-
-        const elementStartTime = Date.now();
-        const entityCardElement = await page.$(`#${entityType}-${entityId}`);
-        if (!entityCardElement) {
-          throw new Error(`${entityType} card element not found`);
-        }
-
-        const boundingBox = await entityCardElement.boundingBox();
-        if (!boundingBox) {
-          throw new Error(`Could not determine ${entityType} card dimensions`);
-        }
-        const elementTime = Date.now() - elementStartTime;
-
-        span.setAttributes({
-          "page.element_selection_time_ms": elementTime,
-          "screenshot.width": boundingBox.width,
-          "screenshot.height": boundingBox.height,
-          "screenshot.x": boundingBox.x,
-          "screenshot.y": boundingBox.y,
-        });
-
-        const screenshotStartTime = Date.now();
-        const screenshotBuffer = await page.screenshot({
-          clip: {
-            x: boundingBox.x,
-            y: boundingBox.y,
-            width: boundingBox.width,
-            height: boundingBox.height,
-          },
-          omitBackground: true,
-          type: "png",
-        });
-        const screenshotTime = Date.now() - screenshotStartTime;
-
-        const buffer = Buffer.from(screenshotBuffer);
-
-        span.setAttributes({
-          "screenshot.generation_time_ms": screenshotTime,
-          "screenshot.buffer_size": buffer.length,
-        });
-
-        span.setStatus({ code: 1 }); // OK
-        return buffer;
-      } catch (error: unknown) {
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-        const errorStack = error instanceof Error ? error.stack : undefined;
-
-        span.setAttributes({
-          "error.message": errorMessage,
-          "error.type":
-            error instanceof Error ? error.constructor.name : "Unknown",
-        });
-
-        if (errorStack) {
-          span.setAttributes({ "error.stack": errorStack });
-        }
-
-        span.setStatus({ code: 2, message: errorMessage }); // ERROR
-
-        console.error(
-          `Image generation failed for ${entityType} ${entityId}:`,
-          {
-            entityId,
-            entityType,
-            pageUrl: entityPageUrl,
-            error: errorMessage,
-            stack: errorStack,
-          }
-        );
-
-        throw error;
-      } finally {
-        if (page) {
-          try {
-            await page.close();
-          } catch (closeError) {
-            console.warn("Failed to close page:", closeError);
-          }
-        }
         span.end();
       }
     }
