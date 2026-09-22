@@ -6,9 +6,9 @@ function stableStringify(value: unknown): string {
     return `[${value.map(stableStringify).join(",")}]`;
   }
   if (value && typeof value === "object") {
-    const entries = Object.entries(value).sort(([left], [right]) =>
-      left.localeCompare(right)
-    );
+    const entries = Object.entries(value)
+      .filter(([key]) => key !== "id")
+      .sort(([left], [right]) => left.localeCompare(right));
     return `{${entries
       .map(
         ([key, entryValue]) =>

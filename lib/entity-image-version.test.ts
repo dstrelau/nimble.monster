@@ -10,6 +10,34 @@ describe("getEntityImageVersion", () => {
     );
   });
 
+  it("ignores transient IDs added while converting entity content", () => {
+    const entity = {
+      id: "monster-a",
+      name: "Rope",
+      abilities: [{ id: "ability-a", name: "Entangle" }],
+      members: [
+        {
+          id: "member-a",
+          actions: [{ id: "action-a", name: "Constrict" }],
+        },
+      ],
+    };
+
+    expect(
+      getEntityImageVersion({
+        ...entity,
+        id: "monster-b",
+        abilities: [{ id: "ability-b", name: "Entangle" }],
+        members: [
+          {
+            id: "member-b",
+            actions: [{ id: "action-b", name: "Constrict" }],
+          },
+        ],
+      })
+    ).toBe(getEntityImageVersion(entity));
+  });
+
   it("changes when rendered entity content changes", () => {
     const entity = {
       name: "Rope",
