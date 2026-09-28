@@ -1,5 +1,5 @@
 {
-  "totalMinis": 779,
+  "totalMinis": 782,
   "s3BaseUrl": "https://paperforgedev.s3.us-east-2.amazonaws.com/",
   "minis": [
     {
@@ -82282,6 +82282,306 @@
           "tierNumber": 8,
           "filenameTier": "T8",
           "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/843__Reskin_WinterWolfPup_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "4e0d2f38-c0ea-4afe-a426-755b6b4274ec",
+      "number": 844,
+      "name": "Will-o'-Wisp",
+      "url": "https://www.paperforgeminis.com/minis/4e0d2f38-c0ea-4afe-a426-755b6b4274ec",
+      "enabled": true,
+      "releaseDate": "2026-09-22T03:37:53.837Z",
+      "downloads": [
+        {
+          "filename": "844_Will-o_-Wisp_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/844_Will-o_-Wisp_T1_PDF.pdf"
+        },
+        {
+          "filename": "844_Will-o_-Wisp_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/844_Will-o_-Wisp_T1_PNGs.zip"
+        },
+        {
+          "filename": "844_Will-o_-Wisp_T1_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/844_Will-o_-Wisp_T1_VTT.zip"
+        },
+        {
+          "filename": "844_Will-o_-Wisp_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/844_Will-o_-Wisp_T2_PDF.pdf"
+        },
+        {
+          "filename": "844_Will-o_-Wisp_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/844_Will-o_-Wisp_T2_PNGs.zip"
+        },
+        {
+          "filename": "844_Will-o_-Wisp_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/844_Will-o_-Wisp_T2_VTT.zip"
+        },
+        {
+          "filename": "844_Will-o_-Wisp_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/844_Will-o_-Wisp_T3_VTT.zip"
+        },
+        {
+          "filename": "844_Will-o_-Wisp_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/844_Will-o_-Wisp_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "844_Will-o_-Wisp_T4_PNGS.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/844_Will-o_-Wisp_T4_PNGS.zip"
+        },
+        {
+          "filename": "844_Will-o_-Wisp_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/844_Will-o_-Wisp_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "f10d6abd-a047-4cc6-84f4-a5246eabb35f",
+      "number": 845,
+      "name": "Will-o'-Wisp",
+      "url": "https://www.paperforgeminis.com/minis/f10d6abd-a047-4cc6-84f4-a5246eabb35f",
+      "enabled": true,
+      "releaseDate": "2026-09-24T02:30:01.678Z",
+      "downloads": [
+        {
+          "filename": "845_Will-o_-Wisp_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/845_Will-o_-Wisp_T1_PDF.pdf"
+        },
+        {
+          "filename": "845_Will-o_-Wisp_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/845_Will-o_-Wisp_T1_PNGs.zip"
+        },
+        {
+          "filename": "845_Will-o_-Wisp_T1_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/845_Will-o_-Wisp_T1_VTT.zip"
+        },
+        {
+          "filename": "845_Will-o_-Wisp_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/845_Will-o_-Wisp_T2_PDF.pdf"
+        },
+        {
+          "filename": "845_Will-o_-Wisp_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/845_Will-o_-Wisp_T2_PNGs.zip"
+        },
+        {
+          "filename": "845_Will-o_-Wisp_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/845_Will-o_-Wisp_T2_VTT.zip"
+        },
+        {
+          "filename": "845_Will-o_-Wisp_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/845_Will-o_-Wisp_T3_VTT.zip"
+        },
+        {
+          "filename": "845_Will-o_-Wisp_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/845_Will-o_-Wisp_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "845_Will-o_-Wisp_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/845_Will-o_-Wisp_T4_PNGs.zip"
+        },
+        {
+          "filename": "845_Will-o_-Wisp_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/845_Will-o_-Wisp_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "66a1282e-745d-4816-b47c-7626f5c45f7f",
+      "number": 846,
+      "name": "Will-o'-Wisp",
+      "url": "https://www.paperforgeminis.com/minis/66a1282e-745d-4816-b47c-7626f5c45f7f",
+      "enabled": true,
+      "releaseDate": "2026-09-25T12:10:55.507Z",
+      "downloads": [
+        {
+          "filename": "846_Will-o_-Wisp_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/846_Will-o_-Wisp_T1_PDF.pdf"
+        },
+        {
+          "filename": "846_Will-o_-Wisp_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/846_Will-o_-Wisp_T1_PNGs.zip"
+        },
+        {
+          "filename": "846_Will-o_-Wisp_T1_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/846_Will-o_-Wisp_T1_VTT.zip"
+        },
+        {
+          "filename": "846_Will-o_-Wisp_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/846_Will-o_-Wisp_T2_PDF.pdf"
+        },
+        {
+          "filename": "846_Will-o_-Wisp_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/846_Will-o_-Wisp_T2_PNGs.zip"
+        },
+        {
+          "filename": "846_Will-o_-Wisp_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/846_Will-o_-Wisp_T2_VTT.zip"
+        },
+        {
+          "filename": "846_Will-o_-Wisp_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/846_Will-o_-Wisp_T3_VTT.zip"
+        },
+        {
+          "filename": "846_Will-o_-Wisp_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/846_Will-o_-Wisp_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "846_Will-o_-Wisp_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/846_Will-o_-Wisp_T4_PNGs.zip"
+        },
+        {
+          "filename": "846_Will-o_-Wisp_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/846_Will-o_-Wisp_T8_PSD.zip"
         }
       ]
     }
