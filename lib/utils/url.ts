@@ -173,6 +173,13 @@ export function getFamilyUrl(family: { name: string; id: string }): string {
   return `/families/${slugify(family)}`;
 }
 
+export function getFamilyImageUrl(family: {
+  name: string;
+  id: string;
+}): string {
+  return `/families/${slugify(family)}/image`;
+}
+
 export function getFamilyEditUrl(family: { name: string; id: string }): string {
   return `/families/${slugify(family)}/edit`;
 }

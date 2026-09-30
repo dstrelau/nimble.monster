@@ -36,7 +36,7 @@ const renderRequestSchema = z
   .object({
     entityId: z.string().min(1).max(200),
     entityUrlPath: z.string().min(1).max(500),
-    entityType: z.enum(["monster", "companion", "item"]),
+    entityType: z.enum(["monster", "companion", "family", "item"]),
     theme: z.enum(["light", "dark"]),
   })
   .strict();
@@ -59,16 +59,24 @@ function parseRequest(value: unknown): EntityImageRenderOptions | null {
   const validPrefixes: Record<typeof entityType, readonly string[]> = {
     monster: ["/monsters/", "/hazards/"],
     companion: ["/companions/"],
+    family: ["/families/"],
     item: ["/items/"],
   };
+  const pathParts = entityUrlPath.split("?");
+  const [pathname, search = ""] = pathParts;
+  const validSearch =
+    entityType === "family"
+      ? search === "imagePreview=overview"
+      : search.length === 0;
   if (
+    !validSearch ||
+    pathParts.length > 2 ||
+    entityUrlPath.includes("#") ||
     !validPrefixes[entityType].some(
       (prefix) =>
-        entityUrlPath.startsWith(prefix) &&
-        entityUrlPath.length > prefix.length &&
-        !entityUrlPath.slice(prefix.length).includes("/") &&
-        !entityUrlPath.includes("?") &&
-        !entityUrlPath.includes("#")
+        pathname.startsWith(prefix) &&
+        pathname.length > prefix.length &&
+        !pathname.slice(prefix.length).includes("/")
     )
   ) {
     return null;

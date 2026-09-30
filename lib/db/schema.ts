@@ -33,7 +33,7 @@ export type ItemRarity =
   | "very_rare"
   | "legendary";
 export type ItemBackdrop = "glow" | "sunburst" | "motes" | "icon" | "bare";
-export type EntityImageType = "monster" | "companion" | "item";
+export type EntityImageType = "monster" | "companion" | "family" | "item";
 export type EntityImageTheme = "light" | "dark";
 export type GenerationStatus = "generating" | "completed" | "failed";
 export type SubclassVisibility = "public" | "private";

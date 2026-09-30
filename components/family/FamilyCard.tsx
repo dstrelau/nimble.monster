@@ -3,11 +3,11 @@ import { MonsterGroupMinis } from "@/components/monster/MonsterGroupMinis";
 import { AbilityOverlay } from "@/components/shared/AbilityOverlay";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { MonsterMini } from "@/lib/services/monsters";
-import type { Family } from "@/lib/types";
+import type { FamilyOverview } from "@/lib/types";
 import { getFamilyUrl } from "@/lib/utils/url";
 
 interface FamilyCardProps {
-  family: Family;
+  family: FamilyOverview;
   monsters: MonsterMini[];
   showEditDeleteButtons?: boolean;
 }

@@ -1,12 +1,12 @@
 import { trace } from "@opentelemetry/api";
 import type { Browser } from "puppeteer-core";
-import type { EntityImageTheme } from "@/lib/db/schema";
+import type { EntityImageTheme, EntityImageType } from "@/lib/db/schema";
 
 export interface EntityImageRenderOptions {
   baseUrl: string;
   entityId: string;
   entityUrlPath: string;
-  entityType: "monster" | "companion" | "item";
+  entityType: EntityImageType;
   theme: EntityImageTheme;
 }
 

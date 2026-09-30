@@ -12,6 +12,11 @@ describe("generateBlobFilename", () => {
     expect(filename).toBe("companion-xyz789-dark-v2.png");
   });
 
+  it("supports family images", () => {
+    const filename = generateBlobFilename("family", "family123", "light", "v3");
+    expect(filename).toBe("family-family123-v3.png");
+  });
+
   it("handles special characters in ids", () => {
     const filename = generateBlobFilename(
       "monster",
@@ -41,5 +46,10 @@ describe("generateEntityImagePath", () => {
   it("dark theme includes theme in path", () => {
     const path = generateEntityImagePath("companion", "xyz789", "dark", "v2");
     expect(path).toBe("card-images/companion/companion-xyz789-dark-v2.png");
+  });
+
+  it("stores family images under the family path", () => {
+    const path = generateEntityImagePath("family", "family123", "light", "v3");
+    expect(path).toBe("card-images/family/family-family123-v3.png");
   });
 });

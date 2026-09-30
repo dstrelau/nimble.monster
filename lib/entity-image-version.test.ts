@@ -59,4 +59,19 @@ describe("getEntityImageVersion", () => {
       })
     ).not.toBe(getEntityImageVersion(entity));
   });
+
+  it("changes when a family preview monster changes", () => {
+    const family = {
+      name: "Undead",
+      abilities: [{ name: "Unliving, Undying" }],
+      monsters: [{ name: "Skeleton", hp: 10 }],
+    };
+
+    expect(
+      getEntityImageVersion({
+        ...family,
+        monsters: [{ name: "Skeleton", hp: 15 }],
+      })
+    ).not.toBe(getEntityImageVersion(family));
+  });
 });

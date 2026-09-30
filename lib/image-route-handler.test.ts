@@ -4,6 +4,7 @@ import {
   generateEntityImageWithStorage,
   ImageGenerationDeniedError,
 } from "@/lib/image-generation";
+import { getFamilyUrl } from "@/lib/utils/url";
 import { createImageResponse } from "./image-route-handler";
 
 vi.mock("@/lib/image-generation", () => ({
@@ -91,6 +92,27 @@ describe("entity image generation authorization", () => {
 
     expect(generateEntityImageWithStorage).toHaveBeenCalledWith(
       expect.objectContaining({ allowGeneration: true })
+    );
+  });
+
+  it("renders families through the overview-card page", async () => {
+    const family = {
+      id: "22222222-2222-4222-8222-222222222222",
+      name: "Example Family",
+      monsters: [{ name: "Example Monster", hp: 12 }],
+    };
+
+    await createImageResponse(
+      makeRequest({ "user-agent": "Discordbot/2.0" }),
+      family,
+      "family"
+    );
+
+    expect(generateEntityImageWithStorage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        entityType: "family",
+        entityUrlPath: `${getFamilyUrl(family)}?imagePreview=overview`,
+      })
     );
   });
 

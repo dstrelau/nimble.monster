@@ -5,6 +5,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import type { EntityImageType } from "@/lib/db/schema";
 
 export interface BlobStorageResult {
   url: string;
@@ -121,7 +122,7 @@ export async function deleteBlobs(filenames: string[]): Promise<void> {
 }
 
 export function generateBlobFilename(
-  entityType: "monster" | "companion" | "item",
+  entityType: EntityImageType,
   entityId: string,
   theme: "light" | "dark",
   version: string
@@ -131,7 +132,7 @@ export function generateBlobFilename(
 }
 
 export function generateEntityImagePath(
-  entityType: "monster" | "companion" | "item",
+  entityType: EntityImageType,
   entityId: string,
   theme: "light" | "dark",
   version: string

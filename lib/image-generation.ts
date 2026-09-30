@@ -13,14 +13,14 @@ import {
   failImageGeneration,
   findCompletedEntityImage,
 } from "@/lib/db/entity-images";
-import type { EntityImageTheme } from "@/lib/db/schema";
+import type { EntityImageTheme, EntityImageType } from "@/lib/db/schema";
 import { renderEntityImage } from "@/lib/entity-image-renderer";
 
 export interface ImageGenerationOptions {
   baseUrl: string;
   entityId: string;
   entityUrlPath: string;
-  entityType: "monster" | "companion" | "item";
+  entityType: EntityImageType;
   theme: EntityImageTheme;
 }
 

@@ -1,21 +1,23 @@
 import { trace } from "@opentelemetry/api";
 import type { NextRequest } from "next/server";
-import type { EntityImageTheme } from "@/lib/db/schema";
+import type { EntityImageTheme, EntityImageType } from "@/lib/db/schema";
 import { getEntityImageVersion } from "@/lib/entity-image-version";
 import {
   generateEntityImageWithStorage,
   ImageGenerationDeniedError,
   ImageRendererUnavailableError,
 } from "@/lib/image-generation";
-import { getCompanionUrl, getItemUrl, getMonsterUrl } from "./utils/url";
+import {
+  getCompanionUrl,
+  getFamilyUrl,
+  getItemUrl,
+  getMonsterUrl,
+} from "./utils/url";
 
 type Entity = {
   id: string;
   name: string;
-  updatedAt: Date | string;
 };
-
-type EntityType = "monster" | "companion" | "item";
 
 const IMAGE_PREVIEW_BOT_USER_AGENTS = [
   /Discordbot/i,
@@ -54,10 +56,10 @@ export function parseThemeParam(request: NextRequest): EntityImageTheme {
   return "light";
 }
 
-export async function createImageResponse(
+export async function createImageResponse<T extends Entity>(
   request: NextRequest,
-  entity: Entity,
-  entityType: EntityType
+  entity: T,
+  entityType: EntityImageType
 ): Promise<Response> {
   const tracer = trace.getTracer("image-route-handler");
 
@@ -109,6 +111,8 @@ export async function createImageResponse(
             return getItemUrl(entity);
           case "companion":
             return getCompanionUrl(entity);
+          case "family":
+            return `${getFamilyUrl(entity)}?imagePreview=overview`;
           default:
             throw new Error(`Unsupported entity type: ${entityType}`);
         }
