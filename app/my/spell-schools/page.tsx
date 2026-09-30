@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SchoolsListView } from "@/components/school/SchoolsListView";
-import { Button } from "@/components/ui/button";
+import { CreateEmptyState } from "@/components/shared/GridStates";
 import { auth } from "@/lib/auth";
 import { listAllSpellSchoolsForDiscordID } from "@/lib/db/school";
 
@@ -18,14 +17,7 @@ export default async function MySpellsPage() {
 
   if (spellSchools.length === 0) {
     return (
-      <div className="text-center py-12 space-y-4">
-        <p className="text-muted-foreground">
-          You haven&apos;t created any spell schools yet.
-        </p>
-        <Button asChild>
-          <Link href="/spell-schools/new">Create Your First School</Link>
-        </Button>
-      </div>
+      <CreateEmptyState href="/spell-schools/new" entityName="Spell School" />
     );
   }
 

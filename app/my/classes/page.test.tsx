@@ -52,8 +52,10 @@ describe("MyClassesPage", () => {
     render(await MyClassesPage());
 
     expect(screen.queryByTestId("classes-list-view")).not.toBeInTheDocument();
-    expect(
-      screen.getByText("You haven't created any classes yet.")
-    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Create Class" })).toHaveAttribute(
+      "href",
+      "/classes/new"
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(1);
   });
 });

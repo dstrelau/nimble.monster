@@ -1,3 +1,7 @@
+import { Plus } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
 interface LoadingStateProps {
   className?: string;
 }
@@ -43,3 +47,25 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     </div>
   );
 };
+
+interface CreateEmptyStateProps {
+  href: string;
+  entityName: string;
+}
+
+export function CreateEmptyState({ href, entityName }: CreateEmptyStateProps) {
+  return (
+    <div className="col-span-full flex justify-center py-12">
+      <Button
+        asChild
+        size="lg"
+        className="h-14 bg-flame px-8 text-lg text-black hover:bg-flame/90 has-[>svg]:px-8"
+      >
+        <Link href={href}>
+          <Plus className="size-5" />
+          Create {entityName}
+        </Link>
+      </Button>
+    </div>
+  );
+}

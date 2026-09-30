@@ -25,6 +25,19 @@ afterEach(() => {
 });
 
 describe("MyRulesPage", () => {
+  it("links to the custom-rule form when the user's rules are empty", async () => {
+    mockAuth.mockResolvedValue({ user: { id: "user-1" } });
+    mockListCustomRulesForUser.mockResolvedValue([]);
+
+    render(await MyRulesPage());
+
+    expect(screen.getByRole("link", { name: "Create Rule" })).toHaveAttribute(
+      "href",
+      "/custom-rules/new"
+    );
+    expect(screen.getAllByRole("link")).toHaveLength(1);
+  });
+
   it("lists all rules owned by the current user", async () => {
     mockAuth.mockResolvedValue({ user: { id: "user-1" } });
     mockListCustomRulesForUser.mockResolvedValue([

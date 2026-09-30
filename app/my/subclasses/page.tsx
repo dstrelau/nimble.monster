@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { CreateEmptyState } from "@/components/shared/GridStates";
 import { SubclassesListView } from "@/components/subclass/SubclassesListView";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
@@ -14,13 +15,7 @@ export default async function MySubclassesPage() {
   return (
     <div className="py-3">
       {subclasses.length === 0 ? (
-        <div className="text-center text-muted-foreground py-8">
-          No subclasses found.{" "}
-          <a href="/subclasses/new" className="text-primary hover:underline">
-            Create your first subclass
-          </a>
-          .
-        </div>
+        <CreateEmptyState href="/subclasses/new" entityName="Subclass" />
       ) : (
         <SubclassesListView subclasses={subclasses} />
       )}

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { FamilyCard } from "@/components/family/FamilyCard";
+import { CreateEmptyState } from "@/components/shared/GridStates";
 import { auth } from "@/lib/auth";
 import { getUserFamiliesWithMonsters } from "@/lib/db";
 
@@ -12,12 +13,7 @@ export default async function MyFamiliesPage() {
   return (
     <div className="space-y-6">
       {families.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-gray-600">
-            Families allow associating one or more abilities with a group of
-            related monsters.
-          </p>
-        </div>
+        <CreateEmptyState href="/families/new" entityName="Family" />
       ) : (
         <div className="grid gap-8 items-start md:grid-cols-2 lg:grid-cols-3">
           {families.map((family) => (

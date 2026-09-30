@@ -53,7 +53,7 @@ describe("MySpellsPage", () => {
 
     expect(screen.queryByTestId("schools-list-view")).not.toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Create Your First School" })
-    ).toBeInTheDocument();
+      screen.getByRole("link", { name: "Create Spell School" })
+    ).toHaveAttribute("href", "/spell-schools/new");
   });
 });

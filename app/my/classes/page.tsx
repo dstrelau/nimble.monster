@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ClassesListView } from "@/components/class/ClassesListView";
+import { CreateEmptyState } from "@/components/shared/GridStates";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { listAllClassesForDiscordID } from "@/lib/db";
@@ -21,6 +22,10 @@ export default async function MyClassesPage() {
 
   const classes = await listAllClassesForDiscordID(session.user.discordId);
 
+  if (classes.length === 0) {
+    return <CreateEmptyState href="/classes/new" entityName="Class" />;
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-end">
@@ -31,13 +36,7 @@ export default async function MyClassesPage() {
           </Link>
         </Button>
       </div>
-      {classes.length === 0 ? (
-        <p className="text-muted-foreground text-center py-8">
-          You haven't created any classes yet.
-        </p>
-      ) : (
-        <ClassesListView classes={classes} />
-      )}
+      <ClassesListView classes={classes} />
     </div>
   );
 }

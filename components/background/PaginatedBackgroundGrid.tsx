@@ -7,6 +7,7 @@ import type React from "react";
 import { publicBackgroundsInfiniteQueryOptions } from "@/app/backgrounds/hooks";
 import { myBackgroundsInfiniteQueryOptions } from "@/app/my/backgrounds/hooks";
 import {
+  CreateEmptyState,
   EmptyState,
   ErrorState,
   LoadingState,
@@ -83,7 +84,11 @@ export const PaginatedBackgroundGrid: React.FC<PaginatedBackgroundGridProps> = (
       />
 
       {!filteredBackgrounds || filteredBackgrounds?.length === 0 ? (
-        <EmptyState entityName="backgrounds" />
+        props.kind === "my-backgrounds" ? (
+          <CreateEmptyState href="/backgrounds/new" entityName="Background" />
+        ) : (
+          <EmptyState entityName="backgrounds" />
+        )
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 gap-4">
           {filteredBackgrounds.map((background) => (
