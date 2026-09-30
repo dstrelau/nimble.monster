@@ -2,6 +2,7 @@
 
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { publicAncestriesInfiniteQueryOptions } from "@/app/ancestries/hooks";
@@ -26,6 +27,7 @@ export type PaginatedAncestryGridProps =
 export const PaginatedAncestryGrid: React.FC<PaginatedAncestryGridProps> = (
   props
 ) => {
+  const { data: session } = useSession();
   const [rawSearchQuery, setSearchQuery] = useQueryState("search");
   const [searchQuery] = useDebouncedValue(rawSearchQuery, { wait: 250 });
 
@@ -52,7 +54,10 @@ export const PaginatedAncestryGrid: React.FC<PaginatedAncestryGridProps> = (
           creatorId: props.creatorId,
         });
       case "my-ancestries":
-        return myAncestriesInfiniteQueryOptions(params);
+        return myAncestriesInfiniteQueryOptions({
+          ...params,
+          ownerId: session?.user?.id,
+        });
       case "ancestries":
         return publicAncestriesInfiniteQueryOptions(params);
     }

@@ -1,5 +1,6 @@
 "use server";
 import { and, asc, desc, eq, gt, inArray, like, lt, or } from "drizzle-orm";
+import { z } from "zod";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
   type AncestryRow,
@@ -28,6 +29,8 @@ import type {
   SearchAncestriesParams,
   UpdateAncestryInput,
 } from "./types";
+
+const auth = async () => (await import("@/lib/auth")).auth();
 
 // Helper converters
 const toUserFromRow = (u: UserRow): User => ({
@@ -85,6 +88,7 @@ const parseAbilitiesFromRow = (abilities: unknown): AncestryAbility[] => {
 const toAncestryMiniFromRow = (a: AncestryRow): AncestryMini => ({
   id: a.id,
   name: a.name,
+  visibility: a.visibility === "private" ? "private" : "public",
   size: parseSizeFromRow(a.size),
   rarity: (a.rarity ?? "common") as AncestryRarity,
   createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),
@@ -101,6 +105,7 @@ interface AncestryFullData {
 const toAncestryFromFullData = (data: AncestryFullData): Ancestry => ({
   id: data.ancestry.id,
   name: data.ancestry.name,
+  visibility: data.ancestry.visibility === "private" ? "private" : "public",
   size: parseSizeFromRow(data.ancestry.size),
   rarity: (data.ancestry.rarity ?? "common") as AncestryRarity,
   createdAt: data.ancestry.createdAt
@@ -160,6 +165,9 @@ export const deleteAncestry = async (
   discordId: string
 ): Promise<boolean> => {
   if (!isValidUUID(id)) return false;
+  const session = await auth();
+  if (!session?.user?.discordId || session.user.discordId !== discordId)
+    return false;
 
   const db = await getDatabase();
 
@@ -185,19 +193,23 @@ export const listPublicAncestries = async (): Promise<AncestryMini[]> => {
   const result = await db
     .select()
     .from(ancestries)
+    .where(eq(ancestries.visibility, "public"))
     .orderBy(asc(ancestries.name));
 
   return result.map(toAncestryMiniFromRow);
 };
 
-export const paginatePublicAncestries = async ({
-  cursor,
-  limit = 100,
-  sort = "-createdAt",
-  search,
-  creatorId,
-  source,
-}: PaginateAncestriesParams): Promise<{
+const paginateAncestries = async (
+  {
+    cursor,
+    limit = 100,
+    sort = "-createdAt",
+    search,
+    creatorId,
+    source,
+  }: PaginateAncestriesParams,
+  publicOnly: boolean
+): Promise<{
   data: Ancestry[];
   nextCursor: string | null;
 }> => {
@@ -215,9 +227,8 @@ export const paginatePublicAncestries = async ({
   const db = await getDatabase();
 
   // Build where conditions
-  const conditions: ReturnType<typeof eq>[] = [
-    eq(ancestries.visibility, "public"),
-  ];
+  const conditions: ReturnType<typeof eq>[] = [];
+  if (publicOnly) conditions.push(eq(ancestries.visibility, "public"));
 
   if (creatorId) {
     conditions.push(eq(ancestries.userId, creatorId));
@@ -357,6 +368,16 @@ export const paginatePublicAncestries = async ({
   return { data: results, nextCursor };
 };
 
+export const paginatePublicAncestries = async (
+  params: PaginateAncestriesParams,
+  includePrivate = false
+) => {
+  if (!includePrivate) return paginateAncestries(params, true);
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+  return paginateAncestries({ ...params, creatorId: session.user.id }, false);
+};
+
 export const findAncestry = async (id: string): Promise<Ancestry | null> => {
   if (!isValidUUID(id)) return null;
 
@@ -365,7 +386,13 @@ export const findAncestry = async (id: string): Promise<Ancestry | null> => {
   const fullDataMap = await loadAncestryFullData(db, [id]);
   const fullData = fullDataMap.get(id);
 
-  return fullData ? toAncestryFromFullData(fullData) : null;
+  if (!fullData) return null;
+  if (fullData.ancestry.visibility !== "public") {
+    const session = await auth();
+    if (!session?.user?.id || session.user.id !== fullData.creator.id)
+      return null;
+  }
+  return toAncestryFromFullData(fullData);
 };
 
 export const findAncestryWithCreatorId = async (
@@ -373,6 +400,8 @@ export const findAncestryWithCreatorId = async (
   creatorId: string
 ): Promise<Ancestry | null> => {
   if (!isValidUUID(id)) return null;
+  const session = await auth();
+  if (!session?.user?.id || session.user.id !== creatorId) return null;
 
   const db = await getDatabase();
 
@@ -408,6 +437,9 @@ export const findAncestryWithCreatorId = async (
 export const listAllAncestriesForDiscordID = async (
   discordId: string
 ): Promise<Ancestry[]> => {
+  const session = await auth();
+  if (!session?.user?.discordId || session.user.discordId !== discordId)
+    return [];
   const db = await getDatabase();
 
   const rows = await db
@@ -459,7 +491,9 @@ export const searchPublicAncestries = async ({
   const db = await getDatabase();
 
   // Build where conditions
-  const conditions: ReturnType<typeof eq>[] = [];
+  const conditions: ReturnType<typeof eq>[] = [
+    eq(ancestries.visibility, "public"),
+  ];
 
   if (searchTerm) {
     conditions.push(like(ancestries.name, `%${searchTerm}%`));
@@ -534,6 +568,13 @@ export const createAncestry = async (
   input: CreateAncestryInput,
   discordId: string
 ): Promise<Ancestry> => {
+  const session = await auth();
+  if (!session?.user?.discordId || session.user.discordId !== discordId)
+    throw new Error("Unauthorized");
+  const visibility = z
+    .enum(["public", "private"])
+    .default("public")
+    .parse(input.visibility);
   const { name, description, size, rarity, abilities, sourceId } = input;
 
   const db = await getDatabase();
@@ -554,6 +595,7 @@ export const createAncestry = async (
     .insert(ancestries)
     .values({
       name,
+      visibility,
       description,
       size: JSON.stringify(size),
       rarity,
@@ -591,6 +633,13 @@ export const updateAncestry = async (
   input: UpdateAncestryInput,
   discordId: string
 ): Promise<Ancestry> => {
+  const session = await auth();
+  if (!session?.user?.discordId || session.user.discordId !== discordId)
+    throw new Error("Unauthorized");
+  const visibility = z
+    .enum(["public", "private"])
+    .optional()
+    .parse(input.visibility);
   const { name, description, size, rarity, abilities, sourceId } = input;
 
   if (!isValidUUID(id)) {
@@ -617,6 +666,7 @@ export const updateAncestry = async (
     .update(ancestries)
     .set({
       name,
+      visibility,
       description,
       size: JSON.stringify(size),
       rarity,
@@ -669,10 +719,16 @@ export const findAncestriesByIds = async (
 
   const db = await getDatabase();
   const dataMap = await loadAncestryFullData(db, validIds);
+  const session = await auth();
 
   return validIds
     .map((id) => dataMap.get(id))
-    .filter((d): d is AncestryFullData => d !== undefined)
+    .filter(
+      (d): d is AncestryFullData =>
+        d !== undefined &&
+        (d.ancestry.visibility === "public" ||
+          d.creator.id === session?.user?.id)
+    )
     .map(toAncestryFromFullData);
 };
 

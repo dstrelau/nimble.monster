@@ -195,7 +195,12 @@ export const listCollectionsWithMonstersForUser = async (
     })
     .from(ancestriesCollections)
     .innerJoin(ancestries, eq(ancestriesCollections.ancestryId, ancestries.id))
-    .where(inArray(ancestriesCollections.collectionId, collectionIds));
+    .where(
+      and(
+        inArray(ancestriesCollections.collectionId, collectionIds),
+        or(eq(ancestries.visibility, "public"), eq(ancestries.userId, user.id))
+      )
+    );
 
   // Get backgrounds for each collection
   const backgroundLinks = await db
@@ -1253,12 +1258,15 @@ async function loadCollectionOverview(
         eq(ancestriesCollections.ancestryId, ancestries.id)
       )
       .where(
-        publicOnly
-          ? and(
-              eq(ancestriesCollections.collectionId, collection.id),
-              eq(ancestries.visibility, "public")
-            )
-          : eq(ancestriesCollections.collectionId, collection.id)
+        and(
+          eq(ancestriesCollections.collectionId, collection.id),
+          publicOnly
+            ? eq(ancestries.visibility, "public")
+            : or(
+                eq(ancestries.visibility, "public"),
+                eq(ancestries.userId, creator.id)
+              )
+        )
       ),
     db
       .select({ background: backgrounds })

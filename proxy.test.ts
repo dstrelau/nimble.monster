@@ -172,6 +172,14 @@ describe("proxy", () => {
     expect(res?.status).toBe(200);
   });
 
+  it("does not auto-login private GET API requests", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("NIMBLE_DEV_AUTO_LOGIN_USERNAME", "admin");
+    const res = await proxy(makeRequest("GET", "/_actions/myAncestries"));
+    expect(res?.status).toBe(200);
+    expect(res?.headers.has("location")).toBe(false);
+  });
+
   it("does not redirect the dev login page when dev auto-login is enabled", async () => {
     vi.stubEnv("NODE_ENV", "development");
     vi.stubEnv("NIMBLE_DEV_AUTO_LOGIN_USERNAME", "admin");

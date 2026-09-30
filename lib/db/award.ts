@@ -186,7 +186,13 @@ export async function getAwardBySlugWithCounts(
     db
       .select({ count: count() })
       .from(ancestriesAwards)
-      .where(eq(ancestriesAwards.awardId, row.id)),
+      .innerJoin(ancestries, eq(ancestriesAwards.ancestryId, ancestries.id))
+      .where(
+        and(
+          eq(ancestriesAwards.awardId, row.id),
+          eq(ancestries.visibility, "public")
+        )
+      ),
     db
       .select({ count: count() })
       .from(backgroundsAwards)
@@ -278,7 +284,13 @@ export async function getAwardsWithCounts(): Promise<AwardWithCounts[]> {
     db
       .select({ awardId: ancestriesAwards.awardId, count: count() })
       .from(ancestriesAwards)
-      .where(inArray(ancestriesAwards.awardId, awardIds))
+      .innerJoin(ancestries, eq(ancestriesAwards.ancestryId, ancestries.id))
+      .where(
+        and(
+          inArray(ancestriesAwards.awardId, awardIds),
+          eq(ancestries.visibility, "public")
+        )
+      )
       .groupBy(ancestriesAwards.awardId),
     db
       .select({ awardId: backgroundsAwards.awardId, count: count() })
@@ -1034,7 +1046,12 @@ async function loadAncestriesForAward(
     .from(ancestries)
     .innerJoin(users, eq(ancestries.userId, users.id))
     .leftJoin(sources, eq(ancestries.sourceId, sources.id))
-    .where(inArray(ancestries.id, ancestryIds));
+    .where(
+      and(
+        inArray(ancestries.id, ancestryIds),
+        eq(ancestries.visibility, "public")
+      )
+    );
 
   const awardRows = await db
     .select({ ancestryId: ancestriesAwards.ancestryId, award: awards })
@@ -1059,39 +1076,43 @@ async function loadAncestriesForAward(
   };
 
   return ancestryRows
-    .map((row) => ({
-      id: row.ancestries.id,
-      name: row.ancestries.name,
-      size: parseSize(row.ancestries.size),
-      rarity: row.ancestries.rarity ?? "common",
-      createdAt: row.ancestries.createdAt
-        ? new Date(row.ancestries.createdAt)
-        : new Date(),
-      updatedAt: row.ancestries.updatedAt
-        ? new Date(row.ancestries.updatedAt)
-        : new Date(),
-      description: row.ancestries.description,
-      abilities: parseJsonField<AncestryAbility>(row.ancestries.abilities),
-      creator: toUser(row.users),
-      source: row.sources
-        ? {
-            id: row.sources.id,
-            name: row.sources.name,
-            license: row.sources.license,
-            link: row.sources.link,
-            abbreviation: row.sources.abbreviation,
-            createdAt: row.sources.createdAt
-              ? new Date(row.sources.createdAt)
-              : new Date(),
-            updatedAt: row.sources.updatedAt
-              ? new Date(row.sources.updatedAt)
-              : new Date(),
-          }
-        : undefined,
-      awards: (awardsByAncestry.get(row.ancestries.id) || []).map((a) =>
-        toAward(a)
-      ),
-    }))
+    .map(
+      (row): Ancestry => ({
+        id: row.ancestries.id,
+        name: row.ancestries.name,
+        visibility:
+          row.ancestries.visibility === "private" ? "private" : "public",
+        size: parseSize(row.ancestries.size),
+        rarity: row.ancestries.rarity ?? "common",
+        createdAt: row.ancestries.createdAt
+          ? new Date(row.ancestries.createdAt)
+          : new Date(),
+        updatedAt: row.ancestries.updatedAt
+          ? new Date(row.ancestries.updatedAt)
+          : new Date(),
+        description: row.ancestries.description,
+        abilities: parseJsonField<AncestryAbility>(row.ancestries.abilities),
+        creator: toUser(row.users),
+        source: row.sources
+          ? {
+              id: row.sources.id,
+              name: row.sources.name,
+              license: row.sources.license,
+              link: row.sources.link,
+              abbreviation: row.sources.abbreviation,
+              createdAt: row.sources.createdAt
+                ? new Date(row.sources.createdAt)
+                : new Date(),
+              updatedAt: row.sources.updatedAt
+                ? new Date(row.sources.updatedAt)
+                : new Date(),
+            }
+          : undefined,
+        awards: (awardsByAncestry.get(row.ancestries.id) || []).map((a) =>
+          toAward(a)
+        ),
+      })
+    )
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 

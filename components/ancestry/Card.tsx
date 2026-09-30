@@ -3,6 +3,7 @@ import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
 import { FormattedText } from "@/components/shared/FormattedText";
+import { VisibilityBadge } from "@/components/shared/VisibilityBadge";
 import { Badge } from "@/components/ui/badge";
 import {
   CardAction,
@@ -108,6 +109,11 @@ export const Card = ({
         reactionsSlot={
           ancestry.id && (
             <EntityReactions entityType="ancestry" entityId={ancestry.id} />
+          )
+        }
+        actionsSlot={
+          ancestry.visibility === "private" && (
+            <VisibilityBadge visibility={ancestry.visibility} />
           )
         }
       />

@@ -25,6 +25,7 @@ const authProxy = auth((request) => {
     process.env.NIMBLE_DEV_AUTO_LOGIN_USERNAME &&
     request.method === "GET" &&
     !path.startsWith("/api/") &&
+    !path.startsWith("/_actions/") &&
     path !== "/dev-login"
   ) {
     const url = new URL("/api/auth/dev-login", process.env.AUTH_URL ?? nextUrl);

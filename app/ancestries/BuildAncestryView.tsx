@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -12,6 +13,7 @@ import { ConditionValidationIcon } from "@/components/condition/ConditionValidat
 import { SourceSelect } from "@/components/create/SourceSelect";
 import { DiscordLoginButton } from "@/components/layout/DiscordLoginButton";
 import { BuildView } from "@/components/shared/BuildView";
+import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -37,6 +39,7 @@ const formSchema = z.object({
     .array(z.enum(["tiny", "small", "medium", "large", "huge", "gargantuan"]))
     .min(1, "At least one size is required"),
   rarity: z.enum(["common", "uncommon", "exotic"]),
+  visibility: z.enum(["public", "private"]),
   abilities: z.array(
     z.object({
       name: z.string().min(1, "Ability name is required"),
@@ -56,6 +59,7 @@ export default function BuildAncestryView({
   ancestry,
 }: BuildAncestryViewProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -66,6 +70,7 @@ export default function BuildAncestryView({
       description: ancestry?.description || "",
       size: ancestry?.size || ["medium"],
       rarity: ancestry?.rarity || "common",
+      visibility: ancestry?.visibility || "public",
       abilities: ancestry
         ? ancestry.abilities
         : [{ name: "", description: "" }],
@@ -89,6 +94,7 @@ export default function BuildAncestryView({
       description: watchedValues.description || "",
       size: watchedValues.size,
       rarity: watchedValues.rarity,
+      visibility: watchedValues.visibility,
       abilities: watchedValues.abilities || [],
       creator: creator,
       createdAt: new Date(),
@@ -99,6 +105,7 @@ export default function BuildAncestryView({
       watchedValues.description,
       watchedValues.size,
       watchedValues.rarity,
+      watchedValues.visibility,
       watchedValues.abilities,
       creator,
       ancestry?.id,
@@ -114,6 +121,7 @@ export default function BuildAncestryView({
         description: data.description.trim(),
         size: data.size,
         rarity: data.rarity,
+        visibility: data.visibility,
         abilities: data.abilities.map((a) => ({
           name: a.name.trim(),
           description: a.description.trim(),
@@ -126,6 +134,10 @@ export default function BuildAncestryView({
         : await createAncestry(payload);
 
       if (result.success && result.ancestry) {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["ancestries"] }),
+          queryClient.invalidateQueries({ queryKey: ["my-ancestries"] }),
+        ]);
         router.push(`/ancestries/${result.ancestry.id}`);
       }
     } finally {
@@ -294,13 +306,14 @@ export default function BuildAncestryView({
                 ))}
               </div>
 
-              <div className="flex-1 flex items-baseline justify-between">
+              <div className="w-full flex flex-wrap items-end gap-4">
                 <FormField
                   control={form.control}
                   name="sourceId"
                   render={({ field }) => (
                     <FormItem>
                       <SourceSelect
+                        className="grid gap-2 space-y-0"
                         source={field.value ? { id: field.value } : undefined}
                         onChange={(source) => field.onChange(source?.id || "")}
                       />
@@ -309,9 +322,23 @@ export default function BuildAncestryView({
                   )}
                 />
 
+                <FormField
+                  control={form.control}
+                  name="visibility"
+                  render={({ field }) => (
+                    <VisibilityToggle
+                      id="ancestry-visibility-toggle"
+                      checked={field.value === "public"}
+                      onCheckedChange={(checked) =>
+                        field.onChange(checked ? "public" : "private")
+                      }
+                    />
+                  )}
+                />
+
                 {session?.user && (
                   <Button
-                    className="self-end"
+                    className="self-end ml-auto"
                     type="submit"
                     disabled={isSubmitting}
                   >

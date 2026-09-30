@@ -32,6 +32,7 @@ interface AwardRow {
 interface AncestryRow {
   id: string;
   name: string;
+  visibility: string | null;
   size: string;
   rarity: string | null;
   createdAt: string | null;
@@ -57,6 +58,7 @@ interface AncestryWithRelations extends AncestryRow {
 export const toAncestryMini = (a: AncestryRow): AncestryMini => ({
   id: a.id,
   name: a.name,
+  visibility: a.visibility === "private" ? "private" : "public",
   size: (a.size ? a.size.split(" ").filter(Boolean) : []) as AncestrySize[],
   rarity: (a.rarity ?? "common") as AncestryRarity,
   createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),

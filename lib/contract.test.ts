@@ -6,6 +6,22 @@ afterEach(() => {
 });
 
 describe("call", () => {
+  it("sends bodyless GET requests with same-origin credentials and no Server Action header", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify({ data: [] })));
+    vi.stubGlobal("fetch", fetch);
+    const route = defineRoute<undefined, { data: unknown[] }>({
+      method: "GET",
+      path: () => "/_actions/myAncestries?limit=12",
+    });
+    expect(await call(route, undefined)).toEqual({ data: [] });
+    expect(fetch).toHaveBeenCalledWith("/_actions/myAncestries?limit=12", {
+      method: "GET",
+      credentials: "same-origin",
+    });
+  });
+
   it("posts JSON to the stable route without a Server Action header", async () => {
     const fetch = vi.fn().mockResolvedValue(
       new Response(JSON.stringify({ id: "table-id", name: "Weather" }), {

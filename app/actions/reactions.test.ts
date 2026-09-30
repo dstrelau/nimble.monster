@@ -5,8 +5,12 @@ const { mockGetSummary, mockToggle } = vi.hoisted(() => ({
   mockGetSummary: vi.fn(),
   mockToggle: vi.fn(),
 }));
+const mockFindAncestry = vi.hoisted(() => vi.fn());
 
 vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
+vi.mock("@/lib/services/ancestries/repository", () => ({
+  findAncestry: mockFindAncestry,
+}));
 vi.mock("@/lib/services/reactions", () => ({
   getReactionsSummary: mockGetSummary,
   toggleReaction: mockToggle,
@@ -24,6 +28,15 @@ afterEach(() => {
 });
 
 describe("getMyReactions", () => {
+  it("does not expose reactions for an inaccessible ancestry", async () => {
+    mockAuth.mockResolvedValue({ user: { id: "user-1" } });
+    mockFindAncestry.mockResolvedValue(null);
+    expect(await getMyReactions("ancestry", "private-id")).toEqual(
+      emptySummary
+    );
+    expect(mockGetSummary).not.toHaveBeenCalled();
+  });
+
   it("returns a zeroed summary without calling the service when unauthenticated", async () => {
     mockAuth.mockResolvedValue(null);
 
@@ -50,6 +63,20 @@ describe("getMyReactions", () => {
 });
 
 describe("toggleMyReaction", () => {
+  it("does not mutate an inaccessible ancestry but allows an accessible one", async () => {
+    mockAuth.mockResolvedValue({ user: { id: "user-1" } });
+    mockFindAncestry.mockResolvedValue(null);
+    expect(
+      await toggleMyReaction("ancestry", "private-id", "thumbs_up")
+    ).toEqual({ success: false, error: "Ancestry not found" });
+    expect(mockToggle).not.toHaveBeenCalled();
+    mockFindAncestry.mockResolvedValue({ id: "private-id" });
+    mockToggle.mockResolvedValue(emptySummary);
+    expect(
+      await toggleMyReaction("ancestry", "private-id", "thumbs_up")
+    ).toEqual({ success: true, data: emptySummary });
+  });
+
   it("returns an error and does not call the service when unauthenticated", async () => {
     mockAuth.mockResolvedValue(null);
 

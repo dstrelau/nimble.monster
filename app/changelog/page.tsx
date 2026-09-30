@@ -18,6 +18,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "30 September 2026",
+    entries: ["Ancestries can now be private or public."],
+  },
+  {
     date: "29 August 2026",
     entries: [
       "Dice notation now supports non-attack rolls (1d20n) and better supports multiple different dice (1d20+1d10).",

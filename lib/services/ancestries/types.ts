@@ -26,6 +26,7 @@ export interface AncestryAbility {
 export interface AncestryMini {
   id: string;
   name: string;
+  visibility: "public" | "private";
   size: AncestrySize[];
   rarity: AncestryRarity;
   createdAt: Date;
@@ -54,6 +55,7 @@ export interface SearchAncestriesParams {
 
 export interface CreateAncestryInput {
   name: string;
+  visibility?: "public" | "private";
   description: string;
   size: AncestrySize[];
   rarity: AncestryRarity;
@@ -63,6 +65,7 @@ export interface CreateAncestryInput {
 
 export interface UpdateAncestryInput {
   name: string;
+  visibility?: "public" | "private";
   description: string;
   size: AncestrySize[];
   rarity: AncestryRarity;

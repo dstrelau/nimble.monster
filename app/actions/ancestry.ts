@@ -19,6 +19,7 @@ export async function createAncestry(formData: {
   description: string;
   size: AncestrySize[];
   rarity: AncestryRarity;
+  visibility?: "public" | "private";
   abilities: AncestryAbility[];
   sourceId?: string;
 }) {
@@ -30,6 +31,7 @@ export async function createAncestry(formData: {
 
     const ancestry = await createAncestryRepo(formData, session.user.discordId);
 
+    revalidatePath("/ancestries");
     revalidatePath("/my/ancestries");
 
     return { success: true, ancestry };
@@ -48,6 +50,7 @@ export async function updateAncestry(
     description: string;
     size: AncestrySize[];
     rarity: AncestryRarity;
+    visibility?: "public" | "private";
     abilities: AncestryAbility[];
     sourceId?: string;
   }
@@ -65,6 +68,7 @@ export async function updateAncestry(
     );
 
     revalidatePath(`/ancestries/${ancestry.id}`);
+    revalidatePath("/ancestries");
     revalidatePath("/my/ancestries");
 
     return { success: true, ancestry };
@@ -79,7 +83,7 @@ export async function updateAncestry(
 export async function findPublicAncestry(ancestryId: string) {
   try {
     const ancestry = await findAncestry(ancestryId);
-    if (!ancestry) {
+    if (!ancestry || ancestry.visibility !== "public") {
       return { success: false, error: "Ancestry not found", ancestry: null };
     }
 
@@ -102,6 +106,7 @@ export async function deleteAncestry(ancestryId: string) {
   const deleted = await deleteAncestryRepo(ancestryId, session.user.discordId);
 
   if (deleted) {
+    revalidatePath("/ancestries");
     revalidatePath("/my/ancestries");
     return { success: true, error: null };
   }

@@ -192,6 +192,7 @@ const toAncestryMiniFromRow = (a: AncestryRow): AncestryMini => {
   return {
     id: a.id,
     name: a.name,
+    visibility: a.visibility === "private" ? "private" : "public",
     size: sizes as AncestryMini["size"],
     rarity: (a.rarity ?? "common") as AncestryMini["rarity"],
     createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),

@@ -1,5 +1,5 @@
 export interface RouteContract<Input, Output> {
-  method: "POST" | "PUT" | "PATCH" | "DELETE";
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   path: (input: Input) => string;
   readonly __output?: Output;
 }
@@ -17,8 +17,12 @@ export async function call<Input, Output>(
   const response = await fetch(contract.path(input), {
     method: contract.method,
     credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(input),
+    ...(contract.method === "GET"
+      ? {}
+      : {
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        }),
   });
 
   if (!response.ok) {

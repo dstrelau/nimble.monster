@@ -45,6 +45,7 @@ export default async function PreviewAncestriesPage({
     const ancestry: Ancestry = {
       id: "",
       name,
+      visibility: "public",
       size,
       rarity,
       description,

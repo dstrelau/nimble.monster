@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import type { ReactableEntityType, ReactionType } from "@/lib/db/schema";
+import { findAncestry } from "@/lib/services/ancestries/repository";
 import {
   getReactionsSummary,
   type ReactionsSummary,
@@ -13,7 +14,10 @@ export async function getMyReactions(
   entityId: string
 ): Promise<ReactionsSummary> {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (
+    !session?.user?.id ||
+    (entityType === "ancestry" && !(await findAncestry(entityId)))
+  ) {
     return {
       counts: { thumbs_up: 0, thumbs_down: 0 },
       mine: [],
@@ -34,6 +38,9 @@ export async function toggleMyReaction(
   const session = await auth();
   if (!session?.user?.id) {
     return { success: false, error: "Not authenticated" };
+  }
+  if (entityType === "ancestry" && !(await findAncestry(entityId))) {
+    return { success: false, error: "Ancestry not found" };
   }
   const data = await toggleReaction(
     entityType,
