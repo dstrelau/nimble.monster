@@ -195,17 +195,20 @@ export interface Encounter extends Omit<EncounterOverview, "monsters"> {
   monsters: EncounterMonsterEntryFull[];
 }
 
+export interface SubtableColumn {
+  id: string;
+  name: string;
+}
+
 export interface SubtableRow {
   id?: string;
-  low: number;
-  high: number;
-  result: string;
+  cells: Record<string, string>;
 }
 
 export interface Subtable {
   id?: string;
   title: string;
-  notation: string;
+  columns: SubtableColumn[];
   rows: SubtableRow[];
 }
 

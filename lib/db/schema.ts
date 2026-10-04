@@ -169,7 +169,9 @@ export const randomSubtables = sqliteTable(
         onUpdate: "cascade",
       }),
     title: text("title").notNull(),
-    notation: text("notation").notNull(),
+    columns: text("columns", { mode: "json" })
+      .$type<import("@/lib/types").SubtableColumn[]>()
+      .notNull(),
     orderIndex: integer("order_index").notNull(),
   },
   (table) => [
@@ -190,9 +192,9 @@ export const randomSubtableRows = sqliteTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
-    low: integer("low").notNull(),
-    high: integer("high").notNull(),
-    result: text("result").notNull(),
+    cells: text("cells", { mode: "json" })
+      .$type<Record<string, string>>()
+      .notNull(),
     orderIndex: integer("order_index").notNull(),
   },
   (table) => [

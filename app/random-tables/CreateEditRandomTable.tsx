@@ -3,17 +3,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  type Control,
-  useFieldArray,
-  useForm,
-  useWatch,
-} from "react-hook-form";
+import { useFieldArray, useForm, useFormContext } from "react-hook-form";
 import { saveRandomTable } from "@/app/%5Factions/_random-tables/contract";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -23,211 +17,247 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { call } from "@/lib/contract";
-import { parseTableNotation, tableNotationRange } from "@/lib/dice";
 import {
   type RandomTableFormData,
   RandomTableSchema,
 } from "@/lib/random-table-schema";
 import type { RandomTable } from "@/lib/types";
+import { cn, randomUUID } from "@/lib/utils";
 import { getRandomTableUrl } from "@/lib/utils/url";
 
 interface Props {
   randomTable: RandomTable;
   isCreating?: boolean;
   submitLabel?: string;
+  onSubmit?: (data: RandomTableFormData) => void;
 }
 
-/** The next unused roll value, so adding rows walks up the die's range. */
-function nextRollValue(
-  rows: { high?: number }[] | undefined,
-  range: { min: number; max: number } | null
-): number {
-  const min = range?.min ?? 1;
-  const highest = (rows ?? []).reduce(
-    (acc, row) => Math.max(acc, Number(row.high) || min),
-    min - 1
-  );
-  return Math.min(highest + 1, range?.max ?? highest + 1);
+function createDefaultSubtable(): RandomTableFormData["subtables"][number] {
+  return {
+    title: "",
+    columns: [
+      { id: "roll", name: "1d6" },
+      { id: "result", name: "Result" },
+    ],
+    rows: [{ cells: { roll: "", result: "" } }],
+  };
 }
 
 function SubtableFields({
-  control,
   subtableIndex,
   onRemove,
   canRemove,
 }: {
-  control: Control<RandomTableFormData>;
   subtableIndex: number;
   onRemove: () => void;
   canRemove: boolean;
 }) {
+  const { control, getValues, setValue } =
+    useFormContext<RandomTableFormData>();
   const { fields, append, remove } = useFieldArray({
     control,
     name: `subtables.${subtableIndex}.rows`,
   });
-
-  const notation = useWatch({
+  const {
+    fields: columns,
+    append: appendColumn,
+    remove: removeColumn,
+  } = useFieldArray({
     control,
-    name: `subtables.${subtableIndex}.notation`,
+    name: `subtables.${subtableIndex}.columns`,
+    keyName: "fieldKey",
   });
 
-  const rows = useWatch({
-    control,
-    name: `subtables.${subtableIndex}.rows`,
-  });
+  const addColumn = () => {
+    const id = randomUUID();
+    const rows = getValues(`subtables.${subtableIndex}.rows`);
+    setValue(
+      `subtables.${subtableIndex}.rows`,
+      rows.map((row) => ({
+        ...row,
+        cells: { ...row.cells, [id]: "" },
+      })),
+      { shouldDirty: true }
+    );
+    appendColumn({ id, name: `Column ${columns.length + 1}` });
+  };
 
-  const roll = notation ? parseTableNotation(notation) : null;
-  const range = roll ? tableNotationRange(roll) : null;
+  const deleteColumn = (columnIndex: number, columnId: string) => {
+    const rows = getValues(`subtables.${subtableIndex}.rows`);
+    setValue(
+      `subtables.${subtableIndex}.rows`,
+      rows.map((row) => ({
+        ...row,
+        cells: Object.fromEntries(
+          Object.entries(row.cells).filter(([id]) => id !== columnId)
+        ),
+      })),
+      { shouldDirty: true }
+    );
+    removeColumn(columnIndex);
+  };
 
   return (
-    <Card>
-      <CardContent className="space-y-4 px-4">
-        <div className="flex items-end gap-2">
-          <FormField
-            control={control}
-            name={`subtables.${subtableIndex}.title`}
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input placeholder="Encounter Difficulty" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name={`subtables.${subtableIndex}.notation`}
-            render={({ field }) => (
-              <FormItem className="w-32">
-                <FormLabel>Dice</FormLabel>
-                <FormControl>
-                  <Input placeholder="2d12" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {canRemove && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={onRemove}
-              aria-label="Remove table"
-            >
-              <Trash className="h-4 w-4" />
-            </Button>
+    <div
+      className={cn(
+        "overflow-hidden rounded-lg border",
+        columns.length > 4 && "md:col-span-2"
+      )}
+    >
+      <div className="flex items-start justify-between gap-3 bg-header p-1.5 text-header-foreground">
+        <FormField
+          control={control}
+          name={`subtables.${subtableIndex}.title`}
+          render={({ field }) => (
+            <FormItem className="min-w-0 flex-1 gap-1">
+              <FormControl>
+                <Input
+                  aria-label="Table title"
+                  className="h-8 border-header-foreground/30 bg-transparent px-2 font-condensed font-bold text-base text-header-foreground shadow-none placeholder:text-header-foreground/60 focus-visible:border-header-foreground/50 focus-visible:ring-header-foreground/30 md:text-base dark:bg-transparent"
+                  placeholder="Encounter Difficulty"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-baseline gap-2">
-            <Label>Rows</Label>
-            {range && (
-              <span className="text-muted-foreground text-xs tabular-nums">
-                {notation} rolls {range.min}–{range.max}
-              </span>
-            )}
-          </div>
-
-          {fields.map((field, rowIndex) => (
-            <div key={field.id} className="flex items-start gap-2">
-              <FormField
-                control={control}
-                name={`subtables.${subtableIndex}.rows.${rowIndex}.low`}
-                render={({ field: lowField }) => (
-                  <FormItem className="w-20">
-                    <FormControl>
-                      <Input
-                        type="number"
-                        aria-label="Low roll"
-                        className="tabular-nums"
-                        {...lowField}
-                        value={
-                          Number.isNaN(lowField.value) ? "" : lowField.value
-                        }
-                        onChange={(e) =>
-                          lowField.onChange(e.target.valueAsNumber)
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <span className="pt-2 text-muted-foreground">–</span>
-              <FormField
-                control={control}
-                name={`subtables.${subtableIndex}.rows.${rowIndex}.high`}
-                render={({ field: highField }) => (
-                  <FormItem className="w-20">
-                    <FormControl>
-                      <Input
-                        type="number"
-                        aria-label="High roll"
-                        className="tabular-nums"
-                        {...highField}
-                        value={
-                          Number.isNaN(highField.value) ? "" : highField.value
-                        }
-                        onChange={(e) =>
-                          highField.onChange(e.target.valueAsNumber)
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name={`subtables.${subtableIndex}.rows.${rowIndex}.result`}
-                render={({ field: resultField }) => (
-                  <FormItem className="flex-1">
-                    <FormControl>
-                      <Input
-                        aria-label="Result"
-                        placeholder="Result"
-                        {...resultField}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {fields.length > 1 && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => remove(rowIndex)}
-                  aria-label="Remove row"
-                >
-                  <Trash className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          ))}
-
+        />
+        <div className="flex h-8 shrink-0 items-center gap-1">
           <Button
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() => {
-              const next = nextRollValue(rows, range);
-              append({ low: next, high: next, result: "" });
-            }}
+            className="text-header-foreground hover:bg-header-foreground/10 hover:text-header-foreground"
+            onClick={addColumn}
           >
-            <Plus className="mr-2 h-4 w-4" /> Add Row
+            <Plus /> Add column
           </Button>
+          {canRemove && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              className="shrink-0 text-header-foreground hover:bg-header-foreground/10 hover:text-header-foreground"
+              onClick={onRemove}
+              aria-label="Remove table"
+            >
+              <Trash />
+            </Button>
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+      <Table className="min-w-xl">
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            {columns.map((column, columnIndex) => (
+              <TableHead key={column.fieldKey} className="h-11 min-w-40 p-1.5">
+                <div className="flex h-8 items-center gap-1">
+                  <FormField
+                    control={control}
+                    name={`subtables.${subtableIndex}.columns.${columnIndex}.name`}
+                    render={({ field }) => (
+                      <FormItem className="min-w-0 flex-1 gap-1">
+                        <FormControl>
+                          <Input
+                            aria-label="Column name"
+                            className="h-8 bg-transparent font-medium text-muted-foreground shadow-none focus-visible:bg-background dark:bg-transparent dark:focus-visible:bg-input/30"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {columns.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-sm"
+                      className="shrink-0"
+                      aria-label={`Remove ${column.name} column`}
+                      onClick={() => deleteColumn(columnIndex, column.id)}
+                    >
+                      <Trash />
+                    </Button>
+                  )}
+                </div>
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {fields.map((field, rowIndex) => (
+            <TableRow key={field.id} className="hover:bg-transparent">
+              {columns.map((column, columnIndex) => (
+                <TableCell
+                  key={column.id}
+                  className="h-11 whitespace-normal p-1.5 align-top"
+                >
+                  <div className="flex items-start gap-1">
+                    <FormField
+                      control={control}
+                      name={`subtables.${subtableIndex}.rows.${rowIndex}.cells.${column.id}`}
+                      render={({ field }) => (
+                        <FormItem className="min-w-0 flex-1 gap-1">
+                          <FormControl>
+                            <Input
+                              aria-label={`${column.name}, row ${rowIndex + 1}`}
+                              className="h-8 bg-transparent shadow-none focus-visible:bg-background dark:bg-transparent dark:focus-visible:bg-input/30"
+                              {...field}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    {columnIndex === columns.length - 1 &&
+                      (fields.length > 1 ? (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-sm"
+                          className="shrink-0"
+                          onClick={() => remove(rowIndex)}
+                          aria-label={`Remove row ${rowIndex + 1}`}
+                        >
+                          <Trash />
+                        </Button>
+                      ) : (
+                        <span aria-hidden="true" className="size-8 shrink-0" />
+                      ))}
+                  </div>
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <div className="border-t bg-muted/20 p-2">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            append({
+              cells: Object.fromEntries(
+                columns.map((column) => [column.id, ""])
+              ),
+            });
+          }}
+        >
+          <Plus /> Add Row
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -235,6 +265,7 @@ export function CreateEditRandomTable({
   randomTable,
   isCreating = false,
   submitLabel = "Save",
+  onSubmit,
 }: Props) {
   const router = useRouter();
 
@@ -246,13 +277,7 @@ export function CreateEditRandomTable({
       visibility: randomTable.visibility,
       subtables: randomTable.subtables.length
         ? randomTable.subtables
-        : [
-            {
-              title: "",
-              notation: "1d6",
-              rows: [{ low: 1, high: 1, result: "" }],
-            },
-          ],
+        : [createDefaultSubtable()],
     },
   });
 
@@ -262,6 +287,10 @@ export function CreateEditRandomTable({
   });
 
   const handleSubmit = async (data: RandomTableFormData) => {
+    if (onSubmit) {
+      onSubmit(data);
+      return;
+    }
     try {
       const result = await call(saveRandomTable, {
         ...data,
@@ -353,7 +382,6 @@ export function CreateEditRandomTable({
           {fields.map((field, index) => (
             <SubtableFields
               key={field.id}
-              control={form.control}
               subtableIndex={index}
               canRemove={fields.length > 1}
               onRemove={() => remove(index)}
@@ -366,13 +394,7 @@ export function CreateEditRandomTable({
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() =>
-              append({
-                title: "",
-                notation: "1d6",
-                rows: [{ low: 1, high: 1, result: "" }],
-              })
-            }
+            onClick={() => append(createDefaultSubtable())}
           >
             <Plus className="mr-2 h-4 w-4" /> Add Table
           </Button>

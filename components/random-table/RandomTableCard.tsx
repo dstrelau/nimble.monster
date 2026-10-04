@@ -68,9 +68,6 @@ export const RandomTableCard = ({
               <span className="truncate font-condensed font-bold">
                 {subtable.title}
               </span>
-              <span className="shrink-0 text-muted-foreground tabular-nums">
-                {subtable.notation}
-              </span>
             </div>
           ))}
           {remainingCount > 0 && (

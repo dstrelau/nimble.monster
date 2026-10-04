@@ -1,46 +1,34 @@
 import { z } from "zod";
-import { parseTableNotation, tableNotationRange } from "@/lib/dice";
 import { ValidCollectionVisibilities } from "@/lib/types";
 
+export const SubtableColumnSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1, "Column name is required"),
+});
+
 export const SubtableRowSchema = z.object({
-  low: z.number({ error: "Enter a number" }).int(),
-  high: z.number({ error: "Enter a number" }).int(),
-  result: z.string().min(1, "Result is required"),
+  cells: z.record(z.string(), z.string()),
 });
 
 export const SubtableSchema = z
   .object({
     title: z.string().min(1, "Title is required"),
-    notation: z.string().min(1, "Dice notation is required"),
+    columns: z
+      .array(SubtableColumnSchema)
+      .min(1, "At least one column is required"),
     rows: z.array(SubtableRowSchema).min(1, "At least one row is required"),
   })
   .superRefine((subtable, ctx) => {
-    const roll = parseTableNotation(subtable.notation);
-    if (!roll) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["notation"],
-        message: "Not a valid die roll (e.g. 1d6, 2d12, d66)",
-      });
-      return;
-    }
-
-    const { min, max } = tableNotationRange(roll);
-    subtable.rows.forEach((row, index) => {
-      if (row.high < row.low) {
+    const columnIds = new Set<string>();
+    subtable.columns.forEach((column, index) => {
+      if (columnIds.has(column.id)) {
         ctx.addIssue({
           code: "custom",
-          path: ["rows", index, "high"],
-          message: "Must not be less than the low value",
+          path: ["columns", index, "id"],
+          message: "Column IDs must be unique",
         });
       }
-      if (row.low < min || row.high > max) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["rows", index, "low"],
-          message: `${subtable.notation} rolls ${min}–${max}`,
-        });
-      }
+      columnIds.add(column.id);
     });
   });
 

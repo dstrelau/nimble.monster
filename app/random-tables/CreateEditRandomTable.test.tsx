@@ -34,43 +34,47 @@ const emptyTable: RandomTable = {
   subtables: [],
 };
 
+const weaponsTable: RandomTable = {
+  ...emptyTable,
+  id: "2165faa4-f013-4e5b-a800-0107055dd74f",
+  name: "Weapons",
+  subtables: [
+    {
+      title: "Weapons",
+      columns: [
+        { id: "roll", name: "1d6" },
+        { id: "weapon", name: "Weapon" },
+        { id: "price", name: "Price" },
+        { id: "damage", name: "Damage" },
+      ],
+      rows: [
+        {
+          cells: {
+            roll: "1",
+            weapon: "Dagger",
+            price: "5 gp",
+            damage: "1d4",
+          },
+        },
+      ],
+    },
+  ],
+};
+
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
 });
 
 describe("CreateEditRandomTable", () => {
-  it("submits a table whose rows carry numeric ranges", async () => {
-    call.mockResolvedValue({
-      id: "2165faa4-f013-4e5b-a800-0107055dd74f",
-      name: "Combat Encounter",
+  it("submits arbitrary columns and their keyed cell values", async () => {
+    call.mockResolvedValue({ id: weaponsTable.id, name: weaponsTable.name });
+    render(<CreateEditRandomTable randomTable={weaponsTable} />);
+
+    fireEvent.change(screen.getByLabelText("Price, row 1"), {
+      target: { value: "6 gp" },
     });
-
-    render(<CreateEditRandomTable randomTable={emptyTable} isCreating />);
-
-    fireEvent.change(screen.getByPlaceholderText("Name"), {
-      target: { value: "Combat Encounter" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("Encounter Difficulty"), {
-      target: { value: "Difficulty" },
-    });
-
-    const notation = screen.getByPlaceholderText("2d12");
-    fireEvent.change(notation, { target: { value: "" } });
-    fireEvent.change(notation, { target: { value: "2d12" } });
-
-    // The seeded row: make it the combined range 3-8.
-    const low = screen.getByLabelText("Low roll");
-    const high = screen.getByLabelText("High roll");
-    fireEvent.change(low, { target: { value: "" } });
-    fireEvent.change(low, { target: { value: "3" } });
-    fireEvent.change(high, { target: { value: "" } });
-    fireEvent.change(high, { target: { value: "8" } });
-    fireEvent.change(screen.getByLabelText("Result"), {
-      target: { value: "Easy" },
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "Create" }));
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(call).toHaveBeenCalledTimes(1));
     expect(call).toHaveBeenCalledWith(
@@ -79,104 +83,105 @@ describe("CreateEditRandomTable", () => {
         path: expect.any(Function),
       }),
       expect.objectContaining({
-        id: undefined,
-        name: "Combat Encounter",
-        visibility: "public",
+        id: weaponsTable.id,
+        name: "Weapons",
         subtables: [
           {
-            title: "Difficulty",
-            notation: "2d12",
-            rows: [{ low: 3, high: 8, result: "Easy" }],
+            title: "Weapons",
+            columns: weaponsTable.subtables[0].columns,
+            rows: [
+              {
+                cells: {
+                  roll: "1",
+                  weapon: "Dagger",
+                  price: "6 gp",
+                  damage: "1d4",
+                },
+              },
+            ],
           },
         ],
       })
     );
-    expect(push).toHaveBeenCalledWith(
-      expect.stringContaining("/random-tables/combat-encounter-")
-    );
   });
 
-  it("adds rows and tables", async () => {
+  it("adds and removes columns while keeping row cells aligned", () => {
     render(<CreateEditRandomTable randomTable={emptyTable} isCreating />);
 
-    expect(screen.getAllByLabelText("Result")).toHaveLength(1);
+    expect(screen.getAllByLabelText("Column name")).toHaveLength(2);
+    expect(screen.getAllByLabelText(/row 1$/)).toHaveLength(2);
 
-    fireEvent.click(screen.getByRole("button", { name: /Add Row/ }));
-    expect(screen.getAllByLabelText("Result")).toHaveLength(2);
+    fireEvent.click(screen.getByRole("button", { name: "Add column" }));
+    expect(screen.getAllByLabelText("Column name")).toHaveLength(3);
+    expect(screen.getAllByLabelText(/row 1$/)).toHaveLength(3);
 
-    fireEvent.click(screen.getByRole("button", { name: /Add Table/ }));
-    expect(screen.getAllByPlaceholderText("Encounter Difficulty")).toHaveLength(
-      2
+    fireEvent.click(
+      screen.getByRole("button", { name: "Remove Column 3 column" })
     );
+    expect(screen.getAllByLabelText("Column name")).toHaveLength(2);
+    expect(screen.getAllByLabelText(/row 1$/)).toHaveLength(2);
   });
 
-  it("blocks submit and shows the error on the row that cannot be rolled", async () => {
+  it("keeps table actions fixed and gives wide tables the full grid width", () => {
+    render(<CreateEditRandomTable randomTable={weaponsTable} />);
+
+    const card = screen
+      .getByLabelText("Table title")
+      .closest(".overflow-hidden");
+    const addColumn = screen.getByRole("button", { name: "Add column" });
+
+    expect(card).not.toHaveClass("md:col-span-2");
+    expect(addColumn.closest("table")).toBeNull();
+
+    fireEvent.click(addColumn);
+
+    expect(card).toHaveClass("md:col-span-2");
+  });
+
+  it("adds rows and tables", () => {
+    render(<CreateEditRandomTable randomTable={emptyTable} isCreating />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Add Row" }));
+    expect(screen.getAllByRole("textbox", { name: /row 2$/ })).toHaveLength(2);
+
+    fireEvent.click(screen.getByRole("button", { name: "Add Table" }));
+    expect(screen.getAllByLabelText("Table title")).toHaveLength(2);
+  });
+
+  it("blocks submit when a column name is empty", async () => {
     render(<CreateEditRandomTable randomTable={emptyTable} isCreating />);
 
     fireEvent.change(screen.getByPlaceholderText("Name"), {
-      target: { value: "Combat Encounter" },
+      target: { value: "Weather" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Encounter Difficulty"), {
-      target: { value: "Difficulty" },
+    fireEvent.change(screen.getByLabelText("Table title"), {
+      target: { value: "Weather" },
     });
-
-    const notation = screen.getByPlaceholderText("2d12");
-    fireEvent.change(notation, { target: { value: "" } });
-    fireEvent.change(notation, { target: { value: "2d12" } });
-
-    // 2d12 can never roll a 1.
-    const low = screen.getByLabelText("Low roll");
-    fireEvent.change(low, { target: { value: "" } });
-    fireEvent.change(low, { target: { value: "1" } });
-    fireEvent.change(screen.getByLabelText("Result"), {
-      target: { value: "Easy" },
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "Create" }));
-
-    expect(await screen.findByText("2d12 rolls 2–24")).toBeInTheDocument();
-    expect(call).not.toHaveBeenCalled();
-  });
-
-  it("shows an error when a roll value is cleared rather than failing silently", async () => {
-    render(<CreateEditRandomTable randomTable={emptyTable} isCreating />);
-
-    fireEvent.change(screen.getByPlaceholderText("Name"), {
-      target: { value: "Combat Encounter" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("Encounter Difficulty"), {
-      target: { value: "Difficulty" },
-    });
-    fireEvent.change(screen.getByLabelText("Result"), {
-      target: { value: "Easy" },
-    });
-    fireEvent.change(screen.getByLabelText("Low roll"), {
+    fireEvent.change(screen.getAllByLabelText("Column name")[0], {
       target: { value: "" },
     });
-
     fireEvent.click(screen.getByRole("button", { name: "Create" }));
 
-    expect(await screen.findByText("Enter a number")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Column name is required")
+    ).toBeInTheDocument();
     expect(call).not.toHaveBeenCalled();
   });
 
-  it("keeps the draft and shows a JSON route error", async () => {
+  it("keeps the draft and shows a route error", async () => {
     call.mockRejectedValue(new Error("Could not save table"));
     render(<CreateEditRandomTable randomTable={emptyTable} isCreating />);
 
     fireEvent.change(screen.getByPlaceholderText("Name"), {
-      target: { value: "Combat Encounter" },
+      target: { value: "Weather" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Encounter Difficulty"), {
-      target: { value: "Difficulty" },
-    });
-    fireEvent.change(screen.getByLabelText("Result"), {
-      target: { value: "Easy" },
+    fireEvent.change(screen.getByLabelText("Table title"), {
+      target: { value: "Weather" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Create" }));
 
     expect(await screen.findByText("Could not save table")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Name")).toHaveValue("Combat Encounter");
+    expect(screen.getByPlaceholderText("Name")).toHaveValue("Weather");
     expect(push).not.toHaveBeenCalled();
   });
 });

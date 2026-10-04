@@ -50,12 +50,10 @@ async function loadSubtablesByTableId(
     existing.push({
       id: subtable.id,
       title: subtable.title,
-      notation: subtable.notation,
+      columns: subtable.columns,
       rows: (rowsBySubtable.get(subtable.id) ?? []).map((r) => ({
         id: r.id,
-        low: r.low,
-        high: r.high,
-        result: r.result,
+        cells: r.cells,
       })),
     });
     byTable.set(subtable.randomTableId, existing);
@@ -110,7 +108,7 @@ async function replaceSubtables(
     id: crypto.randomUUID(),
     randomTableId,
     title: subtable.title,
-    notation: subtable.notation,
+    columns: subtable.columns,
     orderIndex: index,
   }));
   await db.insert(randomSubtables).values(subtableValues);
@@ -118,9 +116,7 @@ async function replaceSubtables(
   const rowValues = subtables.flatMap((subtable, subtableIndex) =>
     subtable.rows.map((row, rowIndex) => ({
       subtableId: subtableValues[subtableIndex].id,
-      low: row.low,
-      high: row.high,
-      result: row.result,
+      cells: row.cells,
       orderIndex: rowIndex,
     }))
   );

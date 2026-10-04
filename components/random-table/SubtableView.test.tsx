@@ -13,33 +13,72 @@ afterEach(() => {
 });
 
 const subtable = {
-  title: "Encounter Difficulty",
-  notation: "2d12",
+  title: "Weapons",
+  columns: [
+    { id: "roll", name: "1d6" },
+    { id: "weapon", name: "Weapon" },
+    { id: "price", name: "Price" },
+    { id: "damage", name: "Damage" },
+  ],
   rows: [
-    { low: 2, high: 2, result: "Very Deadly" },
-    { low: 3, high: 8, result: "Easy" },
-    { low: 24, high: 24, result: "Deadly" },
+    {
+      cells: {
+        roll: "1",
+        weapon: "Dagger",
+        price: "5 gp",
+        damage: "1d4",
+      },
+    },
+    {
+      cells: {
+        roll: "2–3",
+        weapon: "Shortsword",
+        price: "10 gp",
+        damage: "1d6",
+      },
+    },
   ],
 };
 
 describe("SubtableView", () => {
-  it("renders the title with its dice notation", () => {
+  it("renders the table title and each custom column header", () => {
     render(<SubtableView subtable={subtable} conditions={[]} />);
-    expect(screen.getByText("Encounter Difficulty")).toBeInTheDocument();
-    expect(screen.getByText("[2d12]")).toBeInTheDocument();
+
+    expect(screen.getByText("Weapons")).toBeInTheDocument();
+    expect(screen.getByText("Weapons").closest("table")).toBeNull();
+    for (const name of ["1d6", "Weapon", "Price", "Damage"]) {
+      expect(screen.getByRole("columnheader", { name })).toBeInTheDocument();
+    }
   });
 
-  it("shows a single value for a one-value row and a range for a combined row", () => {
+  it("renders cell values under the custom columns", () => {
     render(<SubtableView subtable={subtable} conditions={[]} />);
-    expect(screen.getByText("2")).toBeInTheDocument();
-    expect(screen.getByText("3-8")).toBeInTheDocument();
-    expect(screen.getByText("24")).toBeInTheDocument();
+
+    for (const value of [
+      "1",
+      "Dagger",
+      "5 gp",
+      "1d4",
+      "2–3",
+      "Shortsword",
+      "10 gp",
+    ]) {
+      expect(screen.getByText(value)).toBeInTheDocument();
+    }
+    expect(screen.getByRole("cell", { name: "1d6" })).toBeInTheDocument();
   });
 
-  it("renders each row's result", () => {
-    render(<SubtableView subtable={subtable} conditions={[]} />);
-    expect(screen.getByText("Very Deadly")).toBeInTheDocument();
-    expect(screen.getByText("Easy")).toBeInTheDocument();
-    expect(screen.getByText("Deadly")).toBeInTheDocument();
+  it("shows an em dash for an empty cell", () => {
+    render(
+      <SubtableView
+        subtable={{
+          ...subtable,
+          rows: [{ cells: { roll: "1", weapon: "", price: "", damage: "" } }],
+        }}
+        conditions={[]}
+      />
+    );
+
+    expect(screen.getAllByText("—")).toHaveLength(3);
   });
 });

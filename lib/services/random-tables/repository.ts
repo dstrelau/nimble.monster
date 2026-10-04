@@ -108,12 +108,10 @@ export const searchPublicRandomTables = async ({
     existing.push({
       id: subtable.id,
       title: subtable.title,
-      notation: subtable.notation,
+      columns: subtable.columns,
       rows: (rowsBySubtable.get(subtable.id) ?? []).map((r) => ({
         id: r.id,
-        low: r.low,
-        high: r.high,
-        result: r.result,
+        cells: r.cells,
       })),
     });
     subtablesByTable.set(subtable.randomTableId, existing);

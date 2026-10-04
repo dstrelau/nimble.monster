@@ -1,91 +1,76 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { RandomTableSchema } from "@/lib/random-table-schema";
+import { STRESS_TEST_TABLE } from "./fixtures";
+
+const push = vi.fn();
+const call = vi.fn();
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+vi.mock("@/lib/contract", () => ({
+  call: (...args: unknown[]) => call(...args),
+  defineRoute: (contract: unknown) => contract,
+}));
+vi.mock("@/components/condition/ConditionValidationIcon", () => ({
+  ConditionValidationIcon: () => null,
+}));
+vi.mock("@/components/shared/FormattedText", () => ({
+  FormattedText: ({ content }: { content: string }) => <span>{content}</span>,
+}));
+
 import { RandomTableLab } from "./RandomTableLab";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
 
 describe("RandomTableLab", () => {
-  it("toggles between editing and the rendered preview", () => {
+  it("loads five valid stress fixtures with wide and narrow tables", () => {
+    expect(RandomTableSchema.safeParse(STRESS_TEST_TABLE).success).toBe(true);
     render(<RandomTableLab />);
+    expect(screen.getAllByRole("table")).toHaveLength(5);
+    expect(screen.getAllByLabelText("Column name")).toHaveLength(29);
+    expect(screen.getByLabelText("1d100, row 1")).toHaveValue("01–20");
+    expect(screen.getByLabelText("Damage, row 1")).toHaveValue("1d4");
+  });
 
-    expect(
-      screen.queryByRole("radio", { name: "Dice table" })
-    ).not.toBeInTheDocument();
-    expect(screen.queryByRole("tab")).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Toggle preview" })
-    ).not.toBePressed();
-    expect(
-      screen.getByRole("button", { name: "Add column" })
-    ).toHaveTextContent("Add column");
-
-    fireEvent.change(screen.getByRole("textbox", { name: "Table title" }), {
-      target: { value: "Armory 1d20" },
-    });
+  it("previews edits without saving or navigating and keeps them when returning", async () => {
+    render(<RandomTableLab />);
     fireEvent.change(screen.getByLabelText("Weapon, row 1"), {
       target: { value: "Silver dagger" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Toggle preview" }));
-
-    expect(
-      screen.getByRole("button", { name: "Toggle preview" })
-    ).toBePressed();
-    expect(
-      screen.queryByRole("textbox", { name: "Table title" })
-    ).not.toBeInTheDocument();
-    expect(screen.getAllByText("Silver dagger")).toHaveLength(2);
-    expect(screen.getAllByText("1d20").length).toBeGreaterThan(0);
-  });
-
-  it("models a dice table using ordinary columns", () => {
-    render(<RandomTableLab />);
-
-    fireEvent.click(screen.getByRole("radio", { name: "Road encounters" }));
-
-    expect(
-      screen.getByDisplayValue("Road Encounters — 1d6")
-    ).toBeInTheDocument();
-    expect(screen.getAllByLabelText("Column name")).toHaveLength(3);
-    expect(screen.getByDisplayValue("Roll")).toBeInTheDocument();
-    expect(screen.getByLabelText("Roll, row 2")).toHaveValue("2–3");
-  });
-
-  it("removes a row directly from its trash button", () => {
-    render(<RandomTableLab />);
-
-    expect(screen.getByLabelText("Weapon, row 2")).toHaveValue("Shortsword");
-    fireEvent.click(screen.getByRole("button", { name: "Remove row 2" }));
-
-    expect(screen.queryByDisplayValue("Shortsword")).not.toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: /Remove row/ })).toHaveLength(
-      2
+    fireEvent.click(screen.getByRole("button", { name: "Preview" }));
+    expect(await screen.findByText("Silver dagger")).toBeInTheDocument();
+    const tables = screen.getAllByRole("table");
+    expect(tables).toHaveLength(5);
+    expect(tables[0].parentElement?.parentElement).toHaveClass("md:col-span-2");
+    expect(tables[3].parentElement?.parentElement).not.toHaveClass(
+      "md:col-span-2"
     );
+    expect(within(tables[1]).getByText(/Goblin Minion/)).toBeInTheDocument();
+    expect(call).not.toHaveBeenCalled();
+    expect(push).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Edit tables" }));
+    expect(screen.getByLabelText("Weapon, row 1")).toHaveValue("Silver dagger");
+    fireEvent.click(screen.getByRole("button", { name: "Reset example" }));
+    expect(screen.getByLabelText("Weapon, row 1")).toHaveValue("Dagger");
   });
 
-  it("separates stacked rows without boxing them", () => {
+  it("uses production column and row controls and resets structural changes", () => {
     render(<RandomTableLab />);
-
-    const separators = screen.getAllByRole("separator");
-    expect(separators).toHaveLength(2);
-    expect(
-      separators.every((separator) => separator.classList.contains("w-3/5"))
-    ).toBe(true);
-  });
-
-  it("renders dice notation and inline formatting in previews", async () => {
-    render(<RandomTableLab />);
-
-    fireEvent.change(screen.getByLabelText("Weapon, row 1"), {
-      target: { value: "A **silver** *dagger*" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Toggle preview" }));
-
-    expect(
-      screen.getAllByText("silver").every((node) => node.tagName === "STRONG")
-    ).toBe(true);
-    expect(
-      screen.getAllByText("dagger").every((node) => node.tagName === "EM")
-    ).toBe(true);
-    expect((await screen.findAllByText("1d4")).length).toBeGreaterThan(0);
+    fireEvent.click(screen.getAllByRole("button", { name: "Add column" })[0]);
+    expect(screen.getAllByLabelText("Column name")).toHaveLength(30);
+    fireEvent.click(screen.getAllByRole("button", { name: "Remove row 2" })[0]);
+    expect(screen.queryByDisplayValue("Longbow")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Reset example" }));
+    expect(screen.getAllByLabelText("Column name")).toHaveLength(29);
+    expect(screen.getByDisplayValue("Longbow")).toBeInTheDocument();
   });
 });

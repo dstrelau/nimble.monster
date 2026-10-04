@@ -43,8 +43,11 @@ const input = {
   subtables: [
     {
       title: "Weather",
-      notation: "1d6",
-      rows: [{ low: 1, high: 6, result: "Clear" }],
+      columns: [
+        { id: "roll", name: "1d6" },
+        { id: "result", name: "Weather" },
+      ],
+      rows: [{ cells: { roll: "1–6", result: "Clear" } }],
     },
   ],
 };

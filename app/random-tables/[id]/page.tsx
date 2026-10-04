@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { RandomTableHeader } from "@/app/random-tables/RandomTableHeader";
-import { SubtableView } from "@/components/random-table/SubtableView";
+import { SubtablesView } from "@/components/random-table/SubtablesView";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { listConditionsForDiscordId, listOfficialConditions } from "@/lib/db";
@@ -105,15 +105,10 @@ export default async function ShowRandomTableView({
           This random table is empty.
         </p>
       ) : (
-        <div className="grid items-start gap-6 md:grid-cols-2 print:grid-cols-2">
-          {randomTable.subtables.map((subtable, index) => (
-            <SubtableView
-              key={subtable.id ?? `${subtable.title}-${index}`}
-              subtable={subtable}
-              conditions={conditions}
-            />
-          ))}
-        </div>
+        <SubtablesView
+          subtables={randomTable.subtables}
+          conditions={conditions}
+        />
       )}
     </div>
   );
