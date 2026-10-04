@@ -239,6 +239,13 @@
       "when": 1789824199705,
       "tag": "0033_redundant_gravity",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "6",
+      "when": 1791142903012,
+      "tag": "0034_global_search",
+      "breakpoints": true
     }
   ]
 }

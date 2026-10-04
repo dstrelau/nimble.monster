@@ -1,3 +1,4 @@
+-- Global search follows the migrations already deployed through 0033.
 CREATE TABLE `global_search_catalog` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`entity_type` text NOT NULL,
