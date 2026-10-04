@@ -29,7 +29,7 @@ const changelog: ChangelogEntry[] = [
   },
   {
     date: "13 August 2026",
-    entries: ["Add global search with Cmd/Ctrl-K across public site content."],
+    entries: ["Add global search."],
   },
   {
     date: "31 July 2026",
