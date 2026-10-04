@@ -72,7 +72,7 @@ describe("Header", () => {
       "/roll"
     );
     expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
-    expect(screen.queryByText("Random Tables")).not.toBeInTheDocument();
+    expect(screen.queryByText("Reference Tables")).not.toBeInTheDocument();
     expect(
       screen.queryByRole("link", { name: "Create" })
     ).not.toBeInTheDocument();
@@ -96,9 +96,8 @@ describe("Header", () => {
     if (!mobileMenuButton) return;
     fireEvent.click(mobileMenuButton);
 
-    expect(screen.getByRole("link", { name: "Random Tables" })).toHaveAttribute(
-      "href",
-      "/random-tables"
-    );
+    const link = screen.getByRole("link", { name: "Reference Tables" });
+    expect(link).toHaveAttribute("href", "/random-tables");
+    expect(link.querySelector("svg")).toHaveClass("lucide-table-2");
   });
 });

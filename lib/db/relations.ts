@@ -77,6 +77,10 @@ export const randomTablesRelations = relations(
       fields: [randomTables.creatorId],
       references: [users.id],
     }),
+    source: one(sources, {
+      fields: [randomTables.sourceId],
+      references: [sources.id],
+    }),
     subtables: many(randomSubtables),
   })
 );
@@ -262,6 +266,7 @@ export const sourcesRelations = relations(sources, ({ many }) => ({
   spellSchools: many(spellSchools),
   backgrounds: many(backgrounds),
   ancestries: many(ancestries),
+  randomTables: many(randomTables),
 }));
 
 // Award relations

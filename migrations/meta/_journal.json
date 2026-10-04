@@ -253,6 +253,13 @@
       "when": 1791145454568,
       "tag": "0035_massive_drax",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "6",
+      "when": 1791153281740,
+      "tag": "0036_odd_captain_stacy",
+      "breakpoints": true
     }
   ]
 }

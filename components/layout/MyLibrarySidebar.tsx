@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Dices, Library } from "lucide-react";
+import { ChevronDown, Library, Table2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -109,8 +109,8 @@ export function MyLibrarySidebar({
             ...group.items,
             {
               href: "/my/random-tables",
-              label: "Random Tables",
-              icon: Dices,
+              label: "Reference Tables",
+              icon: Table2,
               key: "random-tables" as const,
             },
           ]

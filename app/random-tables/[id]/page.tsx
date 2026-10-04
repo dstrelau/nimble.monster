@@ -102,7 +102,7 @@ export default async function ShowRandomTableView({
 
       {randomTable.subtables.length === 0 ? (
         <p className="py-8 text-center text-muted-foreground">
-          This random table is empty.
+          This table is empty.
         </p>
       ) : (
         <SubtablesView

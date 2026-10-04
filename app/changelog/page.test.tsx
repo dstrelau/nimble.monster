@@ -25,7 +25,7 @@ describe("ChangelogPage feature flags", () => {
 
     render(await ChangelogPage());
 
-    expect(screen.queryByText("Add Random Tables.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Add Reference Tables.")).not.toBeInTheDocument();
   });
 
   it("shows random tables when the feature is enabled", async () => {
@@ -34,6 +34,12 @@ describe("ChangelogPage feature flags", () => {
 
     render(await ChangelogPage());
 
-    expect(screen.getByText("Add Random Tables.")).toBeInTheDocument();
+    expect(screen.getByText("Add Reference Tables.")).toBeInTheDocument();
+    expect(
+      screen
+        .getAllByRole("heading", { level: 2 })
+        .slice(0, 2)
+        .map((heading) => heading.textContent)
+    ).toEqual(["4 October 2026", "30 September 2026"]);
   });
 });

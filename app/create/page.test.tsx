@@ -25,7 +25,7 @@ describe("CreatePage random tables feature", () => {
 
     render(await CreatePage());
 
-    expect(screen.queryByText("Random Table")).not.toBeInTheDocument();
+    expect(screen.queryByText("Reference Table")).not.toBeInTheDocument();
   });
 
   it("shows random tables when the feature is enabled", async () => {
@@ -34,9 +34,8 @@ describe("CreatePage random tables feature", () => {
 
     render(await CreatePage());
 
-    expect(screen.getByRole("link", { name: /Random Table/ })).toHaveAttribute(
-      "href",
-      "/random-tables/new"
-    );
+    const link = screen.getByRole("link", { name: /^Reference Table / });
+    expect(link).toHaveAttribute("href", "/random-tables/new");
+    expect(link.querySelector("svg")).toHaveClass("lucide-table-2");
   });
 });

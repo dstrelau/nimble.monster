@@ -6,6 +6,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import * as sourceDb from "@/lib/db/source";
 import { checkpoint } from "@/lib/db/client";
+import { upsertOfficialRandomTable } from "@/lib/db/random-table";
 import { validateOfficialAncestriesJSON } from "@/lib/services/ancestries/official";
 import { upsertOfficialAncestry } from "@/lib/services/ancestries/repository";
 import { validateOfficialBackgroundsJSON } from "@/lib/services/backgrounds/official";
@@ -19,6 +20,7 @@ import {
   validateOfficialMonstersJSON,
 } from "@/lib/services/monsters/official";
 import { upsertOfficialMonster } from "@/lib/services/monsters/repository";
+import { validateOfficialRandomTablesJSON } from "@/lib/services/random-tables/official";
 import { validateOfficialSpellSchoolsJSON } from "@/lib/services/spell-schools/official";
 import { upsertOfficialSpellSchool } from "@/lib/services/spell-schools/repository";
 import { validateOfficialSubclassesJSON } from "@/lib/services/subclasses/official";
@@ -31,6 +33,7 @@ const FILES = [
   "core/ancestries.json",
   "core/backgrounds.json",
   "core/spell-schools.json",
+  "core/equipment-tables.json",
   "heroes/classes.json",
   "other/hexbinder-class.json",
   "heroes/subclasses.json",
@@ -227,6 +230,15 @@ async function seedFile(relPath: string): Promise<void> {
     case "spell-schools":
       count = await seedSpellSchools(json);
       break;
+    case "random-tables": {
+      const { tables, source } = validateOfficialRandomTablesJSON(json);
+      const sourceId = await resolveSourceId(source);
+      for (const table of tables) {
+        await upsertOfficialRandomTable({ ...table, sourceId });
+      }
+      count = tables.length;
+      break;
+    }
     default:
       throw new Error(`${relPath}: unknown content type "${firstType}"`);
   }

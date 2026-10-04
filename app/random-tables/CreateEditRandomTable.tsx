@@ -300,9 +300,7 @@ export function CreateEditRandomTable({
     } catch (error) {
       form.setError("root", {
         message:
-          error instanceof Error
-            ? error.message
-            : "Failed to save random table",
+          error instanceof Error ? error.message : "Failed to save table",
       });
     }
   };

@@ -36,7 +36,8 @@ export const POST = internalAction("application/json", async (request) => {
   if (!parsed.success) {
     return NextResponse.json(
       {
-        error: parsed.error.issues[0]?.message ?? "Invalid random table search",
+        error:
+          parsed.error.issues[0]?.message ?? "Invalid reference table search",
       },
       { status: 400 }
     );
@@ -56,6 +57,13 @@ export const POST = internalAction("application/json", async (request) => {
     data: randomTables.map((randomTable) => ({
       ...randomTable,
       createdAt: randomTable.createdAt?.toISOString(),
+      source: randomTable.source
+        ? {
+            ...randomTable.source,
+            createdAt: randomTable.source.createdAt.toISOString(),
+            updatedAt: randomTable.source.updatedAt.toISOString(),
+          }
+        : undefined,
     })),
   };
   return NextResponse.json(result);

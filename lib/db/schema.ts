@@ -149,6 +149,9 @@ export const randomTables = sqliteTable(
     visibility: text("visibility")
       .$type<RandomTableVisibility>()
       .default("public"),
+    sourceId: text("source_id").references(() => sources.id, {
+      onDelete: "set null",
+    }),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },

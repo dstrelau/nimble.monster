@@ -83,7 +83,7 @@ describe("MyLibrarySidebar", () => {
       within(navigation).getByRole("link", { name: "Adventures 2" })
     ).toHaveAttribute("href", "/my/adventures");
     expect(
-      within(navigation).queryByText("Random Tables")
+      within(navigation).queryByText("Reference Tables")
     ).not.toBeInTheDocument();
   });
 
@@ -183,9 +183,11 @@ describe("MyLibrarySidebar", () => {
     const navigation = screen.getByRole("navigation", {
       name: "My library sidebar",
     });
-    expect(
-      within(navigation).getByRole("link", { name: "Random Tables 5" })
-    ).toHaveAttribute("href", "/my/random-tables");
+    const link = within(navigation).getByRole("link", {
+      name: "Reference Tables 5",
+    });
+    expect(link).toHaveAttribute("href", "/my/random-tables");
+    expect(link.querySelector("svg")).toHaveClass("lucide-table-2");
   });
 
   it("does not add random tables to public profiles", () => {
@@ -199,6 +201,6 @@ describe("MyLibrarySidebar", () => {
       </FeatureFlagsProvider>
     );
 
-    expect(screen.queryByText("Random Tables")).not.toBeInTheDocument();
+    expect(screen.queryByText("Reference Tables")).not.toBeInTheDocument();
   });
 });

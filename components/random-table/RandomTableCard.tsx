@@ -1,4 +1,5 @@
 "use client";
+import { Table2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Link } from "@/components/layout/Link";
 import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
@@ -22,7 +23,7 @@ interface RandomTableCardProps {
 
 export const RandomTableCard = ({
   randomTable,
-  limit = 7,
+  limit = 4,
 }: RandomTableCardProps) => {
   const { data: session } = useSession();
   const { allConditions: conditions } = useConditions({
@@ -32,59 +33,63 @@ export const RandomTableCard = ({
   const visibleSubtables = randomTable.subtables.slice(0, limit);
   const remainingCount = randomTable.subtables.length - visibleSubtables.length;
   const href = randomTable.id && getRandomTableUrl(randomTable);
-
-  const truncatedDescription = randomTable.description
-    ? randomTable.description.length > 100
-      ? `${randomTable.description.slice(0, 100)}...`
-      : randomTable.description
-    : null;
+  const remainingLabel = `+${remainingCount} more ${remainingCount === 1 ? "table" : "tables"}`;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 font-condensed font-bold text-2xl">
-          {randomTable.id ? (
-            <Link href={href}>{randomTable.name}</Link>
-          ) : (
-            randomTable.name
-          )}
+    <Card className="min-w-0">
+      <CardHeader className="gap-3">
+        <CardTitle className="flex items-start gap-2 font-condensed font-bold text-2xl leading-tight">
+          <Table2 className="mt-1 size-5 shrink-0 text-muted-foreground" />
+          <span className="min-w-0 break-words">
+            {randomTable.id ? (
+              <Link href={href}>{randomTable.name}</Link>
+            ) : (
+              randomTable.name
+            )}
+          </span>
         </CardTitle>
-        {truncatedDescription && (
-          <CardDescription>
+        {randomTable.description && (
+          <CardDescription className="line-clamp-2">
             <FormattedText
-              content={truncatedDescription}
+              content={randomTable.description}
               conditions={conditions}
+              blockStyles={false}
             />
           </CardDescription>
         )}
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-1">
+        <ul className="divide-y rounded-lg border px-3">
           {visibleSubtables.map((subtable, index) => (
-            <div
+            <li
               key={subtable.id ?? `${subtable.title}-${index}`}
-              className="flex items-baseline justify-between gap-2 text-sm"
+              className="flex items-start justify-between gap-3 py-3"
             >
-              <span className="truncate font-condensed font-bold">
+              <p className="min-w-0 break-words font-semibold text-sm">
                 {subtable.title}
+              </p>
+              <span className="shrink-0 text-muted-foreground text-xs tabular-nums">
+                {subtable.rows.length}{" "}
+                {subtable.rows.length === 1 ? "row" : "rows"}
               </span>
-            </div>
+            </li>
           ))}
           {remainingCount > 0 && (
-            <div className="mt-2 text-center font-bold text-muted-foreground text-sm">
+            <li className="py-2 text-muted-foreground text-xs">
               {href ? (
                 <Link className="text-muted-foreground" href={href}>
-                  +{remainingCount} more
+                  {remainingLabel}
                 </Link>
               ) : (
-                <span>+{remainingCount} more</span>
+                <span>{remainingLabel}</span>
               )}
-            </div>
+            </li>
           )}
-        </div>
+        </ul>
       </CardContent>
       <CardFooterLayout
         creator={randomTable.creator}
+        source={randomTable.source}
         actionsSlot={
           randomTable.visibility === "private" && (
             <Badge variant="default" className="h-6">

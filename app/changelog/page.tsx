@@ -18,6 +18,11 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "4 October 2026",
+    entries: ["Add Reference Tables."],
+    feature: "random-tables",
+  },
+  {
     date: "30 September 2026",
     entries: ["Ancestries can now be private or public."],
   },
@@ -63,11 +68,6 @@ const changelog: ChangelogEntry[] = [
     entries: [
       "Add likes and reporting to monsters, items, companions, subclasses, classes, spell schools, backgrounds, and ancestries, plus a Most Liked sort option.",
     ],
-  },
-  {
-    date: "13 July 2026",
-    entries: ["Add Random Tables."],
-    feature: "random-tables",
   },
   {
     date: "11 July 2026",

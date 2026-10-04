@@ -1,0 +1,681 @@
+{
+  "source": {
+    "name": "Core Rules 3.0",
+    "abbreviation": "Core3",
+    "license": "Nimble 3rd Party Creator License v2.0",
+    "link": "https://nimblerpg.com/"
+  },
+  "data": [
+    {
+      "type": "random-tables",
+      "attributes": {
+        "name": "Armor & Defense",
+        "description": "Nimble Core Rules 3.0, p. 33.\n\nDefense represents your hero’s ability to dodge or block damage when you use the Defend reaction. While unarmored or wearing regular clothes, your Defense is equal to your DEX. Some items may grant additional Defense while equipped.",
+        "subtables": [
+          {
+            "title": "Cloth",
+            "columns": [
+              { "id": "item", "name": "Cloth" },
+              { "id": "defense", "name": "Defense" },
+              { "id": "cost", "name": "Cost" }
+            ],
+            "rows": [
+              {
+                "cells": {
+                  "item": "Adventurer’s Garb",
+                  "defense": "2+DEX",
+                  "cost": "10 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Minor Enchantment",
+                  "defense": "3+DEX",
+                  "cost": "100 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Major Enchantment",
+                  "defense": "4+DEX",
+                  "cost": "1,000 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Epic Enchantment",
+                  "defense": "5+DEX",
+                  "cost": "10,000 gp"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Leather",
+            "columns": [
+              { "id": "item", "name": "Leather" },
+              { "id": "defense", "name": "Defense" },
+              { "id": "cost", "name": "Cost" }
+            ],
+            "rows": [
+              {
+                "cells": {
+                  "item": "Cheap Hides",
+                  "defense": "3+DEX",
+                  "cost": "5 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Ox Hide",
+                  "defense": "4+DEX",
+                  "cost": "45 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Hard Leather (Req. 1 STR)",
+                  "defense": "5+DEX",
+                  "cost": "300 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Wyrmhide (Req. 1 STR)",
+                  "defense": "6+DEX",
+                  "cost": "2,000 gp"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Mail",
+            "columns": [
+              { "id": "item", "name": "Mail" },
+              { "id": "defense", "name": "Defense" },
+              { "id": "cost", "name": "Cost" }
+            ],
+            "rows": [
+              {
+                "cells": {
+                  "item": "Rusty Mail",
+                  "defense": "6+DEX (max 2)",
+                  "cost": "15 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Chain Shirt (Req. 2 STR)",
+                  "defense": "9+DEX (max 2)",
+                  "cost": "60 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Scale Mail (Req. 3 STR)",
+                  "defense": "12+DEX (max 2)",
+                  "cost": "700 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Dragonscale (Req. 4 STR)",
+                  "defense": "15+DEX (max 2)",
+                  "cost": "3,000 gp"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Plate",
+            "columns": [
+              { "id": "item", "name": "Plate" },
+              { "id": "defense", "name": "Defense" },
+              { "id": "cost", "name": "Cost" }
+            ],
+            "rows": [
+              {
+                "cells": {
+                  "item": "Rusty Plate (Req. 2 STR)",
+                  "defense": "10",
+                  "cost": "25 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Half Plate (Req. 3 STR)",
+                  "defense": "14",
+                  "cost": "200 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Full Plate (Req. 4 STR)",
+                  "defense": "18",
+                  "cost": "2,000 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Adamantine Plate (Req. 5 STR)",
+                  "defense": "22",
+                  "cost": "5,000 gp"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Shields",
+            "columns": [
+              { "id": "item", "name": "Shields" },
+              { "id": "defense", "name": "Defense" },
+              { "id": "cost", "name": "Cost" }
+            ],
+            "rows": [
+              {
+                "cells": {
+                  "item": "Wooden Buckler",
+                  "defense": "2",
+                  "cost": "5 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Iron Shield (Req. 2 STR)",
+                  "defense": "4",
+                  "cost": "80 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Tower Shield (Req. 3 STR)",
+                  "defense": "6",
+                  "cost": "1,500 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Dragon Shield (Req. 3 STR)",
+                  "defense": "8",
+                  "cost": "9,000 gp"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "random-tables",
+      "attributes": {
+        "name": "Weapons",
+        "description": "See @rule:weapon-properties rules.",
+        "subtables": [
+          {
+            "title": "Melee Weapons",
+            "columns": [
+              { "id": "item", "name": "Item" },
+              { "id": "damage", "name": "Damage" },
+              { "id": "properties", "name": "Properties" },
+              { "id": "cost", "name": "Cost" }
+            ],
+            "rows": [
+              {
+                "cells": {
+                  "item": "Dagger",
+                  "damage": "1d4+DEX piercing",
+                  "properties": "Light, Thrown 4",
+                  "cost": "3 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Sickle",
+                  "damage": "1d4+DEX slashing",
+                  "properties": "Vicious",
+                  "cost": "10 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Club/Mace",
+                  "damage": "1d6+STR bludgeoning",
+                  "properties": "—",
+                  "cost": "2 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Hand Axe",
+                  "damage": "1d6+STR slashing",
+                  "properties": "Thrown 4",
+                  "cost": "8 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Spear",
+                  "damage": "1d6+STR piercing",
+                  "properties": "2-handed (1-handed: Req. 2 STR), Reach 2",
+                  "cost": "10 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Short Sword",
+                  "damage": "1d6+DEX piercing",
+                  "properties": "Light",
+                  "cost": "15 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Rapier",
+                  "damage": "2d4+DEX piercing",
+                  "properties": "—",
+                  "cost": "60 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Staff",
+                  "damage": "1d8+STR bludgeoning",
+                  "properties": "2-handed",
+                  "cost": "8 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Longsword",
+                  "damage": "1d8+STR slashing",
+                  "properties": "2-handed (1-handed: Req. 2 STR)",
+                  "cost": "60 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Battleaxe",
+                  "damage": "1d10+STR slashing",
+                  "properties": "2-handed",
+                  "cost": "30 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Pole Hammer",
+                  "damage": "1d10+STR bludgeoning",
+                  "properties": "2-handed, Reach 2",
+                  "cost": "60 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Glaive",
+                  "damage": "1d10+STR slashing",
+                  "properties": "2-handed, Reach 2",
+                  "cost": "60 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Great Spear",
+                  "damage": "1d10+STR piercing",
+                  "properties": "2-handed, Reach 2",
+                  "cost": "60 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Greatmaul",
+                  "damage": "3d4+STR bludgeoning",
+                  "properties": "2-handed (Req. 2 STR)",
+                  "cost": "80 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Greataxe",
+                  "damage": "2d6+STR slashing",
+                  "properties": "2-handed (Req. 2 STR)",
+                  "cost": "100 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Greatsword",
+                  "damage": "1d12+STR slashing/piercing",
+                  "properties": "2-handed (Req. 2 STR)",
+                  "cost": "120 gp"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Ranged Weapons",
+            "columns": [
+              { "id": "item", "name": "Item" },
+              { "id": "damage", "name": "Damage" },
+              { "id": "properties", "name": "Properties" },
+              { "id": "cost", "name": "Cost" }
+            ],
+            "rows": [
+              {
+                "cells": {
+                  "item": "Sling",
+                  "damage": "1d4+DEX bludgeoning",
+                  "properties": "2-handed, Range 12, Vicious",
+                  "cost": "4 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Javelins",
+                  "damage": "1d6+STR piercing",
+                  "properties": "Range 8, Stack of 4",
+                  "cost": "20 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Throwing Hammers",
+                  "damage": "1d8+STR bludgeoning",
+                  "properties": "Range 4, Stack of 3",
+                  "cost": "25 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Shortbow",
+                  "damage": "1d6+DEX piercing",
+                  "properties": "2-handed, Range 12",
+                  "cost": "25 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Longbow",
+                  "damage": "1d8+DEX piercing",
+                  "properties": "2-handed, Range 16 (Req. 1 STR)",
+                  "cost": "30 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Crossbow",
+                  "damage": "4d4+DEX piercing",
+                  "properties": "2-handed, Load: 1 action, Range 8",
+                  "cost": "60 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Handheld Ballista",
+                  "damage": "1d20+DEX piercing",
+                  "properties": "2-handed, Load: 2 actions, Range 8 (Req. 2 STR)",
+                  "cost": "120 gp"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "random-tables",
+      "attributes": {
+        "name": "Misc Adventuring Equipment",
+        "description": "Nimble Core Rules 3.0, p. 37.\n\n**What About…?** These are not ALL of the items available for purchase, merely a sampling. If you can think of it, you can likely buy it!\n\nCurrency is made up of silver (sp) and gold pieces (gp). 10 silver = 1 gold. 1 sp is roughly the cost of a humble meal; 1 gp, a sumptuous feast. Most small towns will have equipment and items worth 50 gp or less. You’ll need to adventure to larger towns or cities or find a traveling merchant to purchase more valuable pieces of equipment.",
+        "subtables": [
+          {
+            "title": "Misc Adventuring Equipment",
+            "columns": [
+              { "id": "item", "name": "Item" },
+              { "id": "properties", "name": "Properties" },
+              { "id": "cost", "name": "Cost" }
+            ],
+            "rows": [
+              {
+                "cells": {
+                  "item": "Healing Potion",
+                  "properties": "(action) Heal 2d4+4 HP.",
+                  "cost": "50 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Greater Healing Potion",
+                  "properties": "(action) Heal 3d6+6 HP.",
+                  "cost": "150 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Supreme Healing Potion",
+                  "properties": "(action) Heal 4d8+8 HP.",
+                  "cost": "450 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Torch (stack of 2)",
+                  "properties": "For when it’s dark. 1 use each.",
+                  "cost": "5 sp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Lantern & Oil",
+                  "properties": "Like a torch, but not as cool (refill: 1 gp).",
+                  "cost": "10 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Medical Kit (1 use)",
+                  "properties": "Recover 1 Wound during a Field Rest.",
+                  "cost": "20 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Vial of Pitch",
+                  "properties": "Sticky, and VERY flammable.",
+                  "cost": "2 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Rope (50 ft.)",
+                  "properties": "You always need rope.",
+                  "cost": "10 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Chain (10 ft.)",
+                  "properties": "Like rope, but stronger (and heavy).",
+                  "cost": "50 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Bucket",
+                  "properties": "Also works as a hat in a pinch!",
+                  "cost": "1 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Padlock & Key",
+                  "properties": "Lock it or lose it.",
+                  "cost": "3 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Mirror",
+                  "properties": "For medusas AND spinach teeth.",
+                  "cost": "4 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Telescope",
+                  "properties": "Arrr.",
+                  "cost": "10 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Magnifying Glass",
+                  "properties": "Make the small, big.",
+                  "cost": "5 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Chalk",
+                  "properties": "Not JUST for kids.",
+                  "cost": "1 sp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Shovel",
+                  "properties": "Sometimes you need a hole dug.",
+                  "cost": "3 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Pulley",
+                  "properties": "Pull down, go up.",
+                  "cost": "3 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Grappling Hook",
+                  "properties": "For climbing or catching BIG fish.",
+                  "cost": "4 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Quiver & Ammo",
+                  "properties": "Don’t leave home without it.",
+                  "cost": "10 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Saw",
+                  "properties": "For cutting lumber.",
+                  "cost": "4 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Soap",
+                  "properties": "Useless.",
+                  "cost": "1 sp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Strange Plant",
+                  "properties": "Who knows?",
+                  "cost": "5 sp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Shiny Object",
+                  "properties": "Worthless, but VERY pretty.",
+                  "cost": "1 sp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Lock Pick",
+                  "properties": "It’s not mine, honest!",
+                  "cost": "5 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Bell",
+                  "properties": "For service.",
+                  "cost": "2 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Dice",
+                  "properties": "Math rocks. LOTS of fun.",
+                  "cost": "5 sp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Blanket",
+                  "properties": "Warm & fuzzy.",
+                  "cost": "1 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Hunting Trap",
+                  "properties": "Snap snap, don’t lose a finger!",
+                  "cost": "10 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Camping Supplies",
+                  "properties": "Bedroll, rations, simple tent.",
+                  "cost": "5 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Crowbar",
+                  "properties": "It’s LIKE a key.",
+                  "cost": "2 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Pitons",
+                  "properties": "Metal spikes, for sealing doors.",
+                  "cost": "5 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Manacles",
+                  "properties": "For when someone has been bad.",
+                  "cost": "3 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Instrument",
+                  "properties": "Drums, Horn, Lyre, Flute, etc.",
+                  "cost": "5–50 gp"
+                }
+              },
+              {
+                "cells": {
+                  "item": "Large Sack",
+                  "properties": "Like a BIG pocket.",
+                  "cost": "5 sp"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

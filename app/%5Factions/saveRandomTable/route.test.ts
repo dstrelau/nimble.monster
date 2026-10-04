@@ -134,4 +134,32 @@ describe("POST /_actions/saveRandomTable", () => {
     expect(response.status).toBe(400);
     expect(mockCreateRandomTable).not.toHaveBeenCalled();
   });
+
+  it("uses reference table terminology for invalid IDs", async () => {
+    const response = await POST(request({ ...input, id: "invalid" }));
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({
+      error: "Invalid reference table ID",
+    });
+    expect(mockUpdateRandomTable).not.toHaveBeenCalled();
+  });
+
+  it("translates the internal missing-table error to the user-facing name", async () => {
+    mockUpdateRandomTable.mockRejectedValue(
+      new Error("Random table not found")
+    );
+    const response = await POST(
+      request({
+        ...input,
+        id: "22222222-2222-2222-2222-222222222222",
+      })
+    );
+
+    expect(response.status).toBe(404);
+    expect(await response.json()).toEqual({
+      error: "Reference table not found",
+    });
+    expect(revalidatePath).not.toHaveBeenCalled();
+  });
 });

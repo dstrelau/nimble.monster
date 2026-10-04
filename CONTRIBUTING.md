@@ -93,6 +93,28 @@ pnpm db:generate
 pnpm db:migrate
 ```
 
+### Seeding Official Tables
+
+`make seed` loads `data/official/core/equipment-tables.json` along with the
+other official content into the local development database. The file contains
+Armor & Defense (five subtables), Weapons (melee and ranged subtables), and
+Misc Adventuring Equipment from Nimble Core Rules 3.0, pages 33–37.
+
+Table seed documents use a `data` array of `type: "random-tables"` resources.
+An optional top-level `source` object contains `name`, `abbreviation`, `license`,
+and `link`; the seed finds or creates it by name and attaches it to every table
+in that document. The equipment references use **Core Rules 3.0** (`Core3`).
+Each resource's `attributes` contains `name`, optional `description`, and
+`subtables`. Each subtable has a `title`, `columns` (`id` and `name`), and
+`rows` with string `cells` keyed by column ID. The loader validates the entire
+document using the editor's table schema before writing. Tables are public,
+owned by Nimble Co., and updated by owner and name on repeat runs; subtables
+and rows are replaced transactionally without changing the parent table ID.
+
+The existing `random-tables` feature flag still controls access. To browse
+them locally, enable it with `pnpm feature-flag admin random-tables true`,
+sign in as the dev admin, and open **Play → Reference Tables**.
+
 ## Running Without Discord Auth
 
 You can browse the app without Discord credentials configured - you just won't be able to log in or create/edit content.

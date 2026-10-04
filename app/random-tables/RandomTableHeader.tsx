@@ -6,6 +6,7 @@ import { useState } from "react";
 import { deleteRandomTable } from "@/app/%5Factions/_random-tables/contract";
 import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
+import { SourceBadge } from "@/components/shared/SourceBadge";
 import { VisibilityBadge } from "@/components/shared/VisibilityBadge";
 import { Button } from "@/components/ui/button";
 import { call } from "@/lib/contract";
@@ -35,11 +36,7 @@ export function RandomTableHeader({
     try {
       await call(deleteRandomTable, { id: randomTable.id });
     } catch (error) {
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Failed to delete random table."
-      );
+      alert(error instanceof Error ? error.message : "Failed to delete table.");
       setIsDeleting(false);
       return;
     }
@@ -82,9 +79,10 @@ export function RandomTableHeader({
             )}
           </div>
         </div>
-        {randomTable.creator && (
-          <div className="mt-2 flex">
+        {(randomTable.creator || randomTable.source) && (
+          <div className="mt-2 flex flex-wrap items-center gap-3">
             <Attribution user={randomTable.creator} />
+            {randomTable.source && <SourceBadge source={randomTable.source} />}
           </div>
         )}
         {randomTable.description && (

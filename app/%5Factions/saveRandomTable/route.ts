@@ -10,7 +10,7 @@ import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 import { isValidUUID } from "@/lib/utils/validation";
 
 const saveRandomTableSchema = RandomTableSchema.extend({
-  id: z.string().refine(isValidUUID, "Invalid random table ID").optional(),
+  id: z.string().refine(isValidUUID, "Invalid reference table ID").optional(),
 });
 
 export const POST = internalAction("application/json", async (request) => {
@@ -61,7 +61,7 @@ export const POST = internalAction("application/json", async (request) => {
   } catch (error) {
     if (error instanceof Error && error.message === "Random table not found") {
       return NextResponse.json(
-        { error: "Random table not found" },
+        { error: "Reference table not found" },
         { status: 404 }
       );
     }

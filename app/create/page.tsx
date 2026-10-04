@@ -2,7 +2,6 @@ import {
   BookOpenText,
   BookUser,
   Box,
-  Dices,
   Drama,
   HandFist,
   HeartHandshake,
@@ -10,6 +9,7 @@ import {
   Scroll,
   Shield,
   Swords,
+  Table2,
   TriangleAlert,
   Users,
   WandSparkles,
@@ -166,9 +166,9 @@ export default async function CreatePage() {
             {randomTablesEnabled && (
               <CreateCard
                 href="/random-tables/new"
-                icon={<Dices className="size-16" />}
-                title="Random Table"
-                description="Roll for random results."
+                icon={<Table2 className="size-16" />}
+                title="Reference Table"
+                description="Reference tables and random results."
               />
             )}
 

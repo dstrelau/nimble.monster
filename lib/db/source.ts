@@ -1,6 +1,16 @@
 import { asc, eq } from "drizzle-orm";
+import type { Source } from "@/lib/types";
 import { getDatabase } from "./drizzle";
-import { sources } from "./schema";
+import { type SourceRow, sources } from "./schema";
+
+export function toSource(row: SourceRow | null): Source | undefined {
+  if (!row) return undefined;
+  return {
+    ...row,
+    createdAt: row.createdAt ? new Date(row.createdAt) : new Date(),
+    updatedAt: row.updatedAt ? new Date(row.updatedAt) : new Date(),
+  };
+}
 
 export async function getAllSources() {
   const db = getDatabase();

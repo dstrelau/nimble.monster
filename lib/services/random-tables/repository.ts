@@ -4,8 +4,10 @@ import {
   randomSubtableRows,
   randomSubtables,
   randomTables,
+  sources,
   users,
 } from "@/lib/db/schema";
+import { toSource } from "@/lib/db/source";
 import type { RandomTable, Subtable, User } from "@/lib/types";
 
 export type RandomTableSortBy = "name" | "createdAt";
@@ -63,6 +65,7 @@ export const searchPublicRandomTables = async ({
     .select()
     .from(randomTables)
     .innerJoin(users, eq(randomTables.creatorId, users.id))
+    .leftJoin(sources, eq(randomTables.sourceId, sources.id))
     .where(and(...whereConditions))
     .orderBy(orderBy)
     .limit(limit)
@@ -124,6 +127,7 @@ export const searchPublicRandomTables = async ({
     visibility:
       row.random_tables.visibility === "private" ? "private" : "public",
     creator: toUserFromRow(row.users),
+    source: toSource(row.sources),
     subtables: subtablesByTable.get(row.random_tables.id) ?? [],
     createdAt: row.random_tables.createdAt
       ? new Date(row.random_tables.createdAt)

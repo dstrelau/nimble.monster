@@ -1,6 +1,6 @@
 import { defineRoute } from "@/lib/contract";
 import type { RandomTableFormData } from "@/lib/random-table-schema";
-import type { RandomTable } from "@/lib/types";
+import type { RandomTable, Source } from "@/lib/types";
 
 export type SaveRandomTableInput = RandomTableFormData & { id?: string };
 
@@ -22,8 +22,15 @@ export interface SearchRandomTablesInput {
   page: number;
 }
 
-export type SerializedRandomTable = Omit<RandomTable, "createdAt"> & {
+export type SerializedRandomTable = Omit<
+  RandomTable,
+  "createdAt" | "source"
+> & {
   createdAt?: string;
+  source?: Omit<Source, "createdAt" | "updatedAt"> & {
+    createdAt: string;
+    updatedAt: string;
+  };
 };
 
 export interface SearchRandomTablesResult {

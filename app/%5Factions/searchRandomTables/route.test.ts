@@ -49,6 +49,22 @@ describe("POST /_actions/searchRandomTables", () => {
         creator: { id: "user-1" },
         subtables: [],
         createdAt: new Date("2026-08-30T12:00:00.000Z"),
+        source: {
+          id: "source-1",
+          name: "Core Rules 3.0",
+          abbreviation: "Core3",
+          license: "Nimble 3rd Party Creator License v2.0",
+          link: "https://nimblerpg.com/",
+          createdAt: new Date("2026-08-01T09:30:00.000Z"),
+          updatedAt: new Date("2026-09-02T15:45:00.000Z"),
+        },
+      },
+      {
+        id: "unsourced-table",
+        name: "Travel",
+        visibility: "public",
+        creator: { id: "user-1" },
+        subtables: [],
       },
     ]);
 
@@ -69,7 +85,23 @@ describe("POST /_actions/searchRandomTables", () => {
         expect.objectContaining({
           id: "table-1",
           createdAt: "2026-08-30T12:00:00.000Z",
+          source: {
+            id: "source-1",
+            name: "Core Rules 3.0",
+            abbreviation: "Core3",
+            license: "Nimble 3rd Party Creator License v2.0",
+            link: "https://nimblerpg.com/",
+            createdAt: "2026-08-01T09:30:00.000Z",
+            updatedAt: "2026-09-02T15:45:00.000Z",
+          },
         }),
+        {
+          id: "unsourced-table",
+          name: "Travel",
+          visibility: "public",
+          creator: { id: "user-1" },
+          subtables: [],
+        },
       ],
     });
   });

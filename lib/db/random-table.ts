@@ -1,5 +1,7 @@
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { toUser } from "@/lib/db/converters";
+import type { RandomTableFormData } from "@/lib/random-table-schema";
+import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import type { RandomTable, Subtable } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
 import { getDatabase } from "./drizzle";
@@ -8,9 +10,12 @@ import {
   randomSubtableRows,
   randomSubtables,
   randomTables,
+  type SourceRow,
+  sources,
   type UserRow,
   users,
 } from "./schema";
+import { toSource } from "./source";
 
 async function loadSubtablesByTableId(
   db: ReturnType<typeof getDatabase>,
@@ -65,7 +70,8 @@ async function loadSubtablesByTableId(
 function toRandomTable(
   table: RandomTableRowRecord,
   creator: UserRow,
-  subtables: Subtable[]
+  subtables: Subtable[],
+  source: SourceRow | null = null
 ): RandomTable {
   return {
     id: table.id,
@@ -73,6 +79,7 @@ function toRandomTable(
     description: table.description || undefined,
     visibility: (table.visibility ?? "public") as "public" | "private",
     creator: toUser(creator),
+    source: toSource(source),
     subtables,
     createdAt: table.createdAt ? new Date(table.createdAt) : undefined,
   };
@@ -146,18 +153,19 @@ export const listRandomTablesForUser = async (
   if (!user) return [];
 
   const tableRows = await db
-    .select()
+    .select({ table: randomTables, source: sources })
     .from(randomTables)
+    .leftJoin(sources, eq(randomTables.sourceId, sources.id))
     .where(eq(randomTables.creatorId, user.id))
     .orderBy(asc(randomTables.name));
 
   const subtablesByTable = await loadSubtablesByTableId(
     db,
-    tableRows.map((t) => t.id)
+    tableRows.map(({ table }) => table.id)
   );
 
-  return tableRows.map((table) =>
-    toRandomTable(table, user, subtablesByTable.get(table.id) ?? [])
+  return tableRows.map(({ table, source }) =>
+    toRandomTable(table, user, subtablesByTable.get(table.id) ?? [], source)
   );
 };
 
@@ -169,9 +177,10 @@ export const getPublicRandomTableById = async (
   const db = getDatabase();
 
   const result = await db
-    .select({ table: randomTables, creator: users })
+    .select({ table: randomTables, creator: users, source: sources })
     .from(randomTables)
     .innerJoin(users, eq(randomTables.creatorId, users.id))
+    .leftJoin(sources, eq(randomTables.sourceId, sources.id))
     .where(and(eq(randomTables.id, id), eq(randomTables.visibility, "public")))
     .limit(1);
 
@@ -181,7 +190,8 @@ export const getPublicRandomTableById = async (
   return toRandomTable(
     result[0].table,
     result[0].creator,
-    subtablesByTable.get(id) ?? []
+    subtablesByTable.get(id) ?? [],
+    result[0].source
   );
 };
 
@@ -197,9 +207,10 @@ export const getRandomTable = async (
     const user = await findUserByDiscordId(db, discordId);
     if (user) {
       const owned = await db
-        .select({ table: randomTables, creator: users })
+        .select({ table: randomTables, creator: users, source: sources })
         .from(randomTables)
         .innerJoin(users, eq(randomTables.creatorId, users.id))
+        .leftJoin(sources, eq(randomTables.sourceId, sources.id))
         .where(
           and(eq(randomTables.id, id), eq(randomTables.creatorId, user.id))
         )
@@ -210,7 +221,8 @@ export const getRandomTable = async (
         return toRandomTable(
           owned[0].table,
           owned[0].creator,
-          subtablesByTable.get(id) ?? []
+          subtablesByTable.get(id) ?? [],
+          owned[0].source
         );
       }
     }
@@ -229,6 +241,47 @@ export interface CreateRandomTableInput {
 
 export interface UpdateRandomTableInput extends CreateRandomTableInput {
   id: string;
+}
+
+export async function upsertOfficialRandomTable(
+  input: RandomTableFormData & { sourceId?: string }
+): Promise<void> {
+  const db = getDatabase();
+
+  await db.transaction(async (tx) => {
+    const [existing] = await tx
+      .select({ id: randomTables.id })
+      .from(randomTables)
+      .where(
+        and(
+          eq(randomTables.name, input.name),
+          eq(randomTables.creatorId, OFFICIAL_USER_ID)
+        )
+      )
+      .limit(1);
+
+    const id = existing?.id ?? crypto.randomUUID();
+    const values = {
+      name: input.name,
+      description: input.description ?? "",
+      visibility: "public" as const,
+      sourceId: input.sourceId,
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (existing) {
+      await tx.update(randomTables).set(values).where(eq(randomTables.id, id));
+    } else {
+      await tx.insert(randomTables).values({
+        ...values,
+        id,
+        creatorId: OFFICIAL_USER_ID,
+        createdAt: "2024-01-01 00:00:00",
+      });
+    }
+
+    await replaceSubtables(tx, id, input.subtables);
+  });
 }
 
 export const createRandomTable = async (
@@ -253,13 +306,19 @@ export const createRandomTable = async (
   });
 
   const result = await db
-    .select()
+    .select({ table: randomTables, source: sources })
     .from(randomTables)
+    .leftJoin(sources, eq(randomTables.sourceId, sources.id))
     .where(eq(randomTables.id, id))
     .limit(1);
 
   const subtablesByTable = await loadSubtablesByTableId(db, [id]);
-  return toRandomTable(result[0], user, subtablesByTable.get(id) ?? []);
+  return toRandomTable(
+    result[0].table,
+    user,
+    subtablesByTable.get(id) ?? [],
+    result[0].source
+  );
 };
 
 export const updateRandomTable = async (
@@ -295,13 +354,19 @@ export const updateRandomTable = async (
   });
 
   const result = await db
-    .select()
+    .select({ table: randomTables, source: sources })
     .from(randomTables)
+    .leftJoin(sources, eq(randomTables.sourceId, sources.id))
     .where(eq(randomTables.id, input.id))
     .limit(1);
 
   const subtablesByTable = await loadSubtablesByTableId(db, [input.id]);
-  return toRandomTable(result[0], user, subtablesByTable.get(input.id) ?? []);
+  return toRandomTable(
+    result[0].table,
+    user,
+    subtablesByTable.get(input.id) ?? [],
+    result[0].source
+  );
 };
 
 export const deleteRandomTable = async (input: {

@@ -15,7 +15,7 @@ afterEach(() => {
 
 describe("publicRandomTablesInfiniteQueryOptions", () => {
   it("uses the JSON search route and revives dates", async () => {
-    mockCall.mockResolvedValue({
+    const response = Response.json({
       data: [
         {
           id: "table-1",
@@ -23,10 +23,27 @@ describe("publicRandomTablesInfiniteQueryOptions", () => {
           visibility: "public",
           creator: { id: "user-1" },
           subtables: [],
-          createdAt: "2026-08-30T12:00:00.000Z",
+          createdAt: new Date("2026-08-30T12:00:00.000Z"),
+          source: {
+            id: "source-1",
+            name: "Core Rules 3.0",
+            abbreviation: "Core3",
+            license: "Nimble 3rd Party Creator License v2.0",
+            link: "https://nimblerpg.com/",
+            createdAt: new Date("2026-08-01T09:30:00.000Z"),
+            updatedAt: new Date("2026-09-02T15:45:00.000Z"),
+          },
+        },
+        {
+          id: "unsourced-table",
+          name: "Travel",
+          visibility: "public",
+          creator: { id: "user-1" },
+          subtables: [],
         },
       ],
     });
+    mockCall.mockResolvedValue(await response.json());
     const options = publicRandomTablesInfiniteQueryOptions({
       search: "weather",
       sort: "-name",
@@ -45,5 +62,20 @@ describe("publicRandomTablesInfiniteQueryOptions", () => {
     expect(result.data[0].createdAt).toEqual(
       new Date("2026-08-30T12:00:00.000Z")
     );
+    expect(result.data[0].source?.createdAt.getTime()).toBe(
+      Date.UTC(2026, 7, 1, 9, 30)
+    );
+    expect(result.data[0].source?.updatedAt.getTime()).toBe(
+      Date.UTC(2026, 8, 2, 15, 45)
+    );
+    expect(result.data[0].source).toMatchObject({
+      id: "source-1",
+      name: "Core Rules 3.0",
+      abbreviation: "Core3",
+      license: "Nimble 3rd Party Creator License v2.0",
+      link: "https://nimblerpg.com/",
+    });
+    expect(result.data[1].createdAt).toBeUndefined();
+    expect(result.data[1].source).toBeUndefined();
   });
 });

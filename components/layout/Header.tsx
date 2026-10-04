@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Dices, Menu, X } from "lucide-react";
+import { Dices, Menu, Table2, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { getNavCountsAction } from "@/app/actions/nav";
@@ -84,8 +84,8 @@ const NAV_GROUPS: {
       ? [
           {
             href: "/random-tables",
-            label: "Random Tables",
-            icon: Dices,
+            label: "Reference Tables",
+            icon: Table2,
           },
           { href: "/roll", label: "Dice Roller", icon: Dices },
         ]

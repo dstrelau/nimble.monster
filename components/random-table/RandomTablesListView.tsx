@@ -55,7 +55,7 @@ export const RandomTablesListView: React.FC = () => {
       </FilterBar>
 
       {!randomTables || randomTables.length === 0 ? (
-        <EmptyState entityName="random tables" />
+        <EmptyState entityName="reference tables" />
       ) : (
         <>
           <div className="grid items-start gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3">

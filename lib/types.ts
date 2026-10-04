@@ -215,6 +215,7 @@ export interface Subtable {
 export interface RandomTable {
   id: string;
   creator: User;
+  source?: Source;
   name: string;
   description?: string;
   visibility: CollectionVisibilityType;

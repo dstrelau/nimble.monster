@@ -39,6 +39,13 @@ export async function paginatePublicRandomTables(params: {
       createdAt: randomTable.createdAt
         ? new Date(randomTable.createdAt)
         : undefined,
+      source: randomTable.source
+        ? {
+            ...randomTable.source,
+            createdAt: new Date(randomTable.source.createdAt),
+            updatedAt: new Date(randomTable.source.updatedAt),
+          }
+        : undefined,
     })),
   };
 }

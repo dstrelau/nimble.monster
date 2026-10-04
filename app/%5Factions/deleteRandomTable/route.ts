@@ -8,7 +8,7 @@ import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 import { isValidUUID } from "@/lib/utils/validation";
 
 const deleteRandomTableSchema = z.object({
-  id: z.string().refine(isValidUUID, "Invalid random table ID"),
+  id: z.string().refine(isValidUUID, "Invalid reference table ID"),
 });
 
 export const POST = internalAction("application/json", async (request) => {
@@ -41,7 +41,7 @@ export const POST = internalAction("application/json", async (request) => {
   });
   if (!deleted) {
     return NextResponse.json(
-      { error: "Random table not found" },
+      { error: "Reference table not found" },
       { status: 404 }
     );
   }
