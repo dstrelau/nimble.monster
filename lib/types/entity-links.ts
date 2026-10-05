@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Goblin } from "@/components/icons/goblin";
 import type { MyLibraryCounts } from "@/lib/db/my-library";
+import { deslugify } from "@/lib/utils/slug";
 
 export const ENTITY_TYPES = [
   "monster",
@@ -47,6 +48,17 @@ export interface EntityReference {
   name: string;
   type: EntityType;
   href?: string;
+}
+
+export interface EntityReferenceRequest {
+  type: EntityType;
+  id: string;
+}
+
+export const ENTITY_REFERENCE_BATCH_SIZE = 50;
+
+export function normalizeEntityReferenceId(id: string): string {
+  return deslugify(id)?.toLowerCase() ?? id;
 }
 
 export const ENTITY_TYPE_ICONS: Record<EntityType, LucideIcon> = {

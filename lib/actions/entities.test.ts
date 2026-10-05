@@ -6,7 +6,7 @@ import { getDatabase } from "@/lib/db/drizzle";
 import * as relations from "@/lib/db/relations";
 import * as schema from "@/lib/db/schema";
 import { uuidToIdentifier } from "@/lib/utils/slug";
-import { getEntityById } from "./entities";
+import { getEntitiesByIds, getEntityById } from "./entities";
 
 vi.mock("@/lib/db/drizzle", () => ({ getDatabase: vi.fn() }));
 vi.mock("@/lib/auth", () => ({
@@ -14,30 +14,37 @@ vi.mock("@/lib/auth", () => ({
     user: { id: "11111111-1111-4111-8111-111111111111", discordId: "owner" },
   })),
 }));
-vi.mock("@/lib/services/monsters", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@/lib/services/monsters")>();
-  return {
-    ...actual,
-    monstersService: {
-      ...actual.monstersService,
-      getPublicBestiaryEntry: vi.fn(async (id: string) => ({
-        id,
-        name: "Pit",
-        hazard: true,
-      })),
-    },
-  };
-});
-
-vi.mock("@/lib/db/custom-rule", () => ({
-  findPublicCustomRule: vi.fn(async (id: string) => ({
-    id,
-    name: "House Rule",
-  })),
-}));
 
 describe("getEntityById", () => {
+  let client: Client;
+  beforeAll(async () => {
+    client = createClient({ url: "file::memory:" });
+    const db = drizzle(client, { schema: { ...schema, ...relations } });
+    await migrate(db, { migrationsFolder: "migrations" });
+    vi.mocked(getDatabase).mockReturnValue(db);
+    const ownerId = "11111111-1111-4111-8111-111111111111";
+    const id = "00000000-0000-0000-0000-000000000001";
+    await db.insert(schema.users).values({ id: ownerId, username: "owner" });
+    await db.insert(schema.monsters).values({
+      id,
+      userId: ownerId,
+      name: "Pit",
+      hazard: true,
+      level: "1",
+      hp: 0,
+      armor: "",
+      visibility: "public",
+    });
+    await db.insert(schema.customRules).values({
+      id,
+      userId: ownerId,
+      name: "House Rule",
+      content: "Text",
+      visibility: "public",
+    });
+  });
+  afterAll(() => client.close());
+
   it("uses the canonical hazard destination for monster references", async () => {
     await expect(
       getEntityById("monster", "00000000000000000000000001")
@@ -117,6 +124,29 @@ describe("entity reference visibility", () => {
       await db
         .insert(schema.randomTables)
         .values({ ...fields, creatorId: ownerId });
+      await db.insert(schema.items).values({ ...fields, userId: ownerId });
+      await db
+        .insert(schema.companions)
+        .values({ ...fields, userId: ownerId, hpPerLevel: "5" });
+      await db
+        .insert(schema.collections)
+        .values({ ...fields, creatorId: ownerId });
+      await db.insert(schema.classes).values({
+        ...fields,
+        userId: ownerId,
+        description: "Text",
+        hitDie: "d8",
+        startingHp: 12,
+      });
+      await db.insert(schema.subclasses).values({
+        ...fields,
+        userId: ownerId,
+        description: "Text",
+        className: "Test Class",
+      });
+      await db
+        .insert(schema.customRules)
+        .values({ ...fields, userId: ownerId, content: "Text" });
     }
     await db.insert(schema.families).values({
       id: secretId,
@@ -138,6 +168,12 @@ describe("entity reference visibility", () => {
     "school",
     "encounter",
     "table",
+    "item",
+    "companion",
+    "collection",
+    "class",
+    "subclass",
+    "rule",
   ] as const)("resolves only public %s content, even for its owner", async (type) => {
     await expect(getEntityById(type, publicId)).resolves.toMatchObject({
       id: publicId,
@@ -152,5 +188,57 @@ describe("entity reference visibility", () => {
 
   it("rejects secret families too", async () => {
     await expect(getEntityById("family", secretId)).resolves.toBeNull();
+  });
+
+  it("deduplicates IDs and resolves a mixed batch with one metadata query per type", async () => {
+    const execute = vi.spyOn(client, "execute");
+    const result = await getEntitiesByIds([
+      { type: "family", id: publicId },
+      { type: "family", id: uuidToIdentifier(publicId) },
+      { type: "family", id: privateId },
+      { type: "family", id: secretId },
+      { type: "family", id: "00000000-0000-0000-0000-00000000000a" },
+      { type: "school", id: publicId },
+      { type: "rule", id: "conditions" },
+      { type: "rule", id: "playing-dead" },
+      { type: "item", id: "invalid" },
+    ]);
+    expect(result).toEqual(
+      expect.arrayContaining([
+        { id: publicId, type: "family", name: "public content" },
+        { id: publicId, type: "school", name: "public content" },
+        {
+          id: "conditions",
+          type: "rule",
+          name: "Conditions",
+          href: "/rules/conditions",
+        },
+        {
+          id: "playing-dead",
+          type: "rule",
+          name: "Playing Dead",
+          href: "/rules/conditions#variant-playing-dead",
+        },
+      ])
+    );
+    expect(result).toHaveLength(4);
+    const queries = execute.mock.calls.map(([input]) => {
+      const statement: unknown = input;
+      if (typeof statement === "string") return statement;
+      if (statement && typeof statement === "object" && "sql" in statement) {
+        return String(statement.sql);
+      }
+      throw new Error("Expected a SQL statement");
+    });
+    expect(queries).toHaveLength(2);
+    expect(
+      queries.every(
+        (query) =>
+          query.startsWith('select "id", "name" from') &&
+          query.includes(" in (") &&
+          query.includes('"visibility" = ?')
+      )
+    ).toBe(true);
+    execute.mockRestore();
   });
 });
