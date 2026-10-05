@@ -1,9 +1,4 @@
 import type { Metadata } from "next";
-import { auth } from "@/lib/auth";
-import {
-  type FeatureFlag,
-  isFeatureFlagEnabled,
-} from "@/lib/services/featureFlags";
 import { SITE_NAME } from "@/lib/utils/branding";
 
 export const metadata: Metadata = {
@@ -13,14 +8,12 @@ export const metadata: Metadata = {
 interface ChangelogEntry {
   date: string;
   entries: string[];
-  feature?: FeatureFlag;
 }
 
 const changelog: ChangelogEntry[] = [
   {
     date: "4 October 2026",
     entries: ["Add Reference Tables."],
-    feature: "random-tables",
   },
   {
     date: "30 September 2026",
@@ -220,20 +213,11 @@ const changelog: ChangelogEntry[] = [
   },
 ];
 
-export default async function ChangelogPage() {
-  const session = await auth();
-  const randomTablesEnabled = await isFeatureFlagEnabled(
-    session?.user?.id,
-    "random-tables"
-  );
-  const visibleChangelog = changelog.filter(
-    (group) => group.feature !== "random-tables" || randomTablesEnabled
-  );
-
+export default function ChangelogPage() {
   return (
     <div className="prose prose-neutral dark:prose-invert">
       <h1>Changelog</h1>
-      {visibleChangelog.map((group) => (
+      {changelog.map((group) => (
         <section key={group.date}>
           <h2>{group.date}</h2>
           <ul>

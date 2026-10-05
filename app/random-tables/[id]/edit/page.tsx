@@ -1,7 +1,6 @@
 import { notFound, permanentRedirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getRandomTableEditUrl } from "@/lib/utils/url";
 import { CreateEditRandomTable } from "../../CreateEditRandomTable";
@@ -13,10 +12,7 @@ export default async function EditRandomTablePage({
 }) {
   const { id } = await params;
   const session = await auth();
-  if (
-    !session?.user?.id ||
-    !(await isFeatureFlagEnabled(session.user.id, "random-tables"))
-  ) {
+  if (!session?.user?.id) {
     return notFound();
   }
 

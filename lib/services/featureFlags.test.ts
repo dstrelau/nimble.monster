@@ -51,7 +51,7 @@ afterEach(() => {
 describe("feature flags", () => {
   it("recognizes registered feature names", () => {
     expect(isFeatureFlag("class-draft-autosave")).toBe(true);
-    expect(isFeatureFlag("random-tables")).toBe(true);
+    expect(isFeatureFlag("random-tables")).toBe(false);
     expect(isFeatureFlag("unknown-feature")).toBe(false);
   });
 
@@ -64,7 +64,6 @@ describe("feature flags", () => {
 
     await expect(getEnabledFeatureFlags("user-1")).resolves.toEqual([
       "class-draft-autosave",
-      "random-tables",
     ]);
   });
 

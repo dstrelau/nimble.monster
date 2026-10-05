@@ -1,8 +1,6 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { RandomTablesListView } from "@/components/random-table/RandomTablesListView";
-import { auth } from "@/lib/auth";
-import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 
 const searchParamsSchema = z.object({
   sort: z
@@ -18,11 +16,6 @@ export default async function RandomTablesPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const session = await auth();
-  if (!(await isFeatureFlagEnabled(session?.user?.id, "random-tables"))) {
-    notFound();
-  }
-
   const rawParams = await searchParams;
   const parseResult = searchParamsSchema.safeParse(rawParams);
   if (!parseResult.success) {

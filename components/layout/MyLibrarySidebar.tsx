@@ -10,7 +10,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import type { MyLibraryCounts } from "@/lib/db/my-library";
 import {
   MY_LIBRARY_GROUPS,
@@ -100,11 +99,10 @@ export function MyLibrarySidebar({
 }: MyLibrarySidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const randomTablesEnabled = useFeatureFlag("random-tables");
   const groups = MY_LIBRARY_GROUPS.map((group) => ({
     ...group,
     items:
-      !profileHref && group.label === "Play" && randomTablesEnabled
+      !profileHref && group.label === "Play"
         ? [
             ...group.items,
             {

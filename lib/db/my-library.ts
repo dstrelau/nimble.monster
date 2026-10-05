@@ -36,8 +36,7 @@ export interface MyLibraryCounts {
 }
 
 export async function getMyLibraryCounts(
-  userId: string,
-  includeRandomTables = false
+  userId: string
 ): Promise<MyLibraryCounts> {
   const db = getDatabase();
   const [
@@ -98,12 +97,10 @@ export async function getMyLibraryCounts(
       .select({ count: count() })
       .from(adventures)
       .where(eq(adventures.userId, userId)),
-    includeRandomTables
-      ? db
-          .select({ count: count() })
-          .from(randomTables)
-          .where(eq(randomTables.creatorId, userId))
-      : Promise.resolve([]),
+    db
+      .select({ count: count() })
+      .from(randomTables)
+      .where(eq(randomTables.creatorId, userId)),
     db
       .select({ count: count() })
       .from(subclasses)

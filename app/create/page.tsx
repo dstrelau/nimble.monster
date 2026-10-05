@@ -30,7 +30,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { auth } from "@/lib/auth";
-import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 
 interface CreateCardProps {
   href: string;
@@ -68,7 +67,9 @@ function CreateCard({
     return (
       <div className="basis-64 block">
         <Tooltip>
-          <TooltipTrigger asChild>{cardContent}</TooltipTrigger>
+          <TooltipTrigger className="h-full w-full text-left">
+            {cardContent}
+          </TooltipTrigger>
           <TooltipContent>{disabledMessage}</TooltipContent>
         </Tooltip>
       </div>
@@ -85,10 +86,6 @@ function CreateCard({
 export default async function CreatePage() {
   const session = await auth();
   const isAuthenticated = !!session?.user?.id;
-  const randomTablesEnabled = await isFeatureFlagEnabled(
-    session?.user?.id,
-    "random-tables"
-  );
   return (
     <TooltipProvider>
       <div className="container mx-auto px-4 py-8">
@@ -163,14 +160,14 @@ export default async function CreatePage() {
                 description="Create a custom rule or rules clarification."
               />
             )}
-            {randomTablesEnabled && (
-              <CreateCard
-                href="/random-tables/new"
-                icon={<Table2 className="size-16" />}
-                title="Reference Table"
-                description="Reference tables and random results."
-              />
-            )}
+            <CreateCard
+              href="/random-tables/new"
+              icon={<Table2 className="size-16" />}
+              title="Reference Table"
+              description="Reference tables and random results."
+              disabled={!isAuthenticated}
+              disabledMessage="You must signin to create a Reference Table."
+            />
 
             <h2 className="w-full text-4xl text-center font-bold mb-4">
               Heroes

@@ -127,7 +127,7 @@ describe("adventure library counts", () => {
   it("counts an owner's public and private adventures", async () => {
     mockState.queueCounts(2, 3);
 
-    const counts = await getMyLibraryCounts("owner", true);
+    const counts = await getMyLibraryCounts("owner");
 
     expect(counts.adventures).toBe(2);
     expect(counts["random-tables"]).toBe(3);
@@ -138,15 +138,20 @@ describe("adventure library counts", () => {
     });
   });
 
-  it("does not query random tables when they are disabled", async () => {
+  it("counts an owner's reference tables without a feature flag", async () => {
     mockState.queueCounts(2, 3);
 
     const counts = await getMyLibraryCounts("owner");
 
-    expect(counts["random-tables"]).toBe(0);
-    expect(mockState.chain.from).not.toHaveBeenCalledWith(
+    expect(counts["random-tables"]).toBe(3);
+    expect(mockState.chain.from).toHaveBeenCalledWith(
       mockState.tables.randomTables
     );
+    expect(mockState.wherePredicates[11]).toEqual({
+      type: "eq",
+      column: mockState.tables.randomTables.creatorId,
+      value: "owner",
+    });
   });
 
   it("counts only public adventures for a public profile", async () => {

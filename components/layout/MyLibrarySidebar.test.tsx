@@ -6,7 +6,6 @@ import {
   within,
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { FeatureFlagsProvider } from "@/lib/contexts/FeatureFlagsContext";
 import type { MyLibraryCounts } from "@/lib/db/my-library";
 import { MyLibrarySidebar } from "./MyLibrarySidebar";
 
@@ -53,7 +52,7 @@ describe("MyLibrarySidebar", () => {
         .getAllByRole("heading", { level: 2 })
         .map((heading) => heading.textContent)
     ).toEqual(["Bestiary", "Heroes", "Gear", "Play"]);
-    expect(links).toHaveLength(14);
+    expect(links).toHaveLength(15);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/my/monsters",
       "/my/hazards",
@@ -68,6 +67,7 @@ describe("MyLibrarySidebar", () => {
       "/my/adventures",
       "/my/encounters",
       "/my/rules",
+      "/my/random-tables",
       "/my/collections",
     ]);
     expect(
@@ -83,8 +83,8 @@ describe("MyLibrarySidebar", () => {
       within(navigation).getByRole("link", { name: "Adventures 2" })
     ).toHaveAttribute("href", "/my/adventures");
     expect(
-      within(navigation).queryByText("Reference Tables")
-    ).not.toBeInTheDocument();
+      within(navigation).getByRole("link", { name: "Reference Tables 5" })
+    ).toBeInTheDocument();
   });
 
   it("opens the library navigation on smaller screens", () => {
@@ -173,12 +173,9 @@ describe("MyLibrarySidebar", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows random tables only in an enabled user's own library", () => {
-    render(
-      <FeatureFlagsProvider enabledFeatures={["random-tables"]}>
-        <MyLibrarySidebar counts={counts} />
-      </FeatureFlagsProvider>
-    );
+  it("shows reference tables in every user's own library", () => {
+    pathname = "/my/random-tables";
+    render(<MyLibrarySidebar counts={counts} />);
 
     const navigation = screen.getByRole("navigation", {
       name: "My library sidebar",
@@ -187,18 +184,13 @@ describe("MyLibrarySidebar", () => {
       name: "Reference Tables 5",
     });
     expect(link).toHaveAttribute("href", "/my/random-tables");
+    expect(link).toHaveAttribute("aria-current", "page");
     expect(link.querySelector("svg")).toHaveClass("lucide-table-2");
   });
 
   it("does not add random tables to public profiles", () => {
     render(
-      <FeatureFlagsProvider enabledFeatures={["random-tables"]}>
-        <MyLibrarySidebar
-          counts={counts}
-          profileHref="/u/creator"
-          title={null}
-        />
-      </FeatureFlagsProvider>
+      <MyLibrarySidebar counts={counts} profileHref="/u/creator" title={null} />
     );
 
     expect(screen.queryByText("Reference Tables")).not.toBeInTheDocument();

@@ -1,16 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockAuth, mockIsFeatureFlagEnabled, mockSearchPublicRandomTables } =
-  vi.hoisted(() => ({
-    mockAuth: vi.fn(),
-    mockIsFeatureFlagEnabled: vi.fn(),
-    mockSearchPublicRandomTables: vi.fn(),
-  }));
-
-vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
-vi.mock("@/lib/services/featureFlags", () => ({
-  isFeatureFlagEnabled: mockIsFeatureFlagEnabled,
+const { mockSearchPublicRandomTables } = vi.hoisted(() => ({
+  mockSearchPublicRandomTables: vi.fn(),
 }));
+
 vi.mock("@/lib/services/random-tables/repository", () => ({
   searchPublicRandomTables: mockSearchPublicRandomTables,
 }));
@@ -19,8 +12,6 @@ vi.mock("@/lib/telemetry", () => ({
 }));
 
 import { POST } from "./route";
-
-const SESSION = { user: { id: "user-1" } };
 
 function request(body: unknown) {
   return new Request("http://localhost/_actions/searchRandomTables", {
@@ -35,12 +26,10 @@ function request(body: unknown) {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mockAuth.mockResolvedValue(SESSION);
-  mockIsFeatureFlagEnabled.mockResolvedValue(true);
 });
 
 describe("POST /_actions/searchRandomTables", () => {
-  it("searches public tables and serializes dates", async () => {
+  it("searches public tables without authentication and serializes dates", async () => {
     mockSearchPublicRandomTables.mockResolvedValue([
       {
         id: "table-1",
@@ -106,14 +95,18 @@ describe("POST /_actions/searchRandomTables", () => {
     });
   });
 
-  it("does not search when the feature is disabled", async () => {
-    mockIsFeatureFlagEnabled.mockResolvedValue(false);
+  it("still rejects cross-origin requests", async () => {
+    const crossOriginRequest = request({
+      sort: "name",
+      search: null,
+      limit: 12,
+      page: 0,
+    });
+    crossOriginRequest.headers.set("Origin", "https://other.example");
 
-    const response = await POST(
-      request({ sort: "name", search: null, limit: 12, page: 0 })
-    );
+    const response = await POST(crossOriginRequest);
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(403);
     expect(mockSearchPublicRandomTables).not.toHaveBeenCalled();
   });
 

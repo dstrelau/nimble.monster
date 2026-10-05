@@ -4,9 +4,7 @@ import type {
   SearchRandomTablesInput,
   SearchRandomTablesResult,
 } from "@/app/%5Factions/_random-tables/contract";
-import { auth } from "@/lib/auth";
 import { internalAction } from "@/lib/internal-action";
-import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 import { searchPublicRandomTables } from "@/lib/services/random-tables/repository";
 
 const searchRandomTablesSchema = z.object({
@@ -17,14 +15,6 @@ const searchRandomTablesSchema = z.object({
 });
 
 export const POST = internalAction("application/json", async (request) => {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  if (!(await isFeatureFlagEnabled(session.user.id, "random-tables"))) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
-
   let body: unknown;
   try {
     body = await request.json();

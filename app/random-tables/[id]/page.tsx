@@ -5,7 +5,6 @@ import { SubtablesView } from "@/components/random-table/SubtablesView";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { listConditionsForDiscordId, listOfficialConditions } from "@/lib/db";
-import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getRandomTableUrl } from "@/lib/utils/url";
@@ -15,11 +14,6 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const session = await auth();
-  if (!(await isFeatureFlagEnabled(session?.user?.id, "random-tables"))) {
-    return {};
-  }
-
   const { id } = await params;
   const uid = deslugify(id);
   if (!uid) return {};
@@ -64,9 +58,6 @@ export default async function ShowRandomTableView({
 }) {
   const { id } = await params;
   const session = await auth();
-  if (!(await isFeatureFlagEnabled(session?.user?.id, "random-tables"))) {
-    return notFound();
-  }
 
   const uid = deslugify(id);
   if (!uid) return notFound();

@@ -4,7 +4,6 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { internalAction } from "@/lib/internal-action";
-import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 import { isValidUUID } from "@/lib/utils/validation";
 
 const deleteRandomTableSchema = z.object({
@@ -15,9 +14,6 @@ export const POST = internalAction("application/json", async (request) => {
   const session = await auth();
   if (!session?.user?.id || !session.user.discordId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  if (!(await isFeatureFlagEnabled(session.user.id, "random-tables"))) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
   let body: unknown;

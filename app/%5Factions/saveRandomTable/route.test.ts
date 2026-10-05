@@ -3,13 +3,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const {
   mockAuth,
   mockCreateRandomTable,
-  mockIsFeatureFlagEnabled,
   mockUpdateRandomTable,
   revalidatePath,
 } = vi.hoisted(() => ({
   mockAuth: vi.fn(),
   mockCreateRandomTable: vi.fn(),
-  mockIsFeatureFlagEnabled: vi.fn(),
   mockUpdateRandomTable: vi.fn(),
   revalidatePath: vi.fn(),
 }));
@@ -18,9 +16,6 @@ vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
 vi.mock("@/lib/db", () => ({
   createRandomTable: mockCreateRandomTable,
   updateRandomTable: mockUpdateRandomTable,
-}));
-vi.mock("@/lib/services/featureFlags", () => ({
-  isFeatureFlagEnabled: mockIsFeatureFlagEnabled,
 }));
 vi.mock("next/cache", () => ({ revalidatePath }));
 vi.mock("@/lib/telemetry", () => ({
@@ -67,10 +62,9 @@ describe("POST /_actions/saveRandomTable", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockAuth.mockResolvedValue(SESSION);
-    mockIsFeatureFlagEnabled.mockResolvedValue(true);
   });
 
-  it("creates a random table and returns navigation data", async () => {
+  it("creates a random table without a feature flag and returns navigation data", async () => {
     mockCreateRandomTable.mockResolvedValue({
       id: "22222222-2222-2222-2222-222222222222",
       name: "Weather",
@@ -112,20 +106,6 @@ describe("POST /_actions/saveRandomTable", () => {
 
     expect(response.status).toBe(401);
     expect(mockCreateRandomTable).not.toHaveBeenCalled();
-  });
-
-  it("conceals the route when the feature is disabled", async () => {
-    mockIsFeatureFlagEnabled.mockResolvedValue(false);
-
-    const response = await POST(request(input));
-
-    expect(response.status).toBe(404);
-    expect(mockIsFeatureFlagEnabled).toHaveBeenCalledWith(
-      SESSION.user.id,
-      "random-tables"
-    );
-    expect(mockCreateRandomTable).not.toHaveBeenCalled();
-    expect(mockUpdateRandomTable).not.toHaveBeenCalled();
   });
 
   it("rejects invalid table input", async () => {

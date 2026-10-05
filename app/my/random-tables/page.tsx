@@ -3,14 +3,10 @@ import { RandomTableCard } from "@/components/random-table/RandomTableCard";
 import { CreateEmptyState } from "@/components/shared/GridStates";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 
 export default async function MyRandomTablesPage() {
   const session = await auth();
-  if (
-    !session?.user?.id ||
-    !(await isFeatureFlagEnabled(session.user.id, "random-tables"))
-  ) {
+  if (!session?.user?.id) {
     notFound();
   }
 
