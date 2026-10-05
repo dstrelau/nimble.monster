@@ -1,12 +1,13 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { useEntityQuery } from "@/lib/hooks/useEntityQuery";
 import type { Condition } from "@/lib/types";
 import { FormattedText, PrefixedFormattedText } from "./FormattedText";
 
 // Mock useEntityQuery to avoid QueryClient context issues in tests
 // Entity links use createRoot which creates isolated React trees
 vi.mock("@/lib/hooks/useEntityQuery", () => ({
-  useEntityQuery: (type: string, id: string) => {
+  useEntityQuery: vi.fn((type: string, id: string) => {
     const officialRule = type === "rule" && id === "encounter-difficulties";
     return {
       data: officialRule
@@ -24,11 +25,12 @@ vi.mock("@/lib/hooks/useEntityQuery", () => ({
       isLoading: false,
       isError: false,
     };
-  },
+  }),
 }));
 
 afterEach(() => {
   cleanup();
+  vi.clearAllMocks();
 });
 
 const mockConditions: Condition[] = [
@@ -396,6 +398,141 @@ describe("FormattedText - Dice Notation", () => {
 });
 
 describe("FormattedText - Entity Links", () => {
+  it.each([
+    ["monsters", "monster"],
+    ["hazards", "monster"],
+    ["items", "item"],
+    ["companions", "companion"],
+    ["families", "family"],
+    ["collections", "collection"],
+    ["spell-schools", "school"],
+    ["classes", "class"],
+    ["subclasses", "subclass"],
+    ["ancestries", "ancestry"],
+    ["backgrounds", "background"],
+    ["custom-rules", "rule"],
+    ["adventures", "adventure"],
+    ["encounters", "encounter"],
+    ["tables", "table"],
+  ])("renders a full %s URL as a %s mention", async (path, type) => {
+    render(
+      <FormattedText
+        content={`See https://nimble.nexus/${path}/old-name-0000000000000000000000000a.`}
+        conditions={[]}
+      />
+    );
+
+    const link = await screen.findByRole("link", { name: "Test Entity" });
+    expect(link.querySelector("svg")).toBeInTheDocument();
+    expect(useEntityQuery).toHaveBeenCalledWith(
+      type,
+      "0000000000000000000000000a"
+    );
+    expect(screen.getByText(/See/)).toHaveTextContent("See Test Entity.");
+  });
+
+  it("handles legacy UUID URLs, query strings, fragments, and punctuation", async () => {
+    render(
+      <FormattedText
+        content="(http://www.nimble.monster/items/00000000-0000-0000-0000-00000000000b/?from=share#details), then https://nimble.nexus/classes/name-0000000000000000000000000c!"
+        conditions={[]}
+      />
+    );
+
+    expect(await screen.findAllByRole("link")).toHaveLength(2);
+    expect(useEntityQuery).toHaveBeenCalledWith(
+      "item",
+      "0000000000000000000000000b"
+    );
+    expect(useEntityQuery).toHaveBeenCalledWith(
+      "class",
+      "0000000000000000000000000c"
+    );
+    expect(screen.getByText(/then/)).toHaveTextContent(
+      "(Test Entity), then Test Entity!"
+    );
+  });
+
+  it("renders official rule URLs and resolves variant anchors", async () => {
+    render(
+      <FormattedText
+        content="https://nimble.nexus/rules/encounter-difficulties https://nimble.nexus/rules/conditions#variant-playing-dead"
+        conditions={[]}
+      />
+    );
+
+    expect(
+      await screen.findByRole("link", { name: "Encounter Difficulties" })
+    ).toHaveAttribute("href", "/rules/encounter-difficulties");
+    expect(useEntityQuery).toHaveBeenCalledWith("rule", "playing-dead");
+  });
+
+  it("preserves formatting and dice while parsing dice-like URL slugs", async () => {
+    render(
+      <FormattedText
+        content="**See https://nimble.nexus/items/2d6-sword-0000000000000000000000000a**, @class:abc123 and roll 1d8."
+        conditions={[]}
+      />
+    );
+
+    const links = await screen.findAllByRole("link");
+    expect(links).toHaveLength(2);
+    expect(links[0].closest("strong")).toBeInTheDocument();
+    expect(screen.getByText("1d8")).toBeInTheDocument();
+    expect(screen.queryByText("2d6")).not.toBeInTheDocument();
+  });
+
+  it("renders URL mentions without links in noninteractive output", async () => {
+    render(
+      <FormattedText
+        content="https://nimble.nexus/items/sword-0000000000000000000000000a"
+        conditions={[]}
+        noInteractive
+      />
+    );
+
+    expect(await screen.findByText("Test Entity")).toBeInTheDocument();
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it.each([
+    ["@table:0000000000000000000000000a", "Test Entity"],
+    ["@table:[0000000000000000000000000a|roll for loot]", "roll for loot"],
+  ])("renders table references: %s", async (content, name) => {
+    render(<FormattedText content={content} conditions={[]} />);
+
+    const link = await screen.findByRole("link", { name });
+    expect(link).toHaveAttribute(
+      "href",
+      "/tables/test-entity-00000000000000000000000001"
+    );
+    expect(link.querySelector("svg")).toHaveClass("lucide-table-2");
+    expect(useEntityQuery).toHaveBeenCalledWith(
+      "table",
+      "0000000000000000000000000a"
+    );
+  });
+
+  it.each([
+    "https://example.com/items/sword-0000000000000000000000000a",
+    "https://nimble.nexus.evil.com/items/sword-0000000000000000000000000a",
+    "https://nimble.nexus@evil.com/items/sword-0000000000000000000000000a",
+    "https://evil.com@nimble.nexus/items/sword-0000000000000000000000000a",
+    "https://nimble.nexus:444/items/sword-0000000000000000000000000a",
+    "https://nimble.nexus/items",
+    "https://nimble.nexus/items/new",
+    "https://nimble.nexus/items/sword-0000000000000000000000000a/edit",
+    "https://nimble.nexus/items/not-a-valid-id",
+    "https://nimble.nexus/api/items/0000000000000000000000000a",
+    "/items/sword-0000000000000000000000000a",
+  ])("leaves unsupported URLs unchanged: %s", (content) => {
+    const { container } = render(
+      <FormattedText content={content} conditions={[]} />
+    );
+    expect(container).toHaveTextContent(content);
+    expect(useEntityQuery).not.toHaveBeenCalled();
+  });
+
   it.skip("should parse basic entity link syntax", () => {
     // TODO: Fix test - entity links require client-side context (useIsClient, QueryClient)
     const content = "Check out this @monster:abc123xyz creature.";

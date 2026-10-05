@@ -19,11 +19,12 @@ import type { Condition, Condition as ConditionT } from "@/lib/types";
 import {
   ENTITY_TYPE_ICONS,
   ENTITY_TYPE_PATHS,
+  ENTITY_TYPES,
   type EntityType,
   isEntityType,
 } from "@/lib/types/entity-links";
 import { cn } from "@/lib/utils";
-import { slugify } from "@/lib/utils/slug";
+import { deslugify, slugify, uuidToIdentifier } from "@/lib/utils/slug";
 
 interface FormattedTextProps {
   content: string;
@@ -274,6 +275,43 @@ function diceNotationPlugin(md: MarkdownIt) {
 
 // Custom markdown-it plugin for entity link parsing
 function entityLinkPlugin(md: MarkdownIt) {
+  // Parse URLs before dice notation so dice-like text in a slug stays intact.
+  md.core.ruler.before("dice", "entity_url", (state) => {
+    for (const block of state.tokens) {
+      if (block.type !== "inline" || !block.children) continue;
+      block.children = block.children.flatMap((token) => {
+        if (token.type !== "text") return [token];
+        const matches = md.linkify.match(token.content) ?? [];
+        const children = [];
+        let lastIndex = 0;
+
+        for (const match of matches) {
+          if (!/^https?:\/\//i.test(match.raw)) continue;
+          const reference = parseEntityUrl(match.raw);
+          if (!reference) continue;
+
+          if (match.index > lastIndex) {
+            const text = new state.Token("text", "", 0);
+            text.content = token.content.slice(lastIndex, match.index);
+            children.push(text);
+          }
+          const entity = new state.Token("entity_link", "", 0);
+          entity.meta = reference;
+          children.push(entity);
+          lastIndex = match.lastIndex;
+        }
+
+        if (lastIndex === 0) return [token];
+        if (lastIndex < token.content.length) {
+          const text = new state.Token("text", "", 0);
+          text.content = token.content.slice(lastIndex);
+          children.push(text);
+        }
+        return children;
+      });
+    }
+  });
+
   md.inline.ruler.before("emphasis", "entity_link", (state, silent) => {
     const start = state.pos;
     const max = state.posMax;
@@ -363,6 +401,45 @@ function entityLinkPlugin(md: MarkdownIt) {
       : "";
     return `<span class="inline-flex items-center gap-1" data-entity-type="${meta.entityType}" data-entity-id="${meta.entityId}"${displayAttr}><span class="bg-muted h-4 w-16 rounded-md animate-pulse"></span></span>`;
   };
+}
+
+function parseEntityUrl(value: string) {
+  try {
+    const url = new URL(value);
+    if (
+      ![
+        "nimble.nexus",
+        "www.nimble.nexus",
+        "nimble.monster",
+        "www.nimble.monster",
+      ].includes(url.hostname) ||
+      url.username ||
+      url.password ||
+      url.port
+    ) {
+      return null;
+    }
+    const parts = url.pathname.match(/^\/([^/]+)\/([^/]+)\/?$/);
+    if (!parts) return null;
+    const [, path, slug] = parts;
+    if (path === "rules") {
+      const entityId = url.hash.startsWith("#variant-")
+        ? url.hash.slice("#variant-".length)
+        : slug;
+      return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entityId)
+        ? { entityType: "rule", entityId }
+        : null;
+    }
+    const entityType =
+      path === "hazards"
+        ? "monster"
+        : ENTITY_TYPES.find((type) => ENTITY_TYPE_PATHS[type] === path);
+    if (!entityType) return null;
+    const uuid = deslugify(slug);
+    return uuid ? { entityType, entityId: uuidToIdentifier(uuid) } : null;
+  } catch {
+    return null;
+  }
 }
 
 function listStylePlugin(md: MarkdownIt) {

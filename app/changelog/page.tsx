@@ -13,7 +13,10 @@ interface ChangelogEntry {
 const changelog: ChangelogEntry[] = [
   {
     date: "5 October 2026",
-    entries: ["Hazards can now have optional HP."],
+    entries: [
+      "Hazards can now have optional HP.",
+      "Pasted public Nexus content URLs now display as named entity links in formatted text, including tables with @table references.",
+    ],
   },
   {
     date: "4 October 2026",
