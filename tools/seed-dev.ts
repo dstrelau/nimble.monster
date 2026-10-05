@@ -5,16 +5,26 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
+import { getExampleAdventures } from "@/app/adventures/exampleAdventures";
+import { EXAMPLE_COMPANIONS } from "@/app/companions/exampleCompanions";
 import {
   ITEM_BACKDROP_FIXTURES,
   ITEM_CONTENT_FIXTURES,
   ITEM_RARITY_FIXTURES,
 } from "@/app/dev/entities/items/fixtures";
+import { createAdventure } from "@/lib/db/adventures";
 import { createCollection } from "@/lib/db/collection";
+import { createCompanion } from "@/lib/db/companion";
+import { createCustomRule } from "@/lib/db/custom-rule";
 import { getDatabase } from "@/lib/db/drizzle";
+import { createEncounter } from "@/lib/db/encounter";
 import {
+  adventures,
   collections,
+  companions,
+  customRules,
+  encounters,
   items,
   itemsCollections,
   monsters,
@@ -25,7 +35,10 @@ import {
   parseJSONAPIMonster,
   validateOfficialMonstersJSON,
 } from "@/lib/services/monsters/official";
-import { createMonster } from "@/lib/services/monsters/repository";
+import {
+  createHazard,
+  createMonster,
+} from "@/lib/services/monsters/repository";
 import { ITEM_EXAMPLES } from "@/lib/services/items/examples";
 
 interface DevUser {
@@ -144,6 +157,159 @@ async function seedDevItems(): Promise<number> {
   return fixtureItems.length;
 }
 
+// Official seeds cover the other reference types. Keep these outside the
+// monster guard so existing dev databases also gain the missing examples.
+async function seedDevReferences(): Promise<void> {
+  const db = getDatabase();
+  const companion = EXAMPLE_COMPANIONS.Stabs;
+  const existingCompanion = await db.query.companions.findFirst({
+    columns: { id: true },
+    where: and(
+      eq(companions.userId, DEV_USER.id),
+      eq(companions.name, companion.name),
+      eq(companions.visibility, "public")
+    ),
+  });
+  if (!existingCompanion) {
+    await createCompanion({
+      ...companion,
+      visibility: "public",
+      discordId: DEV_USER.discordId,
+    });
+  }
+
+  const ruleName = "Dev's Safe Rest";
+  const existingRule = await db.query.customRules.findFirst({
+    columns: { id: true },
+    where: and(
+      eq(customRules.userId, DEV_USER.id),
+      eq(customRules.name, ruleName),
+      eq(customRules.visibility, "public")
+    ),
+  });
+  if (!existingRule) {
+    await createCustomRule({
+      userId: DEV_USER.id,
+      name: ruleName,
+      content:
+        "Heroes can only take a Safe Rest in a secure, sheltered location.",
+      keywords: "rest, recovery",
+      visibility: "public",
+      links: [],
+    });
+  }
+
+  const officialMonsters = await db
+    .select({ id: monsters.id, name: monsters.name })
+    .from(monsters)
+    .where(
+      and(
+        eq(monsters.userId, OFFICIAL_USER_ID),
+        eq(monsters.visibility, "public"),
+        eq(monsters.hazard, false),
+        inArray(monsters.name, [
+          "Goblin Minion",
+          "Goblin",
+          "Bugbear",
+          "Skeleton",
+        ])
+      )
+    );
+  const goblinMinionId = officialMonsters.find(
+    (monster) => monster.name === "Goblin Minion"
+  )?.id;
+  if (!goblinMinionId) {
+    throw new Error("Seed official monsters before dev reference examples.");
+  }
+  const encounterName = "Dev's Goblin Patrol";
+  const existingEncounter = await db.query.encounters.findFirst({
+    columns: { id: true },
+    where: and(
+      eq(encounters.creatorId, DEV_USER.id),
+      eq(encounters.name, encounterName),
+      eq(encounters.visibility, "public")
+    ),
+  });
+  if (!existingEncounter) {
+    await createEncounter({
+      discordId: DEV_USER.discordId,
+      name: encounterName,
+      description: "A goblin patrol on the trail to the Delian Tomb.",
+      visibility: "public",
+      heroCount: 4,
+      heroLevel: 1,
+      monsters: [{ monsterId: goblinMinionId, quantity: 4, isPerHero: false }],
+    });
+  }
+
+  const adventure = getExampleAdventures({
+    goblinMinionId,
+    goblinId: officialMonsters.find((monster) => monster.name === "Goblin")?.id,
+    bugbearId: officialMonsters.find((monster) => monster.name === "Bugbear")
+      ?.id,
+    skeletonId: officialMonsters.find((monster) => monster.name === "Skeleton")
+      ?.id,
+  })["delian tomb"];
+  const existingAdventure = await db.query.adventures.findFirst({
+    columns: { id: true },
+    where: and(
+      eq(adventures.userId, DEV_USER.id),
+      eq(adventures.name, adventure.name),
+      eq(adventures.visibility, "public")
+    ),
+  });
+  if (!existingAdventure) {
+    await createAdventure(DEV_USER.id, {
+      ...adventure,
+      // The builder uploads example images to blob storage. Dev seeds must
+      // work offline without bucket credentials, so omit the map placeholder.
+      nodes: adventure.nodes.filter((node) => node.kind !== "image"),
+    });
+  }
+
+  const hazardName = "Dev's Rockfall";
+  const existingHazard = await db.query.monsters.findFirst({
+    columns: { id: true },
+    where: and(
+      eq(monsters.userId, DEV_USER.id),
+      eq(monsters.name, hazardName),
+      eq(monsters.hazard, true),
+      eq(monsters.visibility, "public")
+    ),
+  });
+  if (!existingHazard) {
+    await createHazard(
+      {
+        name: hazardName,
+        level: "1",
+        levelInt: 1,
+        visibility: "public",
+        abilities: [
+          {
+            id: "unstable-ceiling",
+            name: "Unstable Ceiling",
+            description:
+              "Loose stones fall when a creature crosses the passage.",
+          },
+        ],
+        actions: [
+          {
+            id: "falling-stones",
+            name: "Falling Stones",
+            damage: "1d6",
+            description: "DC 10 DEX save to avoid the falling stones.",
+          },
+        ],
+        actionPreface: "When triggered:",
+      },
+      DEV_USER.discordId
+    );
+  }
+  console.log(
+    '  ensured public companion, rule, encounter, adventure, and hazard examples owned by "dev"'
+  );
+}
+
 export async function seedDevData(): Promise<void> {
   if (process.env.NODE_ENV === "production") {
     console.log("Skipping dev user seed (NODE_ENV=production).");
@@ -224,10 +390,7 @@ export async function seedDevData(): Promise<void> {
       name: "Dev's Collection",
       description: "Sample collection owned by the dev user.",
       visibility: "public",
-      monsterIds: [
-        ...monsterIds,
-        ...officialMonster.map((m) => m.id),
-      ],
+      monsterIds: [...monsterIds, ...officialMonster.map((m) => m.id)],
       discordId: DEV_USER.discordId,
     });
 
@@ -238,11 +401,13 @@ export async function seedDevData(): Promise<void> {
     console.log('  "dev" already owns content — leaving it untouched');
   }
 
+  await seedDevReferences();
+
   console.log(
     `  ensured ${fixtureItemCount + devItems.length} varied items + 1 magic-item-only collection owned by "dev"`
   );
 
   console.log(
-    'Dev users ready. Log in via /api/auth?dev-login&username=dev (or =admin).'
+    "Dev users ready. Log in via /api/auth?dev-login&username=dev (or =admin)."
   );
 }
