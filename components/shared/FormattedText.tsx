@@ -1,5 +1,5 @@
 "use client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DOMPurify from "isomorphic-dompurify";
 import MarkdownIt from "markdown-it";
 import Link from "next/link";
@@ -15,6 +15,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useEntityQuery } from "@/lib/hooks/useEntityQuery";
+import { getQueryClient } from "@/lib/queryClient";
 import type { Condition, Condition as ConditionT } from "@/lib/types";
 import {
   ENTITY_TYPE_ICONS,
@@ -482,15 +483,7 @@ export function FormattedText({
 }: FormattedTextProps) {
   const isClient = useIsClient();
   const containerRef = useRef<HTMLDivElement>(null);
-  const queryClientRef = useRef<QueryClient>(
-    new QueryClient({
-      defaultOptions: {
-        queries: {
-          staleTime: 60000,
-        },
-      },
-    })
-  );
+  const queryClient = getQueryClient();
 
   const { html, placeholders } = useMemo(() => {
     const markdown = enableHeadings ? mdWithHeadings : md;
@@ -577,7 +570,7 @@ export function FormattedText({
             type={entityType}
             id={entityId}
             displayName={displayName}
-            queryClient={queryClientRef.current}
+            queryClient={queryClient}
             noInteractive={noInteractive}
           />
         ),
@@ -587,7 +580,14 @@ export function FormattedText({
     });
 
     return { html: processedDiv.innerHTML, placeholders };
-  }, [content, conditions, enableHeadings, isClient, noInteractive]);
+  }, [
+    content,
+    conditions,
+    enableHeadings,
+    isClient,
+    noInteractive,
+    queryClient,
+  ]);
 
   useLayoutEffect(() => {
     if (!containerRef.current || placeholders.length === 0) return;
