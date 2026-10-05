@@ -181,7 +181,7 @@ describe("GlobalSearchDialog", () => {
 
   it("browses reference tables and navigates to a table result", async () => {
     vi.useFakeTimers();
-    const href = "/random-tables/armor-defense-000000000000000000000001";
+    const href = "/tables/armor-defense-000000000000000000000001";
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
       Response.json({
         results: [

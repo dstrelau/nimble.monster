@@ -32,7 +32,7 @@ describe("CreatePage reference tables", () => {
     render(await CreatePage());
 
     const link = screen.getByRole("link", { name: /^Reference Table / });
-    expect(link).toHaveAttribute("href", "/random-tables/new");
+    expect(link).toHaveAttribute("href", "/tables/new");
     expect(link.querySelector("svg")).toHaveClass("lucide-table-2");
   });
 });

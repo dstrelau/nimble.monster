@@ -19,7 +19,7 @@ export default async function RandomTablesPage({
   const rawParams = await searchParams;
   const parseResult = searchParamsSchema.safeParse(rawParams);
   if (!parseResult.success) {
-    redirect("/random-tables");
+    redirect("/tables");
   }
   return <RandomTablesListView />;
 }

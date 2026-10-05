@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { RandomTableHeader } from "@/app/random-tables/RandomTableHeader";
+import { RandomTableHeader } from "@/app/tables/RandomTableHeader";
 import { SubtablesView } from "@/components/random-table/SubtablesView";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";

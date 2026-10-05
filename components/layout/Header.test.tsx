@@ -74,7 +74,7 @@ describe("Header", () => {
     expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Reference Tables 7" })
-    ).toHaveAttribute("href", "/random-tables");
+    ).toHaveAttribute("href", "/tables");
     expect(
       screen.queryByRole("link", { name: "Create" })
     ).not.toBeInTheDocument();
@@ -97,7 +97,7 @@ describe("Header", () => {
     fireEvent.click(mobileMenuButton);
 
     const link = screen.getByRole("link", { name: "Reference Tables 7" });
-    expect(link).toHaveAttribute("href", "/random-tables");
+    expect(link).toHaveAttribute("href", "/tables");
     expect(link.querySelector("svg")).toHaveClass("lucide-table-2");
   });
 });

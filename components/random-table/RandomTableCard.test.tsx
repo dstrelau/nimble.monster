@@ -30,7 +30,7 @@ describe("RandomTableCard", () => {
     const overflowLink = screen.getByRole("link", { name: "+1 more table" });
     expect(titleLink).toHaveAttribute(
       "href",
-      "/random-tables/armor-defense-00000000000000000000000001"
+      "/tables/armor-defense-00000000000000000000000001"
     );
     expect(overflowLink).toHaveAttribute(
       "href",

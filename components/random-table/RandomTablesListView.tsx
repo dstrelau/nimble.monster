@@ -7,7 +7,7 @@ import type React from "react";
 import {
   isRandomTableSortOption,
   publicRandomTablesInfiniteQueryOptions,
-} from "@/app/random-tables/actions";
+} from "@/app/tables/actions";
 import { RandomTableCard } from "@/components/random-table/RandomTableCard";
 import { FilterBar } from "@/components/shared/FilterBar";
 import {

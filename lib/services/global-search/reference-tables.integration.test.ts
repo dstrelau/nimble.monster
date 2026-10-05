@@ -83,7 +83,7 @@ it("backfills public tables and synchronizes search, recent results, and counts"
       type: "randomTable",
       id,
       name: "Armor & Defense",
-      href: "/random-tables/armor-defense-00000000008008000000000001",
+      href: "/tables/armor-defense-00000000008008000000000001",
       creator: { id: "owner", name: "table-owner", username: "table-owner" },
     }),
   ]);

@@ -1,6 +1,6 @@
 "use client";
 
-import type { RandomTableSortOption } from "@/app/random-tables/actions";
+import type { RandomTableSortOption } from "@/app/tables/actions";
 import {
   Select,
   SelectContent,

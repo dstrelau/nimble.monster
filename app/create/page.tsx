@@ -161,7 +161,7 @@ export default async function CreatePage() {
               />
             )}
             <CreateCard
-              href="/random-tables/new"
+              href="/tables/new"
               icon={<Table2 className="size-16" />}
               title="Reference Table"
               description="Reference tables and random results."

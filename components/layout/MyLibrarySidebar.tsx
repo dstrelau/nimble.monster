@@ -106,7 +106,7 @@ export function MyLibrarySidebar({
         ? [
             ...group.items,
             {
-              href: "/my/random-tables",
+              href: "/my/tables",
               label: "Reference Tables",
               icon: Table2,
               key: "random-tables" as const,

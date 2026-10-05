@@ -67,7 +67,7 @@ describe("MyLibrarySidebar", () => {
       "/my/adventures",
       "/my/encounters",
       "/my/rules",
-      "/my/random-tables",
+      "/my/tables",
       "/my/collections",
     ]);
     expect(
@@ -174,7 +174,7 @@ describe("MyLibrarySidebar", () => {
   });
 
   it("shows reference tables in every user's own library", () => {
-    pathname = "/my/random-tables";
+    pathname = "/my/tables";
     render(<MyLibrarySidebar counts={counts} />);
 
     const navigation = screen.getByRole("navigation", {
@@ -183,7 +183,7 @@ describe("MyLibrarySidebar", () => {
     const link = within(navigation).getByRole("link", {
       name: "Reference Tables 5",
     });
-    expect(link).toHaveAttribute("href", "/my/random-tables");
+    expect(link).toHaveAttribute("href", "/my/tables");
     expect(link).toHaveAttribute("aria-current", "page");
     expect(link.querySelector("svg")).toHaveClass("lucide-table-2");
   });

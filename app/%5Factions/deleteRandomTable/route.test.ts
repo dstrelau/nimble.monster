@@ -38,7 +38,7 @@ describe("POST /_actions/deleteRandomTable", () => {
     );
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ success: true });
-    expect(revalidatePath).toHaveBeenCalledWith("/my/random-tables");
+    expect(revalidatePath).toHaveBeenCalledWith("/my/tables");
   });
 
   it("still rejects unauthenticated requests", async () => {

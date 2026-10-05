@@ -41,7 +41,7 @@ export function RandomTableHeader({
       return;
     }
 
-    router.push("/my/random-tables");
+    router.push("/my/tables");
   };
 
   return (

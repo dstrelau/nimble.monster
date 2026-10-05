@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateEditRandomTable } from "@/app/random-tables/CreateEditRandomTable";
+import { CreateEditRandomTable } from "@/app/tables/CreateEditRandomTable";
 import { type RandomTable, UNKNOWN_USER } from "@/lib/types";
 
 export function NewRandomTable() {

@@ -143,14 +143,14 @@ export function getAdventureEditUrl(adventure: {
 
 // Random table URLs
 export function getRandomTableUrl(table: { name: string; id: string }): string {
-  return `/random-tables/${slugify(table)}`;
+  return `/tables/${slugify(table)}`;
 }
 
 export function getRandomTableEditUrl(table: {
   name: string;
   id: string;
 }): string {
-  return `/random-tables/${slugify(table)}/edit`;
+  return `/tables/${slugify(table)}/edit`;
 }
 
 // Custom rules are browsed inline in the rules reference, behind the homebrew

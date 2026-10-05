@@ -46,8 +46,8 @@ export const POST = internalAction("application/json", async (request) => {
           discordId: session.user.discordId,
         });
 
-    revalidatePath("/my/random-tables");
-    if (id) revalidatePath("/random-tables/[id]", "page");
+    revalidatePath("/my/tables");
+    if (id) revalidatePath("/tables/[id]", "page");
 
     const result: RandomTableMutationResult = {
       id: randomTable.id,

@@ -81,7 +81,7 @@ describe("POST /_actions/saveRandomTable", () => {
       ...input,
       discordId: "dev-user-1",
     });
-    expect(revalidatePath).toHaveBeenCalledWith("/my/random-tables");
+    expect(revalidatePath).toHaveBeenCalledWith("/my/tables");
   });
 
   it("updates an owned random table", async () => {
@@ -96,7 +96,7 @@ describe("POST /_actions/saveRandomTable", () => {
       id,
       discordId: "dev-user-1",
     });
-    expect(revalidatePath).toHaveBeenCalledWith("/random-tables/[id]", "page");
+    expect(revalidatePath).toHaveBeenCalledWith("/tables/[id]", "page");
   });
 
   it("rejects unauthenticated requests", async () => {

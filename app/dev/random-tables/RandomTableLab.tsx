@@ -2,7 +2,7 @@
 
 import { RotateCcw } from "lucide-react";
 import { useState } from "react";
-import { CreateEditRandomTable } from "@/app/random-tables/CreateEditRandomTable";
+import { CreateEditRandomTable } from "@/app/tables/CreateEditRandomTable";
 import { SubtablesView } from "@/components/random-table/SubtablesView";
 import { Button } from "@/components/ui/button";
 import type { RandomTableFormData } from "@/lib/random-table-schema";

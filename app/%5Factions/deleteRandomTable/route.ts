@@ -42,6 +42,6 @@ export const POST = internalAction("application/json", async (request) => {
     );
   }
 
-  revalidatePath("/my/random-tables");
+  revalidatePath("/my/tables");
   return NextResponse.json({ success: true });
 });

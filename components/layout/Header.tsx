@@ -61,7 +61,7 @@ const HEADER_ITEM_CONFIG: Record<
   adventures: { href: "/adventures", countKey: "adventures" },
   encounters: { href: "/encounters", countKey: "encounters" },
   rules: { href: "/rules", countKey: "rules" },
-  "random-tables": { href: "/random-tables", countKey: "randomTables" },
+  "random-tables": { href: "/tables", countKey: "randomTables" },
 };
 
 const UTILITY_ITEMS: NavMenuItem[] = [
