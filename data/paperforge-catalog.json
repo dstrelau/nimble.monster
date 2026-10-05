@@ -1,5 +1,5 @@
 {
-  "totalMinis": 782,
+  "totalMinis": 785,
   "s3BaseUrl": "https://paperforgedev.s3.us-east-2.amazonaws.com/",
   "minis": [
     {
@@ -1027,121 +1027,121 @@
       "releaseDate": "2025-12-30T13:08:30.686Z",
       "downloads": [
         {
-          "filename": "38_Shoosuva_FREE_PDF_1.pdf",
+          "filename": "37_GnollWhiterling_FREE_PDF.pdf",
           "category": "pdf",
           "tier": "FREE",
           "tierName": "Free",
           "tierNumber": 0,
           "filenameTier": "FREE",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_FREE_PDF_1.pdf"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWhiterling_FREE_PDF.pdf"
         },
         {
-          "filename": "38_Shoosuva_FREE_PNGs_1.zip",
+          "filename": "37_GnollWhiterling_FREE_PNGs.zip",
           "category": "png",
           "tier": "FREE",
           "tierName": "Free",
           "tierNumber": 0,
           "filenameTier": "FREE",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_FREE_PNGs_1.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWhiterling_FREE_PNGs.zip"
         },
         {
-          "filename": "38_Shoosuva_FREE_VTT_1.zip",
+          "filename": "37_GnollWhiterling_FREE_VTT.zip",
           "category": "vtt",
           "tier": "FREE",
           "tierName": "Free",
           "tierNumber": 0,
           "filenameTier": "FREE",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_FREE_VTT_1.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWhiterling_FREE_VTT.zip"
         },
         {
-          "filename": "38_Shoosuva_T1_PDF_1.pdf",
+          "filename": "37_GnollWhiterling_T1_PDF.pdf",
           "category": "pdf",
           "tier": "COPPER",
           "tierName": "Copper",
           "tierNumber": 1,
           "filenameTier": "T1",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_T1_PDF_1.pdf"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWhiterling_T1_PDF.pdf"
         },
         {
-          "filename": "38_Shoosuva_T1_PNGs_1.zip",
+          "filename": "37_GnollWhiterling_T1_PNGs.zip",
           "category": "png",
           "tier": "COPPER",
           "tierName": "Copper",
           "tierNumber": 1,
           "filenameTier": "T1",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_T1_PNGs_1.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWhiterling_T1_PNGs.zip"
         },
         {
-          "filename": "38_Shoosuva_T1_VTT_1.zip",
+          "filename": "37_GnollWhiterling_T1_VTT.zip",
           "category": "vtt",
           "tier": "COPPER",
           "tierName": "Copper",
           "tierNumber": 1,
           "filenameTier": "T1",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_T1_VTT_1.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWhiterling_T1_VTT.zip"
         },
         {
-          "filename": "38_Shoosuva_T2_PDF_1.pdf",
+          "filename": "37_GnollWhiterling_T2_PDF.pdf",
           "category": "pdf",
           "tier": "IRON",
           "tierName": "Iron",
           "tierNumber": 2,
           "filenameTier": "T2",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_T2_PDF_1.pdf"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWhiterling_T2_PDF.pdf"
         },
         {
-          "filename": "38_Shoosuva_T2_PNGs_1.zip",
+          "filename": "37_GnollWhiterling_T2_PNGs.zip",
           "category": "png",
           "tier": "IRON",
           "tierName": "Iron",
           "tierNumber": 2,
           "filenameTier": "T2",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_T2_PNGs_1.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWhiterling_T2_PNGs.zip"
         },
         {
-          "filename": "38_Shoosuva_T2_VTT_1.zip",
+          "filename": "37_GnollWhiterling_T2_VTT.zip",
           "category": "vtt",
           "tier": "IRON",
           "tierName": "Iron",
           "tierNumber": 2,
           "filenameTier": "T2",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_T2_VTT_1.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWhiterling_T2_VTT.zip"
         },
         {
-          "filename": "38_Shoosuva_T3_VTT_1.zip",
+          "filename": "37_GnollWhiterling_T3_VTT.zip",
           "category": "vtt",
           "tier": "STEEL",
           "tierName": "Steel",
           "tierNumber": 3,
           "filenameTier": "T3",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_T3_VTT_1.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWhiterling_T3_VTT.zip"
         },
         {
-          "filename": "38_Shoosuva_T4_CUTFILE_1.zip",
+          "filename": "37_GnollWitherling_T4_CUTFILE.zip",
           "category": "cutfile",
           "tier": "TITANIUM",
           "tierName": "Titanium",
           "tierNumber": 4,
           "filenameTier": "T4",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_T4_CUTFILE_1.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWitherling_T4_CUTFILE.zip"
         },
         {
-          "filename": "38_Shoosuva_T4_PNGs_1.zip",
+          "filename": "37_GnollWhiterling_T4_PNGs.zip",
           "category": "png",
           "tier": "TITANIUM",
           "tierName": "Titanium",
           "tierNumber": 4,
           "filenameTier": "T4",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_T4_PNGs_1.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWhiterling_T4_PNGs.zip"
         },
         {
-          "filename": "38_Shoosuva_T8_PSD_1.zip",
+          "filename": "37_GnollWitherling_T8_PSD.zip",
           "category": "psd",
           "tier": "MITHRIL",
           "tierName": "Mithril",
           "tierNumber": 8,
           "filenameTier": "T8",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/38_Shoosuva_T8_PSD_1.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/37_GnollWitherling_T8_PSD.zip"
         }
       ]
     },
@@ -47423,6 +47423,15 @@
           "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/493_SlitheringTracker_FREE_CUTFILE.zip"
         },
         {
+          "filename": "PaperForge493_SlitheringTracker_PDF_Free.pdf",
+          "category": "pdf",
+          "tier": "FREE",
+          "tierName": "Free",
+          "tierNumber": 0,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/PaperForge493_SlitheringTracker_PDF_Free.pdf"
+        },
+        {
           "filename": "493_SlitheringTracker_FREE_HDPNGs.zip",
           "category": "png",
           "tier": "FREE",
@@ -53104,13 +53113,13 @@
           "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/553_TwigBlight_T1_VTT.zip"
         },
         {
-          "filename": "553_TwigBlight_T2_PNGs.zip",
-          "category": "png",
+          "filename": "553_TwigBlight_T2_PDF.pdf",
+          "category": "pdf",
           "tier": "IRON",
           "tierName": "Iron",
           "tierNumber": 2,
           "filenameTier": "T2",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/553_TwigBlight_T2_PNGs.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/553_TwigBlight_T2_PDF.pdf"
         },
         {
           "filename": "553_TwigBlight_T2_PNGs.zip",
@@ -65098,13 +65107,13 @@
           "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/675_UndeadWarrior_T2_PDF.pdf"
         },
         {
-          "filename": "675_UndeadWarrior_T2_VTT.zip",
-          "category": "vtt",
+          "filename": "675_UndeadWarrior_T2_PNGs.zip",
+          "category": "png",
           "tier": "IRON",
           "tierName": "Iron",
           "tierNumber": 2,
           "filenameTier": "T2",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/675_UndeadWarrior_T2_VTT.zip"
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/675_UndeadWarrior_T2_PNGs.zip"
         },
         {
           "filename": "675_UndeadWarrior_T2_VTT.zip",
@@ -65496,15 +65505,6 @@
           "tierNumber": 2,
           "filenameTier": "T2",
           "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/679_SharklinChief_T2_VTT.zip"
-        },
-        {
-          "filename": "679_SharklinChief_T3_VTT.zip",
-          "category": "vtt",
-          "tier": "STEEL",
-          "tierName": "Steel",
-          "tierNumber": 3,
-          "filenameTier": "T3",
-          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/679_SharklinChief_T3_VTT.zip"
         },
         {
           "filename": "679_SharklinChief_T3_VTT.zip",
@@ -82582,6 +82582,225 @@
           "tierNumber": 8,
           "filenameTier": "T8",
           "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/846_Will-o_-Wisp_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "02d28892-9daa-40d0-bdd4-937ed7e5972b",
+      "number": 847,
+      "name": "Pumpking Slasher",
+      "url": "https://www.paperforgeminis.com/minis/02d28892-9daa-40d0-bdd4-937ed7e5972b",
+      "enabled": true,
+      "releaseDate": "2026-10-01T04:30:38.771Z",
+      "downloads": [
+        {
+          "filename": "847_PumpkingSlasher_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/847_PumpkingSlasher_CUTFILE.zip"
+        },
+        {
+          "filename": "847_PumpkingSlasher_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/847_PumpkingSlasher_PDF.pdf"
+        },
+        {
+          "filename": "PumpklinSlashers_Stats.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/PumpklinSlashers_Stats.pdf"
+        },
+        {
+          "filename": "847_PumpkingSlasher_HDPNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/847_PumpkingSlasher_HDPNGs.zip"
+        },
+        {
+          "filename": "847_PumpkingSlasher_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/847_PumpkingSlasher_PNGs.zip"
+        },
+        {
+          "filename": "847_PumpkingSlasher_PSD.zip",
+          "category": "psd",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/847_PumpkingSlasher_PSD.zip"
+        },
+        {
+          "filename": "847_PumpkingSlasher_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/847_PumpkingSlasher_VTT.zip"
+        }
+      ]
+    },
+    {
+      "id": "38c04012-3257-489a-b958-89cc979b0c46",
+      "number": 848,
+      "name": "Pumpklin Stabber",
+      "url": "https://www.paperforgeminis.com/minis/38c04012-3257-489a-b958-89cc979b0c46",
+      "enabled": true,
+      "releaseDate": "2026-10-01T04:34:41.794Z",
+      "downloads": [
+        {
+          "filename": "848_PumpklinStabber_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/848_PumpklinStabber_CUTFILE.zip"
+        },
+        {
+          "filename": "848_PumpklinStabber_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/848_PumpklinStabber_PDF.pdf"
+        },
+        {
+          "filename": "PumpklinSlashers_Stats_2.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/PumpklinSlashers_Stats_2.pdf"
+        },
+        {
+          "filename": "848_PumpklinStabber_HDPNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/848_PumpklinStabber_HDPNGs.zip"
+        },
+        {
+          "filename": "848_PumpklinStabber_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/848_PumpklinStabber_PNGs.zip"
+        },
+        {
+          "filename": "848_PumpklinStabber_PSD.zip",
+          "category": "psd",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/848_PumpklinStabber_PSD.zip"
+        },
+        {
+          "filename": "848_PumpklinStabber_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/848_PumpklinStabber_VTT.zip"
+        }
+      ]
+    },
+    {
+      "id": "23e3bb8b-1415-41ec-b285-4f28513bb873",
+      "number": 849,
+      "name": "Pumpklin Lantern",
+      "url": "https://www.paperforgeminis.com/minis/23e3bb8b-1415-41ec-b285-4f28513bb873",
+      "enabled": true,
+      "releaseDate": "2026-10-01T04:37:30.478Z",
+      "downloads": [
+        {
+          "filename": "849_PumpklinLantern_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/849_PumpklinLantern_CUTFILE.zip"
+        },
+        {
+          "filename": "849_PumpklinLantern_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/849_PumpklinLantern_PDF.pdf"
+        },
+        {
+          "filename": "PumpklinSlashers_Stats_3.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/PumpklinSlashers_Stats_3.pdf"
+        },
+        {
+          "filename": "849_PumpklinLantern_HDPNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/849_PumpklinLantern_HDPNGs.zip"
+        },
+        {
+          "filename": "849_PumpklinLantern_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/849_PumpklinLantern_PNGs.zip"
+        },
+        {
+          "filename": "849_PumpklinLantern_PSD.zip",
+          "category": "psd",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/849_PumpklinLantern_PSD.zip"
+        },
+        {
+          "filename": "849_PumpklinLantern_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": null,
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/849_PumpklinLantern_VTT.zip"
         }
       ]
     }
