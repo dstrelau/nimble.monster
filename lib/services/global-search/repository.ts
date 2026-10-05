@@ -15,6 +15,7 @@ import {
   getFamilyUrl,
   getItemUrl,
   getMonsterUrl,
+  getRandomTableUrl,
   getSpellSchoolUrl,
   getSubclassUrl,
 } from "@/lib/utils/url";
@@ -131,6 +132,8 @@ function resultHref(
       return getFamilyUrl(entity);
     case "rule":
       return getCustomRuleUrl(entity);
+    case "randomTable":
+      return getRandomTableUrl(entity);
   }
 }
 
@@ -323,6 +326,8 @@ function sourceTable(type: GlobalSearchEntityType): string {
       return "families";
     case "rule":
       return "custom_rules";
+    case "randomTable":
+      return "random_tables";
   }
 }
 

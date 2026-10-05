@@ -13,6 +13,7 @@ export const GLOBAL_SEARCH_ENTITY_TYPES = [
   "adventure",
   "family",
   "rule",
+  "randomTable",
 ] as const;
 
 export type GlobalSearchEntityType =
@@ -36,6 +37,7 @@ export const GLOBAL_SEARCH_ENTITY_LABELS: Record<
   adventure: "Adventures",
   family: "Families",
   rule: "Rules",
+  randomTable: "Reference Tables",
 };
 
 export interface GlobalSearchCreator {

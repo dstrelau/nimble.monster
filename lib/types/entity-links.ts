@@ -11,6 +11,7 @@ import {
   Scroll,
   Shield,
   Swords,
+  Table2,
   TriangleAlert,
   Users,
   WandSparkles,
@@ -85,7 +86,8 @@ export type SiteNavigationItemKey =
   | "items"
   | "adventures"
   | "encounters"
-  | "rules";
+  | "rules"
+  | "random-tables";
 
 export interface SiteNavigationItem {
   key: SiteNavigationItemKey;
@@ -160,6 +162,7 @@ export const SITE_NAVIGATION_GROUPS: SiteNavigationGroup[] = [
       { key: "adventures", label: "Adventures", icon: MapIcon },
       { key: "encounters", label: "Encounters", icon: Swords },
       { key: "rules", label: "Rules", icon: BookOpen },
+      { key: "random-tables", label: "Reference Tables", icon: Table2 },
     ],
   },
 ];
@@ -176,23 +179,25 @@ export const MY_LIBRARY_GROUPS: {
   items: MyLibraryItem[];
 }[] = [
   ...SITE_NAVIGATION_GROUPS.map((group) => {
-    const items = group.items.map((item): MyLibraryItem => {
-      if (item.key === "rules") {
-        return {
-          href: "/my/rules",
-          label: "Custom Rules",
-          icon: NotebookPen,
-          key: "rules",
-        };
-      }
+    const items = group.items
+      .filter((item) => item.key !== "random-tables")
+      .map((item): MyLibraryItem => {
+        if (item.key === "rules") {
+          return {
+            href: "/my/rules",
+            label: "Custom Rules",
+            icon: NotebookPen,
+            key: "rules",
+          };
+        }
 
-      return {
-        href: `/my/${item.key}`,
-        label: item.label,
-        icon: item.icon,
-        key: item.key,
-      };
-    });
+        return {
+          href: `/my/${item.key}`,
+          label: item.label,
+          icon: item.icon,
+          key: item.key,
+        };
+      });
     const familyItem: MyLibraryItem = {
       href: "/my/families",
       label: "Families",

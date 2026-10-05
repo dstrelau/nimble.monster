@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Dices, Menu, Table2, X } from "lucide-react";
+import { Dices, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { getNavCountsAction } from "@/app/actions/nav";
@@ -25,6 +25,7 @@ import type {
   BestiaryCounts,
   CharacterOptionCounts,
   GearCounts,
+  RandomTableCounts,
   RuleCounts,
 } from "@/lib/db";
 import {
@@ -37,7 +38,8 @@ export type AllNavCounts = BestiaryCounts &
   CharacterOptionCounts &
   GearCounts &
   AdventureCounts &
-  RuleCounts;
+  RuleCounts &
+  RandomTableCounts;
 
 interface HeaderProps {
   initialCounts: AllNavCounts;
@@ -59,6 +61,7 @@ const HEADER_ITEM_CONFIG: Record<
   adventures: { href: "/adventures", countKey: "adventures" },
   encounters: { href: "/encounters", countKey: "encounters" },
   rules: { href: "/rules", countKey: "rules" },
+  "random-tables": { href: "/random-tables", countKey: "randomTables" },
 };
 
 const UTILITY_ITEMS: NavMenuItem[] = [
@@ -80,14 +83,7 @@ const NAV_GROUPS: {
       ...HEADER_ITEM_CONFIG[item.key],
     })),
     ...(group.label === "Play"
-      ? [
-          {
-            href: "/random-tables",
-            label: "Reference Tables",
-            icon: Table2,
-          },
-          { href: "/roll", label: "Dice Roller", icon: Dices },
-        ]
+      ? [{ href: "/roll", label: "Dice Roller", icon: Dices }]
       : []),
   ],
 }));

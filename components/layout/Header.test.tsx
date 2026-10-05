@@ -30,6 +30,7 @@ const counts: AllNavCounts = {
   adventures: 1,
   encounters: 28,
   rules: 137,
+  randomTables: 7,
 };
 
 afterEach(() => {
@@ -72,7 +73,7 @@ describe("Header", () => {
     );
     expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Reference Tables" })
+      screen.getByRole("link", { name: "Reference Tables 7" })
     ).toHaveAttribute("href", "/random-tables");
     expect(
       screen.queryByRole("link", { name: "Create" })
@@ -95,7 +96,7 @@ describe("Header", () => {
     if (!mobileMenuButton) return;
     fireEvent.click(mobileMenuButton);
 
-    const link = screen.getByRole("link", { name: "Reference Tables" });
+    const link = screen.getByRole("link", { name: "Reference Tables 7" });
     expect(link).toHaveAttribute("href", "/random-tables");
     expect(link.querySelector("svg")).toHaveClass("lucide-table-2");
   });

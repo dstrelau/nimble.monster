@@ -6,6 +6,7 @@ import {
   BookOpen,
   Map as MapIcon,
   Swords,
+  Table2,
   TriangleAlert,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -50,6 +51,7 @@ const TYPE_ICONS: Record<GlobalSearchEntityType, LucideIcon> = {
   adventure: MapIcon,
   family: ENTITY_TYPE_ICONS.family,
   rule: BookOpen,
+  randomTable: Table2,
 };
 
 const NAVIGATION_SEARCH_TYPES = {
@@ -65,6 +67,7 @@ const NAVIGATION_SEARCH_TYPES = {
   adventures: "adventure",
   encounters: "encounter",
   rules: "rule",
+  "random-tables": "randomTable",
 } satisfies Record<SiteNavigationItemKey, GlobalSearchEntityType>;
 
 type SearchStatus = "idle" | "loading" | "ready" | "error";

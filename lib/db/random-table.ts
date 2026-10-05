@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, count, eq, inArray } from "drizzle-orm";
 import { toUser } from "@/lib/db/converters";
 import type { RandomTableFormData } from "@/lib/random-table-schema";
 import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
@@ -16,6 +16,18 @@ import {
   users,
 } from "./schema";
 import { toSource } from "./source";
+
+export interface RandomTableCounts {
+  randomTables: number;
+}
+
+export async function getRandomTableCounts(): Promise<RandomTableCounts> {
+  const [result] = await getDatabase()
+    .select({ count: count() })
+    .from(randomTables)
+    .where(eq(randomTables.visibility, "public"));
+  return { randomTables: result?.count ?? 0 };
+}
 
 async function loadSubtablesByTableId(
   db: ReturnType<typeof getDatabase>,

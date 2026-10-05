@@ -179,6 +179,40 @@ describe("GlobalSearchDialog", () => {
     ).toBeInTheDocument();
   });
 
+  it("browses reference tables and navigates to a table result", async () => {
+    vi.useFakeTimers();
+    const href = "/random-tables/armor-defense-000000000000000000000001";
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      Response.json({
+        results: [
+          { type: "randomTable", id: "table-1", name: "Armor & Defense", href },
+        ],
+      })
+    );
+    render(<GlobalSearchDialog />);
+    fireEvent.keyDown(document, { key: "k", ctrlKey: true });
+    fireEvent.click(screen.getByText("Reference Tables"));
+    expect(
+      screen.getByPlaceholderText("Search Reference Tables")
+    ).toBeInTheDocument();
+
+    await act(async () => {
+      vi.advanceTimersByTime(225);
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(String(vi.mocked(fetch).mock.calls[0]?.[0])).toBe(
+      "/_actions/search?limit=12&type=randomTable"
+    );
+    expect(screen.getByText("Armor & Defense")).toBeInTheDocument();
+    expect(document.querySelector("[cmdk-group-heading]")?.textContent).toBe(
+      "Reference Tables"
+    );
+    fireEvent.click(screen.getByText("Armor & Defense"));
+    expect(mockPush).toHaveBeenCalledWith(href);
+  });
+
   it("groups results by type and renders available entity images", async () => {
     vi.useFakeTimers();
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
