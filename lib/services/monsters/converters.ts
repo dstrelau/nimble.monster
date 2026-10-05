@@ -142,6 +142,7 @@ export const toBestiaryEntryMini = (m: MonsterRow): BestiaryEntryMini =>
     ? {
         id: m.id,
         hazard: true,
+        ...(m.hp > 0 ? { hp: m.hp } : {}),
         level: m.level,
         levelInt: m.levelInt,
         name: m.name,
@@ -387,6 +388,7 @@ export const toJsonApiMonster = (m: BestiaryEntry) => {
       attributes: {
         name: m.name,
         hazard: true,
+        ...(m.hp != null ? { hp: m.hp } : {}),
         level: m.level,
         levelInt: m.levelInt,
         abilities: m.abilities.map(({ name, description }) => ({

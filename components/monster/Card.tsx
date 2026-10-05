@@ -54,7 +54,18 @@ const MonsterStats: React.FC<{
   variant: "hazard" | "legendary" | "minion" | "standard";
   className?: string;
 }> = ({ monster, variant, className }) => {
-  if (variant === "hazard") return null;
+  if (variant === "hazard") {
+    return monster.hp > 0 ? (
+      <StatsGroup
+        className={cn(
+          "flex gap-2 items-center justify-end font-slab font-black",
+          className
+        )}
+      >
+        <HPStat value={String(monster.hp)} />
+      </StatsGroup>
+    ) : null;
+  }
 
   let statCount = 0;
 

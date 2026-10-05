@@ -53,6 +53,8 @@ import {
 } from "@/components/shared/Form";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toggle } from "@/components/ui/toggle";
@@ -1183,7 +1185,7 @@ const HazardForm: React.FC<{
   setMonster: (m: MonsterFormState) => void;
 }> = ({ monster, setMonster }) => (
   <div className="space-y-4">
-    <div className="grid grid-cols-4 gap-x-6">
+    <div className="grid grid-cols-4 gap-x-6 gap-y-4">
       <FormInput
         label="Name"
         name="name"
@@ -1208,6 +1210,20 @@ const HazardForm: React.FC<{
           });
         }}
       />
+      <div className="space-y-2 col-span-2">
+        <Label htmlFor="hp">HP (optional)</Label>
+        <Input
+          id="hp"
+          name="hp"
+          type="number"
+          min={1}
+          step={1}
+          value={monster.hp || ""}
+          onChange={(event) =>
+            setMonster({ ...monster, hp: Number(event.target.value) })
+          }
+        />
+      </div>
     </div>
     <AbilitiesSection
       abilities={monster.abilities}
@@ -1281,6 +1297,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
     return {
       ...EXAMPLE_MONSTERS.empty,
       hazard,
+      hp: hazard ? 0 : EXAMPLE_MONSTERS.empty.hp,
       speed: hazard ? 0 : 6,
       creator,
     };
@@ -1298,6 +1315,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
               name: data.name,
               level: data.level,
               levelInt: data.levelInt,
+              hp: data.hp || undefined,
               actions: data.actions,
               abilities: data.abilities,
               actionPreface: data.actionPreface,
@@ -1359,6 +1377,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
             name: data.name,
             level: data.level,
             levelInt: data.levelInt,
+            hp: data.hp || undefined,
             actions: data.actions,
             abilities: data.abilities,
             actionPreface: data.actionPreface,

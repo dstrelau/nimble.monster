@@ -47,11 +47,13 @@ const sharedSchema = z.object({
 });
 
 const createHazardSchema = sharedSchema.extend({
+  hp: z.number().int().positive().optional(),
   sourceId: uuid.optional(),
   remixedFromId: uuid.optional(),
 });
 
 const updateHazardSchema = sharedSchema.extend({
+  hp: z.number().int().positive().optional(),
   id: uuid,
   moreInfo: z.string(),
 });

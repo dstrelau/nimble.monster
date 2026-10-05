@@ -243,6 +243,7 @@ const toHazardFromFullData = (data: MonsterFullData): Hazard => {
   return {
     id: entry.id,
     hazard: true,
+    ...(entry.hp > 0 ? { hp: entry.hp } : {}),
     level: entry.level,
     levelInt: entry.levelInt,
     name: entry.name,
@@ -1266,7 +1267,7 @@ const createBestiaryEntry = async (
     kind: hazard ? "" : kind,
     level,
     levelInt,
-    hp: hazard ? 0 : hp,
+    hp,
     hpPerHero: hazard ? null : hpPerHero,
     armor: hazard ? "" : armorValue,
     size: hazard ? "medium" : size,
@@ -1344,7 +1345,7 @@ export const createHazard = async (
     {
       ...input,
       hazard: true,
-      hp: 0,
+      hp: input.hp ?? 0,
       hpPerHero: null,
       armor: "none",
       size: "medium",
@@ -1596,7 +1597,7 @@ const updateBestiaryEntry = async (
       name,
       level,
       levelInt,
-      hp: hazard ? 0 : hp,
+      hp,
       hpPerHero: hazard ? null : hpPerHero,
       armor: hazard ? "" : armorValue,
       size: hazard ? "medium" : size,
@@ -1672,7 +1673,7 @@ export const updateHazard = async (
     {
       ...input,
       hazard: true,
-      hp: 0,
+      hp: input.hp ?? 0,
       hpPerHero: null,
       armor: "none",
       size: "medium",

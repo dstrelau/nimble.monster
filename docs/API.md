@@ -128,28 +128,22 @@ Standard (non-minion) monsters may also include a `bloodied` attribute
     "attributes": {
       "name": "Goblin Pit Trap",
       "hazard": true,
-      "hp": 0,
-      "level": 1,
-      "size": "medium",
-      "armor": "none",
-      "movement": [],
+      "level": "1",
+      "levelInt": 1,
       "abilities": [
         { "name": "Hidden Trap!", "description": "DC 12 Perception to spot it." }
       ],
       "actions": [],
       "actionsInstructions": "",
-      "effects": [],
-      "description": "",
-      "legendary": false,
-      "minion": false
+      "description": ""
     }
   }
 }
 ```
 
-Hazards retain neutral values for fields required by the shared monster API
-contract (`hp`, `size`, and `armor`), but they do not have HP, movement, armor,
-size, saves, Bloodied, or Last Stand mechanics in the application.
+Hazards optionally include `hp`, a positive integer, when fixed HP is set.
+It is omitted when the hazard has no HP. Hazards do not include movement,
+armor, size, saves, Bloodied, or Last Stand mechanics.
 
 **Response (legendary monster):**
 ```json
@@ -245,8 +239,8 @@ member has saves and uses the same parsed shape as a legendary monster's
 `saves`. The top-level `hp` on a team is `0`; per-member HP lives on each
 member.
 
-The `hp` field is always present and holds the monster's fixed total HP. Hazards
-use `0` solely as a neutral shared-resource value. Monsters
+The `hp` field is always present for creatures and holds the monster's fixed
+total HP. For hazards it is optional, as described above. Monsters
 that scale their HP with party size (the "X/hero" format) additionally include an
 `hpPerHero` integer; when present, clients should display HP as `{hpPerHero}/hero`.
 The field is omitted when a monster does not use per-hero HP. `hp` remains

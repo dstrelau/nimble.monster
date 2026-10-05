@@ -120,6 +120,7 @@ export interface MonsterMini extends BestiaryEntryMiniBase {
 
 export interface HazardMini extends BestiaryEntryMiniBase {
   hazard: true;
+  hp?: number;
 }
 
 export type CreatureMonsterMini = MonsterMini;
@@ -191,7 +192,7 @@ export interface Monster extends MonsterMini, BestiaryEntryBase {
   size: MonsterSize;
 }
 
-export interface Hazard extends BestiaryEntryMiniBase, BestiaryEntryBase {
+export interface Hazard extends HazardMini, BestiaryEntryBase {
   hazard: true;
 }
 
@@ -317,6 +318,7 @@ export interface CreateHazardInput {
   name: string;
   level: string;
   levelInt: number;
+  hp?: number;
   actions: Action[];
   abilities: Ability[];
   actionPreface: string;

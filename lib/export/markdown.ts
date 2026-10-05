@@ -38,6 +38,7 @@ function generateStandardBriefMarkdown(monster: Monster): string {
 
 function generateHazardBriefMarkdown(monster: Hazard): string {
   const sections = [`**${monster.name}**`, `**Level:** ${monster.level}`];
+  if (monster.hp != null) sections.push(`**HP:** ${monster.hp}`);
   const abilities = monster.abilities;
   if (abilities.length > 0) sections.push(generateBriefAbilities(abilities));
   if (monster.actions.length > 0) sections.push(generateBriefActions(monster));
@@ -294,6 +295,7 @@ function generateFrontmatter(monster: BestiaryEntry, tags: string[]): string {
 
   lines.push(`name: "${escapeYaml(monster.name)}"`);
   lines.push(`level: ${monster.level}`);
+  if (monster.hazard && monster.hp != null) lines.push(`hp: ${monster.hp}`);
   if (!monster.hazard) {
     if (monster.kind) lines.push(`kind: "${escapeYaml(monster.kind)}"`);
     if (monster.role) lines.push(`role: ${monster.role}`);
@@ -318,6 +320,7 @@ function generateBody(monster: BestiaryEntry): string {
 
   sections.push(generateHeader(monster));
   if (monster.hazard) {
+    if (monster.hp != null) sections.push(`**HP:** ${monster.hp}`);
     if (monster.abilities.length > 0) sections.push(generateAbilities(monster));
     if (monster.actions.length > 0) sections.push(generateActions(monster));
     if (monster.moreInfo) sections.push(generateMoreInfo(monster.moreInfo));

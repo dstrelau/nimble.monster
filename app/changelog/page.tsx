@@ -12,6 +12,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "5 October 2026",
+    entries: ["Hazards can now have optional HP."],
+  },
+  {
     date: "4 October 2026",
     entries: ["Add Reference Tables."],
   },

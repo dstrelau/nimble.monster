@@ -10,6 +10,8 @@ import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import BuildMonsterView from "@/app/monsters/BuildMonsterView";
 import { call } from "@/lib/contract";
+import { toHazardMonsterView } from "@/lib/services/hazards/converters";
+import type { MonsterFormState } from "@/lib/services/monsters";
 import { getMonsterUrl } from "@/lib/utils/url";
 
 const { mockPush } = vi.hoisted(() => ({ mockPush: vi.fn() }));
@@ -71,14 +73,14 @@ function deferred<T>() {
   return { promise, resolve };
 }
 
-function renderBuilder() {
+function renderBuilder(hazard = false, existingMonster?: MonsterFormState) {
   const queryClient = new QueryClient({
     defaultOptions: { mutations: { retry: false } },
   });
   const invalidate = vi.spyOn(queryClient, "invalidateQueries");
   render(
     <QueryClientProvider client={queryClient}>
-      <BuildMonsterView />
+      <BuildMonsterView hazard={hazard} existingMonster={existingMonster} />
     </QueryClientProvider>
   );
   return { invalidate };
@@ -91,6 +93,72 @@ beforeEach(() => {
 });
 
 describe("bestiary builder mutation", () => {
+  it("starts hazard HP blank and sends entered HP on create", async () => {
+    vi.mocked(call).mockResolvedValueOnce({
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Barrier",
+      hazard: true,
+    });
+    renderBuilder(true);
+    const hp = screen.getByRole("spinbutton", { name: "HP (optional)" });
+    expect(hp).toHaveValue(null);
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Barrier" },
+    });
+    fireEvent.change(hp, { target: { value: "37" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => {
+      expect(call).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          kind: "hazard",
+          input: expect.objectContaining({ hp: 37 }),
+        })
+      );
+      expect(mockPush).toHaveBeenCalled();
+    });
+  });
+
+  it("loads saved hazard HP and clears it in the update payload", async () => {
+    const existing = toHazardMonsterView({
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Barrier",
+      hazard: true,
+      hp: 37,
+      level: "2",
+      levelInt: 2,
+      visibility: "private",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      abilities: [],
+      actions: [],
+      actionPreface: "",
+      creator: {
+        id: "owner",
+        discordId: "discord-owner",
+        username: "owner",
+        displayName: "Owner",
+      },
+    });
+    vi.mocked(call).mockResolvedValueOnce(existing);
+    renderBuilder(true, existing);
+    const hp = screen.getByRole("spinbutton", { name: "HP (optional)" });
+    expect(hp).toHaveValue(37);
+    fireEvent.change(hp, { target: { value: "" } });
+    expect(hp).toHaveValue(null);
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => {
+      expect(call).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          kind: "hazard",
+          input: expect.objectContaining({ id: existing.id, hp: undefined }),
+        })
+      );
+      expect(mockPush).toHaveBeenCalled();
+    });
+  });
+
   it("preserves the draft while pending, invalidates caches, and navigates", async () => {
     const pending = deferred<{ id: string; name: string; hazard: boolean }>();
     vi.mocked(call).mockReturnValueOnce(pending.promise);

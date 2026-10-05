@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { monsterToMarkdown } from "@/lib/export/markdown";
+import { toHazardMonsterView } from "@/lib/services/hazards/converters";
 import type { User } from "@/lib/types";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { toJsonApiMonster, toZodMonster } from "./converters";
@@ -156,6 +157,18 @@ describe("hazard conversion", () => {
     expect("hp" in document.attributes).toBe(false);
   });
 
+  it("preserves optional HP in the API and shared editor/card state", () => {
+    const withHp = { ...hazard, hp: 37 };
+    expect(toJsonApiMonster(withHp).attributes).toMatchObject({ hp: 37 });
+    expect(toHazardMonsterView(withHp)).toMatchObject({
+      hp: 37,
+      hpPerHero: null,
+      speed: 0,
+      armor: "none",
+    });
+    expect(toHazardMonsterView(hazard).hp).toBe(0);
+  });
+
   it("uses the hazards canonical route", () => {
     expect(getMonsterUrl(hazard)).toBe(
       "/hazards/goblin-pit-trap-0000000000000000000000005v"
@@ -168,5 +181,16 @@ describe("hazard conversion", () => {
     expect(markdown).toContain("Hazard");
     expect(markdown).not.toContain("## Stats");
     expect(markdown).not.toContain("hp:");
+  });
+
+  it("exports hazard HP without introducing creature-only stats", () => {
+    const withHp = { ...hazard, hp: 37 };
+    const markdown = monsterToMarkdown(withHp);
+    expect(markdown).toContain("hp: 37");
+    expect(markdown).toContain("**HP:** 37");
+    expect(markdown).not.toContain("armor:");
+    expect(markdown).not.toContain("## Stats");
+    expect(monsterToMarkdown(withHp, { brief: true })).toContain("**HP:** 37");
+    expect(monsterToMarkdown(hazard, { brief: true })).not.toContain("**HP:**");
   });
 });

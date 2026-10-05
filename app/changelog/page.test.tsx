@@ -13,10 +13,13 @@ describe("ChangelogPage", () => {
 
     expect(screen.getByText("Add Reference Tables.")).toBeInTheDocument();
     expect(
+      screen.getByText("Hazards can now have optional HP.")
+    ).toBeInTheDocument();
+    expect(
       screen
         .getAllByRole("heading", { level: 2 })
         .slice(0, 2)
         .map((heading) => heading.textContent)
-    ).toEqual(["4 October 2026", "30 September 2026"]);
+    ).toEqual(["5 October 2026", "4 October 2026"]);
   });
 });

@@ -20,7 +20,9 @@ const toJsonApiMonsterMini = (m: BestiaryEntryMini) => ({
           minion: m.minion,
           role: m.role,
         }
-      : {}),
+      : m.hp != null
+        ? { hp: m.hp }
+        : {}),
   },
   links: {
     self: `/api/monsters/${uuidToIdentifier(m.id)}`,

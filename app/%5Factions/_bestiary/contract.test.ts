@@ -6,6 +6,7 @@ import {
   type UpdateBestiaryEntryInput,
   updateBestiaryEntry,
 } from "./contract";
+import { createBestiaryEntrySchema, updateBestiaryEntrySchema } from "./input";
 
 const createInput = {
   kind: "hazard",
@@ -31,6 +32,42 @@ const updateInput = {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+});
+
+describe("hazard HP validation", () => {
+  it.each([
+    undefined,
+    1,
+    37,
+  ])("accepts optional HP %s for create and update", (hp) => {
+    expect(
+      createBestiaryEntrySchema.parse({
+        ...createInput,
+        input: { ...createInput.input, hp },
+      }).input
+    ).toHaveProperty("hp", hp);
+    expect(
+      updateBestiaryEntrySchema.parse({
+        ...updateInput,
+        input: { ...updateInput.input, hp },
+      }).input
+    ).toHaveProperty("hp", hp);
+  });
+
+  it.each([0, -1, 1.5, null, "37"])("rejects invalid HP %s", (hp) => {
+    expect(
+      createBestiaryEntrySchema.safeParse({
+        ...createInput,
+        input: { ...createInput.input, hp },
+      }).success
+    ).toBe(false);
+    expect(
+      updateBestiaryEntrySchema.safeParse({
+        ...updateInput,
+        input: { ...updateInput.input, hp },
+      }).success
+    ).toBe(false);
+  });
 });
 
 describe("bestiary client transport", () => {

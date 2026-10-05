@@ -12,7 +12,7 @@ const STORAGE_SIZE: MonsterSize = "medium";
 export function toHazardMonsterView(hazard: Hazard): MonsterFormState {
   return {
     ...hazard,
-    hp: 0,
+    hp: hazard.hp ?? 0,
     hpPerHero: null,
     armor: STORAGE_ARMOR,
     size: STORAGE_SIZE,
