@@ -31,6 +31,9 @@ export const ENTITY_TYPES = [
   "ancestry",
   "background",
   "rule",
+  "adventure",
+  "encounter",
+  "table",
 ] as const;
 
 export type EntityType = (typeof ENTITY_TYPES)[number];
@@ -58,6 +61,9 @@ export const ENTITY_TYPE_ICONS: Record<EntityType, LucideIcon> = {
   ancestry: Scroll,
   background: Drama,
   rule: NotebookPen,
+  adventure: MapIcon,
+  encounter: Swords,
+  table: Table2,
 };
 
 export const ENTITY_TYPE_PATHS: Record<EntityType, string> = {
@@ -72,6 +78,9 @@ export const ENTITY_TYPE_PATHS: Record<EntityType, string> = {
   ancestry: "ancestries",
   background: "backgrounds",
   rule: "custom-rules",
+  adventure: "adventures",
+  encounter: "encounters",
+  table: "tables",
 };
 
 export type SiteNavigationItemKey =
