@@ -1,16 +1,18 @@
 "use server";
 
-import { parseEncounterSort } from "@/app/encounters/actions";
+import {
+  type PaginatedEncounterResponse,
+  parseEncounterSort,
+} from "@/app/encounters/actions";
 import { auth } from "@/lib/auth";
 import { searchEncountersForCreator } from "@/lib/services/encounters/repository";
-import type { EncounterOverview } from "@/lib/types";
 
 export async function paginateMyEncounters(params: {
   sort: string;
   search: string | null;
   limit: number;
   pageParam: number;
-}): Promise<{ data: EncounterOverview[] }> {
+}): Promise<PaginatedEncounterResponse> {
   const session = await auth();
   if (!session?.user?.id) {
     throw new Error("Unauthorized");
@@ -19,9 +21,12 @@ export async function paginateMyEncounters(params: {
   const data = await searchEncountersForCreator({
     ...parseEncounterSort(params.sort),
     searchTerm: params.search || undefined,
-    limit: params.limit,
+    limit: params.limit + 1,
     offset: params.pageParam * params.limit,
     creatorId: session.user.id,
   });
-  return { data };
+  return {
+    data: data.slice(0, params.limit),
+    hasMore: data.length > params.limit,
+  };
 }

@@ -13,7 +13,7 @@ export type ItemSortOption = PaginateItemsSortOption;
 
 export type PaginatedItemResponse = {
   data: Item[];
-  nextPage: string;
+  hasMore: boolean;
 };
 
 export async function paginatePublicItems(params: {
@@ -41,11 +41,14 @@ export async function paginatePublicItems(params: {
     rarity: params.rarity as ItemRarityFilter,
     source: params.source,
     creatorId: params.creatorId,
-    limit: params.limit,
+    limit: params.limit + 1,
     offset: params.pageParam * params.limit,
   };
   const data = await items.searchPublicItems(opts);
-  return { data, nextPage: "next" };
+  return {
+    data: data.slice(0, params.limit),
+    hasMore: data.length > params.limit,
+  };
 }
 
 export function publicItemsInfiniteQueryOptions({
@@ -75,7 +78,7 @@ export function publicItemsInfiniteQueryOptions({
       _allPages: PaginatedItemResponse[],
       lastPageParam: number
     ) => {
-      if (lastPage.data.length === 0) {
+      if (!lastPage.hasMore) {
         return undefined;
       }
       return lastPageParam + 1;

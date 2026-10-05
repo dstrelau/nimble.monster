@@ -35,6 +35,7 @@ export type SerializedRandomTable = Omit<
 
 export interface SearchRandomTablesResult {
   data: SerializedRandomTable[];
+  hasMore: boolean;
 }
 
 export const saveRandomTable = defineRoute<

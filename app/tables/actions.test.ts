@@ -16,6 +16,7 @@ afterEach(() => {
 describe("publicRandomTablesInfiniteQueryOptions", () => {
   it("uses the JSON search route and revives dates", async () => {
     const response = Response.json({
+      hasMore: false,
       data: [
         {
           id: "table-1",
@@ -77,5 +78,28 @@ describe("publicRandomTablesInfiniteQueryOptions", () => {
     });
     expect(result.data[1].createdAt).toBeUndefined();
     expect(result.data[1].source).toBeUndefined();
+  });
+
+  it.each([
+    false,
+    true,
+  ])("uses the server's hasMore=%s indicator", async (hasMore) => {
+    mockCall.mockResolvedValue({
+      hasMore,
+      data: Array.from({ length: 12 }, (_, index) => ({
+        id: `table-${index}`,
+        name: `Table ${index}`,
+        visibility: "public",
+        creator: { id: "user-1" },
+        subtables: [],
+      })),
+    });
+    const options = publicRandomTablesInfiniteQueryOptions();
+    const result = await options.queryFn({ pageParam: 2 });
+
+    expect(result.hasMore).toBe(hasMore);
+    expect(options.getNextPageParam(result, [result], 2)).toBe(
+      hasMore ? 3 : undefined
+    );
   });
 });

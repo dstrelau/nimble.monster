@@ -19,6 +19,7 @@ export function isRandomTableSortOption(
 
 export type PaginatedRandomTableResponse = {
   data: RandomTable[];
+  hasMore: boolean;
 };
 
 export async function paginatePublicRandomTables(params: {
@@ -34,6 +35,7 @@ export async function paginatePublicRandomTables(params: {
     page: params.pageParam,
   });
   return {
+    hasMore: result.hasMore,
     data: result.data.map((randomTable) => ({
       ...randomTable,
       createdAt: randomTable.createdAt
@@ -75,7 +77,7 @@ export function publicRandomTablesInfiniteQueryOptions({
       _allPages: PaginatedRandomTableResponse[],
       lastPageParam: number
     ) => {
-      if (lastPage.data.length === 0) {
+      if (!lastPage.hasMore) {
         return undefined;
       }
       return lastPageParam + 1;

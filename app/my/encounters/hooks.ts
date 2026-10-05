@@ -23,7 +23,7 @@ export function myEncountersInfiniteQueryOptions({
       _allPages: PaginatedEncounterResponse[],
       lastPageParam: number
     ) => {
-      if (lastPage.data.length === 0) {
+      if (!lastPage.hasMore) {
         return undefined;
       }
       return lastPageParam + 1;

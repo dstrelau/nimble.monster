@@ -14,6 +14,7 @@ export type CollectionSortOption =
 
 export type PaginatedCollectionResponse = {
   data: CollectionOverview[];
+  hasMore: boolean;
 };
 
 export async function paginatePublicCollections(params: {
@@ -30,11 +31,14 @@ export async function paginatePublicCollections(params: {
     searchTerm: params.search || undefined,
     sortBy: sortBy,
     sortDirection,
-    limit: params.limit,
+    limit: params.limit + 1,
     offset: params.pageParam * params.limit,
   };
   const data = await collections.searchPublicCollections(opts);
-  return { data };
+  return {
+    data: data.slice(0, params.limit),
+    hasMore: data.length > params.limit,
+  };
 }
 
 export function publicCollectionsInfiniteQueryOptions({
@@ -58,7 +62,7 @@ export function publicCollectionsInfiniteQueryOptions({
       _allPages: PaginatedCollectionResponse[],
       lastPageParam: number
     ) => {
-      if (lastPage.data.length === 0) {
+      if (!lastPage.hasMore) {
         return undefined;
       }
       return lastPageParam + 1;

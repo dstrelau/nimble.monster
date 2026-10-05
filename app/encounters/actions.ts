@@ -10,6 +10,7 @@ export type EncounterSortOption = "name" | "-name" | "createdAt" | "-createdAt";
 
 export type PaginatedEncounterResponse = {
   data: EncounterOverview[];
+  hasMore: boolean;
 };
 
 export function parseEncounterSort(sort: string): {
@@ -34,11 +35,14 @@ export async function paginatePublicEncounters(params: {
   const data = await encounters.searchPublicEncounters({
     ...parseEncounterSort(params.sort),
     searchTerm: params.search || undefined,
-    limit: params.limit,
+    limit: params.limit + 1,
     offset: params.pageParam * params.limit,
     creatorId: params.creatorId,
   });
-  return { data };
+  return {
+    data: data.slice(0, params.limit),
+    hasMore: data.length > params.limit,
+  };
 }
 
 export function publicEncountersInfiniteQueryOptions({
@@ -64,7 +68,7 @@ export function publicEncountersInfiniteQueryOptions({
       _allPages: PaginatedEncounterResponse[],
       lastPageParam: number
     ) => {
-      if (lastPage.data.length === 0) {
+      if (!lastPage.hasMore) {
         return undefined;
       }
       return lastPageParam + 1;

@@ -40,11 +40,12 @@ export const POST = internalAction("application/json", async (request) => {
     searchTerm: input.search || undefined,
     sortBy: sortField === "name" ? "name" : "createdAt",
     sortDirection: descending ? "desc" : "asc",
-    limit: input.limit,
+    limit: input.limit + 1,
     offset: input.page * input.limit,
   });
   const result: SearchRandomTablesResult = {
-    data: randomTables.map((randomTable) => ({
+    hasMore: randomTables.length > input.limit,
+    data: randomTables.slice(0, input.limit).map((randomTable) => ({
       ...randomTable,
       createdAt: randomTable.createdAt?.toISOString(),
       source: randomTable.source
