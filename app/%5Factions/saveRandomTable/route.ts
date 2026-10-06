@@ -55,6 +55,15 @@ export const POST = internalAction("application/json", async (request) => {
     };
     return NextResponse.json(result, { status: id ? 200 : 201 });
   } catch (error) {
+    if (
+      error instanceof Error &&
+      [
+        "Sub-table IDs must be unique",
+        "Sub-table ID does not belong to this table",
+      ].includes(error.message)
+    ) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     if (error instanceof Error && error.message === "Random table not found") {
       return NextResponse.json(
         { error: "Reference table not found" },

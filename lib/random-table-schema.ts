@@ -12,6 +12,7 @@ export const SubtableRowSchema = z.object({
 
 export const SubtableSchema = z
   .object({
+    id: z.uuid().optional(),
     title: z.string().min(1, "Title is required"),
     columns: z
       .array(SubtableColumnSchema)
@@ -36,7 +37,23 @@ export const RandomTableSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
   visibility: z.enum(ValidCollectionVisibilities),
-  subtables: z.array(SubtableSchema).min(1, "At least one table is required"),
+  subtables: z
+    .array(SubtableSchema)
+    .min(1, "At least one table is required")
+    .superRefine((subtables, ctx) => {
+      const ids = new Set<string>();
+      subtables.forEach((subtable, index) => {
+        if (subtable.id === undefined) return;
+        if (ids.has(subtable.id)) {
+          ctx.addIssue({
+            code: "custom",
+            path: [index, "id"],
+            message: "Sub-table IDs must be unique",
+          });
+        }
+        ids.add(subtable.id);
+      });
+    }),
 });
 
 export type RandomTableFormData = z.infer<typeof RandomTableSchema>;

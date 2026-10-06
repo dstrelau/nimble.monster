@@ -1,7 +1,7 @@
-import { and, asc, count, eq, inArray } from "drizzle-orm";
+import { and, asc, count, eq, inArray, isNull } from "drizzle-orm";
 import { toUser } from "@/lib/db/converters";
-import type { RandomTableFormData } from "@/lib/random-table-schema";
 import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
+import type { OfficialRandomTableInput } from "@/lib/services/random-tables/official";
 import type { RandomTable, Subtable } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
 import { getDatabase } from "./drizzle";
@@ -102,12 +102,25 @@ async function replaceSubtables(
     Parameters<ReturnType<typeof getDatabase>["transaction"]>[0]
   >[0],
   randomTableId: string,
-  subtables: Subtable[]
+  subtables: (Subtable & { officialId?: string })[]
 ): Promise<void> {
   const existing = await db
     .select({ id: randomSubtables.id })
     .from(randomSubtables)
     .where(eq(randomSubtables.randomTableId, randomTableId));
+
+  const existingIds = new Set(existing.map((subtable) => subtable.id));
+  const submittedIds = new Set<string>();
+  for (const subtable of subtables) {
+    if (subtable.id === undefined) continue;
+    if (submittedIds.has(subtable.id)) {
+      throw new Error("Sub-table IDs must be unique");
+    }
+    if (!existingIds.has(subtable.id)) {
+      throw new Error("Sub-table ID does not belong to this table");
+    }
+    submittedIds.add(subtable.id);
+  }
 
   if (existing.length > 0) {
     await db.delete(randomSubtableRows).where(
@@ -116,21 +129,37 @@ async function replaceSubtables(
         existing.map((s) => s.id)
       )
     );
-    await db
-      .delete(randomSubtables)
-      .where(eq(randomSubtables.randomTableId, randomTableId));
+    const omittedIds = existing
+      .filter((subtable) => !submittedIds.has(subtable.id))
+      .map((subtable) => subtable.id);
+    if (omittedIds.length > 0) {
+      await db
+        .delete(randomSubtables)
+        .where(inArray(randomSubtables.id, omittedIds));
+    }
   }
 
   if (subtables.length === 0) return;
 
   const subtableValues = subtables.map((subtable, index) => ({
-    id: crypto.randomUUID(),
+    id: subtable.id ?? crypto.randomUUID(),
     randomTableId,
     title: subtable.title,
     columns: subtable.columns,
     orderIndex: index,
   }));
-  await db.insert(randomSubtables).values(subtableValues);
+  for (const [index, values] of subtableValues.entries()) {
+    // Import keys are supplied only by the official importer, never user forms.
+    const officialId = subtables[index].officialId;
+    if (existingIds.has(values.id)) {
+      await db
+        .update(randomSubtables)
+        .set({ ...values, officialId })
+        .where(eq(randomSubtables.id, values.id));
+    } else {
+      await db.insert(randomSubtables).values({ ...values, officialId });
+    }
+  }
 
   const rowValues = subtables.flatMap((subtable, subtableIndex) =>
     subtable.rows.map((row, rowIndex) => ({
@@ -256,24 +285,86 @@ export interface UpdateRandomTableInput extends CreateRandomTableInput {
 }
 
 export async function upsertOfficialRandomTable(
-  input: RandomTableFormData & { sourceId?: string }
+  input: OfficialRandomTableInput
 ): Promise<void> {
   const db = getDatabase();
 
   await db.transaction(async (tx) => {
-    const [existing] = await tx
-      .select({ id: randomTables.id })
+    const importIds = input.subtables.map((subtable) => subtable.id);
+    if (new Set(importIds).size !== importIds.length) {
+      throw new Error("Official sub-table IDs must be unique");
+    }
+    const [keyed] = await tx
+      .select()
       .from(randomTables)
-      .where(
-        and(
-          eq(randomTables.name, input.name),
-          eq(randomTables.creatorId, OFFICIAL_USER_ID)
-        )
-      )
-      .limit(1);
+      .where(eq(randomTables.officialId, input.officialId));
+    if (keyed && keyed.creatorId !== OFFICIAL_USER_ID) {
+      throw new Error("Official table ID belongs to another user");
+    }
+    const legacy =
+      !keyed && input.legacyName
+        ? await tx
+            .select()
+            .from(randomTables)
+            .where(
+              and(
+                eq(randomTables.name, input.legacyName),
+                eq(randomTables.creatorId, OFFICIAL_USER_ID),
+                isNull(randomTables.officialId)
+              )
+            )
+        : [];
+    if (legacy.length > 1)
+      throw new Error("Ambiguous legacy official table name");
+    const existing = keyed ?? legacy[0];
 
     const id = existing?.id ?? crypto.randomUUID();
+    const existingSubtables = existing
+      ? await tx
+          .select()
+          .from(randomSubtables)
+          .where(eq(randomSubtables.randomTableId, id))
+      : [];
+    const keyedSubtables = await tx
+      .select()
+      .from(randomSubtables)
+      .where(inArray(randomSubtables.officialId, importIds));
+    if (keyedSubtables.some((subtable) => subtable.randomTableId !== id)) {
+      throw new Error("Official sub-table ID belongs to another table");
+    }
+    const mappedIds = new Set<string>();
+    const subtables = input.subtables.map((subtable) => {
+      const keyedSubtable = keyedSubtables.find(
+        (row) => row.officialId === subtable.id
+      );
+      // Only explicit historical titles may bridge pre-key seed data. Never use order.
+      const matches =
+        !keyedSubtable && subtable.legacyTitle
+          ? existingSubtables.filter(
+              (row) =>
+                row.officialId === null && row.title === subtable.legacyTitle
+            )
+          : [];
+      if (matches.length > 1)
+        throw new Error("Ambiguous legacy official sub-table title");
+      const persistedId = (keyedSubtable ?? matches[0])?.id;
+      if (persistedId && mappedIds.has(persistedId)) {
+        throw new Error("Legacy official sub-table mapped more than once");
+      }
+      if (persistedId) mappedIds.add(persistedId);
+      return { ...subtable, id: persistedId, officialId: subtable.id };
+    });
+    if (
+      existingSubtables.some(
+        (row) => row.officialId === null && !mappedIds.has(row.id)
+      )
+    ) {
+      throw new Error(
+        "Unmapped legacy official sub-table; refusing to delete it"
+      );
+    }
     const values = {
+      officialId: input.officialId,
       name: input.name,
       description: input.description ?? "",
       visibility: "public" as const,
@@ -292,7 +383,7 @@ export async function upsertOfficialRandomTable(
       });
     }
 
-    await replaceSubtables(tx, id, input.subtables);
+    await replaceSubtables(tx, id, subtables);
   });
 }
 
@@ -314,7 +405,16 @@ export const createRandomTable = async (
       visibility: input.visibility,
       creatorId: user.id,
     });
-    await replaceSubtables(tx, id, input.subtables);
+    await replaceSubtables(
+      tx,
+      id,
+      input.subtables.map(({ id, title, columns, rows }) => ({
+        id,
+        title,
+        columns,
+        rows,
+      }))
+    );
   });
 
   const result = await db
@@ -362,7 +462,16 @@ export const updateRandomTable = async (
       })
       .where(eq(randomTables.id, input.id));
 
-    await replaceSubtables(tx, input.id, input.subtables);
+    await replaceSubtables(
+      tx,
+      input.id,
+      input.subtables.map(({ id, title, columns, rows }) => ({
+        id,
+        title,
+        columns,
+        rows,
+      }))
+    );
   });
 
   const result = await db

@@ -28,6 +28,19 @@ vi.mock("@/lib/db/drizzle", () => ({ getDatabase: vi.fn() }));
 
 const { tables, source } = validateOfficialRandomTablesJSON(equipmentTables);
 
+function tableContent(table: (typeof tables)[number]) {
+  return {
+    name: table.name,
+    description: table.description,
+    visibility: table.visibility,
+    subtables: table.subtables.map(({ title, columns, rows }) => ({
+      title,
+      columns,
+      rows,
+    })),
+  };
+}
+
 describe("official equipment JSON", () => {
   it("preserves all PDF categories, rows, and representative nontrivial values", () => {
     expect(source).toEqual({
@@ -90,6 +103,30 @@ describe("official equipment JSON", () => {
   it.each([
     null,
     { data: [] },
+    { data: [{ ...equipmentTables.data[0], id: undefined }] },
+    { data: [equipmentTables.data[0], equipmentTables.data[0]] },
+    {
+      data: [
+        {
+          ...equipmentTables.data[0],
+          attributes: {
+            ...equipmentTables.data[0].attributes,
+            subtables: [{ ...tables[0].subtables[0], id: undefined }],
+          },
+        },
+      ],
+    },
+    {
+      data: [
+        {
+          ...equipmentTables.data[0],
+          attributes: {
+            ...equipmentTables.data[0].attributes,
+            subtables: [tables[0].subtables[0], tables[0].subtables[0]],
+          },
+        },
+      ],
+    },
     { ...equipmentTables, source: { name: "Incomplete source" } },
     { data: [{ type: "items", attributes: tables[0] }] },
     {
@@ -125,6 +162,9 @@ describe("official table persistence", () => {
   it("loads the seed twice without duplicates and round-trips every cell in order", async () => {
     for (const table of tables) await upsertOfficialRandomTable(table);
     const firstRows = await getDatabase().select().from(schema.randomTables);
+    const firstSubtables = await getDatabase()
+      .select()
+      .from(schema.randomSubtables);
     if (!source) throw new Error("Missing seed source");
     for (let pass = 0; pass < 2; pass++) {
       const sourceId = await findOrCreateSource(source);
@@ -137,9 +177,10 @@ describe("official table persistence", () => {
       firstRows.map((row) => row.id)
     );
     expect(secondRows).toHaveLength(3);
-    expect(
-      await getDatabase().select().from(schema.randomSubtables)
-    ).toHaveLength(8);
+    expect(await getDatabase().select().from(schema.randomSubtables)).toEqual(
+      firstSubtables
+    );
+    expect(firstSubtables).toHaveLength(8);
     expect(
       await getDatabase().select().from(schema.randomSubtableRows)
     ).toHaveLength(77);
@@ -150,7 +191,7 @@ describe("official table persistence", () => {
       if (!row) throw new Error("Missing seeded table");
       const loaded = await getPublicRandomTableById(row.id);
       expect(loaded).toMatchObject({
-        ...table,
+        ...tableContent(table),
         source: { name: "Core Rules 3.0", abbreviation: "Core3" },
         creator: { id: OFFICIAL_USER_ID, username: "nimble-co" },
       });
@@ -187,7 +228,7 @@ describe("official table persistence", () => {
       username: "source-test-owner",
     });
     const input = {
-      ...tables[1],
+      ...tableContent(tables[1]),
       discordId: "source-test-discord",
       visibility: "private" as const,
     };
@@ -207,6 +248,7 @@ describe("official table persistence", () => {
     const updated = await updateRandomTable({
       ...input,
       id: created.id,
+      subtables: created.subtables,
       name: "Edited weapons",
     });
     expect(updated.source).toMatchObject(source);
@@ -255,7 +297,9 @@ describe("official table persistence", () => {
       .select()
       .from(schema.randomTables)
       .where(eq(schema.randomTables.creatorId, OFFICIAL_USER_ID));
-    expect(await getPublicRandomTableById(official.id)).toMatchObject(revised);
+    expect(await getPublicRandomTableById(official.id)).toMatchObject(
+      tableContent(revised)
+    );
     expect(await db.select().from(schema.randomSubtables)).toHaveLength(1);
     expect(await db.select().from(schema.randomSubtableRows)).toHaveLength(1);
     const [owned] = await db
@@ -281,5 +325,230 @@ describe("official table persistence", () => {
       upsertOfficialRandomTable({ ...tables[0], description: "Must roll back" })
     ).rejects.toThrow();
     expect(await getPublicRandomTableById(row.id)).toEqual(original);
+  });
+
+  it("keeps user sub-table IDs across rename, reorder, row edits, additions and deletion", async () => {
+    await getDatabase().insert(schema.users).values({
+      id: "owner",
+      username: "owner",
+      discordId: "owner-discord",
+    });
+    const input = { ...tableContent(tables[0]), discordId: "owner-discord" };
+    const created = await createRandomTable(input);
+    const updated = await updateRandomTable({
+      ...input,
+      id: created.id,
+      name: "Renamed parent",
+      subtables: [
+        {
+          ...created.subtables[3],
+          title: "Renamed plate",
+          rows: [{ cells: { item: "Edited", defense: "12", cost: "9 gp" } }],
+        },
+        created.subtables[0],
+        { ...input.subtables[1], title: "New leather" },
+      ],
+    });
+    expect(updated.subtables.map((subtable) => subtable.id)).toEqual([
+      created.subtables[3].id,
+      created.subtables[0].id,
+      expect.any(String),
+    ]);
+    expect(created.subtables.map((subtable) => subtable.id)).not.toContain(
+      updated.subtables[2].id
+    );
+    expect(updated.subtables[0]).toMatchObject({
+      title: "Renamed plate",
+      rows: [{ cells: { item: "Edited", defense: "12", cost: "9 gp" } }],
+    });
+    const records = await getDatabase().select().from(schema.randomSubtables);
+    expect(records.map((row) => row.id).sort()).toEqual(
+      updated.subtables.map((row) => row.id).sort()
+    );
+    expect(records.every((row) => row.officialId === null)).toBe(true);
+    expect(
+      await getDatabase().select().from(schema.randomSubtableRows)
+    ).toHaveLength(9);
+    const savedAgain = await updateRandomTable({
+      ...input,
+      id: created.id,
+      subtables: updated.subtables,
+    });
+    expect(savedAgain.subtables.map((row) => row.id)).toEqual(
+      updated.subtables.map((row) => row.id)
+    );
+  });
+
+  it("rejects duplicate, unknown, foreign sub-table IDs and unauthorized edits without mutation", async () => {
+    await getDatabase()
+      .insert(schema.users)
+      .values([
+        { id: "owner", username: "owner", discordId: "owner-discord" },
+        { id: "other", username: "other", discordId: "other-discord" },
+      ]);
+    const input = { ...tableContent(tables[1]), discordId: "owner-discord" };
+    const created = await createRandomTable(input);
+    const other = await createRandomTable({
+      ...input,
+      discordId: "other-discord",
+    });
+    // A different table owned by the same user is still foreign.
+    const sibling = await createRandomTable(input);
+    for (const subtables of [
+      [created.subtables[0], created.subtables[0]],
+      [{ ...created.subtables[0], id: "fe092006-022a-4285-bdd4-6e0ff3b489ad" }],
+      [other.subtables[0]],
+      [sibling.subtables[0]],
+    ]) {
+      await expect(
+        updateRandomTable({
+          ...input,
+          id: created.id,
+          name: "Must roll back",
+          subtables,
+        })
+      ).rejects.toThrow(/Sub-table/);
+      expect(await getRandomTable(created.id, input.discordId)).toEqual(
+        created
+      );
+    }
+    await expect(
+      updateRandomTable({
+        ...input,
+        id: created.id,
+        discordId: "other-discord",
+        subtables: created.subtables,
+      })
+    ).rejects.toThrow("Random table not found");
+    const before = await getDatabase().select().from(schema.randomTables);
+    await expect(
+      createRandomTable({ ...input, subtables: created.subtables })
+    ).rejects.toThrow("Sub-table ID does not belong");
+    expect(await getDatabase().select().from(schema.randomTables)).toEqual(
+      before
+    );
+    expect(await getRandomTable(other.id, "other-discord")).toEqual(other);
+  });
+
+  it("maps legacy seed titles once, retaining existing IDs through reordered and renamed imports", async () => {
+    const original = tables[0];
+    const parentId = crypto.randomUUID();
+    await getDatabase().insert(schema.randomTables).values({
+      id: parentId,
+      name: original.name,
+      creatorId: OFFICIAL_USER_ID,
+    });
+    const legacyRows = original.subtables.map((subtable, index) => ({
+      id: crypto.randomUUID(),
+      randomTableId: parentId,
+      title: subtable.title,
+      columns: subtable.columns,
+      orderIndex: original.subtables.length - index,
+    }));
+    await getDatabase().insert(schema.randomSubtables).values(legacyRows);
+    const revised = {
+      ...original,
+      name: "Renamed armor",
+      subtables: [...original.subtables].reverse().map((subtable) => ({
+        ...subtable,
+        title: `Renamed ${subtable.title}`,
+      })),
+    };
+    await upsertOfficialRandomTable(revised);
+    const mapped = await getDatabase().select().from(schema.randomSubtables);
+    expect(mapped.map((row) => row.id).sort()).toEqual(
+      legacyRows.map((row) => row.id).sort()
+    );
+    for (const subtable of original.subtables) {
+      expect(mapped.find((row) => row.officialId === subtable.id)?.id).toBe(
+        legacyRows.find((row) => row.title === subtable.title)?.id
+      );
+    }
+    const loaded = await getPublicRandomTableById(parentId);
+    expect(loaded).toMatchObject(tableContent(revised));
+    expect(loaded?.subtables.map((row) => row.id)).toEqual(
+      [...legacyRows].reverse().map((row) => row.id)
+    );
+    // Subsequent imports no longer depend on the historical names.
+    await upsertOfficialRandomTable({
+      ...revised,
+      legacyName: undefined,
+      subtables: revised.subtables.map((subtable) => ({
+        ...subtable,
+        legacyTitle: undefined,
+      })),
+    });
+    expect(await getPublicRandomTableById(parentId)).toMatchObject(
+      tableContent(revised)
+    );
+    expect(await getDatabase().select().from(schema.randomSubtables)).toEqual(
+      mapped
+    );
+    expect(await getDatabase().select().from(schema.randomTables)).toHaveLength(
+      1
+    );
+  });
+
+  it.each([
+    "duplicate title",
+    "unmapped title",
+    "duplicate parent",
+  ])("rejects %s during legacy mapping without mutation", async (problem) => {
+    const parentId = crypto.randomUUID();
+    await getDatabase().insert(schema.randomTables).values({
+      id: parentId,
+      name: tables[0].name,
+      creatorId: OFFICIAL_USER_ID,
+    });
+    await getDatabase()
+      .insert(schema.randomSubtables)
+      .values({
+        id: crypto.randomUUID(),
+        randomTableId: parentId,
+        title:
+          problem === "unmapped title" ? "Unknown historical title" : "Cloth",
+        columns: tables[0].subtables[0].columns,
+        orderIndex: 0,
+      });
+    if (problem === "duplicate title") {
+      await getDatabase().insert(schema.randomSubtables).values({
+        id: crypto.randomUUID(),
+        randomTableId: parentId,
+        title: "Cloth",
+        columns: tables[0].subtables[0].columns,
+        orderIndex: 1,
+      });
+    }
+    if (problem === "duplicate parent") {
+      await getDatabase().insert(schema.randomTables).values({
+        id: crypto.randomUUID(),
+        name: tables[0].name,
+        creatorId: OFFICIAL_USER_ID,
+      });
+    }
+    const before = await getPublicRandomTableById(parentId);
+    await expect(upsertOfficialRandomTable(tables[0])).rejects.toThrow(
+      /legacy/i
+    );
+    expect(await getPublicRandomTableById(parentId)).toEqual(before);
+    expect(
+      (await getDatabase().select().from(schema.randomTables)).every(
+        (row) => row.officialId === null
+      )
+    ).toBe(true);
+  });
+
+  it("rejects official import keys attached to another table", async () => {
+    await upsertOfficialRandomTable(tables[0]);
+    const before = await getDatabase().select().from(schema.randomTables);
+    await expect(
+      upsertOfficialRandomTable({
+        ...tables[1],
+        subtables: [tables[0].subtables[0]],
+      })
+    ).rejects.toThrow("Official sub-table ID belongs to another table");
+    expect(await getDatabase().select().from(schema.randomTables)).toEqual(
+      before
+    );
   });
 });

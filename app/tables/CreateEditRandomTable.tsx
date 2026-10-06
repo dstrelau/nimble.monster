@@ -284,6 +284,7 @@ export function CreateEditRandomTable({
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "subtables",
+    keyName: "fieldKey",
   });
 
   const handleSubmit = async (data: RandomTableFormData) => {
@@ -379,7 +380,7 @@ export function CreateEditRandomTable({
         <div className="grid items-start gap-6 md:grid-cols-2">
           {fields.map((field, index) => (
             <SubtableFields
-              key={field.id}
+              key={field.fieldKey}
               subtableIndex={index}
               canRemove={fields.length > 1}
               onRemove={() => remove(index)}

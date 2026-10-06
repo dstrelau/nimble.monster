@@ -141,6 +141,7 @@ export const randomTables = sqliteTable(
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
+    officialId: text("official_id").unique(),
     creatorId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
@@ -165,6 +166,7 @@ export const randomSubtables = sqliteTable(
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
+    officialId: text("official_id").unique(),
     randomTableId: text("random_table_id")
       .notNull()
       .references(() => randomTables.id, {

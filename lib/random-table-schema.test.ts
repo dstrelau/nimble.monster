@@ -9,6 +9,29 @@ const table = (subtables: unknown[]) => ({
 });
 
 describe("RandomTableSchema", () => {
+  it("preserves persisted IDs and rejects malformed or duplicate IDs", () => {
+    const subtable = {
+      id: "56648cf2-a838-40dc-a66a-2712ea10c5a7",
+      title: "Weather",
+      columns: [{ id: "result", name: "Result" }],
+      rows: [{ cells: { result: "Clear" } }],
+    };
+    expect(RandomTableSchema.parse(table([subtable])).subtables[0].id).toBe(
+      subtable.id
+    );
+    expect(
+      RandomTableSchema.safeParse(table([{ ...subtable, id: "bad-id" }]))
+        .success
+    ).toBe(false);
+    expect(
+      RandomTableSchema.safeParse(table([subtable, subtable])).success
+    ).toBe(false);
+    const { id: _id, ...newSubtable } = subtable;
+    expect(
+      RandomTableSchema.safeParse(table([newSubtable, newSubtable])).success
+    ).toBe(true);
+  });
+
   it("accepts arbitrary columns and cell values", () => {
     const result = RandomTableSchema.safeParse(
       table([

@@ -40,6 +40,7 @@ const weaponsTable: RandomTable = {
   name: "Weapons",
   subtables: [
     {
+      id: "56648cf2-a838-40dc-a66a-2712ea10c5a7",
       title: "Weapons",
       columns: [
         { id: "roll", name: "1d6" },
@@ -87,6 +88,7 @@ describe("CreateEditRandomTable", () => {
         name: "Weapons",
         subtables: [
           {
+            id: weaponsTable.subtables[0].id,
             title: "Weapons",
             columns: weaponsTable.subtables[0].columns,
             rows: [
@@ -103,6 +105,50 @@ describe("CreateEditRandomTable", () => {
         ],
       })
     );
+  });
+
+  it("retains the surviving database ID after removal and leaves a new table ID unassigned", async () => {
+    call.mockResolvedValue({ id: weaponsTable.id, name: weaponsTable.name });
+    render(
+      <CreateEditRandomTable
+        randomTable={{
+          ...weaponsTable,
+          subtables: [
+            {
+              ...weaponsTable.subtables[0],
+              id: "783bf563-70c8-4342-94f5-7b1b5d709766",
+              title: "Remove me",
+            },
+            weaponsTable.subtables[0],
+          ],
+        }}
+      />
+    );
+    fireEvent.click(screen.getAllByRole("button", { name: "Remove table" })[0]);
+    fireEvent.change(screen.getByLabelText("Table title"), {
+      target: { value: "Renamed weapons" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Add Table" }));
+    fireEvent.change(screen.getAllByLabelText("Table title")[1], {
+      target: { value: "New table" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(call).toHaveBeenCalledTimes(1));
+    expect(call.mock.calls[0][1].subtables).toEqual([
+      expect.objectContaining({
+        id: weaponsTable.subtables[0].id,
+        title: "Renamed weapons",
+      }),
+      {
+        title: "New table",
+        columns: [
+          { id: "roll", name: "1d6" },
+          { id: "result", name: "Result" },
+        ],
+        rows: [{ cells: { roll: "", result: "" } }],
+      },
+    ]);
+    expect(call.mock.calls[0][1].subtables[0]).not.toHaveProperty("fieldKey");
   });
 
   it("adds and removes columns while keeping row cells aligned", () => {

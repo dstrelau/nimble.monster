@@ -7,13 +7,17 @@
   },
   "data": [
     {
+      "id": "f65bcf78-9a2c-4b16-8e40-671e82091a01",
       "type": "random-tables",
       "attributes": {
         "name": "Armor & Defense",
+        "legacyName": "Armor & Defense",
         "description": "Nimble Core Rules 3.0, p. 33.\n\nDefense represents your hero’s ability to dodge or block damage when you use the Defend reaction. While unarmored or wearing regular clothes, your Defense is equal to your DEX. Some items may grant additional Defense while equipped.",
         "subtables": [
           {
+            "id": "f65bcf78-9a2c-4b16-8e40-671e82091b01",
             "title": "Cloth",
+            "legacyTitle": "Cloth",
             "columns": [
               { "id": "item", "name": "Cloth" },
               { "id": "defense", "name": "Defense" },
@@ -51,7 +55,9 @@
             ]
           },
           {
+            "id": "f65bcf78-9a2c-4b16-8e40-671e82091b02",
             "title": "Leather",
+            "legacyTitle": "Leather",
             "columns": [
               { "id": "item", "name": "Leather" },
               { "id": "defense", "name": "Defense" },
@@ -89,7 +95,9 @@
             ]
           },
           {
+            "id": "f65bcf78-9a2c-4b16-8e40-671e82091b03",
             "title": "Mail",
+            "legacyTitle": "Mail",
             "columns": [
               { "id": "item", "name": "Mail" },
               { "id": "defense", "name": "Defense" },
@@ -127,7 +135,9 @@
             ]
           },
           {
+            "id": "f65bcf78-9a2c-4b16-8e40-671e82091b04",
             "title": "Plate",
+            "legacyTitle": "Plate",
             "columns": [
               { "id": "item", "name": "Plate" },
               { "id": "defense", "name": "Defense" },
@@ -165,7 +175,9 @@
             ]
           },
           {
+            "id": "f65bcf78-9a2c-4b16-8e40-671e82091b05",
             "title": "Shields",
+            "legacyTitle": "Shields",
             "columns": [
               { "id": "item", "name": "Shields" },
               { "id": "defense", "name": "Defense" },
@@ -206,13 +218,17 @@
       }
     },
     {
+      "id": "f65bcf78-9a2c-4b16-8e40-671e82091a02",
       "type": "random-tables",
       "attributes": {
         "name": "Weapons",
+        "legacyName": "Weapons",
         "description": "See @rule:weapon-properties rules.",
         "subtables": [
           {
+            "id": "f65bcf78-9a2c-4b16-8e40-671e82091b06",
             "title": "Melee Weapons",
+            "legacyTitle": "Melee Weapons",
             "columns": [
               { "id": "item", "name": "Item" },
               { "id": "damage", "name": "Damage" },
@@ -351,7 +367,9 @@
             ]
           },
           {
+            "id": "f65bcf78-9a2c-4b16-8e40-671e82091b07",
             "title": "Ranged Weapons",
+            "legacyTitle": "Ranged Weapons",
             "columns": [
               { "id": "item", "name": "Item" },
               { "id": "damage", "name": "Damage" },
@@ -421,13 +439,17 @@
       }
     },
     {
+      "id": "f65bcf78-9a2c-4b16-8e40-671e82091a03",
       "type": "random-tables",
       "attributes": {
         "name": "Misc Adventuring Equipment",
+        "legacyName": "Misc Adventuring Equipment",
         "description": "Nimble Core Rules 3.0, p. 37.\n\n**What About…?** These are not ALL of the items available for purchase, merely a sampling. If you can think of it, you can likely buy it!\n\nCurrency is made up of silver (sp) and gold pieces (gp). 10 silver = 1 gold. 1 sp is roughly the cost of a humble meal; 1 gp, a sumptuous feast. Most small towns will have equipment and items worth 50 gp or less. You’ll need to adventure to larger towns or cities or find a traveling merchant to purchase more valuable pieces of equipment.",
         "subtables": [
           {
+            "id": "f65bcf78-9a2c-4b16-8e40-671e82091b08",
             "title": "Misc Adventuring Equipment",
+            "legacyTitle": "Misc Adventuring Equipment",
             "columns": [
               { "id": "item", "name": "Item" },
               { "id": "properties", "name": "Properties" },

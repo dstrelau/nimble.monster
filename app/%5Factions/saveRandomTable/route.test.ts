@@ -87,16 +87,49 @@ describe("POST /_actions/saveRandomTable", () => {
   it("updates an owned random table", async () => {
     const id = "22222222-2222-2222-2222-222222222222";
     mockUpdateRandomTable.mockResolvedValue({ id, name: "Weather" });
+    const subtables = [
+      { ...input.subtables[0], id: "56648cf2-a838-40dc-a66a-2712ea10c5a7" },
+    ];
 
-    const response = await POST(request({ ...input, id }));
+    const response = await POST(request({ ...input, id, subtables }));
 
     expect(response.status).toBe(200);
     expect(mockUpdateRandomTable).toHaveBeenCalledWith({
       ...input,
       id,
+      subtables,
       discordId: "dev-user-1",
     });
     expect(revalidatePath).toHaveBeenCalledWith("/tables/[id]", "page");
+  });
+
+  it("rejects duplicate sub-table IDs before persistence", async () => {
+    const subtable = {
+      ...input.subtables[0],
+      id: "56648cf2-a838-40dc-a66a-2712ea10c5a7",
+    };
+    const response = await POST(
+      request({ ...input, subtables: [subtable, subtable] })
+    );
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({
+      error: "Sub-table IDs must be unique",
+    });
+    expect(mockCreateRandomTable).not.toHaveBeenCalled();
+  });
+
+  it("returns a validation error for a foreign sub-table ID without invalidating pages", async () => {
+    mockUpdateRandomTable.mockRejectedValue(
+      new Error("Sub-table ID does not belong to this table")
+    );
+    const response = await POST(
+      request({ ...input, id: "22222222-2222-2222-2222-222222222222" })
+    );
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({
+      error: "Sub-table ID does not belong to this table",
+    });
+    expect(revalidatePath).not.toHaveBeenCalled();
   });
 
   it("rejects unauthenticated requests", async () => {
