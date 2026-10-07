@@ -1,6 +1,10 @@
-import type { Profile } from "next-auth";
+import NextAuth, { type NextAuthConfig, type Profile } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("next-auth", () => ({
+  default: vi.fn((_config: NextAuthConfig) => ({})),
+}));
 
 interface SessionUser {
   id?: string;
@@ -133,6 +137,22 @@ const sessionCallback = ({
 describe("NextAuth configuration", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it("configures Discord's issuer for OAuth callback validation", async () => {
+    await import("./auth");
+
+    const config = vi.mocked(NextAuth).mock.calls[0]?.[0];
+    if (!config || typeof config === "function") {
+      throw new Error("Expected a static NextAuth configuration");
+    }
+    const discord = config.providers.find(
+      (provider) => typeof provider !== "function" && provider.id === "discord"
+    );
+
+    expect(discord).toMatchObject({
+      options: { issuer: "https://discord.com" },
+    });
   });
 
   describe("signIn callback", () => {

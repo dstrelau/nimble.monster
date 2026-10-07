@@ -31,6 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   providers: [
     Discord({
+      issuer: "https://discord.com",
       // Documentation:
       // > That means you only have to override part of the options that you
       // > need to be different. For example if you want different scopes,
