@@ -142,6 +142,99 @@ afterEach(() => {
 });
 
 describe("AdventureView", () => {
+  it("renders reference table rows inline and a placeholder when unavailable", () => {
+    const adventure = calloutAdventure("note");
+    adventure.nodes = [
+      {
+        ...adventure.nodes[0],
+        kind: "table",
+        content: "",
+        table: {
+          id: "table",
+          name: "Travel Events",
+          description: "Along the road.",
+          visibility: "public",
+          creator: adventure.creator,
+          subtables: [
+            {
+              title: "Weather",
+              columns: [{ id: "result", name: "Result" }],
+              rows: [{ cells: { result: "Heavy rain" } }],
+            },
+          ],
+        },
+      },
+      {
+        ...adventure.nodes[0],
+        id: "missing",
+        kind: "table",
+        table: null,
+        referenceRemoved: true,
+      },
+    ];
+    render(<AdventureView adventure={adventure} />);
+    expect(
+      screen.getByRole("heading", { name: "Travel Events" })
+    ).toBeVisible();
+    expect(screen.getByRole("cell", { name: "Heavy rain" })).toBeVisible();
+    expect(screen.getByText("Along the road.")).toBeVisible();
+    expect(screen.getByText("Removed content")).toBeVisible();
+  });
+
+  it.each([
+    { ids: null, cells: ["First result", "Hidden result", "Last result"] },
+    { ids: ["last", "first"], cells: ["First result", "Last result"] },
+    { ids: ["middle"], cells: ["Hidden result"] },
+    { ids: [], cells: [] },
+    { ids: ["deleted"], cells: [] },
+  ])("renders selected sub-tables by ID in source order: $ids", ({
+    ids,
+    cells,
+  }) => {
+    const adventure = calloutAdventure("note");
+    adventure.nodes = [
+      {
+        ...adventure.nodes[0],
+        kind: "table",
+        content: "",
+        subtableIds: ids,
+        table: {
+          id: "table",
+          name: "Travel Events",
+          visibility: "public",
+          creator: adventure.creator,
+          subtables: [
+            {
+              id: "first",
+              title: "Duplicate title",
+              columns: [{ id: "result", name: "Result" }],
+              rows: [{ cells: { result: "First result" } }],
+            },
+            {
+              id: "middle",
+              title: "Duplicate title",
+              columns: [{ id: "result", name: "Result" }],
+              rows: [{ cells: { result: "Hidden result" } }],
+            },
+            {
+              id: "last",
+              title: "Renamed last",
+              columns: [{ id: "result", name: "Result" }],
+              rows: [{ cells: { result: "Last result" } }],
+            },
+          ],
+        },
+      },
+    ];
+    render(<AdventureView adventure={adventure} />);
+    expect(
+      screen.queryAllByRole("cell").map((cell) => cell.textContent?.trim())
+    ).toEqual(cells);
+    expect(screen.queryByText("Removed content") !== null).toBe(
+      ids?.[0] === "deleted"
+    );
+  });
+
   it.each(
     calloutVariants
   )("renders the $label callout with its shared icon and color treatment", ({

@@ -12,6 +12,7 @@ import {
   Plus,
   Shield,
   Swords,
+  Table2,
   Trash2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -37,11 +38,13 @@ import { Goblin } from "@/components/icons/goblin";
 import { Card as ItemCard } from "@/components/item/Card";
 import { Card as MonsterCard } from "@/components/monster/Card";
 import { SelectableMonsterGrid } from "@/components/monster/SelectableMonsterGrid";
+import { SubtablesView } from "@/components/random-table/SubtablesView";
 import { Attribution } from "@/components/shared/Attribution";
 import { ExampleLoader } from "@/components/shared/ExampleLoader";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -69,7 +72,7 @@ import type {
 import { toHazardMonsterView } from "@/lib/services/hazards/converters";
 import type { Item } from "@/lib/services/items";
 import type { BestiaryEntry } from "@/lib/services/monsters";
-import type { EncounterOverview, User } from "@/lib/types";
+import type { EncounterOverview, RandomTable, User } from "@/lib/types";
 import { cn, randomUUID } from "@/lib/utils";
 import { getAdventureUrl } from "@/lib/utils/url";
 import { AdventureImageUpload } from "./AdventureImageUpload";
@@ -82,6 +85,7 @@ interface AdventureFormProps {
   adventureId?: string;
   initialValue: AdventureInput;
   encounters: EncounterOverview[];
+  tables?: RandomTable[];
   creator: User;
   initialStatblocks?: AdventureStatblock[];
   initialRemovedNodeIds?: string[];
@@ -150,6 +154,8 @@ function emptyNode(
     title: "",
     content: "",
     encounterId: null,
+    tableId: null,
+    subtableIds: null,
     monsterIds: [],
     itemIds: [],
     missingStatblockCount: 0,
@@ -174,10 +180,14 @@ function normalizeOrder(nodes: AdventureNodeInput[]): AdventureNodeInput[] {
     const hasNoTextContent =
       node.kind === "section" ||
       node.kind === "encounter" ||
+      node.kind === "table" ||
       node.kind === "monsters" ||
       node.kind === "items" ||
       node.kind === "image";
-    const hasNoTitle = node.kind === "encounter" || node.kind === "image";
+    const hasNoTitle =
+      node.kind === "encounter" ||
+      node.kind === "table" ||
+      node.kind === "image";
     return {
       ...node,
       orderIndex: siblings.findIndex((item) => item.id === node.id),
@@ -191,6 +201,7 @@ export function AdventureForm({
   adventureId,
   initialValue,
   encounters,
+  tables = [],
   creator,
   initialStatblocks = [],
   initialRemovedNodeIds = [],
@@ -240,6 +251,9 @@ export function AdventureForm({
   const availableEncounters = encounters.filter(
     (encounter) =>
       draft.visibility === "private" || encounter.visibility === "public"
+  );
+  const availableTables = tables.filter(
+    (table) => draft.visibility === "private" || table.visibility === "public"
   );
 
   const updateNode = (id: string, patch: Partial<AdventureNodeInput>) => {
@@ -382,6 +396,14 @@ export function AdventureForm({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
+    if (
+      draft.nodes.some(
+        (node) => node.kind === "table" && node.subtableIds?.length === 0
+      )
+    ) {
+      setError("Select at least one sub-table");
+      return;
+    }
     const payload: AdventureInput = {
       ...draft,
       nodes: normalizeOrder(draft.nodes),
@@ -485,6 +507,8 @@ export function AdventureForm({
       encounter:
         encounters.find((encounter) => encounter.id === node.encounterId) ??
         null,
+      table: availableTables.find((table) => table.id === node.tableId) ?? null,
+      subtableIds: node.subtableIds,
       monsters: node.monsterIds.flatMap((id) => {
         const value = statblocks.get(id);
         return value?.entityType === "monster" ? [value.entity] : [];
@@ -644,15 +668,20 @@ export function AdventureForm({
                 const hasNoTextContent =
                   kind === "section" ||
                   kind === "encounter" ||
+                  kind === "table" ||
                   kind === "monsters" ||
                   kind === "items" ||
                   kind === "image";
                 updateNode(node.id, {
                   kind,
                   title:
-                    kind === "encounter" || kind === "image" ? "" : node.title,
+                    kind === "encounter" || kind === "table" || kind === "image"
+                      ? ""
+                      : node.title,
                   content: hasNoTextContent ? "" : node.content,
                   encounterId: kind === "encounter" ? node.encounterId : null,
+                  tableId: kind === "table" ? node.tableId : null,
+                  subtableIds: kind === "table" ? node.subtableIds : null,
                   monsterIds: kind === "monsters" ? node.monsterIds : [],
                   itemIds: kind === "items" ? node.itemIds : [],
                   missingStatblockCount:
@@ -673,7 +702,7 @@ export function AdventureForm({
             >
               <SelectTrigger
                 id={`kind-${node.id}`}
-                className="w-40 shrink-0"
+                className="w-48 shrink-0"
                 aria-label="Section type"
               >
                 <SelectValue />
@@ -725,10 +754,18 @@ export function AdventureForm({
                   <Shield />
                   Items
                 </SelectItem>
+                <SelectItem
+                  value="table"
+                  disabled={depth === 0 || children.length > 0}
+                >
+                  <Table2 />
+                  Reference table
+                </SelectItem>
               </SelectContent>
             </Select>
             {node.kind !== "image" &&
               node.kind !== "encounter" &&
+              node.kind !== "table" &&
               node.kind !== "monsters" &&
               node.kind !== "items" && (
                 <div className="min-w-48 flex-1">
@@ -858,6 +895,124 @@ export function AdventureForm({
                     <EncounterCard encounter={selectedEncounter} limit={3} />
                   </div>
                 )}
+              </div>
+            )}
+
+            {node.kind === "table" && (
+              <div className="space-y-2">
+                <Label htmlFor={`table-${node.id}`}>Reference table</Label>
+                {removedNodeIds.has(node.id) && (
+                  <div className="rounded-md border border-dashed p-3 text-muted-foreground">
+                    Removed content
+                  </div>
+                )}
+                <Select
+                  value={node.tableId ?? "none"}
+                  onValueChange={(tableId) => {
+                    updateNode(node.id, {
+                      tableId: tableId === "none" ? null : tableId,
+                      subtableIds: null,
+                    });
+                    setRemovedNodeIds((current) => {
+                      const next = new Set(current);
+                      next.delete(node.id);
+                      return next;
+                    });
+                  }}
+                >
+                  <SelectTrigger id={`table-${node.id}`} className="w-full">
+                    <SelectValue placeholder="Select a reference table" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">
+                      Select a reference table
+                    </SelectItem>
+                    {availableTables.map((table) => (
+                      <SelectItem key={table.id} value={table.id}>
+                        {table.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {availableTables
+                  .filter((table) => table.id === node.tableId)
+                  .map((table) => {
+                    const ids = table.subtables.flatMap((subtable) =>
+                      subtable.id ? [subtable.id] : []
+                    );
+                    const selectedIds =
+                      node.subtableIds == null
+                        ? ids
+                        : ids.filter((id) => node.subtableIds?.includes(id));
+                    return (
+                      <div key={table.id} className="space-y-3">
+                        <fieldset className="flex flex-wrap items-center gap-x-5 gap-y-3 py-2">
+                          <legend className="sr-only">
+                            Visible sub-tables
+                          </legend>
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              id={`subtables-all-${node.id}`}
+                              checked={
+                                node.subtableIds == null
+                                  ? true
+                                  : selectedIds.length > 0
+                                    ? "indeterminate"
+                                    : false
+                              }
+                              onCheckedChange={(checked) =>
+                                updateNode(node.id, {
+                                  subtableIds: checked ? null : [],
+                                })
+                              }
+                            />
+                            <Label htmlFor={`subtables-all-${node.id}`}>
+                              All
+                            </Label>
+                          </div>
+                          {table.subtables.map((subtable) => {
+                            const id = subtable.id;
+                            if (!id) return null;
+                            return (
+                              <div key={id} className="flex items-center gap-2">
+                                <Checkbox
+                                  id={`subtable-${node.id}-${id}`}
+                                  checked={selectedIds.includes(id)}
+                                  onCheckedChange={(checked) => {
+                                    const next = checked
+                                      ? [...selectedIds, id]
+                                      : selectedIds.filter(
+                                          (selected) => selected !== id
+                                        );
+                                    updateNode(node.id, {
+                                      subtableIds:
+                                        next.length === ids.length
+                                          ? null
+                                          : next,
+                                    });
+                                  }}
+                                />
+                                <Label htmlFor={`subtable-${node.id}-${id}`}>
+                                  {subtable.title}
+                                </Label>
+                              </div>
+                            );
+                          })}
+                        </fieldset>
+                        {node.subtableIds != null &&
+                          selectedIds.length === 0 && (
+                            <p className="text-sm text-destructive">
+                              Select at least one sub-table
+                            </p>
+                          )}
+                        <SubtablesView
+                          subtables={table.subtables}
+                          subtableIds={node.subtableIds}
+                          conditions={[]}
+                        />
+                      </div>
+                    );
+                  })}
               </div>
             )}
 
@@ -1010,6 +1165,7 @@ export function AdventureForm({
             {node.kind !== "section" &&
               node.kind !== "image" &&
               node.kind !== "encounter" &&
+              node.kind !== "table" &&
               node.kind !== "monsters" &&
               node.kind !== "items" && (
                 <div className="space-y-2">
@@ -1059,6 +1215,9 @@ export function AdventureForm({
       (node.kind === "encounter" && node.encounterId
         ? encounters.find((encounter) => encounter.id === node.encounterId)
             ?.name
+        : undefined) ||
+      (node.kind === "table"
+        ? tables.find((table) => table.id === node.tableId)?.name
         : undefined) ||
       ((node.kind === "monsters" || node.kind === "items") && node.title
         ? node.title
@@ -1231,6 +1390,11 @@ export function AdventureForm({
                         ].map((id) => statblocks.get(id));
                         return (
                           encounter?.visibility === "private" ||
+                          tables.some(
+                            (table) =>
+                              table.id === node.tableId &&
+                              table.visibility === "private"
+                          ) ||
                           selected.some(
                             (statblock) =>
                               statblock?.entity.visibility === "private"
@@ -1239,7 +1403,7 @@ export function AdventureForm({
                       });
                       if (hasPrivateContent) {
                         setError(
-                          "Remove private encounters and statblocks before making this adventure public."
+                          "Remove private encounters, reference tables, and statblocks before making this adventure public."
                         );
                         return;
                       }

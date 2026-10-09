@@ -12,8 +12,9 @@ import { call } from "@/lib/contract";
 import type { AdventureInput, AdventureStatblock } from "@/lib/db/adventures";
 import type { Item } from "@/lib/services/items";
 import type { BestiaryEntryMini } from "@/lib/services/monsters";
-import type { EncounterOverview, User } from "@/lib/types";
+import type { EncounterOverview, RandomTable, User } from "@/lib/types";
 import { AdventureForm } from "./AdventureForm";
+import { AdventureView } from "./AdventureView";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -122,7 +123,7 @@ vi.mock("./AdventureView", () => ({
     "text-emerald-700 dark:text-emerald-400",
     "text-violet-700 dark:text-violet-400",
   ],
-  AdventureView: () => <div data-testid="adventure-preview" />,
+  AdventureView: vi.fn(() => <div data-testid="adventure-preview" />),
 }));
 
 afterEach(() => {
@@ -268,7 +269,8 @@ const uploadedImageValue: AdventureInput = {
 function renderForm(
   value: AdventureInput = initialValue,
   encounters: EncounterOverview[] = [],
-  initialStatblocks: AdventureStatblock[] = []
+  initialStatblocks: AdventureStatblock[] = [],
+  tables: RandomTable[] = []
 ) {
   const queryClient = new QueryClient();
   return render(
@@ -278,12 +280,210 @@ function renderForm(
         encounters={encounters}
         creator={creator}
         initialStatblocks={initialStatblocks}
+        tables={tables}
       />
     </QueryClientProvider>
   );
 }
 
 describe("AdventureForm", () => {
+  it("selects and submits a reference table without text content", async () => {
+    const table: RandomTable = {
+      id: "66666666-6666-4666-8666-666666666666",
+      name: "Travel Events",
+      visibility: "public",
+      creator,
+      subtables: [
+        {
+          id: "77777777-7777-4777-8777-777777777777",
+          title: "Weather",
+          columns: [{ id: "result", name: "Result" }],
+          rows: [{ cells: { result: "Heavy rain" } }],
+        },
+      ],
+    };
+    renderForm(
+      {
+        ...initialValue,
+        name: "Table Adventure",
+        nodes: [
+          initialValue.nodes[0],
+          {
+            ...initialValue.nodes[1],
+            parentId: initialValue.nodes[0].id,
+            kind: "table",
+            title: "Stale title",
+            content: "Stale text",
+            tableId: null,
+          },
+        ],
+      },
+      [],
+      [],
+      [table]
+    );
+    fireEvent.click(screen.getByRole("combobox", { name: "Reference table" }));
+    fireEvent.click(
+      await screen.findByRole("option", { name: "Travel Events" })
+    );
+    expect(screen.getByText("Heavy rain")).toBeVisible();
+    expect(screen.queryByLabelText("table content")).not.toBeInTheDocument();
+    vi.mocked(call).mockClear();
+    fireEvent.click(screen.getByRole("button", { name: "Create" }));
+    await waitFor(() =>
+      expect(call).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          nodes: expect.arrayContaining([
+            expect.objectContaining({
+              kind: "table",
+              tableId: table.id,
+              subtableIds: null,
+              title: "",
+              content: "",
+            }),
+          ]),
+        })
+      )
+    );
+  });
+
+  it("selects stable IDs, previews only that subset, and handles all, empty and table changes", async () => {
+    const weatherId = "77777777-7777-4777-8777-777777777777";
+    const terrainId = "88888888-8888-4888-8888-888888888888";
+    const table: RandomTable = {
+      id: "66666666-6666-4666-8666-666666666666",
+      name: "Travel Events",
+      visibility: "public",
+      creator,
+      subtables: [
+        {
+          id: weatherId,
+          title: "Weather",
+          columns: [{ id: "result", name: "Result" }],
+          rows: [{ cells: { result: "Heavy rain" } }],
+        },
+        {
+          id: terrainId,
+          title: "Terrain",
+          columns: [{ id: "result", name: "Result" }],
+          rows: [{ cells: { result: "Steep cliffs" } }],
+        },
+      ],
+    };
+    const other = {
+      ...table,
+      id: "99999999-9999-4999-8999-999999999999",
+      name: "Other Events",
+    };
+    renderForm(
+      {
+        ...initialValue,
+        name: "Selected Table Adventure",
+        nodes: [
+          initialValue.nodes[0],
+          {
+            ...initialValue.nodes[1],
+            kind: "table",
+            parentId: initialValue.nodes[0].id,
+            tableId: table.id,
+          },
+        ],
+      },
+      [],
+      [],
+      [table, other]
+    );
+    expect(screen.getByRole("checkbox", { name: "All" })).toBeChecked();
+    fireEvent.click(screen.getByRole("checkbox", { name: "Weather" }));
+    expect(
+      screen.getByRole("checkbox", { name: "All" })
+    ).toBePartiallyChecked();
+    expect(
+      screen.queryByRole("cell", { name: "Heavy rain" })
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("cell", { name: "Steep cliffs" })).toBeVisible();
+    fireEvent.click(
+      screen.getAllByRole("button", { name: "Toggle preview" })[0]
+    );
+    expect(vi.mocked(AdventureView).mock.calls.at(-1)?.[0]).toMatchObject({
+      adventure: {
+        nodes: expect.arrayContaining([
+          expect.objectContaining({ subtableIds: [terrainId], table }),
+        ]),
+      },
+    });
+    fireEvent.click(
+      screen.getAllByRole("button", { name: "Toggle preview" })[0]
+    );
+    fireEvent.click(screen.getByRole("combobox", { name: "Reference table" }));
+    fireEvent.click(
+      await screen.findByRole("option", { name: "Other Events" })
+    );
+    expect(screen.getByRole("checkbox", { name: "All" })).toBeChecked();
+    fireEvent.click(screen.getByRole("checkbox", { name: "All" }));
+    expect(screen.getByRole("checkbox", { name: "Terrain" })).not.toBeChecked();
+    vi.mocked(call).mockClear();
+    fireEvent.click(screen.getByRole("button", { name: "Create" }));
+    expect(call).not.toHaveBeenCalled();
+    expect(
+      screen.getAllByText("Select at least one sub-table").length
+    ).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole("checkbox", { name: "Terrain" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "Weather" }));
+    expect(screen.getByRole("checkbox", { name: "All" })).toBeChecked();
+    fireEvent.click(screen.getByRole("checkbox", { name: "Weather" }));
+    fireEvent.click(screen.getByRole("button", { name: "Create" }));
+    await waitFor(() =>
+      expect(call).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          nodes: expect.arrayContaining([
+            expect.objectContaining({
+              tableId: other.id,
+              subtableIds: [terrainId],
+            }),
+          ]),
+        })
+      )
+    );
+  });
+
+  it("blocks publishing an adventure containing an owned private table", () => {
+    const table: RandomTable = {
+      id: "66666666-6666-4666-8666-666666666666",
+      name: "Secret Events",
+      visibility: "private",
+      creator,
+      subtables: [],
+    };
+    renderForm(
+      {
+        ...initialValue,
+        visibility: "private",
+        nodes: [
+          initialValue.nodes[0],
+          {
+            ...initialValue.nodes[1],
+            kind: "table",
+            parentId: initialValue.nodes[0].id,
+            tableId: table.id,
+          },
+        ],
+      },
+      [],
+      [],
+      [table]
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Private" }));
+    expect(
+      screen.getByText(
+        "Remove private encounters, reference tables, and statblocks before making this adventure public."
+      )
+    ).toBeVisible();
+    expect(screen.getByRole("button", { name: "Private" })).toBeVisible();
+  });
+
   it("defaults top-level nodes to sections and child nodes to text", () => {
     renderForm({ ...initialValue, nodes: [] });
 

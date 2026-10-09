@@ -9,6 +9,7 @@ import { getAdventureNodeAnchorId } from "@/components/adventure/AdventureOutlin
 import { EncounterCard } from "@/components/encounter/EncounterCard";
 import { Card as ItemCard } from "@/components/item/Card";
 import { Card as MonsterCard } from "@/components/monster/Card";
+import { SubtablesView } from "@/components/random-table/SubtablesView";
 import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
 import { Card } from "@/components/ui/card";
@@ -278,6 +279,41 @@ function AdventureNodeView({
             conditions={conditions}
           />
         )}
+      </section>
+    );
+  }
+
+  if (node.kind === "table") {
+    return (
+      <section className="my-6 space-y-4">
+        {node.table && (
+          <>
+            <NodeHeading
+              depth={depth}
+              title={node.table.name}
+              anchorId={getAdventureNodeAnchorId(node.id)}
+            />
+            {node.table.description && (
+              <FormattedText
+                content={node.table.description}
+                conditions={conditions}
+              />
+            )}
+            <SubtablesView
+              subtables={node.table.subtables}
+              subtableIds={node.subtableIds}
+              conditions={conditions}
+            />
+            {node.subtableIds?.length &&
+            !node.table.subtables.some(
+              (subtable) =>
+                subtable.id && node.subtableIds?.includes(subtable.id)
+            ) ? (
+              <RemovedContent />
+            ) : null}
+          </>
+        )}
+        {node.referenceRemoved && <RemovedContent />}
       </section>
     );
   }

@@ -9,11 +9,12 @@ import {
   type BestiaryEntry,
   findBestiaryEntriesByIds,
 } from "@/lib/services/monsters";
-import type { EncounterOverview, User } from "@/lib/types";
+import type { EncounterOverview, RandomTable, User } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
 import { toUser } from "./converters";
 import { getDatabase } from "./drizzle";
 import { findEncounterOverviewsByIds } from "./encounter";
+import { findRandomTablesByIds } from "./random-table";
 import {
   type AdventureImageExtension,
   type AdventureNodeKind,
@@ -27,6 +28,8 @@ import {
   encounters,
   items,
   monsters,
+  randomSubtables,
+  randomTables,
   users,
 } from "./schema";
 
@@ -55,6 +58,8 @@ export interface AdventureNode {
   title: string;
   content: string;
   encounter: EncounterOverview | null;
+  table?: RandomTable | null;
+  subtableIds?: string[] | null;
   monsters: BestiaryEntry[];
   items: Item[];
   missingStatblockCount: number;
@@ -95,6 +100,8 @@ export interface AdventureNodeInput {
   title: string;
   content: string;
   encounterId: string | null;
+  tableId?: string | null;
+  subtableIds?: string[] | null;
   monsterIds: string[];
   itemIds: string[];
   missingStatblockCount: number;
@@ -209,6 +216,10 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
     .where(eq(adventureNodes.adventureId, id))
     .orderBy(asc(adventureNodes.orderIndex));
   const nodeIds = nodeRows.map((node) => node.id);
+  const tables = await findRandomTablesByIds(
+    nodeRows.flatMap((node) => (node.tableId ? [node.tableId] : []))
+  );
+  const tableMap = new Map(tables.map((table) => [table.id, table]));
   const monsterRelations =
     nodeIds.length > 0
       ? await db
@@ -250,7 +261,7 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
   const statblockItemMap = new Map(
     statblockItems.map((item) => [item.id, item])
   );
-  const canDisplayStatblock = (entity: BestiaryEntry | Item) =>
+  const canDisplayReference = (entity: BestiaryEntry | Item | RandomTable) =>
     entity.visibility === "public" ||
     (row.adventure.visibility === "private" &&
       entity.creator.id === row.adventure.userId);
@@ -275,6 +286,13 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
     creator: toUser(row.creator),
     nodes: nodeRows.map((node) => {
       const encounter = getEncounter(node);
+      const referencedTable = node.tableId
+        ? tableMap.get(node.tableId)
+        : undefined;
+      const table =
+        referencedTable && canDisplayReference(referencedTable)
+          ? referencedTable
+          : null;
       const nodeMonsterRelations = monsterRelations.filter(
         (relation) => relation.nodeId === node.id
       );
@@ -285,13 +303,13 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
         const monster = relation.monsterId
           ? statblockMonsterMap.get(relation.monsterId)
           : undefined;
-        return monster && canDisplayStatblock(monster) ? [monster] : [];
+        return monster && canDisplayReference(monster) ? [monster] : [];
       });
       const nodeItems = nodeItemRelations.flatMap((relation) => {
         const item = relation.itemId
           ? statblockItemMap.get(relation.itemId)
           : undefined;
-        return item && canDisplayStatblock(item) ? [item] : [];
+        return item && canDisplayReference(item) ? [item] : [];
       });
       const relationCount =
         nodeMonsterRelations.length + nodeItemRelations.length;
@@ -303,6 +321,8 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
         title: node.title,
         content: node.content,
         encounter,
+        table,
+        subtableIds: node.subtableIds,
         monsters: nodeMonsters,
         items: nodeItems,
         missingStatblockCount: Math.max(
@@ -318,7 +338,9 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
               )
             : null,
         caption: node.caption,
-        referenceRemoved: (node.kind === "encounter" && !encounter) || false,
+        referenceRemoved:
+          (node.kind === "encounter" && !encounter) ||
+          (node.kind === "table" && !table),
         presentation: node.presentation,
       };
     }),
@@ -356,6 +378,11 @@ function validateAdventureInput(input: AdventureInput) {
     if (node.kind === "encounter" && !node.encounterId) {
       throw new AdventureInputError(
         "Encounter sections must select an encounter"
+      );
+    }
+    if (node.kind === "table" && !node.tableId) {
+      throw new AdventureInputError(
+        "Reference table blocks must select a table"
       );
     }
     if (
@@ -482,6 +509,69 @@ async function validateEncounterAccess(
   }
 }
 
+async function validateTableAccess(
+  db: Parameters<
+    Parameters<ReturnType<typeof getDatabase>["transaction"]>[0]
+  >[0],
+  userId: string,
+  visibility: AdventureVisibility,
+  nodes: AdventureNodeInput[]
+) {
+  const ids = [
+    ...new Set(
+      nodes.flatMap((node) =>
+        node.kind === "table" && node.tableId ? [node.tableId] : []
+      )
+    ),
+  ];
+  if (ids.length === 0) return;
+  const accessible = await db
+    .select({ id: randomTables.id })
+    .from(randomTables)
+    .where(
+      and(
+        inArray(randomTables.id, ids),
+        visibility === "public"
+          ? eq(randomTables.visibility, "public")
+          : or(
+              eq(randomTables.visibility, "public"),
+              eq(randomTables.creatorId, userId)
+            )
+      )
+    );
+  if (accessible.length !== ids.length) {
+    throw new AdventureInputError(
+      "One or more reference tables are unavailable"
+    );
+  }
+  const subtables = await db
+    .select({ id: randomSubtables.id, tableId: randomSubtables.randomTableId })
+    .from(randomSubtables)
+    .where(inArray(randomSubtables.randomTableId, ids));
+  for (const node of nodes) {
+    if (node.kind !== "table" || node.subtableIds == null) continue;
+    if (node.subtableIds.length === 0) {
+      throw new AdventureInputError("Select at least one sub-table");
+    }
+    if (new Set(node.subtableIds).size !== node.subtableIds.length) {
+      throw new AdventureInputError("Sub-table selections must be unique");
+    }
+    if (
+      node.subtableIds.some(
+        (id) =>
+          !subtables.some(
+            (subtable) =>
+              subtable.id === id && subtable.tableId === node.tableId
+          )
+      )
+    ) {
+      throw new AdventureInputError(
+        "One or more selected sub-tables are unavailable"
+      );
+    }
+  }
+}
+
 async function validateStatblockAccess(
   db: Parameters<
     Parameters<ReturnType<typeof getDatabase>["transaction"]>[0]
@@ -558,14 +648,20 @@ async function insertAdventureChildren(
           parentId: node.parentId ? insertedIds.get(node.parentId) : undefined,
           kind: node.kind,
           orderIndex: node.orderIndex,
-          title: node.kind === "encounter" ? "" : node.title.trim(),
+          title:
+            node.kind === "encounter" || node.kind === "table"
+              ? ""
+              : node.title.trim(),
           content:
             node.kind === "encounter" ||
+            node.kind === "table" ||
             node.kind === "monsters" ||
             node.kind === "items"
               ? ""
               : node.content,
           encounterId: node.kind === "encounter" ? node.encounterId : undefined,
+          tableId: node.kind === "table" ? node.tableId : undefined,
+          subtableIds: node.kind === "table" ? node.subtableIds : undefined,
           imageId: node.kind === "image" ? node.imageId : undefined,
           imageExtension:
             node.kind === "image" ? node.imageExtension : undefined,
@@ -697,6 +793,7 @@ export async function createAdventure(
 
   await db.transaction(async (tx) => {
     await validateEncounterAccess(tx, userId, input.visibility, input.nodes);
+    await validateTableAccess(tx, userId, input.visibility, input.nodes);
     await validateStatblockAccess(tx, userId, input.visibility, input.nodes);
     await attachAdventureImages(tx, id, userId, input.nodes);
     await tx.insert(adventures).values({
@@ -740,6 +837,7 @@ export async function updateAdventure(
       ).flatMap((node) => (node.imageId ? [node.imageId] : []))
     );
     await validateEncounterAccess(tx, userId, input.visibility, input.nodes);
+    await validateTableAccess(tx, userId, input.visibility, input.nodes);
     await validateStatblockAccess(tx, userId, input.visibility, input.nodes);
     await attachAdventureImages(tx, id, userId, input.nodes);
     await tx

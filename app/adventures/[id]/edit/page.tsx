@@ -4,6 +4,7 @@ import { AdventureForm } from "@/app/adventures/AdventureForm";
 import { auth } from "@/lib/auth";
 import { findAdventure } from "@/lib/db/adventures";
 import { listAccessibleEncounterOverviews } from "@/lib/db/encounter";
+import { listAccessibleRandomTables } from "@/lib/db/random-table";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getAdventureEditUrl } from "@/lib/utils/url";
@@ -27,9 +28,10 @@ export default async function EditAdventurePage({ params }: PageProps) {
     permanentRedirect(getAdventureEditUrl(adventure));
   }
 
-  const accessibleEncounters = await listAccessibleEncounterOverviews(
-    session.user.id
-  );
+  const [accessibleEncounters, tables] = await Promise.all([
+    listAccessibleEncounterOverviews(session.user.id),
+    listAccessibleRandomTables(session.user.id),
+  ]);
   const encounterMap = new Map(
     accessibleEncounters.map((encounter) => [encounter.id, encounter])
   );
@@ -54,6 +56,8 @@ export default async function EditAdventurePage({ params }: PageProps) {
             title: node.title,
             content: node.content,
             encounterId: node.encounter?.id ?? null,
+            tableId: node.table?.id ?? null,
+            subtableIds: node.subtableIds,
             monsterIds: node.monsters.map((monster) => monster.id),
             itemIds: node.items.map((item) => item.id),
             missingStatblockCount: node.missingStatblockCount,
@@ -65,6 +69,7 @@ export default async function EditAdventurePage({ params }: PageProps) {
         }}
         creator={adventure.creator}
         encounters={[...encounterMap.values()]}
+        tables={tables}
         initialRemovedNodeIds={adventure.nodes.flatMap((node) =>
           node.referenceRemoved ? [node.id] : []
         )}

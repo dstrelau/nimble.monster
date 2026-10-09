@@ -1381,6 +1381,7 @@ export type AdventureNodeKind =
   | "callout"
   | "image"
   | "encounter"
+  | "table"
   | "monsters"
   | "items";
 export type AdventureImageExtension = "jpg" | "png" | "webp";
@@ -1481,6 +1482,12 @@ export const adventureNodes = sqliteTable(
       onDelete: "set null",
       onUpdate: "cascade",
     }),
+    tableId: text("table_id").references(() => randomTables.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    // NULL includes all current and future sub-tables; arrays select stable IDs.
+    subtableIds: text("subtable_ids", { mode: "json" }).$type<string[]>(),
     imageId: text("image_id").references(() => adventureImages.id, {
       onDelete: "set null",
       onUpdate: "cascade",

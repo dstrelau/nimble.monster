@@ -1,4 +1,4 @@
-import { and, asc, count, eq, inArray, isNull } from "drizzle-orm";
+import { and, asc, count, eq, inArray, isNull, or } from "drizzle-orm";
 import { toUser } from "@/lib/db/converters";
 import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import type { OfficialRandomTableInput } from "@/lib/services/random-tables/official";
@@ -184,6 +184,51 @@ const findUserByDiscordId = async (
     .limit(1);
   return result[0] ?? null;
 };
+
+export async function listAccessibleRandomTables(
+  userId: string
+): Promise<RandomTable[]> {
+  const db = getDatabase();
+  const rows = await db
+    .select({ table: randomTables, creator: users, source: sources })
+    .from(randomTables)
+    .innerJoin(users, eq(randomTables.creatorId, users.id))
+    .leftJoin(sources, eq(randomTables.sourceId, sources.id))
+    .where(
+      or(
+        eq(randomTables.visibility, "public"),
+        eq(randomTables.creatorId, userId)
+      )
+    )
+    .orderBy(asc(randomTables.name));
+  const subtables = await loadSubtablesByTableId(
+    db,
+    rows.map(({ table }) => table.id)
+  );
+  return rows.map(({ table, creator, source }) =>
+    toRandomTable(table, creator, subtables.get(table.id) ?? [], source)
+  );
+}
+
+export async function findRandomTablesByIds(
+  ids: string[]
+): Promise<RandomTable[]> {
+  if (ids.length === 0) return [];
+  const db = getDatabase();
+  const rows = await db
+    .select({ table: randomTables, creator: users, source: sources })
+    .from(randomTables)
+    .innerJoin(users, eq(randomTables.creatorId, users.id))
+    .leftJoin(sources, eq(randomTables.sourceId, sources.id))
+    .where(inArray(randomTables.id, ids));
+  const subtables = await loadSubtablesByTableId(
+    db,
+    rows.map(({ table }) => table.id)
+  );
+  return rows.map(({ table, creator, source }) =>
+    toRandomTable(table, creator, subtables.get(table.id) ?? [], source)
+  );
+}
 
 export const listRandomTablesForUser = async (
   discordId: string

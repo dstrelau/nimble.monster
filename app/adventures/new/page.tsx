@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import type { AdventureInput, AdventureStatblock } from "@/lib/db/adventures";
 import { listAccessibleEncounterOverviews } from "@/lib/db/encounter";
+import { listAccessibleRandomTables } from "@/lib/db/random-table";
 import { findOfficialMonstersByNames } from "@/lib/services/monsters/repository";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { AdventureForm } from "../AdventureForm";
@@ -47,8 +48,9 @@ export default async function NewAdventurePage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/create");
 
-  const [encounters, officialMonsters] = await Promise.all([
+  const [encounters, tables, officialMonsters] = await Promise.all([
     listAccessibleEncounterOverviews(session.user.id),
+    listAccessibleRandomTables(session.user.id),
     findOfficialMonstersByNames([
       "Goblin Minion",
       "Goblin",
@@ -72,6 +74,7 @@ export default async function NewAdventurePage() {
       <AdventureForm
         initialValue={EMPTY_ADVENTURE}
         encounters={encounters}
+        tables={tables}
         creator={session.user}
         initialStatblocks={initialStatblocks}
         exampleAdventures={exampleAdventures}

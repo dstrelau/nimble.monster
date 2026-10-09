@@ -22,6 +22,7 @@ const changelog: ChangelogEntry[] = [
     entries: [
       "Hazards can now have optional HP.",
       "Pasted public Nexus content URLs now display as named entity links in formatted text, including tables with @table references.",
+      "Reference tables can now be added to adventures, with a choice of which sub-tables to display.",
     ],
   },
   {

@@ -1,0 +1,1 @@
+ALTER TABLE `adventure_nodes` ADD `subtable_ids` text;
