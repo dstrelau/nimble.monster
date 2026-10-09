@@ -291,6 +291,17 @@ describe("FormattedText - Dice Notation", () => {
     expect(screen.getByText("2d8+3")).toBeInTheDocument();
   });
 
+  it.each([
+    "1d10+5c",
+    "1d10+2+12c",
+  ])("keeps the full crit-only bonus in the clickable roll %s", (notation) => {
+    render(
+      <FormattedText content={`Deal **${notation}** damage.`} conditions={[]} />
+    );
+    expect(screen.getByText(notation)).toHaveAttribute("data-dice-notation");
+    expect(screen.getByText(notation).closest("strong")).not.toBeNull();
+  });
+
   it("should parse dice notation with negative modifiers", () => {
     const content = "Lose 1d4-2 HP.";
 

@@ -1,4 +1,4 @@
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import type { DieResult } from "@/lib/dice";
 import { DiceRollDisplay } from "./DiceRollDisplay";
@@ -8,6 +8,61 @@ afterEach(() => {
 });
 
 describe("DiceRollDisplay", () => {
+  it("shows the crit bonus in green on a crit and gray when inactive", () => {
+    const results: DieResult[] = [
+      { value: 10, dieSize: 10, type: "primary", isCrit: true, isMiss: false },
+      { value: 3, dieSize: 10, type: "explosion", isCrit: true, isMiss: false },
+    ];
+    const { rerender } = render(
+      <DiceRollDisplay
+        results={results}
+        modifier={2}
+        critModifier={5}
+        total={20}
+      />
+    );
+    expect(screen.getByTitle("Critical hit bonus")).toHaveTextContent("+ 5c");
+    expect(screen.getByTitle("Critical hit bonus")).toHaveClass("text-success");
+    expect(screen.getByText("= 20")).toBeInTheDocument();
+    rerender(
+      <DiceRollDisplay
+        results={results}
+        modifier={2}
+        critModifier={5}
+        total={20}
+        pending
+      />
+    );
+    expect(screen.getByTitle("Critical hit bonus (not applied)")).toHaveClass(
+      "text-muted-foreground"
+    );
+    rerender(
+      <DiceRollDisplay
+        results={[
+          {
+            value: 7,
+            dieSize: 10,
+            type: "primary",
+            isCrit: false,
+            isMiss: false,
+          },
+        ]}
+        modifier={2}
+        critModifier={5}
+        total={9}
+      />
+    );
+    expect(
+      screen.getByTitle("Critical hit bonus (not applied)")
+    ).toHaveTextContent("+ 5c");
+    expect(screen.getByTitle("Critical hit bonus (not applied)")).toHaveClass(
+      "text-muted-foreground"
+    );
+    expect(screen.getByText("= 9")).toBeInTheDocument();
+    rerender(<DiceRollDisplay results={results} modifier={2} total={9} />);
+    expect(screen.queryByText("+ 5c")).not.toBeInTheDocument();
+  });
+
   it("sorts dice results in correct order: primary, regular, dropped, explosion, vicious", () => {
     const results: DieResult[] = [
       { value: 5, dieSize: 6, type: "vicious", isCrit: false, isMiss: false },

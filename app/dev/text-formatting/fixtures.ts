@@ -51,7 +51,7 @@ export const FORMATTING_FIXTURES: FormattingFixture[] = [
     name: "Dice notation",
     description: "Multiple dice sizes, modifiers, and roll modes.",
     content:
-      "Deal 2d6+4 damage, regain 1d8-2 HP, then roll 3d6a with advantage, 2d8d with disadvantage, or 4d10v vicious.\n\nParenthetical dice (1d20) and **bold damage 6d6+6** should remain interactive.",
+      "Deal 2d6+4 damage, regain 1d8-2 HP, then roll 3d6a with advantage, 2d8d with disadvantage, or 4d10v vicious.\n\nAdd a crit-only bonus with 1d10+5c, or combine it with an ordinary modifier: **1d10+2+5c**.\n\nParenthetical dice (1d20) and **bold damage 6d6+6** should remain interactive.",
   },
   {
     id: "conditions",

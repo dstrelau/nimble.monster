@@ -205,8 +205,8 @@ export function DiceRollerClient({ initialDice }: Props) {
                         <li>
                           <code>n</code> — <strong>Normal:</strong> disable
                           misses and exploding critical hits. Cannot be combined
-                          with <code>v</code> or <code>^N</code>. E.g.{" "}
-                          <code>3d6n+2</code>
+                          with <code>v</code>, <code>^N</code>, or a crit bonus.
+                          E.g. <code>3d6n+2</code>
                         </li>
                         <li>
                           <code>^N</code> / <code>^-N</code> —{" "}
@@ -216,6 +216,15 @@ export function DiceRollerClient({ initialDice }: Props) {
                           rolls 4–6 crit)
                         </li>
                       </ul>
+                      <p>
+                        <strong>Crit bonus:</strong> append <code>+Nc</code> to
+                        add N only on a critical hit, once per roll—not per
+                        explosion. E.g. <code>1d10+5c</code>, or{" "}
+                        <code>1d10+2+5c</code> for +2 on every hit and another
+                        +5 on a crit. The crit bonus must be nonnegative and
+                        come last; it cannot be used with normal, compound, or
+                        tens/ones rolls.
+                      </p>
                       <p>
                         <strong>Compound rolls</strong> such as{" "}
                         <code>1d20+1d10+3</code> are always normal and cannot
@@ -260,6 +269,7 @@ export function DiceRollerClient({ initialDice }: Props) {
               results={sampleRoll.results}
               modifier={sampleRoll.modifier}
               primaryMod={sampleRoll.primaryMod}
+              critModifier={parsedDice?.critModifier}
               total={sampleRoll.total}
             />
           </CardContent>

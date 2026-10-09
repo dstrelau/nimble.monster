@@ -101,6 +101,7 @@ interface DiceRollDisplayProps {
   results: DieResult[];
   modifier: number;
   primaryMod?: number;
+  critModifier?: number;
   total: number;
   hideTotal?: boolean;
 }
@@ -111,9 +112,13 @@ export function DiceRollDisplay({
   results,
   modifier,
   primaryMod,
+  critModifier = 0,
   total,
   hideTotal,
 }: DiceRollDisplayProps) {
+  const isCrit =
+    !pending &&
+    results.some((result) => result.type === "primary" && result.isCrit);
   const sortedResults = results
     .map((result, index) => ({ result, index }))
     .sort((a, b) => {
@@ -148,6 +153,19 @@ export function DiceRollDisplay({
         <span className="flex items-center">
           {modifier > 0 ? "+ " : ""}
           {modifier}
+        </span>
+      )}
+      {!hideTotal && critModifier > 0 && (
+        <span
+          className={cn(
+            "flex items-center",
+            isCrit ? "text-success" : "text-muted-foreground"
+          )}
+          title={
+            isCrit ? "Critical hit bonus" : "Critical hit bonus (not applied)"
+          }
+        >
+          + {critModifier}c
         </span>
       )}
       {!hideTotal && (

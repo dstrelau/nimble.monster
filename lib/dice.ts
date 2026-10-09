@@ -37,6 +37,8 @@
  * MODIFIERS:
  * - Added to the total only if the roll is not a critical miss (total > 0)
  * - Example: 1d6+2 rolling 1 = 0 (not 2), rolling 3 = 5
+ * - A trailing +Nc adds N once on a critical hit, not once per explosion.
+ * - Example: 1d10+2+5c adds 2 on every hit and another 5 on a crit.
  */
 
 // AGENT INSTRUCTIONS:
@@ -59,6 +61,7 @@ export type DiceRoll = {
   dieSize: number;
   modifier: number;
   primaryMod: number;
+  critModifier?: number;
   vicious: boolean;
   advantage: number;
   disadvantage: number;
@@ -197,8 +200,10 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
   }
 
   // Standard dice notation
-  // Groups: 1=numDice 2=dieSize 3=flags 4=primaryMod sign 5=primaryMod digits 6=modifier sign 7=modifier digits
-  const diceRegex = /^(\d+)d(\d+)([vadn\d]+)?(?:\^(-?)(\d+))?(?:([+-])(\d+))?$/;
+  // Groups: 1=numDice 2=dieSize 3=flags 4=primaryMod sign 5=primaryMod digits
+  // 6=modifier sign 7=modifier digits 8=crit-only bonus digits
+  const diceRegex =
+    /^(\d+)d(\d+)([vadn\d]+)?(?:\^(-?)(\d+))?(?:([+-])(\d+))?(?:\+(\d+)c)?$/;
   const match = trimmed.match(diceRegex);
 
   if (!match) {
@@ -266,7 +271,7 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
     return null;
   }
 
-  if (normal && (vicious || primaryMod !== 0)) {
+  if (normal && (vicious || primaryMod !== 0 || match[8] !== undefined)) {
     return null;
   }
 
@@ -292,13 +297,18 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
     result.normal = true;
   }
 
+  if (match[8] !== undefined) {
+    result.critModifier = Number.parseInt(match[8], 10);
+  }
+
   return result;
 }
 
 function primaryDie(
   dieSize: number,
   vicious: boolean,
-  primaryMod: number
+  primaryMod: number,
+  critModifier: number
 ): ProbabilityDistribution {
   const baseProbability = 1 / dieSize;
   const result: ProbabilityDistribution = new Map();
@@ -324,7 +334,9 @@ function primaryDie(
         explosionDist = calculateExplosionDistribution(dieSize, vicious);
       }
       for (const [value, prob] of explosionDist) {
-        result.set(value, (result.get(value) || 0) + baseProbability * prob);
+        // Shift only crit outcomes, once for the entire explosion chain.
+        const total = value + critModifier;
+        result.set(total, (result.get(total) || 0) + baseProbability * prob);
       }
     } else {
       // Regular hit at effective value
@@ -466,7 +478,8 @@ function calculateAdvantageDistribution(
   advantage: number,
   disadvantage: number,
   vicious: boolean,
-  primaryMod: number
+  primaryMod: number,
+  critModifier: number
 ): ProbabilityDistribution {
   const extraDice = advantage > 0 ? advantage : disadvantage;
   const totalDice = numDice + extraDice;
@@ -513,7 +526,8 @@ function calculateAdvantageDistribution(
       const explosionDist = calculateExplosionDistribution(dieSize, vicious);
 
       for (const [explosionValue, explosionP] of explosionDist) {
-        const total = explosionValue + otherDiceSum;
+        // The selected primary die triggers one bonus, regardless of chain length.
+        const total = explosionValue + otherDiceSum + critModifier;
         result.set(total, (result.get(total) || 0) + probability * explosionP);
       }
     } else {
@@ -647,6 +661,7 @@ export function calculateProbabilityDistribution(
     dieSize,
     modifier,
     primaryMod,
+    critModifier = 0,
     vicious,
     advantage,
     disadvantage,
@@ -683,12 +698,18 @@ export function calculateProbabilityDistribution(
       advantage,
       disadvantage,
       vicious,
-      primaryMod
+      primaryMod,
+      critModifier
     );
   } else if (numDice === 1) {
-    result = primaryDie(dieSize, vicious, primaryMod);
+    result = primaryDie(dieSize, vicious, primaryMod, critModifier);
   } else {
-    const firstDieDistribution = primaryDie(dieSize, vicious, primaryMod);
+    const firstDieDistribution = primaryDie(
+      dieSize,
+      vicious,
+      primaryMod,
+      critModifier
+    );
     const restDistribution = regularDiceDistribution(numDice - 1, dieSize);
     result = combineProbabilityDistributions(
       firstDieDistribution,
@@ -1123,6 +1144,7 @@ export function simulateRoll(diceRoll: DiceRoll): RollResult {
     dieSize,
     modifier,
     primaryMod,
+    critModifier = 0,
     vicious,
     advantage,
     disadvantage,
@@ -1168,6 +1190,15 @@ export function simulateRoll(diceRoll: DiceRoll): RollResult {
 
   if (normal || total > 0) {
     total += modifier;
+  }
+
+  // Check the primary die, not explosion dice (which also carry isCrit).
+  // Applying this after the ordinary modifier keeps hit/miss handling unchanged.
+  if (
+    critModifier > 0 &&
+    results.some((die) => die.type === "primary" && die.isCrit)
+  ) {
+    total += critModifier;
   }
 
   return { results, modifier, primaryMod, total };

@@ -3,6 +3,7 @@ import {
   calculateAverageDamageOnHit,
   calculateMissProbability,
   calculateProbabilityDistribution,
+  calculateTotalAverageDamage,
   parseDiceNotation,
   simulateRoll,
 } from "./dice";
@@ -876,6 +877,104 @@ describe("tensOnes dice (d44, d66, d88)", () => {
 
     const sum = Array.from(dist.values()).reduce((a, b) => a + b, 0);
     expect(sum).toBeCloseTo(1.0, 10);
+  });
+});
+
+describe("crit-only bonus (+Nc)", () => {
+  it.each([
+    ["1d10+5c", 0, 5],
+    ["1d10+2+5c", 2, 5],
+    ["1d10-2+5c", -2, 5],
+    ["2d6va^2+3+12c", 3, 12],
+    ["1D10+5C", 0, 5],
+    ["1d10+0c", 0, 0],
+  ])("parses %s", (notation, modifier, critModifier) => {
+    expect(parseDiceNotation(notation)).toMatchObject({
+      modifier,
+      critModifier,
+    });
+  });
+
+  it.each([
+    "1d10-5c",
+    "1d10+5c+2",
+    "1d10+5c+3c",
+    "1d10+5cc",
+    "1d10+c",
+    "1d10n+5c",
+    "1d10n+0c",
+    "1d10+1d6+5c",
+    "d66+5c",
+  ])("rejects %s", (notation) => {
+    expect(parseDiceNotation(notation)).toBeNull();
+  });
+
+  it.each([
+    ["1d10+2+5c", [1], 0],
+    ["1d10+2+5c", [7], 9],
+    ["1d10+2+5c", [10, 3], 20],
+    ["1d10+2+5c", [10, 10, 3], 30],
+    ["2d10+5c", [7, 10], 17],
+    ["2d10+5c", [10, 3, 7], 25],
+    ["1d10v+5c", [10, 2, 10, 4, 3], 34],
+    ["1d10a+5c", [2, 10, 3], 18],
+    ["1d10d+5c", [10, 7], 7],
+    ["1d10d+5c", [10, 10, 3], 18],
+    ["1d10^2+5c", [8, 3], 18],
+  ])("rolls %s with %j", (notation, values, total) => {
+    const parsed = parseDiceNotation(notation);
+    if (!parsed) throw new Error("Failed to parse");
+    const random = vi.spyOn(Math, "random");
+    for (const value of values) {
+      random.mockReturnValueOnce((value - 0.5) / 10);
+    }
+    try {
+      const result = simulateRoll(parsed);
+      expect(result.total).toBe(total);
+    } finally {
+      random.mockRestore();
+    }
+  });
+
+  it.each([
+    ["1d4+5c", 10, 1 / 16, 1 / 4],
+    ["2d4+5c", 11, 1 / 64, 1 / 4],
+    ["1d4v+5c", 11, 1 / 64, 1 / 4],
+    ["1d4a+5c", 10, 7 / 64, 1 / 16],
+    ["1d4d+5c", 10, 1 / 64, 7 / 16],
+    ["1d4^2+5c", 10, 3 / 16, 0],
+  ])("shifts critical outcomes in %s", (notation, outcome, probability, miss) => {
+    const parsed = parseDiceNotation(notation);
+    if (!parsed) throw new Error("Failed to parse");
+    const distribution = calculateProbabilityDistribution(parsed);
+    expect(distribution.get(outcome)).toBeCloseTo(probability, 12);
+    expect(calculateMissProbability(distribution, parsed)).toBeCloseTo(
+      miss,
+      12
+    );
+  });
+
+  it("preserves hits and shifts whole explosion chains and averages", () => {
+    const parsed = parseDiceNotation("1d10+5c");
+    const baseline = parseDiceNotation("1d10");
+    if (!parsed || !baseline) throw new Error("Failed to parse");
+    const distribution = calculateProbabilityDistribution(parsed);
+    const baseDistribution = calculateProbabilityDistribution(baseline);
+    expect(distribution.get(7)).toBeCloseTo(0.1, 12);
+    expect(distribution.has(11)).toBe(false);
+    expect(distribution.get(16)).toBeCloseTo(0.01, 12);
+    expect(distribution.get(26)).toBeCloseTo(0.001, 12);
+    // P(crit)=0.1. Existing statistics omit chains that still explode after
+    // four rerolls, so represented crit mass is 0.1 * (1 - 0.1^4).
+    const averageIncrease = 5 * 0.1 * (1 - 0.1 ** 4);
+    expect(
+      calculateTotalAverageDamage(distribution) -
+        calculateTotalAverageDamage(baseDistribution)
+    ).toBeCloseTo(averageIncrease, 12);
+    expect(
+      calculateAverageDamageOnHit(distribution, parsed) -
+        calculateAverageDamageOnHit(baseDistribution, baseline)
+    ).toBeCloseTo(averageIncrease / 0.9, 12);
   });
 });
 

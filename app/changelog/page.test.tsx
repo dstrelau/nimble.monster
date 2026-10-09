@@ -18,8 +18,8 @@ describe("ChangelogPage", () => {
     expect(
       screen
         .getAllByRole("heading", { level: 2 })
-        .slice(0, 2)
+        .slice(0, 3)
         .map((heading) => heading.textContent)
-    ).toEqual(["5 October 2026", "4 October 2026"]);
+    ).toEqual(["9 October 2026", "5 October 2026", "4 October 2026"]);
   });
 });

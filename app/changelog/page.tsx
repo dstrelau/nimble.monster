@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "9 October 2026",
+    entries: [
+      "Dice rolls now support crit-only bonuses: 1d10+5c adds 5 only on crit.",
+    ],
+  },
+  {
     date: "5 October 2026",
     entries: [
       "Hazards can now have optional HP.",

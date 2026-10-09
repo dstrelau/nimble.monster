@@ -110,6 +110,7 @@ function DiceDrawer({ diceText }: { diceText: string }) {
                 : parsed.modifier < 0
                   ? `${parsed.modifier}`
                   : ""}
+              {parsed.critModifier !== undefined && `+${parsed.critModifier}c`}
               {parsed.vicious && " (Vicious)"}
               {parsed.advantage === 1
                 ? " ADV"
@@ -144,6 +145,7 @@ function DiceDrawer({ diceText }: { diceText: string }) {
               pending={isRolling}
               results={sampleRoll.results}
               modifier={sampleRoll.modifier}
+              critModifier={parsed.critModifier}
               total={sampleRoll.total}
             />
 
@@ -171,7 +173,7 @@ function DiceDrawer({ diceText }: { diceText: string }) {
 
 export function DiceNotation({ text }: DiceNotationProps) {
   const diceRegex =
-    /\b(\d+d\d+(?:(?:[vadn]\d*)+)?(?:\^-?\d+)?(?:\+\d+d\d+)*(?:[+-]\d+)?|d(?:44|66|88)(?:[ad]\d*)?)\b/gi;
+    /\b(\d+d\d+(?:(?:[vadn]\d*)+)?(?:\^-?\d+)?(?:\+\d+d\d+)*(?:[+-]\d+(?![\dc]))?(?:\+\d+c)?|d(?:44|66|88)(?:[ad]\d*)?)\b/gi;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
 
