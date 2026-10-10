@@ -8,6 +8,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CreateEditCollection } from "@/app/collections/CreateEditCollection";
 import { CreateEditEncounter } from "@/app/encounters/CreateEditEncounter";
+import { NewEncounter } from "@/app/encounters/new/NewEncounterClient";
 import { call } from "@/lib/contract";
 import type { Collection, Encounter, User } from "@/lib/types";
 import { getCollectionUrl, getEncounterUrl } from "@/lib/utils/url";
@@ -115,6 +116,72 @@ beforeEach(() => {
 });
 
 describe("encounter editor mutation", () => {
+  it("saves a remixed draft as a new encounter with its copied party and quantity rules", async () => {
+    const draft: Encounter = {
+      ...emptyEncounter,
+      name: "River Crossing",
+      description: "Hold the bridge.",
+      visibility: "public",
+      heroCount: 6,
+      heroLevel: 7,
+      monsters: [
+        {
+          quantity: 3,
+          isPerHero: true,
+          heroesPerMonster: 2,
+          monster: {
+            id: "550e8400-e29b-41d4-a716-446655440000",
+            name: "Rockfall",
+            hazard: true,
+            visibility: "public",
+            level: "2",
+            levelInt: 2,
+            creator,
+            createdAt: new Date(0),
+            updatedAt: new Date(0),
+            abilities: [],
+            actions: [],
+            actionPreface: "",
+          },
+        },
+      ],
+    };
+    const result = {
+      id: "660e8400-e29b-41d4-a716-446655440000",
+      name: "My River Crossing",
+    };
+    vi.mocked(call).mockResolvedValueOnce(result);
+    render(<NewEncounter initialEncounter={draft} />);
+
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(
+      "River Crossing"
+    );
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "My River Crossing" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Create" }));
+
+    await waitFor(() =>
+      expect(mockPush).toHaveBeenCalledWith(getEncounterUrl(result))
+    );
+    expect(call).toHaveBeenCalledWith(expect.anything(), {
+      id: undefined,
+      name: "My River Crossing",
+      description: "Hold the bridge.",
+      visibility: "public",
+      heroCount: 6,
+      heroLevel: 7,
+      monsters: [
+        {
+          monsterId: "550e8400-e29b-41d4-a716-446655440000",
+          quantity: 3,
+          isPerHero: true,
+          heroesPerMonster: 2,
+        },
+      ],
+    });
+  });
+
   it("preserves the draft while pending and navigates after success", async () => {
     const pending = deferred<{ id: string; name: string }>();
     vi.mocked(call).mockReturnValueOnce(pending.promise);

@@ -15,6 +15,7 @@ const changelog: ChangelogEntry[] = [
     date: "10 October 2026",
     entries: [
       "Encounter viewers can now adjust hero count and level for their own table without changing the saved encounter.",
+      "Encounters can now be remixed into an editable copy in your own library.",
     ],
   },
   {

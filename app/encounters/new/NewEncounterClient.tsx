@@ -3,7 +3,11 @@
 import { CreateEditEncounter } from "@/app/encounters/CreateEditEncounter";
 import { type Encounter, UNKNOWN_USER } from "@/lib/types";
 
-export function NewEncounter() {
+interface NewEncounterProps {
+  initialEncounter?: Encounter;
+}
+
+export function NewEncounter({ initialEncounter }: NewEncounterProps) {
   const emptyEncounter: Encounter = {
     id: "",
     creator: UNKNOWN_USER,
@@ -18,7 +22,7 @@ export function NewEncounter() {
   return (
     <div className="container max-w-7xl">
       <CreateEditEncounter
-        encounter={emptyEncounter}
+        encounter={initialEncounter ?? emptyEncounter}
         isCreating={true}
         submitLabel="Create"
       />

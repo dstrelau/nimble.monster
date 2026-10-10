@@ -97,6 +97,7 @@ export default async function ShowEncounterView({
       <EncounterHeader
         encounter={encounter}
         showEditDeleteButtons={isCreator}
+        showRemixButton={Boolean(session?.user?.id)}
         conditions={conditions}
       />
 

@@ -1,5 +1,5 @@
 "use client";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Shuffle, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -10,17 +10,20 @@ import { FormattedText } from "@/components/shared/FormattedText";
 import { VisibilityBadge } from "@/components/shared/VisibilityBadge";
 import { Button } from "@/components/ui/button";
 import type { Condition, Encounter } from "@/lib/types";
+import { slugify } from "@/lib/utils/slug";
 import { getEncounterEditUrl } from "@/lib/utils/url";
 
 interface EncounterHeaderProps {
   encounter: Encounter;
   showEditDeleteButtons?: boolean;
+  showRemixButton?: boolean;
   conditions: Condition[];
 }
 
 export function EncounterHeader({
   encounter,
   showEditDeleteButtons = false,
+  showRemixButton = false,
   conditions,
 }: EncounterHeaderProps) {
   const router = useRouter();
@@ -52,7 +55,7 @@ export function EncounterHeader({
   return (
     <div className="flex justify-between items-start mb-6">
       <div className="w-full">
-        <div className="flex justify-between items-start">
+        <div className="flex flex-wrap justify-between items-start gap-2">
           <div className="flex gap-2 items-center">
             <h1 className="text-3xl font-black">{encounter.name}</h1>
             {encounter.visibility === "private" && (
@@ -62,7 +65,7 @@ export function EncounterHeader({
               />
             )}
           </div>
-          <div className="flex gap-2 print:hidden">
+          <div className="flex flex-wrap gap-2 print:hidden">
             <EntityReactions
               entityType="encounter"
               entityId={encounter.id}
@@ -81,6 +84,14 @@ export function EncounterHeader({
                   Delete
                 </Button>
               </>
+            )}
+            {showRemixButton && (
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`/encounters/new?remix=${slugify(encounter)}`}>
+                  <Shuffle className="w-4 h-4" />
+                  Remix
+                </Link>
+              </Button>
             )}
           </div>
         </div>
