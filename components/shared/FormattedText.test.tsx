@@ -1,11 +1,17 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
+import { StrictMode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useEntityQuery } from "@/lib/hooks/useEntityQuery";
 import type { Condition } from "@/lib/types";
 import { FormattedText, PrefixedFormattedText } from "./FormattedText";
 
-// Mock useEntityQuery to avoid QueryClient context issues in tests
-// Entity links use createRoot which creates isolated React trees
+// Keep entity rendering tests independent of network requests.
 vi.mock("@/lib/hooks/useEntityQuery", () => ({
   useEntityQuery: vi.fn((type: string, id: string) => {
     const officialRule = type === "rule" && id === "encounter-difficulties";
@@ -110,6 +116,59 @@ describe("FormattedText", () => {
     const conditionElement = screen.getByText("Poisoned");
     expect(conditionElement).toHaveClass("underline");
     expect(conditionElement).toHaveClass("decoration-dotted");
+  });
+
+  it("opens condition definitions on tap and dismisses on another tap or Escape", async () => {
+    render(
+      <StrictMode>
+        <FormattedText
+          content="You are [[Poisoned|suffering]] and [[Stunned]]."
+          conditions={mockConditions}
+        />
+      </StrictMode>
+    );
+
+    const trigger = screen.getByRole("button", { name: "suffering" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(trigger);
+    expect(
+      await screen.findByRole("dialog", { name: "Poisoned" })
+    ).toHaveTextContent(mockConditions[0].description);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.click(trigger);
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+
+    fireEvent.click(screen.getByRole("button", { name: "Stunned" }));
+    expect(
+      await screen.findByRole("dialog", { name: "Stunned" })
+    ).toHaveTextContent(mockConditions[1].description);
+    fireEvent.keyDown(document, { key: "Escape" });
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+
+  it("keeps conditions noninteractive in static output", () => {
+    render(
+      <FormattedText
+        content="You are [[Poisoned]]."
+        conditions={mockConditions}
+        noInteractive
+      />
+    );
+
+    expect(screen.getByText("Poisoned")).toHaveClass("decoration-dotted");
+    expect(screen.queryByRole("button")).toBeNull();
+  });
+
+  it("removes an open condition definition when its text changes", async () => {
+    const { rerender } = render(
+      <FormattedText content="[[Poisoned]]" conditions={mockConditions} />
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Poisoned" }));
+    await screen.findByRole("dialog", { name: "Poisoned" });
+
+    rerender(<FormattedText content="Recovered" conditions={mockConditions} />);
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
   });
 
   it("respects newlines", () => {
@@ -619,7 +678,6 @@ describe("FormattedText - Entity Links", () => {
 
     render(<FormattedText content={content} conditions={[]} />);
 
-    // Wait for the entity name to appear (rendered asynchronously via createRoot)
     const entityText = await screen.findByText("Test Entity");
     expect(entityText.closest("a")).toHaveAttribute(
       "href",

@@ -3,17 +3,13 @@ import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DOMPurify from "isomorphic-dompurify";
 import MarkdownIt from "markdown-it";
 import Link from "next/link";
-import { useLayoutEffect, useMemo, useRef } from "react";
-import { createRoot } from "react-dom/client";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { DiceNotation } from "@/components/dice/DiceNotation";
+import { ReferencePopover } from "@/components/shared/ReferencePopover";
 import { useIsClient } from "@/components/shared/SSRSafe";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useEntityQuery } from "@/lib/hooks/useEntityQuery";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Condition, Condition as ConditionT } from "@/lib/types";
@@ -36,14 +32,21 @@ interface FormattedTextProps {
   noInteractive?: boolean;
 }
 
+interface InteractiveContent {
+  container: Element;
+  component: React.ReactNode;
+}
+
 function ConditionSpan({
   displayText,
   condition,
+  noInteractive,
 }: {
   displayText: string;
   condition: ConditionT | undefined;
+  noInteractive: boolean;
 }) {
-  if (!condition) {
+  if (!condition || noInteractive) {
     return (
       <span className="underline decoration-dotted cursor-help">
         {displayText}
@@ -51,21 +54,22 @@ function ConditionSpan({
     );
   }
 
-  const text = (
-    <span className="underline decoration-dotted cursor-default">
-      {displayText}
-    </span>
-  );
-
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>{text}</TooltipTrigger>
-        <TooltipContent className="max-w-3xs text-wrap">
-          <strong>{condition.name}:</strong> {condition.description}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <ReferencePopover
+      label={condition.name}
+      className="max-w-3xs"
+      trigger={
+        <Button
+          type="button"
+          variant="link"
+          className="inline h-auto p-0 whitespace-normal text-inherit font-[inherit] underline decoration-dotted underline-offset-auto"
+        >
+          {displayText}
+        </Button>
+      }
+    >
+      <strong>{condition.name}:</strong> {condition.description}
+    </ReferencePopover>
   );
 }
 
@@ -483,6 +487,9 @@ export function FormattedText({
 }: FormattedTextProps) {
   const isClient = useIsClient();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [interactiveContent, setInteractiveContent] = useState<
+    InteractiveContent[]
+  >([]);
   const queryClient = getQueryClient();
 
   const { html, placeholders } = useMemo(() => {
@@ -522,6 +529,7 @@ export function FormattedText({
               key={condition?.name}
               displayText={displayText}
               condition={condition}
+              noInteractive={noInteractive}
             />
           ),
         });
@@ -535,7 +543,6 @@ export function FormattedText({
       const placeholderId = `dice-placeholder-${diceIndex}`;
       const placeholder = document.createElement("span");
       placeholder.id = placeholderId;
-      placeholder.textContent = diceText;
       span.parentNode?.replaceChild(placeholder, span);
 
       placeholders.push({
@@ -590,34 +597,26 @@ export function FormattedText({
   ]);
 
   useLayoutEffect(() => {
-    if (!containerRef.current || placeholders.length === 0) return;
-
-    placeholders.forEach(({ id, component }) => {
-      const placeholder = containerRef.current?.querySelector(`#${id}`);
-      if (placeholder) {
-        const reactContainer = document.createElement("span");
-        // Copy the text content before replacing to avoid flicker
-        reactContainer.textContent = placeholder.textContent;
-        placeholder.parentNode?.replaceChild(reactContainer, placeholder);
-        const root = createRoot(reactContainer);
-        root.render(component);
-      }
-    });
+    setInteractiveContent(
+      placeholders.flatMap(({ id, component }) => {
+        const container = containerRef.current?.querySelector(`#${id}`);
+        if (!container) return [];
+        return [{ container, component }];
+      })
+    );
   }, [placeholders]);
 
-  const renderedContent =
-    placeholders.length > 0 ? (
+  // Keep the markup stable while portals render into its placeholders.
+  const renderedContent = useMemo(
+    () => (
       <div
         ref={containerRef}
         // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized and processed markdown content
         dangerouslySetInnerHTML={{ __html: html }}
       />
-    ) : (
-      <div
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized markdown content
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    );
+    ),
+    [html]
+  );
 
   return (
     <div
@@ -630,6 +629,9 @@ export function FormattedText({
       )}
     >
       {renderedContent}
+      {interactiveContent.map(({ container, component }) =>
+        createPortal(component, container)
+      )}
     </div>
   );
 }

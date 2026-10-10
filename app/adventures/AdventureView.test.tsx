@@ -797,7 +797,7 @@ describe("AdventureView", () => {
     render(<AdventureView adventure={adventure} />);
 
     expect(screen.getByRole("heading", { name: "Status" })).toBeVisible();
-    expect(screen.getByText("Blinded")).toHaveClass("cursor-default");
+    expect(screen.getByRole("button", { name: "Blinded" })).toBeVisible();
   });
 
   it("keeps content visible while conditions load and resolves it after ready", async () => {
@@ -862,7 +862,7 @@ describe("AdventureView", () => {
     rerender(<AdventureView adventure={adventure} />);
 
     await waitFor(() => {
-      expect(screen.getByText("Blinded")).toHaveClass("cursor-default");
+      expect(screen.getByRole("button", { name: "Blinded" })).toBeVisible();
     });
   });
 
