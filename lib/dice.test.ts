@@ -164,6 +164,14 @@ describe("parseDiceNotation", () => {
       modifier: -2,
       additionalDice: [{ numDice: 1, dieSize: 8 }],
     });
+    expect(parseDiceNotation("1d20-2d4+1d6-3")).toMatchObject({
+      normal: true,
+      modifier: -3,
+      additionalDice: [
+        { numDice: 2, dieSize: 4, subtract: true },
+        { numDice: 1, dieSize: 6 },
+      ],
+    });
   });
 
   it("rejects flags and invalid die sizes in compound rolls", () => {
@@ -613,6 +621,73 @@ describe("calculateProbabilityDistribution", () => {
     expect(dist.get(0)).toBe(1 / 4);
     expect(calculateMissProbability(dist, roll)).toBe(0);
     expect(calculateAverageDamageOnHit(dist, roll)).toBeCloseTo(1.5, 10);
+  });
+
+  it.each([
+    "1d20-1d4",
+    "1d4-1d4+1d20+2",
+  ])("calculates every outcome of %s, including zero and negative subtotals", (notation) => {
+    const roll = parseDiceNotation(notation);
+    if (!roll) throw new Error("Failed to parse");
+    const expected = new Map<number, number>();
+    for (let d20 = 1; d20 <= 20; d20++) {
+      for (let subtracted = 1; subtracted <= 4; subtracted++) {
+        for (
+          let first = 1;
+          first <= (notation === "1d20-1d4" ? 1 : 4);
+          first++
+        ) {
+          const total =
+            notation === "1d20-1d4"
+              ? d20 - subtracted
+              : first - subtracted + d20 + 2;
+          const probability = notation === "1d20-1d4" ? 1 / 80 : 1 / 320;
+          expected.set(total, (expected.get(total) || 0) + probability);
+        }
+      }
+    }
+    const dist = calculateProbabilityDistribution(roll);
+    expect([...dist.keys()].sort((a, b) => a - b)).toEqual(
+      [...expected.keys()].sort((a, b) => a - b)
+    );
+    for (const [total, probability] of expected) {
+      expect(dist.get(total)).toBeCloseTo(probability, 12);
+    }
+    expect(calculateMissProbability(dist, roll)).toBe(0);
+    expect(calculateTotalAverageDamage(dist)).toBeCloseTo(
+      notation === "1d20-1d4" ? 8 : 12.5,
+      12
+    );
+  });
+
+  it("applies a compound modifier even when the dice cancel to zero", () => {
+    const roll = parseDiceNotation("1d4-1d4-2");
+    if (!roll) throw new Error("Failed to parse");
+    const dist = calculateProbabilityDistribution(roll);
+    expect(dist.get(-2)).toBeCloseTo(4 / 16, 12);
+    expect(dist.get(0)).toBeCloseTo(2 / 16, 12);
+    expect(calculateTotalAverageDamage(dist)).toBeCloseTo(-2, 12);
+  });
+
+  it("subtracts each die in a pool when simulating a compound roll", () => {
+    const roll = parseDiceNotation("1d20-2d4+1d6-3");
+    if (!roll) throw new Error("Failed to parse");
+    const random = vi
+      .spyOn(Math, "random")
+      .mockReturnValueOnce(0)
+      .mockReturnValueOnce(0.999)
+      .mockReturnValueOnce(0.5)
+      .mockReturnValueOnce(0.999);
+    try {
+      const result = simulateRoll(roll);
+      expect(result.results.map(({ value }) => value)).toEqual([1, -4, -3, 6]);
+      expect(result.total).toBe(-3);
+      expect(result.results.every((die) => !die.isCrit && !die.isMiss)).toBe(
+        true
+      );
+    } finally {
+      random.mockRestore();
+    }
   });
 
   it("simulates normal and compound rolls without critical results", () => {

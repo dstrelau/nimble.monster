@@ -6,7 +6,7 @@
  * NOTATION FORMAT:
  * - Basic: XdY+Z where X = number of dice, Y = die size, Z = modifier
  * - Flags can be added after dY: v (vicious), a/aN (advantage), d/dN (disadvantage), n (normal)
- * - Compound rolls add differently sized pools; they are always normal
+ * - Compound rolls add or subtract dice pools; they are always normal
  * - Examples: "3d6+2", "1d8v", "2d20a", "3d6d2-1", "1d20n", "1d20+1d10"
  *
  * PRIMARY DIE RULES:
@@ -54,6 +54,7 @@ export const VALID_DIE_SIZES = [4, 6, 8, 10, 12, 20, 44, 66, 88] as const;
 type DicePool = {
   numDice: number;
   dieSize: number;
+  subtract?: true;
 };
 
 export type DiceRoll = {
@@ -113,13 +114,17 @@ export function parseDiceNotation(notation: string): DiceRoll | null {
   // Compound rolls contain at least two plain dice pools and may end with a
   // numeric modifier. They are normal rolls: no pool has a primary die.
   const compoundMatch = trimmed.match(
-    /^((?:\d+d\d+\+)+\d+d\d+)(?:([+-])(\d+))?$/
+    /^(\d+d\d+(?:[+-]\d+d\d+)+)(?:([+-])(\d+))?$/
   );
   if (compoundMatch) {
-    const dicePools = compoundMatch[1].split("+").map((term) => {
-      const [numDice, dieSize] = term.split("d").map(Number);
-      return { numDice, dieSize };
-    });
+    const dicePools: DicePool[] = Array.from(
+      compoundMatch[1].matchAll(/([+-]?)(\d+)d(\d+)/g),
+      ([, sign, count, size]) => ({
+        numDice: Number(count),
+        dieSize: Number(size),
+        ...(sign === "-" ? { subtract: true } : {}),
+      })
+    );
 
     if (
       dicePools.some(
@@ -349,12 +354,13 @@ function primaryDie(
 
 function applyModifier(
   distribution: ProbabilityDistribution,
-  mod: number
+  mod: number,
+  preserveMiss = true
 ): ProbabilityDistribution {
   if (mod === 0) return distribution;
   const result = new Map<number, number>();
   for (const [roll, p] of distribution) {
-    if (roll === 0) {
+    if (preserveMiss && roll === 0) {
       result.set(roll, p);
       continue;
     }
@@ -406,16 +412,18 @@ function generateAllOutcomes(
 
 function combineProbabilityDistributions(
   d1: ProbabilityDistribution,
-  d2: ProbabilityDistribution
+  d2: ProbabilityDistribution,
+  preserveMiss = true
 ): ProbabilityDistribution {
   const result: ProbabilityDistribution = new Map();
   const missP = d1.get(0);
-  if (missP) {
+  if (preserveMiss && missP) {
     result.set(0, missP);
   }
   for (const [r1, p1] of d1) {
-    // if roll is zero, that's a miss. don't count anything else.
-    if (r1 === 0) continue;
+    // Only Nimble rolls treat zero as a miss. Normal compound rolls can
+    // cancel to zero, and subsequent pools still contribute to their total.
+    if (preserveMiss && r1 === 0) continue;
     for (const [r2, p2] of d2) {
       const totalRoll = r1 + r2;
       const combinedP = p1 * p2;
@@ -686,9 +694,18 @@ export function calculateProbabilityDistribution(
         : regularDiceDistribution(numDice, dieSize);
 
     for (const pool of additionalDice) {
+      const poolDistribution = regularDiceDistribution(
+        pool.numDice,
+        pool.dieSize
+      );
+      // Reflect subtracted pool outcomes about zero before convolution:
+      // P(A - B = t) = sum over a - b = t of P(A = a) * P(B = b).
       result = combineProbabilityDistributions(
         result,
-        regularDiceDistribution(pool.numDice, pool.dieSize)
+        pool.subtract
+          ? new Map(Array.from(poolDistribution, ([value, p]) => [-value, p]))
+          : poolDistribution,
+        false
       );
     }
   } else if (advantage > 0 || disadvantage > 0) {
@@ -718,7 +735,7 @@ export function calculateProbabilityDistribution(
   }
 
   if (modifier !== 0) {
-    result = applyModifier(result, modifier);
+    result = applyModifier(result, modifier, !normal);
   }
 
   return result;
@@ -1055,7 +1072,9 @@ function simulateNormalRoll(
 
   for (const pool of additionalDice) {
     for (let i = 0; i < pool.numDice; i++) {
-      const value = Math.floor(Math.random() * pool.dieSize) + 1;
+      const face = Math.floor(Math.random() * pool.dieSize) + 1;
+      // Signed contributions let the roll display show which dice subtract.
+      const value = pool.subtract ? -face : face;
       total += value;
       results.push({
         value,

@@ -173,7 +173,7 @@ function DiceDrawer({ diceText }: { diceText: string }) {
 
 export function DiceNotation({ text }: DiceNotationProps) {
   const diceRegex =
-    /\b(\d+d\d+(?:(?:[vadn]\d*)+)?(?:\^-?\d+)?(?:\+\d+d\d+)*(?:[+-]\d+(?![\dc]))?(?:\+\d+c)?|d(?:44|66|88)(?:[ad]\d*)?)\b/gi;
+    /\b(\d+d\d+(?:(?:[vadn]\d*)+)?(?:\^-?\d+)?(?:[+-]\d+d\d+)*(?:[+-]\d+(?![\dc]))?(?:\+\d+c)?|d(?:44|66|88)(?:[ad]\d*)?)\b/gi;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
 
