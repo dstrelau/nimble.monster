@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { EncounterCombatTracker } from "@/app/encounters/EncounterCombatTracker";
 import { EncounterHeader } from "@/app/encounters/EncounterHeader";
-import { EncounterStatsPanel } from "@/app/encounters/EncounterStatsPanel";
+import { EncounterViewerSidebar } from "@/app/encounters/EncounterViewerSidebar";
 import { Card as MonsterCard } from "@/components/monster/Card";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
@@ -145,10 +144,7 @@ export default async function ShowEncounterView({
               ) : null
             )}
           </div>
-          <div className="lg:col-span-1 print:col-span-1 lg:sticky lg:top-4 print:static flex flex-col gap-6">
-            <EncounterStatsPanel encounter={encounter} />
-            <EncounterCombatTracker encounter={encounter} />
-          </div>
+          <EncounterViewerSidebar key={encounter.id} encounter={encounter} />
         </div>
       )}
     </div>

@@ -1,4 +1,5 @@
 import { CircleAlert, Scale, Swords, TriangleAlert, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,6 +20,7 @@ interface EncounterStatsPanelProps {
   encounter: EncounterOverview;
   onHeroCountChange?: (value: number) => void;
   onHeroLevelChange?: (value: number) => void;
+  onResetHeroes?: () => void;
 }
 
 const RATIO_VERY_LOW_THRESHOLD = 0.5;
@@ -70,6 +72,7 @@ export function EncounterStatsPanel({
   encounter,
   onHeroCountChange,
   onHeroLevelChange,
+  onResetHeroes,
 }: EncounterStatsPanelProps) {
   const editableHeroes = Boolean(onHeroCountChange && onHeroLevelChange);
   const { totalMonsterLevel, totalMonsterHP, minionCount, nonMinionCount } =
@@ -172,7 +175,21 @@ export function EncounterStatsPanel({
     <Card>
       <CardContent className="flex flex-col divide-y">
         <div className="flex flex-col gap-1.5 py-2.5 first:pt-0 last:pb-0">
-          <SectionHeader icon={Users} label="Heroes" />
+          <div className="flex items-center justify-between">
+            <SectionHeader icon={Users} label="Heroes" />
+            {onResetHeroes && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={onResetHeroes}
+                aria-label="Reset heroes to encounter defaults"
+                className="print:hidden"
+              >
+                Reset
+              </Button>
+            )}
+          </div>
           <StatRow
             label="Count"
             value={
@@ -181,6 +198,7 @@ export function EncounterStatsPanel({
                   <Input
                     type="number"
                     min={1}
+                    aria-label="Hero count"
                     className="max-w-16 flex-1 font-sans font-normal tabular-nums"
                     value={encounter.heroCount}
                     onChange={(e) =>
@@ -194,6 +212,7 @@ export function EncounterStatsPanel({
                     type="number"
                     min={1}
                     max={20}
+                    aria-label="Hero level"
                     className="max-w-16 flex-1 font-sans font-normal tabular-nums"
                     value={encounter.heroLevel}
                     onChange={(e) =>

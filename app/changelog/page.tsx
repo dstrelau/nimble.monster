@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "10 October 2026",
+    entries: [
+      "Encounter viewers can now adjust hero count and level for their own table without changing the saved encounter.",
+    ],
+  },
+  {
     date: "9 October 2026",
     entries: [
       "Dice rolls now support crit-only bonuses: 1d10+5c adds 5 only on crit.",
