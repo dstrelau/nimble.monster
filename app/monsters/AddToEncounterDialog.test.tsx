@@ -210,4 +210,22 @@ describe("AddToEncounterDialog", () => {
     ).not.toBeInTheDocument();
     expect(screen.queryByRole("spinbutton")).not.toBeInTheDocument();
   });
+
+  it("keeps the dialog and selection open when private content cannot be added", async () => {
+    const error =
+      "Public encounters cannot contain private monsters or hazards.";
+    mockAddMonsterToEncounter.mockResolvedValueOnce({ success: false, error });
+    render(<AddToEncounterDialog monsterId="m1" />, {
+      wrapper: createWrapper(),
+    });
+    fireEvent.click(screen.getByRole("button", { name: /add to encounter/i }));
+    await screen.findByText("Empty Encounter");
+    fireEvent.change(screen.getByTestId("encounter-select"), {
+      target: { value: "enc-2" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(error);
+    expect(screen.getByRole("dialog")).toBeVisible();
+    expect(screen.getByTestId("encounter-select")).toHaveValue("enc-2");
+  });
 });

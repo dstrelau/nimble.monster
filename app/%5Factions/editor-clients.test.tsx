@@ -116,6 +116,83 @@ beforeEach(() => {
 });
 
 describe("encounter editor mutation", () => {
+  it("keeps a private encounter private when it contains private content", async () => {
+    render(
+      <CreateEditEncounter
+        encounter={{
+          ...emptyEncounter,
+          id: "existing",
+          name: "Private encounter",
+          monsters: [
+            {
+              quantity: 1,
+              isPerHero: false,
+              monster: {
+                id: "hazard",
+                name: "Private hazard",
+                hazard: true,
+                visibility: "private",
+                level: "2",
+                levelInt: 2,
+                creator,
+                createdAt: new Date(0),
+                updatedAt: new Date(0),
+                abilities: [],
+                actions: [],
+                actionPreface: "",
+              },
+            },
+          ],
+        }}
+      />
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Private" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Public encounters cannot contain private monsters or hazards."
+    );
+    expect(screen.getByRole("button", { name: "Private" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+    expect(call).not.toHaveBeenCalled();
+  });
+
+  it("requires explicit removal of unavailable content before saving", async () => {
+    render(
+      <CreateEditEncounter
+        encounter={{
+          ...emptyEncounter,
+          id: "existing",
+          name: "Ambush",
+          visibility: "public",
+          unavailableMonsterIds: ["hidden"],
+        }}
+      />
+    );
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Updated ambush" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Remove or replace unavailable content"
+    );
+    expect(call).not.toHaveBeenCalled();
+
+    vi.mocked(call).mockResolvedValueOnce({
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Updated ambush",
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Remove unavailable content" })
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(mockPush).toHaveBeenCalled());
+    expect(call).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ monsters: [], visibility: "public" })
+    );
+  });
+
   it("saves a remixed draft as a new encounter with its copied party and quantity rules", async () => {
     const draft: Encounter = {
       ...emptyEncounter,

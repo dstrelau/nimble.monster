@@ -7,6 +7,10 @@ import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { getDatabase } from "@/lib/db/drizzle";
 import { encounters, monsters } from "@/lib/db/schema";
+import {
+  PUBLIC_ENCOUNTER_CONTENT_ERROR,
+  UNAVAILABLE_ENCOUNTER_CONTENT_ERROR,
+} from "@/lib/encounter-privacy";
 
 export async function deleteEncounter(encounterId: string) {
   try {
@@ -115,12 +119,25 @@ export async function addMonsterToEncounter(formData: FormData) {
   const quantity = accessible[0].legendary ? 1 : requestedQuantity;
   const isPerHero = !accessible[0].legendary && requestedPerHero;
 
-  await db.addMonsterToEncounter({
-    monsterId,
-    encounterId,
-    quantity,
-    isPerHero,
-    heroesPerMonster,
-  });
+  try {
+    await db.addMonsterToEncounter({
+      monsterId,
+      encounterId,
+      quantity,
+      isPerHero,
+      heroesPerMonster,
+    });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      [
+        PUBLIC_ENCOUNTER_CONTENT_ERROR,
+        UNAVAILABLE_ENCOUNTER_CONTENT_ERROR,
+      ].includes(error.message)
+    ) {
+      return { success: false, error: error.message };
+    }
+    throw error;
+  }
   return { success: true };
 }

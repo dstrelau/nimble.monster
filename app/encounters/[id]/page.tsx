@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { EncounterHeader } from "@/app/encounters/EncounterHeader";
 import { EncounterViewerSidebar } from "@/app/encounters/EncounterViewerSidebar";
@@ -101,9 +102,23 @@ export default async function ShowEncounterView({
         conditions={conditions}
       />
 
+      {isCreator && Boolean(encounter.unavailableMonsterIds?.length) && (
+        <p className="mb-6 rounded-lg border p-4 text-sm">
+          Some monsters or hazards are no longer available and are excluded from
+          this encounter’s totals.{" "}
+          <Link
+            href={`${getEncounterUrl(encounter)}/edit`}
+            className="underline"
+          >
+            Edit this encounter
+          </Link>{" "}
+          to remove or replace them before saving.
+        </p>
+      )}
+
       {encounter.monsters.length === 0 ? (
         <p className="text-center text-muted-foreground py-8">
-          This encounter is empty.
+          No available monsters or hazards.
         </p>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 print:grid-cols-3 gap-6 items-start">

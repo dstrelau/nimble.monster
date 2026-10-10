@@ -28,7 +28,7 @@ export default async function NewEncounterPage({
       creator: session.user,
       name: source.name,
       description: source.description,
-      visibility: "public",
+      visibility: source.visibility,
       heroCount: source.heroCount,
       heroLevel: source.heroLevel,
       monsters: source.monsters.filter(

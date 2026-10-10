@@ -41,6 +41,9 @@ const mockDb = {
   insert: mockInsert,
   update: mockUpdate,
   delete: mockDelete,
+  transaction: async <T>(
+    callback: (db: typeof mockChain) => Promise<T>
+  ): Promise<T> => callback(mockChain),
 };
 
 vi.mock("@/lib/db/drizzle", () => ({
@@ -224,19 +227,19 @@ describe("listEncountersWithMonstersForUser", () => {
     const monsterLinks = [
       {
         encounterId: "e1",
-        monster: { id: "m1", name: "Goblin" },
+        monster: { id: "m1", name: "Goblin", visibility: "public" },
         quantity: 2,
         isPerHero: false,
       },
       {
         encounterId: "e2",
-        monster: { id: "m2", name: "Orc" },
+        monster: { id: "m2", name: "Orc", visibility: "public" },
         quantity: 1,
         isPerHero: true,
       },
       {
         encounterId: "e1",
-        monster: { id: "m3", name: "Rat" },
+        monster: { id: "m3", name: "Rat", visibility: "public" },
         quantity: 5,
         isPerHero: false,
       },
@@ -591,7 +594,12 @@ describe("createEncounter", () => {
 
 describe("addMonsterToEncounter", () => {
   it("inserts a new link when none exists", async () => {
-    queueDb([], undefined);
+    queueDb(
+      [{ id: "e1", creatorId: "user-1", visibility: "public" }],
+      [],
+      [{ id: "m1", visibility: "public", userId: "user-1" }],
+      undefined
+    );
 
     await addMonsterToEncounter({
       monsterId: "m1",
@@ -605,7 +613,12 @@ describe("addMonsterToEncounter", () => {
   });
 
   it("updates the existing link when one exists", async () => {
-    queueDb([{ monsterId: "m1", encounterId: "e1" }], undefined);
+    queueDb(
+      [{ id: "e1", creatorId: "user-1", visibility: "public" }],
+      [{ monsterId: "m1", encounterId: "e1" }],
+      [{ id: "m1", visibility: "public", userId: "user-1" }],
+      undefined
+    );
 
     await addMonsterToEncounter({
       monsterId: "m1",

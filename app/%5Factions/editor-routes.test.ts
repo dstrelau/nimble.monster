@@ -93,6 +93,16 @@ beforeEach(() => {
 });
 
 describe("encounter and collection save routes", () => {
+  it.each([
+    "Public encounters cannot contain private monsters or hazards.",
+    "Remove or replace unavailable content before saving this encounter.",
+  ])("returns a useful validation error: %s", async (message) => {
+    mockCreateEncounter.mockRejectedValueOnce(new Error(message));
+    const response = await saveEncounterPost(request(encounterInput));
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ error: message });
+  });
+
   it("creates an encounter with its monsters in one request", async () => {
     mockCreateEncounter.mockResolvedValue({ id, name: encounterInput.name });
     mockUpdateEncounter.mockResolvedValue({ id, name: encounterInput.name });
@@ -102,14 +112,9 @@ describe("encounter and collection save routes", () => {
     expect(response.status).toBe(201);
     expect(mockCreateEncounter).toHaveBeenCalledWith({
       ...encounterInput,
-      monsters: undefined,
       discordId: "discord-owner",
     });
-    expect(mockUpdateEncounter).toHaveBeenCalledWith({
-      id,
-      ...encounterInput,
-      discordId: "discord-owner",
-    });
+    expect(mockUpdateEncounter).not.toHaveBeenCalled();
     expect(mockRevalidatePath).toHaveBeenCalledWith("/my/encounters");
   });
 

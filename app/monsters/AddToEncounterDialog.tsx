@@ -75,7 +75,10 @@ export const AddToEncounterDialog = ({
       formData.append("quantity", String(legendary ? 1 : data.quantity));
       formData.append("isPerHero", String(!legendary && data.isPerHero));
       formData.append("heroesPerMonster", String(data.heroesPerMonster));
-      return addMonsterToEncounter(formData);
+      const result = await addMonsterToEncounter(formData);
+      if (!result.success)
+        throw new Error(result.error ?? "Failed to add content to encounter");
+      return result;
     },
     onSuccess: () => {
       setOpen(false);
@@ -150,6 +153,11 @@ export const AddToEncounterDialog = ({
                 This monster is already in the selected encounter. Submitting
                 will update its quantity.
               </div>
+            )}
+            {mutation.error && (
+              <p className="text-destructive text-sm" role="alert">
+                {mutation.error.message}
+              </p>
             )}
             <div className="flex justify-end">
               <Button type="submit" disabled={mutation.isPending}>

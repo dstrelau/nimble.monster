@@ -1,5 +1,9 @@
 import { and, asc, eq, inArray, or } from "drizzle-orm";
 import { toUser } from "@/lib/db/converters";
+import {
+  PUBLIC_ENCOUNTER_CONTENT_ERROR,
+  UNAVAILABLE_ENCOUNTER_CONTENT_ERROR,
+} from "@/lib/encounter-privacy";
 import { findBestiaryEntriesByIds } from "@/lib/services/monsters";
 import { toBestiaryEntryMini } from "@/lib/services/monsters/converters";
 import type {
@@ -35,12 +39,18 @@ async function loadEncounterOverview(
     .innerJoin(monsters, eq(monstersEncounters.monsterId, monsters.id))
     .where(eq(monstersEncounters.encounterId, encounter.id));
 
-  const entries: EncounterMonsterEntry[] = monsterLinks.map((link) => ({
-    monster: toBestiaryEntryMini(link.monster),
-    quantity: link.quantity,
-    isPerHero: link.isPerHero,
-    heroesPerMonster: link.heroesPerMonster,
-  }));
+  const entries: EncounterMonsterEntry[] = monsterLinks
+    .filter(
+      ({ monster }) =>
+        monster.visibility === "public" ||
+        (encounter.visibility === "private" && monster.userId === creator.id)
+    )
+    .map((link) => ({
+      monster: toBestiaryEntryMini(link.monster),
+      quantity: link.quantity,
+      isPerHero: link.isPerHero,
+      heroesPerMonster: link.heroesPerMonster,
+    }));
 
   return {
     id: encounter.id,
@@ -149,7 +159,8 @@ export const listAccessibleEncounterOverviews = async (
 async function loadEncounterFull(
   db: ReturnType<typeof getDatabase>,
   encounter: EncounterRow,
-  creator: UserRow
+  creator: UserRow,
+  viewerDiscordId?: string
 ): Promise<Encounter> {
   const monsterLinks = await db
     .select({
@@ -166,9 +177,16 @@ async function loadEncounterFull(
   );
   const monstersById = new Map(fullMonsters.map((m) => [m.id, m]));
 
+  const unavailableMonsterIds: string[] = [];
   const entries: EncounterMonsterEntryFull[] = monsterLinks.flatMap((link) => {
     const monster = monstersById.get(link.monsterId);
-    return monster
+    const accessible =
+      monster &&
+      (monster.visibility === "public" ||
+        (encounter.visibility === "private" &&
+          monster.creator.discordId === viewerDiscordId));
+    if (!accessible) unavailableMonsterIds.push(link.monsterId);
+    return monster && accessible
       ? [
           {
             monster,
@@ -189,6 +207,10 @@ async function loadEncounterFull(
     heroLevel: encounter.heroLevel,
     creator: toUser(creator),
     monsters: entries,
+    ...(viewerDiscordId === creator.discordId &&
+    unavailableMonsterIds.length > 0
+      ? { unavailableMonsterIds }
+      : {}),
     createdAt: encounter.createdAt ? new Date(encounter.createdAt) : undefined,
   };
 }
@@ -233,7 +255,18 @@ export const listEncountersWithMonstersForUser = async (
     );
 
   const entriesByEncounter = new Map<string, EncounterMonsterEntry[]>();
+  const encountersById = new Map(
+    encounterRows.map((encounter) => [encounter.id, encounter])
+  );
   for (const link of monsterLinks) {
+    if (
+      link.monster.visibility !== "public" &&
+      !(
+        encountersById.get(link.encounterId)?.visibility === "private" &&
+        link.monster.userId === user.id
+      )
+    )
+      continue;
     const existing = entriesByEncounter.get(link.encounterId) ?? [];
     existing.push({
       monster: toBestiaryEntryMini(link.monster),
@@ -322,7 +355,8 @@ export const getEncounter = async (
         return loadEncounterFull(
           db,
           ownedEncounter[0].encounter,
-          ownedEncounter[0].creator
+          ownedEncounter[0].creator,
+          discordId
         );
       }
     }
@@ -350,6 +384,47 @@ export interface UpdateEncounterInput extends CreateEncounterInput {
   id: string;
 }
 
+async function validatedEncounterMonsters(
+  db: Pick<ReturnType<typeof getDatabase>, "select">,
+  userId: string,
+  visibility: "public" | "private",
+  entries: NonNullable<CreateEncounterInput["monsters"]>
+) {
+  const qtyMap = new Map(entries.map((entry) => [entry.monsterId, entry]));
+  if (qtyMap.size === 0) return [];
+  const selected = await db
+    .select({
+      id: monsters.id,
+      legendary: monsters.legendary,
+      visibility: monsters.visibility,
+      userId: monsters.userId,
+    })
+    .from(monsters)
+    .where(inArray(monsters.id, [...qtyMap.keys()]));
+  if (
+    selected.length !== qtyMap.size ||
+    selected.some(
+      (monster) => monster.visibility !== "public" && monster.userId !== userId
+    )
+  )
+    throw new Error(UNAVAILABLE_ENCOUNTER_CONTENT_ERROR);
+  if (
+    visibility === "public" &&
+    selected.some((monster) => monster.visibility === "private")
+  ) {
+    throw new Error(PUBLIC_ENCOUNTER_CONTENT_ERROR);
+  }
+  return selected.map((monster) => {
+    const entry = qtyMap.get(monster.id);
+    return {
+      monsterId: monster.id,
+      quantity: monster.legendary ? 1 : (entry?.quantity ?? 1),
+      isPerHero: monster.legendary ? false : (entry?.isPerHero ?? false),
+      heroesPerMonster: entry?.heroesPerMonster ?? 1,
+    };
+  });
+}
+
 export const createEncounter = async (
   input: CreateEncounterInput
 ): Promise<EncounterOverview> => {
@@ -368,27 +443,28 @@ export const createEncounter = async (
 
   const encounterId = crypto.randomUUID();
 
-  await db.insert(encounters).values({
-    id: encounterId,
-    name: input.name,
-    description: input.description || undefined,
-    visibility: input.visibility,
-    heroCount: input.heroCount,
-    heroLevel: input.heroLevel,
-    creatorId: user.id,
-  });
-
-  if (input.monsters && input.monsters.length > 0) {
-    await db.insert(monstersEncounters).values(
-      input.monsters.map((m) => ({
-        encounterId,
-        monsterId: m.monsterId,
-        quantity: m.quantity,
-        isPerHero: m.isPerHero,
-        heroesPerMonster: m.heroesPerMonster ?? 1,
-      }))
+  await db.transaction(async (tx) => {
+    const entries = await validatedEncounterMonsters(
+      tx,
+      user.id,
+      input.visibility,
+      input.monsters ?? []
     );
-  }
+    await tx.insert(encounters).values({
+      id: encounterId,
+      name: input.name,
+      description: input.description || undefined,
+      visibility: input.visibility,
+      heroCount: input.heroCount,
+      heroLevel: input.heroLevel,
+      creatorId: user.id,
+    });
+    if (entries.length > 0) {
+      await tx
+        .insert(monstersEncounters)
+        .values(entries.map((entry) => ({ ...entry, encounterId })));
+    }
+  });
 
   const encounterResult = await db
     .select()
@@ -425,51 +501,48 @@ export const updateEncounter = async (
     throw new Error("Encounter not found");
   }
 
-  await db
-    .update(encounters)
-    .set({
-      name: input.name,
-      description: input.description || undefined,
-      visibility: input.visibility,
-      heroCount: input.heroCount,
-      heroLevel: input.heroLevel,
-      updatedAt: new Date().toISOString(),
-    })
-    .where(eq(encounters.id, input.id));
-
-  if (input.monsters) {
-    await db
-      .delete(monstersEncounters)
-      .where(eq(monstersEncounters.encounterId, input.id));
-
-    if (input.monsters.length > 0) {
-      const qtyMap = new Map(input.monsters.map((m) => [m.monsterId, m]));
-      const accessible = await db
-        .select({ id: monsters.id, legendary: monsters.legendary })
-        .from(monsters)
-        .where(
-          and(
-            inArray(monsters.id, [...qtyMap.keys()]),
-            or(eq(monsters.visibility, "public"), eq(monsters.userId, user.id))
-          )
-        );
-
-      if (accessible.length > 0) {
-        await db.insert(monstersEncounters).values(
-          accessible.map((m) => {
-            const entry = qtyMap.get(m.id);
-            return {
-              encounterId: input.id,
-              monsterId: m.id,
-              quantity: m.legendary ? 1 : (entry?.quantity ?? 1),
-              isPerHero: m.legendary ? false : (entry?.isPerHero ?? false),
-              heroesPerMonster: entry?.heroesPerMonster ?? 1,
-            };
-          })
-        );
+  await db.transaction(async (tx) => {
+    const requested =
+      input.monsters ??
+      (await tx
+        .select({
+          monsterId: monstersEncounters.monsterId,
+          quantity: monstersEncounters.quantity,
+          isPerHero: monstersEncounters.isPerHero,
+          heroesPerMonster: monstersEncounters.heroesPerMonster,
+        })
+        .from(monstersEncounters)
+        .where(eq(monstersEncounters.encounterId, input.id)));
+    const entries = await validatedEncounterMonsters(
+      tx,
+      user.id,
+      input.visibility,
+      requested
+    );
+    await tx
+      .update(encounters)
+      .set({
+        name: input.name,
+        description: input.description || undefined,
+        visibility: input.visibility,
+        heroCount: input.heroCount,
+        heroLevel: input.heroLevel,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(encounters.id, input.id));
+    if (input.monsters) {
+      await tx
+        .delete(monstersEncounters)
+        .where(eq(monstersEncounters.encounterId, input.id));
+      if (entries.length > 0) {
+        await tx
+          .insert(monstersEncounters)
+          .values(
+            entries.map((entry) => ({ ...entry, encounterId: input.id }))
+          );
       }
     }
-  }
+  });
 
   const encounterResult = await db
     .select()
@@ -559,38 +632,45 @@ export const addMonsterToEncounter = async (input: {
 }): Promise<void> => {
   const db = getDatabase();
 
-  const existing = await db
-    .select()
-    .from(monstersEncounters)
-    .where(
-      and(
-        eq(monstersEncounters.encounterId, input.encounterId),
-        eq(monstersEncounters.monsterId, input.monsterId)
-      )
-    )
-    .limit(1);
-
-  if (existing.length === 0) {
-    await db.insert(monstersEncounters).values({
-      encounterId: input.encounterId,
-      monsterId: input.monsterId,
-      quantity: input.quantity,
-      isPerHero: input.isPerHero,
-      heroesPerMonster: input.heroesPerMonster ?? 1,
-    });
-  } else {
-    await db
-      .update(monstersEncounters)
-      .set({
+  await db.transaction(async (tx) => {
+    const [encounter] = await tx
+      .select()
+      .from(encounters)
+      .where(eq(encounters.id, input.encounterId))
+      .limit(1);
+    if (!encounter) throw new Error("Encounter not found");
+    const existing = await tx
+      .select()
+      .from(monstersEncounters)
+      .where(eq(monstersEncounters.encounterId, input.encounterId));
+    await validatedEncounterMonsters(
+      tx,
+      encounter.creatorId,
+      encounter.visibility === "private" ? "private" : "public",
+      [...existing, input]
+    );
+    if (!existing.some((entry) => entry.monsterId === input.monsterId)) {
+      await tx.insert(monstersEncounters).values({
+        encounterId: input.encounterId,
+        monsterId: input.monsterId,
         quantity: input.quantity,
         isPerHero: input.isPerHero,
         heroesPerMonster: input.heroesPerMonster ?? 1,
-      })
-      .where(
-        and(
-          eq(monstersEncounters.encounterId, input.encounterId),
-          eq(monstersEncounters.monsterId, input.monsterId)
-        )
-      );
-  }
+      });
+    } else {
+      await tx
+        .update(monstersEncounters)
+        .set({
+          quantity: input.quantity,
+          isPerHero: input.isPerHero,
+          heroesPerMonster: input.heroesPerMonster ?? 1,
+        })
+        .where(
+          and(
+            eq(monstersEncounters.encounterId, input.encounterId),
+            eq(monstersEncounters.monsterId, input.monsterId)
+          )
+        );
+    }
+  });
 };

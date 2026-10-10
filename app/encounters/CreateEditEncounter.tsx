@@ -30,6 +30,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { call } from "@/lib/contract";
+import {
+  PUBLIC_ENCOUNTER_CONTENT_ERROR,
+  UNAVAILABLE_ENCOUNTER_CONTENT_ERROR,
+} from "@/lib/encounter-privacy";
 import type { BestiaryEntry } from "@/lib/services/monsters";
 import type { Encounter, EncounterMonsterEntryFull } from "@/lib/types";
 import { cn, monstersSortedByLevelInt } from "@/lib/utils";
@@ -171,6 +175,9 @@ export function CreateEditEncounter({
   const [monstersSectionOpen, setMonstersSectionOpen] = useState(
     () => encounter.monsters.length === 0
   );
+  const [unavailableIds, setUnavailableIds] = useState(
+    encounter.unavailableMonsterIds ?? []
+  );
 
   const selectedMonsterIds = useMemo(
     () => new Set(selectedMonsters.keys()),
@@ -293,9 +300,22 @@ export function CreateEditEncounter({
       watchedValues.visibility !== encounter.visibility ||
       watchedValues.heroCount !== encounter.heroCount ||
       watchedValues.heroLevel !== encounter.heroLevel ||
+      unavailableIds.length !==
+        (encounter.unavailableMonsterIds?.length ?? 0) ||
       !entriesEqual(currentEntries, encounter.monsters);
 
   const handleSubmit = async (data: FormData) => {
+    if (unavailableIds.length > 0) {
+      form.setError("root", { message: UNAVAILABLE_ENCOUNTER_CONTENT_ERROR });
+      return;
+    }
+    if (
+      data.visibility === "public" &&
+      currentEntries.some((entry) => entry.monster.visibility !== "public")
+    ) {
+      form.setError("root", { message: PUBLIC_ENCOUNTER_CONTENT_ERROR });
+      return;
+    }
     setIsSubmitting(true);
     try {
       const result = await call(saveEncounter, {
@@ -373,9 +393,21 @@ export function CreateEditEncounter({
                   <VisibilityToggle
                     id="encounter-visibility-toggle"
                     checked={field.value === "public"}
-                    onCheckedChange={(checked) =>
-                      field.onChange(checked ? "public" : "private")
-                    }
+                    onCheckedChange={(checked) => {
+                      if (
+                        checked &&
+                        currentEntries.some(
+                          (entry) => entry.monster.visibility !== "public"
+                        )
+                      ) {
+                        form.setError("root", {
+                          message: PUBLIC_ENCOUNTER_CONTENT_ERROR,
+                        });
+                        return;
+                      }
+                      form.clearErrors("root");
+                      field.onChange(checked ? "public" : "private");
+                    }}
                   />
                 )}
               />
@@ -409,13 +441,36 @@ export function CreateEditEncounter({
         </div>
 
         {form.formState.errors.root && (
-          <div className="mb-4 text-destructive text-sm">
+          <div role="alert" className="mb-4 text-destructive text-sm">
             {form.formState.errors.root.message}
           </div>
         )}
 
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
           <div className="grid grid-flow-row-dense grid-cols-1 items-start gap-6 md:grid-cols-2 lg:col-span-2">
+            {unavailableIds.map((monsterId) => (
+              <div
+                key={monsterId}
+                className="col-span-full flex flex-col items-start justify-between gap-4 rounded-lg border p-4 sm:flex-row sm:items-center"
+              >
+                <p className="text-sm text-muted-foreground">
+                  A monster or hazard is no longer available. Remove this
+                  reference before saving. You can add a replacement below.
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setUnavailableIds((ids) =>
+                      ids.filter((id) => id !== monsterId)
+                    );
+                    form.clearErrors("root");
+                  }}
+                >
+                  Remove unavailable content
+                </Button>
+              </div>
+            ))}
             {sortedEntries.length === 0 ? (
               <p className="col-span-full rounded-lg border border-dashed py-8 text-center text-muted-foreground">
                 No monsters yet. Add some below.

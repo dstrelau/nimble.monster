@@ -52,6 +52,16 @@ import {
   IconFormSelect,
 } from "@/components/shared/Form";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -1266,6 +1276,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
 }) => {
   const id = useId();
   const router = useRouter();
+  const [confirmPrivate, setConfirmPrivate] = useState(false);
 
   const { data: session } = useSession();
   const creator = session?.user || UNKNOWN_USER;
@@ -1586,6 +1597,14 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
                         id={`public-toggle-${id}`}
                         checked={monster.visibility === "public"}
                         onCheckedChange={(checked) => {
+                          if (
+                            !checked &&
+                            monster.id &&
+                            existingMonster?.visibility === "public"
+                          ) {
+                            setConfirmPrivate(true);
+                            return;
+                          }
                           setMonster({
                             ...monster,
                             visibility: checked ? "public" : "private",
@@ -1596,6 +1615,34 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
                   </div>
                 </fieldset>
               </div>
+              <AlertDialog
+                open={confirmPrivate}
+                onOpenChange={setConfirmPrivate}
+              >
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Make this {monster.hazard ? "hazard" : "monster"} private?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      After you save, it will disappear from other people’s
+                      encounters and their encounter totals. Their encounters
+                      will keep their current visibility. You can still use it
+                      in your own private encounters.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() =>
+                        setMonster({ ...monster, visibility: "private" })
+                      }
+                    >
+                      Make private
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </>
           )}
         </form>

@@ -153,4 +153,25 @@ describe("NewEncounterPage", () => {
       })
     ).rejects.toThrow("NOT_FOUND");
   });
+
+  it("keeps an owned private remix private so its private content can be saved", async () => {
+    mockGetEncounter.mockResolvedValueOnce({
+      ...source,
+      creator: viewer,
+      visibility: "private",
+      monsters: [ownedEntry],
+    });
+    render(
+      await NewEncounterPage({
+        searchParams: Promise.resolve({ remix: slugify(source) }),
+      })
+    );
+    expect(
+      JSON.parse(screen.getByLabelText("Encounter draft").textContent ?? "")
+    ).toMatchObject({
+      id: "",
+      visibility: "private",
+      monsters: [{ monster: { id: "owned-private" } }],
+    });
+  });
 });

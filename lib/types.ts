@@ -193,6 +193,7 @@ export interface EncounterMonsterEntryFull {
 
 export interface Encounter extends Omit<EncounterOverview, "monsters"> {
   monsters: EncounterMonsterEntryFull[];
+  unavailableMonsterIds?: string[];
 }
 
 export interface SubtableColumn {

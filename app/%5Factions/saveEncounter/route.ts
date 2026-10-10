@@ -5,6 +5,10 @@ import type { EditorMutationResult } from "@/app/%5Factions/_editors/contract";
 import { saveEncounterSchema } from "@/app/%5Factions/_editors/input";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import {
+  PUBLIC_ENCOUNTER_CONTENT_ERROR,
+  UNAVAILABLE_ENCOUNTER_CONTENT_ERROR,
+} from "@/lib/encounter-privacy";
 import { internalAction } from "@/lib/internal-action";
 
 export const POST = internalAction("application/json", async (request) => {
@@ -37,13 +41,7 @@ export const POST = internalAction("application/json", async (request) => {
         discordId: session.user.discordId,
       });
     } else {
-      const created = await db.createEncounter({
-        ...input,
-        monsters: undefined,
-        discordId: session.user.discordId,
-      });
-      encounter = await db.updateEncounter({
-        id: created.id,
+      encounter = await db.createEncounter({
         ...input,
         discordId: session.user.discordId,
       });
@@ -61,6 +59,15 @@ export const POST = internalAction("application/json", async (request) => {
     };
     return NextResponse.json(result, { status: id ? 200 : 201 });
   } catch (error) {
+    if (
+      error instanceof Error &&
+      [
+        PUBLIC_ENCOUNTER_CONTENT_ERROR,
+        UNAVAILABLE_ENCOUNTER_CONTENT_ERROR,
+      ].includes(error.message)
+    ) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     if (error instanceof Error && error.message === "Encounter not found") {
       return NextResponse.json(
         { error: "Encounter not found" },
