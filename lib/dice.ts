@@ -111,6 +111,25 @@ function selectKeptDice(
 export function parseDiceNotation(notation: string): DiceRoll | null {
   const trimmed = notation.trim().toLowerCase();
 
+  // Statistics run in a worker, but parsing and random rolling still run on
+  // the main thread. Bound input size and dice allocation independently of
+  // how expensive an exact probability calculation might be.
+  if (
+    trimmed.length > 256 ||
+    Array.from(trimmed.matchAll(/\d+/g)).some(
+      ([digits]) => !Number.isSafeInteger(Number(digits))
+    )
+  ) {
+    return null;
+  }
+  const pools = Array.from(trimmed.matchAll(/(\d+)d\d+/g));
+  if (
+    pools.length > 10 ||
+    pools.reduce((total, [, count]) => total + Number(count), 0) > 100
+  ) {
+    return null;
+  }
+
   // Compound rolls contain at least two plain dice pools and may end with a
   // numeric modifier. They are normal rolls: no pool has a primary die.
   const compoundMatch = trimmed.match(

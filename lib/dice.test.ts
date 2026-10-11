@@ -87,6 +87,19 @@ describe("parseDiceNotation", () => {
     expect(parseDiceNotation("1d0")).toBeNull();
   });
 
+  it("bounds input allocation without rejecting expensive valid statistics", () => {
+    expect(parseDiceNotation("100d6n")).not.toBeNull();
+    expect(parseDiceNotation("101d6n")).toBeNull();
+    expect(parseDiceNotation("60d6+40d8")).not.toBeNull();
+    expect(parseDiceNotation("60d6-41d8")).toBeNull();
+    expect(parseDiceNotation(Array(10).fill("1d6").join("+"))).not.toBeNull();
+    expect(parseDiceNotation(Array(11).fill("1d6").join("+"))).toBeNull();
+    expect(parseDiceNotation(`${"0".repeat(253)}1d6`)).not.toBeNull();
+    expect(parseDiceNotation(`${"0".repeat(254)}1d6`)).toBeNull();
+    expect(parseDiceNotation("1d6+9007199254740992")).toBeNull();
+    expect(parseDiceNotation("1d20a5+11")).not.toBeNull();
+  });
+
   it("handles uppercase V", () => {
     const result = parseDiceNotation("1d8V");
     expect(result).toEqual({
