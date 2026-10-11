@@ -37,6 +37,7 @@ export const upsertOfficialSpellSchool = async (input: {
   spells: Array<{
     name: string;
     tier: number;
+    version?: number;
     actions: number;
     reaction?: boolean;
     target?: SpellTarget;
@@ -94,6 +95,7 @@ export const upsertOfficialSpellSchool = async (input: {
     schoolId: string;
     name: string;
     tier: number;
+    version: number;
     actions: number;
     reaction: boolean;
     utility: boolean;
@@ -113,6 +115,7 @@ export const upsertOfficialSpellSchool = async (input: {
       schoolId,
       name: spell.name,
       tier: spell.tier,
+      version: spell.version ?? 3,
       actions: spell.actions,
       reaction: spell.reaction || false,
       utility: spell.utility || false,
@@ -178,6 +181,7 @@ export const findOfficialSpellSchoolsByNames = async (
         name: s.name,
         schoolId: s.schoolId,
         tier: s.tier,
+        version: s.version,
         actions: s.actions,
         reaction: s.reaction || false,
         utility: s.utility || false,

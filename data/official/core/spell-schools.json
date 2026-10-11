@@ -13,13 +13,18 @@
         "description": "Wield the destructive and empowering forces of flame.",
         "spells": [
           {
+            "name": "Hearth & Home",
+            "tier": 3,
+            "actions": 0,
+            "version": 2,
+            "description": "Casting Time: 10 minutes. Conjure a welcoming inn, complete with sturdy wooden tables, plush chairs, and a soft rug underfoot. At its heart burns a cozy fire in a fireplace, filling the space with warmth and light. The inn lasts for 12 hours and vanishes without a trace afterward."
+          },
+          {
             "name": "Fire Step",
             "tier": 0,
             "actions": 0,
             "utility": true,
-            "target": {
-              "type": "self"
-            },
+            "target": { "type": "self" },
             "description": "Casting Time: 1 minute. Teleport to a fire source you can see."
           },
           {
@@ -33,11 +38,7 @@
             "name": "Flame Dart",
             "tier": 0,
             "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 8
-            },
+            "target": { "type": "single", "kind": "range", "distance": 10 },
             "damage": "1d10. On crit: Smoldering.",
             "highLevels": "+5 damage every 5 levels."
           },
@@ -45,96 +46,68 @@
             "name": "Heart's Fire",
             "tier": 0,
             "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 4
-            },
-            "description": "Give an ally within Range an extra action. Spend 1 mana to cast this when it is not your turn.",
-            "highLevels": "+1 Range every 5 levels."
+            "reaction": true,
+            "target": { "type": "single", "kind": "range", "distance": 4 },
+            "description": "(1/round) Give an ally 1 action. Cast as a Reaction for 1 mana.",
+            "highLevels": "+2 Range every 5 levels."
           },
           {
             "name": "Kindle",
             "tier": 0,
             "actions": 1,
             "utility": true,
-            "target": {
-              "type": "single"
-            },
-            "description": "Conjure a minor visual illusion. OR: **Ignite:** Ignite a small, unheld item within Range 6."
+            "target": { "type": "single" },
+            "description": "Conjure a minor visual illusion. OR: Ignite a small, unheld item within Reach 6."
           },
           {
             "name": "Ignite",
             "tier": 1,
             "actions": 2,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 8
-            },
-            "damage": "4d10 to a Smoldering target, ending the condition on hit.",
+            "target": { "type": "single", "kind": "range", "distance": 10 },
+            "damage": "4d10 to a Smoldering target.",
             "upcast": "+10 damage."
           },
           {
             "name": "Enchant Weapon",
             "tier": 2,
             "actions": 1,
-            "target": {
-              "type": "single"
-            },
-            "description": "A weapon you touch is enchanted with magical flame. It deals +KEY damage and inflicts Smoldering on crit.",
+            "target": { "type": "single", "kind": "reach", "distance": 8 },
+            "description": "A weapon you choose inflicts Smoldering on crit and gains (1/turn) +KEY damage.",
             "concentration": "Up to 1 minute.",
             "upcast": "+KEY damage."
           },
           {
             "name": "Flame Barrier",
             "tier": 3,
-            "actions": 1,
-            "reaction": true,
-            "target": {
-              "type": "self"
-            },
-            "description": "When attacked, Defend for free. Until the start of your next turn, melee attackers against you take KEY damage (ignoring armor) and gain Smoldering.",
-            "upcast": "+KEY damage."
-          },
-          {
-            "name": "Hearth & Home",
-            "tier": 3,
             "actions": 0,
-            "description": "Casting Time: 10 minutes. Conjure a welcoming inn, complete with sturdy wooden tables, plush chairs, and a soft rug underfoot. At its heart burns a cozy fire in a fireplace, filling the space with warmth and light. The inn lasts for 12 hours and vanishes without a trace afterward."
+            "reaction": true,
+            "target": { "type": "aoe", "kind": "reach", "distance": 1 },
+            "description": "Castable only while Defending. Triggers whenever you are attacked this round.",
+            "damage": "10+KEY and Smoldering.",
+            "upcast": "+KEY damage OR +1 Reach."
           },
           {
             "name": "Pyroclasm",
             "tier": 4,
             "actions": 2,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 3
-            },
-            "description": "Others within Reach take 2d20+10 damage (ignoring armor) on a failed DEX save. Half damage on save. Smoldering creatures fail.",
-            "upcast": "+1 Reach, +2 damage."
+            "target": { "type": "aoe", "kind": "reach", "distance": 3 },
+            "damage": "2d20+10 on a failed DEX save (Smoldering creatures fail); half on save.",
+            "upcast": "Advantage 1 and +1 Reach."
           },
           {
             "name": "Fiery Embrace",
             "tier": 5,
             "actions": 2,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 8
-            },
-            "description": "While within Reach: 1 ally gains the effects of Enchant Weapon. Enemies gain Smoldering, lose damage resistance, and their damage immunity is reduced to resistance.",
+            "target": { "type": "aoe", "kind": "reach", "distance": 10 },
+            "description": "An ally gains the effects of Enchant Weapon. Enemies gain Smoldering, and effects that would end it, don't.",
             "concentration": "Up to 1 minute.",
-            "upcast": "+1 ally."
+            "upcast": "+1 ally and +2 Reach."
           },
           {
             "name": "Living Inferno",
             "tier": 7,
             "actions": 3,
-            "target": {
-              "type": "self"
-            },
+            "target": { "type": "self" },
             "description": "Gain the effects of Flame Barrier until your next turn. At the end of this turn and your next turn, cast Pyroclasm for free.",
             "upcast": "Upcast Flame Barrier and Pyroclasm."
           },
@@ -142,10 +115,8 @@
             "name": "Dragonform",
             "tier": 9,
             "actions": 5,
-            "target": {
-              "type": "self"
-            },
-            "description": "Transform into a Huge dragon. Gain 3 actions, a fly speed of 12, LVL Armor, 10×LVL temp HP, and: * **Tooth & Claw.** Action: (Reach 2) 1d20+LVL damage (ignoring armor). Inflicts Smoldering. * **Immolating Breath.** 2 Actions: (Reach: Cone 8). DC 20 DEX save, KEY d20 damage, half on save. Smoldering targets fail. You can maintain this form for as long as the temp HP granted by this spell remain (max. 10 minutes). When it ends, you drop to 0 HP."
+            "target": { "type": "self" },
+            "description": "Transform into a Huge dragon. Gain 3 actions, a flying Speed of 12, LVL Defense, 10×LVL temp HP, and:\n\n* **Tooth & Claw.** 1 Action: (Reach 2) 1d20+LVL damage (ignoring armor). Inflicts Smoldering.\n* **Immolating Breath.** 2 Actions: (Cone 10, AoE) KEY d20 damage, half on DEX save (Smoldering targets fail).\n\nYou can maintain this form for as long as the temp HP granted by this spell remain (max. 10 minutes). When it ends, you drop to 0 HP."
           }
         ]
       }
@@ -157,41 +128,51 @@
         "description": "Command the freezing cold to hinder and shatter your foes.",
         "spells": [
           {
+            "name": "Cryosleep",
+            "tier": 3,
+            "actions": 2,
+            "version": 2,
+            "target": { "type": "aoe", "kind": "reach", "distance": 12 },
+            "description": "Creatures in a 2×2 area within Reach are Dazed. On a failed STR save, they fall asleep instead, becoming Incapacitated until their next two turns have passed, until damaged, or until an ally uses an action to wake them.",
+            "upcast": "+1 area, +1 turn asleep."
+          },
+          {
+            "name": "Cryotomb",
+            "tier": 8,
+            "actions": 4,
+            "version": 2,
+            "target": { "type": "single", "kind": "range", "distance": 12 },
+            "description": "A target must make a STR save or become incapacitated in an icy tomb and immune to harm. This lasts as long as you remain alive, or until the ice melts or is otherwise destroyed. The creature may repeat the save once every 10 days. Huge or larger creatures have advantage on the save. A Small or Tiny creatures, disadvantage.",
+            "upcast": "+5 spell save DC."
+          },
+          {
             "name": "Chillcraft",
             "tier": 0,
             "actions": 1,
             "utility": true,
-            "description": "Harmlessly freeze, thaw, or move a bath-sized amount of water near you. OR: **Craft:** Conjure a sheet of opaque, mirror-like, or transparent ice the size of a window or small door."
+            "description": "**Chill:** Harmlessly freeze, thaw, or move a bath-sized amount of water near you. OR: **Craft:** Conjure a sheet of opaque, mirror-like, or transparent ice the size of a window or door."
           },
           {
             "name": "Ice Disk",
             "tier": 0,
             "actions": 0,
             "utility": true,
-            "description": "Casting Time: 1 minute. Conjure a disk of ice that floats just above the ground and follows you. It can carry up to 250 lbs./115 kg of weight for 1 hour or until you cast this spell again."
+            "description": "Casting Time: 1 minute. Conjure a floating disk of ice that follows you. It can carry moderately heavy weight for 1 hour or until you cast this spell again."
           },
           {
             "name": "Ice Lance",
             "tier": 0,
             "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 12
-            },
-            "damage": "1d6 cold or piercing damage. On hit: Slowed.",
+            "target": { "type": "single", "kind": "range", "distance": 12 },
+            "damage": "1d6 cold/piercing, Slowed.",
             "highLevels": "+3 damage every 5 levels."
           },
           {
             "name": "Snowblind",
             "tier": 0,
             "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "reach",
-              "distance": 1
-            },
-            "damage": "1d6. On hit: Blinded until the end of their next turn.",
+            "target": { "type": "single", "kind": "reach", "distance": 1 },
+            "damage": "1d6, Blind until the end of their next turn.",
             "highLevels": "+3 damage every 5 levels."
           },
           {
@@ -199,102 +180,64 @@
             "tier": 0,
             "actions": 0,
             "utility": true,
-            "description": "Casting Time: 10 minutes. Turn a small patch of water into a reflective icy mirror. Looking though it grants you vision of any desired location near this same body of water for 10 minutes."
+            "description": "Casting Time: 1 minute. Turn a small patch of water into a reflective icy mirror. Looking through it grants you vision of any desired location near this body of water for 10 minutes."
           },
           {
             "name": "Frost Shield",
             "tier": 1,
-            "actions": 1,
+            "actions": 0,
             "reaction": true,
-            "target": {
-              "type": "self"
-            },
-            "description": "When attacked, Gain 2×KEY temp HP and Defend for free. The ice melts and these temp HP are lost at the start of your next turn.",
-            "highLevels": "+2×KEY temp HP."
+            "target": { "type": "self" },
+            "description": "Castable only while Defending. Gain 2×KEY temp HP. The temp HP are lost at the start of your next turn.",
+            "upcast": "+5 temp HP."
           },
           {
             "name": "Shatter",
             "tier": 2,
             "actions": 2,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 12
-            },
-            "damage": "3d6. If any die rolls the max against a Hampered target, this counts as a crit. On crit: +20 damage.",
-            "upcast": "Increase the result of ANY die by 1. +5 damage on crit."
+            "target": { "type": "single", "kind": "range", "distance": 12 },
+            "damage": "3d6. ANY die can crit vs a Hampered target. On crit: +20 damage (instead of rolling any additional dice).",
+            "upcast": "Increase a die roll by 1 and +5 damage on crit."
           },
           {
-            "name": "Cryosleep",
+            "name": "Omenrime",
             "tier": 3,
-            "actions": 2,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 12
-            },
-            "description": "Creatures in a 2×2 area within Reach are Dazed. On a failed STR save, they fall asleep instead, becoming Incapacitated until their next two turns have passed, until damaged, or until an ally uses an action to wake them.",
-            "upcast": "+1 area, +1 turn asleep."
+            "actions": 1,
+            "target": { "type": "special", "kind": "reach", "distance": 6 },
+            "description": "Roll 1d6; you may replace any single die rolled within Reach with that die (it expires at the end of the encounter if unused). Exchange the original die with the d6 that you rolled; treat it exactly as if that die were the one originally rolled.",
+            "upcast": "+1 Reach and roll +1d6 (keep only 1)."
           },
           {
             "name": "Rimeblades",
             "tier": 4,
             "actions": 3,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 12
-            },
-            "description": "Conjure razor-sharp icy spikes in 5 contiguous spaces within Reach; this area is difficult terrain. Creatures that enter these spaces (or who are in the area when you conjure them) suffer 2d6 damage for each space they touch.",
+            "target": { "type": "aoe", "kind": "reach", "distance": 12 },
+            "description": "Conjure icy blades in 5 contiguous spaces; this area is Difficult Terrain. Creatures there (or who enter later) suffer 2d6 damage for each space they touch.",
             "concentration": "Up to 1 minute.",
-            "upcast": "+1 space, +1 damage."
+            "upcast": "+1 space and +1 damage."
           },
           {
             "name": "Arctic Blast",
             "tier": 5,
             "actions": 2,
-            "target": {
-              "type": "aoe",
-              "kind": "cone",
-              "distance": 4
-            },
-            "damage": "4d6+10 damage. This area is difficult terrain until the end of your next turn. Surviving creatures must make a STR save or be frozen in place (Restrained) until the end of their next turn; creatures already Hampered are Incapacitated for 1 turn instead.",
+            "target": { "type": "aoe", "kind": "cone", "distance": 4 },
+            "damage": "4d6+10. This area is Difficult Terrain for 1 round. Any already Hampered creatures there are Restrained (frozen in place).",
             "upcast": "+1 Reach."
-          },
-          {
-            "name": "Cryotomb",
-            "tier": 8,
-            "actions": 4,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 12
-            },
-            "description": "A target must make a STR save or become incapacitated in an icy tomb and immune to harm. This lasts as long as you remain alive, or until the ice melts or is otherwise destroyed. The creature may repeat the save once every 10 days. Huge or larger creatures have advantage on the save. A Small or Tiny creatures, disadvantage.",
-            "upcast": "+5 spell save DC."
           },
           {
             "name": "Glacier Strike",
             "tier": 8,
             "actions": 3,
-            "target": {
-              "type": "aoe",
-              "kind": "range",
-              "distance": 12
-            },
-            "damage": "d66 bludgeoning to creatures in a 3×3 area. Creatures adjacent to that area take half as much. The entire area permanently becomes difficult terrain.",
+            "target": { "type": "aoe", "kind": "range", "distance": 12 },
+            "damage": "d66 bludgeoning to creatures in a 3×3 area. Creatures adjacent to that area take half as much. The entire area permanently becomes Difficult Terrain.",
             "upcast": "+1 initial area."
           },
           {
             "name": "Arctic Annihilation",
             "tier": 9,
             "actions": 3,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 12
-            },
-            "description": "Choose any number of objects or willing creatures within Reach to encase in ice. They are Incapacitated and immune to damage and negative effects until the start of their next turn. All other creatures and objects within Reach take d66 damage. Any surviving creature who took this damage must make a STR save or be Incapacitated for 1 round. Once you cast this spell, you must Safe Rest for 1 week before using it again."
+            "target": { "type": "aoe", "kind": "reach", "distance": 12 },
+            "description": "Any targets you choose are encased in ice and immune to damage and negative effects until the start of their next turn. All others take d66 damage, then make a STR save or be Incapacitated until the end of their next turn. Once you cast this spell, you must Safe Rest for 1 week before using it again."
           }
         ]
       }
@@ -306,15 +249,26 @@
         "description": "Channel the raw power of storms and electricity.",
         "spells": [
           {
+            "name": "Sparkfetch",
+            "tier": 0,
+            "actions": 0,
+            "version": 2,
+            "description": "Loudly teleport a tiny, unheld metal item you can see to yourself."
+          },
+          {
+            "name": "Teleport",
+            "tier": 6,
+            "actions": 0,
+            "version": 2,
+            "description": "Casting Time: 10 minutes. You and up to 10 willing creatures within 2 spaces are instantly teleported to a place of your choice that you have visited before."
+          },
+          {
             "name": "Overload",
             "tier": 0,
             "actions": 1,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 2
-            },
-            "damage": "2d8 to others within Reach.",
+            "target": { "type": "aoe", "kind": "reach", "distance": 2 },
+            "description": "Castable only if Charged, ending the condition.",
+            "damage": "2d8.",
             "highLevels": "+4 damage every 5 levels."
           },
           {
@@ -322,80 +276,55 @@
             "tier": 0,
             "actions": 0,
             "utility": true,
-            "description": "Casting Time: 1 minute. Conjure a Tiny (squirrel-sized) electrical helper for up to 1 hour. It can fetch Tiny objects (~1 lb./500 g max), open unlocked doors, illuminate a small area, or deliver a harmless shock. If it takes damage or moves further than 6 spaces away from you, it dissipates into sparks."
+            "description": "Casting Time: 1 minute. Conjure a Tiny (squirrel-sized) helper for up to 1 hour. It can fetch Tiny objects, open unlocked doors, illuminate a small area, or deliver a harmless shock. If it takes damage or moves further than 6 spaces away from you, it dissipates into sparks."
           },
           {
             "name": "Spark Step",
             "tier": 0,
             "actions": 1,
             "utility": true,
-            "target": {
-              "type": "self",
-              "kind": "range",
-              "distance": 4
-            },
-            "description": "Teleport to a metal object."
-          },
-          {
-            "name": "Sparkfetch",
-            "tier": 0,
-            "actions": 0,
-            "description": "Loudly teleport a tiny, unheld metal item you can see to yourself."
+            "target": { "type": "self" },
+            "description": "Reach: 4. Teleport to a metal object."
           },
           {
             "name": "Tempest's Command",
             "tier": 0,
             "actions": 1,
             "utility": true,
-            "description": "Dispel a minor magical effect, or temporarily suppress a stronger one (the more powerful an enchantment, the shorter the duration). OR: **Voice of Thunder:** Your eyes glow and your voice is amplified to a booming, thunder-like volume for 1 min."
+            "description": "Dispel a minor magical effect, or temporarily suppress a stronger one (the more powerful an enchantment, the shorter the duration). OR: Your eyes glow and your voice is amplified to a thunder-like volume for 1 minute."
           },
           {
             "name": "Zap",
             "tier": 0,
             "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 12
-            },
-            "damage": "2d8. On miss: the lightning fails to find ground, and strikes you instead.",
+            "target": { "type": "single", "kind": "range", "distance": 8 },
+            "damage": "1d8+4. On miss: you take half the damage instead.",
             "highLevels": "+6 damage every 5 levels."
           },
           {
             "name": "Arc Lightning",
             "tier": 1,
             "actions": 2,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 12
-            },
-            "damage": "3d8. The bolt also damages the next closest creatures to your target. On miss: the lightning fails to find ground and strikes you instead.",
+            "target": { "type": "single+", "kind": "range", "distance": 12 },
+            "damage": "3d8. Also hits the next closest creature.",
+            "description": "If you are the closest, you are hit! If 2 creatures are equally close, the GM can select randomly, the taller one, or whoever has the most metal.",
             "upcast": "+4 damage."
           },
           {
             "name": "Alacrity",
             "tier": 2,
-            "actions": 1,
+            "actions": 0,
             "reaction": true,
-            "target": {
-              "type": "self",
-              "kind": "range",
-              "distance": 4
-            },
-            "description": "When attacked. Defend for free. After damage is dealt, you gain the Charged condition then teleport anywhere within Range.",
-            "upcast": "+4 Range."
+            "target": { "type": "self" },
+            "description": "(1/turn) Teleport up to your Speed, gain Charged (can be cast while Defending, after damage).",
+            "upcast": "+4 spaces."
           },
           {
             "name": "Stormlash",
             "tier": 3,
             "actions": 2,
-            "target": {
-              "type": "aoe",
-              "kind": "line",
-              "distance": 12
-            },
-            "damage": "3d8+4 (ignoring metal armor). Surviving creatures are Dazed on a failed STR save, or Incapacitated instead for 1 of their turns if they fail by 5 or more. Creatures with a large amount of metal (e.g., armor or a longsword) roll with disadvantage.",
+            "target": { "type": "aoe", "kind": "line", "distance": 12 },
+            "damage": "3d8+4 and Prone on a failed STR save. Creatures with a large amount of metal (e.g., armor or a longsword) roll with disadvantage and suffer +10 damage.",
             "upcast": "+4 damage."
           },
           {
@@ -403,51 +332,33 @@
             "tier": 4,
             "actions": 3,
             "reaction": true,
-            "target": {
-              "type": "multi",
-              "kind": "range",
-              "distance": 8
-            },
-            "description": "When an ally is attacked. Choose another creature within Range to swap places with your ally on a failed WIL save (they become the new target). Costs 1 Action while Charged, ending the condition.",
-            "upcast": "+4 Range."
+            "target": { "type": "multi", "kind": "range", "distance": 8 },
+            "description": "Castable when an ally is attacked. Teleport an ally away. Teleport another creature there on a failed WIL save (making them the target). Costs 1 action if Charged, ending the condition.",
+            "upcast": "+2 Range."
           },
           {
             "name": "Electrocharge",
             "tier": 5,
             "actions": 2,
-            "target": {
-              "type": "single"
-            },
-            "description": "A creature you touch gains the Charged condition, +1 max action, +5 armor, 2x speed, and advantage on DEX saves.",
+            "target": { "type": "single", "kind": "reach", "distance": 4 },
+            "description": "Give a creature Charged, +1 max action, +5 Defense, 2× Speed, and advantage on DEX saves.",
             "concentration": "Up to 1 minute.",
-            "upcast": "+4 Range."
+            "upcast": "+4 Reach."
           },
           {
             "name": "Ride the Lightning",
             "tier": 6,
             "actions": 3,
-            "target": {
-              "type": "aoe"
-            },
-            "description": "Teleport up to 12 spaces away to a spot you can see (if a willing creature is there, swap places with them). Adjacent creatures take d88 damage. Surviving creatures must make a STR save or be hurled back 3 spaces, knocked Prone, and deafened for 1 day.",
-            "upcast": "+1 DC."
-          },
-          {
-            "name": "Teleport",
-            "tier": 6,
-            "actions": 0,
-            "description": "Casting Time: 10 minutes. You and up to 10 willing creatures within 2 spaces are instantly teleported to a place of your choice that you have visited before."
+            "target": { "type": "aoe", "kind": "reach", "distance": 12 },
+            "description": "Teleport to a spot you can see (if a willing creature is there, swap places with them). Adjacent creatures take d88 damage and Knockback 2. Creatures moved 2+ spaces are also knocked Prone, Dazed, and deafened for 1 day.",
+            "upcast": "+1 Knockback."
           },
           {
             "name": "Seething Storm",
             "tier": 9,
             "actions": 3,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 4
-            },
-            "description": "You become a cloud of tempestuous storm. You can fly, move for free 1/round, and attacks against you are made with disadvantage. * At the end of each of your turns, strike up to 4 creatures within Reach with a bolt of lightning for d88 damage (a creature can only be struck 1/round). * +2 Reach and number of bolts each round. Costs 3 actions each round to maintain. Once you cast this spell, you must Safe Rest for 1 week before you can use it again.",
+            "target": { "type": "aoe", "kind": "reach", "distance": 4 },
+            "description": "Become a cloud of tempestuous storm. You can fly, move for free 1/round, and attacks against you are disadvantaged. At the end of each of your turns, strike up to 4 creatures within Reach with a bolt of lightning for d88 damage (a creature can only be struck 1/round). Costs 3 actions each round to maintain. +2 Reach and +2 lightning bolts each round. Once you cast this spell, you must Safe Rest for 1 week before you can use it again.",
             "concentration": "Up to 1 minute."
           }
         ]
@@ -460,16 +371,53 @@
         "description": "Draw upon the forces of death and shadow.",
         "spells": [
           {
+            "name": "Shadow Blast",
+            "tier": 0,
+            "actions": 1,
+            "version": 2,
+            "target": { "type": "single", "kind": "range", "distance": 8 },
+            "damage": "1d12+KEY. 1/round.",
+            "highLevels": "+1d12 every 5 levels."
+          },
+          {
+            "name": "Summon Shadow",
+            "tier": 0,
+            "actions": 1,
+            "version": 2,
+            "description": "Summon a shadow minion within Reach 1 (you can summon a max of INT or LVL minions this way, whichever is lower). Your shadow minions follow the normal minion rules: they have 1 HP, no damage bonus, and do not crit. They abandon you immediately outside of combat. **Action:** (1/turn) you may command ALL of your minions to move up to 6 then attack (Reach 1, d12 each).",
+            "highLevels": "+1 Reach every 5 levels."
+          },
+          {
+            "name": "Memory Veil",
+            "tier": 3,
+            "actions": 0,
+            "version": 2,
+            "description": "Conceal or change all memories of an event for up to 12 creatures within 2 spaces on a failed WIL save for as long as this spell lasts.",
+            "concentration": "Ss long as the caster remains conscious."
+          },
+          {
+            "name": "Greater Shadow",
+            "tier": 4,
+            "actions": 2,
+            "version": 2,
+            "description": "Summon a 5d12 Greater Shadow minion (max 1) adjacent to you. When it dies, it explodes into 5 shadow minions (see Summon Shadow). Place them anywhere within 8 spaces.",
+            "upcast": "+1d12 damage, +1 shadow minion on explosion."
+          },
+          {
+            "name": "Speak With Dead",
+            "tier": 4,
+            "actions": 0,
+            "version": 2,
+            "description": "Temporarily animate a corpse, allowing it to answer up to 3 questions before returning to rest. The corpse must answer, but it isn’t required to be truthful if it dislikes the questioner or the questions."
+          },
+          {
             "name": "Entice",
             "tier": 0,
             "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 8
-            },
-            "damage": "1d4 (ignoring armor). On hit: target moves 2 spaces closer to you.",
-            "highLevels": "Increment the die size 1 step every 5 levels (d6 » d8 » d10 » d12)."
+            "target": { "type": "single", "kind": "range", "distance": 12 },
+            "damage": "1d12 (ignoring armor). Target moves Primary Die spaces closer to you and gains 1d12 damage on their next attack.",
+            "description": "1/round.",
+            "highLevels": "You may add 1d12 every 5 levels."
           },
           {
             "name": "False Face",
@@ -483,141 +431,88 @@
             "tier": 0,
             "actions": 0,
             "utility": true,
-            "target": {
-              "type": "single"
-            },
-            "description": "Action: Soil a surface with blood, filth, or other disgusting things. OR: **Gravework:** Casting time 1 minute: Shape/move a body-sized plot of earth."
-          },
-          {
-            "name": "Shadow Blast",
-            "tier": 0,
-            "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 8
-            },
-            "damage": "1d12+KEY. 1/round.",
-            "highLevels": "+1d12 every 5 levels."
-          },
-          {
-            "name": "Summon Shadow",
-            "tier": 0,
-            "actions": 1,
-            "description": "Summon a shadow minion within Reach 1 (you can summon a max of INT or LVL minions this way, whichever is lower). Your shadow minions follow the normal minion rules: they have 1 HP, no damage bonus, and do not crit. They abandon you immediately outside of combat. **Action:** (1/turn) you may command ALL of your minions to move up to 6 then attack (Reach 1, d12 each).",
-            "highLevels": "+1 Reach every 5 levels."
+            "target": { "type": "single" },
+            "description": "**Gravemark:** Magically soil a surface with blood, filth, or other disgusting things (1 Action). OR: **Gravework:** Shape/move a body-sized plot of earth (1 Minute)."
           },
           {
             "name": "Thought Leech",
             "tier": 0,
             "actions": 1,
             "utility": true,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 6
-            },
-            "description": "Read the surface thoughts of a creature within Reach. Creatures can sense you doing this and may not like it."
+            "target": { "type": "single", "kind": "reach", "distance": 6 },
+            "description": "Read the surface thoughts of a creature. They can sense you doing this and may not like it."
           },
           {
             "name": "Withering Touch",
             "tier": 0,
             "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "reach",
-              "distance": 1
-            },
-            "damage": "1d12. On hit: Target is considered undead for 1 round.",
+            "target": { "type": "single", "kind": "reach", "distance": 1 },
+            "damage": "1d12. On damage, target is considered undead for 1 round.",
             "highLevels": "+6 damage every 5 levels."
           },
           {
             "name": "Shadow Trap",
             "tier": 1,
-            "actions": 2,
-            "target": {
-              "type": "single"
-            },
-            "description": "The next creature to move adjacent to you suffers 3d12 damage; if Small or Tiny, it is also Restrained by shadowy tendrils for as long as you maintain concentration or until they escape.",
-            "concentration": "Up to 1 minute.",
-            "upcast": "+1 size category, +1d12 damage when they escape."
+            "actions": 1,
+            "reaction": true,
+            "target": { "type": "single", "kind": "reach", "distance": 8 },
+            "description": "Reaction: When an enemy moves next to an ally within Reach. If Small/Tiny, the enemy is also Restrained until they escape.",
+            "damage": "2d12.",
+            "upcast": "+1 size category and +1d12 damage on escape."
           },
           {
             "name": "Dread Visage",
             "tier": 2,
-            "actions": 1,
-            "reaction": true,
-            "target": {
-              "type": "self"
-            },
-            "description": "When attacked, Defend for free. Melee attackers are Frightened of you and suffer 1d12 damage if they attack you this round. Costs 2 mana less while dying.",
-            "upcast": "+2 damage, +2 Armor."
-          },
-          {
-            "name": "Memory Veil",
-            "tier": 3,
             "actions": 0,
-            "description": "Conceal or change all memories of an event for up to 12 creatures within 2 spaces on a failed WIL save for as long as this spell lasts.",
-            "concentration": "Ss long as the caster remains conscious."
+            "reaction": true,
+            "target": { "type": "self" },
+            "description": "Castable only while Defending. Frighten all creatures attacking you in melee this round. Costs 2 mana less while Dying.",
+            "damage": "1d12 to all creatures attacking you in melee this round.",
+            "upcast": "+2 damage and +2 Defense."
           },
           {
             "name": "Vampiric Greed",
             "tier": 3,
             "actions": 2,
-            "target": {
-              "type": "aoe"
-            },
-            "description": "Gain 1 Wound. 4d12 to all adjacent creatures, and heal HP equal to the damage done. Any surviving creatures make a STR save. Gain 1 additional Wound for each creature that saves.",
-            "upcast": "+1 DC."
+            "target": { "type": "aoe", "kind": "reach", "distance": 1 },
+            "damage": "4d12.",
+            "description": "Heal HP equal to the damage dealt then gain 1 Wound. Gain 1 additional Wound for each creature that survived this damage.",
+            "upcast": "+1 Reach OR +10 damage."
           },
           {
-            "name": "Greater Shadow",
+            "name": "Vigor Mortis",
             "tier": 4,
-            "actions": 2,
-            "description": "Summon a 5d12 Greater Shadow minion (max 1) adjacent to you. When it dies, it explodes into 5 shadow minions (see Summon Shadow). Place them anywhere within 8 spaces.",
-            "upcast": "+1d12 damage, +1 shadow minion on explosion."
-          },
-          {
-            "name": "Speak With Dead",
-            "tier": 4,
-            "actions": 0,
-            "description": "Temporarily animate a corpse, allowing it to answer up to 3 questions before returning to rest. The corpse must answer, but it isn’t required to be truthful if it dislikes the questioner or the questions."
+            "actions": 1,
+            "reaction": true,
+            "target": { "type": "single", "kind": "reach", "distance": 8 },
+            "description": "Castable only when an ally drops to 0 HP. Their max actions do not change, they skip STR saves to act, and taking damage while Dying causes 1 fewer Wound (min 1).",
+            "concentration": "Up to 1 minute.",
+            "upcast": "+10 temp HP."
           },
           {
             "name": "Gangrenous Burst",
             "tier": 5,
             "actions": 2,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 8
-            },
-            "description": "Other damaged creatures must make a STR save or take 3d20 damage (ignoring armor), half on save. The save is rolled with disadvantage while Bloodied.",
+            "target": { "type": "aoe", "kind": "reach", "distance": 8 },
+            "damage": "3d20 (ignoring armor) to damaged creatures on a failed STR save (target rolls with disadvantage if Bloodied), half on save.",
             "upcast": "+10 damage."
           },
           {
             "name": "Unspeakable Word",
             "tier": 6,
             "actions": 2,
-            "target": {
-              "type": "special",
-              "kind": "reach",
-              "distance": 8
-            },
-            "damage": "d66 (with advantage, ignoring armor, does not miss or crit) on a failed INT save. Target rolls with disadvantage if Bloodied or Frightened. On a success, you both take half of this damage instead.",
-            "upcast": "+1 DC, +10 damage."
+            "target": { "type": "single", "kind": "reach", "distance": 8 },
+            "damage": "d66 with advantage (ignoring armor).",
+            "description": "On a failed INT save (disadvantage if Bloodied or Frightened) the target is Weakened 10, and you are Empowered 10 on your next attack. On save, the opposite happens instead.",
+            "upcast": "+1 DC and +10 damage."
           },
           {
             "name": "Creeping Death",
             "tier": 7,
             "actions": 3,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 8
-            },
-            "damage": "4d20. If this kills the creature, it violently erupts and you MUST deal the same amount of damage to another creature within 8 spaces of it that has not yet been damaged by this effect. Repeat until a creature survives this damage or no other creatures are within Reach.",
-            "upcast": "+1d20 damage."
+            "target": { "type": "aoe", "kind": "reach", "distance": 8 },
+            "damage": "4d20. If this kills the creature, repeat the damage to another creature within Reach 8 of it not yet damaged by this effect. Repeat until a target survives or no others are within Reach.",
+            "upcast": "+10 damage."
           }
         ]
       }
@@ -629,92 +524,18 @@
         "description": "Harness divine light to heal, protect, and punish.",
         "spells": [
           {
-            "name": "Beautify",
-            "tier": 0,
-            "actions": 1,
-            "utility": true,
-            "target": {
-              "type": "single"
-            },
-            "description": "Clean stains or repair a small tear/break in a non-magical item, or conjure tiny beautiful things: flowers, butterflies, etc."
-          },
-          {
-            "name": "Bond of Peace",
-            "tier": 0,
-            "actions": 1,
-            "utility": true,
-            "target": {
-              "type": "single"
-            },
-            "description": "Telepathically communicate simple thoughts or feelings with a friendly creature you can see. OR: **Peace:** Imbue your spoken words with calming magic, granting advantage on any check made to soothe anger or fear in creatures who can hear you."
-          },
-          {
-            "name": "Light",
-            "tier": 0,
-            "actions": 1,
-            "utility": true,
-            "target": {
-              "type": "single"
-            },
-            "description": "Cause an item to brightly glow as a torch with radiant light for as long as you hold it."
-          },
-          {
-            "name": "Rebuke",
-            "tier": 0,
-            "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "reach",
-              "distance": 4
-            },
-            "damage": "1d6 (ignoring armor), does not miss. 2× damage against undead or cowardly (those Frightened or behind cover).",
-            "highLevels": "+2 damage every 5 levels."
-          },
-          {
-            "name": "True Strike",
-            "tier": 0,
-            "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "reach",
-              "distance": 2
-            },
-            "description": "Give a creature advantage on the next attack they make (until the end of their next turn).",
-            "highLevels": "+1 Reach every 5 levels."
-          },
-          {
-            "name": "Heal",
-            "tier": 1,
-            "actions": 1,
-            "target": {
-              "type": "single+",
-              "kind": "reach",
-              "distance": 1
-            },
-            "description": "Heal a creature 1d6+KEY HP.",
-            "upcast": "Choose one: +1 target, +4 Reach, +1d6 healing. If 5+ mana is spent, you may also heal 1 negative condition (e.g., Blind, Poisoned, 1 Wound)."
-          },
-          {
             "name": "Lifebinding Spirit",
             "tier": 1,
             "actions": 1,
+            "version": 2,
             "description": "Summon a spirit companion that follows you and is immune to harm. It lasts until you cast this spell again, take a Safe Rest, or it heals a number of times equal to the mana spent summoning it. **Action:** It attacks or heals a creature within Reach 4. It attacks for 1d6+WIL radiant damage (ignoring armor), or heals for the same amount.",
             "upcast": "Increment its die size by 1 (max d12), +1 healing use."
-          },
-          {
-            "name": "Warding Bond",
-            "tier": 2,
-            "actions": 1,
-            "target": {
-              "type": "single"
-            },
-            "description": "Designate a willing creature as your ward for 1 minute. They take half damage from all attacks; you are attacked for the other half.",
-            "upcast": "+1 creature."
           },
           {
             "name": "Radiant Bond",
             "tier": 3,
             "actions": 0,
+            "version": 2,
             "description": "Telepathically communicate across any distance with a creature that holds a gift you have freely given.",
             "concentration": "Up to 10 minutes."
           },
@@ -722,63 +543,114 @@
             "name": "Revive",
             "tier": 3,
             "actions": 0,
+            "version": 2,
             "description": "Casting Time: 1 hour. Bring a dead creature back to life, provided they’ve been dead no more than 10 days and have not been revived by this spell before. Attempting to revive a creature already brought back with this spell risks raising a mindless, zombified husk instead."
           },
           {
-            "name": "Shield of Justice",
-            "tier": 3,
+            "name": "Beautify",
+            "tier": 0,
             "actions": 1,
-            "reaction": true,
-            "target": {
-              "type": "self"
-            },
-            "description": "When attacked, Defend for free and reflect Radiant damage back at the attacker equal to the amount blocked (ignoring armor)",
-            "upcast": "+5 Armor."
+            "utility": true,
+            "target": { "type": "single" },
+            "description": "Clean stains or repair a small tear/break in a non-magical item, or conjure tiny beautiful things: flowers, butterflies, etc."
+          },
+          {
+            "name": "Bond of Peace",
+            "tier": 0,
+            "actions": 1,
+            "utility": true,
+            "target": { "type": "single" },
+            "description": "**Bond:** Telepathically communicate simple thoughts or feelings with a friendly creature you can see. OR: **Peace:** Imbue your spoken words with calming magic, granting advantage on any check made to soothe anger or fear in creatures who can hear you."
+          },
+          {
+            "name": "Light",
+            "tier": 0,
+            "actions": 1,
+            "utility": true,
+            "target": { "type": "single" },
+            "description": "Cause an item to brightly glow as a torch with radiant light for as long as you hold it."
+          },
+          {
+            "name": "Rebuke",
+            "tier": 0,
+            "actions": 1,
+            "target": { "type": "single", "kind": "reach", "distance": 4 },
+            "damage": "1d8 (ignoring armor). 2× damage against undead or cowardly (those Frightened or behind Cover).",
+            "highLevels": "+3 damage every 5 levels."
+          },
+          {
+            "name": "True Strike",
+            "tier": 0,
+            "actions": 1,
+            "target": { "type": "single", "kind": "reach", "distance": 4 },
+            "description": "A target gains advantage (ignoring all sources of disadvantage) and +1 Reach on the next attack they make this encounter.",
+            "highLevels": "+1 Reach every 5 levels."
+          },
+          {
+            "name": "Heal",
+            "tier": 1,
+            "actions": 1,
+            "target": { "type": "single+", "kind": "reach", "distance": 1 },
+            "description": "Heal a target 1d8+KEY HP. If 5+ mana is spent, heal a negative condition as well (e.g., Blind, 1 Wound).",
+            "upcast": "Choose 1: +1d8, +1 target, OR +4 Reach."
+          },
+          {
+            "name": "Warding Bond",
+            "tier": 2,
+            "actions": 0,
+            "target": { "type": "single", "kind": "reach", "distance": 4 },
+            "description": "Make an ally your ward: they take 2 less damage from all sources. (1/round) When they are attacked, you may be attacked for some or all of the damage instead.",
+            "concentration": "Up to 1 minute.",
+            "upcast": "+2 Reach and +2 damage reduction."
           },
           {
             "name": "Condemn",
+            "tier": 3,
+            "actions": 1,
+            "target": { "type": "single", "kind": "reach", "distance": 4 },
+            "damage": "30. Cannot be reduced by any means. The next attack against that enemy gains advantage.",
+            "description": "Can only target enemies who crit since your last turn.",
+            "upcast": "+1 Reach and +1 advantage."
+          },
+          {
+            "name": "Shield of Justice",
             "tier": 4,
-            "actions": 2,
-            "target": {
-              "type": "single",
-              "kind": "reach",
-              "distance": 4
-            },
-            "damage": "30. Can only target an enemy that crit you or an ally since your last turn. Cannot be reduced by any means. The next attack against that enemy is made with advantage.",
-            "upcast": "+1 Reach, +1 advantage."
+            "actions": 0,
+            "reaction": true,
+            "target": { "type": "self" },
+            "description": "Castable only while Defending. Creatures who attack you are Blinded (until the end of their next turn); you deal damage back to each (ignoring armor) equal to damage you take this round.",
+            "upcast": "+5 damage OR +5 Defense."
           },
           {
             "name": "Vengeance",
             "tier": 5,
             "actions": 2,
-            "target": {
-              "type": "single",
-              "kind": "reach",
-              "distance": 1
-            },
-            "damage": "1d100, to a creature that attacked a Dying ally or reduced one to 0 HP since your last turn.",
-            "upcast": "+1 Reach, roll w/ advantage."
+            "target": { "type": "single", "kind": "reach", "distance": 1 },
+            "damage": "1d100.",
+            "description": "Can only target enemies who attacked a Dying ally or reduced one to 0 HP since your last turn.",
+            "upcast": "+1 Reach and +1 advantage."
           },
           {
             "name": "Sacrifice",
             "tier": 6,
             "actions": 1,
-            "target": {
-              "type": "special",
-              "kind": "reach",
-              "distance": 4
-            },
-            "description": "Reduce yourself to 0 HP. You cannot have more than 0 HP until you Safe Rest. Heal a number of HP equal to your maximum HP, divided as you choose to any other creatures within Reach. You may revive a creature that has died in the past minute if you give them at least 20 HP (also healing 2 Wounds from them), provided they have not been revived with this spell before.",
+            "target": { "type": "special", "kind": "reach", "distance": 4 },
+            "description": "Reduce yourself to 0 HP and you cannot have more than 0 HP until you Safe Rest. Heal an amount of HP equal to your max HP, divided as you choose among any other creatures. You may revive a creature that has died in the past minute if you give them at least 20 HP (also healing 2 Wounds from them), provided they have not been revived with this spell before.",
             "upcast": "+4 Reach."
+          },
+          {
+            "name": "Celestial Legion",
+            "tier": 7,
+            "actions": 1,
+            "description": "(1/turn) Any friendly creature may use 1 of 3 charges to call upon higher powers for aid this encounter:\n\n* **Reckoning.** When you attack, gain advantage (ignoring all disadvantage) and add 1d20 damage to the attack; with advantage too, if Bloodied.\n* **Trembling.** When attacked, the enemy becomes Frightened of you until the end of their next turn. Reduce the incoming damage by 1d20 if Bloodied.",
+            "upcast": "+1 charge."
           },
           {
             "name": "Redeem",
             "tier": 9,
             "actions": 0,
-            "target": {
-              "type": "aoe"
-            },
-            "description": "Casting Time: 24 hours. Requires: A diamond worth at least 10,000 gp, which this spell consumes. Revive any number of deceased creatures you choose—within 1 mile—that have died in the past year, provided they have not died of old age or been revived with this spell before."
+            "target": { "type": "aoe" },
+            "description": "Casting Time: 1 day. Requires (and consumes) a diamond worth 10,000 gp. Reach: 1 mile. Revive any number of creatures that have died in the past year, provided they have not died of old age or been revived with this spell before."
           }
         ]
       }
@@ -790,16 +662,47 @@
         "description": "Control the air itself to move, protect, and cut.",
         "spells": [
           {
+            "name": "Lesser Windform",
+            "tier": 0,
+            "actions": 0,
+            "version": 2,
+            "description": "You are invisible and blinded for the duration of the spell.",
+            "concentration": "Up to 10 minutes."
+          },
+          {
+            "name": "Vicious Mockery",
+            "tier": 0,
+            "actions": 1,
+            "version": 2,
+            "target": { "type": "single", "kind": "range", "distance": 12 },
+            "damage": "1d4+INT psychic (ignoring armor). On hit: the target is Taunted during their next turn.",
+            "highLevels": "+2 damage every 5 levels."
+          },
+          {
+            "name": "Fly",
+            "tier": 3,
+            "actions": 1,
+            "version": 2,
+            "target": { "type": "single+" },
+            "description": "Touch a creature, grant a flying speed of 12.",
+            "concentration": "Up to 10 minutes.",
+            "upcast": "+1 target."
+          },
+          {
+            "name": "Greater Windform",
+            "tier": 5,
+            "actions": 0,
+            "version": 2,
+            "description": "Gain invisibility, a flying speed, and the ability to slip through any space that wind can pass through.",
+            "concentration": "Up to 10 minutes."
+          },
+          {
             "name": "Breath of Life",
             "tier": 0,
             "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 6
-            },
-            "description": "Restore 1 HP to a Dying creature.",
-            "highLevels": "+2 Range every 5 levels."
+            "target": { "type": "single", "kind": "range", "distance": 6 },
+            "description": "Restore 1d4 HP to a Dying creature. If healed for 4+: they also regain 1 action.",
+            "highLevels": "+2 Range and healing every 5 levels."
           },
           {
             "name": "Feather Fall",
@@ -807,153 +710,89 @@
             "actions": 1,
             "reaction": true,
             "utility": true,
-            "target": {
-              "type": "single",
-              "kind": "reach",
-              "distance": 6
-            },
-            "description": "When a creature falls, cause them to gently float to the ground, unharmed."
+            "target": { "type": "single", "kind": "reach", "distance": 6 },
+            "description": "Reaction: When a creature falls, cause them to gently float to the ground."
           },
           {
             "name": "Helpful Gust",
             "tier": 0,
             "actions": 1,
             "utility": true,
-            "target": {
-              "type": "single",
-              "kind": "reach",
-              "distance": 6
-            },
-            "description": "Gently move a Tiny unheld item within Reach in any direction. OR: Generate an illusory scent."
-          },
-          {
-            "name": "Lesser Windform",
-            "tier": 0,
-            "actions": 0,
-            "description": "You are invisible and blinded for the duration of the spell.",
-            "concentration": "Up to 10 minutes."
+            "target": { "type": "single", "kind": "reach", "distance": 6 },
+            "description": "Gently move a Tiny unheld item in any direction. OR: Generate an illusory scent."
           },
           {
             "name": "Razor Wind",
             "tier": 0,
             "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 12
-            },
-            "damage": "1d4 slashing. Vicious. Also damages up to 1 adjacent target.",
-            "highLevels": "+2 damage every 5 levels."
-          },
-          {
-            "name": "Vicious Mockery",
-            "tier": 0,
-            "actions": 1,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 12
-            },
-            "damage": "1d4+INT psychic (ignoring armor). On hit: the target is Taunted during their next turn.",
-            "highLevels": "+2 damage every 5 levels."
+            "target": { "type": "single+", "kind": "range", "distance": 12 },
+            "damage": "2d4 slashing, with advantage OR include a 2nd creature adjacent to your target.",
+            "highLevels": "+3 damage every 5 levels."
           },
           {
             "name": "Wind Whisper",
             "tier": 0,
             "actions": 1,
             "utility": true,
-            "target": {
-              "type": "single"
-            },
-            "description": "You whisper a message into the wind and it will be secretly carried to a specified target within 100 miles/160 km."
+            "target": { "type": "single" },
+            "description": "You whisper a message into the wind and it will be secretly carried to a specified target anywhere wind could reach."
           },
           {
             "name": "Blustery Gale",
             "tier": 1,
             "actions": 2,
-            "target": {
-              "type": "single",
-              "kind": "range",
-              "distance": 12
-            },
-            "damage": "3d4 bludgeoning, advantage against flying, Small, or Tiny targets. On hit: Move a Med target 2 spaces away; Small/Tiny twice as far; Large half as far (round down). For each die you would roll due to forced movement from this spell, deal +5 damage instead.",
-            "upcast": "+1 movement."
+            "target": { "type": "single", "kind": "range", "distance": 12 },
+            "damage": "3d4 bludgeoning, Knockback 2 (advantage vs flying/Small/Tiny). Forced movement deals +5 damage instead of rolling additional dice.",
+            "upcast": "+1 Knockback."
           },
           {
             "name": "Barrier of Wind",
             "tier": 2,
-            "actions": 1,
+            "actions": 0,
             "reaction": true,
-            "target": {
-              "type": "self"
-            },
-            "description": "When attacked at Range. Defend for free. Ranged attacks have disadvantage against you this round (including the triggering attack).",
-            "upcast": "+3 Armor."
+            "target": { "type": "special", "kind": "reach", "distance": 1 },
+            "description": "Castable only while Defending vs Ranged. Reduce the Primary Die by 3. If it misses, redirect the original attack to another space in Reach.",
+            "upcast": "+1 Reduction and +1 Reach."
           },
           {
-            "name": "Fly",
+            "name": "Echoburst",
             "tier": 3,
-            "actions": 1,
-            "target": {
-              "type": "single+"
-            },
-            "description": "Touch a creature, grant a flying speed of 12.",
-            "concentration": "Up to 10 minutes.",
-            "upcast": "+1 target."
+            "actions": 2,
+            "target": { "type": "single", "kind": "reach", "distance": 1 },
+            "damage": "d44 bludgeoning (ignoring armor). Any creature in the targeted space at the beginning of your next turn takes this damage again.",
+            "upcast": "Roll with advantage OR +1 Reach."
           },
           {
             "name": "Eye of the Storm",
             "tier": 4,
             "actions": 2,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 3
-            },
-            "damage": "4d4+10 bludgeoning to enemies within Reach. You may place surviving creatures anywhere within 1 space of the storm’s Reach on a failed STR save.",
+            "target": { "type": "aoe", "kind": "reach", "distance": 3 },
+            "damage": "4d4+10 bludgeoning to enemies. Place surviving creatures anywhere within 1 space of the storm's Reach on a failed STR save.",
             "upcast": "+1 Reach."
-          },
-          {
-            "name": "Greater Windform",
-            "tier": 5,
-            "actions": 0,
-            "description": "Gain invisibility, a flying speed, and the ability to slip through any space that wind can pass through.",
-            "concentration": "Up to 10 minutes."
           },
           {
             "name": "Updraft",
             "tier": 5,
-            "actions": 3,
-            "target": {
-              "type": "aoe",
-              "kind": "reach",
-              "distance": 12
-            },
-            "description": "Enemies within a 5×5 area must repeat a DEX save until they succeed. For each time they failed they suffer 1d6 falling damage and land prone.",
-            "upcast": "+2 Range, +1 area."
+            "actions": 2,
+            "target": { "type": "aoe", "kind": "reach", "distance": 12 },
+            "damage": "20 bludgeoning minus a DEX save to creatures in a 5×5 area. On 10+ damage, they land Prone and Dazed.",
+            "upcast": "+2 damage."
           },
           {
             "name": "Thousand Cuts",
             "tier": 6,
             "actions": 3,
-            "target": {
-              "type": "aoe",
-              "kind": "range",
-              "distance": 12
-            },
-            "damage": "d44 slashing damage (roll with advantage), also damages enemies within Reach 1 of your target.",
+            "target": { "type": "aoe", "kind": "range", "distance": 12 },
+            "damage": "d44 slashing with advantage. Also damages enemies within Reach 1 of your target.",
             "upcast": "+1 Reach."
           },
           {
             "name": "Boisterous Winds",
             "tier": 7,
             "actions": 2,
-            "target": {
-              "type": "multi"
-            },
-            "description": "You and up to 12 allies within Reach 12 gain: Ranged attacks have disadvantage against you, a flying speed of 12, and can move for free 1/round.",
-            "concentration": "Up to 1 minute.",
-            "upcast": "+1 minute or +2 targets."
+            "target": { "type": "multi", "kind": "reach", "distance": 12 },
+            "description": "Gently move all creatures up to 6 spaces, each in a straight line in a direction of your choice. At the beginning of your subsequent turns, do so again but 2 fewer spaces.",
+            "upcast": "+2 spaces."
           }
         ]
       }

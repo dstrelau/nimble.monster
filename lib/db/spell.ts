@@ -69,6 +69,7 @@ const toSpellFromRow = (
     schoolId: s.schoolId,
     name: s.name,
     tier: s.tier,
+    version: s.version,
     actions: s.actions,
     reaction: s.reaction ?? false,
     target,

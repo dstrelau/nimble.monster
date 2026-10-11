@@ -16,6 +16,7 @@ export interface JSONAPISpellTarget {
 export interface JSONAPISpell {
   name: string;
   tier: number;
+  version?: number;
   actions: number;
   reaction?: boolean;
   utility?: boolean;
@@ -150,6 +151,12 @@ export function validateOfficialSpellSchoolsJSON(data: unknown): {
       if (typeof sp.tier !== "number") {
         throw new Error(
           `Invalid spell school at index ${index} ("${attrs.name}"): spell "${sp.name}" missing or invalid tier`
+        );
+      }
+
+      if (sp.version !== undefined && sp.version !== 2 && sp.version !== 3) {
+        throw new Error(
+          `Invalid spell school at index ${index} ("${attrs.name}"): spell "${sp.name}" version must be 2 or 3`
         );
       }
 

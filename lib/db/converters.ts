@@ -182,6 +182,7 @@ interface SpellDbRow {
   schoolId: string;
   name: string;
   tier: number;
+  version: number;
   actions: number;
   reaction: boolean | null;
   targetType: string | null;
@@ -477,6 +478,7 @@ export const toSpellSchool = (s: SpellSchoolRow): SpellSchool => {
         schoolId: spell.schoolId,
         name: spell.name,
         tier: spell.tier,
+        version: spell.version,
         actions: spell.actions,
         reaction: spell.reaction ?? false,
         target,

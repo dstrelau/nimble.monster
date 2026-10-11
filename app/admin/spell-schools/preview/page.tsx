@@ -73,6 +73,7 @@ export default async function PreviewSpellSchoolsPage({
       schoolId: "",
       name: s.name,
       tier: s.tier,
+      version: s.version ?? 3,
       actions: s.actions,
       reaction: s.reaction ?? false,
       target: mapTarget(s.target),

@@ -669,6 +669,7 @@ function generateSpells(spells: SpellSchool["spells"]): string {
     if (spell.actions > 0)
       details.push(`${spell.actions} action${spell.actions > 1 ? "s" : ""}`);
     if (spell.reaction) details.push("Reaction");
+    if (spell.version === 2) details.push("Legacy (v2)");
 
     if (details.length > 0) {
       spellLine += ` *(${details.join(", ")})*`;

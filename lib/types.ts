@@ -469,6 +469,7 @@ export interface SpellMini {
   id: string;
   name: string;
   tier: number;
+  version?: number;
   actions: number;
   target?: SpellTarget;
   utility?: boolean;

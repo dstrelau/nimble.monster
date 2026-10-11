@@ -445,6 +445,7 @@ export const spells = sqliteTable(
       }),
     name: text("name").notNull(),
     tier: integer("tier").notNull().default(0),
+    version: integer("version").notNull().default(3),
     actions: integer("actions").notNull().default(1),
     reaction: integer("reaction", { mode: "boolean" }).notNull().default(false),
     targetType: text("target_type"),

@@ -129,6 +129,7 @@ const toSpell = (s: SpellRow): Spell => ({
   name: s.name,
   schoolId: s.schoolId,
   tier: s.tier,
+  version: s.version,
   actions: s.actions,
   reaction: s.reaction || false,
   utility: s.utility || false,
@@ -450,6 +451,7 @@ export interface CreateSpellSchoolInput {
   spells?: Array<{
     name: string;
     tier: number;
+    version?: number;
     actions: number;
     reaction?: boolean;
     utility?: boolean;
@@ -498,6 +500,7 @@ export const createSpellSchool = async (
         schoolId,
         name: spell.name,
         tier: spell.tier,
+        version: spell.version ?? 3,
         actions: spell.actions,
         reaction: spell.reaction || false,
         utility: spell.utility || false,
@@ -577,6 +580,7 @@ export const updateSpellSchool = async (
         schoolId: input.id,
         name: spell.name,
         tier: spell.tier,
+        version: spell.version ?? 3,
         actions: spell.actions,
         reaction: spell.reaction || false,
         utility: spell.utility || false,

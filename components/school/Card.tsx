@@ -1,4 +1,5 @@
 "use client";
+import { Info } from "lucide-react";
 import { DiceNotation } from "@/components/dice/DiceNotation";
 import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
@@ -11,6 +12,11 @@ import {
   CardTitle,
   Card as UICard,
 } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { maybePeriod } from "@/lib/text";
 import type { SpellSchool, SpellTarget, User } from "@/lib/types";
@@ -188,8 +194,15 @@ export function Card({
       <CardContent className={cn(selectable && "pointer-events-none")}>
         <div className={cn(mini ? "space-y-1" : "space-y-6")}>
           {(() => {
-            const regularSpells = spellSchool.spells.filter((s) => !s.utility);
-            const utilitySpells = spellSchool.spells.filter((s) => s.utility);
+            const regularSpells = spellSchool.spells.filter(
+              (s) => s.version !== 2 && !s.utility
+            );
+            const utilitySpells = spellSchool.spells.filter(
+              (s) => s.version !== 2 && s.utility
+            );
+            const legacySpells = spellSchool.spells.filter(
+              (s) => s.version === 2
+            );
             return (
               <>
                 {regularSpells.map((spell) => (
@@ -211,6 +224,39 @@ export function Card({
                       <div className="h-px flex-1 bg-border" />
                     </div>
                     {utilitySpells.map((spell) => (
+                      <SpellEntry
+                        key={spell.id}
+                        spell={spell}
+                        mini={mini}
+                        conditions={conditions}
+                        formatDistance={formatDistance}
+                      />
+                    ))}
+                  </>
+                )}
+                {legacySpells.length > 0 && (
+                  <>
+                    <div className="flex items-center gap-3 pt-2">
+                      <div className="h-px flex-1 bg-border" />
+                      <span className="flex items-center gap-1 text-muted-foreground">
+                        <span className="text-xs italic uppercase tracking-wider">
+                          Legacy Spells
+                        </span>
+                        <Tooltip>
+                          <TooltipTrigger
+                            aria-label="About legacy spells"
+                            className="cursor-help"
+                          >
+                            <Info className="size-3.5" aria-hidden="true" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            These spells are part of an older version of Nimble.
+                          </TooltipContent>
+                        </Tooltip>
+                      </span>
+                      <div className="h-px flex-1 bg-border" />
+                    </div>
+                    {legacySpells.map((spell) => (
                       <SpellEntry
                         key={spell.id}
                         spell={spell}

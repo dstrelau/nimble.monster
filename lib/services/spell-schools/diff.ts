@@ -30,6 +30,7 @@ function compareSpells(
     return (
       u.name === e.name &&
       u.tier === e.tier &&
+      (u.version ?? 3) === (e.version ?? 3) &&
       u.actions === e.actions &&
       u.reaction === e.reaction &&
       (u.damage ?? "") === (e.damage ?? "") &&
