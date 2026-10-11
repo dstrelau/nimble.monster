@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
+import { parseDiceNotation } from "@/lib/dice";
 import { SITE_NAME } from "@/lib/utils/branding";
-import {
-  calculateAverageDamageOnHit,
-  calculateMissProbability,
-  calculateProbabilityDistribution,
-  calculateTotalAverageDamage,
-  type DiceRoll,
-  parseDiceNotation,
-} from "../../lib/dice";
 import { DiceRollerClient } from "./dice-roller-client";
 
 type Props = {
@@ -18,39 +11,18 @@ export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
   const dice = (await searchParams).dice;
+  const title = `Dice Roller - ${SITE_NAME}`;
+  const description =
+    dice && parseDiceNotation(dice)
+      ? `Roll ${dice}`
+      : "Roll dice and explore their probabilities.";
 
-  try {
-    let diceRoll: DiceRoll | null = null;
-    if (dice) {
-      diceRoll = parseDiceNotation(dice);
-    }
-    if (diceRoll) {
-      const distribution = calculateProbabilityDistribution(diceRoll);
-      const avgOnHit = calculateAverageDamageOnHit(distribution, diceRoll);
-      const totalAvg = calculateTotalAverageDamage(distribution);
-      const missProbability = calculateMissProbability(distribution, diceRoll);
-
-      const title = `Dice Roller - ${SITE_NAME}`;
-      const description = `${dice}\nAvg ${totalAvg.toFixed(1)} (${avgOnHit.toFixed(1)} on hit)\n${(100 * missProbability).toFixed(1)}% miss`;
-
-      return {
-        title,
-        description,
-        openGraph: {
-          title,
-          description,
-          type: "website",
-        },
-        twitter: {
-          card: "summary",
-          title,
-          description,
-        },
-      };
-    }
-  } catch {}
-
-  return {};
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: "website" },
+    twitter: { card: "summary", title, description },
+  };
 }
 
 export default async function DiceRollerPage({ searchParams }: Props) {

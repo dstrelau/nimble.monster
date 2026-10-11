@@ -1,5 +1,4 @@
-import { CircleSlash2, Plus, Sword, Trash } from "lucide-react";
-import { useMemo } from "react";
+import { CircleSlash2, LoaderCircle, Plus, Sword, Trash } from "lucide-react";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { FormInput, FormTextarea } from "@/components/shared/Form";
 import { Button } from "@/components/ui/button";
@@ -9,12 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  calculateAverageDamageOnHit,
-  calculateMissProbability,
-  calculateProbabilityDistribution,
-  parseDiceNotation,
-} from "@/lib/dice";
+import { useDiceStatistics } from "@/lib/hooks/useDiceStatistics";
 import type { Action } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -31,25 +25,11 @@ const ActionRow: React.FC<ActionRowProps> = ({
   onChange,
   onRemove,
 }) => {
-  const rollStats = useMemo(() => {
-    if (!action.damage || !showDamage) return null;
-    const diceRoll = parseDiceNotation(action.damage);
-    if (!diceRoll) return null;
-    const distribution = calculateProbabilityDistribution(diceRoll);
-    return { diceRoll, distribution };
-  }, [action.damage, showDamage]);
-
-  let avgDamage: number | undefined;
-  let missPercent: number | undefined;
-  if (rollStats) {
-    avgDamage = calculateAverageDamageOnHit(
-      rollStats.distribution,
-      rollStats.diceRoll
-    );
-    missPercent =
-      100 *
-      calculateMissProbability(rollStats.distribution, rollStats.diceRoll);
-  }
+  const { stats, showLoading, error } = useDiceStatistics(
+    showDamage ? (action.damage ?? null) : null
+  );
+  const avgDamage = stats?.averageRoll;
+  const missPercent = stats ? 100 * stats.missProbability : undefined;
 
   return (
     <div className="flex flex-row items-center">
@@ -70,6 +50,16 @@ const ActionRow: React.FC<ActionRowProps> = ({
               label={
                 <TooltipProvider>
                   <span className="flex-1">Damage</span>{" "}
+                  {showLoading && (
+                    <output className="inline-flex items-center">
+                      <LoaderCircle
+                        className="size-4 animate-spin text-muted-foreground motion-reduce:animate-none"
+                        aria-hidden="true"
+                      />
+                      <span className="sr-only">Loading dice statistics</span>
+                    </output>
+                  )}
+                  {error && <span role="alert">{error}</span>}
                   {missPercent && (
                     <Tooltip>
                       <TooltipTrigger asChild>

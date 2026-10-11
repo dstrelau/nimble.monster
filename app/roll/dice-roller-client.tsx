@@ -22,12 +22,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useDiceStatistics } from "@/lib/hooks/useDiceStatistics";
 import {
-  calculateAverageDamageOnHit,
-  calculateMissProbability,
-  calculateProbabilityDistribution,
-  calculateTotalAverageDamage,
-  type ProbabilityDistribution,
   parseDiceNotation,
   simulateRoll,
   VALID_DIE_SIZES,
@@ -42,11 +38,8 @@ export function DiceRollerClient({ initialDice }: Props) {
   const [diceNotation, setDiceNotation] = useQueryState("dice", {
     defaultValue: initialDice,
   });
-  const [probabilities, setProbabilities] = useState<ProbabilityDistribution>(
-    new Map()
-  );
-  const [averageRoll, setAverageRoll] = useState<number | null>(null);
-  const [totalAverageRoll, setTotalAverageRoll] = useState<number | null>(null);
+  const { stats, pending, showLoading, error } =
+    useDiceStatistics(diceNotation);
   const [isValidDice, setIsValidDice] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [lastValidDice, setLastValidDice] = useState(initialDice);
@@ -110,12 +103,6 @@ export function DiceRollerClient({ initialDice }: Props) {
       setIsValidDice(true);
       setErrorMessage(null);
       setLastValidDice(diceNotation);
-      const distribution = calculateProbabilityDistribution(diceRoll);
-      const average = calculateAverageDamageOnHit(distribution, diceRoll);
-      const totalAverage = calculateTotalAverageDamage(distribution);
-      setAverageRoll(average);
-      setTotalAverageRoll(totalAverage);
-      setProbabilities(distribution);
     } catch {
       setIsValidDice(false);
       setErrorMessage("Invalid dice notation");
@@ -123,16 +110,15 @@ export function DiceRollerClient({ initialDice }: Props) {
   }, [diceNotation]);
 
   const parsedDice = parseDiceNotation(lastValidDice);
-  const missProbability = parsedDice
-    ? calculateMissProbability(probabilities, parsedDice)
-    : 0;
+  const missProbability = stats?.missProbability ?? 0;
 
-  const filteredProbabilities = Array.from(probabilities.entries())
+  const filteredProbabilities = Array.from(stats?.distribution.entries() ?? [])
     .filter(([r, p]) => p > 0.005 && (parsedDice?.normal === true || r > 0))
     .sort(([_, a], [__, b]) => b - a)
     .sort(([a], [b]) => a - b);
 
   const barsToDisplay: Array<[number, number]> = [];
+  let compactHistogram = false;
   if (missProbability > 0) {
     barsToDisplay.push([0, missProbability]);
   }
@@ -140,10 +126,20 @@ export function DiceRollerClient({ initialDice }: Props) {
   if (filteredProbabilities.length > 0) {
     const minValue = filteredProbabilities[0][0];
     const maxValue = filteredProbabilities[filteredProbabilities.length - 1][0];
-    const probabilityMap = new Map(filteredProbabilities);
-
-    for (let i = minValue; i <= maxValue; i++) {
-      barsToDisplay.push([i, probabilityMap.get(i) || 0]);
+    // Filling every gap can freeze the main thread for large crit bonuses.
+    // Unsafe integer outcomes also cannot be advanced reliably with i++.
+    compactHistogram =
+      !Number.isSafeInteger(minValue) ||
+      !Number.isSafeInteger(maxValue) ||
+      maxValue - minValue >= 200;
+    if (compactHistogram) {
+      barsToDisplay.push(...filteredProbabilities);
+    } else {
+      const probabilityMap = new Map(filteredProbabilities);
+      for (let offset = 0; offset <= maxValue - minValue; offset++) {
+        const value = minValue + offset;
+        barsToDisplay.push([value, probabilityMap.get(value) || 0]);
+      }
     }
   }
 
@@ -154,6 +150,10 @@ export function DiceRollerClient({ initialDice }: Props) {
 
   // Calculate scale factor to make tallest bar 216px high (180 * 1.2)
   const scaleFactor = maxProbability > 0 ? 216 / maxProbability : 0;
+  const labelWidth = Math.max(
+    36,
+    ...barsToDisplay.map(([outcome]) => String(outcome).length * 8)
+  );
 
   return (
     <div className="container mx-auto flex flex-col gap-4">
@@ -284,80 +284,114 @@ export function DiceRollerClient({ initialDice }: Props) {
           </CardFooter>
         </Card>
 
-        <Card className="min-w-48 w-fit">
+        <Card className="min-w-48 w-fit max-w-full">
           <CardHeader>
             <h3 className="flex gap-1 items-center text-lg font-bold">
-              <Dices className="size-4" />
-              {lastValidDice}
+              <Dices className="size-4 shrink-0" />
+              <span className="break-all">{lastValidDice}</span>
             </h3>
           </CardHeader>
           <CardContent>
             <DiceStatistics
-              averageRoll={averageRoll}
-              totalAverageRoll={totalAverageRoll}
-              missProbability={missProbability}
+              averageRoll={stats?.averageRoll ?? null}
+              totalAverageRoll={stats?.totalAverageRoll ?? null}
+              missProbability={stats?.missProbability ?? null}
+              pending={pending}
+              showLoading={showLoading}
+              error={error}
             />
           </CardContent>
         </Card>
       </div>
 
-      {Object.keys(filteredProbabilities).length > 0 && (
-        <Card className="flex-1 min-w-sm overflow-x-scroll">
-          <CardContent className="p-6">
-            <div className="overflow-x-auto " style={{ maxWidth: "100%" }}>
+      {pending ? (
+        <Card className="flex-1 min-w-sm" aria-busy="true">
+          <CardContent className="flex h-[312px] items-center justify-center p-6">
+            {showLoading && (
               <div
-                style={{
-                  height: "264px",
-                  minWidth: `${barsToDisplay.length * 48 + 24}px`,
-                  position: "relative",
-                }}
+                role="img"
+                aria-label="Loading probability graph"
+                className="flex h-[264px] w-full max-w-xl items-end justify-center gap-2 border-b border-muted pb-7"
               >
-                {barsToDisplay.map(([outcome, probability], index) => {
-                  const height = Math.max(1, probability * scaleFactor);
-                  const isGap =
-                    missProbability > 0 && index === 0 && outcome === 0;
-                  const xOffset = isGap ? 0 : index * 42 + 12 + 24;
-
-                  return (
-                    <div key={outcome}>
-                      <div
-                        className="absolute text-center text-xs text-foreground"
-                        style={{
-                          bottom: `${height + 31}px`,
-                          left: `${xOffset}px`,
-                          width: "36px",
-                        }}
-                      >
-                        {(100 * probability).toFixed(1)}%
-                      </div>
-                      {probability > 0 && (
-                        <div
-                          className="absolute bg-primary rounded-t"
-                          style={{
-                            height: `${height}px`,
-                            width: "36px",
-                            bottom: "29px",
-                            left: `${xOffset}px`,
-                          }}
-                        />
-                      )}
-                      <div
-                        className="absolute text-sm font-medium text-center text-foreground"
-                        style={{
-                          bottom: "0px",
-                          left: `${xOffset}px`,
-                          width: "36px",
-                        }}
-                      >
-                        {outcome}
-                      </div>
-                    </div>
-                  );
-                })}
+                {[
+                  24, 42, 65, 96, 132, 168, 200, 216, 196, 158, 112, 76, 48, 28,
+                ].map((height) => (
+                  <div
+                    key={height}
+                    className="flex-1 rounded-t bg-muted"
+                    style={{ height }}
+                  />
+                ))}
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
+      ) : (
+        Object.keys(filteredProbabilities).length > 0 && (
+          <Card className="flex-1 min-w-sm overflow-x-scroll">
+            <CardContent className="p-6">
+              {compactHistogram && (
+                <p className="mb-2 text-sm text-muted-foreground">
+                  Outcome gaps omitted.
+                </p>
+              )}
+              <div className="overflow-x-auto " style={{ maxWidth: "100%" }}>
+                <div
+                  style={{
+                    height: "264px",
+                    minWidth: `${barsToDisplay.length * (labelWidth + 12) + 24}px`,
+                    position: "relative",
+                  }}
+                >
+                  {barsToDisplay.map(([outcome, probability], index) => {
+                    const height = Math.max(1, probability * scaleFactor);
+                    const isGap =
+                      missProbability > 0 && index === 0 && outcome === 0;
+                    const xOffset = isGap
+                      ? 0
+                      : index * (labelWidth + 6) + 12 + 24;
+
+                    return (
+                      <div key={outcome}>
+                        <div
+                          className="absolute text-center text-xs text-foreground"
+                          style={{
+                            bottom: `${height + 31}px`,
+                            left: `${xOffset}px`,
+                            width: `${labelWidth}px`,
+                          }}
+                        >
+                          {(100 * probability).toFixed(1)}%
+                        </div>
+                        {probability > 0 && (
+                          <div
+                            className="absolute bg-primary rounded-t"
+                            style={{
+                              height: `${height}px`,
+                              width: "36px",
+                              bottom: "29px",
+                              left: `${xOffset + (labelWidth - 36) / 2}px`,
+                            }}
+                          />
+                        )}
+                        <div
+                          className="absolute text-sm font-medium text-center text-foreground"
+                          style={{
+                            bottom: "0px",
+                            left: `${xOffset}px`,
+                            width: `${labelWidth}px`,
+                          }}
+                        >
+                          {outcome}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )
       )}
     </div>
   );

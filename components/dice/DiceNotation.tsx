@@ -14,14 +14,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import {
-  calculateAverageDamageOnHit,
-  calculateMissProbability,
-  calculateProbabilityDistribution,
-  calculateTotalAverageDamage,
-  parseDiceNotation,
-  simulateRoll,
-} from "@/lib/dice";
+import { parseDiceNotation, simulateRoll } from "@/lib/dice";
+import { useDiceStatistics } from "@/lib/hooks/useDiceStatistics";
 
 interface DiceNotationProps {
   text: string;
@@ -30,37 +24,18 @@ interface DiceNotationProps {
 function DiceDrawer({ diceText }: { diceText: string }) {
   const [rollKey, reroll] = useState(0);
   const [isRolling, setIsRolling] = useState(false);
+  const [open, setOpen] = useState(false);
   const parsed = useMemo(() => parseDiceNotation(diceText), [diceText]);
-
-  const distribution = useMemo(
-    () => (parsed ? calculateProbabilityDistribution(parsed) : null),
-    [parsed]
-  );
-  const averageRoll = useMemo(
-    () =>
-      distribution && parsed
-        ? calculateAverageDamageOnHit(distribution, parsed)
-        : 0,
-    [distribution, parsed]
-  );
-  const totalAverageRoll = useMemo(
-    () => (distribution ? calculateTotalAverageDamage(distribution) : 0),
-    [distribution]
-  );
-  const missProbability = useMemo(
-    () =>
-      distribution && parsed
-        ? calculateMissProbability(distribution, parsed)
-        : 0,
-    [distribution, parsed]
+  const { stats, pending, showLoading, error } = useDiceStatistics(
+    open ? diceText : null
   );
   // biome-ignore lint/correctness/useExhaustiveDependencies: rollKey triggers reroll
   const sampleRoll = useMemo(
-    () => (parsed ? simulateRoll(parsed) : null),
-    [parsed, rollKey]
+    () => (open && parsed ? simulateRoll(parsed) : null),
+    [open, parsed, rollKey]
   );
 
-  if (!parsed || !sampleRoll) return <span>{diceText}</span>;
+  if (!parsed) return <span>{diceText}</span>;
 
   const dieToIcon = (size: number) => {
     const className = "size-3.5 stroke-flame";
@@ -91,7 +66,13 @@ function DiceDrawer({ diceText }: { diceText: string }) {
   };
 
   return (
-    <Drawer onOpenChange={(open) => open && handleReroll()}>
+    <Drawer
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (nextOpen) handleReroll();
+      }}
+    >
       <DrawerTrigger asChild>
         <span
           data-dice-notation
@@ -136,17 +117,20 @@ function DiceDrawer({ diceText }: { diceText: string }) {
 
           <div className="flex flex-wrap">
             <DiceStatistics
-              averageRoll={averageRoll}
-              totalAverageRoll={totalAverageRoll}
-              missProbability={missProbability}
+              averageRoll={stats?.averageRoll ?? null}
+              totalAverageRoll={stats?.totalAverageRoll ?? null}
+              missProbability={stats?.missProbability ?? null}
+              pending={pending}
+              showLoading={showLoading}
+              error={error}
             />
             <DiceRollDisplay
               className="flex-1"
               pending={isRolling}
-              results={sampleRoll.results}
-              modifier={sampleRoll.modifier}
+              results={sampleRoll?.results ?? []}
+              modifier={sampleRoll?.modifier ?? 0}
               critModifier={parsed.critModifier}
-              total={sampleRoll.total}
+              total={sampleRoll?.total ?? 0}
             />
 
             <div className="flex flex-col gap-4">
