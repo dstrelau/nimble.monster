@@ -3,6 +3,7 @@ import { notFound, permanentRedirect, unauthorized } from "next/navigation";
 import { userFamiliesQueryOptions } from "@/app/families/hooks";
 import BuildMonster from "@/app/monsters/BuildMonsterView";
 import { auth } from "@/lib/auth";
+import { isMonsterInOtherUsersEncounter } from "@/lib/db/encounter";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { findMonsterWithCreatorId } from "@/lib/services/monsters";
@@ -31,7 +32,8 @@ export default async function EditMonsterPage({
   }
 
   const queryClient = getQueryClient();
-  await Promise.all([
+  const [usedInOtherUsersEncounter] = await Promise.all([
+    isMonsterInOtherUsersEncounter(monster.id, session.user.id),
     queryClient.prefetchQuery(userFamiliesQueryOptions()),
     queryClient.prefetchQuery(monsterSourcesQueryOptions()),
     queryClient.prefetchQuery(officialConditionsQueryOptions()),
@@ -39,7 +41,10 @@ export default async function EditMonsterPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <BuildMonster existingMonster={monster} />
+      <BuildMonster
+        existingMonster={monster}
+        usedInOtherUsersEncounter={usedInOtherUsersEncounter}
+      />
     </HydrationBoundary>
   );
 }

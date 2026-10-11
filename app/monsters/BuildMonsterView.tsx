@@ -1267,12 +1267,14 @@ interface BuildMonsterProps {
   existingMonster?: MonsterFormState;
   remixedFromId?: string;
   hazard?: boolean;
+  usedInOtherUsersEncounter?: boolean;
 }
 
 const BuildMonster: React.FC<BuildMonsterProps> = ({
   existingMonster,
   remixedFromId,
   hazard = false,
+  usedInOtherUsersEncounter = false,
 }) => {
   const id = useId();
   const router = useRouter();
@@ -1599,6 +1601,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
                         onCheckedChange={(checked) => {
                           if (
                             !checked &&
+                            usedInOtherUsersEncounter &&
                             monster.id &&
                             existingMonster?.visibility === "public"
                           ) {

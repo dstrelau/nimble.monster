@@ -3,6 +3,7 @@ import { notFound, permanentRedirect, unauthorized } from "next/navigation";
 import BuildMonster from "@/app/monsters/BuildMonsterView";
 import { monsterSourcesQueryOptions } from "@/app/monsters/hooks";
 import { auth } from "@/lib/auth";
+import { isMonsterInOtherUsersEncounter } from "@/lib/db/encounter";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { getOwnedHazard, toHazardMonsterView } from "@/lib/services/hazards";
@@ -25,14 +26,19 @@ export default async function EditHazardPage({
   if (id !== slugify(hazard)) permanentRedirect(getMonsterEditUrl(hazard));
 
   const queryClient = getQueryClient();
-  await Promise.all([
+  const [usedInOtherUsersEncounter] = await Promise.all([
+    isMonsterInOtherUsersEncounter(hazard.id, session.user.id),
     queryClient.prefetchQuery(monsterSourcesQueryOptions()),
     queryClient.prefetchQuery(officialConditionsQueryOptions()),
   ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <BuildMonster existingMonster={toHazardMonsterView(hazard)} hazard />
+      <BuildMonster
+        existingMonster={toHazardMonsterView(hazard)}
+        usedInOtherUsersEncounter={usedInOtherUsersEncounter}
+        hazard
+      />
     </HydrationBoundary>
   );
 }

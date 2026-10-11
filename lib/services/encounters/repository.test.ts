@@ -87,6 +87,7 @@ const makeUserRow = (id: string) => ({
 
 const makeMonsterRow = (id: string, name: string, visibility = "public") => ({
   id,
+  userId: "user-1",
   name,
   hp: 10,
   hpPerHero: null,
@@ -355,9 +356,11 @@ describe("encounters repository", () => {
       );
     });
 
-    it("does not hide the owner's private monsters from their encounters", async () => {
+    it("does not hide the owner's private monsters from their private encounters", async () => {
+      const encounter = makeEncounterRow("enc-1", "Alpha");
+      encounter.encounters.visibility = "private";
       queryQueue = [
-        [makeEncounterRow("enc-1", "Alpha")],
+        [encounter],
         [
           makeMonsterJoinRow(
             "enc-1",

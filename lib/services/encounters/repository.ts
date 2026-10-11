@@ -279,7 +279,19 @@ const searchEncounters = async ({
     );
 
   const monstersByEncounter = new Map<string, MonsterEncounterJoinRow[]>();
+  const encountersById = new Map(
+    encounterRows.map((row) => [row.encounters.id, row.encounters])
+  );
   for (const row of monsterJoins) {
+    const encounter = encountersById.get(row.encounterId);
+    if (
+      row.monster.visibility !== "public" &&
+      !(
+        encounter?.visibility === "private" &&
+        row.monster.userId === encounter.creatorId
+      )
+    )
+      continue;
     const existing = monstersByEncounter.get(row.encounterId) || [];
     existing.push({
       monster: row.monster,

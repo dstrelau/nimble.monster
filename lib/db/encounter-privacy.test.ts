@@ -13,7 +13,10 @@ import {
   PUBLIC_ENCOUNTER_CONTENT_ERROR,
   UNAVAILABLE_ENCOUNTER_CONTENT_ERROR,
 } from "@/lib/encounter-privacy";
-import { listPublicEncounters } from "@/lib/services/encounters/repository";
+import {
+  listPublicEncounters,
+  searchEncountersForCreator,
+} from "@/lib/services/encounters/repository";
 import {
   parseJSONAPIMonster,
   validateOfficialMonstersJSON,
@@ -30,6 +33,7 @@ import {
   findEncounterOverviewsByIds,
   getEncounter,
   getPublicEncounterById,
+  isMonsterInOtherUsersEncounter,
   listEncountersWithMonstersForUser,
   updateEncounter,
 } from "./encounter";
@@ -63,6 +67,178 @@ afterEach(() => {
 });
 
 describe("encounter privacy", () => {
+  it.each([
+    false,
+    true,
+  ])("creator search withholds foreign private content and keeps own content only in private encounters (hazard=%s)", async (hazard) => {
+    const entry = hazard
+      ? await createHazard(officialInput, "owner")
+      : await createMonster(officialInput, "owner");
+    const control = await createMonster(
+      parseJSONAPIMonster(officialMonsters[1]),
+      "other"
+    );
+    const input = {
+      discordId: "owner",
+      name: "Search QA",
+      visibility: "public" as const,
+      heroCount: 4,
+      heroLevel: 2,
+      monsters: [
+        { monsterId: entry.id, quantity: 3, isPerHero: false },
+        { monsterId: control.id, quantity: 2, isPerHero: false },
+      ],
+    };
+    const ownPublic = await createEncounter(input);
+    const ownPrivate = await createEncounter({
+      ...input,
+      visibility: "private",
+    });
+    await createEncounter({ ...input, discordId: "other" });
+    await createEncounter({
+      ...input,
+      discordId: "other",
+      visibility: "private",
+    });
+    await getDatabase()
+      .update(schema.monsters)
+      .set({ visibility: "private" })
+      .where(eq(schema.monsters.id, entry.id));
+    const params = {
+      sortBy: "name" as const,
+      sortDirection: "asc" as const,
+      limit: 10,
+    };
+    const otherList = await searchEncountersForCreator({
+      ...params,
+      creatorId: otherId,
+    });
+    expect(otherList).toHaveLength(2);
+    for (const encounter of otherList) {
+      expect(encounter.monsters.map(({ monster }) => monster.id)).toEqual([
+        control.id,
+      ]);
+    }
+    expect(JSON.stringify(otherList)).not.toContain(entry.name);
+    const ownList = await searchEncountersForCreator({
+      ...params,
+      creatorId: ownerId,
+    });
+    expect(
+      ownList
+        .find(({ id }) => id === ownPublic.id)
+        ?.monsters.map(({ monster }) => monster.id)
+    ).toEqual([control.id]);
+    expect(
+      ownList
+        .find(({ id }) => id === ownPrivate.id)
+        ?.monsters.map(({ monster }) => monster.id)
+        .sort()
+    ).toEqual([entry.id, control.id].sort());
+  });
+
+  it("rejects missing references without partial writes and rolls back link-write failures", async () => {
+    const entry = await createMonster(officialInput, "owner");
+    const link = { monsterId: entry.id, quantity: 2, isPerHero: false };
+    const input = {
+      discordId: "owner",
+      name: "Original",
+      visibility: "public" as const,
+      heroCount: 4,
+      heroLevel: 2,
+      monsters: [link],
+    };
+    const encounter = await createEncounter(input);
+    const missing = {
+      ...link,
+      monsterId: "99999999-9999-4999-8999-999999999999",
+    };
+    await expect(
+      createEncounter({ ...input, monsters: [link, missing] })
+    ).rejects.toThrow(UNAVAILABLE_ENCOUNTER_CONTENT_ERROR);
+    await expect(
+      updateEncounter({
+        ...input,
+        id: encounter.id,
+        name: "Changed",
+        monsters: [link, missing],
+      })
+    ).rejects.toThrow(UNAVAILABLE_ENCOUNTER_CONTENT_ERROR);
+    await expect(
+      addMonsterToEncounter({ ...missing, encounterId: encounter.id })
+    ).rejects.toThrow(UNAVAILABLE_ENCOUNTER_CONTENT_ERROR);
+    expect(await getDatabase().select().from(schema.encounters)).toHaveLength(
+      1
+    );
+    expect(await getEncounter(encounter.id, "owner")).toMatchObject({
+      name: "Original",
+      monsters: [{ quantity: 2, monster: { id: entry.id } }],
+    });
+
+    await client.execute(
+      "CREATE TRIGGER fail_qa_link BEFORE INSERT ON monsters_encounters WHEN NEW.quantity = 13 BEGIN SELECT RAISE(ABORT, 'QA link failure'); END"
+    );
+    await expect(
+      createEncounter({ ...input, monsters: [{ ...link, quantity: 13 }] })
+    ).rejects.toThrow();
+    await expect(
+      updateEncounter({
+        ...input,
+        id: encounter.id,
+        name: "Changed",
+        visibility: "private",
+        monsters: [{ ...link, quantity: 13 }],
+      })
+    ).rejects.toThrow();
+    expect(await getDatabase().select().from(schema.encounters)).toHaveLength(
+      1
+    );
+    expect(await getEncounter(encounter.id, "owner")).toMatchObject({
+      name: "Original",
+      visibility: "public",
+      monsters: [{ quantity: 2, monster: { id: entry.id } }],
+    });
+  });
+
+  it.each([
+    false,
+    true,
+  ])("warns only for another user's references, regardless of encounter visibility (hazard=%s)", async (hazard) => {
+    const entry = hazard
+      ? await createHazard(officialInput, "owner")
+      : await createMonster(officialInput, "owner");
+    const input = {
+      discordId: "owner",
+      name: "Own encounter",
+      visibility: "public" as const,
+      heroCount: 4,
+      heroLevel: 2,
+      monsters: [{ monsterId: entry.id, quantity: 1, isPerHero: false }],
+    };
+    expect(await isMonsterInOtherUsersEncounter(entry.id, ownerId)).toBe(false);
+    await createEncounter(input);
+    expect(await isMonsterInOtherUsersEncounter(entry.id, ownerId)).toBe(false);
+    const otherEncounter = await createEncounter({
+      ...input,
+      discordId: "other",
+    });
+    expect(await isMonsterInOtherUsersEncounter(entry.id, ownerId)).toBe(true);
+    await updateEncounter({
+      ...input,
+      discordId: "other",
+      id: otherEncounter.id,
+      visibility: "private",
+    });
+    expect(await isMonsterInOtherUsersEncounter(entry.id, ownerId)).toBe(true);
+    await updateEncounter({
+      ...input,
+      discordId: "other",
+      id: otherEncounter.id,
+      monsters: [],
+    });
+    expect(await isMonsterInOtherUsersEncounter(entry.id, ownerId)).toBe(false);
+  });
+
   it.each([
     false,
     true,
@@ -151,6 +327,18 @@ describe("encounter privacy", () => {
         ({ monster }) => monster.id
       )
     ).toEqual([control.id]);
+
+    await expect(
+      addMonsterToEncounter({
+        monsterId: control.id,
+        quantity: 7,
+        isPerHero: false,
+        encounterId: encounter.id,
+      })
+    ).rejects.toThrow(UNAVAILABLE_ENCOUNTER_CONTENT_ERROR);
+    expect(
+      (await getEncounter(encounter.id, "other"))?.monsters[0].quantity
+    ).toBe(2);
 
     await expect(
       updateEncounter({ ...input, id: encounter.id })

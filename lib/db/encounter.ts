@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, or } from "drizzle-orm";
+import { and, asc, eq, inArray, ne, or } from "drizzle-orm";
 import { toUser } from "@/lib/db/converters";
 import {
   PUBLIC_ENCOUNTER_CONTENT_ERROR,
@@ -301,6 +301,24 @@ export const listAccessibleEncounterReferences = async (
       or(eq(encounters.visibility, "public"), eq(encounters.creatorId, userId))
     )
     .orderBy(asc(encounters.name));
+};
+
+export const isMonsterInOtherUsersEncounter = async (
+  monsterId: string,
+  creatorId: string
+): Promise<boolean> => {
+  const rows = await getDatabase()
+    .select({ id: encounters.id })
+    .from(monstersEncounters)
+    .innerJoin(encounters, eq(monstersEncounters.encounterId, encounters.id))
+    .where(
+      and(
+        eq(monstersEncounters.monsterId, monsterId),
+        ne(encounters.creatorId, creatorId)
+      )
+    )
+    .limit(1);
+  return rows.length > 0;
 };
 
 export const getPublicEncounterById = async (
