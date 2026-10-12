@@ -3,15 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import type {
-  ArmorType,
-  ClassLevel,
-  ClassVisibility,
-  HitDieSize,
-  StatType,
-  WeaponSpec,
-} from "@/lib/types";
-import { getClassUrl } from "@/lib/utils/url";
 
 export async function searchClassesForSubclass(searchTerm?: string) {
   const session = await auth();
@@ -35,91 +26,6 @@ export async function searchPublicClasses(params: {
   } catch (error) {
     console.error("Error searching public classes:", error);
     return { success: false, error: "Failed to search classes" };
-  }
-}
-
-export async function createClass(formData: {
-  name: string;
-  description: string;
-  keyStats: StatType[];
-  hitDie: HitDieSize;
-  startingHp: number;
-  saves: Record<StatType, number>;
-  armor: ArmorType[];
-  weapons: WeaponSpec[];
-  startingGear: string[];
-  levels: ClassLevel[];
-  abilityLists: Array<{
-    name: string;
-    description: string;
-    items: Array<{ name: string; description: string }>;
-  }>;
-  visibility: ClassVisibility;
-}) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const classEntity = await db.createClass({
-      ...formData,
-      discordId: session.user.discordId,
-    });
-
-    revalidatePath("/my/classes");
-
-    return { success: true, class: classEntity };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-}
-
-export async function updateClass(
-  classId: string,
-  formData: {
-    name: string;
-    description: string;
-    keyStats: StatType[];
-    hitDie: HitDieSize;
-    startingHp: number;
-    saves: Record<StatType, number>;
-    armor: ArmorType[];
-    weapons: WeaponSpec[];
-    startingGear: string[];
-    levels: ClassLevel[];
-    abilityLists: Array<{
-      name: string;
-      description: string;
-      items: Array<{ name: string; description: string }>;
-    }>;
-    visibility: ClassVisibility;
-  }
-) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const classEntity = await db.updateClass({
-      id: classId,
-      ...formData,
-      discordId: session.user.discordId,
-    });
-
-    revalidatePath(getClassUrl(classEntity));
-    revalidatePath("/my/classes");
-
-    return { success: true, class: classEntity };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
-    };
   }
 }
 

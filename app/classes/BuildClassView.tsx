@@ -22,6 +22,7 @@ import {
   useForm,
 } from "react-hook-form";
 import { z } from "zod";
+import { createClass, updateClass } from "@/app/%5Factions/_class/contract";
 import {
   EXAMPLE_CLASSES,
   exampleClassToFormValues,
@@ -70,6 +71,7 @@ import { TagsInput } from "@/components/ui/tags-input";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
+import { call } from "@/lib/contract";
 import { useClassDraft } from "@/lib/hooks/useClassDraft";
 import {
   ARMOR_TYPES,
@@ -81,7 +83,6 @@ import {
 } from "@/lib/types";
 import { cn, randomUUID } from "@/lib/utils";
 import { getClassUrl } from "@/lib/utils/url";
-import { createClass, updateClass } from "../actions/class";
 
 const weaponSpecSchema = z.union([
   z.object({ kind: z.enum(["blade", "stave", "wand"]) }),
@@ -333,19 +334,12 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
       };
 
       const result = isEditing
-        ? await updateClass(classEntity.id, payload)
-        : await createClass(payload);
+        ? await call(updateClass, { id: classEntity.id, input: payload })
+        : await call(createClass, payload);
 
-      if (result.success && result.class) {
-        await deleteDraftOnSave();
-        router.push(getClassUrl(result.class));
-      } else {
-        form.setError("root", {
-          message:
-            result.error ||
-            `Failed to ${isEditing ? "update" : "create"} class`,
-        });
-      }
+      await deleteDraftOnSave();
+      router.push(getClassUrl(result));
+      router.refresh();
     } catch (error) {
       form.setError("root", {
         message: `Error ${classEntity?.id ? "updating" : "creating"} class: ${error instanceof Error ? error.message : String(error)}`,

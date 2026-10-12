@@ -439,7 +439,7 @@ contract compatibility window that a future migration must preserve.
 | Adventure statblock picker | Complete | Hardened internal search route; private cache isolation and date revival covered |
 | Adventure image operations | Complete | Hardened upload and delete route handlers |
 | Core content builders | Complete | Monster, hazard, item, encounter, and collection create/update use stable `/_actions` JSON routes |
-| Character-option builders | Partially complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce) and [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471) complete; class, subclass, companion, family, spell-school, and custom-rule saves remain in Wave 1 |
+| Character-option builders | Partially complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), and [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9) complete; subclass, companion, family, spell-school, and custom-rule saves remain in Wave 1 |
 | Drafts | Not started | Wave 1 |
 | Deletes and relationship writes | Not started | Wave 2 |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
@@ -495,3 +495,32 @@ contract compatibility window that a future migration must preserve.
 - Retain both URLs and accepted request/response shapes for at least one full
   deployment interval. Pre-cutover tabs need the existing refresh/retry path.
   Class saves are the next bounded Wave 1 slice.
+
+### Class saves — October 2026
+
+- `BuildClassView`, the only create/update caller, uses typed JSON POSTs to
+  `/_actions/createClass` (201) and `/_actions/updateClass` (200), returning
+  only `{ id, name }`. Routes delegate to the unchanged transactional database
+  operations, deriving ownership from the session. Missing and non-owned
+  updates return 404, and client-supplied owner identity is ignored.
+- Runtime validation covers all builder fields, including nested level abilities,
+  all three weapon-spec shapes, saves, option lists/items and visibility.
+  Empty editor placeholders are still filtered by the builder before transport.
+  Exact-origin/media-type checks, telemetry-safe failures, owner-list and
+  canonical detail invalidation remain; public-list invalidation and explicit
+  refresh keep navigation fresh without a Flight mutation response.
+- Pending controls, inline errors, preserved drafts and successful-save draft
+  deletion remain unchanged. Class draft autosave/load/delete still use their
+  existing actions and belong to the separate documented draft slice.
+- Removed `createClass` and `updateClass` from `app/actions/class.ts`; searches,
+  lookup and delete remain for later waves. Application ratchet: **108 → 106**;
+  repository markers are unchanged.
+- Route-boundary and builder/client-transport tests cover both operations and
+  stable URLs without `next-action`. Live authenticated requests verify create,
+  replacement updates of ordered abilities/options, ownership, validation,
+  origin/media rejection and persisted detail rendering. Browser QA covers
+  create/update, navigation/full reload and transport-error draft retention/retry.
+  QA users/content and nested records are cleaned up after verification.
+- Retain both URLs and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs need the existing refresh/retry path.
+  Subclass saves are the next bounded Wave 1 slice.
