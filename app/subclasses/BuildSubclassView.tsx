@@ -13,6 +13,10 @@ import {
   useWatch,
 } from "react-hook-form";
 import { z } from "zod";
+import {
+  createSubclass,
+  updateSubclass,
+} from "@/app/%5Factions/_subclass/contract";
 import { subclassClassOptionsQueryOptions } from "@/app/subclasses/hooks";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { DiscordLoginButton } from "@/components/layout/DiscordLoginButton";
@@ -41,11 +45,11 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
+import { call } from "@/lib/contract";
 import { useClassDraft } from "@/lib/hooks/useClassDraft";
 import { type Subclass, UNKNOWN_USER } from "@/lib/types";
 import { randomUUID } from "@/lib/utils";
 import { getSubclassUrl } from "@/lib/utils/url";
-import { createSubclass, updateSubclass } from "../actions/subclass";
 
 const abilitySchema = z
   .object({
@@ -370,19 +374,12 @@ export default function BuildSubclassView({
         visibility: data.visibility,
       };
       const result = isEditing
-        ? await updateSubclass(subclass.id, payload)
-        : await createSubclass(payload);
+        ? await call(updateSubclass, { id: subclass.id, input: payload })
+        : await call(createSubclass, payload);
 
-      if (result.success && result.subclass) {
-        await deleteDraftOnSave();
-        router.push(getSubclassUrl(result.subclass));
-      } else {
-        form.setError("root", {
-          message:
-            result.error ||
-            `Failed to ${isEditing ? "update" : "create"} subclass`,
-        });
-      }
+      await deleteDraftOnSave();
+      router.push(getSubclassUrl(result));
+      router.refresh();
     } catch (error) {
       form.setError("root", {
         message: `Error ${subclass?.id ? "updating" : "creating"} subclass: ${error instanceof Error ? error.message : String(error)}`,

@@ -3,8 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import type { SubclassLevel, SubclassVisibility } from "@/lib/types";
-import { getSubclassUrl } from "@/lib/utils/url";
 
 export async function searchPublicSubclasses(params: {
   creatorId?: string;
@@ -20,87 +18,6 @@ export async function searchPublicSubclasses(params: {
   } catch (error) {
     console.error("Error searching public subclasses:", error);
     return { success: false, error: "Failed to search subclasses" };
-  }
-}
-
-export async function createSubclass(formData: {
-  name: string;
-  classId?: string | null;
-  className: string;
-  namePreface?: string;
-  tagline?: string;
-  description?: string;
-  levels: SubclassLevel[];
-  abilityListIds?: string[];
-  abilityLists?: Array<{
-    name: string;
-    description: string;
-    items: Array<{ name: string; description: string }>;
-  }>;
-  visibility: SubclassVisibility;
-}) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const subclass = await db.createSubclass({
-      ...formData,
-      discordId: session.user.discordId,
-    });
-
-    revalidatePath("/my/subclasses");
-
-    return { success: true, subclass };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-}
-
-export async function updateSubclass(
-  subclassId: string,
-  formData: {
-    name: string;
-    classId?: string | null;
-    className: string;
-    namePreface?: string;
-    tagline?: string;
-    description?: string;
-    levels: SubclassLevel[];
-    abilityListIds?: string[];
-    abilityLists?: Array<{
-      name: string;
-      description: string;
-      items: Array<{ name: string; description: string }>;
-    }>;
-    visibility: SubclassVisibility;
-  }
-) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const subclass = await db.updateSubclass({
-      id: subclassId,
-      ...formData,
-      discordId: session.user.discordId,
-    });
-
-    revalidatePath(getSubclassUrl(subclass));
-    revalidatePath("/my/subclasses");
-
-    return { success: true, subclass };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
-    };
   }
 }
 
