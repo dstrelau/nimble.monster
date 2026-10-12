@@ -1,5 +1,4 @@
 import type React from "react";
-import { DiceNotation } from "@/components/dice/DiceNotation";
 import { PrefixedFormattedText } from "@/components/shared/FormattedText";
 import { maybePeriod } from "@/lib/text";
 import type { Action, Condition } from "@/lib/types";
@@ -32,17 +31,22 @@ export const ActionsList: React.FC<ActionsListProps> = ({
             action && (
               <li key={action.id}>
                 <PrefixedFormattedText
-                  content={action.description || ""}
+                  content={[
+                    action.description
+                      ? maybePeriod(action.damage)
+                      : action.damage,
+                    action.description,
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                   conditions={conditions}
                   noInteractive={noInteractive}
                   prefix={
                     <>
                       {actions.length > 1 && (
-                        <span className="text-foreground">•</span>
+                        <span className="text-foreground">• </span>
                       )}
                       <strong>{maybePeriod(action.name)}</strong>
-                      {action.damage && <DiceNotation text={action.damage} />}
-                      {action.damage && action.description && ". "}
                     </>
                   }
                 />
