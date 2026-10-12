@@ -1,4 +1,14 @@
-import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  inArray,
+  like,
+  ne,
+  notExists,
+  or,
+} from "drizzle-orm";
 import type {
   Award,
   ClassAbilityItem,
@@ -19,6 +29,7 @@ import {
   type ClassAbilityListRow,
   classAbilityItems,
   classAbilityLists,
+  classesClassAbilityLists,
   type SourceRow,
   type SubclassAbilityRow,
   type SubclassRow,
@@ -472,6 +483,26 @@ export interface CreateSubclassInput {
   sourceId?: string;
 }
 
+async function validateAbilityListOwnership(
+  db: ReturnType<typeof getDatabase>,
+  abilityListIds: string[],
+  userId: string
+): Promise<void> {
+  if (abilityListIds.length === 0) return;
+  const ownedLists = await db
+    .select({ id: classAbilityLists.id })
+    .from(classAbilityLists)
+    .where(
+      and(
+        inArray(classAbilityLists.id, abilityListIds),
+        eq(classAbilityLists.userId, userId)
+      )
+    );
+  if (ownedLists.length !== abilityListIds.length) {
+    throw new Error("Option lists must belong to the subclass creator");
+  }
+}
+
 export const createSubclass = async (
   input: CreateSubclassInput
 ): Promise<Subclass> => {
@@ -486,6 +517,9 @@ export const createSubclass = async (
   if (userResult.length === 0) {
     throw new Error("User not found");
   }
+
+  const abilityListIds = input.abilityListIds || [];
+  await validateAbilityListOwnership(db, abilityListIds, userResult[0].id);
 
   const subclassId = crypto.randomUUID();
 
@@ -530,7 +564,6 @@ export const createSubclass = async (
   }
 
   // Insert ability list links for existing lists
-  const abilityListIds = input.abilityListIds || [];
   if (abilityListIds.length > 0) {
     await db.insert(subclassesClassAbilityLists).values(
       abilityListIds.map((listId, index) => ({
@@ -611,6 +644,9 @@ export const updateSubclass = async (
     throw new Error("Subclass not found");
   }
 
+  const abilityListIds = input.abilityListIds || [];
+  await validateAbilityListOwnership(db, abilityListIds, userResult[0].id);
+
   await db
     .update(subclasses)
     .set({
@@ -657,16 +693,44 @@ export const updateSubclass = async (
     await db.insert(subclassAbilities).values(abilityInserts);
   }
 
-  // Delete old inline ability lists (those linked to this subclass)
+  // Delete only replaced, exclusively linked lists belonging to this creator.
+  // Legacy foreign/shared links are detached below, never deleted here.
   const existingLinks = await db
     .select({ abilityListId: subclassesClassAbilityLists.abilityListId })
     .from(subclassesClassAbilityLists)
     .where(eq(subclassesClassAbilityLists.subclassId, input.id));
-  const existingListIds = existingLinks.map((l) => l.abilityListId);
+  const existingListIds = existingLinks
+    .map((l) => l.abilityListId)
+    .filter((id) => !abilityListIds.includes(id));
   if (existingListIds.length > 0) {
-    await db
-      .delete(classAbilityLists)
-      .where(inArray(classAbilityLists.id, existingListIds));
+    await db.delete(classAbilityLists).where(
+      and(
+        inArray(classAbilityLists.id, existingListIds),
+        eq(classAbilityLists.userId, userResult[0].id),
+        notExists(
+          db
+            .select()
+            .from(subclassesClassAbilityLists)
+            .where(
+              and(
+                eq(
+                  subclassesClassAbilityLists.abilityListId,
+                  classAbilityLists.id
+                ),
+                ne(subclassesClassAbilityLists.subclassId, input.id)
+              )
+            )
+        ),
+        notExists(
+          db
+            .select()
+            .from(classesClassAbilityLists)
+            .where(
+              eq(classesClassAbilityLists.abilityListId, classAbilityLists.id)
+            )
+        )
+      )
+    );
   }
 
   await db
@@ -674,7 +738,6 @@ export const updateSubclass = async (
     .where(eq(subclassesClassAbilityLists.subclassId, input.id));
 
   // Re-link existing ability list IDs
-  const abilityListIds = input.abilityListIds || [];
   if (abilityListIds.length > 0) {
     await db.insert(subclassesClassAbilityLists).values(
       abilityListIds.map((listId, index) => ({

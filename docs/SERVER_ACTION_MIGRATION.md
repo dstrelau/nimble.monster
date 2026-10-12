@@ -530,7 +530,7 @@ contract compatibility window that a future migration must preserve.
 - `BuildSubclassView`, the only create/update caller, uses typed JSON POSTs to
   `/_actions/createSubclass` (201) and `/_actions/updateSubclass` (200).
   Responses contain `{ id, name, namePreface? }`; the preface is required for
-  correct canonical navigation. Routes delegate to unchanged database operations,
+  correct canonical navigation. Routes delegate to database operations,
   deriving ownership from the session and returning 404 for missing/non-owned
   updates. Class IDs remain optional informational references as before.
 - Runtime validation covers all builder fields, nested level abilities and inline
@@ -538,6 +538,14 @@ contract compatibility window that a future migration must preserve.
   repository generates new persisted UUIDs. Session identity, source IDs and
   existing ability-list links are not accepted as builder authority; only inline
   options are submitted by this caller. No public API or repository boundary changed.
+- Follow-up ownership hardening requires every existing option-list reference to
+  belong to the subclass creator, validated before create/update writes. Updates
+  retain requested list IDs and delete only replaced, exclusively linked lists
+  owned by that creator; legacy foreign/shared links are detached without deleting
+  their underlying lists. A read-only production audit found 346 subclasses and
+  28 links, with zero cross-owner, shared or dangling links; no data repair was
+  required. Real SQLite regression tests cover rejection without partial writes,
+  retained-list ordering and safe replacement/detachment.
 - Exact-origin/media checks, telemetry-safe errors, owner-list and canonical
   detail invalidation remain. Public-list invalidation and explicit refresh keep
   post-save navigation fresh. Pending controls, inline errors, retained input,
