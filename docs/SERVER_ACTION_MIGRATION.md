@@ -439,7 +439,7 @@ contract compatibility window that a future migration must preserve.
 | Adventure statblock picker | Complete | Hardened internal search route; private cache isolation and date revival covered |
 | Adventure image operations | Complete | Hardened upload and delete route handlers |
 | Core content builders | Complete | Monster, hazard, item, encounter, and collection create/update use stable `/_actions` JSON routes |
-| Character-option builders | Partially complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce) complete; background, class, subclass, companion, family, spell-school, and custom-rule saves remain in Wave 1 |
+| Character-option builders | Partially complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce) and [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471) complete; class, subclass, companion, family, spell-school, and custom-rule saves remain in Wave 1 |
 | Drafts | Not started | Wave 1 |
 | Deletes and relationship writes | Not started | Wave 2 |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
@@ -471,3 +471,27 @@ contract compatibility window that a future migration must preserve.
   full deployment interval. Tabs loaded before this cutover still need the
   existing refresh/retry path; subsequent compatible deployments must preserve
   stable-route saves. Background saves are the next bounded Wave 1 slice.
+
+### Background saves — October 2026
+
+- The only create/update caller, `BuildBackgroundView`, now uses typed JSON
+  POSTs to `/_actions/createBackground` (201) and `/_actions/updateBackground`
+  (200), returning only `{ id, name }`. Ownership remains session-derived in
+  the existing service/repository; missing and non-owned updates return 404.
+- Runtime schemas validate and trim builder fields and validate IDs. The shared
+  boundary preserves exact-origin/media-type checks, telemetry-safe 500s and
+  no CORS. Owner-list and canonical detail invalidation are retained; public
+  list invalidation, both React Query invalidations and explicit refresh keep
+  post-save navigation fresh. Failures retain the draft, show one inline error
+  and re-enable retry without automatically repeating creates.
+- Removed `createBackground` and `updateBackground` from
+  `app/actions/background.ts`, leaving lookup and delete for later waves.
+  Application ratchet: **110 → 108**; repository markers are unchanged.
+- Route-boundary and builder/client-transport tests cover both operations,
+  stable URLs without `next-action`, pending/error UX, auth, validation,
+  ownership, safe failures and cache invalidation. Live HTTP and browser QA
+  exercise authenticated create/update and persisted results; QA records are
+  removed after verification.
+- Retain both URLs and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs need the existing refresh/retry path.
+  Class saves are the next bounded Wave 1 slice.

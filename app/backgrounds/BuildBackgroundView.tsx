@@ -1,11 +1,16 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  createBackground,
+  updateBackground,
+} from "@/app/%5Factions/_background/contract";
 import { Card } from "@/components/background/Card";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { SourceSelect } from "@/components/create/SourceSelect";
@@ -22,10 +27,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { call } from "@/lib/contract";
 import type { Background } from "@/lib/services/backgrounds";
 import { UNKNOWN_USER } from "@/lib/types";
 import { getBackgroundUrl } from "@/lib/utils/url";
-import { createBackground, updateBackground } from "../actions/background";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -44,8 +49,10 @@ export default function BuildBackgroundView({
   background,
 }: BuildBackgroundViewProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -82,8 +89,8 @@ export default function BuildBackgroundView({
 
   const handleSubmit = async (data: FormData) => {
     setIsSubmitting(true);
+    setError(null);
     try {
-      const isEditing = !!background?.id;
       const payload = {
         name: data.name.trim(),
         description: data.description.trim(),
@@ -91,13 +98,20 @@ export default function BuildBackgroundView({
         sourceId:
           data.sourceId && data.sourceId !== "none" ? data.sourceId : undefined,
       };
-      const result = isEditing
-        ? await updateBackground(background.id, payload)
-        : await createBackground(payload);
+      const result = background?.id
+        ? await call(updateBackground, { id: background.id, input: payload })
+        : await call(createBackground, payload);
 
-      if (result.success && result.background) {
-        router.push(getBackgroundUrl(result.background));
-      }
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["backgrounds"] }),
+        queryClient.invalidateQueries({ queryKey: ["my-backgrounds"] }),
+      ]);
+      router.push(getBackgroundUrl(result));
+      router.refresh();
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to save background"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -180,6 +194,11 @@ export default function BuildBackgroundView({
                 )}
               />
 
+              {error && (
+                <p role="alert" className="text-destructive text-sm">
+                  {error}
+                </p>
+              )}
               {session?.user && (
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting
