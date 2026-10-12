@@ -2,83 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import type {
-  AncestryAbility,
-  AncestryRarity,
-  AncestrySize,
-} from "@/lib/services/ancestries";
 import {
-  createAncestry as createAncestryRepo,
   deleteAncestry as deleteAncestryRepo,
   findAncestry,
-  updateAncestry as updateAncestryRepo,
 } from "@/lib/services/ancestries";
-
-export async function createAncestry(formData: {
-  name: string;
-  description: string;
-  size: AncestrySize[];
-  rarity: AncestryRarity;
-  visibility?: "public" | "private";
-  abilities: AncestryAbility[];
-  sourceId?: string;
-}) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const ancestry = await createAncestryRepo(formData, session.user.discordId);
-
-    revalidatePath("/ancestries");
-    revalidatePath("/my/ancestries");
-
-    return { success: true, ancestry };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-}
-
-export async function updateAncestry(
-  ancestryId: string,
-  formData: {
-    name: string;
-    description: string;
-    size: AncestrySize[];
-    rarity: AncestryRarity;
-    visibility?: "public" | "private";
-    abilities: AncestryAbility[];
-    sourceId?: string;
-  }
-) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const ancestry = await updateAncestryRepo(
-      ancestryId,
-      formData,
-      session.user.discordId
-    );
-
-    revalidatePath(`/ancestries/${ancestry.id}`);
-    revalidatePath("/ancestries");
-    revalidatePath("/my/ancestries");
-
-    return { success: true, ancestry };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-}
 
 export async function findPublicAncestry(ancestryId: string) {
   try {

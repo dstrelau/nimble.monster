@@ -8,6 +8,10 @@ import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  createAncestry,
+  updateAncestry,
+} from "@/app/%5Factions/_ancestry/contract";
 import { Card } from "@/components/ancestry/Card";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { SourceSelect } from "@/components/create/SourceSelect";
@@ -27,10 +31,11 @@ import { Input } from "@/components/ui/input";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { call } from "@/lib/contract";
 import type { Ancestry } from "@/lib/services/ancestries";
 import { RARITIES, SIZES } from "@/lib/services/ancestries";
 import { UNKNOWN_USER } from "@/lib/types";
-import { createAncestry, updateAncestry } from "../actions/ancestry";
+import { getAncestryUrl } from "@/lib/utils/url";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -62,6 +67,7 @@ export default function BuildAncestryView({
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -114,8 +120,8 @@ export default function BuildAncestryView({
 
   const handleSubmit = async (data: FormData) => {
     setIsSubmitting(true);
+    setError(null);
     try {
-      const isEditing = !!ancestry?.id;
       const payload = {
         name: data.name.trim(),
         description: data.description.trim(),
@@ -129,17 +135,20 @@ export default function BuildAncestryView({
         sourceId:
           data.sourceId && data.sourceId !== "none" ? data.sourceId : undefined,
       };
-      const result = isEditing
-        ? await updateAncestry(ancestry.id, payload)
-        : await createAncestry(payload);
+      const result = ancestry?.id
+        ? await call(updateAncestry, { id: ancestry.id, input: payload })
+        : await call(createAncestry, payload);
 
-      if (result.success && result.ancestry) {
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ["ancestries"] }),
-          queryClient.invalidateQueries({ queryKey: ["my-ancestries"] }),
-        ]);
-        router.push(`/ancestries/${result.ancestry.id}`);
-      }
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["ancestries"] }),
+        queryClient.invalidateQueries({ queryKey: ["my-ancestries"] }),
+      ]);
+      router.push(getAncestryUrl(result));
+      router.refresh();
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to save ancestry"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -350,6 +359,11 @@ export default function BuildAncestryView({
                   </Button>
                 )}
               </div>
+              {error && (
+                <p role="alert" className="w-full text-destructive">
+                  {error}
+                </p>
+              )}
             </form>
           </Form>
           {!session?.user && (

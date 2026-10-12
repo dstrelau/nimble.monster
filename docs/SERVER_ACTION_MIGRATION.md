@@ -439,7 +439,7 @@ contract compatibility window that a future migration must preserve.
 | Adventure statblock picker | Complete | Hardened internal search route; private cache isolation and date revival covered |
 | Adventure image operations | Complete | Hardened upload and delete route handlers |
 | Core content builders | Complete | Monster, hazard, item, encounter, and collection create/update use stable `/_actions` JSON routes |
-| Character-option builders | Not started | Wave 1 |
+| Character-option builders | Partially complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce) complete; background, class, subclass, companion, family, spell-school, and custom-rule saves remain in Wave 1 |
 | Drafts | Not started | Wave 1 |
 | Deletes and relationship writes | Not started | Wave 2 |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
@@ -448,3 +448,26 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Not started | Wave 5 |
+
+### Ancestry saves — October 2026
+
+- `BuildAncestryView` (the only create/update caller) uses typed JSON POSTs to
+  `/_actions/createAncestry` (201) and `/_actions/updateAncestry` (200), returning
+  only `{ id, name }`. The service/repository still derives ownership from the
+  session and hides non-owned/missing updates behind 404. No public API mutation
+  or repository Server Action boundary changed.
+- Runtime validation matches builder fields; exact-origin/media-type checks,
+  telemetry-safe 500s, list/detail revalidation, both React Query invalidations,
+  canonical navigation and explicit refresh are preserved. Failed requests keep
+  the draft, show one inline error and re-enable retry without automatic creates.
+- Removed `createAncestry` and `updateAncestry` from `app/actions/ancestry.ts`;
+  that module retains only public lookup and delete. Application ratchet:
+  **112 → 110** exports; repository markers remain unchanged.
+- Route-boundary, stable-URL/no-`next-action`, pending/error/navigation tests
+  accompany live authenticated create/update, persistence/reload, malformed-input,
+  unauthorized, non-owner, wrong-origin and wrong-media checks. QA data is removed
+  after verification.
+- Retain both URLs and these accepted request/response shapes for at least one
+  full deployment interval. Tabs loaded before this cutover still need the
+  existing refresh/retry path; subsequent compatible deployments must preserve
+  stable-route saves. Background saves are the next bounded Wave 1 slice.
