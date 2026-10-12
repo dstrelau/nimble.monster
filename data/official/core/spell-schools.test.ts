@@ -139,6 +139,10 @@ function spell(name: string): JSONAPISpell {
 describe("Core Rules 3.0 spell data", () => {
   it("is accepted by the official import validator", () => {
     const result = validateOfficialSpellSchoolsJSON(structuredClone(core));
+    expect(result.source).toMatchObject({
+      name: "Core Rules 3.0",
+      abbreviation: "Core3",
+    });
     expect(result.spellSchools).toHaveLength(6);
     expect(spells).toHaveLength(90);
     expect(spells.filter((s) => (s.version ?? 3) === 3)).toHaveLength(73);
