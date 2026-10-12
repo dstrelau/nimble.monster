@@ -1,5 +1,4 @@
 "use client";
-import { Table2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Link } from "@/components/layout/Link";
 import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
@@ -38,15 +37,12 @@ export const RandomTableCard = ({
   return (
     <Card className="min-w-0">
       <CardHeader className="gap-3">
-        <CardTitle className="flex items-start gap-2 font-condensed font-bold text-2xl leading-tight">
-          <Table2 className="mt-1 size-5 shrink-0 text-muted-foreground" />
-          <span className="min-w-0 break-words">
-            {randomTable.id ? (
-              <Link href={href}>{randomTable.name}</Link>
-            ) : (
-              randomTable.name
-            )}
-          </span>
+        <CardTitle className="min-w-0 break-words font-condensed font-bold text-2xl leading-tight">
+          {randomTable.id ? (
+            <Link href={href}>{randomTable.name}</Link>
+          ) : (
+            randomTable.name
+          )}
         </CardTitle>
         {randomTable.description && (
           <CardDescription className="line-clamp-2">

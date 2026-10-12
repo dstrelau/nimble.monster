@@ -44,7 +44,7 @@ describe("RandomTableCard", () => {
     expect(screen.queryByText("3 columns")).not.toBeInTheDocument();
     expect(screen.queryByText("20 rows")).not.toBeInTheDocument();
     expect(screen.queryByText("5 tables")).not.toBeInTheDocument();
-    expect(container.querySelector(".lucide-table-2")).not.toBeNull();
+    expect(container.querySelector(".lucide-table-2")).toBeNull();
     expect(screen.getByRole("link", { name: /Nimble Co\./ })).toHaveAttribute(
       "href",
       "/u/nimble-co"
