@@ -7,6 +7,10 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  createSpellSchool,
+  updateSpellSchool,
+} from "@/app/%5Factions/_spellSchool/contract";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { DiscordLoginButton } from "@/components/layout/DiscordLoginButton";
 import { Card } from "@/components/school/Card";
@@ -31,10 +35,10 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { call } from "@/lib/contract";
 import { type SpellSchool, UNKNOWN_USER } from "@/lib/types";
 import { cn, randomUUID } from "@/lib/utils";
 import { getSpellSchoolUrl } from "@/lib/utils/url";
-import { createSpellSchool, updateSpellSchool } from "../spell-schools/actions";
 
 // Helper functions for target type display
 function getTargetTypeDisplay(
@@ -263,14 +267,11 @@ export default function BuildSchoolView({
 
     try {
       const result = existingSchool
-        ? await updateSpellSchool(existingSchool.id, data)
-        : await createSpellSchool(data);
+        ? await call(updateSpellSchool, { id: existingSchool.id, input: data })
+        : await call(createSpellSchool, data);
 
-      if (result.success && result.spellSchool) {
-        router.push(getSpellSchoolUrl(result.spellSchool));
-      } else {
-        setError(result.error || "An error occurred");
-      }
+      router.push(getSpellSchoolUrl(result));
+      router.refresh();
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred"

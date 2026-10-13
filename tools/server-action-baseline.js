@@ -29,7 +29,7 @@ export const serverActionBaseline = {
     "app/my/hazards/actions.ts": 1,
     "app/my/items/actions.ts": 1,
     "app/my/monsters/actions.ts": 1,
-    "app/spell-schools/actions.ts": 5,
+    "app/spell-schools/actions.ts": 3,
     "app/u/[username]/actions.ts": 2,
     "components/shared/search-creators-action.ts": 3,
     "lib/actions.ts": 1,
