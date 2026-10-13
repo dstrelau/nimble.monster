@@ -3,8 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
-import type { Ability } from "@/lib/types";
-import { getFamilyUrl, getUserUrl } from "@/lib/utils/url";
 
 export async function getUserFamilies() {
   try {
@@ -21,74 +19,6 @@ export async function getUserFamilies() {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
       families: [],
-    };
-  }
-}
-
-export async function createFamily(formData: {
-  name: string;
-  description?: string;
-  abilities: Ability[];
-}) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const family = await db.createFamily({
-      name: formData.name,
-      description: formData.description,
-      abilities: formData.abilities,
-      discordId: session.user.discordId,
-    });
-
-    // Revalidate the families page to force a refresh
-    revalidatePath("/my/families");
-
-    return { success: true, family };
-  } catch (error) {
-    console.error("Error creating family:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
-    };
-  }
-}
-
-export async function updateFamily(
-  familyId: string,
-  formData: {
-    name: string;
-    description?: string;
-    abilities: Ability[];
-  }
-) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const family = await db.updateFamily({
-      id: familyId,
-      name: formData.name,
-      description: formData.description,
-      abilities: formData.abilities,
-      discordId: session.user.discordId,
-    });
-
-    // Revalidate the families page and family detail page to force a refresh
-    revalidatePath(getUserUrl(session.user));
-    revalidatePath("/my/families");
-    revalidatePath(getFamilyUrl(family));
-
-    return { success: true, family };
-  } catch (error) {
-    console.error("Error updating family:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }
 }

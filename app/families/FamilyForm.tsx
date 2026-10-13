@@ -7,25 +7,14 @@ import {
   useFieldArray,
   useWatch,
 } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
+import type { FamilySchema } from "@/app/%5Factions/_family/input";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
-const AbilitySchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, "Ability name is required"),
-  description: z.string().min(1, "Ability description is required"),
-});
-
-export const FamilySchema = z.object({
-  name: z.string().min(1, "Family name is required"),
-  description: z.string().optional(),
-  abilities: z.array(AbilitySchema).min(1, "At least one ability is required"),
-});
 
 export type FamilyFormData = z.infer<typeof FamilySchema>;
 

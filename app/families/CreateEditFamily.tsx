@@ -3,14 +3,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { createFamily, updateFamily } from "@/app/families/actions";
-import {
-  FamilyForm,
-  type FamilyFormData,
-  FamilySchema,
-} from "@/app/families/FamilyForm";
+import { createFamily, updateFamily } from "@/app/%5Factions/_family/contract";
+import { FamilySchema } from "@/app/%5Factions/_family/input";
+import { FamilyForm, type FamilyFormData } from "@/app/families/FamilyForm";
 import { FamilyHeader } from "@/app/families/FamilyHeader";
 import { Button } from "@/components/ui/button";
+import { call } from "@/lib/contract";
 import type { FamilyOverview } from "@/lib/types";
 import { getFamilyUrl } from "@/lib/utils/url";
 
@@ -58,26 +56,22 @@ export function CreateEditFamily({
         description: ability.description,
       }));
 
-      const result = isCreating
-        ? await createFamily({
-            name: data.name,
-            description: data.description || undefined,
-            abilities: abilitiesWithIds,
-          })
-        : await updateFamily(family.id, {
-            name: data.name,
-            description: data.description || undefined,
-            abilities: abilitiesWithIds,
-          });
-
-      if (result.success) {
-        const target = isCreating ? result.family : family;
-        if (target) {
-          router.push(getFamilyUrl(target));
-        }
-      } else {
+      try {
+        const input = {
+          name: data.name,
+          description: data.description || undefined,
+          abilities: abilitiesWithIds,
+        };
+        const result = isCreating
+          ? await call(createFamily, input)
+          : await call(updateFamily, { id: family.id, input });
+        router.push(getFamilyUrl(result));
+        router.refresh();
+      } catch (error) {
         setError(
-          result.error || `Failed to ${isCreating ? "create" : "update"} family`
+          error instanceof Error
+            ? error.message
+            : `Failed to ${isCreating ? "create" : "update"} family`
         );
       }
     });
