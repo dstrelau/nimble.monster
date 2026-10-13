@@ -4,10 +4,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useId, useState } from "react";
-import {
-  createCompanion,
-  updateCompanion,
-} from "@/app/%5Factions/_companion/contract";
 import { Card } from "@/components/companion/Card";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { AbilitiesSection } from "@/components/create/AbilitiesSection";
@@ -18,11 +14,11 @@ import { ExampleLoader } from "@/components/shared/ExampleLoader";
 import { FormInput, FormSelect, FormTextarea } from "@/components/shared/Form";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
-import { call } from "@/lib/contract";
 import { SIZES } from "@/lib/services/monsters";
 import type { Companion } from "@/lib/types";
 import { UNKNOWN_USER } from "@/lib/types";
 import { getCompanionUrl } from "@/lib/utils/url";
+import { createCompanion, updateCompanion } from "../actions/companion";
 import { EXAMPLE_COMPANIONS } from "./exampleCompanions";
 
 const CompanionForm: React.FC<{
@@ -192,17 +188,21 @@ const BuildCompanion: React.FC<BuildCompanionProps> = ({
       };
 
       const result = companion.id
-        ? await call(updateCompanion, { id: companion.id, input: formData })
-        : await call(createCompanion, formData);
+        ? await updateCompanion(companion.id, formData)
+        : await createCompanion(formData);
 
-      queryClient.invalidateQueries({ queryKey: ["companions"] });
-      queryClient.invalidateQueries({ queryKey: ["companion", result.id] });
-      router.push(getCompanionUrl(result));
-      router.refresh();
+      if (result.success && result.companion) {
+        queryClient.invalidateQueries({ queryKey: ["companions"] });
+        queryClient.invalidateQueries({
+          queryKey: ["companion", result.companion.id],
+        });
+        router.push(getCompanionUrl(result.companion));
+      } else {
+        setSubmitError(result.error || "Failed to save companion");
+      }
     } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : "Failed to save companion"
-      );
+      console.error("Failed to save companion:", error);
+      setSubmitError("An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
     }
