@@ -439,7 +439,7 @@ contract compatibility window that a future migration must preserve.
 | Adventure statblock picker | Complete | Hardened internal search route; private cache isolation and date revival covered |
 | Adventure image operations | Complete | Hardened upload and delete route handlers |
 | Core content builders | Complete | Monster, hazard, item, encounter, and collection create/update use stable `/_actions` JSON routes |
-| Character-option builders | Partially complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9), and [subclass create/update](https://ampcode.com/threads/T-01a131de-6489-707c-8e6c-58bb0194dc05) complete; companion, family, spell-school, and custom-rule saves remain in Wave 1 |
+| Character-option builders | Partially complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9), [subclass create/update](https://ampcode.com/threads/T-01a131de-6489-707c-8e6c-58bb0194dc05), and [companion create/update](https://ampcode.com/threads/T-01a13403-bbd1-768c-bf19-0288a298516d) complete; family, spell-school, and custom-rule saves remain in Wave 1 |
 | Drafts | Not started | Wave 1 |
 | Deletes and relationship writes | Not started | Wave 2 |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
@@ -564,3 +564,35 @@ contract compatibility window that a future migration must preserve.
 - Retain both URLs and accepted request/response shapes for at least one full
   deployment interval. Pre-cutover tabs still need the existing refresh/retry
   path. Companion saves are the next bounded Wave 1 slice.
+
+### Companion saves — October 2026
+
+- `BuildCompanionView`, the only browser save caller, uses typed JSON POSTs to
+  `/_actions/createCompanion` (201) and `/_actions/updateCompanion` (200), returning
+  only `{ id, name }`. Both routes delegate to the existing database operations;
+  ownership comes from the authenticated session, never from the request.
+  Updates preserve the owner-scoped lookup before persistence and hide missing
+  or non-owned records behind 404. CLI seed calls remain direct database calls.
+- Runtime validation covers every builder field, including size, wounds,
+  string HP/level expressions, actions, abilities and optional Paperforge images.
+  Example/editor action and ability IDs remain strings; persistence retains
+  its existing action-ID stripping. Empty optional editor text is still accepted.
+  No public API, database schema or repository boundary changed.
+- The shared boundary enforces exact origin and JSON media type, records unexpected
+  failures and returns generic 500s without CORS. Owner-list and detail revalidation
+  remain; public-list revalidation and explicit refresh keep post-save navigation
+  fresh. Both query invalidations, pending controls, single inline errors, retained
+  input and manual retry remain, without automatic create retries.
+- Removed `createCompanion` and `updateCompanion` from `app/actions/companion.ts`;
+  public lookup and delete remain for later waves. Application ratchet:
+  **104 → 102** exports; repository markers are unchanged.
+- Route and builder transport tests cover both stable URLs without `next-action`,
+  authentication, owner checks, nested validation, boundary rejection, telemetry-safe
+  failures, cache freshness and pending/error/retry behavior. Live authenticated
+  requests exercise both operations, persisted scalar/nested fields and error
+  statuses; browser QA covers example create, edit, normal navigation/full reload
+  and transport-failure retained input/retry. Test-owned content/users are cleaned
+  up after verification.
+- Retain both URLs and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs need the existing refresh/retry path.
+  Family saves are the next bounded Wave 1 slice.
