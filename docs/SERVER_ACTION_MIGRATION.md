@@ -440,7 +440,7 @@ contract compatibility window that a future migration must preserve.
 | Adventure image operations | Complete | Hardened upload and delete route handlers |
 | Core content builders | Complete | Monster, hazard, item, encounter, and collection create/update use stable `/_actions` JSON routes |
 | Character-option builders | Complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9), [subclass create/update](https://ampcode.com/threads/T-01a131de-6489-707c-8e6c-58bb0194dc05), [companion create/update](https://ampcode.com/threads/T-01a13403-bbd1-768c-bf19-0288a298516d), [family create/update](https://ampcode.com/threads/T-01a13516-5c8e-72bf-bf74-c2dc2fe983e6), [spell-school create/update](https://ampcode.com/threads/T-01a13629-09df-7764-a771-a0a9c46381aa), and [custom-rule create/update](https://ampcode.com/threads/T-01a1384e-59c8-716d-8cb2-6133f8114ab2) complete |
-| Drafts | Not started | Wave 1 |
+| Drafts | Complete | Class/subclass draft save/load/delete use stable `/_actions/classDraft` GET/POST/DELETE |
 | Deletes and relationship writes | Not started | Wave 2 |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
 | Public browser reads | Not started | Wave 3; prefer existing JSON:API |
@@ -676,3 +676,41 @@ contract compatibility window that a future migration must preserve.
 - Retain both URLs and accepted request/response shapes for at least one full
   deployment interval. Pre-cutover tabs need the existing refresh/retry path.
   Class draft save/load/delete is the next bounded Wave 1 slice.
+
+### Class drafts — October 2026
+
+- The shared `useClassDraft` hook, used by both `BuildClassView` and
+  `BuildSubclassView`, uses typed GET/POST/DELETE requests to
+  `/_actions/classDraft`. GET takes an optional UUID `classId` query parameter;
+  POST accepts `{ classId: UUID | null, data: JSON object }`; DELETE accepts
+  `{ classId: UUID | null }`. Responses are 200 JSON: `{ draft: { data,
+  updatedAt } | null }`, `{ updatedAt }`, and `{ success: true }`, respectively.
+- Authentication and the `class-draft-autosave` feature flag are enforced on
+  every request. The existing service/repository scopes all operations to the
+  session's Discord identity, not a supplied owner. Drafts are private per-user
+  scratch space, not changes to the referenced class. New-class and new-subclass
+  forms retain their existing shared null/`__new__` key; separating these draft
+  namespaces is outside this transport migration.
+- Runtime validation accepts incomplete editor JSON objects and validates IDs.
+  Mutations use the shared exact-origin/JSON boundary; reads return private,
+  no-store responses including errors. Unexpected failures are recorded in
+  telemetry with generic 500s and no CORS. There was no path/tag or React Query
+  cache invalidation in the old draft flow; none is added.
+- Three-second debounce, restore/stale comparison, discard and successful-save
+  cleanup remain in the existing hook. Best-effort failures preserve editing
+  and the last confirmed save time, with no unhandled fetch rejection, global
+  toast or automatic retry; a subsequent edit can save again. Successful entity
+  saves still proceed if draft cleanup fails, matching the former action result.
+- Removed all three Server Actions and their module `app/actions/classDraft.ts`;
+  action tests are replaced by route-boundary tests and the hook tests now use
+  the real typed fetch transport. Application ratchet: **96 → 93** exports;
+  repository markers and public APIs are unchanged.
+- Tests cover auth/flag gating, validation, mutation origin/media rejection,
+  generic telemetry-safe failures, JSON dates and stable URLs with no
+  `next-action`. Live requests cover save/replacement/load/delete for null and
+  UUID keys, per-user read/delete isolation, SQLite persistence and cleanup.
+  Browser QA covers both builders, reload/restore/discard, draft removal after
+  entity saves and retained input/retry after transport failure.
+- Retain the URL, methods and accepted shapes for at least one full deployment
+  interval. Pre-cutover tabs require the existing refresh/retry path. Wave 1 is
+  complete; entity deletes are the next bounded Wave 2 slice.

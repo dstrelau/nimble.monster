@@ -6,7 +6,8 @@ import {
   deleteClassDraft,
   getClassDraft,
   saveClassDraft,
-} from "@/app/actions/classDraft";
+} from "@/app/%5Factions/classDraft/contract";
+import { call } from "@/lib/contract";
 
 export type DraftState = "idle" | "loading" | "available" | "stale";
 
@@ -54,21 +55,26 @@ export function useClassDraft<T>({
       };
 
     setDraftState("loading");
-    getClassDraft(classId).then((result) => {
-      if (cancelled) return;
-      if (result.success && result.draft) {
-        const draftUpdated = new Date(result.draft.updatedAt);
-        if (classUpdatedAt && draftUpdated <= classUpdatedAt) {
-          setDraftState("stale");
+    call(getClassDraft, { classId })
+      .then((result) => {
+        if (cancelled) return;
+        if (result.draft) {
+          const draftUpdated = new Date(result.draft.updatedAt);
+          if (classUpdatedAt && draftUpdated <= classUpdatedAt) {
+            setDraftState("stale");
+          } else {
+            setDraftState("available");
+          }
+          setDraftData(result.draft.data as T);
+          setLastSavedAt(draftUpdated);
         } else {
-          setDraftState("available");
+          setDraftState("idle");
         }
-        setDraftData(result.draft.data as T);
-        setLastSavedAt(draftUpdated);
-      } else {
-        setDraftState("idle");
-      }
-    });
+      })
+      .catch(() => {
+        // Autosave is best-effort; a failed load must not block editing.
+        if (!cancelled) setDraftState("idle");
+      });
 
     return () => {
       cancelled = true;
@@ -77,9 +83,13 @@ export function useClassDraft<T>({
 
   const saveDebouncer = useDebouncer(
     async (data: unknown) => {
-      const result = await saveClassDraft(classId, data);
-      if (result.success && result.updatedAt && mountedRef.current) {
-        setLastSavedAt(new Date(result.updatedAt));
+      try {
+        const result = await call(saveClassDraft, { classId, data });
+        if (mountedRef.current) {
+          setLastSavedAt(new Date(result.updatedAt));
+        }
+      } catch {
+        // Keep input and the last confirmed save time; a later edit can retry.
       }
     },
     { wait: 3000 }
@@ -101,13 +111,14 @@ export function useClassDraft<T>({
     setDraftState("idle");
     setDraftData(null);
     setLastSavedAt(null);
-    await deleteClassDraft(classId);
+    await call(deleteClassDraft, { classId }).catch(() => undefined);
   }, [classId]);
 
   const deleteDraftOnSave = useCallback(async () => {
     saveDebouncer.cancel();
     setLastSavedAt(null);
-    await deleteClassDraft(classId);
+    // Draft cleanup must not turn a successful class save into an editor error.
+    await call(deleteClassDraft, { classId }).catch(() => undefined);
   }, [classId, saveDebouncer]);
 
   return {

@@ -8,12 +8,6 @@ const { mockGetClassDraft, mockSaveClassDraft, mockDeleteClassDraft } =
     mockDeleteClassDraft: vi.fn(),
   }));
 
-vi.mock("@/app/actions/classDraft", () => ({
-  getClassDraft: mockGetClassDraft,
-  saveClassDraft: mockSaveClassDraft,
-  deleteClassDraft: mockDeleteClassDraft,
-}));
-
 vi.mock("@tanstack/react-pacer", () => ({
   useDebouncer: (fn: (...args: unknown[]) => unknown) => ({
     maybeExecute: (...args: unknown[]) => fn(...args),
@@ -25,10 +19,26 @@ import { useClassDraft } from "./useClassDraft";
 
 afterEach(() => {
   vi.clearAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe("useClassDraft", () => {
   beforeEach(() => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, init: RequestInit) => {
+        const input = init.body ? JSON.parse(String(init.body)) : null;
+        const result =
+          init.method === "GET"
+            ? await mockGetClassDraft(
+                new URL(url, "https://nimble.nexus").searchParams.get("classId")
+              )
+            : init.method === "DELETE"
+              ? await mockDeleteClassDraft(input.classId)
+              : await mockSaveClassDraft(input.classId, input.data);
+        return Response.json(result);
+      })
+    );
     mockGetClassDraft.mockResolvedValue({ success: true, draft: null });
     mockSaveClassDraft.mockResolvedValue({
       success: true,
@@ -220,5 +230,64 @@ describe("useClassDraft", () => {
 
     expect(mockDeleteClassDraft).toHaveBeenCalledWith("class-1");
     expect(result.current.lastSavedAt).toBeNull();
+  });
+
+  it("uses stable GET/POST/DELETE requests without next-action or a GET body", async () => {
+    const { result } = renderHook(() =>
+      useClassDraft({ classId: "class-1", isLoggedIn: true })
+    );
+    await waitFor(() => expect(result.current.draftState).toBe("idle"));
+    await act(async () => {
+      result.current.onFormChange({ name: "Partial" });
+    });
+    await act(async () => {
+      await result.current.discardDraft();
+    });
+    expect(fetch).toHaveBeenNthCalledWith(
+      1,
+      "/_actions/classDraft?classId=class-1",
+      {
+        method: "GET",
+        credentials: "same-origin",
+      }
+    );
+    for (const method of ["POST", "DELETE"]) {
+      expect(fetch).toHaveBeenCalledWith("/_actions/classDraft", {
+        method,
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          method === "POST"
+            ? { classId: "class-1", data: { name: "Partial" } }
+            : { classId: "class-1" }
+        ),
+      });
+    }
+  });
+
+  it("keeps editing usable after HTTP and network failures and retries on a later edit", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(
+      Response.json({ error: "Forbidden" }, { status: 403 })
+    );
+    const { result } = renderHook(() =>
+      useClassDraft({ classId: null, isLoggedIn: true })
+    );
+    await waitFor(() => expect(result.current.draftState).toBe("idle"));
+    mockSaveClassDraft.mockRejectedValueOnce(new Error("Network unavailable"));
+    await act(async () => {
+      result.current.onFormChange({ name: "Retained" });
+    });
+    expect(result.current.lastSavedAt).toBeNull();
+    await act(async () => {
+      result.current.onFormChange({ name: "Retained again" });
+    });
+    expect(result.current.lastSavedAt).toBeInstanceOf(Date);
+    mockDeleteClassDraft.mockRejectedValueOnce(
+      new Error("Network unavailable")
+    );
+    await act(async () => {
+      await result.current.deleteDraftOnSave();
+    });
+    expect(result.current.draftState).toBe("idle");
   });
 });
