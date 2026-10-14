@@ -101,7 +101,9 @@ describe.each([true, false])("family builder creating=%s", (creating) => {
     expect(screen.getByRole("textbox", { name: "Family Name" })).toHaveValue(
       "New name"
     );
-    expect(screen.getByRole("button", { name: label })).toBeEnabled();
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: label })).toBeEnabled()
+    );
     expect(mocks.push).not.toHaveBeenCalled();
     expect(fetchMock).toHaveBeenCalledOnce();
     fetchMock.mockResolvedValue(
