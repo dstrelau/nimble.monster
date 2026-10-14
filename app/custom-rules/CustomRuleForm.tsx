@@ -6,6 +6,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  createCustomRule,
+  updateCustomRule,
+} from "@/app/%5Factions/_customRule/contract";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
@@ -33,6 +37,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
+import { call } from "@/lib/contract";
 import type {
   CustomRule,
   CustomRuleLink,
@@ -40,7 +45,6 @@ import type {
 } from "@/lib/db/custom-rule";
 import { randomUUID } from "@/lib/utils";
 import { getCustomRuleUrl } from "@/lib/utils/url";
-import { createCustomRuleAction, updateCustomRuleAction } from "./actions";
 import { CustomRuleBody } from "./CustomRuleBody";
 
 interface RuleLinkRow extends CustomRuleLink {
@@ -134,14 +138,17 @@ export function CustomRuleForm({
         .filter((link) => link.ruleSlug)
         .map(({ ruleSlug, relation }) => ({ ruleSlug, relation })),
     };
-    const result = isCreating
-      ? await createCustomRuleAction(payload)
-      : await updateCustomRuleAction(rule.id, payload);
-
-    if (result.success) {
-      router.push(getCustomRuleUrl(result.rule));
-    } else {
-      form.setError("root", { message: result.error });
+    try {
+      const result = isCreating
+        ? await call(createCustomRule, payload)
+        : await call(updateCustomRule, { id: rule.id, input: payload });
+      router.push(getCustomRuleUrl(result));
+      router.refresh();
+    } catch (error) {
+      form.setError("root", {
+        message:
+          error instanceof Error ? error.message : "Failed to save custom rule",
+      });
     }
   };
 

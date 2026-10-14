@@ -439,7 +439,7 @@ contract compatibility window that a future migration must preserve.
 | Adventure statblock picker | Complete | Hardened internal search route; private cache isolation and date revival covered |
 | Adventure image operations | Complete | Hardened upload and delete route handlers |
 | Core content builders | Complete | Monster, hazard, item, encounter, and collection create/update use stable `/_actions` JSON routes |
-| Character-option builders | Partially complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9), [subclass create/update](https://ampcode.com/threads/T-01a131de-6489-707c-8e6c-58bb0194dc05), [companion create/update](https://ampcode.com/threads/T-01a13403-bbd1-768c-bf19-0288a298516d), [family create/update](https://ampcode.com/threads/T-01a13516-5c8e-72bf-bf74-c2dc2fe983e6), and [spell-school create/update](https://ampcode.com/threads/T-01a13629-09df-7764-a771-a0a9c46381aa) complete; custom-rule saves remain in Wave 1 |
+| Character-option builders | Complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9), [subclass create/update](https://ampcode.com/threads/T-01a131de-6489-707c-8e6c-58bb0194dc05), [companion create/update](https://ampcode.com/threads/T-01a13403-bbd1-768c-bf19-0288a298516d), [family create/update](https://ampcode.com/threads/T-01a13516-5c8e-72bf-bf74-c2dc2fe983e6), [spell-school create/update](https://ampcode.com/threads/T-01a13629-09df-7764-a771-a0a9c46381aa), and [custom-rule create/update](https://ampcode.com/threads/T-01a1384e-59c8-716d-8cb2-6133f8114ab2) complete |
 | Drafts | Not started | Wave 1 |
 | Deletes and relationship writes | Not started | Wave 2 |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
@@ -650,3 +650,29 @@ contract compatibility window that a future migration must preserve.
 - Retain both URLs and accepted request/response shapes for at least one full
   deployment interval. Pre-cutover tabs need the existing refresh/retry path.
   Custom-rule saves are the next bounded Wave 1 slice.
+
+### Custom-rule saves — October 2026
+
+- `CustomRuleForm`, the sole create/update caller, uses typed JSON POSTs to
+  `/_actions/createCustomRule` (201) and `/_actions/updateCustomRule` (200),
+  returning only `{ id, name }`. Existing database operations retain
+  session-derived ownership, transactional writes and official-rule link
+  normalization, validation and replacement. Missing/non-owned updates return
+  404; unknown official-rule links return actionable 422 errors before writes.
+- Runtime schemas validate every editor field, link relation and update UUID;
+  untrusted owner identity is stripped. Exact-origin/JSON enforcement and
+  telemetry-safe generic failures use the shared internal boundary without CORS.
+  Existing list/detail revalidation remains; canonical navigation explicitly
+  refreshes. Pending controls, retained input, one inline error and manual retry
+  work for HTTP and network failures without automatically repeating creates.
+- Removed `createCustomRuleAction` and `updateCustomRuleAction` from
+  `app/custom-rules/actions.ts`; delete remains for Wave 2. Application ratchet:
+  **98 → 96** exports; repository markers and public APIs are unchanged.
+- Route-boundary and real-form transport tests cover both stable URLs without
+  `next-action`, validation/auth/ownership, safe failures and fresh navigation.
+  Live authenticated HTTP and browser QA cover both saves, persisted text and
+  link replacement, navigation/full reload and failure input retention/retry.
+  Test-owned rules, links and users are removed after verification.
+- Retain both URLs and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs need the existing refresh/retry path.
+  Class draft save/load/delete is the next bounded Wave 1 slice.
