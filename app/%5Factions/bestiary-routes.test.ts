@@ -8,6 +8,8 @@ const {
   mockAuth,
   mockCreateHazard,
   mockCreateMonster,
+  mockDeleteHazard,
+  mockDeleteMonster,
   mockRevalidatePath,
   mockTelemetryErrors,
   mockUpdateHazard,
@@ -16,6 +18,8 @@ const {
   mockAuth: vi.fn(),
   mockCreateHazard: vi.fn(),
   mockCreateMonster: vi.fn(),
+  mockDeleteHazard: vi.fn(),
+  mockDeleteMonster: vi.fn(),
   mockRevalidatePath: vi.fn(),
   mockTelemetryErrors: vi.fn(),
   mockUpdateHazard: vi.fn(),
@@ -25,11 +29,13 @@ const {
 vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
 vi.mock("@/lib/services/hazards", () => ({
   createHazard: mockCreateHazard,
+  deleteHazard: mockDeleteHazard,
   updateHazard: mockUpdateHazard,
 }));
 vi.mock("@/lib/services/monsters", () => ({
   monstersService: {
     createMonster: mockCreateMonster,
+    deleteMonster: mockDeleteMonster,
     updateMonster: mockUpdateMonster,
   },
 }));
@@ -51,6 +57,7 @@ vi.mock("@opentelemetry/api", () => ({
 }));
 
 import { POST as createPost } from "./createBestiaryEntry/route";
+import { POST as deletePost } from "./deleteBestiaryEntry/route";
 import { POST as updatePost } from "./updateBestiaryEntry/route";
 
 const id = "22222222-2222-2222-2222-222222222222";
@@ -254,5 +261,83 @@ describe("bestiary mutation routes", () => {
     expect(response.status).toBe(500);
     expect(await response.json()).toEqual({ error: "Internal Server Error" });
     expect(mockTelemetryErrors).toHaveBeenCalledWith(error);
+  });
+});
+
+describe.each(["monster", "hazard"])("delete %s route", (kind) => {
+  const service = kind === "monster" ? mockDeleteMonster : mockDeleteHazard;
+  const section = kind === "monster" ? "monsters" : "hazards";
+
+  it("deletes only for the session owner and refreshes lists/detail", async () => {
+    service.mockResolvedValue(true);
+    const response = await deletePost(
+      request({ id, kind, discordId: "attacker" })
+    );
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toContain("application/json");
+    expect(response.headers.has("access-control-allow-origin")).toBe(false);
+    expect(await response.json()).toEqual({ success: true });
+    expect(service).toHaveBeenCalledWith(id, "discord-owner");
+    expect(mockRevalidatePath.mock.calls).toEqual([
+      [`/my/${section}`],
+      [`/${section}`],
+      [`/${section}/[id]`, "page"],
+    ]);
+  });
+
+  it("hides missing, non-owned and wrong-kind records as 404", async () => {
+    service.mockResolvedValue(false);
+    const response = await deletePost(request({ id, kind }));
+    expect(response.status).toBe(404);
+    expect(await response.json()).toEqual({
+      error: "Bestiary entry not found",
+    });
+    expect(mockRevalidatePath).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    null,
+    { user: { id: "owner", discordId: "" } },
+  ])("requires a full session", async (userSession) => {
+    mockAuth.mockResolvedValue(userSession);
+    const response = await deletePost(request({ id, kind }));
+    expect(response.status).toBe(401);
+    expect(service).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    "{broken",
+    { id: "bad", kind },
+    { id, kind: "item" },
+  ])("rejects malformed input", async (body) => {
+    const response = await deletePost(request(body));
+    expect(response.status).toBe(400);
+    expect(service).not.toHaveBeenCalled();
+  });
+
+  it("rejects origin and media mismatches before authentication", async () => {
+    expect(
+      (await deletePost(request({ id, kind }, { origin: "https://evil.test" })))
+        .status
+    ).toBe(403);
+    expect(
+      (
+        await deletePost(
+          request({ id, kind }, { "content-type": "text/plain" })
+        )
+      ).status
+    ).toBe(415);
+    expect(mockAuth).not.toHaveBeenCalled();
+    expect(service).not.toHaveBeenCalled();
+  });
+
+  it("records unexpected failures without leaking storage details", async () => {
+    const error = new Error("SQLITE_BUSY secret");
+    service.mockRejectedValue(error);
+    const response = await deletePost(request({ id, kind }));
+    expect(response.status).toBe(500);
+    expect(await response.json()).toEqual({ error: "Internal Server Error" });
+    expect(mockTelemetryErrors).toHaveBeenCalledWith(error);
+    expect(mockRevalidatePath).not.toHaveBeenCalled();
   });
 });

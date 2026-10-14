@@ -1,10 +1,10 @@
 "use client";
 import { Shuffle } from "lucide-react";
 import Link from "next/link";
-import { deleteMonster } from "@/app/actions/monster";
-import { deleteHazard } from "@/app/monsters/actions";
+import { deleteBestiaryEntry } from "@/app/%5Factions/deleteBestiaryEntry/contract";
 import { EntityDetailActions } from "@/components/EntityDetailActions";
 import { Button } from "@/components/ui/button";
+import { call } from "@/lib/contract";
 import type { MonsterFormState } from "@/lib/services/monsters";
 import { slugify } from "@/lib/utils/slug";
 import { getMonsterEditUrl } from "@/lib/utils/url";
@@ -26,9 +26,22 @@ export function MonsterDetailActions({
     <EntityDetailActions
       isOwner={isOwner}
       editUrl={getMonsterEditUrl(monster)}
-      onDelete={() =>
-        monster.hazard ? deleteHazard(monster.id) : deleteMonster(monster.id)
-      }
+      onDelete={async () => {
+        try {
+          return await call(deleteBestiaryEntry, {
+            id: monster.id,
+            kind: monster.hazard ? "hazard" : "monster",
+          });
+        } catch (error) {
+          return {
+            success: false,
+            error:
+              error instanceof Error
+                ? error.message
+                : "Could not delete the entry. Please try again.",
+          };
+        }
+      }}
       redirectTo={monster.hazard ? "/my/hazards" : "/my/monsters"}
       entityType="monster"
       entityId={monster.id}

@@ -441,7 +441,7 @@ contract compatibility window that a future migration must preserve.
 | Core content builders | Complete | Monster, hazard, item, encounter, and collection create/update use stable `/_actions` JSON routes |
 | Character-option builders | Complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9), [subclass create/update](https://ampcode.com/threads/T-01a131de-6489-707c-8e6c-58bb0194dc05), [companion create/update](https://ampcode.com/threads/T-01a13403-bbd1-768c-bf19-0288a298516d), [family create/update](https://ampcode.com/threads/T-01a13516-5c8e-72bf-bf74-c2dc2fe983e6), [spell-school create/update](https://ampcode.com/threads/T-01a13629-09df-7764-a771-a0a9c46381aa), and [custom-rule create/update](https://ampcode.com/threads/T-01a1384e-59c8-716d-8cb2-6133f8114ab2) complete |
 | Drafts | Complete | Class/subclass draft save/load/delete use stable `/_actions/classDraft` GET/POST/DELETE |
-| Deletes and relationship writes | Not started | Wave 2 |
+| Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6) complete; remaining entity deletes and relationships are Wave 2 |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
 | Public browser reads | Not started | Wave 3; prefer existing JSON:API |
 | Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
@@ -714,3 +714,34 @@ contract compatibility window that a future migration must preserve.
 - Retain the URL, methods and accepted shapes for at least one full deployment
   interval. Pre-cutover tabs require the existing refresh/retry path. Wave 1 is
   complete; entity deletes are the next bounded Wave 2 slice.
+
+### Monster and hazard deletion — October 2026
+
+- `MonsterDetailActions`, the sole browser caller for both kinds, uses typed
+  JSON POSTs to `/_actions/deleteBestiaryEntry` with `{ id: UUID, kind:
+  "monster" | "hazard" }`, returning 200 `{ success: true }`. The existing
+  service/repository deletes only when ID, session-derived owner and stored
+  kind all match. Missing, non-owned, wrong-kind and already-deleted entries
+  return 404; a client-supplied Discord identity is ignored.
+- UUID/kind validation, exact-origin/JSON enforcement and safe unexpected 500s
+  use the shared internal boundary. Telemetry records resource/user identifiers
+  and deletion results. Owner-list invalidation is preserved and applied to
+  hazards too; public lists and the matching detail page are also invalidated.
+  Existing database cascades and search-index triggers are unchanged.
+- The shared detail UI retains owner-only controls, permanent-delete confirmation,
+  pending disable and the correct owner-list navigation. HTTP/network failures
+  use its existing single error alert and re-enable manual retry without automatic
+  requests. Other entity deletion callers and the public API are unchanged.
+- Removed `deleteMonster` from `app/actions/monster.ts` and `deleteHazard` from
+  `app/monsters/actions.ts`. Application ratchet: **93 → 91** exports; remaining
+  read exports and repository markers are unchanged.
+- Route-boundary and real-detail UI transport tests cover both kinds, stable
+  URLs without `next-action`, auth, ownership outcomes, validation, safe failures,
+  invalidation, confirmation, pending/error and retry. Live authenticated HTTP
+  checks verify deletions persist, rejected requests retain data, search entries
+  disappear and repeated deletes return 404. Browser QA covers both detail routes,
+  cancellation, failure/retry, owner-list navigation and full reload. Test-owned
+  copies of existing content and users are cleaned up after verification.
+- Retain this URL and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs still need the existing refresh/retry
+  path. Item deletion is the next bounded Wave 2 slice.

@@ -1,11 +1,7 @@
 "use server";
 
-import { SpanStatusCode, trace } from "@opentelemetry/api";
-import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { monstersService, type TypeFilter } from "@/lib/services/monsters";
-
-const tracer = trace.getTracer("monster-actions");
 
 export async function findPublicMonster(id: string) {
   const session = await auth();
@@ -35,61 +31,4 @@ export async function searchPublicMonsters(params: {
   } catch (_error) {
     return { success: false, error: "Failed to search monsters" };
   }
-}
-
-export async function deleteMonster(monsterId: string) {
-  return tracer.startActiveSpan("deleteMonster", async (span) => {
-    span.setAttribute("monster.id", monsterId);
-
-    try {
-      const session = await auth();
-      if (!session?.user?.id) {
-        span.setAttribute("delete.result", "unauthenticated");
-        span.end();
-        return { success: false, error: "Not authenticated" };
-      }
-      span.setAttribute("user.id", session.user.id);
-
-      const deleted = await monstersService.deleteMonster(
-        monsterId,
-        session.user.discordId
-      );
-
-      span.setAttribute("delete.rows_affected", deleted ? 1 : 0);
-
-      if (deleted) {
-        span.setAttribute("delete.result", "success");
-        span.end();
-        revalidatePath("/my/monsters");
-        return { success: true, error: null };
-      }
-
-      span.setAttribute("delete.result", "not_found");
-      span.setStatus({
-        code: SpanStatusCode.ERROR,
-        message: "Delete affected 0 rows",
-      });
-      span.end();
-      return {
-        success: false,
-        error: "Could not delete the monster. Please try again.",
-      };
-    } catch (error) {
-      span.setAttribute("delete.result", "error");
-      if (error instanceof Error) {
-        span.recordException(error);
-      }
-      span.setStatus({
-        code: SpanStatusCode.ERROR,
-        message:
-          error instanceof Error ? error.message : "Unknown error occurred",
-      });
-      span.end();
-      return {
-        success: false,
-        error:
-          error instanceof Error ? error.message : "Unknown error occurred",
-      };
-    }
-  });
 }
