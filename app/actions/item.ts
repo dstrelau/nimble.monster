@@ -1,7 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth";
 import { itemsService } from "@/lib/services/items";
 
 // export async function searchPublicItems(params: {
@@ -82,22 +80,4 @@ export async function findPublicItem(itemId: string) {
       item: null,
     };
   }
-}
-
-export async function deleteItem(itemId: string) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return { success: false, error: "Not authenticated" };
-  }
-
-  const deleted = await itemsService.deleteItem(itemId, session.user.discordId);
-
-  if (deleted) {
-    revalidatePath("/my/items");
-    return { success: true, error: null };
-  }
-  return {
-    success: false,
-    error: "Could not delete the item. Please try again.",
-  };
 }
