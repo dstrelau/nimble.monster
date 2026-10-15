@@ -1,11 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth";
-import {
-  deleteBackground as deleteBackgroundRepo,
-  findBackground,
-} from "@/lib/services/backgrounds";
+import { findBackground } from "@/lib/services/backgrounds";
 
 export async function findPublicBackground(backgroundId: string) {
   try {
@@ -26,25 +21,4 @@ export async function findPublicBackground(backgroundId: string) {
       background: null,
     };
   }
-}
-
-export async function deleteBackground(backgroundId: string) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return { success: false, error: "Not authenticated" };
-  }
-
-  const deleted = await deleteBackgroundRepo(
-    backgroundId,
-    session.user.discordId
-  );
-
-  if (deleted) {
-    revalidatePath("/my/backgrounds");
-    return { success: true, error: null };
-  }
-  return {
-    success: false,
-    error: "Could not delete the background. Please try again.",
-  };
 }
