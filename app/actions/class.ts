@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 
@@ -48,25 +47,4 @@ export async function findPublicClass(classId: string) {
 
 export async function listPublicClassesAction() {
   return db.listPublicClasses();
-}
-
-export async function deleteClass(classId: string) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return { success: false, error: "Not authenticated" };
-  }
-
-  const deleted = await db.deleteClass({
-    id: classId,
-    discordId: session.user.discordId,
-  });
-
-  if (deleted) {
-    revalidatePath("/my/classes");
-    return { success: true, error: null };
-  }
-  return {
-    success: false,
-    error: "Could not delete the class. Please try again.",
-  };
 }

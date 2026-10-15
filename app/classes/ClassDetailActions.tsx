@@ -1,6 +1,8 @@
 "use client";
-import { deleteClass } from "@/app/actions/class";
+import { useRouter } from "next/navigation";
+import { deleteClass } from "@/app/%5Factions/deleteClass/contract";
 import { EntityDetailActions } from "@/components/EntityDetailActions";
+import { call } from "@/lib/contract";
 import type { Class } from "@/lib/types";
 import { getClassEditUrl } from "@/lib/utils/url";
 
@@ -13,6 +15,7 @@ export function ClassDetailActions({
   classEntity,
   isOwner,
 }: ClassDetailActionsProps) {
+  const router = useRouter();
   if (!classEntity?.id) {
     return null;
   }
@@ -21,7 +24,21 @@ export function ClassDetailActions({
     <EntityDetailActions
       isOwner={isOwner}
       editUrl={getClassEditUrl(classEntity)}
-      onDelete={() => deleteClass(classEntity.id)}
+      onDelete={async () => {
+        try {
+          const result = await call(deleteClass, { id: classEntity.id });
+          router.refresh();
+          return result;
+        } catch (error) {
+          return {
+            success: false,
+            error:
+              error instanceof Error
+                ? error.message
+                : "Could not delete the class. Please try again.",
+          };
+        }
+      }}
       redirectTo="/my/classes"
       entityType="class"
       entityId={classEntity.id}
