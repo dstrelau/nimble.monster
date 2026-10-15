@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mockAuth } = vi.hoisted(() => ({ mockAuth: vi.fn() }));
 const {
-  mockDeleteCollection,
   mockListCollectionsWithMonstersForUser,
   mockGetCollection,
   mockAddMonsterToCollection,
@@ -13,7 +12,6 @@ const {
   mockAddBackgroundToCollection,
   mockAddSubclassToCollection,
 } = vi.hoisted(() => ({
-  mockDeleteCollection: vi.fn(),
   mockListCollectionsWithMonstersForUser: vi.fn(),
   mockGetCollection: vi.fn(),
   mockAddMonsterToCollection: vi.fn(),
@@ -23,10 +21,6 @@ const {
   mockAddAncestryToCollection: vi.fn(),
   mockAddBackgroundToCollection: vi.fn(),
   mockAddSubclassToCollection: vi.fn(),
-}));
-
-const { mockRevalidatePath } = vi.hoisted(() => ({
-  mockRevalidatePath: vi.fn(),
 }));
 
 // Mock for entity accessibility checks (getDatabase returns a chainable query builder)
@@ -48,7 +42,6 @@ const { mockGetDatabase, mockEntityAccessibleResult } = vi.hoisted(() => {
 });
 
 vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
-vi.mock("next/cache", () => ({ revalidatePath: mockRevalidatePath }));
 vi.mock("@/lib/db/drizzle", () => ({ getDatabase: mockGetDatabase }));
 vi.mock("@/lib/db/schema", () => ({
   monsters: { id: "m.id", visibility: "m.vis", userId: "m.uid" },
@@ -77,7 +70,6 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock("@/lib/db", () => ({
-  deleteCollection: mockDeleteCollection,
   listCollectionsWithMonstersForUser: mockListCollectionsWithMonstersForUser,
   getCollection: mockGetCollection,
   addMonsterToCollection: mockAddMonsterToCollection,
@@ -107,7 +99,6 @@ import {
   addMonsterToCollection,
   addSpellSchoolToCollection,
   addSubclassToCollection,
-  deleteCollection,
   listOwnCollections,
 } from "./collection";
 
@@ -129,54 +120,6 @@ const OTHER_COLLECTION = {
   name: "Other Collection",
   creator: { id: "other-uuid", discordId: "discord-other" },
 };
-
-describe("deleteCollection", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("returns error when unauthenticated", async () => {
-    mockAuth.mockResolvedValue(null);
-    const result = await deleteCollection("col-1");
-    expect(result).toEqual({ success: false, error: "Not authenticated" });
-    expect(mockDeleteCollection).not.toHaveBeenCalled();
-  });
-
-  it("deletes and revalidates on success", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockDeleteCollection.mockResolvedValue(true);
-    const result = await deleteCollection("col-1");
-    expect(result).toEqual({ success: true, error: null });
-    expect(mockDeleteCollection).toHaveBeenCalledWith({
-      id: "col-1",
-      discordId: "discord-123",
-    });
-    expect(mockRevalidatePath).toHaveBeenCalledWith("/my/collections");
-  });
-
-  it("returns error when db returns false", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockDeleteCollection.mockResolvedValue(false);
-    const result = await deleteCollection("col-1");
-    expect(result.success).toBe(false);
-  });
-
-  it("handles foreign key constraint error", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockDeleteCollection.mockRejectedValue(
-      new Error("SQLITE_CONSTRAINT: foreign key constraint failed")
-    );
-    const result = await deleteCollection("col-1");
-    expect(result.success).toBe(false);
-    expect(result.error).toContain("monsters associated");
-  });
-
-  it("handles generic error", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockDeleteCollection.mockRejectedValue(new Error("connection failed"));
-    const result = await deleteCollection("col-1");
-    expect(result.success).toBe(false);
-    expect(result.error).toContain("error occurred");
-  });
-});
 
 describe("listOwnCollections", () => {
   beforeEach(() => vi.clearAllMocks());

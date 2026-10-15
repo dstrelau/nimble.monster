@@ -441,7 +441,7 @@ contract compatibility window that a future migration must preserve.
 | Core content builders | Complete | Monster, hazard, item, encounter, and collection create/update use stable `/_actions` JSON routes |
 | Character-option builders | Complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9), [subclass create/update](https://ampcode.com/threads/T-01a131de-6489-707c-8e6c-58bb0194dc05), [companion create/update](https://ampcode.com/threads/T-01a13403-bbd1-768c-bf19-0288a298516d), [family create/update](https://ampcode.com/threads/T-01a13516-5c8e-72bf-bf74-c2dc2fe983e6), [spell-school create/update](https://ampcode.com/threads/T-01a13629-09df-7764-a771-a0a9c46381aa), and [custom-rule create/update](https://ampcode.com/threads/T-01a1384e-59c8-716d-8cb2-6133f8114ab2) complete |
 | Drafts | Complete | Class/subclass draft save/load/delete use stable `/_actions/classDraft` GET/POST/DELETE |
-| Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6), [item deletion](https://ampcode.com/threads/T-01a13c98-fff1-70db-8069-f73ee3f1805b) and [encounter deletion](https://ampcode.com/threads/T-01a13dab-a15d-7443-94f8-d96e9f856073) complete; remaining entity deletes and relationships are Wave 2 |
+| Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6), [item deletion](https://ampcode.com/threads/T-01a13c98-fff1-70db-8069-f73ee3f1805b), [encounter deletion](https://ampcode.com/threads/T-01a13dab-a15d-7443-94f8-d96e9f856073), and [collection deletion](https://ampcode.com/threads/T-01a13ebe-4c4c-7488-b3e4-cc6d709ec057) complete; remaining entity deletes and relationships are Wave 2 |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
 | Public browser reads | Not started | Wave 3; prefer existing JSON:API |
 | Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
@@ -808,3 +808,34 @@ contract compatibility window that a future migration must preserve.
 - Retain this URL and accepted shapes for at least one full deployment interval.
   Pre-cutover tabs still need the existing refresh/retry path. Collection deletion
   is the next bounded Wave 2 slice.
+
+### Collection deletion — October 2026
+
+- `CollectionHeader`, the only browser caller, uses a typed JSON POST to
+  `/_actions/deleteCollection` with `{ id: UUID }`, returning 200 `{ success: true }`.
+  The existing database operation deletes only when the ID and session-derived
+  owner match. Missing, non-owned and already-deleted collections return 404;
+  submitted owner identity is ignored. Membership cascades remain unchanged;
+  member entities are not deleted. No public API or repository boundary changed.
+- Runtime UUID validation, exact-origin/JSON enforcement, telemetry and generic
+  unexpected 500s use the shared internal boundary without CORS. The existing
+  recognized foreign-key conflict remains actionable as 409. Owner-list
+  invalidation remains; public-list and detail invalidation plus explicit refresh
+  keep post-delete navigation fresh without a Flight mutation response.
+- Owner-only controls, confirmation and `/my/collections` navigation remain.
+  Delete is disabled while pending. HTTP/network errors show one actionable
+  alert, retain the detail and enable manual retry without automatic requests.
+- Removed `deleteCollection` from `app/actions/collection.ts` and its action-only
+  tests; list/member actions remain. Application ratchet: **89 → 88** exports;
+  repository markers are unchanged.
+- Route-boundary and real-header transport tests cover stable URL/no `next-action`,
+  auth, ownership, validation, conflict, safe failures, invalidation and pending/error
+  UX. Live authenticated requests verify rejected-request retention, persisted
+  deletion, membership removal, detail 404 and repeated-delete 404. Browser QA
+  covers cancellation, failure/manual retry, pending controls, navigation and
+  full reload. Disposable users/collections/memberships are removed and their
+  absence verified. Production QA uses short-lived sessions for disposable
+  non-admin users, never a development-login bypass or real-user content.
+- Retain this URL and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs still need the existing refresh/retry
+  path. Ancestry deletion is the next bounded Wave 2 slice.

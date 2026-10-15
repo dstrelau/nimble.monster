@@ -1,7 +1,6 @@
 "use server";
 
 import { and, eq, or } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 import { forbidden, unauthorized } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
@@ -16,46 +15,6 @@ import {
   spellSchools,
   subclasses,
 } from "@/lib/db/schema";
-
-export async function deleteCollection(collectionId: string) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const deleted = await db.deleteCollection({
-      id: collectionId,
-      discordId: session.user.discordId,
-    });
-
-    if (deleted) {
-      revalidatePath("/my/collections");
-      return { success: true, error: null };
-    }
-    return {
-      success: false,
-      error: "Could not delete the collection. Please try again.",
-    };
-  } catch (error) {
-    // Handle specific database errors
-    const errorMessage = error instanceof Error ? error.message : "";
-
-    if (errorMessage.includes("foreign key constraint")) {
-      return {
-        success: false,
-        error:
-          "Cannot delete this collection because it has monsters associated with it.",
-      };
-    }
-
-    return {
-      success: false,
-      error:
-        "An error occurred while deleting the collection. Please try again later.",
-    };
-  }
-}
 
 export async function listOwnCollections() {
   const session = await auth();

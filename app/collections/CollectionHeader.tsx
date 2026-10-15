@@ -3,7 +3,7 @@ import { Pencil, Share, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteCollection } from "@/app/actions/collection";
+import { deleteCollection } from "@/app/%5Factions/deleteCollection/contract";
 import { EntityReactions } from "@/components/EntityReactions";
 import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { call } from "@/lib/contract";
 import type { Collection, Condition } from "@/lib/types";
 import { getCollectionEditUrl, getCollectionExportUrl } from "@/lib/utils/url";
 
@@ -32,7 +33,7 @@ export function CollectionHeader({
 }: CollectionHeaderProps) {
   const router = useRouter();
 
-  const [_isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDelete = async () => {
@@ -43,16 +44,15 @@ export function CollectionHeader({
     setIsDeleting(true);
 
     try {
-      const result = await deleteCollection(collection.id);
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to delete collection");
-      }
-
+      await call(deleteCollection, { id: collection.id });
       router.push("/my/collections");
+      router.refresh();
     } catch (error) {
-      console.error("Error deleting collection:", error);
-      alert("Failed to delete collection. Please try again.");
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to delete collection. Please try again."
+      );
       setIsDeleting(false);
     }
   };
@@ -124,7 +124,12 @@ export function CollectionHeader({
                     Edit
                   </Link>
                 </Button>
-                <Button variant="outline" size="sm" onClick={handleDelete}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
                   <Trash2 className="w-4 h-4" />
                   Delete
                 </Button>
