@@ -10,6 +10,7 @@ import type {
   Monster,
   MonsterSize,
 } from "@/lib/services/monsters";
+import type { AttackMetadata } from "@/lib/types/attack";
 
 export const CollectionVisibility = {
   PUBLIC: "public",
@@ -120,13 +121,13 @@ export interface Condition {
   official: boolean;
 }
 
-export interface Ability {
+export interface Ability extends AttackMetadata {
   id: string;
   name: string;
   description: string;
 }
 
-export interface Action {
+export interface Action extends AttackMetadata {
   id: string;
   name: string;
   damage?: string;

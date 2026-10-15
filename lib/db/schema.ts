@@ -8,6 +8,7 @@ import {
   text,
   unique,
 } from "drizzle-orm/sqlite-core";
+import type { Ability, Action } from "@/lib/types";
 
 // Enum value types (stored as text in SQLite)
 export type ArmorType = "" | "medium" | "heavy";
@@ -243,8 +244,14 @@ export const monsters = sqliteTable(
     speed: integer("speed").notNull().default(0),
     fly: integer("fly").notNull().default(0),
     swim: integer("swim").notNull().default(0),
-    actions: text("actions", { mode: "json" }).notNull().default("[]"),
-    abilities: text("abilities", { mode: "json" }).notNull().default("[]"),
+    actions: text("actions", { mode: "json" })
+      .$type<Omit<Action, "id">[]>()
+      .notNull()
+      .default(sql`'[]'`),
+    abilities: text("abilities", { mode: "json" })
+      .$type<Omit<Ability, "id">[]>()
+      .notNull()
+      .default(sql`'[]'`),
     // Team ("legendary duo") members. Null/empty for ordinary monsters; a
     // non-empty array marks this stat block as a team of 2+ creatures, each
     // holding its own hp/armor/saves/size/abilities/actions.

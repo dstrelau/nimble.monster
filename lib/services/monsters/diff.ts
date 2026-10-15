@@ -1,4 +1,5 @@
 import type { Ability, Action } from "@/lib/types";
+import { attackMetadataSchema } from "@/lib/types/attack";
 import type { Monster } from "./types";
 
 export type DiffStatus = "new" | "updated" | "unchanged";
@@ -31,7 +32,9 @@ function compareAbilities(uploaded: Ability[], existing: Ability[]): boolean {
   return sortedUploaded.every(
     (u, i) =>
       u.name === sortedExisting[i].name &&
-      u.description === sortedExisting[i].description
+      u.description === sortedExisting[i].description &&
+      JSON.stringify(attackMetadataSchema.parse(u)) ===
+        JSON.stringify(attackMetadataSchema.parse(sortedExisting[i]))
   );
 }
 
@@ -51,7 +54,9 @@ function compareActions(uploaded: Action[], existing: Action[]): boolean {
       u.name === e.name &&
       (u.description ?? "") === (e.description ?? "") &&
       (u.damage ?? "") === (e.damage ?? "") &&
-      (u.range ?? "") === (e.range ?? "")
+      (u.range ?? "") === (e.range ?? "") &&
+      JSON.stringify(attackMetadataSchema.parse(u)) ===
+        JSON.stringify(attackMetadataSchema.parse(e))
     );
   });
 }

@@ -1,6 +1,7 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { TROLL_HUNTER } from "@/app/dev/monster-card/fixtures";
+import { AbilityOverlay } from "./AbilityOverlay";
 import { ActionsList } from "./ActionsList";
 
 afterEach(cleanup);
@@ -53,5 +54,87 @@ describe("ActionsList", () => {
       "2d6+3. Push the target."
     );
     expect(within(action).getByText("On a crit:").tagName).toBe("STRONG");
+  });
+
+  it("labels structured counts, targets, areas and alternatives in the damage paragraph", () => {
+    const { container } = render(
+      <ActionsList
+        conditions={[]}
+        noInteractive
+        actions={[
+          {
+            id: "pudding",
+            name: "Acidic Touch",
+            damage: "1d6+6",
+            target: { reach: 2 },
+            attackCount: 2,
+          },
+          {
+            id: "worm",
+            name: "Crush",
+            damage: "d88",
+            area: { shape: "line", size: 4 },
+          },
+          {
+            id: "goblin",
+            name: "Stab",
+            damage: "1d6",
+            alternative: { name: "Shoot", target: { range: 8 } },
+          },
+          { id: "square", name: "Blast", area: { shape: "square", size: 2 } },
+          {
+            id: "cone",
+            name: "Breath",
+            area: { shape: "cone", size: 4 },
+          },
+        ]}
+      />
+    );
+    expect(container).toHaveTextContent("Acidic Touch (2×)");
+    expect(container).toHaveTextContent("Reach 2");
+    expect(container).toHaveTextContent("(Line 4)");
+    expect(container).toHaveTextContent("or Shoot, Range 8");
+    expect(container).toHaveTextContent("2×2 AoE");
+    expect(container).toHaveTextContent("(Cone 4)");
+    expect(container).not.toHaveTextContent(/\bft\b/);
+    const paragraph = screen.getAllByRole("listitem")[0].querySelector("p");
+    expect(paragraph).toHaveTextContent("1d6+6. (Reach 2)");
+    expect(paragraph?.querySelector("[data-dice-notation]")).not.toBeNull();
+  });
+
+  it("renders passive AoE and aura while preserving legacy distance text", () => {
+    const { container } = render(
+      <>
+        <AbilityOverlay
+          conditions={[]}
+          noInteractive
+          abilities={[
+            {
+              id: "burst",
+              name: "Burst Lightning",
+              target: { reach: 1 },
+              aoe: true,
+              description: "On death, 2d8 (ignores metal armor).",
+            },
+            {
+              id: "aura",
+              name: "Terror",
+              target: { aura: 3 },
+              description: "Frightened.",
+            },
+          ]}
+        />
+        <ActionsList
+          conditions={[]}
+          noInteractive
+          actions={[{ id: "legacy", name: "Shoot", range: "8" }]}
+        />
+      </>
+    );
+    expect(container).toHaveTextContent("Reach 1, AoE");
+    expect(container).toHaveTextContent("Aura 3");
+    expect(container).toHaveTextContent("On death");
+    expect(container).toHaveTextContent("(8)");
+    expect(container).not.toHaveTextContent(/\bft\b/);
   });
 });

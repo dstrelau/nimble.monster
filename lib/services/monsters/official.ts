@@ -1,4 +1,5 @@
 import { and, eq } from "drizzle-orm";
+import { z } from "zod";
 import type { JSONAPIFamily, JSONAPIMonster } from "@/lib/api/monsters";
 import { getDatabase } from "@/lib/db/drizzle";
 import { families } from "@/lib/db/schema";
@@ -6,14 +7,28 @@ import {
   type OfficialSource,
   validateOfficialSource,
 } from "@/lib/services/validate-source";
+import { attackMetadataSchema } from "@/lib/types/attack";
 import type { CreateMonsterInput } from "./types";
 
 export const OFFICIAL_USER_ID = "00000000-0000-0000-0000-000000000000";
 
+const importedAbilitySchema = attackMetadataSchema.safeExtend({
+  name: z.string(),
+  description: z.string(),
+});
+const importedActionSchema = attackMetadataSchema.safeExtend({
+  name: z.string(),
+  description: z.string().optional(),
+  range: z.string().optional(),
+  damage: z
+    .object({ roll: z.string().optional(), kind: z.string().optional() })
+    .optional(),
+});
+
 export async function findOrCreateOfficialFamily(
   name: string,
   description: string | undefined,
-  abilities: Array<{ name: string; description: string }>
+  abilities: JSONAPIFamily["attributes"]["abilities"]
 ): Promise<string> {
   const db = await getDatabase();
 
@@ -26,6 +41,7 @@ export async function findOrCreateOfficialFamily(
     .limit(1);
 
   const abilitiesData = abilities.map((a) => ({
+    ...attackMetadataSchema.parse(a),
     name: a.name,
     description: a.description,
   }));
@@ -103,49 +119,18 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
     }
   );
 
-  const actions = attrs.actions.map(
-    (a: {
-      name: string;
-      description?: string;
-      damage?: { roll: string };
-      target?: { reach: number } | { range: number };
-    }) => {
-      const action: {
-        id: string;
-        name: string;
-        description?: string;
-        damage?: string;
-        range?: string;
-      } = {
-        id: crypto.randomUUID(),
-        name: a.name,
-      };
+  const actions = attrs.actions.map(({ damage, ...action }) => ({
+    ...action,
+    id: crypto.randomUUID(),
+    damage: damage?.roll,
+  }));
 
-      if (a.description) {
-        action.description = a.description;
-      }
-
-      if (a.damage?.roll) {
-        action.damage = a.damage.roll;
-      }
-
-      if (a.target && "reach" in a.target) {
-        action.range = `${a.target.reach}ft`;
-      } else if (a.target && "range" in a.target) {
-        action.range = `${a.target.range}ft`;
-      }
-
-      return action;
-    }
-  );
-
-  const abilities = attrs.abilities.map(
-    (a: { name: string; description: string }) => ({
-      id: crypto.randomUUID(),
-      name: a.name,
-      description: a.description,
-    })
-  );
+  const abilities = attrs.abilities.map((a) => ({
+    ...attackMetadataSchema.parse(a),
+    id: crypto.randomUUID(),
+    name: a.name,
+    description: a.description,
+  }));
 
   const levelInt =
     typeof attrs.level === "number"
@@ -254,6 +239,15 @@ export function validateOfficialMonstersJSON(data: unknown): {
         );
       }
 
+      const abilities = z
+        .array(importedAbilitySchema)
+        .safeParse(attrs.abilities);
+      if (!abilities.success) {
+        throw new Error(
+          `Invalid family at index ${index}: abilities: ${abilities.error.message}`
+        );
+      }
+
       familiesMap.set(item.id as string, item as JSONAPIFamily);
     }
   }
@@ -331,6 +325,18 @@ export function validateOfficialMonstersJSON(data: unknown): {
       throw new Error(
         `Invalid monster at index ${index} ("${attrs.name}"): missing or invalid level`
       );
+    }
+
+    for (const [field, schema] of [
+      ["actions", z.array(importedActionSchema)],
+      ["abilities", z.array(importedAbilitySchema)],
+    ] satisfies Array<[string, z.ZodType]>) {
+      const result = schema.safeParse(attrs[field]);
+      if (!result.success) {
+        throw new Error(
+          `Invalid monster at index ${index} ("${attrs.name}"): ${field}: ${result.error.message}`
+        );
+      }
     }
 
     if ("relationships" in item && item.relationships) {

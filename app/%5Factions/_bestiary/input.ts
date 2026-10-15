@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { MonsterRoleOptions, SIZES } from "@/lib/services/monsters/types";
+import { attackMetadataSchema } from "@/lib/types/attack";
 import { isValidUUID } from "@/lib/utils/validation";
 
 const uuid = z.string().refine(isValidUUID, "Invalid UUID");
 
-const actionSchema = z.object({
+const actionSchema = attackMetadataSchema.safeExtend({
   id: z.string(),
   name: z.string(),
   damage: z.string().optional(),
@@ -12,7 +13,7 @@ const actionSchema = z.object({
   description: z.string().optional(),
 });
 
-const abilitySchema = z.object({
+const abilitySchema = attackMetadataSchema.safeExtend({
   id: z.string(),
   name: z.string(),
   description: z.string(),

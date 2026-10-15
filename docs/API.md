@@ -119,6 +119,42 @@ Retrieve a single monster by ID (26-character identifier).
 Standard (non-minion) monsters may also include a `bloodied` attribute
 (`{ "description": "..." }`) when one is set; it is omitted otherwise.
 
+**Structured attacks:** Actions and abilities can carry optional combat
+metadata, also preserved on team members and family abilities:
+
+- `target`: exactly one of `{ "reach": 2 }`, `{ "range": 8 }`, or
+  `{ "aura": 3 }`. Distances use Nimble spaces, not feet.
+- `area`: `{ "shape": "square" | "cone" | "line", "size": 2 }`.
+  For a square, `size` is its side; for a cone or line, it is its length.
+  Lines are always one space wide; `width` is not accepted. For example,
+  `{ "shape": "line", "size": 4 }` displays as “Line 4”. Cones display as
+  “Cone 4” and cannot also specify a ranged target.
+- `aoe`: `true` for a printed AoE without a specified shape/size. A supplied
+  `area` and `aoe: true` are mutually exclusive; do not invent dimensions
+  when the book omits them.
+- `attackCount`: a positive integer for a printed repeated attack, such as
+  `2` for “Acidic Touch (2×)”. It is not a target count or the number of
+  different actions to choose.
+- `alternative`: `{ "name": "Shoot", "target": { "range": 8 } }` for an
+  inline alternative sharing the primary attack's damage/count. Its range
+  belongs to the alternative, not to the primary melee attack.
+
+All distances, dimensions and counts are positive integers. Damage remains
+separate from `description` (`{ "roll": "1d6+6" }` on creature actions);
+do not repeat damage, targets, areas or counts in the name/description.
+Legacy `range` strings remain supported but are not converted into structured
+targets because their original reach/range meaning is ambiguous. They are
+displayed verbatim, without appending units.
+
+```json
+{
+  "name": "Crush",
+  "damage": { "roll": "d88" },
+  "area": { "shape": "line", "size": 4 },
+  "description": "Damage on a failed DC 18 DEX save."
+}
+```
+
 **Response (hazard):**
 ```json
 {

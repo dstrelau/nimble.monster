@@ -26,6 +26,7 @@ export function CreateEditFamily({
   const [error, setError] = useState<string | null>(null);
 
   const normalizedAbilities = family.abilities.map((ability) => ({
+    ...ability,
     name: ability.name || "",
     description: ability.description || "",
   }));
@@ -51,9 +52,8 @@ export function CreateEditFamily({
     setError(null);
     startTransition(async () => {
       const abilitiesWithIds = data.abilities.map((ability) => ({
+        ...ability,
         id: ability.id ?? Math.random().toString(36).slice(2),
-        name: ability.name,
-        description: ability.description,
       }));
 
       try {
@@ -86,13 +86,17 @@ export function CreateEditFamily({
     name: watchedValues.name || family.name,
     description: watchedValues.description ?? family.description,
     abilities:
-      watchedValues.abilities
-        ?.filter((a) => a.name && a.description)
-        .map((ability) => ({
-          id: ability.id ?? Math.random().toString(36).slice(2),
-          name: ability.name ?? "",
-          description: ability.description ?? "",
-        })) ?? family.abilities,
+      watchedValues.abilities?.flatMap((ability) => {
+        const parsed = FamilySchema.shape.abilities.element.safeParse(ability);
+        return parsed.success
+          ? [
+              {
+                ...parsed.data,
+                id: parsed.data.id ?? Math.random().toString(36).slice(2),
+              },
+            ]
+          : [];
+      }) ?? family.abilities,
   };
 
   return (

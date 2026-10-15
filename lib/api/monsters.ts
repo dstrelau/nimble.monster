@@ -1,5 +1,7 @@
 import { fetchApi } from "@/lib/api";
 import type { Monster } from "@/lib/services/monsters/types";
+import type { Ability, Action } from "@/lib/types";
+import { randomUUID } from "@/lib/utils";
 
 export interface JSONAPIFamily {
   type: "families";
@@ -7,7 +9,7 @@ export interface JSONAPIFamily {
   attributes: {
     name: string;
     description?: string;
-    abilities: Array<{ name: string; description: string }>;
+    abilities: Omit<Ability, "id">[];
   };
 }
 
@@ -25,13 +27,12 @@ export interface JSONAPIMonster {
     kind?: string;
     role?: string;
     movement: Array<{ speed: number } | { mode: string; speed: number }>;
-    abilities: Array<{ name: string; description: string }>;
-    actions: Array<{
-      name: string;
-      description?: string;
-      damage?: { roll: string };
-      target?: { reach: number } | { range: number };
-    }>;
+    abilities: Omit<Ability, "id">[];
+    actions: Array<
+      Omit<Action, "id" | "damage"> & {
+        damage?: { roll?: string; kind?: string };
+      }
+    >;
     actionsInstructions: string;
     description?: string;
     mild_encounter?: string;
@@ -96,23 +97,15 @@ function parseMonster(data: JSONAPIMonster): Monster {
     }
   });
 
-  const actions = attrs.actions.map((a) => ({
-    id: crypto.randomUUID(),
-    name: a.name,
-    description: a.description,
-    damage: a.damage?.roll,
-    range:
-      a.target && "reach" in a.target
-        ? `${a.target.reach}ft`
-        : a.target && "range" in a.target
-          ? `${a.target.range}ft`
-          : undefined,
+  const actions = attrs.actions.map(({ damage, ...action }) => ({
+    ...action,
+    id: randomUUID(),
+    damage: damage?.roll,
   }));
 
   const abilities = attrs.abilities.map((a) => ({
+    ...a,
     id: crypto.randomUUID(),
-    name: a.name,
-    description: a.description,
   }));
 
   const parsedLevel = Number.parseInt(String(attrs.level), 10);

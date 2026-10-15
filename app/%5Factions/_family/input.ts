@@ -1,7 +1,8 @@
 import { z } from "zod";
+import { attackMetadataSchema } from "@/lib/types/attack";
 import { isValidUUID } from "@/lib/utils/validation";
 
-const abilitySchema = z.object({
+const abilitySchema = attackMetadataSchema.safeExtend({
   id: z.string().optional(),
   name: z.string().min(1, "Ability name is required"),
   description: z.string().min(1, "Ability description is required"),
@@ -15,7 +16,7 @@ export const FamilySchema = z.object({
 
 export const familyInputSchema = FamilySchema.extend({
   abilities: z
-    .array(abilitySchema.required())
+    .array(abilitySchema.safeExtend({ id: z.string() }))
     .min(1, "At least one ability is required"),
 });
 

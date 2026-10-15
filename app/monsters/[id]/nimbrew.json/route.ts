@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { addCorsHeaders } from "@/lib/cors";
 import { monstersService } from "@/lib/services/monsters";
 import { telemetry } from "@/lib/telemetry";
+import { formatAttackDetails, formatAttackName } from "@/lib/text";
 import { formatSizeKind } from "@/lib/utils/monster";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterUrl } from "@/lib/utils/url";
@@ -62,30 +63,38 @@ export const GET = telemetry(
       ...(monster.families?.flatMap((family) =>
         family.abilities.map((passive) => ({
           type: "single",
-          name: passive.name,
-          desc: passive.description,
+          name: formatAttackName(passive),
+          desc: [formatAttackDetails(passive), passive.description]
+            .filter(Boolean)
+            .join(" "),
         }))
       ) || []),
       ...(monster.abilities?.map((ability) => ({
         type: "single",
-        name: ability.name,
-        desc: ability.description,
+        name: formatAttackName(ability),
+        desc: [formatAttackDetails(ability), ability.description]
+          .filter(Boolean)
+          .join(" "),
       })) || []),
       // Team members expose their own passive abilities, prefixed with the
       // member name so they remain attributable in the flattened export.
       ...(monster.members?.flatMap((member) =>
         member.abilities.map((ability) => ({
           type: "single",
-          name: `${member.name}: ${ability.name}`,
-          desc: ability.description,
+          name: `${member.name}: ${formatAttackName(ability)}`,
+          desc: [formatAttackDetails(ability), ability.description]
+            .filter(Boolean)
+            .join(" "),
         }))
       ) || []),
     ];
 
     const actions = monster.actions?.map((a) => ({
       type: "single",
-      name: a.name,
-      desc: [a.damage, a.description].join(" "),
+      name: formatAttackName(a),
+      desc: [a.damage, formatAttackDetails(a), a.description]
+        .filter(Boolean)
+        .join(" "),
     }));
 
     // Each team member's actions become a "multi" group named for the member.
@@ -96,8 +105,10 @@ export const GET = telemetry(
         desc: "",
         actions: member.actions.map((a) => ({
           type: "single",
-          name: a.name,
-          desc: [a.damage, a.description].filter(Boolean).join(" "),
+          name: formatAttackName(a),
+          desc: [a.damage, formatAttackDetails(a), a.description]
+            .filter(Boolean)
+            .join(" "),
         })),
       })) || [];
 

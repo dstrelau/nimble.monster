@@ -1,6 +1,7 @@
 import { toFamilyOverview, toUser } from "@/lib/db/converters";
 import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
 import type { Ability, Action, FamilyOverview } from "@/lib/types";
+import { attackMetadataSchema } from "@/lib/types/attack";
 import { uuidToIdentifier } from "@/lib/utils/slug";
 import { parseMembers } from "./members";
 import { parseSaves } from "./saves";
@@ -252,16 +253,33 @@ const toZodMember = (member: MonsterTeamMember) => {
     armor: member.armor === "none" ? ("none" as const) : member.armor,
     size: member.size,
     saves: member.saves ? parseSaves(member.saves) : undefined,
-    abilities: member.abilities.map((a) => ({
-      name: a.name,
-      description: a.description,
-    })),
-    actions: member.actions.map((a) => ({
-      name: a.name,
-      description: [a.damage, a.description].filter(Boolean).join(". "),
-      ...(a.damage ? { damage: { roll: a.damage } } : {}),
-    })),
+    abilities: member.abilities.map(({ id, ...ability }) => ability),
+    actions: member.actions.map(toJsonApiAction),
     actionsInstructions: member.actionPreface || undefined,
+  };
+};
+
+const toJsonApiAction = (a: Action) => {
+  let target = a.target;
+  let description = a.description;
+  if (!target) {
+    const match = description?.match(/\((reach|range)\s+(\d+)\)/i);
+    if (match) {
+      const distance = Number.parseInt(match[2], 10);
+      target =
+        match[1].toLowerCase() === "reach"
+          ? { reach: distance }
+          : { range: distance };
+      description = description?.replace(match[0], "").trim();
+    }
+  }
+  return {
+    ...attackMetadataSchema.parse(a),
+    name: a.name,
+    description,
+    range: a.range,
+    ...(a.damage ? { damage: { roll: a.damage } } : {}),
+    ...(target ? { target } : {}),
   };
 };
 
@@ -274,37 +292,8 @@ export const toZodMonster = (m: Monster) => {
   if (m.burrow > 0) movement.push({ mode: "burrow", speed: m.burrow });
   if (m.teleport > 0) movement.push({ mode: "teleport", speed: m.teleport });
 
-  const abilities = m.abilities.map((a) => ({
-    description: a.description,
-    name: a.name,
-  }));
-
-  const actions = m.actions.map((a) => {
-    const action: {
-      name: string;
-      description?: string;
-      damage?: { roll: string };
-      target?: { reach: number } | { range: number };
-    } = {
-      name: a.name,
-      description: [a.damage, a.description].filter(Boolean).join(". "),
-    };
-
-    if (a.damage) {
-      action.damage = { roll: a.damage };
-    }
-
-    const reachMatch = a.description?.match(/\(reach\s+(\d+)\)/i);
-    const rangeMatch = a.description?.match(/\(range\s+(\d+)\)/i);
-
-    if (reachMatch) {
-      action.target = { reach: Number.parseInt(reachMatch[1], 10) };
-    } else if (rangeMatch) {
-      action.target = { range: Number.parseInt(rangeMatch[1], 10) };
-    }
-
-    return action;
-  });
+  const abilities = m.abilities.map(({ id, ...ability }) => ability);
+  const actions = m.actions.map(toJsonApiAction);
 
   const parsedLevel: number | "1/4" | "1/3" | "1/2" =
     m.level === "1/4" || m.level === "1/3" || m.level === "1/2"
@@ -391,15 +380,8 @@ export const toJsonApiMonster = (m: BestiaryEntry) => {
         ...(m.hp != null ? { hp: m.hp } : {}),
         level: m.level,
         levelInt: m.levelInt,
-        abilities: m.abilities.map(({ name, description }) => ({
-          name,
-          description,
-        })),
-        actions: m.actions.map(({ name, description, damage }) => ({
-          name,
-          description,
-          damage,
-        })),
+        abilities: m.abilities.map(({ id, ...ability }) => ability),
+        actions: m.actions.map(({ id, ...action }) => action),
         actionsInstructions: m.actionPreface,
         description: m.moreInfo,
       },

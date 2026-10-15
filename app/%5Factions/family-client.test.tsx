@@ -7,7 +7,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CreateEditFamily } from "@/app/families/CreateEditFamily";
-import { UNKNOWN_USER } from "@/lib/types";
+import { type FamilyOverview, UNKNOWN_USER } from "@/lib/types";
 import { getFamilyUrl } from "@/lib/utils/url";
 
 const mocks = vi.hoisted(() => ({ push: vi.fn(), refresh: vi.fn() }));
@@ -16,11 +16,20 @@ vi.mock("@/app/families/FamilyHeader", () => ({ FamilyHeader: () => null }));
 vi.mock("@/components/condition/ConditionValidationIcon", () => ({
   ConditionValidationIcon: () => null,
 }));
-const family = {
+const family: FamilyOverview = {
   id: "33333333-3333-3333-3333-333333333333",
   name: "Old name",
   description: "Old description",
-  abilities: [{ id: "old", name: "Dive", description: "Move 3 spaces" }],
+  abilities: [
+    {
+      id: "old",
+      name: "Dive",
+      description: "Move 3 spaces",
+      target: { reach: 2 },
+      area: { shape: "line", size: 6 },
+      attackCount: 2,
+    },
+  ],
   creatorId: "owner",
   creator: UNKNOWN_USER,
 };
@@ -68,9 +77,7 @@ describe.each([true, false])("family builder creating=%s", (creating) => {
     expect(input).toMatchObject({
       name: "New name",
       description: "Old description",
-      abilities: [
-        { id: expect.any(String), name: "Dive", description: "Move 3 spaces" },
-      ],
+      abilities: family.abilities,
     });
     expect(input).not.toHaveProperty("discordId");
     if (!creating) expect(body.id).toBe(family.id);

@@ -1,6 +1,6 @@
 import type React from "react";
 import { PrefixedFormattedText } from "@/components/shared/FormattedText";
-import { maybePeriod } from "@/lib/text";
+import { formatAttackDetails, formatAttackName, maybePeriod } from "@/lib/text";
 import type { Action, Condition } from "@/lib/types";
 
 interface ActionsListProps {
@@ -32,9 +32,10 @@ export const ActionsList: React.FC<ActionsListProps> = ({
               <li key={action.id}>
                 <PrefixedFormattedText
                   content={[
-                    action.description
+                    formatAttackDetails(action) || action.description
                       ? maybePeriod(action.damage)
                       : action.damage,
+                    formatAttackDetails(action),
                     action.description,
                   ]
                     .filter(Boolean)
@@ -46,13 +47,10 @@ export const ActionsList: React.FC<ActionsListProps> = ({
                       {actions.length > 1 && (
                         <span className="text-foreground">• </span>
                       )}
-                      <strong>{maybePeriod(action.name)}</strong>
+                      <strong>{maybePeriod(formatAttackName(action))}</strong>
                     </>
                   }
                 />
-                {action.range && (
-                  <span className="range">({action.range} ft)</span>
-                )}
               </li>
             )
         )}

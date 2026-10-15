@@ -1,7 +1,7 @@
 import { Users } from "lucide-react";
 import { Link } from "@/components/layout/Link";
 import { PrefixedFormattedText } from "@/components/shared/FormattedText";
-import { maybePeriod } from "@/lib/text";
+import { formatAttackDetails, formatAttackName, maybePeriod } from "@/lib/text";
 import type { Ability, Condition, FamilyOverview } from "@/lib/types";
 import { getFamilyUrl } from "@/lib/utils/url";
 import { isValidUUID } from "@/lib/utils/validation";
@@ -61,10 +61,12 @@ export const AbilityOverlay = ({
                         :{" "}
                       </>
                     )}
-                    {maybePeriod(abilityName)}
+                    {maybePeriod(formatAttackName(ability))}
                   </span>
                 }
-                content={ability.description || ""}
+                content={[formatAttackDetails(ability), ability.description]
+                  .filter(Boolean)
+                  .join(" ")}
                 conditions={conditions}
                 noInteractive={noInteractive}
               />

@@ -1,6 +1,7 @@
 import type { Item } from "@/lib/services/items";
 import type { BestiaryEntry, Hazard, Monster } from "@/lib/services/monsters";
-import type { SpellSchool } from "@/lib/types";
+import { formatAttackDetails, formatAttackName } from "@/lib/text";
+import type { Ability, Action, SpellSchool } from "@/lib/types";
 import { formatHp } from "@/lib/utils/monster";
 
 function generateStandardBriefMarkdown(monster: Monster): string {
@@ -114,7 +115,9 @@ function generateLegendaryBriefMarkdown(monster: Monster): string {
     lines.push("");
   }
   for (const ability of abilities) {
-    lines.push(`* **${ability.name.trim()}.** ${ability.description.trim()}`);
+    lines.push(
+      `* **${formatAttackName(ability).trim()}.** ${[formatAttackDetails(ability), ability.description.trim()].filter(Boolean).join(" ")}`
+    );
   }
 
   // Separator before actions
@@ -170,10 +173,8 @@ function getBriefSpeedString(monster: Monster): string {
   return movement.join(", ");
 }
 
-function getBriefAbilities(
-  monster: Monster
-): { name: string; description: string }[] {
-  const abilities: { name: string; description: string }[] = [];
+function getBriefAbilities(monster: Monster): Ability[] {
+  const abilities: Ability[] = [];
 
   for (const family of monster.families) {
     for (const ability of family.abilities) {
@@ -188,34 +189,24 @@ function getBriefAbilities(
   return abilities;
 }
 
-function generateBriefAbilities(
-  abilities: { name: string; description: string }[]
-): string {
+function generateBriefAbilities(abilities: Ability[]): string {
   const lines: string[] = ["\n**Passive**"];
 
   for (const ability of abilities) {
-    lines.push(`* **${ability.name.trim()}.** ${ability.description.trim()}`);
+    lines.push(
+      `* **${formatAttackName(ability).trim()}.** ${[formatAttackDetails(ability), ability.description.trim()].filter(Boolean).join(" ")}`
+    );
   }
 
   return lines.join("\n");
 }
 
-function formatBriefAction(action: {
-  name: string;
-  damage?: string;
-  range?: string;
-  description?: string;
-}): string {
-  let actionLine = `* **${action.name}.**`;
-
-  // Build the damage/range part
-  if (action.damage && action.range) {
-    actionLine += ` ${action.damage} (${action.range}).`;
-  } else if (action.damage) {
-    actionLine += ` ${action.damage}.`;
-  } else if (action.range) {
-    actionLine += ` (${action.range}).`;
-  }
+function formatBriefAction(action: Action): string {
+  let actionLine = `* **${formatAttackName(action)}.**`;
+  const details = [action.damage, formatAttackDetails(action)]
+    .filter(Boolean)
+    .join(" ");
+  if (details) actionLine += ` ${details}.`;
 
   if (action.description) {
     actionLine += ` ${action.description}`;
@@ -411,7 +402,9 @@ function generateAbilities(monster: BestiaryEntry): string {
           lines.push(`\n*${family.description}*`);
         }
         for (const ability of family.abilities) {
-          lines.push(`- **${ability.name}**: ${ability.description}`);
+          lines.push(
+            `- **${formatAttackName(ability)}**: ${[formatAttackDetails(ability), ability.description].filter(Boolean).join(" ")}`
+          );
         }
       }
     }
@@ -419,7 +412,9 @@ function generateAbilities(monster: BestiaryEntry): string {
 
   if (monster.abilities.length > 0) {
     for (const ability of monster.abilities) {
-      lines.push(`- **${ability.name}**: ${ability.description}`);
+      lines.push(
+        `- **${formatAttackName(ability)}**: ${[formatAttackDetails(ability), ability.description].filter(Boolean).join(" ")}`
+      );
     }
   }
 
@@ -434,11 +429,12 @@ function generateActions(monster: BestiaryEntry): string {
   }
 
   for (const action of monster.actions) {
-    let actionLine = `- **${action.name}**`;
+    let actionLine = `- **${formatAttackName(action)}**`;
 
     const details = [];
     if (action.damage) details.push(action.damage);
-    if (action.range) details.push(action.range);
+    const attackDetails = formatAttackDetails(action);
+    if (attackDetails) details.push(attackDetails.slice(1, -1));
 
     if (details.length > 0) {
       actionLine += ` (${details.join(", ")})`;
