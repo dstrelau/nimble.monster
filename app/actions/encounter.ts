@@ -1,7 +1,6 @@
 "use server";
 
 import { and, eq, or } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 import { forbidden, unauthorized } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
@@ -11,45 +10,6 @@ import {
   PUBLIC_ENCOUNTER_CONTENT_ERROR,
   UNAVAILABLE_ENCOUNTER_CONTENT_ERROR,
 } from "@/lib/encounter-privacy";
-
-export async function deleteEncounter(encounterId: string) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: "Not authenticated" };
-    }
-
-    const deleted = await db.deleteEncounter({
-      id: encounterId,
-      discordId: session.user.discordId,
-    });
-
-    if (deleted) {
-      revalidatePath("/my/encounters");
-      return { success: true, error: null };
-    }
-    return {
-      success: false,
-      error: "Could not delete the encounter. Please try again.",
-    };
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "";
-
-    if (errorMessage.includes("foreign key constraint")) {
-      return {
-        success: false,
-        error:
-          "Cannot delete this encounter because it has monsters associated with it.",
-      };
-    }
-
-    return {
-      success: false,
-      error:
-        "An error occurred while deleting the encounter. Please try again later.",
-    };
-  }
-}
 
 export async function listOwnEncounters() {
   const session = await auth();

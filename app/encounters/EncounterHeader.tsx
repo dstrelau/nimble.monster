@@ -3,12 +3,13 @@ import { Pencil, Shuffle, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteEncounter } from "@/app/actions/encounter";
+import { deleteEncounter } from "@/app/%5Factions/deleteEncounter/contract";
 import { EntityReactions } from "@/components/EntityReactions";
 import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
 import { VisibilityBadge } from "@/components/shared/VisibilityBadge";
 import { Button } from "@/components/ui/button";
+import { call } from "@/lib/contract";
 import type { Condition, Encounter } from "@/lib/types";
 import { slugify } from "@/lib/utils/slug";
 import { getEncounterEditUrl } from "@/lib/utils/url";
@@ -28,7 +29,7 @@ export function EncounterHeader({
 }: EncounterHeaderProps) {
   const router = useRouter();
 
-  const [_isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
     if (!confirm(`Are you sure you want to delete "${encounter.name}"?`)) {
@@ -38,16 +39,15 @@ export function EncounterHeader({
     setIsDeleting(true);
 
     try {
-      const result = await deleteEncounter(encounter.id);
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to delete encounter");
-      }
-
+      await call(deleteEncounter, { id: encounter.id });
       router.push("/my/encounters");
+      router.refresh();
     } catch (error) {
-      console.error("Error deleting encounter:", error);
-      alert("Failed to delete encounter. Please try again.");
+      alert(
+        error instanceof Error
+          ? `Error deleting encounter: ${error.message}`
+          : "Failed to delete encounter. Please try again."
+      );
       setIsDeleting(false);
     }
   };
@@ -79,7 +79,12 @@ export function EncounterHeader({
                     Edit
                   </Link>
                 </Button>
-                <Button variant="outline" size="sm" onClick={handleDelete}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
                   <Trash2 className="w-4 h-4" />
                   Delete
                 </Button>

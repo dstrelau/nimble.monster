@@ -1,19 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mockAuth } = vi.hoisted(() => ({ mockAuth: vi.fn() }));
-const {
-  mockDeleteEncounter,
-  mockListEncountersWithMonstersForUser,
-  mockAddMonsterToEncounter,
-} = vi.hoisted(() => ({
-  mockDeleteEncounter: vi.fn(),
-  mockListEncountersWithMonstersForUser: vi.fn(),
-  mockAddMonsterToEncounter: vi.fn(),
-}));
-
-const { mockRevalidatePath } = vi.hoisted(() => ({
-  mockRevalidatePath: vi.fn(),
-}));
+const { mockListEncountersWithMonstersForUser, mockAddMonsterToEncounter } =
+  vi.hoisted(() => ({
+    mockListEncountersWithMonstersForUser: vi.fn(),
+    mockAddMonsterToEncounter: vi.fn(),
+  }));
 
 // getDatabase returns a chainable query builder; `.limit` resolves the query.
 // addMonsterToEncounter runs two sequential queries (ownership, then
@@ -37,7 +29,6 @@ const { mockGetDatabase, mockLimit } = vi.hoisted(() => {
 });
 
 vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
-vi.mock("next/cache", () => ({ revalidatePath: mockRevalidatePath }));
 vi.mock("@/lib/db/drizzle", () => ({ getDatabase: mockGetDatabase }));
 vi.mock("@/lib/db/schema", () => ({
   encounters: { id: "e.id", creatorId: "e.creatorId" },
@@ -66,16 +57,11 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock("@/lib/db", () => ({
-  deleteEncounter: mockDeleteEncounter,
   listEncountersWithMonstersForUser: mockListEncountersWithMonstersForUser,
   addMonsterToEncounter: mockAddMonsterToEncounter,
 }));
 
-import {
-  addMonsterToEncounter,
-  deleteEncounter,
-  listOwnEncounters,
-} from "./encounter";
+import { addMonsterToEncounter, listOwnEncounters } from "./encounter";
 
 const SESSION = {
   user: {
@@ -91,54 +77,6 @@ function buildFormData(entries: Record<string, string>): FormData {
   }
   return fd;
 }
-
-describe("deleteEncounter", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("returns error when unauthenticated", async () => {
-    mockAuth.mockResolvedValue(null);
-    const result = await deleteEncounter("enc-1");
-    expect(result).toEqual({ success: false, error: "Not authenticated" });
-    expect(mockDeleteEncounter).not.toHaveBeenCalled();
-  });
-
-  it("deletes and revalidates on success", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockDeleteEncounter.mockResolvedValue(true);
-    const result = await deleteEncounter("enc-1");
-    expect(result).toEqual({ success: true, error: null });
-    expect(mockDeleteEncounter).toHaveBeenCalledWith({
-      id: "enc-1",
-      discordId: "discord-123",
-    });
-    expect(mockRevalidatePath).toHaveBeenCalledWith("/my/encounters");
-  });
-
-  it("returns error when db returns false", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockDeleteEncounter.mockResolvedValue(false);
-    const result = await deleteEncounter("enc-1");
-    expect(result.success).toBe(false);
-  });
-
-  it("handles foreign key constraint error", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockDeleteEncounter.mockRejectedValue(
-      new Error("SQLITE_CONSTRAINT: foreign key constraint failed")
-    );
-    const result = await deleteEncounter("enc-1");
-    expect(result.success).toBe(false);
-    expect(result.error).toContain("monsters associated");
-  });
-
-  it("handles generic error", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockDeleteEncounter.mockRejectedValue(new Error("connection failed"));
-    const result = await deleteEncounter("enc-1");
-    expect(result.success).toBe(false);
-    expect(result.error).toContain("error occurred");
-  });
-});
 
 describe("listOwnEncounters", () => {
   beforeEach(() => vi.clearAllMocks());
