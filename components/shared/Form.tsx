@@ -92,7 +92,11 @@ export interface FormSelectProps<T extends string> {
   name: string;
   className?: string;
   labelClassName?: string;
-  choices: ReadonlyArray<{ readonly value: T; readonly label: string }>;
+  choices: ReadonlyArray<{
+    readonly value: T;
+    readonly label: string;
+    readonly icon?: React.ComponentType<{ className?: string }>;
+  }>;
   selected: T;
   onChange: (value: T) => void;
 }
@@ -118,6 +122,7 @@ export function FormSelect<T extends string>({
         <SelectContent>
           {choices.map((choice) => (
             <SelectItem key={choice.value} value={choice.value}>
+              {choice.icon && <choice.icon className="size-4" />}
               {choice.label}
             </SelectItem>
           ))}

@@ -1,18 +1,66 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/paperforge-catalog", () => ({
-  PAPERFORGE_ENTRIES: [
+vi.mock("@/lib/paperforge-catalog", () => {
+  const entries = [
     { id: "2", name: "Goblin Archer", folder: "0002" },
     { id: "1", name: "Goblin Warrior", folder: "0001" },
-  ],
-}));
+  ];
+  return {
+    PAPERFORGE_ENTRIES: entries,
+    getPaperforgeEntry: (id: string) =>
+      entries.find((entry) => entry.id === id),
+  };
+});
 
 import { PaperforgeImageSelect } from "./PaperforgeImageSelect";
 
 afterEach(cleanup);
 
 describe("PaperforgeImageSelect", () => {
+  it("chooses and clears a portrait through a modal, preserving it on dismissal", () => {
+    function Editor() {
+      const [value, setValue] = useState<string>();
+      return (
+        <PaperforgeImageSelect portrait value={value} onChange={setValue} />
+      );
+    }
+    render(<Editor />);
+
+    expect(screen.queryByText("Image")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Choose image" }));
+    expect(
+      screen.getByRole("dialog", { name: "Choose image" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Clear image" })).toBeDisabled();
+    fireEvent.change(screen.getByRole("combobox", { name: "Search images" }), {
+      target: { value: "Warrior" },
+    });
+    expect(screen.queryByText("Goblin Archer")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("option", { name: "Goblin Warrior" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Goblin Warrior" })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Clear image" })
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /change image/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(
+      screen.getByRole("img", { name: "Goblin Warrior" })
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /change image/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Clear image" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Choose image" })
+    ).toBeInTheDocument();
+  });
+
   it("renders searchable image cards and selects an image", () => {
     const onChange = vi.fn();
     const { rerender } = render(

@@ -2,9 +2,12 @@ import { and, eq, sql } from "drizzle-orm";
 import { getDatabase } from "@/lib/db/drizzle";
 import { userFeatureFlags } from "@/lib/db/schema";
 
-export type FeatureFlag = "class-draft-autosave";
+export type FeatureFlag = "class-draft-autosave" | "monster-statblock-editor";
 
-export const FEATURE_FLAGS: readonly FeatureFlag[] = ["class-draft-autosave"];
+export const FEATURE_FLAGS: readonly FeatureFlag[] = [
+  "class-draft-autosave",
+  "monster-statblock-editor",
+];
 
 export function isFeatureFlag(value: string): value is FeatureFlag {
   return FEATURE_FLAGS.some((feature) => feature === value);

@@ -74,6 +74,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import { call } from "@/lib/contract";
 import type {
   Monster,
@@ -92,6 +93,7 @@ import { UNKNOWN_USER } from "@/lib/types";
 import { cn, levelIntToDisplay } from "@/lib/utils";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { useUserFamiliesQuery } from "../families/hooks";
+import { StatblockEditor } from "./StatblockEditor";
 
 const EXAMPLE_MONSTERS: Record<string, Omit<Monster, "creator">> = {
   goblin: {
@@ -1063,7 +1065,8 @@ const HPInput: React.FC<{
   onChange: (hp: number) => void;
   onPerHeroChange: (hpPerHero: number | null) => void;
   className?: string;
-}> = ({ monster, onChange, onPerHeroChange, className }) => {
+  compact?: boolean;
+}> = ({ monster, onChange, onPerHeroChange, className, compact = false }) => {
   const perHeroId = useId();
   const perHeroEnabled = monster.hpPerHero != null;
 
@@ -1145,6 +1148,28 @@ const HPInput: React.FC<{
       </Tooltip>
     </TooltipProvider>
   ) : null;
+
+  if (compact) {
+    return (
+      <div className={cn("space-y-2", className)}>
+        <IconFormInput
+          icon={HPIcon}
+          name="statblock-hp"
+          text={perHeroEnabled ? "HP / hero" : "HP"}
+          value={currentValue}
+          onChange={(value) =>
+            perHeroEnabled
+              ? onPerHeroChange(Math.max(0, value))
+              : onChange(value)
+          }
+        />
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          {perHeroToggle}
+          {recommendationIndicator}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("space-y-2", className)}>
@@ -1279,6 +1304,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
   const id = useId();
   const router = useRouter();
   const [confirmPrivate, setConfirmPrivate] = useState(false);
+  const statblockEditor = useFeatureFlag("monster-statblock-editor");
 
   const { data: session } = useSession();
   const creator = session?.user || UNKNOWN_USER;
@@ -1378,6 +1404,11 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
             families: data.families || [],
             sourceId: data.source?.id ?? null,
             role: data.role || null,
+            ...(statblockEditor && {
+              creatureTypes: data.creatureTypes,
+              creatureKinds: data.creatureKinds,
+              environments: data.environments,
+            }),
             paperforgeId: data.paperforgeId ?? null,
           },
         });
@@ -1476,6 +1507,105 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
 
   const isWidePreview = monster.legendary || (monster.members?.length ?? 0) > 0;
 
+  const changeVisibility = (checked: boolean) => {
+    if (
+      !checked &&
+      usedInOtherUsersEncounter &&
+      monster.id &&
+      existingMonster?.visibility === "public"
+    ) {
+      setConfirmPrivate(true);
+      return;
+    }
+    setMonster({ ...monster, visibility: checked ? "public" : "private" });
+  };
+  const visibilityConfirmation = (
+    <AlertDialog open={confirmPrivate} onOpenChange={setConfirmPrivate}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Make this {monster.hazard ? "hazard" : "monster"} private?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            After you save, it will disappear from other people’s encounters and
+            their encounter totals. Their encounters will keep their current
+            visibility. You can still use it in your own private encounters.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => setMonster({ ...monster, visibility: "private" })}
+          >
+            Make private
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+  const sourceSelect = (
+    <SourceSelect
+      source={monster.source}
+      onChange={(sourceOption) => {
+        if (sourceOption) {
+          setMonster({
+            ...monster,
+            source: {
+              ...sourceOption,
+              license: "",
+              link: "",
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          });
+        } else {
+          const { source: _, ...rest } = monster;
+          setMonster(rest);
+        }
+      }}
+    />
+  );
+
+  if (statblockEditor && !monster.hazard) {
+    return (
+      <StatblockEditor
+        monster={monster}
+        setMonster={setMonster}
+        onSubmit={handleSubmit}
+        onVisibilityChange={changeVisibility}
+        pending={mutation.isPending}
+        canSave={!!session?.user}
+        error={mutation.error?.message}
+        hpInput={
+          <HPInput
+            compact
+            monster={monster}
+            onChange={(hp) => setMonster({ ...monster, hp: Math.max(0, hp) })}
+            onPerHeroChange={(hpPerHero) =>
+              setMonster({ ...monster, hpPerHero })
+            }
+          />
+        }
+        families={<FamilySection monster={monster} setMonster={setMonster} />}
+        source={sourceSelect}
+        encounterNotes={
+          <EncounterGuidelinesFields
+            monster={monster}
+            setMonster={setMonster}
+          />
+        }
+        examples={
+          <ExampleLoader
+            examples={EXAMPLE_MONSTERS}
+            onLoadExample={loadExample}
+            className="mb-0 mr-0 [&>div]:flex-wrap"
+          />
+        }
+        visibilityConfirmation={visibilityConfirmation}
+      />
+    );
+  }
+
   return (
     <BuildView
       entityName={monster.name}
@@ -1563,26 +1693,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
             </div>
           )}
 
-          <SourceSelect
-            source={monster.source}
-            onChange={(sourceOption) => {
-              if (sourceOption) {
-                setMonster({
-                  ...monster,
-                  source: {
-                    ...sourceOption,
-                    license: "",
-                    link: "",
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                  },
-                });
-              } else {
-                const { source: _, ...rest } = monster;
-                setMonster(rest);
-              }
-            }}
-          />
+          {sourceSelect}
 
           {session?.user && (
             <>
@@ -1601,54 +1712,13 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
                       <VisibilityToggle
                         id={`public-toggle-${id}`}
                         checked={monster.visibility === "public"}
-                        onCheckedChange={(checked) => {
-                          if (
-                            !checked &&
-                            usedInOtherUsersEncounter &&
-                            monster.id &&
-                            existingMonster?.visibility === "public"
-                          ) {
-                            setConfirmPrivate(true);
-                            return;
-                          }
-                          setMonster({
-                            ...monster,
-                            visibility: checked ? "public" : "private",
-                          });
-                        }}
+                        onCheckedChange={changeVisibility}
                       />
                     </div>
                   </div>
                 </fieldset>
               </div>
-              <AlertDialog
-                open={confirmPrivate}
-                onOpenChange={setConfirmPrivate}
-              >
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Make this {monster.hazard ? "hazard" : "monster"} private?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      After you save, it will disappear from other people’s
-                      encounters and their encounter totals. Their encounters
-                      will keep their current visibility. You can still use it
-                      in your own private encounters.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() =>
-                        setMonster({ ...monster, visibility: "private" })
-                      }
-                    >
-                      Make private
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              {visibilityConfirmation}
             </>
           )}
         </form>

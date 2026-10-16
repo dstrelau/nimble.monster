@@ -51,6 +51,7 @@ afterEach(() => {
 describe("feature flags", () => {
   it("recognizes registered feature names", () => {
     expect(isFeatureFlag("class-draft-autosave")).toBe(true);
+    expect(isFeatureFlag("monster-statblock-editor")).toBe(true);
     expect(isFeatureFlag("random-tables")).toBe(false);
     expect(isFeatureFlag("unknown-feature")).toBe(false);
   });

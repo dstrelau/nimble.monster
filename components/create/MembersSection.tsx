@@ -35,7 +35,8 @@ const MemberHPInput: React.FC<{
   member: MonsterTeamMember;
   onChange: (patch: Partial<MonsterTeamMember>) => void;
   className?: string;
-}> = ({ member, onChange, className }) => {
+  compact?: boolean;
+}> = ({ member, onChange, className, compact = false }) => {
   const perHeroId = useId();
   const perHeroEnabled = member.hpPerHero != null;
 
@@ -67,7 +68,9 @@ const MemberHPInput: React.FC<{
     <div className={cn("space-y-2", className)}>
       {perHeroEnabled ? (
         <FormInput
-          name="member-hp-per-hero"
+          name={
+            compact ? `member-hp-per-hero-${member.id}` : "member-hp-per-hero"
+          }
           value={member.hpPerHero ?? 0}
           labelClassName="h-8"
           label={label}
@@ -75,7 +78,7 @@ const MemberHPInput: React.FC<{
         />
       ) : (
         <FormInput
-          name="member-hp"
+          name={compact ? `member-hp-${member.id}` : "member-hp"}
           value={member.hp}
           labelClassName="h-8"
           label={label}
@@ -89,9 +92,10 @@ const MemberHPInput: React.FC<{
 const MemberRow: React.FC<{
   member: MonsterTeamMember;
   index: number;
+  compact?: boolean;
   onChange: (member: MonsterTeamMember) => void;
   onRemove: () => void;
-}> = ({ member, index, onChange, onRemove }) => {
+}> = ({ member, index, compact = false, onChange, onRemove }) => {
   const patch = (fields: Partial<MonsterTeamMember>) =>
     onChange({ ...member, ...fields });
 
@@ -108,10 +112,15 @@ const MemberRow: React.FC<{
           Team Member
         </Button>
       </div>
-      <div className="grid grid-cols-2 gap-x-6">
+      <div
+        className={cn(
+          "grid",
+          compact ? "gap-4 grid-cols-1 sm:grid-cols-2" : "grid-cols-2 gap-x-6"
+        )}
+      >
         <FormInput
           label="Name"
-          name="member-name"
+          name={compact ? `member-name-${member.id}` : "member-name"}
           value={member.name}
           onChange={(name) => patch({ name })}
         />
@@ -120,46 +129,54 @@ const MemberRow: React.FC<{
           onChange={(paperforgeId) => patch({ paperforgeId })}
         />
       </div>
-      <div className="grid grid-cols-12 gap-x-4">
+      <div
+        className={cn(
+          "grid",
+          compact ? "gap-4 grid-cols-2 sm:grid-cols-4" : "grid-cols-12 gap-x-4"
+        )}
+      >
         <MemberHPInput
           member={member}
+          compact={compact}
           onChange={patch}
-          className="col-span-4"
+          className={cn(!compact && "col-span-4")}
         />
         <IconFormSelect
           icon={ArmorIcon}
           text="Armor"
-          name="member-armor"
+          name={compact ? `member-armor-${member.id}` : "member-armor"}
           choices={ARMORS}
           selected={member.armor}
-          className="col-span-3"
+          className={cn(!compact && "col-span-3")}
           labelClassName="h-8"
           onChange={(armor) => patch({ armor })}
         />
         <FormSelect
           label="Size"
-          name="member-size"
+          name={compact ? `member-size-${member.id}` : "member-size"}
           choices={SIZES}
           selected={member.size}
-          className="col-span-2"
+          className={cn(!compact && "col-span-2")}
           labelClassName="h-8"
           onChange={(size) => patch({ size })}
         />
         <IconFormInput
           icon={SavesIcon}
           text="Saves"
-          name="member-saves"
+          name={compact ? `member-saves-${member.id}` : "member-saves"}
           value={member.saves || ""}
-          className="col-span-3"
+          className={cn(!compact && "col-span-3")}
           labelClassName="h-8"
           onChange={(saves) => patch({ saves })}
         />
       </div>
       <AbilitiesSection
+        compact={compact}
         abilities={member.abilities}
         onChange={(abilities) => patch({ abilities })}
       />
       <ActionsSection
+        compact={compact}
         actions={member.actions}
         actionPreface={member.actionPreface || ""}
         showDamage={false}
@@ -172,11 +189,13 @@ const MemberRow: React.FC<{
 
 interface MembersSectionProps {
   members: MonsterTeamMember[];
+  compact?: boolean;
   onChange: (members: MonsterTeamMember[]) => void;
 }
 
 export const MembersSection: React.FC<MembersSectionProps> = ({
   members,
+  compact = false,
   onChange,
 }) => (
   <fieldset className="flex flex-col gap-4">
@@ -187,6 +206,7 @@ export const MembersSection: React.FC<MembersSectionProps> = ({
           key={member.id}
           member={member}
           index={index}
+          compact={compact}
           onChange={(newMember) => {
             const next = [...members];
             next[index] = newMember;
