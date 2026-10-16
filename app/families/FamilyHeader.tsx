@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { deleteFamily } from "@/app/families/actions";
+import { deleteFamily } from "@/app/%5Factions/deleteFamily/contract";
 import { AbilityOverlay } from "@/components/shared/AbilityOverlay";
 import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
 import { Button } from "@/components/ui/button";
+import { call } from "@/lib/contract";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { FamilyOverview } from "@/lib/types";
 import { getFamilyEditUrl } from "@/lib/utils/url";
@@ -28,7 +29,7 @@ export function FamilyHeader({
     creatorId: session?.user.discordId,
   });
 
-  const [_isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const handleDelete = async () => {
     if (!confirm(`Are you sure you want to delete "${family.name}"?`)) {
       return;
@@ -37,15 +38,10 @@ export function FamilyHeader({
     setIsDeleting(true);
 
     try {
-      const result = await deleteFamily(family.id);
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to delete family");
-      }
-
+      await call(deleteFamily, { id: family.id });
       router.push("/my/families");
-    } catch (error) {
-      console.error("Error deleting family:", error);
+      router.refresh();
+    } catch {
       alert("Failed to delete family. Please try again.");
       setIsDeleting(false);
     }
@@ -64,7 +60,12 @@ export function FamilyHeader({
                   Edit
                 </Link>
               </Button>
-              <Button variant="outline" size="sm" onClick={handleDelete}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDelete}
+                disabled={isDeleting}
+              >
                 <Trash2 className="w-4 h-4" />
                 Delete
               </Button>
