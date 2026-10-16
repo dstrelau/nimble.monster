@@ -927,3 +927,33 @@ contract compatibility window that a future migration must preserve.
 - Retain this URL and accepted request/response shapes for at least one full
   deployment interval. Pre-cutover tabs still need the existing refresh/retry
   path. Subclass deletion is the next bounded Wave 2 slice.
+
+### Subclass deletion — October 2026
+
+- `SubclassDetailActions`, the sole browser caller, uses a typed JSON POST to
+  `/_actions/deleteSubclass` with `{ id: UUID }`, returning 200 `{ success: true }`.
+  The unchanged database operation scopes deletion to the session-derived owner.
+  Missing, non-owned and already-deleted subclasses return 404; submitted owner
+  identity is ignored. Subclass abilities, collection memberships and option-list
+  links cascade; collections and reusable option lists/items remain unchanged.
+- UUID validation, exact-origin/JSON enforcement, telemetry and generic unexpected
+  500s reuse the shared internal boundary without CORS. Owner-list invalidation
+  remains; public-list and detail invalidation plus explicit refresh keep navigation
+  fresh. Owner-only controls, permanent-delete confirmation, pending disable and
+  `/my/subclasses` navigation remain. HTTP/network errors retain the detail, show
+  one actionable alert and enable manual retry without automatic requests.
+- Removed `deleteSubclass` from `app/actions/subclass.ts`; its three read exports
+  remain for Wave 3. Application ratchet: **85 → 84** exports; repository markers
+  and public APIs are unchanged.
+- Route-boundary and real-detail transport tests cover stable URL/no `next-action`,
+  auth, ownership, validation, generic failures, invalidation and pending/error UX.
+  Live authenticated requests verify rejected-request retention, persisted deletion,
+  ability/membership/link removal, reusable-option and collection retention,
+  detail 404 and repeat-delete 404. Browser QA covers cancellation, network
+  failure/manual retry, pending controls, owner-list navigation and full reload.
+  Disposable non-admin QA users/content are cleaned up with explicit absence
+  checks; production uses short-lived Auth.js sessions, not a development-login
+  bypass or real-user content.
+- Retain this URL and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs still need the existing refresh/retry
+  path. Companion deletion is the next bounded Wave 2 slice.
