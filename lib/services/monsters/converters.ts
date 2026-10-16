@@ -3,6 +3,7 @@ import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
 import type { Ability, Action, FamilyOverview } from "@/lib/types";
 import { attackMetadataSchema } from "@/lib/types/attack";
 import { uuidToIdentifier } from "@/lib/utils/slug";
+import type { MonsterClassifications } from "./classifications";
 import { parseMembers } from "./members";
 import { parseSaves } from "./saves";
 import type {
@@ -26,7 +27,7 @@ const parseJsonField = <T>(value: unknown): T[] => {
   return [];
 };
 
-interface MonsterRow {
+interface MonsterRow extends MonsterClassifications {
   id: string;
   name: string;
   hp: number;
@@ -158,6 +159,9 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
     ...toMonsterMini(m),
     kind: m.kind,
     role: m.role as Monster["role"],
+    creatureTypes: m.creatureTypes ?? [],
+    creatureKinds: m.creatureKinds ?? [],
+    environments: m.environments ?? [],
     bloodied: m.bloodied,
     lastStand: m.lastStand,
     speed: m.speed,
@@ -319,6 +323,9 @@ export const toZodMonster = (m: Monster) => {
     armor: m.armor === "none" ? ("none" as const) : m.armor,
     kind: m.kind || undefined,
     role: m.role || undefined,
+    ...(m.creatureTypes?.length ? { creatureTypes: m.creatureTypes } : {}),
+    ...(m.creatureKinds?.length ? { creatureKinds: m.creatureKinds } : {}),
+    ...(m.environments?.length ? { environments: m.environments } : {}),
     movement: movement,
     abilities,
     actions,

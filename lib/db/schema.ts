@@ -8,6 +8,11 @@ import {
   text,
   unique,
 } from "drizzle-orm/sqlite-core";
+import type {
+  CreatureKind,
+  CreatureType,
+  MonsterEnvironment,
+} from "@/lib/services/monsters/classifications";
 import type { Ability, Action } from "@/lib/types";
 
 // Enum value types (stored as text in SQLite)
@@ -263,6 +268,18 @@ export const monsters = sqliteTable(
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
     kind: text("kind").notNull().default(""),
+    creatureTypes: text("creature_types", { mode: "json" })
+      .$type<CreatureType[]>()
+      .notNull()
+      .default([]),
+    creatureKinds: text("creature_groups", { mode: "json" })
+      .$type<CreatureKind[]>()
+      .notNull()
+      .default([]),
+    environments: text("environments", { mode: "json" })
+      .$type<MonsterEnvironment[]>()
+      .notNull()
+      .default([]),
     visibility: text("visibility").$type<MonsterVisibility>().default("public"),
     actionPreface: text("action_preface"),
     moreInfo: text("more_info").default(""),

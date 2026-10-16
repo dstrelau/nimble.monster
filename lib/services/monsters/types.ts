@@ -6,6 +6,7 @@ import type {
   Source,
   User,
 } from "@/lib/types";
+import type { MonsterClassifications } from "./classifications";
 
 export const SIZES = [
   { value: "tiny", label: "Tiny" },
@@ -177,7 +178,10 @@ interface BestiaryEntryBase {
   isOfficial?: boolean;
 }
 
-export interface Monster extends MonsterMini, BestiaryEntryBase {
+export interface Monster
+  extends MonsterMini,
+    BestiaryEntryBase,
+    MonsterClassifications {
   families: FamilyOverview[];
   members?: MonsterTeamMember[];
   saves?: string;
@@ -244,7 +248,7 @@ export const PaginateMonstersSortOptions = [
 export type PaginateMonstersSortOption =
   (typeof PaginateMonstersSortOptions)[number];
 
-export interface CreateMonsterInput {
+export interface CreateMonsterInput extends MonsterClassifications {
   name: string;
   kind?: string;
   level: string;
@@ -279,7 +283,7 @@ export interface CreateMonsterInput {
   remixedFromId?: string;
 }
 
-export interface UpdateMonsterInput {
+export interface UpdateMonsterInput extends MonsterClassifications {
   id: string;
   name: string;
   level: string;

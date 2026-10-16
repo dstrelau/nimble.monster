@@ -1,4 +1,8 @@
 import { fetchApi } from "@/lib/api";
+import {
+  type MonsterClassifications,
+  MonsterClassificationsSchema,
+} from "@/lib/services/monsters/classifications";
 import type { Monster } from "@/lib/services/monsters/types";
 import type { Ability, Action } from "@/lib/types";
 import { randomUUID } from "@/lib/utils";
@@ -16,7 +20,7 @@ export interface JSONAPIFamily {
 export interface JSONAPIMonster {
   type: "monsters";
   id?: string;
-  attributes: {
+  attributes: MonsterClassifications & {
     name: string;
     hazard?: boolean;
     hp: number;
@@ -131,6 +135,7 @@ function parseMonster(data: JSONAPIMonster): Monster {
     size: attrs.size as Monster["size"],
     armor: attrs.armor as Monster["armor"],
     kind: attrs.kind,
+    ...MonsterClassificationsSchema.parse(attrs),
     role: (attrs.role as Monster["role"]) ?? undefined,
     legendary: attrs.legendary,
     minion: attrs.minion ?? false,

@@ -8,6 +8,7 @@ import {
   validateOfficialSource,
 } from "@/lib/services/validate-source";
 import { attackMetadataSchema } from "@/lib/types/attack";
+import { MonsterClassificationsSchema } from "./classifications";
 import type { CreateMonsterInput } from "./types";
 
 export const OFFICIAL_USER_ID = "00000000-0000-0000-0000-000000000000";
@@ -155,6 +156,7 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
         ? ""
         : (attrs.armor as CreateMonsterInput["armor"]),
     kind: attrs.kind,
+    ...MonsterClassificationsSchema.parse(attrs),
     legendary: attrs.legendary,
     minion: attrs.minion ?? false,
     visibility: "public",
@@ -293,6 +295,8 @@ export function validateOfficialMonstersJSON(data: unknown): {
         `Invalid monster at index ${index}: missing or invalid name`
       );
     }
+
+    MonsterClassificationsSchema.parse(attrs);
 
     if (attrs.hazard !== undefined && typeof attrs.hazard !== "boolean") {
       throw new Error(

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MonsterClassificationsSchema } from "@/lib/services/monsters/classifications";
 import { MonsterRoleOptions, SIZES } from "@/lib/services/monsters/types";
 import { attackMetadataSchema } from "@/lib/types/attack";
 import { isValidUUID } from "@/lib/utils/validation";
@@ -60,6 +61,7 @@ const updateHazardSchema = sharedSchema.extend({
 });
 
 const monsterFields = {
+  ...MonsterClassificationsSchema.shape,
   kind: z.string().optional(),
   hp: z.number(),
   hpPerHero: z.number().nullable().optional(),

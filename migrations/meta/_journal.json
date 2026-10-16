@@ -295,6 +295,13 @@
       "when": 1791680790818,
       "tag": "0041_lush_legion",
       "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "6",
+      "when": 1792114090546,
+      "tag": "0042_soft_zaran",
+      "breakpoints": true
     }
   ]
 }

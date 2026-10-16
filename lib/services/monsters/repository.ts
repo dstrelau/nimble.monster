@@ -37,6 +37,7 @@ import type { Ability, Action, Source, User } from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
+import { MonsterClassificationsSchema } from "./classifications";
 import { extractAllConditions, syncMonsterConditions } from "./conditions";
 import { syncMonsterFamilies } from "./families";
 import {
@@ -186,6 +187,9 @@ const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
     : new Date(),
   kind: data.monster.kind,
   role: data.monster.role as MonsterRole | null,
+  creatureTypes: data.monster.creatureTypes,
+  creatureKinds: data.monster.creatureKinds,
+  environments: data.monster.environments,
   isOfficial: data.monster.isOfficial ?? false,
   bloodied: data.monster.bloodied,
   lastStand: data.monster.lastStand,
@@ -1198,6 +1202,9 @@ const createBestiaryEntry = async (
   input: CreateBestiaryEntryCommand,
   discordId: string
 ): Promise<BestiaryEntry> => {
+  const classifications = MonsterClassificationsSchema.parse(
+    input.hazard ? {} : input
+  );
   const db = await getDatabase();
 
   const {
@@ -1265,6 +1272,7 @@ const createBestiaryEntry = async (
     id: monsterId,
     name,
     kind: hazard ? "" : kind,
+    ...classifications,
     level,
     levelInt,
     hp,
@@ -1375,6 +1383,7 @@ export const createHazard = async (
 export const upsertOfficialMonster = async (
   input: CreateMonsterInput
 ): Promise<Monster> => {
+  const classifications = MonsterClassificationsSchema.parse(input);
   const db = await getDatabase();
 
   const {
@@ -1436,6 +1445,7 @@ export const upsertOfficialMonster = async (
   const monsterValues = {
     name,
     kind,
+    ...classifications,
     level,
     levelInt,
     hp,
@@ -1517,6 +1527,9 @@ const updateBestiaryEntry = async (
   input: UpdateBestiaryEntryCommand,
   discordId: string
 ): Promise<BestiaryEntry> => {
+  const classifications = MonsterClassificationsSchema.parse(
+    input.hazard ? {} : input
+  );
   const db = await getDatabase();
 
   const {
@@ -1594,6 +1607,7 @@ const updateBestiaryEntry = async (
   await db
     .update(monsters)
     .set({
+      ...classifications,
       name,
       level,
       levelInt,

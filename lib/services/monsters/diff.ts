@@ -91,6 +91,20 @@ export function compareMonsters(
     return "updated";
   if ((uploaded.kind ?? "") !== (existing.kind ?? "")) return "updated";
   if ((uploaded.role ?? null) !== (existing.role ?? null)) return "updated";
+  for (const field of [
+    "creatureTypes",
+    "creatureKinds",
+    "environments",
+  ] as const) {
+    const values = uploaded[field];
+    if (
+      values !== undefined &&
+      JSON.stringify([...values].sort()) !==
+        JSON.stringify([...(existing[field] ?? [])].sort())
+    ) {
+      return "updated";
+    }
+  }
   if (uploaded.legendary !== existing.legendary) return "updated";
   if (uploaded.minion !== existing.minion) return "updated";
   if (uploaded.hazard !== existing.hazard) return "updated";

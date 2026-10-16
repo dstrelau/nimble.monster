@@ -162,6 +162,9 @@ export const POST = telemetry(async (request: Request) => {
       session.user.discordId
     );
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return jsonApiError(400, error.issues[0].message);
+    }
     if (
       error instanceof Error &&
       (error.message === "Monster name is required" ||

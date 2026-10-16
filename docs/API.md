@@ -288,6 +288,32 @@ the raw save string (e.g., "STR++" becomes `{"str": 2}`, "DEX-" becomes `{"dex":
 Monsters may also include `paperforgeId` and `paperforgeImageUrl` when a
 Paperforge illustration is associated.
 
+Monster attributes may include three optional classification arrays. Each field
+is omitted from list and detail responses when empty. These are not present on hazards.
+
+```json
+{
+  "creatureTypes": ["undead", "dragon"],
+  "creatureKinds": ["drake"],
+  "environments": ["underground", "ruins"]
+}
+```
+
+Values are curated, lowercase identifiers (multiword values use hyphens).
+Each array can contain multiple values:
+
+- `creatureTypes`: Broad creature categories, such as `beast`, `humanoid`, or
+  `undead`.
+- `creatureKinds`: More specific kinds, such as `goblinoid`, `mind-flayer`,
+  or `animated-object`.
+- `environments`: Suitable encounter environments, such as `forest`, `dungeon`,
+  or `aquatic`.
+
+The existing `kind` attribute remains a free-text descriptor, separate from
+these classifications.
+
+The API does not currently support filtering by these fields.
+
 When `include=families` is specified and the monster belongs to families, the
 response includes a `relationships.families` field and an `included` array with
 the full family resources. When `include=creator` is specified, the creator user
