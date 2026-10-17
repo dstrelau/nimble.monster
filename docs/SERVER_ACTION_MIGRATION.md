@@ -441,7 +441,7 @@ contract compatibility window that a future migration must preserve.
 | Core content builders | Complete | Monster, hazard, item, encounter, and collection create/update use stable `/_actions` JSON routes |
 | Character-option builders | Complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9), [subclass create/update](https://ampcode.com/threads/T-01a131de-6489-707c-8e6c-58bb0194dc05), [companion create/update](https://ampcode.com/threads/T-01a13403-bbd1-768c-bf19-0288a298516d), [family create/update](https://ampcode.com/threads/T-01a13516-5c8e-72bf-bf74-c2dc2fe983e6), [spell-school create/update](https://ampcode.com/threads/T-01a13629-09df-7764-a771-a0a9c46381aa), and [custom-rule create/update](https://ampcode.com/threads/T-01a1384e-59c8-716d-8cb2-6133f8114ab2) complete |
 | Drafts | Complete | Class/subclass draft save/load/delete use stable `/_actions/classDraft` GET/POST/DELETE |
-| Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6), [item deletion](https://ampcode.com/threads/T-01a13c98-fff1-70db-8069-f73ee3f1805b), [encounter deletion](https://ampcode.com/threads/T-01a13dab-a15d-7443-94f8-d96e9f856073), [collection deletion](https://ampcode.com/threads/T-01a13ebe-4c4c-7488-b3e4-cc6d709ec057), [ancestry deletion](https://ampcode.com/threads/T-01a13fd0-f6d8-71da-90c0-5802c407f5dd), [background deletion](https://ampcode.com/threads/T-01a140e3-9c3e-736f-ae30-237797e4ebc0), [class deletion](https://ampcode.com/threads/T-01a141f6-ab29-7486-a38e-0cf7979d41a5), [subclass deletion](https://ampcode.com/threads/T-01a1441b-eb0c-739a-9999-8b3be511c56c), [companion deletion](https://ampcode.com/threads/T-01a1452e-6f24-7362-a486-d87159dee0a1), and [family deletion](https://ampcode.com/threads/T-01a14641-5148-70ec-822b-a77be155af1d) complete; remaining entity deletes and relationships are Wave 2 |
+| Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6), [item deletion](https://ampcode.com/threads/T-01a13c98-fff1-70db-8069-f73ee3f1805b), [encounter deletion](https://ampcode.com/threads/T-01a13dab-a15d-7443-94f8-d96e9f856073), [collection deletion](https://ampcode.com/threads/T-01a13ebe-4c4c-7488-b3e4-cc6d709ec057), [ancestry deletion](https://ampcode.com/threads/T-01a13fd0-f6d8-71da-90c0-5802c407f5dd), [background deletion](https://ampcode.com/threads/T-01a140e3-9c3e-736f-ae30-237797e4ebc0), [class deletion](https://ampcode.com/threads/T-01a141f6-ab29-7486-a38e-0cf7979d41a5), [subclass deletion](https://ampcode.com/threads/T-01a1441b-eb0c-739a-9999-8b3be511c56c), [companion deletion](https://ampcode.com/threads/T-01a1452e-6f24-7362-a486-d87159dee0a1), [family deletion](https://ampcode.com/threads/T-01a14641-5148-70ec-822b-a77be155af1d), and [spell-school deletion](https://ampcode.com/threads/T-01a14753-b964-771c-84f1-75ed7ecd56f7) complete; remaining entity deletes and relationships are Wave 2 |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
 | Public browser reads | Not started | Wave 3; prefer existing JSON:API |
 | Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
@@ -1014,3 +1014,33 @@ contract compatibility window that a future migration must preserve.
 - Retain this URL and accepted request/response shapes for at least one full
   deployment interval. Pre-cutover tabs still need the existing refresh/retry
   path. Spell-school deletion is the next bounded Wave 2 slice.
+
+### Spell-school deletion — October 2026
+
+- `SchoolActions`, the sole browser caller, uses a typed JSON POST to
+  `/_actions/deleteSpellSchool` with `{ id: UUID }`, returning 200 `{ success: true }`.
+  The unchanged database operation scopes deletion to the session-derived owner.
+  Missing, non-owned and already-deleted schools return 404; submitted owner
+  identity is ignored. Spells and collection memberships cascade; collections remain.
+- UUID validation, exact-origin/JSON enforcement, telemetry and generic unexpected
+  500s reuse the shared internal boundary without CORS. Existing public/owner-list
+  and detail invalidation remain; explicit refresh keeps post-delete navigation
+  fresh. Owner-only controls, the spell-cascade warning and confirmation dialog,
+  pending disable and `/my/spell-schools` navigation remain. HTTP/network errors
+  now show one inline alert instead of console-only failures, retaining the detail
+  and allowing manual retry without automatic deletion requests.
+- Removed `deleteSpellSchool` from `app/spell-schools/actions.ts`; its two read
+  exports remain for Wave 3. Application ratchet: **82 → 81** exports; repository
+  markers and public APIs are unchanged.
+- Route-boundary and real-component transport tests cover stable URL/no
+  `next-action`, auth, ownership, validation, safe failures, invalidation and
+  confirmation/pending/error/retry UX. Live authenticated requests verify rejected
+  request retention, persisted deletion, spell/membership removal, collection
+  retention, detail 404 and repeat-delete 404. Browser QA covers cancellation,
+  network failure/manual retry, pending controls, owner-list navigation and reload.
+  Disposable non-admin QA users/content are cleaned up with explicit absence
+  checks; production uses short-lived Auth.js sessions, not a dev-login bypass
+  or real-user content.
+- Retain this URL and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs still need the existing refresh/retry
+  path. Custom-rule deletion is the next bounded Wave 2 slice.

@@ -3,7 +3,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteSpellSchool } from "@/app/spell-schools/actions";
+import { deleteSpellSchool } from "@/app/%5Factions/deleteSpellSchool/contract";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { call } from "@/lib/contract";
 import type { SpellSchool } from "@/lib/types";
 
 interface SchoolActionsProps {
@@ -25,6 +26,7 @@ interface SchoolActionsProps {
 export function SchoolActions({ spellSchool }: SchoolActionsProps) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleEdit = () => {
     router.push(`/spell-schools/${spellSchool.id}/edit`);
@@ -32,16 +34,13 @@ export function SchoolActions({ spellSchool }: SchoolActionsProps) {
 
   const handleDelete = async () => {
     setIsDeleting(true);
+    setError(null);
     try {
-      const result = await deleteSpellSchool(spellSchool.id);
-      if (result.success) {
-        router.push("/my/spell-schools");
-      } else {
-        // Handle error - you might want to show a toast or error message
-        console.error("Failed to delete spell school:", result.error);
-      }
-    } catch (error) {
-      console.error("Error deleting spell school:", error);
+      await call(deleteSpellSchool, { id: spellSchool.id });
+      router.push("/my/spell-schools");
+      router.refresh();
+    } catch {
+      setError("Failed to delete spell school. Please try again.");
     } finally {
       setIsDeleting(false);
     }
@@ -49,6 +48,7 @@ export function SchoolActions({ spellSchool }: SchoolActionsProps) {
 
   return (
     <div className="flex gap-2 justify-end">
+      {error && <p role="alert">{error}</p>}
       <Button variant="outline" size="sm" onClick={handleEdit}>
         <Pencil className="w-4 h-4" />
         Edit
