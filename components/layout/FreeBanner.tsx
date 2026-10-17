@@ -3,7 +3,7 @@
 import { X } from "lucide-react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { dismissBanner } from "@/app/actions/user";
 import { Button } from "@/components/ui/button";
 
@@ -11,13 +11,12 @@ const STORAGE_KEY = "nimble-nexus-banner-dismissed";
 
 export function FreeBanner() {
   const { data: session } = useSession();
-  const [dismissed, setDismissed] = useState(true);
+  const [dismissed, setDismissed] = useState(false);
 
-  useEffect(() => {
-    const localDismissed = localStorage.getItem(STORAGE_KEY) === "true";
-    const userDismissed = session?.user?.bannerDismissed ?? false;
-    setDismissed(localDismissed || userDismissed);
-  }, [session?.user?.bannerDismissed]);
+  useLayoutEffect(() => {
+    // Hydration can reset the early root marker; retain its state before paint.
+    setDismissed(localStorage.getItem(STORAGE_KEY) === "true");
+  }, []);
 
   const handleDismiss = async () => {
     localStorage.setItem(STORAGE_KEY, "true");
@@ -27,12 +26,12 @@ export function FreeBanner() {
     }
   };
 
-  if (dismissed) {
+  if (dismissed || session?.user?.bannerDismissed) {
     return null;
   }
 
   return (
-    <div className="bg-flame text-white px-4 py-2">
+    <div className="bg-flame text-white px-4 py-2 [[data-free-banner-dismissed=true]_&]:hidden">
       <div className="mx-auto max-w-7xl flex items-center justify-between gap-4">
         <p className="text-sm flex-1">
           This tool is free to use for anyone who already owns the content, is

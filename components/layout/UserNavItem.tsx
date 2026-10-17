@@ -17,6 +17,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { getUserUrl } from "@/lib/utils/url";
@@ -48,7 +49,7 @@ interface UserNavItemProps {
 }
 
 export function UserNavItem({ open, onOpenChange }: UserNavItemProps) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const currentUser = session?.user;
   const pathname = usePathname();
   const profilePath = currentUser?.username
@@ -77,6 +78,20 @@ export function UserNavItem({ open, onOpenChange }: UserNavItemProps) {
 
   const handleSignOut = () => signOut({ redirectTo: "/" });
   const handleSignIn = () => signIn("discord", { redirectTo: "/create" });
+
+  if (!currentUser && (status === "loading" || session === undefined)) {
+    return (
+      <NavTriggerButton
+        className="h-16 px-3"
+        disabled
+        aria-label="Loading account"
+        aria-busy="true"
+      >
+        <Skeleton className="size-10 rounded-full" />
+        <Skeleton className="hidden h-5 w-20 md:block" />
+      </NavTriggerButton>
+    );
+  }
 
   if (!currentUser) {
     return (

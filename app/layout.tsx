@@ -52,6 +52,14 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <style>{`@media print { html { font-size: 87.5%; } }`}</style>
+        {/* Honor local banner dismissals before the page paints, just like the theme. */}
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: Static script with no user-provided source.
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{if(localStorage.getItem("nimble-nexus-banner-dismissed")==="true")document.documentElement.setAttribute("data-free-banner-dismissed","true")}catch{}',
+          }}
+        />
       </head>
       <body
         className={cn(

@@ -1,4 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+"use client";
+
+import Image from "next/image";
+import { useState } from "react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { User } from "@/lib/types";
 
 type AvatarSize = "sm" | "md" | "lg";
@@ -25,33 +29,35 @@ const getSizeInPixels = (size: AvatarSize | number): number => {
 
 export const UserAvatar = ({ user, size, className }: UserAvatarProps) => {
   const sizeInPixels = getSizeInPixels(size);
-
-  if (!user) {
-    return (
-      <Avatar
-        className={className}
-        style={{ width: sizeInPixels, height: sizeInPixels }}
-      >
-        <AvatarImage
-          src="https://cdn.discordapp.com/embed/avatars/0.png"
-          alt="Discord"
-        />
-        <AvatarFallback>?</AvatarFallback>
-      </Avatar>
-    );
-  }
-
-  const fallbackLetter = user.displayName?.charAt(0).toUpperCase() || "?";
+  const src = user
+    ? user.imageUrl
+    : "https://cdn.discordapp.com/embed/avatars/0.png";
+  const [failedSrc, setFailedSrc] = useState<string>();
+  const fallbackLetter = user?.displayName?.charAt(0).toUpperCase() || "?";
 
   return (
     <Avatar
       className={className}
       style={{ width: sizeInPixels, height: sizeInPixels }}
     >
-      <AvatarImage src={user.imageUrl} alt={user.displayName || "User"} />
-      <AvatarFallback className="bg-transparent">
-        {fallbackLetter}
-      </AvatarFallback>
+      {src && src !== failedSrc ? (
+        // The browser can load this from SSR HTML instead of waiting for hydration.
+        <Image
+          src={src}
+          alt={user ? user.displayName || "User" : "Discord"}
+          width={Math.round(sizeInPixels)}
+          height={Math.round(sizeInPixels)}
+          unoptimized
+          loading="eager"
+          className="aspect-square size-full"
+          data-slot="avatar-image"
+          onError={() => setFailedSrc(src)}
+        />
+      ) : (
+        <AvatarFallback className={user ? "bg-transparent" : undefined}>
+          {fallbackLetter}
+        </AvatarFallback>
+      )}
     </Avatar>
   );
 };

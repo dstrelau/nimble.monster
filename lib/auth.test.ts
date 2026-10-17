@@ -1,3 +1,4 @@
+import { NextRequest } from "next/server";
 import NextAuth, { type NextAuthConfig, type Profile } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -137,6 +138,40 @@ const sessionCallback = ({
 describe("NextAuth configuration", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.resetModules();
+  });
+
+  it("returns the stored image URL for sessions without a Discord avatar hash", async () => {
+    await import("./auth");
+    const config = vi.mocked(NextAuth).mock.calls[0]?.[0];
+    if (!config || typeof config === "function") {
+      throw new Error("Expected a static NextAuth configuration");
+    }
+    const { default: createAuth } =
+      await vi.importActual<typeof import("next-auth")>("next-auth");
+    const { handlers } = createAuth({
+      ...config,
+      secret: "session-avatar-regression-test",
+      trustHost: true,
+      jwt: {
+        decode: async () => ({
+          userId: "avatar-user",
+          discordId: "avatar-discord-user",
+          displayName: "Avatar User",
+          imageUrl: "https://cdn.discordapp.com/embed/avatars/0.png",
+        }),
+        encode: async () => "test-session",
+      },
+    });
+    const response = await handlers.GET(
+      new NextRequest("http://localhost/api/auth/session", {
+        headers: { cookie: "authjs.session-token=test-session" },
+      })
+    );
+    expect(response.status).toBe(200);
+    expect((await response.json()).user.imageUrl).toBe(
+      "https://cdn.discordapp.com/embed/avatars/0.png"
+    );
   });
 
   it("configures Discord's issuer for OAuth callback validation", async () => {

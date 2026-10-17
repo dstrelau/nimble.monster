@@ -1,13 +1,11 @@
 "use client";
 import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import DOMPurify from "isomorphic-dompurify";
 import MarkdownIt from "markdown-it";
+import type Token from "markdown-it/lib/token.mjs";
 import Link from "next/link";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { createElement, Fragment, type ReactNode, useMemo } from "react";
 import { DiceNotation } from "@/components/dice/DiceNotation";
 import { ReferencePopover } from "@/components/shared/ReferencePopover";
-import { useIsClient } from "@/components/shared/SSRSafe";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEntityQuery } from "@/lib/hooks/useEntityQuery";
@@ -30,11 +28,6 @@ interface FormattedTextProps {
   enableHeadings?: boolean;
   blockStyles?: boolean;
   noInteractive?: boolean;
-}
-
-interface InteractiveContent {
-  container: Element;
-  component: React.ReactNode;
 }
 
 function ConditionSpan({
@@ -198,13 +191,6 @@ function conditionPlugin(md: MarkdownIt) {
     state.pos = pos + 2;
     return true;
   });
-
-  // Add custom renderer that creates HTML markers
-  md.renderer.rules.condition = (tokens, idx) => {
-    const token = tokens[idx];
-    const meta = token.meta;
-    return `<span class="underline decoration-dotted" data-condition-name="${meta.conditionName}" data-display-text="${meta.displayText}">${meta.displayText}</span>`;
-  };
 }
 
 // Custom markdown-it plugin for dice notation parsing
@@ -269,13 +255,6 @@ function diceNotationPlugin(md: MarkdownIt) {
       blockToken.children = newChildren;
     }
   });
-
-  // Add custom renderer that creates HTML markers
-  md.renderer.rules.dice = (tokens, idx) => {
-    const token = tokens[idx];
-    const meta = token.meta;
-    return `<span data-dice-text="${meta.diceText}">${meta.diceText}</span>`;
-  };
 }
 
 // Custom markdown-it plugin for entity link parsing
@@ -396,16 +375,6 @@ function entityLinkPlugin(md: MarkdownIt) {
     state.pos = finalPos;
     return true;
   });
-
-  // Add custom renderer that creates HTML with skeleton placeholder
-  md.renderer.rules.entity_link = (tokens, idx) => {
-    const token = tokens[idx];
-    const meta = token.meta;
-    const displayAttr = meta.displayName
-      ? ` data-display-name="${meta.displayName}"`
-      : "";
-    return `<span class="inline-flex items-center gap-1" data-entity-type="${meta.entityType}" data-entity-id="${meta.entityId}"${displayAttr}><span class="bg-muted h-4 w-16 rounded-md animate-pulse"></span></span>`;
-  };
 }
 
 function parseEntityUrl(value: string) {
@@ -447,17 +416,6 @@ function parseEntityUrl(value: string) {
   }
 }
 
-function listStylePlugin(md: MarkdownIt) {
-  md.renderer.rules.bullet_list_open = (tokens, idx, options, _env, self) => {
-    tokens[idx].attrJoin("class", "list-disc pl-5");
-    return self.renderToken(tokens, idx, options);
-  };
-  md.renderer.rules.ordered_list_open = (tokens, idx, options, _env, self) => {
-    tokens[idx].attrJoin("class", "list-decimal pl-5");
-    return self.renderToken(tokens, idx, options);
-  };
-}
-
 function createMarkdown(enableHeadings = false) {
   const markdown = new MarkdownIt("zero").enable([
     "paragraph",
@@ -469,13 +427,95 @@ function createMarkdown(enableHeadings = false) {
   conditionPlugin(markdown);
   diceNotationPlugin(markdown);
   entityLinkPlugin(markdown);
-  listStylePlugin(markdown);
   markdown.enable(["text"]);
   return markdown;
 }
 
 const md = createMarkdown();
 const mdWithHeadings = createMarkdown(true);
+
+// Render the parser's tokens as React elements on both server and client.
+// Raw HTML is disabled in the parser; React escapes all user-supplied text.
+function renderTokens(
+  tokens: Token[],
+  conditions: ConditionT[],
+  noInteractive: boolean,
+  queryClient: QueryClient
+): ReactNode[] {
+  let index = 0;
+  function renderLevel(): ReactNode[] {
+    const children: ReactNode[] = [];
+    while (index < tokens.length) {
+      const key = index;
+      const token = tokens[index++];
+      if (token.nesting === -1) break;
+      if (token.nesting === 1) {
+        const nested = renderLevel();
+        children.push(
+          createElement(
+            token.hidden ? Fragment : token.tag,
+            token.hidden
+              ? { key }
+              : {
+                  key,
+                  ...(token.tag === "ul" && { className: "list-disc pl-5" }),
+                  ...(token.tag === "ol" && {
+                    className: "list-decimal pl-5",
+                    start: token.attrGet("start") ?? undefined,
+                  }),
+                },
+            ...nested
+          )
+        );
+      } else if (token.type === "inline") {
+        children.push(
+          <Fragment key={key}>
+            {renderTokens(
+              token.children ?? [],
+              conditions,
+              noInteractive,
+              queryClient
+            )}
+          </Fragment>
+        );
+      } else if (token.type === "condition") {
+        children.push(
+          <ConditionSpan
+            key={key}
+            displayText={token.meta.displayText}
+            condition={conditions.find(
+              (condition) =>
+                condition.name.toLowerCase() ===
+                token.meta.conditionName.toLowerCase()
+            )}
+            noInteractive={noInteractive}
+          />
+        );
+      } else if (token.type === "dice") {
+        children.push(<DiceNotation key={key} text={token.meta.diceText} />);
+      } else if (token.type === "entity_link") {
+        children.push(
+          <EntityLink
+            key={key}
+            type={token.meta.entityType}
+            id={token.meta.entityId}
+            displayName={token.meta.displayName}
+            queryClient={queryClient}
+            noInteractive={noInteractive}
+          />
+        );
+      } else if (token.type === "softbreak") {
+        children.push("\n");
+      } else if (token.type === "hardbreak") {
+        children.push(<br key={key} />);
+      } else {
+        children.push(token.content);
+      }
+    }
+    return children;
+  }
+  return renderLevel();
+}
 
 export function FormattedText({
   content,
@@ -485,137 +525,10 @@ export function FormattedText({
   blockStyles = true,
   noInteractive = false,
 }: FormattedTextProps) {
-  const isClient = useIsClient();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [interactiveContent, setInteractiveContent] = useState<
-    InteractiveContent[]
-  >([]);
   const queryClient = getQueryClient();
-
-  const { html, placeholders } = useMemo(() => {
-    const markdown = enableHeadings ? mdWithHeadings : md;
-    const html = DOMPurify.sanitize(markdown.render(content));
-
-    if (!isClient) {
-      return { html, placeholders: [] };
-    }
-
-    // Create a new div to hold the processed content
-    const processedDiv = document.createElement("div");
-    processedDiv.innerHTML = html;
-
-    const placeholders: { id: string; component: React.ReactNode }[] = [];
-
-    // Replace each condition span with a placeholder
-    processedDiv
-      .querySelectorAll("[data-condition-name]")
-      .forEach((span, index) => {
-        const conditionName = span.getAttribute("data-condition-name") || "";
-        const displayText =
-          span.getAttribute("data-display-text") || conditionName;
-        const condition = conditions.find(
-          (c) => c.name.toLowerCase() === conditionName.toLowerCase()
-        );
-
-        const placeholderId = `condition-placeholder-${index}`;
-        const placeholder = document.createElement("span");
-        placeholder.id = placeholderId;
-        span.parentNode?.replaceChild(placeholder, span);
-
-        placeholders.push({
-          id: placeholderId,
-          component: (
-            <ConditionSpan
-              key={condition?.name}
-              displayText={displayText}
-              condition={condition}
-              noInteractive={noInteractive}
-            />
-          ),
-        });
-      });
-
-    // Replace each dice span with a placeholder
-    let diceIndex = 0;
-    processedDiv.querySelectorAll("[data-dice-text]").forEach((span) => {
-      const diceText = span.getAttribute("data-dice-text") || "";
-
-      const placeholderId = `dice-placeholder-${diceIndex}`;
-      const placeholder = document.createElement("span");
-      placeholder.id = placeholderId;
-      span.parentNode?.replaceChild(placeholder, span);
-
-      placeholders.push({
-        id: placeholderId,
-        component: (
-          <DiceNotation key={`${diceText}-${diceIndex}`} text={diceText} />
-        ),
-      });
-
-      diceIndex++;
-    });
-
-    // Replace each entity link span with a placeholder
-    let entityIndex = 0;
-    processedDiv.querySelectorAll("[data-entity-type]").forEach((span) => {
-      const entityType = span.getAttribute("data-entity-type") || "";
-      const entityId = span.getAttribute("data-entity-id") || "";
-      const displayName = span.getAttribute("data-display-name") || undefined;
-
-      if (!isEntityType(entityType)) return;
-
-      const placeholderId = `entity-placeholder-${entityIndex}`;
-      const placeholder = document.createElement("span");
-      placeholder.id = placeholderId;
-      span.parentNode?.replaceChild(placeholder, span);
-
-      placeholders.push({
-        id: placeholderId,
-        component: (
-          <EntityLink
-            key={`${entityType}-${entityId}-${entityIndex}`}
-            type={entityType}
-            id={entityId}
-            displayName={displayName}
-            queryClient={queryClient}
-            noInteractive={noInteractive}
-          />
-        ),
-      });
-
-      entityIndex++;
-    });
-
-    return { html: processedDiv.innerHTML, placeholders };
-  }, [
-    content,
-    conditions,
-    enableHeadings,
-    isClient,
-    noInteractive,
-    queryClient,
-  ]);
-
-  useLayoutEffect(() => {
-    setInteractiveContent(
-      placeholders.flatMap(({ id, component }) => {
-        const container = containerRef.current?.querySelector(`#${id}`);
-        if (!container) return [];
-        return [{ container, component }];
-      })
-    );
-  }, [placeholders]);
-
-  // Keep the markup stable while portals render into its placeholders.
-  const renderedContent = useMemo(
-    () => (
-      <div
-        ref={containerRef}
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized and processed markdown content
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    ),
-    [html]
+  const tokens = useMemo(
+    () => (enableHeadings ? mdWithHeadings : md).parse(content, {}),
+    [content, enableHeadings]
   );
 
   return (
@@ -628,10 +541,7 @@ export function FormattedText({
         className
       )}
     >
-      {renderedContent}
-      {interactiveContent.map(({ container, component }) =>
-        createPortal(component, container)
-      )}
+      <div>{renderTokens(tokens, conditions, noInteractive, queryClient)}</div>
     </div>
   );
 }

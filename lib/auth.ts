@@ -160,9 +160,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.displayName = token.displayName;
       }
       session.user.imageUrl =
-        token.imageUrl || token.avatar
+        (typeof token.imageUrl === "string" && token.imageUrl) ||
+        (token.avatar
           ? `https://cdn.discordapp.com/avatars/${token.discordId}/${token.avatar}.png`
-          : "https://cdn.discordapp.com/embed/avatars/0.png";
+          : "https://cdn.discordapp.com/embed/avatars/0.png");
       session.user.role = token.role;
       session.user.bannerDismissed = token.bannerDismissed ?? false;
       return session;

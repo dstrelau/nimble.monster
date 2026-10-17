@@ -1,4 +1,5 @@
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -6,6 +7,8 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { StrictMode } from "react";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useEntityQuery } from "@/lib/hooks/useEntityQuery";
 import type { Condition } from "@/lib/types";
@@ -55,6 +58,54 @@ const mockConditions: Condition[] = [
 ];
 
 describe("FormattedText", () => {
+  it("server-renders dice and conditions and preserves their nodes through hydration", async () => {
+    const content = "Deal **1d6+6** and [[Poisoned|poison]] the target.";
+    const element = (
+      <FormattedText content={content} conditions={mockConditions} />
+    );
+    const container = document.createElement("div");
+    container.innerHTML = renderToString(element);
+    document.body.append(container);
+    const dice = container.querySelector("[data-dice-notation]");
+    const condition = container.querySelector("button");
+    expect(dice).toHaveTextContent("1d6+6");
+    expect(dice?.querySelector("svg")).not.toBeNull();
+    expect(condition).toHaveTextContent("poison");
+    const onRecoverableError = vi.fn();
+    let root: ReturnType<typeof hydrateRoot> | undefined;
+    try {
+      await act(async () => {
+        root = hydrateRoot(container, element, { onRecoverableError });
+      });
+      expect(onRecoverableError).not.toHaveBeenCalled();
+      expect(container.querySelector("[data-dice-notation]")).toBe(dice);
+      expect(container.querySelector("button")).toBe(condition);
+      fireEvent.click(condition ?? document.body);
+      expect(
+        await screen.findByRole("dialog", { name: "Poisoned" })
+      ).toHaveTextContent(mockConditions[0].description);
+    } finally {
+      await act(async () => root?.unmount());
+      container.remove();
+    }
+  });
+
+  it("renders HTML and condition display text as text, not markup", () => {
+    const { container } = render(
+      <FormattedText
+        content={
+          '<script>alert("x")</script> [[Poisoned|<img src=x onerror=alert(1)>]]'
+        }
+        conditions={mockConditions}
+      />
+    );
+    expect(container.querySelector("script, img")).toBeNull();
+    expect(screen.getByRole("button")).toHaveTextContent(
+      "<img src=x onerror=alert(1)>"
+    );
+    expect(container).toHaveTextContent('<script>alert("x")</script>');
+  });
+
   it("should render both markdown formatting and condition tooltips", () => {
     const content =
       "This is **bold text** and you are [[Poisoned|suffering from poison]].";
@@ -330,11 +381,11 @@ describe("FormattedText - Dice Notation", () => {
   });
 
   it("should update dice notation when another digit is entered", async () => {
-    const { rerender } = render(
+    const { container, rerender } = render(
       <FormattedText content="Roll 1d2" conditions={[]} />
     );
 
-    expect(await screen.findByText("1d2")).toBeInTheDocument();
+    expect(container).toHaveTextContent("Roll 1d2");
 
     rerender(<FormattedText content="Roll 1d20" conditions={[]} />);
 
