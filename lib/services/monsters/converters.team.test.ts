@@ -94,8 +94,12 @@ describe("toZodMonster (team)", () => {
     if (!monster.members) throw new Error("expected members");
     monster.members[0].actions[0].target = { reach: 4 };
     monster.members[0].actions[0].attackCount = 2;
-    monster.members[1].abilities[0].target = { reach: 1 };
-    monster.members[1].abilities[0].aoe = true;
+    const legacyAbility = {
+      ...monster.members[1].abilities[0],
+      target: { reach: 1 },
+      aoe: true,
+    };
+    monster.members[1].abilities[0] = legacyAbility;
     const zod = toZodMonster(monster);
     if (!("members" in zod)) throw new Error("expected members");
     const [kelebek, poppy] = zod.members;
@@ -109,9 +113,9 @@ describe("toZodMonster (team)", () => {
     });
     expect(poppy.armor).toBe("medium");
     expect(poppy.abilities[0].name).toBe("Stink Cloud");
-    expect(poppy.abilities[0]).toMatchObject({
-      target: { reach: 1 },
-      aoe: true,
+    expect(poppy.abilities[0]).toEqual({
+      name: "Stink Cloud",
+      description: "...",
     });
   });
 

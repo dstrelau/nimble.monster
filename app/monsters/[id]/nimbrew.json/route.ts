@@ -63,28 +63,22 @@ export const GET = telemetry(
       ...(monster.families?.flatMap((family) =>
         family.abilities.map((passive) => ({
           type: "single",
-          name: formatAttackName(passive),
-          desc: [formatAttackDetails(passive), passive.description]
-            .filter(Boolean)
-            .join(" "),
+          name: passive.name,
+          desc: passive.description,
         }))
       ) || []),
       ...(monster.abilities?.map((ability) => ({
         type: "single",
-        name: formatAttackName(ability),
-        desc: [formatAttackDetails(ability), ability.description]
-          .filter(Boolean)
-          .join(" "),
+        name: ability.name,
+        desc: ability.description,
       })) || []),
       // Team members expose their own passive abilities, prefixed with the
       // member name so they remain attributable in the flattened export.
       ...(monster.members?.flatMap((member) =>
         member.abilities.map((ability) => ({
           type: "single",
-          name: `${member.name}: ${formatAttackName(ability)}`,
-          desc: [formatAttackDetails(ability), ability.description]
-            .filter(Boolean)
-            .join(" "),
+          name: `${member.name}: ${ability.name}`,
+          desc: ability.description,
         }))
       ) || []),
     ];

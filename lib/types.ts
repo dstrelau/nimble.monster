@@ -121,7 +121,7 @@ export interface Condition {
   official: boolean;
 }
 
-export interface Ability extends AttackMetadata {
+export interface Ability {
   id: string;
   name: string;
   description: string;

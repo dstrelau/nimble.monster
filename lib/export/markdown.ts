@@ -115,9 +115,7 @@ function generateLegendaryBriefMarkdown(monster: Monster): string {
     lines.push("");
   }
   for (const ability of abilities) {
-    lines.push(
-      `* **${formatAttackName(ability).trim()}.** ${[formatAttackDetails(ability), ability.description.trim()].filter(Boolean).join(" ")}`
-    );
+    lines.push(`* **${ability.name.trim()}.** ${ability.description.trim()}`);
   }
 
   // Separator before actions
@@ -193,9 +191,7 @@ function generateBriefAbilities(abilities: Ability[]): string {
   const lines: string[] = ["\n**Passive**"];
 
   for (const ability of abilities) {
-    lines.push(
-      `* **${formatAttackName(ability).trim()}.** ${[formatAttackDetails(ability), ability.description.trim()].filter(Boolean).join(" ")}`
-    );
+    lines.push(`* **${ability.name.trim()}.** ${ability.description.trim()}`);
   }
 
   return lines.join("\n");
@@ -402,9 +398,7 @@ function generateAbilities(monster: BestiaryEntry): string {
           lines.push(`\n*${family.description}*`);
         }
         for (const ability of family.abilities) {
-          lines.push(
-            `- **${formatAttackName(ability)}**: ${[formatAttackDetails(ability), ability.description].filter(Boolean).join(" ")}`
-          );
+          lines.push(`- **${ability.name}**: ${ability.description}`);
         }
       }
     }
@@ -412,9 +406,7 @@ function generateAbilities(monster: BestiaryEntry): string {
 
   if (monster.abilities.length > 0) {
     for (const ability of monster.abilities) {
-      lines.push(
-        `- **${formatAttackName(ability)}**: ${[formatAttackDetails(ability), ability.description].filter(Boolean).join(" ")}`
-      );
+      lines.push(`- **${ability.name}**: ${ability.description}`);
     }
   }
 

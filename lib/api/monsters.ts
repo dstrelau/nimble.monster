@@ -108,7 +108,8 @@ function parseMonster(data: JSONAPIMonster): Monster {
   }));
 
   const abilities = attrs.abilities.map((a) => ({
-    ...a,
+    name: a.name,
+    description: a.description,
     id: crypto.randomUUID(),
   }));
 

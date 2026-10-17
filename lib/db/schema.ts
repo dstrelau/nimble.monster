@@ -348,7 +348,10 @@ export const companions = sqliteTable(
     size: text("size").$type<SizeType>().notNull().default("medium"),
     saves: text("saves").notNull().default(""),
     actions: text("actions", { mode: "json" }).notNull().default("[]"),
-    abilities: text("abilities", { mode: "json" }).notNull().default("[]"),
+    abilities: text("abilities", { mode: "json" })
+      .$type<Omit<Ability, "id">[]>()
+      .notNull()
+      .default(sql`'[]'`),
     actionPreface: text("action_preface"),
     dyingRule: text("dying_rule").notNull().default(""),
     moreInfo: text("more_info").default(""),
@@ -379,7 +382,10 @@ export const families = sqliteTable("families", {
     .references(() => users.id, { onUpdate: "cascade" }),
   visibility: text("visibility").$type<FamilyVisibility>().default("public"),
   name: text("name").notNull(),
-  abilities: text("abilities", { mode: "json" }).notNull().default("[]"),
+  abilities: text("abilities", { mode: "json" })
+    .$type<Omit<Ability, "id">[]>()
+    .notNull()
+    .default(sql`'[]'`),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   description: text("description"),

@@ -44,6 +44,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { CardContent, Card as FormCard } from "@/components/ui/card";
@@ -147,6 +148,7 @@ interface StatblockEditorProps {
   source: ReactNode;
   encounterNotes: ReactNode;
   examples: ReactNode;
+  onClear: () => void;
   visibilityConfirmation: ReactNode;
 }
 
@@ -175,6 +177,7 @@ export function StatblockEditor({
   source,
   encounterNotes,
   examples,
+  onClear,
   visibilityConfirmation,
 }: StatblockEditorProps) {
   const [preview, setPreview] = useState(false);
@@ -236,10 +239,11 @@ export function StatblockEditor({
         team || monster.legendary ? "max-w-4xl" : "max-w-3xl"
       )}
     >
-      <div className="flex items-end gap-4">
+      <div className="flex items-end justify-between gap-2 pb-5">
         <FormSelect
           label="Monster type"
           name="monster-type"
+          className="[&>button]:mb-0"
           selected={type}
           choices={[
             { value: "minion", label: "Minion", icon: PersonStanding },
@@ -252,6 +256,31 @@ export function StatblockEditor({
             else changeType(value);
           }}
         />
+        {!preview && (
+          <div className="flex items-end gap-2">
+            {examples}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button type="button" variant="destructive">
+                  Clear
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="duration-0 [animation-duration:0s]">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Clear form?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will reset all fields. Any unsaved changes will be
+                    lost.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={onClear}>Clear</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
       </div>
       {error && (
         <p role="alert" className="text-destructive">
@@ -273,88 +302,87 @@ export function StatblockEditor({
           />
         </div>
       ) : (
-        <>
-          <div className="flex flex-wrap justify-end">{examples}</div>
-          <FormCard>
-            <div className="px-4">
-              <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-4 md:grid-cols-[4.5rem_minmax(0,1fr)_minmax(0,18rem)]">
-                <div className="relative h-22">
-                  <PaperforgeImageSelect
-                    portrait
-                    className="absolute -left-7 top-0 z-10"
-                    value={monster.paperforgeId}
-                    onChange={(paperforgeId) => patch({ paperforgeId })}
+        <FormCard>
+          <div className="px-4">
+            <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-4 md:grid-cols-[4.5rem_minmax(0,1fr)_minmax(0,18rem)]">
+              <div className="relative h-22">
+                <PaperforgeImageSelect
+                  portrait
+                  className="absolute -left-7 -top-8 z-10"
+                  value={monster.paperforgeId}
+                  onChange={(paperforgeId) => patch({ paperforgeId })}
+                />
+              </div>
+              <div className="min-w-0 space-y-3">
+                <Label htmlFor="statblock-name">Name</Label>
+                <Input
+                  id="statblock-name"
+                  required
+                  placeholder="Monster name"
+                  value={monster.name}
+                  onChange={(event) => patch({ name: event.target.value })}
+                  className={cn(
+                    "h-auto py-2 font-slab font-bold",
+                    monster.legendary
+                      ? "text-3xl md:text-3xl"
+                      : "small-caps text-2xl md:text-2xl"
+                  )}
+                />
+                <div className="grid grid-cols-2 gap-3">
+                  <FormSelect
+                    label="Level"
+                    name="statblock-level"
+                    choices={MONSTER_LEVELS.map((level) => ({
+                      value: String(level.value),
+                      label: level.label,
+                    }))}
+                    selected={String(monster.levelInt)}
+                    onChange={(value) =>
+                      patch({
+                        levelInt: Number(value),
+                        level: levelIntToDisplay(Number(value)),
+                      })
+                    }
+                  />
+                  <FormSelect
+                    label="Size"
+                    name="statblock-size"
+                    choices={SIZES}
+                    selected={monster.size}
+                    onChange={(size) => patch({ size })}
                   />
                 </div>
-                <div className="min-w-0 space-y-3">
-                  <Label htmlFor="statblock-name">Name</Label>
-                  <Input
-                    id="statblock-name"
-                    required
-                    placeholder="Monster name"
-                    value={monster.name}
-                    onChange={(event) => patch({ name: event.target.value })}
+                <FormInput
+                  label="Descriptor"
+                  name="statblock-kind"
+                  value={monster.kind || ""}
+                  onChange={(kind) => patch({ kind })}
+                />
+              </div>
+              <div className="col-span-2 min-w-0 space-y-3 md:col-span-1">
+                {!team && (
+                  <div
                     className={cn(
-                      "h-auto py-2 font-slab font-bold",
-                      monster.legendary
-                        ? "text-3xl md:text-3xl"
-                        : "small-caps text-2xl md:text-2xl"
+                      "grid gap-3",
+                      monster.minion
+                        ? "grid-cols-1"
+                        : "grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]"
                     )}
-                  />
-                  <div className="grid grid-cols-2 gap-3">
-                    <FormSelect
-                      label="Level"
-                      name="statblock-level"
-                      choices={MONSTER_LEVELS.map((level) => ({
-                        value: String(level.value),
-                        label: level.label,
-                      }))}
-                      selected={String(monster.levelInt)}
-                      onChange={(value) =>
-                        patch({
-                          levelInt: Number(value),
-                          level: levelIntToDisplay(Number(value)),
-                        })
-                      }
-                    />
-                    <FormSelect
-                      label="Size"
-                      name="statblock-size"
-                      choices={SIZES}
-                      selected={monster.size}
-                      onChange={(size) => patch({ size })}
-                    />
-                  </div>
-                  <FormInput
-                    label="Descriptor"
-                    name="statblock-kind"
-                    value={monster.kind || ""}
-                    onChange={(kind) => patch({ kind })}
-                  />
-                </div>
-                <div className="col-span-2 min-w-0 space-y-3 md:col-span-1">
-                  {!team && (
-                    <div
-                      className={cn(
-                        "grid gap-3",
-                        monster.minion
-                          ? "grid-cols-1"
-                          : "grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]"
-                      )}
-                    >
-                      {!monster.minion && (
-                        <>
-                          <IconFormSelect
-                            icon={ArmorIcon}
-                            text="Armor"
-                            name="statblock-armor"
-                            choices={ARMORS}
-                            selected={monster.armor}
-                            onChange={(armor) => patch({ armor })}
-                          />
-                          {hpInput}
-                        </>
-                      )}
+                  >
+                    {!monster.minion && (
+                      <>
+                        <IconFormSelect
+                          icon={ArmorIcon}
+                          text="Armor"
+                          name="statblock-armor"
+                          choices={ARMORS}
+                          selected={monster.armor}
+                          onChange={(armor) => patch({ armor })}
+                        />
+                        {hpInput}
+                      </>
+                    )}
+                    {!monster.legendary && (
                       <IconFormInput
                         icon={SpeedIcon}
                         text="Speed"
@@ -364,17 +392,19 @@ export function StatblockEditor({
                           patch({ speed: Math.max(0, speed) })
                         }
                       />
-                      {monster.legendary && (
-                        <IconFormInput
-                          icon={SavesIcon}
-                          text="Saves"
-                          name="statblock-saves"
-                          value={monster.saves || ""}
-                          onChange={(saves) => patch({ saves })}
-                        />
-                      )}
-                    </div>
-                  )}
+                    )}
+                    {monster.legendary && (
+                      <IconFormInput
+                        icon={SavesIcon}
+                        text="Saves"
+                        name="statblock-saves"
+                        value={monster.saves || ""}
+                        onChange={(saves) => patch({ saves })}
+                      />
+                    )}
+                  </div>
+                )}
+                {!monster.legendary && (
                   <Section
                     title="Movement types"
                     summary={MOVEMENTS.filter(({ key }) => monster[key] > 0)
@@ -396,149 +426,149 @@ export function StatblockEditor({
                       ))}
                     </div>
                   </Section>
-                </div>
+                )}
               </div>
             </div>
-            <div className="bg-muted px-4 py-3 text-foreground dark:shadow-sm">
-              <AbilitiesSection
+          </div>
+          <div className="bg-muted px-4 py-3 text-foreground dark:shadow-sm">
+            <AbilitiesSection
+              compact
+              abilities={monster.abilities}
+              onChange={(abilities) => patch({ abilities })}
+            />
+          </div>
+          <CardContent className="space-y-5">
+            {team ? (
+              <MembersSection
                 compact
-                abilities={monster.abilities}
-                onChange={(abilities) => patch({ abilities })}
+                members={monster.members ?? []}
+                onChange={(members) => patch({ members })}
               />
-            </div>
-            <CardContent className="space-y-5">
-              {team ? (
-                <MembersSection
-                  compact
-                  members={monster.members ?? []}
-                  onChange={(members) => patch({ members })}
-                />
-              ) : (
-                <ActionsSection
-                  compact
-                  actions={monster.actions}
-                  actionPreface={monster.actionPreface}
-                  showDamage={!monster.legendary && !monster.minion}
-                  onChange={(newActions) => patch({ actions: newActions })}
-                  onPrefaceChange={(actionPreface) => patch({ actionPreface })}
-                />
-              )}
-              <div>
-                {(!monster.minion || monster.bloodied) && (
-                  <Section title="Bloodied" summary={monster.bloodied}>
-                    <FormTextarea
-                      label={
-                        <span className="flex items-center gap-2">
-                          Bloodied effect{" "}
-                          <ConditionValidationIcon text={monster.bloodied} />
-                        </span>
-                      }
-                      name="statblock-bloodied"
-                      value={monster.bloodied || ""}
-                      onChange={(bloodied) => patch({ bloodied })}
-                    />
-                  </Section>
-                )}
-                {(monster.legendary || team || monster.lastStand) && (
-                  <Section title="Last stand" summary={monster.lastStand}>
-                    <FormTextarea
-                      label="Last stand effect"
-                      name="statblock-last-stand"
-                      value={monster.lastStand || ""}
-                      onChange={(lastStand) => patch({ lastStand })}
-                    />
-                  </Section>
-                )}
-              </div>
-              <FormTextarea
-                label={
-                  <span className="flex items-center gap-2">
-                    Description{" "}
-                    <ConditionValidationIcon text={monster.moreInfo} />
-                  </span>
-                }
-                name="statblock-description"
-                value={monster.moreInfo || ""}
-                rows={2}
-                className="[&_textarea]:italic"
-                onChange={(moreInfo) => patch({ moreInfo })}
+            ) : (
+              <ActionsSection
+                compact
+                actions={monster.actions}
+                actionPreface={monster.actionPreface}
+                showDamage={!monster.legendary && !monster.minion}
+                onChange={(newActions) => patch({ actions: newActions })}
+                onPrefaceChange={(actionPreface) => patch({ actionPreface })}
               />
-              <div>
-                <Section
-                  title="Encounter notes"
-                  summary={
-                    monster.mild_encounter || monster.spicy_encounter
-                      ? "Notes added"
-                      : undefined
-                  }
-                >
-                  {encounterNotes}
+            )}
+            <div>
+              {(!monster.minion || monster.bloodied) && (
+                <Section title="Bloodied" summary={monster.bloodied}>
+                  <FormTextarea
+                    label={
+                      <span className="flex items-center gap-2">
+                        Bloodied effect{" "}
+                        <ConditionValidationIcon text={monster.bloodied} />
+                      </span>
+                    }
+                    name="statblock-bloodied"
+                    value={monster.bloodied || ""}
+                    onChange={(bloodied) => patch({ bloodied })}
+                  />
                 </Section>
-              </div>
-            </CardContent>
-            <div className="border-t px-4 pt-2 [&>div:first-child]:border-t-0">
+              )}
+              {(monster.legendary || team || monster.lastStand) && (
+                <Section title="Last stand" summary={monster.lastStand}>
+                  <FormTextarea
+                    label="Last stand effect"
+                    name="statblock-last-stand"
+                    value={monster.lastStand || ""}
+                    onChange={(lastStand) => patch({ lastStand })}
+                  />
+                </Section>
+              )}
+            </div>
+            <FormTextarea
+              label={
+                <span className="flex items-center gap-2">
+                  Description{" "}
+                  <ConditionValidationIcon text={monster.moreInfo} />
+                </span>
+              }
+              name="statblock-description"
+              value={monster.moreInfo || ""}
+              rows={2}
+              className="[&_textarea]:italic"
+              onChange={(moreInfo) => patch({ moreInfo })}
+            />
+            <div>
               <Section
-                title="Classification"
-                summary={[
-                  MONSTER_ROLES.find((role) => role.value === monster.role)
-                    ?.label,
-                  ...(monster.creatureTypes ?? []),
-                  ...(monster.creatureKinds ?? []),
-                  ...(monster.environments ?? []),
-                ]
-                  .filter(Boolean)
-                  .join(", ")}
+                title="Encounter notes"
+                summary={
+                  monster.mild_encounter || monster.spicy_encounter
+                    ? "Notes added"
+                    : undefined
+                }
               >
-                <FormSelect
-                  label="Combat role"
-                  name="statblock-role"
-                  selected={monster.role || "none"}
-                  choices={[
-                    { value: "none", label: "Not specified" },
-                    ...MONSTER_ROLES,
-                  ]}
-                  onChange={(role) =>
-                    patch({
-                      role:
-                        MONSTER_ROLES.find((option) => option.value === role)
-                          ?.value ?? null,
-                    })
-                  }
-                />
-                <ClassificationField
-                  label="Creature types"
-                  values={CREATURE_TYPES}
-                  selected={monster.creatureTypes ?? []}
-                  onChange={(creatureTypes) => patch({ creatureTypes })}
-                />
-                <ClassificationField
-                  label="Creature kinds"
-                  values={CREATURE_KINDS}
-                  selected={monster.creatureKinds ?? []}
-                  onChange={(creatureKinds) => patch({ creatureKinds })}
-                />
-                <ClassificationField
-                  label="Environments"
-                  values={MONSTER_ENVIRONMENTS}
-                  selected={monster.environments ?? []}
-                  onChange={(environments) => patch({ environments })}
-                />
-              </Section>
-              <Section
-                title="Family & source"
-                summary={[
-                  ...monster.families.map((family) => family.name),
-                  monster.source?.name,
-                ]
-                  .filter(Boolean)
-                  .join(", ")}
-              >
-                {families}
-                {source}
+                {encounterNotes}
               </Section>
             </div>
-          </FormCard>
-        </>
+          </CardContent>
+          <div className="border-t px-4 pt-2 [&>div:first-child]:border-t-0">
+            <Section
+              title="Classification"
+              summary={[
+                MONSTER_ROLES.find((role) => role.value === monster.role)
+                  ?.label,
+                ...(monster.creatureTypes ?? []),
+                ...(monster.creatureKinds ?? []),
+                ...(monster.environments ?? []),
+              ]
+                .filter(Boolean)
+                .join(", ")}
+            >
+              <FormSelect
+                label="Combat role"
+                name="statblock-role"
+                selected={monster.role || "none"}
+                choices={[
+                  { value: "none", label: "Not specified" },
+                  ...MONSTER_ROLES,
+                ]}
+                onChange={(role) =>
+                  patch({
+                    role:
+                      MONSTER_ROLES.find((option) => option.value === role)
+                        ?.value ?? null,
+                  })
+                }
+              />
+              <ClassificationField
+                label="Creature types"
+                values={CREATURE_TYPES}
+                selected={monster.creatureTypes ?? []}
+                onChange={(creatureTypes) => patch({ creatureTypes })}
+              />
+              <ClassificationField
+                label="Creature kinds"
+                values={CREATURE_KINDS}
+                selected={monster.creatureKinds ?? []}
+                onChange={(creatureKinds) => patch({ creatureKinds })}
+              />
+              <ClassificationField
+                label="Environments"
+                values={MONSTER_ENVIRONMENTS}
+                selected={monster.environments ?? []}
+                onChange={(environments) => patch({ environments })}
+              />
+            </Section>
+            <Section
+              title="Family & source"
+              summary={[
+                ...monster.families.map((family) => family.name),
+                monster.source?.name,
+              ]
+                .filter(Boolean)
+                .join(", ")}
+            >
+              {families}
+              {source}
+            </Section>
+          </div>
+        </FormCard>
       )}
       <div
         className={cn(

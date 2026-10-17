@@ -13,7 +13,7 @@ import type { CreateMonsterInput } from "./types";
 
 export const OFFICIAL_USER_ID = "00000000-0000-0000-0000-000000000000";
 
-const importedAbilitySchema = attackMetadataSchema.safeExtend({
+const importedAbilitySchema = z.strictObject({
   name: z.string(),
   description: z.string(),
 });
@@ -42,7 +42,6 @@ export async function findOrCreateOfficialFamily(
     .limit(1);
 
   const abilitiesData = abilities.map((a) => ({
-    ...attackMetadataSchema.parse(a),
     name: a.name,
     description: a.description,
   }));
@@ -127,7 +126,6 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
   }));
 
   const abilities = attrs.abilities.map((a) => ({
-    ...attackMetadataSchema.parse(a),
     id: crypto.randomUUID(),
     name: a.name,
     description: a.description,

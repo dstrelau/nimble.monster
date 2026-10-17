@@ -1567,6 +1567,13 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
   );
 
   if (statblockEditor && !monster.hazard) {
+    const example = monster.members?.length
+      ? "team"
+      : monster.legendary
+        ? "manticore"
+        : monster.minion
+          ? "kobold"
+          : "goblin";
     return (
       <StatblockEditor
         monster={monster}
@@ -1595,11 +1602,32 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           />
         }
         examples={
-          <ExampleLoader
-            examples={EXAMPLE_MONSTERS}
-            onLoadExample={loadExample}
-            className="mb-0 mr-0 [&>div]:flex-wrap"
-          />
+          <div className="flex flex-col items-start min-[480px]:flex-row min-[480px]:items-center">
+            <span className="text-sm font-bold whitespace-nowrap">
+              Load example:
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              className="small-caps text-sm"
+              onClick={() => loadExample(example)}
+            >
+              {example.charAt(0).toUpperCase() + example.slice(1)}
+            </Button>
+          </div>
+        }
+        onClear={() =>
+          setMonster({
+            ...EXAMPLE_MONSTERS.empty,
+            id: monster.id,
+            creator,
+            remixedFrom: monster.remixedFrom,
+            legendary: monster.legendary,
+            minion: monster.minion,
+            members: monster.members?.length
+              ? [emptyMember(), emptyMember()]
+              : [],
+          })
         }
         visibilityConfirmation={visibilityConfirmation}
       />

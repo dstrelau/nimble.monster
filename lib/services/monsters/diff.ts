@@ -32,9 +32,7 @@ function compareAbilities(uploaded: Ability[], existing: Ability[]): boolean {
   return sortedUploaded.every(
     (u, i) =>
       u.name === sortedExisting[i].name &&
-      u.description === sortedExisting[i].description &&
-      JSON.stringify(attackMetadataSchema.parse(u)) ===
-        JSON.stringify(attackMetadataSchema.parse(sortedExisting[i]))
+      u.description === sortedExisting[i].description
   );
 }
 

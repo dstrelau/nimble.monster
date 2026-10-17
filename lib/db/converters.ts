@@ -221,7 +221,8 @@ export const toFamilyOverview = (
     description: f.description ?? undefined,
     abilities: parseJsonField<Omit<Ability, "id">>(f.abilities).map(
       (ability) => ({
-        ...ability,
+        name: ability.name,
+        description: ability.description,
         id: crypto.randomUUID(),
       })
     ),
@@ -280,7 +281,8 @@ export const toCompanion = (c: CompanionRow): Companion => {
     updatedAt: c.updatedAt ? new Date(c.updatedAt) : new Date(),
     abilities: parseJsonField<Omit<Ability, "id">>(c.abilities).map(
       (ability) => ({
-        ...ability,
+        name: ability.name,
+        description: ability.description,
         id: crypto.randomUUID(),
       })
     ),

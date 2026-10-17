@@ -168,7 +168,7 @@ describe("ActionsSection", () => {
     expect(screen.queryByLabelText("Name")).not.toBeInTheDocument();
   });
 
-  it("applies structured details without submitting, cancels edits, and clears optional counts", () => {
+  it("edits structured details inline without submitting and keeps edits across collapse", () => {
     function Editor() {
       const [actions, setActions] = useState<Action[]>([
         {
@@ -201,14 +201,16 @@ describe("ActionsSection", () => {
       );
     }
     render(<Editor />);
-    fireEvent.click(screen.getByRole("button", { name: "Attack details…" }));
+    const disclosure = screen.getByRole("button", { name: /^Attack details/ });
+    fireEvent.click(disclosure);
+    expect(disclosure).toHaveAttribute("aria-expanded", "true");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Attack count"), {
       target: { value: "5" },
     });
     fireEvent.change(screen.getAllByLabelText("Spaces")[1], {
       target: { value: "12" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Apply" }));
     expect(
       screen.getByText("5× (Reach 2, or Shoot, Range 12)")
     ).toBeInTheDocument();
@@ -216,28 +218,27 @@ describe("ActionsSection", () => {
     expect(screen.getByRole("textbox", { name: /Effect/ })).toHaveValue(
       "Push 1 space."
     );
-    fireEvent.click(screen.getByRole("button", { name: "Attack details…" }));
     expect(screen.getByLabelText("Legacy range text")).toHaveValue(
       "within sight"
     );
     fireEvent.change(screen.getByLabelText("Attack count"), {
       target: { value: "7" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    fireEvent.click(disclosure);
+    expect(disclosure).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByLabelText("Attack count")).not.toBeInTheDocument();
     expect(
-      screen.getByText("5× (Reach 2, or Shoot, Range 12)")
+      screen.getByText("7× (Reach 2, or Shoot, Range 12)")
     ).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Attack details…" }));
-    expect(screen.getByLabelText("Attack count")).toHaveValue(5);
+    fireEvent.click(disclosure);
+    expect(screen.getByLabelText("Attack count")).toHaveValue(7);
     fireEvent.change(screen.getByLabelText("Attack count"), {
       target: { value: "" },
     });
     fireEvent.click(
       screen.getByRole("checkbox", { name: "Alternative attack" })
     );
-    fireEvent.click(screen.getByRole("button", { name: "Apply" }));
     expect(screen.getByText("(Reach 2)")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Attack details…" }));
     expect(screen.getByLabelText("Attack count")).toHaveValue(null);
     expect(
       screen.getByRole("checkbox", { name: "Alternative attack" })
@@ -260,12 +261,11 @@ describe("ActionsSection", () => {
       );
     }
     render(<Editor />);
-    fireEvent.click(screen.getByRole("button", { name: "Attack details…" }));
+    fireEvent.click(screen.getByRole("button", { name: /^Attack details/ }));
     fireEvent.keyDown(screen.getByRole("combobox", { name: "Area" }), {
       key: "Enter",
     });
     fireEvent.click(screen.getByRole("option", { name: "Cone" }));
-    fireEvent.click(screen.getByRole("button", { name: "Apply" }));
     expect(screen.getByRole("alert")).toHaveTextContent(
       "A cone cannot also have a ranged target"
     );
@@ -276,8 +276,8 @@ describe("ActionsSection", () => {
     fireEvent.change(screen.getByLabelText("Length (spaces)"), {
       target: { value: "4" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Apply" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(screen.getByText("(Range 7, Line 4)")).toBeInTheDocument();
   });
 });

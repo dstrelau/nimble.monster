@@ -302,6 +302,13 @@
       "when": 1792114090546,
       "tag": "0042_soft_zaran",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "6",
+      "when": 1792201783155,
+      "tag": "0043_abilities_without_attacks",
+      "breakpoints": true
     }
   ]
 }

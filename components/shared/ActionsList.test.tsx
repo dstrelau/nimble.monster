@@ -102,7 +102,7 @@ describe("ActionsList", () => {
     expect(paragraph?.querySelector("[data-dice-notation]")).not.toBeNull();
   });
 
-  it("renders passive AoE and aura while preserving legacy distance text", () => {
+  it("keeps ability effects in descriptions while preserving action range text", () => {
     const { container } = render(
       <>
         <AbilityOverlay
@@ -112,15 +112,12 @@ describe("ActionsList", () => {
             {
               id: "burst",
               name: "Burst Lightning",
-              target: { reach: 1 },
-              aoe: true,
-              description: "On death, 2d8 (ignores metal armor).",
+              description: "On death, Reach 1, AoE: 2d8 (ignores metal armor).",
             },
             {
               id: "aura",
               name: "Terror",
-              target: { aura: 3 },
-              description: "Frightened.",
+              description: "Aura 3: Frightened.",
             },
           ]}
         />

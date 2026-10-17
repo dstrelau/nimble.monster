@@ -109,4 +109,30 @@ describe("AbilitiesSection", () => {
     expect(screen.getByRole("button", { name: /add/i })).toBeInTheDocument();
     expect(screen.queryByLabelText("Name")).not.toBeInTheDocument();
   });
+
+  it("offers only name and effect editing in the compact form", () => {
+    render(
+      <AbilitiesSection
+        compact
+        abilities={[
+          {
+            id: "passive",
+            name: "Spines",
+            description: "Melee attackers take 1d4.",
+          },
+        ]}
+        onChange={mockOnChange}
+      />
+    );
+    expect(screen.getByRole("textbox", { name: "Ability name" })).toHaveValue(
+      "Spines"
+    );
+    expect(screen.getByRole("textbox", { name: /Effect/ })).toHaveValue(
+      "Melee attackers take 1d4."
+    );
+    expect(
+      screen.queryByRole("button", { name: /details/i })
+    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("spinbutton")).not.toBeInTheDocument();
+  });
 });

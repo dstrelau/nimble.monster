@@ -1,7 +1,7 @@
 import { CircleSlash2, LoaderCircle, Plus, Sword, Trash } from "lucide-react";
 import { useId } from "react";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
-import { AttackDetailsDialog } from "@/components/create/AttackDetailsDialog";
+import { AttackDetails } from "@/components/create/AttackDetails";
 import { FormInput, FormTextarea } from "@/components/shared/Form";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +11,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useDiceStatistics } from "@/lib/hooks/useDiceStatistics";
-import { formatAttackDetails } from "@/lib/text";
 import type { Action } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -40,7 +39,7 @@ const ActionRow: React.FC<ActionRowProps> = ({
   if (compact) {
     return (
       <div className="space-y-2">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
           <div
             className={cn(
               "grid min-w-0 gap-3",
@@ -63,13 +62,6 @@ const ActionRow: React.FC<ActionRowProps> = ({
               />
             )}
           </div>
-          <div className="col-span-2 row-start-2 sm:col-span-1 sm:row-start-auto">
-            <AttackDetailsDialog
-              name={action.name}
-              value={action}
-              onChange={(details) => onChange({ ...action, ...details })}
-            />
-          </div>
           <Button
             type="button"
             variant="ghost"
@@ -80,12 +72,6 @@ const ActionRow: React.FC<ActionRowProps> = ({
             <Trash />
           </Button>
         </div>
-        {(action.attackCount || formatAttackDetails(action)) && (
-          <p className="text-sm text-muted-foreground">
-            {action.attackCount ? `${action.attackCount}× ` : ""}
-            {formatAttackDetails(action)}
-          </p>
-        )}
         {showDamage && (error || showLoading || stats) && (
           <p
             className="text-xs text-muted-foreground"
@@ -108,6 +94,10 @@ const ActionRow: React.FC<ActionRowProps> = ({
           rows={1}
           className="[&_textarea]:min-h-9"
           onChange={(description) => onChange({ ...action, description })}
+        />
+        <AttackDetails
+          value={action}
+          onChange={(details) => onChange({ ...action, ...details })}
         />
       </div>
     );

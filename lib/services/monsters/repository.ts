@@ -118,7 +118,8 @@ const parseJsonField = <T>(value: unknown): T[] => {
 
 const toAbilitiesFromRow = (abilities: unknown): Ability[] => {
   return parseJsonField<Omit<Ability, "id">>(abilities).map((ability) => ({
-    ...ability,
+    name: ability.name,
+    description: ability.description,
     id: crypto.randomUUID(),
   }));
 };
@@ -1286,7 +1287,10 @@ const createBestiaryEntry = async (
     burrow: legendary || hazard ? 0 : burrow,
     teleport: legendary || hazard ? 0 : teleport,
     actions: stripActionIds(actions),
-    abilities: abilities,
+    abilities: abilities.map(({ name, description }) => ({
+      name,
+      description,
+    })),
     members: hazard ? [] : stripMemberIds(members),
     bloodied: minion || hazard ? "" : bloodied,
     lastStand: !hazard && (legendary || isTeam) ? lastStand : "",
@@ -1459,7 +1463,10 @@ export const upsertOfficialMonster = async (
     burrow: legendary || hazard ? 0 : burrow,
     teleport: legendary || hazard ? 0 : teleport,
     actions: stripActionIds(actions),
-    abilities: abilities,
+    abilities: abilities.map(({ name, description }) => ({
+      name,
+      description,
+    })),
     members: hazard ? [] : stripMemberIds(members),
     bloodied: minion || hazard ? "" : bloodied,
     lastStand: !hazard && (legendary || isTeam) ? lastStand : "",
@@ -1622,7 +1629,10 @@ const updateBestiaryEntry = async (
       teleport: hazard ? 0 : teleport,
       burrow: hazard ? 0 : burrow,
       actions: stripActionIds(actions),
-      abilities: abilities,
+      abilities: abilities.map(({ name, description }) => ({
+        name,
+        description,
+      })),
       members: hazard ? [] : stripMemberIds(members),
       legendary: hazard ? false : legendary,
       minion: hazard ? false : minion,

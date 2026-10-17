@@ -174,7 +174,8 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
     updatedAt: m.updatedAt ? new Date(m.updatedAt) : new Date(),
     abilities: parseJsonField<Omit<Ability, "id">>(m.abilities).map(
       (ability) => ({
-        ...ability,
+        name: ability.name,
+        description: ability.description,
         id: crypto.randomUUID(),
       })
     ),
@@ -257,7 +258,10 @@ const toZodMember = (member: MonsterTeamMember) => {
     armor: member.armor === "none" ? ("none" as const) : member.armor,
     size: member.size,
     saves: member.saves ? parseSaves(member.saves) : undefined,
-    abilities: member.abilities.map(({ id, ...ability }) => ability),
+    abilities: member.abilities.map(({ name, description }) => ({
+      name,
+      description,
+    })),
     actions: member.actions.map(toJsonApiAction),
     actionsInstructions: member.actionPreface || undefined,
   };
@@ -296,7 +300,10 @@ export const toZodMonster = (m: Monster) => {
   if (m.burrow > 0) movement.push({ mode: "burrow", speed: m.burrow });
   if (m.teleport > 0) movement.push({ mode: "teleport", speed: m.teleport });
 
-  const abilities = m.abilities.map(({ id, ...ability }) => ability);
+  const abilities = m.abilities.map(({ name, description }) => ({
+    name,
+    description,
+  }));
   const actions = m.actions.map(toJsonApiAction);
 
   const parsedLevel: number | "1/4" | "1/3" | "1/2" =
@@ -387,7 +394,10 @@ export const toJsonApiMonster = (m: BestiaryEntry) => {
         ...(m.hp != null ? { hp: m.hp } : {}),
         level: m.level,
         levelInt: m.levelInt,
-        abilities: m.abilities.map(({ id, ...ability }) => ability),
+        abilities: m.abilities.map(({ name, description }) => ({
+          name,
+          description,
+        })),
         actions: m.actions.map(({ id, ...action }) => action),
         actionsInstructions: m.actionPreface,
         description: m.moreInfo,

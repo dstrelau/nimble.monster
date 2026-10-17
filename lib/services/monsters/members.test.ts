@@ -91,16 +91,42 @@ describe("stripMemberIds", () => {
         hpPerHero: 10,
         armor: "heavy",
         size: "huge",
-        abilities: [{ name: "Ab", description: "d" }],
-        actions: [{ name: "Ac", description: "d2" }],
+        abilities: [
+          { name: "Ab", description: "d", target: { reach: 3 }, damage: "2d8" },
+        ],
+        actions: [
+          {
+            name: "Ac",
+            description: "d2",
+            target: { reach: 4 },
+            damage: "1d6",
+          },
+        ],
       },
     ]);
     const reparsed = parseMembers(stripMemberIds(original));
     expect(reparsed[0].name).toBe("A");
     expect(reparsed[0].hpPerHero).toBe(10);
     expect(reparsed[0].armor).toBe("heavy");
-    expect(reparsed[0].abilities[0].name).toBe("Ab");
-    expect(reparsed[0].actions[0].name).toBe("Ac");
+    expect(reparsed[0].abilities[0]).toEqual({
+      id: expect.any(String),
+      name: "Ab",
+      description: "d",
+    });
+    const legacyAbility = {
+      ...original[0].abilities[0],
+      target: { reach: 3 },
+      damage: "2d8",
+    };
+    original[0].abilities[0] = legacyAbility;
+    expect(stripMemberIds(original)[0].abilities).toEqual([
+      { name: "Ab", description: "d" },
+    ]);
+    expect(reparsed[0].actions[0]).toMatchObject({
+      name: "Ac",
+      target: { reach: 4 },
+      damage: "1d6",
+    });
   });
 
   it("returns [] for undefined", () => {

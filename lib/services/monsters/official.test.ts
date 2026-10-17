@@ -91,7 +91,7 @@ describe("structured monster attacks", () => {
     );
   });
 
-  it("preserves alternate ranged attacks and triggered AoE abilities without making the melee attack ranged", () => {
+  it("preserves alternate ranged attacks without making the melee attack ranged", () => {
     const goblin = officialMonster("Goblin");
     goblin.attributes.actions = [
       {
@@ -110,27 +110,43 @@ describe("structured monster attacks", () => {
     expect(
       toJsonApiMonster(importedMonster(goblin)).attributes.actions[0]
     ).toMatchObject({ alternative: { name: "Shoot", target: { range: 8 } } });
+  });
 
+  it("rejects attack fields on abilities and strips legacy fields during conversion", () => {
     const drake = officialMonster("Blue Drake");
-    drake.attributes.abilities = [
-      {
-        name: "Burst Lightning",
-        target: { reach: 1 },
-        aoe: true,
-        description: "On death, 2d8 (ignores metal armor).",
-      },
-    ];
-    const edit = createBestiaryEntrySchema.parse({
-      kind: "monster",
-      input: parseJSONAPIMonster(drake),
-    });
-    expect(edit.input.abilities[0]).toMatchObject({
+    const legacyAbility = {
+      name: "Burst Lightning",
       target: { reach: 1 },
-      aoe: true,
+      aoe: false,
+      damage: "2d8",
+      range: "1",
+      area: { shape: "square", size: 2 },
+      attackCount: 2,
+      alternative: { name: "Burst", target: { range: 3 } },
+      description: "On death, Reach 1, AoE: 2d8 (ignores metal armor).",
+    };
+    drake.attributes.abilities = [legacyAbility];
+    expect(() => validateOfficialMonstersJSON({ data: [drake] })).toThrow(
+      /abilities/
+    );
+    const input = parseJSONAPIMonster(drake);
+    expect(input.abilities[0]).toEqual({
+      id: expect.any(String),
+      name: legacyAbility.name,
+      description: legacyAbility.description,
     });
     expect(
+      createBestiaryEntrySchema.safeParse({
+        kind: "monster",
+        input: { ...input, abilities: [{ ...legacyAbility, id: "ability" }] },
+      }).success
+    ).toBe(false);
+    expect(
       toJsonApiMonster(importedMonster(drake)).attributes.abilities[0]
-    ).toMatchObject({ target: { reach: 1 }, aoe: true });
+    ).toEqual({
+      name: legacyAbility.name,
+      description: legacyAbility.description,
+    });
   });
 
   it.each([

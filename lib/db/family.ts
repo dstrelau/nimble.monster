@@ -160,7 +160,8 @@ const toFamilyOverviewFromRow = (
   description: family.description ?? undefined,
   abilities: parseJsonField<Omit<Ability, "id">>(family.abilities).map(
     (ability) => ({
-      ...ability,
+      name: ability.name,
+      description: ability.description,
       id: crypto.randomUUID(),
     })
   ),
@@ -247,7 +248,8 @@ export const getUserFamiliesWithMonsters = async (
       description: family.description ?? undefined,
       abilities: parseJsonField<Omit<Ability, "id">>(family.abilities).map(
         (ability) => ({
-          ...ability,
+          name: ability.name,
+          description: ability.description,
           id: crypto.randomUUID(),
         })
       ),
@@ -322,7 +324,8 @@ export const listPublicFamiliesForUser = async (
       description: family.description ?? undefined,
       abilities: parseJsonField<Omit<Ability, "id">>(family.abilities).map(
         (ability) => ({
-          ...ability,
+          name: ability.name,
+          description: ability.description,
           id: crypto.randomUUID(),
         })
       ),
@@ -417,7 +420,10 @@ export const createFamily = async ({
     .values({
       name,
       description: description || null,
-      abilities: abilities.map((a) => ({ ...a })),
+      abilities: abilities.map(({ name, description }) => ({
+        name,
+        description,
+      })),
       visibility: "public",
       creatorId: creator.id,
     })
@@ -463,10 +469,9 @@ export const updateFamily = async ({
     .set({
       name,
       description: description === "" ? null : description,
-      abilities: abilities.map((a) => ({
-        ...a,
-        Name: undefined,
-        Description: undefined,
+      abilities: abilities.map(({ name, description }) => ({
+        name,
+        description,
       })),
       updatedAt: new Date().toISOString(),
     })
@@ -549,7 +554,8 @@ export const getRandomFeaturedFamily = async (): Promise<Family | null> => {
     description: family.description ?? undefined,
     abilities: parseJsonField<Omit<Ability, "id">>(family.abilities).map(
       (ability) => ({
-        ...ability,
+        name: ability.name,
+        description: ability.description,
         id: crypto.randomUUID(),
       })
     ),

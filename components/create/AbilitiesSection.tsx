@@ -1,10 +1,8 @@
 import { Plus, Trash } from "lucide-react";
 import { useId } from "react";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
-import { AttackDetailsDialog } from "@/components/create/AttackDetailsDialog";
 import { FormInput, FormTextarea } from "@/components/shared/Form";
 import { Button } from "@/components/ui/button";
-import { formatAttackDetails } from "@/lib/text";
 import type { Ability } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -47,12 +45,6 @@ const AbilityRow: React.FC<AbilityRowProps> = ({
           />
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2">
-          <AttackDetailsDialog
-            ability
-            name={ability.name}
-            value={ability}
-            onChange={(details) => onChange({ ...ability, ...details })}
-          />
           <Button
             type="button"
             variant="ghost"
@@ -63,12 +55,6 @@ const AbilityRow: React.FC<AbilityRowProps> = ({
             <Trash />
           </Button>
         </div>
-        {(ability.attackCount || formatAttackDetails(ability)) && (
-          <p className="text-sm text-muted-foreground">
-            {ability.attackCount ? `${ability.attackCount}× ` : ""}
-            {formatAttackDetails(ability)}
-          </p>
-        )}
       </div>
     );
   }

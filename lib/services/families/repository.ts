@@ -31,7 +31,8 @@ const toUserFromRow = (u: UserRow): User => ({
 
 const toAbilitiesFromRow = (abilities: unknown): Ability[] => {
   return ((abilities as Omit<Ability, "id">[]) || []).map((ability) => ({
-    ...ability,
+    name: ability.name,
+    description: ability.description,
     id: crypto.randomUUID(),
   }));
 };

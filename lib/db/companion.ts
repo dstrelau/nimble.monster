@@ -250,7 +250,10 @@ export const createCompanion = async (
       size: input.size,
       saves: input.saves,
       actions: stripActionIds(input.actions),
-      abilities: input.abilities,
+      abilities: input.abilities.map(({ name, description }) => ({
+        name,
+        description,
+      })),
       actionPreface: input.actionPreface,
       dyingRule: input.dyingRule,
       moreInfo: input.moreInfo || "",
@@ -315,7 +318,10 @@ export const updateCompanion = async (
       size: input.size,
       saves: input.saves,
       actions: stripActionIds(input.actions),
-      abilities: input.abilities,
+      abilities: input.abilities.map(({ name, description }) => ({
+        name,
+        description,
+      })),
       actionPreface: input.actionPreface,
       dyingRule: input.dyingRule,
       moreInfo: input.moreInfo,

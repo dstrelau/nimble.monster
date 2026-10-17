@@ -119,8 +119,13 @@ Retrieve a single monster by ID (26-character identifier).
 Standard (non-minion) monsters may also include a `bloodied` attribute
 (`{ "description": "..." }`) when one is set; it is omitted otherwise.
 
-**Structured attacks:** Actions and abilities can carry optional combat
-metadata, also preserved on team members and family abilities:
+**Abilities:** Monster, hazard, team-member, companion, and family abilities
+contain only `name` and `description` (plus a client-side `id` when editing).
+Attack-only fields are not accepted on abilities; describe any triggered damage
+or distances in the ability's description.
+
+**Structured attacks:** Actions can carry optional combat metadata, including
+actions on team members:
 
 - `target`: exactly one of `{ "reach": 2 }`, `{ "range": 8 }`, or
   `{ "aura": 3 }`. Distances use Nimble spaces, not feet.

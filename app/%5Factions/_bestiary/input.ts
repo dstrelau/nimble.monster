@@ -14,7 +14,7 @@ const actionSchema = attackMetadataSchema.safeExtend({
   description: z.string().optional(),
 });
 
-const abilitySchema = attackMetadataSchema.safeExtend({
+const abilitySchema = z.strictObject({
   id: z.string(),
   name: z.string(),
   description: z.string(),

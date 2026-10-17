@@ -33,7 +33,11 @@ const parseJsonField = <T>(value: unknown): T[] => {
 const abilitiesWithIds = (
   items: Array<Omit<Ability, "id">> | undefined
 ): Ability[] =>
-  (items ?? []).map((item) => ({ ...item, id: crypto.randomUUID() }));
+  (items ?? []).map(({ name, description }) => ({
+    name,
+    description,
+    id: crypto.randomUUID(),
+  }));
 
 const actionsWithIds = (
   items: Array<Omit<Action, "id">> | undefined
@@ -75,7 +79,10 @@ export const stripMemberIds = (
     size: m.size,
     saves: m.saves,
     actionPreface: m.actionPreface,
-    abilities: m.abilities.map(({ id, ...rest }) => rest),
+    abilities: m.abilities.map(({ name, description }) => ({
+      name,
+      description,
+    })),
     actions: m.actions.map(({ id, ...rest }) => rest),
   }));
 

@@ -20,7 +20,11 @@ export const companionInputSchema = z.object({
     })
   ),
   abilities: z.array(
-    z.object({ id: z.string(), name: z.string(), description: z.string() })
+    z.strictObject({
+      id: z.string(),
+      name: z.string(),
+      description: z.string(),
+    })
   ),
   actionPreface: z.string(),
   dyingRule: z.string(),
