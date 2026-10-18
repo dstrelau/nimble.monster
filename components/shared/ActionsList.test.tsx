@@ -76,6 +76,16 @@ describe("ActionsList", () => {
             area: { shape: "line", size: 4 },
           },
           {
+            id: "explicit-one",
+            name: "Narrow line",
+            area: { shape: "line", size: 6, width: 1 },
+          },
+          {
+            id: "wide-line",
+            name: "Wide line",
+            area: { shape: "line", size: 6, width: 3 },
+          },
+          {
             id: "goblin",
             name: "Stab",
             damage: "1d6",
@@ -93,6 +103,8 @@ describe("ActionsList", () => {
     expect(container).toHaveTextContent("Acidic Touch (2×)");
     expect(container).toHaveTextContent("Reach 2");
     expect(container).toHaveTextContent("(Line 4)");
+    expect(container).toHaveTextContent("(Line 6)");
+    expect(container).toHaveTextContent("(Line 3×6)");
     expect(container).toHaveTextContent("or Shoot, Range 8");
     expect(container).toHaveTextContent("2×2 AoE");
     expect(container).toHaveTextContent("(Cone 4)");

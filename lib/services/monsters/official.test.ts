@@ -73,22 +73,49 @@ describe("structured monster attacks", () => {
     expect(monsters[0].attributes.actions).toEqual(data.attributes.actions);
     expect(monsterToMarkdown(monster)).toContain("Acidic Touch (2×)");
     expect(monsterToMarkdown(monster)).toContain("Reach 2");
+  });
 
-    const worm = officialMonster("Great Worm");
-    worm.attributes.actions[0] = {
-      name: "Crush",
-      damage: { roll: "d88" },
-      area: { shape: "line", size: 4 },
-      description: "Damage on a failed DC 18 DEX save.",
-    };
-    const wormExport = toJsonApiMonster(importedMonster(worm));
-    expect(wormExport.attributes.actions[0]).toMatchObject({
-      area: { shape: "line", size: 4 },
+  it.each([
+    { width: undefined, expectedWidth: 1, label: "Line 6" },
+    { width: 1, expectedWidth: 1, label: "Line 6" },
+    { width: 3, expectedWidth: 3, label: "Line 3×6" },
+  ])("round-trips line width $width with length 6", ({
+    width,
+    expectedWidth,
+    label,
+  }) => {
+    const data = officialMonster("Great Worm");
+    data.attributes.actions = [
+      {
+        name: "Crush",
+        damage: { roll: "d88" },
+        area: {
+          shape: "line",
+          size: 6,
+          ...(width === undefined ? {} : { width }),
+        },
+        description: "Damage on a failed DC 18 DEX save.",
+      },
+    ];
+    const { monsters } = validateOfficialMonstersJSON({ data: [data] });
+    const input = parseJSONAPIMonster(monsters[0]);
+    const edit = createBestiaryEntrySchema.parse({ kind: "monster", input });
+    const expectedArea = { shape: "line", size: 6, width: expectedWidth };
+    expect(edit.input.actions[0].area).toEqual(expectedArea);
+    const monster = importedMonster(monsters[0]);
+    const exported = toJsonApiMonster(monster);
+    expect(exported.attributes.actions[0].area).toEqual(expectedArea);
+    const reimported = validateOfficialMonstersJSON({
+      data: [{ type: "monsters", attributes: exported.attributes }],
     });
-    expect(monsterToMarkdown(importedMonster(worm))).toContain("Line 4");
-    expect(monsterToMarkdown(importedMonster(worm))).not.toContain(
-      "Line 4 AoE"
+    expect(parseJSONAPIMonster(reimported.monsters[0]).actions[0].area).toEqual(
+      expectedArea
     );
+    expect(monsterToMarkdown(monster)).toContain(`**Crush** (d88, ${label})`);
+    expect(monsterToMarkdown(monster, { brief: true })).toContain(
+      `**Crush.** d88 (${label}).`
+    );
+    expect(monsterToMarkdown(monster)).not.toContain(`${label} AoE`);
   });
 
   it("preserves alternate ranged attacks without making the melee attack ranged", () => {
@@ -154,8 +181,13 @@ describe("structured monster attacks", () => {
     { target: { reach: 2, range: 8 } },
     { attackCount: 0 },
     { attackCount: 2.5 },
-    { area: { shape: "line", width: 1, size: 4 } },
-    { area: { shape: "line", width: 3, size: 4 } },
+    { area: { shape: "line", width: 0, size: 4 } },
+    { area: { shape: "line", width: -1, size: 4 } },
+    { area: { shape: "line", width: 1.5, size: 4 } },
+    { area: { shape: "line", width: "3", size: 4 } },
+    { area: { shape: "line", width: null, size: 4 } },
+    { area: { shape: "square", width: 3, size: 4 } },
+    { area: { shape: "cone", width: 3, size: 4 } },
     { target: { range: 7 }, area: { shape: "cone", size: 4 } },
     { aoe: true, area: { shape: "line", size: 4 } },
   ])("rejects malformed attack metadata during import and editing: %j", (metadata) => {
@@ -203,5 +235,9 @@ describe("structured monster attacks", () => {
     expect(compareMonsters(changed, original)).toBe("updated");
     changed.actions[0].area = { size: 4, shape: "line" };
     expect(compareMonsters(changed, original)).toBe("unchanged");
+    changed.actions[0].area = { shape: "line", size: 4, width: 1 };
+    expect(compareMonsters(changed, original)).toBe("unchanged");
+    changed.actions[0].area = { shape: "line", size: 4, width: 3 };
+    expect(compareMonsters(changed, original)).toBe("updated");
   });
 });

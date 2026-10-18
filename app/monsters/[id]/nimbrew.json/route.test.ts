@@ -310,7 +310,14 @@ describe("GET /monsters/[id]/nimbrew.json", () => {
     expect(data.actions[0].type).toBe("single");
   });
 
-  it("should handle monster with single action", async () => {
+  it.each([
+    { width: undefined, label: "Line 6" },
+    { width: 1, label: "Line 6" },
+    { width: 3, label: "Line 3×6" },
+  ])("exports a single line action with width $width", async ({
+    width,
+    label,
+  }) => {
     mockFormatSizeKind.mockReturnValue("Small Beast");
 
     const mockMonster = {
@@ -339,6 +346,11 @@ describe("GET /monsters/[id]/nimbrew.json", () => {
           id: "test-id-4",
           name: "Bite",
           damage: "1",
+          area: {
+            shape: "line",
+            size: 6,
+            ...(width === undefined ? {} : { width }),
+          },
           description: "Melee weapon attack",
         },
       ],
@@ -360,5 +372,6 @@ describe("GET /monsters/[id]/nimbrew.json", () => {
     expect(data.actions).toHaveLength(1);
     expect(data.actions[0].type).toBe("single");
     expect(data.actions[0].name).toBe("Bite");
+    expect(data.actions[0].desc).toBe(`1 (${label}) Melee weapon attack`);
   });
 });

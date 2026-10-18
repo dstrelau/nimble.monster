@@ -131,9 +131,12 @@ actions on team members:
   `{ "aura": 3 }`. Distances use Nimble spaces, not feet.
 - `area`: `{ "shape": "square" | "cone" | "line", "size": 2 }`.
   For a square, `size` is its side; for a cone or line, it is its length.
-  Lines are always one space wide; `width` is not accepted. For example,
-  `{ "shape": "line", "size": 4 }` displays as “Line 4”. Cones display as
-  “Cone 4” and cannot also specify a ranged target.
+  Lines also accept a positive-integer `width`, defaulting to `1` when omitted.
+  `{ "shape": "line", "size": 6, "width": 3 }` displays as “Line 3×6”
+  (width × length). Widthless lines and explicit `width: 1` display as “Line 6”;
+  edit validation and JSON exports supply the default `width: 1`.
+  Squares and cones do not accept `width`. Cones display as “Cone 4” and
+  cannot also specify a ranged target.
 - `aoe`: `true` for a printed AoE without a specified shape/size. A supplied
   `area` and `aoe: true` are mutually exclusive; do not invent dimensions
   when the book omits them.

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Distances use Nimble spaces. Lines are always one space wide.
+// Distances use Nimble spaces. Line size is length; omitted width means 1.
 export const attackTargetSchema = z.union([
   z.object({ reach: z.number().int().positive() }).strict(),
   z.object({ range: z.number().int().positive() }).strict(),
@@ -18,6 +18,7 @@ export const attackAreaSchema = z.discriminatedUnion("shape", [
     .object({
       shape: z.literal("line"),
       size: z.number().int().positive(),
+      width: z.number().int().positive().default(1),
     })
     .strict(),
 ]);
@@ -48,4 +49,5 @@ export const attackMetadataSchema = z
     path: ["aoe"],
   });
 
-export type AttackMetadata = z.infer<typeof attackMetadataSchema>;
+// Existing stored actions may omit line width; validation supplies the default.
+export type AttackMetadata = z.input<typeof attackMetadataSchema>;

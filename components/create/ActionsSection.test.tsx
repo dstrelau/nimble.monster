@@ -279,5 +279,24 @@ describe("ActionsSection", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(screen.getByText("(Range 7, Line 4)")).toBeInTheDocument();
+    expect(screen.getByLabelText("Width (spaces)")).toHaveValue(1);
+    fireEvent.change(screen.getByLabelText("Width (spaces)"), {
+      target: { value: "3" },
+    });
+    fireEvent.change(screen.getByLabelText("Length (spaces)"), {
+      target: { value: "6" },
+    });
+    expect(screen.getByText("(Range 7, Line 3×6)")).toBeInTheDocument();
+    const disclosure = screen.getByRole("button", { name: /^Attack details/ });
+    fireEvent.click(disclosure);
+    fireEvent.click(disclosure);
+    expect(screen.getByLabelText("Width (spaces)")).toHaveValue(3);
+    fireEvent.keyDown(screen.getByRole("combobox", { name: "Area" }), {
+      key: "Enter",
+    });
+    fireEvent.click(screen.getByRole("option", { name: "Square" }));
+    expect(screen.queryByLabelText("Width (spaces)")).not.toBeInTheDocument();
+    expect(screen.getByText("(Range 7, 6×6 AoE)")).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 });

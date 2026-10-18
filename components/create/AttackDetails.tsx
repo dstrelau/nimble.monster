@@ -142,9 +142,18 @@ export function AttackDetails({ value, onChange }: AttackDetailsProps) {
             onChange={(shape) =>
               patch({
                 area:
-                  shape === "square" || shape === "cone" || shape === "line"
-                    ? { shape, size: value.area?.size ?? 1 }
-                    : undefined,
+                  shape === "line"
+                    ? {
+                        shape,
+                        size: value.area?.size ?? 1,
+                        width:
+                          value.area?.shape === "line"
+                            ? (value.area.width ?? 1)
+                            : 1,
+                      }
+                    : shape === "square" || shape === "cone"
+                      ? { shape, size: value.area?.size ?? 1 }
+                      : undefined,
                 aoe: shape === "aoe" ? true : undefined,
               })
             }
@@ -165,9 +174,15 @@ export function AttackDetails({ value, onChange }: AttackDetailsProps) {
               }}
             />
             {value.area.shape === "line" && (
-              <p className="text-sm text-muted-foreground">
-                Lines are always one space wide.
-              </p>
+              <FormInput
+                label="Width (spaces)"
+                name={`${id}-width`}
+                value={value.area.width ?? 1}
+                onChange={(width) => {
+                  if (value.area?.shape === "line")
+                    patch({ area: { ...value.area, width } });
+                }}
+              />
             )}
           </div>
         )}

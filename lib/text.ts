@@ -35,7 +35,11 @@ export const formatAttackDetails = (
         parts.push(`${area.size}×${area.size} AoE`);
         break;
       case "line":
-        parts.push(`Line ${area.size}`);
+        parts.push(
+          (area.width ?? 1) === 1
+            ? `Line ${area.size}`
+            : `Line ${area.width}×${area.size}`
+        );
         break;
       case "cone":
         parts.push(`Cone ${area.size}`);
