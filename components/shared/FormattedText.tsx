@@ -55,7 +55,7 @@ function ConditionSpan({
         <Button
           type="button"
           variant="link"
-          className="inline h-auto p-0 whitespace-normal text-inherit font-[inherit] underline decoration-dotted underline-offset-auto"
+          className="inline h-auto p-0 whitespace-normal text-inherit [font:inherit] underline decoration-dotted underline-offset-auto"
         >
           {displayText}
         </Button>

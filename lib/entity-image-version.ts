@@ -20,7 +20,9 @@ function stableStringify(value: unknown): string {
 }
 
 export function getEntityImageVersion(entity: unknown): string {
+  // Bump when renderer changes require cached images to be regenerated.
   return createHash("sha256")
+    .update("renderer-v2:")
     .update(stableStringify(entity))
     .digest("hex")
     .slice(0, 16);

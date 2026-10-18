@@ -109,9 +109,10 @@ export async function renderEntityImage(
           container.style.padding = "0";
         }
 
+        // Inline reference buttons are card content, not export controls.
         document
           .querySelectorAll<HTMLElement>(
-            `[id^="${type}-"] button, [id^="${type}-"] [data-card-export-hide]`
+            `[id^="${type}-"] button:not(.formatted-text button), [id^="${type}-"] [data-card-export-hide]`
           )
           .forEach((element) => {
             element.style.display = "none";
