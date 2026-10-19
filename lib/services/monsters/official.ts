@@ -132,21 +132,23 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
   }));
 
   const levelInt =
-    typeof attrs.level === "number"
-      ? attrs.level
-      : attrs.level === "1/4"
-        ? -4
-        : attrs.level === "1/3"
-          ? -3
-          : attrs.level === "1/2"
-            ? -2
-            : 1;
+    attrs.level === undefined
+      ? 0
+      : typeof attrs.level === "number"
+        ? attrs.level
+        : attrs.level === "1/4"
+          ? -4
+          : attrs.level === "1/3"
+            ? -3
+            : attrs.level === "1/2"
+              ? -2
+              : 1;
 
   return {
     name: attrs.name,
     hp: attrs.hp,
     hpPerHero: attrs.hpPerHero ?? null,
-    level: String(attrs.level),
+    level: String(attrs.level ?? ""),
     levelInt,
     size: attrs.size as CreateMonsterInput["size"],
     armor:
@@ -322,7 +324,8 @@ export function validateOfficialMonstersJSON(data: unknown): {
       typeof attrs.level !== "number" &&
       attrs.level !== "1/4" &&
       attrs.level !== "1/3" &&
-      attrs.level !== "1/2"
+      attrs.level !== "1/2" &&
+      !(attrs.minion === true && attrs.level === undefined)
     ) {
       throw new Error(
         `Invalid monster at index ${index} ("${attrs.name}"): missing or invalid level`

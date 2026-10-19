@@ -325,7 +325,7 @@ export const toZodMonster = (m: Monster) => {
     hazard: m.hazard,
     hp: m.hp,
     hpPerHero: m.hpPerHero ?? undefined,
-    level: parsedLevel,
+    level: m.minion && m.level === "" ? undefined : parsedLevel,
     size: m.size,
     armor: m.armor === "none" ? ("none" as const) : m.armor,
     kind: m.kind || undefined,

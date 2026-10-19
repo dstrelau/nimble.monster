@@ -211,6 +211,37 @@ describe("monster classifications", () => {
   });
 
   it.each([
+    {
+      name: "Bandit",
+      identity: {
+        creatureTypes: ["humanoid"],
+        creatureKinds: ["bandit"],
+      } satisfies MonsterClassifications,
+    },
+    {
+      name: "Black Pudding",
+      identity: {
+        creatureTypes: ["ooze"],
+        creatureKinds: ["ooze"],
+      } satisfies MonsterClassifications,
+    },
+  ])("round-trips the GMG identity for $name", async ({ name, identity }) => {
+    const fixture = officialMonsters.find((m) => m.attributes.name === name);
+    if (!fixture) throw new Error(`Missing official ${name}`);
+    const { monsters } = validateOfficialMonstersJSON({
+      data: [
+        { ...fixture, attributes: { ...fixture.attributes, ...identity } },
+      ],
+      included: officialJSON.included,
+    });
+    const monster = await upsertOfficialMonster(
+      parseJSONAPIMonster(monsters[0])
+    );
+    expect(await findMonster(monster.id)).toMatchObject(identity);
+    expect(toJsonApiMonster(monster).attributes).toMatchObject(identity);
+  });
+
+  it.each([
     { creatureTypes: ["goblinoid"] },
     { creatureKinds: ["forest"] },
     { environments: "forest" },

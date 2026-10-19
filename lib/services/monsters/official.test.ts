@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createBestiaryEntrySchema } from "@/app/%5Factions/_bestiary/input";
 import { familyInputSchema } from "@/app/%5Factions/_family/input";
-import type { JSONAPIMonster } from "@/lib/api/monsters";
+import { getMonster, type JSONAPIMonster } from "@/lib/api/monsters";
 import { monsterToMarkdown } from "@/lib/export/markdown";
 import { toJsonApiMonster } from "./converters";
 import { compareMonsters } from "./diff";
@@ -40,6 +40,63 @@ function importedMonster(data: JSONAPIMonster): Monster {
     updatedAt: new Date(0),
   };
 }
+
+describe("minion levels", () => {
+  it.each([
+    { level: undefined, stored: "", levelInt: 0 },
+    { level: "1/4", stored: "1/4", levelInt: -4 },
+  ])("preserves minion level $level through import and JSON:API", async ({
+    level,
+    stored,
+    levelInt,
+  }) => {
+    const data = officialMonster("Kobold Minion");
+    delete data.relationships;
+    data.attributes.minion = true;
+    if (level === undefined) delete data.attributes.level;
+    else data.attributes.level = level;
+    validateOfficialMonstersJSON({ data: [data] });
+    const monster = importedMonster(data);
+    expect(monster).toMatchObject({ level: stored, levelInt });
+    const exported = JSON.parse(JSON.stringify(toJsonApiMonster(monster)));
+    expect(exported.attributes.level).toBe(level);
+    if (level === undefined)
+      expect(exported.attributes).not.toHaveProperty("level");
+    const { monsters } = validateOfficialMonstersJSON({
+      data: [{ type: "monsters", attributes: exported.attributes }],
+    });
+    expect(parseJSONAPIMonster(monsters[0])).toMatchObject({
+      level: stored,
+      levelInt,
+    });
+    const fetch = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(Response.json({ data: exported }));
+    try {
+      expect(await getMonster(exported.id)).toMatchObject({
+        level: stored,
+        levelInt,
+      });
+    } finally {
+      fetch.mockRestore();
+    }
+  });
+
+  it.each([
+    { minion: undefined, level: undefined },
+    { minion: false, level: undefined },
+    { minion: "true", level: undefined },
+    { minion: true, level: null },
+    { minion: true, level: "invalid" },
+  ])("rejects missing ordinary levels and invalid supplied minion levels: %j", (fields) => {
+    const data = officialMonster("Kobold Minion");
+    expect(() =>
+      validateOfficialMonstersJSON({
+        data: [{ ...data, attributes: { ...data.attributes, ...fields } }],
+      })
+    ).toThrow("missing or invalid level");
+  });
+});
 
 describe("structured monster attacks", () => {
   it("round-trips targets, areas and counts through import, edit validation and JSON:API export", () => {

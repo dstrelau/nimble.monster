@@ -25,7 +25,8 @@ export interface JSONAPIMonster {
     hazard?: boolean;
     hp: number;
     hpPerHero?: number;
-    level: number | string;
+    // Official validation requires a level unless minion is true.
+    level?: number | string;
     size: string;
     armor: string;
     kind?: string;
@@ -115,23 +116,25 @@ function parseMonster(data: JSONAPIMonster): Monster {
 
   const parsedLevel = Number.parseInt(String(attrs.level), 10);
   const levelInt =
-    typeof attrs.level === "number"
-      ? attrs.level
-      : attrs.level === "1/4"
-        ? -4
-        : attrs.level === "1/3"
-          ? -3
-          : attrs.level === "1/2"
-            ? -2
-            : Number.isNaN(parsedLevel)
-              ? 1
-              : parsedLevel;
+    attrs.level === undefined
+      ? 0
+      : typeof attrs.level === "number"
+        ? attrs.level
+        : attrs.level === "1/4"
+          ? -4
+          : attrs.level === "1/3"
+            ? -3
+            : attrs.level === "1/2"
+              ? -2
+              : Number.isNaN(parsedLevel)
+                ? 1
+                : parsedLevel;
 
   return {
     id: data.id || crypto.randomUUID(),
     name: attrs.name,
     hp: attrs.hp,
-    level: String(attrs.level),
+    level: String(attrs.level ?? ""),
     levelInt,
     size: attrs.size as Monster["size"],
     armor: attrs.armor as Monster["armor"],
