@@ -11,8 +11,7 @@
       "attributes": {
         "name": "Bandit Minion",
         "hp": 1,
-        "level": "1/4",
-        "size": "medium",
+        "size": "small",
         "armor": "none",
         "kind": "Bandits",
         "movement": [
@@ -20,14 +19,23 @@
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Inept",
+            "description": "Your attacks miss on 8."
+          },
+          {
+            "name": "Mortal Panic",
+            "description": "Attacks miss you on a 2 or less."
+          }
+        ],
         "actions": [
           {
-            "name": "Stab",
+            "name": "I’ll Cut Ya!",
             "damage": {
               "roll": "1d8"
             },
-            "description": "(follows minion rules)"
+            "description": "(follows @rule:[minions|minion rules])"
           }
         ],
         "actionsInstructions": "",
@@ -49,24 +57,31 @@
       "type": "monsters",
       "attributes": {
         "name": "Goblin Minion",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["goblinoid"],
+        "environments": [],
         "hp": 1,
-        "level": "1/4",
         "size": "small",
         "armor": "none",
-        "kind": "Goblins",
+        "kind": "Goblinoid",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Haha, Missed Me!",
+            "description": "Whenever you survive an attack, deal 2 psychic damage back (ignoring Defense)."
+          }
+        ],
         "actions": [
           {
             "name": "Stab",
             "damage": {
               "roll": "1d6"
             },
-            "description": "(follows minion rules)"
+            "description": "(follows @rule:[minions|minion rules])"
           }
         ],
         "actionsInstructions": "",
@@ -88,8 +103,10 @@
       "type": "monsters",
       "attributes": {
         "name": "Kobold Minion",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["kobold"],
+        "environments": [],
         "hp": 1,
-        "level": "1/4",
         "size": "small",
         "armor": "none",
         "kind": "Kobolds",
@@ -105,7 +122,7 @@
             "damage": {
               "roll": "1d4"
             },
-            "description": "(follows minion rules)"
+            "description": "(follows @rule:[minions|minion rules])"
           }
         ],
         "actionsInstructions": "",
@@ -128,7 +145,6 @@
       "attributes": {
         "name": "Snakeman Minion",
         "hp": 1,
-        "level": "1/4",
         "size": "medium",
         "armor": "none",
         "kind": "Snakemen",
@@ -144,7 +160,13 @@
             "damage": {
               "roll": "1d6"
             },
-            "description": "Melee/ranged (follows minion rules)"
+            "alternative": {
+              "name": "Spit",
+              "target": {
+                "range": 8
+              }
+            },
+            "description": "(follows @rule:[minions|minion rules])"
           }
         ],
         "actionsInstructions": "",
@@ -166,7 +188,7 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit",
-        "hp": 12,
+        "hp": 10,
         "level": "1/3",
         "size": "medium",
         "armor": "none",
@@ -176,14 +198,29 @@
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Inept",
+            "description": "Your attacks miss on 8."
+          },
+          {
+            "name": "Mortal Panic",
+            "description": "Attacks miss you on a 2 or less."
+          }
+        ],
         "actions": [
           {
-            "name": "Stab",
+            "name": "Hand It Over!",
             "damage": {
-              "roll": "1d8+1"
+              "roll": "1d8"
             },
-            "description": "(or Shoot, Range 8)"
+            "alternative": {
+              "name": "Shoot",
+              "target": {
+                "range": 8
+              }
+            },
+            "description": ""
           }
         ],
         "actionsInstructions": "",
@@ -204,24 +241,38 @@
       "type": "monsters",
       "attributes": {
         "name": "Goblin",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["goblinoid"],
+        "environments": [],
         "hp": 15,
-        "level": "1/3",
+        "level": "1/2",
         "size": "small",
         "armor": "none",
-        "kind": "Goblins",
+        "kind": "Goblinoid",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Haha, Didn’t Hurt!",
+            "description": "Whenever you survive an attack, deal 2 psychic damage back (ignoring Defense)."
+          }
+        ],
         "actions": [
           {
             "name": "Stab",
             "damage": {
-              "roll": "1d6+2"
+              "roll": "1d6"
             },
-            "description": "(or Shoot, Range 8)"
+            "alternative": {
+              "name": "Shoot",
+              "target": {
+                "range": 8
+              }
+            },
+            "description": "Can’t crit."
           }
         ],
         "actionsInstructions": "",
@@ -242,7 +293,10 @@
       "type": "monsters",
       "attributes": {
         "name": "Kobold",
-        "hp": 12,
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["kobold"],
+        "environments": [],
+        "hp": 10,
         "level": "1/3",
         "size": "small",
         "armor": "none",
@@ -252,14 +306,25 @@
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Nooooo!",
+            "description": "When an ally within Reach 2 dies, attack for free."
+          }
+        ],
         "actions": [
           {
             "name": "Stab",
             "damage": {
-              "roll": "1d4+2"
+              "roll": "1d4"
             },
-            "description": "(or Sling, Range 8)"
+            "description": "Can’t crit.",
+            "alternative": {
+              "name": "Sling",
+              "target": {
+                "range": 8
+              }
+            }
           }
         ],
         "actionsInstructions": "",
@@ -439,8 +504,11 @@
       "type": "monsters",
       "attributes": {
         "name": "Kobold Sneak",
-        "hp": 15,
-        "level": "1/2",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["kobold"],
+        "environments": [],
+        "hp": 20,
+        "level": 1,
         "size": "small",
         "armor": "none",
         "kind": "Kobolds",
@@ -451,17 +519,27 @@
         ],
         "abilities": [
           {
-            "name": "Revenge",
-            "description": "When an ally dies, you may move up to 6 spaces before using your Nooooo! ability."
+            "name": "Sneaky!",
+            "description": "You may move before using your Nooooo! ability."
+          },
+          {
+            "name": "Nooooo!",
+            "description": "When an ally within Reach 2 dies, attack for free."
           }
         ],
         "actions": [
           {
             "name": "Stab",
             "damage": {
-              "roll": "1d4+2"
+              "roll": "2d4"
             },
-            "description": "(or Sling, Range 8)"
+            "description": "",
+            "alternative": {
+              "name": "Sling",
+              "target": {
+                "range": 8
+              }
+            }
           }
         ],
         "actionsInstructions": "",
@@ -520,7 +598,7 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit Hunter",
-        "hp": 22,
+        "hp": 17,
         "level": 1,
         "size": "medium",
         "armor": "none",
@@ -530,12 +608,17 @@
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Mortal Panic",
+            "description": "Attacks miss you on a 2 or less."
+          }
+        ],
         "actions": [
           {
             "name": "Battlebow",
             "damage": {
-              "roll": "2d8+2"
+              "roll": "2d8"
             },
             "target": {
               "range": 12
@@ -812,10 +895,13 @@
       "attributes": {
         "name": "Kobold Clanger",
         "hp": 16,
-        "level": 1,
+        "level": 2,
         "size": "small",
-        "armor": "heavy",
+        "armor": "medium",
         "kind": "Kobolds",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["kobold"],
+        "environments": [],
         "movement": [
           {
             "speed": 6
@@ -824,10 +910,15 @@
         "abilities": [
           {
             "name": "CLANG!",
-            "description": "Allies who hear your clanging, roll 1 additional die whenever they attack."
+            "description": "Allies who hear your clanging roll 1 additional die whenever they attack."
           }
         ],
-        "actions": [],
+        "actions": [
+          {
+            "name": "Preoccupied Noisemaker",
+            "description": "Doesn’t attack (Clang, clang!)."
+          }
+        ],
         "actionsInstructions": "",
         "description": "",
         "legendary": false,
@@ -846,11 +937,14 @@
       "type": "monsters",
       "attributes": {
         "name": "Kobold Trapper",
-        "hp": 26,
-        "level": 1,
+        "hp": 30,
+        "level": 2,
         "size": "small",
         "armor": "none",
         "kind": "Kobolds",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["kobold"],
+        "environments": [],
         "movement": [
           {
             "speed": 6
@@ -858,15 +952,19 @@
         ],
         "abilities": [
           {
+            "name": "Nooooo!",
+            "description": "When an ally within Reach 2 dies, attack for free."
+          },
+          {
             "name": "Trap!",
-            "description": "When an enemy moves adjacent to you or an ally, they trigger one of your traps! (1/encounter each). BEEES! Deal 5d4 damage (doesn't miss). Half as much to ALL adjacent creatures. HIDDEN NET! Restrained (escape DC 10)."
+            "description": "When an enemy moves adjacent to you or an ally, they trigger one of your traps! (1/encounter each).\n- Trap: BEEES! Deal 4d4 damage (doesn’t miss). Half as much to ALL adjacent creatures.\n- Trap: HIDDEN NET! Restrained (escape DC 10)."
           }
         ],
         "actions": [
           {
-            "name": "Throw Scorpion (2×)",
+            "name": "Throw Scorpion",
             "damage": {
-              "roll": "1d4+2"
+              "roll": "2d4+2"
             },
             "target": {
               "range": 8
@@ -891,8 +989,11 @@
       "type": "monsters",
       "attributes": {
         "name": "Kobold Denwarden",
-        "hp": 20,
-        "level": 1,
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["kobold"],
+        "environments": [],
+        "hp": 30,
+        "level": 3,
         "size": "small",
         "armor": "medium",
         "kind": "Kobolds",
@@ -903,17 +1004,28 @@
         ],
         "abilities": [
           {
-            "name": "Hold!",
+            "name": "Nooooo!",
+            "description": "When an ally within Reach 2 dies, attack for free."
+          },
+          {
+            "name": "Hoooold!",
             "description": "Adjacent allies gain Medium Armor."
           }
         ],
         "actions": [
           {
-            "name": "Stab (2×)",
+            "name": "Stab",
             "damage": {
-              "roll": "1d4+2"
+              "roll": "2d4+2"
             },
-            "description": "(or Sling, Range 8)"
+            "description": "",
+            "alternative": {
+              "name": "Sling",
+              "target": {
+                "range": 8
+              }
+            },
+            "attackCount": 2
           }
         ],
         "actionsInstructions": "",
@@ -934,7 +1046,7 @@
       "type": "monsters",
       "attributes": {
         "name": "Snakeman",
-        "hp": 26,
+        "hp": 21,
         "level": 1,
         "size": "medium",
         "armor": "none",
@@ -944,14 +1056,25 @@
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Coiling Strike",
+            "description": "On melee crit, Grapple (escape DC 10)."
+          }
+        ],
         "actions": [
           {
             "name": "Slash",
             "damage": {
-              "roll": "1d6+6"
+              "roll": "2d6"
             },
-            "description": "(or Spit, Range 8)"
+            "alternative": {
+              "name": "Spit",
+              "target": {
+                "range": 8
+              }
+            },
+            "description": ""
           }
         ],
         "actionsInstructions": "",
@@ -1010,7 +1133,7 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit Assassin",
-        "hp": 24,
+        "hp": 20,
         "level": 2,
         "size": "medium",
         "armor": "none",
@@ -1023,16 +1146,21 @@
         "abilities": [
           {
             "name": "Sneak",
-            "description": "You are invisible until you attack."
+            "description": "You are [[Invisible]] until you attack."
+          },
+          {
+            "name": "Mortal Panic",
+            "description": "Attacks miss you on a 2 or less."
           }
         ],
         "actions": [
           {
-            "name": "Poison Blade (2×)",
+            "name": "Poison Blade",
+            "attackCount": 2,
             "damage": {
-              "roll": "1d8+2"
+              "roll": "1d8"
             },
-            "description": "On damage: Dazed."
+            "description": "On damage, [[Dazed]]."
           }
         ],
         "actionsInstructions": "",
@@ -1053,23 +1181,29 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit Bruiser",
-        "hp": 24,
+        "hp": 27,
         "level": 2,
         "size": "medium",
-        "armor": "medium",
+        "armor": "none",
         "kind": "Bandits",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Mortal Panic",
+            "description": "Attacks miss you on a 2 or less."
+          }
+        ],
         "actions": [
           {
-            "name": "Bash",
+            "name": "And STAY Down!",
             "damage": {
-              "roll": "2d8+4"
-            }
+              "roll": "2d8"
+            },
+            "description": "On damage, [[Prone]]."
           }
         ],
         "actionsInstructions": "",
@@ -1173,11 +1307,14 @@
       "type": "monsters",
       "attributes": {
         "name": "Bugbear",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["goblinoid"],
+        "environments": [],
         "hp": 30,
         "level": 2,
         "size": "medium",
-        "armor": "medium",
-        "kind": "Goblins",
+        "armor": "none",
+        "kind": "Goblinoid",
         "movement": [
           {
             "speed": 6
@@ -1186,22 +1323,26 @@
         "abilities": [],
         "actions": [
           {
-            "name": "Cleave",
+            "name": "Bash",
             "damage": {
-              "roll": "2d6+4"
+              "roll": "3d6"
+            },
+            "description": "On damage, target’s next attack is disadvantaged.",
+            "target": {
+              "reach": 2
             }
           },
           {
             "name": "Javelin",
             "damage": {
-              "roll": "1d6+2"
+              "roll": "2d6"
             },
             "target": {
               "range": 8
             }
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
         "legendary": false,
         "paperforgeId": "161"
@@ -1219,11 +1360,14 @@
       "type": "monsters",
       "attributes": {
         "name": "Goblin Taskmaster",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["goblinoid"],
+        "environments": [],
         "hp": 30,
         "level": 2,
         "size": "small",
-        "armor": "medium",
-        "kind": "Goblins",
+        "armor": "none",
+        "kind": "Goblinoid",
         "movement": [
           {
             "speed": 6
@@ -1231,24 +1375,34 @@
         ],
         "abilities": [
           {
+            "name": "Gotta Do Better Than That!",
+            "description": "Whenever you survive an attack, deal 2 psychic damage back (ignoring Defense)."
+          },
+          {
             "name": "Meat Shield",
-            "description": "Can force other goblins to Interpose for him."
+            "description": "Can force other Goblins to Interpose for you."
           }
         ],
         "actions": [
           {
             "name": "Stab",
             "damage": {
-              "roll": "1d6+2"
+              "roll": "1d6"
             },
-            "description": "(or Shoot, Range 8) Then:"
+            "alternative": {
+              "name": "Shoot",
+              "target": {
+                "range": 8
+              }
+            },
+            "description": ""
           },
           {
-            "name": "Get in here!",
-            "description": "Call a goblin minion to the fight."
+            "name": "Get In Here!",
+            "description": "Call a @monster:[0tjywh0r9t9tgte9yb0hkxyn4t|Goblin Minion] to the fight."
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Do both in order:",
         "description": "",
         "legendary": false,
         "paperforgeId": "5"
@@ -1266,11 +1420,14 @@
       "type": "monsters",
       "attributes": {
         "name": "Goblin Ratrider",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["goblinoid"],
+        "environments": [],
         "hp": 30,
         "level": 2,
         "size": "medium",
         "armor": "none",
-        "kind": "Goblins",
+        "kind": "Goblinoid",
         "movement": [
           {
             "speed": 10
@@ -1278,23 +1435,28 @@
         ],
         "abilities": [
           {
+            "name": "Haha, Nice Try!",
+            "description": "Whenever you survive an attack, deal 2 psychic damage back (ignoring Defense)."
+          },
+          {
             "name": "CHAAARGE!",
-            "description": "If you move at least 4 spaces in a straight line, attack with advantage once."
+            "description": "If you move at least 4 spaces in a straight line, your next attack is advantaged."
           }
         ],
         "actions": [
           {
-            "name": "Bite & Stab (2×)",
+            "name": "Bite & Stab",
+            "attackCount": 2,
             "damage": {
-              "roll": "1d6+2"
+              "roll": "1d6"
             },
-            "description": "On crit: Prone."
+            "description": "On crit, [[Prone]]."
           }
         ],
         "actionsInstructions": "",
         "description": "",
         "legendary": false,
-        "paperforgeId": "25"
+        "paperforgeId": "45"
       },
       "relationships": {
         "family": {
@@ -1465,7 +1627,7 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit Captain",
-        "hp": 36,
+        "hp": 35,
         "level": 4,
         "size": "medium",
         "armor": "medium",
@@ -1475,14 +1637,30 @@
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Strict Training",
+            "description": "Your allies are NOT Inept."
+          },
+          {
+            "name": "Mortal Panic",
+            "description": "Attacks miss you on a 2 or less."
+          }
+        ],
         "actions": [
           {
-            "name": "Slice (3×)",
+            "name": "Slice",
+            "attackCount": 3,
             "damage": {
-              "roll": "1d8+1"
+              "roll": "1d8"
             },
-            "description": "(or Shoot, Range 8)"
+            "alternative": {
+              "name": "Shoot",
+              "target": {
+                "range": 8
+              }
+            },
+            "description": ""
           }
         ],
         "actionsInstructions": "",
@@ -1503,7 +1681,7 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit Mage",
-        "hp": 41,
+        "hp": 40,
         "level": 4,
         "size": "medium",
         "armor": "none",
@@ -1516,7 +1694,11 @@
         "abilities": [
           {
             "name": "Spark Step",
-            "description": "When damaged, teleport up to 4 spaces."
+            "description": "When damaged, teleport 4."
+          },
+          {
+            "name": "Mortal Panic",
+            "description": "Attacks miss you on a 2 or less."
           }
         ],
         "actions": [
@@ -1525,10 +1707,10 @@
             "damage": {
               "roll": "3d8"
             },
+            "description": "Also hits the next closest creature (friend or foe “Out of the way!”).",
             "target": {
               "range": 12
-            },
-            "description": "Also strikes the next closest creature. On miss: damage self instead."
+            }
           }
         ],
         "actionsInstructions": "",
@@ -1709,24 +1891,36 @@
       "type": "monsters",
       "attributes": {
         "name": "Cobra Captain",
-        "hp": 36,
+        "hp": 52,
         "level": 4,
         "size": "medium",
-        "armor": "medium",
+        "armor": "none",
         "kind": "Snakemen",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Coiling Command",
+            "description": "(1/round) An ally Grapples an enemy adjacent to it (escape DC 10)."
+          }
+        ],
         "actions": [
           {
-            "name": "Slash (2×)",
+            "name": "Slash",
+            "attackCount": 2,
             "damage": {
-              "roll": "1d6+6"
+              "roll": "2d6"
             },
-            "description": "(or Spit, Range 8)"
+            "alternative": {
+              "name": "Spit",
+              "target": {
+                "range": 8
+              }
+            },
+            "description": ""
           }
         ],
         "actionsInstructions": "",
@@ -2202,7 +2396,7 @@
       "type": "monsters",
       "attributes": {
         "name": "Giant Cobra",
-        "hp": 80,
+        "hp": 84,
         "level": 8,
         "size": "large",
         "armor": "medium",
@@ -2212,14 +2406,19 @@
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Coiling Strike",
+            "description": "On melee crit, Grapple (escape DC 10)."
+          }
+        ],
         "actions": [
           {
             "name": "Crush",
             "damage": {
               "roll": "2d6+20"
             },
-            "description": "Advantage vs. smaller creatures."
+            "description": "Advantage vs smaller creatures."
           }
         ],
         "actionsInstructions": "",
@@ -3711,12 +3910,8 @@
       "id": "bandits",
       "attributes": {
         "name": "Bandits",
-        "abilities": [
-          {
-            "name": "Parry",
-            "description": "Treat attacks against you that roll 2 as a miss."
-          }
-        ]
+        "abilities": [],
+        "description": "You’ve got money, they want money… a perfect match! (hand it over)"
       }
     },
     {
@@ -3751,13 +3946,8 @@
       "id": "goblins",
       "attributes": {
         "name": "Goblins",
-        "description": "Green, cunning, & thriving on the edge of chaos. Will mock you mercilessly if given the chance.",
-        "abilities": [
-          {
-            "name": "Haha, Missed Me!",
-            "description": "Whenever an attack misses you, deal 1 psychic damage in return."
-          }
-        ]
+        "description": "Green, cunning, & thriving on the edge of chaos. Will mock you mercilessly if given the chance.\n\nSample Encounters (per hero)\nFor an easier encounter use the line 1 or 2 levels lower. More challenging, 1 or 2 levels higher.\nLevel 1: 2 Goblins OR 3 Minions.\nLevel 2: 3 Goblins OR 1 Bugbear.\nLevel 3: 2 Goblins +1 Bugbear/Taskmaster.\nLevel 4: 2 Goblins +1 Taskmaster.\nLevel 5: 1 Goblin +1 Ratrider +1 Bugbear.\nLevel 6: 1 Bugbear +1 Ratrider +1 Taskmaster.",
+        "abilities": []
       }
     },
     {
@@ -3774,12 +3964,7 @@
       "attributes": {
         "name": "Kobolds",
         "description": "Small, maniacal dragonlings. Fiercely protective of their own.",
-        "abilities": [
-          {
-            "name": "Nooooo!",
-            "description": "When an ally within 2 spaces dies, attack once for free."
-          }
-        ]
+        "abilities": []
       }
     },
     {
@@ -3821,13 +4006,8 @@
       "id": "snakemen",
       "attributes": {
         "name": "Snakemen",
-        "description": "*Aggressive Hissing Noises*",
-        "abilities": [
-          {
-            "name": "Coiling Strike",
-            "description": "On melee crit: Grapple (escape DC 10)."
-          }
-        ]
+        "description": "*Aggressive Hissing noises*",
+        "abilities": []
       }
     },
     {
