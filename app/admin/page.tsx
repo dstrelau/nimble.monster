@@ -53,8 +53,8 @@ export default async function AdminPage() {
           <CardContent className="space-y-2">
             <p>
               Upload a JSON file containing official content. The content type
-              (monsters, ancestries, backgrounds, subclasses, or spell-schools)
-              is auto-detected from the file.
+              (monsters, ancestries, backgrounds, classes, conditions,
+              subclasses, or spell-schools) is auto-detected from the file.
             </p>
             <p className="text-sm text-muted-foreground">
               The file must follow the JSONAPI format with a &quot;data&quot;

@@ -6,6 +6,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import * as sourceDb from "@/lib/db/source";
 import { checkpoint } from "@/lib/db/client";
+import { upsertOfficialCondition } from "@/lib/db/condition";
 import { upsertOfficialRandomTable } from "@/lib/db/random-table";
 import { validateOfficialAncestriesJSON } from "@/lib/services/ancestries/official";
 import { upsertOfficialAncestry } from "@/lib/services/ancestries/repository";
@@ -13,6 +14,7 @@ import { validateOfficialBackgroundsJSON } from "@/lib/services/backgrounds/offi
 import { upsertOfficialBackground } from "@/lib/services/backgrounds/repository";
 import { validateOfficialClassesJSON } from "@/lib/services/classes/official";
 import { upsertOfficialClass } from "@/lib/services/classes/repository";
+import { validateOfficialConditionsJSON } from "@/lib/services/conditions/official";
 import { ensureOfficialUser } from "@/lib/services/ensure-official-user";
 import {
   findOrCreateOfficialFamily,
@@ -40,6 +42,7 @@ const FILES = [
   "heroes/story-subclasses.json",
   "other/hexbinder-subclasses.json",
   "other/hexbinder-spells.json",
+  "gmg/conditions.json",
   "gmg/bestiary.json",
 ];
 
@@ -230,6 +233,14 @@ async function seedFile(relPath: string): Promise<void> {
     case "spell-schools":
       count = await seedSpellSchools(json);
       break;
+    case "conditions": {
+      const { conditions } = validateOfficialConditionsJSON(json);
+      for (const condition of conditions) {
+        await upsertOfficialCondition(condition.attributes);
+      }
+      count = conditions.length;
+      break;
+    }
     case "random-tables": {
       const { tables, source } = validateOfficialRandomTablesJSON(json);
       const sourceId = await resolveSourceId(source);

@@ -6,6 +6,7 @@ import type { JSONAPIFamily } from "@/lib/api/monsters";
 import { isAdmin } from "@/lib/auth";
 import * as awardDb from "@/lib/db/award";
 import { checkpoint } from "@/lib/db/client";
+import { upsertOfficialCondition } from "@/lib/db/condition";
 import * as sourceDb from "@/lib/db/source";
 import {
   type AncestrySessionData,
@@ -22,6 +23,10 @@ import {
   validateOfficialClassesJSON,
 } from "@/lib/services/classes/official";
 import { upsertOfficialClass } from "@/lib/services/classes/repository";
+import {
+  type ConditionSessionData,
+  validateOfficialConditionsJSON,
+} from "@/lib/services/conditions/official";
 import { ensureOfficialUser } from "@/lib/services/ensure-official-user";
 import {
   findOrCreateOfficialFamily,
@@ -293,13 +298,15 @@ export async function uploadOfficialContentAction(formData: FormData) {
       return uploadOfficialBackgroundsFromJSON(json);
     case "classes":
       return uploadOfficialClassesFromJSON(json);
+    case "conditions":
+      return uploadOfficialConditionsFromJSON(json);
     case "subclasses":
       return uploadOfficialSubclassesFromJSON(json);
     case "spell-schools":
       return uploadOfficialSpellSchoolsFromJSON(json);
     default:
       throw new Error(
-        `Unknown content type: "${contentType}". Expected "monsters", "ancestries", "backgrounds", "classes", "subclasses", or "spell-schools".`
+        `Unknown content type: "${contentType}". Expected "monsters", "ancestries", "backgrounds", "classes", "conditions", "subclasses", or "spell-schools".`
       );
   }
 }
@@ -494,6 +501,45 @@ export async function cancelOfficialBackgroundsUploadAction(
   }
 
   await deleteGenericPreviewSession("backgrounds", sessionKey);
+  redirect("/admin");
+}
+
+// --- Conditions ---
+
+async function uploadOfficialConditionsFromJSON(json: unknown) {
+  const sessionData = validateOfficialConditionsJSON(json);
+  const sessionKey = crypto.randomUUID();
+  await writeGenericPreviewSession("conditions", sessionKey, sessionData);
+  redirect(`/admin/conditions/preview?session=${sessionKey}`);
+}
+
+export async function commitOfficialConditionsAction(sessionKey: string) {
+  if (!(await isAdmin())) {
+    throw new Error("Unauthorized");
+  }
+  const sessionData = await readGenericPreviewSession<ConditionSessionData>(
+    "conditions",
+    sessionKey
+  );
+  if (!sessionData) throw new Error("Session expired or invalid");
+  const { conditions } = validateOfficialConditionsJSON({
+    data: sessionData.conditions,
+  });
+  await ensureOfficialUser();
+  for (const condition of conditions) {
+    await upsertOfficialCondition(condition.attributes);
+  }
+  await deleteGenericPreviewSession("conditions", sessionKey);
+  await checkpoint();
+  revalidatePath("/", "layout");
+  redirect("/admin");
+}
+
+export async function cancelOfficialConditionsUploadAction(sessionKey: string) {
+  if (!(await isAdmin())) {
+    throw new Error("Unauthorized");
+  }
+  await deleteGenericPreviewSession("conditions", sessionKey);
   redirect("/admin");
 }
 

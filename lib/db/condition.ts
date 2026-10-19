@@ -1,5 +1,6 @@
 import { and, eq, sql } from "drizzle-orm";
 import { type ConditionUsage, extractConditions } from "@/lib/conditions";
+import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import type { Condition } from "@/lib/types";
 import { getDatabase } from "./drizzle";
 import { conditions, monstersConditions, users } from "./schema";
@@ -195,6 +196,38 @@ export async function updateConditionDescription(
     )
     .returning();
   return result[0] ?? null;
+}
+
+export async function upsertOfficialCondition(input: {
+  name: string;
+  description: string;
+}) {
+  const db = getDatabase();
+  return db.transaction(async (tx) => {
+    const [existing] = await tx
+      .select({ id: conditions.id })
+      .from(conditions)
+      .where(
+        and(
+          eq(conditions.official, true),
+          sql`lower(${conditions.name}) = lower(${input.name})`
+        )
+      )
+      .limit(1);
+    if (existing) {
+      const [updated] = await tx
+        .update(conditions)
+        .set(input)
+        .where(eq(conditions.id, existing.id))
+        .returning();
+      return updated;
+    }
+    const [created] = await tx
+      .insert(conditions)
+      .values({ ...input, official: true, creatorId: OFFICIAL_USER_ID })
+      .returning();
+    return created;
+  });
 }
 
 export async function listOfficialConditions() {

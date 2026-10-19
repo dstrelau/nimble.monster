@@ -1,0 +1,11 @@
+{
+  "data": [
+    {
+      "type": "conditions",
+      "attributes": {
+        "name": "Despair",
+        "description": "Disadvantage on all rolls (dealing or healing any damage ends)."
+      }
+    }
+  ]
+}
