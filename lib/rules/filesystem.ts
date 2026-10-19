@@ -15,7 +15,7 @@ export interface Rule {
 }
 
 export interface RuleSource {
-  book: "Core Rules v2" | "GMG v1";
+  book: "Core Rules v2" | "GMG v1" | "Core Rules v3" | "GMG v3";
   pages?: number[];
 }
 
@@ -79,7 +79,12 @@ export function parseSources(
     const bookMatch = lines[index].match(/^\s{2}- book:\s*"([^"]+)"\s*$/);
     if (!bookMatch) throw new Error(`${slug}.mdx: malformed source entry`);
     const book = bookMatch[1];
-    if (book !== "Core Rules v2" && book !== "GMG v1") {
+    if (
+      book !== "Core Rules v2" &&
+      book !== "GMG v1" &&
+      book !== "Core Rules v3" &&
+      book !== "GMG v3"
+    ) {
       throw new Error(
         `${slug}.mdx: unknown source book ${JSON.stringify(book)}`
       );
