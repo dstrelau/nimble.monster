@@ -47,7 +47,12 @@ describe("the rule corpus", () => {
       ).toBe(rule.keywords.length);
       expect(rule.sources?.length).toBeGreaterThan(0);
       for (const source of rule.sources ?? []) {
-        expect(["Core Rules v2", "GMG v1"]).toContain(source.book);
+        expect([
+          "Core Rules v2",
+          "GMG v1",
+          "Core Rules v3",
+          "GMG v3",
+        ]).toContain(source.book);
         expect(source.pages?.length).toBeGreaterThan(0);
       }
     }
@@ -119,6 +124,17 @@ variantOf: parent-rule
       { book: "GMG v1", pages: [7] },
     ]);
     expect(rule.variantOf).toBe("parent-rule");
+  });
+
+  it.each([
+    "Core Rules v3",
+    "GMG v3",
+  ])("preserves an updated %s citation", (book) => {
+    const rule = parseRule(
+      "test-rule",
+      rawRule(`sources:\n  - book: "${book}"\n    pages: [7, 29]\n`)
+    );
+    expect(rule.sources).toEqual([{ book, pages: [7, 29] }]);
   });
 
   it("keeps a known source book when its exact page is unknown", () => {
