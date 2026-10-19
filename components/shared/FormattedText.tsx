@@ -7,7 +7,6 @@ import { createElement, Fragment, type ReactNode, useMemo } from "react";
 import { DiceNotation } from "@/components/dice/DiceNotation";
 import { ReferencePopover } from "@/components/shared/ReferencePopover";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useEntityQuery } from "@/lib/hooks/useEntityQuery";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Condition, Condition as ConditionT } from "@/lib/types";
@@ -84,7 +83,7 @@ function EntityLinkInner({
     return (
       <span className="inline-flex items-center gap-1">
         <Icon className="stroke-flame size-4" />
-        <Skeleton className="bg-muted h-4 w-18" />
+        <span className="bg-muted h-4 w-18 animate-pulse rounded-md" />
       </span>
     );
   }

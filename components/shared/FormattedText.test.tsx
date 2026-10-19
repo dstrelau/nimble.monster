@@ -14,6 +14,8 @@ import { useEntityQuery } from "@/lib/hooks/useEntityQuery";
 import type { Condition } from "@/lib/types";
 import { FormattedText, PrefixedFormattedText } from "./FormattedText";
 
+const queryState = vi.hoisted(() => ({ loading: false }));
+
 // Keep entity rendering tests independent of network requests.
 vi.mock("@/lib/hooks/useEntityQuery", () => ({
   useEntityQuery: vi.fn((type: string, id: string) => {
@@ -31,7 +33,7 @@ vi.mock("@/lib/hooks/useEntityQuery", () => ({
             name: "Test Entity",
             type: "monster",
           },
-      isLoading: false,
+      isLoading: queryState.loading,
       isError: false,
     };
   }),
@@ -39,6 +41,7 @@ vi.mock("@/lib/hooks/useEntityQuery", () => ({
 
 afterEach(() => {
   cleanup();
+  queryState.loading = false;
   vi.clearAllMocks();
 });
 
@@ -58,6 +61,34 @@ const mockConditions: Condition[] = [
 ];
 
 describe("FormattedText", () => {
+  it("hydrates inline entity references while their data is loading", async () => {
+    queryState.loading = true;
+    const element = (
+      <FormattedText
+        content="See @rule:[minions|minion rules] for details."
+        conditions={[]}
+        noInteractive
+      />
+    );
+    const container = document.createElement("div");
+    container.innerHTML = renderToString(element);
+    document.body.append(container);
+    const paragraph = container.querySelector("p");
+    const onRecoverableError = vi.fn();
+    let root: ReturnType<typeof hydrateRoot> | undefined;
+    try {
+      await act(async () => {
+        root = hydrateRoot(container, element, { onRecoverableError });
+      });
+      expect(onRecoverableError).not.toHaveBeenCalled();
+      expect(container.querySelector("p")).toBe(paragraph);
+      expect(paragraph).toHaveTextContent("See for details.");
+    } finally {
+      await act(async () => root?.unmount());
+      container.remove();
+    }
+  });
+
   it("server-renders dice and conditions and preserves their nodes through hydration", async () => {
     const content = "Deal **1d6+6** and [[Poisoned|poison]] the target.";
     const element = (
