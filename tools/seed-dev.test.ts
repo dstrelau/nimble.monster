@@ -50,6 +50,13 @@ describe("dev reference seed", () => {
   });
 
   it("supplies public records for every preview group using official monster references", async () => {
+    expect(await getDatabase().select().from(schema.conditions).where(eq(schema.conditions.official, true))).toEqual([
+      expect.objectContaining({
+        name: "Despair",
+        description: "Disadvantage on all rolls (dealing or healing any damage ends).",
+        creatorId: OFFICIAL_USER_ID,
+      }),
+    ]);
     const page = await ReferencePage();
     const examples: ReferenceExample[] = page.props.examples;
     expect(examples).toHaveLength(17);
