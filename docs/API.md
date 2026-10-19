@@ -327,6 +327,11 @@ creator's `monster-custom-artwork` feature flag; viewing saved artwork does not.
 Other users' remixes do not inherit custom artwork. Nimbrew and Markdown exports
 continue to export statblock content without artwork.
 
+Minions (`minion: true`) may omit `level`. Official imports preserve that omission
+through JSON:API export and render no level label. Internally, a level-free minion
+uses an empty level string and `levelInt: 0`. Ordinary monsters still require a
+level, and supplied minion levels must pass the normal level validation.
+
 Monster attributes may include three optional classification arrays. Each field
 is omitted from list and detail responses when empty. These are not present on hazards.
 
@@ -343,13 +348,15 @@ Each array can contain multiple values:
 
 - `creatureTypes`: Broad creature categories, such as `beast`, `humanoid`, or
   `undead`.
-- `creatureKinds`: More specific kinds, such as `goblinoid`, `mind-flayer`,
-  or `animated-object`.
+- `creatureKinds`: More specific identities, such as `bandit`, `stirge`, `ooze`,
+  `goblinoid`, `mind-flayer`, or `animated-object`.
 - `environments`: Suitable encounter environments, such as `forest`, `dungeon`,
   or `aquatic`.
 
 The existing `kind` attribute remains a free-text descriptor, separate from
-these classifications.
+these classifications. GMG imports omit it for ordinary monsters and retain
+printed descriptors for legendary monsters; structured `creatureKinds` still
+applies to both.
 
 The API does not currently support filtering by these fields.
 
