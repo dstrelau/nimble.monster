@@ -86,6 +86,7 @@ export async function renderEntityImage(
     const selectorStartedAt = performance.now();
     const entityCard = await page.waitForSelector(selector, {
       timeout: 10_000,
+      visible: true,
     });
     span?.setAttribute(
       "page.selector.wait_duration_ms",
@@ -94,8 +95,21 @@ export async function renderEntityImage(
     if (!entityCard) {
       throw new Error(`${entityType} card element not found`);
     }
+    await entityCard.dispose();
 
-    await page.evaluate(
+    // Linked entities load after hydration; don't export their placeholders.
+    await page.waitForFunction(
+      (cardSelector) => {
+        const card = document.querySelector(cardSelector);
+        return card && !card.querySelector('[data-slot="skeleton"]');
+      },
+      { timeout: 10_000 },
+      selector
+    );
+
+    // Hydration can replace the element returned by waitForSelector. Prepare
+    // and measure the current card together, without retaining a stale handle.
+    const boundingBox = await page.evaluate(
       ({ cardSelector, type }) => {
         const container = document.querySelector<HTMLElement>(
           ".container .max-w-2xl"
@@ -119,14 +133,19 @@ export async function renderEntityImage(
           });
 
         const card = document.querySelector<HTMLElement>(cardSelector);
-        if (card) card.style.padding = "20px";
+        if (!card) return null;
+        card.style.padding = "20px";
         document.documentElement.style.background = "transparent";
         document.body.style.background = "transparent";
+
+        const { x, y, width, height } = card.getBoundingClientRect();
+        return width > 0 && height > 0
+          ? { x: x + window.scrollX, y: y + window.scrollY, width, height }
+          : null;
       },
       { cardSelector: selector, type: entityType }
     );
 
-    const boundingBox = await entityCard.boundingBox();
     if (!boundingBox) {
       throw new Error(`Could not determine ${entityType} card dimensions`);
     }
