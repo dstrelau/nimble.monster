@@ -7,6 +7,7 @@ import {
   type EntityImageRenderOptions,
   renderEntityImage,
 } from "../../lib/entity-image-renderer";
+import { recordError } from "../../lib/telemetry";
 import { RenderQueue, RenderQueueFullError } from "./queue";
 import {
   extractTraceContext,
@@ -144,7 +145,9 @@ createServer(async (request, response) => {
     "image-renderer.render",
     {
       attributes: {
+        "renderer.entity.id": options.entityId,
         "renderer.entity.type": options.entityType,
+        "renderer.entity.path": options.entityUrlPath,
         "renderer.theme": options.theme,
         "renderer.queue.size": renderQueue.size,
         "renderer.queue.capacity": 8,
@@ -180,17 +183,15 @@ createServer(async (request, response) => {
       } catch (error) {
         if (error instanceof RenderQueueFullError) {
           span.setAttribute("renderer.outcome", "queue_full");
+          span.setStatus({ code: SpanStatusCode.ERROR });
           responseStatus = 503;
           responseHeaders = { "Retry-After": "10" };
         } else {
-          span.setAttributes({
-            "renderer.outcome": "render_error",
-            "error.type":
-              error instanceof Error ? error.constructor.name : "Unknown",
-          });
+          span.setAttribute("renderer.outcome", "render_error");
+          recordError(span, error);
         }
-        span.setStatus({ code: SpanStatusCode.ERROR });
       } finally {
+        span.setAttribute("http.response.status_code", responseStatus);
         await setMemoryAttributes(span, "end");
         span.end();
         await flushTelemetry();

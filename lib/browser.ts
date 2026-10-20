@@ -1,5 +1,6 @@
 import { SpanStatusCode, trace } from "@opentelemetry/api";
 import puppeteer, { type Browser } from "puppeteer-core";
+import { recordError } from "./telemetry";
 
 const BROWSER_LAUNCH_TIMEOUT_MS = 10_000;
 const BROWSER_PROTOCOL_TIMEOUT_MS = 30_000;
@@ -41,15 +42,10 @@ export async function withBrowser<T>(
 
       phase = "render";
       const value = await render(browser);
-      span.setStatus({ code: SpanStatusCode.OK });
       outcome = { ok: true, value };
     } catch (error) {
-      span.setAttributes({
-        "browser.error.phase": phase,
-        "error.type":
-          error instanceof Error ? error.constructor.name : "Unknown",
-      });
-      span.setStatus({ code: SpanStatusCode.ERROR });
+      span.setAttribute("browser.error.phase", phase);
+      recordError(span, error);
       outcome = { error, ok: false };
     }
 
@@ -63,17 +59,22 @@ export async function withBrowser<T>(
         );
       } catch (error) {
         span.setAttributes({
-          "browser.error.phase": "close",
-          "error.type":
-            error instanceof Error ? error.constructor.name : "Unknown",
+          "browser.close.error.type":
+            error instanceof Error ? error.name : "Unknown",
+          "browser.close.error.message":
+            error instanceof Error ? error.message : String(error),
         });
-        span.setStatus({ code: SpanStatusCode.ERROR });
         if (outcome.ok) {
+          span.setAttribute("browser.error.phase", "close");
+          recordError(span, error);
           outcome = { error, ok: false };
+        } else if (error instanceof Error) {
+          span.recordException(error);
         }
       }
     }
 
+    if (outcome.ok) span.setStatus({ code: SpanStatusCode.OK });
     span.end();
     if (!outcome.ok) throw outcome.error;
     return outcome.value;

@@ -8,6 +8,7 @@ vi.mock("puppeteer-core", () => ({
   default: {
     launch: async () => ({
       newPage: async () => ({
+        on: () => {},
         evaluateOnNewDocument: async () => {},
         setViewport: async () => {},
         goto: async () => ({ status: () => 200 }),

@@ -24,6 +24,22 @@ export async function renderEntityImage(
   const page = await browser.newPage();
   const entityPageUrl = new URL(entityUrlPath, baseUrl).toString();
   const selector = `#${entityType}-${entityId}`;
+  let pageErrorCount = 0;
+  page.on("pageerror", (error) => {
+    pageErrorCount++;
+    if (pageErrorCount <= 5) {
+      span?.addEvent("page.error", {
+        "exception.message": error.message,
+      });
+    }
+  });
+  span?.setAttributes({
+    "page.entity.id": entityId,
+    "page.entity.type": entityType,
+    "page.entity.path": entityUrlPath,
+    "page.theme": theme,
+    "page.render.phase": "setup",
+  });
 
   try {
     await page.evaluateOnNewDocument((selectedTheme: string) => {
@@ -35,6 +51,7 @@ export async function renderEntityImage(
       deviceScaleFactor: 2,
     });
 
+    span?.setAttribute("page.render.phase", "navigation");
     const navigationStartedAt = performance.now();
     let response = await page.goto(entityPageUrl, {
       waitUntil: "domcontentloaded",
@@ -61,6 +78,7 @@ export async function renderEntityImage(
       );
     }
 
+    span?.setAttribute("page.render.phase", "assets");
     const assetsStartedAt = performance.now();
     await page
       .waitForFunction(
@@ -83,6 +101,7 @@ export async function renderEntityImage(
       performance.now() - assetsStartedAt
     );
 
+    span?.setAttribute("page.render.phase", "selector");
     const selectorStartedAt = performance.now();
     const entityCard = await page.waitForSelector(selector, {
       timeout: 10_000,
@@ -98,6 +117,8 @@ export async function renderEntityImage(
     await entityCard.dispose();
 
     // Linked entities load after hydration; don't export their placeholders.
+    span?.setAttribute("page.render.phase", "content");
+    const contentStartedAt = performance.now();
     await page.waitForFunction(
       (cardSelector) => {
         const card = document.querySelector(cardSelector);
@@ -106,9 +127,14 @@ export async function renderEntityImage(
       { timeout: 10_000 },
       selector
     );
+    span?.setAttribute(
+      "page.content.wait_duration_ms",
+      performance.now() - contentStartedAt
+    );
 
     // Hydration can replace the element returned by waitForSelector. Prepare
     // and measure the current card together, without retaining a stale handle.
+    span?.setAttribute("page.render.phase", "prepare");
     const boundingBox = await page.evaluate(
       ({ cardSelector, type }) => {
         const container = document.querySelector<HTMLElement>(
@@ -150,6 +176,7 @@ export async function renderEntityImage(
       throw new Error(`Could not determine ${entityType} card dimensions`);
     }
 
+    span?.setAttribute("page.render.phase", "screenshot");
     const screenshotStartedAt = performance.now();
     const screenshot = await page.screenshot({
       clip: boundingBox,
@@ -165,6 +192,7 @@ export async function renderEntityImage(
     });
     return image;
   } finally {
+    span?.setAttribute("page.error.count", pageErrorCount);
     await page.close();
   }
 }

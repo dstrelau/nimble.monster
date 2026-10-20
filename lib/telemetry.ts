@@ -1,5 +1,32 @@
-import { trace } from "@opentelemetry/api";
+import { type Span, SpanStatusCode, trace } from "@opentelemetry/api";
 import type { NextResponse } from "next/server";
+
+export function recordError(span: Span, error: unknown): void {
+  const message = error instanceof Error ? error.message : String(error);
+  span.setStatus({ code: SpanStatusCode.ERROR, message });
+
+  // Drizzle/fetch use Error.cause; Auth.js wraps its original error in cause.err.
+  // Keep only error diagnostics, not provider metadata, headers, or bodies.
+  let current: unknown = error;
+  for (let depth = 0; depth < 5 && current !== undefined; depth++) {
+    const prefix = depth === 0 ? "error" : `error.cause.${depth}`;
+    span.setAttributes({
+      [`${prefix}.type`]:
+        current instanceof Error ? current.name : typeof current,
+      [`${prefix}.message`]:
+        current instanceof Error ? current.message : String(current),
+    });
+    if (current instanceof Error) span.recordException(current);
+    if (typeof current !== "object" || current === null) break;
+    if ("code" in current && typeof current.code === "string") {
+      span.setAttribute(`${prefix}.code`, current.code);
+    }
+    current = "cause" in current ? current.cause : undefined;
+    if (typeof current === "object" && current !== null && "err" in current) {
+      current = current.err;
+    }
+  }
+}
 
 function isRetryableDbError(error: unknown): boolean {
   if (typeof error !== "object" || !error) return false;
@@ -28,9 +55,7 @@ export function telemetry<T extends readonly unknown[]>(
         error instanceof Error ? error.message : String(error);
 
       if (activeSpan) {
-        if (error instanceof Error) {
-          activeSpan.recordException(error);
-        }
+        recordError(activeSpan, error);
 
         activeSpan.setAttributes({
           "exception.message": errorMessage,

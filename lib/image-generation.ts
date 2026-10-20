@@ -15,6 +15,7 @@ import {
 } from "@/lib/db/entity-images";
 import type { EntityImageTheme, EntityImageType } from "@/lib/db/schema";
 import { renderEntityImage } from "@/lib/entity-image-renderer";
+import { recordError } from "@/lib/telemetry";
 
 export interface ImageGenerationOptions {
   baseUrl: string;
@@ -52,22 +53,33 @@ async function fetchRenderer(
     `image-renderer.${requestType}`,
     { attributes: { "renderer.request.type": requestType } },
     async (span) => {
+      const startedAt = performance.now();
+      span.setAttribute(
+        "renderer.request.timeout_ms",
+        requestType === "health"
+          ? RENDERER_WAKE_TIMEOUT_MS
+          : RENDERER_REQUEST_TIMEOUT_MS
+      );
       propagation.inject(context.active(), init.headers);
       try {
         const response = await fetch(url, init);
-        span.setAttribute("http.response.status_code", response.status);
+        span.setAttributes({
+          "http.response.status_code": response.status,
+          "http.response.header.content-type":
+            response.headers.get("content-type") ?? "",
+        });
         span.setStatus({
           code: response.ok ? SpanStatusCode.OK : SpanStatusCode.ERROR,
         });
         return response;
       } catch (error) {
-        span.setAttribute(
-          "error.type",
-          error instanceof Error ? error.constructor.name : "Unknown"
-        );
-        span.setStatus({ code: SpanStatusCode.ERROR });
+        recordError(span, error);
         throw error;
       } finally {
+        span.setAttributes({
+          "renderer.request.duration_ms": performance.now() - startedAt,
+          "renderer.request.aborted": init.signal?.aborted ?? false,
+        });
         span.end();
       }
     }
@@ -281,7 +293,6 @@ export async function generateEntityImageWithStorage({
       } catch (error: unknown) {
         const errorMessage =
           error instanceof Error ? error.message : String(error);
-        const errorStack = error instanceof Error ? error.stack : undefined;
 
         if (error instanceof ImageGenerationDeniedError) {
           span.setAttribute("generation.denied", true);
@@ -289,15 +300,7 @@ export async function generateEntityImageWithStorage({
           throw error;
         }
 
-        span.setAttributes({
-          "error.message": errorMessage,
-          "error.type":
-            error instanceof Error ? error.constructor.name : "Unknown",
-        });
-
-        if (errorStack) {
-          span.setAttributes({ "error.stack": errorStack });
-        }
+        recordError(span, error);
 
         // Mark generation as failed if we claimed it
         if (claim?.claimed) {
@@ -316,7 +319,6 @@ export async function generateEntityImageWithStorage({
           }
         }
 
-        span.setStatus({ code: 2, message: errorMessage }); // ERROR
         throw error;
       } finally {
         span.end();

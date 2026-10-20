@@ -1,3 +1,4 @@
+import { trace } from "@opentelemetry/api";
 import { eq } from "drizzle-orm";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
@@ -5,6 +6,7 @@ import Discord from "next-auth/providers/discord";
 import "next-auth/jwt";
 import { getDatabase } from "./db/drizzle";
 import { users } from "./db/schema";
+import { recordError } from "./telemetry";
 import type { User } from "./types";
 
 const isDev = process.env.NODE_ENV === "development";
@@ -29,6 +31,16 @@ declare module "next-auth/jwt" {
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
+  logger: {
+    error(error) {
+      // Auth.js converts callback failures into redirects instead of throwing
+      // them through route instrumentation. Capture them before that happens.
+      trace.getTracer("auth").startActiveSpan("auth.error", (span) => {
+        recordError(span, error);
+        span.end();
+      });
+    },
+  },
   providers: [
     Discord({
       issuer: "https://discord.com",
