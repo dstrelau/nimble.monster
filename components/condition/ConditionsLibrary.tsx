@@ -18,6 +18,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { CONDITION_USAGE_LABELS, type ConditionUsage } from "@/lib/conditions";
 import { call } from "@/lib/contract";
@@ -78,49 +85,50 @@ function ConditionCard({ condition }: ConditionCardProps) {
     return count > 0 ? [`${count} ${count === 1 ? singular : plural}`] : [];
   }).join(", ");
   return (
-    <section
-      aria-label={condition.name}
-      className="rounded-lg border bg-card p-4 space-y-4"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1 break-words">
-          <h2 className="font-semibold text-lg">{condition.name}</h2>
-        </div>
-        <div className="flex shrink-0 gap-2">
-          <Dialog open={editOpen} onOpenChange={setEditOpen}>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                aria-label={`Edit ${condition.name}`}
-              >
-                <Pencil className="size-4" />
-                Edit
-              </Button>
-            </DialogTrigger>
-            {editOpen && (
-              <ConditionManagementDialog
-                condition={condition}
-                onSaved={() => setEditOpen(false)}
-              />
-            )}
-          </Dialog>
-          <Button
-            variant="outline"
-            size="sm"
-            aria-label={`Delete ${condition.name}`}
-            onClick={confirmDelete}
-            disabled={pending}
-          >
-            <Trash2 className="size-4" />
-            Delete
-          </Button>
-        </div>
-      </div>
-      <p className="whitespace-pre-wrap text-sm">{condition.description}</p>
-      {usedBy && (
-        <p className="text-sm text-muted-foreground">Used by {usedBy}</p>
-      )}
+    <section aria-label={condition.name}>
+      <Card>
+        <CardHeader>
+          <CardTitle className="min-w-0 break-words text-lg leading-7">
+            <h2>{condition.name}</h2>
+          </CardTitle>
+          <CardAction className="flex gap-2">
+            <Dialog open={editOpen} onOpenChange={setEditOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  aria-label={`Edit ${condition.name}`}
+                >
+                  <Pencil className="size-4" />
+                  Edit
+                </Button>
+              </DialogTrigger>
+              {editOpen && (
+                <ConditionManagementDialog
+                  condition={condition}
+                  onSaved={() => setEditOpen(false)}
+                />
+              )}
+            </Dialog>
+            <Button
+              variant="outline"
+              size="sm"
+              aria-label={`Delete ${condition.name}`}
+              onClick={confirmDelete}
+              disabled={pending}
+            >
+              <Trash2 className="size-4" />
+              Delete
+            </Button>
+          </CardAction>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="whitespace-pre-wrap text-sm">{condition.description}</p>
+          {usedBy && (
+            <p className="text-sm text-muted-foreground">Used by {usedBy}</p>
+          )}
+        </CardContent>
+      </Card>
       <AlertDialog
         open={confirmOpen}
         onOpenChange={(open) => {
