@@ -108,15 +108,17 @@ export const PaperforgeImageSelect: React.FC<{
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon"
             aria-label={
               value
                 ? `Change image. Current selection: ${selectedLabel}`
                 : "Choose image"
             }
             className={cn(
-              "group relative flex size-22 shrink-0 items-center justify-center rounded-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              "group relative size-22 rounded-full p-0 whitespace-normal",
               !value &&
                 "border-2 border-dashed border-input bg-muted text-xs font-medium text-muted-foreground",
               className
@@ -136,7 +138,7 @@ export const PaperforgeImageSelect: React.FC<{
             ) : (
               <span className="px-3 text-center">Choose image</span>
             )}
-          </button>
+          </Button>
         </DialogTrigger>
         <DialogContent className="max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
