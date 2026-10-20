@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Library, Table2 } from "lucide-react";
+import { ChevronDown, Library, Sparkles, Table2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -110,6 +110,12 @@ export function MyLibrarySidebar({
               label: "Reference Tables",
               icon: Table2,
               key: "random-tables" as const,
+            },
+            {
+              href: "/my/conditions",
+              label: "Conditions",
+              icon: Sparkles,
+              key: "conditions" as const,
             },
           ]
         : group.items,

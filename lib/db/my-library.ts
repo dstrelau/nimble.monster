@@ -7,6 +7,7 @@ import {
   classes,
   collections,
   companions,
+  conditions,
   customRules,
   encounters,
   families,
@@ -18,6 +19,7 @@ import {
 } from "./schema";
 
 export interface MyLibraryCounts {
+  conditions: number;
   monsters: number;
   hazards: number;
   rules: number;
@@ -55,6 +57,7 @@ export async function getMyLibraryCounts(
     subclassCount,
     familyCount,
     schoolCount,
+    conditionCount,
   ] = await Promise.all([
     db
       .select({ count: count() })
@@ -113,9 +116,14 @@ export async function getMyLibraryCounts(
       .select({ count: count() })
       .from(spellSchools)
       .where(eq(spellSchools.userId, userId)),
+    db
+      .select({ count: count() })
+      .from(conditions)
+      .where(eq(conditions.creatorId, userId)),
   ]);
 
   return {
+    conditions: conditionCount[0]?.count ?? 0,
     monsters: monsterCount[0]?.count ?? 0,
     hazards: hazardCount[0]?.count ?? 0,
     rules: ruleCount[0]?.count ?? 0,
@@ -260,6 +268,7 @@ export async function getPublicLibraryCounts(
   ]);
 
   return {
+    conditions: 0,
     monsters: monsterCount[0]?.count ?? 0,
     hazards: hazardCount[0]?.count ?? 0,
     rules: ruleCount[0]?.count ?? 0,

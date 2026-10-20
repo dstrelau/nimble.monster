@@ -10,6 +10,7 @@ interface SearchInputProps {
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  "aria-label"?: string;
 }
 
 export const SearchInput: React.FC<SearchInputProps> = ({
@@ -17,6 +18,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   onChange,
   placeholder = "Search",
   className,
+  "aria-label": ariaLabel,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -45,6 +47,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
         ref={inputRef}
         type="text"
         icon={Search}
+        aria-label={ariaLabel}
         placeholder={placeholder}
         defaultValue={value}
         onChange={handleChange}

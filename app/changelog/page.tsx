@@ -12,6 +12,10 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "19 October 2026",
+    entries: ["Manage Conditions in My Library"],
+  },
+  {
     date: "18 October 2026",
     entries: ["Line attack areas can now have a custom width."],
   },

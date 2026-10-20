@@ -7,8 +7,8 @@ import {
   Ellipsis,
   Pilcrow,
 } from "lucide-react";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { ConditionManagementDialog } from "@/components/condition/ConditionManagementDialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -116,32 +116,28 @@ export function ConditionValidationIcon({
   return (
     <>
       <FormattingDialog />
-      <Dialog>
-        <Tooltip>
-          <TooltipTrigger asChild>{Icon}</TooltipTrigger>
-          <TooltipContent className="max-w-50 text-center">
-            <div className="space-y-2">
-              <p>{tooltipText}</p>
-              {session ? (
-                <DialogTrigger asChild>
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="p-0 h-auto text-blue-400"
-                  >
-                    Manage Conditions
-                  </Button>
-                </DialogTrigger>
-              ) : (
-                <p className="text-muted-foreground">
-                  Login to define new conditions
-                </p>
-              )}
-            </div>
-          </TooltipContent>
-          <ConditionManagementDialog />
-        </Tooltip>
-      </Dialog>
+      <Tooltip>
+        <TooltipTrigger asChild>{Icon}</TooltipTrigger>
+        <TooltipContent className="max-w-50 text-center">
+          <div className="space-y-2">
+            <p>{tooltipText}</p>
+            {session ? (
+              <Button
+                asChild
+                variant="link"
+                size="sm"
+                className="p-0 h-auto text-blue-400"
+              >
+                <Link href="/my/conditions">Manage Conditions</Link>
+              </Button>
+            ) : (
+              <p className="text-muted-foreground">
+                Login to define new conditions
+              </p>
+            )}
+          </div>
+        </TooltipContent>
+      </Tooltip>
     </>
   );
 }

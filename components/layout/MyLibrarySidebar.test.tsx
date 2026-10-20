@@ -21,6 +21,7 @@ afterEach(() => {
 });
 
 const counts: MyLibraryCounts = {
+  conditions: 3,
   monsters: 12,
   hazards: 14,
   families: 3,
@@ -52,7 +53,7 @@ describe("MyLibrarySidebar", () => {
         .getAllByRole("heading", { level: 2 })
         .map((heading) => heading.textContent)
     ).toEqual(["Bestiary", "Heroes", "Gear", "Play"]);
-    expect(links).toHaveLength(15);
+    expect(links).toHaveLength(16);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/my/monsters",
       "/my/hazards",
@@ -68,6 +69,7 @@ describe("MyLibrarySidebar", () => {
       "/my/encounters",
       "/my/rules",
       "/my/tables",
+      "/my/conditions",
       "/my/collections",
     ]);
     expect(
@@ -194,5 +196,6 @@ describe("MyLibrarySidebar", () => {
     );
 
     expect(screen.queryByText("Reference Tables")).not.toBeInTheDocument();
+    expect(screen.queryByText("Conditions")).not.toBeInTheDocument();
   });
 });

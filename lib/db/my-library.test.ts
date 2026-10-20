@@ -25,6 +25,7 @@ const mockState = vi.hoisted(() => {
       userId: "companions.user_id",
       visibility: "companions.visibility",
     },
+    conditions: { creatorId: "conditions.creator_id" },
     customRules: {
       userId: "custom_rules.user_id",
       visibility: "custom_rules.visibility",
@@ -89,7 +90,7 @@ const mockState = vi.hoisted(() => {
       vi.clearAllMocks();
     },
     queueCounts(adventureCount: number, randomTableCount = 0) {
-      for (let index = 0; index < 15; index += 1) {
+      for (let index = 0; index < 16; index += 1) {
         queuedResults.push([
           {
             count:
