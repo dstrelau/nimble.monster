@@ -11,7 +11,6 @@ import {
   classes,
   companions,
   items,
-  monsters,
   spellSchools,
   subclasses,
 } from "@/lib/db/schema";
@@ -25,55 +24,6 @@ export async function listOwnCollections() {
     session.user.discordId
   );
   return { success: true, collections };
-}
-
-export async function addMonsterToCollection(formData: FormData) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return unauthorized();
-  }
-
-  const monsterId = formData.get("monsterId")?.toString();
-  const collectionId = formData.get("collectionId")?.toString();
-  if (!monsterId || !collectionId) {
-    return { success: false, error: "Missing monsterId or collectionId" };
-  }
-
-  const collection = await db.getCollection(
-    collectionId,
-    session.user.discordId
-  );
-  if (!collection) {
-    return {
-      success: false,
-      error: "Collection not found or you don't have permission to update it",
-    };
-  }
-
-  if (collection.creator.discordId !== session.user.discordId) {
-    return forbidden();
-  }
-
-  const entityDb = getDatabase();
-  const accessible = await entityDb
-    .select({ id: monsters.id })
-    .from(monsters)
-    .where(
-      and(
-        eq(monsters.id, monsterId),
-        or(
-          eq(monsters.visibility, "public"),
-          eq(monsters.userId, session.user.id)
-        )
-      )
-    )
-    .limit(1);
-  if (accessible.length === 0) {
-    return forbidden();
-  }
-
-  await db.addMonsterToCollection({ monsterId, collectionId });
-  return { success: true };
 }
 
 export async function addItemToCollection(formData: FormData) {

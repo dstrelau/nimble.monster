@@ -8,19 +8,15 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const {
-  mockListOwnCollections,
-  mockAddMonsterToCollection,
-  mockAddCompanionToCollection,
-} = vi.hoisted(() => ({
-  mockListOwnCollections: vi.fn(),
-  mockAddMonsterToCollection: vi.fn(),
-  mockAddCompanionToCollection: vi.fn(),
-}));
+const { mockListOwnCollections, mockFetch, mockAddCompanionToCollection } =
+  vi.hoisted(() => ({
+    mockListOwnCollections: vi.fn(),
+    mockFetch: vi.fn(),
+    mockAddCompanionToCollection: vi.fn(),
+  }));
 
 vi.mock("@/app/actions/collection", () => ({
   listOwnCollections: mockListOwnCollections,
-  addMonsterToCollection: mockAddMonsterToCollection,
   addItemToCollection: vi.fn(),
   addSpellSchoolToCollection: vi.fn(),
   addCompanionToCollection: mockAddCompanionToCollection,
@@ -107,10 +103,15 @@ const COLLECTIONS = {
 describe("AddToCollectionDialog", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubGlobal("fetch", mockFetch);
+    mockFetch.mockResolvedValue(Response.json({ success: true }));
     mockListOwnCollections.mockResolvedValue(COLLECTIONS);
   });
 
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllGlobals();
+  });
 
   it("renders the trigger button", () => {
     render(<AddToCollectionDialog type="monster" monsterId="m1" />, {
@@ -186,9 +187,11 @@ describe("AddToCollectionDialog", () => {
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
   });
 
-  it("adds a hazard through the monster collection action", async () => {
-    mockAddMonsterToCollection.mockResolvedValue({ success: true });
-    render(<AddToCollectionDialog type="hazard" monsterId="hazard-1" />, {
+  it.each<"monster" | "hazard">([
+    "monster",
+    "hazard",
+  ])("adds a %s through stable JSON transport", async (type) => {
+    render(<AddToCollectionDialog type={type} monsterId="entity-1" />, {
       wrapper: createWrapper(),
     });
 
@@ -201,11 +204,57 @@ describe("AddToCollectionDialog", () => {
     fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
 
     await waitFor(() => {
-      expect(mockAddMonsterToCollection).toHaveBeenCalledOnce();
+      expect(mockFetch).toHaveBeenCalledOnce();
     });
-    const formData = mockAddMonsterToCollection.mock.calls[0][0] as FormData;
-    expect(formData.get("monsterId")).toBe("hazard-1");
-    expect(formData.get("collectionId")).toBe("col-2");
+    expect(mockFetch).toHaveBeenCalledWith("/_actions/addMonsterToCollection", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ monsterId: "entity-1", collectionId: "col-2" }),
+    });
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+    );
+    expect(mockListOwnCollections).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([
+    "http",
+    "network",
+  ])("retains selection after %s failure and permits manual retry", async (failure) => {
+    let rejectRequest: (error: Error) => void = () => {};
+    let resolveRequest: (response: Response) => void = () => {};
+    mockFetch.mockReturnValueOnce(
+      new Promise<Response>((resolve, reject) => {
+        resolveRequest = resolve;
+        rejectRequest = reject;
+      })
+    );
+    render(<AddToCollectionDialog type="monster" monsterId="entity-1" />, {
+      wrapper: createWrapper(),
+    });
+    fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
+    await screen.findByText("Empty Collection");
+    fireEvent.change(screen.getByTestId("collection-select"), {
+      target: { value: "col-2" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
+    expect(
+      await screen.findByRole("button", { name: "Adding..." })
+    ).toBeDisabled();
+    if (failure === "http")
+      resolveRequest(Response.json({ error: "Forbidden" }, { status: 403 }));
+    else rejectRequest(new Error("Failed to fetch"));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      failure === "http" ? "Forbidden" : "Failed to fetch"
+    );
+    expect(screen.getByTestId("collection-select")).toHaveValue("col-2");
+    expect(mockFetch).toHaveBeenCalledOnce();
+    fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+    );
+    expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 
   it("submits form with correct entity type and collection", async () => {

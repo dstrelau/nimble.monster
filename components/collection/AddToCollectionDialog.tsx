@@ -3,12 +3,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CopyPlus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { addMonsterToCollection } from "@/app/%5Factions/addMonsterToCollection/contract";
 import {
   addAncestryToCollection,
   addBackgroundToCollection,
   addCompanionToCollection,
   addItemToCollection,
-  addMonsterToCollection,
   addSpellSchoolToCollection,
   addSubclassToCollection,
 } from "@/app/actions/collection";
@@ -36,6 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { call } from "@/lib/contract";
 
 interface AddToCollectionForm {
   collectionId: string;
@@ -111,11 +112,11 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
 
       switch (props.type) {
         case "monster":
-          formData.append("monsterId", props.monsterId);
-          return addMonsterToCollection(formData);
         case "hazard":
-          formData.append("monsterId", props.monsterId);
-          return addMonsterToCollection(formData);
+          return call(addMonsterToCollection, {
+            monsterId: props.monsterId,
+            collectionId: data.collectionId,
+          });
         case "item":
           formData.append("itemId", props.itemId);
           return addItemToCollection(formData);
@@ -206,6 +207,11 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
               <div className="text-warning text-sm">
                 This {entityLabel} is already in the selected collection
               </div>
+            )}
+            {mutation.isError && (
+              <p role="alert" className="text-destructive text-sm">
+                {mutation.error.message}
+              </p>
             )}
             <div className="flex justify-end">
               <Button

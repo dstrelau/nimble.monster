@@ -4,7 +4,6 @@ const { mockAuth } = vi.hoisted(() => ({ mockAuth: vi.fn() }));
 const {
   mockListCollectionsWithMonstersForUser,
   mockGetCollection,
-  mockAddMonsterToCollection,
   mockAddItemToCollection,
   mockAddSpellSchoolToCollection,
   mockAddCompanionToCollection,
@@ -14,7 +13,6 @@ const {
 } = vi.hoisted(() => ({
   mockListCollectionsWithMonstersForUser: vi.fn(),
   mockGetCollection: vi.fn(),
-  mockAddMonsterToCollection: vi.fn(),
   mockAddItemToCollection: vi.fn(),
   mockAddSpellSchoolToCollection: vi.fn(),
   mockAddCompanionToCollection: vi.fn(),
@@ -24,7 +22,7 @@ const {
 }));
 
 // Mock for entity accessibility checks (getDatabase returns a chainable query builder)
-const { mockGetDatabase, mockEntityAccessibleResult } = vi.hoisted(() => {
+const { mockGetDatabase } = vi.hoisted(() => {
   const mockResult = vi.fn().mockResolvedValue([{ id: "entity" }]);
   const chain = {
     select: vi.fn(),
@@ -37,7 +35,6 @@ const { mockGetDatabase, mockEntityAccessibleResult } = vi.hoisted(() => {
   chain.where.mockReturnValue(chain);
   return {
     mockGetDatabase: vi.fn(() => chain),
-    mockEntityAccessibleResult: mockResult,
   };
 });
 
@@ -72,7 +69,6 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/lib/db", () => ({
   listCollectionsWithMonstersForUser: mockListCollectionsWithMonstersForUser,
   getCollection: mockGetCollection,
-  addMonsterToCollection: mockAddMonsterToCollection,
   addItemToCollection: mockAddItemToCollection,
   addSpellSchoolToCollection: mockAddSpellSchoolToCollection,
   addCompanionToCollection: mockAddCompanionToCollection,
@@ -96,7 +92,6 @@ import {
   addBackgroundToCollection,
   addCompanionToCollection,
   addItemToCollection,
-  addMonsterToCollection,
   addSpellSchoolToCollection,
   addSubclassToCollection,
   listOwnCollections,
@@ -150,75 +145,6 @@ function buildFormData(entries: Record<string, string>): FormData {
   }
   return fd;
 }
-
-// All add*ToCollection actions share the same structure. Test one thoroughly,
-// then spot-check the others.
-describe("addMonsterToCollection", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("throws unauthorized when unauthenticated", async () => {
-    mockAuth.mockResolvedValue(null);
-    await expect(
-      addMonsterToCollection(
-        buildFormData({ monsterId: "m1", collectionId: "c1" })
-      )
-    ).rejects.toBe(unauthorizedSentinel);
-  });
-
-  it("returns error when missing params", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    const result = await addMonsterToCollection(buildFormData({}));
-    expect(result).toEqual({
-      success: false,
-      error: "Missing monsterId or collectionId",
-    });
-  });
-
-  it("returns error when collection not found", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockGetCollection.mockResolvedValue(null);
-    const result = await addMonsterToCollection(
-      buildFormData({ monsterId: "m1", collectionId: "c1" })
-    );
-    expect(result.success).toBe(false);
-    expect(mockGetCollection).toHaveBeenCalledWith("c1", "discord-123");
-  });
-
-  it("throws forbidden when not the owner", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockGetCollection.mockResolvedValue(OTHER_COLLECTION);
-    await expect(
-      addMonsterToCollection(
-        buildFormData({ monsterId: "m1", collectionId: "col-2" })
-      )
-    ).rejects.toBe(forbiddenSentinel);
-  });
-
-  it("throws forbidden when entity is not accessible", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockGetCollection.mockResolvedValue(OWNED_COLLECTION);
-    mockEntityAccessibleResult.mockResolvedValueOnce([]);
-    await expect(
-      addMonsterToCollection(
-        buildFormData({ monsterId: "m1", collectionId: "col-1" })
-      )
-    ).rejects.toBe(forbiddenSentinel);
-    expect(mockAddMonsterToCollection).not.toHaveBeenCalled();
-  });
-
-  it("adds monster to owned collection", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockGetCollection.mockResolvedValue(OWNED_COLLECTION);
-    const result = await addMonsterToCollection(
-      buildFormData({ monsterId: "m1", collectionId: "col-1" })
-    );
-    expect(result).toEqual({ success: true });
-    expect(mockAddMonsterToCollection).toHaveBeenCalledWith({
-      monsterId: "m1",
-      collectionId: "col-1",
-    });
-  });
-});
 
 describe("addItemToCollection", () => {
   beforeEach(() => vi.clearAllMocks());
