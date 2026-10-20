@@ -13,6 +13,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { GameIcon } from "@/components/icons/GameIcon";
 import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandDialog,
@@ -194,9 +195,11 @@ export function GlobalSearchDialog() {
         </DialogDescription>
         <div className="relative">
           {selectedType && SelectedTypeIcon && (
-            <button
+            <Button
               type="button"
-              className="group/type absolute top-3.5 left-3 z-10 size-5 text-muted-foreground hover:text-primary"
+              variant="ghost"
+              size="icon-sm"
+              className="group/type absolute top-2 left-1.5 z-10 text-muted-foreground"
               aria-label={`Clear ${selectedTypeLabel} filter`}
               title={`Clear ${selectedTypeLabel} filter`}
               onClick={() => {
@@ -206,7 +209,7 @@ export function GlobalSearchDialog() {
             >
               <SelectedTypeIcon className="size-5 group-hover/type:hidden group-focus/type:hidden" />
               <ArrowLeft className="hidden size-5 group-hover/type:block group-focus/type:block" />
-            </button>
+            </Button>
           )}
           <CommandInput
             ref={inputRef}
