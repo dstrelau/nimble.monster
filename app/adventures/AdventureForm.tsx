@@ -45,6 +45,7 @@ import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -950,7 +951,7 @@ export function AdventureForm({
                           <legend className="sr-only">
                             Visible sub-tables
                           </legend>
-                          <div className="flex items-center gap-2">
+                          <Field orientation="horizontal" className="w-auto">
                             <Checkbox
                               id={`subtables-all-${node.id}`}
                               checked={
@@ -966,15 +967,19 @@ export function AdventureForm({
                                 })
                               }
                             />
-                            <Label htmlFor={`subtables-all-${node.id}`}>
+                            <FieldLabel htmlFor={`subtables-all-${node.id}`}>
                               All
-                            </Label>
-                          </div>
+                            </FieldLabel>
+                          </Field>
                           {table.subtables.map((subtable) => {
                             const id = subtable.id;
                             if (!id) return null;
                             return (
-                              <div key={id} className="flex items-center gap-2">
+                              <Field
+                                key={id}
+                                orientation="horizontal"
+                                className="w-auto"
+                              >
                                 <Checkbox
                                   id={`subtable-${node.id}-${id}`}
                                   checked={selectedIds.includes(id)}
@@ -992,10 +997,12 @@ export function AdventureForm({
                                     });
                                   }}
                                 />
-                                <Label htmlFor={`subtable-${node.id}-${id}`}>
+                                <FieldLabel
+                                  htmlFor={`subtable-${node.id}-${id}`}
+                                >
                                   {subtable.title}
-                                </Label>
-                              </div>
+                                </FieldLabel>
+                              </Field>
                             );
                           })}
                         </fieldset>
