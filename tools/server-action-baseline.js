@@ -19,7 +19,6 @@ export const serverActionBaseline = {
     "app/ancestries/actions.ts": 1,
     "app/backgrounds/actions.ts": 1,
     "app/companions/actions.ts": 1,
-    "app/custom-rules/actions.ts": 1,
     "app/families/actions.ts": 1,
     "app/hazards/actions.ts": 1,
     "app/monsters/actions.ts": 2,

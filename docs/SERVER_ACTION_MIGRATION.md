@@ -441,7 +441,7 @@ contract compatibility window that a future migration must preserve.
 | Core content builders | Complete | Monster, hazard, item, encounter, and collection create/update use stable `/_actions` JSON routes |
 | Character-option builders | Complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9), [subclass create/update](https://ampcode.com/threads/T-01a131de-6489-707c-8e6c-58bb0194dc05), [companion create/update](https://ampcode.com/threads/T-01a13403-bbd1-768c-bf19-0288a298516d), [family create/update](https://ampcode.com/threads/T-01a13516-5c8e-72bf-bf74-c2dc2fe983e6), [spell-school create/update](https://ampcode.com/threads/T-01a13629-09df-7764-a771-a0a9c46381aa), and [custom-rule create/update](https://ampcode.com/threads/T-01a1384e-59c8-716d-8cb2-6133f8114ab2) complete |
 | Drafts | Complete | Class/subclass draft save/load/delete use stable `/_actions/classDraft` GET/POST/DELETE |
-| Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6), [item deletion](https://ampcode.com/threads/T-01a13c98-fff1-70db-8069-f73ee3f1805b), [encounter deletion](https://ampcode.com/threads/T-01a13dab-a15d-7443-94f8-d96e9f856073), [collection deletion](https://ampcode.com/threads/T-01a13ebe-4c4c-7488-b3e4-cc6d709ec057), [ancestry deletion](https://ampcode.com/threads/T-01a13fd0-f6d8-71da-90c0-5802c407f5dd), [background deletion](https://ampcode.com/threads/T-01a140e3-9c3e-736f-ae30-237797e4ebc0), [class deletion](https://ampcode.com/threads/T-01a141f6-ab29-7486-a38e-0cf7979d41a5), [subclass deletion](https://ampcode.com/threads/T-01a1441b-eb0c-739a-9999-8b3be511c56c), [companion deletion](https://ampcode.com/threads/T-01a1452e-6f24-7362-a486-d87159dee0a1), [family deletion](https://ampcode.com/threads/T-01a14641-5148-70ec-822b-a77be155af1d), and [spell-school deletion](https://ampcode.com/threads/T-01a14753-b964-771c-84f1-75ed7ecd56f7) complete; remaining entity deletes and relationships are Wave 2 |
+| Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6), [item deletion](https://ampcode.com/threads/T-01a13c98-fff1-70db-8069-f73ee3f1805b), [encounter deletion](https://ampcode.com/threads/T-01a13dab-a15d-7443-94f8-d96e9f856073), [collection deletion](https://ampcode.com/threads/T-01a13ebe-4c4c-7488-b3e4-cc6d709ec057), [ancestry deletion](https://ampcode.com/threads/T-01a13fd0-f6d8-71da-90c0-5802c407f5dd), [background deletion](https://ampcode.com/threads/T-01a140e3-9c3e-736f-ae30-237797e4ebc0), [class deletion](https://ampcode.com/threads/T-01a141f6-ab29-7486-a38e-0cf7979d41a5), [subclass deletion](https://ampcode.com/threads/T-01a1441b-eb0c-739a-9999-8b3be511c56c), [companion deletion](https://ampcode.com/threads/T-01a1452e-6f24-7362-a486-d87159dee0a1), [family deletion](https://ampcode.com/threads/T-01a14641-5148-70ec-822b-a77be155af1d), [spell-school deletion](https://ampcode.com/threads/T-01a14753-b964-771c-84f1-75ed7ecd56f7), and [custom-rule deletion](https://ampcode.com/threads/T-01a15993-16a3-748b-8f4f-08dfd4c166a5) complete; collection and encounter relationships are next in Wave 2 |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
 | Public browser reads | Not started | Wave 3; prefer existing JSON:API |
 | Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
@@ -1044,3 +1044,35 @@ contract compatibility window that a future migration must preserve.
 - Retain this URL and accepted request/response shapes for at least one full
   deployment interval. Pre-cutover tabs still need the existing refresh/retry
   path. Custom-rule deletion is the next bounded Wave 2 slice.
+
+### Custom-rule deletion — October 2026
+
+- `CustomRuleActions`, the sole browser caller, uses a typed JSON POST to
+  `/_actions/deleteCustomRule` with `{ id: UUID }`, returning 200 `{ success: true }`.
+  The unchanged database operation scopes deletion to the session-derived user ID.
+  Missing, non-owned and already-deleted rules return 404; submitted owner identity
+  is ignored. Official-rule links cascade and search-index removal is preserved;
+  official rules are not modified. No public API or repository boundary changed.
+- UUID validation, exact-origin/JSON enforcement, telemetry and generic unexpected
+  500s reuse the shared internal boundary without CORS. Existing list invalidation
+  remains, with owner-list and detail invalidation plus explicit refresh. Successful
+  deletion navigates to the existing `/my/rules` owner list: the former
+  `/custom-rules` destination was verified to return 404 on current main.
+- Owner-only controls, permanent-delete confirmation and pending disable remain.
+  HTTP/network failures now show one readable inline alert beneath the controls,
+  retain the detail and enable manual retry without automatic deletion requests.
+- Removed `deleteCustomRuleAction` and its now-empty module
+  `app/custom-rules/actions.ts`. Application ratchet: **81 → 80** exports;
+  repository markers are unchanged. Route-boundary and real-component transport
+  tests cover stable URL/no `next-action`, auth, ownership, validation, safe failures,
+  invalidation and confirmation/pending/error/retry behavior.
+- Live authenticated requests verify rejected-request retention, persisted deletion,
+  link/search removal, detail 404 and repeat-delete 404. Browser QA covers
+  cancellation, network failure/manual retry, pending controls, correct owner-list
+  navigation and full reload without console/page/hydration errors. Disposable
+  non-admin QA users/content are removed with explicit absence checks. Production
+  verification uses short-lived Auth.js sessions, not a dev-login bypass or
+  real-user content.
+- Retain this URL and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs still need the existing refresh/retry path.
+  Collection/encounter relationship writes are the next bounded Wave 2 work.
