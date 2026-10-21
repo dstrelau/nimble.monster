@@ -5,7 +5,7 @@ import { forbidden, unauthorized } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { getDatabase } from "@/lib/db/drizzle";
-import { ancestries, backgrounds, classes, subclasses } from "@/lib/db/schema";
+import { backgrounds, classes, subclasses } from "@/lib/db/schema";
 
 export async function listOwnCollections() {
   const session = await auth();
@@ -16,55 +16,6 @@ export async function listOwnCollections() {
     session.user.discordId
   );
   return { success: true, collections };
-}
-
-export async function addAncestryToCollection(formData: FormData) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return unauthorized();
-  }
-
-  const ancestryId = formData.get("ancestryId")?.toString();
-  const collectionId = formData.get("collectionId")?.toString();
-  if (!ancestryId || !collectionId) {
-    return { success: false, error: "Missing ancestryId or collectionId" };
-  }
-
-  const collection = await db.getCollection(
-    collectionId,
-    session.user.discordId
-  );
-  if (!collection) {
-    return {
-      success: false,
-      error: "Collection not found or you don't have permission to update it",
-    };
-  }
-
-  if (collection.creator.discordId !== session.user.discordId) {
-    return forbidden();
-  }
-
-  const entityDb = getDatabase();
-  const accessible = await entityDb
-    .select({ id: ancestries.id })
-    .from(ancestries)
-    .where(
-      and(
-        eq(ancestries.id, ancestryId),
-        or(
-          eq(ancestries.visibility, "public"),
-          eq(ancestries.userId, session.user.id)
-        )
-      )
-    )
-    .limit(1);
-  if (accessible.length === 0) {
-    return forbidden();
-  }
-
-  await db.addAncestryToCollection({ ancestryId, collectionId });
-  return { success: true };
 }
 
 export async function addBackgroundToCollection(formData: FormData) {

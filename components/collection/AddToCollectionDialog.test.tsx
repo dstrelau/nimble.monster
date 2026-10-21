@@ -15,7 +15,6 @@ const { mockListOwnCollections, mockFetch } = vi.hoisted(() => ({
 
 vi.mock("@/app/actions/collection", () => ({
   listOwnCollections: mockListOwnCollections,
-  addAncestryToCollection: vi.fn(),
   addBackgroundToCollection: vi.fn(),
   addSubclassToCollection: vi.fn(),
 }));
@@ -76,7 +75,7 @@ const COLLECTIONS = {
       monsters: [{ id: "m-existing" }],
       items: [{ id: "i-existing" }],
       companions: [{ id: "c-existing" }],
-      ancestries: [],
+      ancestries: [{ id: "a-existing" }],
       backgrounds: [],
       subclasses: [],
       spellSchools: [{ id: "s-existing" }],
@@ -162,11 +161,12 @@ describe("AddToCollectionDialog", () => {
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
   });
 
-  it.each<"hazard" | "item" | "spellSchool" | "companion">([
+  it.each<"hazard" | "item" | "spellSchool" | "companion" | "ancestry">([
     "hazard",
     "item",
     "spellSchool",
     "companion",
+    "ancestry",
   ])("detects a duplicate %s", async (type) => {
     render(
       type === "item" ? (
@@ -175,6 +175,8 @@ describe("AddToCollectionDialog", () => {
         <AddToCollectionDialog type="spellSchool" spellSchoolId="s-existing" />
       ) : type === "companion" ? (
         <AddToCollectionDialog type="companion" companionId="c-existing" />
+      ) : type === "ancestry" ? (
+        <AddToCollectionDialog type="ancestry" ancestryId="a-existing" />
       ) : (
         <AddToCollectionDialog type="hazard" monsterId="m-existing" />
       ),
@@ -198,12 +200,15 @@ describe("AddToCollectionDialog", () => {
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
   });
 
-  it.each<"monster" | "hazard" | "item" | "spellSchool" | "companion">([
+  it.each<
+    "monster" | "hazard" | "item" | "spellSchool" | "companion" | "ancestry"
+  >([
     "monster",
     "hazard",
     "item",
     "spellSchool",
     "companion",
+    "ancestry",
   ])("adds a %s through stable JSON transport", async (type) => {
     render(
       type === "item" ? (
@@ -212,6 +217,8 @@ describe("AddToCollectionDialog", () => {
         <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
       ) : type === "companion" ? (
         <AddToCollectionDialog type="companion" companionId="entity-1" />
+      ) : type === "ancestry" ? (
+        <AddToCollectionDialog type="ancestry" ancestryId="entity-1" />
       ) : (
         <AddToCollectionDialog type={type} monsterId="entity-1" />
       ),
@@ -238,7 +245,9 @@ describe("AddToCollectionDialog", () => {
           ? "/_actions/addSpellSchoolToCollection"
           : type === "companion"
             ? "/_actions/addCompanionToCollection"
-            : "/_actions/addMonsterToCollection",
+            : type === "ancestry"
+              ? "/_actions/addAncestryToCollection"
+              : "/_actions/addMonsterToCollection",
       {
         method: "POST",
         credentials: "same-origin",
@@ -250,7 +259,9 @@ describe("AddToCollectionDialog", () => {
               ? { spellSchoolId: "entity-1", collectionId: "col-2" }
               : type === "companion"
                 ? { companionId: "entity-1", collectionId: "col-2" }
-                : { monsterId: "entity-1", collectionId: "col-2" }
+                : type === "ancestry"
+                  ? { ancestryId: "entity-1", collectionId: "col-2" }
+                  : { monsterId: "entity-1", collectionId: "col-2" }
         ),
       }
     );
@@ -269,6 +280,8 @@ describe("AddToCollectionDialog", () => {
     ["spellSchool", "network"],
     ["companion", "http"],
     ["companion", "network"],
+    ["ancestry", "http"],
+    ["ancestry", "network"],
   ])("retains %s selection after %s failure and permits manual retry", async (type, failure) => {
     let rejectRequest: (error: Error) => void = () => {};
     let resolveRequest: (response: Response) => void = () => {};
@@ -285,6 +298,8 @@ describe("AddToCollectionDialog", () => {
         <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
       ) : type === "companion" ? (
         <AddToCollectionDialog type="companion" companionId="entity-1" />
+      ) : type === "ancestry" ? (
+        <AddToCollectionDialog type="ancestry" ancestryId="entity-1" />
       ) : (
         <AddToCollectionDialog type="monster" monsterId="entity-1" />
       ),

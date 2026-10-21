@@ -4,13 +4,11 @@ const { mockAuth } = vi.hoisted(() => ({ mockAuth: vi.fn() }));
 const {
   mockListCollectionsWithMonstersForUser,
   mockGetCollection,
-  mockAddAncestryToCollection,
   mockAddBackgroundToCollection,
   mockAddSubclassToCollection,
 } = vi.hoisted(() => ({
   mockListCollectionsWithMonstersForUser: vi.fn(),
   mockGetCollection: vi.fn(),
-  mockAddAncestryToCollection: vi.fn(),
   mockAddBackgroundToCollection: vi.fn(),
   mockAddSubclassToCollection: vi.fn(),
 }));
@@ -63,7 +61,6 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/lib/db", () => ({
   listCollectionsWithMonstersForUser: mockListCollectionsWithMonstersForUser,
   getCollection: mockGetCollection,
-  addAncestryToCollection: mockAddAncestryToCollection,
   addBackgroundToCollection: mockAddBackgroundToCollection,
   addSubclassToCollection: mockAddSubclassToCollection,
 }));
@@ -79,7 +76,6 @@ vi.mock("@/lib/services/companions/repository", () => ({
 }));
 
 import {
-  addAncestryToCollection,
   addBackgroundToCollection,
   addSubclassToCollection,
   listOwnCollections,
@@ -127,24 +123,6 @@ function buildFormData(entries: Record<string, string>): FormData {
   }
   return fd;
 }
-
-describe("addAncestryToCollection", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("passes discordId to getCollection and adds ancestry", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockGetCollection.mockResolvedValue(OWNED_COLLECTION);
-    const result = await addAncestryToCollection(
-      buildFormData({ ancestryId: "a1", collectionId: "col-1" })
-    );
-    expect(result).toEqual({ success: true });
-    expect(mockGetCollection).toHaveBeenCalledWith("col-1", "discord-123");
-    expect(mockAddAncestryToCollection).toHaveBeenCalledWith({
-      ancestryId: "a1",
-      collectionId: "col-1",
-    });
-  });
-});
 
 describe("addBackgroundToCollection", () => {
   beforeEach(() => vi.clearAllMocks());
