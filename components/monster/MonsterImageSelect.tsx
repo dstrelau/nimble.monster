@@ -13,7 +13,6 @@ import {
   Dialog,
   DialogContent,
   DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -194,9 +193,7 @@ export function MonsterImageSelect({
             if (isUploading) event.preventDefault();
           }}
         >
-          <DialogHeader>
-            <DialogTitle>Choose image</DialogTitle>
-          </DialogHeader>
+          <DialogTitle className="sr-only">Choose image</DialogTitle>
           <Tabs
             defaultValue={customArtwork ? "upload" : "paperforge"}
             className="min-h-0 flex-1"
