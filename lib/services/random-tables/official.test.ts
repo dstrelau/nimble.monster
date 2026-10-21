@@ -489,53 +489,54 @@ describe("official table persistence", () => {
     );
   });
 
-  it.each(["duplicate title", "unmapped title", "duplicate parent"])(
-    "rejects %s during legacy mapping without mutation",
-    async (problem) => {
-      const parentId = crypto.randomUUID();
+  it.each([
+    "duplicate title",
+    "unmapped title",
+    "duplicate parent",
+  ])("rejects %s during legacy mapping without mutation", async (problem) => {
+    const parentId = crypto.randomUUID();
+    await getDatabase().insert(schema.randomTables).values({
+      id: parentId,
+      name: tables[0].name,
+      creatorId: OFFICIAL_USER_ID,
+    });
+    await getDatabase()
+      .insert(schema.randomSubtables)
+      .values({
+        id: crypto.randomUUID(),
+        randomTableId: parentId,
+        title:
+          problem === "unmapped title" ? "Unknown historical title" : "Cloth",
+        columns: tables[0].subtables[0].columns,
+        orderIndex: 0,
+      });
+    if (problem === "duplicate title") {
+      await getDatabase().insert(schema.randomSubtables).values({
+        id: crypto.randomUUID(),
+        randomTableId: parentId,
+        title: "Cloth",
+        columns: tables[0].subtables[0].columns,
+        orderIndex: 1,
+      });
+    }
+    if (problem === "duplicate parent") {
       await getDatabase().insert(schema.randomTables).values({
-        id: parentId,
+        id: crypto.randomUUID(),
         name: tables[0].name,
         creatorId: OFFICIAL_USER_ID,
       });
-      await getDatabase()
-        .insert(schema.randomSubtables)
-        .values({
-          id: crypto.randomUUID(),
-          randomTableId: parentId,
-          title:
-            problem === "unmapped title" ? "Unknown historical title" : "Cloth",
-          columns: tables[0].subtables[0].columns,
-          orderIndex: 0,
-        });
-      if (problem === "duplicate title") {
-        await getDatabase().insert(schema.randomSubtables).values({
-          id: crypto.randomUUID(),
-          randomTableId: parentId,
-          title: "Cloth",
-          columns: tables[0].subtables[0].columns,
-          orderIndex: 1,
-        });
-      }
-      if (problem === "duplicate parent") {
-        await getDatabase().insert(schema.randomTables).values({
-          id: crypto.randomUUID(),
-          name: tables[0].name,
-          creatorId: OFFICIAL_USER_ID,
-        });
-      }
-      const before = await getPublicRandomTableById(parentId);
-      await expect(upsertOfficialRandomTable(tables[0])).rejects.toThrow(
-        /legacy/i
-      );
-      expect(await getPublicRandomTableById(parentId)).toEqual(before);
-      expect(
-        (await getDatabase().select().from(schema.randomTables)).every(
-          (row) => row.officialId === null
-        )
-      ).toBe(true);
     }
-  );
+    const before = await getPublicRandomTableById(parentId);
+    await expect(upsertOfficialRandomTable(tables[0])).rejects.toThrow(
+      /legacy/i
+    );
+    expect(await getPublicRandomTableById(parentId)).toEqual(before);
+    expect(
+      (await getDatabase().select().from(schema.randomTables)).every(
+        (row) => row.officialId === null
+      )
+    ).toBe(true);
+  });
 
   it("rejects official import keys attached to another table", async () => {
     await upsertOfficialRandomTable(tables[0]);

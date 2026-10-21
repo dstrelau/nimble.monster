@@ -136,14 +136,14 @@ describe("NewEncounterPage", () => {
     expect(source.monsters).toHaveLength(3);
   });
 
-  it.each(["invalid", [slugify(source), slugify(source)]])(
-    "returns not found for an invalid remix parameter %j",
-    async (remix) => {
-      await expect(
-        NewEncounterPage({ searchParams: Promise.resolve({ remix }) })
-      ).rejects.toThrow("NOT_FOUND");
-    }
-  );
+  it.each([
+    "invalid",
+    [slugify(source), slugify(source)],
+  ])("returns not found for an invalid remix parameter %j", async (remix) => {
+    await expect(
+      NewEncounterPage({ searchParams: Promise.resolve({ remix }) })
+    ).rejects.toThrow("NOT_FOUND");
+  });
 
   it("does not expose missing or unauthorized private encounters", async () => {
     mockGetEncounter.mockResolvedValue(null);

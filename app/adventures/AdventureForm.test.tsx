@@ -688,7 +688,7 @@ describe("AdventureForm", () => {
   it("renders the accessible colored callout presentation pills", () => {
     renderForm(calloutValue);
 
-    const group = screen.getByRole("radiogroup", { name: "Callout style" });
+    const group = screen.getByRole("group", { name: "Callout style" });
     expect(
       within(group)
         .getAllByRole("radio")
@@ -731,7 +731,7 @@ describe("AdventureForm", () => {
       nodes: [{ ...calloutValue.nodes[0], presentation: "rules" }],
     });
 
-    const group = screen.getByRole("radiogroup", { name: "Callout style" });
+    const group = screen.getByRole("group", { name: "Callout style" });
     expect(within(group).getByRole("radio", { name: "Note" })).toHaveAttribute(
       "aria-checked",
       "true"

@@ -214,7 +214,6 @@ const MinionTrackerBoxes = ({
     <div className="flex flex-wrap gap-2">
       {Array.from({ length: count }, (_, i) => (
         <button
-          // biome-ignore lint/suspicious/noArrayIndexKey: each fixed tracker slot is identified by its position
           key={`${monster.id}-${i}`}
           type="button"
           aria-label={`Toggle ${monster.name} ${i + 1}`}
@@ -270,7 +269,6 @@ const TrackerGroup = ({ monster, hp, count }: TrackerGroup) => (
       ) : (
         Array.from({ length: count }, (_, i) => (
           <MonsterHpRow
-            // biome-ignore lint/suspicious/noArrayIndexKey: each fixed tracker slot is identified by its position
             key={`${monster.id}-${i}`}
             hp={hp}
             index={i}

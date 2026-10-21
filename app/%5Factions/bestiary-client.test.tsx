@@ -118,50 +118,47 @@ describe("bestiary builder mutation", () => {
     ["Legendary", "Manticore", "Ravager of the Lowlands"],
     ["Minion", "Kobold", "Kobold Minion"],
     ["Team", "Team", "Kelebek & Poppy"],
-  ])(
-    "loads only the %s example and confirms before clearing",
-    (kind, example, name) => {
-      renderBuilder(false, undefined, true);
-      if (kind !== "Standard") {
-        fireEvent.keyDown(
-          screen.getByRole("combobox", { name: "Monster type" }),
-          {
-            key: "ArrowDown",
-          }
-        );
-        fireEvent.click(screen.getByRole("option", { name: kind }));
-      }
-      fireEvent.click(
-        screen.getByRole("button", { name: "Start from an example" })
+  ])("loads only the %s example and confirms before clearing", (kind, example, name) => {
+    renderBuilder(false, undefined, true);
+    if (kind !== "Standard") {
+      fireEvent.keyDown(
+        screen.getByRole("combobox", { name: "Monster type" }),
+        {
+          key: "ArrowDown",
+        }
       );
-      expect(screen.getByText("Load example:")).toBeInTheDocument();
-      for (const other of ["Goblin", "Manticore", "Kobold", "Team"]) {
-        expect(screen.queryByRole("button", { name: other }) !== null).toBe(
-          other === example
-        );
-      }
-      expect(
-        screen.queryByRole("button", { name: "Empty" })
-      ).not.toBeInTheDocument();
-      fireEvent.click(screen.getByRole("button", { name: example }));
-      expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(name);
-      fireEvent.click(screen.getByRole("button", { name: "Clear" }));
-      const dialog = screen.getByRole("alertdialog");
-      expect(within(dialog).getByText("Clear form?")).toBeInTheDocument();
-      fireEvent.click(within(dialog).getByRole("button", { name: "Cancel" }));
-      expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(name);
-      fireEvent.click(screen.getByRole("button", { name: "Clear" }));
-      fireEvent.click(
-        within(screen.getByRole("alertdialog")).getByRole("button", {
-          name: "Clear",
-        })
-      );
-      expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("");
-      expect(
-        screen.getByRole("combobox", { name: "Monster type" })
-      ).toHaveTextContent(kind);
+      fireEvent.click(screen.getByRole("option", { name: kind }));
     }
-  );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Start from an example" })
+    );
+    expect(screen.getByText("Load example:")).toBeInTheDocument();
+    for (const other of ["Goblin", "Manticore", "Kobold", "Team"]) {
+      expect(screen.queryByRole("button", { name: other }) !== null).toBe(
+        other === example
+      );
+    }
+    expect(
+      screen.queryByRole("button", { name: "Empty" })
+    ).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: example }));
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(name);
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+    const dialog = screen.getByRole("alertdialog");
+    expect(within(dialog).getByText("Clear form?")).toBeInTheDocument();
+    fireEvent.click(within(dialog).getByRole("button", { name: "Cancel" }));
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(name);
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+    fireEvent.click(
+      within(screen.getByRole("alertdialog")).getByRole("button", {
+        name: "Clear",
+      })
+    );
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("");
+    expect(
+      screen.getByRole("combobox", { name: "Monster type" })
+    ).toHaveTextContent(kind);
+  });
 
   it("opts flagged monsters into the editor and keeps draft fields across preview", async () => {
     vi.mocked(call).mockRejectedValueOnce(new Error("Try again"));

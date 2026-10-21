@@ -119,20 +119,20 @@ describe("internalAction", () => {
     expect(handler).toHaveBeenCalledOnce();
   });
 
-  it.each(["text/plain", "application/x-www-form-urlencoded"])(
-    "rejects a %s simple-request CSRF body before the handler",
-    async (contentType) => {
-      const handler = okHandler();
-      const response = await internalAction(
-        "application/json",
-        handler
-      )(request({ "content-type": contentType }));
+  it.each([
+    "text/plain",
+    "application/x-www-form-urlencoded",
+  ])("rejects a %s simple-request CSRF body before the handler", async (contentType) => {
+    const handler = okHandler();
+    const response = await internalAction(
+      "application/json",
+      handler
+    )(request({ "content-type": contentType }));
 
-      expect(response.status).toBe(415);
-      expect(handler).not.toHaveBeenCalled();
-      expect(response.headers.has("access-control-allow-origin")).toBe(false);
-    }
-  );
+    expect(response.status).toBe(415);
+    expect(handler).not.toHaveBeenCalled();
+    expect(response.headers.has("access-control-allow-origin")).toBe(false);
+  });
 
   it("accepts multipart/form-data with a browser boundary", async () => {
     const handler = okHandler();

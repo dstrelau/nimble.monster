@@ -314,64 +314,64 @@ describe("GET /monsters/[id]/nimbrew.json", () => {
     { width: undefined, label: "Line 6" },
     { width: 1, label: "Line 6" },
     { width: 3, label: "Line 3×6" },
-  ])(
-    "exports a single line action with width $width",
-    async ({ width, label }) => {
-      mockFormatSizeKind.mockReturnValue("Small Beast");
+  ])("exports a single line action with width $width", async ({
+    width,
+    label,
+  }) => {
+    mockFormatSizeKind.mockReturnValue("Small Beast");
 
-      const mockMonster = {
-        id: "550e8400-e29b-41d4-a716-446655440000",
-        name: "Rat",
-        visibility: "public",
-        creator: fakeCreator,
-        level: "1",
-        levelInt: 1,
-        hp: 1,
-        legendary: false,
-        minion: false,
-        armor: "none",
-        size: "small",
-        speed: 6,
-        fly: 0,
-        swim: 0,
-        climb: 0,
-        teleport: 0,
-        burrow: 0,
-        saves: "",
-        families: [],
-        abilities: [],
-        actions: [
-          {
-            id: "test-id-4",
-            name: "Bite",
-            damage: "1",
-            area: {
-              shape: "line",
-              size: 6,
-              ...(width === undefined ? {} : { width }),
-            },
-            description: "Melee weapon attack",
+    const mockMonster = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Rat",
+      visibility: "public",
+      creator: fakeCreator,
+      level: "1",
+      levelInt: 1,
+      hp: 1,
+      legendary: false,
+      minion: false,
+      armor: "none",
+      size: "small",
+      speed: 6,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      teleport: 0,
+      burrow: 0,
+      saves: "",
+      families: [],
+      abilities: [],
+      actions: [
+        {
+          id: "test-id-4",
+          name: "Bite",
+          damage: "1",
+          area: {
+            shape: "line",
+            size: 6,
+            ...(width === undefined ? {} : { width }),
           },
-        ],
-        actionPreface: "",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      } satisfies Partial<Monster>;
+          description: "Melee weapon attack",
+        },
+      ],
+      actionPreface: "",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } satisfies Partial<Monster>;
 
-      const slug = "rat-abcdefghijklmnopqrstuvwxyz";
-      mockDeslugify.mockReturnValue("550e8400-e29b-41d4-a716-446655440000");
-      mockSlugify.mockReturnValue(slug);
-      mockFindMonster.mockResolvedValue(mockMonster);
+    const slug = "rat-abcdefghijklmnopqrstuvwxyz";
+    mockDeslugify.mockReturnValue("550e8400-e29b-41d4-a716-446655440000");
+    mockSlugify.mockReturnValue(slug);
+    mockFindMonster.mockResolvedValue(mockMonster);
 
-      const response = await GET(mockRequest, createMockParams(slug));
-      const data = await response.json();
+    const response = await GET(mockRequest, createMockParams(slug));
+    const data = await response.json();
 
-      expect(response.status).toBe(200);
-      expect(data.armor).toBe("");
-      expect(data.actions).toHaveLength(1);
-      expect(data.actions[0].type).toBe("single");
-      expect(data.actions[0].name).toBe("Bite");
-      expect(data.actions[0].desc).toBe(`1 (${label}) Melee weapon attack`);
-    }
-  );
+    expect(response.status).toBe(200);
+    expect(data.armor).toBe("");
+    expect(data.actions).toHaveLength(1);
+    expect(data.actions[0].type).toBe("single");
+    expect(data.actions[0].name).toBe("Bite");
+    expect(data.actions[0].desc).toBe(`1 (${label}) Melee weapon attack`);
+  });
 });

@@ -68,21 +68,22 @@ describe("collection deletion route", () => {
     expect(await response.json()).toEqual({ error: "Collection not found" });
     expect(mocks.revalidatePath).not.toHaveBeenCalled();
   });
-  it.each([null, { user: { id: "owner", discordId: "" } }])(
-    "requires complete authentication",
-    async (session) => {
-      mocks.auth.mockResolvedValue(session);
-      expect((await POST(request())).status).toBe(401);
-      expect(mocks.deleteCollection).not.toHaveBeenCalled();
-    }
-  );
-  it.each(["{broken", { id: "invalid" }, {}])(
-    "rejects malformed JSON/schema",
-    async (body) => {
-      expect((await POST(request(body))).status).toBe(400);
-      expect(mocks.deleteCollection).not.toHaveBeenCalled();
-    }
-  );
+  it.each([
+    null,
+    { user: { id: "owner", discordId: "" } },
+  ])("requires complete authentication", async (session) => {
+    mocks.auth.mockResolvedValue(session);
+    expect((await POST(request())).status).toBe(401);
+    expect(mocks.deleteCollection).not.toHaveBeenCalled();
+  });
+  it.each([
+    "{broken",
+    { id: "invalid" },
+    {},
+  ])("rejects malformed JSON/schema", async (body) => {
+    expect((await POST(request(body))).status).toBe(400);
+    expect(mocks.deleteCollection).not.toHaveBeenCalled();
+  });
   it("rejects origin/media mismatches before authentication or writes", async () => {
     expect(
       (await POST(request({ id }, { origin: "https://evil.test" }))).status

@@ -187,78 +187,82 @@ describe("AdventureView", () => {
     { ids: ["middle"], cells: ["Hidden result"] },
     { ids: [], cells: [] },
     { ids: ["deleted"], cells: [] },
-  ])(
-    "renders selected sub-tables by ID in source order: $ids",
-    ({ ids, cells }) => {
-      const adventure = calloutAdventure("note");
-      adventure.nodes = [
-        {
-          ...adventure.nodes[0],
-          kind: "table",
-          content: "",
-          subtableIds: ids,
-          table: {
-            id: "table",
-            name: "Travel Events",
-            visibility: "public",
-            creator: adventure.creator,
-            subtables: [
-              {
-                id: "first",
-                title: "Duplicate title",
-                columns: [{ id: "result", name: "Result" }],
-                rows: [{ cells: { result: "First result" } }],
-              },
-              {
-                id: "middle",
-                title: "Duplicate title",
-                columns: [{ id: "result", name: "Result" }],
-                rows: [{ cells: { result: "Hidden result" } }],
-              },
-              {
-                id: "last",
-                title: "Renamed last",
-                columns: [{ id: "result", name: "Result" }],
-                rows: [{ cells: { result: "Last result" } }],
-              },
-            ],
-          },
+  ])("renders selected sub-tables by ID in source order: $ids", ({
+    ids,
+    cells,
+  }) => {
+    const adventure = calloutAdventure("note");
+    adventure.nodes = [
+      {
+        ...adventure.nodes[0],
+        kind: "table",
+        content: "",
+        subtableIds: ids,
+        table: {
+          id: "table",
+          name: "Travel Events",
+          visibility: "public",
+          creator: adventure.creator,
+          subtables: [
+            {
+              id: "first",
+              title: "Duplicate title",
+              columns: [{ id: "result", name: "Result" }],
+              rows: [{ cells: { result: "First result" } }],
+            },
+            {
+              id: "middle",
+              title: "Duplicate title",
+              columns: [{ id: "result", name: "Result" }],
+              rows: [{ cells: { result: "Hidden result" } }],
+            },
+            {
+              id: "last",
+              title: "Renamed last",
+              columns: [{ id: "result", name: "Result" }],
+              rows: [{ cells: { result: "Last result" } }],
+            },
+          ],
         },
-      ];
-      render(<AdventureView adventure={adventure} />);
-      expect(
-        screen.queryAllByRole("cell").map((cell) => cell.textContent?.trim())
-      ).toEqual(cells);
-      expect(screen.queryByText("Removed content") !== null).toBe(
-        ids?.[0] === "deleted"
-      );
-    }
-  );
+      },
+    ];
+    render(<AdventureView adventure={adventure} />);
+    expect(
+      screen.queryAllByRole("cell").map((cell) => cell.textContent?.trim())
+    ).toEqual(cells);
+    expect(screen.queryByText("Removed content") !== null).toBe(
+      ids?.[0] === "deleted"
+    );
+  });
 
-  it.each(calloutVariants)(
-    "renders the $label callout with its shared icon and color treatment",
-    ({ presentation, label, iconClass, panelClass }) => {
-      render(<AdventureView adventure={calloutAdventure(presentation)} />);
+  it.each(
+    calloutVariants
+  )("renders the $label callout with its shared icon and color treatment", ({
+    presentation,
+    label,
+    iconClass,
+    panelClass,
+  }) => {
+    render(<AdventureView adventure={calloutAdventure(presentation)} />);
 
-      const panel = screen.getByTestId("adventure-callout");
-      expect(panel).toHaveAttribute("data-callout-presentation", presentation);
-      expect(panel).toHaveClass("border-l-4", panelClass);
-      expect(screen.getByText("A Callout Title")).toHaveClass("text-xs");
-      expect(screen.queryByText(label)).not.toBeInTheDocument();
-      expect(panel.querySelector(`svg.${iconClass}`)).not.toBeNull();
-      expect(panel).toHaveClass("my-2");
-      const icon = panel.querySelector(`svg.${iconClass}`);
-      expect(icon).toHaveClass("size-3.5");
-      expect(icon?.parentElement).toHaveClass("size-6", "rounded-md");
-      expect(
-        screen.queryByRole("heading", { name: "A Callout Title" })
-      ).not.toBeInTheDocument();
-      expect(panel.querySelector("div.text-sm")).toHaveClass(
-        "text-sm",
-        "leading-5"
-      );
-    }
-  );
+    const panel = screen.getByTestId("adventure-callout");
+    expect(panel).toHaveAttribute("data-callout-presentation", presentation);
+    expect(panel).toHaveClass("border-l-4", panelClass);
+    expect(screen.getByText("A Callout Title")).toHaveClass("text-xs");
+    expect(screen.queryByText(label)).not.toBeInTheDocument();
+    expect(panel.querySelector(`svg.${iconClass}`)).not.toBeNull();
+    expect(panel).toHaveClass("my-2");
+    const icon = panel.querySelector(`svg.${iconClass}`);
+    expect(icon).toHaveClass("size-3.5");
+    expect(icon?.parentElement).toHaveClass("size-6", "rounded-md");
+    expect(
+      screen.queryByRole("heading", { name: "A Callout Title" })
+    ).not.toBeInTheDocument();
+    expect(panel.querySelector("div.text-sm")).toHaveClass(
+      "text-sm",
+      "leading-5"
+    );
+  });
 
   it("displays the callout style when the callout has no title", () => {
     render(<AdventureView adventure={calloutAdventure("note", "")} />);

@@ -36,19 +36,19 @@ beforeEach(() => {
 });
 
 describe("feature flag administration", () => {
-  it.each([true, false])(
-    "persists an explicit enabled=%s for the selected user",
-    async (enabled) => {
-      const response = await POST(request({ ...input, enabled }));
-      expect(response.status).toBe(200);
-      expect(await response.json()).toEqual({ success: true });
-      expect(mocks.setFeatureFlag).toHaveBeenCalledWith(
-        "target-user",
-        "monster-statblock-editor",
-        enabled
-      );
-    }
-  );
+  it.each([
+    true,
+    false,
+  ])("persists an explicit enabled=%s for the selected user", async (enabled) => {
+    const response = await POST(request({ ...input, enabled }));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ success: true });
+    expect(mocks.setFeatureFlag).toHaveBeenCalledWith(
+      "target-user",
+      "monster-statblock-editor",
+      enabled
+    );
+  });
 
   it("denies non-admins and cross-origin writes", async () => {
     mocks.isAdmin.mockResolvedValue(false);

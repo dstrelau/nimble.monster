@@ -10,8 +10,7 @@ import {
 } from "@opentelemetry/api";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { resourceFromAttributes } from "@opentelemetry/resources";
-import { NodeSDK } from "@opentelemetry/sdk-node";
-import { SimpleSpanProcessor } from "@opentelemetry/sdk-trace";
+import { NodeSDK, tracing } from "@opentelemetry/sdk-node";
 import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions";
 
 const honeycombApiKey = process.env.HONEYCOMB_API_KEY;
@@ -23,7 +22,7 @@ const traceExporter = new OTLPTraceExporter({
   url: "https://api.honeycomb.io/v1/traces",
   headers: { "x-honeycomb-team": honeycombApiKey },
 });
-const spanProcessor = new SimpleSpanProcessor({ exporter: traceExporter });
+const spanProcessor = new tracing.SimpleSpanProcessor(traceExporter);
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
     [ATTR_SERVICE_NAME]: "nimble.image-renderer",

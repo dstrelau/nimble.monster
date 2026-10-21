@@ -54,39 +54,39 @@ describe("family image preview privacy", () => {
     vi.mocked(monstersRepo.listMonstersByFamilyId).mockResolvedValue(monsters);
   });
 
-  it.each(["private", "secret"] satisfies FamilyVisibility[])(
-    "does not advertise an image for a %s family",
-    async (visibility) => {
-      const family = makeFamily(visibility);
-      vi.mocked(db.getFamily).mockResolvedValue(family);
+  it.each([
+    "private",
+    "secret",
+  ] satisfies FamilyVisibility[])("does not advertise an image for a %s family", async (visibility) => {
+    const family = makeFamily(visibility);
+    vi.mocked(db.getFamily).mockResolvedValue(family);
 
-      const metadata = await generateMetadata({
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ id: slugify(family) }),
+    });
+
+    expect(metadata.openGraph?.images).toBeUndefined();
+    expect(metadata.twitter).toEqual({
+      card: "summary",
+      title: family.name,
+      description: "0 monsters by Creator",
+    });
+  });
+
+  it.each([
+    "private",
+    "secret",
+  ] satisfies FamilyVisibility[])("rejects the renderer-only preview for a %s family", async (visibility) => {
+    const family = makeFamily(visibility);
+    vi.mocked(db.getFamily).mockResolvedValue(family);
+
+    await expect(
+      FamilyDetailPage({
         params: Promise.resolve({ id: slugify(family) }),
-      });
+        searchParams: Promise.resolve({ imagePreview: "overview" }),
+      })
+    ).rejects.toThrow("not found");
 
-      expect(metadata.openGraph?.images).toBeUndefined();
-      expect(metadata.twitter).toEqual({
-        card: "summary",
-        title: family.name,
-        description: "0 monsters by Creator",
-      });
-    }
-  );
-
-  it.each(["private", "secret"] satisfies FamilyVisibility[])(
-    "rejects the renderer-only preview for a %s family",
-    async (visibility) => {
-      const family = makeFamily(visibility);
-      vi.mocked(db.getFamily).mockResolvedValue(family);
-
-      await expect(
-        FamilyDetailPage({
-          params: Promise.resolve({ id: slugify(family) }),
-          searchParams: Promise.resolve({ imagePreview: "overview" }),
-        })
-      ).rejects.toThrow("not found");
-
-      expect(monstersRepo.listMonstersByFamilyId).not.toHaveBeenCalled();
-    }
-  );
+    expect(monstersRepo.listMonstersByFamilyId).not.toHaveBeenCalled();
+  });
 });

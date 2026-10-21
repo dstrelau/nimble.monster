@@ -1,11 +1,13 @@
 "use client";
 import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import markdownIt, { type MarkdownIt, type Token } from "markdown-it";
+import MarkdownIt from "markdown-it";
+import type Token from "markdown-it/lib/token.mjs";
 import Link from "next/link";
 import { createElement, Fragment, type ReactNode, useMemo } from "react";
 import { DiceNotation } from "@/components/dice/DiceNotation";
 import { ReferencePopover } from "@/components/shared/ReferencePopover";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useEntityQuery } from "@/lib/hooks/useEntityQuery";
 import { getQueryClient } from "@/lib/queryClient";
 import type { Condition, Condition as ConditionT } from "@/lib/types";
@@ -82,10 +84,7 @@ function EntityLinkInner({
     return (
       <span className="inline-flex items-center gap-1">
         <Icon className="stroke-flame size-4" />
-        <span
-          data-slot="skeleton"
-          className="animate-pulse rounded-md bg-muted h-4 w-18"
-        />
+        <Skeleton className="bg-muted h-4 w-18" />
       </span>
     );
   }
@@ -418,7 +417,7 @@ function parseEntityUrl(value: string) {
 }
 
 function createMarkdown(enableHeadings = false) {
-  const markdown = new markdownIt("zero").enable([
+  const markdown = new MarkdownIt("zero").enable([
     "paragraph",
     "emphasis",
     "newline",
@@ -479,44 +478,28 @@ function renderTokens(
             )}
           </Fragment>
         );
-      } else if (
-        token.type === "condition" &&
-        typeof token.meta?.conditionName === "string" &&
-        typeof token.meta.displayText === "string"
-      ) {
-        const { conditionName, displayText } = token.meta;
+      } else if (token.type === "condition") {
         children.push(
           <ConditionSpan
             key={key}
-            displayText={displayText}
+            displayText={token.meta.displayText}
             condition={conditions.find(
               (condition) =>
-                condition.name.toLowerCase() === conditionName.toLowerCase()
+                condition.name.toLowerCase() ===
+                token.meta.conditionName.toLowerCase()
             )}
             noInteractive={noInteractive}
           />
         );
-      } else if (
-        token.type === "dice" &&
-        typeof token.meta?.diceText === "string"
-      ) {
+      } else if (token.type === "dice") {
         children.push(<DiceNotation key={key} text={token.meta.diceText} />);
-      } else if (
-        token.type === "entity_link" &&
-        typeof token.meta?.entityType === "string" &&
-        isEntityType(token.meta.entityType) &&
-        typeof token.meta.entityId === "string"
-      ) {
+      } else if (token.type === "entity_link") {
         children.push(
           <EntityLink
             key={key}
             type={token.meta.entityType}
             id={token.meta.entityId}
-            displayName={
-              typeof token.meta.displayName === "string"
-                ? token.meta.displayName
-                : undefined
-            }
+            displayName={token.meta.displayName}
             queryClient={queryClient}
             noInteractive={noInteractive}
           />

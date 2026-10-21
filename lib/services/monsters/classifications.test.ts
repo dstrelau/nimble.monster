@@ -216,63 +216,58 @@ describe("monster classifications", () => {
     { environments: "forest" },
     { creatureTypes: null },
     { environments: ["FOREST"] },
-  ])(
-    "rejects invalid classifications at write and import boundaries: %j",
-    async (invalid) => {
-      expect(
-        createBestiaryEntrySchema.safeParse({
-          kind: "monster",
-          input: { ...input, ...invalid },
-        }).success
-      ).toBe(false);
-      expect(
-        updateBestiaryEntrySchema.safeParse({
-          kind: "monster",
-          input: {
-            ...input,
-            id: ownerId,
-            armor: "none",
-            kind: "Undead",
-            legendary: false,
-            minion: false,
-            bloodied: "",
-            lastStand: "",
-            saves: [],
-            actionPreface: "",
-            moreInfo: "",
-            ...invalid,
+  ])("rejects invalid classifications at write and import boundaries: %j", async (invalid) => {
+    expect(
+      createBestiaryEntrySchema.safeParse({
+        kind: "monster",
+        input: { ...input, ...invalid },
+      }).success
+    ).toBe(false);
+    expect(
+      updateBestiaryEntrySchema.safeParse({
+        kind: "monster",
+        input: {
+          ...input,
+          id: ownerId,
+          armor: "none",
+          kind: "Undead",
+          legendary: false,
+          minion: false,
+          bloodied: "",
+          lastStand: "",
+          saves: [],
+          actionPreface: "",
+          moreInfo: "",
+          ...invalid,
+        },
+      }).success
+    ).toBe(false);
+    expect(() =>
+      validateOfficialMonstersJSON({
+        ...officialJSON,
+        data: [
+          {
+            ...officialMonster,
+            attributes: { ...officialMonster.attributes, ...invalid },
           },
-        }).success
-      ).toBe(false);
-      expect(() =>
-        validateOfficialMonstersJSON({
-          ...officialJSON,
-          data: [
-            {
-              ...officialMonster,
-              attributes: { ...officialMonster.attributes, ...invalid },
-            },
-          ],
-        })
-      ).toThrow(z.ZodError);
+        ],
+      })
+    ).toThrow(z.ZodError);
 
-      mockAuth.mockResolvedValue({
-        user: { id: ownerId, discordId: "owner" },
-        expires: "2099-01-01",
-      });
-      const response = await postMonster(
-        new Request("http://localhost/api/monsters", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...input, ...invalid }),
-        })
-      );
-      expect(response.status).toBe(400);
-      expect(await getDatabase().select().from(schema.monsters)).toHaveLength(
-        0
-      );
-    }
-  );
+    mockAuth.mockResolvedValue({
+      user: { id: ownerId, discordId: "owner" },
+      expires: "2099-01-01",
+    });
+    const response = await postMonster(
+      new Request("http://localhost/api/monsters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...input, ...invalid }),
+      })
+    );
+    expect(response.status).toBe(400);
+    expect(await getDatabase().select().from(schema.monsters)).toHaveLength(0);
+  });
 
   it("ignores creature classifications on hazards", async () => {
     const hazard = await createHazard(

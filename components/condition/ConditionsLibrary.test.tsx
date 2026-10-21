@@ -138,21 +138,21 @@ describe("ConditionsLibrary", () => {
   it.each([
     { trigger: "New Condition", initialFocus: "Name" },
     { trigger: "Edit Dazed", initialFocus: "Description" },
-  ])(
-    "focuses $initialFocus without opening the tooltip for $trigger",
-    async ({ trigger, initialFocus }) => {
-      renderLibrary();
-      fireEvent.click(screen.getByRole("button", { name: trigger }));
-      expect(screen.getByRole("textbox", { name: initialFocus })).toHaveFocus();
-      expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
-      fireEvent.focus(
-        screen.getByRole("button", { name: "About condition names" })
-      );
-      expect(await screen.findByRole("tooltip")).toHaveTextContent(
-        "Names cannot be changed after creation."
-      );
-    }
-  );
+  ])("focuses $initialFocus without opening the tooltip for $trigger", async ({
+    trigger,
+    initialFocus,
+  }) => {
+    renderLibrary();
+    fireEvent.click(screen.getByRole("button", { name: trigger }));
+    expect(screen.getByRole("textbox", { name: initialFocus })).toHaveFocus();
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    fireEvent.focus(
+      screen.getByRole("button", { name: "About condition names" })
+    );
+    expect(await screen.findByRole("tooltip")).toHaveTextContent(
+      "Names cannot be changed after creation."
+    );
+  });
 
   it("requires confirmation with fresh usage and lets the user cancel", async () => {
     vi.mocked(call).mockResolvedValue({
@@ -182,30 +182,29 @@ describe("ConditionsLibrary", () => {
     expect(deleteCondition).toHaveBeenCalledWith("condition");
   });
 
-  it.each([0, 1])(
-    "only warns about references when the fresh count is positive (%i)",
-    async (count) => {
-      vi.mocked(call).mockResolvedValue({ ...unused, adventures: count });
-      renderLibrary();
-      fireEvent.click(screen.getByRole("button", { name: "Delete Dazed" }));
-      await waitFor(() =>
-        expect(
-          screen.getByRole("button", { name: "Delete Condition" })
-        ).toBeEnabled()
-      );
+  it.each([
+    0, 1,
+  ])("only warns about references when the fresh count is positive (%i)", async (count) => {
+    vi.mocked(call).mockResolvedValue({ ...unused, adventures: count });
+    renderLibrary();
+    fireEvent.click(screen.getByRole("button", { name: "Delete Dazed" }));
+    await waitFor(() =>
       expect(
-        screen.getByText("Are you sure you want to delete the Dazed condition?")
-      ).toBeInTheDocument();
-      if (count === 0) {
-        expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-        expect(screen.queryByText(/0 entities/)).not.toBeInTheDocument();
-      } else {
-        expect(screen.getByRole("alert")).toHaveTextContent(
-          "1 entity in your library references it and will no longer display properly."
-        );
-      }
+        screen.getByRole("button", { name: "Delete Condition" })
+      ).toBeEnabled()
+    );
+    expect(
+      screen.getByText("Are you sure you want to delete the Dazed condition?")
+    ).toBeInTheDocument();
+    if (count === 0) {
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+      expect(screen.queryByText(/0 entities/)).not.toBeInTheDocument();
+    } else {
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "1 entity in your library references it and will no longer display properly."
+      );
     }
-  );
+  });
 
   it("blocks deletion when usage cannot be loaded", async () => {
     vi.mocked(call).mockRejectedValue(new Error("Unavailable"));

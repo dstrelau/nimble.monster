@@ -636,42 +636,42 @@ describe("calculateProbabilityDistribution", () => {
     expect(calculateAverageDamageOnHit(dist, roll)).toBeCloseTo(1.5, 10);
   });
 
-  it.each(["1d20-1d4", "1d4-1d4+1d20+2"])(
-    "calculates every outcome of %s, including zero and negative subtotals",
-    (notation) => {
-      const roll = parseDiceNotation(notation);
-      if (!roll) throw new Error("Failed to parse");
-      const expected = new Map<number, number>();
-      for (let d20 = 1; d20 <= 20; d20++) {
-        for (let subtracted = 1; subtracted <= 4; subtracted++) {
-          for (
-            let first = 1;
-            first <= (notation === "1d20-1d4" ? 1 : 4);
-            first++
-          ) {
-            const total =
-              notation === "1d20-1d4"
-                ? d20 - subtracted
-                : first - subtracted + d20 + 2;
-            const probability = notation === "1d20-1d4" ? 1 / 80 : 1 / 320;
-            expected.set(total, (expected.get(total) || 0) + probability);
-          }
+  it.each([
+    "1d20-1d4",
+    "1d4-1d4+1d20+2",
+  ])("calculates every outcome of %s, including zero and negative subtotals", (notation) => {
+    const roll = parseDiceNotation(notation);
+    if (!roll) throw new Error("Failed to parse");
+    const expected = new Map<number, number>();
+    for (let d20 = 1; d20 <= 20; d20++) {
+      for (let subtracted = 1; subtracted <= 4; subtracted++) {
+        for (
+          let first = 1;
+          first <= (notation === "1d20-1d4" ? 1 : 4);
+          first++
+        ) {
+          const total =
+            notation === "1d20-1d4"
+              ? d20 - subtracted
+              : first - subtracted + d20 + 2;
+          const probability = notation === "1d20-1d4" ? 1 / 80 : 1 / 320;
+          expected.set(total, (expected.get(total) || 0) + probability);
         }
       }
-      const dist = calculateProbabilityDistribution(roll);
-      expect([...dist.keys()].sort((a, b) => a - b)).toEqual(
-        [...expected.keys()].sort((a, b) => a - b)
-      );
-      for (const [total, probability] of expected) {
-        expect(dist.get(total)).toBeCloseTo(probability, 12);
-      }
-      expect(calculateMissProbability(dist, roll)).toBe(0);
-      expect(calculateTotalAverageDamage(dist)).toBeCloseTo(
-        notation === "1d20-1d4" ? 8 : 12.5,
-        12
-      );
     }
-  );
+    const dist = calculateProbabilityDistribution(roll);
+    expect([...dist.keys()].sort((a, b) => a - b)).toEqual(
+      [...expected.keys()].sort((a, b) => a - b)
+    );
+    for (const [total, probability] of expected) {
+      expect(dist.get(total)).toBeCloseTo(probability, 12);
+    }
+    expect(calculateMissProbability(dist, roll)).toBe(0);
+    expect(calculateTotalAverageDamage(dist)).toBeCloseTo(
+      notation === "1d20-1d4" ? 8 : 12.5,
+      12
+    );
+  });
 
   it("applies a compound modifier even when the dice cancel to zero", () => {
     const roll = parseDiceNotation("1d4-1d4-2");
@@ -1031,19 +1031,16 @@ describe("crit-only bonus (+Nc)", () => {
     ["1d4a+5c", 10, 7 / 64, 1 / 16],
     ["1d4d+5c", 10, 1 / 64, 7 / 16],
     ["1d4^2+5c", 10, 3 / 16, 0],
-  ])(
-    "shifts critical outcomes in %s",
-    (notation, outcome, probability, miss) => {
-      const parsed = parseDiceNotation(notation);
-      if (!parsed) throw new Error("Failed to parse");
-      const distribution = calculateProbabilityDistribution(parsed);
-      expect(distribution.get(outcome)).toBeCloseTo(probability, 12);
-      expect(calculateMissProbability(distribution, parsed)).toBeCloseTo(
-        miss,
-        12
-      );
-    }
-  );
+  ])("shifts critical outcomes in %s", (notation, outcome, probability, miss) => {
+    const parsed = parseDiceNotation(notation);
+    if (!parsed) throw new Error("Failed to parse");
+    const distribution = calculateProbabilityDistribution(parsed);
+    expect(distribution.get(outcome)).toBeCloseTo(probability, 12);
+    expect(calculateMissProbability(distribution, parsed)).toBeCloseTo(
+      miss,
+      12
+    );
+  });
 
   it("preserves hits and shifts whole explosion chains and averages", () => {
     const parsed = parseDiceNotation("1d10+5c");

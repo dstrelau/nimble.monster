@@ -94,38 +94,39 @@ describe("adventure mutation route invalidation", () => {
     ]);
   });
 
-  it.each(["read-aloud", "optional", "rules"])(
-    "accepts the %s callout presentation value",
-    async (presentation) => {
-      const input = {
-        ...adventureInput,
-        nodes: [
-          {
-            id: "callout-node",
-            parentId: null,
-            kind: "callout",
-            orderIndex: 0,
-            title: "A callout",
-            content: "Callout content",
-            encounterId: null,
-            monsterIds: [],
-            itemIds: [],
-            missingStatblockCount: 0,
-            presentation,
-          },
-        ],
-      };
-      mockCreateAdventure.mockResolvedValue({
-        id: "new-adventure",
-        name: input.name,
-      });
+  it.each([
+    "read-aloud",
+    "optional",
+    "rules",
+  ])("accepts the %s callout presentation value", async (presentation) => {
+    const input = {
+      ...adventureInput,
+      nodes: [
+        {
+          id: "callout-node",
+          parentId: null,
+          kind: "callout",
+          orderIndex: 0,
+          title: "A callout",
+          content: "Callout content",
+          encounterId: null,
+          monsterIds: [],
+          itemIds: [],
+          missingStatblockCount: 0,
+          presentation,
+        },
+      ],
+    };
+    mockCreateAdventure.mockResolvedValue({
+      id: "new-adventure",
+      name: input.name,
+    });
 
-      const response = await createAdventurePost(request(input));
+    const response = await createAdventurePost(request(input));
 
-      expect(response.status).toBe(201);
-      expect(mockCreateAdventure).toHaveBeenCalledWith("owner", input);
-    }
-  );
+    expect(response.status).toBe(201);
+    expect(mockCreateAdventure).toHaveBeenCalledWith("owner", input);
+  });
 
   it("returns an intentional 400 for malformed JSON", async () => {
     const response = await createAdventurePost(

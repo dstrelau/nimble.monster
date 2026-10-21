@@ -62,8 +62,7 @@ describe("ItemCardPrinter", () => {
     const cards = container.querySelectorAll<HTMLElement>("[data-print-card]");
 
     expect(sheets).toHaveLength(2);
-    expect(sheets[0].style.width).toBe("215.9mm");
-    expect(sheets[0].style.height).toBe("279.4mm");
+    expect(sheets[0]).toHaveStyle({ width: "215.9mm", height: "279.4mm" });
     expect(sheets[0].style.gridTemplateColumns).toBe("repeat(3, 64.5mm)");
     expect(sheets[0].style.gridTemplateRows).toBe("repeat(3, 89mm)");
     expect(sheets[0]).toHaveAttribute("data-active", "false");
@@ -71,9 +70,11 @@ describe("ItemCardPrinter", () => {
     expect(sheets[0].querySelectorAll("[data-print-card]")).toHaveLength(9);
     expect(sheets[1].querySelectorAll("[data-print-card]")).toHaveLength(1);
     expect(cards).toHaveLength(10);
-    expect(cards[0].style.width).toBe("63.5mm");
-    expect(cards[0].style.height).toBe("88mm");
-    expect(cards[0].style.margin).toBe("0.5mm");
+    expect(cards[0]).toHaveStyle({
+      width: "63.5mm",
+      height: "88mm",
+      margin: "0.5mm",
+    });
 
     fireEvent.click(
       screen.getByRole("button", { name: "Previous print page" })

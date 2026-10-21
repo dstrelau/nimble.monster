@@ -65,35 +65,35 @@ describe("family deletion client", () => {
     );
     expect(mocks.refresh).toHaveBeenCalledOnce();
   });
-  it.each(["http", "network"])(
-    "retains the detail and allows manual retry after %s failure",
-    async (failure) => {
-      const fetchMock = vi.fn();
-      if (failure === "http")
-        fetchMock.mockResolvedValue(
-          Response.json({ error: "Family not found" }, { status: 404 })
-        );
-      else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
-      vi.stubGlobal("fetch", fetchMock);
-      render(<FamilyHeader family={family} showEditDeleteButtons />);
-      fireEvent.click(screen.getByRole("button", { name: "Delete" }));
-      await waitFor(() =>
-        expect(window.alert).toHaveBeenCalledWith(
-          "Failed to delete family. Please try again."
-        )
+  it.each([
+    "http",
+    "network",
+  ])("retains the detail and allows manual retry after %s failure", async (failure) => {
+    const fetchMock = vi.fn();
+    if (failure === "http")
+      fetchMock.mockResolvedValue(
+        Response.json({ error: "Family not found" }, { status: 404 })
       );
-      expect(window.alert).toHaveBeenCalledOnce();
-      expect(mocks.push).not.toHaveBeenCalled();
-      expect(mocks.refresh).not.toHaveBeenCalled();
-      expect(screen.getByRole("button", { name: "Delete" })).toBeEnabled();
-      expect(fetchMock).toHaveBeenCalledOnce();
-      fetchMock.mockResolvedValue(Response.json({ success: true }));
-      fireEvent.click(screen.getByRole("button", { name: "Delete" }));
-      await waitFor(() =>
-        expect(mocks.push).toHaveBeenCalledWith("/my/families")
-      );
-    }
-  );
+    else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<FamilyHeader family={family} showEditDeleteButtons />);
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+    await waitFor(() =>
+      expect(window.alert).toHaveBeenCalledWith(
+        "Failed to delete family. Please try again."
+      )
+    );
+    expect(window.alert).toHaveBeenCalledOnce();
+    expect(mocks.push).not.toHaveBeenCalled();
+    expect(mocks.refresh).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Delete" })).toBeEnabled();
+    expect(fetchMock).toHaveBeenCalledOnce();
+    fetchMock.mockResolvedValue(Response.json({ success: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+    await waitFor(() =>
+      expect(mocks.push).toHaveBeenCalledWith("/my/families")
+    );
+  });
   it("does not delete on cancellation or show deletion to non-owners", () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);

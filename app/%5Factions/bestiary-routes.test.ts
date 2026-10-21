@@ -148,35 +148,32 @@ describe("bestiary mutation routes", () => {
   it.each([
     ["monster", false, mockUpdateMonster, "/my/monsters", "/monsters/[id]"],
     ["hazard", true, mockUpdateHazard, "/my/hazards", "/hazards/[id]"],
-  ])(
-    "updates a %s and invalidates its list and detail",
-    async (kind, hazard, service, listPath, detailPath) => {
-      const input =
-        kind === "monster"
-          ? {
-              ...monsterInput,
-              id,
-              kind: "",
-              legendary: false,
-              minion: false,
-              bloodied: "",
-              lastStand: "",
-              saves: [],
-              moreInfo: "",
-            }
-          : { ...sharedInput, id, moreInfo: "" };
-      service.mockResolvedValue({ id, name: sharedInput.name, hazard });
+  ])("updates a %s and invalidates its list and detail", async (kind, hazard, service, listPath, detailPath) => {
+    const input =
+      kind === "monster"
+        ? {
+            ...monsterInput,
+            id,
+            kind: "",
+            legendary: false,
+            minion: false,
+            bloodied: "",
+            lastStand: "",
+            saves: [],
+            moreInfo: "",
+          }
+        : { ...sharedInput, id, moreInfo: "" };
+    service.mockResolvedValue({ id, name: sharedInput.name, hazard });
 
-      const response = await updatePost(request({ kind, input }));
+    const response = await updatePost(request({ kind, input }));
 
-      expect(response.status).toBe(200);
-      expect(service).toHaveBeenCalledWith(input, "discord-owner");
-      expect(mockRevalidatePath.mock.calls).toEqual([
-        [listPath],
-        [detailPath, "page"],
-      ]);
-    }
-  );
+    expect(response.status).toBe(200);
+    expect(service).toHaveBeenCalledWith(input, "discord-owner");
+    expect(mockRevalidatePath.mock.calls).toEqual([
+      [listPath],
+      [detailPath, "page"],
+    ]);
+  });
 
   it("rejects malformed JSON separately from schema failures", async () => {
     const malformed = await createPost(request("{broken"));
@@ -332,24 +329,25 @@ describe.each(["monster", "hazard"])("delete %s route", (kind) => {
     expect(mockRevalidatePath).not.toHaveBeenCalled();
   });
 
-  it.each([null, { user: { id: "owner", discordId: "" } }])(
-    "requires a full session",
-    async (userSession) => {
-      mockAuth.mockResolvedValue(userSession);
-      const response = await deletePost(request({ id, kind }));
-      expect(response.status).toBe(401);
-      expect(service).not.toHaveBeenCalled();
-    }
-  );
+  it.each([
+    null,
+    { user: { id: "owner", discordId: "" } },
+  ])("requires a full session", async (userSession) => {
+    mockAuth.mockResolvedValue(userSession);
+    const response = await deletePost(request({ id, kind }));
+    expect(response.status).toBe(401);
+    expect(service).not.toHaveBeenCalled();
+  });
 
-  it.each(["{broken", { id: "bad", kind }, { id, kind: "item" }])(
-    "rejects malformed input",
-    async (body) => {
-      const response = await deletePost(request(body));
-      expect(response.status).toBe(400);
-      expect(service).not.toHaveBeenCalled();
-    }
-  );
+  it.each([
+    "{broken",
+    { id: "bad", kind },
+    { id, kind: "item" },
+  ])("rejects malformed input", async (body) => {
+    const response = await deletePost(request(body));
+    expect(response.status).toBe(400);
+    expect(service).not.toHaveBeenCalled();
+  });
 
   it("rejects origin and media mismatches before authentication", async () => {
     expect(

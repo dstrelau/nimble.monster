@@ -66,33 +66,33 @@ describe("spell-school deletion client", () => {
     );
     expect(mocks.refresh).toHaveBeenCalledOnce();
   });
-  it.each(["http", "network"])(
-    "retains the detail and allows manual retry after %s failure",
-    async (failure) => {
-      const fetchMock = vi.fn();
-      if (failure === "http")
-        fetchMock.mockResolvedValue(
-          Response.json({ error: "Spell school not found" }, { status: 404 })
-        );
-      else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
-      vi.stubGlobal("fetch", fetchMock);
-      render(<SchoolActions spellSchool={school} />);
-      await confirmDelete();
-      expect(await screen.findByRole("alert")).toHaveTextContent(
-        "Failed to delete spell school. Please try again."
+  it.each([
+    "http",
+    "network",
+  ])("retains the detail and allows manual retry after %s failure", async (failure) => {
+    const fetchMock = vi.fn();
+    if (failure === "http")
+      fetchMock.mockResolvedValue(
+        Response.json({ error: "Spell school not found" }, { status: 404 })
       );
-      expect(mocks.push).not.toHaveBeenCalled();
-      expect(mocks.refresh).not.toHaveBeenCalled();
-      expect(screen.getByRole("button", { name: /^Delete$/ })).toBeEnabled();
-      expect(fetchMock).toHaveBeenCalledOnce();
-      fetchMock.mockResolvedValue(Response.json({ success: true }));
-      await confirmDelete();
-      await waitFor(() =>
-        expect(mocks.push).toHaveBeenCalledWith("/my/spell-schools")
-      );
-      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    }
-  );
+    else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<SchoolActions spellSchool={school} />);
+    await confirmDelete();
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Failed to delete spell school. Please try again."
+    );
+    expect(mocks.push).not.toHaveBeenCalled();
+    expect(mocks.refresh).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: /^Delete$/ })).toBeEnabled();
+    expect(fetchMock).toHaveBeenCalledOnce();
+    fetchMock.mockResolvedValue(Response.json({ success: true }));
+    await confirmDelete();
+    await waitFor(() =>
+      expect(mocks.push).toHaveBeenCalledWith("/my/spell-schools")
+    );
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
   it("does not delete on cancellation", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);

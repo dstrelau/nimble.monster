@@ -57,43 +57,43 @@ const school: SpellSchool = {
 };
 
 describe("legacy spell sections", () => {
-  it.each([false, true])(
-    "explains legacy spells on icon focus (mini: %s)",
-    async (mini) => {
-      render(<Card spellSchool={school} link={false} mini={mini} />);
-      expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
-      fireEvent.focus(
-        screen.getByRole("button", { name: "About legacy spells" })
-      );
-      expect(await screen.findByRole("tooltip")).toHaveTextContent(
-        "These spells are part of an older version of Nimble."
-      );
-      fireEvent.keyDown(document.activeElement || document.body, {
-        key: "Escape",
-      });
-      expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
-    }
-  );
+  it.each([
+    false,
+    true,
+  ])("explains legacy spells on icon focus (mini: %s)", async (mini) => {
+    render(<Card spellSchool={school} link={false} mini={mini} />);
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    fireEvent.focus(
+      screen.getByRole("button", { name: "About legacy spells" })
+    );
+    expect(await screen.findByRole("tooltip")).toHaveTextContent(
+      "These spells are part of an older version of Nimble."
+    );
+    fireEvent.keyDown(document.activeElement || document.body, {
+      key: "Escape",
+    });
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  });
 
-  it.each([false, true])(
-    "shows legacy spells without per-spell badges (mini: %s)",
-    (mini) => {
-      render(<Card spellSchool={school} link={false} mini={mini} />);
-      expect(screen.queryByText("Legacy")).not.toBeInTheDocument();
-      expect(screen.getByText("Legacy Spells")).toBeInTheDocument();
-      expect(
-        screen.getByRole("heading", { name: "Cryosleep" })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("heading", { name: "Omenrime" })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("heading", { name: "Ice Lance" })
-      ).toBeInTheDocument();
-      if (!mini)
-        expect(screen.getByText("Original sleep effect.")).toBeInTheDocument();
-    }
-  );
+  it.each([
+    false,
+    true,
+  ])("shows legacy spells without per-spell badges (mini: %s)", (mini) => {
+    render(<Card spellSchool={school} link={false} mini={mini} />);
+    expect(screen.queryByText("Legacy")).not.toBeInTheDocument();
+    expect(screen.getByText("Legacy Spells")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Cryosleep" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Omenrime" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Ice Lance" })
+    ).toBeInTheDocument();
+    if (!mini)
+      expect(screen.getByText("Original sleep effect.")).toBeInTheDocument();
+  });
 
   it("also shows legacy utility spells without badges", () => {
     render(
@@ -110,48 +110,48 @@ describe("legacy spell sections", () => {
     expect(screen.queryByText("Legacy")).not.toBeInTheDocument();
   });
 
-  it.each([false, true])(
-    "groups all legacy spells after current utility spells (mini: %s)",
-    (mini) => {
-      render(
-        <Card
-          spellSchool={{
-            ...school,
-            spells: [
-              school.spells[0],
-              school.spells[1],
-              { ...school.spells[2], name: "Ice Disk", utility: true },
-              {
-                ...school.spells[0],
-                id: "legacy-utility",
-                name: "Old Utility",
-                utility: true,
-              },
-            ],
-          }}
-          link={false}
-          mini={mini}
-        />
-      );
-      expect(
-        screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent)
-      ).toEqual(["Omenrime", "Ice Disk", "Cryosleep", "Old Utility"]);
-      expect(
-        screen
-          .getByText("Legacy Spells")
-          .compareDocumentPosition(
-            screen.getByRole("heading", { name: "Cryosleep" })
-          ) & Node.DOCUMENT_POSITION_FOLLOWING
-      ).toBeTruthy();
-      expect(
-        screen
-          .getByRole("heading", { name: "Ice Disk" })
-          .compareDocumentPosition(screen.getByText("Legacy Spells")) &
-          Node.DOCUMENT_POSITION_FOLLOWING
-      ).toBeTruthy();
-      expect(screen.queryByText("Legacy")).not.toBeInTheDocument();
-    }
-  );
+  it.each([
+    false,
+    true,
+  ])("groups all legacy spells after current utility spells (mini: %s)", (mini) => {
+    render(
+      <Card
+        spellSchool={{
+          ...school,
+          spells: [
+            school.spells[0],
+            school.spells[1],
+            { ...school.spells[2], name: "Ice Disk", utility: true },
+            {
+              ...school.spells[0],
+              id: "legacy-utility",
+              name: "Old Utility",
+              utility: true,
+            },
+          ],
+        }}
+        link={false}
+        mini={mini}
+      />
+    );
+    expect(
+      screen.getAllByRole("heading", { level: 3 }).map((h) => h.textContent)
+    ).toEqual(["Omenrime", "Ice Disk", "Cryosleep", "Old Utility"]);
+    expect(
+      screen
+        .getByText("Legacy Spells")
+        .compareDocumentPosition(
+          screen.getByRole("heading", { name: "Cryosleep" })
+        ) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+    expect(
+      screen
+        .getByRole("heading", { name: "Ice Disk" })
+        .compareDocumentPosition(screen.getByText("Legacy Spells")) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+    expect(screen.queryByText("Legacy")).not.toBeInTheDocument();
+  });
 
   it("omits the legacy section when there are no legacy spells", () => {
     render(

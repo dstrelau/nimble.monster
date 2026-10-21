@@ -155,7 +155,6 @@ export const Card = ({
         <div className="flex items-center justify-center gap-1">
           <strong className={cn("font-sans text-xs")}>WOUNDS:</strong>
           {Array.from({ length: companion.wounds }, (_, i) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: these are stateless wound markers
             <Circle key={`${companion.id}-wound-${i}`} className="w-6 h-6" />
           ))}
           <Skull className="w-6 h-6" />

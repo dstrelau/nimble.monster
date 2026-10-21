@@ -66,39 +66,39 @@ describe("subclass deletion client", () => {
     );
     expect(mocks.refresh).toHaveBeenCalledOnce();
   });
-  it.each(["http", "network"])(
-    "retains the detail and allows manual retry after %s failure",
-    async (failure) => {
-      const fetchMock = vi.fn();
-      const message =
-        failure === "http" ? "Subclass not found" : "Failed to fetch";
-      if (failure === "http")
-        fetchMock.mockResolvedValue(
-          Response.json({ error: message }, { status: 404 })
-        );
-      else fetchMock.mockRejectedValue(new TypeError(message));
-      vi.stubGlobal("fetch", fetchMock);
-      render(<SubclassDetailActions subclass={subclass} isOwner />);
-      fireEvent.click(screen.getByRole("button", { name: "Delete" }));
-      await waitFor(() =>
-        expect(window.alert).toHaveBeenCalledWith(
-          `Error deleting subclass: ${message}`
-        )
+  it.each([
+    "http",
+    "network",
+  ])("retains the detail and allows manual retry after %s failure", async (failure) => {
+    const fetchMock = vi.fn();
+    const message =
+      failure === "http" ? "Subclass not found" : "Failed to fetch";
+    if (failure === "http")
+      fetchMock.mockResolvedValue(
+        Response.json({ error: message }, { status: 404 })
       );
-      expect(window.alert).toHaveBeenCalledOnce();
-      expect(mocks.push).not.toHaveBeenCalled();
-      expect(mocks.refresh).not.toHaveBeenCalled();
-      await waitFor(() =>
-        expect(screen.getByRole("button", { name: "Delete" })).toBeEnabled()
-      );
-      expect(fetchMock).toHaveBeenCalledOnce();
-      fetchMock.mockResolvedValue(Response.json({ success: true }));
-      fireEvent.click(screen.getByRole("button", { name: "Delete" }));
-      await waitFor(() =>
-        expect(mocks.push).toHaveBeenCalledWith("/my/subclasses")
-      );
-    }
-  );
+    else fetchMock.mockRejectedValue(new TypeError(message));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<SubclassDetailActions subclass={subclass} isOwner />);
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+    await waitFor(() =>
+      expect(window.alert).toHaveBeenCalledWith(
+        `Error deleting subclass: ${message}`
+      )
+    );
+    expect(window.alert).toHaveBeenCalledOnce();
+    expect(mocks.push).not.toHaveBeenCalled();
+    expect(mocks.refresh).not.toHaveBeenCalled();
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Delete" })).toBeEnabled()
+    );
+    expect(fetchMock).toHaveBeenCalledOnce();
+    fetchMock.mockResolvedValue(Response.json({ success: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+    await waitFor(() =>
+      expect(mocks.push).toHaveBeenCalledWith("/my/subclasses")
+    );
+  });
   it("does not delete on cancellation or show deletion to non-owners", () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);

@@ -101,35 +101,35 @@ describe("POST /_actions/searchRandomTables", () => {
     { count: 2, hasMore: false },
     { count: 3, hasMore: false },
     { count: 4, hasMore: true },
-  ])(
-    "detects continuation with $count rows for a limit of 3",
-    async ({ count, hasMore }) => {
-      const tables = Array.from({ length: count }, (_, index) => ({
-        id: `table-${index}`,
-        name: `Table ${index}`,
-        visibility: "public",
-        creator: { id: "user-1" },
-        subtables: [],
-      }));
-      mockSearchPublicRandomTables.mockResolvedValue(tables);
+  ])("detects continuation with $count rows for a limit of 3", async ({
+    count,
+    hasMore,
+  }) => {
+    const tables = Array.from({ length: count }, (_, index) => ({
+      id: `table-${index}`,
+      name: `Table ${index}`,
+      visibility: "public",
+      creator: { id: "user-1" },
+      subtables: [],
+    }));
+    mockSearchPublicRandomTables.mockResolvedValue(tables);
 
-      const response = await POST(
-        request({ sort: "name", search: null, limit: 3, page: 2 })
-      );
+    const response = await POST(
+      request({ sort: "name", search: null, limit: 3, page: 2 })
+    );
 
-      expect(mockSearchPublicRandomTables).toHaveBeenCalledWith({
-        searchTerm: undefined,
-        sortBy: "name",
-        sortDirection: "asc",
-        limit: 4,
-        offset: 6,
-      });
-      expect(await response.json()).toEqual({
-        data: tables.slice(0, 3),
-        hasMore,
-      });
-    }
-  );
+    expect(mockSearchPublicRandomTables).toHaveBeenCalledWith({
+      searchTerm: undefined,
+      sortBy: "name",
+      sortDirection: "asc",
+      limit: 4,
+      offset: 6,
+    });
+    expect(await response.json()).toEqual({
+      data: tables.slice(0, 3),
+      hasMore,
+    });
+  });
 
   it("still rejects cross-origin requests", async () => {
     const crossOriginRequest = request({

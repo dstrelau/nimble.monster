@@ -183,43 +183,50 @@ describe("Core Rules 3.0 spell data", () => {
     expect(spell("Shadow Blast").damage).toBe("1d12+KEY. 1/round.");
   });
 
-  it.each([0, 1, 2.5, 4, "2", null])(
-    "rejects invalid spell version %s",
-    (version) => {
-      expect(() =>
-        validateOfficialSpellSchoolsJSON({
-          data: [
-            {
-              type: "spell-schools",
-              attributes: {
-                name: "Test school",
-                spells: [{ name: "Test spell", tier: 0, actions: 1, version }],
-              },
+  it.each([
+    0,
+    1,
+    2.5,
+    4,
+    "2",
+    null,
+  ])("rejects invalid spell version %s", (version) => {
+    expect(() =>
+      validateOfficialSpellSchoolsJSON({
+        data: [
+          {
+            type: "spell-schools",
+            attributes: {
+              name: "Test school",
+              spells: [{ name: "Test spell", tier: 0, actions: 1, version }],
             },
-          ],
-        })
-      ).toThrow("version must be 2 or 3");
-    }
-  );
+          },
+        ],
+      })
+    ).toThrow("version must be 2 or 3");
+  });
 
-  it.each(printedSchools)(
-    "matches the printed $name roster, tiers, costs, and utility flags",
-    ({ name, spells: combat, utility }) => {
-      const school = core.data.find((s) => s.attributes.name === name);
-      expect(school).toBeDefined();
-      for (const [isUtility, expected] of [
-        [false, combat],
-        [true, utility],
-      ] satisfies [boolean, (string | number)[][]][]) {
-        const actual = school?.attributes.spells
-          .filter((s) => !("version" in s) || s.version !== 2)
-          .filter((s) => Boolean("utility" in s && s.utility) === isUtility)
-          .map((s) => [s.name, s.tier, s.actions]);
-        expect(actual).toHaveLength(expected.length);
-        expect(actual).toEqual(expect.arrayContaining(expected));
-      }
+  it.each(
+    printedSchools
+  )("matches the printed $name roster, tiers, costs, and utility flags", ({
+    name,
+    spells: combat,
+    utility,
+  }) => {
+    const school = core.data.find((s) => s.attributes.name === name);
+    expect(school).toBeDefined();
+    for (const [isUtility, expected] of [
+      [false, combat],
+      [true, utility],
+    ] satisfies [boolean, (string | number)[][]][]) {
+      const actual = school?.attributes.spells
+        .filter((s) => !("version" in s) || s.version !== 2)
+        .filter((s) => Boolean("utility" in s && s.utility) === isUtility)
+        .map((s) => [s.name, s.tier, s.actions]);
+      expect(actual).toHaveLength(expected.length);
+      expect(actual).toEqual(expect.arrayContaining(expected));
     }
-  );
+  });
 
   it("uses the revised ranges and dice rather than v2 values", () => {
     expect(spell("Flame Dart").target?.distance).toBe(10);

@@ -9,13 +9,9 @@
     "ignoreUnknown": true,
     "includes": [
       "**",
-      "!assets/game-icons",
       "!data/paperforge-catalog.json",
       "!tools",
-      "!app/ui/global.css",
-      "!**/*.md",
-      "!**/*.yaml",
-      "!**/*.yml"
+      "!app/ui/global.css"
     ]
   },
   "formatter": {
@@ -27,7 +23,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "preset": "recommended"
+      "recommended": true
     }
   },
   "javascript": {
@@ -52,17 +48,5 @@
         "organizeImports": "on"
       }
     }
-  },
-  "overrides": [
-    {
-      "includes": ["components/ui/**"],
-      "assist": { "enabled": false }
-    },
-    {
-      "includes": ["**/*.test.tsx"],
-      "linter": {
-        "rules": { "correctness": { "noComponentHookFactories": "off" } }
-      }
-    }
-  ]
+  }
 }

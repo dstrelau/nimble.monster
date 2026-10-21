@@ -45,37 +45,37 @@ function testPagination<Page extends { data: unknown[]; hasMore: boolean }>(
       { count: 2, hasMore: false },
       { count: 3, hasMore: false },
       { count: 4, hasMore: true },
-    ])(
-      "detects continuation with $count rows for a limit of 3",
-      async ({ count, hasMore }) => {
-        mocks.auth.mockResolvedValue({ user: { id: "current-user" } });
-        const rows = Array.from({ length: count }, (_, index) => ({
-          id: `entity-${index}`,
-        }));
-        search.mockResolvedValue(rows);
+    ])("detects continuation with $count rows for a limit of 3", async ({
+      count,
+      hasMore,
+    }) => {
+      mocks.auth.mockResolvedValue({ user: { id: "current-user" } });
+      const rows = Array.from({ length: count }, (_, index) => ({
+        id: `entity-${index}`,
+      }));
+      search.mockResolvedValue(rows);
 
-        const result = await options.queryFn({ pageParam: 2 });
+      const result = await options.queryFn({ pageParam: 2 });
 
+      expect(search).toHaveBeenCalledWith(
+        expect.objectContaining({
+          limit: 4,
+          offset: 6,
+          searchTerm: "test",
+          sortBy: "name",
+          sortDirection: "desc",
+        })
+      );
+      expect(result).toEqual({ data: rows.slice(0, 3), hasMore });
+      expect(options.getNextPageParam(result, [result], 2)).toBe(
+        hasMore ? 3 : undefined
+      );
+      if (name === "my encounters") {
         expect(search).toHaveBeenCalledWith(
-          expect.objectContaining({
-            limit: 4,
-            offset: 6,
-            searchTerm: "test",
-            sortBy: "name",
-            sortDirection: "desc",
-          })
+          expect.objectContaining({ creatorId: "current-user" })
         );
-        expect(result).toEqual({ data: rows.slice(0, 3), hasMore });
-        expect(options.getNextPageParam(result, [result], 2)).toBe(
-          hasMore ? 3 : undefined
-        );
-        if (name === "my encounters") {
-          expect(search).toHaveBeenCalledWith(
-            expect.objectContaining({ creatorId: "current-user" })
-          );
-        }
       }
-    );
+    });
   });
 }
 

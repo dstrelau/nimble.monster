@@ -110,35 +110,33 @@ describe.each([false, true])("spell-school builder editing=%s", (editing) => {
     );
     expect(mocks.refresh).toHaveBeenCalled();
   });
-  it.each(["http", "network"])(
-    "retains input after %s failure and permits manual retry",
-    async (failure) => {
-      const fetchMock = vi.fn();
-      if (failure === "http")
-        fetchMock.mockResolvedValue(
-          Response.json({ error: "Unauthorized" }, { status: 401 })
-        );
-      else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
-      vi.stubGlobal("fetch", fetchMock);
-      renderBuilder(editing);
-      fireEvent.click(screen.getByRole("button", { name: label }));
-      const message = failure === "http" ? "Unauthorized" : "Failed to fetch";
-      expect(await screen.findByText(message)).toBeVisible();
-      expect(screen.getAllByText(message)).toHaveLength(1);
-      expect(screen.getByRole("textbox", { name: "School Name" })).toHaveValue(
-        "New school"
-      );
-      expect(screen.getByRole("textbox", { name: /^Name$/ })).toHaveValue(
-        "Gust"
-      );
-      expect(screen.getByRole("button", { name: label })).toBeEnabled();
-      expect(mocks.push).not.toHaveBeenCalled();
-      expect(fetchMock).toHaveBeenCalledOnce();
+  it.each([
+    "http",
+    "network",
+  ])("retains input after %s failure and permits manual retry", async (failure) => {
+    const fetchMock = vi.fn();
+    if (failure === "http")
       fetchMock.mockResolvedValue(
-        Response.json({ id: school.id, name: "New school" })
+        Response.json({ error: "Unauthorized" }, { status: 401 })
       );
-      fireEvent.click(screen.getByRole("button", { name: label }));
-      await waitFor(() => expect(mocks.push).toHaveBeenCalled());
-    }
-  );
+    else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
+    vi.stubGlobal("fetch", fetchMock);
+    renderBuilder(editing);
+    fireEvent.click(screen.getByRole("button", { name: label }));
+    const message = failure === "http" ? "Unauthorized" : "Failed to fetch";
+    expect(await screen.findByText(message)).toBeVisible();
+    expect(screen.getAllByText(message)).toHaveLength(1);
+    expect(screen.getByRole("textbox", { name: "School Name" })).toHaveValue(
+      "New school"
+    );
+    expect(screen.getByRole("textbox", { name: /^Name$/ })).toHaveValue("Gust");
+    expect(screen.getByRole("button", { name: label })).toBeEnabled();
+    expect(mocks.push).not.toHaveBeenCalled();
+    expect(fetchMock).toHaveBeenCalledOnce();
+    fetchMock.mockResolvedValue(
+      Response.json({ id: school.id, name: "New school" })
+    );
+    fireEvent.click(screen.getByRole("button", { name: label }));
+    await waitFor(() => expect(mocks.push).toHaveBeenCalled());
+  });
 });

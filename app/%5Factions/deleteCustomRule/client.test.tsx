@@ -58,31 +58,31 @@ describe("custom-rule deletion client", () => {
     await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/my/rules"));
     expect(mocks.refresh).toHaveBeenCalledOnce();
   });
-  it.each(["http", "network"])(
-    "retains the detail and allows manual retry after %s failure",
-    async (failure) => {
-      const fetchMock = vi.fn();
-      if (failure === "http")
-        fetchMock.mockResolvedValue(
-          Response.json({ error: "Custom rule not found" }, { status: 404 })
-        );
-      else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
-      vi.stubGlobal("fetch", fetchMock);
-      render(<CustomRuleActions rule={rule} />);
-      await confirmDelete();
-      expect(await screen.findByRole("alert")).toHaveTextContent(
-        "Failed to delete custom rule. Please try again."
+  it.each([
+    "http",
+    "network",
+  ])("retains the detail and allows manual retry after %s failure", async (failure) => {
+    const fetchMock = vi.fn();
+    if (failure === "http")
+      fetchMock.mockResolvedValue(
+        Response.json({ error: "Custom rule not found" }, { status: 404 })
       );
-      expect(mocks.push).not.toHaveBeenCalled();
-      expect(mocks.refresh).not.toHaveBeenCalled();
-      expect(screen.getByRole("button", { name: /^Delete$/ })).toBeEnabled();
-      expect(fetchMock).toHaveBeenCalledOnce();
-      fetchMock.mockResolvedValue(Response.json({ success: true }));
-      await confirmDelete();
-      await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/my/rules"));
-      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    }
-  );
+    else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
+    vi.stubGlobal("fetch", fetchMock);
+    render(<CustomRuleActions rule={rule} />);
+    await confirmDelete();
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Failed to delete custom rule. Please try again."
+    );
+    expect(mocks.push).not.toHaveBeenCalled();
+    expect(mocks.refresh).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: /^Delete$/ })).toBeEnabled();
+    expect(fetchMock).toHaveBeenCalledOnce();
+    fetchMock.mockResolvedValue(Response.json({ success: true }));
+    await confirmDelete();
+    await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/my/rules"));
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
   it("does not delete on cancellation", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);

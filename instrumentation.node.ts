@@ -6,8 +6,7 @@ await migrate(getDatabase(), { migrationsFolder: "./migrations" });
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { resourceFromAttributes } from "@opentelemetry/resources";
-import { NodeSDK } from "@opentelemetry/sdk-node";
-import * as tracing from "@opentelemetry/sdk-trace";
+import { NodeSDK, tracing } from "@opentelemetry/sdk-node";
 import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions";
 
 const HONEYCOMB_API_KEY = process.env.HONEYCOMB_API_KEY ?? "";

@@ -1,6 +1,5 @@
 import { SpanStatusCode, trace } from "@opentelemetry/api";
-import { NodeSDK } from "@opentelemetry/sdk-node";
-import * as tracing from "@opentelemetry/sdk-trace";
+import { NodeSDK, tracing } from "@opentelemetry/sdk-node";
 import { NextRequest } from "next/server";
 import puppeteer from "puppeteer-core";
 import {
@@ -16,7 +15,7 @@ import { withBrowser } from "./browser";
 import { recordError, telemetry } from "./telemetry";
 
 const exporter = new tracing.InMemorySpanExporter();
-const processor = new tracing.SimpleSpanProcessor({ exporter });
+const processor = new tracing.SimpleSpanProcessor(exporter);
 const sdk = new NodeSDK({
   spanProcessors: [processor],
 });
@@ -30,36 +29,36 @@ afterEach(() => {
 afterAll(() => sdk.shutdown());
 
 describe("telemetry", () => {
-  it.each([false, true])(
-    "reports cleanup failures without hiding a render failure (render fails: %s)",
-    async (renderFails) => {
-      const renderError = new Error("render failed");
-      const closeError = new Error("browser close failed");
-      vi.spyOn(puppeteer, "launch").mockResolvedValue(
-        Object.assign(Object.create(null), {
-          close: async () => {
-            throw closeError;
-          },
-        })
-      );
+  it.each([
+    false,
+    true,
+  ])("reports cleanup failures without hiding a render failure (render fails: %s)", async (renderFails) => {
+    const renderError = new Error("render failed");
+    const closeError = new Error("browser close failed");
+    vi.spyOn(puppeteer, "launch").mockResolvedValue(
+      Object.assign(Object.create(null), {
+        close: async () => {
+          throw closeError;
+        },
+      })
+    );
 
-      await expect(
-        withBrowser(async () => {
-          if (renderFails) throw renderError;
-          return "image";
-        })
-      ).rejects.toBe(renderFails ? renderError : closeError);
+    await expect(
+      withBrowser(async () => {
+        if (renderFails) throw renderError;
+        return "image";
+      })
+    ).rejects.toBe(renderFails ? renderError : closeError);
 
-      await processor.forceFlush();
-      const [span] = exporter.getFinishedSpans();
-      expect(span.status.code).toBe(SpanStatusCode.ERROR);
-      expect(span.attributes).toMatchObject({
-        "browser.error.phase": renderFails ? "render" : "close",
-        "error.message": renderFails ? renderError.message : closeError.message,
-        "browser.close.error.message": closeError.message,
-      });
-    }
-  );
+    await processor.forceFlush();
+    const [span] = exporter.getFinishedSpans();
+    expect(span.status.code).toBe(SpanStatusCode.ERROR);
+    expect(span.attributes).toMatchObject({
+      "browser.error.phase": renderFails ? "render" : "close",
+      "error.message": renderFails ? renderError.message : closeError.message,
+      "browser.close.error.message": closeError.message,
+    });
+  });
 
   it("records an unexpected handler exception before rethrowing it", async () => {
     const sqliteError = Object.assign(new Error("database is locked"), {
