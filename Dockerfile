@@ -36,7 +36,7 @@ EXPOSE 3000
 FROM app-runtime AS runner
 RUN apt-get update && apt-get install -y --no-install-recommends sqlite3 \
     && rm -rf /var/lib/apt/lists/*
-COPY --from=litestream/litestream:0.3.13 /usr/local/bin/litestream /usr/local/bin/litestream
+COPY --from=litestream/litestream:0.5.17 /usr/local/bin/litestream /usr/local/bin/litestream
 COPY litestream.yml /etc/litestream.yml
 USER node
 CMD ["litestream", "replicate", "-exec", "node server.js"]

@@ -28,12 +28,21 @@ and keep Litestream snapshots small.
 ## Restoring from Backup
 
 If `/data/db.sqlite` is lost (volume failure, fresh machine, etc.) Litestream
-will restore from S3 on first run. To restore manually:
+0.5 restores from S3 before starting Node (`restore-if-db-not-exists: true`).
+The new backup prefix is `db.sqlite-v0.5`; the frozen pre-upgrade 0.3 backups
+remain at `db.sqlite`. An empty new prefix permits fresh initialization, so a
+missing database at the first cutover must be recovered from the old prefix.
+
+For manual recovery, stop application writes and replication first. Restore to
+a separate file using the deployed config (including Tigris credentials), verify
+it, and only then replace the database with ownership preserved for `node`:
 
 ```bash
-fly ssh console -a nimble-nexus
-litestream restore -o /data/db.sqlite s3://nimble-nexus-litestream/db.sqlite
+litestream restore -config /etc/litestream.yml -o /data/recovered.sqlite /data/db.sqlite
+sqlite3 /data/recovered.sqlite 'PRAGMA integrity_check;'
 ```
+
+See `docs/LITESTREAM_UPGRADE.md` for cutover, old-prefix recovery, and rollback.
 
 ## Debugging Database Issues
 
