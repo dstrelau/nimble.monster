@@ -7,7 +7,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { GlobalSearchDialog } from "./GlobalSearchDialog";
+import { GlobalSearchDialog, GlobalSearchTrigger } from "./GlobalSearchDialog";
 
 const { mockPush } = vi.hoisted(() => ({
   mockPush: vi.fn(),
@@ -39,6 +39,24 @@ afterEach(() => {
 describe("GlobalSearchDialog", () => {
   beforeEach(() => {
     mockPush.mockReset();
+  });
+
+  it("opens the existing search from the homepage trigger", async () => {
+    render(
+      <>
+        <GlobalSearchTrigger />
+        <GlobalSearchDialog />
+      </>
+    );
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Search rules, creatures, spells, and more",
+      })
+    );
+    expect(
+      await screen.findByRole("dialog", { name: "Global search" })
+    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Search")).toHaveFocus();
   });
 
   it("opens with Ctrl-K and Meta-K and closes with Escape", async () => {

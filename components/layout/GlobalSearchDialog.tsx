@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   BookOpen,
   Map as MapIcon,
+  Search,
   Swords,
   Table2,
   TriangleAlert,
@@ -73,6 +74,19 @@ const NAVIGATION_SEARCH_TYPES = {
 
 type SearchStatus = "idle" | "loading" | "ready" | "error";
 
+export function GlobalSearchTrigger() {
+  return (
+    <Button
+      variant="outline"
+      className="h-auto min-h-14 w-full justify-start gap-3 whitespace-normal py-3 text-left text-base"
+      onClick={() => document.dispatchEvent(new Event("open-global-search"))}
+    >
+      <Search aria-hidden="true" />
+      Search rules, creatures, spells, and more
+    </Button>
+  );
+}
+
 export function GlobalSearchDialog() {
   const pathname = usePathname();
   const router = useRouter();
@@ -95,8 +109,16 @@ export function GlobalSearchDialog() {
       }
     }
 
+    function openSearch() {
+      setOpen(true);
+    }
+
     document.addEventListener("keydown", handleShortcut);
-    return () => document.removeEventListener("keydown", handleShortcut);
+    document.addEventListener("open-global-search", openSearch);
+    return () => {
+      document.removeEventListener("keydown", handleShortcut);
+      document.removeEventListener("open-global-search", openSearch);
+    };
   }, [pathname]);
 
   useEffect(() => {

@@ -9,6 +9,7 @@ import {
   inArray,
   like,
   lt,
+  ne,
   or,
   type SQL,
   sql,
@@ -496,6 +497,7 @@ const paginateBestiaryEntries = async ({
   search,
   type = "all",
   creatorId,
+  excludeCreatorId,
   source,
   role,
   level,
@@ -527,6 +529,10 @@ const paginateBestiaryEntries = async ({
 
   if (creatorId) {
     whereConditions.push(eq(monsters.userId, creatorId));
+  }
+
+  if (excludeCreatorId) {
+    whereConditions.push(ne(monsters.userId, excludeCreatorId));
   }
 
   if (source) {
