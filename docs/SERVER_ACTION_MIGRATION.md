@@ -1254,3 +1254,40 @@ contract compatibility window that a future migration must preserve.
   deployment interval. Pre-cutover tabs still need the existing refresh/retry path.
   Background collection membership is the next bounded Wave 2 slice; remaining
   collection/encounter relationship writes follow before reactions and preferences.
+
+### Background collection membership — October 2026
+
+- `AddToCollectionDialog`, reached from the background detail page and the sole
+  browser caller, uses typed JSON POSTs to `/_actions/addBackgroundToCollection`
+  with `{ backgroundId: UUID, collectionId: UUID }`, returning 200
+  `{ success: true }`. Existing collection lookup/ownership and public-or-owned
+  background checks remain: foreign private collections return 404; foreign public
+  collections and inaccessible/missing backgrounds return 403. Session identity
+  remains authoritative; submitted owner identity is ignored.
+- The unchanged database operation preserves idempotent membership insertion.
+  UUID validation, exact-origin/JSON enforcement, telemetry and generic unexpected
+  500s reuse the shared internal boundary without CORS. Owner/public collection
+  lists and detail pages are revalidated; the existing owner-collection query
+  invalidation refreshes duplicate detection without a Flight mutation response.
+- The dialog retains pending disable, duplicate warnings, selection and one inline
+  error/manual retry for HTTP/network failures. Success closes/resets the dialog
+  without navigation or automatic mutation retries.
+- Removed `addBackgroundToCollection` from `app/actions/collection.ts`, its old
+  action-only test and the dialog's action import/call. Application ratchet:
+  **75 → 74** exports; other membership actions, public APIs, database/repository
+  boundaries and repository markers are unchanged.
+- Route-boundary and real-dialog transport tests cover stable URL/no `next-action`,
+  auth/ownership, validation, safe failures, invalidation and pending/error/retry
+  behavior. Live development HTTP checks verify rejection without writes, owned
+  private/foreign public backgrounds, duplicate idempotency and persisted membership.
+  Browser QA verifies retained selection/manual retry, refreshed duplicate
+  detection, normal navigation, active owner navigation and collection reload.
+  Disposable non-admin users, copied backgrounds, collections, memberships and
+  search entries are cleaned up with explicit absence checks. Production
+  verification uses short-lived Auth.js sessions for test-owned non-admin users,
+  not a dev-login bypass or real-user content; deployment evidence is recorded
+  in the run thread.
+- Retain this URL and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs still need the existing refresh/retry path.
+  Subclass collection membership is the next bounded Wave 2 slice; remaining
+  collection/encounter relationship writes follow before reactions and preferences.

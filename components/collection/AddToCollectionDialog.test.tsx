@@ -15,7 +15,6 @@ const { mockListOwnCollections, mockFetch } = vi.hoisted(() => ({
 
 vi.mock("@/app/actions/collection", () => ({
   listOwnCollections: mockListOwnCollections,
-  addBackgroundToCollection: vi.fn(),
   addSubclassToCollection: vi.fn(),
 }));
 
@@ -76,7 +75,7 @@ const COLLECTIONS = {
       items: [{ id: "i-existing" }],
       companions: [{ id: "c-existing" }],
       ancestries: [{ id: "a-existing" }],
-      backgrounds: [],
+      backgrounds: [{ id: "b-existing" }],
       subclasses: [],
       spellSchools: [{ id: "s-existing" }],
     },
@@ -161,61 +160,27 @@ describe("AddToCollectionDialog", () => {
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
   });
 
-  it.each<"hazard" | "item" | "spellSchool" | "companion" | "ancestry">([
-    "hazard",
-    "item",
-    "spellSchool",
-    "companion",
-    "ancestry",
-  ])("detects a duplicate %s", async (type) => {
-    render(
-      type === "item" ? (
-        <AddToCollectionDialog type="item" itemId="i-existing" />
-      ) : type === "spellSchool" ? (
-        <AddToCollectionDialog type="spellSchool" spellSchoolId="s-existing" />
-      ) : type === "companion" ? (
-        <AddToCollectionDialog type="companion" companionId="c-existing" />
-      ) : type === "ancestry" ? (
-        <AddToCollectionDialog type="ancestry" ancestryId="a-existing" />
-      ) : (
-        <AddToCollectionDialog type="hazard" monsterId="m-existing" />
-      ),
-      {
-        wrapper: createWrapper(),
-      }
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
-    await screen.findByText("My Monsters");
-
-    fireEvent.change(screen.getByTestId("collection-select"), {
-      target: { value: "col-1" },
-    });
-
-    expect(
-      await screen.findByText(
-        `This ${type === "spellSchool" ? "spell school" : type} is already in the selected collection`
-      )
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
-  });
-
   it.each<
-    "monster" | "hazard" | "item" | "spellSchool" | "companion" | "ancestry"
-  >(["monster", "hazard", "item", "spellSchool", "companion", "ancestry"])(
-    "adds a %s through stable JSON transport",
+    "hazard" | "item" | "spellSchool" | "companion" | "ancestry" | "background"
+  >(["hazard", "item", "spellSchool", "companion", "ancestry", "background"])(
+    "detects a duplicate %s",
     async (type) => {
       render(
         type === "item" ? (
-          <AddToCollectionDialog type="item" itemId="entity-1" />
+          <AddToCollectionDialog type="item" itemId="i-existing" />
         ) : type === "spellSchool" ? (
-          <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
+          <AddToCollectionDialog
+            type="spellSchool"
+            spellSchoolId="s-existing"
+          />
         ) : type === "companion" ? (
-          <AddToCollectionDialog type="companion" companionId="entity-1" />
+          <AddToCollectionDialog type="companion" companionId="c-existing" />
         ) : type === "ancestry" ? (
-          <AddToCollectionDialog type="ancestry" ancestryId="entity-1" />
+          <AddToCollectionDialog type="ancestry" ancestryId="a-existing" />
+        ) : type === "background" ? (
+          <AddToCollectionDialog type="background" backgroundId="b-existing" />
         ) : (
-          <AddToCollectionDialog type={type} monsterId="entity-1" />
+          <AddToCollectionDialog type="hazard" monsterId="m-existing" />
         ),
         {
           wrapper: createWrapper(),
@@ -225,49 +190,104 @@ describe("AddToCollectionDialog", () => {
       fireEvent.click(
         screen.getByRole("button", { name: /add to collection/i })
       );
-      await screen.findByText("Empty Collection");
+      await screen.findByText("My Monsters");
 
       fireEvent.change(screen.getByTestId("collection-select"), {
-        target: { value: "col-2" },
+        target: { value: "col-1" },
       });
-      fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
 
-      await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledOnce();
-      });
-      expect(mockFetch).toHaveBeenCalledWith(
-        type === "item"
-          ? "/_actions/addItemToCollection"
-          : type === "spellSchool"
-            ? "/_actions/addSpellSchoolToCollection"
-            : type === "companion"
-              ? "/_actions/addCompanionToCollection"
-              : type === "ancestry"
-                ? "/_actions/addAncestryToCollection"
-                : "/_actions/addMonsterToCollection",
-        {
-          method: "POST",
-          credentials: "same-origin",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(
-            type === "item"
-              ? { itemId: "entity-1", collectionId: "col-2" }
-              : type === "spellSchool"
-                ? { spellSchoolId: "entity-1", collectionId: "col-2" }
-                : type === "companion"
-                  ? { companionId: "entity-1", collectionId: "col-2" }
-                  : type === "ancestry"
-                    ? { ancestryId: "entity-1", collectionId: "col-2" }
-                    : { monsterId: "entity-1", collectionId: "col-2" }
-          ),
-        }
-      );
-      await waitFor(() =>
-        expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
-      );
-      expect(mockListOwnCollections).toHaveBeenCalledTimes(2);
+      expect(
+        await screen.findByText(
+          `This ${type === "spellSchool" ? "spell school" : type} is already in the selected collection`
+        )
+      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
     }
   );
+
+  it.each<
+    | "monster"
+    | "hazard"
+    | "item"
+    | "spellSchool"
+    | "companion"
+    | "ancestry"
+    | "background"
+  >([
+    "monster",
+    "hazard",
+    "item",
+    "spellSchool",
+    "companion",
+    "ancestry",
+    "background",
+  ])("adds a %s through stable JSON transport", async (type) => {
+    render(
+      type === "item" ? (
+        <AddToCollectionDialog type="item" itemId="entity-1" />
+      ) : type === "spellSchool" ? (
+        <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
+      ) : type === "companion" ? (
+        <AddToCollectionDialog type="companion" companionId="entity-1" />
+      ) : type === "ancestry" ? (
+        <AddToCollectionDialog type="ancestry" ancestryId="entity-1" />
+      ) : type === "background" ? (
+        <AddToCollectionDialog type="background" backgroundId="entity-1" />
+      ) : (
+        <AddToCollectionDialog type={type} monsterId="entity-1" />
+      ),
+      {
+        wrapper: createWrapper(),
+      }
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
+    await screen.findByText("Empty Collection");
+
+    fireEvent.change(screen.getByTestId("collection-select"), {
+      target: { value: "col-2" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledOnce();
+    });
+    expect(mockFetch).toHaveBeenCalledWith(
+      type === "item"
+        ? "/_actions/addItemToCollection"
+        : type === "spellSchool"
+          ? "/_actions/addSpellSchoolToCollection"
+          : type === "companion"
+            ? "/_actions/addCompanionToCollection"
+            : type === "ancestry"
+              ? "/_actions/addAncestryToCollection"
+              : type === "background"
+                ? "/_actions/addBackgroundToCollection"
+                : "/_actions/addMonsterToCollection",
+      {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          type === "item"
+            ? { itemId: "entity-1", collectionId: "col-2" }
+            : type === "spellSchool"
+              ? { spellSchoolId: "entity-1", collectionId: "col-2" }
+              : type === "companion"
+                ? { companionId: "entity-1", collectionId: "col-2" }
+                : type === "ancestry"
+                  ? { ancestryId: "entity-1", collectionId: "col-2" }
+                  : type === "background"
+                    ? { backgroundId: "entity-1", collectionId: "col-2" }
+                    : { monsterId: "entity-1", collectionId: "col-2" }
+        ),
+      }
+    );
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+    );
+    expect(mockListOwnCollections).toHaveBeenCalledTimes(2);
+  });
 
   it.each([
     ["monster", "http"],
@@ -280,6 +300,8 @@ describe("AddToCollectionDialog", () => {
     ["companion", "network"],
     ["ancestry", "http"],
     ["ancestry", "network"],
+    ["background", "http"],
+    ["background", "network"],
   ])(
     "retains %s selection after %s failure and permits manual retry",
     async (type, failure) => {
@@ -300,6 +322,8 @@ describe("AddToCollectionDialog", () => {
           <AddToCollectionDialog type="companion" companionId="entity-1" />
         ) : type === "ancestry" ? (
           <AddToCollectionDialog type="ancestry" ancestryId="entity-1" />
+        ) : type === "background" ? (
+          <AddToCollectionDialog type="background" backgroundId="entity-1" />
         ) : (
           <AddToCollectionDialog type="monster" monsterId="entity-1" />
         ),

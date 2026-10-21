@@ -4,14 +4,12 @@ import { CopyPlus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { addAncestryToCollection } from "@/app/%5Factions/addAncestryToCollection/contract";
+import { addBackgroundToCollection } from "@/app/%5Factions/addBackgroundToCollection/contract";
 import { addCompanionToCollection } from "@/app/%5Factions/addCompanionToCollection/contract";
 import { addItemToCollection } from "@/app/%5Factions/addItemToCollection/contract";
 import { addMonsterToCollection } from "@/app/%5Factions/addMonsterToCollection/contract";
 import { addSpellSchoolToCollection } from "@/app/%5Factions/addSpellSchoolToCollection/contract";
-import {
-  addBackgroundToCollection,
-  addSubclassToCollection,
-} from "@/app/actions/collection";
+import { addSubclassToCollection } from "@/app/actions/collection";
 import { ownCollectionsQueryOptions } from "@/app/collections/ownCollectionsQueryOptions";
 import { Button } from "@/components/ui/button";
 import {
@@ -138,8 +136,10 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
             collectionId: data.collectionId,
           });
         case "background":
-          formData.append("backgroundId", props.backgroundId);
-          return addBackgroundToCollection(formData);
+          return call(addBackgroundToCollection, {
+            backgroundId: props.backgroundId,
+            collectionId: data.collectionId,
+          });
         case "subclass":
           formData.append("subclassId", props.subclassId);
           return addSubclassToCollection(formData);
