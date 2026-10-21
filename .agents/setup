@@ -8,10 +8,9 @@ echo "Installing system prerequisites..."
 packages=()
 command -v curl >/dev/null 2>&1 || packages+=(curl)
 command -v chromium >/dev/null 2>&1 || packages+=(chromium)
-if ((${#packages[@]})); then
-  sudo apt-get update
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y "${packages[@]}"
-fi
+sudo apt-get update
+# ca-certificates is always upgraded so revoked CAs are distrusted.
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates "${packages[@]}"
 
 flyctl_install="$HOME/.fly"
 if [[ ! -x "$flyctl_install/bin/fly" ]]; then

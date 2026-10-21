@@ -1,6 +1,6 @@
 FROM node:26-slim AS base
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    openssl \
+    ca-certificates openssl \
     && rm -rf /var/lib/apt/lists/*
 
 FROM base AS deps
@@ -16,8 +16,6 @@ ENV NEXT_PUBLIC_BUCKET_NAME=nimble-nexus
 RUN node tools/sync-icons.js && node --run build
 
 FROM base AS app-runtime
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/.next/standalone ./

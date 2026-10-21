@@ -19,6 +19,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 26
+          check-latest: true
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: make check
@@ -34,6 +35,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 26
+          check-latest: true
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm run test:run
@@ -50,6 +52,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 26
+          check-latest: true
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Verify Paperforge images in Tigris
