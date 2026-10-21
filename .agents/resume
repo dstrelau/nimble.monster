@@ -5,7 +5,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
 missing=()
-[[ -x "$HOME/.local/node-24/bin/node" ]] || missing+=("Node.js 24")
+[[ -x "$HOME/.local/node-26/bin/node" ]] || missing+=("Node.js 26")
 [[ -d node_modules ]] || missing+=("node_modules")
 [[ -f .env.local ]] || missing+=(".env.local")
 [[ -f db/dev.db ]] || missing+=("db/dev.db")

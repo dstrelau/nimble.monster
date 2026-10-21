@@ -1,19 +1,19 @@
-FROM node:24-slim AS base
+FROM node:26-slim AS base
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     && rm -rf /var/lib/apt/lists/*
 
 FROM base AS deps
 WORKDIR /app
-COPY package.json pnpm-lock.yaml .npmrc ./
-RUN corepack enable && corepack install && pnpm install --frozen-lockfile
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN npm install -g pnpm@latest-12 && pnpm install --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_PUBLIC_BUCKET_NAME=nimble-nexus
-RUN corepack enable && corepack install && node tools/sync-icons.js && pnpm run build
+RUN node tools/sync-icons.js && node --run build
 
 FROM base AS app-runtime
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
