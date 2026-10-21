@@ -83,7 +83,7 @@ describe("custom monster artwork selection", () => {
     fireEvent.change(screen.getByLabelText("Artist (optional)"), {
       target: { value: "Discarded edit" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
     expect(screen.getByRole("status")).toHaveTextContent("Morgan Vale");
     expect(screen.getByRole("status")).not.toHaveTextContent("Discarded edit");
     fireEvent.click(screen.getByRole("button", { name: "Change image" }));

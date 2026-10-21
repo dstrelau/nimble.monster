@@ -337,14 +337,6 @@ export function MonsterImageSelect({
               <X />
               Remove image
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={isUploading}
-              onClick={() => changeOpen(false)}
-            >
-              Cancel
-            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
