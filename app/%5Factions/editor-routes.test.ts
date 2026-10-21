@@ -221,14 +221,17 @@ describe("encounter and collection save routes", () => {
       collectionInput,
       "Collection not found",
     ],
-  ])("hides unauthorized or missing updates as not found", async (handler, service, input, message) => {
-    service.mockRejectedValue(new Error(message));
+  ])(
+    "hides unauthorized or missing updates as not found",
+    async (handler, service, input, message) => {
+      service.mockRejectedValue(new Error(message));
 
-    const response = await handler(request({ ...input, id }));
+      const response = await handler(request({ ...input, id }));
 
-    expect(response.status).toBe(404);
-    expect(await response.json()).toEqual({ error: message });
-  });
+      expect(response.status).toBe(404);
+      expect(await response.json()).toEqual({ error: message });
+    }
+  );
 
   it("records unexpected failures and returns a generic 500", async () => {
     const error = new Error("database path and storage details");

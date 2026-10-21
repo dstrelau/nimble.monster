@@ -73,19 +73,19 @@ describe("MyLibrarySidebar", () => {
       "/my/collections",
     ]);
     expect(
-      within(navigation).getByRole("link", { name: "Monsters 12" })
+      within(navigation).getByRole("link", { name: /^Monsters\s*12$/ })
     ).toHaveAttribute("aria-current", "page");
     expect(
-      within(navigation).getByRole("link", { name: "Collections 11" })
+      within(navigation).getByRole("link", { name: /^Collections\s*11$/ })
     ).not.toHaveAttribute("aria-current");
     expect(
-      within(navigation).getByRole("link", { name: "Custom Rules 13" })
+      within(navigation).getByRole("link", { name: /^Custom Rules\s*13$/ })
     ).toHaveAttribute("href", "/my/rules");
     expect(
-      within(navigation).getByRole("link", { name: "Adventures 2" })
+      within(navigation).getByRole("link", { name: /^Adventures\s*2$/ })
     ).toHaveAttribute("href", "/my/adventures");
     expect(
-      within(navigation).getByRole("link", { name: "Reference Tables 5" })
+      within(navigation).getByRole("link", { name: /^Reference Tables\s*5$/ })
     ).toBeInTheDocument();
   });
 
@@ -93,7 +93,7 @@ describe("MyLibrarySidebar", () => {
     render(<MyLibrarySidebar counts={counts} />);
 
     fireEvent.click(
-      screen.getByRole("button", { name: /My Library Monsters/ })
+      screen.getByRole("button", { name: /My Library\s*Monsters/ })
     );
 
     expect(
@@ -130,7 +130,7 @@ describe("MyLibrarySidebar", () => {
       "/u/creator/collections",
     ]);
     expect(
-      within(navigation).getByRole("link", { name: "Monsters 12" })
+      within(navigation).getByRole("link", { name: /^Monsters\s*12$/ })
     ).toHaveAttribute("aria-current", "page");
     expect(screen.queryByText("Public Library")).not.toBeInTheDocument();
     expect(
@@ -147,10 +147,10 @@ describe("MyLibrarySidebar", () => {
       name: "My library sidebar",
     });
     expect(
-      within(navigation).getByRole("link", { name: "Adventures 0" })
+      within(navigation).getByRole("link", { name: /^Adventures\s*0$/ })
     ).toHaveAttribute("href", "/my/adventures");
     expect(
-      within(navigation).getByRole("link", { name: "Monsters 0" })
+      within(navigation).getByRole("link", { name: /^Monsters\s*0$/ })
     ).toBeInTheDocument();
   });
 
@@ -168,10 +168,10 @@ describe("MyLibrarySidebar", () => {
       name: "Public library sidebar",
     });
     expect(
-      within(navigation).getByRole("link", { name: "Adventures 0" })
+      within(navigation).getByRole("link", { name: /^Adventures\s*0$/ })
     ).toHaveAttribute("href", "/u/creator/adventures");
     expect(
-      within(navigation).getByRole("link", { name: "Monsters 12" })
+      within(navigation).getByRole("link", { name: /^Monsters\s*12$/ })
     ).toBeInTheDocument();
   });
 
@@ -183,7 +183,7 @@ describe("MyLibrarySidebar", () => {
       name: "My library sidebar",
     });
     const link = within(navigation).getByRole("link", {
-      name: "Reference Tables 5",
+      name: /^Reference Tables\s*5$/,
     });
     expect(link).toHaveAttribute("href", "/my/tables");
     expect(link).toHaveAttribute("aria-current", "page");

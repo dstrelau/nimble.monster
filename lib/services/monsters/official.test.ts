@@ -79,44 +79,43 @@ describe("structured monster attacks", () => {
     { width: undefined, expectedWidth: 1, label: "Line 6" },
     { width: 1, expectedWidth: 1, label: "Line 6" },
     { width: 3, expectedWidth: 3, label: "Line 3×6" },
-  ])("round-trips line width $width with length 6", ({
-    width,
-    expectedWidth,
-    label,
-  }) => {
-    const data = officialMonster("Great Worm");
-    data.attributes.actions = [
-      {
-        name: "Crush",
-        damage: { roll: "d88" },
-        area: {
-          shape: "line",
-          size: 6,
-          ...(width === undefined ? {} : { width }),
+  ])(
+    "round-trips line width $width with length 6",
+    ({ width, expectedWidth, label }) => {
+      const data = officialMonster("Great Worm");
+      data.attributes.actions = [
+        {
+          name: "Crush",
+          damage: { roll: "d88" },
+          area: {
+            shape: "line",
+            size: 6,
+            ...(width === undefined ? {} : { width }),
+          },
+          description: "Damage on a failed DC 18 DEX save.",
         },
-        description: "Damage on a failed DC 18 DEX save.",
-      },
-    ];
-    const { monsters } = validateOfficialMonstersJSON({ data: [data] });
-    const input = parseJSONAPIMonster(monsters[0]);
-    const edit = createBestiaryEntrySchema.parse({ kind: "monster", input });
-    const expectedArea = { shape: "line", size: 6, width: expectedWidth };
-    expect(edit.input.actions[0].area).toEqual(expectedArea);
-    const monster = importedMonster(monsters[0]);
-    const exported = toJsonApiMonster(monster);
-    expect(exported.attributes.actions[0].area).toEqual(expectedArea);
-    const reimported = validateOfficialMonstersJSON({
-      data: [{ type: "monsters", attributes: exported.attributes }],
-    });
-    expect(parseJSONAPIMonster(reimported.monsters[0]).actions[0].area).toEqual(
-      expectedArea
-    );
-    expect(monsterToMarkdown(monster)).toContain(`**Crush** (d88, ${label})`);
-    expect(monsterToMarkdown(monster, { brief: true })).toContain(
-      `**Crush.** d88 (${label}).`
-    );
-    expect(monsterToMarkdown(monster)).not.toContain(`${label} AoE`);
-  });
+      ];
+      const { monsters } = validateOfficialMonstersJSON({ data: [data] });
+      const input = parseJSONAPIMonster(monsters[0]);
+      const edit = createBestiaryEntrySchema.parse({ kind: "monster", input });
+      const expectedArea = { shape: "line", size: 6, width: expectedWidth };
+      expect(edit.input.actions[0].area).toEqual(expectedArea);
+      const monster = importedMonster(monsters[0]);
+      const exported = toJsonApiMonster(monster);
+      expect(exported.attributes.actions[0].area).toEqual(expectedArea);
+      const reimported = validateOfficialMonstersJSON({
+        data: [{ type: "monsters", attributes: exported.attributes }],
+      });
+      expect(
+        parseJSONAPIMonster(reimported.monsters[0]).actions[0].area
+      ).toEqual(expectedArea);
+      expect(monsterToMarkdown(monster)).toContain(`**Crush** (d88, ${label})`);
+      expect(monsterToMarkdown(monster, { brief: true })).toContain(
+        `**Crush.** d88 (${label}).`
+      );
+      expect(monsterToMarkdown(monster)).not.toContain(`${label} AoE`);
+    }
+  );
 
   it("preserves alternate ranged attacks without making the melee attack ranged", () => {
     const goblin = officialMonster("Goblin");
@@ -190,41 +189,44 @@ describe("structured monster attacks", () => {
     { area: { shape: "cone", width: 3, size: 4 } },
     { target: { range: 7 }, area: { shape: "cone", size: 4 } },
     { aoe: true, area: { shape: "line", size: 4 } },
-  ])("rejects malformed attack metadata during import and editing: %j", (metadata) => {
-    const data = officialMonster("Black Pudding");
-    const action = { ...data.attributes.actions[0], ...metadata };
-    const input = parseJSONAPIMonster(data);
-    expect(
-      createBestiaryEntrySchema.safeParse({
-        kind: "monster",
-        input: { ...input, actions: [{ ...input.actions[0], ...metadata }] },
-      }).success
-    ).toBe(false);
-    expect(
-      familyInputSchema.safeParse({
-        name: "Family",
-        abilities: [
-          {
-            id: "ability",
-            name: "Ability",
-            description: "Effect.",
-            ...metadata,
-          },
-        ],
-      }).success
-    ).toBe(false);
-    expect(() =>
-      validateOfficialMonstersJSON({
-        data: [
-          {
-            type: "monsters",
-            attributes: { ...data.attributes, actions: [action] },
-          },
-        ],
-        included: [],
-      })
-    ).toThrow(/actions/);
-  });
+  ])(
+    "rejects malformed attack metadata during import and editing: %j",
+    (metadata) => {
+      const data = officialMonster("Black Pudding");
+      const action = { ...data.attributes.actions[0], ...metadata };
+      const input = parseJSONAPIMonster(data);
+      expect(
+        createBestiaryEntrySchema.safeParse({
+          kind: "monster",
+          input: { ...input, actions: [{ ...input.actions[0], ...metadata }] },
+        }).success
+      ).toBe(false);
+      expect(
+        familyInputSchema.safeParse({
+          name: "Family",
+          abilities: [
+            {
+              id: "ability",
+              name: "Ability",
+              description: "Effect.",
+              ...metadata,
+            },
+          ],
+        }).success
+      ).toBe(false);
+      expect(() =>
+        validateOfficialMonstersJSON({
+          data: [
+            {
+              type: "monsters",
+              attributes: { ...data.attributes, actions: [action] },
+            },
+          ],
+          included: [],
+        })
+      ).toThrow(/actions/);
+    }
+  );
 
   it("detects metadata-only changes during import preview", () => {
     const data = officialMonster("Great Worm");

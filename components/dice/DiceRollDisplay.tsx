@@ -143,6 +143,7 @@ export function DiceRollDisplay({
     >
       {sortedResults.map((result, index) => (
         <DiceRollResult
+          // biome-ignore lint/suspicious/noArrayIndexKey: the display slots have no persistent identity across rolls
           key={`${result.type}-${index}`}
           result={result}
           primaryMod={primaryMod}

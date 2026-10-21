@@ -29,7 +29,8 @@ export async function renderEntityImage(
     pageErrorCount++;
     if (pageErrorCount <= 5) {
       span?.addEvent("page.error", {
-        "exception.message": error.message,
+        "exception.message":
+          error instanceof Error ? error.message : String(error),
       });
     }
   });

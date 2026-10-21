@@ -85,35 +85,35 @@ describe.each([true, false])("family builder creating=%s", (creating) => {
     );
     expect(mocks.refresh).toHaveBeenCalled();
   });
-  it.each([
-    "http",
-    "network",
-  ])("retains input after %s failures and permits only manual retry", async (failure) => {
-    const fetchMock = vi.fn();
-    if (failure === "http")
-      fetchMock.mockResolvedValue(
-        Response.json({ error: "Unauthorized" }, { status: 401 })
+  it.each(["http", "network"])(
+    "retains input after %s failures and permits only manual retry",
+    async (failure) => {
+      const fetchMock = vi.fn();
+      if (failure === "http")
+        fetchMock.mockResolvedValue(
+          Response.json({ error: "Unauthorized" }, { status: 401 })
+        );
+      else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
+      vi.stubGlobal("fetch", fetchMock);
+      renderBuilder(creating);
+      const label = creating ? "Create" : "Save";
+      fireEvent.click(screen.getByRole("button", { name: label }));
+      const message = failure === "http" ? "Unauthorized" : "Failed to fetch";
+      expect(await screen.findByText(message)).toBeVisible();
+      expect(screen.getAllByText(message)).toHaveLength(1);
+      expect(screen.getByRole("textbox", { name: "Family Name" })).toHaveValue(
+        "New name"
       );
-    else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
-    vi.stubGlobal("fetch", fetchMock);
-    renderBuilder(creating);
-    const label = creating ? "Create" : "Save";
-    fireEvent.click(screen.getByRole("button", { name: label }));
-    const message = failure === "http" ? "Unauthorized" : "Failed to fetch";
-    expect(await screen.findByText(message)).toBeVisible();
-    expect(screen.getAllByText(message)).toHaveLength(1);
-    expect(screen.getByRole("textbox", { name: "Family Name" })).toHaveValue(
-      "New name"
-    );
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: label })).toBeEnabled()
-    );
-    expect(mocks.push).not.toHaveBeenCalled();
-    expect(fetchMock).toHaveBeenCalledOnce();
-    fetchMock.mockResolvedValue(
-      Response.json({ id: family.id, name: "New name" })
-    );
-    fireEvent.click(screen.getByRole("button", { name: label }));
-    await waitFor(() => expect(mocks.push).toHaveBeenCalled());
-  });
+      await waitFor(() =>
+        expect(screen.getByRole("button", { name: label })).toBeEnabled()
+      );
+      expect(mocks.push).not.toHaveBeenCalled();
+      expect(fetchMock).toHaveBeenCalledOnce();
+      fetchMock.mockResolvedValue(
+        Response.json({ id: family.id, name: "New name" })
+      );
+      fireEvent.click(screen.getByRole("button", { name: label }));
+      await waitFor(() => expect(mocks.push).toHaveBeenCalled());
+    }
+  );
 });

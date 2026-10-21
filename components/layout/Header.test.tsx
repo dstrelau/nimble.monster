@@ -55,15 +55,15 @@ describe("Header", () => {
     fireEvent.click(mobileMenuButton);
 
     expect(
-      screen.getByRole("link", { name: "Monsters 2772" })
+      screen.getByRole("link", { name: /^Monsters\s*2772$/ })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Adventures 1" })
+      screen.getByRole("link", { name: /^Adventures\s*1$/ })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Encounters 28" })
+      screen.getByRole("link", { name: /^Encounters\s*28$/ })
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Rules 137" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /^Rules\s*137$/ })).toHaveAttribute(
       "href",
       "/rules"
     );
@@ -73,7 +73,7 @@ describe("Header", () => {
     );
     expect(screen.getByRole("button", { name: "Play" })).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Reference Tables 7" })
+      screen.getByRole("link", { name: /^Reference Tables\s*7$/ })
     ).toHaveAttribute("href", "/tables");
     expect(
       screen.queryByRole("link", { name: "Create" })
@@ -96,7 +96,7 @@ describe("Header", () => {
     if (!mobileMenuButton) return;
     fireEvent.click(mobileMenuButton);
 
-    const link = screen.getByRole("link", { name: "Reference Tables 7" });
+    const link = screen.getByRole("link", { name: /^Reference Tables\s*7$/ });
     expect(link).toHaveAttribute("href", "/tables");
     expect(link.querySelector("svg")).toHaveClass("lucide-table-2");
   });

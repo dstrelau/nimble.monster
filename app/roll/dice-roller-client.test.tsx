@@ -32,13 +32,16 @@ afterEach(cleanup);
 it.each([
   ["1d4+1000000000c", "1000000005"],
   ["1d4n+9007199254740991", "9007199254740992"],
-])("renders %s without expanding enormous or unsafe outcome ranges", (notation, outcome) => {
-  render(
-    <NuqsTestingAdapter>
-      <DiceRollerClient initialDice={notation} />
-    </NuqsTestingAdapter>
-  );
-  expect(screen.getByText("Outcome gaps omitted.")).toBeInTheDocument();
-  expect(screen.getByText(outcome)).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: "Reroll" })).toBeEnabled();
-});
+])(
+  "renders %s without expanding enormous or unsafe outcome ranges",
+  (notation, outcome) => {
+    render(
+      <NuqsTestingAdapter>
+        <DiceRollerClient initialDice={notation} />
+      </NuqsTestingAdapter>
+    );
+    expect(screen.getByText("Outcome gaps omitted.")).toBeInTheDocument();
+    expect(screen.getByText(outcome)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Reroll" })).toBeEnabled();
+  }
+);

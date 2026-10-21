@@ -68,7 +68,11 @@ await filesystem.writeFile(
   JSON.stringify({
     private: true,
     type: "module",
-    dependencies: { "puppeteer-core": "24.15.0" },
+    dependencies: {
+      "puppeteer-core": JSON.parse(
+        await readFile(new URL("../../package.json", import.meta.url), "utf8")
+      ).dependencies["puppeteer-core"],
+    },
   })
 );
 await sprite.execFile("npm", ["install", "--omit=dev", "--no-package-lock"], {

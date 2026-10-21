@@ -174,17 +174,20 @@ describe("entity reference visibility", () => {
     "class",
     "subclass",
     "rule",
-  ] as const)("resolves only public %s content, even for its owner", async (type) => {
-    await expect(getEntityById(type, publicId)).resolves.toMatchObject({
-      id: publicId,
-      name: "public content",
-      type,
-    });
-    await expect(getEntityById(type, privateId)).resolves.toBeNull();
-    await expect(
-      getEntityById(type, uuidToIdentifier(privateId))
-    ).resolves.toBeNull();
-  });
+  ] as const)(
+    "resolves only public %s content, even for its owner",
+    async (type) => {
+      await expect(getEntityById(type, publicId)).resolves.toMatchObject({
+        id: publicId,
+        name: "public content",
+        type,
+      });
+      await expect(getEntityById(type, privateId)).resolves.toBeNull();
+      await expect(
+        getEntityById(type, uuidToIdentifier(privateId))
+      ).resolves.toBeNull();
+    }
+  );
 
   it("rejects secret families too", async () => {
     await expect(getEntityById("family", secretId)).resolves.toBeNull();

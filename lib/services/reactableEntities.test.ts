@@ -50,14 +50,15 @@ describe("syncLikeCount", () => {
     ["encounter", encounters],
   ];
 
-  it.each(
-    cases
-  )("updates the %s table's like_count column", async (entityType, table) => {
-    await syncLikeCount(entityType, "entity-1", 5);
+  it.each(cases)(
+    "updates the %s table's like_count column",
+    async (entityType, table) => {
+      await syncLikeCount(entityType, "entity-1", 5);
 
-    expect(mockUpdate).toHaveBeenCalledWith(table);
-    expect(mockSet).toHaveBeenCalledWith({ likeCount: 5 });
-  });
+      expect(mockUpdate).toHaveBeenCalledWith(table);
+      expect(mockSet).toHaveBeenCalledWith({ likeCount: 5 });
+    }
+  );
 });
 
 describe("resolveEntities customRule", () => {

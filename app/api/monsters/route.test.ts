@@ -842,31 +842,28 @@ describe("GET /api/monsters", () => {
     expect(data.included[0].attributes).not.toHaveProperty("discordId");
   });
 
-  it.each([
-    ["standard"],
-    ["legendary"],
-    ["minion"],
-    ["teams"],
-    ["all"],
-  ])("should handle type=%s parameter", async (type) => {
-    mockPaginateMonsters.mockResolvedValue({
-      data: [],
-      nextCursor: null,
-    });
+  it.each([["standard"], ["legendary"], ["minion"], ["teams"], ["all"]])(
+    "should handle type=%s parameter",
+    async (type) => {
+      mockPaginateMonsters.mockResolvedValue({
+        data: [],
+        nextCursor: null,
+      });
 
-    const request = new Request(
-      `http://localhost:3000/api/monsters?type=${type}`
-    );
-    const response = await GET(request);
+      const request = new Request(
+        `http://localhost:3000/api/monsters?type=${type}`
+      );
+      const response = await GET(request);
 
-    expect(response.status).toBe(200);
-    expect(mockPaginateMonsters).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type,
-        includePrivate: false,
-      })
-    );
-  });
+      expect(response.status).toBe(200);
+      expect(mockPaginateMonsters).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type,
+          includePrivate: false,
+        })
+      );
+    }
+  );
 
   it("dispatches type=hazard to typed hazard pagination", async () => {
     mockPaginateHazards.mockResolvedValue({

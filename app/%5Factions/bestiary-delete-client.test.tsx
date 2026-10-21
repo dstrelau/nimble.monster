@@ -77,36 +77,36 @@ describe.each([false, true])("delete UI hazard=%s", (hazard) => {
       )
     );
   });
-  it.each([
-    "http",
-    "network",
-  ])("shows one error and permits manual retry after %s failure", async (failure) => {
-    const fetchMock = vi.fn();
-    const message =
-      failure === "http" ? "Bestiary entry not found" : "Failed to fetch";
-    if (failure === "http")
-      fetchMock.mockResolvedValue(
-        Response.json({ error: message }, { status: 404 })
+  it.each(["http", "network"])(
+    "shows one error and permits manual retry after %s failure",
+    async (failure) => {
+      const fetchMock = vi.fn();
+      const message =
+        failure === "http" ? "Bestiary entry not found" : "Failed to fetch";
+      if (failure === "http")
+        fetchMock.mockResolvedValue(
+          Response.json({ error: message }, { status: 404 })
+        );
+      else fetchMock.mockRejectedValue(new TypeError(message));
+      vi.stubGlobal("fetch", fetchMock);
+      show();
+      fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+      await waitFor(() =>
+        expect(window.alert).toHaveBeenCalledWith(
+          `Error deleting ${kind}: ${message}`
+        )
       );
-    else fetchMock.mockRejectedValue(new TypeError(message));
-    vi.stubGlobal("fetch", fetchMock);
-    show();
-    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
-    await waitFor(() =>
-      expect(window.alert).toHaveBeenCalledWith(
-        `Error deleting ${kind}: ${message}`
-      )
-    );
-    expect(window.alert).toHaveBeenCalledOnce();
-    expect(mocks.push).not.toHaveBeenCalled();
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Delete" })).toBeEnabled()
-    );
-    expect(fetchMock).toHaveBeenCalledOnce();
-    fetchMock.mockResolvedValue(Response.json({ success: true }));
-    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
-    await waitFor(() => expect(mocks.push).toHaveBeenCalled());
-  });
+      expect(window.alert).toHaveBeenCalledOnce();
+      expect(mocks.push).not.toHaveBeenCalled();
+      await waitFor(() =>
+        expect(screen.getByRole("button", { name: "Delete" })).toBeEnabled()
+      );
+      expect(fetchMock).toHaveBeenCalledOnce();
+      fetchMock.mockResolvedValue(Response.json({ success: true }));
+      fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+      await waitFor(() => expect(mocks.push).toHaveBeenCalled());
+    }
+  );
   it("does not send cancelled or non-owner deletes", () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);

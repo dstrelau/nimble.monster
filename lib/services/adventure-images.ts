@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import sharp from "sharp";
+import sharp, { type Metadata } from "sharp";
 import {
   ADVENTURE_IMAGE_MAX_DIMENSION,
   ADVENTURE_IMAGE_MAX_FILE_SIZE,
@@ -44,7 +44,7 @@ export async function uploadAdventureImage(
     failOn: "warning",
     limitInputPixels: ADVENTURE_IMAGE_MAX_PIXELS,
   });
-  let metadata: sharp.Metadata;
+  let metadata: Metadata;
   try {
     metadata = await source.metadata();
   } catch {

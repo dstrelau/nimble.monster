@@ -202,74 +202,72 @@ describe("AddToCollectionDialog", () => {
 
   it.each<
     "monster" | "hazard" | "item" | "spellSchool" | "companion" | "ancestry"
-  >([
-    "monster",
-    "hazard",
-    "item",
-    "spellSchool",
-    "companion",
-    "ancestry",
-  ])("adds a %s through stable JSON transport", async (type) => {
-    render(
-      type === "item" ? (
-        <AddToCollectionDialog type="item" itemId="entity-1" />
-      ) : type === "spellSchool" ? (
-        <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
-      ) : type === "companion" ? (
-        <AddToCollectionDialog type="companion" companionId="entity-1" />
-      ) : type === "ancestry" ? (
-        <AddToCollectionDialog type="ancestry" ancestryId="entity-1" />
-      ) : (
-        <AddToCollectionDialog type={type} monsterId="entity-1" />
-      ),
-      {
-        wrapper: createWrapper(),
-      }
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
-    await screen.findByText("Empty Collection");
-
-    fireEvent.change(screen.getByTestId("collection-select"), {
-      target: { value: "col-2" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
-
-    await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledOnce();
-    });
-    expect(mockFetch).toHaveBeenCalledWith(
-      type === "item"
-        ? "/_actions/addItemToCollection"
-        : type === "spellSchool"
-          ? "/_actions/addSpellSchoolToCollection"
-          : type === "companion"
-            ? "/_actions/addCompanionToCollection"
-            : type === "ancestry"
-              ? "/_actions/addAncestryToCollection"
-              : "/_actions/addMonsterToCollection",
-      {
-        method: "POST",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          type === "item"
-            ? { itemId: "entity-1", collectionId: "col-2" }
-            : type === "spellSchool"
-              ? { spellSchoolId: "entity-1", collectionId: "col-2" }
-              : type === "companion"
-                ? { companionId: "entity-1", collectionId: "col-2" }
-                : type === "ancestry"
-                  ? { ancestryId: "entity-1", collectionId: "col-2" }
-                  : { monsterId: "entity-1", collectionId: "col-2" }
+  >(["monster", "hazard", "item", "spellSchool", "companion", "ancestry"])(
+    "adds a %s through stable JSON transport",
+    async (type) => {
+      render(
+        type === "item" ? (
+          <AddToCollectionDialog type="item" itemId="entity-1" />
+        ) : type === "spellSchool" ? (
+          <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
+        ) : type === "companion" ? (
+          <AddToCollectionDialog type="companion" companionId="entity-1" />
+        ) : type === "ancestry" ? (
+          <AddToCollectionDialog type="ancestry" ancestryId="entity-1" />
+        ) : (
+          <AddToCollectionDialog type={type} monsterId="entity-1" />
         ),
-      }
-    );
-    await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
-    );
-    expect(mockListOwnCollections).toHaveBeenCalledTimes(2);
-  });
+        {
+          wrapper: createWrapper(),
+        }
+      );
+
+      fireEvent.click(
+        screen.getByRole("button", { name: /add to collection/i })
+      );
+      await screen.findByText("Empty Collection");
+
+      fireEvent.change(screen.getByTestId("collection-select"), {
+        target: { value: "col-2" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
+
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledOnce();
+      });
+      expect(mockFetch).toHaveBeenCalledWith(
+        type === "item"
+          ? "/_actions/addItemToCollection"
+          : type === "spellSchool"
+            ? "/_actions/addSpellSchoolToCollection"
+            : type === "companion"
+              ? "/_actions/addCompanionToCollection"
+              : type === "ancestry"
+                ? "/_actions/addAncestryToCollection"
+                : "/_actions/addMonsterToCollection",
+        {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(
+            type === "item"
+              ? { itemId: "entity-1", collectionId: "col-2" }
+              : type === "spellSchool"
+                ? { spellSchoolId: "entity-1", collectionId: "col-2" }
+                : type === "companion"
+                  ? { companionId: "entity-1", collectionId: "col-2" }
+                  : type === "ancestry"
+                    ? { ancestryId: "entity-1", collectionId: "col-2" }
+                    : { monsterId: "entity-1", collectionId: "col-2" }
+          ),
+        }
+      );
+      await waitFor(() =>
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+      );
+      expect(mockListOwnCollections).toHaveBeenCalledTimes(2);
+    }
+  );
 
   it.each([
     ["monster", "http"],
@@ -282,52 +280,57 @@ describe("AddToCollectionDialog", () => {
     ["companion", "network"],
     ["ancestry", "http"],
     ["ancestry", "network"],
-  ])("retains %s selection after %s failure and permits manual retry", async (type, failure) => {
-    let rejectRequest: (error: Error) => void = () => {};
-    let resolveRequest: (response: Response) => void = () => {};
-    mockFetch.mockReturnValueOnce(
-      new Promise<Response>((resolve, reject) => {
-        resolveRequest = resolve;
-        rejectRequest = reject;
-      })
-    );
-    render(
-      type === "item" ? (
-        <AddToCollectionDialog type="item" itemId="entity-1" />
-      ) : type === "spellSchool" ? (
-        <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
-      ) : type === "companion" ? (
-        <AddToCollectionDialog type="companion" companionId="entity-1" />
-      ) : type === "ancestry" ? (
-        <AddToCollectionDialog type="ancestry" ancestryId="entity-1" />
-      ) : (
-        <AddToCollectionDialog type="monster" monsterId="entity-1" />
-      ),
-      {
-        wrapper: createWrapper(),
-      }
-    );
-    fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
-    await screen.findByText("Empty Collection");
-    fireEvent.change(screen.getByTestId("collection-select"), {
-      target: { value: "col-2" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
-    expect(
-      await screen.findByRole("button", { name: "Adding..." })
-    ).toBeDisabled();
-    if (failure === "http")
-      resolveRequest(Response.json({ error: "Forbidden" }, { status: 403 }));
-    else rejectRequest(new Error("Failed to fetch"));
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      failure === "http" ? "Forbidden" : "Failed to fetch"
-    );
-    expect(screen.getByTestId("collection-select")).toHaveValue("col-2");
-    expect(mockFetch).toHaveBeenCalledOnce();
-    fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
-    await waitFor(() =>
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
-    );
-    expect(mockFetch).toHaveBeenCalledTimes(2);
-  });
+  ])(
+    "retains %s selection after %s failure and permits manual retry",
+    async (type, failure) => {
+      let rejectRequest: (error: Error) => void = () => {};
+      let resolveRequest: (response: Response) => void = () => {};
+      mockFetch.mockReturnValueOnce(
+        new Promise<Response>((resolve, reject) => {
+          resolveRequest = resolve;
+          rejectRequest = reject;
+        })
+      );
+      render(
+        type === "item" ? (
+          <AddToCollectionDialog type="item" itemId="entity-1" />
+        ) : type === "spellSchool" ? (
+          <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
+        ) : type === "companion" ? (
+          <AddToCollectionDialog type="companion" companionId="entity-1" />
+        ) : type === "ancestry" ? (
+          <AddToCollectionDialog type="ancestry" ancestryId="entity-1" />
+        ) : (
+          <AddToCollectionDialog type="monster" monsterId="entity-1" />
+        ),
+        {
+          wrapper: createWrapper(),
+        }
+      );
+      fireEvent.click(
+        screen.getByRole("button", { name: /add to collection/i })
+      );
+      await screen.findByText("Empty Collection");
+      fireEvent.change(screen.getByTestId("collection-select"), {
+        target: { value: "col-2" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
+      expect(
+        await screen.findByRole("button", { name: "Adding..." })
+      ).toBeDisabled();
+      if (failure === "http")
+        resolveRequest(Response.json({ error: "Forbidden" }, { status: 403 }));
+      else rejectRequest(new Error("Failed to fetch"));
+      expect(await screen.findByRole("alert")).toHaveTextContent(
+        failure === "http" ? "Forbidden" : "Failed to fetch"
+      );
+      expect(screen.getByTestId("collection-select")).toHaveValue("col-2");
+      expect(mockFetch).toHaveBeenCalledOnce();
+      fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
+      await waitFor(() =>
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+      );
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    }
+  );
 });
