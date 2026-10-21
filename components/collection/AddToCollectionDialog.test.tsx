@@ -17,7 +17,6 @@ const { mockListOwnCollections, mockFetch, mockAddCompanionToCollection } =
 
 vi.mock("@/app/actions/collection", () => ({
   listOwnCollections: mockListOwnCollections,
-  addSpellSchoolToCollection: vi.fn(),
   addCompanionToCollection: mockAddCompanionToCollection,
   addAncestryToCollection: vi.fn(),
   addBackgroundToCollection: vi.fn(),
@@ -83,7 +82,7 @@ const COLLECTIONS = {
       ancestries: [],
       backgrounds: [],
       subclasses: [],
-      spellSchools: [],
+      spellSchools: [{ id: "s-existing" }],
     },
     {
       id: "col-2",
@@ -166,13 +165,16 @@ describe("AddToCollectionDialog", () => {
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
   });
 
-  it.each<"hazard" | "item">([
+  it.each<"hazard" | "item" | "spellSchool">([
     "hazard",
     "item",
+    "spellSchool",
   ])("detects a duplicate %s", async (type) => {
     render(
       type === "item" ? (
         <AddToCollectionDialog type="item" itemId="i-existing" />
+      ) : type === "spellSchool" ? (
+        <AddToCollectionDialog type="spellSchool" spellSchoolId="s-existing" />
       ) : (
         <AddToCollectionDialog type="hazard" monsterId="m-existing" />
       ),
@@ -190,20 +192,23 @@ describe("AddToCollectionDialog", () => {
 
     expect(
       await screen.findByText(
-        `This ${type} is already in the selected collection`
+        `This ${type === "spellSchool" ? "spell school" : type} is already in the selected collection`
       )
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
   });
 
-  it.each<"monster" | "hazard" | "item">([
+  it.each<"monster" | "hazard" | "item" | "spellSchool">([
     "monster",
     "hazard",
     "item",
+    "spellSchool",
   ])("adds a %s through stable JSON transport", async (type) => {
     render(
       type === "item" ? (
         <AddToCollectionDialog type="item" itemId="entity-1" />
+      ) : type === "spellSchool" ? (
+        <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
       ) : (
         <AddToCollectionDialog type={type} monsterId="entity-1" />
       ),
@@ -226,7 +231,9 @@ describe("AddToCollectionDialog", () => {
     expect(mockFetch).toHaveBeenCalledWith(
       type === "item"
         ? "/_actions/addItemToCollection"
-        : "/_actions/addMonsterToCollection",
+        : type === "spellSchool"
+          ? "/_actions/addSpellSchoolToCollection"
+          : "/_actions/addMonsterToCollection",
       {
         method: "POST",
         credentials: "same-origin",
@@ -234,7 +241,9 @@ describe("AddToCollectionDialog", () => {
         body: JSON.stringify(
           type === "item"
             ? { itemId: "entity-1", collectionId: "col-2" }
-            : { monsterId: "entity-1", collectionId: "col-2" }
+            : type === "spellSchool"
+              ? { spellSchoolId: "entity-1", collectionId: "col-2" }
+              : { monsterId: "entity-1", collectionId: "col-2" }
         ),
       }
     );
@@ -249,6 +258,8 @@ describe("AddToCollectionDialog", () => {
     ["monster", "network"],
     ["item", "http"],
     ["item", "network"],
+    ["spellSchool", "http"],
+    ["spellSchool", "network"],
   ])("retains %s selection after %s failure and permits manual retry", async (type, failure) => {
     let rejectRequest: (error: Error) => void = () => {};
     let resolveRequest: (response: Response) => void = () => {};
@@ -261,6 +272,8 @@ describe("AddToCollectionDialog", () => {
     render(
       type === "item" ? (
         <AddToCollectionDialog type="item" itemId="entity-1" />
+      ) : type === "spellSchool" ? (
+        <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
       ) : (
         <AddToCollectionDialog type="monster" monsterId="entity-1" />
       ),

@@ -1146,3 +1146,39 @@ contract compatibility window that a future migration must preserve.
   deployment interval. Pre-cutover tabs still need the existing refresh/retry path.
   Spell-school collection membership is the next bounded Wave 2 slice; remaining
   collection/encounter relationship writes follow before reactions and preferences.
+
+### Spell-school collection membership — October 2026
+
+- `AddToCollectionDialog`, reached from the spell-school detail page and the sole
+  browser caller, uses typed JSON POSTs to `/_actions/addSpellSchoolToCollection`
+  with `{ spellSchoolId: UUID, collectionId: UUID }`, returning 200
+  `{ success: true }`. Existing collection lookup/ownership and public-or-owned
+  school checks remain: foreign private collections return 404; foreign public
+  collections and inaccessible/missing schools return 403. Session identity is
+  authoritative; submitted owner identity is ignored.
+- The unchanged database operation preserves idempotent membership insertion.
+  Runtime UUID validation, exact-origin/JSON enforcement, telemetry and generic
+  unexpected 500s reuse the shared internal boundary without CORS. Owner/public
+  collection lists and detail pages are revalidated; the existing owner-collection
+  query invalidation refreshes duplicate detection without a Flight response.
+- The shared dialog retains pending disable, duplicate warnings, selection and
+  one inline error/manual retry for HTTP/network failures. Success closes/resets
+  the dialog without navigation or automatic mutation retries.
+- Removed `addSpellSchoolToCollection` from `app/actions/collection.ts`, its
+  action-only tests and the dialog's action import/call. Application ratchet:
+  **78 → 77** exports; other membership actions, public APIs, database/repository
+  boundaries and repository markers are unchanged.
+- Route-boundary and real-dialog transport tests cover stable URL/no `next-action`,
+  auth/ownership, validation, safe failures, invalidation and pending/error/retry
+  behavior. Live development HTTP checks verify rejection without writes, owned
+  private/foreign public schools, duplicate idempotency and persisted membership.
+  Browser QA verifies retained selection/manual retry, refreshed duplicate
+  detection, normal navigation, active owner navigation and collection reload.
+  Disposable non-admin users, copied schools, collections, memberships and search
+  entries are removed with explicit absence checks. Production verification uses
+  short-lived Auth.js sessions for test-owned non-admin users, not a dev-login
+  bypass or real-user content; deployment evidence is recorded in the run thread.
+- Retain this URL and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs still need the existing refresh/retry path.
+  Companion collection membership is the next bounded Wave 2 slice; remaining
+  collection/encounter relationship writes follow before reactions and preferences.

@@ -5,11 +5,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { addItemToCollection } from "@/app/%5Factions/addItemToCollection/contract";
 import { addMonsterToCollection } from "@/app/%5Factions/addMonsterToCollection/contract";
+import { addSpellSchoolToCollection } from "@/app/%5Factions/addSpellSchoolToCollection/contract";
 import {
   addAncestryToCollection,
   addBackgroundToCollection,
   addCompanionToCollection,
-  addSpellSchoolToCollection,
   addSubclassToCollection,
 } from "@/app/actions/collection";
 import { ownCollectionsQueryOptions } from "@/app/collections/ownCollectionsQueryOptions";
@@ -123,8 +123,10 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
             collectionId: data.collectionId,
           });
         case "spellSchool":
-          formData.append("spellSchoolId", props.spellSchoolId);
-          return addSpellSchoolToCollection(formData);
+          return call(addSpellSchoolToCollection, {
+            spellSchoolId: props.spellSchoolId,
+            collectionId: data.collectionId,
+          });
         case "companion":
           formData.append("companionId", props.companionId);
           return addCompanionToCollection(formData);

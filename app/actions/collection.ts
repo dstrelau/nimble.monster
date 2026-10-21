@@ -10,7 +10,6 @@ import {
   backgrounds,
   classes,
   companions,
-  spellSchools,
   subclasses,
 } from "@/lib/db/schema";
 
@@ -23,55 +22,6 @@ export async function listOwnCollections() {
     session.user.discordId
   );
   return { success: true, collections };
-}
-
-export async function addSpellSchoolToCollection(formData: FormData) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return unauthorized();
-  }
-
-  const spellSchoolId = formData.get("spellSchoolId")?.toString();
-  const collectionId = formData.get("collectionId")?.toString();
-  if (!spellSchoolId || !collectionId) {
-    return { success: false, error: "Missing spellSchoolId or collectionId" };
-  }
-
-  const collection = await db.getCollection(
-    collectionId,
-    session.user.discordId
-  );
-  if (!collection) {
-    return {
-      success: false,
-      error: "Collection not found or you don't have permission to update it",
-    };
-  }
-
-  if (collection.creator.discordId !== session.user.discordId) {
-    return forbidden();
-  }
-
-  const entityDb = getDatabase();
-  const accessible = await entityDb
-    .select({ id: spellSchools.id })
-    .from(spellSchools)
-    .where(
-      and(
-        eq(spellSchools.id, spellSchoolId),
-        or(
-          eq(spellSchools.visibility, "public"),
-          eq(spellSchools.userId, session.user.id)
-        )
-      )
-    )
-    .limit(1);
-  if (accessible.length === 0) {
-    return forbidden();
-  }
-
-  await db.addSpellSchoolToCollection({ spellSchoolId, collectionId });
-  return { success: true };
 }
 
 export async function addCompanionToCollection(formData: FormData) {

@@ -4,7 +4,6 @@ const { mockAuth } = vi.hoisted(() => ({ mockAuth: vi.fn() }));
 const {
   mockListCollectionsWithMonstersForUser,
   mockGetCollection,
-  mockAddSpellSchoolToCollection,
   mockAddCompanionToCollection,
   mockAddAncestryToCollection,
   mockAddBackgroundToCollection,
@@ -12,7 +11,6 @@ const {
 } = vi.hoisted(() => ({
   mockListCollectionsWithMonstersForUser: vi.fn(),
   mockGetCollection: vi.fn(),
-  mockAddSpellSchoolToCollection: vi.fn(),
   mockAddCompanionToCollection: vi.fn(),
   mockAddAncestryToCollection: vi.fn(),
   mockAddBackgroundToCollection: vi.fn(),
@@ -67,7 +65,6 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/lib/db", () => ({
   listCollectionsWithMonstersForUser: mockListCollectionsWithMonstersForUser,
   getCollection: mockGetCollection,
-  addSpellSchoolToCollection: mockAddSpellSchoolToCollection,
   addCompanionToCollection: mockAddCompanionToCollection,
   addAncestryToCollection: mockAddAncestryToCollection,
   addBackgroundToCollection: mockAddBackgroundToCollection,
@@ -88,7 +85,6 @@ import {
   addAncestryToCollection,
   addBackgroundToCollection,
   addCompanionToCollection,
-  addSpellSchoolToCollection,
   addSubclassToCollection,
   listOwnCollections,
 } from "./collection";
@@ -169,33 +165,6 @@ describe("addCompanionToCollection", () => {
     await expect(
       addCompanionToCollection(
         buildFormData({ companionId: "c1", collectionId: "col-2" })
-      )
-    ).rejects.toBe(forbiddenSentinel);
-  });
-});
-
-describe("addSpellSchoolToCollection", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("adds spell school to owned collection", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockGetCollection.mockResolvedValue(OWNED_COLLECTION);
-    const result = await addSpellSchoolToCollection(
-      buildFormData({ spellSchoolId: "ss1", collectionId: "col-1" })
-    );
-    expect(result).toEqual({ success: true });
-    expect(mockAddSpellSchoolToCollection).toHaveBeenCalledWith({
-      spellSchoolId: "ss1",
-      collectionId: "col-1",
-    });
-  });
-
-  it("uses discordId for ownership check", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockGetCollection.mockResolvedValue(OTHER_COLLECTION);
-    await expect(
-      addSpellSchoolToCollection(
-        buildFormData({ spellSchoolId: "ss1", collectionId: "col-2" })
       )
     ).rejects.toBe(forbiddenSentinel);
   });
