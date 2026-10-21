@@ -17,7 +17,6 @@ const { mockListOwnCollections, mockFetch, mockAddCompanionToCollection } =
 
 vi.mock("@/app/actions/collection", () => ({
   listOwnCollections: mockListOwnCollections,
-  addItemToCollection: vi.fn(),
   addSpellSchoolToCollection: vi.fn(),
   addCompanionToCollection: mockAddCompanionToCollection,
   addAncestryToCollection: vi.fn(),
@@ -79,7 +78,7 @@ const COLLECTIONS = {
       id: "col-1",
       name: "My Monsters",
       monsters: [{ id: "m-existing" }],
-      items: [],
+      items: [{ id: "i-existing" }],
       companions: [],
       ancestries: [],
       backgrounds: [],
@@ -167,10 +166,20 @@ describe("AddToCollectionDialog", () => {
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
   });
 
-  it("detects a duplicate hazard through the collection monsters", async () => {
-    render(<AddToCollectionDialog type="hazard" monsterId="m-existing" />, {
-      wrapper: createWrapper(),
-    });
+  it.each<"hazard" | "item">([
+    "hazard",
+    "item",
+  ])("detects a duplicate %s", async (type) => {
+    render(
+      type === "item" ? (
+        <AddToCollectionDialog type="item" itemId="i-existing" />
+      ) : (
+        <AddToCollectionDialog type="hazard" monsterId="m-existing" />
+      ),
+      {
+        wrapper: createWrapper(),
+      }
+    );
 
     fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
     await screen.findByText("My Monsters");
@@ -181,19 +190,27 @@ describe("AddToCollectionDialog", () => {
 
     expect(
       await screen.findByText(
-        "This hazard is already in the selected collection"
+        `This ${type} is already in the selected collection`
       )
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
   });
 
-  it.each<"monster" | "hazard">([
+  it.each<"monster" | "hazard" | "item">([
     "monster",
     "hazard",
+    "item",
   ])("adds a %s through stable JSON transport", async (type) => {
-    render(<AddToCollectionDialog type={type} monsterId="entity-1" />, {
-      wrapper: createWrapper(),
-    });
+    render(
+      type === "item" ? (
+        <AddToCollectionDialog type="item" itemId="entity-1" />
+      ) : (
+        <AddToCollectionDialog type={type} monsterId="entity-1" />
+      ),
+      {
+        wrapper: createWrapper(),
+      }
+    );
 
     fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
     await screen.findByText("Empty Collection");
@@ -206,12 +223,21 @@ describe("AddToCollectionDialog", () => {
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledOnce();
     });
-    expect(mockFetch).toHaveBeenCalledWith("/_actions/addMonsterToCollection", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ monsterId: "entity-1", collectionId: "col-2" }),
-    });
+    expect(mockFetch).toHaveBeenCalledWith(
+      type === "item"
+        ? "/_actions/addItemToCollection"
+        : "/_actions/addMonsterToCollection",
+      {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          type === "item"
+            ? { itemId: "entity-1", collectionId: "col-2" }
+            : { monsterId: "entity-1", collectionId: "col-2" }
+        ),
+      }
+    );
     await waitFor(() =>
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
     );
@@ -219,9 +245,11 @@ describe("AddToCollectionDialog", () => {
   });
 
   it.each([
-    "http",
-    "network",
-  ])("retains selection after %s failure and permits manual retry", async (failure) => {
+    ["monster", "http"],
+    ["monster", "network"],
+    ["item", "http"],
+    ["item", "network"],
+  ])("retains %s selection after %s failure and permits manual retry", async (type, failure) => {
     let rejectRequest: (error: Error) => void = () => {};
     let resolveRequest: (response: Response) => void = () => {};
     mockFetch.mockReturnValueOnce(
@@ -230,9 +258,16 @@ describe("AddToCollectionDialog", () => {
         rejectRequest = reject;
       })
     );
-    render(<AddToCollectionDialog type="monster" monsterId="entity-1" />, {
-      wrapper: createWrapper(),
-    });
+    render(
+      type === "item" ? (
+        <AddToCollectionDialog type="item" itemId="entity-1" />
+      ) : (
+        <AddToCollectionDialog type="monster" monsterId="entity-1" />
+      ),
+      {
+        wrapper: createWrapper(),
+      }
+    );
     fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
     await screen.findByText("Empty Collection");
     fireEvent.change(screen.getByTestId("collection-select"), {

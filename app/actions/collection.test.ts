@@ -4,7 +4,6 @@ const { mockAuth } = vi.hoisted(() => ({ mockAuth: vi.fn() }));
 const {
   mockListCollectionsWithMonstersForUser,
   mockGetCollection,
-  mockAddItemToCollection,
   mockAddSpellSchoolToCollection,
   mockAddCompanionToCollection,
   mockAddAncestryToCollection,
@@ -13,7 +12,6 @@ const {
 } = vi.hoisted(() => ({
   mockListCollectionsWithMonstersForUser: vi.fn(),
   mockGetCollection: vi.fn(),
-  mockAddItemToCollection: vi.fn(),
   mockAddSpellSchoolToCollection: vi.fn(),
   mockAddCompanionToCollection: vi.fn(),
   mockAddAncestryToCollection: vi.fn(),
@@ -69,7 +67,6 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/lib/db", () => ({
   listCollectionsWithMonstersForUser: mockListCollectionsWithMonstersForUser,
   getCollection: mockGetCollection,
-  addItemToCollection: mockAddItemToCollection,
   addSpellSchoolToCollection: mockAddSpellSchoolToCollection,
   addCompanionToCollection: mockAddCompanionToCollection,
   addAncestryToCollection: mockAddAncestryToCollection,
@@ -91,7 +88,6 @@ import {
   addAncestryToCollection,
   addBackgroundToCollection,
   addCompanionToCollection,
-  addItemToCollection,
   addSpellSchoolToCollection,
   addSubclassToCollection,
   listOwnCollections,
@@ -145,49 +141,6 @@ function buildFormData(entries: Record<string, string>): FormData {
   }
   return fd;
 }
-
-describe("addItemToCollection", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("throws unauthorized when unauthenticated", async () => {
-    mockAuth.mockResolvedValue(null);
-    await expect(
-      addItemToCollection(buildFormData({ itemId: "i1", collectionId: "c1" }))
-    ).rejects.toBe(unauthorizedSentinel);
-  });
-
-  it("returns error when missing params", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    const result = await addItemToCollection(buildFormData({}));
-    expect(result).toEqual({
-      success: false,
-      error: "Missing itemId or collectionId",
-    });
-  });
-
-  it("throws forbidden when not the owner", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockGetCollection.mockResolvedValue(OTHER_COLLECTION);
-    await expect(
-      addItemToCollection(
-        buildFormData({ itemId: "i1", collectionId: "col-2" })
-      )
-    ).rejects.toBe(forbiddenSentinel);
-  });
-
-  it("adds item to owned collection", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockGetCollection.mockResolvedValue(OWNED_COLLECTION);
-    const result = await addItemToCollection(
-      buildFormData({ itemId: "i1", collectionId: "col-1" })
-    );
-    expect(result).toEqual({ success: true });
-    expect(mockAddItemToCollection).toHaveBeenCalledWith({
-      itemId: "i1",
-      collectionId: "col-1",
-    });
-  });
-});
 
 describe("addCompanionToCollection", () => {
   beforeEach(() => vi.clearAllMocks());

@@ -3,12 +3,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CopyPlus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { addItemToCollection } from "@/app/%5Factions/addItemToCollection/contract";
 import { addMonsterToCollection } from "@/app/%5Factions/addMonsterToCollection/contract";
 import {
   addAncestryToCollection,
   addBackgroundToCollection,
   addCompanionToCollection,
-  addItemToCollection,
   addSpellSchoolToCollection,
   addSubclassToCollection,
 } from "@/app/actions/collection";
@@ -118,8 +118,10 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
             collectionId: data.collectionId,
           });
         case "item":
-          formData.append("itemId", props.itemId);
-          return addItemToCollection(formData);
+          return call(addItemToCollection, {
+            itemId: props.itemId,
+            collectionId: data.collectionId,
+          });
         case "spellSchool":
           formData.append("spellSchoolId", props.spellSchoolId);
           return addSpellSchoolToCollection(formData);
