@@ -1,6 +1,8 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
+import { toUser } from "@/lib/db/converters";
 import { getDatabase } from "@/lib/db/drizzle";
-import { userFeatureFlags } from "@/lib/db/schema";
+import { userFeatureFlags, users } from "@/lib/db/schema";
+import type { User } from "@/lib/types";
 
 export type FeatureFlag =
   | "class-draft-autosave"
@@ -38,6 +40,29 @@ export async function getEnabledFeatureFlags(
   return rows
     .map(({ feature }) => feature)
     .filter((feature) => isFeatureFlag(feature));
+}
+
+export async function getFeatureFlagUsers(): Promise<
+  Record<FeatureFlag, User[]>
+> {
+  const db = getDatabase();
+  const rows = await db
+    .select({ feature: userFeatureFlags.feature, user: users })
+    .from(userFeatureFlags)
+    .innerJoin(users, eq(users.id, userFeatureFlags.userId))
+    .where(eq(userFeatureFlags.enabled, true))
+    .orderBy(asc(users.displayName));
+
+  const byFlag: Record<FeatureFlag, User[]> = {
+    "class-draft-autosave": [],
+    "monster-statblock-editor": [],
+    "monster-custom-artwork": [],
+    "field-guide": [],
+  };
+  for (const { feature, user } of rows) {
+    if (isFeatureFlag(feature)) byFlag[feature].push(toUser(user));
+  }
+  return byFlag;
 }
 
 export async function isFeatureFlagEnabled(

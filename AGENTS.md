@@ -122,6 +122,7 @@ Workflow:
 - Never use `crypto.randomUUID()` directly in client components — it requires a secure context (HTTPS/localhost) and will throw on plain HTTP. Use `randomUUID()` from `lib/utils.ts` instead, which has a `Math.random` fallback.
 - You may not use an empty string value="" on a <Select> element. Use "none" and special-case this value to be null/undefined as appropriate.
 - Use lucide icons instead of custom SVGs
+- Before writing any UI, search `components/ui`, `components/shared`, and `components/layout` for an existing component (e.g. `Combobox`, `UserAvatar`, `CreatorCombobox`) and compose it. Do not re-implement pickers, async search, or entity display from lower-level primitives (`Popover` + `Command`, plain text) when a standard component exists; extend the standard component instead if it lacks something.
 - Always prefer reusing existing components over creating new ones. Before building a new component to display an entity, search for how that entity is already rendered elsewhere (e.g. detail pages, list cards) and reuse those components.
 - Avoid cluttering the UI with redundant copy. Do not repeat nearby navigation labels in page headings or add explanatory subtitles and placeholder text unless they help the user take an action.
 
