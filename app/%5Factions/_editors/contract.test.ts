@@ -33,29 +33,32 @@ describe("editor client transport", () => {
   it.each([
     ["/_actions/saveEncounter", encounterInput, saveEncounter],
     ["/_actions/saveCollection", collectionInput, saveCollection],
-  ])("uses stable JSON URL %s without a Next Action header", async (path, input, contract) => {
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ id: "saved-id", name: input.name }), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      })
-    );
-    vi.stubGlobal("fetch", fetchMock);
+  ])(
+    "uses stable JSON URL %s without a Next Action header",
+    async (path, input, contract) => {
+      const fetchMock = vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ id: "saved-id", name: input.name }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        })
+      );
+      vi.stubGlobal("fetch", fetchMock);
 
-    if (contract === saveEncounter) {
-      await call(saveEncounter, encounterInput);
-    } else {
-      await call(saveCollection, collectionInput);
+      if (contract === saveEncounter) {
+        await call(saveEncounter, encounterInput);
+      } else {
+        await call(saveCollection, collectionInput);
+      }
+
+      const [url, options] = fetchMock.mock.calls[0];
+      expect(url).toBe(path);
+      expect(options).toMatchObject({
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      });
+      expect(options.headers).not.toHaveProperty("next-action");
     }
-
-    const [url, options] = fetchMock.mock.calls[0];
-    expect(url).toBe(path);
-    expect(options).toMatchObject({
-      method: "POST",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    });
-    expect(options.headers).not.toHaveProperty("next-action");
-  });
+  );
 });

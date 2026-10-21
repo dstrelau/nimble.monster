@@ -63,49 +63,47 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-it.each([
-  "monster",
-  "item",
-  "companion",
-  "family",
-] as const)("exports a replaced %s card with condition text but no controls", async (entityType) => {
-  vi.spyOn(Element.prototype, "getBoundingClientRect").mockReturnValue(
-    new DOMRect(12, 34, 400, 300)
-  );
-  render(
-    <div>
-      <div id={`${entityType}-test`}>
-        <FormattedText
-          content="Inflicts [[Poisoned|poison]] and [[Unknown]]."
-          conditions={[
-            {
-              id: "poisoned",
-              name: "Poisoned",
-              description: "Poison",
-              official: true,
-            },
-          ]}
-        />
-        <button type="button" aria-label="share">
-          Share
-        </button>
-        <div data-card-export-hide>
-          <button type="button">Upvote</button>
+it.each(["monster", "item", "companion", "family"] as const)(
+  "exports a replaced %s card with condition text but no controls",
+  async (entityType) => {
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockReturnValue(
+      new DOMRect(12, 34, 400, 300)
+    );
+    render(
+      <div>
+        <div id={`${entityType}-test`}>
+          <FormattedText
+            content="Inflicts [[Poisoned|poison]] and [[Unknown]]."
+            conditions={[
+              {
+                id: "poisoned",
+                name: "Poisoned",
+                description: "Poison",
+                official: true,
+              },
+            ]}
+          />
+          <button type="button" aria-label="share">
+            Share
+          </button>
+          <div data-card-export-hide>
+            <button type="button">Upvote</button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-  const browser = await puppeteer.launch();
-  await expect(
-    renderEntityImage(
-      {
-        baseUrl: "https://example.com",
-        entityUrlPath: `/${entityType}s/test`,
-        entityId: "test",
-        entityType,
-        theme: "light",
-      },
-      browser
-    )
-  ).resolves.toEqual(Buffer.from("image"));
-});
+    );
+    const browser = await puppeteer.launch();
+    await expect(
+      renderEntityImage(
+        {
+          baseUrl: "https://example.com",
+          entityUrlPath: `/${entityType}s/test`,
+          entityId: "test",
+          entityType,
+          theme: "light",
+        },
+        browser
+      )
+    ).resolves.toEqual(Buffer.from("image"));
+  }
+);

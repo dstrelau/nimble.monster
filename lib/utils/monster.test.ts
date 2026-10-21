@@ -107,11 +107,14 @@ describe("legendaryEncounterDifficulty", () => {
     [10, 10, "Hard"],
     [11, 10, "Deadly"],
     [12, 10, "Very Deadly"],
-  ] as const)("reports a level %i legendary encounter against level %i heroes as %s", (encounterLevel, heroLevel, expected) => {
-    expect(legendaryEncounterDifficulty(encounterLevel, heroLevel)).toBe(
-      expected
-    );
-  });
+  ] as const)(
+    "reports a level %i legendary encounter against level %i heroes as %s",
+    (encounterLevel, heroLevel, expected) => {
+      expect(legendaryEncounterDifficulty(encounterLevel, heroLevel)).toBe(
+        expected
+      );
+    }
+  );
 });
 
 describe("hasLegendaryEncounterConflict", () => {

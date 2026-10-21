@@ -171,13 +171,14 @@ describe("adventure reference tables", () => {
     [privateId, "public"],
     [otherPrivateId, "private"],
     ["44444444-4444-4444-8444-444444444444", "private"],
-  ] satisfies Array<
-    [string, "public" | "private"]
-  >)("rejects unavailable table %s in a %s adventure", async (id, visibility) => {
-    await expect(
-      createAdventure("owner", input(id, visibility))
-    ).rejects.toThrow("One or more reference tables are unavailable");
-  });
+  ] satisfies Array<[string, "public" | "private"]>)(
+    "rejects unavailable table %s in a %s adventure",
+    async (id, visibility) => {
+      await expect(
+        createAdventure("owner", input(id, visibility))
+      ).rejects.toThrow("One or more reference tables are unavailable");
+    }
+  );
 
   it("requires a selected table", async () => {
     await expect(createAdventure("owner", input(null))).rejects.toThrow(
@@ -240,30 +241,30 @@ describe("adventure reference tables", () => {
       ids: ["bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"],
       message: "One or more selected sub-tables are unavailable",
     },
-  ])("rejects invalid selections $ids without mutation", async ({
-    ids,
-    message,
-  }) => {
-    const original = await createAdventure("owner", input(publicId));
-    const invalid = input(publicId);
-    invalid.nodes[1].subtableIds = ids;
-    // Also reference the foreign ID's table: validation must check per-block membership,
-    // not just whether the sub-table belongs to any table used by this adventure.
-    invalid.nodes.push({
-      ...invalid.nodes[1],
-      id: "other-table",
-      orderIndex: 1,
-      tableId: privateId,
-      subtableIds: null,
-    });
-    await expect(
-      updateAdventure(original.id, "owner", invalid)
-    ).rejects.toThrow(message);
-    expect(await findAdventure(original.id)).toEqual(original);
-    const malformed = input(publicId);
-    malformed.nodes[1].subtableIds = ["invalid-id"];
-    expect(adventureInputSchema.safeParse(malformed).success).toBe(false);
-  });
+  ])(
+    "rejects invalid selections $ids without mutation",
+    async ({ ids, message }) => {
+      const original = await createAdventure("owner", input(publicId));
+      const invalid = input(publicId);
+      invalid.nodes[1].subtableIds = ids;
+      // Also reference the foreign ID's table: validation must check per-block membership,
+      // not just whether the sub-table belongs to any table used by this adventure.
+      invalid.nodes.push({
+        ...invalid.nodes[1],
+        id: "other-table",
+        orderIndex: 1,
+        tableId: privateId,
+        subtableIds: null,
+      });
+      await expect(
+        updateAdventure(original.id, "owner", invalid)
+      ).rejects.toThrow(message);
+      expect(await findAdventure(original.id)).toEqual(original);
+      const malformed = input(publicId);
+      malformed.nodes[1].subtableIds = ["invalid-id"];
+      expect(adventureInputSchema.safeParse(malformed).success).toBe(false);
+    }
+  );
 
   it("hides a table that becomes private and preserves the block when the table is deleted", async () => {
     const adventure = await createAdventure("owner", input(publicId, "public"));

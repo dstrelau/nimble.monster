@@ -181,8 +181,10 @@ describe("EntityReactions", () => {
       { wrapper: createWrapper() }
     );
 
-    expect(
-      await screen.findByRole("button", { name: "Like" })
-    ).toHaveTextContent("Like 2");
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Like" })).toHaveTextContent(
+        "Like 2"
+      )
+    );
   });
 });

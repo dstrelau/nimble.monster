@@ -81,37 +81,37 @@ describe.each([true, false])("custom rule creating=%s", (creating) => {
     );
     expect(mocks.refresh).toHaveBeenCalled();
   });
-  it.each([
-    "http",
-    "network",
-  ])("retains input after %s failures and allows manual retry", async (failure) => {
-    const fetchMock = vi.fn();
-    if (failure === "http")
-      fetchMock.mockResolvedValue(
-        Response.json({ error: "Not authenticated" }, { status: 401 })
+  it.each(["http", "network"])(
+    "retains input after %s failures and allows manual retry",
+    async (failure) => {
+      const fetchMock = vi.fn();
+      if (failure === "http")
+        fetchMock.mockResolvedValue(
+          Response.json({ error: "Not authenticated" }, { status: 401 })
+        );
+      else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
+      vi.stubGlobal("fetch", fetchMock);
+      renderForm(creating);
+      const label = creating ? "Create" : "Save";
+      fireEvent.click(screen.getByRole("button", { name: label }));
+      const message =
+        failure === "http" ? "Not authenticated" : "Failed to fetch";
+      expect(await screen.findByText(message)).toBeVisible();
+      expect(screen.getAllByText(message)).toHaveLength(1);
+      expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(
+        "New name"
       );
-    else fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
-    vi.stubGlobal("fetch", fetchMock);
-    renderForm(creating);
-    const label = creating ? "Create" : "Save";
-    fireEvent.click(screen.getByRole("button", { name: label }));
-    const message =
-      failure === "http" ? "Not authenticated" : "Failed to fetch";
-    expect(await screen.findByText(message)).toBeVisible();
-    expect(screen.getAllByText(message)).toHaveLength(1);
-    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(
-      "New name"
-    );
-    expect(screen.getByRole("textbox", { name: "Rule text" })).toHaveValue(
-      rule.content
-    );
-    expect(screen.getByRole("button", { name: label })).toBeEnabled();
-    expect(mocks.push).not.toHaveBeenCalled();
-    expect(fetchMock).toHaveBeenCalledOnce();
-    fetchMock.mockResolvedValue(
-      Response.json({ id: rule.id, name: "New name" })
-    );
-    fireEvent.click(screen.getByRole("button", { name: label }));
-    await waitFor(() => expect(mocks.push).toHaveBeenCalled());
-  });
+      expect(screen.getByRole("textbox", { name: "Rule text" })).toHaveValue(
+        rule.content
+      );
+      expect(screen.getByRole("button", { name: label })).toBeEnabled();
+      expect(mocks.push).not.toHaveBeenCalled();
+      expect(fetchMock).toHaveBeenCalledOnce();
+      fetchMock.mockResolvedValue(
+        Response.json({ id: rule.id, name: "New name" })
+      );
+      fireEvent.click(screen.getByRole("button", { name: label }));
+      await waitFor(() => expect(mocks.push).toHaveBeenCalled());
+    }
+  );
 });

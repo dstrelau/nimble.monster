@@ -128,17 +128,16 @@ describe("proxy", () => {
     expect(res?.status).toBe(200);
   });
 
-  it.each([
-    "AhrefsBot/7.0",
-    "Amazonbot/0.1",
-    "bingbot/2.0",
-  ])("blocks %s from dynamic entity images", async (userAgent) => {
-    const req = makeRequest("GET", "/monsters/abc-123/image", {
-      "user-agent": userAgent,
-    });
-    const res = await proxy(req);
-    expect(res?.status).toBe(403);
-  });
+  it.each(["AhrefsBot/7.0", "Amazonbot/0.1", "bingbot/2.0"])(
+    "blocks %s from dynamic entity images",
+    async (userAgent) => {
+      const req = makeRequest("GET", "/monsters/abc-123/image", {
+        "user-agent": userAgent,
+      });
+      const res = await proxy(req);
+      expect(res?.status).toBe(403);
+    }
+  );
 
   it("allows other user agents to fetch dynamic entity images", async () => {
     const req = makeRequest("GET", "/monsters/abc-123/image", {

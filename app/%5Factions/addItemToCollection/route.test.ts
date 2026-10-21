@@ -76,14 +76,14 @@ describe("item collection membership route", () => {
       ["/collections/[id]", "page"],
     ]);
   });
-  it.each([
-    null,
-    { user: { id: "" } },
-  ])("requires authentication", async (session) => {
-    mocks.auth.mockResolvedValue(session);
-    expect((await POST(request())).status).toBe(401);
-    expect(mocks.addItemToCollection).not.toHaveBeenCalled();
-  });
+  it.each([null, { user: { id: "" } }])(
+    "requires authentication",
+    async (session) => {
+      mocks.auth.mockResolvedValue(session);
+      expect((await POST(request())).status).toBe(401);
+      expect(mocks.addItemToCollection).not.toHaveBeenCalled();
+    }
+  );
   it("returns 404 for an unavailable collection", async () => {
     mocks.getCollection.mockResolvedValue(null);
     expect((await POST(request())).status).toBe(404);

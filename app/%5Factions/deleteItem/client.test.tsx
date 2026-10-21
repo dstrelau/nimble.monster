@@ -62,35 +62,35 @@ describe("item deletion client", () => {
     finish(Response.json({ success: true }));
     await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/my/items"));
   });
-  it.each([
-    "http",
-    "network",
-  ])("retains the page, shows one error and allows manual retry after %s failure", async (failure) => {
-    const fetchMock = vi.fn();
-    const message = failure === "http" ? "Item not found" : "Failed to fetch";
-    if (failure === "http")
-      fetchMock.mockResolvedValue(
-        Response.json({ error: message }, { status: 404 })
+  it.each(["http", "network"])(
+    "retains the page, shows one error and allows manual retry after %s failure",
+    async (failure) => {
+      const fetchMock = vi.fn();
+      const message = failure === "http" ? "Item not found" : "Failed to fetch";
+      if (failure === "http")
+        fetchMock.mockResolvedValue(
+          Response.json({ error: message }, { status: 404 })
+        );
+      else fetchMock.mockRejectedValue(new TypeError(message));
+      vi.stubGlobal("fetch", fetchMock);
+      render(<ItemDetailActions item={item} isOwner />);
+      fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+      await waitFor(() =>
+        expect(window.alert).toHaveBeenCalledWith(
+          `Error deleting item: ${message}`
+        )
       );
-    else fetchMock.mockRejectedValue(new TypeError(message));
-    vi.stubGlobal("fetch", fetchMock);
-    render(<ItemDetailActions item={item} isOwner />);
-    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
-    await waitFor(() =>
-      expect(window.alert).toHaveBeenCalledWith(
-        `Error deleting item: ${message}`
-      )
-    );
-    expect(window.alert).toHaveBeenCalledOnce();
-    expect(mocks.push).not.toHaveBeenCalled();
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Delete" })).toBeEnabled()
-    );
-    expect(fetchMock).toHaveBeenCalledOnce();
-    fetchMock.mockResolvedValue(Response.json({ success: true }));
-    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
-    await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/my/items"));
-  });
+      expect(window.alert).toHaveBeenCalledOnce();
+      expect(mocks.push).not.toHaveBeenCalled();
+      await waitFor(() =>
+        expect(screen.getByRole("button", { name: "Delete" })).toBeEnabled()
+      );
+      expect(fetchMock).toHaveBeenCalledOnce();
+      fetchMock.mockResolvedValue(Response.json({ success: true }));
+      fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+      await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/my/items"));
+    }
+  );
   it("does not request deletion on cancellation or show it to non-owners", () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);

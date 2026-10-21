@@ -78,11 +78,11 @@ describe("condition routes", () => {
     expect((await GET(request("GET"))).status).toBe(401);
     expect(mocks.update).not.toHaveBeenCalled();
   });
-  it.each([
-    "{broken",
-    JSON.stringify({ id, description: "  " }),
-  ])("rejects invalid input", async (body) => {
-    expect((await PATCH(request("PATCH", body))).status).toBe(400);
-    expect(mocks.update).not.toHaveBeenCalled();
-  });
+  it.each(["{broken", JSON.stringify({ id, description: "  " })])(
+    "rejects invalid input",
+    async (body) => {
+      expect((await PATCH(request("PATCH", body))).status).toBe(400);
+      expect(mocks.update).not.toHaveBeenCalled();
+    }
+  );
 });
