@@ -7,6 +7,13 @@ const allowedOrigins = process.env.ALLOWED_DEV_ORIGINS
 const nextConfig: NextConfig = {
   allowedDevOrigins: allowedOrigins,
   output: "standalone",
+  outputFileTracingIncludes: {
+    // OTel loads this through createRequire, which standalone tracing misses.
+    "/*": [
+      "node_modules/.pnpm/forwarded-parse@*/node_modules/forwarded-parse/**/*",
+      "node_modules/.pnpm/@opentelemetry+instrumentation-http@*/node_modules/forwarded-parse/**/*",
+    ],
+  },
   transpilePackages: ["next-mdx-remote"],
   experimental: {
     useCache: true,
