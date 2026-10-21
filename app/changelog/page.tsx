@@ -12,12 +12,6 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
-    date: "21 October 2026",
-    entries: [
-      "Custom monster artwork uploads with artist credits (early access).",
-    ],
-  },
-  {
     date: "19 October 2026",
     entries: ["Manage Conditions in My Library"],
   },
