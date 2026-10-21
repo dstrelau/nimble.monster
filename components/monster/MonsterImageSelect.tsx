@@ -201,7 +201,7 @@ export function MonsterImageSelect({
             defaultValue={customArtwork ? "upload" : "paperforge"}
             className="min-h-0 flex-1"
           >
-            <TabsList>
+            <TabsList className="mx-auto">
               <TabsTrigger value="paperforge" disabled={isUploading}>
                 Paper Forge
               </TabsTrigger>
