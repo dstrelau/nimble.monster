@@ -2,11 +2,15 @@ import { and, eq, sql } from "drizzle-orm";
 import { getDatabase } from "@/lib/db/drizzle";
 import { userFeatureFlags } from "@/lib/db/schema";
 
-export type FeatureFlag = "class-draft-autosave" | "monster-statblock-editor";
+export type FeatureFlag =
+  | "class-draft-autosave"
+  | "monster-statblock-editor"
+  | "monster-custom-artwork";
 
 export const FEATURE_FLAGS: readonly FeatureFlag[] = [
   "class-draft-autosave",
   "monster-statblock-editor",
+  "monster-custom-artwork",
 ];
 
 export function isFeatureFlag(value: string): value is FeatureFlag {

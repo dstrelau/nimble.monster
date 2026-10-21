@@ -30,6 +30,7 @@ import {
 } from "@/components/create/MembersSection";
 import { SourceSelect } from "@/components/create/SourceSelect";
 import { Card } from "@/components/monster/Card";
+import { MonsterImageSelect } from "@/components/monster/MonsterImageSelect";
 import {
   ArmorIcon,
   BurrowIcon,
@@ -41,7 +42,6 @@ import {
   SwimIcon,
   TeleportIcon,
 } from "@/components/monster/Stat";
-import { PaperforgeImageSelect } from "@/components/paperforge/PaperforgeImageSelect";
 import { BuildView } from "@/components/shared/BuildView";
 import { ExampleLoader } from "@/components/shared/ExampleLoader";
 import {
@@ -454,9 +454,12 @@ const LegendaryForm: React.FC<{
         className="sm:col-span-2"
         onChange={(name) => setMonster({ ...monster, name })}
       />
-      <PaperforgeImageSelect
+      <MonsterImageSelect
         value={monster.paperforgeId}
-        onChange={(paperforgeId) => setMonster({ ...monster, paperforgeId })}
+        customArtwork={monster.customArtwork}
+        onChange={({ paperforgeId, customArtwork }) =>
+          setMonster({ ...monster, paperforgeId, customArtwork })
+        }
         className="sm:col-span-1"
       />
     </div>
@@ -646,9 +649,12 @@ const MinionForm: React.FC<{
           className="sm:col-span-2"
           onChange={(name) => setMonster({ ...monster, name })}
         />
-        <PaperforgeImageSelect
+        <MonsterImageSelect
           value={monster.paperforgeId}
-          onChange={(paperforgeId) => setMonster({ ...monster, paperforgeId })}
+          customArtwork={monster.customArtwork}
+          onChange={({ paperforgeId, customArtwork }) =>
+            setMonster({ ...monster, paperforgeId, customArtwork })
+          }
           className="sm:col-span-1"
         />
       </div>
@@ -783,9 +789,12 @@ const StandardForm: React.FC<{
           className="sm:col-span-2"
           onChange={(name) => setMonster({ ...monster, name })}
         />
-        <PaperforgeImageSelect
+        <MonsterImageSelect
           value={monster.paperforgeId}
-          onChange={(paperforgeId) => setMonster({ ...monster, paperforgeId })}
+          customArtwork={monster.customArtwork}
+          onChange={({ paperforgeId, customArtwork }) =>
+            setMonster({ ...monster, paperforgeId, customArtwork })
+          }
           className="sm:col-span-1"
         />
       </div>
@@ -1320,6 +1329,17 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
         const { source: _, ...baseWithoutSource } = baseMonster;
         return {
           ...baseWithoutSource,
+          customArtwork:
+            existingMonster.customArtwork?.userId === creator.id
+              ? existingMonster.customArtwork
+              : null,
+          members: existingMonster.members?.map((member) => ({
+            ...member,
+            customArtwork:
+              member.customArtwork?.userId === creator.id
+                ? member.customArtwork
+                : null,
+          })),
           id: "",
           visibility: "public",
           remixedFrom: {
@@ -1410,6 +1430,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
               environments: data.environments,
             }),
             paperforgeId: data.paperforgeId ?? null,
+            customArtwork: data.customArtwork ?? null,
           },
         });
       }
@@ -1476,6 +1497,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           creatureKinds: data.creatureKinds,
           environments: data.environments,
           paperforgeId: data.paperforgeId,
+          customArtwork: data.customArtwork ?? null,
           remixedFromId,
         },
       });

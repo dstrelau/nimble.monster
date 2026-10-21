@@ -39,6 +39,7 @@ function catalogRow(
     rank: number;
     name_priority: number;
     paperforge_id: string | null;
+    custom_artwork: string | null;
     image_icon: string | null;
   }> = {}
 ) {
@@ -56,6 +57,7 @@ function catalogRow(
     rank: 0,
     name_priority: 0,
     paperforge_id: null,
+    custom_artwork: null,
     image_icon: null,
     ...values,
   };
@@ -175,9 +177,15 @@ describe("global search repository", () => {
   });
 
   it("returns available monster and item image identifiers", async () => {
+    const artwork = { id: exactNameId, userId: creatorId, artist: "Vale" };
     mockExecute.mockResolvedValue({
       rows: [
         catalogRow({ paperforge_id: "5" }),
+        catalogRow({
+          entity_id: creatorId,
+          name: "Frost Drake",
+          custom_artwork: JSON.stringify(artwork),
+        }),
         catalogRow({
           entity_type: "item",
           entity_id: bodyMatchId,
@@ -192,6 +200,7 @@ describe("global search repository", () => {
     expect(results).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ paperforgeId: "5" }),
+        expect.objectContaining({ customArtwork: artwork }),
         expect.objectContaining({ imageIcon: "emerald" }),
       ])
     );

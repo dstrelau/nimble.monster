@@ -8,6 +8,7 @@ import {
   text,
   unique,
 } from "drizzle-orm/sqlite-core";
+import type { MonsterArtwork } from "@/lib/monster-artwork";
 import type {
   CreatureKind,
   CreatureType,
@@ -293,12 +294,31 @@ export const monsters = sqliteTable(
     levelInt: integer("level_int").notNull().default(0),
     role: text("role").$type<MonsterRole>(),
     paperforgeId: text("paperforge_id"),
+    customArtwork: text("custom_artwork", {
+      mode: "json",
+    }).$type<MonsterArtwork>(),
     isOfficial: integer("is_official", { mode: "boolean" })
       .notNull()
       .default(false),
     likeCount: integer("like_count").notNull().default(0),
   },
   (table) => [index("idx_monsters_user_id").on(table.userId)]
+);
+
+export const monsterArtworks = sqliteTable(
+  "monster_artworks",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    status: text("status", {
+      enum: ["uploading", "ready", "deleting"],
+    }).notNull(),
+    createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+    updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [index("idx_monster_artworks_user_id").on(table.userId)]
 );
 
 // Items table

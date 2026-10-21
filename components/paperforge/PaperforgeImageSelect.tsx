@@ -35,25 +35,25 @@ import {
 } from "@/lib/paperforge-catalog";
 import { cn } from "@/lib/utils";
 
-export const PaperforgeImageSelect: React.FC<{
-  value: string | undefined;
-  onChange: (value: string | undefined) => void;
-  className?: string;
+const options = PAPERFORGE_ENTRIES.map((e: PaperForgeEntry) => ({
+  value: e.id,
+  label: `${e.name} (#${e.id})`,
+  name: e.name,
+  folder: e.folder,
+})).sort((a, b) => a.label.localeCompare(b.label));
+
+interface PaperforgeImageChoicesProps {
+  value?: string;
+  onChange: (value: string) => void;
   portrait?: boolean;
-}> = ({ value, onChange, className, portrait = false }) => {
-  const [open, setOpen] = useState(false);
+}
 
-  const options = PAPERFORGE_ENTRIES.map((e: PaperForgeEntry) => ({
-    value: e.id,
-    label: `${e.name} (#${e.id})`,
-    name: e.name,
-    folder: e.folder,
-  })).sort((a, b) => a.label.localeCompare(b.label));
-
-  const selectedLabel =
-    options.find((opt) => opt.value === value)?.label || "Select image...";
-
-  const imageChoices = (
+export function PaperforgeImageChoices({
+  value,
+  onChange,
+  portrait = false,
+}: PaperforgeImageChoicesProps) {
+  return (
     <Command label={portrait ? "Search images" : undefined}>
       <CommandInput placeholder="Search..." autoFocus={portrait} />
       <CommandList
@@ -70,7 +70,6 @@ export const PaperforgeImageSelect: React.FC<{
               className="group min-w-0 flex-col gap-0.5 py-0.5 text-center data-[selected=true]:bg-transparent"
               onSelect={() => {
                 onChange(option.value);
-                setOpen(false);
               }}
             >
               <div className="flex items-center justify-center rounded-sm">
@@ -102,6 +101,27 @@ export const PaperforgeImageSelect: React.FC<{
         </CommandGroup>
       </CommandList>
     </Command>
+  );
+}
+
+export const PaperforgeImageSelect: React.FC<{
+  value: string | undefined;
+  onChange: (value: string | undefined) => void;
+  className?: string;
+  portrait?: boolean;
+}> = ({ value, onChange, className, portrait = false }) => {
+  const [open, setOpen] = useState(false);
+  const selectedLabel =
+    options.find((opt) => opt.value === value)?.label || "Select image...";
+  const imageChoices = (
+    <PaperforgeImageChoices
+      value={value}
+      portrait={portrait}
+      onChange={(next) => {
+        onChange(next);
+        setOpen(false);
+      }}
+    />
   );
 
   if (portrait) {

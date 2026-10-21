@@ -16,6 +16,7 @@ import {
   MembersSection,
 } from "@/components/create/MembersSection";
 import { Card } from "@/components/monster/Card";
+import { MonsterImageSelect } from "@/components/monster/MonsterImageSelect";
 import {
   ArmorIcon,
   BurrowIcon,
@@ -26,7 +27,6 @@ import {
   SwimIcon,
   TeleportIcon,
 } from "@/components/monster/Stat";
-import { PaperforgeImageSelect } from "@/components/paperforge/PaperforgeImageSelect";
 import {
   FormInput,
   FormSelect,
@@ -306,11 +306,14 @@ export function StatblockEditor({
           <div className="px-4">
             <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-4 md:grid-cols-[4.5rem_minmax(0,1fr)_minmax(0,18rem)]">
               <div className="relative h-22">
-                <PaperforgeImageSelect
+                <MonsterImageSelect
                   portrait
                   className="absolute -left-7 -top-8 z-10"
                   value={monster.paperforgeId}
-                  onChange={(paperforgeId) => patch({ paperforgeId })}
+                  customArtwork={monster.customArtwork}
+                  onChange={({ paperforgeId, customArtwork }) =>
+                    patch({ paperforgeId, customArtwork })
+                  }
                 />
               </div>
               <div className="min-w-0 space-y-3">

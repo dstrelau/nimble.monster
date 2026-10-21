@@ -1,3 +1,4 @@
+import type { MonsterArtwork } from "@/lib/monster-artwork";
 import type { Ability, Action } from "@/lib/types";
 import type { MonsterArmor, MonsterSize, MonsterTeamMember } from "./types";
 
@@ -7,6 +8,7 @@ import type { MonsterArmor, MonsterSize, MonsterTeamMember } from "./types";
 interface StoredMember {
   name?: string;
   paperforgeId?: string;
+  customArtwork?: MonsterArtwork | null;
   hp?: number;
   hpPerHero?: number | null;
   armor?: MonsterArmor;
@@ -53,6 +55,7 @@ export const parseMembers = (value: unknown): MonsterTeamMember[] =>
     id: crypto.randomUUID(),
     name: m.name ?? "",
     paperforgeId: m.paperforgeId ?? undefined,
+    customArtwork: m.customArtwork ?? undefined,
     hp: m.hp ?? 0,
     hpPerHero: m.hpPerHero ?? null,
     armor: m.armor ?? "none",
@@ -73,6 +76,7 @@ export const stripMemberIds = (
   (members ?? []).map((m) => ({
     name: m.name,
     paperforgeId: m.paperforgeId,
+    customArtwork: m.customArtwork ?? undefined,
     hp: m.hp,
     hpPerHero: m.hpPerHero ?? null,
     armor: m.armor,

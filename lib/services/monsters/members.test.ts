@@ -91,6 +91,12 @@ describe("stripMemberIds", () => {
         hpPerHero: 10,
         armor: "heavy",
         size: "huge",
+        customArtwork: {
+          id: "550e8400-e29b-41d4-a716-446655440000",
+          userId: "11111111-1111-4111-8111-111111111111",
+          artist: "Morgan Vale",
+          sourceUrl: "https://example.com/art",
+        },
         abilities: [
           { name: "Ab", description: "d", target: { reach: 3 }, damage: "2d8" },
         ],
@@ -108,6 +114,7 @@ describe("stripMemberIds", () => {
     expect(reparsed[0].name).toBe("A");
     expect(reparsed[0].hpPerHero).toBe(10);
     expect(reparsed[0].armor).toBe("heavy");
+    expect(reparsed[0].customArtwork).toEqual(original[0].customArtwork);
     expect(reparsed[0].abilities[0]).toEqual({
       id: expect.any(String),
       name: "Ab",

@@ -1,3 +1,4 @@
+import type { MonsterArtwork } from "@/lib/monster-artwork";
 import type {
   Ability,
   Action,
@@ -116,6 +117,7 @@ export interface MonsterMini extends BestiaryEntryMiniBase {
   size: MonsterSize;
   armor: MonsterArmor;
   paperforgeId?: string;
+  customArtwork?: MonsterArtwork | null;
   role?: MonsterRole | null;
 }
 
@@ -136,6 +138,7 @@ export interface MonsterTeamMember {
   id: string;
   name: string;
   paperforgeId?: string;
+  customArtwork?: MonsterArtwork | null;
   hp: number;
   hpPerHero?: number | null;
   armor: MonsterArmor;
@@ -280,6 +283,7 @@ export interface CreateMonsterInput extends MonsterClassifications {
   sourceId?: string;
   role?: MonsterRole | null;
   paperforgeId?: string | null;
+  customArtwork?: MonsterArtwork | null;
   remixedFromId?: string;
 }
 
@@ -316,6 +320,7 @@ export interface UpdateMonsterInput extends MonsterClassifications {
   sourceId?: string | null;
   role?: MonsterRole | null;
   paperforgeId?: string | null;
+  customArtwork?: MonsterArtwork | null;
 }
 
 export interface CreateHazardInput {

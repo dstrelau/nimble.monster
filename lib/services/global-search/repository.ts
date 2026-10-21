@@ -1,5 +1,6 @@
 import type { Row } from "@libsql/client";
 import { getClient } from "@/lib/db/client";
+import { monsterArtworkSchema } from "@/lib/monster-artwork";
 import { getAllRuleFaqs, ruleFaqUrl } from "@/lib/rules/faqs";
 import { getAllRules } from "@/lib/rules/filesystem";
 import { tokenizeForSearch } from "@/lib/rules/keyword-search";
@@ -43,6 +44,7 @@ type CatalogRow = {
   rank: unknown;
   name_priority: unknown;
   paperforge_id: unknown;
+  custom_artwork?: unknown;
   image_icon: unknown;
 };
 
@@ -161,6 +163,9 @@ function toCatalogResult(row: CatalogRow, query: string): RankedResult | null {
   const creatorName = stringValue(row.creator_name);
   const creatorUsername = stringValue(row.creator_username);
   const paperforgeId = stringValue(row.paperforge_id);
+  const customArtwork = row.custom_artwork
+    ? monsterArtworkSchema.parse(JSON.parse(stringValue(row.custom_artwork)))
+    : undefined;
   const imageIcon = stringValue(row.image_icon);
 
   return {
@@ -181,6 +186,7 @@ function toCatalogResult(row: CatalogRow, query: string): RankedResult | null {
         : {}),
       ...(field ? { matchedField: field } : {}),
       ...(paperforgeId ? { paperforgeId } : {}),
+      ...(customArtwork ? { customArtwork } : {}),
       ...(imageIcon ? { imageIcon } : {}),
     },
     score: rankingScore(
@@ -207,6 +213,7 @@ function toCatalogRow(row: Row): CatalogRow {
     rank: row.rank,
     name_priority: row.name_priority,
     paperforge_id: row.paperforge_id,
+    custom_artwork: row.custom_artwork,
     image_icon: row.image_icon,
   };
 }
@@ -353,6 +360,7 @@ export async function listRecentGlobal(
         0 AS rank,
         0 AS name_priority,
         monsters.paperforge_id,
+        monsters.custom_artwork,
         items.image_icon
       FROM global_search_catalog AS catalog
       INNER JOIN ${table} AS entity ON entity.id = catalog.entity_id
@@ -440,6 +448,7 @@ export async function searchGlobal(
           ELSE 0
         END AS name_priority,
         monsters.paperforge_id,
+        monsters.custom_artwork,
         items.image_icon
       FROM global_search_fts
       INNER JOIN global_search_catalog AS catalog

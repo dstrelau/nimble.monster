@@ -5,7 +5,7 @@ import { Fragment } from "react";
 import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { UserAvatar } from "@/components/layout/UserAvatar";
-import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
+import { MonsterImage } from "@/components/monster/MonsterImage";
 import { PaperforgeLink } from "@/components/paperforge/PaperforgeLink";
 import { AbilityOverlay } from "@/components/shared/AbilityOverlay";
 import { ActionsList } from "@/components/shared/ActionsList";
@@ -135,9 +135,10 @@ const MonsterHeader: React.FC<{
   link?: boolean;
   variant: "hazard" | "legendary" | "minion" | "standard";
 }> = ({ monster, link = true, variant }) => {
+  const hasArtwork = !!(monster.customArtwork || monster.paperforgeId);
   const headerClasses = cn(
     "gap-1 flex flex-col relative",
-    monster.paperforgeId && "z-10 -ml-6",
+    hasArtwork && "z-10 -ml-6",
     variant === "minion" &&
       "has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0"
   );
@@ -147,9 +148,10 @@ const MonsterHeader: React.FC<{
       data-slot="card-header"
       className={cn("gap-1 px-4 grow", headerClasses)}
     >
-      {monster.paperforgeId && (
-        <PaperforgeImage
-          id={monster.paperforgeId}
+      {hasArtwork && (
+        <MonsterImage
+          paperforgeId={monster.paperforgeId}
+          customArtwork={monster.customArtwork}
           className="absolute left-3 top-1/2 -translate-y-1/2 size-22 z-20"
           size={88}
         />
@@ -162,7 +164,7 @@ const MonsterHeader: React.FC<{
             : "justify-between"
         )}
       >
-        <div className={cn("basis-full", monster.paperforgeId && "ml-24")}>
+        <div className={cn("basis-full", hasArtwork && "ml-24")}>
           <div className="space-x-1">
             <div
               className={cn(
@@ -224,9 +226,10 @@ const MemberBlock: React.FC<{
   <div className="flex flex-col gap-2">
     <div className="flex justify-between items-center gap-2">
       <div className="flex items-center gap-2">
-        {member.paperforgeId && (
-          <PaperforgeImage
-            id={member.paperforgeId}
+        {(member.paperforgeId || member.customArtwork) && (
+          <MonsterImage
+            paperforgeId={member.paperforgeId}
+            customArtwork={member.customArtwork}
             className="-ml-6 size-20 shrink-0"
             size={80}
           />
@@ -324,8 +327,16 @@ export const Card = ({
     creatorId: creator?.discordId,
   });
   const paperforgeEntry = PAPERFORGE_ENTRIES.find(
-    (e) => e.id === monster.paperforgeId
+    (e) => !monster.customArtwork && e.id === monster.paperforgeId
   );
+  const artworkCredits = [
+    { key: "monster", name: undefined, artwork: monster.customArtwork },
+    ...(monster.members ?? []).map((member) => ({
+      key: member.id,
+      name: member.name,
+      artwork: member.customArtwork,
+    })),
+  ].filter(({ artwork }) => artwork?.artist);
   const isTeam = (monster.members?.length ?? 0) > 0;
   const hasAbilities =
     (monster.families?.some((family) => family.abilities.length > 0) ??
@@ -378,7 +389,10 @@ export const Card = ({
       <CardContentWithGap
         className={cn(
           selectable && "pointer-events-none",
-          monster.paperforgeId && !isTeam && !hasAbilities && "pt-4"
+          (monster.paperforgeId || monster.customArtwork) &&
+            !isTeam &&
+            !hasAbilities &&
+            "pt-4"
         )}
       >
         {hasAbilities && (
@@ -486,6 +500,26 @@ export const Card = ({
                 </Link>
               </>
             )}
+          </div>
+        )}
+        {artworkCredits.length > 0 && (
+          <div className="space-y-1 text-xs text-muted-foreground">
+            {artworkCredits.map(({ key, name, artwork }) => (
+              <p key={key}>
+                {name && <>{name}: </>}Art by{" "}
+                {artwork?.sourceUrl && !noInteractive ? (
+                  <Link
+                    href={artwork.sourceUrl}
+                    external
+                    className="text-muted-foreground underline"
+                  >
+                    {artwork.artist}
+                  </Link>
+                ) : (
+                  artwork?.artist
+                )}
+              </p>
+            ))}
           </div>
         )}
       </CardContentWithGap>

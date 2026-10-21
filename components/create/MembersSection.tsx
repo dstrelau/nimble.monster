@@ -2,8 +2,8 @@ import { Plus, Trash2 } from "lucide-react";
 import { useId } from "react";
 import { AbilitiesSection } from "@/components/create/AbilitiesSection";
 import { ActionsSection } from "@/components/create/ActionsSection";
+import { MonsterImageSelect } from "@/components/monster/MonsterImageSelect";
 import { ArmorIcon, HPIcon, SavesIcon } from "@/components/monster/Stat";
-import { PaperforgeImageSelect } from "@/components/paperforge/PaperforgeImageSelect";
 import {
   FormInput,
   FormSelect,
@@ -124,9 +124,12 @@ const MemberRow: React.FC<{
           value={member.name}
           onChange={(name) => patch({ name })}
         />
-        <PaperforgeImageSelect
+        <MonsterImageSelect
           value={member.paperforgeId}
-          onChange={(paperforgeId) => patch({ paperforgeId })}
+          customArtwork={member.customArtwork}
+          onChange={({ paperforgeId, customArtwork }) =>
+            patch({ paperforgeId, customArtwork })
+          }
         />
       </div>
       <div

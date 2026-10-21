@@ -63,6 +63,7 @@ import { findBackgroundsByIds } from "@/lib/services/backgrounds/repository";
 import type { BackgroundMini } from "@/lib/services/backgrounds/types";
 import { findCompanionsByIds } from "@/lib/services/companions/repository";
 import { toBestiaryEntryMini } from "@/lib/services/monsters/converters";
+import { parseMembers } from "@/lib/services/monsters/members";
 import type {
   Ability,
   Action,
@@ -474,6 +475,7 @@ const toMonsterFromFullData = (data: MonsterFullData): BestiaryEntry => {
     size: data.monster.size,
     armor: data.monster.armor === "" ? "none" : data.monster.armor,
     paperforgeId: data.monster.paperforgeId ?? undefined,
+    customArtwork: data.monster.customArtwork ?? undefined,
     createdAt: data.monster.createdAt
       ? new Date(data.monster.createdAt)
       : new Date(),
@@ -496,6 +498,7 @@ const toMonsterFromFullData = (data: MonsterFullData): BestiaryEntry => {
       : new Date(),
     abilities: toAbilitiesFromRow(data.monster.abilities),
     actions: toActionsFromRow(data.monster.actions),
+    members: parseMembers(data.monster.members),
     actionPreface: data.monster.actionPreface || "",
     moreInfo: data.monster.moreInfo || "",
     families: data.families

@@ -10,7 +10,7 @@ import {
   Skull,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
+import { MonsterImage } from "@/components/monster/MonsterImage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Collapsible,
@@ -144,20 +144,22 @@ const HpTrackerBoxes = ({
 const TrackerGroupHeader = ({ monster }: { monster: TrackedMonster }) => (
   <div className="flex items-center gap-2">
     <div className="w-6 shrink-0 flex items-center justify-center">
-      {monster.legendary && monster.paperforgeId ? (
+      {monster.legendary && (monster.paperforgeId || monster.customArtwork) ? (
         <div className="flex flex-col items-center">
           <Crown className="size-4 stroke-flame -mb-2" />
-          <PaperforgeImage
-            id={monster.paperforgeId}
+          <MonsterImage
+            paperforgeId={monster.paperforgeId}
+            customArtwork={monster.customArtwork}
             size={24}
-            className="rounded-sm"
+            className="size-6"
           />
         </div>
-      ) : monster.paperforgeId ? (
-        <PaperforgeImage
-          id={monster.paperforgeId}
+      ) : monster.paperforgeId || monster.customArtwork ? (
+        <MonsterImage
+          paperforgeId={monster.paperforgeId}
+          customArtwork={monster.customArtwork}
           size={24}
-          className="rounded-sm"
+          className="size-6"
         />
       ) : monster.legendary ? (
         <Crown className="size-4 stroke-flame" />

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { MonsterArtworkInputError } from "@/lib/services/monster-artwork";
 import type {
   CreateHazardInput,
   CreateMonsterInput,
@@ -225,6 +226,39 @@ describe("bestiary mutation routes", () => {
     expect(await response.json()).toEqual({
       error: "Monster name is required",
     });
+    expect(mockTelemetryErrors).not.toHaveBeenCalled();
+  });
+
+  it("returns artwork ownership validation failures as bad requests", async () => {
+    const error = new MonsterArtworkInputError(
+      "Artwork must be owned by you and ready"
+    );
+    mockCreateMonster.mockRejectedValue(error);
+    mockUpdateMonster.mockRejectedValue(error);
+    const create = await createPost(
+      request({ kind: "monster", input: monsterInput })
+    );
+    const update = await updatePost(
+      request({
+        kind: "monster",
+        input: {
+          ...monsterInput,
+          id,
+          kind: "",
+          legendary: false,
+          minion: false,
+          bloodied: "",
+          lastStand: "",
+          saves: [],
+          moreInfo: "",
+        },
+      })
+    );
+
+    for (const response of [create, update]) {
+      expect(response.status).toBe(400);
+      expect(await response.json()).toEqual({ error: error.message });
+    }
     expect(mockTelemetryErrors).not.toHaveBeenCalled();
   });
 

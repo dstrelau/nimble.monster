@@ -3,8 +3,8 @@ import { Crown, EyeOff, PersonStanding, X } from "lucide-react";
 import type { ReactNode } from "react";
 import React from "react";
 import { Link } from "@/components/layout/Link";
+import { MonsterImage } from "@/components/monster/MonsterImage";
 import { HPStat } from "@/components/monster/Stat";
-import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
 import { Level } from "@/components/shared/Level";
 import {
   Card,
@@ -40,20 +40,25 @@ export const MonsterRow: React.FC<{
       )}
     >
       <div className="w-7 shrink-0 flex items-center justify-center">
-        {!monster.hazard && monster.legendary && monster.paperforgeId ? (
+        {!monster.hazard &&
+        monster.legendary &&
+        (monster.paperforgeId || monster.customArtwork) ? (
           <div className="flex flex-col items-center">
             <Crown className="size-5 stroke-flame -mb-2.5" />
-            <PaperforgeImage
-              id={monster.paperforgeId}
+            <MonsterImage
+              paperforgeId={monster.paperforgeId}
+              customArtwork={monster.customArtwork}
               size={28}
-              className="rounded-sm"
+              className="size-7"
             />
           </div>
-        ) : !monster.hazard && monster.paperforgeId ? (
-          <PaperforgeImage
-            id={monster.paperforgeId}
+        ) : !monster.hazard &&
+          (monster.paperforgeId || monster.customArtwork) ? (
+          <MonsterImage
+            paperforgeId={monster.paperforgeId}
+            customArtwork={monster.customArtwork}
             size={28}
-            className="rounded-sm"
+            className="size-7"
           />
         ) : !monster.hazard && monster.legendary ? (
           <Crown className="size-5 stroke-flame" />

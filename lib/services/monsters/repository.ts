@@ -33,6 +33,11 @@ import {
   type UserRow,
   users,
 } from "@/lib/db/schema";
+import {
+  cleanupMonsterArtwork,
+  collectMonsterArtwork,
+  validateMonsterArtwork,
+} from "@/lib/services/monster-artwork";
 import type { Ability, Action, Source, User } from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
@@ -148,6 +153,7 @@ const toMonsterMiniFromRow = (m: MonsterRow): MonsterMini => ({
   size: m.size,
   armor: m.armor === "" ? "none" : m.armor,
   paperforgeId: m.paperforgeId ?? undefined,
+  customArtwork: m.customArtwork,
   createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
   role: m.role as MonsterRole | null,
   isOfficial: m.isOfficial ?? false,
@@ -183,6 +189,7 @@ const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
   size: data.monster.size,
   armor: data.monster.armor === "" ? "none" : data.monster.armor,
   paperforgeId: data.monster.paperforgeId ?? undefined,
+  customArtwork: data.monster.customArtwork,
   createdAt: data.monster.createdAt
     ? new Date(data.monster.createdAt)
     : new Date(),
@@ -411,17 +418,31 @@ export const deleteMonster = async (
   if (userResult.length === 0) return false;
   const user = userResult[0];
 
-  const result = await db
-    .delete(monsters)
-    .where(
-      and(
-        eq(monsters.id, id),
-        eq(monsters.userId, user.id),
-        eq(monsters.hazard, false)
+  const deleted = await db.transaction(async (tx) => {
+    const [owned] = await tx
+      .select()
+      .from(monsters)
+      .where(
+        and(
+          eq(monsters.id, id),
+          eq(monsters.userId, user.id),
+          eq(monsters.hazard, false)
+        )
       )
+      .limit(1);
+    if (!owned) return null;
+    await tx.delete(monsters).where(eq(monsters.id, id));
+    return owned;
+  });
+  if (deleted)
+    await cleanupMonsterArtwork(
+      user.id,
+      collectMonsterArtwork({
+        customArtwork: deleted.customArtwork,
+        members: parseMembers(deleted.members),
+      })
     );
-
-  return result.rowsAffected > 0;
+  return deleted !== null;
 };
 
 export const deleteHazard = async (
@@ -1269,45 +1290,49 @@ const createBestiaryEntry = async (
 
   // Insert the monster
   const monsterId = crypto.randomUUID();
-  await db.insert(monsters).values({
-    id: monsterId,
-    name,
-    kind: hazard ? "" : kind,
-    ...classifications,
-    level,
-    levelInt,
-    hp,
-    hpPerHero: hazard ? null : hpPerHero,
-    armor: hazard ? "" : armorValue,
-    size: hazard ? "medium" : size,
-    speed: legendary || hazard ? 0 : speed,
-    fly: legendary || hazard ? 0 : fly,
-    swim: legendary || hazard ? 0 : swim,
-    climb: legendary || hazard ? 0 : climb,
-    burrow: legendary || hazard ? 0 : burrow,
-    teleport: legendary || hazard ? 0 : teleport,
-    actions: stripActionIds(actions),
-    abilities: abilities.map(({ name, description }) => ({
+  await db.transaction(async (tx) => {
+    if (!hazard) await validateMonsterArtwork(tx, user.id, input);
+    await tx.insert(monsters).values({
+      id: monsterId,
       name,
-      description,
-    })),
-    members: hazard ? [] : stripMemberIds(members),
-    bloodied: minion || hazard ? "" : bloodied,
-    lastStand: !hazard && (legendary || isTeam) ? lastStand : "",
-    saves: hazard ? "" : savesString,
-    visibility,
-    actionPreface,
-    moreInfo,
-    peaceful: mild_encounter,
-    deadly: spicy_encounter,
-    legendary: hazard ? false : legendary,
-    minion: hazard ? false : minion,
-    hazard,
-    role: hazard ? null : role,
-    paperforgeId: hazard ? null : paperforgeId,
-    userId: user.id,
-    sourceId: sourceId || null,
-    remixedFromId: remixedFromId || null,
+      kind: hazard ? "" : kind,
+      ...classifications,
+      level,
+      levelInt,
+      hp,
+      hpPerHero: hazard ? null : hpPerHero,
+      armor: hazard ? "" : armorValue,
+      size: hazard ? "medium" : size,
+      speed: legendary || hazard ? 0 : speed,
+      fly: legendary || hazard ? 0 : fly,
+      swim: legendary || hazard ? 0 : swim,
+      climb: legendary || hazard ? 0 : climb,
+      burrow: legendary || hazard ? 0 : burrow,
+      teleport: legendary || hazard ? 0 : teleport,
+      actions: stripActionIds(actions),
+      abilities: abilities.map(({ name, description }) => ({
+        name,
+        description,
+      })),
+      members: hazard ? [] : stripMemberIds(members),
+      bloodied: minion || hazard ? "" : bloodied,
+      lastStand: !hazard && (legendary || isTeam) ? lastStand : "",
+      saves: hazard ? "" : savesString,
+      visibility,
+      actionPreface,
+      moreInfo,
+      peaceful: mild_encounter,
+      deadly: spicy_encounter,
+      legendary: hazard ? false : legendary,
+      minion: hazard ? false : minion,
+      hazard,
+      role: hazard ? null : role,
+      paperforgeId: hazard ? null : paperforgeId,
+      customArtwork: hazard ? null : input.customArtwork,
+      userId: user.id,
+      sourceId: sourceId || null,
+      remixedFromId: remixedFromId || null,
+    });
   });
 
   // Sync conditions
@@ -1482,28 +1507,52 @@ export const upsertOfficialMonster = async (
     role: hazard ? null : role,
     paperforgeId: hazard ? null : paperforgeId,
     isOfficial: true,
+    customArtwork: input.customArtwork,
     sourceId: sourceId || null,
     remixedFromId: remixedFromId || null,
     updatedAt: new Date().toISOString(),
   };
 
-  let monsterId: string;
-
-  if (existingMonster.length > 0) {
-    monsterId = existingMonster[0].id;
-    await db
-      .update(monsters)
-      .set(monsterValues)
-      .where(eq(monsters.id, monsterId));
-  } else {
-    monsterId = crypto.randomUUID();
-    await db.insert(monsters).values({
-      id: monsterId,
-      ...monsterValues,
-      userId: OFFICIAL_USER_ID,
-      createdAt: "2024-01-01 00:00:00",
-    });
-  }
+  let monsterId = existingMonster[0]?.id ?? crypto.randomUUID();
+  const previousArtwork = await db.transaction(async (tx) => {
+    const [existing] = await tx
+      .select()
+      .from(monsters)
+      .where(eq(monsters.id, monsterId))
+      .limit(1);
+    const previous = existing
+      ? {
+          customArtwork: existing.customArtwork,
+          members: parseMembers(existing.members),
+        }
+      : {};
+    const customArtwork =
+      input.customArtwork === undefined
+        ? previous.customArtwork
+        : input.customArtwork;
+    await validateMonsterArtwork(
+      tx,
+      OFFICIAL_USER_ID,
+      { ...input, customArtwork },
+      previous
+    );
+    if (existingMonster.length > 0) {
+      monsterId = existingMonster[0].id;
+      await tx
+        .update(monsters)
+        .set({ ...monsterValues, customArtwork })
+        .where(eq(monsters.id, monsterId));
+    } else {
+      await tx.insert(monsters).values({
+        id: monsterId,
+        ...monsterValues,
+        userId: OFFICIAL_USER_ID,
+        createdAt: "2024-01-01 00:00:00",
+      });
+    }
+    return collectMonsterArtwork(previous);
+  });
+  await cleanupMonsterArtwork(OFFICIAL_USER_ID, previousArtwork);
 
   const upsertMemberConditionSources = collectMemberConditionSources(members);
   const conditionNames = extractAllConditions({
@@ -1592,66 +1641,90 @@ const updateBestiaryEntry = async (
   const user = userResult[0];
 
   // Verify monster exists and belongs to user
-  const existingMonster = await db
-    .select()
-    .from(monsters)
-    .where(
-      and(
-        eq(monsters.id, id),
-        eq(monsters.userId, user.id),
-        eq(monsters.hazard, hazard)
+  const previousArtwork = await db.transaction(async (tx) => {
+    const existingMonster = await tx
+      .select()
+      .from(monsters)
+      .where(
+        and(
+          eq(monsters.id, id),
+          eq(monsters.userId, user.id),
+          eq(monsters.hazard, hazard)
+        )
       )
-    )
-    .limit(1);
+      .limit(1);
 
-  if (existingMonster.length === 0) {
-    throw new Error("Monster not found");
-  }
+    if (existingMonster.length === 0) {
+      throw new Error("Monster not found");
+    }
 
-  const armorValue = armor === "none" || !armor ? "" : armor;
+    const armorValue = armor === "none" || !armor ? "" : armor;
+    const previous = {
+      customArtwork: existingMonster[0].customArtwork,
+      members: parseMembers(existingMonster[0].members),
+    };
+    const customArtwork =
+      input.customArtwork === undefined
+        ? previous.customArtwork
+        : input.customArtwork;
+    if (!hazard)
+      await validateMonsterArtwork(
+        tx,
+        user.id,
+        { ...input, customArtwork },
+        previous
+      );
 
-  // Update the monster
-  await db
-    .update(monsters)
-    .set({
-      ...classifications,
-      name,
-      level,
-      levelInt,
-      hp,
-      hpPerHero: hazard ? null : hpPerHero,
-      armor: hazard ? "" : armorValue,
-      size: hazard ? "medium" : size,
-      speed: hazard ? 0 : speed,
-      fly: hazard ? 0 : fly,
-      swim: hazard ? 0 : swim,
-      climb: hazard ? 0 : climb,
-      teleport: hazard ? 0 : teleport,
-      burrow: hazard ? 0 : burrow,
-      actions: stripActionIds(actions),
-      abilities: abilities.map(({ name, description }) => ({
+    // Update the monster
+    await tx
+      .update(monsters)
+      .set({
+        ...classifications,
         name,
-        description,
-      })),
-      members: hazard ? [] : stripMemberIds(members),
-      legendary: hazard ? false : legendary,
-      minion: hazard ? false : minion,
-      hazard,
-      bloodied: hazard ? "" : bloodied,
-      lastStand: hazard ? "" : lastStand,
-      saves: hazard ? "" : Array.isArray(saves) ? saves.join(" ") : saves || "",
-      kind: hazard ? "" : kind,
-      visibility,
-      actionPreface,
-      moreInfo,
-      peaceful: mild_encounter,
-      deadly: spicy_encounter,
-      role: hazard ? null : role,
-      paperforgeId: hazard ? null : paperforgeId,
-      sourceId: sourceId ?? null,
-      updatedAt: new Date().toISOString(),
-    })
-    .where(and(eq(monsters.id, id), eq(monsters.hazard, hazard)));
+        level,
+        levelInt,
+        hp,
+        hpPerHero: hazard ? null : hpPerHero,
+        armor: hazard ? "" : armorValue,
+        size: hazard ? "medium" : size,
+        speed: hazard ? 0 : speed,
+        fly: hazard ? 0 : fly,
+        swim: hazard ? 0 : swim,
+        climb: hazard ? 0 : climb,
+        teleport: hazard ? 0 : teleport,
+        burrow: hazard ? 0 : burrow,
+        actions: stripActionIds(actions),
+        abilities: abilities.map(({ name, description }) => ({
+          name,
+          description,
+        })),
+        members: hazard ? [] : stripMemberIds(members),
+        legendary: hazard ? false : legendary,
+        minion: hazard ? false : minion,
+        hazard,
+        bloodied: hazard ? "" : bloodied,
+        lastStand: hazard ? "" : lastStand,
+        saves: hazard
+          ? ""
+          : Array.isArray(saves)
+            ? saves.join(" ")
+            : saves || "",
+        kind: hazard ? "" : kind,
+        visibility,
+        actionPreface,
+        moreInfo,
+        peaceful: mild_encounter,
+        deadly: spicy_encounter,
+        role: hazard ? null : role,
+        paperforgeId: hazard ? null : paperforgeId,
+        customArtwork: hazard ? null : customArtwork,
+        sourceId: sourceId ?? null,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(and(eq(monsters.id, id), eq(monsters.hazard, hazard)));
+    return collectMonsterArtwork(previous);
+  });
+  if (!hazard) await cleanupMonsterArtwork(user.id, previousArtwork);
 
   // Sync conditions
   const memberConditionSources = collectMemberConditionSources(members);

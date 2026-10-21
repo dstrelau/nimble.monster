@@ -1,4 +1,8 @@
 import { toFamilyOverview, toUser } from "@/lib/db/converters";
+import {
+  getMonsterArtworkUrl,
+  type MonsterArtwork,
+} from "@/lib/monster-artwork";
 import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
 import type { Ability, Action, FamilyOverview } from "@/lib/types";
 import { attackMetadataSchema } from "@/lib/types/attack";
@@ -41,6 +45,7 @@ interface MonsterRow extends MonsterClassifications {
   size: string;
   armor: string;
   paperforgeId: string | null;
+  customArtwork?: MonsterArtwork | null;
   createdAt: string | null;
   kind: string;
   role: string | null;
@@ -134,6 +139,7 @@ export const toMonsterMini = (m: MonsterRow): MonsterMini => ({
     ? "none"
     : m.armor) as MonsterMini["armor"],
   paperforgeId: m.paperforgeId ?? undefined,
+  customArtwork: m.customArtwork ?? undefined,
   createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
   role: m.role as MonsterMini["role"],
   isOfficial: m.isOfficial ?? false,
@@ -253,6 +259,12 @@ const toZodMember = (member: MonsterTeamMember) => {
     name: member.name,
     paperforgeId: member.paperforgeId || undefined,
     paperforgeImageUrl,
+    ...(member.customArtwork && {
+      customArtwork: {
+        ...member.customArtwork,
+        imageUrl: getMonsterArtworkUrl(member.customArtwork, 1600),
+      },
+    }),
     hp: member.hp,
     hpPerHero: member.hpPerHero ?? undefined,
     armor: member.armor === "none" ? ("none" as const) : member.armor,
@@ -343,6 +355,12 @@ export const toZodMonster = (m: Monster) => {
     spicy_encounter: m.spicy_encounter || undefined,
     paperforgeId: m.paperforgeId || undefined,
     paperforgeImageUrl,
+    ...(m.customArtwork && {
+      customArtwork: {
+        ...m.customArtwork,
+        imageUrl: getMonsterArtworkUrl(m.customArtwork, 1600),
+      },
+    }),
   };
 
   if (m.members && m.members.length > 0) {

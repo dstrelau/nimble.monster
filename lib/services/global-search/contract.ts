@@ -1,3 +1,5 @@
+import type { MonsterArtwork } from "@/lib/monster-artwork";
+
 export const GLOBAL_SEARCH_ENTITY_TYPES = [
   "monster",
   "hazard",
@@ -55,6 +57,7 @@ export interface GlobalSearchResult {
   creator?: GlobalSearchCreator;
   matchedField?: "name" | "keywords" | "summary" | "body";
   paperforgeId?: string;
+  customArtwork?: MonsterArtwork;
   imageIcon?: string;
 }
 

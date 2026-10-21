@@ -88,6 +88,7 @@ const toMonsterMini = (m: MonsterRow): BestiaryEntryMini =>
         size: m.size,
         armor: m.armor === "" ? "none" : m.armor,
         paperforgeId: m.paperforgeId ?? undefined,
+        customArtwork: m.customArtwork ?? undefined,
         createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
         role: m.role,
       };

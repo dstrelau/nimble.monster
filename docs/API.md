@@ -296,6 +296,27 @@ the raw save string (e.g., "STR++" becomes `{"str": 2}`, "DEX-" becomes `{"dex":
 Monsters may also include `paperforgeId` and `paperforgeImageUrl` when a
 Paperforge illustration is associated.
 
+Monsters and team members with uploaded artwork instead include `customArtwork`:
+
+```json
+{
+  "customArtwork": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "userId": "550e8400-e29b-41d4-a716-446655440001",
+    "imageUrl": "https://example.com/monster-artwork/display-1600.webp",
+    "artist": "Morgan Vale",
+    "sourceUrl": "https://example.com/artwork"
+  }
+}
+```
+
+`artist` and `sourceUrl` are optional. The image URL serves optimized rectangular
+artwork; Nexus displays a centered circular crop. Uploaded image URLs are public,
+even when their monster is private. Uploading and attaching artwork require the
+creator's `monster-custom-artwork` feature flag; viewing saved artwork does not.
+Other users' remixes do not inherit custom artwork. Nimbrew and Markdown exports
+continue to export statblock content without artwork.
+
 Monster attributes may include three optional classification arrays. Each field
 is omitted from list and detail responses when empty. These are not present on hazards.
 

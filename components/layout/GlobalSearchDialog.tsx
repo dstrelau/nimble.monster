@@ -12,7 +12,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { GameIcon } from "@/components/icons/GameIcon";
-import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
+import { MonsterImage } from "@/components/monster/MonsterImage";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -292,11 +292,12 @@ export function GlobalSearchDialog() {
                     onSelect={() => selectResult(result)}
                     className="group items-center !py-1 hover:bg-accent hover:text-accent-foreground"
                   >
-                    {result.paperforgeId ? (
-                      <PaperforgeImage
-                        id={result.paperforgeId}
+                    {result.paperforgeId || result.customArtwork ? (
+                      <MonsterImage
+                        paperforgeId={result.paperforgeId}
+                        customArtwork={result.customArtwork}
                         size={40}
-                        className="size-9 shrink-0 rounded-sm object-contain"
+                        className="size-9 shrink-0"
                       />
                     ) : result.imageIcon ? (
                       <span className="flex size-9 shrink-0 items-center justify-center">

@@ -1,4 +1,5 @@
 import { fetchApi } from "@/lib/api";
+import type { MonsterArtwork } from "@/lib/monster-artwork";
 import {
   type MonsterClassifications,
   MonsterClassificationsSchema,
@@ -54,6 +55,7 @@ export interface JSONAPIMonster {
     };
     paperforgeId?: string;
     paperforgeImageUrl?: string;
+    customArtwork?: MonsterArtwork & { imageUrl: string };
   };
   relationships?: {
     family?: {
@@ -143,6 +145,7 @@ function parseMonster(data: JSONAPIMonster): Monster {
     hazard: false,
     visibility: "public",
     paperforgeId: attrs.paperforgeId,
+    customArtwork: attrs.customArtwork,
     createdAt: new Date(),
     ...speeds,
     abilities,

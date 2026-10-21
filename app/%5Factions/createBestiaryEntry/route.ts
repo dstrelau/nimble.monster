@@ -6,6 +6,7 @@ import { createBestiaryEntrySchema } from "@/app/%5Factions/_bestiary/input";
 import { auth } from "@/lib/auth";
 import { internalAction } from "@/lib/internal-action";
 import { createHazard } from "@/lib/services/hazards";
+import { MonsterArtworkInputError } from "@/lib/services/monster-artwork";
 import { monstersService } from "@/lib/services/monsters";
 
 export const POST = internalAction("application/json", async (request) => {
@@ -51,6 +52,9 @@ export const POST = internalAction("application/json", async (request) => {
     };
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
+    if (error instanceof MonsterArtworkInputError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     if (error instanceof Error && error.message.endsWith("name is required")) {
       return NextResponse.json({ error: error.message }, { status: 422 });
     }

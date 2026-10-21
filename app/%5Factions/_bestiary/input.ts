@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { monsterArtworkSchema } from "@/lib/monster-artwork";
 import { MonsterClassificationsSchema } from "@/lib/services/monsters/classifications";
 import { MonsterRoleOptions, SIZES } from "@/lib/services/monsters/types";
 import { attackMetadataSchema } from "@/lib/types/attack";
@@ -24,6 +25,7 @@ const memberSchema = z.object({
   id: z.string(),
   name: z.string(),
   paperforgeId: z.string().optional(),
+  customArtwork: monsterArtworkSchema.strict().nullable().optional(),
   hp: z.number(),
   hpPerHero: z.number().nullable().optional(),
   armor: z.enum(["none", "medium", "heavy"]),
@@ -82,6 +84,7 @@ const monsterFields = {
   saves: z.array(z.string()).optional(),
   role: z.enum(MonsterRoleOptions).nullable().optional(),
   paperforgeId: z.string().nullable().optional(),
+  customArtwork: monsterArtworkSchema.strict().nullable().optional(),
 };
 
 const createMonsterSchema = sharedSchema.extend({

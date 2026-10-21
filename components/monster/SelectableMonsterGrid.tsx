@@ -13,7 +13,7 @@ import {
 } from "@/app/%5Factions/statblockPickerSearch/queries";
 import { Card } from "@/components/monster/Card";
 import { MonsterFilterBar } from "@/components/monster/MonsterFilterBar";
-import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
+import { MonsterImage } from "@/components/monster/MonsterImage";
 import { CreatorCombobox } from "@/components/shared/CreatorCombobox";
 import {
   EmptyState,
@@ -61,11 +61,12 @@ function CompactMonsterOption({
       )}
     >
       <div className="flex w-6 shrink-0 items-center justify-center">
-        {!monster.hazard && monster.paperforgeId ? (
-          <PaperforgeImage
-            id={monster.paperforgeId}
+        {!monster.hazard && (monster.paperforgeId || monster.customArtwork) ? (
+          <MonsterImage
+            paperforgeId={monster.paperforgeId}
+            customArtwork={monster.customArtwork}
             size={24}
-            className="rounded-sm"
+            className="size-6"
           />
         ) : !monster.hazard && monster.legendary ? (
           <Crown className="size-4 stroke-flame" />

@@ -15,6 +15,7 @@ import {
   users,
 } from "@/lib/db/schema";
 import type { Monster } from "@/lib/services/monsters";
+import { parseMembers } from "@/lib/services/monsters/members";
 import type { Ability, Award, Family, Source, User } from "@/lib/types";
 
 const toUserFromRow = (u: UserRow): User => ({
@@ -140,6 +141,7 @@ export async function getRandomFeaturedFamily(): Promise<Family | null> {
           size: link.monsters.size,
           armor: link.monsters.armor === "" ? "none" : link.monsters.armor,
           paperforgeId: link.monsters.paperforgeId ?? undefined,
+          customArtwork: link.monsters.customArtwork ?? undefined,
           createdAt: link.monsters.createdAt
             ? new Date(link.monsters.createdAt)
             : new Date(),
@@ -160,6 +162,7 @@ export async function getRandomFeaturedFamily(): Promise<Family | null> {
           actionPreface: link.monsters.actionPreface ?? "ACTIONS:",
           abilities: toAbilitiesFromRow(link.monsters.abilities),
           actions: toActionsFromRow(link.monsters.actions),
+          members: parseMembers(link.monsters.members),
           moreInfo: link.monsters.moreInfo ?? undefined,
           creator: toUserFromRow(link.users),
           source: toSourceFromRow(link.sources),

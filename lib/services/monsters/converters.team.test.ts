@@ -82,6 +82,37 @@ const teamMonster: Monster = {
 };
 
 describe("toZodMonster (team)", () => {
+  it("includes custom artwork and credits for the monster and its individual members", () => {
+    const artwork = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      userId: "11111111-1111-4111-8111-111111111111",
+      artist: "Morgan Vale",
+      sourceUrl: "https://example.com/art",
+    };
+    const monster = structuredClone(teamMonster);
+    monster.customArtwork = artwork;
+    if (!monster.members) throw new Error("expected members");
+    monster.members[1].customArtwork = { ...artwork, artist: "Second Artist" };
+    const api = toJsonApiMonster(monster);
+    expect(api.attributes).toMatchObject({
+      customArtwork: {
+        artist: "Morgan Vale",
+        sourceUrl: "https://example.com/art",
+        imageUrl: expect.stringContaining("/display-1600.webp"),
+      },
+      members: [
+        { name: "Kelebek" },
+        {
+          name: "Poppy",
+          customArtwork: {
+            artist: "Second Artist",
+            imageUrl: expect.stringContaining("/display-1600.webp"),
+          },
+        },
+      ],
+    });
+  });
+
   it("emits subtype 'team' with a members array", () => {
     const zod = toZodMonster(teamMonster);
     expect(zod.subtype).toBe("team");
