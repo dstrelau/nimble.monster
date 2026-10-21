@@ -51,7 +51,7 @@ describe("custom monster artwork selection", () => {
       button: 0,
       ctrlKey: false,
     });
-    fireEvent.change(screen.getByLabelText("Choose artwork file"), {
+    fireEvent.change(screen.getByLabelText("Image file"), {
       target: {
         files: [new File(["image"], "troll.png", { type: "image/png" })],
       },
@@ -108,7 +108,7 @@ describe("custom monster artwork selection", () => {
       ctrlKey: false,
     });
     const file = new File(["invalid"], "invalid.png", { type: "image/png" });
-    fireEvent.change(screen.getByLabelText("Choose artwork file"), {
+    fireEvent.change(screen.getByLabelText("Image file"), {
       target: { files: [file] },
     });
     expect(await screen.findByRole("alert")).toHaveTextContent(
@@ -119,9 +119,9 @@ describe("custom monster artwork selection", () => {
     );
     Object.defineProperty(file, "size", { value: 10 * 1024 * 1024 + 1 });
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Choose file" })).toBeEnabled()
+      expect(screen.getByLabelText("Image file")).toBeEnabled()
     );
-    fireEvent.change(screen.getByLabelText("Choose artwork file"), {
+    fireEvent.change(screen.getByLabelText("Image file"), {
       target: { files: [file] },
     });
     expect(screen.getByRole("alert")).toHaveTextContent(
@@ -145,9 +145,7 @@ describe("custom monster artwork selection", () => {
     );
     expect(screen.getByRole("img")).toHaveClass("rounded-full", "object-cover");
     fireEvent.click(screen.getByRole("button", { name: "Change image" }));
-    expect(
-      screen.queryByLabelText("Choose artwork file")
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Image file")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Remove image" })).toBeEnabled();
     expect(screen.getByText(/uploads are not enabled/)).toBeInTheDocument();
   });

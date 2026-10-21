@@ -1,6 +1,6 @@
 "use client";
 
-import { ImagePlus, LoaderCircle, Upload, X } from "lucide-react";
+import { ImagePlus, X } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { Link } from "@/components/layout/Link";
 import { MonsterImage } from "@/components/monster/MonsterImage";
@@ -57,7 +57,6 @@ export function MonsterImageSelect({
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<MonsterArtwork | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const discardUploads = (keepId?: string) => {
@@ -162,7 +161,7 @@ export function MonsterImageSelect({
             className={cn(
               portrait
                 ? "group relative size-22 rounded-full p-0 whitespace-normal"
-                : "w-full justify-start",
+                : "w-fit",
               portrait &&
                 !value &&
                 !customArtwork &&
@@ -184,11 +183,7 @@ export function MonsterImageSelect({
             ) : (
               <>
                 {!portrait && <ImagePlus />}
-                {customArtwork
-                  ? "Custom artwork"
-                  : value
-                    ? "Change image…"
-                    : "Choose image…"}
+                {value || customArtwork ? "Change image" : "Choose image"}
               </>
             )}
           </Button>
@@ -241,52 +236,22 @@ export function MonsterImageSelect({
               )}
               {enabled ? (
                 <>
-                  <fieldset
-                    className={cn(
-                      "flex flex-col items-center gap-3 rounded-md border-2 border-dashed p-6 text-center text-muted-foreground",
-                      dragging && "border-primary"
-                    )}
-                    onDragOver={(event) => {
-                      event.preventDefault();
-                      setDragging(true);
-                    }}
-                    onDragLeave={() => setDragging(false)}
-                    onDrop={(event) => {
-                      event.preventDefault();
-                      setDragging(false);
-                      void upload(event.dataTransfer.files[0]);
-                    }}
-                  >
-                    <legend className="sr-only">Upload monster artwork</legend>
-                    {isUploading ? (
-                      <LoaderCircle className="animate-spin" />
-                    ) : (
-                      <Upload />
-                    )}
-                    <p className="text-sm">
-                      {isUploading
-                        ? "Uploading artwork…"
-                        : "Drop image here or"}
-                    </p>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      disabled={isUploading}
-                      onClick={() => input.current?.click()}
-                    >
-                      {draft ? "Replace image" : "Choose file"}
-                    </Button>
-                    <p className="text-xs">JPEG, PNG, or WebP up to 10 MB</p>
-                    <input
+                  <div className="space-y-2">
+                    <Label htmlFor={`${id}-file`}>Image file</Label>
+                    <Input
                       ref={input}
+                      id={`${id}-file`}
                       type="file"
                       accept={MONSTER_ARTWORK_ACCEPT}
-                      className="sr-only"
-                      aria-label="Choose artwork file"
                       disabled={isUploading}
                       onChange={(event) => void upload(event.target.files?.[0])}
                     />
-                  </fieldset>
+                    <p className="text-xs text-muted-foreground">
+                      {isUploading
+                        ? "Uploading artwork…"
+                        : "JPEG, PNG, or WebP up to 10 MB"}
+                    </p>
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     Only upload artwork you have permission to use. Uploaded
                     files are accessible to anyone with the image URL, including
