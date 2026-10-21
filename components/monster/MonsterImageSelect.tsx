@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -189,18 +188,19 @@ export function MonsterImageSelect({
           </Button>
         </DialogTrigger>
         <DialogContent
-          className="max-h-[90dvh] overflow-y-auto"
+          className="flex max-h-[90dvh] flex-col"
+          aria-describedby={undefined}
           onInteractOutside={(event) => {
             if (isUploading) event.preventDefault();
           }}
         >
           <DialogHeader>
             <DialogTitle>Choose image</DialogTitle>
-            <DialogDescription>
-              Choose Paper Forge art or upload your own artwork.
-            </DialogDescription>
           </DialogHeader>
-          <Tabs defaultValue={customArtwork ? "upload" : "paperforge"}>
+          <Tabs
+            defaultValue={customArtwork ? "upload" : "paperforge"}
+            className="min-h-0 flex-1"
+          >
             <TabsList>
               <TabsTrigger value="paperforge" disabled={isUploading}>
                 Paper Forge
@@ -225,7 +225,7 @@ export function MonsterImageSelect({
                 }
               />
             </TabsContent>
-            <TabsContent value="upload" className="space-y-4">
+            <TabsContent value="upload" className="space-y-4 overflow-y-auto">
               {draft && (
                 <MonsterImage
                   customArtwork={draft}

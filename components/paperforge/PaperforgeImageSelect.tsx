@@ -58,7 +58,9 @@ export function PaperforgeImageChoices({
       <CommandInput placeholder="Search..." autoFocus={portrait} />
       <CommandList
         className={cn(
-          portrait ? "max-h-[min(50dvh,32rem)]" : "max-h-[min(65vh,32rem)]"
+          portrait
+            ? "max-h-[min(32dvh,32rem)] sm:max-h-[min(50dvh,32rem)]"
+            : "max-h-[min(65vh,32rem)]"
         )}
       >
         <CommandEmpty>No image found.</CommandEmpty>
