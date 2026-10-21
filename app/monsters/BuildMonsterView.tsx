@@ -1160,22 +1160,54 @@ const HPInput: React.FC<{
 
   if (compact) {
     return (
-      <div className={cn("space-y-2", className)}>
-        <IconFormInput
-          icon={HPIcon}
-          name="statblock-hp"
-          text={perHeroEnabled ? "HP / hero" : "HP"}
-          value={currentValue}
-          onChange={(value) =>
-            perHeroEnabled
-              ? onPerHeroChange(Math.max(0, value))
-              : onChange(value)
-          }
-        />
-        <div className="flex flex-wrap items-center gap-2 text-xs">
+      <div className={cn("space-y-4", className)}>
+        <div className="flex flex-wrap items-end gap-3">
+          <IconFormInput
+            icon={HPIcon}
+            name="statblock-hp"
+            text={perHeroEnabled ? "HP / hero" : "HP"}
+            value={currentValue}
+            onChange={(value) =>
+              perHeroEnabled
+                ? onPerHeroChange(Math.max(0, value))
+                : onChange(value)
+            }
+          />
           {perHeroToggle}
-          {recommendationIndicator}
+          {recommended != null &&
+            currentValue > 0 &&
+            currentValue !== recommended && (
+              <span className="pb-2 text-sm text-muted-foreground">
+                Custom HP
+              </span>
+            )}
         </div>
+        {recommended != null && (
+          <div className="space-y-2 rounded-md border p-3 text-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p>
+                Suggested {perHeroEnabled ? "HP / hero" : "HP"}: {recommended}{" "}
+                for level {monster.level} +{" "}
+                {monster.armor === "none" ? "no" : monster.armor} armor.
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  perHeroEnabled
+                    ? onPerHeroChange(recommended)
+                    : onChange(recommended)
+                }
+              >
+                Use {recommended}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Changing level or armor updates the suggestion, not your HP.
+            </p>
+          </div>
+        )}
       </div>
     );
   }
