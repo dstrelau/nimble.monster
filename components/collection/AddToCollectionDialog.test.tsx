@@ -8,16 +8,13 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockListOwnCollections, mockFetch, mockAddCompanionToCollection } =
-  vi.hoisted(() => ({
-    mockListOwnCollections: vi.fn(),
-    mockFetch: vi.fn(),
-    mockAddCompanionToCollection: vi.fn(),
-  }));
+const { mockListOwnCollections, mockFetch } = vi.hoisted(() => ({
+  mockListOwnCollections: vi.fn(),
+  mockFetch: vi.fn(),
+}));
 
 vi.mock("@/app/actions/collection", () => ({
   listOwnCollections: mockListOwnCollections,
-  addCompanionToCollection: mockAddCompanionToCollection,
   addAncestryToCollection: vi.fn(),
   addBackgroundToCollection: vi.fn(),
   addSubclassToCollection: vi.fn(),
@@ -78,7 +75,7 @@ const COLLECTIONS = {
       name: "My Monsters",
       monsters: [{ id: "m-existing" }],
       items: [{ id: "i-existing" }],
-      companions: [],
+      companions: [{ id: "c-existing" }],
       ancestries: [],
       backgrounds: [],
       subclasses: [],
@@ -165,16 +162,19 @@ describe("AddToCollectionDialog", () => {
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
   });
 
-  it.each<"hazard" | "item" | "spellSchool">([
+  it.each<"hazard" | "item" | "spellSchool" | "companion">([
     "hazard",
     "item",
     "spellSchool",
+    "companion",
   ])("detects a duplicate %s", async (type) => {
     render(
       type === "item" ? (
         <AddToCollectionDialog type="item" itemId="i-existing" />
       ) : type === "spellSchool" ? (
         <AddToCollectionDialog type="spellSchool" spellSchoolId="s-existing" />
+      ) : type === "companion" ? (
+        <AddToCollectionDialog type="companion" companionId="c-existing" />
       ) : (
         <AddToCollectionDialog type="hazard" monsterId="m-existing" />
       ),
@@ -198,17 +198,20 @@ describe("AddToCollectionDialog", () => {
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
   });
 
-  it.each<"monster" | "hazard" | "item" | "spellSchool">([
+  it.each<"monster" | "hazard" | "item" | "spellSchool" | "companion">([
     "monster",
     "hazard",
     "item",
     "spellSchool",
+    "companion",
   ])("adds a %s through stable JSON transport", async (type) => {
     render(
       type === "item" ? (
         <AddToCollectionDialog type="item" itemId="entity-1" />
       ) : type === "spellSchool" ? (
         <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
+      ) : type === "companion" ? (
+        <AddToCollectionDialog type="companion" companionId="entity-1" />
       ) : (
         <AddToCollectionDialog type={type} monsterId="entity-1" />
       ),
@@ -233,7 +236,9 @@ describe("AddToCollectionDialog", () => {
         ? "/_actions/addItemToCollection"
         : type === "spellSchool"
           ? "/_actions/addSpellSchoolToCollection"
-          : "/_actions/addMonsterToCollection",
+          : type === "companion"
+            ? "/_actions/addCompanionToCollection"
+            : "/_actions/addMonsterToCollection",
       {
         method: "POST",
         credentials: "same-origin",
@@ -243,7 +248,9 @@ describe("AddToCollectionDialog", () => {
             ? { itemId: "entity-1", collectionId: "col-2" }
             : type === "spellSchool"
               ? { spellSchoolId: "entity-1", collectionId: "col-2" }
-              : { monsterId: "entity-1", collectionId: "col-2" }
+              : type === "companion"
+                ? { companionId: "entity-1", collectionId: "col-2" }
+                : { monsterId: "entity-1", collectionId: "col-2" }
         ),
       }
     );
@@ -260,6 +267,8 @@ describe("AddToCollectionDialog", () => {
     ["item", "network"],
     ["spellSchool", "http"],
     ["spellSchool", "network"],
+    ["companion", "http"],
+    ["companion", "network"],
   ])("retains %s selection after %s failure and permits manual retry", async (type, failure) => {
     let rejectRequest: (error: Error) => void = () => {};
     let resolveRequest: (response: Response) => void = () => {};
@@ -274,6 +283,8 @@ describe("AddToCollectionDialog", () => {
         <AddToCollectionDialog type="item" itemId="entity-1" />
       ) : type === "spellSchool" ? (
         <AddToCollectionDialog type="spellSchool" spellSchoolId="entity-1" />
+      ) : type === "companion" ? (
+        <AddToCollectionDialog type="companion" companionId="entity-1" />
       ) : (
         <AddToCollectionDialog type="monster" monsterId="entity-1" />
       ),
@@ -303,36 +314,5 @@ describe("AddToCollectionDialog", () => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
     );
     expect(mockFetch).toHaveBeenCalledTimes(2);
-  });
-
-  it("submits form with correct entity type and collection", async () => {
-    mockAddCompanionToCollection.mockResolvedValue({ success: true });
-    render(<AddToCollectionDialog type="companion" companionId="comp-1" />, {
-      wrapper: createWrapper(),
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
-
-    await waitFor(() => {
-      expect(screen.getByTestId("collection-select")).toBeInTheDocument();
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText("Empty Collection")).toBeInTheDocument();
-    });
-
-    fireEvent.change(screen.getByTestId("collection-select"), {
-      target: { value: "col-2" },
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
-
-    await waitFor(() => {
-      expect(mockAddCompanionToCollection).toHaveBeenCalled();
-    });
-
-    const formData = mockAddCompanionToCollection.mock.calls[0][0] as FormData;
-    expect(formData.get("companionId")).toBe("comp-1");
-    expect(formData.get("collectionId")).toBe("col-2");
   });
 });

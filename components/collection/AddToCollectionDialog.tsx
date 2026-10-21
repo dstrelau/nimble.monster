@@ -3,13 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CopyPlus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { addCompanionToCollection } from "@/app/%5Factions/addCompanionToCollection/contract";
 import { addItemToCollection } from "@/app/%5Factions/addItemToCollection/contract";
 import { addMonsterToCollection } from "@/app/%5Factions/addMonsterToCollection/contract";
 import { addSpellSchoolToCollection } from "@/app/%5Factions/addSpellSchoolToCollection/contract";
 import {
   addAncestryToCollection,
   addBackgroundToCollection,
-  addCompanionToCollection,
   addSubclassToCollection,
 } from "@/app/actions/collection";
 import { ownCollectionsQueryOptions } from "@/app/collections/ownCollectionsQueryOptions";
@@ -128,8 +128,10 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
             collectionId: data.collectionId,
           });
         case "companion":
-          formData.append("companionId", props.companionId);
-          return addCompanionToCollection(formData);
+          return call(addCompanionToCollection, {
+            companionId: props.companionId,
+            collectionId: data.collectionId,
+          });
         case "ancestry":
           formData.append("ancestryId", props.ancestryId);
           return addAncestryToCollection(formData);

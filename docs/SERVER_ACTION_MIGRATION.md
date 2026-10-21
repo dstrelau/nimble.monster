@@ -442,7 +442,7 @@ contract compatibility window that a future migration must preserve.
 | Character-option builders | Complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9), [subclass create/update](https://ampcode.com/threads/T-01a131de-6489-707c-8e6c-58bb0194dc05), [companion create/update](https://ampcode.com/threads/T-01a13403-bbd1-768c-bf19-0288a298516d), [family create/update](https://ampcode.com/threads/T-01a13516-5c8e-72bf-bf74-c2dc2fe983e6), [spell-school create/update](https://ampcode.com/threads/T-01a13629-09df-7764-a771-a0a9c46381aa), and [custom-rule create/update](https://ampcode.com/threads/T-01a1384e-59c8-716d-8cb2-6133f8114ab2) complete |
 | Drafts | Complete | Class/subclass draft save/load/delete use stable `/_actions/classDraft` GET/POST/DELETE |
 | Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6), [item deletion](https://ampcode.com/threads/T-01a13c98-fff1-70db-8069-f73ee3f1805b), [encounter deletion](https://ampcode.com/threads/T-01a13dab-a15d-7443-94f8-d96e9f856073), [collection deletion](https://ampcode.com/threads/T-01a13ebe-4c4c-7488-b3e4-cc6d709ec057), [ancestry deletion](https://ampcode.com/threads/T-01a13fd0-f6d8-71da-90c0-5802c407f5dd), [background deletion](https://ampcode.com/threads/T-01a140e3-9c3e-736f-ae30-237797e4ebc0), [class deletion](https://ampcode.com/threads/T-01a141f6-ab29-7486-a38e-0cf7979d41a5), [subclass deletion](https://ampcode.com/threads/T-01a1441b-eb0c-739a-9999-8b3be511c56c), [companion deletion](https://ampcode.com/threads/T-01a1452e-6f24-7362-a486-d87159dee0a1), [family deletion](https://ampcode.com/threads/T-01a14641-5148-70ec-822b-a77be155af1d), [spell-school deletion](https://ampcode.com/threads/T-01a14753-b964-771c-84f1-75ed7ecd56f7), and [custom-rule deletion](https://ampcode.com/threads/T-01a15993-16a3-748b-8f4f-08dfd4c166a5) complete; collection and encounter relationships are next in Wave 2 |
-| Collection membership | Partially complete | [Monster/hazard additions](https://ampcode.com/threads/T-01a15aa3-c86d-765f-b04a-5c7613dd7f8c) complete; item additions are next, then remaining collection and encounter relationships |
+| Collection membership | Partially complete | [Monster/hazard](https://ampcode.com/threads/T-01a15aa3-c86d-765f-b04a-5c7613dd7f8c), item, spell-school and [companion additions](https://ampcode.com/threads/T-01a15ddd-db75-7496-8b0f-f3d1693a1aa5) complete; ancestry additions are next, then remaining collection and encounter relationships |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
 | Public browser reads | Not started | Wave 3; prefer existing JSON:API |
 | Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
@@ -1181,4 +1181,40 @@ contract compatibility window that a future migration must preserve.
 - Retain this URL and accepted request/response shapes for at least one full
   deployment interval. Pre-cutover tabs still need the existing refresh/retry path.
   Companion collection membership is the next bounded Wave 2 slice; remaining
+  collection/encounter relationship writes follow before reactions and preferences.
+
+### Companion collection membership — October 2026
+
+- `AddToCollectionDialog`, reached from the companion detail page and the sole
+  browser caller, uses a typed JSON POST to `/_actions/addCompanionToCollection`
+  with `{ companionId: UUID, collectionId: UUID }`, returning 200
+  `{ success: true }`. Existing collection lookup/ownership and public-or-owned
+  companion checks remain: foreign private collections return 404; foreign public
+  collections and inaccessible/missing companions return 403. Session identity
+  remains authoritative; submitted owner identity is ignored.
+- The unchanged database operation preserves idempotent membership insertion.
+  UUID validation, exact-origin/JSON enforcement, telemetry and generic unexpected
+  500s reuse the shared internal boundary without CORS. Owner/public collection
+  lists and detail pages are revalidated; the existing owner-collection query
+  invalidation refreshes duplicate detection without a Flight mutation response.
+- The shared dialog retains pending disable, duplicate warnings, selection and
+  one inline error/manual retry for HTTP/network failures. Success closes/resets
+  the dialog without navigation or automatic mutation retries.
+- Removed `addCompanionToCollection` from `app/actions/collection.ts`, its old
+  action-only tests and the dialog's action import/call. Application ratchet:
+  **77 → 76** exports; other membership actions, public APIs, database/repository
+  boundaries and repository markers are unchanged.
+- Route-boundary and real-dialog transport tests cover stable URL/no `next-action`,
+  auth/ownership, validation, safe failures, invalidation and pending/error/retry
+  behavior. Live development HTTP checks verify rejection without writes, owned
+  private/foreign public companions, duplicate idempotency and persisted membership.
+  Browser QA verifies retained selection/manual retry, refreshed duplicate
+  detection, normal navigation, active owner navigation and collection reload.
+  Disposable non-admin users, copied companions, collections and memberships are
+  cleaned up with explicit absence checks. Production verification uses short-lived
+  Auth.js sessions for test-owned non-admin users, not a dev-login bypass or real
+  user content; deployment evidence is recorded in the run thread.
+- Retain this URL and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs still need the existing refresh/retry path.
+  Ancestry collection membership is the next bounded Wave 2 slice; remaining
   collection/encounter relationship writes follow before reactions and preferences.
