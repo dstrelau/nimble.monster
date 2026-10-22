@@ -442,7 +442,8 @@ contract compatibility window that a future migration must preserve.
 | Character-option builders | Complete | [Ancestry create/update](https://ampcode.com/threads/T-01a12d95-8eed-738f-b3d0-5cdd70bde1ce), [background create/update](https://ampcode.com/threads/T-01a12ea6-7074-774d-83e8-fb1aafc4b471), [class create/update](https://ampcode.com/threads/T-01a12fb9-1a91-7239-8aec-2d85c9f642a9), [subclass create/update](https://ampcode.com/threads/T-01a131de-6489-707c-8e6c-58bb0194dc05), [companion create/update](https://ampcode.com/threads/T-01a13403-bbd1-768c-bf19-0288a298516d), [family create/update](https://ampcode.com/threads/T-01a13516-5c8e-72bf-bf74-c2dc2fe983e6), [spell-school create/update](https://ampcode.com/threads/T-01a13629-09df-7764-a771-a0a9c46381aa), and [custom-rule create/update](https://ampcode.com/threads/T-01a1384e-59c8-716d-8cb2-6133f8114ab2) complete |
 | Drafts | Complete | Class/subclass draft save/load/delete use stable `/_actions/classDraft` GET/POST/DELETE |
 | Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6), [item deletion](https://ampcode.com/threads/T-01a13c98-fff1-70db-8069-f73ee3f1805b), [encounter deletion](https://ampcode.com/threads/T-01a13dab-a15d-7443-94f8-d96e9f856073), [collection deletion](https://ampcode.com/threads/T-01a13ebe-4c4c-7488-b3e4-cc6d709ec057), [ancestry deletion](https://ampcode.com/threads/T-01a13fd0-f6d8-71da-90c0-5802c407f5dd), [background deletion](https://ampcode.com/threads/T-01a140e3-9c3e-736f-ae30-237797e4ebc0), [class deletion](https://ampcode.com/threads/T-01a141f6-ab29-7486-a38e-0cf7979d41a5), [subclass deletion](https://ampcode.com/threads/T-01a1441b-eb0c-739a-9999-8b3be511c56c), [companion deletion](https://ampcode.com/threads/T-01a1452e-6f24-7362-a486-d87159dee0a1), [family deletion](https://ampcode.com/threads/T-01a14641-5148-70ec-822b-a77be155af1d), [spell-school deletion](https://ampcode.com/threads/T-01a14753-b964-771c-84f1-75ed7ecd56f7), and [custom-rule deletion](https://ampcode.com/threads/T-01a15993-16a3-748b-8f4f-08dfd4c166a5) complete; collection and encounter relationships are next in Wave 2 |
-| Collection membership | Partially complete | Monster/hazard, item, spell-school, companion, ancestry, background and [subclass additions](https://ampcode.com/threads/T-01a16113-ad31-73be-bbe1-1162b11fed6d) complete; class additions are next, then remaining collection and encounter relationships |
+| Collection membership | Partially complete | Monster/hazard, item, spell-school, companion, ancestry, background and [subclass additions](https://ampcode.com/threads/T-01a16113-ad31-73be-bbe1-1162b11fed6d) complete; class addition export has no callers on current main and remains for a separately scoped removal, not a new UI feature |
+| Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
 | Reactions, reports, conditions, preferences | Not started | Wave 2 |
 | Public browser reads | Not started | Wave 3; prefer existing JSON:API |
 | Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
@@ -1329,3 +1330,46 @@ contract compatibility window that a future migration must preserve.
   deployment interval. Pre-cutover tabs still need the existing refresh/retry path.
   Class collection membership is the next bounded Wave 2 slice; remaining
   collection/encounter relationship writes follow before reactions and preferences.
+
+### Monster and hazard encounter membership — October 2026
+
+- The logged class-collection addition was audited first: `addClassToCollection`
+  has no callers, and `AddToCollectionDialog` has no class variant. This run
+  leaves that unused export unchanged rather than introducing a new feature.
+  The next active Wave 2 relationship flow is encounter membership.
+- `AddToEncounterDialog`, used by monster and hazard detail pages, now sends
+  typed JSON to `/_actions/addMonsterToEncounter`: `{ monsterId: UUID,
+  encounterId: UUID, quantity: number, isPerHero: boolean,
+  heroesPerMonster: number }`, returning 200 `{ success: true }`. UUIDs and
+  JSON types are runtime-validated; omitted counts retain defaults, and finite
+  counts below one retain the existing minimum-one normalization.
+- Session-derived ownership and public-or-owned content checks remain. Missing
+  or non-owned encounters return 404; inaccessible/missing content returns 403.
+  Client identity and legendary claims are ignored. Stored legendary status
+  forces quantity one and static counting. The unchanged transactional database
+  operation inserts or updates membership and retains encounter-wide privacy
+  validation; recognized public/private and unavailable-content errors return
+  actionable 400s, while unexpected errors use telemetry and generic 500s.
+- Exact-origin/JSON enforcement reuses `internalAction`, without CORS. Owner and
+  public encounter lists plus detail pages are revalidated; existing query
+  invalidation refreshes membership warnings without a Flight response. Selection,
+  count controls, pending disable, inline errors and manual retry remain. Success
+  closes/resets the dialog without navigation or automatic mutation retries.
+- Removed `addMonsterToEncounter` from `app/actions/encounter.ts`, its old
+  action-only tests and the dialog's action import/FormData call. The owner-list
+  read remains for Wave 3. Application ratchet: **73 → 72** exports; collection
+  actions, public APIs and repository boundaries are unchanged.
+- Route-boundary and real-dialog transport tests cover stable URL/no `next-action`,
+  validation, auth, privacy, legendary rules, cache invalidation and pending/error
+  UX. Live authenticated requests verify rejection without writes, static/per-hero
+  count persistence, updates, repeat idempotency, monsters, hazards and legendary
+  normalization. Browser QA covers retained counts/selection and manual retry,
+  refreshed membership warnings, navigation and full reload. Disposable non-admin
+  users and copies of seeded/existing content are cleaned up with explicit absence
+  checks. Production uses short-lived Auth.js sessions for test-owned users, not
+  a dev-login bypass or real-user content; run evidence is recorded in the linked
+  thread above.
+- Retain this URL and accepted shapes for at least one full deployment interval.
+  Pre-cutover tabs still need the existing refresh/retry path. Resolve the unused
+  class-collection export next, then proceed to reactions/reports in Wave 2;
+  collection replacement/removal already uses `saveCollection`.

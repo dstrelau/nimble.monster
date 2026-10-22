@@ -1,211 +1,30 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockAuth } = vi.hoisted(() => ({ mockAuth: vi.fn() }));
-const { mockListEncountersWithMonstersForUser, mockAddMonsterToEncounter } =
-  vi.hoisted(() => ({
-    mockListEncountersWithMonstersForUser: vi.fn(),
-    mockAddMonsterToEncounter: vi.fn(),
-  }));
-
-// getDatabase returns a chainable query builder; `.limit` resolves the query.
-// addMonsterToEncounter runs two sequential queries (ownership, then
-// accessibility), both ending in `.limit`, so tests drive `mockLimit` with
-// `mockResolvedValueOnce` in call order.
-const { mockGetDatabase, mockLimit } = vi.hoisted(() => {
-  const limit = vi.fn().mockResolvedValue([{ id: "row" }]);
-  const chain = {
-    select: vi.fn(),
-    from: vi.fn(),
-    where: vi.fn(),
-    limit,
-  };
-  chain.select.mockReturnValue(chain);
-  chain.from.mockReturnValue(chain);
-  chain.where.mockReturnValue(chain);
-  return {
-    mockGetDatabase: vi.fn(() => chain),
-    mockLimit: limit,
-  };
-});
-
-vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
-vi.mock("@/lib/db/drizzle", () => ({ getDatabase: mockGetDatabase }));
-vi.mock("@/lib/db/schema", () => ({
-  encounters: { id: "e.id", creatorId: "e.creatorId" },
-  monsters: {
-    id: "m.id",
-    legendary: "m.legendary",
-    visibility: "m.vis",
-    userId: "m.uid",
-  },
-}));
-vi.mock("drizzle-orm", () => ({
-  and: vi.fn((...args: unknown[]) => args),
-  eq: vi.fn((...args: unknown[]) => args),
-  or: vi.fn((...args: unknown[]) => args),
-}));
-
+const mocks = vi.hoisted(() => ({ auth: vi.fn(), list: vi.fn() }));
 const unauthorizedSentinel = Symbol("unauthorized");
-const forbiddenSentinel = Symbol("forbidden");
+vi.mock("@/lib/auth", () => ({ auth: mocks.auth }));
 vi.mock("next/navigation", () => ({
   unauthorized: vi.fn(() => {
     throw unauthorizedSentinel;
   }),
-  forbidden: vi.fn(() => {
-    throw forbiddenSentinel;
-  }),
 }));
+vi.mock("@/lib/db", () => ({ listEncountersWithMonstersForUser: mocks.list }));
 
-vi.mock("@/lib/db", () => ({
-  listEncountersWithMonstersForUser: mockListEncountersWithMonstersForUser,
-  addMonsterToEncounter: mockAddMonsterToEncounter,
-}));
-
-import { addMonsterToEncounter, listOwnEncounters } from "./encounter";
-
-const SESSION = {
-  user: {
-    id: "user-uuid",
-    discordId: "discord-123",
-  },
-};
-
-function buildFormData(entries: Record<string, string>): FormData {
-  const fd = new FormData();
-  for (const [k, v] of Object.entries(entries)) {
-    fd.set(k, v);
-  }
-  return fd;
-}
+import { listOwnEncounters } from "./encounter";
 
 describe("listOwnEncounters", () => {
   beforeEach(() => vi.clearAllMocks());
-
-  it("throws unauthorized when unauthenticated", async () => {
-    mockAuth.mockResolvedValue(null);
+  it("requires authentication", async () => {
+    mocks.auth.mockResolvedValue(null);
     await expect(listOwnEncounters()).rejects.toBe(unauthorizedSentinel);
   });
-
-  it("returns encounters for the user", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    const encs = [{ id: "enc-1" }];
-    mockListEncountersWithMonstersForUser.mockResolvedValue(encs);
-
-    const result = await listOwnEncounters();
-    expect(result).toEqual({ success: true, encounters: encs });
-    expect(mockListEncountersWithMonstersForUser).toHaveBeenCalledWith(
-      "discord-123"
-    );
-  });
-});
-
-describe("addMonsterToEncounter", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("throws unauthorized when unauthenticated", async () => {
-    mockAuth.mockResolvedValue(null);
-    await expect(
-      addMonsterToEncounter(
-        buildFormData({ monsterId: "m1", encounterId: "e1" })
-      )
-    ).rejects.toBe(unauthorizedSentinel);
-  });
-
-  it("returns error when missing params", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    const result = await addMonsterToEncounter(buildFormData({}));
-    expect(result).toEqual({
-      success: false,
-      error: "Missing monsterId or encounterId",
+  it("returns the session user's encounters", async () => {
+    mocks.auth.mockResolvedValue({
+      user: { id: "user", discordId: "discord-123" },
     });
-  });
-
-  it("returns error when encounter not owned", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    // ownership query returns no rows
-    mockLimit.mockResolvedValueOnce([]);
-    const result = await addMonsterToEncounter(
-      buildFormData({ monsterId: "m1", encounterId: "e1" })
-    );
-    expect(result).toEqual({
-      success: false,
-      error: "Encounter not found or you don't have permission to update it",
-    });
-    expect(mockAddMonsterToEncounter).not.toHaveBeenCalled();
-  });
-
-  it("throws forbidden when monster is not accessible", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    // ownership ok, accessibility empty
-    mockLimit.mockResolvedValueOnce([{ id: "e1" }]).mockResolvedValueOnce([]);
-    await expect(
-      addMonsterToEncounter(
-        buildFormData({ monsterId: "m1", encounterId: "e1" })
-      )
-    ).rejects.toBe(forbiddenSentinel);
-    expect(mockAddMonsterToEncounter).not.toHaveBeenCalled();
-  });
-
-  it("adds monster to owned encounter with parsed quantity/isPerHero", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockLimit
-      .mockResolvedValueOnce([{ id: "e1" }])
-      .mockResolvedValueOnce([{ id: "m1" }]);
-    const result = await addMonsterToEncounter(
-      buildFormData({
-        monsterId: "m1",
-        encounterId: "e1",
-        quantity: "3",
-        isPerHero: "true",
-        heroesPerMonster: "4",
-      })
-    );
-    expect(result).toEqual({ success: true });
-    expect(mockAddMonsterToEncounter).toHaveBeenCalledWith({
-      monsterId: "m1",
-      encounterId: "e1",
-      quantity: 3,
-      isPerHero: true,
-      heroesPerMonster: 4,
-    });
-  });
-
-  it("clamps quantity to a minimum of 1 and defaults isPerHero to false", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockLimit
-      .mockResolvedValueOnce([{ id: "e1" }])
-      .mockResolvedValueOnce([{ id: "m1" }]);
-    await addMonsterToEncounter(
-      buildFormData({ monsterId: "m1", encounterId: "e1", quantity: "0" })
-    );
-    expect(mockAddMonsterToEncounter).toHaveBeenCalledWith({
-      monsterId: "m1",
-      encounterId: "e1",
-      quantity: 1,
-      isPerHero: false,
-      heroesPerMonster: 1,
-    });
-  });
-
-  it("ignores per-hero counts for legendary monsters", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockLimit
-      .mockResolvedValueOnce([{ id: "e1" }])
-      .mockResolvedValueOnce([{ id: "m1", legendary: true }]);
-    await addMonsterToEncounter(
-      buildFormData({
-        monsterId: "m1",
-        encounterId: "e1",
-        quantity: "3",
-        isPerHero: "true",
-      })
-    );
-    expect(mockAddMonsterToEncounter).toHaveBeenCalledWith({
-      monsterId: "m1",
-      encounterId: "e1",
-      quantity: 1,
-      isPerHero: false,
-      heroesPerMonster: 1,
-    });
+    const encounters = [{ id: "enc-1" }];
+    mocks.list.mockResolvedValue(encounters);
+    expect(await listOwnEncounters()).toEqual({ success: true, encounters });
+    expect(mocks.list).toHaveBeenCalledWith("discord-123");
   });
 });

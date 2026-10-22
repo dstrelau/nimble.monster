@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CopyPlus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { addMonsterToEncounter } from "@/app/actions/encounter";
+import { addMonsterToEncounter } from "@/app/%5Factions/addMonsterToEncounter/contract";
 import { EncounterCountControl } from "@/app/encounters/EncounterCountControl";
 import { ownEncountersQueryOptions } from "@/app/encounters/ownEncountersQueryOptions";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { call } from "@/lib/contract";
 
 interface AddToEncounterForm {
   encounterId: string;
@@ -69,16 +70,13 @@ export const AddToEncounterDialog = ({
 
   const mutation = useMutation({
     mutationFn: async (data: AddToEncounterForm) => {
-      const formData = new FormData();
-      formData.append("encounterId", data.encounterId);
-      formData.append("monsterId", monsterId);
-      formData.append("quantity", String(legendary ? 1 : data.quantity));
-      formData.append("isPerHero", String(!legendary && data.isPerHero));
-      formData.append("heroesPerMonster", String(data.heroesPerMonster));
-      const result = await addMonsterToEncounter(formData);
-      if (!result.success)
-        throw new Error(result.error ?? "Failed to add content to encounter");
-      return result;
+      return call(addMonsterToEncounter, {
+        encounterId: data.encounterId,
+        monsterId,
+        quantity: legendary ? 1 : data.quantity,
+        isPerHero: !legendary && data.isPerHero,
+        heroesPerMonster: data.heroesPerMonster,
+      });
     },
     onSuccess: () => {
       setOpen(false);
