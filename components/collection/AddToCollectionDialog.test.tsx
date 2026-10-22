@@ -15,7 +15,6 @@ const { mockListOwnCollections, mockFetch } = vi.hoisted(() => ({
 
 vi.mock("@/app/actions/collection", () => ({
   listOwnCollections: mockListOwnCollections,
-  addSubclassToCollection: vi.fn(),
 }));
 
 // Mock shadcn Select to use a plain HTML select (Radix portals don't work in jsdom)
@@ -76,7 +75,7 @@ const COLLECTIONS = {
       companions: [{ id: "c-existing" }],
       ancestries: [{ id: "a-existing" }],
       backgrounds: [{ id: "b-existing" }],
-      subclasses: [],
+      subclasses: [{ id: "sc-existing" }],
       spellSchools: [{ id: "s-existing" }],
     },
     {
@@ -161,49 +160,57 @@ describe("AddToCollectionDialog", () => {
   });
 
   it.each<
-    "hazard" | "item" | "spellSchool" | "companion" | "ancestry" | "background"
-  >(["hazard", "item", "spellSchool", "companion", "ancestry", "background"])(
-    "detects a duplicate %s",
-    async (type) => {
-      render(
-        type === "item" ? (
-          <AddToCollectionDialog type="item" itemId="i-existing" />
-        ) : type === "spellSchool" ? (
-          <AddToCollectionDialog
-            type="spellSchool"
-            spellSchoolId="s-existing"
-          />
-        ) : type === "companion" ? (
-          <AddToCollectionDialog type="companion" companionId="c-existing" />
-        ) : type === "ancestry" ? (
-          <AddToCollectionDialog type="ancestry" ancestryId="a-existing" />
-        ) : type === "background" ? (
-          <AddToCollectionDialog type="background" backgroundId="b-existing" />
-        ) : (
-          <AddToCollectionDialog type="hazard" monsterId="m-existing" />
-        ),
-        {
-          wrapper: createWrapper(),
-        }
-      );
+    | "hazard"
+    | "item"
+    | "spellSchool"
+    | "companion"
+    | "ancestry"
+    | "background"
+    | "subclass"
+  >([
+    "hazard",
+    "item",
+    "spellSchool",
+    "companion",
+    "ancestry",
+    "background",
+    "subclass",
+  ])("detects a duplicate %s", async (type) => {
+    render(
+      type === "item" ? (
+        <AddToCollectionDialog type="item" itemId="i-existing" />
+      ) : type === "spellSchool" ? (
+        <AddToCollectionDialog type="spellSchool" spellSchoolId="s-existing" />
+      ) : type === "companion" ? (
+        <AddToCollectionDialog type="companion" companionId="c-existing" />
+      ) : type === "ancestry" ? (
+        <AddToCollectionDialog type="ancestry" ancestryId="a-existing" />
+      ) : type === "background" ? (
+        <AddToCollectionDialog type="background" backgroundId="b-existing" />
+      ) : type === "subclass" ? (
+        <AddToCollectionDialog type="subclass" subclassId="sc-existing" />
+      ) : (
+        <AddToCollectionDialog type="hazard" monsterId="m-existing" />
+      ),
+      {
+        wrapper: createWrapper(),
+      }
+    );
 
-      fireEvent.click(
-        screen.getByRole("button", { name: /add to collection/i })
-      );
-      await screen.findByText("My Monsters");
+    fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
+    await screen.findByText("My Monsters");
 
-      fireEvent.change(screen.getByTestId("collection-select"), {
-        target: { value: "col-1" },
-      });
+    fireEvent.change(screen.getByTestId("collection-select"), {
+      target: { value: "col-1" },
+    });
 
-      expect(
-        await screen.findByText(
-          `This ${type === "spellSchool" ? "spell school" : type} is already in the selected collection`
-        )
-      ).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
-    }
-  );
+    expect(
+      await screen.findByText(
+        `This ${type === "spellSchool" ? "spell school" : type} is already in the selected collection`
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
+  });
 
   it.each<
     | "monster"
@@ -213,6 +220,7 @@ describe("AddToCollectionDialog", () => {
     | "companion"
     | "ancestry"
     | "background"
+    | "subclass"
   >([
     "monster",
     "hazard",
@@ -221,6 +229,7 @@ describe("AddToCollectionDialog", () => {
     "companion",
     "ancestry",
     "background",
+    "subclass",
   ])("adds a %s through stable JSON transport", async (type) => {
     render(
       type === "item" ? (
@@ -233,6 +242,8 @@ describe("AddToCollectionDialog", () => {
         <AddToCollectionDialog type="ancestry" ancestryId="entity-1" />
       ) : type === "background" ? (
         <AddToCollectionDialog type="background" backgroundId="entity-1" />
+      ) : type === "subclass" ? (
+        <AddToCollectionDialog type="subclass" subclassId="entity-1" />
       ) : (
         <AddToCollectionDialog type={type} monsterId="entity-1" />
       ),
@@ -263,7 +274,9 @@ describe("AddToCollectionDialog", () => {
               ? "/_actions/addAncestryToCollection"
               : type === "background"
                 ? "/_actions/addBackgroundToCollection"
-                : "/_actions/addMonsterToCollection",
+                : type === "subclass"
+                  ? "/_actions/addSubclassToCollection"
+                  : "/_actions/addMonsterToCollection",
       {
         method: "POST",
         credentials: "same-origin",
@@ -279,7 +292,9 @@ describe("AddToCollectionDialog", () => {
                   ? { ancestryId: "entity-1", collectionId: "col-2" }
                   : type === "background"
                     ? { backgroundId: "entity-1", collectionId: "col-2" }
-                    : { monsterId: "entity-1", collectionId: "col-2" }
+                    : type === "subclass"
+                      ? { subclassId: "entity-1", collectionId: "col-2" }
+                      : { monsterId: "entity-1", collectionId: "col-2" }
         ),
       }
     );
@@ -302,6 +317,8 @@ describe("AddToCollectionDialog", () => {
     ["ancestry", "network"],
     ["background", "http"],
     ["background", "network"],
+    ["subclass", "http"],
+    ["subclass", "network"],
   ])(
     "retains %s selection after %s failure and permits manual retry",
     async (type, failure) => {
@@ -324,6 +341,8 @@ describe("AddToCollectionDialog", () => {
           <AddToCollectionDialog type="ancestry" ancestryId="entity-1" />
         ) : type === "background" ? (
           <AddToCollectionDialog type="background" backgroundId="entity-1" />
+        ) : type === "subclass" ? (
+          <AddToCollectionDialog type="subclass" subclassId="entity-1" />
         ) : (
           <AddToCollectionDialog type="monster" monsterId="entity-1" />
         ),

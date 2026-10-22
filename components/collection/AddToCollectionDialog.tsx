@@ -9,7 +9,7 @@ import { addCompanionToCollection } from "@/app/%5Factions/addCompanionToCollect
 import { addItemToCollection } from "@/app/%5Factions/addItemToCollection/contract";
 import { addMonsterToCollection } from "@/app/%5Factions/addMonsterToCollection/contract";
 import { addSpellSchoolToCollection } from "@/app/%5Factions/addSpellSchoolToCollection/contract";
-import { addSubclassToCollection } from "@/app/actions/collection";
+import { addSubclassToCollection } from "@/app/%5Factions/addSubclassToCollection/contract";
 import { ownCollectionsQueryOptions } from "@/app/collections/ownCollectionsQueryOptions";
 import { Button } from "@/components/ui/button";
 import {
@@ -105,9 +105,6 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
 
   const mutation = useMutation({
     mutationFn: async (data: AddToCollectionForm) => {
-      const formData = new FormData();
-      formData.append("collectionId", data.collectionId);
-
       switch (props.type) {
         case "monster":
         case "hazard":
@@ -141,8 +138,10 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
             collectionId: data.collectionId,
           });
         case "subclass":
-          formData.append("subclassId", props.subclassId);
-          return addSubclassToCollection(formData);
+          return call(addSubclassToCollection, {
+            subclassId: props.subclassId,
+            collectionId: data.collectionId,
+          });
       }
     },
     onSuccess: () => {

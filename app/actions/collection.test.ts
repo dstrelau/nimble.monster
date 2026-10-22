@@ -1,14 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mockAuth } = vi.hoisted(() => ({ mockAuth: vi.fn() }));
-const {
-  mockListCollectionsWithMonstersForUser,
-  mockGetCollection,
-  mockAddSubclassToCollection,
-} = vi.hoisted(() => ({
+const { mockListCollectionsWithMonstersForUser } = vi.hoisted(() => ({
   mockListCollectionsWithMonstersForUser: vi.fn(),
-  mockGetCollection: vi.fn(),
-  mockAddSubclassToCollection: vi.fn(),
 }));
 
 // Mock for entity accessibility checks (getDatabase returns a chainable query builder)
@@ -31,13 +25,7 @@ const { mockGetDatabase } = vi.hoisted(() => {
 vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
 vi.mock("@/lib/db/drizzle", () => ({ getDatabase: mockGetDatabase }));
 vi.mock("@/lib/db/schema", () => ({
-  monsters: { id: "m.id", visibility: "m.vis", userId: "m.uid" },
-  items: { id: "i.id", visibility: "i.vis", userId: "i.uid" },
-  companions: { id: "c.id", visibility: "c.vis", userId: "c.uid" },
-  ancestries: { id: "a.id", visibility: "a.vis", userId: "a.uid" },
-  backgrounds: { id: "b.id", visibility: "b.vis", userId: "b.uid" },
-  subclasses: { id: "s.id", visibility: "s.vis", userId: "s.uid" },
-  spellSchools: { id: "ss.id", visibility: "ss.vis", userId: "ss.uid" },
+  classes: { id: "c.id", visibility: "c.vis", userId: "c.uid" },
 }));
 vi.mock("drizzle-orm", () => ({
   and: vi.fn((...args: unknown[]) => args),
@@ -58,33 +46,15 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/lib/db", () => ({
   listCollectionsWithMonstersForUser: mockListCollectionsWithMonstersForUser,
-  getCollection: mockGetCollection,
-  addSubclassToCollection: mockAddSubclassToCollection,
 }));
 
-vi.mock("@/lib/services/ancestries/repository", () => ({
-  searchPublicAncestries: vi.fn(),
-}));
-vi.mock("@/lib/services/backgrounds/repository", () => ({
-  searchPublicBackgrounds: vi.fn(),
-}));
-vi.mock("@/lib/services/companions/repository", () => ({
-  searchPublicCompanions: vi.fn(),
-}));
-
-import { addSubclassToCollection, listOwnCollections } from "./collection";
+import { listOwnCollections } from "./collection";
 
 const SESSION = {
   user: {
     id: "user-uuid",
     discordId: "discord-123",
   },
-};
-
-const OWNED_COLLECTION = {
-  id: "col-1",
-  name: "My Collection",
-  creator: { id: "user-uuid", discordId: "discord-123" },
 };
 
 describe("listOwnCollections", () => {
@@ -105,32 +75,5 @@ describe("listOwnCollections", () => {
     expect(mockListCollectionsWithMonstersForUser).toHaveBeenCalledWith(
       "discord-123"
     );
-  });
-});
-
-// Helper to build FormData for add-to-collection actions
-function buildFormData(entries: Record<string, string>): FormData {
-  const fd = new FormData();
-  for (const [k, v] of Object.entries(entries)) {
-    fd.set(k, v);
-  }
-  return fd;
-}
-
-describe("addSubclassToCollection", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("passes discordId to getCollection and adds subclass", async () => {
-    mockAuth.mockResolvedValue(SESSION);
-    mockGetCollection.mockResolvedValue(OWNED_COLLECTION);
-    const result = await addSubclassToCollection(
-      buildFormData({ subclassId: "s1", collectionId: "col-1" })
-    );
-    expect(result).toEqual({ success: true });
-    expect(mockGetCollection).toHaveBeenCalledWith("col-1", "discord-123");
-    expect(mockAddSubclassToCollection).toHaveBeenCalledWith({
-      subclassId: "s1",
-      collectionId: "col-1",
-    });
   });
 });
