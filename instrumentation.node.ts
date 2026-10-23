@@ -56,14 +56,15 @@ const httpInstrumentation = new HttpInstrumentation({
   },
 });
 
-// Drop traces for the /api/build-id poll; ParentBasedSampler drops all child
-// spans (middleware, route execution, etc.) along with the root.
+// OpenTelemetry's current HTTP semantic conventions provide `url.path` to the
+// sampler. Keep the old key during the convention migration. ParentBasedSampler
+// then drops the nested Next.js spans with the non-recording root span.
 const dropBuildIdSampler: tracing.Sampler = {
   shouldSample(_context, _traceId, _spanName, _spanKind, attributes) {
-    const target = attributes["http.target"];
+    const path = attributes["url.path"] ?? attributes["http.target"];
     return {
       decision:
-        typeof target === "string" && target.startsWith("/api/build-id")
+        typeof path === "string" && path.startsWith("/api/build-id")
           ? tracing.SamplingDecision.NOT_RECORD
           : tracing.SamplingDecision.RECORD_AND_SAMPLED,
     };
