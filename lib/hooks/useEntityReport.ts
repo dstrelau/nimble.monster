@@ -1,6 +1,7 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { reportEntity } from "@/app/actions/reports";
+import { reportEntity } from "@/app/%5Factions/reportEntity/contract";
+import { call } from "@/lib/contract";
 import type { ReactableEntityType, ReportReason } from "@/lib/db/schema";
 import { entityReportQueryOptions } from "./entityReportQueryOptions";
 
@@ -20,7 +21,7 @@ export function useEntityReport(
     }: {
       reason: ReportReason;
       details: string;
-    }) => reportEntity(entityType, entityId, reason, details),
+    }) => call(reportEntity, { entityType, entityId, reason, details }),
     onSuccess: (result) => {
       if (result.success) {
         queryClient.setQueryData(queryKey, true);

@@ -12,7 +12,7 @@ export const serverActionBaseline = {
     "app/actions/monster.ts": 2,
     "app/actions/nav.ts": 1,
     "app/actions/reactions.ts": 1,
-    "app/actions/reports.ts": 2,
+    "app/actions/reports.ts": 1,
     "app/actions/subclass.ts": 3,
     "app/actions/user.ts": 1,
     "app/admin/actions.ts": 22,

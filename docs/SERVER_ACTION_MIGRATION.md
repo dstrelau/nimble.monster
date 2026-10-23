@@ -444,7 +444,7 @@ contract compatibility window that a future migration must preserve.
 | Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6), [item deletion](https://ampcode.com/threads/T-01a13c98-fff1-70db-8069-f73ee3f1805b), [encounter deletion](https://ampcode.com/threads/T-01a13dab-a15d-7443-94f8-d96e9f856073), [collection deletion](https://ampcode.com/threads/T-01a13ebe-4c4c-7488-b3e4-cc6d709ec057), [ancestry deletion](https://ampcode.com/threads/T-01a13fd0-f6d8-71da-90c0-5802c407f5dd), [background deletion](https://ampcode.com/threads/T-01a140e3-9c3e-736f-ae30-237797e4ebc0), [class deletion](https://ampcode.com/threads/T-01a141f6-ab29-7486-a38e-0cf7979d41a5), [subclass deletion](https://ampcode.com/threads/T-01a1441b-eb0c-739a-9999-8b3be511c56c), [companion deletion](https://ampcode.com/threads/T-01a1452e-6f24-7362-a486-d87159dee0a1), [family deletion](https://ampcode.com/threads/T-01a14641-5148-70ec-822b-a77be155af1d), [spell-school deletion](https://ampcode.com/threads/T-01a14753-b964-771c-84f1-75ed7ecd56f7), and [custom-rule deletion](https://ampcode.com/threads/T-01a15993-16a3-748b-8f4f-08dfd4c166a5) complete; collection and encounter relationships are next in Wave 2 |
 | Collection membership | Complete | Monster/hazard, item, spell-school, companion, ancestry, background and [subclass additions](https://ampcode.com/threads/T-01a16113-ad31-73be-bbe1-1162b11fed6d) use stable JSON; [unused class action removed](https://ampcode.com/threads/T-01a16671-16c8-767b-b110-eb5a4fc52e2f); editor-based class additions/replacement/removal already use `saveCollection` |
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
-| Reactions, reports, conditions, preferences | Partially complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985) use stable JSON; reports are next in Wave 2 |
+| Reactions, reports, conditions, preferences | Partially complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985) and [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8) use stable JSON; conditions and preferences are next in Wave 2 |
 | Public browser reads | Not started | Wave 3; prefer existing JSON:API |
 | Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
 | Admin workflows | Not started | Wave 4 |
@@ -1439,3 +1439,40 @@ contract compatibility window that a future migration must preserve.
   deployment interval. Pre-cutover tabs still need the existing refresh/retry
   path; the remaining reaction read still uses legacy Server Action transport.
   Reports are the next bounded Wave 2 slice.
+
+### Report submission — October 2026
+
+- The sole browser mutation caller, `useEntityReport`, now sends typed JSON
+  POSTs to `/_actions/reportEntity`: `{ entityType, entityId: UUID, reason,
+  details: string }`, returning 200 `{ success: true }`. The shared dialog is
+  reached through `EntityDetailActions` and the spell-school/custom-rule pages;
+  hazards use the `monster` entity type, as before.
+- The route validates the entity/reason enums, UUID and details string, derives
+  reporter identity from the session, and delegates to the unchanged report
+  service. One-report-per-user/entity idempotency and original reason/details
+  retention on duplicates remain unchanged. Existing reporting does not enforce
+  entity ownership or visibility; this transport cutover does not introduce new
+  resource authorization semantics or a public moderation API.
+- Exact-origin/JSON enforcement, no CORS, telemetry identifiers (not report
+  details), and generic unexpected 500s reuse `internalAction`. The hook keeps
+  its report-summary cache update and no navigation/revalidation. The dialog
+  retains pending disable and now catches HTTP/network failures inline, keeping
+  reason/details for manual retry rather than closing or losing the draft.
+- Removed `reportEntity` from `app/actions/reports.ts`, obsolete action tests
+  and the hook's action import/call. `getMyReport` remains for Wave 3.
+  Application ratchet: **70 → 69**; report service/database, admin moderation,
+  public APIs and repository boundaries are unchanged.
+- Route-boundary and real-dialog fetch tests cover stable URL/no `next-action`,
+  all entity types/reasons, session identity, malformed input, origin/media
+  rejection, safe failures, cache updates and pending/error/manual retry UX.
+  Live authenticated HTTP checks verify persisted reason/details, duplicate
+  idempotency and independent reporters. Browser QA covers existing report
+  surfaces, draft retention, manual retry and Reported state after reload.
+  Disposable non-admin users and copies of seeded/existing content are used;
+  production uses short-lived Auth.js sessions, never a dev-login bypass.
+  Request/deployment evidence and explicit zero-count cleanup checks are
+  recorded in the linked run thread above.
+- Retain this URL and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs still need the existing refresh/retry
+  path; the remaining report read still uses legacy Server Action transport.
+  Conditions and preferences are next in Wave 2.

@@ -47,13 +47,19 @@ export function ReportEntityDialog({
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState<ReportReason | "">("");
   const [details, setDetails] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (!reason) return;
-    await report(reason, details);
-    setOpen(false);
-    setReason("");
-    setDetails("");
+    setError(null);
+    try {
+      await report(reason, details);
+      setOpen(false);
+      setReason("");
+      setDetails("");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to report");
+    }
   };
 
   return (
@@ -101,6 +107,11 @@ export function ReportEntityDialog({
             onChange={(e) => setDetails(e.target.value)}
           />
         </div>
+        {error && (
+          <p role="alert" className="text-sm text-destructive">
+            {error}
+          </p>
+        )}
         <DialogFooter>
           <Button onClick={handleSubmit} disabled={!reason || isReportPending}>
             Report
