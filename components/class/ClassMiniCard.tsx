@@ -78,7 +78,7 @@ export function ClassMiniCard({
         <div className="text-base line-clamp-2">{classEntity.description}</div>
       </CardContent>
       <CardFooterLayout
-        className={cn(selectable && "pointer-events-none")}
+        className={cn(selectable && "relative z-20")}
         creator={classEntity.creator}
         source={classEntity.source}
         awards={classEntity.awards}
@@ -101,16 +101,21 @@ export function ClassMiniCard({
 
   if (selectable) {
     return (
-      <button
-        type="button"
+      <div
         className={cn(
           "w-full cursor-pointer relative text-left transition-[filter] duration-150 hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
           selected && "drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
         )}
-        onClick={onSelect}
       >
+        <button
+          type="button"
+          aria-label={`Select ${classEntity.name}`}
+          aria-pressed={selected}
+          className="absolute inset-0 z-10 rounded-xl focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
+          onClick={onSelect}
+        />
         {card}
-      </button>
+      </div>
     );
   }
 
