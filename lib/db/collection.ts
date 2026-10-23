@@ -1078,31 +1078,6 @@ export const addSubclassToCollection = async (input: {
   }
 };
 
-export const addClassToCollection = async (input: {
-  classId: string;
-  collectionId: string;
-}): Promise<void> => {
-  const db = getDatabase();
-
-  const existing = await db
-    .select()
-    .from(classesCollections)
-    .where(
-      and(
-        eq(classesCollections.collectionId, input.collectionId),
-        eq(classesCollections.classId, input.classId)
-      )
-    )
-    .limit(1);
-
-  if (existing.length === 0) {
-    await db.insert(classesCollections).values({
-      collectionId: input.collectionId,
-      classId: input.classId,
-    });
-  }
-};
-
 export const listPublicCollectionsForUser = async (
   creatorId: string
 ): Promise<CollectionOverview[]> => {

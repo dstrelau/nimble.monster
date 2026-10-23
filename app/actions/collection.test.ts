@@ -5,42 +5,12 @@ const { mockListCollectionsWithMonstersForUser } = vi.hoisted(() => ({
   mockListCollectionsWithMonstersForUser: vi.fn(),
 }));
 
-// Mock for entity accessibility checks (getDatabase returns a chainable query builder)
-const { mockGetDatabase } = vi.hoisted(() => {
-  const mockResult = vi.fn().mockResolvedValue([{ id: "entity" }]);
-  const chain = {
-    select: vi.fn(),
-    from: vi.fn(),
-    where: vi.fn(),
-    limit: mockResult,
-  };
-  chain.select.mockReturnValue(chain);
-  chain.from.mockReturnValue(chain);
-  chain.where.mockReturnValue(chain);
-  return {
-    mockGetDatabase: vi.fn(() => chain),
-  };
-});
-
 vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
-vi.mock("@/lib/db/drizzle", () => ({ getDatabase: mockGetDatabase }));
-vi.mock("@/lib/db/schema", () => ({
-  classes: { id: "c.id", visibility: "c.vis", userId: "c.uid" },
-}));
-vi.mock("drizzle-orm", () => ({
-  and: vi.fn((...args: unknown[]) => args),
-  eq: vi.fn((...args: unknown[]) => args),
-  or: vi.fn((...args: unknown[]) => args),
-}));
 
 const unauthorizedSentinel = Symbol("unauthorized");
-const forbiddenSentinel = Symbol("forbidden");
 vi.mock("next/navigation", () => ({
   unauthorized: vi.fn(() => {
     throw unauthorizedSentinel;
-  }),
-  forbidden: vi.fn(() => {
-    throw forbiddenSentinel;
   }),
 }));
 
