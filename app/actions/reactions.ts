@@ -1,12 +1,11 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import type { ReactableEntityType, ReactionType } from "@/lib/db/schema";
+import type { ReactableEntityType } from "@/lib/db/schema";
 import { findAncestry } from "@/lib/services/ancestries/repository";
 import {
   getReactionsSummary,
   type ReactionsSummary,
-  toggleReaction,
 } from "@/lib/services/reactions";
 
 export async function getMyReactions(
@@ -24,29 +23,4 @@ export async function getMyReactions(
     };
   }
   return getReactionsSummary(entityType, entityId, session.user.id);
-}
-
-export async function toggleMyReaction(
-  entityType: ReactableEntityType,
-  entityId: string,
-  reactionType: ReactionType
-): Promise<{
-  success: boolean;
-  data?: ReactionsSummary;
-  error?: string;
-}> {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return { success: false, error: "Not authenticated" };
-  }
-  if (entityType === "ancestry" && !(await findAncestry(entityId))) {
-    return { success: false, error: "Ancestry not found" };
-  }
-  const data = await toggleReaction(
-    entityType,
-    entityId,
-    session.user.id,
-    reactionType
-  );
-  return { success: true, data };
 }

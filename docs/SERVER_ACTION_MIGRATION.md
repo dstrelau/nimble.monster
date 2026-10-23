@@ -444,7 +444,7 @@ contract compatibility window that a future migration must preserve.
 | Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6), [item deletion](https://ampcode.com/threads/T-01a13c98-fff1-70db-8069-f73ee3f1805b), [encounter deletion](https://ampcode.com/threads/T-01a13dab-a15d-7443-94f8-d96e9f856073), [collection deletion](https://ampcode.com/threads/T-01a13ebe-4c4c-7488-b3e4-cc6d709ec057), [ancestry deletion](https://ampcode.com/threads/T-01a13fd0-f6d8-71da-90c0-5802c407f5dd), [background deletion](https://ampcode.com/threads/T-01a140e3-9c3e-736f-ae30-237797e4ebc0), [class deletion](https://ampcode.com/threads/T-01a141f6-ab29-7486-a38e-0cf7979d41a5), [subclass deletion](https://ampcode.com/threads/T-01a1441b-eb0c-739a-9999-8b3be511c56c), [companion deletion](https://ampcode.com/threads/T-01a1452e-6f24-7362-a486-d87159dee0a1), [family deletion](https://ampcode.com/threads/T-01a14641-5148-70ec-822b-a77be155af1d), [spell-school deletion](https://ampcode.com/threads/T-01a14753-b964-771c-84f1-75ed7ecd56f7), and [custom-rule deletion](https://ampcode.com/threads/T-01a15993-16a3-748b-8f4f-08dfd4c166a5) complete; collection and encounter relationships are next in Wave 2 |
 | Collection membership | Complete | Monster/hazard, item, spell-school, companion, ancestry, background and [subclass additions](https://ampcode.com/threads/T-01a16113-ad31-73be-bbe1-1162b11fed6d) use stable JSON; [unused class action removed](https://ampcode.com/threads/T-01a16671-16c8-767b-b110-eb5a4fc52e2f); editor-based class additions/replacement/removal already use `saveCollection` |
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
-| Reactions, reports, conditions, preferences | Not started | Wave 2 |
+| Reactions, reports, conditions, preferences | Partially complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985) use stable JSON; reports are next in Wave 2 |
 | Public browser reads | Not started | Wave 3; prefer existing JSON:API |
 | Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
 | Admin workflows | Not started | Wave 4 |
@@ -1403,3 +1403,39 @@ contract compatibility window that a future migration must preserve.
 - No new class-detail functionality or stable route is introduced. Existing
   `saveCollection` contracts and cache behavior are unchanged. Reactions and
   reports are next in Wave 2; collection/encounter relationship writes are complete.
+
+### Reaction toggles — October 2026
+
+- The only browser mutation caller, `useEntityReactions`, now sends typed JSON
+  POSTs to `/_actions/toggleReaction`: `{ entityType, entityId: UUID,
+  reactionType }`, returning 200 `{ success: true, data: { counts, mine } }`.
+  The shared hook serves all 12 reactable types, including monsters/hazards,
+  badge and labeled controls, list cards and detail pages.
+- The route validates both enums and the UUID, derives identity from the session,
+  preserves the existing inaccessible-ancestry 404 check, and delegates to the
+  unchanged reaction service. Mutual exclusion, toggle-off behavior, aggregate
+  counts and denormalized `like_count` synchronization remain unchanged. This
+  transport migration does not extend ancestry-specific visibility checks to
+  other entity types or introduce new resource authorization semantics.
+- Exact-origin/JSON enforcement, no CORS, telemetry identifiers, and generic
+  unexpected 500s reuse `internalAction`. The hook keeps the same query-summary
+  update, no navigation, no optimistic count change and manual retry behavior;
+  no automatic mutation retry or new cache revalidation is introduced. Controls
+  retain their existing pending/error presentation.
+- Removed `toggleMyReaction` and its obsolete action tests; `getMyReactions`
+  remains for Wave 3. Application ratchet: **71 → 70**; repository boundaries,
+  public APIs, report actions and shared transport are unchanged.
+- Route-boundary and real-component fetch tests cover stable URL/no `next-action`,
+  every entity type, auth, ancestry privacy, malformed input, origin/media
+  rejection, safe errors, summary updates, failed-request count retention and
+  manual retry. Live HTTP checks cover all 12 types plus hazards, upvote/downvote
+  replacement/removal, two-user aggregation, spoofed identity and independent SQL
+  checks of reactions and `like_count`. Browser QA covers badge/labeled toggles,
+  full reload, navigation, failed transport/manual retry and clean successful-flow
+  console/page errors. Disposable non-admin users and copied content are used,
+  with explicit zero-count cleanup checks; production authentication uses
+  short-lived Auth.js sessions, not a development bypass.
+- Retain this URL and accepted request/response shapes for at least one full
+  deployment interval. Pre-cutover tabs still need the existing refresh/retry
+  path; the remaining reaction read still uses legacy Server Action transport.
+  Reports are the next bounded Wave 2 slice.

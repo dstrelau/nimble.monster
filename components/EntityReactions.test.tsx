@@ -9,15 +9,14 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mockUseSession } = vi.hoisted(() => ({ mockUseSession: vi.fn() }));
-const { mockGetMyReactions, mockToggleMyReaction } = vi.hoisted(() => ({
+const { mockGetMyReactions } = vi.hoisted(() => ({
   mockGetMyReactions: vi.fn(),
-  mockToggleMyReaction: vi.fn(),
 }));
+const mockFetch = vi.fn<typeof fetch>();
 
 vi.mock("next-auth/react", () => ({ useSession: mockUseSession }));
 vi.mock("@/app/actions/reactions", () => ({
   getMyReactions: mockGetMyReactions,
-  toggleMyReaction: mockToggleMyReaction,
 }));
 
 import { EntityReactions } from "./EntityReactions";
@@ -32,11 +31,13 @@ function createWrapper() {
 }
 
 beforeEach(() => {
+  vi.stubGlobal("fetch", mockFetch);
   mockUseSession.mockReturnValue({ status: "authenticated" });
 });
 
 afterEach(() => {
-  vi.clearAllMocks();
+  vi.resetAllMocks();
+  vi.unstubAllGlobals();
   cleanup();
 });
 
@@ -106,13 +107,15 @@ describe("EntityReactions", () => {
       counts: { thumbs_up: 0, thumbs_down: 0 },
       mine: [],
     });
-    mockToggleMyReaction.mockResolvedValue({
-      success: true,
-      data: {
-        counts: { thumbs_up: 1, thumbs_down: 0 },
-        mine: ["thumbs_up"],
-      },
-    });
+    mockFetch.mockResolvedValue(
+      Response.json({
+        success: true,
+        data: {
+          counts: { thumbs_up: 1, thumbs_down: 0 },
+          mine: ["thumbs_up"],
+        },
+      })
+    );
 
     render(<EntityReactions entityType="monster" entityId="m1" />, {
       wrapper: createWrapper(),
@@ -122,11 +125,16 @@ describe("EntityReactions", () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(mockToggleMyReaction).toHaveBeenCalledWith(
-        "monster",
-        "m1",
-        "thumbs_up"
-      );
+      expect(mockFetch).toHaveBeenCalledWith("/_actions/toggleReaction", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          entityType: "monster",
+          entityId: "m1",
+          reactionType: "thumbs_up",
+        }),
+      });
     });
     await waitFor(() => {
       expect(
@@ -140,13 +148,15 @@ describe("EntityReactions", () => {
       counts: { thumbs_up: 1, thumbs_down: 0 },
       mine: ["thumbs_up"],
     });
-    mockToggleMyReaction.mockResolvedValue({
-      success: true,
-      data: {
-        counts: { thumbs_up: 0, thumbs_down: 0 },
-        mine: [],
-      },
-    });
+    mockFetch.mockResolvedValue(
+      Response.json({
+        success: true,
+        data: {
+          counts: { thumbs_up: 0, thumbs_down: 0 },
+          mine: [],
+        },
+      })
+    );
 
     render(<EntityReactions entityType="monster" entityId="m1" />, {
       wrapper: createWrapper(),
@@ -157,13 +167,6 @@ describe("EntityReactions", () => {
     });
     fireEvent.click(button);
 
-    await waitFor(() => {
-      expect(mockToggleMyReaction).toHaveBeenCalledWith(
-        "monster",
-        "m1",
-        "thumbs_up"
-      );
-    });
     await waitFor(() => {
       const upvoteButton = screen.getByRole("button", { name: "Upvote" });
       expect(upvoteButton).toHaveTextContent("");
@@ -186,5 +189,41 @@ describe("EntityReactions", () => {
         "Like 2"
       )
     );
+  });
+
+  it("keeps the previous count after failure and permits a manual retry", async () => {
+    mockGetMyReactions.mockResolvedValue({
+      counts: { thumbs_up: 2, thumbs_down: 0 },
+      mine: [],
+    });
+    mockFetch.mockResolvedValueOnce(
+      Response.json({ error: "Internal Server Error" }, { status: 500 })
+    );
+    mockFetch.mockResolvedValueOnce(
+      Response.json({
+        success: true,
+        data: { counts: { thumbs_up: 3, thumbs_down: 0 }, mine: ["thumbs_up"] },
+      })
+    );
+    render(<EntityReactions entityType="item" entityId="i1" />, {
+      wrapper: createWrapper(),
+    });
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Upvote" })).toHaveTextContent(
+        "2"
+      )
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Upvote" }));
+    await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+    expect(screen.getByRole("button", { name: "Upvote" })).toHaveTextContent(
+      "2"
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Upvote" }));
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Remove upvote" })
+      ).toHaveTextContent("3")
+    );
+    expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 });
