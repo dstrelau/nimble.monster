@@ -5,7 +5,7 @@ import { Pencil, Plus, Sparkles, Trash2, TriangleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { loadConditionUsage } from "@/app/%5Factions/conditions/contract";
-import { deleteCondition } from "@/app/actions/conditions";
+import { deleteCondition } from "@/app/%5Factions/deleteCondition/contract";
 import { ConditionManagementDialog } from "@/components/condition/ConditionManagementDialog";
 import { SearchInput } from "@/components/shared/SearchInput";
 import {
@@ -67,7 +67,7 @@ function ConditionCard({ condition }: ConditionCardProps) {
     setPending(true);
     setError("");
     try {
-      await deleteCondition(condition.id);
+      await call(deleteCondition, { id: condition.id });
       setConfirmOpen(false);
       await refresh();
     } catch {

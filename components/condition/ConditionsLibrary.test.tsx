@@ -11,7 +11,7 @@ import {
   loadConditionUsage,
   updateCondition,
 } from "@/app/%5Factions/conditions/contract";
-import { deleteCondition } from "@/app/actions/conditions";
+import { deleteCondition } from "@/app/%5Factions/deleteCondition/contract";
 import type { ConditionUsage } from "@/lib/conditions";
 import { call } from "@/lib/contract";
 import { ConditionsLibrary } from "./ConditionsLibrary";
@@ -23,11 +23,11 @@ vi.mock("@/lib/contract", async (importOriginal) => ({
 }));
 vi.mock("@/app/actions/conditions", () => ({
   createCondition: vi.fn(),
-  deleteCondition: vi.fn(),
 }));
 afterEach(() => {
   cleanup();
   vi.resetAllMocks();
+  vi.unstubAllGlobals();
 });
 
 const unused: ConditionUsage = {
@@ -166,7 +166,7 @@ describe("ConditionsLibrary", () => {
     fireEvent.click(screen.getByRole("button", { name: "Delete Dazed" }));
     await screen.findByText(/7 entities in your library reference it/);
     expect(call).toHaveBeenCalledWith(loadConditionUsage, { id: "condition" });
-    expect(deleteCondition).not.toHaveBeenCalled();
+    expect(call).not.toHaveBeenCalledWith(deleteCondition, expect.anything());
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Delete Dazed" }));
@@ -179,7 +179,7 @@ describe("ConditionsLibrary", () => {
     await waitFor(() =>
       expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument()
     );
-    expect(deleteCondition).toHaveBeenCalledWith("condition");
+    expect(call).toHaveBeenCalledWith(deleteCondition, { id: "condition" });
   });
 
   it.each([0, 1])(
@@ -215,6 +215,64 @@ describe("ConditionsLibrary", () => {
     expect(
       screen.getByRole("button", { name: "Delete Condition" })
     ).toBeDisabled();
-    expect(deleteCondition).not.toHaveBeenCalled();
+    expect(call).not.toHaveBeenCalledWith(deleteCondition, expect.anything());
   });
+
+  it.each(["http", "network"])(
+    "uses stable JSON transport, retains confirmation on %s failure and retries manually",
+    async (failure) => {
+      const transport =
+        await vi.importActual<typeof import("@/lib/contract")>(
+          "@/lib/contract"
+        );
+      vi.mocked(call).mockImplementation(transport.call);
+      const fetchMock = vi.fn().mockResolvedValueOnce(Response.json(unused));
+      vi.stubGlobal("fetch", fetchMock);
+      renderLibrary(unused);
+      fireEvent.click(screen.getByRole("button", { name: "Delete Dazed" }));
+      const remove = await screen.findByRole("button", {
+        name: "Delete Condition",
+      });
+      await waitFor(() => expect(remove).toBeEnabled());
+      let rejectRequest: (error: Error) => void = () => {};
+      let resolveRequest: (response: Response) => void = () => {};
+      fetchMock.mockImplementationOnce(
+        () =>
+          new Promise<Response>((resolve, reject) => {
+            resolveRequest = resolve;
+            rejectRequest = reject;
+          })
+      );
+      fireEvent.click(remove);
+      expect(screen.getByRole("button", { name: "Deleting…" })).toBeDisabled();
+      expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
+      if (failure === "network") rejectRequest(new Error("Failed to fetch"));
+      else
+        resolveRequest(
+          Response.json({ error: "Unavailable" }, { status: 500 })
+        );
+      expect(await screen.findByRole("alert")).toHaveTextContent(
+        "Could not delete condition. Please try again."
+      );
+      expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+      expect(remove).toBeEnabled();
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      fetchMock.mockResolvedValueOnce(Response.json({ success: true }));
+      fireEvent.click(remove);
+      await waitFor(() =>
+        expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument()
+      );
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+      for (const [url, options] of fetchMock.mock.calls.slice(1)) {
+        expect(url).toBe("/_actions/deleteCondition");
+        expect(options).toEqual({
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: "condition" }),
+        });
+        expect(new Headers(options.headers).has("next-action")).toBe(false);
+      }
+    }
+  );
 });

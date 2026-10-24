@@ -4,7 +4,6 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import {
   createCondition as dbCreateCondition,
-  deleteCondition as dbDeleteCondition,
   listConditionsForDiscordId,
   listOfficialConditions,
 } from "@/lib/db/condition";
@@ -52,14 +51,4 @@ export async function createCondition(
   );
   revalidatePath("/my", "layout");
   return condition;
-}
-
-export async function deleteCondition(conditionId: string): Promise<void> {
-  const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error("Not authenticated");
-  }
-
-  await dbDeleteCondition(conditionId, session.user.discordId);
-  revalidatePath("/my", "layout");
 }
