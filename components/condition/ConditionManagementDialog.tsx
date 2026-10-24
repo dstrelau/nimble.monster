@@ -5,7 +5,7 @@ import { Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { updateCondition } from "@/app/%5Factions/conditions/contract";
-import { createCondition } from "@/app/actions/conditions";
+import { createCondition } from "@/app/%5Factions/createCondition/contract";
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -49,7 +49,7 @@ export function ConditionManagementDialog({
       if (condition) {
         await call(updateCondition, { id: condition.id, description });
       } else {
-        await createCondition(name, description);
+        await call(createCondition, { name, description });
       }
       await queryClient.invalidateQueries({ queryKey: ["conditions"] });
       router.refresh();

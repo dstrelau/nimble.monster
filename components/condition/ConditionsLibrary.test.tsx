@@ -21,9 +21,6 @@ vi.mock("@/lib/contract", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/contract")>()),
   call: vi.fn(),
 }));
-vi.mock("@/app/actions/conditions", () => ({
-  createCondition: vi.fn(),
-}));
 afterEach(() => {
   cleanup();
   vi.resetAllMocks();
@@ -70,6 +67,80 @@ function renderLibrary(
 }
 
 describe("ConditionsLibrary", () => {
+  it.each(["http", "network"])(
+    "creates through stable JSON, retains drafts after %s failure and retries manually",
+    async (failure) => {
+      const transport =
+        await vi.importActual<typeof import("@/lib/contract")>(
+          "@/lib/contract"
+        );
+      vi.mocked(call).mockImplementation(transport.call);
+      const fetchMock = vi.fn();
+      vi.stubGlobal("fetch", fetchMock);
+      renderLibrary();
+      fireEvent.click(screen.getByRole("button", { name: "New Condition" }));
+      fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+        target: { value: "Cancelled" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+      expect(fetchMock).not.toHaveBeenCalled();
+      fireEvent.click(screen.getByRole("button", { name: "New Condition" }));
+      const name = screen.getByRole("textbox", { name: "Name" });
+      const description = screen.getByRole("textbox", { name: "Description" });
+      expect(name).toHaveValue("");
+      expect(
+        screen.getByRole("button", { name: "Create Condition" })
+      ).toBeDisabled();
+      fireEvent.change(name, { target: { value: "New Daze" } });
+      fireEvent.change(description, {
+        target: { value: "Cannot react.\nÉlan lost." },
+      });
+      let rejectRequest: (error: Error) => void = () => {};
+      let resolveRequest: (response: Response) => void = () => {};
+      fetchMock.mockImplementationOnce(
+        () =>
+          new Promise<Response>((resolve, reject) => {
+            resolveRequest = resolve;
+            rejectRequest = reject;
+          })
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Create Condition" }));
+      expect(screen.getByRole("button", { name: "Creating…" })).toBeDisabled();
+      expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
+      expect(name).toBeDisabled();
+      expect(description).toBeDisabled();
+      if (failure === "network") rejectRequest(new Error("Failed to fetch"));
+      else
+        resolveRequest(Response.json({ error: "Conflict" }, { status: 409 }));
+      await screen.findByRole("alert");
+      expect(name).toHaveValue("New Daze");
+      expect(description).toHaveValue("Cannot react.\nÉlan lost.");
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      fetchMock.mockResolvedValueOnce(
+        Response.json({ success: true }, { status: 201 })
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Create Condition" }));
+      await waitFor(() =>
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+      );
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      for (const [url, options] of fetchMock.mock.calls) {
+        expect(url).toBe("/_actions/createCondition");
+        expect(options).toEqual({
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: "New Daze",
+            description: "Cannot react.\nÉlan lost.",
+          }),
+        });
+        expect(new Headers(options.headers).has("next-action")).toBe(false);
+      }
+    }
+  );
+
   it("edits only the description and discards cancelled edits", async () => {
     renderLibrary();
     expect(
