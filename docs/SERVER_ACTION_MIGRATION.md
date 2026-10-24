@@ -444,7 +444,7 @@ contract compatibility window that a future migration must preserve.
 | Deletes and relationship writes | Partially complete | [Monster/hazard deletion](https://ampcode.com/threads/T-01a13a73-a887-7119-b01e-78b7a94f4db6), [item deletion](https://ampcode.com/threads/T-01a13c98-fff1-70db-8069-f73ee3f1805b), [encounter deletion](https://ampcode.com/threads/T-01a13dab-a15d-7443-94f8-d96e9f856073), [collection deletion](https://ampcode.com/threads/T-01a13ebe-4c4c-7488-b3e4-cc6d709ec057), [ancestry deletion](https://ampcode.com/threads/T-01a13fd0-f6d8-71da-90c0-5802c407f5dd), [background deletion](https://ampcode.com/threads/T-01a140e3-9c3e-736f-ae30-237797e4ebc0), [class deletion](https://ampcode.com/threads/T-01a141f6-ab29-7486-a38e-0cf7979d41a5), [subclass deletion](https://ampcode.com/threads/T-01a1441b-eb0c-739a-9999-8b3be511c56c), [companion deletion](https://ampcode.com/threads/T-01a1452e-6f24-7362-a486-d87159dee0a1), [family deletion](https://ampcode.com/threads/T-01a14641-5148-70ec-822b-a77be155af1d), [spell-school deletion](https://ampcode.com/threads/T-01a14753-b964-771c-84f1-75ed7ecd56f7), and [custom-rule deletion](https://ampcode.com/threads/T-01a15993-16a3-748b-8f4f-08dfd4c166a5) complete; collection and encounter relationships are next in Wave 2 |
 | Collection membership | Complete | Monster/hazard, item, spell-school, companion, ancestry, background and [subclass additions](https://ampcode.com/threads/T-01a16113-ad31-73be-bbe1-1162b11fed6d) use stable JSON; [unused class action removed](https://ampcode.com/threads/T-01a16671-16c8-767b-b110-eb5a4fc52e2f); editor-based class additions/replacement/removal already use `saveCollection` |
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
-| Reactions, reports, conditions, preferences | Partially complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139) and [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) use stable JSON; preferences remain in Wave 2 |
+| Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
 | Public browser reads | Not started | Wave 3; prefer existing JSON:API |
 | Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
 | Admin workflows | Not started | Wave 4 |
@@ -1550,3 +1550,36 @@ contract compatibility window that a future migration must preserve.
 - Retain this URL and accepted request/response shapes for at least one full
   deployment interval. Pre-cutover tabs still need the existing refresh/retry
   path. Preferences are the next bounded Wave 2 work.
+
+### Banner dismissal — October 2026
+
+- `FreeBanner`, the sole caller, sends a typed JSON POST to
+  `/_actions/dismissBanner` with `{}`, returning 200 `{ success: true }`.
+  The existing database update remains scoped to the session user ID and only
+  sets `banner_dismissed=true`; repeated calls are idempotent. Client-supplied
+  identity/preference fields are ignored. Unauthenticated calls return 401.
+- The shared `internalAction` boundary enforces exact origin, JSON media type,
+  no CORS, telemetry and generic unexpected 500s. Malformed JSON and non-object
+  bodies return 400. No cache revalidation, session-token refresh or navigation
+  existed in this flow, and none is introduced. Existing session snapshots retain
+  their banner flag until sign-in refresh; browser-local storage immediately
+  retains dismissal independently, as before.
+- Dismissal remains local-first, including signed-out usage: hide immediately
+  and store the browser preference without waiting for a server response.
+  Signed-out clicks make no request. HTTP/network failures now settle safely
+  rather than becoming unhandled rejections; they do not undo local dismissal,
+  show an error for an already-dismissed banner, or automatically retry.
+- Removed `dismissBanner` and the now-empty `app/actions/user.ts` module.
+  Application ratchet: **67 → 66**. No other preference Server Actions remain;
+  Wave 2 is complete. Public browser reads are next in documented Wave 3 order.
+- Route tests use real in-memory SQL to verify owner isolation, idempotency and
+  rejected-request retention; real-component tests cover stable URL/no
+  `next-action`, pending local dismissal, signed-out behavior and HTTP/network
+  failures. Live development and authenticated production requests independently
+  verify persisted preferences and unchanged second-user state. Browser QA
+  verifies dismissal, failure retention, normal navigation and reload.
+  Disposable non-admin users are removed with explicit absence checks;
+  production uses one-hour Auth.js sessions, never a dev-login bypass or real-user
+  content. Request/deployment/cleanup evidence is recorded in the linked run.
+- Retain this URL and accepted shapes for at least one full deployment interval.
+  Pre-cutover tabs retain the existing refresh/retry requirement.

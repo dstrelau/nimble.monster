@@ -4,8 +4,9 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useLayoutEffect, useState } from "react";
-import { dismissBanner } from "@/app/actions/user";
+import { dismissBanner } from "@/app/%5Factions/dismissBanner/contract";
 import { Button } from "@/components/ui/button";
+import { call } from "@/lib/contract";
 
 const STORAGE_KEY = "nimble-nexus-banner-dismissed";
 
@@ -22,7 +23,11 @@ export function FreeBanner() {
     localStorage.setItem(STORAGE_KEY, "true");
     setDismissed(true);
     if (session?.user?.id) {
-      await dismissBanner();
+      try {
+        await call(dismissBanner, {});
+      } catch {
+        // Local dismissal is independent of best-effort account persistence.
+      }
     }
   };
 
