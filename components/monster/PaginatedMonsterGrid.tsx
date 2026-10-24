@@ -18,7 +18,6 @@ import {
   userProfileMonstersInfiniteQueryOptions,
 } from "@/app/u/[username]/hooks";
 import {
-  CreateEmptyState,
   EmptyState,
   ErrorState,
   LoadingState,
@@ -151,14 +150,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
       />
 
       {!filteredMonsters || filteredMonsters?.length === 0 ? (
-        props.kind === "my-monsters" ? (
-          <CreateEmptyState
-            href={hazardsOnly ? "/hazards/new" : "/monsters/new"}
-            entityName={hazardsOnly ? "Hazard" : "Monster"}
-          />
-        ) : (
-          <EmptyState entityName={hazardsOnly ? "hazards" : "monsters"} />
-        )
+        <EmptyState entityName={hazardsOnly ? "hazards" : "monsters"} />
       ) : (
         <div className="grid grid-flow-dense grid-cols-1 gap-8 @min-[44rem]:grid-cols-2 @min-[70rem]:grid-cols-3 print:grid-cols-3">
           {filteredMonsters.map((monster) => (

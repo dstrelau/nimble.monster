@@ -11,7 +11,6 @@ import {
 import { myEncountersInfiniteQueryOptions } from "@/app/my/encounters/hooks";
 import { EncounterCard } from "@/components/encounter/EncounterCard";
 import {
-  CreateEmptyState,
   EmptyState,
   ErrorState,
   LoadingState,
@@ -76,11 +75,7 @@ export const EncountersListView: React.FC<EncountersListViewProps> = (
       />
 
       {!filteredEncounters || filteredEncounters?.length === 0 ? (
-        props.kind === "my-encounters" ? (
-          <CreateEmptyState href="/encounters/new" entityName="Encounter" />
-        ) : (
-          <EmptyState entityName="encounters" />
-        )
+        <EmptyState entityName="encounters" />
       ) : (
         <>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">

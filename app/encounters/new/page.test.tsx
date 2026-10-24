@@ -104,7 +104,7 @@ describe("NewEncounterPage", () => {
       NewEncounterPage({
         searchParams: Promise.resolve({ remix: slugify(source) }),
       })
-    ).rejects.toThrow("REDIRECT:/create");
+    ).rejects.toThrow("REDIRECT:/api/auth/signin?callbackUrl=/encounters/new");
 
     render(await NewEncounterPage({ searchParams: Promise.resolve({}) }));
     expect(screen.getByLabelText("Encounter draft")).toHaveTextContent("null");

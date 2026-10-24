@@ -13,7 +13,7 @@ export default async function NewEncounterPage({
   const session = await auth();
 
   if (!session?.user?.id) {
-    redirect("/create");
+    redirect("/api/auth/signin?callbackUrl=/encounters/new");
   }
 
   const { remix } = await searchParams;

@@ -10,13 +10,18 @@ import type { MyLibraryCounts } from "@/lib/db/my-library";
 import { MyLibrarySidebar } from "./MyLibrarySidebar";
 
 let pathname = "/my/monsters";
+const router = vi.hoisted(() => ({ push: vi.fn(), replace: vi.fn() }));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => pathname,
+  useRouter: () => router,
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
+  vi.clearAllMocks();
   pathname = "/my/monsters";
 });
 
@@ -40,6 +45,30 @@ const counts: MyLibraryCounts = {
 };
 
 describe("MyLibrarySidebar", () => {
+  it("searches the library from any /my page", () => {
+    vi.useFakeTimers();
+    render(<MyLibrarySidebar counts={counts} />);
+
+    fireEvent.change(
+      screen.getByRole("textbox", { name: "Search my library" }),
+      {
+        target: { value: "  frost giant " },
+      }
+    );
+    expect(router.push).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(250);
+
+    expect(router.push).toHaveBeenCalledWith("/my/library?q=frost+giant");
+  });
+
+  it("omits library search from public profile sidebars", () => {
+    render(<MyLibrarySidebar counts={counts} profileHref="/u/someone" />);
+
+    expect(
+      screen.queryByRole("textbox", { name: "Search my library" })
+    ).not.toBeInTheDocument();
+  });
+
   it("shows every library section with its count and active state", () => {
     render(<MyLibrarySidebar counts={counts} />);
 

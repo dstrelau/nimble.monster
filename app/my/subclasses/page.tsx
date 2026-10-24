@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
-import { CreateEmptyState } from "@/components/shared/GridStates";
+import { MyLibraryPageHeader } from "@/components/layout/MyLibraryPageHeader";
+import { EmptyState } from "@/components/shared/GridStates";
 import { SubclassesListView } from "@/components/subclass/SubclassesListView";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import { ENTITY_TYPE_ICONS } from "@/lib/types/entity-links";
 
 export default async function MySubclassesPage() {
   const session = await auth();
@@ -13,9 +15,15 @@ export default async function MySubclassesPage() {
   );
 
   return (
-    <div className="py-3">
+    <div className="space-y-6">
+      <MyLibraryPageHeader
+        icon={ENTITY_TYPE_ICONS.subclass}
+        title="My Subclasses"
+        newHref="/subclasses/new"
+        newLabel="New Subclass"
+      />
       {subclasses.length === 0 ? (
-        <CreateEmptyState href="/subclasses/new" entityName="Subclass" />
+        <EmptyState entityName="subclasses" />
       ) : (
         <SubclassesListView subclasses={subclasses} />
       )}

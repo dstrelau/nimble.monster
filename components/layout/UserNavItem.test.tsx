@@ -70,7 +70,7 @@ describe("UserNavItem", () => {
     fireEvent.click(screen.getByRole("button", { name: /Login to Create/ }));
 
     expect(signIn).toHaveBeenCalledWith("discord", {
-      redirectTo: "/create",
+      redirectTo: "/my/library",
     });
   });
 
@@ -91,13 +91,8 @@ describe("UserNavItem", () => {
 
     render(<UserNavItem open={true} onOpenChange={vi.fn()} />);
 
-    expect(screen.getByRole("link", { name: "Create" })).toHaveAttribute(
-      "href",
-      "/create"
-    );
     const accountLinks = screen.getAllByRole("link");
     expect(accountLinks.map((link) => link.textContent)).toEqual([
-      "Create",
       "My Library",
       "View Profile",
     ]);

@@ -8,7 +8,6 @@ import type React from "react";
 import { publicAncestriesInfiniteQueryOptions } from "@/app/ancestries/hooks";
 import { myAncestriesInfiniteQueryOptions } from "@/app/my/ancestries/hooks";
 import {
-  CreateEmptyState,
   EmptyState,
   ErrorState,
   LoadingState,
@@ -89,11 +88,7 @@ export const PaginatedAncestryGrid: React.FC<PaginatedAncestryGridProps> = (
       />
 
       {!filteredAncestries || filteredAncestries?.length === 0 ? (
-        props.kind === "my-ancestries" ? (
-          <CreateEmptyState href="/ancestries/new" entityName="Ancestry" />
-        ) : (
-          <EmptyState entityName="ancestries" />
-        )
+        <EmptyState entityName="ancestries" />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 gap-4">
           {filteredAncestries.map((ancestry) => (

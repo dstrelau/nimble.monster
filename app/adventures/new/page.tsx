@@ -46,7 +46,8 @@ const EMPTY_ADVENTURE: AdventureInput = {
 
 export default async function NewAdventurePage() {
   const session = await auth();
-  if (!session?.user?.id) redirect("/create");
+  if (!session?.user?.id)
+    redirect("/api/auth/signin?callbackUrl=/adventures/new");
 
   const [encounters, tables, officialMonsters] = await Promise.all([
     listAccessibleEncounterOverviews(session.user.id),

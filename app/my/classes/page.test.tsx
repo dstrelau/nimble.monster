@@ -52,10 +52,12 @@ describe("MyClassesPage", () => {
     render(await MyClassesPage());
 
     expect(screen.queryByTestId("classes-list-view")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Create Class" })).toHaveAttribute(
+    expect(
+      screen.getByRole("heading", { name: "My Classes" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "New Class" })).toHaveAttribute(
       "href",
       "/classes/new"
     );
-    expect(screen.getAllByRole("link")).toHaveLength(1);
   });
 });

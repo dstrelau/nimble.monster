@@ -1,9 +1,10 @@
 "use client";
 
-import { ChevronDown, Library, Sparkles, Table2 } from "lucide-react";
+import { ChevronDown, Library } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { SearchInput } from "@/components/shared/SearchInput";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -13,6 +14,7 @@ import {
 import type { MyLibraryCounts } from "@/lib/db/my-library";
 import {
   MY_LIBRARY_GROUPS,
+  MY_LIBRARY_PRIVATE_ITEMS,
   type MyLibraryItem,
 } from "@/lib/types/entity-links";
 import { cn } from "@/lib/utils";
@@ -92,6 +94,44 @@ function LibraryNavigation({
   );
 }
 
+const LIBRARY_PATH = "/my/library";
+
+function MyLibrarySearch() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const onLibrary = pathname === LIBRARY_PATH;
+  const currentQuery = onLibrary ? (searchParams.get("q") ?? "") : "";
+  const [value, setValue] = useState(currentQuery);
+  const timer = useRef<number | undefined>(undefined);
+
+  useEffect(() => setValue(currentQuery), [currentQuery]);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+
+  function handleChange(next: string) {
+    setValue(next);
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => {
+      const query = next.trim();
+      if (!onLibrary && !query) return;
+      const href = query
+        ? `${LIBRARY_PATH}?${new URLSearchParams({ q: query })}`
+        : LIBRARY_PATH;
+      if (onLibrary) router.replace(href);
+      else router.push(href);
+    }, 225);
+  }
+
+  return (
+    <SearchInput
+      aria-label="Search my library"
+      placeholder="Search my library"
+      value={value}
+      onChange={handleChange}
+    />
+  );
+}
+
 export function MyLibrarySidebar({
   counts,
   profileHref,
@@ -103,21 +143,7 @@ export function MyLibrarySidebar({
     ...group,
     items:
       !profileHref && group.label === "Play"
-        ? [
-            ...group.items,
-            {
-              href: "/my/tables",
-              label: "Reference Tables",
-              icon: Table2,
-              key: "random-tables" as const,
-            },
-            {
-              href: "/my/conditions",
-              label: "Conditions",
-              icon: Sparkles,
-              key: "conditions" as const,
-            },
-          ]
+        ? [...group.items, ...MY_LIBRARY_PRIVATE_ITEMS]
         : group.items,
   }));
   const activeItem = groups
@@ -141,6 +167,11 @@ export function MyLibrarySidebar({
                 <Library className="size-5 text-primary" />
                 {title}
               </span>
+            </div>
+          )}
+          {!profileHref && (
+            <div className="mb-5">
+              <MyLibrarySearch />
             </div>
           )}
           <nav aria-label={navigationLabel}>
@@ -182,6 +213,11 @@ export function MyLibrarySidebar({
             aria-label={profileHref ? "Public library menu" : "My library menu"}
             className="mt-2 rounded-lg border bg-card p-4 shadow-sm"
           >
+            {!profileHref && (
+              <div className="mb-5">
+                <MyLibrarySearch />
+              </div>
+            )}
             <LibraryNavigation
               counts={counts}
               profileHref={profileHref}

@@ -7,7 +7,7 @@ export default async function NewCollectionPage() {
   const session = await auth();
 
   if (!session?.user?.id) {
-    redirect("/create");
+    redirect("/api/auth/signin?callbackUrl=/collections/new");
   }
 
   return (

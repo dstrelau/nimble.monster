@@ -31,11 +31,13 @@ describe("MyRulesPage", () => {
 
     render(await MyRulesPage());
 
-    expect(screen.getByRole("link", { name: "Create Rule" })).toHaveAttribute(
+    expect(
+      screen.getByRole("heading", { name: "My Rules" })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "New Rule" })).toHaveAttribute(
       "href",
       "/custom-rules/new"
     );
-    expect(screen.getAllByRole("link")).toHaveLength(1);
   });
 
   it("lists all rules owned by the current user", async () => {

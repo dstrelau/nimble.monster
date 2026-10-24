@@ -231,7 +231,7 @@ export async function FieldGuideHome() {
               </p>
             )}
             <Link
-              href="/create"
+              href="/my/library"
               className="inline-flex items-center gap-2 text-primary hover:underline"
             >
               Make something new{" "}
@@ -279,7 +279,7 @@ export async function FieldGuideHome() {
         </div>
         <div className="space-y-2">
           <Button size="lg" asChild>
-            <Link href="/create">
+            <Link href="/my/library">
               Share your creation <ArrowRight aria-hidden="true" />
             </Link>
           </Button>

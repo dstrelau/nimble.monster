@@ -1,9 +1,11 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 import { PaginatedAncestryGrid } from "@/components/ancestry/PaginatedAncestryGrid";
+import { MyLibraryPageHeader } from "@/components/layout/MyLibraryPageHeader";
 import { auth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/queryClient";
 import { paginatePublicAncestries } from "@/lib/services/ancestries/repository";
+import { ENTITY_TYPE_ICONS } from "@/lib/types/entity-links";
 import { myAncestriesInfiniteQueryOptions } from "./hooks";
 
 export default async function MyAncestriesPage() {
@@ -21,8 +23,16 @@ export default async function MyAncestriesPage() {
   });
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <PaginatedAncestryGrid kind="my-ancestries" />
-    </HydrationBoundary>
+    <div className="space-y-6">
+      <MyLibraryPageHeader
+        icon={ENTITY_TYPE_ICONS.ancestry}
+        title="My Ancestries"
+        newHref="/ancestries/new"
+        newLabel="New Ancestry"
+      />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <PaginatedAncestryGrid kind="my-ancestries" />
+      </HydrationBoundary>
+    </div>
   );
 }

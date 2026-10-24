@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "24 October 2026",
+    entries: [
+      "My Library now shows your most recent creations and can search everything you've made.",
+    ],
+  },
+  {
     date: "19 October 2026",
     entries: ["Manage Conditions in My Library"],
   },

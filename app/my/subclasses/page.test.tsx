@@ -54,8 +54,9 @@ describe("MySubclassesPage", () => {
     expect(
       screen.queryByTestId("subclasses-list-view")
     ).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: "Create Subclass" })
-    ).toHaveAttribute("href", "/subclasses/new");
+    expect(screen.getByRole("link", { name: "New Subclass" })).toHaveAttribute(
+      "href",
+      "/subclasses/new"
+    );
   });
 });

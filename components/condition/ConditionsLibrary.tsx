@@ -7,6 +7,7 @@ import { useState } from "react";
 import { loadConditionUsage } from "@/app/%5Factions/conditions/contract";
 import { deleteCondition } from "@/app/%5Factions/deleteCondition/contract";
 import { ConditionManagementDialog } from "@/components/condition/ConditionManagementDialog";
+import { MyLibraryPageHeader } from "@/components/layout/MyLibraryPageHeader";
 import { SearchInput } from "@/components/shared/SearchInput";
 import {
   AlertDialog,
@@ -198,11 +199,7 @@ export function ConditionsLibrary({ conditions }: ConditionsLibraryProps) {
   );
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Sparkles className="size-6 stroke-flame" />
-          <h1 className="text-2xl font-bold">My Conditions</h1>
-        </div>
+      <MyLibraryPageHeader icon={Sparkles} title="My Conditions">
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -214,7 +211,7 @@ export function ConditionsLibrary({ conditions }: ConditionsLibraryProps) {
             <ConditionManagementDialog onSaved={() => setCreateOpen(false)} />
           )}
         </Dialog>
-      </div>
+      </MyLibraryPageHeader>
       <SearchInput
         aria-label="Search conditions"
         value={search}

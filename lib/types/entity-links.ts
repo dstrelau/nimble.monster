@@ -10,6 +10,7 @@ import {
   NotebookPen,
   Scroll,
   Shield,
+  Sparkles,
   Swords,
   Table2,
   TriangleAlert,
@@ -249,3 +250,19 @@ export const MY_LIBRARY_GROUPS: {
 export const MY_LIBRARY_ITEMS = MY_LIBRARY_GROUPS.flatMap(
   (group) => group.items
 );
+
+/** Library sections shown only to the owner, appended to the Play group. */
+export const MY_LIBRARY_PRIVATE_ITEMS: MyLibraryItem[] = [
+  {
+    href: "/my/tables",
+    label: "Reference Tables",
+    icon: Table2,
+    key: "random-tables",
+  },
+  {
+    href: "/my/conditions",
+    label: "Conditions",
+    icon: Sparkles,
+    key: "conditions",
+  },
+];

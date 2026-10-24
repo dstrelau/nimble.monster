@@ -1,10 +1,10 @@
-import { NotebookPen, Plus } from "lucide-react";
+import { NotebookPen } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CreateEmptyState } from "@/components/shared/GridStates";
+import { MyLibraryPageHeader } from "@/components/layout/MyLibraryPageHeader";
+import { EmptyState } from "@/components/shared/GridStates";
 import { VisibilityBadge } from "@/components/shared/VisibilityBadge";
-import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { listCustomRulesForUser } from "@/lib/db/custom-rule";
 import { SITE_NAME } from "@/lib/utils/branding";
@@ -20,25 +20,16 @@ export default async function MyRulesPage() {
 
   const rules = await listCustomRulesForUser(session.user.id);
 
-  if (rules.length === 0) {
-    return <CreateEmptyState href="/custom-rules/new" entityName="Rule" />;
-  }
-
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <NotebookPen className="size-6 stroke-flame" />
-          <h1 className="text-2xl font-bold">My Rules</h1>
-        </div>
-        <Button asChild>
-          <Link href="/custom-rules/new">
-            <Plus />
-            New Rule
-          </Link>
-        </Button>
-      </div>
+      <MyLibraryPageHeader
+        icon={NotebookPen}
+        title="My Rules"
+        newHref="/custom-rules/new"
+        newLabel="New Rule"
+      />
 
+      {rules.length === 0 && <EmptyState entityName="rules" />}
       <div className="grid gap-3 md:grid-cols-2">
         {rules.map((rule) => (
           <Link

@@ -24,6 +24,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/create",
+        destination: "/my/library",
+        permanent: true,
+      },
+      {
         source: "/f/:path*",
         destination: "/families/:path*",
         permanent: true,

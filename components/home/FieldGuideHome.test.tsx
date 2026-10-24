@@ -33,7 +33,7 @@ it("labels every illustration as temporary art and offers real destinations even
   );
   expect(
     screen.getByRole("link", { name: "Share your creation" })
-  ).toHaveAttribute("href", "/create");
+  ).toHaveAttribute("href", "/my/library");
   expect(
     screen.getByText(/The next creature could be yours/)
   ).toBeInTheDocument();
