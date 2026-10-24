@@ -1,26 +1,11 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData } from "@tanstack/react-query";
 import type { PaginatePublicMonstersResponse } from "@/lib/services/monsters/service";
 import type {
   MonsterRole,
   MonsterTypeOption,
   PaginateMonstersSortOption,
 } from "@/lib/services/monsters/types";
-import { listAllMonsterSources, paginatePublicMonsters } from "./actions";
-
-export function monsterSourcesQueryOptions(props?: { enabled?: boolean }) {
-  return {
-    ...props,
-    queryKey: ["monster-sources"],
-    queryFn: async () => {
-      return await listAllMonsterSources();
-    },
-    staleTime: 60000,
-  };
-}
-
-export function useMonsterSourcesQuery(props?: { enabled?: boolean }) {
-  return useQuery(monsterSourcesQueryOptions(props));
-}
+import { paginatePublicMonsters } from "./actions";
 
 export function publicMonstersInfiniteQueryOptions({
   search,

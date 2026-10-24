@@ -9,7 +9,6 @@ import {
 import { getQueryClient } from "@/lib/queryClient";
 import { monstersService } from "@/lib/services/monsters";
 import { deslugify } from "@/lib/utils/slug";
-import { monsterSourcesQueryOptions } from "../hooks";
 
 export default async function NewMonsterPage({
   searchParams,
@@ -36,7 +35,6 @@ export default async function NewMonsterPage({
 
   await Promise.all([
     queryClient.prefetchQuery(userFamiliesQueryOptions()),
-    queryClient.prefetchQuery(monsterSourcesQueryOptions()),
     queryClient.prefetchQuery(officialConditionsQueryOptions()),
     queryClient.prefetchQuery(
       userConditionsQueryOptions({ discordId: session?.user?.discordId })

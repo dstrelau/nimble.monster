@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { Source } from "@/lib/types";
 import * as repository from "./repository";
 import {
   type BestiaryEntry,
@@ -135,10 +134,6 @@ export class MonstersService {
     }
 
     return repository.deleteMonster(monsterId, userDiscordId);
-  }
-
-  async listAllSources(): Promise<Source[]> {
-    return repository.listAllSources();
   }
 }
 

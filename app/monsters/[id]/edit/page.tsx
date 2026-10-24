@@ -9,7 +9,6 @@ import { getQueryClient } from "@/lib/queryClient";
 import { findMonsterWithCreatorId } from "@/lib/services/monsters";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterEditUrl } from "@/lib/utils/url";
-import { monsterSourcesQueryOptions } from "../../hooks";
 
 export default async function EditMonsterPage({
   params,
@@ -35,7 +34,6 @@ export default async function EditMonsterPage({
   const [usedInOtherUsersEncounter] = await Promise.all([
     isMonsterInOtherUsersEncounter(monster.id, session.user.id),
     queryClient.prefetchQuery(userFamiliesQueryOptions()),
-    queryClient.prefetchQuery(monsterSourcesQueryOptions()),
     queryClient.prefetchQuery(officialConditionsQueryOptions()),
   ]);
 

@@ -1803,19 +1803,3 @@ export const updateHazard = async (
   if (!hazard) throw new Error("Hazard not found");
   return hazard;
 };
-
-export const listAllSources = async (): Promise<Source[]> => {
-  const db = await getDatabase();
-
-  const sourceRows = await db.select().from(sources).orderBy(asc(sources.name));
-
-  return sourceRows.map((s) => ({
-    id: s.id,
-    name: s.name,
-    license: s.license,
-    link: s.link,
-    abbreviation: s.abbreviation,
-    createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
-    updatedAt: s.updatedAt ? new Date(s.updatedAt) : new Date(),
-  }));
-};

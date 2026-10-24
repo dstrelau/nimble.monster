@@ -1,6 +1,5 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import BuildMonsterView from "@/app/monsters/BuildMonsterView";
-import { monsterSourcesQueryOptions } from "@/app/monsters/hooks";
 import { auth } from "@/lib/auth";
 import {
   officialConditionsQueryOptions,
@@ -39,7 +38,6 @@ export default async function NewHazardPage({
   }
 
   await Promise.all([
-    queryClient.prefetchQuery(monsterSourcesQueryOptions()),
     queryClient.prefetchQuery(officialConditionsQueryOptions()),
     queryClient.prefetchQuery(
       userConditionsQueryOptions({ discordId: session?.user?.discordId })

@@ -10,7 +10,6 @@ import { z } from "zod";
 import { publicAncestriesInfiniteQueryOptions } from "@/app/ancestries/hooks";
 import { publicBackgroundsInfiniteQueryOptions } from "@/app/backgrounds/hooks";
 import { publicEncountersInfiniteQueryOptions } from "@/app/encounters/actions";
-import { monsterSourcesQueryOptions } from "@/app/monsters/hooks";
 import {
   userProfileHazardsInfiniteQueryOptions,
   userProfileMonstersInfiniteQueryOptions,
@@ -230,7 +229,6 @@ export default async function UserProfileEntityPage({
     db.getPublicLibraryCounts(user.id),
     loadProfileEntityContent(entityType, user.id, rawSearchParams, queryClient),
     queryClient.prefetchQuery(sourcesQueryOptions()),
-    queryClient.prefetchQuery(monsterSourcesQueryOptions()),
     queryClient.prefetchQuery(officialConditionsQueryOptions()),
   ]);
 
