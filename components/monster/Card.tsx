@@ -5,6 +5,12 @@ import { Fragment } from "react";
 import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { UserAvatar } from "@/components/layout/UserAvatar";
+import {
+  MonsterCardHeader,
+  MonsterCardLevelTab,
+  type MonsterDamageInteractions,
+} from "@/components/monster/MonsterCardHeader";
+import { MonsterCardMetadata } from "@/components/monster/MonsterCardMetadata";
 import { MonsterImage } from "@/components/monster/MonsterImage";
 import { PaperforgeLink } from "@/components/paperforge/PaperforgeLink";
 import { AbilityOverlay } from "@/components/shared/AbilityOverlay";
@@ -18,6 +24,7 @@ import { Level } from "@/components/shared/Level";
 import { MoreInfoSection } from "@/components/shared/MoreInfoSection";
 import { CardContentWithGap } from "@/components/shared/StyledComponents";
 import { Card as ShadcnCard } from "@/components/ui/card";
+import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
 import type {
@@ -298,6 +305,7 @@ const TeamHeader: React.FC<{ monster: MonsterFormState; link?: boolean }> = ({
 
 interface CardProps {
   monster: MonsterFormState;
+  damageInteractions?: MonsterDamageInteractions;
   creator?: User;
   link?: boolean;
   noInteractive?: boolean;
@@ -312,6 +320,7 @@ interface CardProps {
 
 export const Card = ({
   monster,
+  damageInteractions,
   creator,
   link = true,
   noInteractive = false,
@@ -323,6 +332,7 @@ export const Card = ({
   selected = false,
   onSelect,
 }: CardProps) => {
+  const redesigned = useFeatureFlag("monster-card-layout");
   const { allConditions: conditions } = useConditions({
     creatorId: creator?.discordId,
   });
@@ -342,6 +352,8 @@ export const Card = ({
     (monster.families?.some((family) => family.abilities.length > 0) ??
       false) ||
     (monster.abilities?.length ?? 0) > 0;
+  const showBloodied = !monster.hazard && !monster.minion && !!monster.bloodied;
+  const showLastStand = (monster.legendary || isTeam) && !!monster.lastStand;
   const preventNonDiceInteraction = (event: React.MouseEvent<HTMLElement>) => {
     if (!(event.target instanceof Element)) return;
     if (event.target.closest("[data-dice-notation]")) return;
@@ -365,7 +377,13 @@ export const Card = ({
       onClickCapture={noInteractive ? preventNonDiceInteraction : undefined}
       {...(selectable && selected && { "data-selected": "" })}
     >
-      {isTeam ? (
+      {redesigned ? (
+        <MonsterCardHeader
+          monster={monster}
+          link={!selectable && link && !noInteractive}
+          damageInteractions={damageInteractions}
+        />
+      ) : isTeam ? (
         <TeamHeader
           monster={monster}
           link={!selectable && link && !noInteractive}
@@ -389,7 +407,8 @@ export const Card = ({
       <CardContentWithGap
         className={cn(
           selectable && "pointer-events-none",
-          (monster.paperforgeId || monster.customArtwork) &&
+          !redesigned &&
+            (monster.paperforgeId || monster.customArtwork) &&
             !isTeam &&
             !hasAbilities &&
             "pt-4"
@@ -423,23 +442,24 @@ export const Card = ({
               <MemberDivider />
             </Fragment>
           ))}
-        {!monster.hazard && !monster.minion && monster.bloodied && (
-          <PrefixedFormattedText
-            content={monster.bloodied}
-            conditions={conditions}
-            prefix={<strong>BLOODIED:</strong>}
-            noInteractive={noInteractive}
-          />
-        )}
-
-        {(monster.legendary || isTeam) && monster.lastStand && (
-          <div>
-            <PrefixedFormattedText
-              content={monster.lastStand}
-              conditions={conditions}
-              prefix={<strong>LAST STAND:</strong>}
-              noInteractive={noInteractive}
-            />
+        {(showBloodied || showLastStand) && (
+          <div className={cn("flex flex-col", !redesigned && "gap-4")}>
+            {showBloodied && monster.bloodied && (
+              <PrefixedFormattedText
+                content={monster.bloodied}
+                conditions={conditions}
+                prefix={<strong>BLOODIED:</strong>}
+                noInteractive={noInteractive}
+              />
+            )}
+            {showLastStand && monster.lastStand && (
+              <PrefixedFormattedText
+                content={monster.lastStand}
+                conditions={conditions}
+                prefix={<strong>LAST STAND:</strong>}
+                noInteractive={noInteractive}
+              />
+            )}
           </div>
         )}
 
@@ -524,6 +544,7 @@ export const Card = ({
         )}
       </CardContentWithGap>
 
+      {redesigned && <MonsterCardMetadata monster={monster} />}
       <CardFooterLayout
         creator={creator}
         source={monster.source}
@@ -554,6 +575,7 @@ export const Card = ({
         id={`monster-${monster.id}`}
         onClick={onSelect}
       >
+        {redesigned && <MonsterCardLevelTab monster={monster} />}
         {card}
       </button>
     );
@@ -567,6 +589,7 @@ export const Card = ({
       )}
       id={`monster-${monster.id}`}
     >
+      {redesigned && <MonsterCardLevelTab monster={monster} />}
       {card}
     </div>
   );

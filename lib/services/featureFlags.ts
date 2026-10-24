@@ -8,12 +8,14 @@ export type FeatureFlag =
   | "class-draft-autosave"
   | "monster-statblock-editor"
   | "monster-custom-artwork"
+  | "monster-card-layout"
   | "field-guide";
 
 export const FEATURE_FLAGS: readonly FeatureFlag[] = [
   "class-draft-autosave",
   "monster-statblock-editor",
   "monster-custom-artwork",
+  "monster-card-layout",
   "field-guide",
 ];
 
@@ -57,6 +59,7 @@ export async function getFeatureFlagUsers(): Promise<
     "class-draft-autosave": [],
     "monster-statblock-editor": [],
     "monster-custom-artwork": [],
+    "monster-card-layout": [],
     "field-guide": [],
   };
   for (const { feature, user } of rows) {

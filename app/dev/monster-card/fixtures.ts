@@ -73,3 +73,198 @@ export const TROLL_HUNTER: Monster = {
     displayName: "SanityWithIn",
   },
 };
+
+export interface MockDamageInteractions {
+  resistant: ("fire" | "ice" | "acid" | "poison" | "lightning" | "physical")[];
+  vulnerable: ("fire" | "ice" | "acid" | "poison" | "lightning" | "physical")[];
+}
+
+interface MonsterCardCase {
+  id: string;
+  label: string;
+  monster: Monster;
+  soloHp: number;
+  saves: string;
+  damageInteractions?: MockDamageInteractions;
+}
+
+const STRESS_BASE: Monster = {
+  ...TROLL_HUNTER,
+  abilities: TROLL_HUNTER.abilities.slice(0, 1),
+  actions: TROLL_HUNTER.actions.slice(0, 1),
+  moreInfo: undefined,
+};
+
+const LEVIATHAN: Monster = {
+  ...STRESS_BASE,
+  name: "Ancient Clockwork Leviathan of the Sunken Foundry",
+  level: "20",
+  levelInt: 20,
+  size: "gargantuan",
+  kind: "Construct",
+  role: "aoe",
+  armor: "heavy",
+  hp: 999,
+  paperforgeId: "364",
+  speed: 12,
+  swim: 12,
+  fly: 10,
+  climb: 6,
+  burrow: 4,
+  teleport: 30,
+  creatureTypes: ["construct", "elemental"],
+  creatureKinds: ["automaton"],
+  environments: ["underground", "ruins", "aquatic", "volcanic"],
+};
+
+export const MONSTER_CARD_CASES: MonsterCardCase[] = [
+  {
+    id: "troll",
+    label: "Typical name + artwork",
+    monster: {
+      ...TROLL_HUNTER,
+      creatureTypes: ["giant", "humanoid"],
+      creatureKinds: ["troll"],
+      environments: ["forest", "swamp"],
+    },
+    soloHp: 45,
+    saves: "STR++, WIL+",
+    damageInteractions: { resistant: ["ice"], vulnerable: ["fire", "acid"] },
+  },
+  {
+    id: "captain",
+    label: "Long name + artwork",
+    monster: {
+      ...STRESS_BASE,
+      name: "Captain Sylvestra Redmane, the Red Siren",
+      level: "12",
+      levelInt: 12,
+      size: "medium",
+      kind: "Varis' Ex-Paramour",
+      role: "melee",
+      hp: 120,
+      swim: 8,
+      climb: 3,
+      paperforgeId: "325",
+      creatureTypes: ["humanoid"],
+      creatureKinds: ["human"],
+      environments: ["aquatic", "settlement"],
+    },
+    soloHp: 90,
+    saves: "STR+, DEX++, INT-, WIL+",
+    damageInteractions: { resistant: [], vulnerable: ["fire", "acid"] },
+  },
+  {
+    id: "leviathan",
+    label: "Long name + every movement mode + artwork",
+    monster: LEVIATHAN,
+    soloHp: 120,
+    saves: "STR+, DEX++, INT-, WIL+",
+    damageInteractions: {
+      resistant: ["fire", "poison", "physical"],
+      vulnerable: ["ice", "acid"],
+    },
+  },
+  {
+    id: "leviathan-no-art",
+    label: "Same dense monster, without artwork",
+    monster: { ...LEVIATHAN, paperforgeId: undefined },
+    soloHp: 120,
+    saves: "STR+, DEX++, INT-, WIL+",
+    damageInteractions: {
+      resistant: ["fire", "poison", "physical"],
+      vulnerable: ["ice", "acid"],
+    },
+  },
+  {
+    id: "unbroken",
+    label: "Unbroken name + no artwork + no armor",
+    monster: {
+      ...STRESS_BASE,
+      name: "Ghraxxathulmorgovianthraxiel",
+      level: "5",
+      levelInt: 5,
+      size: "medium",
+      kind: "Humanoid",
+      armor: "none",
+      hp: 65,
+      fly: 8,
+      paperforgeId: undefined,
+    },
+    soloHp: 65,
+    saves: "STR++, DEX++, INT-, WIL+",
+  },
+  {
+    id: "imp",
+    label: "Tiny name + dense stats + artwork",
+    monster: {
+      ...STRESS_BASE,
+      name: "Imp",
+      level: "1/2",
+      levelInt: -2,
+      size: "tiny",
+      kind: "Fiend",
+      hp: 12,
+      speed: 4,
+      fly: 8,
+      teleport: 6,
+      creatureTypes: ["fiend"],
+      creatureKinds: ["devil"],
+      environments: ["volcanic", "dungeon"],
+    },
+    soloHp: 12,
+    saves: "DEX++, WIL-",
+    damageInteractions: { resistant: ["fire"], vulnerable: ["ice"] },
+  },
+  {
+    id: "swarm",
+    label: "Long metadata + per-hero HP + no artwork",
+    monster: {
+      ...STRESS_BASE,
+      name: "Swarm of Gnashing Teeth",
+      level: "7",
+      levelInt: 7,
+      size: "huge",
+      kind: "Aberration (Ooze, Swarm of Tiny Eldritch Things)",
+      role: "skirmisher",
+      hp: 0,
+      hpPerHero: 35,
+      swim: 6,
+      climb: 6,
+      paperforgeId: undefined,
+      creatureTypes: ["aberration", "ooze"],
+      environments: ["ruins", "dungeon", "underground"],
+    },
+    soloHp: 135,
+    saves: "STR-, DEX++, INT+, WIL++",
+    damageInteractions: {
+      resistant: ["physical", "poison"],
+      vulnerable: ["fire"],
+    },
+  },
+  {
+    id: "vorthelax",
+    label: "Long solo title + saves + artwork",
+    monster: {
+      ...STRESS_BASE,
+      name: "Vorthelax the Unending, Devourer of the Ninth Sky",
+      level: "15",
+      levelInt: 15,
+      size: "gargantuan",
+      kind: "Dragon",
+      armor: "heavy",
+      hp: 360,
+      fly: 10,
+      paperforgeId: "364",
+      creatureTypes: ["dragon"],
+      creatureKinds: ["drake"],
+      environments: ["mountains", "arctic"],
+    },
+    soloHp: 120,
+    saves: "STR+, DEX++, INT-, WIL+",
+    damageInteractions: {
+      resistant: ["fire", "lightning"],
+      vulnerable: ["ice"],
+    },
+  },
+];

@@ -52,6 +52,7 @@ describe("feature flags", () => {
   it("recognizes registered feature names", () => {
     expect(isFeatureFlag("class-draft-autosave")).toBe(true);
     expect(isFeatureFlag("monster-statblock-editor")).toBe(true);
+    expect(isFeatureFlag("monster-card-layout")).toBe(true);
     expect(isFeatureFlag("field-guide")).toBe(true);
     expect(isFeatureFlag("random-tables")).toBe(false);
     expect(isFeatureFlag("unknown-feature")).toBe(false);
@@ -60,12 +61,14 @@ describe("feature flags", () => {
   it("returns only registered enabled features for a user", async () => {
     mockRows.push([
       { feature: "class-draft-autosave" },
+      { feature: "monster-card-layout" },
       { feature: "random-tables" },
       { feature: "removed-feature" },
     ]);
 
     await expect(getEnabledFeatureFlags("user-1")).resolves.toEqual([
       "class-draft-autosave",
+      "monster-card-layout",
     ]);
   });
 
