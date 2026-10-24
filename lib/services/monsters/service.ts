@@ -5,10 +5,8 @@ import {
   type CreateMonsterInput,
   CreatureTypeOptions,
   type Monster,
-  type MonsterMini,
   MonsterRoleOptions,
   PaginateMonstersSortOptions,
-  type SearchMonstersParams,
   type UpdateMonsterInput,
 } from "./types";
 
@@ -69,10 +67,6 @@ export class MonstersService {
       creatorId,
       ...parsedParams,
     });
-  }
-
-  async searchMonsters(params: SearchMonstersParams): Promise<MonsterMini[]> {
-    return repository.searchPublicMonsterMinis(params);
   }
 
   async listPublicMonstersForUser(userId: string): Promise<Monster[]> {

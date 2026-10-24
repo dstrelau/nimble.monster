@@ -445,7 +445,7 @@ contract compatibility window that a future migration must preserve.
 | Collection membership | Complete | Monster/hazard, item, spell-school, companion, ancestry, background and [subclass additions](https://ampcode.com/threads/T-01a16113-ad31-73be-bbe1-1162b11fed6d) use stable JSON; [unused class action removed](https://ampcode.com/threads/T-01a16671-16c8-767b-b110-eb5a4fc52e2f); editor-based class additions/replacement/removal already use `saveCollection` |
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
-| Public browser reads | Cleanup started | [Unused monster-source prefetch removed](https://ampcode.com/threads/T-01a16f06-5748-72da-8161-a6c2b4a60465); active pagination remains next in Wave 3; prefer existing JSON:API |
+| Public browser reads | Cleanup started | [Unused monster-source prefetch removed](https://ampcode.com/threads/T-01a16f06-5748-72da-8161-a6c2b4a60465) and [unused monster lookup/search removed](https://ampcode.com/threads/T-01a17019-c140-715a-b92e-9c7ea7cf8e9c); active pagination remains next in Wave 3; prefer existing JSON:API |
 | Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
@@ -1610,3 +1610,36 @@ contract compatibility window that a future migration must preserve.
   `AbortSignal` and typed failures); bodyless GET is already supported.
   The live shared source query still uses legacy Server Action transport and
   remains a later Wave 3 slice. Pre-cutover tabs retain refresh/retry handling.
+
+### Unused monster lookup and search — October 2026
+
+- The full caller audit found no imports or calls for `findPublicMonster` or
+  `searchPublicMonsters` in `app/actions/monster.ts`. The search action was the
+  only consumer of `MonstersService.searchMonsters` and the repository's
+  `searchPublicMonsterMinis`; their search parameter/filter types were also
+  exclusively used by that chain. None is the active pagination or picker path.
+- Removed the empty action module, the unused service/repository search methods
+  and their exclusive types. Application ratchet: **65 → 63**; monster repository
+  exports: **28 → 27**. The shared mini converter and `listPublicMonsterMinis`
+  remain because they still have consumers. Repository directives remain for
+  Wave 5. No replacement endpoint, new UI, authorization change or wire contract
+  is invented for unused exports.
+- Existing picker boundary/query transport tests, public monster API tests and
+  bestiary tests cover the retained flows. No new permanent tests are needed for
+  this deletion-only cleanup. Live HTTP checks exercise public/owner picker
+  search, filters, cursor pagination, private exclusion, session-derived owner
+  isolation, origin/media/shape rejection and public/private detail reads.
+  Stable picker requests use JSON with no `next-action` header. Browser QA covers
+  search/selection, detail navigation and full reload without page errors.
+- Disposable non-admin users and private copies of existing content are used,
+  with independent SQL ownership/visibility and zero-count cleanup checks.
+  Production authentication uses one-hour Auth.js sessions, never a dev-login
+  bypass or real-user writes. Request, deployment and cleanup evidence is
+  recorded in the linked run thread.
+- Active public pagination remains next in Wave 3, after the documented shared
+  transport prerequisites (`204`/void, `AbortSignal`, typed failures). The existing
+  monster JSON:API client needs a field-parity audit before replacing pagination:
+  creator, source, awards, families, teams and timestamps cannot be dropped or
+  fabricated. Server Components must keep direct service reads, not relative HTTP
+  fetches. Existing active reads and their pre-cutover refresh/retry requirement
+  are unchanged by this cleanup.

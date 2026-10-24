@@ -60,7 +60,6 @@ import type {
   Monster,
   MonsterMini,
   MonsterRole,
-  SearchMonstersParams,
   UpdateHazardInput,
   UpdateMonsterInput,
 } from "./types";
@@ -1057,83 +1056,6 @@ export const listAllMonstersForDiscordID = async (
     .map((id) => monsterDataMap.get(id))
     .filter((m): m is MonsterFullData => m !== undefined)
     .map(toMonsterFromFullData);
-};
-
-export const searchPublicMonsterMinis = async ({
-  searchTerm,
-  type,
-  creatorId,
-  sortBy = "name",
-  sortDirection = "asc",
-  limit: maxLimit = 500,
-}: SearchMonstersParams): Promise<MonsterMini[]> => {
-  const db = await getDatabase();
-
-  const whereConditions: ReturnType<typeof eq>[] = [
-    eq(monsters.visibility, "public"),
-  ];
-
-  if (creatorId) {
-    // Get user by discordId
-    const userResult = await db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.discordId, creatorId))
-      .limit(1);
-
-    if (userResult.length > 0) {
-      whereConditions.push(eq(monsters.userId, userResult[0].id));
-    }
-  }
-
-  if (type === "standard") {
-    whereConditions.push(eq(monsters.legendary, false));
-    whereConditions.push(eq(monsters.minion, false));
-    whereConditions.push(eq(monsters.hazard, false));
-  } else if (type === "legendary") {
-    whereConditions.push(eq(monsters.legendary, true));
-    whereConditions.push(eq(monsters.hazard, false));
-  } else if (type === "minion") {
-    whereConditions.push(eq(monsters.minion, true));
-    whereConditions.push(eq(monsters.hazard, false));
-  } else if (type === "hazard") {
-    whereConditions.push(eq(monsters.hazard, true));
-  } else {
-    whereConditions.push(eq(monsters.hazard, false));
-  }
-
-  let query = db.select().from(monsters).$dynamic();
-
-  if (searchTerm) {
-    const searchCondition = or(
-      like(monsters.name, `%${searchTerm}%`),
-      like(monsters.kind, `%${searchTerm}%`)
-    );
-    query = query.where(and(...whereConditions, searchCondition));
-  } else {
-    query = query.where(and(...whereConditions));
-  }
-
-  // Add ordering
-  if (sortBy === "name") {
-    query = query.orderBy(
-      sortDirection === "desc" ? desc(monsters.name) : asc(monsters.name)
-    );
-  } else if (sortBy === "level") {
-    query = query.orderBy(
-      sortDirection === "desc"
-        ? desc(monsters.levelInt)
-        : asc(monsters.levelInt)
-    );
-  } else if (sortBy === "hp") {
-    query = query.orderBy(
-      sortDirection === "desc" ? desc(monsters.hp) : asc(monsters.hp)
-    );
-  }
-
-  const monsterRows = await query.limit(maxLimit);
-
-  return monsterRows.map(toMonsterMiniFromRow);
 };
 
 export const listMonstersByFamilyId = async (

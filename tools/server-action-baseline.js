@@ -9,7 +9,6 @@ export const serverActionBaseline = {
     "app/actions/conditions.ts": 2,
     "app/actions/encounter.ts": 1,
     "app/actions/item.ts": 1,
-    "app/actions/monster.ts": 2,
     "app/actions/nav.ts": 1,
     "app/actions/reactions.ts": 1,
     "app/actions/reports.ts": 1,
@@ -40,7 +39,7 @@ export const serverActionBaseline = {
     "lib/services/encounters/repository.ts": 4,
     "lib/services/families/repository.ts": 1,
     "lib/services/items/repository.ts": 15,
-    "lib/services/monsters/repository.ts": 28,
+    "lib/services/monsters/repository.ts": 27,
     "lib/services/sources/repository.ts": 2,
   },
 };

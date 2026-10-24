@@ -95,8 +95,6 @@ export const MonsterRoleOptions = [
   "support",
 ] as const;
 
-export type TypeFilter = "all" | "legendary" | "standard" | "minion" | "hazard";
-
 interface BestiaryEntryMiniBase {
   id: string;
   level: string;
@@ -210,16 +208,6 @@ export type BestiaryEntry = Hazard | CreatureMonster;
 
 /** Storage-shaped state used only by the shared creature/hazard editor UI. */
 export type MonsterFormState = Omit<Monster, "hazard"> & { hazard: boolean };
-
-export interface SearchMonstersParams {
-  searchTerm?: string;
-  type?: TypeFilter;
-  creatorId?: string;
-  legendary?: boolean | null;
-  sortBy?: "name" | "level" | "hp";
-  sortDirection?: "asc" | "desc";
-  limit?: number;
-}
 
 export const MonsterTypeOptions = [
   "all",
