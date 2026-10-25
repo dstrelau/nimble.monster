@@ -1,14 +1,4 @@
-import {
-  and,
-  asc,
-  desc,
-  eq,
-  inArray,
-  like,
-  ne,
-  notExists,
-  or,
-} from "drizzle-orm";
+import { and, asc, eq, inArray, ne, notExists } from "drizzle-orm";
 import type {
   Award,
   ClassAbilityItem,
@@ -361,27 +351,6 @@ export const findSubclass = async (id: string): Promise<Subclass | null> => {
   if (!isValidUUID(id)) return null;
 
   const db = getDatabase();
-  const dataMap = await loadSubclassFullData(db, [id]);
-  const data = dataMap.get(id);
-
-  return data ? toSubclass(data) : null;
-};
-
-export const findPublicSubclassById = async (
-  id: string
-): Promise<Subclass | null> => {
-  if (!isValidUUID(id)) return null;
-
-  const db = getDatabase();
-
-  const check = await db
-    .select({ id: subclasses.id })
-    .from(subclasses)
-    .where(and(eq(subclasses.id, id), eq(subclasses.visibility, "public")))
-    .limit(1);
-
-  if (check.length === 0) return null;
-
   const dataMap = await loadSubclassFullData(db, [id]);
   const data = dataMap.get(id);
 
@@ -784,68 +753,6 @@ export const updateSubclass = async (
   }
 
   return toSubclass(data);
-};
-
-export interface SearchSubclassParams {
-  creatorId?: string;
-  searchTerm?: string;
-  className?: string;
-  sortBy?: "name" | "className";
-  sortDirection?: "asc" | "desc";
-  limit?: number;
-}
-
-export const searchPublicSubclassMinis = async (
-  params: SearchSubclassParams
-): Promise<SubclassMini[]> => {
-  const db = getDatabase();
-
-  const conditions: ReturnType<typeof eq>[] = [
-    eq(subclasses.visibility, "public"),
-  ];
-
-  if (params.creatorId) {
-    const userResult = await db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.discordId, params.creatorId))
-      .limit(1);
-
-    if (userResult.length > 0) {
-      conditions.push(eq(subclasses.userId, userResult[0].id));
-    }
-  }
-
-  if (params.className) {
-    conditions.push(eq(subclasses.className, params.className));
-  }
-
-  let query = db.select().from(subclasses).$dynamic();
-
-  if (params.searchTerm) {
-    const searchCondition = or(
-      like(subclasses.name, `%${params.searchTerm}%`),
-      like(subclasses.tagline, `%${params.searchTerm}%`)
-    );
-    query = query.where(and(...conditions, searchCondition));
-  } else {
-    query = query.where(and(...conditions));
-  }
-
-  // Add ordering
-  const orderFn = params.sortDirection === "desc" ? desc : asc;
-  if (params.sortBy === "className") {
-    query = query.orderBy(orderFn(subclasses.className), asc(subclasses.name));
-  } else {
-    query = query.orderBy(orderFn(subclasses.name));
-  }
-
-  if (params.limit) {
-    query = query.limit(params.limit);
-  }
-
-  const rows = await query;
-  return rows.map(toSubclassMini);
 };
 
 export const findSubclassWithCreatorDiscordId = async (

@@ -445,7 +445,7 @@ contract compatibility window that a future migration must preserve.
 | Collection membership | Complete | Monster/hazard, item, spell-school, companion, ancestry, background and [subclass additions](https://ampcode.com/threads/T-01a16113-ad31-73be-bbe1-1162b11fed6d) use stable JSON; [unused class action removed](https://ampcode.com/threads/T-01a16671-16c8-767b-b110-eb5a4fc52e2f); editor-based class additions/replacement/removal already use `saveCollection` |
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
-| Public browser reads | Cleanup started | [Unused monster-source prefetch removed](https://ampcode.com/threads/T-01a16f06-5748-72da-8161-a6c2b4a60465) and [unused monster lookup/search removed](https://ampcode.com/threads/T-01a17019-c140-715a-b92e-9c7ea7cf8e9c); active pagination remains next in Wave 3; prefer existing JSON:API |
+| Public browser reads | Cleanup started | [Unused monster-source prefetch removed](https://ampcode.com/threads/T-01a16f06-5748-72da-8161-a6c2b4a60465), [unused monster lookup/search removed](https://ampcode.com/threads/T-01a17019-c140-715a-b92e-9c7ea7cf8e9c), and [unused class/subclass lookup/search removed](https://ampcode.com/threads/T-01a1712b-65a5-72de-94ed-eac19100526f); active pagination remains next in Wave 3; prefer existing JSON:API |
 | Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
@@ -1643,3 +1643,40 @@ contract compatibility window that a future migration must preserve.
   fabricated. Server Components must keep direct service reads, not relative HTTP
   fetches. Existing active reads and their pre-cutover refresh/retry requirement
   are unchanged by this cleanup.
+
+### Unused class/subclass lookup and search — October 2026
+
+- The full caller audit found no imports or calls for `searchPublicClasses`,
+  `findPublicClass`, `searchPublicSubclasses` or `findPublicSubclass`. Removed
+  those four exports and their exclusively used database functions
+  `searchPublicClassMinis`, `findPublicClassById`, `searchPublicSubclassMinis`,
+  `findPublicSubclassById` and search parameter types. Application ratchet:
+  **63 → 59**; repository directives and counts are unchanged.
+- Retained public lists, subclass class-option search, direct server detail
+  reads and stable `saveCollection` remain unchanged. No replacement endpoint
+  or new UI is needed for unused exports. Existing route/client tests cover
+  the retained contracts; this deletion-only cleanup adds no transport or tests.
+- The initial browser QA exposed pre-existing nested interactive elements in
+  selectable subclass cards. The separately authorized and deployed
+  [UI fix](https://github.com/dstrelau/nimble.monster/commit/e64c54dd0937971945bcf0d78aa6ed88d141da65)
+  resolves that blocker; it is not part of this cleanup. Repeated local browser
+  QA verifies Classes/Subclasses new/edit/reload with zero nested buttons/links
+  and no console warnings/errors or page errors. Mouse and Space selection,
+  independent source controls, save navigation and membership persistence pass.
+  Known Companion nested creator links and the Heroes source-filter
+  abbreviation/ID mismatch are unrelated, unchanged, and not claimed clean.
+- Focused tests: 66 passed. Full suite: 1,974 passed, seven skipped. `make check`
+  and `git diff --check` pass. The live HTTP matrix uses 15 stable JSON collection
+  saves/rejections plus public/private detail reads, checking session ownership,
+  visibility filtering, creation/addition/repetition/replacement/removal and
+  independent SQL persistence. Browser Create/Save use 201/200 JSON without
+  `next-action`, confirmed with raw CDP request and extra-header events.
+- Disposable non-admin users and copies of existing class/subclass rows are
+  used, never real-user edits. Cleanup checks users, entities, collections,
+  memberships, search catalog and FTS with zero-count assertions and compares
+  original rows unchanged. Production authentication uses one-hour Auth.js
+  sessions, not a development bypass. The [run thread](https://ampcode.com/threads/T-01a1712b-65a5-72de-94ed-eac19100526f)
+  records deployment, functional production requests and cleanup evidence.
+- Active public pagination remains next in Wave 3 after the documented shared
+  transport prerequisites and JSON:API field-parity work. Existing stable
+  contracts and legacy-read refresh/retry handling remain unchanged.

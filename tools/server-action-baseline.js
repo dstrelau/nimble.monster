@@ -3,7 +3,7 @@ export const serverActionBaseline = {
   application: {
     "app/actions/ancestry.ts": 1,
     "app/actions/background.ts": 1,
-    "app/actions/class.ts": 4,
+    "app/actions/class.ts": 2,
     "app/actions/collection.ts": 1,
     "app/actions/companion.ts": 1,
     "app/actions/conditions.ts": 2,
@@ -12,7 +12,7 @@ export const serverActionBaseline = {
     "app/actions/nav.ts": 1,
     "app/actions/reactions.ts": 1,
     "app/actions/reports.ts": 1,
-    "app/actions/subclass.ts": 3,
+    "app/actions/subclass.ts": 1,
     "app/admin/actions.ts": 22,
     "app/ancestries/actions.ts": 1,
     "app/backgrounds/actions.ts": 1,

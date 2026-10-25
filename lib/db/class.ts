@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, like } from "drizzle-orm";
+import { and, asc, eq, inArray, like } from "drizzle-orm";
 import type {
   ArmorType,
   Award,
@@ -316,27 +316,6 @@ export const findClass = async (id: string): Promise<Class | null> => {
   return data ? toClass(data) : null;
 };
 
-export const findPublicClassById = async (
-  id: string
-): Promise<Class | null> => {
-  if (!isValidUUID(id)) return null;
-
-  const db = getDatabase();
-
-  const check = await db
-    .select({ id: classes.id })
-    .from(classes)
-    .where(and(eq(classes.id, id), eq(classes.visibility, "public")))
-    .limit(1);
-
-  if (check.length === 0) return null;
-
-  const dataMap = await loadClassFullData(db, [id]);
-  const data = dataMap.get(id);
-
-  return data ? toClass(data) : null;
-};
-
 export const findClassWithCreatorDiscordId = async (
   id: string,
   discordId: string
@@ -417,55 +396,6 @@ export const listAllClassesForDiscordID = async (
     .map((id) => dataMap.get(id))
     .filter((d): d is ClassFullData => d !== undefined)
     .map(toClass);
-};
-
-export interface SearchClassesParams {
-  searchTerm?: string;
-  creatorId?: string;
-  sortBy?: "name";
-  sortDirection?: "asc" | "desc";
-  limit?: number;
-}
-
-export const searchPublicClassMinis = async (
-  params: SearchClassesParams
-): Promise<ClassMini[]> => {
-  const db = getDatabase();
-
-  const conditions: ReturnType<typeof eq>[] = [
-    eq(classes.visibility, "public"),
-  ];
-
-  if (params.creatorId) {
-    const userResult = await db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.discordId, params.creatorId))
-      .limit(1);
-
-    if (userResult.length > 0) {
-      conditions.push(eq(classes.userId, userResult[0].id));
-    }
-  }
-
-  let query = db.select().from(classes).$dynamic();
-
-  if (params.searchTerm) {
-    const searchCondition = like(classes.name, `%${params.searchTerm}%`);
-    query = query.where(and(...conditions, searchCondition));
-  } else {
-    query = query.where(and(...conditions));
-  }
-
-  const orderFn = params.sortDirection === "desc" ? desc : asc;
-  query = query.orderBy(orderFn(classes.name));
-
-  if (params.limit) {
-    query = query.limit(params.limit);
-  }
-
-  const rows = await query;
-  return rows.map(toClassMini);
 };
 
 export const searchPublicClassesWithCreator = async (
