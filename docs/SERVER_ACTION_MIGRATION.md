@@ -1680,3 +1680,35 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after the documented shared
   transport prerequisites and JSON:API field-parity work. Existing stable
   contracts and legacy-read refresh/retry handling remain unchanged.
+
+### Unused public item lookup — October 2026
+
+- The full caller audit found no imports or calls for `findPublicItem` in
+  `app/actions/item.ts`. Removed that export and its now-empty module, including
+  the already-commented-out search/pagination implementations. Application
+  ratchet: **59 → 58**; repository directives and counts are unchanged.
+- The item service and repository public lookup still serve the public item
+  API, metadata, legacy list redirects and image routes, so they remain. Active
+  detail pages retain their direct service reads and existing visibility checks.
+  No replacement endpoint, new UI, wire contract, auth or cache behavior is
+  introduced for a caller-free export. Existing route/client tests cover the
+  retained contracts; this deletion-only cleanup adds no transport or tests.
+- Focused checks cover the item JSON:API routes, repository and stable item
+  editor contracts/transport. The full suite passes 1,974 tests, with seven
+  skipped; `make check` and `git diff --check` pass. Live development and
+  production verification exercise public item lookup with/without creator
+  inclusion, invalid include/identifier and missing-item errors, canonical UUID
+  redirects, list-to-detail client navigation and full reload. Raw CDP request
+  and extra-header events verify the public API GET has no `next-action` header.
+- QA uses existing public content read-only: no fixtures, real-user writes,
+  sessions minted for production, or database cleanup are needed. Development
+  browser QA uses the configured dev session; production checks are anonymous,
+  matching the public lookup contract. An initial development-only metadataBase
+  warning comes from the unchanged environment-dependent root metadata; the
+  settled browser run has no console/page/hydration errors or failed requests.
+  The [run thread](https://ampcode.com/threads/T-01a17576-b201-73e8-9fee-450c5039275d)
+  records exact requests, deployment identity and final production evidence.
+- Active public pagination remains next in Wave 3 after the documented shared
+  transport prerequisites (`204`/void, `AbortSignal`, typed failures) and
+  JSON:API field-parity audit. Other unused lookups can be removed without
+  inventing endpoints. Existing legacy reads retain refresh/retry handling.
