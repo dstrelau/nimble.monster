@@ -1,8 +1,8 @@
 "use client";
 
+import type { DiceStats } from "nimble-dice";
+import { parseDiceNotation } from "nimble-dice";
 import { useEffect, useState } from "react";
-import { parseDiceNotation } from "@/lib/dice";
-import type { DiceStats } from "@/lib/dice.worker";
 
 interface Result {
   notation: string;

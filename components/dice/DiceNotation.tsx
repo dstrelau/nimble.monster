@@ -1,6 +1,7 @@
 "use client";
 import { Box } from "lucide-react";
 import Link from "next/link";
+import { parseDiceNotation, simulateRoll } from "nimble-dice";
 import { useMemo, useState } from "react";
 import { DiceRollDisplay } from "@/components/dice/DiceRollDisplay";
 import { DiceStatistics } from "@/components/dice/DiceStatistics";
@@ -14,7 +15,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { parseDiceNotation, simulateRoll } from "@/lib/dice";
 import { useDiceStatistics } from "@/lib/hooks/useDiceStatistics";
 
 interface DiceNotationProps {

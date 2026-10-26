@@ -1,12 +1,12 @@
 "use client";
 
 import { RotateCw } from "lucide-react";
+import type { DieResult, RollResult } from "nimble-dice";
+import { parseDiceNotation, simulateRoll } from "nimble-dice";
 import { useMemo, useState } from "react";
 import { DiceRollDisplay } from "@/components/dice/DiceRollDisplay";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { DieResult, RollResult } from "@/lib/dice";
-import { parseDiceNotation, simulateRoll } from "@/lib/dice";
 
 function buildRoll(
   dieSize: number,

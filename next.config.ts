@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
       "node_modules/.pnpm/@opentelemetry+instrumentation-http@*/node_modules/forwarded-parse/**/*",
     ],
   },
-  transpilePackages: ["next-mdx-remote"],
+  transpilePackages: ["next-mdx-remote", "nimble-dice"],
   experimental: {
     useCache: true,
     authInterrupts: true,

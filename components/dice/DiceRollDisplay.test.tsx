@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
+import type { DieResult } from "nimble-dice";
 import { afterEach, describe, expect, it } from "vitest";
-import type { DieResult } from "@/lib/dice";
 import { DiceRollDisplay } from "./DiceRollDisplay";
 
 afterEach(() => {

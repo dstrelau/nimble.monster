@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { parseDiceNotation } from "@/lib/dice";
+import { parseDiceNotation } from "nimble-dice";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { DiceRollerClient } from "./dice-roller-client";
 

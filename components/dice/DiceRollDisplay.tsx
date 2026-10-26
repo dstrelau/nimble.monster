@@ -1,7 +1,7 @@
 import { Box, Flame } from "lucide-react";
+import type { DieResult } from "nimble-dice";
 import React from "react";
 import { D4, D8, D10, D12, D20 } from "@/components/icons/PolyhedralDice";
-import type { DieResult } from "@/lib/dice";
 import { cn } from "@/lib/utils";
 
 function DiceIcon({

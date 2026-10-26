@@ -1,9 +1,9 @@
 import { act, cleanup, render, renderHook } from "@testing-library/react";
+import type { DiceStats } from "nimble-dice";
+import * as dice from "nimble-dice";
 import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { DiceNotation } from "@/components/dice/DiceNotation";
-import * as dice from "@/lib/dice";
-import type { DiceStats } from "@/lib/dice.worker";
 import { useDiceStatistics } from "./useDiceStatistics";
 
 class TestWorker {

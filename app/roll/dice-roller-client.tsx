@@ -1,5 +1,6 @@
 "use client";
 import { Box, CircleAlert, Dices, Info, RotateCw } from "lucide-react";
+import { parseDiceNotation, simulateRoll, VALID_DIE_SIZES } from "nimble-dice";
 import { useQueryState } from "nuqs";
 import { useEffect, useId, useMemo, useState } from "react";
 import { DiceRollDisplay } from "@/components/dice/DiceRollDisplay";
@@ -23,11 +24,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDiceStatistics } from "@/lib/hooks/useDiceStatistics";
-import {
-  parseDiceNotation,
-  simulateRoll,
-  VALID_DIE_SIZES,
-} from "../../lib/dice";
 
 type Props = {
   initialDice: string;

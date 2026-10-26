@@ -1,10 +1,10 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { NuqsTestingAdapter } from "nuqs/adapters/testing";
-import { afterEach, expect, it, vi } from "vitest";
 import {
   calculateProbabilityDistribution,
   parseDiceNotation,
-} from "@/lib/dice";
+} from "nimble-dice";
+import { NuqsTestingAdapter } from "nuqs/adapters/testing";
+import { afterEach, expect, it, vi } from "vitest";
 import { DiceRollerClient } from "./dice-roller-client";
 
 // Model the completed worker response while exercising the real small dice
