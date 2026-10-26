@@ -1712,3 +1712,31 @@ contract compatibility window that a future migration must preserve.
   transport prerequisites (`204`/void, `AbortSignal`, typed failures) and
   JSON:API field-parity audit. Other unused lookups can be removed without
   inventing endpoints. Existing legacy reads retain refresh/retry handling.
+
+### Unused public background lookup — October 2026
+
+- The full caller audit found no imports or calls for `findPublicBackground` in
+  `app/actions/background.ts`. Removed the export and its empty module.
+  Application ratchet: **58 → 57**; repository directives/counts are unchanged.
+- `findBackground` remains shared by direct server detail/metadata reads and
+  the service. Active public pagination and stable background saves remain
+  unchanged. No replacement endpoint, new UI, wire contract, auth, telemetry,
+  cache or navigation behavior is introduced for a caller-free export. Existing
+  background route/client tests cover retained boundaries and stable JSON
+  transport; this deletion-only cleanup needs no new permanent tests.
+- Focused tests: 15 passed. Full suite: 1,974 passed, seven skipped.
+  `make check` and `git diff --check` pass. Live development verification checks
+  background list/detail HTML, malformed/missing identifiers (404), legacy UUID
+  canonical redirects (308), client list-to-detail navigation and full reload.
+  Raw CDP request and extra-header events confirm detail GETs have no
+  `next-action` header; Heroes navigation is active on the list and creator
+  attribution loads, with no browser console/page errors or failed requests.
+- QA reads existing public content only; no fixtures or production-auth sessions
+  are needed and no database writes require cleanup. Development browser QA
+  uses the configured dev session; production QA is anonymous, matching the
+  removed public lookup. The [run thread](https://ampcode.com/threads/T-01a17688-d6a7-763e-bdc6-bc26356b0608)
+  records deployment identity, exact post-deployment functional requests and
+  cleanup. Other legacy action reads remain intentionally outside this slice.
+- Active public pagination remains next in Wave 3 after shared transport
+  prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
+  field-parity work. Unused lookups may be removed without inventing endpoints.
