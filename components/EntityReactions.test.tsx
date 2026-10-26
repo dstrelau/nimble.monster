@@ -15,9 +15,6 @@ const { mockGetMyReactions } = vi.hoisted(() => ({
 const mockFetch = vi.fn<typeof fetch>();
 
 vi.mock("next-auth/react", () => ({ useSession: mockUseSession }));
-vi.mock("@/app/actions/reactions", () => ({
-  getMyReactions: mockGetMyReactions,
-}));
 
 import { EntityReactions } from "./EntityReactions";
 
@@ -31,8 +28,21 @@ function createWrapper() {
 }
 
 beforeEach(() => {
-  vi.stubGlobal("fetch", mockFetch);
-  mockUseSession.mockReturnValue({ status: "authenticated" });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn((url: string, options: RequestInit) => {
+      if (url.startsWith("/_actions/getMyReactions?")) {
+        return mockGetMyReactions().then((summary: unknown) =>
+          Response.json(summary)
+        );
+      }
+      return mockFetch(url, options);
+    })
+  );
+  mockUseSession.mockReturnValue({
+    status: "authenticated",
+    data: { user: { id: "user-1" } },
+  });
 });
 
 afterEach(() => {
@@ -42,6 +52,132 @@ afterEach(() => {
 });
 
 describe("EntityReactions", () => {
+  it("uses a bodyless stable GET with cancellation and no identity or next-action", async () => {
+    mockGetMyReactions.mockResolvedValue({
+      counts: { thumbs_up: 2, thumbs_down: 0 },
+      mine: [],
+    });
+    render(<EntityReactions entityType="item" entityId="i1" />, {
+      wrapper: createWrapper(),
+    });
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Upvote" })).toHaveTextContent(
+        "2"
+      )
+    );
+    expect(fetch).toHaveBeenCalledWith(
+      "/_actions/getMyReactions?entityType=item&entityId=i1",
+      {
+        method: "GET",
+        credentials: "same-origin",
+        signal: expect.any(AbortSignal),
+      }
+    );
+  });
+
+  it("isolates fresh cached reads and an in-flight mutation across account changes", async () => {
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false, staleTime: Infinity } },
+    });
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <QueryClientProvider client={client}>{children}</QueryClientProvider>
+    );
+    mockGetMyReactions.mockResolvedValue({
+      counts: { thumbs_up: 2, thumbs_down: 0 },
+      mine: ["thumbs_up"],
+    });
+    const { rerender } = render(
+      <EntityReactions entityType="item" entityId="i1" />,
+      { wrapper }
+    );
+    await screen.findByRole("button", { name: "Remove upvote" });
+    let resolveMutation: (response: Response) => void = () => {
+      throw new Error("Mutation not started");
+    };
+    mockFetch.mockImplementationOnce(
+      () =>
+        new Promise<Response>((resolve) => {
+          resolveMutation = resolve;
+        })
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Remove upvote" }));
+    await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+    mockUseSession.mockReturnValue({
+      status: "authenticated",
+      data: { user: { id: "user-2" } },
+    });
+    mockGetMyReactions.mockResolvedValue({
+      counts: { thumbs_up: 2, thumbs_down: 0 },
+      mine: [],
+    });
+    rerender(<EntityReactions entityType="item" entityId="i1" />);
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Upvote" })).toHaveTextContent(
+        "2"
+      )
+    );
+    resolveMutation(
+      Response.json({
+        success: true,
+        data: { counts: { thumbs_up: 1, thumbs_down: 0 }, mine: [] },
+      })
+    );
+    await waitFor(() =>
+      expect(
+        client.getQueryData(["reactions", "item", "i1", "user-1"])
+      ).toEqual({ counts: { thumbs_up: 1, thumbs_down: 0 }, mine: [] })
+    );
+    expect(screen.getByRole("button", { name: "Upvote" })).toHaveTextContent(
+      "2"
+    );
+    mockUseSession.mockReturnValue({ status: "unauthenticated" });
+    rerender(<EntityReactions entityType="item" entityId="i1" />);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    client.clear();
+  });
+
+  it("preserves the fallback during pending/error reads and recovers on refetch", async () => {
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <QueryClientProvider client={client}>{children}</QueryClientProvider>
+    );
+    let fail: (error: Error) => void = () => {
+      throw new Error("Read not started");
+    };
+    mockGetMyReactions.mockImplementationOnce(
+      () =>
+        new Promise((_, reject) => {
+          fail = reject;
+        })
+    );
+    render(<EntityReactions entityType="item" entityId="i1" />, { wrapper });
+    expect(screen.getByRole("button", { name: "Upvote" })).toHaveTextContent(
+      ""
+    );
+    fail(new Error("Network failure"));
+    await waitFor(() =>
+      expect(
+        client.getQueryState(["reactions", "item", "i1", "user-1"])?.status
+      ).toBe("error")
+    );
+    expect(screen.getByRole("button", { name: "Upvote" })).toHaveTextContent(
+      ""
+    );
+    mockGetMyReactions.mockResolvedValue({
+      counts: { thumbs_up: 4, thumbs_down: 0 },
+      mine: ["thumbs_up"],
+    });
+    await client.refetchQueries();
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Remove upvote" })
+      ).toHaveTextContent("4")
+    );
+    client.clear();
+  });
+
   it("renders nothing when unauthenticated", () => {
     mockUseSession.mockReturnValue({ status: "unauthenticated" });
 

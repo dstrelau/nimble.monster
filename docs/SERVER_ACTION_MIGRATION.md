@@ -246,7 +246,46 @@ N+1.
 - Do not automatically retry non-idempotent creates. Deletes and updates should
   only retry when their idempotency is established.
 
-## Migration waves
+## Traffic-first migration priority
+
+Select remaining browser operations by observed production root-request volume,
+not wave number or the number of unused exports that can be deleted. Aggregate
+build-specific IDs by verified manifest filename/export name; never rank stale
+IDs as separate operations. Use a fixed recent 24-hour window, with seven days
+as a tie-breaker when sparse. Waves below remain architecture/scope guidance,
+not the execution queue. Historical "next" notes in the progress log describe
+the ordering at that time and are superseded by this section.
+
+Host measurement: Honeycomb environment/dataset `nimble.monster`, fixed window
+**2026-10-25T12:00:00Z–2026-10-26T12:00:00Z**, root HTTP spans only
+(`trace.parent_id` does not exist; `http.request.header.next-action` exists).
+
+| Priority | Verified named operation | Observed requests | HTTP <400 | HTTP ≥400 |
+| --- | --- | ---: | ---: | ---: |
+| 1 | `getMyReactions` (this slice) | 6,171 | 6,005 | 166 |
+| 2 | `loadConditionsForDiscordId` | 4,783 | 4,604 | 179 |
+| 3 | `loadOfficialConditions` | 1,452 | 1,309 | 143 |
+| 4 | `getNavCountsAction` | 1,174 | 1,005 | 169 |
+
+Total observed action root requests: **16,687**. The remaining **3,107** include
+other operations, older references and invalid/unmapped IDs; this is not a
+complete mapping of every ID or historical alias. No sampling banner was returned.
+These are observed requests, not unique users; QA/bot traffic is not excluded.
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/JvkrCgnqMx),
+[initial seven-day ID results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/pQkrFW2AbzZ).
+
+Read-only extraction of five deployed manifests verified OCI layer digests,
+image `GH_SHA`, filename and exported name. For builds `e64c54dd`, `cb96d2c9`,
+`35d84cdc`, `1b63297b`, `57d2ffa5`, respectively, `app/actions/reactions.ts#getMyReactions`
+maps to `609056db60741f152861289bde55e76b2ddaeff6ce`,
+`607cacdbd2a01b7d3748b299f79f3acc0efa051bf4`,
+`600d2b014595ec347bbcfd14d8f15cccc841b64072`,
+`60ebb8262efa7c194bc8fc5d4279b4eea243cd1128`, and
+`602178c695f7dfa0033935b6087223e1323fa6eeb0`. The last mapping was also
+read directly from the running production manifest over Fly SSH. Counts above
+aggregate verified IDs rather than treating them as five different actions.
+
+## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
 file in a wave in one change.
@@ -322,9 +361,9 @@ risk, so migrate them even though they do not write data.
    change, and retain old accepted shapes for the documented compatibility
    window.
 
-Likely slices are public/owner pagination by entity family, then sources and
-creator search, then generic entity/option loaders, navigation counts, and
-other session-specific reads.
+Public/owner pagination by entity family, sources and creator search, generic
+entity/option loaders, navigation counts and other session-specific reads are
+separate bounded slices. Choose among them using the traffic-first queue above.
 
 ### Wave 4 — admin workflows
 
@@ -446,7 +485,7 @@ contract compatibility window that a future migration must preserve.
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
 | Public browser reads | Cleanup started | [Unused monster-source prefetch removed](https://ampcode.com/threads/T-01a16f06-5748-72da-8161-a6c2b4a60465), [unused monster lookup/search removed](https://ampcode.com/threads/T-01a17019-c140-715a-b92e-9c7ea7cf8e9c), and [unused class/subclass lookup/search removed](https://ampcode.com/threads/T-01a1712b-65a5-72de-94ed-eac19100526f); active pagination remains next in Wave 3; prefer existing JSON:API |
-| Private/UI-specific browser reads | Partially complete | Picker complete; remaining reads are Wave 3 |
+| Private/UI-specific browser reads | Partially complete | Picker and [reaction summary reads](https://ampcode.com/threads/T-01a1781c-f9af-7729-a9fb-5deda49e493a) use stable routes; conditions are next by measured traffic |
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Not started | Wave 5 |
@@ -1740,6 +1779,44 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Reaction summary reads — October 2026
+
+- Selected `getMyReactions` ahead of pagination using the verified traffic-first
+  ranking above: 6,171 requests, the most-called current named operation.
+  `useEntityReactions`, shared by list cards and detail controls for all 12
+  reactable types (hazards use `monster`), uses a bodyless typed GET to
+  `/_actions/getMyReactions?entityType=…&entityId=…`. The response remains
+  `{ counts: { thumbs_up, thumbs_down }, mine }`, using JSON primitives only.
+- The route validates enums/UUIDs, derives identity only from `auth()`, returns
+  `private, no-store` on success and errors, records unexpected failures in
+  telemetry and returns generic 500s without CORS. It is a safe read, not a
+  mutation: no origin/media-type requirement is added. Anonymous reads retain
+  a zero summary; inaccessible ancestries remain hidden by the existing
+  repository check. Other types retain existing authorization semantics; this
+  migration does not broaden their visibility checks or expose a public API.
+- The shared reaction service owns the existing empty/ancestry/read behavior.
+  `HydratedEntityDetail` calls it directly, never relative HTTP. Server hydration,
+  browser queries and mutation updates share a session-user-scoped key; identity
+  is not sent as request authority. In-flight mutation results keep their
+  starting cache key even if the account changes. Counts, pending/error fallback,
+  query retry defaults, manual mutation retry and navigation remain unchanged.
+- The shared transport now accepts `AbortSignal`, handles 204/void and throws
+  `RouteError` with HTTP status and a stable code (server code or `HTTP_<status>`),
+  completing the documented browser-read prerequisites without changing other
+  callers' accepted contracts. Reaction queries consume React Query cancellation.
+- Removed `app/actions/reactions.ts` and its obsolete wrapper-only tests.
+  Application ratchet: **56 → 55**; repository directives/counts are unchanged.
+  Route tests use real SQLite aggregation with asymmetric users/reactions;
+  real-component transport tests cover stable GET/no `next-action`, session
+  cache isolation, in-flight account switches and pending/error recovery.
+- Live development and authenticated production QA, deployment identity,
+  inspected browser evidence and explicit zero-residue cleanup are recorded in
+  the [run thread](https://ampcode.com/threads/T-01a1781c-f9af-7729-a9fb-5deda49e493a).
+  Retain this URL and accepted shape for at least one full deployment interval.
+  Pre-cutover tabs still need the existing refresh/retry path for old action IDs.
+  `loadConditionsForDiscordId` is the next traffic-ranked slice; other actions
+  and the recorded unrelated Companion/Heroes UI issues remain unchanged.
 
 ### Unused public ancestry lookup — October 2026
 

@@ -1,11 +1,50 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { call, defineRoute } from "./contract";
+import { call, defineRoute, RouteError } from "./contract";
 
 afterEach(() => {
   vi.unstubAllGlobals();
 });
 
 describe("call", () => {
+  it("supports void responses and forwards cancellation", async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(new Response(null, { status: 204 }));
+    vi.stubGlobal("fetch", fetch);
+    const route = defineRoute<undefined, void>({
+      method: "DELETE",
+      path: () => "/_actions/test",
+    });
+    const { signal } = new AbortController();
+    expect(await call(route, undefined, { signal })).toBeUndefined();
+    expect(fetch.mock.calls[0][1].signal).toBe(signal);
+  });
+
+  it("retains HTTP status and a stable failure code", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(
+          Response.json(
+            { error: "Unavailable", code: "UNAVAILABLE" },
+            { status: 503 }
+          )
+        )
+    );
+    const route = defineRoute<undefined, never>({
+      method: "GET",
+      path: () => "/_actions/test",
+    });
+    await expect(call(route, undefined)).rejects.toMatchObject({
+      name: "RouteError",
+      message: "Unavailable",
+      status: 503,
+      code: "UNAVAILABLE",
+    });
+    expect(RouteError.prototype).toBeInstanceOf(Error);
+  });
+
   it("sends bodyless GET requests with same-origin credentials and no Server Action header", async () => {
     const fetch = vi
       .fn()
@@ -63,6 +102,10 @@ describe("call", () => {
       path: () => "/_actions/test",
     });
 
-    await expect(call(route, undefined)).rejects.toThrow("Not found");
+    await expect(call(route, undefined)).rejects.toMatchObject({
+      message: "Not found",
+      status: 404,
+      code: "HTTP_404",
+    });
   });
 });

@@ -10,13 +10,31 @@ export function defineRoute<Input, Output>(
   return contract;
 }
 
+export class RouteError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+    readonly code: string
+  ) {
+    super(message);
+    this.name = "RouteError";
+  }
+}
+
+export function call<Input, Output>(
+  contract: RouteContract<Input, Output>,
+  input: Input,
+  options?: { signal?: AbortSignal }
+): Promise<Output>;
 export async function call<Input, Output>(
   contract: RouteContract<Input, Output>,
-  input: Input
-): Promise<Output> {
+  input: Input,
+  options: { signal?: AbortSignal } = {}
+): Promise<Output | undefined> {
   const response = await fetch(contract.path(input), {
     method: contract.method,
     credentials: "same-origin",
+    ...options,
     ...(contract.method === "GET"
       ? {}
       : {
@@ -34,8 +52,16 @@ export async function call<Input, Output>(
       typeof body.error === "string"
         ? body.error
         : `Action failed: ${response.status}`;
-    throw new Error(message);
+    const code =
+      typeof body === "object" &&
+      body !== null &&
+      "code" in body &&
+      typeof body.code === "string"
+        ? body.code
+        : `HTTP_${response.status}`;
+    throw new RouteError(message, response.status, code);
   }
 
+  if (response.status === 204) return undefined;
   return response.json();
 }

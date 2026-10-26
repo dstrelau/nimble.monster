@@ -10,19 +10,30 @@ export function useEntityReactions(
   entityType: ReactableEntityType,
   entityId: string
 ) {
-  const { status } = useSession();
+  const { status, data: session } = useSession();
   const queryClient = useQueryClient();
-  const queryKey = ["reactions", entityType, entityId] as const;
+  const options = entityReactionsQueryOptions(
+    entityType,
+    entityId,
+    session?.user?.id
+  );
 
   const query = useQuery({
-    ...entityReactionsQueryOptions(entityType, entityId),
+    ...options,
     enabled: status === "authenticated",
   });
 
   const mutation = useMutation({
-    mutationFn: (reactionType: ReactionType) =>
-      call(toggleReaction, { entityType, entityId, reactionType }),
-    onSuccess: (result) => {
+    mutationFn: async (reactionType: ReactionType) => {
+      const queryKey = options.queryKey;
+      const result = await call(toggleReaction, {
+        entityType,
+        entityId,
+        reactionType,
+      });
+      return { result, queryKey };
+    },
+    onSuccess: ({ result, queryKey }) => {
       if (result.success && result.data) {
         queryClient.setQueryData(queryKey, result.data);
       }

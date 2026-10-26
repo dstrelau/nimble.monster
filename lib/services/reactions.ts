@@ -5,6 +5,7 @@ import {
   type ReactionType,
   reactions,
 } from "@/lib/db/schema";
+import { findAncestry } from "@/lib/services/ancestries/repository";
 import { syncLikeCount } from "@/lib/services/reactableEntities";
 
 export const REACTION_TYPES: ReactionType[] = ["thumbs_up", "thumbs_down"];
@@ -18,6 +19,20 @@ const emptyCounts = (): Record<ReactionType, number> => ({
   thumbs_up: 0,
   thumbs_down: 0,
 });
+
+export async function getMyReactions(
+  entityType: ReactableEntityType,
+  entityId: string,
+  userId?: string
+): Promise<ReactionsSummary> {
+  if (
+    !userId ||
+    (entityType === "ancestry" && !(await findAncestry(entityId)))
+  ) {
+    return { counts: emptyCounts(), mine: [] };
+  }
+  return getReactionsSummary(entityType, entityId, userId);
+}
 
 const oppositeReaction = (reactionType: ReactionType): ReactionType =>
   reactionType === "thumbs_up" ? "thumbs_down" : "thumbs_up";
