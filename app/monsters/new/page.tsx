@@ -2,6 +2,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { userFamiliesQueryOptions } from "@/app/families/hooks";
 import BuildMonsterView from "@/app/monsters/BuildMonsterView";
 import { auth } from "@/lib/auth";
+import { listConditionsForDiscordId } from "@/lib/db/condition";
 import {
   officialConditionsQueryOptions,
   userConditionsQueryOptions,
@@ -36,9 +37,10 @@ export default async function NewMonsterPage({
   await Promise.all([
     queryClient.prefetchQuery(userFamiliesQueryOptions()),
     queryClient.prefetchQuery(officialConditionsQueryOptions()),
-    queryClient.prefetchQuery(
-      userConditionsQueryOptions({ discordId: session?.user?.discordId })
-    ),
+    queryClient.prefetchQuery({
+      ...userConditionsQueryOptions({ discordId: session?.user?.discordId }),
+      queryFn: () => listConditionsForDiscordId(session?.user?.discordId ?? ""),
+    }),
   ]);
 
   return (

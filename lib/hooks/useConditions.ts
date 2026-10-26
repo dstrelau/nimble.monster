@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import {
-  loadConditionsForDiscordId,
-  loadOfficialConditions,
-} from "@/app/actions/conditions";
+import { loadConditionsForDiscordId } from "@/app/%5Factions/loadConditionsForDiscordId/contract";
+import { loadOfficialConditions } from "@/app/actions/conditions";
+import { call } from "@/lib/contract";
 import type { Condition } from "@/lib/types";
 
 export function officialConditionsQueryOptions(props?: {
@@ -28,7 +27,12 @@ export function userConditionsQueryOptions({
   return {
     ...props,
     queryKey: ["conditions", discordId],
-    queryFn: () => loadConditionsForDiscordId(discordId ?? ""),
+    queryFn: ({ signal }: { signal: AbortSignal }) =>
+      call(
+        loadConditionsForDiscordId,
+        { discordId: discordId ?? "" },
+        { signal }
+      ),
     enabled: (props?.enabled ?? true) && !!discordId,
   };
 }

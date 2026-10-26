@@ -262,10 +262,10 @@ Host measurement: Honeycomb environment/dataset `nimble.monster`, fixed window
 
 | Priority | Verified named operation | Observed requests | HTTP <400 | HTTP ≥400 |
 | --- | --- | ---: | ---: | ---: |
-| 1 | `getMyReactions` (this slice) | 6,171 | 6,005 | 166 |
-| 2 | `loadConditionsForDiscordId` | 4,783 | 4,604 | 179 |
-| 3 | `loadOfficialConditions` | 1,452 | 1,309 | 143 |
-| 4 | `getNavCountsAction` | 1,174 | 1,005 | 169 |
+| Migrated | `getMyReactions` | 6,171 | 6,005 | 166 |
+| Migrated in this slice | `loadConditionsForDiscordId` | 4,783 | 4,604 | 179 |
+| Next | `loadOfficialConditions` | 1,452 | 1,309 | 143 |
+| Following | `getNavCountsAction` | 1,174 | 1,005 | 169 |
 
 Total observed action root requests: **16,687**. The remaining **3,107** include
 other operations, older references and invalid/unmapped IDs; this is not a
@@ -485,7 +485,7 @@ contract compatibility window that a future migration must preserve.
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
 | Public browser reads | Cleanup started | [Unused monster-source prefetch removed](https://ampcode.com/threads/T-01a16f06-5748-72da-8161-a6c2b4a60465), [unused monster lookup/search removed](https://ampcode.com/threads/T-01a17019-c140-715a-b92e-9c7ea7cf8e9c), and [unused class/subclass lookup/search removed](https://ampcode.com/threads/T-01a1712b-65a5-72de-94ed-eac19100526f); active pagination remains next in Wave 3; prefer existing JSON:API |
-| Private/UI-specific browser reads | Partially complete | Picker and [reaction summary reads](https://ampcode.com/threads/T-01a1781c-f9af-7729-a9fb-5deda49e493a) use stable routes; conditions are next by measured traffic |
+| Private/UI-specific browser reads | Partially complete | Picker, [reaction summary reads](https://ampcode.com/threads/T-01a1781c-f9af-7729-a9fb-5deda49e493a) and [creator/viewer conditions](https://ampcode.com/threads/T-01a178af-d558-748e-876d-ea6e1b43b5ed) use stable routes; official conditions are next by recorded traffic |
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Not started | Wave 5 |
@@ -1779,6 +1779,59 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Creator and viewer condition reads — October 2026
+
+- Selected `loadConditionsForDiscordId` using the recorded fixed-window ranking:
+  4,783 root HTTP attempts (4,604 HTTP <400; 179 HTTP ≥400), the highest-volume
+  remaining named action after reactions. The window, mapping coverage and
+  sampling limitations remain recorded above; these counts are not a fresh
+  measurement or distinct-user counts.
+- The sole browser transport owner, `userConditionsQueryOptions` in
+  `lib/hooks/useConditions.ts`, now uses bodyless typed GETs to
+  `/_actions/loadConditionsForDiscordId?discordId=…` with cancellation. Its shared
+  hook serves monster/hazard, item, companion, ancestry, background, class,
+  subclass, school, family, collection, encounter, table, custom-rule and
+  adventure rendering, plus condition validation in builders.
+- Preserved the existing creator-plus-viewer contract, including anonymous
+  creator reads. Discord ID is a lookup key, not session authority. There is no
+  new own-session-only restriction, ownership check or public JSON:API endpoint.
+  Unknown and empty lookup keys retain empty arrays; a missing parameter returns
+  400. Query keys remain scoped by requested Discord ID, independent of session,
+  because the same creator result is deliberately available to every viewer.
+  Signing out disables/removes the viewer query from the hook's result; changing
+  accounts selects that viewer's cache entry without relabeling in-flight data.
+- The database helper now projects exactly `Condition`'s four JSON fields:
+  `id`, `name`, `description`, `official`. Internal creator IDs and timestamps
+  are not serialized or hydrated. The same projection serves direct server
+  reads and browser reads; no date revival is required. All helper consumers
+  were audited, including condition creation's name-only duplicate check.
+- Both shared hydration components and monster/hazard new pages override the
+  browser query function with direct database reads while retaining identical
+  cache keys. Other server readers were already direct and remain so. No
+  relative HTTP fetch runs in Server Components. `private, no-store`, no CORS,
+  identifier telemetry and generic unexpected 500s follow the existing read
+  boundary. Safe GETs do not require mutation origin/media headers.
+- Removed the `loadConditionsForDiscordId` Server Action export; official
+  conditions remain for the next bounded slice. Application ratchet: **55 → 54**;
+  repository directives/counts and all mutation transports are unchanged.
+  Loading/error fallbacks, condition popovers, query retry defaults, invalidation,
+  navigation and creator/viewer/official combination order are unchanged.
+- Route tests use real SQLite to distinguish two creators, empty/unknown keys,
+  injection-like input, minimal serialization and safe telemetry errors.
+  Hook transport tests verify stable GET/no `next-action`, URL encoding,
+  cancellation, creator/viewer cache separation, account changes, sign-out and
+  recovery after a failed read. Local/full checks, live anonymous/authenticated
+  HTTP, inspected browser evidence, deployment and production cleanup results
+  are recorded in the [run thread](https://ampcode.com/threads/T-01a178af-d558-748e-876d-ea6e1b43b5ed).
+  QA uses disposable non-admin users, custom conditions and copies of existing
+  seeded/public monster/hazard content, not real-user mutations. Production
+  sessions expire after one hour and are not a dev-login bypass.
+- Retain the URL and accepted shape for at least one deployment interval. Old
+  tabs still need refresh/retry for legacy action references. Official-condition
+  reads are next by recorded traffic, subject to refreshed evidence when stale.
+  The owner's accepted/deferred reaction cleanup/recording closeout is not
+  claimed completed by this slice.
 
 ### Reaction summary reads — October 2026
 

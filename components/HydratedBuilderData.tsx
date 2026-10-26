@@ -1,6 +1,7 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { auth } from "@/lib/auth";
+import { listConditionsForDiscordId } from "@/lib/db/condition";
 import {
   officialConditionsQueryOptions,
   userConditionsQueryOptions,
@@ -22,10 +23,12 @@ export async function HydratedBuilderData({
   const queries = [queryClient.prefetchQuery(officialConditionsQueryOptions())];
 
   if (session?.user?.discordId) {
+    const discordId = session.user.discordId;
     queries.push(
-      queryClient.prefetchQuery(
-        userConditionsQueryOptions({ discordId: session.user.discordId })
-      )
+      queryClient.prefetchQuery({
+        ...userConditionsQueryOptions({ discordId }),
+        queryFn: () => listConditionsForDiscordId(discordId),
+      })
     );
   }
   if (includeSources) {

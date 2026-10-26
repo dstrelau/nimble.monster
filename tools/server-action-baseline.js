@@ -4,7 +4,7 @@ export const serverActionBaseline = {
     "app/actions/class.ts": 2,
     "app/actions/collection.ts": 1,
     "app/actions/companion.ts": 1,
-    "app/actions/conditions.ts": 2,
+    "app/actions/conditions.ts": 1,
     "app/actions/encounter.ts": 1,
     "app/actions/nav.ts": 1,
     "app/actions/reports.ts": 1,
