@@ -1740,3 +1740,33 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Unused public ancestry lookup — October 2026
+
+- The full caller audit found no application callers for `findPublicAncestry` in
+  `app/actions/ancestry.ts`; its only import was a repository test of the wrapper
+  itself. Removed the export, empty module and that exclusive test. Application
+  ratchet: **57 → 56**; repository directives/counts are unchanged.
+- Retained `findAncestry` serves direct server detail/metadata reads and the
+  service. Repository tests still cover anonymous/non-owner private exclusion,
+  owner access, public lists, collections and awards. Active pagination and
+  stable ancestry saves are unchanged. No replacement endpoint, new UI, wire
+  contract, auth, telemetry, cache or navigation behavior is introduced for an
+  unused export; existing route/client tests cover retained stable transports.
+- Focused tests: 51 passed. Full suite: 1,973 passed, seven skipped (one obsolete
+  wrapper-only test removed). Live development checks cover list/detail HTML,
+  malformed/missing identifiers (404), legacy UUID canonical redirects (308),
+  list-to-detail client navigation and full reload. Raw CDP request and
+  extra-header events verify detail GETs without `next-action`; Heroes navigation
+  is active and creator attribution renders without console/page errors or
+  failed HTTP responses. Chromium-canceled legacy POST reads and an RSC GET
+  during navigation are recorded separately, not mistaken for HTTP failures.
+- QA reads existing public content only; no fixtures or production-auth sessions
+  are needed and no database writes require cleanup. Development browser QA
+  uses the configured dev session; production QA is anonymous, matching the
+  removed public lookup. The [run thread](https://ampcode.com/threads/T-01a1779d-7aca-77e3-a653-2ee550feb879)
+  records checks, deployment identity, exact post-deployment functional requests
+  and cleanup. Other legacy reads remain outside this slice.
+- Active public pagination remains next in Wave 3 after shared transport
+  prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
+  field-parity work. Unused lookups may be removed without inventing endpoints.

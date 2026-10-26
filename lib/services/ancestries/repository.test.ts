@@ -2,7 +2,6 @@ import { type Client, createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { findPublicAncestry } from "@/app/actions/ancestry";
 import {
   getAwardBySlugWithCounts,
   getAwardsWithCounts,
@@ -171,18 +170,6 @@ describe("ancestry visibility", () => {
         (a) => a.id
       )
     ).toEqual([privateId, publicId]);
-  });
-
-  it("never returns private data from the explicitly public server action, even to its owner", async () => {
-    signIn();
-    expect(await findPublicAncestry(privateId)).toMatchObject({
-      success: false,
-      ancestry: null,
-    });
-    expect(await findPublicAncestry(publicId)).toMatchObject({
-      success: true,
-      ancestry: { id: publicId },
-    });
   });
 
   it("omits private children from the public collection API data source, even for its owner", async () => {
