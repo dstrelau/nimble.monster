@@ -1,5 +1,5 @@
 {
-  "totalMinis": 785,
+  "totalMinis": 790,
   "s3BaseUrl": "https://paperforgedev.s3.us-east-2.amazonaws.com/",
   "minis": [
     {
@@ -82801,6 +82801,398 @@
           "tierNumber": 1,
           "filenameTier": null,
           "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/849_PumpklinLantern_VTT.zip"
+        }
+      ]
+    },
+    {
+      "id": "6dfd7e1e-14b5-45c2-b03f-fb5237cd9609",
+      "number": 850,
+      "name": "Statue",
+      "url": "https://www.paperforgeminis.com/minis/6dfd7e1e-14b5-45c2-b03f-fb5237cd9609",
+      "enabled": true,
+      "releaseDate": "2026-10-20T02:54:48.097Z",
+      "downloads": [
+        {
+          "filename": "850_Statue_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/850_Statue_T1_PDF.pdf"
+        },
+        {
+          "filename": "850_Statue_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/850_Statue_T1_PNGs.zip"
+        },
+        {
+          "filename": "850_Statue_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/850_Statue_T2_PDF.pdf"
+        },
+        {
+          "filename": "850_Statue_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/850_Statue_T2_PNGs.zip"
+        },
+        {
+          "filename": "850_Statue_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/850_Statue_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "850_Statue_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/850_Statue_T4_PNGs.zip"
+        },
+        {
+          "filename": "850_Statue_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/850_Statue_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "6a00d2de-a544-41b6-9be8-4ccd718f8ce2",
+      "number": 851,
+      "name": "Statue",
+      "url": "https://www.paperforgeminis.com/minis/6a00d2de-a544-41b6-9be8-4ccd718f8ce2",
+      "enabled": true,
+      "releaseDate": "2026-10-20T02:57:03.372Z",
+      "downloads": [
+        {
+          "filename": "851_Statue_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/851_Statue_T1_PDF.pdf"
+        },
+        {
+          "filename": "851_Statue_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/851_Statue_T1_PNGs.zip"
+        },
+        {
+          "filename": "851_Statue_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/851_Statue_T2_PDF.pdf"
+        },
+        {
+          "filename": "851_Statue_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/851_Statue_T2_PNGs.zip"
+        },
+        {
+          "filename": "851_Statue_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/851_Statue_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "851_Statue_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/851_Statue_T4_PNGs.zip"
+        },
+        {
+          "filename": "851_Statue_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/851_Statue_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "e6fa154d-b596-412d-8c7b-45f79ea19a6d",
+      "number": 852,
+      "name": "Statue",
+      "url": "https://www.paperforgeminis.com/minis/e6fa154d-b596-412d-8c7b-45f79ea19a6d",
+      "enabled": true,
+      "releaseDate": "2026-10-20T02:57:38.683Z",
+      "downloads": [
+        {
+          "filename": "852_Statue_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/852_Statue_T1_PDF.pdf"
+        },
+        {
+          "filename": "852_Statue_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/852_Statue_T1_PNGs.zip"
+        },
+        {
+          "filename": "852_Statue_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/852_Statue_T2_PDF.pdf"
+        },
+        {
+          "filename": "852_Statue_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/852_Statue_T2_PNGs.zip"
+        },
+        {
+          "filename": "852_Statue_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/852_Statue_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "852_Statue_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/852_Statue_T4_PNGs.zip"
+        },
+        {
+          "filename": "852_Statue_T8_PSD_1.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/852_Statue_T8_PSD_1.zip"
+        }
+      ]
+    },
+    {
+      "id": "15e98aae-3e4b-4fe7-a417-811c6f96c1b7",
+      "number": 853,
+      "name": "Statue",
+      "url": "https://www.paperforgeminis.com/minis/15e98aae-3e4b-4fe7-a417-811c6f96c1b7",
+      "enabled": true,
+      "releaseDate": "2026-10-20T03:01:25.535Z",
+      "downloads": [
+        {
+          "filename": "853_Statue_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/853_Statue_T1_PDF.pdf"
+        },
+        {
+          "filename": "853_Statue_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/853_Statue_T1_PNGs.zip"
+        },
+        {
+          "filename": "853_Statue_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/853_Statue_T2_PDF.pdf"
+        },
+        {
+          "filename": "853_Statue_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/853_Statue_T2_PNGs.zip"
+        },
+        {
+          "filename": "853_Statue_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/853_Statue_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "853_Statue_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/853_Statue_T4_PNGs.zip"
+        },
+        {
+          "filename": "853_Statue_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/853_Statue_T8_PSD.zip"
+        }
+      ]
+    },
+    {
+      "id": "9794030f-96ca-4d91-b93a-5b34b3451a73",
+      "number": 854,
+      "name": "Ghost",
+      "url": "https://www.paperforgeminis.com/minis/9794030f-96ca-4d91-b93a-5b34b3451a73",
+      "enabled": true,
+      "releaseDate": "2026-10-25T13:25:04.184Z",
+      "downloads": [
+        {
+          "filename": "854_Ghost_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/854_Ghost_T1_PDF.pdf"
+        },
+        {
+          "filename": "854_Ghost_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/854_Ghost_T1_PNGs.zip"
+        },
+        {
+          "filename": "854_Ghost_T1_VTT.zip",
+          "category": "vtt",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/854_Ghost_T1_VTT.zip"
+        },
+        {
+          "filename": "854_Ghost_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/854_Ghost_T2_PDF.pdf"
+        },
+        {
+          "filename": "854_Ghost_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/854_Ghost_T2_PNGs.zip"
+        },
+        {
+          "filename": "854_Ghost_T2_VTT.zip",
+          "category": "vtt",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/854_Ghost_T2_VTT.zip"
+        },
+        {
+          "filename": "854_Ghost_T3_VTT.zip",
+          "category": "vtt",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/854_Ghost_T3_VTT.zip"
+        },
+        {
+          "filename": "854_Ghost_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/854_Ghost_T4_CUTFILE.zip"
+        },
+        {
+          "filename": "854_Ghost_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/854_Ghost_T4_PNGs.zip"
+        },
+        {
+          "filename": "854_Ghost_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://paperforgedev.s3.us-east-2.amazonaws.com/854_Ghost_T8_PSD.zip"
         }
       ]
     }
