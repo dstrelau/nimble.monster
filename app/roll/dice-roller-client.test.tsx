@@ -59,3 +59,26 @@ it.each([
   });
   expect(screen.getByText(message, { exact: false })).toBeInTheDocument();
 });
+
+it("keeps the last valid probabilities while editing, then updates on valid input", () => {
+  render(
+    <NuqsTestingAdapter>
+      <DiceRollerClient initialDice="1d4n" />
+    </NuqsTestingAdapter>
+  );
+  const input = screen.getByRole("textbox", { name: "Dice Notation" });
+  expect(screen.getAllByText("25.0%")).toHaveLength(4);
+
+  for (const notation of ["", "1", "1d", "1d4+", "1d7"]) {
+    fireEvent.change(input, { target: { value: notation } });
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getAllByText("25.0%")).toHaveLength(4);
+    expect(screen.getByRole("heading", { name: "1d4n" })).toBeInTheDocument();
+  }
+
+  fireEvent.change(input, { target: { value: "1d8n" } });
+  expect(input).toHaveAttribute("aria-invalid", "false");
+  expect(screen.queryByText("25.0%")).not.toBeInTheDocument();
+  expect(screen.getAllByText("12.5%")).toHaveLength(8);
+  expect(screen.getByRole("heading", { name: "1d8n" })).toBeInTheDocument();
+});

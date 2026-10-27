@@ -34,11 +34,11 @@ export function DiceRollerClient({ initialDice }: Props) {
   const [diceNotation, setDiceNotation] = useQueryState("dice", {
     defaultValue: initialDice,
   });
-  const { stats, pending, showLoading, error } =
-    useDiceStatistics(diceNotation);
   const [isValidDice, setIsValidDice] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [lastValidDice, setLastValidDice] = useState(initialDice);
+  const { stats, pending, showLoading, error } =
+    useDiceStatistics(lastValidDice);
   const [rollKey, setRollKey] = useState(0);
   const [mounted, setMounted] = useState(false);
 
@@ -156,109 +156,117 @@ export function DiceRollerClient({ initialDice }: Props) {
 
   return (
     <div className="container mx-auto flex flex-col gap-4">
-      <div className="flex gap-4">
-        <div className="w-2/3">
-          <Label
-            htmlFor={`diceNotation-${id}`}
-            className="text-sm font-medium mb-2 flex items-center gap-1"
-          >
-            Dice Notation
-            <Dialog>
-              <DialogTrigger>
-                <Info className="cursor-pointer size-4" />
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Dice Notation</DialogTitle>
-                  <DialogDescription asChild className="space-y-3">
-                    <div>
-                      <p>
-                        Basic format: <code>XdY+Z</code> — roll X dice of size
-                        Y, add modifier Z.
-                      </p>
-                      <p>
-                        Valid die sizes:{" "}
-                        {VALID_DIE_SIZES.map((s) => (
-                          <code key={s}>d{s} </code>
-                        ))}
-                      </p>
-                      <p className="font-semibold">
-                        Flags (added after the die size):
-                      </p>
-                      <ul className="list-disc pl-5 space-y-1">
-                        <li>
-                          <code>v</code> — <strong>Vicious:</strong> each
-                          explosion adds an extra non-exploding die. E.g.{" "}
-                          <code>1d8v</code>
-                        </li>
-                        <li>
-                          <code>a</code> / <code>aN</code> —{" "}
-                          <strong>Advantage:</strong> roll N extra dice, keep
-                          the highest. E.g. <code>2d20a</code>
-                        </li>
-                        <li>
-                          <code>d</code> / <code>dN</code> —{" "}
-                          <strong>Disadvantage:</strong> roll N extra dice, keep
-                          the lowest. E.g. <code>3d6d2-1</code>
-                        </li>
-                        <li>
-                          <code>n</code> — <strong>Normal:</strong> disable
-                          misses and exploding critical hits. Cannot be combined
-                          with <code>v</code>, <code>^N</code>, or a crit bonus.
-                          E.g. <code>3d6n+2</code>
-                        </li>
-                        <li>
-                          <code>^N</code> / <code>^-N</code> —{" "}
-                          <strong>Primary modifier:</strong> shift the primary
-                          die&apos;s effective value, changing miss and crit
-                          thresholds. E.g. <code>1d6^2</code> (rolls 1–3 hit,
-                          rolls 4–6 crit)
-                        </li>
-                      </ul>
-                      <p>
-                        <strong>Crit bonus:</strong> append <code>+Nc</code> to
-                        add N only on a critical hit, once per roll—not per
-                        explosion. E.g. <code>1d10+5c</code>, or{" "}
-                        <code>1d10+2+5c</code> for +2 on every hit and another
-                        +5 on a crit. The crit bonus must be nonnegative and
-                        come last; it cannot be used with normal, compound, or
-                        tens/ones rolls.
-                      </p>
-                      <p>
-                        <strong>Compound rolls</strong> such as{" "}
-                        <code>1d20+1d10+3</code> are always normal and cannot
-                        use special flags.
-                      </p>
-                    </div>
-                  </DialogDescription>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-            {!isValidDice && <CircleAlert className="size-4 stroke-error" />}
-          </Label>
-          <Input
-            id={`diceNotation-${id}`}
-            type="text"
-            value={diceNotation}
-            onChange={(e) => {
-              setDiceNotation(e.target.value);
-            }}
-            placeholder="3d6+2"
-            className="text-xl"
-            onKeyDown={(e) => e.key === "Enter"}
-          />
-          {!isValidDice && errorMessage && (
-            <p className="text-sm text-error mt-1">{errorMessage}</p>
-          )}
+      <div className="space-y-1">
+        <div className="flex gap-4">
+          <div className="w-2/3">
+            <Label
+              htmlFor={`diceNotation-${id}`}
+              className="text-sm font-medium mb-2 flex items-center gap-1"
+            >
+              Dice Notation
+              <Dialog>
+                <DialogTrigger>
+                  <Info className="cursor-pointer size-4" />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Dice Notation</DialogTitle>
+                    <DialogDescription asChild className="space-y-3">
+                      <div>
+                        <p>
+                          Basic format: <code>XdY+Z</code> — roll X dice of size
+                          Y, add modifier Z.
+                        </p>
+                        <p>
+                          Valid die sizes:{" "}
+                          {VALID_DIE_SIZES.map((s) => (
+                            <code key={s}>d{s} </code>
+                          ))}
+                        </p>
+                        <p className="font-semibold">
+                          Flags (added after the die size):
+                        </p>
+                        <ul className="list-disc pl-5 space-y-1">
+                          <li>
+                            <code>v</code> — <strong>Vicious:</strong> each
+                            explosion adds an extra non-exploding die. E.g.{" "}
+                            <code>1d8v</code>
+                          </li>
+                          <li>
+                            <code>a</code> / <code>aN</code> —{" "}
+                            <strong>Advantage:</strong> roll N extra dice, keep
+                            the highest. E.g. <code>2d20a</code>
+                          </li>
+                          <li>
+                            <code>d</code> / <code>dN</code> —{" "}
+                            <strong>Disadvantage:</strong> roll N extra dice,
+                            keep the lowest. E.g. <code>3d6d2-1</code>
+                          </li>
+                          <li>
+                            <code>n</code> — <strong>Normal:</strong> disable
+                            misses and exploding critical hits. Cannot be
+                            combined with <code>v</code>, <code>^N</code>, or a
+                            crit bonus. E.g. <code>3d6n+2</code>
+                          </li>
+                          <li>
+                            <code>^N</code> / <code>^-N</code> —{" "}
+                            <strong>Primary modifier:</strong> shift the primary
+                            die&apos;s effective value, changing miss and crit
+                            thresholds. E.g. <code>1d6^2</code> (rolls 1–3 hit,
+                            rolls 4–6 crit)
+                          </li>
+                        </ul>
+                        <p>
+                          <strong>Crit bonus:</strong> append <code>+Nc</code>{" "}
+                          to add N only on a critical hit, once per roll—not per
+                          explosion. E.g. <code>1d10+5c</code>, or{" "}
+                          <code>1d10+2+5c</code> for +2 on every hit and another
+                          +5 on a crit. The crit bonus must be nonnegative and
+                          come last; it cannot be used with normal, compound, or
+                          tens/ones rolls.
+                        </p>
+                        <p>
+                          <strong>Compound rolls</strong> such as{" "}
+                          <code>1d20+1d10+3</code> are always normal and cannot
+                          use special flags.
+                        </p>
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+              {!isValidDice && <CircleAlert className="size-4 stroke-error" />}
+            </Label>
+            <Input
+              id={`diceNotation-${id}`}
+              type="text"
+              value={diceNotation}
+              onChange={(e) => {
+                setDiceNotation(e.target.value);
+              }}
+              placeholder="3d6+2"
+              className="text-xl"
+              aria-invalid={!isValidDice}
+              aria-describedby={`diceNotation-error-${id}`}
+              onKeyDown={(e) => e.key === "Enter"}
+            />
+          </div>
+          <div className="flex items-end">
+            <D20 className="size-8" />
+            <D12 className="size-8" />
+            <D10 className="size-8" />
+            <D8 className="size-8" />
+            <Box className="size-8" />
+            <D4 className="size-8" />
+          </div>
         </div>
-        <div className="flex items-end">
-          <D20 className="size-8" />
-          <D12 className="size-8" />
-          <D10 className="size-8" />
-          <D8 className="size-8" />
-          <Box className="size-8" />
-          <D4 className="size-8" />
-        </div>
+        <p
+          id={`diceNotation-error-${id}`}
+          className="min-h-15 sm:min-h-10 lg:min-h-5 text-sm text-error"
+          aria-live="polite"
+        >
+          {!isValidDice && errorMessage}
+        </p>
       </div>
 
       <div className="flex flex-wrap gap-4">
@@ -290,7 +298,7 @@ export function DiceRollerClient({ initialDice }: Props) {
               <span className="break-all">{lastValidDice}</span>
             </h3>
           </CardHeader>
-          <CardContent>
+          <CardContent className="min-h-36">
             <DiceStatistics
               averageRoll={stats?.averageRoll ?? null}
               totalAverageRoll={stats?.totalAverageRoll ?? null}
@@ -304,7 +312,7 @@ export function DiceRollerClient({ initialDice }: Props) {
       </div>
 
       {pending ? (
-        <Card className="flex-1 min-w-sm" aria-busy="true">
+        <Card className="flex-1 min-w-0" aria-busy="true">
           <CardContent className="flex h-[312px] items-center justify-center p-6">
             {showLoading && (
               <div
@@ -327,7 +335,7 @@ export function DiceRollerClient({ initialDice }: Props) {
         </Card>
       ) : (
         Object.keys(filteredProbabilities).length > 0 && (
-          <Card className="flex-1 min-w-sm overflow-x-scroll">
+          <Card className="flex-1 min-w-0 overflow-x-auto">
             <CardContent className="p-6">
               {compactHistogram && (
                 <p className="mb-2 text-sm text-muted-foreground">
