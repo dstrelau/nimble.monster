@@ -156,6 +156,9 @@ In creature action responses, `description` keeps its original format for
 backwards compatibility: it is always a string, prefixed with the damage roll
 (`"2d8+4. (Reach 2) Knock prone on crit."`, or just `"3d6"` for a damage-only
 action). Structured fields appear alongside it; they do not replace it.
+Clients that build their own text can use `plainDescription` instead: the
+description without the damage prefix, and without “(Reach N)”/“(Range N)”
+text when that distance is returned as `target`. It is omitted when empty.
 
 Legacy `range` strings remain supported but are not converted into structured
 targets because their original reach/range meaning is ambiguous. They are

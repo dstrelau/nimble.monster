@@ -211,6 +211,7 @@ describe("GET /api/monsters/[id]", () => {
       {
         name: "Club",
         description: "2d8+4. (Reach 2) Knock prone on crit.",
+        plainDescription: "Knock prone on crit.",
         damage: { roll: "2d8+4" },
         target: { reach: 2 },
       },
@@ -274,6 +275,7 @@ describe("GET /api/monsters/[id]", () => {
       {
         name: "Bite",
         description: "1d6. (Reach 1) Knock prone.",
+        plainDescription: "Knock prone.",
         damage: { roll: "1d6" },
         target: { reach: 1 },
       },

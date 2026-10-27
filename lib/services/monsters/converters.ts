@@ -284,6 +284,9 @@ const toJsonApiAction = (a: Action) => {
   const parsed = attackMetadataSchema.safeParse(a);
   const metadata = parsed.success ? parsed.data : undefined;
   let target = metadata?.target;
+  // The stored text without anything repeated in structured fields, so
+  // clients can build their own description.
+  let plainDescription = a.description?.trim();
   if (!target) {
     const match = a.description?.match(/\((reach|range)\s+(\d+)\)/i);
     if (match) {
@@ -292,6 +295,7 @@ const toJsonApiAction = (a: Action) => {
         match[1].toLowerCase() === "reach"
           ? { reach: distance }
           : { range: distance };
+      plainDescription = plainDescription?.replace(match[0], "").trim();
     }
   }
   return {
@@ -301,6 +305,7 @@ const toJsonApiAction = (a: Action) => {
     // the damage roll and keeping any "(Reach N)" text. Structured fields are
     // additive and must not change it.
     description: [a.damage, a.description].filter(Boolean).join(". "),
+    ...(plainDescription ? { plainDescription } : {}),
     range: a.range,
     ...(a.damage ? { damage: { roll: a.damage } } : {}),
     ...(target ? { target } : {}),
