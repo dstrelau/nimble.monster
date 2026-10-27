@@ -333,6 +333,48 @@ include `404c8e7e1d6d79deaa32986e803e7c5efbc31f0465` in `67eeed9e`,
 The [source-read run](https://ampcode.com/threads/T-01a17e0b-5c7a-730e-9ee7-df31b084d6ff)
 records the full safe mapping/volume export and verification evidence.
 
+### Expanded ancestry-pagination selection — October 27, 2026
+
+Requeried the same fixed **2026-10-26T15:00:00Z–2026-10-27T15:00:00Z**
+window and root HTTP filters, not a rolling or seven-day window:
+[query results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/qG1qmfkFr8).
+The complete JSON again contains **7,835 attempts**, reports mean sample rate
+**1**, and examines 1,659,457 rows. Status <400/≥400 means HTTP transport
+success/failure, not domain success; bots/QA are included. No child spans are
+counted. Mapping coverage, not a change in traffic, explains the revised totals.
+
+Read-only OCI extraction now covers **52 deployed images**, `d3498158` through
+`10c21d43`. Each mapping records image `GH_SHA`, deployment tag, verified SHA256
+of the compressed standalone layer, filename and export. All aliases aggregate
+by filename/export; build-specific IDs are not separate actions. **7,775
+attempts map to named operations**. The remaining **60 attempts across seven
+invalid/unmapped IDs** are excluded from named rankings: `x` (40), `cachefn` (6),
+`0`, `1`, `action` (four each), and two non-40-character hex IDs (one each).
+Even conservatively assigning all 60 to the runner-up gives 342 < 350, so the
+residual cannot change this selection. Volume is not sparse; no seven-day
+tie-breaker is needed. Refresh or reuse these explicit bounds for the next slice.
+
+| Priority | Verified named operation | Attempts | HTTP <400 | HTTP ≥400 |
+| --- | --- | ---: | ---: | ---: |
+| Already migrated | `loadConditionsForDiscordId` | 2,756 | 2,502 | 254 |
+| Already migrated | `getNavCountsAction` | 1,288 | 876 | 412 |
+| Already migrated | `loadOfficialConditions` | 1,069 | 834 | 235 |
+| Already migrated | `getSourcesForEntityType` | 589 | 437 | 152 |
+| Selected in this slice | `paginatePublicAncestries` | 350 | 237 | 113 |
+| Next measured candidate | `searchPublicItems` | 282 | 276 | 6 |
+| Remaining | `paginatePublicMonsters` | 278 | 250 | 28 |
+| Remaining | `listOwnCollections` | 228 | 200 | 28 |
+| Remaining | `getMyReport` | 217 | 187 | 30 |
+| Remaining | `getAllSources` | 186 | 179 | 7 |
+| Remaining | `listOwnEncounters` | 151 | 131 | 20 |
+| Remaining | `getUserFamilies` | 110 | 109 | 1 |
+| Remaining | `paginatePublicBackgrounds` | 92 | 83 | 9 |
+
+The [ancestry-pagination run](https://ampcode.com/threads/T-01a17f1d-f419-74be-9759-f752b0e7bf41)
+retains the complete counts and verified mappings. The 60 residual requests
+cannot upset ancestry's lead, but could affect the close items/monsters ranking;
+do not assume the next candidate wins without resolving that comparison.
+
 Read-only extraction of five deployed manifests verified OCI layer digests,
 image `GH_SHA`, filename and exported name. For builds `e64c54dd`, `cb96d2c9`,
 `35d84cdc`, `1b63297b`, `57d2ffa5`, respectively, `app/actions/reactions.ts#getMyReactions`
@@ -1838,6 +1880,57 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Public ancestry pagination — October 2026
+
+- The owner explicitly deferred the baseline collection-card warning below and
+  authorized shipping this migration without repairing the collection screen.
+  That warning is not claimed fixed or verified clean. Required deployment and
+  functional production checks still apply to the migrated transport.
+- Selected `app/ancestries/actions.ts#paginatePublicAncestries` from the expanded
+  fixed-window mapping above: 350 root attempts, 237 HTTP <400 and 113 HTTP ≥400.
+  No other unarchived scheduled run owns this slice.
+- The sole browser transport owner, `publicAncestriesInfiniteQueryOptions`, now
+  uses a cancellable bodyless `GET /_actions/publicAncestries`. It serves the
+  public catalogue, creator-profile ancestry grids and collection new/edit
+  selectors. Three server prefetch sites use the unchanged ancestry service
+  directly, never relative HTTP. Query keys, defaults, cursor continuation,
+  previous-data behavior, pending/error UI, retries and navigation are retained.
+  Dates on ancestries, sources and awards are revived before client consumers.
+- This is the existing UI pagination contract, not a new supported third-party
+  ancestry API. There is no existing public ancestry API to reuse; introducing
+  one and its JSON:API model would broaden this bounded transport slice.
+  The anonymous-readable internal route retains public-only SQL even when a
+  signed-in owner submits `creatorId`, `includePrivate` or identity parameters.
+  Creator/source/search are filters, not authorization. My Library's separately
+  authenticated route is unchanged. No new cookie mutation, CSRF gate, CORS,
+  revalidation, redirect or persistence behavior is introduced by this read.
+- Zod validates all five sort modes, integer limits 1–100 and cursor shape/value
+  types/sort agreement before the service. Invalid input returns 400; unexpected
+  failures escape through telemetry before returning a generic 500. Success and
+  errors use `private, no-store`. Unsupported writes receive framework 405s.
+- Removed the only export and empty `app/ancestries/actions.ts`; ratchet
+  **51 → 50**. Repository directives and exports are unchanged. Keep this URL
+  and response shape for at least one deployment interval; legacy pre-cutover
+  tabs still need refresh/retry.
+- Real-SQL route tests cover public/private exclusion, combined filters, complete
+  fields and relationships, all sorts with asymmetric ties over three pages,
+  empty results, invalid limits/cursors and safe failures. Transport tests cover
+  stable URL/no `next-action`, cancellation, nested date revival, cache isolation,
+  typed failures and recovery. Focused checks: 27 passed including existing
+  repository tests. Full suite: 1,972 passed, seven skipped; `make check` and
+  `git diff --check` pass. Twenty live development requests verify all sorts
+  against independent SQL, paging, filters, empty results, 400s and 405.
+- Browser QA exercises catalogue paging/search/source/sort, creator-profile
+  navigation and reload, collection selection, and forced read failure/recovery.
+  Raw CDP request and extra-header events show stable GETs without `next-action`.
+  The unchanged selectable ancestry card nests footer buttons inside a button;
+  this warning is reproduced on baseline `10c21d43` and separately suggested,
+  not a transport regression or a claim of clean collection markup.
+- QA reads existing/seeded data only. No disposable entities or production auth
+  sessions are required; local collection selection is an unsaved draft. The
+  run thread records final checks, deployment identity, exact functional
+  production requests and cleanup. The overall migration remains incomplete.
 
 ### Entity-specific source options — October 2026
 

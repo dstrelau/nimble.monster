@@ -20,6 +20,7 @@ import { UserAvatar } from "@/components/layout/UserAvatar";
 import * as db from "@/lib/db";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
+import { ancestriesService } from "@/lib/services/ancestries/service";
 import { itemsService } from "@/lib/services/items";
 import { MonsterRoleOptions } from "@/lib/services/monsters/types";
 import { sourcesQueryOptions } from "@/lib/services/sources";
@@ -115,12 +116,18 @@ async function loadProfileEntityContent(
     case "ancestries": {
       const searchParams =
         characterOptionSearchParamsSchema.parse(rawSearchParams);
-      await queryClient.prefetchInfiniteQuery(
-        publicAncestriesInfiniteQueryOptions({
+      await queryClient.prefetchInfiniteQuery({
+        ...publicAncestriesInfiniteQueryOptions({
           ...searchParams,
           creatorId: userId,
-        })
-      );
+        }),
+        queryFn: () =>
+          ancestriesService.paginatePublicAncestries({
+            ...searchParams,
+            creatorId: userId,
+            limit: 12,
+          }),
+      });
       return (
         <ProfileEntityContent entityType="ancestries" creatorId={userId} />
       );

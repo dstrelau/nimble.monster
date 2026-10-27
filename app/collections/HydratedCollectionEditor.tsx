@@ -11,6 +11,7 @@ import {
   publicSpellSchoolsQueryOptions,
   publicSubclassesQueryOptions,
 } from "@/lib/queryOptions";
+import { ancestriesService } from "@/lib/services/ancestries/service";
 import {
   listSourcesForEntityType,
   sourcesForEntityTypeQueryOptions,
@@ -45,12 +46,17 @@ export async function HydratedCollectionEditor({
         limit: 6,
       })
     ),
-    queryClient.prefetchInfiniteQuery(
-      publicAncestriesInfiniteQueryOptions({
+    queryClient.prefetchInfiniteQuery({
+      ...publicAncestriesInfiniteQueryOptions({
         sort: "-createdAt",
         limit: 12,
-      })
-    ),
+      }),
+      queryFn: () =>
+        ancestriesService.paginatePublicAncestries({
+          sort: "-createdAt",
+          limit: 12,
+        }),
+    }),
     queryClient.prefetchInfiniteQuery(
       publicBackgroundsInfiniteQueryOptions({
         sort: "-createdAt",
