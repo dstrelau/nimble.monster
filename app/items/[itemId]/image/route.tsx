@@ -37,7 +37,7 @@ export async function GET(
         "item.visibility": item?.visibility || "unknown",
       });
 
-      if (!item || item.visibility !== "public") {
+      if (item?.visibility !== "public") {
         const reason = !item ? "not_found" : "not_public";
         span.setAttributes({
           "response.status": 404,

@@ -17,7 +17,7 @@ export async function GET(
   }
 
   const family = await db.getFamily(uid);
-  if (!family || family.visibility !== "public") {
+  if (family?.visibility !== "public") {
     return new Response("Family not found", { status: 404 });
   }
 

@@ -73,7 +73,7 @@ export async function renderEntityImage(
       "page.response.status_code": response?.status() ?? 0,
     });
 
-    if (!response || response.status() !== 200) {
+    if (response?.status() !== 200) {
       throw new Error(
         `Failed to load ${entityType} page: ${response?.status() ?? "no response"}`
       );
