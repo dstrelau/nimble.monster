@@ -3,7 +3,7 @@
 ## Overview
 
 The Nimble Monster API follows the [JSON:API v1.1](https://jsonapi.org/format/)
-specification. All responses use the `application/vnd.api+json` content type.
+specification. All responses use the `application/vnd.api+json; charset=utf-8` content type.
 
 Monster responses generally conform to schemas defined in
 [nimble-schemas](https://github.com/dstrelau/nimble-schemas). Hazard resources

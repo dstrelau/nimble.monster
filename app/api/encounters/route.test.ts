@@ -76,7 +76,7 @@ describe("GET /api/encounters", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe(
-      "application/vnd.api+json"
+      "application/vnd.api+json; charset=utf-8"
     );
     expect(data).toHaveProperty("data");
     expect(Array.isArray(data.data)).toBe(true);

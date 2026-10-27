@@ -127,7 +127,7 @@ describe("GET /api/monsters", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toContain(
-      "application/vnd.api+json"
+      "application/vnd.api+json; charset=utf-8"
     );
     expect(data).toHaveProperty("data");
     expect(Array.isArray(data.data)).toBe(true);

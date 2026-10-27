@@ -75,7 +75,7 @@ describe("GET /api/families/[id]", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe(
-      "application/vnd.api+json"
+      "application/vnd.api+json; charset=utf-8"
     );
 
     const resource = data.data;

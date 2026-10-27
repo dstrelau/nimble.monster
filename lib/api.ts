@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { addCorsHeaders } from "@/lib/cors";
 
-const CONTENT_TYPE = "application/vnd.api+json";
+const CONTENT_TYPE = "application/vnd.api+json; charset=utf-8";
 
 // Headers for a JSON:API response, including CORS.
 export function jsonApiHeaders(): Headers {
