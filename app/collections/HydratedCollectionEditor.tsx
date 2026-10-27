@@ -12,6 +12,7 @@ import {
   publicSubclassesQueryOptions,
 } from "@/lib/queryOptions";
 import {
+  listSourcesForEntityType,
   sourcesForEntityTypeQueryOptions,
   sourcesQueryOptions,
 } from "@/lib/services/sources";
@@ -60,11 +61,26 @@ export async function HydratedCollectionEditor({
     queryClient.prefetchQuery(publicSubclassesQueryOptions()),
     queryClient.prefetchQuery(publicSpellSchoolsQueryOptions()),
     queryClient.prefetchQuery(sourcesQueryOptions()),
-    queryClient.prefetchQuery(sourcesForEntityTypeQueryOptions("monsters")),
-    queryClient.prefetchQuery(sourcesForEntityTypeQueryOptions("ancestries")),
-    queryClient.prefetchQuery(sourcesForEntityTypeQueryOptions("backgrounds")),
-    queryClient.prefetchQuery(sourcesForEntityTypeQueryOptions("classes")),
-    queryClient.prefetchQuery(sourcesForEntityTypeQueryOptions("subclasses")),
+    queryClient.prefetchQuery({
+      ...sourcesForEntityTypeQueryOptions("monsters"),
+      queryFn: () => listSourcesForEntityType("monsters"),
+    }),
+    queryClient.prefetchQuery({
+      ...sourcesForEntityTypeQueryOptions("ancestries"),
+      queryFn: () => listSourcesForEntityType("ancestries"),
+    }),
+    queryClient.prefetchQuery({
+      ...sourcesForEntityTypeQueryOptions("backgrounds"),
+      queryFn: () => listSourcesForEntityType("backgrounds"),
+    }),
+    queryClient.prefetchQuery({
+      ...sourcesForEntityTypeQueryOptions("classes"),
+      queryFn: () => listSourcesForEntityType("classes"),
+    }),
+    queryClient.prefetchQuery({
+      ...sourcesForEntityTypeQueryOptions("subclasses"),
+      queryFn: () => listSourcesForEntityType("subclasses"),
+    }),
   ]);
 
   return (

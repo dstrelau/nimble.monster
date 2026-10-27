@@ -7,7 +7,10 @@ import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { monstersService } from "@/lib/services/monsters";
 import { PaginateMonstersSortOptions } from "@/lib/services/monsters/types";
-import { sourcesForEntityTypeQueryOptions } from "@/lib/services/sources";
+import {
+  listSourcesForEntityType,
+  sourcesForEntityTypeQueryOptions,
+} from "@/lib/services/sources";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { publicMonstersInfiniteQueryOptions } from "./hooks";
 
@@ -43,7 +46,10 @@ export default async function MonstersPage({
 
   const queryClient = getQueryClient();
   await Promise.all([
-    queryClient.prefetchQuery(sourcesForEntityTypeQueryOptions("monsters")),
+    queryClient.prefetchQuery({
+      ...sourcesForEntityTypeQueryOptions("monsters"),
+      queryFn: () => listSourcesForEntityType("monsters"),
+    }),
     queryClient.prefetchQuery({
       ...officialConditionsQueryOptions(),
       queryFn: listOfficialConditions,

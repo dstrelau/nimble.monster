@@ -285,6 +285,54 @@ IDs before choosing another slice: this table does not establish the next action
 among that residual volume. Do not fall back to unused-export cleanup or wave
 order in place of measuring live browser calls.
 
+### Refreshed source-read selection — October 27, 2026
+
+Fixed window **2026-10-26T15:00:00Z–2026-10-27T15:00:00Z**, same dataset and
+root HTTP filters (`trace.parent_id` absent, `http.request.header.next-action`
+present), grouped by action ID and HTTP response status:
+[query results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/4Z9R4XqWt5k).
+The result JSON reports **mean sample rate 1**, 1,441,876 rows examined and
+**7,835 matching root HTTP attempts**. These are observed requests, not users;
+QA/bots are not excluded. HTTP <400 and HTTP ≥400 classify transport status,
+not domain success encoded inside a legacy Flight response.
+
+| Priority | Verified named operation | Attempts | HTTP <400 | HTTP ≥400 |
+| --- | --- | ---: | ---: | ---: |
+| Already migrated | `loadConditionsForDiscordId` | 2,654 | 2,502 | 152 |
+| Already migrated | `getNavCountsAction` | 1,177 | 876 | 301 |
+| Already migrated | `loadOfficialConditions` | 991 | 834 | 157 |
+| Selected source-read slice | `getSourcesForEntityType` | 544 | 437 | 107 |
+| Remaining | `paginatePublicAncestries` | 347 | 237 | 110 |
+| Remaining | `searchPublicItems` | 279 | 276 | 3 |
+| Remaining | `paginatePublicMonsters` | 265 | 250 | 15 |
+| Remaining | `listOwnCollections` | 211 | 200 | 11 |
+| Remaining | `getMyReport` | 200 | 187 | 13 |
+| Remaining | `getAllSources` | 183 | 179 | 4 |
+| Remaining | `listOwnEncounters` | 134 | 131 | 3 |
+| Remaining | `getUserFamilies` | 110 | 109 | 1 |
+| Remaining | `paginatePublicBackgrounds` | 84 | 83 | 1 |
+
+Read-only extraction of the 16 deployed OCI manifests from `57d2ffa5` through
+`ac33c540` verifies image `GH_SHA`, compressed standalone-layer SHA256, filename
+and export name. IDs are deduplicated and aggregated by filename/export, never
+treated as different operations. These manifests map **7,319 attempts**; **516
+attempts across 54 IDs remain unmapped by this extraction**, including 40 with
+the invalid probe ID `x` (HTTP 200 is not evidence it names an action). Older
+historical aliases are deliberately not guessed. All remaining mapped operations
+below the table have ≤35 attempts. Even the entire unmapped residual is smaller
+than the selected action's 544 attempts, establishing its priority among remaining
+operations without a sparse-volume seven-day tie-breaker. Residual coverage must
+be revisited before selecting the next slice; 516 could change the next ranking.
+
+For `lib/services/sources/actions.ts#getSourcesForEntityType`, observed aliases
+include `404c8e7e1d6d79deaa32986e803e7c5efbc31f0465` in `67eeed9e`,
+`40d2987c376d7b84dd54d698531addc5ddfdd85776` in `9f7e5731`,
+`40c868436c254c432aed4df2de6f3e77d9177b06f0` in `33054557`,
+`4030b16fd63d165fc1d2ca7b892cca591bfc240d71` in `7b6577da`, and
+`40d67b5b120329c4508424a72a71be0a802acff56b` in `ac33c540`.
+The [source-read run](https://ampcode.com/threads/T-01a17e0b-5c7a-730e-9ee7-df31b084d6ff)
+records the full safe mapping/volume export and verification evidence.
+
 Read-only extraction of five deployed manifests verified OCI layer digests,
 image `GH_SHA`, filename and exported name. For builds `e64c54dd`, `cb96d2c9`,
 `35d84cdc`, `1b63297b`, `57d2ffa5`, respectively, `app/actions/reactions.ts#getMyReactions`
@@ -1790,6 +1838,55 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Entity-specific source options — October 2026
+
+- Selected `getSourcesForEntityType` using the refreshed traffic evidence above:
+  544 root HTTP attempts, 437 HTTP <400 and 107 HTTP ≥400, aggregated across
+  verified deployed aliases. Coordination found no other unarchived slice owner.
+- `sourcesForEntityTypeQueryOptions`, the sole browser transport owner, now
+  sends a cancellable, bodyless GET to
+  `/_actions/getSourcesForEntityType?entityType=…`, returning `SourceOption[]`
+  (`id`, `name`, `abbreviation`). The shared `SourceFilter` serves monsters,
+  hazards (using `monsters`), ancestries, backgrounds, classes, subclasses and
+  spell schools, both public lists and collection selectors.
+- The route validates the six existing entity types, returns 400 for missing,
+  empty or unsupported values and generic telemetry-recorded 500s on unexpected
+  failures. Success/errors use `private, no-store` without CORS. Unsupported
+  writes receive framework 405s. This is a safe anonymous-readable metadata
+  query, not a mutation; no session, origin/media gate or public JSON:API is
+  introduced. The unchanged repository selects distinct, name-sorted sources
+  referenced by that entity table, including private references as before, but
+  exposes no entity rows, owners or internal source metadata. Submitted identity
+  and visibility parameters do not alter the result.
+- Four list pages plus the shared collection new/edit hydrator override the
+  browser query function with direct `listSourcesForEntityType` calls at all
+  nine prefetch sites. SSR never fetches a relative URL. The same query keys and
+  five-minute freshness remain, including entity separation, disabled all-source
+  queries, initial empty fallback, retained background data and query retry/error
+  recovery. Filtering, navigation, selection and mutation caches are unchanged.
+- Removed only `getSourcesForEntityType` from `lib/services/sources/actions.ts`;
+  `getAllSources` remains for a later slice. Application ratchet **52 → 51**.
+  Repository markers/counts, SQL, public APIs and shared transport are unchanged.
+- Real-SQL route tests cover all types, asymmetric references, deduplication,
+  sorting, empty results, validation and safe errors. Hook transport tests cover
+  stable GET/no `next-action`, all six types, cancellation, cache isolation,
+  disabled/fresh queries and failed-read data retention/recovery. Focused tests:
+  21 passed. Full suite: 1,953 passed, seven skipped; `make check` and
+  `git diff --check` pass. Live local HTTP checks compare all six results with
+  independent SQL and verify validation/405 responses. Browser QA exercises
+  seven lists and collection source selectors, reload and actual fetch headers.
+- Local collection Monsters-tab QA also exposes unchanged selectable-card
+  nested source buttons in `components/monster/Card.tsx`. This is a separately
+  suggested UI fix, not a source transport failure or a claim of clean markup.
+  Public-list source-menu QA has no console/page/hydration errors.
+- QA is read-only against seeded/existing content: no disposable entities,
+  production sessions or database writes are needed, so no fixture deletion is
+  required. The [run thread](https://ampcode.com/threads/T-01a17e0b-5c7a-730e-9ee7-df31b084d6ff)
+  records deployment identity, exact functional production requests, inspected
+  visual evidence and cleanup. Retain this URL and response shape for at least
+  one deployment interval. Legacy tabs still need refresh/retry for other action
+  IDs. Migration remains incomplete; revisit residual mapping before selection.
 
 ### Public navigation counts — October 2026
 

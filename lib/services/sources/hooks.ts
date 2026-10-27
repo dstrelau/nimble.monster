@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllSources, getSourcesForEntityType } from "./actions";
+import { getSourcesForEntityType } from "@/app/%5Factions/getSourcesForEntityType/contract";
+import { call } from "@/lib/contract";
+import { getAllSources } from "./actions";
 import type { EntityType } from "./types";
 
 export function sourcesQueryOptions() {
@@ -19,9 +21,8 @@ export function useSourcesQuery(opts?: { enabled?: boolean }) {
 export function sourcesForEntityTypeQueryOptions(entityType: EntityType) {
   return {
     queryKey: ["sources", entityType],
-    queryFn: async () => {
-      return await getSourcesForEntityType(entityType);
-    },
+    queryFn: ({ signal }: { signal: AbortSignal }) =>
+      call(getSourcesForEntityType, { entityType }, { signal }),
     staleTime: 300000,
   };
 }

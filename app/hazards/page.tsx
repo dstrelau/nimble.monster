@@ -6,7 +6,10 @@ import { listOfficialConditions } from "@/lib/db/condition";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { PaginateMonstersSortOptions } from "@/lib/services/monsters/types";
-import { sourcesForEntityTypeQueryOptions } from "@/lib/services/sources";
+import {
+  listSourcesForEntityType,
+  sourcesForEntityTypeQueryOptions,
+} from "@/lib/services/sources";
 
 const searchParamsSchema = z.object({
   sort: z.enum(PaginateMonstersSortOptions).default("-createdAt"),
@@ -24,7 +27,10 @@ export default async function HazardsPage({
   const queryClient = getQueryClient();
 
   await Promise.all([
-    queryClient.prefetchQuery(sourcesForEntityTypeQueryOptions("monsters")),
+    queryClient.prefetchQuery({
+      ...sourcesForEntityTypeQueryOptions("monsters"),
+      queryFn: () => listSourcesForEntityType("monsters"),
+    }),
     queryClient.prefetchQuery({
       ...officialConditionsQueryOptions(),
       queryFn: listOfficialConditions,
