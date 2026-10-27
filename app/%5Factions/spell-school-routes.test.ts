@@ -120,6 +120,9 @@ describe.each([
         ).status
       ).toBe(status);
     }
+    expect(
+      (await handler(request(path, body({ ...input, spells: [] })))).status
+    ).toBe(status);
   });
   it("requires a session and Discord identity", async () => {
     for (const session of [null, { user: { id: "owner" } }]) {
@@ -137,7 +140,6 @@ describe.each([
       { ...input, name: "" },
       { ...input, description: 9 },
       { ...input, visibility: "unlisted" },
-      { ...input, spells: [] },
       ...[
         { name: "" },
         { tier: -1 },

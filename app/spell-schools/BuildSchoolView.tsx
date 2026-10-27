@@ -106,7 +106,7 @@ const formSchema = z.object({
   id: z.union([z.literal(""), z.uuid()]),
   name: z.string().min(1, "School name is required"),
   description: z.string().optional(),
-  spells: z.array(spellSchema).min(1, "At least one spell is required"),
+  spells: z.array(spellSchema),
   visibility: z.enum(["public", "private"]),
 });
 

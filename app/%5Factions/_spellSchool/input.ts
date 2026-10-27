@@ -32,7 +32,7 @@ export const spellInputSchema = z.object({
 export const spellSchoolInputSchema = z.object({
   name: z.string().min(1, "School name is required"),
   description: z.string().optional(),
-  spells: z.array(spellInputSchema).min(1, "At least one spell is required"),
+  spells: z.array(spellInputSchema),
   visibility: z.enum(["public", "private"]),
 });
 
