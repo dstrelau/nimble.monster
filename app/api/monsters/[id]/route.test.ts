@@ -157,6 +157,130 @@ describe("GET /api/monsters/[id]", () => {
     expect(resource.relationships).not.toHaveProperty("families");
   });
 
+  it("keeps the legacy action description alongside structured fields", async () => {
+    const mockMonster: Monster = {
+      hazard: false,
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Ogre",
+      level: "3",
+      levelInt: 3,
+      hp: 50,
+      legendary: false,
+      minion: false,
+      armor: "none",
+      size: "large",
+      speed: 6,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      teleport: 0,
+      burrow: 0,
+      visibility: "public",
+      families: [],
+      abilities: [],
+      actions: [
+        {
+          id: "a1",
+          name: "Club",
+          damage: "2d8+4",
+          description: "(Reach 2) Knock prone on crit.",
+        },
+        {
+          id: "a2",
+          name: "Breath",
+          damage: "3d6",
+          area: { shape: "line", size: 6 },
+        },
+      ],
+      actionPreface: "",
+      creator: fakeCreator,
+      createdAt: new Date("2025-01-01"),
+      updatedAt: new Date("2025-01-01"),
+    };
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
+
+    const response = await GET(
+      new Request(
+        "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
+      ),
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
+    const { actions } = (await response.json()).data.attributes;
+
+    expect(actions).toEqual([
+      {
+        name: "Club",
+        description: "2d8+4. (Reach 2) Knock prone on crit.",
+        damage: { roll: "2d8+4" },
+        target: { reach: 2 },
+      },
+      {
+        name: "Breath",
+        description: "3d6",
+        damage: { roll: "3d6" },
+        area: { shape: "line", size: 6, width: 1 },
+      },
+    ]);
+  });
+
+  it("omits invalid stored action metadata instead of failing", async () => {
+    const mockMonster: Monster = {
+      hazard: false,
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Wolf",
+      level: "1",
+      levelInt: 1,
+      hp: 12,
+      legendary: false,
+      minion: false,
+      armor: "none",
+      size: "medium",
+      speed: 8,
+      fly: 0,
+      swim: 0,
+      climb: 0,
+      teleport: 0,
+      burrow: 0,
+      visibility: "public",
+      families: [],
+      abilities: [],
+      actions: [
+        {
+          id: "a1",
+          name: "Bite",
+          damage: "1d6",
+          description: "(Reach 1) Knock prone.",
+          target: { range: 4 },
+          area: { shape: "cone", size: 2 },
+        },
+        { id: "a2", name: "Howl", attackCount: 2 },
+      ],
+      actionPreface: "",
+      creator: fakeCreator,
+      createdAt: new Date("2025-01-01"),
+      updatedAt: new Date("2025-01-01"),
+    };
+    mockGetPublicBestiaryEntry.mockResolvedValue(mockMonster);
+
+    const response = await GET(
+      new Request(
+        "http://localhost:3000/api/monsters/0psvtrh43w8xm9dfbf5b6nkcq1"
+      ),
+      createMockParams("0psvtrh43w8xm9dfbf5b6nkcq1")
+    );
+
+    expect(response.status).toBe(200);
+    expect((await response.json()).data.attributes.actions).toEqual([
+      {
+        name: "Bite",
+        description: "1d6. (Reach 1) Knock prone.",
+        damage: { roll: "1d6" },
+        target: { reach: 1 },
+      },
+      { name: "Howl", description: "", attackCount: 2 },
+    ]);
+  });
+
   it("should return a hazard without creature-only attributes", async () => {
     const mockHazard: Hazard = {
       hazard: true,

@@ -280,23 +280,27 @@ const toZodMember = (member: MonsterTeamMember) => {
 };
 
 const toJsonApiAction = (a: Action) => {
-  let target = a.target;
-  let description = a.description;
+  // Invalid stored metadata is omitted rather than failing the whole response.
+  const parsed = attackMetadataSchema.safeParse(a);
+  const metadata = parsed.success ? parsed.data : undefined;
+  let target = metadata?.target;
   if (!target) {
-    const match = description?.match(/\((reach|range)\s+(\d+)\)/i);
+    const match = a.description?.match(/\((reach|range)\s+(\d+)\)/i);
     if (match) {
       const distance = Number.parseInt(match[2], 10);
       target =
         match[1].toLowerCase() === "reach"
           ? { reach: distance }
           : { range: distance };
-      description = description?.replace(match[0], "").trim();
     }
   }
   return {
-    ...attackMetadataSchema.parse(a),
+    ...metadata,
     name: a.name,
-    description,
+    // Public API contract: description is the full attack text, prefixed with
+    // the damage roll and keeping any "(Reach N)" text. Structured fields are
+    // additive and must not change it.
+    description: [a.damage, a.description].filter(Boolean).join(". "),
     range: a.range,
     ...(a.damage ? { damage: { roll: a.damage } } : {}),
     ...(target ? { target } : {}),

@@ -70,7 +70,10 @@ describe("structured monster attacks", () => {
     const { monsters } = validateOfficialMonstersJSON({
       data: [{ type: "monsters", attributes: exported.attributes }],
     });
-    expect(monsters[0].attributes.actions).toEqual(data.attributes.actions);
+    // Structured fields survive; description keeps the legacy API format.
+    expect(monsters[0].attributes.actions).toEqual([
+      { ...data.attributes.actions[0], description: "1d6+6. Digested." },
+    ]);
     expect(monsterToMarkdown(monster)).toContain("Acidic Touch (2×)");
     expect(monsterToMarkdown(monster)).toContain("Reach 2");
   });

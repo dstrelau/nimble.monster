@@ -147,9 +147,16 @@ actions on team members:
   inline alternative sharing the primary attack's damage/count. Its range
   belongs to the alternative, not to the primary melee attack.
 
-All distances, dimensions and counts are positive integers. Damage remains
-separate from `description` (`{ "roll": "1d6+6" }` on creature actions);
-do not repeat damage, targets, areas or counts in the name/description.
+All distances, dimensions and counts are positive integers. When authoring or
+importing, keep damage separate from `description` (`{ "roll": "1d6+6" }` on
+creature actions); do not repeat damage, targets, areas or counts in the
+name/description.
+
+In creature action responses, `description` keeps its original format for
+backwards compatibility: it is always a string, prefixed with the damage roll
+(`"2d8+4. (Reach 2) Knock prone on crit."`, or just `"3d6"` for a damage-only
+action). Structured fields appear alongside it; they do not replace it.
+
 Legacy `range` strings remain supported but are not converted into structured
 targets because their original reach/range meaning is ambiguous. They are
 displayed verbatim, without appending units.
