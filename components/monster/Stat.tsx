@@ -78,10 +78,11 @@ export const ArmorStat: React.FC<{ value: "M" | "H" }> = ({ value }) => (
   <Stat name="armor" value={value} SvgIcon={ArmorIcon} />
 );
 
-export const SavesStat: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => (
-  <Stat name="saves" value="" SvgIcon={SavesIcon}>
+export const SavesStat: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+}> = ({ children, className }) => (
+  <Stat name="saves" value="" SvgIcon={SavesIcon} className={className}>
     {children}
   </Stat>
 );

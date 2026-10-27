@@ -95,10 +95,7 @@ export function MonsterCardHeader({
           )}
         >
           <div
-            className={cn(
-              "w-full space-y-2 font-slab font-black",
-              hasArtwork && "pr-20"
-            )}
+            className={cn("w-full font-slab font-black", hasArtwork && "pr-20")}
           >
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <div className="flex items-center gap-x-4">
@@ -144,13 +141,13 @@ export function MonsterCardHeader({
                   )}
                 </div>
               )}
+              {!monster.hazard && monster.saves && (
+                <SavesStat className="max-w-full">
+                  <span className="sr-only">Saves:</span>{" "}
+                  <span className="min-w-0 wrap-anywhere">{monster.saves}</span>
+                </SavesStat>
+              )}
             </div>
-            {!monster.hazard && monster.saves && (
-              <SavesStat>
-                <span className="sr-only">Saves:</span>{" "}
-                <span className="min-w-0 wrap-anywhere">{monster.saves}</span>
-              </SavesStat>
-            )}
           </div>
           {hasArtwork && (
             <MonsterImage
