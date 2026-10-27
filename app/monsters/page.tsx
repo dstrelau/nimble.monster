@@ -2,6 +2,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
+import { listOfficialConditions } from "@/lib/db/condition";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { monstersService } from "@/lib/services/monsters";
@@ -43,7 +44,10 @@ export default async function MonstersPage({
   const queryClient = getQueryClient();
   await Promise.all([
     queryClient.prefetchQuery(sourcesForEntityTypeQueryOptions("monsters")),
-    queryClient.prefetchQuery(officialConditionsQueryOptions()),
+    queryClient.prefetchQuery({
+      ...officialConditionsQueryOptions(),
+      queryFn: listOfficialConditions,
+    }),
     queryClient.prefetchInfiniteQuery(
       publicMonstersInfiniteQueryOptions(params)
     ),

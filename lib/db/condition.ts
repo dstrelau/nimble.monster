@@ -200,7 +200,12 @@ export async function updateConditionDescription(
 export async function listOfficialConditions() {
   const db = getDatabase();
   return await db
-    .select()
+    .select({
+      id: conditions.id,
+      name: conditions.name,
+      description: conditions.description,
+      official: conditions.official,
+    })
     .from(conditions)
     .where(eq(conditions.official, true));
 }

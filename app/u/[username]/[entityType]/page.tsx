@@ -229,7 +229,10 @@ export default async function UserProfileEntityPage({
     db.getPublicLibraryCounts(user.id),
     loadProfileEntityContent(entityType, user.id, rawSearchParams, queryClient),
     queryClient.prefetchQuery(sourcesQueryOptions()),
-    queryClient.prefetchQuery(officialConditionsQueryOptions()),
+    queryClient.prefetchQuery({
+      ...officialConditionsQueryOptions(),
+      queryFn: db.listOfficialConditions,
+    }),
   ]);
 
   return (

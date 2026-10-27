@@ -2,6 +2,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound, permanentRedirect, unauthorized } from "next/navigation";
 import BuildMonster from "@/app/monsters/BuildMonsterView";
 import { auth } from "@/lib/auth";
+import { listOfficialConditions } from "@/lib/db/condition";
 import { isMonsterInOtherUsersEncounter } from "@/lib/db/encounter";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
@@ -27,7 +28,10 @@ export default async function EditHazardPage({
   const queryClient = getQueryClient();
   const [usedInOtherUsersEncounter] = await Promise.all([
     isMonsterInOtherUsersEncounter(hazard.id, session.user.id),
-    queryClient.prefetchQuery(officialConditionsQueryOptions()),
+    queryClient.prefetchQuery({
+      ...officialConditionsQueryOptions(),
+      queryFn: listOfficialConditions,
+    }),
   ]);
 
   return (

@@ -263,9 +263,9 @@ Host measurement: Honeycomb environment/dataset `nimble.monster`, fixed window
 | Priority | Verified named operation | Observed requests | HTTP <400 | HTTP ≥400 |
 | --- | --- | ---: | ---: | ---: |
 | Migrated | `getMyReactions` | 6,171 | 6,005 | 166 |
-| Migrated in this slice | `loadConditionsForDiscordId` | 4,783 | 4,604 | 179 |
-| Next | `loadOfficialConditions` | 1,452 | 1,309 | 143 |
-| Following | `getNavCountsAction` | 1,174 | 1,005 | 169 |
+| Migrated | `loadConditionsForDiscordId` | 4,783 | 4,604 | 179 |
+| Migrated in this slice | `loadOfficialConditions` | 1,452 | 1,309 | 143 |
+| Next | `getNavCountsAction` | 1,174 | 1,005 | 169 |
 
 Total observed action root requests: **16,687**. The remaining **3,107** include
 other operations, older references and invalid/unmapped IDs; this is not a
@@ -273,6 +273,12 @@ complete mapping of every ID or historical alias. No sampling banner was returne
 These are observed requests, not unique users; QA/bot traffic is not excluded.
 [24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/JvkrCgnqMx),
 [initial seven-day ID results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/pQkrFW2AbzZ).
+
+The official-condition slice reuses this recent fixed-window evidence on
+October 27 (UTC), rather than presenting it as a fresh measurement. Its named
+volume is not sparse and exceeds the next recorded action; no seven-day
+tie-breaker is needed. The residual 3,107 attempts are not assigned to named
+actions, and absence of a sampling banner is not proof of unsampled coverage.
 
 Read-only extraction of five deployed manifests verified OCI layer digests,
 image `GH_SHA`, filename and exported name. For builds `e64c54dd`, `cb96d2c9`,
@@ -485,7 +491,7 @@ contract compatibility window that a future migration must preserve.
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
 | Public browser reads | Cleanup started | [Unused monster-source prefetch removed](https://ampcode.com/threads/T-01a16f06-5748-72da-8161-a6c2b4a60465), [unused monster lookup/search removed](https://ampcode.com/threads/T-01a17019-c140-715a-b92e-9c7ea7cf8e9c), and [unused class/subclass lookup/search removed](https://ampcode.com/threads/T-01a1712b-65a5-72de-94ed-eac19100526f); active pagination remains next in Wave 3; prefer existing JSON:API |
-| Private/UI-specific browser reads | Partially complete | Picker, [reaction summary reads](https://ampcode.com/threads/T-01a1781c-f9af-7729-a9fb-5deda49e493a) and [creator/viewer conditions](https://ampcode.com/threads/T-01a178af-d558-748e-876d-ea6e1b43b5ed) use stable routes; official conditions are next by recorded traffic |
+| Private/UI-specific browser reads | Partially complete | Picker, [reaction summary reads](https://ampcode.com/threads/T-01a1781c-f9af-7729-a9fb-5deda49e493a), [creator/viewer conditions](https://ampcode.com/threads/T-01a178af-d558-748e-876d-ea6e1b43b5ed) and [official conditions](https://ampcode.com/threads/T-01a17ad3-4ab5-7205-a5f9-9405ebba43db) use stable routes; navigation counts are next by recorded traffic |
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Not started | Wave 5 |
@@ -1779,6 +1785,51 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Official condition reads — October 2026
+
+- Selected `loadOfficialConditions`, the highest-volume remaining named action
+  in the recent fixed-window ranking: 1,452 attempts, 1,309 HTTP <400 and 143
+  HTTP ≥400. No other unarchived scheduled run owns this operation. The priority
+  section records evidence reuse, mapping/coverage limitations and residual
+  unmapped volume; these are request counts, not distinct actions or users.
+- The shared `officialConditionsQueryOptions` browser query now uses a bodyless,
+  cancellable GET to `/_actions/loadOfficialConditions`. Its parameterless typed
+  contract returns `Condition[]`; no body, owner identity or lookup parameters
+  are accepted as authority. Anonymous and authenticated readers get the same
+  official definitions. Extra query parameters cannot alter the selection.
+  This UI-specific read does not introduce a supported public JSON:API endpoint.
+- `listOfficialConditions` now projects exactly `id`, `name`, `description` and
+  `official`, shared by server hydration and browser JSON. The consumer audit
+  found no need for creator IDs or timestamps. Custom conditions stay excluded;
+  an empty database returns `[]`. The GET uses `private, no-store`, no CORS,
+  telemetry and generic unexpected 500s, following the creator-condition read.
+  Safe, parameterless GETs require neither mutation-origin/media checks nor a
+  request-body schema; unsupported writes return framework 405s.
+- Nine server prefetch sites retain the same query key and override the browser
+  query function with direct `listOfficialConditions`: shared builder/detail
+  hydration, monster/hazard lists, new/edit pages and profile entity pages.
+  Existing direct reads for companions, tables, collections and encounters remain
+  direct. Server Components do not fetch relative HTTP. Shared cards/detail
+  rendering, builder validation, creator → viewer → official precedence, query
+  freshness/retry, loading/error fallbacks and navigation remain unchanged.
+- Removed the final `loadOfficialConditions` export and now-empty
+  `app/actions/conditions.ts`. Application ratchet: **54 → 53**. Repository markers,
+  mutation contracts, public APIs, schema and cache invalidation are unchanged.
+  Real-SQL route tests cover official/custom separation, minimal serialization,
+  empty results and safe failures. Hook tests cover the actual stable URL, no
+  body/`next-action`, cancellation, pending/error recovery and shared cache use.
+- The [run thread](https://ampcode.com/threads/T-01a17ad3-4ab5-7205-a5f9-9405ebba43db)
+  records focused/full checks, live HTTP, browser navigation/reload and definition
+  rendering, deployment identity, exact production requests and cleanup evidence.
+  Development QA uses disposable local condition copies from existing public
+  definitions. Production QA is anonymous and read-only, matching the existing
+  access contract: no production fixtures, minted sessions or real-user writes
+  are needed. Existing unrelated/deferred closeouts are not claimed completed.
+- Retain this URL and response shape for at least one deployment interval.
+  Pre-cutover tabs retain refresh/retry handling for legacy action references.
+  Navigation counts are next by the recorded traffic ranking, subject to refresh
+  when the evidence is no longer representative; migration is not yet complete.
 
 ### Creator and viewer condition reads — October 2026
 

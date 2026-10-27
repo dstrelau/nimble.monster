@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { loadConditionsForDiscordId } from "@/app/%5Factions/loadConditionsForDiscordId/contract";
-import { loadOfficialConditions } from "@/app/actions/conditions";
+import { loadOfficialConditions } from "@/app/%5Factions/loadOfficialConditions/contract";
 import { call } from "@/lib/contract";
 import type { Condition } from "@/lib/types";
 
@@ -12,7 +12,8 @@ export function officialConditionsQueryOptions(props?: {
   return {
     ...props,
     queryKey: ["conditions", "official"],
-    queryFn: loadOfficialConditions,
+    queryFn: ({ signal }: { signal: AbortSignal }) =>
+      call(loadOfficialConditions, undefined, { signal }),
   };
 }
 

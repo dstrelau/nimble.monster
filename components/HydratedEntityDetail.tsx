@@ -3,7 +3,10 @@ import type { ReactNode } from "react";
 import { ownCollectionsQueryOptions } from "@/app/collections/ownCollectionsQueryOptions";
 import { ownEncountersQueryOptions } from "@/app/encounters/ownEncountersQueryOptions";
 import { auth } from "@/lib/auth";
-import { listConditionsForDiscordId } from "@/lib/db/condition";
+import {
+  listConditionsForDiscordId,
+  listOfficialConditions,
+} from "@/lib/db/condition";
 import type { ReactableEntityType } from "@/lib/db/schema";
 import { entityReactionsQueryOptions } from "@/lib/hooks/entityReactionsQueryOptions";
 import { entityReportQueryOptions } from "@/lib/hooks/entityReportQueryOptions";
@@ -36,7 +39,12 @@ export async function HydratedEntityDetail({
   children,
 }: HydratedEntityDetailProps) {
   const queryClient = getQueryClient();
-  const queries = [queryClient.prefetchQuery(officialConditionsQueryOptions())];
+  const queries = [
+    queryClient.prefetchQuery({
+      ...officialConditionsQueryOptions(),
+      queryFn: listOfficialConditions,
+    }),
+  ];
 
   const conditionDiscordIds = new Set(
     [creatorDiscordId, viewerDiscordId].filter(

@@ -2,6 +2,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { z } from "zod";
 import { publicHazardsInfiniteQueryOptions } from "@/app/hazards/hooks";
 import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
+import { listOfficialConditions } from "@/lib/db/condition";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { PaginateMonstersSortOptions } from "@/lib/services/monsters/types";
@@ -24,7 +25,10 @@ export default async function HazardsPage({
 
   await Promise.all([
     queryClient.prefetchQuery(sourcesForEntityTypeQueryOptions("monsters")),
-    queryClient.prefetchQuery(officialConditionsQueryOptions()),
+    queryClient.prefetchQuery({
+      ...officialConditionsQueryOptions(),
+      queryFn: listOfficialConditions,
+    }),
     queryClient.prefetchInfiniteQuery(
       publicHazardsInfiniteQueryOptions(params)
     ),

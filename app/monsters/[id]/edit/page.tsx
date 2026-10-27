@@ -3,6 +3,7 @@ import { notFound, permanentRedirect, unauthorized } from "next/navigation";
 import { userFamiliesQueryOptions } from "@/app/families/hooks";
 import BuildMonster from "@/app/monsters/BuildMonsterView";
 import { auth } from "@/lib/auth";
+import { listOfficialConditions } from "@/lib/db/condition";
 import { isMonsterInOtherUsersEncounter } from "@/lib/db/encounter";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
@@ -34,7 +35,10 @@ export default async function EditMonsterPage({
   const [usedInOtherUsersEncounter] = await Promise.all([
     isMonsterInOtherUsersEncounter(monster.id, session.user.id),
     queryClient.prefetchQuery(userFamiliesQueryOptions()),
-    queryClient.prefetchQuery(officialConditionsQueryOptions()),
+    queryClient.prefetchQuery({
+      ...officialConditionsQueryOptions(),
+      queryFn: listOfficialConditions,
+    }),
   ]);
 
   return (
