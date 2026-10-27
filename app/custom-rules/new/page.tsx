@@ -11,7 +11,8 @@ export const metadata: Metadata = {
 
 export default async function NewCustomRulePage() {
   const session = await auth();
-  if (!session?.user?.id) redirect("/custom-rules");
+  if (!session?.user?.id)
+    redirect("/api/auth/signin?callbackUrl=/custom-rules/new");
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">

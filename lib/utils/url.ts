@@ -153,11 +153,7 @@ export function getRandomTableEditUrl(table: {
   return `/tables/${slugify(table)}/edit`;
 }
 
-// Custom rules are browsed inline in the rules reference, behind the homebrew
-// toggle; only the detail and edit pages live under /custom-rules.
-export const CUSTOM_RULES_URL = "/rules?homebrew=1#all-rules";
-
-// Family URLs
+// Custom rule URLs
 export function getCustomRuleUrl(rule: { name: string; id: string }): string {
   return `/custom-rules/${slugify(rule)}`;
 }

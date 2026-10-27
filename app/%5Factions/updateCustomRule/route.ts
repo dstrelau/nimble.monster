@@ -48,8 +48,9 @@ export const POST = internalAction("application/json", async (request) => {
     }
     throw error;
   }
-  revalidatePath("/custom-rules");
-  revalidatePath(`/custom-rules/${rule.id}`);
+  revalidatePath("/my/rules");
+  revalidatePath("/custom-rules/[id]", "page");
+  revalidatePath("/rules/[slug]", "page");
   const result: CustomRuleMutationResult = { id: rule.id, name: rule.name };
   return NextResponse.json(result);
 });

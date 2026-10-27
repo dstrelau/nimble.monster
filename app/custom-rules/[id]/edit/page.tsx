@@ -20,9 +20,15 @@ export default async function EditCustomRulePage({ params }: PageProps) {
   const uid = deslugify(id);
   if (!uid) notFound();
 
-  const [rule, session] = await Promise.all([findCustomRule(uid), auth()]);
+  const session = await auth();
+  if (!session?.user?.id)
+    redirect(
+      `/api/auth/signin?callbackUrl=${encodeURIComponent(`/custom-rules/${id}/edit`)}`
+    );
+
+  const rule = await findCustomRule(uid);
   if (!rule) notFound();
-  if (session?.user?.id !== rule.creator.id) redirect("/custom-rules");
+  if (session.user.id !== rule.creator.id) redirect("/rules");
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">

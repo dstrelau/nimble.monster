@@ -53,9 +53,9 @@ describe("custom-rule deletion route", () => {
     expect(await response.json()).toEqual({ success: true });
     expect(mocks.deleteCustomRule).toHaveBeenCalledWith(id, "owner");
     expect(mocks.revalidatePath.mock.calls).toEqual([
-      ["/custom-rules"],
       ["/my/rules"],
       ["/custom-rules/[id]", "page"],
+      ["/rules/[slug]", "page"],
     ]);
   });
   it("hides missing, non-owned and already-deleted rules behind 404", async () => {

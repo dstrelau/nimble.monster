@@ -45,8 +45,8 @@ export const POST = internalAction("application/json", async (request) => {
       { status: 404 }
     );
   }
-  revalidatePath("/custom-rules");
   revalidatePath("/my/rules");
   revalidatePath("/custom-rules/[id]", "page");
+  revalidatePath("/rules/[slug]", "page");
   return NextResponse.json({ success: true });
 });

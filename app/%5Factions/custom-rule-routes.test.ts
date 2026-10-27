@@ -73,9 +73,13 @@ describe.each([
       ...(status === 200 ? { id } : {}),
       userId: "owner",
     });
-    expect(mocks.revalidate).toHaveBeenCalledWith("/custom-rules");
+    expect(mocks.revalidate).toHaveBeenCalledWith("/my/rules");
+    expect(mocks.revalidate).toHaveBeenCalledWith("/rules/[slug]", "page");
     if (status === 200)
-      expect(mocks.revalidate).toHaveBeenCalledWith(`/custom-rules/${id}`);
+      expect(mocks.revalidate).toHaveBeenCalledWith(
+        "/custom-rules/[id]",
+        "page"
+      );
   });
   it("requires authentication before writes", async () => {
     mocks.auth.mockResolvedValue(null);

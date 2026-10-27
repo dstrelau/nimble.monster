@@ -39,7 +39,8 @@ export const POST = internalAction("application/json", async (request) => {
     throw error;
   }
   trace.getActiveSpan()?.setAttribute("customRule.id", rule.id);
-  revalidatePath("/custom-rules");
+  revalidatePath("/my/rules");
+  revalidatePath("/rules/[slug]", "page");
   const result: CustomRuleMutationResult = { id: rule.id, name: rule.name };
   return NextResponse.json(result, { status: 201 });
 });

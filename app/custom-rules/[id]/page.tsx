@@ -123,8 +123,8 @@ export default async function CustomRulePage({ params }: PageProps) {
     >
       <div className="mx-auto max-w-3xl px-4 py-8">
         <nav className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
-          <Link href="/custom-rules" className="hover:text-foreground">
-            Custom Rules
+          <Link href="/rules" className="hover:text-foreground">
+            Rules
           </Link>
           <span>/</span>
           <span className="text-foreground">{rule.name}</span>
