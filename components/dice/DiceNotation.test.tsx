@@ -13,4 +13,14 @@ describe("DiceNotation", () => {
       expect(trigger).toHaveAttribute("aria-haspopup", "dialog");
     }
   );
+
+  it.each([
+    ["d100", "d100"],
+    ["1d100", "d100"],
+    ["d100a", "d100 ADV"],
+    ["d66", "d66"],
+  ])("labels %s as %s", (notation, label) => {
+    render(<DiceNotation text={`Roll ${notation}.`} />);
+    expect(screen.getByText(label)).toHaveAttribute("aria-haspopup", "dialog");
+  });
 });

@@ -68,7 +68,10 @@ export function DiceRollerClient({ initialDice }: Props) {
           ? Number.parseInt(dieSizeMatch[1], 10)
           : null;
         const advantageMatch = diceNotation.toLowerCase().match(/a(\d+)/);
-        const disadvantageMatch = diceNotation.toLowerCase().match(/d(\d+)$/);
+        // Skip the die size itself so d100 is not read as disadvantage 100.
+        const disadvantageMatch = diceNotation
+          .toLowerCase()
+          .match(/d\d+[vn]*d(\d+)/);
 
         if (
           dieSize !== null &&

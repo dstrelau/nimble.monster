@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import {
   calculateProbabilityDistribution,
   parseDiceNotation,
@@ -12,9 +12,8 @@ import { DiceRollerClient } from "./dice-roller-client";
 vi.mock("@/lib/hooks/useDiceStatistics", () => ({
   useDiceStatistics: (notation: string) => {
     const roll = parseDiceNotation(notation);
-    if (!roll) throw new Error("Invalid test notation");
     return {
-      stats: {
+      stats: roll && {
         distribution: calculateProbabilityDistribution(roll),
         averageRoll: 0,
         totalAverageRoll: 0,
@@ -45,3 +44,18 @@ it.each([
     expect(screen.getByRole("button", { name: "Reroll" })).toBeEnabled();
   }
 );
+
+it.each([
+  ["2d100", "Invalid dice notation"],
+  ["1d20d7", "Disadvantage values over 6 are not supported"],
+])("explains why %s is invalid", (notation, message) => {
+  render(
+    <NuqsTestingAdapter>
+      <DiceRollerClient initialDice="d100" />
+    </NuqsTestingAdapter>
+  );
+  fireEvent.change(screen.getByRole("textbox"), {
+    target: { value: notation },
+  });
+  expect(screen.getByText(message, { exact: false })).toBeInTheDocument();
+});
