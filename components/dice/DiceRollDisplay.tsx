@@ -21,6 +21,7 @@ function DiceIcon({
     case 8:
       return <D8 className={className} style={style} />;
     case 10:
+    case 100:
       return <D10 className={className} style={style} />;
     case 12:
       return <D12 className={className} style={style} />;

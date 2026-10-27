@@ -47,6 +47,7 @@ function DiceDrawer({ diceText }: { diceText: string }) {
       case 8:
         return <D8 className={className} />;
       case 10:
+      case 100:
         return <D10 className={className} />;
       case 12:
         return <D12 className={className} />;
@@ -84,8 +85,7 @@ function DiceDrawer({ diceText }: { diceText: string }) {
           ) : (
             <>
               {parsed.tensOnes
-                ? // Percentile d100 is two d10s; d66 and friends repeat the size.
-                  `d${parsed.dieSize === 10 ? 100 : parsed.dieSize.toString().repeat(parsed.numDice)}`
+                ? `d${parsed.dieSize.toString().repeat(parsed.numDice)}`
                 : `${parsed.numDice}d${parsed.dieSize}`}
               {parsed.modifier > 0
                 ? `+${parsed.modifier}`
@@ -158,7 +158,7 @@ function DiceDrawer({ diceText }: { diceText: string }) {
 
 export function DiceNotation({ text }: DiceNotationProps) {
   const diceRegex =
-    /\b(\d+d\d+(?:(?:[vadn]\d*)+)?(?:\^-?\d+)?(?:[+-]\d+d\d+)*(?:[+-]\d+(?![\dc]))?(?:\+\d+c)?|d(?:44|66|88|100)(?:[ad]\d*)?)\b/gi;
+    /\b(\d+d\d+(?:(?:[vadn]\d*)+)?(?:\^-?\d+)?(?:[+-]\d+d\d+)*(?:[+-]\d+(?![\dc]))?(?:\+\d+c)?|d(?:44|66|88)(?:[ad]\d*)?(?:[+-]\d+d\d+)*(?:[+-]\d+(?![\dc]))?)\b/gi;
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
 

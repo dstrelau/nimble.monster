@@ -46,12 +46,12 @@ it.each([
 );
 
 it.each([
-  ["2d100", "Invalid dice notation"],
+  ["d100", "Invalid dice notation"],
   ["1d20d7", "Disadvantage values over 6 are not supported"],
 ])("explains why %s is invalid", (notation, message) => {
   render(
     <NuqsTestingAdapter>
-      <DiceRollerClient initialDice="d100" />
+      <DiceRollerClient initialDice="1d6" />
     </NuqsTestingAdapter>
   );
   fireEvent.change(screen.getByRole("textbox"), {

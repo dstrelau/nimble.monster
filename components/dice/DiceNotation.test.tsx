@@ -15,10 +15,12 @@ describe("DiceNotation", () => {
   );
 
   it.each([
-    ["d100", "d100"],
-    ["1d100", "d100"],
-    ["d100a", "d100 ADV"],
+    ["1d100", "1d100"],
+    ["1d100a", "1d100 ADV"],
     ["d66", "d66"],
+    ["d44+4", "d44+4"],
+    ["d44+1d6", "d44+1d6"],
+    ["d66a-1d4+2", "d66a-1d4+2"],
   ])("labels %s as %s", (notation, label) => {
     render(<DiceNotation text={`Roll ${notation}.`} />);
     expect(screen.getByText(label)).toHaveAttribute("aria-haspopup", "dialog");
