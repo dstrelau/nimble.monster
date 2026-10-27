@@ -5,7 +5,7 @@ import { parseDiceNotation, simulateRoll } from "nimble-dice";
 import { useMemo, useState } from "react";
 import { DiceRollDisplay } from "@/components/dice/DiceRollDisplay";
 import { DiceStatistics } from "@/components/dice/DiceStatistics";
-import { D4, D8, D10, D12, D20 } from "@/components/icons/PolyhedralDice";
+import { D4, D8, D10, D12, D20, D100 } from "@/components/icons/PolyhedralDice";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -47,12 +47,13 @@ function DiceDrawer({ diceText }: { diceText: string }) {
       case 8:
         return <D8 className={className} />;
       case 10:
-      case 100:
         return <D10 className={className} />;
       case 12:
         return <D12 className={className} />;
       case 20:
         return <D20 className={className} />;
+      case 100:
+        return <D100 className={className} />;
       default:
         return null;
     }

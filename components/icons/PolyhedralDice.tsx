@@ -83,6 +83,75 @@ export const D10 = ({
   );
 };
 
+// A d100 (zocchihedron) drawn as a golf ball: evenly spaced dimples on a hex
+// grid, with the outer ring sunk halfway into the outline.
+const D100_DIMPLES = [
+  [10.33, 3.31],
+  [13.67, 3.31],
+  [5.31, 6.21],
+  [8.66, 6.21],
+  [12, 6.21],
+  [15.34, 6.21],
+  [18.69, 6.21],
+  [3.64, 9.1],
+  [6.98, 9.1],
+  [10.33, 9.1],
+  [13.67, 9.1],
+  [17.02, 9.1],
+  [20.36, 9.1],
+  [5.31, 12],
+  [8.66, 12],
+  [12, 12],
+  [15.34, 12],
+  [18.69, 12],
+  [3.64, 14.9],
+  [6.98, 14.9],
+  [10.33, 14.9],
+  [13.67, 14.9],
+  [17.02, 14.9],
+  [20.36, 14.9],
+  [5.31, 17.79],
+  [8.66, 17.79],
+  [12, 17.79],
+  [15.34, 17.79],
+  [18.69, 17.79],
+  [10.33, 20.69],
+  [13.67, 20.69],
+];
+
+export const D100 = ({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    style={style}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <title>D100</title>
+    <circle cx="12" cy="12" r="10" />
+    {D100_DIMPLES.map(([cx, cy]) => (
+      <circle
+        key={`${cx},${cy}`}
+        cx={cx}
+        cy={cy}
+        r="1.15"
+        fill="currentColor"
+        stroke="none"
+      />
+    ))}
+  </svg>
+);
+
 export const D8 = ({
   className,
   style,
@@ -157,6 +226,7 @@ const DIE_COMPONENTS: Record<
   10: D10,
   12: D12,
   20: D20,
+  100: D100,
 };
 
 export const Die = ({

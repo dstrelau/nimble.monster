@@ -1,7 +1,7 @@
 import { Box, Flame } from "lucide-react";
 import type { DieResult } from "nimble-dice";
 import React from "react";
-import { D4, D8, D10, D12, D20 } from "@/components/icons/PolyhedralDice";
+import { D4, D8, D10, D12, D20, D100 } from "@/components/icons/PolyhedralDice";
 import { cn } from "@/lib/utils";
 
 function DiceIcon({
@@ -21,12 +21,13 @@ function DiceIcon({
     case 8:
       return <D8 className={className} style={style} />;
     case 10:
-    case 100:
       return <D10 className={className} style={style} />;
     case 12:
       return <D12 className={className} style={style} />;
     case 20:
       return <D20 className={className} style={style} />;
+    case 100:
+      return <D100 className={className} style={style} />;
     default:
       return <Box className={className} style={style} />;
   }
