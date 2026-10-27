@@ -139,16 +139,13 @@ export const D100 = ({
   >
     <title>D100</title>
     <circle cx="12" cy="12" r="10" />
-    {D100_DIMPLES.map(([cx, cy]) => (
-      <circle
-        key={`${cx},${cy}`}
-        cx={cx}
-        cy={cy}
-        r="1.15"
-        fill="currentColor"
-        stroke="none"
-      />
-    ))}
+    {/* Dimples are round-capped zero-length strokes, not fills, so they take
+        the stroke color like every other icon line (e.g. stroke-flame). A
+        2.3 stroke width gives the same 1.15 radius. */}
+    <path
+      strokeWidth="2.3"
+      d={D100_DIMPLES.map(([cx, cy]) => `M${cx} ${cy}h0`).join("")}
+    />
   </svg>
 );
 
