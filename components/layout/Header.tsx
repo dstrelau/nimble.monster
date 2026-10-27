@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Dices, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { getNavCountsAction } from "@/app/actions/nav";
+import { getNavCounts } from "@/app/%5Factions/getNavCounts/contract";
 import { CountedNavMenu } from "@/components/layout/CountedNavMenu";
 import { Logo } from "@/components/layout/Logo";
 import { MobileMenuDropdown } from "@/components/layout/MobileMenuDropdown";
@@ -20,26 +20,16 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Separator } from "@/components/ui/separator";
-import type {
-  AdventureCounts,
-  BestiaryCounts,
-  CharacterOptionCounts,
-  GearCounts,
-  RandomTableCounts,
-  RuleCounts,
-} from "@/lib/db";
+import { call } from "@/lib/contract";
+import type { AllNavCounts } from "@/lib/db/nav";
 import {
   ENTITY_TYPE_ICONS,
   SITE_NAVIGATION_GROUPS,
   type SiteNavigationItemKey,
 } from "@/lib/types/entity-links";
 
-export type AllNavCounts = BestiaryCounts &
-  CharacterOptionCounts &
-  GearCounts &
-  AdventureCounts &
-  RuleCounts &
-  RandomTableCounts;
+const loadNavCounts = ({ signal }: { signal?: AbortSignal } = {}) =>
+  call(getNavCounts, undefined, { signal });
 
 interface HeaderProps {
   initialCounts: AllNavCounts;
@@ -94,7 +84,7 @@ const Header = ({ initialCounts }: HeaderProps) => {
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const { data: counts } = useQuery({
     queryKey: ["nav-counts"],
-    queryFn: getNavCountsAction,
+    queryFn: loadNavCounts,
     initialData: initialCounts,
     staleTime: 60_000,
   });
@@ -134,7 +124,7 @@ const Header = ({ initialCounts }: HeaderProps) => {
                   label={group.label}
                   items={group.items}
                   queryKey="nav-counts"
-                  queryFn={getNavCountsAction}
+                  queryFn={loadNavCounts}
                 />
               ))}
             </NavigationMenuList>

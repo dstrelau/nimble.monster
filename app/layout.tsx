@@ -1,13 +1,13 @@
 import "@/app/ui/global.css";
 import type { Metadata } from "next";
 import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
-import { getNavCountsAction } from "@/app/actions/nav";
 import { Footer } from "@/components/layout/Footer";
 import { FreeBanner } from "@/components/layout/FreeBanner";
 import { GlobalSearchDialog } from "@/components/layout/GlobalSearchDialog";
 import Header from "@/components/layout/Header";
 import { StaleDeploymentBanner } from "@/components/layout/StaleDeploymentBanner";
 import { auth } from "@/lib/auth";
+import { getNavCounts } from "@/lib/db/nav";
 import { getEnabledFeatureFlags } from "@/lib/services/featureFlags";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
@@ -43,10 +43,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [session, navCounts] = await Promise.all([
-    auth(),
-    getNavCountsAction(),
-  ]);
+  const [session, navCounts] = await Promise.all([auth(), getNavCounts()]);
   const enabledFeatures = await getEnabledFeatureFlags(session?.user.id);
   return (
     <html lang="en" suppressHydrationWarning>

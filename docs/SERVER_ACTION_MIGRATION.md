@@ -264,8 +264,8 @@ Host measurement: Honeycomb environment/dataset `nimble.monster`, fixed window
 | --- | --- | ---: | ---: | ---: |
 | Migrated | `getMyReactions` | 6,171 | 6,005 | 166 |
 | Migrated | `loadConditionsForDiscordId` | 4,783 | 4,604 | 179 |
-| Migrated in this slice | `loadOfficialConditions` | 1,452 | 1,309 | 143 |
-| Next | `getNavCountsAction` | 1,174 | 1,005 | 169 |
+| Migrated | `loadOfficialConditions` | 1,452 | 1,309 | 143 |
+| Migrated in navigation-count slice | `getNavCountsAction` | 1,174 | 1,005 | 169 |
 
 Total observed action root requests: **16,687**. The remaining **3,107** include
 other operations, older references and invalid/unmapped IDs; this is not a
@@ -274,11 +274,16 @@ These are observed requests, not unique users; QA/bot traffic is not excluded.
 [24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/JvkrCgnqMx),
 [initial seven-day ID results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/pQkrFW2AbzZ).
 
-The official-condition slice reuses this recent fixed-window evidence on
-October 27 (UTC), rather than presenting it as a fresh measurement. Its named
-volume is not sparse and exceeds the next recorded action; no seven-day
-tie-breaker is needed. The residual 3,107 attempts are not assigned to named
+The official-condition and navigation-count slices reuse this recent fixed-window
+evidence on October 27 (UTC), rather than presenting it as a fresh measurement.
+Navigation counts are the highest-volume remaining verified named operation
+after the preceding three migrations; 1,174 attempts are not sparse and require
+no seven-day tie-breaker. The residual 3,107 attempts are not assigned to named
 actions, and absence of a sampling banner is not proof of unsampled coverage.
+After navigation counts, refresh the fixed-window ranking and map the remaining
+IDs before choosing another slice: this table does not establish the next action
+among that residual volume. Do not fall back to unused-export cleanup or wave
+order in place of measuring live browser calls.
 
 Read-only extraction of five deployed manifests verified OCI layer digests,
 image `GH_SHA`, filename and exported name. For builds `e64c54dd`, `cb96d2c9`,
@@ -1785,6 +1790,47 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Public navigation counts — October 2026
+
+- Selected `getNavCountsAction` from the recorded traffic-first ranking: 1,174
+  root HTTP attempts (1,005 HTTP <400; 169 HTTP ≥400). This is reused recent
+  fixed-window evidence, not a new query; coverage and unmapped volume remain
+  disclosed above. Coordination found no other unarchived owner of this slice.
+  The official-condition run retains its own disclosed closeout exceptions;
+  this run neither reopens nor claims to resolve them.
+- Caller audit found only `Header` (its shared query plus four `CountedNavMenu`
+  observers) and the root layout. The header now uses a bodyless typed GET to
+  `/_actions/getNavCounts`, sharing its unchanged `["nav-counts"]` cache key,
+  one-minute freshness, initial server counts and existing bestiary-save
+  invalidation. The transport supports cancellation. Background pending/failure
+  retains existing counts; normal query retries/recovery and navigation remain
+  unchanged. This read has no mutation, persistence or redirect contract.
+- These are public catalogue totals, not My Library counts. The prior action
+  performed no auth check: anonymous and signed-in viewers deliberately receive
+  the same 13 numeric fields. Existing SQL helpers still exclude private rows,
+  separate monsters/hazards and add filesystem rules to public custom rules.
+  Arbitrary query parameters cannot select a user or private data. There is no
+  new session-only authorization, identity-scoped cache key or supported public
+  JSON:API endpoint. Safe parameterless GETs need no mutation-origin/media gate
+  or input schema. Responses and generic unexpected 500s are `private, no-store`,
+  with no CORS and existing error telemetry; unsupported writes return 405.
+- Moved the existing aggregation into `lib/db/nav.ts` without `use server`.
+  The root layout calls it directly; the browser contract imports only its type,
+  never its database implementation. No relative HTTP occurs in SSR. Removed
+  the final export and empty `app/actions/nav.ts`; application ratchet **53 → 52**.
+  Repository directives/counts, underlying SQL, admin actions and other browser
+  reads are unchanged. Route tests use real SQLite with asymmetric public/private
+  counts, empty results and safe errors; real-header transport tests verify
+  stable URL/no `next-action`, pending retention, invalidation and error recovery.
+- The [run thread](https://ampcode.com/threads/T-01a17cf8-91c8-72f6-b8e8-8eeecea072a1)
+  records local/full checks, independent SQL totals, live HTTP and browser
+  navigation/reload, deployed identity, exact production requests and cleanup.
+  QA reads existing public content only: no production fixtures, auth tokens or
+  database writes are necessary for this anonymous-readable operation. Local
+  browser QA uses the configured development session. Retain the URL and response
+  shape for at least one deployment interval; old action tabs still need refresh.
+  Refresh traffic evidence for the next slice; the migration is not complete.
 
 ### Official condition reads — October 2026
 
