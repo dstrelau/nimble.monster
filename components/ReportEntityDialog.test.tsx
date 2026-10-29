@@ -9,14 +9,13 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockGetMyReport } = vi.hoisted(() => ({
+const { mockGetMyReport, mockUseSession } = vi.hoisted(() => ({
   mockGetMyReport: vi.fn(),
+  mockUseSession: vi.fn(),
 }));
 const mockFetch = vi.fn<typeof fetch>();
 
-vi.mock("@/app/actions/reports", () => ({
-  getMyReport: mockGetMyReport,
-}));
+vi.mock("next-auth/react", () => ({ useSession: mockUseSession }));
 
 import { ReportEntityDialog } from "./ReportEntityDialog";
 
@@ -30,7 +29,21 @@ function createWrapper() {
 }
 
 beforeEach(() => {
-  vi.stubGlobal("fetch", mockFetch);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn((url: string, options: RequestInit) => {
+      if (url.startsWith("/_actions/getMyReport?")) {
+        return mockGetMyReport().then((reported: boolean) =>
+          Response.json(reported)
+        );
+      }
+      return mockFetch(url, options);
+    })
+  );
+  mockUseSession.mockReturnValue({
+    status: "authenticated",
+    data: { user: { id: "user-1" } },
+  });
   mockGetMyReport.mockResolvedValue(false);
   mockFetch.mockResolvedValue(Response.json({ success: true }));
 });
@@ -42,6 +55,132 @@ afterEach(() => {
 });
 
 describe("ReportEntityDialog", () => {
+  it("reads a boolean using cancellable stable GET without identity or next-action", async () => {
+    mockGetMyReport.mockResolvedValue(true);
+    render(
+      <ReportEntityDialog entityType="item" entityId="i1" entityLabel="Item" />,
+      {
+        wrapper: createWrapper(),
+      }
+    );
+    expect(
+      await screen.findByRole("button", { name: "Reported" })
+    ).toBeDisabled();
+    expect(fetch).toHaveBeenCalledWith(
+      "/_actions/getMyReport?entityType=item&entityId=i1",
+      {
+        method: "GET",
+        credentials: "same-origin",
+        signal: expect.any(AbortSignal),
+      }
+    );
+    const init = vi.mocked(fetch).mock.calls[0][1];
+    expect(init?.body).toBeUndefined();
+    expect(new Headers(init?.headers).has("next-action")).toBe(false);
+  });
+
+  it("isolates cached reads and an in-flight report across account changes and sign-out", async () => {
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false, staleTime: Infinity } },
+    });
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <QueryClientProvider client={client}>{children}</QueryClientProvider>
+    );
+    const element = (
+      <ReportEntityDialog entityType="item" entityId="i1" entityLabel="Item" />
+    );
+    const { rerender } = render(element, { wrapper });
+    await waitFor(() => expect(mockGetMyReport).toHaveBeenCalledTimes(1));
+    let finish: (response: Response) => void = () => {
+      throw new Error("Report not started");
+    };
+    mockFetch.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        })
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Report" }));
+    const dialog = await screen.findByRole("dialog");
+    fireEvent.click(within(dialog).getByText("Spam"));
+    fireEvent.click(within(dialog).getByRole("button", { name: "Report" }));
+    await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+    mockUseSession.mockReturnValue({
+      status: "authenticated",
+      data: { user: { id: "user-2" } },
+    });
+    rerender(
+      <ReportEntityDialog entityType="item" entityId="i1" entityLabel="Item" />
+    );
+    await waitFor(() =>
+      expect(client.getQueryData(["report", "item", "i1", "user-2"])).toBe(
+        false
+      )
+    );
+    finish(Response.json({ success: true }));
+    await waitFor(() =>
+      expect(client.getQueryData(["report", "item", "i1", "user-1"])).toBe(true)
+    );
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+    );
+    expect(screen.getByRole("button", { name: "Report" })).toBeEnabled();
+    mockUseSession.mockReturnValue({
+      status: "authenticated",
+      data: { user: { id: "user-1" } },
+    });
+    rerender(
+      <ReportEntityDialog entityType="item" entityId="i1" entityLabel="Item" />
+    );
+    expect(screen.getByRole("button", { name: "Reported" })).toBeDisabled();
+    mockUseSession.mockReturnValue({ status: "unauthenticated", data: null });
+    rerender(
+      <ReportEntityDialog entityType="item" entityId="i1" entityLabel="Item" />
+    );
+    expect(screen.getByRole("button", { name: "Report" })).toBeEnabled();
+    expect(mockGetMyReport).toHaveBeenCalledTimes(2);
+    client.clear();
+  });
+
+  it("retains its fallback through a failed read and recovers on refetch", async () => {
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <QueryClientProvider client={client}>{children}</QueryClientProvider>
+    );
+    let fail: (error: Error) => void = () => {
+      throw new Error("Read not started");
+    };
+    mockGetMyReport.mockImplementationOnce(
+      () =>
+        new Promise((_, reject) => {
+          fail = reject;
+        })
+    );
+    render(
+      <ReportEntityDialog entityType="item" entityId="i1" entityLabel="Item" />,
+      { wrapper }
+    );
+    expect(screen.getByRole("button", { name: "Report" })).toBeEnabled();
+    fail(new Error("Unavailable"));
+    await waitFor(() =>
+      expect(
+        client.getQueryState(["report", "item", "i1", "user-1"])?.status
+      ).toBe("error")
+    );
+    expect(screen.getByRole("button", { name: "Report" })).toBeEnabled();
+    mockGetMyReport.mockResolvedValue(true);
+    await client.refetchQueries();
+    expect(
+      await screen.findByRole("button", { name: "Reported" })
+    ).toBeDisabled();
+    mockGetMyReport.mockRejectedValue(new Error("Unavailable"));
+    await client.refetchQueries();
+    expect(screen.getByRole("button", { name: "Reported" })).toBeDisabled();
+    client.clear();
+  });
+
   it("opens the report dialog on click, titled with the entity label", async () => {
     render(
       <ReportEntityDialog

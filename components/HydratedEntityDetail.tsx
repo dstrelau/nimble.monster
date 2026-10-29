@@ -16,6 +16,7 @@ import {
 } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { getMyReactions } from "@/lib/services/reactions";
+import { hasUserReported } from "@/lib/services/reports";
 
 interface HydratedEntityDetailProps {
   authenticated: boolean;
@@ -67,7 +68,13 @@ export async function HydratedEntityDetail({
         ...entityReactionsQueryOptions(entityType, entityId, session?.user?.id),
         queryFn: () => getMyReactions(entityType, entityId, session?.user?.id),
       }),
-      queryClient.prefetchQuery(entityReportQueryOptions(entityType, entityId))
+      queryClient.prefetchQuery({
+        ...entityReportQueryOptions(entityType, entityId, session?.user?.id),
+        queryFn: () =>
+          session?.user?.id
+            ? hasUserReported(entityType, entityId, session.user.id)
+            : Promise.resolve(false),
+      })
     );
     if (includeCollections) {
       queries.push(queryClient.prefetchQuery(ownCollectionsQueryOptions()));

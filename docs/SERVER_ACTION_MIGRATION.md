@@ -421,6 +421,47 @@ After item search, the residual could change the next ranking; refresh or expand
 mapping before selecting another action. The current verified item alias is
 `40b47e36eb7d12e16f016140f1f4692150d7a895e1`.
 
+### Refreshed report-read selection — October 29, 2026
+
+Fixed window **2026-10-28T22:00:00Z–2026-10-29T22:00:00Z**, root HTTP spans
+only (`trace.parent_id` absent, `http.request.header.next-action` present), grouped
+by ID and `COALESCE(http.response.status_code, http.status_code)`:
+[results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/Ek8akxDvn89).
+The complete result contains **1,515 root attempts**, mean sample rate **1**,
+925,865 rows examined and zero OTHER/truncated volume. QA/bots are included;
+HTTP <400/≥400 is transport success/failure, not Flight domain-result success.
+
+Read-only extraction of **55 deployed images** (`a533cb6c` through `9eb787e2`)
+checks each compressed standalone-layer SHA256 and records image `GH_SHA`, tag,
+filename and export. Aliases aggregate by filename/export, not build-specific
+ID. All **1,495 non-probe attempts map to verified named actions**; no unnamed
+volume remains. The excluded 20 probes are `x` (18 HTTP 200, one HTTP 400) and
+a 64-zero ID (one HTTP 400). Volume is not sparse and the lead is not tied, so
+no seven-day tie-breaker is required. The run's `report-traffic-evidence.json`
+retains complete results and safe mappings. Coordination found no other
+unarchived scheduled owner.
+
+| Priority | Verified named operation | Attempts | HTTP <400 | HTTP ≥400 |
+| --- | --- | ---: | ---: | ---: |
+| Already migrated | `searchPublicItems` | 200 | 198 | 2 |
+| Already migrated | `paginatePublicMonsters` | 176 | 162 | 14 |
+| Selected report-read slice | `getMyReport` | 170 | 162 | 8 |
+| Remaining | `paginatePublicCompanionsAction` | 154 | 154 | 0 |
+| Remaining | `getAllSources` | 154 | 152 | 2 |
+| Remaining | `listOwnCollections` | 116 | 108 | 8 |
+| Remaining | `getUserFamilies` | 115 | 115 | 0 |
+| Remaining | `paginateUserProfileMonsters` | 92 | 77 | 15 |
+| Remaining | `listOwnEncounters` | 70 | 63 | 7 |
+| Remaining | `paginatePublicBackgrounds` | 46 | 42 | 4 |
+
+All other remaining named operations have ≤27 attempts. The next two candidates
+are tied: refresh this window and use seven days as the tie-breaker if needed;
+do not infer their order from this table. Verified report aliases include
+`60c435a833d4dce182e3dd459fe1e324aa3ed45bf0` (58),
+`60193bc573f62bac2e92a1f3151d735f87c570ae67` (56),
+`600ec990cede15d3bf0fb706f3f849342ead66877b` (55) and
+`6056024ac9f9500d1f4280303177e2d288b37ba660` (one).
+
 Read-only extraction of five deployed manifests verified OCI layer digests,
 image `GH_SHA`, filename and exported name. For builds `e64c54dd`, `cb96d2c9`,
 `35d84cdc`, `1b63297b`, `57d2ffa5`, respectively, `app/actions/reactions.ts#getMyReactions`
@@ -632,7 +673,7 @@ contract compatibility window that a future migration must preserve.
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
 | Public browser reads | Partially complete | Ancestry and monster pagination, source options, navigation counts and [item search/pagination](https://ampcode.com/threads/T-01a188c6-2cba-721e-b7ee-ef1b744afdc5) use internal stable GETs. All application browser reads belong under `/_actions`, not the third-party JSON:API. Remaining operations follow measured traffic priority. |
-| Private/UI-specific browser reads | Partially complete | Picker, [reaction summary reads](https://ampcode.com/threads/T-01a1781c-f9af-7729-a9fb-5deda49e493a), [creator/viewer conditions](https://ampcode.com/threads/T-01a178af-d558-748e-876d-ea6e1b43b5ed) and [official conditions](https://ampcode.com/threads/T-01a17ad3-4ab5-7205-a5f9-9405ebba43db) use stable routes; navigation counts are next by recorded traffic |
+| Private/UI-specific browser reads | Partially complete | Picker, reaction summary, creator/viewer and official conditions, navigation counts and [report status reads](https://ampcode.com/threads/T-01a189d8-7afb-75e0-9d07-35be1c47103c) use stable routes. Remaining operations follow measured traffic priority. |
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Not started | Wave 5 |
@@ -1926,6 +1967,60 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Session report-status reads — October 2026
+
+- Selected `app/actions/reports.ts#getMyReport` using the refreshed fixed-window
+  evidence above: 170 attempts, 162 HTTP <400 and eight HTTP ≥400. No competing
+  unarchived scheduled run owns this operation.
+- `entityReportQueryOptions`, the only browser transport owner, now uses a
+  cancellable bodyless `GET /_actions/getMyReport?entityType=…&entityId=…`,
+  returning only a boolean. `ReportEntityDialog` shares this query across ten
+  existing detail routes: monsters, hazards (using `monster`), items, companions,
+  ancestries, backgrounds, classes, subclasses, spell schools and custom rules.
+  No new report UI is invented for the other accepted types. `HydratedEntityDetail` calls
+  the existing report service directly, retaining the browser's query key;
+  Server Components never make relative HTTP requests.
+- The route validates the 12 supported types and UUIDs, derives reporter identity
+  only from `auth()` and preserves anonymous `false`, missing-report `false`
+  and the existing per-user/per-type/per-ID lookup. It does not introduce entity
+  visibility rules, reveal another reporter or serialize report details. Submitted
+  identity parameters are ignored. Success/errors are `private, no-store`,
+  without CORS; unexpected errors reach telemetry before a generic 500. Safe
+  GETs need no mutation origin/media gate; unsupported writes receive 405.
+- Report query keys now include session user ID. Signed-out/loading sessions
+  retain the false fallback without a private request. Account changes select
+  separate cache entries, and an in-flight report mutation updates only its
+  starting user's cache. Pending/error fallback, retained background data,
+  query retry/recovery, report draft retention/manual retry and navigation remain.
+  The existing stable report mutation, database schema and moderation are unchanged.
+- Removed the last export and empty `app/actions/reports.ts`, its obsolete
+  wrapper-only tests and action imports/calls. Application ratchet **49 → 48**;
+  repository directives/exports and public API are unchanged. Real-SQL boundary
+  tests cover reporter/type/ID isolation, anonymous reads, validation and safe
+  failures; real-dialog transport tests cover stable GET/no `next-action`,
+  cancellation, account changes/sign-out and failure/recovery alongside the
+  retained stable submission tests.
+- Focused checks: 71 passed. Full suite: 2,048 passed, seven skipped;
+  `make check` and `git diff --check` pass. Forty-nine live development requests
+  verify all 12 accepted types, anonymous/reporter/second-user separation,
+  ignored identity, missing reports, 400/405 behavior and independently checked
+  persistence. Browser QA covers all ten existing detail routes and dialog
+  cancellation/reload, same-document account changes, client navigation and
+  disposable report submission/reload. Thirteen stable GETs include 11 raw CDP
+  extra-header checks without `next-action`. No page/hydration errors or normal
+  flow console errors occur; two deliberately aborted read errors are recorded
+  separately and recovery succeeds. Six zero-row SQL checks, FTS absence and
+  unchanged source rows verify local cleanup.
+- The [run thread](https://ampcode.com/threads/T-01a189d8-7afb-75e0-9d07-35be1c47103c)
+  records local/full checks, live authenticated HTTP, browser navigation/reload,
+  deployed identity, exact functional production requests and cleanup. QA uses
+  disposable non-admin users, report rows and copies of existing content, never
+  real-user edits. Production uses one-hour Auth.js sessions, not a dev bypass.
+- Retain this URL and response shape for at least one deployment interval.
+  Legacy pre-cutover tabs still need refresh/retry. The migration is incomplete;
+  companions and all-source reads are tied in the latest window and need a
+  refreshed ranking/seven-day tie-breaker before the next selection.
 
 ### Public item search and pagination — October 2026
 
