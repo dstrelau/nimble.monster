@@ -106,7 +106,7 @@ function reviveAwards(
   return awards?.map(reviveAward);
 }
 
-function reviveMonster(monster: Jsonify<Monster>): Monster {
+export function reviveMonster(monster: Jsonify<Monster>): Monster {
   return {
     ...monster,
     createdAt: new Date(monster.createdAt),

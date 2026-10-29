@@ -107,6 +107,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
     queryKey: options.queryKey,
     queryFn: async (context: {
       pageParam?: string;
+      signal?: AbortSignal;
     }): Promise<{ data: BestiaryEntry[]; nextCursor: string | null }> => {
       const page = await options.queryFn(context);
       return page;

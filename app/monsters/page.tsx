@@ -54,9 +54,15 @@ export default async function MonstersPage({
       ...officialConditionsQueryOptions(),
       queryFn: listOfficialConditions,
     }),
-    queryClient.prefetchInfiniteQuery(
-      publicMonstersInfiniteQueryOptions(params)
-    ),
+    queryClient.prefetchInfiniteQuery({
+      ...publicMonstersInfiniteQueryOptions(params),
+      queryFn: () =>
+        monstersService.paginatePublicMonsters({
+          ...params,
+          type: params.type === "hazard" ? "all" : params.type,
+          limit: 12,
+        }),
+    }),
   ]);
 
   return (

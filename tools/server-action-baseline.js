@@ -12,7 +12,6 @@ export const serverActionBaseline = {
     "app/companions/actions.ts": 1,
     "app/families/actions.ts": 1,
     "app/hazards/actions.ts": 1,
-    "app/monsters/actions.ts": 1,
     "app/my/backgrounds/actions.ts": 1,
     "app/my/encounters/actions.ts": 1,
     "app/my/hazards/actions.ts": 1,

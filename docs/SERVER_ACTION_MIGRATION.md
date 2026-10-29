@@ -36,11 +36,13 @@ transport.
 
 Use these rules to choose a destination:
 
-1. A public resource read that already has a public API should use `/api`.
-2. A generally useful public resource read that belongs in the supported API
-   may extend `/api` and `docs/API.md`.
-3. A private, session-specific, or UI-specific read or mutation should use
-   `/_actions`.
+1. All application browser reads and writes use `/_actions`, including anonymous
+   public catalogue reads. `/api` is exclusively the supported third-party API
+   and must not power application UI pages.
+2. Do not extend JSON:API or expose additional identity fields for UI parity.
+   Historical public-read/JSON:API field-parity guidance below is superseded by
+   this separation; preserve the existing UI domain contract instead.
+3. Share domain logic through services, not HTTP between these surfaces.
 4. Server Components should call the service or repository directly. Do not
    add an HTTP round trip merely to avoid a Server Action directive.
 5. Internal fetch operations should use JSON. File uploads may use multipart
@@ -374,6 +376,42 @@ The [ancestry-pagination run](https://ampcode.com/threads/T-01a17f1d-f419-74be-9
 retains the complete counts and verified mappings. The 60 residual requests
 cannot upset ancestry's lead, but could affect the close items/monsters ranking;
 do not assume the next candidate wins without resolving that comparison.
+
+### Refreshed monster-pagination selection — October 29, 2026
+
+Fixed window **2026-10-28T12:00:00Z–2026-10-29T12:00:00Z**, root spans only
+(`trace.parent_id` absent, `http.request.header.next-action` present), grouped by
+action ID and HTTP status: [results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/tDNQdCoStRe).
+The complete JSON contains **1,528 root attempts**, mean sample rate **1**,
+1,276,453 rows examined and no truncated/OTHER volume. Bots/QA are not excluded;
+HTTP <400/≥400 is transport success/failure, not Flight domain-result success.
+
+| Priority | Verified named operation | Attempts | HTTP <400 | HTTP ≥400 |
+| --- | --- | ---: | ---: | ---: |
+| Selected monster-pagination slice | `app/monsters/actions.ts#paginatePublicMonsters` | 393 | 393 | 0 |
+| Next measured candidate | `lib/services/items/repository.ts#searchPublicItems` | 267 | 267 | 0 |
+| Remaining | `getMyReport` | 161 | 150 | 11 |
+| Remaining | `listOwnCollections` | 142 | 131 | 11 |
+| Remaining | `paginateUserProfileMonsters` | 85 | 85 | 0 |
+| Remaining | `paginatePublicBackgrounds` | 84 | 84 | 0 |
+| Remaining | `getAllSources` | 66 | 66 | 0 |
+| Remaining | `listOwnEncounters` | 39 | 39 | 0 |
+| Remaining | `getUserFamilies` | 37 | 37 | 0 |
+| Remaining | `paginatePublicHazards` | 26 | 26 | 0 |
+
+Read-only OCI extraction verifies image `GH_SHA`, compressed standalone layer
+SHA256, filename and export for `4629e46f` and `0009b481`; aliases are aggregated
+by filename/export. Those manifests map **1,347 attempts**. The prior verified
+source/reaction aliases recorded above identify another **51 failed attempts**
+for already-migrated operations. Excluded invalid probes account for **37**:
+`x` (29 HTTP 200, seven HTTP 400) and a 64-zero ID (one HTTP 400).
+**93 attempts across 22 otherwise-unmapped IDs** remain (92 HTTP 409, one HTTP
+200); no name or cause is guessed for them. Even assigning all 93 to
+item search gives 360 < 393, so incomplete historical coverage cannot change
+this selection. This is not sparse traffic and needs no seven-day tie-breaker.
+Other mapped operations have at most 16 attempts. Refresh/revisit residual
+coverage before the next selection. The run retains safe mappings and counts
+in its traffic-evidence artifact; archived-run file transfer was unavailable.
 
 Read-only extraction of five deployed manifests verified OCI layer digests,
 image `GH_SHA`, filename and exported name. For builds `e64c54dd`, `cb96d2c9`,
@@ -1880,6 +1918,52 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Public monster pagination — October 2026
+
+- Selected `app/monsters/actions.ts#paginatePublicMonsters` using the refreshed
+  traffic-first evidence above: 393 root attempts, all HTTP 200. No other
+  unarchived scheduled run owned the operation. The 93 unmapped attempts cannot
+  overturn its lead over item search; no historical alias is guessed.
+- `publicMonstersInfiniteQueryOptions`, the sole browser transport owner, now
+  sends a bodyless cancellable GET to `/_actions/publicMonsters`. The public
+  catalogue retains its query keys, defaults, cursor continuation, previous-data
+  behavior, pending/error UI, retries and navigation. Its grid passes cancellation
+  through the existing normalized query wrapper. The existing picker date
+  reviver is reused for monster/source/award dates; all other domain fields,
+  creator attribution, families, teams and artwork retain their existing shape.
+- The monster list and shared collection new/edit hydrator prefetch directly
+  from `monstersService`, never relative HTTP. Collection selection already
+  uses the independent stable picker route and remains unchanged. Profile,
+  owner and hazard pagination are separate legacy operations outside this slice.
+- The anonymous-readable GET delegates to the unchanged public service, which
+  strips unknown fields and always excludes private rows and hazards. Creator
+  and excluded-creator IDs are public filters, not session authority; arbitrary
+  identity/visibility parameters cannot enable owner access. No new identity
+  fields, JSON:API extensions, session restriction, CORS, revalidation or writes
+  are introduced. Responses/errors are `private, no-store`; unexpected errors
+  reach telemetry before the generic 500 response. Unsupported writes return
+  framework 405. Safe reads need no mutation-origin/media-type gate.
+- Zod validates all seven sort modes, integer limits 1–100, creature type, role,
+  integer level and cursor shape/value types/sort agreement before SQL. Invalid
+  input returns 400 rather than an unexpected service exception. Query defaults
+  remain 12 rows in the browser and 10 for a parameterless service/route read.
+- Removed the only export and empty `app/monsters/actions.ts`; application
+  ratchet **50 → 49**. Repository markers/counts and supported APIs are unchanged.
+  Real-SQL route tests cover public/private/hazard separation, combined filters,
+  full relationships and teams, seven sorts with asymmetric ties across pages,
+  empty results, invalid inputs and telemetry-recorded generic failures. Browser
+  query tests verify stable URL/no `next-action`, cancellation, nested date
+  revival, cache isolation and typed failure/recovery.
+- The [run thread](https://ampcode.com/threads/T-01a187b3-1a85-72aa-8625-133b0ff19755)
+  records local/full checks, live request results against independent SQLite
+  expectations, browser navigation/reload/error recovery, deployment identity,
+  exact functional production requests and cleanup. QA reads existing public
+  content only; no fixtures, production sessions or database writes are needed.
+  Retain the stable URL and response shape for at least one deployment interval;
+  old tabs still need refresh/retry for legacy action references. Migration is
+  incomplete; item search is the next measured candidate, subject to refreshed
+  evidence and residual mapping bounds.
 
 ### Public ancestry pagination — October 2026
 

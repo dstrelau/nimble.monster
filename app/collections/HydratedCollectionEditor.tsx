@@ -12,6 +12,7 @@ import {
   publicSubclassesQueryOptions,
 } from "@/lib/queryOptions";
 import { ancestriesService } from "@/lib/services/ancestries/service";
+import { monstersService } from "@/lib/services/monsters";
 import {
   listSourcesForEntityType,
   sourcesForEntityTypeQueryOptions,
@@ -25,13 +26,19 @@ export async function HydratedCollectionEditor({
 }) {
   const queryClient = getQueryClient();
   await Promise.all([
-    queryClient.prefetchInfiniteQuery(
-      publicMonstersInfiniteQueryOptions({
+    queryClient.prefetchInfiniteQuery({
+      ...publicMonstersInfiniteQueryOptions({
         sort: "-createdAt",
         type: "all",
         limit: 12,
-      })
-    ),
+      }),
+      queryFn: () =>
+        monstersService.paginatePublicMonsters({
+          sort: "-createdAt",
+          type: "all",
+          limit: 12,
+        }),
+    }),
     queryClient.prefetchInfiniteQuery(
       publicItemsInfiniteQueryOptions({
         sort: "-createdAt",
