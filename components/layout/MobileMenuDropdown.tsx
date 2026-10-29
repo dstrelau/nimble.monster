@@ -16,7 +16,8 @@ export const MobileMenuDropdown: React.FC<MobileMenuDropdownProps> = ({
   return (
     <div
       className={cn(
-        "md:hidden absolute inset-x-0 top-full z-40 bg-header border-t border-white/20 shadow-sm max-h-[calc(100vh-4rem)] overflow-y-auto",
+        // Keep the last link reachable even with mobile browser toolbars expanded.
+        "md:hidden absolute inset-x-0 top-full z-40 bg-header border-t border-white/20 shadow-sm max-h-[calc(100svh-4rem)] overflow-y-auto",
         className
       )}
     >
