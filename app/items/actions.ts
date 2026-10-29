@@ -1,55 +1,13 @@
 import { keepPreviousData } from "@tanstack/react-query";
-import type { Item } from "@/lib/services/items";
-import * as items from "@/lib/services/items/repository";
-import type {
-  ItemMini,
-  ItemRarityFilter,
-  ItemSortBy,
-  ItemSortDirection,
-  PaginateItemsSortOption,
-} from "@/lib/services/items/types";
+import { publicItems } from "@/app/%5Factions/publicItems/contract";
+import { reviveItem } from "@/app/%5Factions/statblockPickerSearch/queries";
+import { call } from "@/lib/contract";
+import type { PublicItemPageResponse } from "@/lib/services/items/service";
+import type { PaginateItemsSortOption } from "@/lib/services/items/types";
 
 export type ItemSortOption = PaginateItemsSortOption;
 
-export type PaginatedItemResponse = {
-  data: Item[];
-  hasMore: boolean;
-};
-
-export async function paginatePublicItems(params: {
-  sort: string;
-  rarity: string;
-  search: string | null;
-  source?: string;
-  creatorId?: string;
-  limit: number;
-  pageParam: number;
-}): Promise<PaginatedItemResponse> {
-  const desc = params.sort?.startsWith("-");
-  const sortDirection: ItemSortDirection = desc ? "desc" : "asc";
-  const sortField = desc ? params.sort.slice(1) : params.sort;
-  const sortBy: ItemSortBy =
-    sortField === "name"
-      ? "name"
-      : sortField === "likes"
-        ? "likes"
-        : "createdAt";
-  const opts = {
-    searchTerm: params.search || undefined,
-    sortBy: sortBy,
-    sortDirection,
-    rarity: params.rarity as ItemRarityFilter,
-    source: params.source,
-    creatorId: params.creatorId,
-    limit: params.limit + 1,
-    offset: params.pageParam * params.limit,
-  };
-  const data = await items.searchPublicItems(opts);
-  return {
-    data: data.slice(0, params.limit),
-    hasMore: data.length > params.limit,
-  };
-}
+export type PaginatedItemResponse = PublicItemPageResponse;
 
 export function publicItemsInfiniteQueryOptions({
   search = null,
@@ -69,8 +27,20 @@ export function publicItemsInfiniteQueryOptions({
   const params = { search, sort, rarity, source, creatorId, limit };
   return {
     queryKey: ["items", params],
-    queryFn: ({ pageParam }: { pageParam: number }) =>
-      paginatePublicItems({ pageParam, ...params }),
+    queryFn: async ({
+      pageParam,
+      signal,
+    }: {
+      pageParam: number;
+      signal?: AbortSignal;
+    }): Promise<PaginatedItemResponse> => {
+      const result = await call(
+        publicItems,
+        { pageParam, ...params },
+        { signal }
+      );
+      return { ...result, data: result.data.map(reviveItem) };
+    },
     placeholderData: keepPreviousData,
     initialPageParam: 0,
     getNextPageParam: (
@@ -94,8 +64,4 @@ export function publicItemsInfiniteQueryOptions({
       return firstPageParam - 1;
     },
   };
-}
-
-export async function listPublicItems(): Promise<ItemMini[]> {
-  return items.listPublicItems();
 }

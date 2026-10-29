@@ -12,6 +12,7 @@ import {
   publicSubclassesQueryOptions,
 } from "@/lib/queryOptions";
 import { ancestriesService } from "@/lib/services/ancestries/service";
+import { itemsService } from "@/lib/services/items/service";
 import { monstersService } from "@/lib/services/monsters";
 import {
   listSourcesForEntityType,
@@ -39,13 +40,20 @@ export async function HydratedCollectionEditor({
           limit: 12,
         }),
     }),
-    queryClient.prefetchInfiniteQuery(
-      publicItemsInfiniteQueryOptions({
+    queryClient.prefetchInfiniteQuery({
+      ...publicItemsInfiniteQueryOptions({
         sort: "-createdAt",
         rarity: "all",
         limit: 12,
-      })
-    ),
+      }),
+      queryFn: ({ pageParam }) =>
+        itemsService.publicItemPage({
+          sort: "-createdAt",
+          rarity: "all",
+          limit: 12,
+          pageParam,
+        }),
+    }),
     queryClient.prefetchInfiniteQuery(
       publicCompanionsInfiniteQueryOptions({
         sort: "-createdAt",

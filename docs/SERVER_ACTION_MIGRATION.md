@@ -388,9 +388,9 @@ HTTP <400/≥400 is transport success/failure, not Flight domain-result success.
 
 | Priority | Verified named operation | Attempts | HTTP <400 | HTTP ≥400 |
 | --- | --- | ---: | ---: | ---: |
-| Selected monster-pagination slice | `app/monsters/actions.ts#paginatePublicMonsters` | 393 | 393 | 0 |
-| Next measured candidate | `lib/services/items/repository.ts#searchPublicItems` | 267 | 267 | 0 |
-| Remaining | `getMyReport` | 161 | 150 | 11 |
+| Migrated monster-pagination slice | `app/monsters/actions.ts#paginatePublicMonsters` | 393 | 393 | 0 |
+| Selected item-pagination slice | `lib/services/items/repository.ts#searchPublicItems` | 267 | 267 | 0 |
+| Next measured candidate | `getMyReport` | 161 | 150 | 11 |
 | Remaining | `listOwnCollections` | 142 | 131 | 11 |
 | Remaining | `paginateUserProfileMonsters` | 85 | 85 | 0 |
 | Remaining | `paginatePublicBackgrounds` | 84 | 84 | 0 |
@@ -412,6 +412,14 @@ this selection. This is not sparse traffic and needs no seven-day tie-breaker.
 Other mapped operations have at most 16 attempts. Refresh/revisit residual
 coverage before the next selection. The run retains safe mappings and counts
 in its traffic-evidence artifact; archived-run file transfer was unavailable.
+
+The item-pagination run reuses this recent window on October 29, rather than
+claiming a fresh measurement. With monsters migrated, item search still has a
+bounded lead: assigning all 93 unnamed attempts to `getMyReport` yields 254,
+below 267. The current unarchived-child lookup found no competing slice owner.
+After item search, the residual could change the next ranking; refresh or expand
+mapping before selecting another action. The current verified item alias is
+`40b47e36eb7d12e16f016140f1f4692150d7a895e1`.
 
 Read-only extraction of five deployed manifests verified OCI layer digests,
 image `GH_SHA`, filename and exported name. For builds `e64c54dd`, `cb96d2c9`,
@@ -623,7 +631,7 @@ contract compatibility window that a future migration must preserve.
 | Collection membership | Complete | Monster/hazard, item, spell-school, companion, ancestry, background and [subclass additions](https://ampcode.com/threads/T-01a16113-ad31-73be-bbe1-1162b11fed6d) use stable JSON; [unused class action removed](https://ampcode.com/threads/T-01a16671-16c8-767b-b110-eb5a4fc52e2f); editor-based class additions/replacement/removal already use `saveCollection` |
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
-| Public browser reads | Cleanup started | [Unused monster-source prefetch removed](https://ampcode.com/threads/T-01a16f06-5748-72da-8161-a6c2b4a60465), [unused monster lookup/search removed](https://ampcode.com/threads/T-01a17019-c140-715a-b92e-9c7ea7cf8e9c), and [unused class/subclass lookup/search removed](https://ampcode.com/threads/T-01a1712b-65a5-72de-94ed-eac19100526f); active pagination remains next in Wave 3; prefer existing JSON:API |
+| Public browser reads | Partially complete | Ancestry and monster pagination, source options, navigation counts and [item search/pagination](https://ampcode.com/threads/T-01a188c6-2cba-721e-b7ee-ef1b744afdc5) use internal stable GETs. All application browser reads belong under `/_actions`, not the third-party JSON:API. Remaining operations follow measured traffic priority. |
 | Private/UI-specific browser reads | Partially complete | Picker, [reaction summary reads](https://ampcode.com/threads/T-01a1781c-f9af-7729-a9fb-5deda49e493a), [creator/viewer conditions](https://ampcode.com/threads/T-01a178af-d558-748e-876d-ea6e1b43b5ed) and [official conditions](https://ampcode.com/threads/T-01a17ad3-4ab5-7205-a5f9-9405ebba43db) use stable routes; navigation counts are next by recorded traffic |
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
@@ -1918,6 +1926,58 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Public item search and pagination — October 2026
+
+- Selected `lib/services/items/repository.ts#searchPublicItems` using the recent
+  fixed-window evidence above: 267 root attempts, all HTTP 200. Residual bounds
+  establish its lead after monster pagination; no competing active run exists.
+- `publicItemsInfiniteQueryOptions` now calls a cancellable, bodyless
+  `GET /_actions/publicItems`. Its sole live browser consumer is `ItemsListView`;
+  collection selection already uses the independent stable picker. Both the
+  item page and shared collection new/edit hydrator prefetch the service directly,
+  never relative HTTP. Cache keys, page-number/offset pagination, lookahead
+  `hasMore`, previous data, retries, loading/error UI and navigation remain.
+  The picker date reviver is reused for item/source/award timestamps. Existing
+  creator, description, artwork, source and award fields retain their shape;
+  no identity fields or third-party API are added.
+- Moved search SQL out of the `use server` repository into an ordinary
+  `public-search` module. Shared row loading/conversion lives in `loader`, used
+  by both search and the retained repository functions; SQL joins, ordering,
+  public visibility and conversion semantics remain unchanged. The service owns
+  the former pagination wrapper. Removed the repository Server Action export and
+  its browser import, the old wrapper and an unused `listPublicItems` bridge.
+  Item repository exports **15 → 14**, total repository exports **76 → 75**;
+  application exports remain **49**. No other directive is removed in this slice.
+- Zod validates the five existing sort modes, supported rarities, integer limits
+  1–100 and nonnegative safe page offsets before SQL. Invalid inputs return 400,
+  unexpected failures are recorded by telemetry and return generic 500s.
+  Success/errors use `private, no-store`, without CORS. Unsupported writes receive
+  405. This existing anonymous-readable catalogue stays public-only even with
+  owner/visibility parameters; creator is a public filter, never authority. Safe
+  GETs introduce no mutation-origin/media gate, session requirement, writes,
+  revalidation, cache invalidation or redirects. The supported API is unchanged.
+- Real-SQL route tests cover asymmetric sort/page boundaries, combined filters,
+  private exclusion, full serialization, empty/exact-limit results, validation
+  and safe errors. Query tests verify stable GET/no `next-action`, cancellation,
+  date revival, cache keys, failed-refetch retention and recovery. Focused tests:
+  46 passed. Full suite: 2,024 passed, seven skipped; `make check` and
+  `git diff --check` pass. Live local HTTP checks compare 25 requests against
+  independent SQLite expectations. Browser QA covers 12→20 load-more, search,
+  detail client navigation/reload, collection Items new/reload and transport
+  failure/recovery. Raw CDP request and extra-header events confirm GET/JSON200,
+  no body and no `next-action`; no page/hydration errors were observed.
+- Existing development item fixtures reference missing emerald/sparkles icons,
+  producing unrelated static 404 console errors. Their unchanged fixture paths
+  and absent assets were verified; a separate fix is suggested, not included.
+  Existing Companion collection markup is not claimed repaired by this slice.
+- QA reads seeded/existing public content only. No users, entities, production
+  sessions or database writes are created, so there are no QA rows to delete.
+  The [run thread](https://ampcode.com/threads/T-01a188c6-2cba-721e-b7ee-ef1b744afdc5)
+  records deployment identity, exact functional production requests, browser
+  evidence and cleanup. Retain this URL/shape for at least one deployment interval;
+  pre-cutover tabs still need refresh/retry for old IDs. Migration remains
+  incomplete; refresh ranking/mapping before the next slice.
 
 ### Public monster pagination — October 2026
 

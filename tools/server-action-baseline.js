@@ -30,7 +30,7 @@ export const serverActionBaseline = {
     "lib/services/collections/repository.ts": 3,
     "lib/services/encounters/repository.ts": 4,
     "lib/services/families/repository.ts": 1,
-    "lib/services/items/repository.ts": 15,
+    "lib/services/items/repository.ts": 14,
     "lib/services/monsters/repository.ts": 27,
     "lib/services/sources/repository.ts": 2,
   },

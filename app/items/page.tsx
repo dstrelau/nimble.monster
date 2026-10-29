@@ -4,6 +4,7 @@ import { z } from "zod";
 import { ItemsListView } from "@/app/items/ItemsListView";
 import { getQueryClient } from "@/lib/queryClient";
 import * as items from "@/lib/services/items/repository";
+import { itemsService } from "@/lib/services/items/service";
 import { PaginateItemsSortOptions } from "@/lib/services/items/types";
 import { sourcesQueryOptions } from "@/lib/services/sources";
 import { getItemUrl } from "@/lib/utils/url";
@@ -42,7 +43,11 @@ export default async function ItemsPage({
   const queryClient = getQueryClient();
   await Promise.all([
     queryClient.prefetchQuery(sourcesQueryOptions()),
-    queryClient.prefetchInfiniteQuery(publicItemsInfiniteQueryOptions(params)),
+    queryClient.prefetchInfiniteQuery({
+      ...publicItemsInfiniteQueryOptions(params),
+      queryFn: ({ pageParam }) =>
+        itemsService.publicItemPage({ ...params, pageParam, limit: 12 }),
+    }),
   ]);
 
   return (

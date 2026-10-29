@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { searchPublicItems } from "./public-search";
 import * as repository from "./repository";
 import {
   type CreateItemInput,
@@ -33,7 +34,50 @@ export type PaginatePublicItemsResponse = {
   nextCursor: string | null;
 };
 
+export const PublicItemPageSchema = PaginateItemsSchema.omit({
+  cursor: true,
+}).extend({
+  limit: z.number().int().min(1).max(100).default(12),
+  pageParam: z
+    .number()
+    .int()
+    .min(0)
+    .max(Number.MAX_SAFE_INTEGER / 100)
+    .default(0),
+});
+export type PublicItemPageInput = Omit<
+  z.input<typeof PublicItemPageSchema>,
+  "sort" | "rarity"
+> & { sort?: string; rarity?: string };
+export interface PublicItemPageResponse {
+  data: Item[];
+  hasMore: boolean;
+}
+
 export class ItemsService {
+  async publicItemPage(
+    params: PublicItemPageInput
+  ): Promise<PublicItemPageResponse> {
+    const parsed = PublicItemPageSchema.parse(params);
+    const descending = parsed.sort.startsWith("-");
+    const field = descending ? parsed.sort.slice(1) : parsed.sort;
+    const data = await searchPublicItems({
+      searchTerm: parsed.search || undefined,
+      sortBy:
+        field === "name" ? "name" : field === "likes" ? "likes" : "createdAt",
+      sortDirection: descending ? "desc" : "asc",
+      rarity: parsed.rarity,
+      source: parsed.source,
+      creatorId: parsed.creatorId,
+      limit: parsed.limit + 1,
+      offset: parsed.pageParam * parsed.limit,
+    });
+    return {
+      data: data.slice(0, parsed.limit),
+      hasMore: data.length > parsed.limit,
+    };
+  }
+
   async paginatePublicItems(
     params: PaginateItemsParams
   ): Promise<PaginatePublicItemsResponse> {

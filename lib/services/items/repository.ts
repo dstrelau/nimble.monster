@@ -1,95 +1,30 @@
 "use server";
 import { and, asc, desc, eq, gt, inArray, like, lt, or } from "drizzle-orm";
 import { getDatabase } from "@/lib/db/drizzle";
-import type { AwardRow, SourceRow } from "@/lib/db/schema";
 import {
-  awards,
   collections,
   items,
-  itemsAwards,
   itemsCollections,
   sources,
-  type UserRow,
   users,
 } from "@/lib/db/schema";
-import type { Source, User } from "@/lib/types";
 import type { CursorData } from "@/lib/utils/cursor";
 import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
+import {
+  type ItemFullData,
+  loadItemFullData,
+  toItemFromFullData,
+  toUserFromRow,
+} from "./loader";
 import type {
   CreateItemInput,
   Item,
   ItemMini,
   ItemRarity,
   PaginateItemsParams,
-  SearchItemsParams,
   UpdateItemInput,
 } from "./types";
-
-const toUserFromRow = (u: UserRow): User => ({
-  id: u.id,
-  discordId: u.discordId ?? "",
-  username: u.username ?? "",
-  displayName: u.displayName || u.username || "",
-  imageUrl:
-    u.imageUrl ||
-    (u.avatar
-      ? `https://cdn.discordapp.com/avatars/${u.discordId}/${u.avatar}.png`
-      : "https://cdn.discordapp.com/embed/avatars/0.png"),
-});
-
-const toSourceFromRow = (s: SourceRow | null): Source | undefined => {
-  if (!s) return undefined;
-  return {
-    id: s.id,
-    name: s.name,
-    license: s.license,
-    link: s.link,
-    abbreviation: s.abbreviation,
-    createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
-    updatedAt: s.updatedAt ? new Date(s.updatedAt) : new Date(),
-  };
-};
-
-const toAwardFromRow = (a: AwardRow) => ({
-  id: a.id,
-  slug: a.slug,
-  name: a.name,
-  abbreviation: a.abbreviation,
-  description: a.description,
-  url: a.url,
-  color: a.color,
-  icon: a.icon,
-  createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),
-  updatedAt: a.updatedAt ? new Date(a.updatedAt) : new Date(),
-});
-
-interface ItemFullData {
-  item: typeof items.$inferSelect;
-  creator: UserRow;
-  source: SourceRow | null;
-  awards: AwardRow[];
-}
-
-const toItemFromFullData = (data: ItemFullData): Item => ({
-  id: data.item.id,
-  name: data.item.name,
-  kind: data.item.kind || undefined,
-  rarity: (data.item.rarity ?? "unspecified") as ItemRarity,
-  visibility: (data.item.visibility ?? "public") as "public" | "private",
-  imageIcon: data.item.imageIcon || undefined,
-  imageBgIcon: data.item.imageBgIcon || undefined,
-  imageColor: data.item.imageColor || undefined,
-  imageBgColor: data.item.imageBgColor || undefined,
-  createdAt: data.item.createdAt ? new Date(data.item.createdAt) : new Date(),
-  updatedAt: data.item.updatedAt ? new Date(data.item.updatedAt) : new Date(),
-  description: data.item.description,
-  moreInfo: data.item.moreInfo || undefined,
-  imageBackdrop: data.item.imageBackdrop || undefined,
-  creator: toUserFromRow(data.creator),
-  source: toSourceFromRow(data.source),
-  awards: data.awards.map(toAwardFromRow),
-});
 
 const toItemMiniFromRow = (item: typeof items.$inferSelect): ItemMini => ({
   id: item.id,
@@ -104,48 +39,6 @@ const toItemMiniFromRow = (item: typeof items.$inferSelect): ItemMini => ({
   createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
   updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
 });
-
-async function loadItemFullData(
-  db: Awaited<ReturnType<typeof getDatabase>>,
-  itemIds: string[]
-): Promise<Map<string, ItemFullData>> {
-  if (itemIds.length === 0) return new Map();
-
-  // Get base item data with creator and source
-  const itemRows = await db
-    .select()
-    .from(items)
-    .innerJoin(users, eq(items.userId, users.id))
-    .leftJoin(sources, eq(items.sourceId, sources.id))
-    .where(inArray(items.id, itemIds));
-
-  // Get awards for all items
-  const awardRows = await db
-    .select({ itemId: itemsAwards.itemId, award: awards })
-    .from(itemsAwards)
-    .innerJoin(awards, eq(itemsAwards.awardId, awards.id))
-    .where(inArray(itemsAwards.itemId, itemIds));
-
-  // Group awards by item
-  const awardsByItem = new Map<string, AwardRow[]>();
-  for (const row of awardRows) {
-    const existing = awardsByItem.get(row.itemId) || [];
-    existing.push(row.award);
-    awardsByItem.set(row.itemId, existing);
-  }
-
-  const result = new Map<string, ItemFullData>();
-  for (const row of itemRows) {
-    result.set(row.items.id, {
-      item: row.items,
-      creator: row.users,
-      source: row.sources,
-      awards: awardsByItem.get(row.items.id) || [],
-    });
-  }
-
-  return result;
-}
 
 export const deleteItem = async (
   id: string,
@@ -351,87 +244,6 @@ export const listAllItemsForDiscordID = async (
     .where(eq(items.userId, user.id))
     .orderBy(asc(items.name));
 
-  if (itemRows.length === 0) return [];
-
-  const itemIds = itemRows.map((r) => r.id);
-  const itemDataMap = await loadItemFullData(db, itemIds);
-
-  return itemIds
-    .map((id) => itemDataMap.get(id))
-    .filter((i): i is ItemFullData => i !== undefined)
-    .map(toItemFromFullData);
-};
-
-export const searchPublicItems = async ({
-  searchTerm,
-  rarity,
-  creatorId,
-  source,
-  sortBy,
-  sortDirection = "asc",
-  limit,
-  offset,
-}: SearchItemsParams & { offset?: number }): Promise<Item[]> => {
-  const db = await getDatabase();
-
-  // Build conditions
-  const conditions = [eq(items.visibility, "public")];
-
-  if (creatorId) {
-    conditions.push(eq(items.userId, creatorId));
-  }
-
-  if (searchTerm) {
-    conditions.push(
-      or(
-        like(items.name, `%${searchTerm}%`),
-        like(items.kind, `%${searchTerm}%`)
-      ) as ReturnType<typeof eq>
-    );
-  }
-
-  if (rarity && rarity !== "all") {
-    conditions.push(eq(items.rarity, rarity));
-  }
-
-  if (source) {
-    const sourceRow = await db
-      .select({ id: sources.id })
-      .from(sources)
-      .where(eq(sources.abbreviation, source))
-      .limit(1);
-    if (sourceRow.length > 0) {
-      conditions.push(eq(items.sourceId, sourceRow[0].id));
-    } else {
-      return [];
-    }
-  }
-
-  // Determine order
-  const orderColumn =
-    sortBy === "name"
-      ? items.name
-      : sortBy === "likes"
-        ? items.likeCount
-        : items.createdAt;
-  const orderFn = sortDirection === "desc" ? desc : asc;
-
-  // Build query
-  let query = db
-    .select({ id: items.id })
-    .from(items)
-    .where(and(...conditions))
-    .orderBy(orderFn(orderColumn))
-    .$dynamic();
-
-  if (limit) {
-    query = query.limit(limit);
-  }
-  if (offset) {
-    query = query.offset(offset);
-  }
-
-  const itemRows = await query;
   if (itemRows.length === 0) return [];
 
   const itemIds = itemRows.map((r) => r.id);
