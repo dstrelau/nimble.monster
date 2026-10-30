@@ -499,7 +499,7 @@ neither tied nor sparse, so no seven-day tie-breaker is needed. The earlier
 | Already migrated | `getAllSources` | 137 | 131 | 6 |
 | Already migrated | `listOwnCollections` | 120 | 104 | 16 |
 | Selected family-read slice | `getUserFamilies` | 102 | 102 | 0 |
-| Next measured candidate | `paginatePublicBackgrounds` | 93 | 86 | 7 |
+| Selected background-pagination slice | `paginatePublicBackgrounds` | 93 | 86 | 7 |
 | Already migrated | `searchPublicItems` | 89 | 88 | 1 |
 | Remaining | `paginateUserProfileMonsters` | 83 | 64 | 19 |
 | Remaining | `listOwnEncounters` | 71 | 61 | 10 |
@@ -538,6 +538,15 @@ lead needs no seven-day tie-breaker. All sampling/coverage, excluded-probe and
 HTTP-vs-domain-result limitations above still apply. The unarchived-child lookup
 found only this run. After this slice, background pagination leads on this
 evidence; refresh the measurement when it is no longer representative.
+
+The background-pagination run reuses this fully mapped window on October 30,
+about 21 hours after its endpoint; this is not a fresh measurement. Backgrounds
+lead remaining named operations by ten attempts after family reads. The window
+still represents the previous day's browser traffic; its untied, non-sparse lead
+needs no seven-day tie-breaker. Sampling/coverage, excluded probes and
+HTTP-vs-domain-result limitations above still apply. The unarchived-child lookup
+found only this run. Profile monster pagination leads the remaining actions on
+this evidence; refresh the window/mapping before the next selection.
 
 ## Migration waves (scope guidance)
 
@@ -738,7 +747,7 @@ contract compatibility window that a future migration must preserve.
 | Collection membership | Complete | Monster/hazard, item, spell-school, companion, ancestry, background and [subclass additions](https://ampcode.com/threads/T-01a16113-ad31-73be-bbe1-1162b11fed6d) use stable JSON; [unused class action removed](https://ampcode.com/threads/T-01a16671-16c8-767b-b110-eb5a4fc52e2f); editor-based class additions/replacement/removal already use `saveCollection` |
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
-| Public browser reads | Partially complete | Ancestry, monster and [companion pagination](https://ampcode.com/threads/T-01a18aeb-4708-74f5-866c-0e0b52d3e2f3), source options, navigation counts and [item search/pagination](https://ampcode.com/threads/T-01a188c6-2cba-721e-b7ee-ef1b744afdc5) use internal stable GETs. All application browser reads belong under `/_actions`, not the third-party JSON:API. Remaining operations follow measured traffic priority. |
+| Public browser reads | Partially complete | Ancestry, monster, [background pagination](https://ampcode.com/threads/T-01a18f35-c260-71bc-87af-6169397d40ed) and [companion pagination](https://ampcode.com/threads/T-01a18aeb-4708-74f5-866c-0e0b52d3e2f3), source options, navigation counts and [item search/pagination](https://ampcode.com/threads/T-01a188c6-2cba-721e-b7ee-ef1b744afdc5) use internal stable GETs. All application browser reads belong under `/_actions`, not the third-party JSON:API. Remaining operations follow measured traffic priority. |
 | Private/UI-specific browser reads | Partially complete | Picker, reaction summary, creator/viewer and official conditions, navigation counts and [report status reads](https://ampcode.com/threads/T-01a189d8-7afb-75e0-9d07-35be1c47103c) use stable routes. Remaining operations follow measured traffic priority. |
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
@@ -2033,6 +2042,57 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Public background pagination — October 2026
+
+- Selected `app/backgrounds/actions.ts#paginatePublicBackgrounds` using the
+  recent fully mapped fixed window above: 93 root attempts, 86 HTTP <400 and
+  seven HTTP ≥400, highest among remaining actions. No other unarchived run
+  owns this operation; measurement reuse and coverage are disclosed above.
+- The sole browser transport owner, `publicBackgroundsInfiniteQueryOptions`,
+  now uses cancellable bodyless `GET /_actions/publicBackgrounds`. It serves
+  the public catalogue, creator profiles and collection new/edit selectors.
+  All three server prefetch sites call `backgroundsService` directly with the
+  same parameters and cache keys, never relative HTTP. My Backgrounds retains
+  its separate legacy action for a later slice.
+- Retained search, source abbreviation and creator filters, all five sorts,
+  cursor tie-breaking, 12-row browser defaults, previous-data/retry/error UX,
+  navigation and selection. JSON transport revives background, source and award
+  dates. The domain projection and existing creator attribution are unchanged;
+  no public API or new identity fields are introduced.
+- Anonymous public reads remain public-only regardless of supplied session,
+  owner/private/visibility parameters. The route validates integer limits,
+  sort and decoded cursor shape/value/sort agreement. Safe GETs need neither
+  mutation-origin/media gates nor session auth. Success/errors are JSON with
+  `private, no-store`, no CORS; telemetry records unexpected failures before a
+  generic 500. Unsupported writes return framework 405s.
+- Removed the sole export and empty `app/backgrounds/actions.ts`; application
+  ratchet **44 → 43**. Repository directives/exports and SQL are unchanged.
+  Real-SQL route tests cover public/private exclusion, asymmetric sort ties,
+  combined filters, relationships, empty results and safe errors. Hook tests
+  cover the stable URL/no `next-action`, encoding, all date revival, cancellation,
+  pending/failed-read data retention and recovery. Focused tests: 21 passed.
+  Full suite: 2,119 passed, seven skipped; `make check` and diff checks pass.
+- Live development HTTP: 34 requests, five full traversals matching independent
+  SQL (24 public rows), filters, empty results, invalid limits/sort/cursors and
+  unsupported POST. Browser QA covers catalogue/profile load-more, search/source/
+  sort, detail client navigation/reload, collection new/edit hydration, selected
+  background persistence via save/reload and independent SQL, plus deliberate
+  read failure/recovery. Raw CDP captures bodyless stable GETs without
+  `next-action`, including extra request headers.
+- Collection QA exposes pre-existing nested buttons in
+  `components/background/Card.tsx` (selectable wrapper plus source/reaction
+  controls); recorded as a separate suggested fix, not a transport regression
+  or a claim of warning-free markup. The disposable local collection and its
+  membership were deleted and zero residue verified. Production QA is anonymous,
+  read-only against existing public content: no fixtures, sessions or writes
+  are needed for this public read. The
+  [run thread](https://ampcode.com/threads/T-01a18f35-c260-71bc-87af-6169397d40ed)
+  records deployment identity, exact production requests/results, inspected
+  visual evidence, investigation and final cleanup.
+- Retain this URL and response shape for at least one deployment interval.
+  Pre-cutover tabs still need refresh/retry. Migration remains incomplete;
+  refresh traffic before selecting the next slice.
 
 ### Session family-picker reads — October 2026
 

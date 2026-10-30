@@ -12,6 +12,7 @@ import {
   publicSubclassesQueryOptions,
 } from "@/lib/queryOptions";
 import { ancestriesService } from "@/lib/services/ancestries/service";
+import { backgroundsService } from "@/lib/services/backgrounds/service";
 import { paginatePublicCompanions } from "@/lib/services/companions";
 import { itemsService } from "@/lib/services/items/service";
 import { monstersService } from "@/lib/services/monsters";
@@ -80,12 +81,17 @@ export async function HydratedCollectionEditor({
           limit: 12,
         }),
     }),
-    queryClient.prefetchInfiniteQuery(
-      publicBackgroundsInfiniteQueryOptions({
+    queryClient.prefetchInfiniteQuery({
+      ...publicBackgroundsInfiniteQueryOptions({
         sort: "-createdAt",
         limit: 12,
-      })
-    ),
+      }),
+      queryFn: () =>
+        backgroundsService.paginatePublicBackgrounds({
+          sort: "-createdAt",
+          limit: 12,
+        }),
+    }),
     queryClient.prefetchQuery(publicClassesQueryOptions()),
     queryClient.prefetchQuery(publicSubclassesQueryOptions()),
     queryClient.prefetchQuery(publicSpellSchoolsQueryOptions()),

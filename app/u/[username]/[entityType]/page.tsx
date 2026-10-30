@@ -21,6 +21,7 @@ import * as db from "@/lib/db";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { ancestriesService } from "@/lib/services/ancestries/service";
+import { backgroundsService } from "@/lib/services/backgrounds/service";
 import { itemsService } from "@/lib/services/items";
 import { MonsterRoleOptions } from "@/lib/services/monsters/types";
 import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
@@ -135,12 +136,18 @@ async function loadProfileEntityContent(
     case "backgrounds": {
       const searchParams =
         characterOptionSearchParamsSchema.parse(rawSearchParams);
-      await queryClient.prefetchInfiniteQuery(
-        publicBackgroundsInfiniteQueryOptions({
+      await queryClient.prefetchInfiniteQuery({
+        ...publicBackgroundsInfiniteQueryOptions({
           ...searchParams,
           creatorId: userId,
-        })
-      );
+        }),
+        queryFn: () =>
+          backgroundsService.paginatePublicBackgrounds({
+            ...searchParams,
+            creatorId: userId,
+            limit: 12,
+          }),
+      });
       return (
         <ProfileEntityContent entityType="backgrounds" creatorId={userId} />
       );
