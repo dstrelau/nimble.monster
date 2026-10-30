@@ -1,8 +1,9 @@
 import { CircleSlash2, LoaderCircle, Plus, Sword, Trash } from "lucide-react";
-import { useId } from "react";
+import { type ReactNode, useId } from "react";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { AttackDetails } from "@/components/create/AttackDetails";
 import { FormInput, FormTextarea } from "@/components/shared/Form";
+import { SortableList } from "@/components/shared/SortableList";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -18,6 +19,7 @@ interface ActionRowProps {
   action: Action;
   showDamage?: boolean;
   compact?: boolean;
+  dragHandle?: ReactNode;
   onChange: (action: Action) => void;
   onRemove: () => void;
 }
@@ -26,6 +28,7 @@ const ActionRow: React.FC<ActionRowProps> = ({
   action,
   showDamage = true,
   compact = false,
+  dragHandle,
   onChange,
   onRemove,
 }) => {
@@ -62,15 +65,18 @@ const ActionRow: React.FC<ActionRowProps> = ({
               />
             )}
           </div>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label={`Remove action ${action.name || "untitled"}`}
-            onClick={onRemove}
-          >
-            <Trash />
-          </Button>
+          <div className="flex">
+            {dragHandle}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={`Remove action ${action.name || "untitled"}`}
+              onClick={onRemove}
+            >
+              <Trash />
+            </Button>
+          </div>
         </div>
         {showDamage && (error || showLoading || stats) && (
           <p
@@ -209,6 +215,24 @@ export const ActionsSection: React.FC<ActionsSectionProps> = ({
   onPrefaceChange,
 }) => {
   const id = useId();
+  const renderRow = (action: Action, index: number, dragHandle?: ReactNode) => (
+    <ActionRow
+      key={action.id}
+      action={action}
+      showDamage={showDamage}
+      compact={compact}
+      dragHandle={dragHandle}
+      onChange={(newAction) => {
+        const newActions = [...actions];
+        newActions[index] = newAction;
+        onChange(newActions);
+      }}
+      onRemove={() => {
+        const newActions = actions.filter((_, i) => i !== index);
+        onChange(newActions);
+      }}
+    />
+  );
   return (
     <fieldset className="flex flex-col gap-4">
       <legend className={cn("font-sans mb-4 font-bold", compact && "sr-only")}>
@@ -222,23 +246,17 @@ export const ActionsSection: React.FC<ActionsSectionProps> = ({
           value={actionPreface}
           onChange={onPrefaceChange}
         />
-        {actions.map((action, index) => (
-          <ActionRow
-            key={action.id}
-            action={action}
-            showDamage={showDamage}
-            compact={compact}
-            onChange={(newAction) => {
-              const newActions = [...actions];
-              newActions[index] = newAction;
-              onChange(newActions);
-            }}
-            onRemove={() => {
-              const newActions = actions.filter((_, i) => i !== index);
-              onChange(newActions);
-            }}
-          />
-        ))}
+        {compact ? (
+          <SortableList
+            items={actions}
+            itemLabel={(action) => `action ${action.name || "untitled"}`}
+            onReorder={onChange}
+          >
+            {(action, index, handle) => renderRow(action, index, handle)}
+          </SortableList>
+        ) : (
+          actions.map((action, index) => renderRow(action, index))
+        )}
         <Button
           type="button"
           variant="ghost"

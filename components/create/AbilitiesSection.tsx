@@ -1,7 +1,8 @@
 import { Plus, Trash } from "lucide-react";
-import { useId } from "react";
+import { type ReactNode, useId } from "react";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
 import { FormInput, FormTextarea } from "@/components/shared/Form";
+import { SortableList } from "@/components/shared/SortableList";
 import { Button } from "@/components/ui/button";
 import type { Ability } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -9,6 +10,7 @@ import { cn } from "@/lib/utils";
 interface AbilityRowProps {
   ability: Ability;
   compact?: boolean;
+  dragHandle?: ReactNode;
   onChange: (ability: Ability) => void;
   onRemove: () => void;
 }
@@ -16,6 +18,7 @@ interface AbilityRowProps {
 const AbilityRow: React.FC<AbilityRowProps> = ({
   ability,
   compact = false,
+  dragHandle,
   onChange,
   onRemove,
 }) => {
@@ -44,7 +47,8 @@ const AbilityRow: React.FC<AbilityRowProps> = ({
             onChange={(description) => onChange({ ...ability, description })}
           />
         </div>
-        <div className="flex flex-wrap items-center justify-end gap-2">
+        <div className="flex flex-wrap items-center justify-end">
+          {dragHandle}
           <Button
             type="button"
             variant="ghost"
@@ -105,44 +109,62 @@ export const AbilitiesSection: React.FC<AbilitiesSectionProps> = ({
   abilities,
   compact = false,
   onChange,
-}) => (
-  <fieldset className="flex flex-col">
-    <legend className={cn("font-sans mb-4 font-bold", compact && "sr-only")}>
-      Abilities
-    </legend>
-    {abilities.map((ability, index) => (
-      <AbilityRow
-        key={ability.id}
-        ability={ability}
-        compact={compact}
-        onChange={(newAbility) => {
-          const newAbilities = [...abilities];
-          newAbilities[index] = newAbility;
-          onChange(newAbilities);
-        }}
-        onRemove={() => {
-          const newAbilities = abilities.filter((_, i) => i !== index);
-          onChange(newAbilities);
-        }}
-      />
-    ))}
-    <Button
-      type="button"
-      variant="ghost"
-      className="text-muted-foreground"
-      onClick={() =>
-        onChange([
-          ...abilities,
-          {
-            id: Math.random().toString(36).slice(2),
-            name: "",
-            description: "",
-          },
-        ])
-      }
-    >
-      <Plus className="w-6 h-6" />
-      {compact ? "Add ability" : "Add"}
-    </Button>
-  </fieldset>
-);
+}) => {
+  const renderRow = (
+    ability: Ability,
+    index: number,
+    dragHandle?: ReactNode
+  ) => (
+    <AbilityRow
+      key={ability.id}
+      ability={ability}
+      compact={compact}
+      dragHandle={dragHandle}
+      onChange={(newAbility) => {
+        const newAbilities = [...abilities];
+        newAbilities[index] = newAbility;
+        onChange(newAbilities);
+      }}
+      onRemove={() => {
+        const newAbilities = abilities.filter((_, i) => i !== index);
+        onChange(newAbilities);
+      }}
+    />
+  );
+  return (
+    <fieldset className="flex flex-col">
+      <legend className={cn("font-sans mb-4 font-bold", compact && "sr-only")}>
+        Abilities
+      </legend>
+      {compact ? (
+        <SortableList
+          items={abilities}
+          itemLabel={(ability) => `ability ${ability.name || "untitled"}`}
+          onReorder={onChange}
+        >
+          {(ability, index, handle) => renderRow(ability, index, handle)}
+        </SortableList>
+      ) : (
+        abilities.map((ability, index) => renderRow(ability, index))
+      )}
+      <Button
+        type="button"
+        variant="ghost"
+        className="text-muted-foreground"
+        onClick={() =>
+          onChange([
+            ...abilities,
+            {
+              id: Math.random().toString(36).slice(2),
+              name: "",
+              description: "",
+            },
+          ])
+        }
+      >
+        <Plus className="w-6 h-6" />
+        {compact ? "Add ability" : "Add"}
+      </Button>
+    </fieldset>
+  );
+};

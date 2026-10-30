@@ -1,4 +1,10 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Ability } from "@/lib/types";
 import { AbilitiesSection } from "./AbilitiesSection";
@@ -134,5 +140,67 @@ describe("AbilitiesSection", () => {
       screen.queryByRole("button", { name: /details/i })
     ).not.toBeInTheDocument();
     expect(screen.queryByRole("spinbutton")).not.toBeInTheDocument();
+  });
+});
+
+describe("AbilitiesSection reordering", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("moves an ability down with the keyboard drag handle", async () => {
+    // jsdom has no layout; stack siblings vertically so dnd-kit can measure.
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(
+      function (this: Element) {
+        const index = Array.from(this.parentElement?.children ?? []).indexOf(
+          this
+        );
+        return DOMRect.fromRect({
+          x: 0,
+          y: index * 100,
+          width: 300,
+          height: 80,
+        });
+      }
+    );
+    const onChange = vi.fn();
+    const abilities: Ability[] = [
+      { id: "a", name: "First", description: "" },
+      { id: "b", name: "Second", description: "" },
+      { id: "c", name: "Third", description: "" },
+    ];
+    render(
+      <AbilitiesSection compact abilities={abilities} onChange={onChange} />
+    );
+
+    const handle = screen.getByRole("button", {
+      name: "Reorder ability First",
+    });
+    handle.focus();
+    // dnd-kit attaches its document key listeners on the next tick.
+    const tick = () => act(() => new Promise((r) => setTimeout(r, 0)));
+    fireEvent.keyDown(handle, { code: "Space" });
+    await tick();
+    fireEvent.keyDown(document, { code: "ArrowDown" });
+    await tick();
+    fireEvent.keyDown(document, { code: "Space" });
+
+    expect(onChange).toHaveBeenCalledWith([
+      { id: "b", name: "Second", description: "" },
+      { id: "a", name: "First", description: "" },
+      { id: "c", name: "Third", description: "" },
+    ]);
+  });
+
+  it("does not offer reordering in the full form", () => {
+    render(
+      <AbilitiesSection
+        abilities={[{ id: "a", name: "First", description: "" }]}
+        onChange={vi.fn()}
+      />
+    );
+    expect(
+      screen.queryByRole("button", { name: /Reorder/ })
+    ).not.toBeInTheDocument();
   });
 });
