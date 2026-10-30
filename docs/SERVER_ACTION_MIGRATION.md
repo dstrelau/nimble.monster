@@ -473,6 +473,46 @@ maps to `609056db60741f152861289bde55e76b2ddaeff6ce`,
 read directly from the running production manifest over Fly SSH. Counts above
 aggregate verified IDs rather than treating them as five different actions.
 
+### Refreshed companion-pagination selection — October 30, 2026
+
+Fixed window **2026-10-29T03:00:00Z–2026-10-30T03:00:00Z**, root HTTP spans
+only (`trace.parent_id` absent, `http.request.header.next-action` present), grouped
+by ID and `COALESCE(http.response.status_code, http.status_code)`:
+[results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/wPrLt8WA5f6).
+The full result contains **1,239 attempts**, mean sample rate **1**, 1,104,448
+rows examined and zero OTHER/truncated volume. Bots/QA are included; HTTP
+<400/≥400 is transport success/failure, not Flight domain-result success.
+
+Read-only extraction of **55 deployed images** (`a533cb6c` through `72a5e5be`)
+verifies each compressed standalone-layer SHA256 and records image `GH_SHA`,
+tag, filename and export. Build aliases aggregate by filename/export, never as
+distinct actions. All **1,225 non-probe attempts map to named actions**. Only
+14 invalid probes remain excluded: `x` (12 HTTP 200, one HTTP 400) and a
+64-zero ID (one HTTP 400). There is no otherwise-unmapped volume. The lead is
+neither tied nor sparse, so no seven-day tie-breaker is needed. The earlier
+154–154 companions/sources tie is superseded by this measurement, not guessed.
+
+| Priority | Verified named operation | Attempts | HTTP <400 | HTTP ≥400 |
+| --- | --- | ---: | ---: | ---: |
+| Already migrated | `getMyReport` | 167 | 151 | 16 |
+| Selected companion slice | `paginatePublicCompanionsAction` | 161 | 157 | 4 |
+| Next measured candidate | `getAllSources` | 137 | 131 | 6 |
+| Remaining | `listOwnCollections` | 120 | 104 | 16 |
+| Remaining | `getUserFamilies` | 102 | 102 | 0 |
+| Remaining | `paginatePublicBackgrounds` | 93 | 86 | 7 |
+| Already migrated | `searchPublicItems` | 89 | 88 | 1 |
+| Remaining | `paginateUserProfileMonsters` | 83 | 64 | 19 |
+| Remaining | `listOwnEncounters` | 71 | 61 | 10 |
+| Already migrated | `paginatePublicMonsters` | 68 | 54 | 14 |
+
+All other remaining named operations have ≤29 attempts. Coordination found no
+other unarchived owner. `companion-traffic-evidence.json` in the
+[run thread](https://ampcode.com/threads/T-01a18aeb-4708-74f5-866c-0e0b52d3e2f3)
+retains complete results and verified mappings. The current pre-cutover alias
+is `40271510081b03240ce10470013d688ab8b3845257`; older deployed aliases include
+`401e6e472072b52ecb9147ec53a4cfe46316fc6258` (`9eb787e2`). Refresh this ranking
+when no longer representative; all-source reads are next on this evidence.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -672,7 +712,7 @@ contract compatibility window that a future migration must preserve.
 | Collection membership | Complete | Monster/hazard, item, spell-school, companion, ancestry, background and [subclass additions](https://ampcode.com/threads/T-01a16113-ad31-73be-bbe1-1162b11fed6d) use stable JSON; [unused class action removed](https://ampcode.com/threads/T-01a16671-16c8-767b-b110-eb5a4fc52e2f); editor-based class additions/replacement/removal already use `saveCollection` |
 | Encounter membership | Complete | [Monster/hazard additions and count updates](https://ampcode.com/threads/T-01a1655e-8e04-772b-a2ed-9a26ffdf8f83) use stable JSON; editor-based replacement/removal already uses `saveEncounter` |
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
-| Public browser reads | Partially complete | Ancestry and monster pagination, source options, navigation counts and [item search/pagination](https://ampcode.com/threads/T-01a188c6-2cba-721e-b7ee-ef1b744afdc5) use internal stable GETs. All application browser reads belong under `/_actions`, not the third-party JSON:API. Remaining operations follow measured traffic priority. |
+| Public browser reads | Partially complete | Ancestry, monster and [companion pagination](https://ampcode.com/threads/T-01a18aeb-4708-74f5-866c-0e0b52d3e2f3), source options, navigation counts and [item search/pagination](https://ampcode.com/threads/T-01a188c6-2cba-721e-b7ee-ef1b744afdc5) use internal stable GETs. All application browser reads belong under `/_actions`, not the third-party JSON:API. Remaining operations follow measured traffic priority. |
 | Private/UI-specific browser reads | Partially complete | Picker, reaction summary, creator/viewer and official conditions, navigation counts and [report status reads](https://ampcode.com/threads/T-01a189d8-7afb-75e0-9d07-35be1c47103c) use stable routes. Remaining operations follow measured traffic priority. |
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
@@ -1967,6 +2007,59 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Public companion pagination — October 2026
+
+- Selected `app/companions/actions.ts#paginatePublicCompanionsAction` using the
+  refreshed fixed-window ranking above: 161 root attempts, 157 HTTP <400 and
+  four HTTP ≥400. No other unarchived run owns this slice.
+- `publicCompanionsInfiniteQueryOptions`, the sole browser transport owner,
+  now sends cancellable bodyless GETs to `/_actions/publicCompanions`. Both the
+  catalogue and collection new/edit selectors retain the same query keys,
+  six-row default, cursor/lookahead pagination, previous-data behavior, filters,
+  loading/error UX and retries. Companion, source and award dates are revived
+  from JSON before client consumers. Creator, abilities/actions, artwork and
+  relationship shapes remain unchanged; no additional identity fields or
+  third-party API are introduced.
+- The catalogue page and shared collection hydrator prefetch the existing
+  service directly, never relative HTTP. Existing SQL joins, sorting and public
+  visibility remain unchanged. Creator is a public filter, not authority;
+  submitted owner/visibility parameters cannot opt into private companions.
+  Safe anonymous catalogue reads introduce no auth requirement, mutation
+  origin/media gate, CORS, writes, cache invalidation or navigation behavior.
+- Zod validates all five sorts, supported classes, integer limits 1–100 and
+  cursor shape/value types/sort agreement before SQL. Invalid input returns 400;
+  unexpected errors reach telemetry then return generic 500s. Success/errors
+  use `private, no-store`. Unsupported writes receive framework 405s.
+- Removed the final export and empty `app/companions/actions.ts`, plus its
+  browser import/call. Application ratchet **48 → 47**; repository directives,
+  exports, supported APIs and companion/collection mutations are unchanged.
+- Real-SQL boundary tests cover public/private separation, combined filters,
+  full fields/relationships, all five sorts with asymmetric ties across pages,
+  empty/exact-limit results, validation and safe telemetry errors. Transport
+  tests cover stable GET/no `next-action`, URL encoding, cancellation, nested
+  date revival, cache keys and failed-refetch retention/recovery. Focused tests:
+  22 passed. Full suite: 2,070 passed, seven skipped; `make check` and
+  `git diff --check` pass. Twenty-four live development requests independently
+  match SQLite results across all sorts, pages, filters, 400s and 405.
+- Browser QA verifies catalogue 6→9 load-more, search/class/sort, detail client
+  navigation/reload, forced failure/recovery, collection new/edit hydration,
+  selection, creation and independently persisted membership. Nine successful
+  stable GETs have raw CDP extra-header checks without `next-action`; four
+  deliberately aborted retry attempts are recorded separately. No normal-flow
+  console/page/hydration errors occur. Existing Companion nested creator-link
+  markup is unchanged, not claimed repaired. An overloaded first recording
+  failed; the replacement lower-frame-rate clip was inspected successfully.
+- QA uses one disposable local non-admin user, nine copies of seeded content
+  and one collection. Cleanup verifies zero users, companions, collections,
+  search catalog/FTS residue and the original companion unchanged. Production
+  verification is anonymous/read-only, matching this public read contract; no
+  production sessions or data writes are needed. The
+  [run thread](https://ampcode.com/threads/T-01a18aeb-4708-74f5-866c-0e0b52d3e2f3)
+  records deployment identity, exact functional production requests and cleanup.
+- Retain this URL and accepted response shape for at least one deployment
+  interval. Legacy pre-cutover tabs still need refresh/retry. Migration remains
+  incomplete; all-source reads lead the remaining actions on current evidence.
 
 ### Session report-status reads — October 2026
 

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { PaginatedCompanionGrid } from "@/components/companion/PaginatedCompanionGrid";
 import { getQueryClient } from "@/lib/queryClient";
+import { paginatePublicCompanions } from "@/lib/services/companions";
 import { PaginateCompanionsSortOptions } from "@/lib/services/companions/types";
 import { SUBCLASS_CLASSES } from "@/lib/types";
 import { publicCompanionsInfiniteQueryOptions } from "./hooks";
@@ -33,9 +34,10 @@ export default async function CompanionsPage({
   const params = parseResult.data;
 
   const queryClient = getQueryClient();
-  await queryClient.prefetchInfiniteQuery(
-    publicCompanionsInfiniteQueryOptions(params)
-  );
+  await queryClient.prefetchInfiniteQuery({
+    ...publicCompanionsInfiniteQueryOptions(params),
+    queryFn: () => paginatePublicCompanions(params),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

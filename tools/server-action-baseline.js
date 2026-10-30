@@ -8,7 +8,6 @@ export const serverActionBaseline = {
     "app/actions/subclass.ts": 1,
     "app/admin/actions.ts": 22,
     "app/backgrounds/actions.ts": 1,
-    "app/companions/actions.ts": 1,
     "app/families/actions.ts": 1,
     "app/hazards/actions.ts": 1,
     "app/my/backgrounds/actions.ts": 1,
