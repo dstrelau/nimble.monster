@@ -496,9 +496,9 @@ neither tied nor sparse, so no seven-day tie-breaker is needed. The earlier
 | --- | --- | ---: | ---: | ---: |
 | Already migrated | `getMyReport` | 167 | 151 | 16 |
 | Already migrated | `paginatePublicCompanionsAction` | 161 | 157 | 4 |
-| Selected all-source slice | `getAllSources` | 137 | 131 | 6 |
-| Next measured candidate | `listOwnCollections` | 120 | 104 | 16 |
-| Remaining | `getUserFamilies` | 102 | 102 | 0 |
+| Already migrated | `getAllSources` | 137 | 131 | 6 |
+| Selected collection-read slice | `listOwnCollections` | 120 | 104 | 16 |
+| Next measured candidate | `getUserFamilies` | 102 | 102 | 0 |
 | Remaining | `paginatePublicBackgrounds` | 93 | 86 | 7 |
 | Already migrated | `searchPublicItems` | 89 | 88 | 1 |
 | Remaining | `paginateUserProfileMonsters` | 83 | 64 | 19 |
@@ -520,6 +520,15 @@ excluded probes and HTTP-vs-domain-result limitations above still apply. No
 seven-day tie-breaker is needed for this non-sparse, untied selection. Coordination
 found no other unarchived owner. After this slice, `listOwnCollections` leads
 the remaining actions, subject to refreshed evidence when no longer representative.
+
+The collection-read run also reuses this fully mapped recent window on October
+30, about eleven hours after its endpoint, not a fresh measurement. With sources
+migrated, `app/actions/collection.ts#listOwnCollections` leads remaining named
+operations by 18 attempts. The non-sparse, untied selection needs no seven-day
+tie-breaker; all coverage, excluded-probe and transport-status limitations above
+still apply. The unarchived-child lookup found only this run, no competing owner.
+After this slice, `getUserFamilies` leads on this evidence; refresh the ranking
+when no longer representative rather than assuming the historical order holds.
 
 ## Migration waves (scope guidance)
 
@@ -2015,6 +2024,59 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Session collection-picker reads — October 2026
+
+- Selected `app/actions/collection.ts#listOwnCollections` using the recent
+  fully mapped fixed window above: 120 root attempts, 104 HTTP <400 and 16
+  HTTP ≥400. No other unarchived run owns the operation.
+- `ownCollectionsQueryOptions`, the sole browser transport owner, now uses a
+  cancellable bodyless `GET /_actions/listOwnCollections`. The shared
+  `AddToCollectionDialog` serves monster, hazard, item, companion, ancestry,
+  background, subclass and spell-school details. `HydratedEntityDetail` prefetches
+  the unchanged database helper directly, never relative HTTP. The full overview
+  response, sorting, public/private ownership selection and all eight membership
+  arrays remain unchanged. Collection and nested member dates are revived after
+  JSON; no third-party API or additional identity fields are introduced.
+- Authentication is derived exclusively from `auth()`. Anonymous/incomplete
+  sessions receive a JSON 401; submitted owner/Discord/visibility parameters
+  cannot select another user's collections. The parameterless safe GET needs
+  no body schema or mutation-origin/media gate. Success/errors use
+  `private, no-store` without CORS; telemetry records unexpected failures before
+  generic 500s. Unsupported writes receive framework 405s.
+- Query keys now include the session user ID without sending it as authority.
+  Loading/signed-out sessions issue no private query. Account changes remount
+  the dialog, discarding its previous selection and mutation state; in-flight
+  reads cancel, and old mutations invalidate only their starting user's cache.
+  Existing duplicate warnings, disabled/pending Add, draft retention/manual
+  mutation retry, background-read data retention and query recovery remain.
+  Membership writes, revalidation, SQL visibility rules and navigation are unchanged.
+- Removed the final export and empty `app/actions/collection.ts`, its obsolete
+  wrapper-only tests and all action imports/calls. Application ratchet
+  **46 → 45**; repository directives/exports are unchanged. Real-SQL route
+  tests cover owner isolation, public/private and empty results, all membership
+  kinds, ancestry visibility, date serialization and generic telemetry errors.
+  Real-dialog transport tests cover stable GET/no `next-action`, cancellation,
+  date revival, account changes/sign-out and failed-read retention/recovery,
+  alongside all eight retained stable membership transports.
+- Focused tests: 46 passed. Full suite: 2,089 passed, seven skipped.
+  `make check` and `git diff --check` pass. Eleven live development requests
+  verify anonymous/two-owner isolation, ignored identity, all membership kinds,
+  status/media/cache headers, 405s, HEAD and independently persisted add/read.
+  Browser QA covers all eight detail routes plus reloads, duplicate detection,
+  a persisted monster add, client navigation and deliberately failed-read
+  recovery. Raw CDP request and extra-header events confirm bodyless stable
+  GETs without `next-action`; no page/hydration errors or failed HTTP responses
+  occur. The deliberately aborted read's console error is recorded separately.
+- QA uses two disposable non-admin users, three collections and links to existing
+  public content, never real-user changes or handcrafted monsters. The
+  [run thread](https://ampcode.com/threads/T-01a18d10-bc48-7555-914a-1dc1d2a53e4c)
+  records inspected browser evidence, zero-residue local/production cleanup,
+  deployed build identity and exact authenticated production requests. Production
+  uses one-hour Auth.js sessions, not a dev-login bypass. Retain the stable URL
+  and response shape for at least one deployment interval; pre-cutover tabs still
+  need refresh/retry. Migration remains incomplete; families lead the remaining
+  actions on current evidence, subject to refresh.
 
 ### All-source catalogue options — October 2026
 

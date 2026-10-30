@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ownCollectionsQueryOptions } from "@/app/collections/ownCollectionsQueryOptions";
 import { ownEncountersQueryOptions } from "@/app/encounters/ownEncountersQueryOptions";
 import { auth } from "@/lib/auth";
+import { listCollectionsWithMonstersForUser } from "@/lib/db/collection";
 import {
   listConditionsForDiscordId,
   listOfficialConditions,
@@ -76,8 +77,17 @@ export async function HydratedEntityDetail({
             : Promise.resolve(false),
       })
     );
-    if (includeCollections) {
-      queries.push(queryClient.prefetchQuery(ownCollectionsQueryOptions()));
+    if (includeCollections && session?.user?.id && session.user.discordId) {
+      const discordId = session.user.discordId;
+      queries.push(
+        queryClient.prefetchQuery({
+          ...ownCollectionsQueryOptions(session.user.id),
+          queryFn: async () => ({
+            success: true,
+            collections: await listCollectionsWithMonstersForUser(discordId),
+          }),
+        })
+      );
     }
     if (includeEncounters) {
       queries.push(queryClient.prefetchQuery(ownEncountersQueryOptions()));

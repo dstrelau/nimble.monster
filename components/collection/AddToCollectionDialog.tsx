@@ -1,6 +1,7 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CopyPlus } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { addAncestryToCollection } from "@/app/%5Factions/addAncestryToCollection/contract";
@@ -51,10 +52,26 @@ type AddToCollectionDialogProps =
   | { type: "subclass"; subclassId: string };
 
 export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
+  const { data: session, status } = useSession();
+  if (status !== "authenticated" || !session?.user?.id) return null;
+  return (
+    <SessionCollectionDialog
+      key={session.user.id}
+      {...props}
+      userId={session.user.id}
+    />
+  );
+};
+
+const SessionCollectionDialog = (
+  props: AddToCollectionDialogProps & { userId: string }
+) => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const availableCollections = useQuery(ownCollectionsQueryOptions());
+  const availableCollections = useQuery(
+    ownCollectionsQueryOptions(props.userId)
+  );
 
   const form = useForm<AddToCollectionForm>({
     defaultValues: {
@@ -148,7 +165,7 @@ export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
       setOpen(false);
       form.reset();
       return queryClient.invalidateQueries({
-        queryKey: ownCollectionsQueryOptions().queryKey,
+        queryKey: ownCollectionsQueryOptions(props.userId).queryKey,
       });
     },
   });
