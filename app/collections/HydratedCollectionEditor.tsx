@@ -16,6 +16,7 @@ import { paginatePublicCompanions } from "@/lib/services/companions";
 import { itemsService } from "@/lib/services/items/service";
 import { monstersService } from "@/lib/services/monsters";
 import {
+  listAllSources,
   listSourcesForEntityType,
   sourcesForEntityTypeQueryOptions,
   sourcesQueryOptions,
@@ -88,7 +89,10 @@ export async function HydratedCollectionEditor({
     queryClient.prefetchQuery(publicClassesQueryOptions()),
     queryClient.prefetchQuery(publicSubclassesQueryOptions()),
     queryClient.prefetchQuery(publicSpellSchoolsQueryOptions()),
-    queryClient.prefetchQuery(sourcesQueryOptions()),
+    queryClient.prefetchQuery({
+      ...sourcesQueryOptions(),
+      queryFn: listAllSources,
+    }),
     queryClient.prefetchQuery({
       ...sourcesForEntityTypeQueryOptions("monsters"),
       queryFn: () => listSourcesForEntityType("monsters"),

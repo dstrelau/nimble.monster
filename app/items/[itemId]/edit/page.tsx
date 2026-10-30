@@ -4,7 +4,7 @@ import BuildItemView from "@/app/items/BuildItemView";
 import { auth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/queryClient";
 import { itemsService } from "@/lib/services/items";
-import { sourcesQueryOptions } from "@/lib/services/sources";
+import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getItemEditUrl } from "@/lib/utils/url";
 
@@ -29,7 +29,10 @@ export default async function EditItemPage({
   }
 
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery(sourcesQueryOptions());
+  await queryClient.prefetchQuery({
+    ...sourcesQueryOptions(),
+    queryFn: listAllSources,
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

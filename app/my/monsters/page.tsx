@@ -4,7 +4,7 @@ import { MyLibraryPageHeader } from "@/components/layout/MyLibraryPageHeader";
 import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
 import { auth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/queryClient";
-import { sourcesQueryOptions } from "@/lib/services/sources";
+import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
 import { ENTITY_TYPE_ICONS } from "@/lib/types/entity-links";
 import { myMonstersInfiniteQueryOptions } from "./hooks";
 
@@ -14,7 +14,10 @@ export default async function MyMonstersPage() {
 
   const queryClient = getQueryClient();
   await Promise.all([
-    queryClient.prefetchQuery(sourcesQueryOptions()),
+    queryClient.prefetchQuery({
+      ...sourcesQueryOptions(),
+      queryFn: listAllSources,
+    }),
     queryClient.prefetchInfiniteQuery(
       myMonstersInfiniteQueryOptions({ sort: "-createdAt", type: "all" })
     ),

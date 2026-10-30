@@ -6,7 +6,7 @@ import { MyLibraryPageHeader } from "@/components/layout/MyLibraryPageHeader";
 import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
 import { auth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/queryClient";
-import { sourcesQueryOptions } from "@/lib/services/sources";
+import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
 
 export default async function MyHazardsPage() {
   const session = await auth();
@@ -14,7 +14,10 @@ export default async function MyHazardsPage() {
 
   const queryClient = getQueryClient();
   await Promise.all([
-    queryClient.prefetchQuery(sourcesQueryOptions()),
+    queryClient.prefetchQuery({
+      ...sourcesQueryOptions(),
+      queryFn: listAllSources,
+    }),
     queryClient.prefetchInfiniteQuery(
       myHazardsInfiniteQueryOptions({ sort: "-createdAt" })
     ),

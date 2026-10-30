@@ -20,7 +20,6 @@ export const serverActionBaseline = {
     "components/shared/search-creators-action.ts": 3,
     "lib/actions.ts": 1,
     "lib/actions/entities.ts": 2,
-    "lib/services/sources/actions.ts": 1,
   },
   repositoryMarkers: {
     "lib/services/ancestries/repository.ts": 12,

@@ -23,7 +23,7 @@ import { getQueryClient } from "@/lib/queryClient";
 import { ancestriesService } from "@/lib/services/ancestries/service";
 import { itemsService } from "@/lib/services/items";
 import { MonsterRoleOptions } from "@/lib/services/monsters/types";
-import { sourcesQueryOptions } from "@/lib/services/sources";
+import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
 import { MY_LIBRARY_ITEMS } from "@/lib/types/entity-links";
 import { SITE_NAME } from "@/lib/utils/branding";
 
@@ -235,7 +235,10 @@ export default async function UserProfileEntityPage({
   const [counts, content] = await Promise.all([
     db.getPublicLibraryCounts(user.id),
     loadProfileEntityContent(entityType, user.id, rawSearchParams, queryClient),
-    queryClient.prefetchQuery(sourcesQueryOptions()),
+    queryClient.prefetchQuery({
+      ...sourcesQueryOptions(),
+      queryFn: listAllSources,
+    }),
     queryClient.prefetchQuery({
       ...officialConditionsQueryOptions(),
       queryFn: db.listOfficialConditions,

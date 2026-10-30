@@ -10,7 +10,7 @@ import {
   userConditionsQueryOptions,
 } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
-import { sourcesQueryOptions } from "@/lib/services/sources";
+import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
 
 interface HydratedBuilderDataProps {
   includeSources?: boolean;
@@ -40,7 +40,12 @@ export async function HydratedBuilderData({
     );
   }
   if (includeSources) {
-    queries.push(queryClient.prefetchQuery(sourcesQueryOptions()));
+    queries.push(
+      queryClient.prefetchQuery({
+        ...sourcesQueryOptions(),
+        queryFn: listAllSources,
+      })
+    );
   }
 
   await Promise.all(queries);

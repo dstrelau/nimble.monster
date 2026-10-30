@@ -1,15 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
+import { getAllSources } from "@/app/%5Factions/getAllSources/contract";
 import { getSourcesForEntityType } from "@/app/%5Factions/getSourcesForEntityType/contract";
 import { call } from "@/lib/contract";
-import { getAllSources } from "./actions";
 import type { EntityType } from "./types";
 
 export function sourcesQueryOptions() {
   return {
     queryKey: ["sources"],
-    queryFn: async () => {
-      return await getAllSources();
-    },
+    queryFn: ({ signal }: { signal: AbortSignal }) =>
+      call(getAllSources, undefined, { signal }),
     staleTime: 300000,
   };
 }

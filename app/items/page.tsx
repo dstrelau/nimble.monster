@@ -6,7 +6,7 @@ import { getQueryClient } from "@/lib/queryClient";
 import * as items from "@/lib/services/items/repository";
 import { itemsService } from "@/lib/services/items/service";
 import { PaginateItemsSortOptions } from "@/lib/services/items/types";
-import { sourcesQueryOptions } from "@/lib/services/sources";
+import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
 import { getItemUrl } from "@/lib/utils/url";
 import { publicItemsInfiniteQueryOptions } from "./actions";
 
@@ -42,7 +42,10 @@ export default async function ItemsPage({
 
   const queryClient = getQueryClient();
   await Promise.all([
-    queryClient.prefetchQuery(sourcesQueryOptions()),
+    queryClient.prefetchQuery({
+      ...sourcesQueryOptions(),
+      queryFn: listAllSources,
+    }),
     queryClient.prefetchInfiniteQuery({
       ...publicItemsInfiniteQueryOptions(params),
       queryFn: ({ pageParam }) =>

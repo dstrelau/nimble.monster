@@ -495,9 +495,9 @@ neither tied nor sparse, so no seven-day tie-breaker is needed. The earlier
 | Priority | Verified named operation | Attempts | HTTP <400 | HTTP ≥400 |
 | --- | --- | ---: | ---: | ---: |
 | Already migrated | `getMyReport` | 167 | 151 | 16 |
-| Selected companion slice | `paginatePublicCompanionsAction` | 161 | 157 | 4 |
-| Next measured candidate | `getAllSources` | 137 | 131 | 6 |
-| Remaining | `listOwnCollections` | 120 | 104 | 16 |
+| Already migrated | `paginatePublicCompanionsAction` | 161 | 157 | 4 |
+| Selected all-source slice | `getAllSources` | 137 | 131 | 6 |
+| Next measured candidate | `listOwnCollections` | 120 | 104 | 16 |
 | Remaining | `getUserFamilies` | 102 | 102 | 0 |
 | Remaining | `paginatePublicBackgrounds` | 93 | 86 | 7 |
 | Already migrated | `searchPublicItems` | 89 | 88 | 1 |
@@ -512,6 +512,14 @@ retains complete results and verified mappings. The current pre-cutover alias
 is `40271510081b03240ce10470013d688ab8b3845257`; older deployed aliases include
 `401e6e472072b52ecb9147ec53a4cfe46316fc6258` (`9eb787e2`). Refresh this ranking
 when no longer representative; all-source reads are next on this evidence.
+
+The all-source run reuses this fully mapped recent window on October 30, about
+six hours after its endpoint; it is not a fresh measurement. All-source reads
+lead remaining operations by 17 attempts after companion pagination. Coverage,
+excluded probes and HTTP-vs-domain-result limitations above still apply. No
+seven-day tie-breaker is needed for this non-sparse, untied selection. Coordination
+found no other unarchived owner. After this slice, `listOwnCollections` leads
+the remaining actions, subject to refreshed evidence when no longer representative.
 
 ## Migration waves (scope guidance)
 
@@ -2007,6 +2015,55 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### All-source catalogue options — October 2026
+
+- Selected `lib/services/sources/actions.ts#getAllSources` from the recent fully
+  mapped fixed window above: 137 attempts, 131 HTTP <400 and six HTTP ≥400.
+  The two browser hooks now share a cancellable, bodyless typed
+  `GET /_actions/getAllSources`, retaining the `["sources"]` key and their
+  respective five-minute and one-minute freshness. `SourceFilter`, the item
+  builder and shared `SourceSelect` retain pending/empty fallback, retry,
+  background-data retention, selection and navigation behavior.
+- All eight server prefetch sites override the browser function with direct
+  `listAllSources` calls: shared builder/collection hydration, item list/new/edit,
+  My Monsters/Hazards and creator-profile entity pages. Server Components never
+  make relative HTTP requests. Existing SQL selects all sources, including
+  unreferenced options, sorted by name, and returns only `id`, `name` and
+  `abbreviation`. No dates or additional identity fields are serialized.
+- This parameterless anonymous-readable catalogue metadata query keeps the same
+  result for signed-in viewers. Identity/visibility query parameters cannot alter
+  selection. Safe reads need no auth, mutation-origin/media gate or body schema.
+  Success and generic telemetry-recorded 500s use `private, no-store`, no CORS;
+  unsupported writes return framework 405s. No supported API, database schema,
+  mutation, cache invalidation, redirects or repository directives change.
+- Removed the final export and empty `lib/services/sources/actions.ts`, its
+  barrel re-export and both browser action imports/calls. Application ratchet
+  **47 → 46**; repository counts remain unchanged. Retain this stable URL and
+  response shape for at least one deployment interval. Legacy pre-cutover tabs
+  still need refresh/retry for old action references.
+- Real-SQL route tests cover sorted unreferenced sources, minimal serialization,
+  empty results and safe telemetry errors. Both browser hooks are tested for
+  stable GET/no body or `next-action`, cancellation, disabled queries, cache
+  separation and failed-read retention/recovery. Focused checks: 26 passed.
+  Full suite: 2,075 passed, seven skipped; `make check` and `git diff --check`
+  pass. Live development GETs independently match SQLite, including ignored
+  identity/entity parameters; POST/PUT/DELETE return 405.
+- Browser QA covers 27 supported list/new/edit/profile routes, source selection,
+  client detail navigation/full reload and deliberately aborted reads/recovery.
+  Four normal stable GETs have raw CDP extra-header checks without `next-action`.
+  Settled supported-route QA has no console/page/hydration errors. Initial local
+  icon 404s resolved by initializing the existing icon submodule and running the
+  documented sync, without code changes. An unsupported profile tables probe
+  returned its existing 404 before source prefetch; it is not a migrated route.
+- Local editor QA uses two disposable copies of seeded ancestry/background
+  content and unsaved source selections, never real-user saves. Cleanup verifies
+  zero copied entities, search-catalog and FTS residue and clears browser drafts.
+  Production verification is anonymous/read-only, matching this public contract;
+  no production auth sessions, fixtures or writes are needed.
+  The [run thread](https://ampcode.com/threads/T-01a18bfe-214c-72cc-9a2e-62fa4f402226)
+  records browser QA, deployment identity, exact functional production requests
+  and cleanup. The migration remains incomplete.
 
 ### Public companion pagination — October 2026
 

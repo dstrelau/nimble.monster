@@ -2,11 +2,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, cleanup, renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { useSourcesQuery as useBuilderSourcesQuery } from "@/lib/hooks/useSources";
+import { useSourcesForEntityTypeQuery, useSourcesQuery } from "./hooks";
 import type { EntityType } from "./types";
-
-vi.mock("./actions", () => ({ getAllSources: vi.fn() }));
-
-import { useSourcesForEntityTypeQuery } from "./hooks";
 
 let client: QueryClient;
 beforeEach(() => {
@@ -21,6 +19,61 @@ function wrapper({ children }: { children: ReactNode }) {
   return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
 }
 const rows = (name: string) => [{ id: name, name, abbreviation: name }];
+
+it.each([useSourcesQuery, useBuilderSourcesQuery])(
+  "loads all-source options through a cancellable stable GET, retains data on failure and recovers (%#)",
+  async (useSources) => {
+    const fetcher = vi.fn(async (_url: string, _options: RequestInit) =>
+      Response.json(rows("All"))
+    );
+    vi.stubGlobal("fetch", fetcher);
+    const { result, rerender, unmount } = renderHook(
+      ({ enabled }) => useSources({ enabled }),
+      { wrapper, initialProps: { enabled: false } }
+    );
+    expect(fetcher).not.toHaveBeenCalled();
+    rerender({ enabled: true });
+    await waitFor(() => expect(result.current.data).toEqual(rows("All")));
+    expect(fetcher).toHaveBeenCalledWith("/_actions/getAllSources", {
+      method: "GET",
+      credentials: "same-origin",
+      signal: expect.any(AbortSignal),
+    });
+    expect(client.getQueryData(["sources"])).toEqual(rows("All"));
+    expect(client.getQueryData(["sources", "monsters"])).toBeUndefined();
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(result.current.error).toBeNull();
+    fetcher.mockResolvedValueOnce(
+      Response.json({ error: "Unavailable" }, { status: 503 })
+    );
+    await act(() => result.current.refetch());
+    await waitFor(() =>
+      expect(result.current.error).toMatchObject({
+        status: 503,
+        code: "HTTP_503",
+      })
+    );
+    expect(result.current.data).toEqual(rows("All"));
+    fetcher.mockResolvedValueOnce(Response.json(rows("Recovered")));
+    await act(() => result.current.refetch());
+    await waitFor(() => expect(result.current.data).toEqual(rows("Recovered")));
+    let signal: AbortSignal | null | undefined;
+    fetcher.mockImplementationOnce((_url, options) => {
+      signal = options.signal;
+      return new Promise<Response>(() => {});
+    });
+    act(() => {
+      void result.current.refetch();
+    });
+    expect(signal?.aborted).toBe(false);
+    unmount();
+    expect(signal?.aborted).toBe(true);
+    for (const [, options] of fetcher.mock.calls) {
+      expect(options).not.toHaveProperty("headers");
+      expect(options).not.toHaveProperty("body");
+    }
+  }
+);
 
 it.each<EntityType>([
   "monsters",

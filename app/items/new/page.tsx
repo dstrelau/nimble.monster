@@ -2,7 +2,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import BuildItemView from "@/app/items/BuildItemView";
 import { getQueryClient } from "@/lib/queryClient";
 import { itemsService } from "@/lib/services/items";
-import { sourcesQueryOptions } from "@/lib/services/sources";
+import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
 import { deslugify } from "@/lib/utils/slug";
 
 export default async function NewItemPage({
@@ -27,7 +27,10 @@ export default async function NewItemPage({
   }
 
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery(sourcesQueryOptions());
+  await queryClient.prefetchQuery({
+    ...sourcesQueryOptions(),
+    queryFn: listAllSources,
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
