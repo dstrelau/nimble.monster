@@ -6,6 +6,7 @@ import {
   listConditionsForDiscordId,
   listOfficialConditions,
 } from "@/lib/db/condition";
+import { listFamiliesForUser } from "@/lib/db/family";
 import {
   officialConditionsQueryOptions,
   userConditionsQueryOptions,
@@ -38,7 +39,12 @@ export default async function NewMonsterPage({
   }
 
   await Promise.all([
-    queryClient.prefetchQuery(userFamiliesQueryOptions()),
+    session?.user?.id && session.user.discordId
+      ? queryClient.prefetchQuery({
+          ...userFamiliesQueryOptions({ userId: session.user.id }),
+          queryFn: () => listFamiliesForUser(session.user.discordId),
+        })
+      : undefined,
     queryClient.prefetchQuery({
       ...officialConditionsQueryOptions(),
       queryFn: listOfficialConditions,

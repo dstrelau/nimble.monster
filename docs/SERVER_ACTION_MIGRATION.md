@@ -497,9 +497,9 @@ neither tied nor sparse, so no seven-day tie-breaker is needed. The earlier
 | Already migrated | `getMyReport` | 167 | 151 | 16 |
 | Already migrated | `paginatePublicCompanionsAction` | 161 | 157 | 4 |
 | Already migrated | `getAllSources` | 137 | 131 | 6 |
-| Selected collection-read slice | `listOwnCollections` | 120 | 104 | 16 |
-| Next measured candidate | `getUserFamilies` | 102 | 102 | 0 |
-| Remaining | `paginatePublicBackgrounds` | 93 | 86 | 7 |
+| Already migrated | `listOwnCollections` | 120 | 104 | 16 |
+| Selected family-read slice | `getUserFamilies` | 102 | 102 | 0 |
+| Next measured candidate | `paginatePublicBackgrounds` | 93 | 86 | 7 |
 | Already migrated | `searchPublicItems` | 89 | 88 | 1 |
 | Remaining | `paginateUserProfileMonsters` | 83 | 64 | 19 |
 | Remaining | `listOwnEncounters` | 71 | 61 | 10 |
@@ -529,6 +529,15 @@ tie-breaker; all coverage, excluded-probe and transport-status limitations above
 still apply. The unarchived-child lookup found only this run, no competing owner.
 After this slice, `getUserFamilies` leads on this evidence; refresh the ranking
 when no longer representative rather than assuming the historical order holds.
+
+The family-read run reuses this fully mapped window on October 30, about
+16 hours after its endpoint; this is not a fresh measurement. Families lead
+remaining named actions by nine attempts after collection reads. The window
+still covers the previous day's deployed browser traffic; its untied, non-sparse
+lead needs no seven-day tie-breaker. All sampling/coverage, excluded-probe and
+HTTP-vs-domain-result limitations above still apply. The unarchived-child lookup
+found only this run. After this slice, background pagination leads on this
+evidence; refresh the measurement when it is no longer representative.
 
 ## Migration waves (scope guidance)
 
@@ -2024,6 +2033,64 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Session family-picker reads — October 2026
+
+- Selected `app/families/actions.ts#getUserFamilies` using the recent fully
+  mapped fixed window above: 102 root attempts, all HTTP <400, nine ahead of
+  background pagination. No other unarchived scheduled run owns the operation.
+- `userFamiliesQueryOptions`, the only browser transport owner, now sends a
+  cancellable bodyless `GET /_actions/getUserFamilies`. `FamilySection` serves
+  classic standard/minion/legendary/team monster forms and the feature-flagged
+  statblock editor's Family & source section. Hazards share the builder module
+  but do not render this section. Monster new/edit server prefetches use
+  `listFamiliesForUser` directly, never relative HTTP. Existing My Families,
+  family-detail and other server database reads remain direct and unchanged.
+- Authentication and owner selection derive exclusively from `auth()`, including
+  both session user ID and Discord ID. Anonymous/incomplete sessions receive
+  JSON 401; submitted user/Discord/owner/visibility query parameters cannot
+  select another account's private families. The parameterless safe GET needs
+  no body schema or mutation-origin/media gate. Success/errors are
+  `private, no-store`, without CORS; unexpected failures reach telemetry before
+  generic JSON 500s. Unsupported writes receive framework 405s.
+- The unchanged SQL selects the owner's public/private families, name-sorted,
+  with abilities, descriptions, visibility, creator and monster counts. These
+  overviews contain no dates; no date reviver, new identity fields or supported
+  API is introduced. Existing randomly assigned ability IDs remain unchanged.
+  The internal response is a typed overview array rather than the obsolete
+  action envelope, which only the old hook consumed. Domain writes, validation,
+  cache invalidation, navigation and family membership authorization are unchanged.
+- Query keys now include session user ID without sending it as authority.
+  Signed-out/loading sessions issue no private query; account changes select
+  separate entries and cancel obsolete reads. Existing one-minute freshness,
+  empty/pending fallback and selection behavior remain. Transport errors now
+  retain cached choices instead of replacing them with an empty successful
+  result; React Query's normal retry/reconnect recovery remains available.
+- Removed the final export and empty `app/families/actions.ts`, its browser
+  import/call and both server-action prefetches. Application ratchet
+  **45 → 44**; repository directives/exports, schema and public API are unchanged.
+  Real-SQL route tests cover owner isolation, public/private ordering, abilities,
+  asymmetric membership counts, minimal serialization, empty owners and safe
+  telemetry errors. Hook transport tests cover stable GET/no `next-action`,
+  cancellation, account changes/sign-out, disabled queries and failed-read
+  retention/recovery alongside existing bestiary save tests.
+- Focused tests: 24 passed. Full suite: 2,098 passed, seven skipped.
+  `make check` and `git diff --check` pass. Ten live development HTTP checks
+  verify anonymous/three-owner isolation, ignored identity, counts/abilities,
+  JSON/cache headers, HEAD and unsupported methods against independent SQLite
+  expectations. Browser QA covers classic/statblock new/edit, client navigation,
+  reload, private choices, empty owners, a persisted selection and timed
+  background-read failure/recovery; hazard new/edit are unchanged controls.
+- QA uses three disposable non-admin users, three families, two copies of
+  existing public monsters and one existing-public-hazard copy, never handcrafted
+  monsters or real-user edits. The
+  [run thread](https://ampcode.com/threads/T-01a18e23-4aab-75c1-aca2-1749b7ff1275)
+  records inspected browser evidence, local/production cleanup, deployed build
+  identity and exact authenticated production requests. Production uses one-hour
+  Auth.js sessions, not a dev-login bypass. Retain this URL and response shape
+  for at least one deployment interval; pre-cutover tabs still need refresh/retry.
+  Migration remains incomplete; background pagination leads on current evidence,
+  subject to refreshed measurement before the next selection.
 
 ### Session collection-picker reads — October 2026
 

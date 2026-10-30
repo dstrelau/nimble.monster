@@ -5,6 +5,7 @@ import BuildMonster from "@/app/monsters/BuildMonsterView";
 import { auth } from "@/lib/auth";
 import { listOfficialConditions } from "@/lib/db/condition";
 import { isMonsterInOtherUsersEncounter } from "@/lib/db/encounter";
+import { listFamiliesForUser } from "@/lib/db/family";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { findMonsterWithCreatorId } from "@/lib/services/monsters";
@@ -34,7 +35,10 @@ export default async function EditMonsterPage({
   const queryClient = getQueryClient();
   const [usedInOtherUsersEncounter] = await Promise.all([
     isMonsterInOtherUsersEncounter(monster.id, session.user.id),
-    queryClient.prefetchQuery(userFamiliesQueryOptions()),
+    queryClient.prefetchQuery({
+      ...userFamiliesQueryOptions({ userId: session.user.id }),
+      queryFn: () => listFamiliesForUser(session.user.discordId),
+    }),
     queryClient.prefetchQuery({
       ...officialConditionsQueryOptions(),
       queryFn: listOfficialConditions,

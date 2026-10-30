@@ -345,7 +345,7 @@ const FamilySection: React.FC<{
 }> = ({ monster, setMonster }) => {
   const { data: session } = useSession();
   const userFamilies = useUserFamiliesQuery({
-    enabled: !!session?.user,
+    userId: session?.user?.id,
   });
 
   const handleSelectFamilies = (familyIds: string[]) => {

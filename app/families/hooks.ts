@@ -1,17 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUserFamilies } from "./actions";
+import { getUserFamilies } from "@/app/%5Factions/getUserFamilies/contract";
+import { call } from "@/lib/contract";
 
-export function useUserFamiliesQuery(props: { enabled?: boolean }) {
+interface UserFamiliesQueryProps {
+  userId: string | undefined;
+  enabled?: boolean;
+}
+
+export function useUserFamiliesQuery(props: UserFamiliesQueryProps) {
   return useQuery(userFamiliesQueryOptions(props));
 }
 
-export function userFamiliesQueryOptions(props?: { enabled?: boolean }) {
+export function userFamiliesQueryOptions(props: UserFamiliesQueryProps) {
   return {
-    ...props,
-    queryKey: ["user-families"],
-    queryFn: async () => {
-      const result = await getUserFamilies();
-      return result.success ? result.families : [];
-    },
+    queryKey: ["user-families", props.userId],
+    enabled: Boolean(props.userId) && props.enabled !== false,
+    queryFn: ({ signal }: { signal: AbortSignal }) =>
+      call(getUserFamilies, undefined, { signal }),
   };
 }
