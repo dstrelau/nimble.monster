@@ -84,7 +84,9 @@ export function MonsterCardHeader({
     !isTeam &&
     (monster.hazard
       ? monster.hp > 0
-      : !monster.minion || hasArtwork || hasMovement || !!monster.saves);
+      : !monster.minion || hasMovement || !!monster.saves);
+  // Without a combat band, artwork moves into the name row.
+  const artworkBesideName = hasArtwork && !isTeam && !hasCombatBand;
   return (
     <div data-slot="card-header" className="space-y-3">
       {hasCombatBand && (
@@ -159,23 +161,38 @@ export function MonsterCardHeader({
           )}
         </div>
       )}
-      <div className="px-4">
-        <h3
-          className={cn(
-            "font-slab font-bold wrap-anywhere",
-            monster.legendary ? "text-3xl/8" : "small-caps text-2xl/6"
+      <div
+        className={cn(
+          "px-4",
+          artworkBesideName && "relative flex min-h-10 items-center"
+        )}
+      >
+        <div className={cn("min-w-0", artworkBesideName && "pr-20")}>
+          <h3
+            className={cn(
+              "font-slab font-bold wrap-anywhere",
+              monster.legendary ? "text-3xl/8" : "small-caps text-2xl/6"
+            )}
+          >
+            {link && monster.id ? (
+              <Link href={getMonsterUrl(monster)}>{monster.name}</Link>
+            ) : (
+              monster.name
+            )}
+          </h3>
+          {!monster.hazard && !monster.legendary && !isTeam && monster.kind && (
+            <div className="mt-1 text-sm/4 font-condensed text-muted-foreground small-caps">
+              {monster.kind}
+            </div>
           )}
-        >
-          {link && monster.id ? (
-            <Link href={getMonsterUrl(monster)}>{monster.name}</Link>
-          ) : (
-            monster.name
-          )}
-        </h3>
-        {!monster.hazard && !monster.legendary && !isTeam && monster.kind && (
-          <div className="mt-1 text-sm/4 font-condensed text-muted-foreground small-caps">
-            {monster.kind}
-          </div>
+        </div>
+        {artworkBesideName && (
+          <MonsterImage
+            paperforgeId={monster.paperforgeId}
+            customArtwork={monster.customArtwork}
+            size={88}
+            className="absolute -right-2 -top-6 z-20 size-22"
+          />
         )}
       </div>
       {damageInteractions &&

@@ -69,6 +69,32 @@ describe("monster card header", () => {
     expect(screen.queryByText("AoE")).not.toBeInTheDocument();
   });
 
+  it.each([
+    [0, true],
+    [8, false],
+  ])(
+    "places minion artwork beside the name only without stats (fly=%i)",
+    (fly, besideName) => {
+      render(
+        <MonsterCardHeader
+          monster={{
+            ...TROLL_HUNTER,
+            minion: true,
+            level: "",
+            levelInt: 0,
+            armor: "none",
+            hp: 0,
+            fly,
+          }}
+        />
+      );
+      const nextToImage = screen.getByRole("img").previousElementSibling;
+      expect(nextToImage?.contains(screen.getByRole("heading")) ?? false).toBe(
+        besideName
+      );
+    }
+  );
+
   it.each([false, true])(
     "preserves saves and compact defenses with legendary=%s",
     (legendary) => {
