@@ -75,10 +75,10 @@ beforeEach(() => {
 });
 
 describe("item mutation routes", () => {
-  it("creates an item and invalidates the owner list", async () => {
+  it("creates an item without an official source and invalidates the owner list", async () => {
     mockCreateItem.mockResolvedValue({ id, name: input.name });
 
-    const response = await createPost(request(input));
+    const response = await createPost(request({ ...input, sourceId: id }));
 
     expect(response.status).toBe(201);
     expect(await response.json()).toEqual({ id, name: input.name });

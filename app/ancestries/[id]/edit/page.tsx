@@ -27,7 +27,7 @@ export default async function EditAncestryPage({
   }
 
   return (
-    <HydratedBuilderData includeSources>
+    <HydratedBuilderData>
       <BuildAncestryView ancestry={ancestry} />
     </HydratedBuilderData>
   );

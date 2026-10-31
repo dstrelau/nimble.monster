@@ -151,7 +151,6 @@ interface StatblockEditorProps {
   error?: string;
   hpInput: ReactNode;
   families: ReactNode;
-  source: ReactNode;
   encounterNotes: ReactNode;
   examples: ReactNode;
   onClear: () => void;
@@ -182,7 +181,6 @@ export function StatblockEditor({
   error,
   hpInput,
   families,
-  source,
   encounterNotes,
   examples,
   onClear,
@@ -651,16 +649,12 @@ export function StatblockEditor({
                 />
               </Section>
               <Section
-                title="Family & source"
-                summary={[
-                  ...monster.families.map((family) => family.name),
-                  monster.source?.name,
-                ]
-                  .filter(Boolean)
+                title="Family"
+                summary={monster.families
+                  .map((family) => family.name)
                   .join(", ")}
               >
                 {families}
-                {source}
               </Section>
             </div>
           )}

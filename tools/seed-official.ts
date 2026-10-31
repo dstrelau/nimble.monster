@@ -82,10 +82,7 @@ async function seedMonsters(json: unknown): Promise<number> {
         input.families = [{ id: familyId }];
       }
     }
-    if (sourceId) {
-      input.sourceId = sourceId;
-    }
-    await upsertOfficialMonster(input, monsterData.id);
+    await upsertOfficialMonster({ ...input, sourceId }, monsterData.id);
   }
 
   return monsters.length;

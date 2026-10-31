@@ -60,7 +60,6 @@ export interface CreateAncestryInput {
   size: AncestrySize[];
   rarity: AncestryRarity;
   abilities: AncestryAbility[];
-  sourceId?: string;
 }
 
 export interface UpdateAncestryInput {
@@ -70,5 +69,4 @@ export interface UpdateAncestryInput {
   size: AncestrySize[];
   rarity: AncestryRarity;
   abilities: AncestryAbility[];
-  sourceId?: string;
 }

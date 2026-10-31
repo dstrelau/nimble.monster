@@ -13,7 +13,6 @@ import {
 } from "@/app/%5Factions/_background/contract";
 import { Card } from "@/components/background/Card";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
-import { SourceSelect } from "@/components/create/SourceSelect";
 import { DiscordLoginButton } from "@/components/layout/DiscordLoginButton";
 import { BuildView } from "@/components/shared/BuildView";
 import { Button } from "@/components/ui/button";
@@ -36,7 +35,6 @@ const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
   requirement: z.string().optional(),
-  sourceId: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -60,7 +58,6 @@ export default function BuildBackgroundView({
       name: background?.name || "",
       description: background?.description || "",
       requirement: background?.requirement || "",
-      sourceId: background?.source?.id || "",
     },
   });
 
@@ -95,8 +92,6 @@ export default function BuildBackgroundView({
         name: data.name.trim(),
         description: data.description.trim(),
         requirement: data.requirement?.trim() || undefined,
-        sourceId:
-          data.sourceId && data.sourceId !== "none" ? data.sourceId : undefined,
       };
       const result = background?.id
         ? await call(updateBackground, { id: background.id, input: payload })
@@ -175,20 +170,6 @@ export default function BuildBackgroundView({
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="sourceId"
-                render={({ field }) => (
-                  <FormItem>
-                    <SourceSelect
-                      source={field.value ? { id: field.value } : undefined}
-                      onChange={(source) => field.onChange(source?.id || "")}
-                    />
                     <FormMessage />
                   </FormItem>
                 )}

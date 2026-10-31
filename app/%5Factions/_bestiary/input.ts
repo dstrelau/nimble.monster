@@ -47,12 +47,10 @@ const sharedSchema = z.object({
   mild_encounter: z.string().optional(),
   spicy_encounter: z.string().optional(),
   visibility: z.enum(["public", "private"]),
-  sourceId: uuid.nullable().optional(),
 });
 
 const createHazardSchema = sharedSchema.extend({
   hp: z.number().int().positive().optional(),
-  sourceId: uuid.optional(),
   remixedFromId: uuid.optional(),
 });
 
@@ -89,7 +87,6 @@ const monsterFields = {
 
 const createMonsterSchema = sharedSchema.extend({
   ...monsterFields,
-  sourceId: uuid.optional(),
   fly: z.number(),
   swim: z.number(),
   climb: z.number(),

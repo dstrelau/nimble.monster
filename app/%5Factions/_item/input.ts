@@ -16,7 +16,6 @@ export const itemInputSchema = z.object({
   imageBackdrop: z.string().optional(),
   rarity: z.enum(RARITIES.map(({ value }) => value)).optional(),
   visibility: z.enum(["public", "private"]),
-  sourceId: uuid.optional(),
 });
 
 export const createItemSchema = itemInputSchema.extend({

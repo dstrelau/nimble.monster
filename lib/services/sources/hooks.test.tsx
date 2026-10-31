@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, cleanup, renderHook, waitFor } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { useSourcesQuery as useBuilderSourcesQuery } from "@/lib/hooks/useSources";
 import { useSourcesForEntityTypeQuery, useSourcesQuery } from "./hooks";
 import type { EntityType } from "./types";
 
@@ -20,7 +19,7 @@ function wrapper({ children }: { children: ReactNode }) {
 }
 const rows = (name: string) => [{ id: name, name, abbreviation: name }];
 
-it.each([useSourcesQuery, useBuilderSourcesQuery])(
+it.each([useSourcesQuery])(
   "loads all-source options through a cancellable stable GET, retains data on failure and recovers (%#)",
   async (useSources) => {
     const fetcher = vi.fn(async (_url: string, _options: RequestInit) =>

@@ -18,7 +18,6 @@ export const ancestryInputSchema = z.object({
       description: z.string().trim().min(1, "Ability description is required"),
     })
   ),
-  sourceId: uuid.optional(),
 });
 
 export const updateAncestrySchema = z.object({

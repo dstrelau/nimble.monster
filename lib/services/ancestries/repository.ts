@@ -575,7 +575,7 @@ export const createAncestry = async (
     .enum(["public", "private"])
     .default("public")
     .parse(input.visibility);
-  const { name, description, size, rarity, abilities, sourceId } = input;
+  const { name, description, size, rarity, abilities } = input;
 
   const db = await getDatabase();
 
@@ -601,27 +601,15 @@ export const createAncestry = async (
       rarity,
       abilities: abilities,
       userId: user.id,
-      sourceId: sourceId || null,
     })
     .returning();
 
   const createdAncestry = result[0];
 
-  // Get source if specified
-  let source: SourceRow | null = null;
-  if (sourceId) {
-    const sourceResult = await db
-      .select()
-      .from(sources)
-      .where(eq(sources.id, sourceId))
-      .limit(1);
-    source = sourceResult[0] || null;
-  }
-
   const fullData: AncestryFullData = {
     ancestry: createdAncestry,
     creator: user,
-    source,
+    source: null,
     awards: [],
   };
 
@@ -640,7 +628,7 @@ export const updateAncestry = async (
     .enum(["public", "private"])
     .optional()
     .parse(input.visibility);
-  const { name, description, size, rarity, abilities, sourceId } = input;
+  const { name, description, size, rarity, abilities } = input;
 
   if (!isValidUUID(id)) {
     throw new Error("Invalid ancestry ID");
@@ -671,7 +659,6 @@ export const updateAncestry = async (
       size: JSON.stringify(size),
       rarity,
       abilities: abilities,
-      sourceId: sourceId || null,
       updatedAt: new Date().toISOString(),
     })
     .where(and(eq(ancestries.id, id), eq(ancestries.userId, user.id)))
@@ -683,17 +670,6 @@ export const updateAncestry = async (
 
   const updatedAncestry = result[0];
 
-  // Get source if specified
-  let source: SourceRow | null = null;
-  if (sourceId) {
-    const sourceResult = await db
-      .select()
-      .from(sources)
-      .where(eq(sources.id, sourceId))
-      .limit(1);
-    source = sourceResult[0] || null;
-  }
-
   // Fetch awards
   const awardRows = await db
     .select({ award: awards })
@@ -704,7 +680,7 @@ export const updateAncestry = async (
   const fullData: AncestryFullData = {
     ancestry: updatedAncestry,
     creator: user,
-    source,
+    source: null,
     awards: awardRows.map((r) => r.award),
   };
 
@@ -733,7 +709,7 @@ export const findAncestriesByIds = async (
 };
 
 export const upsertOfficialAncestry = async (
-  input: CreateAncestryInput
+  input: CreateAncestryInput & { sourceId?: string }
 ): Promise<void> => {
   const db = await getDatabase();
   const names =

@@ -82,7 +82,6 @@ export interface CreateItemInput {
   imageBackdrop?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
-  sourceId?: string;
   remixedFromId?: string;
 }
 
@@ -98,5 +97,4 @@ export interface UpdateItemInput {
   imageBackdrop?: string;
   rarity?: ItemRarity;
   visibility: "public" | "private";
-  sourceId?: string;
 }

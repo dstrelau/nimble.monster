@@ -1187,7 +1187,6 @@ const createBestiaryEntry = async (
     bloodied = "",
     lastStand = "",
     saves = [],
-    sourceId,
     role,
     paperforgeId,
     remixedFromId,
@@ -1258,7 +1257,6 @@ const createBestiaryEntry = async (
       paperforgeId: hazard ? null : paperforgeId,
       customArtwork: hazard ? null : input.customArtwork,
       userId: user.id,
-      sourceId: sourceId || null,
       remixedFromId: remixedFromId || null,
     });
   });
@@ -1338,7 +1336,7 @@ export const createHazard = async (
 };
 
 export const upsertOfficialMonster = async (
-  input: CreateMonsterInput,
+  input: CreateMonsterInput & { sourceId?: string },
   id?: string
 ): Promise<Monster> => {
   if (id !== undefined && !isValidUUID(id))
@@ -1551,7 +1549,6 @@ const updateBestiaryEntry = async (
     mild_encounter = "",
     spicy_encounter = "",
     families: familyInputs = [],
-    sourceId,
     role,
     paperforgeId,
   } = input;
@@ -1650,7 +1647,6 @@ const updateBestiaryEntry = async (
         role: hazard ? null : role,
         paperforgeId: hazard ? null : paperforgeId,
         customArtwork: hazard ? null : customArtwork,
-        sourceId: sourceId ?? null,
         updatedAt: new Date().toISOString(),
       })
       .where(and(eq(monsters.id, id), eq(monsters.hazard, hazard)));

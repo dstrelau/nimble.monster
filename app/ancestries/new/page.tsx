@@ -3,7 +3,7 @@ import BuildAncestryView from "../BuildAncestryView";
 
 export default function NewAncestryPage() {
   return (
-    <HydratedBuilderData includeSources>
+    <HydratedBuilderData>
       <BuildAncestryView />
     </HydratedBuilderData>
   );

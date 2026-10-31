@@ -10,15 +10,12 @@ import {
   userConditionsQueryOptions,
 } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
-import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
 
 interface HydratedBuilderDataProps {
-  includeSources?: boolean;
   children: ReactNode;
 }
 
 export async function HydratedBuilderData({
-  includeSources = false,
   children,
 }: HydratedBuilderDataProps) {
   const session = await auth();
@@ -36,14 +33,6 @@ export async function HydratedBuilderData({
       queryClient.prefetchQuery({
         ...userConditionsQueryOptions({ discordId }),
         queryFn: () => listConditionsForDiscordId(discordId),
-      })
-    );
-  }
-  if (includeSources) {
-    queries.push(
-      queryClient.prefetchQuery({
-        ...sourcesQueryOptions(),
-        queryFn: listAllSources,
       })
     );
   }

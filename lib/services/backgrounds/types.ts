@@ -31,12 +31,10 @@ export interface CreateBackgroundInput {
   name: string;
   description: string;
   requirement?: string;
-  sourceId?: string;
 }
 
 export interface UpdateBackgroundInput {
   name: string;
   description: string;
   requirement?: string;
-  sourceId?: string;
 }

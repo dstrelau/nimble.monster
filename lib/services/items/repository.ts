@@ -491,7 +491,6 @@ export const createItem = async (
     imageBackdrop,
     rarity,
     visibility,
-    sourceId,
     remixedFromId,
   } = input;
 
@@ -523,7 +522,6 @@ export const createItem = async (
     rarity,
     visibility,
     userId: user.id,
-    sourceId: sourceId || null,
     remixedFromId: remixedFromId || null,
   });
 
@@ -561,7 +559,6 @@ export const updateItem = async (
     imageBackdrop,
     rarity,
     visibility,
-    sourceId,
   } = input;
 
   // Get user by discordId
@@ -602,7 +599,6 @@ export const updateItem = async (
       imageBackdrop,
       rarity,
       visibility,
-      sourceId: sourceId || null,
       updatedAt: new Date().toISOString(),
     })
     .where(eq(items.id, id));

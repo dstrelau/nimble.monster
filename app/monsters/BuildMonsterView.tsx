@@ -28,7 +28,6 @@ import {
   emptyMember,
   MembersSection,
 } from "@/components/create/MembersSection";
-import { SourceSelect } from "@/components/create/SourceSelect";
 import { Card } from "@/components/monster/Card";
 import { MonsterImageSelect } from "@/components/monster/MonsterImageSelect";
 import {
@@ -1440,7 +1439,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
               mild_encounter: data.mild_encounter,
               spicy_encounter: data.spicy_encounter,
               visibility: data.visibility,
-              sourceId: data.source?.id ?? null,
             },
           });
         }
@@ -1480,7 +1478,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
             mild_encounter: data.mild_encounter || "",
             spicy_encounter: data.spicy_encounter || "",
             families: data.families || [],
-            sourceId: data.source?.id ?? null,
             role: data.role || null,
             ...(statblockEditor && {
               creatureTypes: data.creatureTypes,
@@ -1508,7 +1505,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
             mild_encounter: data.mild_encounter,
             spicy_encounter: data.spicy_encounter,
             visibility: data.visibility,
-            sourceId: data.source?.id,
             remixedFromId,
           },
         });
@@ -1549,7 +1545,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
               ? data.saves
               : [data.saves]
             : [],
-          sourceId: data.source?.id,
           role: data.role,
           creatureTypes: data.creatureTypes,
           creatureKinds: data.creatureKinds,
@@ -1624,28 +1619,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
       </AlertDialogContent>
     </AlertDialog>
   );
-  const sourceSelect = (
-    <SourceSelect
-      source={monster.source}
-      onChange={(sourceOption) => {
-        if (sourceOption) {
-          setMonster({
-            ...monster,
-            source: {
-              ...sourceOption,
-              license: "",
-              link: "",
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            },
-          });
-        } else {
-          const { source: _, ...rest } = monster;
-          setMonster(rest);
-        }
-      }}
-    />
-  );
 
   if (statblockEditor && !monster.hazard) {
     const example = monster.members?.length
@@ -1675,7 +1648,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           />
         }
         families={<FamilySection monster={monster} setMonster={setMonster} />}
-        source={sourceSelect}
         encounterNotes={
           <EncounterGuidelinesFields
             monster={monster}
@@ -1840,8 +1812,6 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
               </Tabs>
             </div>
           )}
-
-          {sourceSelect}
 
           {session?.user && (
             <>

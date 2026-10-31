@@ -463,7 +463,6 @@ export interface CreateSpellSchoolInput {
     upcast?: string;
   }>;
   discordId: string;
-  sourceId?: string;
 }
 
 export const createSpellSchool = async (
@@ -489,7 +488,6 @@ export const createSpellSchool = async (
     description: input.description || undefined,
     visibility: input.visibility,
     userId: userResult[0].id,
-    sourceId: input.sourceId || undefined,
   });
 
   // Insert spells
@@ -565,7 +563,6 @@ export const updateSpellSchool = async (
       name: input.name,
       description: input.description || undefined,
       visibility: input.visibility,
-      sourceId: input.sourceId || undefined,
       updatedAt: new Date().toISOString(),
     })
     .where(eq(spellSchools.id, input.id));

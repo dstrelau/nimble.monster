@@ -27,7 +27,7 @@ export default async function EditBackgroundPage({
   }
 
   return (
-    <HydratedBuilderData includeSources>
+    <HydratedBuilderData>
       <BuildBackgroundView background={background} />
     </HydratedBuilderData>
   );

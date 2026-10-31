@@ -361,10 +361,7 @@ export async function commitOfficialMonstersAction(sessionKey: string) {
         input.families = [{ id: familyId }];
       }
     }
-    if (sourceId) {
-      input.sourceId = sourceId;
-    }
-    await upsertOfficialMonster(input, monsterData.id);
+    await upsertOfficialMonster({ ...input, sourceId }, monsterData.id);
   }
 
   await deletePreviewSession(sessionKey);

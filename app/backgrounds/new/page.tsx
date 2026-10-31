@@ -3,7 +3,7 @@ import BuildBackgroundView from "../BuildBackgroundView";
 
 export default function NewBackgroundPage() {
   return (
-    <HydratedBuilderData includeSources>
+    <HydratedBuilderData>
       <BuildBackgroundView />
     </HydratedBuilderData>
   );

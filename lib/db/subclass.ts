@@ -449,7 +449,6 @@ export interface CreateSubclassInput {
     items: Array<{ name: string; description: string }>;
   }>;
   discordId: string;
-  sourceId?: string;
 }
 
 async function validateAbilityListOwnership(
@@ -502,7 +501,6 @@ export const createSubclass = async (
     description: input.description || undefined,
     visibility: input.visibility,
     userId: userResult[0].id,
-    sourceId: input.sourceId || undefined,
   });
 
   // Insert abilities
@@ -626,7 +624,6 @@ export const updateSubclass = async (
       tagline: input.tagline || undefined,
       description: input.description || undefined,
       visibility: input.visibility,
-      sourceId: input.sourceId || undefined,
       updatedAt: new Date().toISOString(),
     })
     .where(eq(subclasses.id, input.id));

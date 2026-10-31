@@ -45,7 +45,6 @@ import { call } from "@/lib/contract";
 import type { Item } from "@/lib/services/items";
 import { RARITIES } from "@/lib/services/items";
 import { ITEM_EXAMPLES } from "@/lib/services/items/examples";
-import { sourcesQueryOptions } from "@/lib/services/sources";
 import { UNKNOWN_USER } from "@/lib/types";
 import { getItemUrl } from "@/lib/utils/url";
 
@@ -68,7 +67,6 @@ const formSchema = z.object({
     "legendary",
   ]),
   visibility: z.enum(["public", "private"]),
-  sourceId: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -89,8 +87,6 @@ export default function BuildItemView({
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const sourcesQuery = useQuery(sourcesQueryOptions());
-
   const sourceData = item || existingItem;
 
   const form = useForm<FormData>({
@@ -107,7 +103,6 @@ export default function BuildItemView({
       imageBackdrop: sourceData?.imageBackdrop || "",
       rarity: sourceData?.rarity || "unspecified",
       visibility: sourceData?.visibility || "public",
-      sourceId: remixedFromId ? "" : sourceData?.source?.id || "",
     },
   });
 
@@ -170,8 +165,6 @@ export default function BuildItemView({
         imageBackdrop: data.imageBackdrop,
         rarity: data.rarity,
         visibility: data.visibility,
-        sourceId:
-          data.sourceId && data.sourceId !== "none" ? data.sourceId : undefined,
         ...(remixedFromId && { remixedFromId }),
       };
       const result = isEditing
@@ -396,37 +389,6 @@ export default function BuildItemView({
                 />
               )}
             </div>
-
-            {sourcesQuery.data && sourcesQuery.data.length > 0 && (
-              <FormField
-                control={form.control}
-                name="sourceId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Source</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="None" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="none">None</SelectItem>
-                        {sourcesQuery.data.map((source) => (
-                          <SelectItem key={source.id} value={source.id}>
-                            {source.name} ({source.abbreviation})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
 
             {session?.user && (
               <div className="flex flex-row justify-between items-center my-4">

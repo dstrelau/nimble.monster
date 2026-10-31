@@ -71,10 +71,20 @@ beforeEach(() => {
 });
 
 describe.each([
-  { path: "createAncestry", handler: create, body: input, status: 201 },
-  { path: "updateAncestry", handler: update, body: { id, input }, status: 200 },
+  {
+    path: "createAncestry",
+    handler: create,
+    body: { ...input, sourceId: id },
+    status: 201,
+  },
+  {
+    path: "updateAncestry",
+    handler: update,
+    body: { id, input: { ...input, sourceId: id } },
+    status: 200,
+  },
 ])("$path", ({ path, handler, body, status }) => {
-  it("returns only navigation data and preserves session ownership and invalidation", async () => {
+  it("returns only navigation data, preserves session ownership and invalidation, and drops official sources", async () => {
     const response = await handler(request(path, body));
     expect(response.status).toBe(status);
     expect(response.headers.get("content-type")).toContain("application/json");
@@ -105,7 +115,6 @@ describe.each([
       { ...input, name: "  " },
       { ...input, size: [] },
       { ...input, rarity: "rare" },
-      { ...input, sourceId: "bad-id" },
       { ...input, abilities: [{ name: "", description: "light" }] },
     ]) {
       expect(

@@ -268,7 +268,6 @@ export interface CreateMonsterInput extends MonsterClassifications {
   bloodied?: string;
   lastStand?: string;
   saves?: string[];
-  sourceId?: string;
   role?: MonsterRole | null;
   paperforgeId?: string | null;
   customArtwork?: MonsterArtwork | null;
@@ -305,7 +304,6 @@ export interface UpdateMonsterInput extends MonsterClassifications {
   mild_encounter?: string;
   spicy_encounter?: string;
   families?: { id: string }[];
-  sourceId?: string | null;
   role?: MonsterRole | null;
   paperforgeId?: string | null;
   customArtwork?: MonsterArtwork | null;
@@ -323,12 +321,10 @@ export interface CreateHazardInput {
   mild_encounter?: string;
   spicy_encounter?: string;
   visibility: "public" | "private";
-  sourceId?: string;
   remixedFromId?: string;
 }
 
-export interface UpdateHazardInput extends Omit<CreateHazardInput, "sourceId"> {
+export interface UpdateHazardInput extends CreateHazardInput {
   id: string;
   moreInfo: string;
-  sourceId?: string | null;
 }

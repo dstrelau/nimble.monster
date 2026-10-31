@@ -37,7 +37,6 @@ const input = {
   name: "Stargazer",
   description: "Read the distant stars.",
   requirement: "Wits 2",
-  sourceId: id,
 };
 
 function request(path: string, body: unknown, headers?: HeadersInit) {
@@ -70,15 +69,20 @@ beforeEach(() => {
 });
 
 describe.each([
-  { path: "createBackground", handler: create, body: input, status: 201 },
+  {
+    path: "createBackground",
+    handler: create,
+    body: { ...input, sourceId: id },
+    status: 201,
+  },
   {
     path: "updateBackground",
     handler: update,
-    body: { id, input },
+    body: { id, input: { ...input, sourceId: id } },
     status: 200,
   },
 ])("$path", ({ path, handler, body, status }) => {
-  it("returns minimal JSON with session ownership and refreshed lists/detail", async () => {
+  it("returns minimal JSON with session ownership, refreshed lists/detail, and no official source", async () => {
     const response = await handler(request(path, body));
     expect(response.status).toBe(status);
     expect(response.headers.get("content-type")).toContain("application/json");
@@ -111,7 +115,6 @@ describe.each([
       { ...input, name: "  " },
       { ...input, description: " " },
       { ...input, requirement: 3 },
-      { ...input, sourceId: "bad-id" },
     ]) {
       expect(
         (

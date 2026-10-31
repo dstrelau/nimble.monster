@@ -114,7 +114,6 @@ function edit(monster: Monster): UpdateMonsterInput {
     lastStand: monster.lastStand ?? "",
     saves: (monster.saves ?? "").split(" "),
     moreInfo: monster.moreInfo ?? "",
-    sourceId: monster.source?.id,
   };
 }
 function member(customArtwork: MonsterArtwork): MonsterTeamMember {

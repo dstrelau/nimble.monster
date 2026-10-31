@@ -521,7 +521,7 @@ export const createBackground = async (
   input: CreateBackgroundInput,
   discordId: string
 ): Promise<Background> => {
-  const { name, description, requirement, sourceId } = input;
+  const { name, description, requirement } = input;
 
   const db = await getDatabase();
 
@@ -544,27 +544,15 @@ export const createBackground = async (
       description,
       requirement: requirement || null,
       userId: user.id,
-      sourceId: sourceId || null,
     })
     .returning();
 
   const createdBackground = result[0];
 
-  // Get source if specified
-  let source: SourceRow | null = null;
-  if (sourceId) {
-    const sourceResult = await db
-      .select()
-      .from(sources)
-      .where(eq(sources.id, sourceId))
-      .limit(1);
-    source = sourceResult[0] || null;
-  }
-
   const fullData: BackgroundFullData = {
     background: createdBackground,
     creator: user,
-    source,
+    source: null,
     awards: [],
   };
 
@@ -576,7 +564,7 @@ export const updateBackground = async (
   input: UpdateBackgroundInput,
   discordId: string
 ): Promise<Background> => {
-  const { name, description, requirement, sourceId } = input;
+  const { name, description, requirement } = input;
 
   if (!isValidUUID(id)) {
     throw new Error("Invalid background ID");
@@ -604,7 +592,6 @@ export const updateBackground = async (
       name,
       description,
       requirement: requirement || null,
-      sourceId: sourceId || null,
       updatedAt: new Date().toISOString(),
     })
     .where(and(eq(backgrounds.id, id), eq(backgrounds.userId, user.id)))
@@ -616,17 +603,6 @@ export const updateBackground = async (
 
   const updatedBackground = result[0];
 
-  // Get source if specified
-  let source: SourceRow | null = null;
-  if (sourceId) {
-    const sourceResult = await db
-      .select()
-      .from(sources)
-      .where(eq(sources.id, sourceId))
-      .limit(1);
-    source = sourceResult[0] || null;
-  }
-
   // Fetch awards
   const awardRows = await db
     .select({ award: awards })
@@ -637,7 +613,7 @@ export const updateBackground = async (
   const fullData: BackgroundFullData = {
     background: updatedBackground,
     creator: user,
-    source,
+    source: null,
     awards: awardRows.map((r) => r.award),
   };
 
@@ -660,7 +636,7 @@ export const findBackgroundsByIds = async (
 };
 
 export const upsertOfficialBackground = async (
-  input: CreateBackgroundInput
+  input: CreateBackgroundInput & { sourceId?: string }
 ): Promise<void> => {
   const db = await getDatabase();
 

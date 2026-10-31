@@ -14,7 +14,6 @@ import {
 } from "@/app/%5Factions/_ancestry/contract";
 import { Card } from "@/components/ancestry/Card";
 import { ConditionValidationIcon } from "@/components/condition/ConditionValidationIcon";
-import { SourceSelect } from "@/components/create/SourceSelect";
 import { DiscordLoginButton } from "@/components/layout/DiscordLoginButton";
 import { BuildView } from "@/components/shared/BuildView";
 import { VisibilityToggle } from "@/components/shared/VisibilityToggle";
@@ -51,7 +50,6 @@ const formSchema = z.object({
       description: z.string().min(1, "Ability description is required"),
     })
   ),
-  sourceId: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -80,7 +78,6 @@ export default function BuildAncestryView({
       abilities: ancestry
         ? ancestry.abilities
         : [{ name: "", description: "" }],
-      sourceId: ancestry?.source?.id || "",
     },
   });
 
@@ -132,8 +129,6 @@ export default function BuildAncestryView({
           name: a.name.trim(),
           description: a.description.trim(),
         })),
-        sourceId:
-          data.sourceId && data.sourceId !== "none" ? data.sourceId : undefined,
       };
       const result = ancestry?.id
         ? await call(updateAncestry, { id: ancestry.id, input: payload })
@@ -316,21 +311,6 @@ export default function BuildAncestryView({
               </div>
 
               <div className="w-full flex flex-wrap items-end gap-4">
-                <FormField
-                  control={form.control}
-                  name="sourceId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <SourceSelect
-                        className="grid gap-2 space-y-0"
-                        source={field.value ? { id: field.value } : undefined}
-                        onChange={(source) => field.onChange(source?.id || "")}
-                      />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
                 <FormField
                   control={form.control}
                   name="visibility"

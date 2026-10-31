@@ -105,7 +105,7 @@ beforeEach(() => {
 });
 
 describe("bestiary mutation routes", () => {
-  it("creates a monster for the session owner and invalidates its list", async () => {
+  it("creates a monster for the session owner without an official source", async () => {
     mockCreateMonster.mockResolvedValue({
       id,
       name: monsterInput.name,
@@ -113,7 +113,7 @@ describe("bestiary mutation routes", () => {
     });
 
     const response = await createPost(
-      request({ kind: "monster", input: monsterInput })
+      request({ kind: "monster", input: { ...monsterInput, sourceId: id } })
     );
 
     expect(response.status).toBe(201);
