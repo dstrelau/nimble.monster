@@ -2,6 +2,7 @@
 
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import {
   parseAsInteger,
   parseAsString,
@@ -49,6 +50,7 @@ export type PaginatedMonsterGridProps =
 export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
   props
 ) => {
+  const { data: session } = useSession();
   const hazardsOnly = props.entityType === "hazards";
   const [rawSearchQuery, setSearchQuery] = useQueryState("search");
   const [searchQuery] = useDebouncedValue(rawSearchQuery, { wait: 250 });
@@ -96,7 +98,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
       case "user-monsters":
         return userProfileMonstersInfiniteQueryOptions(props.creatorId, params);
       case "my-monsters":
-        return myMonstersInfiniteQueryOptions(params);
+        return myMonstersInfiniteQueryOptions(session?.user?.id, params);
       case "monsters":
         return publicMonstersInfiniteQueryOptions(params);
     }
@@ -120,7 +122,22 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
     }) => last.nextCursor,
   };
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage, error } =
-    useInfiniteQuery(normalizedOptions);
+    useInfiniteQuery({
+      ...normalizedOptions,
+      enabled:
+        props.kind !== "my-monsters" ||
+        hazardsOnly ||
+        Boolean(session?.user?.id),
+      placeholderData: (previousData, previousQuery) => {
+        if (
+          props.kind === "my-monsters" &&
+          !hazardsOnly &&
+          previousQuery?.queryKey[1] !== session?.user?.id
+        )
+          return undefined;
+        return keepPreviousData(previousData);
+      },
+    });
 
   if (isLoading) {
     return <LoadingState />;

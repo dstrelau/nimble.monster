@@ -548,6 +548,50 @@ HTTP-vs-domain-result limitations above still apply. The unarchived-child lookup
 found only this run. Profile monster pagination leads the remaining actions on
 this evidence; refresh the window/mapping before the next selection.
 
+### Refreshed private-monster-pagination selection — October 31, 2026
+
+Fixed window **2026-10-30T04:00:00Z–2026-10-31T04:00:00Z**, root HTTP spans
+only (`trace.parent_id` absent, `http.request.header.next-action` present), grouped
+by action ID and `COALESCE(http.response.status_code, http.status_code)`:
+[results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/zvhmnBMxFLm).
+The full result contains **1,332 attempts**, mean sample rate **1**, 1,220,379
+rows examined and zero OTHER/truncated volume. Bots/QA are included; HTTP
+<400/≥400 measures transport status, not successful Flight domain results.
+
+Read-only OCI extraction verifies compressed standalone-layer SHA256, image
+`GH_SHA`, filename and exported name across **64 deployed images**. Aliases
+aggregate by filename/export rather than being ranked as distinct actions.
+**524 attempts map to verified names**. Excluded invalid probes total **804**:
+`x` (647), `0` (57), `action` (52), `1` (46), `094f8325` (one) and `7eba23ac`
+(one). Two otherwise-unmapped IDs account for **four HTTP 409 attempts**:
+`004db257abb3059612903b43f69cff3340efa22df6` and
+`005e0343e10b2dd5ecd3cd5f2d940a6b8296749001`, two each. The registry transfer
+for `deployment-01M5XED31WW30470WKXG7FBEKA` was incomplete; no name or cause is
+guessed for the residual. Even assigning all four to own-encounter reads yields
+82 < 85, so incomplete mapping cannot change this selection. The untied lead
+is not sparse and needs no seven-day tie-breaker. The
+[run thread](https://ampcode.com/threads/T-01a19048-c405-726c-990c-3e00887075b7)
+retains full safe counts/provenance in `my-monsters-traffic-evidence.json`.
+
+| Priority | Verified named operation | Attempts | HTTP <400 | HTTP ≥400 |
+| --- | --- | ---: | ---: | ---: |
+| Already migrated | `getUserFamilies` | 88 | 67 | 21 |
+| Selected private-monster slice | `app/my/monsters/actions.ts#paginateMyMonsters` | 85 | 85 | 0 |
+| Already migrated | `listOwnCollections` | 79 | 45 | 34 |
+| Next measured candidate | `listOwnEncounters` | 78 | 56 | 22 |
+| Already migrated | `getAllSources` | 46 | 29 | 17 |
+| Remaining | `paginateUserProfileMonsters` | 43 | 39 | 4 |
+| Already migrated | `paginatePublicBackgrounds` | 41 | 32 | 9 |
+| Remaining | `paginateUserProfileHazards` | 14 | 14 | 0 |
+| Remaining | `searchPublicCollections` | 13 | 11 | 2 |
+| Remaining | `paginatePublicHazards` | 8 | 8 | 0 |
+
+All other remaining named operations have ≤3 attempts. Coordination's required
+unarchived-child lookup found only this run. This fresh window supersedes the
+previous profile-pagination priority; revisit mapping/ranking when no longer
+representative, rather than assuming historical order. No archived deferred
+reaction closeout is reopened or claimed completed.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -2042,6 +2086,53 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Private monster pagination — October 2026
+
+- Selected `app/my/monsters/actions.ts#paginateMyMonsters` from the fresh fixed
+  window above: 85 root attempts, all HTTP <400, highest remaining named action.
+  No competing unarchived scheduled run owns the slice. Residual mapping cannot
+  overturn its lead; the old profile-pagination priority is superseded.
+- `myMonstersInfiniteQueryOptions` now uses cancellable bodyless
+  `GET /_actions/myMonsters`. The sole browser consumer is
+  `PaginatedMonsterGrid` in My Monsters. Its server page retains the same
+  prefetch defaults and calls `monstersService.paginateMyMonsters` directly,
+  never HTTP. Public/profile/hazard reads retain their existing transports.
+- The handler requires `auth().user.id` and passes only that identity to the
+  service. Runtime parsing strips spoofed creator/owner/private parameters;
+  requested filters cannot grant access to another user's rows. Own public and
+  private monsters remain included, hazards excluded. Search/source/role/level,
+  creature-type filtering, all seven sort orders, cursor tie-breaking, browser
+  page size 12 and empty results are unchanged. Integer limits, enums, decoded
+  cursor shape/value and sort agreement are validated before querying SQL.
+- The typed transport revives monster/source/award dates with `reviveMonster`.
+  Query keys include session-user identity only for cache isolation, never as
+  request authority. Missing sessions disable the private query. Same-owner
+  filter transitions retain previous data, but account changes/sign-out do not
+  inherit another account's placeholder data or relabel in-flight results.
+  The shared grid preserves this boundary when normalizing monster/hazard
+  query options. Existing pending/error/retry, detail navigation and refresh
+  behavior remain; no mutations or invalidation contracts are changed.
+- Success/error JSON uses `private, no-store`, no CORS, telemetry and generic
+  unexpected 500s. Anonymous reads return 401; malformed filters/cursors 400;
+  unsupported writes return framework 405s. A safe read needs neither a
+  mutation-origin/media gate nor a new public API. No domain projection,
+  identity fields, repository directive or database schema is changed.
+- Removed the sole export and empty `app/my/monsters/actions.ts`; application
+  ratchet **43 → 42**. Extended existing real-SQL monster route tests for
+  session isolation, private rows, pagination, combined filters, input errors
+  and safe failures. Hook tests exercise actual Request headers/URL/body,
+  cancellation, date revival, pending/error recovery, account switches and
+  sign-out. The [run thread](https://ampcode.com/threads/T-01a19048-c405-726c-990c-3e00887075b7)
+  records full/local checks, live HTTP, inspected browser evidence, deployment,
+  exact authenticated production requests and verified test-data cleanup.
+- QA uses two disposable non-admin users and copies of existing official
+  monsters, not hand-crafted statblocks or real-user mutations. Production
+  session minting stays inside Fly with one-hour expiry; secrets/tokens are
+  neither printed nor retained in public artifacts. The internal URL/shape
+  remains compatible for at least one deployment interval. Pre-cutover tabs
+  still need refresh/retry for legacy action references. Migration is not
+  complete; `listOwnEncounters` leads remaining actions on current evidence.
 
 ### Public background pagination — October 2026
 

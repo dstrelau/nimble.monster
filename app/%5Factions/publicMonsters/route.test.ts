@@ -7,9 +7,14 @@ import { afterAll, beforeAll, beforeEach, expect, it, vi } from "vitest";
 import * as schema from "@/lib/db/schema";
 import { encodeCursor } from "@/lib/utils/cursor";
 
-const { getDatabase } = vi.hoisted(() => ({ getDatabase: vi.fn() }));
+const { auth, getDatabase } = vi.hoisted(() => ({
+  auth: vi.fn(),
+  getDatabase: vi.fn(),
+}));
+vi.mock("@/lib/auth", () => ({ auth }));
 vi.mock("@/lib/db/drizzle", () => ({ getDatabase }));
 
+import { GET as getMyMonsters } from "../myMonsters/route";
 import { GET } from "./route";
 
 const client = createClient({ url: ":memory:" });
@@ -124,8 +129,89 @@ beforeAll(async () => {
     .insert(schema.monstersFamilies)
     .values({ monsterId: "a", familyId: "family" });
 });
-beforeEach(() => getDatabase.mockReturnValue(db));
+beforeEach(() => {
+  getDatabase.mockReturnValue(db);
+  auth.mockResolvedValue({ user: { id: "owner" } });
+});
 afterAll(() => client.close());
+
+it("scopes private pagination to the session, never query authority or hazards", async () => {
+  const query = new URLSearchParams({
+    sort: "name",
+    creatorId: "other",
+    userId: "other",
+    includePrivate: "false",
+  });
+  const response = await getMyMonsters(
+    new Request(`https://nimble.nexus/_actions/myMonsters?${query}`)
+  );
+  expect(response.status).toBe(200);
+  expect(response.headers.get("content-type")).toContain("application/json");
+  expect(response.headers.get("cache-control")).toBe("private, no-store");
+  expect(response.headers.has("access-control-allow-origin")).toBe(false);
+  const body = await response.json();
+  expect(body.data.map((m: { id: string }) => m.id)).toEqual([
+    "a",
+    "private",
+    "c",
+  ]);
+  expect(body.data[0]).toMatchObject({
+    createdAt: date,
+    source: { createdAt: date },
+    awards: [{ createdAt: date }],
+  });
+  auth.mockResolvedValueOnce({ user: { id: "other" } });
+  expect(
+    (
+      await (
+        await getMyMonsters(
+          new Request("https://nimble.nexus/_actions/myMonsters")
+        )
+      ).json()
+    ).data.map((m: { id: string }) => m.id)
+  ).toEqual(["b"]);
+  auth.mockResolvedValueOnce({ user: { id: "empty" } });
+  expect(
+    await (
+      await getMyMonsters(
+        new Request("https://nimble.nexus/_actions/myMonsters")
+      )
+    ).json()
+  ).toEqual({ data: [], nextCursor: null });
+});
+
+it("rejects anonymous private reads and paginates owned rows through the existing filters", async () => {
+  auth.mockResolvedValueOnce(null);
+  const anonymous = await getMyMonsters(
+    new Request("https://nimble.nexus/_actions/myMonsters")
+  );
+  expect(anonymous.status).toBe(401);
+  expect(await anonymous.json()).toEqual({ error: "Unauthorized" });
+  expect(anonymous.headers.get("cache-control")).toBe("private, no-store");
+  const ids: string[] = [];
+  let cursor: string | null = null;
+  for (let page = 0; page < 3; page++) {
+    const params = new URLSearchParams({ sort: "name", limit: "1" });
+    if (cursor) params.set("cursor", cursor);
+    const response = await getMyMonsters(
+      new Request(`https://nimble.nexus/_actions/myMonsters?${params}`)
+    );
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    ids.push(...body.data.map((m: { id: string }) => m.id));
+    cursor = body.nextCursor;
+    expect(cursor === null).toBe(page === 2);
+  }
+  expect(ids).toEqual(["a", "private", "c"]);
+  const filtered = await getMyMonsters(
+    new Request(
+      "https://nimble.nexus/_actions/myMonsters?source=C&search=Beast&role=melee&level=-2&type=standard"
+    )
+  );
+  expect((await filtered.json()).data.map((m: { id: string }) => m.id)).toEqual(
+    ["a"]
+  );
+});
 
 it("retains public creature fields and relationships, ignoring private/identity overrides", async () => {
   const response = await request(
@@ -235,6 +321,11 @@ it.each([
   const response = await request(query);
   expect(response.status).toBe(400);
   expect(await response.json()).toEqual({ error: expect.any(String) });
+  const privateResponse = await getMyMonsters(
+    new Request(`https://nimble.nexus/_actions/myMonsters?${query}`)
+  );
+  expect(privateResponse.status).toBe(400);
+  expect(await privateResponse.json()).toEqual({ error: expect.any(String) });
   expect(getDatabase).not.toHaveBeenCalled();
 });
 
@@ -262,6 +353,19 @@ it("hides unexpected SQL failures", async () => {
   expect(response.headers.get("cache-control")).toBe("private, no-store");
   expect(recordException).toHaveBeenCalledWith(
     new Error("Sensitive SQL details")
+  );
+  getDatabase.mockImplementationOnce(() => {
+    throw new Error("Private SQL details");
+  });
+  const privateResponse = await getMyMonsters(
+    new Request("https://nimble.nexus/_actions/myMonsters")
+  );
+  expect(privateResponse.status).toBe(500);
+  expect(await privateResponse.json()).toEqual({
+    error: "Internal Server Error",
+  });
+  expect(recordException).toHaveBeenCalledWith(
+    new Error("Private SQL details")
   );
   span.mockRestore();
 });
