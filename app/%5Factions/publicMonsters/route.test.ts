@@ -213,51 +213,55 @@ it("rejects anonymous private reads and paginates owned rows through the existin
   );
 });
 
-it("retains public creature fields and relationships, ignoring private/identity overrides", async () => {
-  const response = await request(
-    "search=Beast&source=C&creatorId=owner&role=melee&level=-2&includePrivate=true&userId=owner"
-  );
-  expect(response.status).toBe(200);
-  expect(response.headers.get("content-type")).toContain("application/json");
-  expect(response.headers.get("cache-control")).toBe("private, no-store");
-  expect(response.headers.has("access-control-allow-origin")).toBe(false);
-  const body = await response.json();
-  expect(body.nextCursor).toBeNull();
-  expect(body.data).toHaveLength(1);
-  expect(body.data[0]).toMatchObject({
-    id: "a",
-    name: "Alpha",
-    hp: 13,
-    hazard: false,
-    levelInt: -2,
-    visibility: "public",
-    abilities: [{ name: "Flight", description: "Fly" }],
-    createdAt: date,
-    updatedAt: date,
-    creator: { id: "owner", username: "owner" },
-    source: { abbreviation: "C", createdAt: date, updatedAt: date },
-    awards: [{ slug: "winner", createdAt: date, updatedAt: date }],
-    families: [{ id: "family", name: "Pack" }],
-  });
-  expect(
-    (await (await request("creatorId=owner&includePrivate=true")).json()).data
-      .map((m: { id: string }) => m.id)
-      .sort()
-  ).toEqual(["a", "c"]);
-  expect(
-    (await (await request("excludeCreatorId=owner")).json()).data.map(
-      (m: { id: string }) => m.id
-    )
-  ).toEqual(["b"]);
-  expect(await (await request("search=missing")).json()).toEqual({
-    data: [],
-    nextCursor: null,
-  });
-  expect(await (await request("source=missing")).json()).toEqual({
-    data: [],
-    nextCursor: null,
-  });
-});
+it.each([null, { user: { id: "owner" } }, { user: { id: "other" } }])(
+  "retains public profile fields and relationships for session %j, ignoring private/identity overrides",
+  async (session) => {
+    auth.mockResolvedValue(session);
+    const response = await request(
+      "search=Beast&source=C&creatorId=owner&role=melee&level=-2&includePrivate=true&userId=owner"
+    );
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toContain("application/json");
+    expect(response.headers.get("cache-control")).toBe("private, no-store");
+    expect(response.headers.has("access-control-allow-origin")).toBe(false);
+    const body = await response.json();
+    expect(body.nextCursor).toBeNull();
+    expect(body.data).toHaveLength(1);
+    expect(body.data[0]).toMatchObject({
+      id: "a",
+      name: "Alpha",
+      hp: 13,
+      hazard: false,
+      levelInt: -2,
+      visibility: "public",
+      abilities: [{ name: "Flight", description: "Fly" }],
+      createdAt: date,
+      updatedAt: date,
+      creator: { id: "owner", username: "owner" },
+      source: { abbreviation: "C", createdAt: date, updatedAt: date },
+      awards: [{ slug: "winner", createdAt: date, updatedAt: date }],
+      families: [{ id: "family", name: "Pack" }],
+    });
+    expect(
+      (await (await request("creatorId=owner&includePrivate=true")).json()).data
+        .map((m: { id: string }) => m.id)
+        .sort()
+    ).toEqual(["a", "c"]);
+    expect(
+      (await (await request("excludeCreatorId=owner")).json()).data.map(
+        (m: { id: string }) => m.id
+      )
+    ).toEqual(["b"]);
+    expect(await (await request("search=missing")).json()).toEqual({
+      data: [],
+      nextCursor: null,
+    });
+    expect(await (await request("source=missing")).json()).toEqual({
+      data: [],
+      nextCursor: null,
+    });
+  }
+);
 
 it.each([
   ["name", ["a", "b", "c"]],

@@ -23,6 +23,7 @@ import { getQueryClient } from "@/lib/queryClient";
 import { ancestriesService } from "@/lib/services/ancestries/service";
 import { backgroundsService } from "@/lib/services/backgrounds/service";
 import { itemsService } from "@/lib/services/items";
+import { monstersService } from "@/lib/services/monsters";
 import { MonsterRoleOptions } from "@/lib/services/monsters/types";
 import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
 import { MY_LIBRARY_ITEMS } from "@/lib/types/entity-links";
@@ -102,9 +103,16 @@ async function loadProfileEntityContent(
   switch (entityType) {
     case "monsters": {
       const searchParams = monsterSearchParamsSchema.parse(rawSearchParams);
-      await queryClient.prefetchInfiniteQuery(
-        userProfileMonstersInfiniteQueryOptions(userId, searchParams)
-      );
+      await queryClient.prefetchInfiniteQuery({
+        ...userProfileMonstersInfiniteQueryOptions(userId, searchParams),
+        queryFn: () =>
+          monstersService.paginatePublicMonsters({
+            ...searchParams,
+            type: searchParams.type === "hazard" ? "all" : searchParams.type,
+            creatorId: userId,
+            limit: 12,
+          }),
+      });
       return <ProfileEntityContent entityType="monsters" creatorId={userId} />;
     }
     case "hazards": {

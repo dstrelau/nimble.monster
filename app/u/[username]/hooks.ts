@@ -1,18 +1,15 @@
 import { keepPreviousData } from "@tanstack/react-query";
+import { publicMonstersInfiniteQueryOptions } from "@/app/monsters/hooks";
 import type {
   PaginateHazardsParams,
   PaginateHazardsResponse,
 } from "@/lib/services/hazards";
-import type { PaginatePublicMonstersResponse } from "@/lib/services/monsters/service";
 import type {
   MonsterRole,
   MonsterTypeOption,
   PaginateMonstersSortOption,
 } from "@/lib/services/monsters/types";
-import {
-  paginateUserProfileHazards,
-  paginateUserProfileMonsters,
-} from "./actions";
+import { paginateUserProfileHazards } from "./actions";
 
 export function userProfileMonstersInfiniteQueryOptions(
   creatorId: string,
@@ -34,27 +31,16 @@ export function userProfileMonstersInfiniteQueryOptions(
     limit?: number;
   }> = {}
 ) {
-  const creatureType = type === "hazard" ? "all" : type;
-  const params = {
+  return publicMonstersInfiniteQueryOptions({
     search,
     sort,
-    type: creatureType,
+    type,
     source,
     role,
     level,
     limit,
     creatorId,
-  };
-  return {
-    queryKey: ["monsters", params],
-    queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>
-      paginateUserProfileMonsters({ cursor, ...params }),
-    placeholderData: keepPreviousData,
-    initialPageParam: undefined,
-    getNextPageParam: (last: PaginatePublicMonstersResponse) => {
-      return last.nextCursor;
-    },
-  };
+  });
 }
 
 export function userProfileHazardsInfiniteQueryOptions(

@@ -578,9 +578,9 @@ retains full safe counts/provenance in `my-monsters-traffic-evidence.json`.
 | Already migrated | `getUserFamilies` | 88 | 67 | 21 |
 | Already migrated | `app/my/monsters/actions.ts#paginateMyMonsters` | 85 | 85 | 0 |
 | Already migrated | `listOwnCollections` | 79 | 45 | 34 |
-| Selected own-encounter slice | `listOwnEncounters` | 78 | 56 | 22 |
+| Already migrated | `listOwnEncounters` | 78 | 56 | 22 |
 | Already migrated | `getAllSources` | 46 | 29 | 17 |
-| Remaining | `paginateUserProfileMonsters` | 43 | 39 | 4 |
+| Already migrated | `paginateUserProfileMonsters` | 43 | 39 | 4 |
 | Already migrated | `paginatePublicBackgrounds` | 41 | 32 | 9 |
 | Remaining | `paginateUserProfileHazards` | 14 | 14 | 0 |
 | Remaining | `searchPublicCollections` | 13 | 11 | 2 |
@@ -600,6 +600,14 @@ monsters cannot overturn that lead. Sampling, probes and mapping limitations
 remain as disclosed above; this is evidence reuse, not a new measurement.
 Coordination found no other unarchived child slice owner. After this slice,
 profile monster pagination is the next measured candidate, subject to refresh.
+
+The profile-monster run reuses this same-day fixed window on October 31, about
+15 hours after its end. After the completed own-encounter slice, profile monster
+pagination leads at 43 attempts (39 HTTP <400; four HTTP ≥400), ahead of profile
+hazards at 14. All four residual unmapped attempts assigned to hazards would
+still leave 18 < 43. The lead is untied and not sparse; no seven-day tie-breaker
+is needed. This is evidence reuse with the same sampling/coverage limitations,
+not a fresh query. The required unarchived-child lookup found only this run.
 
 ## Migration waves (scope guidance)
 
@@ -805,6 +813,49 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Not started | Wave 5 |
+
+### Creator-profile monster pagination — October 2026
+
+- Selected `app/u/[username]/actions.ts#paginateUserProfileMonsters` using the
+  fixed-window evidence above. The sole browser caller is the profile monster
+  query used by `PaginatedMonsterGrid`; the sole server prefetch is the profile
+  entity page. The removed action delegated to the same public service already
+  used by `/_actions/publicMonsters`, so no duplicate endpoint is introduced.
+- The profile query now composes `publicMonstersInfiniteQueryOptions`, retaining
+  creator-scoped keys, all filters, 12-row default, cursor continuation,
+  previous-data behavior and retry/error UX. It gains the existing stable
+  bodyless GET, cancellation and monster/source/award date revival. The server
+  prefetch overrides the browser transport with the unchanged service directly,
+  including the existing hazard-to-all normalization. No Server Component
+  makes a relative HTTP request.
+- Creator ID remains a public filter, never session authority. Anonymous,
+  owner and other-user reads all exclude private monsters and hazards. The
+  existing route retains validation, telemetry, generic 500s, `private, no-store`,
+  no CORS and 405 for unsupported writes. No identity fields, third-party API,
+  persistence, invalidation, navigation or auth contract is added or changed.
+- Removed one Server Action export and its browser import/call; the independent
+  profile-hazard action remains. Application ratchet **43 → 42**; repository
+  markers and exports are unchanged. Existing SQL-backed route tests now run
+  the profile visibility/serialization case for anonymous, owner and other-user
+  sessions. Existing transport tests run against both catalogue and profile
+  factories, proving exact stable GET/no `next-action`, cancellation, filters,
+  date revival, creator cache isolation and failed-refetch retention/recovery.
+- Focused tests: 35 passed. Full suite: 2,175 passed, seven skipped.
+  `make check` and `git diff --check` pass. Twenty-nine live development
+  requests compare all seven sorts and cursor continuation against independent
+  SQLite rows, creator scoping, type/search/level filters, empty results,
+  ignored authority parameters, 400s and 405. Browser QA verifies 12→24 paging,
+  Goblin filtering/sorting, detail client navigation/full reload, profile reload
+  and deliberately aborted-read recovery. Two normal requests have raw CDP
+  extra-header checks without `next-action`; three aborted retry attempts are
+  recorded separately. Settled QA has no page/hydration errors.
+- The [run thread](https://ampcode.com/threads/T-01a1926d-ee50-73e8-867f-4186e3f6ff58)
+  records full/focused checks, live development and functional production
+  requests, browser navigation/reload, deployed identity and cleanup. QA reads
+  seeded/existing public content only; no production sessions, fixtures or
+  database writes are required. Retain the stable URL/shape for at least one
+  deployment interval. Pre-cutover tabs still need refresh/retry for old IDs.
+  Migration remains incomplete; refresh ranking before the next selection.
 
 ### Ancestry saves — October 2026
 
