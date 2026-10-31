@@ -1,7 +1,8 @@
-import { eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, or, sql } from "drizzle-orm";
 import { extractConditions } from "@/lib/conditions";
-import { getDatabase } from "@/lib/db/drizzle";
-import { conditions, monstersConditions } from "@/lib/db/schema";
+import { type Database, getDatabase } from "@/lib/db/drizzle";
+import { conditions, monsters, monstersConditions } from "@/lib/db/schema";
+import { collectMemberConditionSources, parseMembers } from "./members";
 
 export function extractAllConditions(data: {
   actions: Array<{ description?: string }>;
@@ -25,38 +26,109 @@ export function extractAllConditions(data: {
 
 export async function syncMonsterConditions(
   monsterId: string,
-  conditionNames: string[]
+  conditionNames: string[],
+  ownerId: string
 ): Promise<void> {
-  const db = await getDatabase();
-
-  if (conditionNames.length === 0) {
-    await db
-      .delete(monstersConditions)
-      .where(eq(monstersConditions.monsterId, monsterId));
-    return;
-  }
-
-  // Find existing conditions by name
-  const existingConditions = await db
-    .select({ id: conditions.id, name: conditions.name })
-    .from(conditions)
-    .where(inArray(conditions.name, conditionNames));
-
-  const foundConditionIds = existingConditions.map((c) => c.id);
-
-  // Delete existing monster-condition links
-  await db
-    .delete(monstersConditions)
-    .where(eq(monstersConditions.monsterId, monsterId));
-
-  // Create new links
-  if (foundConditionIds.length > 0) {
-    await db.insert(monstersConditions).values(
-      foundConditionIds.map((conditionId) => ({
-        monsterId,
-        conditionId,
-        inline: false,
-      }))
+  await getDatabase().transaction(async (tx) => {
+    await replaceMonsterConditions(
+      tx,
+      monsterId,
+      conditionNames,
+      ownerId,
+      true
     );
+  });
+}
+
+type ConditionTransaction = Parameters<
+  Parameters<Database["transaction"]>[0]
+>[0];
+
+async function replaceMonsterConditions(
+  tx: ConditionTransaction,
+  monsterId: string,
+  conditionNames: string[],
+  ownerId: string,
+  apply: boolean
+) {
+  const matches = conditionNames.length
+    ? await tx
+        .select({ id: conditions.id, name: conditions.name })
+        .from(conditions)
+        .where(
+          and(
+            inArray(sql`lower(${conditions.name})`, conditionNames),
+            or(eq(conditions.creatorId, ownerId), eq(conditions.official, true))
+          )
+        )
+        // A creator's definition overrides the official one, never another user's.
+        .orderBy(desc(eq(conditions.creatorId, ownerId)), asc(conditions.id))
+    : [];
+  const byName = new Map<string, string>();
+  for (const match of matches) {
+    const name = match.name.toLowerCase();
+    if (!byName.has(name)) byName.set(name, match.id);
   }
+
+  const expected = new Set(byName.values());
+  const existing = await tx
+    .select({ conditionId: monstersConditions.conditionId })
+    .from(monstersConditions)
+    .where(eq(monstersConditions.monsterId, monsterId));
+  const current = new Set(existing.map((link) => link.conditionId));
+  const added = [...expected].filter((id) => !current.has(id));
+  const removed = [...current].filter((id) => !expected.has(id));
+
+  if (apply) {
+    if (removed.length) {
+      await tx
+        .delete(monstersConditions)
+        .where(
+          and(
+            eq(monstersConditions.monsterId, monsterId),
+            inArray(monstersConditions.conditionId, removed)
+          )
+        );
+    }
+    if (added.length) {
+      await tx.insert(monstersConditions).values(
+        added.map((conditionId) => ({
+          monsterId,
+          conditionId,
+          inline: false,
+        }))
+      );
+    }
+  }
+  return { added: added.length, removed: removed.length };
+}
+
+/** Rebuild links from saved content without reimporting or modifying that content. */
+export async function repairMonsterConditions(apply = false) {
+  return getDatabase().transaction(async (tx) => {
+    const entries = await tx.select().from(monsters);
+    const result = { monsters: entries.length, added: 0, removed: 0 };
+    for (const entry of entries) {
+      const memberSources = collectMemberConditionSources(
+        parseMembers(entry.members)
+      );
+      const names = extractAllConditions({
+        actions: [...entry.actions, ...memberSources.actions],
+        abilities: [...entry.abilities, ...memberSources.abilities],
+        bloodied: entry.bloodied,
+        lastStand: entry.lastStand,
+        moreInfo: entry.moreInfo ?? undefined,
+      });
+      const changes = await replaceMonsterConditions(
+        tx,
+        entry.id,
+        names,
+        entry.userId,
+        apply
+      );
+      result.added += changes.added;
+      result.removed += changes.removed;
+    }
+    return result;
+  });
 }

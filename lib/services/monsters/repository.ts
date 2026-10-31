@@ -1271,7 +1271,7 @@ const createBestiaryEntry = async (
     moreInfo,
   });
 
-  await syncMonsterConditions(monsterId, conditionNames);
+  await syncMonsterConditions(monsterId, conditionNames, user.id);
   await syncMonsterFamilies(
     monsterId,
     hazard ? [] : familyInputs.map((f) => f.id)
@@ -1493,7 +1493,7 @@ export const upsertOfficialMonster = async (
     moreInfo,
   });
 
-  await syncMonsterConditions(monsterId, conditionNames);
+  await syncMonsterConditions(monsterId, conditionNames, OFFICIAL_USER_ID);
   await syncMonsterFamilies(
     monsterId,
     hazard ? [] : familyInputs.map((f) => f.id)
@@ -1664,7 +1664,7 @@ const updateBestiaryEntry = async (
     moreInfo: moreInfo || "",
   });
 
-  await syncMonsterConditions(id, conditionNames);
+  await syncMonsterConditions(id, conditionNames, user.id);
   await syncMonsterFamilies(id, hazard ? [] : familyInputs.map((f) => f.id));
 
   // Load and return the updated monster
