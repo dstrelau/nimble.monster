@@ -62,7 +62,7 @@ const original = official.find(
   (monster) => monster.attributes.name === "Black Pudding"
 );
 if (!original) throw new Error("Missing seeded monster");
-const input = parseJSONAPIMonster(original);
+const input = { ...parseJSONAPIMonster(original), paperforgeId: undefined };
 
 beforeAll(async () => {
   await migrate(db, { migrationsFolder: "migrations" });

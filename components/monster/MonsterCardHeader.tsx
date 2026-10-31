@@ -16,7 +16,7 @@ import {
 import { Level } from "@/components/shared/Level";
 import type { MonsterFormState } from "@/lib/services/monsters";
 import { cn } from "@/lib/utils";
-import { formatHp } from "@/lib/utils/monster";
+import { formatHp, formatSizeKind } from "@/lib/utils/monster";
 import { getMonsterUrl } from "@/lib/utils/url";
 
 export interface MonsterDamageInteractions {
@@ -51,10 +51,10 @@ export function MonsterCardLevelTab({ monster }: MonsterCardHeaderProps) {
         ? "Hazard"
         : monster.members?.length
           ? "Legendary team"
-          : `${monster.legendary ? "Legendary " : monster.minion ? "Minion " : ""}${monster.size}`}
-      {(monster.legendary || !!monster.members?.length) &&
-        monster.kind &&
-        ` ${monster.kind}`}
+          : monster.legendary
+            ? `Legendary ${formatSizeKind(monster)}`
+            : `${monster.minion ? "Minion " : ""}${monster.size}`}
+      {!!monster.members?.length && monster.kind && ` ${monster.kind}`}
     </div>
   );
 }

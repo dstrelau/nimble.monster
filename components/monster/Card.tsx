@@ -200,7 +200,7 @@ const MonsterHeader: React.FC<{
                   <Level level={monster.level} />{" "}
                 </>
               )}
-              {variant === "legendary" && "Solo "}
+              {variant === "legendary" && "Legendary "}
               {variant !== "hazard" && formatSizeKind(monster)}
             </div>
           </div>

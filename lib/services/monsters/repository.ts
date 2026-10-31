@@ -1338,8 +1338,11 @@ export const createHazard = async (
 };
 
 export const upsertOfficialMonster = async (
-  input: CreateMonsterInput
+  input: CreateMonsterInput,
+  id?: string
 ): Promise<Monster> => {
+  if (id !== undefined && !isValidUUID(id))
+    throw new Error("Invalid official monster ID");
   const classifications = MonsterClassificationsSchema.parse(input);
   const db = await getDatabase();
 
@@ -1441,7 +1444,8 @@ export const upsertOfficialMonster = async (
     updatedAt: new Date().toISOString(),
   };
 
-  let monsterId = existingMonster[0]?.id ?? crypto.randomUUID();
+  let monsterId =
+    existingMonster[0]?.id ?? id?.toLowerCase() ?? crypto.randomUUID();
   const previousArtwork = await db.transaction(async (tx) => {
     const [existing] = await tx
       .select()

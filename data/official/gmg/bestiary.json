@@ -10,10 +10,12 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit Minion",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["bandit"],
+        "environments": [],
         "hp": 1,
         "size": "small",
         "armor": "none",
-        "kind": "Bandits",
         "movement": [
           {
             "speed": 6
@@ -58,12 +60,11 @@
       "attributes": {
         "name": "Goblin Minion",
         "creatureTypes": ["humanoid"],
-        "creatureKinds": ["goblinoid"],
+        "creatureKinds": ["goblinoid", "goblin"],
         "environments": [],
         "hp": 1,
         "size": "small",
         "armor": "none",
-        "kind": "Goblinoid",
         "movement": [
           {
             "speed": 6
@@ -109,7 +110,6 @@
         "hp": 1,
         "size": "small",
         "armor": "none",
-        "kind": "Kobolds",
         "movement": [
           {
             "speed": 6
@@ -144,10 +144,12 @@
       "type": "monsters",
       "attributes": {
         "name": "Snakeman Minion",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["snakeman"],
+        "environments": [],
         "hp": 1,
         "size": "medium",
         "armor": "none",
-        "kind": "Snakemen",
         "movement": [
           {
             "speed": 6
@@ -188,11 +190,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["bandit"],
+        "environments": [],
         "hp": 10,
         "level": "1/3",
         "size": "medium",
         "armor": "none",
-        "kind": "Bandits",
         "movement": [
           {
             "speed": 6
@@ -242,13 +246,12 @@
       "attributes": {
         "name": "Goblin",
         "creatureTypes": ["humanoid"],
-        "creatureKinds": ["goblinoid"],
+        "creatureKinds": ["goblinoid", "goblin"],
         "environments": [],
         "hp": 15,
         "level": "1/2",
         "size": "small",
         "armor": "none",
-        "kind": "Goblinoid",
         "movement": [
           {
             "speed": 6
@@ -300,7 +303,6 @@
         "level": "1/3",
         "size": "small",
         "armor": "none",
-        "kind": "Kobolds",
         "movement": [
           {
             "speed": 6
@@ -345,23 +347,35 @@
       "type": "monsters",
       "attributes": {
         "name": "Skeleton",
-        "hp": 10,
+        "creatureTypes": ["undead"],
+        "creatureKinds": ["skeleton"],
+        "environments": [],
+        "hp": 9,
         "level": "1/3",
         "size": "medium",
         "armor": "none",
-        "kind": "Undead",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Unliving, Undying",
+            "description": "(1 use) On death, reset to 1 HP."
+          },
+          {
+            "name": "Just Bones!",
+            "description": "Resistant to Piercing hits (not crits)."
+          }
+        ],
         "actions": [
           {
             "name": "Grave Arrow",
             "damage": {
-              "roll": "1d4+3"
+              "roll": "1d4"
             },
+            "description": "Can’t crit.",
             "target": {
               "range": 8
             }
@@ -385,11 +399,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Stenchling",
-        "hp": 18,
+        "creatureTypes": ["fiend"],
+        "creatureKinds": ["stenchling"],
+        "environments": [],
+        "hp": 14,
         "level": "1/2",
         "size": "small",
         "armor": "none",
-        "kind": "Cultists & Horrors",
         "movement": [
           {
             "speed": 6
@@ -398,20 +414,22 @@
         "abilities": [
           {
             "name": "Putrid Cloud",
-            "description": "On Death: 2d6 poison damage to enemies within Reach 2."
+            "description": "On death, (Reach 2, AoE) 2d6 to enemies."
           }
         ],
         "actions": [
           {
             "name": "Bite",
             "damage": {
-              "roll": "2d6"
-            }
+              "roll": "1d6+1"
+            },
+            "description": "Can’t crit."
           }
         ],
         "actionsInstructions": "",
         "description": "",
-        "legendary": false
+        "legendary": false,
+        "paperforgeId": "829"
       },
       "relationships": {
         "family": {
@@ -430,20 +448,31 @@
         "level": "1/2",
         "size": "tiny",
         "armor": "none",
-        "kind": "Dungeon Denizens",
         "movement": [
           {
             "speed": 6
+          },
+          {
+            "mode": "fly",
+            "speed": 8
           }
         ],
-        "abilities": [],
+        "creatureTypes": ["beast"],
+        "creatureKinds": ["stirge"],
+        "environments": ["dungeon"],
+        "abilities": [
+          {
+            "name": "Evasive Flier",
+            "description": "Attacks against you are disadvantaged."
+          }
+        ],
         "actions": [
           {
             "name": "Latch On",
             "damage": {
               "roll": "1d4+2"
             },
-            "description": "On hit: Latched On."
+            "description": "Can’t crit. On hit, Latched On: [[Riding]]; your attacks can’t miss or be Defended/Interposed."
           }
         ],
         "actionsInstructions": "",
@@ -463,12 +492,14 @@
     {
       "type": "monsters",
       "attributes": {
-        "name": "Seedling",
-        "hp": 8,
+        "name": "Briarbane Seedling",
+        "creatureTypes": ["plant"],
+        "creatureKinds": ["briarbane"],
+        "environments": ["forest"],
+        "hp": 12,
         "level": "1/2",
         "size": "small",
-        "armor": "heavy",
-        "kind": "Forest Denizens",
+        "armor": "none",
         "movement": [
           {
             "speed": 6
@@ -479,8 +510,9 @@
           {
             "name": "Thorn Seed",
             "damage": {
-              "roll": "2d6+2"
+              "roll": "1d6+2"
             },
+            "description": "Can’t crit.",
             "target": {
               "range": 6
             }
@@ -511,7 +543,6 @@
         "level": 1,
         "size": "small",
         "armor": "none",
-        "kind": "Kobolds",
         "movement": [
           {
             "speed": 6
@@ -560,24 +591,31 @@
       "type": "monsters",
       "attributes": {
         "name": "Zombie",
-        "hp": 15,
+        "creatureTypes": ["undead"],
+        "creatureKinds": ["zombie"],
+        "environments": [],
+        "hp": 14,
         "level": "1/2",
         "size": "medium",
         "armor": "none",
-        "kind": "Undead",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Unliving, Undying",
+            "description": "(1 use) On death, reset to 1 HP."
+          }
+        ],
         "actions": [
           {
             "name": "Crunch",
             "damage": {
-              "roll": "1d4+4"
+              "roll": "1d4+2"
             },
-            "description": "On damage: Grappled."
+            "description": "On damage, [[Grappled]] (escape DC 10). Can’t crit."
           }
         ],
         "actionsInstructions": "",
@@ -598,11 +636,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit Hunter",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["bandit"],
+        "environments": [],
         "hp": 17,
         "level": 1,
         "size": "medium",
         "armor": "none",
-        "kind": "Bandits",
         "movement": [
           {
             "speed": 6
@@ -643,11 +683,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Cultist",
-        "hp": 28,
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["cultist"],
+        "environments": [],
+        "hp": 22,
         "level": 1,
         "size": "medium",
         "armor": "none",
-        "kind": "Cultists & Horrors",
         "movement": [
           {
             "speed": 6
@@ -656,27 +698,17 @@
         "abilities": [],
         "actions": [
           {
-            "name": "Oblation of Blood!",
-            "description": "If undamaged, attack self for 2 damage. Adjacent enemies are inflicted with Despair."
+            "name": "Fanatical Offering!",
+            "description": "Lose 2 HP, afflict adjacent enemies with [[Despair]]."
           },
           {
             "name": "Dreadful Blade",
             "damage": {
-              "roll": "1d6+6"
+              "roll": "1d6+4"
             }
-          },
-          {
-            "name": "Blood Boil",
-            "damage": {
-              "roll": "3d6+6"
-            },
-            "target": {
-              "range": 12
-            },
-            "description": "(Bloodied creature)"
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Do both in order:",
         "description": "",
         "legendary": false,
         "paperforgeId": "128"
@@ -694,11 +726,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Tiny Mimic",
-        "hp": 28,
+        "hp": 22,
         "level": 1,
         "size": "tiny",
         "armor": "none",
-        "kind": "Dungeon Denizens",
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["mimic"],
+        "environments": ["dungeon"],
         "movement": [
           {
             "speed": 6
@@ -709,22 +743,22 @@
           {
             "name": "Pseudopod",
             "damage": {
-              "roll": "1d4"
+              "roll": "2d4"
             },
-            "description": "(escape DC 9)"
+            "description": "(escape DC 9)."
           },
           {
             "name": "Bite",
             "damage": {
-              "roll": "1d12"
+              "roll": "2d4+5"
             },
-            "description": "(a Grappled creature)"
+            "description": "(a [[Grappled]] creature)."
           }
         ],
-        "actionsInstructions": "",
-        "description": "(Cup, Shoe, Apple, Candlestick, Potion, Pebble)",
+        "actionsInstructions": "Choose one:",
+        "description": "(Cup, Shoe, Apple, Potion)",
         "legendary": false,
-        "paperforgeId": "416"
+        "paperforgeId": "418"
       },
       "relationships": {
         "family": {
@@ -739,29 +773,41 @@
       "type": "monsters",
       "attributes": {
         "name": "Gray Ooze",
-        "hp": 28,
+        "hp": 18,
         "level": 1,
         "size": "medium",
         "armor": "none",
-        "kind": "Dungeon Denizens",
+        "creatureTypes": ["ooze"],
+        "creatureKinds": ["ooze"],
+        "environments": ["dungeon"],
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Goopy 2",
+            "description": "(1/round) When crit or dealt slashing damage: summon 2 ooze minions."
+          },
+          {
+            "name": "Digested",
+            "description": "Deal an additional 2 damage for each time the target has been Digested already this encounter."
+          }
+        ],
         "actions": [
           {
-            "name": "Acidic Touch (2×)",
+            "name": "Acidic Touch",
             "damage": {
-              "roll": "1d6+2"
-            }
+              "roll": "1d6"
+            },
+            "description": "Digested."
           }
         ],
         "actionsInstructions": "",
         "description": "",
         "legendary": false,
-        "paperforgeId": null
+        "paperforgeId": "492"
       },
       "relationships": {
         "family": {
@@ -775,12 +821,14 @@
     {
       "type": "monsters",
       "attributes": {
-        "name": "Acidpod",
-        "hp": 8,
+        "name": "Briarbane Acidpod",
+        "creatureTypes": ["plant"],
+        "creatureKinds": ["briarbane"],
+        "environments": ["forest"],
+        "hp": 18,
         "level": 1,
         "size": "small",
-        "armor": "heavy",
-        "kind": "Forest Denizens",
+        "armor": "none",
         "movement": [
           {
             "speed": 6
@@ -789,13 +837,13 @@
         "abilities": [
           {
             "name": "Caustic Eruption",
-            "description": "On death: 4d6 acid damage to all adjacent creatures."
+            "description": "On death, (Reach 1, AoE) 4d6."
           }
         ],
         "actions": [
           {
             "name": "Grab",
-            "description": "DC 12 DEX save or Grappled."
+            "description": "Grapple (escape DC 12)."
           }
         ],
         "actionsInstructions": "",
@@ -816,11 +864,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Gnoll",
-        "hp": 28,
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["gnoll"],
+        "environments": ["hills", "grassland"],
+        "hp": 21,
         "level": 1,
         "size": "medium",
         "armor": "none",
-        "kind": "Hill And Field",
         "movement": [
           {
             "speed": 6
@@ -828,28 +878,29 @@
         ],
         "abilities": [
           {
-            "name": "Frenzy",
-            "description": "Advantage against Bloodied creatures."
+            "name": "Bloodthirsty",
+            "description": "Advantage vs damaged creatures."
           }
         ],
         "actions": [
           {
-            "name": "Ravage (2×)",
+            "name": "Ravage",
             "damage": {
-              "roll": "1d10"
-            }
+              "roll": "1d8+2"
+            },
+            "description": ""
           },
           {
             "name": "Shoot",
             "damage": {
-              "roll": "1d10"
+              "roll": "1d8"
             },
             "target": {
-              "range": 12
+              "range": 10
             }
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
         "legendary": false,
         "paperforgeId": "33"
@@ -859,11 +910,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Worg",
-        "hp": 28,
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["canine", "worg"],
+        "environments": ["hills", "grassland"],
+        "hp": 20,
         "level": 1,
         "size": "large",
         "armor": "none",
-        "kind": "Hill And Field",
         "movement": [
           {
             "speed": 10
@@ -872,16 +925,16 @@
         "abilities": [
           {
             "name": "Savage",
-            "description": "Always crits when attacking a Grappled creature."
+            "description": "Crits on 5+ vs [[Grappled]] creatures."
           }
         ],
         "actions": [
           {
-            "name": "Rip Apart (2×)",
+            "name": "Rip Apart",
             "damage": {
-              "roll": "1d6+2"
+              "roll": "2d6"
             },
-            "description": "On hit: Grappled (escape DC 10)."
+            "description": "[[Grappled]] (escape DC 10)."
           }
         ],
         "actionsInstructions": "",
@@ -898,7 +951,6 @@
         "level": 2,
         "size": "small",
         "armor": "medium",
-        "kind": "Kobolds",
         "creatureTypes": ["humanoid"],
         "creatureKinds": ["kobold"],
         "environments": [],
@@ -941,7 +993,6 @@
         "level": 2,
         "size": "small",
         "armor": "none",
-        "kind": "Kobolds",
         "creatureTypes": ["humanoid"],
         "creatureKinds": ["kobold"],
         "environments": [],
@@ -996,7 +1047,6 @@
         "level": 3,
         "size": "small",
         "armor": "medium",
-        "kind": "Kobolds",
         "movement": [
           {
             "speed": 6
@@ -1046,11 +1096,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Snakeman",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["snakeman"],
+        "environments": [],
         "hp": 21,
         "level": 1,
         "size": "medium",
         "armor": "none",
-        "kind": "Snakemen",
         "movement": [
           {
             "speed": 6
@@ -1095,24 +1147,31 @@
       "type": "monsters",
       "attributes": {
         "name": "Ghoul",
-        "hp": 20,
+        "creatureTypes": ["undead"],
+        "creatureKinds": ["ghoul"],
+        "environments": [],
+        "hp": 18,
         "level": 1,
         "size": "medium",
         "armor": "none",
-        "kind": "Undead",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Unliving, Undying",
+            "description": "(1 use) On death, reset to 1 HP."
+          }
+        ],
         "actions": [
           {
             "name": "Sickening Claw",
             "damage": {
-              "roll": "1d4+8"
+              "roll": "1d4+4"
             },
-            "description": "On damage: Dazed."
+            "description": "On damage, [[Dazed]]."
           }
         ],
         "actionsInstructions": "",
@@ -1133,11 +1192,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit Assassin",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["bandit"],
+        "environments": [],
         "hp": 20,
         "level": 2,
         "size": "medium",
         "armor": "none",
-        "kind": "Bandits",
         "movement": [
           {
             "speed": 6
@@ -1181,11 +1242,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit Bruiser",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["bandit"],
+        "environments": [],
         "hp": 27,
         "level": 2,
         "size": "medium",
         "armor": "none",
-        "kind": "Bandits",
         "movement": [
           {
             "speed": 6
@@ -1224,11 +1287,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Small Mimic",
-        "hp": 41,
+        "hp": 30,
         "level": 2,
         "size": "small",
         "armor": "none",
-        "kind": "Dungeon Denizens",
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["mimic"],
+        "environments": ["dungeon"],
         "movement": [
           {
             "speed": 6
@@ -1239,20 +1304,20 @@
           {
             "name": "Pseudopod",
             "damage": {
-              "roll": "1d6"
+              "roll": "2d6"
             },
-            "description": "(escape DC 11)"
+            "description": "(escape DC 11)."
           },
           {
             "name": "Bite",
             "damage": {
-              "roll": "1d20"
+              "roll": "2d6+10"
             },
-            "description": "(a Grappled creature)"
+            "description": "(a [[Grappled]] creature)."
           }
         ],
-        "actionsInstructions": "",
-        "description": "(Backpack, Shield/Weapon, Chair, Crate, Tree Stump)",
+        "actionsInstructions": "Choose one:",
+        "description": "(Pack, Shield, Weapon, Chair)",
         "legendary": false,
         "paperforgeId": "416"
       },
@@ -1268,28 +1333,42 @@
     {
       "type": "monsters",
       "attributes": {
-        "name": "Tangler",
-        "hp": 20,
+        "name": "Briarbane Tangler",
+        "creatureTypes": ["plant"],
+        "creatureKinds": ["briarbane"],
+        "environments": ["forest"],
+        "hp": 24,
         "level": 2,
         "size": "medium",
         "armor": "heavy",
-        "kind": "Forest Denizens",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
-        "actions": [
+        "abilities": [
           {
-            "name": "Tangle (2×)",
-            "damage": {
-              "roll": "1d6+2"
-            },
-            "description": "(Reach 6) On Hit: Grappled (escape DC 12, or any fire or slashing damage)."
+            "name": "Peeling Bark",
+            "description": "Being hit degrades armor (H » M » None)."
           }
         ],
-        "actionsInstructions": "",
+        "actions": [
+          {
+            "name": "Tangle",
+            "damage": {
+              "roll": "1d6"
+            },
+            "description": "[[Grappled]] (escape DC 12, or any fire or slashing damage).",
+            "target": {
+              "reach": 6
+            }
+          },
+          {
+            "name": "Pull",
+            "description": "(vs [[Grappled]]) Move them 4 spaces."
+          }
+        ],
+        "actionsInstructions": "Choose twice:",
         "description": "",
         "legendary": false,
         "paperforgeId": "522"
@@ -1308,13 +1387,12 @@
       "attributes": {
         "name": "Bugbear",
         "creatureTypes": ["humanoid"],
-        "creatureKinds": ["goblinoid"],
+        "creatureKinds": ["goblinoid", "bugbear"],
         "environments": [],
         "hp": 30,
         "level": 2,
         "size": "medium",
         "armor": "none",
-        "kind": "Goblinoid",
         "movement": [
           {
             "speed": 6
@@ -1361,13 +1439,12 @@
       "attributes": {
         "name": "Goblin Taskmaster",
         "creatureTypes": ["humanoid"],
-        "creatureKinds": ["goblinoid"],
+        "creatureKinds": ["goblinoid", "goblin"],
         "environments": [],
         "hp": 30,
         "level": 2,
         "size": "small",
         "armor": "none",
-        "kind": "Goblinoid",
         "movement": [
           {
             "speed": 6
@@ -1421,13 +1498,12 @@
       "attributes": {
         "name": "Goblin Ratrider",
         "creatureTypes": ["humanoid"],
-        "creatureKinds": ["goblinoid"],
+        "creatureKinds": ["goblinoid", "goblin"],
         "environments": [],
         "hp": 30,
         "level": 2,
         "size": "medium",
         "armor": "none",
-        "kind": "Goblinoid",
         "movement": [
           {
             "speed": 10
@@ -1471,12 +1547,17 @@
       "type": "monsters",
       "attributes": {
         "name": "Blue Drake",
-        "hp": 34,
+        "creatureTypes": ["dragon"],
+        "creatureKinds": ["drake"],
+        "environments": ["hills", "grassland"],
+        "hp": 25,
         "level": 2,
         "size": "medium",
         "armor": "none",
-        "kind": "Hill And Field",
         "movement": [
+          {
+            "speed": 6
+          },
           {
             "mode": "fly",
             "speed": 12
@@ -1484,33 +1565,36 @@
         ],
         "abilities": [
           {
-            "name": "On Death",
-            "description": "Deal 1d12 damage back (ignores metal armor)."
+            "name": "Burst Lightning",
+            "description": "On death, (Reach 1, AoE) 2d8 (ignores metal armor)."
           }
         ],
         "actions": [
           {
             "name": "Shocking Bite",
             "damage": {
-              "roll": "1d12+5"
+              "roll": "2d8"
             },
-            "description": "(ignores metal armor)"
+            "description": "(ignores metal armor)."
           }
         ],
         "actionsInstructions": "",
         "description": "",
-        "legendary": false
+        "legendary": false,
+        "paperforgeId": "289"
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Giant Spider",
-        "hp": 27,
+        "creatureTypes": ["beast"],
+        "creatureKinds": ["spider"],
+        "environments": ["underground"],
+        "hp": 30,
         "level": 2,
         "size": "medium",
-        "armor": "medium",
-        "kind": "Underground",
+        "armor": "none",
         "movement": [
           {
             "speed": 6
@@ -1523,20 +1607,20 @@
             "damage": {
               "roll": "1d8+2"
             },
+            "description": "[[Restrained]] (escape DC 12, or any slashing/fire damage).",
             "target": {
               "range": 6
-            },
-            "description": "On hit: Restrained (escape DC 12, or any slashing/fire damage)."
+            }
           },
           {
             "name": "Bite",
             "damage": {
-              "roll": "2d8+4"
+              "roll": "1d8+5"
             },
-            "description": "(Hampered target) Poisoned (magical healing ends)."
+            "description": "(vs [[Hampered]]) [[Poisoned]] (healing ends)."
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
         "legendary": false,
         "paperforgeId": "97"
@@ -1546,11 +1630,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Fanatic",
-        "hp": 41,
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["cultist"],
+        "environments": [],
+        "hp": 44,
         "level": 3,
         "size": "medium",
         "armor": "none",
-        "kind": "Cultists & Horrors",
         "movement": [
           {
             "speed": 6
@@ -1559,18 +1645,18 @@
         "abilities": [],
         "actions": [
           {
-            "name": "Oblation of Blood!",
-            "description": "If undamaged, attack self for 2 damage. Adjacent enemies are inflicted with Despair."
+            "name": "Fanatical Offering!",
+            "description": "Lose 2 HP, afflict adjacent enemies with [[Despair]]."
           },
           {
             "name": "Whispers of Madness",
             "damage": {
               "roll": "3d6+6"
             },
-            "description": "Contested STR check or Grappled (reroll to escape, or any radiant damage); if successful, deal psychic damage (cannot be Defended or Interposed against)."
+            "description": "(vs [[Despair|Despairing]]) Grapple (escape DC 13, or any radiant damage). Psychic damage (can’t be Defended or Interposed)."
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
         "legendary": false,
         "paperforgeId": "299"
@@ -1588,31 +1674,38 @@
       "type": "monsters",
       "attributes": {
         "name": "Specter",
-        "hp": 30,
+        "creatureTypes": ["undead"],
+        "creatureKinds": ["ghost", "specter"],
+        "environments": [],
+        "hp": 34,
         "level": 3,
         "size": "medium",
         "armor": "none",
-        "kind": "Undead",
         "movement": [
           {
             "mode": "fly",
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Corrupt",
+            "description": "Vul. to Radiant: your next attack gains advantage."
+          }
+        ],
         "actions": [
           {
             "name": "Deathly Touch",
             "damage": {
               "roll": "1d4"
             },
-            "description": "On damage: set HP to 0."
+            "description": "On damage, set HP to 0."
           }
         ],
         "actionsInstructions": "",
         "description": "",
         "legendary": false,
-        "paperforgeId": "778"
+        "paperforgeId": "65f"
       },
       "relationships": {
         "family": {
@@ -1627,11 +1720,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit Captain",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["bandit"],
+        "environments": [],
         "hp": 35,
         "level": 4,
         "size": "medium",
         "armor": "medium",
-        "kind": "Bandits",
         "movement": [
           {
             "speed": 6
@@ -1681,11 +1776,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Bandit Mage",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["bandit"],
+        "environments": [],
         "hp": 40,
         "level": 4,
         "size": "medium",
         "armor": "none",
-        "kind": "Bandits",
         "movement": [
           {
             "speed": 6
@@ -1731,11 +1828,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Spiny Fiend",
-        "hp": 49,
+        "creatureTypes": ["fiend"],
+        "creatureKinds": ["spiny-fiend"],
+        "environments": [],
+        "hp": 48,
         "level": 4,
         "size": "medium",
         "armor": "none",
-        "kind": "Cultists & Horrors",
         "movement": [
           {
             "speed": 6
@@ -1744,29 +1843,31 @@
         "abilities": [
           {
             "name": "Spines",
-            "description": "Melee attackers take 3 damage."
+            "description": "Melee attackers take 4 damage."
           }
         ],
         "actions": [
           {
-            "name": "Claws (2×)",
+            "name": "Claws",
+            "attackCount": 2,
             "damage": {
-              "roll": "1d6+6"
+              "roll": "1d6+4"
             }
           },
           {
             "name": "Shoot Spine",
             "damage": {
-              "roll": "1d6+6"
+              "roll": "1d6+4"
             },
             "target": {
               "range": 12
             }
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
-        "legendary": false
+        "legendary": false,
+        "paperforgeId": "196"
       },
       "relationships": {
         "family": {
@@ -1781,23 +1882,35 @@
       "type": "monsters",
       "attributes": {
         "name": "Ochre Jelly",
-        "hp": 52,
+        "hp": 46,
         "level": 4,
         "size": "large",
         "armor": "none",
-        "kind": "Dungeon Denizens",
+        "creatureTypes": ["ooze"],
+        "creatureKinds": ["ooze"],
+        "environments": ["dungeon"],
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Goopy 3",
+            "description": "(1/round) When crit or dealt slashing damage: summon 3 ooze minions."
+          },
+          {
+            "name": "Digested",
+            "description": "Deal an additional 3 damage for each time the target has been Digested already this encounter."
+          }
+        ],
         "actions": [
           {
-            "name": "Acidic Touch (2×)",
+            "name": "Acidic Touch",
             "damage": {
-              "roll": "1d6+3"
-            }
+              "roll": "1d6+6"
+            },
+            "description": "Digested."
           }
         ],
         "actionsInstructions": "",
@@ -1818,11 +1931,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Gnoll Packleader",
-        "hp": 39,
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["gnoll"],
+        "environments": ["hills", "grassland"],
+        "hp": 52,
         "level": 4,
         "size": "medium",
-        "armor": "medium",
-        "kind": "Hill And Field",
+        "armor": "none",
         "movement": [
           {
             "speed": 6
@@ -1830,23 +1945,24 @@
         ],
         "abilities": [
           {
-            "name": "Frenzy",
-            "description": "Advantage against Bloodied creatures."
+            "name": "Bloodthirsty",
+            "description": "Advantage vs damaged creatures."
           }
         ],
         "actions": [
           {
             "name": "Bark Orders",
-            "description": "2 allies can move. Then:"
+            "description": "2 allies can move."
           },
           {
-            "name": "Ravage (3×)",
+            "name": "Ravage",
+            "attackCount": 2,
             "damage": {
-              "roll": "1d10"
+              "roll": "1d8+2"
             }
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Do both in order:",
         "description": "",
         "legendary": false,
         "paperforgeId": "34"
@@ -1856,12 +1972,17 @@
       "type": "monsters",
       "attributes": {
         "name": "Griffon",
-        "hp": 50,
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["griffon"],
+        "environments": ["hills", "grassland"],
+        "hp": 52,
         "level": 4,
         "size": "large",
         "armor": "none",
-        "kind": "Hill And Field",
         "movement": [
+          {
+            "speed": 6
+          },
           {
             "mode": "fly",
             "speed": 12
@@ -1872,16 +1993,16 @@
           {
             "name": "Talons",
             "damage": {
-              "roll": "2d6+10"
+              "roll": "1d8+10"
             },
-            "description": "On hit: Grappled (escape DC 14)"
+            "description": "[[Grappled]] (escape DC 12)."
           },
           {
             "name": "Fly & Drop",
-            "description": "(if grappling) Fly upward 12 and release (6d6 fall damage)."
+            "description": "(if Grappling) Fly upward 12 and release (6d6 fall damage, landing [[Prone]])."
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
         "legendary": false,
         "paperforgeId": "352"
@@ -1891,11 +2012,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Cobra Captain",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["snakeman"],
+        "environments": [],
         "hp": 52,
         "level": 4,
         "size": "medium",
         "armor": "none",
-        "kind": "Snakemen",
         "movement": [
           {
             "speed": 6
@@ -1941,58 +2064,68 @@
       "type": "monsters",
       "attributes": {
         "name": "Ettercap",
-        "hp": 49,
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["spider", "ettercap"],
+        "environments": ["underground"],
+        "hp": 50,
         "level": 4,
         "size": "medium",
         "armor": "none",
-        "kind": "Underground",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Silenced",
+            "description": "Cannot cast spells or use other abilities that require speaking (e.g., Commander’s Orders)."
+          }
+        ],
         "actions": [
           {
             "name": "Web Garrote",
             "damage": {
-              "roll": "1d8+2"
+              "roll": "1d8+10"
             },
-            "description": "On hit: Grappled (escape DC 13), Silenced until target escapes. (Silenced: Cannot cast spells or use other abilities that require speaking.)"
+            "description": "[[Grappled]] (escape DC 12) and [[Silenced]] until escape."
           }
         ],
         "actionsInstructions": "",
         "description": "",
         "legendary": false,
-        "paperforgeId": "99"
+        "paperforgeId": "661"
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Doomsayer",
-        "hp": 58,
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["cultist"],
+        "environments": [],
+        "hp": 66,
         "level": 5,
         "size": "medium",
         "armor": "none",
-        "kind": "Cultists & Horrors",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
-        "actions": [
+        "abilities": [
           {
             "name": "Feverish Chant",
-            "description": "(Concentration) Reduce all damage done to allies who can hear you to 1."
-          },
+            "description": "Reduce all damage done to allies who can hear you to 1."
+          }
+        ],
+        "actions": [
           {
-            "name": "Ecstatic Ravings",
+            "name": "Ecstatic Outburst",
             "damage": {
-              "roll": "2d6"
+              "roll": "3d6"
             },
-            "description": "Psychic damage to all enemies who can hear you."
+            "description": "Psychic damage to all [[Despair|Despairing]] enemies (ignoring Defense)."
           }
         ],
         "actionsInstructions": "",
@@ -2012,25 +2145,33 @@
     {
       "type": "monsters",
       "attributes": {
-        "name": "Rootbreaker",
-        "hp": 50,
+        "name": "Briarbane Rootbreaker",
+        "creatureTypes": ["plant"],
+        "creatureKinds": ["briarbane"],
+        "environments": ["forest"],
+        "hp": 58,
         "level": 5,
         "size": "large",
         "armor": "heavy",
-        "kind": "Forest Denizens",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Peeling Bark",
+            "description": "Being hit degrades armor (H » M » None)."
+          }
+        ],
         "actions": [
           {
             "name": "Slam",
+            "attackCount": 2,
             "damage": {
-              "roll": "3d6+6"
+              "roll": "1d6+5"
             },
-            "description": "On crit: knockback 2."
+            "description": "On damage, Knockback 2 or [[Prone]]."
           }
         ],
         "actionsInstructions": "",
@@ -2051,24 +2192,31 @@
       "type": "monsters",
       "attributes": {
         "name": "Ogre Zombie",
-        "hp": 46,
+        "creatureTypes": ["undead", "giant"],
+        "creatureKinds": ["zombie", "ogre"],
+        "environments": [],
+        "hp": 60,
         "level": 5,
         "size": "large",
         "armor": "none",
-        "kind": "Undead",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Unliving, Undying",
+            "description": "(1 use) On death, reset to 1 HP."
+          }
+        ],
         "actions": [
           {
-            "name": "Greatclub (2×)",
+            "name": "Greatclub",
             "damage": {
-              "roll": "1d4+8"
+              "roll": "1d4+18"
             },
-            "description": "On crit: Prone."
+            "description": "On crit, [[Prone]]."
           }
         ],
         "actionsInstructions": "",
@@ -2089,24 +2237,35 @@
       "type": "monsters",
       "attributes": {
         "name": "Greater Stirge",
-        "hp": 60,
+        "hp": 64,
         "level": 6,
         "size": "small",
         "armor": "none",
-        "kind": "Dungeon Denizens",
+        "creatureTypes": ["beast"],
+        "creatureKinds": ["stirge"],
+        "environments": ["dungeon"],
         "movement": [
           {
             "speed": 6
+          },
+          {
+            "mode": "fly",
+            "speed": 10
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Evasive Flier",
+            "description": "Attacks against you are disadvantaged."
+          }
+        ],
         "actions": [
           {
             "name": "Latch On",
             "damage": {
               "roll": "1d12+10"
             },
-            "description": "On hit: Latched On."
+            "description": "On hit, Latched On: [[Riding]]; your attacks can’t miss or be Defended/Interposed."
           }
         ],
         "actionsInstructions": "",
@@ -2127,11 +2286,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Medium Mimic",
-        "hp": 79,
+        "hp": 64,
         "level": 6,
         "size": "medium",
         "armor": "none",
-        "kind": "Dungeon Denizens",
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["mimic"],
+        "environments": ["dungeon"],
         "movement": [
           {
             "speed": 6
@@ -2142,22 +2303,22 @@
           {
             "name": "Pseudopod",
             "damage": {
-              "roll": "1d8"
+              "roll": "2d8+8"
             },
-            "description": "(escape DC 13)"
+            "description": "(escape DC 13)."
           },
           {
             "name": "Bite",
             "damage": {
-              "roll": "2d20"
+              "roll": "2d8+20"
             },
-            "description": "(a Grappled creature)"
+            "description": "(a [[Grappled]] creature)."
           }
         ],
-        "actionsInstructions": "",
-        "description": "(Table, Treasure Chest, Barrel, Bookshelf, Door, Bed)",
+        "actionsInstructions": "Choose one:",
+        "description": "(Table, Treasure Chest, Barrel, Door)",
         "legendary": false,
-        "paperforgeId": "418"
+        "paperforgeId": "415"
       },
       "relationships": {
         "family": {
@@ -2172,27 +2333,30 @@
       "type": "monsters",
       "attributes": {
         "name": "Duskprowler",
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["duskprowler"],
+        "environments": ["forest"],
         "hp": 70,
         "level": 6,
         "size": "large",
         "armor": "none",
-        "kind": "Forest Denizens",
         "movement": [
           {
-            "speed": 6
+            "speed": 8
           }
         ],
         "abilities": [
           {
             "name": "Illusory Aura",
-            "description": "Attacks against the Duskprowler have Disadvantage 2. Damage suppresses this effect until the end of the next hero's turn."
+            "description": "Attacks against the Duskprowler have Disadvantage 2. Damage suppresses this effect until the end of the next hero’s turn."
           }
         ],
         "actions": [
           {
-            "name": "Ravage (2×)",
+            "name": "Ravage",
+            "attackCount": 2,
             "damage": {
-              "roll": "2d8+2"
+              "roll": "1d8+5"
             }
           }
         ],
@@ -2206,11 +2370,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Mummy",
-        "hp": 54,
+        "creatureTypes": ["undead"],
+        "creatureKinds": ["mummy"],
+        "environments": [],
+        "hp": 75,
         "level": 6,
         "size": "medium",
         "armor": "none",
-        "kind": "Undead",
         "movement": [
           {
             "speed": 6
@@ -2219,16 +2385,17 @@
         "abilities": [],
         "actions": [
           {
-            "name": "Slam (2×)",
+            "name": "Cursed Slam",
             "damage": {
-              "roll": "1d4+8"
+              "roll": "1d4+20"
             },
-            "description": "On damage: Dazed."
+            "description": "On damage, [[Dazed]]."
           }
         ],
         "actionsInstructions": "",
         "description": "",
-        "legendary": false
+        "legendary": false,
+        "paperforgeId": "429"
       },
       "relationships": {
         "family": {
@@ -2243,11 +2410,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Nestweaver",
-        "hp": 54,
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["spider", "nestweaver"],
+        "environments": ["underground"],
+        "hp": 50,
         "level": 6,
         "size": "large",
         "armor": "medium",
-        "kind": "Underground",
         "movement": [
           {
             "speed": 6
@@ -2260,20 +2429,20 @@
             "damage": {
               "roll": "1d8+2"
             },
+            "description": "[[Restrained]] (escape DC 12, or any slashing/fire damage).",
             "target": {
               "range": 6
-            },
-            "description": "On hit: Restrained (escape DC 12, or any slashing/fire damage)."
+            }
           },
           {
             "name": "Bite",
             "damage": {
-              "roll": "3d8+6"
+              "roll": "1d8+10"
             },
-            "description": "(Hampered target) Poisoned (magical healing ends)."
+            "description": "(vs [[Hampered]]) [[Poisoned]] (healing ends)."
           }
         ],
-        "actionsInstructions": "Summon 2 spider minions (d8). Then choose 1:",
+        "actionsInstructions": "Swarm. Summon 3 spider minions (size:d8). Then choose 1:",
         "description": "",
         "legendary": false,
         "paperforgeId": "99"
@@ -2283,11 +2452,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Basilisk",
-        "hp": 48,
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["reptile", "basilisk"],
+        "environments": ["forest"],
+        "hp": 60,
         "level": 7,
         "size": "medium",
-        "armor": "heavy",
-        "kind": "Forest Denizens",
+        "armor": "medium",
         "movement": [
           {
             "speed": 6
@@ -2295,56 +2466,75 @@
         ],
         "abilities": [
           {
-            "name": "Flesh to Stone",
-            "description": "Creatures Dazed by the Basilisk remain so for 10 minutes. Dazed 3 times = Petrified."
+            "name": "Lithify",
+            "description": "Max actions reduced by 1 (lasts for 10 min, can stack). Lithified 3 times: [[Petrified]]!"
           }
         ],
         "actions": [
           {
             "name": "Stone Gaze",
-            "description": "Daze 1 creature within sight, then:"
+            "description": "Lithify 1 creature who can see you.",
+            "target": {
+              "reach": 16
+            }
           },
           {
             "name": "Envenom",
             "damage": {
-              "roll": "1d8+10"
+              "roll": "d44"
             },
-            "description": "Advantage vs Dazed targets."
+            "description": "Advantage vs creatures with fewer than 3 actions."
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Do both in order:",
         "description": "",
-        "legendary": false
+        "legendary": false,
+        "paperforgeId": "660"
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Black Pudding",
-        "hp": 90,
+        "hp": 94,
         "level": 8,
         "size": "large",
         "armor": "none",
-        "kind": "Dungeon Denizens",
+        "creatureTypes": ["ooze"],
+        "creatureKinds": ["ooze"],
+        "environments": ["dungeon"],
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Goopy 5",
+            "description": "(1/round) When crit or dealt slashing damage: summon 5 ooze minions."
+          },
+          {
+            "name": "Digested",
+            "description": "Deal an additional 5 damage for each time the target has been Digested already this encounter."
+          }
+        ],
         "actions": [
           {
-            "name": "Acidic Touch (2×)",
+            "name": "Acidic Touch",
+            "attackCount": 2,
             "damage": {
-              "roll": "1d6+5"
+              "roll": "1d6+6"
             },
-            "description": "(Reach 2)"
+            "description": "Digested.",
+            "target": {
+              "reach": 2
+            }
           }
         ],
         "actionsInstructions": "",
         "description": "",
         "legendary": false,
-        "paperforgeId": null
+        "paperforgeId": "492"
       },
       "relationships": {
         "family": {
@@ -2359,11 +2549,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Druid",
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["druid"],
+        "environments": ["forest"],
         "hp": 90,
         "level": 8,
         "size": "medium",
         "armor": "none",
-        "kind": "Forest Denizens",
         "movement": [
           {
             "speed": 6
@@ -2373,20 +2565,25 @@
         "actions": [
           {
             "name": "Beastshift",
+            "attackCount": 2,
             "damage": {
-              "roll": "4d4+10"
+              "roll": "1d4+10"
             },
-            "description": "+4 speed, gain Medium armor this round."
+            "description": "Gain +4 Speed and Medium Armor until the beginning of your next turn. Attack with advantage."
           },
           {
             "name": "Hurricane",
             "damage": {
               "roll": "4d4+10"
             },
-            "description": "(Reach 3) To all enemies within reach. On damage: move targets anywhere else in Reach."
+            "aoe": true,
+            "description": "To enemies. On damage, move targets anywhere within Reach.",
+            "target": {
+              "reach": 3
+            }
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
         "legendary": false,
         "paperforgeId": "641"
@@ -2396,11 +2593,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Giant Cobra",
+        "creatureTypes": ["beast"],
+        "creatureKinds": ["snake"],
+        "environments": [],
         "hp": 84,
         "level": 8,
         "size": "large",
         "armor": "medium",
-        "kind": "Snakemen",
         "movement": [
           {
             "speed": 6
@@ -2439,30 +2638,38 @@
       "type": "monsters",
       "attributes": {
         "name": "Giant Zombie",
-        "hp": 73,
+        "creatureTypes": ["undead", "giant"],
+        "creatureKinds": ["zombie"],
+        "environments": [],
+        "hp": 100,
         "level": 8,
         "size": "huge",
         "armor": "none",
-        "kind": "Undead",
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Unliving, Undying",
+            "description": "(1 use) On death, reset to 1 HP."
+          }
+        ],
         "actions": [
           {
-            "name": "Decaying Swipe (2×)",
+            "name": "Decaying Swipe",
+            "attackCount": 2,
             "damage": {
               "roll": "1d4+10"
             },
-            "description": "On damage: knockback Primary Die spaces."
+            "description": "On damage, [[Prone]] or Knockback Primary Die spaces."
           }
         ],
         "actionsInstructions": "",
         "description": "",
         "legendary": false,
-        "paperforgeId": "434"
+        "paperforgeId": "435"
       },
       "relationships": {
         "family": {
@@ -2477,12 +2684,17 @@
       "type": "monsters",
       "attributes": {
         "name": "Bulette",
-        "hp": 74,
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["bulette"],
+        "environments": ["hills", "grassland"],
+        "hp": 88,
         "level": 10,
         "size": "large",
         "armor": "heavy",
-        "kind": "Hill And Field",
         "movement": [
+          {
+            "speed": 6
+          },
           {
             "mode": "burrow",
             "speed": 6
@@ -2491,39 +2703,42 @@
         "abilities": [
           {
             "name": "Burst Forth!",
-            "description": "Combat with a Bulette starts with the heaviest character making a DC 14 DEX save or they are Grappled (escape DC 14) and take 1d12+20 damage (half on save)."
+            "description": "When the Bulette enters Combat, the heaviest creature is targeted with Leap & Bite."
           }
         ],
         "actions": [
           {
             "name": "Drag Below",
             "damage": {
-              "roll": "2d12"
+              "roll": "1d20+10"
             },
-            "description": "(A Grappled creature) Then drag below and burrow away."
+            "description": "(vs [[Grappled]]) and burrow away (leaving a tunnel 2 spaces wide)."
           },
           {
             "name": "Leap & Bite",
             "damage": {
-              "roll": "1d12+20"
+              "roll": "1d20+20"
             },
-            "description": "(If not grappling) Leap 6, and attack. On hit: Grappled."
+            "description": "Leap 6, Grapple (escape DC 14)."
           }
         ],
-        "actionsInstructions": "",
-        "description": "",
-        "legendary": false
+        "actionsInstructions": "Choose one:",
+        "description": "Burrowing. Yes, heroes can jump down and follow the tunnels a Bulette leaves—at their own peril!",
+        "legendary": false,
+        "paperforgeId": "68"
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Troll",
-        "hp": 100,
+        "creatureTypes": ["giant"],
+        "creatureKinds": ["troll"],
+        "environments": ["hills", "grassland"],
+        "hp": 120,
         "level": 10,
         "size": "large",
-        "armor": "medium",
-        "kind": "Hill And Field",
+        "armor": "none",
         "movement": [
           {
             "speed": 8
@@ -2532,23 +2747,26 @@
         "abilities": [
           {
             "name": "Regenerate",
-            "description": "Does not die at 0 HP. Only fire, radiant, or a crit while at 0 HP can kill it."
+            "description": "Does not die at 0 HP. Only fire, radiant, or a crit while already at 0 HP can kill it."
           }
         ],
         "actions": [
           {
             "name": "Claws",
             "damage": {
-              "roll": "1d4+10"
+              "roll": "1d6+10"
             },
-            "description": "(Reach 2) On crit: Prone."
+            "description": "On damage, [[Prone]].",
+            "target": {
+              "reach": 2
+            }
           },
           {
             "name": "Bite",
             "damage": {
-              "roll": "1d4+20"
+              "roll": "1d20+10"
             },
-            "description": "(A Prone creature)"
+            "description": "(vs [[Prone]])."
           }
         ],
         "actionsInstructions": "Choose twice:",
@@ -2561,28 +2779,36 @@
       "type": "monsters",
       "attributes": {
         "name": "Wraith",
-        "hp": 94,
+        "creatureTypes": ["undead"],
+        "creatureKinds": ["ghost", "wraith"],
+        "environments": [],
+        "hp": 120,
         "level": 10,
         "size": "medium",
         "armor": "none",
-        "kind": "Undead",
         "movement": [
           {
             "mode": "fly",
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Corrupt",
+            "description": "Vul. to Radiant: your next attack gains advantage."
+          }
+        ],
         "actions": [
           {
-            "name": "Soul Rend (2×)",
+            "name": "Soul Rend",
+            "attackCount": 2,
             "damage": {
               "roll": "1d4+10"
             },
+            "description": "On damage, deal 1 Wound.",
             "target": {
               "range": 8
-            },
-            "description": "On damage: deal 1 Wound."
+            }
           }
         ],
         "actionsInstructions": "",
@@ -2603,11 +2829,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Umber Hulk",
-        "hp": 70,
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["insect", "umber-hulk"],
+        "environments": ["underground"],
+        "hp": 80,
         "level": 10,
         "size": "large",
         "armor": "heavy",
-        "kind": "Underground",
         "movement": [
           {
             "speed": 6
@@ -2615,46 +2843,69 @@
         ],
         "abilities": [
           {
-            "name": "Confounding Pheromones",
-            "description": "Enemies make a DC 15 WIL save at the start of their turns or Confused this turn. Gain advantage 1 on the save for each failure this encounter. (Confused: The GM spends your next action.)"
+            "name": "Confused",
+            "description": "The GM spends 1 action this round."
           }
         ],
         "actions": [
           {
-            "name": "Mandible & Claws (2×)",
+            "name": "Confounding Pheromones",
+            "description": "Enemies make a DC 14 WIL save or become Confused (each time they fail, gain advantage 1 on the save this encounter).",
+            "target": {
+              "reach": 3
+            }
+          },
+          {
+            "name": "Mandible & Claws",
+            "attackCount": 2,
             "damage": {
               "roll": "1d10+10"
             }
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Do both in order:",
         "description": "",
         "legendary": false,
-        "paperforgeId": "402"
+        "paperforgeId": "665"
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Elder Ooze",
-        "hp": 150,
+        "hp": 148,
         "level": 12,
         "size": "huge",
         "armor": "none",
-        "kind": "Dungeon Denizens",
+        "creatureTypes": ["ooze"],
+        "creatureKinds": ["ooze"],
+        "environments": ["dungeon"],
         "movement": [
           {
             "speed": 6
           }
         ],
-        "abilities": [],
+        "abilities": [
+          {
+            "name": "Goopy 6",
+            "description": "(1/round) When crit or dealt slashing damage: summon 6 ooze minions."
+          },
+          {
+            "name": "Digested",
+            "description": "Deal an additional 6 damage for each time the target has been Digested already this encounter."
+          }
+        ],
         "actions": [
           {
-            "name": "Acidic Touch (3×)",
+            "name": "Acidic Touch",
+            "attackCount": 3,
             "damage": {
               "roll": "1d6+6"
             },
-            "description": "(Reach 3)"
+            "description": "Digested.",
+            "target": {
+              "reach": 3
+            }
           }
         ],
         "actionsInstructions": "",
@@ -2675,41 +2926,47 @@
       "type": "monsters",
       "attributes": {
         "name": "Hill Giant",
-        "hp": 140,
-        "level": 12,
+        "creatureTypes": ["giant"],
+        "creatureKinds": ["giant"],
+        "environments": ["hills", "grassland"],
+        "hp": 130,
+        "level": 10,
         "size": "huge",
         "armor": "none",
-        "kind": "Hill And Field",
         "movement": [
           {
             "speed": 8
           }
         ],
-        "abilities": [
-          {
-            "name": "Brute",
-            "description": "On hit: Knockback Primary Die spaces."
-          }
-        ],
+        "abilities": [],
         "actions": [
           {
-            "name": "Smash (2×)",
+            "name": "Punt",
+            "attackCount": 2,
             "damage": {
-              "roll": "1d6+15"
+              "roll": "1d4+13"
             },
-            "description": "(Reach 2)"
+            "description": "Knockback Primary Die spaces.",
+            "target": {
+              "reach": 2
+            }
           },
           {
             "name": "Boulder!",
             "damage": {
-              "roll": "1d6+20"
+              "roll": "1d4+30"
             },
+            "area": {
+              "shape": "square",
+              "size": 2
+            },
+            "description": "[[Prone]].",
             "target": {
               "range": 12
             }
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
         "legendary": false,
         "paperforgeId": "608"
@@ -2719,11 +2976,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Cloaker",
+        "creatureTypes": ["aberration"],
+        "creatureKinds": ["cloaker"],
+        "environments": ["underground"],
         "hp": 110,
         "level": 13,
         "size": "large",
         "armor": "none",
-        "kind": "Underground",
         "movement": [
           {
             "mode": "fly",
@@ -2737,7 +2996,7 @@
           },
           {
             "name": "Mutual Harm",
-            "description": "You take half damage from attacks while grappling a creature (they take the other half)."
+            "description": "You take half damage from attacks while Grappling a creature (they take the other half)."
           }
         ],
         "actions": [
@@ -2746,14 +3005,18 @@
             "damage": {
               "roll": "2d10+20"
             },
-            "description": "On Hit: Grappled (escape DC 16)."
+            "description": "[[Grappled]] (escape DC 15)."
           },
           {
             "name": "Horrifying Wail",
-            "description": "DC 16 WIL save, or creatures within 6 spaces are Frightened and must spend 1 Action moving as far away as possible."
+            "aoe": true,
+            "description": "All others make a DC 15 WIL save, or become [[Frightened]] and must spend an Action to move as far away as possible.",
+            "target": {
+              "reach": 6
+            }
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
         "legendary": false,
         "paperforgeId": "733"
@@ -2763,11 +3026,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Glabrezu",
-        "hp": 110,
+        "creatureTypes": ["fiend"],
+        "creatureKinds": ["demon", "glabrezu"],
+        "environments": [],
+        "hp": 120,
         "level": 14,
         "size": "large",
         "armor": "heavy",
-        "kind": "Cultists & Horrors",
         "movement": [
           {
             "speed": 6
@@ -2776,23 +3041,28 @@
         "abilities": [],
         "actions": [
           {
-            "name": "Doomclaw (2×)",
+            "name": "Doomclaw",
+            "attackCount": 2,
             "damage": {
-              "roll": "3d6+10"
+              "roll": "1d6+20"
             },
-            "description": "(Reach 2) On damage: Grappled (escape DC 17). If the same creature is Grappled by both of the glabrezu's claws, it must escape from each of them separately."
+            "description": "On damage, [[Grappled]] (escape DC 16; if [[Grappled]] by both claws, must escape from each).",
+            "target": {
+              "reach": 2
+            }
           },
           {
             "name": "Tear Asunder",
             "damage": {
               "roll": "50"
             },
-            "description": "(A creature Grappled by both of the glabrezu's claws) Unpreventable damage. If the target is at 0 HP: DC 17 STR save or be torn in two, dying instantly."
+            "description": "(A creature [[Grappled]] by both claws) Unpreventable damage. Then, if the target is [[Dying]]: DC 16 STR save or be torn in two, dying instantly."
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
-        "legendary": false
+        "legendary": false,
+        "paperforgeId": "28"
       },
       "relationships": {
         "family": {
@@ -2807,11 +3077,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Treant",
+        "creatureTypes": ["plant"],
+        "creatureKinds": ["treant"],
+        "environments": ["forest"],
         "hp": 170,
         "level": 14,
         "size": "huge",
         "armor": "heavy",
-        "kind": "Forest Denizens",
         "movement": [
           {
             "speed": 6
@@ -2821,6 +3093,10 @@
           {
             "name": "Enrage",
             "description": "Attack with advantage when unarmored."
+          },
+          {
+            "name": "Peeling Bark",
+            "description": "Damage degrades Armor 1 step: Heavy » Medium » None."
           }
         ],
         "actions": [
@@ -2829,14 +3105,17 @@
             "damage": {
               "roll": "2d6+10"
             },
-            "description": "(Reach 3) On damage: Prone."
+            "target": {
+              "reach": 3
+            },
+            "description": "On damage: [[Prone]]."
           },
           {
             "name": "Stomp",
             "damage": {
               "roll": "2d6+20"
             },
-            "description": "(Hampered target)"
+            "description": "([[Hampered]] target)"
           }
         ],
         "actionsInstructions": "Choose twice:",
@@ -2857,11 +3136,13 @@
       "type": "monsters",
       "attributes": {
         "name": "Great Worm",
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["worm"],
+        "environments": ["underground"],
         "hp": 140,
         "level": 16,
         "size": "huge",
         "armor": "heavy",
-        "kind": "Underground",
         "movement": [
           {
             "mode": "burrow",
@@ -2871,40 +3152,58 @@
         "abilities": [
           {
             "name": "Tremor Sight",
-            "description": "Advantage against creatures that moved since the worm's last turn."
+            "description": "Advantage vs targets who moved this round, Disadvantage otherwise."
+          },
+          {
+            "name": "Swallowed",
+            "description": "You take 20 damage at the start of your turn. Your attacks cannot miss and ignore armor."
           }
         ],
         "actions": [
           {
             "name": "Crush",
             "damage": {
-              "roll": "50"
+              "roll": "d88"
             },
-            "description": "Creatures in a 2×6 area take damage on a failed DC 18 DEX save. (Creatures who fail can spend 1 Action to dive out of the way instead of taking this damage. They move half their speed and land Prone.)"
+            "description": "Damage on a failed DC 18 DEX save. (Creatures who fail can spend 1 Action to dive out of the way instead of taking this damage. They move half their speed and land [[Prone]].)",
+            "area": {
+              "shape": "line",
+              "size": 6,
+              "width": 3
+            }
           },
           {
-            "name": "Bite/Swallow",
+            "name": "Bite",
             "damage": {
-              "roll": "1d4+40"
+              "roll": "1d4+50"
             },
-            "description": "On crit: Swallowed. (Swallowed: You take 20 damage at the start of your turn. Your attacks cannot miss and ignore armor.)"
+            "description": "On crit, Swallowed.",
+            "target": {
+              "reach": 6
+            }
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
-        "legendary": false
+        "legendary": false,
+        "paperforgeId": "162"
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Roc",
-        "hp": 195,
+        "creatureTypes": ["beast"],
+        "creatureKinds": ["bird", "roc"],
+        "environments": ["hills", "grassland"],
+        "hp": 236,
         "level": 17,
         "size": "gargantuan",
-        "armor": "medium",
-        "kind": "Hill And Field",
+        "armor": "none",
         "movement": [
+          {
+            "speed": 6
+          },
           {
             "mode": "fly",
             "speed": 20
@@ -2915,32 +3214,38 @@
           {
             "name": "Pluck Up",
             "damage": {
-              "roll": "3d12+20"
+              "roll": "1d12+20"
             },
-            "description": "(Reach 4, target up to 2 creatures) On hit: Grappled (escape DC 18)."
+            "description": "(target up to 2 creatures) On hit, [[Grappled]] (escape DC 17).",
+            "target": {
+              "reach": 4
+            }
           },
           {
             "name": "Crush & Drop",
             "damage": {
-              "roll": "20"
+              "roll": "2d20"
             },
-            "description": "Fly upward 20 spaces, deal damage to Grappled creatures, then release (10d6 fall damage)."
+            "description": "Fly upward 20 spaces, deal damage to [[Grappled]] creatures, then release (10d6 fall damage)."
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Choose one:",
         "description": "",
-        "legendary": false
+        "legendary": false,
+        "paperforgeId": "655"
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Mummy Lord",
-        "hp": 280,
+        "creatureTypes": ["undead"],
+        "creatureKinds": ["mummy"],
+        "environments": [],
+        "hp": 260,
         "level": 21,
         "size": "medium",
         "armor": "none",
-        "kind": "Undead",
         "movement": [
           {
             "speed": 6
@@ -2949,25 +3254,30 @@
         "abilities": [
           {
             "name": "Cursed Gaze",
-            "description": "When crit: DC 20 INT save, or suffer 1 Wound."
+            "description": "When crit, inflict a Wound on failed DC 20 INT save."
           }
         ],
         "actions": [
           {
             "name": "Scarab Swarm",
-            "description": "Summon 10 scarab minions (d6) within 6 spaces. Then:"
+            "description": "Summon 6 scarab minions (size:d6).",
+            "target": {
+              "reach": 6
+            }
           },
           {
-            "name": "Slam (2×)",
+            "name": "Slam",
+            "attackCount": 2,
             "damage": {
               "roll": "1d4+20"
             },
-            "description": "On damage: Dazed."
+            "description": "On damage, [[Dazed]]."
           }
         ],
-        "actionsInstructions": "",
+        "actionsInstructions": "Do both in order:",
         "description": "",
-        "legendary": false
+        "legendary": false,
+        "paperforgeId": "429"
       },
       "relationships": {
         "family": {
@@ -2982,21 +3292,20 @@
       "type": "monsters",
       "attributes": {
         "name": "Alaric Draegoth, the Crimson Count",
-        "hp": 320,
+        "hp": 0,
         "level": 16,
         "size": "medium",
         "armor": "none",
         "kind": "Vampire Lord",
         "movement": [
           {
-            "mode": "fly",
-            "speed": 8
+            "speed": 6
           }
         ],
         "abilities": [
           {
             "name": "Sanguine Cloak",
-            "description": "(1/turn) Deal 1d10 necrotic damage whenever you are hit, the attack is reduced by this amount."
+            "description": "The 1st time you are attacked each turn, deal 1d10 and reduce the Primary Die by this amount."
           },
           {
             "name": "Sunscorn",
@@ -3006,32 +3315,30 @@
         "actions": [
           {
             "name": "Ebonfang",
-            "damage": {
-              "roll": "1d10+15"
-            },
-            "description": "Your target is considered Bloodied for 1 round. Fly 8 before or after attacking."
+            "description": "1d10+10, target is considered Bloodied for 1 round. Fly 8 before or afterward."
           },
           {
             "name": "Beguile",
-            "description": "If no creature is Beguiled, Beguile a target on a failed DC 18 WIL save (w/ disadvantage if Bloodied). Beguiled: Dazed. Cannot Defend or allow anyone to Interpose for you. Damage ends."
+            "description": "(If no creature is [[Beguiled]]) Beguile a target on a failed DC 18 WIL save (w/ disadvantage if Bloodied)."
           },
           {
-            "name": "Beckon & Bite",
-            "damage": {
-              "roll": "2d10+30"
-            },
-            "description": "Move a Beguiled creature adjacent to you and bite them. Also deals 1 Wound."
+            "name": "Beckon & Feast",
+            "description": "Move a [[Beguiled]] creature adjacent to you and bite them: 1d10+30 damage and 1 Wound."
           }
         ],
-        "actionsInstructions": "After each hero's turn, summon 1 blood bat minion (d10) within 8 spaces, then choose 1:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, summon 1 blood bat minion (d10) within 8 spaces, then choose 1 (rec. alternate):",
         "description": "",
+        "paperforgeId": "514",
+        "legendary": true,
+        "creatureTypes": ["undead"],
+        "creatureKinds": ["vampire"],
+        "environments": [],
+        "hpPerHero": 90,
+        "bloodied": "Mistform. No longer vulnerable to radiant, gain: Bat Decoy (1/round). Whenever Alaric would take damage, instead first swap places with a bat minion.",
+        "lastStand": "Regains 25 HP/hero. Sanguine Cloak, attacks, and bats roll d20s instead of d10s.",
         "saves": {
           "all": 2
-        },
-        "bloodied": "At 160 HP, gain Mistform. Not vulnerable to radiant. Bat Decoy: Whenever Alaric would take damage, instead first swap places with a bat minion, 1/round.",
-        "lastStand": "Alaric is dying! 160 more damage and he dies. Until then, his Sanguine Cloak, attacks, and bats roll d20s instead of d10s.",
-        "paperforgeId": "514",
-        "legendary": true
+        }
       },
       "relationships": {}
     },
@@ -3039,11 +3346,11 @@
       "type": "monsters",
       "attributes": {
         "name": "Azriel, Lord of Pain & Flame",
-        "hp": 320,
+        "hp": 0,
         "level": 14,
         "size": "huge",
-        "armor": "heavy",
-        "kind": "Huge Balor Feeling Hot & Spicy",
+        "armor": "none",
+        "kind": "Huge Balor Cruelty Incarnate",
         "movement": [
           {
             "speed": 6
@@ -3052,34 +3359,32 @@
         "abilities": [
           {
             "name": "PAIN!",
-            "description": "Crits against Azriel are Vicious, he deals damage equal to the crit dice back to the attacker."
+            "description": "ALL Primary Dice rolled against Azriel crit on 1 less than the max. When crit, the attacker takes the exploding damage instead of Azriel."
           }
         ],
         "actions": [
           {
             "name": "Crackling Whip",
-            "damage": {
-              "roll": "3d12"
-            },
-            "description": "Move 6. (Reach 6) On hit: Grappled and pulled adjacent to Azriel (escape DC 17 STR, DEX, or until he uses the whip again)."
+            "description": "Move 6. (Reach 6) 2d12+10, pull adjacent to Azriel."
           },
           {
             "name": "Doom Sword",
-            "damage": {
-              "roll": "3d12+10"
-            },
-            "description": "Fire damage to all creatures within Reach 2."
+            "description": "(Reach 2, AoE) 2d12+20."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose 1 (rec. alternate):",
         "description": "",
+        "paperforgeId": "511",
+        "legendary": true,
+        "creatureTypes": ["fiend"],
+        "creatureKinds": ["demon", "balor"],
+        "environments": [],
+        "hpPerHero": 120,
+        "bloodied": "Gain: Rending Winds. (Reach 12, AoE) DC 17 STR save or Rended: take 2 damage/space moved (healing ends). Azriel can use Crackling Whip twice each turn.",
+        "lastStand": "YES, MORE PAIN! Azriel regains 50 HP/hero, EVERY hit against him is a crit.",
         "saves": {
           "all": 1
-        },
-        "bloodied": "At 160 HP, Azriel can use Crackling Whip twice each turn.",
-        "lastStand": "YES, MORE PAIN! Azriel is dying! 180 more damage and he dies. Until then, EVERY hit against him is a crit.",
-        "paperforgeId": "511",
-        "legendary": true
+        }
       },
       "relationships": {}
     },
@@ -3087,106 +3392,115 @@
       "type": "monsters",
       "attributes": {
         "name": "Dravok, All-Seeing Tyrant",
-        "hp": 325,
+        "hp": 0,
         "level": 12,
         "size": "large",
         "armor": "none",
         "kind": "Large Aberration, all TEETH & EYES",
         "movement": [
           {
-            "mode": "fly",
             "speed": 6
           }
         ],
         "abilities": [
           {
-            "name": "My plans, flawless!",
-            "description": "Dravok makes all saves with +1 Advantage, attacks against him have Disadvantage."
+            "name": "My plans, FLAWLESS!",
+            "description": "Attacks against Dravok are Disadvantaged, Dravok makes all saves with +1 advantage."
           },
           {
             "name": "Weakness",
-            "description": "Taking more than 12 piercing or slashing damage: Dravok's plans are FLAWED! (until the end of the next hero's turn.)"
+            "description": "Taking 20 or more piercing or slashing damage at a time: Dravok's plans are FLAWED! (until the end of the next hero's turn)."
           }
         ],
         "actions": [
           {
-            "name": "Eye Ray",
-            "description": "(Range 10) Randomly chosen ray then choose target: 1. Warping Ray: 3d6, On hit: Dazed, exchange places. 2. Petrification Ray: Permanently Dazed, healing ends (3 stacks = Petrified). 3. Terror Ray: 5d10 psychic & Terrified. 4. Gravitation Ray: 2d6, push that many spaces, Prone on 7+. 5. Charm Ray: DC 16 WIL or spend 3 Actions controlled. 6. Death Ray: DC 16 STR or drop to 0 HP."
+            "name": "1. Warping Ray",
+            "description": "2d6+10. Exchange places with target and knock [[Prone]]."
           },
           {
-            "name": "Terrible Maw",
-            "damage": {
-              "roll": "4d4"
-            },
-            "description": "Melee attack. EVERY die can crit and is Vicious."
+            "name": "2. Petrification Ray",
+            "description": "2d6+10. Permanently [[Dazed]] (Can stack, healing ends; 3 stacks: [[Petrified]])."
+          },
+          {
+            "name": "3. Terror Ray",
+            "description": "2d6+10 psychic damage & TERRIFIED: [[Frightened]], and your screams give allies within Reach 6 disadvantage on rolls. Ends when Dravok’s plans are FLAWED."
+          },
+          {
+            "name": "4. Gravitation Ray",
+            "description": "2d6, move target that many spaces. Forced movement deals +5 damage instead of rolling additional dice."
+          },
+          {
+            "name": "5. Charm Ray",
+            "description": "Spend 3 Actions for an enemy (you cannot spend any limited resources, they regain any spent actions afterward)."
+          },
+          {
+            "name": "6. Death Ray",
+            "description": "d66, gain 1 Wound."
           }
         ],
-        "actionsInstructions": "After each hero's turn, Move 6 and then either use Eye Ray OR Terrible Maw:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, move 6 then either use Eye Ray (Range 10, choose, perform in order, or roll randomly) OR Terrible Maw. 4d4. +10 damage for ANY 4 rolled.",
         "description": "",
+        "paperforgeId": "7",
+        "legendary": true,
+        "creatureTypes": ["aberration"],
+        "creatureKinds": [],
+        "environments": [],
+        "hpPerHero": 90,
+        "bloodied": "To Dust! Petrification Ray every enemy. His save DC increases to 18.",
+        "lastStand": "Dravok regains 32 HP/hero. Each turn he uses Warping Ray then another attack. Gain: **Devastation Beam**. (1 use, Line 10×2, AoE) d66, gain 1 Wound.",
         "saves": {
           "int": 2,
           "wil": 2
-        },
-        "bloodied": "To Dust! At 110 HP, use Petrification Ray against every enemy. His save DC increases to 18.",
-        "lastStand": "Dravok is dying! 70 more damage and he dies. Until then, each turn he will move or use Warping Ray and then Devastation Beam: 2d12+20 in a 10 space long, 2 space wide line.",
-        "paperforgeId": "7",
-        "legendary": true
+        }
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Florindris, Bane of the Forest",
-        "hp": 200,
+        "hp": 0,
         "level": 7,
         "size": "large",
-        "armor": "medium",
+        "armor": "none",
         "kind": "Large Floral Dragon",
         "movement": [
           {
-            "mode": "fly",
-            "speed": 10
+            "speed": 6
           }
         ],
         "abilities": [
           {
             "name": "Aura of Wind",
-            "description": "Ranged attacks against you have disadvantage. End of turn: push adjacent creatures 2 spaces away."
+            "description": "Ranged attacks against you have disadvantage. At the end of your turn, push adjacent creatures 2 spaces away."
           },
           {
             "name": "Wither",
-            "description": "Resistant to necrotic damage, but it suppresses Aura of Wind for 1 turn."
+            "description": "Resistant to necrotic damage, but it suppresses Aura of Wind until the end of the next hero’s turn."
           }
         ],
         "actions": [
           {
-            "name": "Petal Storm",
-            "damage": {
-              "roll": "3d10+10"
-            },
-            "description": "(1 use) Damage to all enemies within Reach 8, half on a DC 13 DEX save."
+            "name": "Gust",
+            "description": "(Reach 8) Move a target 1d10 spaces."
           },
           {
             "name": "Rend",
-            "damage": {
-              "roll": "1d10+10"
-            },
-            "description": "Fly 10 before or after attacking. (Reach 2) Up to 2 targets within reach. On hit: Gain Thornblight (suffer 5 damage for each space forcibly moved, magical healing ends)."
-          },
-          {
-            "name": "Gust",
-            "description": "(Reach 8) Move a target 1d10 spaces."
+            "description": "Fly 10. (Reach 2, up to 2 targets) 1d10+10. On hit, gain [[Thornblight]].\n\nThornblight: Suffer 2 damage for each space you are forcibly moved. Healing ends this effect."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose one (rec. alternate):",
         "description": "",
         "saves": {
           "all": 1
         },
-        "bloodied": "At 100 HP, enemies within Reach 12 gain Thornblight, and Petal Storm recharges.",
-        "lastStand": "Florindris is dying! 70 more damage and she dies. Until then, Aura of Wind and Gust move creatures twice as far.",
-        "paperforgeId": "77a",
-        "legendary": true
+        "bloodied": "Enemies within Reach 12 gain Thornblight. Gain: Petal Storm. (1 use, Reach 8, AoE) 2d10+10 damage, half on a DC 13 DEX save.",
+        "lastStand": "Florindris regains 23 HP/hero, and Aura of Wind and Gust move creatures twice as far.",
+        "paperforgeId": "77c",
+        "legendary": true,
+        "creatureTypes": ["dragon"],
+        "creatureKinds": ["dragon"],
+        "environments": [],
+        "hpPerHero": 64
       },
       "relationships": {}
     },
@@ -3194,52 +3508,50 @@
       "type": "monsters",
       "attributes": {
         "name": "General Flameheart",
-        "hp": 175,
+        "hp": 0,
         "level": 8,
         "size": "huge",
-        "armor": "heavy",
+        "armor": "medium",
         "kind": "Huge Flame Titan",
         "movement": [
           {
-            "speed": 8
+            "speed": 6
           }
         ],
         "abilities": [
           {
             "name": "Cinder Armor",
-            "description": "Immune to fire. When damaged, deal 5 fire damage to all adjacent creatures."
+            "description": "Resistant to fire. When damaged, deal 5 fire damage to all adjacent creatures."
           },
           {
             "name": "Extinguish Flame",
-            "description": "Cold or radiant crits extinguish all areas ignited by Molten Fury and suppress Cinder Armor for 1 turn."
+            "description": "Cold or radiant crits extinguish all areas ignited by Molten Fury and suppress Cinder Armor until the end of the next hero’s turn."
           }
         ],
         "actions": [
           {
             "name": "Inferno Cleave",
-            "damage": {
-              "roll": "2d10+10"
-            },
-            "description": "Move 8 then strike a 2×2 square area for fire damage."
+            "description": "Move 6 then strike a 3×2 square area for 2d10+10 fire damage."
           },
           {
             "name": "Molten Fury",
-            "damage": {
-              "roll": "2d10+10"
-            },
-            "description": "Lob a molten fireball at the furthest hero not already in the flames, igniting a 2×2 square area. Another 10 damage at the end of each of their turns if they remain in the area."
+            "description": "Lob a molten fireball at the furthest hero not already in the flames, igniting a 2×2 square area. Creatures there take 2d10+10 damage; and another 10 damage at the end of each of their turns if they remain in the area."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose one (rec. alternate):",
         "description": "",
         "saves": {
-          "str": 1,
+          "str": 2,
           "wil": 1
         },
-        "bloodied": "At 87 HP, on his next turn, he uses Molten Fury a number of times equal to half the number of heroes (rounded up).",
-        "lastStand": "Flameheart is dying! 80 more damage and he dies. Until then, the area of his attacks increase to a 3×3 square.",
+        "bloodied": "Flamespawn. Each Molten Fury spawns an @monster:[ae3a1404-4039-4360-ab71-bdb9b7956d0f|Elemental Fireling] minion.",
+        "lastStand": "Flameheart regains 19 HP/hero, his attacks increase to a 3×3 area. Spawn a @monster:[ae3a1404-4039-4360-ab71-bdb9b7956d0f|Fireling] on each of his turns.",
         "paperforgeId": "583",
-        "legendary": true
+        "legendary": true,
+        "creatureTypes": ["giant"],
+        "creatureKinds": ["giant"],
+        "environments": [],
+        "hpPerHero": 64
       },
       "relationships": {}
     },
@@ -3247,21 +3559,20 @@
       "type": "monsters",
       "attributes": {
         "name": "Gloomwing the Cruel",
-        "hp": 320,
+        "hp": 0,
         "level": 15,
         "size": "huge",
         "armor": "heavy",
         "kind": "Huge Rot Dragon",
         "movement": [
           {
-            "mode": "fly",
-            "speed": 10
+            "speed": 6
           }
         ],
         "abilities": [
           {
             "name": "Aura of Rot",
-            "description": "Creatures within 6 spaces take 5 necrotic damage at the end of their turns."
+            "description": "(Reach 6) Enemies suffer 5 necrotic damage at the end of their turns."
           },
           {
             "name": "Light Sensitivity",
@@ -3270,43 +3581,31 @@
         ],
         "actions": [
           {
-            "name": "Rot Breath",
-            "damage": {
-              "roll": "8d10"
-            },
-            "description": "(1 use) Fly 10, then (Cone 8) DC 17 DEX save or necrotic damage, half on save."
+            "name": "Claws",
+            "description": "Move 6, then (Reach 2) 2d10+10. On damage, Cruelty’s Gift.\n\nCruelty’s Gift: Healing is halved and Vulnerable to necrotic damage. Healing ends."
           },
           {
             "name": "Bite",
-            "damage": {
-              "roll": "3d10"
-            },
-            "description": "(Reach 2) Move 6. On damage: Cruelty's Gift (Healing is halved and Vulnerable to necrotic, healing ends)."
-          },
-          {
-            "name": "Claws",
-            "damage": {
-              "roll": "3d10+10"
-            },
-            "description": "(Reach 2) Slashing + necrotic damage."
+            "description": "(Reach 2) 2d20+10 necrotic."
           },
           {
             "name": "Tail",
-            "damage": {
-              "roll": "1d10"
-            },
-            "description": "(Reach 4) Knocked back that many spaces."
+            "description": "(Cone 4, AoE) 1d10+10, Knockback Primary Die spaces."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose one:",
         "description": "",
+        "paperforgeId": "108",
+        "legendary": true,
+        "creatureTypes": ["dragon"],
+        "creatureKinds": ["dragon"],
+        "environments": [],
+        "hpPerHero": 100,
+        "bloodied": "Gain: Rot Breath (1 use). Fly 10, then (Cone 8, AoE) DC 17 DEX save or 8d10 necrotic, half on save.",
+        "lastStand": "Gloomwing regains 30 HP/hero, Light Sensitivity ends, and the damage and Reach of Aura of Rot is doubled.",
         "saves": {
           "all": 2
-        },
-        "bloodied": "At 160 HP Gloomwing's Rot Breath recharges.",
-        "lastStand": "Gloomwing is dying! 150 more damage and he dies. Until then, the damage and range of His Aura of Rot is doubled.",
-        "paperforgeId": "108",
-        "legendary": true
+        }
       },
       "relationships": {}
     },
@@ -3314,11 +3613,11 @@
       "type": "monsters",
       "attributes": {
         "name": "Grimbeak, the Unyielding",
-        "hp": 100,
+        "hp": 0,
         "level": 3,
         "size": "large",
-        "armor": "medium",
-        "kind": "Large Owlbear",
+        "armor": "none",
+        "kind": "Owlbear",
         "movement": [
           {
             "speed": 6
@@ -3327,61 +3626,52 @@
         "abilities": [
           {
             "name": "Brutal",
-            "description": "Treat the highest die rolled as the Primary Die. On crit: knock Prone."
+            "description": "Treat the highest die rolled as the Primary Die. On crit, knock [[Prone]]."
           }
         ],
         "actions": [
           {
-            "name": "Savage Screech",
-            "damage": {
-              "roll": "2d6"
-            },
-            "description": "(1 use) All enemies within reach 12 suffer damage (ignoring armor). DC 11 WIL save or become Frightened for 1 round."
+            "name": "Beak",
+            "description": "Move 8. Attack for 2d6 damage."
           },
           {
             "name": "Rend & Tear",
-            "damage": {
-              "roll": "2d6+10"
-            }
-          },
-          {
-            "name": "Beak",
-            "damage": {
-              "roll": "2d6"
-            },
-            "description": "Move 8."
+            "description": "Attack for 2d6+5 damage."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose one (rec. alternate):",
         "description": "",
         "saves": {
           "str": 1
         },
-        "bloodied": "At 50 HP, Savage Screech recharges.",
-        "lastStand": "Grimbeak is dying! 30 more damage and she dies. Until then, her Attacks use d10s instead of d6s.",
+        "bloodied": "Gain: Savage Screech. (1 use, Reach 12, AoE) 2d6 psychic damage (ignoring Defense). DC 11 WIL save or [[Frightened]] for 1 round.",
+        "lastStand": "Grimbeak regains 10 HP/hero and rolls d10s instead of d6s.",
         "paperforgeId": "758",
-        "legendary": true
+        "legendary": true,
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["owlbear"],
+        "environments": [],
+        "hpPerHero": 40
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Nalzar, Apex Predator",
-        "hp": 180,
+        "hp": 0,
         "level": 6,
         "size": "large",
-        "armor": "medium",
-        "kind": "Large Grey Drake",
+        "armor": "none",
+        "kind": "Grey Drake",
         "movement": [
           {
-            "mode": "fly",
-            "speed": 8
+            "speed": 6
           }
         ],
         "abilities": [
           {
             "name": "Tail Swipe",
-            "description": "When dealt slashing or lightning damage: knock a hero within 3 spaces Prone."
+            "description": "When dealt slashing or lightning damage: (Reach 3) knock an enemy [[Prone]]."
           },
           {
             "name": "Torn Wings",
@@ -3390,201 +3680,188 @@
         ],
         "actions": [
           {
-            "name": "Devour",
-            "damage": {
-              "roll": "4d12+6"
-            },
-            "description": "(Prone creatures only, Reach 2)"
+            "name": "Wing Buffet",
+            "description": "Fly 10, then land. (Cone 10, AoE) 1d10, [[Prone]] on failed DC 14 STR save (advantage if behind cover or another hero)."
           },
           {
-            "name": "Wing Buffet",
-            "damage": {
-              "roll": "1d12"
-            },
-            "description": "Fly 8, then land. Cone 8: then DC 14 STR save or also knocked Prone (advantage if behind cover or another hero)."
+            "name": "Devour",
+            "description": "Move 2, (vs [[Prone]], Reach 2) 3d10+10."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose one (rec. alternate):",
         "description": "",
         "saves": {
           "str": 1,
           "dex": 1
         },
-        "bloodied": "At 90 HP, her Wing Buffet Range and DC increase by 2.",
-        "lastStand": "Nalzar is dying! 60 more damage and she dies. Until then, each turn, she moves 6, then uses Devour (ignoring the Prone requirement).",
-        "paperforgeId": "720",
-        "legendary": true
+        "bloodied": "+2 to Wing Buffet DC and +1d10 damage.",
+        "lastStand": "Nalzar regains 20 HP/hero and each turn she moves 6, then uses Devour (ignoring the [[Prone]] requirement).",
+        "paperforgeId": "108",
+        "legendary": true,
+        "creatureTypes": ["dragon"],
+        "creatureKinds": ["drake"],
+        "environments": [],
+        "hpPerHero": 56
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Pudge the Blunderer",
-        "hp": 75,
+        "hp": 0,
         "level": 2,
-        "size": "large",
-        "armor": "medium",
+        "size": "medium",
+        "armor": "none",
         "kind": "Dumb Ogre",
         "movement": [
           {
-            "speed": 8
+            "speed": 6
           }
         ],
         "abilities": [],
         "actions": [
           {
             "name": "Move & Smack",
-            "damage": {
-              "roll": "1d8+2"
-            },
-            "description": "Move 8. On damage: Prone."
+            "description": "Move 8, attack for 1d8. On damage, [[Prone]]."
           },
           {
             "name": "Grab & Throw",
-            "damage": {
-              "roll": "1d8+2"
-            },
-            "description": "On damage: they are thrown at another hero within 6 spaces. Both make a DC 12 DEX save or take 1d8+2 damage and are knocked Prone, half damage on save."
+            "description": "1d8. On damage, (Reach 6) throw them at another target, both take another 1d8 damage and are knocked [[Prone]]."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose one (recommended to alternate):",
         "description": "",
         "saves": {
           "str": 1,
           "int": -1
         },
-        "bloodied": "At 37 HP, Pudge's damage increases to 1d12+2.",
-        "lastStand": "Pudge is dying! 20 more damage and he dies. Until then, Pudge can move 6 spaces, and use Grab & Throw each turn.",
+        "bloodied": "Quaking Stomp! Heroes are knocked [[Prone]] on a failed DC 12 STR save.",
+        "lastStand": "Pudge regains 7 HP/hero, and rolls d12s for each attack.",
         "paperforgeId": "780",
-        "legendary": true
+        "legendary": true,
+        "creatureTypes": ["giant"],
+        "creatureKinds": ["ogre"],
+        "environments": [],
+        "hpPerHero": 28
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Queen Aranya, Broodmother",
-        "hp": 160,
+        "hp": 0,
         "level": 6,
         "size": "large",
         "armor": "medium",
         "kind": "Large Matriarch of Spiders",
         "movement": [
           {
-            "speed": 8
+            "speed": 6
           }
         ],
         "abilities": [
           {
             "name": "Weave Web",
-            "description": "Creatures she hits are entangled in a sticky web (Dazed)."
+            "description": "Creatures she hits are entangled in a sticky web ([[Dazed]])."
           },
           {
             "name": "Flammable Webs",
-            "description": "Fire critical hits suppress the Broodmother's Weave Web for 1 turn."
+            "description": "Fire damage suppresses Weave Web for 1 turn."
           }
         ],
         "actions": [
           {
             "name": "Impale",
-            "damage": {
-              "roll": "2d8+8"
-            },
-            "description": "(Reach 2) Then skitter away up to 8 spaces."
+            "description": "(Reach 2) 2d8+8 damage. Then skitter away up to 8 spaces."
           },
           {
             "name": "Hatch Brood",
-            "description": "Summon spiderling minions (1/hero, size: d8); they act only when commanded."
+            "description": "Summon 1 spiderling minion/hero (size:d8); they act only when commanded."
           },
           {
             "name": "Dinner Time!",
-            "description": "Command all of your spiderling minions to move up to 6 spaces and attack once each."
+            "description": "Command all of your spiderling minions to move 6 then attack."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose one (rec. alternate):",
         "description": "",
         "saves": {
           "all": 1
         },
-        "bloodied": "\"Avenge Your Queen, My Brood!\" At 80 HP, summon 3 spiderling minions/hero anywhere within Reach 8.",
-        "lastStand": "Aranya is dying! 40 more damage and she dies. Until then, Hatch Brood after each of her turns.",
+        "bloodied": "Avenge Your Queen, My Brood! Summon 3 spiderling minions/hero within Reach 8.",
+        "lastStand": "Aranya regains 12 HP/hero and uses Hatch Brood after each of her turns.",
         "paperforgeId": "99",
-        "legendary": true
+        "legendary": true,
+        "creatureTypes": ["beast"],
+        "creatureKinds": ["spider"],
+        "environments": [],
+        "hpPerHero": 44
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Ravager of the Lowlands",
-        "hp": 130,
+        "hp": 0,
         "level": 5,
         "size": "large",
-        "armor": "medium",
+        "armor": "none",
         "kind": "Large Manticore",
         "movement": [
           {
-            "mode": "fly",
-            "speed": 10
+            "speed": 6
           }
         ],
         "abilities": [
           {
             "name": "Feral Instinct",
-            "description": "Whenever Ravager is crit, he can fly 10."
+            "description": "Whenever Ravager is crit, he can fly 10, ignoring opportunity attacks."
           }
         ],
         "actions": [
           {
-            "name": "Venomous Stinger",
-            "damage": {
-              "roll": "5d12"
-            },
-            "description": "(1 use) Reach 3."
+            "name": "Claw",
+            "description": "Fly 10, (Reach 2) 1d12+5."
           },
           {
             "name": "Ravage",
-            "damage": {
-              "roll": "1d12+20"
-            }
-          },
-          {
-            "name": "Claw",
-            "damage": {
-              "roll": "1d12+6"
-            },
-            "description": "Fly 10."
+            "description": "(Reach 2) 1d12+12."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose one (rec. alternate):",
         "description": "",
         "saves": {
           "str": 1,
           "dex": 1
         },
-        "bloodied": "At 65 HP, his Venomous Stinger recharges.",
-        "lastStand": "The Ravager is dying! 40 more damage and he dies. Until then, the first time each turn he takes damage, he uses Move & Claw.",
+        "bloodied": "Gain: Venomous Stinger. (1 use, Reach 3) 5d12 damage. [[Poisoned]].",
+        "lastStand": "Ravager regains 17 HP/hero and the first time each turn he takes damage, he attacks for 1d12.",
         "paperforgeId": "143",
-        "legendary": true
+        "legendary": true,
+        "creatureTypes": ["monstrosity"],
+        "creatureKinds": ["manticore"],
+        "environments": [],
+        "hpPerHero": 48
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Caerys, the Hollow Star",
-        "hp": 620,
+        "hp": 0,
         "level": 20,
-        "size": "gargantuan",
+        "size": "medium",
         "armor": "heavy",
         "kind": "World-Ending Cataclysm",
         "movement": [
           {
-            "mode": "fly",
-            "speed": 12
+            "speed": 6
           }
         ],
         "abilities": [
           {
             "name": "Ravages of Time",
-            "description": "At the beginning of each round, all heroes suffer 1 Wound."
+            "description": "At the beginning of each round, enemies suffer 1 Wound."
           },
           {
             "name": "Slipstream",
@@ -3594,17 +3871,11 @@
         "actions": [
           {
             "name": "Wormhole",
-            "damage": {
-              "roll": "3d20"
-            },
-            "description": "Teleport 12. Damage to a creature adjacent to where you began or ended."
+            "description": "Teleport 12. 3d20 to a creature adjacent to where you began or ended."
           },
           {
             "name": "Immensity",
-            "damage": {
-              "roll": "3d20"
-            },
-            "description": "(Reach 12) DC 20 STR save (disadvantage if within Reach 4) or damage and Prone. Half on save."
+            "description": "(Reach 12) 3d20, [[Prone]] on failed DC 20 STR save (disadvantage if within Reach 4). Half on save."
           },
           {
             "name": "Glimpse Your End",
@@ -3612,32 +3883,30 @@
           },
           {
             "name": "Plasma Storm",
-            "damage": {
-              "roll": "2d20+2d20"
-            },
-            "description": "Reach 6, DC 20 DEX save or lightning and fire damage. Half on save."
+            "description": "(Reach 6, AoE) DC 20 DEX save or 2d20 lightning and 2d20 fire damage. Half on save."
           },
           {
             "name": "Singularity",
-            "damage": {
-              "roll": "5d20"
-            },
-            "description": "Reach 2, bludgeoning damage."
+            "description": "(Reach 2) 2d20+40 bludgeoning damage."
           },
           {
-            "name": "Almighty Push & Pull",
-            "description": "(Range 12) DC 20 STR save or be launched 20 ft. into the air, repeat until the target saves. Fall damage for this attack is 1d20 for every 10 ft. fallen."
+            "name": "Desire & End",
+            "description": "(Reach 12) DC 20 INT save or 2d20+20 damage and choose an ally to suffer the same damage. Half on save."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose 1 not yet chosen (reset when all have been chosen):",
+        "actionsInstructions": "ACTIONS: After each hero’s turn, choose 1 not yet chosen (reset when all have been chosen):",
         "description": "",
+        "paperforgeId": null,
+        "legendary": true,
+        "creatureTypes": [],
+        "creatureKinds": [],
+        "environments": [],
+        "hpPerHero": 125,
+        "bloodied": "Gravitational Mastery. (Reach 16) Move ALL objects and creatures anywhere within the area. Gravitational Lensing. The hero with the most HP is marked by Caerys. She takes half damage from all sources and her mark takes the other half, until the mark drops to 0 HP.",
+        "lastStand": "Lose Heavy Armor. Use Gravitational Mastery again, then Caerys regains 60 HP/hero and she chooses twice each turn. If still alive after 1 round: Reset Time: she resets back to full HP.",
         "saves": {
           "all": 3
-        },
-        "bloodied": "At 310 HP, Gravitational Mastery: Move ALL objects and creatures within 16 spaces anywhere else within the area. Gravitational Lensing: The hero with the most HP is marked by Caerys. She takes half damage from all sources, her mark takes the other half. This lasts until the mark drops to 0 HP.",
-        "lastStand": "Use Gravitational Mastery, then Caerys is dying! 200 more damage and she dies. Until then she chooses twice each turn. If still alive after 1 round: Reset Time: she resets back to full HP.",
-        "paperforgeId": null,
-        "legendary": true
+        }
       },
       "relationships": {}
     },
@@ -3645,14 +3914,14 @@
       "type": "monsters",
       "attributes": {
         "name": "Thorn Quickblade",
-        "hp": 125,
+        "hp": 0,
         "level": 4,
         "size": "medium",
-        "armor": "medium",
+        "armor": "none",
         "kind": "Human Criminal",
         "movement": [
           {
-            "speed": 8
+            "speed": 6
           }
         ],
         "abilities": [
@@ -3664,31 +3933,26 @@
         "actions": [
           {
             "name": "Stormquill (Crossbow)",
-            "damage": {
-              "roll": "4d4+10"
-            },
-            "target": {
-              "range": 8
-            },
-            "description": "Move 4."
+            "description": "2d4+10 (Range 8)."
           },
           {
             "name": "Heart Piercer (Rapier)",
-            "damage": {
-              "roll": "2d4+3"
-            },
-            "description": "Move 8. On crit: Dazed."
+            "description": "Move 6, 2d4 damage. On crit, [[Dazed]]."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose one (rec. alternate):",
         "description": "",
         "saves": {
           "dex": 1
         },
-        "bloodied": "Smoke Bomb. At 62 HP, Thorn immediately becomes invisible (until the end of his next turn), then moves 8, ignoring opportunity attacks.",
-        "lastStand": "Mortal Panic! Thorn is dying! 30 more damage and he's dead! Until then he'll Strike Back EVERY time he's hit (1/turn).",
+        "bloodied": "Smoke Bomb. Thorn immediately [[Blind|Blinds]] all enemies for 1 round, then moves 6, ignoring Opportunity Attacks.",
+        "lastStand": "Fight or Flight. Thorn regains 13 HP/hero and (1/turn) can Strike Back or Move when hit.",
         "paperforgeId": "258",
-        "legendary": true
+        "legendary": true,
+        "creatureTypes": ["humanoid"],
+        "creatureKinds": ["human"],
+        "environments": [],
+        "hpPerHero": 44
       },
       "relationships": {}
     },
@@ -3696,20 +3960,20 @@
       "type": "monsters",
       "attributes": {
         "name": "Titan of the Deep Woods",
-        "hp": 240,
+        "hp": 0,
         "level": 10,
         "size": "gargantuan",
         "armor": "heavy",
         "kind": "Gargantuan Skeleton",
         "movement": [
           {
-            "speed": 10
+            "speed": 6
           }
         ],
         "abilities": [
           {
             "name": "Splintering Legions",
-            "description": "Bludgeoning damage or any crit cause bones to splinter off and animate, forming a d10 minion."
+            "description": "Bludgeoning damage or any crit causes bones to splinter off and animate, forming a skeletal minion (size:d10)."
           },
           {
             "name": "Brittle Bones",
@@ -3719,31 +3983,29 @@
         "actions": [
           {
             "name": "Devastating Strike",
-            "damage": {
-              "roll": "1d4+30"
-            },
-            "description": "(Reach 4) On hit: Knockback 6."
+            "description": "(Reach 4) 1d4+30 damage. On hit, [[Knockback]] 6."
           },
           {
             "name": "Crushing Stomp",
-            "damage": {
-              "roll": "1d4+20"
-            },
-            "description": "Move up to 10 spaces. Up to 2 targets along the path. On hit: Prone."
+            "description": "Move 10. Deal 1d4+20 damage to up to 2 targets along the path. On hit, [[Prone]]."
           },
           {
             "name": "Beckoning Doom",
-            "description": "The 2 furthest heroes make a DC 16 STR save or are moved adjacent to Titan."
+            "description": "The 2 furthest heroes make a DC 16 WIL save or are moved adjacent to Titan (disadvantage if any skeleton is adjacent)."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose 1 (rec. alternate):",
         "description": "",
+        "paperforgeId": "774",
+        "legendary": true,
+        "creatureTypes": ["undead"],
+        "creatureKinds": ["skeleton"],
+        "environments": [],
+        "hpPerHero": 64,
+        "lastStand": "Shattered Legion. At 0 HP the Titan collapses into 4 skeleton minions/hero (size:d10). If any remain, they reassemble into the Titan the next evening.",
         "saves": {
           "str": 3
-        },
-        "lastStand": "Shattered Legion. At 0 HP Titan collapses into 4 skeleton minions/hero (d10 sized). If any remain, they reassemble into the Titan the next evening.",
-        "paperforgeId": "774",
-        "legendary": true
+        }
       },
       "relationships": {}
     },
@@ -3751,11 +4013,11 @@
       "type": "monsters",
       "attributes": {
         "name": "Ul'vek, Psionic Despot",
-        "hp": 300,
+        "hp": 0,
         "level": 11,
         "size": "medium",
         "armor": "none",
-        "kind": "Medium Brain-Eating Aberration",
+        "kind": "Brain-Eating Aberration",
         "movement": [
           {
             "speed": 6
@@ -3764,47 +4026,44 @@
         "abilities": [
           {
             "name": "Mind Shield",
-            "description": "Whenever Ul' would fail a save or take more than 30 damage while he has a creature Dominated, he may avoid the attack instead, but all Dominated creatures come to their senses."
+            "description": "Whenever Ul'vek would fail a save or take more than 30 damage while he has any creatures [[Dominated]], he may avoid the attack instead, but all [[Dominated]] creatures come to their senses."
           }
         ],
         "actions": [
           {
             "name": "Dominate",
-            "damage": {
-              "roll": "2d12"
-            },
-            "description": "(If no creatures are Dominated) Choose half of the heroes to suffer psychic damage (ignoring armor). DC 15 WIL save or Dominated as well. Dominated: Rolls are made with disadvantage. Ul' spends your first action on each of your turns. Damage ends."
+            "description": "(If no creatures are [[Dominated]]) Choose half of the heroes to suffer 2d12 psychic damage (ignoring Defense). DC 15 WIL save or [[Dominated]] as well."
           },
           {
             "name": "Consume",
-            "damage": {
-              "roll": "6d12"
-            },
-            "description": "(Dominated creature) Contested DEX or STR check, on success: Grappled. Cannot be Defended or Interposed against."
+            "description": "([[Dominated]] creature) DC 15 DEX save or 6d12 and [[Grappled]] (escape DC 15), half on save. Cannot be Defended or Interposed against."
           },
           {
             "name": "Control",
-            "description": "Teleport 8. (Reach 8) DC 15 WIL save, force an enemy to spend one Action to make a weapon attack or cast a cantrip. On save, they attack with disadvantage."
+            "description": "Teleport 8. (Reach 8) DC 15 STR save, force an enemy to spend one Action to move, make a weapon attack, or cast a cantrip. On save, they move half as far or attack with disadvantage."
           }
         ],
-        "actionsInstructions": "After each hero's turn, choose one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, choose one (rec. alternate):",
         "description": "",
+        "paperforgeId": "348",
+        "legendary": true,
+        "creatureTypes": ["aberration"],
+        "creatureKinds": [],
+        "environments": [],
+        "hpPerHero": 84,
+        "bloodied": "Gain: Illusory Shift (1 use). Reaction (when attacked): Swap places with a [[Dominated]] creature, making them the new target of the attack.",
+        "lastStand": "DOMINATION! Ul'vek regains 30 HP/hero, and every hero makes a DC 15 WIL save or becomes [[Dominated]]. [[Dominated]] no longer ends on taking damage.",
         "saves": {
           "int": 2,
-          "wil": 2,
-          "dex": 1
-        },
-        "bloodied": "At 150 HP gain Illusory Shift. Reaction, when attacked (1 use): Swap places with a Dominated creature, making them the new target of the attack.",
-        "lastStand": "Ul' is dying! 110 more damage and he dies. Until then, Dominated no longer ends on taking damage. Every hero makes a WIL save or become Dominated.",
-        "paperforgeId": "348",
-        "legendary": true
+          "wil": 2
+        }
       }
     },
     {
       "type": "monsters",
       "attributes": {
         "name": "Vael, Undying Necromancer",
-        "hp": 250,
+        "hp": 0,
         "level": 9,
         "size": "medium",
         "armor": "none",
@@ -3817,48 +4076,41 @@
         "abilities": [
           {
             "name": "Protect Master!",
-            "description": "Whenever Vael would fail a save or take 20 or more damage, he may sacrifice his Lifebinding Spirit, Bane, instead. He spends his next turn moving up to 6 spaces and summoning Bane."
+            "description": "Whenever Vael would fail a save or take 20 or more damage, he may sacrifice his Lifebinding Spirit, Bane, instead."
           }
         ],
         "actions": [
           {
             "name": "DOOM",
-            "damage": {
-              "roll": "5d12"
-            },
-            "target": {
-              "range": 12
-            },
-            "description": "(Undamaged target) DC 14 WIL save or full damage. Half on save."
+            "description": "(Range 12, undamaged target) DC 14 WIL save or 2d12+20. Half on save."
           },
           {
-            "name": "Veilwalker's Rebuke",
-            "damage": {
-              "roll": "2d12+6"
-            },
-            "target": {
-              "range": 8
-            },
-            "description": "Double damage against those behind cover. 1/round you may swap places with them."
+            "name": "Veilwalker’s Rebuke",
+            "description": "(Range 8) 2d12+6. Double damage against those behind Cover. (1/round) You may swap places with them."
           },
           {
-            "name": "Cruelty's Edge",
-            "damage": {
-              "roll": "1d4+2"
-            },
-            "description": "On hit: DC 14 WIL save or Dazed and Frightened. Then move 6."
+            "name": "Cruelty’s Edge",
+            "description": "1d4+2. On hit, DC 14 WIL save or [[Dazed]] and [[Frightened]]. Then move 6."
+          },
+          {
+            "name": "Resummon Bane",
+            "description": "(1/round) Move 6 and resummon Bane."
           }
         ],
-        "actionsInstructions": "After each hero's turn, Bane attacks for 1d12+6 then Vael chooses one:",
+        "actionsInstructions": "LEGENDARY: After each hero’s turn, Bane attacks for 1d12+6 then Vael chooses one:",
         "description": "",
+        "paperforgeId": "534",
+        "legendary": true,
+        "creatureTypes": [],
+        "creatureKinds": [],
+        "environments": [],
+        "hpPerHero": 64,
+        "bloodied": "Shield of Cruelty. (Reaction, 1 use) If Vael would be damaged, instead he may reflect that much radiant damage back at the attacker.",
+        "lastStand": "DEATH, AN OLD FRIEND. Vael regains 24 HP/hero. The hero that most recently damaged him is reduced to 0 HP, and Bane is sacrificed into a Vengeful Spirit and can't be resummoned: (Reach 3, AoE) 1d12+6 at the end of each of Vael's turns.",
         "saves": {
           "int": 2,
           "wil": 2
-        },
-        "bloodied": "At 125 HP, Vael gains the reaction Shield of Cruelty. (1 time use) If Vael would be damaged, instead he may reflect that much radiant damage back at the attacker.",
-        "lastStand": "DEATH, AN OLD FRIEND. Vael is dying! 90 more damage and he dies. Until then, he gains Heavy Armor, the hero that most recently damaged him is reduced to 0 HP, and Bane is sacrificed into a Vengeful Spirit. It deals 1d12+6 necrotic damage to creatures within reach 3 at the end of each of his turns.",
-        "paperforgeId": "534",
-        "legendary": true
+        }
       },
       "relationships": {}
     },
@@ -3870,7 +4122,6 @@
         "level": 1,
         "size": "medium",
         "armor": "none",
-        "kind": "Underground",
         "movement": [
           {
             "speed": 6
@@ -3900,7 +4151,92 @@
         ],
         "actionsInstructions": "Choose one:",
         "description": "",
-        "legendary": false
+        "legendary": false,
+        "creatureTypes": ["construct"],
+        "creatureKinds": ["golem"],
+        "environments": ["underground"],
+        "paperforgeId": "448"
+      }
+    },
+    {
+      "type": "monsters",
+      "attributes": {
+        "name": "Ooze Minion",
+        "hp": 1,
+        "size": "small",
+        "armor": "none",
+        "creatureTypes": ["ooze"],
+        "creatureKinds": ["ooze"],
+        "environments": ["dungeon"],
+        "movement": [
+          {
+            "speed": 6
+          }
+        ],
+        "abilities": [],
+        "actions": [
+          {
+            "name": "Acidic Touch",
+            "damage": {
+              "roll": "1d6"
+            },
+            "description": "Digested 0. (follows @rule:[minions|minion rules])"
+          }
+        ],
+        "actionsInstructions": "",
+        "description": "",
+        "legendary": false,
+        "minion": true,
+        "paperforgeId": "492"
+      },
+      "relationships": {
+        "family": {
+          "data": {
+            "type": "families",
+            "id": "oozes"
+          }
+        }
+      }
+    },
+    {
+      "type": "monsters",
+      "id": "ae3a1404-4039-4360-ab71-bdb9b7956d0f",
+      "attributes": {
+        "name": "Elemental Fireling",
+        "hp": 1,
+        "size": "medium",
+        "armor": "none",
+        "movement": [
+          {
+            "speed": 6
+          }
+        ],
+        "abilities": [
+          {
+            "name": "Explode",
+            "description": "On death, (Reach 1, AoE) 1d10."
+          }
+        ],
+        "actions": [
+          {
+            "name": "Flameburst",
+            "target": {
+              "reach": 1
+            },
+            "aoe": true,
+            "damage": {
+              "roll": "1d10"
+            },
+            "description": "(follows @rule:[minions|minion rules])"
+          }
+        ],
+        "actionsInstructions": "",
+        "description": "",
+        "legendary": false,
+        "minion": true,
+        "creatureTypes": ["elemental"],
+        "creatureKinds": [],
+        "environments": []
       }
     }
   ],
@@ -3920,12 +4256,7 @@
       "attributes": {
         "name": "Briarbanes",
         "description": "Soulless, thorny plant beings fertilized by blood.",
-        "abilities": [
-          {
-            "name": "Peeling Bark",
-            "description": "Damage degrades Armor 1 step: Heavy » Medium » None."
-          }
-        ]
+        "abilities": []
       }
     },
     {
@@ -3933,12 +4264,8 @@
       "id": "cultists",
       "attributes": {
         "name": "Cultists",
-        "abilities": [
-          {
-            "name": "Fanatical Zeal",
-            "description": "While not at max HP, make all rolls with advantage. Your crits also inflict Despair (Disadvantage on the next attack you make this encounter)."
-          }
-        ]
+        "abilities": [],
+        "description": "Driven by twisted beliefs, fanatical cultists perform dark rituals to awaken ancient evils, unleashing horrors that feast on fear and despair."
       }
     },
     {
@@ -3955,7 +4282,8 @@
       "id": "horrors",
       "attributes": {
         "name": "Horrors",
-        "abilities": []
+        "abilities": [],
+        "description": "Driven by twisted beliefs, fanatical cultists perform dark rituals to awaken ancient evils, unleashing horrors that feast on fear and despair."
       }
     },
     {
@@ -3975,11 +4303,11 @@
         "abilities": [
           {
             "name": "Ambusher",
-            "description": "Mimics always start first and heroes roll Initiative with disadvantage."
+            "description": "Mimics always start combat first and enemies roll Initiative with disadvantage."
           },
           {
             "name": "Sticky",
-            "description": "Mimic hits also Grapple and can Grapple any number of creatures. When crit: release 1 creature (attacker's choice)."
+            "description": "Mimic hits also Grapple and can Grapple any number of creatures. When crit: release 1 creature (attacker’s choice)."
           }
         ]
       }
@@ -3989,16 +4317,7 @@
       "id": "oozes",
       "attributes": {
         "name": "Oozes",
-        "abilities": [
-          {
-            "name": "Digestive Touch",
-            "description": "Contact with an ooze inflicts the Digested condition: they deal an additional X damage for each time the target has been Digested this encounter."
-          },
-          {
-            "name": "Goopy",
-            "description": "When crit or dealt any slashing damage: summon X ooze minions (size: d6); their attacks inflict Digested."
-          }
-        ]
+        "abilities": []
       }
     },
     {
@@ -4015,16 +4334,7 @@
       "id": "stirges",
       "attributes": {
         "name": "Stirges",
-        "abilities": [
-          {
-            "name": "Evasive Flier",
-            "description": "Attacks against stirges are made with disadvantage."
-          },
-          {
-            "name": "Latched On",
-            "description": "You move where your target moves until either dies. Your attacks can't miss or be Defended/Interposed against. Attacks that miss you damage your target instead."
-          }
-        ]
+        "abilities": []
       }
     },
     {
@@ -4032,13 +4342,8 @@
       "id": "undead",
       "attributes": {
         "name": "Undead",
-        "description": "Hate the living for not being dead, hate themselves for not being living.",
-        "abilities": [
-          {
-            "name": "Unliving, Undying",
-            "description": "The first time this dies, reset to 1 HP instead (excluding minions)."
-          }
-        ]
+        "description": "Hate the living for not being dead, hate themselves for having died.",
+        "abilities": []
       }
     }
   ]

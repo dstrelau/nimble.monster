@@ -2,11 +2,35 @@ import { describe, expect, it } from "vitest";
 import {
   encounterMonsterLevelTotal,
   formatHp,
+  formatSizeKind,
   hasLegendaryEncounterConflict,
   legendaryEncounterDifficulty,
   monsterLevelValue,
   resolvedEncounterMonsterCount,
 } from "./monster";
+
+describe("formatSizeKind", () => {
+  it.each([
+    { size: "huge", kind: "Huge Flame Titan", expected: "Huge Flame Titan" },
+    { size: "large", kind: "Large Aberration", expected: "Large Aberration" },
+    { size: "large", kind: "Grey Drake", expected: "Large Grey Drake" },
+    {
+      size: "medium",
+      kind: "Medium Human Criminal",
+      expected: "Human Criminal",
+    },
+    { size: "medium", kind: "Vampire Lord", expected: "Vampire Lord" },
+  ] satisfies Array<{
+    size: "huge" | "large" | "medium";
+    kind: string;
+    expected: string;
+  }>)(
+    'renders a legendary $size "$kind" without duplicated or Medium sizes',
+    ({ size, kind, expected }) => {
+      expect(formatSizeKind({ legendary: true, size, kind })).toBe(expected);
+    }
+  );
+});
 
 describe("formatHp", () => {
   it("returns the fixed hp as a string when hpPerHero is null", () => {

@@ -22,9 +22,9 @@ describe("monster card level tab", () => {
           }}
         />
       );
-      expect(screen.getByText(/medium/)).toHaveTextContent(
+      expect(screen.getByText(/Lvl/)).toHaveTextContent(
         legendary
-          ? "Lvl 1/2 Legendary medium Keeper of Forgotten Names"
+          ? "Lvl 1/2 Legendary Keeper of Forgotten Names"
           : "Lvl 1/2, medium"
       );
       if (!legendary)

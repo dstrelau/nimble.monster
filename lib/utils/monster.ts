@@ -70,8 +70,10 @@ export function formatSizeKind(
     if (monster.size !== "medium") {
       parts.push(monster.size.charAt(0).toUpperCase() + monster.size.slice(1));
     }
-    parts.push(monster.kind);
-    return parts.join(" ");
+    parts.push(
+      monster.kind?.replace(new RegExp(`^${monster.size}\\s+`, "i"), "")
+    );
+    return parts.filter(Boolean).join(" ");
   }
 
   if (monster.kind && monster.size !== "medium") {

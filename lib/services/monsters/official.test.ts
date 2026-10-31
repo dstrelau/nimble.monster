@@ -45,42 +45,41 @@ describe("minion levels", () => {
   it.each([
     { level: undefined, stored: "", levelInt: 0 },
     { level: "1/4", stored: "1/4", levelInt: -4 },
-  ])("preserves minion level $level through import and JSON:API", async ({
-    level,
-    stored,
-    levelInt,
-  }) => {
-    const data = officialMonster("Kobold Minion");
-    delete data.relationships;
-    data.attributes.minion = true;
-    if (level === undefined) delete data.attributes.level;
-    else data.attributes.level = level;
-    validateOfficialMonstersJSON({ data: [data] });
-    const monster = importedMonster(data);
-    expect(monster).toMatchObject({ level: stored, levelInt });
-    const exported = JSON.parse(JSON.stringify(toJsonApiMonster(monster)));
-    expect(exported.attributes.level).toBe(level);
-    if (level === undefined)
-      expect(exported.attributes).not.toHaveProperty("level");
-    const { monsters } = validateOfficialMonstersJSON({
-      data: [{ type: "monsters", attributes: exported.attributes }],
-    });
-    expect(parseJSONAPIMonster(monsters[0])).toMatchObject({
-      level: stored,
-      levelInt,
-    });
-    const fetch = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(Response.json({ data: exported }));
-    try {
-      expect(await getMonster(exported.id)).toMatchObject({
+  ])(
+    "preserves minion level $level through import and JSON:API",
+    async ({ level, stored, levelInt }) => {
+      const data = officialMonster("Kobold Minion");
+      delete data.relationships;
+      data.attributes.minion = true;
+      if (level === undefined) delete data.attributes.level;
+      else data.attributes.level = level;
+      validateOfficialMonstersJSON({ data: [data] });
+      const monster = importedMonster(data);
+      expect(monster).toMatchObject({ level: stored, levelInt });
+      const exported = JSON.parse(JSON.stringify(toJsonApiMonster(monster)));
+      expect(exported.attributes.level).toBe(level);
+      if (level === undefined)
+        expect(exported.attributes).not.toHaveProperty("level");
+      const { monsters } = validateOfficialMonstersJSON({
+        data: [{ type: "monsters", attributes: exported.attributes }],
+      });
+      expect(parseJSONAPIMonster(monsters[0])).toMatchObject({
         level: stored,
         levelInt,
       });
-    } finally {
-      fetch.mockRestore();
+      const fetch = vi
+        .spyOn(globalThis, "fetch")
+        .mockResolvedValue(Response.json({ data: exported }));
+      try {
+        expect(await getMonster(exported.id)).toMatchObject({
+          level: stored,
+          levelInt,
+        });
+      } finally {
+        fetch.mockRestore();
+      }
     }
-  });
+  );
 
   it.each([
     { minion: undefined, level: undefined },
@@ -88,14 +87,17 @@ describe("minion levels", () => {
     { minion: "true", level: undefined },
     { minion: true, level: null },
     { minion: true, level: "invalid" },
-  ])("rejects missing ordinary levels and invalid supplied minion levels: %j", (fields) => {
-    const data = officialMonster("Kobold Minion");
-    expect(() =>
-      validateOfficialMonstersJSON({
-        data: [{ ...data, attributes: { ...data.attributes, ...fields } }],
-      })
-    ).toThrow("missing or invalid level");
-  });
+  ])(
+    "rejects missing ordinary levels and invalid supplied minion levels: %j",
+    (fields) => {
+      const data = officialMonster("Kobold Minion");
+      expect(() =>
+        validateOfficialMonstersJSON({
+          data: [{ ...data, attributes: { ...data.attributes, ...fields } }],
+        })
+      ).toThrow("missing or invalid level");
+    }
+  );
 });
 
 describe("structured monster attacks", () => {
@@ -140,7 +142,16 @@ describe("structured monster attacks", () => {
   });
 
   it("folds legendary damage into descriptions without repeating it in exports", () => {
-    const monster = importedMonster(officialMonster("Gloomwing the Cruel"));
+    const data = officialMonster("Gloomwing the Cruel");
+    data.attributes.actions = [
+      {
+        name: "Bite",
+        damage: { roll: "3d10" },
+        description:
+          "(Reach 2) Move 6. On damage: Cruelty's Gift (Healing is halved and Vulnerable to necrotic, healing ends).",
+      },
+    ];
+    const monster = importedMonster(data);
     const bite = monster.actions.find((a) => a.name === "Bite");
     expect(bite).toMatchObject({
       damage: "3d10",
@@ -158,7 +169,10 @@ describe("structured monster attacks", () => {
     });
     expect(
       importedMonster(officialMonster("Goblin Minion")).actions[0]
-    ).toMatchObject({ damage: "1d6", description: "(follows minion rules)" });
+    ).toMatchObject({
+      damage: "1d6",
+      description: "(follows @rule:[minions|minion rules])",
+    });
     for (const brief of [false, true]) {
       const line = monsterToMarkdown(monster, { brief })
         .split("\n")

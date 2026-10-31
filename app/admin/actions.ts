@@ -364,7 +364,7 @@ export async function commitOfficialMonstersAction(sessionKey: string) {
     if (sourceId) {
       input.sourceId = sourceId;
     }
-    await upsertOfficialMonster(input);
+    await upsertOfficialMonster(input, monsterData.id);
   }
 
   await deletePreviewSession(sessionKey);

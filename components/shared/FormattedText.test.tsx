@@ -17,14 +17,19 @@ import { FormattedText, PrefixedFormattedText } from "./FormattedText";
 // Keep entity rendering tests independent of network requests.
 vi.mock("@/lib/hooks/useEntityQuery", () => ({
   useEntityQuery: vi.fn((type: string, id: string) => {
-    const officialRule = type === "rule" && id === "encounter-difficulties";
+    const officialRule =
+      type === "rule" &&
+      ["encounter-difficulties", "falling-and-forced-movement"].includes(id);
     return {
       data: officialRule
         ? {
             id,
-            name: "Encounter Difficulties",
+            name:
+              id === "encounter-difficulties"
+                ? "Encounter Difficulties"
+                : "Falling and Forced Movement",
             type,
-            href: "/rules/encounter-difficulties",
+            href: `/rules/${id}`,
           }
         : {
             id: "00000000-0000-0000-0000-000000000001",
@@ -209,6 +214,29 @@ describe("FormattedText", () => {
     ).toHaveTextContent(mockConditions[1].description);
     fireEvent.keyDown(document, { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+
+  it("renders rule links inside condition definitions", async () => {
+    render(
+      <FormattedText
+        content="On hit, [[Knockback]] 6."
+        conditions={[
+          {
+            id: "knockback",
+            name: "Knockback",
+            description:
+              "Forcibly move a creature X spaces (see @rule:[falling-and-forced-movement|Falling & Forced Movement]).",
+            official: true,
+          },
+        ]}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Knockback" }));
+    await screen.findByRole("dialog", { name: "Knockback" });
+    expect(
+      screen.getByRole("link", { name: "Falling & Forced Movement" })
+    ).toHaveAttribute("href", "/rules/falling-and-forced-movement");
   });
 
   it("keeps conditions noninteractive in static output", () => {

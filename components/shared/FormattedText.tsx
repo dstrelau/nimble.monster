@@ -59,7 +59,8 @@ function ConditionSpan({
         </Button>
       }
     >
-      <strong>{condition.name}:</strong> {condition.description}
+      <strong>{condition.name}:</strong>
+      <FormattedText content={condition.description} conditions={[]} />
     </ReferencePopover>
   );
 }

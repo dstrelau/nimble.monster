@@ -58,7 +58,7 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
       if (enabled) {
         expect(container.querySelector("[data-level-label]")).toHaveTextContent(
           legendary
-            ? "Lvl 10 Legendary large Legacy descriptor"
+            ? "Lvl 10 Legendary Large Legacy descriptor"
             : "Lvl 10, large"
         );
         expect(
@@ -79,6 +79,36 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
         ).not.toBeInTheDocument();
         expect(screen.getByText(/Legacy descriptor/i)).toBeInTheDocument();
       }
+    }
+  );
+
+  it.each(["large", "medium"] satisfies MonsterFormState["size"][])(
+    "shows legendary %s size at most once and omits Medium",
+    (size) => {
+      const { container } = render(
+        <FeatureFlagsProvider
+          enabledFeatures={enabled ? ["monster-card-layout"] : []}
+        >
+          <Card
+            monster={{
+              ...TROLL_HUNTER,
+              legendary: true,
+              level: "3",
+              levelInt: 3,
+              size,
+              kind: size === "large" ? "Large Owlbear" : "Medium Vampire Lord",
+            }}
+            noInteractive
+          />
+        </FeatureFlagsProvider>
+      );
+      const label = enabled
+        ? container.querySelector("[data-level-label]")
+        : screen.getByText(/Legendary/);
+      expect(label).toHaveTextContent(
+        `${enabled ? "Lvl" : "Level"} 3 Legendary ${size === "large" ? "Large Owlbear" : "Vampire Lord"}`
+      );
+      expect(label).not.toHaveTextContent(/Large Large|Medium/);
     }
   );
 

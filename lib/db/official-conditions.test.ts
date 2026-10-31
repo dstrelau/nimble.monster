@@ -52,7 +52,11 @@ it("imports official condition JSON without a data migration and is replay-safe"
     )
   );
   expect(
-    (await client.execute("SELECT DISTINCT creator_id FROM conditions WHERE official = 1")).rows
+    (
+      await client.execute(
+        "SELECT DISTINCT creator_id FROM conditions WHERE official = 1"
+      )
+    ).rows
   ).toEqual([{ creator_id: officialId }]);
   for (const condition of conditions) {
     await upsertOfficialCondition(condition.attributes);
@@ -90,7 +94,9 @@ it("imports arbitrary conditions while preserving existing users and same-name c
   expect(
     (await client.execute("SELECT * FROM conditions ORDER BY id")).rows
   ).toEqual(once.rows);
-  expect(once.rows.filter((row) => row.id !== imported.id)).toEqual(before.rows);
+  expect(once.rows.filter((row) => row.id !== imported.id)).toEqual(
+    before.rows
+  );
   expect(await listOfficialConditions()).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
@@ -113,7 +119,10 @@ it("updates official conditions case-insensitively without replacing their ident
   );
   await client.execute(`INSERT INTO conditions (id, name, description, official, creator_id)
     VALUES ('existing-despair', 'despair', 'Outdated definition.', 1, 'legacy-owner')`);
-  const updated = await upsertOfficialCondition({ name: "Despair", description });
+  const updated = await upsertOfficialCondition({
+    name: "Despair",
+    description,
+  });
   expect(updated.creatorId).toBe("legacy-owner");
   expect(await listOfficialConditions()).toEqual([
     expect.objectContaining({

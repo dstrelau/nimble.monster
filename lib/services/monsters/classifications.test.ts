@@ -19,6 +19,7 @@ import {
 import { getDatabase } from "@/lib/db/drizzle";
 import * as relations from "@/lib/db/relations";
 import * as schema from "@/lib/db/schema";
+import { resolveEntityReferences } from "@/lib/services/entity-references";
 import { uuidToIdentifier } from "@/lib/utils/slug";
 import type { MonsterClassifications } from "./classifications";
 import { toJsonApiMonster } from "./converters";
@@ -57,6 +58,11 @@ const officialMonster = officialMonsters.find(
 );
 if (!officialMonster) throw new Error("Missing official Ogre Zombie fixture");
 const input = parseJSONAPIMonster(officialMonster);
+// These cases explicitly exercise legacy imports without assignments.
+input.kind = "Legacy ogre";
+delete input.creatureTypes;
+delete input.creatureKinds;
+delete input.environments;
 const classifications = {
   creatureTypes: ["undead", "giant"],
   creatureKinds: ["zombie", "ogre"],
@@ -182,14 +188,41 @@ describe("monster classifications", () => {
     });
   });
 
-  it("round-trips official imports without erasing assignments on legacy re-imports", async () => {
+  it("round-trips official imports without changing IDs or erasing legacy assignments", async () => {
     const imported = parseJSONAPIMonster({
       ...officialMonster,
       attributes: { ...officialMonster.attributes, ...classifications },
     });
-    const monster = await upsertOfficialMonster(imported);
+    const custom = await createMonster(input, "owner");
+    await expect(upsertOfficialMonster(imported, custom.id)).rejects.toThrow();
+    expect(await findMonster(custom.id)).toMatchObject({
+      creator: { id: ownerId },
+      creatureTypes: [],
+    });
+    const id = "abcdef12-3456-4789-8abc-def012345678";
+    const monster = await upsertOfficialMonster(imported, id.toUpperCase());
+    expect(monster.id).toBe(id);
     expect(monster).toMatchObject(classifications);
-    expect(await upsertOfficialMonster(input)).toMatchObject(classifications);
+    expect(
+      await upsertOfficialMonster(input, "33333333-3333-4333-8333-333333333333")
+    ).toMatchObject({ ...classifications, id });
+    expect(await resolveEntityReferences([{ type: "monster", id }])).toEqual([
+      expect.objectContaining({
+        id,
+        name: monster.name,
+        href: expect.stringContaining(uuidToIdentifier(id)),
+      }),
+    ]);
+    const identifier = uuidToIdentifier(id);
+    const detail = await getMonster(
+      new Request(`http://localhost/api/monsters/${identifier}`),
+      { params: Promise.resolve({ id: identifier }) }
+    );
+    expect(detail.status).toBe(200);
+    expect((await detail.json()).data).toMatchObject({
+      id: identifier,
+      attributes: { name: monster.name },
+    });
     const changed = await upsertOfficialMonster({
       ...input,
       creatureKinds: [],

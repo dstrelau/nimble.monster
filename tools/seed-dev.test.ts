@@ -16,6 +16,7 @@ import {
 } from "vitest";
 import ReferencePage from "@/app/dev/entity-references/page";
 import type { ReferenceExample } from "@/app/dev/entity-references/fixtures";
+import conditionJSON from "@/data/official/gmg/conditions.json";
 import { getEntityById } from "@/lib/actions/entities";
 import { getDatabase } from "@/lib/db/drizzle";
 import * as relations from "@/lib/db/relations";
@@ -50,13 +51,21 @@ describe("dev reference seed", () => {
   });
 
   it("supplies public records for every preview group using official monster references", async () => {
-    expect(await getDatabase().select().from(schema.conditions).where(eq(schema.conditions.official, true))).toEqual([
-      expect.objectContaining({
-        name: "Despair",
-        description: "Disadvantage on all rolls (dealing or healing any damage ends).",
-        creatorId: OFFICIAL_USER_ID,
-      }),
-    ]);
+    const conditions = await getDatabase()
+      .select()
+      .from(schema.conditions)
+      .where(eq(schema.conditions.official, true));
+    expect(conditions).toHaveLength(conditionJSON.data.length);
+    expect(conditions).toEqual(
+      expect.arrayContaining(
+        conditionJSON.data.map(({ attributes }) =>
+          expect.objectContaining({
+            ...attributes,
+            creatorId: OFFICIAL_USER_ID,
+          })
+        )
+      )
+    );
     const page = await ReferencePage();
     const examples: ReferenceExample[] = page.props.examples;
     expect(examples).toHaveLength(17);

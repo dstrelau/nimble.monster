@@ -126,16 +126,16 @@ variantOf: parent-rule
     expect(rule.variantOf).toBe("parent-rule");
   });
 
-  it.each([
-    "Core Rules v3",
-    "GMG v3",
-  ])("preserves an updated %s citation", (book) => {
-    const rule = parseRule(
-      "test-rule",
-      rawRule(`sources:\n  - book: "${book}"\n    pages: [7, 29]\n`)
-    );
-    expect(rule.sources).toEqual([{ book, pages: [7, 29] }]);
-  });
+  it.each(["Core Rules v3", "GMG v3"])(
+    "preserves an updated %s citation",
+    (book) => {
+      const rule = parseRule(
+        "test-rule",
+        rawRule(`sources:\n  - book: "${book}"\n    pages: [7, 29]\n`)
+      );
+      expect(rule.sources).toEqual([{ book, pages: [7, 29] }]);
+    }
+  );
 
   it("keeps a known source book when its exact page is unknown", () => {
     const rule = parseRule(

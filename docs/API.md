@@ -332,6 +332,11 @@ through JSON:API export and render no level label. Internally, a level-free mini
 uses an empty level string and `levelInt: 0`. Ordinary monsters still require a
 level, and supplied minion levels must pass the normal level validation.
 
+Official content uploads and development seeding use a supplied JSON:API UUID
+when creating a new monster, so references between new official statblocks can
+use stable IDs. Re-importing an existing official monster by name preserves its
+database ID; an import does not replace that identity with a different supplied ID.
+
 Monster attributes may include three optional classification arrays. Each field
 is omitted from list and detail responses when empty. These are not present on hazards.
 

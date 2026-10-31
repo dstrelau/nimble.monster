@@ -6,6 +6,27 @@
         "name": "Despair",
         "description": "Disadvantage on all rolls (dealing or healing any damage ends)."
       }
+    },
+    {
+      "type": "conditions",
+      "attributes": {
+        "name": "Knockback",
+        "description": "Forcibly move a creature X spaces, ignoring Difficult Terrain. Other creatures or the environment may halt movement prematurely and deal damage (see @rule:[falling-and-forced-movement|Falling & Forced Movement])."
+      }
+    },
+    {
+      "type": "conditions",
+      "attributes": {
+        "name": "Dominated",
+        "description": "Your rolls are disadvantaged. Dominator spends your first action on each of your turns: moving, making a weapon attack, or casting a cantrip. Damage ends."
+      }
+    },
+    {
+      "type": "conditions",
+      "attributes": {
+        "name": "Beguiled",
+        "description": "Dazed. Cannot Defend or allow anyone to Interpose for you. Damage ends."
+      }
     }
   ]
 }
