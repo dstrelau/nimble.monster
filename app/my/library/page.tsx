@@ -37,7 +37,12 @@ export default async function MyLibraryPage({
 
   return (
     <div className="space-y-6">
-      <MyLibraryPageHeader icon={Library} title="My Library" />
+      <MyLibraryPageHeader
+        icon={Library}
+        title="My Library"
+        newHref="/my/new"
+        newLabel="Create"
+      />
       {entries.length === 0 ? (
         <p className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
           {query

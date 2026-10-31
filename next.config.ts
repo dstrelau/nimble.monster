@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/create",
-        destination: "/my/library",
+        destination: "/my/new",
         permanent: true,
       },
       {

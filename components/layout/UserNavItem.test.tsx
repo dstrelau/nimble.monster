@@ -91,8 +91,13 @@ describe("UserNavItem", () => {
 
     render(<UserNavItem open={true} onOpenChange={vi.fn()} />);
 
+    expect(screen.getByRole("link", { name: "Create" })).toHaveAttribute(
+      "href",
+      "/my/new"
+    );
     const accountLinks = screen.getAllByRole("link");
     expect(accountLinks.map((link) => link.textContent)).toEqual([
+      "Create",
       "My Library",
       "View Profile",
     ]);

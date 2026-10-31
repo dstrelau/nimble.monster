@@ -1,6 +1,7 @@
 "use client";
 
-import { Library, LogOut, User as UserIcon } from "lucide-react";
+import { Library, LogOut, Plus, User as UserIcon } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { ModeToggle } from "@/components/layout/ModeToggle";
@@ -126,6 +127,15 @@ export function UserNavItem({ open, onOpenChange }: UserNavItemProps) {
             </span>
           </NavigationMenuTrigger>
           <NavigationMenuContent className="absolute left-auto right-0 w-72 p-0">
+            <div className="p-3">
+              <Button asChild className="w-full gap-2">
+                <Link href="/my/new">
+                  <Plus className="size-4" />
+                  Create
+                </Link>
+              </Button>
+            </div>
+            <Separator />
             <ul className="py-1">
               <SubNavItem
                 href={myLibraryItem.href}
