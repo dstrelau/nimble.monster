@@ -7,6 +7,7 @@ import {
   type OfficialSource,
   validateOfficialSource,
 } from "@/lib/services/validate-source";
+import { prefixDamage, showsActionDamage } from "@/lib/text";
 import { attackMetadataSchema } from "@/lib/types/attack";
 import { MonsterClassificationsSchema } from "./classifications";
 import type { CreateMonsterInput } from "./types";
@@ -123,6 +124,9 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
     ...action,
     id: crypto.randomUUID(),
     damage: damage?.roll,
+    description: showsActionDamage(attrs)
+      ? action.description
+      : prefixDamage(damage?.roll, action.description),
   }));
 
   const abilities = attrs.abilities.map((a) => ({

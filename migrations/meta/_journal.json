@@ -316,6 +316,13 @@
       "when": 1792541837430,
       "tag": "0044_fair_moon_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "6",
+      "when": 1793399536374,
+      "tag": "0045_legendary_damage_in_descriptions",
+      "breakpoints": true
     }
   ]
 }

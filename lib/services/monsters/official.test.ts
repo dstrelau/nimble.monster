@@ -82,6 +82,34 @@ describe("structured monster attacks", () => {
     expect(monsterToMarkdown(monster)).toContain("Reach 2");
   });
 
+  it("folds legendary damage into descriptions without repeating it in exports", () => {
+    const monster = importedMonster(officialMonster("Gloomwing the Cruel"));
+    const bite = monster.actions.find((a) => a.name === "Bite");
+    expect(bite).toMatchObject({
+      damage: "3d10",
+      description:
+        "3d10. (Reach 2) Move 6. On damage: Cruelty's Gift (Healing is halved and Vulnerable to necrotic, healing ends).",
+    });
+
+    const exported = toJsonApiMonster(monster).attributes.actions.find(
+      (a) => a.name === "Bite"
+    );
+    expect(exported).toMatchObject({
+      description: bite?.description,
+      plainDescription: expect.stringMatching(/^Move 6\./),
+      damage: { roll: "3d10" },
+    });
+    expect(
+      importedMonster(officialMonster("Goblin Minion")).actions[0]
+    ).toMatchObject({ damage: "1d6", description: "(follows minion rules)" });
+    for (const brief of [false, true]) {
+      const line = monsterToMarkdown(monster, { brief })
+        .split("\n")
+        .find((l) => l.includes("Bite"));
+      expect(line?.match(/3d10/g)).toHaveLength(1);
+    }
+  });
+
   it.each([
     { width: undefined, expectedWidth: 1, label: "Line 6" },
     { width: 1, expectedWidth: 1, label: "Line 6" },

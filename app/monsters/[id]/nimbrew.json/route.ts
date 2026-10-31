@@ -5,7 +5,11 @@ import { auth } from "@/lib/auth";
 import { addCorsHeaders } from "@/lib/cors";
 import { monstersService } from "@/lib/services/monsters";
 import { telemetry } from "@/lib/telemetry";
-import { formatAttackDetails, formatAttackName } from "@/lib/text";
+import {
+  formatAttackDetails,
+  formatAttackName,
+  showsActionDamage,
+} from "@/lib/text";
 import { formatSizeKind } from "@/lib/utils/monster";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getMonsterUrl } from "@/lib/utils/url";
@@ -83,10 +87,11 @@ export const GET = telemetry(
       ) || []),
     ];
 
+    const showDamage = showsActionDamage(monster);
     const actions = monster.actions?.map((a) => ({
       type: "single",
       name: formatAttackName(a),
-      desc: [a.damage, formatAttackDetails(a), a.description]
+      desc: [showDamage && a.damage, formatAttackDetails(a), a.description]
         .filter(Boolean)
         .join(" "),
     }));

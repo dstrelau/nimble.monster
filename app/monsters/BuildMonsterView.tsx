@@ -752,7 +752,6 @@ const MinionForm: React.FC<{
       <ActionsSection
         actions={monster.actions}
         actionPreface={monster.actionPreface}
-        showDamage={false}
         onChange={(actions) => setMonster({ ...monster, actions })}
         onPrefaceChange={(actionPreface) =>
           setMonster({ ...monster, actionPreface })

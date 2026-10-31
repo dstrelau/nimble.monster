@@ -31,6 +31,7 @@ import type {
   MonsterFormState,
   MonsterTeamMember,
 } from "@/lib/services/monsters";
+import { showsActionDamage } from "@/lib/text";
 import type { Condition, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatHp, formatSizeKind } from "@/lib/utils/monster";
@@ -429,6 +430,7 @@ export const Card = ({
           actions={monster.actions ?? []}
           conditions={conditions}
           actionPreface={monster.actionPreface}
+          showDamage={showsActionDamage(monster)}
           noInteractive={noInteractive}
         />
         {isTeam &&

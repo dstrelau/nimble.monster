@@ -529,7 +529,7 @@ export function StatblockEditor({
                 compact
                 actions={monster.actions}
                 actionPreface={monster.actionPreface}
-                showDamage={!monster.legendary && !monster.minion}
+                showDamage={!monster.legendary}
                 onChange={(actions) => patch({ actions })}
                 onPrefaceChange={(actionPreface) => patch({ actionPreface })}
               />

@@ -4,6 +4,7 @@ import {
   type MonsterArtwork,
 } from "@/lib/monster-artwork";
 import { getPaperforgeEntry } from "@/lib/paperforge-catalog";
+import { maybePeriod, showsActionDamage } from "@/lib/text";
 import type { Ability, Action, FamilyOverview } from "@/lib/types";
 import { attackMetadataSchema } from "@/lib/types/attack";
 import { uuidToIdentifier } from "@/lib/utils/slug";
@@ -274,12 +275,12 @@ const toZodMember = (member: MonsterTeamMember) => {
       name,
       description,
     })),
-    actions: member.actions.map(toJsonApiAction),
+    actions: member.actions.map((a) => toJsonApiAction(a)),
     actionsInstructions: member.actionPreface || undefined,
   };
 };
 
-const toJsonApiAction = (a: Action) => {
+const toJsonApiAction = (a: Action, showDamage = true) => {
   // Invalid stored metadata is omitted rather than failing the whole response.
   const parsed = attackMetadataSchema.safeParse(a);
   const metadata = parsed.success ? parsed.data : undefined;
@@ -287,6 +288,10 @@ const toJsonApiAction = (a: Action) => {
   // The stored text without anything repeated in structured fields, so
   // clients can build their own description.
   let plainDescription = a.description?.trim();
+  const damagePrefix = `${maybePeriod(a.damage)} `;
+  if (!showDamage && a.damage && plainDescription?.startsWith(damagePrefix)) {
+    plainDescription = plainDescription.slice(damagePrefix.length);
+  }
   if (!target) {
     const match = a.description?.match(/\((reach|range)\s+(\d+)\)/i);
     if (match) {
@@ -304,7 +309,9 @@ const toJsonApiAction = (a: Action) => {
     // Public API contract: description is the full attack text, prefixed with
     // the damage roll and keeping any "(Reach N)" text. Structured fields are
     // additive and must not change it.
-    description: [a.damage, a.description].filter(Boolean).join(". "),
+    description: showDamage
+      ? [a.damage, a.description].filter(Boolean).join(". ")
+      : a.description,
     ...(plainDescription ? { plainDescription } : {}),
     range: a.range,
     ...(a.damage ? { damage: { roll: a.damage } } : {}),
@@ -325,7 +332,9 @@ export const toZodMonster = (m: Monster) => {
     name,
     description,
   }));
-  const actions = m.actions.map(toJsonApiAction);
+  const actions = m.actions.map((a) =>
+    toJsonApiAction(a, showsActionDamage(m))
+  );
 
   const parsedLevel: number | "1/4" | "1/3" | "1/2" =
     m.level === "1/4" || m.level === "1/3" || m.level === "1/2"

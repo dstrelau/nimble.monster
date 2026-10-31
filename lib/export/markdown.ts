@@ -1,6 +1,10 @@
 import type { Item } from "@/lib/services/items";
 import type { BestiaryEntry, Hazard, Monster } from "@/lib/services/monsters";
-import { formatAttackDetails, formatAttackName } from "@/lib/text";
+import {
+  formatAttackDetails,
+  formatAttackName,
+  showsActionDamage,
+} from "@/lib/text";
 import type { Ability, Action, SpellSchool } from "@/lib/types";
 import { formatHp } from "@/lib/utils/monster";
 
@@ -128,7 +132,9 @@ function generateLegendaryBriefMarkdown(monster: Monster): string {
       lines.push(`*${monster.actionPreface}*`);
     }
     for (const action of monster.actions) {
-      lines.push(formatBriefAction(action));
+      lines.push(
+        formatBriefAction(action, monster.hazard || showsActionDamage(monster))
+      );
     }
   }
 
@@ -197,9 +203,9 @@ function generateBriefAbilities(abilities: Ability[]): string {
   return lines.join("\n");
 }
 
-function formatBriefAction(action: Action): string {
+function formatBriefAction(action: Action, showDamage: boolean): string {
   let actionLine = `* **${formatAttackName(action)}.**`;
-  const details = [action.damage, formatAttackDetails(action)]
+  const details = [showDamage && action.damage, formatAttackDetails(action)]
     .filter(Boolean)
     .join(" ");
   if (details) actionLine += ` ${details}.`;
@@ -219,7 +225,9 @@ function generateBriefActions(monster: BestiaryEntry): string {
   }
 
   for (const action of monster.actions) {
-    lines.push(formatBriefAction(action));
+    lines.push(
+      formatBriefAction(action, monster.hazard || showsActionDamage(monster))
+    );
   }
 
   return lines.join("\n");
@@ -424,7 +432,9 @@ function generateActions(monster: BestiaryEntry): string {
     let actionLine = `- **${formatAttackName(action)}**`;
 
     const details = [];
-    if (action.damage) details.push(action.damage);
+    if (action.damage && (monster.hazard || showsActionDamage(monster))) {
+      details.push(action.damage);
+    }
     const attackDetails = formatAttackDetails(action);
     if (attackDetails) details.push(attackDetails.slice(1, -1));
 

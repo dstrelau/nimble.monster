@@ -7,6 +7,7 @@ interface ActionsListProps {
   actions: Action[];
   conditions: Condition[];
   actionPreface?: string;
+  showDamage?: boolean;
   noInteractive?: boolean;
 }
 
@@ -14,6 +15,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({
   actions,
   conditions,
   actionPreface = "ACTIONS:",
+  showDamage = true,
   noInteractive = false,
 }) => {
   if (actions.length === 0) return null;
@@ -32,9 +34,10 @@ export const ActionsList: React.FC<ActionsListProps> = ({
               <li key={action.id}>
                 <PrefixedFormattedText
                   content={[
-                    formatAttackDetails(action) || action.description
-                      ? maybePeriod(action.damage)
-                      : action.damage,
+                    showDamage &&
+                      (formatAttackDetails(action) || action.description
+                        ? maybePeriod(action.damage)
+                        : action.damage),
                     formatAttackDetails(action),
                     action.description,
                   ]

@@ -8,6 +8,17 @@ export const maybePeriod = (s: string | undefined) => {
   return `${s}.`;
 };
 
+// Legendary actions describe their damage in the description text; a stored
+// damage roll is kept but not displayed.
+export const showsActionDamage = (monster: { legendary?: boolean }) =>
+  !monster.legendary;
+
+export const prefixDamage = (
+  damage: string | undefined,
+  description: string | undefined
+) =>
+  description ? [maybePeriod(damage), description].join(" ").trim() : damage;
+
 export const formatAttackName = (attack: {
   name: string;
   attackCount?: number;

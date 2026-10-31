@@ -32,6 +32,27 @@ describe("ActionsList", () => {
     );
   });
 
+  it("omits stored damage when the monster describes damage in text", () => {
+    render(
+      <ActionsList
+        actions={[
+          {
+            id: "bite",
+            name: "Bite",
+            damage: "3d10",
+            description: "3d10. Rend.",
+          },
+        ]}
+        showDamage={false}
+        conditions={[]}
+      />
+    );
+
+    expect(screen.getByRole("listitem").querySelector("p")).toHaveTextContent(
+      /^D103d10\. Rend\.$/
+    );
+  });
+
   it("keeps description paragraphs and separates unterminated damage text", () => {
     render(
       <ActionsList
