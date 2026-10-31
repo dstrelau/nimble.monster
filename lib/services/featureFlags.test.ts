@@ -50,7 +50,7 @@ afterEach(() => {
 
 describe("feature flags", () => {
   it("recognizes registered feature names", () => {
-    expect(isFeatureFlag("class-draft-autosave")).toBe(true);
+    expect(isFeatureFlag("draft-autosave")).toBe(true);
     expect(isFeatureFlag("monster-statblock-editor")).toBe(true);
     expect(isFeatureFlag("monster-card-layout")).toBe(true);
     expect(isFeatureFlag("field-guide")).toBe(true);
@@ -60,14 +60,14 @@ describe("feature flags", () => {
 
   it("returns only registered enabled features for a user", async () => {
     mockRows.push([
-      { feature: "class-draft-autosave" },
+      { feature: "draft-autosave" },
       { feature: "monster-card-layout" },
       { feature: "random-tables" },
       { feature: "removed-feature" },
     ]);
 
     await expect(getEnabledFeatureFlags("user-1")).resolves.toEqual([
-      "class-draft-autosave",
+      "draft-autosave",
       "monster-card-layout",
     ]);
   });
@@ -81,17 +81,17 @@ describe("feature flags", () => {
     mockRows.push([{ enabled: true }]);
 
     await expect(
-      isFeatureFlagEnabled("user-1", "class-draft-autosave")
+      isFeatureFlagEnabled("user-1", "draft-autosave")
     ).resolves.toBe(true);
     expect(mockSelect).toHaveBeenCalledTimes(1);
   });
 
   it("upserts a flag value", async () => {
-    await setFeatureFlag("user-1", "class-draft-autosave", true);
+    await setFeatureFlag("user-1", "draft-autosave", true);
 
     expect(mockValues).toHaveBeenCalledWith({
       userId: "user-1",
-      feature: "class-draft-autosave",
+      feature: "draft-autosave",
       enabled: true,
     });
     expect(mockOnConflictDoUpdate).toHaveBeenCalledWith(

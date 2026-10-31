@@ -5,14 +5,14 @@ import { userFeatureFlags, users } from "@/lib/db/schema";
 import type { User } from "@/lib/types";
 
 export type FeatureFlag =
-  | "class-draft-autosave"
+  | "draft-autosave"
   | "monster-statblock-editor"
   | "monster-custom-artwork"
   | "monster-card-layout"
   | "field-guide";
 
 export const FEATURE_FLAGS: readonly FeatureFlag[] = [
-  "class-draft-autosave",
+  "draft-autosave",
   "monster-statblock-editor",
   "monster-custom-artwork",
   "monster-card-layout",
@@ -56,7 +56,7 @@ export async function getFeatureFlagUsers(): Promise<
     .orderBy(asc(users.displayName));
 
   const byFlag: Record<FeatureFlag, User[]> = {
-    "class-draft-autosave": [],
+    "draft-autosave": [],
     "monster-statblock-editor": [],
     "monster-custom-artwork": [],
     "monster-card-layout": [],

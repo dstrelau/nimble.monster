@@ -3,13 +3,16 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { internalAction } from "@/lib/internal-action";
-import { classDraftsService } from "@/lib/services/classdrafts";
+import { DRAFT_ENTITY_TYPES, draftsService } from "@/lib/services/drafts";
 import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 import { telemetry } from "@/lib/telemetry";
 
 const headers = { "Cache-Control": "private, no-store" };
-const inputSchema = z.object({ classId: z.uuid().nullable() });
-// Drafts deliberately accept incomplete editor fields, not published-class input.
+const inputSchema = z.object({
+  entityType: z.enum(DRAFT_ENTITY_TYPES),
+  entityId: z.uuid().nullable(),
+});
+// Drafts deliberately accept incomplete editor fields, not published input.
 const saveSchema = inputSchema.extend({ data: z.record(z.string(), z.json()) });
 
 async function handle(request: Request) {
@@ -20,14 +23,18 @@ async function handle(request: Request) {
       { status: 401, headers }
     );
   }
-  if (!(await isFeatureFlagEnabled(session.user.id, "class-draft-autosave"))) {
+  if (!(await isFeatureFlagEnabled(session.user.id, "draft-autosave"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403, headers });
   }
   trace.getActiveSpan()?.setAttribute("user.id", session.user.id);
 
   let body: unknown;
   if (request.method === "GET") {
-    body = { classId: new URL(request.url).searchParams.get("classId") };
+    const params = new URL(request.url).searchParams;
+    body = {
+      entityType: params.get("entityType"),
+      entityId: params.get("entityId"),
+    };
   } else {
     try {
       body = await request.json();
@@ -43,16 +50,18 @@ async function handle(request: Request) {
   ).safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid class draft input" },
+      { error: "Invalid draft input" },
       { status: 400, headers }
     );
   }
-  const { classId } = parsed.data;
-  trace
-    .getActiveSpan()
-    ?.setAttribute("classDraft.classId", classId ?? "__new__");
+  const { entityType, entityId } = parsed.data;
+  trace.getActiveSpan()?.setAttributes({
+    "draft.entityType": entityType,
+    "draft.entityId": entityId ?? "__new__",
+  });
+  const discordId = session.user.discordId;
   if (request.method === "GET") {
-    const draft = await classDraftsService.get(session.user.discordId, classId);
+    const draft = await draftsService.get(discordId, entityType, entityId);
     return NextResponse.json(
       {
         draft: draft
@@ -63,9 +72,10 @@ async function handle(request: Request) {
     );
   }
   if (request.method === "POST" && "data" in parsed.data) {
-    const draft = await classDraftsService.save(
-      session.user.discordId,
-      classId,
+    const draft = await draftsService.save(
+      discordId,
+      entityType,
+      entityId,
       parsed.data.data
     );
     if (!draft) {
@@ -79,7 +89,7 @@ async function handle(request: Request) {
       { headers }
     );
   }
-  await classDraftsService.delete(session.user.discordId, classId);
+  await draftsService.delete(discordId, entityType, entityId);
   return NextResponse.json({ success: true }, { headers });
 }
 

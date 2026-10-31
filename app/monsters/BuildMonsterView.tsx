@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   createBestiaryEntry,
   updateBestiaryEntry,
@@ -76,6 +76,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import { call } from "@/lib/contract";
+import { useDraft } from "@/lib/hooks/useDraft";
 import type {
   Monster,
   MonsterArmor,
@@ -1345,6 +1346,7 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
   const router = useRouter();
   const [confirmPrivate, setConfirmPrivate] = useState(false);
   const statblockEditor = useFeatureFlag("monster-statblock-editor");
+  const autosaveEnabled = useFeatureFlag("draft-autosave");
 
   const { data: session } = useSession();
   const creator = session?.user || UNKNOWN_USER;
@@ -1393,6 +1395,31 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
     };
   });
   const queryClient = useQueryClient();
+
+  // Remixes start from another monster, so a draft keyed to "new" would lose
+  // the remix link when restored; only new and owned monsters autosave.
+  const draftsEnabled =
+    autosaveEnabled && statblockEditor && !monster.hazard && !remixedFromId;
+  const {
+    draftState,
+    draftData,
+    lastSavedAt,
+    restoreDraft,
+    discardDraft,
+    onFormChange,
+    deleteDraftOnSave,
+  } = useDraft<MonsterFormState>({
+    entityType: "monster",
+    entityId: existingMonster?.id || null,
+    entityUpdatedAt: existingMonster?.updatedAt,
+    isLoggedIn: !!session?.user?.id,
+    enabled: draftsEnabled,
+  });
+  // Skip the initial state so opening the editor never overwrites a saved draft.
+  const initialMonster = useRef(monster);
+  useEffect(() => {
+    if (monster !== initialMonster.current) onFormChange(monster);
+  }, [monster, onFormChange]);
 
   const mutation = useMutation({
     mutationFn: async (data: MonsterFormState) => {
@@ -1533,7 +1560,8 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
         },
       });
     },
-    onSuccess: (newMonster) => {
+    onSuccess: async (newMonster) => {
+      if (draftsEnabled) await deleteDraftOnSave();
       queryClient.invalidateQueries({ queryKey: ["monsters"] });
       queryClient.invalidateQueries({ queryKey: ["hazards"] });
       queryClient.invalidateQueries({ queryKey: ["nav-counts"] });
@@ -1683,6 +1711,45 @@ const BuildMonster: React.FC<BuildMonsterProps> = ({
           })
         }
         visibilityConfirmation={visibilityConfirmation}
+        lastSavedAt={lastSavedAt}
+        draftBanner={
+          (draftState === "available" || draftState === "stale") && (
+            <div className="flex items-center gap-3 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/50 dark:text-amber-200">
+              <span className="flex-1">
+                {draftState === "stale"
+                  ? "An older draft was found. Restore it?"
+                  : "You have an unsaved draft. Restore it?"}
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => discardDraft()}
+              >
+                Discard
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => {
+                  // Drafts round-trip through JSON; keep identity and dates
+                  // from the loaded monster rather than the serialized copy.
+                  if (draftData)
+                    setMonster({
+                      ...draftData,
+                      id: monster.id,
+                      creator,
+                      createdAt: monster.createdAt,
+                      updatedAt: monster.updatedAt,
+                    });
+                  restoreDraft();
+                }}
+              >
+                Restore
+              </Button>
+            </div>
+          )
+        }
       />
     );
   }

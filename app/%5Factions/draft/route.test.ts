@@ -12,19 +12,22 @@ vi.mock("@/lib/auth", () => ({ auth: mocks.auth }));
 vi.mock("@/lib/services/featureFlags", () => ({
   isFeatureFlagEnabled: mocks.flag,
 }));
-vi.mock("@/lib/services/classdrafts", () => ({ classDraftsService: mocks }));
+vi.mock("@/lib/services/drafts", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/services/drafts/types")>()),
+  draftsService: mocks,
+}));
 
 import { DELETE, GET, POST } from "./route";
 
-const classId = "fa32b802-8c9c-42ab-a561-bb57041bc0b3";
+const entityId = "fa32b802-8c9c-42ab-a561-bb57041bc0b3";
 const updatedAt = new Date("2026-10-14T04:00:00Z");
 function request(
   method: string,
-  body: unknown = { classId: null, data: { name: "" } },
+  body: unknown = { entityType: "class", entityId: null, data: { name: "" } },
   headers: Record<string, string> = {}
 ) {
   return new Request(
-    `https://nimble.nexus/_actions/classDraft${method === "GET" ? `?classId=${classId}` : ""}`,
+    `https://nimble.nexus/_actions/draft${method === "GET" ? `?entityType=class&entityId=${entityId}` : ""}`,
     {
       method,
       headers: {
@@ -49,21 +52,27 @@ beforeEach(() => {
   });
 });
 
-describe("class draft route boundary", () => {
+describe("draft route boundary", () => {
   it("round-trips incomplete JSON drafts and serializes only data and timestamp", async () => {
     const saved = await POST(
       request("POST", {
-        classId,
+        entityType: "class",
+        entityId,
         data: { name: "", nested: [null, 2, true] },
         userId: "victim",
       })
     );
     expect(saved.status).toBe(200);
     expect(await saved.json()).toEqual({ updatedAt: updatedAt.toISOString() });
-    expect(mocks.save).toHaveBeenCalledWith("discord-owner", classId, {
-      name: "",
-      nested: [null, 2, true],
-    });
+    expect(mocks.save).toHaveBeenCalledWith(
+      "discord-owner",
+      "class",
+      entityId,
+      {
+        name: "",
+        nested: [null, 2, true],
+      }
+    );
     const loaded = await GET(request("GET"));
     expect(await loaded.json()).toEqual({
       draft: {
@@ -73,25 +82,64 @@ describe("class draft route boundary", () => {
     });
     expect(loaded.headers.get("cache-control")).toBe("private, no-store");
     expect(loaded.headers.get("access-control-allow-origin")).toBeNull();
-    expect(mocks.get).toHaveBeenCalledWith("discord-owner", classId);
-    expect(await (await DELETE(request("DELETE", { classId }))).json()).toEqual(
-      { success: true }
+    expect(mocks.get).toHaveBeenCalledWith("discord-owner", "class", entityId);
+    expect(
+      await (
+        await DELETE(request("DELETE", { entityType: "class", entityId }))
+      ).json()
+    ).toEqual({ success: true });
+    expect(mocks.delete).toHaveBeenCalledWith(
+      "discord-owner",
+      "class",
+      entityId
     );
-    expect(mocks.delete).toHaveBeenCalledWith("discord-owner", classId);
+  });
+
+  it("keeps each entity type's drafts separate and rejects unknown types", async () => {
+    await POST(
+      request("POST", { entityType: "monster", entityId: null, data: {} })
+    );
+    expect(mocks.save).toHaveBeenCalledWith(
+      "discord-owner",
+      "monster",
+      null,
+      {}
+    );
+    await GET(
+      new Request(
+        `https://nimble.nexus/_actions/draft?entityType=subclass&entityId=${entityId}`
+      )
+    );
+    expect(mocks.get).toHaveBeenCalledWith(
+      "discord-owner",
+      "subclass",
+      entityId
+    );
+    for (const query of ["entityType=item", ""])
+      expect(
+        (await GET(new Request(`https://nimble.nexus/_actions/draft?${query}`)))
+          .status
+      ).toBe(400);
   });
 
   it("supports missing new-class drafts and idempotent deletes", async () => {
     mocks.get.mockResolvedValue(null);
     expect(
       await (
-        await GET(new Request("https://nimble.nexus/_actions/classDraft"))
+        await GET(
+          new Request("https://nimble.nexus/_actions/draft?entityType=class")
+        )
       ).json()
     ).toEqual({ draft: null });
-    expect(mocks.get).toHaveBeenCalledWith("discord-owner", null);
+    expect(mocks.get).toHaveBeenCalledWith("discord-owner", "class", null);
     for (let i = 0; i < 2; i++)
-      expect((await DELETE(request("DELETE", { classId: null }))).status).toBe(
-        200
-      );
+      expect(
+        (
+          await DELETE(
+            request("DELETE", { entityType: "class", entityId: null })
+          )
+        ).status
+      ).toBe(200);
   });
 
   for (const [method, handler] of [
@@ -116,9 +164,13 @@ describe("class draft route boundary", () => {
       const invalid =
         method === "GET"
           ? new Request(
-              "https://nimble.nexus/_actions/classDraft?classId=invalid"
+              "https://nimble.nexus/_actions/draft?entityType=class&entityId=invalid"
             )
-          : request(method, { classId: "invalid", data: {} });
+          : request(method, {
+              entityType: "class",
+              entityId: "invalid",
+              data: {},
+            });
       expect((await handler(invalid)).status).toBe(400);
       const activeSpan = trace.wrapSpanContext({
         traceId: "a".repeat(32),
@@ -152,7 +204,7 @@ describe("class draft route boundary", () => {
       expect(
         (
           await handler(
-            new Request("https://nimble.nexus/_actions/classDraft", {
+            new Request("https://nimble.nexus/_actions/draft", {
               method,
               headers: {
                 origin: "https://nimble.nexus",
@@ -170,7 +222,11 @@ describe("class draft route boundary", () => {
   it("rejects non-object draft data and reports a missing save identity", async () => {
     for (const data of [null, [], "text"])
       expect(
-        (await POST(request("POST", { classId: null, data }))).status
+        (
+          await POST(
+            request("POST", { entityType: "class", entityId: null, data })
+          )
+        ).status
       ).toBe(400);
     mocks.save.mockResolvedValue(null);
     expect((await POST(request("POST"))).status).toBe(404);

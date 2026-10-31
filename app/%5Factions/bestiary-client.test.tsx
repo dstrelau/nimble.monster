@@ -10,6 +10,12 @@ import {
 } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { createBestiaryEntry } from "@/app/%5Factions/_bestiary/contract";
+import {
+  deleteDraft,
+  getDraft,
+  saveDraft,
+} from "@/app/%5Factions/draft/contract";
 import BuildMonsterView from "@/app/monsters/BuildMonsterView";
 import { FeatureFlagsProvider } from "@/lib/contexts/FeatureFlagsContext";
 import { call } from "@/lib/contract";
@@ -70,6 +76,29 @@ vi.mock("@/components/paperforge/PaperforgeImageSelect", () => ({
   PaperforgeImageSelect: () => null,
   PaperforgeImageChoices: () => null,
 }));
+
+const EXAMPLE_DRAFT = {
+  name: "",
+  level: "1",
+  levelInt: 1,
+  hp: 10,
+  armor: "none",
+  size: "medium",
+  speed: 6,
+  fly: 0,
+  swim: 0,
+  climb: 0,
+  teleport: 0,
+  burrow: 0,
+  actions: [],
+  abilities: [],
+  actionPreface: "",
+  legendary: false,
+  minion: false,
+  hazard: false,
+  visibility: "public",
+  creator: { id: "someone-else" },
+};
 
 function deferred<T>() {
   let resolve: (value: T) => void = () => undefined;
@@ -197,6 +226,127 @@ describe("bestiary builder mutation", () => {
     expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(
       "Draft goblin"
     );
+  });
+
+  it.each([
+    ["Standard", {}],
+    [
+      "Legendary",
+      {
+        legendary: true,
+        bloodied: "Roars and recharges.",
+        lastStand: "Fights on at 0 HP.",
+        saves: "STR+",
+      },
+    ],
+    ["Minion", { minion: true }],
+    [
+      "Team",
+      {
+        members: [
+          {
+            id: "m1",
+            name: "Poppy",
+            hp: 12,
+            armor: "medium",
+            size: "small",
+            abilities: [],
+            actions: [],
+          },
+          {
+            id: "m2",
+            name: "Kelebek",
+            hp: 12,
+            armor: "medium",
+            size: "small",
+            abilities: [],
+            actions: [],
+          },
+        ],
+      },
+    ],
+  ] as const)(
+    "restores, autosaves, and clears a %s monster draft",
+    async (kind, fields) => {
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      const created = {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        name: "Draft goblin",
+        hazard: false,
+      };
+      vi.mocked(call).mockImplementation(async (contract) => {
+        if (contract === getDraft)
+          return {
+            draft: {
+              data: { ...EXAMPLE_DRAFT, ...fields, name: "Draft goblin" },
+              updatedAt: "2026-10-29T15:00:00Z",
+            },
+          };
+        if (contract === saveDraft)
+          return { updatedAt: "2026-10-29T15:05:00Z" };
+        if (contract === deleteDraft) return { success: true };
+        return created;
+      });
+      renderBuilder(false, undefined, true, ["draft-autosave"]);
+
+      await screen.findByText("You have an unsaved draft. Restore it?");
+      expect(call).toHaveBeenCalledWith(getDraft, {
+        entityType: "monster",
+        entityId: null,
+      });
+      await vi.advanceTimersByTimeAsync(3500);
+      // Opening the editor must not overwrite the stored draft.
+      expect(call).not.toHaveBeenCalledWith(saveDraft, expect.anything());
+
+      fireEvent.click(screen.getByRole("button", { name: "Restore" }));
+      expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(
+        "Draft goblin"
+      );
+      expect(
+        screen.getByRole("combobox", { name: "Monster type" })
+      ).toHaveTextContent(kind);
+      expect(screen.queryByText(/unsaved draft/)).not.toBeInTheDocument();
+      fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+        target: { value: "Draft goblin boss" },
+      });
+      await vi.advanceTimersByTimeAsync(3500);
+      expect(call).toHaveBeenCalledWith(saveDraft, {
+        entityType: "monster",
+        entityId: null,
+        data: expect.objectContaining({ ...fields, name: "Draft goblin boss" }),
+      });
+      expect(await screen.findByText(/^Draft saved at/)).toBeInTheDocument();
+
+      fireEvent.click(
+        screen.getAllByRole("button", { name: "Save monster" })[0]
+      );
+      await waitFor(() =>
+        expect(mockPush).toHaveBeenCalledWith(getMonsterUrl(created))
+      );
+      expect(call).toHaveBeenCalledWith(
+        createBestiaryEntry,
+        expect.objectContaining({
+          input: expect.objectContaining({
+            name: "Draft goblin boss",
+            legendary: false,
+            minion: false,
+            ...fields,
+            ...("saves" in fields && { saves: [fields.saves] }),
+          }),
+        })
+      );
+      expect(call).toHaveBeenCalledWith(deleteDraft, {
+        entityType: "monster",
+        entityId: null,
+      });
+      vi.useRealTimers();
+    }
+  );
+
+  it("does not load monster drafts without the autosave flag", () => {
+    vi.mocked(call).mockResolvedValue({ draft: null });
+    renderBuilder(false, undefined, true);
+    expect(call).not.toHaveBeenCalledWith(getDraft, expect.anything());
   });
 
   it("hides legendary movement controls without losing the standard draft's movement", () => {

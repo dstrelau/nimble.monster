@@ -156,6 +156,8 @@ interface StatblockEditorProps {
   examples: ReactNode;
   onClear: () => void;
   visibilityConfirmation: ReactNode;
+  draftBanner?: ReactNode;
+  lastSavedAt?: Date | null;
 }
 
 const MOVEMENTS: {
@@ -185,6 +187,8 @@ export function StatblockEditor({
   examples,
   onClear,
   visibilityConfirmation,
+  draftBanner,
+  lastSavedAt,
 }: StatblockEditorProps) {
   const [task, setTask] = useState("basics");
   const [preview, setPreview] = useState(false);
@@ -317,6 +321,7 @@ export function StatblockEditor({
           </Button>
         )}
       </header>
+      {draftBanner}
       {error && (
         <p role="alert" className="text-destructive">
           {error}
@@ -721,6 +726,15 @@ export function StatblockEditor({
           {preview ? <Pencil /> : <Eye />}
           {preview ? "Back to editing" : "Preview"}
         </Button>
+        {canSave && lastSavedAt && (
+          <span className="text-xs text-muted-foreground">
+            Draft saved at{" "}
+            {lastSavedAt.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+        )}
         {canSave && (
           <Button type="submit" disabled={pending}>
             {pending ? "Saving…" : "Save monster"}

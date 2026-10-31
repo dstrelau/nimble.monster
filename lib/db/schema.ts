@@ -1263,11 +1263,12 @@ export const ancestriesAwards = sqliteTable(
   (table) => [primaryKey({ columns: [table.ancestryId, table.awardId] })]
 );
 
-export const CLASS_DRAFT_NEW_SENTINEL = "__new__";
+export const DRAFT_NEW_SENTINEL = "__new__";
 
-// Class drafts table (auto-save form state)
-export const classDrafts = sqliteTable(
-  "class_drafts",
+// Autosaved editor state, one per user, entity type, and entity. Unsaved
+// entities use DRAFT_NEW_SENTINEL as their entity ID.
+export const drafts = sqliteTable(
+  "drafts",
   {
     id: text("id")
       .primaryKey()
@@ -1275,14 +1276,15 @@ export const classDrafts = sqliteTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
-    classId: text("class_id").notNull().default(CLASS_DRAFT_NEW_SENTINEL),
+    entityType: text("entity_type").notNull(),
+    entityId: text("entity_id").notNull().default(DRAFT_NEW_SENTINEL),
     data: text("data", { mode: "json" }).notNull(),
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },
   (table) => [
-    unique().on(table.userId, table.classId),
-    index("idx_class_drafts_user_id").on(table.userId),
+    unique().on(table.userId, table.entityType, table.entityId),
+    index("idx_drafts_user_id").on(table.userId),
   ]
 );
 
@@ -1334,8 +1336,8 @@ export type ClassAbilityListRow = typeof classAbilityLists.$inferSelect;
 export type ClassAbilityListInsert = typeof classAbilityLists.$inferInsert;
 export type ClassAbilityItemRow = typeof classAbilityItems.$inferSelect;
 export type ClassAbilityItemInsert = typeof classAbilityItems.$inferInsert;
-export type ClassDraftRow = typeof classDrafts.$inferSelect;
-export type ClassDraftInsert = typeof classDrafts.$inferInsert;
+export type DraftRow = typeof drafts.$inferSelect;
+export type DraftInsert = typeof drafts.$inferInsert;
 
 // User-authored custom rules. Each rule may link to zero or more official
 // rules via `custom_rule_links`.

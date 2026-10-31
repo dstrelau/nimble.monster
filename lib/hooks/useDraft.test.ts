@@ -1,12 +1,11 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockGetClassDraft, mockSaveClassDraft, mockDeleteClassDraft } =
-  vi.hoisted(() => ({
-    mockGetClassDraft: vi.fn(),
-    mockSaveClassDraft: vi.fn(),
-    mockDeleteClassDraft: vi.fn(),
-  }));
+const { mockGetDraft, mockSaveDraft, mockDeleteDraft } = vi.hoisted(() => ({
+  mockGetDraft: vi.fn(),
+  mockSaveDraft: vi.fn(),
+  mockDeleteDraft: vi.fn(),
+}));
 
 vi.mock("@tanstack/react-pacer", () => ({
   useDebouncer: (fn: (...args: unknown[]) => unknown) => ({
@@ -15,14 +14,14 @@ vi.mock("@tanstack/react-pacer", () => ({
   }),
 }));
 
-import { useClassDraft } from "./useClassDraft";
+import { useDraft } from "./useDraft";
 
 afterEach(() => {
   vi.clearAllMocks();
   vi.unstubAllGlobals();
 });
 
-describe("useClassDraft", () => {
+describe("useDraft", () => {
   beforeEach(() => {
     vi.stubGlobal(
       "fetch",
@@ -30,26 +29,28 @@ describe("useClassDraft", () => {
         const input = init.body ? JSON.parse(String(init.body)) : null;
         const result =
           init.method === "GET"
-            ? await mockGetClassDraft(
-                new URL(url, "https://nimble.nexus").searchParams.get("classId")
+            ? await mockGetDraft(
+                new URL(url, "https://nimble.nexus").searchParams.get(
+                  "entityId"
+                )
               )
             : init.method === "DELETE"
-              ? await mockDeleteClassDraft(input.classId)
-              : await mockSaveClassDraft(input.classId, input.data);
+              ? await mockDeleteDraft(input.entityId)
+              : await mockSaveDraft(input.entityId, input.data);
         return Response.json(result);
       })
     );
-    mockGetClassDraft.mockResolvedValue({ success: true, draft: null });
-    mockSaveClassDraft.mockResolvedValue({
+    mockGetDraft.mockResolvedValue({ success: true, draft: null });
+    mockSaveDraft.mockResolvedValue({
       success: true,
       updatedAt: new Date().toISOString(),
     });
-    mockDeleteClassDraft.mockResolvedValue({ success: true });
+    mockDeleteDraft.mockResolvedValue({ success: true });
   });
 
   it("starts in loading state and transitions to idle when no draft", async () => {
     const { result } = renderHook(() =>
-      useClassDraft({ classId: null, isLoggedIn: true })
+      useDraft({ entityType: "class", entityId: null, isLoggedIn: true })
     );
 
     expect(result.current.draftState).toBe("loading");
@@ -61,15 +62,15 @@ describe("useClassDraft", () => {
 
   it("stays idle when not logged in", () => {
     const { result } = renderHook(() =>
-      useClassDraft({ classId: null, isLoggedIn: false })
+      useDraft({ entityType: "class", entityId: null, isLoggedIn: false })
     );
 
     expect(result.current.draftState).toBe("idle");
-    expect(mockGetClassDraft).not.toHaveBeenCalled();
+    expect(mockGetDraft).not.toHaveBeenCalled();
   });
 
   it("sets available state when draft exists for new class", async () => {
-    mockGetClassDraft.mockResolvedValue({
+    mockGetDraft.mockResolvedValue({
       success: true,
       draft: {
         data: { name: "Test" },
@@ -78,7 +79,7 @@ describe("useClassDraft", () => {
     });
 
     const { result } = renderHook(() =>
-      useClassDraft({ classId: null, isLoggedIn: true })
+      useDraft({ entityType: "class", entityId: null, isLoggedIn: true })
     );
 
     await waitFor(() => {
@@ -91,7 +92,7 @@ describe("useClassDraft", () => {
     const classUpdated = new Date("2026-03-01T12:00:00Z");
     const draftUpdated = new Date("2026-03-01T11:00:00Z");
 
-    mockGetClassDraft.mockResolvedValue({
+    mockGetDraft.mockResolvedValue({
       success: true,
       draft: {
         data: { name: "Old" },
@@ -100,9 +101,10 @@ describe("useClassDraft", () => {
     });
 
     const { result } = renderHook(() =>
-      useClassDraft({
-        classId: "class-1",
-        classUpdatedAt: classUpdated,
+      useDraft({
+        entityType: "class",
+        entityId: "class-1",
+        entityUpdatedAt: classUpdated,
         isLoggedIn: true,
       })
     );
@@ -116,7 +118,7 @@ describe("useClassDraft", () => {
     const classUpdated = new Date("2026-03-01T11:00:00Z");
     const draftUpdated = new Date("2026-03-01T12:00:00Z");
 
-    mockGetClassDraft.mockResolvedValue({
+    mockGetDraft.mockResolvedValue({
       success: true,
       draft: {
         data: { name: "New" },
@@ -125,9 +127,10 @@ describe("useClassDraft", () => {
     });
 
     const { result } = renderHook(() =>
-      useClassDraft({
-        classId: "class-1",
-        classUpdatedAt: classUpdated,
+      useDraft({
+        entityType: "class",
+        entityId: "class-1",
+        entityUpdatedAt: classUpdated,
         isLoggedIn: true,
       })
     );
@@ -137,9 +140,9 @@ describe("useClassDraft", () => {
     });
   });
 
-  it("calls saveClassDraft on form change", async () => {
+  it("calls saveDraft on form change", async () => {
     const { result } = renderHook(() =>
-      useClassDraft({ classId: null, isLoggedIn: true })
+      useDraft({ entityType: "class", entityId: null, isLoggedIn: true })
     );
 
     await waitFor(() => {
@@ -150,23 +153,23 @@ describe("useClassDraft", () => {
       result.current.onFormChange({ name: "Updated" });
     });
 
-    expect(mockSaveClassDraft).toHaveBeenCalledWith(null, { name: "Updated" });
+    expect(mockSaveDraft).toHaveBeenCalledWith(null, { name: "Updated" });
   });
 
   it("does not save when not logged in", async () => {
     const { result } = renderHook(() =>
-      useClassDraft({ classId: null, isLoggedIn: false })
+      useDraft({ entityType: "class", entityId: null, isLoggedIn: false })
     );
 
     act(() => {
       result.current.onFormChange({ name: "Test" });
     });
 
-    expect(mockSaveClassDraft).not.toHaveBeenCalled();
+    expect(mockSaveDraft).not.toHaveBeenCalled();
   });
 
   it("restoreDraft sets state to idle", async () => {
-    mockGetClassDraft.mockResolvedValue({
+    mockGetDraft.mockResolvedValue({
       success: true,
       draft: {
         data: { name: "Draft" },
@@ -175,7 +178,7 @@ describe("useClassDraft", () => {
     });
 
     const { result } = renderHook(() =>
-      useClassDraft({ classId: null, isLoggedIn: true })
+      useDraft({ entityType: "class", entityId: null, isLoggedIn: true })
     );
 
     await waitFor(() => {
@@ -190,7 +193,7 @@ describe("useClassDraft", () => {
   });
 
   it("discardDraft deletes and resets state", async () => {
-    mockGetClassDraft.mockResolvedValue({
+    mockGetDraft.mockResolvedValue({
       success: true,
       draft: {
         data: { name: "Draft" },
@@ -199,7 +202,7 @@ describe("useClassDraft", () => {
     });
 
     const { result } = renderHook(() =>
-      useClassDraft({ classId: "class-1", isLoggedIn: true })
+      useDraft({ entityType: "class", entityId: "class-1", isLoggedIn: true })
     );
 
     await waitFor(() => {
@@ -212,12 +215,12 @@ describe("useClassDraft", () => {
 
     expect(result.current.draftState).toBe("idle");
     expect(result.current.draftData).toBeNull();
-    expect(mockDeleteClassDraft).toHaveBeenCalledWith("class-1");
+    expect(mockDeleteDraft).toHaveBeenCalledWith("class-1");
   });
 
   it("deleteDraftOnSave cleans up after successful save", async () => {
     const { result } = renderHook(() =>
-      useClassDraft({ classId: "class-1", isLoggedIn: true })
+      useDraft({ entityType: "class", entityId: "class-1", isLoggedIn: true })
     );
 
     await waitFor(() => {
@@ -228,13 +231,13 @@ describe("useClassDraft", () => {
       await result.current.deleteDraftOnSave();
     });
 
-    expect(mockDeleteClassDraft).toHaveBeenCalledWith("class-1");
+    expect(mockDeleteDraft).toHaveBeenCalledWith("class-1");
     expect(result.current.lastSavedAt).toBeNull();
   });
 
   it("uses stable GET/POST/DELETE requests without next-action or a GET body", async () => {
     const { result } = renderHook(() =>
-      useClassDraft({ classId: "class-1", isLoggedIn: true })
+      useDraft({ entityType: "class", entityId: "class-1", isLoggedIn: true })
     );
     await waitFor(() => expect(result.current.draftState).toBe("idle"));
     await act(async () => {
@@ -245,21 +248,25 @@ describe("useClassDraft", () => {
     });
     expect(fetch).toHaveBeenNthCalledWith(
       1,
-      "/_actions/classDraft?classId=class-1",
+      "/_actions/draft?entityType=class&entityId=class-1",
       {
         method: "GET",
         credentials: "same-origin",
       }
     );
     for (const method of ["POST", "DELETE"]) {
-      expect(fetch).toHaveBeenCalledWith("/_actions/classDraft", {
+      expect(fetch).toHaveBeenCalledWith("/_actions/draft", {
         method,
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           method === "POST"
-            ? { classId: "class-1", data: { name: "Partial" } }
-            : { classId: "class-1" }
+            ? {
+                entityType: "class",
+                entityId: "class-1",
+                data: { name: "Partial" },
+              }
+            : { entityType: "class", entityId: "class-1" }
         ),
       });
     }
@@ -270,10 +277,10 @@ describe("useClassDraft", () => {
       Response.json({ error: "Forbidden" }, { status: 403 })
     );
     const { result } = renderHook(() =>
-      useClassDraft({ classId: null, isLoggedIn: true })
+      useDraft({ entityType: "class", entityId: null, isLoggedIn: true })
     );
     await waitFor(() => expect(result.current.draftState).toBe("idle"));
-    mockSaveClassDraft.mockRejectedValueOnce(new Error("Network unavailable"));
+    mockSaveDraft.mockRejectedValueOnce(new Error("Network unavailable"));
     await act(async () => {
       result.current.onFormChange({ name: "Retained" });
     });
@@ -282,9 +289,7 @@ describe("useClassDraft", () => {
       result.current.onFormChange({ name: "Retained again" });
     });
     expect(result.current.lastSavedAt).toBeInstanceOf(Date);
-    mockDeleteClassDraft.mockRejectedValueOnce(
-      new Error("Network unavailable")
-    );
+    mockDeleteDraft.mockRejectedValueOnce(new Error("Network unavailable"));
     await act(async () => {
       await result.current.deleteDraftOnSave();
     });

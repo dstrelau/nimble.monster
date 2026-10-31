@@ -26,8 +26,8 @@ vi.mock("next-auth/react", () => ({
 vi.mock("@/lib/contexts/FeatureFlagsContext", () => ({
   useFeatureFlag: () => true,
 }));
-vi.mock("@/lib/hooks/useClassDraft", () => ({
-  useClassDraft: () => ({
+vi.mock("@/lib/hooks/useDraft", () => ({
+  useDraft: () => ({
     draftState: "none",
     onFormChange: mocks.onFormChange,
     deleteDraftOnSave: mocks.deleteDraft,

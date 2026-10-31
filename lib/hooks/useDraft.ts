@@ -3,22 +3,26 @@
 import { useDebouncer } from "@tanstack/react-pacer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  deleteClassDraft,
-  getClassDraft,
-  saveClassDraft,
-} from "@/app/%5Factions/classDraft/contract";
+  deleteDraft,
+  getDraft,
+  saveDraft,
+} from "@/app/%5Factions/draft/contract";
 import { call } from "@/lib/contract";
+import type { DraftEntityType } from "@/lib/services/drafts/types";
 
 export type DraftState = "idle" | "loading" | "available" | "stale";
 
-interface UseClassDraftOptions {
-  classId: string | null;
-  classUpdatedAt?: Date;
+interface UseDraftOptions {
+  entityType: DraftEntityType;
+  /** Null while creating a new entity. */
+  entityId: string | null;
+  /** Drafts saved before this are offered as stale. */
+  entityUpdatedAt?: Date;
   isLoggedIn: boolean;
   enabled?: boolean;
 }
 
-interface UseClassDraftResult<T> {
+interface UseDraftResult<T> {
   draftState: DraftState;
   draftData: T | null;
   lastSavedAt: Date | null;
@@ -28,12 +32,13 @@ interface UseClassDraftResult<T> {
   deleteDraftOnSave: () => Promise<void>;
 }
 
-export function useClassDraft<T>({
-  classId,
-  classUpdatedAt,
+export function useDraft<T>({
+  entityType,
+  entityId,
+  entityUpdatedAt,
   isLoggedIn,
   enabled = true,
-}: UseClassDraftOptions): UseClassDraftResult<T> {
+}: UseDraftOptions): UseDraftResult<T> {
   const [draftState, setDraftState] = useState<DraftState>("idle");
   const [draftData, setDraftData] = useState<T | null>(null);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
@@ -55,12 +60,12 @@ export function useClassDraft<T>({
       };
 
     setDraftState("loading");
-    call(getClassDraft, { classId })
+    call(getDraft, { entityType, entityId })
       .then((result) => {
         if (cancelled) return;
         if (result.draft) {
           const draftUpdated = new Date(result.draft.updatedAt);
-          if (classUpdatedAt && draftUpdated <= classUpdatedAt) {
+          if (entityUpdatedAt && draftUpdated <= entityUpdatedAt) {
             setDraftState("stale");
           } else {
             setDraftState("available");
@@ -79,12 +84,12 @@ export function useClassDraft<T>({
     return () => {
       cancelled = true;
     };
-  }, [classId, classUpdatedAt, isLoggedIn, enabled]);
+  }, [entityType, entityId, entityUpdatedAt, isLoggedIn, enabled]);
 
   const saveDebouncer = useDebouncer(
     async (data: unknown) => {
       try {
-        const result = await call(saveClassDraft, { classId, data });
+        const result = await call(saveDraft, { entityType, entityId, data });
         if (mountedRef.current) {
           setLastSavedAt(new Date(result.updatedAt));
         }
@@ -111,15 +116,15 @@ export function useClassDraft<T>({
     setDraftState("idle");
     setDraftData(null);
     setLastSavedAt(null);
-    await call(deleteClassDraft, { classId }).catch(() => undefined);
-  }, [classId]);
+    await call(deleteDraft, { entityType, entityId }).catch(() => undefined);
+  }, [entityType, entityId]);
 
   const deleteDraftOnSave = useCallback(async () => {
     saveDebouncer.cancel();
     setLastSavedAt(null);
-    // Draft cleanup must not turn a successful class save into an editor error.
-    await call(deleteClassDraft, { classId }).catch(() => undefined);
-  }, [classId, saveDebouncer]);
+    // Draft cleanup must not turn a successful save into an editor error.
+    await call(deleteDraft, { entityType, entityId }).catch(() => undefined);
+  }, [entityType, entityId, saveDebouncer]);
 
   return {
     draftState,

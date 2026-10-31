@@ -24,9 +24,10 @@ vi.mock("@/lib/db/drizzle", () => ({
 }));
 
 vi.mock("@/lib/db/schema", () => ({
-  classDrafts: {
+  drafts: {
     userId: "user_id",
-    classId: "class_id",
+    entityType: "entity_type",
+    entityId: "entity_id",
   },
 }));
 
@@ -40,24 +41,21 @@ vi.mock("drizzle-orm", () => ({
   }),
 }));
 
-import {
-  deleteClassDraft,
-  getClassDraft,
-  upsertClassDraft,
-} from "./repository";
+import { deleteDraft, getDraft, upsertDraft } from "./repository";
 
 afterEach(() => {
   vi.clearAllMocks();
 });
 
-describe("classdrafts repository", () => {
-  describe("upsertClassDraft", () => {
+describe("drafts repository", () => {
+  describe("upsertDraft", () => {
     beforeEach(() => {
       mockReturning.mockResolvedValue([
         {
           id: "draft-1",
           userId: "user-1",
-          classId: "__new__",
+          entityType: "class",
+          entityId: "__new__",
           data: { name: "Test" },
           createdAt: "2026-03-01",
           updatedAt: "2026-03-01",
@@ -66,51 +64,56 @@ describe("classdrafts repository", () => {
     });
 
     it("inserts a new draft", async () => {
-      const result = await upsertClassDraft({
+      const result = await upsertDraft({
         userId: "user-1",
-        classId: "__new__",
+        entityType: "class",
+        entityId: "__new__",
         data: { name: "Test" },
       });
 
       expect(mockInsert).toHaveBeenCalled();
       expect(mockValues).toHaveBeenCalledWith({
         userId: "user-1",
-        classId: "__new__",
+        entityType: "class",
+        entityId: "__new__",
         data: { name: "Test" },
       });
       expect(result.id).toBe("draft-1");
     });
 
     it("uses onConflictDoUpdate", async () => {
-      await upsertClassDraft({
+      await upsertDraft({
         userId: "user-1",
-        classId: "__new__",
+        entityType: "class",
+        entityId: "__new__",
         data: { name: "Test" },
       });
 
       expect(mockOnConflictDoUpdate).toHaveBeenCalledWith(
         expect.objectContaining({
-          target: ["user_id", "class_id"],
+          target: ["user_id", "entity_type", "entity_id"],
         })
       );
     });
   });
 
-  describe("getClassDraft", () => {
+  describe("getDraft", () => {
     it("returns the draft when found", async () => {
       const row = {
         id: "draft-1",
         userId: "user-1",
-        classId: "__new__",
+        entityType: "class",
+        entityId: "__new__",
         data: { name: "Test" },
         createdAt: "2026-03-01",
         updatedAt: "2026-03-01",
       };
       mockLimit.mockResolvedValue([row]);
 
-      const result = await getClassDraft({
+      const result = await getDraft({
         userId: "user-1",
-        classId: "__new__",
+        entityType: "class",
+        entityId: "__new__",
       });
 
       expect(result).toEqual(row);
@@ -119,20 +122,25 @@ describe("classdrafts repository", () => {
     it("returns null when not found", async () => {
       mockLimit.mockResolvedValue([]);
 
-      const result = await getClassDraft({
+      const result = await getDraft({
         userId: "user-1",
-        classId: "__new__",
+        entityType: "class",
+        entityId: "__new__",
       });
 
       expect(result).toBeNull();
     });
   });
 
-  describe("deleteClassDraft", () => {
+  describe("deleteDraft", () => {
     it("deletes the draft", async () => {
       mockDeleteWhere.mockResolvedValue(undefined);
 
-      await deleteClassDraft({ userId: "user-1", classId: "__new__" });
+      await deleteDraft({
+        userId: "user-1",
+        entityType: "class",
+        entityId: "__new__",
+      });
 
       expect(mockDelete).toHaveBeenCalled();
     });

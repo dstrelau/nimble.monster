@@ -72,7 +72,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import { call } from "@/lib/contract";
-import { useClassDraft } from "@/lib/hooks/useClassDraft";
+import { useDraft } from "@/lib/hooks/useDraft";
 import {
   ARMOR_TYPES,
   type ArmorType,
@@ -173,7 +173,7 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
   const id = useId();
   const router = useRouter();
   const { data: session } = useSession();
-  const autosaveEnabled = useFeatureFlag("class-draft-autosave");
+  const autosaveEnabled = useFeatureFlag("draft-autosave");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mode, setMode] = useState<EditorMode>("edit");
 
@@ -219,9 +219,10 @@ export default function BuildClassView({ classEntity }: BuildClassViewProps) {
     discardDraft,
     onFormChange,
     deleteDraftOnSave,
-  } = useClassDraft<FormData>({
-    classId: classEntity?.id ?? null,
-    classUpdatedAt: classEntity?.updatedAt,
+  } = useDraft<FormData>({
+    entityType: "class",
+    entityId: classEntity?.id ?? null,
+    entityUpdatedAt: classEntity?.updatedAt,
     isLoggedIn: !!session?.user?.id,
     enabled: autosaveEnabled,
   });

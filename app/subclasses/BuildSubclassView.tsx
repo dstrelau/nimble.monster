@@ -46,7 +46,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import { call } from "@/lib/contract";
-import { useClassDraft } from "@/lib/hooks/useClassDraft";
+import { useDraft } from "@/lib/hooks/useDraft";
 import { type Subclass, UNKNOWN_USER } from "@/lib/types";
 import { randomUUID } from "@/lib/utils";
 import { getSubclassUrl } from "@/lib/utils/url";
@@ -201,7 +201,7 @@ export default function BuildSubclassView({
   const id = useId();
   const router = useRouter();
   const { data: session } = useSession();
-  const autosaveEnabled = useFeatureFlag("class-draft-autosave");
+  const autosaveEnabled = useFeatureFlag("draft-autosave");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mode, setMode] = useState<"preview" | "edit">("edit");
   const [classSearch, setClassSearch] = useState<string>("");
@@ -265,9 +265,10 @@ export default function BuildSubclassView({
     discardDraft,
     onFormChange,
     deleteDraftOnSave,
-  } = useClassDraft<FormData>({
-    classId: subclass?.id ?? null,
-    classUpdatedAt: subclass?.updatedAt,
+  } = useDraft<FormData>({
+    entityType: "subclass",
+    entityId: subclass?.id ?? null,
+    entityUpdatedAt: subclass?.updatedAt,
     isLoggedIn: !!session?.user?.id,
     enabled: autosaveEnabled,
   });
