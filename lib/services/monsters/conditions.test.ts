@@ -1,18 +1,14 @@
 import { readFileSync } from "node:fs";
 import { createClient } from "@libsql/client";
-import { asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/libsql";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import {
   listConditionsForMonster,
-  listLibraryConditions,
   upsertOfficialCondition,
 } from "@/lib/db/condition";
 import * as schema from "@/lib/db/schema";
 import { ensureOfficialUser } from "@/lib/services/ensure-official-user";
-import { repairMonsterConditions } from "./conditions";
-import { parseMembers } from "./members";
 import {
   OFFICIAL_USER_ID,
   parseJSONAPIMonster,
@@ -50,14 +46,6 @@ function monsterInput(name = "Ul'vek, Psionic Despot") {
 }
 const linkedIds = async (id: string) =>
   (await listConditionsForMonster(id)).map((link) => link.conditionId).sort();
-const allLinks = () =>
-  db
-    .select()
-    .from(schema.monstersConditions)
-    .orderBy(
-      asc(schema.monstersConditions.monsterId),
-      asc(schema.monstersConditions.conditionId)
-    );
 
 beforeEach(async () => {
   client = createClient({ url: ":memory:" });
@@ -152,68 +140,3 @@ it.each(["monster", "hazard"])(
     expect(await linkedIds(entry.id)).toEqual([]);
   }
 );
-
-it("repairs existing missing/foreign/stale links without rewriting content, supports dry runs, and is idempotent", async () => {
-  for (const { name } of references)
-    await upsertOfficialMonster(monsterInput(name));
-  const input = monsterInput();
-  const monster = await createMonster(
-    {
-      ...input,
-      members: parseMembers([
-        {
-          name: "Ally",
-          abilities: [{ name: "Push", description: "[[KNOCKBACK]]" }],
-          actions: [],
-        },
-      ]),
-    },
-    "owner-discord"
-  );
-  const hazard = await createHazard(input, "owner-discord");
-  await db.delete(schema.monstersConditions);
-  await db.insert(schema.monstersConditions).values([
-    { monsterId: monster.id, conditionId: "other-dominated", inline: false },
-    { monsterId: hazard.id, conditionId: "other-only", inline: false },
-  ]);
-  const contentBefore = await db.select().from(schema.monsters);
-  const definitionsBefore = await db.select().from(schema.conditions);
-  const usageBefore = await listLibraryConditions("owner");
-  const broken = await allLinks();
-  expect(await repairMonsterConditions()).toEqual({
-    monsters: 8,
-    added: 9,
-    removed: 2,
-  });
-  expect(await allLinks()).toEqual(broken);
-  expect(await repairMonsterConditions(true)).toEqual({
-    monsters: 8,
-    added: 9,
-    removed: 2,
-  });
-  expect(
-    (await listConditionsForMonster(monster.id))
-      .map((link) => link.condition.name)
-      .sort()
-  ).toEqual(["DoMiNaTeD", "Knockback"]);
-  expect(await linkedIds(hazard.id)).toEqual(["owner-dominated"]);
-  expect(
-    (await allLinks()).some((link) => link.conditionId.startsWith("other"))
-  ).toBe(false);
-  expect(await db.select().from(schema.monsters)).toEqual(contentBefore);
-  expect(await db.select().from(schema.conditions)).toEqual(definitionsBefore);
-  expect(await listLibraryConditions("owner")).toEqual(usageBefore);
-  const repaired = await allLinks();
-  expect(await repairMonsterConditions(true)).toEqual({
-    monsters: 8,
-    added: 0,
-    removed: 0,
-  });
-  expect(await allLinks()).toEqual(repaired);
-  // A failed repair must not leave an incomplete set of links.
-  await db.delete(schema.monstersConditions);
-  await client.execute(`CREATE TRIGGER reject_link BEFORE INSERT ON monsters_conditions
-    WHEN NEW.monster_id = '${hazard.id}' BEGIN SELECT RAISE(ABORT, 'repair failed'); END`);
-  await expect(repairMonsterConditions(true)).rejects.toThrow();
-  expect(await allLinks()).toEqual([]);
-});

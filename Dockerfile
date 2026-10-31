@@ -13,7 +13,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_PUBLIC_BUCKET_NAME=nimble-nexus
-RUN node --run conditions:repair:bundle && node tools/sync-icons.js && node --run build
+RUN node tools/sync-icons.js && node --run build
 
 FROM base AS app-runtime
 WORKDIR /app
@@ -22,7 +22,6 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/migrations ./migrations
-COPY --from=builder /app/tmp/repair-monster-conditions.mjs /app/repair-monster-conditions.mjs
 COPY --from=builder /app/tools/set-feature-flag.mjs /app/set-feature-flag.mjs
 COPY --from=builder /app/tools/check-standalone.mjs /app/check-standalone.mjs
 RUN node check-standalone.mjs && rm check-standalone.mjs

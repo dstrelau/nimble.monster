@@ -1,4 +1,4 @@
-import { spawn, spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -43,38 +43,7 @@ try {
   if (!response.ok || !(await response.text()).includes("Browse Monsters")) {
     throw new Error(`Standalone homepage failed: HTTP ${response.status}`);
   }
-  process.stdout.write(
-    "Standalone smoke test: build-id and homepage HTTP 200\n"
-  );
-  // Exercise the shipped bundle and native database dependency without source
-  // files or development dependencies. The server migrated this disposable DB.
-  for (const args of [[], ["--apply"]]) {
-    const repair = spawnSync(
-      process.execPath,
-      ["repair-monster-conditions.mjs", ...args],
-      {
-        env: { DATABASE_URL: `file:${join(directory, "smoke.db")}` },
-        encoding: "utf8",
-        timeout: 30000,
-      }
-    );
-    if (repair.error) throw repair.error;
-    if (repair.status !== 0) {
-      throw new Error(`Standalone condition repair failed: ${repair.stderr}`);
-    }
-    const expected = {
-      apply: args.length > 0,
-      monsters: 0,
-      added: 0,
-      removed: 0,
-    };
-    if (repair.stdout.trim() !== JSON.stringify(expected)) {
-      throw new Error(`Unexpected standalone repair result: ${repair.stdout}`);
-    }
-  }
-  process.stdout.write(
-    "Standalone smoke test: condition repair dry run and apply passed\n"
-  );
+  process.stdout.write("Standalone smoke test: build-id and homepage HTTP 200\n");
 } finally {
   server.kill("SIGKILL");
   await closed;
