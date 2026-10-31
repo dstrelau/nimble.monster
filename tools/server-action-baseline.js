@@ -3,7 +3,6 @@ export const serverActionBaseline = {
   application: {
     "app/actions/class.ts": 2,
     "app/actions/companion.ts": 1,
-    "app/actions/encounter.ts": 1,
     "app/actions/subclass.ts": 1,
     "app/admin/actions.ts": 22,
     "app/hazards/actions.ts": 1,

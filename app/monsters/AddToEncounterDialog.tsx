@@ -1,6 +1,7 @@
 "use client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CopyPlus } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { addMonsterToEncounter } from "@/app/%5Factions/addMonsterToEncounter/contract";
@@ -31,6 +32,11 @@ import {
 } from "@/components/ui/select";
 import { call } from "@/lib/contract";
 
+interface AddToEncounterDialogProps {
+  monsterId: string;
+  legendary?: boolean;
+}
+
 interface AddToEncounterForm {
   encounterId: string;
   quantity: number;
@@ -38,17 +44,27 @@ interface AddToEncounterForm {
   heroesPerMonster: number;
 }
 
-export const AddToEncounterDialog = ({
+export const AddToEncounterDialog = (props: AddToEncounterDialogProps) => {
+  const { data: session, status } = useSession();
+  if (status !== "authenticated" || !session?.user?.id) return null;
+  return (
+    <SessionEncounterDialog
+      key={session.user.id}
+      {...props}
+      userId={session.user.id}
+    />
+  );
+};
+
+const SessionEncounterDialog = ({
   monsterId,
   legendary = false,
-}: {
-  monsterId: string;
-  legendary?: boolean;
-}) => {
+  userId,
+}: AddToEncounterDialogProps & { userId: string }) => {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const availableEncounters = useQuery(ownEncountersQueryOptions());
+  const availableEncounters = useQuery(ownEncountersQueryOptions(userId));
 
   const form = useForm<AddToEncounterForm>({
     defaultValues: {
@@ -82,7 +98,7 @@ export const AddToEncounterDialog = ({
       setOpen(false);
       form.reset();
       return queryClient.invalidateQueries({
-        queryKey: ownEncountersQueryOptions().queryKey,
+        queryKey: ownEncountersQueryOptions(userId).queryKey,
       });
     },
   });

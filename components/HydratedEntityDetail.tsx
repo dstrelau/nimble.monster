@@ -8,6 +8,7 @@ import {
   listConditionsForDiscordId,
   listOfficialConditions,
 } from "@/lib/db/condition";
+import { listEncountersWithMonstersForUser } from "@/lib/db/encounter";
 import type { ReactableEntityType } from "@/lib/db/schema";
 import { entityReactionsQueryOptions } from "@/lib/hooks/entityReactionsQueryOptions";
 import { entityReportQueryOptions } from "@/lib/hooks/entityReportQueryOptions";
@@ -89,8 +90,17 @@ export async function HydratedEntityDetail({
         })
       );
     }
-    if (includeEncounters) {
-      queries.push(queryClient.prefetchQuery(ownEncountersQueryOptions()));
+    if (includeEncounters && session?.user?.id && session.user.discordId) {
+      const discordId = session.user.discordId;
+      queries.push(
+        queryClient.prefetchQuery({
+          ...ownEncountersQueryOptions(session.user.id),
+          queryFn: async () => ({
+            success: true,
+            encounters: await listEncountersWithMonstersForUser(discordId),
+          }),
+        })
+      );
     }
   }
 

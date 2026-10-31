@@ -8,14 +8,13 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockListOwnEncounters, mockFetch } = vi.hoisted(() => ({
-  mockListOwnEncounters: vi.fn(),
+const { mockRead, mockFetch, mockSession } = vi.hoisted(() => ({
+  mockRead: vi.fn(),
   mockFetch: vi.fn(),
+  mockSession: vi.fn(),
 }));
 
-vi.mock("@/app/actions/encounter", () => ({
-  listOwnEncounters: mockListOwnEncounters,
-}));
+vi.mock("next-auth/react", () => ({ useSession: mockSession }));
 
 // Mock shadcn Select to use a plain HTML select (Radix portals don't work in jsdom)
 vi.mock("@/components/ui/select", () => ({
@@ -83,9 +82,17 @@ const ENCOUNTERS = {
 describe("AddToEncounterDialog", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.stubGlobal("fetch", mockFetch);
+    mockSession.mockReturnValue({
+      status: "authenticated",
+      data: { user: { id: "owner" } },
+    });
+    vi.stubGlobal("fetch", (url: string, init?: RequestInit) =>
+      url === "/_actions/listOwnEncounters"
+        ? mockRead(url, init)
+        : mockFetch(url, init)
+    );
     mockFetch.mockResolvedValue(Response.json({ success: true }));
-    mockListOwnEncounters.mockResolvedValue(ENCOUNTERS);
+    mockRead.mockImplementation(async () => Response.json(ENCOUNTERS));
   });
 
   afterEach(() => {
@@ -218,7 +225,9 @@ describe("AddToEncounterDialog", () => {
     await waitFor(() =>
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
     );
-    expect(mockListOwnEncounters).toHaveBeenCalledTimes(2);
+    expect(
+      await screen.findByRole("button", { name: /add to encounter/i })
+    ).toBeVisible();
   });
 
   it("does not offer per-hero counts for legendary monsters", async () => {
@@ -290,5 +299,162 @@ describe("AddToEncounterDialog", () => {
     );
     expect(mockFetch).toHaveBeenCalledTimes(2);
     expect(JSON.parse(mockFetch.mock.calls[1][1].body).quantity).toBe(3);
+  });
+
+  it("reads a bodyless stable URL without next-action and revives overview and monster dates", async () => {
+    const { ownEncountersQueryOptions } = await import(
+      "@/app/encounters/ownEncountersQueryOptions"
+    );
+    const date = "2026-09-01T12:00:00.000Z";
+    mockRead.mockImplementation(async () =>
+      Response.json({
+        success: true,
+        encounters: [
+          {
+            ...ENCOUNTERS.encounters[0],
+            createdAt: date,
+            monsters: [
+              {
+                monster: { id: "m-existing", createdAt: date },
+                quantity: 3,
+                isPerHero: true,
+                heroesPerMonster: 4,
+              },
+            ],
+          },
+        ],
+      })
+    );
+    const controller = new AbortController();
+    const result = await ownEncountersQueryOptions("owner").queryFn({
+      signal: controller.signal,
+    });
+    const [url, init] = mockRead.mock.calls[0];
+    const request = new Request(new URL(url, "https://nimble.nexus"), init);
+    expect(request.url).toBe("https://nimble.nexus/_actions/listOwnEncounters");
+    expect(request.method).toBe("GET");
+    expect(await request.text()).toBe("");
+    expect(request.headers.has("next-action")).toBe(false);
+    expect(init.signal).toBe(controller.signal);
+    expect(result.encounters[0].createdAt).toEqual(new Date(date));
+    expect(result.encounters[0].monsters[0].monster.createdAt).toEqual(
+      new Date(date)
+    );
+    expect(result.encounters[0].monsters[0]).toMatchObject({
+      quantity: 3,
+      isPerHero: true,
+      heroesPerMonster: 4,
+    });
+  });
+
+  it("isolates accounts, cancels old reads and discards selection on account changes/sign-out", async () => {
+    const wrapper = createWrapper();
+    const view = render(<AddToEncounterDialog monsterId="m1" />, { wrapper });
+    fireEvent.click(screen.getByRole("button", { name: /add to encounter/i }));
+    await screen.findByText("Empty Encounter");
+    fireEvent.change(screen.getByTestId("encounter-select"), {
+      target: { value: "enc-2" },
+    });
+    mockRead.mockImplementation(() => new Promise(() => {}));
+    mockSession.mockReturnValue({
+      status: "authenticated",
+      data: { user: { id: "other" } },
+    });
+    view.rerender(<AddToEncounterDialog monsterId="m1" />);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /add to encounter/i }));
+    expect(screen.queryByText("Empty Encounter")).not.toBeInTheDocument();
+    expect(screen.getByTestId("encounter-select")).toHaveValue("");
+    await waitFor(() => expect(mockRead).toHaveBeenCalledTimes(2));
+    const signal = mockRead.mock.calls[1][1].signal;
+    mockSession.mockReturnValue({ status: "unauthenticated", data: null });
+    view.rerender(<AddToEncounterDialog monsterId="m1" />);
+    expect(
+      screen.queryByRole("button", { name: /add to encounter/i })
+    ).not.toBeInTheDocument();
+    expect(signal.aborted).toBe(true);
+    expect(mockRead).toHaveBeenCalledTimes(2);
+  });
+
+  it("retains options after a failed background read and recovers on retry", async () => {
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={client}>
+        <AddToEncounterDialog monsterId="m1" />
+      </QueryClientProvider>
+    );
+    fireEvent.click(screen.getByRole("button", { name: /add to encounter/i }));
+    await screen.findByText("Empty Encounter");
+    mockRead.mockRejectedValue(new Error("offline"));
+    await client.refetchQueries({ queryKey: ["listOwnEncounters", "owner"] });
+    expect(screen.getByText("Empty Encounter")).toBeInTheDocument();
+    mockRead.mockImplementation(async () =>
+      Response.json({
+        success: true,
+        encounters: [{ id: "new", name: "Recovered encounter", monsters: [] }],
+      })
+    );
+    await client.refetchQueries({ queryKey: ["listOwnEncounters", "owner"] });
+    expect(await screen.findByText("Recovered encounter")).toBeInTheDocument();
+    expect(screen.queryByText("Empty Encounter")).not.toBeInTheDocument();
+  });
+
+  it("does not relabel an old account's pending mutation or invalidate the new account's options", async () => {
+    let resolve: (response: Response) => void = () => {};
+    mockFetch.mockReturnValueOnce(
+      new Promise<Response>((r) => {
+        resolve = r;
+      })
+    );
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false, staleTime: Infinity } },
+    });
+    const view = render(
+      <QueryClientProvider client={client}>
+        <AddToEncounterDialog monsterId="m1" />
+      </QueryClientProvider>
+    );
+    fireEvent.click(screen.getByRole("button", { name: /add to encounter/i }));
+    await screen.findByText("Empty Encounter");
+    fireEvent.change(screen.getByTestId("encounter-select"), {
+      target: { value: "enc-2" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
+    expect(
+      await screen.findByRole("button", { name: "Saving..." })
+    ).toBeDisabled();
+    mockSession.mockReturnValue({
+      status: "authenticated",
+      data: { user: { id: "other" } },
+    });
+    mockRead.mockImplementation(async () =>
+      Response.json({
+        success: true,
+        encounters: [
+          { id: "foreign", name: "Other account encounter", monsters: [] },
+        ],
+      })
+    );
+    view.rerender(
+      <QueryClientProvider client={client}>
+        <AddToEncounterDialog monsterId="m1" />
+      </QueryClientProvider>
+    );
+    fireEvent.click(screen.getByRole("button", { name: /add to encounter/i }));
+    await screen.findByText("Other account encounter");
+    resolve(Response.json({ success: true }));
+    await waitFor(() =>
+      expect(
+        client.getQueryState(["listOwnEncounters", "owner"])?.isInvalidated
+      ).toBe(true)
+    );
+    expect(
+      client.getQueryState(["listOwnEncounters", "other"])?.isInvalidated
+    ).toBe(false);
+    expect(screen.getByRole("dialog")).toBeVisible();
+    expect(screen.getByTestId("encounter-select")).toHaveValue("");
+    expect(screen.queryByText("Empty Encounter")).not.toBeInTheDocument();
   });
 });

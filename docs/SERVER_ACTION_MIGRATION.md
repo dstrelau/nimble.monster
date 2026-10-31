@@ -576,9 +576,9 @@ retains full safe counts/provenance in `my-monsters-traffic-evidence.json`.
 | Priority | Verified named operation | Attempts | HTTP <400 | HTTP ≥400 |
 | --- | --- | ---: | ---: | ---: |
 | Already migrated | `getUserFamilies` | 88 | 67 | 21 |
-| Selected private-monster slice | `app/my/monsters/actions.ts#paginateMyMonsters` | 85 | 85 | 0 |
+| Already migrated | `app/my/monsters/actions.ts#paginateMyMonsters` | 85 | 85 | 0 |
 | Already migrated | `listOwnCollections` | 79 | 45 | 34 |
-| Next measured candidate | `listOwnEncounters` | 78 | 56 | 22 |
+| Selected own-encounter slice | `listOwnEncounters` | 78 | 56 | 22 |
 | Already migrated | `getAllSources` | 46 | 29 | 17 |
 | Remaining | `paginateUserProfileMonsters` | 43 | 39 | 4 |
 | Already migrated | `paginatePublicBackgrounds` | 41 | 32 | 9 |
@@ -591,6 +591,15 @@ unarchived-child lookup found only this run. This fresh window supersedes the
 previous profile-pagination priority; revisit mapping/ranking when no longer
 representative, rather than assuming historical order. No archived deferred
 reaction closeout is reopened or claimed completed.
+
+The own-encounter run reuses this same-day fixed window on October 31, about
+six hours after its end. Removing the already-migrated private monster read
+leaves `listOwnEncounters` highest at 78 attempts, ahead of profile monster
+pagination's 43. Even assigning all four residual unmapped attempts to profile
+monsters cannot overturn that lead. Sampling, probes and mapping limitations
+remain as disclosed above; this is evidence reuse, not a new measurement.
+Coordination found no other unarchived child slice owner. After this slice,
+profile monster pagination is the next measured candidate, subject to refresh.
 
 ## Migration waves (scope guidance)
 
@@ -2086,6 +2095,60 @@ contract compatibility window that a future migration must preserve.
 - Active public pagination remains next in Wave 3 after shared transport
   prerequisites (`204`/void, `AbortSignal`, typed failures) and JSON:API
   field-parity work. Unused lookups may be removed without inventing endpoints.
+
+### Session own-encounter reads — October 2026
+
+- Selected `app/actions/encounter.ts#listOwnEncounters` from the same-day fixed
+  window above: 78 root attempts, 56 HTTP <400 and 22 HTTP ≥400. No other
+  unarchived scheduled run owns the operation.
+- `ownEncountersQueryOptions`, the sole browser transport owner, now uses a
+  cancellable bodyless `GET /_actions/listOwnEncounters`. The monster and hazard
+  detail dialogs retain name-sorted public/private encounter choices, duplicate
+  warnings, quantity/per-hero controls, pending/error UX and manual mutation
+  retry. Encounter and nested monster dates are revived after JSON; overview
+  fields, creator attribution, visibility filtering and counts remain unchanged.
+- `HydratedEntityDetail` prefetches the existing database helper directly, never
+  relative HTTP. Authentication derives exclusively from `auth()`; anonymous or
+  incomplete sessions receive JSON 401. Submitted identity/visibility parameters
+  cannot select another owner's encounters. Safe parameterless reads need no
+  body schema or mutation-origin/media gate. Success/errors use
+  `private, no-store`, no CORS; unexpected errors reach telemetry before generic
+  500s. Unsupported writes return framework 405s. No supported API is changed.
+- Query keys include the session user ID for cache isolation, never as request
+  authority. Signed-out/loading sessions issue no private query. Account changes
+  remount the dialog, discarding its previous selection and mutation state;
+  reads cancel and mutations invalidate only their starting account's cache.
+  Failed background reads retain options and recover on retry. Existing stable
+  membership writes, persistence, revalidation and navigation remain unchanged.
+- Removed the final export and empty `app/actions/encounter.ts`, its obsolete
+  wrapper-only tests and all browser/server action imports. Application ratchet
+  **42 → 41**; repository directives/exports are unchanged. Retain the stable
+  URL and response shape for at least one deployment interval. Pre-cutover tabs
+  still require refresh/retry for old action references.
+- Real-SQL boundary tests cover owner and visibility isolation, public/private
+  encounters, monster/hazard membership, counts, date serialization, empty
+  results, auth and safe failures. Real-dialog transport tests cover stable
+  GET/no `next-action`, cancellation, date revival, account changes/sign-out and
+  failed-read retention/recovery alongside retained membership-write tests.
+  Focused checks: 19 passed. Full suite: 2,132 passed, seven skipped;
+  `make check` and `git diff --check` pass. Twelve live development requests
+  verify anonymous/two-owner isolation, ignored identity, status/media/cache,
+  405s, HEAD and independently persisted add/read. Browser QA covers both detail
+  routes, add/update/reload, duplicate detection, genuine client navigation and
+  cached-option retention/recovery during two deliberately aborted reads. Four
+  successful bodyless GETs have raw CDP extra-header checks without `next-action`;
+  there are no page/hydration errors or failed HTTP responses. The two expected
+  abort console errors are recorded separately. Local cleanup verifies zero
+  users, encounters, membership links, search-catalog and FTS residue, with both
+  original content rows unchanged.
+  The [run thread](https://ampcode.com/threads/T-01a1915b-5e40-75ea-91f9-6e09eafac3a0)
+  records full/local checks, live HTTP, browser evidence, deployment identity,
+  exact authenticated production requests and cleanup outcomes.
+- QA uses two disposable non-admin users, three encounters and links to existing
+  public monster/hazard content, not real-user edits or handcrafted statblocks.
+  Production sessions expire after one hour and are minted inside Fly, never a
+  dev-login bypass. Migration remains incomplete; profile monster pagination
+  leads remaining named actions on this evidence, subject to refresh.
 
 ### Private monster pagination — October 2026
 
