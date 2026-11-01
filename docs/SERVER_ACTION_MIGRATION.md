@@ -701,9 +701,9 @@ context, not an override of the fully mapped, untied 24-hour ranking.
 
 | Priority | Verified named operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
 | --- | --- | ---: | ---: |
-| Selected profile-hazard slice | `app/u/[username]/actions.ts#paginateUserProfileHazards` | 8 (8/0) | 80 (80/0) |
-| Next measured candidate | `lib/services/encounters/repository.ts#searchPublicEncounters` | 6 (6/0) | 35 (35/0) |
-| Remaining | `getTopMonsterCreators` | 2 (2/0) | 15 (15/0) |
+| Migrated profile-hazard slice | `app/u/[username]/actions.ts#paginateUserProfileHazards` | 8 (8/0) | 80 (80/0) |
+| Selected public-encounter slice | `lib/services/encounters/repository.ts#searchPublicEncounters` | 6 (6/0) | 35 (35/0) |
+| Next measured candidate | `getTopMonsterCreators` | 2 (2/0) | 15 (15/0) |
 | Remaining | `app/hazards/actions.ts#paginatePublicHazards` | 1 (1/0) | 59 (58/1) |
 | Remaining | `signInAction` | 1 (1/0) | 5 (5/0) |
 
@@ -711,6 +711,16 @@ All other remaining actions have zero measured 24-hour attempts. The run retains
 complete query results and verified mappings in `profile-hazards-traffic-evidence.json`.
 Refresh evidence before the next selection, including the seven-day residual;
 historical failures of migrated actions are not new remaining operations.
+
+The public-encounter run reuses this same-day window on November 1, about six
+hours after its endpoint; it is not a fresh measurement. It remains representative
+of the previous day's browser traffic after profile hazards migrated. Public
+encounter search leads remaining actions with six successful and zero failed
+attempts, versus two for top creators; sparse traffic is contextualized by the
+recorded seven-day counts, not reordered by them. All root-span, sample-rate,
+probe exclusions, verified alias aggregation and residual limitations above
+still apply. The unarchived-child lookup found only this run. Refresh before
+assuming the next candidate's priority, especially as remaining volume falls.
 
 ## Migration waves (scope guidance)
 
@@ -915,7 +925,65 @@ contract compatibility window that a future migration must preserve.
 | Private/UI-specific browser reads | Partially complete | Picker, reaction summary, creator/viewer and official conditions, navigation counts and [report status reads](https://ampcode.com/threads/T-01a189d8-7afb-75e0-9d07-35be1c47103c) use stable routes. Remaining operations follow measured traffic priority. |
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
-| Repository directives | Not started | Wave 5 |
+| Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Public encounter search and pagination — November 2026
+
+- Selected `lib/services/encounters/repository.ts#searchPublicEncounters` from
+  the recent fully mapped fixed window above: six attempts, all HTTP <400;
+  seven days records 35 successful attempts. No competing unarchived run owns
+  this operation. This is one public-search slice, not a second private-read migration.
+- `publicEncountersInfiniteQueryOptions`, the sole browser transport owner,
+  now uses cancellable bodyless `GET /_actions/publicEncounters`. Its catalogue
+  and creator-profile consumers retain query keys, defaults, 12-row pages,
+  offset/lookahead continuation, previous data, retry/error UX and navigation.
+  Encounter and nested monster dates are revived after JSON. Existing creator,
+  description, hero counts/levels and monster quantities/per-hero metadata
+  keep their shape; no identity fields or third-party API are added.
+- The existing pagination service now owns the former browser wrapper. Both
+  server prefetch sites call it directly, never relative HTTP. SQL, sorting
+  (including existing tie behavior), public encounter/member visibility and
+  converters are unchanged. Creator is a public filter, not authority; submitted
+  user/owner/visibility parameters cannot include private encounters or monsters.
+  Anonymous and authenticated viewers share this deliberately public result.
+- Zod validates four sorts, integer limits 1–100 and nonnegative safe page
+  offsets before SQL. Invalid requests return JSON 400; unexpected failures
+  reach telemetry before generic JSON 500s. Success/errors use `private, no-store`,
+  without CORS. Unsupported writes receive framework 405s. Safe GETs need no
+  session, mutation-origin/media gate, persistence or invalidation changes.
+- Removed the browser repository import/call and wrapper export from
+  `app/encounters/actions.ts`. The import-graph audit found no remaining browser
+  callers of any encounter repository function; its `use server` marker can
+  therefore be retired without moving unchanged SQL into another module.
+  All four functions remain ordinary direct server functions, also used by
+  retained private pagination and the supported API. Repository markers **8 → 7**,
+  callable repository exports **74 → 70**; application exports remain **40**.
+- Real-SQL route tests cover public/private/creator isolation, search, full
+  relationships, four asymmetric sort/page boundaries, exact-limit/empty results,
+  validation and safe telemetry failures. Transport tests cover stable GET/no
+  `next-action`, URL encoding, cancellation, date revival, creator/filter cache
+  separation and failed-refetch data retention/recovery. Replaced the obsolete
+  wrapper-mock test. Focused checks: **57 passed**. Full suite: **2,265 passed,
+  seven skipped**. `make check` and `git diff --check` pass; the existing unused
+  item-builder import warning is not claimed fixed.
+- **33 live development requests** match independent SQL expectations, including
+  status/media/cache headers, four sorts/pages, filters, 400s, HEAD and 405s.
+  Browser QA covers catalogue 12→16 and profile 12→15 pagination, search/sort,
+  detail client navigation/reload, URL reload, deliberately aborted reads and
+  recovery. Five successful stable GETs have raw CDP extra-header checks without
+  `next-action`; four deliberately aborted retries are separate. No page,
+  hydration or console errors occur in the monitored settled flow.
+- Local QA uses one disposable non-admin user and 16 encounters linked to an
+  existing seeded monster. Cleanup verifies zero user/encounter/membership,
+  search-catalog and FTS residue; the seeded monster remains. Production QA is
+  anonymous/read-only, matching this public contract: no production sessions,
+  fixtures or writes. See the [run thread](https://ampcode.com/threads/T-01a197cb-56ee-77af-b0cc-1f542953d099)
+  for inspected browser evidence, deployment identity, exact functional
+  production requests, investigation and cleanup closeout.
+- Retain this stable URL and response shape for at least one deployment
+  interval. Legacy tabs still need refresh/retry for old action references.
+  The migration remains incomplete; top monster creators lead the remaining
+  actions on current evidence, subject to refreshed ranking before selection.
 
 ### Creator-profile hazard pagination — November 2026
 

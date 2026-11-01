@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { EncountersListView } from "@/components/encounter/EncountersListView";
 import { getQueryClient } from "@/lib/queryClient";
+import { paginatePublicEncounters } from "@/lib/services/encounters/pagination";
 import { publicEncountersInfiniteQueryOptions } from "./actions";
 
 const searchParamsSchema = z.object({
@@ -27,9 +28,11 @@ export default async function EncountersPage({
   const params = parseResult.data;
 
   const queryClient = getQueryClient();
-  await queryClient.prefetchInfiniteQuery(
-    publicEncountersInfiniteQueryOptions(params)
-  );
+  await queryClient.prefetchInfiniteQuery({
+    ...publicEncountersInfiniteQueryOptions(params),
+    queryFn: ({ pageParam }) =>
+      paginatePublicEncounters({ ...params, pageParam }),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -1,34 +1,11 @@
 import { keepPreviousData } from "@tanstack/react-query";
-import {
-  type PaginatedEncounterResponse,
-  parseEncounterSort,
-} from "@/lib/services/encounters/pagination";
-import * as encounters from "@/lib/services/encounters/repository";
+import { publicEncounters } from "@/app/%5Factions/publicEncounters/contract";
+import { call } from "@/lib/contract";
+import type { PaginatedEncounterResponse } from "@/lib/services/encounters/pagination";
 
 export type { PaginatedEncounterResponse } from "@/lib/services/encounters/pagination";
-export { parseEncounterSort } from "@/lib/services/encounters/pagination";
 
 export type EncounterSortOption = "name" | "-name" | "createdAt" | "-createdAt";
-
-export async function paginatePublicEncounters(params: {
-  sort: string;
-  search: string | null;
-  limit: number;
-  pageParam: number;
-  creatorId?: string;
-}): Promise<PaginatedEncounterResponse> {
-  const data = await encounters.searchPublicEncounters({
-    ...parseEncounterSort(params.sort),
-    searchTerm: params.search || undefined,
-    limit: params.limit + 1,
-    offset: params.pageParam * params.limit,
-    creatorId: params.creatorId,
-  });
-  return {
-    data: data.slice(0, params.limit),
-    hasMore: data.length > params.limit,
-  };
-}
 
 export function publicEncountersInfiniteQueryOptions({
   search = null,
@@ -44,8 +21,35 @@ export function publicEncountersInfiniteQueryOptions({
   const params = { search, sort, limit, creatorId };
   return {
     queryKey: ["encounters", params],
-    queryFn: ({ pageParam }: { pageParam: number }) =>
-      paginatePublicEncounters({ pageParam, ...params }),
+    queryFn: async ({
+      pageParam,
+      signal,
+    }: {
+      pageParam: number;
+      signal?: AbortSignal;
+    }): Promise<PaginatedEncounterResponse> => {
+      const page = await call(
+        publicEncounters,
+        { pageParam, ...params },
+        { signal }
+      );
+      return {
+        ...page,
+        data: page.data.map((encounter) => ({
+          ...encounter,
+          createdAt: encounter.createdAt
+            ? new Date(encounter.createdAt)
+            : undefined,
+          monsters: encounter.monsters.map((entry) => ({
+            ...entry,
+            monster: {
+              ...entry.monster,
+              createdAt: new Date(entry.monster.createdAt),
+            },
+          })),
+        })),
+      };
+    },
     placeholderData: keepPreviousData,
     initialPageParam: 0,
     getNextPageParam: (

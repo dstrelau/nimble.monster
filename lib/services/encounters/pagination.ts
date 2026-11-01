@@ -4,6 +4,7 @@ import {
   type EncounterSortBy,
   type EncounterSortDirection,
   searchEncountersForCreator,
+  searchPublicEncounters,
 } from "./repository";
 
 export const MyEncountersPageSchema = z.object({
@@ -27,6 +28,14 @@ export interface MyEncountersParams {
   pageParam?: number;
 }
 
+export const PublicEncountersPageSchema = MyEncountersPageSchema.extend({
+  creatorId: z.string().optional(),
+});
+
+export interface PublicEncountersParams extends MyEncountersParams {
+  creatorId?: string;
+}
+
 export interface PaginatedEncounterResponse {
   data: EncounterOverview[];
   hasMore: boolean;
@@ -41,6 +50,23 @@ export function parseEncounterSort(sort: string): {
   return {
     sortBy: sortField === "name" ? "name" : "createdAt",
     sortDirection: desc ? "desc" : "asc",
+  };
+}
+
+export async function paginatePublicEncounters(
+  input: PublicEncountersParams = {}
+): Promise<PaginatedEncounterResponse> {
+  const params = PublicEncountersPageSchema.parse(input);
+  const data = await searchPublicEncounters({
+    ...parseEncounterSort(params.sort),
+    searchTerm: params.search || undefined,
+    limit: params.limit + 1,
+    offset: params.pageParam * params.limit,
+    creatorId: params.creatorId,
+  });
+  return {
+    data: data.slice(0, params.limit),
+    hasMore: data.length > params.limit,
   };
 }
 

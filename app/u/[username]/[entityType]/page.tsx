@@ -22,6 +22,7 @@ import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { ancestriesService } from "@/lib/services/ancestries/service";
 import { backgroundsService } from "@/lib/services/backgrounds/service";
+import { paginatePublicEncounters } from "@/lib/services/encounters/pagination";
 import { paginatePublicHazards } from "@/lib/services/hazards";
 import { itemsService } from "@/lib/services/items";
 import { monstersService } from "@/lib/services/monsters";
@@ -173,12 +174,18 @@ async function loadProfileEntityContent(
     }
     case "encounters": {
       const searchParams = encounterSearchParamsSchema.parse(rawSearchParams);
-      await queryClient.prefetchInfiniteQuery(
-        publicEncountersInfiniteQueryOptions({
+      await queryClient.prefetchInfiniteQuery({
+        ...publicEncountersInfiniteQueryOptions({
           ...searchParams,
           creatorId: userId,
-        })
-      );
+        }),
+        queryFn: ({ pageParam }) =>
+          paginatePublicEncounters({
+            ...searchParams,
+            creatorId: userId,
+            pageParam,
+          }),
+      });
       return (
         <ProfileEntityContent entityType="encounters" creatorId={userId} />
       );
