@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { CollectionsListView } from "@/components/collection/CollectionsListView";
 import { getQueryClient } from "@/lib/queryClient";
+import { publicCollectionPage } from "@/lib/services/collections/service";
 import { publicCollectionsInfiniteQueryOptions } from "./actions";
 
 const searchParamsSchema = z.object({
@@ -27,9 +28,10 @@ export default async function CollectionsPage({
   const params = parseResult.data;
 
   const queryClient = getQueryClient();
-  await queryClient.prefetchInfiniteQuery(
-    publicCollectionsInfiniteQueryOptions(params)
-  );
+  await queryClient.prefetchInfiniteQuery({
+    ...publicCollectionsInfiniteQueryOptions(params),
+    queryFn: ({ pageParam }) => publicCollectionPage({ pageParam, ...params }),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

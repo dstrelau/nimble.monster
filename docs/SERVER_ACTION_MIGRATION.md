@@ -650,6 +650,28 @@ Seven days supplies sparse-traffic context, not an override of the untied
 The run's `my-encounters-traffic-evidence.json` retains complete results and
 verified provenance. Refresh before assuming the next candidate's priority.
 
+### Public collection-search selection — November 1, 2026
+
+Reused the recent fixed **2026-10-30T19:00:00Z–2026-10-31T19:00:00Z**
+measurement and seven-day sparse-traffic context immediately above, rather
+than claiming a new query. Its root HTTP filters, separate <400/≥400 outcomes,
+mean sample rate **1**, complete 150-image filename/export mapping, zero
+unmapped non-probe volume and excluded malformed probes remain applicable.
+All aliases aggregate to named operations, not separate build-specific actions;
+child spans are excluded and bots/QA are included. The only higher remaining
+candidate in that measurement, My Encounters, is now migrated and verified.
+Coordination found no other unarchived run owning a slice.
+
+| Priority | Verified named operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected collection-search slice | `lib/services/collections/repository.ts#searchPublicCollections` | 14 (12/2) | 92 (85/7) |
+| Next measured candidate | `paginateUserProfileHazards` | 8 (8/0) | 88 (88/0) |
+| Remaining | `paginatePublicHazards` | 6 (6/0) | 62 (61/1) |
+
+Seven days corroborates the untied 24-hour ranking; it does not override it.
+Refresh evidence before selecting the next slice. Historical failures of
+already-migrated exports are not ranked as remaining operations.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -854,6 +876,67 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Not started | Wave 5 |
+
+### Public collection search and pagination — November 2026
+
+- Selected `searchPublicCollections` using the recent fully mapped traffic
+  evidence above. `publicCollectionsInfiniteQueryOptions`, the only browser
+  transport owner, now sends cancellable bodyless stable GETs to
+  `/_actions/publicCollections`. `/collections` prefetches the same pagination
+  service directly, never relative HTTP. Query keys, 12-row default, offset
+  and lookahead pagination, previous data, pending/error UX, retry and navigation
+  are retained. The existing collection-overview date reviver is shared with
+  session-owned collection reads without changing that read's transport.
+- Existing public collection SQL and shared member loaders/converters moved
+  unchanged into an ordinary `queries` module. The retained repository has two
+  explicit async delegators because Next.js rejects direct re-exports from a
+  `use server` module. This removes only the browser search export; supported
+  JSON:API list/detail reads and their domain behavior remain unchanged.
+  Collection and all eight member arrays retain their shape, creator fields and
+  dates. No extra identity fields, supported API, writes, invalidation or schema
+  changes are introduced. Existing empty-collection filtering after SQL
+  limit/offset is deliberately retained, including its pagination gap; a
+  separate follow-up is suggested, not folded into the migration.
+- This is an existing anonymous-readable catalogue. Public-only collection and
+  member selection is unchanged for signed-in viewers; submitted owner,
+  creator or visibility parameters cannot enable private access. Safe GETs need
+  no mutation origin/media gate or session requirement. Four sorts, integer
+  limits 1–100 and safe nonnegative page offsets are validated before SQL.
+  Invalid inputs return 400; telemetry records unexpected failures before
+  generic 500s. Success/errors use `private, no-store`, without CORS;
+  unsupported writes receive framework 405s.
+- Removed the repository Server Action export, browser import/call and old
+  pagination wrapper. Collection repository exports **3 → 2**, total repository
+  exports **75 → 74**; application exports remain **41**, and repository
+  directive count is unchanged. Retain the stable URL/response for at least one
+  deployment interval; old pre-cutover tabs still need refresh/retry.
+- Real-SQL route tests cover public/private selection, full memberships,
+  serialization, four asymmetric sort/page boundaries, exact-limit/empty
+  results, preserved content filtering, validation and safe telemetry failures.
+  Browser-query tests cover stable GET/no `next-action`, cancellation, all
+  nested dates, query isolation and failed-refetch retention/recovery. Existing
+  API, ancestry repository and private-picker tests remain controls. Focused
+  suite: 93 passed. Full suite: 2,227 passed, seven skipped. `make check` and
+  `git diff --check` pass.
+- Live development QA verifies 25 requests against independent SQLite results,
+  plus both retained API reads. Browser QA covers load-more 12→16, search/sort,
+  empty/error states, detail client navigation and full reload, and recovery
+  after a deliberately failed read. Raw CDP request and extra-header events
+  confirm bodyless stable GETs without `next-action`. Initial missing local
+  icon assets were repaired by initializing the existing submodule and running
+  the existing sync; this changes no tracked source. An automation-added
+  `data-agent-browser-located` attribute warning is distinguished from application
+  output; settled repeated QA has zero console, page, hydration or HTTP errors.
+- Local QA uses disposable collection rows linking existing seeded public items,
+  never real-user edits or handcrafted monsters. Cleanup verifies zero fixture
+  rows/memberships and byte-for-byte restoration of the original catalogue.
+  Production QA is anonymous and
+  read-only, matching this contract; no production sessions or fixtures are
+  required. The [run thread](https://ampcode.com/threads/T-01a195a6-00f2-7385-95bf-5a703d9b8cf3)
+  records final focused/full checks, inspected media, local cleanup, deployed
+  identity, exact functional production requests and focused error investigation.
+  Migration remains incomplete; profile-hazard pagination is the next measured
+  candidate, subject to refreshed evidence.
 
 ### Private encounter pagination — November 2026
 

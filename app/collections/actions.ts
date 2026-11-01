@@ -1,10 +1,8 @@
 import { keepPreviousData } from "@tanstack/react-query";
-import type {
-  CollectionSortBy,
-  CollectionSortDirection,
-} from "@/lib/services/collections/repository";
-import * as collections from "@/lib/services/collections/repository";
-import type { CollectionOverview } from "@/lib/types";
+import { publicCollections } from "@/app/%5Factions/publicCollections/contract";
+import { call } from "@/lib/contract";
+import type { PublicCollectionPageResponse } from "@/lib/services/collections/service";
+import { reviveCollectionOverview } from "./serialization";
 
 export type CollectionSortOption =
   | "name"
@@ -12,34 +10,7 @@ export type CollectionSortOption =
   | "createdAt"
   | "-createdAt";
 
-export type PaginatedCollectionResponse = {
-  data: CollectionOverview[];
-  hasMore: boolean;
-};
-
-export async function paginatePublicCollections(params: {
-  sort: string;
-  search: string | null;
-  limit: number;
-  pageParam: number;
-}): Promise<PaginatedCollectionResponse> {
-  const desc = params.sort?.startsWith("-");
-  const sortDirection: CollectionSortDirection = desc ? "desc" : "asc";
-  const sortField = desc ? params.sort.slice(1) : params.sort;
-  const sortBy: CollectionSortBy = sortField === "name" ? "name" : "createdAt";
-  const opts = {
-    searchTerm: params.search || undefined,
-    sortBy: sortBy,
-    sortDirection,
-    limit: params.limit + 1,
-    offset: params.pageParam * params.limit,
-  };
-  const data = await collections.searchPublicCollections(opts);
-  return {
-    data: data.slice(0, params.limit),
-    hasMore: data.length > params.limit,
-  };
-}
+export type PaginatedCollectionResponse = PublicCollectionPageResponse;
 
 export function publicCollectionsInfiniteQueryOptions({
   search = null,
@@ -53,8 +24,20 @@ export function publicCollectionsInfiniteQueryOptions({
   const params = { search, sort, limit };
   return {
     queryKey: ["collections", params],
-    queryFn: ({ pageParam }: { pageParam: number }) =>
-      paginatePublicCollections({ pageParam, ...params }),
+    queryFn: async ({
+      pageParam,
+      signal,
+    }: {
+      pageParam: number;
+      signal?: AbortSignal;
+    }): Promise<PaginatedCollectionResponse> => {
+      const result = await call(
+        publicCollections,
+        { pageParam, ...params },
+        { signal }
+      );
+      return { ...result, data: result.data.map(reviveCollectionOverview) };
+    },
     placeholderData: keepPreviousData,
     initialPageParam: 0,
     getNextPageParam: (

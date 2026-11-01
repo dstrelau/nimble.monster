@@ -2,7 +2,6 @@ import { afterEach, describe, expect, it, type Mock, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   encounters: vi.fn(),
-  collections: vi.fn(),
   myEncounters: vi.fn(),
 }));
 
@@ -10,11 +9,7 @@ vi.mock("@/lib/services/encounters/repository", () => ({
   searchPublicEncounters: mocks.encounters,
   searchEncountersForCreator: mocks.myEncounters,
 }));
-vi.mock("@/lib/services/collections/repository", () => ({
-  searchPublicCollections: mocks.collections,
-}));
 
-import { publicCollectionsInfiniteQueryOptions } from "./collections/actions";
 import { publicEncountersInfiniteQueryOptions } from "./encounters/actions";
 
 afterEach(() => vi.clearAllMocks());
@@ -70,9 +65,4 @@ testPagination(
   "encounters",
   mocks.encounters,
   publicEncountersInfiniteQueryOptions(params)
-);
-testPagination(
-  "collections",
-  mocks.collections,
-  publicCollectionsInfiniteQueryOptions(params)
 );
