@@ -116,7 +116,7 @@ export function reviveMonster(monster: Jsonify<Monster>): Monster {
   };
 }
 
-function reviveHazard(hazard: Jsonify<Hazard>): Hazard {
+export function reviveHazard(hazard: Jsonify<Hazard>): Hazard {
   return {
     ...hazard,
     createdAt: new Date(hazard.createdAt),

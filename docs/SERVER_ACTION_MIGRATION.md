@@ -672,6 +672,46 @@ Seven days corroborates the untied 24-hour ranking; it does not override it.
 Refresh evidence before selecting the next slice. Historical failures of
 already-migrated exports are not ranked as remaining operations.
 
+### Creator-profile hazard-pagination selection — November 1, 2026
+
+Refreshed the fixed **2026-10-31T10:00:00Z–2026-11-01T10:00:00Z** window:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/kZL99fLr4jv).
+Root HTTP spans only (`trace.parent_id` absent and
+`http.request.header.next-action` present), grouped by action ID and
+`COALESCE(http.response.status_code, http.status_code)`, contain **288 attempts**.
+Mean sample rate is **1**, 1,372,901 rows were examined and OTHER volume is zero;
+the complete JSON was downloaded rather than relying on the displayed table.
+Bots/QA are included; HTTP <400/≥400 is transport outcome, not domain success.
+
+Read-only OCI extraction across **150 deployed images** verifies compressed
+standalone-layer SHA256, image `GH_SHA`, filename and export. All **171 non-probe
+attempts map**; **117 malformed probes** (`x`: 54, `0`: 23, `1`: 23,
+`action`: 17) are excluded. There is no otherwise-unmapped 24-hour volume.
+Build aliases aggregate by filename/export, never as distinct operations, and
+child spans are not counted. Coordination found no other unarchived slice owner.
+
+Because remaining traffic is sparse, the identical query also covers
+**2026-10-25T10:00:00Z–2026-11-01T10:00:00Z**:
+[seven-day results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/dhwDEXVfSdn).
+It maps **30,521 named attempts**, excludes **1,064 known malformed probes**,
+and leaves **35 unmapped/invalid attempts across seven IDs** (including 28
+`cachefn` attempts), excluded from named rankings. Mean sample rate is **1**,
+6,422,574 rows were examined, and OTHER volume is zero. Seven days supplies
+context, not an override of the fully mapped, untied 24-hour ranking.
+
+| Priority | Verified named operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected profile-hazard slice | `app/u/[username]/actions.ts#paginateUserProfileHazards` | 8 (8/0) | 80 (80/0) |
+| Next measured candidate | `lib/services/encounters/repository.ts#searchPublicEncounters` | 6 (6/0) | 35 (35/0) |
+| Remaining | `getTopMonsterCreators` | 2 (2/0) | 15 (15/0) |
+| Remaining | `app/hazards/actions.ts#paginatePublicHazards` | 1 (1/0) | 59 (58/1) |
+| Remaining | `signInAction` | 1 (1/0) | 5 (5/0) |
+
+All other remaining actions have zero measured 24-hour attempts. The run retains
+complete query results and verified mappings in `profile-hazards-traffic-evidence.json`.
+Refresh evidence before the next selection, including the seven-day residual;
+historical failures of migrated actions are not new remaining operations.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -876,6 +916,67 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Not started | Wave 5 |
+
+### Creator-profile hazard pagination — November 2026
+
+- Selected `app/u/[username]/actions.ts#paginateUserProfileHazards` from the
+  refreshed, fully mapped 24-hour ranking above: eight attempts, all HTTP <400;
+  seven days corroborates the sparse lead with 80 attempts. No other unarchived
+  scheduled run owns this operation.
+- `userProfileHazardsInfiniteQueryOptions`, the only browser transport owner,
+  now sends cancellable bodyless `GET /_actions/publicHazards`. Its sole UI
+  consumer is the hazard branch of `PaginatedMonsterGrid` on creator profiles.
+  The profile page prefetches `paginatePublicHazards` directly, never HTTP,
+  stripping irrelevant monster type/role fields so server and browser hydration
+  use the same existing hazard query key. Defaults, 12-row browser pages,
+  cursor continuation, previous data, retry/error UX and navigation remain.
+- Reused the picker's hazard date reviver for hazard, source and award dates.
+  Existing actions/abilities, creator, artwork and other domain fields keep
+  their shape; no identity fields or third-party JSON:API are added. Existing
+  SQL and service remain unchanged. Creator is a public filter, not authority:
+  anonymous and signed-in viewers receive only public hazards, never private
+  hazards or monsters, regardless of submitted owner/visibility parameters.
+- Zod validates all seven sorts, integer limits 1–100, integer levels and cursor
+  shape/value types/sort agreement before SQL. Invalid requests return 400;
+  unexpected failures reach telemetry before generic JSON 500s. Success/errors
+  use `private, no-store`, no CORS; unsupported writes receive framework 405s.
+  Safe public reads require no session or mutation-origin/media gate. Writes,
+  persistence, revalidation and supported API behavior are unchanged.
+- Removed the final export and empty `app/u/[username]/actions.ts`, its browser
+  import/call and an obsolete test mock. Application ratchet **41 → 40**;
+  repository directives/exports remain **74**. The catalogue's separate
+  `app/hazards/actions.ts` export and private hazard action remain for later
+  traffic-ranked slices; this is not a second migration hidden in the group.
+- Real-SQL route tests cover public/private/monster/creator separation, combined
+  filters, full serialization, all seven sorts across asymmetric ties, exact
+  limits/empty results, validation and safe telemetry errors. Profile transport
+  tests cover stable GET/no `next-action`, cancellation, nested date revival,
+  cache isolation and failed-refetch retention/recovery. Focused checks:
+  **30 passed**. Full suite: **2,250 passed, seven skipped**. `make check` and
+  `git diff --check` pass; the existing unused item-builder import warning is
+  not claimed fixed. **41 live development requests** independently match SQL.
+- Browser QA verifies profile 12→15 pagination, search, source/level/sort filters,
+  active Hazard navigation, detail client navigation/reload, URL reload and
+  intentionally aborted-read failure/recovery. Nine successful bodyless stable
+  GETs have raw CDP extra-header checks without `next-action`; four deliberately
+  aborted retries are separate. Early automation snapshots injected
+  `data-__ab-ci` before dice hydration and caused an attribute warning; a fresh
+  reload waiting for React-owned dice nodes has zero injected attributes and no
+  hydration warning. Settled navigation/reload QA has no page or console errors.
+  An overloaded first recording failed; the inspected lower-frame-rate
+  replacement records real pointer movement and filtering successfully.
+- Local QA uses two disposable non-admin users and 18 copies of existing seeded
+  content, not handcrafted monsters. Cleanup independently verifies zero users,
+  monsters, search-catalog/FTS residue and an unchanged original hazard.
+  Production QA is anonymous/read-only against existing public content; this
+  public contract needs no production sessions or fixture writes. The
+  [run thread](https://ampcode.com/threads/T-01a196b8-afd5-733c-84b7-919ad289614d)
+  records deployment identity, exact functional production requests, inspected
+  browser evidence, focused investigation and cleanup.
+- Retain this URL and response shape for at least one deployment interval.
+  Old tabs still need refresh/retry. The migration is incomplete; public
+  encounter search leads the remaining actions on this window, subject to
+  refreshed measurement before the next selection.
 
 ### Public collection search and pagination — November 2026
 

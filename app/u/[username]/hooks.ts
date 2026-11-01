@@ -1,5 +1,8 @@
 import { keepPreviousData } from "@tanstack/react-query";
+import { publicHazards } from "@/app/%5Factions/publicHazards/contract";
+import { reviveHazard } from "@/app/%5Factions/statblockPickerSearch/queries";
 import { publicMonstersInfiniteQueryOptions } from "@/app/monsters/hooks";
+import { call } from "@/lib/contract";
 import type {
   PaginateHazardsParams,
   PaginateHazardsResponse,
@@ -9,7 +12,6 @@ import type {
   MonsterTypeOption,
   PaginateMonstersSortOption,
 } from "@/lib/services/monsters/types";
-import { paginateUserProfileHazards } from "./actions";
 
 export function userProfileMonstersInfiniteQueryOptions(
   creatorId: string,
@@ -55,8 +57,20 @@ export function userProfileHazardsInfiniteQueryOptions(
   };
   return {
     queryKey: ["hazards", request],
-    queryFn: ({ pageParam: cursor }: { pageParam?: string }) =>
-      paginateUserProfileHazards({ ...request, cursor }),
+    queryFn: async ({
+      pageParam: cursor,
+      signal,
+    }: {
+      pageParam?: string;
+      signal?: AbortSignal;
+    }): Promise<PaginateHazardsResponse> => {
+      const result = await call(
+        publicHazards,
+        { ...request, cursor },
+        { signal }
+      );
+      return { ...result, data: result.data.map(reviveHazard) };
+    },
     placeholderData: keepPreviousData,
     initialPageParam: undefined,
     getNextPageParam: (last: PaginateHazardsResponse) => last.nextCursor,

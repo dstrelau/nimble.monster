@@ -4,10 +4,6 @@ import { userProfileMonstersInfiniteQueryOptions } from "@/app/u/[username]/hook
 import { RouteError } from "@/lib/contract";
 import { publicMonstersInfiniteQueryOptions } from "./hooks";
 
-vi.mock("@/app/u/[username]/actions", () => ({
-  paginateUserProfileHazards: vi.fn(),
-}));
-
 afterEach(() => vi.unstubAllGlobals());
 
 describe.each([
