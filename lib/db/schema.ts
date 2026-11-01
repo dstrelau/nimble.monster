@@ -14,6 +14,7 @@ import type {
   CreatureType,
   MonsterEnvironment,
 } from "@/lib/services/monsters/classifications";
+import type { DamageType } from "@/lib/services/monsters/damage-types";
 import type { Ability, Action } from "@/lib/types";
 
 // Enum value types (stored as text in SQLite)
@@ -279,6 +280,14 @@ export const monsters = sqliteTable(
       .default([]),
     environments: text("environments", { mode: "json" })
       .$type<MonsterEnvironment[]>()
+      .notNull()
+      .default([]),
+    vulnerabilities: text("vulnerabilities", { mode: "json" })
+      .$type<DamageType[]>()
+      .notNull()
+      .default([]),
+    resistances: text("resistances", { mode: "json" })
+      .$type<DamageType[]>()
       .notNull()
       .default([]),
     visibility: text("visibility").$type<MonsterVisibility>().default("public"),

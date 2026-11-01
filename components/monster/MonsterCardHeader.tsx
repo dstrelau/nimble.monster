@@ -19,15 +19,9 @@ import { cn } from "@/lib/utils";
 import { formatHp, formatSizeKind } from "@/lib/utils/monster";
 import { getMonsterUrl } from "@/lib/utils/url";
 
-export interface MonsterDamageInteractions {
-  vulnerable: readonly string[];
-  resistant: readonly string[];
-}
-
 interface MonsterCardHeaderProps {
   monster: MonsterFormState;
   link?: boolean;
-  damageInteractions?: MonsterDamageInteractions;
 }
 
 export function MonsterCardLevelTab({ monster }: MonsterCardHeaderProps) {
@@ -62,7 +56,6 @@ export function MonsterCardLevelTab({ monster }: MonsterCardHeaderProps) {
 export function MonsterCardHeader({
   monster,
   link = false,
-  damageInteractions,
 }: MonsterCardHeaderProps) {
   const isTeam = !!monster.members?.length;
   const hasArtwork = !!(monster.paperforgeId || monster.customArtwork);
@@ -195,43 +188,38 @@ export function MonsterCardHeader({
           />
         )}
       </div>
-      {damageInteractions &&
-        (damageInteractions.vulnerable.length > 0 ||
-          damageInteractions.resistant.length > 0) && (
-          <div
-            className="flex flex-wrap gap-x-4 gap-y-1 px-4 text-sm/5"
-            data-damage-interactions
-          >
-            {[
-              {
-                label: "Vulnerable",
-                values: damageInteractions.vulnerable,
-                Icon: ShieldMinus,
-              },
-              {
-                label: "Resistant",
-                values: damageInteractions.resistant,
-                Icon: ShieldPlus,
-              },
-            ].map(({ label, values, Icon }) =>
-              values.length ? (
-                <div
-                  key={label}
-                  className="flex max-w-full items-start gap-1.5"
-                >
-                  <Icon
-                    aria-hidden
-                    className="mt-0.5 size-4 shrink-0 text-stat-icon"
-                  />
-                  <div className="min-w-0 wrap-anywhere">
-                    <strong>{label}:</strong>{" "}
-                    <span className="capitalize">{values.join(", ")}</span>
-                  </div>
+      {(!!monster.vulnerabilities?.length || !!monster.resistances?.length) && (
+        <div
+          className="flex flex-wrap gap-x-4 gap-y-1 px-4 text-sm/5"
+          data-damage-interactions
+        >
+          {[
+            {
+              label: "Vulnerable",
+              values: monster.vulnerabilities ?? [],
+              Icon: ShieldMinus,
+            },
+            {
+              label: "Resistant",
+              values: monster.resistances ?? [],
+              Icon: ShieldPlus,
+            },
+          ].map(({ label, values, Icon }) =>
+            values.length ? (
+              <div key={label} className="flex max-w-full items-start gap-1.5">
+                <Icon
+                  aria-hidden
+                  className="mt-0.5 size-4 shrink-0 text-stat-icon"
+                />
+                <div className="min-w-0 wrap-anywhere">
+                  <strong>{label}:</strong>{" "}
+                  <span className="capitalize">{values.join(", ")}</span>
                 </div>
-              ) : null
-            )}
-          </div>
-        )}
+              </div>
+            ) : null
+          )}
+        </div>
+      )}
     </div>
   );
 }

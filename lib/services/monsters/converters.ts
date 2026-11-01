@@ -9,6 +9,7 @@ import type { Ability, Action, FamilyOverview } from "@/lib/types";
 import { attackMetadataSchema } from "@/lib/types/attack";
 import { uuidToIdentifier } from "@/lib/utils/slug";
 import type { MonsterClassifications } from "./classifications";
+import type { MonsterDamageInteractions } from "./damage-types";
 import { parseMembers } from "./members";
 import { parseSaves } from "./saves";
 import type {
@@ -32,7 +33,7 @@ const parseJsonField = <T>(value: unknown): T[] => {
   return [];
 };
 
-interface MonsterRow extends MonsterClassifications {
+interface MonsterRow extends MonsterClassifications, MonsterDamageInteractions {
   id: string;
   name: string;
   hp: number;
@@ -169,6 +170,8 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
     creatureTypes: m.creatureTypes ?? [],
     creatureKinds: m.creatureKinds ?? [],
     environments: m.environments ?? [],
+    vulnerabilities: m.vulnerabilities ?? [],
+    resistances: m.resistances ?? [],
     bloodied: m.bloodied,
     lastStand: m.lastStand,
     speed: m.speed,
@@ -363,6 +366,10 @@ export const toZodMonster = (m: Monster) => {
     ...(m.creatureTypes?.length ? { creatureTypes: m.creatureTypes } : {}),
     ...(m.creatureKinds?.length ? { creatureKinds: m.creatureKinds } : {}),
     ...(m.environments?.length ? { environments: m.environments } : {}),
+    ...(m.vulnerabilities?.length
+      ? { vulnerabilities: m.vulnerabilities }
+      : {}),
+    ...(m.resistances?.length ? { resistances: m.resistances } : {}),
     movement: movement,
     abilities,
     actions,

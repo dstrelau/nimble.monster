@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { monsterArtworkSchema } from "@/lib/monster-artwork";
 import { MonsterClassificationsSchema } from "@/lib/services/monsters/classifications";
+import {
+  monsterDamageInteractionFields,
+  refineDisjointDamageInteractions,
+} from "@/lib/services/monsters/damage-types";
 import { MonsterRoleOptions, SIZES } from "@/lib/services/monsters/types";
 import { attackMetadataSchema } from "@/lib/types/attack";
 import { isValidUUID } from "@/lib/utils/validation";
@@ -62,6 +66,7 @@ const updateHazardSchema = sharedSchema.extend({
 
 const monsterFields = {
   ...MonsterClassificationsSchema.shape,
+  ...monsterDamageInteractionFields,
   kind: z.string().optional(),
   hp: z.number(),
   hpPerHero: z.number().nullable().optional(),
@@ -85,29 +90,33 @@ const monsterFields = {
   customArtwork: monsterArtworkSchema.strict().nullable().optional(),
 };
 
-const createMonsterSchema = sharedSchema.extend({
-  ...monsterFields,
-  fly: z.number(),
-  swim: z.number(),
-  climb: z.number(),
-  burrow: z.number(),
-  teleport: z.number(),
-  remixedFromId: uuid.optional(),
-});
+const createMonsterSchema = sharedSchema
+  .extend({
+    ...monsterFields,
+    fly: z.number(),
+    swim: z.number(),
+    climb: z.number(),
+    burrow: z.number(),
+    teleport: z.number(),
+    remixedFromId: uuid.optional(),
+  })
+  .superRefine(refineDisjointDamageInteractions);
 
-const updateMonsterSchema = sharedSchema.extend({
-  ...monsterFields,
-  id: uuid,
-  armor: z.enum(["none", "medium", "heavy"]),
-  kind: z.string(),
-  legendary: z.boolean(),
-  minion: z.boolean(),
-  bloodied: z.string(),
-  lastStand: z.string(),
-  saves: z.array(z.string()),
-  actionPreface: z.string(),
-  moreInfo: z.string(),
-});
+const updateMonsterSchema = sharedSchema
+  .extend({
+    ...monsterFields,
+    id: uuid,
+    armor: z.enum(["none", "medium", "heavy"]),
+    kind: z.string(),
+    legendary: z.boolean(),
+    minion: z.boolean(),
+    bloodied: z.string(),
+    lastStand: z.string(),
+    saves: z.array(z.string()),
+    actionPreface: z.string(),
+    moreInfo: z.string(),
+  })
+  .superRefine(refineDisjointDamageInteractions);
 
 export const createBestiaryEntrySchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("monster"), input: createMonsterSchema }),

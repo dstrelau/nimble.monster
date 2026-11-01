@@ -45,6 +45,7 @@ import { decodeCursor, encodeCursor } from "@/lib/utils/cursor";
 import { isValidUUID } from "@/lib/utils/validation";
 import { MonsterClassificationsSchema } from "./classifications";
 import { extractAllConditions, syncMonsterConditions } from "./conditions";
+import { MonsterDamageInteractionsSchema } from "./damage-types";
 import { syncMonsterFamilies } from "./families";
 import {
   collectMemberConditionSources,
@@ -198,6 +199,8 @@ const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
   creatureTypes: data.monster.creatureTypes,
   creatureKinds: data.monster.creatureKinds,
   environments: data.monster.environments,
+  vulnerabilities: data.monster.vulnerabilities,
+  resistances: data.monster.resistances,
   isOfficial: data.monster.isOfficial ?? false,
   bloodied: data.monster.bloodied,
   lastStand: data.monster.lastStand,
@@ -1155,6 +1158,9 @@ const createBestiaryEntry = async (
   const classifications = MonsterClassificationsSchema.parse(
     input.hazard ? {} : input
   );
+  const damageInteractions = MonsterDamageInteractionsSchema.parse(
+    input.hazard ? {} : input
+  );
   const db = await getDatabase();
 
   const {
@@ -1224,6 +1230,7 @@ const createBestiaryEntry = async (
       name,
       kind: hazard ? "" : kind,
       ...classifications,
+      ...damageInteractions,
       level,
       levelInt,
       hp,
@@ -1342,6 +1349,7 @@ export const upsertOfficialMonster = async (
   if (id !== undefined && !isValidUUID(id))
     throw new Error("Invalid official monster ID");
   const classifications = MonsterClassificationsSchema.parse(input);
+  const damageInteractions = MonsterDamageInteractionsSchema.parse(input);
   const db = await getDatabase();
 
   const {
@@ -1404,6 +1412,7 @@ export const upsertOfficialMonster = async (
     name,
     kind,
     ...classifications,
+    ...damageInteractions,
     level,
     levelInt,
     hp,
@@ -1516,6 +1525,9 @@ const updateBestiaryEntry = async (
   const classifications = MonsterClassificationsSchema.parse(
     input.hazard ? {} : input
   );
+  const damageInteractions = MonsterDamageInteractionsSchema.parse(
+    input.hazard ? {} : input
+  );
   const db = await getDatabase();
 
   const {
@@ -1609,6 +1621,7 @@ const updateBestiaryEntry = async (
       .update(monsters)
       .set({
         ...classifications,
+        ...damageInteractions,
         name,
         level,
         levelInt,

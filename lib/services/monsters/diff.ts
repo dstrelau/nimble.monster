@@ -93,6 +93,8 @@ export function compareMonsters(
     "creatureTypes",
     "creatureKinds",
     "environments",
+    "vulnerabilities",
+    "resistances",
   ] as const) {
     const values = uploaded[field];
     if (

@@ -103,6 +103,8 @@ export default async function PreviewMonstersPage({ searchParams }: PageProps) {
       creatureTypes: input.creatureTypes,
       creatureKinds: input.creatureKinds,
       environments: input.environments,
+      vulnerabilities: input.vulnerabilities,
+      resistances: input.resistances,
       legendary: input.legendary || false,
       minion: input.minion || false,
       hazard: false,

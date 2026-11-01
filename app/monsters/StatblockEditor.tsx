@@ -74,6 +74,7 @@ import {
   CREATURE_TYPES,
   MONSTER_ENVIRONMENTS,
 } from "@/lib/services/monsters/classifications";
+import { DAMAGE_TYPES } from "@/lib/services/monsters/damage-types";
 import { cn, levelIntToDisplay } from "@/lib/utils";
 
 interface ClassificationFieldProps<T extends string> {
@@ -519,6 +520,34 @@ export function StatblockEditor({
                 Set each member’s HP, armor, and saves in Members.
               </p>
             )}
+            <Section
+              title="Damage interactions"
+              summary={[
+                monster.vulnerabilities?.length &&
+                  `Vulnerable: ${monster.vulnerabilities.join(", ")}`,
+                monster.resistances?.length &&
+                  `Resistant: ${monster.resistances.join(", ")}`,
+              ]
+                .filter(Boolean)
+                .join("; ")}
+            >
+              <ClassificationField
+                label="Vulnerabilities"
+                values={DAMAGE_TYPES.filter(
+                  (type) => !monster.resistances?.includes(type)
+                )}
+                selected={monster.vulnerabilities ?? []}
+                onChange={(vulnerabilities) => patch({ vulnerabilities })}
+              />
+              <ClassificationField
+                label="Resistances"
+                values={DAMAGE_TYPES.filter(
+                  (type) => !monster.vulnerabilities?.includes(type)
+                )}
+                selected={monster.resistances ?? []}
+                onChange={(resistances) => patch({ resistances })}
+              />
+            </Section>
           </div>
           {task === "actions" &&
             (team ? (

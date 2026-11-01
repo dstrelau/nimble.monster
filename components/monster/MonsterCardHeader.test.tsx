@@ -109,10 +109,8 @@ describe("monster card header", () => {
             fly: 8,
             speed: 0,
             paperforgeId: undefined,
-          }}
-          damageInteractions={{
-            resistant: ["fire", "poison"],
-            vulnerable: ["ice"],
+            resistances: ["fire", "necrotic"],
+            vulnerabilities: ["ice"],
           }}
         />
       );
@@ -139,7 +137,7 @@ describe("monster card header", () => {
       expect(screen.queryByRole("img")).not.toBeInTheDocument();
       expect(screen.queryByText("M")).not.toBeInTheDocument();
       expect(screen.getByText("Resistant:").parentElement).toHaveTextContent(
-        /fire.*poison/
+        /fire.*necrotic/
       );
       expect(screen.getByText("Vulnerable:").parentElement).toHaveTextContent(
         "ice"

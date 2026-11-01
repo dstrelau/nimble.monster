@@ -8,6 +8,7 @@ import type {
   User,
 } from "@/lib/types";
 import type { MonsterClassifications } from "./classifications";
+import type { MonsterDamageInteractions } from "./damage-types";
 
 export const SIZES = [
   { value: "tiny", label: "Tiny" },
@@ -182,7 +183,8 @@ interface BestiaryEntryBase {
 export interface Monster
   extends MonsterMini,
     BestiaryEntryBase,
-    MonsterClassifications {
+    MonsterClassifications,
+    MonsterDamageInteractions {
   families: FamilyOverview[];
   members?: MonsterTeamMember[];
   saves?: string;
@@ -239,7 +241,9 @@ export const PaginateMonstersSortOptions = [
 export type PaginateMonstersSortOption =
   (typeof PaginateMonstersSortOptions)[number];
 
-export interface CreateMonsterInput extends MonsterClassifications {
+export interface CreateMonsterInput
+  extends MonsterClassifications,
+    MonsterDamageInteractions {
   name: string;
   kind?: string;
   level: string;
@@ -274,7 +278,9 @@ export interface CreateMonsterInput extends MonsterClassifications {
   remixedFromId?: string;
 }
 
-export interface UpdateMonsterInput extends MonsterClassifications {
+export interface UpdateMonsterInput
+  extends MonsterClassifications,
+    MonsterDamageInteractions {
   id: string;
   name: string;
   level: string;

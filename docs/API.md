@@ -365,6 +365,22 @@ applies to both.
 
 The API does not currently support filtering by these fields.
 
+Monster attributes may also include `vulnerabilities` and `resistances`, each an
+array of damage types. Each field is omitted when empty and is not present on
+hazards. A damage type never appears in both arrays.
+
+```json
+{
+  "vulnerabilities": ["fire", "radiant"],
+  "resistances": ["ice", "bludgeoning"]
+}
+```
+
+Values are lowercase and come from a fixed list: the spell damage types `fire`,
+`ice`, `lightning`, `necrotic`, `radiant`, and `wind`, and the weapon damage
+types `bludgeoning`, `piercing`, and `slashing`. Arrays are returned in that
+order.
+
 When `include=families` is specified and the monster belongs to families, the
 response includes a `relationships.families` field and an `included` array with
 the full family resources. When `include=creator` is specified, the creator user

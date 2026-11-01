@@ -57,8 +57,7 @@ export function MonsterCardLab() {
           </div>
           <p className="text-xs text-muted-foreground">
             Solo conversions, classification assignments and damage interactions
-            are illustrative, not published rules. Damage interactions are
-            mockup-only, not new stored fields.
+            are illustrative, not published rules.
           </p>
         </aside>
         <div className="min-w-0 space-y-12">
@@ -86,6 +85,7 @@ export function MonsterCardLab() {
                       saves: legendary ? sample.saves : undefined,
                       bloodied: legendary ? "Takes to the sky." : undefined,
                       lastStand: legendary ? "Dives one last time." : undefined,
+                      ...sample.damageInteractions,
                       abilities: sample.damageInteractions
                         ? sample.monster.abilities.filter(
                             (ability) => ability.name !== "Damage Interactions"
@@ -108,7 +108,6 @@ export function MonsterCardLab() {
                               ...monster,
                               id: `${sample.id}-${legendary ? "solo" : "regular"}`,
                             }}
-                            damageInteractions={sample.damageInteractions}
                             creator={monster.creator}
                             link={false}
                             noInteractive

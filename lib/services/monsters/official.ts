@@ -10,6 +10,7 @@ import {
 import { prefixDamage, showsActionDamage } from "@/lib/text";
 import { attackMetadataSchema } from "@/lib/types/attack";
 import { MonsterClassificationsSchema } from "./classifications";
+import { MonsterDamageInteractionsSchema } from "./damage-types";
 import type { CreateMonsterInput } from "./types";
 
 export const OFFICIAL_USER_ID = "00000000-0000-0000-0000-000000000000";
@@ -161,6 +162,7 @@ export function parseJSONAPIMonster(data: JSONAPIMonster): CreateMonsterInput {
         : (attrs.armor as CreateMonsterInput["armor"]),
     kind: attrs.kind,
     ...MonsterClassificationsSchema.parse(attrs),
+    ...MonsterDamageInteractionsSchema.parse(attrs),
     legendary: attrs.legendary,
     minion: attrs.minion ?? false,
     visibility: "public",
@@ -301,6 +303,7 @@ export function validateOfficialMonstersJSON(data: unknown): {
     }
 
     MonsterClassificationsSchema.parse(attrs);
+    MonsterDamageInteractionsSchema.parse(attrs);
 
     if (attrs.hazard !== undefined && typeof attrs.hazard !== "boolean") {
       throw new Error(

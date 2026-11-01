@@ -484,6 +484,8 @@ const toMonsterFromFullData = (data: MonsterFullData): BestiaryEntry => {
     creatureTypes: data.monster.creatureTypes,
     creatureKinds: data.monster.creatureKinds,
     environments: data.monster.environments,
+    vulnerabilities: data.monster.vulnerabilities,
+    resistances: data.monster.resistances,
     bloodied: data.monster.bloodied,
     lastStand: data.monster.lastStand,
     speed: data.monster.speed,

@@ -8,7 +8,6 @@ import { UserAvatar } from "@/components/layout/UserAvatar";
 import {
   MonsterCardHeader,
   MonsterCardLevelTab,
-  type MonsterDamageInteractions,
 } from "@/components/monster/MonsterCardHeader";
 import { MonsterCardMetadata } from "@/components/monster/MonsterCardMetadata";
 import { MonsterImage } from "@/components/monster/MonsterImage";
@@ -306,7 +305,6 @@ const TeamHeader: React.FC<{ monster: MonsterFormState; link?: boolean }> = ({
 
 interface CardProps {
   monster: MonsterFormState;
-  damageInteractions?: MonsterDamageInteractions;
   creator?: User;
   link?: boolean;
   noInteractive?: boolean;
@@ -321,7 +319,6 @@ interface CardProps {
 
 export const Card = ({
   monster,
-  damageInteractions,
   creator,
   link = true,
   noInteractive = false,
@@ -382,7 +379,6 @@ export const Card = ({
         <MonsterCardHeader
           monster={monster}
           link={!selectable && link && !noInteractive}
-          damageInteractions={damageInteractions}
         />
       ) : isTeam ? (
         <TeamHeader

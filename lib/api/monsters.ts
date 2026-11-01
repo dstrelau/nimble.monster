@@ -4,6 +4,10 @@ import {
   type MonsterClassifications,
   MonsterClassificationsSchema,
 } from "@/lib/services/monsters/classifications";
+import {
+  type MonsterDamageInteractions,
+  MonsterDamageInteractionsSchema,
+} from "@/lib/services/monsters/damage-types";
 import type { Monster } from "@/lib/services/monsters/types";
 import type { Ability, Action } from "@/lib/types";
 import { randomUUID } from "@/lib/utils";
@@ -21,43 +25,44 @@ export interface JSONAPIFamily {
 export interface JSONAPIMonster {
   type: "monsters";
   id?: string;
-  attributes: MonsterClassifications & {
-    name: string;
-    hazard?: boolean;
-    hp: number;
-    hpPerHero?: number;
-    // Official validation requires a level unless minion is true.
-    level?: number | string;
-    size: string;
-    armor: string;
-    kind?: string;
-    role?: string;
-    movement: Array<{ speed: number } | { mode: string; speed: number }>;
-    abilities: Omit<Ability, "id">[];
-    actions: Array<
-      Omit<Action, "id" | "damage"> & {
-        damage?: { roll?: string; kind?: string };
-      }
-    >;
-    actionsInstructions: string;
-    description?: string;
-    mild_encounter?: string;
-    spicy_encounter?: string;
-    legendary: boolean;
-    minion?: boolean;
-    bloodied?: string;
-    lastStand?: string;
-    saves?: {
-      all?: number;
-      str?: number;
-      dex?: number;
-      int?: number;
-      wil?: number;
+  attributes: MonsterClassifications &
+    MonsterDamageInteractions & {
+      name: string;
+      hazard?: boolean;
+      hp: number;
+      hpPerHero?: number;
+      // Official validation requires a level unless minion is true.
+      level?: number | string;
+      size: string;
+      armor: string;
+      kind?: string;
+      role?: string;
+      movement: Array<{ speed: number } | { mode: string; speed: number }>;
+      abilities: Omit<Ability, "id">[];
+      actions: Array<
+        Omit<Action, "id" | "damage"> & {
+          damage?: { roll?: string; kind?: string };
+        }
+      >;
+      actionsInstructions: string;
+      description?: string;
+      mild_encounter?: string;
+      spicy_encounter?: string;
+      legendary: boolean;
+      minion?: boolean;
+      bloodied?: string;
+      lastStand?: string;
+      saves?: {
+        all?: number;
+        str?: number;
+        dex?: number;
+        int?: number;
+        wil?: number;
+      };
+      paperforgeId?: string;
+      paperforgeImageUrl?: string;
+      customArtwork?: MonsterArtwork & { imageUrl: string };
     };
-    paperforgeId?: string;
-    paperforgeImageUrl?: string;
-    customArtwork?: MonsterArtwork & { imageUrl: string };
-  };
   relationships?: {
     family?: {
       data: {
@@ -142,6 +147,7 @@ function parseMonster(data: JSONAPIMonster): Monster {
     armor: attrs.armor as Monster["armor"],
     kind: attrs.kind,
     ...MonsterClassificationsSchema.parse(attrs),
+    ...MonsterDamageInteractionsSchema.parse(attrs),
     role: (attrs.role as Monster["role"]) ?? undefined,
     legendary: attrs.legendary,
     minion: attrs.minion ?? false,

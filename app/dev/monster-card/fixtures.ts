@@ -1,4 +1,5 @@
 import type { Monster } from "@/lib/services/monsters";
+import type { MonsterDamageInteractions } from "@/lib/services/monsters/damage-types";
 
 // Snapshot of the public Troll Hunter card, including its original punctuation:
 // https://nimble.nexus/monsters/troll-hunter-24k8fzpnyn9cztqw0x7gsrakfq
@@ -74,18 +75,13 @@ export const TROLL_HUNTER: Monster = {
   },
 };
 
-export interface MockDamageInteractions {
-  resistant: ("fire" | "ice" | "acid" | "poison" | "lightning" | "physical")[];
-  vulnerable: ("fire" | "ice" | "acid" | "poison" | "lightning" | "physical")[];
-}
-
 interface MonsterCardCase {
   id: string;
   label: string;
   monster: Monster;
   soloHp: number;
   saves: string;
-  damageInteractions?: MockDamageInteractions;
+  damageInteractions?: MonsterDamageInteractions;
 }
 
 const STRESS_BASE: Monster = {
@@ -129,7 +125,10 @@ export const MONSTER_CARD_CASES: MonsterCardCase[] = [
     },
     soloHp: 45,
     saves: "STR++, WIL+",
-    damageInteractions: { resistant: ["ice"], vulnerable: ["fire", "acid"] },
+    damageInteractions: {
+      resistances: ["ice"],
+      vulnerabilities: ["fire", "radiant"],
+    },
   },
   {
     id: "captain",
@@ -152,7 +151,10 @@ export const MONSTER_CARD_CASES: MonsterCardCase[] = [
     },
     soloHp: 90,
     saves: "STR+, DEX++, INT-, WIL+",
-    damageInteractions: { resistant: [], vulnerable: ["fire", "acid"] },
+    damageInteractions: {
+      resistances: [],
+      vulnerabilities: ["fire", "radiant"],
+    },
   },
   {
     id: "leviathan",
@@ -161,8 +163,8 @@ export const MONSTER_CARD_CASES: MonsterCardCase[] = [
     soloHp: 120,
     saves: "STR+, DEX++, INT-, WIL+",
     damageInteractions: {
-      resistant: ["fire", "poison", "physical"],
-      vulnerable: ["ice", "acid"],
+      resistances: ["fire", "necrotic", "bludgeoning"],
+      vulnerabilities: ["ice", "radiant"],
     },
   },
   {
@@ -172,8 +174,8 @@ export const MONSTER_CARD_CASES: MonsterCardCase[] = [
     soloHp: 120,
     saves: "STR+, DEX++, INT-, WIL+",
     damageInteractions: {
-      resistant: ["fire", "poison", "physical"],
-      vulnerable: ["ice", "acid"],
+      resistances: ["fire", "necrotic", "bludgeoning"],
+      vulnerabilities: ["ice", "radiant"],
     },
   },
   {
@@ -214,7 +216,7 @@ export const MONSTER_CARD_CASES: MonsterCardCase[] = [
     },
     soloHp: 12,
     saves: "DEX++, WIL-",
-    damageInteractions: { resistant: ["fire"], vulnerable: ["ice"] },
+    damageInteractions: { resistances: ["fire"], vulnerabilities: ["ice"] },
   },
   {
     id: "swarm",
@@ -238,8 +240,8 @@ export const MONSTER_CARD_CASES: MonsterCardCase[] = [
     soloHp: 135,
     saves: "STR-, DEX++, INT+, WIL++",
     damageInteractions: {
-      resistant: ["physical", "poison"],
-      vulnerable: ["fire"],
+      resistances: ["bludgeoning", "necrotic"],
+      vulnerabilities: ["fire"],
     },
   },
   {
@@ -263,8 +265,8 @@ export const MONSTER_CARD_CASES: MonsterCardCase[] = [
     soloHp: 120,
     saves: "STR+, DEX++, INT-, WIL+",
     damageInteractions: {
-      resistant: ["fire", "lightning"],
-      vulnerable: ["ice"],
+      resistances: ["fire", "lightning"],
+      vulnerabilities: ["ice"],
     },
   },
 ];

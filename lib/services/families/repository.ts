@@ -150,6 +150,8 @@ export async function getRandomFeaturedFamily(): Promise<Family | null> {
           creatureTypes: link.monsters.creatureTypes,
           creatureKinds: link.monsters.creatureKinds,
           environments: link.monsters.environments,
+          vulnerabilities: link.monsters.vulnerabilities,
+          resistances: link.monsters.resistances,
           bloodied: link.monsters.bloodied,
           lastStand: link.monsters.lastStand,
           speed: link.monsters.speed,
