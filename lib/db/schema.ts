@@ -290,6 +290,10 @@ export const monsters = sqliteTable(
       .$type<DamageType[]>()
       .notNull()
       .default([]),
+    immunities: text("immunities", { mode: "json" })
+      .$type<DamageType[]>()
+      .notNull()
+      .default([]),
     visibility: text("visibility").$type<MonsterVisibility>().default("public"),
     actionPreface: text("action_preface"),
     moreInfo: text("more_info").default(""),

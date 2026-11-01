@@ -91,12 +91,14 @@ describe("monster vulnerabilities and resistances", () => {
         ...input,
         vulnerabilities: ["radiant", "fire", "radiant"],
         resistances: ["slashing", "ice"],
+        immunities: ["necrotic", "necrotic"],
       },
       "owner"
     );
     const expected = {
       vulnerabilities: ["fire", "radiant"],
       resistances: ["ice", "slashing"],
+      immunities: ["necrotic"],
     };
     expect(await findMonster(monster.id)).toMatchObject(expected);
 
@@ -109,10 +111,15 @@ describe("monster vulnerabilities and resistances", () => {
     expect((await detail.json()).data.attributes).toMatchObject(expected);
 
     const plain = await createMonster(input, "owner");
-    expect(plain).toMatchObject({ vulnerabilities: [], resistances: [] });
+    expect(plain).toMatchObject({
+      vulnerabilities: [],
+      resistances: [],
+      immunities: [],
+    });
     const attributes = toJsonApiMonster(plain).attributes;
     expect(attributes).not.toHaveProperty("vulnerabilities");
     expect(attributes).not.toHaveProperty("resistances");
+    expect(attributes).not.toHaveProperty("immunities");
   });
 
   it("replaces both lists together on update and preserves them when both are omitted", async () => {
@@ -153,6 +160,8 @@ describe("monster vulnerabilities and resistances", () => {
 
   it.each([
     { vulnerabilities: ["fire", "ice"], resistances: ["ice"] },
+    { vulnerabilities: ["fire"], immunities: ["fire"] },
+    { resistances: ["ice"], immunities: ["wind", "ice"] },
     { resistances: ["acid"] },
     { vulnerabilities: ["Fire"] },
     { vulnerabilities: "fire" },

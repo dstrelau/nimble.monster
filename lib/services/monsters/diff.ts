@@ -95,6 +95,7 @@ export function compareMonsters(
     "environments",
     "vulnerabilities",
     "resistances",
+    "immunities",
   ] as const) {
     const values = uploaded[field];
     if (

@@ -527,6 +527,8 @@ export function StatblockEditor({
                   `Vulnerable: ${monster.vulnerabilities.join(", ")}`,
                 monster.resistances?.length &&
                   `Resistant: ${monster.resistances.join(", ")}`,
+                monster.immunities?.length &&
+                  `Immune: ${monster.immunities.join(", ")}`,
               ]
                 .filter(Boolean)
                 .join("; ")}
@@ -534,7 +536,9 @@ export function StatblockEditor({
               <ClassificationField
                 label="Vulnerabilities"
                 values={DAMAGE_TYPES.filter(
-                  (type) => !monster.resistances?.includes(type)
+                  (type) =>
+                    !monster.resistances?.includes(type) &&
+                    !monster.immunities?.includes(type)
                 )}
                 selected={monster.vulnerabilities ?? []}
                 onChange={(vulnerabilities) => patch({ vulnerabilities })}
@@ -542,10 +546,22 @@ export function StatblockEditor({
               <ClassificationField
                 label="Resistances"
                 values={DAMAGE_TYPES.filter(
-                  (type) => !monster.vulnerabilities?.includes(type)
+                  (type) =>
+                    !monster.vulnerabilities?.includes(type) &&
+                    !monster.immunities?.includes(type)
                 )}
                 selected={monster.resistances ?? []}
                 onChange={(resistances) => patch({ resistances })}
+              />
+              <ClassificationField
+                label="Immunities"
+                values={DAMAGE_TYPES.filter(
+                  (type) =>
+                    !monster.vulnerabilities?.includes(type) &&
+                    !monster.resistances?.includes(type)
+                )}
+                selected={monster.immunities ?? []}
+                onChange={(immunities) => patch({ immunities })}
               />
             </Section>
           </div>

@@ -29,36 +29,52 @@ const damageTypes = z
 export const monsterDamageInteractionFields = {
   vulnerabilities: damageTypes.optional(),
   resistances: damageTypes.optional(),
+  immunities: damageTypes.optional(),
 };
 
-// A monster cannot be both vulnerable and resistant to the same damage type.
+interface DamageInteractionLists {
+  vulnerabilities?: DamageType[];
+  resistances?: DamageType[];
+  immunities?: DamageType[];
+}
+
+// A damage type can appear in at most one of vulnerabilities, resistances,
+// and immunities.
 export function refineDisjointDamageInteractions(
-  value: { vulnerabilities?: DamageType[]; resistances?: DamageType[] },
+  value: DamageInteractionLists,
   ctx: z.RefinementCtx
 ) {
-  const overlap = (value.vulnerabilities ?? []).filter((type) =>
-    value.resistances?.includes(type)
-  );
-  if (overlap.length) {
-    ctx.addIssue({
-      code: "custom",
-      path: ["resistances"],
-      message: `Damage types cannot be both vulnerabilities and resistances: ${overlap.join(", ")}`,
-    });
+  const pairs = [
+    ["vulnerabilities", "resistances"],
+    ["vulnerabilities", "immunities"],
+    ["resistances", "immunities"],
+  ] as const;
+  for (const [first, second] of pairs) {
+    const overlap = (value[first] ?? []).filter((type) =>
+      value[second]?.includes(type)
+    );
+    if (overlap.length) {
+      ctx.addIssue({
+        code: "custom",
+        path: [second],
+        message: `Damage types cannot be both ${first} and ${second}: ${overlap.join(", ")}`,
+      });
+    }
   }
 }
 
-// Both lists are written together: when either is present, the other defaults
-// to [] so the stored pair is always validated as a whole. Omitting both
+// All lists are written together: when any is present, the others default
+// to [] so the stored set is always validated as a whole. Omitting all
 // preserves existing values on updates.
 export const MonsterDamageInteractionsSchema = z
   .object(monsterDamageInteractionFields)
   .superRefine(refineDisjointDamageInteractions)
-  .transform(({ vulnerabilities, resistances }) =>
-    vulnerabilities || resistances
+  .transform(({ vulnerabilities, resistances, immunities }) =>
+    vulnerabilities || resistances || immunities
       ? {
           vulnerabilities: vulnerabilities ?? [],
           resistances: resistances ?? [],
+          immunities: immunities ?? [],
         }
       : {}
   );

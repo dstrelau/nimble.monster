@@ -1,4 +1,4 @@
-import { ShieldMinus, ShieldPlus } from "lucide-react";
+import { ShieldMinus, ShieldOff, ShieldPlus } from "lucide-react";
 import { Link } from "@/components/layout/Link";
 import { MonsterImage } from "@/components/monster/MonsterImage";
 import {
@@ -188,7 +188,9 @@ export function MonsterCardHeader({
           />
         )}
       </div>
-      {(!!monster.vulnerabilities?.length || !!monster.resistances?.length) && (
+      {(!!monster.vulnerabilities?.length ||
+        !!monster.resistances?.length ||
+        !!monster.immunities?.length) && (
         <div
           className="flex flex-wrap gap-x-4 gap-y-1 px-4 text-sm/5"
           data-damage-interactions
@@ -203,6 +205,11 @@ export function MonsterCardHeader({
               label: "Resistant",
               values: monster.resistances ?? [],
               Icon: ShieldPlus,
+            },
+            {
+              label: "Immune",
+              values: monster.immunities ?? [],
+              Icon: ShieldOff,
             },
           ].map(({ label, values, Icon }) =>
             values.length ? (

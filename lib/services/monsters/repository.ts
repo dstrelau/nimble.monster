@@ -201,6 +201,7 @@ const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
   environments: data.monster.environments,
   vulnerabilities: data.monster.vulnerabilities,
   resistances: data.monster.resistances,
+  immunities: data.monster.immunities,
   isOfficial: data.monster.isOfficial ?? false,
   bloodied: data.monster.bloodied,
   lastStand: data.monster.lastStand,

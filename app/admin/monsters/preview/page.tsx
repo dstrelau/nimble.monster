@@ -105,6 +105,7 @@ export default async function PreviewMonstersPage({ searchParams }: PageProps) {
       environments: input.environments,
       vulnerabilities: input.vulnerabilities,
       resistances: input.resistances,
+      immunities: input.immunities,
       legendary: input.legendary || false,
       minion: input.minion || false,
       hazard: false,

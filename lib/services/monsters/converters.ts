@@ -172,6 +172,7 @@ export const toMonster = (m: MonsterWithRelations): Monster => {
     environments: m.environments ?? [],
     vulnerabilities: m.vulnerabilities ?? [],
     resistances: m.resistances ?? [],
+    immunities: m.immunities ?? [],
     bloodied: m.bloodied,
     lastStand: m.lastStand,
     speed: m.speed,
@@ -370,6 +371,7 @@ export const toZodMonster = (m: Monster) => {
       ? { vulnerabilities: m.vulnerabilities }
       : {}),
     ...(m.resistances?.length ? { resistances: m.resistances } : {}),
+    ...(m.immunities?.length ? { immunities: m.immunities } : {}),
     movement: movement,
     abilities,
     actions,

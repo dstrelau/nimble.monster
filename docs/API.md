@@ -365,14 +365,16 @@ applies to both.
 
 The API does not currently support filtering by these fields.
 
-Monster attributes may also include `vulnerabilities` and `resistances`, each an
-array of damage types. Each field is omitted when empty and is not present on
-hazards. A damage type never appears in both arrays.
+Monster attributes may also include `vulnerabilities`, `resistances`, and
+`immunities`, each an array of damage types. Each field is omitted when empty
+and is not present on hazards. A damage type never appears in more than one
+array.
 
 ```json
 {
   "vulnerabilities": ["fire", "radiant"],
-  "resistances": ["ice", "bludgeoning"]
+  "resistances": ["ice", "bludgeoning"],
+  "immunities": ["necrotic"]
 }
 ```
 
