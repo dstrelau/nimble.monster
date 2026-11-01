@@ -609,6 +609,47 @@ still leave 18 < 43. The lead is untied and not sparse; no seven-day tie-breaker
 is needed. This is evidence reuse with the same sampling/coverage limitations,
 not a fresh query. The required unarchived-child lookup found only this run.
 
+### Refreshed private-encounter-pagination selection — October 31, 2026
+
+Fixed window **2026-10-30T19:00:00Z–2026-10-31T19:00:00Z**, root HTTP spans
+only (`trace.parent_id` absent, `http.request.header.next-action` present), grouped
+by action ID and `COALESCE(http.response.status_code, http.status_code)`:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/wZVhLtCATfF).
+The full result contains **379 attempts**, mean sample rate **1**, 1,776,185 rows
+examined and zero OTHER/truncated volume. Bots and QA are included; HTTP
+<400/≥400 measures transport outcome, not successful Flight domain results.
+
+Read-only OCI extraction verifies compressed standalone-layer SHA256, image
+`GH_SHA`, filename and exported name across **150 deployed images**. All **215
+non-probe attempts map to verified named actions**, aggregating build aliases
+by filename/export, not treating IDs as distinct actions. Excluded malformed
+probes total **164**: `x` (74), `0` (34), `1` (28), `action` (28). There is no
+otherwise-unmapped volume. This expands the previous mapping: the formerly
+unknown `004db257…` and `005e0343…` IDs are verified old official-condition and
+navigation-count aliases, respectively, not remaining actions.
+
+| Priority | Verified named operation | Attempts | HTTP <400 | HTTP ≥400 |
+| --- | --- | ---: | ---: | ---: |
+| Already migrated | `listOwnEncounters` | 47 | 32 | 15 |
+| Already migrated | `paginateUserProfileMonsters` | 30 | 30 | 0 |
+| Selected in this slice | `app/my/encounters/actions.ts#paginateMyEncounters` | 20 | 8 | 12 |
+| Next measured candidate | `searchPublicCollections` | 14 | 12 | 2 |
+| Remaining | `paginateUserProfileHazards` | 8 | 8 | 0 |
+| Remaining | `paginatePublicHazards` | 6 | 6 | 0 |
+| Remaining | `signInAction` | 1 | 1 | 0 |
+
+Because remaining traffic is sparse, also queried **2026-10-24T19:00:00Z–
+2026-10-31T19:00:00Z** using the identical root filters:
+[seven-day results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/xdA9LofmL26).
+All **40,451 non-probe attempts** map; 1,065 probes are excluded, mean sample
+rate is **1**, 6,699,830 rows were examined and OTHER/truncated volume is zero.
+Remaining collection search has 92 attempts (85/7), profile hazards 88 (88/0),
+public hazards 62 (61/1), and private encounter pagination 27 (15/12).
+Seven days supplies sparse-traffic context, not an override of the untied
+24-hour primary ranking. Coordination found only this unarchived run.
+The run's `my-encounters-traffic-evidence.json` retains complete results and
+verified provenance. Refresh before assuming the next candidate's priority.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -813,6 +854,58 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Not started | Wave 5 |
+
+### Private encounter pagination — November 2026
+
+- Selected `app/my/encounters/actions.ts#paginateMyEncounters` using the fresh,
+  fully mapped traffic evidence above. Its only browser transport owner is
+  `myEncountersInfiniteQueryOptions`, used by `EncountersListView` on
+  `/my/encounters`. It now sends cancellable bodyless stable GETs to
+  `/_actions/myEncounters`; the page prefetch calls the ordinary pagination
+  service directly, never relative HTTP. Shared sort parsing and response types
+  moved into that service without changing the public encounter transport.
+- Authentication derives owner identity only from `auth()`. Missing/incomplete
+  sessions receive JSON 401. Submitted creator/user/visibility parameters cannot
+  change ownership. The existing SQL still selects both public/private owner
+  encounters, including owned private monsters only inside private encounters,
+  and excludes foreign private monsters. Creator, quantities, per-hero ratios,
+  descriptions, visibility and hero settings retain their shape. Encounter and
+  nested mini-monster dates are revived after JSON. No extra identity fields,
+  supported API, repository directive or database changes are introduced.
+- Four existing sorts, integer limits 1–100, nonnegative safe page offsets and
+  string searches are validated before SQL. Invalid inputs receive 400;
+  unexpected failures reach telemetry before generic JSON 500s. Success/errors
+  are `private, no-store`, with no CORS; unsupported writes receive framework
+  405s. This safe GET needs no mutation-origin/media gate. The 12-row default,
+  offset/lookahead pagination, navigation and existing pending/error/retry UI
+  remain. Private query keys include session user ID without transmitting it
+  as authority; obsolete reads cancel and previous-owner placeholders are never
+  reused. Failed refetches retain cached data and recover normally.
+- Removed the final export and empty `app/my/(library)/encounters/actions.ts`, its browser
+  caller and server-action prefetch. Application ratchet **42 → 41**; repository
+  markers/exports and all mutation/invalidation behavior are unchanged. Real-SQL
+  boundary tests cover asymmetric sort/page boundaries, owner isolation, complete
+  relationships, serialization, validation and safe telemetry errors. Hook tests
+  cover stable URL/no `next-action`, cancellation, account changes/sign-out,
+  nested date revival and failed-read retention/recovery.
+- Local verification includes focused/full tests, `make check`,
+  `git diff --check`, 26 live HTTP checks and inspected browser screenshots/clip.
+  Browser QA covers 12→14 load-more, search/sort, detail navigation/reload,
+  same-document owner changes/sign-out, empty results and aborted-read recovery.
+  A single React development `use()` warning is recorded, not claimed fixed or
+  conclusively attributed; focused comparison/repeat QA found no demonstrated
+  migration-caused regression. Deliberate aborts and scratch baseline-server
+  asset/setup failures are distinguished from migrated-route HTTP failures.
+- QA uses three disposable non-admin users, 15 encounters and one copy of an
+  existing public monster; never real-user edits or handcrafted monsters. Local
+  cleanup verifies zero users/entities/catalogue residue and an unchanged source.
+  The [run thread](https://ampcode.com/threads/T-01a19380-4e8d-7728-a7c6-424870186b9f)
+  is the source of truth for final rebased checks, deployment identity, exact
+  authenticated production requests, inspected evidence and production cleanup.
+  Production verification uses one-hour Auth.js sessions, not a dev-login bypass.
+  Retain this URL/shape for at least one deployment interval; pre-cutover tabs
+  still need refresh/retry. Migration remains incomplete; collection search is
+  the next measured candidate, subject to refreshed evidence.
 
 ### Creator-profile monster pagination — October 2026
 

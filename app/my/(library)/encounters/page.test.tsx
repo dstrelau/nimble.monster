@@ -38,7 +38,7 @@ describe("MyEncountersPage", () => {
 
     expect(mockPrefetchInfiniteQuery).toHaveBeenCalledWith(
       expect.objectContaining({
-        queryKey: ["my-encounters", expect.anything()],
+        queryKey: ["my-encounters", "u1", expect.anything()],
       })
     );
     expect(screen.getByTestId("encounters-list-view")).toHaveAttribute(

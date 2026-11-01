@@ -4,7 +4,6 @@ const mocks = vi.hoisted(() => ({
   encounters: vi.fn(),
   collections: vi.fn(),
   myEncounters: vi.fn(),
-  auth: vi.fn(),
 }));
 
 vi.mock("@/lib/services/encounters/repository", () => ({
@@ -14,11 +13,9 @@ vi.mock("@/lib/services/encounters/repository", () => ({
 vi.mock("@/lib/services/collections/repository", () => ({
   searchPublicCollections: mocks.collections,
 }));
-vi.mock("@/lib/auth", () => ({ auth: mocks.auth }));
 
 import { publicCollectionsInfiniteQueryOptions } from "./collections/actions";
 import { publicEncountersInfiniteQueryOptions } from "./encounters/actions";
-import { myEncountersInfiniteQueryOptions } from "./my/(library)/encounters/hooks";
 
 afterEach(() => vi.clearAllMocks());
 
@@ -43,7 +40,6 @@ function testPagination<Page extends { data: unknown[]; hasMore: boolean }>(
     ])(
       "detects continuation with $count rows for a limit of 3",
       async ({ count, hasMore }) => {
-        mocks.auth.mockResolvedValue({ user: { id: "current-user" } });
         const rows = Array.from({ length: count }, (_, index) => ({
           id: `entity-${index}`,
         }));
@@ -64,11 +60,6 @@ function testPagination<Page extends { data: unknown[]; hasMore: boolean }>(
         expect(options.getNextPageParam(result, [result], 2)).toBe(
           hasMore ? 3 : undefined
         );
-        if (name === "my encounters") {
-          expect(search).toHaveBeenCalledWith(
-            expect.objectContaining({ creatorId: "current-user" })
-          );
-        }
       }
     );
   });
@@ -84,9 +75,4 @@ testPagination(
   "collections",
   mocks.collections,
   publicCollectionsInfiniteQueryOptions(params)
-);
-testPagination(
-  "my encounters",
-  mocks.myEncounters,
-  myEncountersInfiniteQueryOptions(params)
 );

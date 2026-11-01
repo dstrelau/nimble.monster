@@ -1,29 +1,14 @@
 import { keepPreviousData } from "@tanstack/react-query";
-import type {
-  EncounterSortBy,
-  EncounterSortDirection,
-} from "@/lib/services/encounters/repository";
+import {
+  type PaginatedEncounterResponse,
+  parseEncounterSort,
+} from "@/lib/services/encounters/pagination";
 import * as encounters from "@/lib/services/encounters/repository";
-import type { EncounterOverview } from "@/lib/types";
+
+export type { PaginatedEncounterResponse } from "@/lib/services/encounters/pagination";
+export { parseEncounterSort } from "@/lib/services/encounters/pagination";
 
 export type EncounterSortOption = "name" | "-name" | "createdAt" | "-createdAt";
-
-export type PaginatedEncounterResponse = {
-  data: EncounterOverview[];
-  hasMore: boolean;
-};
-
-export function parseEncounterSort(sort: string): {
-  sortBy: EncounterSortBy;
-  sortDirection: EncounterSortDirection;
-} {
-  const desc = sort?.startsWith("-");
-  const sortField = desc ? sort.slice(1) : sort;
-  return {
-    sortBy: sortField === "name" ? "name" : "createdAt",
-    sortDirection: desc ? "desc" : "asc",
-  };
-}
 
 export async function paginatePublicEncounters(params: {
   sort: string;

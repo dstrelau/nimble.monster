@@ -2,6 +2,7 @@
 
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { useQueryState } from "nuqs";
 import type React from "react";
 import {
@@ -27,6 +28,7 @@ export type EncountersListViewProps =
 export const EncountersListView: React.FC<EncountersListViewProps> = (
   props
 ) => {
+  const { data: session, status } = useSession();
   const [rawSearchQuery, setSearchQuery] = useQueryState("search");
   const [searchQuery] = useDebouncedValue(rawSearchQuery, { wait: 250 });
 
@@ -46,7 +48,10 @@ export const EncountersListView: React.FC<EncountersListViewProps> = (
           creatorId: props.creatorId,
         });
       case "my-encounters":
-        return myEncountersInfiniteQueryOptions(params);
+        return myEncountersInfiniteQueryOptions(
+          status === "authenticated" ? session?.user.id : undefined,
+          params
+        );
       case "encounters":
         return publicEncountersInfiniteQueryOptions(params);
     }
