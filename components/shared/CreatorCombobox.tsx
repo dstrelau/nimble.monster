@@ -4,6 +4,7 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { getTopMonsterCreators } from "@/app/%5Factions/getTopMonsterCreators/contract";
 import { UserAvatar } from "@/components/layout/UserAvatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,13 +20,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { call } from "@/lib/contract";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import {
-  getTopItemCreators,
-  getTopMonsterCreators,
-  searchCreators,
-} from "./search-creators-action";
+import { getTopItemCreators, searchCreators } from "./search-creators-action";
 
 interface CreatorComboboxProps {
   kind: "monsters" | "items";
@@ -57,9 +55,21 @@ export function CreatorCombobox({
     : null;
 
   useEffect(() => {
-    const fetcher =
-      kind === "monsters" ? getTopMonsterCreators : getTopItemCreators;
-    fetcher().then(setTopCreators);
+    const controller = new AbortController();
+    const result =
+      kind === "monsters"
+        ? call(getTopMonsterCreators, undefined, {
+            signal: controller.signal,
+          })
+        : getTopItemCreators();
+    result
+      .then((creators) => {
+        if (!controller.signal.aborted) setTopCreators(creators);
+      })
+      .catch(() => {
+        // Keep existing suggestions on failure; remounting retries the read.
+      });
+    return () => controller.abort();
   }, [kind]);
 
   useEffect(() => {

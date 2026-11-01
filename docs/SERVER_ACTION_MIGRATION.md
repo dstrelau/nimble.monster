@@ -703,7 +703,7 @@ context, not an override of the fully mapped, untied 24-hour ranking.
 | --- | --- | ---: | ---: |
 | Migrated profile-hazard slice | `app/u/[username]/actions.ts#paginateUserProfileHazards` | 8 (8/0) | 80 (80/0) |
 | Selected public-encounter slice | `lib/services/encounters/repository.ts#searchPublicEncounters` | 6 (6/0) | 35 (35/0) |
-| Next measured candidate | `getTopMonsterCreators` | 2 (2/0) | 15 (15/0) |
+| Selected top-creator slice | `components/shared/search-creators-action.ts#getTopMonsterCreators` | 2 (2/0) | 15 (15/0) |
 | Remaining | `app/hazards/actions.ts#paginatePublicHazards` | 1 (1/0) | 59 (58/1) |
 | Remaining | `signInAction` | 1 (1/0) | 5 (5/0) |
 
@@ -721,6 +721,19 @@ recorded seven-day counts, not reordered by them. All root-span, sample-rate,
 probe exclusions, verified alias aggregation and residual limitations above
 still apply. The unarchived-child lookup found only this run. Refresh before
 assuming the next candidate's priority, especially as remaining volume falls.
+
+The top-monster-creator run reuses this same-day fixed window on November 1,
+about eleven hours after its endpoint; this is not a fresh measurement. The
+fully mapped previous-day traffic remains representative after the two leaders
+migrated: top creators lead the remaining named operations with two successful
+and zero failed attempts. Seven days supplies sparse-traffic context (15/0),
+not an override of the untied 24-hour lead. The root-only filter, alias mapping,
+sample rate, probe exclusions and seven-day residual limits above still apply.
+The current deployed manifest independently verifies the same filename/export
+under ID `00616666d16e00d0c00f5d71c0245ee22e55dd6298`; that current ID is not
+assumed to be the historical traffic ID. Coordination found no other open owner.
+After this slice, hazards and sign-in tie at one 24-hour attempt; hazards lead
+the recorded seven-day tie-breaker 59 to five. Refresh before the next selection.
 
 ## Migration waves (scope guidance)
 
@@ -926,6 +939,61 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Top monster creator suggestions — November 2026
+
+- Selected `components/shared/search-creators-action.ts#getTopMonsterCreators`
+  using the recent fully mapped fixed-window evidence above: two successful
+  24-hour attempts, 15 successful seven-day attempts, no failures. No competing
+  unarchived scheduled run owns this operation.
+- The sole browser caller, `CreatorCombobox` with `kind="monsters"`, now uses
+  cancellable bodyless `GET /_actions/getTopMonsterCreators`. Its consumers are
+  collection, encounter and adventure new/edit builders. Compact encounter and
+  adventure filters mount the picker inside their filter popover; collection
+  filters display it inline. Item suggestions and creator search remain separate
+  Server Actions, deliberately outside this bounded slice. There were no server
+  prefetch callers to convert; direct database readers remain direct.
+- The unchanged `topMonsterCreators(10)` query ranks owners by public monster
+  count, including hazards as before, excludes private-only/zero-content users
+  and preserves existing tie behavior. The existing `toUser` projection returns
+  only ID, Discord ID, username, display name and avatar URL, never email, role,
+  refresh token or timestamps. No extra identity fields, supported API or new
+  SQL/service abstraction is introduced. There are no dates to revive.
+- This parameterless public catalogue read intentionally needs no session,
+  mutation-origin/media gate or body schema. Submitted owner/visibility/limit
+  parameters cannot change selection. Success/errors use `private, no-store`,
+  without CORS. Unexpected failures reach telemetry then generic JSON 500s;
+  unsupported writes receive framework 405s. No ownership, persistence,
+  invalidation, navigation or editor-save behavior changes.
+- Pending/failed reads retain the existing All Creators/current-user controls;
+  successful reads retain self-deduplication and selection. Failed suggestions
+  do not reject unhandled or erase existing data. Remount/reload retries the
+  read; no new automatic retry policy is added. Unmount cancels the stable GET
+  and ignores late results, including a switch to the retained item transport.
+- Removed just the `getTopMonsterCreators` Server Action export and browser
+  import/call. Application ratchet **40 → 39**; seven repository markers and
+  70 callable repository exports remain unchanged. Retain the stable URL and
+  response shape for at least one deployment interval; old tabs still need
+  refresh/retry for legacy action IDs.
+- Seven focused tests cover real-SQL top-ten ordering/private exclusion/hazards,
+  minimal serialization, empty results and generic telemetry errors, plus real
+  picker stable GET/no `next-action`, cancellation, anonymous/pending behavior,
+  selection, failures/recovery and stale-result exclusion. Full suite:
+  **2,272 passed, seven skipped**. `make check` and `git diff --check` pass;
+  the existing unused item-builder import warning is not claimed fixed.
+- Seven live development requests verify independent SQL results, ignored
+  authority/limit parameters, JSON/cache headers, HEAD and unsupported writes.
+  Browser QA exercises all six new/edit builder routes, creator filtering,
+  reload and deliberately aborted-read recovery. Existing collection selectable
+  monster-card nested-button warnings remain unchanged and already tracked;
+  automation-added `data-__ab-ci` dice attributes also caused a recorded
+  hydration warning outside the creator transport, not claimed repaired.
+- QA reads existing seeded/public content, with only unsaved form/filter state:
+  no fixture rows or production sessions/writes are needed. The
+  [run thread](https://ampcode.com/threads/T-01a198dd-fe48-7614-ac01-cff1e6e13320)
+  records inspected screenshots/recording, local/production functional HTTP,
+  deployed identity, investigation and cleanup. Migration remains incomplete;
+  refresh sparse traffic before selecting the next slice.
 
 ### Public encounter search and pagination — November 2026
 
