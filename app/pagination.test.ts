@@ -18,7 +18,7 @@ vi.mock("@/lib/auth", () => ({ auth: mocks.auth }));
 
 import { publicCollectionsInfiniteQueryOptions } from "./collections/actions";
 import { publicEncountersInfiniteQueryOptions } from "./encounters/actions";
-import { myEncountersInfiniteQueryOptions } from "./my/encounters/hooks";
+import { myEncountersInfiniteQueryOptions } from "./my/(library)/encounters/hooks";
 
 afterEach(() => vi.clearAllMocks());
 

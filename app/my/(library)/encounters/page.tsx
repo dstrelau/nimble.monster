@@ -1,6 +1,6 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
-import { myEncountersInfiniteQueryOptions } from "@/app/my/encounters/hooks";
+import { myEncountersInfiniteQueryOptions } from "@/app/my/(library)/encounters/hooks";
 import { EncountersListView } from "@/components/encounter/EncountersListView";
 import { MyLibraryPageHeader } from "@/components/layout/MyLibraryPageHeader";
 import { auth } from "@/lib/auth";

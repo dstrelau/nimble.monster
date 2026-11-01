@@ -5,7 +5,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { publicBackgroundsInfiniteQueryOptions } from "@/app/backgrounds/hooks";
-import { myBackgroundsInfiniteQueryOptions } from "@/app/my/backgrounds/hooks";
+import { myBackgroundsInfiniteQueryOptions } from "@/app/my/(library)/backgrounds/hooks";
 import {
   EmptyState,
   ErrorState,

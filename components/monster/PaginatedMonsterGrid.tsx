@@ -12,8 +12,8 @@ import {
 import type React from "react";
 import { publicHazardsInfiniteQueryOptions } from "@/app/hazards/hooks";
 import { publicMonstersInfiniteQueryOptions } from "@/app/monsters/hooks";
-import { myHazardsInfiniteQueryOptions } from "@/app/my/hazards/hooks";
-import { myMonstersInfiniteQueryOptions } from "@/app/my/monsters/hooks";
+import { myHazardsInfiniteQueryOptions } from "@/app/my/(library)/hazards/hooks";
+import { myMonstersInfiniteQueryOptions } from "@/app/my/(library)/monsters/hooks";
 import {
   userProfileHazardsInfiniteQueryOptions,
   userProfileMonstersInfiniteQueryOptions,

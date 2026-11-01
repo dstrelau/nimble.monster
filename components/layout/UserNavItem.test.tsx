@@ -100,6 +100,7 @@ describe("UserNavItem", () => {
       "Create",
       "My Library",
       "View Profile",
+      "Settings",
     ]);
   });
 });

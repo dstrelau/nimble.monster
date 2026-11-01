@@ -1,6 +1,12 @@
 "use client";
 
-import { Library, LogOut, Plus, User as UserIcon } from "lucide-react";
+import {
+  Library,
+  LogOut,
+  Plus,
+  Settings,
+  User as UserIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -151,6 +157,12 @@ export function UserNavItem({ open, onOpenChange }: UserNavItemProps) {
                   active={profileItem.isActive}
                 />
               )}
+              <SubNavItem
+                href="/my/settings"
+                label="Settings"
+                icon={Settings}
+                active={pathname?.startsWith("/my/settings/") ?? false}
+              />
             </ul>
             <Separator />
             <div className="flex items-center justify-between gap-2 px-3 py-2 bg-muted rounded-b-md">

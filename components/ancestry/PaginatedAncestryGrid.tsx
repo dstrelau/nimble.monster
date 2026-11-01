@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { publicAncestriesInfiniteQueryOptions } from "@/app/ancestries/hooks";
-import { myAncestriesInfiniteQueryOptions } from "@/app/my/ancestries/hooks";
+import { myAncestriesInfiniteQueryOptions } from "@/app/my/(library)/ancestries/hooks";
 import {
   EmptyState,
   ErrorState,

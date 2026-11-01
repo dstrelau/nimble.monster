@@ -19,6 +19,11 @@ export const FEATURE_FLAGS: readonly FeatureFlag[] = [
   "field-guide",
 ];
 
+/** Flags users may turn on or off for themselves from /my/settings. */
+export const SELF_SERVICE_FEATURE_FLAGS = [
+  "monster-card-layout",
+] as const satisfies readonly FeatureFlag[];
+
 export function isFeatureFlag(value: string): value is FeatureFlag {
   return FEATURE_FLAGS.some((feature) => feature === value);
 }

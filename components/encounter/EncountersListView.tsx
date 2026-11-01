@@ -8,7 +8,7 @@ import {
   type EncounterSortOption,
   publicEncountersInfiniteQueryOptions,
 } from "@/app/encounters/actions";
-import { myEncountersInfiniteQueryOptions } from "@/app/my/encounters/hooks";
+import { myEncountersInfiniteQueryOptions } from "@/app/my/(library)/encounters/hooks";
 import { EncounterCard } from "@/components/encounter/EncounterCard";
 import {
   EmptyState,

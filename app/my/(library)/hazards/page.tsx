@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { TriangleAlert } from "lucide-react";
 import { notFound } from "next/navigation";
-import { myHazardsInfiniteQueryOptions } from "@/app/my/hazards/hooks";
+import { myHazardsInfiniteQueryOptions } from "@/app/my/(library)/hazards/hooks";
 import { MyLibraryPageHeader } from "@/components/layout/MyLibraryPageHeader";
 import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
 import { auth } from "@/lib/auth";
