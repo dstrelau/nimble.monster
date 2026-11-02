@@ -1,7 +1,7 @@
 /** @type {Record<string, Record<string, number>>} */
 export const serverActionBaseline = {
   application: {
-    "app/actions/class.ts": 2,
+    "app/actions/class.ts": 1,
     "app/actions/companion.ts": 1,
     "app/actions/subclass.ts": 1,
     "app/admin/actions.ts": 24,

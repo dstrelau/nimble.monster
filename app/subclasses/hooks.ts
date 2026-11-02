@@ -1,8 +1,17 @@
-import { searchClassesForSubclass } from "@/app/actions/class";
+import { searchClassesForSubclass } from "@/app/%5Factions/searchClassesForSubclass/contract";
+import { call } from "@/lib/contract";
 
-export function subclassClassOptionsQueryOptions(search?: string) {
+export function subclassClassOptionsQueryOptions(
+  search?: string,
+  userId?: string
+) {
   return {
-    queryKey: ["subclass-class-options", search ?? ""],
-    queryFn: () => searchClassesForSubclass(search || undefined),
+    queryKey: ["subclass-class-options", userId, search ?? ""],
+    queryFn: ({ signal }: { signal: AbortSignal }) =>
+      call(
+        searchClassesForSubclass,
+        { searchTerm: search || undefined },
+        { signal }
+      ),
   };
 }

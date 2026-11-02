@@ -777,6 +777,40 @@ The run retains full results and verified mapping records in
 `hazards-traffic-evidence.json`. Refresh before assuming the next sparse-volume
 candidate's priority; already-migrated historical attempts are not remaining work.
 
+### Subclass class-picker selection — November 2, 2026
+
+Refreshed fixed **2026-11-01T06:00:00Z–2026-11-02T06:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/63HMoii8pDE).
+The same root HTTP filters/status grouping return **239 attempts**, mean sample
+rate **1**, 1,225,861 rows examined and zero OTHER volume. Complete JSON was
+downloaded. **105 attempts are named**, **133 are known probes**
+(`x`: 66, `0`: 25, `1`: 25, `action`: 17), and one malformed-length hex ID
+remains excluded. HTTP <400/≥400 is transport outcome, not domain-result success;
+bots/QA are included and child spans are not counted.
+
+Reused the preceding run's verified historical filename/export mappings and
+checked that the refreshed window contains **no new IDs** compared with its
+fully mapped 24-hour window. Independently extracted the latest three OCI
+manifests, checking compressed standalone-layer SHA256 and image `GH_SHA`.
+The sole remaining named action with 24-hour traffic is
+`app/actions/class.ts#searchClassesForSubclass`: **one HTTP 200, zero failures**.
+Its observed alias `40c2cc11a1b96fb0935105034c01d36522fdcddb7d` is directly
+verified in `630de28d`; `a4c47b21` and `cef79601` use different verified aliases.
+Build-specific IDs are aggregated as one operation. Other changed counts belong
+to already-migrated operations/probes, not new migration candidates. No
+valid-length ID is otherwise unmapped on the reused evidence.
+
+Sparse-traffic context reuses, rather than remeasures, the seven-day window
+**2026-10-26T01:00:00Z–2026-11-02T01:00:00Z** and its sampling/exclusion limits
+above: class search **9 (9/0)**, sign-in **4 (4/0)**, creator search **2 (2/0)**,
+top-item creators **1 (1/0)**. The current untied 24-hour lead selects class
+search. Sign-in leads the remaining actions only on this older seven-day
+evidence; refresh both windows before the next sparse-volume selection.
+Coordination found only this run unarchived, with no competing slice owner.
+`classes-traffic-evidence.json` retains full old/new 24-hour results and the
+independently extracted mappings in the
+[run thread](https://ampcode.com/threads/T-01a19b03-2cdf-7549-ab79-4fe8de850ffd).
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -981,6 +1015,59 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Subclass class-picker reads — November 2026
+
+- Selected only `app/actions/class.ts#searchClassesForSubclass` using the
+  refreshed sparse-traffic evidence above. The sole browser query owner,
+  `subclassClassOptionsQueryOptions`, now sends cancellable bodyless
+  `GET /_actions/searchClassesForSubclass?searchTerm=…`. Subclass new/edit
+  pages override the query function with direct database reads, never relative
+  HTTP. Both hydration and browser cache keys include the session user ID;
+  the identity is not sent as request authority. Account changes select separate
+  cached choices instead of reusing another owner's private results.
+- The route authenticates optionally: anonymous readers retain public classes,
+  while signed-in readers also see their own public/private classes first.
+  Submitted user/owner/visibility parameters cannot select another owner's
+  private classes. Existing SQL ordering, per-query 50-row limits, public-row
+  deduplication, owned/official/public buckets and LIKE search semantics remain
+  unchanged. The five existing picker fields are serialized, with no dates or
+  additional identity data. No supported API or JSON:API changes are introduced.
+- Zod validates the optional search string without imposing a new length or
+  wildcard policy. All URL string values remain valid; safe reads need no
+  mutation-origin/media gate. Success/errors use `private, no-store`, no CORS;
+  unexpected failures reach telemetry before generic JSON 500s. Unsupported
+  writes receive framework 405s. Selection/preface updates, pending/empty/error
+  fallback, retries, draft/navigation behavior and all writes are unchanged.
+- Removed the one Server Action export and browser import/call, retaining the
+  unrelated public-class collection read. Application ratchet **38 → 37**;
+  seven repository markers / 70 callable repository exports are unchanged.
+  Keep the URL and response shape for at least one deployment interval;
+  pre-cutover tabs still need refresh/retry for the legacy action reference.
+- Real-SQL route tests cover anonymous/session isolation, forged authority,
+  ordering/buckets/deduplication, minimal serialization, optional/encoded search,
+  wildcards, empty results and telemetry-safe errors. Transport tests cover
+  stable GET/no `next-action`, cancellation, session/search cache separation and
+  failed-refetch retention/recovery. **Seven focused tests pass; full suite:
+  2,282 passed, seven skipped.** `make check` and `git diff --check` pass.
+  The previously recorded item-builder unused-import warning remains unchanged.
+- **14 live development HTTP checks** compare anonymous/two-owner reads against
+  independent SQLite expectations, including ignored identity, empty/encoded/
+  wildcard/injection-like search, JSON/cache headers, HEAD and unsupported writes.
+  Browser QA covers new/edit, canonical redirects/reload, private choices,
+  selection/preface, empty results, same-document account changes and deliberate
+  read failure/recovery. **65 stable GET attempts**, including four deliberate
+  abort/retry attempts, have no `next-action`; 61 have raw CDP extra-header
+  confirmation. No page/hydration errors or failed HTTP responses occur; the
+  four intentional abort console errors are recorded separately.
+- QA uses two disposable non-admin users, three copies of existing classes and
+  one existing-subclass copy, never real-user edits. Local cleanup verifies zero
+  fixtures/catalog/FTS residue and unchanged originals. Production uses one-hour
+  Auth.js sessions, not a dev bypass. The
+  [run thread](https://ampcode.com/threads/T-01a19b03-2cdf-7549-ab79-4fe8de850ffd)
+  records inspected screenshots/interaction clip, exact functional production
+  requests, deployment identity, investigation and production cleanup. Migration
+  remains incomplete; refresh sparse-volume evidence before the next slice.
 
 ### Public hazard catalogue pagination — November 2026
 

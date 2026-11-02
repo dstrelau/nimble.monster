@@ -208,7 +208,7 @@ export default function BuildSubclassView({
   const lastPrefaceFromClass = useRef<string>("");
 
   const { data: classOptions = [], isLoading: classSearchLoading } = useQuery(
-    subclassClassOptionsQueryOptions(classSearch)
+    subclassClassOptionsQueryOptions(classSearch, session?.user?.id)
   );
 
   const classComboboxGroups = useMemo<
