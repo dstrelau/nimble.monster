@@ -735,6 +735,48 @@ assumed to be the historical traffic ID. Coordination found no other open owner.
 After this slice, hazards and sign-in tie at one 24-hour attempt; hazards lead
 the recorded seven-day tie-breaker 59 to five. Refresh before the next selection.
 
+### Refreshed public-hazard selection — November 2, 2026
+
+Fixed **2026-11-01T01:00:00Z–2026-11-02T01:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/EDHPiqNxeUT).
+Root HTTP spans only (`trace.parent_id` absent and
+`http.request.header.next-action` present), grouped by action ID and
+`COALESCE(http.response.status_code, http.status_code)`, contain **240 attempts**.
+Mean sample rate is **1**, 1,095,765 rows were examined and OTHER volume is zero.
+Complete JSON was downloaded; bots/QA are included. HTTP <400/≥400 measures
+transport outcome, not successful Flight domain results.
+
+Read-only OCI extraction of **150 deployed images** verifies each compressed
+standalone-layer SHA256, image `GH_SHA`, filename and export. Aliases aggregate
+by filename/export, never as distinct actions. **110 attempts map to named
+operations**. Excluded malformed probes are `x` (62), `0` (25), `1` (25),
+`action` (17), plus one non-40-character hex ID (one HTTP 200). No valid-length
+ID remains unmapped; child spans are not counted. Coordination found no other
+unarchived slice owner.
+
+Sparse traffic is contextualized by the same query over
+**2026-10-26T01:00:00Z–2026-11-02T01:00:00Z**:
+[seven-day results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/6QnA38iFHfn).
+It contains **17,529 attempts**: **16,370 named**, **1,126 known probes**
+(`x`/`0`/`1`/`action`) and **33 other invalid/unmapped attempts across nine IDs**,
+including 23 `cachefn` attempts. Exclusions are not ranked as named actions.
+Mean sample rate is **1**, 6,181,921 rows were examined and OTHER volume is zero.
+
+| Priority | Verified named operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected public-hazard slice | `app/hazards/actions.ts#paginatePublicHazards` | 5 (5/0) | 55 (54/1) |
+| Next measured candidate | `app/actions/class.ts#searchClassesForSubclass` | 1 (1/0) | 9 (9/0) |
+| Remaining | `lib/actions.ts#signInAction` | 0 (0/0) | 4 (4/0) |
+| Remaining | `components/shared/search-creators-action.ts#searchCreators` | 0 (0/0) | 2 (2/0) |
+| Remaining | `components/shared/search-creators-action.ts#getTopItemCreators` | 0 (0/0) | 1 (1/0) |
+
+Other remaining named actions have zero measured 24-hour attempts. Seven days
+does not override the untied, fully mapped 24-hour lead. The current hazard alias
+is `407dbb9fb3e89e103db6e598c17eaf1fc54ec222b5` in build `a4c47b21`.
+The run retains full results and verified mapping records in
+`hazards-traffic-evidence.json`. Refresh before assuming the next sparse-volume
+candidate's priority; already-migrated historical attempts are not remaining work.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -939,6 +981,61 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Not started | Wave 5 |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Public hazard catalogue pagination — November 2026
+
+- Selected `app/hazards/actions.ts#paginatePublicHazards` using the refreshed
+  fixed-window evidence above: five successful 24-hour attempts, no failures;
+  54 successful/one failed seven-day attempts. No other open scheduled run owns it.
+- The sole browser transport owner, `publicHazardsInfiniteQueryOptions`, now
+  uses the existing cancellable bodyless `GET /_actions/publicHazards` contract,
+  introduced by the profile-hazard slice. `PaginatedMonsterGrid` uses this hook
+  only for the public hazard catalogue; profile/My Library and picker transports
+  are unchanged. The catalogue prefetch now calls `paginatePublicHazards`
+  directly with the same 12-row default and query key; SSR never fetches HTTP.
+- Reused the existing validated route, telemetry, generic JSON errors,
+  `private, no-store`, no CORS, seven sorts, cursor pagination and public-only
+  service/repository selection. Anonymous and signed-in reads retain the same
+  public contract; creator/source/level/search are filters, not authority.
+  Submitted owner/visibility fields cannot expose private hazards or monsters.
+  No new API, identity fields, schema, mutation, invalidation or navigation change
+  is introduced. Safe GETs need no mutation-origin/media-type gate.
+- Reused `reviveHazard` for hazard/source/award dates. Query keys, previous-data
+  behavior, loading/error UI, retries, filtering and load-more remain unchanged.
+  Errors remain typed HTTP failures; React Query retains cached data even when
+  the existing grid chooses its error display. Reload/remount recovers normally.
+- Removed the final export and empty `app/hazards/actions.ts` and browser
+  import/call. Application ratchet **39 → 38**; seven repository markers and
+  70 callable repository exports remain unchanged. Keep the existing stable URL
+  and accepted response shape for at least one deployment interval; old action
+  tabs still require refresh/retry.
+- Extended real-SQL route tests for anonymous cross-creator catalogue selection,
+  private/monster exclusion and empty results. New hook tests cover stable
+  GET/no `next-action`, filter/cursor encoding, cancellation signal, nested date
+  revival, default/cache separation and failed-read retention/recovery. Focused
+  tests: **28 passed**. Full suite: **2,275 passed, seven skipped**.
+  `make check` and `git diff --check` pass; the existing item-builder unused
+  import warning is unchanged. **55 live development HTTP checks** independently
+  match SQL across all seven sorts/pages, filters, 400s, HEAD and 405s.
+- Browser QA verifies 12 → 15 load-more, private-copy exclusion, search,
+  source/level/sort controls, empty state, client detail navigation/reload and
+  deliberately aborted read/reload recovery. Seven successful stable GETs have
+  seven raw CDP extra-header checks without `next-action`; four deliberate
+  abort/retry attempts are recorded separately. No runtime page errors occur.
+  A dropdown focus/`aria-hidden` warning and the already-recorded automation
+  `data-__ab-ci` dice hydration warning are disclosed, not claimed fixed or
+  attributed to this transport. The inspected replacement pointer clip shows
+  three new cards and Load More disappearing; an initial blank automation
+  recording was discarded, not accepted as evidence.
+- QA uses 15 disposable local copies of the existing seeded hazard, not
+  handcrafted monsters or real-user edits. All copies and search-catalog/FTS
+  residue are deleted and the original row is unchanged. Production QA is
+  anonymous/read-only, matching this public contract; no production users,
+  sessions or writes are required. The
+  [run thread](https://ampcode.com/threads/T-01a199f0-8cfc-7768-a789-8ad5863199e8)
+  records inspected artifacts, exact functional production requests, deployment
+  identity, investigation and cleanup. Migration remains incomplete; class
+  search leads the remaining actions on this window, subject to refresh.
 
 ### Top monster creator suggestions — November 2026
 

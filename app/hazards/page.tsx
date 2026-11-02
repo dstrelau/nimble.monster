@@ -5,6 +5,7 @@ import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid"
 import { listOfficialConditions } from "@/lib/db/condition";
 import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
+import { paginatePublicHazards } from "@/lib/services/hazards";
 import { PaginateMonstersSortOptions } from "@/lib/services/monsters/types";
 import {
   listSourcesForEntityType,
@@ -35,9 +36,11 @@ export default async function HazardsPage({
       ...officialConditionsQueryOptions(),
       queryFn: listOfficialConditions,
     }),
-    queryClient.prefetchInfiniteQuery(
-      publicHazardsInfiniteQueryOptions(params)
-    ),
+    queryClient.prefetchInfiniteQuery({
+      ...publicHazardsInfiniteQueryOptions(params),
+      queryFn: ({ pageParam: cursor }) =>
+        paginatePublicHazards({ limit: 12, ...params, cursor }),
+    }),
   ]);
 
   return (

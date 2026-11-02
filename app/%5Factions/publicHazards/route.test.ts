@@ -127,6 +127,25 @@ beforeEach(() => {
 });
 afterAll(() => client.close());
 
+it("serves the anonymous catalogue across creators without opting into private rows", async () => {
+  const response = await request(
+    "sort=name&includePrivate=true&userId=owner&visibility=private"
+  );
+  expect(response.status).toBe(200);
+  const body = await response.json();
+  expect(body.data.map((h: { id: string }) => h.id)).toEqual([
+    "a",
+    "b",
+    "other",
+    "c",
+  ]);
+  expect(body.nextCursor).toBeNull();
+  expect(await (await request("search=absent")).json()).toEqual({
+    data: [],
+    nextCursor: null,
+  });
+});
+
 it("returns public creator hazards with full fields, never private rows or monsters", async () => {
   const response = await request(
     "creatorId=owner&search=Trap&source=C&level=-2&includePrivate=true&userId=owner&visibility=private"
