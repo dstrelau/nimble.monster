@@ -811,6 +811,44 @@ Coordination found only this run unarchived, with no competing slice owner.
 independently extracted mappings in the
 [run thread](https://ampcode.com/threads/T-01a19b03-2cdf-7549-ab79-4fe8de850ffd).
 
+### Discord sign-in selection — November 2, 2026
+
+Refreshed fixed **2026-11-01T11:00:00Z–2026-11-02T11:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/quu4UBUbjbk).
+Root HTTP spans only (`trace.parent_id` absent, `next-action` present), grouped
+by ID and coalesced HTTP status, contain **494 attempts**: **51 named**,
+**442 known probes** (`x`: 273, `0`: 64, `1`: 60, `action`: 43, `y`: two)
+and one unmatched 40-character hex ID. All named attempts belong to already
+migrated operations; no remaining named action has 24-hour traffic. Mean sample
+rate is **1**, 1,407,151 rows were examined and OTHER volume is zero. Bots/QA are
+included; HTTP <400/≥400 measures transport outcome, not Flight domain success.
+
+The identical query over **2026-10-26T11:00:00Z–2026-11-02T11:00:00Z** supplies
+the sparse-volume tie-breaker:
+[seven-day results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/91t9FeCySAk).
+It contains **14,992 attempts**: **13,478 named**, **1,484 known probes**
+(`x`/`0`/`1`/`action`) and **30 other invalid/unmapped attempts**, including
+18 `cachefn` attempts and four `y` attempts. Mean sample rate is **1**,
+6,490,996 rows were examined and OTHER volume is zero. Complete JSON from both
+queries was downloaded; child spans are not counted.
+
+Independently extracted the latest **150 deployed OCI images** (148 distinct
+build SHAs), checking compressed standalone-layer SHA256, `GH_SHA` and manifest
+filename/export. Every observed 42-character action ID maps; other probes are
+excluded, never guessed into named rankings. Build aliases aggregate by export.
+`signin-traffic-evidence.json` retains complete results and verified mappings in
+the [run thread](https://ampcode.com/threads/T-01a19c15-97d5-749f-8343-07d9945c2bbf).
+Coordination found only this run unarchived, with no competing owner.
+
+| Priority | Verified named operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected | `lib/actions.ts#signInAction` | 0 (0/0) | 4 (4/0) |
+| Remaining | `components/shared/search-creators-action.ts#searchCreators` | 0 (0/0) | 2 (2/0) |
+| Remaining | `components/shared/search-creators-action.ts#getTopItemCreators` | 0 (0/0) | 1 (1/0) |
+
+Other remaining named actions have zero attempts in both windows. Creator search
+leads after sign-in on this sparse evidence; refresh before the next selection.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1013,8 +1051,66 @@ contract compatibility window that a future migration must preserve.
 | Public browser reads | Partially complete | Ancestry, monster, [background pagination](https://ampcode.com/threads/T-01a18f35-c260-71bc-87af-6169397d40ed) and [companion pagination](https://ampcode.com/threads/T-01a18aeb-4708-74f5-866c-0e0b52d3e2f3), source options, navigation counts and [item search/pagination](https://ampcode.com/threads/T-01a188c6-2cba-721e-b7ee-ef1b744afdc5) use internal stable GETs. All application browser reads belong under `/_actions`, not the third-party JSON:API. Remaining operations follow measured traffic priority. |
 | Private/UI-specific browser reads | Partially complete | Picker, reaction summary, creator/viewer and official conditions, navigation counts and [report status reads](https://ampcode.com/threads/T-01a189d8-7afb-75e0-9d07-35be1c47103c) use stable routes. Remaining operations follow measured traffic priority. |
 | Admin workflows | Not started | Wave 4 |
-| Auth/framework cleanup | Not started | Wave 5 |
+| Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Discord sign-in initiation — November 2026
+
+- Selected only `lib/actions.ts#signInAction` using the refreshed sparse-traffic
+  evidence above. Its sole caller, `DiscordLoginButton`, is shared by the home
+  page and anonymous ancestry/background/class/subclass/spell-school builders.
+  It now sends typed JSON `{}` to `POST /_actions/signIn`, then navigates to the
+  returned Auth.js URL. No Server Component makes HTTP requests. Auth.js itself
+  retains ownership of OAuth generation, cookies, callback validation and user
+  persistence; no domain service, supported API or JSON:API is introduced.
+- The existing `internalAction` boundary enforces exact origin and JSON media
+  type before any OAuth initiation. Zod requires an empty object; malformed JSON
+  and invalid shapes receive distinct 400s, not 500s. Clients cannot select a
+  provider, credential login, identity or callback destination through the body.
+  Discord is fixed server-side, and the existing Referer-or-home return target
+  still passes through Auth.js's same-origin callback validation. No authenticated
+  session is required to start login; this route does not grant a session.
+- Auth.js writes its existing callback/PKCE cookies via Next.js cookies and uses
+  `redirect: false`, avoiding a thrown framework redirect inside the telemetry
+  boundary. The successful response is private/no-store JSON `{ url }`, without
+  CORS; unexpected exceptions reach telemetry before generic 500s. Unsupported
+  methods receive 405s. No database writes, cache invalidation or revalidation
+  occur until the unchanged OAuth callback runs after external authentication.
+- The button retains its styling/label and return-to-page behavior. While the
+  handoff is pending it is disabled and busy; a failed request keeps the page
+  and draft usable, displays a generic retry message and re-enables the same
+  control. There is no automatic mutation retry or duplicate initiation. The
+  header's pre-existing Auth.js sign-in/sign-out transport is not changed by
+  removing this one Server Action.
+- Removed the export, empty `lib/actions.ts`, its sole import/call and an obsolete
+  spell-school client-test mock of that module.
+  Application ratchet **37 → 36**; seven repository markers / 70 callable
+  repository exports are unchanged. Retain the stable URL/shape for at least
+  one deployment interval; old tabs still need refresh/retry for the old ID.
+- Route/real-button tests cover the security/validation boundary, generic
+  telemetry errors, stable JSON POST/no `next-action`, duplicate prevention,
+  navigation and HTTP/network failure followed by manual retry. **27 focused
+  checks pass** including the shared boundary and spell-school client tests;
+  **full suite: 2,288 passed,
+  seven skipped**. `make check` passes with the unchanged item-builder warning.
+- **24 live development HTTP checks** verify all six return targets, missing/
+  external Referer handling, same-origin metadata fallback, 400/403/415/405s,
+  JSON/private-cache headers and secure HTTP-only callback/15-minute PKCE cookies.
+  Browser QA covers all six placements, client navigation/full reload, delayed
+  pending state, one injected 503 and successful manual retry. Seven real POSTs
+  have raw CDP extra-header checks without `next-action`; the injected eighth
+  request is accounted separately. No page/hydration errors occur. Existing
+  seeded-item emerald-icon 404s and navigation-canceled reads are disclosed,
+  not claimed fixed; no sign-in handler errors occur.
+- The [run thread](https://ampcode.com/threads/T-01a19c15-97d5-749f-8343-07d9945c2bbf)
+  records development/production requests, inspected browser evidence, deployment
+  identity and cleanup. QA verifies this operation's OAuth initiation/handoff,
+  not Discord credential entry or a completed external OAuth callback. Local QA
+  temporarily supplies a nonsecret placeholder client ID because the orb lacks
+  Discord application credentials; production uses the deployed real provider
+  configuration. No users, entities, reports or database fixtures are created.
+  Browser OAuth cookies and storage must be cleared at closeout. Migration
+  remains incomplete; leave the host schedule enabled.
 
 ### Subclass class-picker reads — November 2026
 

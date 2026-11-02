@@ -12,7 +12,6 @@ import { getSpellSchoolUrl } from "@/lib/utils/url";
 
 const mocks = vi.hoisted(() => ({ push: vi.fn(), refresh: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => mocks }));
-vi.mock("@/lib/actions", () => ({ signInAction: vi.fn() }));
 vi.mock("next-auth/react", () => ({
   useSession: () => ({
     data: { user: { id: "owner", discordId: "discord-owner" } },
