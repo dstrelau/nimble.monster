@@ -112,9 +112,9 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
     }
   );
 
-  it("keeps selectable names unlinked and the level tab selectable", () => {
+  it("keeps selection separate from source controls and exposes its state", async () => {
     const onSelect = vi.fn();
-    render(
+    const { container } = render(
       <FeatureFlagsProvider
         enabledFeatures={enabled ? ["monster-card-layout"] : []}
       >
@@ -124,6 +124,15 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
             families: [],
             abilities: [],
             actions: [],
+            source: {
+              id: "source",
+              name: "Nimble Heroes",
+              abbreviation: "Heroes",
+              license: "CC BY 4.0",
+              link: "https://nimbleRPG.com",
+              createdAt: new Date("2026-01-01"),
+              updatedAt: new Date("2026-01-01"),
+            },
           }}
           selectable
           selected
@@ -134,8 +143,17 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
     expect(
       screen.queryByRole("link", { name: TROLL_HUNTER.name })
     ).not.toBeInTheDocument();
-    const button = screen.getByRole("button");
-    fireEvent.click(enabled ? screen.getByText(/Lvl/) : button);
+    expect(container.querySelector("button button, button a")).toBeNull();
+    const button = screen.getByRole("button", {
+      name: `Select ${TROLL_HUNTER.name}`,
+    });
+    expect(button).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(screen.getByRole("button", { name: "Heroes" }));
+    expect(
+      await screen.findByRole("dialog", { name: "Nimble Heroes" })
+    ).toHaveTextContent("CC BY 4.0");
+    expect(onSelect).not.toHaveBeenCalled();
+    fireEvent.click(button);
     expect(onSelect).toHaveBeenCalledOnce();
   });
 

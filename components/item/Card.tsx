@@ -229,7 +229,7 @@ export const Card = ({
         className={cn(
           "pb-4",
           compact && "px-2 pb-1 text-[0.625rem]",
-          selectable && "pointer-events-none"
+          selectable && "relative z-40"
         )}
         disableLink={noInteractive}
         reactionsSlot={
@@ -266,17 +266,22 @@ export const Card = ({
 
   if (selectable) {
     return (
-      <button
-        type="button"
+      <div
         className={cn(
           "cursor-pointer relative text-left transition-[filter] duration-150 hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
           selected && "drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
         )}
         id={`item-${item.id}`}
-        onClick={onSelect}
       >
+        <button
+          type="button"
+          aria-label={`Select ${item.name}`}
+          aria-pressed={selected}
+          className="absolute inset-0 z-30 rounded-xl focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
+          onClick={onSelect}
+        />
         {card}
-      </button>
+      </div>
     );
   }
 

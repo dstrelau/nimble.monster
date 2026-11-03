@@ -106,7 +106,9 @@ export const Card = ({
         creator={creator || ancestry.creator}
         source={ancestry.source}
         awards={ancestry.awards}
+        className={cn(selectable && "relative z-40")}
         reactionsSlot={
+          !selectable &&
           ancestry.id && (
             <EntityReactions entityType="ancestry" entityId={ancestry.id} />
           )
@@ -122,16 +124,21 @@ export const Card = ({
 
   if (selectable) {
     return (
-      <button
-        type="button"
+      <div
         className={cn(
           "w-full cursor-pointer relative text-left transition-[filter] duration-150 hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]",
           selected && "drop-shadow-[0_0_12px_rgba(245,158,11,0.5)]"
         )}
-        onClick={onSelect}
       >
+        <button
+          type="button"
+          aria-label={`Select ${ancestry.name}`}
+          aria-pressed={selected}
+          className="absolute inset-0 z-30 rounded-xl focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
+          onClick={onSelect}
+        />
         {card}
-      </button>
+      </div>
     );
   }
 

@@ -57,6 +57,50 @@ const school: SpellSchool = {
 };
 
 describe("legacy spell sections", () => {
+  it("keeps selection, source details and legacy help as independent controls", async () => {
+    const onSelect = vi.fn();
+    const selectableSchool: SpellSchool = {
+      ...school,
+      source: {
+        id: "source",
+        name: "Nimble Heroes",
+        abbreviation: "Heroes",
+        license: "CC BY 4.0",
+        link: "https://nimbleRPG.com",
+        createdAt: new Date("2026-01-01"),
+        updatedAt: new Date("2026-01-01"),
+      },
+    };
+    const { container, rerender } = render(
+      <Card
+        spellSchool={selectableSchool}
+        selectable
+        mini
+        onSelect={onSelect}
+      />
+    );
+    expect(container.querySelector("button button, button a")).toBeNull();
+    const selection = screen.getByRole("button", { name: "Select Ice Spells" });
+    expect(selection).toHaveAttribute("aria-pressed", "false");
+    fireEvent.click(screen.getByRole("button", { name: "Heroes" }));
+    expect(
+      await screen.findByRole("dialog", { name: "Nimble Heroes" })
+    ).toHaveTextContent("CC BY 4.0");
+    expect(onSelect).not.toHaveBeenCalled();
+    fireEvent.click(selection);
+    expect(onSelect).toHaveBeenCalledOnce();
+    rerender(
+      <Card
+        spellSchool={selectableSchool}
+        selectable
+        selected
+        mini
+        onSelect={onSelect}
+      />
+    );
+    expect(selection).toHaveAttribute("aria-pressed", "true");
+  });
+
   it.each([false, true])(
     "explains legacy spells on icon focus (mini: %s)",
     async (mini) => {
