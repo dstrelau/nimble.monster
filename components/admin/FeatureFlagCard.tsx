@@ -4,9 +4,9 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
+import { searchCreators } from "@/app/%5Factions/searchCreators/contract";
 import { updateFeatureFlag } from "@/app/%5Factions/updateFeatureFlag/contract";
 import { UserAvatar } from "@/components/layout/UserAvatar";
-import { searchCreators } from "@/components/shared/search-creators-action";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,13 +33,15 @@ export function FeatureFlagCard({ feature, users }: FeatureFlagCardProps) {
       setResults([]);
       return;
     }
-    let cancelled = false;
-    searchCreators(query.trim()).then((found) => {
-      if (!cancelled) setResults(found);
-    });
-    return () => {
-      cancelled = true;
-    };
+    const controller = new AbortController();
+    call(searchCreators, { query: query.trim() }, { signal: controller.signal })
+      .then((found) => {
+        if (!controller.signal.aborted) setResults(found);
+      })
+      .catch(() => {
+        // Keep existing results; changing the search retries the read.
+      });
+    return () => controller.abort();
   }, [query]);
 
   const enabledIds = new Set(users.map((user) => user.id));

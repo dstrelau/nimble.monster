@@ -5,6 +5,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { getTopMonsterCreators } from "@/app/%5Factions/getTopMonsterCreators/contract";
+import { searchCreators } from "@/app/%5Factions/searchCreators/contract";
 import { UserAvatar } from "@/components/layout/UserAvatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +24,7 @@ import {
 import { call } from "@/lib/contract";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { getTopItemCreators, searchCreators } from "./search-creators-action";
+import { getTopItemCreators } from "./search-creators-action";
 
 interface CreatorComboboxProps {
   kind: "monsters" | "items";
@@ -77,7 +78,15 @@ export function CreatorCombobox({
       setResults([]);
       return;
     }
-    searchCreators(query).then(setResults);
+    const controller = new AbortController();
+    call(searchCreators, { query }, { signal: controller.signal })
+      .then((found) => {
+        if (!controller.signal.aborted) setResults(found);
+      })
+      .catch(() => {
+        // Keep existing results; changing the search retries the read.
+      });
+    return () => controller.abort();
   }, [query]);
 
   const displayedUsers = query ? results : topCreators;

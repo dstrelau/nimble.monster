@@ -8,15 +8,13 @@ import {
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import type { User } from "@/lib/types";
 
-const { useSession, getTopItemCreators, searchCreators } = vi.hoisted(() => ({
+const { useSession, getTopItemCreators } = vi.hoisted(() => ({
   useSession: vi.fn(),
   getTopItemCreators: vi.fn(),
-  searchCreators: vi.fn(),
 }));
 vi.mock("next-auth/react", () => ({ useSession }));
 vi.mock("./search-creators-action", () => ({
   getTopItemCreators,
-  searchCreators,
 }));
 
 import { CreatorCombobox } from "./CreatorCombobox";
@@ -36,12 +34,88 @@ beforeEach(() => {
   vi.stubGlobal("fetch", fetchMock);
   useSession.mockReturnValue({ data: { user: creators[0] } });
   getTopItemCreators.mockResolvedValue([]);
-  searchCreators.mockResolvedValue([]);
-  fetchMock.mockResolvedValue(Response.json(creators));
+  fetchMock.mockImplementation(async () => Response.json(creators));
 });
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+});
+
+it.each(["monsters", "items"] as const)(
+  "searches %s with encoded cancellable GETs and selects a result",
+  async (kind) => {
+    const onChange = vi.fn();
+    const { unmount } = render(
+      <CreatorCombobox kind={kind} value={null} onChange={onChange} />
+    );
+    fireEvent.click(screen.getByRole("combobox"));
+    fireEvent.change(screen.getByPlaceholderText("Search creators..."), {
+      target: { value: "a+b & 雪" },
+    });
+    await waitFor(() =>
+      expect(
+        fetchMock.mock.calls.some(([url]) =>
+          String(url).startsWith("/_actions/searchCreators?")
+        )
+      ).toBe(true)
+    );
+    const entry = fetchMock.mock.calls.find(([url]) =>
+      String(url).startsWith("/_actions/searchCreators?")
+    );
+    expect(entry?.[0]).toBe(
+      "/_actions/searchCreators?query=a%2Bb+%26+%E9%9B%AA"
+    );
+    expect(entry?.[1]).toEqual({
+      method: "GET",
+      credentials: "same-origin",
+      signal: expect.any(AbortSignal),
+    });
+    expect(new Headers(entry?.[1]?.headers).has("next-action")).toBe(false);
+    fireEvent.click(await screen.findByText("Other Creator"));
+    expect(onChange).toHaveBeenCalledWith("other");
+    unmount();
+    expect(entry?.[1]?.signal?.aborted).toBe(true);
+  }
+);
+
+it("retains search results on failure, recovers on another query and discards late obsolete results", async () => {
+  let resolveLate: (response: Response) => void = () => {};
+  fetchMock.mockImplementation(async (url) => {
+    const query = new URL(String(url), "http://localhost").searchParams.get(
+      "query"
+    );
+    if (query === "late")
+      return new Promise<Response>((resolve) => {
+        resolveLate = resolve;
+      });
+    if (query === "fail")
+      return Response.json({ error: "failed" }, { status: 500 });
+    return Response.json(creators);
+  });
+  render(<CreatorCombobox kind="monsters" value={null} onChange={vi.fn()} />);
+  fireEvent.click(screen.getByRole("combobox"));
+  const input = screen.getByPlaceholderText("Search creators...");
+  fireEvent.change(input, { target: { value: "first" } });
+  await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+  expect(await screen.findByText("Other Creator")).toBeInTheDocument();
+  fireEvent.change(input, { target: { value: "fail" } });
+  await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
+  expect(screen.getByText("Other Creator")).toBeInTheDocument();
+  fireEvent.change(input, { target: { value: "late" } });
+  await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(4));
+  const signal = fetchMock.mock.calls[3][1]?.signal;
+  fireEvent.change(input, { target: { value: "recovered" } });
+  await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(5));
+  expect(signal?.aborted).toBe(true);
+  resolveLate(Response.json([{ ...creators[1], displayName: "Obsolete" }]));
+  await waitFor(() =>
+    expect(screen.getByText("Other Creator")).toBeInTheDocument()
+  );
+  expect(screen.queryByText("Obsolete")).not.toBeInTheDocument();
+  fireEvent.change(input, { target: { value: "" } });
+  await waitFor(() =>
+    expect(fetchMock.mock.calls[4][1]?.signal?.aborted).toBe(true)
+  );
 });
 
 it("loads and selects suggestions through a cancellable stable GET, without next-action", async () => {

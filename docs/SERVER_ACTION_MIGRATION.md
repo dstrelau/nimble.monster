@@ -849,6 +849,46 @@ Coordination found only this run unarchived, with no competing owner.
 Other remaining named actions have zero attempts in both windows. Creator search
 leads after sign-in on this sparse evidence; refresh before the next selection.
 
+### Creator-search selection — November 2, 2026
+
+Refreshed fixed **2026-11-01T16:00:00Z–2026-11-02T16:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/iLiGcNpn4a4).
+Root HTTP spans only (`trace.parent_id` absent, `next-action` present), grouped
+by ID and coalesced HTTP status, contain **492 attempts**: **42 named** (all
+already migrated), **449 known probes** (`x`: 272, `0`: 70, `1`: 58,
+`action`: 47, `y`: two), and one unmatched nonmanifest ID. Mean sample rate is
+**1**, 1,571,427 rows were examined, and OTHER volume is zero. Bots/QA are
+included; HTTP <400/≥400 is transport outcome, not Flight domain success.
+
+The identical root-only query over
+**2026-10-26T16:00:00Z–2026-11-02T16:00:00Z** supplies the sparse-volume
+tie-breaker: [seven-day results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/oPP7AHhUoBz).
+It contains **13,146 attempts**: **11,575 named**, **1,547 known probes**
+(`x`/`0`/`1`/`action`), and **24 other invalid/unmapped attempts**, including
+12 `cachefn` and four `y`. Mean sample rate is **1**, 6,655,272 rows were
+examined, and OTHER volume is zero. Complete JSON, not truncated tables, was read.
+
+Read-only extraction of **150 deployed OCI images / 148 distinct build SHAs**
+verifies each compressed standalone-layer SHA256, `GH_SHA` and manifest
+filename/export. Every observed 42-character manifest action ID maps; no other
+ID is guessed into a named ranking. Aliases aggregate by filename/export, not
+build. Verified search alias `406f89b0a241dd370f3e7d4dc2019148b1ef67f8e1`
+belongs to `components/shared/search-creators-action.ts#searchCreators` in
+build `1aa37b10c1ea2450a67cba1673df0f9f6cdd365b`.
+`creator-search-traffic-evidence.json` in the
+[run thread](https://ampcode.com/threads/T-01a19d28-4450-72ed-bc41-0eb6c9652587)
+retains complete counts and mappings. Coordination found no competing owner.
+
+| Priority | Verified named operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected | `components/shared/search-creators-action.ts#searchCreators` | 0 (0/0) | 2 (2/0) |
+| Next measured candidate | `app/my/hazards/actions.ts#paginateMyHazards` | 0 (0/0) | 1 (1/0) |
+
+Other remaining named actions, including top-item creators, have zero attempts
+in both windows. Seven days breaks the zero-volume 24-hour tie, not an untied
+lead. This supersedes the earlier sign-in ranking; refresh before selecting the
+next slice. Already-migrated historical traffic is not remaining work.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1053,6 +1093,65 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Creator text search — November 2026
+
+- Selected only `components/shared/search-creators-action.ts#searchCreators`
+  using the refreshed sparse-traffic evidence above. Both browser transport
+  owners now use cancellable bodyless `GET /_actions/searchCreators?query=…`:
+  `CreatorCombobox` in collection/encounter/adventure new/edit monster and item
+  pickers, and `FeatureFlagCard` in admin feature flags. No Server Component
+  called the old action; direct database readers remain direct, never HTTP.
+- Zod requires a string query, preserving empty-string and SQL LIKE wildcard
+  semantics. The unchanged parameterized `searchUsers(query, 20)` matches
+  display name or username, sorts by display name and caps at 20. Extra owner,
+  role, visibility and limit parameters cannot change that selection. The
+  existing `toUser` projection is retained without adding identity fields,
+  dates, emails, roles or credentials. No supported API or JSON:API changes.
+- This was and remains an anonymous-readable creator lookup; the admin picker
+  does not make it admin-only. Feature-flag writes retain their independent
+  admin/origin/media boundary. Missing query returns 400; unexpected failures
+  reach telemetry before generic JSON 500s. Success/errors use
+  `private, no-store`, without CORS. Unsupported writes receive 405. Safe GETs
+  need no mutation-origin/media gate, session requirement or body schema.
+- Both callers keep the 250ms debounce and their distinct trimming behavior.
+  Changing/clearing a query or unmounting cancels obsolete reads, and late
+  responses cannot replace current results. Failed reads retain prior results
+  and usable controls; changing the search retries. Selection, current-user
+  exclusion, admin enabled-user exclusion, mutations, cache invalidation,
+  navigation and drafts are unchanged. No new picker, cache layer or service
+  wrapper is introduced.
+- Removed the `searchCreators` Server Action export and both action imports;
+  top-item suggestions remain deliberately unmigrated. Application ratchet
+  **36 → 35**; seven repository markers / 70 exports are unchanged.
+  Real-SQL route tests cover matching, ordering, limit boundaries, minimal
+  serialization, wildcards/special input, empty results, 400 and safe telemetry
+  failures. Real-component tests cover both picker kinds and admin transport,
+  URL encoding, no `next-action`, cancellation, obsolete responses, failure
+  retention/recovery and the retained separate admin mutation.
+- **23 focused tests pass; full suite: 2,297 passed, seven skipped**.
+  `make check` passes with the unchanged item-builder unused-import warning;
+  `git diff --check` passes. **16 live development HTTP checks** independently
+  match SQLite, including anonymous/dev/admin equality, ignored authority and
+  limit parameters, status/media/cache headers, 400/405 and HEAD.
+- Browser QA covers all six new/edit forms, both monster/item variants where
+  rendered, the admin picker, selection, client navigation/full reload, empty
+  results and deliberately failed reads/recovery in both callers. **21 stable
+  GET attempts** include **19 HTTP 200s and 19 raw CDP extra-header checks**
+  without body/`next-action`; two deliberate aborts are separate. No page
+  exceptions occur. Existing selectable-monster nested-button warnings and
+  seeded-item emerald/sparkles icon 404s remain disclosed, not claimed fixed.
+- QA leaves existing users, collections, encounters, adventures and flags
+  unchanged. Loading the local example adventure copied one temporary image;
+  its row and all three local blobs were deleted via the existing owned-image
+  route and zero residue verified. No form was submitted. Browser cookies,
+  storage/cache and saved development session were cleared. The
+  [run thread](https://ampcode.com/threads/T-01a19d28-4450-72ed-bc41-0eb6c9652587)
+  records inspected screenshots/recording, deployment identity, exact functional
+  production requests, focused investigation and final cleanup.
+- Retain this URL/response shape for at least one deployment interval. Old
+  action tabs still need refresh/retry. Migration remains incomplete; leave
+  the host schedule enabled and refresh traffic before the next selection.
 
 ### Discord sign-in initiation — November 2026
 
