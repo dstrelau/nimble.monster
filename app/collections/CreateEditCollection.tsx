@@ -404,44 +404,43 @@ export function CreateEditCollection({
 
             <Separator />
             <Tabs defaultValue="companions">
-              <div className="flex flex-col gap-1">
-                <TabsList className="grid grid-cols-4 w-full">
-                  <TabsTrigger className="text-md" value="companions">
-                    <HeartHandshake className="size-5" />
-                    Companions
-                  </TabsTrigger>
-                  <TabsTrigger className="text-md" value="monsters">
-                    <Goblin className="size-5" />
-                    Monsters
-                  </TabsTrigger>
-                  <TabsTrigger className="text-md" value="items">
-                    <Shield className="size-5" />
-                    Items
-                  </TabsTrigger>
-                  <TabsTrigger className="text-md" value="spellSchools">
-                    <WandSparkles className="size-5" />
-                    Spells
-                  </TabsTrigger>
-                </TabsList>
-                <TabsList className="grid grid-cols-4 h-auto w-full">
-                  <TabsTrigger className="text-md" value="ancestries">
-                    <Scroll className="size-5" />
-                    Ancestries
-                  </TabsTrigger>
-                  <TabsTrigger className="text-md" value="backgrounds">
-                    <Drama className="size-5" />
-                    Backgrounds
-                  </TabsTrigger>
-                  <TabsTrigger className="text-md" value="classes">
-                    <Swords className="size-5" />
-                    Classes
-                  </TabsTrigger>
-                  <TabsTrigger className="text-md" value="subclasses">
-                    <HandFist className="size-5" />
-                    Subclasses
-                  </TabsTrigger>
-                </TabsList>
-              </div>
+              <TabsList
+                aria-label="Collection content"
+                className="grid h-auto w-full grid-cols-2 gap-1 sm:grid-cols-4"
+              >
+                <TabsTrigger className="min-h-11" value="companions">
+                  <HeartHandshake className="size-5" />
+                  Companions
+                </TabsTrigger>
+                <TabsTrigger className="min-h-11" value="monsters">
+                  <Goblin className="size-5" />
+                  Monsters
+                </TabsTrigger>
+                <TabsTrigger className="min-h-11" value="items">
+                  <Shield className="size-5" />
+                  Items
+                </TabsTrigger>
+                <TabsTrigger className="min-h-11" value="spellSchools">
+                  <WandSparkles className="size-5" />
+                  Spells
+                </TabsTrigger>
+                <TabsTrigger className="min-h-11" value="ancestries">
+                  <Scroll className="size-5" />
+                  Ancestries
+                </TabsTrigger>
+                <TabsTrigger className="min-h-11" value="backgrounds">
+                  <Drama className="size-5" />
+                  Backgrounds
+                </TabsTrigger>
+                <TabsTrigger className="min-h-11" value="classes">
+                  <Swords className="size-5" />
+                  Classes
+                </TabsTrigger>
+                <TabsTrigger className="min-h-11" value="subclasses">
+                  <HandFist className="size-5" />
+                  Subclasses
+                </TabsTrigger>
+              </TabsList>
 
               <TabsContent
                 value="monsters"
@@ -522,7 +521,7 @@ export function CreateEditCollection({
             </Tabs>
           </div>
 
-          <div className="hidden sm:block min-w-sm">
+          <div className="hidden lg:block min-w-sm">
             <CollectionCard
               collection={{
                 ...collection,
