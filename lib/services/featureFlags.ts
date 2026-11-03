@@ -22,10 +22,26 @@ export const FEATURE_FLAGS: readonly FeatureFlag[] = [
 /** Flags users may turn on or off for themselves from /my/settings. */
 export const SELF_SERVICE_FEATURE_FLAGS = [
   "monster-card-layout",
+  "monster-custom-artwork",
 ] as const satisfies readonly FeatureFlag[];
 
 export function isFeatureFlag(value: string): value is FeatureFlag {
   return FEATURE_FLAGS.some((feature) => feature === value);
+}
+
+/** Flags the user has ever had set, whether currently enabled or not. */
+export async function getSetFeatureFlags(
+  userId: string
+): Promise<FeatureFlag[]> {
+  const db = getDatabase();
+  const rows = await db
+    .select({ feature: userFeatureFlags.feature })
+    .from(userFeatureFlags)
+    .where(eq(userFeatureFlags.userId, userId));
+
+  return rows
+    .map(({ feature }) => feature)
+    .filter((feature) => isFeatureFlag(feature));
 }
 
 export async function getEnabledFeatureFlags(

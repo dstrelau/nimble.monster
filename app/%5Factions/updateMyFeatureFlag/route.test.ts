@@ -28,17 +28,21 @@ beforeEach(() => {
 });
 
 describe("self-service feature flags", () => {
-  it.each([true, false])(
-    "sets enabled=%s for the session user only",
-    async (enabled) => {
+  it.each([
+    ["monster-card-layout", true],
+    ["monster-card-layout", false],
+    ["monster-custom-artwork", true],
+  ])(
+    "sets %s enabled=%s for the session user only",
+    async (feature, enabled) => {
       const response = await POST(
-        request({ ...input, enabled, userId: "other" })
+        request({ feature, enabled, userId: "other" })
       );
       expect(response.status).toBe(200);
       expect(await response.json()).toEqual({ success: true });
       expect(mocks.setFeatureFlag).toHaveBeenCalledWith(
         "owner",
-        "monster-card-layout",
+        feature,
         enabled
       );
     }

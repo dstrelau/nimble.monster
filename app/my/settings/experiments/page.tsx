@@ -5,15 +5,36 @@ import { MyLibraryPageHeader } from "@/components/layout/MyLibraryPageHeader";
 import { Card } from "@/components/monster/Card";
 import { auth } from "@/lib/auth";
 import { FeatureFlagsProvider } from "@/lib/contexts/FeatureFlagsContext";
-import { getEnabledFeatureFlags } from "@/lib/services/featureFlags";
+import {
+  getEnabledFeatureFlags,
+  getSetFeatureFlags,
+} from "@/lib/services/featureFlags";
 import { monstersService } from "@/lib/services/monsters";
 import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import { cn } from "@/lib/utils";
 import { SITE_NAME } from "@/lib/utils/branding";
-import { MonsterCardLayoutToggle } from "./MonsterCardLayoutToggle";
+import { FeatureFlagToggle } from "./FeatureFlagToggle";
 
 export const metadata: Metadata = {
   title: `Experimental Features - ${SITE_NAME}`,
+};
+
+const CUSTOM_IMAGE_UPLOADS_CONFIRMATION = {
+  title: "Before you upload images",
+  description: (
+    <>
+      <p>
+        Only upload images you have the right to share here, such as your own
+        artwork or images whose license permits this use. Follow any attribution
+        requirements in that license.
+      </p>
+      <p>
+        Uploading copyrighted images without permission, or otherwise breaking
+        these rules, will result in the immediate deactivation of your{" "}
+        {SITE_NAME} account and the permanent removal of all your content.
+      </p>
+    </>
+  ),
 };
 
 export default async function ExperimentsPage() {
@@ -21,10 +42,12 @@ export default async function ExperimentsPage() {
   if (!session?.user?.id) notFound();
 
   const previewParams = { sort: "-createdAt", type: "all", limit: 2 } as const;
-  const [enabledFeatures, { data: myMonsters }] = await Promise.all([
-    getEnabledFeatureFlags(session.user.id),
-    monstersService.paginateMyMonsters(session.user.id, previewParams),
-  ]);
+  const [enabledFeatures, setFeatures, { data: myMonsters }] =
+    await Promise.all([
+      getEnabledFeatureFlags(session.user.id),
+      getSetFeatureFlags(session.user.id),
+      monstersService.paginateMyMonsters(session.user.id, previewParams),
+    ]);
   const monsters =
     myMonsters.length > 0
       ? myMonsters
@@ -39,7 +62,9 @@ export default async function ExperimentsPage() {
     <div className="space-y-6">
       <MyLibraryPageHeader icon={FlaskConical} title="Experimental Features" />
       <section className="space-y-6 rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
-        <MonsterCardLayoutToggle
+        <FeatureFlagToggle
+          feature="monster-card-layout"
+          label="New Monster Card Styling"
           enabled={enabledFeatures.includes("monster-card-layout")}
         />
         <FeatureFlagsProvider
@@ -65,6 +90,18 @@ export default async function ExperimentsPage() {
             </div>
           </section>
         </FeatureFlagsProvider>
+      </section>
+      <section className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+        <FeatureFlagToggle
+          feature="monster-custom-artwork"
+          label="Custom Image Uploads"
+          enabled={enabledFeatures.includes("monster-custom-artwork")}
+          confirmation={
+            setFeatures.includes("monster-custom-artwork")
+              ? undefined
+              : CUSTOM_IMAGE_UPLOADS_CONFIRMATION
+          }
+        />
       </section>
     </div>
   );
