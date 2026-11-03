@@ -967,6 +967,43 @@ operations, not new work. Verified subclass alias
 `008a354dab664eeaa3200bd1996b8b145c2314c39d` belongs to build
 `27a2a1461846f61b35b597a471099cd718bf8f4d`. Refresh before selecting the next slice.
 
+### Private hazard-pagination selection — November 3, 2026
+
+Refreshed fixed **2026-11-02T17:00:00Z–2026-11-03T17:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/zahLi71BkRT).
+Root HTTP spans only (`trace.parent_id` absent, `next-action` present), grouped
+by ID and coalesced HTTP status, contain **880 attempts**: **16 named**, all
+already migrated, and **864 excluded `x` probes**. No otherwise-unmapped volume
+remains. Mean sample rate is **1**, 1,806,099 rows were examined and OTHER volume
+is zero. Bots/QA are included; HTTP <400/≥400 is transport outcome, not Flight
+domain success. No remaining named action has 24-hour traffic.
+
+The identical query over **2026-10-27T17:00:00Z–2026-11-03T17:00:00Z** breaks
+the sparse-volume tie:
+[seven-day results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/ujhSrJEgim2).
+Complete downloaded JSON contains **6,708 attempts**: **4,339 named**, **2,363
+known probes** (`x`/`0`/`1`/`action`/`y`) and **six other invalid/unmapped
+attempts** (two 64-zero IDs and four nonmanifest IDs). Mean sample rate is **1**,
+6,926,335 rows were examined and OTHER volume is zero. No manifest-shaped ID is
+unmapped. Read-only extraction of **150 OCI images / 148 build SHAs** verifies
+compressed standalone-layer SHA256, image `GH_SHA`, filename and export.
+Aliases aggregate by filename/export, including the historical `app/my/hazards`
+path and current route-group path, not by build-specific ID.
+
+| Priority | Verified named operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected | `app/my/(library)/hazards/actions.ts#paginateMyHazards` | 0 (0/0) | 1 (1/0) |
+| Remaining | All other remaining named browser actions | 0 (0/0) | 0 (0/0) |
+
+The successful historical hazard alias
+`40a94e635d992fb05b2f39a73db7b9175d5cb46dbd` belongs to build `9eb787e2`;
+the current pre-cutover alias `40a469534581ca887f719cb7b5f208e12bb2086770`
+belongs to `2ddd12cf`. `my-hazards-traffic-evidence.json` in the
+[run thread](https://ampcode.com/threads/T-01a1a285-d023-717f-8b0e-3cc14b9fd21d)
+retains full results and safe provenance. Coordination found only this
+unarchived child. Refresh both windows before selecting the next zero-volume
+candidate; already-migrated historical failures are not remaining operations.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1171,6 +1208,62 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Session-owned hazard pagination — November 2026
+
+- Selected only `app/my/(library)/hazards/actions.ts#paginateMyHazards` using
+  the refreshed sparse-volume ranking above: zero attempts in 24 hours, one
+  successful attempt in seven days, ahead of the remaining zero-volume actions.
+  The sole browser transport owner, `myHazardsInfiniteQueryOptions`, now sends
+  cancellable bodyless `GET /_actions/myHazards`. `PaginatedMonsterGrid` serves
+  `/my/hazards`; its server page prefetches the existing hazard service directly,
+  never HTTP. Public catalogue, creator-profile and picker reads are unchanged.
+- Authentication derives owner identity only from `auth()`. Anonymous/incomplete
+  sessions get JSON 401; submitted creator/user/visibility parameters cannot
+  select another owner's rows or exclude the owner's private content. The
+  unchanged service/SQL selects only the owner's public/private hazards, never
+  monsters. Zod validates seven sorts, integer limits 1–100, integer levels and
+  cursor shape/value types/sort agreement before SQL. Invalid input returns 400;
+  unexpected failures reach telemetry before generic JSON 500s. Success/errors
+  use `private, no-store`, no CORS. Unsupported writes receive framework 405s.
+  Safe GETs need no mutation-origin/media gate. No schema, writes, public API,
+  identity projection, mutation invalidation or navigation destination changes.
+- Preserved 12-row browser/10-row service defaults, lookahead/cursor pagination,
+  filter keys, same-owner previous data, retries, loading/empty/error rendering
+  and navigation. JSON hazard/source/award dates use the existing picker reviver.
+  Query keys now include session user ID without sending it as authority.
+  Loading/signed-out sessions issue no private read; account switches cancel
+  obsolete reads and never carry another owner's placeholder data. The shared
+  grid now applies its existing My Monsters cache guard to My Hazards as well.
+- Removed the final export and empty hazard action file and all its imports/
+  calls. Application ratchet **33 → 32**; seven repository markers and their
+  export counts are unchanged. Real-SQL route tests cover owner separation,
+  public/private and hazard/monster selection, full fields, all seven sorts
+  across asymmetric ties, validation and safe errors. Hook tests cover stable
+  GET/no `next-action`, cancellation, dates, account changes/sign-out and recovery.
+- Focused checks: **50 passed**. Full suite (`--maxWorkers=2`): **2,336 passed,
+  seven skipped**; `make check` and `git diff --check` pass. Thirty-two live
+  development requests independently match SQLite, including all sorts/pages,
+  three sessions, anonymous 401, ignored identity, filters, 400/405s and HEAD/
+  OPTIONS. Browser QA covers 12→13 load-more, search/sort, private detail client
+  navigation/reload, failed-read reload recovery and same-document account
+  change. Sixteen stable GET attempts include 12 raw CDP extra-header checks
+  without `next-action`; four deliberately aborted retries are distinguished.
+- One overlapping-navigation probe logged a Next development `InnerLayoutRouter`
+  conditional-use warning. Settled list→detail→reload→back checks on unchanged
+  `2ddd12cf` and changed code both have no console errors; no change-caused
+  regression is demonstrated, and the warning is not claimed repaired. Existing
+  homepage fixture emerald-icon 404s are outside this flow. A failed high-load
+  recording was replaced by an inspected 10-fps clip, not claimed successful.
+- QA uses three disposable non-admin users and 15 copies of existing content,
+  never real-user changes. Local cleanup verifies zero users, entities, search
+  catalog/FTS residue and the original hazard unchanged. The
+  [run thread](https://ampcode.com/threads/T-01a1a285-d023-717f-8b0e-3cc14b9fd21d)
+  records deployment identity, authenticated functional production requests,
+  inspected browser evidence and production cleanup. Sessions expire after one
+  hour, not a production dev-login bypass. Retain this stable URL/shape for at
+  least one deployment interval; pre-cutover tabs still need refresh/retry.
+  Migration remains incomplete; refresh before the next zero-volume selection.
 
 ### Public subclass collection-picker reads — November 2026
 

@@ -89,7 +89,7 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
             hazardParams
           );
         case "my-monsters":
-          return myHazardsInfiniteQueryOptions(hazardParams);
+          return myHazardsInfiniteQueryOptions(session?.user?.id, hazardParams);
         case "monsters":
           return publicHazardsInfiniteQueryOptions(hazardParams);
       }
@@ -124,14 +124,10 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage, error } =
     useInfiniteQuery({
       ...normalizedOptions,
-      enabled:
-        props.kind !== "my-monsters" ||
-        hazardsOnly ||
-        Boolean(session?.user?.id),
+      enabled: props.kind !== "my-monsters" || Boolean(session?.user?.id),
       placeholderData: (previousData, previousQuery) => {
         if (
           props.kind === "my-monsters" &&
-          !hazardsOnly &&
           previousQuery?.queryKey[1] !== session?.user?.id
         )
           return undefined;

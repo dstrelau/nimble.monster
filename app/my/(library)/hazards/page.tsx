@@ -6,6 +6,7 @@ import { MyLibraryPageHeader } from "@/components/layout/MyLibraryPageHeader";
 import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
 import { auth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/queryClient";
+import { paginateMyHazards } from "@/lib/services/hazards";
 import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
 
 export default async function MyHazardsPage() {
@@ -18,9 +19,15 @@ export default async function MyHazardsPage() {
       ...sourcesQueryOptions(),
       queryFn: listAllSources,
     }),
-    queryClient.prefetchInfiniteQuery(
-      myHazardsInfiniteQueryOptions({ sort: "-createdAt" })
-    ),
+    queryClient.prefetchInfiniteQuery({
+      ...myHazardsInfiniteQueryOptions(session.user.id, { sort: "-createdAt" }),
+      queryFn: ({ pageParam: cursor }) =>
+        paginateMyHazards(session.user.id, {
+          limit: 12,
+          sort: "-createdAt",
+          cursor,
+        }),
+    }),
   ]);
 
   return (
