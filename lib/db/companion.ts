@@ -101,23 +101,6 @@ export const findCompanion = async (id: string): Promise<Companion | null> => {
   return data ? toCompanion(data) : null;
 };
 
-export const findPublicCompanionById = async (
-  id: string
-): Promise<Companion | null> => {
-  const db = getDatabase();
-
-  const check = await db
-    .select({ id: companions.id })
-    .from(companions)
-    .where(and(eq(companions.id, id), eq(companions.visibility, "public")))
-    .limit(1);
-
-  if (check.length === 0) return null;
-
-  const data = await loadCompanionWithRelations(id);
-  return data ? toCompanion(data) : null;
-};
-
 export const findCompanionWithCreator = async (
   id: string,
   creatorId: string

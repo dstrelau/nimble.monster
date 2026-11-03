@@ -1004,6 +1004,45 @@ retains full results and safe provenance. Coordination found only this
 unarchived child. Refresh both windows before selecting the next zero-volume
 candidate; already-migrated historical failures are not remaining operations.
 
+### Unused companion-lookup selection — November 3, 2026
+
+Refreshed fixed **2026-11-02T22:00:00Z–2026-11-03T22:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/qxkP7NsFKhC).
+Root HTTP spans only (`trace.parent_id` absent, `next-action` present), grouped
+by ID and coalesced HTTP status, contain **1,040 attempts**: **14 named**, all
+already migrated, and **1,026 excluded `x` probes**. Named counts aggregate
+verified filename/export aliases, not build IDs: `getNavCountsAction` has seven
+HTTP 409 attempts; `getTopItemCreators` has six HTTP 200 attempts;
+`listPublicSubclassesAction` has one HTTP 200 attempt. No otherwise-unmapped
+24-hour volume remains. Mean sample rate is **1**, 1,073,778 rows were examined
+and OTHER is zero. Bots/QA are included; HTTP outcomes are not domain success.
+
+The refreshed **2026-10-27T22:00:00Z–2026-11-03T22:00:00Z**
+[seven-day export](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/6YCSNNNhvLx)
+contains **6,944 attempts**, mean sample rate **1**, 6,239,770 examined rows,
+zero OTHER, and 3,028 known `x`/`0`/`1`/`action`/`y` probes. Complete JSON is
+retained in the run, not just the truncated displayed table. Historical IDs in
+this export were **not freshly remapped**: reuse the previous run's verified
+150-image/148-SHA coverage above. Its seven-day window established zero attempts
+for all currently remaining actions. The new window is contained in the union
+of that window and this fresh 24-hour window, whose only three named operations
+are already migrated. Thus all remaining named actions still tie at zero;
+invalid/unmapped probes are not assigned to named actions. This bounded reuse
+does not claim newly extracted provenance or freshly mapped seven-day totals.
+
+| Priority | Remaining operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected unused cleanup | `app/actions/companion.ts#findPublicCompanion` | 0 (0/0) | 0 (0/0) |
+| Tied remaining | All other remaining named actions | 0 (0/0) | 0 (0/0) |
+
+No live high-volume action is displaced. The full caller audit finds no imports
+or calls of the companion wrapper; its public-only database lookup is used
+exclusively by that wrapper. Remove both rather than inventing a browser flow
+or endpoint. Retained public catalogue pagination already uses
+`/_actions/publicCompanions`; detail/metadata/image server readers use
+`findCompanion` directly. Coordination found no other unarchived child owner.
+Refresh evidence before assuming the next zero-volume candidate's priority.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1208,6 +1247,42 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Unused companion lookup — November 2026
+
+- Selected `app/actions/companion.ts#findPublicCompanion` from the zero-volume
+  tie above after confirming no application or test callers. Removed that final
+  export and empty module, plus exclusively used `findPublicCompanionById` in
+  `lib/db/companion.ts`. Application ratchet **32 → 31**; seven repository
+  markers and their 70 exports remain unchanged.
+- No replacement endpoint, new UI, auth rule, visibility behavior, serialization,
+  cache invalidation, navigation, telemetry, schema or supported API is added.
+  Public catalogue reads retain their stable cancellable internal GET and
+  existing route/transport tests. Detail/metadata/image Server Components retain
+  direct `findCompanion` reads and existing ownership checks. Other companion
+  database helpers and all writes remain unchanged. This is unused-code cleanup,
+  not a change to the retained detail visibility contract.
+- Focused retained route/transport/save checks: **37 passed**. Full suite:
+  **2,340 passed, seven skipped**; `make check` and `git diff --check` pass.
+  Twelve actual development requests independently match SQLite public rows,
+  verify stable JSON GET/search/empty/ignored identity, 400/405/HEAD, list/detail
+  HTML, legacy 308 and malformed/missing 404. Browser search/empty/recovery,
+  detail client navigation and reload succeed. Both captured catalogue GETs
+  have raw extra-header evidence without `next-action`; no page/console errors
+  occur. A detail RSC stream canceled after HTTP 200 on reload is recorded
+  separately, not treated as a failed HTTP response. Local HTML checks use the
+  configured dev-login session; production QA is anonymous. No fixtures or
+  writes need deletion; local browser storage/cookies are cleared.
+- The [run thread](https://ampcode.com/threads/T-01a1a398-5e2b-7686-9e57-da118438e0c5)
+  records focused/full checks, live development requests, browser client
+  navigation/reload, deployed identity, exact functional production requests and
+  cleanup. QA reads existing public content only; no fixtures, production sessions
+  or database writes are needed. No new permanent test is necessary for removal of
+  an uncalled wrapper; retained route/client tests cover the stable user flow.
+- Overall migration remains incomplete. Keep existing stable contracts for at
+  least one deployment interval; old tabs may still require refresh/retry for
+  other legacy action IDs. Accepted/deferred earlier closeouts are not reopened
+  or claimed completed by this slice.
 
 ### Session-owned hazard pagination — November 2026
 
