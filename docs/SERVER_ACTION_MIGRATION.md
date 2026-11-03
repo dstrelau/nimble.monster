@@ -929,6 +929,44 @@ All other remaining named actions have zero measured attempts in both windows.
 Seven days corroborates, rather than overrides, the untied 24-hour ranking.
 Refresh before assuming the next candidate's priority.
 
+### Public subclass-list selection — November 3, 2026
+
+Refreshed fixed **2026-11-02T12:00:00Z–2026-11-03T12:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/GUiBV3wVNKP).
+Root HTTP spans only (`trace.parent_id` absent, `next-action` present), grouped
+by ID and coalesced HTTP status, contain **937 attempts**: **16 named** and
+**921 excluded probes** (`x`: 877, `0`: 20, `1`: 12, `action`: 12).
+No otherwise-unmapped volume remains. Mean sample rate is **1**; 1,570,746
+rows were examined and OTHER volume is zero. Bots/QA are included; HTTP
+<400/≥400 is transport outcome, not Flight domain success.
+
+The same query over **2026-10-27T12:00:00Z–2026-11-03T12:00:00Z** supplies
+sparse-volume context:
+[seven-day results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/BnohBUGeXjC).
+Complete downloaded JSON contains **7,296 attempts**: **4,925 named**,
+**2,359 known probes** (`x`/`0`/`1`/`action`/`y`) and **12 other invalid/unmapped
+attempts** (six `cachefn`, two 64-zero IDs and four nonmanifest IDs).
+Mean sample rate is **1**, 6,690,982 rows were examined and OTHER volume is zero.
+No manifest-shaped ID is unmapped. Read-only extraction of **150 deployed OCI
+images / 148 build SHAs** verifies compressed standalone-layer SHA256, image
+`GH_SHA`, filename and export; aliases aggregate by filename/export, never build.
+`subclass-traffic-evidence.json` in the
+[run thread](https://ampcode.com/threads/T-01a1a173-30b6-73b8-9aa7-07c8a86a7acb)
+retains full results and provenance. Coordination found no competing owner;
+the previous item-creator slice is deployed, verified and archived.
+
+| Priority | Verified named operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected | `app/actions/subclass.ts#listPublicSubclassesAction` | 1 (1/0) | 1 (1/0) |
+| Next measured candidate | `app/my/hazards/actions.ts#paginateMyHazards` | 0 (0/0) | 1 (1/0) |
+
+All other remaining browser actions have zero attempts in both windows. Seven
+days corroborates the untied 24-hour lead. The seven failed navigation reads
+and one failed collection read in 24 hours are already-migrated historical
+operations, not new work. Verified subclass alias
+`008a354dab664eeaa3200bd1996b8b145c2314c39d` belongs to build
+`27a2a1461846f61b35b597a471099cd718bf8f4d`. Refresh before selecting the next slice.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1133,6 +1171,58 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Public subclass collection-picker reads — November 2026
+
+- Selected only `app/actions/subclass.ts#listPublicSubclassesAction` from the
+  refreshed root-request ranking above: one HTTP 200 attempt in 24 hours,
+  ahead of the remaining zero-volume actions. The sole browser transport owner,
+  `publicSubclassesQueryOptions`, now sends cancellable bodyless
+  `GET /_actions/listPublicSubclasses`. `SelectableSubclassGrid` serves collection
+  new/edit. The shared collection hydrator overrides its query function with
+  direct `listPublicSubclasses`; catalogue/profile and other server reads remain
+  direct. Server Components never fetch a relative URL.
+- The parameterless anonymous-readable route delegates to unchanged SQL:
+  public-only, name-sorted subclasses with levels/abilities, option lists/items,
+  creator, source and awards. Session identity and submitted owner/visibility,
+  filter or paging parameters cannot opt into private content. It returns the
+  existing public identity projection, never additional user fields or a new
+  third-party API. Safe GETs need no mutation-origin/media gate, auth requirement
+  or request schema. Success/errors use `private, no-store`, no CORS; unexpected
+  errors reach telemetry before generic JSON 500s; unsupported writes get 405.
+- Retained `["subclasses-all"]`, 30-second freshness, filtering/sorting,
+  pending/empty/error behavior, retry/recovery and selection state. JSON dates
+  are revived on subclasses, sources, awards and nested option lists. The
+  existing picker hides cached cards on a failed background read while retaining
+  cache and selection; successful retry restores selected cards. This behavior
+  is preserved, not silently replaced with a different error UX. Collection
+  saving, membership authorization, navigation and invalidation are unchanged.
+- Removed the final export and empty `app/actions/subclass.ts` and all its
+  imports/calls. Application ratchet **34 → 33**; repository markers/exports,
+  schema and supported API are unchanged. Real-SQL boundary tests distinguish
+  private/public rows, name ordering, full relationships, minimal creator data,
+  empty results and safe telemetry errors. Real-picker tests cover stable GET/no
+  `next-action`, cancellation, every nested date, pending/filter/selection,
+  typed initial errors, cached-data retention and recovery.
+- Focused checks: **14 passed**. Full suite (`--maxWorkers=2`): **2,310 passed,
+  seven skipped**; `make check` and `git diff --check` pass. Ten live development
+  requests independently match SQLite's 28 public subclasses and 133 abilities,
+  ignored parameters, status/media/cache headers, HEAD/OPTIONS and write 405s.
+  Raw CDP request and extra-header events confirm an actual bodyless stable GET
+  without `next-action`. Deliberate malformed-response/aborted-read probes are
+  separated from the successful recovery request, not counted as server errors.
+- Local QA uses the existing non-admin dev account, seeded public subclasses
+  and one disposable private collection. New/edit, client navigation/reload,
+  search/class filtering, persisted selection and deliberate transport failure/
+  recovery pass; independent SQLite checks verify membership and zero cleanup
+  residue. No real-user content is edited. The
+  [run thread](https://ampcode.com/threads/T-01a1a173-30b6-73b8-9aa7-07c8a86a7acb)
+  records full checks, actual requests, inspected recording/screenshots,
+  deployment identity, functional production QA and final cleanup.
+- Retain this URL and response shape for at least one deployment interval.
+  Pre-cutover tabs still need refresh/retry. Migration remains incomplete;
+  My Hazards leads remaining actions on sparse seven-day evidence, subject to
+  refreshed measurement before the next selection.
 
 ### Top item creator suggestions — November 2026
 
