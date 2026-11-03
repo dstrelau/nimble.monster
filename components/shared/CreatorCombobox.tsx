@@ -4,6 +4,7 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { getTopItemCreators } from "@/app/%5Factions/getTopItemCreators/contract";
 import { getTopMonsterCreators } from "@/app/%5Factions/getTopMonsterCreators/contract";
 import { searchCreators } from "@/app/%5Factions/searchCreators/contract";
 import { UserAvatar } from "@/components/layout/UserAvatar";
@@ -24,7 +25,6 @@ import {
 import { call } from "@/lib/contract";
 import type { User } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { getTopItemCreators } from "./search-creators-action";
 
 interface CreatorComboboxProps {
   kind: "monsters" | "items";
@@ -57,13 +57,11 @@ export function CreatorCombobox({
 
   useEffect(() => {
     const controller = new AbortController();
-    const result =
-      kind === "monsters"
-        ? call(getTopMonsterCreators, undefined, {
-            signal: controller.signal,
-          })
-        : getTopItemCreators();
-    result
+    call(
+      kind === "monsters" ? getTopMonsterCreators : getTopItemCreators,
+      undefined,
+      { signal: controller.signal }
+    )
       .then((creators) => {
         if (!controller.signal.aborted) setTopCreators(creators);
       })

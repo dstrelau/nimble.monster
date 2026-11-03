@@ -9,7 +9,6 @@ export const serverActionBaseline = {
     "app/my/(library)/hazards/actions.ts": 1,
     "app/my/(library)/items/actions.ts": 1,
     "app/spell-schools/actions.ts": 2,
-    "components/shared/search-creators-action.ts": 1,
     "lib/actions/entities.ts": 2,
   },
   repositoryMarkers: {

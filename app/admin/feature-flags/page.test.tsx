@@ -10,9 +10,6 @@ vi.mock("@/lib/services/featureFlags", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/lib/services/featureFlags")>()),
   getFeatureFlagUsers: mocks.getFeatureFlagUsers,
 }));
-vi.mock("@/components/shared/search-creators-action", () => ({
-  searchCreators: vi.fn(),
-}));
 vi.mock("next/navigation", () => ({
   notFound: () => {
     throw new Error("Not found");

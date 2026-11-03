@@ -889,6 +889,46 @@ in both windows. Seven days breaks the zero-volume 24-hour tie, not an untied
 lead. This supersedes the earlier sign-in ranking; refresh before selecting the
 next slice. Already-migrated historical traffic is not remaining work.
 
+### Top-item-creator selection — November 3, 2026
+
+Refreshed fixed **2026-11-02T02:00:00Z–2026-11-03T02:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/swmQEG1oS87).
+Root HTTP spans only (`trace.parent_id` absent, `next-action` present), grouped
+by ID and coalesced HTTP status, contain **1,295 attempts**: **23 named** and
+**1,272 excluded probes** (`x`: 1,095, `0`: 70, `1`: 58, `action`: 47,
+`y`: two). No otherwise-unmapped 24-hour volume remains. Mean sample rate is
+**1**, 1,181,504 rows were examined and OTHER volume is zero. Bots/QA are
+included; HTTP <400/≥400 describes transport outcome, not Flight domain success.
+
+The identical query over **2026-10-27T02:00:00Z–2026-11-03T02:00:00Z**
+provides sparse-volume context:
+[seven-day results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/GBnfx74y1Uh).
+It contains **8,214 attempts**: **5,825 named**, **2,370 known probes**
+(`x`/`0`/`1`/`action`/`y`) and **19 other invalid/unmapped attempts**, including
+12 `cachefn`, two 64-zero IDs and five nonmanifest IDs. Mean sample rate is
+**1**, 6,301,740 rows were examined and OTHER volume is zero. Complete JSON
+was downloaded, not inferred from the truncated display table.
+
+Read-only extraction of **150 deployed OCI images / 148 distinct build SHAs**
+verifies compressed standalone-layer SHA256, `GH_SHA`, filename and export.
+Every observed manifest-shaped action ID maps; aliases aggregate by export,
+not build. Verified top-item alias `0017563db1a634298b0137a35cd6ee32a4849d38f8`
+belongs to `getTopItemCreators` in `27a2a1461846f61b35b597a471099cd718bf8f4d`.
+`item-creator-traffic-evidence.json` in the
+[run thread](https://ampcode.com/threads/T-01a19f4d-bf45-768b-9d48-0b580d80a9c8)
+retains complete results and verified mappings. No competing unarchived owner
+exists. This fresh ranking supersedes the previous My Hazards candidate.
+
+| Priority | Verified named operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected | `components/shared/search-creators-action.ts#getTopItemCreators` | 7 (7/0) | 7 (7/0) |
+| Next measured candidate | `app/actions/subclass.ts#listPublicSubclassesAction` | 1 (1/0) | 1 (1/0) |
+| Remaining | `app/my/hazards/actions.ts#paginateMyHazards` | 0 (0/0) | 1 (1/0) |
+
+All other remaining named actions have zero measured attempts in both windows.
+Seven days corroborates, rather than overrides, the untied 24-hour ranking.
+Refresh before assuming the next candidate's priority.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1093,6 +1133,60 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Top item creator suggestions — November 2026
+
+- Selected only `components/shared/search-creators-action.ts#getTopItemCreators`
+  using the refreshed traffic-first evidence above: seven successful root
+  attempts in 24 hours, ahead of subclass listing's one. The sole transport owner,
+  `CreatorCombobox`, now uses cancellable bodyless `GET /_actions/getTopItemCreators`.
+  `SelectableItemGrid` shares it across collection new/edit, adventure new/edit
+  item sections and the item-card printer. No Server Component called the old
+  action; direct database readers remain direct, never HTTP.
+- The parameterless public read retains `topItemCreators(10)`: descending public
+  item counts, excluding private-only/zero-item creators, with the existing
+  `toUser` projection and no dates or additional identity data. All viewers get
+  the same catalogue suggestions; submitted owner/visibility/limit parameters
+  cannot alter the query. No new public API, auth restriction, schema, CORS,
+  mutation, revalidation or navigation behavior is introduced. Safe GETs need
+  no mutation-origin/media-type gate or body schema. Responses/errors use
+  `private, no-store`; unexpected exceptions reach telemetry before generic 500s.
+  Unsupported writes receive framework 405s.
+- Existing All Creators/current-user shortcuts, self-exclusion, pending/error
+  fallback, retained suggestions, remount retry, debounced text search and
+  selection behavior remain. Item reads now cancel on unmount/kind changes;
+  late obsolete responses cannot replace the active kind's suggestions. Existing
+  stable monster suggestions and text search are unchanged.
+- Removed the final export and empty `components/shared/search-creators-action.ts`,
+  its browser import/call and the last obsolete test mock. Application ratchet
+  **35 → 34**; seven repository markers and their export counts are unchanged.
+  Real-SQL route tests cover asymmetric public/private counts, top-ten ordering,
+  minimal fields, empty results and telemetry-safe errors. Shared real-component
+  tests cover both suggestion transports, stable URL/no `next-action`, cancellation,
+  anonymous/pending state, selection, failed-read recovery and kind changes.
+- Focused checks: 18 passed including the retained monster route and admin page.
+  Full suite: 2,303 passed, seven skipped. `make check` and `git diff --check`
+  pass; the existing item-builder unused-import warning remains unchanged.
+  Eight live anonymous development requests independently match SQLite, including
+  ignored identity/limit parameters, JSON/cache headers, HEAD, OPTIONS and 405s.
+  Authenticated development reads match the same result. Browser QA covers all
+  five caller routes, reloads, selection, failed-read fallback and recovery.
+- Initial local icon 404s revealed an uninitialized icon submodule; the existing
+  sync command restores assets without tracked changes. A setup follow-up is
+  suggested separately. The previously recorded emerald/sparkles fixture paths
+  remain unrelated static 404s, not migrated-read failures. One initial hydration
+  warning names agent-browser's injected `data-__ab-ci` attributes; settled
+  follow-up QA has no page/hydration errors. Deliberately aborted reads are
+  recorded separately, not claimed successful.
+- QA reads existing seeded/public data only, with unsaved local draft selections.
+  Database before/after snapshots are identical; no QA users, content or production
+  sessions are needed for this public read. The
+  [run thread](https://ampcode.com/threads/T-01a19f4d-bf45-768b-9d48-0b580d80a9c8)
+  records inspected browser evidence, deployed identity, exact functional
+  production requests and final cleanup. Retain this URL and response shape for
+  at least one deployment interval; pre-cutover tabs still need refresh/retry.
+  Migration remains incomplete; subclass listing leads the remaining actions
+  on current evidence, subject to refresh before the next selection.
 
 ### Creator text search — November 2026
 
