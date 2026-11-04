@@ -1043,6 +1043,52 @@ or endpoint. Retained public catalogue pagination already uses
 `findCompanion` directly. Coordination found no other unarchived child owner.
 Refresh evidence before assuming the next zero-volume candidate's priority.
 
+### Unused owner-school lookup selection — November 4, 2026
+
+Refreshed fixed **2026-11-03T03:00:00Z–2026-11-04T03:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/mnTm1nLSoNt).
+Root HTTP spans only (`trace.parent_id` absent, `next-action` present), grouped
+by ID and coalesced HTTP status, contain **697 attempts**: **six named**, all
+HTTP 409 and already migrated, plus **691 excluded `x` probes**. Verified aliases
+aggregate to `app/actions/nav.ts#getNavCountsAction` (five failed attempts)
+and `app/actions/conditions.ts#loadOfficialConditions` (one failed attempt).
+No otherwise-unmapped volume remains. Mean sample rate is **1**, 1,188,950 rows
+were examined and OTHER is zero. Bots/QA are included; HTTP <400/≥400 is
+transport outcome, not Flight/domain success.
+
+Alias provenance is reused, not newly extracted: the prior companion run
+established the `00efbb…` navigation alias; the
+[recorded investigation](https://ampcode.com/threads/T-01a16578-44d7-77b9-8db8-9860df178ea0)
+verified `00984f…` navigation and `006f67…` official conditions directly in
+release v241's manifest, build `j9_BTyKXVaKyvThF-fDDk`, standalone layer
+`sha256:bd8b047d5d2ede52d09539f4aed5810c9fb6edc05ef1decaaa47004133e8afbc`.
+These are legacy aliases of migrated operations, not remaining work.
+
+The refreshed **2026-10-28T03:00:00Z–2026-11-04T03:00:00Z**
+[seven-day export](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/GEvPdrp4Aoa)
+contains **6,619 attempts**, mean sample rate **1**, 6,355,241 examined rows,
+zero OTHER and **3,026 known probes** (`x`/`0`/`1`/`action`/`y`). Six other
+invalid/unmapped attempts are excluded from named rankings: two 64-zero IDs
+and four nonmanifest IDs. Complete JSON is retained in the run. Historical
+seven-day aliases are not freshly remapped: reuse the previous verified
+150-image/148-SHA coverage and its zero-volume remaining-action conclusion.
+This new window is contained in the union of the preceding seven-day window
+and this fresh 24-hour window, whose named operations are already migrated.
+Thus all remaining named actions still tie at zero; no invalid or unmapped
+probe is assigned to a named action, nor is new provenance claimed.
+
+| Priority | Remaining operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected unused cleanup | `app/spell-schools/actions.ts#getUserSpellSchools` | 0 (0/0) | 0 (0/0) |
+| Tied remaining | All other remaining named actions | 0 (0/0) | 0 (0/0) |
+
+Caller audit finds no import or call of this wrapper, including tests. My Spells
+already calls `listAllSpellSchoolsForDiscordID` directly after `auth()`; retain
+that shared database helper and remove only the unused wrapper/auth import.
+No replacement endpoint or new UI is necessary, and no live traffic-ranked
+operation is displaced. Coordination found no other unarchived child owner.
+Refresh evidence before selecting the next tied zero-volume operation.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1247,6 +1293,50 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Unused owner-school lookup — November 2026
+
+- Selected `app/spell-schools/actions.ts#getUserSpellSchools` from the refreshed
+  zero-volume tie above. A repository-wide audit finds no application or test
+  callers. Removed only that wrapper and its exclusive `auth` import; application
+  ratchet **31 → 30**. Retained `listPublicSpellSchoolsAction` remains a separate
+  future slice; seven repository markers and their 70 exports are unchanged.
+- My Spells already authenticates and calls `listAllSpellSchoolsForDiscordID`
+  directly; retained detail/metadata readers also use database helpers directly.
+  No replacement endpoint, new UI, public API, database schema, visibility rule,
+  serialization, navigation, pending/error UX, invalidation or telemetry behavior
+  is introduced. This is unused-code cleanup, not a new browser read contract.
+  Existing stable spell-school save/delete routes and their boundary/client
+  transport tests remain unchanged; no wrapper-only test needs replacement.
+- Focused retained page/route/client checks: **34 passed**. Full suite:
+  **2,354 passed, seven skipped**. `make check` and `git diff --check` pass;
+  the existing unrelated item-builder unused-import warning is not claimed fixed.
+  Ten live development requests verify authenticated public/private owner lists,
+  ignored submitted identity, second-owner empty results, public/private detail
+  access, malformed/missing 404s, HTML content types and no `next-action`.
+- Browser QA covers My Spells, filtering/empty/recovery, private-detail client
+  navigation/reload/back and second-owner isolation. Four My Spells GETs include
+  three raw extra-header captures, without a body or `next-action`; 12 retained
+  internal GET attempts also have no action header in their request events.
+  Seven browser cancellations are recorded separately, not counted as completed
+  responses. No failed HTTP response occurs in the final controlled flow.
+- The development back-navigation flow logs a React conditional-`use()` warning.
+  Restoring the original action module byte-for-byte reproduces the same warning
+  with all functional assertions passing. The final changed-code run has exactly
+  the baseline warning and no additional errors; this warning is not repaired or
+  claimed absent. Initial homepage emerald-icon 404s are outside the final flow
+  and were already recorded by prior runs. The
+  [run thread](https://ampcode.com/threads/T-01a1a4ab-231b-710b-a0c5-96fef28614a3)
+  retains sanitized baseline/changed captures, inspected screenshots, deployment
+  identity, exact authenticated functional production requests and cleanup.
+- QA uses two disposable nonadmin users and public/private copies of an official
+  school and its spells, never real-user edits or handcrafted domain content.
+  Local cleanup verifies zero QA users, schools, spells, search catalog and FTS
+  residue, with the original school/spells fingerprint unchanged. Production
+  uses expiring one-hour Auth.js sessions, not a development bypass. Required
+  production verification/cleanup and final disposition are recorded in the run.
+  Migration remains incomplete; keep the host schedule enabled and refresh
+  evidence before selecting the next zero-volume candidate.
 
 ### Unused companion lookup — November 2026
 
