@@ -1187,6 +1187,45 @@ cleaned up. Coordination finds only this unarchived child; the schedule remains
 paused. After this slice, only owner-item pagination and 24 admin exports remain
 in the application category; repository markers are a separate later category.
 
+### Unused owner-item pagination selection — November 4, 2026
+
+Refreshed fixed **2026-11-03T18:00:00Z–2026-11-04T18:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/EQJi8k85Ygc).
+Root HTTP spans only (`trace.parent_id` absent, `next-action` present), grouped
+by ID and coalesced HTTP status, contain **688 attempts**: **686 excluded `x`
+probes** and two HTTP409 attempts for already-migrated navigation/official
+conditions. Their `00984f…`/`006f67…` aliases reuse the verified v241 manifest
+provenance above. There is no otherwise-unmapped 24-hour volume. Mean sample
+rate is **1**, 1,692,721 rows examined, OTHER zero. Bots/QA are included;
+HTTP <400/≥400 is transport outcome, not Flight/domain success.
+
+The identical [seven-day query](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/edrWHyTy9zV)
+over **2026-10-28T18:00:00Z–2026-11-04T18:00:00Z** contains **5,929 attempts**,
+mean sample rate **1**, 6,858,713 examined rows and zero OTHER. Exclude **3,015
+known probes** and the same six other invalid/unmapped attempts (two 64-zero
+IDs and four nonmanifest IDs). Complete JSON exports are retained in this run.
+Historical aliases reuse the verified 150-image/148-SHA filename/export
+coverage, not fresh OCI extraction: this interval is contained in the union of
+the preceding verified seven-day window and this fresh 24-hour window, whose
+only named operations are already migrated. Remaining named operations still
+tie at **0 successful / 0 failed** in both windows. No probe is assigned a name.
+
+| Priority | Remaining operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected unused cleanup | `app/my/(library)/items/actions.ts#paginateMyItems` | 0 (0/0) | 0 (0/0) |
+| Tied remaining | 24 admin exports | 0 (0/0) | 0 (0/0) |
+
+The full caller audit finds only the uncalled `myItemsInfiniteQueryOptions`;
+neither is imported by any application consumer or test. My Items already
+authenticates and directly calls `itemsService.listItemsForUser` in its Server
+Component, rendering all owner public/private items sorted by name. Remove the
+unused action and its exclusively used hook, not this stable flow or shared
+pagination service (still used by `statblockPickerSearch`). No new endpoint,
+UI, supported API or domain contract is needed. Coordination found only this
+unarchived child. No live-volume candidate is displaced; refresh evidence before
+the next selection. Only admin exports remain in the application category;
+seven repository markers remain a separate later category.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1391,6 +1430,42 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Unused owner-item pagination — November 2026
+
+- Removed the uncalled `paginateMyItems` Server Action and its sole importer,
+  the likewise uncalled `myItemsInfiniteQueryOptions`. Deleted
+  `app/my/(library)/items/{actions,hooks}.ts`; application ratchet **25 → 24**.
+  All 24 remaining application exports are admin operations. The seven
+  repository directives and their counts remain unchanged.
+- My Items retains its authenticated direct service/database read, all owner
+  public/private rows, alphabetical cards, empty state, detail navigation and
+  reload behavior. The shared owner pagination service remains for the existing
+  stable statblock picker. No replacement endpoint, JSON serialization, client
+  cache, identity fields, security boundary, invalidation or supported API is
+  introduced for an unused wrapper. Existing route/client tests cover retained
+  stable item and picker transports; no wrapper-only test is added.
+- Focused tests: **17 passed**. Full suite: **2,388 passed, seven skipped**.
+  `make check` and `git diff --check` pass; the pre-existing item-builder
+  unused-import warning is unchanged. Fourteen live development requests verify
+  session identity, two-owner public/private separation, ignored owner input,
+  empty results, anonymous redirects and the retained stable picker (including
+  its JSON 401). Browser QA verifies active navigation, alphabetical cards,
+  private detail client navigation/reload, history return/reload and empty/other
+  owners. Seven GETs have raw CDP extra-header evidence without `next-action`;
+  no page/console errors or failed HTTP responses occur in the completed pass.
+- Initial scratch QA mistakes (React comment-separated empty text, wrong browser
+  tab, assuming a My Items sidebar exists on detail pages, and querying an
+  absent FTS column) were corrected without application changes. Their failed
+  attempts are not claimed passed. Final cleanup independently checks zero
+  disposable user/item/catalog/FTS residue and the original item unchanged.
+- This [run thread](https://ampcode.com/threads/T-01a1a7e3-1821-71f6-87f9-1adcd7758ac6)
+  records focused/full checks, actual authenticated development/production
+  requests, browser client navigation/full reload, inspected media, deployment
+  identity and cleanup. QA uses disposable non-admin users and copies of existing
+  item content, never edits originals. Production sessions expire after one hour
+  and are not a dev-login bypass. Migration remains incomplete; refresh traffic
+  before selecting one bounded admin operation or repository cleanup.
 
 ### Owner-background pagination — November 2026
 

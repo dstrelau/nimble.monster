@@ -2,7 +2,6 @@
 export const serverActionBaseline = {
   application: {
     "app/admin/actions.ts": 24,
-    "app/my/(library)/items/actions.ts": 1,
   },
   repositoryMarkers: {
     "lib/services/ancestries/repository.ts": 12,
