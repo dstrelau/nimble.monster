@@ -83,32 +83,35 @@ export async function getMyLibraryCounts(
     db
       .select({ count: count() })
       .from(monsters)
-      .where(and(eq(monsters.userId, userId), eq(monsters.hazard, false))),
+      .where(and(eq(monsters.creatorId, userId), eq(monsters.hazard, false))),
     db
       .select({ count: count() })
       .from(monsters)
-      .where(and(eq(monsters.userId, userId), eq(monsters.hazard, true))),
+      .where(and(eq(monsters.creatorId, userId), eq(monsters.hazard, true))),
     db
       .select({ count: count() })
       .from(customRules)
-      .where(eq(customRules.userId, userId)),
+      .where(eq(customRules.creatorId, userId)),
     db
       .select({ count: count() })
       .from(ancestries)
-      .where(eq(ancestries.userId, userId)),
+      .where(eq(ancestries.creatorId, userId)),
     db
       .select({ count: count() })
       .from(companions)
-      .where(eq(companions.userId, userId)),
+      .where(eq(companions.creatorId, userId)),
     db
       .select({ count: count() })
       .from(backgrounds)
-      .where(eq(backgrounds.userId, userId)),
-    db.select({ count: count() }).from(items).where(eq(items.userId, userId)),
+      .where(eq(backgrounds.creatorId, userId)),
+    db
+      .select({ count: count() })
+      .from(items)
+      .where(eq(items.creatorId, userId)),
     db
       .select({ count: count() })
       .from(classes)
-      .where(eq(classes.userId, userId)),
+      .where(eq(classes.creatorId, userId)),
     db
       .select({ count: count() })
       .from(collections)
@@ -120,7 +123,7 @@ export async function getMyLibraryCounts(
     db
       .select({ count: count() })
       .from(adventures)
-      .where(eq(adventures.userId, userId)),
+      .where(eq(adventures.creatorId, userId)),
     db
       .select({ count: count() })
       .from(randomTables)
@@ -128,7 +131,7 @@ export async function getMyLibraryCounts(
     db
       .select({ count: count() })
       .from(subclasses)
-      .where(eq(subclasses.userId, userId)),
+      .where(eq(subclasses.creatorId, userId)),
     db
       .select({ count: count() })
       .from(families)
@@ -136,7 +139,7 @@ export async function getMyLibraryCounts(
     db
       .select({ count: count() })
       .from(spellSchools)
-      .where(eq(spellSchools.userId, userId)),
+      .where(eq(spellSchools.creatorId, userId)),
     db
       .select({ count: count() })
       .from(conditions)
@@ -188,7 +191,7 @@ export async function getPublicLibraryCounts(
       .from(monsters)
       .where(
         and(
-          eq(monsters.userId, userId),
+          eq(monsters.creatorId, userId),
           eq(monsters.visibility, "public"),
           eq(monsters.hazard, false)
         )
@@ -198,7 +201,7 @@ export async function getPublicLibraryCounts(
       .from(monsters)
       .where(
         and(
-          eq(monsters.userId, userId),
+          eq(monsters.creatorId, userId),
           eq(monsters.visibility, "public"),
           eq(monsters.hazard, true)
         )
@@ -208,7 +211,7 @@ export async function getPublicLibraryCounts(
       .from(customRules)
       .where(
         and(
-          eq(customRules.userId, userId),
+          eq(customRules.creatorId, userId),
           eq(customRules.visibility, "public")
         )
       ),
@@ -216,31 +219,39 @@ export async function getPublicLibraryCounts(
       .select({ count: count() })
       .from(ancestries)
       .where(
-        and(eq(ancestries.userId, userId), eq(ancestries.visibility, "public"))
+        and(
+          eq(ancestries.creatorId, userId),
+          eq(ancestries.visibility, "public")
+        )
       ),
     db
       .select({ count: count() })
       .from(companions)
       .where(
-        and(eq(companions.userId, userId), eq(companions.visibility, "public"))
+        and(
+          eq(companions.creatorId, userId),
+          eq(companions.visibility, "public")
+        )
       ),
     db
       .select({ count: count() })
       .from(backgrounds)
       .where(
         and(
-          eq(backgrounds.userId, userId),
+          eq(backgrounds.creatorId, userId),
           eq(backgrounds.visibility, "public")
         )
       ),
     db
       .select({ count: count() })
       .from(items)
-      .where(and(eq(items.userId, userId), eq(items.visibility, "public"))),
+      .where(and(eq(items.creatorId, userId), eq(items.visibility, "public"))),
     db
       .select({ count: count() })
       .from(classes)
-      .where(and(eq(classes.userId, userId), eq(classes.visibility, "public"))),
+      .where(
+        and(eq(classes.creatorId, userId), eq(classes.visibility, "public"))
+      ),
     db
       .select({ count: count() })
       .from(collections)
@@ -263,13 +274,19 @@ export async function getPublicLibraryCounts(
       .select({ count: count() })
       .from(adventures)
       .where(
-        and(eq(adventures.userId, userId), eq(adventures.visibility, "public"))
+        and(
+          eq(adventures.creatorId, userId),
+          eq(adventures.visibility, "public")
+        )
       ),
     db
       .select({ count: count() })
       .from(subclasses)
       .where(
-        and(eq(subclasses.userId, userId), eq(subclasses.visibility, "public"))
+        and(
+          eq(subclasses.creatorId, userId),
+          eq(subclasses.visibility, "public")
+        )
       ),
     db
       .select({ count: count() })
@@ -282,7 +299,7 @@ export async function getPublicLibraryCounts(
       .from(spellSchools)
       .where(
         and(
-          eq(spellSchools.userId, userId),
+          eq(spellSchools.creatorId, userId),
           eq(spellSchools.visibility, "public")
         )
       ),

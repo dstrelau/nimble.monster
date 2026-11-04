@@ -7,7 +7,7 @@ const mockState = vi.hoisted(() => {
   const tables = {
     adventures: {
       id: "adventures.id",
-      userId: "adventures.user_id",
+      creatorId: "adventures.user_id",
       name: "adventures.name",
       tagline: "adventures.tagline",
       summary: "adventures.summary",
@@ -44,8 +44,8 @@ const mockState = vi.hoisted(() => {
       const adventure =
         isRecord(row) && isRecord(row.adventure) ? row.adventure : null;
       if (!adventure) return true;
-      if (condition.column === tables.adventures.userId) {
-        return adventure.userId === condition.value;
+      if (condition.column === tables.adventures.creatorId) {
+        return adventure.creatorId === condition.value;
       }
       if (condition.column === tables.adventures.visibility) {
         return adventure.visibility === condition.value;
@@ -139,7 +139,7 @@ const creator = (id: string) => ({
 const row = (id: string, userId: string, visibility: "public" | "private") => ({
   adventure: {
     id,
-    userId,
+    creatorId: userId,
     name: id,
     tagline: "",
     summary: "",

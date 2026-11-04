@@ -61,7 +61,7 @@ export const deleteItem = async (
   // Delete the item (only if it belongs to the user)
   const result = await db
     .delete(items)
-    .where(and(eq(items.id, id), eq(items.userId, user.id)));
+    .where(and(eq(items.id, id), eq(items.creatorId, user.id)));
 
   return result.rowsAffected > 0;
 };
@@ -189,7 +189,7 @@ export const findItemWithCreatorDiscordId = async (
   const itemCheck = await db
     .select({ id: items.id })
     .from(items)
-    .where(and(eq(items.id, id), eq(items.userId, creatorId)))
+    .where(and(eq(items.id, id), eq(items.creatorId, creatorId)))
     .limit(1);
 
   if (itemCheck.length === 0) return null;
@@ -208,7 +208,7 @@ export const listPublicItemsForUser = async (
   const itemRows = await db
     .select({ id: items.id })
     .from(items)
-    .where(and(eq(items.userId, userId), eq(items.visibility, "public")))
+    .where(and(eq(items.creatorId, userId), eq(items.visibility, "public")))
     .orderBy(asc(items.name));
 
   if (itemRows.length === 0) return [];
@@ -241,7 +241,7 @@ export const listAllItemsForDiscordID = async (
   const itemRows = await db
     .select({ id: items.id })
     .from(items)
-    .where(eq(items.userId, user.id))
+    .where(eq(items.creatorId, user.id))
     .orderBy(asc(items.name));
 
   if (itemRows.length === 0) return [];
@@ -333,7 +333,7 @@ export const paginateItems = async ({
   }
 
   if (creatorId) {
-    whereConditions.push(eq(items.userId, creatorId));
+    whereConditions.push(eq(items.creatorId, creatorId));
   }
 
   if (source) {
@@ -521,7 +521,7 @@ export const createItem = async (
     imageBackdrop,
     rarity,
     visibility,
-    userId: user.id,
+    creatorId: user.id,
     remixedFromId: remixedFromId || null,
   });
 
@@ -577,7 +577,7 @@ export const updateItem = async (
   const existingItem = await db
     .select()
     .from(items)
-    .where(and(eq(items.id, id), eq(items.userId, user.id)))
+    .where(and(eq(items.id, id), eq(items.creatorId, user.id)))
     .limit(1);
 
   if (existingItem.length === 0) {
@@ -622,7 +622,7 @@ export const findItemRemixes = async (itemId: string) => {
   const remixRows = await db
     .select()
     .from(items)
-    .innerJoin(users, eq(items.userId, users.id))
+    .innerJoin(users, eq(items.creatorId, users.id))
     .where(and(eq(items.remixedFromId, itemId), eq(items.visibility, "public")))
     .orderBy(asc(items.name));
 

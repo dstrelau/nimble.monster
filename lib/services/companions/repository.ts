@@ -143,7 +143,7 @@ export const paginatePublicCompanions = async ({
   const conditions = [eq(companions.visibility, "public")];
 
   if (creatorId) {
-    conditions.push(eq(companions.userId, creatorId));
+    conditions.push(eq(companions.creatorId, creatorId));
   }
 
   if (companionClass !== "all") {
@@ -218,7 +218,7 @@ export const paginatePublicCompanions = async ({
   const rows = await db
     .select()
     .from(companions)
-    .innerJoin(users, eq(companions.userId, users.id))
+    .innerJoin(users, eq(companions.creatorId, users.id))
     .leftJoin(sources, eq(companions.sourceId, sources.id))
     .where(and(...allConditions))
     .orderBy(...orderBy)
@@ -311,7 +311,7 @@ export const findCompanionsByIds = async (
   const rows = await db
     .select()
     .from(companions)
-    .innerJoin(users, eq(companions.userId, users.id))
+    .innerJoin(users, eq(companions.creatorId, users.id))
     .leftJoin(sources, eq(companions.sourceId, sources.id))
     .where(inArray(companions.id, validIds));
 
@@ -365,7 +365,7 @@ export const searchPublicCompanions = async ({
       .limit(1);
 
     if (userResult.length > 0) {
-      conditions.push(eq(companions.userId, userResult[0].id));
+      conditions.push(eq(companions.creatorId, userResult[0].id));
     }
   }
 

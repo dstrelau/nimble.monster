@@ -16,7 +16,7 @@ export const searchPublicItems = async ({
 }: SearchItemsParams & { offset?: number }): Promise<Item[]> => {
   const db = await getDatabase();
   const conditions = [eq(items.visibility, "public")];
-  if (creatorId) conditions.push(eq(items.userId, creatorId));
+  if (creatorId) conditions.push(eq(items.creatorId, creatorId));
   const searchCondition = searchTerm
     ? or(
         like(items.name, `%${searchTerm}%`),

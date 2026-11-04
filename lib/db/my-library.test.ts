@@ -5,29 +5,29 @@ const mockState = vi.hoisted(() => {
   const wherePredicates: unknown[] = [];
   const tables = {
     adventures: {
-      userId: "adventures.user_id",
+      creatorId: "adventures.user_id",
       visibility: "adventures.visibility",
     },
     ancestries: {
-      userId: "ancestries.user_id",
+      creatorId: "ancestries.user_id",
       visibility: "ancestries.visibility",
     },
     backgrounds: {
-      userId: "backgrounds.user_id",
+      creatorId: "backgrounds.user_id",
       visibility: "backgrounds.visibility",
     },
-    classes: { userId: "classes.user_id", visibility: "classes.visibility" },
+    classes: { creatorId: "classes.user_id", visibility: "classes.visibility" },
     collections: {
       creatorId: "collections.creator_id",
       visibility: "collections.visibility",
     },
     companions: {
-      userId: "companions.user_id",
+      creatorId: "companions.user_id",
       visibility: "companions.visibility",
     },
     conditions: { creatorId: "conditions.creator_id" },
     customRules: {
-      userId: "custom_rules.user_id",
+      creatorId: "custom_rules.user_id",
       visibility: "custom_rules.visibility",
     },
     encounters: {
@@ -38,9 +38,9 @@ const mockState = vi.hoisted(() => {
       creatorId: "families.creator_id",
       visibility: "families.visibility",
     },
-    items: { userId: "items.user_id", visibility: "items.visibility" },
+    items: { creatorId: "items.user_id", visibility: "items.visibility" },
     monsters: {
-      userId: "monsters.user_id",
+      creatorId: "monsters.user_id",
       visibility: "monsters.visibility",
       hazard: "monsters.hazard",
     },
@@ -48,11 +48,11 @@ const mockState = vi.hoisted(() => {
       creatorId: "random_tables.user_id",
     },
     spellSchools: {
-      userId: "spell_schools.user_id",
+      creatorId: "spell_schools.user_id",
       visibility: "spell_schools.visibility",
     },
     subclasses: {
-      userId: "subclasses.user_id",
+      creatorId: "subclasses.user_id",
       visibility: "subclasses.visibility",
     },
   };
@@ -134,7 +134,7 @@ describe("adventure library counts", () => {
     expect(counts["random-tables"]).toBe(3);
     expect(mockState.wherePredicates[10]).toEqual({
       type: "eq",
-      column: mockState.tables.adventures.userId,
+      column: mockState.tables.adventures.creatorId,
       value: "owner",
     });
   });
@@ -166,7 +166,7 @@ describe("adventure library counts", () => {
       args: [
         {
           type: "eq",
-          column: mockState.tables.adventures.userId,
+          column: mockState.tables.adventures.creatorId,
           value: "owner",
         },
         {

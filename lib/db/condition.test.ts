@@ -34,7 +34,7 @@ beforeAll(async () => {
   // Start with official content, then add references as a user would.
   await db.insert(schema.monsters).values({
     id: "monster",
-    userId: "owner",
+    creatorId: "owner",
     name: monster.name,
     hp: monster.hp,
     level: String(monster.level),
@@ -45,7 +45,7 @@ beforeAll(async () => {
   });
   await db.insert(schema.monsters).values({
     id: "hazard",
-    userId: "owner",
+    creatorId: "owner",
     name: monster.name,
     hp: monster.hp,
     level: String(monster.level),
@@ -74,22 +74,24 @@ beforeAll(async () => {
     .insert(schema.monstersFamilies)
     .values({ monsterId: "monster", familyId: "inherited" });
   await db.insert(schema.companions).values({
-    userId: "owner",
+    creatorId: "owner",
     name: "Companion",
     hpPerLevel: "2",
     dyingRule: "[[Dazed]]",
   });
   await db.insert(schema.ancestries).values({
-    userId: "owner",
+    creatorId: "owner",
     name: "Ancestry",
     description: "",
     abilities: [{ description: "[[Dazed]]" }],
   });
-  await db
-    .insert(schema.backgrounds)
-    .values({ userId: "owner", name: "Background", description: "[[Dazed]]" });
+  await db.insert(schema.backgrounds).values({
+    creatorId: "owner",
+    name: "Background",
+    description: "[[Dazed]]",
+  });
   await db.insert(schema.classes).values({
-    userId: "owner",
+    creatorId: "owner",
     name: "Class",
     description: "[[Dazed]]",
     hitDie: "d6",
@@ -106,13 +108,13 @@ beforeAll(async () => {
     description: "[[Dazed]]",
   });
   await db.insert(schema.customRules).values({
-    userId: "owner",
+    creatorId: "owner",
     name: "Rule",
     content: "[[Dazed]] twice [[DAZED]]",
   });
   await db.insert(schema.adventures).values({
     id: "adventure",
-    userId: "owner",
+    creatorId: "owner",
     name: "Adventure",
     summary: "[[Unused]]",
   });
@@ -138,22 +140,22 @@ beforeAll(async () => {
   ]);
   await db.insert(schema.items).values([
     {
-      userId: "owner",
+      creatorId: "owner",
       name: "Bell",
       description: "[[dazed|daze]] twice [[Dazed]]",
       moreInfo: "[[Dazed]]",
     },
-    { userId: "owner", name: "Charm", description: "[[Dazed]]" },
-    { userId: "other", name: "Other bell", description: "[[Dazed]]" },
+    { creatorId: "owner", name: "Charm", description: "[[Dazed]]" },
+    { creatorId: "other", name: "Other bell", description: "[[Dazed]]" },
     {
-      userId: "owner",
+      creatorId: "owner",
       name: "Not a reference",
       description: "Dazed and [[Dazedness]]",
     },
   ]);
   await db.insert(schema.spellSchools).values({
     id: "school",
-    userId: "owner",
+    creatorId: "owner",
     name: "Mind",
     description: "[[Dazed]]",
   });
@@ -165,7 +167,7 @@ beforeAll(async () => {
   });
   await db.insert(schema.subclasses).values({
     id: "subclass",
-    userId: "owner",
+    creatorId: "owner",
     name: "Seer",
     className: "Mage",
     tagline: "[[Dazed]]",
@@ -211,7 +213,7 @@ beforeAll(async () => {
   });
   await db.insert(schema.adventures).values({
     id: "filtered-adventure",
-    userId: "owner",
+    creatorId: "owner",
     name: "Filtered adventure",
   });
   await db.insert(schema.adventureNodes).values({

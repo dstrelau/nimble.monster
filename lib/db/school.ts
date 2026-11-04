@@ -172,7 +172,7 @@ async function loadSpellSchoolFullData(
   const schoolRows = await db
     .select()
     .from(spellSchools)
-    .innerJoin(users, eq(spellSchools.userId, users.id))
+    .innerJoin(users, eq(spellSchools.creatorId, users.id))
     .leftJoin(sources, eq(spellSchools.sourceId, sources.id))
     .where(inArray(spellSchools.id, schoolIds));
 
@@ -237,7 +237,7 @@ export const deleteSpellSchool = async (input: {
     .where(
       and(
         eq(spellSchools.id, input.id),
-        eq(spellSchools.userId, userResult[0].id)
+        eq(spellSchools.creatorId, userResult[0].id)
       )
     );
 
@@ -299,7 +299,7 @@ export const searchPublicSpellSchools = async ({
       .limit(1);
 
     if (userResult.length > 0) {
-      conditions.push(eq(spellSchools.userId, userResult[0].id));
+      conditions.push(eq(spellSchools.creatorId, userResult[0].id));
     }
   }
 
@@ -376,7 +376,7 @@ export const findSpellSchoolWithCreator = async (
   const check = await db
     .select({ id: spellSchools.id })
     .from(spellSchools)
-    .where(and(eq(spellSchools.id, id), eq(spellSchools.userId, creatorId)))
+    .where(and(eq(spellSchools.id, id), eq(spellSchools.creatorId, creatorId)))
     .limit(1);
 
   if (check.length === 0) return null;
@@ -397,7 +397,7 @@ export const listPublicSpellSchoolsForUser = async (
     .from(spellSchools)
     .where(
       and(
-        eq(spellSchools.userId, userId),
+        eq(spellSchools.creatorId, userId),
         eq(spellSchools.visibility, "public")
       )
     )
@@ -430,7 +430,7 @@ export const listAllSpellSchoolsForDiscordID = async (
   const schoolRows = await db
     .select({ id: spellSchools.id })
     .from(spellSchools)
-    .where(eq(spellSchools.userId, userResult[0].id))
+    .where(eq(spellSchools.creatorId, userResult[0].id))
     .orderBy(asc(spellSchools.name));
 
   if (schoolRows.length === 0) return [];
@@ -487,7 +487,7 @@ export const createSpellSchool = async (
     name: input.name,
     description: input.description || undefined,
     visibility: input.visibility,
-    userId: userResult[0].id,
+    creatorId: userResult[0].id,
   });
 
   // Insert spells
@@ -548,7 +548,7 @@ export const updateSpellSchool = async (
     .where(
       and(
         eq(spellSchools.id, input.id),
-        eq(spellSchools.userId, userResult[0].id)
+        eq(spellSchools.creatorId, userResult[0].id)
       )
     )
     .limit(1);
@@ -621,7 +621,7 @@ export const findSpellSchoolWithCreatorDiscordId = async (
     .select({ id: spellSchools.id })
     .from(spellSchools)
     .where(
-      and(eq(spellSchools.id, id), eq(spellSchools.userId, userResult[0].id))
+      and(eq(spellSchools.id, id), eq(spellSchools.creatorId, userResult[0].id))
     )
     .limit(1);
 

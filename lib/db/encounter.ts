@@ -43,7 +43,7 @@ async function loadEncounterOverview(
     .filter(
       ({ monster }) =>
         monster.visibility === "public" ||
-        (encounter.visibility === "private" && monster.userId === creator.id)
+        (encounter.visibility === "private" && monster.creatorId === creator.id)
     )
     .map((link) => ({
       monster: toBestiaryEntryMini(link.monster),
@@ -102,7 +102,7 @@ async function loadEncounterOverviews(
     const canDisplayMonster =
       link.monster.visibility === "public" ||
       (encounter?.visibility === "private" &&
-        link.monster.userId === encounter.creatorId);
+        link.monster.creatorId === encounter.creatorId);
     if (!canDisplayMonster) continue;
     const existing = entriesByEncounter.get(link.encounterId) ?? [];
     existing.push({
@@ -263,7 +263,7 @@ export const listEncountersWithMonstersForUser = async (
       link.monster.visibility !== "public" &&
       !(
         encountersById.get(link.encounterId)?.visibility === "private" &&
-        link.monster.userId === user.id
+        link.monster.creatorId === user.id
       )
     )
       continue;
@@ -415,7 +415,7 @@ async function validatedEncounterMonsters(
       id: monsters.id,
       legendary: monsters.legendary,
       visibility: monsters.visibility,
-      userId: monsters.userId,
+      userId: monsters.creatorId,
     })
     .from(monsters)
     .where(inArray(monsters.id, [...qtyMap.keys()]));

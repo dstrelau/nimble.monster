@@ -68,12 +68,12 @@ beforeAll(async () => {
   await db.insert(schema.items).values([
     {
       id: "item",
-      userId: "owner",
+      creatorId: "owner",
       name: "Item",
       createdAt: date,
       updatedAt: date,
     },
-    { id: "hidden", userId: "owner", name: "Hidden", visibility: "private" },
+    { id: "hidden", creatorId: "owner", name: "Hidden", visibility: "private" },
   ]);
   await db.insert(schema.itemsCollections).values([
     ...["a", "b", "c", "private"].map((collectionId) => ({
@@ -97,7 +97,7 @@ beforeAll(async () => {
   ]);
   await db.insert(schema.companions).values({
     id: "companion",
-    userId: "owner",
+    creatorId: "owner",
     name: "Companion",
     hpPerLevel: "3",
   });
@@ -107,7 +107,7 @@ beforeAll(async () => {
   await db.insert(schema.ancestries).values([
     {
       id: "ancestry",
-      userId: "owner",
+      creatorId: "owner",
       name: "Ancestry",
       description: "Description",
       createdAt: date,
@@ -115,7 +115,7 @@ beforeAll(async () => {
     },
     {
       id: "hidden-ancestry",
-      userId: "owner",
+      creatorId: "owner",
       name: "Hidden",
       description: "Hidden",
       visibility: "private",
@@ -127,7 +127,7 @@ beforeAll(async () => {
   ]);
   await db.insert(schema.backgrounds).values({
     id: "background",
-    userId: "owner",
+    creatorId: "owner",
     name: "Background",
     description: "Description",
     createdAt: date,
@@ -138,7 +138,7 @@ beforeAll(async () => {
     .values({ collectionId: "a", backgroundId: "background" });
   await db.insert(schema.subclasses).values({
     id: "subclass",
-    userId: "owner",
+    creatorId: "owner",
     name: "Subclass",
     className: "Class",
     createdAt: date,
@@ -146,15 +146,18 @@ beforeAll(async () => {
   await db
     .insert(schema.subclassesCollections)
     .values({ collectionId: "a", subclassId: "subclass" });
-  await db
-    .insert(schema.spellSchools)
-    .values({ id: "school", userId: "owner", name: "School", createdAt: date });
+  await db.insert(schema.spellSchools).values({
+    id: "school",
+    creatorId: "owner",
+    name: "School",
+    createdAt: date,
+  });
   await db
     .insert(schema.spellSchoolsCollections)
     .values({ collectionId: "a", spellSchoolId: "school" });
   await db.insert(schema.classes).values({
     id: "class",
-    userId: "owner",
+    creatorId: "owner",
     name: "Class",
     description: "Description",
     hitDie: "d8",

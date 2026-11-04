@@ -748,7 +748,7 @@ async function loadMonstersForAward(
   const monsterRows = await db
     .select()
     .from(monsters)
-    .innerJoin(users, eq(monsters.userId, users.id))
+    .innerJoin(users, eq(monsters.creatorId, users.id))
     .leftJoin(sources, eq(monsters.sourceId, sources.id))
     .where(inArray(monsters.id, monsterIds));
 
@@ -781,7 +781,7 @@ async function loadMonstersForAward(
     const remixedFromRows = await db
       .select({ monster: monsters, creator: users })
       .from(monsters)
-      .innerJoin(users, eq(monsters.userId, users.id))
+      .innerJoin(users, eq(monsters.creatorId, users.id))
       .where(inArray(monsters.id, remixedFromIds));
 
     for (const row of remixedFromRows) {
@@ -843,7 +843,7 @@ async function loadItemsForAward(
   const itemRows = await db
     .select()
     .from(items)
-    .innerJoin(users, eq(items.userId, users.id))
+    .innerJoin(users, eq(items.creatorId, users.id))
     .leftJoin(sources, eq(items.sourceId, sources.id))
     .where(inArray(items.id, itemIds));
 
@@ -883,7 +883,7 @@ async function loadCompanionsForAward(
   const companionRows = await db
     .select()
     .from(companions)
-    .innerJoin(users, eq(companions.userId, users.id))
+    .innerJoin(users, eq(companions.creatorId, users.id))
     .leftJoin(sources, eq(companions.sourceId, sources.id))
     .where(inArray(companions.id, companionIds));
 
@@ -925,7 +925,7 @@ async function loadSubclassesForAward(
   const subclassRows = await db
     .select()
     .from(subclasses)
-    .innerJoin(users, eq(subclasses.userId, users.id))
+    .innerJoin(users, eq(subclasses.creatorId, users.id))
     .leftJoin(sources, eq(subclasses.sourceId, sources.id))
     .where(inArray(subclasses.id, subclassIds));
 
@@ -988,7 +988,7 @@ async function loadSchoolsForAward(
   const schoolRows = await db
     .select()
     .from(spellSchools)
-    .innerJoin(users, eq(spellSchools.userId, users.id))
+    .innerJoin(users, eq(spellSchools.creatorId, users.id))
     .leftJoin(sources, eq(spellSchools.sourceId, sources.id))
     .where(inArray(spellSchools.id, schoolIds));
 
@@ -1044,7 +1044,7 @@ async function loadAncestriesForAward(
   const ancestryRows = await db
     .select()
     .from(ancestries)
-    .innerJoin(users, eq(ancestries.userId, users.id))
+    .innerJoin(users, eq(ancestries.creatorId, users.id))
     .leftJoin(sources, eq(ancestries.sourceId, sources.id))
     .where(
       and(
@@ -1125,7 +1125,7 @@ async function loadBackgroundsForAward(
   const backgroundRows = await db
     .select()
     .from(backgrounds)
-    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .innerJoin(users, eq(backgrounds.creatorId, users.id))
     .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
     .where(inArray(backgrounds.id, backgroundIds));
 

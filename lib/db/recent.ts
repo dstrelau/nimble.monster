@@ -108,7 +108,7 @@ async function loadMonstersFullData(
   const monsterRows = await db
     .select()
     .from(monsters)
-    .innerJoin(users, eq(monsters.userId, users.id))
+    .innerJoin(users, eq(monsters.creatorId, users.id))
     .leftJoin(sources, eq(monsters.sourceId, sources.id))
     .where(inArray(monsters.id, monsterIds));
 
@@ -141,7 +141,7 @@ async function loadMonstersFullData(
     const remixedFromRows = await db
       .select({ monster: monsters, creator: users })
       .from(monsters)
-      .innerJoin(users, eq(monsters.userId, users.id))
+      .innerJoin(users, eq(monsters.creatorId, users.id))
       .where(inArray(monsters.id, remixedFromIds));
 
     for (const row of remixedFromRows) {
@@ -196,7 +196,7 @@ async function loadItemsFullData(
   const itemRows = await db
     .select()
     .from(items)
-    .innerJoin(users, eq(items.userId, users.id))
+    .innerJoin(users, eq(items.creatorId, users.id))
     .leftJoin(sources, eq(items.sourceId, sources.id))
     .where(inArray(items.id, itemIds));
 
@@ -235,7 +235,7 @@ async function loadCompanionsFullData(
   const companionRows = await db
     .select()
     .from(companions)
-    .innerJoin(users, eq(companions.userId, users.id))
+    .innerJoin(users, eq(companions.creatorId, users.id))
     .leftJoin(sources, eq(companions.sourceId, sources.id))
     .where(inArray(companions.id, companionIds));
 

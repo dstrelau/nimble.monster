@@ -59,7 +59,7 @@ export const POST = internalAction("application/json", async (request) => {
         eq(spellSchools.id, spellSchoolId),
         or(
           eq(spellSchools.visibility, "public"),
-          eq(spellSchools.userId, session.user.id)
+          eq(spellSchools.creatorId, session.user.id)
         )
       )
     )

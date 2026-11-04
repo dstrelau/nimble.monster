@@ -59,7 +59,7 @@ export const POST = internalAction("application/json", async (request) => {
         eq(backgrounds.id, backgroundId),
         or(
           eq(backgrounds.visibility, "public"),
-          eq(backgrounds.userId, session.user.id)
+          eq(backgrounds.creatorId, session.user.id)
         )
       )
     )

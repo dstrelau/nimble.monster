@@ -130,7 +130,7 @@ async function loadAncestryFullData(
   const ancestryRows = await db
     .select()
     .from(ancestries)
-    .innerJoin(users, eq(ancestries.userId, users.id))
+    .innerJoin(users, eq(ancestries.creatorId, users.id))
     .leftJoin(sources, eq(ancestries.sourceId, sources.id))
     .where(inArray(ancestries.id, ancestryIds));
 
@@ -182,7 +182,9 @@ export const deleteAncestry = async (
 
   const result = await db
     .delete(ancestries)
-    .where(and(eq(ancestries.id, id), eq(ancestries.userId, userResult[0].id)));
+    .where(
+      and(eq(ancestries.id, id), eq(ancestries.creatorId, userResult[0].id))
+    );
 
   return result.rowsAffected > 0;
 };
@@ -231,7 +233,7 @@ const paginateAncestries = async (
   if (publicOnly) conditions.push(eq(ancestries.visibility, "public"));
 
   if (creatorId) {
-    conditions.push(eq(ancestries.userId, creatorId));
+    conditions.push(eq(ancestries.creatorId, creatorId));
   }
 
   if (source) {
@@ -298,7 +300,7 @@ const paginateAncestries = async (
   const rows = await db
     .select()
     .from(ancestries)
-    .innerJoin(users, eq(ancestries.userId, users.id))
+    .innerJoin(users, eq(ancestries.creatorId, users.id))
     .leftJoin(sources, eq(ancestries.sourceId, sources.id))
     .where(allConditions.length > 0 ? and(...allConditions) : undefined)
     .orderBy(...orderBy)
@@ -408,9 +410,9 @@ export const findAncestryWithCreatorId = async (
   const result = await db
     .select()
     .from(ancestries)
-    .innerJoin(users, eq(ancestries.userId, users.id))
+    .innerJoin(users, eq(ancestries.creatorId, users.id))
     .leftJoin(sources, eq(ancestries.sourceId, sources.id))
-    .where(and(eq(ancestries.id, id), eq(ancestries.userId, creatorId)))
+    .where(and(eq(ancestries.id, id), eq(ancestries.creatorId, creatorId)))
     .limit(1);
 
   if (result.length === 0) return null;
@@ -445,7 +447,7 @@ export const listAllAncestriesForDiscordID = async (
   const rows = await db
     .select()
     .from(ancestries)
-    .innerJoin(users, eq(ancestries.userId, users.id))
+    .innerJoin(users, eq(ancestries.creatorId, users.id))
     .leftJoin(sources, eq(ancestries.sourceId, sources.id))
     .where(eq(users.discordId, discordId))
     .orderBy(asc(ancestries.name));
@@ -507,7 +509,7 @@ export const searchPublicAncestries = async ({
       .limit(1);
 
     if (userResult.length > 0) {
-      conditions.push(eq(ancestries.userId, userResult[0].id));
+      conditions.push(eq(ancestries.creatorId, userResult[0].id));
     }
   }
 
@@ -528,7 +530,7 @@ export const searchPublicAncestries = async ({
   const rows = await db
     .select()
     .from(ancestries)
-    .innerJoin(users, eq(ancestries.userId, users.id))
+    .innerJoin(users, eq(ancestries.creatorId, users.id))
     .leftJoin(sources, eq(ancestries.sourceId, sources.id))
     .where(conditions.length > 0 ? and(...conditions) : undefined)
     .orderBy(orderBy)
@@ -600,7 +602,7 @@ export const createAncestry = async (
       size: JSON.stringify(size),
       rarity,
       abilities: abilities,
-      userId: user.id,
+      creatorId: user.id,
     })
     .returning();
 
@@ -661,7 +663,7 @@ export const updateAncestry = async (
       abilities: abilities,
       updatedAt: new Date().toISOString(),
     })
-    .where(and(eq(ancestries.id, id), eq(ancestries.userId, user.id)))
+    .where(and(eq(ancestries.id, id), eq(ancestries.creatorId, user.id)))
     .returning();
 
   if (result.length === 0) {
@@ -723,7 +725,7 @@ export const upsertOfficialAncestry = async (
     .where(
       and(
         inArray(ancestries.name, names),
-        eq(ancestries.userId, OFFICIAL_USER_ID)
+        eq(ancestries.creatorId, OFFICIAL_USER_ID)
       )
     )
     .limit(1);
@@ -748,7 +750,7 @@ export const upsertOfficialAncestry = async (
     await db.insert(ancestries).values({
       id: crypto.randomUUID(),
       ...values,
-      userId: OFFICIAL_USER_ID,
+      creatorId: OFFICIAL_USER_ID,
       // Fixed timestamp so official content sorts consistently before user content
       createdAt: "2024-01-01 00:00:00",
     });
@@ -765,12 +767,12 @@ export const findOfficialAncestriesByNames = async (
   const rows = await db
     .select()
     .from(ancestries)
-    .innerJoin(users, eq(ancestries.userId, users.id))
+    .innerJoin(users, eq(ancestries.creatorId, users.id))
     .leftJoin(sources, eq(ancestries.sourceId, sources.id))
     .where(
       and(
         inArray(ancestries.name, names),
-        eq(ancestries.userId, OFFICIAL_USER_ID)
+        eq(ancestries.creatorId, OFFICIAL_USER_ID)
       )
     );
 

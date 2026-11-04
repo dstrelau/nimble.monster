@@ -52,7 +52,7 @@ beforeAll(async () => {
   await db.insert(schema.monsters).values([
     {
       id: "a",
-      userId: "owner",
+      creatorId: "owner",
       name: "Alpha",
       level: "1/2",
       levelInt: -2,
@@ -68,7 +68,7 @@ beforeAll(async () => {
     },
     {
       id: "b",
-      userId: "other",
+      creatorId: "other",
       name: "Alpha",
       level: "3",
       levelInt: 3,
@@ -81,7 +81,7 @@ beforeAll(async () => {
     },
     {
       id: "c",
-      userId: "owner",
+      creatorId: "owner",
       name: "Zulu",
       level: "1/2",
       levelInt: -2,
@@ -98,7 +98,7 @@ beforeAll(async () => {
     },
     {
       id: "private",
-      userId: "owner",
+      creatorId: "owner",
       name: "Alpha private",
       level: "1",
       levelInt: 1,
@@ -109,7 +109,7 @@ beforeAll(async () => {
     },
     {
       id: "hazard",
-      userId: "owner",
+      creatorId: "owner",
       name: "Alpha hazard",
       level: "1",
       levelInt: 1,

@@ -48,7 +48,7 @@ beforeAll(async () => {
   await db.insert(schema.ancestries).values([
     {
       id: "a",
-      userId: owner,
+      creatorId: owner,
       name: "Alpha",
       description: "Alpha description",
       size: '["small"]',
@@ -60,7 +60,7 @@ beforeAll(async () => {
     },
     {
       id: "b",
-      userId: other,
+      creatorId: other,
       name: "Alpha",
       description: "Other alpha",
       size: '["large"]',
@@ -71,7 +71,7 @@ beforeAll(async () => {
     },
     {
       id: "c",
-      userId: owner,
+      creatorId: owner,
       name: "Zulu",
       description: "Zulu description",
       size: '["medium"]',
@@ -82,7 +82,7 @@ beforeAll(async () => {
     },
     {
       id: "private",
-      userId: owner,
+      creatorId: owner,
       name: "Alpha private",
       description: "Secret",
       size: "[]",

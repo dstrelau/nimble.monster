@@ -109,7 +109,7 @@ export const randomSubtableRowsRelations = relations(
 // Monster relations
 export const monstersRelations = relations(monsters, ({ one, many }) => ({
   creator: one(users, {
-    fields: [monsters.userId],
+    fields: [monsters.creatorId],
     references: [users.id],
   }),
   source: one(sources, {
@@ -132,7 +132,7 @@ export const monstersRelations = relations(monsters, ({ one, many }) => ({
 // Item relations
 export const itemsRelations = relations(items, ({ one, many }) => ({
   creator: one(users, {
-    fields: [items.userId],
+    fields: [items.creatorId],
     references: [users.id],
   }),
   source: one(sources, {
@@ -152,7 +152,7 @@ export const itemsRelations = relations(items, ({ one, many }) => ({
 // Companion relations
 export const companionsRelations = relations(companions, ({ one, many }) => ({
   creator: one(users, {
-    fields: [companions.userId],
+    fields: [companions.creatorId],
     references: [users.id],
   }),
   source: one(sources, {
@@ -183,7 +183,7 @@ export const conditionsRelations = relations(conditions, ({ one, many }) => ({
 // Subclass relations
 export const subclassesRelations = relations(subclasses, ({ one, many }) => ({
   creator: one(users, {
-    fields: [subclasses.userId],
+    fields: [subclasses.creatorId],
     references: [users.id],
   }),
   source: one(sources, {
@@ -218,7 +218,7 @@ export const spellSchoolsRelations = relations(
   spellSchools,
   ({ one, many }) => ({
     creator: one(users, {
-      fields: [spellSchools.userId],
+      fields: [spellSchools.creatorId],
       references: [users.id],
     }),
     source: one(sources, {
@@ -234,7 +234,7 @@ export const spellSchoolsRelations = relations(
 // Background relations
 export const backgroundsRelations = relations(backgrounds, ({ one, many }) => ({
   creator: one(users, {
-    fields: [backgrounds.userId],
+    fields: [backgrounds.creatorId],
     references: [users.id],
   }),
   source: one(sources, {
@@ -247,7 +247,7 @@ export const backgroundsRelations = relations(backgrounds, ({ one, many }) => ({
 // Ancestry relations
 export const ancestriesRelations = relations(ancestries, ({ one, many }) => ({
   creator: one(users, {
-    fields: [ancestries.userId],
+    fields: [ancestries.creatorId],
     references: [users.id],
   }),
   source: one(sources, {

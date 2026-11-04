@@ -59,7 +59,7 @@ export const POST = internalAction("application/json", async (request) => {
         eq(subclasses.id, subclassId),
         or(
           eq(subclasses.visibility, "public"),
-          eq(subclasses.userId, session.user.id)
+          eq(subclasses.creatorId, session.user.id)
         )
       )
     )

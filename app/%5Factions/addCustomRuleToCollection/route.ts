@@ -59,7 +59,7 @@ export const POST = internalAction("application/json", async (request) => {
         eq(customRules.id, customRuleId),
         or(
           eq(customRules.visibility, "public"),
-          eq(customRules.userId, session.user.id)
+          eq(customRules.creatorId, session.user.id)
         )
       )
     )

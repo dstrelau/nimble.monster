@@ -60,7 +60,7 @@ vi.mock("@/lib/db/schema", () => ({
   monsters: {
     id: "monsters.id",
     visibility: "monsters.visibility",
-    userId: "monsters.user_id",
+    creatorId: "monsters.user_id",
   },
   monstersEncounters: {
     encounterId: "monsters_encounters.encounter_id",
@@ -597,7 +597,7 @@ describe("addMonsterToEncounter", () => {
     queueDb(
       [{ id: "e1", creatorId: "user-1", visibility: "public" }],
       [],
-      [{ id: "m1", visibility: "public", userId: "user-1" }],
+      [{ id: "m1", visibility: "public", creatorId: "user-1" }],
       undefined
     );
 
@@ -616,7 +616,7 @@ describe("addMonsterToEncounter", () => {
     queueDb(
       [{ id: "e1", creatorId: "user-1", visibility: "public" }],
       [{ monsterId: "m1", encounterId: "e1" }],
-      [{ id: "m1", visibility: "public", userId: "user-1" }],
+      [{ id: "m1", visibility: "public", creatorId: "user-1" }],
       undefined
     );
 

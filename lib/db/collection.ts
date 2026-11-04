@@ -205,7 +205,10 @@ export const listCollectionsWithMonstersForUser = async (
     .where(
       and(
         inArray(ancestriesCollections.collectionId, collectionIds),
-        or(eq(ancestries.visibility, "public"), eq(ancestries.userId, user.id))
+        or(
+          eq(ancestries.visibility, "public"),
+          eq(ancestries.creatorId, user.id)
+        )
       )
     );
 
@@ -576,7 +579,10 @@ export const updateCollection = async (
         .where(
           and(
             inArray(monsters.id, input.monsterIds),
-            or(eq(monsters.visibility, "public"), eq(monsters.userId, user.id))
+            or(
+              eq(monsters.visibility, "public"),
+              eq(monsters.creatorId, user.id)
+            )
           )
         );
       if (accessible.length > 0) {
@@ -602,7 +608,7 @@ export const updateCollection = async (
         .where(
           and(
             inArray(items.id, input.itemIds),
-            or(eq(items.visibility, "public"), eq(items.userId, user.id))
+            or(eq(items.visibility, "public"), eq(items.creatorId, user.id))
           )
         );
       if (accessible.length > 0) {
@@ -630,7 +636,7 @@ export const updateCollection = async (
             inArray(spellSchools.id, input.spellSchoolIds),
             or(
               eq(spellSchools.visibility, "public"),
-              eq(spellSchools.userId, user.id)
+              eq(spellSchools.creatorId, user.id)
             )
           )
         );
@@ -660,7 +666,7 @@ export const updateCollection = async (
             inArray(companions.id, input.companionIds),
             or(
               eq(companions.visibility, "public"),
-              eq(companions.userId, user.id)
+              eq(companions.creatorId, user.id)
             )
           )
         );
@@ -690,7 +696,7 @@ export const updateCollection = async (
             inArray(ancestries.id, input.ancestryIds),
             or(
               eq(ancestries.visibility, "public"),
-              eq(ancestries.userId, user.id)
+              eq(ancestries.creatorId, user.id)
             )
           )
         );
@@ -720,7 +726,7 @@ export const updateCollection = async (
             inArray(backgrounds.id, input.backgroundIds),
             or(
               eq(backgrounds.visibility, "public"),
-              eq(backgrounds.userId, user.id)
+              eq(backgrounds.creatorId, user.id)
             )
           )
         );
@@ -750,7 +756,7 @@ export const updateCollection = async (
             inArray(subclasses.id, input.subclassIds),
             or(
               eq(subclasses.visibility, "public"),
-              eq(subclasses.userId, user.id)
+              eq(subclasses.creatorId, user.id)
             )
           )
         );
@@ -778,7 +784,7 @@ export const updateCollection = async (
         .where(
           and(
             inArray(classes.id, input.classIds),
-            or(eq(classes.visibility, "public"), eq(classes.userId, user.id))
+            or(eq(classes.visibility, "public"), eq(classes.creatorId, user.id))
           )
         );
       if (accessible.length > 0) {
@@ -807,7 +813,7 @@ export const updateCollection = async (
             inArray(customRules.id, input.customRuleIds),
             or(
               eq(customRules.visibility, "public"),
-              eq(customRules.userId, user.id)
+              eq(customRules.creatorId, user.id)
             )
           )
         );
@@ -1309,7 +1315,7 @@ async function loadCollectionOverview(
             ? eq(ancestries.visibility, "public")
             : or(
                 eq(ancestries.visibility, "public"),
-                eq(ancestries.userId, creator.id)
+                eq(ancestries.creatorId, creator.id)
               )
         )
       ),

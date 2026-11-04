@@ -134,7 +134,7 @@ it("cleans legacy ability JSON in all tables and team members without changing a
     .insert(schema.companions)
     .values({
       name: "Companion",
-      userId: ownerId,
+      creatorId: ownerId,
       kind: "Wolf",
       class: "Hunter",
       hpPerLevel: "5",

@@ -45,7 +45,7 @@ beforeAll(async () => {
   await db.insert(schema.items).values([
     {
       id: "a",
-      userId: "owner",
+      creatorId: "owner",
       name: "Alpha",
       kind: "Moon & Sun",
       description: "Full description",
@@ -60,7 +60,7 @@ beforeAll(async () => {
     },
     {
       id: "b",
-      userId: "other",
+      creatorId: "other",
       name: "Bravo",
       description: "B",
       rarity: "common",
@@ -70,7 +70,7 @@ beforeAll(async () => {
     },
     {
       id: "c",
-      userId: "owner",
+      creatorId: "owner",
       name: "Zulu",
       description: "C",
       rarity: "very_rare",
@@ -80,7 +80,7 @@ beforeAll(async () => {
     },
     {
       id: "private",
-      userId: "owner",
+      creatorId: "owner",
       name: "Alpha private",
       description: "Secret",
       rarity: "rare",

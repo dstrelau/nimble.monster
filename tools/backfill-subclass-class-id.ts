@@ -29,7 +29,7 @@ async function backfill() {
     .select({
       id: classes.id,
       name: classes.name,
-      userId: classes.userId,
+      userId: classes.creatorId,
       subclassNamePreface: classes.subclassNamePreface,
     })
     .from(classes);
@@ -56,7 +56,7 @@ async function backfill() {
     .select({
       id: subclasses.id,
       className: subclasses.className,
-      userId: subclasses.userId,
+      userId: subclasses.creatorId,
     })
     .from(subclasses)
     .where(isNull(subclasses.classId));

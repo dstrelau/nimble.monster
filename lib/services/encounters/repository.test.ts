@@ -87,7 +87,7 @@ const makeUserRow = (id: string) => ({
 
 const makeMonsterRow = (id: string, name: string, visibility = "public") => ({
   id,
-  userId: "user-1",
+  creatorId: "user-1",
   name,
   hp: 10,
   hpPerHero: null,

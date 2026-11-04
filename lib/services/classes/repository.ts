@@ -44,7 +44,7 @@ export const upsertOfficialClass = async (input: {
     .select({ id: classes.id })
     .from(classes)
     .where(
-      and(eq(classes.name, input.name), eq(classes.userId, OFFICIAL_USER_ID))
+      and(eq(classes.name, input.name), eq(classes.creatorId, OFFICIAL_USER_ID))
     )
     .limit(1);
 
@@ -104,7 +104,7 @@ export const upsertOfficialClass = async (input: {
           weapons: input.weapons,
           startingGear: input.startingGear,
           visibility: "public",
-          userId: OFFICIAL_USER_ID,
+          creatorId: OFFICIAL_USER_ID,
           sourceId: input.sourceId || null,
           createdAt: "2024-01-01 00:00:00",
         });
@@ -198,7 +198,7 @@ export const findOfficialClassesByNames = async (
     .select()
     .from(classes)
     .where(
-      and(inArray(classes.name, names), eq(classes.userId, OFFICIAL_USER_ID))
+      and(inArray(classes.name, names), eq(classes.creatorId, OFFICIAL_USER_ID))
     );
 
   if (rows.length === 0) return result;

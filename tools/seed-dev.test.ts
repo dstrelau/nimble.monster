@@ -91,7 +91,7 @@ describe("dev reference seed", () => {
     expect(companion).toMatchObject({
       name: "Stabs, the Somewhat Reliable",
       visibility: "public",
-      userId: devId,
+      creatorId: devId,
       hpPerLevel: "5",
     });
     expect(companion?.actions).toEqual(
@@ -99,7 +99,7 @@ describe("dev reference seed", () => {
     );
     const encounterMonsters = await db
       .select({
-        owner: schema.monsters.userId,
+        owner: schema.monsters.creatorId,
         quantity: schema.monstersEncounters.quantity,
       })
       .from(schema.monstersEncounters)
@@ -111,7 +111,7 @@ describe("dev reference seed", () => {
       { owner: OFFICIAL_USER_ID, quantity: 4 },
     ]);
     const adventureMonsters = await db
-      .select({ owner: schema.monsters.userId })
+      .select({ owner: schema.monsters.creatorId })
       .from(schema.adventureNodeMonsters)
       .innerJoin(
         schema.monsters,
@@ -174,7 +174,7 @@ describe("dev reference seed", () => {
         .from(schema.monsters)
         .where(
           and(
-            eq(schema.monsters.userId, devId),
+            eq(schema.monsters.creatorId, devId),
             eq(schema.monsters.hazard, true)
           )
         ),
@@ -190,7 +190,7 @@ describe("dev reference seed", () => {
         .from(schema.monsters)
         .where(
           and(
-            eq(schema.monsters.userId, devId),
+            eq(schema.monsters.creatorId, devId),
             eq(schema.monsters.hazard, true)
           )
         ),

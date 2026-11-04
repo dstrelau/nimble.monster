@@ -143,7 +143,7 @@ export async function listPublicAdventures(): Promise<AdventureOverview[]> {
   const rows = await db
     .select({ adventure: adventures, creator: users })
     .from(adventures)
-    .innerJoin(users, eq(adventures.userId, users.id))
+    .innerJoin(users, eq(adventures.creatorId, users.id))
     .where(eq(adventures.visibility, "public"))
     .orderBy(asc(adventures.name));
 
@@ -157,8 +157,8 @@ export async function listAdventuresForUser(
   const rows = await db
     .select({ adventure: adventures, creator: users })
     .from(adventures)
-    .innerJoin(users, eq(adventures.userId, users.id))
-    .where(eq(adventures.userId, userId))
+    .innerJoin(users, eq(adventures.creatorId, users.id))
+    .where(eq(adventures.creatorId, userId))
     .orderBy(asc(adventures.name));
 
   return rows.map(toAdventureOverview);
@@ -190,9 +190,9 @@ export async function listPublicAdventuresForUser(
   const rows = await db
     .select({ adventure: adventures, creator: users })
     .from(adventures)
-    .innerJoin(users, eq(adventures.userId, users.id))
+    .innerJoin(users, eq(adventures.creatorId, users.id))
     .where(
-      and(eq(adventures.userId, userId), eq(adventures.visibility, "public"))
+      and(eq(adventures.creatorId, userId), eq(adventures.visibility, "public"))
     )
     .orderBy(asc(adventures.name));
 
@@ -205,7 +205,7 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
   const [row] = await db
     .select({ adventure: adventures, creator: users })
     .from(adventures)
-    .innerJoin(users, eq(adventures.userId, users.id))
+    .innerJoin(users, eq(adventures.creatorId, users.id))
     .where(eq(adventures.id, id))
     .limit(1);
   if (!row) return null;
@@ -264,7 +264,7 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
   const canDisplayReference = (entity: BestiaryEntry | Item | RandomTable) =>
     entity.visibility === "public" ||
     (row.adventure.visibility === "private" &&
-      entity.creator.id === row.adventure.userId);
+      entity.creator.id === row.adventure.creatorId);
   const getEncounter = (node: typeof adventureNodes.$inferSelect) => {
     const encounter = node.encounterId
       ? encounterMap.get(node.encounterId)
@@ -272,7 +272,7 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
     return encounter &&
       (encounter.visibility === "public" ||
         (row.adventure.visibility === "private" &&
-          encounter.creator.id === row.adventure.userId))
+          encounter.creator.id === row.adventure.creatorId))
       ? encounter
       : null;
   };
@@ -332,7 +332,7 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
         image:
           node.kind === "image" && node.imageId && node.imageExtension
             ? getAdventureImageUrls(
-                row.adventure.userId,
+                row.adventure.creatorId,
                 node.imageId,
                 node.imageExtension
               )
@@ -595,11 +595,11 @@ async function validateStatblockAccess(
   const monsterVisibility =
     visibility === "public"
       ? eq(monsters.visibility, "public")
-      : or(eq(monsters.visibility, "public"), eq(monsters.userId, userId));
+      : or(eq(monsters.visibility, "public"), eq(monsters.creatorId, userId));
   const itemVisibility =
     visibility === "public"
       ? eq(items.visibility, "public")
-      : or(eq(items.visibility, "public"), eq(items.userId, userId));
+      : or(eq(items.visibility, "public"), eq(items.creatorId, userId));
   const accessibleMonsters =
     monsterIds.length > 0
       ? await db
@@ -798,7 +798,7 @@ export async function createAdventure(
     await attachAdventureImages(tx, id, userId, input.nodes);
     await tx.insert(adventures).values({
       id,
-      userId,
+      creatorId: userId,
       name,
       tagline: input.tagline.trim(),
       summary: input.summary.trim(),
@@ -825,7 +825,7 @@ export async function updateAdventure(
     const [existing] = await tx
       .select({ id: adventures.id })
       .from(adventures)
-      .where(and(eq(adventures.id, id), eq(adventures.userId, userId)))
+      .where(and(eq(adventures.id, id), eq(adventures.creatorId, userId)))
       .limit(1);
     if (!existing) throw new AdventureInputError("Adventure not found");
     previousImageIds = new Set(

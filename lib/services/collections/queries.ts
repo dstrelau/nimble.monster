@@ -962,7 +962,7 @@ export const findPublicCollectionById = async (
     const monsterRows = await db
       .select()
       .from(monsters)
-      .innerJoin(users, eq(monsters.userId, users.id))
+      .innerJoin(users, eq(monsters.creatorId, users.id))
       .leftJoin(sources, eq(monsters.sourceId, sources.id))
       .where(inArray(monsters.id, monsterIds));
 
@@ -1036,7 +1036,7 @@ export const findPublicCollectionById = async (
       const remixedFromRows = await db
         .select()
         .from(monsters)
-        .innerJoin(users, eq(monsters.userId, users.id))
+        .innerJoin(users, eq(monsters.creatorId, users.id))
         .where(inArray(monsters.id, remixedFromIds));
 
       for (const row of remixedFromRows) {
@@ -1072,7 +1072,7 @@ export const findPublicCollectionById = async (
     const itemRows = await db
       .select()
       .from(items)
-      .innerJoin(users, eq(items.userId, users.id))
+      .innerJoin(users, eq(items.creatorId, users.id))
       .leftJoin(sources, eq(items.sourceId, sources.id))
       .where(inArray(items.id, itemIds));
 

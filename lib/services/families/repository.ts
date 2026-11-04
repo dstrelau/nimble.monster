@@ -99,7 +99,7 @@ export async function getRandomFeaturedFamily(): Promise<Family | null> {
       .from(monstersFamilies)
       .where(eq(monstersFamilies.familyId, family.id))
       .innerJoin(monsters, eq(monstersFamilies.monsterId, monsters.id))
-      .innerJoin(users, eq(monsters.userId, users.id))
+      .innerJoin(users, eq(monsters.creatorId, users.id))
       .leftJoin(sources, eq(monsters.sourceId, sources.id));
 
     const publicMonsters = monsterFamilyLinks.filter(

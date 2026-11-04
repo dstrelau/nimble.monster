@@ -47,7 +47,7 @@ beforeAll(async () => {
   await db.insert(schema.companions).values([
     {
       id: "a",
-      userId: "owner",
+      creatorId: "owner",
       name: "Alpha",
       kind: "Wolf",
       class: "Hunter, Mage",
@@ -68,7 +68,7 @@ beforeAll(async () => {
     },
     {
       id: "b",
-      userId: "other",
+      creatorId: "other",
       name: "Alpha",
       kind: "Bird",
       class: "Mage",
@@ -79,7 +79,7 @@ beforeAll(async () => {
     },
     {
       id: "c",
-      userId: "owner",
+      creatorId: "owner",
       name: "Zulu",
       class: "Hunter",
       hpPerLevel: "5",
@@ -89,7 +89,7 @@ beforeAll(async () => {
     },
     {
       id: "private",
-      userId: "owner",
+      creatorId: "owner",
       name: "Alpha secret",
       class: "Hunter",
       hpPerLevel: "9",

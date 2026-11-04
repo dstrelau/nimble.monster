@@ -27,7 +27,7 @@ describe("getEntityById", () => {
     await db.insert(schema.users).values({ id: ownerId, username: "owner" });
     await db.insert(schema.monsters).values({
       id,
-      userId: ownerId,
+      creatorId: ownerId,
       name: "Pit",
       hazard: true,
       level: "1",
@@ -37,7 +37,7 @@ describe("getEntityById", () => {
     });
     await db.insert(schema.customRules).values({
       id,
-      userId: ownerId,
+      creatorId: ownerId,
       name: "House Rule",
       content: "Text",
       visibility: "public",
@@ -110,43 +110,45 @@ describe("entity reference visibility", () => {
         .values({ ...fields, creatorId: ownerId });
       await db
         .insert(schema.ancestries)
-        .values({ ...fields, userId: ownerId, description: "Text" });
+        .values({ ...fields, creatorId: ownerId, description: "Text" });
       await db
         .insert(schema.backgrounds)
-        .values({ ...fields, userId: ownerId, description: "Text" });
-      await db.insert(schema.adventures).values({ ...fields, userId: ownerId });
+        .values({ ...fields, creatorId: ownerId, description: "Text" });
+      await db
+        .insert(schema.adventures)
+        .values({ ...fields, creatorId: ownerId });
       await db
         .insert(schema.spellSchools)
-        .values({ ...fields, userId: ownerId });
+        .values({ ...fields, creatorId: ownerId });
       await db
         .insert(schema.encounters)
         .values({ ...fields, creatorId: ownerId });
       await db
         .insert(schema.randomTables)
         .values({ ...fields, creatorId: ownerId });
-      await db.insert(schema.items).values({ ...fields, userId: ownerId });
+      await db.insert(schema.items).values({ ...fields, creatorId: ownerId });
       await db
         .insert(schema.companions)
-        .values({ ...fields, userId: ownerId, hpPerLevel: "5" });
+        .values({ ...fields, creatorId: ownerId, hpPerLevel: "5" });
       await db
         .insert(schema.collections)
         .values({ ...fields, creatorId: ownerId });
       await db.insert(schema.classes).values({
         ...fields,
-        userId: ownerId,
+        creatorId: ownerId,
         description: "Text",
         hitDie: "d8",
         startingHp: 12,
       });
       await db.insert(schema.subclasses).values({
         ...fields,
-        userId: ownerId,
+        creatorId: ownerId,
         description: "Text",
         className: "Test Class",
       });
       await db
         .insert(schema.customRules)
-        .values({ ...fields, userId: ownerId, content: "Text" });
+        .values({ ...fields, creatorId: ownerId, content: "Text" });
     }
     await db.insert(schema.families).values({
       id: secretId,

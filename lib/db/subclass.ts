@@ -160,7 +160,7 @@ async function loadSubclassFullData(
   const subclassRows = await db
     .select()
     .from(subclasses)
-    .innerJoin(users, eq(subclasses.userId, users.id))
+    .innerJoin(users, eq(subclasses.creatorId, users.id))
     .leftJoin(sources, eq(subclasses.sourceId, sources.id))
     .where(inArray(subclasses.id, subclassIds));
 
@@ -286,7 +286,10 @@ export const deleteSubclass = async (input: {
   const result = await db
     .delete(subclasses)
     .where(
-      and(eq(subclasses.id, input.id), eq(subclasses.userId, userResult[0].id))
+      and(
+        eq(subclasses.id, input.id),
+        eq(subclasses.creatorId, userResult[0].id)
+      )
     );
 
   return result.rowsAffected > 0;
@@ -320,7 +323,7 @@ export const listSubclassMinisForClass = async (
   const rows = await db
     .select()
     .from(subclasses)
-    .innerJoin(users, eq(subclasses.userId, users.id))
+    .innerJoin(users, eq(subclasses.creatorId, users.id))
     .where(
       and(
         eq(subclasses.className, className),
@@ -368,7 +371,7 @@ export const findSubclassWithCreator = async (
   const check = await db
     .select({ id: subclasses.id })
     .from(subclasses)
-    .where(and(eq(subclasses.id, id), eq(subclasses.userId, creatorId)))
+    .where(and(eq(subclasses.id, id), eq(subclasses.creatorId, creatorId)))
     .limit(1);
 
   if (check.length === 0) return null;
@@ -388,7 +391,7 @@ export const listPublicSubclassesForUser = async (
     .select({ id: subclasses.id })
     .from(subclasses)
     .where(
-      and(eq(subclasses.userId, userId), eq(subclasses.visibility, "public"))
+      and(eq(subclasses.creatorId, userId), eq(subclasses.visibility, "public"))
     )
     .orderBy(asc(subclasses.name));
 
@@ -419,7 +422,7 @@ export const listAllSubclassesForDiscordID = async (
   const subclassRows = await db
     .select({ id: subclasses.id })
     .from(subclasses)
-    .where(eq(subclasses.userId, userResult[0].id))
+    .where(eq(subclasses.creatorId, userResult[0].id))
     .orderBy(asc(subclasses.name));
 
   if (subclassRows.length === 0) return [];
@@ -500,7 +503,7 @@ export const createSubclass = async (
     tagline: input.tagline || undefined,
     description: input.description || undefined,
     visibility: input.visibility,
-    userId: userResult[0].id,
+    creatorId: userResult[0].id,
   });
 
   // Insert abilities
@@ -603,7 +606,10 @@ export const updateSubclass = async (
     .select()
     .from(subclasses)
     .where(
-      and(eq(subclasses.id, input.id), eq(subclasses.userId, userResult[0].id))
+      and(
+        eq(subclasses.id, input.id),
+        eq(subclasses.creatorId, userResult[0].id)
+      )
     )
     .limit(1);
 
@@ -771,7 +777,9 @@ export const findSubclassWithCreatorDiscordId = async (
   const check = await db
     .select({ id: subclasses.id })
     .from(subclasses)
-    .where(and(eq(subclasses.id, id), eq(subclasses.userId, userResult[0].id)))
+    .where(
+      and(eq(subclasses.id, id), eq(subclasses.creatorId, userResult[0].id))
+    )
     .limit(1);
 
   if (check.length === 0) return null;

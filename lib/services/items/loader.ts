@@ -77,7 +77,7 @@ export async function loadItemFullData(
   const itemRows = await db
     .select()
     .from(items)
-    .innerJoin(users, eq(items.userId, users.id))
+    .innerJoin(users, eq(items.creatorId, users.id))
     .leftJoin(sources, eq(items.sourceId, sources.id))
     .where(inArray(items.id, itemIds));
   const awardRows = await db

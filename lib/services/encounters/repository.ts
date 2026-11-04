@@ -287,7 +287,7 @@ const searchEncounters = async ({
       row.monster.visibility !== "public" &&
       !(
         encounter?.visibility === "private" &&
-        row.monster.userId === encounter.creatorId
+        row.monster.creatorId === encounter.creatorId
       )
     )
       continue;

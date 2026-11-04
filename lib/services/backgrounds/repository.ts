@@ -105,7 +105,7 @@ async function loadBackgroundFullData(
   const backgroundRows = await db
     .select()
     .from(backgrounds)
-    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .innerJoin(users, eq(backgrounds.creatorId, users.id))
     .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
     .where(inArray(backgrounds.id, backgroundIds));
 
@@ -155,7 +155,7 @@ export const deleteBackground = async (
   const result = await db
     .delete(backgrounds)
     .where(
-      and(eq(backgrounds.id, id), eq(backgrounds.userId, userResult[0].id))
+      and(eq(backgrounds.id, id), eq(backgrounds.creatorId, userResult[0].id))
     );
 
   return result.rowsAffected > 0;
@@ -202,7 +202,7 @@ export const paginatePublicBackgrounds = async ({
   ];
 
   if (creatorId) {
-    conditions.push(eq(backgrounds.userId, creatorId));
+    conditions.push(eq(backgrounds.creatorId, creatorId));
   }
 
   if (source) {
@@ -269,7 +269,7 @@ export const paginatePublicBackgrounds = async ({
   const rows = await db
     .select()
     .from(backgrounds)
-    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .innerJoin(users, eq(backgrounds.creatorId, users.id))
     .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
     .where(allConditions.length > 0 ? and(...allConditions) : undefined)
     .orderBy(...orderBy)
@@ -366,9 +366,9 @@ export const findBackgroundWithCreatorId = async (
   const result = await db
     .select()
     .from(backgrounds)
-    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .innerJoin(users, eq(backgrounds.creatorId, users.id))
     .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
-    .where(and(eq(backgrounds.id, id), eq(backgrounds.userId, creatorId)))
+    .where(and(eq(backgrounds.id, id), eq(backgrounds.creatorId, creatorId)))
     .limit(1);
 
   if (result.length === 0) return null;
@@ -400,7 +400,7 @@ export const listAllBackgroundsForDiscordID = async (
   const rows = await db
     .select()
     .from(backgrounds)
-    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .innerJoin(users, eq(backgrounds.creatorId, users.id))
     .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
     .where(eq(users.discordId, discordId))
     .orderBy(asc(backgrounds.name));
@@ -460,7 +460,7 @@ export const searchPublicBackgrounds = async ({
       .limit(1);
 
     if (userResult.length > 0) {
-      conditions.push(eq(backgrounds.userId, userResult[0].id));
+      conditions.push(eq(backgrounds.creatorId, userResult[0].id));
     }
   }
 
@@ -481,7 +481,7 @@ export const searchPublicBackgrounds = async ({
   const rows = await db
     .select()
     .from(backgrounds)
-    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .innerJoin(users, eq(backgrounds.creatorId, users.id))
     .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
     .where(conditions.length > 0 ? and(...conditions) : undefined)
     .orderBy(orderBy)
@@ -543,7 +543,7 @@ export const createBackground = async (
       name,
       description,
       requirement: requirement || null,
-      userId: user.id,
+      creatorId: user.id,
     })
     .returning();
 
@@ -594,7 +594,7 @@ export const updateBackground = async (
       requirement: requirement || null,
       updatedAt: new Date().toISOString(),
     })
-    .where(and(eq(backgrounds.id, id), eq(backgrounds.userId, user.id)))
+    .where(and(eq(backgrounds.id, id), eq(backgrounds.creatorId, user.id)))
     .returning();
 
   if (result.length === 0) {
@@ -646,7 +646,7 @@ export const upsertOfficialBackground = async (
     .where(
       and(
         eq(backgrounds.name, input.name),
-        eq(backgrounds.userId, OFFICIAL_USER_ID)
+        eq(backgrounds.creatorId, OFFICIAL_USER_ID)
       )
     )
     .limit(1);
@@ -669,7 +669,7 @@ export const upsertOfficialBackground = async (
     await db.insert(backgrounds).values({
       id: crypto.randomUUID(),
       ...values,
-      userId: OFFICIAL_USER_ID,
+      creatorId: OFFICIAL_USER_ID,
       createdAt: "2024-01-01 00:00:00",
     });
   }
@@ -684,12 +684,12 @@ export const findOfficialBackgroundsByNames = async (
   const rows = await db
     .select()
     .from(backgrounds)
-    .innerJoin(users, eq(backgrounds.userId, users.id))
+    .innerJoin(users, eq(backgrounds.creatorId, users.id))
     .leftJoin(sources, eq(backgrounds.sourceId, sources.id))
     .where(
       and(
         inArray(backgrounds.name, names),
-        eq(backgrounds.userId, OFFICIAL_USER_ID)
+        eq(backgrounds.creatorId, OFFICIAL_USER_ID)
       )
     );
 

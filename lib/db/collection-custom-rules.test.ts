@@ -39,16 +39,16 @@ beforeEach(async () => {
     { id: otherId, username: "other", discordId: "other" },
   ]);
   await db.insert(schema.customRules).values([
-    { id: ruleIds.pub, userId: otherId, name: "Pub", visibility: "public" },
+    { id: ruleIds.pub, creatorId: otherId, name: "Pub", visibility: "public" },
     {
       id: ruleIds.ownPrivate,
-      userId: ownerId,
+      creatorId: ownerId,
       name: "Mine",
       visibility: "private",
     },
     {
       id: ruleIds.foreignPrivate,
-      userId: otherId,
+      creatorId: otherId,
       name: "Theirs",
       visibility: "private",
     },

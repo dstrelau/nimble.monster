@@ -41,22 +41,22 @@ beforeAll(async () => {
   ]);
   await db.insert(schema.classes).values(
     [
-      { id: "official", name: "Delta Mage", userId: official },
-      { id: "public", name: "Alpha Mage", userId: "other" },
-      { id: "owned-public", name: "Zulu Mage", userId: "owner" },
+      { id: "official", name: "Delta Mage", creatorId: official },
+      { id: "public", name: "Alpha Mage", creatorId: "other" },
+      { id: "owned-public", name: "Zulu Mage", creatorId: "owner" },
       {
         id: "owned-private",
         name: "Beta Mage",
-        userId: "owner",
+        creatorId: "owner",
         visibility: "private",
       },
       {
         id: "foreign-private",
         name: "Gamma Mage",
-        userId: "other",
+        creatorId: "other",
         visibility: "private",
       },
-      { id: "special", name: "Rock & Ice + 雪", userId: "other" },
+      { id: "special", name: "Rock & Ice + 雪", creatorId: "other" },
     ].map((row): typeof schema.classes.$inferInsert => ({
       ...row,
       visibility: row.visibility === "private" ? "private" : "public",

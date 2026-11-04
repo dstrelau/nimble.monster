@@ -50,7 +50,7 @@ async function loadMonsterFullData(
   const monsterRows = await db
     .select()
     .from(monsters)
-    .innerJoin(users, eq(monsters.userId, users.id))
+    .innerJoin(users, eq(monsters.creatorId, users.id))
     .leftJoin(sources, eq(monsters.sourceId, sources.id))
     .where(inArray(monsters.id, monsterIds));
 
@@ -83,7 +83,7 @@ async function loadMonsterFullData(
     const remixedFromRows = await db
       .select({ monster: monsters, creator: users })
       .from(monsters)
-      .innerJoin(users, eq(monsters.userId, users.id))
+      .innerJoin(users, eq(monsters.creatorId, users.id))
       .where(inArray(monsters.id, remixedFromIds));
 
     for (const row of remixedFromRows) {

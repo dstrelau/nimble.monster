@@ -59,7 +59,7 @@ export const POST = internalAction("application/json", async (request) => {
         eq(companions.id, companionId),
         or(
           eq(companions.visibility, "public"),
-          eq(companions.userId, session.user.id)
+          eq(companions.creatorId, session.user.id)
         )
       )
     )

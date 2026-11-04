@@ -46,7 +46,7 @@ beforeAll(async () => {
   await db.insert(schema.backgrounds).values([
     {
       id: "a",
-      userId: "owner",
+      creatorId: "owner",
       name: "Alpha",
       description: "Track",
       requirement: "DEX 2",
@@ -57,7 +57,7 @@ beforeAll(async () => {
     },
     {
       id: "b",
-      userId: "other",
+      creatorId: "other",
       name: "Alpha",
       description: "Other",
       likeCount: 9,
@@ -66,7 +66,7 @@ beforeAll(async () => {
     },
     {
       id: "c",
-      userId: "owner",
+      creatorId: "owner",
       name: "Zulu",
       description: "Last",
       sourceId: "source",
@@ -76,7 +76,7 @@ beforeAll(async () => {
     },
     {
       id: "private",
-      userId: "owner",
+      creatorId: "owner",
       name: "Alpha secret",
       description: "Hidden",
       sourceId: "source",

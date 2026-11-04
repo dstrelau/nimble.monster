@@ -297,7 +297,7 @@ async function loadMonsterFullData(
   const monsterRows = await db
     .select()
     .from(monsters)
-    .innerJoin(users, eq(monsters.userId, users.id))
+    .innerJoin(users, eq(monsters.creatorId, users.id))
     .leftJoin(sources, eq(monsters.sourceId, sources.id))
     .where(
       hazard === undefined
@@ -344,7 +344,7 @@ async function loadMonsterFullData(
     const remixedFromRows = await db
       .select({ monster: monsters, creator: users })
       .from(monsters)
-      .innerJoin(users, eq(monsters.userId, users.id))
+      .innerJoin(users, eq(monsters.creatorId, users.id))
       .where(inArray(monsters.id, remixedFromIds));
 
     for (const row of remixedFromRows) {
@@ -429,7 +429,7 @@ export const deleteMonster = async (
       .where(
         and(
           eq(monsters.id, id),
-          eq(monsters.userId, user.id),
+          eq(monsters.creatorId, user.id),
           eq(monsters.hazard, false)
         )
       )
@@ -469,7 +469,7 @@ export const deleteHazard = async (
     .where(
       and(
         eq(monsters.id, id),
-        eq(monsters.userId, userResult[0].id),
+        eq(monsters.creatorId, userResult[0].id),
         eq(monsters.hazard, true)
       )
     );
@@ -531,11 +531,11 @@ const paginateBestiaryEntries = async ({
   }
 
   if (creatorId) {
-    whereConditions.push(eq(monsters.userId, creatorId));
+    whereConditions.push(eq(monsters.creatorId, creatorId));
   }
 
   if (excludeCreatorId) {
-    whereConditions.push(ne(monsters.userId, excludeCreatorId));
+    whereConditions.push(ne(monsters.creatorId, excludeCreatorId));
   }
 
   if (source) {
@@ -864,7 +864,10 @@ export const findOfficialMonstersByNames = async (
     .select({ id: monsters.id, name: monsters.name })
     .from(monsters)
     .where(
-      and(eq(monsters.userId, OFFICIAL_USER_ID), inArray(monsters.name, names))
+      and(
+        eq(monsters.creatorId, OFFICIAL_USER_ID),
+        inArray(monsters.name, names)
+      )
     );
 
   if (monsterIdRows.length === 0) return new Map();
@@ -926,7 +929,7 @@ export const findMonsterWithCreatorId = async (
     .where(
       and(
         eq(monsters.id, id),
-        eq(monsters.userId, creatorId),
+        eq(monsters.creatorId, creatorId),
         eq(monsters.hazard, false)
       )
     )
@@ -973,7 +976,7 @@ export const findHazardWithCreatorId = async (
     .where(
       and(
         eq(monsters.id, id),
-        eq(monsters.userId, creatorId),
+        eq(monsters.creatorId, creatorId),
         eq(monsters.hazard, true)
       )
     )
@@ -993,7 +996,7 @@ export const countPublicMonstersForUser = async (
     .from(monsters)
     .where(
       and(
-        eq(monsters.userId, userId),
+        eq(monsters.creatorId, userId),
         eq(monsters.visibility, "public"),
         eq(monsters.hazard, false)
       )
@@ -1012,7 +1015,7 @@ export const listPublicMonstersForUser = async (
     .from(monsters)
     .where(
       and(
-        eq(monsters.userId, userId),
+        eq(monsters.creatorId, userId),
         eq(monsters.visibility, "public"),
         eq(monsters.hazard, false)
       )
@@ -1048,7 +1051,7 @@ export const listAllMonstersForDiscordID = async (
   const monsterIdRows = await db
     .select({ id: monsters.id })
     .from(monsters)
-    .where(and(eq(monsters.userId, user.id), eq(monsters.hazard, false)))
+    .where(and(eq(monsters.creatorId, user.id), eq(monsters.hazard, false)))
     .orderBy(asc(monsters.name));
 
   if (monsterIdRows.length === 0) return [];
@@ -1135,7 +1138,7 @@ export const findMonsterRemixes = async (monsterId: string) => {
   const remixRows = await db
     .select()
     .from(monsters)
-    .innerJoin(users, eq(monsters.userId, users.id))
+    .innerJoin(users, eq(monsters.creatorId, users.id))
     .where(
       and(
         eq(monsters.remixedFromId, monsterId),
@@ -1264,7 +1267,7 @@ const createBestiaryEntry = async (
       role: hazard ? null : role,
       paperforgeId: hazard ? null : paperforgeId,
       customArtwork: hazard ? null : input.customArtwork,
-      userId: user.id,
+      creatorId: user.id,
       remixedFromId: remixedFromId || null,
     });
   });
@@ -1393,7 +1396,9 @@ export const upsertOfficialMonster = async (
   const existingMonster = await db
     .select({ id: monsters.id })
     .from(monsters)
-    .where(and(eq(monsters.name, name), eq(monsters.userId, OFFICIAL_USER_ID)))
+    .where(
+      and(eq(monsters.name, name), eq(monsters.creatorId, OFFICIAL_USER_ID))
+    )
     .limit(1);
 
   const isTeam = !hazard && members.length > 0;
@@ -1486,7 +1491,7 @@ export const upsertOfficialMonster = async (
       await tx.insert(monsters).values({
         id: monsterId,
         ...monsterValues,
-        userId: OFFICIAL_USER_ID,
+        creatorId: OFFICIAL_USER_ID,
         createdAt: "2024-01-01 00:00:00",
       });
     }
@@ -1590,7 +1595,7 @@ const updateBestiaryEntry = async (
       .where(
         and(
           eq(monsters.id, id),
-          eq(monsters.userId, user.id),
+          eq(monsters.creatorId, user.id),
           eq(monsters.hazard, hazard)
         )
       )

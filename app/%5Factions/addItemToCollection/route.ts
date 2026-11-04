@@ -57,7 +57,7 @@ export const POST = internalAction("application/json", async (request) => {
     .where(
       and(
         eq(items.id, itemId),
-        or(eq(items.visibility, "public"), eq(items.userId, session.user.id))
+        or(eq(items.visibility, "public"), eq(items.creatorId, session.user.id))
       )
     )
     .limit(1);

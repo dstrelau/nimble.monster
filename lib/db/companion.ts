@@ -15,7 +15,7 @@ async function loadCompanionWithRelations(companionId: string) {
   const companionRows = await db
     .select()
     .from(companions)
-    .innerJoin(users, eq(companions.userId, users.id))
+    .innerJoin(users, eq(companions.creatorId, users.id))
     .leftJoin(sources, eq(companions.sourceId, sources.id))
     .where(eq(companions.id, companionId))
     .limit(1);
@@ -59,7 +59,9 @@ export const deleteCompanion = async ({
 
   const result = await db
     .delete(companions)
-    .where(and(eq(companions.id, id), eq(companions.userId, userResult[0].id)));
+    .where(
+      and(eq(companions.id, id), eq(companions.creatorId, userResult[0].id))
+    );
 
   return result.rowsAffected > 0;
 };
@@ -70,7 +72,7 @@ export const listPublicCompanions = async (): Promise<Companion[]> => {
   const rows = await db
     .select()
     .from(companions)
-    .innerJoin(users, eq(companions.userId, users.id))
+    .innerJoin(users, eq(companions.creatorId, users.id))
     .leftJoin(sources, eq(companions.sourceId, sources.id))
     .where(eq(companions.visibility, "public"))
     .orderBy(asc(companions.name));
@@ -110,7 +112,7 @@ export const findCompanionWithCreator = async (
   const check = await db
     .select({ id: companions.id })
     .from(companions)
-    .where(and(eq(companions.id, id), eq(companions.userId, creatorId)))
+    .where(and(eq(companions.id, id), eq(companions.creatorId, creatorId)))
     .limit(1);
 
   if (check.length === 0) return null;
@@ -127,10 +129,10 @@ export const listPublicCompanionsForUser = async (
   const rows = await db
     .select()
     .from(companions)
-    .innerJoin(users, eq(companions.userId, users.id))
+    .innerJoin(users, eq(companions.creatorId, users.id))
     .leftJoin(sources, eq(companions.sourceId, sources.id))
     .where(
-      and(eq(companions.userId, userId), eq(companions.visibility, "public"))
+      and(eq(companions.creatorId, userId), eq(companions.visibility, "public"))
     )
     .orderBy(asc(companions.name));
 
@@ -163,7 +165,7 @@ export const listAllCompanionsForDiscordID = async (
   const rows = await db
     .select()
     .from(companions)
-    .innerJoin(users, eq(companions.userId, users.id))
+    .innerJoin(users, eq(companions.creatorId, users.id))
     .leftJoin(sources, eq(companions.sourceId, sources.id))
     .where(eq(users.discordId, discordId))
     .orderBy(asc(companions.name));
@@ -241,7 +243,7 @@ export const createCompanion = async (
       dyingRule: input.dyingRule,
       moreInfo: input.moreInfo || "",
       visibility: input.visibility,
-      userId: userResult[0].id,
+      creatorId: userResult[0].id,
       paperforgeId: input.paperforgeId || null,
     })
     .returning();
@@ -313,7 +315,10 @@ export const updateCompanion = async (
       updatedAt: new Date().toISOString(),
     })
     .where(
-      and(eq(companions.id, input.id), eq(companions.userId, userResult[0].id))
+      and(
+        eq(companions.id, input.id),
+        eq(companions.creatorId, userResult[0].id)
+      )
     );
 
   const data = await loadCompanionWithRelations(input.id);

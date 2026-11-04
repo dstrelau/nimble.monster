@@ -73,12 +73,12 @@ describe("ancestry visibility", () => {
       { id: otherId, discordId: "other-discord", username: "other" },
     ]);
     await db.insert(schema.ancestries).values([
-      { ...input, id: publicId, userId: ownerId, size: '["medium"]' },
+      { ...input, id: publicId, creatorId: ownerId, size: '["medium"]' },
       {
         ...input,
         id: privateId,
         name: "Owner private",
-        userId: ownerId,
+        creatorId: ownerId,
         size: '["small"]',
         visibility: "private",
       },
@@ -86,7 +86,7 @@ describe("ancestry visibility", () => {
         ...input,
         id: otherPrivateId,
         name: "Other private",
-        userId: otherId,
+        creatorId: otherId,
         size: '["large"]',
         visibility: "private",
       },

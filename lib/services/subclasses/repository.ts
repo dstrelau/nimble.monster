@@ -33,7 +33,7 @@ export const upsertOfficialSubclass = async (input: {
       and(
         eq(subclasses.name, input.name),
         eq(subclasses.className, input.className),
-        eq(subclasses.userId, OFFICIAL_USER_ID)
+        eq(subclasses.creatorId, OFFICIAL_USER_ID)
       )
     )
     .limit(1);
@@ -85,7 +85,7 @@ export const upsertOfficialSubclass = async (input: {
           tagline: input.tagline || null,
           description: input.description || null,
           visibility: "public",
-          userId: OFFICIAL_USER_ID,
+          creatorId: OFFICIAL_USER_ID,
           sourceId: input.sourceId || null,
           // Fixed timestamp so official content sorts consistently before user content
           createdAt: "2024-01-01 00:00:00",
@@ -125,7 +125,7 @@ export const findOfficialSubclassesByNames = async (
     .where(
       and(
         inArray(subclasses.name, allNames),
-        eq(subclasses.userId, OFFICIAL_USER_ID)
+        eq(subclasses.creatorId, OFFICIAL_USER_ID)
       )
     );
 

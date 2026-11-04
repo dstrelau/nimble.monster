@@ -58,7 +58,7 @@ export const upsertOfficialSpellSchool = async (input: {
     .where(
       and(
         eq(spellSchools.name, input.name),
-        eq(spellSchools.userId, OFFICIAL_USER_ID)
+        eq(spellSchools.creatorId, OFFICIAL_USER_ID)
       )
     )
     .limit(1);
@@ -82,7 +82,7 @@ export const upsertOfficialSpellSchool = async (input: {
       name: input.name,
       description: input.description || null,
       visibility: "public",
-      userId: OFFICIAL_USER_ID,
+      creatorId: OFFICIAL_USER_ID,
       sourceId: input.sourceId || null,
       createdAt: "2024-01-01 00:00:00",
     });
@@ -153,7 +153,7 @@ export const findOfficialSpellSchoolsByNames = async (
     .where(
       and(
         inArray(spellSchools.name, names),
-        eq(spellSchools.userId, OFFICIAL_USER_ID)
+        eq(spellSchools.creatorId, OFFICIAL_USER_ID)
       )
     );
 

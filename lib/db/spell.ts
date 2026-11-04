@@ -93,7 +93,7 @@ export const findSpell = async (id: string): Promise<Spell | null> => {
     .select()
     .from(spells)
     .innerJoin(spellSchools, eq(spells.schoolId, spellSchools.id))
-    .innerJoin(users, eq(spellSchools.userId, users.id))
+    .innerJoin(users, eq(spellSchools.creatorId, users.id))
     .where(eq(spells.id, id))
     .limit(1);
 
@@ -117,7 +117,7 @@ export const findPublicSpellById = async (
     .select()
     .from(spells)
     .innerJoin(spellSchools, eq(spells.schoolId, spellSchools.id))
-    .innerJoin(users, eq(spellSchools.userId, users.id))
+    .innerJoin(users, eq(spellSchools.creatorId, users.id))
     .where(eq(spells.id, id))
     .limit(1);
 
@@ -147,8 +147,8 @@ export const findSpellWithCreator = async (
     .select()
     .from(spells)
     .innerJoin(spellSchools, eq(spells.schoolId, spellSchools.id))
-    .innerJoin(users, eq(spellSchools.userId, users.id))
-    .where(and(eq(spells.id, id), eq(spellSchools.userId, creatorId)))
+    .innerJoin(users, eq(spellSchools.creatorId, users.id))
+    .where(and(eq(spells.id, id), eq(spellSchools.creatorId, creatorId)))
     .limit(1);
 
   if (result.length === 0) return null;

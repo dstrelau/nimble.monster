@@ -48,7 +48,7 @@ export const getUserPublicMonstersCount = async (
     .from(monsters)
     .where(
       and(
-        eq(monsters.userId, userResult[0].id),
+        eq(monsters.creatorId, userResult[0].id),
         eq(monsters.visibility, "public")
       )
     );
@@ -82,7 +82,7 @@ export const topMonsterCreators = async (limit = 10): Promise<User[]> => {
     .from(users)
     .innerJoin(
       monsters,
-      and(eq(monsters.userId, users.id), eq(monsters.visibility, "public"))
+      and(eq(monsters.creatorId, users.id), eq(monsters.visibility, "public"))
     )
     .groupBy(users.id)
     .orderBy(desc(count(monsters.id)))
@@ -97,7 +97,7 @@ export const topItemCreators = async (limit = 10): Promise<User[]> => {
     .from(users)
     .innerJoin(
       items,
-      and(eq(items.userId, users.id), eq(items.visibility, "public"))
+      and(eq(items.creatorId, users.id), eq(items.visibility, "public"))
     )
     .groupBy(users.id)
     .orderBy(desc(count(items.id)))

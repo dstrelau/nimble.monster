@@ -144,7 +144,7 @@ async function seedDevItems(): Promise<number> {
         moreInfo: item.moreInfo,
         rarity: item.rarity,
         visibility: item.visibility,
-        userId: DEV_USER.id,
+        creatorId: DEV_USER.id,
         imageIcon: item.imageIcon,
         imageBgIcon: item.imageBgIcon,
         imageColor: item.imageColor,
@@ -165,7 +165,7 @@ async function seedDevReferences(): Promise<void> {
   const existingCompanion = await db.query.companions.findFirst({
     columns: { id: true },
     where: and(
-      eq(companions.userId, DEV_USER.id),
+      eq(companions.creatorId, DEV_USER.id),
       eq(companions.name, companion.name),
       eq(companions.visibility, "public")
     ),
@@ -182,7 +182,7 @@ async function seedDevReferences(): Promise<void> {
   const existingRule = await db.query.customRules.findFirst({
     columns: { id: true },
     where: and(
-      eq(customRules.userId, DEV_USER.id),
+      eq(customRules.creatorId, DEV_USER.id),
       eq(customRules.name, ruleName),
       eq(customRules.visibility, "public")
     ),
@@ -204,7 +204,7 @@ async function seedDevReferences(): Promise<void> {
     .from(monsters)
     .where(
       and(
-        eq(monsters.userId, OFFICIAL_USER_ID),
+        eq(monsters.creatorId, OFFICIAL_USER_ID),
         eq(monsters.visibility, "public"),
         eq(monsters.hazard, false),
         inArray(monsters.name, [
@@ -253,7 +253,7 @@ async function seedDevReferences(): Promise<void> {
   const existingAdventure = await db.query.adventures.findFirst({
     columns: { id: true },
     where: and(
-      eq(adventures.userId, DEV_USER.id),
+      eq(adventures.creatorId, DEV_USER.id),
       eq(adventures.name, adventure.name),
       eq(adventures.visibility, "public")
     ),
@@ -271,7 +271,7 @@ async function seedDevReferences(): Promise<void> {
   const existingHazard = await db.query.monsters.findFirst({
     columns: { id: true },
     where: and(
-      eq(monsters.userId, DEV_USER.id),
+      eq(monsters.creatorId, DEV_USER.id),
       eq(monsters.name, hazardName),
       eq(monsters.hazard, true),
       eq(monsters.visibility, "public")
@@ -330,17 +330,17 @@ export async function seedDevData(): Promise<void> {
       description: "A sample magic item owned by the dev user.",
       rarity: "uncommon",
       visibility: "public",
-      userId: DEV_USER.id,
+      creatorId: DEV_USER.id,
     },
     {
       id: DEV_HEALING_POTION_ID,
       ...ITEM_EXAMPLES["Healing Potion"],
-      userId: DEV_USER.id,
+      creatorId: DEV_USER.id,
     },
     {
       id: DEV_GEM_OF_ESCAPE_ID,
       ...ITEM_EXAMPLES["Gem of Escape"],
-      userId: DEV_USER.id,
+      creatorId: DEV_USER.id,
     },
   ] satisfies (typeof items.$inferInsert)[];
   for (const item of devItems) {
@@ -374,7 +374,7 @@ export async function seedDevData(): Promise<void> {
   const existing = await db
     .select({ id: monsters.id })
     .from(monsters)
-    .where(eq(monsters.userId, DEV_USER.id))
+    .where(eq(monsters.creatorId, DEV_USER.id))
     .limit(1);
 
   if (existing.length === 0) {
@@ -383,7 +383,7 @@ export async function seedDevData(): Promise<void> {
     const officialMonster = await db
       .select({ id: monsters.id })
       .from(monsters)
-      .where(eq(monsters.userId, OFFICIAL_USER_ID))
+      .where(eq(monsters.creatorId, OFFICIAL_USER_ID))
       .limit(1);
 
     await createCollection({

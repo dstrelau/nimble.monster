@@ -141,7 +141,7 @@ it("detaches legacy foreign/shared links without deleting their lists, but remov
       description: "",
       hitDie: "d6",
       startingHp: 7,
-      userId: ownerId,
+      creatorId: ownerId,
     })
     .returning();
   await db.insert(schema.classesClassAbilityLists).values({

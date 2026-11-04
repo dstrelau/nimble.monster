@@ -205,12 +205,12 @@ async function loadCustomRulesFullData(
   const ruleRows = await db
     .select({ rule: customRules, creator: customRuleCreatorColumns })
     .from(customRules)
-    .innerJoin(users, eq(customRules.userId, users.id))
+    .innerJoin(users, eq(customRules.creatorId, users.id))
     .where(
       and(
         ruleIds ? inArray(customRules.id, ruleIds) : undefined,
         visibility ? eq(customRules.visibility, visibility) : undefined,
-        userId ? eq(customRules.userId, userId) : undefined
+        userId ? eq(customRules.creatorId, userId) : undefined
       )
     )
     .orderBy(asc(customRules.name));
@@ -258,7 +258,7 @@ export async function listPublicCustomRuleMinis(): Promise<CustomRuleMini[]> {
   const rows = await db
     .select({ rule: customRules, creator: customRuleCreatorColumns })
     .from(customRules)
-    .innerJoin(users, eq(customRules.userId, users.id))
+    .innerJoin(users, eq(customRules.creatorId, users.id))
     .where(eq(customRules.visibility, "public"))
     .orderBy(asc(customRules.name));
   return rows.map(toCustomRuleMini);
@@ -284,13 +284,13 @@ export async function listCustomRuleMinisByCollection(
       customRules,
       eq(customRulesCollections.customRuleId, customRules.id)
     )
-    .innerJoin(users, eq(customRules.userId, users.id))
+    .innerJoin(users, eq(customRules.creatorId, users.id))
     .where(
       and(
         inArray(customRulesCollections.collectionId, collectionIds),
         or(
           eq(customRules.visibility, "public"),
-          ownerId ? eq(customRules.userId, ownerId) : undefined
+          ownerId ? eq(customRules.creatorId, ownerId) : undefined
         )
       )
     )
@@ -393,7 +393,7 @@ export async function listPublicCustomRulesForRules(
     })
     .from(customRuleLinks)
     .innerJoin(customRules, eq(customRuleLinks.customRuleId, customRules.id))
-    .innerJoin(users, eq(customRules.userId, users.id))
+    .innerJoin(users, eq(customRules.creatorId, users.id))
     .where(
       and(
         inArray(customRuleLinks.ruleSlug, ruleSlugs),
@@ -439,7 +439,7 @@ export async function createCustomRule(
   await db.transaction(async (tx) => {
     await tx.insert(customRules).values({
       id,
-      userId: input.userId,
+      creatorId: input.userId,
       name,
       content: input.content,
       keywords: input.keywords.trim(),
@@ -481,7 +481,7 @@ export async function updateCustomRule(
     .select({ id: customRules.id })
     .from(customRules)
     .where(
-      and(eq(customRules.id, input.id), eq(customRules.userId, input.userId))
+      and(eq(customRules.id, input.id), eq(customRules.creatorId, input.userId))
     )
     .limit(1);
   if (existing.length === 0) throw new Error("Custom rule not found");
@@ -539,6 +539,6 @@ export async function deleteCustomRule(
   // custom_rule_links cascades on delete.
   const result = await db
     .delete(customRules)
-    .where(and(eq(customRules.id, id), eq(customRules.userId, userId)));
+    .where(and(eq(customRules.id, id), eq(customRules.creatorId, userId)));
   return result.rowsAffected > 0;
 }

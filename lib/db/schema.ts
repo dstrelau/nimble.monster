@@ -235,7 +235,7 @@ export const monsters = sqliteTable(
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
-    userId: text("user_id")
+    creatorId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
     sourceId: text("source_id").references(() => sources.id, {
@@ -315,7 +315,7 @@ export const monsters = sqliteTable(
       .default(false),
     likeCount: integer("like_count").notNull().default(0),
   },
-  (table) => [index("idx_monsters_user_id").on(table.userId)]
+  (table) => [index("idx_monsters_user_id").on(table.creatorId)]
 );
 
 export const monsterArtworks = sqliteTable(
@@ -346,7 +346,7 @@ export const items = sqliteTable(
     description: text("description").notNull().default(""),
     moreInfo: text("more_info").default(""),
     visibility: text("visibility").$type<ItemVisibility>().default("public"),
-    userId: text("user_id")
+    creatorId: text("user_id")
       .notNull()
       .references(() => users.id, { onUpdate: "cascade" }),
     sourceId: text("source_id").references(() => sources.id, {
@@ -363,7 +363,7 @@ export const items = sqliteTable(
     imageBackdrop: text("image_backdrop"),
     likeCount: integer("like_count").notNull().default(0),
   },
-  (table) => [index("idx_items_user_id").on(table.userId)]
+  (table) => [index("idx_items_user_id").on(table.creatorId)]
 );
 
 // Companions table
@@ -391,7 +391,7 @@ export const companions = sqliteTable(
     visibility: text("visibility")
       .$type<CompanionVisibility>()
       .default("public"),
-    userId: text("user_id")
+    creatorId: text("user_id")
       .notNull()
       .references(() => users.id, { onUpdate: "cascade" }),
     sourceId: text("source_id").references(() => sources.id, {
@@ -402,7 +402,7 @@ export const companions = sqliteTable(
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
     likeCount: integer("like_count").notNull().default(0),
   },
-  (table) => [index("idx_companions_user_id").on(table.userId)]
+  (table) => [index("idx_companions_user_id").on(table.creatorId)]
 );
 
 // Families table
@@ -455,7 +455,7 @@ export const subclasses = sqliteTable(
     visibility: text("visibility")
       .$type<SubclassVisibility>()
       .default("public"),
-    userId: text("user_id")
+    creatorId: text("user_id")
       .notNull()
       .references(() => users.id, { onUpdate: "cascade" }),
     sourceId: text("source_id").references(() => sources.id, {
@@ -467,7 +467,7 @@ export const subclasses = sqliteTable(
     likeCount: integer("like_count").notNull().default(0),
   },
   (table) => [
-    index("idx_subclasses_user_id").on(table.userId),
+    index("idx_subclasses_user_id").on(table.creatorId),
     index("idx_subclasses_class_id").on(table.classId),
   ]
 );
@@ -538,7 +538,7 @@ export const spellSchools = sqliteTable(
     visibility: text("visibility")
       .$type<SpellSchoolVisibility>()
       .default("public"),
-    userId: text("user_id")
+    creatorId: text("user_id")
       .notNull()
       .references(() => users.id, { onUpdate: "cascade" }),
     sourceId: text("source_id").references(() => sources.id, {
@@ -548,7 +548,7 @@ export const spellSchools = sqliteTable(
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
     likeCount: integer("like_count").notNull().default(0),
   },
-  (table) => [index("idx_spell_schools_user_id").on(table.userId)]
+  (table) => [index("idx_spell_schools_user_id").on(table.creatorId)]
 );
 
 // Backgrounds table
@@ -562,7 +562,7 @@ export const backgrounds = sqliteTable(
     description: text("description").notNull(),
     requirement: text("requirement"),
     visibility: text("visibility").default("public"),
-    userId: text("user_id")
+    creatorId: text("user_id")
       .notNull()
       .references(() => users.id, { onUpdate: "cascade" }),
     sourceId: text("source_id").references(() => sources.id, {
@@ -572,7 +572,7 @@ export const backgrounds = sqliteTable(
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
     likeCount: integer("like_count").notNull().default(0),
   },
-  (table) => [index("idx_backgrounds_user_id").on(table.userId)]
+  (table) => [index("idx_backgrounds_user_id").on(table.creatorId)]
 );
 
 // Ancestries table
@@ -588,7 +588,7 @@ export const ancestries = sqliteTable(
     size: text("size").notNull().default(""),
     rarity: text("rarity").$type<AncestryRarity>().default("common"),
     visibility: text("visibility").default("public"),
-    userId: text("user_id")
+    creatorId: text("user_id")
       .notNull()
       .references(() => users.id, { onUpdate: "cascade" }),
     sourceId: text("source_id").references(() => sources.id, {
@@ -598,7 +598,7 @@ export const ancestries = sqliteTable(
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
     likeCount: integer("like_count").notNull().default(0),
   },
-  (table) => [index("idx_ancestries_user_id").on(table.userId)]
+  (table) => [index("idx_ancestries_user_id").on(table.creatorId)]
 );
 
 // Awards table
@@ -684,7 +684,7 @@ export const classes = sqliteTable(
       .$type<ClassVisibility>()
       .notNull()
       .default("public"),
-    userId: text("user_id")
+    creatorId: text("user_id")
       .notNull()
       .references(() => users.id, { onUpdate: "cascade" }),
     sourceId: text("source_id").references(() => sources.id, {
@@ -694,7 +694,7 @@ export const classes = sqliteTable(
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
     likeCount: integer("like_count").notNull().default(0),
   },
-  (table) => [index("idx_classes_user_id").on(table.userId)]
+  (table) => [index("idx_classes_user_id").on(table.creatorId)]
 );
 
 // Class abilities table
@@ -1382,7 +1382,7 @@ export const customRules = sqliteTable(
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
-    userId: text("user_id")
+    creatorId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
     name: text("name").notNull(),
@@ -1396,7 +1396,7 @@ export const customRules = sqliteTable(
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },
-  (table) => [index("idx_custom_rules_user_id").on(table.userId)]
+  (table) => [index("idx_custom_rules_user_id").on(table.creatorId)]
 );
 
 export type CustomRuleRow = typeof customRules.$inferSelect;
@@ -1490,7 +1490,7 @@ export const adventures = sqliteTable(
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
-    userId: text("user_id")
+    creatorId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
     sourceId: text("source_id").references(() => sources.id, {
@@ -1512,7 +1512,7 @@ export const adventures = sqliteTable(
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
   },
   (table) => [
-    index("idx_adventures_user_id").on(table.userId),
+    index("idx_adventures_user_id").on(table.creatorId),
     index("idx_adventures_visibility_updated_at").on(
       table.visibility,
       table.updatedAt

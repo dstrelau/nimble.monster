@@ -158,7 +158,7 @@ async function loadClassFullData(
   const classRows = await db
     .select()
     .from(classes)
-    .innerJoin(users, eq(classes.userId, users.id))
+    .innerJoin(users, eq(classes.creatorId, users.id))
     .leftJoin(sources, eq(classes.sourceId, sources.id))
     .where(inArray(classes.id, classIds));
 
@@ -281,7 +281,9 @@ export const deleteClass = async (input: {
 
   const result = await db
     .delete(classes)
-    .where(and(eq(classes.id, input.id), eq(classes.userId, userResult[0].id)));
+    .where(
+      and(eq(classes.id, input.id), eq(classes.creatorId, userResult[0].id))
+    );
 
   return result.rowsAffected > 0;
 };
@@ -335,7 +337,7 @@ export const findClassWithCreatorDiscordId = async (
   const check = await db
     .select({ id: classes.id })
     .from(classes)
-    .where(and(eq(classes.id, id), eq(classes.userId, userResult[0].id)))
+    .where(and(eq(classes.id, id), eq(classes.creatorId, userResult[0].id)))
     .limit(1);
 
   if (check.length === 0) return null;
@@ -354,7 +356,7 @@ export const listPublicClassesForUser = async (
   const classRows = await db
     .select({ id: classes.id })
     .from(classes)
-    .where(and(eq(classes.userId, userId), eq(classes.visibility, "public")))
+    .where(and(eq(classes.creatorId, userId), eq(classes.visibility, "public")))
     .orderBy(asc(classes.name));
 
   if (classRows.length === 0) return [];
@@ -384,7 +386,7 @@ export const listAllClassesForDiscordID = async (
   const classRows = await db
     .select({ id: classes.id })
     .from(classes)
-    .where(eq(classes.userId, userResult[0].id))
+    .where(eq(classes.creatorId, userResult[0].id))
     .orderBy(asc(classes.name));
 
   if (classRows.length === 0) return [];
@@ -412,7 +414,7 @@ export const searchPublicClassesWithCreator = async (
   const rows = await db
     .select({ class: classes, user: users })
     .from(classes)
-    .innerJoin(users, eq(classes.userId, users.id))
+    .innerJoin(users, eq(classes.creatorId, users.id))
     .where(and(...conditions))
     .orderBy(asc(classes.name));
 
@@ -481,7 +483,7 @@ export const createClass = async (input: CreateClassInput): Promise<Class> => {
       weapons: input.weapons,
       startingGear: input.startingGear,
       visibility: input.visibility,
-      userId: userResult[0].id,
+      creatorId: userResult[0].id,
     });
 
     if (abilityInserts.length > 0) {
@@ -545,7 +547,9 @@ export const updateClass = async (input: UpdateClassInput): Promise<Class> => {
   const existing = await db
     .select()
     .from(classes)
-    .where(and(eq(classes.id, input.id), eq(classes.userId, userResult[0].id)))
+    .where(
+      and(eq(classes.id, input.id), eq(classes.creatorId, userResult[0].id))
+    )
     .limit(1);
 
   if (existing.length === 0) {
@@ -662,11 +666,11 @@ export const searchClassesForSubclass = async (params: {
       id: classes.id,
       name: classes.name,
       subclassNamePreface: classes.subclassNamePreface,
-      userId: classes.userId,
+      userId: classes.creatorId,
       user: users,
     })
     .from(classes)
-    .innerJoin(users, eq(classes.userId, users.id))
+    .innerJoin(users, eq(classes.creatorId, users.id))
     .where(and(...conditions))
     .orderBy(asc(classes.name))
     .limit(50);
@@ -674,7 +678,7 @@ export const searchClassesForSubclass = async (params: {
   // If user is logged in, also fetch their private classes
   let ownedRows: typeof rows = [];
   if (params.userId) {
-    const ownedConditions = [eq(classes.userId, params.userId)];
+    const ownedConditions = [eq(classes.creatorId, params.userId)];
     if (params.searchTerm) {
       ownedConditions.push(like(classes.name, `%${params.searchTerm}%`));
     }
@@ -683,11 +687,11 @@ export const searchClassesForSubclass = async (params: {
         id: classes.id,
         name: classes.name,
         subclassNamePreface: classes.subclassNamePreface,
-        userId: classes.userId,
+        userId: classes.creatorId,
         user: users,
       })
       .from(classes)
-      .innerJoin(users, eq(classes.userId, users.id))
+      .innerJoin(users, eq(classes.creatorId, users.id))
       .where(and(...ownedConditions))
       .orderBy(asc(classes.name))
       .limit(50);
