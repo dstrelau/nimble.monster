@@ -17,10 +17,10 @@ import {
 import ReferencePage from "@/app/dev/entity-references/page";
 import type { ReferenceExample } from "@/app/dev/entity-references/fixtures";
 import conditionJSON from "@/data/official/gmg/conditions.json";
-import { getEntityById } from "@/lib/actions/entities";
 import { getDatabase } from "@/lib/db/drizzle";
 import * as relations from "@/lib/db/relations";
 import * as schema from "@/lib/db/schema";
+import { resolveEntityReferences } from "@/lib/services/entity-references";
 import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import { seedDevData } from "./seed-dev";
 import { seedOfficial } from "./seed-official";
@@ -71,7 +71,9 @@ describe("dev reference seed", () => {
     expect(examples).toHaveLength(17);
     expect(examples.filter((example) => !example.available)).toEqual([]);
     for (const example of examples) {
-      const entity = await getEntityById(example.type, example.id);
+      const [entity] = await resolveEntityReferences([
+        { type: example.type, id: example.id },
+      ]);
       expect(entity, example.key).toMatchObject({ type: example.type });
       if (example.key === "hazard") {
         expect(entity).toMatchObject({
@@ -81,8 +83,10 @@ describe("dev reference seed", () => {
       }
       if (example.privateId) {
         await expect(
-          getEntityById(example.type, example.privateId)
-        ).resolves.toBeNull();
+          resolveEntityReferences([
+            { type: example.type, id: example.privateId },
+          ])
+        ).resolves.toEqual([]);
       }
     }
 
@@ -131,7 +135,9 @@ describe("dev reference seed", () => {
       .update(schema.companions)
       .set({ visibility: "private" })
       .where(eq(schema.companions.id, companion.id));
-    await expect(getEntityById("companion", companion.id)).resolves.toBeNull();
+    await expect(
+      resolveEntityReferences([{ type: "companion", id: companion.id }])
+    ).resolves.toEqual([]);
     const hazard = await db.query.monsters.findFirst({
       where: eq(schema.monsters.hazard, true),
     });
@@ -140,7 +146,9 @@ describe("dev reference seed", () => {
       .update(schema.monsters)
       .set({ visibility: "private" })
       .where(eq(schema.monsters.id, hazard.id));
-    await expect(getEntityById("monster", hazard.id)).resolves.toBeNull();
+    await expect(
+      resolveEntityReferences([{ type: "monster", id: hazard.id }])
+    ).resolves.toEqual([]);
     await db.delete(schema.customRules);
     await db.delete(schema.adventures);
     await db.delete(schema.encounters);

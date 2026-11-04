@@ -6,7 +6,7 @@ import { getDatabase } from "@/lib/db/drizzle";
 import * as relations from "@/lib/db/relations";
 import * as schema from "@/lib/db/schema";
 import { uuidToIdentifier } from "@/lib/utils/slug";
-import { getEntitiesByIds, getEntityById } from "./entities";
+import { resolveEntityReferences } from "./entity-references";
 
 vi.mock("@/lib/db/drizzle", () => ({ getDatabase: vi.fn() }));
 vi.mock("@/lib/auth", () => ({
@@ -15,7 +15,7 @@ vi.mock("@/lib/auth", () => ({
   })),
 }));
 
-describe("getEntityById", () => {
+describe("resolveEntityReferences", () => {
   let client: Client;
   beforeAll(async () => {
     client = createClient({ url: "file::memory:" });
@@ -47,41 +47,57 @@ describe("getEntityById", () => {
 
   it("uses the canonical hazard destination for monster references", async () => {
     await expect(
-      getEntityById("monster", "00000000000000000000000001")
-    ).resolves.toEqual({
-      id: "00000000-0000-0000-0000-000000000001",
-      name: "Pit",
-      type: "monster",
-      href: "/hazards/pit-00000000000000000000000001",
-    });
+      resolveEntityReferences([
+        { type: "monster", id: "00000000000000000000000001" },
+      ])
+    ).resolves.toEqual([
+      {
+        id: "00000000-0000-0000-0000-000000000001",
+        name: "Pit",
+        type: "monster",
+        href: "/hazards/pit-00000000000000000000000001",
+      },
+    ]);
   });
 
   it("resolves an official rule slug", async () => {
-    await expect(getEntityById("rule", "conditions")).resolves.toEqual({
-      id: "conditions",
-      name: "Conditions",
-      type: "rule",
-      href: "/rules/conditions",
-    });
+    await expect(
+      resolveEntityReferences([{ type: "rule", id: "conditions" }])
+    ).resolves.toEqual([
+      {
+        id: "conditions",
+        name: "Conditions",
+        type: "rule",
+        href: "/rules/conditions",
+      },
+    ]);
   });
 
   it("links an official variant to its section on the parent rule", async () => {
-    await expect(getEntityById("rule", "playing-dead")).resolves.toEqual({
-      id: "playing-dead",
-      name: "Playing Dead",
-      type: "rule",
-      href: "/rules/conditions#variant-playing-dead",
-    });
+    await expect(
+      resolveEntityReferences([{ type: "rule", id: "playing-dead" }])
+    ).resolves.toEqual([
+      {
+        id: "playing-dead",
+        name: "Playing Dead",
+        type: "rule",
+        href: "/rules/conditions#variant-playing-dead",
+      },
+    ]);
   });
 
   it("falls back to a public custom rule for a rule identifier", async () => {
     await expect(
-      getEntityById("rule", "00000000000000000000000001")
-    ).resolves.toEqual({
-      id: "00000000-0000-0000-0000-000000000001",
-      name: "House Rule",
-      type: "rule",
-    });
+      resolveEntityReferences([
+        { type: "rule", id: "00000000000000000000000001" },
+      ])
+    ).resolves.toEqual([
+      {
+        id: "00000000-0000-0000-0000-000000000001",
+        name: "House Rule",
+        type: "rule",
+      },
+    ]);
   });
 });
 
@@ -179,25 +195,33 @@ describe("entity reference visibility", () => {
   ] as const)(
     "resolves only public %s content, even for its owner",
     async (type) => {
-      await expect(getEntityById(type, publicId)).resolves.toMatchObject({
-        id: publicId,
-        name: "public content",
-        type,
-      });
-      await expect(getEntityById(type, privateId)).resolves.toBeNull();
       await expect(
-        getEntityById(type, uuidToIdentifier(privateId))
-      ).resolves.toBeNull();
+        resolveEntityReferences([{ type, id: publicId }])
+      ).resolves.toMatchObject([
+        {
+          id: publicId,
+          name: "public content",
+          type,
+        },
+      ]);
+      await expect(
+        resolveEntityReferences([{ type, id: privateId }])
+      ).resolves.toEqual([]);
+      await expect(
+        resolveEntityReferences([{ type, id: uuidToIdentifier(privateId) }])
+      ).resolves.toEqual([]);
     }
   );
 
   it("rejects secret families too", async () => {
-    await expect(getEntityById("family", secretId)).resolves.toBeNull();
+    await expect(
+      resolveEntityReferences([{ type: "family", id: secretId }])
+    ).resolves.toEqual([]);
   });
 
   it("deduplicates IDs and resolves a mixed batch with one metadata query per type", async () => {
     const execute = vi.spyOn(client, "execute");
-    const result = await getEntitiesByIds([
+    const result = await resolveEntityReferences([
       { type: "family", id: publicId },
       { type: "family", id: uuidToIdentifier(publicId) },
       { type: "family", id: privateId },

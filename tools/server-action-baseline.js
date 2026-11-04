@@ -6,7 +6,6 @@ export const serverActionBaseline = {
     "app/my/(library)/backgrounds/actions.ts": 1,
     "app/my/(library)/items/actions.ts": 1,
     "app/spell-schools/actions.ts": 1,
-    "lib/actions/entities.ts": 2,
   },
   repositoryMarkers: {
     "lib/services/ancestries/repository.ts": 12,

@@ -1089,6 +1089,47 @@ No replacement endpoint or new UI is necessary, and no live traffic-ranked
 operation is displaced. Coordination found no other unarchived child owner.
 Refresh evidence before selecting the next tied zero-volume operation.
 
+### Unused entity-reference wrapper selection — November 4, 2026
+
+Refreshed fixed **2026-11-03T08:00:00Z–2026-11-04T08:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/Cgt8th1zqSu).
+Root HTTP spans only (`trace.parent_id` absent, `next-action` present), grouped
+by ID and coalesced HTTP status, contain **690 attempts**: **688 excluded `x`
+probes** and two named failed attempts, one each for already-migrated
+`app/actions/nav.ts#getNavCountsAction` and
+`app/actions/conditions.ts#loadOfficialConditions`. Their `00984f…` and
+`006f67…` aliases reuse the verified v241 manifest provenance recorded above;
+no new extraction is claimed. No otherwise-unmapped 24-hour volume remains.
+Mean sample rate is **1**, 1,371,955 rows were examined and OTHER is zero.
+Bots/QA are included; HTTP <400/≥400 is transport outcome, not domain success.
+
+The refreshed **2026-10-28T08:00:00Z–2026-11-04T08:00:00Z**
+[seven-day export](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/Jfq8ixUnC6w)
+contains **6,499 attempts**, mean sample rate **1**, 6,537,975 examined rows,
+zero OTHER and **3,024 known probes** (`x`/`0`/`1`/`action`/`y`). Six other
+invalid/unmapped attempts remain excluded from named rankings (two 64-zero
+IDs and four nonmanifest IDs). Full JSON exports are retained in the run.
+Historical seven-day aliases are not freshly remapped: reuse the prior
+150-image/148-SHA verified coverage and zero-remaining-volume conclusion.
+The new interval is contained in the union of the preceding verified seven-day
+interval and this fresh 24-hour interval, whose only named operations are
+already migrated. Thus all remaining named actions still tie at zero;
+aliases aggregate by verified filename/export, not build-specific IDs, and
+invalid/unmapped probes are not assigned to named actions.
+
+| Priority | Remaining operation | 24h attempts (<400/≥400) | 7d attempts (<400/≥400) |
+| --- | --- | ---: | ---: |
+| Selected unused group | `lib/actions/entities.ts#getEntityById`, `getEntitiesByIds` | 0 (0/0) | 0 (0/0) |
+| Tied remaining | All other remaining named actions | 0 (0/0) | 0 (0/0) |
+
+A full repository caller audit finds only database-backed service/seed tests.
+`FormattedText` already uses `useEntityQuery` and stable batched
+`GET /_actions/entityReferences`; the original implementation left these
+now-unused wrappers. Remove the wrappers, preserve meaningful
+tests against `resolveEntityReferences`, and introduce no replacement endpoint.
+No live-volume action is displaced. Coordination found only this unarchived
+child; refresh evidence before selecting the next zero-volume candidate.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1293,6 +1334,41 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Unused entity-reference wrappers — November 2026
+
+- Selected the tightly related unused `getEntityById` and `getEntitiesByIds`
+  exports from the refreshed zero-volume tie above. Removed their empty
+  `lib/actions/entities.ts` module and baseline entry: application ratchet
+  **30 → 28**. Seven repository markers and their 70 exports are unchanged.
+- The only callers were `lib/actions/entities.test.ts` and
+  `tools/seed-dev.test.ts`. Moved the former to
+  `lib/services/entity-references.test.ts` and made both test the shared service
+  directly, retaining official/variant/hazard destinations, public-only
+  visibility for all supported types, secret exclusion, mixed-batch deduplication
+  and dev-seed coverage. No production caller, domain SQL, auth, serialization,
+  telemetry, cache key, retry, navigation or pending/error UX changes.
+- Browser references already use typed `GET /_actions/entityReferences` through
+  `useEntityQuery`; this slice adds no endpoint, supported API or identity data.
+  Existing route-boundary and real-FormattedText transport tests continue to
+  prove the stable URL and bodyless GET without `next-action`.
+- Focused checks: **119 passed, seven skipped**. Full suite: **2,354 passed,
+  seven skipped**. `make check` and `git diff --check` pass; the pre-existing
+  item-builder unused-import warning remains outside this slice. Fourteen live
+  development requests cover single/mixed/deduplicated batches, official rules
+  and variants, all 14 database entity types against independent SQLite results,
+  private exclusion despite supplied identity/visibility, missing references,
+  malformed and 50/51-reference boundaries, JSON/cache/CORS, HEAD and 405.
+  Browser lab navigation/reload resolves 349 links with zero skeletons; two
+  stable 32-reference GETs have raw CDP extra headers without a body or
+  `next-action`, and no page/console errors occur in that controlled flow.
+- The [run thread](https://ampcode.com/threads/T-01a1a5bd-cfdb-723b-9bee-56e66821ec4a)
+  records local/full checks, live request matrices, inspected browser evidence,
+  deployed identity, functional production requests and cleanup. Development QA
+  reuses the existing reference lab and seeded public/private records; production
+  QA is anonymous/read-only, matching the existing public metadata contract.
+  No fixture writes, sessions, drafts or real-user edits are required.
+  Migration remains incomplete; leave the host schedule enabled.
 
 ### Unused owner-school lookup — November 2026
 
