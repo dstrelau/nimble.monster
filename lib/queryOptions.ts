@@ -1,8 +1,8 @@
 import { listPublicClasses } from "@/app/%5Factions/listPublicClasses/contract";
+import { listPublicSpellSchools } from "@/app/%5Factions/listPublicSpellSchools/contract";
 import { listPublicSubclasses } from "@/app/%5Factions/listPublicSubclasses/contract";
-import { listPublicSpellSchoolsAction } from "@/app/spell-schools/actions";
 import { call } from "@/lib/contract";
-import type { Class, Subclass } from "@/lib/types";
+import type { Class, SpellSchool, Subclass } from "@/lib/types";
 
 export function publicClassesQueryOptions() {
   return {
@@ -77,7 +77,35 @@ export function publicSubclassesQueryOptions() {
 export function publicSpellSchoolsQueryOptions() {
   return {
     queryKey: ["spellSchools-all"],
-    queryFn: listPublicSpellSchoolsAction,
+    queryFn: async ({
+      signal,
+    }: {
+      signal?: AbortSignal;
+    }): Promise<SpellSchool[]> => {
+      const schools = await call(listPublicSpellSchools, undefined, { signal });
+      return schools.map((school) => ({
+        ...school,
+        createdAt: new Date(school.createdAt),
+        updatedAt: new Date(school.updatedAt),
+        source: school.source
+          ? {
+              ...school.source,
+              createdAt: new Date(school.source.createdAt),
+              updatedAt: new Date(school.source.updatedAt),
+            }
+          : undefined,
+        awards: school.awards?.map((award) => ({
+          ...award,
+          createdAt: new Date(award.createdAt),
+          updatedAt: new Date(award.updatedAt),
+        })),
+        spells: school.spells.map((spell) => ({
+          ...spell,
+          createdAt: new Date(spell.createdAt),
+          updatedAt: new Date(spell.updatedAt),
+        })),
+      }));
+    },
     staleTime: 30000,
   };
 }

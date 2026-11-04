@@ -12,9 +12,6 @@ import { publicClassesQueryOptions } from "@/lib/queryOptions";
 import type { Class } from "@/lib/types";
 import { SelectableClassGrid } from "./SelectableClassGrid";
 
-vi.mock("@/app/spell-schools/actions", () => ({
-  listPublicSpellSchoolsAction: vi.fn(),
-}));
 vi.mock("@/lib/services/sources/hooks", () => ({
   useSourcesQuery: () => ({ data: [] }),
   useSourcesForEntityTypeQuery: () => ({ data: [] }),

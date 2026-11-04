@@ -15,10 +15,7 @@ import { publicSubclassesQueryOptions } from "@/lib/queryOptions";
 import type { Subclass } from "@/lib/types";
 import { SelectableSubclassGrid } from "./SelectableSubclassGrid";
 
-// The unmigrated sibling query and unrelated source menu are not exercised here.
-vi.mock("@/app/spell-schools/actions", () => ({
-  listPublicSpellSchoolsAction: vi.fn(),
-}));
+// The unrelated source menu is not exercised here.
 vi.mock("@/lib/services/sources/hooks", () => ({
   useSourcesQuery: () => ({ data: [] }),
   useSourcesForEntityTypeQuery: () => ({ data: [] }),

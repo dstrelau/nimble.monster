@@ -1366,6 +1366,36 @@ contract compatibility window that a future migration must preserve.
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
 
+### Collection spell-school-picker reads — November 2026
+
+- Selected the live spell-school picker from the same-day zero-volume tie above,
+  after class-picker deployment, functional production QA and zero-residue
+  cleanup completed. No other unarchived migration owner exists.
+- `publicSpellSchoolsQueryOptions` uses cancellable bodyless
+  `GET /_actions/listPublicSpellSchools`; collection new/edit server hydration
+  calls `listPublicSpellSchools` directly. Preserve `spellSchools-all`, 30-second
+  freshness, school/description/spell-name search, date/name/likes sorting,
+  pending/error/empty fallback, selection, save and navigation. The browser
+  revives school, spell, source and award dates after JSON.
+- Public-only SQL, tier/name spell ordering, full spell targets/versions and
+  relationship fields, and public creator projection are unchanged. Anonymous
+  and authenticated readers get the same catalogue; identity/visibility query
+  parameters cannot enable private access. Safe GETs need no mutation gate;
+  responses/errors use `private, no-store`, no CORS, telemetry and generic 500s.
+  Unsupported writes receive 405. Third-party API and schema are unchanged.
+- Removed the final export/empty `app/spell-schools/actions.ts` and obsolete
+  sibling-test mocks; application ratchet **27 → 26**. Repository markers are
+  unchanged. Real-SQL route and real-picker transport tests cover private
+  exclusion, nested serialization/date revival, spell-name search, selection,
+  pending/error cache retention and recovery.
+- The [batch thread](https://ampcode.com/threads/T-01a1a6cb-904c-724e-8e50-279e9151ed30)
+  records focused/full checks, live development/production requests, inspected
+  browser clips/screenshots, deployed identity, independently persisted
+  selection and cleanup. QA writes only disposable non-admin users/collections,
+  never original spell content. Retain this stable URL/shape for at least one
+  deployment interval; old Server Action tabs need refresh. Unrelated documented
+  defects remain outside this slice.
+
 ### Collection class-picker reads — November 2026
 
 - `publicClassesQueryOptions` now uses cancellable bodyless
