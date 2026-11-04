@@ -1,154 +1,62 @@
-# Worktrees (wt)
+# Setup and commands
 
-This project uses [worktrunk](https://worktrunk.dev) (`wt`) for parallel worktree workflows. Config: `.config/wt.toml`.
+- Use Node.js 26 and the pnpm version pinned in `package.json`; install with `pnpm install --frozen-lockfile`.
+- In Amp orbs, `.agents/setup` installs prerequisites, creates `.env.local`, and runs `make setup`. `.agents/resume` checks prerequisites and starts services; run `.agents/setup` if prerequisites are missing.
+- Start the orb web service with `amp orb services ensure` (`.amp/services.yaml`). Use `amp orb service logs web` for logs. Do not start duplicate servers or keep services alive with `nohup`, `&`, or tmux. Share the returned portal URL, not localhost or direct sandbox URLs.
+- Preserve the managed service's portal-based `AUTH_URL` and `ALLOWED_DEV_ORIGINS`. It automatically logs in as `admin` in development.
+- Outside an orb, copy `.env.example` to `.env.local`, generate `AUTH_SECRET`, configure `PUPPETEER_EXECUTABLE_PATH`, then run `make setup` and `pnpm dev`.
+- `make setup` installs dependencies, migrates/seeds `db/dev.db`, and syncs icons; it does not reset an existing DB. `make seed` re-seeds.
+- Before `make check`, run `node_modules/.bin/biome check --write <changed supported files>`. Avoid `make fix`: it applies unsafe fixes repo-wide.
+- Run `make check` after changes (Server Action ratchet, Biome, TypeScript). Fix all errors, even if pre-existing.
+- Run `pnpm run test:run` for non-watch tests (Vitest + Testing Library). Add tests for new functionality; keep mocks narrow and clean up when needed.
+- Only run `pnpm run build` when asked; it disrupts the dev server. Run `rm -rf .next` afterward.
 
-- Worktrees are created as sibling directories: `../nimble.nexus.<branch-name>`
-- On create, the hook copies `db/dev.db`, `.env.local`, and `data/paperforge` from main, symlinks `public/paperforge`, then runs `make setup`
+# Data and authentication
 
-# Build Commands
+- Drizzle uses local SQLite via `@libsql/client`. `DATABASE_URL` is required: development uses `file:db/dev.db`; production uses `file:/data/db.sqlite` with Litestream backups to Tigris, not Turso sync. See `lib/db/AGENTS.md` for database-specific guidance.
+- Official content is seeded from `data/official`; use it instead of hand-crafting test monsters. Dev seeds also provide users `dev` (normal, owns sample content) and `admin` (admin flows).
+- Use `/dev-login` or `/api/auth/dev-login?dev-login&username=dev` (or `=admin`) to switch users. Dev login is disabled outside development. Official content belongs to `nimble-co`, not either test user.
+- Development uploads use `public/blob-storage` without Tigris credentials, even when a bucket name is set.
+- Keep secrets private. Production writes, deployments, and infrastructure changes require explicit authorization. `make db-from-prod` deletes/replaces the local DB and requires explicit approval before overwriting local data.
 
-- `make check` - Lint and type-check (dev-safe, use this during development)
-  - You must run this after making changes to ensure there are no type errors or lint errors.
-  - Never dismiss type errors as "pre-existing" and skip them. If `make check` fails, you must fix ALL errors, even if they weren't introduced by your changes.
-- `make lint` - Biome check (linting, formatting, import sorting)
-- `make setup` - Install deps, set up DB, sync icons
-- `pnpm run build` - Production build (breaks dev server. Only run when asked. Always run `rm -rf .next` after.)
+## Migrations
 
-# Database
-
-- Uses Drizzle ORM with Turso (SQLite via libsql)
-- Schema: `lib/db/schema.ts`
-- Client: `lib/db/client.ts` - auto-retries on stale connection errors
-- `pnpm run db:generate` - Generate migrations (see workflow below)
-- `pnpm run db:migrate` - Run migrations
-- `pnpm run db:push` - Prototyping only; it does not update the migration ledger
-- `pnpm run db:seed` - Seed the dev DB with official content from `data/official`
-- Production uses embedded replicas (local SQLite + Turso sync)
-- See `lib/db/CLAUDE.md` for detailed database architecture info
+1. Edit `lib/db/schema.ts`, then run `pnpm run db:generate`.
+2. Review SQL for only intended changes. Generation compares schema to `migrations/meta/` snapshots, not the live DB; changing `DATABASE_URL` cannot repair missing/stale snapshots.
+3. If generation recreates existing tables unexpectedly, remove only the new unapplied migration/snapshot/journal entry, restore the matching baseline snapshots from Git, and regenerate. Preserve existing migrations and others' changes. Keep the matching snapshot/journal if correcting SQL by hand.
+4. Apply with `DATABASE_URL=file:db/dev.db pnpm run db:migrate`. Verify the full chain against a fresh disposable DB under `tmp/`, then remove it. Never delete an existing DB for this check. `db:push` is for prototyping only; it does not update the migration ledger.
 
 ## Feature flags
 
-- Runtime flags are per-user rows in `user_feature_flags`; missing rows and
-  unknown flags are disabled. Registered names and database helpers live in
-  `lib/services/featureFlags.ts`.
-- Server layouts load enabled flags into `FeatureFlagsProvider`, so client
-  behavior updates after a hard refresh. Security-sensitive server actions
-  must also call `isFeatureFlagEnabled`; never rely on the client context for
-  authorization or enforcement.
-- Change a local flag with
-  `pnpm feature-flag <username> <feature> <true|false>`.
-- Change a production flag without deploying or restarting with
-  `fly ssh console -a nimble-nexus -C 'set-feature-flag <username> <feature> <true|false>'`.
-  The production username for the project owner is `_byteslicer`.
-- When adding a flag, update both the `FeatureFlag` registry and the validated
-  names in `tools/set-feature-flag.mjs`.
+- Registry/helpers: `lib/services/featureFlags.ts`; CLI: `pnpm feature-flag <username> <feature> <true|false>`. Missing/unknown flags are disabled.
+- Client flags refresh after a hard reload. Security-sensitive actions must also call `isFeatureFlagEnabled` server-side; client context is not authorization.
+- New flags must update the registry/result map and `tools/set-feature-flag.mjs` validation/usage. Add to `SELF_SERVICE_FEATURE_FLAGS` only when users should control the flag.
+- Authorized production changes: `fly ssh console -a nimble-nexus -C 'set-feature-flag <username> <feature> <true|false>'`. The owner's production username is `_byteslicer`.
 
-## Seeding a dev database
+# Implementation conventions
 
-The dev DB is seeded from `data/official` (GMG bestiary + character options),
-not a production copy. **All official monsters, ancestries, classes, etc. are
-available out of the box — never hand-craft test monsters.**
+- Prefer SSR and built-in Next.js features. Await promised route `params`; consult the bundled Next.js docs below before changing framework code.
+- Use TypeScript interfaces for props/state. Never use type assertions to bypass checking. Let Biome organize imports.
+- Reuse existing entity displays and components in `components/ui`, `components/shared`, and `components/layout` before adding UI. Use standard shadcn controls/default styling, Tailwind, and Lucide icons. Do not modify `components/ui` without explicit confirmation; add shadcn components with `pnpx shadcn@latest add <component>`.
+- Use `cn` from `lib/utils.ts` for dynamic classes and its `randomUUID()` in client components (native `crypto.randomUUID()` fails on insecure HTTP). Select values must not be empty strings; use a sentinel such as `"none"`.
+- Use OpenTelemetry; do not leave permanent `console.*` calls. Avoid redundant headings, subtitles, and placeholder copy.
+- Public API changes must remain backwards compatible, including shared serializers; follow `app/api/AGENTS.md`. Document API changes in `docs/API.md`.
+- Reuse `parseInclude`, `jsonApiError`, and `jsonApiHeaders` from `lib/api.ts`; follow `app/api/monsters/route.ts`. Include tokens are relationship names (`creator`, not `creators`). Reuse `collectCreators`/`toJsonApiUser` from `lib/services/users/converters.ts`.
+- Add one changelog entry per new user-facing feature, not per commit. No entries for bug fixes, internal work, or API-only changes.
 
-- `make setup` (and the `.claude/hooks/session-init.sh` web-session hook)
-  creates an empty DB, migrates, and seeds it.
-- `make seed` / `pnpm run db:seed` re-seeds. Idempotent (upserts).
-- Logic: `tools/seed-official.ts`, reusing the admin upload path
-  (`app/admin/actions.ts`).
-- For real production data: `make db-from-prod` (needs `fly` access).
+# Browser QA
 
-### Testing as an authenticated user
-
-Official content is owned by `nimble-co`, which you can't log in as. The seed
-also creates two dev-only users (`tools/seed-dev.ts`, skipped when
-`NODE_ENV=production`):
-
-- `dev` — normal user; owns two sample monsters and a collection.
-- `admin` — admin user, for the admin upload flow.
-
-While running `pnpm dev` (`NODE_ENV=development`), log in via
-`/api/auth/dev-login?dev-login&username=dev` (or `=admin`).
-
-## Creating Migrations
-
-`drizzle-kit generate` diffs `lib/db/schema.ts` against the last snapshot in `migrations/meta/`.
-If the snapshot is missing or stale, it will regenerate the entire schema as CREATE TABLE statements
-instead of producing incremental ALTER TABLE statements.
-
-Workflow:
-1. Edit `lib/db/schema.ts` with your changes
-2. Run `pnpm run db:generate` to create a migration
-3. **Review the generated SQL** — it should contain only ALTER TABLE / CREATE INDEX etc., not CREATE TABLE for existing tables
-4. If it generated a full schema recreate, the snapshot is out of sync. Fix:
-   - Delete the bad migration and its snapshot from `migrations/meta/`
-   - Revert `migrations/meta/_journal.json` to remove the bad entry
-   - Create a fresh temp DB: `rm -f tmp/migrate.db && mkdir -p tmp`
-   - Apply existing migrations: `DATABASE_URL=file:tmp/migrate.db pnpm run db:migrate`
-   - Regenerate: `DATABASE_URL=file:tmp/migrate.db pnpm run db:generate`
-   - If still wrong, write the migration SQL by hand (e.g. `ALTER TABLE x ADD COLUMN y text;`)
-   - The generated snapshot in `migrations/meta/` is still needed for future diffs — keep it
-5. Run `pnpm run db:migrate` to apply the generated migration to your dev DB
-6. Test: `rm -f tmp/migrate.db && DATABASE_URL=file:tmp/migrate.db pnpm run db:migrate`
-
-# Changelog
-
-- Only add changelog entries for new user-facing features. Do not add entries for bug fixes or behind-the-scenes improvements.
-- Changelog entries are per feature, not per change/commit/PR. A single feature developed over many commits gets one entry. Do not add or suggest an entry for each individual change within a feature.
-- We generally do NOT changelog API changes (new endpoints, relationships, query params, etc.). The changelog targets end users of the site, not API consumers. Document API changes in `docs/API.md` instead.
-
-# API Routes (app/api)
-
-- Responses follow JSON:API (`application/vnd.api+json`). Shared helpers live in `lib/api.ts` (`apiRedirect`, `fetchApi`).
-- `?include=` tokens are JSON:API relationship NAMES, not arbitrary labels. The creator relationship is named `creator` (singular), so the token is `include=creator` even if a request phrases it as "creators". Don't rename to match user phrasing.
-- The `include` parse → validate → 400-error and the CORS error-response blocks are duplicated across every route. When adding/editing them, copy an existing route verbatim (e.g. `app/api/monsters/route.ts`) rather than hand-writing — it's faster and avoids subtle drift. A shared `parseInclude(searchParams, validIncludes)` + error helper in `lib/api.ts` would eliminate this boilerplate; consider extracting it if you touch many routes at once.
-- Reuse the dedup helper `collectCreators` (in `lib/services/users/converters.ts`) for list endpoints; use `toJsonApiUser` for single-resource endpoints.
-- Biome enforces formatting and line length. Run `node_modules/.bin/biome check --write <changed files>` BEFORE `make check` — otherwise `make check` fails on format-only diffs and costs an extra round-trip.
-
-# Code Style
-
-- Prefer SSR when possible
-- Use the latest Next.js built-in features over external libraries
-- Type all props and state with TypeScript interfaces
-- Do NOT use "as <type>" constructs to bypass type checking. EVER.
-- Organize imports: React/libraries first, then components, then contexts/types
-- File structure: components/, views/, lib/ directories
-- Use tailwind and shadcn for styling
-  - Add new shadcn components via `pnpx shadcn@latest add <component>`
-  - Do not modify shadcn components in components/ui without explicit confirmation
-  - Always use standard shadcn form components (Input, Select, Checkbox, Toggle, Button, etc.) with their default styling for form controls. Do not build custom controls (raw `<button>` steppers, hand-styled toggles, custom color overrides) unless explicitly told to build something custom.
-- In this version of Next.js, params are a Promise that need to be awaited.
-- Use OpenTelemetry.
-- Do not add console.\* functions permanently (they may be used for temporary debugging).
-- Use `cn` from lib/utils.ts for constructing dynamic className attributes. DO NOT use string concatenation for className.
-- Never use `crypto.randomUUID()` directly in client components — it requires a secure context (HTTPS/localhost) and will throw on plain HTTP. Use `randomUUID()` from `lib/utils.ts` instead, which has a `Math.random` fallback.
-- You may not use an empty string value="" on a <Select> element. Use "none" and special-case this value to be null/undefined as appropriate.
-- Use lucide icons instead of custom SVGs
-- Before writing any UI, search `components/ui`, `components/shared`, and `components/layout` for an existing component (e.g. `Combobox`, `UserAvatar`, `CreatorCombobox`) and compose it. Do not re-implement pickers, async search, or entity display from lower-level primitives (`Popover` + `Command`, plain text) when a standard component exists; extend the standard component instead if it lacks something.
-- Always prefer reusing existing components over creating new ones. Before building a new component to display an entity, search for how that entity is already rendered elsewhere (e.g. detail pages, list cards) and reuse those components.
-- Avoid cluttering the UI with redundant copy. Do not repeat nearby navigation labels in page headings or add explanatory subtitles and placeholder text unless they help the user take an action.
-
-# Tests
-
-- `pnpm run test` to run tests (or `pnpm run test:run` for a single non-watch run).
-- When adding new functionality, make sure you add tests.
-- Use @testing-library/react and vitest.
-- Make sure to add cleanup after each test whenever necessary.
-- When mocking dependencies, use the most narrow, specific mock possible.
-
-# Browser QA and debugging
-
-- Static checks and unit tests are not sufficient for route or data-loading UI changes. Browser-test every affected route and entity type, and verify that loading completes, the correct navigation is active, requests succeed, and there are no console errors, page errors, hydration warnings, or relevant server-log errors.
-- Chromium requires at least a medium-sized orb. When testing image generation, use a new medium-or-larger orb if the current orb cannot boot Chromium or lacks sufficient resources.
-- For UI fixes, include screenshot evidence in the final response whenever browser access makes it practical.
-- After changing output shared by server and client components, wait for the dev compiler to settle and test both normal client navigation and a full reload. Do not dismiss hydration errors as stale HMR state without finding and removing avoidable server/client output differences.
-- For equivalent entity-list routes, prefer a consistent loading contract: server-load or dehydrate the active entity's initial page, fetch only that entity plus shared counts, and use client requests for filtering and pagination. Do not load every entity dataset for each route.
-- Audit all call sites before changing shared URL or rendering helpers. If only one navigation surface needs a section-specific destination, construct that link locally rather than changing the shared canonical entity URL.
-- Treat debugging conclusions as hypotheses until the relevant logs or network trace verify them. Browser automation's high-level request headers may omit security-relevant headers; inspect raw CDP network events (including extra request headers) before concluding that headers such as `Origin` were not sent.
+- Browser-test affected routes/entity types for UI or data-loading changes: loading finishes, active navigation is correct, requests succeed, and no relevant browser/server errors occur. For shared server/client output, test both client navigation and full reload after compilation settles; investigate hydration errors rather than dismissing them as HMR.
+- Load the browser skill and use installed `agent-browser` against the managed service. Capture at 2× scale (`agent-browser set viewport 1280 720 2`). Save review media in `.amp/in/artifacts/`, inspect it, and embed screenshots for UI fixes when practical. Keep scratch output in `tmp/`.
+- For entity lists, server-load/dehydrate only the active entity's initial page plus shared counts; use client requests for filtering/pagination, not every entity dataset.
+- Audit shared URL/rendering helper call sites before changing them. Keep section-specific navigation links local rather than changing canonical entity URLs.
+- Verify debugging hypotheses with logs/network evidence. Inspect raw CDP events before concluding security headers such as `Origin` are absent.
 
 # User preferences
 
-- When the user asks the agent to remember something, persist it in this project-level `AGENTS.md` rather than relying only on the current thread's conversation context.
-- For color changes, always show the final result in both light and dark mode.
-- After significant feature additions or subsequent changes that add or alter material functionality, end the turn with a technical explanation covering the architecture and data flow, code reused/extended/added, environment-specific behavior, validation and security boundaries, and any important limitations or follow-up concerns.
+- Persist requests to remember guidance in this project-level `AGENTS.md`.
+- Show color changes in both light and dark mode.
+- After significant functionality changes, explain architecture/data flow, reused or added code, environment-specific behavior, validation/security boundaries, and important limitations.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
