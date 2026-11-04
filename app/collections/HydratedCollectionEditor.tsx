@@ -5,6 +5,7 @@ import { publicBackgroundsInfiniteQueryOptions } from "@/app/backgrounds/hooks";
 import { publicCompanionsInfiniteQueryOptions } from "@/app/companions/hooks";
 import { publicItemsInfiniteQueryOptions } from "@/app/items/actions";
 import { publicMonstersInfiniteQueryOptions } from "@/app/monsters/hooks";
+import { listPublicClasses } from "@/lib/db/class";
 import { listPublicSubclasses } from "@/lib/db/subclass";
 import { getQueryClient } from "@/lib/queryClient";
 import {
@@ -93,7 +94,10 @@ export async function HydratedCollectionEditor({
           limit: 12,
         }),
     }),
-    queryClient.prefetchQuery(publicClassesQueryOptions()),
+    queryClient.prefetchQuery({
+      ...publicClassesQueryOptions(),
+      queryFn: listPublicClasses,
+    }),
     queryClient.prefetchQuery({
       ...publicSubclassesQueryOptions(),
       queryFn: listPublicSubclasses,

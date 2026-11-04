@@ -1130,6 +1130,37 @@ tests against `resolveEntityReferences`, and introduce no replacement endpoint.
 No live-volume action is displaced. Coordination found only this unarchived
 child; refresh evidence before selecting the next zero-volume candidate.
 
+### Three-slice browser-read batch selection — November 4, 2026
+
+Refreshed fixed **2026-11-03T13:00:00Z–2026-11-04T13:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/qdNVmoknB3B).
+Root HTTP spans only (`trace.parent_id` absent, `next-action` present), grouped
+by ID/coalesced HTTP status, contain **690 attempts**: 688 excluded `x` probes
+and two HTTP409 attempts for already-migrated navigation/official-condition
+reads. Mean sample rate is **1**, 1,486,362 rows examined, zero OTHER/unmapped
+volume. HTTP outcomes are transport outcomes, not domain success; bots/QA are
+included. Full JSON is retained in this batch's evidence, not just display rows.
+
+The identical [seven-day query](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/yts31PEXRmX)
+over **2026-10-28T13:00:00Z–2026-11-04T13:00:00Z** contains **6,283 attempts**,
+mean sample rate **1**, 6,652,354 examined rows and zero OTHER. Exclude 3,017
+known probes and six other invalid/unmapped attempts (two 64-zero IDs and four
+nonmanifest IDs). Reuse the verified 150-image/148-SHA historical filename/export
+mapping and bounded-window argument above: this interval is contained in the
+union of the previous verified seven-day window and this fresh 24-hour window.
+The only named new-window attempts are already migrated; all remaining named
+actions therefore still tie at **0 successful / 0 failed** in both windows.
+This is coverage reuse, not a claim of fresh historical OCI extraction. The
+current deployed `c4f87036` manifest was also read directly to confirm live
+filename/export mappings. No probe/unmapped ID is assigned a guessed name.
+
+Select live collection class-picker reads first, spell-school-picker reads next,
+then one owner-pagination read after checking fresh priority. No high-volume
+remaining action is displaced by these tied choices. Coordination found only
+this unarchived child. Each slice has its own checks, commit, deployment,
+functional production QA and cleanup before the next starts; the host schedule
+stays paused for final review.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1334,6 +1365,31 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Collection class-picker reads — November 2026
+
+- `publicClassesQueryOptions` now uses cancellable bodyless
+  `GET /_actions/listPublicClasses`; `HydratedCollectionEditor` calls
+  `listPublicClasses` directly. The collection new/edit picker is the sole
+  browser owner. Keep `classes-all`, 30-second freshness, filters, date sorting,
+  pending/error/empty UI, selection, save, invalidation and navigation behavior.
+- JSON revives class, source, award and ability-list dates. Existing public-only
+  SQL, full class/relationship fields and public creator projection are unchanged;
+  query identity/visibility cannot enable private reads. Safe anonymous GETs need
+  no mutation gate or auth. Responses/errors use `private, no-store`, no CORS,
+  telemetry and generic 500s; unsupported writes return 405.
+- Removed the only export and empty `app/actions/class.ts`, plus its obsolete
+  sibling-test mock. Application ratchet **28 → 27**; repository markers and
+  third-party API are unchanged. Real-SQL boundary and real-picker transport
+  tests cover privacy, ordering, nested serialization/date revival, pending,
+  filtering, selection, failed-refetch cache retention and recovery.
+- The [batch thread](https://ampcode.com/threads/T-01a1a6cb-904c-724e-8e50-279e9151ed30)
+  records full/focused checks, development requests, browser navigation/reload,
+  deployment identity, authenticated production selection/save and independently
+  checked persistence/cleanup. Only disposable non-admin users/collections are
+  written; existing public content is read, never edited. Retain this URL/shape
+  for at least one deployment interval; pre-cutover action tabs need refresh.
+  Existing documented unrelated defects are not claimed fixed.
 
 ### Unused entity-reference wrappers — November 2026
 
