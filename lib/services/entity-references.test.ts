@@ -35,6 +35,16 @@ describe("resolveEntityReferences", () => {
       armor: "",
       visibility: "public",
     });
+    await db.insert(schema.monsters).values({
+      id: "00000000-0000-0000-0000-000000000002",
+      creatorId: ownerId,
+      name: "Hidden Pit",
+      hazard: true,
+      level: "1",
+      hp: 0,
+      armor: "",
+      visibility: "private",
+    });
     await db.insert(schema.customRules).values({
       id,
       creatorId: ownerId,
@@ -56,6 +66,26 @@ describe("resolveEntityReferences", () => {
         name: "Pit",
         type: "monster",
         href: "/hazards/pit-00000000000000000000000001",
+      },
+    ]);
+  });
+
+  it("resolves a private monster only for its creator", async () => {
+    const request = [
+      { type: "monster" as const, id: "00000000000000000000000002" },
+    ];
+    await expect(resolveEntityReferences(request)).resolves.toEqual([]);
+    await expect(
+      resolveEntityReferences(request, "55555555-5555-4555-8555-555555555555")
+    ).resolves.toEqual([]);
+    await expect(
+      resolveEntityReferences(request, "11111111-1111-4111-8111-111111111111")
+    ).resolves.toEqual([
+      {
+        id: "00000000-0000-0000-0000-000000000002",
+        name: "Hidden Pit",
+        type: "monster",
+        href: "/hazards/hidden-pit-00000000000000000000000002",
       },
     ]);
   });
@@ -178,6 +208,8 @@ describe("entity reference visibility", () => {
     client.close();
   });
 
+  const strangerId = "55555555-5555-4555-8555-555555555555";
+
   it.each([
     "family",
     "ancestry",
@@ -193,30 +225,41 @@ describe("entity reference visibility", () => {
     "subclass",
     "rule",
   ] as const)(
-    "resolves only public %s content, even for its owner",
+    "resolves private %s content only for its creator",
     async (type) => {
+      const privateRef = [
+        { type, id: privateId },
+        { type, id: uuidToIdentifier(privateId) },
+      ];
       await expect(
         resolveEntityReferences([{ type, id: publicId }])
       ).resolves.toMatchObject([
-        {
-          id: publicId,
-          name: "public content",
-          type,
-        },
+        { id: publicId, name: "public content", type },
+      ]);
+      await expect(resolveEntityReferences(privateRef)).resolves.toEqual([]);
+      await expect(
+        resolveEntityReferences(privateRef, strangerId)
+      ).resolves.toEqual([]);
+      await expect(
+        resolveEntityReferences(privateRef, ownerId)
+      ).resolves.toMatchObject([
+        { id: privateId, name: "private content", type },
       ]);
       await expect(
-        resolveEntityReferences([{ type, id: privateId }])
-      ).resolves.toEqual([]);
-      await expect(
-        resolveEntityReferences([{ type, id: uuidToIdentifier(privateId) }])
-      ).resolves.toEqual([]);
+        resolveEntityReferences([{ type, id: publicId }], strangerId)
+      ).resolves.toMatchObject([{ id: publicId, type }]);
     }
   );
 
-  it("rejects secret families too", async () => {
+  it("resolves secret families only for their creator", async () => {
+    const secret = [{ type: "family" as const, id: secretId }];
+    await expect(resolveEntityReferences(secret)).resolves.toEqual([]);
+    await expect(resolveEntityReferences(secret, strangerId)).resolves.toEqual(
+      []
+    );
     await expect(
-      resolveEntityReferences([{ type: "family", id: secretId }])
-    ).resolves.toEqual([]);
+      resolveEntityReferences(secret, ownerId)
+    ).resolves.toMatchObject([{ id: secretId, name: "Secret family" }]);
   });
 
   it("deduplicates IDs and resolves a mixed batch with one metadata query per type", async () => {

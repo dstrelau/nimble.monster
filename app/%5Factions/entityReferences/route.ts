@@ -1,6 +1,7 @@
 import { trace } from "@opentelemetry/api";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { auth } from "@/lib/auth";
 import { resolveEntityReferences } from "@/lib/services/entity-references";
 import { telemetry } from "@/lib/telemetry";
 import {
@@ -45,7 +46,11 @@ export const GET = telemetry(async (request: Request) => {
   }
 
   try {
-    const references = await resolveEntityReferences(result.data);
+    const session = await auth();
+    const references = await resolveEntityReferences(
+      result.data,
+      session?.user?.id || undefined
+    );
     trace.getActiveSpan()?.setAttributes({
       "references.requested": result.data.length,
       "references.resolved": references.length,
