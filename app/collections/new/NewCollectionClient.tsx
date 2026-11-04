@@ -20,6 +20,7 @@ export function NewCollection() {
     backgrounds: [],
     subclasses: [],
     classes: [],
+    customRules: [],
     spellSchools: [],
   };
 

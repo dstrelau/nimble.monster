@@ -39,4 +39,5 @@ export const saveCollectionSchema = sharedEditorSchema.extend({
   subclassIds: uuidArray,
   spellSchoolIds: uuidArray,
   classIds: uuidArray,
+  customRuleIds: uuidArray,
 });

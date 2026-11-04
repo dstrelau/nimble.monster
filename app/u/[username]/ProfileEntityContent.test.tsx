@@ -84,6 +84,7 @@ describe("ProfileEntityContent public containers", () => {
       subclasses: [],
       spellSchools: [],
       classes: [],
+      customRules: [],
     };
 
     render(

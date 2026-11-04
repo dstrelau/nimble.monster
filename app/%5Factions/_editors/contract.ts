@@ -31,6 +31,7 @@ export interface SaveCollectionInput {
   subclassIds: string[];
   spellSchoolIds: string[];
   classIds: string[];
+  customRuleIds: string[];
 }
 
 export interface EditorMutationResult {

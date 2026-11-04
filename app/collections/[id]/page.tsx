@@ -5,6 +5,7 @@ import { Card as AncestryCard } from "@/components/ancestry/Card";
 import { Card as BackgroundCard } from "@/components/background/Card";
 import { ClassMiniCard } from "@/components/class/ClassMiniCard";
 import { Card as CompanionCard } from "@/components/companion/Card";
+import { CustomRuleMiniCard } from "@/components/custom-rule/CustomRuleMiniCard";
 import { Card as ItemCard } from "@/components/item/Card";
 import { Card as MonsterCard } from "@/components/monster/Card";
 import { Card as SchoolCard } from "@/components/school/Card";
@@ -103,7 +104,8 @@ export default async function ShowCollectionView({
     collection.backgrounds.length === 0 &&
     collection.subclasses.length === 0 &&
     collection.spellSchools.length === 0 &&
-    collection.classes.length === 0;
+    collection.classes.length === 0 &&
+    collection.customRules.length === 0;
 
   return (
     <div>
@@ -146,6 +148,9 @@ export default async function ShowCollectionView({
           ))}
           {collection.classes.map((c) => (
             <ClassMiniCard key={c.id} classEntity={c} />
+          ))}
+          {collection.customRules.map((rule) => (
+            <CustomRuleMiniCard key={rule.id} customRule={rule} />
           ))}
         </div>
       )}

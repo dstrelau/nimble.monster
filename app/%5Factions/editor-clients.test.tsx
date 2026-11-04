@@ -99,6 +99,7 @@ const emptyCollection: Collection = {
   subclasses: [],
   spellSchools: [],
   classes: [],
+  customRules: [],
 };
 
 function deferred<T>() {

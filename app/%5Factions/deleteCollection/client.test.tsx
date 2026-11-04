@@ -29,6 +29,7 @@ const collection: Collection = {
   ancestries: [],
   backgrounds: [],
   classes: [],
+  customRules: [],
   subclasses: [],
 };
 beforeEach(() => {

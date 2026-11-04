@@ -79,6 +79,7 @@ const collection: CollectionOverview = {
   subclasses: [],
   spellSchools: [],
   classes: [],
+  customRules: [],
 };
 
 const encounter: EncounterOverview = {

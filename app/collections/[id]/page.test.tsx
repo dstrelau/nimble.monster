@@ -112,6 +112,7 @@ function makeCollection(overrides = {}) {
     subclasses: [],
     spellSchools: [],
     classes: [],
+    customRules: [],
     ...overrides,
   };
 }

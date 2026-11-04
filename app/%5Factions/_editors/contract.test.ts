@@ -25,6 +25,7 @@ const collectionInput = {
   subclassIds: [],
   spellSchoolIds: [],
   classIds: ["770e8400-e29b-41d4-a716-446655440000"],
+  customRuleIds: [],
 } satisfies SaveCollectionInput;
 
 afterEach(() => vi.unstubAllGlobals());

@@ -4,6 +4,7 @@ import {
   EyeOff,
   HandFist,
   HeartHandshake,
+  NotebookPen,
   Scroll,
   Swords,
   WandSparkles,
@@ -24,6 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { CustomRuleMini } from "@/lib/db/custom-rule";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { AncestryMini } from "@/lib/services/ancestries/types";
 import type { BackgroundMini } from "@/lib/services/backgrounds/types";
@@ -228,6 +230,21 @@ const SpellSchoolRow = ({
   />
 );
 
+const CustomRuleRow = ({
+  customRule,
+  onRemove,
+}: {
+  customRule: CustomRuleMini;
+  onRemove?: (id: string) => void;
+}) => (
+  <EntityRow
+    id={customRule.id}
+    icon={<NotebookPen className="size-5 stroke-muted-foreground" />}
+    name={customRule.name}
+    onRemove={onRemove}
+  />
+);
+
 const ClassRow = ({
   classEntity,
   onRemove,
@@ -253,6 +270,7 @@ export const CollectionCard = ({
   onRemoveBackgroundAction,
   onRemoveSubclassAction,
   onRemoveClassAction,
+  onRemoveCustomRuleAction,
   onRemoveSpellSchoolAction,
 }: {
   collection: CollectionOverview;
@@ -264,6 +282,7 @@ export const CollectionCard = ({
   onRemoveBackgroundAction?: (id: string) => void;
   onRemoveSubclassAction?: (id: string) => void;
   onRemoveClassAction?: (id: string) => void;
+  onRemoveCustomRuleAction?: (id: string) => void;
   onRemoveSpellSchoolAction?: (id: string) => void;
 }) => {
   const sortedMonsters = monstersSortedByLevelInt(collection.monsters);
@@ -274,6 +293,7 @@ export const CollectionCard = ({
     backgrounds,
     subclasses,
     classes: classEntities,
+    customRules,
     spellSchools,
   } = collection;
 
@@ -283,6 +303,7 @@ export const CollectionCard = ({
     backgrounds.length +
     subclasses.length +
     (classEntities?.length ?? 0) +
+    customRules.length +
     spellSchools.length;
   const total = sortedMonsters.length + sortedItems.length + otherCount;
 
@@ -308,6 +329,7 @@ export const CollectionCard = ({
       type: "class" as const,
       entity: c,
     })),
+    ...customRules.map((r) => ({ type: "customRule" as const, entity: r })),
     ...spellSchools.map((s) => ({ type: "spellSchool" as const, entity: s })),
   ];
   const visibleOther = limitOther ? allOther.slice(0, limitOther) : allOther;
@@ -403,6 +425,14 @@ export const CollectionCard = ({
                     key={entity.id}
                     classEntity={entity}
                     onRemove={onRemoveClassAction}
+                  />
+                );
+              case "customRule":
+                return (
+                  <CustomRuleRow
+                    key={entity.id}
+                    customRule={entity}
+                    onRemove={onRemoveCustomRuleAction}
                   />
                 );
               case "spellSchool":

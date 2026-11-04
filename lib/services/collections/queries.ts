@@ -11,6 +11,10 @@ import {
   or,
 } from "drizzle-orm";
 import { findClassesByIds } from "@/lib/db/class";
+import {
+  findCustomRulesByIds,
+  listCustomRuleMinisByCollection,
+} from "@/lib/db/custom-rule";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
   type AncestryRow,
@@ -30,6 +34,8 @@ import {
   companions,
   companionsCollections,
   conditions,
+  customRules,
+  customRulesCollections,
   type FamilyRow,
   families,
   type ItemRow,
@@ -348,6 +354,11 @@ async function loadCollectionEntityMinis(
       ),
   ]);
 
+  const customRulesByCollection = await listCustomRuleMinisByCollection(
+    collectionIds,
+    null
+  );
+
   // Spell counts
   const schoolIds = [...new Set(schoolJoins.map((l) => l.school.id))];
   const spellCountMap = new Map<string, number>();
@@ -409,6 +420,7 @@ async function loadCollectionEntityMinis(
     subclassesByCollection,
     schoolsByCollection,
     classesByCollection,
+    customRulesByCollection,
   };
 }
 
@@ -690,7 +702,8 @@ export const listPublicCollections = async ({
       (entityMinis.ancestriesByCollection.get(cid)?.length ?? 0) > 0 ||
       (entityMinis.backgroundsByCollection.get(cid)?.length ?? 0) > 0 ||
       (entityMinis.subclassesByCollection.get(cid)?.length ?? 0) > 0 ||
-      (entityMinis.schoolsByCollection.get(cid)?.length ?? 0) > 0
+      (entityMinis.schoolsByCollection.get(cid)?.length ?? 0) > 0 ||
+      (entityMinis.customRulesByCollection.get(cid)?.length ?? 0) > 0
     );
   });
 
@@ -728,6 +741,7 @@ export const listPublicCollections = async ({
       backgrounds: entityMinis.backgroundsByCollection.get(cid) ?? [],
       subclasses: entityMinis.subclassesByCollection.get(cid) ?? [],
       classes: entityMinis.classesByCollection.get(cid) ?? [],
+      customRules: entityMinis.customRulesByCollection.get(cid) ?? [],
       spellSchools: entityMinis.schoolsByCollection.get(cid) ?? [],
     };
   });
@@ -855,7 +869,8 @@ export const searchPublicCollections = async ({
         (entityMinis.ancestriesByCollection.get(cid)?.length ?? 0) > 0 ||
         (entityMinis.backgroundsByCollection.get(cid)?.length ?? 0) > 0 ||
         (entityMinis.subclassesByCollection.get(cid)?.length ?? 0) > 0 ||
-        (entityMinis.schoolsByCollection.get(cid)?.length ?? 0) > 0
+        (entityMinis.schoolsByCollection.get(cid)?.length ?? 0) > 0 ||
+        (entityMinis.customRulesByCollection.get(cid)?.length ?? 0) > 0
       );
     })
     .map((row) => {
@@ -890,6 +905,7 @@ export const searchPublicCollections = async ({
         backgrounds: entityMinis.backgroundsByCollection.get(cid) ?? [],
         subclasses: entityMinis.subclassesByCollection.get(cid) ?? [],
         classes: entityMinis.classesByCollection.get(cid) ?? [],
+        customRules: entityMinis.customRulesByCollection.get(cid) ?? [],
         spellSchools: entityMinis.schoolsByCollection.get(cid) ?? [],
       };
     });
@@ -1093,6 +1109,7 @@ export const findPublicCollectionById = async (
     subclassJoins,
     classJoins,
     schoolJoins,
+    customRuleJoins,
   ] = await Promise.all([
     db
       .select({ companionId: companionsCollections.companionId })
@@ -1169,6 +1186,19 @@ export const findPublicCollectionById = async (
           eq(spellSchools.visibility, "public")
         )
       ),
+    db
+      .select({ customRuleId: customRulesCollections.customRuleId })
+      .from(customRulesCollections)
+      .innerJoin(
+        customRules,
+        eq(customRulesCollections.customRuleId, customRules.id)
+      )
+      .where(
+        and(
+          eq(customRulesCollections.collectionId, id),
+          eq(customRules.visibility, "public")
+        )
+      ),
   ]);
 
   const [
@@ -1178,6 +1208,7 @@ export const findPublicCollectionById = async (
     subclassesData,
     classesData,
     schoolsData,
+    customRulesData,
   ] = await Promise.all([
     findCompanionsByIds(companionJoins.map((r) => r.companionId)),
     findAncestriesByIds(ancestryJoins.map((r) => r.ancestryId)),
@@ -1185,6 +1216,7 @@ export const findPublicCollectionById = async (
     findSubclassesByIds(subclassJoins.map((r) => r.subclassId)),
     findClassesByIds(classJoins.map((r) => r.classId)),
     findSpellSchoolsByIds(schoolJoins.map((r) => r.schoolId)),
+    findCustomRulesByIds(customRuleJoins.map((r) => r.customRuleId)),
   ]);
 
   const legendaryCount = monstersData.filter(
@@ -1211,6 +1243,7 @@ export const findPublicCollectionById = async (
     backgrounds: backgroundsData,
     subclasses: subclassesData,
     classes: classesData,
+    customRules: customRulesData,
     spellSchools: schoolsData,
   };
 };

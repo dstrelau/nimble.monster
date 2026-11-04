@@ -6,6 +6,10 @@ import {
   toSpellSchoolMini,
   toSubclassMini,
 } from "@/lib/db/converters";
+import {
+  findCustomRulesByIds,
+  listCustomRuleMinisByCollection,
+} from "@/lib/db/custom-rule";
 import { findSpellSchoolsByIds } from "@/lib/db/school";
 import { findSubclassesByIds } from "@/lib/db/subclass";
 import { toAncestryMini } from "@/lib/services/ancestries/converters";
@@ -35,6 +39,8 @@ import {
   collections,
   companions,
   companionsCollections,
+  customRules,
+  customRulesCollections,
   type ItemRow,
   items,
   itemsCollections,
@@ -236,6 +242,11 @@ export const listCollectionsWithMonstersForUser = async (
     .innerJoin(classes, eq(classesCollections.classId, classes.id))
     .where(inArray(classesCollections.collectionId, collectionIds));
 
+  const customRulesByCollection = await listCustomRuleMinisByCollection(
+    collectionIds,
+    user.id
+  );
+
   // Group by collection
   const monstersByCollection = new Map<string, MonsterRow[]>();
   for (const link of monsterLinks) {
@@ -322,6 +333,7 @@ export const listCollectionsWithMonstersForUser = async (
       backgrounds: collectionBackgrounds.map(toBackgroundMini),
       subclasses: collectionSubclasses.map(toSubclassMini),
       classes: collectionClasses.map(toClassMini),
+      customRules: customRulesByCollection.get(c.id) || [],
       spellSchools: collectionSchools.map((s) => ({
         ...toSpellSchoolMini(s),
         spellCount: spellCountMap.get(s.id),
@@ -415,7 +427,8 @@ export const getPublicCollectionByIdWithMonstersItems = async (
   return loadCollectionFull(
     db,
     collectionResult[0].collection,
-    collectionResult[0].creator
+    collectionResult[0].creator,
+    true
   );
 };
 
@@ -462,6 +475,7 @@ export interface UpdateCollectionInput extends CreateCollectionInput {
   subclassIds?: string[];
   spellSchoolIds?: string[];
   classIds?: string[];
+  customRuleIds?: string[];
 }
 
 export const createCollection = async (
@@ -778,6 +792,36 @@ export const updateCollection = async (
     }
   }
 
+  // Sync custom rules
+  if (input.customRuleIds) {
+    await db
+      .delete(customRulesCollections)
+      .where(eq(customRulesCollections.collectionId, input.id));
+
+    if (input.customRuleIds.length > 0) {
+      const accessible = await db
+        .select({ id: customRules.id })
+        .from(customRules)
+        .where(
+          and(
+            inArray(customRules.id, input.customRuleIds),
+            or(
+              eq(customRules.visibility, "public"),
+              eq(customRules.userId, user.id)
+            )
+          )
+        );
+      if (accessible.length > 0) {
+        await db.insert(customRulesCollections).values(
+          accessible.map((r) => ({
+            collectionId: input.id,
+            customRuleId: r.id,
+          }))
+        );
+      }
+    }
+  }
+
   const collectionResult = await db
     .select()
     .from(collections)
@@ -1053,6 +1097,31 @@ export const addBackgroundToCollection = async (input: {
   }
 };
 
+export const addCustomRuleToCollection = async (input: {
+  customRuleId: string;
+  collectionId: string;
+}): Promise<void> => {
+  const db = getDatabase();
+
+  const existing = await db
+    .select()
+    .from(customRulesCollections)
+    .where(
+      and(
+        eq(customRulesCollections.collectionId, input.collectionId),
+        eq(customRulesCollections.customRuleId, input.customRuleId)
+      )
+    )
+    .limit(1);
+
+  if (existing.length === 0) {
+    await db.insert(customRulesCollections).values({
+      collectionId: input.collectionId,
+      customRuleId: input.customRuleId,
+    });
+  }
+};
+
 export const addSubclassToCollection = async (input: {
   subclassId: string;
   collectionId: string;
@@ -1291,6 +1360,12 @@ async function loadCollectionOverview(
   const collectionMonsters = monsterLinks.map((l) => l.monster);
   const collectionItems = itemLinks.map((l) => l.item);
   const collectionSchools = schoolLinks.map((l) => l.school);
+  const collectionCustomRules = (
+    await listCustomRuleMinisByCollection(
+      [collection.id],
+      publicOnly ? null : creator.id
+    )
+  ).get(collection.id);
 
   const overviewSchoolIds = collectionSchools.map((s) => s.id);
   const overviewSpellCountMap = new Map<string, number>();
@@ -1326,6 +1401,7 @@ async function loadCollectionOverview(
     backgrounds: backgroundLinks.map((l) => toBackgroundMini(l.background)),
     subclasses: subclassLinks.map((l) => toSubclassMini(l.subclass)),
     classes: classLinks.map((l) => toClassMini(l.class)),
+    customRules: collectionCustomRules ?? [],
     spellSchools: collectionSchools.map((s) => ({
       ...toSpellSchoolMini(s),
       spellCount: overviewSpellCountMap.get(s.id),
@@ -1342,7 +1418,8 @@ async function loadCollectionOverview(
 async function loadCollectionFull(
   db: ReturnType<typeof getDatabase>,
   collection: CollectionRow,
-  creator: UserRow
+  creator: UserRow,
+  publicOnly = false
 ): Promise<Collection> {
   const [
     monsterLinks,
@@ -1353,6 +1430,7 @@ async function loadCollectionFull(
     backgroundLinks,
     subclassLinks,
     classLinks,
+    customRuleLinks,
   ] = await Promise.all([
     db
       .select({ monsterId: monstersCollections.monsterId })
@@ -1386,6 +1464,10 @@ async function loadCollectionFull(
       .select({ classId: classesCollections.classId })
       .from(classesCollections)
       .where(eq(classesCollections.collectionId, collection.id)),
+    db
+      .select({ customRuleId: customRulesCollections.customRuleId })
+      .from(customRulesCollections)
+      .where(eq(customRulesCollections.collectionId, collection.id)),
   ]);
 
   const [
@@ -1397,6 +1479,7 @@ async function loadCollectionFull(
     collectionBackgrounds,
     collectionSubclasses,
     collectionClasses,
+    collectionCustomRules,
   ] = await Promise.all([
     findBestiaryEntriesByIds(monsterLinks.map((l) => l.monsterId)),
     findItemsByIds(itemLinks.map((l) => l.itemId)),
@@ -1406,6 +1489,7 @@ async function loadCollectionFull(
     findBackgroundsByIds(backgroundLinks.map((l) => l.backgroundId)),
     findSubclassesByIds(subclassLinks.map((l) => l.subclassId)),
     findClassesByIds(classLinks.map((l) => l.classId)),
+    findCustomRulesByIds(customRuleLinks.map((l) => l.customRuleId)),
   ]);
 
   const legendaryCount = collectionMonsters.filter(
@@ -1429,6 +1513,11 @@ async function loadCollectionFull(
     backgrounds: collectionBackgrounds,
     subclasses: collectionSubclasses,
     classes: collectionClasses,
+    customRules: collectionCustomRules.filter(
+      (r) =>
+        r.visibility === "public" ||
+        (!publicOnly && r.creator.id === creator.id)
+    ),
     spellSchools: collectionSchools,
     legendaryCount,
     standardCount,

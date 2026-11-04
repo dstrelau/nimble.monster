@@ -5,6 +5,7 @@ import {
   Drama,
   HandFist,
   HeartHandshake,
+  NotebookPen,
   Scroll,
   Shield,
   Swords,
@@ -34,6 +35,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { call } from "@/lib/contract";
+import type { CustomRuleMini } from "@/lib/db/custom-rule";
 import type { Ancestry } from "@/lib/services/ancestries";
 import type { AncestryMini } from "@/lib/services/ancestries/types";
 import type { Background } from "@/lib/services/backgrounds";
@@ -58,6 +60,7 @@ import { SelectableAncestryGrid } from "./SelectableAncestryGrid";
 import { SelectableBackgroundGrid } from "./SelectableBackgroundGrid";
 import { SelectableClassGrid } from "./SelectableClassGrid";
 import { SelectableCompanionGrid } from "./SelectableCompanionGrid";
+import { SelectableCustomRuleGrid } from "./SelectableCustomRuleGrid";
 import { SelectableItemGrid } from "./SelectableItemGrid";
 import { SelectableSpellSchoolGrid } from "./SelectableSpellSchoolGrid";
 import { SelectableSubclassGrid } from "./SelectableSubclassGrid";
@@ -158,6 +161,10 @@ export function CreateEditCollection({
     Map<string, Class | ClassMini>
   >(() => new Map((collection.classes ?? []).map((c) => [c.id, c])));
 
+  const [selectedCustomRules, setSelectedCustomRules] = useState<
+    Map<string, CustomRuleMini>
+  >(() => new Map((collection.customRules ?? []).map((r) => [r.id, r])));
+
   const selectedCompanionIds = useMemo(
     () => new Set(selectedCompanions.keys()),
     [selectedCompanions]
@@ -183,6 +190,11 @@ export function CreateEditCollection({
     [selectedClasses]
   );
 
+  const selectedCustomRuleIds = useMemo(
+    () => new Set(selectedCustomRules.keys()),
+    [selectedCustomRules]
+  );
+
   const currentCompanions = useMemo(
     () => [...selectedCompanions.values()] as CompanionMini[],
     [selectedCompanions]
@@ -206,6 +218,11 @@ export function CreateEditCollection({
   const currentClasses = useMemo(
     () => [...selectedClasses.values()] as ClassMini[],
     [selectedClasses]
+  );
+
+  const currentCustomRules = useMemo(
+    () => [...selectedCustomRules.values()],
+    [selectedCustomRules]
   );
 
   const form = useForm<FormData>({
@@ -259,6 +276,10 @@ export function CreateEditCollection({
       !arraysEqual(
         [...selectedClassIds],
         (collection.classes ?? []).map((c) => c.id)
+      ) ||
+      !arraysEqual(
+        [...selectedCustomRuleIds],
+        (collection.customRules ?? []).map((r) => r.id)
       );
 
   const handleSubmit = async (data: FormData) => {
@@ -290,6 +311,7 @@ export function CreateEditCollection({
         subclassIds: currentSubclasses.map((entity) => entity.id),
         spellSchoolIds: currentSpellSchools.map((entity) => entity.id),
         classIds: currentClasses.map((entity) => entity.id),
+        customRuleIds: currentCustomRules.map((entity) => entity.id),
       });
       router.push(getCollectionUrl(result));
     } catch (error) {
@@ -324,6 +346,7 @@ export function CreateEditCollection({
   const handleSubclassToggle = makeToggle(setSelectedSubclasses);
   const handleSpellSchoolToggle = makeToggle(setSelectedSpellSchools);
   const handleClassToggle = makeToggle(setSelectedClasses);
+  const handleCustomRuleToggle = makeToggle(setSelectedCustomRules);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -440,6 +463,10 @@ export function CreateEditCollection({
                   <HandFist className="size-5" />
                   Subclasses
                 </TabsTrigger>
+                <TabsTrigger className="min-h-11" value="customRules">
+                  <NotebookPen className="size-5" />
+                  Rules
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent
@@ -510,6 +537,16 @@ export function CreateEditCollection({
               </TabsContent>
 
               <TabsContent
+                value="customRules"
+                className="flex flex-col gap-4 grow-2"
+              >
+                <SelectableCustomRuleGrid
+                  selectedIds={selectedCustomRuleIds}
+                  onToggle={handleCustomRuleToggle}
+                />
+              </TabsContent>
+
+              <TabsContent
                 value="spellSchools"
                 className="flex flex-col gap-4 grow-2"
               >
@@ -533,6 +570,7 @@ export function CreateEditCollection({
                 backgrounds: currentBackgrounds,
                 subclasses: currentSubclasses,
                 classes: currentClasses,
+                customRules: currentCustomRules,
                 spellSchools: currentSpellSchools,
                 creator: session?.user || UNKNOWN_USER,
               }}
@@ -581,6 +619,13 @@ export function CreateEditCollection({
               }
               onRemoveClassAction={(id) =>
                 setSelectedClasses((prev) => {
+                  const next = new Map(prev);
+                  next.delete(id);
+                  return next;
+                })
+              }
+              onRemoveCustomRuleAction={(id) =>
+                setSelectedCustomRules((prev) => {
                   const next = new Map(prev);
                   next.delete(id);
                   return next;

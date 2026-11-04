@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { addAncestryToCollection } from "@/app/%5Factions/addAncestryToCollection/contract";
 import { addBackgroundToCollection } from "@/app/%5Factions/addBackgroundToCollection/contract";
 import { addCompanionToCollection } from "@/app/%5Factions/addCompanionToCollection/contract";
+import { addCustomRuleToCollection } from "@/app/%5Factions/addCustomRuleToCollection/contract";
 import { addItemToCollection } from "@/app/%5Factions/addItemToCollection/contract";
 import { addMonsterToCollection } from "@/app/%5Factions/addMonsterToCollection/contract";
 import { addSpellSchoolToCollection } from "@/app/%5Factions/addSpellSchoolToCollection/contract";
@@ -49,7 +50,8 @@ type AddToCollectionDialogProps =
   | { type: "companion"; companionId: string }
   | { type: "ancestry"; ancestryId: string }
   | { type: "background"; backgroundId: string }
-  | { type: "subclass"; subclassId: string };
+  | { type: "subclass"; subclassId: string }
+  | { type: "customRule"; customRuleId: string };
 
 export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
   const { data: session, status } = useSession();
@@ -117,6 +119,10 @@ const SessionCollectionDialog = (
         return selectedCollection.subclasses.some(
           (s) => s.id === props.subclassId
         );
+      case "customRule":
+        return selectedCollection.customRules.some(
+          (r) => r.id === props.customRuleId
+        );
     }
   })();
 
@@ -159,6 +165,11 @@ const SessionCollectionDialog = (
             subclassId: props.subclassId,
             collectionId: data.collectionId,
           });
+        case "customRule":
+          return call(addCustomRuleToCollection, {
+            customRuleId: props.customRuleId,
+            collectionId: data.collectionId,
+          });
       }
     },
     onSuccess: () => {
@@ -183,6 +194,7 @@ const SessionCollectionDialog = (
     ancestry: "ancestry",
     background: "background",
     subclass: "subclass",
+    customRule: "custom rule",
   };
   const entityLabel = entityType[props.type];
 

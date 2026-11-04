@@ -989,6 +989,26 @@ export const backgroundsCollections = sqliteTable(
   (table) => [primaryKey({ columns: [table.backgroundId, table.collectionId] })]
 );
 
+// Custom rules in collections
+export const customRulesCollections = sqliteTable(
+  "custom_rules_collections",
+  {
+    customRuleId: text("custom_rule_id")
+      .notNull()
+      .references(() => customRules.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    collectionId: text("collection_id")
+      .notNull()
+      .references(() => collections.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+  },
+  (table) => [primaryKey({ columns: [table.customRuleId, table.collectionId] })]
+);
+
 // Subclasses in collections
 export const subclassesCollections = sqliteTable(
   "subclasses_collections",

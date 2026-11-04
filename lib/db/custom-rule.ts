@@ -1,4 +1,4 @@
-import { and, asc, count, eq, inArray } from "drizzle-orm";
+import { and, asc, count, eq, inArray, or } from "drizzle-orm";
 import { getAllRules, getValidRuleSlugs } from "@/lib/rules/filesystem";
 import { tokenizeForSearch } from "@/lib/rules/keyword-search";
 import type { User } from "@/lib/types";
@@ -12,6 +12,7 @@ import {
   type CustomRuleVisibility,
   customRuleLinks,
   customRules,
+  customRulesCollections,
   users,
 } from "./schema";
 
@@ -25,17 +26,20 @@ export interface CustomRuleLink {
   relation: CustomRuleRelation;
 }
 
-export interface CustomRule {
+export interface CustomRuleMini {
   id: string;
   name: string;
+  visibility: CustomRuleVisibility;
+  creator: User;
+}
+
+export interface CustomRule extends CustomRuleMini {
   content: string;
   keywords: string;
-  visibility: CustomRuleVisibility;
   likeCount: number;
   createdAt: Date;
   updatedAt: Date;
   links: CustomRuleLink[];
-  creator: User;
 }
 
 export interface RuleCounts {
@@ -180,6 +184,16 @@ const toCustomRule = (data: CustomRuleFullData): CustomRule => ({
   creator: toUser(data.creator),
 });
 
+const toCustomRuleMini = (data: {
+  rule: typeof customRules.$inferSelect;
+  creator: CustomRuleCreatorRow;
+}): CustomRuleMini => ({
+  id: data.rule.id,
+  name: data.rule.name,
+  visibility: data.rule.visibility,
+  creator: toUser(data.creator),
+});
+
 async function loadCustomRulesFullData(
   ruleIds?: string[],
   visibility?: CustomRuleVisibility,
@@ -236,6 +250,63 @@ async function loadCustomRulesFullData(
 
 export async function listPublicCustomRules(): Promise<CustomRule[]> {
   const map = await loadCustomRulesFullData(undefined, "public");
+  return [...map.values()].map(toCustomRule);
+}
+
+export async function listPublicCustomRuleMinis(): Promise<CustomRuleMini[]> {
+  const db = getDatabase();
+  const rows = await db
+    .select({ rule: customRules, creator: customRuleCreatorColumns })
+    .from(customRules)
+    .innerJoin(users, eq(customRules.userId, users.id))
+    .where(eq(customRules.visibility, "public"))
+    .orderBy(asc(customRules.name));
+  return rows.map(toCustomRuleMini);
+}
+
+// Custom rules linked to each of the given collections. Private rules are
+// hidden unless they belong to `ownerId`; pass null for views anyone can see.
+export async function listCustomRuleMinisByCollection(
+  collectionIds: string[],
+  ownerId: string | null
+): Promise<Map<string, CustomRuleMini[]>> {
+  const byCollection = new Map<string, CustomRuleMini[]>();
+  if (collectionIds.length === 0) return byCollection;
+  const db = getDatabase();
+  const rows = await db
+    .select({
+      collectionId: customRulesCollections.collectionId,
+      rule: customRules,
+      creator: customRuleCreatorColumns,
+    })
+    .from(customRulesCollections)
+    .innerJoin(
+      customRules,
+      eq(customRulesCollections.customRuleId, customRules.id)
+    )
+    .innerJoin(users, eq(customRules.userId, users.id))
+    .where(
+      and(
+        inArray(customRulesCollections.collectionId, collectionIds),
+        or(
+          eq(customRules.visibility, "public"),
+          ownerId ? eq(customRules.userId, ownerId) : undefined
+        )
+      )
+    )
+    .orderBy(asc(customRules.name));
+  for (const row of rows) {
+    const existing = byCollection.get(row.collectionId) ?? [];
+    existing.push(toCustomRuleMini(row));
+    byCollection.set(row.collectionId, existing);
+  }
+  return byCollection;
+}
+
+export async function findCustomRulesByIds(
+  ids: string[]
+): Promise<CustomRule[]> {
+  const map = await loadCustomRulesFullData(ids);
   return [...map.values()].map(toCustomRule);
 }
 

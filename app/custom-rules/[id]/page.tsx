@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
 import { EntityReactions } from "@/components/EntityReactions";
 import { HydratedEntityDetail } from "@/components/HydratedEntityDetail";
 import { ReportEntityDialog } from "@/components/ReportEntityDialog";
@@ -119,7 +120,6 @@ export default async function CustomRulePage({ params }: PageProps) {
       entityId={rule.id}
       creatorDiscordId={rule.creator.discordId}
       viewerDiscordId={session?.user?.discordId}
-      includeCollections={false}
     >
       <div className="mx-auto max-w-3xl px-4 py-8">
         <nav className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
@@ -136,6 +136,9 @@ export default async function CustomRulePage({ params }: PageProps) {
             <Attribution user={rule.creator} className="mt-2" />
           </div>
           <div className="flex items-center gap-2">
+            {session?.user && (
+              <AddToCollectionDialog type="customRule" customRuleId={rule.id} />
+            )}
             {isOwner && <CustomRuleActions rule={rule} />}
             <ReportEntityDialog
               entityType="customRule"

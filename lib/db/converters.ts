@@ -257,6 +257,7 @@ export const toCollectionOverview = (
     backgrounds: [],
     subclasses: [],
     classes: [],
+    customRules: [],
     spellSchools: [],
   };
 };

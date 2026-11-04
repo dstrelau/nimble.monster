@@ -1,3 +1,4 @@
+import type { CustomRule, CustomRuleMini } from "@/lib/db/custom-rule";
 import type { Ancestry, AncestryMini } from "@/lib/services/ancestries/types";
 import type {
   Background,
@@ -144,6 +145,7 @@ export interface Collection extends CollectionOverview {
   subclasses: Subclass[];
   spellSchools: SpellSchool[];
   classes: Class[];
+  customRules: CustomRule[];
 }
 
 export interface CollectionOverview {
@@ -162,6 +164,7 @@ export interface CollectionOverview {
   subclasses: SubclassMini[];
   spellSchools: SpellSchoolMini[];
   classes: ClassMini[];
+  customRules: CustomRuleMini[];
   visibility: CollectionVisibilityType;
   createdAt?: Date;
 }
