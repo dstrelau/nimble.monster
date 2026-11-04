@@ -1161,6 +1161,32 @@ this unarchived child. Each slice has its own checks, commit, deployment,
 functional production QA and cleanup before the next starts; the host schedule
 stays paused for final review.
 
+### Owner-background-pagination selection — November 4, 2026
+
+Before the third slice, refreshed fixed **2026-11-03T14:00:00Z–2026-11-04T14:00:00Z**
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/wvRZBiAvX8Q)
+and **2026-10-28T14:00:00Z–2026-11-04T14:00:00Z**
+[seven-day results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/pjiZW34NaKX).
+The same root HTTP filters/status grouping return **690 attempts** in 24 hours:
+688 excluded `x` probes and two HTTP409 attempts for already-migrated navigation
+and official conditions. Seven days contains **6,243 attempts**, **3,018 known
+probes** and the same **six other invalid/unmapped attempts**, excluded from
+named rankings. Mean sample rate is **1**, examined rows are **1,500,545** and
+**6,666,561**, and OTHER is zero. Complete JSON exports are retained in the batch.
+Bots/QA are included; HTTP outcomes are not domain success.
+
+Historical filename/export aliases reuse the verified 150-image/148-SHA
+coverage and bounded-window argument above, not fresh OCI extraction. Every
+observed ID is contained in the preceding downloaded seven-day ID set; the
+added hour is covered by the new 24-hour window. The current `07f2deea` deployed
+manifest independently confirms the owner-background export. All remaining
+named operations still tie at **0 successful / 0 failed** in both windows.
+Select live `paginateMyBackgrounds` from this tie; no higher-volume operation
+is displaced. Class and school slices are deployed, production-verified and
+cleaned up. Coordination finds only this unarchived child; the schedule remains
+paused. After this slice, only owner-item pagination and 24 admin exports remain
+in the application category; repository markers are a separate later category.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1365,6 +1391,42 @@ contract compatibility window that a future migration must preserve.
 | Admin workflows | Not started | Wave 4 |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Owner-background pagination — November 2026
+
+- The only browser caller, `myBackgroundsInfiniteQueryOptions` in
+  `PaginatedBackgroundGrid`, uses cancellable bodyless `GET /_actions/myBackgrounds`.
+  My Backgrounds server hydration calls `backgroundsService.paginatePublicBackgrounds`
+  directly with the session owner, matching the browser cache key and defaults.
+- Preserve the existing **owner-scoped public-only** SQL, not private backgrounds;
+  the old action already used the public service. Session identity is required
+  and cannot be overridden by `creatorId`, `userId`, visibility or include-private
+  input. Preserve full background/creator/source/award fields, five sorts,
+  source/name filters, ID-ascending cursor ties and limit/lookahead semantics.
+  Browser pages remain 12 rows; the service/route default remains 10.
+- Session-scoped query keys and guarded same-owner placeholders keep filtering
+  smooth without showing a previous account's rows after account changes or
+  sign-out. JSON revives background/source/award dates. Existing pending, empty,
+  error/retry, URL navigation and prefix-based mutation invalidation are retained.
+  Safe GETs need no mutation gate; JSON responses/errors are `private, no-store`,
+  no CORS, with telemetry and generic 500s. No schema or public API changes.
+- Removed `app/my/(library)/backgrounds/actions.ts`; application ratchet
+  **26 → 25**. Repository markers are unchanged. Real SQLite route tests cover
+  authorization, private/foreign exclusion, relationships, combined filters,
+  asymmetric cursor ties for every sort and boundary/error behavior. Client
+  tests cover encoded stable GET/no `next-action`, cancellation, nested date
+  revival, account/sign-out isolation, late responses and error recovery.
+- Focused checks: **43 passed**; full suite: **2,388 passed, seven skipped**.
+  `make check` and whitespace checks pass with the pre-existing item-builder
+  unused-import warning unchanged. The
+  [batch thread](https://ampcode.com/threads/T-01a1a6cb-904c-724e-8e50-279e9151ed30)
+  records live development/production request matrices, browser navigation and
+  reload, inspected real-pointer recordings/screenshots, deployment identity,
+  independent SQL comparisons and zero-residue cleanup. QA copies official
+  seeded content into disposable non-admin-owned fixtures, never edits originals.
+  Retain URL/shape for at least one deployment interval; old action tabs need
+  refresh. Unrelated documented defects and server-rendered sidebar counts
+  during same-document account switching are not claimed repaired.
 
 ### Collection spell-school-picker reads — November 2026
 

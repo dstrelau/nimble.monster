@@ -2,6 +2,7 @@
 
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { publicBackgroundsInfiniteQueryOptions } from "@/app/backgrounds/hooks";
@@ -26,6 +27,7 @@ export type PaginatedBackgroundGridProps =
 export const PaginatedBackgroundGrid: React.FC<PaginatedBackgroundGridProps> = (
   props
 ) => {
+  const { data: session } = useSession();
   const [rawSearchQuery, setSearchQuery] = useQueryState("search");
   const [searchQuery] = useDebouncedValue(rawSearchQuery, { wait: 250 });
 
@@ -52,7 +54,7 @@ export const PaginatedBackgroundGrid: React.FC<PaginatedBackgroundGridProps> = (
           creatorId: props.creatorId,
         });
       case "my-backgrounds":
-        return myBackgroundsInfiniteQueryOptions(params);
+        return myBackgroundsInfiniteQueryOptions(session?.user?.id, params);
       case "backgrounds":
         return publicBackgroundsInfiniteQueryOptions(params);
     }
