@@ -212,14 +212,6 @@ export async function removeAwardAssociationAction(
   revalidatePath("/admin/awards");
 }
 
-export async function searchEntitiesAction(entityType: string, query: string) {
-  if (!(await isAdmin())) {
-    throw new Error("Unauthorized");
-  }
-
-  return awardDb.searchEntities(entityType, query);
-}
-
 export async function createSourceAction(formData: FormData) {
   if (!(await isAdmin())) {
     throw new Error("Unauthorized");

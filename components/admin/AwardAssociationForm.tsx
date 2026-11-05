@@ -2,7 +2,7 @@
 
 import { Link as LinkIcon, Plus, X } from "lucide-react";
 import { useId, useState } from "react";
-import { searchEntitiesAction } from "@/app/admin/actions";
+import { searchAwardEntities } from "@/app/%5Factions/searchAwardEntities/contract";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { call } from "@/lib/contract";
 import type { Award } from "@/lib/types";
 
 interface AwardAssociationFormProps {
@@ -41,8 +42,16 @@ export function AwardAssociationForm({
 
   const handleSearch = async () => {
     if (searchQuery.length < 2) return;
-    const results = await searchEntitiesAction(entityType, searchQuery);
-    setSearchResults(results);
+    setError(null);
+    try {
+      const results = await call(searchAwardEntities, {
+        entityType,
+        query: searchQuery,
+      });
+      setSearchResults(results);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Search failed");
+    }
   };
 
   const handleSelectEntity = (entity: Entity) => {

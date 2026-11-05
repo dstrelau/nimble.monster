@@ -1226,6 +1226,36 @@ unarchived child. No live-volume candidate is displaced; refresh evidence before
 the next selection. Only admin exports remain in the application category;
 seven repository markers remain a separate later category.
 
+### Admin award-entity search selection — November 5, 2026
+
+Coordination found no other unarchived child owner. Initially reused the recent
+zero-volume evidence above, then refreshed fixed
+**2026-11-04T00:00:00Z–2026-11-05T00:00:00Z**:
+[24-hour results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/qznW8UoktGE).
+Root HTTP spans only (`trace.parent_id` absent, `next-action` present), grouped
+by ID and coalesced status, contain **46 attempts**: **24 excluded `x` probes**
+and **22 mapped HTTP409 attempts** for already-migrated actions: navigation
+counts 17, entity-source options three, official conditions one and creator/viewer
+conditions one. No otherwise-unmapped 24-hour volume remains. Mean sample rate
+**1**, 768,442 examined rows, OTHER zero. Bots/QA are included; HTTP <400/≥400
+measures transport outcome, not Flight/domain success.
+
+The identical [seven-day query](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/GmL7v6P4qU4)
+over **2026-10-29T00:00:00Z–2026-11-05T00:00:00Z** contains **5,295 attempts**:
+**3,012 known probes**, **2,278 named attempts**, and **five other invalid/unmapped
+attempts** (two 64-zero IDs and three nonmanifest IDs), excluded from rankings.
+Mean sample rate **1**, 6,188,815 examined rows, OTHER zero. Complete JSON and
+fresh read-only SHA256-verified extraction across **150 deployed images / 148
+build SHAs** are retained as `admin-search-traffic-{24,7}.json` in the
+[run thread](https://ampcode.com/threads/T-01a1a8f5-cb5d-74d4-bde4-ca113484df55).
+Every observed manifest-shaped ID maps to exactly one filename/export; aliases
+aggregate by that name, never by build-specific ID. All 24 remaining admin
+exports tie at **0 successful / 0 failed attempts** in both windows. Select the
+single live `app/admin/actions.ts#searchEntitiesAction` read, whose sole caller
+is `AwardAssociationForm`, rather than broadening into native-form writes/imports.
+No higher-volume remaining browser action is displaced. Refresh before the next
+selection; seven repository markers remain a separate later category.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1427,9 +1457,52 @@ contract compatibility window that a future migration must preserve.
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
 | Public browser reads | Partially complete | Ancestry, monster, [background pagination](https://ampcode.com/threads/T-01a18f35-c260-71bc-87af-6169397d40ed) and [companion pagination](https://ampcode.com/threads/T-01a18aeb-4708-74f5-866c-0e0b52d3e2f3), source options, navigation counts and [item search/pagination](https://ampcode.com/threads/T-01a188c6-2cba-721e-b7ee-ef1b744afdc5) use internal stable GETs. All application browser reads belong under `/_actions`, not the third-party JSON:API. Remaining operations follow measured traffic priority. |
 | Private/UI-specific browser reads | Partially complete | Picker, reaction summary, creator/viewer and official conditions, navigation counts and [report status reads](https://ampcode.com/threads/T-01a189d8-7afb-75e0-9d07-35be1c47103c) use stable routes. Remaining operations follow measured traffic priority. |
-| Admin workflows | Not started | Wave 4 |
+| Admin workflows | Partially complete | Award-entity search uses stable admin-only GET; 23 native-form/write/import actions remain |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Admin award-entity search — November 2026
+
+- Replaced the sole browser `searchEntitiesAction` call with typed bodyless
+  `GET /_actions/searchAwardEntities?entityType=…&query=…`. The admin award
+  association form retains two-character UI gating, button/Enter search,
+  type selection, result selection/removal and unsaved form state. Failed reads
+  now use its existing inline error area, retaining prior results and query for
+  manual retry. Association writes, award CRUD, revalidation and navigation are
+  unchanged; this read itself has no writes or invalidation.
+- The boundary derives role only from `auth()`, returning JSON401 anonymously
+  and JSON403 for non-admins before validation/SQL. Zod accepts the existing
+  seven entity types and a string query; invalid/missing input returns 400.
+  Submitted identity/role/limit parameters confer no authority. The unchanged
+  database helper intentionally searches public AND private entities for admins,
+  retains LIKE/wildcard semantics and the ten-result cap, and serializes only
+  `id` and `name`. No additional identity data, JSON:API, dates, schema or
+  Server Component HTTP hop is introduced. Safe GET needs no mutation-origin
+  or media gate. Success/errors are `private, no-store`, without CORS;
+  unexpected exceptions reach telemetry before a generic JSON500.
+- Removed just `searchEntitiesAction` from `app/admin/actions.ts` and its
+  caller import; application ratchet **24 → 23**. Seven repository markers and
+  their counts remain unchanged. Keep the stable URL and accepted response
+  shape for at least one deployment interval; pre-cutover tabs still need refresh.
+- Real-SQL route tests cover all seven types, private inclusion, minimal fields,
+  cap, special/empty/wildcard input, auth, ignored authority, validation and safe
+  telemetry failures. Real-form transport tests cover stable URL/no `next-action`,
+  Enter/short-query gating, selection retention, failed reads and manual retry.
+  Focused tests **22 passed**; full suite **2,403 passed, seven skipped**.
+  `make check` and `git diff --check` pass; the existing BuildItemView unused-import
+  warning remains unchanged. Thirty live development requests independently
+  compare all seven searches to SQLite and verify 401/403/400/405 and media/cache.
+  Browser QA covers all seven picker types, selection, empty results, deliberate
+  failure/manual recovery, client navigation and reload: 11 real JSON200 GETs
+  with raw CDP extra headers and no `next-action`, plus one deliberate intercepted
+  500 (its expected console error is recorded separately). No page/hydration
+  errors occur. Local cleanup verifies zero QA users; no entity/association writes.
+- The [run thread](https://ampcode.com/threads/T-01a1a8f5-cb5d-74d4-bde4-ca113484df55)
+  records inspected browser QA/recording, deployment identity, exact functional
+  authenticated production requests and cleanup. QA uses disposable admin and
+  non-admin users and read-only existing content; no entity or association writes.
+  Production sessions expire after one hour, not a dev-login bypass. Migration
+  remains incomplete; 23 admin exports and seven repository markers remain.
 
 ### Unused owner-item pagination — November 2026
 
