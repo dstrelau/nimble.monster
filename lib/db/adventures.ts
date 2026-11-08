@@ -199,6 +199,38 @@ export async function listPublicAdventuresForUser(
   return rows.map(toAdventureOverview);
 }
 
+export async function listPublicAdventuresUsingEncounter(
+  encounterId: string
+): Promise<AdventureOverview[]> {
+  return listPublicAdventuresReferencing(
+    adventureNodes.encounterId,
+    encounterId
+  );
+}
+
+export async function listPublicAdventuresUsingRandomTable(
+  tableId: string
+): Promise<AdventureOverview[]> {
+  return listPublicAdventuresReferencing(adventureNodes.tableId, tableId);
+}
+
+async function listPublicAdventuresReferencing(
+  column: typeof adventureNodes.encounterId | typeof adventureNodes.tableId,
+  id: string
+): Promise<AdventureOverview[]> {
+  if (!isValidUUID(id)) return [];
+  const db = getDatabase();
+  const rows = await db
+    .selectDistinct({ adventure: adventures, creator: users })
+    .from(adventures)
+    .innerJoin(users, eq(adventures.creatorId, users.id))
+    .innerJoin(adventureNodes, eq(adventureNodes.adventureId, adventures.id))
+    .where(and(eq(column, id), eq(adventures.visibility, "public")))
+    .orderBy(asc(adventures.name));
+
+  return rows.map(toAdventureOverview);
+}
+
 export async function findAdventure(id: string): Promise<Adventure | null> {
   if (!isValidUUID(id)) return null;
   const db = getDatabase();

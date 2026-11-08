@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { EncounterHeader } from "@/app/encounters/EncounterHeader";
 import { EncounterViewerSidebar } from "@/app/encounters/EncounterViewerSidebar";
+import { UsedInAdventures } from "@/components/adventure/UsedInAdventures";
 import { Card as MonsterCard } from "@/components/monster/Card";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
@@ -73,9 +74,10 @@ export default async function ShowEncounterView({
     return permanentRedirect(getEncounterUrl(encounter));
   }
 
-  const [officialConditions, userConditions] = await Promise.all([
+  const [officialConditions, userConditions, adventures] = await Promise.all([
     listOfficialConditions(),
     listConditionsForDiscordId(encounter.creator.discordId),
+    db.listPublicAdventuresUsingEncounter(encounter.id),
   ]);
   const conditions = [...officialConditions, ...userConditions];
   if (
@@ -163,6 +165,10 @@ export default async function ShowEncounterView({
           <EncounterViewerSidebar key={encounter.id} encounter={encounter} />
         </div>
       )}
+
+      <div className="mt-12 flex justify-center print:hidden">
+        <UsedInAdventures adventures={adventures} />
+      </div>
     </div>
   );
 }

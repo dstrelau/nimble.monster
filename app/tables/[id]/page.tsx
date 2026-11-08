@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { RandomTableHeader } from "@/app/tables/RandomTableHeader";
+import { UsedInAdventures } from "@/components/adventure/UsedInAdventures";
 import { SubtablesView } from "@/components/random-table/SubtablesView";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
@@ -75,9 +76,10 @@ export default async function ShowRandomTableView({
     notFound();
   }
 
-  const [officialConditions, userConditions] = await Promise.all([
+  const [officialConditions, userConditions, adventures] = await Promise.all([
     listOfficialConditions(),
     listConditionsForDiscordId(randomTable.creator.discordId),
+    db.listPublicAdventuresUsingRandomTable(randomTable.id),
   ]);
   const conditions = [...officialConditions, ...userConditions];
 
@@ -101,6 +103,10 @@ export default async function ShowRandomTableView({
           conditions={conditions}
         />
       )}
+
+      <div className="mt-12 flex justify-center print:hidden">
+        <UsedInAdventures adventures={adventures} />
+      </div>
     </div>
   );
 }
