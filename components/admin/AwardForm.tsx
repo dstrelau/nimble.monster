@@ -1,7 +1,9 @@
 "use client";
 
 import { Award as AwardIcon } from "lucide-react";
-import { useActionState, useId } from "react";
+import { useRouter } from "next/navigation";
+import { startTransition, useActionState, useId, useRef } from "react";
+import { createAward } from "@/app/%5Factions/createAward/contract";
 import {
   AWARD_COLOR_CLASSES,
   AWARD_COLORS,
@@ -17,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { call } from "@/lib/contract";
 import type { Award } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +30,7 @@ type AwardFormAction = (
 
 interface AwardFormProps {
   award?: Award;
-  onSubmit: AwardFormAction;
+  onSubmit?: AwardFormAction;
   submitLabel?: string;
 }
 
@@ -36,7 +39,32 @@ export function AwardForm({
   onSubmit,
   submitLabel = "Create Award",
 }: AwardFormProps) {
-  const [state, formAction] = useActionState(onSubmit, { error: null });
+  const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
+  const [state, formAction, pending] = useActionState(
+    async (previous: { error: string | null }, formData: FormData) => {
+      if (onSubmit) return onSubmit(previous, formData);
+      try {
+        await call(createAward, {
+          name: String(formData.get("name") ?? ""),
+          abbreviation: String(formData.get("abbreviation") ?? ""),
+          description: String(formData.get("description") ?? ""),
+          url: String(formData.get("url") ?? ""),
+          color: String(formData.get("color") ?? ""),
+          icon: String(formData.get("icon") ?? ""),
+        });
+        router.push("/admin/awards");
+        router.refresh();
+        formRef.current?.reset();
+        return { error: null };
+      } catch (error) {
+        return {
+          error: error instanceof Error ? error.message : "Save failed",
+        };
+      }
+    },
+    { error: null }
+  );
   const nameId = useId();
   const abbreviationId = useId();
   const descriptionId = useId();
@@ -45,7 +73,15 @@ export function AwardForm({
   const iconId = useId();
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form
+      ref={formRef}
+      onSubmit={(event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        startTransition(() => formAction(data));
+      }}
+      className="space-y-4"
+    >
       {state.error && <p className="text-sm text-destructive">{state.error}</p>}
       <div className="space-y-2">
         <Label htmlFor={nameId}>Name</Label>
@@ -131,7 +167,11 @@ export function AwardForm({
         </p>
       </div>
 
-      <Button type="submit" className="flex items-center gap-2">
+      <Button
+        type="submit"
+        disabled={pending}
+        className="flex items-center gap-2"
+      >
         <AwardIcon className="size-4" />
         {submitLabel}
       </Button>

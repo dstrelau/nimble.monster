@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import React from "react";
 import {
   addAwardAssociationAction,
-  createAwardAction,
   deleteAwardAction,
   removeAwardAssociationAction,
   updateAwardAction,
@@ -184,7 +183,7 @@ export default async function AdminAwardsPage() {
             <CardTitle>Create New Award</CardTitle>
           </CardHeader>
           <CardContent>
-            <AwardForm onSubmit={createAwardAction} />
+            <AwardForm />
           </CardContent>
         </Card>
 

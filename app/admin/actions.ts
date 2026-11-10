@@ -56,39 +56,6 @@ import {
 import { upsertOfficialSubclass } from "@/lib/services/subclasses/repository";
 import { awardSlugify } from "@/lib/utils/slug";
 
-export async function createAwardAction(
-  _prevState: { error: string | null },
-  formData: FormData
-): Promise<{ error: string | null }> {
-  if (!(await isAdmin())) {
-    return { error: "Unauthorized" };
-  }
-
-  const name = formData.get("name") as string;
-  const abbreviation = formData.get("abbreviation") as string;
-  const description = (formData.get("description") as string) || "";
-  const url = formData.get("url") as string;
-  const color = formData.get("color") as string;
-  const icon = formData.get("icon") as string;
-  const slug = awardSlugify(abbreviation);
-
-  try {
-    await awardDb.createAward({
-      name,
-      abbreviation,
-      description,
-      slug,
-      url,
-      color,
-      icon,
-    });
-  } catch (e) {
-    return { error: e instanceof Error ? e.message : "Failed to create award" };
-  }
-  revalidatePath("/admin/awards");
-  redirect("/admin/awards");
-}
-
 export async function updateAwardAction(
   id: string,
   _prevState: { error: string | null },

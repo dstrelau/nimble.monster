@@ -1256,6 +1256,43 @@ is `AwardAssociationForm`, rather than broadening into native-form writes/import
 No higher-volume remaining browser action is displaced. Refresh before the next
 selection; seven repository markers remain a separate later category.
 
+### Award CRUD batch selection — November 9, 2026
+
+The owner authorized exactly three sequential slices. This batch selects award
+create, update and delete, each completing its own local gates, deployment, functional production
+QA and cleanup before the next. The host schedule is paused for final review.
+The [implementation thread](https://ampcode.com/threads/T-01a1c2b5-b689-743e-9de8-e2b1b535fd7e)
+retains the full sanitized evidence and access checks. Fly OAuth machine exec
+was verified with an actual exit-zero read of the deployed Next BUILD_ID;
+the old CLI credential remains unusable and is not used for production QA.
+
+Fresh fixed **2026-11-08T23:00:00Z–2026-11-09T23:00:00Z**
+[24-hour root-request results](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/sHMUbT13NzM)
+contain 31 attempts: 28 excluded `x`/`y` probes and three HTTP409 attempts whose
+historical IDs remain unmapped. The fixed **2026-11-02T23:00:00Z–2026-11-09T23:00:00Z**
+[seven-day query](https://ui.honeycomb.io/strelau-45/environments/nimble.monster/datasets/nimble.monster/result/nj1zCpKjUL8)
+contains 1,353 attempts: 1,236 probes, 64 attempts mapped by earlier verified
+aliases to already-migrated reads, and 53 attempts without checked historical
+provenance in this run. All 117 non-probe attempts are HTTP409. Missing-parent
+and present-next-action filters exclude child spans; OTHER is zero. Examined
+rows: 965,599 and 6,049,026. No explicit mean sample rate was returned, so it is
+not asserted. Bots/QA remain included; transport status is not domain success.
+
+The current deployed manifest directly verifies all 23 admin filename/export
+mappings, including this batch. Their current aliases have **0 successful /
+0 failed** attempts in both windows, tied with other mapped remaining actions.
+The old 150-image mapping exports cannot be recovered from the archived run,
+and registry access remains unverified; no historical ID is guessed. Thus this
+is a **bounded selection among mapped zero-volume operations**, not proof that
+unmapped volume cannot conceal a higher-volume remaining operation. This
+coverage limitation remains explicit for subsequent prioritization.
+
+Caller audit accounts for all 23 live admin exports: five award operations,
+three source operations, one upload and fourteen preview commit/cancel actions.
+The three award CRUD operations form the bounded batch without deciding import
+session ownership, concurrency, atomicity or payload-limit policy. Award
+association writes and all source/import workflows remain outside the batch.
+
 ## Migration waves (scope guidance)
 
 Each wave consists of small, reviewable vertical slices. Do not migrate every
@@ -1457,9 +1494,38 @@ contract compatibility window that a future migration must preserve.
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
 | Public browser reads | Partially complete | Ancestry, monster, [background pagination](https://ampcode.com/threads/T-01a18f35-c260-71bc-87af-6169397d40ed) and [companion pagination](https://ampcode.com/threads/T-01a18aeb-4708-74f5-866c-0e0b52d3e2f3), source options, navigation counts and [item search/pagination](https://ampcode.com/threads/T-01a188c6-2cba-721e-b7ee-ef1b744afdc5) use internal stable GETs. All application browser reads belong under `/_actions`, not the third-party JSON:API. Remaining operations follow measured traffic priority. |
 | Private/UI-specific browser reads | Partially complete | Picker, reaction summary, creator/viewer and official conditions, navigation counts and [report status reads](https://ampcode.com/threads/T-01a189d8-7afb-75e0-9d07-35be1c47103c) use stable routes. Remaining operations follow measured traffic priority. |
-| Admin workflows | Partially complete | Award-entity search uses stable admin-only GET; 23 native-form/write/import actions remain |
+| Admin workflows | Partially complete | Award-entity search and award creation use stable admin-only routes; 22 native-form/write/import actions remain |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Admin award creation — November 2026
+
+- The create form now uses typed JSON `POST /_actions/createAward`, delegating
+  unchanged persistence and abbreviation-derived slugs to `lib/db/award.ts`.
+  `auth()` supplies identity and explicit admin authorization; submitted
+  identity, IDs and slugs are not authority. Same-origin/media checks run before
+  parsing; malformed JSON/schema input returns 400, anonymous/non-admin callers
+  get 401/403, duplicate slugs get a safe 409 and unexpected failures reach
+  telemetry before generic 500s. No CORS, public API or schema changes.
+- The shared form retains legacy edit transport only until slice two. Create
+  pending disables submission; failures retain inputs for manual retry. Success
+  resets the create form and explicitly navigates/refreshes `/admin/awards` after
+  route revalidation. No relative HTTP runs in Server Components. Removed
+  `createAwardAction` and its sole page caller; application ratchet **23 → 22**.
+- Boundary tests use real SQLite and independently assert persistence,
+  derived slugs, ignored authority, denials without writes and duplicate
+  non-overwrite. Real-form transport tests verify stable URL/no next-action,
+  pending disable, error/draft retention, retry and navigation/reset.
+- Local gates: six focused tests and 2,411 full-suite tests passed (seven
+  skipped); formatting, `make check` and diff checks passed. Nine actual HTTP
+  requests covered 401/403, origin/media/JSON/schema/method rejection, create
+  persistence and duplicate409. Inspected browser recording/screenshots cover
+  200/409/200, draft retention/retry, client navigation and full reload with no
+  page errors; raw CDP extra headers confirm no next-action. Independent SQLite
+  cleanup found zero test users/awards and unchanged original awards.
+- Deployment, live local/production request results, inspected browser evidence
+  and independently verified fixture cleanup are recorded in the run thread.
+  Until those gates pass, this slice is not production-verified or complete.
 
 ### Admin award-entity search — November 2026
 
