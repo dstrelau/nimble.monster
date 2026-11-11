@@ -67,3 +67,44 @@ it("uses stable JSON without next-action, retains errors/draft, disables pending
   expect(push).toHaveBeenCalledWith("/admin/awards");
   expect(screen.getByLabelText("Name")).toHaveValue("");
 });
+
+it("updates the existing award by id and reports success to its dialog", async () => {
+  const fetcher = vi.fn().mockResolvedValue(Response.json({ success: true }));
+  vi.stubGlobal("fetch", fetcher);
+  const onSaved = vi.fn();
+  render(
+    <AwardForm
+      award={{
+        id: "award-7",
+        slug: "old",
+        name: "Old",
+        abbreviation: "OLD",
+        description: "Keep",
+        url: "https://example.com/old",
+        color: "red",
+        icon: "trophy",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }}
+      onSaved={onSaved}
+      submitLabel="Update Award"
+    />
+  );
+  fireEvent.change(screen.getByLabelText("Name"), { target: { value: "New" } });
+  fireEvent.click(screen.getByRole("button", { name: "Update Award" }));
+  await waitFor(() => expect(onSaved).toHaveBeenCalled());
+  const [url, options] = fetcher.mock.calls[0];
+  expect(url).toBe("/_actions/updateAward");
+  expect(new Headers(options.headers).has("next-action")).toBe(false);
+  expect(JSON.parse(options.body)).toEqual({
+    id: "award-7",
+    name: "New",
+    abbreviation: "OLD",
+    description: "Keep",
+    url: "https://example.com/old",
+    color: "red",
+    icon: "trophy",
+  });
+  expect(refresh).toHaveBeenCalled();
+  expect(screen.getByLabelText("Name")).toHaveValue("New");
+});

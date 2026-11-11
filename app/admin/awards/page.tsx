@@ -1,17 +1,11 @@
-import { Trash2, Unlink } from "lucide-react";
 import { notFound } from "next/navigation";
 import React from "react";
-import {
-  addAwardAssociationAction,
-  deleteAwardAction,
-  removeAwardAssociationAction,
-  updateAwardAction,
-} from "@/app/admin/actions";
+import type { AwardEntityType } from "@/app/%5Factions/_award/contract";
+import { AdminRowActionButton } from "@/components/admin/AdminRowActionButton";
 import { AwardAssociationForm } from "@/components/admin/AwardAssociationForm";
 import { AwardForm } from "@/components/admin/AwardForm";
 import { EditAwardDialog } from "@/components/admin/EditAwardDialog";
 import { AwardBadge } from "@/components/award/AwardBadge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -35,7 +29,7 @@ export default async function AdminAwardsPage() {
   const awardEntityMap = new Map<
     string,
     Array<{
-      type: string;
+      type: AwardEntityType;
       id: string;
       name: string;
       awardIds: string[];
@@ -192,10 +186,7 @@ export default async function AdminAwardsPage() {
             <CardTitle>Add Award Association</CardTitle>
           </CardHeader>
           <CardContent>
-            <AwardAssociationForm
-              awards={awards}
-              onSubmit={addAwardAssociationAction}
-            />
+            <AwardAssociationForm awards={awards} />
           </CardContent>
         </Card>
       </div>
@@ -233,20 +224,10 @@ export default async function AdminAwardsPage() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <EditAwardDialog
-                            award={award}
-                            onSubmit={updateAwardAction.bind(null, award.id)}
+                          <EditAwardDialog award={award} />
+                          <AdminRowActionButton
+                            action={{ kind: "deleteAward", id: award.id }}
                           />
-                          <form action={deleteAwardAction.bind(null, award.id)}>
-                            <Button
-                              type="submit"
-                              variant="ghost"
-                              size="sm"
-                              className="text-destructive"
-                            >
-                              <Trash2 className="size-4" />
-                            </Button>
-                          </form>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -263,23 +244,14 @@ export default async function AdminAwardsPage() {
                         </TableCell>
                         <TableCell />
                         <TableCell>
-                          <form
-                            action={removeAwardAssociationAction.bind(
-                              null,
-                              entity.type,
-                              entity.id,
-                              award.id
-                            )}
-                          >
-                            <Button
-                              type="submit"
-                              variant="ghost"
-                              size="sm"
-                              className="text-destructive"
-                            >
-                              <Unlink className="size-4" />
-                            </Button>
-                          </form>
+                          <AdminRowActionButton
+                            action={{
+                              kind: "removeAwardAssociation",
+                              entityType: entity.type,
+                              entityId: entity.id,
+                              awardId: award.id,
+                            }}
+                          />
                         </TableCell>
                       </TableRow>
                     ))}

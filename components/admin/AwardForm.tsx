@@ -3,7 +3,11 @@
 import { Award as AwardIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useId, useRef } from "react";
-import { createAward } from "@/app/%5Factions/createAward/contract";
+import {
+  type AwardInput,
+  createAward,
+  updateAward,
+} from "@/app/%5Factions/_award/contract";
 import {
   AWARD_COLOR_CLASSES,
   AWARD_COLORS,
@@ -23,39 +27,39 @@ import { call } from "@/lib/contract";
 import type { Award } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type AwardFormAction = (
-  prevState: { error: string | null },
-  formData: FormData
-) => Promise<{ error: string | null }>;
-
 interface AwardFormProps {
   award?: Award;
-  onSubmit?: AwardFormAction;
+  onSaved?: () => void;
   submitLabel?: string;
 }
 
 export function AwardForm({
   award,
-  onSubmit,
+  onSaved,
   submitLabel = "Create Award",
 }: AwardFormProps) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction, pending] = useActionState(
-    async (previous: { error: string | null }, formData: FormData) => {
-      if (onSubmit) return onSubmit(previous, formData);
+    async (_previous: { error: string | null }, formData: FormData) => {
+      const input: AwardInput = {
+        name: String(formData.get("name") ?? ""),
+        abbreviation: String(formData.get("abbreviation") ?? ""),
+        description: String(formData.get("description") ?? ""),
+        url: String(formData.get("url") ?? ""),
+        color: String(formData.get("color") ?? ""),
+        icon: String(formData.get("icon") ?? ""),
+      };
       try {
-        await call(createAward, {
-          name: String(formData.get("name") ?? ""),
-          abbreviation: String(formData.get("abbreviation") ?? ""),
-          description: String(formData.get("description") ?? ""),
-          url: String(formData.get("url") ?? ""),
-          color: String(formData.get("color") ?? ""),
-          icon: String(formData.get("icon") ?? ""),
-        });
+        if (award) {
+          await call(updateAward, { ...input, id: award.id });
+        } else {
+          await call(createAward, input);
+          formRef.current?.reset();
+        }
         router.push("/admin/awards");
         router.refresh();
-        formRef.current?.reset();
+        onSaved?.();
         return { error: null };
       } catch (error) {
         return {

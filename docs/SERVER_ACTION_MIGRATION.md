@@ -122,8 +122,9 @@ zero.
 
 ### Admin workflows
 
-`app/admin/actions.ts` contains 22 actions for awards, sources, entity search,
-and six upload-preview-commit/cancel workflows. These use native form actions,
+`app/admin/actions.ts` originally contained 22 actions for awards, sources,
+entity search, and six upload-preview-commit/cancel workflows; 15 upload/import
+actions remain. These use native form actions,
 redirects, multipart uploads, preview sessions, bulk writes, and broad cache
 invalidation. They are a distinct, high-complexity migration wave.
 
@@ -1494,9 +1495,52 @@ contract compatibility window that a future migration must preserve.
 | Reactions, reports, conditions, preferences | Complete | [Reaction toggles](https://ampcode.com/threads/T-01a169aa-0746-735a-a7c0-8446cab7f985), [report submission](https://ampcode.com/threads/T-01a16abb-6ac1-760e-8159-aadec433f0f8), [condition deletion](https://ampcode.com/threads/T-01a16bce-4053-76b1-b007-b48b240ab139), [condition creation](https://ampcode.com/threads/T-01a16ce0-e547-7735-82bf-72d6eea5d24f) and [banner dismissal](https://ampcode.com/threads/T-01a16df3-8e79-70c7-a4e7-ed05493c11b8) use stable JSON; Wave 3 browser reads are next |
 | Public browser reads | Partially complete | Ancestry, monster, [background pagination](https://ampcode.com/threads/T-01a18f35-c260-71bc-87af-6169397d40ed) and [companion pagination](https://ampcode.com/threads/T-01a18aeb-4708-74f5-866c-0e0b52d3e2f3), source options, navigation counts and [item search/pagination](https://ampcode.com/threads/T-01a188c6-2cba-721e-b7ee-ef1b744afdc5) use internal stable GETs. All application browser reads belong under `/_actions`, not the third-party JSON:API. Remaining operations follow measured traffic priority. |
 | Private/UI-specific browser reads | Partially complete | Picker, reaction summary, creator/viewer and official conditions, navigation counts and [report status reads](https://ampcode.com/threads/T-01a189d8-7afb-75e0-9d07-35be1c47103c) use stable routes. Remaining operations follow measured traffic priority. |
-| Admin workflows | Partially complete | Award-entity search and award creation use stable admin-only routes; 22 native-form/write/import actions remain |
+| Admin workflows | Partially complete | Award-entity search, award CRUD/associations and source CRUD use stable admin-only routes; the upload and 14 preview commit/cancel actions remain |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
 | Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+
+### Admin award and source writes — November 2026
+
+- Award update/delete, award association add/remove and source
+  create/update/delete now use typed JSON `POST /_actions/{updateAward,
+  deleteAward,addAwardAssociation,removeAwardAssociation,createSource,
+  updateSource,deleteSource}`. Contracts live in `app/%5Factions/_award` and
+  `app/%5Factions/_source`; `createAward` moved its contract there unchanged.
+- `lib/admin-action.ts#adminJsonAction` is the shared admin boundary: it wraps
+  `internalAction` (exact-origin, JSON media type, telemetry, generic 500), then
+  requires an authenticated `auth()` admin (401/403) before parsing (400 for
+  malformed JSON or schema mismatch). Submitted identity is never authority.
+- Status changes from the native-form actions: unknown award/source IDs return
+  404 instead of silently succeeding; abbreviation collisions on update return
+  409 instead of an exception message; associations to a missing award or
+  entity return 404 from the foreign-key constraint; deleting a source still
+  referenced by content returns 409 (previously an unhandled throw). Award
+  deletes still cascade their associations; repeated association adds remain
+  idempotent. `updateSource`/`deleteSource` in `lib/db/source.ts` now report
+  whether a row matched. Every original `revalidatePath` is preserved.
+- UI: `AwardForm`/`SourceForm` own create and edit transport and close their
+  edit dialogs through `onSaved`; failures keep the draft and show the route
+  error inline. `AwardAssociationForm` posts one request per selected entity,
+  drops each saved entity from the selection, keeps the unsaved remainder after
+  a failure and refreshes the page. Row delete/unlink buttons are a shared
+  client `AdminRowActionButton` that disables while pending, refreshes on
+  success and alerts the route error on failure. They gained accessible names.
+- Removed seven exports and the wrapper-only `app/admin/actions.test.ts`;
+  application ratchet **22 → 15**. Route tests run against the real migrated
+  SQLite schema with one entity per award-able type (distinct IDs, so a wrong
+  type-to-table mapping fails), cascade/foreign-key/unique behavior and
+  denials without writes. Client tests assert stable URLs, bodies and no
+  `next-action`.
+- Local gates: full suite 2,417 passed (seven skipped); `make check` passed.
+  Development browser QA as admin covered source create → edit (dialog closes)
+  → in-use delete 409 (88 referencing monsters untouched) → delete, and award
+  create → duplicate 409 with draft kept → edit conflict 409 with dialog kept →
+  edit → two monster associations → unlink one → delete both awards (cascade).
+  All writes were fetch POSTs to `/_actions/*`; none were page-URL Server Action
+  posts, and no page errors were logged. The dev DB was left with zero QA rows.
+- Not yet deployed or production-verified. Upload and the 14 import preview
+  commit/cancel actions remain; they need decisions on preview ownership,
+  replay/concurrency and atomic versus partial imports.
 
 ### Admin award creation — November 2026
 

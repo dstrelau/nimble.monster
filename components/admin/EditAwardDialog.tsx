@@ -15,13 +15,9 @@ import type { Award } from "@/lib/types";
 
 interface EditAwardDialogProps {
   award: Award;
-  onSubmit: (
-    prevState: { error: string | null },
-    formData: FormData
-  ) => Promise<{ error: string | null }>;
 }
 
-export function EditAwardDialog({ award, onSubmit }: EditAwardDialogProps) {
+export function EditAwardDialog({ award }: EditAwardDialogProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -37,7 +33,7 @@ export function EditAwardDialog({ award, onSubmit }: EditAwardDialogProps) {
         </DialogHeader>
         <AwardForm
           award={award}
-          onSubmit={onSubmit}
+          onSaved={() => setOpen(false)}
           submitLabel="Update Award"
         />
       </DialogContent>

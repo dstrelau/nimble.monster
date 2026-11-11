@@ -1,7 +1,12 @@
 "use client";
 
 import { Link as LinkIcon, Plus, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
+import {
+  type AwardEntityType,
+  addAwardAssociation,
+} from "@/app/%5Factions/_award/contract";
 import { searchAwardEntities } from "@/app/%5Factions/searchAwardEntities/contract";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +23,6 @@ import type { Award } from "@/lib/types";
 
 interface AwardAssociationFormProps {
   awards: Award[];
-  onSubmit: (formData: FormData) => Promise<{ error: string } | undefined>;
 }
 
 interface Entity {
@@ -26,19 +30,18 @@ interface Entity {
   name: string;
 }
 
-export function AwardAssociationForm({
-  awards,
-  onSubmit,
-}: AwardAssociationFormProps) {
+export function AwardAssociationForm({ awards }: AwardAssociationFormProps) {
+  const router = useRouter();
   const entityTypeId = useId();
   const entitySearchId = useId();
   const awardId = useId();
-  const [entityType, setEntityType] = useState("monster");
+  const [entityType, setEntityType] = useState<AwardEntityType>("monster");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Entity[]>([]);
   const [selectedEntities, setSelectedEntities] = useState<Entity[]>([]);
   const [selectedAwardId, setSelectedAwardId] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
   const handleSearch = async () => {
     if (searchQuery.length < 2) return;
@@ -71,20 +74,27 @@ export function AwardAssociationForm({
     setError(null);
     if (selectedEntities.length === 0 || !selectedAwardId) return;
 
-    for (const entity of selectedEntities) {
-      const formData = new FormData();
-      formData.append("entityType", entityType);
-      formData.append("entityId", entity.id);
-      formData.append("awardId", selectedAwardId);
-      const result = await onSubmit(formData);
-      if (result?.error) {
-        setError(result.error);
-        return;
+    setPending(true);
+    try {
+      for (const entity of selectedEntities) {
+        await call(addAwardAssociation, {
+          entityType,
+          entityId: entity.id,
+          awardId: selectedAwardId,
+        });
+        setSelectedEntities((current) =>
+          current.filter((e) => e.id !== entity.id)
+        );
       }
+      setSelectedAwardId("");
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to add association"
+      );
+    } finally {
+      setPending(false);
+      router.refresh();
     }
-
-    setSelectedEntities([]);
-    setSelectedAwardId("");
   };
 
   return (
@@ -94,7 +104,7 @@ export function AwardAssociationForm({
         <Label htmlFor={entityTypeId}>Entity Type</Label>
         <Select
           value={entityType}
-          onValueChange={(value) => {
+          onValueChange={(value: AwardEntityType) => {
             setEntityType(value);
             setSelectedEntities([]);
             setSearchResults([]);
@@ -196,7 +206,7 @@ export function AwardAssociationForm({
 
       <Button
         type="submit"
-        disabled={selectedEntities.length === 0 || !selectedAwardId}
+        disabled={pending || selectedEntities.length === 0 || !selectedAwardId}
         className="flex items-center gap-2"
       >
         <Plus className="size-4" />

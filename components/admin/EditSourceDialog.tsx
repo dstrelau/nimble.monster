@@ -1,7 +1,7 @@
 "use client";
 
 import { Pencil } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { SourceForm } from "@/components/admin/SourceForm";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,19 +15,10 @@ import type { SourceRow } from "@/lib/db/schema";
 
 interface EditSourceDialogProps {
   source: SourceRow;
-  onSubmit: (formData: FormData) => Promise<void>;
 }
 
-export function EditSourceDialog({ source, onSubmit }: EditSourceDialogProps) {
+export function EditSourceDialog({ source }: EditSourceDialogProps) {
   const [open, setOpen] = useState(false);
-  const [, startTransition] = useTransition();
-
-  const handleSubmit = (formData: FormData) => {
-    startTransition(async () => {
-      await onSubmit(formData);
-      setOpen(false);
-    });
-  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -42,7 +33,7 @@ export function EditSourceDialog({ source, onSubmit }: EditSourceDialogProps) {
         </DialogHeader>
         <SourceForm
           source={source}
-          onSubmit={handleSubmit}
+          onSaved={() => setOpen(false)}
           submitLabel="Update Source"
         />
       </DialogContent>

@@ -38,12 +38,14 @@ export async function updateSource(
   }
 ) {
   const db = getDatabase();
-  await db.update(sources).set(data).where(eq(sources.id, id));
+  const result = await db.update(sources).set(data).where(eq(sources.id, id));
+  return result.rowsAffected > 0;
 }
 
 export async function deleteSource(id: string) {
   const db = getDatabase();
-  await db.delete(sources).where(eq(sources.id, id));
+  const result = await db.delete(sources).where(eq(sources.id, id));
+  return result.rowsAffected > 0;
 }
 
 export async function findOrCreateSource(data: {

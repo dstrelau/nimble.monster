@@ -1,13 +1,7 @@
-import { Trash2 } from "lucide-react";
 import { notFound } from "next/navigation";
-import {
-  createSourceAction,
-  deleteSourceAction,
-  updateSourceAction,
-} from "@/app/admin/actions";
+import { AdminRowActionButton } from "@/components/admin/AdminRowActionButton";
 import { EditSourceDialog } from "@/components/admin/EditSourceDialog";
 import { SourceForm } from "@/components/admin/SourceForm";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -42,7 +36,7 @@ export default async function AdminSourcesPage() {
             <CardTitle>Create New Source</CardTitle>
           </CardHeader>
           <CardContent>
-            <SourceForm onSubmit={createSourceAction} />
+            <SourceForm />
           </CardContent>
         </Card>
       </div>
@@ -80,20 +74,10 @@ export default async function AdminSourcesPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <EditSourceDialog
-                        source={source}
-                        onSubmit={updateSourceAction.bind(null, source.id)}
+                      <EditSourceDialog source={source} />
+                      <AdminRowActionButton
+                        action={{ kind: "deleteSource", id: source.id }}
                       />
-                      <form action={deleteSourceAction.bind(null, source.id)}>
-                        <Button
-                          type="submit"
-                          variant="ghost"
-                          size="sm"
-                          className="text-destructive"
-                        >
-                          <Trash2 className="size-4" />
-                        </Button>
-                      </form>
                     </div>
                   </TableCell>
                 </TableRow>
