@@ -484,13 +484,16 @@ describe("FormattedText - Dice Notation", () => {
     expect(screen.queryByText(/Normal/)).not.toBeInTheDocument();
   });
 
-  it("should parse compound dice notation", () => {
-    render(
-      <FormattedText content="Deal 1d20+1d10+3 damage." conditions={[]} />
-    );
+  it.each(["1d20+1d10+3", "1d20-1d4+0", "1d20a+1d8+5", "1d20+1d8a+5"])(
+    "should parse compound dice notation %s as one roll",
+    (notation) => {
+      render(
+        <FormattedText content={`Roll **${notation}**.`} conditions={[]} />
+      );
 
-    expect(screen.getByText("1d20+1d10+3")).toBeInTheDocument();
-  });
+      expect(screen.getByText(notation)).toHaveAttribute("data-dice-notation");
+    }
+  );
 
   it("should parse multiple dice notations in one text", () => {
     const content = "Attack 1d6 and defend with 2d8+2.";

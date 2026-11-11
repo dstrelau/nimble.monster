@@ -3,7 +3,10 @@ import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import markdownIt, { type MarkdownIt, type Token } from "markdown-it";
 import Link from "next/link";
 import { createElement, Fragment, type ReactNode, useMemo } from "react";
-import { DiceNotation } from "@/components/dice/DiceNotation";
+import {
+  DICE_NOTATION_PATTERN,
+  DiceNotation,
+} from "@/components/dice/DiceNotation";
 import { ReferencePopover } from "@/components/shared/ReferencePopover";
 import { Button } from "@/components/ui/button";
 import { useEntityQuery } from "@/lib/hooks/useEntityQuery";
@@ -202,8 +205,7 @@ function diceNotationPlugin(md: MarkdownIt) {
     // biome-ignore lint/suspicious/noExplicitAny: markdown-it Token constructor type is not exported
     Token: any
   ) {
-    const diceRegex =
-      /(\d+d\d+(?:(?:[vadn]\d*)+)?(?:\^-?\d+)?(?:\+\d+d\d+)*(?:[+-]\d+(?![\dc]))?(?:\+\d+c)?|d(?:44|66|88)(?:[ad]\d*)?)/gi;
+    const diceRegex = new RegExp(`(${DICE_NOTATION_PATTERN.source})`, "gi");
     const result = [];
     let lastIndex = 0;
 

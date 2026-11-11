@@ -352,7 +352,7 @@ importers:
         version: 0.4.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       nimble-dice:
         specifier: github:dstrelau/nimble-dice
-        version: https://codeload.github.com/dstrelau/nimble-dice/tar.gz/aadd1da3d61aea9f667e3b2aa1e00c2a3f559db6
+        version: https://codeload.github.com/dstrelau/nimble-dice/tar.gz/983dfafdbb64ea790d51074f4e8cbd30857952f8
       nimble-schemas:
         specifier: github:dstrelau/nimble-schemas
         version: https://codeload.github.com/dstrelau/nimble-schemas/tar.gz/3c9fbe98772f720727273e0c3cbd187d48c61aed
@@ -4192,8 +4192,8 @@ packages:
       sass:
         optional: true
 
-  nimble-dice@https://codeload.github.com/dstrelau/nimble-dice/tar.gz/aadd1da3d61aea9f667e3b2aa1e00c2a3f559db6:
-    resolution: {gitHosted: true, integrity: sha512-+eto6xlQ3M8mNgpzEuqaI0obZxJiuBEYCFWJO5vkMp6Xn+e/ReRgclMSnKpjkZpxOCV9YsSVIWmtVEWxAkmnHw==, tarball: https://codeload.github.com/dstrelau/nimble-dice/tar.gz/aadd1da3d61aea9f667e3b2aa1e00c2a3f559db6}
+  nimble-dice@https://codeload.github.com/dstrelau/nimble-dice/tar.gz/983dfafdbb64ea790d51074f4e8cbd30857952f8:
+    resolution: {gitHosted: true, integrity: sha512-lpSuI+LLKltgmBORvVK3WnxU9k9xRPbOevQWbTAGO7++kdMmK6KksK8QoC12D1S37dI54vgnl1TkLjxEQ7lUjw==, tarball: https://codeload.github.com/dstrelau/nimble-dice/tar.gz/983dfafdbb64ea790d51074f4e8cbd30857952f8}
     version: 1.0.0
 
   nimble-schemas@https://codeload.github.com/dstrelau/nimble-schemas/tar.gz/3c9fbe98772f720727273e0c3cbd187d48c61aed:
@@ -8745,7 +8745,7 @@ snapshots:
       - '@types/node'
       - babel-plugin-macros
 
-  nimble-dice@https://codeload.github.com/dstrelau/nimble-dice/tar.gz/aadd1da3d61aea9f667e3b2aa1e00c2a3f559db6: {}
+  nimble-dice@https://codeload.github.com/dstrelau/nimble-dice/tar.gz/983dfafdbb64ea790d51074f4e8cbd30857952f8: {}
 
   nimble-schemas@https://codeload.github.com/dstrelau/nimble-schemas/tar.gz/3c9fbe98772f720727273e0c3cbd187d48c61aed:
     dependencies:

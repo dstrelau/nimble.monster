@@ -157,9 +157,12 @@ function DiceDrawer({ diceText }: { diceText: string }) {
   );
 }
 
+// Shared with FormattedText's markdown tokenizer so both find the same text.
+export const DICE_NOTATION_PATTERN =
+  /\d+d\d+(?:(?:[vadn]\d*)+)?(?:\^-?\d+)?(?:[+-]\d+d\d+(?:[ad]\d*)?)*(?:[+-]\d+(?![\dc]))?(?:\+\d+c)?|d(?:44|66|88)(?:[ad]\d*)?(?:[+-]\d+d\d+)*(?:[+-]\d+(?![\dc]))?/;
+
 export function DiceNotation({ text }: DiceNotationProps) {
-  const diceRegex =
-    /\b(\d+d\d+(?:(?:[vadn]\d*)+)?(?:\^-?\d+)?(?:[+-]\d+d\d+)*(?:[+-]\d+(?![\dc]))?(?:\+\d+c)?|d(?:44|66|88)(?:[ad]\d*)?(?:[+-]\d+d\d+)*(?:[+-]\d+(?![\dc]))?)\b/gi;
+  const diceRegex = new RegExp(`\\b(${DICE_NOTATION_PATTERN.source})\\b`, "gi");
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
 
