@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "13 November 2026",
+    entries: [
+      "Dice probability graphs now group rare high and low results into N+ and ≤N bars.",
+    ],
+  },
+  {
     date: "24 October 2026",
     entries: [
       "My Library now shows your most recent creations and can search everything you've made.",

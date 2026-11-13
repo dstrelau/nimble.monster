@@ -111,15 +111,17 @@ export function DiceRollerClient({ initialDice }: Props) {
   const parsedDice = parseDiceNotation(lastValidDice);
   const missProbability = stats?.missProbability ?? 0;
 
-  const filteredProbabilities = Array.from(stats?.distribution.entries() ?? [])
-    .filter(([r, p]) => p > 0.005 && (parsedDice?.normal === true || r > 0))
-    .sort(([_, a], [__, b]) => b - a)
+  const hitProbabilities = Array.from(
+    stats?.distribution.entries() ?? []
+  ).filter(([r, p]) => p > 0 && (parsedDice?.normal === true || r > 0));
+  const filteredProbabilities = hitProbabilities
+    .filter(([_, p]) => p > 0.005)
     .sort(([a], [b]) => a - b);
 
-  const barsToDisplay: Array<[number, number]> = [];
+  const barsToDisplay: Array<[string, number]> = [];
   let compactHistogram = false;
   if (missProbability > 0) {
-    barsToDisplay.push([0, missProbability]);
+    barsToDisplay.push(["0", missProbability]);
   }
 
   if (filteredProbabilities.length > 0) {
@@ -131,14 +133,31 @@ export function DiceRollerClient({ initialDice }: Props) {
       !Number.isSafeInteger(minValue) ||
       !Number.isSafeInteger(maxValue) ||
       maxValue - minValue >= 200;
+
+    // Combine rare outcomes beyond the shown range into "≤N" and "N+" bars.
+    const lowTail = hitProbabilities.filter(([r]) => r < minValue);
+    const highTail = hitProbabilities.filter(([r]) => r > maxValue);
+    const total = (tail: Array<[number, number]>) =>
+      tail.reduce((sum, [_, p]) => sum + p, 0);
+
+    if (lowTail.length > 0) {
+      const lowMax = Math.max(...lowTail.map(([r]) => r));
+      barsToDisplay.push([`≤${lowMax}`, total(lowTail)]);
+    }
     if (compactHistogram) {
-      barsToDisplay.push(...filteredProbabilities);
+      for (const [value, probability] of filteredProbabilities) {
+        barsToDisplay.push([String(value), probability]);
+      }
     } else {
-      const probabilityMap = new Map(filteredProbabilities);
+      const probabilityMap = new Map(hitProbabilities);
       for (let offset = 0; offset <= maxValue - minValue; offset++) {
         const value = minValue + offset;
-        barsToDisplay.push([value, probabilityMap.get(value) || 0]);
+        barsToDisplay.push([String(value), probabilityMap.get(value) || 0]);
       }
+    }
+    if (highTail.length > 0) {
+      const highMin = Math.min(...highTail.map(([r]) => r));
+      barsToDisplay.push([`${highMin}+`, total(highTail)]);
     }
   }
 
@@ -151,7 +170,7 @@ export function DiceRollerClient({ initialDice }: Props) {
   const scaleFactor = maxProbability > 0 ? 216 / maxProbability : 0;
   const labelWidth = Math.max(
     36,
-    ...barsToDisplay.map(([outcome]) => String(outcome).length * 8)
+    ...barsToDisplay.map(([outcome]) => outcome.length * 8)
   );
 
   return (
@@ -353,7 +372,7 @@ export function DiceRollerClient({ initialDice }: Props) {
                   {barsToDisplay.map(([outcome, probability], index) => {
                     const height = Math.max(1, probability * scaleFactor);
                     const isGap =
-                      missProbability > 0 && index === 0 && outcome === 0;
+                      missProbability > 0 && index === 0 && outcome === "0";
                     const xOffset = isGap
                       ? 0
                       : index * (labelWidth + 6) + 12 + 24;
@@ -368,7 +387,9 @@ export function DiceRollerClient({ initialDice }: Props) {
                             width: `${labelWidth}px`,
                           }}
                         >
-                          {(100 * probability).toFixed(1)}%
+                          {probability > 0 && probability < 0.001
+                            ? "<0.1%"
+                            : `${(100 * probability).toFixed(1)}%`}
                         </div>
                         {probability > 0 && (
                           <div
