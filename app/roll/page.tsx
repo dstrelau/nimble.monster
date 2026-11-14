@@ -12,10 +12,15 @@ export async function generateMetadata({
 }: Props): Promise<Metadata> {
   const dice = (await searchParams).dice;
   const title = `Dice Roller - ${SITE_NAME}`;
-  const description =
-    dice && parseDiceNotation(dice)
-      ? `Roll ${dice}`
-      : "Roll dice and explore their probabilities.";
+
+  if (!dice || !parseDiceNotation(dice)) {
+    return {
+      title,
+      description: "Roll dice and explore their probabilities.",
+    };
+  }
+
+  const description = `Roll ${dice}`;
 
   return {
     title,
