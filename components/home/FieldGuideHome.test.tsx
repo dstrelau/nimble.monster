@@ -7,22 +7,27 @@ vi.mock("@/lib/services/monsters/service", () => ({
     paginatePublicMonsters: async () => ({ data: [], nextCursor: null }),
   },
 }));
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: vi.fn() }),
+  usePathname: () => "/",
+  useSearchParams: () => new URLSearchParams(),
+}));
 vi.mock("@/lib/services/classes/repository", () => ({
   findOfficialClassesByNames: async () => new Map(),
 }));
 
 afterEach(cleanup);
 
-it("labels every illustration as temporary art and offers real destinations even without previews", async () => {
+it("credits the artist and offers real destinations even without previews", async () => {
   render(await FieldGuideHome());
   expect(
-    screen.getAllByRole("img", {
-      name: /FPO temporary AI-generated placeholder, to be replaced by a human commission/,
-    })
-  ).toHaveLength(3);
-  expect(screen.getAllByText("PLACEHOLDER · HUMAN ART TO COME")).toHaveLength(
-    3
-  );
+    screen.getByText(
+      /Some artwork copyright Daniel F. Walthall, used with permission/
+    )
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole("link", { name: "CC BY 4.0 license" })
+  ).toHaveAttribute("href", "https://creativecommons.org/licenses/by/4.0/");
   expect(screen.getByRole("link", { name: "Backgrounds" })).toHaveAttribute(
     "href",
     "/backgrounds"

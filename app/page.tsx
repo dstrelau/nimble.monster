@@ -1,6 +1,7 @@
 import { ArrowRight, CornerRightDown } from "lucide-react";
 import { FamilyCard } from "@/components/family/FamilyCard";
 import { FieldGuideHome } from "@/components/home/FieldGuideHome";
+import { parseFieldGuideArtOptions } from "@/components/home/fieldGuideArtOptions";
 import { Card as ItemCard } from "@/components/item/Card";
 import { DiscordLoginButton } from "@/components/layout/DiscordLoginButton";
 import { MonsterCardWithOverflow } from "@/components/monster/MonsterCardWithOverflow";
@@ -11,10 +12,16 @@ import { getRandomFeaturedFamily } from "@/lib/services/families/repository";
 import { isFeatureFlagEnabled } from "@/lib/services/featureFlags";
 import { itemsService } from "@/lib/services/items";
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const session = await auth();
   if (await isFeatureFlagEnabled(session?.user.id, "field-guide")) {
-    return <FieldGuideHome />;
+    return (
+      <FieldGuideHome art={parseFieldGuideArtOptions(await searchParams)} />
+    );
   }
   const featuredFamily = await getRandomFeaturedFamily();
   const recentItems = await itemsService.getRandomRecentItems(3);

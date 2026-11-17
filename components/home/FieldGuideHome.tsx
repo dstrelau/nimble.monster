@@ -1,7 +1,12 @@
 import { ArrowRight, BookOpen, Dices, FolderOpen, Table2 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { ClassMiniCard } from "@/components/class/ClassMiniCard";
+import { FieldGuideArtPanel } from "@/components/home/FieldGuideArtPanel";
+import {
+  DEFAULT_FIELD_GUIDE_ART,
+  type FieldGuideArtOptions,
+} from "@/components/home/fieldGuideArtOptions";
+import { InkArt } from "@/components/home/InkArt";
 import { GlobalSearchTrigger } from "@/components/layout/GlobalSearchDialog";
 import { MonsterCardWithOverflow } from "@/components/monster/MonsterCardWithOverflow";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { findOfficialClassesByNames } from "@/lib/services/classes/repository";
 import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import { monstersService } from "@/lib/services/monsters/service";
-import { cn } from "@/lib/utils";
 
 const PREP_GROUPS = [
   {
@@ -53,39 +57,50 @@ const SHORTCUTS = [
   { label: "Collections", href: "/collections", icon: FolderOpen },
 ];
 
-interface PlaceholderArtProps {
-  region: "hero" | "prep" | "contribution";
-  className?: string;
-}
+const HERO_LINEUP = [
+  { name: "goblin-shaman", className: "z-10 w-[31%] -mr-[6%]" },
+  { name: "orc-warrior", className: "z-20 w-[42%]" },
+  { name: "skeleton-warrior", className: "z-10 w-[36%] -ml-[9%]" },
+] as const;
 
-// Temporary crops of the approved concept, not commissioned site artwork.
-// Large FPO overlays are burned into every asset so the art cannot render unmarked.
-function PlaceholderArt({ region, className }: PlaceholderArtProps) {
+const PREP_ICONS = {
+  supplies: ["torch", "potion", "spellbook-open"],
+  arms: ["war-banner", "battle-axe", "shield"],
+} as const;
+
+function HeroArt({ art }: { art: FieldGuideArtOptions }) {
+  if (art.hero === "lineup") {
+    return (
+      <div className="flex items-end justify-center md:h-[530px]">
+        {HERO_LINEUP.map(({ name, className }) => (
+          <InkArt
+            key={name}
+            name={name}
+            treatment={art.treatment}
+            tint={art.tint}
+            className={className}
+          />
+        ))}
+      </div>
+    );
+  }
   return (
-    <div
-      role="img"
-      aria-label={`${region} artwork: FPO temporary AI-generated placeholder, to be replaced by a human commission`}
-      className={cn("relative isolate overflow-hidden rounded-sm", className)}
-    >
-      <Image
-        src={`/field-guide-fpo/${region}.webp`}
-        alt=""
-        fill
-        loading={region === "hero" ? "eager" : "lazy"}
-        sizes={region === "hero" ? "(min-width: 768px) 50vw, 100vw" : "320px"}
-        className="object-cover"
-      />
-      <span
-        aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 bg-black px-2 py-1 text-center font-sans text-xs font-bold text-white"
-      >
-        PLACEHOLDER · HUMAN ART TO COME
-      </span>
-    </div>
+    <InkArt
+      name={art.hero}
+      treatment={art.treatment}
+      tint={art.tint}
+      className="h-80 w-full md:h-[530px]"
+    />
   );
 }
 
-export async function FieldGuideHome() {
+interface FieldGuideHomeProps {
+  art?: FieldGuideArtOptions;
+}
+
+export async function FieldGuideHome({
+  art = DEFAULT_FIELD_GUIDE_ART,
+}: FieldGuideHomeProps = {}) {
   const [officialMonsters, officialClasses, homebrewMonsters] =
     await Promise.all([
       monstersService.paginatePublicMonsters({
@@ -135,7 +150,7 @@ export async function FieldGuideHome() {
             </Button>
           </div>
         </div>
-        <PlaceholderArt region="hero" className="h-80 md:h-[530px]" />
+        <HeroArt art={art} />
       </section>
 
       <section aria-labelledby="prep-heading" className="space-y-7">
@@ -145,10 +160,16 @@ export async function FieldGuideHome() {
         >
           Find something for your next session.
         </h2>
-        <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
-          <PlaceholderArt region="prep" className="h-56 self-center" />
-          {PREP_GROUPS.map((group) => (
+        <div className="grid gap-7 md:grid-cols-3">
+          {PREP_GROUPS.map((group, index) => (
             <div key={group.title} className="border-l border-border pl-6">
+              <InkArt
+                name={PREP_ICONS[art.icons][index]}
+                treatment={art.treatment}
+                tint={art.tint}
+                decorative
+                className="mb-4 h-24"
+              />
               <h3 className="font-slab text-xl font-bold text-card-foreground">
                 {group.title}
               </h3>
@@ -262,9 +283,11 @@ export async function FieldGuideHome() {
         aria-labelledby="contribute-heading"
         className="grid items-center gap-6 overflow-hidden rounded-lg border border-border bg-muted p-5 md:p-6 lg:grid-cols-[240px_1fr_auto]"
       >
-        <PlaceholderArt
-          region="contribution"
-          className="h-36 w-full max-w-sm"
+        <InkArt
+          name={art.band}
+          treatment={art.treatment}
+          tint={art.tint}
+          className="mx-auto h-36 lg:h-40"
         />
         <div>
           <h2
@@ -286,6 +309,27 @@ export async function FieldGuideHome() {
           <p className="text-sm">Sign in to publish.</p>
         </div>
       </section>
+
+      <p className="text-center text-xs text-muted-foreground">
+        Some artwork copyright Daniel F. Walthall, used with permission. Item
+        icons are adaptations (recolored) of art by Daniel F. Walthall,
+        originals found at{" "}
+        <a
+          href="https://www.drivethrurpg.com/product/181517"
+          className="underline underline-offset-2"
+        >
+          drivethrurpg.com/product/181517
+        </a>
+        , available under a{" "}
+        <a
+          href="https://creativecommons.org/licenses/by/4.0/"
+          className="underline underline-offset-2"
+        >
+          CC BY 4.0 license
+        </a>
+        .
+      </p>
+      <FieldGuideArtPanel options={art} />
     </div>
   );
 }
