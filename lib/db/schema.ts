@@ -124,6 +124,9 @@ export const collections = sqliteTable(
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
     description: text("description").notNull().default(""),
     featuredCollection: text("featured_collection"),
+    // Position within the featured group, such as a Monstery Monday week
+    // number. Gaps are allowed; NULL is unordered and sorts last.
+    featuredSequence: integer("featured_sequence"),
     likeCount: integer("like_count").notNull().default(0),
     visibility: text("visibility")
       .$type<CollectionVisibility>()
@@ -132,6 +135,10 @@ export const collections = sqliteTable(
   (table) => [
     index("idx_collections_user_id").on(table.creatorId),
     index("idx_collections_featured_collection").on(table.featuredCollection),
+    unique("uq_collections_featured_sequence").on(
+      table.featuredCollection,
+      table.featuredSequence
+    ),
   ]
 );
 

@@ -123,6 +123,13 @@ export function FeaturedCollectionsCard({
                 className="flex items-center justify-between gap-4 py-2"
               >
                 <span className="flex min-w-0 items-center gap-2">
+                  {collection.sequence === null ? (
+                    <Badge variant="outline">No week</Badge>
+                  ) : (
+                    <span className="shrink-0 text-muted-foreground tabular-nums">
+                      {collection.sequence}
+                    </span>
+                  )}
                   <Link
                     href={getCollectionUrl(collection)}
                     className="truncate hover:underline"

@@ -356,19 +356,37 @@ describe("collection editor mutation", () => {
       <CreateEditCollection
         collection={emptyCollection}
         isCreating
-        monsteryMonday={false}
+        monsteryMonday={{ featured: false, sequence: 97 }}
       />
     );
     fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
       target: { value: "Week 12" },
     });
+    expect(
+      screen.queryByRole("spinbutton", { name: "Week" })
+    ).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("switch", { name: "Monstery Monday" }));
+    // The suggested next week is prefilled; a blank week blocks the save.
+    const week = screen.getByRole("spinbutton", { name: "Week" });
+    expect(week).toHaveValue(97);
+    fireEvent.change(week, { target: { value: "" } });
+    fireEvent.click(screen.getByRole("button", { name: "Create" }));
+    expect(
+      await screen.findByText("Enter a week number of 1 or more")
+    ).toBeVisible();
+    expect(call).not.toHaveBeenCalled();
+
+    fireEvent.change(week, { target: { value: "12" } });
     fireEvent.click(screen.getByRole("button", { name: "Create" }));
 
     await waitFor(() =>
       expect(call).toHaveBeenCalledWith(
         expect.anything(),
-        expect.objectContaining({ name: "Week 12", monsteryMonday: true })
+        expect.objectContaining({
+          name: "Week 12",
+          monsteryMonday: true,
+          monsteryMondaySequence: 12,
+        })
       )
     );
   });

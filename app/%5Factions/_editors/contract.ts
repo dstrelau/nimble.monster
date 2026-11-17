@@ -34,6 +34,8 @@ export interface SaveCollectionInput {
   customRuleIds: string[];
   /** Requires the monstery-monday permission; omit to leave unchanged. */
   monsteryMonday?: boolean;
+  /** Position on the Monstery Monday page; required when monsteryMonday is true. */
+  monsteryMondaySequence?: number;
 }
 
 export interface EditorMutationResult {

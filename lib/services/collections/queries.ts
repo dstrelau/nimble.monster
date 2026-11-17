@@ -10,6 +10,8 @@ import {
   isNull,
   like,
   lt,
+  max,
+  ne,
   notInArray,
   or,
   type SQL,
@@ -909,6 +911,14 @@ export const listPublicCollections = async ({
   return { collections: results, nextCursor };
 };
 
+// Highest sequence first. SQLite sorts NULL last in descending order, so
+// unsequenced collections fall back to newest-first after the numbered ones.
+const featuredOrder = [
+  desc(collections.featuredSequence),
+  desc(collections.createdAt),
+  asc(collections.id),
+];
+
 export const searchPublicCollections = async ({
   searchTerm,
   featuredCollection,
@@ -937,7 +947,7 @@ export const searchPublicCollections = async ({
             .select({ id: collections.id })
             .from(collections)
             .where(and(eq(collections.visibility, "public"), featuredFilter))
-            .orderBy(desc(collections.createdAt), asc(collections.id))
+            .orderBy(...featuredOrder)
             .limit(1)
         )
       );
@@ -969,9 +979,7 @@ export const searchPublicCollections = async ({
     .innerJoin(users, eq(collections.creatorId, users.id))
     .where(and(...whereConditions))
     .orderBy(
-      ...(featuredCollection
-        ? [desc(collections.createdAt), asc(collections.id)]
-        : [orderBy, asc(collections.id)])
+      ...(featuredCollection ? featuredOrder : [orderBy, asc(collections.id)])
     )
     .limit(limit)
     .offset(offset ?? 0);
@@ -1261,6 +1269,7 @@ export interface FeaturedCollectionAdminRow {
   name: string;
   visibility: string | null;
   createdAt: string | null;
+  sequence: number | null;
   creator: User;
 }
 
@@ -1274,27 +1283,66 @@ export async function listFeaturedCollections(
     .from(collections)
     .innerJoin(users, eq(collections.creatorId, users.id))
     .where(eq(collections.featuredCollection, featuredCollection))
-    .orderBy(desc(collections.createdAt), asc(collections.id));
+    .orderBy(...featuredOrder);
   return rows.map((row) => ({
     id: row.collections.id,
     name: row.collections.name,
     visibility: row.collections.visibility,
     createdAt: row.collections.createdAt,
+    sequence: row.collections.featuredSequence,
     creator: toUserFromRow(row.users),
   }));
 }
 
-export async function isCollectionFeatured(
-  collectionId: string,
+export interface FeaturedMembership {
+  featured: boolean;
+  /** The collection's own sequence, or else the next one after the highest. */
+  sequence: number;
+}
+
+export async function getFeaturedMembership(
+  collectionId: string | undefined,
   featuredCollection: string
+): Promise<FeaturedMembership> {
+  const db = getDatabase();
+  const [[highest], [own]] = await Promise.all([
+    db
+      .select({ value: max(collections.featuredSequence) })
+      .from(collections)
+      .where(eq(collections.featuredCollection, featuredCollection)),
+    collectionId
+      ? db
+          .select({ sequence: collections.featuredSequence })
+          .from(collections)
+          .where(
+            and(
+              eq(collections.id, collectionId),
+              eq(collections.featuredCollection, featuredCollection)
+            )
+          )
+          .limit(1)
+      : [],
+  ]);
+  return {
+    featured: !!own,
+    sequence: own?.sequence ?? (highest?.value ?? 0) + 1,
+  };
+}
+
+/** Whether a collection other than `collectionId` already holds `sequence`. */
+export async function isFeaturedSequenceTaken(
+  featuredCollection: string,
+  sequence: number,
+  collectionId: string | undefined
 ): Promise<boolean> {
   const [row] = await getDatabase()
     .select({ id: collections.id })
     .from(collections)
     .where(
       and(
-        eq(collections.id, collectionId),
-        eq(collections.featuredCollection, featuredCollection)
+        eq(collections.featuredCollection, featuredCollection),
+        eq(collections.featuredSequence, sequence),
+        collectionId ? ne(collections.id, collectionId) : undefined
       )
     )
     .limit(1);
@@ -1303,17 +1351,23 @@ export async function isCollectionFeatured(
 
 /**
  * Adds or removes one featured group's tag. A collection tagged for a
- * different group is left unchanged and reported as a conflict.
+ * different group is left unchanged and reported as a conflict. Removing the
+ * tag clears the sequence; adding it without a sequence keeps the current one.
  */
 export async function setCollectionFeatured(
   collectionId: string,
   featuredCollection: string,
-  featured: boolean
+  featured: boolean,
+  sequence?: number
 ): Promise<"updated" | "not-found" | "conflict"> {
   const db = getDatabase();
   const updated = await db
     .update(collections)
-    .set({ featuredCollection: featured ? featuredCollection : null })
+    .set(
+      featured
+        ? { featuredCollection, featuredSequence: sequence }
+        : { featuredCollection: null, featuredSequence: null }
+    )
     .where(
       and(
         eq(collections.id, collectionId),

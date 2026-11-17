@@ -42,6 +42,7 @@ import type { Ancestry } from "@/lib/services/ancestries";
 import type { AncestryMini } from "@/lib/services/ancestries/types";
 import type { Background } from "@/lib/services/backgrounds";
 import type { BackgroundMini } from "@/lib/services/backgrounds/types";
+import type { FeaturedMembership } from "@/lib/services/collections/queries";
 import type { Item, ItemMini } from "@/lib/services/items";
 import type { BestiaryEntry, BestiaryEntryMini } from "@/lib/services/monsters";
 import type {
@@ -71,6 +72,7 @@ const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
   visibility: z.enum(["public", "private"]),
+  monsteryMondaySequence: z.string(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -83,7 +85,7 @@ interface Props {
   isCreating?: boolean;
   submitLabel?: string;
   /** Current Monstery Monday membership; omit to hide the control. */
-  monsteryMonday?: boolean;
+  monsteryMonday?: FeaturedMembership;
 }
 
 export function CreateEditCollection({
@@ -96,7 +98,7 @@ export function CreateEditCollection({
   const router = useRouter();
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [featured, setFeatured] = useState(monsteryMonday);
+  const [featured, setFeatured] = useState(monsteryMonday?.featured);
   const monsteryMondayId = useId();
 
   const [selectedMonsters, setSelectedMonsters] = useState<
@@ -238,6 +240,7 @@ export function CreateEditCollection({
       name: collection.name,
       description: collection.description || "",
       visibility: collection.visibility,
+      monsteryMondaySequence: String(monsteryMonday?.sequence ?? ""),
     },
   });
 
@@ -252,7 +255,10 @@ export function CreateEditCollection({
     : watchedValues.name !== collection.name ||
       watchedValues.description !== (collection.description || "") ||
       watchedValues.visibility !== collection.visibility ||
-      featured !== monsteryMonday ||
+      featured !== monsteryMonday?.featured ||
+      (featured &&
+        watchedValues.monsteryMondaySequence !==
+          String(monsteryMonday?.sequence)) ||
       !arraysEqual(
         [...selectedMonsterIds],
         collection.monsters.map((m) => m.id)
@@ -291,6 +297,13 @@ export function CreateEditCollection({
       );
 
   const handleSubmit = async (data: FormData) => {
+    const sequence = Number(data.monsteryMondaySequence);
+    if (featured && !(Number.isInteger(sequence) && sequence >= 1)) {
+      form.setError("monsteryMondaySequence", {
+        message: "Enter a week number of 1 or more",
+      });
+      return;
+    }
     setIsSubmitting(true);
     if (onSubmit) {
       try {
@@ -321,6 +334,7 @@ export function CreateEditCollection({
         classIds: currentClasses.map((entity) => entity.id),
         customRuleIds: currentCustomRules.map((entity) => entity.id),
         monsteryMonday: featured,
+        monsteryMondaySequence: featured ? sequence : undefined,
       });
       router.push(getCollectionUrl(result));
     } catch (error) {
@@ -456,6 +470,28 @@ export function CreateEditCollection({
                       : "This collection appears on the Monstery Monday page once it is public."
                     : "This collection is not part of Monstery Monday."}
                 </div>
+                {featured && (
+                  <FormField
+                    control={form.control}
+                    name="monsteryMondaySequence"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Week</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            inputMode="numeric"
+                            min={1}
+                            step={1}
+                            className="w-24"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </div>
             )}
 

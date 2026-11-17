@@ -313,12 +313,15 @@ it("counts explicit featured membership across the full archive without leaking 
   await db
     .insert(schema.users)
     .values({ id: curatorId, username: "renamed-curator" });
+  // Weeks were created out of order, so only the sequence puts week 100
+  // first, then 99, then 9.
   await db.insert(schema.collections).values([
     {
       id: "week-100",
       creatorId: curatorId,
       name: "Moon",
       featuredCollection: "monstery monday",
+      featuredSequence: 100,
       createdAt: "2026-03-01",
     },
     {
@@ -326,14 +329,16 @@ it("counts explicit featured membership across the full archive without leaking 
       creatorId: curatorId,
       name: "Monstery Monday Week 99 - Sun",
       featuredCollection: "monstery monday",
-      createdAt: "2026-02-01",
+      featuredSequence: 99,
+      createdAt: "2026-04-01",
     },
     {
       id: "week-9",
       creatorId: "other",
       name: "Monstery Monday Week 9 - Moon",
       featuredCollection: "monstery monday",
-      createdAt: "2026-01-01",
+      featuredSequence: 9,
+      createdAt: "2026-03-15",
     },
     {
       id: "hidden-week",

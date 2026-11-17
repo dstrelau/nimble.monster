@@ -5,6 +5,7 @@ const {
   mockCreateCollection,
   mockCreateEncounter,
   mockHasPermission,
+  mockIsFeaturedSequenceTaken,
   mockRevalidatePath,
   mockSetCollectionFeatured,
   mockTelemetryErrors,
@@ -15,6 +16,7 @@ const {
   mockCreateCollection: vi.fn(),
   mockCreateEncounter: vi.fn(),
   mockHasPermission: vi.fn(),
+  mockIsFeaturedSequenceTaken: vi.fn(),
   mockRevalidatePath: vi.fn(),
   mockSetCollectionFeatured: vi.fn(),
   mockTelemetryErrors: vi.fn(),
@@ -34,6 +36,7 @@ vi.mock("@/lib/services/permissions", () => ({
 }));
 vi.mock("@/lib/services/collections/queries", () => ({
   MONSTERY_MONDAY: "monstery monday",
+  isFeaturedSequenceTaken: mockIsFeaturedSequenceTaken,
   setCollectionFeatured: mockSetCollectionFeatured,
 }));
 vi.mock("next/cache", () => ({ revalidatePath: mockRevalidatePath }));
@@ -185,10 +188,14 @@ describe("encounter and collection save routes", () => {
     expect(mockSetCollectionFeatured).not.toHaveBeenCalled();
   });
 
-  it.each([true, false])(
+  it.each([
+    [true, 12],
+    [false, undefined],
+  ])(
     "lets permitted users set Monstery Monday to %s",
-    async (monsteryMonday) => {
+    async (monsteryMonday, monsteryMondaySequence) => {
       mockHasPermission.mockResolvedValue(true);
+      mockIsFeaturedSequenceTaken.mockResolvedValue(false);
       mockUpdateCollection.mockResolvedValue({
         id,
         name: collectionInput.name,
@@ -196,7 +203,12 @@ describe("encounter and collection save routes", () => {
       mockSetCollectionFeatured.mockResolvedValue("updated");
 
       const response = await saveCollectionPost(
-        request({ ...collectionInput, id, monsteryMonday })
+        request({
+          ...collectionInput,
+          id,
+          monsteryMonday,
+          monsteryMondaySequence,
+        })
       );
 
       expect(response.status).toBe(200);
@@ -212,11 +224,48 @@ describe("encounter and collection save routes", () => {
       expect(mockSetCollectionFeatured).toHaveBeenCalledWith(
         id,
         "monstery monday",
-        monsteryMonday
+        monsteryMonday,
+        monsteryMondaySequence
       );
       expect(mockRevalidatePath).toHaveBeenCalledWith("/monstery-monday");
     }
   );
+
+  it("rejects a featured collection without a week", async () => {
+    const response = await saveCollectionPost(
+      request({ ...collectionInput, monsteryMonday: true })
+    );
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({
+      error: "Monstery Monday week is required",
+    });
+  });
+
+  it("rejects a taken week before creating the collection", async () => {
+    mockHasPermission.mockResolvedValue(true);
+    mockIsFeaturedSequenceTaken.mockResolvedValue(true);
+
+    const response = await saveCollectionPost(
+      request({
+        ...collectionInput,
+        monsteryMonday: true,
+        monsteryMondaySequence: 42,
+      })
+    );
+
+    expect(response.status).toBe(409);
+    expect(await response.json()).toEqual({
+      error: "Week 42 is already used by another Monstery Monday collection",
+    });
+    expect(mockIsFeaturedSequenceTaken).toHaveBeenCalledWith(
+      "monstery monday",
+      42,
+      undefined
+    );
+    expect(mockCreateCollection).not.toHaveBeenCalled();
+    expect(mockSetCollectionFeatured).not.toHaveBeenCalled();
+  });
 
   it("rejects Monstery Monday changes from users without the permission", async () => {
     mockHasPermission.mockResolvedValue(false);

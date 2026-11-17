@@ -1,13 +1,15 @@
 "use client";
 
 import { CreateEditCollection } from "@/app/collections/CreateEditCollection";
+import type { FeaturedMembership } from "@/lib/services/collections/queries";
 import { type Collection, UNKNOWN_USER } from "@/lib/types";
 
 interface NewCollectionProps {
-  canMarkMonsteryMonday: boolean;
+  /** Omit when the user cannot mark Monstery Monday collections. */
+  monsteryMonday?: FeaturedMembership;
 }
 
-export function NewCollection({ canMarkMonsteryMonday }: NewCollectionProps) {
+export function NewCollection({ monsteryMonday }: NewCollectionProps) {
   const emptyCollection: Collection = {
     id: "",
     creator: UNKNOWN_USER,
@@ -34,7 +36,7 @@ export function NewCollection({ canMarkMonsteryMonday }: NewCollectionProps) {
         collection={emptyCollection}
         isCreating={true}
         submitLabel="Create"
-        monsteryMonday={canMarkMonsteryMonday ? false : undefined}
+        monsteryMonday={monsteryMonday}
       />
     </div>
   );

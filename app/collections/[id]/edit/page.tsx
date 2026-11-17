@@ -2,7 +2,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import {
-  isCollectionFeatured,
+  getFeaturedMembership,
   MONSTERY_MONDAY,
 } from "@/lib/services/collections/queries";
 import { hasPermission } from "@/lib/services/permissions";
@@ -32,7 +32,7 @@ export default async function EditCollectionPage({
   const monsteryMonday =
     collection.creator.id === session.user.id &&
     (await hasPermission(session.user.id, "monstery-monday"))
-      ? await isCollectionFeatured(collection.id, MONSTERY_MONDAY)
+      ? await getFeaturedMembership(collection.id, MONSTERY_MONDAY)
       : undefined;
 
   return (

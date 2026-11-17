@@ -30,15 +30,25 @@ export const saveEncounterSchema = sharedEditorSchema.extend({
 
 const uuidArray = z.array(uuid);
 
-export const saveCollectionSchema = sharedEditorSchema.extend({
-  monsterIds: uuidArray,
-  itemIds: uuidArray,
-  companionIds: uuidArray,
-  ancestryIds: uuidArray,
-  backgroundIds: uuidArray,
-  subclassIds: uuidArray,
-  spellSchoolIds: uuidArray,
-  classIds: uuidArray,
-  customRuleIds: uuidArray,
-  monsteryMonday: z.boolean().optional(),
-});
+export const saveCollectionSchema = sharedEditorSchema
+  .extend({
+    monsterIds: uuidArray,
+    itemIds: uuidArray,
+    companionIds: uuidArray,
+    ancestryIds: uuidArray,
+    backgroundIds: uuidArray,
+    subclassIds: uuidArray,
+    spellSchoolIds: uuidArray,
+    classIds: uuidArray,
+    customRuleIds: uuidArray,
+    monsteryMonday: z.boolean().optional(),
+    monsteryMondaySequence: z
+      .number()
+      .int("Week must be a whole number")
+      .min(1, "Week must be at least 1")
+      .optional(),
+  })
+  .refine(
+    (input) => !input.monsteryMonday || input.monsteryMondaySequence,
+    "Monstery Monday week is required"
+  );

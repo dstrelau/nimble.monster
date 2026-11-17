@@ -3,10 +3,12 @@ import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import type { EditorMutationResult } from "@/app/%5Factions/_editors/contract";
 import { saveCollectionSchema } from "@/app/%5Factions/_editors/input";
+import { isSqliteConstraint } from "@/lib/admin-action";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
 import { internalAction } from "@/lib/internal-action";
 import {
+  isFeaturedSequenceTaken,
   MONSTERY_MONDAY,
   setCollectionFeatured,
 } from "@/lib/services/collections/queries";
@@ -32,12 +34,28 @@ export const POST = internalAction("application/json", async (request) => {
     );
   }
 
-  const { id, monsteryMonday, ...input } = parsed.data;
+  const { id, monsteryMonday, monsteryMondaySequence, ...input } = parsed.data;
   if (
     monsteryMonday !== undefined &&
     !(await hasPermission(session.user.id, "monstery-monday"))
   ) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  const sequenceTaken = () =>
+    NextResponse.json(
+      {
+        error: `Week ${monsteryMondaySequence} is already used by another Monstery Monday collection`,
+      },
+      { status: 409 }
+    );
+  // Checked before any write so a rejected create does not leave a collection
+  // behind; the unique index still catches a concurrent save.
+  if (
+    monsteryMonday &&
+    monsteryMondaySequence &&
+    (await isFeaturedSequenceTaken(MONSTERY_MONDAY, monsteryMondaySequence, id))
+  ) {
+    return sequenceTaken();
   }
 
   try {
@@ -63,11 +81,20 @@ export const POST = internalAction("application/json", async (request) => {
     }
 
     if (monsteryMonday !== undefined) {
-      const featured = await setCollectionFeatured(
-        collection.id,
-        MONSTERY_MONDAY,
-        monsteryMonday
-      );
+      let featured: Awaited<ReturnType<typeof setCollectionFeatured>>;
+      try {
+        featured = await setCollectionFeatured(
+          collection.id,
+          MONSTERY_MONDAY,
+          monsteryMonday,
+          monsteryMondaySequence
+        );
+      } catch (error) {
+        if (isSqliteConstraint(error, "SQLITE_CONSTRAINT_UNIQUE")) {
+          return sequenceTaken();
+        }
+        throw error;
+      }
       if (featured === "conflict") {
         return NextResponse.json(
           { error: "Collection is featured in another group" },
@@ -85,6 +112,9 @@ export const POST = internalAction("application/json", async (request) => {
       "user.id": session.user.id,
       ...(monsteryMonday !== undefined && {
         "collection.monstery_monday": monsteryMonday,
+      }),
+      ...(monsteryMondaySequence !== undefined && {
+        "collection.monstery_monday_sequence": monsteryMondaySequence,
       }),
     });
     const result: EditorMutationResult = {
