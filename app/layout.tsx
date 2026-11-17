@@ -69,7 +69,7 @@ export default async function RootLayout({
         <Providers session={session} enabledFeatures={enabledFeatures}>
           <Header initialCounts={navCounts} />
           <GlobalSearchDialog />
-          <FreeBanner />
+          {process.env.HIDE_FREE_BANNER !== "true" && <FreeBanner />}
           <main className="mx-auto w-full max-w-7xl px-4 py-6">{children}</main>
           <Footer />
           <StaleDeploymentBanner />
