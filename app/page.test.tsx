@@ -29,7 +29,7 @@ afterEach(cleanup);
 
 it("keeps the current homepage unless the account has opted in", async () => {
   account.enabled = false;
-  render(await HomePage({ searchParams: Promise.resolve({}) }));
+  render(await HomePage());
   expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
     "Your homebrew hub"
   );
@@ -38,13 +38,13 @@ it("keeps the current homepage unless the account has opted in", async () => {
   ).not.toBeInTheDocument();
   cleanup();
   account.enabled = true;
-  render(await HomePage({ searchParams: Promise.resolve({}) }));
+  render(await HomePage());
   expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
     "Your next session starts here."
   );
   cleanup();
   account.userId = undefined;
-  render(await HomePage({ searchParams: Promise.resolve({}) }));
+  render(await HomePage());
   expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
     "Your homebrew hub"
   );

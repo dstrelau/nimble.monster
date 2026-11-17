@@ -1,11 +1,6 @@
 import { ArrowRight, BookOpen, Dices, FolderOpen, Table2 } from "lucide-react";
 import Link from "next/link";
 import { ClassMiniCard } from "@/components/class/ClassMiniCard";
-import { FieldGuideArtPanel } from "@/components/home/FieldGuideArtPanel";
-import {
-  DEFAULT_FIELD_GUIDE_ART,
-  type FieldGuideArtOptions,
-} from "@/components/home/fieldGuideArtOptions";
 import { InkArt } from "@/components/home/InkArt";
 import { GlobalSearchTrigger } from "@/components/layout/GlobalSearchDialog";
 import { MonsterCardWithOverflow } from "@/components/monster/MonsterCardWithOverflow";
@@ -57,50 +52,16 @@ const SHORTCUTS = [
   { label: "Collections", href: "/collections", icon: FolderOpen },
 ];
 
+// The skeleton overlaps the orc, which overlaps the goblin.
 const HERO_LINEUP = [
   { name: "goblin-shaman", className: "z-10 w-[31%] -mr-[6%]" },
   { name: "orc-warrior", className: "z-20 w-[42%]" },
-  { name: "skeleton-warrior", className: "z-10 w-[36%] -ml-[9%]" },
+  { name: "skeleton-warrior", className: "z-30 w-[36%] -ml-[14%]" },
 ] as const;
 
-const PREP_ICONS = {
-  supplies: ["torch", "potion", "spellbook-open"],
-  arms: ["war-banner", "battle-axe", "shield"],
-} as const;
+const PREP_ICONS = ["torch", "potion", "spellbook-open"] as const;
 
-function HeroArt({ art }: { art: FieldGuideArtOptions }) {
-  if (art.hero === "lineup") {
-    return (
-      <div className="flex items-end justify-center md:h-[530px]">
-        {HERO_LINEUP.map(({ name, className }) => (
-          <InkArt
-            key={name}
-            name={name}
-            treatment={art.treatment}
-            tint={art.tint}
-            className={className}
-          />
-        ))}
-      </div>
-    );
-  }
-  return (
-    <InkArt
-      name={art.hero}
-      treatment={art.treatment}
-      tint={art.tint}
-      className="h-80 w-full md:h-[530px]"
-    />
-  );
-}
-
-interface FieldGuideHomeProps {
-  art?: FieldGuideArtOptions;
-}
-
-export async function FieldGuideHome({
-  art = DEFAULT_FIELD_GUIDE_ART,
-}: FieldGuideHomeProps = {}) {
+export async function FieldGuideHome() {
   const [officialMonsters, officialClasses, homebrewMonsters] =
     await Promise.all([
       monstersService.paginatePublicMonsters({
@@ -150,7 +111,11 @@ export async function FieldGuideHome({
             </Button>
           </div>
         </div>
-        <HeroArt art={art} />
+        <div className="flex items-end justify-center md:h-[530px]">
+          {HERO_LINEUP.map(({ name, className }) => (
+            <InkArt key={name} name={name} className={className} />
+          ))}
+        </div>
       </section>
 
       <section aria-labelledby="prep-heading" className="space-y-7">
@@ -164,9 +129,7 @@ export async function FieldGuideHome({
           {PREP_GROUPS.map((group, index) => (
             <div key={group.title} className="border-l border-border pl-6">
               <InkArt
-                name={PREP_ICONS[art.icons][index]}
-                treatment={art.treatment}
-                tint={art.tint}
+                name={PREP_ICONS[index]}
                 decorative
                 className="mb-4 h-24"
               />
@@ -283,12 +246,7 @@ export async function FieldGuideHome({
         aria-labelledby="contribute-heading"
         className="grid items-center gap-6 overflow-hidden rounded-lg border border-border bg-muted p-5 md:p-6 lg:grid-cols-[240px_1fr_auto]"
       >
-        <InkArt
-          name={art.band}
-          treatment={art.treatment}
-          tint={art.tint}
-          className="mx-auto h-36 lg:h-40"
-        />
+        <InkArt name="war-banner" className="mx-auto h-36 lg:h-40" />
         <div>
           <h2
             id="contribute-heading"
@@ -329,7 +287,6 @@ export async function FieldGuideHome({
         </a>
         .
       </p>
-      <FieldGuideArtPanel options={art} />
     </div>
   );
 }

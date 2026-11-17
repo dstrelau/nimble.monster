@@ -7,11 +7,6 @@ vi.mock("@/lib/services/monsters/service", () => ({
     paginatePublicMonsters: async () => ({ data: [], nextCursor: null }),
   },
 }));
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ replace: vi.fn() }),
-  usePathname: () => "/",
-  useSearchParams: () => new URLSearchParams(),
-}));
 vi.mock("@/lib/services/classes/repository", () => ({
   findOfficialClassesByNames: async () => new Map(),
 }));
