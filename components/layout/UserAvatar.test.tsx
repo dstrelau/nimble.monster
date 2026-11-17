@@ -39,6 +39,25 @@ it("shows initials for missing or failed images and loads a changed URL", () => 
   expect(screen.queryByText("A")).toBeNull();
 });
 
+it("shows animated Discord avatars as their static first frame", () => {
+  const avatar = "https://cdn.discordapp.com/avatars/456/a_2922ef48";
+  const { rerender } = render(
+    <UserAvatar
+      user={{ ...user, imageUrl: `${avatar}.gif?size=64` }}
+      size="sm"
+    />
+  );
+  expect(screen.getByRole("img")).toHaveAttribute(
+    "src",
+    `${avatar}.png?size=64`
+  );
+
+  // Only Discord avatar URLs are rewritten; other GIFs keep animating.
+  const otherGif = "https://example.com/avatars/me.gif";
+  rerender(<UserAvatar user={{ ...user, imageUrl: otherGif }} size="sm" />);
+  expect(screen.getByRole("img")).toHaveAttribute("src", otherGif);
+});
+
 it("server-renders the guest avatar", () => {
   const container = document.createElement("div");
   container.innerHTML = renderToString(<UserAvatar size="sm" />);

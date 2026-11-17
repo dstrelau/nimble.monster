@@ -27,10 +27,18 @@ const getSizeInPixels = (size: AvatarSize | number): number => {
   }
 };
 
+// Discord serves the first frame of an animated avatar when its .gif URL is
+// requested as .png, so avatars never animate.
+const toStaticAvatarUrl = (url: string | undefined) =>
+  url?.replace(
+    /^(https:\/\/cdn\.discordapp\.com\/avatars\/[^?#]+)\.gif(?=[?#]|$)/,
+    "$1.png"
+  );
+
 export const UserAvatar = ({ user, size, className }: UserAvatarProps) => {
   const sizeInPixels = getSizeInPixels(size);
   const src = user
-    ? user.imageUrl
+    ? toStaticAvatarUrl(user.imageUrl)
     : "https://cdn.discordapp.com/embed/avatars/0.png";
   const [failedSrc, setFailedSrc] = useState<string>();
   const fallbackLetter = user?.displayName?.charAt(0).toUpperCase() || "?";
