@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
     useCache: true,
     authInterrupts: true,
     useTypeScriptCli: true,
+    agentUpgrade: "security",
   },
   reactStrictMode: true,
   async redirects() {
