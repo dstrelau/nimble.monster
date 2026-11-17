@@ -12,6 +12,12 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    date: "17 November 2026",
+    entries: [
+      "The dice roller now shows the chance of rolling at least, at most, or between totals. Click a bar to fill in a number.",
+    ],
+  },
+  {
     date: "13 November 2026",
     entries: [
       "Dice probability graphs now group rare high and low results into N+ and ≤N bars.",

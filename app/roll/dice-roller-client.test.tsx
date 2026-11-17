@@ -114,3 +114,64 @@ it("keeps the last valid probabilities while editing, then updates on valid inpu
   expect(screen.getAllByText("12.5%")).toHaveLength(8);
   expect(screen.getByRole("heading", { name: "1d8n" })).toBeInTheDocument();
 });
+
+const chance = () =>
+  screen.getByRole("status", { name: "Chance of total in range" });
+
+it("sums every outcome in the range, including ones too rare for a bar", () => {
+  render(
+    <NuqsTestingAdapter>
+      <DiceRollerClient initialDice="1d20" />
+    </NuqsTestingAdapter>
+  );
+  expect(chance()).toHaveTextContent("-");
+
+  // A total of 35+ needs a crit (1/20) and then 15 or more on the
+  // exploding die (6/20): 1.5%, spread over outcomes with no bar of their own.
+  fireEvent.change(screen.getByRole("spinbutton", { name: "Minimum total" }), {
+    target: { value: "35" },
+  });
+  expect(chance()).toHaveTextContent("1.5%");
+});
+
+it("fills the bound from a clicked bar", () => {
+  render(
+    <NuqsTestingAdapter>
+      <DiceRollerClient initialDice="2d6n" />
+    </NuqsTestingAdapter>
+  );
+  fireEvent.click(screen.getByRole("button", { name: "7: 16.7%" }));
+  expect(screen.getByRole("spinbutton", { name: "Minimum total" })).toHaveValue(
+    7
+  );
+  expect(chance()).toHaveTextContent("58.3%"); // 21/36
+});
+
+it.each([
+  ["?max=4", "16.7%"], // 2-4 on 2d6: 6/36
+  ["?min=7&max=9", "41.7%"], // 7-9 on 2d6: 15/36
+])("reads the range %s from the URL", (searchParams, expected) => {
+  render(
+    <NuqsTestingAdapter searchParams={searchParams}>
+      <DiceRollerClient initialDice="2d6n" />
+    </NuqsTestingAdapter>
+  );
+  expect(chance()).toHaveTextContent(expected);
+});
+
+it("moves the nearer bound when a bar is clicked in between mode", () => {
+  render(
+    <NuqsTestingAdapter searchParams="?min=5&max=9">
+      <DiceRollerClient initialDice="2d6n" />
+    </NuqsTestingAdapter>
+  );
+  fireEvent.click(screen.getByRole("button", { name: "11: 5.6%" }));
+  expect(screen.getByRole("spinbutton", { name: "Maximum total" })).toHaveValue(
+    11
+  );
+  fireEvent.click(screen.getByRole("button", { name: "6: 13.9%" }));
+  expect(screen.getByRole("spinbutton", { name: "Minimum total" })).toHaveValue(
+    6
+  );
+  expect(chance()).toHaveTextContent("69.4%"); // 6-11 on 2d6: 25/36
+});

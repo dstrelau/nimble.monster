@@ -20,6 +20,6 @@ describe("ChangelogPage", () => {
         .getAllByRole("heading", { level: 2 })
         .slice(0, 3)
         .map((heading) => heading.textContent)
-    ).toEqual(["13 November 2026", "24 October 2026", "19 October 2026"]);
+    ).toEqual(["17 November 2026", "13 November 2026", "24 October 2026"]);
   });
 });

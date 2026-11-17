@@ -1,10 +1,14 @@
 "use client";
 import { Box, CircleAlert, Dices, Info, RotateCw } from "lucide-react";
 import { parseDiceNotation, simulateRoll, VALID_DIE_SIZES } from "nimble-dice";
-import { useQueryState } from "nuqs";
+import { parseAsInteger, useQueryState } from "nuqs";
 import { useEffect, useId, useMemo, useState } from "react";
 import { DiceRollDisplay } from "@/components/dice/DiceRollDisplay";
 import { DiceStatistics } from "@/components/dice/DiceStatistics";
+import {
+  TotalRangeControls,
+  type TotalRangeMode,
+} from "@/components/dice/TotalRangeControls";
 import { D4, D8, D10, D12, D20 } from "@/components/icons/PolyhedralDice";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,10 +28,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDiceStatistics } from "@/lib/hooks/useDiceStatistics";
+import { cn } from "@/lib/utils";
 
 type Props = {
   initialDice: string;
 };
+
+interface Bar {
+  label: string;
+  probability: number;
+  // Lowest and highest totals the bar covers; tail bars cover several.
+  lo: number;
+  hi: number;
+}
+
+const formatChance = (probability: number) =>
+  probability > 0 && probability < 0.001
+    ? "<0.1%"
+    : `${(100 * probability).toFixed(1)}%`;
 
 export function DiceRollerClient({ initialDice }: Props) {
   const id = useId();
@@ -39,6 +57,15 @@ export function DiceRollerClient({ initialDice }: Props) {
   const [lastValidDice, setLastValidDice] = useState(initialDice);
   const { stats, pending, showLoading, error } =
     useDiceStatistics(lastValidDice);
+  const [minTotal, setMinTotal] = useQueryState("min", parseAsInteger);
+  const [maxTotal, setMaxTotal] = useQueryState("max", parseAsInteger);
+  const [rangeMode, setRangeMode] = useState<TotalRangeMode>(() =>
+    minTotal !== null && maxTotal !== null
+      ? "between"
+      : maxTotal !== null
+        ? "atMost"
+        : "atLeast"
+  );
   const [rollKey, setRollKey] = useState(0);
   const [mounted, setMounted] = useState(false);
 
@@ -118,10 +145,15 @@ export function DiceRollerClient({ initialDice }: Props) {
     .filter(([_, p]) => p > 0.005)
     .sort(([a], [b]) => a - b);
 
-  const barsToDisplay: Array<[string, number]> = [];
+  const barsToDisplay: Bar[] = [];
   let compactHistogram = false;
   if (missProbability > 0) {
-    barsToDisplay.push(["0", missProbability]);
+    barsToDisplay.push({
+      label: "0",
+      probability: missProbability,
+      lo: 0,
+      hi: 0,
+    });
   }
 
   if (filteredProbabilities.length > 0) {
@@ -140,38 +172,110 @@ export function DiceRollerClient({ initialDice }: Props) {
     const total = (tail: Array<[number, number]>) =>
       tail.reduce((sum, [_, p]) => sum + p, 0);
 
+    const single = (value: number, probability: number): Bar => ({
+      label: String(value),
+      probability,
+      lo: value,
+      hi: value,
+    });
+
     if (lowTail.length > 0) {
       const lowMax = Math.max(...lowTail.map(([r]) => r));
-      barsToDisplay.push([`≤${lowMax}`, total(lowTail)]);
+      barsToDisplay.push({
+        label: `≤${lowMax}`,
+        probability: total(lowTail),
+        lo: Math.min(...lowTail.map(([r]) => r)),
+        hi: lowMax,
+      });
     }
     if (compactHistogram) {
       for (const [value, probability] of filteredProbabilities) {
-        barsToDisplay.push([String(value), probability]);
+        barsToDisplay.push(single(value, probability));
       }
     } else {
       const probabilityMap = new Map(hitProbabilities);
       for (let offset = 0; offset <= maxValue - minValue; offset++) {
         const value = minValue + offset;
-        barsToDisplay.push([String(value), probabilityMap.get(value) || 0]);
+        barsToDisplay.push(single(value, probabilityMap.get(value) || 0));
       }
     }
     if (highTail.length > 0) {
       const highMin = Math.min(...highTail.map(([r]) => r));
-      barsToDisplay.push([`${highMin}+`, total(highTail)]);
+      barsToDisplay.push({
+        label: `${highMin}+`,
+        probability: total(highTail),
+        lo: highMin,
+        hi: Math.max(...highTail.map(([r]) => r)),
+      });
     }
   }
 
   const maxProbability =
     barsToDisplay.length > 0
-      ? Math.max(...barsToDisplay.map(([_, p]) => p))
+      ? Math.max(...barsToDisplay.map((bar) => bar.probability))
       : 0;
 
   // Calculate scale factor to make tallest bar 216px high (180 * 1.2)
   const scaleFactor = maxProbability > 0 ? 216 / maxProbability : 0;
   const labelWidth = Math.max(
     36,
-    ...barsToDisplay.map(([outcome]) => outcome.length * 8)
+    ...barsToDisplay.map((bar) => bar.label.length * 8)
   );
+
+  // Each mode reads only its own bounds, so a stale bound never leaks in.
+  const rangeLow = rangeMode === "atMost" ? -Infinity : minTotal;
+  const rangeHigh = rangeMode === "atLeast" ? Infinity : maxTotal;
+  const range =
+    rangeLow === null || rangeHigh === null
+      ? null
+      : {
+          lo: Math.min(rangeLow, rangeHigh),
+          hi: Math.max(rangeLow, rangeHigh),
+        };
+  // Sum the full distribution, including outcomes too rare to get a bar.
+  let rangeProbability = 0;
+  if (range && stats) {
+    for (const [total, probability] of stats.distribution) {
+      if (total >= range.lo && total <= range.hi)
+        rangeProbability += probability;
+    }
+  }
+
+  const changeRangeMode = (mode: TotalRangeMode) => {
+    const current = rangeMode === "atMost" ? maxTotal : minTotal;
+    if (mode === "atLeast") {
+      setMinTotal(current);
+      setMaxTotal(null);
+    } else if (mode === "atMost") {
+      setMinTotal(null);
+      setMaxTotal(current);
+    } else {
+      setMinTotal(current);
+      setMaxTotal(rangeMode === "between" ? maxTotal : current);
+    }
+    setRangeMode(mode);
+  };
+
+  const selectBar = (bar: Bar) => {
+    if (rangeMode === "atLeast") {
+      setMinTotal(bar.lo);
+    } else if (rangeMode === "atMost") {
+      setMaxTotal(bar.hi);
+    } else if (minTotal === null) {
+      setMinTotal(bar.lo);
+    } else if (maxTotal === null) {
+      setMaxTotal(bar.hi);
+    } else if (bar.hi < Math.min(minTotal, maxTotal)) {
+      setMinTotal(bar.lo);
+    } else if (bar.lo > Math.max(minTotal, maxTotal)) {
+      setMaxTotal(bar.hi);
+    } else if (bar.lo - minTotal <= maxTotal - bar.hi) {
+      // Inside the range: move whichever bound is closer.
+      setMinTotal(bar.lo);
+    } else {
+      setMaxTotal(bar.hi);
+    }
+  };
 
   return (
     <div className="container mx-auto flex flex-col gap-4">
@@ -326,6 +430,15 @@ export function DiceRollerClient({ initialDice }: Props) {
               showLoading={showLoading}
               error={error}
             />
+            <TotalRangeControls
+              mode={rangeMode}
+              min={minTotal}
+              max={maxTotal}
+              chance={range ? formatChance(rangeProbability) : "-"}
+              onModeChange={changeRangeMode}
+              onMinChange={setMinTotal}
+              onMaxChange={setMaxTotal}
+            />
           </CardContent>
         </Card>
       </div>
@@ -369,50 +482,65 @@ export function DiceRollerClient({ initialDice }: Props) {
                     position: "relative",
                   }}
                 >
-                  {barsToDisplay.map(([outcome, probability], index) => {
-                    const height = Math.max(1, probability * scaleFactor);
+                  {barsToDisplay.map((bar, index) => {
+                    const height = Math.max(1, bar.probability * scaleFactor);
                     const isGap =
-                      missProbability > 0 && index === 0 && outcome === "0";
+                      missProbability > 0 && index === 0 && bar.label === "0";
                     const xOffset = isGap
                       ? 0
                       : index * (labelWidth + 6) + 12 + 24;
+                    const outside =
+                      range !== null &&
+                      (bar.hi < range.lo || bar.lo > range.hi);
 
                     return (
-                      <div key={outcome}>
-                        <div
-                          className="absolute text-center text-xs text-foreground"
-                          style={{
-                            bottom: `${height + 31}px`,
-                            left: `${xOffset}px`,
-                            width: `${labelWidth}px`,
-                          }}
+                      <button
+                        key={bar.label}
+                        type="button"
+                        aria-label={`${bar.label}: ${formatChance(bar.probability)}`}
+                        onClick={() => selectBar(bar)}
+                        className="group absolute inset-y-0 cursor-pointer rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        style={{
+                          left: `${xOffset}px`,
+                          width: `${labelWidth}px`,
+                        }}
+                      >
+                        <span
+                          className={cn(
+                            "absolute inset-x-0 text-center text-xs",
+                            outside
+                              ? "text-muted-foreground"
+                              : "text-foreground"
+                          )}
+                          style={{ bottom: `${height + 31}px` }}
                         >
-                          {probability > 0 && probability < 0.001
-                            ? "<0.1%"
-                            : `${(100 * probability).toFixed(1)}%`}
-                        </div>
-                        {probability > 0 && (
-                          <div
-                            className="absolute bg-primary rounded-t"
+                          {formatChance(bar.probability)}
+                        </span>
+                        {bar.probability > 0 && (
+                          <span
+                            className={cn(
+                              "absolute rounded-t group-hover:opacity-80",
+                              outside ? "bg-muted-foreground/30" : "bg-primary"
+                            )}
                             style={{
                               height: `${height}px`,
                               width: "36px",
                               bottom: "29px",
-                              left: `${xOffset + (labelWidth - 36) / 2}px`,
+                              left: `${(labelWidth - 36) / 2}px`,
                             }}
                           />
                         )}
-                        <div
-                          className="absolute text-sm font-medium text-center text-foreground"
-                          style={{
-                            bottom: "0px",
-                            left: `${xOffset}px`,
-                            width: `${labelWidth}px`,
-                          }}
+                        <span
+                          className={cn(
+                            "absolute inset-x-0 bottom-0 text-center text-sm font-medium",
+                            outside
+                              ? "text-muted-foreground"
+                              : "text-foreground"
+                          )}
                         >
-                          {outcome}
-                        </div>
-                      </div>
+                          {bar.label}
+                        </span>
+                      </button>
                     );
                   })}
                 </div>
