@@ -42,7 +42,7 @@
 - Use OpenTelemetry; do not leave permanent `console.*` calls. Avoid redundant headings, subtitles, and placeholder copy.
 - Public API changes must remain backwards compatible, including shared serializers; follow `app/api/AGENTS.md`. Document API changes in `docs/API.md`.
 - Reuse `parseInclude`, `jsonApiError`, and `jsonApiHeaders` from `lib/api.ts`; follow `app/api/monsters/route.ts`. Include tokens are relationship names (`creator`, not `creators`). Reuse `collectCreators`/`toJsonApiUser` from `lib/services/users/converters.ts`.
-- Add one changelog entry per new user-facing feature, not per commit. No entries for bug fixes, internal work, or API-only changes.
+- Add changelog entries only when the user explicitly asks for one.
 
 # Browser QA
 
