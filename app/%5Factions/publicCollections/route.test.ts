@@ -294,8 +294,18 @@ it("records unexpected failures and returns only a generic error", async () => {
 
 it("counts explicit featured membership across the full archive without leaking private content", async () => {
   expect(await getMonsteryMondayOverview()).toEqual({
-    collections: 0,
-    monsters: 0,
+    counts: {
+      monsters: 0,
+      hazards: 0,
+      items: 0,
+      companions: 0,
+      ancestries: 0,
+      backgrounds: 0,
+      classes: 0,
+      subclasses: 0,
+      spellSchools: 0,
+      rules: 0,
+    },
     creators: [],
     latest: null,
   });
@@ -400,10 +410,27 @@ it("counts explicit featured membership across the full archive without leaking 
     { collectionId: "week-99", monsterId: "hazard-only-author" },
     { collectionId: "hidden-week", monsterId: second.id },
   ]);
+  await db.insert(schema.items).values([
+    { id: "item-twice-featured", creatorId: curatorId, name: "Twice" },
+    {
+      id: "item-private",
+      creatorId: curatorId,
+      name: "Private",
+      visibility: "private",
+    },
+    { id: "item-only-hidden", creatorId: curatorId, name: "Hidden" },
+  ]);
+  // An item in two archived weeks counts once; private items and items only in
+  // excluded collections do not count.
+  await db.insert(schema.itemsCollections).values([
+    { collectionId: "week-100", itemId: "item-twice-featured" },
+    { collectionId: "week-99", itemId: "item-twice-featured" },
+    { collectionId: "week-99", itemId: "item-private" },
+    { collectionId: "hidden-week", itemId: "item-only-hidden" },
+  ]);
   const overview = await getMonsteryMondayOverview();
   expect(overview).toMatchObject({
-    collections: 3,
-    monsters: 3,
+    counts: { monsters: 3, hazards: 1, items: 1, companions: 0 },
     latest: { id: "week-100" },
   });
   // "owner" made two archived monsters and "other" one, so owner leads even

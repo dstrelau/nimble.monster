@@ -55,7 +55,6 @@ it("adds and removes a collection from the Monstery Monday page", async () => {
     (await listFeaturedCollections(MONSTERY_MONDAY)).map((c) => c.id)
   ).toEqual(["week"]);
   expect(await getMonsteryMondayOverview()).toMatchObject({
-    collections: 1,
     latest: { id: "week" },
   });
 
@@ -63,7 +62,6 @@ it("adds and removes a collection from the Monstery Monday page", async () => {
   expect(remove.status).toBe(200);
   expect(await listFeaturedCollections(MONSTERY_MONDAY)).toEqual([]);
   expect(await getMonsteryMondayOverview()).toMatchObject({
-    collections: 0,
     latest: null,
   });
 });

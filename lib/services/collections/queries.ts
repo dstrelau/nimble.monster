@@ -12,7 +12,9 @@ import {
   lt,
   notInArray,
   or,
+  type SQL,
 } from "drizzle-orm";
+import type { SQLiteColumn, SQLiteTable } from "drizzle-orm/sqlite-core";
 import { findClassesByIds } from "@/lib/db/class";
 import {
   findCustomRulesByIds,
@@ -952,14 +954,120 @@ const monsteryMondayFilter = and(
   eq(collections.featuredCollection, MONSTERY_MONDAY)
 );
 
+// Distinct public entities of one type across the archive, so an entity
+// featured in several weeks counts once.
+async function countMonsteryMondayEntities(
+  link: SQLiteTable,
+  linkCollectionId: SQLiteColumn,
+  linkEntityId: SQLiteColumn,
+  entity: SQLiteTable,
+  entityId: SQLiteColumn,
+  visibility: SQLiteColumn,
+  filter?: SQL
+): Promise<number> {
+  const [row] = await getDatabase()
+    .select({ count: countDistinct(entityId) })
+    .from(collections)
+    .innerJoin(link, eq(linkCollectionId, collections.id))
+    .innerJoin(entity, eq(entityId, linkEntityId))
+    .where(and(monsteryMondayFilter, eq(visibility, "public"), filter));
+  return row?.count ?? 0;
+}
+
 export async function getMonsteryMondayOverview() {
   const db = getDatabase();
   const monsterCount = countDistinct(monsters.id);
-  const [[collectionStats], creatorRows, latest] = await Promise.all([
-    db
-      .select({ collections: count() })
-      .from(collections)
-      .where(monsteryMondayFilter),
+  const entityCounts = Promise.all([
+    countMonsteryMondayEntities(
+      monstersCollections,
+      monstersCollections.collectionId,
+      monstersCollections.monsterId,
+      monsters,
+      monsters.id,
+      monsters.visibility,
+      eq(monsters.hazard, true)
+    ),
+    countMonsteryMondayEntities(
+      itemsCollections,
+      itemsCollections.collectionId,
+      itemsCollections.itemId,
+      items,
+      items.id,
+      items.visibility
+    ),
+    countMonsteryMondayEntities(
+      companionsCollections,
+      companionsCollections.collectionId,
+      companionsCollections.companionId,
+      companions,
+      companions.id,
+      companions.visibility
+    ),
+    countMonsteryMondayEntities(
+      ancestriesCollections,
+      ancestriesCollections.collectionId,
+      ancestriesCollections.ancestryId,
+      ancestries,
+      ancestries.id,
+      ancestries.visibility
+    ),
+    countMonsteryMondayEntities(
+      backgroundsCollections,
+      backgroundsCollections.collectionId,
+      backgroundsCollections.backgroundId,
+      backgrounds,
+      backgrounds.id,
+      backgrounds.visibility
+    ),
+    countMonsteryMondayEntities(
+      classesCollections,
+      classesCollections.collectionId,
+      classesCollections.classId,
+      classes,
+      classes.id,
+      classes.visibility
+    ),
+    countMonsteryMondayEntities(
+      subclassesCollections,
+      subclassesCollections.collectionId,
+      subclassesCollections.subclassId,
+      subclasses,
+      subclasses.id,
+      subclasses.visibility
+    ),
+    countMonsteryMondayEntities(
+      spellSchoolsCollections,
+      spellSchoolsCollections.collectionId,
+      spellSchoolsCollections.spellSchoolId,
+      spellSchools,
+      spellSchools.id,
+      spellSchools.visibility
+    ),
+    countMonsteryMondayEntities(
+      customRulesCollections,
+      customRulesCollections.collectionId,
+      customRulesCollections.customRuleId,
+      customRules,
+      customRules.id,
+      customRules.visibility
+    ),
+  ]);
+  const [
+    [
+      hazards,
+      itemsCount,
+      companionsCount,
+      ancestriesCount,
+      backgroundsCount,
+      classesCount,
+      subclassesCount,
+      spellSchoolsCount,
+      rulesCount,
+    ],
+    creatorRows,
+    latest,
+  ] = await Promise.all([
+    entityCounts,
     // Each monster has one creator, so per-creator counts sum to the archive
     // total. Most prolific creators come first for the spotlight.
     db
@@ -988,8 +1096,18 @@ export async function getMonsteryMondayOverview() {
     }),
   ]);
   return {
-    ...collectionStats,
-    monsters: creatorRows.reduce((sum, row) => sum + row.monsters, 0),
+    counts: {
+      monsters: creatorRows.reduce((sum, row) => sum + row.monsters, 0),
+      hazards,
+      items: itemsCount,
+      companions: companionsCount,
+      ancestries: ancestriesCount,
+      backgrounds: backgroundsCount,
+      classes: classesCount,
+      subclasses: subclassesCount,
+      spellSchools: spellSchoolsCount,
+      rules: rulesCount,
+    },
     creators: creatorRows.map((row) => toUserFromRow(row.user)),
     latest: latest[0] ?? null,
   };

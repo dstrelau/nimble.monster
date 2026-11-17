@@ -12,6 +12,7 @@ import {
   MONSTERY_MONDAY,
 } from "@/lib/services/collections/queries";
 import { publicCollectionPage } from "@/lib/services/collections/service";
+import { cn } from "@/lib/utils";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { getUserUrl } from "@/lib/utils/url";
 
@@ -45,17 +46,39 @@ export default async function MonsteryMondayPage() {
         publicCollectionPage({ ...params, pageParam }),
     }),
   ]);
+  const { counts } = overview;
   const stats = [
-    { label: "Monsters", value: overview.monsters },
-    { label: "Creators", value: overview.creators.length },
-    { label: "Collections", value: overview.collections },
+    { singular: "Monster", plural: "Monsters", value: counts.monsters },
+    { singular: "Hazard", plural: "Hazards", value: counts.hazards },
+    { singular: "Item", plural: "Items", value: counts.items },
+    { singular: "Companion", plural: "Companions", value: counts.companions },
+    { singular: "Ancestry", plural: "Ancestries", value: counts.ancestries },
+    {
+      singular: "Background",
+      plural: "Backgrounds",
+      value: counts.backgrounds,
+    },
+    { singular: "Class", plural: "Classes", value: counts.classes },
+    { singular: "Subclass", plural: "Subclasses", value: counts.subclasses },
+    {
+      singular: "Spell School",
+      plural: "Spell Schools",
+      value: counts.spellSchools,
+    },
+    { singular: "Rule", plural: "Rules", value: counts.rules },
   ];
+  const shownStats = stats
+    .filter(({ value }) => value > 0)
+    .map(({ singular, plural, value }) => ({
+      label: value === 1 ? singular : plural,
+      value,
+    }));
 
   return (
     <div className="space-y-9">
       <section
         aria-labelledby="monday-title"
-        className="grid items-start gap-8 md:grid-cols-2 md:gap-10"
+        className="mx-auto grid max-w-5xl items-start gap-8 md:grid-cols-2 md:gap-10 lg:grid-cols-[3fr_2fr]"
       >
         <div>
           <h1
@@ -77,9 +100,14 @@ export default async function MonsteryMondayPage() {
           </p>
           <dl
             aria-label="Full archive totals"
-            className="my-5 grid max-w-md grid-cols-3 gap-3 border-y py-3"
+            // Three per row whenever they wrap; one row on wide screens if
+            // they fit.
+            className={cn(
+              "my-5 grid grid-cols-3 gap-x-7 gap-y-3 border-y py-3",
+              shownStats.length <= 6 && "lg:flex"
+            )}
           >
-            {stats.map(({ label, value }) => (
+            {shownStats.map(({ label, value }) => (
               <div
                 key={label}
                 className="flex flex-col-reverse justify-end gap-0.5"
@@ -120,7 +148,7 @@ export default async function MonsteryMondayPage() {
           </div>
         </div>
         {overview.latest && (
-          <section aria-labelledby="latest-title">
+          <section aria-labelledby="latest-title" className="md:self-center">
             <h2 id="latest-title" className="sr-only">
               Latest collection
             </h2>
@@ -137,7 +165,7 @@ export default async function MonsteryMondayPage() {
             id="creators-title"
             className="font-slab text-lg font-bold whitespace-nowrap"
           >
-            Made by{" "}
+            Contributions from{" "}
             <span className="text-primary">
               {overview.creators.length.toLocaleString("en-US")}
             </span>{" "}
