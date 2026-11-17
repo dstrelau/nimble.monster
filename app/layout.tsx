@@ -57,6 +57,12 @@ export default async function RootLayout({
               'try{if(localStorage.getItem("nimble-nexus-banner-dismissed")==="true")document.documentElement.setAttribute("data-free-banner-dismissed","true")}catch{}',
           }}
         />
+        {process.env.NODE_ENV === "production" && (
+          <script
+            src="https://ampcode.com/w/pw_hXmsP1whp7ghXhvArmoZiQ644dc86P9VZlnyW_RSkjA.js"
+            async
+          />
+        )}
       </head>
       <body
         className={cn(
