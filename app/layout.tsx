@@ -1,6 +1,7 @@
 import "@/app/ui/global.css";
 import type { Metadata } from "next";
 import { Roboto_Flex, Roboto_Serif, Roboto_Slab } from "next/font/google";
+import { headers } from "next/headers";
 import { Footer } from "@/components/layout/Footer";
 import { FreeBanner } from "@/components/layout/FreeBanner";
 import { GlobalSearchDialog } from "@/components/layout/GlobalSearchDialog";
@@ -45,12 +46,14 @@ export default async function RootLayout({
 }>) {
   const [session, navCounts] = await Promise.all([auth(), getNavCounts()]);
   const enabledFeatures = await getEnabledFeatureFlags(session?.user.id);
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <style>{`@media print { html { font-size: 87.5%; } }`}</style>
         {/* Honor local banner dismissals before the page paints, just like the theme. */}
         <script
+          nonce={nonce}
           // biome-ignore lint/security/noDangerouslySetInnerHtml: Static script with no user-provided source.
           dangerouslySetInnerHTML={{
             __html:
@@ -61,6 +64,7 @@ export default async function RootLayout({
           <script
             src="https://ampcode.com/w/pw_hXmsP1whp7ghXhvArmoZiQ644dc86P9VZlnyW_RSkjA.js"
             async
+            nonce={nonce}
           />
         )}
       </head>
@@ -72,7 +76,11 @@ export default async function RootLayout({
           serif.variable
         )}
       >
-        <Providers session={session} enabledFeatures={enabledFeatures}>
+        <Providers
+          session={session}
+          enabledFeatures={enabledFeatures}
+          nonce={nonce}
+        >
           <Header initialCounts={navCounts} />
           <GlobalSearchDialog />
           {process.env.HIDE_FREE_BANNER !== "true" && <FreeBanner />}

@@ -205,4 +205,23 @@ describe("proxy", () => {
     const res = await proxy(req);
     expect(res?.status).not.toBe(308);
   });
+
+  it("sends a fresh CSP nonce to the page and the browser", async () => {
+    const policyNonces = await Promise.all(
+      [1, 2].map(async () => {
+        const res = await proxy(makeRequest("GET", "/monsters"));
+        const policy =
+          res?.headers.get("content-security-policy-report-only") ?? "";
+        const requestNonce = res?.headers.get("x-middleware-request-x-nonce");
+        const requestPolicy = res?.headers.get(
+          "x-middleware-request-content-security-policy-report-only"
+        );
+        expect(requestNonce).toBeTruthy();
+        expect(policy).toContain(`'nonce-${requestNonce}'`);
+        expect(requestPolicy).toBe(policy);
+        return requestNonce;
+      })
+    );
+    expect(policyNonces[0]).not.toBe(policyNonces[1]);
+  });
 });

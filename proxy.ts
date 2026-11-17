@@ -44,8 +44,42 @@ const authProxy = auth((request) => {
     }
   }
 
-  return NextResponse.next();
+  // Next.js reads the nonce from this request header and adds it to its own
+  // inline scripts; the root layout reads x-nonce for ours.
+  const nonce = btoa(crypto.randomUUID());
+  const policy = contentSecurityPolicy(nonce);
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set(CSP_HEADER, policy);
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  response.headers.set(CSP_HEADER, policy);
+  return response;
 });
+
+// Report-only while we collect violations from production; switch to
+// Content-Security-Policy to enforce it.
+const CSP_HEADER = "Content-Security-Policy-Report-Only";
+
+function contentSecurityPolicy(nonce: string): string {
+  const isDev = process.env.NODE_ENV === "development";
+  return [
+    "default-src 'self'",
+    // 'strict-dynamic' lets nonced scripts (Next.js chunks, the Amp feedback
+    // widget) load further scripts, and ignores host allowlists.
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob: https://cdn.discordapp.com https://*.fly.storage.tigris.dev",
+    "font-src 'self' data:",
+    "connect-src 'self' https://ampcode.com",
+    "frame-src https://ampcode.com",
+    "object-src 'none'",
+    "base-uri 'self'",
+    // Discord sign-in posts to /api/auth and redirects to discord.com.
+    "form-action 'self' https://discord.com",
+    "frame-ancestors 'none'",
+    "report-uri /api/csp-report",
+  ].join("; ");
+}
 
 const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? "")
   .split(",")

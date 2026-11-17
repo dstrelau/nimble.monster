@@ -13,10 +13,12 @@ import type { FeatureFlag } from "@/lib/services/featureFlags";
 export function Providers({
   session,
   enabledFeatures,
+  nonce,
   children,
 }: {
   session: Session | null;
   enabledFeatures: readonly FeatureFlag[];
+  nonce: string | undefined;
   children: React.ReactNode;
 }) {
   const queryClient = getQueryClient();
@@ -31,6 +33,7 @@ export function Providers({
               defaultTheme="system"
               enableSystem
               themes={["light", "dark"]}
+              nonce={nonce}
             >
               {children}
             </ThemeProvider>
