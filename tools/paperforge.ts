@@ -15,8 +15,10 @@ import sharp from "sharp";
 
 // --- Constants ---
 
-const LISTING_URL =
-  "https://www.paperforgeminis.com/minis?sort=created-old&perPage=60";
+const PF_SITE = "https://www.paperforgeminis.com";
+const LISTING_URL = `${PF_SITE}/minis?sort=created-old&perPage=60`;
+const PF_USER_AGENT = "Mozilla/5.0 (paperforge-index-builder)";
+const DETAIL_CONCURRENCY = 3;
 const PF_S3_BASE = "https://paperforgedev.s3.us-east-2.amazonaws.com/";
 const CATALOG_PATH = "data/paperforge-catalog.json";
 const LEGACY_PATH = "data/paperforge-legacy.json";
@@ -39,6 +41,7 @@ const TIER_MAP: Record<string, { tierName: string; tierNumber: number }> = {
 // --- Shared types ---
 
 interface CatalogDownload {
+  assetId?: string;
   filename: string;
   category: string;
   tier: string;
@@ -164,11 +167,12 @@ function filterSyncMinis(
 
 async function processInBatches<T, R>(
   items: T[],
-  fn: (item: T) => Promise<R>
+  fn: (item: T) => Promise<R>,
+  concurrency = CONCURRENCY
 ): Promise<R[]> {
   const results: R[] = [];
-  for (let i = 0; i < items.length; i += CONCURRENCY) {
-    const batch = items.slice(i, i + CONCURRENCY);
+  for (let i = 0; i < items.length; i += concurrency) {
+    const batch = items.slice(i, i + concurrency);
     const batchResults = await Promise.all(batch.map(fn));
     results.push(...batchResults);
   }
@@ -309,9 +313,10 @@ function processRawMini(mini: RawMini): CatalogMini {
       tierNumber: -1,
     };
     const filenameTier = extractTierFromFilename(filename);
-    const downloadUrl = PF_S3_BASE + encodeURIComponent(filename);
+    const downloadUrl = `${PF_SITE}/api/download/${encodeURIComponent(asset.id)}`;
 
     downloads.push({
+      assetId: asset.id,
       filename,
       category,
       tier: tierCode,
@@ -339,10 +344,98 @@ function processRawMini(mini: RawMini): CatalogMini {
   };
 }
 
+const MASKED_FILENAME_PREFIX = "•••";
+
+// Detail pages embed the mini's assets, with FREE download filenames intact
+// and paid ones masked as "•••_T1_VTT.zip".
+function extractDownloadNamesFromDetailHtml(html: string): Map<string, string> {
+  const names = new Map<string, string>();
+  const assetRe = /\{[^{}]*\\"type\\":\\"DOWNLOAD\\"[^{}]*\}/g;
+  for (const match of html.match(assetRe) ?? []) {
+    const asset: RawAsset = JSON.parse(match.replaceAll('\\"', '"'));
+    if (asset.document_file) names.set(asset.id, asset.document_file);
+  }
+  return names;
+}
+
+// The listing no longer includes download filenames. Reuse the ones the
+// previous catalog recorded by asset ID, and fetch detail pages only for
+// minis with download assets the catalog has not seen.
+async function resolveDownloadFilenames(
+  rawMinis: RawMini[],
+  previous: CatalogJSON | null
+) {
+  const knownNames = new Map<string, string>();
+  const previousDownloads = new Map<string, CatalogDownload[]>();
+  for (const mini of previous?.minis ?? []) {
+    previousDownloads.set(mini.id, mini.downloads);
+    for (const d of mini.downloads) {
+      if (d.assetId && d.filename) knownNames.set(d.assetId, d.filename);
+    }
+  }
+
+  const needsDetail: RawMini[] = [];
+  for (const mini of rawMinis) {
+    let missing = false;
+    for (const asset of mini.assets ?? []) {
+      if (asset.type !== "DOWNLOAD" || asset.document_file) continue;
+      const known = knownNames.get(asset.id);
+      if (known) asset.document_file = known;
+      else missing = true;
+    }
+    if (missing) needsDetail.push(mini);
+  }
+
+  console.log(
+    `Fetching ${needsDetail.length} detail pages for new download assets...`
+  );
+  await processInBatches(
+    needsDetail,
+    async (mini) => {
+      const resp = await fetch(`${PF_SITE}/minis/${mini.id}`, {
+        headers: { "User-Agent": PF_USER_AGENT },
+      });
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status} fetching mini ${mini.id}`);
+      }
+      const names = extractDownloadNamesFromDetailHtml(await resp.text());
+      // Catalogs written before asset IDs were recorded still hold the full
+      // paid filenames; match masked names to them by tier and suffix.
+      const unclaimed = (previousDownloads.get(mini.id) ?? []).filter(
+        (d) => !d.assetId
+      );
+      for (const asset of mini.assets) {
+        if (asset.type !== "DOWNLOAD" || asset.document_file) continue;
+        let name = names.get(asset.id) ?? "";
+        if (name.startsWith(MASKED_FILENAME_PREFIX)) {
+          const suffix = name.slice(MASKED_FILENAME_PREFIX.length);
+          const i = unclaimed.findIndex(
+            (d) => d.tier === asset.tier && d.filename.endsWith(suffix)
+          );
+          if (i !== -1) name = unclaimed.splice(i, 1)[0].filename;
+        }
+        asset.document_file = name;
+      }
+    },
+    DETAIL_CONCURRENCY
+  );
+
+  const unresolved = rawMinis.flatMap((m) =>
+    (m.assets ?? []).filter((a) => a.type === "DOWNLOAD" && !a.document_file)
+  );
+  if (unresolved.length > 0) {
+    throw new Error(
+      `${unresolved.length} download assets have no filename (first: ${unresolved[0].id} in mini ${unresolved[0].miniId})`
+    );
+  }
+}
+
 async function cmdScrape() {
+  const previous = fs.existsSync(CATALOG_PATH) ? loadCatalog() : null;
+
   console.log(`Fetching ${LISTING_URL} ...`);
   const resp = await fetch(LISTING_URL, {
-    headers: { "User-Agent": "Mozilla/5.0 (paperforge-index-builder)" },
+    headers: { "User-Agent": PF_USER_AGENT },
   });
   if (!resp.ok) {
     throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
@@ -353,6 +446,8 @@ async function cmdScrape() {
   const rawMinis = extractMinisFromHtml(html);
   console.log(`Extracted ${rawMinis.length} raw minis`);
 
+  await resolveDownloadFilenames(rawMinis, previous);
+
   const results = rawMinis.map(processRawMini);
   results.sort((a, b) => (a.number ?? 99999) - (b.number ?? 99999));
 
@@ -361,6 +456,16 @@ async function cmdScrape() {
     s3BaseUrl: PF_S3_BASE,
     minis: results,
   };
+
+  if (previous) {
+    const before = getMinisWithFreeVTT(previous).length;
+    const after = getMinisWithFreeVTT(index).length;
+    if (after < before) {
+      throw new Error(
+        `Minis with FREE VTT dropped from ${before} to ${after}; not writing ${CATALOG_PATH}`
+      );
+    }
+  }
 
   fs.mkdirSync(path.dirname(CATALOG_PATH), { recursive: true });
   fs.writeFileSync(CATALOG_PATH, JSON.stringify(index, null, 2));
@@ -637,6 +742,16 @@ export function getPaperforgeEntry(identifier: string): PaperForgeEntry | null {
   return null;
 }
 `;
+
+  if (fs.existsSync(INDEX_PATH)) {
+    const newIds = new Set(allWithPortraits.map((m) => m.miniId));
+    const dropped = parseIndex().filter((e) => !newIds.has(e.id));
+    if (dropped.length > 0) {
+      throw new Error(
+        `${dropped.length} indexed icons would be removed (first: #${dropped[0].id} ${dropped[0].name}); not writing ${INDEX_PATH}`
+      );
+    }
+  }
 
   fs.writeFileSync(INDEX_PATH, content);
   console.log(
