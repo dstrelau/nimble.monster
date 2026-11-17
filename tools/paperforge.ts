@@ -6,6 +6,7 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import {
+  GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -894,12 +895,30 @@ async function cmdVerify() {
           const head = await s3.send(
             new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: key })
           );
-          const remoteEtag = head.ETag?.replace(/"/g, "");
+          if (head.ETag?.replace(/"/g, "") === localMd5) {
+            return { size, result: "match" as const };
+          }
+          // Re-encoding the same image gives different PNG bytes across
+          // sharp/libvips versions, so compare decoded pixels instead.
+          const object = await s3.send(
+            new GetObjectCommand({ Bucket: BUCKET_NAME, Key: key })
+          );
+          if (!object.Body) throw new Error(`Empty body for ${key}`);
+          const remoteBuffer = Buffer.from(
+            await object.Body.transformToByteArray()
+          );
+          const [local, remote] = await Promise.all(
+            [localBuffer, remoteBuffer].map((b) =>
+              sharp(b).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
+            )
+          );
+          const samePixels =
+            local.info.width === remote.info.width &&
+            local.info.height === remote.info.height &&
+            local.data.equals(remote.data);
           return {
             size,
-            result: (localMd5 === remoteEtag ? "match" : "mismatch") as
-              | "match"
-              | "mismatch",
+            result: samePixels ? ("match" as const) : ("mismatch" as const),
           };
         } catch {
           return { size, result: "missing-remote" as const };
@@ -1106,7 +1125,7 @@ Commands:
   images [ID]         Extract portraits and resize → ${OUTPUT_DIR}/
   index               Generate TypeScript catalog → ${INDEX_PATH}
   upload [ID]         Upload resized images to Tigris
-  verify              Compare local images vs Tigris (checksum)
+  verify              Compare local images vs Tigris (pixels)
   verify-remote       Check Tigris for missing images
   all [ID]            Run: scrape (if needed) → download → images → index
 
