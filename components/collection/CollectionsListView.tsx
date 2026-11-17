@@ -10,6 +10,7 @@ import {
   publicCollectionsInfiniteQueryOptions,
 } from "@/app/collections/actions";
 import { CollectionCard } from "@/components/collection/CollectionCard";
+import { CollectionPlateCard } from "@/components/collection/CollectionPlateCard";
 import {
   EmptyState,
   ErrorState,
@@ -20,10 +21,12 @@ import { CollectionFilterBar } from "./CollectionFilterBar";
 
 interface CollectionsListViewProps {
   featuredCollection?: string;
+  cardVariant?: "default" | "plate";
 }
 
 export const CollectionsListView: React.FC<CollectionsListViewProps> = ({
   featuredCollection,
+  cardVariant = "default",
 }) => {
   const [rawSearchQuery, setSearchQuery] = useQueryState("search");
   const [searchQuery] = useDebouncedValue(rawSearchQuery, { wait: 250 });
@@ -75,13 +78,16 @@ export const CollectionsListView: React.FC<CollectionsListViewProps> = ({
       ) : (
         <>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
-            {filteredCollections.map((collection) => (
-              <CollectionCard
-                key={collection.id}
-                collection={collection}
-                showDescription={!featuredCollection}
-              />
-            ))}
+            {filteredCollections.map((collection) =>
+              cardVariant === "plate" ? (
+                <CollectionPlateCard
+                  key={collection.id}
+                  collection={collection}
+                />
+              ) : (
+                <CollectionCard key={collection.id} collection={collection} />
+              )
+            )}
           </div>
           {hasNextPage && (
             <div ref={loadMoreRef}>

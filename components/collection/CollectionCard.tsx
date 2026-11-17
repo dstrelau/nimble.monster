@@ -263,7 +263,6 @@ const ClassRow = ({
 export const CollectionCard = ({
   collection,
   limit = 7,
-  showDescription = true,
   onRemoveMonsterAction,
   onRemoveItemAction,
   onRemoveCompanionAction,
@@ -276,7 +275,6 @@ export const CollectionCard = ({
 }: {
   collection: CollectionOverview;
   limit?: number;
-  showDescription?: boolean;
   onRemoveMonsterAction?: (id: string) => void;
   onRemoveItemAction?: (id: string) => void;
   onRemoveCompanionAction?: (id: string) => void;
@@ -365,7 +363,7 @@ export const CollectionCard = ({
             `${collection.name}`
           )}
         </CardTitle>
-        {showDescription && truncatedDescription && (
+        {truncatedDescription && (
           <CardDescription>
             <FormattedText
               content={truncatedDescription}

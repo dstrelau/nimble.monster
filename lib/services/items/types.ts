@@ -22,6 +22,7 @@ export interface ItemMini {
   imageBgIcon?: string;
   imageColor?: string;
   imageBgColor?: string;
+  imageBackdrop?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,7 +30,6 @@ export interface ItemMini {
 export interface Item extends ItemMini {
   description: string;
   moreInfo?: string;
-  imageBackdrop?: string;
   creator: User;
   source?: Source;
   awards?: Award[];

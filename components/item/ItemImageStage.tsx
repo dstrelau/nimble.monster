@@ -14,12 +14,12 @@ interface ItemImageStageProps {
   imageBgIcon?: string;
   imageColor?: string;
   imageBgColor?: string;
-  size?: "default" | "print" | "sm";
+  size?: "default" | "print" | "sm" | "xs";
   className?: string;
 }
 
 const SIZE_CLASSES: Record<
-  "default" | "print" | "sm",
+  "default" | "print" | "sm" | "xs",
   { stage: string; icon: string; bgIcon: string }
 > = {
   default: { stage: "size-64", icon: "size-32", bgIcon: "size-64" },
@@ -29,6 +29,7 @@ const SIZE_CLASSES: Record<
     bgIcon: "size-full",
   },
   sm: { stage: "size-16", icon: "size-9", bgIcon: "size-16" },
+  xs: { stage: "size-12", icon: "size-7", bgIcon: "size-12" },
 };
 
 // Scattered star positions for the Motes backdrop, hand-placed in a loose
@@ -55,12 +56,13 @@ const MOTE_POSITIONS: {
 ];
 
 const MOTE_SIZE_CLASSES: Record<
-  "default" | "print" | "sm",
+  "default" | "print" | "sm" | "xs",
   Record<"sm" | "md" | "lg", string>
 > = {
   default: { sm: "size-2", md: "size-2.5", lg: "size-3" },
   print: { sm: "size-2", md: "size-2.5", lg: "size-3" },
   sm: { sm: "size-1", md: "size-1.5", lg: "size-2" },
+  xs: { sm: "size-0.5", md: "size-1", lg: "size-1.5" },
 };
 
 export function ItemImageStage({

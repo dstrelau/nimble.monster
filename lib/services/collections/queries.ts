@@ -182,6 +182,7 @@ const toItemMiniFromRow = (item: ItemRow): ItemMini => ({
   imageBgIcon: item.imageBgIcon || undefined,
   imageColor: item.imageColor || undefined,
   imageBgColor: item.imageBgColor || undefined,
+  imageBackdrop: item.imageBackdrop || undefined,
   createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
   updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
 });

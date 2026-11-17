@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { publicCollectionsInfiniteQueryOptions } from "@/app/collections/actions";
-import { CollectionCard } from "@/components/collection/CollectionCard";
+import { CollectionPlateCard } from "@/components/collection/CollectionPlateCard";
 import { CollectionsListView } from "@/components/collection/CollectionsListView";
 import { UserAvatar } from "@/components/layout/UserAvatar";
 import { getQueryClient } from "@/lib/queryClient";
@@ -77,12 +77,12 @@ export default async function MonsteryMondayPage() {
           </p>
           <dl
             aria-label="Full archive totals"
-            className="my-7 grid max-w-md grid-cols-3 gap-3 border-y py-5"
+            className="my-5 grid max-w-md grid-cols-3 gap-3 border-y py-3"
           >
             {stats.map(({ label, value }) => (
               <div
                 key={label}
-                className="flex flex-col-reverse justify-end gap-1.5"
+                className="flex flex-col-reverse justify-end gap-0.5"
               >
                 <dt className="text-sm">{label}</dt>
                 <dd className="font-slab text-4xl font-bold tracking-tight text-primary tabular-nums">
@@ -124,10 +124,7 @@ export default async function MonsteryMondayPage() {
             <h2 id="latest-title" className="sr-only">
               Latest collection
             </h2>
-            <CollectionCard
-              collection={overview.latest}
-              showDescription={false}
-            />
+            <CollectionPlateCard collection={overview.latest} />
           </section>
         )}
       </section>
@@ -174,7 +171,10 @@ export default async function MonsteryMondayPage() {
           Past collections
         </h2>
         <HydrationBoundary state={dehydrate(queryClient)}>
-          <CollectionsListView featuredCollection={MONSTERY_MONDAY} />
+          <CollectionsListView
+            featuredCollection={MONSTERY_MONDAY}
+            cardVariant="plate"
+          />
         </HydrationBoundary>
       </section>
     </div>
