@@ -953,29 +953,32 @@ const monsteryMondayFilter = and(
 
 export async function getMonsteryMondayOverview() {
   const db = getDatabase();
-  const [[collectionStats], [monsterStats], latest] = await Promise.all([
+  const monsterCount = countDistinct(monsters.id);
+  const [[collectionStats], creatorRows, latest] = await Promise.all([
     db
       .select({ collections: count() })
       .from(collections)
       .where(monsteryMondayFilter),
+    // Each monster has one creator, so per-creator counts sum to the archive
+    // total. Most prolific creators come first for the spotlight.
     db
-      .select({
-        monsters: countDistinct(monsters.id),
-        creators: countDistinct(monsters.creatorId),
-      })
+      .select({ user: users, monsters: monsterCount })
       .from(collections)
       .innerJoin(
         monstersCollections,
         eq(monstersCollections.collectionId, collections.id)
       )
       .innerJoin(monsters, eq(monsters.id, monstersCollections.monsterId))
+      .innerJoin(users, eq(users.id, monsters.creatorId))
       .where(
         and(
           monsteryMondayFilter,
           eq(monsters.visibility, "public"),
           eq(monsters.hazard, false)
         )
-      ),
+      )
+      .groupBy(users.id)
+      .orderBy(desc(monsterCount), asc(users.username)),
     searchPublicCollections({
       featuredCollection: MONSTERY_MONDAY,
       sortBy: "createdAt",
@@ -983,7 +986,12 @@ export async function getMonsteryMondayOverview() {
       limit: 1,
     }),
   ]);
-  return { ...collectionStats, ...monsterStats, latest: latest[0] ?? null };
+  return {
+    ...collectionStats,
+    monsters: creatorRows.reduce((sum, row) => sum + row.monsters, 0),
+    creators: creatorRows.map((row) => toUserFromRow(row.user)),
+    latest: latest[0] ?? null,
+  };
 }
 
 export interface FeaturedCollectionAdminRow {

@@ -296,7 +296,7 @@ it("counts explicit featured membership across the full archive without leaking 
   expect(await getMonsteryMondayOverview()).toEqual({
     collections: 0,
     monsters: 0,
-    creators: 0,
+    creators: [],
     latest: null,
   });
   const curatorId = "ce3f2e61-62ce-4589-ba8b-da3c93630c0d";
@@ -404,9 +404,11 @@ it("counts explicit featured membership across the full archive without leaking 
   expect(overview).toMatchObject({
     collections: 3,
     monsters: 3,
-    creators: 2,
     latest: { id: "week-100" },
   });
+  // "owner" made two archived monsters and "other" one, so owner leads even
+  // though "other" sorts first by name.
+  expect(overview.creators.map((u) => u.username)).toEqual(["owner", "other"]);
   const first = await (
     await request("featuredCollection=monstery+monday&limit=1")
   ).json();

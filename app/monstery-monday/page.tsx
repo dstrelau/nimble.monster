@@ -5,6 +5,7 @@ import type { CSSProperties } from "react";
 import { publicCollectionsInfiniteQueryOptions } from "@/app/collections/actions";
 import { CollectionCard } from "@/components/collection/CollectionCard";
 import { CollectionsListView } from "@/components/collection/CollectionsListView";
+import { UserAvatar } from "@/components/layout/UserAvatar";
 import { getQueryClient } from "@/lib/queryClient";
 import {
   getMonsteryMondayOverview,
@@ -12,6 +13,7 @@ import {
 } from "@/lib/services/collections/queries";
 import { publicCollectionPage } from "@/lib/services/collections/service";
 import { SITE_NAME } from "@/lib/utils/branding";
+import { getUserUrl } from "@/lib/utils/url";
 
 export const metadata: Metadata = {
   title: `Monstery Monday - ${SITE_NAME}`,
@@ -45,7 +47,7 @@ export default async function MonsteryMondayPage() {
   ]);
   const stats = [
     { label: "Monsters", value: overview.monsters },
-    { label: "Creators", value: overview.creators },
+    { label: "Creators", value: overview.creators.length },
     { label: "Collections", value: overview.collections },
   ];
 
@@ -129,6 +131,40 @@ export default async function MonsteryMondayPage() {
           </section>
         )}
       </section>
+      {overview.creators.length > 0 && (
+        <section
+          aria-labelledby="creators-title"
+          className="flex flex-wrap items-center gap-x-5 gap-y-3 border-y py-4"
+        >
+          <h2
+            id="creators-title"
+            className="font-slab text-lg font-bold whitespace-nowrap"
+          >
+            Made by{" "}
+            <span className="text-primary">
+              {overview.creators.length.toLocaleString("en-US")}
+            </span>{" "}
+            creators
+          </h2>
+          <ul className="flex flex-wrap gap-y-1.5 pl-2">
+            {overview.creators.map((creator) => (
+              <li key={creator.id} className="-ml-2">
+                <Link
+                  href={getUserUrl(creator)}
+                  title={creator.displayName}
+                  className="block rounded-full"
+                >
+                  <UserAvatar
+                    user={creator}
+                    size={34}
+                    className="bg-muted ring-2 ring-background"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       <section
         id="archive"
         aria-labelledby="archive-title"
