@@ -1,6 +1,7 @@
 "use client";
 import type { LucideIcon } from "lucide-react";
 import { TriangleAlert } from "lucide-react";
+import NextLink from "next/link";
 import { EntityReactions } from "@/components/EntityReactions";
 import {
   resolveItemBackdrop,
@@ -8,16 +9,22 @@ import {
 } from "@/components/item/colors";
 import { ItemImageStage } from "@/components/item/ItemImageStage";
 import { Link } from "@/components/layout/Link";
+import { UserAvatar } from "@/components/layout/UserAvatar";
 import { MonsterImage } from "@/components/monster/MonsterImage";
 import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
 import { Level } from "@/components/shared/Level";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { RARITIES } from "@/lib/services/items";
-import type { CollectionOverview } from "@/lib/types";
+import type { CollectionOverview, User } from "@/lib/types";
 import { ENTITY_TYPE_ICONS } from "@/lib/types/entity-links";
 import { cn, itemsSortedByName, monstersSortedByLevelInt } from "@/lib/utils";
-import { getCollectionUrl, getItemUrl, getMonsterUrl } from "@/lib/utils/url";
+import {
+  getCollectionUrl,
+  getItemUrl,
+  getMonsterUrl,
+  getUserUrl,
+} from "@/lib/utils/url";
 
 // Earthy inks that keep the cream header text readable; dark mode uses a
 // slightly deeper shade of each so the band doesn't glare on the dark page.
@@ -36,6 +43,9 @@ const LIST_LIMIT = 6;
 // Six overlapping 48px portraits span about 238px, leaving room in the
 // narrowest card (about 315px at the 3-column breakpoint); the rest are left out.
 const LINEUP_LIMIT = 6;
+// Overlapping 24px avatars; past this many, the last slot shows "+N" so the
+// footer keeps room for reactions.
+const CONTRIBUTOR_LIMIT = 10;
 
 // "Monstery Monday Week 95 - Contrast" -> week "95", title "Contrast".
 function parseName(name: string): { week?: string; title: string } {
@@ -288,6 +298,11 @@ export const CollectionPlateCard = ({
       <CardFooterLayout
         className="px-5 py-3"
         creator={collection.creator}
+        attributionSlot={
+          collection.contributors?.length ? (
+            <Contributors users={collection.contributors} />
+          ) : undefined
+        }
         reactionsSlot={
           <EntityReactions entityType="collection" entityId={collection.id} />
         }
@@ -300,5 +315,40 @@ export const CollectionPlateCard = ({
         }
       />
     </Card>
+  );
+};
+
+const Contributors = ({ users }: { users: User[] }) => {
+  const shown =
+    users.length > CONTRIBUTOR_LIMIT
+      ? users.slice(0, CONTRIBUTOR_LIMIT - 1)
+      : users;
+  const hidden = users.length - shown.length;
+  return (
+    <ul aria-label="Contributors" className="flex pl-1.5">
+      {shown.map((user) => (
+        <li key={user.id} className="-ml-1.5">
+          <NextLink
+            href={getUserUrl(user)}
+            title={user.displayName}
+            className="block rounded-full"
+          >
+            <UserAvatar
+              user={user}
+              size={24}
+              className="bg-muted ring-2 ring-card"
+            />
+          </NextLink>
+        </li>
+      ))}
+      {hidden > 0 && (
+        <li
+          title={plural(hidden, "more contributor")}
+          className="relative -ml-1.5 flex size-6 items-center justify-center rounded-full bg-muted text-xs font-semibold tabular-nums ring-2 ring-card"
+        >
+          +{hidden}
+        </li>
+      )}
+    </ul>
   );
 };

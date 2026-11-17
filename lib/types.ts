@@ -151,6 +151,9 @@ export interface Collection extends CollectionOverview {
 export interface CollectionOverview {
   id: string;
   creator: User;
+  // Creators of the collection's public entities; only loaded for featured
+  // collections.
+  contributors?: User[];
   description?: string;
   legendaryCount: number;
   monsters: BestiaryEntryMini[];

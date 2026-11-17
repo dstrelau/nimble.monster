@@ -101,6 +101,30 @@ describe("CollectionPlateCard", () => {
     expect(screen.getByText("10 spells")).toBeTruthy();
   });
 
+  it("shows contributors instead of the curator, capping the stack", () => {
+    const contributors = Array.from({ length: 12 }, (_, i) => ({
+      id: `c${i}`,
+      discordId: `cd${i}`,
+      username: `creator${i}`,
+      displayName: `Creator ${i}`,
+    }));
+    render(
+      <CollectionPlateCard
+        collection={collection("Monstery Monday Week 95 - Contrast", {
+          contributors,
+        })}
+      />
+    );
+
+    const list = screen.getByRole("list", { name: "Contributors" });
+    const links = within(list).getAllByRole("link");
+    expect(links.map((a) => a.getAttribute("title"))).toEqual(
+      contributors.slice(0, 9).map((c) => c.displayName)
+    );
+    expect(within(list).getByText("+3")).toBeTruthy();
+    expect(screen.queryByText("Sanity")).toBeNull();
+  });
+
   it("keeps a name without a week number as the title", () => {
     render(
       <CollectionPlateCard

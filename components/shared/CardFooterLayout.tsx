@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 
 interface CardFooterLayoutProps {
   creator?: User;
+  // Replaces the creator attribution, such as with several contributors.
+  attributionSlot?: React.ReactNode;
   attributionSize?: React.ComponentProps<typeof Attribution>["size"];
   source?: Source;
   awards?: Award[];
@@ -22,6 +24,7 @@ interface CardFooterLayoutProps {
 
 export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
   creator,
+  attributionSlot,
   attributionSize = "default",
   source,
   awards = [],
@@ -37,15 +40,16 @@ export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
       <Separator />
       <CardFooter className={cn("flex-col items-stretch", className)}>
         <div className="flex items-center justify-between gap-2">
-          {creator ? (
-            <Attribution
-              user={creator}
-              size={attributionSize}
-              disableLink={disableLink}
-            />
-          ) : (
-            <div />
-          )}
+          {attributionSlot ??
+            (creator ? (
+              <Attribution
+                user={creator}
+                size={attributionSize}
+                disableLink={disableLink}
+              />
+            ) : (
+              <div />
+            ))}
 
           <div className="flex items-center gap-2">
             {awards.map((award) => (

@@ -13,8 +13,13 @@ import {
   notInArray,
   or,
   type SQL,
+  sql,
 } from "drizzle-orm";
-import type { SQLiteColumn, SQLiteTable } from "drizzle-orm/sqlite-core";
+import {
+  type SQLiteColumn,
+  type SQLiteTable,
+  unionAll,
+} from "drizzle-orm/sqlite-core";
 import { findClassesByIds } from "@/lib/db/class";
 import {
   findCustomRulesByIds,
@@ -430,6 +435,138 @@ async function loadCollectionEntityMinis(
     classesByCollection,
     customRulesByCollection,
   };
+}
+
+// Creators of each collection's public entities, most entities first.
+async function loadCollectionContributors(
+  db: ReturnType<typeof getDatabase>,
+  collectionIds: string[]
+): Promise<Map<string, User[]>> {
+  const contributions = (
+    link: SQLiteTable,
+    linkCollectionId: SQLiteColumn,
+    linkEntityId: SQLiteColumn,
+    entity: SQLiteTable,
+    entityId: SQLiteColumn,
+    creatorId: SQLiteColumn,
+    visibility: SQLiteColumn
+  ) =>
+    db
+      .select({
+        collectionId: sql<string>`${linkCollectionId}`,
+        creatorId: sql<string>`${creatorId}`,
+      })
+      .from(link)
+      .innerJoin(entity, eq(entityId, linkEntityId))
+      .where(
+        and(inArray(linkCollectionId, collectionIds), eq(visibility, "public"))
+      );
+  const rows = await unionAll(
+    contributions(
+      monstersCollections,
+      monstersCollections.collectionId,
+      monstersCollections.monsterId,
+      monsters,
+      monsters.id,
+      monsters.creatorId,
+      monsters.visibility
+    ),
+    contributions(
+      itemsCollections,
+      itemsCollections.collectionId,
+      itemsCollections.itemId,
+      items,
+      items.id,
+      items.creatorId,
+      items.visibility
+    ),
+    contributions(
+      companionsCollections,
+      companionsCollections.collectionId,
+      companionsCollections.companionId,
+      companions,
+      companions.id,
+      companions.creatorId,
+      companions.visibility
+    ),
+    contributions(
+      ancestriesCollections,
+      ancestriesCollections.collectionId,
+      ancestriesCollections.ancestryId,
+      ancestries,
+      ancestries.id,
+      ancestries.creatorId,
+      ancestries.visibility
+    ),
+    contributions(
+      backgroundsCollections,
+      backgroundsCollections.collectionId,
+      backgroundsCollections.backgroundId,
+      backgrounds,
+      backgrounds.id,
+      backgrounds.creatorId,
+      backgrounds.visibility
+    ),
+    contributions(
+      classesCollections,
+      classesCollections.collectionId,
+      classesCollections.classId,
+      classes,
+      classes.id,
+      classes.creatorId,
+      classes.visibility
+    ),
+    contributions(
+      subclassesCollections,
+      subclassesCollections.collectionId,
+      subclassesCollections.subclassId,
+      subclasses,
+      subclasses.id,
+      subclasses.creatorId,
+      subclasses.visibility
+    ),
+    contributions(
+      spellSchoolsCollections,
+      spellSchoolsCollections.collectionId,
+      spellSchoolsCollections.spellSchoolId,
+      spellSchools,
+      spellSchools.id,
+      spellSchools.creatorId,
+      spellSchools.visibility
+    ),
+    contributions(
+      customRulesCollections,
+      customRulesCollections.collectionId,
+      customRulesCollections.customRuleId,
+      customRules,
+      customRules.id,
+      customRules.creatorId,
+      customRules.visibility
+    )
+  );
+
+  const userIds = [...new Set(rows.map((r) => r.creatorId))];
+  const userRows = userIds.length
+    ? await db.select().from(users).where(inArray(users.id, userIds))
+    : [];
+  const usersById = new Map(userRows.map((u) => [u.id, toUserFromRow(u)]));
+
+  const tallies = new Map<string, Map<string, number>>();
+  for (const { collectionId, creatorId } of rows) {
+    const tally = tallies.get(collectionId) ?? new Map<string, number>();
+    tally.set(creatorId, (tally.get(creatorId) ?? 0) + 1);
+    tallies.set(collectionId, tally);
+  }
+  const result = new Map<string, User[]>();
+  for (const [collectionId, tally] of tallies) {
+    result.set(
+      collectionId,
+      [...tally]
+        .sort(([, a], [, b]) => b - a)
+        .flatMap(([id]) => usersById.get(id) ?? [])
+    );
+  }
+  return result;
 }
 
 // Full monster data for collection detail view
@@ -876,7 +1013,12 @@ export const searchPublicCollections = async ({
     );
 
   // Load new entity types
-  const entityMinis = await loadCollectionEntityMinis(db, collectionIds);
+  const [entityMinis, contributors] = await Promise.all([
+    loadCollectionEntityMinis(db, collectionIds),
+    featuredCollection
+      ? loadCollectionContributors(db, collectionIds)
+      : undefined,
+  ]);
 
   // Group by collection
   const monstersByCollection = new Map<string, MonsterRow[]>();
@@ -943,6 +1085,7 @@ export const searchPublicCollections = async ({
         classes: entityMinis.classesByCollection.get(cid) ?? [],
         customRules: entityMinis.customRulesByCollection.get(cid) ?? [],
         spellSchools: entityMinis.schoolsByCollection.get(cid) ?? [],
+        contributors: contributors && (contributors.get(cid) ?? []),
       };
     });
 };
