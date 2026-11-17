@@ -17,7 +17,7 @@
 - Official content is seeded from `data/official`; use it instead of hand-crafting test monsters. Dev seeds also provide users `dev` (normal, owns sample content) and `admin` (admin flows).
 - Use `/dev-login` or `/api/auth/dev-login?dev-login&username=dev` (or `=admin`) to switch users. Dev login is disabled outside development. Official content belongs to `nimble-co`, not either test user.
 - Development uploads use `public/blob-storage` without Tigris credentials, even when a bucket name is set.
-- Keep secrets private. Production writes, deployments, and infrastructure changes require explicit authorization. `make db-from-prod` deletes/replaces the local DB and requires explicit approval before overwriting local data.
+- Keep secrets private. Production writes, deployments, and infrastructure changes require explicit authorization. Pulling a copy of the production DB with `make db-from-prod` is OK and encouraged whenever you need more realistic test data; it is read-only against production but replaces the local `db/dev.db`.
 
 ## Migrations
 
