@@ -4,6 +4,7 @@ import { searchPublicCollections } from "./queries";
 
 export const PublicCollectionPageSchema = z.object({
   search: z.string().nullish(),
+  featuredCollection: z.string().trim().min(1).max(100).optional(),
   sort: z
     .enum(["name", "-name", "createdAt", "-createdAt"])
     .default("-createdAt"),
@@ -31,6 +32,8 @@ export async function publicCollectionPage(
   const field = descending ? parsed.sort.slice(1) : parsed.sort;
   const data = await searchPublicCollections({
     searchTerm: parsed.search || undefined,
+    featuredCollection: parsed.featuredCollection,
+    excludeLatest: !!parsed.featuredCollection,
     sortBy: field === "name" ? "name" : "createdAt",
     sortDirection: descending ? "desc" : "asc",
     limit: parsed.limit + 1,

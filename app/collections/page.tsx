@@ -1,7 +1,9 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { CollectionsListView } from "@/components/collection/CollectionsListView";
+import { Button } from "@/components/ui/button";
 import { getQueryClient } from "@/lib/queryClient";
 import { publicCollectionPage } from "@/lib/services/collections/service";
 import { publicCollectionsInfiniteQueryOptions } from "./actions";
@@ -35,6 +37,11 @@ export default async function CollectionsPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="mb-6 flex justify-end">
+        <Button asChild variant="outline">
+          <Link href="/monstery-monday">Monstery Monday</Link>
+        </Button>
+      </div>
       <CollectionsListView />
     </HydrationBoundary>
   );

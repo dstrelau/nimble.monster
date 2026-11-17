@@ -5,6 +5,7 @@ import { drizzle } from "drizzle-orm/libsql";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { afterAll, beforeAll, beforeEach, expect, it, vi } from "vitest";
 import * as schema from "@/lib/db/schema";
+import { getMonsteryMondayOverview } from "@/lib/services/collections/queries";
 import {
   parseJSONAPIMonster,
   validateOfficialMonstersJSON,
@@ -262,6 +263,7 @@ it("retains exact-limit, empty and existing post-query content-filter behavior",
 
 it.each([
   "sort=bogus",
+  "featuredCollection=",
   "limit=0",
   "limit=101",
   "limit=1.5",
@@ -288,4 +290,134 @@ it("records unexpected failures and returns only a generic error", async () => {
   expect(response.status).toBe(500);
   expect(await response.json()).toEqual({ error: "Internal Server Error" });
   expect(recordException).toHaveBeenCalled();
+});
+
+it("counts explicit featured membership across the full archive without leaking private content", async () => {
+  expect(await getMonsteryMondayOverview()).toEqual({
+    collections: 0,
+    monsters: 0,
+    creators: 0,
+    latest: null,
+  });
+  const curatorId = "ce3f2e61-62ce-4589-ba8b-da3c93630c0d";
+  await db
+    .insert(schema.users)
+    .values({ id: curatorId, username: "renamed-curator" });
+  await db.insert(schema.collections).values([
+    {
+      id: "week-100",
+      creatorId: curatorId,
+      name: "Moon",
+      featuredCollection: "monstery monday",
+      createdAt: "2026-03-01",
+    },
+    {
+      id: "week-99",
+      creatorId: curatorId,
+      name: "Monstery Monday Week 99 - Sun",
+      featuredCollection: "monstery monday",
+      createdAt: "2026-02-01",
+    },
+    {
+      id: "week-9",
+      creatorId: "other",
+      name: "Monstery Monday Week 9 - Moon",
+      featuredCollection: "monstery monday",
+      createdAt: "2026-01-01",
+    },
+    {
+      id: "hidden-week",
+      creatorId: curatorId,
+      name: "Monstery Monday Week 101 - Moon",
+      featuredCollection: "monstery monday",
+      visibility: "private",
+    },
+    {
+      id: "personal-week",
+      creatorId: "other",
+      name: "Monstery Monday Week 102 - Moon",
+    },
+    {
+      id: "non-week",
+      creatorId: curatorId,
+      name: "Monstery Monday Week 103 - Moon",
+      featuredCollection: "another feature",
+    },
+  ]);
+  const { monsters } = validateOfficialMonstersJSON(
+    JSON.parse(readFileSync("data/official/gmg/bestiary.json", "utf8"))
+  );
+  const input = parseJSONAPIMonster(monsters[0]);
+  const second = await createMonster(input, "discord-owner");
+  const privateMonster = await createMonster(
+    { ...input, visibility: "private" },
+    "discord-owner"
+  );
+  await db.insert(schema.users).values(
+    ["hidden-week", "personal-week", "non-week"].map((collectionId) => ({
+      id: `author-of-${collectionId}`,
+      username: `author-of-${collectionId}`,
+    }))
+  );
+  await db.insert(schema.monsters).values([
+    {
+      id: "other-author",
+      creatorId: "other",
+      name: input.name,
+      hp: input.hp,
+      level: input.level,
+      armor: input.armor === "none" ? "" : input.armor,
+    },
+    {
+      id: "hazard-only-author",
+      creatorId: curatorId,
+      name: input.name,
+      hp: input.hp,
+      level: input.level,
+      armor: input.armor === "none" ? "" : input.armor,
+      hazard: true,
+    },
+    // Each is the only monster of its own creator and sits only in a
+    // collection the page must exclude, so a missing filter changes the counts.
+    ...["hidden-week", "personal-week", "non-week"].map((collectionId) => ({
+      id: `only-in-${collectionId}`,
+      creatorId: `author-of-${collectionId}`,
+      name: input.name,
+      hp: input.hp,
+      level: input.level,
+      armor: input.armor === "none" ? "" : input.armor,
+    })),
+  ]);
+  await db.insert(schema.monstersCollections).values([
+    { collectionId: "hidden-week", monsterId: "only-in-hidden-week" },
+    { collectionId: "personal-week", monsterId: "only-in-personal-week" },
+    { collectionId: "non-week", monsterId: "only-in-non-week" },
+    { collectionId: "week-100", monsterId },
+    { collectionId: "week-99", monsterId },
+    { collectionId: "week-99", monsterId: second.id },
+    { collectionId: "week-99", monsterId: "other-author" },
+    { collectionId: "week-99", monsterId: privateMonster.id },
+    { collectionId: "week-99", monsterId: "hazard-only-author" },
+    { collectionId: "hidden-week", monsterId: second.id },
+  ]);
+  const overview = await getMonsteryMondayOverview();
+  expect(overview).toMatchObject({
+    collections: 3,
+    monsters: 3,
+    creators: 2,
+    latest: { id: "week-100" },
+  });
+  const first = await (
+    await request("featuredCollection=monstery+monday&limit=1")
+  ).json();
+  const last = await (
+    await request("featuredCollection=monstery+monday&limit=1&pageParam=1")
+  ).json();
+  expect(first.data.map((c: { id: string }) => c.id)).toEqual(["week-99"]);
+  expect(first.hasMore).toBe(true);
+  expect(last.data.map((c: { id: string }) => c.id)).toEqual(["week-9"]);
+  expect(last.hasMore).toBe(false);
+  expect(first.data[0].monsters.map((m: { id: string }) => m.id)).not.toContain(
+    privateMonster.id
+  );
 });

@@ -5,6 +5,7 @@ import type { PublicCollectionPageResponse } from "@/lib/services/collections/se
 interface PublicCollectionsInput {
   sort?: string;
   search?: string | null;
+  featuredCollection?: string;
   limit?: number;
   pageParam?: number;
 }

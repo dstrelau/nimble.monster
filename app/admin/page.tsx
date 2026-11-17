@@ -13,6 +13,7 @@ const adminLinks = [
   { href: "/admin/paperforge", label: "Paperforge" },
   { href: "/admin/reports", label: "Reports" },
   { href: "/admin/feature-flags", label: "Feature Flags" },
+  { href: "/admin/monstery-monday", label: "Monstery Monday" },
 ];
 
 export default async function AdminPage() {

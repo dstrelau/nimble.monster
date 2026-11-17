@@ -2,12 +2,15 @@ import {
   and,
   asc,
   count,
+  countDistinct,
   desc,
   eq,
   gt,
   inArray,
+  isNull,
   like,
   lt,
+  notInArray,
   or,
 } from "drizzle-orm";
 import { findClassesByIds } from "@/lib/db/class";
@@ -98,6 +101,8 @@ export type CollectionSortDirection = "asc" | "desc";
 
 export interface SearchCollectionsParams {
   searchTerm?: string;
+  featuredCollection?: string;
+  excludeLatest?: boolean;
   sortBy: CollectionSortBy;
   sortDirection: CollectionSortDirection;
   limit: number;
@@ -766,6 +771,8 @@ export const listPublicCollections = async ({
 
 export const searchPublicCollections = async ({
   searchTerm,
+  featuredCollection,
+  excludeLatest,
   sortBy,
   sortDirection = "asc",
   limit,
@@ -775,6 +782,27 @@ export const searchPublicCollections = async ({
 
   // Build where conditions
   const whereConditions = [eq(collections.visibility, "public")];
+
+  if (featuredCollection) {
+    const featuredFilter = eq(
+      collections.featuredCollection,
+      featuredCollection
+    );
+    whereConditions.push(featuredFilter);
+    if (excludeLatest) {
+      whereConditions.push(
+        notInArray(
+          collections.id,
+          db
+            .select({ id: collections.id })
+            .from(collections)
+            .where(and(eq(collections.visibility, "public"), featuredFilter))
+            .orderBy(desc(collections.createdAt), asc(collections.id))
+            .limit(1)
+        )
+      );
+    }
+  }
 
   if (searchTerm) {
     const searchCondition = or(
@@ -800,7 +828,11 @@ export const searchPublicCollections = async ({
     .from(collections)
     .innerJoin(users, eq(collections.creatorId, users.id))
     .where(and(...whereConditions))
-    .orderBy(orderBy)
+    .orderBy(
+      ...(featuredCollection
+        ? [desc(collections.createdAt), asc(collections.id)]
+        : [orderBy, asc(collections.id)])
+    )
     .limit(limit)
     .offset(offset ?? 0);
 
@@ -863,6 +895,7 @@ export const searchPublicCollections = async ({
     .filter((r) => {
       const cid = r.collections.id;
       return (
+        !!featuredCollection ||
         (monstersByCollection.get(cid)?.length ?? 0) > 0 ||
         (itemsByCollection.get(cid)?.length ?? 0) > 0 ||
         (entityMinis.companionsByCollection.get(cid)?.length ?? 0) > 0 ||
@@ -910,6 +943,108 @@ export const searchPublicCollections = async ({
       };
     });
 };
+
+export const MONSTERY_MONDAY = "monstery monday";
+
+const monsteryMondayFilter = and(
+  eq(collections.visibility, "public"),
+  eq(collections.featuredCollection, MONSTERY_MONDAY)
+);
+
+export async function getMonsteryMondayOverview() {
+  const db = getDatabase();
+  const [[collectionStats], [monsterStats], latest] = await Promise.all([
+    db
+      .select({ collections: count() })
+      .from(collections)
+      .where(monsteryMondayFilter),
+    db
+      .select({
+        monsters: countDistinct(monsters.id),
+        creators: countDistinct(monsters.creatorId),
+      })
+      .from(collections)
+      .innerJoin(
+        monstersCollections,
+        eq(monstersCollections.collectionId, collections.id)
+      )
+      .innerJoin(monsters, eq(monsters.id, monstersCollections.monsterId))
+      .where(
+        and(
+          monsteryMondayFilter,
+          eq(monsters.visibility, "public"),
+          eq(monsters.hazard, false)
+        )
+      ),
+    searchPublicCollections({
+      featuredCollection: MONSTERY_MONDAY,
+      sortBy: "createdAt",
+      sortDirection: "desc",
+      limit: 1,
+    }),
+  ]);
+  return { ...collectionStats, ...monsterStats, latest: latest[0] ?? null };
+}
+
+export interface FeaturedCollectionAdminRow {
+  id: string;
+  name: string;
+  visibility: string | null;
+  createdAt: string | null;
+  creator: User;
+}
+
+// Includes private collections so admins can see every tagged collection,
+// even ones the public page hides.
+export async function listFeaturedCollections(
+  featuredCollection: string
+): Promise<FeaturedCollectionAdminRow[]> {
+  const rows = await getDatabase()
+    .select()
+    .from(collections)
+    .innerJoin(users, eq(collections.creatorId, users.id))
+    .where(eq(collections.featuredCollection, featuredCollection))
+    .orderBy(desc(collections.createdAt), asc(collections.id));
+  return rows.map((row) => ({
+    id: row.collections.id,
+    name: row.collections.name,
+    visibility: row.collections.visibility,
+    createdAt: row.collections.createdAt,
+    creator: toUserFromRow(row.users),
+  }));
+}
+
+/**
+ * Adds or removes one featured group's tag. A collection tagged for a
+ * different group is left unchanged and reported as a conflict.
+ */
+export async function setCollectionFeatured(
+  collectionId: string,
+  featuredCollection: string,
+  featured: boolean
+): Promise<"updated" | "not-found" | "conflict"> {
+  const db = getDatabase();
+  const updated = await db
+    .update(collections)
+    .set({ featuredCollection: featured ? featuredCollection : null })
+    .where(
+      and(
+        eq(collections.id, collectionId),
+        or(
+          isNull(collections.featuredCollection),
+          eq(collections.featuredCollection, featuredCollection)
+        )
+      )
+    )
+    .returning({ id: collections.id });
+  if (updated.length > 0) return "updated";
+  const [existing] = await db
+    .select({ id: collections.id })
+    .from(collections)
+    .where(eq(collections.id, collectionId))
+    .limit(1);
+  return existing ? "conflict" : "not-found";
+}
 
 export const findPublicCollectionById = async (
   id: string

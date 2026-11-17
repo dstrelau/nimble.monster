@@ -65,7 +65,7 @@ export const TROLL_HUNTER: Monster = {
     },
   ],
   actionPreface: "Choose one.",
-  moreInfo: "Made by SanityWithIn for Monster Monday Week 9: Forest.",
+  moreInfo: "Made by SanityWithIn for Monstery Monday Week 9: Forest.",
   families: [],
   creator: {
     id: "ce3f2e61-62ce-4589-ba8b-da3c93630c0d",

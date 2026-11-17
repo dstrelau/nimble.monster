@@ -16,12 +16,19 @@ export function publicCollectionsInfiniteQueryOptions({
   search = null,
   sort = "-createdAt",
   limit = 12,
+  featuredCollection,
 }: Partial<{
   search?: string | null;
   sort: string;
   limit?: number;
+  featuredCollection?: string;
 }> = {}) {
-  const params = { search, sort, limit };
+  const params = {
+    search,
+    sort,
+    limit,
+    ...(featuredCollection && { featuredCollection }),
+  };
   return {
     queryKey: ["collections", params],
     queryFn: async ({

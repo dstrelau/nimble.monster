@@ -110,12 +110,16 @@ export const collections = sqliteTable(
     createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").default(sql`CURRENT_TIMESTAMP`),
     description: text("description").notNull().default(""),
+    featuredCollection: text("featured_collection"),
     likeCount: integer("like_count").notNull().default(0),
     visibility: text("visibility")
       .$type<CollectionVisibility>()
       .default("public"),
   },
-  (table) => [index("idx_collections_user_id").on(table.creatorId)]
+  (table) => [
+    index("idx_collections_user_id").on(table.creatorId),
+    index("idx_collections_featured_collection").on(table.featuredCollection),
+  ]
 );
 
 // Encounters table

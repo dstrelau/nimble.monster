@@ -141,7 +141,11 @@ const Header = ({ initialCounts }: HeaderProps) => {
                 href={item.href}
                 label={item.label}
                 icon={item.icon}
-                active={pathname === item.href}
+                active={
+                  pathname === item.href ||
+                  (item.href === "/collections" &&
+                    pathname === "/monstery-monday")
+                }
               />
             ))}
           </div>
@@ -190,7 +194,11 @@ const Header = ({ initialCounts }: HeaderProps) => {
                 href={item.href}
                 label={item.label}
                 icon={item.icon}
-                active={pathname === item.href}
+                active={
+                  pathname === item.href ||
+                  (item.href === "/collections" &&
+                    pathname === "/monstery-monday")
+                }
                 onClick={() => setMobileMenuOpen(false)}
               />
             ))}

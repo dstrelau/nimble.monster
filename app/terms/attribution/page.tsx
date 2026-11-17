@@ -34,6 +34,8 @@ export default function TermsPage() {
         permission. Support them on{" "}
         <Link href="https://www.patreon.com/c/paperforge">Patreon</Link>.
       </p>
+      <h2>Daniel F. Walthall</h2>
+      <p>Some artwork copyright Daniel F. Walthall, used with permission.</p>
       <h2>Game Icons</h2>
       <p>
         Icons from https://game-icons.net licensed under CC 3.0 and/or CC0 by
