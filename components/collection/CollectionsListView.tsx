@@ -22,11 +22,16 @@ import { CollectionFilterBar } from "./CollectionFilterBar";
 interface CollectionsListViewProps {
   featuredCollection?: string;
   cardVariant?: "default" | "plate";
+  limit?: number;
+  // Shown below the grid once every page has loaded.
+  endMessage?: React.ReactNode;
 }
 
 export const CollectionsListView: React.FC<CollectionsListViewProps> = ({
   featuredCollection,
   cardVariant = "default",
+  limit,
+  endMessage,
 }) => {
   const [rawSearchQuery, setSearchQuery] = useQueryState("search");
   const [searchQuery] = useDebouncedValue(rawSearchQuery, { wait: 250 });
@@ -41,6 +46,7 @@ export const CollectionsListView: React.FC<CollectionsListViewProps> = ({
         sort: featuredCollection ? "-createdAt" : sortQuery,
         search: featuredCollection ? undefined : searchQuery || undefined,
         featuredCollection,
+        limit,
       })
     );
 
@@ -89,13 +95,15 @@ export const CollectionsListView: React.FC<CollectionsListViewProps> = ({
               )
             )}
           </div>
-          {hasNextPage && (
+          {hasNextPage ? (
             <div ref={loadMoreRef}>
               <LoadMoreButton
                 onClick={() => fetchNextPage()}
                 disabled={isFetching}
               />
             </div>
+          ) : (
+            endMessage
           )}
         </>
       )}

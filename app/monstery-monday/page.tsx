@@ -20,6 +20,7 @@ import { getUserUrl } from "@/lib/utils/url";
 const INTRO =
   "A weekly themed design challenge for the Nimble homebrew community.";
 const CURATOR = "SanityWithIn";
+const PAGE_SIZE = 18;
 
 export const metadata: Metadata = {
   title: `Monstery Monday - ${SITE_NAME}`,
@@ -40,7 +41,7 @@ function eyeMask(layer: "ink" | "fill"): CSSProperties {
 }
 
 export default async function MonsteryMondayPage() {
-  const params = { featuredCollection: MONSTERY_MONDAY };
+  const params = { featuredCollection: MONSTERY_MONDAY, limit: PAGE_SIZE };
   const queryClient = getQueryClient();
   const [overview] = await Promise.all([
     getMonsteryMondayOverview(),
@@ -205,6 +206,21 @@ export default async function MonsteryMondayPage() {
           <CollectionsListView
             featuredCollection={MONSTERY_MONDAY}
             cardVariant="plate"
+            limit={PAGE_SIZE}
+            endMessage={
+              <p className="text-center text-muted-foreground">
+                Early pre-Nexus Monstery Monday content can be found in the{" "}
+                <a
+                  href="https://drive.google.com/drive/folders/1bTFxGfeYQIw8UlW-trwGuTdZHXCc1RXU"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-4"
+                >
+                  Google Drive
+                </a>
+                .
+              </p>
+            }
           />
         </HydrationBoundary>
       </section>
