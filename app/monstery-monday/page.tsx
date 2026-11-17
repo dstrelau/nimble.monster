@@ -16,10 +16,14 @@ import { cn } from "@/lib/utils";
 import { SITE_NAME } from "@/lib/utils/branding";
 import { getUserUrl } from "@/lib/utils/url";
 
+// Shared by the page intro and the metadata description so they stay in sync.
+const INTRO =
+  "A weekly themed design challenge for the Nimble homebrew community.";
+const CURATOR = "SanityWithIn";
+
 export const metadata: Metadata = {
   title: `Monstery Monday - ${SITE_NAME}`,
-  description:
-    "Explore the community’s weekly Nimble design challenges and collections.",
+  description: `${INTRO} Curated by ${CURATOR}.`,
 };
 
 // Safari still needs the -webkit- mask properties, so set both like InkArt.
@@ -88,13 +92,12 @@ export default async function MonsteryMondayPage() {
             Monstery Monday
           </h1>
           <p className="max-w-md">
-            A weekly themed design challenge for the Nimble homebrew community.
-            Curated by{" "}
+            {INTRO} Curated by{" "}
             <Link
               href="/u/sanitywithin"
               className="underline underline-offset-4"
             >
-              SanityWithIn
+              {CURATOR}
             </Link>
             .
           </p>
