@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { saveCollection } from "@/app/%5Factions/_editors/contract";
@@ -31,7 +31,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { call } from "@/lib/contract";
@@ -80,6 +82,8 @@ interface Props {
   ) => Promise<void>;
   isCreating?: boolean;
   submitLabel?: string;
+  /** Current Monstery Monday membership; omit to hide the control. */
+  monsteryMonday?: boolean;
 }
 
 export function CreateEditCollection({
@@ -87,10 +91,13 @@ export function CreateEditCollection({
   onSubmit,
   isCreating = false,
   submitLabel = "Save",
+  monsteryMonday,
 }: Props) {
   const router = useRouter();
   const { data: session } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [featured, setFeatured] = useState(monsteryMonday);
+  const monsteryMondayId = useId();
 
   const [selectedMonsters, setSelectedMonsters] = useState<
     Map<string, BestiaryEntry | BestiaryEntryMini>
@@ -245,6 +252,7 @@ export function CreateEditCollection({
     : watchedValues.name !== collection.name ||
       watchedValues.description !== (collection.description || "") ||
       watchedValues.visibility !== collection.visibility ||
+      featured !== monsteryMonday ||
       !arraysEqual(
         [...selectedMonsterIds],
         collection.monsters.map((m) => m.id)
@@ -312,6 +320,7 @@ export function CreateEditCollection({
         spellSchoolIds: currentSpellSchools.map((entity) => entity.id),
         classIds: currentClasses.map((entity) => entity.id),
         customRuleIds: currentCustomRules.map((entity) => entity.id),
+        monsteryMonday: featured,
       });
       router.push(getCollectionUrl(result));
     } catch (error) {
@@ -424,6 +433,31 @@ export function CreateEditCollection({
                 />
               )}
             />
+
+            {featured !== undefined && (
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id={monsteryMondayId}
+                    checked={featured}
+                    onCheckedChange={setFeatured}
+                  />
+                  <Label
+                    htmlFor={monsteryMondayId}
+                    className="text-sm font-medium"
+                  >
+                    Monstery Monday
+                  </Label>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {featured
+                    ? watchedValues.visibility === "public"
+                      ? "This collection appears on the Monstery Monday page."
+                      : "This collection appears on the Monstery Monday page once it is public."
+                    : "This collection is not part of Monstery Monday."}
+                </div>
+              </div>
+            )}
 
             <Separator />
             <Tabs defaultValue="companions">

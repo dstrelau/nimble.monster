@@ -95,6 +95,19 @@ export const userFeatureFlags = sqliteTable(
   (table) => [primaryKey({ columns: [table.userId, table.feature] })]
 );
 
+// Per-user permissions granted by admins. A row grants the permission.
+export const userPermissions = sqliteTable(
+  "user_permissions",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    permission: text("permission").notNull(),
+    createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+  },
+  (table) => [primaryKey({ columns: [table.userId, table.permission] })]
+);
+
 // Collections table
 export const collections = sqliteTable(
   "collections",

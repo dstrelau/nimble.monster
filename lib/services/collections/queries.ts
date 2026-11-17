@@ -1014,6 +1014,23 @@ export async function listFeaturedCollections(
   }));
 }
 
+export async function isCollectionFeatured(
+  collectionId: string,
+  featuredCollection: string
+): Promise<boolean> {
+  const [row] = await getDatabase()
+    .select({ id: collections.id })
+    .from(collections)
+    .where(
+      and(
+        eq(collections.id, collectionId),
+        eq(collections.featuredCollection, featuredCollection)
+      )
+    )
+    .limit(1);
+  return !!row;
+}
+
 /**
  * Adds or removes one featured group's tag. A collection tagged for a
  * different group is left unchanged and reported as a conflict.

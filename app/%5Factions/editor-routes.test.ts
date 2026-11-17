@@ -4,7 +4,9 @@ const {
   mockAuth,
   mockCreateCollection,
   mockCreateEncounter,
+  mockHasPermission,
   mockRevalidatePath,
+  mockSetCollectionFeatured,
   mockTelemetryErrors,
   mockUpdateCollection,
   mockUpdateEncounter,
@@ -12,7 +14,9 @@ const {
   mockAuth: vi.fn(),
   mockCreateCollection: vi.fn(),
   mockCreateEncounter: vi.fn(),
+  mockHasPermission: vi.fn(),
   mockRevalidatePath: vi.fn(),
+  mockSetCollectionFeatured: vi.fn(),
   mockTelemetryErrors: vi.fn(),
   mockUpdateCollection: vi.fn(),
   mockUpdateEncounter: vi.fn(),
@@ -24,6 +28,13 @@ vi.mock("@/lib/db", () => ({
   createEncounter: mockCreateEncounter,
   updateCollection: mockUpdateCollection,
   updateEncounter: mockUpdateEncounter,
+}));
+vi.mock("@/lib/services/permissions", () => ({
+  hasPermission: mockHasPermission,
+}));
+vi.mock("@/lib/services/collections/queries", () => ({
+  MONSTERY_MONDAY: "monstery monday",
+  setCollectionFeatured: mockSetCollectionFeatured,
 }));
 vi.mock("next/cache", () => ({ revalidatePath: mockRevalidatePath }));
 vi.mock("@/lib/telemetry", () => ({
@@ -171,6 +182,52 @@ describe("encounter and collection save routes", () => {
       ["/my/collections"],
       ["/collections/[id]", "page"],
     ]);
+    expect(mockSetCollectionFeatured).not.toHaveBeenCalled();
+  });
+
+  it.each([true, false])(
+    "lets permitted users set Monstery Monday to %s",
+    async (monsteryMonday) => {
+      mockHasPermission.mockResolvedValue(true);
+      mockUpdateCollection.mockResolvedValue({
+        id,
+        name: collectionInput.name,
+      });
+      mockSetCollectionFeatured.mockResolvedValue("updated");
+
+      const response = await saveCollectionPost(
+        request({ ...collectionInput, id, monsteryMonday })
+      );
+
+      expect(response.status).toBe(200);
+      expect(mockHasPermission).toHaveBeenCalledWith(
+        "owner",
+        "monstery-monday"
+      );
+      expect(mockUpdateCollection).toHaveBeenCalledWith({
+        ...collectionInput,
+        id,
+        discordId: "discord-owner",
+      });
+      expect(mockSetCollectionFeatured).toHaveBeenCalledWith(
+        id,
+        "monstery monday",
+        monsteryMonday
+      );
+      expect(mockRevalidatePath).toHaveBeenCalledWith("/monstery-monday");
+    }
+  );
+
+  it("rejects Monstery Monday changes from users without the permission", async () => {
+    mockHasPermission.mockResolvedValue(false);
+
+    const response = await saveCollectionPost(
+      request({ ...collectionInput, id, monsteryMonday: false })
+    );
+
+    expect(response.status).toBe(403);
+    expect(mockUpdateCollection).not.toHaveBeenCalled();
+    expect(mockSetCollectionFeatured).not.toHaveBeenCalled();
   });
 
   it("separates malformed JSON from domain schema failures", async () => {

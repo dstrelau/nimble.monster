@@ -32,6 +32,8 @@ export interface SaveCollectionInput {
   spellSchoolIds: string[];
   classIds: string[];
   customRuleIds: string[];
+  /** Requires the monstery-monday permission; omit to leave unchanged. */
+  monsteryMonday?: boolean;
 }
 
 export interface EditorMutationResult {

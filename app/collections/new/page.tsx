@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { hasPermission } from "@/lib/services/permissions";
 import { HydratedCollectionEditor } from "../HydratedCollectionEditor";
 import { NewCollection } from "./NewCollectionClient";
 
@@ -12,7 +13,11 @@ export default async function NewCollectionPage() {
 
   return (
     <HydratedCollectionEditor>
-      <NewCollection />
+      <NewCollection
+        canMarkMonsteryMonday={
+          await hasPermission(session.user.id, "monstery-monday")
+        }
+      />
     </HydratedCollectionEditor>
   );
 }

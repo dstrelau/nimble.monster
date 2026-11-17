@@ -3,7 +3,11 @@
 import { CreateEditCollection } from "@/app/collections/CreateEditCollection";
 import { type Collection, UNKNOWN_USER } from "@/lib/types";
 
-export function NewCollection() {
+interface NewCollectionProps {
+  canMarkMonsteryMonday: boolean;
+}
+
+export function NewCollection({ canMarkMonsteryMonday }: NewCollectionProps) {
   const emptyCollection: Collection = {
     id: "",
     creator: UNKNOWN_USER,
@@ -30,6 +34,7 @@ export function NewCollection() {
         collection={emptyCollection}
         isCreating={true}
         submitLabel="Create"
+        monsteryMonday={canMarkMonsteryMonday ? false : undefined}
       />
     </div>
   );

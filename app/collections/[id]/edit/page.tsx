@@ -1,6 +1,11 @@
 import { notFound, permanentRedirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
+import {
+  isCollectionFeatured,
+  MONSTERY_MONDAY,
+} from "@/lib/services/collections/queries";
+import { hasPermission } from "@/lib/services/permissions";
 import { deslugify, slugify } from "@/lib/utils/slug";
 import { getCollectionEditUrl } from "@/lib/utils/url";
 import { CreateEditCollection } from "../../CreateEditCollection";
@@ -24,10 +29,19 @@ export default async function EditCollectionPage({
     return permanentRedirect(getCollectionEditUrl(collection));
   }
 
+  const monsteryMonday =
+    collection.creator.id === session.user.id &&
+    (await hasPermission(session.user.id, "monstery-monday"))
+      ? await isCollectionFeatured(collection.id, MONSTERY_MONDAY)
+      : undefined;
+
   return (
     <HydratedCollectionEditor>
       <div>
-        <CreateEditCollection collection={collection} />
+        <CreateEditCollection
+          collection={collection}
+          monsteryMonday={monsteryMonday}
+        />
       </div>
     </HydratedCollectionEditor>
   );

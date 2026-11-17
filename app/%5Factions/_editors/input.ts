@@ -40,4 +40,5 @@ export const saveCollectionSchema = sharedEditorSchema.extend({
   spellSchoolIds: uuidArray,
   classIds: uuidArray,
   customRuleIds: uuidArray,
+  monsteryMonday: z.boolean().optional(),
 });

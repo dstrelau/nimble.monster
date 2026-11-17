@@ -13,6 +13,7 @@ const adminLinks = [
   { href: "/admin/paperforge", label: "Paperforge" },
   { href: "/admin/reports", label: "Reports" },
   { href: "/admin/feature-flags", label: "Feature Flags" },
+  { href: "/admin/permissions", label: "Permissions" },
   { href: "/admin/monstery-monday", label: "Monstery Monday" },
 ];
 

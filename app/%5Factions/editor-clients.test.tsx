@@ -341,4 +341,35 @@ describe("collection editor mutation", () => {
     expect(name).toHaveValue("Unsaved Collection");
     expect(mockPush).not.toHaveBeenCalled();
   });
+
+  it("offers Monstery Monday only when allowed and sends the choice", async () => {
+    const { unmount } = render(
+      <CreateEditCollection collection={emptyCollection} isCreating />
+    );
+    expect(
+      screen.queryByRole("switch", { name: "Monstery Monday" })
+    ).not.toBeInTheDocument();
+    unmount();
+
+    vi.mocked(call).mockReturnValueOnce(new Promise(() => {}));
+    render(
+      <CreateEditCollection
+        collection={emptyCollection}
+        isCreating
+        monsteryMonday={false}
+      />
+    );
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Week 12" },
+    });
+    fireEvent.click(screen.getByRole("switch", { name: "Monstery Monday" }));
+    fireEvent.click(screen.getByRole("button", { name: "Create" }));
+
+    await waitFor(() =>
+      expect(call).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ name: "Week 12", monsteryMonday: true })
+      )
+    );
+  });
 });
