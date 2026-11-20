@@ -30,7 +30,7 @@ describe("TextFormattingLab", () => {
 
     expect(
       container.querySelectorAll("[data-formatting-fixture]")
-    ).toHaveLength(10);
+    ).toHaveLength(11);
     expect(container.querySelectorAll("[data-compact-component]")).toHaveLength(
       4
     );
@@ -53,6 +53,6 @@ describe("TextFormattingLab", () => {
     ).toBeInTheDocument();
     expect(
       container.querySelectorAll("[data-formatting-fixture] pre")
-    ).toHaveLength(10);
+    ).toHaveLength(11);
   });
 });

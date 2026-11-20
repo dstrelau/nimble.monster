@@ -13,6 +13,7 @@ describe("text-formatting fixtures", () => {
       "dice",
       "conditions",
       "lists",
+      "links",
       "headings",
       "combined",
       "malformed",

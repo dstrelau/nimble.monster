@@ -74,6 +74,13 @@ export const FORMATTING_FIXTURES: FormattingFixture[] = [
     ].join("\n"),
   },
   {
+    id: "links",
+    name: "Markdown links",
+    description: "External, internal, formatted, and unsafe link syntax.",
+    content:
+      "Read the [official Nimble site](https://nimblerpg.com) or the [combat rules](/rules/combat).\n\nA link with [**bold** text and 2d6](https://example.com) stays one link. An unsafe [script link](javascript:alert(1)) stays plain text.",
+  },
+  {
     id: "headings",
     name: "Heading hierarchy",
     description: "Heading levels mixed with paragraphs and lists.",

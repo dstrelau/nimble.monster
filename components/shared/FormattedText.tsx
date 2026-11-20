@@ -245,10 +245,14 @@ function diceNotationPlugin(md: MarkdownIt) {
       if (!blockToken.children) continue;
 
       const newChildren = [];
+      // Dice inside a Markdown link stay text so a click only follows the link.
+      let linkDepth = 0;
 
       for (let j = 0; j < blockToken.children.length; j++) {
         const token = blockToken.children[j];
-        if (token.type === "text") {
+        if (token.type === "link_open") linkDepth++;
+        if (token.type === "link_close") linkDepth--;
+        if (token.type === "text" && linkDepth === 0) {
           const split = splitTextToken(token.content, state.Token);
           newChildren.push(...split);
         } else {
@@ -267,8 +271,12 @@ function entityLinkPlugin(md: MarkdownIt) {
   md.core.ruler.before("dice", "entity_url", (state) => {
     for (const block of state.tokens) {
       if (block.type !== "inline" || !block.children) continue;
+      // Leave URLs inside a Markdown link's text alone; links cannot nest.
+      let linkDepth = 0;
       block.children = block.children.flatMap((token) => {
-        if (token.type !== "text") return [token];
+        if (token.type === "link_open") linkDepth++;
+        if (token.type === "link_close") linkDepth--;
+        if (token.type !== "text" || linkDepth > 0) return [token];
         const matches = md.linkify.match(token.content) ?? [];
         const children = [];
         let lastIndex = 0;
@@ -426,6 +434,7 @@ function createMarkdown(enableHeadings = false) {
     "emphasis",
     "newline",
     "list",
+    "link",
     ...(enableHeadings ? ["heading"] : []),
   ]);
   conditionPlugin(markdown);
@@ -455,6 +464,29 @@ function renderTokens(
       if (token.nesting === -1) break;
       if (token.nesting === 1) {
         const nested = renderLevel();
+        if (token.type === "link_open") {
+          // markdown-it has already rejected javascript:, vbscript:, file:, and data: URLs.
+          const href = String(token.attrGet("href") ?? "");
+          const external = /^[a-z][a-z0-9+.-]*:/i.test(href);
+          children.push(
+            noInteractive ? (
+              <span key={key}>{nested}</span>
+            ) : (
+              <a
+                key={key}
+                href={href}
+                className="underline underline-offset-2"
+                {...(external && {
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                })}
+              >
+                {nested}
+              </a>
+            )
+          );
+          continue;
+        }
         children.push(
           createElement(
             token.hidden ? Fragment : token.tag,

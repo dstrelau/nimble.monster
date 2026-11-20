@@ -403,6 +403,70 @@ describe("FormattedText", () => {
     expect(container).toHaveTextContent("incomplete [ syntax and");
   });
 
+  it("renders Markdown links with formatting, leaving dice in link text plain", () => {
+    render(
+      <FormattedText
+        content="Read [the **guide** for 2d6](https://example.com/guide?a=1&b=2) or [rules](/rules/combat)."
+        conditions={[]}
+      />
+    );
+
+    const external = screen.getByRole("link", { name: "the guide for 2d6" });
+    expect(external).toHaveAttribute(
+      "href",
+      "https://example.com/guide?a=1&b=2"
+    );
+    expect(external).toHaveAttribute("target", "_blank");
+    expect(external).toHaveAttribute("rel", "noopener noreferrer");
+    expect(external.querySelector("strong")).toHaveTextContent("guide");
+    expect(
+      external.querySelector("[data-dice-notation]")
+    ).not.toBeInTheDocument();
+
+    const internal = screen.getByRole("link", { name: "rules" });
+    expect(internal).toHaveAttribute("href", "/rules/combat");
+    expect(internal).not.toHaveAttribute("target");
+  });
+
+  it("does not link unsafe Markdown link URLs", () => {
+    const { container } = render(
+      <FormattedText
+        content="[click](javascript:alert(1)) [img](data:text/html,hi)"
+        conditions={[]}
+      />
+    );
+
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(container).toHaveTextContent("[click](javascript:alert(1))");
+  });
+
+  it("renders Markdown link text without a link in noninteractive output", () => {
+    const { container } = render(
+      <FormattedText
+        content="[guide](https://example.com)"
+        conditions={[]}
+        noInteractive
+      />
+    );
+
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(container).toHaveTextContent(/^guide$/);
+  });
+
+  it("does not nest entity URL mentions inside Markdown link text", () => {
+    render(
+      <FormattedText
+        content="[https://nimble.nexus/items/sword-0000000000000000000000000a](https://example.com)"
+        conditions={[]}
+      />
+    );
+
+    const links = screen.getAllByRole("link");
+    expect(links).toHaveLength(1);
+    expect(links[0]).toHaveAttribute("href", "https://example.com");
+    expect(screen.queryByText("Test Entity")).not.toBeInTheDocument();
+  });
+
   it("should handle empty content", () => {
     const { container } = render(
       <FormattedText content="" conditions={mockConditions} />
