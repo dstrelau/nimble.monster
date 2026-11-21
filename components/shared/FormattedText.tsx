@@ -267,7 +267,7 @@ function diceNotationPlugin(md: MarkdownIt) {
 
 // Custom markdown-it plugin for entity link parsing
 function entityLinkPlugin(md: MarkdownIt) {
-  // Parse URLs before dice notation so dice-like text in a slug stays intact.
+  // Parse raw URLs before dice notation so dice-like text in a URL stays intact.
   md.core.ruler.before("dice", "entity_url", (state) => {
     for (const block of state.tokens) {
       if (block.type !== "inline" || !block.children) continue;
@@ -282,18 +282,31 @@ function entityLinkPlugin(md: MarkdownIt) {
         let lastIndex = 0;
 
         for (const match of matches) {
+          // Only explicit http(s) URLs; skip emails and scheme-less domains.
           if (!/^https?:\/\//i.test(match.raw)) continue;
           const reference = parseEntityUrl(match.raw);
-          if (!reference) continue;
+          const href = md.normalizeLink(match.url);
+          if (!reference && !md.validateLink(href)) continue;
 
           if (match.index > lastIndex) {
             const text = new state.Token("text", "", 0);
             text.content = token.content.slice(lastIndex, match.index);
             children.push(text);
           }
-          const entity = new state.Token("entity_link", "", 0);
-          entity.meta = reference;
-          children.push(entity);
+          if (reference) {
+            const entity = new state.Token("entity_link", "", 0);
+            entity.meta = reference;
+            children.push(entity);
+          } else {
+            const open = new state.Token("link_open", "a", 1);
+            open.attrs = [
+              ["href", href],
+              ["title", match.raw],
+            ];
+            const text = new state.Token("text", "", 0);
+            text.content = shortenUrl(match.url);
+            children.push(open, text, new state.Token("link_close", "a", -1));
+          }
           lastIndex = match.lastIndex;
         }
 
@@ -389,6 +402,14 @@ function entityLinkPlugin(md: MarkdownIt) {
   });
 }
 
+// Show a raw URL as its host and path, trimmed to a readable length.
+function shortenUrl(value: string) {
+  const url = new URL(value);
+  const path = url.pathname === "/" ? "" : url.pathname;
+  const display = `${url.host.replace(/^www\./, "")}${path}${url.search}${url.hash}`;
+  return display.length > 40 ? `${display.slice(0, 39)}…` : display;
+}
+
 function parseEntityUrl(value: string) {
   try {
     const url = new URL(value);
@@ -468,6 +489,7 @@ function renderTokens(
           // markdown-it has already rejected javascript:, vbscript:, file:, and data: URLs.
           const href = String(token.attrGet("href") ?? "");
           const external = /^[a-z][a-z0-9+.-]*:/i.test(href);
+          const title = token.attrGet("title");
           children.push(
             noInteractive ? (
               <span key={key}>{nested}</span>
@@ -475,6 +497,7 @@ function renderTokens(
               <a
                 key={key}
                 href={href}
+                title={title === null ? undefined : String(title)}
                 className="underline underline-offset-2"
                 {...(external && {
                   target: "_blank",

@@ -467,6 +467,66 @@ describe("FormattedText", () => {
     expect(screen.queryByText("Test Entity")).not.toBeInTheDocument();
   });
 
+  it("links raw http(s) URLs with a shortened display and the full URL as a tooltip", () => {
+    const url =
+      "https://www.example.com/guides/combat-rules-for-large-monsters?page=2d6";
+    render(
+      <FormattedText content={`See ${url}, then roll 1d8.`} conditions={[]} />
+    );
+
+    const link = screen.getByRole("link");
+    expect(link).toHaveAttribute("href", url);
+    expect(link).toHaveAttribute("title", url);
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveTextContent(
+      /^example\.com\/guides\/combat-rules-for-lar…$/
+    );
+    expect(link.querySelector("[data-dice-notation]")).not.toBeInTheDocument();
+    expect(screen.getByText("1d8")).toBeInTheDocument();
+  });
+
+  it("shows short raw URLs without truncation", () => {
+    render(<FormattedText content="http://example.com/" conditions={[]} />);
+    expect(screen.getByRole("link")).toHaveTextContent(/^example\.com$/);
+  });
+
+  it("does not link emails, scheme-less domains, or raw URLs in noninteractive output", () => {
+    const { container } = render(
+      <FormattedText
+        content="Mail me@example.com or visit www.example.com and example.org."
+        conditions={[]}
+      />
+    );
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(container).toHaveTextContent(
+      "Mail me@example.com or visit www.example.com and example.org."
+    );
+    cleanup();
+
+    const { container: staticOutput } = render(
+      <FormattedText
+        content="https://example.com/a"
+        conditions={[]}
+        noInteractive
+      />
+    );
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(staticOutput).toHaveTextContent(/^example\.com\/a$/);
+  });
+
+  it("does not auto-link a raw URL inside Markdown link text", () => {
+    render(
+      <FormattedText
+        content="[https://example.org/x](https://example.com)"
+        conditions={[]}
+      />
+    );
+    const links = screen.getAllByRole("link");
+    expect(links).toHaveLength(1);
+    expect(links[0]).toHaveAttribute("href", "https://example.com");
+    expect(links[0]).toHaveTextContent("https://example.org/x");
+  });
+
   it("should handle empty content", () => {
     const { container } = render(
       <FormattedText content="" conditions={mockConditions} />
@@ -748,22 +808,39 @@ describe("FormattedText - Entity Links", () => {
   it.each([
     "https://example.com/items/sword-0000000000000000000000000a",
     "https://nimble.nexus.evil.com/items/sword-0000000000000000000000000a",
-    "https://nimble.nexus@evil.com/items/sword-0000000000000000000000000a",
-    "https://evil.com@nimble.nexus/items/sword-0000000000000000000000000a",
     "https://nimble.nexus:444/items/sword-0000000000000000000000000a",
     "https://nimble.nexus/items",
     "https://nimble.nexus/items/new",
     "https://nimble.nexus/items/sword-0000000000000000000000000a/edit",
     "https://nimble.nexus/items/not-a-valid-id",
     "https://nimble.nexus/api/items/0000000000000000000000000a",
-    "/items/sword-0000000000000000000000000a",
-  ])("leaves unsupported URLs unchanged: %s", (content) => {
-    const { container } = render(
-      <FormattedText content={content} conditions={[]} />
-    );
-    expect(container).toHaveTextContent(content);
+  ])("links unsupported URLs as plain external links: %s", (content) => {
+    render(<FormattedText content={content} conditions={[]} />);
+    const link = screen.getByRole("link");
+    expect(link).toHaveAttribute("href", content);
+    expect(link).toHaveAttribute("title", content);
     expect(useEntityQuery).not.toHaveBeenCalled();
   });
+
+  it.each([
+    "https://nimble.nexus@evil.com/items/sword-0000000000000000000000000a",
+    "https://evil.com@nimble.nexus/items/sword-0000000000000000000000000a",
+  ])("does not resolve URLs with credentials as entities: %s", (content) => {
+    render(<FormattedText content={content} conditions={[]} />);
+    expect(useEntityQuery).not.toHaveBeenCalled();
+  });
+
+  it.each(["/items/sword-0000000000000000000000000a"])(
+    "leaves relative URLs unchanged: %s",
+    (content) => {
+      const { container } = render(
+        <FormattedText content={content} conditions={[]} />
+      );
+      expect(container).toHaveTextContent(content);
+      expect(screen.queryByRole("link")).not.toBeInTheDocument();
+      expect(useEntityQuery).not.toHaveBeenCalled();
+    }
+  );
 
   it.skip("should parse basic entity link syntax", () => {
     // TODO: Fix test - entity links require client-side context (useIsClient, QueryClient)

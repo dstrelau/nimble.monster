@@ -76,9 +76,10 @@ export const FORMATTING_FIXTURES: FormattingFixture[] = [
   {
     id: "links",
     name: "Markdown links",
-    description: "External, internal, formatted, and unsafe link syntax.",
+    description:
+      "Markdown, raw URL, internal, formatted, and unsafe link syntax.",
     content:
-      "Read the [official Nimble site](https://nimblerpg.com) or the [combat rules](/rules/combat).\n\nA link with [**bold** text and 2d6](https://example.com) stays one link. An unsafe [script link](javascript:alert(1)) stays plain text.",
+      "Read the [official Nimble site](https://nimblerpg.com) or the [combat rules](/rules/combat).\n\nA link with [**bold** text and 2d6](https://example.com) stays one link. An unsafe [script link](javascript:alert(1)) stays plain text.\n\nA raw URL like https://www.example.com/guides/combat-rules-for-large-monsters?page=2 is shortened, while me@example.com and www.example.com stay plain text.",
   },
   {
     id: "headings",
