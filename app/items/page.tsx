@@ -6,7 +6,8 @@ import { getQueryClient } from "@/lib/queryClient";
 import * as items from "@/lib/services/items/repository";
 import { itemsService } from "@/lib/services/items/service";
 import { PaginateItemsSortOptions } from "@/lib/services/items/types";
-import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
+import { sourcesQueryOptions } from "@/lib/services/sources";
+import { listAllSources } from "@/lib/services/sources/repository";
 import { getItemUrl } from "@/lib/utils/url";
 import { publicItemsInfiniteQueryOptions } from "./actions";
 

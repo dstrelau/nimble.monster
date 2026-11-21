@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import type { ListCollectionsParams } from "./queries";
 import * as queries from "./queries";

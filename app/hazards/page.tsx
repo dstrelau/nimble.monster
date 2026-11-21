@@ -7,10 +7,8 @@ import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { paginatePublicHazards } from "@/lib/services/hazards";
 import { PaginateMonstersSortOptions } from "@/lib/services/monsters/types";
-import {
-  listSourcesForEntityType,
-  sourcesForEntityTypeQueryOptions,
-} from "@/lib/services/sources";
+import { sourcesForEntityTypeQueryOptions } from "@/lib/services/sources";
+import { listSourcesForEntityType } from "@/lib/services/sources/repository";
 
 const searchParamsSchema = z.object({
   sort: z.enum(PaginateMonstersSortOptions).default("-createdAt"),

@@ -7,10 +7,8 @@ import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { monstersService } from "@/lib/services/monsters";
 import { PaginateMonstersSortOptions } from "@/lib/services/monsters/types";
-import {
-  listSourcesForEntityType,
-  sourcesForEntityTypeQueryOptions,
-} from "@/lib/services/sources";
+import { sourcesForEntityTypeQueryOptions } from "@/lib/services/sources";
+import { listSourcesForEntityType } from "@/lib/services/sources/repository";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { publicMonstersInfiniteQueryOptions } from "./hooks";
 

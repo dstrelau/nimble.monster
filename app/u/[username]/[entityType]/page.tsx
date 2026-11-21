@@ -27,7 +27,8 @@ import { paginatePublicHazards } from "@/lib/services/hazards";
 import { itemsService } from "@/lib/services/items";
 import { monstersService } from "@/lib/services/monsters";
 import { MonsterRoleOptions } from "@/lib/services/monsters/types";
-import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
+import { sourcesQueryOptions } from "@/lib/services/sources";
+import { listAllSources } from "@/lib/services/sources/repository";
 import { MY_LIBRARY_ITEMS } from "@/lib/types/entity-links";
 import { SITE_NAME } from "@/lib/utils/branding";
 

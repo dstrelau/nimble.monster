@@ -5,7 +5,8 @@ import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid"
 import { auth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/queryClient";
 import { monstersService } from "@/lib/services/monsters";
-import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
+import { sourcesQueryOptions } from "@/lib/services/sources";
+import { listAllSources } from "@/lib/services/sources/repository";
 import { ENTITY_TYPE_ICONS } from "@/lib/types/entity-links";
 import { myMonstersInfiniteQueryOptions } from "./hooks";
 

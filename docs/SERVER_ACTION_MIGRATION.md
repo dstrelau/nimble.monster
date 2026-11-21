@@ -130,14 +130,15 @@ invalidation. They are a distinct, high-complexity migration wave.
 
 ### Repository directives
 
-Eight files under `lib/services/*/repository.ts` use `"use server"` as a
-server-only marker. That directive means "make exported async functions Server
-Actions," not merely "keep this code off the client." After browser callers
-have been removed, select a real server-only boundary and replace these
-directives. The choice must work for both Next.js and CLI tooling such as seed
-scripts; adding `import "server-only"` indiscriminately may break non-Next
-entrypoints. Audit and test the import graph so client modules cannot pull
-database code into their bundles.
+Four files under `lib/services/*/repository.ts` (ancestries, backgrounds, items,
+monsters) still use `"use server"` as a server-only marker. That directive means
+"make exported async functions Server Actions," not merely "keep this code off
+the client." After browser callers have been removed, select a real server-only
+boundary and replace these directives. `import "server-only"` is the chosen
+boundary: Next.js handles it (client build error), Vitest aliases it, but plain
+Node/jiti CLI entrypoints such as the seed scripts fail on it, so it can only
+replace a marker whose module no CLI imports. Audit and test the import graph
+so client modules cannot pull database code into their bundles.
 
 ## Required internal-route contract
 
@@ -1497,7 +1498,43 @@ contract compatibility window that a future migration must preserve.
 | Private/UI-specific browser reads | Partially complete | Picker, reaction summary, creator/viewer and official conditions, navigation counts and [report status reads](https://ampcode.com/threads/T-01a189d8-7afb-75e0-9d07-35be1c47103c) use stable routes. Remaining operations follow measured traffic priority. |
 | Admin workflows | Partially complete | Award-entity search, award CRUD/associations and source CRUD use stable admin-only routes; the upload and 14 preview commit/cancel actions remain |
 | Auth/framework cleanup | Partially complete | Shared Discord login initiation uses stable `/_actions/signIn`; Auth.js callback/session and the existing header auth controls remain unchanged |
-| Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; seven repository markers remain |
+| Repository directives | Partially complete | Encounter marker retired after its last browser caller migrated; collection, family and source markers replaced by `import "server-only"`; four repository markers (ancestry, background, item, monster; 65 exports) remain, blocked on browser-reachable imports and the admin upload policy questions |
+
+### Repository server-only boundary: collections, families, sources — November 2026
+
+- Replaced `"use server"` with `import "server-only"` in
+  `lib/services/{collections,families,sources}/repository.ts` (5 exports:
+  2 + 1 + 2). Repository ratchet **7 files / 70 exports → 4 files / 65 exports**;
+  the application count (15, all in `app/admin/actions.ts`) is unchanged. No
+  SQL, route, HTTP, UI or storage behavior changed, and the admin upload and
+  preview actions were not touched.
+- Why `server-only`: Next.js resolves it itself. It is an inert module in
+  server compilers and a build error in client compilers, so it positively
+  guards the browser boundary without making the exports callable. The package
+  is not installed; plain Node (seed scripts through jiti, `node tools/*.ts`)
+  fails with `Cannot find module 'server-only'` if it ever reaches one of these
+  files, so a CLI entrypoint must not import a `server-only` module. Vitest maps
+  the specifier to the inert `test/server-only.ts`.
+- Audit: an esbuild browser graph (every `"use client"` file as an entry,
+  remaining `"use server"` files stubbed) found collections and families
+  unreachable from any client entry. Sources was reachable only through
+  `sources/index.ts` re-exporting the repository (`SourceFilter` > index >
+  repository). The index no longer re-exports it, and the nine server callers
+  (eight pages and the collection editor hydrator; both `/_actions` source
+  routes already did) import `@/lib/services/sources/repository` directly. A re-run shows
+  all three modules unreachable from the browser. A Node graph of `tools/*`,
+  `instrumentation*`, `proxy.ts` and `drizzle.config.ts` reaches none of them;
+  seed scripts only import the ancestry, background, item and monster markers.
+- Not converted: the ancestry, background, item and monster repositories are
+  imported by browser-reachable service/index modules (for example
+  `BuildItemView > items/index > repository`) and by the seed scripts, and the
+  admin preview pages call monster/ancestry/background repositories that belong
+  to the unresolved upload policy (bearer vs uploader ownership, replay,
+  atomicity, limits). Those need a separate import-graph split, not just a marker swap.
+- A future production check should hit the retained flows (home featured
+  family, public collection API, source filters/`/_actions/getAllSources` and
+  `getSourcesForEntityType`) and inspect sanitized compiled action manifests to
+  confirm no mapping remains for these modules, without printing encryption keys.
 
 ### Admin award and source writes — November 2026
 

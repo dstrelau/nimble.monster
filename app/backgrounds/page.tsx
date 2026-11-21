@@ -2,10 +2,8 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { PaginatedBackgroundGrid } from "@/components/background/PaginatedBackgroundGrid";
 import { getQueryClient } from "@/lib/queryClient";
 import { backgroundsService } from "@/lib/services/backgrounds/service";
-import {
-  listSourcesForEntityType,
-  sourcesForEntityTypeQueryOptions,
-} from "@/lib/services/sources";
+import { sourcesForEntityTypeQueryOptions } from "@/lib/services/sources";
+import { listSourcesForEntityType } from "@/lib/services/sources/repository";
 import { publicBackgroundsInfiniteQueryOptions } from "./hooks";
 
 export default async function BackgroundsPage() {

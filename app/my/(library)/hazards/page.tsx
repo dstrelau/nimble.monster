@@ -7,7 +7,8 @@ import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid"
 import { auth } from "@/lib/auth";
 import { getQueryClient } from "@/lib/queryClient";
 import { paginateMyHazards } from "@/lib/services/hazards";
-import { listAllSources, sourcesQueryOptions } from "@/lib/services/sources";
+import { sourcesQueryOptions } from "@/lib/services/sources";
+import { listAllSources } from "@/lib/services/sources/repository";
 
 export default async function MyHazardsPage() {
   const session = await auth();

@@ -2,10 +2,8 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { PaginatedAncestryGrid } from "@/components/ancestry/PaginatedAncestryGrid";
 import { getQueryClient } from "@/lib/queryClient";
 import { ancestriesService } from "@/lib/services/ancestries/service";
-import {
-  listSourcesForEntityType,
-  sourcesForEntityTypeQueryOptions,
-} from "@/lib/services/sources";
+import { sourcesForEntityTypeQueryOptions } from "@/lib/services/sources";
+import { listSourcesForEntityType } from "@/lib/services/sources/repository";
 import { publicAncestriesInfiniteQueryOptions } from "./hooks";
 
 export default async function AncestriesPage() {

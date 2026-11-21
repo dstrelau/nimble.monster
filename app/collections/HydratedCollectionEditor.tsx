@@ -20,11 +20,13 @@ import { paginatePublicCompanions } from "@/lib/services/companions";
 import { itemsService } from "@/lib/services/items/service";
 import { monstersService } from "@/lib/services/monsters";
 import {
-  listAllSources,
-  listSourcesForEntityType,
   sourcesForEntityTypeQueryOptions,
   sourcesQueryOptions,
 } from "@/lib/services/sources";
+import {
+  listAllSources,
+  listSourcesForEntityType,
+} from "@/lib/services/sources/repository";
 
 export async function HydratedCollectionEditor({
   children,
