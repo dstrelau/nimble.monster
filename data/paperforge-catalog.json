@@ -1,5 +1,5 @@
 {
-  "totalMinis": 800,
+  "totalMinis": 805,
   "s3BaseUrl": "https://paperforgedev.s3.us-east-2.amazonaws.com/",
   "minis": [
     {
@@ -92001,16 +92001,6 @@
       "releaseDate": "2026-11-03T20:16:08.969Z",
       "downloads": [
         {
-          "assetId": "74a87042-cfae-4496-a6be-541a010d4ab5",
-          "filename": "•••_PDF_1.pdf",
-          "category": "pdf",
-          "tier": "STEEL",
-          "tierName": "Steel",
-          "tierNumber": 3,
-          "filenameTier": null,
-          "url": "https://www.paperforgeminis.com/api/download/74a87042-cfae-4496-a6be-541a010d4ab5"
-        },
-        {
           "assetId": "d8b78a07-f837-409d-926c-f0ad42f205f1",
           "filename": "•••_T3_PDF.pdf",
           "category": "pdf",
@@ -92019,6 +92009,16 @@
           "tierNumber": 3,
           "filenameTier": "T3",
           "url": "https://www.paperforgeminis.com/api/download/d8b78a07-f837-409d-926c-f0ad42f205f1"
+        },
+        {
+          "assetId": "a6f2abc9-c7aa-44fd-abbf-89e7d0d5789c",
+          "filename": "•••_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://www.paperforgeminis.com/api/download/a6f2abc9-c7aa-44fd-abbf-89e7d0d5789c"
         },
         {
           "assetId": "f65072eb-2e99-49be-853a-de67e3ef7c44",
@@ -92289,6 +92289,346 @@
           "tierNumber": 8,
           "filenameTier": "T8",
           "url": "https://www.paperforgeminis.com/api/download/808f2094-dacf-43e7-8c47-b04afe83e3a4"
+        }
+      ]
+    },
+    {
+      "id": "b16f94d1-196d-44ac-9b95-c69a9799c3be",
+      "number": 865,
+      "name": "Door",
+      "url": "https://www.paperforgeminis.com/minis/b16f94d1-196d-44ac-9b95-c69a9799c3be",
+      "enabled": true,
+      "releaseDate": "2026-11-17T03:42:57.688Z",
+      "downloads": [
+        {
+          "assetId": "e4dfc7b8-e4bd-4e71-a083-8a162ff8f115",
+          "filename": "•••_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://www.paperforgeminis.com/api/download/e4dfc7b8-e4bd-4e71-a083-8a162ff8f115"
+        },
+        {
+          "assetId": "5bfcd125-1e26-419f-a8ab-60c1b9a24263",
+          "filename": "•••_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://www.paperforgeminis.com/api/download/5bfcd125-1e26-419f-a8ab-60c1b9a24263"
+        },
+        {
+          "assetId": "778da245-4b44-49fb-810d-fcbefee79699",
+          "filename": "•••_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://www.paperforgeminis.com/api/download/778da245-4b44-49fb-810d-fcbefee79699"
+        },
+        {
+          "assetId": "ac374e67-e887-48d5-b852-24dfca505cd9",
+          "filename": "•••_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://www.paperforgeminis.com/api/download/ac374e67-e887-48d5-b852-24dfca505cd9"
+        },
+        {
+          "assetId": "1626f895-e56c-47fa-91ab-3d9110e57dbb",
+          "filename": "•••_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://www.paperforgeminis.com/api/download/1626f895-e56c-47fa-91ab-3d9110e57dbb"
+        },
+        {
+          "assetId": "e209923f-4f11-4ae0-a71b-bdc61b0b4254",
+          "filename": "•••_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://www.paperforgeminis.com/api/download/e209923f-4f11-4ae0-a71b-bdc61b0b4254"
+        },
+        {
+          "assetId": "005a70a8-ca6e-4571-b290-cea954388bd4",
+          "filename": "•••_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://www.paperforgeminis.com/api/download/005a70a8-ca6e-4571-b290-cea954388bd4"
+        }
+      ]
+    },
+    {
+      "id": "077f9c22-d8b0-47d6-9ae9-1406d414ce58",
+      "number": 866,
+      "name": "Door",
+      "url": "https://www.paperforgeminis.com/minis/077f9c22-d8b0-47d6-9ae9-1406d414ce58",
+      "enabled": true,
+      "releaseDate": "2026-11-17T03:45:20.585Z",
+      "downloads": [
+        {
+          "assetId": "93eb3619-7f93-45e7-ab74-e24287758341",
+          "filename": "•••_T1_PDF.pdf",
+          "category": "pdf",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://www.paperforgeminis.com/api/download/93eb3619-7f93-45e7-ab74-e24287758341"
+        },
+        {
+          "assetId": "a783daf6-1c7e-4fe8-bc3c-0be8b1110309",
+          "filename": "•••_T1_PNGs.zip",
+          "category": "png",
+          "tier": "COPPER",
+          "tierName": "Copper",
+          "tierNumber": 1,
+          "filenameTier": "T1",
+          "url": "https://www.paperforgeminis.com/api/download/a783daf6-1c7e-4fe8-bc3c-0be8b1110309"
+        },
+        {
+          "assetId": "fa74008a-75cd-40b1-9b4a-0d10f7bc2214",
+          "filename": "•••_T2_PDF.pdf",
+          "category": "pdf",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://www.paperforgeminis.com/api/download/fa74008a-75cd-40b1-9b4a-0d10f7bc2214"
+        },
+        {
+          "assetId": "0d7d3318-ab09-497d-bde6-7ee5ad00730b",
+          "filename": "•••_T2_PNGs.zip",
+          "category": "png",
+          "tier": "IRON",
+          "tierName": "Iron",
+          "tierNumber": 2,
+          "filenameTier": "T2",
+          "url": "https://www.paperforgeminis.com/api/download/0d7d3318-ab09-497d-bde6-7ee5ad00730b"
+        },
+        {
+          "assetId": "49cb2b79-0e0f-426a-b982-10a16be596f5",
+          "filename": "•••_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://www.paperforgeminis.com/api/download/49cb2b79-0e0f-426a-b982-10a16be596f5"
+        },
+        {
+          "assetId": "38291565-82e0-483a-9fef-c396f9c5dbf8",
+          "filename": "•••_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://www.paperforgeminis.com/api/download/38291565-82e0-483a-9fef-c396f9c5dbf8"
+        },
+        {
+          "assetId": "f9a4d1e8-dfaa-475b-9188-315bde250223",
+          "filename": "•••_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://www.paperforgeminis.com/api/download/f9a4d1e8-dfaa-475b-9188-315bde250223"
+        }
+      ]
+    },
+    {
+      "id": "baafc1ab-0835-48f3-8977-311865308b79",
+      "number": 867,
+      "name": "Door",
+      "url": "https://www.paperforgeminis.com/minis/baafc1ab-0835-48f3-8977-311865308b79",
+      "enabled": true,
+      "releaseDate": "2026-11-17T03:49:11.408Z",
+      "downloads": [
+        {
+          "assetId": "17419068-ed19-42f9-8308-98786e28e1fa",
+          "filename": "•••_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://www.paperforgeminis.com/api/download/17419068-ed19-42f9-8308-98786e28e1fa"
+        },
+        {
+          "assetId": "e9ab2989-9cc2-4158-a6fa-effad81f4ecd",
+          "filename": "•••_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://www.paperforgeminis.com/api/download/e9ab2989-9cc2-4158-a6fa-effad81f4ecd"
+        },
+        {
+          "assetId": "82e45e52-4265-47da-8f45-ef64a375649c",
+          "filename": "•••_CUTFILE_1.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": null,
+          "url": "https://www.paperforgeminis.com/api/download/82e45e52-4265-47da-8f45-ef64a375649c"
+        },
+        {
+          "assetId": "8cc9c3fc-b47e-48d5-9612-9f070fe34780",
+          "filename": "•••_PNGs_1.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": null,
+          "url": "https://www.paperforgeminis.com/api/download/8cc9c3fc-b47e-48d5-9612-9f070fe34780"
+        },
+        {
+          "assetId": "48554907-3bd0-444e-be4e-3f16b6c6a8d5",
+          "filename": "•••_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://www.paperforgeminis.com/api/download/48554907-3bd0-444e-be4e-3f16b6c6a8d5"
+        }
+      ]
+    },
+    {
+      "id": "0fcedf65-a981-4cdd-a044-ebbd46504e71",
+      "number": 868,
+      "name": "Door",
+      "url": "https://www.paperforgeminis.com/minis/0fcedf65-a981-4cdd-a044-ebbd46504e71",
+      "enabled": true,
+      "releaseDate": "2026-11-18T02:11:50.143Z",
+      "downloads": [
+        {
+          "assetId": "e6af0da3-0fc7-42ea-8a30-516a47ac0eac",
+          "filename": "•••_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://www.paperforgeminis.com/api/download/e6af0da3-0fc7-42ea-8a30-516a47ac0eac"
+        },
+        {
+          "assetId": "2d830ce8-8614-4ef6-854c-f0a4d4b97eaa",
+          "filename": "•••_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://www.paperforgeminis.com/api/download/2d830ce8-8614-4ef6-854c-f0a4d4b97eaa"
+        },
+        {
+          "assetId": "22b77df7-75b9-47f2-bdcb-d5562e4bdf33",
+          "filename": "•••_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://www.paperforgeminis.com/api/download/22b77df7-75b9-47f2-bdcb-d5562e4bdf33"
+        },
+        {
+          "assetId": "234b5cfb-9a18-45ea-90fd-1357b94656bb",
+          "filename": "•••_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://www.paperforgeminis.com/api/download/234b5cfb-9a18-45ea-90fd-1357b94656bb"
+        },
+        {
+          "assetId": "ea69648e-b970-4bd0-ab1e-c0676b0a1fb0",
+          "filename": "•••_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://www.paperforgeminis.com/api/download/ea69648e-b970-4bd0-ab1e-c0676b0a1fb0"
+        }
+      ]
+    },
+    {
+      "id": "676fbc7d-654d-486b-8647-4b7c5067cfd4",
+      "number": 869,
+      "name": "Door",
+      "url": "https://www.paperforgeminis.com/minis/676fbc7d-654d-486b-8647-4b7c5067cfd4",
+      "enabled": true,
+      "releaseDate": "2026-11-18T02:11:57.754Z",
+      "downloads": [
+        {
+          "assetId": "e00422c6-33d9-4644-ad93-19dab8353b10",
+          "filename": "•••_T3_PDF.pdf",
+          "category": "pdf",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://www.paperforgeminis.com/api/download/e00422c6-33d9-4644-ad93-19dab8353b10"
+        },
+        {
+          "assetId": "abef82dd-bc67-410b-9c4c-ba5233beadf1",
+          "filename": "•••_T3_PNGs.zip",
+          "category": "png",
+          "tier": "STEEL",
+          "tierName": "Steel",
+          "tierNumber": 3,
+          "filenameTier": "T3",
+          "url": "https://www.paperforgeminis.com/api/download/abef82dd-bc67-410b-9c4c-ba5233beadf1"
+        },
+        {
+          "assetId": "91200e5b-14ff-4729-a6ea-6687b139b5ca",
+          "filename": "•••_T4_CUTFILE.zip",
+          "category": "cutfile",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://www.paperforgeminis.com/api/download/91200e5b-14ff-4729-a6ea-6687b139b5ca"
+        },
+        {
+          "assetId": "f43eb7f5-1c21-4dcb-b65b-f6de6f1f0006",
+          "filename": "•••_T4_PNGs.zip",
+          "category": "png",
+          "tier": "TITANIUM",
+          "tierName": "Titanium",
+          "tierNumber": 4,
+          "filenameTier": "T4",
+          "url": "https://www.paperforgeminis.com/api/download/f43eb7f5-1c21-4dcb-b65b-f6de6f1f0006"
+        },
+        {
+          "assetId": "8ddff7a2-858e-43db-8d58-20a041825333",
+          "filename": "•••_T8_PSD.zip",
+          "category": "psd",
+          "tier": "MITHRIL",
+          "tierName": "Mithril",
+          "tierNumber": 8,
+          "filenameTier": "T8",
+          "url": "https://www.paperforgeminis.com/api/download/8ddff7a2-858e-43db-8d58-20a041825333"
         }
       ]
     }
