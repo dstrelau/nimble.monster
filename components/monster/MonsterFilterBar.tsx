@@ -49,6 +49,8 @@ interface SimpleFilterBarProps {
   /** Collapse creator/type/source/role/level/sort into a single popover menu. */
   compact?: boolean;
   hazardsOnly?: boolean;
+  /** Omit the Hazards option from the type filter, for lists of creatures only. */
+  hideHazardType?: boolean;
 }
 
 const TYPE_OPTIONS: {
@@ -94,6 +96,7 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
   beforeFilters,
   compact = false,
   hazardsOnly = false,
+  hideHazardType = false,
 }) => {
   const filterControls = (
     <>
@@ -103,7 +106,9 @@ export const MonsterFilterBar: React.FC<SimpleFilterBarProps> = ({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {TYPE_OPTIONS.map(({ label, value, icon }) => (
+            {TYPE_OPTIONS.filter(
+              ({ value }) => !(hideHazardType && value === "hazard")
+            ).map(({ label, value, icon }) => (
               <SelectItem key={value} value={value}>
                 {icon}
                 {label}

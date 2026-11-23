@@ -40,6 +40,8 @@ interface SelectableMonsterGridProps {
   compact?: boolean;
   /** Limit selection to public entries, even when filtering to the current user. */
   publicOnly?: boolean;
+  /** Show only creatures or only hazards; omit to show both. */
+  entityType?: "monsters" | "hazards";
 }
 
 function CompactMonsterOption({
@@ -102,6 +104,7 @@ export function SelectableMonsterGrid({
   onToggle,
   compact = false,
   publicOnly = false,
+  entityType,
 }: SelectableMonsterGridProps) {
   const [creatorId, setCreatorId] = useState<string | null>(null);
   const [rawSearch, setRawSearch] = useState<string | null>(null);
@@ -123,8 +126,9 @@ export function SelectableMonsterGrid({
     limit: compact ? 50 : 12,
   };
 
-  const isHazard = type === "hazard";
-  const includesHazards = type === "all" || isHazard;
+  const isHazard = entityType === "hazards" || type === "hazard";
+  const includesHazards =
+    isHazard || (entityType !== "monsters" && type === "all");
   const includesCreatures = !isHazard;
   const isMyContent =
     !publicOnly && creatorId !== null && creatorId === session?.user?.id;
@@ -203,7 +207,9 @@ export function SelectableMonsterGrid({
   ) : error ? (
     <ErrorState message={error.message} />
   ) : !monsters || monsters.length === 0 ? (
-    <EmptyState entityName="monsters" />
+    <EmptyState
+      entityName={entityType === "hazards" ? "hazards" : "monsters"}
+    />
   ) : compact ? (
     <div className="flex flex-col gap-1">
       {monsters.map((monster) => (
@@ -259,6 +265,8 @@ export function SelectableMonsterGrid({
         level={level}
         onLevelChange={setLevel}
         compact={compact}
+        hazardsOnly={entityType === "hazards"}
+        hideHazardType={entityType === "monsters"}
         beforeFilters={
           <CreatorCombobox
             kind="monsters"

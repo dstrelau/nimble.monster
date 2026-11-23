@@ -10,6 +10,7 @@ import {
   Shield,
   Swords,
   Table2,
+  TriangleAlert,
   WandSparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -531,6 +532,10 @@ export function CreateEditCollection({
                   <Goblin className="size-5" />
                   Monsters
                 </TabsTrigger>
+                <TabsTrigger className="min-h-11" value="hazards">
+                  <TriangleAlert className="size-5" />
+                  Hazards
+                </TabsTrigger>
                 <TabsTrigger className="min-h-11" value="items">
                   <Shield className="size-5" />
                   Items
@@ -570,6 +575,18 @@ export function CreateEditCollection({
                 className="flex flex-col gap-4 grow-2"
               >
                 <SelectableMonsterGrid
+                  entityType="monsters"
+                  selectedIds={selectedMonsterIds}
+                  onToggle={handleMonsterToggle}
+                />
+              </TabsContent>
+
+              <TabsContent
+                value="hazards"
+                className="flex flex-col gap-4 grow-2"
+              >
+                <SelectableMonsterGrid
+                  entityType="hazards"
                   selectedIds={selectedMonsterIds}
                   onToggle={handleMonsterToggle}
                 />
