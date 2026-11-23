@@ -30,6 +30,7 @@ const collection: Collection = {
   backgrounds: [],
   classes: [],
   customRules: [],
+  randomTables: [],
   subclasses: [],
 };
 beforeEach(() => {

@@ -146,6 +146,7 @@ export interface Collection extends CollectionOverview {
   spellSchools: SpellSchool[];
   classes: Class[];
   customRules: CustomRule[];
+  randomTables: RandomTable[];
 }
 
 export interface CollectionOverview {
@@ -168,6 +169,7 @@ export interface CollectionOverview {
   spellSchools: SpellSchoolMini[];
   classes: ClassMini[];
   customRules: CustomRuleMini[];
+  randomTables: RandomTableMini[];
   visibility: CollectionVisibilityType;
   createdAt?: Date;
 }
@@ -220,13 +222,16 @@ export interface Subtable {
   rows: SubtableRow[];
 }
 
-export interface RandomTable {
+export interface RandomTableMini {
   id: string;
-  creator: User;
-  source?: Source;
   name: string;
-  description?: string;
   visibility: CollectionVisibilityType;
+  creator: User;
+}
+
+export interface RandomTable extends RandomTableMini {
+  source?: Source;
+  description?: string;
   subtables: Subtable[];
   createdAt?: Date;
 }

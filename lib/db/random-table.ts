@@ -2,7 +2,7 @@ import { and, asc, count, eq, inArray, isNull, or } from "drizzle-orm";
 import { toUser } from "@/lib/db/converters";
 import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import type { OfficialRandomTableInput } from "@/lib/services/random-tables/official";
-import type { RandomTable, Subtable } from "@/lib/types";
+import type { RandomTable, RandomTableMini, Subtable } from "@/lib/types";
 import { isValidUUID } from "@/lib/utils/validation";
 import { getDatabase } from "./drizzle";
 import {
@@ -10,6 +10,7 @@ import {
   randomSubtableRows,
   randomSubtables,
   randomTables,
+  randomTablesCollections,
   type SourceRow,
   sources,
   type UserRow,
@@ -554,3 +555,62 @@ export const deleteRandomTable = async (input: {
 
   return result.rowsAffected > 0;
 };
+
+const toRandomTableMini = (
+  table: RandomTableRowRecord,
+  creator: UserRow
+): RandomTableMini => ({
+  id: table.id,
+  name: table.name,
+  visibility: (table.visibility ?? "public") as "public" | "private",
+  creator: toUser(creator),
+});
+
+export async function listPublicRandomTableMinis(): Promise<RandomTableMini[]> {
+  const rows = await getDatabase()
+    .select({ table: randomTables, creator: users })
+    .from(randomTables)
+    .innerJoin(users, eq(randomTables.creatorId, users.id))
+    .where(eq(randomTables.visibility, "public"))
+    .orderBy(asc(randomTables.name));
+  return rows.map(({ table, creator }) => toRandomTableMini(table, creator));
+}
+
+// Reference tables linked to each of the given collections. Private tables
+// are hidden unless they belong to `ownerId`; pass null for views anyone can
+// see.
+export async function listRandomTableMinisByCollection(
+  collectionIds: string[],
+  ownerId: string | null
+): Promise<Map<string, RandomTableMini[]>> {
+  const byCollection = new Map<string, RandomTableMini[]>();
+  if (collectionIds.length === 0) return byCollection;
+  const rows = await getDatabase()
+    .select({
+      collectionId: randomTablesCollections.collectionId,
+      table: randomTables,
+      creator: users,
+    })
+    .from(randomTablesCollections)
+    .innerJoin(
+      randomTables,
+      eq(randomTablesCollections.randomTableId, randomTables.id)
+    )
+    .innerJoin(users, eq(randomTables.creatorId, users.id))
+    .where(
+      and(
+        inArray(randomTablesCollections.collectionId, collectionIds),
+        or(
+          eq(randomTables.visibility, "public"),
+          ownerId ? eq(randomTables.creatorId, ownerId) : undefined
+        )
+      )
+    )
+    .orderBy(asc(randomTables.name));
+  for (const { collectionId, table, creator } of rows) {
+    const existing = byCollection.get(collectionId) ?? [];
+    existing.push(toRandomTableMini(table, creator));
+    byCollection.set(collectionId, existing);
+  }
+  return byCollection;
+}

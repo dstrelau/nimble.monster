@@ -1033,6 +1033,28 @@ export const customRulesCollections = sqliteTable(
   (table) => [primaryKey({ columns: [table.customRuleId, table.collectionId] })]
 );
 
+// Reference tables in collections
+export const randomTablesCollections = sqliteTable(
+  "random_tables_collections",
+  {
+    randomTableId: text("random_table_id")
+      .notNull()
+      .references(() => randomTables.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    collectionId: text("collection_id")
+      .notNull()
+      .references(() => collections.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+  },
+  (table) => [
+    primaryKey({ columns: [table.randomTableId, table.collectionId] }),
+  ]
+);
+
 // Subclasses in collections
 export const subclassesCollections = sqliteTable(
   "subclasses_collections",

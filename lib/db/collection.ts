@@ -10,6 +10,10 @@ import {
   findCustomRulesByIds,
   listCustomRuleMinisByCollection,
 } from "@/lib/db/custom-rule";
+import {
+  findRandomTablesByIds,
+  listRandomTableMinisByCollection,
+} from "@/lib/db/random-table";
 import { findSpellSchoolsByIds } from "@/lib/db/school";
 import { findSubclassesByIds } from "@/lib/db/subclass";
 import { toAncestryMini } from "@/lib/services/ancestries/converters";
@@ -47,6 +51,8 @@ import {
   type MonsterRow,
   monsters,
   monstersCollections,
+  randomTables,
+  randomTablesCollections,
   type SpellSchoolRow,
   type SubclassRow,
   spellSchools,
@@ -249,6 +255,10 @@ export const listCollectionsWithMonstersForUser = async (
     collectionIds,
     user.id
   );
+  const randomTablesByCollection = await listRandomTableMinisByCollection(
+    collectionIds,
+    user.id
+  );
 
   // Group by collection
   const monstersByCollection = new Map<string, MonsterRow[]>();
@@ -337,6 +347,7 @@ export const listCollectionsWithMonstersForUser = async (
       subclasses: collectionSubclasses.map(toSubclassMini),
       classes: collectionClasses.map(toClassMini),
       customRules: customRulesByCollection.get(c.id) || [],
+      randomTables: randomTablesByCollection.get(c.id) || [],
       spellSchools: collectionSchools.map((s) => ({
         ...toSpellSchoolMini(s),
         spellCount: spellCountMap.get(s.id),
@@ -479,6 +490,7 @@ export interface UpdateCollectionInput extends CreateCollectionInput {
   spellSchoolIds?: string[];
   classIds?: string[];
   customRuleIds?: string[];
+  randomTableIds?: string[];
 }
 
 export const createCollection = async (
@@ -828,6 +840,36 @@ export const updateCollection = async (
     }
   }
 
+  // Sync reference tables
+  if (input.randomTableIds) {
+    await db
+      .delete(randomTablesCollections)
+      .where(eq(randomTablesCollections.collectionId, input.id));
+
+    if (input.randomTableIds.length > 0) {
+      const accessible = await db
+        .select({ id: randomTables.id })
+        .from(randomTables)
+        .where(
+          and(
+            inArray(randomTables.id, input.randomTableIds),
+            or(
+              eq(randomTables.visibility, "public"),
+              eq(randomTables.creatorId, user.id)
+            )
+          )
+        );
+      if (accessible.length > 0) {
+        await db.insert(randomTablesCollections).values(
+          accessible.map((t) => ({
+            collectionId: input.id,
+            randomTableId: t.id,
+          }))
+        );
+      }
+    }
+  }
+
   const collectionResult = await db
     .select()
     .from(collections)
@@ -1128,6 +1170,31 @@ export const addCustomRuleToCollection = async (input: {
   }
 };
 
+export const addRandomTableToCollection = async (input: {
+  randomTableId: string;
+  collectionId: string;
+}): Promise<void> => {
+  const db = getDatabase();
+
+  const existing = await db
+    .select()
+    .from(randomTablesCollections)
+    .where(
+      and(
+        eq(randomTablesCollections.collectionId, input.collectionId),
+        eq(randomTablesCollections.randomTableId, input.randomTableId)
+      )
+    )
+    .limit(1);
+
+  if (existing.length === 0) {
+    await db.insert(randomTablesCollections).values({
+      collectionId: input.collectionId,
+      randomTableId: input.randomTableId,
+    });
+  }
+};
+
 export const addSubclassToCollection = async (input: {
   subclassId: string;
   collectionId: string;
@@ -1372,6 +1439,12 @@ async function loadCollectionOverview(
       publicOnly ? null : creator.id
     )
   ).get(collection.id);
+  const collectionRandomTables = (
+    await listRandomTableMinisByCollection(
+      [collection.id],
+      publicOnly ? null : creator.id
+    )
+  ).get(collection.id);
 
   const overviewSchoolIds = collectionSchools.map((s) => s.id);
   const overviewSpellCountMap = new Map<string, number>();
@@ -1408,6 +1481,7 @@ async function loadCollectionOverview(
     subclasses: subclassLinks.map((l) => toSubclassMini(l.subclass)),
     classes: classLinks.map((l) => toClassMini(l.class)),
     customRules: collectionCustomRules ?? [],
+    randomTables: collectionRandomTables ?? [],
     spellSchools: collectionSchools.map((s) => ({
       ...toSpellSchoolMini(s),
       spellCount: overviewSpellCountMap.get(s.id),
@@ -1437,6 +1511,7 @@ async function loadCollectionFull(
     subclassLinks,
     classLinks,
     customRuleLinks,
+    randomTableLinks,
   ] = await Promise.all([
     db
       .select({ monsterId: monstersCollections.monsterId })
@@ -1474,6 +1549,10 @@ async function loadCollectionFull(
       .select({ customRuleId: customRulesCollections.customRuleId })
       .from(customRulesCollections)
       .where(eq(customRulesCollections.collectionId, collection.id)),
+    db
+      .select({ randomTableId: randomTablesCollections.randomTableId })
+      .from(randomTablesCollections)
+      .where(eq(randomTablesCollections.collectionId, collection.id)),
   ]);
 
   const [
@@ -1486,6 +1565,7 @@ async function loadCollectionFull(
     collectionSubclasses,
     collectionClasses,
     collectionCustomRules,
+    collectionRandomTables,
   ] = await Promise.all([
     findBestiaryEntriesByIds(monsterLinks.map((l) => l.monsterId)),
     findItemsByIds(itemLinks.map((l) => l.itemId)),
@@ -1496,6 +1576,7 @@ async function loadCollectionFull(
     findSubclassesByIds(subclassLinks.map((l) => l.subclassId)),
     findClassesByIds(classLinks.map((l) => l.classId)),
     findCustomRulesByIds(customRuleLinks.map((l) => l.customRuleId)),
+    findRandomTablesByIds(randomTableLinks.map((l) => l.randomTableId)),
   ]);
 
   const legendaryCount = collectionMonsters.filter(
@@ -1523,6 +1604,11 @@ async function loadCollectionFull(
       (r) =>
         r.visibility === "public" ||
         (!publicOnly && r.creator.id === creator.id)
+    ),
+    randomTables: collectionRandomTables.filter(
+      (t) =>
+        t.visibility === "public" ||
+        (!publicOnly && t.creator.id === creator.id)
     ),
     spellSchools: collectionSchools,
     legendaryCount,

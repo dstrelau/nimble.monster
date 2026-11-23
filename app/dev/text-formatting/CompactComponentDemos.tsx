@@ -80,6 +80,7 @@ const collection: CollectionOverview = {
   spellSchools: [],
   classes: [],
   customRules: [],
+  randomTables: [],
 };
 
 const encounter: EncounterOverview = {

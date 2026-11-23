@@ -10,6 +10,7 @@ import { addCompanionToCollection } from "@/app/%5Factions/addCompanionToCollect
 import { addCustomRuleToCollection } from "@/app/%5Factions/addCustomRuleToCollection/contract";
 import { addItemToCollection } from "@/app/%5Factions/addItemToCollection/contract";
 import { addMonsterToCollection } from "@/app/%5Factions/addMonsterToCollection/contract";
+import { addRandomTableToCollection } from "@/app/%5Factions/addRandomTableToCollection/contract";
 import { addSpellSchoolToCollection } from "@/app/%5Factions/addSpellSchoolToCollection/contract";
 import { addSubclassToCollection } from "@/app/%5Factions/addSubclassToCollection/contract";
 import { ownCollectionsQueryOptions } from "@/app/collections/ownCollectionsQueryOptions";
@@ -51,7 +52,8 @@ type AddToCollectionDialogProps =
   | { type: "ancestry"; ancestryId: string }
   | { type: "background"; backgroundId: string }
   | { type: "subclass"; subclassId: string }
-  | { type: "customRule"; customRuleId: string };
+  | { type: "customRule"; customRuleId: string }
+  | { type: "randomTable"; randomTableId: string };
 
 export const AddToCollectionDialog = (props: AddToCollectionDialogProps) => {
   const { data: session, status } = useSession();
@@ -123,6 +125,10 @@ const SessionCollectionDialog = (
         return selectedCollection.customRules.some(
           (r) => r.id === props.customRuleId
         );
+      case "randomTable":
+        return selectedCollection.randomTables.some(
+          (t) => t.id === props.randomTableId
+        );
     }
   })();
 
@@ -170,6 +176,11 @@ const SessionCollectionDialog = (
             customRuleId: props.customRuleId,
             collectionId: data.collectionId,
           });
+        case "randomTable":
+          return call(addRandomTableToCollection, {
+            randomTableId: props.randomTableId,
+            collectionId: data.collectionId,
+          });
       }
     },
     onSuccess: () => {
@@ -195,6 +206,7 @@ const SessionCollectionDialog = (
     background: "background",
     subclass: "subclass",
     customRule: "custom rule",
+    randomTable: "reference table",
   };
   const entityLabel = entityType[props.type];
 

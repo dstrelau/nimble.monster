@@ -79,6 +79,12 @@ vi.mock("@/components/school/Card", () => ({
     <div data-testid="school-card">{spellSchool.name}</div>
   ),
 }));
+vi.mock("@/components/random-table/RandomTableCard", () => ({
+  RandomTableCard: ({ randomTable }: { randomTable: { name: string } }) => (
+    <div data-testid="random-table-card">{randomTable.name}</div>
+  ),
+}));
+
 vi.mock("@/components/class/ClassMiniCard", () => ({
   ClassMiniCard: ({ classEntity }: { classEntity: { name: string } }) => (
     <div data-testid="class-card">{classEntity.name}</div>
@@ -113,6 +119,7 @@ function makeCollection(overrides = {}) {
     spellSchools: [],
     classes: [],
     customRules: [],
+    randomTables: [],
     ...overrides,
   };
 }
@@ -177,6 +184,7 @@ describe("ShowCollectionView", () => {
         backgrounds: [{ id: "b1", name: "Sage" }],
         subclasses: [{ id: "sc1", name: "Berserker" }],
         spellSchools: [{ id: "ss1", name: "Evocation" }],
+        randomTables: [{ id: "t1", name: "Wandering Monsters" }],
       })
     );
 
@@ -188,6 +196,9 @@ describe("ShowCollectionView", () => {
     expect(screen.getByTestId("background-card")).toHaveTextContent("Sage");
     expect(screen.getByTestId("subclass-card")).toHaveTextContent("Berserker");
     expect(screen.getByTestId("school-card")).toHaveTextContent("Evocation");
+    expect(screen.getByTestId("random-table-card")).toHaveTextContent(
+      "Wandering Monsters"
+    );
   });
 
   it("calls notFound for private collection when not the creator", async () => {

@@ -9,6 +9,7 @@ import {
   Scroll,
   Shield,
   Swords,
+  Table2,
   WandSparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -51,6 +52,7 @@ import type {
   Collection,
   Companion,
   CompanionMini,
+  RandomTableMini,
   SpellSchool,
   SpellSchoolMini,
   Subclass,
@@ -65,6 +67,7 @@ import { SelectableClassGrid } from "./SelectableClassGrid";
 import { SelectableCompanionGrid } from "./SelectableCompanionGrid";
 import { SelectableCustomRuleGrid } from "./SelectableCustomRuleGrid";
 import { SelectableItemGrid } from "./SelectableItemGrid";
+import { SelectableRandomTableGrid } from "./SelectableRandomTableGrid";
 import { SelectableSpellSchoolGrid } from "./SelectableSpellSchoolGrid";
 import { SelectableSubclassGrid } from "./SelectableSubclassGrid";
 
@@ -174,6 +177,10 @@ export function CreateEditCollection({
     Map<string, CustomRuleMini>
   >(() => new Map((collection.customRules ?? []).map((r) => [r.id, r])));
 
+  const [selectedRandomTables, setSelectedRandomTables] = useState<
+    Map<string, RandomTableMini>
+  >(() => new Map((collection.randomTables ?? []).map((t) => [t.id, t])));
+
   const selectedCompanionIds = useMemo(
     () => new Set(selectedCompanions.keys()),
     [selectedCompanions]
@@ -202,6 +209,15 @@ export function CreateEditCollection({
   const selectedCustomRuleIds = useMemo(
     () => new Set(selectedCustomRules.keys()),
     [selectedCustomRules]
+  );
+
+  const selectedRandomTableIds = useMemo(
+    () => new Set(selectedRandomTables.keys()),
+    [selectedRandomTables]
+  );
+  const currentRandomTables = useMemo(
+    () => [...selectedRandomTables.values()],
+    [selectedRandomTables]
   );
 
   const currentCompanions = useMemo(
@@ -294,6 +310,10 @@ export function CreateEditCollection({
       !arraysEqual(
         [...selectedCustomRuleIds],
         (collection.customRules ?? []).map((r) => r.id)
+      ) ||
+      !arraysEqual(
+        [...selectedRandomTableIds],
+        (collection.randomTables ?? []).map((t) => t.id)
       );
 
   const handleSubmit = async (data: FormData) => {
@@ -333,6 +353,7 @@ export function CreateEditCollection({
         spellSchoolIds: currentSpellSchools.map((entity) => entity.id),
         classIds: currentClasses.map((entity) => entity.id),
         customRuleIds: currentCustomRules.map((entity) => entity.id),
+        randomTableIds: currentRandomTables.map((entity) => entity.id),
         monsteryMonday: featured,
         monsteryMondaySequence: featured ? sequence : undefined,
       });
@@ -370,6 +391,7 @@ export function CreateEditCollection({
   const handleSpellSchoolToggle = makeToggle(setSelectedSpellSchools);
   const handleClassToggle = makeToggle(setSelectedClasses);
   const handleCustomRuleToggle = makeToggle(setSelectedCustomRules);
+  const handleRandomTableToggle = makeToggle(setSelectedRandomTables);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -537,6 +559,10 @@ export function CreateEditCollection({
                   <NotebookPen className="size-5" />
                   Rules
                 </TabsTrigger>
+                <TabsTrigger className="min-h-11" value="randomTables">
+                  <Table2 className="size-5" />
+                  Tables
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent
@@ -617,6 +643,16 @@ export function CreateEditCollection({
               </TabsContent>
 
               <TabsContent
+                value="randomTables"
+                className="flex flex-col gap-4 grow-2"
+              >
+                <SelectableRandomTableGrid
+                  selectedIds={selectedRandomTableIds}
+                  onToggle={handleRandomTableToggle}
+                />
+              </TabsContent>
+
+              <TabsContent
                 value="spellSchools"
                 className="flex flex-col gap-4 grow-2"
               >
@@ -641,6 +677,7 @@ export function CreateEditCollection({
                 subclasses: currentSubclasses,
                 classes: currentClasses,
                 customRules: currentCustomRules,
+                randomTables: currentRandomTables,
                 spellSchools: currentSpellSchools,
                 creator: session?.user || UNKNOWN_USER,
               }}
@@ -696,6 +733,13 @@ export function CreateEditCollection({
               }
               onRemoveCustomRuleAction={(id) =>
                 setSelectedCustomRules((prev) => {
+                  const next = new Map(prev);
+                  next.delete(id);
+                  return next;
+                })
+              }
+              onRemoveRandomTableAction={(id) =>
+                setSelectedRandomTables((prev) => {
                   const next = new Map(prev);
                   next.delete(id);
                   return next;

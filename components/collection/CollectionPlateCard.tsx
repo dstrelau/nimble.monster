@@ -129,6 +129,11 @@ export const CollectionPlateCard = ({
       count: collection.customRules.length,
       Icon: ENTITY_TYPE_ICONS.rule,
     },
+    {
+      label: "reference table",
+      count: collection.randomTables.length,
+      Icon: ENTITY_TYPE_ICONS.table,
+    },
   ];
 
   const lineup = [
@@ -221,6 +226,11 @@ export const CollectionPlateCard = ({
       key: r.id,
       name: r.name,
       detail: "Rule",
+    })),
+    ...collection.randomTables.map((t) => ({
+      key: t.id,
+      name: t.name,
+      detail: "Reference table",
     })),
   ];
 

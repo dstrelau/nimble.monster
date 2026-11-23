@@ -379,6 +379,13 @@
       "when": 1794944620416,
       "tag": "0053_featured_sequence",
       "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "6",
+      "when": 1795470308925,
+      "tag": "0054_premium_meltdown",
+      "breakpoints": true
     }
   ]
 }

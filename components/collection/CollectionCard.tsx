@@ -7,6 +7,7 @@ import {
   NotebookPen,
   Scroll,
   Swords,
+  Table2,
   WandSparkles,
   X,
 } from "lucide-react";
@@ -34,6 +35,7 @@ import type {
   ClassMini,
   CollectionOverview,
   CompanionMini,
+  RandomTableMini,
   SpellSchoolMini,
   SubclassMini,
 } from "@/lib/types";
@@ -245,6 +247,21 @@ const CustomRuleRow = ({
   />
 );
 
+const RandomTableRow = ({
+  randomTable,
+  onRemove,
+}: {
+  randomTable: RandomTableMini;
+  onRemove?: (id: string) => void;
+}) => (
+  <EntityRow
+    id={randomTable.id}
+    icon={<Table2 className="size-5 stroke-muted-foreground" />}
+    name={randomTable.name}
+    onRemove={onRemove}
+  />
+);
+
 const ClassRow = ({
   classEntity,
   onRemove,
@@ -271,6 +288,7 @@ export const CollectionCard = ({
   onRemoveSubclassAction,
   onRemoveClassAction,
   onRemoveCustomRuleAction,
+  onRemoveRandomTableAction,
   onRemoveSpellSchoolAction,
 }: {
   collection: CollectionOverview;
@@ -283,6 +301,7 @@ export const CollectionCard = ({
   onRemoveSubclassAction?: (id: string) => void;
   onRemoveClassAction?: (id: string) => void;
   onRemoveCustomRuleAction?: (id: string) => void;
+  onRemoveRandomTableAction?: (id: string) => void;
   onRemoveSpellSchoolAction?: (id: string) => void;
 }) => {
   const sortedMonsters = monstersSortedByLevelInt(collection.monsters);
@@ -294,6 +313,7 @@ export const CollectionCard = ({
     subclasses,
     classes: classEntities,
     customRules,
+    randomTables,
     spellSchools,
   } = collection;
 
@@ -304,6 +324,7 @@ export const CollectionCard = ({
     subclasses.length +
     (classEntities?.length ?? 0) +
     customRules.length +
+    randomTables.length +
     spellSchools.length;
   const total = sortedMonsters.length + sortedItems.length + otherCount;
 
@@ -330,6 +351,7 @@ export const CollectionCard = ({
       entity: c,
     })),
     ...customRules.map((r) => ({ type: "customRule" as const, entity: r })),
+    ...randomTables.map((t) => ({ type: "randomTable" as const, entity: t })),
     ...spellSchools.map((s) => ({ type: "spellSchool" as const, entity: s })),
   ];
   const visibleOther = limitOther ? allOther.slice(0, limitOther) : allOther;
@@ -433,6 +455,14 @@ export const CollectionCard = ({
                     key={entity.id}
                     customRule={entity}
                     onRemove={onRemoveCustomRuleAction}
+                  />
+                );
+              case "randomTable":
+                return (
+                  <RandomTableRow
+                    key={entity.id}
+                    randomTable={entity}
+                    onRemove={onRemoveRandomTableAction}
                   />
                 );
               case "spellSchool":

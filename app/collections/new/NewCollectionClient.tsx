@@ -27,6 +27,7 @@ export function NewCollection({ monsteryMonday }: NewCollectionProps) {
     subclasses: [],
     classes: [],
     customRules: [],
+    randomTables: [],
     spellSchools: [],
   };
 

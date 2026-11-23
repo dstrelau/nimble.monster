@@ -102,6 +102,7 @@ const COLLECTIONS = {
         { id: "s-existing", createdAt: "2026-09-10T12:00:00.000Z" },
       ],
       classes: [{ id: "cl-existing", createdAt: "2026-09-11T12:00:00.000Z" }],
+      randomTables: [{ id: "t-existing" }],
     },
     {
       id: "col-2",
@@ -114,6 +115,7 @@ const COLLECTIONS = {
       subclasses: [],
       spellSchools: [],
       classes: [],
+      randomTables: [],
     },
   ],
 };
@@ -398,6 +400,52 @@ describe("AddToCollectionDialog", () => {
       )
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
+  });
+
+  it("detects a duplicate reference table", async () => {
+    render(
+      <AddToCollectionDialog type="randomTable" randomTableId="t-existing" />,
+      { wrapper: createWrapper() }
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
+    await screen.findByText("My Monsters");
+    fireEvent.change(screen.getByTestId("collection-select"), {
+      target: { value: "col-1" },
+    });
+
+    expect(
+      await screen.findByText(
+        "This reference table is already in the selected collection"
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^add$/i })).toBeDisabled();
+  });
+
+  it("adds a reference table through stable JSON transport", async () => {
+    render(
+      <AddToCollectionDialog type="randomTable" randomTableId="entity-1" />,
+      { wrapper: createWrapper() }
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /add to collection/i }));
+    await screen.findByText("Empty Collection");
+    fireEvent.change(screen.getByTestId("collection-select"), {
+      target: { value: "col-2" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^add$/i }));
+
+    await waitFor(() => expect(mockFetch).toHaveBeenCalledOnce());
+    expect(mockFetch).toHaveBeenCalledWith(
+      "/_actions/addRandomTableToCollection",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({
+          randomTableId: "entity-1",
+          collectionId: "col-2",
+        }),
+      })
+    );
   });
 
   it.each<

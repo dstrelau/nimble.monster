@@ -258,6 +258,7 @@ export const toCollectionOverview = (
     subclasses: [],
     classes: [],
     customRules: [],
+    randomTables: [],
     spellSchools: [],
   };
 };

@@ -29,6 +29,10 @@ import {
 } from "@/lib/db/custom-rule";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
+  findRandomTablesByIds,
+  listRandomTableMinisByCollection,
+} from "@/lib/db/random-table";
+import {
   type AncestryRow,
   type AwardRow,
   ancestries,
@@ -60,6 +64,8 @@ import {
   monstersCollections,
   monstersConditions,
   monstersFamilies,
+  randomTables,
+  randomTablesCollections,
   type SourceRow,
   type SpellSchoolRow,
   type SubclassRow,
@@ -373,6 +379,10 @@ async function loadCollectionEntityMinis(
     collectionIds,
     null
   );
+  const randomTablesByCollection = await listRandomTableMinisByCollection(
+    collectionIds,
+    null
+  );
 
   // Spell counts
   const schoolIds = [...new Set(schoolJoins.map((l) => l.school.id))];
@@ -436,6 +446,7 @@ async function loadCollectionEntityMinis(
     schoolsByCollection,
     classesByCollection,
     customRulesByCollection,
+    randomTablesByCollection,
   };
 }
 
@@ -544,6 +555,15 @@ async function loadCollectionContributors(
       customRules.id,
       customRules.creatorId,
       customRules.visibility
+    ),
+    contributions(
+      randomTablesCollections,
+      randomTablesCollections.collectionId,
+      randomTablesCollections.randomTableId,
+      randomTables,
+      randomTables.id,
+      randomTables.creatorId,
+      randomTables.visibility
     )
   );
 
@@ -850,7 +870,8 @@ export const listPublicCollections = async ({
       (entityMinis.backgroundsByCollection.get(cid)?.length ?? 0) > 0 ||
       (entityMinis.subclassesByCollection.get(cid)?.length ?? 0) > 0 ||
       (entityMinis.schoolsByCollection.get(cid)?.length ?? 0) > 0 ||
-      (entityMinis.customRulesByCollection.get(cid)?.length ?? 0) > 0
+      (entityMinis.customRulesByCollection.get(cid)?.length ?? 0) > 0 ||
+      (entityMinis.randomTablesByCollection.get(cid)?.length ?? 0) > 0
     );
   });
 
@@ -889,6 +910,7 @@ export const listPublicCollections = async ({
       subclasses: entityMinis.subclassesByCollection.get(cid) ?? [],
       classes: entityMinis.classesByCollection.get(cid) ?? [],
       customRules: entityMinis.customRulesByCollection.get(cid) ?? [],
+      randomTables: entityMinis.randomTablesByCollection.get(cid) ?? [],
       spellSchools: entityMinis.schoolsByCollection.get(cid) ?? [],
     };
   });
@@ -1056,7 +1078,8 @@ export const searchPublicCollections = async ({
         (entityMinis.backgroundsByCollection.get(cid)?.length ?? 0) > 0 ||
         (entityMinis.subclassesByCollection.get(cid)?.length ?? 0) > 0 ||
         (entityMinis.schoolsByCollection.get(cid)?.length ?? 0) > 0 ||
-        (entityMinis.customRulesByCollection.get(cid)?.length ?? 0) > 0
+        (entityMinis.customRulesByCollection.get(cid)?.length ?? 0) > 0 ||
+        (entityMinis.randomTablesByCollection.get(cid)?.length ?? 0) > 0
       );
     })
     .map((row) => {
@@ -1092,6 +1115,7 @@ export const searchPublicCollections = async ({
         subclasses: entityMinis.subclassesByCollection.get(cid) ?? [],
         classes: entityMinis.classesByCollection.get(cid) ?? [],
         customRules: entityMinis.customRulesByCollection.get(cid) ?? [],
+        randomTables: entityMinis.randomTablesByCollection.get(cid) ?? [],
         spellSchools: entityMinis.schoolsByCollection.get(cid) ?? [],
         contributors: contributors && (contributors.get(cid) ?? []),
       };
@@ -1202,6 +1226,14 @@ export async function getMonsteryMondayOverview() {
       customRules.id,
       customRules.visibility
     ),
+    countMonsteryMondayEntities(
+      randomTablesCollections,
+      randomTablesCollections.collectionId,
+      randomTablesCollections.randomTableId,
+      randomTables,
+      randomTables.id,
+      randomTables.visibility
+    ),
   ]);
   const [
     [
@@ -1214,6 +1246,7 @@ export async function getMonsteryMondayOverview() {
       subclassesCount,
       spellSchoolsCount,
       rulesCount,
+      randomTablesCount,
     ],
     creatorRows,
     latest,
@@ -1258,6 +1291,7 @@ export async function getMonsteryMondayOverview() {
       subclasses: subclassesCount,
       spellSchools: spellSchoolsCount,
       rules: rulesCount,
+      randomTables: randomTablesCount,
     },
     creators: creatorRows.map((row) => toUserFromRow(row.user)),
     latest: latest[0] ?? null,
@@ -1586,6 +1620,7 @@ export const findPublicCollectionById = async (
     classJoins,
     schoolJoins,
     customRuleJoins,
+    randomTableJoins,
   ] = await Promise.all([
     db
       .select({ companionId: companionsCollections.companionId })
@@ -1675,6 +1710,19 @@ export const findPublicCollectionById = async (
           eq(customRules.visibility, "public")
         )
       ),
+    db
+      .select({ randomTableId: randomTablesCollections.randomTableId })
+      .from(randomTablesCollections)
+      .innerJoin(
+        randomTables,
+        eq(randomTablesCollections.randomTableId, randomTables.id)
+      )
+      .where(
+        and(
+          eq(randomTablesCollections.collectionId, id),
+          eq(randomTables.visibility, "public")
+        )
+      ),
   ]);
 
   const [
@@ -1685,6 +1733,7 @@ export const findPublicCollectionById = async (
     classesData,
     schoolsData,
     customRulesData,
+    randomTablesData,
   ] = await Promise.all([
     findCompanionsByIds(companionJoins.map((r) => r.companionId)),
     findAncestriesByIds(ancestryJoins.map((r) => r.ancestryId)),
@@ -1693,6 +1742,7 @@ export const findPublicCollectionById = async (
     findClassesByIds(classJoins.map((r) => r.classId)),
     findSpellSchoolsByIds(schoolJoins.map((r) => r.schoolId)),
     findCustomRulesByIds(customRuleJoins.map((r) => r.customRuleId)),
+    findRandomTablesByIds(randomTableJoins.map((r) => r.randomTableId)),
   ]);
 
   const legendaryCount = monstersData.filter(
@@ -1720,6 +1770,7 @@ export const findPublicCollectionById = async (
     subclasses: subclassesData,
     classes: classesData,
     customRules: customRulesData,
+    randomTables: randomTablesData,
     spellSchools: schoolsData,
   };
 };

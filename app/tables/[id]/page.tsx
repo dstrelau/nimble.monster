@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { RandomTableHeader } from "@/app/tables/RandomTableHeader";
 import { UsedInAdventures } from "@/components/adventure/UsedInAdventures";
+import { AddToCollectionDialog } from "@/components/collection/AddToCollectionDialog";
 import { SubtablesView } from "@/components/random-table/SubtablesView";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
@@ -90,6 +91,14 @@ export default async function ShowRandomTableView({
       <RandomTableHeader
         randomTable={randomTable}
         showEditDeleteButtons={isCreator}
+        addToCollection={
+          session?.user ? (
+            <AddToCollectionDialog
+              type="randomTable"
+              randomTableId={randomTable.id}
+            />
+          ) : undefined
+        }
         conditions={conditions}
       />
 

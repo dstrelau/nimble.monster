@@ -100,6 +100,7 @@ const emptyCollection: Collection = {
   spellSchools: [],
   classes: [],
   customRules: [],
+  randomTables: [],
 };
 
 function deferred<T>() {

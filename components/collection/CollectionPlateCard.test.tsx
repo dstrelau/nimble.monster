@@ -72,6 +72,7 @@ const collection = (
   spellSchools: [],
   classes: [],
   customRules: [],
+  randomTables: [],
   ...overrides,
 });
 

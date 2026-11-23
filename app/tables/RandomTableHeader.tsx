@@ -2,7 +2,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { deleteRandomTable } from "@/app/%5Factions/_random-tables/contract";
 import { Attribution } from "@/components/shared/Attribution";
 import { FormattedText } from "@/components/shared/FormattedText";
@@ -16,12 +16,14 @@ import { getRandomTableEditUrl } from "@/lib/utils/url";
 interface RandomTableHeaderProps {
   randomTable: RandomTable;
   showEditDeleteButtons?: boolean;
+  addToCollection?: ReactNode;
   conditions: Condition[];
 }
 
 export function RandomTableHeader({
   randomTable,
   showEditDeleteButtons = false,
+  addToCollection,
   conditions,
 }: RandomTableHeaderProps) {
   const router = useRouter();
@@ -58,6 +60,7 @@ export function RandomTableHeader({
             )}
           </div>
           <div className="flex gap-2 print:hidden">
+            {addToCollection}
             {showEditDeleteButtons && (
               <>
                 <Button variant="outline" size="sm" asChild>

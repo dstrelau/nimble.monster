@@ -74,6 +74,7 @@ describe("GET /api/collections/[id]", () => {
       subclasses: [],
       classes: [],
       customRules: [],
+      randomTables: [],
       spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
@@ -177,6 +178,7 @@ describe("GET /api/collections/[id]", () => {
       subclasses: [],
       classes: [],
       customRules: [],
+      randomTables: [],
       spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
@@ -252,6 +254,7 @@ describe("GET /api/collections/[id]", () => {
       subclasses: [],
       classes: [],
       customRules: [],
+      randomTables: [],
       spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
@@ -303,6 +306,7 @@ describe("GET /api/collections/[id]", () => {
       subclasses: [],
       classes: [],
       customRules: [],
+      randomTables: [],
       spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
@@ -391,6 +395,7 @@ describe("GET /api/collections/[id]", () => {
       subclasses: [],
       classes: [],
       customRules: [],
+      randomTables: [],
       spellSchools: [],
       createdAt: new Date("2025-01-01"),
     };
@@ -458,6 +463,7 @@ describe("GET /api/collections/[id]", () => {
       subclasses: [],
       classes: [],
       customRules: [],
+      randomTables: [],
       spellSchools: [],
     };
 
@@ -498,6 +504,7 @@ describe("GET /api/collections/[id]", () => {
       subclasses: [],
       classes: [],
       customRules: [],
+      randomTables: [],
       spellSchools: [],
     };
 

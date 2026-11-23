@@ -5,7 +5,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getDatabase } from "@/lib/db/drizzle";
 import * as relations from "@/lib/db/relations";
 import * as schema from "@/lib/db/schema";
-import { MONSTERY_MONDAY, searchPublicCollections } from "./queries";
+import {
+  getMonsteryMondayOverview,
+  MONSTERY_MONDAY,
+  searchPublicCollections,
+} from "./queries";
 
 vi.mock("@/lib/db/drizzle", () => ({ getDatabase: vi.fn() }));
 
@@ -71,6 +75,10 @@ describe("searchPublicCollections contributors", () => {
       creatorId: alice,
       visibility: "public",
     });
+    await db.insert(schema.randomTables).values([
+      { id: uuid(500), name: "Table", creatorId: bob, visibility: "public" },
+      { id: uuid(501), name: "Secret", creatorId: dave, visibility: "private" },
+    ]);
     await db.insert(schema.monstersCollections).values(
       [1, 2, 3, 4].map((n) => ({
         monsterId: uuid(200 + n),
@@ -83,6 +91,11 @@ describe("searchPublicCollections contributors", () => {
     await db
       .insert(schema.ancestriesCollections)
       .values({ ancestryId: uuid(400), collectionId });
+    await db
+      .insert(schema.randomTablesCollections)
+      .values(
+        [500, 501].map((n) => ({ randomTableId: uuid(n), collectionId }))
+      );
   });
 
   it("lists creators of public entities, most contributions first", async () => {
@@ -95,13 +108,20 @@ describe("searchPublicCollections contributors", () => {
       ...params,
       featuredCollection: MONSTERY_MONDAY,
     });
-    // Alice: 2 monsters + 1 ancestry; Bob and Carol tie at 1 each. Dave's
-    // monster is private and the curator contributed nothing.
+    // Alice: 2 monsters + 1 ancestry; Bob: 1 monster + 1 reference table;
+    // Carol: 1 item. Dave's monster and table are private and the curator
+    // contributed nothing.
     const ids = featured.contributors?.map((u) => u.id);
-    expect(ids?.[0]).toBe(alice);
-    expect(ids?.slice(1).sort()).toEqual([bob, carol].sort());
+    expect(ids).toEqual([alice, bob, carol]);
 
     const [unfeatured] = await searchPublicCollections(params);
     expect(unfeatured.contributors).toBeUndefined();
+  });
+
+  it("counts public reference tables in the Monstery Monday overview", async () => {
+    const { counts } = await getMonsteryMondayOverview();
+    expect(counts.randomTables).toBe(1);
+    expect(counts.items).toBe(1);
+    expect(counts.ancestries).toBe(1);
   });
 });

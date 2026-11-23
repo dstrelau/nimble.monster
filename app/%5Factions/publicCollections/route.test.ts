@@ -305,6 +305,7 @@ it("counts explicit featured membership across the full archive without leaking 
       subclasses: 0,
       spellSchools: 0,
       rules: 0,
+      randomTables: 0,
     },
     creators: [],
     latest: null,

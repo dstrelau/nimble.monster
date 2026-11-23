@@ -71,6 +71,11 @@ export default async function MonsteryMondayPage() {
       value: counts.spellSchools,
     },
     { singular: "Rule", plural: "Rules", value: counts.rules },
+    {
+      singular: "Reference Table",
+      plural: "Reference Tables",
+      value: counts.randomTables,
+    },
   ];
   const shownStats = stats
     .filter(({ value }) => value > 0)

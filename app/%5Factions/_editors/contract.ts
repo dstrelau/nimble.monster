@@ -32,6 +32,7 @@ export interface SaveCollectionInput {
   spellSchoolIds: string[];
   classIds: string[];
   customRuleIds: string[];
+  randomTableIds: string[];
   /** Requires the monstery-monday permission; omit to leave unchanged. */
   monsteryMonday?: boolean;
   /** Position on the Monstery Monday page; required when monsteryMonday is true. */
