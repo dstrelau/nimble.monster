@@ -31,12 +31,12 @@ const FormattingDialog = () => (
     <DialogTrigger className="" title="Formatting supported. Click for more.">
       <Pilcrow className="size-4 stroke-muted-foreground hover:stroke-flame" />
     </DialogTrigger>
-    <DialogContent className="max-h-[90vh] overflow-y-scroll">
+    <DialogContent className="flex max-h-[90dvh] flex-col">
       <DialogHeader>
         <DialogTitle>Formatting</DialogTitle>
+        <DialogDescription>Basic markdown is supported.</DialogDescription>
       </DialogHeader>
-      <DialogDescription>Basic markdown is supported.</DialogDescription>
-      <div className="prose prose-neutral dark:prose-invert prose-sm">
+      <div className="prose prose-neutral dark:prose-invert prose-sm -mx-6 min-h-0 overflow-y-auto overscroll-contain px-6 [&_pre]:break-all [&_pre]:whitespace-pre-wrap">
         <pre>
           {`**bold** and  _italic_
 - lists
