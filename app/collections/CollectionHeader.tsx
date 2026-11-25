@@ -101,6 +101,7 @@ export function CollectionHeader({
             <EntityReactions
               entityType="collection"
               entityId={collection.id}
+              likeCount={collection.likeCount}
               showLabel
             />
             <DropdownMenu>

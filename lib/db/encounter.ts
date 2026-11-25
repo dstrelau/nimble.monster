@@ -55,6 +55,7 @@ async function loadEncounterOverview(
   return {
     id: encounter.id,
     name: encounter.name,
+    likeCount: encounter.likeCount,
     description: encounter.description || undefined,
     visibility: (encounter.visibility ?? "public") as "public" | "private",
     heroCount: encounter.heroCount,
@@ -117,6 +118,7 @@ async function loadEncounterOverviews(
   return rows.map(({ encounter, creator }) => ({
     id: encounter.id,
     name: encounter.name,
+    likeCount: encounter.likeCount,
     description: encounter.description || undefined,
     visibility: encounter.visibility === "private" ? "private" : "public",
     heroCount: encounter.heroCount,
@@ -201,6 +203,7 @@ async function loadEncounterFull(
   return {
     id: encounter.id,
     name: encounter.name,
+    likeCount: encounter.likeCount,
     description: encounter.description || undefined,
     visibility: (encounter.visibility ?? "public") as "public" | "private",
     heroCount: encounter.heroCount,
@@ -280,6 +283,7 @@ export const listEncountersWithMonstersForUser = async (
   return encounterRows.map((encounter) => ({
     id: encounter.id,
     name: encounter.name,
+    likeCount: encounter.likeCount,
     description: encounter.description || undefined,
     visibility: (encounter.visibility ?? "public") as "public" | "private",
     heroCount: encounter.heroCount,

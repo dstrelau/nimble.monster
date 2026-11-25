@@ -314,7 +314,11 @@ export const CollectionPlateCard = ({
           ) : undefined
         }
         reactionsSlot={
-          <EntityReactions entityType="collection" entityId={collection.id} />
+          <EntityReactions
+            entityType="collection"
+            entityId={collection.id}
+            likeCount={collection.likeCount}
+          />
         }
         actionsSlot={
           collection.visibility === "private" && (

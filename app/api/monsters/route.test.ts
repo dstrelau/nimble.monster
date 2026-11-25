@@ -4,7 +4,7 @@ import {
 } from "nimble-schemas/zod/monster";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { GET } from "./route";
+import { GET, POST } from "./route";
 
 vi.mock("@opentelemetry/api", () => ({
   trace: {
@@ -14,19 +14,25 @@ vi.mock("@opentelemetry/api", () => ({
   },
 }));
 
-vi.mock("@/lib/auth", () => ({
-  auth: vi.fn(),
+const {
+  mockAuth,
+  mockCreateMonster,
+  mockPaginateHazards,
+  mockPaginateMonsters,
+} = vi.hoisted(() => ({
+  mockAuth: vi.fn(),
+  mockCreateMonster: vi.fn(),
+  mockPaginateHazards: vi.fn(),
+  mockPaginateMonsters: vi.fn(),
 }));
 
-const { mockPaginateHazards, mockPaginateMonsters } = vi.hoisted(() => {
-  return {
-    mockPaginateHazards: vi.fn(),
-    mockPaginateMonsters: vi.fn(),
-  };
-});
+vi.mock("@/lib/auth", () => ({
+  auth: mockAuth,
+}));
 
 vi.mock("@/lib/services/monsters/repository", async () => {
   return {
+    createMonster: mockCreateMonster,
     paginateHazards: mockPaginateHazards,
     paginateMonsters: mockPaginateMonsters,
   };
@@ -1206,5 +1212,31 @@ describe("GET /api/monsters", () => {
         includePrivate: false,
       })
     );
+  });
+});
+
+describe("POST /api/monsters", () => {
+  it("preserves the legacy creation response without the internal like count", async () => {
+    const monster = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Shield Guardian",
+      level: "5",
+      levelInt: 5,
+      hp: 60,
+      visibility: "private",
+      creator: fakeCreator,
+    };
+    mockAuth.mockResolvedValueOnce({ user: fakeCreator });
+    mockCreateMonster.mockResolvedValueOnce({ ...monster, likeCount: 0 });
+
+    const response = await POST(
+      new Request("http://localhost:3000/api/monsters", {
+        method: "POST",
+        body: JSON.stringify({ name: monster.name }),
+      })
+    );
+
+    expect(response.status).toBe(201);
+    expect(await response.json()).toEqual(monster);
   });
 });

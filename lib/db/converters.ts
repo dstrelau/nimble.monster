@@ -57,6 +57,7 @@ interface UserRow {
 interface CollectionWithRelations {
   id: string;
   name: string;
+  likeCount: number;
   description: string | null;
   visibility: string | null;
   createdAt: string | null;
@@ -76,6 +77,7 @@ interface CollectionWithRelations {
 interface CompanionRow {
   id: string;
   name: string;
+  likeCount: number;
   kind: string;
   class: string;
   hpPerLevel: string;
@@ -240,6 +242,7 @@ export const toCollectionOverview = (
   ).length;
   return {
     id: c.id,
+    likeCount: c.likeCount,
     creator: toUser(c.creator),
     description: c.description ?? undefined,
     legendaryCount,
@@ -276,6 +279,7 @@ export const toCompanionMini = (
 export const toCompanion = (c: CompanionRow): Companion => {
   return {
     ...toCompanionMini(c),
+    likeCount: c.likeCount,
     kind: c.kind,
     class: c.class,
     size: c.size as Companion["size"],

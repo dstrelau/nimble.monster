@@ -77,7 +77,11 @@ export const Card = ({
         reactionsSlot={
           !selectable &&
           background.id && (
-            <EntityReactions entityType="background" entityId={background.id} />
+            <EntityReactions
+              entityType="background"
+              entityId={background.id}
+              likeCount={background.likeCount}
+            />
           )
         }
       />

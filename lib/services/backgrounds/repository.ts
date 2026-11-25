@@ -83,6 +83,7 @@ interface BackgroundFullData {
 const toBackgroundFromFullData = (data: BackgroundFullData): Background => ({
   id: data.background.id,
   name: data.background.name,
+  likeCount: data.background.likeCount,
   requirement: data.background.requirement || undefined,
   createdAt: data.background.createdAt
     ? new Date(data.background.createdAt)

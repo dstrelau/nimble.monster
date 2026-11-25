@@ -105,6 +105,7 @@ interface AncestryFullData {
 const toAncestryFromFullData = (data: AncestryFullData): Ancestry => ({
   id: data.ancestry.id,
   name: data.ancestry.name,
+  likeCount: data.ancestry.likeCount,
   visibility: data.ancestry.visibility === "private" ? "private" : "public",
   size: parseSizeFromRow(data.ancestry.size),
   rarity: (data.ancestry.rarity ?? "common") as AncestryRarity,

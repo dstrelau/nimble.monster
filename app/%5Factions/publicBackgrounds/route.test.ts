@@ -109,6 +109,7 @@ it("retains the public domain contract and relationships without accepting visib
         id: "a",
         name: "Alpha",
         requirement: "DEX 2",
+        likeCount: 2,
         description: "Track",
         createdAt: date,
         updatedAt: date,

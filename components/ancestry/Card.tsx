@@ -110,7 +110,11 @@ export const Card = ({
         reactionsSlot={
           !selectable &&
           ancestry.id && (
-            <EntityReactions entityType="ancestry" entityId={ancestry.id} />
+            <EntityReactions
+              entityType="ancestry"
+              entityId={ancestry.id}
+              likeCount={ancestry.likeCount}
+            />
           )
         }
         actionsSlot={

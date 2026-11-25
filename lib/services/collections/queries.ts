@@ -1103,6 +1103,7 @@ export const searchPublicCollections = async ({
 
       return {
         id: cid,
+        likeCount: row.collections.likeCount,
         creator: toUserFromRow(row.users),
         description: row.collections.description ?? undefined,
         legendaryCount,

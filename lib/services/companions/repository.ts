@@ -72,6 +72,7 @@ interface CompanionFullData {
 const toCompanionFromFullData = (data: CompanionFullData): Companion => ({
   id: data.companion.id,
   name: data.companion.name,
+  likeCount: data.companion.likeCount,
   hp_per_level: data.companion.hpPerLevel,
   wounds: data.companion.wounds,
   visibility: (data.companion.visibility ?? "public") as "public" | "private",

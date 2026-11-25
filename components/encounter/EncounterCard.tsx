@@ -104,7 +104,11 @@ export const EncounterCard = ({
         creator={encounter.creator}
         reactionsSlot={
           encounter.id && (
-            <EntityReactions entityType="encounter" entityId={encounter.id} />
+            <EntityReactions
+              entityType="encounter"
+              entityId={encounter.id}
+              likeCount={encounter.likeCount}
+            />
           )
         }
         actionsSlot={

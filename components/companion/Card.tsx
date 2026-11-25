@@ -177,7 +177,11 @@ export const Card = ({
         className={cn(selectable && "relative z-40")}
         reactionsSlot={
           companion.id && (
-            <EntityReactions entityType="companion" entityId={companion.id} />
+            <EntityReactions
+              entityType="companion"
+              entityId={companion.id}
+              likeCount={companion.likeCount}
+            />
           )
         }
         actionsSlot={

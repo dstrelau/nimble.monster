@@ -9,6 +9,7 @@ export interface BackgroundMini {
 }
 
 export interface Background extends BackgroundMini {
+  likeCount?: number;
   description: string;
   creator: User;
   source?: Source;

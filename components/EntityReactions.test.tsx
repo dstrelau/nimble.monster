@@ -86,8 +86,8 @@ describe("EntityReactions", () => {
       counts: { thumbs_up: 2, thumbs_down: 0 },
       mine: ["thumbs_up"],
     });
-    const { rerender } = render(
-      <EntityReactions entityType="item" entityId="i1" />,
+    const { container, rerender } = render(
+      <EntityReactions entityType="item" entityId="i1" likeCount={5} />,
       { wrapper }
     );
     await screen.findByRole("button", { name: "Remove upvote" });
@@ -110,7 +110,7 @@ describe("EntityReactions", () => {
       counts: { thumbs_up: 2, thumbs_down: 0 },
       mine: [],
     });
-    rerender(<EntityReactions entityType="item" entityId="i1" />);
+    rerender(<EntityReactions entityType="item" entityId="i1" likeCount={5} />);
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Upvote" })).toHaveTextContent(
         "2"
@@ -131,8 +131,9 @@ describe("EntityReactions", () => {
       "2"
     );
     mockUseSession.mockReturnValue({ status: "unauthenticated" });
-    rerender(<EntityReactions entityType="item" entityId="i1" />);
+    rerender(<EntityReactions entityType="item" entityId="i1" likeCount={5} />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(container).toHaveTextContent("5 likes");
     client.clear();
   });
 
@@ -178,17 +179,30 @@ describe("EntityReactions", () => {
     client.clear();
   });
 
-  it("renders nothing when unauthenticated", () => {
-    mockUseSession.mockReturnValue({ status: "unauthenticated" });
+  it.each([
+    { showLabel: false, likeCount: 7, text: "7 likes" },
+    { showLabel: true, likeCount: 1, text: "1 like" },
+    { showLabel: true, likeCount: 0, text: "0 likes" },
+  ])(
+    "shows $text as a read-only count for guests",
+    ({ showLabel, likeCount, text }) => {
+      mockUseSession.mockReturnValue({ status: "unauthenticated" });
 
-    const { container } = render(
-      <EntityReactions entityType="monster" entityId="m1" />,
-      { wrapper: createWrapper() }
-    );
+      const { container } = render(
+        <EntityReactions
+          entityType="monster"
+          entityId="m1"
+          likeCount={likeCount}
+          showLabel={showLabel}
+        />,
+        { wrapper: createWrapper() }
+      );
 
-    expect(container).toBeEmptyDOMElement();
-    expect(mockGetMyReactions).not.toHaveBeenCalled();
-  });
+      expect(container).toHaveTextContent(text);
+      expect(screen.queryByRole("button")).not.toBeInTheDocument();
+      expect(fetch).not.toHaveBeenCalled();
+    }
+  );
 
   it("shows only the icon when there are zero upvotes", async () => {
     mockGetMyReactions.mockResolvedValue({

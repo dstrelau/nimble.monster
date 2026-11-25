@@ -171,7 +171,11 @@ export function Card({
         reactionsSlot={
           !selectable &&
           subclass.id && (
-            <EntityReactions entityType="subclass" entityId={subclass.id} />
+            <EntityReactions
+              entityType="subclass"
+              entityId={subclass.id}
+              likeCount={subclass.likeCount}
+            />
           )
         }
         actionsSlot={

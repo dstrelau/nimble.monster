@@ -101,6 +101,7 @@ export interface Companion extends CompanionMini {
   kind: string;
   class: string;
   size: MonsterSize;
+  likeCount?: number;
   saves: string;
   abilities: Ability[];
   actions: Action[];
@@ -152,6 +153,7 @@ export interface Collection extends CollectionOverview {
 export interface CollectionOverview {
   id: string;
   creator: User;
+  likeCount?: number;
   // Creators of the collection's public entities; only loaded for featured
   // collections.
   contributors?: User[];
@@ -185,6 +187,7 @@ export interface EncounterOverview {
   id: string;
   creator: User;
   name: string;
+  likeCount?: number;
   description?: string;
   visibility: CollectionVisibilityType;
   heroCount: number;

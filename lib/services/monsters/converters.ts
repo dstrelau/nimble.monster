@@ -70,6 +70,7 @@ interface MonsterRow extends MonsterClassifications, MonsterDamageInteractions {
   deadly: string | null;
   remixedFromId: string | null;
   isOfficial: boolean | null;
+  likeCount: number;
 }
 
 interface UserRow {
@@ -165,6 +166,7 @@ export const toBestiaryEntryMini = (m: MonsterRow): BestiaryEntryMini =>
 export const toMonster = (m: MonsterWithRelations): Monster => {
   return {
     ...toMonsterMini(m),
+    likeCount: m.likeCount,
     kind: m.kind,
     role: m.role as Monster["role"],
     creatureTypes: m.creatureTypes ?? [],

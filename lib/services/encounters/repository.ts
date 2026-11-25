@@ -304,6 +304,7 @@ const searchEncounters = async ({
   return encounterRows.map((row) => ({
     id: row.encounters.id,
     name: row.encounters.name,
+    likeCount: row.encounters.likeCount,
     description: row.encounters.description ?? undefined,
     visibility: row.encounters.visibility === "private" ? "private" : "public",
     heroCount: row.encounters.heroCount,

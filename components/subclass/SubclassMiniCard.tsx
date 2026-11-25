@@ -85,7 +85,11 @@ export function SubclassMiniCard({
         reactionsSlot={
           !selectable &&
           subclass.id && (
-            <EntityReactions entityType="subclass" entityId={subclass.id} />
+            <EntityReactions
+              entityType="subclass"
+              entityId={subclass.id}
+              likeCount={subclass.likeCount}
+            />
           )
         }
         actionsSlot={

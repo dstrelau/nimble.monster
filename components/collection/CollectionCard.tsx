@@ -496,7 +496,11 @@ const ClassicCollectionCard = ({
         creator={collection.creator}
         reactionsSlot={
           collection.id && (
-            <EntityReactions entityType="collection" entityId={collection.id} />
+            <EntityReactions
+              entityType="collection"
+              entityId={collection.id}
+              likeCount={collection.likeCount}
+            />
           )
         }
         actionsSlot={

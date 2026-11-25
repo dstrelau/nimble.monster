@@ -148,6 +148,7 @@ export default async function CustomRulePage({ params }: PageProps) {
             <EntityReactions
               entityType="customRule"
               entityId={rule.id}
+              likeCount={rule.likeCount}
               showLabel
             />
           </div>

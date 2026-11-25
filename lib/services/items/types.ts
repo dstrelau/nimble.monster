@@ -28,6 +28,7 @@ export interface ItemMini {
 }
 
 export interface Item extends ItemMini {
+  likeCount?: number;
   description: string;
   moreInfo?: string;
   creator: User;

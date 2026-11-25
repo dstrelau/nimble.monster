@@ -179,5 +179,6 @@ export const POST = telemetry(async (request: Request) => {
     "monster.id": newMonster.id,
   });
 
-  return NextResponse.json(newMonster, { status: 201 });
+  const { likeCount: _likeCount, ...response } = newMonster;
+  return NextResponse.json(response, { status: 201 });
 });

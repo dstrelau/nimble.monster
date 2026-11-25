@@ -4,16 +4,19 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { ReactableEntityType } from "@/lib/db/schema";
 import { useEntityReactions } from "@/lib/hooks/useEntityReactions";
+import { cn } from "@/lib/utils";
 
 interface EntityReactionsProps {
   entityType: ReactableEntityType;
   entityId: string;
+  likeCount?: number;
   showLabel?: boolean;
 }
 
 export function EntityReactions({
   entityType,
   entityId,
+  likeCount = 0,
   showLabel = false,
 }: EntityReactionsProps) {
   const { isAuthenticated, counts, mine, toggle } = useEntityReactions(
@@ -21,7 +24,28 @@ export function EntityReactions({
     entityId
   );
 
-  if (!isAuthenticated) return null;
+  if (!isAuthenticated) {
+    return (
+      <span
+        data-card-export-hide="true"
+        className={cn(
+          "relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap px-2.5 text-foreground",
+          showLabel ? "h-8 text-sm font-medium" : "h-7 text-xs font-bold"
+        )}
+      >
+        <ThumbsUp
+          aria-hidden="true"
+          className={showLabel ? "size-4" : "order-2 size-5"}
+        />
+        <span>
+          {likeCount}
+          <span className={showLabel ? undefined : "sr-only"}>
+            {likeCount === 1 ? " like" : " likes"}
+          </span>
+        </span>
+      </span>
+    );
+  }
 
   const count = counts?.thumbs_up ?? 0;
   const reacted = mine.includes("thumbs_up");

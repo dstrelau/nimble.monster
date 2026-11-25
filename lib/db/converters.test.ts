@@ -4,6 +4,7 @@ import { toCompanion } from "./converters";
 const baseCompanionRow = {
   id: "test-id",
   name: "Test Companion",
+  likeCount: 11,
   kind: "Wolf",
   class: "Hunter",
   hpPerLevel: "5",
@@ -53,6 +54,7 @@ describe("toCompanion", () => {
     const result = toCompanion(baseCompanionRow);
     expect(result.id).toBe("test-id");
     expect(result.name).toBe("Test Companion");
+    expect(result.likeCount).toBe(11);
     expect(result.kind).toBe("Wolf");
     expect(result.class).toBe("Hunter");
     expect(result.hp_per_level).toBe("5");

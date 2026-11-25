@@ -284,6 +284,7 @@ export function Card({
             <EntityReactions
               entityType="spellSchool"
               entityId={spellSchool.id}
+              likeCount={spellSchool.likeCount}
             />
           )
         }

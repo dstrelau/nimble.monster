@@ -42,6 +42,7 @@ interface AwardRow {
 }
 
 interface ItemWithRelations extends ItemRow {
+  likeCount: number;
   creator: UserRow;
   source: {
     id: string;
@@ -72,6 +73,7 @@ export const toItemMini = (i: ItemRow): ItemMini => ({
 export const toItem = (i: ItemWithRelations): Item => {
   return {
     ...toItemMini(i),
+    likeCount: i.likeCount,
     description: i.description,
     moreInfo: i.moreInfo || undefined,
     imageBackdrop: i.imageBackdrop || undefined,

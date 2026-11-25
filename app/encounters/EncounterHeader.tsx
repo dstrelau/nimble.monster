@@ -69,6 +69,7 @@ export function EncounterHeader({
             <EntityReactions
               entityType="encounter"
               entityId={encounter.id}
+              likeCount={encounter.likeCount}
               showLabel
             />
             {showEditDeleteButtons && (

@@ -480,6 +480,7 @@ export async function getRecentPublicContent(
           data: toCollectionOverview({
             id: c.collections.id,
             name: c.collections.name,
+            likeCount: c.collections.likeCount,
             description: c.collections.description,
             visibility: c.collections.visibility,
             createdAt: c.collections.createdAt,

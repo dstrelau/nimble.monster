@@ -178,6 +178,7 @@ interface MonsterFullData {
 
 const toMonsterFromFullData = (data: MonsterFullData): Monster => ({
   id: data.monster.id,
+  likeCount: data.monster.likeCount,
   hp: data.monster.hp,
   hpPerHero: data.monster.hpPerHero ?? null,
   legendary: data.monster.legendary || false,
@@ -258,6 +259,7 @@ const toHazardFromFullData = (data: MonsterFullData): Hazard => {
   const entry = toMonsterFromFullData(data);
   return {
     id: entry.id,
+    likeCount: entry.likeCount,
     hazard: true,
     ...(entry.hp > 0 ? { hp: entry.hp } : {}),
     level: entry.level,

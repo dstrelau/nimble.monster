@@ -552,7 +552,11 @@ export const Card = ({
         disableLink={noInteractive}
         actionsSlot={<CardActions monster={monster} />}
         reactionsSlot={
-          <EntityReactions entityType="monster" entityId={monster.id} />
+          <EntityReactions
+            entityType="monster"
+            entityId={monster.id}
+            likeCount={monster.likeCount}
+          />
         }
         paperforgeSlot={
           !noInteractive &&

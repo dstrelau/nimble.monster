@@ -72,6 +72,7 @@ export interface AdventureNode {
 export interface Adventure {
   id: string;
   name: string;
+  likeCount?: number;
   tagline: string;
   summary: string;
   visibility: AdventureVisibility;
@@ -84,6 +85,7 @@ export interface Adventure {
 export interface AdventureOverview {
   id: string;
   name: string;
+  likeCount?: number;
   tagline: string;
   summary: string;
   visibility: AdventureVisibility;
@@ -174,6 +176,7 @@ function toAdventureOverview({
   return {
     id: adventure.id,
     name: adventure.name,
+    likeCount: adventure.likeCount,
     tagline: adventure.tagline,
     summary: adventure.summary,
     visibility: adventure.visibility,
@@ -312,6 +315,7 @@ export async function findAdventure(id: string): Promise<Adventure | null> {
   return {
     id: row.adventure.id,
     name: row.adventure.name,
+    likeCount: row.adventure.likeCount,
     tagline: row.adventure.tagline,
     summary: row.adventure.summary,
     visibility: row.adventure.visibility,

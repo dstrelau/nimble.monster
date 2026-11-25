@@ -218,7 +218,11 @@ export function ClassDetailView({
         awards={classEntity.awards}
         reactionsSlot={
           classEntity.id && (
-            <EntityReactions entityType="class" entityId={classEntity.id} />
+            <EntityReactions
+              entityType="class"
+              entityId={classEntity.id}
+              likeCount={classEntity.likeCount}
+            />
           )
         }
         actionsSlot={

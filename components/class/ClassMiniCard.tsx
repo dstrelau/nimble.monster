@@ -85,7 +85,11 @@ export function ClassMiniCard({
         reactionsSlot={
           !selectable &&
           classEntity.id && (
-            <EntityReactions entityType="class" entityId={classEntity.id} />
+            <EntityReactions
+              entityType="class"
+              entityId={classEntity.id}
+              likeCount={classEntity.likeCount}
+            />
           )
         }
         actionsSlot={

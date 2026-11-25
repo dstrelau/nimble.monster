@@ -81,6 +81,7 @@ export default async function AdventurePage({ params }: PageProps) {
           <EntityReactions
             entityType="adventure"
             entityId={adventure.id}
+            likeCount={adventure.likeCount}
             showLabel
           />
           {isOwner && (

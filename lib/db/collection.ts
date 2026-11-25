@@ -336,6 +336,7 @@ export const listCollectionsWithMonstersForUser = async (
     return {
       id: c.id,
       name: c.name,
+      likeCount: c.likeCount,
       description: c.description || undefined,
       visibility: c.visibility as "public" | "private",
       creator: toUser(user),
@@ -1471,6 +1472,7 @@ async function loadCollectionOverview(
   return {
     id: collection.id,
     name: collection.name,
+    likeCount: collection.likeCount,
     description: collection.description || undefined,
     visibility: collection.visibility as "public" | "private",
     creator: toUser(creator),
@@ -1591,6 +1593,7 @@ async function loadCollectionFull(
   return {
     id: collection.id,
     name: collection.name,
+    likeCount: collection.likeCount,
     description: collection.description || undefined,
     visibility: collection.visibility as "public" | "private",
     creator: toUser(creator),

@@ -149,6 +149,7 @@ export interface MonsterTeamMember {
 }
 
 interface BestiaryEntryBase {
+  likeCount?: number;
   abilities: Ability[];
   actions: Action[];
   actionPreface: string;

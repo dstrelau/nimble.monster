@@ -34,6 +34,7 @@ export interface AncestryMini {
 }
 
 export interface Ancestry extends AncestryMini {
+  likeCount?: number;
   description: string;
   abilities: AncestryAbility[];
   creator: User;

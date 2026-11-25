@@ -53,7 +53,11 @@ export function AdventureList({
           <CardFooterLayout
             creator={adventure.creator}
             reactionsSlot={
-              <EntityReactions entityType="adventure" entityId={adventure.id} />
+              <EntityReactions
+                entityType="adventure"
+                entityId={adventure.id}
+                likeCount={adventure.likeCount}
+              />
             }
             actionsSlot={
               adventure.visibility === "private" && (

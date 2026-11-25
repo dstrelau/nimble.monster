@@ -52,6 +52,7 @@ export interface ItemFullData {
 export const toItemFromFullData = (data: ItemFullData): Item => ({
   id: data.item.id,
   name: data.item.name,
+  likeCount: data.item.likeCount,
   kind: data.item.kind || undefined,
   rarity: (data.item.rarity ?? "unspecified") as ItemRarity,
   visibility: (data.item.visibility ?? "public") as "public" | "private",

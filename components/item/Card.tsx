@@ -233,7 +233,13 @@ export const Card = ({
         )}
         disableLink={noInteractive}
         reactionsSlot={
-          item.id && <EntityReactions entityType="item" entityId={item.id} />
+          item.id && (
+            <EntityReactions
+              entityType="item"
+              entityId={item.id}
+              likeCount={item.likeCount}
+            />
+          )
         }
         actionsSlot={
           item.id && (
