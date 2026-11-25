@@ -4,8 +4,6 @@
 
 @plugin "@tailwindcss/typography";
 
-@tailwind utilities;
-
 .item-card-print-sheet {
     --background: #faf5ea;
     --foreground: #3a3226;
