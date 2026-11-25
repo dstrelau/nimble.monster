@@ -2,11 +2,19 @@ import { ArrowRight, BookOpen, Dices, FolderOpen, Table2 } from "lucide-react";
 import Link from "next/link";
 import { ClassMiniCard } from "@/components/class/ClassMiniCard";
 import { InkArt } from "@/components/home/InkArt";
+import {
+  MONSTERY_MONDAY_BANNER_WEEK,
+  MonsteryMondayBanner,
+} from "@/components/home/MonsteryMondayBanner";
 import { GlobalSearchTrigger } from "@/components/layout/GlobalSearchDialog";
 import { MonsterCardWithOverflow } from "@/components/monster/MonsterCardWithOverflow";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { findOfficialClassesByNames } from "@/lib/services/classes/repository";
+import {
+  findMonsteryMondayWeek,
+  getMonsteryMondayOverview,
+} from "@/lib/services/collections/queries";
 import { OFFICIAL_USER_ID } from "@/lib/services/monsters/official";
 import { monstersService } from "@/lib/services/monsters/service";
 
@@ -61,30 +69,47 @@ const HERO_LINEUP = [
 
 const PREP_ICONS = ["torch", "potion", "spellbook-open"] as const;
 
-export async function FieldGuideHome() {
-  const [officialMonsters, officialClasses, homebrewMonsters] =
-    await Promise.all([
-      monstersService.paginatePublicMonsters({
-        creatorId: OFFICIAL_USER_ID,
-        sort: "name",
-        limit: 1,
-      }),
-      findOfficialClassesByNames(["Berserker"]),
-      monstersService.paginatePublicMonsters({
-        excludeCreatorId: OFFICIAL_USER_ID,
-        sort: "-createdAt",
-        limit: 1,
-      }),
-    ]);
+interface FieldGuideHomeProps {
+  signedIn: boolean;
+}
+
+export async function FieldGuideHome({ signedIn }: FieldGuideHomeProps) {
+  const [
+    officialMonsters,
+    officialClasses,
+    homebrewMonsters,
+    monsteryMondayWeek,
+    monsteryMonday,
+  ] = await Promise.all([
+    monstersService.paginatePublicMonsters({
+      creatorId: OFFICIAL_USER_ID,
+      sort: "name",
+      limit: 1,
+    }),
+    findOfficialClassesByNames(["Berserker"]),
+    monstersService.paginatePublicMonsters({
+      excludeCreatorId: OFFICIAL_USER_ID,
+      sort: "-createdAt",
+      limit: 1,
+    }),
+    findMonsteryMondayWeek(MONSTERY_MONDAY_BANNER_WEEK),
+    getMonsteryMondayOverview(),
+  ]);
   const officialClass = officialClasses.get("Berserker");
 
   return (
     <div className="space-y-12 pb-4 md:space-y-16">
+      <MonsteryMondayBanner
+        week={monsteryMondayWeek}
+        monsters={monsteryMonday.counts.monsters}
+        items={monsteryMonday.counts.items}
+        creators={monsteryMonday.creators.length}
+      />
       <section
         aria-labelledby="field-guide-heading"
         className="grid items-center gap-8 md:grid-cols-2 md:gap-4"
       >
-        <div className="relative z-10 space-y-6 py-4 md:py-10">
+        <div className="relative z-10 space-y-6 pb-4 md:pb-10">
           <p className="font-condensed text-sm font-bold uppercase tracking-[0.2em] text-primary">
             A field guide to Nimble
           </p>
@@ -95,15 +120,14 @@ export async function FieldGuideHome() {
             Your next session starts here.
           </h1>
           <p className="max-w-md text-lg md:text-xl">
-            Official reference. Community imagination.
-            <br />
-            More to bring to your Nimble table.
+            The official rules and bestiary, plus thousands of monsters, items,
+            and heroes from the Nimble community.
           </p>
           <GlobalSearchTrigger />
           <div className="flex flex-wrap gap-3">
             <Button size="lg" asChild>
-              <Link href="#discover">
-                Explore homebrew <ArrowRight aria-hidden="true" />
+              <Link href="/monsters">
+                Browse monsters <ArrowRight aria-hidden="true" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
@@ -123,7 +147,7 @@ export async function FieldGuideHome() {
           id="prep-heading"
           className="font-slab text-3xl font-bold tracking-tight md:text-4xl"
         >
-          Find something for your next session.
+          Prep by what the table needs.
         </h2>
         <div className="grid gap-7 md:grid-cols-3">
           {PREP_GROUPS.map((group, index) => (
@@ -155,11 +179,7 @@ export async function FieldGuideHome() {
         </div>
       </section>
 
-      <section
-        id="discover"
-        aria-labelledby="discover-heading"
-        className="scroll-mt-6 space-y-6"
-      >
+      <section aria-labelledby="discover-heading" className="space-y-6">
         <div>
           <h2
             id="discover-heading"
@@ -204,7 +224,7 @@ export async function FieldGuideHome() {
             </Link>
           </div>
           <div className="min-w-0 space-y-3">
-            <Badge variant="outline">Homebrew · Monster</Badge>
+            <Badge variant="outline">Homebrew · Newest monster</Badge>
             {homebrewMonsters.data.map((monster) => (
               <MonsterCardWithOverflow key={monster.id} monster={monster} />
             ))}
@@ -215,10 +235,10 @@ export async function FieldGuideHome() {
               </p>
             )}
             <Link
-              href="/my/library"
+              href="/monsters"
               className="inline-flex items-center gap-2 text-primary hover:underline"
             >
-              Make something new{" "}
+              See the latest homebrew{" "}
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </div>
@@ -264,7 +284,7 @@ export async function FieldGuideHome() {
               Share your creation <ArrowRight aria-hidden="true" />
             </Link>
           </Button>
-          <p className="text-sm">Sign in to publish.</p>
+          {!signedIn && <p className="text-sm">Sign in to publish.</p>}
         </div>
       </section>
 

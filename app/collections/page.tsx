@@ -1,10 +1,16 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { CollectionsListView } from "@/components/collection/CollectionsListView";
-import { Button } from "@/components/ui/button";
+import {
+  MONSTERY_MONDAY_BANNER_WEEK,
+  MonsteryMondayBanner,
+} from "@/components/home/MonsteryMondayBanner";
 import { getQueryClient } from "@/lib/queryClient";
+import {
+  findMonsteryMondayWeek,
+  getMonsteryMondayOverview,
+} from "@/lib/services/collections/queries";
 import { publicCollectionPage } from "@/lib/services/collections/service";
 import { publicCollectionsInfiniteQueryOptions } from "./actions";
 
@@ -30,17 +36,25 @@ export default async function CollectionsPage({
   const params = parseResult.data;
 
   const queryClient = getQueryClient();
-  await queryClient.prefetchInfiniteQuery({
-    ...publicCollectionsInfiniteQueryOptions(params),
-    queryFn: ({ pageParam }) => publicCollectionPage({ pageParam, ...params }),
-  });
+  const [monsteryMondayWeek, monsteryMonday] = await Promise.all([
+    findMonsteryMondayWeek(MONSTERY_MONDAY_BANNER_WEEK),
+    getMonsteryMondayOverview(),
+    queryClient.prefetchInfiniteQuery({
+      ...publicCollectionsInfiniteQueryOptions(params),
+      queryFn: ({ pageParam }) =>
+        publicCollectionPage({ pageParam, ...params }),
+    }),
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="mb-6 flex justify-end">
-        <Button asChild variant="outline">
-          <Link href="/monstery-monday">Monstery Monday</Link>
-        </Button>
+      <div className="mb-6">
+        <MonsteryMondayBanner
+          week={monsteryMondayWeek}
+          monsters={monsteryMonday.counts.monsters}
+          items={monsteryMonday.counts.items}
+          creators={monsteryMonday.creators.length}
+        />
       </div>
       <CollectionsListView />
     </HydrationBoundary>

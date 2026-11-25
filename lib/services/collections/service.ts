@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { CollectionOverview } from "@/lib/types";
-import { searchPublicCollections } from "./queries";
+import { MONSTERY_MONDAY, searchPublicCollections } from "./queries";
 
 export const PublicCollectionPageSchema = z.object({
   search: z.string().nullish(),
@@ -34,6 +34,10 @@ export async function publicCollectionPage(
     searchTerm: parsed.search || undefined,
     featuredCollection: parsed.featuredCollection,
     excludeLatest: !!parsed.featuredCollection,
+    // The main list leaves Monstery Monday to its own page.
+    excludeFeaturedCollection: parsed.featuredCollection
+      ? undefined
+      : MONSTERY_MONDAY,
     sortBy: field === "name" ? "name" : "createdAt",
     sortDirection: descending ? "desc" : "asc",
     limit: parsed.limit + 1,

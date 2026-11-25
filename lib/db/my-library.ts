@@ -3,6 +3,7 @@ import {
   type MonsterArtwork,
   monsterArtworkSchema,
 } from "@/lib/monster-artwork";
+import { notMonsteryMonday } from "@/lib/services/collections/queries";
 import {
   getAdventureUrl,
   getAncestryUrl,
@@ -258,7 +259,8 @@ export async function getPublicLibraryCounts(
       .where(
         and(
           eq(collections.creatorId, userId),
-          eq(collections.visibility, "public")
+          eq(collections.visibility, "public"),
+          notMonsteryMonday()
         )
       ),
     db

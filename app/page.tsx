@@ -14,7 +14,7 @@ import { itemsService } from "@/lib/services/items";
 export default async function HomePage() {
   const session = await auth();
   if (await isFeatureFlagEnabled(session?.user.id, "field-guide")) {
-    return <FieldGuideHome />;
+    return <FieldGuideHome signedIn={!!session?.user} />;
   }
   const featuredFamily = await getRandomFeaturedFamily();
   const recentItems = await itemsService.getRandomRecentItems(3);

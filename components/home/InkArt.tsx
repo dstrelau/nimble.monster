@@ -12,6 +12,12 @@ const ART = {
   potion: { width: 225, height: 420, label: "Potion" },
   "spellbook-open": { width: 420, height: 288, label: "Open spellbook" },
   "war-banner": { width: 196, height: 420, label: "War banner" },
+  "floating-eye": {
+    width: 781,
+    height: 1000,
+    label: "Floating eye",
+    src: "/monstery-monday/floating-eye",
+  },
 } as const;
 
 export type InkArtName = keyof typeof ART;
@@ -23,7 +29,9 @@ interface InkArtProps {
 }
 
 function mask(name: InkArtName, layer: "ink" | "fill"): CSSProperties {
-  const url = `url(/field-guide-art/${name}-${layer}.webp)`;
+  const art = ART[name];
+  const src = "src" in art ? art.src : `/field-guide-art/${name}`;
+  const url = `url(${src}-${layer}.webp)`;
   return {
     maskImage: url,
     WebkitMaskImage: url,

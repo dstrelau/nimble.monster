@@ -118,6 +118,8 @@ export interface SearchCollectionsParams {
   searchTerm?: string;
   featuredCollection?: string;
   excludeLatest?: boolean;
+  /** Leaves out every collection in this featured group. */
+  excludeFeaturedCollection?: string;
   sortBy: CollectionSortBy;
   sortDirection: CollectionSortDirection;
   limit: number;
@@ -945,6 +947,7 @@ export const searchPublicCollections = async ({
   searchTerm,
   featuredCollection,
   excludeLatest,
+  excludeFeaturedCollection,
   sortBy,
   sortDirection = "asc",
   limit,
@@ -974,6 +977,14 @@ export const searchPublicCollections = async ({
         )
       );
     }
+  }
+
+  if (excludeFeaturedCollection) {
+    const notFeatured = or(
+      isNull(collections.featuredCollection),
+      ne(collections.featuredCollection, excludeFeaturedCollection)
+    );
+    if (notFeatured) whereConditions.push(notFeatured);
   }
 
   if (searchTerm) {
@@ -1128,6 +1139,34 @@ const monsteryMondayFilter = and(
   eq(collections.visibility, "public"),
   eq(collections.featuredCollection, MONSTERY_MONDAY)
 );
+
+/** Leaves out Monstery Monday collections where the archive has its own page. */
+export function notMonsteryMonday() {
+  return or(
+    isNull(collections.featuredCollection),
+    ne(collections.featuredCollection, MONSTERY_MONDAY)
+  );
+}
+
+/** Whether the user has made any public Monstery Monday collection. */
+export async function hasMonsteryMondayCollections(creatorId: string) {
+  const [row] = await getDatabase()
+    .select({ id: collections.id })
+    .from(collections)
+    .where(and(monsteryMondayFilter, eq(collections.creatorId, creatorId)))
+    .limit(1);
+  return !!row;
+}
+
+/** One week's public Monstery Monday collection, or null until it is posted. */
+export async function findMonsteryMondayWeek(week: number) {
+  const [row] = await getDatabase()
+    .select({ id: collections.id, name: collections.name })
+    .from(collections)
+    .where(and(monsteryMondayFilter, eq(collections.featuredSequence, week)))
+    .limit(1);
+  return row ?? null;
+}
 
 // Distinct public entities of one type across the archive, so an entity
 // featured in several weeks counts once.

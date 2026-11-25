@@ -15,6 +15,10 @@ import {
   userProfileMonstersInfiniteQueryOptions,
 } from "@/app/u/[username]/hooks";
 import ProfileEntityContent from "@/app/u/[username]/ProfileEntityContent";
+import {
+  MONSTERY_MONDAY_BANNER_WEEK,
+  MonsteryMondayBanner,
+} from "@/components/home/MonsteryMondayBanner";
 import { MyLibrarySidebar } from "@/components/layout/MyLibrarySidebar";
 import { UserAvatar } from "@/components/layout/UserAvatar";
 import * as db from "@/lib/db";
@@ -22,6 +26,11 @@ import { officialConditionsQueryOptions } from "@/lib/hooks/useConditions";
 import { getQueryClient } from "@/lib/queryClient";
 import { ancestriesService } from "@/lib/services/ancestries/service";
 import { backgroundsService } from "@/lib/services/backgrounds/service";
+import {
+  findMonsteryMondayWeek,
+  getMonsteryMondayOverview,
+  hasMonsteryMondayCollections,
+} from "@/lib/services/collections/queries";
 import { paginatePublicEncounters } from "@/lib/services/encounters/pagination";
 import { paginatePublicHazards } from "@/lib/services/hazards";
 import { itemsService } from "@/lib/services/items";
@@ -237,13 +246,34 @@ async function loadProfileEntityContent(
           spellSchools={await db.listPublicSpellSchoolsForUser(userId)}
         />
       );
-    case "collections":
-      return (
+    case "collections": {
+      const [collections, showBanner] = await Promise.all([
+        db.listPublicCollectionsForUser(userId),
+        hasMonsteryMondayCollections(userId),
+      ]);
+      const content = (
         <ProfileEntityContent
           entityType="collections"
-          collections={await db.listPublicCollectionsForUser(userId)}
+          collections={collections}
         />
       );
+      if (!showBanner) return content;
+      const [week, overview] = await Promise.all([
+        findMonsteryMondayWeek(MONSTERY_MONDAY_BANNER_WEEK),
+        getMonsteryMondayOverview(),
+      ]);
+      return (
+        <div className="space-y-6">
+          <MonsteryMondayBanner
+            week={week}
+            monsters={overview.counts.monsters}
+            items={overview.counts.items}
+            creators={overview.creators.length}
+          />
+          {content}
+        </div>
+      );
+    }
     case "rules":
       return (
         <ProfileEntityContent

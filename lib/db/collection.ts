@@ -20,6 +20,7 @@ import { toAncestryMini } from "@/lib/services/ancestries/converters";
 import { findAncestriesByIds } from "@/lib/services/ancestries/repository";
 import { toBackgroundMini } from "@/lib/services/backgrounds/converters";
 import { findBackgroundsByIds } from "@/lib/services/backgrounds/repository";
+import { notMonsteryMonday } from "@/lib/services/collections/queries";
 import { findCompanionsByIds } from "@/lib/services/companions/repository";
 import { findItemsByIds } from "@/lib/services/items";
 import type { ItemMini } from "@/lib/services/items/types";
@@ -1240,7 +1241,8 @@ export const listPublicCollectionsForUser = async (
     .where(
       and(
         eq(collections.creatorId, creatorId),
-        eq(collections.visibility, "public")
+        eq(collections.visibility, "public"),
+        notMonsteryMonday()
       )
     )
     .orderBy(asc(collections.name));

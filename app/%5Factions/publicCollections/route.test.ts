@@ -455,4 +455,11 @@ it("counts explicit featured membership across the full archive without leaking 
   expect(first.data[0].monsters.map((m: { id: string }) => m.id)).not.toContain(
     privateMonster.id
   );
+  // The main list leaves Monstery Monday to its own page but keeps untagged
+  // and other featured collections, even when a search names the challenge.
+  const main = await (await request("search=Monstery+Monday")).json();
+  expect(main.data.map((c: { id: string }) => c.id).sort()).toEqual([
+    "non-week",
+    "personal-week",
+  ]);
 });

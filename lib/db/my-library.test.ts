@@ -108,6 +108,9 @@ const mockState = vi.hoisted(() => {
 
 vi.mock("./drizzle", () => ({ getDatabase: mockState.getDatabase }));
 vi.mock("./schema", () => mockState.tables);
+vi.mock("@/lib/services/collections/queries", () => ({
+  notMonsteryMonday: () => ({ type: "notMonsteryMonday" }),
+}));
 vi.mock("drizzle-orm", () => ({
   and: (...args: unknown[]) => ({ type: "and", args }),
   count: () => ({ type: "count" }),

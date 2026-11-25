@@ -2,11 +2,14 @@ import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { listPublicCollectionsForUser } from "@/lib/db/collection";
 import { getDatabase } from "@/lib/db/drizzle";
+import { getPublicLibraryCounts } from "@/lib/db/my-library";
 import * as relations from "@/lib/db/relations";
 import * as schema from "@/lib/db/schema";
 import {
   getMonsteryMondayOverview,
+  hasMonsteryMondayCollections,
   MONSTERY_MONDAY,
   searchPublicCollections,
 } from "./queries";
@@ -123,5 +126,35 @@ describe("searchPublicCollections contributors", () => {
     expect(counts.randomTables).toBe(1);
     expect(counts.items).toBe(1);
     expect(counts.ancestries).toBe(1);
+  });
+
+  it("leaves Monstery Monday out of a creator's profile collections", async () => {
+    await getDatabase()
+      .insert(schema.collections)
+      .values([
+        {
+          id: uuid(600),
+          name: "Curator's Picks",
+          creatorId: curator,
+          visibility: "public",
+        },
+        {
+          id: uuid(601),
+          name: "Alice's Other Feature",
+          creatorId: alice,
+          visibility: "public",
+          featuredCollection: "another feature",
+        },
+      ]);
+
+    const curatorCollections = await listPublicCollectionsForUser(curator);
+    expect(curatorCollections.map((c) => c.id)).toEqual([uuid(600)]);
+    expect((await getPublicLibraryCounts(curator)).collections).toBe(1);
+    expect(await hasMonsteryMondayCollections(curator)).toBe(true);
+
+    // Other featured groups still show, and they do not earn the banner.
+    const aliceCollections = await listPublicCollectionsForUser(alice);
+    expect(aliceCollections.map((c) => c.id)).toEqual([uuid(601)]);
+    expect(await hasMonsteryMondayCollections(alice)).toBe(false);
   });
 });
