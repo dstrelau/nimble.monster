@@ -4,12 +4,12 @@ import { createClient } from "@libsql/client";
 
 const usage = `Usage: set-feature-flag <username> <feature> <true|false>
 
-Features: draft-autosave, monster-statblock-editor, monster-custom-artwork, monster-card-layout, field-guide`;
+Features: draft-autosave, monster-statblock-editor, monster-custom-artwork, monster-card-layout, field-guide, collection-plate-card`;
 
 const [username, feature, enabledValue, ...extraArgs] = process.argv.slice(2);
 if (
   !username ||
-  !["draft-autosave", "monster-statblock-editor", "monster-custom-artwork", "monster-card-layout", "field-guide"].includes(feature) ||
+  !["draft-autosave", "monster-statblock-editor", "monster-custom-artwork", "monster-card-layout", "field-guide", "collection-plate-card"].includes(feature) ||
   !["true", "false"].includes(enabledValue) ||
   extraArgs.length > 0
 ) {

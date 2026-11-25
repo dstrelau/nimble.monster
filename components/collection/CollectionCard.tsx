@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { CollectionPlateCard } from "@/components/collection/CollectionPlateCard";
 import { EntityReactions } from "@/components/EntityReactions";
 import { GameIcon } from "@/components/icons/GameIcon";
 import { Link } from "@/components/layout/Link";
@@ -26,6 +27,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import type { CustomRuleMini } from "@/lib/db/custom-rule";
 import { useConditions } from "@/lib/hooks/useConditions";
 import type { AncestryMini } from "@/lib/services/ancestries/types";
@@ -277,7 +279,7 @@ const ClassRow = ({
   />
 );
 
-export const CollectionCard = ({
+const ClassicCollectionCard = ({
   collection,
   limit = 7,
   onRemoveMonsterAction,
@@ -507,4 +509,15 @@ export const CollectionCard = ({
       />
     </Card>
   );
+};
+
+export const CollectionCard = (
+  props: React.ComponentProps<typeof ClassicCollectionCard>
+) => {
+  const plate = useFeatureFlag("collection-plate-card");
+  // The editor preview passes remove actions, which only the classic card has.
+  if (plate && !props.onRemoveMonsterAction) {
+    return <CollectionPlateCard collection={props.collection} />;
+  }
+  return <ClassicCollectionCard {...props} />;
 };

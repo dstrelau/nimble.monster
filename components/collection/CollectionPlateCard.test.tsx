@@ -7,7 +7,13 @@ vi.mock("@/components/EntityReactions", () => ({
   EntityReactions: () => null,
 }));
 vi.mock("@/components/icons/GameIcon", () => ({ GameIcon: () => null }));
+vi.mock("next-auth/react", () => ({ useSession: () => ({ data: null }) }));
+vi.mock("@/lib/hooks/useConditions", () => ({
+  useConditions: () => ({ allConditions: [] }),
+}));
 
+import { FeatureFlagsProvider } from "@/lib/contexts/FeatureFlagsContext";
+import { CollectionCard } from "./CollectionCard";
 import { CollectionPlateCard } from "./CollectionPlateCard";
 
 afterEach(cleanup);
@@ -136,5 +142,32 @@ describe("CollectionPlateCard", () => {
       screen.getByRole("heading", { name: "Spooky Extras: Week of Dread" })
     ).toBeTruthy();
     expect(screen.queryByText(/^Week /)).toBeNull();
+  });
+});
+
+describe("CollectionCard", () => {
+  const weekly = collection("Monstery Monday Week 95 - Contrast");
+
+  it("uses the plate card when collection-plate-card is enabled", () => {
+    render(
+      <FeatureFlagsProvider enabledFeatures={["collection-plate-card"]}>
+        <CollectionCard collection={weekly} />
+      </FeatureFlagsProvider>
+    );
+    expect(screen.getByText("Week 95")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Contrast" })).toBeTruthy();
+  });
+
+  it("keeps the classic card without the flag or in the editor preview", () => {
+    render(<CollectionCard collection={weekly} />);
+    render(
+      <FeatureFlagsProvider enabledFeatures={["collection-plate-card"]}>
+        <CollectionCard collection={weekly} onRemoveMonsterAction={() => {}} />
+      </FeatureFlagsProvider>
+    );
+    expect(screen.queryByText("Week 95")).toBeNull();
+    expect(
+      screen.getAllByText("Monstery Monday Week 95 - Contrast")
+    ).toHaveLength(2);
   });
 });

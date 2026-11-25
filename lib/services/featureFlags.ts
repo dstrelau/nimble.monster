@@ -9,7 +9,8 @@ export type FeatureFlag =
   | "monster-statblock-editor"
   | "monster-custom-artwork"
   | "monster-card-layout"
-  | "field-guide";
+  | "field-guide"
+  | "collection-plate-card";
 
 export const FEATURE_FLAGS: readonly FeatureFlag[] = [
   "draft-autosave",
@@ -17,6 +18,7 @@ export const FEATURE_FLAGS: readonly FeatureFlag[] = [
   "monster-custom-artwork",
   "monster-card-layout",
   "field-guide",
+  "collection-plate-card",
 ];
 
 /** Flags users may turn on or off for themselves from /my/settings. */
@@ -82,6 +84,7 @@ export async function getFeatureFlagUsers(): Promise<
     "monster-custom-artwork": [],
     "monster-card-layout": [],
     "field-guide": [],
+    "collection-plate-card": [],
   };
   for (const { feature, user } of rows) {
     if (isFeatureFlag(feature)) byFlag[feature].push(toUser(user));
