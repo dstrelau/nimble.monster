@@ -58,7 +58,7 @@ describe("self-service feature flags", () => {
   });
 
   it.each([
-    { ...input, feature: "monster-statblock-editor" },
+    { ...input, feature: "field-guide" },
     { ...input, feature: "unregistered-flag" },
     { ...input, enabled: "true" },
     { feature: input.feature },

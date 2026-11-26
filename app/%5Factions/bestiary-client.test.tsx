@@ -62,8 +62,37 @@ vi.mock("@/components/create/AbilitiesSection", () => ({
   AbilitiesSection: () => null,
 }));
 vi.mock("@/components/create/MembersSection", () => ({
-  emptyMember: () => ({}),
-  MembersSection: () => null,
+  emptyMember: () => ({
+    id: Math.random().toString(36).slice(2),
+    name: "",
+    hp: 0,
+    hpPerHero: null,
+    armor: "none",
+    size: "medium",
+    saves: "",
+    actionPreface: "",
+    abilities: [],
+    actions: [],
+  }),
+  MembersSection: ({
+    members,
+    onChange,
+  }: {
+    members: { name: string }[];
+    onChange: (members: { name: string }[]) => void;
+  }) => (
+    <input
+      aria-label="Member name"
+      value={members[0]?.name ?? ""}
+      onChange={(event) =>
+        onChange(
+          members.map((member, index) =>
+            index === 0 ? { ...member, name: event.target.value } : member
+          )
+        )
+      }
+    />
+  ),
 }));
 vi.mock("@/components/create/SourceSelect", () => ({
   SourceSelect: () => null,
@@ -132,6 +161,24 @@ function renderBuilder(
   return { invalidate };
 }
 
+function openTask(name: RegExp) {
+  // Radix tabs activate on mousedown, not click.
+  fireEvent.mouseDown(
+    within(
+      screen.getByRole("tablist", { name: "Monster build tasks" })
+    ).getByRole("tab", { name }),
+    { button: 0, ctrlKey: false }
+  );
+}
+
+function selectType(kind: string) {
+  fireEvent.click(screen.getByRole("radio", { name: kind }));
+}
+
+function expectType(kind: string) {
+  expect(screen.getByRole("radio", { name: kind })).toBeChecked();
+}
+
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
@@ -142,74 +189,78 @@ beforeEach(() => {
 });
 
 describe("bestiary builder mutation", () => {
-  it.each([
-    ["Standard", "Goblin", "Goblin Taskmaster"],
-    ["Legendary", "Manticore", "Ravager of the Lowlands"],
-    ["Minion", "Kobold", "Kobold Minion"],
-    ["Team", "Team", "Kelebek & Poppy"],
-  ])(
-    "loads only the %s example and confirms before clearing",
-    (kind, example, name) => {
-      renderBuilder(false, undefined, true);
-      if (kind !== "Standard") {
-        fireEvent.keyDown(
-          screen.getByRole("combobox", { name: "Monster type" }),
-          {
-            key: "ArrowDown",
-          }
-        );
-        fireEvent.click(screen.getByRole("option", { name: kind }));
-      }
-      fireEvent.click(
-        screen.getByRole("button", { name: "Start from an example" })
-      );
-      expect(screen.getByText("Load example:")).toBeInTheDocument();
-      for (const other of ["Goblin", "Manticore", "Kobold", "Team"]) {
-        expect(screen.queryByRole("button", { name: other }) !== null).toBe(
-          other === example
-        );
-      }
-      expect(
-        screen.queryByRole("button", { name: "Empty" })
-      ).not.toBeInTheDocument();
-      fireEvent.click(screen.getByRole("button", { name: example }));
-      expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(name);
-      fireEvent.click(screen.getByRole("button", { name: "Clear" }));
-      const dialog = screen.getByRole("alertdialog");
-      expect(within(dialog).getByText("Clear form?")).toBeInTheDocument();
-      fireEvent.click(within(dialog).getByRole("button", { name: "Cancel" }));
-      expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(name);
-      fireEvent.click(screen.getByRole("button", { name: "Clear" }));
-      fireEvent.click(
-        within(screen.getByRole("alertdialog")).getByRole("button", {
-          name: "Clear",
-        })
-      );
-      expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("");
-      expect(
-        screen.getByRole("combobox", { name: "Monster type" })
-      ).toHaveTextContent(kind);
-    }
-  );
+  it("hides the top-level size for teams, which set it per member", () => {
+    renderBuilder(false, undefined, true);
+    expect(
+      screen.getByRole("radiogroup", { name: "Size" })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Clear" })
+    ).not.toBeInTheDocument();
+    selectType("Team");
+    expect(
+      screen.queryByRole("radiogroup", { name: "Size" })
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Name" })).toBeInTheDocument();
+    selectType("Legendary");
+    expect(
+      screen.getByRole("radiogroup", { name: "Size" })
+    ).toBeInTheDocument();
+  });
+
+  it("only confirms leaving Team once a member holds content", () => {
+    renderBuilder(false, undefined, true);
+    selectType("Team");
+    selectType("Standard");
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+    expectType("Standard");
+
+    selectType("Team");
+    openTask(/^Members/);
+    fireEvent.change(screen.getByRole("textbox", { name: "Member name" }), {
+      target: { value: "Kelebek" },
+    });
+    openTask(/^Basics/);
+    fireEvent.click(screen.getByRole("radio", { name: "Standard" }));
+    const dialog = screen.getByRole("alertdialog");
+    fireEvent.click(within(dialog).getByRole("button", { name: "Cancel" }));
+    expectType("Team");
+
+    fireEvent.click(screen.getByRole("radio", { name: "Standard" }));
+    fireEvent.click(
+      within(screen.getByRole("alertdialog")).getByRole("button", {
+        name: "Change type",
+      })
+    );
+    expectType("Standard");
+  });
 
   it("opts flagged monsters into the editor and keeps draft fields across preview", async () => {
     vi.mocked(call).mockRejectedValueOnce(new Error("Try again"));
     renderBuilder(false, undefined, true);
-    const tasks = within(
-      screen.getByRole("navigation", { name: "Monster build tasks" })
-    );
+    expect(screen.getByRole("radio", { name: "Standard" })).toBeChecked();
     expect(
-      screen.getByRole("combobox", { name: "Monster type" })
+      within(
+        screen.getByRole("radiogroup", { name: "Monster type" })
+      ).getAllByRole("radio")
+    ).toHaveLength(4);
+    expect(screen.queryByText("Level —, standard")).not.toBeInTheDocument();
+    expect(screen.getByText("Human-sized (1 per space).")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("radio", { name: "Huge" }));
+    expect(
+      screen.getByText("Small house-sized (3×3 area).")
     ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("radio", { name: "Huge" }));
+    expect(screen.getByRole("radio", { name: "Huge" })).toBeChecked();
     fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
       target: { value: "Draft goblin" },
     });
-    fireEvent.click(tasks.getByRole("button", { name: /^Finishing touches/ }));
+    openTask(/^Finishing touches/);
     fireEvent.change(screen.getByRole("textbox", { name: "Description" }), {
       target: { value: "Keeps the other goblins in line." },
     });
-    fireEvent.click(tasks.getByRole("button", { name: /^Traits/ }));
-    fireEvent.click(tasks.getByRole("button", { name: /^Finishing touches/ }));
+    openTask(/^Traits/);
+    openTask(/^Finishing touches/);
     expect(screen.getByRole("textbox", { name: "Description" })).toHaveValue(
       "Keeps the other goblins in line."
     );
@@ -217,7 +268,7 @@ describe("bestiary builder mutation", () => {
     fireEvent.click(
       screen.getAllByRole("button", { name: "Back to editing" })[0]
     );
-    fireEvent.click(tasks.getByRole("button", { name: /^Basics/ }));
+    openTask(/^Basics/);
     expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(
       "Draft goblin"
     );
@@ -302,9 +353,7 @@ describe("bestiary builder mutation", () => {
       expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue(
         "Draft goblin"
       );
-      expect(
-        screen.getByRole("combobox", { name: "Monster type" })
-      ).toHaveTextContent(kind);
+      expectType(kind);
       expect(screen.queryByText(/unsaved draft/)).not.toBeInTheDocument();
       fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
         target: { value: "Draft goblin boss" },
@@ -351,10 +400,7 @@ describe("bestiary builder mutation", () => {
 
   it("hides legendary movement controls without losing the standard draft's movement", () => {
     renderBuilder(false, undefined, true);
-    const tasks = within(
-      screen.getByRole("navigation", { name: "Monster build tasks" })
-    );
-    fireEvent.click(tasks.getByRole("button", { name: /^Defenses/ }));
+    openTask(/^Stats/);
     fireEvent.change(screen.getByRole("spinbutton", { name: "Speed" }), {
       target: { value: "9" },
     });
@@ -362,12 +408,9 @@ describe("bestiary builder mutation", () => {
     fireEvent.change(screen.getByRole("spinbutton", { name: "Fly" }), {
       target: { value: "3" },
     });
-    fireEvent.click(tasks.getByRole("button", { name: /^Basics/ }));
-    fireEvent.keyDown(screen.getByRole("combobox", { name: "Monster type" }), {
-      key: "ArrowDown",
-    });
-    fireEvent.click(screen.getByRole("option", { name: "Legendary" }));
-    fireEvent.click(tasks.getByRole("button", { name: /^Defenses/ }));
+    openTask(/^Basics/);
+    selectType("Legendary");
+    openTask(/^Stats/);
     expect(
       screen.queryByRole("spinbutton", { name: "Speed" })
     ).not.toBeInTheDocument();
@@ -376,12 +419,9 @@ describe("bestiary builder mutation", () => {
     ).not.toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: "Saves" })).toBeInTheDocument();
 
-    fireEvent.click(tasks.getByRole("button", { name: /^Basics/ }));
-    fireEvent.keyDown(screen.getByRole("combobox", { name: "Monster type" }), {
-      key: "ArrowDown",
-    });
-    fireEvent.click(screen.getByRole("option", { name: "Standard" }));
-    fireEvent.click(tasks.getByRole("button", { name: /^Defenses/ }));
+    openTask(/^Basics/);
+    selectType("Standard");
+    openTask(/^Stats/);
     expect(screen.getByRole("spinbutton", { name: "Speed" })).toHaveValue(9);
     fireEvent.click(screen.getByRole("button", { name: /^Movement types/ }));
     expect(screen.getByRole("spinbutton", { name: "Fly" })).toHaveValue(3);
@@ -420,13 +460,10 @@ describe("bestiary builder mutation", () => {
     };
     vi.mocked(call).mockResolvedValueOnce(existing);
     renderBuilder(false, existing, true);
-    const tasks = within(
-      screen.getByRole("navigation", { name: "Monster build tasks" })
-    );
-    fireEvent.click(tasks.getByRole("button", { name: /^Defenses/ }));
     const level = screen.getByRole("combobox", { name: "Level" });
     fireEvent.keyDown(level, { key: "ArrowDown" });
     fireEvent.click(await screen.findByRole("option", { name: "2" }));
+    openTask(/^Stats/);
     fireEvent.keyDown(screen.getByRole("combobox", { name: "Armor" }), {
       key: "ArrowDown",
     });
@@ -434,8 +471,12 @@ describe("bestiary builder mutation", () => {
     fireEvent.change(screen.getByRole("spinbutton", { name: "HP" }), {
       target: { value: "37" },
     });
-    fireEvent.keyDown(level, { key: "ArrowDown" });
+    openTask(/^Basics/);
+    fireEvent.keyDown(screen.getByRole("combobox", { name: "Level" }), {
+      key: "ArrowDown",
+    });
     fireEvent.click(await screen.findByRole("option", { name: "3" }));
+    openTask(/^Stats/);
     expect(screen.getByRole("spinbutton", { name: "HP" })).toHaveValue(37);
     fireEvent.click(screen.getByRole("button", { name: "Use 33" }));
     expect(screen.getByRole("spinbutton", { name: "HP" })).toHaveValue(33);
@@ -443,15 +484,15 @@ describe("bestiary builder mutation", () => {
     fireEvent.change(screen.getByRole("spinbutton", { name: "HP / hero" }), {
       target: { value: "13" },
     });
-    fireEvent.click(tasks.getByRole("button", { name: /^Traits/ }));
-    fireEvent.click(tasks.getByRole("button", { name: /^Defenses/ }));
+    openTask(/^Traits/);
+    openTask(/^Stats/);
     fireEvent.click(screen.getByRole("button", { name: "per hero" }));
     expect(screen.getByRole("spinbutton", { name: "HP" })).toHaveValue(33);
     fireEvent.click(screen.getByRole("button", { name: "per hero" }));
     expect(screen.getByRole("spinbutton", { name: "HP / hero" })).toHaveValue(
       13
     );
-    fireEvent.click(tasks.getByRole("button", { name: /^Finishing touches/ }));
+    openTask(/^Finishing touches/);
     fireEvent.click(screen.getByRole("button", { name: /^Classification/ }));
     const types = within(
       screen.getByRole("group", { name: "Creature types" })
@@ -523,7 +564,7 @@ describe("bestiary builder mutation", () => {
   it("keeps hazards on the existing editor even with the flag", () => {
     renderBuilder(true, undefined, true);
     expect(
-      screen.queryByRole("combobox", { name: "Monster type" })
+      screen.queryByRole("radiogroup", { name: "Monster type" })
     ).not.toBeInTheDocument();
     expect(
       screen.getByRole("spinbutton", { name: "HP (optional)" })
@@ -533,7 +574,7 @@ describe("bestiary builder mutation", () => {
   it("does not enable Build bench with only the artwork flag", () => {
     renderBuilder(false, undefined, false, ["monster-custom-artwork"]);
     expect(
-      screen.queryByRole("navigation", { name: "Monster build tasks" })
+      screen.queryByRole("tablist", { name: "Monster build tasks" })
     ).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
     expect(
@@ -556,9 +597,6 @@ describe("bestiary builder mutation", () => {
       hazard: false,
     });
     renderBuilder(false, undefined, true, ["monster-custom-artwork"]);
-    const tasks = within(
-      screen.getByRole("navigation", { name: "Monster build tasks" })
-    );
     fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
       target: { value: "Bench draft" },
     });
@@ -580,7 +618,7 @@ describe("bestiary builder mutation", () => {
       target: { value: "https://example.com/art" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Use image" }));
-    fireEvent.click(tasks.getByRole("button", { name: /^Actions/ }));
+    openTask(/^Actions/);
     fireEvent.click(screen.getByRole("button", { name: "Add action" }));
     fireEvent.change(screen.getByRole("textbox", { name: "Action name" }), {
       target: { value: "Blast" },
@@ -599,14 +637,14 @@ describe("bestiary builder mutation", () => {
     fireEvent.change(screen.getByLabelText("Width (spaces)"), {
       target: { value: "2" },
     });
-    fireEvent.click(tasks.getByRole("button", { name: /^Traits/ }));
-    fireEvent.click(tasks.getByRole("button", { name: /^Actions/ }));
+    openTask(/^Traits/);
+    openTask(/^Actions/);
     expect(screen.getByRole("textbox", { name: "Action name" })).toHaveValue(
       "Blast"
     );
     fireEvent.click(screen.getByRole("button", { name: /^Attack details/ }));
     expect(screen.getByLabelText("Width (spaces)")).toHaveValue(2);
-    fireEvent.click(tasks.getByRole("button", { name: /^Basics/ }));
+    openTask(/^Basics/);
     expect(
       screen.getByRole("button", { name: "Change image" })
     ).toBeInTheDocument();
@@ -638,7 +676,7 @@ describe("bestiary builder mutation", () => {
 
   it("returns to Basics when saving an unnamed draft from another task", async () => {
     renderBuilder(false, undefined, true);
-    fireEvent.click(screen.getByRole("button", { name: /^Finishing touches/ }));
+    openTask(/^Finishing touches/);
     fireEvent.click(screen.getAllByRole("button", { name: "Save monster" })[0]);
     expect(screen.getByRole("alert")).toHaveTextContent(
       "Give your monster a name before saving."

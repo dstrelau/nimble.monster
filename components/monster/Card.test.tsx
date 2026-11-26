@@ -16,6 +16,10 @@ vi.mock("@/lib/hooks/useConditions", () => ({
   useConditions: () => ({ allConditions: [] }),
 }));
 
+vi.mock("@/components/EntityReactions", () => ({
+  EntityReactions: () => <button type="button">Upvote</button>,
+}));
+
 afterEach(cleanup);
 
 describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
@@ -206,4 +210,36 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
       );
     }
   );
+});
+
+describe("non-interactive monster card footer", () => {
+  it("shows the creator and reactions for a saved monster", () => {
+    render(
+      <Card
+        monster={TROLL_HUNTER}
+        creator={TROLL_HUNTER.creator}
+        noInteractive
+      />
+    );
+    expect(
+      screen.getByText(TROLL_HUNTER.creator.displayName)
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Upvote" })).toBeInTheDocument();
+  });
+
+  it("omits reactions for an unsaved monster with no id", () => {
+    render(
+      <Card
+        monster={{ ...TROLL_HUNTER, id: "" }}
+        creator={TROLL_HUNTER.creator}
+        noInteractive
+      />
+    );
+    expect(
+      screen.getByText(TROLL_HUNTER.creator.displayName)
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Upvote" })
+    ).not.toBeInTheDocument();
+  });
 });

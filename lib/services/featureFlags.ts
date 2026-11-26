@@ -23,6 +23,7 @@ export const FEATURE_FLAGS: readonly FeatureFlag[] = [
 
 /** Flags users may turn on or off for themselves from /my/settings. */
 export const SELF_SERVICE_FEATURE_FLAGS = [
+  "monster-statblock-editor",
   "monster-card-layout",
   "monster-custom-artwork",
 ] as const satisfies readonly FeatureFlag[];

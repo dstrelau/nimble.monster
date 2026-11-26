@@ -11,12 +11,32 @@ import type { MonsterClassifications } from "./classifications";
 import type { MonsterDamageInteractions } from "./damage-types";
 
 export const SIZES = [
-  { value: "tiny", label: "Tiny" },
-  { value: "small", label: "Small" },
-  { value: "medium", label: "Medium" },
-  { value: "large", label: "Large" },
-  { value: "huge", label: "Huge" },
-  { value: "gargantuan", label: "Gargantuan" },
+  {
+    value: "tiny",
+    label: "Tiny",
+    description: "Fits in a pocket (many per space).",
+  },
+  {
+    value: "small",
+    label: "Small",
+    description: "Fits in a backpack (2 per space).",
+  },
+  {
+    value: "medium",
+    label: "Medium",
+    description: "Human-sized (1 per space).",
+  },
+  { value: "large", label: "Large", description: "Bear-sized (2×2 area)." },
+  {
+    value: "huge",
+    label: "Huge",
+    description: "Small house-sized (3×3 area).",
+  },
+  {
+    value: "gargantuan",
+    label: "Gargantuan",
+    description: "Fortress or bigger (4×4+ area).",
+  },
 ] as const;
 export type MonsterSize = (typeof SIZES)[number]["value"];
 

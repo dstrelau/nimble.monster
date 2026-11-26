@@ -44,7 +44,12 @@ export default async function ExperimentsPage() {
   return (
     <div className="space-y-6">
       <MyLibraryPageHeader icon={FlaskConical} title="Experimental Features" />
-      <section className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+      <section className="space-y-6 rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
+        <FeatureFlagToggle
+          feature="monster-statblock-editor"
+          label="New Monster Builder"
+          enabled={enabledFeatures.includes("monster-statblock-editor")}
+        />
         <FeatureFlagToggle
           feature="monster-card-layout"
           label="New Monster Card Styling"

@@ -547,16 +547,18 @@ export const Card = ({
         creator={creator}
         source={monster.source}
         awards={monster.awards}
-        hideActions={selectable || hideActions || noInteractive}
+        hideActions={selectable || hideActions}
         className={cn(selectable && "relative z-40")}
         disableLink={noInteractive}
         actionsSlot={<CardActions monster={monster} />}
         reactionsSlot={
-          <EntityReactions
-            entityType="monster"
-            entityId={monster.id}
-            likeCount={monster.likeCount}
-          />
+          monster.id && (
+            <EntityReactions
+              entityType="monster"
+              entityId={monster.id}
+              likeCount={monster.likeCount}
+            />
+          )
         }
         paperforgeSlot={
           !noInteractive &&
