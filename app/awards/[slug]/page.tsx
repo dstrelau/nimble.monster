@@ -7,6 +7,7 @@ import { Card as BackgroundCard } from "@/components/background/Card";
 import { Card as CompanionCard } from "@/components/companion/Card";
 import { Card as ItemCard } from "@/components/item/Card";
 import { Card as MonsterCard } from "@/components/monster/Card";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import { Card as SchoolCard } from "@/components/school/Card";
 import { SubclassMiniCard } from "@/components/subclass/SubclassMiniCard";
 import { getAwardBySlug, getEntitiesForAward } from "@/lib/db/award";
@@ -71,101 +72,134 @@ export default async function AwardPage({
           <p className="text-muted-foreground">No award recipients (yet)</p>
         </div>
       ) : (
-        <div className="space-y-12">
-          {entities.monsters.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold mb-4">Monsters</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {entities.monsters.map((monster) => (
-                  <div key={monster.id} className="w-full max-w-sm mx-auto">
-                    <MonsterCard monster={monster} />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+        <ReactionsBatch
+          pages={[
+            {
+              entityType: "monster",
+              ids: entities.monsters.map(({ id }) => id),
+            },
+            { entityType: "item", ids: entities.items.map(({ id }) => id) },
+            {
+              entityType: "companion",
+              ids: entities.companions.map(({ id }) => id),
+            },
+            {
+              entityType: "subclass",
+              ids: entities.subclasses.map(({ id }) => id),
+            },
+            {
+              entityType: "spellSchool",
+              ids: entities.schools.map(({ id }) => id),
+            },
+            {
+              entityType: "ancestry",
+              ids: entities.ancestries.map(({ id }) => id),
+            },
+            {
+              entityType: "background",
+              ids: entities.backgrounds.map(({ id }) => id),
+            },
+          ]}
+        >
+          <div className="space-y-12">
+            {entities.monsters.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4">Monsters</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {entities.monsters.map((monster) => (
+                    <div key={monster.id} className="w-full max-w-sm mx-auto">
+                      <MonsterCard monster={monster} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
-          {entities.items.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold mb-4">Items</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {entities.items.map((item) => (
-                  <div key={item.id} className="w-full max-w-sm mx-auto">
-                    <ItemCard item={item} creator={item.creator} />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+            {entities.items.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4">Items</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {entities.items.map((item) => (
+                    <div key={item.id} className="w-full max-w-sm mx-auto">
+                      <ItemCard item={item} creator={item.creator} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
-          {entities.companions.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold mb-4">Companions</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {entities.companions.map((companion) => (
-                  <div key={companion.id} className="w-full max-w-sm mx-auto">
-                    <CompanionCard
-                      companion={companion}
-                      creator={companion.creator}
-                    />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+            {entities.companions.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4">Companions</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {entities.companions.map((companion) => (
+                    <div key={companion.id} className="w-full max-w-sm mx-auto">
+                      <CompanionCard
+                        companion={companion}
+                        creator={companion.creator}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
-          {entities.subclasses.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold mb-4">Subclasses</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {entities.subclasses.map((subclass) => (
-                  <div key={subclass.id} className="w-full max-w-sm mx-auto">
-                    <SubclassMiniCard subclass={subclass} />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+            {entities.subclasses.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4">Subclasses</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {entities.subclasses.map((subclass) => (
+                    <div key={subclass.id} className="w-full max-w-sm mx-auto">
+                      <SubclassMiniCard subclass={subclass} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
-          {entities.schools.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold mb-4">Spell Schools</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {entities.schools.map((school) => (
-                  <div key={school.id} className="w-full max-w-sm mx-auto">
-                    <SchoolCard spellSchool={school} />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+            {entities.schools.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4">Spell Schools</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {entities.schools.map((school) => (
+                    <div key={school.id} className="w-full max-w-sm mx-auto">
+                      <SchoolCard spellSchool={school} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
-          {entities.ancestries.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold mb-4">Ancestries</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {entities.ancestries.map((ancestry) => (
-                  <div key={ancestry.id} className="w-full max-w-sm mx-auto">
-                    <AncestryCard hideDescription ancestry={ancestry} />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+            {entities.ancestries.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4">Ancestries</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {entities.ancestries.map((ancestry) => (
+                    <div key={ancestry.id} className="w-full max-w-sm mx-auto">
+                      <AncestryCard hideDescription ancestry={ancestry} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
-          {entities.backgrounds.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold mb-4">Backgrounds</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {entities.backgrounds.map((background) => (
-                  <div key={background.id} className="w-full max-w-sm mx-auto">
-                    <BackgroundCard background={background} />
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-        </div>
+            {entities.backgrounds.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold mb-4">Backgrounds</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {entities.backgrounds.map((background) => (
+                    <div
+                      key={background.id}
+                      className="w-full max-w-sm mx-auto"
+                    >
+                      <BackgroundCard background={background} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+        </ReactionsBatch>
       )}
     </div>
   );

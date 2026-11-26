@@ -4,6 +4,7 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { useMemo } from "react";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import { EmptyState } from "@/components/shared/GridStates";
 import { SubclassMiniCard } from "@/components/subclass/SubclassMiniCard";
 import type { Subclass, SubclassSortOption } from "@/lib/types";
@@ -91,11 +92,20 @@ export const SubclassesListView: React.FC<SubclassesListViewProps> = ({
       {filteredSubclasses.length === 0 ? (
         <EmptyState entityName="subclasses" />
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
-          {filteredSubclasses.map((subclass) => (
-            <SubclassMiniCard key={subclass.id} subclass={subclass} />
-          ))}
-        </div>
+        <ReactionsBatch
+          pages={[
+            {
+              entityType: "subclass",
+              ids: subclasses.map((subclass) => subclass.id),
+            },
+          ]}
+        >
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
+            {filteredSubclasses.map((subclass) => (
+              <SubclassMiniCard key={subclass.id} subclass={subclass} />
+            ))}
+          </div>
+        </ReactionsBatch>
       )}
     </div>
   );

@@ -11,6 +11,7 @@ import {
 } from "@/app/collections/actions";
 import { CollectionCard } from "@/components/collection/CollectionCard";
 import { CollectionPlateCard } from "@/components/collection/CollectionPlateCard";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import {
   EmptyState,
   ErrorState,
@@ -83,18 +84,25 @@ export const CollectionsListView: React.FC<CollectionsListViewProps> = ({
         <EmptyState entityName="collections" />
       ) : (
         <>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
-            {filteredCollections.map((collection) =>
-              cardVariant === "plate" ? (
-                <CollectionPlateCard
-                  key={collection.id}
-                  collection={collection}
-                />
-              ) : (
-                <CollectionCard key={collection.id} collection={collection} />
-              )
-            )}
-          </div>
+          <ReactionsBatch
+            pages={(data?.pages ?? []).map((page) => ({
+              entityType: "collection",
+              ids: page.data.map((collection) => collection.id),
+            }))}
+          >
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
+              {filteredCollections.map((collection) =>
+                cardVariant === "plate" ? (
+                  <CollectionPlateCard
+                    key={collection.id}
+                    collection={collection}
+                  />
+                ) : (
+                  <CollectionCard key={collection.id} collection={collection} />
+                )
+              )}
+            </div>
+          </ReactionsBatch>
           {hasNextPage ? (
             <div ref={loadMoreRef}>
               <LoadMoreButton

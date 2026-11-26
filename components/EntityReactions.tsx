@@ -47,7 +47,8 @@ export function EntityReactions({
     );
   }
 
-  const count = counts?.thumbs_up ?? 0;
+  // The stored total shows until the viewer's reactions load.
+  const count = counts?.thumbs_up ?? likeCount;
   const reacted = mine.includes("thumbs_up");
 
   if (showLabel)

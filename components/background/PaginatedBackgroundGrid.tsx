@@ -7,6 +7,7 @@ import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { publicBackgroundsInfiniteQueryOptions } from "@/app/backgrounds/hooks";
 import { myBackgroundsInfiniteQueryOptions } from "@/app/my/(library)/backgrounds/hooks";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import {
   EmptyState,
   ErrorState,
@@ -87,13 +88,20 @@ export const PaginatedBackgroundGrid: React.FC<PaginatedBackgroundGridProps> = (
       {!filteredBackgrounds || filteredBackgrounds?.length === 0 ? (
         <EmptyState entityName="backgrounds" />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 gap-4">
-          {filteredBackgrounds.map((background) => (
-            <div key={background.id} className="w-full max-w-sm mx-auto">
-              <Card background={background} creator={background.creator} />
-            </div>
-          ))}
-        </div>
+        <ReactionsBatch
+          pages={(data?.pages ?? []).map((page) => ({
+            entityType: "background",
+            ids: page.data.map((background) => background.id),
+          }))}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 gap-4">
+            {filteredBackgrounds.map((background) => (
+              <div key={background.id} className="w-full max-w-sm mx-auto">
+                <Card background={background} creator={background.creator} />
+              </div>
+            ))}
+          </div>
+        </ReactionsBatch>
       )}
       {data?.pages.at(-1)?.data.length === 12 && hasNextPage && (
         <LoadMoreButton onClick={() => fetchNextPage()} disabled={isFetching} />

@@ -17,6 +17,7 @@ const mockFetch = vi.fn<typeof fetch>();
 vi.mock("next-auth/react", () => ({ useSession: mockUseSession }));
 
 import { EntityReactions } from "./EntityReactions";
+import { ReactionsBatch } from "./ReactionsBatch";
 
 function createWrapper() {
   const queryClient = new QueryClient({
@@ -375,5 +376,67 @@ describe("EntityReactions", () => {
       ).toHaveTextContent("3")
     );
     expect(mockFetch).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("EntityReactions inside ReactionsBatch", () => {
+  it("loads batched cards with one request and leaves other cards alone", async () => {
+    const batched = [
+      "11111111-1111-1111-1111-111111111111",
+      "22222222-2222-2222-2222-222222222222",
+    ];
+    let resolveBatch: (response: Response) => void = () => {
+      throw new Error("Batch not started");
+    };
+    mockFetch.mockImplementation(
+      () =>
+        new Promise<Response>((resolve) => {
+          resolveBatch = resolve;
+        })
+    );
+    mockGetMyReactions.mockResolvedValue({
+      counts: { thumbs_up: 9, thumbs_down: 0 },
+      mine: [],
+    });
+    render(
+      <ReactionsBatch pages={[{ entityType: "monster", ids: batched }]}>
+        <EntityReactions
+          entityType="monster"
+          entityId={batched[0]}
+          likeCount={3}
+        />
+        <EntityReactions entityType="monster" entityId={batched[1]} />
+        <EntityReactions entityType="item" entityId={batched[0]} />
+      </ReactionsBatch>,
+      { wrapper: createWrapper() }
+    );
+
+    // The stored count shows while the batch is in flight.
+    const [first, second, unbatched] = screen.getAllByRole("button");
+    expect(first).toHaveTextContent("3");
+    await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+    expect(mockFetch).toHaveBeenCalledWith(
+      `/_actions/getMyReactionsBatch?entityType=monster&entityIds=${batched.join("%2C")}`,
+      expect.objectContaining({ method: "GET" })
+    );
+
+    resolveBatch(
+      Response.json({
+        [batched[0]]: {
+          counts: { thumbs_up: 4, thumbs_down: 0 },
+          mine: ["thumbs_up"],
+        },
+        [batched[1]]: { counts: { thumbs_up: 1, thumbs_down: 0 }, mine: [] },
+      })
+    );
+    await waitFor(() => expect(first).toHaveAccessibleName("Remove upvote"));
+    expect(first).toHaveTextContent("4");
+    expect(second).toHaveAccessibleName("Upvote");
+    expect(second).toHaveTextContent("1");
+
+    // An item with the same ID is not in the monster batch, so it fetches alone.
+    await waitFor(() => expect(unbatched).toHaveTextContent("9"));
+    expect(mockGetMyReactions).toHaveBeenCalledTimes(1);
+    expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 });

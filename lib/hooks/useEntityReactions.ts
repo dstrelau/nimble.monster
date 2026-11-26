@@ -2,6 +2,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { toggleReaction } from "@/app/%5Factions/toggleReaction/contract";
+import { useIsReactionBatched } from "@/components/ReactionsBatch";
 import { call } from "@/lib/contract";
 import type { ReactableEntityType, ReactionType } from "@/lib/db/schema";
 import { entityReactionsQueryOptions } from "./entityReactionsQueryOptions";
@@ -18,9 +19,11 @@ export function useEntityReactions(
     session?.user?.id
   );
 
+  // A ReactionsBatch above the card fills this query instead.
+  const batched = useIsReactionBatched(entityType, entityId);
   const query = useQuery({
     ...options,
-    enabled: status === "authenticated",
+    enabled: status === "authenticated" && !batched,
   });
 
   const mutation = useMutation({

@@ -3,6 +3,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { CustomRule } from "@/lib/db/custom-rule";
 import type { CollectionOverview, Family, User } from "@/lib/types";
 
+vi.mock("@/components/ReactionsBatch", () => ({
+  ReactionsBatch: ({ children }: { children: React.ReactNode }) => children,
+}));
 vi.mock("@/components/adventure/AdventureList", () => ({
   AdventureList: () => null,
 }));

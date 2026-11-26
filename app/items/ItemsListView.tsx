@@ -6,6 +6,7 @@ import { parseAsString, useQueryState } from "nuqs";
 import type React from "react";
 import { Card } from "@/components/item/Card";
 import { ItemFilterBar } from "@/components/item/ItemFilterBar";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import {
   EmptyState,
   ErrorState,
@@ -67,17 +68,24 @@ export const ItemsListView: React.FC = () => {
         <EmptyState entityName="items" />
       ) : (
         <>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            {filteredItems.map((item) => (
-              <Card
-                className="max-w-sm min-w-2xs"
-                key={item.id}
-                item={item}
-                creator={item.creator}
-                hideDescription={true}
-              />
-            ))}
-          </div>
+          <ReactionsBatch
+            pages={(data?.pages ?? []).map((page) => ({
+              entityType: "item",
+              ids: page.data.map((item) => item.id),
+            }))}
+          >
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {filteredItems.map((item) => (
+                <Card
+                  className="max-w-sm min-w-2xs"
+                  key={item.id}
+                  item={item}
+                  creator={item.creator}
+                  hideDescription={true}
+                />
+              ))}
+            </div>
+          </ReactionsBatch>
           {data?.pages.at(-1)?.data.length === 12 && hasNextPage && (
             <LoadMoreButton
               onClick={() => fetchNextPage()}

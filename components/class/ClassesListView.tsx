@@ -4,6 +4,7 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { useMemo } from "react";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import { FilterBar } from "@/components/shared/FilterBar";
 import { EmptyState } from "@/components/shared/GridStates";
 import { SourceFilter } from "@/components/shared/SourceFilter";
@@ -119,11 +120,15 @@ export const ClassesListView: React.FC<ClassesListViewProps> = ({
       {filtered.length === 0 ? (
         <EmptyState entityName="classes" />
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
-          {filtered.map((c) => (
-            <ClassMiniCard key={c.id} classEntity={c} />
-          ))}
-        </div>
+        <ReactionsBatch
+          pages={[{ entityType: "class", ids: classes.map((c) => c.id) }]}
+        >
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
+            {filtered.map((c) => (
+              <ClassMiniCard key={c.id} classEntity={c} />
+            ))}
+          </div>
+        </ReactionsBatch>
       )}
     </div>
   );

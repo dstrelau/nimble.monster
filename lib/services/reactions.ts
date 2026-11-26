@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDatabase } from "@/lib/db/drizzle";
 import {
   type ReactableEntityType,
@@ -32,6 +32,60 @@ export async function getMyReactions(
     return { counts: emptyCounts(), mine: [] };
   }
   return getReactionsSummary(entityType, entityId, userId);
+}
+
+/** Summaries for several entities of one type, keyed by entity ID. */
+export async function getMyReactionsBatch(
+  entityType: ReactableEntityType,
+  entityIds: string[],
+  userId?: string
+): Promise<Record<string, ReactionsSummary>> {
+  const summaries: Record<string, ReactionsSummary> = {};
+  for (const id of entityIds)
+    summaries[id] = { counts: emptyCounts(), mine: [] };
+  if (!userId) return summaries;
+
+  // Match getMyReactions: hidden ancestries keep the empty summary.
+  const ids =
+    entityType === "ancestry"
+      ? (
+          await Promise.all(
+            entityIds.map(async (id) => ((await findAncestry(id)) ? id : null))
+          )
+        ).filter((id): id is string => id !== null)
+      : entityIds;
+  if (ids.length === 0) return summaries;
+
+  const db = getDatabase();
+  const forEntities = and(
+    eq(reactions.entityType, entityType),
+    inArray(reactions.entityId, ids)
+  );
+  const [countRows, mineRows] = await Promise.all([
+    db
+      .select({
+        entityId: reactions.entityId,
+        reactionType: reactions.reactionType,
+        count: sql<number>`count(*)`,
+      })
+      .from(reactions)
+      .where(forEntities)
+      .groupBy(reactions.entityId, reactions.reactionType),
+    db
+      .select({
+        entityId: reactions.entityId,
+        reactionType: reactions.reactionType,
+      })
+      .from(reactions)
+      .where(and(forEntities, eq(reactions.userId, userId))),
+  ]);
+  for (const row of countRows) {
+    summaries[row.entityId].counts[row.reactionType] = row.count;
+  }
+  for (const row of mineRows) {
+    summaries[row.entityId].mine.push(row.reactionType);
+  }
+  return summaries;
 }
 
 const oppositeReaction = (reactionType: ReactionType): ReactionType =>

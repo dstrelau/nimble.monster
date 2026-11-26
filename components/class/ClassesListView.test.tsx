@@ -6,6 +6,9 @@ const { mockUseQueryState } = vi.hoisted(() => ({
   mockUseQueryState: vi.fn(),
 }));
 
+vi.mock("@/components/ReactionsBatch", () => ({
+  ReactionsBatch: ({ children }: { children: React.ReactNode }) => children,
+}));
 vi.mock("nuqs", () => ({
   parseAsString: {},
   parseAsStringLiteral: () => ({ withDefault: (d: string) => d }),

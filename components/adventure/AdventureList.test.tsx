@@ -3,6 +3,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AdventureOverview } from "@/lib/db/adventures";
 import { AdventureList } from "./AdventureList";
 
+vi.mock("@/components/ReactionsBatch", () => ({
+  ReactionsBatch: ({ children }: { children: React.ReactNode }) => children,
+}));
 vi.mock("@/components/EntityReactions", () => ({
   EntityReactions: ({ entityType }: { entityType: string }) => (
     <button type="button">Like {entityType}</button>

@@ -5,6 +5,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { publicCompanionsInfiniteQueryOptions } from "@/app/companions/hooks";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import {
   EmptyState,
   ErrorState,
@@ -79,17 +80,24 @@ export const PaginatedCompanionGrid: React.FC = () => {
       {!filteredCompanions || filteredCompanions?.length === 0 ? (
         <EmptyState entityName="companions" />
       ) : (
-        <div className="max-w-3xl mx-auto grid grid-cols-1 gap-4">
-          {filteredCompanions.map((companion) => (
-            <div key={companion.id} className="w-full">
-              <Card
-                companion={companion}
-                creator={companion.creator}
-                hideDescription
-              />
-            </div>
-          ))}
-        </div>
+        <ReactionsBatch
+          pages={(data?.pages ?? []).map((page) => ({
+            entityType: "companion",
+            ids: page.data.map((companion) => companion.id),
+          }))}
+        >
+          <div className="max-w-3xl mx-auto grid grid-cols-1 gap-4">
+            {filteredCompanions.map((companion) => (
+              <div key={companion.id} className="w-full">
+                <Card
+                  companion={companion}
+                  creator={companion.creator}
+                  hideDescription
+                />
+              </div>
+            ))}
+          </div>
+        </ReactionsBatch>
       )}
       {data?.pages.at(-1)?.data.length === 6 && hasNextPage && (
         <LoadMoreButton onClick={() => fetchNextPage()} disabled={isFetching} />

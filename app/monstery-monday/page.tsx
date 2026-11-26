@@ -6,6 +6,7 @@ import { publicCollectionsInfiniteQueryOptions } from "@/app/collections/actions
 import { CollectionPlateCard } from "@/components/collection/CollectionPlateCard";
 import { CollectionsListView } from "@/components/collection/CollectionsListView";
 import { UserAvatar } from "@/components/layout/UserAvatar";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import { getQueryClient } from "@/lib/queryClient";
 import {
   getMonsteryMondayOverview,
@@ -161,7 +162,11 @@ export default async function MonsteryMondayPage() {
             <h2 id="latest-title" className="sr-only">
               Latest collection
             </h2>
-            <CollectionPlateCard collection={overview.latest} />
+            <ReactionsBatch
+              pages={[{ entityType: "collection", ids: [overview.latest.id] }]}
+            >
+              <CollectionPlateCard collection={overview.latest} />
+            </ReactionsBatch>
           </section>
         )}
       </section>

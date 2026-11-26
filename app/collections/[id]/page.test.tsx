@@ -11,6 +11,9 @@ const {
   mockListOfficialConditions: vi.fn(),
 }));
 
+vi.mock("@/components/ReactionsBatch", () => ({
+  ReactionsBatch: ({ children }: { children: React.ReactNode }) => children,
+}));
 vi.mock("@/lib/auth", () => ({ auth: mockAuth }));
 vi.mock("@/lib/db", () => ({
   getCollection: mockGetCollection,

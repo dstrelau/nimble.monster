@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { CollectionCard } from "@/components/collection/CollectionCard";
 import { MyLibraryPageHeader } from "@/components/layout/MyLibraryPageHeader";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import { EmptyState } from "@/components/shared/GridStates";
 import { auth } from "@/lib/auth";
 import * as db from "@/lib/db";
@@ -24,11 +25,17 @@ export default async function MyCollectionsPage() {
       {collections.length === 0 ? (
         <EmptyState entityName="collections" />
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
-          {collections.map((c) => (
-            <CollectionCard key={c.id} collection={c} />
-          ))}
-        </div>
+        <ReactionsBatch
+          pages={[
+            { entityType: "collection", ids: collections.map(({ id }) => id) },
+          ]}
+        >
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start">
+            {collections.map((c) => (
+              <CollectionCard key={c.id} collection={c} />
+            ))}
+          </div>
+        </ReactionsBatch>
       )}
     </div>
   );

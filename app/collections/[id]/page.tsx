@@ -8,6 +8,7 @@ import { Card as CompanionCard } from "@/components/companion/Card";
 import { CustomRuleMiniCard } from "@/components/custom-rule/CustomRuleMiniCard";
 import { Card as ItemCard } from "@/components/item/Card";
 import { Card as MonsterCard } from "@/components/monster/Card";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import { RandomTableCard } from "@/components/random-table/RandomTableCard";
 import { Card as SchoolCard } from "@/components/school/Card";
 import { SubclassMiniCard } from "@/components/subclass/SubclassMiniCard";
@@ -122,42 +123,76 @@ export default async function ShowCollectionView({
           This collection is empty.
         </p>
       ) : (
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
-          {monstersSortedByLevelInt(collection.monsters).map((m) => (
-            <MonsterCard
-              key={m.id}
-              monster={m.hazard ? toHazardMonsterView(m) : m}
-              creator={m.creator}
-            />
-          ))}
-          {itemsSortedByName(collection.items).map((item) => (
-            <ItemCard key={item.id} item={item} creator={item.creator} />
-          ))}
-          {collection.companions.map((c) => (
-            <CompanionCard key={c.id} companion={c} creator={c.creator} />
-          ))}
-          {collection.ancestries.map((ancestry) => (
-            <AncestryCard key={ancestry.id} ancestry={ancestry} />
-          ))}
-          {collection.backgrounds.map((background) => (
-            <BackgroundCard key={background.id} background={background} />
-          ))}
-          {collection.subclasses.map((subclass) => (
-            <SubclassMiniCard key={subclass.id} subclass={subclass} />
-          ))}
-          {collection.spellSchools.map((school) => (
-            <SchoolCard key={school.id} spellSchool={school} mini={true} />
-          ))}
-          {collection.classes.map((c) => (
-            <ClassMiniCard key={c.id} classEntity={c} />
-          ))}
-          {collection.customRules.map((rule) => (
-            <CustomRuleMiniCard key={rule.id} customRule={rule} />
-          ))}
-          {collection.randomTables.map((table) => (
-            <RandomTableCard key={table.id} randomTable={table} />
-          ))}
-        </div>
+        <ReactionsBatch
+          pages={[
+            {
+              entityType: "monster",
+              ids: collection.monsters.map(({ id }) => id),
+            },
+            { entityType: "item", ids: collection.items.map(({ id }) => id) },
+            {
+              entityType: "companion",
+              ids: collection.companions.map(({ id }) => id),
+            },
+            {
+              entityType: "ancestry",
+              ids: collection.ancestries.map(({ id }) => id),
+            },
+            {
+              entityType: "background",
+              ids: collection.backgrounds.map(({ id }) => id),
+            },
+            {
+              entityType: "subclass",
+              ids: collection.subclasses.map(({ id }) => id),
+            },
+            {
+              entityType: "spellSchool",
+              ids: collection.spellSchools.map(({ id }) => id),
+            },
+            {
+              entityType: "class",
+              ids: collection.classes.map(({ id }) => id),
+            },
+          ]}
+        >
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
+            {monstersSortedByLevelInt(collection.monsters).map((m) => (
+              <MonsterCard
+                key={m.id}
+                monster={m.hazard ? toHazardMonsterView(m) : m}
+                creator={m.creator}
+              />
+            ))}
+            {itemsSortedByName(collection.items).map((item) => (
+              <ItemCard key={item.id} item={item} creator={item.creator} />
+            ))}
+            {collection.companions.map((c) => (
+              <CompanionCard key={c.id} companion={c} creator={c.creator} />
+            ))}
+            {collection.ancestries.map((ancestry) => (
+              <AncestryCard key={ancestry.id} ancestry={ancestry} />
+            ))}
+            {collection.backgrounds.map((background) => (
+              <BackgroundCard key={background.id} background={background} />
+            ))}
+            {collection.subclasses.map((subclass) => (
+              <SubclassMiniCard key={subclass.id} subclass={subclass} />
+            ))}
+            {collection.spellSchools.map((school) => (
+              <SchoolCard key={school.id} spellSchool={school} mini={true} />
+            ))}
+            {collection.classes.map((c) => (
+              <ClassMiniCard key={c.id} classEntity={c} />
+            ))}
+            {collection.customRules.map((rule) => (
+              <CustomRuleMiniCard key={rule.id} customRule={rule} />
+            ))}
+            {collection.randomTables.map((table) => (
+              <RandomTableCard key={table.id} randomTable={table} />
+            ))}
+          </div>
+        </ReactionsBatch>
       )}
     </div>
   );

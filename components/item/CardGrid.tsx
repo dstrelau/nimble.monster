@@ -1,3 +1,4 @@
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import type { Item } from "@/lib/services/items";
 import { cn } from "@/lib/utils";
 import { Card } from "./Card";
@@ -40,22 +41,26 @@ export function CardGrid({
   hideActions = false,
 }: CardGridProps) {
   return (
-    <div
-      className={cn(
-        "grid gap-6 [&>*]:w-full",
-        DEFAULT_GRID_CLASSES[gridColumns.default],
-        MD_GRID_CLASSES[gridColumns.md],
-        gridColumns.lg && LG_GRID_CLASSES[gridColumns.lg]
-      )}
+    <ReactionsBatch
+      pages={[{ entityType: "item", ids: items.map((item) => item.id) }]}
     >
-      {items.map((item) => (
-        <Card
-          key={item.id}
-          item={item}
-          creator={item.creator}
-          hideActions={hideActions}
-        />
-      ))}
-    </div>
+      <div
+        className={cn(
+          "grid gap-6 [&>*]:w-full",
+          DEFAULT_GRID_CLASSES[gridColumns.default],
+          MD_GRID_CLASSES[gridColumns.md],
+          gridColumns.lg && LG_GRID_CLASSES[gridColumns.lg]
+        )}
+      >
+        {items.map((item) => (
+          <Card
+            key={item.id}
+            item={item}
+            creator={item.creator}
+            hideActions={hideActions}
+          />
+        ))}
+      </div>
+    </ReactionsBatch>
   );
 }

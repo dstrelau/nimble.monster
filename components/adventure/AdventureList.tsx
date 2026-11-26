@@ -1,5 +1,6 @@
 import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import { CardFooterLayout } from "@/components/shared/CardFooterLayout";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -28,47 +29,58 @@ export function AdventureList({
   }
 
   return (
-    <div className="grid items-start gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {adventures.map((adventure) => (
-        <Card key={adventure.id}>
-          <CardHeader>
-            <CardTitle className="font-slab text-xl font-bold">
-              <h2>
-                <Link href={getAdventureUrl(adventure)}>{adventure.name}</Link>
-              </h2>
-            </CardTitle>
-            {adventure.tagline && (
-              <CardDescription className="italic">
-                {adventure.tagline}
-              </CardDescription>
+    <ReactionsBatch
+      pages={[
+        {
+          entityType: "adventure",
+          ids: adventures.map((adventure) => adventure.id),
+        },
+      ]}
+    >
+      <div className="grid items-start gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {adventures.map((adventure) => (
+          <Card key={adventure.id}>
+            <CardHeader>
+              <CardTitle className="font-slab text-xl font-bold">
+                <h2>
+                  <Link href={getAdventureUrl(adventure)}>
+                    {adventure.name}
+                  </Link>
+                </h2>
+              </CardTitle>
+              {adventure.tagline && (
+                <CardDescription className="italic">
+                  {adventure.tagline}
+                </CardDescription>
+              )}
+            </CardHeader>
+            {adventure.summary && (
+              <CardContent>
+                <p className="line-clamp-3 text-sm text-muted-foreground">
+                  {adventure.summary}
+                </p>
+              </CardContent>
             )}
-          </CardHeader>
-          {adventure.summary && (
-            <CardContent>
-              <p className="line-clamp-3 text-sm text-muted-foreground">
-                {adventure.summary}
-              </p>
-            </CardContent>
-          )}
-          <CardFooterLayout
-            creator={adventure.creator}
-            reactionsSlot={
-              <EntityReactions
-                entityType="adventure"
-                entityId={adventure.id}
-                likeCount={adventure.likeCount}
-              />
-            }
-            actionsSlot={
-              adventure.visibility === "private" && (
-                <Badge variant="default" className="h-6">
-                  Private
-                </Badge>
-              )
-            }
-          />
-        </Card>
-      ))}
-    </div>
+            <CardFooterLayout
+              creator={adventure.creator}
+              reactionsSlot={
+                <EntityReactions
+                  entityType="adventure"
+                  entityId={adventure.id}
+                  likeCount={adventure.likeCount}
+                />
+              }
+              actionsSlot={
+                adventure.visibility === "private" && (
+                  <Badge variant="default" className="h-6">
+                    Private
+                  </Badge>
+                )
+              }
+            />
+          </Card>
+        ))}
+      </div>
+    </ReactionsBatch>
   );
 }

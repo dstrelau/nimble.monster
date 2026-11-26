@@ -4,6 +4,9 @@ import type { Item } from "@/lib/services/items";
 import type { User } from "@/lib/types";
 import { CardGrid } from "./CardGrid";
 
+vi.mock("@/components/ReactionsBatch", () => ({
+  ReactionsBatch: ({ children }: { children: React.ReactNode }) => children,
+}));
 vi.mock("./Card", () => ({
   Card: ({ item }: { item: Item }) => <div>{item.name}</div>,
 }));

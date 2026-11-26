@@ -7,6 +7,7 @@ import { parseAsString, parseAsStringLiteral, useQueryState } from "nuqs";
 import type React from "react";
 import { publicAncestriesInfiniteQueryOptions } from "@/app/ancestries/hooks";
 import { myAncestriesInfiniteQueryOptions } from "@/app/my/(library)/ancestries/hooks";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import {
   EmptyState,
   ErrorState,
@@ -90,17 +91,24 @@ export const PaginatedAncestryGrid: React.FC<PaginatedAncestryGridProps> = (
       {!filteredAncestries || filteredAncestries?.length === 0 ? (
         <EmptyState entityName="ancestries" />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 gap-4">
-          {filteredAncestries.map((ancestry) => (
-            <div key={ancestry.id} className="w-full max-w-sm mx-auto">
-              <Card
-                ancestry={ancestry}
-                creator={ancestry.creator}
-                hideDescription={true}
-              />
-            </div>
-          ))}
-        </div>
+        <ReactionsBatch
+          pages={(data?.pages ?? []).map((page) => ({
+            entityType: "ancestry",
+            ids: page.data.map((ancestry) => ancestry.id),
+          }))}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 gap-4">
+            {filteredAncestries.map((ancestry) => (
+              <div key={ancestry.id} className="w-full max-w-sm mx-auto">
+                <Card
+                  ancestry={ancestry}
+                  creator={ancestry.creator}
+                  hideDescription={true}
+                />
+              </div>
+            ))}
+          </div>
+        </ReactionsBatch>
       )}
       {data?.pages.at(-1)?.data.length === 12 && hasNextPage && (
         <LoadMoreButton onClick={() => fetchNextPage()} disabled={isFetching} />

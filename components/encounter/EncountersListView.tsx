@@ -11,6 +11,7 @@ import {
 } from "@/app/encounters/actions";
 import { myEncountersInfiniteQueryOptions } from "@/app/my/(library)/encounters/hooks";
 import { EncounterCard } from "@/components/encounter/EncounterCard";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import {
   EmptyState,
   ErrorState,
@@ -83,11 +84,18 @@ export const EncountersListView: React.FC<EncountersListViewProps> = (
         <EmptyState entityName="encounters" />
       ) : (
         <>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
-            {filteredEncounters.map((encounter) => (
-              <EncounterCard key={encounter.id} encounter={encounter} />
-            ))}
-          </div>
+          <ReactionsBatch
+            pages={(data?.pages ?? []).map((page) => ({
+              entityType: "encounter",
+              ids: page.data.map((encounter) => encounter.id),
+            }))}
+          >
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
+              {filteredEncounters.map((encounter) => (
+                <EncounterCard key={encounter.id} encounter={encounter} />
+              ))}
+            </div>
+          </ReactionsBatch>
           {hasNextPage && (
             <LoadMoreButton
               onClick={() => fetchNextPage()}

@@ -1,4 +1,5 @@
 "use client";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 
 import { FilterBar } from "@/components/shared/FilterBar";
 import { EmptyState } from "@/components/shared/GridStates";
@@ -40,11 +41,20 @@ export function SchoolsListView({ spellSchools }: SchoolsListViewProps) {
       {filteredSchools.length === 0 ? (
         <EmptyState entityName="spell schools" />
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
-          {filteredSchools.map((school) => (
-            <Card key={school.id} spellSchool={school} mini={true} />
-          ))}
-        </div>
+        <ReactionsBatch
+          pages={[
+            {
+              entityType: "spellSchool",
+              ids: spellSchools.map((school) => school.id),
+            },
+          ]}
+        >
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 items-start">
+            {filteredSchools.map((school) => (
+              <Card key={school.id} spellSchool={school} mini={true} />
+            ))}
+          </div>
+        </ReactionsBatch>
       )}
     </div>
   );

@@ -18,6 +18,7 @@ import {
   userProfileHazardsInfiniteQueryOptions,
   userProfileMonstersInfiniteQueryOptions,
 } from "@/app/u/[username]/hooks";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import {
   EmptyState,
   ErrorState,
@@ -166,30 +167,37 @@ export const PaginatedMonsterGrid: React.FC<PaginatedMonsterGridProps> = (
       {!filteredMonsters || filteredMonsters?.length === 0 ? (
         <EmptyState entityName={hazardsOnly ? "hazards" : "monsters"} />
       ) : (
-        <div className="grid grid-flow-dense grid-cols-1 gap-8 @min-[44rem]:grid-cols-2 @min-[70rem]:grid-cols-3 print:grid-cols-3">
-          {filteredMonsters.map((monster) => (
-            <div
-              key={monster.id}
-              className={cn(
-                !monster.hazard &&
-                  (monster.legendary || (monster.members?.length ?? 0) > 0) &&
-                  "@min-[44rem]:col-span-2 print:col-span-2",
-                !monster.hazard &&
-                  monster.legendary &&
-                  typeQuery === "legendary" &&
-                  "@min-[70rem]:col-span-3"
-              )}
-            >
-              <Card
-                monster={
-                  monster.hazard ? toHazardMonsterView(monster) : monster
-                }
-                creator={monster.creator}
-                hideDescription={true}
-              />
-            </div>
-          ))}
-        </div>
+        <ReactionsBatch
+          pages={(data?.pages ?? []).map((page) => ({
+            entityType: "monster",
+            ids: page.data.map((monster) => monster.id),
+          }))}
+        >
+          <div className="grid grid-flow-dense grid-cols-1 gap-8 @min-[44rem]:grid-cols-2 @min-[70rem]:grid-cols-3 print:grid-cols-3">
+            {filteredMonsters.map((monster) => (
+              <div
+                key={monster.id}
+                className={cn(
+                  !monster.hazard &&
+                    (monster.legendary || (monster.members?.length ?? 0) > 0) &&
+                    "@min-[44rem]:col-span-2 print:col-span-2",
+                  !monster.hazard &&
+                    monster.legendary &&
+                    typeQuery === "legendary" &&
+                    "@min-[70rem]:col-span-3"
+                )}
+              >
+                <Card
+                  monster={
+                    monster.hazard ? toHazardMonsterView(monster) : monster
+                  }
+                  creator={monster.creator}
+                  hideDescription={true}
+                />
+              </div>
+            ))}
+          </div>
+        </ReactionsBatch>
       )}
       {hasNextPage && (
         <LoadMoreButton onClick={() => fetchNextPage()} disabled={isFetching} />

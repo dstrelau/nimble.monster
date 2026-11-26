@@ -9,6 +9,7 @@ import { EncountersListView } from "@/components/encounter/EncountersListView";
 import { FamilyCard } from "@/components/family/FamilyCard";
 import { CardGrid as ItemCardGrid } from "@/components/item/CardGrid";
 import { PaginatedMonsterGrid } from "@/components/monster/PaginatedMonsterGrid";
+import { ReactionsBatch } from "@/components/ReactionsBatch";
 import { SchoolsListView } from "@/components/school/SchoolsListView";
 import { SubclassesListView } from "@/components/subclass/SubclassesListView";
 import type { AdventureOverview } from "@/lib/db/adventures";
@@ -106,11 +107,20 @@ export default function ProfileEntityContent(props: ProfileEntityContentProps) {
           No public collections available
         </p>
       ) : (
-        <div className="grid items-start gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {props.collections.map((collection) => (
-            <CollectionCard key={collection.id} collection={collection} />
-          ))}
-        </div>
+        <ReactionsBatch
+          pages={[
+            {
+              entityType: "collection",
+              ids: props.collections.map(({ id }) => id),
+            },
+          ]}
+        >
+          <div className="grid items-start gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {props.collections.map((collection) => (
+              <CollectionCard key={collection.id} collection={collection} />
+            ))}
+          </div>
+        </ReactionsBatch>
       );
     case "families":
       return props.families.length === 0 ? (
