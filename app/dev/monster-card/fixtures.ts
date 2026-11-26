@@ -79,8 +79,9 @@ interface MonsterCardCase {
   id: string;
   label: string;
   monster: Monster;
-  soloHp: number;
-  saves: string;
+  /** Legendary conversions only; minions have no legendary variant. */
+  soloHp?: number;
+  saves?: string;
   damageInteractions?: MonsterDamageInteractions;
 }
 
@@ -112,6 +113,47 @@ const LEVIATHAN: Monster = {
   creatureKinds: ["automaton"],
   environments: ["underground", "ruins", "aquatic", "volcanic"],
 };
+
+// Mirrors the seeded Bandit Minion: no level, no armor, 1 HP.
+const BANDIT_MINION: Monster = {
+  ...STRESS_BASE,
+  name: "Bandit Minion",
+  minion: true,
+  level: "",
+  levelInt: 0,
+  size: "small",
+  kind: "",
+  hp: 1,
+  armor: "none",
+  paperforgeId: "17e",
+  moreInfo: undefined,
+  creatureTypes: ["humanoid"],
+  creatureKinds: ["bandit"],
+  abilities: [
+    {
+      id: "minion-inept",
+      name: "Inept",
+      description: "Your attacks miss on 8.",
+    },
+    {
+      id: "minion-mortal-panic",
+      name: "Mortal Panic",
+      description: "Attacks miss you on a 2 or less.",
+    },
+  ],
+  actionPreface: "",
+  actions: [
+    {
+      id: "minion-cut-ya",
+      name: "I’ll Cut Ya!",
+      damage: "1d8",
+      description: "(follows @rule:[minions|minion rules])",
+    },
+  ],
+};
+
+const RAMBLING =
+  "every other turn the bandit also shouts a very long and rambling battle cry that keeps going well past the end of the first line, so it has to wrap around the artwork.";
 
 export const MONSTER_CARD_CASES: MonsterCardCase[] = [
   {
@@ -268,5 +310,54 @@ export const MONSTER_CARD_CASES: MonsterCardCase[] = [
       resistances: ["fire", "lightning"],
       vulnerabilities: ["ice"],
     },
+  },
+  {
+    id: "minion",
+    label: "Minion + artwork + short abilities",
+    monster: BANDIT_MINION,
+  },
+  {
+    id: "minion-long-name",
+    label: "Minion + long name wraps beside artwork",
+    monster: {
+      ...BANDIT_MINION,
+      name: "Bandit Minion Warlord of the Sunken Foundry",
+    },
+  },
+  {
+    id: "minion-long-ability",
+    label: "Minion + long first ability wraps around artwork",
+    monster: {
+      ...BANDIT_MINION,
+      abilities: [
+        {
+          id: "minion-inept",
+          name: "Inept",
+          description: `Your attacks miss on 8, and ${RAMBLING}`,
+        },
+        ...BANDIT_MINION.abilities.slice(1),
+      ],
+    },
+  },
+  {
+    id: "minion-no-abilities",
+    label: "Minion + artwork, no abilities, long action",
+    monster: {
+      ...BANDIT_MINION,
+      abilities: [],
+      actions: [
+        {
+          id: "minion-cut-ya",
+          name: "I’ll Cut Ya!",
+          damage: "1d8",
+          description: `(follows @rule:[minions|minion rules]) ${RAMBLING}`,
+        },
+      ],
+    },
+  },
+  {
+    id: "minion-stats",
+    label: "Minion + movement stats + artwork",
+    monster: { ...BANDIT_MINION, fly: 8, speed: 4 },
   },
 ];

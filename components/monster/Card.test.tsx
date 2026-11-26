@@ -7,7 +7,6 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { TROLL_HUNTER } from "@/app/dev/monster-card/fixtures";
-import { FeatureFlagsProvider } from "@/lib/contexts/FeatureFlagsContext";
 import type { MonsterFormState } from "@/lib/services/monsters";
 import { getMonsterUrl } from "@/lib/utils/url";
 import { Card } from "./Card";
@@ -22,7 +21,7 @@ vi.mock("@/components/EntityReactions", () => ({
 
 afterEach(cleanup);
 
-describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
+describe("monster cards", () => {
   it.each([false, true])(
     "preserves regular/Legendary content and navigation (legendary=%s)",
     (legendary) => {
@@ -39,11 +38,7 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
         source: undefined,
       };
       const { container } = render(
-        <FeatureFlagsProvider
-          enabledFeatures={enabled ? ["monster-card-layout"] : []}
-        >
-          <Card monster={monster} creator={monster.creator} hideActions />
-        </FeatureFlagsProvider>
+        <Card monster={monster} creator={monster.creator} hideActions />
       );
       expect(screen.getByRole("link", { name: monster.name })).toHaveAttribute(
         "href",
@@ -59,30 +54,20 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
       expect(
         screen.getByText(legendary ? "47/hero" : "90")
       ).toBeInTheDocument();
-      if (enabled) {
-        expect(container.querySelector("[data-level-label]")).toHaveTextContent(
-          legendary
-            ? "Lvl 10 Legendary Large Legacy descriptor"
-            : "Lvl 10, large"
-        );
-        expect(
-          screen.getByText("Environment").nextElementSibling
-        ).toHaveTextContent("swamp, ruins");
-        expect(screen.getByText("Role").nextElementSibling).toHaveTextContent(
-          "AoE"
-        );
-        expect(
-          within(
-            screen.getByRole("heading").parentElement ?? container
-          ).queryByText("Legacy descriptor") !== null
-        ).toBe(!legendary);
-      } else {
-        expect(container.querySelector("[data-level-label]")).toBeNull();
-        expect(
-          screen.queryByLabelText("Monster metadata")
-        ).not.toBeInTheDocument();
-        expect(screen.getByText(/Legacy descriptor/i)).toBeInTheDocument();
-      }
+      expect(container.querySelector("[data-level-label]")).toHaveTextContent(
+        legendary ? "Lvl 10 Legendary Large Legacy descriptor" : "Lvl 10, large"
+      );
+      expect(
+        screen.getByText("Environment").nextElementSibling
+      ).toHaveTextContent("swamp, ruins");
+      expect(screen.getByText("Role").nextElementSibling).toHaveTextContent(
+        "AoE"
+      );
+      expect(
+        within(
+          screen.getByRole("heading").parentElement ?? container
+        ).queryByText("Legacy descriptor") !== null
+      ).toBe(!legendary);
     }
   );
 
@@ -90,27 +75,21 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
     "shows legendary %s size at most once and omits Medium",
     (size) => {
       const { container } = render(
-        <FeatureFlagsProvider
-          enabledFeatures={enabled ? ["monster-card-layout"] : []}
-        >
-          <Card
-            monster={{
-              ...TROLL_HUNTER,
-              legendary: true,
-              level: "3",
-              levelInt: 3,
-              size,
-              kind: size === "large" ? "Large Owlbear" : "Medium Vampire Lord",
-            }}
-            noInteractive
-          />
-        </FeatureFlagsProvider>
+        <Card
+          monster={{
+            ...TROLL_HUNTER,
+            legendary: true,
+            level: "3",
+            levelInt: 3,
+            size,
+            kind: size === "large" ? "Large Owlbear" : "Medium Vampire Lord",
+          }}
+          noInteractive
+        />
       );
-      const label = enabled
-        ? container.querySelector("[data-level-label]")
-        : screen.getByText(/Legendary/);
+      const label = container.querySelector("[data-level-label]");
       expect(label).toHaveTextContent(
-        `${enabled ? "Lvl" : "Level"} 3 Legendary ${size === "large" ? "Large Owlbear" : "Vampire Lord"}`
+        `Lvl 3 Legendary ${size === "large" ? "Large Owlbear" : "Vampire Lord"}`
       );
       expect(label).not.toHaveTextContent(/Large Large|Medium/);
     }
@@ -119,30 +98,26 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
   it("keeps selection separate from source controls and exposes its state", async () => {
     const onSelect = vi.fn();
     const { container } = render(
-      <FeatureFlagsProvider
-        enabledFeatures={enabled ? ["monster-card-layout"] : []}
-      >
-        <Card
-          monster={{
-            ...TROLL_HUNTER,
-            families: [],
-            abilities: [],
-            actions: [],
-            source: {
-              id: "source",
-              name: "Nimble Heroes",
-              abbreviation: "Heroes",
-              license: "CC BY 4.0",
-              link: "https://nimbleRPG.com",
-              createdAt: new Date("2026-01-01"),
-              updatedAt: new Date("2026-01-01"),
-            },
-          }}
-          selectable
-          selected
-          onSelect={onSelect}
-        />
-      </FeatureFlagsProvider>
+      <Card
+        monster={{
+          ...TROLL_HUNTER,
+          families: [],
+          abilities: [],
+          actions: [],
+          source: {
+            id: "source",
+            name: "Nimble Heroes",
+            abbreviation: "Heroes",
+            license: "CC BY 4.0",
+            link: "https://nimbleRPG.com",
+            createdAt: new Date("2026-01-01"),
+            updatedAt: new Date("2026-01-01"),
+          },
+        }}
+        selectable
+        selected
+        onSelect={onSelect}
+      />
     );
     expect(
       screen.queryByRole("link", { name: TROLL_HUNTER.name })
@@ -189,13 +164,7 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
               ]
             : [],
       };
-      const { container } = render(
-        <FeatureFlagsProvider
-          enabledFeatures={enabled ? ["monster-card-layout"] : []}
-        >
-          <Card monster={monster} noInteractive />
-        </FeatureFlagsProvider>
-      );
+      const { container } = render(<Card monster={monster} noInteractive />);
       expect(screen.queryByText("99") !== null).toBe(variant === "hazard");
       expect(screen.queryByText("H")).not.toBeInTheDocument();
       if (variant === "minion")
@@ -205,9 +174,7 @@ describe.each([false, true])("monster cards with layout flag=%s", (enabled) => {
         expect(screen.getByText("31")).toBeInTheDocument();
         expect(screen.getByText("WIL+")).toBeInTheDocument();
       }
-      expect(container.querySelector("[data-level-label]") !== null).toBe(
-        enabled
-      );
+      expect(container.querySelector("[data-level-label]")).not.toBeNull();
     }
   );
 });

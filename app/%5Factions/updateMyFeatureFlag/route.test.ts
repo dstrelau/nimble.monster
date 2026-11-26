@@ -12,7 +12,7 @@ vi.mock("@/lib/services/featureFlags", async (importOriginal) => ({
 
 import { POST } from "./route";
 
-const input = { feature: "monster-card-layout", enabled: true };
+const input = { feature: "monster-custom-artwork", enabled: true };
 
 function request(body: unknown = input, origin = "https://nimble.nexus") {
   return new Request("https://nimble.nexus/_actions/updateMyFeatureFlag", {
@@ -29,9 +29,8 @@ beforeEach(() => {
 
 describe("self-service feature flags", () => {
   it.each([
-    ["monster-card-layout", true],
-    ["monster-card-layout", false],
     ["monster-custom-artwork", true],
+    ["monster-custom-artwork", false],
   ])(
     "sets %s enabled=%s for the session user only",
     async (feature, enabled) => {

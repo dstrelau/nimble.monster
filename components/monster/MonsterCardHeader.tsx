@@ -19,6 +19,48 @@ import { cn } from "@/lib/utils";
 import { formatHp, formatSizeKind } from "@/lib/utils/monster";
 import { getMonsterUrl } from "@/lib/utils/url";
 
+// The 88px medallion is centered on the band, so it hangs (88 - band) / 2 above
+// and below it. It only reaches the name once that exceeds the 12px gap.
+const MEDALLION_REACHES_NAME_BELOW_BAND_HEIGHT = 64;
+
+// Stats wrap with the card's width, so watch the band and let CSS react.
+function flagTallBand(band: HTMLDivElement | null) {
+  const header = band?.parentElement;
+  if (!band || !header) return;
+  const update = () =>
+    header.toggleAttribute(
+      "data-band-tall",
+      band.offsetHeight >= MEDALLION_REACHES_NAME_BELOW_BAND_HEIGHT
+    );
+  update();
+  const observer = new ResizeObserver(update);
+  observer.observe(band);
+  return () => observer.disconnect();
+}
+
+// Beside the name, the centered medallion can hang below the header into the
+// content. Publish by how much, so the first lines of text can wrap around it.
+function trackMedallionOverlap(row: HTMLDivElement | null) {
+  const header = row?.parentElement;
+  const card = header?.parentElement;
+  const content = header?.nextElementSibling;
+  const image = row?.querySelector("img");
+  if (!row || !card || !content || !image) return;
+  const update = () => {
+    const overlap =
+      image.getBoundingClientRect().bottom -
+      content.getBoundingClientRect().top;
+    card.style.setProperty(
+      "--medallion-overlap",
+      overlap > 0 ? `${Math.ceil(overlap) + 4}px` : "0px"
+    );
+  };
+  update();
+  const observer = new ResizeObserver(update);
+  observer.observe(row);
+  return () => observer.disconnect();
+}
+
 interface MonsterCardHeaderProps {
   monster: MonsterFormState;
   link?: boolean;
@@ -53,10 +95,8 @@ export function MonsterCardLevelTab({ monster }: MonsterCardHeaderProps) {
   );
 }
 
-export function MonsterCardHeader({
-  monster,
-  link = false,
-}: MonsterCardHeaderProps) {
+/** What the header shows, and where its artwork goes. */
+export function getHeaderLayout(monster: MonsterFormState) {
   const isTeam = !!monster.members?.length;
   const hasArtwork = !!(monster.paperforgeId || monster.customArtwork);
   // Legendary records store unused movement as zero, not an immobile creature.
@@ -80,13 +120,35 @@ export function MonsterCardHeader({
       : !monster.minion || hasMovement || !!monster.saves);
   // Without a combat band, artwork moves into the name row.
   const artworkBesideName = hasArtwork && !isTeam && !hasCombatBand;
+  return {
+    isTeam,
+    hasArtwork,
+    hasMovement,
+    showSpeed,
+    hasCombatBand,
+    artworkBesideName,
+  };
+}
+
+export function MonsterCardHeader({
+  monster,
+  link = false,
+}: MonsterCardHeaderProps) {
+  const {
+    isTeam,
+    hasArtwork,
+    hasMovement,
+    showSpeed,
+    hasCombatBand,
+    artworkBesideName,
+  } = getHeaderLayout(monster);
   return (
-    <div data-slot="card-header" className="space-y-3">
+    <div data-slot="card-header" className="group space-y-3">
       {hasCombatBand && (
         <div
+          ref={flagTallBand}
           className={cn(
-            "relative -mt-4 flex items-center rounded-t-xl border-b bg-muted px-2 py-1.5",
-            hasArtwork && "min-h-16"
+            "relative -mt-4 flex items-center rounded-t-xl border-b bg-muted px-2 py-1.5"
           )}
         >
           <div
@@ -155,12 +217,16 @@ export function MonsterCardHeader({
         </div>
       )}
       <div
-        className={cn(
-          "px-4",
-          artworkBesideName && "relative flex min-h-10 items-center"
-        )}
+        ref={artworkBesideName ? trackMedallionOverlap : undefined}
+        className={cn("px-4", artworkBesideName && "relative")}
       >
         <div className={cn("min-w-0", artworkBesideName && "pr-20")}>
+          {hasArtwork && hasCombatBand && (
+            <div
+              aria-hidden
+              className="float-right h-5 w-18 group-data-band-tall:hidden"
+            />
+          )}
           <h3
             className={cn(
               "font-slab font-bold wrap-anywhere",
@@ -184,7 +250,7 @@ export function MonsterCardHeader({
             paperforgeId={monster.paperforgeId}
             customArtwork={monster.customArtwork}
             size={88}
-            className="absolute -right-2 -top-6 z-20 size-22"
+            className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 size-22"
           />
         )}
       </div>

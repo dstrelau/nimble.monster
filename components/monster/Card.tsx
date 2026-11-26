@@ -6,6 +6,7 @@ import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
 import { UserAvatar } from "@/components/layout/UserAvatar";
 import {
+  getHeaderLayout,
   MonsterCardHeader,
   MonsterCardLevelTab,
 } from "@/components/monster/MonsterCardHeader";
@@ -19,11 +20,9 @@ import {
   FormattedText,
   PrefixedFormattedText,
 } from "@/components/shared/FormattedText";
-import { Level } from "@/components/shared/Level";
 import { MoreInfoSection } from "@/components/shared/MoreInfoSection";
 import { CardContentWithGap } from "@/components/shared/StyledComponents";
 import { Card as ShadcnCard } from "@/components/ui/card";
-import { useFeatureFlag } from "@/lib/contexts/FeatureFlagsContext";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
 import type {
@@ -33,186 +32,10 @@ import type {
 import { showsActionDamage } from "@/lib/text";
 import type { Condition, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { formatHp, formatSizeKind } from "@/lib/utils/monster";
+import { formatHp } from "@/lib/utils/monster";
 import { getMonsterUrl, getUserUrl } from "@/lib/utils/url";
 import CardActions from "./CardActions";
-import {
-  ArmorStat,
-  BurrowIcon,
-  ClimbIcon,
-  FlyIcon,
-  HPStat,
-  SavesStat,
-  SpeedIcon,
-  Stat,
-  SwimIcon,
-  TeleportIcon,
-} from "./Stat";
-
-const StatsGroup: React.FC<{
-  children: React.ReactNode;
-  className?: string;
-}> = ({ children, className }) => {
-  return <div className={className}>{children}</div>;
-};
-
-const MonsterStats: React.FC<{
-  monster: MonsterFormState;
-  variant: "hazard" | "legendary" | "minion" | "standard";
-  className?: string;
-}> = ({ monster, variant, className }) => {
-  if (variant === "hazard") {
-    return monster.hp > 0 ? (
-      <StatsGroup
-        className={cn(
-          "flex gap-2 items-center justify-end font-slab font-black",
-          className
-        )}
-      >
-        <HPStat value={String(monster.hp)} />
-      </StatsGroup>
-    ) : null;
-  }
-
-  let statCount = 0;
-
-  if (monster.armor !== "none") statCount++;
-  if (monster.swim) statCount++;
-  if (monster.fly) statCount++;
-  if (monster.climb) statCount++;
-  if (monster.burrow) statCount++;
-  if (monster.teleport) statCount++;
-  if (variant !== "legendary" && monster.speed !== 6) statCount++;
-  if (monster.hp) statCount++;
-  if (monster.saves) statCount += 2;
-
-  if (statCount === 0) return null;
-
-  const classes = "flex gap-2 items-center justify-end font-slab font-black";
-  return (
-    <StatsGroup
-      className={cn(
-        statCount > 4 && variant !== "legendary" && "flex-wrap",
-        variant === "legendary" && "shrink-0",
-        classes,
-        className
-      )}
-    >
-      {(variant === "legendary" || variant === "standard") && (
-        <>
-          {monster.armor === "medium" && <ArmorStat value="M" />}
-          {monster.armor === "heavy" && <ArmorStat value="H" />}
-        </>
-      )}
-      {variant !== "legendary" && (
-        <>
-          <Stat name="swim" value={monster.swim} SvgIcon={SwimIcon} />
-          <Stat name="fly" value={monster.fly} SvgIcon={FlyIcon} />
-          <Stat name="climb" value={monster.climb} SvgIcon={ClimbIcon} />
-          <Stat name="burrow" value={monster.burrow} SvgIcon={BurrowIcon} />
-          <Stat
-            name="teleport"
-            value={monster.teleport}
-            SvgIcon={TeleportIcon}
-          />
-          {monster.speed !== 6 && (
-            <Stat
-              name="speed"
-              value={monster.speed}
-              SvgIcon={SpeedIcon}
-              showZero={true}
-            />
-          )}
-        </>
-      )}
-      {variant === "legendary" && (
-        <>
-          <HPStat value={formatHp(monster)} />
-          <SavesStat>{monster.saves}</SavesStat>
-        </>
-      )}
-      {variant === "standard" && <HPStat value={formatHp(monster)} />}
-    </StatsGroup>
-  );
-};
-
-const MonsterHeader: React.FC<{
-  monster: MonsterFormState;
-  hiddenFamilyId?: string;
-  link?: boolean;
-  variant: "hazard" | "legendary" | "minion" | "standard";
-}> = ({ monster, link = true, variant }) => {
-  const hasArtwork = !!(monster.customArtwork || monster.paperforgeId);
-  const headerClasses = cn(
-    "gap-1 flex flex-col relative",
-    hasArtwork && "z-10 -ml-6",
-    variant === "minion" &&
-      "has-data-[slot=card-action]:grid-cols-[2fr_1fr] gap-0"
-  );
-
-  return (
-    <div
-      data-slot="card-header"
-      className={cn("gap-1 px-4 grow", headerClasses)}
-    >
-      {hasArtwork && (
-        <MonsterImage
-          paperforgeId={monster.paperforgeId}
-          customArtwork={monster.customArtwork}
-          className="absolute left-3 top-1/2 -translate-y-1/2 size-22 z-20"
-          size={88}
-        />
-      )}
-      <div
-        className={cn(
-          "flex items-start",
-          variant === "legendary"
-            ? "flex-col gap-2 sm:flex-row sm:justify-between sm:gap-0"
-            : "justify-between"
-        )}
-      >
-        <div className={cn("basis-full", hasArtwork && "ml-24")}>
-          <div className="space-x-1">
-            <div
-              className={cn(
-                "font-slab font-bold inline",
-                variant === "legendary" ? "text-3xl/8" : "small-caps text-2xl/6"
-              )}
-            >
-              {link && monster.id ? (
-                <Link href={getMonsterUrl(monster)}>{monster.name}</Link>
-              ) : (
-                monster.name
-              )}
-            </div>{" "}
-            <div
-              className={cn(
-                "text-sm/4 font-condensed font-muted-foreground",
-                variant === "legendary" && "text-md font-slab font-normal",
-                variant === "minion" && "small-caps",
-                (variant === "standard" || variant === "hazard") && "small-caps"
-              )}
-            >
-              {monster.levelInt !== 0 && (
-                <>
-                  {variant === "legendary" ? "Level" : "Lvl"}{" "}
-                  <Level level={monster.level} />{" "}
-                </>
-              )}
-              {variant === "legendary" && "Legendary "}
-              {variant !== "hazard" && formatSizeKind(monster)}
-            </div>
-          </div>
-        </div>
-        <MonsterStats
-          monster={monster}
-          variant={variant}
-          className={cn(variant === "legendary" && "self-end sm:self-auto")}
-        />
-      </div>
-    </div>
-  );
-};
+import { ArmorStat, HPStat, SavesStat } from "./Stat";
 
 const MemberStats: React.FC<{ member: MonsterTeamMember }> = ({ member }) => (
   <div className="flex gap-2 items-center justify-end font-slab font-black shrink-0">
@@ -278,31 +101,6 @@ const MemberDivider: React.FC = () => (
   </div>
 );
 
-const TeamHeader: React.FC<{ monster: MonsterFormState; link?: boolean }> = ({
-  monster,
-  link = true,
-}) => (
-  <div data-slot="card-header" className="gap-1 px-4 grow flex flex-col">
-    <div className="space-x-1">
-      <div className="font-slab font-bold inline text-3xl/8">
-        {link && monster.id ? (
-          <Link href={getMonsterUrl(monster)}>{monster.name}</Link>
-        ) : (
-          monster.name
-        )}
-      </div>{" "}
-      <div className="text-md font-slab font-normal text-muted-foreground">
-        {monster.levelInt !== 0 && (
-          <>
-            Level <Level level={monster.level} />{" "}
-          </>
-        )}
-        {monster.kind}
-      </div>
-    </div>
-  </div>
-);
-
 interface CardProps {
   monster: MonsterFormState;
   creator?: User;
@@ -330,7 +128,6 @@ export const Card = ({
   selected = false,
   onSelect,
 }: CardProps) => {
-  const redesigned = useFeatureFlag("monster-card-layout");
   const { allConditions: conditions } = useConditions({
     creatorId: creator?.discordId,
   });
@@ -350,6 +147,18 @@ export const Card = ({
     (monster.families?.some((family) => family.abilities.length > 0) ??
       false) ||
     (monster.abilities?.length ?? 0) > 0;
+  // The header's medallion can hang into the first lines of text below it.
+  // Its text sits 0.5rem inside the ability block, so it needs that much less.
+  const wrapsAroundMedallion = getHeaderLayout(monster).artworkBesideName;
+  const abilityLeading = wrapsAroundMedallion && (
+    <div
+      aria-hidden
+      className="float-right w-18 h-[calc(var(--medallion-overlap,0px)-0.5rem)]"
+    />
+  );
+  const actionLeading = wrapsAroundMedallion && (
+    <div aria-hidden className="float-right w-18 h-(--medallion-overlap,0px)" />
+  );
   const showBloodied = !monster.hazard && !monster.minion && !!monster.bloodied;
   const showLastStand = (monster.legendary || isTeam) && !!monster.lastStand;
   const preventNonDiceInteraction = (event: React.MouseEvent<HTMLElement>) => {
@@ -375,42 +184,12 @@ export const Card = ({
       onClickCapture={noInteractive ? preventNonDiceInteraction : undefined}
       {...(selectable && selected && { "data-selected": "" })}
     >
-      {redesigned ? (
-        <MonsterCardHeader
-          monster={monster}
-          link={!selectable && link && !noInteractive}
-        />
-      ) : isTeam ? (
-        <TeamHeader
-          monster={monster}
-          link={!selectable && link && !noInteractive}
-        />
-      ) : (
-        <MonsterHeader
-          monster={monster}
-          link={!selectable && link && !noInteractive}
-          variant={
-            monster.hazard
-              ? "hazard"
-              : monster.legendary
-                ? "legendary"
-                : monster.minion
-                  ? "minion"
-                  : "standard"
-          }
-        />
-      )}
+      <MonsterCardHeader
+        monster={monster}
+        link={!selectable && link && !noInteractive}
+      />
 
-      <CardContentWithGap
-        className={cn(
-          selectable && "pointer-events-none",
-          !redesigned &&
-            (monster.paperforgeId || monster.customArtwork) &&
-            !isTeam &&
-            !hasAbilities &&
-            "pt-4"
-        )}
-      >
+      <CardContentWithGap className={cn(selectable && "pointer-events-none")}>
         {hasAbilities && (
           <AbilityOverlay
             conditions={conditions}
@@ -420,6 +199,7 @@ export const Card = ({
             ]}
             families={monster.families ?? []}
             noInteractive={noInteractive}
+            leading={abilityLeading || undefined}
           />
         )}
         <ActionsList
@@ -428,6 +208,7 @@ export const Card = ({
           actionPreface={monster.actionPreface}
           showDamage={showsActionDamage(monster)}
           noInteractive={noInteractive}
+          leading={hasAbilities ? undefined : actionLeading || undefined}
         />
         {isTeam &&
           monster.members?.map((member) => (
@@ -441,7 +222,7 @@ export const Card = ({
             </Fragment>
           ))}
         {(showBloodied || showLastStand) && (
-          <div className={cn("flex flex-col", !redesigned && "gap-4")}>
+          <div className="flex flex-col">
             {showBloodied && monster.bloodied && (
               <PrefixedFormattedText
                 content={monster.bloodied}
@@ -542,7 +323,7 @@ export const Card = ({
         )}
       </CardContentWithGap>
 
-      {redesigned && <MonsterCardMetadata monster={monster} />}
+      <MonsterCardMetadata monster={monster} />
       <CardFooterLayout
         creator={creator}
         source={monster.source}
@@ -584,7 +365,7 @@ export const Card = ({
           className="absolute inset-0 z-30 rounded-xl focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
           onClick={onSelect}
         />
-        {redesigned && <MonsterCardLevelTab monster={monster} />}
+        <MonsterCardLevelTab monster={monster} />
         {card}
       </div>
     );
@@ -598,7 +379,7 @@ export const Card = ({
       )}
       id={`monster-${monster.id}`}
     >
-      {redesigned && <MonsterCardLevelTab monster={monster} />}
+      <MonsterCardLevelTab monster={monster} />
       {card}
     </div>
   );

@@ -51,13 +51,6 @@ export default async function ExperimentsPage() {
           enabled={enabledFeatures.includes("monster-statblock-editor")}
         />
         <FeatureFlagToggle
-          feature="monster-card-layout"
-          label="New Monster Card Styling"
-          enabled={enabledFeatures.includes("monster-card-layout")}
-        />
-      </section>
-      <section className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
-        <FeatureFlagToggle
           feature="monster-custom-artwork"
           label="Custom Image Uploads"
           enabled={enabledFeatures.includes("monster-custom-artwork")}

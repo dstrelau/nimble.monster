@@ -623,16 +623,20 @@ export function FormattedText({
 
 export const PrefixedFormattedText = ({
   prefix,
+  leading,
   content,
   conditions,
   noInteractive = false,
 }: {
   prefix: React.ReactNode;
+  /** Rendered first in the text flow, e.g. a float that text wraps around. */
+  leading?: React.ReactNode;
   content: string;
   conditions: Condition[];
   noInteractive?: boolean;
 }) => (
   <div className="overflow-auto">
+    {leading}
     <span className="float-left mr-1">{prefix}</span>
     <FormattedText
       content={content}

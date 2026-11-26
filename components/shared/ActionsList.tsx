@@ -9,6 +9,8 @@ interface ActionsListProps {
   actionPreface?: string;
   showDamage?: boolean;
   noInteractive?: boolean;
+  /** Placed at the start of the first action's text, when there is no preface. */
+  leading?: React.ReactNode;
 }
 
 export const ActionsList: React.FC<ActionsListProps> = ({
@@ -17,6 +19,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({
   actionPreface = "ACTIONS:",
   showDamage = true,
   noInteractive = false,
+  leading,
 }) => {
   if (actions.length === 0) return null;
 
@@ -29,10 +32,11 @@ export const ActionsList: React.FC<ActionsListProps> = ({
       )}
       <ul className="text-base leading-5.5 space-y-1">
         {actions?.map(
-          (action) =>
+          (action, index) =>
             action && (
               <li key={action.id}>
                 <PrefixedFormattedText
+                  leading={index === 0 && !actionPreface ? leading : undefined}
                   content={[
                     showDamage &&
                       (formatAttackDetails(action) || action.description

@@ -1,4 +1,5 @@
 import { Users } from "lucide-react";
+import type { ReactNode } from "react";
 import { Link } from "@/components/layout/Link";
 import { PrefixedFormattedText } from "@/components/shared/FormattedText";
 import { maybePeriod } from "@/lib/text";
@@ -11,11 +12,14 @@ export const AbilityOverlay = ({
   families = [],
   conditions,
   noInteractive = false,
+  leading,
 }: {
   abilities: Ability[];
   families?: FamilyOverview[];
   conditions: Condition[];
   noInteractive?: boolean;
+  /** Placed at the start of the first ability's text. */
+  leading?: ReactNode;
 }) => {
   if (abilities.length === 0) return null;
 
@@ -34,13 +38,14 @@ export const AbilityOverlay = ({
       className="font-stretch-extra-condensed relative p-2 w-[calc(100%+2rem)] -translate-x-4 px-4 bg-muted text-foreground dark:shadow-sm"
     >
       <div className="flex flex-col gap-3 leading-5.5">
-        {abilities?.map((ability) => {
+        {abilities?.map((ability, index) => {
           const abilityName = ability.name || "";
           const family = abilityToFamily.get(abilityName);
 
           return (
             <div key={ability.id}>
               <PrefixedFormattedText
+                leading={index === 0 ? leading : undefined}
                 prefix={
                   <span className="inline-flex items-baseline font-bold">
                     {family && (

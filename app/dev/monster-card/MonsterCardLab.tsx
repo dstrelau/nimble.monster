@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FeatureFlagsProvider } from "@/lib/contexts/FeatureFlagsContext";
 import type { Monster } from "@/lib/services/monsters";
 import { MONSTER_CARD_CASES } from "./fixtures";
 
@@ -20,62 +19,67 @@ export function MonsterCardLab() {
   const [selectedCase, setSelectedCase] = useState("all");
 
   return (
-    <FeatureFlagsProvider enabledFeatures={["monster-card-layout"]}>
-      <div className="grid items-start gap-8 lg:grid-cols-[180px_minmax(0,1fr)]">
-        <aside className="space-y-5 lg:sticky lg:top-24 lg:max-h-[calc(100dvh-8rem)] lg:overflow-y-auto">
-          <h1 className="font-slab font-black text-2xl">Monster cards</h1>
-          <ModeToggle />
-          <div className="space-y-2">
-            <Label htmlFor="card-width">Card width</Label>
-            <Select value={width} onValueChange={setWidth}>
-              <SelectTrigger id="card-width" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="288">Narrow · 288px</SelectItem>
-                <SelectItem value="343">Phone · 343px</SelectItem>
-                <SelectItem value="384">Standard · 384px</SelectItem>
-                <SelectItem value="480">Wide · 480px</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="card-case">Case</Label>
-            <Select value={selectedCase} onValueChange={setSelectedCase}>
-              <SelectTrigger id="card-case" className="w-full min-w-0">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All eight cases</SelectItem>
-                {MONSTER_CARD_CASES.map((sample) => (
-                  <SelectItem key={sample.id} value={sample.id}>
-                    {sample.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Solo conversions, classification assignments and damage interactions
-            are illustrative, not published rules.
-          </p>
-        </aside>
-        <div className="min-w-0 space-y-12">
-          {MONSTER_CARD_CASES.filter(
-            (sample) => selectedCase === "all" || sample.id === selectedCase
-          ).map((sample) => (
-            <section
-              key={sample.id}
-              id={`case-${sample.id}`}
-              className="space-y-4"
-            >
-              <h2 className="text-lg font-semibold">{sample.label}</h2>
-              <div className="overflow-x-auto pb-2">
-                <div
-                  className="grid w-max items-start gap-x-6 gap-y-4"
-                  style={{ gridTemplateColumns: `repeat(2, ${width}px)` }}
-                >
-                  {[false, true].map((legendary) => {
+    <div className="grid items-start gap-8 lg:grid-cols-[180px_minmax(0,1fr)]">
+      <aside className="space-y-5 lg:sticky lg:top-24 lg:max-h-[calc(100dvh-8rem)] lg:overflow-y-auto">
+        <h1 className="font-slab font-black text-2xl">Monster cards</h1>
+        <ModeToggle />
+        <div className="space-y-2">
+          <Label htmlFor="card-width">Card width</Label>
+          <Select value={width} onValueChange={setWidth}>
+            <SelectTrigger id="card-width" className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="288">Narrow · 288px</SelectItem>
+              <SelectItem value="343">Phone · 343px</SelectItem>
+              <SelectItem value="384">Standard · 384px</SelectItem>
+              <SelectItem value="480">Wide · 480px</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="card-case">Case</Label>
+          <Select value={selectedCase} onValueChange={setSelectedCase}>
+            <SelectTrigger id="card-case" className="w-full min-w-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All cases</SelectItem>
+              {MONSTER_CARD_CASES.map((sample) => (
+                <SelectItem key={sample.id} value={sample.id}>
+                  {sample.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Solo conversions, classification assignments and damage interactions
+          are illustrative, not published rules.
+        </p>
+      </aside>
+      <div className="min-w-0 space-y-12">
+        {MONSTER_CARD_CASES.filter(
+          (sample) => selectedCase === "all" || sample.id === selectedCase
+        ).map((sample) => (
+          <section
+            key={sample.id}
+            id={`case-${sample.id}`}
+            className="space-y-4"
+          >
+            <h2 className="text-lg font-semibold">{sample.label}</h2>
+            <div className="overflow-x-auto pb-2">
+              <div
+                className="grid w-max items-start gap-x-6 gap-y-4"
+                style={{ gridTemplateColumns: `repeat(2, ${width}px)` }}
+              >
+                {(sample.monster.minion ? [false] : [false, true]).map(
+                  (legendary) => {
+                    const variant = legendary
+                      ? "Legendary"
+                      : sample.monster.minion
+                        ? "Minion"
+                        : "Regular";
                     const monster: Monster = {
                       ...sample.monster,
                       legendary,
@@ -95,12 +99,12 @@ export function MonsterCardLab() {
                     return (
                       <article
                         key={`${sample.id}-${legendary}`}
-                        aria-label={`${sample.label}, ${legendary ? "Legendary" : "regular"}`}
+                        aria-label={`${sample.label}, ${variant}`}
                         data-variant={legendary ? "solo" : "regular"}
                         className="space-y-2"
                       >
                         <p className="text-xs text-muted-foreground">
-                          {legendary ? "Legendary" : "Regular"}
+                          {variant}
                         </p>
                         <div className="pt-2">
                           <Card
@@ -115,13 +119,13 @@ export function MonsterCardLab() {
                         </div>
                       </article>
                     );
-                  })}
-                </div>
+                  }
+                )}
               </div>
-            </section>
-          ))}
-        </div>
+            </div>
+          </section>
+        ))}
       </div>
-    </FeatureFlagsProvider>
+    </div>
   );
 }
