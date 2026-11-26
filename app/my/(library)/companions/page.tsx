@@ -25,10 +25,7 @@ export default async function MyCompanionsPage() {
       {companions.length === 0 ? (
         <EmptyState entityName="companions" />
       ) : (
-        <CardGrid
-          companions={companions}
-          gridColumns={{ default: 1, md: 1, lg: 2 }}
-        />
+        <CardGrid companions={companions} />
       )}
     </div>
   );

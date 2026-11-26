@@ -1,26 +1,17 @@
-import clsx from "clsx";
 import type { Companion } from "@/lib/types";
 import { Card } from "./Card";
+
+interface CardGridProps {
+  companions: Companion[];
+  hideActions?: boolean;
+}
 
 export const CardGrid = ({
   companions,
   hideActions = false,
-  gridColumns = { default: 1, md: 1, lg: 2 },
-}: {
-  companions: Companion[];
-  hideActions?: boolean;
-  gridColumns?: { default?: number; sm?: number; md?: number; lg?: number };
-}) => {
+}: CardGridProps) => {
   return (
-    <div
-      className={clsx(
-        "grid gap-8",
-        gridColumns.default && `grid-cols-${gridColumns.default}`,
-        gridColumns.sm && `grid-cols-${gridColumns.sm}`,
-        gridColumns.md && `md:grid-cols-${gridColumns.md}`,
-        gridColumns.lg && `lg:grid-cols-${gridColumns.lg}`
-      )}
-    >
+    <div className="mx-auto grid max-w-3xl grid-cols-1 gap-8">
       {companions.map((c) => {
         return (
           <Card
