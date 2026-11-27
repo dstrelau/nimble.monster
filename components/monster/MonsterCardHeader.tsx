@@ -148,7 +148,7 @@ export function MonsterCardHeader({
         <div
           ref={flagTallBand}
           className={cn(
-            "relative -mt-4 flex items-center rounded-t-xl border-b bg-muted px-2 py-1.5"
+            "relative -mt-3 flex items-center rounded-t-xl border-b bg-muted px-2 py-1.5"
           )}
         >
           <div

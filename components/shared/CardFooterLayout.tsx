@@ -19,6 +19,7 @@ interface CardFooterLayoutProps {
   reactionsSlot?: React.ReactNode;
   paperforgeSlot?: React.ReactNode;
   className?: string;
+  separatorClassName?: string;
   disableLink?: boolean;
 }
 
@@ -33,11 +34,12 @@ export const CardFooterLayout: React.FC<CardFooterLayoutProps> = ({
   reactionsSlot,
   paperforgeSlot,
   className,
+  separatorClassName,
   disableLink = false,
 }) => {
   return (
     <>
-      <Separator />
+      <Separator className={separatorClassName} />
       <CardFooter className={cn("flex-col items-stretch", className)}>
         <div className="flex items-center justify-between gap-2">
           {attributionSlot ??

@@ -14,7 +14,7 @@ export const CardContentWithGap: React.FC<{
   children: React.ReactNode;
   className?: string;
 }> = ({ children, className = "" }) => (
-  <CardContent className={`flex flex-col gap-4 ${className}`}>
+  <CardContent className={`flex flex-col gap-3 ${className}`}>
     {children}
   </CardContent>
 );

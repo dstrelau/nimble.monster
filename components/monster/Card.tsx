@@ -178,6 +178,7 @@ export const Card = ({
   const card = (
     <ShadcnCard
       className={cn(
+        "gap-3 py-3",
         className,
         selectable && selected && "ring-2 ring-amber-500"
       )}
@@ -329,7 +330,9 @@ export const Card = ({
         source={monster.source}
         awards={monster.awards}
         hideActions={selectable || hideActions}
-        className={cn(selectable && "relative z-40")}
+        // The card spaces sections 12px apart; the footer pulls in to 8px.
+        separatorClassName="-mt-1"
+        className={cn("-my-1", selectable && "relative z-40")}
         disableLink={noInteractive}
         actionsSlot={<CardActions monster={monster} />}
         reactionsSlot={

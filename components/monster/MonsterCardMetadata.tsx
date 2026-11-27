@@ -26,7 +26,7 @@ export function MonsterCardMetadata({ monster }: MonsterCardMetadataProps) {
   return (
     <dl
       aria-label="Monster metadata"
-      className="grid grid-cols-2 gap-x-4 gap-y-1 border-t px-4 pt-3 text-xs/4 text-muted-foreground"
+      className="grid grid-cols-2 gap-x-4 gap-y-1 px-4 text-xs/4 text-muted-foreground"
     >
       {rows.map((row) => (
         <div key={row.label} className="min-w-0 wrap-anywhere">
