@@ -108,10 +108,7 @@ export function MonsterCardLab() {
                         </p>
                         <div className="pt-2">
                           <Card
-                            monster={{
-                              ...monster,
-                              id: `${sample.id}-${legendary ? "solo" : "regular"}`,
-                            }}
+                            monster={monster}
                             creator={monster.creator}
                             link={false}
                             noInteractive
