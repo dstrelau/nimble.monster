@@ -42,6 +42,11 @@ const DEV_PAGES = [
     name: "Items",
     description: "Item entity lab.",
   },
+  {
+    href: "/dev/entities/hazards",
+    name: "Hazards",
+    description: "Hazard card fixtures.",
+  },
 ];
 
 export default function DevIndexPage() {
