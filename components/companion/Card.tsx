@@ -4,8 +4,9 @@ import { Circle, Skull } from "lucide-react";
 import type React from "react";
 import { EntityReactions } from "@/components/EntityReactions";
 import { Link } from "@/components/layout/Link";
+import { CardTab, flagTallBand } from "@/components/monster/MonsterCardHeader";
+import { MonsterImage } from "@/components/monster/MonsterImage";
 import { HPStat, SavesStat } from "@/components/monster/Stat";
-import { PaperforgeImage } from "@/components/paperforge/PaperforgeImage";
 import { PaperforgeLink } from "@/components/paperforge/PaperforgeLink";
 import { AbilityOverlay } from "@/components/shared/AbilityOverlay";
 import { ActionsList } from "@/components/shared/ActionsList";
@@ -17,14 +18,8 @@ import {
   ShareMenuCopyURLItem,
   ShareMenuDownloadCardItem,
 } from "@/components/shared/ShareMenu";
-import {
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Card as ShadcnCard,
-} from "@/components/ui/card";
+import { CardContentWithGap } from "@/components/shared/StyledComponents";
+import { Card as ShadcnCard } from "@/components/ui/card";
 import { useConditions } from "@/lib/hooks/useConditions";
 import { PAPERFORGE_ENTRIES } from "@/lib/paperforge-catalog";
 import type { MonsterSize } from "@/lib/services/monsters";
@@ -32,58 +27,73 @@ import type { Companion, User } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { getCompanionImageUrl, getCompanionUrl } from "@/lib/utils/url";
 
-// Helper function to format companion size
-const formatCompanionSize = (size: MonsterSize): string => {
-  return size !== "medium" ? size.charAt(0).toUpperCase() + size.slice(1) : "";
-};
+const formatCompanionSize = (size: MonsterSize): string =>
+  size !== "medium" ? size.charAt(0).toUpperCase() + size.slice(1) : "";
 
 const HeaderCompanion: React.FC<{
   companion: Companion;
   link?: boolean;
-}> = ({ companion, link = true }) => (
-  <CardHeader
-    className={cn("gap-0 relative", companion.paperforgeId && "min-h-10")}
-  >
-    {companion.paperforgeId && (
-      <PaperforgeImage
-        id={companion.paperforgeId}
-        className="absolute -top-7 -left-3 mr-2 size-19 z-10"
-        size={76}
-      />
-    )}
-    <CardAction>
-      <div className="flex items-start justify-between">
-        <div className={cn("font-slab flex items-center font-black")}>
-          <HPStat value={`${companion.hp_per_level}/LVL`} />
-          {companion.saves && (
-            <SavesStat>
-              <span>{companion.saves}</span>
-            </SavesStat>
-          )}
-        </div>
-      </div>
-    </CardAction>
-    <CardDescription
-      className={cn("font-slab text-md", companion.paperforgeId && "ml-14")}
-    >
-      {formatCompanionSize(companion.size)} {companion.kind} Adventuring
-      Companion, {companion.class}
-    </CardDescription>
+}> = ({ companion, link = true }) => {
+  const hasArtwork = !!companion.paperforgeId;
+  const descriptor = [
+    [formatCompanionSize(companion.size), companion.kind]
+      .filter(Boolean)
+      .join(" "),
+    companion.class,
+  ]
+    .filter(Boolean)
+    .join(", ");
 
-    <CardTitle
-      className={cn(
-        "font-slab font-bold text-2xl leading-tight text-left",
-        companion.paperforgeId && "ml-14"
-      )}
-    >
-      {link && companion.id ? (
-        <Link href={getCompanionUrl(companion)}>{companion.name}</Link>
-      ) : (
-        companion.name
-      )}
-    </CardTitle>
-  </CardHeader>
-);
+  return (
+    <div data-slot="card-header" className="group space-y-3">
+      <div
+        ref={flagTallBand}
+        className="relative -mt-3 flex items-center rounded-t-xl border-b bg-muted px-2 py-1.5"
+      >
+        <div
+          className={cn("w-full font-slab font-black", hasArtwork && "pr-20")}
+        >
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <HPStat value={`${companion.hp_per_level}/LVL`} />
+            {companion.saves && (
+              <SavesStat className="max-w-full">
+                <span className="sr-only">Saves:</span>{" "}
+                <span className="min-w-0 wrap-anywhere">{companion.saves}</span>
+              </SavesStat>
+            )}
+          </div>
+        </div>
+        {hasArtwork && (
+          <MonsterImage
+            paperforgeId={companion.paperforgeId}
+            size={88}
+            className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 size-22"
+          />
+        )}
+      </div>
+      <div className="min-w-0 px-4">
+        {hasArtwork && (
+          <div
+            aria-hidden
+            className="float-right h-5 w-18 group-data-band-tall:hidden"
+          />
+        )}
+        <h3 className="font-slab font-bold wrap-anywhere small-caps text-2xl/6">
+          {link && companion.id ? (
+            <Link href={getCompanionUrl(companion)}>{companion.name}</Link>
+          ) : (
+            companion.name
+          )}
+        </h3>
+        {descriptor && (
+          <div className="mt-1 text-sm/4 font-condensed text-muted-foreground small-caps">
+            {descriptor}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 interface CardProps {
   companion: Companion;
@@ -118,6 +128,7 @@ export const Card = ({
   const card = (
     <ShadcnCard
       className={cn(
+        "gap-3 py-3",
         className,
         selectable && selected && "ring-2 ring-amber-500"
       )}
@@ -125,12 +136,7 @@ export const Card = ({
     >
       <HeaderCompanion companion={companion} link={!selectable && link} />
 
-      <CardContent
-        className={cn(
-          "flex flex-col gap-3 pt-0 pb-4",
-          selectable && "pointer-events-none"
-        )}
-      >
+      <CardContentWithGap className={cn(selectable && "pointer-events-none")}>
         {companion.abilities.length > 0 && (
           <AbilityOverlay
             conditions={allConditions}
@@ -167,14 +173,15 @@ export const Card = ({
             conditions={allConditions}
           />
         )}
-      </CardContent>
+      </CardContentWithGap>
 
       <CardFooterLayout
         creator={creator}
         source={companion.source}
         awards={companion.awards}
         hideActions={selectable || hideActions}
-        className={cn(selectable && "relative z-40")}
+        separatorClassName="-mt-1"
+        className={cn("-my-1", selectable && "relative z-40")}
         reactionsSlot={
           companion.id && (
             <EntityReactions
@@ -221,10 +228,20 @@ export const Card = ({
           className="absolute inset-0 z-30 rounded-xl focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2"
           onClick={onSelect}
         />
+        <CardTab hasArtwork={!!companion.paperforgeId}>
+          Adventuring Companion
+        </CardTab>
         {card}
       </div>
     );
   }
 
-  return <div id={`companion-${companion.id}`}>{card}</div>;
+  return (
+    <div id={`companion-${companion.id}`}>
+      <CardTab hasArtwork={!!companion.paperforgeId}>
+        Adventuring Companion
+      </CardTab>
+      {card}
+    </div>
+  );
 };

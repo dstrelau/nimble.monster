@@ -24,7 +24,7 @@ import { getMonsterUrl } from "@/lib/utils/url";
 const MEDALLION_REACHES_NAME_BELOW_BAND_HEIGHT = 64;
 
 // Stats wrap with the card's width, so watch the band and let CSS react.
-function flagTallBand(band: HTMLDivElement | null) {
+export function flagTallBand(band: HTMLDivElement | null) {
   const header = band?.parentElement;
   if (!band || !header) return;
   const update = () =>
@@ -66,9 +66,14 @@ interface MonsterCardHeaderProps {
   link?: boolean;
 }
 
-export function MonsterCardLevelTab({ monster }: MonsterCardHeaderProps) {
-  const hasArtwork = !!(monster.paperforgeId || monster.customArtwork);
-
+/** The label tab above a card; leaves room for a medallion on the right. */
+export function CardTab({
+  hasArtwork,
+  children,
+}: {
+  hasArtwork: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <div
       data-level-label
@@ -77,6 +82,16 @@ export function MonsterCardLevelTab({ monster }: MonsterCardHeaderProps) {
         hasArtwork ? "max-w-[calc(100%-6rem)]" : "max-w-[calc(100%-1.5rem)]"
       )}
     >
+      {children}
+    </div>
+  );
+}
+
+export function MonsterCardLevelTab({ monster }: MonsterCardHeaderProps) {
+  const hasArtwork = !!(monster.paperforgeId || monster.customArtwork);
+
+  return (
+    <CardTab hasArtwork={hasArtwork}>
       {monster.levelInt !== 0 && (
         <>
           Lvl <Level level={monster.level} />
@@ -91,7 +106,7 @@ export function MonsterCardLevelTab({ monster }: MonsterCardHeaderProps) {
             ? `Legendary ${formatSizeKind(monster)}`
             : `${monster.minion ? "Minion " : ""}${monster.size}`}
       {!!monster.members?.length && monster.kind && ` ${monster.kind}`}
-    </div>
+    </CardTab>
   );
 }
 

@@ -47,6 +47,11 @@ const DEV_PAGES = [
     name: "Hazards",
     description: "Hazard card fixtures.",
   },
+  {
+    href: "/dev/entities/companions",
+    name: "Companions",
+    description: "Companion card fixtures.",
+  },
 ];
 
 export default function DevIndexPage() {
